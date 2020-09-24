@@ -2,136 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0176F2776B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DFC2776BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728573AbgIXQ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:27:46 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:25298 "EHLO z5.mailgun.us"
+        id S1728618AbgIXQ1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:27:55 -0400
+Received: from mga18.intel.com ([134.134.136.126]:10938 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728581AbgIXQ1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:27:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600964863; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=H7xOaaB817aiULShu/d8nxmq9YAErkwo2R+VMgY3kb4=; b=oKFAVSI33lHC8MB1kCm9lPNXydrP78baE3OQEHdN9TErdDMR2q+19hrQ4cbbLpcLPEY9/Df4
- 0tMoUUhhRCFCav6ykjLS50ApAEMCzmbwt7ufEUR0HZ7+5dAfDb+GKsxPPvfEBQMYhj6F5er/
- uGV7bOU364xkc6Rz2Pf0C4iaCHg=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f6cc8ff89f51cb4f12ab143 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 16:27:43
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 7FAC3C433A0; Thu, 24 Sep 2020 16:27:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F2382C433FF;
-        Thu, 24 Sep 2020 16:27:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F2382C433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Julian Calaby <julian.calaby@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v2] ath10k: sdio: remove redundant check in for loop
-References: <c2987351e3bdad16510dd35847991c2412a9db6b.camel@nvidia.com>
-        <20200916165748.20927-1-alex.dewar90@gmail.com>
-        <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
-Date:   Thu, 24 Sep 2020 19:27:36 +0300
-In-Reply-To: <CAGRGNgWoFfCnK9FcWTf_f0b57JNEjsm6ZNQB5X_AMf8L3FyNcQ@mail.gmail.com>
-        (Julian Calaby's message of "Thu, 17 Sep 2020 10:45:33 +1000")
-Message-ID: <87h7rnnnrb.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S1728583AbgIXQ1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:27:55 -0400
+IronPort-SDR: JURWzQJ7P/rI5MiDzfuo+ivCO8x3XISUlfAuNDavcwifCFcnBjcUiuvYSYjnrRrSUB1Z0PxfFp
+ Iap7IaKSlo0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="149009660"
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
+   d="scan'208";a="149009660"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 09:27:53 -0700
+IronPort-SDR: hFXbLew9Cyi6uK+36ft0QonUw+RdzAvcY53J0lCSlyH2xqXN+pWnDrUc6amf9IBeDFUbDbHa1B
+ pgFFT8hNru5g==
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
+   d="scan'208";a="347892032"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 09:27:52 -0700
+Date:   Thu, 24 Sep 2020 09:27:51 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200924162750.GC22819@linux.intel.com>
+References: <20200918235337.GA21189@sjchrist-ice>
+ <1B23E216-0229-4BDD-8B09-807256A54AF5@amacapital.net>
+ <20200922125801.GA133710@linux.intel.com>
+ <25d46fdc-1c19-2de8-2ce8-1033a0027ecf@intel.com>
+ <20200923143305.GE5160@linux.intel.com>
+ <982367fb-17b7-a647-a33b-8c8e5e1511a2@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <982367fb-17b7-a647-a33b-8c8e5e1511a2@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Julian Calaby <julian.calaby@gmail.com> writes:
+On Thu, Sep 24, 2020 at 07:50:15AM -0700, Dave Hansen wrote:
+> On 9/23/20 7:33 AM, Jarkko Sakkinen wrote:
+> > The consequence is that enclaves are best created with an ioctl API and the
+> > access control can be based only to the origin of the source file for the
+> > enclave data, i.e. on VMA file pointer and page permissions. For example,
+> > this could be done with LSM hooks that are triggered in the appropriate
+> > ioctl's and they could make the access control decision based on this
+> > information.
+> > 
+> > Unfortunately, there is ENCLS[EMODPE] that a running enclave can use to
+> > upgrade its permissions. If we do not limit mmap() and mprotect(), enclave
+> > could upgrade its permissions by using EMODPE followed by an appropriate
+> > mprotect() call. This would be completely hidden from the kernel.
+> > 
+> > Add 'mprotect' hook to vm_ops, so that a callback can be implemeted for SGX
+> > that will ensure that {mmap, mprotect}() permissions do not surpass any of
+> > the original page permissions. This feature allows to maintain and refine
+> > sane access control for enclaves.
+> 
+> Maybe I'm just being dense, but I still don't have a clear idea what
+> function this hook serves.
+> 
+> I understand that SGX has an orthogonal set of page permissions to the
+> normal x86 page tables.  It needs these so that the OS can't play nasty
+> tricks on the enclave, like removing read-only protections that provide
+> hardening.
+> 
+> But, I still don't get the connection to mprotect() and the x86 paging
+> permissions.  If the enclave's permissions are orthogonal, then why
+> bother with this hook?  Why does the OS view of the enclave's memory matter?
 
-> On Thu, Sep 17, 2020 at 3:09 AM Alex Dewar <alex.dewar90@gmail.com> wrote:
->>
->> The for loop checks whether cur_section is NULL on every iteration, but
->> we know it can never be NULL as there is another check towards the
->> bottom of the loop body. Refactor to avoid this unnecessary check.
->>
->> Also, increment the variable i inline for clarity
->
-> Comments below.
->
->> Addresses-Coverity: 1496984 ("Null pointer dereferences)
->> Suggested-by: Saeed Mahameed <saeedm@nvidia.com>
->> Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
->> ---
->> v2: refactor in the manner suggested by Saeed
->>
->>  drivers/net/wireless/ath/ath10k/sdio.c | 12 +++---------
->>  1 file changed, 3 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
->> index 81ddaafb6721..486886c74e6a 100644
->> --- a/drivers/net/wireless/ath/ath10k/sdio.c
->> +++ b/drivers/net/wireless/ath/ath10k/sdio.c
->> @@ -2307,8 +2307,8 @@ static int ath10k_sdio_dump_memory_section(struct ath10k *ar,
->>         }
->>
->>         count = 0;
->> -
->> -       for (i = 0; cur_section; i++) {
->> +       i = 0;
->> +       for (; cur_section; cur_section = next_section) {
->
-> You can have multiple statements in each section of a for() if you need to, e.g.
->
-> for (i = 1; cur_section; cur_section = next_section, i++) {
->
-> which means that the increment of i isn't hidden deep in the function body.
+For the purpose of this discussion, ignore the enclave permissions.  The only
+reason they're mentioned is to explain the background (well, try to) of how we
+ended up at an ->mprotect() hook.  There was a great deal of discussion in the
+past about whether or not we could use enclave permissions to enforce OS
+permissions.  The TL:DR version is that because of ENCLU[EMODPE], the answer
+is "no".
 
-Yeah, I was thinking the same. But I'll apply this patch anyway, it's
-still an improvement.
+What we're preventing via ->mprotect() is using SGX to bypass existing
+restrictions on code execution, e.g. noexec and LSM policies.
 
-> That said, this function is a mess. Something (approximately) like
-> this might be more readable:
->
-> prev_end = memregion->start;
-> for (i = 0; i < mem_region->section_table.size; i++) {
->     cur_section = &mem_region->section_table.sections[i];
->
->     // fail if prev_end is greater than cur_section->start - message
-> from line 2329 and 2294
->     // check section size - from line 2315
->
->     skip_size = cur_section->start - prev_end;
->
->     // check buffer size - from line 2339 - needs to account for the
-> skip size too.
->     // fill in the skip size amount - from line 2358 and 2304
->     // ath10k_sdio_read_mem - from line 2346
->
->     prev_end = cur_section->end;
-> }
+Because code must first be loaded into an enclave before it can be executed,
+all enclaves are kind of a variant on (in SELinux terminology) either EXECMOD
+or EXECMEM.  I.e. it's simply not possible to execute an enclave by mapping
+the source file as executable.  This effectively allows userspace to bypass a
+noexec FS by loading code into an enclave without EXEC perms on the source
+file, only on /dev/sgx/enclave, and denying EXEC on /dev/sgx/enclave would
+prevent running _any_ enclave.
 
-I agree. Anyone can come up with a patch?
+The ->mprotect() hook is used by SGX to require userspace to declare what
+permissions are allowed on any given enclave page, e.g. SGX's mmap()/mprotect()
+requires all underlying enclave pages to be declared as executable if the
+mmap()/mprotect() is specifying VM_EXEC.  By requiring userspace to declare
+their intent up front, SGX can then enforce noexec by requiring pages that are
+declared as executable to have VM_MAYEXEC set in the source VMA when loading
+code into the enclave.
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+As Jarkko pointed out, an alternative to adding ->mprotect() would be to
+simply require VM_MAYEXEC on _all_ source VMAs when loading code into the
+enclave.  That would work, albeit with the potentially undesirable side effect
+of preventing loading any part of an enclave from e.g. a noexec, readonly FS.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+But, unconditionally requiring VM_MAYEXEC doesn't address the Linux Security
+Module hooks for mmap() and mprotect(), which could also be bypassed by abusing
+SGX.  E.g. a process could gain arbitrary code execution by loading code from
+anonymous memory into an enclave, as the LSM checks hooks at mmap()/mprotect()
+will see always vm_file=/dev/sgx/enclave.  An LSM could deny a process access
+to /dev/sgx/enclave, but again that is very coarse granularity.
+
+By requiring userspace to declare permissions up front (when loading code/data
+into an enclave), SGX can make explicit upcalls to LSMs hooks at load time so
+that an LSM can enforce a meaningful policy, e.g. require all enclave code to
+originate from an executable file system.  This series doesn't actually
+implement the LSM integration, but it does ensure that _if_ we want to add LSM
+support in the future, we can do so without breaking userspace.
