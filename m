@@ -2,77 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CD5277990
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C68227799E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbgIXTnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:43:10 -0400
-Received: from mga18.intel.com ([134.134.136.126]:31793 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgIXTm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:42:57 -0400
-IronPort-SDR: ohw5qSIGv1JOtoD33b4wdLdDQEOD2xDrYBW+dXDkoJWz7Kvc/3lVIZ/vxQdx1wUHF7tuL8JdUT
- xMUycXakq+nw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="149076396"
-X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="149076396"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 12:42:53 -0700
-IronPort-SDR: sphcFmOIPr8ZyE0rndpU52g9haCu2iElE9atdGqEklsDjD4YMe5fSZ4uDvFw+nShMxWcT6YPTo
- SDhoNzVh6JeA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="347953060"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by FMSMGA003.fm.intel.com with ESMTP; 24 Sep 2020 12:42:53 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] KVM: VMX: Use "illegal GPA" helper for PT/RTIT output base check
-Date:   Thu, 24 Sep 2020 12:42:50 -0700
-Message-Id: <20200924194250.19137-6-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924194250.19137-1-sean.j.christopherson@intel.com>
-References: <20200924194250.19137-1-sean.j.christopherson@intel.com>
+        id S1726565AbgIXTo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgIXTo5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 15:44:57 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4AA5C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:44:57 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id z19so414917pfn.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:44:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ADwlTn9rnJzlHv/xfLefERCgTh/zOY3+dj+IP5LMhIo=;
+        b=L2Wx7FlLw8QHVp62Ne3mt4GV7+MUCO/WLUazgDqXAmYbUX1Et5GwKUZRbOhKWcg1pJ
+         h3F8YG2QH8T53HlhbxkOnKDq7rYr7VYQSpBZ/SrGKbAAN0q9gjlZztvIvkLYWYD2H5p5
+         D5jWhUDJxNaNV9x10hDsgdYsv3+GqUJuih92RXGRYnyEyog4jlWpFA8o+B+sqtqEeysu
+         zXsVFR5QGsEI7lJZ39JHqx1JjZyubGP7QEwNsybW+JHQWulohPcvjDgNlPxNi7sQOhp+
+         YLXR3ph4QhgGStegDp9ue2849D7tWES5wOYPeY73GujeWcYMaP3DsMTgcgakPfQ8C4Iw
+         pmzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ADwlTn9rnJzlHv/xfLefERCgTh/zOY3+dj+IP5LMhIo=;
+        b=RiJj0cIEomzX/Im21fmHggoWGKEh3mQxyOlIH2x7D/nHUveh3h4FRuxSu0k13hum3A
+         b0hgQGcNVMYPhRpEEDO/SN8jhaYnq5SJdM86tWuE50BnmV2OveCDrANB5ARbvR7//edt
+         XFOnxWik3iUJGuqYnRnTFkNbhcSa1axEph7H7hqC5hpjGvzLsp/zR3oOqtALsdthjBFu
+         w0hYiZ9ZP8IzhQWiD5W210Yk6aAGZUlApfAg3nQCTnZJf9ujMQG8GanRY2yx45mrRlhM
+         XxwoMs0LPlu+AWovpTandtLuPG0erScZxuhybiIrS/FdsEHHvurKWe96Siyr6oIo4c9c
+         wBTw==
+X-Gm-Message-State: AOAM531UuVRfyaX0KcS0TTD2HOLUNOw80zsO8NemfuEvVThtycQSaPzu
+        TtoOQc8GDAymWZz1sY9rZrxisw==
+X-Google-Smtp-Source: ABdhPJyn7jUbiC3AGiO/dBfKmKGpcA3VV/JE4LzjEmCUjGJIbrcL8/kmgANM72e+JonEfnG9EJ77rg==
+X-Received: by 2002:a17:902:854b:b029:d1:cbf4:bb43 with SMTP id d11-20020a170902854bb02900d1cbf4bb43mr778274plo.13.1600976697336;
+        Thu, 24 Sep 2020 12:44:57 -0700 (PDT)
+Received: from ?IPv6:2620:10d:c085:21d6::1911? ([2620:10d:c090:400::5:d63d])
+        by smtp.gmail.com with ESMTPSA id u10sm267612pfn.122.2020.09.24.12.44.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 12:44:56 -0700 (PDT)
+Subject: Re: bdi cleanups v7
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+References: <20200924065140.726436-1-hch@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a9235ba9-95a0-4251-ee7d-e4012775346e@kernel.dk>
+Date:   Thu, 24 Sep 2020 13:44:54 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924065140.726436-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use kvm_vcpu_is_illegal_gpa() to check for a legal GPA when validating a
-PT output base instead of open coding a clever, but difficult to read,
-variant.  Code readability is far more important than shaving a few uops
-in a slow path.
+On 9/24/20 12:51 AM, Christoph Hellwig wrote:
+> Hi Jens,
+> 
+> this series contains a bunch of different BDI cleanups.  The biggest item
+> is to isolate block drivers from the BDI in preparation of changing the
+> lifetime of the block device BDI in a follow up series.
 
-No functional change intended.
+Applied, thanks.
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/vmx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 7987de212057..8f1eb5dca794 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1037,7 +1037,7 @@ static inline bool pt_can_write_msr(struct vcpu_vmx *vmx)
- static inline bool pt_output_base_valid(struct kvm_vcpu *vcpu, u64 base)
- {
- 	/* The base must be 128-byte aligned and a legal physical address. */
--	return !(base & (~((1UL << cpuid_maxphyaddr(vcpu)) - 1) | 0x7f));
-+	return !kvm_vcpu_is_illegal_gpa(vcpu, base) && !(base & 0x7f);
- }
- 
- static inline void pt_load_msr(struct pt_ctx *ctx, u32 addr_range)
 -- 
-2.28.0
+Jens Axboe
 
