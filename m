@@ -2,73 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B638F276DFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A73D276E02
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbgIXJzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:55:35 -0400
-Received: from 8bytes.org ([81.169.241.247]:46336 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726607AbgIXJzf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:55:35 -0400
+        id S1727374AbgIXJ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:56:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726607AbgIXJ4c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:56:32 -0400
+X-Greylist: delayed 3159 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Sep 2020 02:56:32 PDT
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C1A6C0613CE;
+        Thu, 24 Sep 2020 02:56:32 -0700 (PDT)
 Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id EAEBB295; Thu, 24 Sep 2020 11:55:33 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 11:55:32 +0200
+        id EAE83295; Thu, 24 Sep 2020 11:56:30 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 11:56:29 +0200
 From:   Joerg Roedel <joro@8bytes.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v5 0/5] iommu aux-domain APIs extensions
-Message-ID: <20200924095532.GK27174@8bytes.org>
-References: <20200922061042.31633-1-baolu.lu@linux.intel.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Poonam Aggrwal <poonam.aggrwal@nxp.com>, robh@kernel.org,
+        Joerg Roedel <jroedel@suse.de>, Arnd Bergmann <arnd@arndb.de>,
+        Richard Weinberger <richard@nod.at>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mtd@lists.infradead.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Suram Suram <suram@nxp.com>, masonccyang@mxic.com.tw,
+        Will Deacon <will@kernel.org>, Zhiqiang.Hou@nxp.com
+Subject: Re: arm-smmu 5000000.iommu: Cannot accommodate DMA offset for IOMMU
+ page tables
+Message-ID: <20200924095629.GL27174@8bytes.org>
+References: <CA+G9fYvuq58q+GsWnzni0sKSHbubuQz-UaK3TASX26V_a7yBVw@mail.gmail.com>
+ <20200924090349.GF27174@8bytes.org>
+ <ecf71b34-a104-d42a-bfcd-9570e73520a7@arm.com>
+ <20200924092546.GJ27174@8bytes.org>
+ <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922061042.31633-1-baolu.lu@linux.intel.com>
+In-Reply-To: <e2186418-d4d6-e1f4-5eb4-3bfafb5cebb2@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 02:10:37PM +0800, Lu Baolu wrote:
-> Hi Jorge and Alex,
-> 
-> A description of this patch series could be found here.
-> 
-> https://lore.kernel.org/linux-iommu/20200901033422.22249-1-baolu.lu@linux.intel.com/
+On Thu, Sep 24, 2020 at 10:36:47AM +0100, Robin Murphy wrote:
+> Yes, the issue was introduced by one of the changes in "dma-mapping:
+> introduce DMA range map, supplanting dma_pfn_offset", so it only existed in
+> the dma-mapping/for-next branch anyway.
 
-Hmm, I am wondering if we can avoid all this hassle and special APIs by
-making the mdev framework more visible outside of the vfio code. There
-is an underlying bus implementation for mdevs, so is there a reason
-those can't use the standard iommu-core code to setup IOMMU mappings?
+Okay, alright then.
 
-What speaks against doing:
-
-	- IOMMU drivers capable of handling mdevs register iommu-ops
-	  for the mdev_bus.
-
-	- iommu_domain_alloc() takes bus_type as parameter, so there can
-	  be special domains be allocated for mdevs.
-
-	- Group creation and domain allocation will happen
-	  automatically in the iommu-core when a new mdev is registered
-	  through device-driver core code.
-
-	- There should be no need for special iommu_aux_* APIs, as one
-	  can attach a domain directly to &mdev->dev with
-	  iommu_attach_device(domain, &mdev->dev).
-
-Doing it this way will probably also keep the mdev-special code in VFIO
-small.
-
-Regards,
-
-	Joerg
