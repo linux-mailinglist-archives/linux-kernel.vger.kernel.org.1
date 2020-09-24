@@ -2,97 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367FB276F3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DED0276F4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgIXLCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:02:16 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:45606 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgIXLCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:02:15 -0400
-Received: from zn.tnic (p200300ec2f0c9500edd7635a8c92a40c.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9500:edd7:635a:8c92:a40c])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 46EE91EC03D2;
-        Thu, 24 Sep 2020 13:02:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600945334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=AoWYwBf6behZg5DxLQW8BEn7Q5Lu03q3jtwWp4i/kAI=;
-        b=C8WcwHgY9Xm/myNatk7G4U0C12ign5Naua2aw06f5ZoUUwyJ1LedWG4/lE+ptjLO1+HQXh
-        OcUtcgMkvE8LKER+HFro/B7wM9YX5qO/DH79TLKJ9imOWw9tXbweffYpmmNOS8eSFFzzSF
-        /JCM9pEFZV7cWGjQuFXr/hqCGGrh4Nw=
-Date:   Thu, 24 Sep 2020 13:02:07 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Michael Matz <matz@suse.de>, 'Dave Jiang' <dave.jiang@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "ashok.raj@intel.com" <ashok.raj@intel.com>,
-        "sanjay.k.kumar@intel.com" <sanjay.k.kumar@intel.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/5] x86/asm: Carve out a generic movdir64b() helper
- for general usage
-Message-ID: <20200924110207.GE5030@zn.tnic>
-References: <160090233730.44288.4446779116422752486.stgit@djiang5-desk3.ch.intel.com>
- <160090264332.44288.7575027054245105525.stgit@djiang5-desk3.ch.intel.com>
- <a8c81da06df2471296b663d40b186c92@AcuMS.aculab.com>
- <20200924101506.GD5030@zn.tnic>
- <40f740d814764019ac2306800a6b68e4@AcuMS.aculab.com>
+        id S1727446AbgIXLGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727426AbgIXLGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:06:15 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065C4C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:06:13 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id d15so3378907lfq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:06:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LzyEVfHWmhqp2YeTW1iTgqjO0Sx0b8TSpBv6gZq633w=;
+        b=mufSaWhJTEpeaZqLGunvZqqHp9vEfBBCJzxEWCpJIHPJWzWi4QefkwK17iHLj/pM7s
+         fo3Q/6tkCYEU1JO1FR8d0Fw1SbQjuYNK7wD1jJbywuEiIMVj1wu0Mng26Fk8TMYlTMB0
+         ij9xlXAM5BmSstdnt4c6W+tgp8uqsCiOftPyb/HBtk14B1VLqILUzVHnIWT+skfcvSUt
+         U8qor5QHgb8M4sS19ELlkfjSP4OJ8fk7aoQwkmaWj9VdJN7KhP6kR53XUzhLzSssLOfs
+         TO42wpmo034sPiyRDcX4NGwSLBrA3zYMOw4IZcHOTu/pGikUUPWXM4fOpxD0Y/ULdQP+
+         lwew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LzyEVfHWmhqp2YeTW1iTgqjO0Sx0b8TSpBv6gZq633w=;
+        b=keWq1qnkGDi4wMi8aHVrueq9Q/OXAlwlcxD6lU3WchvQQGZVFC2Z4I90VnxsogmdjK
+         ZteUjZWLIQrysR+wq+mUaz9+XHibFmTnalgtt6KIParS6yt8FtnZPuaL/gdxeO3gG9HY
+         n5MqIVnyVC8o+d0jp7L8LnLpcy5bMFEb994QC0nfie9MoUdtl1tslQU1mkYCrFm84smC
+         v9QV+cU9gaKhJsu9XRqWjrUn1L35zV27hg+1Xz67s6UjFXw2FwHstv+oB+V9sTXTpm07
+         0lWKqB6fq6v+WAdqxpufyDk89ZGKeSYXALQnWyLSfAIt7GzsM9XJZLpdCNTVRKW5zDFU
+         DFvA==
+X-Gm-Message-State: AOAM531yqZZ/ko0K3iqpQD+vGzSJycCP2u9GokZqldYFchaGFK0ylPXH
+        4TRqbS9hmD3XTSd2slcmotNUAQ==
+X-Google-Smtp-Source: ABdhPJx2FKWu3aQ4RnPGtoMvMr5etGzGRJYG6Q3BiqdvsBtHHdBydd7wU/4y8htyLWyho1WG9GSMIg==
+X-Received: by 2002:ac2:5110:: with SMTP id q16mr102229lfb.561.1600945572287;
+        Thu, 24 Sep 2020 04:06:12 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-133-169.NA.cust.bahnhof.se. [155.4.133.169])
+        by smtp.gmail.com with ESMTPSA id w4sm1762393lfr.139.2020.09.24.04.06.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 04:06:11 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>, linux-pm@vger.kernel.org
+Cc:     Sudeep Holla <sudeep.holla@arm.com>,
+        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] PM / Domains: Add power on/off notifiers for genpd
+Date:   Thu, 24 Sep 2020 13:04:46 +0200
+Message-Id: <20200924110449.329523-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <40f740d814764019ac2306800a6b68e4@AcuMS.aculab.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:42:16AM +0000, David Laight wrote:
-> The movdir64b instruction does a 'normal' read of 64 bytes (can be
-> misaligned) Then a cache-bypassing (probably) write-combining single
-> 64byte write to an address that must be aligned. Any reference to
-> segment registers is largely irrelevant since we are not in real mode.
+Changes in v2:
+	- Improved error handling in patch3.
 
-Sounds like you know better than the SDM.
+A device may have specific HW constraints that must be obeyed to, before its
+corresponding PM domain (genpd) can be powered off - and vice verse at power
+on. These constraints can't be managed through the regular runtime PM based
+deployment for a device, because the access pattern for it, isn't always
+request based. In other words, using the runtime PM callbacks to deal with the
+constraints doesn't work for these cases.
 
-> Mainly less lines of code to look at.
+For these reasons, this series introduces a power on/off notification mechanism
+to genpd. To add/remove a notifier for a device, the device must already have
+been attached to the genpd, which also means that it needs to be a part of the
+PM domain topology.
 
-Yeah, no. Readability is what I would prefer any day of the week.
+The intent is to allow these genpd power on/off notifiers to replace the need
+for the existing CPU_CLUSTER_PM_ENTER|EXIT notifiers. For example, those would
+otherwise be needed in psci_pd_power_off() in cpuidle-psci-domain.c, when
+powering off the CPU cluster.
 
-> No idea what clwb() is doing.
+Another series that enables drivers/soc/qcom/rpmh-rsc.c to make use of the new
+genpd on/off notifiers, are soon to be posted. However, I would appreciate any
+feedback on the approach taken, even before that series hits LKML.
 
-Sounds like you need to read another part of the SDM.
+Kind regards
+Ulf Hansson
 
-> But the "+m" (dst) tells gcc it depends on, and modifies the 64 bytes
-> at *dst.
-> 
-> I believe the 'volatile' is pointless.
 
-I discussed this at the time with a gcc person. And nope, it ain't
-pointless.
+Ulf Hansson (3):
+  PM / Domains: Rename power state enums for genpd
+  PM / Domains: Allow to abort power off when no ->power_off() callback
+  PM / Domains: Add support for PM domain on/off notifiers for genpd
 
-> No, that just says the asm uses the value of the pointer.
-> Not what it points to.
-
-Err, no, it is *exactly* what it points to that is important here and
-you're telling the compiler that the instruction will read that much
-memory through the pointer.
-
-Ok, I've read enough babble. I'll discuss it with a gcc person before I
-take anything.
+ drivers/base/power/domain.c | 187 +++++++++++++++++++++++++++++-------
+ include/linux/pm_domain.h   |  19 +++-
+ 2 files changed, 171 insertions(+), 35 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.25.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
