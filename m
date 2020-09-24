@@ -2,110 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB32277B88
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCCF3277B97
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgIXWNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 18:13:46 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:32818 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgIXWNq (ORCPT
+        id S1726638AbgIXWXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 18:23:43 -0400
+Received: from smtprelay0172.hostedemail.com ([216.40.44.172]:45502 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726280AbgIXWXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 18:13:46 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 0D9A61C0BE0; Fri, 25 Sep 2020 00:13:43 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 00:13:42 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, libffi-discuss@sourceware.org, luto@kernel.org,
-        David.Laight@ACULAB.COM, mark.rutland@arm.com, mic@digikod.net
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-Message-ID: <20200924221342.GB13185@amd>
-References: <20200916150826.5990-1-madvenka@linux.microsoft.com>
- <87v9gdz01h.fsf@mid.deneb.enyo.de>
- <96ea02df-4154-5888-1669-f3beeed60b33@linux.microsoft.com>
- <20200923014616.GA1216401@rani.riverdale.lan>
- <20200923091125.GB1240819@rani.riverdale.lan>
- <a742b9cd-4ffb-60e0-63b8-894800009700@linux.microsoft.com>
- <20200923195147.GA1358246@rani.riverdale.lan>
- <2ed2becd-49b5-7e76-9836-6a43707f539f@linux.microsoft.com>
+        Thu, 24 Sep 2020 18:23:43 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 67C1118224D82;
+        Thu, 24 Sep 2020 22:23:42 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1981:2110:2194:2199:2393:2553:2559:2562:2691:2693:2828:2893:2903:3138:3139:3140:3141:3142:3355:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:4641:5007:6691:7875:7903:7974:10004:10394:10400:10471:10848:11232:11658:11914:12050:12296:12297:12740:12760:12895:13161:13229:13255:13439:14096:14097:14659:14721:21080:21324:21325:21433:21627:21740:21789:21990:30054:30070:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: space69_45180fb27162
+X-Filterd-Recvd-Size: 3682
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 24 Sep 2020 22:23:40 +0000 (UTC)
+Message-ID: <a53048f738dacc1c58654eb94e229de79d4f94c2.camel@perches.com>
+Subject: Re: [Cocci] coccinelle: Convert comma to semicolons (was Re:
+ [PATCH] checkpatch: Add test for comma use that should be semicolon)
+From:   Joe Perches <joe@perches.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Julia Lawall <julia.lawall@inria.fr>
+Cc:     Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cocci <cocci@systeme.lip6.fr>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Whitcroft <apw@shadowen.org>
+Date:   Thu, 24 Sep 2020 15:23:39 -0700
+In-Reply-To: <87r1qqvo2d.fsf@nanos.tec.linutronix.de>
+References: <87r1qqvo2d.fsf@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="nVMJ2NtxeReIH9PS"
-Content-Disposition: inline
-In-Reply-To: <2ed2becd-49b5-7e76-9836-6a43707f539f@linux.microsoft.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 2020-09-24 at 23:53 +0200, Thomas Gleixner wrote:
+> On Thu, Sep 24 2020 at 13:33, Joe Perches wrote:
+> > On Thu, 2020-09-24 at 22:19 +0200, Thomas Gleixner wrote:
+> > > On Sat, Aug 22 2020 at 09:07, Julia Lawall wrote:
+> > > > On Fri, 21 Aug 2020, Joe Perches wrote:
+> > > > > True enough for a general statement, though the coccinelle
+> > > > > script Julia provided does not change a single instance of
+> > > > > for loop expressions with commas.
+> > > > > 
+> > > > > As far as I can tell, no logic defect is introduced by the
+> > > > > script at all.
+> > > > 
+> > > > The script has a rule to ensure that what is changed is part of a top
+> > > > level statement that has the form e1, e2;.  I put that in to avoid
+> > > > transforming cases where the comma is the body of a macro, but it protects
+> > > > against for loop headers as well.
+> > > 
+> > > Right. I went through the lot and did not find something dodgy. Except
+> > > for two hunks this still applies. Can someone please send a proper patch
+> > > with changelog/SOB etc. for this?
+> > 
+> > Treewide?
+> > 
+> > Somebody no doubt would complain, but there
+> > _really should_ be some mechanism for these
+> > trivial and correct treewide changes...
+> 
+> There are lots of mechanisms:
 
---nVMJ2NtxeReIH9PS
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I've tried them all.
 
-Hi!
+None of them work particularly well,
+especially the individual patch route.
 
-> PC-relative data referencing
-> ----------------------------
->=20
-> I agree that the current PC value can be loaded in a GPR using the trick
-> of call, pop on i386.
->=20
-> Perhaps, on other architectures, we can do similar things. For instance,
-> in architectures that load the return address in a designated register
-> instead of pushing it on the stack, the trampoline could call a leaf func=
-tion
-> that moves the value of that register into data_reg so that at the locati=
-on
-> after the call instruction, the current PC is already loaded in data_reg.
-> SPARC is one example I can think of.
->=20
-> My take is - if the ISA supports PC-relative data referencing explicitly =
-(like
-> X64 or ARM64), then we can use it. Or, if the ABI specification documents=
- an
-> approved way to load the PC into a GPR, we can use it.
->=20
-> Otherwise, using an ABI quirk or a calling convention side effect to load=
- the
-> PC into a GPR is, IMO, non-standard or non-compliant or non-approved or
-> whatever you want to call it. I would be conservative and not use
+>  - Andrew picks such changes up
 
-ISAs are very well defined, and basically not changing. If you want to
-argue we should not use something, you should have very clear picture
-_why_ it is bad. "Non-standard or non-approved or whatever" just does
-not cut it.
+Generally not treewide.
 
-And yes, certain tricks may be seriously slow on modern CPUs, and we
-might want to avoid those. But other than that... you should have
-better argument than "it is non-standard".
+>  - With a few competent eyeballs on it (reviewers) this can go thorugh
+>    the trivial tree as well. It's more than obvious after all.
 
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+Jiri is almost non-existent when it comes to
+trivial treewide patches.
 
---nVMJ2NtxeReIH9PS
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>  - Send the script to Linus with a proper change log attached and ask
+>    him to run it.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Linus has concerns about backports and what he
+deems trivialities.  Generally overblown IMO.
 
-iEYEARECAAYFAl9tGhYACgkQMOfwapXb+vJZHwCfU5jKO40qUDcezUI+s8fyyfU7
-zC8An2cC26db1I80i/2GbnoRTakpnf34
-=8gy5
------END PGP SIGNATURE-----
+>  - In the worst case if nobody feels responsible, I'll take care.
 
---nVMJ2NtxeReIH9PS--
+If Julia doesn't send a new patch in the next few
+days, I will do the apply, fixup and resend of hers.
+
+So, you're on-deck, nearly up...
+
+> All of the above is better than trying to get the attention of a
+> gazillion of maintainters.
+
+True.
+
+And all of the treewide changes depend on some
+generic acceptance of value in the type of change.
+
+Some believe that comma->semicolon conversions
+aren't useful as there isn't a logical change and
+the compiler output wouldn't be different.
+
+Anyway, cheers, Joe
+
+
