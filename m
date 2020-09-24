@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAEB0276B35
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F4B276B38
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727274AbgIXHvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:51:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52664 "EHLO
+        id S1727279AbgIXHvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:51:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727103AbgIXHvC (ORCPT
+        with ESMTP id S1727103AbgIXHvc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:51:02 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC31C0613CE;
-        Thu, 24 Sep 2020 00:51:02 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 197so180303pge.8;
-        Thu, 24 Sep 2020 00:51:02 -0700 (PDT)
+        Thu, 24 Sep 2020 03:51:32 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC90C0613CE;
+        Thu, 24 Sep 2020 00:51:32 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b124so1363642pfg.13;
+        Thu, 24 Sep 2020 00:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1ou3bbGe5th7uUnDB+XZd2U1A6RJKgi+roKFJ78TGSE=;
-        b=BOb+/LYGXMai0U9rgCSZN1L6+ZoTk3gCQR8/xpp7xEbyARJ35XA8xhwOLFdzXIby9+
-         hgayC9UPcQKtS7AMaXA5L296CGHBqtkB8e7IC486yWvTu5dqUBovaFsGj3ANae7uCZNU
-         7TbMQsUXG2riuoPg9rkz6RrwyWuQ1rrGobD2jj/FBqXmtPQlofAITn8aLHtwhJXqPcjS
-         Rj6NgxzUeyNgRTx0cL6sm9jn8IpWQrtG8Z0o+XWkkUowvs+iCywG7fAOPnsoIF9qtDsb
-         f0eFY4i//YZeUtIaa6hWCvJ+1b96JN4IN85KoO1Nyk4wA0wAUEDFWZc9tStrWOZsp0q+
-         jF9Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=48nix4rTdQigZRa9Vc7CjTQh3htJMAItDGYGEpyaX94=;
+        b=LQ9fBJUkchQKhpDJK824w+FTNJrBTTwrBKUZD8qpIHSBjtOPhtIzo6VKaoMMHhNFAL
+         lxtHy84Dpu58G96obf8L3Wlh+T+71fNnC8Od/NwficCfZb1+GYjfYw2XDgXjFX8eIQHp
+         1YiOujXN/CFMVfOoMiIOvcWc3SFrb+s0TAX5ihF2qGNHuxCsqew19roD2DweOQBLVDtI
+         oJxL6FeRwxwgkHl++r4TBYC/gJdE2FOJxlzGFfJv3DJMQs64aAAa26HAOILgU8tv6S8C
+         AIq1mphBEYwZbyzic6qye7YROHHz+2iilIUxfJlFdtlG08D5cGckAo8BUW4KMR9JhLdM
+         rLCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1ou3bbGe5th7uUnDB+XZd2U1A6RJKgi+roKFJ78TGSE=;
-        b=J1+mJemvEjmcgPGJdVvQiAuhtxvUGORo9z0qvrFER5ueJvCKeLvnN3ZHhDnFgyOYHz
-         l6Fx5eGEwinRAaiJBaJqUA52nj0bYg5tHo8+uhtyd+ZeBTj/tkUpjzD6COp02G4zD8DE
-         Ippen6DJ7QOX4DpY919ySv3CntCiVItdnMg9p38y01sns2M+42XiApGkrm7E99FWnoHx
-         WmgZCYnc1E6obqCBxYxksrmxCLzYkW2Ok92jHdm1sXPyo/h5QjxvxPdGZ6XPRNsq9ok8
-         +h7PYsNjoA08T3nFY9snIKe32HKgvWHiZM7GXCJOKMmlaH0KJdXLXmMRghmz+SF/7cYZ
-         4GHA==
-X-Gm-Message-State: AOAM530hwSrE1mIur2MDGhfXgqaoYJGawkaOgM+SjLg+28t4uYoE1P4a
-        ATzKd+qzfY39w/rksg5tdaMnpJserXe2FQ==
-X-Google-Smtp-Source: ABdhPJw4MgmARHZwrEzuIpcQpWYfGdKEOkw+oB7mtLkaloOH2ms8EUdNOmvxD62oFX0h8kVM1sDFqg==
-X-Received: by 2002:a05:6a00:1491:b029:142:2501:34e0 with SMTP id v17-20020a056a001491b0290142250134e0mr3355943pfu.57.1600933861944;
-        Thu, 24 Sep 2020 00:51:01 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id t24sm1879687pfq.37.2020.09.24.00.50.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 00:51:01 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 15:50:56 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 17/20] tools: gpio: port gpio-hammer to v2 uAPI
-Message-ID: <20200924075056.GC17562@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <20200922023151.387447-18-warthog618@gmail.com>
- <CAHp75VenmSn0MV+FOfX=y9h3ob=Hsg741MjUJ-DEHcvxRT6wYA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=48nix4rTdQigZRa9Vc7CjTQh3htJMAItDGYGEpyaX94=;
+        b=hFXDFZ/+Jj1c88DddS5itIKuRhjVE5Kx6nqmmwMNBLJQWflZEO69ev619gdsXNGNuD
+         v94vxwlbEER56K1l+zrJlqynG8KD1X9OHM0LTerXoBdWb/NlJf1f8gbkTWkrtqb5rqnh
+         pvdsOUqn+8kLzIbYKmMhUuKwcVxv+2gkEPw7d4Iz++GqC1t1SWf0gidrqLQp+v9yHnyZ
+         vRZLS04//OXCfYdS618UhLPXAHmLXAWGDms6jSs4dwHDHROzNEPcFsXxgtR4A38K3Wty
+         BkG3k6wInL1EBwgPWXq4yXJ3kGDIRhHBU68OT0KD+LEr+LPWFOLJlmrb7+d5+nJ5UHRV
+         phYw==
+X-Gm-Message-State: AOAM530lqevAecA1YrYEn6m7yLbquVz9D8jamKPR/BWYZSkAQP9dV32A
+        pL+ed0m/oqQTMPc+NIopUekidsrFAynsgV1TGnGYB0sSBm3tVg==
+X-Google-Smtp-Source: ABdhPJx65pp+0WKMk7ffwPmRtbbQTqLX1EOoTsZNPeH430NNbFVserZlspAwXhx3O3RcBnCwjUoE6+jE3pvHXX1gUQg=
+X-Received: by 2002:a63:511d:: with SMTP id f29mr3010937pgb.11.1600933891983;
+ Thu, 24 Sep 2020 00:51:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VenmSn0MV+FOfX=y9h3ob=Hsg741MjUJ-DEHcvxRT6wYA@mail.gmail.com>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-4-keescook@chromium.org> <DM6PR11MB271492D0565E91475D949F5DEF390@DM6PR11MB2714.namprd11.prod.outlook.com>
+ <CABqSeAS=b6NQ=mqrD=hV60md3isYSDyAnE9QE_AT4=oYYFkAfQ@mail.gmail.com> <202009240037.21A9E3CE@keescook>
+In-Reply-To: <202009240037.21A9E3CE@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 24 Sep 2020 02:51:20 -0500
+Message-ID: <CABqSeATpdn48Jbc1zLugbJBhRJNKr0P+BVx0SyODrEQgrX9HMw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-api@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 07:30:52PM +0300, Andy Shevchenko wrote:
-> On Tue, Sep 22, 2020 at 5:36 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Port the gpio-hammer tool to the latest GPIO uAPI.
-> 
-> _BITUL() and _BITULL() are part of Linux uAPI. Why not to use them?
-> const.h
-> 
+On Thu, Sep 24, 2020 at 2:38 AM Kees Cook <keescook@chromium.org> wrote:
+> > Would you mind educating me how this patch plan one handling MIPS? For
+> > one kernel they seem to have up to three arch numbers per build,
+> > AUDIT_ARCH_MIPS{,64,64N32}. Though ARCH_TRACE_IGNORE_COMPAT_SYSCALLS
+> > does not seem to be defined for MIPS so I'm assuming the syscall
+> > numbers are the same, but I think it is possible some client uses that
+> > arch number to pose different constraints for different processes, so
+> > it would better not accelerate them rather than break them.
+>
+> I'll take a look, but I'm hoping it won't be too hard to fit into what
+> I've got designed so for to deal with x86_x32. (Will MIPS want this
+> optimization at all?)
 
-Yeah, that is an oversight on my part - will change for v10.
-
-Cheers,
-Kent.
+I just took a slightly closer look at MIPS and it seems that they have
+sparse syscall numbers (defines HAVE_SPARSE_SYSCALL_NR). I don't know
+how the different "regions of syscall numbers" are affected by arch
+numbers, however...
