@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3962774D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136172774D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728334AbgIXPIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728345AbgIXPIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 24 Sep 2020 11:08:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33244 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728296AbgIXPIe (ORCPT
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728306AbgIXPIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Sep 2020 11:08:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600960113;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MQoQDFgY9yaaRRiEJU3spleYVLTHQmZvjCiRju5YF+Q=;
-        b=IEnrwnaSlnAk+kuVAacWmmWO5mBqwgeed9VR4vWq0uwk0Gm7i9ljvfCIB6MpU8Dz+neHZ/
-        yvRMUyWfzxumjoSqbSA1H4YnzQJKjiVAlP0Meh4dUDnO033TnhTmsYJWIKTzw1qeCKnC3j
-        rw2s0FmTdF6Ev1vNqp+flzI1rxBaQUY=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-594-4uNmq2zHOfONkY5duQnPkA-1; Thu, 24 Sep 2020 11:08:30 -0400
-X-MC-Unique: 4uNmq2zHOfONkY5duQnPkA-1
-Received: by mail-qt1-f199.google.com with SMTP id a16so2654328qtj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:08:30 -0700 (PDT)
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A49C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:08:34 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id n61so3427136ota.10
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oKut7+ZE8Cwg1H0GjJjlU6QFhq4QfWKGoaWrzXaMdPQ=;
+        b=VeYYf3vkSJaJTKjSHt+ahxijhfiWy07sbqhRFNB0b5LvH7k+8GTTQfwTPDvbJG9hs4
+         nvNOxUL/BWQokmlPGL12ud/TUqbXsogCeqT2zRDRnKKm1WZnqdsay9Lr/iVjiexNTHh4
+         p9Mhd9dQ71pSQlXJ7uIXGNVQZekU7vvWLupZQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MQoQDFgY9yaaRRiEJU3spleYVLTHQmZvjCiRju5YF+Q=;
-        b=amWGzmLCvcIU24szuWUnOy4JQSbL457q64SWDTjQ8s/XFfSWoZd2QLztAXk3onq+Z3
-         uD/7C986fAWIJpoZcJ5NQNPbYXFjQGssB4+OxDp5LgNgxAsKA8TmjL30yUzCPdwIK+E8
-         dWcJRqgzal7+B6aViuoKXg+XkAaIQJWFJiTnmpPLtsR42UjI/ElYC0/Dry1GZV2kyfX6
-         rNGsltqm6KqLKx94GmxvsamAlr8Fz/d5jw4ochIb0IGOqjOu8wN9mAWycdN0K17CkB3B
-         2v9jI3D/NdRFeVyXc+sEOJ06NlCou/oUQHLUtc0bRRIAjAQIg/rfd9hvnGznbr8t4rsj
-         gh8w==
-X-Gm-Message-State: AOAM532V0QsKAF3v5sw+9oTVaFk5mRpFbZvbVmzX1yDbWhGipuRP+yNH
-        SOf51ElXPBJT2mCjA0ipgxuwph7xMHXaF71rIfO9y2d0/mcxLgE02vl1bNoCVyd5hgCzUQGE5Hd
-        GVBWQ+rh9LhPHL/IIWOZ99EAt
-X-Received: by 2002:a05:620a:919:: with SMTP id v25mr46595qkv.461.1600960110108;
-        Thu, 24 Sep 2020 08:08:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPKyFUERco+7cJyYy2qb6iiaNZvQWTPdRkcsArJJYM6TktrNZefehjko3nxuDJ6Se8rtvUPA==
-X-Received: by 2002:a05:620a:919:: with SMTP id v25mr46579qkv.461.1600960109906;
-        Thu, 24 Sep 2020 08:08:29 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id w6sm2456247qti.63.2020.09.24.08.08.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 08:08:29 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 11:08:27 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Oleg Nesterov <oleg@redhat.com>, Linux-MM <linux-mm@kvack.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oKut7+ZE8Cwg1H0GjJjlU6QFhq4QfWKGoaWrzXaMdPQ=;
+        b=Fkfeg+d1II4kl0PEqp2A4MwLSJR/1+RxoNZeZk/uPbpjxaYJVXnz5Fk3pYck4Iu8Eh
+         13CqRJ95WlbqLESD5e+YzpYn+xEb+iWrBwoC5ILdaRvI+KsIe8LOaZqbQb65iSvnTnkJ
+         0wzBNyGHHEytWE7VhGQTVQkph3NtCe2MX0Z53dQlPstbqY8GATiFWRO2tPTU8gs/Q2WF
+         hwIFQgh5qiLlvihOEOfoRMUUQSW4GFh5wAxpyEiZnoZcApUAbHZMViaAlhMfcDd+Q4F8
+         sEibZc/LnnKJ2fn7jtTNqmFOpdvCfOq7DBoT5yjItUbqZGXp/KxEEYR2XD7Jf5KQx0ng
+         H/ng==
+X-Gm-Message-State: AOAM530fn2DP8PyguUVpNEHm/iJZpwmtMqHUOKmXGtyAJ8O/lmn/j0Dp
+        kLuAs0N3UM/PVIsAi/BcY/vewQ==
+X-Google-Smtp-Source: ABdhPJwcaYObD6Zecw0a5f2Axhe2/u582XLt8J7QRbvkVnxZhcDq7TBRAeSuG1P7AzLJ2JFGI7vqOA==
+X-Received: by 2002:a9d:128d:: with SMTP id g13mr52032otg.245.1600960114168;
+        Thu, 24 Sep 2020 08:08:34 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x15sm869317oor.33.2020.09.24.08.08.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 08:08:33 -0700 (PDT)
+Subject: Re: [RFC PATCH 05/11] drivers/acpi: convert seqno counter_atomic
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jann Horn <jannh@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Hugh Dickins <hughd@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for
- ptes
-Message-ID: <20200924150827.GE79898@xz-x1>
-References: <20200921211744.24758-1-peterx@redhat.com>
- <20200921212028.25184-1-peterx@redhat.com>
- <20200922114839.GC11679@redhat.com>
- <20200922124013.GD11679@redhat.com>
- <20200922155842.GG19098@xz-x1>
- <20200922165216.GF11679@redhat.com>
- <20200922183438.GL19098@xz-x1>
- <20200922184359.GI11679@redhat.com>
- <20200923010332.GP19098@xz-x1>
- <CAHk-=whBth_SpXYCmYLiZTRadAvncCDAmK_Kw1QNTg-HS23aKA@mail.gmail.com>
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <cover.1600816121.git.skhan@linuxfoundation.org>
+ <9e2c6cccabc96fe1e5304e2fa2dfdad28ca5ac9c.1600816121.git.skhan@linuxfoundation.org>
+ <CAJZ5v0iS2wpvvJGLsEJSSdCJ0tf4DmJ9fQWVU3PzFuMB7Zbkjw@mail.gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <3cc1e840-6525-e125-499a-03b9c86c0243@linuxfoundation.org>
+Date:   Thu, 24 Sep 2020 09:08:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whBth_SpXYCmYLiZTRadAvncCDAmK_Kw1QNTg-HS23aKA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0iS2wpvvJGLsEJSSdCJ0tf4DmJ9fQWVU3PzFuMB7Zbkjw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 01:25:52PM -0700, Linus Torvalds wrote:
-> IOW, the third patch would be something (COMPLETELY UNTESTED) like the attached.
+On 9/24/20 5:13 AM, Rafael J. Wysocki wrote:
+> On Wed, Sep 23, 2020 at 3:44 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> counter_atomic is introduced to be used when a variable is used as
+>> a simple counter and doesn't guard object lifetimes. This clearly
+>> differentiates atomic_t usages that guard object lifetimes.
+>>
+>> counter_atomic variables will wrap around to 0 when it overflows and
+>> should not be used to guard resource lifetimes, device usage and
+>> open counts that control state changes, and pm states.
+>>
+>> seqno is a sequence number counter for logging. This counter gets
+>> incremented. Unsure if there is a chance of this overflowing. It
+>> doesn't look like overflowing causes any problems since it is used
+>> to tag the log messages and nothing more.
+>>
+>> Convert it to use counter_atomic.
+>>
+>> This conversion doesn't change the oveflow wrap around behavior.
 
-Thanks.  I'll rework on top.
+I see typo here. Will fix it.
 
--- 
-Peter Xu
+>>
+>> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+> Both this change and the next patch are fine by me.
+> 
 
+Thanks Rafael. Okay to add your Acked-by?
+
+thanks,
+-- Shuah
