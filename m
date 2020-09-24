@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1373276822
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C305D276829
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgIXFO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 01:14:56 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20390 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726736AbgIXFO4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 01:14:56 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08O52VTV092817;
-        Thu, 24 Sep 2020 01:14:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : from : to : cc
- : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pp1;
- bh=lh13OQH20WYkAvF82qQ30CMf0+MM9LtINKRcfdztWMI=;
- b=D+qEBAGzMJ2TGyOO9VzCuILJe9DtF3tWQSOAmDH4lukbMBcEFlM2dyhNf1ZpDfh6he0W
- Hnk9XO9yJy+6nG8pi8Bjt2vNSsSUAj1cicSpRYINjOdv6YlDr3xM9oeeP85Zqk+nWpvs
- JSKrUdoV8hIq2LJquHIMHbUmkF+aKiNCi7+CS+EXcsCjNlN9V8n7aFGmRrF5JKOoDmyb
- +Zvt1iZaFv5eDU/YqRNrGbjS1CUyDhxrflFYK0XVOyPN0SFbW3JExw5ixXY96UKjwv1k
- n22fRXvstUuf3OVkDdDkq0cQhI/E4lJ5ydbABruQFjFb1nXZFxXnBMwdcgbzFxee0Eia FA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33rjwgartr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 01:14:45 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08O52vcB093840;
-        Thu, 24 Sep 2020 01:14:45 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33rjwgarmu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 01:14:45 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08O5CeLf007209;
-        Thu, 24 Sep 2020 05:14:23 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 33n9m82h75-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 05:14:23 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08O5ELXa28639680
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Sep 2020 05:14:21 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 663FD4C050;
-        Thu, 24 Sep 2020 05:14:21 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9173A4C040;
-        Thu, 24 Sep 2020 05:14:18 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.84.181.82])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 24 Sep 2020 05:14:18 +0000 (GMT)
-Subject: [PATCH] rpadlpar_io:Add MODULE_DESCRIPTION entries to kernel modules
-From:   Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     tyreld@linux.ibm.com, mpe@ellerman.id.au, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 24 Sep 2020 10:44:16 +0530
-Message-ID: <20200924051343.16052.9571.stgit@localhost.localdomain>
-User-Agent: StGit/0.19
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-24_01:2020-09-24,2020-09-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 mlxscore=0 clxscore=1011 impostorscore=0 bulkscore=0
- spamscore=0 malwarescore=0 suspectscore=1 phishscore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240036
+        id S1726840AbgIXFRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 01:17:38 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:24597 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726823AbgIXFRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 01:17:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600924658; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=9c5kRk1iRWNGCAyOwHL9JZ77Jetg7PxW6V4Qija+Jw4=; b=Kxkx1iC2mx/66nJUuf36KGVwp5MPBykXY5MyB5uPzZaTvM124Bugev8ylxqvCbP1KVORP53h
+ ibXDWViCWABruQzi0d02Ji+8ogN4dTzhGpPlBPL56OV+3LX/F1Nvrz3fGzWXs7DD95G/Xngz
+ NWKQ88jWBj6U1W/4mVnCfzBx/vo=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f6c2bde48c378a4cbeb6dc1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 05:17:18
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 652AAC433F1; Thu, 24 Sep 2020 05:17:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3079CC433C8;
+        Thu, 24 Sep 2020 05:17:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3079CC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org, pdaly@codeaurora.org,
+        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com, david@redhat.com
+Cc:     Chris Goldsworthy <cgoldswo@codeaurora.org>
+Subject: [PATCH v3] mm: cma: indefinitely retry allocations in cma_alloc
+Date:   Wed, 23 Sep 2020 22:16:24 -0700
+Message-Id: <cover.1600922611.git.cgoldswo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a brief MODULE_DESCRIPTION to rpadlpar_io kernel modules
-(descriptions taken from Kconfig file)
+V1: Introduces a retry loop that attempts a CMA allocation a finite
+number of times before giving up:
+ 
+https://lkml.org/lkml/2020/8/5/1097
+https://lkml.org/lkml/2020/8/11/893
 
-Signed-off-by: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
----
- drivers/pci/hotplug/rpadlpar_core.c |    1 +
- 1 file changed, 1 insertion(+)
+V2: Introduces an indefinite retry for CMA allocations.  David Hildenbrand
+raised a page pinning example which precludes doing this infite-retrying
+for all CMA users:
 
-diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
-index f979b70..bac65ed 100644
---- a/drivers/pci/hotplug/rpadlpar_core.c
-+++ b/drivers/pci/hotplug/rpadlpar_core.c
-@@ -478,3 +478,4 @@ static void __exit rpadlpar_io_exit(void)
- module_init(rpadlpar_io_init);
- module_exit(rpadlpar_io_exit);
- MODULE_LICENSE("GPL");
-+MODULE_DESCRIPTION("RPA Dynamic Logical Partitioning driver for I/O slots");
+https://lkml.org/lkml/2020/9/17/984
+
+V3: Re-introduce a GFP mask argument for cma_alloc(), that can take in
+__GFP_NOFAIL as an argument to indicate that a CMA allocation should be
+retried indefinitely. This lets callers of cma_alloc() decide if they want
+to perform indefinite retires. Also introduces a config option for
+controlling the duration of the sleep between retries.
+
+Chris Goldsworthy (1):
+  mm: cma: indefinitely retry allocations in cma_alloc
+
+ arch/powerpc/kvm/book3s_hv_builtin.c       |  2 +-
+ drivers/dma-buf/heaps/cma_heap.c           |  2 +-
+ drivers/s390/char/vmcp.c                   |  2 +-
+ drivers/staging/android/ion/ion_cma_heap.c |  2 +-
+ include/linux/cma.h                        |  2 +-
+ kernel/dma/contiguous.c                    |  4 ++--
+ mm/Kconfig                                 | 11 ++++++++++
+ mm/cma.c                                   | 35 +++++++++++++++++++++++++-----
+ mm/cma_debug.c                             |  2 +-
+ mm/hugetlb.c                               |  4 ++--
+ 10 files changed, 50 insertions(+), 16 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
