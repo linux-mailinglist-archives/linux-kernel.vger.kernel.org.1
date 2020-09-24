@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEA97276A92
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED8C276A9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727175AbgIXHTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:19:36 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:45512 "EHLO huawei.com"
+        id S1727125AbgIXHTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:19:49 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:53240 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727054AbgIXHTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:19:35 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id BFA6150DC3FAB62E2252;
-        Thu, 24 Sep 2020 15:19:32 +0800 (CST)
+        id S1727110AbgIXHTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:19:42 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id C1842825956AD73B710B;
+        Thu, 24 Sep 2020 15:19:37 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.253) by
  DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
  14.3.487.0; Thu, 24 Sep 2020 15:19:26 +0800
@@ -31,9 +31,9 @@ CC:     Zhen Lei <thunder.leizhen@huawei.com>,
         Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
         Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v6 1/6] genirq: define an empty function set_handle_irq() if !GENERIC_IRQ_MULTI_HANDLER
-Date:   Thu, 24 Sep 2020 15:17:49 +0800
-Message-ID: <20200924071754.4509-2-thunder.leizhen@huawei.com>
+Subject: [PATCH v6 2/6] irqchip: dw-apb-ictl: prepare for support hierarchy irq domain
+Date:   Thu, 24 Sep 2020 15:17:50 +0800
+Message-ID: <20200924071754.4509-3-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20200924071754.4509-1-thunder.leizhen@huawei.com>
 References: <20200924071754.4509-1-thunder.leizhen@huawei.com>
@@ -46,43 +46,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid compilation error if an irqchip driver references the function
-set_handle_irq() but may not select GENERIC_IRQ_MULTI_HANDLER on some
-systems.
+Rename some functions and variables in advance, to make the next patch
+looks more clear. The details are as follows:
+1. rename dw_apb_ictl_handler() to dw_apb_ictl_handle_irq_cascaded().
+2. change (1 << hwirq) to BIT(hwirq).
 
-For example, the Synopsys DesignWare APB interrupt controller
-(dw_apb_ictl) is used as the secondary interrupt controller on arc, csky,
-arm64, and most arm32 SoCs, and it's also used as the primary interrupt
-controller on Hisilicon SD5203 (an arm32 SoC). The latter need to use
-set_handle_irq() to register the top-level IRQ handler, but this multi
-irq handler registration mechanism is not implemented on arc system.
+In function dw_apb_ictl_init():
+1. rename local variable irq to parent_irq.
+2. add "const struct irq_domain_ops *domain_ops = &irq_generic_chip_ops",
+   then replace &irq_generic_chip_ops in other places with domain_ops.
 
-The input parameter "handle_irq" maybe defined as static and only
-set_handle_irq() references it. This will trigger "defined but not used"
-warning. So add "(void)handle_irq" to suppress it.
+No functional change.
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Tested-by: Haoyu Lv <lvhaoyu@huawei.com>
 ---
- include/linux/irq.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/irqchip/irq-dw-apb-ictl.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 1b7f4dfee35b397..b167baef88c0b43 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -1252,6 +1252,12 @@ void irq_matrix_free(struct irq_matrix *m, unsigned int cpu,
-  * top-level IRQ handler.
-  */
- extern void (*handle_arch_irq)(struct pt_regs *) __ro_after_init;
-+#else
-+#define set_handle_irq(handle_irq)		\
-+	do {					\
-+		(void)handle_irq;		\
-+		WARN_ON(1);			\
-+	} while (0)
- #endif
+diff --git a/drivers/irqchip/irq-dw-apb-ictl.c b/drivers/irqchip/irq-dw-apb-ictl.c
+index e4550e9c810ba94..5458004242e9d20 100644
+--- a/drivers/irqchip/irq-dw-apb-ictl.c
++++ b/drivers/irqchip/irq-dw-apb-ictl.c
+@@ -26,7 +26,7 @@
+ #define APB_INT_FINALSTATUS_H	0x34
+ #define APB_INT_BASE_OFFSET	0x04
  
- #endif /* _LINUX_IRQ_H */
+-static void dw_apb_ictl_handler(struct irq_desc *desc)
++static void dw_apb_ictl_handle_irq_cascaded(struct irq_desc *desc)
+ {
+ 	struct irq_domain *d = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+@@ -43,7 +43,7 @@ static void dw_apb_ictl_handler(struct irq_desc *desc)
+ 			u32 virq = irq_find_mapping(d, gc->irq_base + hwirq);
+ 
+ 			generic_handle_irq(virq);
+-			stat &= ~(1 << hwirq);
++			stat &= ~BIT(hwirq);
+ 		}
+ 	}
+ 
+@@ -73,12 +73,13 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+ 	struct irq_domain *domain;
+ 	struct irq_chip_generic *gc;
+ 	void __iomem *iobase;
+-	int ret, nrirqs, irq, i;
++	int ret, nrirqs, parent_irq, i;
+ 	u32 reg;
++	const struct irq_domain_ops *domain_ops = &irq_generic_chip_ops;
+ 
+ 	/* Map the parent interrupt for the chained handler */
+-	irq = irq_of_parse_and_map(np, 0);
+-	if (irq <= 0) {
++	parent_irq = irq_of_parse_and_map(np, 0);
++	if (parent_irq <= 0) {
+ 		pr_err("%pOF: unable to parse irq\n", np);
+ 		return -EINVAL;
+ 	}
+@@ -120,8 +121,7 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+ 	else
+ 		nrirqs = fls(readl_relaxed(iobase + APB_INT_ENABLE_L));
+ 
+-	domain = irq_domain_add_linear(np, nrirqs,
+-				       &irq_generic_chip_ops, NULL);
++	domain = irq_domain_add_linear(np, nrirqs, domain_ops, NULL);
+ 	if (!domain) {
+ 		pr_err("%pOF: unable to add irq domain\n", np);
+ 		ret = -ENOMEM;
+@@ -146,7 +146,8 @@ static int __init dw_apb_ictl_init(struct device_node *np,
+ 		gc->chip_types[0].chip.irq_resume = dw_apb_ictl_resume;
+ 	}
+ 
+-	irq_set_chained_handler_and_data(irq, dw_apb_ictl_handler, domain);
++	irq_set_chained_handler_and_data(parent_irq,
++				dw_apb_ictl_handle_irq_cascaded, domain);
+ 
+ 	return 0;
+ 
 -- 
 1.8.3
 
