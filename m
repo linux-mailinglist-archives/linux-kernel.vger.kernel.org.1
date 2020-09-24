@@ -2,76 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26554277608
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2259627760E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728576AbgIXP55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:57:57 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:35518 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728139AbgIXP5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:57:54 -0400
-Received: from zn.tnic (p200300ec2f0c950086c1a307bd73ace8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9500:86c1:a307:bd73:ace8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5DB981EC046C;
-        Thu, 24 Sep 2020 17:57:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600963073;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=QS0UPPpukaaGR044ycG31aWsVOTNPV8uZL7cGVPnRe4=;
-        b=ISfWmNxW/nJHGp7rto/mTXqWmBoBIflNMYyGpWY2oVQEvGtRirWm1iNB8JhRAPfHCYUl9v
-        I2vHMOj3cB6u8Jw9CzewJmYMhUjL/Z6lBhF34eng4JHaxwMNt7i7q7+9S3a3RfsbrsYrsD
-        /47mwP0SyEfZi/4TxX80YnlNWwPbhBI=
-Date:   Thu, 24 Sep 2020 17:57:51 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver
-Message-ID: <20200924155751.GJ5030@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-18-jarkko.sakkinen@linux.intel.com>
- <20200922154424.GL22660@zn.tnic>
- <20200923132037.GA5160@linux.intel.com>
- <20200923161733.GP28545@zn.tnic>
- <20200924115119.GD56811@linux.intel.com>
+        id S1728596AbgIXP6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728381AbgIXP6h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:58:37 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7117CC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:58:37 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id k25so3235825ljk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:58:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CDlImHQG+WyGWW1Zw8OrcVApf/zvofomVSpORgyBHR8=;
+        b=gU9H8quw0ODZD5j2ATVueoHOBIrQbytcaQkpJ4BOa0yac1xXfdXp3nabz+lI1bwWGC
+         dGGlkRyJzpHFaqqmFSeoFPcO0NA7OALEi8rZ6V8mcAPas1TR0JLDs82By7cToOhXI/vl
+         5NkyAJespvEzlUiX6038sU2DCsPIsey/ykeCc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CDlImHQG+WyGWW1Zw8OrcVApf/zvofomVSpORgyBHR8=;
+        b=MT44turq0xHT7bk0M3LxMUJF5MHL8GT2H0bd6NLGlnlIRHe9koScvNkWr4hmRTPvmR
+         XbIQ2DytPOs7qcwomURQs+DB58nBDdKKhmYRTnm97LZsJ+lNreTPSd64VqLsNkZ2lZEc
+         hBcPPw78NojCzQt/Nxdnf5FzMjoft8e2QxcEO+sc4Njxgpoe+C7yOL4UeEs/UMsnC83l
+         yh3bPkcWI/8LaI+Wr8/b8BEw7Veay6IIP+y3bVFhVmCSVZ0NWDPvYKPD4bB0gwg+KCNW
+         7UUJSjWM1qkSoda2S6oQ2i7iUoHH9jODawLDNTOPGmk9NtzYv2YNyU2XAIrN4TZ48vli
+         KnZw==
+X-Gm-Message-State: AOAM532Gm82VCeHLd+gwutApTn6Dt6vMTfIXZZWMbVF+wxhZfM9BFT/3
+        lEkxJyHqn0PYrro8wP2pg661Xu9qObsGaQ==
+X-Google-Smtp-Source: ABdhPJwCztssYuIbseGcBhTx55UEUTo86IEQ3E6ppZzRmXBAGoFpnlGJohhwfwA0Xl0yi5U8RMCwJw==
+X-Received: by 2002:a2e:b8c8:: with SMTP id s8mr155005ljp.127.1600963115513;
+        Thu, 24 Sep 2020 08:58:35 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id v196sm2386945lfa.96.2020.09.24.08.58.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 08:58:33 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id d15so4463705lfq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:58:33 -0700 (PDT)
+X-Received: by 2002:ac2:5594:: with SMTP id v20mr47607lfg.344.1600963112812;
+ Thu, 24 Sep 2020 08:58:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200924115119.GD56811@linux.intel.com>
+References: <a46e9bbef2ed4e17778f5615e818526ef848d791.camel@redhat.com>
+ <20200916142806.GD7076@osiris> <20200922190350.7a0e0ca5@thinkpad>
+ <20200923153938.5be5dd2c@thinkpad> <CAHk-=wiMJu0_sLO78+nLoe=pxC-p=sSpC3moq0p5RyJc9KXC4Q@mail.gmail.com>
+ <20200923233306.7c5666de@thinkpad> <CAHk-=wgbfGCKKn=RTX9gF9Q+FYOGn2kD1OLnQuJSD+A0Rvg9Pw@mail.gmail.com>
+ <20200924000226.06298978@thinkpad> <20200924140638.7bcb7765@thinkpad>
+In-Reply-To: <20200924140638.7bcb7765@thinkpad>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 24 Sep 2020 08:58:15 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjTKXJH1teKV3-tu1+qABMq0_tpdM9K4hYwbGCt7vwx7Q@mail.gmail.com>
+Message-ID: <CAHk-=wjTKXJH1teKV3-tu1+qABMq0_tpdM9K4hYwbGCt7vwx7Q@mail.gmail.com>
+Subject: Re: BUG: Bad page state in process dirtyc0w_child
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Peter Xu <peterx@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
+        Qian Cai <cai@redhat.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:51:28PM +0300, Jarkko Sakkinen wrote:
-> On Wed, Sep 23, 2020 at 06:17:33PM +0200, Borislav Petkov wrote:
-> > > Add 'access' implementation to vm_ops with the help of these functions.
-> > 
-> > "Add an ->access virtual MM function for accessing the enclave's memory... "
-> 
-> Thank you. I wrote the last paragraph like this:
-> 
-> "Add an '->access' virtual function for accessing the enclave's memory
-> to vm_ops by using these functions. This allows to use ptrace() with
+On Thu, Sep 24, 2020 at 5:06 AM Gerald Schaefer
+<gerald.schaefer@linux.ibm.com> wrote:
+>
+> It's all good now, no more occurrences with unlock_page() before
+> wp_page_reuse().
 
-"to vm_ops" must come after "function".
+Thanks for the confirmation. When you pointed at that unlock_page()
+change, I was pretty sure that was it ("D'oh!"), but it's always good
+to have that verification.
 
-But lemme ask what is "vm_ops"?
+Committed,
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+              Linus
