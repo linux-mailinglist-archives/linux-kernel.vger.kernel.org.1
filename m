@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E863B277841
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC669277843
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgIXSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:07:55 -0400
-Received: from smtprelay0224.hostedemail.com ([216.40.44.224]:60986 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728577AbgIXSHz (ORCPT
+        id S1728679AbgIXSIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727753AbgIXSIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:07:55 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 4FBFD100E7B4A;
-        Thu, 24 Sep 2020 18:07:54 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3867:3868:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:7903:7974:8828:9025:10004:10400:10848:11232:11658:11914:12043:12048:12050:12297:12555:12679:12740:12760:12895:13069:13161:13229:13311:13357:13439:14180:14181:14659:14721:21080:21325:21433:21451:21627:21740:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: flesh53_541162527161
-X-Filterd-Recvd-Size: 2054
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 24 Sep 2020 18:07:51 +0000 (UTC)
-Message-ID: <734165bbee434a920f074940624bcef01fcd9d60.camel@perches.com>
-Subject: Re: [PATCH v3] nfs: remove incorrect fallthrough label
-From:   Joe Perches <joe@perches.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Hongxiang Lou <louhongxiang@huawei.com>,
-        linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mark Brown <broonie@kernel.org>
-Date:   Thu, 24 Sep 2020 11:07:50 -0700
-In-Reply-To: <ca629208707903da56823dd57540d677df2da283.camel@perches.com>
-References: <ce28bb9bc25cb3f1197f75950a0cfe14947f9002.camel@perches.com>
-         <20200917214545.199463-1-ndesaulniers@google.com>
-         <CAKwvOdnziDJbRAP77K+V885SCuORfV4SmHDnSLUxhUGSSLMq_Q@mail.gmail.com>
-         <ca629208707903da56823dd57540d677df2da283.camel@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 24 Sep 2020 14:08:32 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B941C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:08:32 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600970910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Bw5S+6KuIUsf1Ic4pM97Qi2nlRcZRP5Ar9fFDTLLUw=;
+        b=BFv13BBwZgcf3j3gzcZuOliSN8tZcl0i/3dGzy5msoV6KtAaVM1UaERRetVK3NJaHj/5xk
+        UIO65CxI9LstgnSToCBpHWSmRN5EbRbO5g8NKQCPFX+QnEgqiWGGWkPYWilX0+AjyEUbHq
+        loo+/XDnwPc4bBteAQPZT6IZCGA6UKBEyt4azsnpKrLgYAwOVhdT+x7DhevzuiE50fPh/S
+        Rbd0PHY+fAFQV7Jop2Ji0MLy07aMAqo5Y8jkV4in2rUObveERnjBm+Wf5hpu84JMGojsr0
+        Mka2am2irirRyj+a86syQ7G2qQ8nQxXPv7h05GpofGotZ28FiD/9P1tM0H7xag==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600970910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Bw5S+6KuIUsf1Ic4pM97Qi2nlRcZRP5Ar9fFDTLLUw=;
+        b=FyjIgl0rAl+mfyJCmXnGuCr/m1OxqqIiW9SGRGkrMzi5Arq7DjIq7YyFH81d135W6Tf9YP
+        GcyvhfigZHF+9OBA==
+To:     Prasad Sodagudi <psodagud@codeaurora.org>, rostedt@goodmis.org,
+        pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org, tkjos@google.com,
+        Prasad Sodagudi <psodagud@codeaurora.org>
+Subject: Re: [PATCH 1/2] genirq/cpuhotplug: Reduce logging level for couple of prints
+In-Reply-To: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org>
+References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org>
+Date:   Thu, 24 Sep 2020 20:08:30 +0200
+Message-ID: <87zh5f6o9t.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-24 at 10:40 -0700, Joe Perches wrote:
-> On Thu, 2020-09-24 at 10:19 -0700, Nick Desaulniers wrote:
-> > Hello maintainers,
-> > Would you mind please picking up this patch?  KernelCI has been
-> > erroring for over a week without it.
-> 
-> As it's trivial and necessary, why not go through Linus directly?
-[]
-> Fixes: 2a1390c95a69 ("nfs: Convert to use the preferred fallthrough macro")
+On Wed, Sep 23 2020 at 17:08, Prasad Sodagudi wrote:
+> During the cpu hot plug stress testing, couple of messages
+> continuous flooding on to the console is causing timers
+> migration delay. Delayed time migrations from hot plugging
+> core is causing device instability with watchdog. So reduce
+> log level for couple of prints in cpu hot plug flow.
 
-Real reason why not:
+This is fixing the wrong end, really.
 
-the commit to be fixed is not in Linus' tree.
+Timer migration can be delayed by other means as well.
 
-> https://lore.kernel.org/patchwork/patch/1307549/
+The real problem is that the migration happens _after_ the CPU is
+completely dead and the hotplug control thread is not guaranteed to
+reach the timer migration state before timers are overdue at all.
 
+There is a bunch of related problems, e.g. the interrupt migration
+mechanism kicks in late as well.
 
+I'm not against changing the log level per se, but the justification for
+doing so is just bogus.
+
+The more obvious question is whether these printks are useful at all
+other than at the pr_debug() level.
+
+Thanks,
+
+        tglx
