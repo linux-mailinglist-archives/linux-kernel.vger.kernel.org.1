@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FD4277127
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4E6277129
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727750AbgIXMhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbgIXMhc (ORCPT
+        id S1727767AbgIXMht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:37:49 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:21008 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727718AbgIXMhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:37:32 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7DB6C0613CE;
-        Thu, 24 Sep 2020 05:37:31 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id n22so3202802edt.4;
-        Thu, 24 Sep 2020 05:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:from:mime-version:content-transfer-encoding
-         :content-description:subject:to:date:reply-to;
-        bh=rUiEbTkFRYTKacHBjpkGu4iBc7Yy8pQW6dlUm/MZgag=;
-        b=OIzZVlTSJMUayp47xJfqFDyCgk0TEtTPmeHFkhGehfFo8gltXJ0E0Cs1OUHlfsIbds
-         VtT6Si90gkwRoo+BUKrWK4IjWhfiFUoQY1hGYRgoo6aRaEaFUMKwui6tpCNgZ+4FSBvz
-         joZjiKq7QxeOeGiH0ZY+JawkBjJFBsIfI987p76rFSQ01nKMHE+liH9IOsqOzahfRP90
-         ZieGs2TVeDMYVoKe6B9yDKGIc152INkTD1m2cvxTQHmrM/aXCK1w7eHWCi8Fyoo+0I5B
-         tAu9JLnQRQWGd92i0gR6ZctPDm19IOPcybMLAkebRXO0GLNBgyr/ETugPiOo+ww6h9rn
-         0uVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:from:mime-version
-         :content-transfer-encoding:content-description:subject:to:date
-         :reply-to;
-        bh=rUiEbTkFRYTKacHBjpkGu4iBc7Yy8pQW6dlUm/MZgag=;
-        b=L3AUne49D79AP1TUM1Ntj584ZDxXp3K9vpUbVAwmry9olPS0P3yhpPMl+CpZYvlo8I
-         6uEjMJ9cpmTPFhkQjvHG7HMfMc/xvengdR8WzDaMHxKfZ7tTDoeBUnT+J8N9OKqGIE2c
-         FEmOYgz0RNhsGZlFjD6LHxq3no5LVvUjyuDS8xQAgFTHumQgspySUp95hcC6d9OGouQE
-         lmdBW2Msu4sAexLwh/lCthAmUCEnJopFjD8F8+jhbohB1tPKdpm+GhVhpAfXNTms3o1n
-         dcxUUMlVSI5kwINvlHzOk+yfNJm4Px9j2FyMRrkvCP/0maSgAV43qQbGWw/1P7pmSjHK
-         A8UA==
-X-Gm-Message-State: AOAM533Bz+sc+7bScTgBiSM42H4VL0wvQ/YjV4y5x7Q6XhYeFSeHISIs
-        6Dxo4gqwRRF0hJrURuHC9yo=
-X-Google-Smtp-Source: ABdhPJxDEZQCjUGFkhaOmyfqnVqC2pCnChZHT87HaorkaAXsTyNkpMmlKm6gYIXRxxmiFTMvREoj3g==
-X-Received: by 2002:a05:6402:1593:: with SMTP id c19mr812023edv.33.1600951050715;
-        Thu, 24 Sep 2020 05:37:30 -0700 (PDT)
-Received: from [10.20.30.70] ([196.171.44.145])
-        by smtp.gmail.com with ESMTPSA id b6sm2457744eds.46.2020.09.24.05.37.25
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Thu, 24 Sep 2020 05:37:30 -0700 (PDT)
-Message-ID: <5f6c930a.1c69fb81.c35d3.6283@mx.google.com>
-From:   Lucas steven <jo718357@gmail.com>
-X-Google-Original-From: Lucas steven
-Content-Type: text/plain; charset="iso-8859-1"
+        Thu, 24 Sep 2020 08:37:48 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-42-w-QZRmrqOgiSZ0QwhDWzxw-1; Thu, 24 Sep 2020 13:37:43 +0100
+X-MC-Unique: w-QZRmrqOgiSZ0QwhDWzxw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 13:37:42 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 24 Sep 2020 13:37:42 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Jann Horn' <jannh@google.com>, Kees Cook <keescook@chromium.org>
+CC:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        "Andy Lutomirski" <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        "Andrea Arcangeli" <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        "Hubertus Franke" <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        "Josep Torrellas" <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 3/6] seccomp: Implement constant action bitmaps
+Thread-Topic: [PATCH 3/6] seccomp: Implement constant action bitmaps
+Thread-Index: AQHWkm52E4NdUTUYRkuK8ZQr+ESnnKl3uRCg
+Date:   Thu, 24 Sep 2020 12:37:42 +0000
+Message-ID: <ec31caaea19247f0b9bd9c73ccaa7dbd@AcuMS.aculab.com>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-4-keescook@chromium.org>
+ <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
+ <202009240018.A4D8274F@keescook>
+ <CAG48ez1MWhrtkbWTNpc1v-WqWYiLM_JrCKvuE6DdH6vBY3MJzQ@mail.gmail.com>
+In-Reply-To: <CAG48ez1MWhrtkbWTNpc1v-WqWYiLM_JrCKvuE6DdH6vBY3MJzQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: AUF
-To:     Recipients <Lucas@vger.kernel.org>
-Date:   Thu, 24 Sep 2020 13:37:19 +0100
-Reply-To: purchaseirorder@gmail.com
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings!,
+RnJvbTogSmFubiBIb3JuDQo+IFNlbnQ6IDI0IFNlcHRlbWJlciAyMDIwIDEzOjI5DQouLi4NCj4g
+SSB0aGluayBvdXIgZ29hbCBoZXJlIHNob3VsZCBiZSB0aGF0IGlmIGEgc3lzY2FsbCBpcyBhbHdh
+eXMgYWxsb3dlZCwNCj4gc2VjY29tcCBzaG91bGQgZXhlY3V0ZSB0aGUgc21hbGxlc3QgYW1vdW50
+IG9mIGluc3RydWN0aW9ucyB3ZSBjYW4gZ2V0DQo+IGF3YXkgd2l0aCwgYW5kIHRvdWNoIHRoZSBz
+bWFsbGVzdCBhbW91bnQgb2YgbWVtb3J5IHBvc3NpYmxlIChhbmQNCj4gcHJlZmVyYWJseSB0aGF0
+IG1lbW9yeSBzaG91bGQgYmUgc2hhcmVkIGJldHdlZW4gdGhyZWFkcykuIFRoZSBiaXRtYXANCj4g
+ZmFzdHBhdGggc2hvdWxkIHByb2JhYmx5IGFsc28gYXZvaWQgcG9wdWxhdGVfc2VjY29tcF9kYXRh
+KCkuDQoNCklmIG1vc3Qgc3lzY2FsbHMgYXJlIGV4cGVjdGVkIHRvIGJlIGFsbG93ZWQgdGhlbiBh
+biBpbml0aWFsOg0KCWlmIChnbG9iYWxfbWFzayAmICgxdSA8PCAoc3lzY2FsbF9udW1iZXIgJiA2
+MykpDQp0ZXN0IGNhbiBiZSB1c2VkIHRvIHNraXAgYW55IGZ1cnRoZXIgbG9va3Vwcy4NCg0KQWx0
+aG91Z2ggSVNUUiBzb21lb25lIHN1Z2dlc3RpbmcgdGhhdCB0aGUgZ2xvYmFsX21hc2sgc2hvdWxk
+DQpiZSBwZXItY3B1IGJlY2F1c2UgZXZlbiBzaGFyZWQgcmVhZC1vbmx5IGNhY2hlIGxpbmVzIHdl
+cmUNCmV4cGVuc2l2ZSBvbiBzb21lIGFyY2hpdGVjdHVyZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lz
+dGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24g
+S2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-send us your Catalog of Products and FOB Prices, we are interested in
-buy large quantities and send to Japan for our customers,
- =
-
-Censtar Science & Technology Co., Ltd.
-Lucas steven
-Purchase Manager
