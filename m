@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65083277555
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475A727755A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728384AbgIXPat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:30:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728343AbgIXPat (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:30:49 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3AF8C0613CE;
-        Thu, 24 Sep 2020 08:30:48 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x22so2096513pfo.12;
-        Thu, 24 Sep 2020 08:30:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yanHGoZJj/tcEI8AVG6llL0fhzRiqvwYaviiL5Ezz3E=;
-        b=ezNq1DHk4aNb+MSOycaRr9VWUq1Qil3Y4UoOygCV1AX9tQN1xlt+KEI3xDsK4hm60D
-         GFOugf47Qt1NC/tZueImMyAiEYCqCXEP26A9qXOgblPKBalIb6Fp+r87y8OkF24rtv2e
-         1p8+WnTVov6uGi64oLAPHumRF4sskzWR3wFGEG7DiUIf0lWJQ/c9yG+61mFwp6K+kRct
-         gm1ASwt/Tj9es80OzDDvf30uxyZ46OdNkhAIf6Md/MCZVpqREZu7gKj3fZk4H48JYKBB
-         zbO82ZiSr+J1f1iAwv21h7zWDDL6cm1AKIL97ZEhHahS4+3ZCOZuy1sGWtGq/PVX+nZB
-         nQ2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yanHGoZJj/tcEI8AVG6llL0fhzRiqvwYaviiL5Ezz3E=;
-        b=LAu1tf09MvD7ntSV+aVlZFFy/1yRH3XKBb8zQyYXiC8BrVZF3mPmlvCqtPyaitO1IJ
-         /35KGVnPymt92uCmqOO5vWx3SGa9XxUyxNewK/UqCsWx8b3dV3hMRwh6BSCIZLTTD7YZ
-         HSvmmWGZUIIqKFj6nwvQRUXEY2NgwqOeGFkxHjCLHKWtXCnN9kEmN8Tw2vXNTRIgZeoQ
-         xHiqQftsE47Lgmh7UfUBZ/j2GaYVY8RLaVjll0K+OUjvdFTN9pikW/FStnpyq1/PAS/J
-         bfu13/mAudBtxnKQtyojWH0xdYFn1MGlLTo7gO7Zu0RJTDbeUC2oteiveVbat51UWqXH
-         3U2Q==
-X-Gm-Message-State: AOAM530gQuVUGdWKd7hYXV5a/DbJcxorBCr5CoC5w7UhnG5yRHnXvVaV
-        xHoG5F4+s6tFJYQyf1DSyA==
-X-Google-Smtp-Source: ABdhPJwqZfwiI24nj6maCQ3FVjnC1hLBovtP3quILpVSg5gXxUjuwWRHxbd90tmjpkb4DXHr/yYuNA==
-X-Received: by 2002:a62:3812:0:b029:13e:d13d:a062 with SMTP id f18-20020a6238120000b029013ed13da062mr4689781pfa.40.1600961448347;
-        Thu, 24 Sep 2020 08:30:48 -0700 (PDT)
-Received: from PWN (n11212042027.netvigator.com. [112.120.42.27])
-        by smtp.gmail.com with ESMTPSA id u2sm2825443pji.50.2020.09.24.08.30.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 08:30:47 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 11:30:35 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
- buffers
-Message-ID: <20200924153035.GA879703@PWN>
-References: <0000000000006b9e8d059952095e@google.com>
- <cover.1600953813.git.yepeilin.cs@gmail.com>
- <20200924140937.GA749208@kroah.com>
- <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
+        id S1728440AbgIXPcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:32:15 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:40541 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728285AbgIXPcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:32:14 -0400
+Received: from [141.14.220.45] (g45.guest.molgen.mpg.de [141.14.220.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id 2E70C20646203;
+        Thu, 24 Sep 2020 17:32:12 +0200 (CEST)
+Subject: Re: [Intel-wired-lan] [PATCH v2] e1000e: Increase iteration on
+ polling MDIC ready bit
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20200923074751.10527-1-kai.heng.feng@canonical.com>
+ <20200924150958.18016-1-kai.heng.feng@canonical.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <748efbf9-573f-ab2a-0c82-a7b2a11cda60@molgen.mpg.de>
+Date:   Thu, 24 Sep 2020 17:32:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
+In-Reply-To: <20200924150958.18016-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Dear Kai-Heng,
 
-On Thu, Sep 24, 2020 at 02:42:18PM +0000, David Laight wrote:
-> > On Thu, Sep 24, 2020 at 09:38:22AM -0400, Peilin Ye wrote:
-> > > Hi all,
-> > >
-> > > syzbot has reported [1] a global out-of-bounds read issue in
-> > > fbcon_get_font(). A malicious user may resize `vc_font.height` to a large
-> > > value in vt_ioctl(), causing fbcon_get_font() to overflow our built-in
-> > > font data buffers, declared in lib/fonts/font_*.c:
+
+Thank you for sending version 2.
+
+Am 24.09.20 um 17:09 schrieb Kai-Heng Feng:
+> We are seeing the following error after S3 resume:
+
+I’d be great if you added the system and used hardware, you are seeing 
+this with.
+
+> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
+
+A follow-up patch, should extend the message to include the timeout value.
+
+ > MDI Write did not complete did not complete in … seconds.
+
+According to the Linux timestamps it’s 98 ms, which makes sense, as (640 
+* 3 * 50 μs = 96 ms).
+
+What crappy hardware is this, that it takes longer than 100 ms?
+
+> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
+> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
+> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
 > ...
-> > > (drivers/video/fbdev/core/fbcon.c)
-> > >  	if (font->width <= 8) {
-> > >  		j = vc->vc_font.height;
-> > > +		if (font->charcount * j > FNTSIZE(fontdata))
-> > > +			return -EINVAL;
+> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
 > 
-> Can that still go wrong because the multiply wraps?
+> As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
+> increase polling iteration can resolve the issue.
 
-Thank you for bringing this up!
+Please explicitly state, what the current timeout value is, and what it 
+is increased to.
 
-The resizing of `vc_font.height` happened in vt_resizex():
+     640 * 3 * 50 μs = 96 ms
+     640 * 10 * 50 μs = 320 ms
 
-(drivers/tty/vt/vt_ioctl.c)
-	if (v.v_clin > 32)
-		return -EINVAL;
-	[...]
-	for (i = 0; i < MAX_NR_CONSOLES; i++) {
-			[...]
-			if (v.v_clin)
-				vcp->vc_font.height = v.v_clin;
-				     ^^^^^^^^^^^^^^
+The macro definition also misses the unit.
 
-It does check if `v.v_clin` is greater than 32. And, currently, all
-built-in fonts have a `charcount` of 256.
+     /* SerDes Control */
+     #define E1000_GEN_POLL_TIMEOUT          640
 
-Therefore, for built-in fonts and resizing happened in vt_resizex(), it
-cannot cause an interger overflow.
+How did you determine, that tenfold that value is good. And not 
+eightfold, for example? Please give the exact value (Linux log message 
+timestamps should be enough), what the hardware needs now.
 
-However I am not very sure about user-provided fonts, and if there are
-other functions that can resize `height` or even `charcount` to a really
-huge value, but I will do more investigation and think about it.
+As a commit message summary, I suggest:
 
-Thank you,
-Peilin Ye
+ > e1000e: Increase MDIC ready bit polling timeout from 96 ms to 320 ms
 
+> While at it, also move the delay to the end of loop, to potentially save
+> 50 us.
+> 
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2:
+>   - Increase polling iteration instead of powering down the phy.
+> 
+>   drivers/net/ethernet/intel/e1000e/phy.c | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
+> index e11c877595fb..72968a01164b 100644
+> --- a/drivers/net/ethernet/intel/e1000e/phy.c
+> +++ b/drivers/net/ethernet/intel/e1000e/phy.c
+> @@ -203,11 +203,12 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
+>   	 * Increasing the time out as testing showed failures with
+>   	 * the lower time out
+>   	 */
+> -	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
+> -		udelay(50);
+> +	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
+>   		mdic = er32(MDIC);
+>   		if (mdic & E1000_MDIC_READY)
+>   			break;
+> +
+> +		udelay(50);
+>   	}
+>   	if (!(mdic & E1000_MDIC_READY)) {
+>   		e_dbg("MDI Write did not complete\n");
+> 
