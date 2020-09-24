@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4199C276E89
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F060276E8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbgIXKVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47622 "EHLO
+        id S1727448AbgIXKVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgIXKVA (ORCPT
+        with ESMTP id S1726380AbgIXKVn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:21:00 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1C2C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 03:21:00 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k13so1640466pfg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 03:21:00 -0700 (PDT)
+        Thu, 24 Sep 2020 06:21:43 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C78C0613CE;
+        Thu, 24 Sep 2020 03:21:43 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id a17so3187818wrn.6;
+        Thu, 24 Sep 2020 03:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UnX/s8dZ825hFV3NINASU3thAKHqLnvKzLvNJDhsTxw=;
-        b=nH3eZDk35EHcCWXWaKQIMkR+yP2F/bGhle8z+L+nODfmh49vfcG+D/AlVlDcNwF93h
-         7Fa3DZyfzvLB2U5j7+Xjsa5/jBMi0ROHZCDnB4SoKEBoGbrPipDk+jFISQNbL4AGwCuy
-         Om6S0Lwy7DhMMeb7B6X+UUluQOdKRvNTfcr1aiB/kVWRYwec26OpvHPbBBMM5M98Zemf
-         5tpIzf6p8z2ouj7VU93SiovfoQvUiSpgIDFDiLSbDd949AzNO9OH44VfgxZHr7sImXgA
-         z0OzZjfgKEWmVn8+zbHWU93BWyHGvCslNmiw74IzdzBFgrY9dYo415wMQ/BWvE62o7Gp
-         5rQw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=F7hKavhEcupnToKUFzbg3DWL90gfwumnqBNWj3kdfcE=;
+        b=UUvmS7FQpCtHfwVQUrlQgsHWgbBJa/ItZg7JlzPUch8LP+TJAGvdjwJZLS+Gfl/yAy
+         It005gDiuLxpg/iTcrZQxl+qucOX8hgrvmTz40ZFbNX28UljalzIA7Bqu8XoqpCpGzG9
+         oAB3kwuleVD6MXP4x6aSYYRlDnWbXK6MPOHUARkhwjYkeFkWg8P6+tisZYQWu9V/9iUv
+         L+wCGwBtTgIwfMFrrgF0zR48u6A4DIjZOdLGExSXJX0N2z1WIxiXyldRBlu9Ii+tLA+f
+         BfCTw4MW+ielaX9l4vxNqR7C6y76BhlwVzU9AkqG5PiVEMoQ0CE41OuXKbiE4pmgqx06
+         uK2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UnX/s8dZ825hFV3NINASU3thAKHqLnvKzLvNJDhsTxw=;
-        b=Tiw19yas/yF5iF+8iNeIfdoaZmlwosKl0TmdBwmdrOBK+S2iqi4sX7TV8+kMJtitbR
-         7tQ444KALu7pBtUw8A5cTsLnGDERDDxoUTcRfsBimd1j9lP70WzRshHHFdn6MssBW6nP
-         5df8GeDm+TnEPGzoYs23uxWZvJ881ESt4j42J6WlmZcX8YJb1cZosazhhUlVO3wVQ4Zl
-         zI4zscoFbepLI9KMujfHSAFL7Vh1G1m8DRXfQvYpHnjwm2jFYIfsnU4wmmiuR8KWZv1x
-         MOM1Ys2d4d12GN9WWARMvTrduyMJONuY91GaPMAzKbOAjxQBJsx3ybpi1HX8H/Gfk0zM
-         kiYw==
-X-Gm-Message-State: AOAM531wZIOzT0JIHJn3TdbMabVJatPbooXpjPNsdvHPUTFfM0UYe394
-        qmqvKx4yzVnJ287FNF8cD8M=
-X-Google-Smtp-Source: ABdhPJxT9eCCvF0ZzSCxtrU4pmvcGxqZZRohK+ny2zGL4Vs2ipJgBjlDxeOkt33NdOvh5FEuwFwlPQ==
-X-Received: by 2002:a63:2f07:: with SMTP id v7mr3297305pgv.67.1600942860497;
-        Thu, 24 Sep 2020 03:21:00 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id fz23sm1922444pjb.36.2020.09.24.03.20.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=F7hKavhEcupnToKUFzbg3DWL90gfwumnqBNWj3kdfcE=;
+        b=CBJH1dy0ET0xP752hjX56k+a180aHA257AxCTmKVAiNAHVqFzS5mUzbkl/l6ZcN8Oi
+         ALBrqRtqbhplVPOy85wn35NQAY++30yU/JoueUyeRykq2XAFWJok5ME/3MRLSJriDwst
+         EBc88De236M1tYwGDdbRElonloJ6oPqtIp4z+9a66CeFunq6ar7RYG1nYCHhh32M3vq/
+         qJmtSpXc0O2kazNZbk8Oc8yQ1TvHRnRl5k6c4KYnizSdamsGa9h6VMLTMewW/ZHgi9DM
+         oPlldVY5xot75/Ppv88TdOtd4nBFQNDGGIOFU27IBWuBfV7jMHsCBMHXUexGFOPvidFG
+         W0dQ==
+X-Gm-Message-State: AOAM533yjkUkXroqpZMJUhMURhj6Hfii+TPRFS5J6CZkcOidG1+qjADD
+        YAjHOot7XETdTadLhVenZRo=
+X-Google-Smtp-Source: ABdhPJyUOvK4kZ/jUWxtxlWqb7JBR1DiNby1Da9/TxNUdxyX9VeEZwrEMbhiMEnyjd1n4P+7CiOf0w==
+X-Received: by 2002:adf:eacf:: with SMTP id o15mr4625705wrn.12.1600942902078;
+        Thu, 24 Sep 2020 03:21:42 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id 70sm3121819wmb.41.2020.09.24.03.21.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 03:21:00 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-To:     devel@driverdev.osuosl.org
-Cc:     Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        greybus-dev@lists.linaro.org (moderated list:GREYBUS SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list),
-        alsa-devel@alsa-project.org (moderated list:SOUND)
-Subject: [PATCH 3/3] [PATCH] staging: greybus: __u8 is sufficient for snd_ctl_elem_type_t and snd_ctl_elem_iface_t
-Date:   Thu, 24 Sep 2020 18:20:39 +0800
-Message-Id: <20200924102039.43895-3-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924102039.43895-1-coiby.xu@gmail.com>
-References: <20200924102039.43895-1-coiby.xu@gmail.com>
+        Thu, 24 Sep 2020 03:21:40 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 12:21:39 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Tang Bin <tangbin@cmss.chinamobile.com>,
+        gregkh@linuxfoundation.org, jonathanh@nvidia.com,
+        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+Subject: Re: [PATCH] usb: phy: tegra: Use IS_ERR() to check and simplify code
+Message-ID: <20200924102139.GF2483160@ulmo>
+References: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
+ <87imc3eiug.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="f61P+fpdnY2FZS1u"
+Content-Disposition: inline
+In-Reply-To: <87imc3eiug.fsf@kernel.org>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use __8 to replace int and remove the unnecessary __bitwise type attribute.
 
-Found by sparse,
+--f61P+fpdnY2FZS1u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-$ make C=2 drivers/staging/greybus/
-drivers/staging/greybus/audio_topology.c:185:24: warning: cast to restricted snd_ctl_elem_type_t
-drivers/staging/greybus/audio_topology.c:679:14: warning: restricted snd_ctl_elem_iface_t degrades to integer
-drivers/staging/greybus/audio_topology.c:906:14: warning: restricted snd_ctl_elem_iface_t degrades to integer
+On Thu, Sep 24, 2020 at 10:26:15AM +0300, Felipe Balbi wrote:
+> Tang Bin <tangbin@cmss.chinamobile.com> writes:
+>=20
+> > Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
+> > simplify code, avoid redundant judgements.
+> >
+> > Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
+> > Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+>=20
+> Applied for next merge window. Make sure to get this driver out of
+> drivers/usb/phy and moved into drivers/phy ASAP.
 
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
----
- drivers/staging/greybus/audio_topology.c | 2 +-
- include/uapi/sound/asound.h              | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Sergei had commented on this patch with valid concerns, see here in case
+you don't have his reply in your inbox:
 
-diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
-index 56bf1a4f95ad..f6023ff390c2 100644
---- a/drivers/staging/greybus/audio_topology.c
-+++ b/drivers/staging/greybus/audio_topology.c
-@@ -182,7 +182,7 @@ static int gbcodec_mixer_ctl_info(struct snd_kcontrol *kcontrol,
- 	/* update uinfo */
- 	uinfo->access = data->access;
- 	uinfo->count = data->vcount;
--	uinfo->type = (snd_ctl_elem_type_t)info->type;
-+	uinfo->type = info->type;
- 
- 	switch (info->type) {
- 	case GB_AUDIO_CTL_ELEM_TYPE_BOOLEAN:
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 535a7229e1d9..8e71a95644ab 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -950,7 +950,7 @@ struct snd_ctl_card_info {
- 	unsigned char components[128];	/* card components / fine identification, delimited with one space (AC97 etc..) */
- };
- 
--typedef int __bitwise snd_ctl_elem_type_t;
-+typedef __u8 snd_ctl_elem_type_t;
- #define	SNDRV_CTL_ELEM_TYPE_NONE	((__force snd_ctl_elem_type_t) 0) /* invalid */
- #define	SNDRV_CTL_ELEM_TYPE_BOOLEAN	((__force snd_ctl_elem_type_t) 1) /* boolean type */
- #define	SNDRV_CTL_ELEM_TYPE_INTEGER	((__force snd_ctl_elem_type_t) 2) /* integer type */
-@@ -960,7 +960,7 @@ typedef int __bitwise snd_ctl_elem_type_t;
- #define	SNDRV_CTL_ELEM_TYPE_INTEGER64	((__force snd_ctl_elem_type_t) 6) /* 64-bit integer type */
- #define	SNDRV_CTL_ELEM_TYPE_LAST	SNDRV_CTL_ELEM_TYPE_INTEGER64
- 
--typedef int __bitwise snd_ctl_elem_iface_t;
-+typedef __u8 snd_ctl_elem_iface_t;
- #define	SNDRV_CTL_ELEM_IFACE_CARD	((__force snd_ctl_elem_iface_t) 0) /* global control */
- #define	SNDRV_CTL_ELEM_IFACE_HWDEP	((__force snd_ctl_elem_iface_t) 1) /* hardware dependent device */
- #define	SNDRV_CTL_ELEM_IFACE_MIXER	((__force snd_ctl_elem_iface_t) 2) /* virtual mixer device */
--- 
-2.28.0
+    http://patchwork.ozlabs.org/project/linux-tegra/patch/20200910115607.11=
+392-1-tangbin@cmss.chinamobile.com/#2526208
 
+I agree with those concerns. This patch is broken because it will output
+the wrong error code on failure. I don't fully agree with Sergei's point
+that this patch isn't worth redoing. I do like the idiomatic error
+handling better, but I think we shouldn't be breaking the error messages
+like this.
+
+Thierry
+
+--f61P+fpdnY2FZS1u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9sczMACgkQ3SOs138+
+s6Fl0w//W0lviwOWICGtlYukVhARQtGJ/GQCFz2gLD1NWsmrnfdCuN868rubQfyF
+DNj6B7RShzGs9SWzKRfmL9IeOp2TZ30YbjOSHNYqGaErbuj2p0sXuqoSF0fg5aRq
+2Sp9G6uJSgmOZDPZvWsI4s5UEt58um+LM9zsROCG5y5rQGkSSWdROp7xY0yDy+0T
+s06ufbcZqLTTwbxHI00kNeHTurdDhhzP3LZpXHUYs39ge7oArp/g3a0JaxnnFN4g
+bTE1o5LA5mYKN6fSgNH7C08bkrJu7GKpoocjPlCbuv8seoDCtGE3q0y07zJo+Mlh
+h3hp6t7xGzO+QNfOgEoHwadLDhXq/2+ycAKMf/mmmsadzeILc2uWC3qRxSEuP/Pd
+ghj/01b4o4aEPqfbbc0+x5+YYpcOZuyTxVz77VZljgw2e09iAdBhpQ18ssA/O9Tw
+dw/+zPMpz9rpHBV/RWnO0i/01sDST3M7T8odcfcScoUeM6HMgMqtAf2LFxldflf8
+69CeZOFfdzCyZGYU4QNn1cRzU36/VaJ8voOkcIagzUM8oZYylxvDlhviT5RFr1kf
+Wxt9+Bl2CmnzIwAMI5MKln6i3bDndFYCn99eoJ5mk2o82PrgZgdCIRDaY2dJ4h1t
+v/SBOkjnksCkxlnWPfHN67VpridtIb4ZrBdh7ZEenz7xXEi8dE8=
+=gIrU
+-----END PGP SIGNATURE-----
+
+--f61P+fpdnY2FZS1u--
