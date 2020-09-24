@@ -2,29 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 810E12776CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7DF2776D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726958AbgIXQf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:35:58 -0400
-Received: from ms.lwn.net ([45.79.88.28]:59126 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726458AbgIXQf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:35:58 -0400
+        id S1727099AbgIXQhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgIXQhT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:37:19 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0496C0613CE;
+        Thu, 24 Sep 2020 09:37:19 -0700 (PDT)
 Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 05B52382;
-        Thu, 24 Sep 2020 16:35:57 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 10:35:56 -0600
+        by ms.lwn.net (Postfix) with ESMTPSA id 09BCF750;
+        Thu, 24 Sep 2020 16:37:18 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 10:37:16 -0600
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v3] documentation: arm: sunxi: Allwinner H2+/H3 update
-Message-ID: <20200924103556.272065ca@lwn.net>
-In-Reply-To: <20200923065954.GA22809@monster.powergraphx.local>
-References: <20200923065954.GA22809@monster.powergraphx.local>
+To:     sathnaga@linux.vnet.ibm.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH V2] Doc: admin-guide: Add entry for kvm_cma_resv_ratio
+ kernel param
+Message-ID: <20200924103716.551ba462@lwn.net>
+In-Reply-To: <20200921090220.14981-1-sathnaga@linux.vnet.ibm.com>
+References: <20200921090220.14981-1-sathnaga@linux.vnet.ibm.com>
 Organization: LWN.net
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -33,31 +41,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 08:59:54 +0200
-Wilken Gottwalt <wilken.gottwalt@mailbox.org> wrote:
+On Mon, 21 Sep 2020 14:32:20 +0530
+sathnaga@linux.vnet.ibm.com wrote:
 
-> Replaced the link to the datasheet by a link to the current version.
+> From: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
 > 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-> ---
-> Changes in v3:
->         - removed the description of the H2+/H3 differences
-> Changes in v2:
->         - addressed comments/proposals from Maxime
-> ---
->  Documentation/arm/sunxi.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Add document entry for kvm_cma_resv_ratio kernel param which
+> is used to alter the KVM contiguous memory allocation percentage
+> for hash pagetable allocation used by hash mode PowerPC KVM guests.
 > 
-> diff --git a/Documentation/arm/sunxi.rst b/Documentation/arm/sunxi.rst
-> index b037428aee98..62b533d0ba94 100644
-> --- a/Documentation/arm/sunxi.rst
-> +++ b/Documentation/arm/sunxi.rst
-> @@ -108,7 +108,7 @@ SunXi family
->  
->          * Datasheet
->  
-> -          http://dl.linux-sunxi.org/H3/Allwinner_H3_Datasheet_V1.0.pdf
-> +          https://linux-sunxi.org/images/4/4b/Allwinner_H3_Datasheet_V1.2.pdf
+> Cc: linux-kernel@vger.kernel.org
+> Cc: kvm-ppc@vger.kernel.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> Signed-off-by: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+> ---
+> 
+> V2: 
+> Addressed review comments from Randy.
+> 
+> V1: https://lkml.org/lkml/2020/9/16/72
 
 Applied, thanks.
 
