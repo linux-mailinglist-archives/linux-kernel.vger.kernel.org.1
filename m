@@ -2,112 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541E1276C89
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33DE276C8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:00:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgIXJAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:00:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35128 "EHLO
+        id S1727315AbgIXJAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:00:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726064AbgIXJAO (ORCPT
+        with ESMTP id S1726064AbgIXJAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:00:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 116B1C0613CE
+        Thu, 24 Sep 2020 05:00:15 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED89C0613CE
         for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mmMTuVMaVxuGLQvB+jy13FMm4lnU6MIfeDStXdPYzIo=; b=llXIJ797DVSbnwRMqdQXQmT3yu
-        JJdv5D+VU5ItCkcQ55462b8/5ISuhq2eyR4WRpHjITq5vzv5I+N61oS3ZDbDkCU0Dhyppeu+q0gSR
-        0M8vyjoTChsfAme4Vy1T0t5uhjFLlAV5G39afdBnODDCCJe+ysh8o7gmHdiI4tUX7QAcN79pcYZRK
-        oK11vx5cPesE+kVy0SvR4IXbPmmlDR3wYHBXgd37AqrqTjuKdEkVraZh+wYjh0kA4f6QwF8JpQfSr
-        PFvWFrOs7fHsjFX2hUufg4dFX6Wl1jKeqY9T+Of+4r1b/cvlNymB9Cu7pzEAecRrVMHGEEcjVldNS
-        ZB1B7u1g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLN6h-0000rQ-Ts; Thu, 24 Sep 2020 09:00:04 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E025F300455;
-        Thu, 24 Sep 2020 11:00:02 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CBBC22BC0B6B4; Thu, 24 Sep 2020 11:00:02 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 11:00:02 +0200
-From:   peterz@infradead.org
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Daisuke Nishimura <nishimura@mxp.nes.nec.co.jp>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, npiggin@gmail.com
-Subject: Re: [PATCH] page_alloc: Fix freeing non-compound pages
-Message-ID: <20200924090002.GG1362448@hirez.programming.kicks-ass.net>
-References: <20200922140017.26387-1-willy@infradead.org>
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id 94D5029B8B9
+Subject: Re: [PATCH v3 16/16] ARM: Remove custom IRQ stat accounting
+To:     Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>, kernel-team@android.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, kernelci-results@groups.io
+References: <20200901144324.1071694-1-maz@kernel.org>
+ <20200901144324.1071694-17-maz@kernel.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <aa8ff875-bee8-26f8-46b0-df579f2067a7@collabora.com>
+Date:   Thu, 24 Sep 2020 10:00:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922140017.26387-1-willy@infradead.org>
+In-Reply-To: <20200901144324.1071694-17-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 03:00:17PM +0100, Matthew Wilcox (Oracle) wrote:
-> Here is a very rare race which leaks memory:
+Hi Marc,
+
+On 01/09/2020 15:43, Marc Zyngier wrote:
+> Let's switch the arm code to the core accounting, which already
+> does everything we need.
 > 
-> Page P0 is allocated to the page cache.
-> Page P1 is free.
-> 
-> Thread A		Thread B		Thread C
-> find_get_entry():
-> xas_load() returns P0
-> 						Removes P0 from page cache
-> 						Frees P0
-> 						P0 merged with its buddy P1
-> 			alloc_pages(GFP_KERNEL, 1) returns P0
-> 			P0 has refcount 1
-> page_cache_get_speculative(P0)
-> P0 has refcount 2
-> 			__free_pages(P0)
-> 			P0 has refcount 1
-> put_page(P0)
-> P1 is not freed
-> 
-> Fix this by freeing all the pages in __free_pages() that won't be freed
-> by the call to put_page().  It's usually not a good idea to split a page,
-> but this is a very unlikely scenario.
-> 
-> Fixes: e286781d5f2e ("mm: speculative page references")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 > ---
->  mm/page_alloc.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index fab5e97dc9ca..5db74797db39 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4943,10 +4943,19 @@ static inline void free_the_page(struct page *page, unsigned int order)
->  		__free_pages_ok(page, order);
+>  arch/arm/include/asm/hardirq.h | 17 -----------------
+>  arch/arm/kernel/smp.c          | 20 ++++----------------
+>  2 files changed, 4 insertions(+), 33 deletions(-)
+
+This appears to be causing a NULL pointer dereference on
+beaglebone-black, it got bisected automatically several times.
+None of the other platforms in the KernelCI labs appears to be
+affected.
+
+Here's the error in the full job log, with next-20200923:
+
+  https://storage.staging.kernelci.org/kernelci/staging.kernelci.org/staging-20200924.0/arm/multi_v7_defconfig/gcc-8/lab-baylibre/baseline-beaglebone-black.html#L460
+
+and some meta-data:
+
+  https://staging.kernelci.org/test/case/id/5f6bea67f724eb1b34dce584/
+
+The full bisection report is available here:
+
+  https://groups.io/g/kernelci-results-staging/message/2094
+
+I've also run it again with a debug build to locate the problem,
+see below.
+
+
+> diff --git a/arch/arm/include/asm/hardirq.h b/arch/arm/include/asm/hardirq.h
+> index 7a88f160b1fb..b95848ed2bc7 100644
+> --- a/arch/arm/include/asm/hardirq.h
+> +++ b/arch/arm/include/asm/hardirq.h
+> @@ -6,29 +6,12 @@
+>  #include <linux/threads.h>
+>  #include <asm/irq.h>
+>  
+> -/* number of IPIS _not_ including IPI_CPU_BACKTRACE */
+> -#define NR_IPI	7
+> -
+>  typedef struct {
+>  	unsigned int __softirq_pending;
+> -#ifdef CONFIG_SMP
+> -	unsigned int ipi_irqs[NR_IPI];
+> -#endif
+>  } ____cacheline_aligned irq_cpustat_t;
+>  
+>  #include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
+>  
+> -#define __inc_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)++
+> -#define __get_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)
+> -
+> -#ifdef CONFIG_SMP
+> -u64 smp_irq_stat_cpu(unsigned int cpu);
+> -#else
+> -#define smp_irq_stat_cpu(cpu)	0
+> -#endif
+> -
+> -#define arch_irq_stat_cpu	smp_irq_stat_cpu
+> -
+>  #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
+>  
+>  #endif /* __ASM_HARDIRQ_H */
+> diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+> index d51e64955a26..aead847ac8b9 100644
+> --- a/arch/arm/kernel/smp.c
+> +++ b/arch/arm/kernel/smp.c
+> @@ -65,6 +65,7 @@ enum ipi_msg_type {
+>  	IPI_CPU_STOP,
+>  	IPI_IRQ_WORK,
+>  	IPI_COMPLETION,
+> +	NR_IPI,
+>  	/*
+>  	 * CPU_BACKTRACE is special and not included in NR_IPI
+>  	 * or tracable with trace_ipi_*
+> @@ -529,27 +530,16 @@ void show_ipi_list(struct seq_file *p, int prec)
+>  	unsigned int cpu, i;
+>  
+>  	for (i = 0; i < NR_IPI; i++) {
+> +		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
+
+It looks like irq_desc_get_irq() gets called with a NULL
+pointer (well, 0x0000001c):
+
+(gdb) l *0xc030ef38
+0xc030ef38 is in show_ipi_list (../include/linux/irqdesc.h:123).
+118		return container_of(data->common, struct irq_desc, irq_common_data);
+119	}
+120	
+121	static inline unsigned int irq_desc_get_irq(struct irq_desc *desc)
+122	{
+123		return desc->irq_data.irq;
+124	}
+125	
+126	static inline struct irq_data *irq_desc_get_irq_data(struct irq_desc *desc)
+127	{
+
+Full job log: https://lava.baylibre.com/scheduler/job/142375#L727
+
+I haven't looked any further but hopefully this should be a good
+enough clue to find the root cause.  I don't know if you have a
+platform at hand to reproduce the issue, please let me know if
+you need some help with debugging or testing a fix.
+
+Hope this helps,
+Guillaume
+
+
+>  		seq_printf(p, "%*s%u: ", prec - 1, "IPI", i);
+>  
+>  		for_each_online_cpu(cpu)
+> -			seq_printf(p, "%10u ",
+> -				   __get_irq_stat(cpu, ipi_irqs[i]));
+> +			seq_printf(p, "%10u ", kstat_irqs_cpu(irq, cpu));
+>  
+>  		seq_printf(p, " %s\n", ipi_types[i]);
+>  	}
 >  }
 >  
-> +/*
-> + * If we free a non-compound allocation, another thread may have a
-> + * speculative reference to the first page.  It has no way of knowing
-> + * about the rest of the allocation, so we have to free all but the
-> + * first page here.
-> + */
->  void __free_pages(struct page *page, unsigned int order)
+> -u64 smp_irq_stat_cpu(unsigned int cpu)
+> -{
+> -	u64 sum = 0;
+> -	int i;
+> -
+> -	for (i = 0; i < NR_IPI; i++)
+> -		sum += __get_irq_stat(cpu, ipi_irqs[i]);
+> -
+> -	return sum;
+> -}
+> -
+>  void arch_send_call_function_ipi_mask(const struct cpumask *mask)
 >  {
->  	if (put_page_testzero(page))
->  		free_the_page(page, order);
-> +	else if (!PageHead(page))
-> +		while (order-- > 0)
-> +			free_the_page(page + (1 << order), order);
->  }
->  EXPORT_SYMBOL(__free_pages);
-
-So the obvious question I have here is why not teach put_page() to free
-the whole thing?
+>  	smp_cross_call(mask, IPI_CALL_FUNC);
+> @@ -630,10 +620,8 @@ static void do_handle_IPI(int ipinr)
+>  {
+>  	unsigned int cpu = smp_processor_id();
+>  
+> -	if ((unsigned)ipinr < NR_IPI) {
+> +	if ((unsigned)ipinr < NR_IPI)
+>  		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
+> -		__inc_irq_stat(cpu, ipi_irqs[ipinr]);
+> -	}
+>  
+>  	switch (ipinr) {
+>  	case IPI_WAKEUP:
+> 
 
