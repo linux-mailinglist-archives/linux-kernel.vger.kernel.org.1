@@ -2,190 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BFA276949
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C40827693D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727126AbgIXGvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:51:02 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:30678 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727096AbgIXGux (ORCPT
+        id S1727042AbgIXGuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:50:37 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:24949 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIXGuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:50:53 -0400
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08O6iehk021055;
-        Thu, 24 Sep 2020 02:50:50 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com with ESMTP id 33r5u9b1t3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 02:50:50 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 08O6omuf063893
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 24 Sep 2020 02:50:49 -0400
-Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
- SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 23 Sep 2020 23:50:47 -0700
-Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
- SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Wed, 23 Sep 2020 23:50:16 -0700
-Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
- (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 23 Sep 2020 23:50:46 -0700
-Received: from saturn.ad.analog.com ([10.48.65.107])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08O6oSlX022302;
-        Thu, 24 Sep 2020 02:50:43 -0400
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-clk@vger.kernel.org>, <linux-fpga@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>, <mdf@kernel.org>,
-        <ardeleanalex@gmail.com>, <mircea.caprioru@analog.com>,
-        <alexandru.ardelean@analog.com>
-Subject: [PATCH v3 6/6] clk: axi-clkgen: Add support for FPGA info
-Date:   Thu, 24 Sep 2020 09:50:12 +0300
-Message-ID: <20200924065012.59605-7-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200924065012.59605-1-alexandru.ardelean@analog.com>
-References: <20200924065012.59605-1-alexandru.ardelean@analog.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ADIRoutedOnPrem: True
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-24_02:2020-09-24,2020-09-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- impostorscore=0 mlxlogscore=860 suspectscore=0 clxscore=1015
- malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240052
+        Thu, 24 Sep 2020 02:50:37 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 05ABC4E1010;
+        Thu, 24 Sep 2020 14:50:31 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Ariel Elior <aelior@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-everest-linux-l2@marvell.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] net/ethernet/broadcom: fix spelling typo
+Date:   Thu, 24 Sep 2020 14:50:24 +0800
+Message-Id: <1600930226-31320-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHk1NT0tLTRhKQkxMVkpNS0tCSEtJSElITUlVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MQg6GCo*SD8aMANWOgtKAzMh
+        EU5PCSNVSlVKTUtLQkhLSUhJQ0tNVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFPTkNONwY+
+X-HM-Tid: 0a74bee0b7d99376kuws05abc4e1010
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mircea Caprioru <mircea.caprioru@analog.com>
+Modify the comment typo: "compliment" -> "complement".
 
-This patch adds support for vco maximum and minimum ranges in accordance
-with fpga speed grade, voltage, device package, technology and family. This
-new information is extracted from two new registers implemented in the ip
-core: ADI_REG_FPGA_INFO and ADI_REG_FPGA_VOLTAGE, which are stored in the
-'include/linux/fpga/adi-axi-common.h' file as they are common to all ADI
-FPGA cores.
-
-Signed-off-by: Mircea Caprioru <mircea.caprioru@analog.com>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- drivers/clk/clk-axi-clkgen.c | 67 +++++++++++++++++++++++++++++++-----
- 1 file changed, 59 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_reg.h | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/clk/clk-axi-clkgen.c b/drivers/clk/clk-axi-clkgen.c
-index 6ffc19e9d850..b03ea28270cb 100644
---- a/drivers/clk/clk-axi-clkgen.c
-+++ b/drivers/clk/clk-axi-clkgen.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/platform_device.h>
- #include <linux/clk-provider.h>
-+#include <linux/fpga/adi-axi-common.h>
- #include <linux/slab.h>
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -49,6 +50,7 @@
- struct axi_clkgen {
- 	void __iomem *base;
- 	struct clk_hw clk_hw;
-+	unsigned int pcore_version;
- };
- 
- static uint32_t axi_clkgen_lookup_filter(unsigned int m)
-@@ -101,15 +103,15 @@ static uint32_t axi_clkgen_lookup_lock(unsigned int m)
- }
- 
- #ifdef ARCH_ZYNQMP
--static const unsigned int fpfd_min = 10000;
--static const unsigned int fpfd_max = 450000;
--static const unsigned int fvco_min = 800000;
--static const unsigned int fvco_max = 1600000;
-+static unsigned int fpfd_min = 10000;
-+static unsigned int fpfd_max = 450000;
-+static unsigned int fvco_min = 800000;
-+static unsigned int fvco_max = 1600000;
- #else
--static const unsigned int fpfd_min = 10000;
--static const unsigned int fpfd_max = 300000;
--static const unsigned int fvco_min = 600000;
--static const unsigned int fvco_max = 1200000;
-+static unsigned int fpfd_min = 10000;
-+static unsigned int fpfd_max = 300000;
-+static unsigned int fvco_min = 600000;
-+static unsigned int fvco_max = 1200000;
- #endif
- 
- static void axi_clkgen_calc_params(unsigned long fin, unsigned long fout,
-@@ -229,6 +231,49 @@ static void axi_clkgen_read(struct axi_clkgen *axi_clkgen,
- 	*val = readl(axi_clkgen->base + reg);
- }
- 
-+static void axi_clkgen_setup_ranges(struct axi_clkgen *axi_clkgen)
-+{
-+	unsigned int reg_value;
-+	unsigned int tech, family, speed_grade, voltage;
-+
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_FPGA_INFO, &reg_value);
-+	tech = ADI_AXI_INFO_FPGA_TECH(reg_value);
-+	family = ADI_AXI_INFO_FPGA_FAMILY(reg_value);
-+	speed_grade = ADI_AXI_INFO_FPGA_SPEED_GRADE(reg_value);
-+
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_FPGA_VOLTAGE, &reg_value);
-+	voltage = ADI_AXI_INFO_FPGA_VOLTAGE(reg_value);
-+
-+	switch (speed_grade) {
-+	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_1 ... ADI_AXI_FPGA_SPEED_GRADE_XILINX_1LV:
-+		fvco_max = 1200000;
-+		fpfd_max = 450000;
-+		break;
-+	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_2 ... ADI_AXI_FPGA_SPEED_GRADE_XILINX_2LV:
-+		fvco_max = 1440000;
-+		fpfd_max = 500000;
-+		if ((family == ADI_AXI_FPGA_FAMILY_XILINX_KINTEX) |
-+		    (family == ADI_AXI_FPGA_FAMILY_XILINX_ARTIX)) {
-+			if (voltage < 950) {
-+				fvco_max = 1200000;
-+				fpfd_max = 450000;
-+			}
-+		}
-+		break;
-+	case ADI_AXI_FPGA_SPEED_GRADE_XILINX_3:
-+		fvco_max = 1600000;
-+		fpfd_max = 550000;
-+		break;
-+	default:
-+		break;
-+	};
-+
-+	if (tech == ADI_AXI_FPGA_TECH_XILINX_ULTRASCALE_PLUS) {
-+		fvco_max = 1600000;
-+		fvco_min = 800000;
-+	}
-+}
-+
- static int axi_clkgen_wait_non_busy(struct axi_clkgen *axi_clkgen)
- {
- 	unsigned int timeout = 10000;
-@@ -524,6 +569,12 @@ static int axi_clkgen_probe(struct platform_device *pdev)
- 	if (IS_ERR(axi_clkgen->base))
- 		return PTR_ERR(axi_clkgen->base);
- 
-+	axi_clkgen_read(axi_clkgen, ADI_AXI_REG_VERSION,
-+			&axi_clkgen->pcore_version);
-+
-+	if (ADI_AXI_PCORE_VER_MAJOR(axi_clkgen->pcore_version) > 0x04)
-+		axi_clkgen_setup_ranges(axi_clkgen);
-+
- 	init.num_parents = of_clk_get_parent_count(pdev->dev.of_node);
- 	if (init.num_parents < 1 || init.num_parents > 2)
- 		return -EINVAL;
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_reg.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_reg.h
+index bfc0e45..5caa75b
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_reg.h
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_reg.h
+@@ -284,12 +284,12 @@
+ #define CCM_REG_GR_ARB_TYPE					 0xd015c
+ /* [RW 2] Load (FIC0) channel group priority. The lowest priority is 0; the
+    highest priority is 3. It is supposed; that the Store channel priority is
+-   the compliment to 4 of the rest priorities - Aggregation channel; Load
++   the complement to 4 of the rest priorities - Aggregation channel; Load
+    (FIC0) channel and Load (FIC1). */
+ #define CCM_REG_GR_LD0_PR					 0xd0164
+ /* [RW 2] Load (FIC1) channel group priority. The lowest priority is 0; the
+    highest priority is 3. It is supposed; that the Store channel priority is
+-   the compliment to 4 of the rest priorities - Aggregation channel; Load
++   the complement to 4 of the rest priorities - Aggregation channel; Load
+    (FIC0) channel and Load (FIC1). */
+ #define CCM_REG_GR_LD1_PR					 0xd0168
+ /* [RW 2] General flags index. */
+@@ -4489,11 +4489,11 @@
+ #define TCM_REG_GR_ARB_TYPE					 0x50114
+ /* [RW 2] Load (FIC0) channel group priority. The lowest priority is 0; the
+    highest priority is 3. It is supposed that the Store channel is the
+-   compliment of the other 3 groups. */
++   complement of the other 3 groups. */
+ #define TCM_REG_GR_LD0_PR					 0x5011c
+ /* [RW 2] Load (FIC1) channel group priority. The lowest priority is 0; the
+    highest priority is 3. It is supposed that the Store channel is the
+-   compliment of the other 3 groups. */
++   complement of the other 3 groups. */
+ #define TCM_REG_GR_LD1_PR					 0x50120
+ /* [RW 4] The number of double REG-pairs; loaded from the STORM context and
+    sent to STORM; for a specific connection type. The double REG-pairs are
+@@ -5020,11 +5020,11 @@
+ #define UCM_REG_GR_ARB_TYPE					 0xe0144
+ /* [RW 2] Load (FIC0) channel group priority. The lowest priority is 0; the
+    highest priority is 3. It is supposed that the Store channel group is
+-   compliment to the others. */
++   complement to the others. */
+ #define UCM_REG_GR_LD0_PR					 0xe014c
+ /* [RW 2] Load (FIC1) channel group priority. The lowest priority is 0; the
+    highest priority is 3. It is supposed that the Store channel group is
+-   compliment to the others. */
++   complement to the others. */
+ #define UCM_REG_GR_LD1_PR					 0xe0150
+ /* [RW 2] The queue index for invalidate counter flag decision. */
+ #define UCM_REG_INV_CFLG_Q					 0xe00e4
+@@ -5523,11 +5523,11 @@
+ #define XCM_REG_GR_ARB_TYPE					 0x2020c
+ /* [RW 2] Load (FIC0) channel group priority. The lowest priority is 0; the
+    highest priority is 3. It is supposed that the Channel group is the
+-   compliment of the other 3 groups. */
++   complement of the other 3 groups. */
+ #define XCM_REG_GR_LD0_PR					 0x20214
+ /* [RW 2] Load (FIC1) channel group priority. The lowest priority is 0; the
+    highest priority is 3. It is supposed that the Channel group is the
+-   compliment of the other 3 groups. */
++   complement of the other 3 groups. */
+ #define XCM_REG_GR_LD1_PR					 0x20218
+ /* [RW 1] Input nig0 Interface enable. If 0 - the valid input is
+    disregarded; acknowledge output is deasserted; all other signals are
 -- 
-2.25.1
+2.7.4
 
