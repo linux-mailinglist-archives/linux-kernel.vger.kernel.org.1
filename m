@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D269277308
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C71A27730B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728084AbgIXNr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:47:26 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:40148 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727685AbgIXNr0 (ORCPT
+        id S1728154AbgIXNr7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 09:47:59 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:31480 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727970AbgIXNr7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:47:26 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08ODdGog075670;
-        Thu, 24 Sep 2020 13:47:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=II2vJVmC5zG0R5CMLcfuYnwOeV3MsHQw7NMx8DI8AOg=;
- b=TG0YJydhqajhhsaXLePT8faqf2HXfVXu/PROxzLnkjjT4NpSOtSG5Gc37b1XapP3a6sR
- RNei+W4kzn6XYfTkmc1Szxzew4/WvOcm0ZI8LBxquUQAx00cAdlCQ+TEbXTQVYtHKY96
- Ajd+9OlqXZigdmzV5tN1IgC1IGg9vwlYtU5uPQZmM9Ov92jDSuI5Zsm6B1CXYLDqK06J
- x6lW8CPTtylSHtHodPtpRbhCeXgMoLeLWiOgSvGi/LM2mVsB9hm5qBTrq2XZGBRvRoLE
- 3+Pe5BWrvHpOyawi5uDFxhmVsNwJ7kbT76jHa40sPw3sc1c4N4HWZqXUDhzSdbdM1e41 WA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33q5rgpphf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Sep 2020 13:47:18 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08ODeBgD013387;
-        Thu, 24 Sep 2020 13:47:18 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 33r28x1cc5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Sep 2020 13:47:18 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08ODlGYu002389;
-        Thu, 24 Sep 2020 13:47:16 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 24 Sep 2020 06:47:16 -0700
-Date:   Thu, 24 Sep 2020 16:47:09 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Wei Yongjun <weiyongjun1@huawei.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] mm/hmm/test: use after free in dmirror_allocate_chunk()
-Message-ID: <20200924134709.GK4282@kadam>
-References: <20200922081234.GA1274646@mwanda>
- <c25729e4-8a53-07e3-ae98-d77919f3ac21@nvidia.com>
+        Thu, 24 Sep 2020 09:47:59 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-275-AmPfbs06OlSmLB8NwMzbeQ-1; Thu, 24 Sep 2020 14:47:55 +0100
+X-MC-Unique: AmPfbs06OlSmLB8NwMzbeQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 14:47:54 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 24 Sep 2020 14:47:54 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'YiFei Zhu' <zhuyifei1999@gmail.com>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>
+CC:     YiFei Zhu <yifeifz2@illinois.edu>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        "Andrea Arcangeli" <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: RE: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+Thread-Topic: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+Thread-Index: AQHWknD17ZW/yCPmvkCTJZb3HlQhMal3ymow
+Date:   Thu, 24 Sep 2020 13:47:54 +0000
+Message-ID: <7042ba3307b34ce3b95e5fede823514e@AcuMS.aculab.com>
+References: <cover.1600951211.git.yifeifz2@illinois.edu>
+ <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
+In-Reply-To: <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c25729e4-8a53-07e3-ae98-d77919f3ac21@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240103
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- clxscore=1015 suspectscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240103
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 10:31:01AM -0700, Ralph Campbell wrote:
-> > @@ -471,30 +487,16 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
-> >   				sizeof(new_chunks[0]) * new_capacity,
-> >   				GFP_KERNEL);
-> >   		if (!new_chunks)
+From: YiFei Zhu 
+> Sent: 24 September 2020 13:44
 > 
-> Need to call mutex_unlock(&mdevice->devmem_lock).
-> In fact, why not make this goto err_unlock and add
-> err_unlock: mutex_unlock() before the err_release:.
+> Seccomp cache emulator needs to know all the architecture numbers
+> that syscall_get_arch() could return for the kernel build in order
+> to generate a cache for all of them.
+> 
+> The array is declared in header as static __maybe_unused const
+> to maximize compiler optimiation opportunities such as loop
+> unrolling.
 
-Ugh...  Thanks for catching that.
+I doubt the compiler will do what you want.
+Looking at it, in most cases there are one or two entries.
+I think only MIPS has three.
 
-regards,
-dan carpenter
+So a static inline function that contains a list of
+conditionals will generate better code that any kind of
+array lookup.
+For x86-64 you end up with something like:
+
+#ifdef CONFIG_IA32_EMULATION
+	if (sd->arch == AUDIT_ARCH_I386) return xxx;
+#endif
+	return yyy;
+
+Probably saves you having multiple arrays that need to be
+kept carefully in step.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
