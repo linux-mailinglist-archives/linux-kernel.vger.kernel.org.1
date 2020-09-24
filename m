@@ -2,76 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C596A277736
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:51:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E24277738
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgIXQvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51672 "EHLO
+        id S1728562AbgIXQvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727127AbgIXQvf (ORCPT
+        with ESMTP id S1726993AbgIXQvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:51:35 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C9EDC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 09:51:35 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id kk9so411pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 09:51:35 -0700 (PDT)
+        Thu, 24 Sep 2020 12:51:54 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3E2C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 09:51:54 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id p65so3527651qtd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 09:51:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=pqeo0+ordMchNpddfhm5pIn2x8EAw5l5wTXt0uNN9GE=;
-        b=sF4Hvgm4kE4UY9UGDBSe8f4ma8iHmxFAZNIt5H8MCPfcaIiNzIXkGYHTymogy+iEiT
-         U8I8xqOHeOahNcl8x/e+C05gCZStqTAretO/HD+4exa1iz5kB92IfS4jJkEjVm0zZHb1
-         Sk+cfPP4F7V5wttHlDALP6WJ81IKC70bKmLmGv99Zjm+bcwfgSXK/hH80cdpMnudY1jn
-         dw6bz8lx8/DMRk+PSn5GpTct1LaaLkWX9PMkZN/TB1TZ6Bfov4J/2vaPnBlJky8Q2QYa
-         r5v1NcL+lpR8VaQGrfX10y2zigf0igp3STUwuzAgJaYnDQFed+oOFAuirquCVSCyOJYi
-         K2eA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2HIyXx3s73LRrQkm+2xnUYOIMGnUAb5vPH458q/eHM0=;
+        b=Gq2CkCU/WyZ8U9hNjFyGbyFkvcjO2IImWCtlNVUwFsk4OSpRT2+Ky4ZbxhcCDzjD6B
+         oYjO45xmtz0QBGgkzoUXJHwwvYWyJCHHI0ppI7NyH8Y75C1KnRCfOlMBfol31Sx+U2P0
+         b4euqbEfeTluR4QA0tF55NF3HBeiudHAz7KH/Qye52L5i8LUQE9QW4Dcho02AmXs4HAJ
+         9bL19BsXzDzayge1UqgbS0l8ooJ1QIAM0qYBDK4mxzv3JmQg5bhz2hEXMgiXhCaAhbNi
+         YMCUviz/wBdE+prxnw9QtQtC4IUoGSeelRDljLQljzo1CKEQYeADvKz8s3jYvKmdfpF2
+         UcYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=pqeo0+ordMchNpddfhm5pIn2x8EAw5l5wTXt0uNN9GE=;
-        b=VJE8SjmOkAZEM8JwzjXeGKz3L7VLmfPOz9GgsRDSRAEnZGcDEyetSQ8S9SSLDi9FPJ
-         Cn984MjTYJaCoVshK5lyR/Fc45QREjdF8Eq4KRSosCJWrocKW9TT77a1dM6hw/wVQ7XL
-         EPtyomky0tYtKHbN7bBQDrc/JQvhWGdhoeDXkQULQSqAzSuD3Om4Kw9q00cShqKnkM5B
-         oUJVuRn4YgzgK5xdBaCHoJLs3rAu62xePn6AKhFQ3klTX2iaZrikqlpdcUN9FoHn4RbL
-         6P4O9x8Wd258b/fQYZdr6Cbj6ZT2mC2+MaRqKxnDLYzmdJruZpAx2lf25RtNsW30baer
-         Qf1g==
-X-Gm-Message-State: AOAM532FjtVF0LlS0Tj7kuj/3YQCCoEtaaWd5S9tGY0a9W4WVwRDjX1l
-        0Hd2dQMiGfSoU0S6fxhjYk0zpg==
-X-Google-Smtp-Source: ABdhPJzMSHbGLYo2g5Z7rZjbVaYYZcqg1CIZzhc7X74SKXOwebVurVfHHNo9UKwz9SPSEe+LGjq0TA==
-X-Received: by 2002:a17:902:760f:b029:d1:f8be:b0be with SMTP id k15-20020a170902760fb02900d1f8beb0bemr90676pll.9.1600966294797;
-        Thu, 24 Sep 2020 09:51:34 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id q65sm3327621pga.88.2020.09.24.09.51.34
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2HIyXx3s73LRrQkm+2xnUYOIMGnUAb5vPH458q/eHM0=;
+        b=gmyDSek2WjgxkidwC6DK+ln3NusJunBlqV2OdposL7VwSbefhKJkilwaZmSTIcEKGO
+         xhvU6MxGPfHC+Gbw4Y040DXtjT3BP/YCf/ofvUgC/U4VriRTy7BFB8Rsin7iTf+VRx9Z
+         HrcW8rixftD/8c1NKqVkWTwGuE8k/yB15LM0TFyiDirh4M0+AbRw1mWQbhC7hKF9mhN9
+         P65ZHRNk+omV0KHvhydbSpBzu/PfL/1K5eWTdHBORhT5+oy/+nC3Bif+qwLA08G3MbWg
+         p8WUWO9eoX9y5kDWWAeLgafrTPx7hLXbckV7rA8fehuGrxrmW7UXZIJ9ruCWtAGg7lVH
+         btcQ==
+X-Gm-Message-State: AOAM530ts6/1GJDTOc494I38hzqPIvy04WYTRGMRcqeFJJpbjFnuvqxA
+        8pRr/QrRrrZFIyHNoILebsIc/g==
+X-Google-Smtp-Source: ABdhPJxCjmf5BK+Jx3OZvHqqLVtzy1xfkcJEWZVBAiNudjZaGbj8d6kJUM9EMXaX9ojj8gbHS+RhuQ==
+X-Received: by 2002:ac8:6ec2:: with SMTP id f2mr482171qtv.159.1600966313832;
+        Thu, 24 Sep 2020 09:51:53 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id c28sm62266qtk.18.2020.09.24.09.51.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 09:51:34 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-media@vger.kernel.org
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: remove Maxime Jourdan as maintainer of Amlogic VDEC
-In-Reply-To: <20200923160910.31968-1-narmstrong@baylibre.com>
-References: <20200923160910.31968-1-narmstrong@baylibre.com>
-Date:   Thu, 24 Sep 2020 09:51:33 -0700
-Message-ID: <7ho8lv9kyy.fsf@baylibre.com>
+        Thu, 24 Sep 2020 09:51:53 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kLUTI-000NmG-1K; Thu, 24 Sep 2020 13:51:52 -0300
+Date:   Thu, 24 Sep 2020 13:51:52 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+Message-ID: <20200924165152.GE9916@ziepe.ca>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-2-peterx@redhat.com>
+ <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
+ <20200922151736.GD19098@xz-x1>
+ <20200922161046.GB731578@ziepe.ca>
+ <20200922175415.GI19098@xz-x1>
+ <20200922191116.GK8409@ziepe.ca>
+ <20200923002735.GN19098@xz-x1>
+ <20200923170759.GA9916@ziepe.ca>
+ <20200924143517.GD79898@xz-x1>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924143517.GD79898@xz-x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Neil Armstrong <narmstrong@baylibre.com> writes:
+On Thu, Sep 24, 2020 at 10:35:17AM -0400, Peter Xu wrote:
 
-> Maxime is no more a BayLibre employee, and his e-mail address is now invalid.
->
-> I'll be happy to add him back using another e-mail address if he wants to continue
-> maintaining this driver.
->
-> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+> If so, I'd hope you won't disagree that I still move the get_page() out of the
+> "if (wp)".  Not only it's a shared operation no matter whether "if (wp)" or
+> not, but I'm afraid it would confuse future readers on a special ordering on
+> the get_page() and the wrprotect(), especially with the comment above.
 
-Acked-by: Kevin Hilman <khilman@baylibre.com>
+Sure, you could add a comment before the page_maybe_dma_pinned that it
+could be fused with get_page()
+
+> Yes.  It's kind of related here on whether we can still use wrprotect() to
+> guard against fast-gup, though.  So my understanding is that we should still at
+> least need the other patch [1] that I proposed in the other thread to force
+> break-cow for read-only gups (that patch is not only for fast-gup, of course).
+
+Probably, I haven't intensively studied that patch, and it should go
+along with edits to some of the callers..
+
+> But I agree that should be another bigger topic.  I hope we don't need to pick
+> that patch up someday by another dma report on read-only pinned pages...
+
+In RDMA we found long ago that read only pins don't work well, I think
+most other places are likely the same - the problems are easy enough
+to hit. Something like your COW break patch on read is really needed
+to allow read-only GUP.
+
+> Regarding the solution here, I think we can also cover read-only fast-gup too
+> in the future - IIUC what we need to do is to make it pte_protnone() instead of
+> pte_wrprotect(), then in the fault handler we should identify this special
+> pte_protnone() against numa balancing (change_prot_numa()).  I think it should
+> work fine too, iiuc, because I don't think we should migrate a page at all if
+> it's pinned for any reason...
+
+With your COW breaking patch the read only fast-gup should break the
+COW because of the write protect, just like for the write side. Not
+seeing why we need to do something more?
+
+Jason
