@@ -2,129 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760AC277421
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A43F277427
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728279AbgIXOgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:36:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
+        id S1728297AbgIXOhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgIXOgb (ORCPT
+        with ESMTP id S1727859AbgIXOhf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:36:31 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DE6C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:36:31 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id w7so2028946pfi.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:36:31 -0700 (PDT)
+        Thu, 24 Sep 2020 10:37:35 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36625C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:37:34 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id q124so953359vkb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:37:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/t8PieN/eFPss7Qpw0jjxSzLNSWlXorRRsXxHO8bkrw=;
-        b=B5rOfAQGAlGeVxwr/0IYp/Z9JGcqYTy72x+HQEwDfYQWEybUAgy5tukLTTH7WtxQan
-         OPiu/ZlDVa62RVJi7WPmsJS8RzFHcrH4wV0cS4nDJFxT/OlTuw8/01/Bo1anPFZgbtcu
-         dPXqMy8YcQPK7f3t+qx9DbRlekyLuKIuyHfPFACkrrmfop/W9vQsPuj0LwRySTR/++Bq
-         J8LNbND9KcnKgBpxRVGT2uXTkHp1mpnEzgPFo6/FtFqpWiehDdtcBY2w0utkHgAm+Kwf
-         KY4goQvP9EEJ11U3AkUcPUNmQDEIN9JpFbD83oPLXkgJyoTx9wZ+xHJCx9j4zLHMgKQu
-         pPgQ==
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=Y+sY5R9BB1m0tnZgETWGm1/pCFVH9axPAXKPrQuX+UI=;
+        b=hR3QsXIYBnI6Vd62/KFSvHz3GH86eRf00HC7RuFHojqbSkEvtqengUdf4AU2sLWRrP
+         9Twxsb0n4+YqJaA0gfey8koYjKFs4GtdaCNV9vNmWeGQHWBs0ixYNUowWV7LbUbTkhgN
+         wwIxNaMOTXqRm6XHIQmThYm377r0mkynlyfrtGG4SI1kzRfRteqJ4SQE7tGkKZY8m5fi
+         PJSat0T3igs534E2sK/LM/S6inDijwqy0CCiqWPZkJbjYTy2hWkgLFiiHcQP8zPYN59y
+         ITS0efQRzOiylzUcenR0rU7DW67u3oSqk4Cd8r5H1IJP9O98G8qTy4nTNQdyBt5/jqOw
+         i0ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=/t8PieN/eFPss7Qpw0jjxSzLNSWlXorRRsXxHO8bkrw=;
-        b=r/xpMGcUQNxmcDF8GnPJDlJbRyjxUQDuxxQTQKftZtgowa++z7WxRZiXVT4zGM4q6X
-         GoGF1SztlHqni9yV6cManSksT8G50CyO031WEJRU4Wty0b1m1vSJc8SCqaolbum9Q94F
-         AxUoPOnn7ajFr1f6I8gi/aULRfTB/a6pQeo3tvIs3Dg3qMpLRh5PobvjjY58Oui8sJQv
-         ca8KWPOY6CpImYn695dh9Thv43fx8Z/4dqvMdZul82CjnPzedzuTPTwph7N3NIIRsa6A
-         KzGMhqZ+FBB1GhV9oBfEU9yr58qDNdGgD1mW4OPL9dew4v1VesgWf4uZqmr2GR5DYsUf
-         YSwA==
-X-Gm-Message-State: AOAM530UxQBenjvm5FkKfIUMQ34dKEFo7ssGAoMlUvUWEEZOZ7hZCYd1
-        tq1GbNFeHVgRczPVXoS7sEM=
-X-Google-Smtp-Source: ABdhPJy9e27mTknYv36d4JU7GC59hiPiimY7cgOXFCU24o+AeS3RgImChNT3If7MjETsBzgL9tuwBg==
-X-Received: by 2002:a62:7fcf:0:b029:151:15e0:ab82 with SMTP id a198-20020a627fcf0000b029015115e0ab82mr4825933pfd.80.1600958190712;
-        Thu, 24 Sep 2020 07:36:30 -0700 (PDT)
-Received: from google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id y1sm3341813pgy.0.2020.09.24.07.36.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 07:36:29 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-Date:   Thu, 24 Sep 2020 23:36:23 +0900
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andi Kleen <andi@firstfloor.org>,
-        Li Bin <huawei.libin@huawei.com>, Wei Li <liwei391@huawei.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] perf stat: Fix segfault when counting armv8_pmu
- events
-Message-ID: <20200924143623.GA357648@google.com>
-References: <20200922031346.15051-1-liwei391@huawei.com>
- <20200922031346.15051-2-liwei391@huawei.com>
- <20200923054426.GG2893484@krava>
- <CAM9d7cjLKosv97fEUCATVTr0mkZL_W5oDzBSxde70RhOeZ=6fg@mail.gmail.com>
- <20200923140747.GN2893484@krava>
- <CAM9d7cgT4qLH0mPM1nTRa-FYwjMOc4LOCUD_X0r21hdUUVLpRA@mail.gmail.com>
- <20200923201900.GQ2893484@krava>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=Y+sY5R9BB1m0tnZgETWGm1/pCFVH9axPAXKPrQuX+UI=;
+        b=BJU3rmOgta4KQ8Nz0i+oJZNYJDWnVs5movtZpfubIeZZhWNDNjhfph7kufNLdjmogS
+         I5sZSiGeKLkCzVzpQEqSKD87dqPkQEZCxhz0ogrviJV5J81mnjCaA8/im9JzsZsdgY8e
+         De4srvOaboZ0iqWnwJKmIzmzfaGVeT49M7o4KOGfvGTv5ILZAc95KkZsdkewFh7thdNe
+         Ys0K61yjLKtpUKJKJKpYwWAZjRJZ9XUsZPw9N0pM5x+5a5zz/KjnmW/nur6O1Pddl4W6
+         RP9kdYz5DbFiRQUFyrzuzTIfllbJriuV/tE+QJsy7VqUv6y2Twhv3enTGdbNcMGa/FM5
+         ieeg==
+X-Gm-Message-State: AOAM5328apMLuTEZn3Atit4GH7GIt11tEdtulz3DOFXVgc7FI1GMyFJN
+        orHFqdTEkHDxQWxSbmbvYXnuvmPjenbnFOkxuLBX3g==
+X-Google-Smtp-Source: ABdhPJz/1ugw5vGXzY5IhqsVU4RR0CGvMpxr2KfhDZ18CkSWeRw1I+fPQbfCgpteCj5LxlXmT9qvi7F0gzCfzTRQNNY=
+X-Received: by 2002:a1f:7882:: with SMTP id t124mr4288846vkc.22.1600958252946;
+ Thu, 24 Sep 2020 07:37:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200923201900.GQ2893484@krava>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 24 Sep 2020 20:07:21 +0530
+Message-ID: <CA+G9fYt86DcPWokgFx4ZhsMKEjEXuUhtOTAn0hZk9mjTgy+YWQ@mail.gmail.com>
+Subject: i386: allmodconfig build failed on linux next
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Cc:     lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 10:19:00PM +0200, Jiri Olsa wrote:
-> On Wed, Sep 23, 2020 at 11:15:06PM +0900, Namhyung Kim wrote:
-> > I think the problem is that armv8_pmu has a cpumask,
-> > and the user requested per-task events.
-> > 
-> > The code tried to open the event with a dummy cpu map
-> > since it's not a cpu event, but the pmu has cpu map and
-> > it's passed to evsel.  So there's confusion somewhere
-> > whether it should use evsel->cpus or a dummy map.
-> 
-> you're right, I have following cpus file in pmu:
-> 
->   # cat /sys/devices/armv8_pmuv3_0/cpus 
->   0-3
-> 
-> covering all the cpus.. and once you have cpumask/cpus file,
-> you're system wide by default in current code, but we should
-> not crash ;-)
-> 
-> I tried to cover this case in patch below and I probably broke
-> some other use cases, but perhaps we could allow to open counters
-> per cpus for given workload
-> 
-> I'll try to look at this more tomorrow
+i386 allmodconfig build failed on linux next due to below errors.
+Since we recently started building allmodconfig. we do not have when
+this problem started.
 
-I'm thinking about a different approach, we can ignore cpu map
-for the ARM cpu PMU and use the dummy, not tested ;-)
+We are building with gcc-8, gcc-9 and gcc-10.
 
-Thanks
-Namhyung
+Build log:
+------------
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux ARCH=3Di386 HOSTCC=3Dgcc
+CC=3D"sccache gcc" O=3Dbuild allmodconfig
 
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Di386 HOSTCC=3Dgc=
+c
+CC=3D"sccache gcc" O=3Dbuild
 
-diff --git a/tools/lib/perf/evlist.c b/tools/lib/perf/evlist.c
-index 2208444ecb44..cfcdbd7be066 100644
---- a/tools/lib/perf/evlist.c
-+++ b/tools/lib/perf/evlist.c
-@@ -45,6 +45,9 @@ static void __perf_evlist__propagate_maps(struct perf_evlist *evlist,
-        if (!evsel->own_cpus || evlist->has_user_cpus) {
-                perf_cpu_map__put(evsel->cpus);
-                evsel->cpus = perf_cpu_map__get(evlist->cpus);
-+       } else if (!evsel->system_wide && perf_cpu_map__empty(evlist->cpus)) {
-+               perf_cpu_map__put(evsel->cpus);
-+               evsel->cpus = perf_cpu_map__get(evlist->cpus);
-        } else if (evsel->cpus != evsel->own_cpus) {
-                perf_cpu_map__put(evsel->cpus);
-                evsel->cpus = perf_cpu_map__get(evsel->own_cpus);
+../drivers/bus/mhi/core/debugfs.c: In function =E2=80=98mhi_debugfs_events_=
+show=E2=80=99:
+../drivers/bus/mhi/core/debugfs.c:74:51: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+   74 |   seq_printf(m, " local rp: 0x%llx db: 0x%llx\n", (u64)ring->rp,
+      |                                                   ^
+../drivers/bus/mhi/core/debugfs.c:74:45: warning: format =E2=80=98%llx=E2=
+=80=99
+expects argument of type =E2=80=98long long unsigned int=E2=80=99, but argu=
+ment 4 has
+type =E2=80=98dma_addr_t=E2=80=99 {aka =E2=80=98unsigned int=E2=80=99} [-Wf=
+ormat=3D]
+   74 |   seq_printf(m, " local rp: 0x%llx db: 0x%llx\n", (u64)ring->rp,
+      |                                          ~~~^
+      |                                             |
+      |                                             long long unsigned int
+      |                                          %x
+   75 |       mhi_event->db_cfg.db_val);
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~
+      |                        |
+      |                        dma_addr_t {aka unsigned int}
+../drivers/bus/mhi/core/debugfs.c: In function =E2=80=98mhi_debugfs_channel=
+s_show=E2=80=99:
+../drivers/bus/mhi/core/debugfs.c:122:7: warning: cast from pointer to
+integer of different size [-Wpointer-to-int-cast]
+  122 |       (u64)ring->rp, (u64)ring->wp,
+      |       ^
+../drivers/bus/mhi/core/debugfs.c:122:22: warning: cast from pointer
+to integer of different size [-Wpointer-to-int-cast]
+  122 |       (u64)ring->rp, (u64)ring->wp,
+      |                      ^
+../drivers/bus/mhi/core/debugfs.c:121:62: warning: format =E2=80=98%llx=E2=
+=80=99
+expects argument of type =E2=80=98long long unsigned int=E2=80=99, but argu=
+ment 5 has
+type =E2=80=98dma_addr_t=E2=80=99 {aka =E2=80=98unsigned int=E2=80=99} [-Wf=
+ormat=3D]
+  121 |   seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
+      |                                                           ~~~^
+      |                                                              |
+      |
+long long unsigned int
+      |                                                           %x
+  122 |       (u64)ring->rp, (u64)ring->wp,
+  123 |       mhi_chan->db_cfg.db_val);
+      |       ~~~~~~~~~~~~~~~~~~~~~~~
+      |                       |
+      |                       dma_addr_t {aka unsigned int}
+In file included from /usr/include/sys/socket.h:33,
+                 from ../net/bpfilter/main.c:6:
+/usr/include/bits/socket.h:354:11: fatal error: asm/socket.h: No such
+file or directory
+  354 | # include <asm/socket.h>
+      |           ^~~~~~~~~~~~~~
+compilation terminated.
+make[3]: *** [scripts/Makefile.userprogs:43: net/bpfilter/main.o] Error 1
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [../scripts/Makefile.build:500: net/bpfilter] Error 2
+In file included from ../include/linux/printk.h:7,
+                 from ../include/linux/kernel.h:16,
+                 from ../arch/x86/include/asm/percpu.h:27,
+                 from ../arch/x86/include/asm/current.h:6,
+                 from ../include/linux/sched.h:12,
+                 from ../fs/btrfs/extent-tree.c:6:
+../fs/btrfs/extent-tree.c: In function =E2=80=98__btrfs_free_extent=E2=80=
+=99:
+../include/linux/kern_levels.h:5:18: warning: format =E2=80=98%lu=E2=80=99 =
+expects
+argument of type =E2=80=98long unsigned int=E2=80=99, but argument 8 has ty=
+pe
+=E2=80=98unsigned int=E2=80=99 [-Wformat=3D]
+    5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+      |                  ^~~~~~
+../include/linux/kern_levels.h:10:19: note: in expansion of macro =E2=80=98=
+KERN_SOH=E2=80=99
+   10 | #define KERN_CRIT KERN_SOH "2" /* critical conditions */
+      |                   ^~~~~~~~
+../fs/btrfs/ctree.h:3148:24: note: in expansion of macro =E2=80=98KERN_CRIT=
+=E2=80=99
+ 3148 |  btrfs_printk(fs_info, KERN_CRIT fmt, ##args)
+      |                        ^~~~~~~~~
+../fs/btrfs/extent-tree.c:3187:4: note: in expansion of macro =E2=80=98btrf=
+s_crit=E2=80=99
+ 3187 |    btrfs_crit(info,
+      |    ^~~~~~~~~~
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [/linux/Makefile:1792: net] Error 2
+In file included from ../drivers/net/ethernet/intel/ice/ice_flex_pipe.c:6:
+../drivers/net/ethernet/intel/ice/ice_flex_pipe.c: In function
+=E2=80=98ice_free_flow_profs=E2=80=99:
+../drivers/net/ethernet/intel/ice/ice_flow.h:197:33: warning: cast
+from pointer to integer of different size [-Wpointer-to-int-cast]
+  197 | #define ICE_FLOW_ENTRY_HNDL(e) ((u64)e)
+      |                                 ^
+../drivers/net/ethernet/intel/ice/ice_flex_pipe.c:2921:9: note: in
+expansion of macro =E2=80=98ICE_FLOW_ENTRY_HNDL=E2=80=99
+ 2921 |         ICE_FLOW_ENTRY_HNDL(e));
+      |         ^~~~~~~~~~~~~~~~~~~
+In file included from ../drivers/net/ethernet/intel/ice/ice_flow.c:5:
+../drivers/net/ethernet/intel/ice/ice_flow.c: In function =E2=80=98ice_flow=
+_add_entry=E2=80=99:
+../drivers/net/ethernet/intel/ice/ice_flow.h:197:33: warning: cast
+from pointer to integer of different size [-Wpointer-to-int-cast]
+  197 | #define ICE_FLOW_ENTRY_HNDL(e) ((u64)e)
+      |                                 ^
+../drivers/net/ethernet/intel/ice/ice_flow.c:946:13: note: in
+expansion of macro =E2=80=98ICE_FLOW_ENTRY_HNDL=E2=80=99
+  946 |  *entry_h =3D ICE_FLOW_ENTRY_HNDL(e);
+      |             ^~~~~~~~~~~~~~~~~~~
+../drivers/net/ethernet/intel/ice/ice_flow.c: In function =E2=80=98ice_flow=
+_rem_entry=E2=80=99:
+../drivers/net/ethernet/intel/ice/ice_flow.h:198:32: warning: cast to
+pointer from integer of different size [-Wint-to-pointer-cast]
+  198 | #define ICE_FLOW_ENTRY_PTR(h) ((struct ice_flow_entry *)(h))
+      |                                ^
+../drivers/net/ethernet/intel/ice/ice_flow.c:974:10: note: in
+expansion of macro =E2=80=98ICE_FLOW_ENTRY_PTR=E2=80=99
+  974 |  entry =3D ICE_FLOW_ENTRY_PTR(entry_h);
+      |          ^~~~~~~~~~~~~~~~~~
+In file included from ../include/linux/kernel.h:14,
+                 from ../arch/x86/include/asm/percpu.h:27,
+                 from ../arch/x86/include/asm/current.h:6,
+                 from ../arch/x86/include/asm/processor.h:17,
+                 from ../arch/x86/include/asm/timex.h:5,
+                 from ../include/linux/timex.h:65,
+                 from ../include/linux/time32.h:13,
+                 from ../include/linux/time.h:73,
+                 from ../include/linux/efi.h:17,
+                 from ../drivers/firmware/efi/mokvar-table.c:35:
+../drivers/firmware/efi/mokvar-table.c: In function =E2=80=98efi_mokvar_tab=
+le_init=E2=80=99:
+../include/linux/minmax.h:18:28: warning: comparison of distinct
+pointer types lacks a cast
+   18 |  (!!(sizeof((typeof(x) *)1 =3D=3D (typeof(y) *)1)))
+      |                            ^~
+../include/linux/minmax.h:32:4: note: in expansion of macro =E2=80=98__type=
+check=E2=80=99
+   32 |   (__typecheck(x, y) && __no_side_effects(x, y))
+      |    ^~~~~~~~~~~
+../include/linux/minmax.h:42:24: note: in expansion of macro =E2=80=98__saf=
+e_cmp=E2=80=99
+   42 |  __builtin_choose_expr(__safe_cmp(x, y), \
+      |                        ^~~~~~~~~~
+../include/linux/minmax.h:51:19: note: in expansion of macro =E2=80=98__car=
+eful_cmp=E2=80=99
+   51 | #define min(x, y) __careful_cmp(x, y, <)
+      |                   ^~~~~~~~~~~~~
+../drivers/firmware/efi/mokvar-table.c:149:15: note: in expansion of macro =
+=E2=80=98min=E2=80=99
+  149 |    map_size =3D min(map_size_needed + 2*EFI_PAGE_SIZE,
+      |               ^~~
+../drivers/staging/media/atomisp/pci/atomisp_compat_css20.c: In
+function =E2=80=98__set_css_print_env=E2=80=99:
+../drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:860:50:
+error: assignment to =E2=80=98int (*)(const char *, char *)=E2=80=99 from i=
+ncompatible
+pointer type =E2=80=98int (__attribute__((regparm(0))) *)(const char *, cha=
+r
+*)=E2=80=99 [-Werror=3Dincompatible-pointer-types]
+  860 |   isp->css_env.isp_css_env.print_env.debug_print =3D vprintk;
+      |                                                  ^
+../drivers/staging/media/atomisp/pci/atomisp_compat_css20.c: In
+function =E2=80=98atomisp_css_load_firmware=E2=80=99:
+../drivers/staging/media/atomisp/pci/atomisp_compat_css20.c:893:49:
+error: assignment to =E2=80=98int (*)(const char *, char *)=E2=80=99 from i=
+ncompatible
+pointer type =E2=80=98int (__attribute__((regparm(0))) *)(const char *, cha=
+r
+*)=E2=80=99 [-Werror=3Dincompatible-pointer-types]
+  893 |  isp->css_env.isp_css_env.print_env.error_print =3D vprintk;
+      |                                                 ^
+cc1: some warnings being treated as errors
+make[5]: *** [../scripts/Makefile.build:283:
+drivers/staging/media/atomisp/pci/atomisp_compat_css20.o] Error 1
+In file included from ../include/linux/printk.h:409,
+                 from ../include/linux/kernel.h:16,
+                 from ../drivers/staging/media/atomisp/pci/hmm/hmm.c:23:
+../drivers/staging/media/atomisp/pci/hmm/hmm.c: In function =E2=80=98hmm_al=
+loc=E2=80=99:
+../drivers/staging/media/atomisp/pci/hmm/hmm.c:272:3: warning: format
+=E2=80=98%ld=E2=80=99 expects argument of type =E2=80=98long int=E2=80=99, =
+but argument 6 has type
+=E2=80=98size_t=E2=80=99 {aka =E2=80=98unsigned int=E2=80=99} [-Wformat=3D]
+  272 |   "%s: pages: 0x%08x (%ld bytes), type: %d from highmem %d,
+user ptr %p, cached %d\n",
+      |   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~~~~~
+../include/linux/dynamic_debug.h:129:15: note: in definition of macro
+=E2=80=98__dynamic_func_call=E2=80=99
+  129 |   func(&id, ##__VA_ARGS__);  \
+      |               ^~~~~~~~~~~
+../include/linux/dynamic_debug.h:161:2: note: in expansion of macro
+=E2=80=98_dynamic_func_call=E2=80=99
+  161 |  _dynamic_func_call(fmt,__dynamic_dev_dbg,   \
+      |  ^~~~~~~~~~~~~~~~~~
+../include/linux/dev_printk.h:123:2: note: in expansion of macro
+=E2=80=98dynamic_dev_dbg=E2=80=99
+  123 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+      |  ^~~~~~~~~~~~~~~
+../include/linux/dev_printk.h:123:23: note: in expansion of macro =E2=80=98=
+dev_fmt=E2=80=99
+  123 |  dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+      |                       ^~~~~~~
+../drivers/staging/media/atomisp/pci/hmm/hmm.c:271:2: note: in
+expansion of macro =E2=80=98dev_dbg=E2=80=99
+  271 |  dev_dbg(atomisp_dev,
+      |  ^~~~~~~
+../drivers/staging/media/atomisp/pci/hmm/hmm.c:272:25: note: format
+string is defined here
+  272 |   "%s: pages: 0x%08x (%ld bytes), type: %d from highmem %d,
+user ptr %p, cached %d\n",
+      |                       ~~^
+      |                         |
+      |                         long int
+      |                       %d
+make[5]: Target '__build' not remade because of errors.
+make[4]: *** [../scripts/Makefile.build:500:
+drivers/staging/media/atomisp] Error 2
+make[4]: Target '__build' not remade because of errors.
+make[3]: *** [../scripts/Makefile.build:500: drivers/staging/media] Error 2
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [../scripts/Makefile.build:500: drivers/staging] Error 2
+make[2]: Target '__build' not remade because of errors.
+make[1]: *** [/linux/Makefile:1792: drivers] Error 2
+make[1]: Target '__all' not remade because of errors.
+make: *** [Makefile:185: __sub-make] Error 2
+make: Target '__all' not remade because of errors.
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
