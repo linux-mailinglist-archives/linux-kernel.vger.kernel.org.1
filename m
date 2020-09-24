@@ -2,92 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2861B277516
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0B727751A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728374AbgIXPUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:20:52 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:44374 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728294AbgIXPUv (ORCPT
+        id S1728460AbgIXPVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728139AbgIXPVR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:20:51 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08OFKbmD053626;
-        Thu, 24 Sep 2020 10:20:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600960837;
-        bh=As0LBQrlo7GbhKXw66VgAuUH9w1aj9X87IwzCpW+vT4=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=xjIa4C5kIQgkKD1o5cTbyDD+vxUvBx6vLaaIGcyQ6gTYb5XP3wCA/WEvZ0GIxuVuT
-         rixW574qS4cClFNGK9UbcbGgj/Kwv3nhtMGNYB3cQNPLZXFG6QdifxMBRW4cRNGA/8
-         sacQw/Pua6Fru4oym/MkROOvGSAEtuomvOCL62QI=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08OFKbDt054494
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Sep 2020 10:20:37 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Sep 2020 10:20:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Sep 2020 10:20:37 -0500
-Received: from [10.24.69.198] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OFKYtn005534;
-        Thu, 24 Sep 2020 10:20:35 -0500
-Subject: Re: [PATCH] ARM: davinci: fix kconfig dependency warning when
- !PINCTRL
-To:     Necip Fazil Yildiran <fazilyildiran@gmail.com>
-CC:     <bgolaszewski@baylibre.com>, <arnd@arndb.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <paul@pgazz.com>,
-        <jeho@cs.utexas.edu>
-References: <20200914123848.307406-1-fazilyildiran@gmail.com>
-From:   Sekhar Nori <nsekhar@ti.com>
-Message-ID: <fa237200-7555-9fda-04be-994151637bf7@ti.com>
-Date:   Thu, 24 Sep 2020 20:50:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Thu, 24 Sep 2020 11:21:17 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1495CC0613CE;
+        Thu, 24 Sep 2020 08:21:17 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id s205so3078440lja.7;
+        Thu, 24 Sep 2020 08:21:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=U/mZAambhFcl0S7KGEMSUJjg0a7gPmj28sRt8xsxUs0=;
+        b=B1cp87nPpk6fcWkz7WopVAUa9cH5zagTJ8w6MstgYFm2N8S6/lERSognJMXCMS0C+9
+         mToxWz1aWOpujhsqR9EYGB9aw2XcIxz9xCDxeb2nb8zspvfNQZkW8Tp2I9cXqtzox+81
+         Lr4UL51TmMNrEX23ZWzFpDZgumqj8CIWk4F5y8ZygycgvfeL1OmX+TCmn3hA776svmx/
+         04MwvEJGpkbZB+9hzLOATT6IWG9TzXVRVORodjxckIKf+WBADQ/6rwdW1rUFGzVsKLfy
+         TIPf9pJcCBWthYpY4V4YL/Krj1doPvm+fSIvLsBzX4IyRdAb/7q3mafoL3d77UlWomb4
+         eRnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=U/mZAambhFcl0S7KGEMSUJjg0a7gPmj28sRt8xsxUs0=;
+        b=l59+wlLPMtzF7L73hcur+Q//UBglKDl4eV6Kf4Eyj4+MHJooUUNiHqzEuDzRMBtpsI
+         3s9qFspbJN7AKY/ZGBAuNCLkvLd/9NJrqhOopVbie+NSly5dSmGsWi9Y/YGwrbL/Lvbu
+         TLemxxPtnllvDgYslZz5tbakkYTlGBwPMdq54SMMtuPfO4JspUeJ2e1u8ikOPoLWJI1u
+         ENY89ptPLKSmjzK/SLuhg2a5JcLCyiwMRyUt6H3Nl+UTNyql7pIX/4G3K424QV4dsyRA
+         WtWeU8jW0PwUr7vvMmZDDnYg+4bS4g8iQgaBgVM+/70L8i5AIlGuuFp1092MZ8VrH9Kl
+         mtyg==
+X-Gm-Message-State: AOAM533M6HTNiqytfCzEuNNe1o5IhlRVx0bG2DVJ1sIDfiRKaZDp1DdE
+        YEKiDzz9h8UnzrFG4Icev7g=
+X-Google-Smtp-Source: ABdhPJyLv1TmIc/5WfunO6vMcDPwSFsYmXi2nRV7bxMy6gP3CGLrG7hHCdMN/ZXmksdMyAPKbuKlzw==
+X-Received: by 2002:a2e:3008:: with SMTP id w8mr99644ljw.63.1600960875417;
+        Thu, 24 Sep 2020 08:21:15 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id o128sm2313144lfa.110.2020.09.24.08.21.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 08:21:14 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Thu, 24 Sep 2020 17:21:12 +0200
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200924152112.GB19013@pc636>
+References: <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200924111907.GE2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20200914123848.307406-1-fazilyildiran@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924111907.GE2628@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Necip,
-
-On 14/09/20 6:08 PM, Necip Fazil Yildiran wrote:
-> When ARCH_DAVINCI is enabled and PINCTRL is disabled, it results
-> in the following Kbuild warning:
+On Thu, Sep 24, 2020 at 01:19:07PM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
+> > The key point is "enough". We need pages to make a) fast progress b) support
+> > single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
+> > on scheduler latency and vague pre-allocated number of pages, it might
+> > be not enough what would require to refill it more and more or we can overshoot
+> > that would lead to memory overhead. So we have here timing issues and
+> > not accurate model. IMHO.
 > 
-> WARNING: unmet direct dependencies detected for PINCTRL_SINGLE
->   Depends on [n]: PINCTRL [=n] && OF [=y] && HAS_IOMEM [=y]
->   Selected by [y]:
->   - ARCH_DAVINCI [=y] && ARCH_MULTI_V5 [=y]
+> I'm firmly opposed to the single argument kvfree_rcu() idea, that's
+> requiring memory to free memory.
 > 
-> The reason is that ARCH_DAVINCI selects PINCTRL_SINGLE without depending on
-> or selecting PINCTRL while PINCTRL_SINGLE is subordinate to PINCTRL.
-> 
-> Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
-> 
-> Fixes: f962396ce292 ("ARM: davinci: support multiplatform build for ARM v5")
-> Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+Hmm.. The problem is there is a demand in it:
 
-I think its better to fix this by changing the "select PINCTRL_SINGLE"
-to "imply PINCTRL_SINGLE". It should be valid to build a DaVinci kernel
-without pinctrl support if bootloader is taking care of the pin muxing.
+Please have a look at places in the kernel where people do not
+embed the rcu_head into their stuctures and do like:
 
-I would not recommend it, but its not illegal either.
+<snip>
+    synchronize_rcu();
+    kfree(p);
+<snip>
 
-While at it, I would drop the other "select PINCTRL" line under "config
-MACH_DA8XX_DT". It should not be needed since ARCH_DAVINCI will imply
-PINCTRL_SINGLE
+<snip>
+urezki@pc638:~/data/coding/linux-rcu.git$ find ./ -name "*.c" | xargs grep -C 1 -rn "synchronize_rcu" | grep kfree
+./fs/nfs/sysfs.c-113-           kfree(old);
+./fs/ext4/super.c-1708- kfree(old_qname);
+./kernel/trace/ftrace.c-5079-                   kfree(direct);
+./kernel/trace/ftrace.c-5156-                   kfree(direct);
+./kernel/trace/trace_probe.c-1087-      kfree(link);
+./kernel/module.c-3910- kfree(mod->args);
+./net/core/sysctl_net_core.c-143-                               kfree(cur);
+./arch/x86/mm/mmio-mod.c-314-           kfree(found_trace);
+./drivers/mfd/dln2.c-183-               kfree(i);
+./drivers/block/drbd/drbd_state.c-2074-         kfree(old_conf);
+./drivers/block/drbd/drbd_nl.c-1689-    kfree(old_disk_conf);
+./drivers/block/drbd/drbd_nl.c-2522-    kfree(old_net_conf);
+./drivers/block/drbd/drbd_nl.c-2935-            kfree(old_disk_conf);
+./drivers/block/drbd/drbd_receiver.c-3805-      kfree(old_net_conf);
+./drivers/block/drbd/drbd_receiver.c-4177-                      kfree(old_disk_conf);
+./drivers/ipack/carriers/tpci200.c-189- kfree(slot_irq);
+./drivers/crypto/nx/nx-842-pseries.c-1010-      kfree(old_devdata);
+./drivers/net/ethernet/myricom/myri10ge/myri10ge.c-3583-        kfree(mgp->ss);
+./drivers/net/ethernet/mellanox/mlx5/core/fpga/tls.c:286:       synchronize_rcu(); /* before kfree(flow) */
+./drivers/net/ethernet/mellanox/mlxsw/core.c-1574-      kfree(rxl_item);
+./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6642- kfree(adapter->mbox_log);
+./drivers/net/ethernet/chelsio/cxgb4/cxgb4_main.c-6644- kfree(adapter);
+./drivers/infiniband/hw/hfi1/sdma.c-1337-       kfree(dd->per_sdma);
+./drivers/infiniband/core/device.c:2164:                         * synchronize_rcu before the netdev is kfreed, so we
+./drivers/misc/vmw_vmci/vmci_context.c-692-             kfree(notifier);
+./drivers/misc/vmw_vmci/vmci_event.c-213-       kfree(s);
+./drivers/staging/fwserial/fwserial.c-2122-     kfree(peer);
+urezki@pc638:~/data/coding/linux-rcu.git$
+<snip>
 
-Thanks,
-Sekhar
+--
+Vlad Rezki
