@@ -2,140 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EA92768E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA7A2768FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgIXGas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:30:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32487 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726119AbgIXGas (ORCPT
+        id S1726981AbgIXGfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726896AbgIXGf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:30:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600929047;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rFFyYTrms2NUjPJLW1DPbzsCtUaxd33WbnTy6rIAmEs=;
-        b=Qy0SMjVCGP7rqzu9BpV6sqDYuQFyR/SN/uVsPvsZxgveH57B28YatpzFdH1c9qTZQ5C8dE
-        /vqO1sT+NTeGcdRdIvBTZ7YHNRqNxlToyzmkSdHrBlM3vnV0jMgv0++6yy+XXi6T1gXADh
-        PbmAIXFrQM/XbyuI0VnFxPi3An0t0Lw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-476-Y4uhOkLUOfKTtV0MCvFwnQ-1; Thu, 24 Sep 2020 02:30:45 -0400
-X-MC-Unique: Y4uhOkLUOfKTtV0MCvFwnQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62A6C64096;
-        Thu, 24 Sep 2020 06:30:43 +0000 (UTC)
-Received: from optiplex-lnx (unknown [10.3.128.5])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1776678827;
-        Thu, 24 Sep 2020 06:30:41 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 02:30:38 -0400
-From:   Rafael Aquini <aquini@redhat.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
- dereference
-Message-ID: <20200924063038.GD1023012@optiplex-lnx>
-References: <20200922184838.978540-1-aquini@redhat.com>
- <878sd1qllb.fsf@yhuang-dev.intel.com>
- <20200923043459.GL795820@optiplex-lnx>
- <87sgb9oz1u.fsf@yhuang-dev.intel.com>
- <20200923130138.GM795820@optiplex-lnx>
- <87blhwng5f.fsf@yhuang-dev.intel.com>
- <20200924020928.GC1023012@optiplex-lnx>
- <877dsjessq.fsf@yhuang-dev.intel.com>
+        Thu, 24 Sep 2020 02:35:29 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE806C0613D3
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:35:29 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id o20so1256555pfp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:35:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cMk5EkO4+a7or+6O9dGbx3RFLRF/gjrDA61H05E6FkU=;
+        b=CNwT7A48Bv2tL3cgjhSN+QqVUZyOE4oH0z/QPxXWxHlfvRHPpqeNrgMWakuntfufGc
+         6KUk9TcIO4PkswHtuWMCf8r0mqTH7vFuT/bBhZeuy+TzYNKUXRoJdaXK4dG2kfEf6gk9
+         Rs+I9bobAz5kV/oNMpcu35ByBl0v2BMQslpfYGtbn+BM6zjiNUEgodgm/4r34wcvNwjn
+         2UZSNR3oyiG2TOzi14qu9qp3NluDDlwqlAsjDtGiwA1n+eCdk+t0tAvQNAGekqGpvOW0
+         AfujOjW5OyTXMvkODohRmQk5rm5/k6ztAB9NzO9IKQlmmQAsxA4HMGEoPuDQUbYpeg8O
+         Orjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cMk5EkO4+a7or+6O9dGbx3RFLRF/gjrDA61H05E6FkU=;
+        b=AsAEbgkJHLpcJWSBD21cheTPW0jo6c1oZySvsQ/y5rP0t5XA5VOrGkZg6SFCROUurA
+         wKpTdAsSGrQyXbENZcl9c1759ToWButTuQHd9Yn5awzzWNzIcZZ7QBb9i9pe2+zqr5ea
+         BCOqypjgzaPzTLr4P9wlSXz6r7IQaD9XlsWuJwx5aBiGnPs/yIfZTqK5/slbgWnHVSzk
+         0QixouRifWD3LNyS8frI4IT/vnQtBoyTXltJFUudLKd7TNxmR53O0FXJSqBOE2GFyYJA
+         bLVxwWMRb4GFt2dMwQI3r6FMyHfFKNBoqPB88qY8TH4MTNjb6qK92XVefdZohuewYcp/
+         Vymg==
+X-Gm-Message-State: AOAM531k1vDY8JJNWYRPIOOG1hIp/c9O7TPunVWoXYKylgV2on0j1WV1
+        DpAE0uNV+fTX2V0rnrVW+IRi7aaDyxGIEzxULVE=
+X-Google-Smtp-Source: ABdhPJxRtZ216lgi7xyFj9DVfZBzPvh8X3PV8a9E299xrYCeK5YYgipOFzUGlybGn6AWVn8DDIuoiw==
+X-Received: by 2002:a62:5b85:0:b029:142:2501:34e1 with SMTP id p127-20020a625b850000b0290142250134e1mr3072236pfb.58.1600929329001;
+        Wed, 23 Sep 2020 23:35:29 -0700 (PDT)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id f4sm1691321pgk.19.2020.09.23.23.35.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 23:35:28 -0700 (PDT)
+From:   Jian-Hong Pan <jhp@endlessos.org>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Soeren Moch <smoch@web.de>,
+        Tobias Schramm <t.schramm@manjaro.org>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Katsuhiro Suzuki <katsuhiro@katsuster.net>,
+        Hugh Cole-Baker <sigmaris@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux@endlessm.com, Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH] arm64: dts: rockchip: disable USB type-c DisplayPort
+Date:   Thu, 24 Sep 2020 14:30:43 +0800
+Message-Id: <20200924063042.41545-1-jhp@endlessos.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <877dsjessq.fsf@yhuang-dev.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:51:17AM +0800, Huang, Ying wrote:
-> Rafael Aquini <aquini@redhat.com> writes:
-> > The bug here is quite simple: split_swap_cluster() misses checking for
-> > lock_cluster() returning NULL before committing to change cluster_info->flags.
-> 
-> I don't think so.  We shouldn't run into this situation firstly.  So the
-> "fix" hides the real bug instead of fixing it.  Just like we call
-> VM_BUG_ON_PAGE(!PageLocked(head), head) in split_huge_page_to_list()
-> instead of returning if !PageLocked(head) silently.
->
+The cdn-dp sub driver probes the device failed on PINEBOOK Pro.
 
-Not the same thing, obviously, as you are going for an apples-to-carrots
-comparison, but since you mentioned:
+kernel: cdn-dp fec00000.dp: [drm:cdn_dp_probe [rockchipdrm]] *ERROR* missing extcon or phy
+kernel: cdn-dp: probe of fec00000.dp failed with error -22
 
-split_huge_page_to_list() asserts (in debug builds) *page is locked, 
-and later checks if *head bears the SwapCache flag. 
-deferred_split_scan(), OTOH, doesn't hand down the compound head locked, 
-but the 2nd page in the group instead. 
-This doesn't necessarely means it's a problem, though, but might help
-on hitting the issue. 
+Then, the device halts all of the DRM related device jobs. For example,
+the operations: vop_component_ops, vop_component_ops and
+rockchip_dp_component_ops cannot be bound to corresponding devices. So,
+Xorg cannot find the correct DRM device.
 
+The USB type-C DisplayPort does not work for now. So, disable the
+DisplayPort node until the type-C phy work has been done.
+
+Link: https://patchwork.kernel.org/patch/11794141/#23639877
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+ arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+index 06d48338c836..d624c595c533 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-pinebook-pro.dts
+@@ -380,7 +380,7 @@ mains_charger: dc-charger {
+ };
  
-> > The fundamental problem has nothing to do with allocating, or not allocating
-> > a swap cluster, but it has to do with the fact that the THP deferred split scan
-> > can transiently race with swapcache insertion, and the fact that when you run
-> > your swap area on rotational storage cluster_info is _always_ NULL.
-> > split_swap_cluster() needs to check for lock_cluster() returning NULL because
-> > that's one possible case, and it clearly fails to do so.
-> 
-> If there's a race, we should fix the race.  But the code path for
-> swapcache insertion is,
-> 
-> add_to_swap()
->   get_swap_page() /* Return if fails to allocate */
->   add_to_swap_cache()
->     SetPageSwapCache()
-> 
-> While the code path to split THP is,
-> 
-> split_huge_page_to_list()
->   if PageSwapCache()
->     split_swap_cluster()
-> 
-> Both code paths are protected by the page lock.  So there should be some
-> other reasons to trigger the bug.
-
-As mentioned above, no they seem to not be protected (at least, not the
-same page, depending on the case). While add_to_swap() will assure a 
-page_lock on the compound head, split_huge_page_to_list() does not.
-
-
-> And again, for HDD, a THP shouldn't have PageSwapCache() set at the
-> first place.  If so, the bug is that the flag is set and we should fix
-> the setting.
-> 
-
-I fail to follow your claim here. Where is the guarantee, in the code, that 
-you'll never have a compound head in the swapcache? 
-
-> > Run a workload that cause multiple THP COW, and add a memory hogger to create
-> > memory pressure so you'll force the reclaimers to kick the registered
-> > shrinkers. The trigger is not heavy swapping, and that's probably why
-> > most swap test cases don't hit it. The window is tight, but you will get the
-> > NULL pointer dereference.
-> 
-> Do you have a script to reproduce the bug?
-> 
-
-Nope, a convoluted set of internal regression tests we have usually
-triggers it. In the wild, customers running HANNA are seeing it,
-occasionally.
-
-> > Regardless you find furhter bugs, or not, this patch is needed to correct a
-> > blunt coding mistake.
-> 
-> As above.  I don't agree with that.
-> 
-
-It's OK to disagree, split_swap_cluster still misses the cluster_info NULL check,
-though.
+ &cdn_dp {
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &cpu_b0 {
+-- 
+2.28.0
 
