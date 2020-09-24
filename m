@@ -2,35 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC838276F59
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D72E276F53
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbgIXLGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:06:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:42280 "EHLO foss.arm.com"
+        id S1727487AbgIXLG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:06:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:42294 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727476AbgIXLGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:06:24 -0400
+        id S1727479AbgIXLG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:06:26 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AB9E152B;
-        Thu, 24 Sep 2020 04:06:23 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 275F3152F;
+        Thu, 24 Sep 2020 04:06:25 -0700 (PDT)
 Received: from monolith.localdoman (unknown [10.37.8.98])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9A0723F73B;
-        Thu, 24 Sep 2020 04:06:20 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5A8B13F8C6;
+        Thu, 24 Sep 2020 04:06:23 -0700 (PDT)
 From:   Alexandru Elisei <alexandru.elisei@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     mark.rutland@arm.com, sumit.garg@linaro.org, maz@kernel.org,
         swboyd@chromium.org, catalin.marinas@arm.com, will@kernel.org,
         Julien Thierry <julien.thierry@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Pouloze <suzuki.poulose@arm.com>,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-Subject: [PATCH v7 5/7] KVM: arm64: pmu: Make overflow handler NMI safe
-Date:   Thu, 24 Sep 2020 12:07:04 +0100
-Message-Id: <20200924110706.254996-6-alexandru.elisei@arm.com>
+        Will Deacon <will.deacon@arm.com>
+Subject: [PATCH v7 6/7] arm_pmu: Introduce pmu_irq_ops
+Date:   Thu, 24 Sep 2020 12:07:05 +0100
+Message-Id: <20200924110706.254996-7-alexandru.elisei@arm.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200924110706.254996-1-alexandru.elisei@arm.com>
 References: <20200924110706.254996-1-alexandru.elisei@arm.com>
@@ -42,106 +38,179 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Julien Thierry <julien.thierry@arm.com>
 
-kvm_vcpu_kick() is not NMI safe. When the overflow handler is called from
-NMI context, defer waking the vcpu to an irq_work queue.
+Currently the PMU interrupt can either be a normal irq or a percpu irq.
+Supporting NMI will introduce two cases for each existing one. It becomes
+a mess of 'if's when managing the interrupt.
 
-A vcpu can be freed while it's not running by kvm_destroy_vm(). Prevent
-running the irq_work for a non-existent vcpu by calling irq_work_sync() on
-the PMU destroy path.
+Define sets of callbacks for operations commonly done on the interrupt. The
+appropriate set of callbacks is selected at interrupt request time and
+simplifies interrupt enabling/disabling and freeing.
 
 Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-Cc: Marc Zyngier <marc.zyngier@arm.com>
 Cc: Will Deacon <will.deacon@arm.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: James Morse <james.morse@arm.com>
-Cc: Suzuki K Pouloze <suzuki.poulose@arm.com>
-Cc: kvm@vger.kernel.org
-Cc: kvmarm@lists.cs.columbia.edu
 Signed-off-by: Julien Thierry <julien.thierry@arm.com>
 Tested-by: Sumit Garg <sumit.garg@linaro.org> (Developerbox)
-[Alexandru E.: Added irq_work_sync()]
 Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
 ---
-I suggested in v6 that I will add an irq_work_sync() to
-kvm_pmu_vcpu_reset(). It turns out it's not necessary: a vcpu reset is done
-by the vcpu being reset with interrupts enabled, which means all the work
-has had a chance to run before the reset takes place.
+ drivers/perf/arm_pmu.c | 90 ++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 74 insertions(+), 16 deletions(-)
 
- arch/arm64/kvm/pmu-emul.c | 26 +++++++++++++++++++++++++-
- include/kvm/arm_pmu.h     |  1 +
- 2 files changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm64/kvm/pmu-emul.c b/arch/arm64/kvm/pmu-emul.c
-index f0d0312c0a55..81916e360b1e 100644
---- a/arch/arm64/kvm/pmu-emul.c
-+++ b/arch/arm64/kvm/pmu-emul.c
-@@ -269,6 +269,7 @@ void kvm_pmu_vcpu_destroy(struct kvm_vcpu *vcpu)
+diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
+index df352b334ea7..a770726e98d4 100644
+--- a/drivers/perf/arm_pmu.c
++++ b/drivers/perf/arm_pmu.c
+@@ -26,8 +26,46 @@
  
- 	for (i = 0; i < ARMV8_PMU_MAX_COUNTERS; i++)
- 		kvm_pmu_release_perf_event(&pmu->pmc[i]);
-+	irq_work_sync(&vcpu->arch.pmu.overflow_work);
- }
+ #include <asm/irq_regs.h>
  
- u64 kvm_pmu_valid_counter_mask(struct kvm_vcpu *vcpu)
-@@ -433,6 +434,22 @@ void kvm_pmu_sync_hwstate(struct kvm_vcpu *vcpu)
- 	kvm_pmu_update_state(vcpu);
- }
- 
-+/**
-+ * When perf interrupt is an NMI, we cannot safely notify the vcpu corresponding
-+ * to the event.
-+ * This is why we need a callback to do it once outside of the NMI context.
-+ */
-+static void kvm_pmu_perf_overflow_notify_vcpu(struct irq_work *work)
++static int armpmu_count_irq_users(const int irq);
++
++struct pmu_irq_ops {
++	void (*enable_pmuirq)(unsigned int irq);
++	void (*disable_pmuirq)(unsigned int irq);
++	void (*free_pmuirq)(unsigned int irq, int cpu, void __percpu *devid);
++};
++
++static void armpmu_free_pmuirq(unsigned int irq, int cpu, void __percpu *devid)
 +{
-+	struct kvm_vcpu *vcpu;
-+	struct kvm_pmu *pmu;
-+
-+	pmu = container_of(work, struct kvm_pmu, overflow_work);
-+	vcpu = kvm_pmc_to_vcpu(pmu->pmc);
-+
-+	kvm_vcpu_kick(vcpu);
++	free_irq(irq, per_cpu_ptr(devid, cpu));
 +}
 +
- /**
-  * When the perf event overflows, set the overflow status and inform the vcpu.
-  */
-@@ -465,7 +482,11 @@ static void kvm_pmu_perf_overflow(struct perf_event *perf_event,
- 
- 	if (kvm_pmu_overflow_status(vcpu)) {
- 		kvm_make_request(KVM_REQ_IRQ_PENDING, vcpu);
--		kvm_vcpu_kick(vcpu);
++static const struct pmu_irq_ops pmuirq_ops = {
++	.enable_pmuirq = enable_irq,
++	.disable_pmuirq = disable_irq_nosync,
++	.free_pmuirq = armpmu_free_pmuirq
++};
 +
-+		if (!in_nmi())
-+			kvm_vcpu_kick(vcpu);
-+		else
-+			irq_work_queue(&vcpu->arch.pmu.overflow_work);
++static void armpmu_enable_percpu_pmuirq(unsigned int irq)
++{
++	enable_percpu_irq(irq, IRQ_TYPE_NONE);
++}
++
++static void armpmu_free_percpu_pmuirq(unsigned int irq, int cpu,
++				   void __percpu *devid)
++{
++	if (armpmu_count_irq_users(irq) == 1)
++		free_percpu_irq(irq, devid);
++}
++
++static const struct pmu_irq_ops percpu_pmuirq_ops = {
++	.enable_pmuirq = armpmu_enable_percpu_pmuirq,
++	.disable_pmuirq = disable_percpu_irq,
++	.free_pmuirq = armpmu_free_percpu_pmuirq
++};
++
+ static DEFINE_PER_CPU(struct arm_pmu *, cpu_armpmu);
+ static DEFINE_PER_CPU(int, cpu_irq);
++static DEFINE_PER_CPU(const struct pmu_irq_ops *, cpu_irq_ops);
+ 
+ static inline u64 arm_pmu_event_max_period(struct perf_event *event)
+ {
+@@ -544,6 +582,23 @@ static int armpmu_count_irq_users(const int irq)
+ 	return count;
+ }
+ 
++static const struct pmu_irq_ops *armpmu_find_irq_ops(int irq)
++{
++	const struct pmu_irq_ops *ops = NULL;
++	int cpu;
++
++	for_each_possible_cpu(cpu) {
++		if (per_cpu(cpu_irq, cpu) != irq)
++			continue;
++
++		ops = per_cpu(cpu_irq_ops, cpu);
++		if (ops)
++			break;
++	}
++
++	return ops;
++}
++
+ void armpmu_free_irq(int irq, int cpu)
+ {
+ 	if (per_cpu(cpu_irq, cpu) == 0)
+@@ -551,18 +606,18 @@ void armpmu_free_irq(int irq, int cpu)
+ 	if (WARN_ON(irq != per_cpu(cpu_irq, cpu)))
+ 		return;
+ 
+-	if (!irq_is_percpu_devid(irq))
+-		free_irq(irq, per_cpu_ptr(&cpu_armpmu, cpu));
+-	else if (armpmu_count_irq_users(irq) == 1)
+-		free_percpu_irq(irq, &cpu_armpmu);
++	per_cpu(cpu_irq_ops, cpu)->free_pmuirq(irq, cpu, &cpu_armpmu);
+ 
+ 	per_cpu(cpu_irq, cpu) = 0;
++	per_cpu(cpu_irq_ops, cpu) = NULL;
+ }
+ 
+ int armpmu_request_irq(int irq, int cpu)
+ {
+ 	int err = 0;
+ 	const irq_handler_t handler = armpmu_dispatch_irq;
++	const struct pmu_irq_ops *irq_ops;
++
+ 	if (!irq)
+ 		return 0;
+ 
+@@ -584,15 +639,26 @@ int armpmu_request_irq(int irq, int cpu)
+ 		irq_set_status_flags(irq, IRQ_NOAUTOEN);
+ 		err = request_irq(irq, handler, irq_flags, "arm-pmu",
+ 				  per_cpu_ptr(&cpu_armpmu, cpu));
++
++		irq_ops = &pmuirq_ops;
+ 	} else if (armpmu_count_irq_users(irq) == 0) {
+ 		err = request_percpu_irq(irq, handler, "arm-pmu",
+ 					 &cpu_armpmu);
++
++		irq_ops = &percpu_pmuirq_ops;
++	} else {
++		/* Per cpudevid irq was already requested by another CPU */
++		irq_ops = armpmu_find_irq_ops(irq);
++
++		if (WARN_ON(!irq_ops))
++			err = -EINVAL;
  	}
  
- 	cpu_pmu->pmu.start(perf_event, PERF_EF_RELOAD);
-@@ -764,6 +785,9 @@ static int kvm_arm_pmu_v3_init(struct kvm_vcpu *vcpu)
- 			return ret;
- 	}
+ 	if (err)
+ 		goto err_out;
  
-+	init_irq_work(&vcpu->arch.pmu.overflow_work,
-+		      kvm_pmu_perf_overflow_notify_vcpu);
-+
- 	vcpu->arch.pmu.created = true;
+ 	per_cpu(cpu_irq, cpu) = irq;
++	per_cpu(cpu_irq_ops, cpu) = irq_ops;
+ 	return 0;
+ 
+ err_out:
+@@ -625,12 +691,8 @@ static int arm_perf_starting_cpu(unsigned int cpu, struct hlist_node *node)
+ 	per_cpu(cpu_armpmu, cpu) = pmu;
+ 
+ 	irq = armpmu_get_cpu_irq(pmu, cpu);
+-	if (irq) {
+-		if (irq_is_percpu_devid(irq))
+-			enable_percpu_irq(irq, IRQ_TYPE_NONE);
+-		else
+-			enable_irq(irq);
+-	}
++	if (irq)
++		per_cpu(cpu_irq_ops, cpu)->enable_pmuirq(irq);
+ 
  	return 0;
  }
-diff --git a/include/kvm/arm_pmu.h b/include/kvm/arm_pmu.h
-index 6db030439e29..dbf4f08d42e5 100644
---- a/include/kvm/arm_pmu.h
-+++ b/include/kvm/arm_pmu.h
-@@ -27,6 +27,7 @@ struct kvm_pmu {
- 	bool ready;
- 	bool created;
- 	bool irq_level;
-+	struct irq_work overflow_work;
- };
+@@ -644,12 +706,8 @@ static int arm_perf_teardown_cpu(unsigned int cpu, struct hlist_node *node)
+ 		return 0;
  
- #define kvm_arm_pmu_v3_ready(v)		((v)->arch.pmu.ready)
+ 	irq = armpmu_get_cpu_irq(pmu, cpu);
+-	if (irq) {
+-		if (irq_is_percpu_devid(irq))
+-			disable_percpu_irq(irq);
+-		else
+-			disable_irq_nosync(irq);
+-	}
++	if (irq)
++		per_cpu(cpu_irq_ops, cpu)->disable_pmuirq(irq);
+ 
+ 	per_cpu(cpu_armpmu, cpu) = NULL;
+ 
 -- 
 2.28.0
 
