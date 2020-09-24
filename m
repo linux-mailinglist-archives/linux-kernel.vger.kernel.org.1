@@ -2,119 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00F32773E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D9C2773DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728259AbgIXO1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:27:35 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:35865 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728064AbgIXO1f (ORCPT
+        id S1728214AbgIXOZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727974AbgIXOZf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:27:35 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U9zEpE4_1600957646;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9zEpE4_1600957646)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Sep 2020 22:27:27 +0800
-Subject: Re: BUG: Bad page state in process dirtyc0w_child
-To:     Qian Cai <cai@redhat.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <a46e9bbef2ed4e17778f5615e818526ef848d791.camel@redhat.com>
- <20200916142806.GD7076@osiris> <20200922190350.7a0e0ca5@thinkpad>
- <20200923153938.5be5dd2c@thinkpad>
- <76fef5dfd8efdb4130e41d1811b2a78ce39c8b0d.camel@redhat.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <4bf5597b-2466-29f3-e855-920d5632536f@linux.alibaba.com>
-Date:   Thu, 24 Sep 2020 22:25:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Thu, 24 Sep 2020 10:25:35 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23F7DC0613CE;
+        Thu, 24 Sep 2020 07:25:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id y6so1749075plt.9;
+        Thu, 24 Sep 2020 07:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BhjXs0X1T6fyEGbqATV3iAKCYDUTserBVGQfsds99Q8=;
+        b=lZ2IHLOvUlSzofjJzppCZLACHPsTpIecrUUi9yAxP/p2GvombkArlU1xTZQhAGnnjK
+         g2GebQ/478ooEg8r5LWavf20tfUHnei0vBc51EApwiUQoShSyH+V6dwxfT2qcl8s0iSS
+         /qXQEn0URynfGfyTDlit78GesAM221oMd2R25Hi9nVYzscs9+9GmmaflqLcEp5ACCvT/
+         q2mNkYlPDdTJPfqnwcNgEyRQxXy4CapItbbfWtij9i+M1fCht3TSleY5p+Zb5vH+e6cl
+         tghZdra5yDIl1eJHDG5d1wXzyMT90qrJwYHZO22BNM6r+7AMsLHgWTizzxRn/54oshsA
+         YJOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BhjXs0X1T6fyEGbqATV3iAKCYDUTserBVGQfsds99Q8=;
+        b=JTHs9vyUBeqLPtWEJXbeHHE17JTfl18RDVDAj/goD8ifyxqpA+M2WcIiifp32Le+mT
+         rgd1j0XH3aN8xNtWTq+9sT08rf919PZYGJY1dbKFRotClRjReUYwXp/X9yERIicpjk64
+         thXX6d61CSr6j8PpA7UB/mkF0zESspsjQ1/WqYmfQZHMpC+Yzm+brhnRS9mNdX9sdsNn
+         5QuJEeR3nt+Ovj3e3FJND7XIyGx/z6UllS29tKNHlNjlXYTCcqrUZuWbJRQoapj0bNTK
+         g9Ts8FrLvwTmJXUbiNiSlBl/XA1a43AW1rc+JilDNmorGjHBduAbhQusK66Pb/mCuUqU
+         +hlg==
+X-Gm-Message-State: AOAM532ZwrcHSvYjcI8llCSfyWEICZ7r8ccyaQOHWM7ybHbRdAFEzzPM
+        8Xe0Vj68xz3AkmLIR+CA0w==
+X-Google-Smtp-Source: ABdhPJylzhyMM4ZubAhCo7dYA3YL2otZrpcXevMiKCn9wIriHYocj00wslJC0GNCVDoN5qMmkBz98A==
+X-Received: by 2002:a17:90b:796:: with SMTP id l22mr4254744pjz.199.1600957534641;
+        Thu, 24 Sep 2020 07:25:34 -0700 (PDT)
+Received: from PWN (n11212042027.netvigator.com. [112.120.42.27])
+        by smtp.gmail.com with ESMTPSA id gb17sm2667794pjb.15.2020.09.24.07.25.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 07:25:33 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 10:25:25 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Message-ID: <20200924142525.GA879276@PWN>
+References: <0000000000006b9e8d059952095e@google.com>
+ <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <20200924140937.GA749208@kroah.com>
 MIME-Version: 1.0
-In-Reply-To: <76fef5dfd8efdb4130e41d1811b2a78ce39c8b0d.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924140937.GA749208@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2020/9/24 上午10:06, Qian Cai 写道:
-> On Wed, 2020-09-23 at 15:39 +0200, Gerald Schaefer wrote:
->> OK, I can now reproduce this, and unfortunately also with the gup_fast
->> fix, so it is something different. Bisecting is a bit hard, as it will
->> not always show immediately, sometimes takes up to an hour.
->>
->> Still, I think I found the culprit, merge commit b25d1dc9474e "Merge
->> branch 'simplify-do_wp_page'". Without those 4 patches, it works fine,
->> running over night.
->>
->> Not sure why this only shows on s390, should not be architecture-specific,
->> but we do often see subtle races earlier than others due to hypervisor
->> impact.
+On Thu, Sep 24, 2020 at 04:09:37PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Sep 24, 2020 at 09:38:22AM -0400, Peilin Ye wrote:
+> > Peilin Ye (3):
+> >   fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
+> >   Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
+> >   fbcon: Fix global-out-of-bounds read in fbcon_get_font()
+> > 
+> >  drivers/video/console/newport_con.c     |  7 +------
+> >  drivers/video/fbdev/core/fbcon.c        | 12 ++++++++++++
+> >  drivers/video/fbdev/core/fbcon.h        |  7 -------
+> >  drivers/video/fbdev/core/fbcon_rotate.c |  1 +
+> >  drivers/video/fbdev/core/tileblit.c     |  1 +
+> >  include/linux/font.h                    | 13 +++++++++++++
+> >  lib/fonts/font_10x18.c                  |  9 ++++-----
+> >  lib/fonts/font_6x10.c                   |  9 +++++----
+> >  lib/fonts/font_6x11.c                   |  9 ++++-----
+> >  lib/fonts/font_7x14.c                   |  9 ++++-----
+> >  lib/fonts/font_8x16.c                   |  9 ++++-----
+> >  lib/fonts/font_8x8.c                    |  9 ++++-----
+> >  lib/fonts/font_acorn_8x8.c              |  9 ++++++---
+> >  lib/fonts/font_mini_4x6.c               |  8 ++++----
+> >  lib/fonts/font_pearl_8x8.c              |  9 ++++-----
+> >  lib/fonts/font_sun12x22.c               |  9 ++++-----
+> >  lib/fonts/font_sun8x16.c                |  7 ++++---
+> >  lib/fonts/font_ter16x32.c               |  9 ++++-----
+> >  18 files changed, 79 insertions(+), 67 deletions(-)
 > 
-> Apparently, someone can reproduce something similar on x86 as well:
+> Gotta love going backwards in arrays :)
 > 
-> https://lore.kernel.org/linux-mm/c41149a8-211e-390b-af1d-d5eee690fecb@linux.alibaba.com/
+> Nice work, whole series is:
 > 
-> Probably, Alex could revert the bad commits and confirm it there.
-> 
->>
->> The first commit 09854ba94c6a ("mm: do_wp_page() simplification") already
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-yes, after revert this commit, the BUG disappears.
+Thank you for reviewing it!
 
-Thanks
-Alex
+Peilin Ye
 
->> introduces this error. The dirtyc0w_child test seems to play with cow
->> and racing madvise(MADV_DONTNEED), but I have not yet fully understood
->> it and also not the changes from commit 09854ba94c6a. As Linus already
->> mentioned in the merge commit message, this is some bad timing for such
->> a change, so I don't want to delay this further with trying to understand
->> it better before reporting. Maybe Peter or Linus can spot some obvious
->> issue.
->>
->> One thing that seems strange to me is that the page flags from the
->> bad page state output are (uptodate|swapbacked), see below, or
->> (referenced|uptodate|dirty|swapbacked) in the original report. But IIUC,
->> that should not qualify for the "PAGE_FLAGS_CHECK_AT_FREE flag(s) set"
->> reason. So it seems that the flags have changed between check_free_page()
->> and __dump_page(), which would be very odd. Or maybe some issue with
->> compound pages, because __dump_page() looks at head->flags.
->>
->> [ 1863.237707] BUG: Bad page state in process dirtyc0w_child  pfn:58527d
->> [ 1863.237721] page:000000008866956b refcount:0 mapcount:0
->> mapping:0000000000000000 index:0x0 pfn:0x58527d
->> [ 1863.237727] flags: 0x3ffff00000080004(uptodate|swapbacked)
->> [ 1863.237734] raw: 3ffff00000080004 0000000000000100 0000000000000122
->> 0000000000000000
->> [ 1863.237738] raw: 0000000000000000 0000000000000000 ffffffff00000000
->> 0000000000000000
->> [ 1863.237742] page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
->> [ 1863.237745] Modules linked in:
->> [ 1863.237752] CPU: 16 PID: 9074 Comm: dirtyc0w_child Tainted:
->> G    B             5.9.0-rc6-00020-geff48ddeab78-dirty #104
->> [ 1863.237756] Hardware name: IBM 3906 M03 703 (LPAR)
->> [ 1863.237759] Call Trace:
->> [ 1863.237768]  [<0000000000115f28>] show_stack+0x100/0x158 
->> [ 1863.237775]  [<000000000096b41a>] dump_stack+0xa2/0xd8 
->> [ 1863.237781]  [<00000000003d497c>] bad_page+0xdc/0x140 
->> [ 1863.237785]  [<00000000003d5b62>] free_pcp_prepare+0x31a/0x360 
->> [ 1863.237789]  [<00000000003d906a>] free_unref_page+0x32/0xb8 
->> [ 1863.237794]  [<00000000003b05f4>] zap_p4d_range+0x64c/0xcf8 
->> [ 1863.237797]  [<00000000003b0e7a>] unmap_page_range+0x9a/0x110 
->> [ 1863.237801]  [<00000000003b0f84>] unmap_single_vma+0x94/0x100 
->> [ 1863.237805]  [<00000000003b14c2>] zap_page_range+0x14a/0x1f0 
->> [ 1863.237809]  [<00000000003e3a24>] do_madvise+0x75c/0x918 
->> [ 1863.237812]  [<00000000003e3c06>] __s390x_sys_madvise+0x26/0x38 
->> [ 1863.237817]  [<0000000000d280d4>] system_call+0xe0/0x2c0 
->> [ 1863.237820] INFO: lockdep is turned off.
->>
