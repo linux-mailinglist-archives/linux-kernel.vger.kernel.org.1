@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A40276FEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79452276FF0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:28:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727527AbgIXL1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:27:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgIXL1u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:27:50 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC4BC0613CE;
-        Thu, 24 Sep 2020 04:27:50 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z18so1737023pfg.0;
-        Thu, 24 Sep 2020 04:27:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YDFIQq/o1hm+LPrfCgI+XDiyZGlyHTyQEBbo9XIzVSg=;
-        b=WuRgE8Jjopy30o3FSLNz3iDk57XIlZh37vnPbLS1kM2vsI5akChLVS3hNvv/ZBe/jK
-         KY8+uhar453Fa7ME8SSX3VbMX8bsPw9cQl++OLNKH9aDEGXHtCQ9Fh5IPuXk1IlBR5/K
-         qNQ+anXXi7d9KPta2u3CPqMrNqWD9bG8unkPjETicAV3sqUDXEoJljMAXMrowuwKky2z
-         5eZ9rnc/54B5dZy1jcAH7BLeiSbRk46KOBCODjninAflSOxojrtubRDkDICSdsDr8SZy
-         kenaEFDVuD4uH6/KONa+GdT3oDCKesM5T+SPvCUBh2KxjgJ90PArh1b461RkMBkZ86Ir
-         Y7RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YDFIQq/o1hm+LPrfCgI+XDiyZGlyHTyQEBbo9XIzVSg=;
-        b=PH0g/7WWumRvY2hAgG4jxhgi0X7bHuNZbCTv9C+YWlzcinOVDOh+ZZabCIMP9EQlRk
-         sV7O/SCekJuOYe6ksjnTRHIADhQNRfEY8HDkjZrqArxG4ddfL9XpcG9ZWD/NjokDM4Ca
-         uR28z7X0dDV4XFtV+Pdx4z5DJbHFgnhekL9YqB561qRJN99s/BDR45f9Fs15FosVf8JX
-         aF7HWU+FlPVMO+IWLQWXi4CZU2GBskWmPlKvakhysbMhSaMKF2rHVlINMprqdoXGB3Yb
-         v0z1g6MbujdtjBJ3HVRg9IKQs82ymxeTU5ffdkm+k0QXZR1o+1rT4a7Syu29WrO9tcFw
-         Qj9A==
-X-Gm-Message-State: AOAM5338K8dxYKDFwJqXUIFyhMXZTxVswBNvyoG6eNX3Nr0MP5RCgVMX
-        30oD59xVBuh/Li5fwhGPI4E=
-X-Google-Smtp-Source: ABdhPJwLhKbyQz7qDtizIH2JGxD8Qq8fkhyk4avxo67t4ta6TF8+O3ly5vMX7Xu0cVlAynT9iJaHRQ==
-X-Received: by 2002:a63:4e52:: with SMTP id o18mr3530830pgl.171.1600946870002;
-        Thu, 24 Sep 2020 04:27:50 -0700 (PDT)
-Received: from adolin ([49.207.208.43])
-        by smtp.gmail.com with ESMTPSA id c3sm2739187pfn.23.2020.09.24.04.27.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 04:27:49 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 16:57:44 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     Julia.Lawall@lip6.fr
-Cc:     corbet@lwn.net, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
-        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] Documentation: Coccinelle: Modify parallelisation
- information in docs
-Message-ID: <3ecfe0e7f95021525b7bbf783a45eb3a176791a9.1600945451.git.sylphrenadin@gmail.com>
-References: <cover.1600945451.git.sylphrenadin@gmail.com>
+        id S1727536AbgIXL2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:28:12 -0400
+Received: from mga14.intel.com ([192.55.52.115]:16373 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726652AbgIXL2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:28:11 -0400
+IronPort-SDR: 190nK8jV78sjHnGgbbyr00u9Q3Tb/c37ZPFYUIxjXaAuPPLz6nsbiV3O+DIrtLrGN6J69MmFnz
+ 4uaBXN8NsLNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="160457571"
+X-IronPort-AV: E=Sophos;i="5.77,297,1596524400"; 
+   d="scan'208";a="160457571"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 04:28:10 -0700
+IronPort-SDR: 6AaJWL+W/8naSncd7ds/TQNBCRDBKYoSc7qLYzcsk3/4fkbG3+WX2R+VyamwX13Q2vJU66ZQUv
+ BZCJFIs+FjRg==
+X-IronPort-AV: E=Sophos;i="5.77,297,1596524400"; 
+   d="scan'208";a="486866581"
+Received: from ekoteln-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.45.129])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 04:28:04 -0700
+Date:   Thu, 24 Sep 2020 14:28:01 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 23/24] docs: x86/sgx: Document SGX micro architecture
+ and kernel internals
+Message-ID: <20200924112801.GC56811@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-24-jarkko.sakkinen@linux.intel.com>
+ <20200923135005.GI28545@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1600945451.git.sylphrenadin@gmail.com>
+In-Reply-To: <20200923135005.GI28545@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset modifies coccicheck to use at most one thread per core by
-default for optimal performance. Modify documentation in coccinelle.rst
-to reflect the same.
+On Wed, Sep 23, 2020 at 03:50:05PM +0200, Borislav Petkov wrote:
+> > +This leaf function takes an RSA-3072 signature of the enclave measurement and an
+> > +optional cryptographic token. Linux does not take advantage of launch tokens.
+> > +The instruction checks that the signature is signed with the key defined in
+> > +**IA32_SGXLEPUBKEYHASH?** MSRs and the measurement is correct. If so, the
+> 
+> That '?' wants to be '[0123]' perhaps?
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
- Documentation/dev-tools/coccinelle.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+What do you think of this:
 
-diff --git a/Documentation/dev-tools/coccinelle.rst b/Documentation/dev-tools/coccinelle.rst
-index 74c5e6aeeff5..a27a4867018c 100644
---- a/Documentation/dev-tools/coccinelle.rst
-+++ b/Documentation/dev-tools/coccinelle.rst
-@@ -130,8 +130,8 @@ To enable verbose messages set the V= variable, for example::
- Coccinelle parallelization
- --------------------------
- 
--By default, coccicheck tries to run as parallel as possible. To change
--the parallelism, set the J= variable. For example, to run across 4 CPUs::
-+By default, coccicheck uses at most only one thread per core of the system.
-+To change the parallelism, set the J= variable. For example, to run across 4 CPUs::
- 
-    make coccicheck MODE=report J=4
- 
--- 
-2.25.1
+"The leaf instruction checks that the measurement is correct and
+signature is signed with the key hashed to the four
++**IA32_SGXLEPUBKEYHASH{0, 1, 2, 3}** MSRs representing the SHA256 of a
+public key."
 
+I though that little more detail would make sense here (i.e. what do the
+MSRs represent).
+
+/Jarkko
