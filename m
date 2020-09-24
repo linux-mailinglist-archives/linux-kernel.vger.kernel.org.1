@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BC9277C1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B23C277C21
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726709AbgIXXFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 19:05:09 -0400
-Received: from mga12.intel.com ([192.55.52.136]:33534 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726397AbgIXXFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 19:05:09 -0400
-IronPort-SDR: pDiq48MlVdehx9sqlaOdTwzCAwhEmeeslkBXXOhMal92aNdOgXhVPe1JLTnURxysF8KVRgxppT
- zybrX02Q6ZLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="140799556"
-X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="140799556"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 16:05:09 -0700
-IronPort-SDR: DTeNHZ6aog3FVIKOt9A/8jA2Wdb4mMOF4QGxpICuPDHyv4eLWgFVqufJ3s+0wSn9qe3458UIjy
- tpNmprXiVeXg==
-X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="310579735"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 16:05:08 -0700
-Date:   Thu, 24 Sep 2020 16:05:06 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200924230501.GA20095@linux.intel.com>
-References: <20200922053515.GA97687@linux.intel.com>
- <20200922164301.GB30874@linux.intel.com>
- <20200923135056.GD5160@linux.intel.com>
- <op.0rgp5h0hwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200924192853.GA18826@linux.intel.com>
- <c680f7bd-2d82-6477-707f-cd03aae4b4aa@intel.com>
- <20200924200156.GA19127@linux.intel.com>
- <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
- <20200924202549.GB19127@linux.intel.com>
- <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
+        id S1726761AbgIXXFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 19:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726676AbgIXXFX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 19:05:23 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D84C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:05:23 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id n14so1107728pff.6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:05:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=hnujkixuRutuFm4HGJsB1dGhTsgM8S0w50kayJIGLaI=;
+        b=AGjPLAwmd0eUyxxHh90kZSBg3bosIAt3Ufw+0IDG15NNgTznjJp8nHebjBbTvVbtJp
+         VZmNIpA89F1a0DyN7dNSZErrceZ+VGgSxfVUBUC/6FUQ6DdGsduL4BCt6ghnlJDlbWV6
+         MBu80ynEvcPsSPce+VyrlzcR8f24v7fopLv2vp4EE9lQ206XB75uSsUH2VFsd4bfxr/H
+         T2sH2vPfRYOaBATr2pGEEvaLhByriK0qI8uc2zXnqFHM6LqQyuUQNT9X9MdkrtzZUme4
+         HUd5/WCq+j0FMK53FJ8xTwGBjVsNK7CRpWgZ6fSN0dmoNs4XLYfrE3AByUS1EvR15tiD
+         k6sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hnujkixuRutuFm4HGJsB1dGhTsgM8S0w50kayJIGLaI=;
+        b=h5Xr+e8y0ByP7KqyKQTzcQxNGXCoXm+G19+MifvNWJHNFSoBp1u0KTtUtgRDJr9TTQ
+         KaXs8lT7Xmnr2k+xZwzvpoGfIFWd+avujcgEckJnp1RWd+LmzNNpF522SNpxKmGrR7tB
+         vT8nUAvdt0TaCoZ2CAqQSv8ATaC7cVN2zN+F3lu7J5kyR1RccIGLDS68GOVm4Dxi8Vj3
+         F/fpS/V4zKXCI0N4CuAo7mLAkWr/4LggJ1Z15M9C1O2KI2Zo5VunLkZvIiDaNhP7yTut
+         osmBly/9G+4HHJVcdBI1WbTW0adRUGwCPQHP6/xUEoa2eh/S8Rb1Mfp9BaMseDzNbTBy
+         jxzA==
+X-Gm-Message-State: AOAM530HjExeum/MEAvEYnaMlRpJKDYAqque6rLXNZocgbwiMM4ThtxW
+        5GyHuisfRHKGhCViL+z3yc6Auw==
+X-Google-Smtp-Source: ABdhPJy48Kf1t5uSs4D7LqUt5Y++xBcg6hs8vGC7R3E5kRfGt3wS51C1KBJ0tAonffigZ7E5TVpuDQ==
+X-Received: by 2002:a63:c1c:: with SMTP id b28mr1084821pgl.275.1600988722347;
+        Thu, 24 Sep 2020 16:05:22 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id ih11sm302565pjb.51.2020.09.24.16.05.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 16:05:21 -0700 (PDT)
+Subject: Re: linux-next: Signed-off-by missing for commits in the block tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>
+References: <20200925084053.7169dd01@canb.auug.org.au>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <c190a77d-33bd-2213-5cc1-17b5268d511d@kernel.dk>
+Date:   Thu, 24 Sep 2020 17:05:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200925084053.7169dd01@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 01:54:09PM -0700, Dave Hansen wrote:
-> On 9/24/20 1:25 PM, Sean Christopherson wrote:
-> ...
-> >> Why don't we just declare enclave memory as "out of scope for noexec" in
-> >> the same way that anonymous memory is, and just discard this patch?
-> >> That doesn't seem too much of a stretch.
-> > 
-> > Because we lose line of sight to LSM support.  Without enforcing "declare perms
-> > at load time" in the initial series, we would create an ABI where userspace
-> > could load an enclave page with only READ permissions and then map the enclave
-> > with whatever permissions it wants, without any convenient way for SGX to call
-> > into the LSM.
+On 9/24/20 4:40 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
-> This argument holds no water for me.  LSMs are all about taking what
-> would otherwise be perfectly acceptable behavior and breaking them in
-> the name of security.  They fundamentally break applications that used
-> to work just fine and also did totally sane things.
+> Commits
+> 
+>   caec515ad9ed ("md/raid5: reallocate page array after setting new stripe_size")
+>   6a4b2e201b37 ("md/raid5: resize stripe_head when reshape array")
+>   1df3ccb18cf4 ("md/raid5: let multiple devices of stripe_head share page")
+>   e56e7ebce809 ("md/raid6: let async recovery function support different page offset")
+>   2b2059f32e20 ("md/raid6: let syndrome computor support different page offset")
+>   f849daa2c23c ("md/raid5: convert to new xor compution interface")
+>   4737539e07a3 ("md/raid5: add new xor function to support different page offset")
+>   a5a1925b9a1a ("md/raid5: make async_copy_data() to support different page offset")
+> 
+> are missing a Signed-off-by from their committer.
 
-It's not about LSMs breaking things, they can obviously do that without any
-help.  The concern is that, unless we lay the groundwork now, adding support
-for LSMs in the future will break existing applications or create an unholy
-mess of an ABI.
+Song, I'm going to drop this series. Please re-do it and submit it again.
 
-If we want to support LSM policy for enclave page permissions, checking LSM
-policies at load time and hooking mprotect() to enforce the policy at run
-time is by far the cleanest solution of the many ideas we discussed.
+-- 
+Jens Axboe
 
-The problem is that enforcing permissions via mprotect() needs to be done
-unconditionally, otherwise we end up with weird behavior where the existence
-of an LSM will change what is/isn't allowed, even if the LSM(s) has no SGX
-policy whatsover.
-
-And on the flip side, enforcing permissions unconditionally will break
-backwards compatibility.
-
-I'm a-ok if we want to kill off the ->mprotect() hook, so long as we
-acknowledge that in doing so we are likely throwing in the towel on supporting
-LSM policies for enclave page permissions.
