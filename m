@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DFA277665
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B05427767E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726912AbgIXQQe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:16:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44009 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726811AbgIXQQd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:16:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600964191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8EfF16bCe0njopv3EGBmqLVMqnHunaWFKN8Yz67AbYg=;
-        b=SZptJvB+pQlcd8YjUUqMlwenVsqSUxMuO+75CO6TJJPp2HagDGhNzOWU1FSlXs0AGN9WOg
-        0BDFZEPuLr8eEAs3qh0GKUaT5+Ad/wYr4my5antAmLTmrC4hDU/VQfDwv9F3DmFV4QMO3C
-        WapHhgOXl4rQ9xypYuGnHQ2RmZF+8oU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-536-lKHT9NflMrW8m7cD-KYijw-1; Thu, 24 Sep 2020 12:16:29 -0400
-X-MC-Unique: lKHT9NflMrW8m7cD-KYijw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726752AbgIXQTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:19:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726458AbgIXQTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:19:50 -0400
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0D521100746C;
-        Thu, 24 Sep 2020 16:16:28 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA2C455785;
-        Thu, 24 Sep 2020 16:16:24 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 12:16:24 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Satya Tangirala <satyat@google.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
- support
-Message-ID: <20200924161624.GC14369@redhat.com>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-3-satyat@google.com>
- <20200922003255.GC32959@sol.localdomain>
- <20200924011438.GD10500@redhat.com>
- <20200924071721.GA1883346@google.com>
- <20200924134649.GB13849@redhat.com>
- <20200924154550.GA1266@sol.localdomain>
+        by mail.kernel.org (Postfix) with ESMTPSA id 03DC52311B;
+        Thu, 24 Sep 2020 16:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600964389;
+        bh=r00IuGK5X4M7N6a9KOcuaC8vPlLWVqhKALShVxiGX1k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=J8IIsKYi2Sg1I974iLW774RlXPH4NpiJIHTCb40J2Kg5XuyCH70i3/2ElWkQC4dLl
+         VIa/s7z3oKL0Y5ZO2WHgzdjvS81cW4H3GK23R4h3sBFEHcd939hMI6uFOA04s4haSp
+         xuoTdJh0UgzRKbYb/hnhHLcmAQRNY8PysRdFdkfI=
+Received: by mail-lf1-f41.google.com with SMTP id w11so4615496lfn.2;
+        Thu, 24 Sep 2020 09:19:48 -0700 (PDT)
+X-Gm-Message-State: AOAM531fY8mjW4vt2oAwjn/poTUstmpQCHyb/pmecbxYJTYLwKTZrLrT
+        tqa2A8KnxL2mDfylRnMofLPJk8ekAH6j+lYcIPA=
+X-Google-Smtp-Source: ABdhPJxK14YFyUBWy6SgCJIl22YZISDj8RkvTJ370I4zSII4adfInU3jERuIkf/bpKmN5pFlCasStitlaM5OzKK+AJg=
+X-Received: by 2002:ac2:5e99:: with SMTP id b25mr82111lfq.248.1600964387152;
+ Thu, 24 Sep 2020 09:19:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924154550.GA1266@sol.localdomain>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <1593266228-61125-1-git-send-email-guoren@kernel.org>
+ <1593266228-61125-2-git-send-email-guoren@kernel.org> <20200911204512.GA2705@aurel32.net>
+ <CAJF2gTQiLV8sDE5cnvP=aBog4zaiMvMeieg_JtXwRODky1u3Hg@mail.gmail.com>
+ <20200914103836.GB2705@aurel32.net> <87lfgzeidk.fsf@igel.home>
+In-Reply-To: <87lfgzeidk.fsf@igel.home>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 25 Sep 2020 00:19:35 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQ8ONde3GRhQgx2Nqvb5X20nTmW8jZEemZKhezRDzP3aQ@mail.gmail.com>
+Message-ID: <CAJF2gTQ8ONde3GRhQgx2Nqvb5X20nTmW8jZEemZKhezRDzP3aQ@mail.gmail.com>
+Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
+To:     Andreas Schwab <schwab@linux-m68k.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <anup@brainfault.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>,
+        Nick Hu <nickhu@andestech.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24 2020 at 11:45am -0400,
-Eric Biggers <ebiggers@kernel.org> wrote:
+How about this, revert the commit and don't free INIT_DATA_SECTION. I
+think the solution is safe enough, but wast a little memory.
 
-> On Thu, Sep 24, 2020 at 09:46:49AM -0400, Mike Snitzer wrote:
-> > > > Can you help me better understand the expected consumer of this code?
-> > > > If you have something _real_ please be explicit.  It makes justifying
-> > > > supporting niche code like this more tolerable.
-> > >
-> > > So the motivation for this code was that Android currently uses a device
-> > > mapper target on top of a phone's disk for user data. On many phones,
-> > > that disk has inline encryption support, and it'd be great to be able to
-> > > make use of that. The DM device configuration isn't changed at runtime.
-> > 
-> > OK, which device mapper target is used?
-> 
-> There are several device-mapper targets that Android can require for the
-> "userdata" partition -- potentially in a stack of more than one:
-> 
-> dm-linear: required for Dynamic System Updates
-> (https://developer.android.com/topic/dsu)
-> 
-> dm-bow: required for User Data Checkpoints on ext4
-> (https://source.android.com/devices/tech/ota/user-data-checkpoint)
-> (https://patchwork.kernel.org/patch/10838743/)
-> 
-> dm-default-key: required for metadata encryption
-> (https://source.android.com/security/encryption/metadata)
+diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+index f3586e3..34d00d9 100644
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+@@ -22,13 +22,11 @@ SECTIONS
+        /* Beginning of code and text segment */
+        . = LOAD_OFFSET;
+        _start = .;
+-       _stext = .;
+        HEAD_TEXT_SECTION
+        . = ALIGN(PAGE_SIZE);
 
-Please work with all google stakeholders to post the latest code for the
-dm-bow and dm-default-key targets and I'll work through them.
+        __init_begin = .;
+        INIT_TEXT_SECTION(PAGE_SIZE)
+-       INIT_DATA_SECTION(16)
+        . = ALIGN(8);
+        __soc_early_init_table : {
+                __soc_early_init_table_start = .;
+@@ -55,6 +53,7 @@ SECTIONS
+        . = ALIGN(SECTION_ALIGN);
+        .text : {
+                _text = .;
++               _stext = .;
+                TEXT_TEXT
+                SCHED_TEXT
+                CPUIDLE_TEXT
+@@ -67,6 +66,8 @@ SECTIONS
+                _etext = .;
+        }
 
-I think the more code we have to inform DM core's implementation the
-better off we'll be in the long run.  Could also help improve these
-targets as a side-effect of additional review.
++       INIT_DATA_SECTION(16)
++
+        /* Start of data section */
+        _sdata = .;
+        RO_DATA(SECTION_ALIGN)
 
-I know I largely ignored dm-bow before but that was more to do with
-competing tasks, etc.  I'll try my best...
+On Thu, Sep 24, 2020 at 3:36 PM Andreas Schwab <schwab@linux-m68k.org> wrote:
+>
+> On Sep 14 2020, Aurelien Jarno wrote:
+>
+> > How should we proceed to get that fixed in time for 5.9? For the older
+> > branches where it has been backported (so far 5.7 and 5.8), should we
+> > just get that commit reverted instead?
+>
+> Can this please be resolved ASAP?
+>
+> Andreas.
+>
+> --
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+> "And now for something completely different."
 
-> We're already carrying this patchset in the Android common kernels since late
-> last year, as it's required for inline encryption to work when any of the above
-> is used.  So this is something that is needed and is already being used.
-> 
-> Now, you don't have to "count" dm-bow and dm-default-key since they aren't
-> upstream; that leaves dm-linear.  But hopefully the others at least show that
-> architecturally, dm-linear is just the initial use case, and this patchset also
-> makes it easy to pass through inline crypto on any other target that can support
-> it (basically, anything that doesn't change the data itself as it goes through).
 
-Sure, that context really helps.
 
-About "basically, anything that doesn't change the data itself as it
-goes through": could you be a bit more precise?  Very few DM targets
-actually change the data as associated bios are remapped.
+-- 
+Best Regards
+ Guo Ren
 
-I'm just wondering if your definition of "doesn't change the data"
-includes things more subtle than the data itself?
-
-Thanks,
-Mike
-
+ML: https://lore.kernel.org/linux-csky/
