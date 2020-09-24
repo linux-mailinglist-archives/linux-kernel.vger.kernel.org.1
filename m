@@ -2,121 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC1C277137
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6728277139
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727834AbgIXMkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:40:22 -0400
-Received: from foss.arm.com ([217.140.110.172]:45092 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727570AbgIXMkU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:40:20 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 382BD152B;
-        Thu, 24 Sep 2020 05:40:19 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 662DB3F73B;
-        Thu, 24 Sep 2020 05:40:17 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org
-Cc:     dietmar.eggemann@arm.com, qperret@google.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com
-Subject: [PATCH 3/3] arm64: rebuild sched domains on invariance status changes
-Date:   Thu, 24 Sep 2020 13:39:37 +0100
-Message-Id: <20200924123937.20938-4-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200924123937.20938-1-ionela.voinescu@arm.com>
-References: <20200924123937.20938-1-ionela.voinescu@arm.com>
+        id S1727843AbgIXMkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgIXMke (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:40:34 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4723FC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:40:34 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id z1so3664382wrt.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=b2lDPvNgcW90ATPJ0W6Cm5nzCR7vWtrpBfUZKLwoBYE=;
+        b=Whtw4ysULiBOjxfFnqdE6kgGRcEheRG7g1Ju/zSoLoYcs/WE74gfKpw4OHU7h3seU7
+         nz6swSb5eDQ7L9bgCwxZJ2eWUmNIGgLBn/SU9k56Zx8rv2iQDJOQI4M0iLY+mDF0Wa2+
+         PYweCxZtwn18ZAcsAqO+iZzxo69cAX2Wr/orsbNrXYxufMlOQqlcRt4UYe1bcbGPsrEQ
+         hQ2hU5xQaxp4SCezw91qP5usR+IE532hKc2MSm6VVq3ulWtV3lJsoGaqHAJfGXPiB+AJ
+         buIuBw3pmtbY8odVSk3sqZ6tMj+c+ENivH3ebV8HWFPuH4GEiDBoAB563DtMSCkjCILU
+         oIIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=b2lDPvNgcW90ATPJ0W6Cm5nzCR7vWtrpBfUZKLwoBYE=;
+        b=bDYZy81dgALsMk8K02ATrPj0ca4aUvw4y1S0vEfivdFqpRA/IqvV8+DA/3RhBzYxCJ
+         IBHPFo06r3v7boVTIXauuC+M30K4RTKt4hj8kOfAYPtBcxF/hfLgBVeuzn1C6MW307IQ
+         aNQqxDRQvZ7lo3iZ7QyNEar7doAkWd+fE+n3hNDB3CgPhftR6YveIw7j67MJ8n44Pnhd
+         byF4YXmVe/A4+ADICGaWFYEieC6TuylWJZ7ys9g9duWM1THC8j1WAXFMHy1lt94a1gQG
+         N9eGkv2ahFV01zXDxDxkWwuUCqTQPS0sBSDkPLHkOpgEBtrp7S0Bfkb+fzlnpjPfoHEB
+         JNyQ==
+X-Gm-Message-State: AOAM530Ni/GiOfGWKDle22Dg1fquuYS4Z68oXvtrO4YI4cFHZ1Z4ZBwy
+        PunnAKozKic2EBidjsCuz3N5aQ==
+X-Google-Smtp-Source: ABdhPJy5etVAKJBI8BzMQLjxLKwC8dcLGsYrTzKTEFk+k5Pr3/2wNCCUe6bHw+q1Fuv9x8rNwEvhig==
+X-Received: by 2002:a5d:4744:: with SMTP id o4mr4883028wrs.130.1600951233003;
+        Thu, 24 Sep 2020 05:40:33 -0700 (PDT)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id f16sm3466734wrp.47.2020.09.24.05.40.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 05:40:32 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 13:40:30 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Ben Dooks <ben@fluff.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vincent Sanders <vince@arm.linux.org.uk>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] mfd: sm501: Fix leaks in probe()
+Message-ID: <20200924124030.GK4678@dell>
+References: <20200911113326.GB367487@mwanda>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200911113326.GB367487@mwanda>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Task scheduler behavior depends on frequency invariance (FI) support and
-the resulting invariant load tracking signals. For example, in order to
-make accurate predictions across CPUs for all performance states, Energy
-Aware Scheduling (EAS) needs frequency-invariant load tracking signals
-and therefore it has a direct dependency on FI. If a platform is found
-lacking FI support, EAS is disabled.
+On Fri, 11 Sep 2020, Dan Carpenter wrote:
 
-While arch_scale_freq_invariant() will see changes in FI support, it
-could return different values during system initialisation. Such a
-scenario will happen for a system that does not support cpufreq driven
-FI, but does support counter-driven FI. For such a system,
-arch_scale_freq_invariant() will return false if called before counter
-based FI initialisation, but change its status to true after it.
+> This code should clean up if sm501_init_dev() fails.
+> 
+> Fixes: b6d6454fdb66 ("[PATCH] mfd: SM501 core driver")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> ---
+>  drivers/mfd/sm501.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 
-For arm64 this affects the task scheduler behavior which builds its
-scheduling domain hierarchy well before the late counter-based FI init.
-During that process it will disable EAS due to its dependency on FI.
+Applied, thanks.
 
-Two points of early calls to arch_scale_freq_invariant() which determine
-EAS enablement are:
- - (1) drivers/base/arch_topology.c:126 <<update_topology_flags_workfn>>
-		rebuild_sched_domains();
-       This will happen after CPU capacity initialisation.
- - (2) kernel/sched/cpufreq_schedutil.c:917 <<rebuild_sd_workfn>>
-		rebuild_sched_domains_energy();
-		-->rebuild_sched_domains();
-       This will happen during sched_cpufreq_governor_change() for the
-       schedutil cpufreq governor.
-
-Therefore, if there is a change in FI support status after counter init,
-use the existing rebuild_sched_domains_energy() function to trigger a
-rebuild of the scheduling and performance domains that in turn determine
-the enablement of EAS.
-
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
----
- arch/arm64/include/asm/topology.h |  1 +
- arch/arm64/kernel/topology.c      | 10 ++++++++++
- 2 files changed, 11 insertions(+)
-
-diff --git a/arch/arm64/include/asm/topology.h b/arch/arm64/include/asm/topology.h
-index 7cb519473fbd..9394101e3c08 100644
---- a/arch/arm64/include/asm/topology.h
-+++ b/arch/arm64/include/asm/topology.h
-@@ -16,6 +16,7 @@ int pcibus_to_node(struct pci_bus *bus);
- 
- #include <linux/arch_topology.h>
- 
-+void rebuild_sched_domains_energy(void);
- #ifdef CONFIG_ARM64_AMU_EXTN
- /*
-  * Replace task scheduler's default counter-based
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 543c67cae02f..2a9b69fdabc9 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -213,6 +213,7 @@ static DEFINE_STATIC_KEY_FALSE(amu_fie_key);
- 
- static int __init init_amu_fie(void)
- {
-+	bool invariance_status = topology_scale_freq_invariant();
- 	cpumask_var_t valid_cpus;
- 	bool have_policy = false;
- 	int ret = 0;
-@@ -255,6 +256,15 @@ static int __init init_amu_fie(void)
- 	if (!topology_scale_freq_invariant())
- 		static_branch_disable(&amu_fie_key);
- 
-+	/*
-+	 * Task scheduler behavior depends on frequency invariance support,
-+	 * either cpufreq or counter driven. If the support status changes as
-+	 * a result of counter initialisation and use, retrigger the build of
-+	 * scheduling domains to ensure the information is propagated properly.
-+	 */
-+	if (invariance_status != topology_scale_freq_invariant())
-+		rebuild_sched_domains_energy();
-+
- free_valid_mask:
- 	free_cpumask_var(valid_cpus);
- 
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
