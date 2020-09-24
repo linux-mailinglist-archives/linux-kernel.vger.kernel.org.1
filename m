@@ -2,198 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B31A2772DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA1A2772ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:45:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgIXNoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:44:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58550 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727859AbgIXNoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:44:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 235E0ABAD;
-        Thu, 24 Sep 2020 13:44:53 +0000 (UTC)
-Subject: Re: [PATCH RFC 4/4] mm/page_alloc: place pages to tail in
- __free_pages_core()
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-5-david@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <34a094bd-d37a-b735-14bb-ea65e2e2b7a1@suse.cz>
-Date:   Thu, 24 Sep 2020 15:44:52 +0200
+        id S1728117AbgIXNpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:45:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51532 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728101AbgIXNp3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:45:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600955127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=K9Z9F7RxcgQ9rPtNPeSxeVDvP+GWh1Rt0q8Ee+GXEDM=;
+        b=RtDGyAV55B8SDoq5DL/zKTbj9D3Mu2Hqx0x4Bhe1Kgetfvaz6Xff+F7MzzJ9e/ttMjhKNY
+        733ZQC09LEV19f9kOVcFw8zwptIMRNtrHAnwHLwS9pb0kUBxCP44XgEoTZqu9lRZelOfIM
+        MkVixv6mQJqvSaClB5gwkFgOCD7POD8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-42-c2v8abAmOdK17kNELYu4qg-1; Thu, 24 Sep 2020 09:45:22 -0400
+X-MC-Unique: c2v8abAmOdK17kNELYu4qg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B7D561008552;
+        Thu, 24 Sep 2020 13:45:19 +0000 (UTC)
+Received: from [10.10.115.120] (ovpn-115-120.rdu2.redhat.com [10.10.115.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CA34B1002C07;
+        Thu, 24 Sep 2020 13:45:12 +0000 (UTC)
+Subject: Re: [PATCH v2 1/4] sched/isolation: API to get housekeeping online
+ CPUs
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jerinj@marvell.com, mathias.nyman@intel.com, jiri@nvidia.com,
+        mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org
+References: <20200923181126.223766-1-nitesh@redhat.com>
+ <20200923181126.223766-2-nitesh@redhat.com>
+ <20200924124619.GL2628@hirez.programming.kicks-ass.net>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ VujM7c/b4pps
+Organization: Red Hat Inc,
+Message-ID: <6243a4b7-9a43-a7f4-0386-0370449ddc8d@redhat.com>
+Date:   Thu, 24 Sep 2020 09:45:10 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200916183411.64756-5-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200924124619.GL2628@hirez.programming.kicks-ass.net>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="HKrLwWXCgkXOOpskHrwX5Q48mH8JpbM50"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 8:34 PM, David Hildenbrand wrote:
-> __free_pages_core() is used when exposing fresh memory to the buddy
-> during system boot and when onlining memory in generic_online_page().
-> 
-> generic_online_page() is used in two cases:
-> 
-> 1. Direct memory onlining in online_pages().
-> 2. Deferred memory onlining in memory-ballooning-like mechanisms (HyperV
->    balloon and virtio-mem), when parts of a section are kept
->    fake-offline to be fake-onlined later on.
-> 
-> In 1, we already place pages to the tail of the freelist. Pages will be
-> freed to MIGRATE_ISOLATE lists first and moved to the tail of the freelists
-> via undo_isolate_page_range().
-> 
-> In 2, we currently don't implement a proper rule. In case of virtio-mem,
-> where we currently always online MAX_ORDER - 1 pages, the pages will be
-> placed to the HEAD of the freelist - undesireable. While the hyper-v
-> balloon calls generic_online_page() with single pages, usually it will
-> call it on successive single pages in a larger block.
-> 
-> The pages are fresh, so place them to the tail of the freelists and avoid
-> the PCP.
-> 
-> Note: If we detect that the new behavior is undesireable for
-> __free_pages_core() during boot, we can let the caller specify the
-> behavior.
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-> Cc: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: Stephen Hemminger <sthemmin@microsoft.com>
-> Cc: Wei Liu <wei.liu@kernel.org>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--HKrLwWXCgkXOOpskHrwX5Q48mH8JpbM50
+Content-Type: multipart/mixed; boundary="QbZeJQShDXeeE7B2zk7P2QOND28FmFuhJ"
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+--QbZeJQShDXeeE7B2zk7P2QOND28FmFuhJ
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
-> ---
->  mm/page_alloc.c | 32 ++++++++++++++++++++------------
->  1 file changed, 20 insertions(+), 12 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 75b0f49b4022..50746e6dc21b 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -264,7 +264,8 @@ bool pm_suspended_storage(void)
->  unsigned int pageblock_order __read_mostly;
->  #endif
->  
-> -static void __free_pages_ok(struct page *page, unsigned int order);
-> +static void __free_pages_ok(struct page *page, unsigned int order,
-> +			    fop_t fop_flags);
->  
->  /*
->   * results with 256, 32 in the lowmem_reserve sysctl:
-> @@ -676,7 +677,7 @@ static void bad_page(struct page *page, const char *reason)
->  void free_compound_page(struct page *page)
->  {
->  	mem_cgroup_uncharge(page);
-> -	__free_pages_ok(page, compound_order(page));
-> +	__free_pages_ok(page, compound_order(page), FOP_NONE);
->  }
->  
->  void prep_compound_page(struct page *page, unsigned int order)
-> @@ -1402,17 +1403,15 @@ static void free_pcppages_bulk(struct zone *zone, int count,
->  	spin_unlock(&zone->lock);
->  }
->  
-> -static void free_one_page(struct zone *zone,
-> -				struct page *page, unsigned long pfn,
-> -				unsigned int order,
-> -				int migratetype)
-> +static void free_one_page(struct zone *zone, struct page *page, unsigned long pfn,
-> +			  unsigned int order, int migratetype, fop_t fop_flags)
->  {
->  	spin_lock(&zone->lock);
->  	if (unlikely(has_isolate_pageblock(zone) ||
->  		is_migrate_isolate(migratetype))) {
->  		migratetype = get_pfnblock_migratetype(page, pfn);
->  	}
-> -	__free_one_page(page, pfn, zone, order, migratetype, FOP_NONE);
-> +	__free_one_page(page, pfn, zone, order, migratetype, fop_flags);
->  	spin_unlock(&zone->lock);
->  }
->  
-> @@ -1490,7 +1489,8 @@ void __meminit reserve_bootmem_region(phys_addr_t start, phys_addr_t end)
->  	}
->  }
->  
-> -static void __free_pages_ok(struct page *page, unsigned int order)
-> +static void __free_pages_ok(struct page *page, unsigned int order,
-> +			    fop_t fop_flags)
->  {
->  	unsigned long flags;
->  	int migratetype;
-> @@ -1502,7 +1502,8 @@ static void __free_pages_ok(struct page *page, unsigned int order)
->  	migratetype = get_pfnblock_migratetype(page, pfn);
->  	local_irq_save(flags);
->  	__count_vm_events(PGFREE, 1 << order);
-> -	free_one_page(page_zone(page), page, pfn, order, migratetype);
-> +	free_one_page(page_zone(page), page, pfn, order, migratetype,
-> +		      fop_flags);
->  	local_irq_restore(flags);
->  }
->  
-> @@ -1523,7 +1524,13 @@ void __free_pages_core(struct page *page, unsigned int order)
->  
->  	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
->  	set_page_refcounted(page);
-> -	__free_pages(page, order);
-> +
-> +	/*
-> +	 * Bypass PCP and place fresh pages right to the tail, primarily
-> +	 * relevant for memory onlining.
-> +	 */
-> +	page_ref_dec(page);
-> +	__free_pages_ok(page, order, FOP_TO_TAIL);
->  }
->  
->  #ifdef CONFIG_NEED_MULTIPLE_NODES
-> @@ -3167,7 +3174,8 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn)
->  	 */
->  	if (migratetype >= MIGRATE_PCPTYPES) {
->  		if (unlikely(is_migrate_isolate(migratetype))) {
-> -			free_one_page(zone, page, pfn, 0, migratetype);
-> +			free_one_page(zone, page, pfn, 0, migratetype,
-> +				      FOP_NONE);
->  			return;
->  		}
->  		migratetype = MIGRATE_MOVABLE;
-> @@ -4984,7 +4992,7 @@ static inline void free_the_page(struct page *page, unsigned int order)
->  	if (order == 0)		/* Via pcp? */
->  		free_unref_page(page);
->  	else
-> -		__free_pages_ok(page, order);
-> +		__free_pages_ok(page, order, FOP_NONE);
->  }
->  
->  void __free_pages(struct page *page, unsigned int order)
-> 
+
+On 9/24/20 8:46 AM, Peter Zijlstra wrote:
+>
+> FWIW, cross-posting to moderated lists is annoying. I don't know why we
+> allow them in MAINTAINERS :-(
+
+Yeah, it sends out an acknowledgment for every email.
+I had to include it because sending the patches to it apparently allows the=
+m
+to get tested by Intel folks.
+
+>
+--=20
+Nitesh
+
+
+--QbZeJQShDXeeE7B2zk7P2QOND28FmFuhJ--
+
+--HKrLwWXCgkXOOpskHrwX5Q48mH8JpbM50
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl9souYACgkQo4ZA3AYy
+ozleKQ//aOYjmqwRTP1nJU8udLJGHJPYhjlV3zFwyKbhaDjPKmPoG8B3yGrGIM0r
+hUepl4fCkHY4RcqgXcVC2xNNQQIpQ4J3Kre3l0agESKZD1evhFGyAcSDK80/W61b
+Eycz8Vqix4jLiK3JalIhoMMCwYr7HXUDAxdqnVLWB3ynoY8rPp0dAEJh64wqhhoH
+LHeb2j4RL4FY3l0ewIbnC60VuBJMeVT5JKKUaw0Ds3X9eV1jIGXZ/lI2R3z+ttov
+zOjIwfwYJY17ByeASizYvmm1FhTwgZGUG5yZbAyJE6anrKt3CHxvazWnTpNgdmQk
+GfyPi+20aArQcv/O8CcO+ip/fW2HZBccyO08UhaKIW39/qkpwcsq/xGeorrikSGi
+Gr2E3iQaGo+jeGEZYIvnWY0pnu2rwpyMZKvJrN+QNttUOXETomVsoTaaU6hkql8J
+CjDszAtb20ZbLmyEbdqOetw/pgP6X3a13rUXVp5LpT7wD+jkW7vj20Rp5nd5Fctp
+klhN+QEItoxLEdo9p9GrkeLjoIEbRw7Lt6u+/x2zKxVKMU1/Twt/+NKnK9zwmFTo
+XE9TG0WdW0vCZI2wLc/G9Dci1dhazjnhXMTobpjeC+BePcx41zCu0l94D9NdGfT7
+dzStjRzb/UUFpfpI6Rfo+rg/E6hvgn/hXoHMfARdbm6zQmx6PL4=
+=IEMl
+-----END PGP SIGNATURE-----
+
+--HKrLwWXCgkXOOpskHrwX5Q48mH8JpbM50--
 
