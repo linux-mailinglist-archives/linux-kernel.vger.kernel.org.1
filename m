@@ -2,87 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E93277568
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D822F277583
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:34:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728536AbgIXPc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:32:57 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:43938 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728517AbgIXPcs (ORCPT
+        id S1728433AbgIXPeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:34:44 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:32790 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728333AbgIXPeo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:32:48 -0400
-Received: by mail-oi1-f194.google.com with SMTP id i17so4040073oig.10;
-        Thu, 24 Sep 2020 08:32:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P23WTnX7J0orLd7NlQt3f+ZbjZvXRzDMrC3Fd2GLoKk=;
-        b=N0Nza/BdN+bC4mKtKWFclWrKkk+/rR8UFurT4LWWzuv8iORHC5TfAN8EVijj3IDlAb
-         Ii0I/6HlzqkpI+RkyaDuzCcstRO4jBnhIgkIe4f/lJKtKhzJlKmvqfIOirgf2Jfn9W6h
-         hjfVTq9CsmO5r+9xZMnWZ9dnjNFz4NZrLNHADQ7xrvLTSzw4nT98Muj2mEDCtQ0PIud6
-         6xFsXRzu2PYGZzmQ17vouVTIklR75hKuIg/AL7PttKen7RbMFvEUV8ecoTGuqagv4lQ0
-         /f6Ok/CvEPsV+fqKNnPUf9UsuuXnNY189TrPEPpprNiykW3bcOV0hORr1Na8wHJp6J3s
-         uRGw==
-X-Gm-Message-State: AOAM532HCJeB9iBqWD7ppcsAsEil8w6ywKL7Eu4+UgR089l87WafrHyu
-        O4s2zjYVQ7OMuM7u3k2eE9DwBdIQ1J4Lt1i3B5s=
-X-Google-Smtp-Source: ABdhPJzMLCBbJ0WFPI7Z3JLQmUU26VA+GnT7EPMgPhi4RFKQSQG3Sr5op/Tenf0QRSiGD2MHjOa0UKJgNLH+/EKRQ04=
-X-Received: by 2002:aca:df84:: with SMTP id w126mr2906529oig.103.1600961567060;
- Thu, 24 Sep 2020 08:32:47 -0700 (PDT)
+        Thu, 24 Sep 2020 11:34:44 -0400
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 08OFYQLJ017212;
+        Fri, 25 Sep 2020 00:34:27 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 08OFYQLJ017212
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600961667;
+        bh=8++tngXIYpSoFvOERHcAK2tucrHOFQ6aDKwQ9XkyMIY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IgcGkJxs6Jc3Q2xAmuE/XdLre5F5tY4Q990eUCze91ZcIrtuALUv+v0IVChKJFgV5
+         5Q0jdf5lEaGnN0YzLKqSjTkXisAjI45q5TJpbx4r+ZFK061Jo1hl45ywvIUnOS+dc2
+         L7bfvj5AgVy4hYAzZhDc7e9plPqT2yPJfMbt6RTlbN6Gza0I4IIhgciv7kEZK7kHPn
+         +ySFS5RLnU4aGzAP+LCXqqvH8YBPSd9zPaYbSNeRxZ+3jqhywOzZJ+3NOZWu5G32Yo
+         zkLdQ/ZANS5LZiDkAhLPyKY5RDlfuWmBvLGm4EeDjw3Wb8Z4sD7OI970PGKEW9ibhl
+         cykRl/++BWuVQ==
+X-Nifty-SrcIP: [209.85.214.182]
+Received: by mail-pl1-f182.google.com with SMTP id m15so1856833pls.8;
+        Thu, 24 Sep 2020 08:34:27 -0700 (PDT)
+X-Gm-Message-State: AOAM533hjJEPiGEf5nhWIbBvnW6B6aytGj4aYwxJmk0Z6fZ6u0xWizN+
+        v0CFl1ACxarJcTbTCpgbd9M+aik4EeNQD6PbBes=
+X-Google-Smtp-Source: ABdhPJweqgFrBZfOuGz2apTHkL9ybv71G+elcg8t+sB7qXNkjDjJXCwevQ4WrMjsrEgXlLXmJ8CwxU1fONonFFlbNlo=
+X-Received: by 2002:a17:90b:360a:: with SMTP id ml10mr4365101pjb.198.1600961666135;
+ Thu, 24 Sep 2020 08:34:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1600816121.git.skhan@linuxfoundation.org>
- <9e2c6cccabc96fe1e5304e2fa2dfdad28ca5ac9c.1600816121.git.skhan@linuxfoundation.org>
- <CAJZ5v0iS2wpvvJGLsEJSSdCJ0tf4DmJ9fQWVU3PzFuMB7Zbkjw@mail.gmail.com> <3cc1e840-6525-e125-499a-03b9c86c0243@linuxfoundation.org>
-In-Reply-To: <3cc1e840-6525-e125-499a-03b9c86c0243@linuxfoundation.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 24 Sep 2020 17:32:36 +0200
-Message-ID: <CAJZ5v0h7QhLRs6hb1ges2bsFyvRPL1b4dSm=YM4J631agowkiQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 05/11] drivers/acpi: convert seqno counter_atomic
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
+References: <20200922204323.GA244571@roeck-us.net>
+In-Reply-To: <20200922204323.GA244571@roeck-us.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 25 Sep 2020 00:33:49 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATzjBC0SquV5iJhBO+aoPqeyYAikxiu5qZmEDm6k9ZdJQ@mail.gmail.com>
+Message-ID: <CAK7LNATzjBC0SquV5iJhBO+aoPqeyYAikxiu5qZmEDm6k9ZdJQ@mail.gmail.com>
+Subject: Re: [PATCH] scripts/kallsyms: skip ppc compiler stub *.long_branch.*
+ / *.plt_branch.*
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 5:08 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+On Wed, Sep 23, 2020 at 5:43 AM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> On 9/24/20 5:13 AM, Rafael J. Wysocki wrote:
-> > On Wed, Sep 23, 2020 at 3:44 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
-> >>
-> >> counter_atomic is introduced to be used when a variable is used as
-> >> a simple counter and doesn't guard object lifetimes. This clearly
-> >> differentiates atomic_t usages that guard object lifetimes.
-> >>
-> >> counter_atomic variables will wrap around to 0 when it overflows and
-> >> should not be used to guard resource lifetimes, device usage and
-> >> open counts that control state changes, and pm states.
-> >>
-> >> seqno is a sequence number counter for logging. This counter gets
-> >> incremented. Unsure if there is a chance of this overflowing. It
-> >> doesn't look like overflowing causes any problems since it is used
-> >> to tag the log messages and nothing more.
-> >>
-> >> Convert it to use counter_atomic.
-> >>
-> >> This conversion doesn't change the oveflow wrap around behavior.
->
-> I see typo here. Will fix it.
->
-> >>
-> >> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> On Wed, Sep 23, 2020 at 02:48:56AM +0900, Masahiro Yamada wrote:
+> > PowerPC allmodconfig often fails to build as follows:
 > >
-> > Both this change and the next patch are fine by me.
+> >     LD      .tmp_vmlinux.kallsyms1
+> >     KSYM    .tmp_vmlinux.kallsyms1.o
+> >     LD      .tmp_vmlinux.kallsyms2
+> >     KSYM    .tmp_vmlinux.kallsyms2.o
+> >     LD      .tmp_vmlinux.kallsyms3
+> >     KSYM    .tmp_vmlinux.kallsyms3.o
+> >     LD      vmlinux
+> >     SORTTAB vmlinux
+> >     SYSMAP  System.map
+> >   Inconsistent kallsyms data
+> >   Try make KALLSYMS_EXTRA_PASS=1 as a workaround
+> >   make[2]: *** [../Makefile:1162: vmlinux] Error 1
 > >
+> > Setting KALLSYMS_EXTRA_PASS=1 does not help.
+> >
+> > This is caused by the compiler inserting stubs such as *.long_branch.*
+> > and *.plt_branch.*
+> >
+> >   $ powerpc-linux-nm -n .tmp_vmlinux.kallsyms2
+> >    [ snip ]
+> >   c00000000210c000 T __init_begin
+> >   c00000000210c000 T _sinittext
+> >   c00000000210c010 t 00000075.plt_branch.da9:19
+> >   c00000000210c020 t 00000075.plt_branch.1677:5
+> >   c00000000210c030 t 00000075.long_branch.memmove
+> >   c00000000210c034 t 00000075.plt_branch.9e0:5
+> >   c00000000210c044 t 00000075.plt_branch.free_initrd_mem
+> >     ...
+> >
+> > Actually, the problem mentioned in scripts/link-vmlinux.sh comments;
+> > "In theory it's possible this results in even more stubs, but unlikely"
+> > is happening here, and ends up with another kallsyms step required.
+> >
+> > scripts/kallsyms.c already ignores various compiler stubs. Let's do
+> > similar to make kallsysms for PowerPC always succeed in 2 steps.
+> >
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 >
-> Thanks Rafael. Okay to add your Acked-by?
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
+>
+> Thanks,
+> Guenter
+>
+> > ---
+> >
+> >  scripts/kallsyms.c | 16 +++++++++++++++-
+> >  1 file changed, 15 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
+> > index 0096cd965332..306b9b38150f 100644
+> > --- a/scripts/kallsyms.c
+> > +++ b/scripts/kallsyms.c
+> > @@ -120,17 +120,25 @@ static bool is_ignored_symbol(const char *name, char type)
+> >               NULL
+> >       };
+> >
+> > +     static const char * const ignored_matches[] = {
+> > +             ".long_branch.",        /* ppc stub */
+> > +             ".plt_branch.",         /* ppc stub */
+> > +             NULL
+> > +     };
+> > +
+> >       const char * const *p;
+> >
+> > -     /* Exclude symbols which vary between passes. */
+> > +     /* ignore symbol names that exactly match to a particular string. */
+> >       for (p = ignored_symbols; *p; p++)
+> >               if (!strcmp(name, *p))
+> >                       return true;
+> >
+> > +     /* ignore symbol names that start with a particular string. */
+> >       for (p = ignored_prefixes; *p; p++)
+> >               if (!strncmp(name, *p, strlen(*p)))
+> >                       return true;
+> >
+> > +     /* ignore symbol names that end with a particular string. */
+> >       for (p = ignored_suffixes; *p; p++) {
+> >               int l = strlen(name) - strlen(*p);
+> >
+> > @@ -138,6 +146,12 @@ static bool is_ignored_symbol(const char *name, char type)
+> >                       return true;
+> >       }
+> >
+> > +     /* ignore symbol names that contain a particular string. */
+> > +     for (p = ignored_matches; *p; p++) {
+> > +             if (strstr(name, *p))
+> > +                     return true;
+> > +     }
+> > +
+> >       if (type == 'U' || type == 'u')
+> >               return true;
+> >       /* exclude debugging symbols */
+> > --
+> > 2.25.1
+> >
 
-Sure.
+Applied to linux-kbuild/fixes.
 
-Thanks!
+
+
+-- 
+Best Regards
+Masahiro Yamada
