@@ -2,159 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B97F27654B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 02:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25CC127654F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 02:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbgIXAmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 20:42:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        id S1726775AbgIXAnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 20:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgIXAmF (ORCPT
+        with ESMTP id S1726466AbgIXAnR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 20:42:05 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF5EC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 17:42:04 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id j2so1597925eds.9
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 17:42:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ALS2hDm4ftsEUNq9TXFt06kpNHf/ZcV3y5aWx3s1Do8=;
-        b=i+nBcw6Qc5YdCSP79kchMxNZ9vscFmuRHIjL+4oM9aaVNrPeQ2J1fRTklh0kqsjyI1
-         N8NLB4IWr+D48TgWyYvZVuR18wkLSPfX8ovenzBJ4SrpdBaZGCKeG/X9PqlHe/AREy+G
-         qo3TDDWtf6fkUtjt6XhYF7btCK2MTxIo9/4DEX+39YzOETzUS7wn6qaEXW02Fy7Nv7Sy
-         iAhA3DJm5GB6uJspOdBYPqpCrSqmLiQJtt9QHxklrgcQ+yeDdyLYxkIwNF+ZXqK0GpPm
-         VMI2uHMtk9t1HcUse8hr8ZqCv8PfIWNolN5O2CBcz/jLPmHK2IpxgDyi/+YWAMhYYGp8
-         Br8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ALS2hDm4ftsEUNq9TXFt06kpNHf/ZcV3y5aWx3s1Do8=;
-        b=KsRk229vH/1R0LIiKx5NdXR70lDmqxgg+XuKXZ6vwXj8D1G3zEz7JuuZeqrftW6UMe
-         Dj2WyCshCEird6HHGhWm+/WVCc9Mz/xIvLjNcFIqHp5Y0uq74DCISSgbUN9h/RaRhBSJ
-         2aqB8Skxovbgajc1WPzF/c+dg+3HnKQqLgg940dI2YsXh1q7ttRhajW1J4/lccjEJdHH
-         FH/MjfWiUd8pGEAQGwe8Ja/n9TC9azWeh37P/PZ2zI41e51Bw1WKXeTx6qCok8kiefMD
-         7RZQ1bVuMDNOjv/FNzMGj/wKqrJxS/AfP5xUP7tlxvTNby1WTaQIwnYltmVeLk7oxzPy
-         EKXw==
-X-Gm-Message-State: AOAM530LuPNkjEYkKn2S1ee6zOzg+NKsYR9Ib/t1Q2ewX4ueIdCb0ZE8
-        AQxCxjBRc4bptkMDmKwGNliA4WYdtKLUlm51b6mxtg==
-X-Google-Smtp-Source: ABdhPJyJ+2+MBiUxJyKzlnkil/1tpGNHZFlDrmkJ5755EYgjTjHJLwH+rSfDuJCXfwgvffq+bBDZCtFfWoiMAlyJwQo=
-X-Received: by 2002:a50:e807:: with SMTP id e7mr2071571edn.84.1600908123101;
- Wed, 23 Sep 2020 17:42:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200923232923.3142503-1-keescook@chromium.org> <20200923232923.3142503-2-keescook@chromium.org>
-In-Reply-To: <20200923232923.3142503-2-keescook@chromium.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Thu, 24 Sep 2020 02:41:36 +0200
-Message-ID: <CAG48ez17XK2Co+1LbUWTc4x_W7nza=TObNh2Kpz6P+ba3OKPsw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] seccomp: Introduce SECCOMP_PIN_ARCHITECTURE
-To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 23 Sep 2020 20:43:17 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E8BC0613CE;
+        Wed, 23 Sep 2020 17:43:17 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id DAE2911E58429;
+        Wed, 23 Sep 2020 17:26:28 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 17:43:15 -0700 (PDT)
+Message-Id: <20200923.174315.476378523694485733.davem@davemloft.net>
+To:     mchehab+huawei@kernel.org
+Cc:     linux-doc@vger.kernel.org, corbet@lwn.net, ast@kernel.org,
+        andriin@fb.com, xiyou.wangcong@gmail.com, edumazet@google.com,
+        fruggeri@arista.com, kuba@kernel.org, jiri@mellanox.com,
+        ap420073@gmail.com, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH 1/3] net: fix a new kernel-doc warning at dev.c
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <dbe62eb5e9dda5a5ee145f866a24c4cfddbd754f.1600773619.git.mchehab+huawei@kernel.org>
+References: <cover.1600773619.git.mchehab+huawei@kernel.org>
+        <dbe62eb5e9dda5a5ee145f866a24c4cfddbd754f.1600773619.git.mchehab+huawei@kernel.org>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 23 Sep 2020 17:26:29 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> For systems that provide multiple syscall maps based on audit
-> architectures (e.g. AUDIT_ARCH_X86_64 and AUDIT_ARCH_I386 via
-> CONFIG_COMPAT) or via syscall masks (e.g. x86_x32), allow a fast way
-> to pin the process to a specific syscall table, instead of needing
-> to generate all filters with an architecture check as the first filter
-> action.
->
-> This creates the internal representation that seccomp itself can use
-> (which is separate from the filters, which need to stay runtime
-> agnostic). Additionally paves the way for constant-action bitmaps.
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Date: Tue, 22 Sep 2020 13:22:52 +0200
 
-I don't really see the point in providing this UAPI - the syscall
-number checking will probably have much more performance cost than the
-architecture number check, and it's not like this lets us avoid the
-check, we're just moving it over into C code.
+> kernel-doc expects the function prototype to be just after
+> the kernel-doc markup, as otherwise it will get it all wrong:
+> 
+> 	./net/core/dev.c:10036: warning: Excess function parameter 'dev' description in 'WAIT_REFS_MIN_MSECS'
+> 
+> Fixes: 0e4be9e57e8c ("net: use exponential backoff in netdev_wait_allrefs")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  include/linux/seccomp.h                       |  9 +++
->  include/uapi/linux/seccomp.h                  |  1 +
->  kernel/seccomp.c                              | 79 ++++++++++++++++++-
->  tools/testing/selftests/seccomp/seccomp_bpf.c | 33 ++++++++
->  4 files changed, 120 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-> index 02aef2844c38..0be20bc81ea9 100644
-> --- a/include/linux/seccomp.h
-> +++ b/include/linux/seccomp.h
-> @@ -20,12 +20,18 @@
->  #include <linux/atomic.h>
->  #include <asm/seccomp.h>
->
-> +#define SECCOMP_ARCH_IS_NATIVE         1
-> +#define SECCOMP_ARCH_IS_COMPAT         2
-
-FYI, mips has three different possible "arch" values (per kernel build
-config; the __AUDIT_ARCH_LE flag can also be set, but that's fixed
-based on the config):
-
- - AUDIT_ARCH_MIPS
- - AUDIT_ARCH_MIPS | __AUDIT_ARCH_64BIT
- - AUDIT_ARCH_MIPS | __AUDIT_ARCH_64BIT | __AUDIT_ARCH_CONVENTION_MIPS64_N32
-
-But I guess we can deal with that once someone wants to actually add
-support for this on mips.
-
-> +#define SECCOMP_ARCH_IS_MULTIPLEX      3
-
-Why should X32 be handled specially? If the seccomp filter allows
-specific syscalls (as it should), we don't have to care about X32.
-Only in weird cases where the seccomp filter wants to deny specific
-syscalls (a horrible idea), X32 is a concern, and in such cases, the
-userspace code can generate a single conditional jump to deal with it.
-
-And when seccomp is used properly to allow specific syscalls, the
-kernel will just waste time uselessly checking this X32 stuff.
-
-[...]
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-[...]
-> +static long seccomp_pin_architecture(void)
-> +{
-> +#ifdef SECCOMP_ARCH
-> +       struct task_struct *task = current;
-> +
-> +       u8 arch = seccomp_get_arch(syscall_get_arch(task),
-> +                                  syscall_get_nr(task, task_pt_regs(task)));
-> +
-> +       /* How did you even get here? */
-
-Via a racing TSYNC, that's how.
-
-> +       if (task->seccomp.arch && task->seccomp.arch != arch)
-> +               return -EBUSY;
-> +
-> +       task->seccomp.arch = arch;
-> +#endif
-> +       return 0;
-> +}
-
-Why does this return 0 if SECCOMP_ARCH is not defined? That suggests
-to userspace that we have successfully pinned the ABI, even though
-we're actually unable to do so.
+Applied to net-next.
