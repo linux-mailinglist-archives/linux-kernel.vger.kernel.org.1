@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE98276C68
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFD9276BEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbgIXIvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:51:31 -0400
-Received: from elvis.franken.de ([193.175.24.41]:54784 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727289AbgIXIv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:51:28 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kLMyM-0003LM-00; Thu, 24 Sep 2020 10:51:26 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B79BEC1009; Thu, 24 Sep 2020 10:20:08 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 10:20:08 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] MIPS: OCTEON: fix error - use 'ret' after remove it
-Message-ID: <20200924082008.GA7822@alpha.franken.de>
-References: <20200924064142.90491-1-miaoqinglang@huawei.com>
+        id S1727304AbgIXIbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:31:14 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:52852 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726960AbgIXIbO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:31:14 -0400
+X-UUID: 0b4befb0c9e14a26bd31ae84c28b7256-20200924
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=DVsde8Sxk23MLuOP2061BcZ00WNs3yYnS+BwpO2OdC0=;
+        b=ZagBkT8LsKGA5lk7INzrhXmHg4ALNaUbomCfytyc14roUgl0Art4krlD0eoquvJi8es/V96qqoyoDaeMNNDcnwks2XndgtxPiQSsd2octfXd1SRuWp/Qev5ZpuI5yvqpz5d1Rex/Vwav1po9LccT35Kb8Uzoho5xpStfnnWBw3g=;
+X-UUID: 0b4befb0c9e14a26bd31ae84c28b7256-20200924
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1474091165; Thu, 24 Sep 2020 16:31:03 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 24 Sep
+ 2020 16:31:02 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Sep 2020 16:31:01 +0800
+Message-ID: <1600936119.21970.4.camel@mhfsdcap03>
+Subject: Re: [PATCH] usb: gadget: bcm63xx_udc: fix up the error of
+ undeclared usb_debug_root
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Felipe Balbi <balbi@kernel.org>
+CC:     Kevin Cernekee <cernekee@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Date:   Thu, 24 Sep 2020 16:28:39 +0800
+In-Reply-To: <871rirehqq.fsf@kernel.org>
+References: <1600061930-778-1-git-send-email-chunfeng.yun@mediatek.com>
+         <871rirehqq.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924064142.90491-1-miaoqinglang@huawei.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-SNTS-SMTP: B7859B15AFDE944996573D812135A52BDB5B7466C5FA3F1467BE71D06B2672CE2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:41:42PM +0800, Qinglang Miao wrote:
-> Variable ret was removed in commit 0ee69c589ec("MIPS: OCTEON:
-> use devm_platform_ioremap_resource") but still being used in
-> devm_release_mem_region which is unneeded. So remove this
-> line to fix error.
-> 
-> Fixes: 0ee69c589ec("MIPS: OCTEON: use devm_platform_ioremap_resource")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->  arch/mips/cavium-octeon/octeon-usb.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/mips/cavium-octeon/octeon-usb.c b/arch/mips/cavium-octeon/octeon-usb.c
-> index 97f6dc31e1b4..987a94cbf3d0 100644
-> --- a/arch/mips/cavium-octeon/octeon-usb.c
-> +++ b/arch/mips/cavium-octeon/octeon-usb.c
-> @@ -534,8 +534,6 @@ static int __init dwc3_octeon_device_init(void)
->  			dev_info(&pdev->dev, "clocks initialized.\n");
->  			mutex_unlock(&dwc3_octeon_clocks_mutex);
->  			devm_iounmap(&pdev->dev, base);
-> -			devm_release_mem_region(&pdev->dev, res->start,
-> -						resource_size(res));
->  		}
->  	} while (node != NULL);
+T24gVGh1LCAyMDIwLTA5LTI0IGF0IDEwOjUwICswMzAwLCBGZWxpcGUgQmFsYmkgd3JvdGU6DQo+
+IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4gd3JpdGVzOg0KPiANCj4g
+PiBGaXggdXAgdGhlIGJ1aWxkIGVycm9yIGNhdXNlZCBieSB1bmRlY2xhcmVkIHVzYl9kZWJ1Z19y
+b290DQo+ID4NCj4gPiBDYzogc3RhYmxlIDxzdGFibGVAdmdlci5rZXJuZWwub3JnPg0KPiA+IEZp
+eGVzOiBhNjZhZGE0ZjI0MWMoInVzYjogZ2FkZ2V0OiBiY202M3h4X3VkYzogY3JlYXRlIGRlYnVn
+ZnMgZGlyZWN0b3J5IHVuZGVyIHVzYiByb290IikNCj4gPiBSZXBvcnRlZC1ieToga2VybmVsIHRl
+c3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVu
+IDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiANCj4gJCBwYXRjaCAtcDEgLS1kcnktcnVu
+IHAucGF0Y2gNCj4gL3Vzci9iaW4vcGF0Y2g6ICoqKiogT25seSBnYXJiYWdlIHdhcyBmb3VuZCBp
+biB0aGUgcGF0Y2ggaW5wdXQuDQo+IA0KUGxlYXNlIHRyeSB0byBhcHBseSB2MiwgaHR0cHM6Ly9w
+YXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTc3MjkxMS8NCkkgaW5kZWVkIGFkZCBhIGxpbmUg
+Y29kZQ0KDQoNCg==
 
-I've reverted the orginal fix as IMHO the whole change is wrong.
-The code maps/unmaps the io region to setup clocks and phy and
-releases everything so the real driver can pick it up later.
-The devm_release_mem_region is important and since the device
-continues to exists, there is not auto-cleanup.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
