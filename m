@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27A0276FAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5AD276FB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727443AbgIXLSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:18:14 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:60764 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727421AbgIXLSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:18:13 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id AA7261EB0692C9CFE893;
-        Thu, 24 Sep 2020 19:18:11 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020
- 19:18:02 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH v2] mm/mempool: Add 'else' to split mutually exclusive case
-Date:   Thu, 24 Sep 2020 07:16:41 -0400
-Message-ID: <20200924111641.28922-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1727464AbgIXLSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:18:20 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:30264 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727421AbgIXLST (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:18:19 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08OB6dUP000402;
+        Thu, 24 Sep 2020 07:18:07 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33r5p6bq6e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 07:18:07 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 08OBI5Fd063193
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 24 Sep 2020 07:18:06 -0400
+Received: from SCSQCASHYB6.ad.analog.com (10.77.17.132) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 24 Sep 2020 04:18:03 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB6.ad.analog.com (10.77.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 24 Sep 2020 04:17:31 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 24 Sep 2020 04:18:03 -0700
+Received: from saturn.ad.analog.com ([10.48.65.107])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08OBI2VL007892;
+        Thu, 24 Sep 2020 07:18:02 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 0/3] iio: add titles to some Kconfig symbols 
+Date:   Thu, 24 Sep 2020 14:17:55 +0300
+Message-ID: <20200924111758.196367-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-24_08:2020-09-24,2020-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 spamscore=0 mlxlogscore=878 impostorscore=0 clxscore=1015
+ suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240086
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add else to split mutually exclusive case and avoid some unnecessary check.
-It doesn't seem to change code generation (compiler is smart), but I think
-it helps readability.
+For some embedded systems, a workflow involving external kernel modules
+that implement IIO devices is more practical than working with in-tree
+sources. However, there are number of features in the IIO KConfig that can
+only be switched on by enabling a particular sensor.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- mm/mempool.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+This came as a request a few years back:
+   https://github.com/analogdevicesinc/linux/issues/140
 
-diff --git a/mm/mempool.c b/mm/mempool.c
-index 79bff63ecf27..95fa8e601730 100644
---- a/mm/mempool.c
-+++ b/mm/mempool.c
-@@ -58,11 +58,10 @@ static void __check_element(mempool_t *pool, void *element, size_t size)
- static void check_element(mempool_t *pool, void *element)
- {
- 	/* Mempools backed by slab allocator */
--	if (pool->free == mempool_free_slab || pool->free == mempool_kfree)
-+	if (pool->free == mempool_free_slab || pool->free == mempool_kfree) {
- 		__check_element(pool, element, ksize(element));
--
- 	/* Mempools backed by page allocator */
--	if (pool->free == mempool_free_pages) {
-+	} else if (pool->free == mempool_free_pages) {
- 		int order = (int)(long)pool->pool_data;
- 		void *addr = kmap_atomic((struct page *)element);
- 
-@@ -82,11 +81,10 @@ static void __poison_element(void *element, size_t size)
- static void poison_element(mempool_t *pool, void *element)
- {
- 	/* Mempools backed by slab allocator */
--	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
-+	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc) {
- 		__poison_element(element, ksize(element));
--
- 	/* Mempools backed by page allocator */
--	if (pool->alloc == mempool_alloc_pages) {
-+	} else if (pool->alloc == mempool_alloc_pages) {
- 		int order = (int)(long)pool->pool_data;
- 		void *addr = kmap_atomic((struct page *)element);
- 
-@@ -107,7 +105,7 @@ static __always_inline void kasan_poison_element(mempool_t *pool, void *element)
- {
- 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
- 		kasan_poison_kfree(element, _RET_IP_);
--	if (pool->alloc == mempool_alloc_pages)
-+	else if (pool->alloc == mempool_alloc_pages)
- 		kasan_free_pages(element, (unsigned long)pool->pool_data);
- }
- 
-@@ -115,7 +113,7 @@ static void kasan_unpoison_element(mempool_t *pool, void *element)
- {
- 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
- 		kasan_unpoison_slab(element);
--	if (pool->alloc == mempool_alloc_pages)
-+	else if (pool->alloc == mempool_alloc_pages)
- 		kasan_alloc_pages(element, (unsigned long)pool->pool_data);
- }
- 
+This patch implements that request.
+
+After a quick run-through the iio Kconfig files, 4 seem to be useful to add
+titles to.
+i.e. IIO_TRIGGERED_EVENT, IIO_TRIGGERED_BUFFER, IIO_BUFFER_DMAENGINE &
+IIO_BUFFER_DMA.
+
+It's possible that for some out-of-tree drivers this could be useful.
+
+Alexandru Ardelean (3):
+  iio: dma-buffer: Kconfig: Provide titles for IIO DMA Kconfig symbols
+  iio: Kconfig: Provide title for IIO_TRIGGERED_EVENT symbol
+  iio: buffer: Kconfig: add title for IIO_TRIGGERED_BUFFER symbol
+
+ drivers/iio/Kconfig        |  2 +-
+ drivers/iio/buffer/Kconfig | 10 +++++-----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
 -- 
-2.19.1
+2.25.1
 
