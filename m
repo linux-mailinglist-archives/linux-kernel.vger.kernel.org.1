@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35B4276DAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C37276DB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgIXJmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:42:21 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:50364 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgIXJmU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:42:20 -0400
-Received: by mail-io1-f78.google.com with SMTP id b16so1938161iod.17
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:42:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=5Z29b/4Aq5RLlagrKhDMYCmWTH+Cjp9/dDSEi30fRns=;
-        b=lLpJzKhquyJe1HsGlpHaobXaQIXxavdhXBMcraUmi6Ntmp9b7+LaVjBHbONBl6tlhn
-         jD9L2gq6vq4IPtfIyt4nimHPWXV0SztTUZhaXoMS6lSkQOrto9vi2UY5JE2EdoLxZCPC
-         HGH11Bo75NSY89mesO6t+M/dFqPRTiP2ykAQ0BQOl2LjHyKXjAQWldqiFSDCc5r0281d
-         IfoXtiyfE/0KN9Pws8Oup4kBH2hpsZ/IleOapat47pbWJakkK3HuiV8XROikplmplycP
-         cTwWL9vQ9z7p1sl4y5NuuFiPjsns1zO+v8LCMwTTvW8SdMGqLjgHbEacSXYS+XwEL7M9
-         XiuA==
-X-Gm-Message-State: AOAM533GMHHbNPhQwr8KMwYIyrwjabAIHAgf5sRKud47Ed8d3fLqlxYB
-        VC+Insyizng5BiQ3lwjpIBtXLvq8TNYlG/P+H2mx/0J8H3Ha
-X-Google-Smtp-Source: ABdhPJxJzEjhFWdm19ixZuV1MHyRv/T955N/kjW3qyT3+zklKVK5Cw22Y6ewTYb/RP88s1Kb33R/HhvTaxdkT5XSZspHMJN2N9Ci
+        id S1726635AbgIXJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:45:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726442AbgIXJpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:45:23 -0400
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C253823977;
+        Thu, 24 Sep 2020 09:45:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600940722;
+        bh=yxZaR8oHCKmbjvofeBI7154Pzfy5ckgYTMwdIng5lfc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=DpMHvs/+ynAjvKVx5Aj3p/dwAFZejJzwsOMF/qi81GBlcMl7MYV3/F2PzydqyMbPD
+         as6wT9rJsSAsrri9EkAaA+hvf7onEy/YXw6ESMBr/SPWeMCckfOa2x0nG5YihA4VXl
+         fgy64/b/73LPl/1kb9s3m1c603dfvjz7AXhmWuaE=
+Received: by mail-ot1-f51.google.com with SMTP id y5so2571579otg.5;
+        Thu, 24 Sep 2020 02:45:22 -0700 (PDT)
+X-Gm-Message-State: AOAM532JrB0yWDJZi/lOmCeE0B5r3Tqpi8erXj0KfpKQI3+AA7HaFbIn
+        9XSFlgKmt/80+z8VPEhzGplGG+LWa3QXmgNaxek=
+X-Google-Smtp-Source: ABdhPJxoellXIpyU0LHX8I0XsNYx3OIWNYU0Klr4nYoPB5A75M1KYnpRpffRjnqMc5d/R8WVBiDyUMG8J33nChSQM7M=
+X-Received: by 2002:a9d:335:: with SMTP id 50mr2389727otv.90.1600940722000;
+ Thu, 24 Sep 2020 02:45:22 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:d8d0:: with SMTP id l16mr3246663ilo.47.1600940539721;
- Thu, 24 Sep 2020 02:42:19 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 02:42:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002d3bc705b00c04fa@google.com>
-Subject: KASAN: user-memory-access Read in vdso_fault
-From:   syzbot <syzbot+fe2a9f19481e3bfed524@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, x86@kernel.org
+References: <20200923161404.17811-1-ardb@kernel.org> <20200923161404.17811-2-ardb@kernel.org>
+ <202009231140.B4648C6@keescook> <CAMj1kXFFs2rLMn5kdY9CGsz32ctBshb93iN7yBtZNHYwW2mWnw@mail.gmail.com>
+ <202009231400.E52D1C7E7@keescook>
+In-Reply-To: <202009231400.E52D1C7E7@keescook>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 24 Sep 2020 11:45:11 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGGk2v69u+67LAyiyCTCteWxuMoRmVmWFGNdFbMPm6hCA@mail.gmail.com>
+Message-ID: <CAMj1kXGGk2v69u+67LAyiyCTCteWxuMoRmVmWFGNdFbMPm6hCA@mail.gmail.com>
+Subject: Re: [PATCH 1/7] efi: pstore: disentangle from deprecated efivars module
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Matthew Garrett <mjg59@google.com>,
+        Peter Jones <pjones@redhat.com>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 23 Sep 2020 at 23:02, Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Sep 23, 2020 at 08:43:21PM +0200, Ard Biesheuvel wrote:
+> > On Wed, 23 Sep 2020 at 20:41, Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > On Wed, Sep 23, 2020 at 06:13:58PM +0200, Ard Biesheuvel wrote:
+> > > > The EFI pstore implementation relies on the 'efivars' abstraction,
+> > > > which encapsulates the EFI variable store in a way that can be
+> > > > overridden by other backing stores, like the Google SMI one.
+> > > >
+> > > > On top of that, the EFI pstore implementation also relies on the
+> > > > efivars.ko module, which is a separate layer built on top of the
+> > > > 'efivars' abstraction that exposes the [deprecated] sysfs entries
+> > > > for each variable that exists in the backing store.
+> > > >
+> > > > Since the efivars.ko module is deprecated, and all users appear to
+> > > > have moved to the efivarfs file system instead, let's prepare for
+> > > > its removal, by removing EFI pstore's dependency on it.
+> > > >
+> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > >
+> > > With this and the other pstore patch, do the pstore self-tests still
+> > > pass on an EFI system?
+> > >
+> > > If so, please consider both:
+> > >
+> > > Acked-by: Kees Cook <keescook@chromium.org>
+> > >
+> >
+> > Selftests? Excellent! Are they documented too?
+>
+> Not really, but they're pretty simple:
+>
+> cd tools/testing/selftests/pstore
+> *double-check "config" against running kernel config*
+> ./pstore_tests
+> ./pstore_crash_test
+> *wait for system to reboot*
+> cd tools/testing/selftests/pstore
+> ./pstore_post_reboot_tests
+>
+> (though please test before/after, just to make sure other deltas haven't
+> broken things before your series -- I don't test EFI pstore with high
+> frequency)
+>
 
-syzbot found the following issue on:
+I have done the 'before' test on three different EFI Linux systems
+(x86, arm64 and ARM), and they all give me something like the below
 
-HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1077ecc3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
-dashboard link: https://syzkaller.appspot.com/bug?extid=fe2a9f19481e3bfed524
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+=== Pstore unit tests (pstore_tests) ===
+UUID=109d02e6-9395-4274-9554-2c078e87a662
+Checking pstore backend is registered ... ok
+  backend=efi
+  cmdline=BOOT_IMAGE=/vmlinuz-5.3.0-59-generic
+root=/dev/mapper/crypt-root ro quiet splash vt.handoff=1
+Checking pstore console is registered ... FAIL
+Checking /dev/pmsg0 exists ... FAIL
+Writing unique string to /dev/pmsg0 ... FAIL
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fe2a9f19481e3bfed524@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: user-memory-access in vdso_fault+0xc1/0x1b0 arch/x86/entry/vdso/vma.c:67
-Read of size 8 at addr 000000001953fc48 by task systemd-udevd/9883
-
-CPU: 0 PID: 9883 Comm: systemd-udevd Not tainted 5.9.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- __kasan_report mm/kasan/report.c:517 [inline]
- kasan_report+0x151/0x1d0 mm/kasan/report.c:530
- vdso_fault+0xc1/0x1b0 arch/x86/entry/vdso/vma.c:67
- __do_fault+0x138/0x3b0 mm/memory.c:3450
- do_read_fault+0x5a6/0x9e0 mm/memory.c:3843
- do_fault mm/memory.c:3971 [inline]
- handle_pte_fault mm/memory.c:4211 [inline]
- __handle_mm_fault mm/memory.c:4346 [inline]
- handle_mm_fault+0x1d73/0x29a0 mm/memory.c:4444
- do_user_addr_fault+0x515/0xa90 arch/x86/mm/fault.c:1372
- handle_page_fault arch/x86/mm/fault.c:1429 [inline]
- exc_page_fault+0x129/0x240 arch/x86/mm/fault.c:1482
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
-RIP: 0033:0x7ffedaddb630
-Code: Bad RIP value.
-RSP: 002b:00007ffedad997b8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000015
-RDX: 0000000058585858 RSI: 0000000000000000 RDI: 00007ffedad997e0
-RBP: 0000000000000000 R08: 000000000000fefe R09: 0000000000000030
-R10: 0000000000000000 R11: 0000000000000206 R12: 000055e855d83675
-R13: 00007ffedad99938 R14: 0000000000080000 R15: 000055e855d83660
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+So I'm not sure if there is any point to doing the 'after' test if
+this is the baseline.
