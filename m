@@ -2,119 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FE42767E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E852767E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726721AbgIXE3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 00:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgIXE3a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 00:29:30 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E7B6C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 21:29:30 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id c5so187105ilk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 21:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qj92FMGcpgxsdyUE56yoRlee9YhbsU/CYNtrILGXrHI=;
-        b=hKpwx2YFNPQQjIl9obkIR88i8flXLlEDKWxisryuqYs45VmEht4DryPajZHZDrfgJo
-         Lr7xg4gz90OwQUlv600R7W23mD8oRCNtjAiWMyhJuhjJ0BhDv6JdimhYmHd5J5gyT2Dy
-         pKmtNuGp8qb2Y9/v95kVPaazILhYm8WAxoATiV7dl+O3/Jakwtn0wFCDwC8J2utZPAUN
-         ooVNZsT2cnge4jawn/OSnkpR9vYPAJd3OGcXEs/E2HpK16SmkxjkEwQDl3enHcN86C3F
-         a35u2//yA5cHN3x4scuZ/EPVcltWqAZWPmquI4A2wTaFTGa3B84C5AqlKGVMN0B60Yus
-         vHwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qj92FMGcpgxsdyUE56yoRlee9YhbsU/CYNtrILGXrHI=;
-        b=BDMJBb6h8NQQMT0foxxQkO4kuen2Q/ThP1LGO4Qss0XW/fNCieF+U8+X9hGtUTZ3Lz
-         5lwMStbinWZZz7y7x4eXztF7QfS3cFfsdVddggYHtitjwAJl8ETLBSZmNAQhPLnP/Sub
-         ZeN+e1pLdnmaZ2EOINk9m97/UYBLECFdmSHb78RkBdfMzKXGdQgRhQCGoJRuqZ97Ddp7
-         VYys0MLzMHMrnO4xddtQW3Vf/a4zuPSZ0lg/64eTI1DwvwZJRGG9qbsEhVr+AZ/wQE1R
-         1irz22d/A8INv/TqOLLtgFpQlIgmtBrwVYCpJ5//oFp/ibbwCiYX/PN55fTOTAK0NcsQ
-         46Wg==
-X-Gm-Message-State: AOAM5304qb629ElschW90AaQy3KzP9sAKtcDrUS1uFA4TLtIs2WiGwTt
-        NAwry/qm5xiVmoROC0N3E7z7g0e/apH+hakII5A=
-X-Google-Smtp-Source: ABdhPJxPfqY8QUPf2j8F+mjd8vxgY0gvW57lNgORQ3ajNglXpQPqzal3Fo3UsraealyXmnxEAKajzM/jFfds1uWW1fc=
-X-Received: by 2002:a92:7989:: with SMTP id u131mr2492233ilc.93.1600921769596;
- Wed, 23 Sep 2020 21:29:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200917181347.1359365-1-axelrasmussen@google.com>
- <CALOAHbDSHGeXjJN3E5mTOAFTVsXAvQL9+nSYTqht5Lz8HRNv0A@mail.gmail.com>
- <CAJHvVcg6eY0vVtfi8D6D9aus7=5zeP2H7Yc0mY5ofXztSzOFqQ@mail.gmail.com>
- <CALOAHbBr=ASfvHw1ZscWBE=CY-e7sBrLV0F5Ow=g1UGxmQsWcw@mail.gmail.com>
- <20200922125113.12ef1e03@gandalf.local.home> <CALOAHbD2qgvd7CHy6ZFJ_h8drtRWEU=E-hPofY-TuGTNfxyQbw@mail.gmail.com>
- <20200923120924.49638d90@oasis.local.home>
-In-Reply-To: <20200923120924.49638d90@oasis.local.home>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 24 Sep 2020 12:28:53 +0800
-Message-ID: <CALOAHbBFr8TrwAJ+V7RrTrj==ogcyqUMVBqVYTtTCvcHfD8j7g@mail.gmail.com>
-Subject: Re: [PATCH] mmap_lock: add tracepoints around lock acquisition
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
+        id S1726808AbgIXE3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 00:29:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726466AbgIXE3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 00:29:36 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A4C020888;
+        Thu, 24 Sep 2020 04:29:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600921776;
+        bh=vMTPxsuZ6SRzpJC0xTX5yCd+YWzo04WVJM/7L6AUrsY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MsOmAxgg+jysqlFTskUiS43OIWcfhjb3IBqqvPrxciN9Ur/8QQpDAgVGugXdCw6Vy
+         k7+jMW9x2yPqiZYQaSP0jA2AfwTTIMLpO9aX2iUwBLNWdjMV94A/7Ijpg5sGpTTGkG
+         4wV85SHLPay1YhrIxUkkCIkUZtEHcPJ7NuBkU21w=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E88A935226CB; Wed, 23 Sep 2020 21:29:35 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 21:29:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, rcu@vger.kernel.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [GIT PULL rcu-tasks-trace] 50x speedup for
+ synchronize_rcu_tasks_trace()
+Message-ID: <20200924042935.GV29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200922162542.GA18664@paulmck-ThinkPad-P72>
+ <CAADnVQJfmFjVRqJopeqy_7bHVdQ9x+i9d94Sv7Dshnh40FisTA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJfmFjVRqJopeqy_7bHVdQ9x+i9d94Sv7Dshnh40FisTA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 12:09 AM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Wed, 23 Sep 2020 18:04:17 +0800
-> Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> > > What you can do, and what we have done is the following:
-> > >
-> > > (see include/linux/page_ref.h)
-> > >
-> > >
-> > > #ifdef CONFIG_TRACING
-> > > extern struct tracepoint __tracepoint_mmap_lock_start_locking;
-> > > extern struct tracepoint __tracepoint_mmap_lock_acquire_returned;
-> > >
-> > > #define mmap_lock_tracepoint_active(t) static_key_false(&(__tracepoint_mmap_lock_##t).key)
-> > >
-> > > #else
-> > > #define mmap_lock_tracepoint_active(t) false
-> > > #endif
-> > >
-> > > static inline void mmap_write_lock(struct mm_struct *mm)
-> > > {
-> > >         if (mmap_lock_tracepoint_active(start_locking))
-> > >                 mmap_lock_start_trace_wrapper();
-> > >         down_write(&mm->mmap_lock);
-> > >         if (mmap_lock_tracepoint_active(acquire_returned))
-> > >                 mmap_lock_acquire_trace_wrapper();
-> > > }
-> > >
-> > >
-> > > -- Steve
+On Wed, Sep 23, 2020 at 07:46:15PM -0700, Alexei Starovoitov wrote:
+> On Tue, Sep 22, 2020 at 9:25 AM Paul E. McKenney <paulmck@kernel.org> wrote:
 > >
+> > Hello, Alexei,
 > >
-> > Great!
+> > This pull request contains eight commits that speed up RCU Tasks Trace
+> > grace periods by a factor of 50, fix a few race conditions exposed
+> > by this speedup, and clean up a couple of minor issues.  These have
+> > been exposed to 0day and -next testing, and have passed well over 1,000
+> > hours of rcutorture testing, some of which has contained ad-hoc changes
+> > to further increase race probabilities.  So they should be solid!
+> > (Famous last words...)
 > >
-> > Thanks Steve.
->
-> If the above becomes useful, I may just add helper functions into a
-> header file that you can include. Perhaps call it: tracepoint_active()
-> and you need to pass in as an argument the name of the tracepoint.
->
+> > I would normally have sent this series up through -tip, but as we
+> > discussed, going up through the BFP and networking trees provides the
+> > needed exposure to real-world testing of these changes.  Please note
+> > that the first patch is already in mainline, but given identical SHA-1
+> > commit IDs, git should have no problem figuring this out.  I will also
+> > be retaining these commits in -rcu in order to continue exposing them
+> > to rcutorture testing, but again the identical SHA-1 commit IDs will
+> > make everything work out.
+> 
+> Pulled into bpf-next. Thanks a lot.
+> 
+> Also confirming 50x speedup.
+> Really nice to see that selftests/bpf are now fast again.
+> 
+> Not only all bpf developers will be running these patches now,
+> but the bpf CI system will be exercising them as well.
 
-Yes, please. The new helper would be useful.
+Sounds very good, thank you!  If problems arise, you know where
+to find me.  As do most of the people running these patches, I
+would guess.  ;-)
 
--- 
-Thanks
-Yafang
+							Thanx, Paul
