@@ -2,96 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CF82769D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:57:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22B82769D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727089AbgIXG5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:57:23 -0400
-Received: from mga18.intel.com ([134.134.136.126]:20416 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726960AbgIXG5W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:57:22 -0400
-IronPort-SDR: UkvnZ22gcJmiuYv9GxL4WopM7GWsdTrYojPmFHn5enNPRslwyD7T0PpuxIUI8MLv+g0G1sxzSK
- TYcOsUwEQVWw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148872655"
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
-   d="scan'208";a="148872655"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 23:57:22 -0700
-IronPort-SDR: TtuPRGHSrFfPT77WvdNkzCxkOuBtHHh8rPRBoT2X/iSXQsRe6KpFaKORl9wqrWlnho3kF0tT9q
- yn1f6l3PoCBA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
-   d="scan'208";a="338944949"
-Received: from unknown (HELO yhuang-dev) ([10.239.159.65])
-  by orsmga008.jf.intel.com with ESMTP; 23 Sep 2020 23:57:20 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Rafael Aquini <aquini@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer dereference
-References: <20200922184838.978540-1-aquini@redhat.com>
-        <878sd1qllb.fsf@yhuang-dev.intel.com>
-        <20200923043459.GL795820@optiplex-lnx>
-        <87sgb9oz1u.fsf@yhuang-dev.intel.com>
-        <20200923130138.GM795820@optiplex-lnx>
-        <87blhwng5f.fsf@yhuang-dev.intel.com>
-        <20200924020928.GC1023012@optiplex-lnx>
-        <877dsjessq.fsf@yhuang-dev.intel.com>
-        <20200924063038.GD1023012@optiplex-lnx>
-Date:   Thu, 24 Sep 2020 14:57:20 +0800
-In-Reply-To: <20200924063038.GD1023012@optiplex-lnx> (Rafael Aquini's message
-        of "Thu, 24 Sep 2020 02:30:38 -0400")
-Message-ID: <87y2kzd5m7.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1727134AbgIXG5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:57:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726902AbgIXG5y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:57:54 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E880C0613CE;
+        Wed, 23 Sep 2020 23:57:54 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600930672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5rTYnFSI7MvYdctqS1tc/c91OuHk2uQv9NNDSCQ04XQ=;
+        b=ToSaPZLxQ2AH6wpji2/x8TcisM3A51I/7u6foK9kSTrf7OV6+B/sYvPqQhMtEJrg0N9zIx
+        Cxs2etUyPDaehZQCOzhxH7PpvSyJSfy+zT5nw6FTVB78t6JNp7mDPmryw8BrJtWSznRbjf
+        8WXrnLC1goQovtz1OVkxeDIie+039a2C5Ao2dLue3fpVFSN5R/cBi6m5tXzS9aMxE6UJwX
+        Uwp2HtahcdV3lHGQhtB2rKe1baF/Au/D2y5x0sKC4vrpIL/XuoPxLZOPdKWgIlvAl5aFPa
+        sm2IQ31/n393ddHyPDhkeJ4Ev5cXAXShQDmJK93cRSzGvYG6PFna1CfbOLLbSA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600930672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5rTYnFSI7MvYdctqS1tc/c91OuHk2uQv9NNDSCQ04XQ=;
+        b=EvF/NhfcVha3UwOSEREyL46c1SondfygAd7QtbHcK6NXwedthX3cPGyjT7D4JChbCJd2jo
+        pNgVY6bwfByW4sDA==
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     peterz@infradead.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list\:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of kmap_atomic & friends
+In-Reply-To: <20200923171234.0001402d@oasis.local.home>
+References: <20200919091751.011116649@linutronix.de> <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com> <87mu1lc5mp.fsf@nanos.tec.linutronix.de> <87k0wode9a.fsf@nanos.tec.linutronix.de> <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com> <87eemwcpnq.fsf@nanos.tec.linutronix.de> <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com> <87a6xjd1dw.fsf@nanos.tec.linutronix.de> <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com> <87sgbbaq0y.fsf@nanos.tec.linutronix.de> <20200923084032.GU1362448@hirez.programming.kicks-ass.net> <20200923115251.7cc63a7e@oasis.local.home> <874kno9pr9.fsf@nanos.tec.linutronix.de> <20200923171234.0001402d@oasis.local.home>
+Date:   Thu, 24 Sep 2020 08:57:52 +0200
+Message-ID: <871riracgf.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rafael Aquini <aquini@redhat.com> writes:
+On Wed, Sep 23 2020 at 17:12, Steven Rostedt wrote:
+> On Wed, 23 Sep 2020 22:55:54 +0200
+> Then scratch the idea of having anonymous local_lock() and just bring
+> local_lock in directly? Then have a kmap local lock, which would only
+> block those that need to do a kmap.
 
->> 
->> If there's a race, we should fix the race.  But the code path for
->> swapcache insertion is,
->> 
->> add_to_swap()
->>   get_swap_page() /* Return if fails to allocate */
->>   add_to_swap_cache()
->>     SetPageSwapCache()
->> 
->> While the code path to split THP is,
->> 
->> split_huge_page_to_list()
->>   if PageSwapCache()
->>     split_swap_cluster()
->> 
->> Both code paths are protected by the page lock.  So there should be some
->> other reasons to trigger the bug.
+That's still going to end up in lock ordering nightmares and you lose
+the ability to use kmap_local from arbitrary contexts which was again
+one of the goals of this exercise.
+
+Aside of that you're imposing reentrancy protections on something which
+does not need it in the first place.
+
+> Now as for migration disabled nesting, at least now we would have
+> groupings of this, and perhaps the theorists can handle that. I mean,
+> how is this much different that having a bunch of tasks blocked on a
+> mutex with the owner is pinned on a CPU?
 >
-> As mentioned above, no they seem to not be protected (at least, not the
-> same page, depending on the case). While add_to_swap() will assure a 
-> page_lock on the compound head, split_huge_page_to_list() does not.
->
+> migrate_disable() is a BKL of pinning affinity.
 
-int split_huge_page_to_list(struct page *page, struct list_head *list)
-{
-	struct page *head = compound_head(page);
-	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
-	struct deferred_split *ds_queue = get_deferred_split_queue(head);
-	struct anon_vma *anon_vma = NULL;
-	struct address_space *mapping = NULL;
-	int count, mapcount, extra_pins, ret;
-	unsigned long flags;
-	pgoff_t end;
+No. That's just wrong. preempt disable is a concurrency control,
+i.e. protecting against reentrancy on a given CPU. But it's a cpu global
+protection which means that it's not protecting a specific code path.
 
-	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
-	VM_BUG_ON_PAGE(!PageLocked(head), head);
+Contrary to preempt disable, migrate disable is not protecting against
+reentrancy on a given CPU. It's a temporary restriction to the scheduler
+on placement.
 
-I found there's page lock checking in split_huge_page_to_list().
+The fact that disabling preemption implicitely disables migration does
+not make them semantically equivalent.
 
-Best Regards,
-Huang, Ying
+> If we only have local_lock() available (even on !RT), then it makes
+> the blocking in groups. At least this way you could grep for all the
+> different local_locks in the system and plug that into the algorithm
+> for WCS, just like one would with a bunch of mutexes.
+
+You cannot do that on RT at all where migrate disable is substituting
+preempt disable in spin and rw locks. The result would be the same as
+with a !RT kernel just with horribly bad performance.
+
+That means the stacking problem has to be solved anyway.
+
+So why on earth do you want to create yet another special duct tape case
+for kamp_local() which proliferates inconsistency instead of aiming for
+consistency accross all preemption models?
+
+Thanks,
+
+        tglx
