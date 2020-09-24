@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911C5277115
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8401B277117
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727764AbgIXMdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:33:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:44740 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727660AbgIXMdc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:33:32 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 19860113E;
-        Thu, 24 Sep 2020 05:33:32 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 352CC3F73B;
-        Thu, 24 Sep 2020 05:33:30 -0700 (PDT)
-References: <20200921163557.234036895@infradead.org> <20200921163845.769861942@infradead.org> <jhj5z83mlvu.mognet@arm.com> <20200924122934.GI2628@hirez.programming.kicks-ass.net>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
-Subject: Re: [PATCH 7/9] sched: Add migrate_disable()
-In-reply-to: <20200924122934.GI2628@hirez.programming.kicks-ass.net>
-Date:   Thu, 24 Sep 2020 13:33:25 +0100
-Message-ID: <jhj4knnmk16.mognet@arm.com>
+        id S1727781AbgIXMdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:33:52 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:38261 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727570AbgIXMdv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:33:51 -0400
+X-UUID: c6d82b8a50b644eab02e850af9bf1686-20200924
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3xhvL/jxHoFM4lCpaJFVgA5szl9rK3NZUTpqOY0oS0A=;
+        b=YgF878XPHogI4aTUl5UXQky6mdiiEW+RWb6ulCfUOWiPS5hWL6B3fqUN5C0ngx5Nlx2pbx55PDn1qNdeFUCuublJ5JySfEtLL3ftvy2zXc/0j/oI4H5haOX1q70dbsv9rbe6xcB6I2GLmW6hC8qVP6sB5tms4ariWW/MlE6q86A=;
+X-UUID: c6d82b8a50b644eab02e850af9bf1686-20200924
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1621613781; Thu, 24 Sep 2020 20:33:47 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Sep 2020 20:33:42 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Sep 2020 20:33:43 +0800
+Message-ID: <1600950825.19591.2.camel@mtksdccf07>
+Subject: Re: [PATCH v4 0/6] kasan: add workqueue and timer stack for generic
+ KASAN
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Alexander Potapenko <glider@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        "Andrey Konovalov" <andreyknvl@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        "Linux Memory Management List" <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 24 Sep 2020 20:33:45 +0800
+In-Reply-To: <CAG_fn=U_dshqBB8HBhGyYnn_vScTOcLJX=mfU+8Wi5wjZL2oYA@mail.gmail.com>
+References: <20200924040152.30851-1-walter-zh.wu@mediatek.com>
+         <CAG_fn=U_dshqBB8HBhGyYnn_vScTOcLJX=mfU+8Wi5wjZL2oYA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain
+X-TM-SNTS-SMTP: 06AAE36FCA1A35D7BBA6DD440E2BA708F1295AAE573EAC13CD5AE6AAD26BA90B2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gVGh1LCAyMDIwLTA5LTI0IGF0IDEzOjUxICswMjAwLCAnQWxleGFuZGVyIFBvdGFwZW5rbycg
+dmlhIGthc2FuLWRldg0Kd3JvdGU6DQo+ID4gLS0tDQo+ID4gRG9jdW1lbnRhdGlvbi9kZXYtdG9v
+bHMva2FzYW4ucnN0IHwgIDUgKysrLS0NCj4gPiBrZXJuZWwvdGltZS90aW1lci5jICAgICAgICAg
+ICAgICAgfCAgMyArKysNCj4gPiBrZXJuZWwvd29ya3F1ZXVlLmMgICAgICAgICAgICAgICAgfCAg
+MyArKysNCj4gPiBsaWIvdGVzdF9rYXNhbl9tb2R1bGUuYyAgICAgICAgICAgfCA1NSArKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gbW0v
+a2FzYW4vcmVwb3J0LmMgICAgICAgICAgICAgICAgIHwgIDQgKystLQ0KPiA+IDUgZmlsZXMgY2hh
+bmdlZCwgNjYgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gDQo+IFdoaWxlIGF0IGl0
+LCBjYW4geW91IHJlbW92ZSBhIG1lbnRpb24gb2YgY2FsbF9yY3UoKSBmcm9tIHRoZQ0KPiBrYXNh
+bl9yZWNvcmRfYXV4X3N0YWNrKCkgaW1wbGVtZW50YXRpb24sIGFzIGl0IGlzIG5vIG1vcmUNCj4g
+UkNVLXNwZWNpZmljPw0KPiANCg0KVGhhbmsgeW91IGZvciB5b3VyIHJlbWluZGVyLiB2NSB3aWxs
+IGRvIGl0LiANCg0KV2FsdGVyDQo=
 
-On 24/09/20 13:29, Peter Zijlstra wrote:
-> On Thu, Sep 24, 2020 at 12:53:25PM +0100, Valentin Schneider wrote:
->> On 21/09/20 17:36, Peter Zijlstra wrote:
->>
->> [...]
->>
->> > +void migrate_enable(void)
->> > +{
->> > +	if (--current->migration_disabled)
->> > +		return;
->> > +
->> > +	barrier();
->> > +
->> > +	if (p->cpus_ptr == &p->cpus_mask)
->> > +		return;
->>
->> If we get to here this means we're the migrate_enable() invocation that
->> marks the end of the migration_disabled region. How can cpus_ptr already
->> point back to current's cpus_mask?
->
-> It might never have been changed away.
->
->
->       migrate_disable()
->         ->migration_disabled++;
->       |	|
->       |	|
->       |	v
->       |	migrate_disable_switch()
->       |	  if (->cpus_ptr == &->cpus_mask)
->       |	    __do_set_cpus_allowed(.new_mask = cpumask_of())
->       |	|
->       |	|
->       v	v
->       migrate_enable()
->         ->migration_disabled--;
->
->
-> Only if we've passed through a context switch between migrate_disable()
-> and migrate_enable() will the mask have been changed.
-
-Doh, yes indeed. Thanks.
