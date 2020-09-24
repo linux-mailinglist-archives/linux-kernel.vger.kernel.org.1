@@ -2,162 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7B2276DEE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C080E276DF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727427AbgIXJxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:53:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:40446 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgIXJxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:53:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DED27113E;
-        Thu, 24 Sep 2020 02:53:07 -0700 (PDT)
-Received: from ubuntu.arm.com (unknown [10.57.15.115])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E876C3F73B;
-        Thu, 24 Sep 2020 02:53:05 -0700 (PDT)
-From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
-        robh+dt@kernel.org, daniel.lezcano@linaro.org
-Cc:     morten.rasmussen@arm.com, chris.redpath@arm.com,
-        nicola.mazzucato@arm.com
-Subject: [PATCH v2 2/2] [RFC] CPUFreq: Add support for cpu-perf-dependencies
-Date:   Thu, 24 Sep 2020 10:53:47 +0100
-Message-Id: <20200924095347.32148-3-nicola.mazzucato@arm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200924095347.32148-1-nicola.mazzucato@arm.com>
-References: <20200924095347.32148-1-nicola.mazzucato@arm.com>
+        id S1727325AbgIXJyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:54:09 -0400
+Received: from mail-db8eur05on2116.outbound.protection.outlook.com ([40.107.20.116]:37217
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726380AbgIXJyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:54:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YS5h1NzTYX8M2FE8uhpyLaINAm6iWD/OSZoG2pRNqPR/6/vx78e7gRSydkkygEJIX6s9V4L5KHJhm9N2IEI6tdXBYnHW8+xtCqs5LrDB8bTls8LrSfmG69AxOhB9kw+wYES1CoGhWKuPmhB+cjOkTr3L+vdp6M3tUFWQt7XIWoF1AZ5yl+JIO+jFTtTswqZHzcH8scZn0YN9QN0LbBxCMPOoLFfnBfShKN3SaQkBM4r1xW443YHeuuONRZKBpYogPanNebEopSL2PHsLGXa3xcQrOAfjGEdxzRA4tND3f1m/uDYPyGJJ9p6CCzwzOVHwb8pr3ewmbMxx5NIuYFzi6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ec6ztxZRyHm3UMFo5CdGTbN2iud47Q99WwaDo7oQBXU=;
+ b=m2HW0YMCsmGV9PNnBIpvPe3gt7wldfaRy/TYtIdrFQ5UZrRsXmNRGHSXVBq/bz3DVAYwj/SaTqCbN3wb7TxXBm++J0w1EgC0qt4rNZVuQM8UCDFjlSnz6UnZOhe++zUfTCW5Mmsqk3LOdFTrmh2Hd1d9OYlnpqAoAUJQ8BXeFusbk1nnAyoiE3WRRQmIe5rM4QT1mucJ1dbufz9xN9G+4oaW9b5XKB7RamfAVd6azXLQp2bp5NV/7iS+qCjxX40YRnBMqnFRKBEZr81+W1t4iBf2fCm3pvM7+sLc5ucF8rYBYYb8pMhPjyxHJL2G2sOFZ6hV+Gp3iVVibOvrp0S/gA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=prevas.dk; dmarc=pass action=none header.from=prevas.dk;
+ dkim=pass header.d=prevas.dk; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=prevas.dk;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ec6ztxZRyHm3UMFo5CdGTbN2iud47Q99WwaDo7oQBXU=;
+ b=lG77YTjy6TIUASW/sWUkgcHs8u46xoIgRuFu9X6RF0wngYLx/fkxCuipZsRWP5ZHoU0cLINn60Jb+Ej4oe3YSi0woameF4N/trmJm+Hb9lftwApKO6YVgsqudZvsrDxDkBEzzBP5WL8NstNmlzVHCyOW3fBgz+kVQfWVBtefGbE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=prevas.dk;
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:3f::10)
+ by AM9PR10MB3989.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1f0::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.13; Thu, 24 Sep
+ 2020 09:54:05 +0000
+Received: from AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::acf4:4f51:6c3a:8cbc]) by AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::acf4:4f51:6c3a:8cbc%5]) with mapi id 15.20.3412.020; Thu, 24 Sep 2020
+ 09:54:05 +0000
+Subject: Re: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
+To:     Petr Mladek <pmladek@suse.com>,
+        John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+References: <20200922153816.5883-1-john.ogness@linutronix.de>
+ <20200922153816.5883-4-john.ogness@linutronix.de>
+ <20200923151129.GC6442@alley>
+From:   Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Message-ID: <aef3626f-56a0-9040-fc0e-224ada032d02@prevas.dk>
+Date:   Thu, 24 Sep 2020 11:54:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20200923151129.GC6442@alley>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR01CA0097.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::38) To AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:3f::10)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.16.11.132] (81.216.59.226) by AM0PR01CA0097.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Thu, 24 Sep 2020 09:54:04 +0000
+X-Originating-IP: [81.216.59.226]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5795a959-da76-4fb7-7666-08d8606fc650
+X-MS-TrafficTypeDiagnostic: AM9PR10MB3989:
+X-Microsoft-Antispam-PRVS: <AM9PR10MB3989BC06E2821A833EBCD52993390@AM9PR10MB3989.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Je8X2oVNk4BeA3gqhy62nFcEd0y5EWn6lFEmY+VGjYJjZJGWE6rSNEuTmqPTyA5pDoYApUct/8Zq3X97L2BFvf325WuRhJL6YnunQzYvjCeSFFDcUUhCDvi8gTxjXkwNKhx/GTWBlnfGlA7cMSTn6v4NYymjdbkRvCG1fNj7fA3R2qWF8k0zMHqeGyG96ZRvo7UALgKR2DXWBapGj4SkT9n8HiWvebFlvrABqydZxZ3/IiuczCWq0RsWPNkKyL45xDCP8wpqXoJ0MUy8fa1iXZqAPZph61DVclIpFGY4iPmUAjQXIN+GxpIi/TB5zACmGyP+f6FH1gid0ARgV93Nn8DT4Ifaq5LTtQHfxAgkXmfuAKRm/eMCJmuMe3+MEfh5
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39840400004)(376002)(366004)(346002)(396003)(136003)(66476007)(83380400001)(4326008)(44832011)(66946007)(31686004)(16576012)(110136005)(2906002)(6486002)(316002)(54906003)(186003)(8976002)(8936002)(956004)(52116002)(478600001)(66556008)(36756003)(26005)(8676002)(4744005)(2616005)(5660300002)(86362001)(16526019)(31696002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: vVnEy3XCA9Ih0W7mjadAxTdmU+0tzjmlxZysJkBzMDbSBVu1zmuiG91i2U+A8XoE5DYmPvAGzgsDRRsdJI48dv0eu8J46nzprp3NxTzqMp6cpTXd/7bpwdZ9LFDuff0R80KFPH2CrP328nd9oLhCIlWC3Ic2xXMmuLU4TnW689kmIbcVb01tBgEZtefS+AP/FZfNlV0clN3LEWjvGTW3dv4HNYWtdB+1FgWBWWulHdq81J7mo1T1m/UoPay3WB/vb4dQcF0dHsZxsTGx2gQpdgz/4EjARi2YSyxcHRXsLaCcbpBCy7nPLHJrSBAtWBtYDHcbgPZl2Y2FjKvvFtNOn7N2mu7clKNCblL9Un2pX2qhQytel4YzroEfkTIKxYzAAwvy0H4TeCsypDCCiQqOKboDeINMSqbFwUaYIHL31FKUL5yK/aQDXGW44OHnTlK4JeXkeJdiJrFPNIYEZ8g0mlff5I46/V10/Fm8IJmcqHjCFmhyCFrv/qUJF1z88CQaUSAkSgX8TY0rSznEVBMTcwfWfqnkBDbB1KlTaQjdo3OJ68+ne0w4HTk500jzvNB5kiCyFrZ0JmMpS6GKmsWhVdDVJ4TMNWgxQDIbNzFAhKCIGofdScLCyWuOSvJUpyXsgsg3wLfJ68OnwxiqKUaqgA==
+X-OriginatorOrg: prevas.dk
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5795a959-da76-4fb7-7666-08d8606fc650
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB1874.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 09:54:05.8832
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d350cf71-778d-4780-88f5-071a4cb1ed61
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 715ODeKxkipxZYvVktSZacjyWOuHfa0v/d1DU3zJG/P7L7DGLbAMs/3+ZkP9HRJdWDk27w+pT/Ghbz+uXoTfaiI+o/hkJK0JCtLuG0ShdzE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB3989
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am seeking some feedback/comments on the following approach.
+On 23/09/2020 17.11, Petr Mladek wrote:
+> On Tue 2020-09-22 17:44:14, John Ogness wrote:
+>> vprintk_store() is using a single static buffer as a temporary
+>> sprint buffer for the message text. This will not work once
+>> @logbuf_lock is removed. Replace the single static buffer with a
+>> pool of buffers.
+> 
+> The buffer is used because we do not know the length of the
+> formatted message to reserve the right space in the ring buffer
+> in advance.
+> 
+> There was the idea to call vsprintf(NULL, fmt, args) to count
+> the length in advance.
 
-Intro:
-Info of performance depency for cpus will be beneficial for systems
-where f/w description of the CPU performance control domain is different
-from the clock domain, e.g. per-CPU control with multiple CPUs sharing
-clock, and kernel OSPM s/w components need to take CPU performance
-dependency into account.
-Essentially these s/w components will have to be provided with
-this information from dt and this RFC is presenting a possible way
-to do so.
+sprintf is dog slow. If you do this, perhaps say "we can afford to use
+128 bytes of stack" and do vsprintf(stackbuf, 128, fmt, args) to do the
+counting, and in the vast majority of cases where the text fits we don't
+need to do vsprintf() again.
 
-Little details about implementation are given, as this RFC aims to
-present the overall approach.
-
-Proposal:
-The cpufreq framework currently assumes that a policy covers a group of
-CPUs that are controlled together. The energy model and thermal
-frameworks assume that the policy cpumask describes performance
-dependency relation. This assumption is no longer generally valid, so we
-need a way to represent both control and performance relation in cpufreq.
-
-The proposal is to have one cpufreq_policy instance per control domain,
-and have a new cpumask 'dependent_cpus' to the policy to represent the
-CPU performance dependencies.
-
-The main reason for a new cpumaks is that although 'related_cpus'
-could be (or could have been) used for such purpose, its meaning has
-changed over time. Initially it was designed specifically for this
-purpose[1], but eventually it has changed to online + offline cpus when
-sw coordination in use [2,3].
-
-There is also a 'shared_type' field in cpufreq_policy which provides
-info about coordination type (NONE, SW_ANY, SW_ALL, HW). Currently it's in
-use only for ACPI but I assume it can be used to indicate the coordination
-type even out of ACPI itself. Currently there is no use of TYPE_HW.
-
-Provided that the cpufreq driver will populate dependent_cpus and
-set shared_type, the s/w components that rely on such description (we
-focus on energy-model and cpufreq_cooling for now) will always be provided
-with the correct information, when picking the new cpumask.
-
-Proposed changes (at high level)(4):
-
-1) cpufreq: Add new dependent_cpus cpumaks in cpufreq_policy
-
-   * New cpumask addition
-   <snippet>
-struct cpufreq_policy {
-        cpumask_var_t           related_cpus; /* Online + Offline CPUs */
-        cpumask_var_t           real_cpus; /* Related and present */
-
-+       /*
-+        * CPUs with hardware clk/perf dependencies
-+        *
-+        * For sw components that rely on h/w info of clk dependencies when hw
-+        * coordinates. This cpumask should always reflect the hw dependencies.
-+        */
-+       cpumask_var_t           dependent_cpus;                 /* all clk-dependent cpus */
-+
-        unsigned int            shared_type; /* ACPI: ANY or ALL affected CPUs
-   </snippet>
-
-   * Fallback mechanism for dependent_cpus. With this, s/w components can
-     always pick dependent_cpus regardless the coordination type.
-   <snippet>
-static int cpufreq_online(unsigned int cpu)
-
-                /* related_cpus should at least include policy->cpus. */
-                cpumask_copy(policy->related_cpus, policy->cpus);
-+
-+               /* dependent_cpus should differ only when hw coordination is in place */
-+               if (policy->shared_type != CPUFREQ_SHARED_TYPE_HW)
-+                       cpumask_copy(policy->dependent_cpus, policy->cpus);
-        }
-   </snippet>
-
-   * Add sysfs attribute for dependent_cpus
-
-2) drivers/thermal/cpufreq_cooling: Replace related_cpus with dependent_cpus
-
-3) drivers/firmware/arm_scmi/perf.c: Parse dt for `cpu-performance-dependencies`
-
-   * Parse dt for `cpu-performance-dependencies` optional node
-
-   * Store internally performance dependencies
-
-   * Add api to get depedent_cpus if required
-
-4) drivers/cpufreq/scmi-cpufreq: Register EM device with the proper cpumask
-
-   * Check for performance dependencies and get dependent_cpus
-
-   * Set policy->shared_type accordingly
-
-   * Provide to EM the correct performance dependencies information
-   <snippet>
-static int scmi_cpufreq_init(struct cpufreq_policy *policy)
-        policy->fast_switch_possible =
-                handle->perf_ops->fast_switch_possible(handle, cpu_dev);
-
--       em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, policy->cpus);
-+       /*
-+        * EM needs accurate information about clk boundaries, thus provide the
-+        * correct cpumask.
-+        */
-+       if (handle->perf_ops->has_perf_deps(handle))
-+               em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb,
-+                                       policy->dependent_cpus);
-+       else
-+               em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb,
-+                                           policy->cpus);
-   </snippet>
-
-Any other suggestions are welcome.
-
-Thanks
-Nicola
-
-[1] 'commit e8628dd06d66 ("[CPUFREQ] expose cpufreq coordination requirements regardless of coordination mechanism")'
-[2] 'commit 951fc5f45836 ("cpufreq: Update Documentation for cpus and related_cpus")'
-[3] 'commit f4fd3797848a ("acpi-cpufreq: Add new sysfs attribute freqdomain_cpus")'
--- 
-2.27.0
-
+Rasmus
