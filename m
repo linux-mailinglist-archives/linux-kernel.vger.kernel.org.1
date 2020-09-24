@@ -2,151 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C8D277414
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24CAF277418
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbgIXOeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:34:02 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:45115 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728088AbgIXOeC (ORCPT
+        id S1728337AbgIXOeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:34:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728088AbgIXOeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:34:02 -0400
-Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08OEXjYB007803
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 10:33:45 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 1FBFD42003C; Thu, 24 Sep 2020 10:33:45 -0400 (EDT)
-Date:   Thu, 24 Sep 2020 10:33:45 -0400
-From:   "Theodore Y. Ts'o" <tytso@mit.edu>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-Message-ID: <20200924143345.GD482521@mit.edu>
-References: <68510957-c887-8e26-4a1a-a7a93488586a@kernel.dk>
- <20200904035528.GE558530@mit.edu>
- <20200915044519.GA38283@mit.edu>
- <20200915073303.GA754106@T590>
- <20200915224541.GB38283@mit.edu>
- <20200915230941.GA791425@T590>
- <20200916202026.GC38283@mit.edu>
- <20200917022051.GA1004828@T590>
- <20200917143012.GF38283@mit.edu>
- <20200924005901.GB1806978@T590>
+        Thu, 24 Sep 2020 10:34:03 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE3FC0613CE;
+        Thu, 24 Sep 2020 07:34:03 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id 185so3818813oie.11;
+        Thu, 24 Sep 2020 07:34:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fq0zugItcF1BHyiJdFIvA0GVCu5hDXXnGo1JwlqfSGg=;
+        b=Mu5iS2/0yA25dRJ+hSiXFp1spYUCVWRChGOvq0ZDyVdw2zBXq2WEOgY89IvmQv3HCh
+         YONAaO9oxQJhopBcThva44JMtywEzVb59OwGMjMM2EjUwS81d7ESQVZpwG0RIYx0294w
+         WOPXCZKnULZbzo9X3uYvMBl70H1y9gGKvlW/bj8uT6QQHUqDmvqn8oMhNmcJZvuKkaAk
+         tW48ooe45RG4ARae8WQpl9Dxbduo+HncUvIseUD63ABm1BAwgv4t7jwq/SOPES/Yo0yM
+         n+jUb+Nz3+6wr2Czqu0VSMZO0Cm16KE/2nIb6wUlFztwIlOZt2S4xHL/dEV3TtBj8+s0
+         sIcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=fq0zugItcF1BHyiJdFIvA0GVCu5hDXXnGo1JwlqfSGg=;
+        b=psb0FnMtentpE7e48ONCxv0pBIhHhYYbRN0ikruBbDbWWInaO/s3fjYaxVNsC/vxE2
+         zXhXxyZVRTqQO5uO5Dmox3raRibE5lhaFeKqMrGdw/B3Pvx7F9gdEGEOpvc5zVCgovkO
+         9ATexRjvIdpdcQMe/7xzL0S9yAIB1a0LsgfeOU09Qbdh/y/CeR+f9jZt9NLknOm0RK9u
+         ykA/HOcmuZ0mfRQUQi3PrhDWZkpmUakAP6PK6GvaXAGIzT7lXID0sni3ksn9amGHp3iU
+         k1Y0l5AMhiB9kFGsYD5kUKzxB8RmwQueBCroC1skVKXxonI/ehJi56DpLD0HiKJT7L71
+         XQKA==
+X-Gm-Message-State: AOAM530/rlZNWRnmiixSAkrbuMziq2QMHEzarw5PGwYfMTi6TECukXpa
+        NvdWsJel2HcHfLtE8HPPFjKpX/AMf34=
+X-Google-Smtp-Source: ABdhPJw3yFrHa8qGybEJzkGOucvz9sGZrrMAAPNfMEj4FrmozO0rUHrCqSrK2GQjl/FxbMDo9ElN8w==
+X-Received: by 2002:aca:1716:: with SMTP id j22mr2743559oii.44.1600958041613;
+        Thu, 24 Sep 2020 07:34:01 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d22sm730454oij.0.2020.09.24.07.34.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 07:34:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH -next] usb: typec: Remove set but not used variable
+To:     Li Heng <liheng40@huawei.com>, heikki.krogerus@linux.intel.com
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1600956767-10427-1-git-send-email-liheng40@huawei.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <fe671faa-9975-be20-22f5-31a97e3c8859@roeck-us.net>
+Date:   Thu, 24 Sep 2020 07:33:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924005901.GB1806978@T590>
+In-Reply-To: <1600956767-10427-1-git-send-email-liheng40@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 08:59:01AM +0800, Ming Lei wrote:
+On 9/24/20 7:12 AM, Li Heng wrote:
+> Fixes gcc '-Wunused-but-set-variable' warning:
 > 
-> The list corruption issue can be reproduced on kvm/qumu guest too when
-> running xfstests(ext4) generic/038.
+> drivers/usb/typec/tcpm/tcpm.c:1620:39: warning:
+> ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
 > 
-> However, the issue may become not reproduced when adding or removing memory
-> debug options, such as adding KASAN.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Li Heng <liheng40@huawei.com>
 
-Can you reliably reprodue this crash?  And if so, with what config and
-what kernel version.
+I thought there was a patch series underway which started using it,
+but maybe my memory defeats me. Either case, it doesn't make much sense
+to remove the ops variable without removing the associated functions
+as well.
 
-One of the reasons why I had gone silent on this bug is that I've been
-trying many, many configurations and configurations which reliably
-reproduced on say, -rc4 would not reproduce on -rc5, and then I would
-get a completely different set of results on -rc6.  So I've been
-trying to run a lot of different experiments to try to understand what
-might be going on, since it seems pretty clear this must be a very
-timing-sensitive failure.
+Guenter
 
-I also found that the re-occrance went down significantly if I enabled
-KASAN, and while it didn't go away, I wasn't able to get a KASAN
-failure to trigger, either.  Turning off CONFIG_PROVE_LOCKING and a
-*lot* of other debugging configs made the problem vanish in -rc4, but
-that trick didn't work with -rc5 or -rc6.
-
-Each time I discovered one of these things, I was about to post to the
-e-mail thread, only to have a confirmation test run on a different
-kernel version make the problem go away.  In particular, your revert
-helped with -rc4 and -rc6 IIRC, but it didn't help in -rc5.....
-
-HOWEVER, thanks to a hint from a colleague at $WORK, and realizing
-that one of the stack traces had virtio balloon in the trace, I
-realized that when I switched the GCE VM type from e1-standard-2 to
-n1-standard-2 (where e1 VM's are cheaper because they use
-virtio-balloon to better manage host OS memory utilization), problem
-has become, much, *much* rarer (and possibly has gone away, although
-I'm going to want to run a lot more tests before I say that
-conclusively) on my test setup.  At the very least, using an n1 VM
-(which doesn't have virtio-balloon enabled in the hypervisor) is
-enough to unblock ext4 development.
-
-Any chance your kvm/qemu configuration might have been using
-virtio-ballon?  Because other ext4 developers who have been using
-kvm-xftests have not had any problems....
-
-> When I enable PAGE_POISONING, double free on kmalloc(192) is captured:
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 6 ------
+>  1 file changed, 6 deletions(-)
 > 
-> [ 1198.317139] slab: double free detected in cache 'kmalloc-192', objp ffff89ada7584300^M
-> [ 1198.326651] ------------[ cut here ]------------^M
-> [ 1198.327969] kernel BUG at mm/slab.c:2535!^M
-> [ 1198.329129] invalid opcode: 0000 [#1] SMP PTI^M
-> [ 1198.333776] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc4_quiesce_srcu-xfstests #102^M
-> [ 1198.336085] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-prebuilt.qemu.org 04/01/2014^M
-> [ 1198.339826] RIP: 0010:free_block.cold.92+0x13/0x15^M
-> [ 1198.341472] Code: 8d 44 05 f0 eb d0 48 63 83 e0 00 00 00 48 8d 54 05 f8 e9 4b 81 ff ff 48 8b 73 58 48 89 ea 48 c7 c7 98 e7 4a 9c e8 20 c3 eb ff <0f> 0b 48 8b 73 58 48 c7 c2 20 e8 4a 9c 48 c7 c7 70 32 22 9c e8 19^M
-> [ 1198.347331] RSP: 0018:ffff982e40710be8 EFLAGS: 00010046^M
-> [ 1198.349091] RAX: 0000000000000048 RBX: ffff89adb6441400 RCX: 0000000000000000^M
-> [ 1198.351839] RDX: 0000000000000000 RSI: ffff89adbaa97800 RDI: ffff89adbaa97800^M
-> [ 1198.354572] RBP: ffff89ada7584300 R08: 0000000000000417 R09: 0000000000000057^M
-> [ 1198.357150] R10: 0000000000000001 R11: ffff982e40710aa5 R12: ffff89adbaaae598^M
-> [ 1198.359067] R13: ffffe7bc819d6108 R14: ffffe7bc819d6100 R15: ffff89adb6442280^M
-> [ 1198.360975] FS:  0000000000000000(0000) GS:ffff89adbaa80000(0000) knlGS:0000000000000000^M
-> [ 1198.363202] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033^M
-> [ 1198.365986] CR2: 000055f6a3811318 CR3: 000000017adca005 CR4: 0000000000770ee0^M
-> [ 1198.368679] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000^M
-> [ 1198.371386] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400^M
-> [ 1198.374203] PKRU: 55555554^M
-> [ 1198.375174] Call Trace:^M
-> [ 1198.376165]  <IRQ>^M
-> [ 1198.376908]  ___cache_free+0x56d/0x770^M
-> [ 1198.378355]  ? kmem_freepages+0xa0/0xf0^M
-> [ 1198.379814]  kfree+0x91/0x120^M
-> [ 1198.382121]  kmem_freepages+0xa0/0xf0^M
-> [ 1198.383474]  slab_destroy+0x9f/0x120^M
-> [ 1198.384779]  slabs_destroy+0x6d/0x90^M
-> [ 1198.386110]  ___cache_free+0x632/0x770^M
-> [ 1198.387547]  ? kmem_freepages+0xa0/0xf0^M
-> [ 1198.389016]  kfree+0x91/0x120^M
-> [ 1198.390160]  kmem_freepages+0xa0/0xf0^M
-> [ 1198.391551]  slab_destroy+0x9f/0x120^M
-> [ 1198.392964]  slabs_destroy+0x6d/0x90^M
-> [ 1198.394439]  ___cache_free+0x632/0x770^M
-> [ 1198.395896]  kmem_cache_free.part.75+0x19/0x70^M
-> [ 1198.397791]  rcu_core+0x1eb/0x6b0^M
-> [ 1198.399829]  ? ktime_get+0x37/0xa0^M
-> [ 1198.401343]  __do_softirq+0xdf/0x2c5^M
-> [ 1198.403010]  asm_call_on_stack+0x12/0x20^M
-> [ 1198.404847]  </IRQ>^M
-> [ 1198.405799]  do_softirq_own_stack+0x39/0x50^M
-> [ 1198.407621]  irq_exit_rcu+0x97/0xa0^M
-> [ 1198.409127]  sysvec_apic_timer_interrupt+0x2c/0x80^M
-> [ 1198.410608]  asm_sysvec_apic_timer_interrupt+0x12/0x20^M
-> [ 1198.411883] RIP: 0010:default_idle+0x13/0x20^M
-> [ 1198.412994] Code: 89 44 24 20 48 83 c0 22 48 89 44 24 28 eb c7 e8 03 93 ff ff cc cc cc 0f 1f 44 00 00 e9 07 00 00 00 0f 00 2d 11 ec 55 00 fb f4 <c3> 66 66 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44 00 00 65 48 8b 04^M
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 9280654..1542eaa 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1617,12 +1617,6 @@ static int tcpm_altmode_vdm(struct typec_altmode *altmode,
+>  	return 0;
+>  }
+> 
+> -static const struct typec_altmode_ops tcpm_altmode_ops = {
+> -	.enter = tcpm_altmode_enter,
+> -	.exit = tcpm_altmode_exit,
+> -	.vdm = tcpm_altmode_vdm,
+> -};
+> -
+>  /*
+>   * PD (data, control) command handling functions
+>   */
+> --
+> 2.7.4
+> 
 
-Hmm, so that this looks like some kind of RCU involvement?  Some kind
-of object that had been scheduled to be freed via RCU, but then got
-freed before RCU cleanup happened?
 
-The question then is what subsystem the object involved came from.
-
-    	     	     	  	    	       - Ted
