@@ -2,322 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 600832766BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DEB2766BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726572AbgIXDGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 23:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37088 "EHLO
+        id S1726626AbgIXDGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 23:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgIXDGI (ORCPT
+        with ESMTP id S1726358AbgIXDGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 23:06:08 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4829C0613CE;
-        Wed, 23 Sep 2020 20:06:07 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id k15so2077226wrn.10;
-        Wed, 23 Sep 2020 20:06:07 -0700 (PDT)
+        Wed, 23 Sep 2020 23:06:15 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2919FC0613CE;
+        Wed, 23 Sep 2020 20:06:15 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id i17so2131873oig.10;
+        Wed, 23 Sep 2020 20:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u+AMXhkc8gQOOArFCuMtLDRMg0ycafzPZM+2quzOAFg=;
-        b=KS+yIFZUeS/PUDTUKGGTQsqHupnyMwA3s1N/ks81eixFP5uVUzK0y/63T5cNr327Xx
-         6LoIbWbD/nyUdI0AvFgGz4uRQKOIfztyhwGOK6Ay2O+VA4d5ihkNjpm6Uv3OoSQdf0KF
-         K9b40mOtqTjqllMcCikNhed+QaCG7keqm67Bzd5+uZZq4zbv6+USoQ2ysqGaRFOev7wk
-         dk7ARQDWHpeumc9maX1arMdJDZx9hflMaO/lygxJz6cMjctMMqLj5Nn/leFYnL2sYmrY
-         2nrnP911NBgl9V4aPQQKn7ZCQpcKXoqGBZbdbA2Qz9I+K8qMyWgYmwONaWvXck28s0g2
-         6TGA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=AKvj7PNebl1pwBbwjLcg7LPGpeU6dsk0+5GMEfBC318=;
+        b=JWaEvSIiN96ozuP3NNvNGwmtRbWIxA4zv+874uiIaMd1APXl4FKLyXkNxqocyWyLtV
+         0/v5dF4HZBd2x+AZhS2zs8fL2Mzc7g47ooV4IRMUj4cuR8N/qizHSCjWMmjx2GQ5d5iO
+         s3ZITO23GXrMYC9X/La+S9ASex6RoEZuTcXft390eIvPOfEHTkO712n6PJbuEkT8GFtG
+         XlepVxXgJ5wu3iLsXaMlLH1E9sf5/RoVg1cxfrbyu6YAd3aHlDtwuQIbhL1To++8z+jr
+         2m8atr2qXRx/5D1g4AU/QzezcbtaR/Tw8a5wPLGZqZd61mZ6ol2Dy+OIBnxeW/KOAMVX
+         xMHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=u+AMXhkc8gQOOArFCuMtLDRMg0ycafzPZM+2quzOAFg=;
-        b=hiZU9BM7MBFrrJaaJ+Pi5f6adjtqyaUhCqMRbeCPvne64o3cZvddBNkRlJQXV/JP9z
-         XShUI4Mi32PsWHC2JHN+qMD0E2wyJzjPr7fRMIlA2j7t1zbusf2J/giapwenAgbuUsTN
-         brmMagxLHFqSYtacqYq9kSUFfDAM/PMp8LncmP3s8f+5a3zdQjSM02uHxk9qE8Ov3ASj
-         ZZ7gmFiTG9yQ3zLh3tWuqA9TKTry5LSJb8imbwp5Uh0O7XKgYq/gulCLqFAQMnTb47Lp
-         XFXeHbGcIeP3sCOnvcmwdORQylUYJ9spda4GH573pcCePEVU3XuZCQik0Z+Ft/xtRpF/
-         /OcQ==
-X-Gm-Message-State: AOAM5332U8RnI48VUinN8AUzikLNXi1A8lcc3YeUN+7v7vcyqe1HVqDE
-        lQkLnmyltxRCsZkeyyI6tSveRfHPnC8tAMY3GDzYmEnK
-X-Google-Smtp-Source: ABdhPJzvlLf/ESS96Z0UOO6R+IKLhoTuNhlPNNMBLXe0ODwve4RRV/DbrSW1+Y9zuttOdAXJF44gEkp5NmSJlJxn2/o=
-X-Received: by 2002:adf:80e4:: with SMTP id 91mr2546542wrl.223.1600916766170;
- Wed, 23 Sep 2020 20:06:06 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AKvj7PNebl1pwBbwjLcg7LPGpeU6dsk0+5GMEfBC318=;
+        b=K+S0gbacj6D9mnFC0VVwKbV/0jE9sFLmJemG4r5jRneySGOa1IatME4uskGnv4EUWS
+         j0y8jHRYYVCxPy7/1JHHtVtZbqdJaUXyJceJYTRo2sOLMebJaA97+yOyPq6Py1cCaZiL
+         jdeDDnRM0ke9X7CM9zVrhWt3ZKa7f7xTYjiJ1RDJI1CJbiPP+sVuVzNmBByw2oohSZlw
+         vPLMnkvDqN4VReETgM9o9qdjM96H/42gavdM5gq9lfQjsFdW4mP/xeG/53NpzBQAEiEI
+         nqFIVVJoT2xhhRO10K4mf8KeqRaJD81s/I4YAWtNZeKaRv7FwMQbpC5bv8WCUbAVc+Oi
+         34lw==
+X-Gm-Message-State: AOAM531oTZIiB6U/gkJ9EG79AoclDIJajT9TagN3ckiy2BllNptf87ry
+        4FJwOx48B7pRmNZt+kyw8xI=
+X-Google-Smtp-Source: ABdhPJwyxAOickP+q55D641vL7DUS+nsCA4A+2R9NqLAGpYfJFbJakLh46Vl639n+yjwi9ZepKO4ww==
+X-Received: by 2002:a05:6808:491:: with SMTP id z17mr1446898oid.110.1600916774336;
+        Wed, 23 Sep 2020 20:06:14 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d17sm504731oth.73.2020.09.23.20.06.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 23 Sep 2020 20:06:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 23 Sep 2020 20:06:12 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "xiao.mx.ma" <734056705@qq.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xiao.mx.ma@deltaww.com,
+        jiajia.feng@deltaww.com
+Subject: Re: [PATCH v4] hwmon:Driver for Delta power supplies
+Message-ID: <20200924030612.GA224951@roeck-us.net>
+References: <tencent_72114122A1CD54BA37F47AB40ED140D0F208@qq.com>
 MIME-Version: 1.0
-References: <20200923224206.68968-4-nickrterrell@gmail.com> <202009241007.ZmzDeiuB%lkp@intel.com>
-In-Reply-To: <202009241007.ZmzDeiuB%lkp@intel.com>
-From:   Nick Terrell <nickrterrell@gmail.com>
-Date:   Wed, 23 Sep 2020 20:05:55 -0700
-Message-ID: <CANr2Dbd1DXb66_Gf9aAB7PCn6=yz_Or5_JWZtm_cHndYrO+28A@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] lib: zstd: Upgrade to latest upstream zstd version 1.4.6
-To:     kernel test robot <lkp@intel.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>, kbuild-all@lists.01.org,
-        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        Petr Malat <oss@malat.biz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_72114122A1CD54BA37F47AB40ED140D0F208@qq.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 7:28 PM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Nick,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on kdave/for-next]
-> [also build test ERROR on f2fs/dev-test linus/master v5.9-rc6 next-20200923]
-> [cannot apply to cryptodev/master crypto/master]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Nick-Terrell/Update-to-zstd-1-4-6/20200924-064102
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-> config: h8300-randconfig-p002-20200923 (attached as .config)
-> compiler: h8300-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=h8300
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    h8300-linux-ld: lib/zstd/common/entropy_common.o: in function `MEM_swap32':
-> >> lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
-> >> h8300-linux-ld: lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
-> >> h8300-linux-ld: lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
-> >> h8300-linux-ld: lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/common/fse_decompress.o: in function `MEM_swap32':
-> >> lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/common/fse_decompress.o:lib/zstd/common/mem.h:179: more undefined references to `__bswapsi2' follow
->    h8300-linux-ld: lib/zstd/compress/zstd_compress.o: in function `MEM_swap64':
-> >> lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/compress/zstd_compress.o: in function `MEM_swap32':
-> >> lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/compress/zstd_compress.o:lib/zstd/compress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
->    h8300-linux-ld: lib/zstd/compress/zstd_double_fast.o: in function `MEM_swap64':
-> >> lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/compress/zstd_double_fast.o:lib/zstd/compress/../common/mem.h:192: more undefined references to `__bswapdi2' follow
->    h8300-linux-ld: lib/zstd/compress/zstd_opt.o: in function `MEM_swap32':
-> >> lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/compress/zstd_opt.o: in function `MEM_swap64':
-> >> lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
-> >> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/compress/zstd_opt.o:lib/zstd/compress/../common/mem.h:192: more undefined references to `__bswapdi2' follow
->    h8300-linux-ld: lib/zstd/decompress/huf_decompress.o: in function `MEM_swap32':
->    lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/huf_decompress.o:lib/zstd/decompress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
->    lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
->    lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o:lib/zstd/decompress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
->    lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
->    lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
->    lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
->    lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
->    lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
->    lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
->    lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
->    lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o:lib/zstd/decompress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
->    lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
->    lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress_block.o: in function `MEM_swap32':
->    lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
->    h8300-linux-ld: lib/zstd/decompress/zstd_decompress_block.o:lib/zstd/decompress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
-
-Looks like I need to fix these. It looks like I should use the swab*()
-functions from include/linux/swab.h. I'll put up a v4 shortly.
-
-> cppcheck warnings: (new ones prefixed by >>)
->
-> >> lib/zstd/decompress/zstd_ddict.c:147:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
->        if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
->                                   ^
-
-This one is a bit silly, but I will fix it.
-
-> >> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
->
->    ^
-> >> lib/zstd/compress/zstd_ldm.c:571:0: warning: Array 'rep[3]' accessed at index 3, which is out of bounds. [arrayIndexOutOfBounds]
->        ZSTD_blockCompressor const blockCompressor =
->    ^
-
-This seems like a false positive.
-
-> >> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
->
->    ^
-> >> lib/zstd/decompress/zstd_decompress.c:133:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
->        if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
->                                   ^
-> >> lib/zstd/decompress/zstd_decompress.c:1751:28: warning: Variable 'zds->inPos' is reassigned a value before the old one has been used. [redundantAssignment]
->                    zds->inPos = 0;   /* input is consumed */
->                               ^
->    lib/zstd/decompress/zstd_decompress.c:1747:28: note: Variable 'zds->inPos' is reassigned a value before the old one has been used.
->                    zds->inPos += loadedSize;
->                               ^
->    lib/zstd/decompress/zstd_decompress.c:1751:28: note: Variable 'zds->inPos' is reassigned a value before the old one has been used.
->                    zds->inPos = 0;   /* input is consumed */
->                               ^
-
-This is a false positive. It is incorrectly analyzing the control flow.
-
-> >> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
->
->    ^
-> >> lib/zstd/compress/zstd_compress.c:84:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
->        if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
->                                   ^
->    lib/zstd/compress/zstd_compress.c:200:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
->        if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
->                                   ^
->    lib/zstd/compress/zstd_compress.c:3345:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
->        if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
->                                   ^
-> >> lib/zstd/common/zstd_internal.h:401:27: warning: Array 'DeBruijnClz[32]' accessed at index 509099, which is out of bounds. [arrayIndexOutOfBounds]
->            return DeBruijnClz[(v * 0x07C4ACDDU) >> 27];
->                              ^
-
-This is a false positive. v is a 32-bit integer, so the index must be
-less than 2^(32-27) = 32, which is the size of the array.
-
->    lib/zstd/compress/zstd_compress.c:3494:40: note: Assignment 'limitedSrcSize=(uint32_t)(pledgedSrcSize<524288U?pledgedSrcSize:524288U)', assigned value is 524288
->                U32 const limitedSrcSize = (U32)MIN(pledgedSrcSize, 1U << 19);
->                                           ^
->    lib/zstd/compress/zstd_compress.c:3495:90: note: Calling function 'ZSTD_highbit32', 1st argument 'limitedSrcSize-1' value is 524287
->                U32 const limitedSrcLog = limitedSrcSize > 1 ? ZSTD_highbit32(limitedSrcSize - 1) + 1 : 1;
->                                                                                             ^
->    lib/zstd/common/zstd_internal.h:395:17: note: Assignment 'v=val', assigned value is 524287
->            U32 v = val;
->                    ^
->    lib/zstd/common/zstd_internal.h:396:0: note: Assignment 'v=v|(v>>1)', assigned value is 524287
->            v |= v >> 1;
->    ^
->    lib/zstd/common/zstd_internal.h:397:0: note: Assignment 'v=v|(v>>2)', assigned value is 524287
->            v |= v >> 2;
->    ^
->    lib/zstd/common/zstd_internal.h:398:0: note: Assignment 'v=v|(v>>4)', assigned value is 524287
->            v |= v >> 4;
->    ^
->    lib/zstd/common/zstd_internal.h:399:0: note: Assignment 'v=v|(v>>8)', assigned value is 524287
->            v |= v >> 8;
->    ^
->    lib/zstd/common/zstd_internal.h:400:0: note: Assignment 'v=v|(v>>16)', assigned value is 524287
->            v |= v >> 16;
->    ^
->    lib/zstd/common/zstd_internal.h:401:27: note: Array index out of bounds
->            return DeBruijnClz[(v * 0x07C4ACDDU) >> 27];
->                              ^
-> >> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
->
->    ^
-> >> lib/zstd/compress/zstd_lazy.c:663:74: warning: Overflow in pointer arithmetic, NULL pointer is subtracted. [nullPointerArithmetic]
->        const U32 dictAndPrefixLength = (U32)((ip - prefixLowest) + (dictEnd - dictLowest));
->                                                                             ^
->    lib/zstd/compress/zstd_lazy.c:658:70: note: Assignment 'dictEnd=dictMode==ZSTD_dictMatchState?dms->window.nextSrc:NULL', assigned value is 0
->        const BYTE* const dictEnd      = dictMode == ZSTD_dictMatchState ?
->                                                                         ^
->    lib/zstd/compress/zstd_lazy.c:663:74: note: Null pointer subtraction
->        const U32 dictAndPrefixLength = (U32)((ip - prefixLowest) + (dictEnd - dictLowest));
->                                                                             ^
-> >> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
->
->    ^
-> >> lib/zstd/compress/zstd_double_fast.c:97:75: warning: Overflow in pointer arithmetic, NULL pointer is subtracted. [nullPointerArithmetic]
->        const U32 dictAndPrefixLength  = (U32)((ip - prefixLowest) + (dictEnd - dictStart));
->                                                                              ^
->    lib/zstd/compress/zstd_double_fast.c:88:70: note: Assignment 'dictEnd=dictMode==ZSTD_dictMatchState?dms->window.nextSrc:NULL', assigned value is 0
->        const BYTE* const dictEnd      = dictMode == ZSTD_dictMatchState ?
->                                                                         ^
->    lib/zstd/compress/zstd_double_fast.c:97:75: note: Null pointer subtraction
->        const U32 dictAndPrefixLength  = (U32)((ip - prefixLowest) + (dictEnd - dictStart));
->                                                                              ^
-
-Seems like another false positive.
-
-> >> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
->
->    ^
->
-> # https://github.com/0day-ci/linux/commit/400786d3b08436113bcb3c9c16a97eefc31317c1
-> git remote add linux-review https://github.com/0day-ci/linux
-> git fetch --no-tags linux-review Nick-Terrell/Update-to-zstd-1-4-6/20200924-064102
-> git checkout 400786d3b08436113bcb3c9c16a97eefc31317c1
-> vim +179 lib/zstd/common/mem.h
->
->    173
->    174
->    175  MEM_STATIC U32 MEM_swap32(U32 in)
->    176  {
->    177  #if (defined (__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 403)) \
->    178    || (defined(__clang__) && __has_builtin(__builtin_bswap32))
->  > 179      return __builtin_bswap32(in);
->    180  #else
->    181      return  ((in << 24) & 0xff000000 ) |
->    182              ((in <<  8) & 0x00ff0000 ) |
->    183              ((in >>  8) & 0x0000ff00 ) |
->    184              ((in >> 24) & 0x000000ff );
->    185  #endif
->    186  }
->    187
->
+On Wed, Sep 23, 2020 at 11:48:05AM +0100, xiao.mx.ma wrote:
+> From: Delta <xiao.mx.ma@deltaww.com>
+> 
+> The <drivers/hwmon/pmbus/delta.c> provides a driver for Delta's modules.
+> Currently supports Q54SJ108A2 series and other series will continue to be
+> added in the future. And some customize functions such as R/W blackbox and
+> bootloader will be added in next revision.
+> 
+> Signed-off-by: Delta <xiao.mx.ma@deltaww.com>
+> 
+> --Patch v2 changelog:
+> 	Add delta.rst in Documentation/hwmon.
+> 	Tristate "DELTA" in Kconfig is changed to "DELTA_POWER_SUPPLIES".
+> 	Modify code: drop the excessive empty lines, correct the comment
+> content, adjust indent, remove extra brackets.
+> --Patch v3 changelog:
+> 	Add delta.rst to Documentation/hwmon/index.rst.
+> 	Tristate "DELTA_POWER_SUPPLIES" in Kconfig is changed to "Delta
+> Power Supplies".
+> --Patch v4 changelog:
+> 	Correct the spelling 'Temperature' in the delta.rst.
+> 	Add Write_protect when write command VOUT_OV_FAULT_RESPONSE and
+> IOUT_OC_FAULT_RESPONSE.
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+Change log goes here (after ---)
+
+>  Documentation/hwmon/delta.rst |  52 ++++++++++++
+>  Documentation/hwmon/index.rst |   1 +
+>  drivers/hwmon/pmbus/Kconfig   |   9 ++
+>  drivers/hwmon/pmbus/Makefile  |   1 +
+>  drivers/hwmon/pmbus/delta.c   | 153 ++++++++++++++++++++++++++++++++++
+>  5 files changed, 216 insertions(+)
+>  create mode 100644 Documentation/hwmon/delta.rst
+>  create mode 100644 drivers/hwmon/pmbus/delta.c
+> 
+> diff --git a/Documentation/hwmon/delta.rst b/Documentation/hwmon/delta.rst
+> new file mode 100644
+> index 000000000000..225cc9ddfa00
+> --- /dev/null
+> +++ b/Documentation/hwmon/delta.rst
+> @@ -0,0 +1,52 @@
+> +Kernel driver delta
+> +=====================
+> +
+> +Supported chips:
+> +
+> +  * DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, Q54SJ108A2NCPG, Q54SJ108A2NCPH
+> +
+> +    Prefix: 'Q54SJ108A2'
+> +
+> +    Addresses scanned: -
+> +
+> +    Datasheet: https://filecenter.delta-china.com.cn/products/download/01/0102/datasheet/DS_Q54SJ108A2.pdf
+> +
+> +Authors:
+> +    Delta <xiao.mx.ma@deltaww.com>
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver implements support for DELTA Q54SJ108A2NCAH, Q54SJ108A2NCDH, 
+> +Q54SJ108A2NCPG, and Q54SJ108A2NCPH 1/4 Brick DC/DC Regulated Power Module 
+> +with PMBus support.
+> +
+> +The driver is a client driver to the core PMBus driver.
+> +Please see Documentation/hwmon/pmbus.rst for details on PMBus client drivers.
+> +
+> +
+> +Usage Notes
+> +-----------
+> +
+> +This driver does not auto-detect devices. You will have to instantiate the
+> +devices explicitly. Please see Documentation/i2c/instantiating-devices.rst for
+> +details.
+> +
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +=================== ===== =======================================================
+> +curr1_alarm         RO    Output current alarm
+> +curr1_input         RO    Output current
+> +curr1_label         RO    'iout1'
+> +in1_alarm           RO    Input voltage alarm
+> +in1_input           RO    Input voltage
+> +in1_label           RO    'vin'
+> +in2_alarm           RO    Output voltage alarm
+> +in2_input           RO    Output voltage
+> +in2_label           RO    'vout1'
+> +temp1_alarm         RO    Temperature alarm
+> +temp1_input         RO    Chip temperature
+> +=================== ===== =======================================================
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 750d3a975d82..31c51545df72 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -51,6 +51,7 @@ Hardware Monitoring Kernel Drivers
+>     da9052
+>     da9055
+>     dell-smm-hwmon
+> +   delta
+>     dme1737
+>     drivetemp
+>     ds1621
+> diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+> index e35db489b76f..9b1863bfa946 100644
+> --- a/drivers/hwmon/pmbus/Kconfig
+> +++ b/drivers/hwmon/pmbus/Kconfig
+> @@ -44,6 +44,15 @@ config SENSORS_BEL_PFE
+>  
+>  	  This driver can also be built as a module. If so, the module will
+>  	  be called bel-pfe.
+> +	  
+> +config SENSORS_DELTA
+> +	tristate "Delta Power Supplies"
+> +	help
+> +	  If you say yes here you get hardware monitoring support for Delta
+> +	  Q54SJ108A2 series Power Supplies.
+> +
+> +	  This driver can also be built as a module. If so, the module will
+> +	  be called delta.
+>  
+>  config SENSORS_IBM_CFFPS
+>  	tristate "IBM Common Form Factor Power Supply"
+> diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+> index c4b15db996ad..8957f5337002 100644
+> --- a/drivers/hwmon/pmbus/Makefile
+> +++ b/drivers/hwmon/pmbus/Makefile
+> @@ -7,6 +7,7 @@ obj-$(CONFIG_PMBUS)		+= pmbus_core.o
+>  obj-$(CONFIG_SENSORS_PMBUS)	+= pmbus.o
+>  obj-$(CONFIG_SENSORS_ADM1275)	+= adm1275.o
+>  obj-$(CONFIG_SENSORS_BEL_PFE)	+= bel-pfe.o
+> +obj-$(CONFIG_SENSORS_DELTA)	+= delta.o
+>  obj-$(CONFIG_SENSORS_IBM_CFFPS)	+= ibm-cffps.o
+>  obj-$(CONFIG_SENSORS_INSPUR_IPSPS) += inspur-ipsps.o
+>  obj-$(CONFIG_SENSORS_IR35221)	+= ir35221.o
+> diff --git a/drivers/hwmon/pmbus/delta.c b/drivers/hwmon/pmbus/delta.c
+> new file mode 100644
+> index 000000000000..22e08325194d
+> --- /dev/null
+> +++ b/drivers/hwmon/pmbus/delta.c
+> @@ -0,0 +1,153 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Driver for Delta modules, Q54SJ108A2 series 1/4 Brick DC/DC
+> + * Regulated Power Module
+> + *
+> + * Copyright 2020 Delta LLC.
+> + */
+> +
+> +#include <linux/bits.h>
+> +#include <linux/err.h>
+> +#include <linux/i2c.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/of_device.h>
+> +#include <linux/pmbus.h>
+> +#include <linux/util_macros.h>
+> +#include "pmbus.h"
+> +
+> +enum chips {
+> +	Q54SJ108A2
+> +};
+> +
+> +static int delta_write_word_data(struct i2c_client *client, int page, int reg,
+> +			       u16 word)
+> +{
+> +	u8 value;
+> +	u8 ret;
+> +
+> +	switch (reg) {
+> +	case PMBUS_VOUT_OV_FAULT_RESPONSE:
+> +	case PMBUS_IOUT_OC_FAULT_RESPONSE:
+> +		value = 0;
+> +		ret = pmbus_write_byte_data(client, page, PMBUS_WRITE_PROTECT, value);
+> +		value = (u8)word;
+> +		return pmbus_write_byte_data(client, page, reg, value);
+> +	default:
+> +		return -ENODATA;
+> +	}
+> +}
+
+This function is pointless. Neither PMBUS_VOUT_OV_FAULT_RESPONSE nor
+PMBUS_IOUT_OC_FAULT_RESPONSE is written by the PMBus core.
+Also, even if it was used, the commands are byte commands,
+and write_work_data would never be called to issue those commands.
+
+Guenter
+
+> +
+> +static const struct pmbus_driver_info delta_info[] = {
+> +	[Q54SJ108A2] = {
+> +		.pages = 1,
+> +		.write_word_data = delta_write_word_data,
+> +
+> +		/* Source : Delta Q54SJ108A2 */
+> +		.format[PSC_TEMPERATURE] = linear,
+> +		.format[PSC_VOLTAGE_IN] = linear,
+> +		.format[PSC_CURRENT_OUT] = linear,
+> +
+> +		.func[0] = PMBUS_HAVE_VIN |
+> +		PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
+> +		PMBUS_HAVE_IOUT | PMBUS_HAVE_STATUS_IOUT |
+> +		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP |
+> +		PMBUS_HAVE_STATUS_INPUT,
+> +	},
+> +};
+> +
+> +static int delta_probe(struct i2c_client *client, const struct i2c_device_id *id)
+> +{
+> +	struct device *dev = &client->dev;
+> +	u8 buf[I2C_SMBUS_BLOCK_MAX + 1];
+> +	struct pmbus_driver_info *info;
+> +	enum chips chip_id;
+> +	int ret;
+> +
+> +	if (!i2c_check_functionality(client->adapter,
+> +				     I2C_FUNC_SMBUS_BYTE_DATA |
+> +				     I2C_FUNC_SMBUS_WORD_DATA |
+> +				     I2C_FUNC_SMBUS_BLOCK_DATA))
+> +		return -ENODEV;
+> +
+> +	if (client->dev.of_node)
+> +		chip_id = (enum chips)of_device_get_match_data(dev);
+> +	else
+> +		chip_id = id->driver_data;
+> +
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_ID, buf);
+> +	if (ret < 0) {
+> +		dev_err(&client->dev, "Failed to read Manufacturer ID\n");
+> +		return ret;
+> +	}
+> +	if (ret != 5 || strncmp(buf, "DELTA", 5)) {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer ID '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	/*
+> +	 * The chips support reading PMBUS_MFR_MODEL.
+> +	 */
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_MODEL, buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to read Manufacturer Model\n");
+> +		return ret;
+> +	}
+> +	if (ret != 14 || strncmp(buf, "Q54SJ108A2", 10)) {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer Model '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	ret = i2c_smbus_read_block_data(client, PMBUS_MFR_REVISION, buf);
+> +	if (ret < 0) {
+> +		dev_err(dev, "Failed to read Manufacturer Revision\n");
+> +		return ret;
+> +	}
+> +	if (ret != 4 || buf[0] != 'S') {
+> +		buf[ret] = '\0';
+> +		dev_err(dev, "Unsupported Manufacturer Revision '%s'\n", buf);
+> +		return -ENODEV;
+> +	}
+> +
+> +	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
+> +	if (!info)
+> +		return -ENOMEM;
+> +
+> +	memcpy(info, &delta_info[chip_id], sizeof(*info));
+> +
+> +	return pmbus_do_probe(client, id, info);
+> +}
+> +
+> +static const struct i2c_device_id delta_id[] = {
+> +	{ "Q54SJ108A2", Q54SJ108A2 },
+> +	{ },
+> +};
+> +
+> +MODULE_DEVICE_TABLE(i2c, delta_id);
+> +
+> +static const struct of_device_id delta_of_match[] = {
+> +	{ .compatible = "delta,Q54SJ108A2", .data = (void *)Q54SJ108A2 },
+> +	{ },
+> +};
+> +
+> +MODULE_DEVICE_TABLE(of, delta_of_match);
+> +
+> +static struct i2c_driver delta_driver = {
+> +	.driver = {
+> +		.name = "Q54SJ108A2",
+> +		.of_match_table = delta_of_match,
+> +	},
+> +	.probe = delta_probe,
+> +	.remove = pmbus_do_remove,
+> +	.id_table = delta_id,
+> +};
+> +
+> +module_i2c_driver(delta_driver);
+> +
+> +MODULE_AUTHOR("Delta <xiao.mx.ma@deltaww.com>");
+> +MODULE_DESCRIPTION("PMBus driver for Delta Q54SJ108A2 series modules");
+> +MODULE_LICENSE("GPL");
+> -- 
+> 2.25.1
+> 
