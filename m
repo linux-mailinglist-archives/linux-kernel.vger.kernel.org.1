@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76D5027721B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1432427721D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727998AbgIXN0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:26:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727846AbgIXN0I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:26:08 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E28ECC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:26:07 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id z23so4405505ejr.13
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:26:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XexnDGcXtnYzxSDXXL3LsxUhuAmen63As9oxJV/uz9Q=;
-        b=kgTjvI+notSvcV1G6DlP/YbBRTYIoc9l+xpy2LnM2CAUVSj4ezg/9x6dqOZ6wnrq94
-         9MtdtxN11ZInl93BO1eYXIug84nACv74HI0Bou42h/R6ly+hJgJucBtFwoi55wT0shSk
-         LFDbcbXi7f8wKGj9oWgR9a4BMZ8us74xQRmaL0jhunAT0o6ZPyKIS1cQ5obDH5ZVDNK1
-         i/HHctQ+fqdd3KkbVaoKIPbGFGuQf7QfUZZX4jKh5f3qRC4qyq1s4k53xIqvXVLpHDQn
-         oRsIhLPdVxLK/zWXUj1yCexDQd9E2st1Mz0TEywAu4kFD7takgrMpk5THLnYgtq/3ckb
-         3sAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XexnDGcXtnYzxSDXXL3LsxUhuAmen63As9oxJV/uz9Q=;
-        b=ud/ZEqEI3QtQ0EVSnfXfWbNKMmBjpZfAx9r6miHrUaxtl3pi1AnLb4tOhGMPblpu2q
-         hJ/ZsK5/uO0Iltje1BAJY1FwdRLIMTJqkz7NpZSfticGBslZqgvJvjcaTa64+WcXfIzs
-         54ErqLZT4zmP3b/dn/XJod5K2xiL3ZgvyL0MOWcaz76n8GuJ+thT6Ls7NqRPeVKDpOwt
-         7ujGUfDVZefCFPWanFagvM+m7KlQtZ0fZ+Khsh53ryQPlaRwr+NfJGC26PjsfP1YgyCb
-         +Zulb7TFc6qIPZc0LNPzG1oEaxUhGrjei9iVwKMB8FPHyjjk4UNxjPYt6Skq/eEkzeeE
-         lv3w==
-X-Gm-Message-State: AOAM531Zz7aRHMK5RD+YjBmJ/JkIJQb2AP2lMPfi+jKV1oGbAm4dtGlB
-        Wu2p5T0fhUJgu8Cw1N1dY3Lz8DTYLcljxXkXeJmMfQ==
-X-Google-Smtp-Source: ABdhPJzL25q1kuPvZnzXILD9yCjuVJJoFdPmKYvOCzgBP1DPA6gPD4TIEnBP9L8hXZW3TjX9vVurhdi3YXx/TqF6yN8=
-X-Received: by 2002:a17:906:f11:: with SMTP id z17mr1101533eji.88.1600953966583;
- Thu, 24 Sep 2020 06:26:06 -0700 (PDT)
+        id S1728007AbgIXN0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:26:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36268 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727846AbgIXN0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:26:34 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600953992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/o8HUIGyiR7bXTTAsdidVaiFgkeoZ4tJxmxbiSYuUYI=;
+        b=sAKDQ8F0bS5bpqu27PZIl/5KpAF0uyLBWULia75Tunf624OzkGPrMAleSkkvRVM5HpoZzT
+        PVqtx7uuAvjIkb4h214/16kEXJ6h79nmcXWZV3rLq0f7DAxR0jWI6y5SB5+ADPLxoGjAsU
+        dVyTMtOSnQQWVPQ+UCMyWJq7W0QB3n0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 64165AC83;
+        Thu, 24 Sep 2020 13:26:32 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 15:26:30 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Mark Salyzyn <salyzyn@android.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Changki Kim <changki.kim@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
+Message-ID: <20200924132630.GE29288@alley>
+References: <20200923135617.27149-1-pmladek@suse.com>
+ <20200923135617.27149-3-pmladek@suse.com>
+ <20200924021756.GD577@jagdpanzerIV.localdomain>
+ <87k0wj7fcs.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-References: <20200916094952.458003-1-jonathanh@nvidia.com> <20200916094952.458003-4-jonathanh@nvidia.com>
-In-Reply-To: <20200916094952.458003-4-jonathanh@nvidia.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 24 Sep 2020 15:25:55 +0200
-Message-ID: <CAMpxmJVFtx4kZOvP5UkYL1U_1UJn_FGabBZdE7cdMDxQAPoSwA@mail.gmail.com>
-Subject: Re: [PATCH V2 3/5] misc: eeprom: at24: Support custom device names
- for AT24 EEPROMs
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-tegra@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0wj7fcs.fsf@jogness.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:50 AM Jon Hunter <jonathanh@nvidia.com> wrote:
->
-> By using the label property, a more descriptive name can be populated
-> for AT24 EEPROMs NVMEM device. Update the AT24 driver to check to see
-> if the label property is present and if so, use this as the name for
-> NVMEM device. Please note that when the 'label' property is present for
-> the AT24 EEPROM, we do not want the NVMEM driver to append the 'devid'
-> to the name and so the nvmem_config.id is initialised to
-> NVMEM_DEVID_NONE.
->
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
+On Thu 2020-09-24 10:29:31, John Ogness wrote:
+> On 2020-09-24, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
+> > A question. Suppose we have a task which does
+> >
+> > 	CPU0
+> >
+> > 	pr_err(...);
+> >
+> > 	preempt_disable();
+> > 	pr_err(...);
+> > 	preempt_enable();
+> >
+> > 	pr_err(...);
+> >
+> > 	rcu_read_lock();
+> > 	pr_info(...);
+> > 	rcu_read_unlock();
+> >
+> > Should we distinguish those as 3 different contexts?
+> >
+> > - normal printk
+> > - printk under disabled preemption (affects scheduling)
+> > - printk under RCU read side lock (affects RCU grace periods)
+> 
+> The internal purpose of the printk_info's @caller_id is to support
+> _some_ sanity with LOG_CONT. True LOG_CONT sanity will not be available
+> until we provide a context API like we previously talked about [0]. But
+> for now it is good enough (even if it is not good).
+> 
+> We can also store various flags and counters to describe the current
+> context. But these would only exist to provide the user with information
+> rather than because printk itself needs it. I only mention this so that
+> we don't get things mixed up. We can add as much information as want,
+> but LOG_CONT will only be interested in a subset of that.
 
-Queued for v5.10, thanks!
+Yeah, we need to keep this in mind, so that some "tiny" changes in the
+context would not prevent concatenating related pieces of the message.
 
-Bartosz
+Best Regards,
+Petr
