@@ -2,165 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53DB727670F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF0927673F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbgIXDYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 23:24:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726988AbgIXDYU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 23:24:20 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AFC6C0613D3;
-        Wed, 23 Sep 2020 20:24:20 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k8so1027531pfk.2;
-        Wed, 23 Sep 2020 20:24:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z7HzKeU+YA+5aHKiz2EeN/KjqifzfqdCnK/SeiTbOfE=;
-        b=Aw6B7XlCdnR2FWkEXh6n4je/FYrmxziP+LGULZ63SEZanzdLUZvMXHS70GpqoYIK/s
-         KhTQ2klOtJUB8hEv5YWfnEnKcnbWv2fXL3GJWjH+XK6/jjqhR+eGiR4qcjUwTfz/YO4J
-         H5MaKQ9wQhF/oUWjY/oSRt5a//Z2BYV0//ginwIsNo4sZb0baZu0WZAwq5d3b1w+72g3
-         KOQsIVexXsbn54y/ZD+wzDo1BDE9NTAVbk9wYpLByU75hVpLstPy58cOI2WYL4u9EAu0
-         g+fmrzqdVf45Hsf48CcvWLqL2HAdTelLqRTu9lgiu7rz7maAgJjo5od8OAvk/M+vWv21
-         J/9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z7HzKeU+YA+5aHKiz2EeN/KjqifzfqdCnK/SeiTbOfE=;
-        b=QLnqE5A7Qv2eJELfpv1V0o5fQA0ZVTD9ikT/FY5e8ntGAT1kVEwUG7c4lacRskA04g
-         b1Lw9NgKnFxyspJg4h9e8qXViy64Z5gf5zHBuPq5W6Pe/SVYqX4PIEgMJukfo2fDQe5q
-         Yr1gDZGTZxgYSq2K8VQfX/AudhV/+S6Pv3cH/DO06+DWyUXiPao/7qIVtg5YwadsHFsX
-         Z9kmISr8JSMBR0VexcleSNgP1KvFKBrAQ98a3D9FcILCFEC7gmY2kCJMOfbIyBKIekWZ
-         rXMp2iKOPdQUzZK49R5b+kvx3YSEyUButZASlzDQyqLkuGEASbYM5fjcQM0irDzR4CxV
-         egpA==
-X-Gm-Message-State: AOAM5332Pvwq5rUUetSBvA3h11XZ6HWCoNyir87BY+sIhbVQ53Yq0yHy
-        FdJlueX/tEPNuvB2qxetIgs7nhImarfHgQ==
-X-Google-Smtp-Source: ABdhPJyYnbwiVMvPZWFR7UWMvCm9jblwlxI2CIZ293stINzslINVqDS1oBvWF+A64NGjr27qBU7DVg==
-X-Received: by 2002:a63:c64d:: with SMTP id x13mr2278799pgg.380.1600917860098;
-        Wed, 23 Sep 2020 20:24:20 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id 124sm959465pfd.132.2020.09.23.20.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 20:24:19 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 11:24:14 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 10/20] gpiolib: cdev: support
- GPIO_V2_LINE_SET_CONFIG_IOCTL
-Message-ID: <20200924032414.GC11575@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <20200922023151.387447-11-warthog618@gmail.com>
- <CAHp75VdaPR+iihenPYos1mAGLbDhJPvCfDTtURpk_MBa=3wYEg@mail.gmail.com>
- <CAHp75Vcktxp1C6NTOrW-WEnfueOu0UvtquFLpsL5+vv6Fdaajw@mail.gmail.com>
+        id S1727153AbgIXD07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 23:26:59 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:42438 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727146AbgIXD06 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 23:26:58 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id BAD5DE1925281BB33692;
+        Thu, 24 Sep 2020 11:26:55 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020
+ 11:26:45 +0800
+Subject: Re: [PATCH v5 5/6] dt-bindings: dw-apb-ictl: convert to json-schema
+To:     Rob Herring <robh@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        "Vineet Gupta" <vgupta@synopsys.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-snps-arc <linux-snps-arc@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+References: <20200918112202.3418-1-thunder.leizhen@huawei.com>
+ <20200918112202.3418-6-thunder.leizhen@huawei.com>
+ <20200923204911.GA1271664@bogus>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <c5ba167c-2c66-66ec-9d0c-fe6a5755166f@huawei.com>
+Date:   Thu, 24 Sep 2020 11:26:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vcktxp1C6NTOrW-WEnfueOu0UvtquFLpsL5+vv6Fdaajw@mail.gmail.com>
+In-Reply-To: <20200923204911.GA1271664@bogus>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 07:15:46PM +0300, Andy Shevchenko wrote:
-> On Wed, Sep 23, 2020 at 7:14 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > >
-> > > Add support for GPIO_V2_LINE_SET_CONFIG_IOCTL, the uAPI v2
-> > > line set config ioctl.
+
+
+On 2020/9/24 4:49, Rob Herring wrote:
+> On Fri, Sep 18, 2020 at 07:22:01PM +0800, Zhen Lei wrote:
+>> Convert the Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+>> binding to DT schema format using json-schema.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>  .../interrupt-controller/snps,dw-apb-ictl.txt      | 43 -------------
+>>  .../interrupt-controller/snps,dw-apb-ictl.yaml     | 75 ++++++++++++++++++++++
+>>  2 files changed, 75 insertions(+), 43 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+>>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+>> deleted file mode 100644
+>> index 2db59df9408f4c6..000000000000000
+>> --- a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+>> +++ /dev/null
+>> @@ -1,43 +0,0 @@
+>> -Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+>> -
+>> -Synopsys DesignWare provides interrupt controller IP for APB known as
+>> -dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs with
+>> -APB bus, e.g. Marvell Armada 1500. It can also be used as primary interrupt
+>> -controller in some SoCs, e.g. Hisilicon SD5203.
+>> -
+>> -Required properties:
+>> -- compatible: shall be "snps,dw-apb-ictl"
+>> -- reg: physical base address of the controller and length of memory mapped
+>> -  region starting with ENABLE_LOW register
+>> -- interrupt-controller: identifies the node as an interrupt controller
+>> -- #interrupt-cells: number of cells to encode an interrupt-specifier, shall be 1
+>> -
+>> -Additional required property when it's used as secondary interrupt controller:
+>> -- interrupts: interrupt reference to primary interrupt controller
+>> -
+>> -The interrupt sources map to the corresponding bits in the interrupt
+>> -registers, i.e.
+>> -- 0 maps to bit 0 of low interrupts,
+>> -- 1 maps to bit 1 of low interrupts,
+>> -- 32 maps to bit 0 of high interrupts,
+>> -- 33 maps to bit 1 of high interrupts,
+>> -- (optional) fast interrupts start at 64.
+>> -
+>> -Example:
+>> -	/* dw_apb_ictl is used as secondary interrupt controller */
+>> -	aic: interrupt-controller@3000 {
+>> -		compatible = "snps,dw-apb-ictl";
+>> -		reg = <0x3000 0xc00>;
+>> -		interrupt-controller;
+>> -		#interrupt-cells = <1>;
+>> -		interrupt-parent = <&gic>;
+>> -		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+>> -	};
+>> -
+>> -	/* dw_apb_ictl is used as primary interrupt controller */
+>> -	vic: interrupt-controller@10130000 {
+>> -		compatible = "snps,dw-apb-ictl";
+>> -		reg = <0x10130000 0x1000>;
+>> -		interrupt-controller;
+>> -		#interrupt-cells = <1>;
+>> -	};
+>> diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+>> new file mode 100644
+>> index 000000000000000..70c12979c843bf0
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+>> @@ -0,0 +1,75 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/interrupt-controller/snps,dw-apb-ictl.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+>> +
+>> +maintainers:
+>> +  - Marc Zyngier <marc.zyngier@arm.com>
 > 
-> > > +static long linereq_set_config_unlocked(struct linereq *lr,
-> > > +                                       struct gpio_v2_line_config *lc)
-> > > +{
-> > > +       struct gpio_desc *desc;
-> > > +       unsigned int i;
-> > > +       u64 flags;
-> > > +       bool polarity_change;
-> > > +       int ret;
-> > > +
-> > > +       for (i = 0; i < lr->num_lines; i++) {
-> > > +               desc = lr->lines[i].desc;
-> > > +               flags = gpio_v2_line_config_flags(lc, i);
-> >
-> > > +               polarity_change =
-> > > +                       (test_bit(FLAG_ACTIVE_LOW, &desc->flags) !=
-> > > +                        ((flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW) != 0));
-> >
-> > Comparison
+> Usually this would be an owner for this IP block, not the subsystem 
+> maintainer.
+
+OK, I will change it to the author of the file "snps,dw-apb-ictl.txt".
+
+
 > 
-> Comparison between int / long (not all archs are agreed on this) and
-> boolean is not the best we can do.
+>> +
+>> +description:
+>> +  Synopsys DesignWare provides interrupt controller IP for APB known as
+>> +  dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs
+>> +  with APB bus, e.g. Marvell Armada 1500. It can also be used as primary
+>> +  interrupt controller in some SoCs, e.g. Hisilicon SD5203.
+>> +
+>> +allOf:
+>> +  - $ref: /schemas/interrupt-controller.yaml#
+> 
+> You can drop this, it's already applied based on node name.
+But if we drop this, the "snps,dw-apb-ictl.yaml" can not require that the node name
+must match '^interrupt-controller(@[0-9a-f,]+)*$'. The problem of Patch 6/6 was
+discovered by this.
+
+> 
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: snps,dw-apb-ictl
+>> +
+>> +  interrupt-controller: true
+>> +
+>> +  reg:
+>> +    description:
+>> +      Physical base address of the controller and length of memory mapped
+>> +      region starting with ENABLE_LOW register.
+> 
+> Need to define how many reg regions (maxItems: 1).
+
+OK, I will add it.
+
+> 
+>> +
+>> +  interrupts:
+>> +    description:
+>> +      Interrupt reference to primary interrupt controller.
+>> +
+>> +      The interrupt sources map to the corresponding bits in the interrupt
+>> +      registers, i.e.
+>> +      - 0 maps to bit 0 of low interrupts,
+>> +      - 1 maps to bit 1 of low interrupts,
+>> +      - 32 maps to bit 0 of high interrupts,
+>> +      - 33 maps to bit 1 of high interrupts,
+>> +      - (optional) fast interrupts start at 64.
+>> +    minItems: 1
+>> +    maxItems: 65
+> 
+> 65 connections to the primary interrupt controller? I think this is for 
+> the child interrupts? If so, move to #interrupt-cells description 
+> instead.
+Oh, yes. The property "interrupts" here describes which interrupts are used in the
+primary interrupt controller. We don't known how many will be connected but at least one.
+I will remove "maxItems: 65", it's my mistake.
+
+Property "#interrupt-cells" describes how many cells of one "interrupts" item. So I will
+move these descriptions under the top property "properties:"
+
+> 
+>> +
+>> +  "#interrupt-cells":
+>> +    description:
+>> +      Number of cells to encode an interrupt-specifier.
+> 
+> Drop. No need to redefine common properties.
+
+This is useful. See below, I add "const: 1" to require that the value of
+"#interrupt-cells" can only be one.
+
+#interrupt-cells = <1>;
+
+I followed the description in "snps,dw-apb-ictl.txt".
+-- #interrupt-cells: number of cells to encode an interrupt-specifier, shall be 1
+
+> 
+>> +    const: 1
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupt-controller
+>> +  - '#interrupt-cells'
+>> +
+>> +examples:
+>> +  - |
+>> +    /* dw_apb_ictl is used as secondary interrupt controller */
+>> +    aic: interrupt-controller@3000 {
+>> +        compatible = "snps,dw-apb-ictl";
+>> +        reg = <0x3000 0xc00>;
+>> +        interrupt-controller;
+>> +        #interrupt-cells = <1>;
+>> +        interrupt-parent = <&gic>;
+>> +        interrupts = <0 3 4>;
+>> +    };
+>> +
+>> +    /* dw_apb_ictl is used as primary interrupt controller */
+>> +    vic: interrupt-controller@10130000 {
+>> +        compatible = "snps,dw-apb-ictl";
+>> +        reg = <0x10130000 0x1000>;
+>> +        interrupt-controller;
+>> +        #interrupt-cells = <1>;
+>> +    };
+>> -- 
+>> 1.8.3
+>>
+>>
+> 
+> .
 > 
 
-There is no bool to int comparision here.
-
-There are two comparisons - the inner int vs int => bool and the
-outer bool vs bool.  The "!= 0" is effectively an implicit cast to
-bool, as is your new_polarity initialisation below.
-
-> What about
-> 
->   bool old_polarity = test_bit(FLAG_ACTIVE_LOW, &desc->flags);
->   bool new_polarity = flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW;
-> 
->   old_polarity ^ new_polarity
-> 
-
-So using bitwise operators on bools is ok??
-
-> and move this under INPUT conditional?
-> 
-
-It has to be before the gpio_v2_line_config_flags_to_desc_flags() call,
-as that modifies the desc flags, including the new polarity, so
-polarity_change would then always be false :-).
-
-Cheers,
-Kent.
-
-> > > +
-> > > +               gpio_v2_line_config_flags_to_desc_flags(flags, &desc->flags);
-> > > +               /*
-> > > +                * Lines have to be requested explicitly for input
-> > > +                * or output, else the line will be treated "as is".
-> > > +                */
-> > > +               if (flags & GPIO_V2_LINE_FLAG_OUTPUT) {
-> > > +                       int val = gpio_v2_line_config_output_value(lc, i);
-> > > +
-> > > +                       edge_detector_stop(&lr->lines[i]);
-> > > +                       ret = gpiod_direction_output(desc, val);
-> > > +                       if (ret)
-> > > +                               return ret;
-> > > +               } else if (flags & GPIO_V2_LINE_FLAG_INPUT) {
-> > > +                       ret = gpiod_direction_input(desc);
-> > > +                       if (ret)
-> > > +                               return ret;
-> > > +
-> > > +                       ret = edge_detector_update(&lr->lines[i],
-> > > +                                       flags & GPIO_V2_LINE_EDGE_FLAGS,
-> > > +                                       polarity_change);
-> > > +                       if (ret)
-> > > +                               return ret;
-> > > +               }
-> > > +
-> > > +               blocking_notifier_call_chain(&desc->gdev->notifier,
-> > > +                                            GPIO_V2_LINE_CHANGED_CONFIG,
-> > > +                                            desc);
-> > > +       }
-> > > +       return 0;
-> > > +}
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
