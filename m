@@ -2,106 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AE232773CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D452D2773CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728226AbgIXOUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:20:15 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:59810 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727974AbgIXOUO (ORCPT
+        id S1728198AbgIXOVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:21:03 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:60403 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727974AbgIXOVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:20:14 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-218-ndXhimk2PgyG-5cmTZlPGg-1; Thu, 24 Sep 2020 15:20:10 +0100
-X-MC-Unique: ndXhimk2PgyG-5cmTZlPGg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 15:20:09 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 24 Sep 2020 15:20:09 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'YiFei Zhu' <zhuyifei1999@gmail.com>
-CC:     "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        "Andrea Arcangeli" <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: RE: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
-Thread-Topic: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
-Thread-Index: AQHWknD17ZW/yCPmvkCTJZb3HlQhMal3ymow///6ngCAABEUAA==
-Date:   Thu, 24 Sep 2020 14:20:09 +0000
-Message-ID: <665ea57e360a421c958fffa08da77920@AcuMS.aculab.com>
-References: <cover.1600951211.git.yifeifz2@illinois.edu>
- <20bbc8ed4b9f2c83d0f67f37955eb2d789268525.1600951211.git.yifeifz2@illinois.edu>
- <7042ba3307b34ce3b95e5fede823514e@AcuMS.aculab.com>
- <CABqSeASWf_CArdOzASLeRBPZQ-S_vtinhZLteYng4iAof4py+w@mail.gmail.com>
-In-Reply-To: <CABqSeASWf_CArdOzASLeRBPZQ-S_vtinhZLteYng4iAof4py+w@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 24 Sep 2020 10:21:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600957262; x=1632493262;
+  h=to:cc:from:subject:message-id:date:mime-version:
+   content-transfer-encoding;
+  bh=AXfCp1SiddQmAtKsdozKcAnnSiVqTWsFP9hnxw69msY=;
+  b=cUBotEzSki0Jc+pjtFKv78oMhAVaizhY732drj82syQAQ0TJPVYMSzKU
+   Maj8lbLxRhqjDLzAecX6hOuEgtb2a5Pw84g78d5xnv5ee5dlP5pSRlav6
+   myDnOj57T3Lzdgyy3N6FWgLceCQAzWKmhjdLnL8J3lOHnug59z9ic9hRF
+   U=;
+X-IronPort-AV: E=Sophos;i="5.77,298,1596499200"; 
+   d="scan'208";a="55840363"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-81e76b79.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 24 Sep 2020 14:21:01 +0000
+Received: from EX13MTAUWC002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2b-81e76b79.us-west-2.amazon.com (Postfix) with ESMTPS id B2731A081C;
+        Thu, 24 Sep 2020 14:20:59 +0000 (UTC)
+Received: from EX13D12UWC002.ant.amazon.com (10.43.162.253) by
+ EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 24 Sep 2020 14:20:59 +0000
+Received: from [192.168.7.67] (10.43.162.133) by EX13D12UWC002.ant.amazon.com
+ (10.43.162.253) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 24 Sep
+ 2020 14:20:58 +0000
+To:     Jan Kiszka <jan.kiszka@siemens.com>,
+        Kieran Bingham <kbingham@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+From:   George Prekas <prekageo@amazon.com>
+Subject: [PATCH v2] scripts/gdb: fix list_for_each
+Message-ID: <4ae23bb1-c333-f669-da2d-fa35c4f49018@amazon.com>
+Date:   Thu, 24 Sep 2020 09:20:56 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+X-Originating-IP: [10.43.162.133]
+X-ClientProxiedBy: EX13D47UWA001.ant.amazon.com (10.43.163.6) To
+ EX13D12UWC002.ant.amazon.com (10.43.162.253)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogWWlGZWkgWmh1DQo+IFNlbnQ6IDI0IFNlcHRlbWJlciAyMDIwIDE1OjE3DQo+IA0KPiBP
-biBUaHUsIFNlcCAyNCwgMjAyMCBhdCA4OjQ3IEFNIERhdmlkIExhaWdodCA8RGF2aWQuTGFpZ2h0
-QGFjdWxhYi5jb20+IHdyb3RlOg0KPiA+IEkgZG91YnQgdGhlIGNvbXBpbGVyIHdpbGwgZG8gd2hh
-dCB5b3Ugd2FudC4NCj4gPiBMb29raW5nIGF0IGl0LCBpbiBtb3N0IGNhc2VzIHRoZXJlIGFyZSBv
-bmUgb3IgdHdvIGVudHJpZXMuDQo+ID4gSSB0aGluayBvbmx5IE1JUFMgaGFzIHRocmVlLg0KPiAN
-Cj4gSXQgZG9lcyA7KSBHQ0MgMTAuMi4wOg0KPiANCj4gJCBvYmpkdW1wIC1kIGtlcm5lbC9zZWNj
-b21wLm8gfCBsZXNzDQo+IFsuLi5dDQo+IDAwMDAwMDAwMDAwMDE1MjAgPF9fc2VjY29tcF9maWx0
-ZXI+Og0KPiBbLi4uXQ0KPiAgICAgMTU4NzogICAgICAgNDEgOGIgNTQgMjQgMDQgICAgICAgICAg
-bW92ICAgIDB4NCglcjEyKSwlZWR4DQo+ICAgICAxNThjOiAgICAgICBiOSAwOCAwMSAwMCAwMCAg
-ICAgICAgICBtb3YgICAgJDB4MTA4LCVlY3gNCj4gICAgIDE1OTE6ICAgICAgIDgxIGZhIDNlIDAw
-IDAwIGMwICAgICAgIGNtcCAgICAkMHhjMDAwMDAzZSwlZWR4DQo+ICAgICAxNTk3OiAgICAgICA3
-NSAyZSAgICAgICAgICAgICAgICAgICBqbmUgICAgMTVjNyA8X19zZWNjb21wX2ZpbHRlcisweGE3
-Pg0KPiBbLi4uXQ0KPiAgICAgMTVjNzogICAgICAgODEgZmEgMDMgMDAgMDAgNDAgICAgICAgY21w
-ICAgICQweDQwMDAwMDAzLCVlZHgNCj4gICAgIDE1Y2Q6ICAgICAgIGI5IDQwIDAxIDAwIDAwICAg
-ICAgICAgIG1vdiAgICAkMHgxNDAsJWVjeA0KPiAgICAgMTVkMjogICAgICAgNzQgYzUgICAgICAg
-ICAgICAgICAgICAgamUgICAgIDE1OTkgPF9fc2VjY29tcF9maWx0ZXIrMHg3OT4NCj4gICAgIDE1
-ZDQ6ICAgICAgIDBmIDBiICAgICAgICAgICAgICAgICAgIHVkMg0KPiBbLi4uXQ0KPiAwMDAwMDAw
-MDAwMDAxY2IwIDxzZWNjb21wX2NhY2hlX3ByZXBhcmU+Og0KPiBbLi4uXQ0KPiAgICAgMWNjNDog
-ICAgICAgNDEgYjkgM2UgMDAgMDAgYzAgICAgICAgbW92ICAgICQweGMwMDAwMDNlLCVyOWQNCj4g
-Wy4uLl0NCj4gICAgIDFkYmE6ICAgICAgIDQxIGI5IDAzIDAwIDAwIDQwICAgICAgIG1vdiAgICAk
-MHg0MDAwMDAwMywlcjlkDQo+IFsuLi5dDQo+IDAwMDAwMDAwMDAwMDJlMzAgPHByb2NfcGlkX3Nl
-Y2NvbXBfY2FjaGU+Og0KPiBbLi4uXQ0KPiAgICAgMmU3MjogICAgICAgYmEgM2UgMDAgMDAgYzAg
-ICAgICAgICAgbW92ICAgICQweGMwMDAwMDNlLCVlZHgNCj4gWy4uLl0NCj4gICAgIDJlYjU6ICAg
-ICAgIGJhIDAzIDAwIDAwIDQwICAgICAgICAgIG1vdiAgICAkMHg0MDAwMDAwMywlZWR4DQo+IA0K
-PiBHcmFudGVkLCBJIGhhdmUgQ0NfT1BUSU1JWkVfRk9SX1BFUkZPUk1BTkNFIHJhdGhlciB0aGFu
-DQo+IENDX09QVElNSVpFX0ZPUl9TSVpFLCBidXQgdGhpcyBwYXRjaCBpdHNlbGYgaXMgdHJ5aW5n
-IHRvIHNhY3JpZmljZQ0KPiBzb21lIG9mIHRoZSBtZW1vcnkgZm9yIHNwZWVkLg0KDQpEb24ndCBi
-b3RoIENDX09QVElNSVpFX0ZPUl9QRVJGT1JNQU5DRSAoLT8/KSBhbmQgQ0NfT1BUSU1JWkVfRk9S
-X1NJWkUgKC1zKQ0KZ2VuZXJhdGUgdGVycmlibGUgY29kZT8NCg0KVHJ5IHdpdGggYSBzbGdodGx5
-IG9sZGVyIGdjYy4NCkkgdGhpbmsgdGhhdCBlbnRpcmUgb3B0aW1pc2F0aW9uIChkaXNjYXJkaW5n
-IGNvbnN0IGFycmF5cykNCmlzIHZlcnkgcmVjZW50Lg0KDQoJRGF2aWQNCiANCg0KLQ0KUmVnaXN0
-ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBL
-ZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+If the list is uninitialized (next pointer is NULL), list_for_each gets
+stuck in an infinite loop. Print a message and treat list as empty.
+
+Signed-off-by: George Prekas <prekageo@amazon.com>
+---
+  scripts/gdb/linux/lists.py | 5 +++++
+  1 file changed, 5 insertions(+)
+
+diff --git a/scripts/gdb/linux/lists.py b/scripts/gdb/linux/lists.py
+index c487ddf09d38..bae4d70b7eae 100644
+--- a/scripts/gdb/linux/lists.py
++++ b/scripts/gdb/linux/lists.py
+@@ -27,6 +27,11 @@ def list_for_each(head):
+          raise TypeError("Must be struct list_head not {}"
+                             .format(head.type))
+
++    if head['next'] == 0:
++        gdb.write("list_for_each: Uninitialized list '{}' treated as 
+empty\n"
++                     .format(head.address))
++        return
++
+      node = head['next'].dereference()
+      while node.address != head.address:
+          yield node.address
+-- 
+2.16.6
 
