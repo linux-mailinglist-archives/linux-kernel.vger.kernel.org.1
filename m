@@ -2,81 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C07E27710B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91A6F277110
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727766AbgIXMba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgIXMba (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:31:30 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00489C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:31:29 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600950688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5z81b0l/ou8a1NGQIAUTYGK50fEsB6aV5MR6+jiqW8U=;
-        b=V6bjnZooJtr1WM7nDsx5fWI6vLi1VItA1R8bQtqGIu+sXQ4Lmo1QTicCjetO8yhFWKz7O2
-        ZiyxJ7kdRoqONsYfpj72YajZE7muZGfmTGOxu37qF1Du0YJxyIAEko8xLvyart5pZfPlxC
-        UD0fi2YmXJxL1XEEmOvGnXCznP8eivd0qi8/A9PqC5yA1wd26FOIZczlhyYRNfMYfbgHD5
-        UvoO4oEhZVuqmtoNBpiuhSKczs3X04WKeLjZH6Y3Ud2xinlZQtfgpenMJFhBZ5p7pD1FgD
-        FhQJJkZ6ht9N76CTz6zDpJjyQj6NQh5bN2ZLzp5iMk+VeamNyvmEjw/FeI7fQg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600950688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5z81b0l/ou8a1NGQIAUTYGK50fEsB6aV5MR6+jiqW8U=;
-        b=Ix8Ykr+c5+mW05+gua7Jy3Ryh1WB3CFcHLWhygzt0KwubfPERGmDX2CXFuy37l3gLFjXGB
-        B0hmn48tl7KeyBDQ==
-To:     qianjun.kernel@gmail.com, peterz@infradead.org, will@kernel.org,
-        luto@kernel.org, linux-kernel@vger.kernel.org
-Cc:     laoar.shao@gmail.com, qais.yousef@arm.com, urezki@gmail.com,
-        jun qian <qianjun.kernel@gmail.com>
-Subject: Re: [PATCH V7 2/4] softirq: Factor loop termination condition
-In-Reply-To: <87v9g38tcc.fsf@nanos.tec.linutronix.de>
-References: <20200915115609.85106-1-qianjun.kernel@gmail.com> <20200915115609.85106-3-qianjun.kernel@gmail.com> <87v9g38tcc.fsf@nanos.tec.linutronix.de>
-Date:   Thu, 24 Sep 2020 14:31:27 +0200
-Message-ID: <87r1qr8ig0.fsf@nanos.tec.linutronix.de>
+        id S1727760AbgIXMct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:32:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55286 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727556AbgIXMcs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:32:48 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E4EA205F4;
+        Thu, 24 Sep 2020 12:32:43 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 08:32:41 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     peterz@infradead.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list\:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
+ kmap_atomic & friends
+Message-ID: <20200924083241.314f2102@gandalf.local.home>
+In-Reply-To: <871riracgf.fsf@nanos.tec.linutronix.de>
+References: <20200919091751.011116649@linutronix.de>
+        <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
+        <87mu1lc5mp.fsf@nanos.tec.linutronix.de>
+        <87k0wode9a.fsf@nanos.tec.linutronix.de>
+        <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com>
+        <87eemwcpnq.fsf@nanos.tec.linutronix.de>
+        <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
+        <87a6xjd1dw.fsf@nanos.tec.linutronix.de>
+        <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
+        <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
+        <20200923084032.GU1362448@hirez.programming.kicks-ass.net>
+        <20200923115251.7cc63a7e@oasis.local.home>
+        <874kno9pr9.fsf@nanos.tec.linutronix.de>
+        <20200923171234.0001402d@oasis.local.home>
+        <871riracgf.fsf@nanos.tec.linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24 2020 at 10:36, Thomas Gleixner wrote:
+On Thu, 24 Sep 2020 08:57:52 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-> On Tue, Sep 15 2020 at 19:56, qianjun kernel wrote:
->>  asmlinkage __visible void __softirq_entry __do_softirq(void)
->>  {
->>  	u64 start = sched_clock();
->>  	unsigned long old_flags = current->flags;
->> -	int max_restart = MAX_SOFTIRQ_RESTART;
->> +	unsigned int max_restart = MAX_SOFTIRQ_RESTART;
->
-> And this change is related to making the timeout check a function in
-> which way?
+> > Now as for migration disabled nesting, at least now we would have
+> > groupings of this, and perhaps the theorists can handle that. I mean,
+> > how is this much different that having a bunch of tasks blocked on a
+> > mutex with the owner is pinned on a CPU?
+> >
+> > migrate_disable() is a BKL of pinning affinity.  
+> 
+> No. That's just wrong. preempt disable is a concurrency control,
 
-Aside of that looking at:
+I think you totally misunderstood what I was saying. The above wasn't about
+comparing preempt_disable to migrate_disable. It was comparing
+migrate_disable to a chain of tasks blocked on mutexes where the top owner
+has preempt_disable set. You still have a bunch of tasks that can't move to
+other CPUs.
 
-      https://lore.kernel.org/r/20200911155555.GX2674@hirez.programming.kicks-ass.net
 
-Peter gave you a series of patches, granted they are untested and
-lacking proper changelogs. But you go and repost them mostly unmodified
-and taking authorship of them.
+> > If we only have local_lock() available (even on !RT), then it makes
+> > the blocking in groups. At least this way you could grep for all the
+> > different local_locks in the system and plug that into the algorithm
+> > for WCS, just like one would with a bunch of mutexes.  
+> 
+> You cannot do that on RT at all where migrate disable is substituting
+> preempt disable in spin and rw locks. The result would be the same as
+> with a !RT kernel just with horribly bad performance.
 
-This not the way it works. You cannot claim authorship of something you
-did not write yourself. See Documentation/process/ for detailed
-explanation how to handle patches which you got from someone else.
+Note, the spin and rwlocks already have a lock associated with them. Why
+would it be any different on RT? I wasn't suggesting adding another lock
+inside a spinlock. Why would I recommend THAT? I wasn't recommending
+blindly replacing migrate_disable() with local_lock(). I just meant expose
+local_lock() but not migrate_disable().
 
-Thanks,
+> 
+> That means the stacking problem has to be solved anyway.
+> 
+> So why on earth do you want to create yet another special duct tape case
+> for kamp_local() which proliferates inconsistency instead of aiming for
+> consistency accross all preemption models?
 
-        tglx
+The idea was to help with the scheduling issue.
 
+Anyway, instead of blocking. What about having a counter of number of
+migrate disabled tasks per cpu, and when taking a migrate_disable(), and there's
+already another task with migrate_disabled() set, and the current task has
+an affinity greater than 1, it tries to migrate to another CPU?
+
+This way migrate_disable() is less likely to have a bunch of tasks blocked
+on one CPU serialized by each task exiting the migrate_disable() section.
+
+Yes, there's more overhead, but it only happens if multiple tasks are in a
+migrate disable section on the same CPU.
+
+-- Steve
 
