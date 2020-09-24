@@ -2,166 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B0F2773D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:24:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D00F32773E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728255AbgIXOYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:24:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21670 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728064AbgIXOYD (ORCPT
+        id S1728259AbgIXO1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:27:35 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:35865 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728064AbgIXO1f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:24:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600957441;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EtXi8AVwKAmD56PIvAkkrx4PVSul86QCJGsRZtmKcpI=;
-        b=FG7KXykfx8VMUSfqt9mcH+9xj3EKPIbzMNbgoRIwXA+0BOde6gJRxujXvYn/Hx+nhiO01b
-        AFFzqQWYzreaTWX3p8agUIr7533n8fOtwprwGIb6QKoyfMhnsz3A53i/PngkIPWDqtWwfw
-        HMKWPMkBtreVbI9xvcsVJsGgTElt6Gg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-58-l-n79gQCPbiteXKqP3h2Gw-1; Thu, 24 Sep 2020 10:23:59 -0400
-X-MC-Unique: l-n79gQCPbiteXKqP3h2Gw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 34B4C1007B01;
-        Thu, 24 Sep 2020 14:23:58 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D2E23702E7;
-        Thu, 24 Sep 2020 14:23:54 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 10:23:54 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
- support
-Message-ID: <20200924142353.GC13849@redhat.com>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-3-satyat@google.com>
- <20200924012103.GE10500@redhat.com>
- <20200924073842.GA1894729@google.com>
+        Thu, 24 Sep 2020 10:27:35 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U9zEpE4_1600957646;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9zEpE4_1600957646)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 24 Sep 2020 22:27:27 +0800
+Subject: Re: BUG: Bad page state in process dirtyc0w_child
+To:     Qian Cai <cai@redhat.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <a46e9bbef2ed4e17778f5615e818526ef848d791.camel@redhat.com>
+ <20200916142806.GD7076@osiris> <20200922190350.7a0e0ca5@thinkpad>
+ <20200923153938.5be5dd2c@thinkpad>
+ <76fef5dfd8efdb4130e41d1811b2a78ce39c8b0d.camel@redhat.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <4bf5597b-2466-29f3-e855-920d5632536f@linux.alibaba.com>
+Date:   Thu, 24 Sep 2020 22:25:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924073842.GA1894729@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <76fef5dfd8efdb4130e41d1811b2a78ce39c8b0d.camel@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24 2020 at  3:38am -0400,
-Satya Tangirala <satyat@google.com> wrote:
 
-> On Wed, Sep 23, 2020 at 09:21:03PM -0400, Mike Snitzer wrote:
-> > On Wed, Sep 09 2020 at  7:44pm -0400,
-> > Satya Tangirala <satyat@google.com> wrote:
-> > 
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > Update the device-mapper core to support exposing the inline crypto
-> > > support of the underlying device(s) through the device-mapper device.
-> > > 
-> > > This works by creating a "passthrough keyslot manager" for the dm
-> > > device, which declares support for encryption settings which all
-> > > underlying devices support.  When a supported setting is used, the bio
-> > > cloning code handles cloning the crypto context to the bios for all the
-> > > underlying devices.  When an unsupported setting is used, the blk-crypto
-> > > fallback is used as usual.
-> > > 
-> > > Crypto support on each underlying device is ignored unless the
-> > > corresponding dm target opts into exposing it.  This is needed because
-> > > for inline crypto to semantically operate on the original bio, the data
-> > > must not be transformed by the dm target.  Thus, targets like dm-linear
-> > > can expose crypto support of the underlying device, but targets like
-> > > dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
-> > > 
-> > > When a key is evicted from the dm device, it is evicted from all
-> > > underlying devices.
-> > > 
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > Co-developed-by: Satya Tangirala <satyat@google.com>
-> > > Signed-off-by: Satya Tangirala <satyat@google.com>
-> > > ---
-> > >  block/blk-crypto.c              |  1 +
-> > >  block/keyslot-manager.c         | 34 ++++++++++++
-> > >  drivers/md/dm-core.h            |  4 ++
-> > >  drivers/md/dm-table.c           | 52 +++++++++++++++++++
-> > >  drivers/md/dm.c                 | 92 ++++++++++++++++++++++++++++++++-
-> > >  include/linux/device-mapper.h   |  6 +++
-> > >  include/linux/keyslot-manager.h |  7 +++
-> > >  7 files changed, 195 insertions(+), 1 deletion(-)
-> > > 
 
-> > > diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
-> > > index c4ef1fceead6..4542050eebfc 100644
-> > > --- a/drivers/md/dm-core.h
-> > > +++ b/drivers/md/dm-core.h
-> > > @@ -12,6 +12,7 @@
-> > >  #include <linux/kthread.h>
-> > >  #include <linux/ktime.h>
-> > >  #include <linux/blk-mq.h>
-> > > +#include <linux/keyslot-manager.h>
-> > >  
-> > >  #include <trace/events/block.h>
-> > >  
-> > > @@ -49,6 +50,9 @@ struct mapped_device {
-> > >  
-> > >  	int numa_node_id;
-> > >  	struct request_queue *queue;
-> > > +#ifdef CONFIG_BLK_INLINE_ENCRYPTION
-> > > +	struct blk_keyslot_manager ksm;
-> > > +#endif
-> > >  
-> > >  	atomic_t holders;
-> > >  	atomic_t open_count;
-> > 
-> > Any reason you placed the ksm member where you did?
-> > 
-> > Looking at 'struct blk_keyslot_manager' I'm really hating adding that
-> > bloat to every DM device for a feature that really won't see much broad
-> > use (AFAIK).
-> > 
-> > Any chance you could allocate 'struct blk_keyslot_manager' as needed so
-> > that most users of DM would only be carrying 1 extra pointer (set to
-> > NULL)?
->
-> I don't think there's any technical problem with doing that - the only
-> other thing that would need addressing is that the patch uses
-> "container_of" on that blk_keyslot_manager in dm_keyslot_evict() to get
-> a pointer to the struct mapped_device. I could try adding a "private"
-> field to struct blk_keyslot_manager and store a pointer to the struct
-> mapped_device there).
+在 2020/9/24 上午10:06, Qian Cai 写道:
+> On Wed, 2020-09-23 at 15:39 +0200, Gerald Schaefer wrote:
+>> OK, I can now reproduce this, and unfortunately also with the gup_fast
+>> fix, so it is something different. Bisecting is a bit hard, as it will
+>> not always show immediately, sometimes takes up to an hour.
+>>
+>> Still, I think I found the culprit, merge commit b25d1dc9474e "Merge
+>> branch 'simplify-do_wp_page'". Without those 4 patches, it works fine,
+>> running over night.
+>>
+>> Not sure why this only shows on s390, should not be architecture-specific,
+>> but we do often see subtle races earlier than others due to hypervisor
+>> impact.
+> 
+> Apparently, someone can reproduce something similar on x86 as well:
+> 
+> https://lore.kernel.org/linux-mm/c41149a8-211e-390b-af1d-d5eee690fecb@linux.alibaba.com/
+> 
+> Probably, Alex could revert the bad commits and confirm it there.
+> 
+>>
+>> The first commit 09854ba94c6a ("mm: do_wp_page() simplification") already
 
-Yes, that'd be ideal.
+yes, after revert this commit, the BUG disappears.
 
-As for the lifetime of the struct blk_keyslot_manager pointer DM would
-manage (in your future code revision): you meantioned in one reply that
-the request_queue takes care of setting up the ksm... but the ksm
-is tied to the queue at a later phase using blk_ksm_register(). 
+Thanks
+Alex
 
-In any case, I think my feature reequest (to have DM allocate the ksm
-struct only as needed) is a bit challenging because of how DM allocates
-the request_queue upfront in alloc_dev() and then later completes the
-request_queue initialization based on DM_TYPE* in dm_setup_md_queue().
-
-It _could_ be that you'll need to add a new DM_TYPE_KSM_BIO_BASED or
-something.  But you have a catch-22 in that the dm-table.c code to
-establish the intersection of supported modes assumes ksm is already
-allocated.  So something needs to give by reasoning through: _what_ is
-the invariant that will trigger the delayed allocation of the ksm
-struct?  I don't yet see how you can make that informed decision that
-the target(s) in the DM table _will_ use the ksm if it exists.
-
-But then once the ksm is allocated, it never gets allocated again
-because md->queue->ksm is already set, and it inherits the lifetime that
-is used when destroying the mapped_device (md->queue, etc).
-
-Mike
-
+>> introduces this error. The dirtyc0w_child test seems to play with cow
+>> and racing madvise(MADV_DONTNEED), but I have not yet fully understood
+>> it and also not the changes from commit 09854ba94c6a. As Linus already
+>> mentioned in the merge commit message, this is some bad timing for such
+>> a change, so I don't want to delay this further with trying to understand
+>> it better before reporting. Maybe Peter or Linus can spot some obvious
+>> issue.
+>>
+>> One thing that seems strange to me is that the page flags from the
+>> bad page state output are (uptodate|swapbacked), see below, or
+>> (referenced|uptodate|dirty|swapbacked) in the original report. But IIUC,
+>> that should not qualify for the "PAGE_FLAGS_CHECK_AT_FREE flag(s) set"
+>> reason. So it seems that the flags have changed between check_free_page()
+>> and __dump_page(), which would be very odd. Or maybe some issue with
+>> compound pages, because __dump_page() looks at head->flags.
+>>
+>> [ 1863.237707] BUG: Bad page state in process dirtyc0w_child  pfn:58527d
+>> [ 1863.237721] page:000000008866956b refcount:0 mapcount:0
+>> mapping:0000000000000000 index:0x0 pfn:0x58527d
+>> [ 1863.237727] flags: 0x3ffff00000080004(uptodate|swapbacked)
+>> [ 1863.237734] raw: 3ffff00000080004 0000000000000100 0000000000000122
+>> 0000000000000000
+>> [ 1863.237738] raw: 0000000000000000 0000000000000000 ffffffff00000000
+>> 0000000000000000
+>> [ 1863.237742] page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
+>> [ 1863.237745] Modules linked in:
+>> [ 1863.237752] CPU: 16 PID: 9074 Comm: dirtyc0w_child Tainted:
+>> G    B             5.9.0-rc6-00020-geff48ddeab78-dirty #104
+>> [ 1863.237756] Hardware name: IBM 3906 M03 703 (LPAR)
+>> [ 1863.237759] Call Trace:
+>> [ 1863.237768]  [<0000000000115f28>] show_stack+0x100/0x158 
+>> [ 1863.237775]  [<000000000096b41a>] dump_stack+0xa2/0xd8 
+>> [ 1863.237781]  [<00000000003d497c>] bad_page+0xdc/0x140 
+>> [ 1863.237785]  [<00000000003d5b62>] free_pcp_prepare+0x31a/0x360 
+>> [ 1863.237789]  [<00000000003d906a>] free_unref_page+0x32/0xb8 
+>> [ 1863.237794]  [<00000000003b05f4>] zap_p4d_range+0x64c/0xcf8 
+>> [ 1863.237797]  [<00000000003b0e7a>] unmap_page_range+0x9a/0x110 
+>> [ 1863.237801]  [<00000000003b0f84>] unmap_single_vma+0x94/0x100 
+>> [ 1863.237805]  [<00000000003b14c2>] zap_page_range+0x14a/0x1f0 
+>> [ 1863.237809]  [<00000000003e3a24>] do_madvise+0x75c/0x918 
+>> [ 1863.237812]  [<00000000003e3c06>] __s390x_sys_madvise+0x26/0x38 
+>> [ 1863.237817]  [<0000000000d280d4>] system_call+0xe0/0x2c0 
+>> [ 1863.237820] INFO: lockdep is turned off.
+>>
