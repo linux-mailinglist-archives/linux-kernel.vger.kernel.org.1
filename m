@@ -2,33 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994472777FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA4E2777FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728694AbgIXRne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:43:34 -0400
-Received: from mga01.intel.com ([192.55.52.88]:58106 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbgIXRne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:43:34 -0400
-IronPort-SDR: Z4fA312wpwMM609Zk9tOqePy4T04Cu8DQU5QOQ9KJamOMiQemaCFCKqdOKopMmj2NfzzYJTKjX
- 3hqm5hd4yvwA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="179377269"
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="179377269"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 10:43:34 -0700
-IronPort-SDR: uMkYnroberLWVUlj//n2+KQtl7lQjCroVrhI98rwLaBGasY7IUwFNbAUhjw2H8MzK17vrhZZkI
- IRDG5RLx2WfA==
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="336085216"
-Received: from schen9-mobl.amr.corp.intel.com ([10.254.89.92])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 10:43:33 -0700
-Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
- sched domain
-To:     Phil Auld <pauld@redhat.com>
+        id S1728628AbgIXRpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:45:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58376 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726477AbgIXRpY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 13:45:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600969523;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=N6VrObRfGfl6en/XmGXA504cmVEeL7RsZT38rJSi6G0=;
+        b=Mxzl/b5RS54iynQDqOlBOr8X/a522eGOhBTFsZAWvf9a+rQn4n/rY6MzIOQX8uqBbBzpCV
+        NROzYFQYipUp6WVezdvBPmLuOAOukyiaBzvr33TzwVDC13ZTvIIJc9Ek65RMqZ9S4nSAqX
+        ZmMHPmnzSPrrKCHa8Gjdq2/BKFM5CFk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-443-ISuOFl20PpeIV-i6VT-5wA-1; Thu, 24 Sep 2020 13:45:18 -0400
+X-MC-Unique: ISuOFl20PpeIV-i6VT-5wA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 21161801AC8;
+        Thu, 24 Sep 2020 17:45:16 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-112-166.phx2.redhat.com [10.3.112.166])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 902D178482;
+        Thu, 24 Sep 2020 17:45:08 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 13:45:06 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
 Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         "Li, Aubrey" <aubrey.li@linux.intel.com>,
         Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
@@ -41,6 +48,9 @@ Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Qais Yousef <qais.yousef@arm.com>,
         Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
+ sched domain
+Message-ID: <20200924174506.GE29958@lorien.usersys.redhat.com>
 References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
  <20200916110039.GG3117@suse.de>
  <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
@@ -50,49 +60,53 @@ References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
  <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
  <40ee756f-1f27-b17e-6292-d8069a56e3c8@linux.intel.com>
  <20200924171339.GD29958@lorien.usersys.redhat.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <129fceda-cf89-de74-f3fd-026c3c089d62@linux.intel.com>
-Date:   Thu, 24 Sep 2020 10:43:12 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ <129fceda-cf89-de74-f3fd-026c3c089d62@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200924171339.GD29958@lorien.usersys.redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <129fceda-cf89-de74-f3fd-026c3c089d62@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/24/20 10:13 AM, Phil Auld wrote:
-> On Thu, Sep 24, 2020 at 09:37:33AM -0700 Tim Chen wrote:
->>
->>
->> On 9/22/20 12:14 AM, Vincent Guittot wrote:
->>
->>>>
->>>>>>
->>>>>> And a quick test with hackbench on my octo cores arm64 gives for 12
->>
->> Vincent,
->>
->> Is it octo (=10) or octa (=8) cores on a single socket for your system?
+On Thu, Sep 24, 2020 at 10:43:12AM -0700 Tim Chen wrote:
 > 
-> In what Romance language does octo mean 10?  :)
+> 
+> On 9/24/20 10:13 AM, Phil Auld wrote:
+> > On Thu, Sep 24, 2020 at 09:37:33AM -0700 Tim Chen wrote:
+> >>
+> >>
+> >> On 9/22/20 12:14 AM, Vincent Guittot wrote:
+> >>
+> >>>>
+> >>>>>>
+> >>>>>> And a quick test with hackbench on my octo cores arm64 gives for 12
+> >>
+> >> Vincent,
+> >>
+> >> Is it octo (=10) or octa (=8) cores on a single socket for your system?
+> > 
+> > In what Romance language does octo mean 10?  :)
+> > 
+> 
+> Got confused by october, the tenth month. :)
+
+It used to be the eigth month ;)
+
+> 
+> Tim
+> 
+> > 
+> >> The L2 is per core or there are multiple L2s shared among groups of cores?
+> >>
+> >> Wonder if placing the threads within a L2 or not within
+> >> an L2 could cause differences seen with Aubrey's test.
+> >>
+> >> Tim
+> >>
+> > 
 > 
 
-Got confused by october, the tenth month. :)
+-- 
 
-Tim
-
-> 
->> The L2 is per core or there are multiple L2s shared among groups of cores?
->>
->> Wonder if placing the threads within a L2 or not within
->> an L2 could cause differences seen with Aubrey's test.
->>
->> Tim
->>
-> 
