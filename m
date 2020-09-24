@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C8527761B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFA34277617
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728611AbgIXQBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:01:01 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:36076 "EHLO mail.skyhub.de"
+        id S1728593AbgIXQAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:00:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728381AbgIXQBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:01:00 -0400
-Received: from zn.tnic (p200300ec2f0c950086c1a307bd73ace8.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9500:86c1:a307:bd73:ace8])
+        id S1728381AbgIXQAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:00:51 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5B47B1EC03D2;
-        Thu, 24 Sep 2020 18:00:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600963259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Rzo2+uteZG8Ttlcty7/jTxT0+oan80JDRiAugBxyH0g=;
-        b=cUUuiUuOw23CcowVMwZSiYfMBNRQ1s5vMhmFk+ugVJnUZJLJj3IMb2UDimKtyDFM6PLX9l
-        gy9KOBz4x3EQM9v8t1+E6QnEMsrlF52eB3oP7lSvx9qD7LdGB8FAu+63oJ2Tp2GOK9RfQ5
-        /IVW3uFrUKZZvYyDw9f/RAPIgfLxbQg=
-Date:   Thu, 24 Sep 2020 18:00:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        by mail.kernel.org (Postfix) with ESMTPSA id 6ADA3235FD;
+        Thu, 24 Sep 2020 16:00:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600963251;
+        bh=r67kiC0WjaNVmOhYLjf6JYjUJqRLU6Z2/EyBhfyzyvU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AwScAfRx9Njhn+CsDf0vIPl1vMTCryCGmJiCCir1LBP2pGPpRObRPiwsIoyRYH6N/
+         xUCfZrh4aCjPZwNIHlxf0aMfv2SW539VKPcmv4ErcMaOcXInPHNESLWt4RHU02/Yyp
+         fForhBgGlJDyPOtPYa/UHZ89hPiCuqNi9WgX4ljA=
+Date:   Thu, 24 Sep 2020 18:01:07 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Petko Manolov <petkan@nucleusys.com>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        Himadri Pandya <himadrispandya@gmail.com>, davem@davemloft.net,
+        kuba@kernel.org, pankaj.laxminarayan.bharadiya@intel.com,
+        keescook@chromium.org, yuehaibing@huawei.com, ogiannou@gmail.com,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 18/24] x86/vdso: Add support for exception fixup in
- vDSO functions
-Message-ID: <20200924160057.GK5030@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-19-jarkko.sakkinen@linux.intel.com>
- <20200923220712.GU28545@zn.tnic>
- <20200924120851.GE56811@linux.intel.com>
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH 3/4] net: usb: rtl8150: use usb_control_msg_recv() and
+ usb_control_msg_send()
+Message-ID: <20200924160107.GA1174357@kroah.com>
+References: <20200923090519.361-1-himadrispandya@gmail.com>
+ <20200923090519.361-4-himadrispandya@gmail.com>
+ <1600856557.26851.6.camel@suse.com>
+ <20200923144832.GA11151@karbon>
+ <2f997848ed05c1f060125f7567f6bc3fae7410bb.camel@suse.com>
+ <20200924154026.GA9761@carbon.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924120851.GE56811@linux.intel.com>
+In-Reply-To: <20200924154026.GA9761@carbon.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 03:09:01PM +0300, Jarkko Sakkinen wrote:
-> This is not technically SGX specific patch. Is SGX documentation the
-> correct place for this?
+On Thu, Sep 24, 2020 at 06:40:26PM +0300, Petko Manolov wrote:
+> On 20-09-24 13:09:05, Oliver Neukum wrote:
+> > Am Mittwoch, den 23.09.2020, 17:48 +0300 schrieb Petko Manolov:
+> > 
+> > > One possible fix is to add yet another argument to usb_control_msg_recv(), 
+> > > which would be the GFP_XYZ flag to pass on to kmemdup().  Up to Greg, of 
+> > > course.
+> > 
+> > submitted. The problem is those usages that are very hard to trace. I'd 
+> > dislike to just slab GFP_NOIO on them for no obvious reason.
+> 
+> Do you mean you submitted a patch for usb_control_msg_recv() (because i don't 
+> see it on linux-netdev) or i'm reading this all wrong?
 
-So what is it then? It is SGX implementation-specific. Why would you not
-put it in the documentation?!
-
-> From checkpatch I only get:
-
-Please concentrate and start reading more carefully:
-
-".git/rebase-apply/patch:122: new blank line at EOF."
-
-Would that error come from checkpatch?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+It's on the linux-usb list:
+	https://lore.kernel.org/r/20200923134348.23862-1-oneukum@suse.com
