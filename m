@@ -2,113 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E0A2775EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDBB2775EE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728582AbgIXPzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42970 "EHLO
+        id S1728590AbgIXPzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728575AbgIXPzL (ORCPT
+        with ESMTP id S1728436AbgIXPzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:55:11 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E57C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:55:11 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id q21so3607219ota.8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:55:11 -0700 (PDT)
+        Thu, 24 Sep 2020 11:55:24 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF05C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:55:24 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id m15so1886347pls.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:55:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=BFQYGakvszSZQYEiK77qmVljG0V+wrRK/T3GO3bZxA4=;
-        b=VuYM/Sxtj92l9I7qft+wT7jbFfT5vZNLK8wgvLXr8W0wjputBXVcePPAvaI+sKwdv2
-         bH4N0JJWo33SnqLzRC1fZbF0hRkFxmfqgEc4IHi1hVHB3Fy5EsfE6p2K8PvvMTwvUO6b
-         9dUZIZYKqOWqyX/6f49oJ2/bXQPDOhNowqmZNQr3+sWHQqVSXVZnFVVpP3cc4ixi06m+
-         TyS7AJO+fPZVMp/o356dNl29HmfqXU3xV/wr1dPTCU9YV33lDqN3S/FcY7VoNLuqRiDr
-         T76jWbUSgh9HkVtgoxw65kl9/4u2P6dZIejODFmlWo6SkLGdgLmwrtvRTusn5irWQFTB
-         Tc/A==
+        bh=7fLTh9jL1POsAJyAwBG036fCbpHZ7vFNhvxGxsA/maA=;
+        b=UN5kA39n7bx+2dZUFFwEidL4mRPP7F5+vhq7Vy0NJsRMWKRMn+nwjEBoGqwfvfe33V
+         cH5rcWsLGJgwwupusUODWGxemHGLnzJYUC6WxkVsCfMBKpB11rOcl0kfxad/Rwu87xqn
+         xl/nw49zS7HZspAVyE3x1JnL9dGzuvBCMCrmk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=BFQYGakvszSZQYEiK77qmVljG0V+wrRK/T3GO3bZxA4=;
-        b=T5yuysXdhr0CXdQz0yKd5V9I0ZrCnomLB49/lZtwCfY4uixtoppf4og22eIAjUk6zv
-         W4+LYAMpF4QhSjc6/Oa5myx36WZJtfAfBOmgm2FOK+T8MQRcB12Xk9CzdSD6K04C6dG5
-         mp3kqITs6O3KlTLnIrAZ0Y1ZulLLIBKgSG1d6qMKQ9Q1vz1fBNgLNwZSnhhJGiSk0VQ5
-         5nONyOvSRjBWAdLbfeFrYBisuiFmnCCvpi0cs6TObH/ZgNskq3saJXIKJ+MGuFaHxj8P
-         nBftFYi9gPXTonKSuQnxaaQb0LvhJwTwyUU6R1GOiuRBA63MTJRqUY6FLDpf8CZnIKix
-         C9ug==
-X-Gm-Message-State: AOAM532St5VBH8htazPms87d3I0nx+NxJUtcBtYZf85l43JELqc47U3h
-        l4NvcCryaGnBO7UY8OeSjbGR4w==
-X-Google-Smtp-Source: ABdhPJwFHBL2FKeccMlXLdOu/LTSXUl23rU0UsGy8dJd/nIuZMvT3wS2wgBvDcqgNEUZ6Q8WAUKisQ==
-X-Received: by 2002:a05:6830:610:: with SMTP id w16mr178455oti.353.1600962910817;
-        Thu, 24 Sep 2020 08:55:10 -0700 (PDT)
-Received: from yoga (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
-        by smtp.gmail.com with ESMTPSA id p8sm907633oot.29.2020.09.24.08.55.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 08:55:10 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 10:55:07 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Sibi Sankar <sibis@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 6/8] iommu/arm-smmu: Add impl hook for inherit boot
- mappings
-Message-ID: <20200924155507.GE40811@yoga>
-References: <20200904155513.282067-1-bjorn.andersson@linaro.org>
- <20200904155513.282067-7-bjorn.andersson@linaro.org>
- <0bfcc8f7-d054-616b-834b-319461b1ecb9@arm.com>
- <20200913032559.GT3715@yoga>
- <20200921210814.GE3811@willie-the-truck>
+        bh=7fLTh9jL1POsAJyAwBG036fCbpHZ7vFNhvxGxsA/maA=;
+        b=WcnKoaNp82iO2pqqUZwAqCSewqF0Two+mzINzPMWR9hlbenxv3FtkTWH13WHYXeJ+3
+         xBmg2HrYX0wnEdhO4D8RHYZi0zff9PYfAkgLLuDWRz9a+gRZSVd9s7sgOhLlxbDKxGl/
+         E6aSdibY+NuMlznTiINuUrW9Sl29oXiJv47WJ21l7yPZCz1FTEu6Xo33VvfN5RJBKFZQ
+         AsxNK/BDft3iOSxsOKF48v7y21o0jmZX3L4wTJ7j0Y4zsNzHQtDIHHmqLTotPeoTX1TY
+         rQ+9GEFrcqWxEPmbzits37zQ2oWGnf+NeuQUAwMeQeUZt3+ZmMJviEgF93AA67enm/+m
+         EsdA==
+X-Gm-Message-State: AOAM533GMUsNo/krHTtI5ZhfvlcGiNzhK8mYLxxpD+Haq+Fs3aEW5yED
+        jmgxMs5R9boCHA5qfL5kwr+xoQ==
+X-Google-Smtp-Source: ABdhPJwRSAiXyiNg0VJvCtL0dZgy6vfq+3uHTNuSGySrHdwBGL0d9FBnfZeCzUV9uWPYYfZ70FmCFw==
+X-Received: by 2002:a17:902:8f8f:b029:d2:439c:3b7d with SMTP id z15-20020a1709028f8fb02900d2439c3b7dmr4963448plo.39.1600962923888;
+        Thu, 24 Sep 2020 08:55:23 -0700 (PDT)
+Received: from localhost ([2620:15c:202:1:f693:9fff:fef4:e70a])
+        by smtp.gmail.com with ESMTPSA id i9sm3404790pfq.53.2020.09.24.08.55.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 08:55:23 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 08:55:21 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-usb@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v3 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200924155521.GA3165145@google.com>
+References: <20200923180952.v3.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200923180952.v3.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+ <20200924152758.GA1337044@rowland.harvard.edu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200921210814.GE3811@willie-the-truck>
+In-Reply-To: <20200924152758.GA1337044@rowland.harvard.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21 Sep 16:08 CDT 2020, Will Deacon wrote:
+Hi Alan,
 
-> On Sat, Sep 12, 2020 at 10:25:59PM -0500, Bjorn Andersson wrote:
-> > On Fri 11 Sep 12:13 CDT 2020, Robin Murphy wrote:
-> > > On 2020-09-04 16:55, Bjorn Andersson wrote:
-> > > > Add a new operation to allow platform implementations to inherit any
-> > > > stream mappings from the boot loader.
-> > > 
-> > > Is there a reason we need an explicit step for this? The aim of the
-> > > cfg_probe hook is that the SMMU software state should all be set up by then,
-> > > and you can mess about with it however you like before arm_smmu_reset()
-> > > actually commits anything to hardware. I would have thought you could
-> > > permanently steal a context bank, configure it as your bypass hole, read out
-> > > the previous SME configuration and tweak smmu->smrs and smmu->s2crs
-> > > appropriately all together "invisibly" at that point.
+On Thu, Sep 24, 2020 at 11:27:58AM -0400, Alan Stern wrote:
+> On Wed, Sep 23, 2020 at 06:10:12PM -0700, Matthias Kaehlcke wrote:
+> > The main issue this driver addresses is that a USB hub needs to be
+> > powered before it can be discovered. For discrete onboard hubs (an
+> > example for such a hub is the Realtek RTS5411) this is often solved
+> > by supplying the hub with an 'always-on' regulator, which is kind
+> > of a hack. Some onboard hubs may require further initialization
+> > steps, like changing the state of a GPIO or enabling a clock, which
+> > requires even more hacks. This driver creates a platform device
+> > representing the hub which performs the necessary initialization.
+> > Currently it only supports switching on a single regulator, support
+> > for multiple regulators or other actions can be added as needed.
+> > Different initialization sequences can be supported based on the
+> > compatible string.
 > > 
-> > I did this because as of 6a79a5a3842b ("iommu/arm-smmu: Call
-> > configuration impl hook before consuming features") we no longer have
-> > setup pgsize_bitmap as we hit cfg_probe, which means that I need to
-> > replicate this logic to set up the iommu_domain.
+> > Besides performing the initialization the driver can be configured
+> > to power the hub off during system suspend. This can help to extend
+> > battery life on battery powered devices which have no requirements
+> > to keep the hub powered during suspend. The driver can also be
+> > configured to leave the hub powered when a wakeup capable USB device
+> > is connected when suspending, and power it off otherwise.
 > > 
-> > If I avoid setting up an iommu_domain for the identity context, as you
-> > request in patch 8, this shouldn't be needed anymore.
+> > Technically the driver consists of two drivers, the platform driver
+> > described above and a very thin USB driver that subclasses the
+> > generic driver. The purpose of this driver is to provide the platform
+> > driver with the USB devices corresponding to the hub(s) (a hub
+> > controller may provide multiple 'logical' hubs, e.g. one to support
+> > USB 2.0 and another for USB 3.x).
 > > 
-> > > If that can't work, I'm very curious as to what I've overlooked.
-> > > 
-> > 
-> > I believe that will work, I will rework the patches and try it out.
+> > Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+> > Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > ---
 > 
-> Did you get a chance to rework this?
+> > --- a/drivers/usb/misc/Kconfig
+> > +++ b/drivers/usb/misc/Kconfig
+> > @@ -275,3 +275,19 @@ config USB_CHAOSKEY
+> >  
+> >  	  To compile this driver as a module, choose M here: the
+> >  	  module will be called chaoskey.
+> > +
+> > +config USB_ONBOARD_HUB
+> > +	tristate "Onboard USB hub support"
+> > +	depends on OF || COMPILE_TEST
+> > +	help
+> > +	  Say Y here if you want to support discrete onboard USB hubs that
+> > +	  don't require an additional control bus for initialization (an
 > 
+> ... but does require nontrivial form of initialization, such as
+> enabling a power regulator.
 
-Unfortunately not, I hope to get to this shortly.
+ok, I'll add that
 
-Thanks,
-Bjorn
+> > +static void onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
+> > +{
+> > +	struct udev_node *node;
+> > +
+> > +	smp_rmb();
+> > +	if (hub->going_away) {
+> > +		/*
+> > +		 * We are most likely being called as a result of unbinding a USB device from
+> > +		 * onboard_hub_remove(). This function also holds the lock and iterates over
+> > +		 * 'udev_list'. Skip deleting the node in this case to avoid a self deadlock,
+> > +		 * keeping the node in the list isn't a problem, since the device is about to go
+> > +		 * away.
+> > +		 */
+> > +		return;
+> > +	}
+> 
+> This part has a suspicious look.  For one thing, there's no comment
+> explaining the purpose of the smp_rmb().  For another, that barrier
+> doesn't seem to pair with any other memory barrier in the driver.
+
+IIUC the mutex_lock() in onboard_hub_remove() is an implicit barrier, but
+it is indeed not obvious from looking at the code.
+
+> I get that you want to avoid self-deadlock here.  But there must be a
+> better way.  See below.
+
+I wasn't super happy about this either ...
+
+> > +static int onboard_hub_remove(struct platform_device *pdev)
+> > +{
+> > +	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
+> > +	struct udev_node *node;
+> > +
+> > +	hub->going_away = true;
+> > +
+> > +	mutex_lock(&hub->lock);
+> > +
+> > +	/* unbind the USB devices to avoid dangling references to this device */
+> > +	list_for_each_entry(node, &hub->udev_list, list)
+> > +		device_release_driver(&node->udev->dev);
+> > +
+> > +	mutex_unlock(&hub->lock);
+> 
+> Alternative approach:
+> 
+> 	/* unbind the USB devices to avoid dangling references to this device */
+> 	mutex_lock(&hub->lock);
+> 	while (!list_empty(&hub->udev_list)) {
+> 		node = list_first_entry(&hub->udev_list, struct udev_node, list);
+> 		udev = node->udev;
+> 
+> 		/*
+> 		 * Unbinding the driver will call onboard_hub_remove_usbdev(),
+> 		 * which acquires hub->lock.  We must release the lock first.
+> 		 */
+> 		usb_get_device(udev);
+> 		mutex_unlock(&hub->lock);
+> 		device_release_driver(&udev->dev);
+> 		usb_put_device(udev);
+> 		mutex_lock(&hub->lock);
+> 	}
+> 	mutex_unlock(&hub->lock);
+>
+
+Thanks, that should work. I also thought about unlocking the mutex before
+calling device_release_driver(), but that wouldn't be the right thing when
+using list_for_each_entry(_safe). The alternative loop style allows for it.
+
+> > +static int onboard_hub_usbdev_probe(struct usb_device *udev)
+> > +{
+> > +	struct device *dev = &udev->dev;
+> > +	struct onboard_hub *hub;
+> > +
+> > +	/* ignore supported hubs without device tree node */
+> > +	if (!dev->of_node)
+> > +		return -ENODEV;
+> > +
+> > +	hub = _find_onboard_hub(dev);
+> > +	if (IS_ERR(hub))
+> > +		return PTR_ERR(dev);
+> 
+> hub, not dev.
+
+ugh, yes
