@@ -2,183 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB7F276EFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED3A276F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgIXKr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:47:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726303AbgIXKr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:47:59 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98F7A239A1;
-        Thu, 24 Sep 2020 10:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600944478;
-        bh=crA6jQgUS1FFfr6DRg0MQCRnOUDeb7w6bUzRsFm5xKE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=bKPDntr9XYycPElj3RXGS8Km6PrEOQQzu7sg5MsQWDi1Ki9DE9qD1W5I+MKQWdZJC
-         /qm9XZyDoUOqK+LxF8HigXlZY7JxaqEEtvxixVdmq0UPYTwcoVVdY0o8aY4BBBXgb+
-         T7Xv0tonCuc1WPT4hyhR2yKq9UnnO1dLSFTBKCXE=
-Received: by mail-ot1-f42.google.com with SMTP id s66so2736743otb.2;
-        Thu, 24 Sep 2020 03:47:58 -0700 (PDT)
-X-Gm-Message-State: AOAM532cbIt0Fx7dMG7XFsewB7cp4h8Ig0X3waYMRy4jlGG9IJWJNkXu
-        kudbLAr1bfjxKTGx5uMr93aCJnNTEMHFf66ZGYA=
-X-Google-Smtp-Source: ABdhPJzlB3sNdM6Y8ZczMUhZi5xLlk1yPJfn5LQFHG2nfujWOJKSwSKRUGCMAg4Q7lc7uwfm4oYnzmNrRLyGXUnIVPo=
-X-Received: by 2002:a9d:6193:: with SMTP id g19mr2623454otk.108.1600944477888;
- Thu, 24 Sep 2020 03:47:57 -0700 (PDT)
+        id S1726595AbgIXKut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:50:49 -0400
+Received: from mail-bn8nam12on2075.outbound.protection.outlook.com ([40.107.237.75]:12705
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726415AbgIXKut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 06:50:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZsVya4BujNekHyvNyNDGLEAvUtuKnDiZiuVIh6L3QSD8r7vctsrefMlKbj9X4CzUNdFoCeyemuN7VtjEUUaQHwLzVZI68gPmJ7ZAsauVorKLvAHYbPRK6zVKy9Wk5eYh4N9bf60a0/nKjbbv4Pupdi4S3iv4vqQgijlWFnSdBctKQ7ZPeHKmFbEWbMCcqwskqEyOBfEF5fImJ8UjA1Vz/I8wtb6t6NEg5QuI4xq0Z7C7s+NmJdHS+6IYnrtEEQ4bATprCEEeMVGMq4+52avCaJOPmvKBGL2mS3OWjF91QrK9GL7fse7nhyp0ik+f1gOmj8ocEX82Oyru4XyHV6NipQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YcCKoh9lnBfCzTA7Ims08zMzDRdcIc8kFN2fp8yqDZY=;
+ b=Vv5V+iNW/244ZfVlyfHzPcgeQw7xF02D8Mzx3DZyUisoS/xQm/x1CGz8y6GooL5IcNWBllemyRSPZH+SrZzhSIfLQf8qtY+dtOnL+B6PDcKT82afOEjiU6sNbVHNAvIF1/b2yvV0VW3vgyHt6JuuEnnORMSDWc5emYl6KgapiRLITdIieiTFYhVFKiN9p3i+L9ktLYlHLqMU8XabbwY99Fz9352mI53o88Bsky4Hcq4R0bgmXiAPgHhzJh+Fm1F0tdYBBzFTP3LM0Igt/htvijoWHcoyfC8u2CJYy18lDAGrGhKxXoxDrByyPw2YwP9Th4tdEHKJpgoJ02gyn7Ojzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YcCKoh9lnBfCzTA7Ims08zMzDRdcIc8kFN2fp8yqDZY=;
+ b=bWBa5D73ofxfWWbERkKPzpe7PF6GoU7Lgk2PcO/zlpm2/x1T+YU9qRJLJHlr+Z5zY8DCkznB4eLbcCmC09S5xmzC95nMTZkEZwTlG0UEpKkNN+AYAD8jDAe2/eClSt0HQACWVbW4GohTODyPVpT5OlboxFVQzhstRkPuGSJbl8A=
+Authentication-Results: lists.linux-foundation.org; dkim=none (message not
+ signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
+ DM6PR12MB3081.namprd12.prod.outlook.com (2603:10b6:5:38::27) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3391.17; Thu, 24 Sep 2020 10:50:46 +0000
+Received: from DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
+ ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3412.022; Thu, 24 Sep 2020
+ 10:50:46 +0000
+Subject: Re: [PATCH 00/13] iommu: amd: Add Generic IO Page Table Framework
+ Support
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+References: <20200923101442.73157-1-suravee.suthikulpanit@amd.com>
+ <20200924103448.GO27174@8bytes.org>
+From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Message-ID: <c4b95103-8c66-6a9b-af18-a7c40d9dd943@amd.com>
+Date:   Thu, 24 Sep 2020 17:50:37 +0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+In-Reply-To: <20200924103448.GO27174@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [183.89.247.160]
+X-ClientProxiedBy: SG2PR03CA0112.apcprd03.prod.outlook.com
+ (2603:1096:4:91::16) To DM5PR12MB1163.namprd12.prod.outlook.com
+ (2603:10b6:3:7a::18)
 MIME-Version: 1.0
-References: <20200924082833.12722-1-jlee@suse.com>
-In-Reply-To: <20200924082833.12722-1-jlee@suse.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 24 Sep 2020 12:47:46 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE64kMU7wnMQK+k=0tjaH9OMOrzN86yJPPRkx5Nq8XBqw@mail.gmail.com>
-Message-ID: <CAMj1kXE64kMU7wnMQK+k=0tjaH9OMOrzN86yJPPRkx5Nq8XBqw@mail.gmail.com>
-Subject: Re: [PATCH] efi/efivars: Create efivars mount point in the
- registration of efivars abstraction
-To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Lee, Chun-Yi" <jlee@suse.com>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Fabian Vogt <fvogt@suse.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Suravees-MacBook-Pro.local (183.89.247.160) by SG2PR03CA0112.apcprd03.prod.outlook.com (2603:1096:4:91::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.9 via Frontend Transport; Thu, 24 Sep 2020 10:50:45 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: aed2f12f-9ed7-4860-ebbf-08d86077b121
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3081:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3081102CE1AF44124A3665C0F3390@DM6PR12MB3081.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: y/fiEcp7RWozyMJD17lwFTaHitGml4KOR5Gf3rcHpAtqc2x+LooFElDzbIOqfaUonyud3qrd3l9pPVROF6ffn16RhCT2Fs+ifobZJcf9UgbMw0TLdXn76k5y0sEI8KtDtfyfPh4RKBDSKfstAPAzWxv/7ko44HzXQ5FNEdLpkIZUYR9GuP9ZBFnS75kXxc2hbHdRK2Ua3Yzu6l3stKzFmnrBAkVjxCDlxSc2a4rgs+WYu3AC9bAbRow+LX9npSlkkcN6614nJiQcDOR9RJWBQGZ7H79RAFElEKiSJiHkUUBwVBypVCHLSNoTjrpDlOOsKxR9MTBEJqJIxGZFvIK6YsEmWSPb9MwxnMPi6nNrWZIGBjLxyMUPwqGKSPGISn39T6nq0laPXjwE735YoVuXRQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(346002)(376002)(136003)(396003)(316002)(8676002)(4326008)(5660300002)(36756003)(66556008)(66476007)(4744005)(44832011)(2616005)(956004)(478600001)(16526019)(186003)(8936002)(66946007)(6666004)(26005)(2906002)(6512007)(31686004)(31696002)(6916009)(53546011)(6506007)(6486002)(86362001)(52116002)(41533002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: IgL9nesptcl5jCURFcD4n3cLVzzjUgSEEwpYjvVoHOG3DEm5i+WZNNs8nPelJeeGc9FjOhUX+DwHq4LZ9R56Ykc+e6ob8c5Lyhuq2NGTMcNPF6OAMGg9XTFVirU0gGDscanFtOIJPUFjx24lVtep6+YJtUsuxcnBUDTWylEt9QJ0vuIhXp46tn6BoozNgm3S5TQXzBJVVuk00myuoOayyNhFQoe00SvQMCywtjf0L1DSn18cGA8u8MACXgZqR6UkKWVCWLeOF9oMut/kFOOVlh5+VVx2vuRb4CuvtWKUkCsRybM7KfDJg80RHiqsQ++XLKrm9f9s0x4xu+4lbQlAYNDKni1CiT0D5JR8y3r6hHLIBzODxJVBsiTZACeJqh8PvsCR4Tnh897ZhL3NRqCrYyUnBQYEA9A3jIuowZee3g4n3CvnJ0eBdZ6+B5TuP/qysHhyFPiURWNPWDOlGu3ETcDqxlTbMYa1SjWjQLJlMSf2UzxPkNU7mVdislGC5KOdNi975e0NzXs2/ftNj0bBHhbSVj72z1xIyMh6GgOjNmD8yT1a6Ml9plfqKdhRKCdOkW7gC9d2oLrhGCgOExIjlxavhtp8JzT/EqJYfSsxztOqHRy0Oiq0Bv6Rj0mAg+/4JZYuPV/iqFAAV8Y553O9Lg==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aed2f12f-9ed7-4860-ebbf-08d86077b121
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 10:50:46.4289
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lcKHRUYIn7yezpG+zsoU1/7A6aHxh+JmXvTFPIkVvxp9HQ6ZHLDRq5F24libAB4B2EFLZh6gBV1W8RgqYRxgwA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3081
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 at 10:28, Lee, Chun-Yi <joeyli.kernel@gmail.com> wrote:
->
-> This patch moved the logic of creating efivars mount point to the
-> registration of efivars abstraction. It's useful for userland to
-> determine the availability of efivars filesystem by checking the
-> existence of mount point.
->
-> The 'efivars' platform device be created on generic EFI runtime services
-> platform, so it can be used to determine the availability of efivarfs.
-> But this approach is not available for google gsmi efivars abstraction.
->
-> This patch be tested on Here on qemu-OVMF and qemu-uboot.
->
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Matthias Brugger <mbrugger@suse.com>
-> Cc: Fabian Vogt <fvogt@suse.com>
-> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Arthur Heymans <arthur@aheymans.xyz>
-> Cc: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> ---
-
-I take it this is v3 of [0]? If so, please explain how it deviates
-from v2. If it doesn't deviate from v2, it is better to continue the
-discussion in the other thread.
-
-For the sake of discussion, it helps to clarify the confusing nomenclature:
-
-a) 'efivars abstraction' - an internal kernel API that exposes EFI
-variables, and can potentially be backed by an implementation that is
-not EFI based (i.e., Google gsmi)
-
-b) efivars.ko module, built on top of the efivars abstraction, which
-exposes EFI variables (real ones or gsmi ones) via the deprecated
-sysfs interface
-
-c) efivarfs filesystem, also built on top of the efivars abstraction,
-which exposes EFI variables (real ones or gsmi ones) via a special
-filesystem independently of sysfs.
-
-Of course, the sysfs mount point we create for efivarfs is not called
-'efivarfs' but 'efivars'. The sysfs subdirectory we create for
-efivars.ko is called 'vars'. Sigh.
 
 
-In this patch, you create the mount point for c) based on whether a)
-gets registered (which occurs on systems with EFI Get/SetVariable
-support or GSMI), right? So, to Greg's point, wouldn't it be easier to
-simply check whether efivarfs is listed in /proc/filesystems?
+On 9/24/20 5:34 PM, Joerg Roedel wrote:
+> Hi Suravee,
+> 
+> On Wed, Sep 23, 2020 at 10:14:29AM +0000, Suravee Suthikulpanit wrote:
+>> The framework allows callable implementation of IO page table.
+>> This allows AMD IOMMU driver to switch between different types
+>> of AMD IOMMU page tables (e.g. v1 vs. v2).
+> 
+> Is there a reason you created your own framework, there is already an
+> io-pgtable framework for ARM, maybe that can be reused?
+> 
 
-It also helps if you could clarify what the actual use case is, rather
-than saying that it is generally useful.
+Actually, this is the same framework used by ARM codes.
+Sorry if the description is not clear.
 
+Suravee
 
-
-
-
-[0] https://lore.kernel.org/linux-efi/20200825160719.7188-1-jlee@suse.com/
-
->  drivers/firmware/efi/efi.c  |  7 -------
->  drivers/firmware/efi/vars.c | 17 +++++++++++++++++
->  2 files changed, 17 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> index 3aa07c3b5136..23c11a2a3f4d 100644
-> --- a/drivers/firmware/efi/efi.c
-> +++ b/drivers/firmware/efi/efi.c
-> @@ -405,13 +405,6 @@ static int __init efisubsys_init(void)
->         if (error)
->                 goto err_remove_group;
->
-> -       /* and the standard mountpoint for efivarfs */
-> -       error = sysfs_create_mount_point(efi_kobj, "efivars");
-> -       if (error) {
-> -               pr_err("efivars: Subsystem registration failed.\n");
-> -               goto err_remove_group;
-> -       }
-> -
->         if (efi_enabled(EFI_DBG) && efi_enabled(EFI_PRESERVE_BS_REGIONS))
->                 efi_debugfs_init();
->
-> diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
-> index 973eef234b36..6fa7f288d635 100644
-> --- a/drivers/firmware/efi/vars.c
-> +++ b/drivers/firmware/efi/vars.c
-> @@ -1179,6 +1179,8 @@ int efivars_register(struct efivars *efivars,
->                      const struct efivar_operations *ops,
->                      struct kobject *kobject)
->  {
-> +       int error;
-> +
->         if (down_interruptible(&efivars_lock))
->                 return -EINTR;
->
-> @@ -1191,6 +1193,19 @@ int efivars_register(struct efivars *efivars,
->
->         up(&efivars_lock);
->
-> +       /* and the standard mountpoint for efivarfs */
-> +       if (efi_kobj) {
-> +               error = sysfs_create_mount_point(efi_kobj, "efivars");
-> +               if (error) {
-> +                       if (down_interruptible(&efivars_lock))
-> +                               return -EINTR;
-> +                       __efivars = NULL;
-> +                       up(&efivars_lock);
-> +                       pr_err("efivars: Subsystem registration failed.\n");
-> +                       return error;
-> +               }
-> +       }
-> +
->         return 0;
->  }
->  EXPORT_SYMBOL_GPL(efivars_register);
-> @@ -1222,6 +1237,8 @@ int efivars_unregister(struct efivars *efivars)
->
->         pr_info("Unregistered efivars operations\n");
->         __efivars = NULL;
-> +       if (efi_kobj)
-> +               sysfs_remove_mount_point(efi_kobj, "efivars");
->
->         rv = 0;
->  out:
-> --
-> 2.16.4
->
