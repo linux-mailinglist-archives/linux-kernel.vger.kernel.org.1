@@ -2,210 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37C427785F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E440277863
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgIXSS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
+        id S1728734AbgIXSUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:20:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgIXSS4 (ORCPT
+        with ESMTP id S1727753AbgIXSUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:18:56 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ABC5C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:18:56 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id k133so94677pgc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:18:56 -0700 (PDT)
+        Thu, 24 Sep 2020 14:20:10 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597ACC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:20:10 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id mm21so157300pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:20:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kMOo3KJOc2PkcKyNcQfsNJAsR6f1LNJwtWex0bOgd4U=;
-        b=UF9Vjbajp3t54efxJmM5yiZOcksaGSimduU4WCEIVRQgT9ybDXJHKE7XVVH9i/nojc
-         C40JEOUUteqYEOHflO+errQaVhlV5MPfyKO/4ltZCTTUgsXXbizA4CJKX4F3CYN2Oi/N
-         +RUupw5ssFBrbYHaGgnswbGTNYRU9NkQ0b/+Nyd1emjUJT68xU4kW/ZlabBVcKFhajuX
-         T3COmAclEof6trd3+WKkbzEkKdFhuQrLOICiXd6RIg3JAvU+NzqEG3D9aNGxzyP76j4m
-         eu6Yh4tV2hUyAM11mq9cd/Jbphs9fnNAcFmcfpSHFF1EMip60Vj1QDQJ1on8qwtaYgwb
-         /1+w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eQMwhMR95n+3FqBYI5WeAox8ddPXZxaoyC5f5KTzv1Q=;
+        b=GdfyMCbqMOKTkZTGUricXEzpXRPXMc0br4yflxhC7hdlpcAcJ41FcQce+qdccc3z87
+         MMHOf+8H5Qr7RybcJieBQ5EQNHlLU5mUBdxeE64mi7MqDPzFTD8FlUGOrNkDsD3zyonP
+         cZvcfl8xL5uDWI7gIgAXwh2E3zr9TiPG7nH676ZY8oREoV9x/hm2xZY621hV4+O5Obyn
+         FzkZiPfL3s8lCz0lJhzkW2b7vZnlvGlJmmvTq3UFIh29qUQ4q7K0h7b0kWCmUVcE3j22
+         8ctZwQVXWEnL7SHF/Pk+KGEEY4RL75w0Lg0VL8ZNiJbHODxZsUa+28YyqqxNSOWrwW7p
+         5Wnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kMOo3KJOc2PkcKyNcQfsNJAsR6f1LNJwtWex0bOgd4U=;
-        b=YEPVeUB7keX/Sg1r3GdSHrSJBrCgWhBr5AHSV/rxgblcfbeD328Wm3pIkf3vpefHnh
-         mA2qQH1ur6NPpAedDADJoe+OcwGp72Hkenum7z2Fs+RZnTWb1im/FG/RxJeg2qbSQVwA
-         GLOeuLa7N266MUZVXErJ7iYw/AiA/lQWQpfOzDlieofcduU9YSxh2p6WaaHCLZlghK7U
-         blCFsIzGBCznKvWLjdDwfN9zRjcjkVMwRHTlmGX5B0YY4WZ8Miu16TK9JVKrhdeimcnL
-         fgX8Ty7EjLCQHz51RAD8auRMkcAKgEUR/nfm/W7ZVueLFWzfGoIuKwNxyWEaiP7sqXrs
-         0spQ==
-X-Gm-Message-State: AOAM533920xQj039lbihDwVjQcq+L8qUTcfCwcNMfLqg85arhI1sRce/
-        37muAJEmkAwtF7K+O0JcnPCjVQ==
-X-Google-Smtp-Source: ABdhPJzWWolsPBNCZ7SjOc0mBzGWK3XO0MUbcfIpHW3PyUEUNg7ig5lUo8kWNHk7e9tx2r4xxj6bkg==
-X-Received: by 2002:a05:6a00:1695:b029:142:2501:34e4 with SMTP id k21-20020a056a001695b0290142250134e4mr288221pfc.61.1600971535820;
-        Thu, 24 Sep 2020 11:18:55 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id s24sm35509pjp.53.2020.09.24.11.18.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 11:18:55 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 12:18:53 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Loic PALLARDY <loic.pallardy@st.com>,
-        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/10] rpmsg: Make RPMSG name service modular
-Message-ID: <20200924181853.GA1177445@xps15>
-References: <20200922001000.899956-1-mathieu.poirier@linaro.org>
- <20200922080944.GB4648@ubuntu>
- <CANLsYkyh16_G0y3ZP1_Fv1R1jE83xmSh1kXPpQVBBaz-kdOL4Q@mail.gmail.com>
- <20200924065355.GA20502@ubuntu>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eQMwhMR95n+3FqBYI5WeAox8ddPXZxaoyC5f5KTzv1Q=;
+        b=ddEI31P+rSYkGEPHPVwGGFPreLvMq3zjunmEJfab2dyzvZpntH224ld3YRx9gO5O9+
+         N9YB+v8ImbSlB6Wk4RE7adYiDUvjLS7P7PqOkXMkHLCBanyuOJ4fwYOeVbKrJ9A/XMyr
+         nlmB0Hn66iO3jwsVl00jXeT9jFxAgbzwMBIiHLlMUNNMUGV/qBeG+qOqLrEr1D0IneJZ
+         gB5iwyFjl5goP27iTWii5f06NcT+oVmHtzdOZgKkb3ZtcKjwj4iY2/pV6AEIpq2cL82p
+         To9BxOk91hfxL+eP/6uDujsLaR0ybKxTcKcAPJKjARi1OCiNVvN5LJrQ9sOzmCNdt83l
+         WW1Q==
+X-Gm-Message-State: AOAM530g/qMmhN+JUwrB4ggCawf3SaN4Pg/8Exo65+Aq++7x+qvv+p9c
+        X8xBBI2uYtPRBdfYYrszgTMwg0fYGUGw+0J7v7Ib3Q==
+X-Google-Smtp-Source: ABdhPJxGK7ykG4+qfUScNswCNWsCaTVZXUZJkcNZiTFJ0sltfxqVFMju3BXl5ivw2bkup5SuTddERmoUfauwxLhCPrg=
+X-Received: by 2002:a17:90a:c17:: with SMTP id 23mr182252pjs.127.1600971609587;
+ Thu, 24 Sep 2020 11:20:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924065355.GA20502@ubuntu>
+References: <20200924170928.466191266@goodmis.org> <20200924171846.993048030@goodmis.org>
+ <2006335081.68212.1600969345189.JavaMail.zimbra@efficios.com>
+In-Reply-To: <2006335081.68212.1600969345189.JavaMail.zimbra@efficios.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Thu, 24 Sep 2020 11:19:33 -0700
+Message-ID: <CAJHvVcjcehxKV2dmc8+j5ke-JcqGRvGoQTf2iKSN4istLQKseQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
+ enabled in a header
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     rostedt <rostedt@goodmis.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 08:53:56AM +0200, Guennadi Liakhovetski wrote:
-> Hi Mathieu,
-> 
-> Sorry for a delayed response, after I'd sent that my message I've 
-> subscribed to remoteproc and it seems during that transition some 
-> messages were only delivered from the list and not directly to me 
-> or something similar has happened.
+On Thu, Sep 24, 2020 at 10:42 AM Mathieu Desnoyers
+<mathieu.desnoyers@efficios.com> wrote:
 >
+> ----- On Sep 24, 2020, at 1:09 PM, rostedt rostedt@goodmis.org wrote:
+>
+> > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> >
+> > As tracepoints are discouraged from being added in a header because it can
+> > cause side effects if other tracepoints are in headers, the common
+> > workaround is to add a function call that calls a wrapper function in a
+> > C file that then calls the tracepoint. But as function calls add overhead,
+> > this function should only be called when the tracepoint in question is
+> > enabled. To get around the overhead, a static_branch can be used that only
+> > gets set when the tracepoint is enabled, and then inside the block of the
+> > static branch can contain the call to the tracepoint wrapper.
+> >
+> > Add a tracepoint_enabled(tp) macro that gets passed the name of the
+> > tracepoint, and this becomes a static_branch that is enabled when the
+> > tracepoint is enabled and is a nop when the tracepoint is disabled.
+> >
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > ---
+> > Documentation/trace/tracepoints.rst | 25 ++++++++++++++++++++++
+> > include/linux/tracepoint-defs.h     | 33 +++++++++++++++++++++++++++++
+> > 2 files changed, 58 insertions(+)
+> >
+> > diff --git a/Documentation/trace/tracepoints.rst
+> > b/Documentation/trace/tracepoints.rst
+> > index 6e3ce3bf3593..833d39ee1c44 100644
+> > --- a/Documentation/trace/tracepoints.rst
+> > +++ b/Documentation/trace/tracepoints.rst
+> > @@ -146,3 +146,28 @@ with jump labels and avoid conditional branches.
+> >       define tracepoints. Check http://lwn.net/Articles/379903,
+> >       http://lwn.net/Articles/381064 and http://lwn.net/Articles/383362
+> >       for a series of articles with more details.
+> > +
+> > +If you require calling a tracepoint from a header file, it is not
+> > +recommended to call one directly or to use the trace_<tracepoint>_enabled()
+> > +function call, as tracepoints in header files can have side effects if a
+> > +header is included from a file that has CREATE_TRACE_POINTS set. Instead,
+> > +include tracepoint-defs.h and use trace_enabled().
+>
+> Tracepoints per-se have no issues being used from header files. The TRACE_EVENT
+> infrastructure seems to be the cause of this problem. We should fix trace events
+> rather than require all users to use weird work-arounds thorough the kernel code
+> base.
+>
+> I am not against the idea of a tracepoint_enabled(tp), but I am against the
+> motivation behind this patch and the new tracepoint user requirements it documents.
 
-Ok
- 
-> On Tue, Sep 22, 2020 at 01:12:41PM -0600, Mathieu Poirier wrote:
-> > Good day Guennadi,
-> > 
-> > On Tue, 22 Sep 2020 at 02:09, Guennadi Liakhovetski
-> > <guennadi.liakhovetski@linux.intel.com> wrote:
-> > >
-> > > Hi Mathieu,
-> > >
-> > > Thanks for the patches. I'm trying to understand the concept of
-> > > this approach and I'm probably failing at that. It seems to me
-> > > that this patch set is making the NS announcement service to a
-> > > separate RPMsg device and I don't understand the reasoning for
-> > > doing this. As far as I understand namespace announcements
-> > > belong to RPMsg devices / channels, they create a dedicated
-> > > endpoint on them with a fixed pre-defined address. But they
-> > > don't form a separate RPMsg device. I think the current
-> > > virtio_rpmsg_bus.c has that correctly: for each rpmsg device /
-> > > channel multiple endpoints can be created, where the NS
-> > > service is one of them. It's just an endpoing of an rpmsg
-> > > device, not a complete separate device. Have I misunderstood
-> > > anything?
-> > 
-> > This patchset does not introduce any new features - the end result in
-> > terms of functionality is exactly the same.  It is also a carbon copy
-> > of the work introduced by Arnaud (hence reusing his patches), with the
-> > exception that the code is presented in a slightly different order to
-> > allow for a complete dissociation of RPMSG name service from the
-> > virtIO transport mechanic.
-> > 
-> > To make that happen rpmsg device specific byte conversion operations
-> > had to be introduced in struct rpmsg_device_ops and the explicit
-> > creation of an rpmsg_device associated with the name service (that
-> > wasn't needed when name service was welded to virtIO).  But
-> > associating a rpmsg_device to the name service doesn't change anything
-> > - RPMSG devices are created the same way when name service messages
-> > are received from the host or the remote processor.
-> 
-> Yes, the current rpmsg-virtio code does create *one* rpmsg device when 
-> an NS announcement arrives.
+Perhaps anecdotally, I've found that the situation Steven described
+occurs not just because of the TRACE_EVENT infrastructure. We also run
+into this problem when adding tracepoints under any "very core" APIs,
+i.e. anything that is transiently included from linux/tracepoint.h.
+For example, I ran into this issue while adding tracepoints under the
+linux/mmap_lock.h API, because that header is somehow transiently
+included by linux/tracepoint.h (sorry, I don't have the exact
+transient include path on hand; I can dig it up if it would be
+useful).
 
-Currently an rpmsg_device is created each time a NS announcement is received.  
 
-> Whereas with this patch set the first rpmsg 
-> device would be created to probe the NS service driver and the next one 
-> would still be created following the code borrowed from rpmsg-virtio 
-> when an NS announcement arrives. And I don't see how those two devices 
-> now make sense, sorry. I understand one device per channel, but two, of 
-> which one is for a certain endpoing only, whereas other endpoints don't 
-> create their devices, don't seem very logical to me.
 
-In the current implementation the NS service channel is created automatically
-when instantiating an rproc_vdev.  An official rpmsg_device is not needed since
-it is implicit.  With this set (and as you noted above) an rpmsg_device to
-represent the NS service is registered, the same way other services such as
-rpmsg_chrdev are.  After that nothing else changes and no other rpmgs_device
-are created until NS request come in.  When an NS request does come in an
-rpmsg_device is created, and that for each request that is received.
-
-> 
-> Thanks
-> Guennadi
-> 
-> > To prove my theory I ran the rpmsg_client_sample.c and it just worked,
-> > no changes to client code needed.
-> > 
-> > Let's keep talking, it's the only way we'll get through this.
-> > 
-> > Mathieu
-> > 
-> > >
-> > > Thanks
-> > > Guennadi
-> > >
-> > > On Mon, Sep 21, 2020 at 06:09:50PM -0600, Mathieu Poirier wrote:
-> > > > Hi all,
-> > > >
-> > > > After looking at Guennadi[1] and Arnaud's patchsets[2] it became
-> > > > clear that we need to go back to a generic rpmsg_ns_msg structure
-> > > > if we wanted to make progress.  To do that some of the work from
-> > > > Arnaud had to be modified in a way that common name service
-> > > > functionality was transport agnostic.
-> > > >
-> > > > This patchset is based on Arnaud's work but also include a patch
-> > > > from Guennadi and some input from me.  It should serve as a
-> > > > foundation for the next revision of [1].
-> > > >
-> > > > Applies on rpmsg-next (4e3dda0bc603) and tested on stm32mp157. I
-> > > > did not test the modularisation.
-> > > >
-> > > > Comments and feedback would be greatly appreciated.
-> > > >
-> > > > Thanks,
-> > > > Mathieu
-> > > >
-> > > > [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=346593
-> > > > [2]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=338335
-> > > >
-> > > > Arnaud Pouliquen (5):
-> > > >   rpmsg: virtio: rename rpmsg_create_channel
-> > > >   rpmsg: core: Add channel creation internal API
-> > > >   rpmsg: virtio: Add rpmsg channel device ops
-> > > >   rpmsg: Turn name service into a stand alone driver
-> > > >   rpmsg: virtio: use rpmsg ns device for the ns announcement
-> > > >
-> > > > Guennadi Liakhovetski (1):
-> > > >   rpmsg: Move common structures and defines to headers
-> > > >
-> > > > Mathieu Poirier (4):
-> > > >   rpmsg: virtio: Move virtio RPMSG structures to private header
-> > > >   rpmsg: core: Add RPMSG byte conversion operations
-> > > >   rpmsg: virtio: Make endianness conversion virtIO specific
-> > > >   rpmsg: ns: Make Name service module transport agnostic
-> > > >
-> > > >  drivers/rpmsg/Kconfig            |   9 +
-> > > >  drivers/rpmsg/Makefile           |   1 +
-> > > >  drivers/rpmsg/rpmsg_core.c       |  96 +++++++++++
-> > > >  drivers/rpmsg/rpmsg_internal.h   | 102 +++++++++++
-> > > >  drivers/rpmsg/rpmsg_ns.c         | 108 ++++++++++++
-> > > >  drivers/rpmsg/virtio_rpmsg_bus.c | 284 +++++++++----------------------
-> > > >  include/linux/rpmsg_ns.h         |  83 +++++++++
-> > > >  include/uapi/linux/rpmsg.h       |   3 +
-> > > >  8 files changed, 487 insertions(+), 199 deletions(-)
-> > > >  create mode 100644 drivers/rpmsg/rpmsg_ns.c
-> > > >  create mode 100644 include/linux/rpmsg_ns.h
-> > > >
-> > > > --
-> > > > 2.25.1
-> > > >
+>
+> > +
+> > +In a C file::
+> > +
+> > +     void do_trace_foo_bar_wrapper(args)
+> > +     {
+> > +             trace_foo_bar(args);
+> > +     }
+> > +
+> > +In the header file::
+> > +
+> > +     DECLEARE_TRACEPOINT(foo_bar);
+> > +
+> > +     static inline void some_inline_function()
+> > +     {
+> > +             [..]
+> > +             if (trace_enabled(foo_bar))
+>
+> Is it trace_enabled() or tracepoint_enabled() ? There is a mismatch
+> between the commit message/code and the documentation.
+>
+> Thanks,
+>
+> Mathieu
+>
+> > +                     do_trace_foo_bar_wrapper(args);
+> > +             [..]
+> > +     }
+> > diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+> > index b29950a19205..ca2f1f77f6f8 100644
+> > --- a/include/linux/tracepoint-defs.h
+> > +++ b/include/linux/tracepoint-defs.h
+> > @@ -48,4 +48,37 @@ struct bpf_raw_event_map {
+> >       u32                     writable_size;
+> > } __aligned(32);
+> >
+> > +/*
+> > + * If a tracepoint needs to be called from a header file, it is not
+> > + * recommended to call it directly, as tracepoints in header files
+> > + * may cause side-effects. Instead, use trace_enabled() to test
+> > + * if the tracepoint is enabled, then if it is, call a wrapper
+> > + * function defined in a C file that will then call the tracepoint.
+> > + *
+> > + * For "trace_foo()", you would need to create a wrapper function
+> > + * in a C file to call trace_foo():
+> > + *   void trace_bar(args) { trace_foo(args); }
+> > + * Then in the header file, declare the tracepoint:
+> > + *   DECLARE_TRACEPOINT(foo);
+> > + * And call your wrapper:
+> > + *   static inline void some_inlined_function() {
+> > + *            [..]
+> > + *            if (tracepoint_enabled(foo))
+> > + *                    trace_bar(args);
+> > + *            [..]
+> > + *   }
+> > + *
+> > + * Note: tracepoint_enabled(foo) is equivalent to trace_foo_enabled()
+> > + *   but is safe to have in headers, where trace_foo_enabled() is not.
+> > + */
+> > +#define DECLARE_TRACEPOINT(tp) \
+> > +     extern struct tracepoint __tracepoint_##tp
+> > +
+> > +#ifdef CONFIG_TRACEPOINTS
+> > +# define tracepoint_enabled(tp) \
+> > +     static_key_false(&(__tracepoint_##tp).key)
+> > +#else
+> > +# define tracepoint_enabled(tracepoint) false
+> > +#endif
+> > +
+> > #endif
+> > --
+> > 2.28.0
+>
+> --
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> http://www.efficios.com
