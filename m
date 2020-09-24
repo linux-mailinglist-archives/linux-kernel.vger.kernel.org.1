@@ -2,42 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49207276D69
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A08276D5B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726899AbgIXJ2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:28:00 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:39866 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727494AbgIXJ01 (ORCPT
+        id S1726658AbgIXJ1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:27:39 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:34166 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727499AbgIXJ01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Sep 2020 05:26:27 -0400
-Received: by mail-il1-f205.google.com with SMTP id r10so2094574ilq.6
+Received: by mail-io1-f79.google.com with SMTP id i1so1959490iom.1
         for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wQ51f9WTAZ5e5qtWDKE3zolADPaVRzEKSYmLIUlQCxM=;
-        b=jnsv4EWVrvMwEx4UgoZM+bdzfBQ8Iou04phEkcWQA73UyLLprNtDEjUQzCxdLc2bXs
-         H+qqc7Mp4C/RpYSF+3B+Nxq8nknn/tDJLnE0qisDKkUFMGzIDQdeTxd7a9BE9PXpH5kK
-         sKaopdmex5RQ0LkFXAOrghl/+zA2Dm3OR30CfskNxGSb5xlqHxn/S8n3TO2tDiAFmfyZ
-         elM9Pg9dtR1ca5TJudnA51pSOdTcK4eEQU03hJrodhaqq4vnLtr0zKkGocsIjYaZoS8D
-         hqMEVLkS3xAei2eHLlLxImadYlR3F8fwqvOZaHJl9Rb50e43EExSybxdvJLwsp2eT9hz
-         hUzw==
-X-Gm-Message-State: AOAM532HUfqA3T0n6HStHRw6yzdcOX8XY9ZocuxpL888Yo5XUYPEOH/r
-        woxcgkAJ7T2xKGogSXkUMwMcgQSwxe1SbaKgbjIg6IinYaZt
-X-Google-Smtp-Source: ABdhPJwmsNm47rwzH7GpbfqeU15rs/Sv4XFx3pugpzM0RTOhBVAIlBylP3aBEGqVLJQk2YQasb0ysawOr7kN2bwA0xCSTMmW+kzX
+        bh=lKlrAGi+eyrd8zC5Zvr/WU9bXgo79OUvMpHFZeKuFmw=;
+        b=mcYUZrQyo1zlACg9IjcE9wuBnH0ekNxJ+M+WxAIBdY52C0AYYoAPOWU4dd42Bl/WsP
+         5RxuTh5CdOsVPtJfhQR6DfYM2CJrTU3+08taOYxsb6OSzJUWibwjEJjXWgw8Tz53PUvu
+         gy8qaMSNvmMNZTTXYdFgAZCNApQUoLzUDERAW4NkCcn6KCev5Uvd047sERCwQvwdzB8E
+         Swym7eQU9cPCkDV45k47BMOGfTMjAGOGNQAMkNBuLmBTvNedJyeBQj6PKIbC6qKf3qs4
+         GWrF8VxtTWzQk+88lEe8OalKPc87/ddO+T6KU1/k42QONplrFGpkHa4SyHW0LBu9Otlz
+         DHLQ==
+X-Gm-Message-State: AOAM532fuzHwu6iMhfbHvQgo5SvVb334lZZG4K63vkgqNcKz+VqeKJ7G
+        gPmPMMrPXH3SkufE/WUyaTl5sawayq8blU0kRsbBYKF6inQp
+X-Google-Smtp-Source: ABdhPJw9jg/gq+1ZA5IdnhW4HLsVV4Cdn6aEtihx4wg6L+dXlAjcGYm79ogPqjFkSH35WhM+zX7Ilecn7xhuEa/czHZyMab1y5OI
 MIME-Version: 1.0
-X-Received: by 2002:a6b:d603:: with SMTP id w3mr2601767ioa.29.1600939586515;
+X-Received: by 2002:a05:6602:2d55:: with SMTP id d21mr2522579iow.134.1600939586782;
  Thu, 24 Sep 2020 02:26:26 -0700 (PDT)
 Date:   Thu, 24 Sep 2020 02:26:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005c793005b00bcb89@google.com>
-Subject: general protection fault in cdev_del (2)
-From:   syzbot <syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Message-ID: <000000000000608c1705b00bcb89@google.com>
+Subject: KMSAN: uninit-value in ieee80211_skb_resize
+From:   syzbot <syzbot+32fd1a1bfe355e93f1e2@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, johannes@sipsolutions.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -47,84 +49,84 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12641dab900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5f4c828c9e3cef97
-dashboard link: https://syzkaller.appspot.com/bug?extid=c49fe6089f295a05e6f8
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14eadc8d900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1517d075900000
+HEAD commit:    c5a13b33 kmsan: clang-format core
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1366df53900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
+dashboard link: https://syzkaller.appspot.com/bug?extid=32fd1a1bfe355e93f1e2
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e95cd3900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11abf481900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
+Reported-by: syzbot+32fd1a1bfe355e93f1e2@syzkaller.appspotmail.com
 
-RBP: 00007ffee0265520 R08: 0000000000000002 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-R13: 0000000000000005 R14: 0000000000000000 R15: 0000000000000000
-general protection fault, probably for non-canonical address 0xdffffc000000000c: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000060-0x0000000000000067]
-CPU: 0 PID: 7451 Comm: syz-executor249 Not tainted 5.9.0-rc6-syzkaller #0
+=====================================================
+BUG: KMSAN: uninit-value in ieee80211_skb_resize+0x8c0/0x980 net/mac80211/tx.c:1955
+CPU: 0 PID: 8539 Comm: syz-executor053 Not tainted 5.9.0-rc4-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:cdev_del+0x22/0x90 fs/char_dev.c:596
-Code: b5 0f 1f 80 00 00 00 00 55 48 89 fd 48 83 ec 08 e8 d3 41 b3 ff 48 8d 7d 64 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 4f 48
-RSP: 0018:ffffc90007f07b10 EFLAGS: 00010207
-RAX: dffffc0000000000 RBX: ffff8880a16f3500 RCX: ffffffff841165ff
-RDX: 000000000000000c RSI: ffffffff81c2fc6d RDI: 0000000000000064
-RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff8d0b7a67
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a16f3508
-R13: ffff8880a17cd008 R14: ffff8880a6236420 R15: ffff8880a6236278
-FS:  0000000000000000(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0288f8a710 CR3: 0000000094f1e000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- tty_unregister_device drivers/tty/tty_io.c:3193 [inline]
- tty_unregister_device+0x112/0x1b0 drivers/tty/tty_io.c:3188
- gsmld_detach_gsm drivers/tty/n_gsm.c:2411 [inline]
- gsmld_close+0xaa/0x260 drivers/tty/n_gsm.c:2480
- tty_ldisc_close+0x110/0x190 drivers/tty/tty_ldisc.c:489
- tty_ldisc_kill+0x94/0x150 drivers/tty/tty_ldisc.c:637
- tty_ldisc_hangup+0x30b/0x680 drivers/tty/tty_ldisc.c:756
- __tty_hangup.part.0+0x403/0x870 drivers/tty/tty_io.c:625
- __tty_hangup drivers/tty/tty_io.c:575 [inline]
- tty_vhangup+0x1d/0x30 drivers/tty/tty_io.c:698
- pty_close+0x3f5/0x550 drivers/tty/pty.c:79
- tty_release+0x455/0xf60 drivers/tty/tty_io.c:1679
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- exit_task_work include/linux/task_work.h:25 [inline]
- do_exit+0xb7d/0x29f0 kernel/exit.c:806
- do_group_exit+0x125/0x310 kernel/exit.c:903
- __do_sys_exit_group kernel/exit.c:914 [inline]
- __se_sys_exit_group kernel/exit.c:912 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+ ieee80211_skb_resize+0x8c0/0x980 net/mac80211/tx.c:1955
+ ieee80211_build_hdr+0x2939/0x41f0 net/mac80211/tx.c:2825
+ __ieee80211_subif_start_xmit+0x172a/0x7300 net/mac80211/tx.c:3999
+ ieee80211_subif_start_xmit+0x14b/0x19a0 net/mac80211/tx.c:4144
+ __netdev_start_xmit include/linux/netdevice.h:4634 [inline]
+ netdev_start_xmit include/linux/netdevice.h:4648 [inline]
+ xmit_one+0x3cf/0x750 net/core/dev.c:3561
+ dev_hard_start_xmit+0x196/0x420 net/core/dev.c:3577
+ sch_direct_xmit+0x5d3/0x1a50 net/sched/sch_generic.c:314
+ qdisc_restart net/sched/sch_generic.c:377 [inline]
+ __qdisc_run+0x35b/0x490 net/sched/sch_generic.c:385
+ qdisc_run include/net/pkt_sched.h:134 [inline]
+ __dev_xmit_skb net/core/dev.c:3752 [inline]
+ __dev_queue_xmit+0x2cfa/0x4470 net/core/dev.c:4105
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4169
+ packet_snd net/packet/af_packet.c:2989 [inline]
+ packet_sendmsg+0x8542/0x9a80 net/packet/af_packet.c:3014
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ __sys_sendto+0x9dc/0xc80 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:2000
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x440018
-Code: Bad RIP value.
-RSP: 002b:00007ffee02654c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000440018
-RDX: 0000000000000000 RSI: 000000000000003c RDI: 0000000000000000
-RBP: 00000000004bfd90 R08: 00000000000000e7 R09: ffffffffffffffd0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00000000006d2180 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 98d732d1ef99b6c5 ]---
-RIP: 0010:cdev_del+0x22/0x90 fs/char_dev.c:596
-Code: b5 0f 1f 80 00 00 00 00 55 48 89 fd 48 83 ec 08 e8 d3 41 b3 ff 48 8d 7d 64 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 4f 48
-RSP: 0018:ffffc90007f07b10 EFLAGS: 00010207
-RAX: dffffc0000000000 RBX: ffff8880a16f3500 RCX: ffffffff841165ff
-RDX: 000000000000000c RSI: ffffffff81c2fc6d RDI: 0000000000000064
-RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff8d0b7a67
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880a16f3508
-R13: ffff8880a17cd008 R14: ffff8880a6236420 R15: ffff8880a6236278
-FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd722a6000 CR3: 0000000094644000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+RIP: 0033:0x441ea9
+Code: e8 bc 00 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fffc4414388 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441ea9
+RDX: 000000000000000e RSI: 00000000200000c0 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000004800 R11: 0000000000000246 R12: 0000000000000032
+R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
+
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:143 [inline]
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:126
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
+ slab_alloc_node mm/slub.c:2907 [inline]
+ __kmalloc_node_track_caller+0x9aa/0x12f0 mm/slub.c:4511
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1094 [inline]
+ alloc_skb_with_frags+0x1f2/0xc10 net/core/skbuff.c:5771
+ sock_alloc_send_pskb+0xc83/0xe50 net/core/sock.c:2348
+ packet_alloc_skb net/packet/af_packet.c:2837 [inline]
+ packet_snd net/packet/af_packet.c:2932 [inline]
+ packet_sendmsg+0x6abb/0x9a80 net/packet/af_packet.c:3014
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ __sys_sendto+0x9dc/0xc80 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:2000
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
 
 
 ---
