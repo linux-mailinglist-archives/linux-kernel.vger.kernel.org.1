@@ -2,122 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072C12771CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:07:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181DF2771D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727866AbgIXNHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:07:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:45824 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727704AbgIXNHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:07:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F31212FC;
-        Thu, 24 Sep 2020 06:07:41 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E4223F718;
-        Thu, 24 Sep 2020 06:07:38 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 14:07:34 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org, bhelgaas@google.com, shawnguo@kernel.org,
-        kishon@ti.com, leoyang.li@nxp.com, gustavo.pimentel@synopsys.com,
-        arnd@arndb.de, gregkh@linuxfoundation.org, andrew.murray@arm.com,
-        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, roy.zang@nxp.com,
-        Xiaowei Bao <xiaowei.bao@nxp.com>
-Subject: Re: [PATCHv8 10/12] arm64: dts: layerscape: Add PCIe EP node for
- ls1088a
-Message-ID: <20200924130734.GA17981@e121166-lin.cambridge.arm.com>
-References: <20200918080024.13639-1-Zhiqiang.Hou@nxp.com>
- <20200918080024.13639-11-Zhiqiang.Hou@nxp.com>
+        id S1727906AbgIXNHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727782AbgIXNHz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:07:55 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C37C0613CE;
+        Thu, 24 Sep 2020 06:07:54 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c9500832c6260210b2089.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9500:832c:6260:210b:2089])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 347BE1EC03F0;
+        Thu, 24 Sep 2020 15:07:53 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600952873;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=pPCkHSTlJNBGoTx2iGF/ZWSi//3FBF/3q6vcbe65064=;
+        b=XR25InTP1OiI7NkNDQQAy4UHFpR73tQOozoongeAVPC/jth/KYFbj/ZVQcUEYCSQMo7Kye
+        UZ+g0IEr3tr1r47iw7CRW905bstbdVlMJm5DTxI75CuYCHllptBfRLPgGu43/Trd/M+LUz
+        PxFPgOjItb1fbKKmne2+XV3Td7mkk4s=
+Date:   Thu, 24 Sep 2020 15:07:46 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
+        fenghua.yu@intel.com, kevin.tian@intel.com,
+        David.Laight@ACULAB.COM, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Michael Matz <matz@suse.de>
+Subject: Re: [PATCH v5 1/5] x86/asm: Carve out a generic movdir64b() helper
+ for general usage
+Message-ID: <20200924130746.GF5030@zn.tnic>
+References: <160090233730.44288.4446779116422752486.stgit@djiang5-desk3.ch.intel.com>
+ <160090264332.44288.7575027054245105525.stgit@djiang5-desk3.ch.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200918080024.13639-11-Zhiqiang.Hou@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <160090264332.44288.7575027054245105525.stgit@djiang5-desk3.ch.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 04:00:22PM +0800, Zhiqiang Hou wrote:
-> From: Xiaowei Bao <xiaowei.bao@nxp.com>
-> 
-> Add PCIe EP node for ls1088a to support EP mode.
-> 
-> Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
-> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-> Reviewed-by: Andrew Murray <andrew.murray@arm.com>
-> ---
-> V8:
->  - s/pcie_ep/pcie-ep.
-> 
->  .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 31 +++++++++++++++++++
->  1 file changed, 31 insertions(+)
-
-Dropped this patch. dts files updates should be sent via arm-soc along
-with platform support.
-
-Thanks,
-Lorenzo
-
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> index 169f4742ae3b..f21dd143ab6d 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> @@ -499,6 +499,17 @@
->  			status = "disabled";
->  		};
->  
-> +		pcie-ep@3400000 {
-> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
-> +			reg = <0x00 0x03400000 0x0 0x00100000
-> +			       0x20 0x00000000 0x8 0x00000000>;
-> +			reg-names = "regs", "addr_space";
-> +			num-ib-windows = <24>;
-> +			num-ob-windows = <128>;
-> +			max-functions = /bits/ 8 <2>;
-> +			status = "disabled";
-> +		};
+On Wed, Sep 23, 2020 at 04:10:43PM -0700, Dave Jiang wrote:
+> +/* The dst parameter must be 64-bytes aligned */
+> +static inline void movdir64b(void *dst, const void *src)
+> +{
+> +	/*
+> +	 * Note that this isn't an "on-stack copy", just definition of "dst"
+> +	 * as a pointer to 64-bytes of stuff that is going to be overwritten.
+> +	 * In the MOVDIR64B case that may be needed as you can use the
+> +	 * MOVDIR64B instruction to copy arbitrary memory around. This trick
+> +	 * lets the compiler know how much gets clobbered.
+> +	 */
+> +	volatile struct { char _[64]; } *__dst = dst;
 > +
->  		pcie@3500000 {
->  			compatible = "fsl,ls1088a-pcie";
->  			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
-> @@ -525,6 +536,16 @@
->  			status = "disabled";
->  		};
->  
-> +		pcie-ep@3500000 {
-> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
-> +			reg = <0x00 0x03500000 0x0 0x00100000
-> +			       0x28 0x00000000 0x8 0x00000000>;
-> +			reg-names = "regs", "addr_space";
-> +			num-ib-windows = <6>;
-> +			num-ob-windows = <8>;
-> +			status = "disabled";
-> +		};
-> +
->  		pcie@3600000 {
->  			compatible = "fsl,ls1088a-pcie";
->  			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
-> @@ -551,6 +572,16 @@
->  			status = "disabled";
->  		};
->  
-> +		pcie-ep@3600000 {
-> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
-> +			reg = <0x00 0x03600000 0x0 0x00100000
-> +			       0x30 0x00000000 0x8 0x00000000>;
-> +			reg-names = "regs", "addr_space";
-> +			num-ib-windows = <6>;
-> +			num-ob-windows = <8>;
-> +			status = "disabled";
-> +		};
-> +
->  		smmu: iommu@5000000 {
->  			compatible = "arm,mmu-500";
->  			reg = <0 0x5000000 0 0x800000>;
-> -- 
-> 2.17.1
-> 
+> +	/* MOVDIR64B [rdx], rax */
+> +	asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
+> +		     :
+> +		     : "m" (*(struct { char _[64];} **)src), "a" (__dst)
+> +		     : "memory");
+> +}
+
+Ok, Micha and I hashed it out on IRC, here's what you do. Please keep
+the comments too because we will forget soon again.
+
+static inline void movdir64b(void *__dst, const void *src)
+{
+	struct { char _[64]; } *__src = src;
+	struct { char _[64]; } *__dst = dst;
+
+	/*
+	 * MOVDIR64B %(rdx), rax.
+	 *
+	 * Both __src and __dst must be memory constraints in order to tell the
+	 * compiler that no other memory accesses should be reordered around
+	 * this one.
+	 *
+	 * Also, both must be supplied as lvalues because this tells
+	 * the compiler what the object is (its size) the instruction accesses.
+	 * I.e., not the pointers but what they point, thus the deref'ing '*'.
+	 */
+	asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
+		     : "+m" (*__dst)
+		     :  "m" (*__src), "a" (__dst), "d" (__src));
+}
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
