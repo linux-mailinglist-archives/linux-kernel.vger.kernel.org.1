@@ -2,83 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B46277331
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFC027729C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgIXNzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:55:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39424 "EHLO mx2.suse.de"
+        id S1728081AbgIXNjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:39:02 -0400
+Received: from mga04.intel.com ([192.55.52.120]:17190 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727749AbgIXNzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:55:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 31965ABAD;
-        Thu, 24 Sep 2020 13:55:39 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EB4561E1303; Thu, 24 Sep 2020 11:08:59 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 11:08:59 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org,
-        syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
-Subject: Re: [PATCH] ext4: fix leaking sysfs kobject after failed mount
-Message-ID: <20200924090859.GF27019@quack2.suse.cz>
-References: <000000000000443d8a05afcff2b5@google.com>
- <20200922162456.93657-1-ebiggers@kernel.org>
+        id S1727888AbgIXNjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:39:01 -0400
+IronPort-SDR: hUQp4x/SJplnpc8Mi6XCZU/c0UXYRueMezf0dHQ42xp1f9d6l1l2c4DtcwRIgXGPILmWLrG5J6
+ zJ0mc8gJsxgw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="158582189"
+X-IronPort-AV: E=Sophos;i="5.77,297,1596524400"; 
+   d="scan'208";a="158582189"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 06:38:58 -0700
+IronPort-SDR: jWOEcGzq6troy1NP13CLTFfaqvuZUeJBoVkPvBeW4r3vbRUuadDgQPeiLaL7c3iQMg08GSayWH
+ UKC1wj2Ts6RA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,297,1596524400"; 
+   d="scan'208";a="339049158"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 24 Sep 2020 06:38:54 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kLRDi-001fqv-2C; Thu, 24 Sep 2020 16:23:34 +0300
+Date:   Thu, 24 Sep 2020 16:23:34 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        linux-pwm@vger.kernel.org, lee.jones@linaro.org,
+        thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com, rtanwar@maxlinear.com
+Subject: Re: [PATCH v13 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200924132334.GT3956970@smile.fi.intel.com>
+References: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
+ <befa655d8beb326fc8aa405a25a8b3e62b7e6a4a.1600158087.git.rahul.tanwar@linux.intel.com>
+ <20200924065534.e2anwghhtysv63e7@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200922162456.93657-1-ebiggers@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924065534.e2anwghhtysv63e7@pengutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 22-09-20 09:24:56, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> ext4_unregister_sysfs() only deletes the kobject.  The reference to it
-> needs to be put separately, like ext4_put_super() does.
-> 
-> This addresses the syzbot report
-> "memory leak in kobject_set_name_vargs (3)"
-> (https://syzkaller.appspot.com/bug?extid=9f864abad79fae7c17e1).
-> 
-> Reported-by: syzbot+9f864abad79fae7c17e1@syzkaller.appspotmail.com
-> Fixes: 72ba74508b28 ("ext4: release sysfs kobject when failing to enable quotas on mount")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
+On Thu, Sep 24, 2020 at 08:55:34AM +0200, Uwe Kleine-König wrote:
+> On Tue, Sep 15, 2020 at 04:23:37PM +0800, Rahul Tanwar wrote:
 
-Looks good. You can add:
+...
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> > +	ret = lgm_clk_enable(dev, pc);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to enable clock\n");
+> 
+> You used dev_err_probe four times for six error paths. I wonder why you
+> didn't use it here (and below for a failing pwmchip_add()).
 
-								Honza
+dev_err_probe() makes sense when we might experience deferred probe. In neither
+of mentioned function this can be the case.
 
-> ---
->  fs/ext4/super.c | 1 +
->  1 file changed, 1 insertion(+)
+> > +		return ret;
+> > +	}
+
+...
+
+> > +	ret = lgm_reset_control_deassert(dev, pc);
+> > +	if (ret)
+> > +		return dev_err_probe(dev, ret, "cannot deassert reset control\n");
 > 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index ea425b49b345..41953b86ffe3 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -4872,6 +4872,7 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
->  
->  failed_mount8:
->  	ext4_unregister_sysfs(sb);
-> +	kobject_put(&sbi->s_kobj);
->  failed_mount7:
->  	ext4_unregister_li_request(sb);
->  failed_mount6:
-> 
-> base-commit: ba4f184e126b751d1bffad5897f263108befc780
-> -- 
-> 2.28.0
-> 
+> After lgm_reset_control_deassert is called pc->rst is unused. So there
+> is no need to have this member in struct lgm_pwm_chip. The same applies
+> to ->clk. (You have to pass rst (or clk) to devm_add_action_or_reset for
+> that to work. Looks like a nice idea anyhow.)
+
+True. And above dev_err_probe() is not needed.
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Andy Shevchenko
+
+
