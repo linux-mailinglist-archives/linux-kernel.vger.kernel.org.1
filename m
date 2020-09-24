@@ -2,184 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D642765CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2C552765C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbgIXBXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 21:23:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23874 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725208AbgIXBXD (ORCPT
+        id S1726687AbgIXBVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 21:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIXBVg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 21:23:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600910581;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p9WO4qQNqPNvxeAmCHyDKaeS+OQCXdDkVSudf43hciY=;
-        b=GLH0RrUq53M+3Bcp74jeuzTlk7X+Kyf+L8NZLFJoLYpLQBaXxtpFGMe1YY0CAt54foeUpW
-        8Wmd2Oyx4+2sX/9gh5q785C3Puq0Ea+Y/0E/CBjM1RKltt6VYdl4u+cRz3Sp7e5RRWECg9
-        pUarrgarnVGeblUiXtBH0nHka4GZPn4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-_QOUAg3aNFeQnO8SChft0w-1; Wed, 23 Sep 2020 21:21:08 -0400
-X-MC-Unique: _QOUAg3aNFeQnO8SChft0w-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E221801AF7;
-        Thu, 24 Sep 2020 01:21:07 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3649810027AB;
-        Thu, 24 Sep 2020 01:21:04 +0000 (UTC)
-Date:   Wed, 23 Sep 2020 21:21:03 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
-        Alasdair Kergon <agk@redhat.com>,
-        Eric Biggers <ebiggers@google.com>
-Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
- support
-Message-ID: <20200924012103.GE10500@redhat.com>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-3-satyat@google.com>
+        Wed, 23 Sep 2020 21:21:36 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F55C0613D4
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 18:21:36 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id j7so714665plk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 18:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=igPpRkqz2XyzMzkU8JuUgO7QxgO9fdrNQoEexwdzcUg=;
+        b=EBjVIhB6OfDRJIAiUCR71d+gb2psevpXoene0AJ0nRFcULfdopK8KrdPe/F9FJmCgb
+         8zi0VOXHlCWVdfWSjra+UEk282IjLmLZUPtV0WVzViQP05tIwRO1xcKCT/iUWraLYj2r
+         71lzww5GhZmX+iC5NnNOmqvdXdr28L7lIeccP9wUD0gIIo1stLkoYrQ58mStb0diOMw+
+         Yj5RcV1OgCYmmA3nesfaxrtuJtbjqDGmq+LzrODoJIPD2cGWkBDuGgRBL1TiMXJldP/o
+         /OnQtbhuC8Ys6XxcrwPwPeH/KvHLnDAemjCcR6n/3ddOjGkdG5U4iGcskMsZmXNqEFK0
+         QN6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=igPpRkqz2XyzMzkU8JuUgO7QxgO9fdrNQoEexwdzcUg=;
+        b=n2mogvEdD3DKc98uRgV2vDpFdz69oa8Ob/7s2HhVjuaFZSVXnJ/Cnp9WOK2QYaPM2b
+         RN8Oh/3v/GvOaUJvMmp7w47vdh9ugf0o9PY9r/QjXXQ2J0ujnP07EIS58sc6iM1RFsyx
+         gpUTwXowN6PlaODZas7jqveMqDPH6lxtxP6N+DxymkSPqyza3gjaSoYdWBqk1DWa3xG5
+         btPAHCxwhxC3o783NIZTUEbMd9M+W+40dsS0G3oAH6C+2k5cpJCWEfia0gXHA7hdTZIE
+         5SDErlmZs1OD3ZgCxNuLqYPy/iqH8GPXj62a/TqgKypQ2eUPkbVSTntwGyTgAvyoeiEr
+         csPQ==
+X-Gm-Message-State: AOAM531d0TNxYQS4xVbbLqYZJYsxibKnw/SBlU2q5CbH96mbeMQg8P9E
+        QEDqrx2RYBOVpCY8mXv4y5g=
+X-Google-Smtp-Source: ABdhPJywyJR9mm2o+4PGbq261WDOkrGKnAyW2YEZZ/IUYEFFQLVDsIB/k2pYKCOn3b1vZeffmps+fg==
+X-Received: by 2002:a17:902:6941:b029:d0:cbe1:e705 with SMTP id k1-20020a1709026941b02900d0cbe1e705mr2313216plt.19.1600910495483;
+        Wed, 23 Sep 2020 18:21:35 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id 9sm906898pgx.76.2020.09.23.18.21.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 18:21:34 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 10:21:32 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
+Message-ID: <20200924012132.GA577@jagdpanzerIV.localdomain>
+References: <20200922153816.5883-1-john.ogness@linutronix.de>
+ <20200922153816.5883-4-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200909234422.76194-3-satyat@google.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20200922153816.5883-4-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 09 2020 at  7:44pm -0400,
-Satya Tangirala <satyat@google.com> wrote:
-
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> Update the device-mapper core to support exposing the inline crypto
-> support of the underlying device(s) through the device-mapper device.
-> 
-> This works by creating a "passthrough keyslot manager" for the dm
-> device, which declares support for encryption settings which all
-> underlying devices support.  When a supported setting is used, the bio
-> cloning code handles cloning the crypto context to the bios for all the
-> underlying devices.  When an unsupported setting is used, the blk-crypto
-> fallback is used as usual.
-> 
-> Crypto support on each underlying device is ignored unless the
-> corresponding dm target opts into exposing it.  This is needed because
-> for inline crypto to semantically operate on the original bio, the data
-> must not be transformed by the dm target.  Thus, targets like dm-linear
-> can expose crypto support of the underlying device, but targets like
-> dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
-> 
-> When a key is evicted from the dm device, it is evicted from all
-> underlying devices.
-> 
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> Co-developed-by: Satya Tangirala <satyat@google.com>
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  block/blk-crypto.c              |  1 +
->  block/keyslot-manager.c         | 34 ++++++++++++
->  drivers/md/dm-core.h            |  4 ++
->  drivers/md/dm-table.c           | 52 +++++++++++++++++++
->  drivers/md/dm.c                 | 92 ++++++++++++++++++++++++++++++++-
->  include/linux/device-mapper.h   |  6 +++
->  include/linux/keyslot-manager.h |  7 +++
->  7 files changed, 195 insertions(+), 1 deletion(-)
-> 
-> diff --git a/block/blk-crypto.c b/block/blk-crypto.c
-> index 2d5e60023b08..33555cf0e3e7 100644
-> --- a/block/blk-crypto.c
-> +++ b/block/blk-crypto.c
-> @@ -402,3 +402,4 @@ int blk_crypto_evict_key(struct request_queue *q,
->  	 */
->  	return blk_crypto_fallback_evict_key(key);
->  }
-> +EXPORT_SYMBOL_GPL(blk_crypto_evict_key);
-> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
-> index 60ac406d54b9..e0f776c38d8a 100644
-> --- a/block/keyslot-manager.c
-> +++ b/block/keyslot-manager.c
-> @@ -416,6 +416,40 @@ void blk_ksm_unregister(struct request_queue *q)
+On (20/09/22 17:44), John Ogness wrote:
+[..]
+>  int vprintk_store(int facility, int level,
+>  		  const struct dev_printk_info *dev_info,
+>  		  const char *fmt, va_list args)
 >  {
->  	q->ksm = NULL;
->  }
-> +EXPORT_SYMBOL_GPL(blk_ksm_unregister);
+> -	static char textbuf[LOG_LINE_MAX];
+> -	char *text = textbuf;
+>  	size_t text_len;
+>  	enum log_flags lflags = 0;
+> +	unsigned long irqflags;
+> +	int sprint_id;
+> +	char *text;
+> +	int ret;
 > +
-> +/**
-> + * blk_ksm_intersect_modes() - restrict supported modes by child device
-> + * @parent: The keyslot manager for parent device
-> + * @child: The keyslot manager for child device, or NULL
-> + *
-> + * Clear any crypto mode support bits in @parent that aren't set in @child.
-> + * If @child is NULL, then all parent bits are cleared.
-> + *
-> + * Only use this when setting up the keyslot manager for a layered device,
-> + * before it's been exposed yet.
-> + */
-> +void blk_ksm_intersect_modes(struct blk_keyslot_manager *parent,
-> +			     const struct blk_keyslot_manager *child)
-> +{
-> +	if (child) {
-> +		unsigned int i;
-> +
-> +		parent->max_dun_bytes_supported =
-> +			min(parent->max_dun_bytes_supported,
-> +			    child->max_dun_bytes_supported);
-> +		for (i = 0; i < ARRAY_SIZE(child->crypto_modes_supported);
-> +		     i++) {
-> +			parent->crypto_modes_supported[i] &=
-> +				child->crypto_modes_supported[i];
-> +		}
-> +	} else {
-> +		parent->max_dun_bytes_supported = 0;
-> +		memset(parent->crypto_modes_supported, 0,
-> +		       sizeof(parent->crypto_modes_supported));
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(blk_ksm_intersect_modes);
->  
->  /**
->   * blk_ksm_init_passthrough() - Init a passthrough keyslot manager
-> diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
-> index c4ef1fceead6..4542050eebfc 100644
-> --- a/drivers/md/dm-core.h
-> +++ b/drivers/md/dm-core.h
-> @@ -12,6 +12,7 @@
->  #include <linux/kthread.h>
->  #include <linux/ktime.h>
->  #include <linux/blk-mq.h>
-> +#include <linux/keyslot-manager.h>
->  
->  #include <trace/events/block.h>
->  
-> @@ -49,6 +50,9 @@ struct mapped_device {
->  
->  	int numa_node_id;
->  	struct request_queue *queue;
-> +#ifdef CONFIG_BLK_INLINE_ENCRYPTION
-> +	struct blk_keyslot_manager ksm;
-> +#endif
->  
->  	atomic_t holders;
->  	atomic_t open_count;
+> +	text = get_sprint_buf(&sprint_id, &irqflags);
+> +	if (WARN_ON_ONCE(!text))
+> +		return 0;
 
-Any reason you placed the ksm member where you did?
+So we failed to get the buffer. How likely that this recursive
+WARN_ON_ONCE()->printk()->get_sprint_buf() will be able to get one?
+I would rather expect that we will entirely lose WARN_ON_ONCE().
 
-Looking at 'struct blk_keyslot_manager' I'm really hating adding that
-bloat to every DM device for a feature that really won't see much broad
-use (AFAIK).
-
-Any chance you could allocate 'struct blk_keyslot_manager' as needed so
-that most users of DM would only be carrying 1 extra pointer (set to
-NULL)?
-
-Thanks,
-Mike
-
+	-ss
