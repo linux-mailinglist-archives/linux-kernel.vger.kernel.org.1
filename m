@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990D9276B59
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:03:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AC1276B61
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727234AbgIXIC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:02:59 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35518 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727013AbgIXIC6 (ORCPT
+        id S1727236AbgIXIFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:05:36 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:10034 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727013AbgIXIFf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:02:58 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08O81uVe022453;
-        Thu, 24 Sep 2020 10:02:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=STMicroelectronics;
- bh=bCUBFmWtTPnQyN/Hu8xkI73KOtRV/y37x8FA0MEEGc0=;
- b=llMOrdYoJzW79whZF/bf6pCncPh2n5rzm25bAt0PRELvjaNQqfoSaECwKw9Fjl0jc8jl
- aviNvJI1M3n9uGOLp0vdSWEa0uhOlYyfJLWDo36N6D5GG0+CIeJ/LrHEekDZEHAw+MEP
- 5xsMxLaEgDifVPQL3zvw1Llrs1riSu1QNQn4xFJNL/ckd8BdT2pE1MB0K0WcDJB/AdBI
- gZr6Mr4Wzk+dHWDFL7gt2hI8kQpkgXdXeTyswpJu0GeAJbEyI3UcAasCQkGWj6GJpRDV
- IK5zojwBI5DDHERAQbf4NKyEXE1Dsq77qmHoIkVW2EVrXaf8tF3DKk+cWp6QSjdAS7ol tw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 33n8vf43f4-1
+        Thu, 24 Sep 2020 04:05:35 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08O84TfF026770;
+        Thu, 24 Sep 2020 04:05:34 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33r5u9b82m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 10:02:45 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0BFD510002A;
-        Thu, 24 Sep 2020 10:02:45 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DFE8A21FEB1;
-        Thu, 24 Sep 2020 10:02:44 +0200 (CEST)
-Received: from lmecxl0889.tpe.st.com (10.75.127.48) by SFHDAG3NODE1.st.com
- (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 24 Sep
- 2020 10:02:43 +0200
-Subject: Re: [Linux-stm32] [PATCH 3/3] ARM: dts: stm32: update stm32mp151 for
- remote proc synchronisation support
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Rob Herring <robh@kernel.org>,
-        Alexandre TORGUE <alexandre.torgue@st.com>
-CC:     Ohad Ben-Cohen <ohad@wizery.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Fabien DESSENNE <fabien.dessenne@st.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200827072101.26588-1-arnaud.pouliquen@st.com>
- <20200827072101.26588-4-arnaud.pouliquen@st.com>
- <be888a4b-b931-521b-42c7-fd4e60afd945@pengutronix.de>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Message-ID: <c8fbe2df-a648-913a-d9f9-19e2202f1687@st.com>
-Date:   Thu, 24 Sep 2020 10:02:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 24 Sep 2020 04:05:33 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08O85W3o049921
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 24 Sep 2020 04:05:32 -0400
+Received: from SCSQCASHYB7.ad.analog.com (10.77.17.133) by
+ SCSQMBX10.ad.analog.com (10.77.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 24 Sep 2020 01:05:30 -0700
+Received: from SCSQMBX11.ad.analog.com (10.77.17.10) by
+ SCSQCASHYB7.ad.analog.com (10.77.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 24 Sep 2020 01:05:30 -0700
+Received: from zeus.spd.analog.com (10.66.68.11) by SCSQMBX11.ad.analog.com
+ (10.77.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 24 Sep 2020 01:05:30 -0700
+Received: from saturn.ad.analog.com ([10.48.65.107])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08O85Srq000911;
+        Thu, 24 Sep 2020 04:05:28 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <jic23@kernel.org>,
+        <Michael.Hennerich@analog.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v3 0/4] iio: adc: ad9467: add support for AD9434 & AD9265 
+Date:   Thu, 24 Sep 2020 11:05:14 +0300
+Message-ID: <20200924080518.96410-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <be888a4b-b931-521b-42c7-fd4e60afd945@pengutronix.de>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG3NODE1.st.com
- (10.75.127.7)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-24_05:2020-09-24,2020-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ impostorscore=0 mlxlogscore=999 suspectscore=0 clxscore=1015
+ malwarescore=0 mlxscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ahmad,
+This is a V2 & V3 for:
+  https://lore.kernel.org/linux-iio/CA+U=DspC_W=j-eET38q1v+ytbntUXQwvUCBKx0DJ9hDGVtV-OA@mail.gmail.com/T/
 
-On 9/24/20 7:45 AM, Ahmad Fatoum wrote:
-> Hello Arnaud,
-> 
-> On 8/27/20 9:21 AM, Arnaud Pouliquen wrote:
->> Two backup registers are used to store the Cortex-M4 state and the resource
->> table address.
->> Declare the tamp node and add associated properties in m4_rproc node
->> to allow Linux to attach to a firmware loaded by the first boot stages.
->>
->> Associated driver implementation is available in commit 9276536f455b3
->> ("remoteproc: stm32: Parse syscon that will manage M4 synchronisation").
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> ---
->>  arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
->> index bfe29023fbd5..842ecffae73a 100644
->> --- a/arch/arm/boot/dts/stm32mp151.dtsi
->> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
->> @@ -1541,6 +1541,11 @@
->>  			status = "disabled";
->>  		};
->>  
->> +		tamp: tamp@5c00a000 {
->> +			compatible = "st,stm32-tamp", "syscon";
->> +			reg = <0x5c00a000 0x400>;
->> +		};
->> +
-> 
-> Just saw this now. I have a pending patch adding this node as well:
-> https://lore.kernel.org/patchwork/patch/1306971/
-> 
-> For my use case, I need a "simple-mfd" compatible to allow child
-> nodes to be probed.
-> 
-> Could you CC me when you send out your v2, so I can rebase?
-> (Or if you don't mind, just add the "simple-mfd" into the compatible
-> list yourself :-)
+V2 is:
+  https://lore.kernel.org/linux-iio/20200922132559.38456-1-alexandru.ardelean@analog.com/T/
 
-I prefer that you propose the "simple-mfd" compatibility. I do not master the
-consequence of adding it...
-I will add you in cc of my v2 , but as your patch could trig some discussions
-I would suggest to send in advance a patchset including this patch and your patch
-on top of, just add a reference to this series in the cover letter and explain
-potential impact (or non impact) on the legacy.
+It does a bit of rework/unification of the 2 chip-info constants, so
+that it's easier to add new devices 2 this driver.
+V1 only added only AD9434, but when adding AD9265, I noticed that some
+things could be a bit more unified for vref_mask & default_output_mode.
 
-Regards,
-Arnaud
- 
-> 
-> Cheers
-> Ahmad
-> 
->>  		/*
->>  		 * Break node order to solve dependency probe issue between
->>  		 * pinctrl and exti.
->> @@ -1717,6 +1722,8 @@
->>  			st,syscfg-holdboot = <&rcc 0x10C 0x1>;
->>  			st,syscfg-tz = <&rcc 0x000 0x1>;
->>  			st,syscfg-pdds = <&pwr_mcu 0x0 0x1>;
->> +			st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
->> +			st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
->>  			status = "disabled";
->>  		};
->>  	};
->>
-> 
+In V3 the dt-bindings patches were merged and the docs polished a bit.
+
+Changelog v2 -> v3:
+* merge dt-bindings patches from v2 into a single one
+* polish the dt-bindings docs to better cover/describe new parts
+
+Changelog v1 -> v2:
+* add AD9265 support
+* wrap axi-adc chip-info, to also define vref_mask & default_output_mode
+  in the chip-info table
+
+Alexandru Ardelean (2):
+  iio: adc: ad9467: wrap a axi-adc chip-info into a ad9467_chip_info
+    type
+  dt-bindings: iio: ad9467: add entries for for AD9434 & AD9265 ADCs
+
+Michael Hennerich (2):
+  iio: adc: ad9467: add support for AD9434 high-speed ADC
+  iio: adc: ad9467: add support for AD9265 high-speed ADC
+
+ .../bindings/iio/adc/adi,ad9467.yaml          |  15 ++-
+ drivers/iio/adc/ad9467.c                      | 121 +++++++++++++-----
+ 2 files changed, 100 insertions(+), 36 deletions(-)
+
+-- 
+2.25.1
+
