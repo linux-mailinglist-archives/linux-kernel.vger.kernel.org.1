@@ -2,259 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A4D276B86
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04989276B8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727284AbgIXIMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:12:46 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57644 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727237AbgIXIMf (ORCPT
+        id S1727249AbgIXIP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727219AbgIXIP1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:12:35 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08O8CSPq072518;
-        Thu, 24 Sep 2020 03:12:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600935148;
-        bh=IRolLNDMcU0upv/ueUSj45mxeHTZL6OBj6VSoFhHIvQ=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=UrMVGSdGLjM06O3YW3UAa67lMUsBG5em7qCTc9n31QUmK1mOqU9UT1DgHgOzH318u
-         8ry/EVHCgT5Lv1RCLwxSOUpuM+nirx7cYVB13QUyUOFdhyVzanGx2slzkusNb/bkL4
-         Jl213zaK3SOzYwXRFt95G5/9ULIfn4DyKBiCAAvE=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08O8CSh6030304;
-        Thu, 24 Sep 2020 03:12:28 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Sep 2020 03:12:28 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Sep 2020 03:12:28 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08O8CFFL002000;
-        Thu, 24 Sep 2020 03:12:26 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-CC:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 4/4] mtd: hyperbus: hbmc-am654: Add DMA support for reads
-Date:   Thu, 24 Sep 2020 13:42:14 +0530
-Message-ID: <20200924081214.16934-5-vigneshr@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924081214.16934-1-vigneshr@ti.com>
-References: <20200924081214.16934-1-vigneshr@ti.com>
+        Thu, 24 Sep 2020 04:15:27 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69590C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 01:15:27 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 34so1419560pgo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 01:15:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U2el13qFqXukTglGs7cvKDB4IKPjADIDv75hQ/9i9+E=;
+        b=RVei7Bv4JMWbyvkyLgdFQFwYfIpkjYeRy3yleinFgOrptu3zTUE/9EyHI98NN+C/im
+         x+96TesErw40CMW2cMSm5o5OF37NXz5frZ+kCND0pFHvWzwiM02cMCdZCtO/oRNKJHyH
+         BqTHY9BpOHNgc+U56i6p8SKaUYIHr4tUX87jM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U2el13qFqXukTglGs7cvKDB4IKPjADIDv75hQ/9i9+E=;
+        b=KerD9weKS/xa8ARUh2/L7g1lQkVnczrdD4p+656DpvDkCcUh/A7rsZtE4FLIOp1KuB
+         FEbQOdG+Tb1xFa/rQaFMOIXwQZwnrdKiEtXNfGgI9QTTVqHgeZ4erN3WzHCOgk0yQgY1
+         /gfDlH94oQiiBJXXkRnJuEZ5wsPADAxG/bUCC5jffEHSulehnXu66vjNe0yTcmMLHzhZ
+         pNVFWc9p/ycLAag8iHCsTHxZUYQIYCZjZttUx92C+B3JhTBmWoaczRmksY8UK7fBXJHD
+         AksnpMu8Di6vZNOm4zKPeuqQEBG6TMlkUmx4ROLLmo5iHTMcV8x7dN0528TwHFCfYCD9
+         EwgA==
+X-Gm-Message-State: AOAM531L3FyhOQ99WStKWNRchbiOkVjxVDnrZTKHoowxRcYsIUJF8rwV
+        xbKm7ULgDo4R/3Bf4TUEBD9PFg==
+X-Google-Smtp-Source: ABdhPJxpG1Cp3bwo9P3GzvSQphN8aQzF+v4CUOKCDxb9oKuyX9qUhNPoAp+ludYIjdThKbRJpvKwPg==
+X-Received: by 2002:a63:ea16:: with SMTP id c22mr2984137pgi.326.1600935326829;
+        Thu, 24 Sep 2020 01:15:26 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q193sm1932012pfq.127.2020.09.24.01.15.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 01:15:25 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 01:15:24 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
+Message-ID: <202009240112.C48EF38EC2@keescook>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-4-keescook@chromium.org>
+ <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
+ <202009240018.A4D8274F@keescook>
+ <CABqSeARV4prXOWf9qOBnm5Mm_aAdjwquqFFLQSuL0EegqeWEkA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABqSeARV4prXOWf9qOBnm5Mm_aAdjwquqFFLQSuL0EegqeWEkA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AM654 HyperBus controller provides MMIO interface to read data from
-flash. So add DMA memcpy support for reading data over MMIO interface.
-This provides 5x improvement in throughput and reduces CPU usage as
-well.
+On Thu, Sep 24, 2020 at 03:07:23AM -0500, YiFei Zhu wrote:
+> On Thu, Sep 24, 2020 at 2:37 AM Kees Cook <keescook@chromium.org> wrote:
+> > >
+> > > This belongs over into patch 1.
+> >
+> > Thanks! I was rushing to get this posted so YiFei Zhu wouldn't spend
+> > time fighting with arch and Kconfig stuff. :) I'll clean this (and the
+> > other random cruft) up.
+> 
+> Wait, what? I'm sorry. We have already begun fixing the mentioned
+> issues (mostly the split bitmaps for different arches). Although yes
+> it's nice to have another implementation to refer to so we get the
+> best of both worlds (and yes I'm already copying some of the code I
+> think are better here over there), don't you think it's not nice to
+> say "Hey I've worked on this in June, it needed rework but I didn't
+> send the newer version. Now you sent yours so I'll rush mine so your
+> work is redundant."?
 
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/mtd/hyperbus/hbmc-am654.c | 126 +++++++++++++++++++++++++++++-
- 1 file changed, 125 insertions(+), 1 deletion(-)
+I was trying to be helpful: you hadn't seen the RFC, and it was missing
+the emulator piece, which I wanted to be small, so I put got it out the
+door today. I didn't want you to think you needed to port the larger
+emulator over, for example.
 
-diff --git a/drivers/mtd/hyperbus/hbmc-am654.c b/drivers/mtd/hyperbus/hbmc-am654.c
-index b6a2400fcaa9..a3439b791eeb 100644
---- a/drivers/mtd/hyperbus/hbmc-am654.c
-+++ b/drivers/mtd/hyperbus/hbmc-am654.c
-@@ -3,6 +3,10 @@
- // Copyright (C) 2019 Texas Instruments Incorporated - https://www.ti.com/
- // Author: Vignesh Raghavendra <vigneshr@ti.com>
- 
-+#include <linux/completion.h>
-+#include <linux/dma-direction.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/dmaengine.h>
- #include <linux/err.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -13,10 +17,18 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
-+#include <linux/sched/task_stack.h>
- #include <linux/types.h>
- 
- #define AM654_HBMC_CALIB_COUNT 25
- 
-+struct am654_hbmc_device_priv {
-+	struct completion rx_dma_complete;
-+	phys_addr_t device_base;
-+	struct hyperbus_ctlr *ctlr;
-+	struct dma_chan *rx_chan;
-+};
-+
- struct am654_hbmc_priv {
- 	struct hyperbus_ctlr ctlr;
- 	struct hyperbus_device hbdev;
-@@ -51,13 +63,103 @@ static int am654_hbmc_calibrate(struct hyperbus_device *hbdev)
- 	return ret;
- }
- 
-+static void am654_hbmc_dma_callback(void *param)
-+{
-+	struct am654_hbmc_device_priv *priv = param;
-+
-+	complete(&priv->rx_dma_complete);
-+}
-+
-+static int am654_hbmc_dma_read(struct am654_hbmc_device_priv *priv, void *to,
-+			       unsigned long from, ssize_t len)
-+
-+{
-+	enum dma_ctrl_flags flags = DMA_CTRL_ACK | DMA_PREP_INTERRUPT;
-+	struct dma_chan *rx_chan = priv->rx_chan;
-+	struct dma_async_tx_descriptor *tx;
-+	dma_addr_t dma_dst, dma_src;
-+	dma_cookie_t cookie;
-+	int ret;
-+
-+	if (!priv->rx_chan || !virt_addr_valid(to) || object_is_on_stack(to))
-+		return -EINVAL;
-+
-+	dma_dst = dma_map_single(rx_chan->device->dev, to, len, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(rx_chan->device->dev, dma_dst)) {
-+		dev_dbg(priv->ctlr->dev, "DMA mapping failed\n");
-+		return -EIO;
-+	}
-+
-+	dma_src = priv->device_base + from;
-+	tx = dmaengine_prep_dma_memcpy(rx_chan, dma_dst, dma_src, len, flags);
-+	if (!tx) {
-+		dev_err(priv->ctlr->dev, "device_prep_dma_memcpy error\n");
-+		ret = -EIO;
-+		goto unmap_dma;
-+	}
-+
-+	reinit_completion(&priv->rx_dma_complete);
-+	tx->callback = am654_hbmc_dma_callback;
-+	tx->callback_param = priv;
-+	cookie = dmaengine_submit(tx);
-+
-+	ret = dma_submit_error(cookie);
-+	if (ret) {
-+		dev_err(priv->ctlr->dev, "dma_submit_error %d\n", cookie);
-+		goto unmap_dma;
-+	}
-+
-+	dma_async_issue_pending(rx_chan);
-+	if (!wait_for_completion_timeout(&priv->rx_dma_complete,  msecs_to_jiffies(len + 1000))) {
-+		dmaengine_terminate_sync(rx_chan);
-+		dev_err(priv->ctlr->dev, "DMA wait_for_completion_timeout\n");
-+		ret = -ETIMEDOUT;
-+	}
-+
-+unmap_dma:
-+	dma_unmap_single(rx_chan->device->dev, dma_dst, len, DMA_FROM_DEVICE);
-+	return ret;
-+}
-+
-+static void am654_hbmc_read(struct hyperbus_device *hbdev, void *to,
-+			    unsigned long from, ssize_t len)
-+{
-+	struct am654_hbmc_device_priv *priv = hbdev->priv;
-+
-+	if (len < SZ_1K || am654_hbmc_dma_read(priv, to, from, len))
-+		memcpy_fromio(to, hbdev->map.virt + from, len);
-+}
-+
- static const struct hyperbus_ops am654_hbmc_ops = {
- 	.calibrate = am654_hbmc_calibrate,
-+	.copy_from = am654_hbmc_read,
- };
- 
-+static int am654_hbmc_request_mmap_dma(struct am654_hbmc_device_priv *priv)
-+{
-+	struct dma_chan *rx_chan;
-+	dma_cap_mask_t mask;
-+
-+	dma_cap_zero(mask);
-+	dma_cap_set(DMA_MEMCPY, mask);
-+
-+	rx_chan = dma_request_chan_by_mask(&mask);
-+	if (IS_ERR(rx_chan)) {
-+		if (PTR_ERR(rx_chan) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_dbg(priv->ctlr->dev, "No DMA channel available\n");
-+		return 0;
-+	}
-+	priv->rx_chan = rx_chan;
-+	init_completion(&priv->rx_dma_complete);
-+
-+	return 0;
-+}
-+
- static int am654_hbmc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-+	struct am654_hbmc_device_priv *dev_priv;
- 	struct device *dev = &pdev->dev;
- 	struct am654_hbmc_priv *priv;
- 	struct resource res;
-@@ -96,13 +198,31 @@ static int am654_hbmc_probe(struct platform_device *pdev)
- 	priv->ctlr.dev = dev;
- 	priv->ctlr.ops = &am654_hbmc_ops;
- 	priv->hbdev.ctlr = &priv->ctlr;
-+
-+	dev_priv = devm_kzalloc(dev, sizeof(*dev_priv), GFP_KERNEL);
-+	if (!dev_priv) {
-+		ret = -ENOMEM;
-+		goto disable_mux;
-+	}
-+
-+	priv->hbdev.priv = dev_priv;
-+	dev_priv->device_base = res.start;
-+	dev_priv->ctlr = &priv->ctlr;
-+
-+	ret = am654_hbmc_request_mmap_dma(dev_priv);
-+	if (ret)
-+		goto disable_mux;
-+
- 	ret = hyperbus_register_device(&priv->hbdev);
- 	if (ret) {
- 		dev_err(dev, "failed to register controller\n");
--		goto disable_mux;
-+		goto release_dma;
- 	}
- 
- 	return 0;
-+release_dma:
-+	if (dev_priv->rx_chan)
-+		dma_release_channel(dev_priv->rx_chan);
- disable_mux:
- 	if (priv->mux_ctrl)
- 		mux_control_deselect(priv->mux_ctrl);
-@@ -112,12 +232,16 @@ static int am654_hbmc_probe(struct platform_device *pdev)
- static int am654_hbmc_remove(struct platform_device *pdev)
- {
- 	struct am654_hbmc_priv *priv = platform_get_drvdata(pdev);
-+	struct am654_hbmc_device_priv *dev_priv = priv->hbdev.priv;
- 	int ret;
- 
- 	ret = hyperbus_unregister_device(&priv->hbdev);
- 	if (priv->mux_ctrl)
- 		mux_control_deselect(priv->mux_ctrl);
- 
-+	if (dev_priv->rx_chan)
-+		dma_release_channel(dev_priv->rx_chan);
-+
- 	return ret;
- }
- 
+> That said, I do think this should be configurable. Users would be free
+> to experiment with the bitmap on or off, just like users may turn
+> seccomp off entirely. A choice also allows users to select different
+> implementations, a few whom I work with have ideas on how to
+> accelerate / cache argument dependent syscalls, for example.
+
+I'm open to ideas, but I want to have a non-optional performance
+improvement as the first step. :) "seccomp is magically faster" was my
+driving goal.
+
 -- 
-2.28.0
-
+Kees Cook
