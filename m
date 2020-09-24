@@ -2,300 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324E2277A94
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5045277A91
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbgIXUks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 16:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgIXUkr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:40:47 -0400
-Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1132BC0613CE;
-        Thu, 24 Sep 2020 13:40:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=YdMmIrFjy96JjZkrcSCWZWLABUbKOvDG/JNltuFZSaU=; b=BRtvxQYh1Y3OMCq4Kf1YBUAwZg
-        AdlcG1QdMUxg3ALlmkBMcq8Fes7GkNqPgbSkFwUY2V54/jeKT8Q05AcH4bBOHmAQc9aouuKfzC72q
-        aG24wLj1cSKhR4DYSdYTwVw163dOCYVYxDNsXX+DF1G7KUlaVk8ZmNzLEDmGihP+/OUg=;
-Received: from p200300ccff10b0001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff10:b000:1a3d:a2ff:febf:d33a] helo=aktux)
-        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <andreas@kemnade.info>)
-        id 1kLY2G-0001pe-BJ; Thu, 24 Sep 2020 22:40:12 +0200
-Date:   Thu, 24 Sep 2020 22:40:11 +0200
-From:   Andreas Kemnade <andreas@kemnade.info>
-To:     Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v3 5/7] rtc: New driver for RTC in Netronix embedded
- controller
-Message-ID: <20200924224011.074d7a19@aktux>
-In-Reply-To: <20200924192455.2484005-6-j.neuschaefer@gmx.net>
-References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
-        <20200924192455.2484005-6-j.neuschaefer@gmx.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1726632AbgIXUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 16:40:32 -0400
+Received: from mga07.intel.com ([134.134.136.100]:25817 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgIXUkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 16:40:31 -0400
+IronPort-SDR: F5NqhzqKfocXtUwAssTqgSwAASDyx6qUmcxOi/JnqqRgQip9n58Q15JfI4ihnRU6Pb+9fAN4cg
+ jfysVq/QnMkw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="225476625"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="225476625"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 13:40:31 -0700
+IronPort-SDR: Ncq7pUS/J7GeyXjQY9EWCGqsA6GvmdU92K2DdO4C3cY+fqn2nPWLihlMvCyyazpG8iDqDMtylT
+ M/IOqx6DyFbg==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="487093551"
+Received: from deepamin-mobl1.gar.corp.intel.com (HELO localhost) ([10.252.44.18])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 13:40:24 -0700
+Date:   Thu, 24 Sep 2020 23:40:22 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, sean.j.christopherson@intel.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver'
+Message-ID: <20200924204022.GE108958@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-18-jarkko.sakkinen@linux.intel.com>
+ <20200922154424.GL22660@zn.tnic>
+ <20200923132037.GA5160@linux.intel.com>
+ <20200923161733.GP28545@zn.tnic>
+ <20200924115119.GD56811@linux.intel.com>
+ <20200924155751.GJ5030@zn.tnic>
+ <20200924203859.GD108958@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -1.0 (-)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924203859.GD108958@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 21:24:53 +0200
-Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net> wrote:
+On Thu, Sep 24, 2020 at 11:39:07PM +0300, Jarkko Sakkinen wrote:
+> On Thu, Sep 24, 2020 at 05:57:51PM +0200, Borislav Petkov wrote:
+> > On Thu, Sep 24, 2020 at 02:51:28PM +0300, Jarkko Sakkinen wrote:
+> > > On Wed, Sep 23, 2020 at 06:17:33PM +0200, Borislav Petkov wrote:
+> > > > > Add 'access' implementation to vm_ops with the help of these functions.
+> > > > 
+> > > > "Add an ->access virtual MM function for accessing the enclave's memory... "
+> > > 
+> > > Thank you. I wrote the last paragraph like this:
+> > > 
+> > > "Add an '->access' virtual function for accessing the enclave's memory
+> > > to vm_ops by using these functions. This allows to use ptrace() with
+> > 
+> > "to vm_ops" must come after "function".
+> > 
+> > But lemme ask what is "vm_ops"?
+> 
+> I assume this is a rethorical question and I notice what I suggested
+> looks as bad as my earlier commit message :-)
+> 
+> So, I gave it some thought that and decided to "open code" the paragraph
+> as
+> 
+> "Add sgx_vma_access() function that implements 'access' virtual function
+> of struct vm_operations_struct. Use formentioned leaf instructions to
+> achieve read and write primitives for the enclave memory."
+> 
+> I think this starts to have the right balance and is understandable.
+> 
+> Still open for futher suggestion of course.
 
-> With this driver, mainline Linux can keep its time and date in sync with
-> the vendor kernel.
->=20
-> Advanced functionality like alarm and automatic power-on is not yet
-> supported.
->=20
-> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> ---
->=20
-> v3:
-> - Add email address to copyright line
-> - Remove OF compatible string and don't include linux/of_device.h
-> - Don't use a comma after sentinels
-> - Avoid ret |=3D ... pattern
-> - Move 8-bit register conversion to ntxec.h
-> - Relicense as GPLv2 or later
->=20
-> v2:
-> - https://lore.kernel.org/lkml/20200905133230.1014581-7-j.neuschaefer@gmx=
-.net/
-> - Rework top-of-file comment [Lee Jones]
-> - Sort the #include lines [Alexandre Belloni]
-> - don't align =3D signs in struct initializers [Uwe Kleine-K=C3=B6nig]
-> - Switch to regmap
-> - Fix register number used to read minutes and seconds
-> - Prefix registers with NTXEC_REG_
-> - Add help text to the Kconfig option
-> - Use devm_rtc_allocate_device and rtc_register_device, set ->range_min a=
-nd ->range_max
-> ---
->  drivers/rtc/Kconfig     |   8 +++
->  drivers/rtc/Makefile    |   1 +
->  drivers/rtc/rtc-ntxec.c | 132 ++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 141 insertions(+)
->  create mode 100644 drivers/rtc/rtc-ntxec.c
->=20
-> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
-> index 48c536acd777f..ae8f3dc36c9a3 100644
-> --- a/drivers/rtc/Kconfig
-> +++ b/drivers/rtc/Kconfig
-> @@ -1301,6 +1301,14 @@ config RTC_DRV_CROS_EC
->  	  This driver can also be built as a module. If so, the module
->  	  will be called rtc-cros-ec.
->=20
-> +config RTC_DRV_NTXEC
-> +	tristate "Netronix embedded controller RTC driver"
-> +	depends on MFD_NTXEC
-> +	help
-> +	  Say yes here if you want to support the RTC functionality of the
-> +	  embedded controller found in certain e-book readers designed by the
-> +	  ODM Netronix.
-> +
->  comment "on-CPU RTC drivers"
->=20
->  config RTC_DRV_ASM9260
-> diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
-> index 880e08a409c3d..733479db18896 100644
-> --- a/drivers/rtc/Makefile
-> +++ b/drivers/rtc/Makefile
-> @@ -111,6 +111,7 @@ obj-$(CONFIG_RTC_DRV_MT7622)	+=3D rtc-mt7622.o
->  obj-$(CONFIG_RTC_DRV_MV)	+=3D rtc-mv.o
->  obj-$(CONFIG_RTC_DRV_MXC)	+=3D rtc-mxc.o
->  obj-$(CONFIG_RTC_DRV_MXC_V2)	+=3D rtc-mxc_v2.o
-> +obj-$(CONFIG_RTC_DRV_NTXEC)	+=3D rtc-ntxec.o
->  obj-$(CONFIG_RTC_DRV_OMAP)	+=3D rtc-omap.o
->  obj-$(CONFIG_RTC_DRV_OPAL)	+=3D rtc-opal.o
->  obj-$(CONFIG_RTC_DRV_PALMAS)	+=3D rtc-palmas.o
-> diff --git a/drivers/rtc/rtc-ntxec.c b/drivers/rtc/rtc-ntxec.c
-> new file mode 100644
-> index 0000000000000..af23c7cc76544
-> --- /dev/null
-> +++ b/drivers/rtc/rtc-ntxec.c
-> @@ -0,0 +1,132 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * The Netronix embedded controller is a microcontroller found in some
-> + * e-book readers designed by the ODM Netronix, Inc. It contains RTC,
-> + * battery monitoring, system power management, and PWM functionality.
-> + *
-> + * This driver implements access to the RTC time and date.
-> + *
-> + * Copyright 2020 Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> + */
-> +
-> +#include <linux/mfd/ntxec.h>
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/regmap.h>
-> +#include <linux/rtc.h>
-> +#include <linux/types.h>
-> +
-> +struct ntxec_rtc {
-> +	struct device *dev;
-> +	struct ntxec *ec;
-> +};
-> +
-> +#define NTXEC_REG_WRITE_YEAR	0x10
-> +#define NTXEC_REG_WRITE_MONTH	0x11
-> +#define NTXEC_REG_WRITE_DAY	0x12
-> +#define NTXEC_REG_WRITE_HOUR	0x13
-> +#define NTXEC_REG_WRITE_MINUTE	0x14
-> +#define NTXEC_REG_WRITE_SECOND	0x15
-> +
-> +#define NTXEC_REG_READ_YM	0x20
-> +#define NTXEC_REG_READ_DH	0x21
-> +#define NTXEC_REG_READ_MS	0x23
-> +
-> +static int ntxec_read_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct ntxec_rtc *rtc =3D dev_get_drvdata(dev);
-> +	unsigned int value;
-> +	int res;
-> +
-> +	res =3D regmap_read(rtc->ec->regmap, NTXEC_REG_READ_YM, &value);
-> +	if (res < 0)
-> +		return res;
-> +
-> +	tm->tm_year =3D (value >> 8) + 100;
-> +	tm->tm_mon =3D (value & 0xff) - 1;
-> +
-> +	res =3D regmap_read(rtc->ec->regmap, NTXEC_REG_READ_DH, &value);
-> +	if (res < 0)
-> +		return res;
-> +
-> +	tm->tm_mday =3D value >> 8;
-> +	tm->tm_hour =3D value & 0xff;
-> +
-> +	res =3D regmap_read(rtc->ec->regmap, NTXEC_REG_READ_MS, &value);
-> +	if (res < 0)
-> +		return res;
-> +
-> +	tm->tm_min =3D value >> 8;
-> +	tm->tm_sec =3D value & 0xff;
-> +
-> +	return 0;
-> +}
-> +
-> +static int ntxec_set_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct ntxec_rtc *rtc =3D dev_get_drvdata(dev);
-> +	int res =3D 0;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_YEAR, ntxec_reg8(=
-tm->tm_year - 100));
-> +	if (res)
-> +		return res;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_MONTH, ntxec_reg8=
-(tm->tm_mon + 1));
-> +	if (res)
-> +		return res;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_DAY, ntxec_reg8(t=
-m->tm_mday));
-> +	if (res)
-> +		return res;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_HOUR, ntxec_reg8(=
-tm->tm_hour));
-> +	if (res)
-> +		return res;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_MINUTE, ntxec_reg=
-8(tm->tm_min));
-> +	if (res)
-> +		return res;
-> +
-> +	return regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_SECOND, ntxec_reg8=
-(tm->tm_sec));
-> +}
-> +
-> +static const struct rtc_class_ops ntxec_rtc_ops =3D {
-> +	.read_time =3D ntxec_read_time,
-> +	.set_time =3D ntxec_set_time,
-> +};
-> +
-> +static int ntxec_rtc_probe(struct platform_device *pdev)
-> +{
-> +	struct rtc_device *dev;
-> +	struct ntxec_rtc *rtc;
-> +
-> +	rtc =3D devm_kzalloc(&pdev->dev, sizeof(*rtc), GFP_KERNEL);
-> +	if (!rtc)
-> +		return -ENOMEM;
-> +
-> +	rtc->dev =3D &pdev->dev;
-> +	rtc->ec =3D dev_get_drvdata(pdev->dev.parent);
-> +	platform_set_drvdata(pdev, rtc);
-> +
-> +	dev =3D devm_rtc_allocate_device(&pdev->dev);
-> +	if (IS_ERR(dev))
-> +		return PTR_ERR(dev);
-> +
-> +	dev->ops =3D &ntxec_rtc_ops;
-> +	dev->range_min =3D RTC_TIMESTAMP_BEGIN_2000;
-> +	dev->range_max =3D 9025257599LL; /* 2255-12-31 23:59:59 */
-> +
-> +	return rtc_register_device(dev);
-> +}
-> +
-> +static struct platform_driver ntxec_rtc_driver =3D {
-> +	.driver =3D {
-> +		.name =3D "ntxec-rtc",
-> +	},
-> +	.probe =3D ntxec_rtc_probe,
-> +};
-> +module_platform_driver(ntxec_rtc_driver);
-> +
-I think module autoloading will not work without
+I'm not sure if I said it already but I also added cc to linux-mm (same
+CC's in the patch as with mprotect callback commit). This should also
+have mm ack I think.
 
-MODULE_ALIAS("platform:ntxec-rtc");
-
-Same for the pwm device.
-> +MODULE_AUTHOR("Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>");
-> +MODULE_DESCRIPTION("RTC driver for Netronix EC");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.28.0
->=20
->=20
-
-Regards,
-Andreas
+/Jarkko
