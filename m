@@ -2,86 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F4427713E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6292277140
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727757AbgIXMmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbgIXMmP (ORCPT
+        id S1727783AbgIXMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:42:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35065 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727722AbgIXMm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:42:15 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B93AC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:42:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id v12so3443775wmh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:42:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hOdMr4z55y7m7sInvhahv883Nzw4CA2e6+vBER7Lkgk=;
-        b=X1LVvTRsoWnLc/tlMzEdUlaLLa/Mc+PPd1dPAzm1ooceZGCXUh7/IEZugJcWOmepRZ
-         GeSYBaziRvTrY+eH+k9YC22kK6mkyF6XwsLyaW8feBMHQ21tSTdnKtClsBuulZ3DAyp+
-         vTFnF6cvWo+XQdCDLTcPzkyywh7meFZj4xkhnpHYzytJqv1c+HD4cjCvg6hgMmCqyEux
-         Ri96TXQSykfD0N1ymbWQCikxogDPZ1CPirstYnw8zEWn6oAX4k8zA6KYS1qX+2OM4FSq
-         WWhUKEKbbGaUWW+yd+kDYZX5bVagsYfnZcYf7nLuVhSnXUVN6oSI2SMQx4w8P5BLFh8X
-         P40Q==
+        Thu, 24 Sep 2020 08:42:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600951344;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1oG8raWp9jQLZJ6ZPnSu5CGYjsnTW1Sct0OlPCPovyo=;
+        b=SzlGagWv7Z8u3XstQbvMF75iFOQXlADszKM1ncmIL6zDFnmy5qsMvYAGH2ZfptLsflhVxU
+        paJZUYIJveTHCxJt5p/wLHrOAgvN/UweRYBm3OFk23cfJF7Of5ZF+uyGmR+dK8ozMO8KNM
+        DgpcSPy3ia7EOhoH/NX2s2GSCvUHmck=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-EPADIVuwPSW5HM3iDCR-_g-1; Thu, 24 Sep 2020 08:42:22 -0400
+X-MC-Unique: EPADIVuwPSW5HM3iDCR-_g-1
+Received: by mail-ed1-f72.google.com with SMTP id r21so1129142eda.20
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:42:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hOdMr4z55y7m7sInvhahv883Nzw4CA2e6+vBER7Lkgk=;
-        b=Y5IMI14LE1+wI77nCy9MkEOqG961ExAd9Agbk0sYkg1/yaFqOD9ouFRxiMz8z+ii51
-         CvD2cB9rdXK6KbgyoVT2206ldFCip1ugwuy64nACFuk0q8FJp58wkHCGrvrnOGgXrpSv
-         IE7zZpVaOq+mAokYvY+t1tWU1pUU46x8hQ7xZ+uWtyfQRXWul2qSfSygOnygBoIM7tOJ
-         dU1kAKFwvGxciHa6e/B/sr+tLetnc2FmxKnH1tyUe3ZTMimf9UTNR9RJK1KvTqZJEv04
-         PD2Z3/TjJi+D1IJnyk+W6DKGBivpKQgglyC5YthofLq3iMsoIauQ24ylPw8VFVranIH5
-         hwJw==
-X-Gm-Message-State: AOAM533Vugw5HLVECz+hOsnXaShLWR8BIeYnZxE0EuIjWLQCniw5IY5Z
-        bYgiKUqaq2yPhuWPKfkue5zUag==
-X-Google-Smtp-Source: ABdhPJy6WEyI2TEYojR2YX/nEcp2VQQw6hJS/44FfWdWWIxB1UV7hUg1HHH4twHysn3pBlq8qVl2mw==
-X-Received: by 2002:a1c:1983:: with SMTP id 125mr4429708wmz.29.1600951333815;
-        Thu, 24 Sep 2020 05:42:13 -0700 (PDT)
-Received: from dell ([91.110.221.204])
-        by smtp.gmail.com with ESMTPSA id t6sm3473010wre.30.2020.09.24.05.42.12
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=1oG8raWp9jQLZJ6ZPnSu5CGYjsnTW1Sct0OlPCPovyo=;
+        b=Kbt/TsN3qE41+FodwYrQTwIur0y7G+J/6HQ45Be//4gXoGZpSBNb3jJUeawHrMQiKZ
+         1/RT8dkJ8Jui7C2gWD3DljoiQek3c45IUX98kvz2/jN6VMV8psv6p38YO+S8GK1j25jC
+         NITDldaZYc9SJoaEgGzNpcjKQNTnRF8VuGz3deeeN61F8NT3YOblGcC4VZIWetumGUMu
+         pRCyRGAyZV11IzAIm8U9mQuz1niH8qq2rRi5IchrrRY4SujgoK7wDYMNoxGgLahAHvHt
+         eeyvpsUDukKkigFu8o4nYLowtB45qIhRhGeV9rJQpazZCBbP+vgRizU6HW+905nBAiqP
+         kTzQ==
+X-Gm-Message-State: AOAM533XxRK6OeQk4kh3powe+grrKOOIYwEc+FiiTMz2S4OYgNG1KzDc
+        mGczGedeRxWhINfrxkirI5DfdlwqReyZhESTlJO/+URpzTKp8ZAVStUu0akc7WL0XBZ/HXni9/O
+        LXQUrjR43ql3uIJSFZaH4BsXl
+X-Received: by 2002:a17:907:394:: with SMTP id ss20mr819244ejb.120.1600951340889;
+        Thu, 24 Sep 2020 05:42:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxp8lEE/44Rl5KNBVpGxQ/u4Y3jmeeyLqwhKssEJwf2ePb/11oX3g6CNB50t9lD6awRJ4hdiQ==
+X-Received: by 2002:a17:907:394:: with SMTP id ss20mr819224ejb.120.1600951340696;
+        Thu, 24 Sep 2020 05:42:20 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id u13sm2373819ejn.82.2020.09.24.05.42.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 05:42:13 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 13:42:11 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     matthias.bgg@gmail.com, gene_chen@richtek.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mfd: mt6360: Remove unused including
- <linux/version.h>
-Message-ID: <20200924124211.GL4678@dell>
-References: <20200914142518.39228-1-yuehaibing@huawei.com>
+        Thu, 24 Sep 2020 05:42:20 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86/mmu: Stash 'kvm' in a local variable in kvm_mmu_free_roots()
+In-Reply-To: <20200923191204.8410-1-sean.j.christopherson@intel.com>
+References: <20200923191204.8410-1-sean.j.christopherson@intel.com>
+Date:   Thu, 24 Sep 2020 14:42:19 +0200
+Message-ID: <875z83e47o.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200914142518.39228-1-yuehaibing@huawei.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Sep 2020, YueHaibing wrote:
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-> Remove including <linux/version.h> that don't need it.
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> To make kvm_mmu_free_roots() a bit more readable, capture 'kvm' in a
+> local variable instead of doing vcpu->kvm over and over (and over).
+>
+> No functional change intended.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 > ---
->  drivers/mfd/mt6360-core.c | 1 -
->  1 file changed, 1 deletion(-)
+>  arch/x86/kvm/mmu/mmu.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 76c5826e29a2..cdc498093450 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3603,6 +3603,7 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
+>  void kvm_mmu_free_roots(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>  			ulong roots_to_free)
+>  {
+> +	struct kvm *kvm = vcpu->kvm;
+>  	int i;
+>  	LIST_HEAD(invalid_list);
+>  	bool free_active_root = roots_to_free & KVM_MMU_ROOT_CURRENT;
+> @@ -3620,22 +3621,21 @@ void kvm_mmu_free_roots(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>  			return;
+>  	}
+>  
+> -	spin_lock(&vcpu->kvm->mmu_lock);
+> +	spin_lock(&kvm->mmu_lock);
+>  
+>  	for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
+>  		if (roots_to_free & KVM_MMU_ROOT_PREVIOUS(i))
+> -			mmu_free_root_page(vcpu->kvm, &mmu->prev_roots[i].hpa,
+> +			mmu_free_root_page(kvm, &mmu->prev_roots[i].hpa,
+>  					   &invalid_list);
+>  
+>  	if (free_active_root) {
+>  		if (mmu->shadow_root_level >= PT64_ROOT_4LEVEL &&
+>  		    (mmu->root_level >= PT64_ROOT_4LEVEL || mmu->direct_map)) {
+> -			mmu_free_root_page(vcpu->kvm, &mmu->root_hpa,
+> -					   &invalid_list);
+> +			mmu_free_root_page(kvm, &mmu->root_hpa, &invalid_list);
+>  		} else {
+>  			for (i = 0; i < 4; ++i)
+>  				if (mmu->pae_root[i] != 0)
+> -					mmu_free_root_page(vcpu->kvm,
+> +					mmu_free_root_page(kvm,
+>  							   &mmu->pae_root[i],
+>  							   &invalid_list);
+>  			mmu->root_hpa = INVALID_PAGE;
+> @@ -3643,8 +3643,8 @@ void kvm_mmu_free_roots(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+>  		mmu->root_pgd = 0;
+>  	}
+>  
+> -	kvm_mmu_commit_zap_page(vcpu->kvm, &invalid_list);
+> -	spin_unlock(&vcpu->kvm->mmu_lock);
+> +	kvm_mmu_commit_zap_page(kvm, &invalid_list);
+> +	spin_unlock(&kvm->mmu_lock);
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_mmu_free_roots);
 
-Applied, thanks.
+What about kvm_mmu_get_page(), make_mmu_pages_available(),
+mmu_alloc_root(), kvm_mmu_sync_roots(), direct_page_fault(),
+kvm_mmu_pte_write() which seem to be using the same ugly pattern? :-)
+
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Vitaly
+
