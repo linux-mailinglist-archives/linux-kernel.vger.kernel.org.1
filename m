@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBBC276E47
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0EC4276E63
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbgIXKKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:10:54 -0400
-Received: from gentwo.org ([3.19.106.255]:48690 "EHLO gentwo.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgIXKKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:10:53 -0400
-Received: by gentwo.org (Postfix, from userid 1002)
-        id D7A6C3F1AE; Thu, 24 Sep 2020 10:10:52 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.org (Postfix) with ESMTP id D4FD23F1AA;
-        Thu, 24 Sep 2020 10:10:52 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 10:10:52 +0000 (UTC)
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@www.lameter.com
-To:     David Brazdil <dbrazdil@google.com>
-cc:     kvmarm@lists.cs.columbia.edu,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v4 00/10] Independent per-CPU data section for nVHE
-In-Reply-To: <20200922204910.7265-1-dbrazdil@google.com>
-Message-ID: <alpine.DEB.2.22.394.2009241003100.1613@www.lameter.com>
-References: <20200922204910.7265-1-dbrazdil@google.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1727375AbgIXKN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:13:58 -0400
+Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:14279 "EHLO
+        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727003AbgIXKN5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 06:13:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1600942437;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Dxq6kcZuD1yLhz83BdQaDBswf+r7H5Cw763TEiIA5Ks=;
+  b=Il0jhs334bOK10DoEpusXfBPn17ZpuBu0s49b+IO38UC2Nst4woelFBN
+   Kx21FFBQXQm6CKaMhTl9eY64+XmHP8UBVwEasemw82W3dZCh4rVSRUgOv
+   i57VK9S8xsmUxzuN+tTcdIiIiYrWD8zVBU3fP5tPz3t7oOCWdnJvLCdS0
+   s=;
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: aa9Yc5uXsNyZc4a3xJjI0PKxAR/Q972NX44zik2KmyXqKIBIwfskdtuxoCOTkpDzQqtPG5Ik68
+ mWzavWg3o5Ena2knokLLhk07n2q6itSyIjuGpZBNMC3du2eDTN9uB00bOIIh2lBQEtzJ0KYZrC
+ 806XnxjNuw18wsK3GcVFFzAObva5+PihDMkZ8n3kuZIOl1MVqq6xhCLdv2LRIU4QPsAHgSTzXI
+ dI7U6/tY5qSKfc4zjw+ra9KETYu+azT3zprazSO+RJqQzET1XibyqxZUlS635Pb+nk46w8yis4
+ J6U=
+X-SBRS: None
+X-MesageID: 28460264
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.77,297,1596513600"; 
+   d="scan'208";a="28460264"
+Date:   Thu, 24 Sep 2020 12:13:44 +0200
+From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>, <axboe@kernel.dk>,
+        <aliguori@amazon.com>, <amit@kernel.org>, <mheyne@amazon.de>,
+        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] xen-blkback: add a parameter for disabling of persistent
+ grants
+Message-ID: <20200924101344.GN19254@Air-de-Roger>
+References: <20200922070125.27251-1-sjpark@amazon.com>
+ <20200923200930.GB11767@char.us.oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200923200930.GB11767@char.us.oracle.com>
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ FTLPEX02CL06.citrite.net (10.13.108.179)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020, David Brazdil wrote:
+On Wed, Sep 23, 2020 at 04:09:30PM -0400, Konrad Rzeszutek Wilk wrote:
+> On Tue, Sep 22, 2020 at 09:01:25AM +0200, SeongJae Park wrote:
+> > From: SeongJae Park <sjpark@amazon.de>
+> > 
+> > Persistent grants feature provides high scalability.  On some small
+> > systems, however, it could incur data copy overhead[1] and thus it is
+> > required to be disabled.  But, there is no option to disable it.  For
+> > the reason, this commit adds a module parameter for disabling of the
+> > feature.
+> 
+> Would it be better suited to have it per guest?
 
-> Introduce '.hyp.data..percpu' as part of ongoing effort to make nVHE
-> hyp code self-contained and independent of the rest of the kernel.
+I think having a per-backend policy that could be specified at the
+toolstack level would be nice, but I see that as a further
+improvement.
 
-The percpu subsystems point is to enable the use of special hardware
-instructions that can perform address calculation and a memory operation
-in one interruptible instruction. This is in particular useful to avoid
-higher overhead for memory management related counters because preempt
-disable/enable etc can be avoided.
+Having a global backend domain policy of whether persistent grants are
+enabled or not seems desirable, and if someone wants even more fine
+grained control this change is AFAICT not incompatible with a
+per-backend option anyway.
 
-ARM cannot do that and thus has a LC/SC loop.
-
-This is a patchset for ARM64 so its not clear to me what kind of advantage
-there would be against a simple implementation that does a regular fetch
-from a base address with an offset.
-
-> Main benefits:
->  * independent nVHE per-CPU data section that can be unmapped from host,
->  * more robust linking of nVHE hyp code,
->  * no need for hyp-specific macros to access per-CPU variables.
-
-Maybe simply don't use percpu variables for your arm code? Those pointers
-to data will be much more indepedent of the rest of the kernel and allow a
-much higher degree of being self-contained.
-
+Roger.
