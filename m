@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CC6276DA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C35B4276DAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727171AbgIXJkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:40:32 -0400
-Received: from outbound-smtp14.blacknight.com ([46.22.139.231]:46837 "EHLO
-        outbound-smtp14.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726635AbgIXJkb (ORCPT
+        id S1727199AbgIXJmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:42:21 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:50364 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgIXJmU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:40:31 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp14.blacknight.com (Postfix) with ESMTPS id D81F61C3984
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 10:40:28 +0100 (IST)
-Received: (qmail 3548 invoked from network); 24 Sep 2020 09:40:28 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 24 Sep 2020 09:40:28 -0000
-Date:   Thu, 24 Sep 2020 10:40:27 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>, osalvador@suse.de,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: Re: [PATCH RFC 0/4] mm: place pages to the freelist tail when onling
- and undoing isolation
-Message-ID: <20200924094026.GL3179@techsingularity.net>
-References: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
- <DAC9E747-BDDF-41B6-A89B-604880DD7543@redhat.com>
- <67928cbd-950a-3279-bf9b-29b04c87728b@suse.cz>
- <fee562a3-9f8f-e9b4-68fe-09c5ea885b91@redhat.com>
+        Thu, 24 Sep 2020 05:42:20 -0400
+Received: by mail-io1-f78.google.com with SMTP id b16so1938161iod.17
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:42:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=5Z29b/4Aq5RLlagrKhDMYCmWTH+Cjp9/dDSEi30fRns=;
+        b=lLpJzKhquyJe1HsGlpHaobXaQIXxavdhXBMcraUmi6Ntmp9b7+LaVjBHbONBl6tlhn
+         jD9L2gq6vq4IPtfIyt4nimHPWXV0SztTUZhaXoMS6lSkQOrto9vi2UY5JE2EdoLxZCPC
+         HGH11Bo75NSY89mesO6t+M/dFqPRTiP2ykAQ0BQOl2LjHyKXjAQWldqiFSDCc5r0281d
+         IfoXtiyfE/0KN9Pws8Oup4kBH2hpsZ/IleOapat47pbWJakkK3HuiV8XROikplmplycP
+         cTwWL9vQ9z7p1sl4y5NuuFiPjsns1zO+v8LCMwTTvW8SdMGqLjgHbEacSXYS+XwEL7M9
+         XiuA==
+X-Gm-Message-State: AOAM533GMHHbNPhQwr8KMwYIyrwjabAIHAgf5sRKud47Ed8d3fLqlxYB
+        VC+Insyizng5BiQ3lwjpIBtXLvq8TNYlG/P+H2mx/0J8H3Ha
+X-Google-Smtp-Source: ABdhPJxJzEjhFWdm19ixZuV1MHyRv/T955N/kjW3qyT3+zklKVK5Cw22Y6ewTYb/RP88s1Kb33R/HhvTaxdkT5XSZspHMJN2N9Ci
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <fee562a3-9f8f-e9b4-68fe-09c5ea885b91@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Received: by 2002:a92:d8d0:: with SMTP id l16mr3246663ilo.47.1600940539721;
+ Thu, 24 Sep 2020 02:42:19 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 02:42:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002d3bc705b00c04fa@google.com>
+Subject: KASAN: user-memory-access Read in vdso_fault
+From:   syzbot <syzbot+fe2a9f19481e3bfed524@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        luto@kernel.org, mingo@redhat.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 05:26:06PM +0200, David Hildenbrand wrote:
-> >>> ???On 2020-09-16 20:34, David Hildenbrand wrote:
-> >>>> When adding separate memory blocks via add_memory*() and onlining them
-> >>>> immediately, the metadata (especially the memmap) of the next block will be
-> >>>> placed onto one of the just added+onlined block. This creates a chain
-> >>>> of unmovable allocations: If the last memory block cannot get
-> >>>> offlined+removed() so will all dependant ones. We directly have unmovable
-> >>>> allocations all over the place.
-> >>>> This can be observed quite easily using virtio-mem, however, it can also
-> >>>> be observed when using DIMMs. The freshly onlined pages will usually be
-> >>>> placed to the head of the freelists, meaning they will be allocated next,
-> >>>> turning the just-added memory usually immediately un-removable. The
-> >>>> fresh pages are cold, prefering to allocate others (that might be hot)
-> >>>> also feels to be the natural thing to do.
-> >>>> It also applies to the hyper-v balloon xen-balloon, and ppc64 dlpar: when
-> >>>> adding separate, successive memory blocks, each memory block will have
-> >>>> unmovable allocations on them - for example gigantic pages will fail to
-> >>>> allocate.
-> >>>> While the ZONE_NORMAL doesn't provide any guarantees that memory can get
-> >>>> offlined+removed again (any kind of fragmentation with unmovable
-> >>>> allocations is possible), there are many scenarios (hotplugging a lot of
-> >>>> memory, running workload, hotunplug some memory/as much as possible) where
-> >>>> we can offline+remove quite a lot with this patchset.
-> >>>
-> >>> Hi David,
-> >>>
-> >>
-> >> Hi Oscar.
-> >>
-> >>> I did not read through the patchset yet, so sorry if the question is nonsense, but is this not trying to fix the same issue the vmemmap patches did? [1]
-> >>
-> >> Not nonesense at all. It only helps to some degree, though. It solves the dependencies due to the memmap. However, it???s not completely ideal, especially for single memory blocks.
-> >>
-> >> With single memory blocks (virtio-mem, xen-balloon, hv balloon, ppc dlpar) you still have unmovable (vmemmap chunks) all over the physical address space. Consider the gigantic page example after hotplug. You directly fragmented all hotplugged memory.
-> >>
-> >> Of course, there might be (less extreme) dependencies due page tables for the identity mapping, extended struct pages and similar.
-> >>
-> >> Having that said, there are other benefits when preferring other memory over just hotplugged memory. Think about adding+onlining memory during boot (dimms under QEMU, virtio-mem), once the system is up you will have most (all) of that memory completely untouched.
-> >>
-> >> So while vmemmap on hotplugged memory would tackle some part of the issue, there are cases where this approach is better, and there are even benefits when combining both.
-> > 
-> 
-> Hi Vlastimil,
-> 
-> > I see the point, but I don't think the head/tail mechanism is great for this. It
-> > might sort of work, but with other interfering activity there are no guarantees
-> > and it relies on a subtle implementation detail. There are better mechanisms
-> 
-> For the specified use case of adding+onlining a whole bunch of memory
-> this works just fine. We don't care too much about "other interfering
-> activity" as you mention here, or about guarantees - this is a pure
-> optimization that seems to work just fine in practice.
-> 
-> I'm not sure about the "subtle implementation detail" - buddy merging,
-> and head/tail of buddy lists are a basic concept of our page allocator.
-> If that would ever change, the optimization here would be lost and we
-> would have to think of something else. Nothing would actually break -
-> and it's all kept directly in page_alloc.c
-> 
+Hello,
 
-It's somewhat subtle because it's relying heavily on the exact ordering
-of how pages are pulled from the free lists at the moment. Lets say for
-example that someone was brave enough to tackle the problem of the giant
-zone lock and split the zone into allocation arenas (like what glibc does
-to split the lock). Depending on the exact ordering of how pages are
-added and removed from the list would break your approach. I'm wary of
-anything that relies on the ordering of freelists for correctness becauuse
-it limits the ability to fix the zone lock (which has been overdue for
-fixing for years now and getting worse as node sizes increase).
+syzbot found the following issue on:
 
-To be robust, you'd need to do something like early memory bring-up whereby
-pages are directly allocated from one part of the DIMM (presumably the
-start) and use that for the metadata -- potentially all the metadata that
-would be necessary to plug/unplug the entire DIMM. This would effectively
-be unmovable but if you want to guarantee that all the memory except the
-metadata can be unplugged, you do not have much alteratives. Playing games
-with the ordering of the freelists will simply end up as "sometimes works,
-sometimes does not". 
+HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1077ecc3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
+dashboard link: https://syzkaller.appspot.com/bug?extid=fe2a9f19481e3bfed524
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
-In terms of forcing ranges to be UNMOVABLE or MOVABLE (either via zones
-or by implementing "sticky" pageblocks which hits complex reclaim-related
-problems), you start running into problems similar to lowmem starvation
-where a page cache allocation fails because unmovable metadata cannot
-be allocated.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-I suggest you keep it simple -- statically allocate the potential
-metadata needed in the future even though it limits the maximum amount
-of memory that can be unplugged. The alternative is unpredictable
-plug/unplug success rates.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+fe2a9f19481e3bfed524@syzkaller.appspotmail.com
 
--- 
-Mel Gorman
-SUSE Labs
+==================================================================
+BUG: KASAN: user-memory-access in vdso_fault+0xc1/0x1b0 arch/x86/entry/vdso/vma.c:67
+Read of size 8 at addr 000000001953fc48 by task systemd-udevd/9883
+
+CPU: 0 PID: 9883 Comm: systemd-udevd Not tainted 5.9.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ __kasan_report mm/kasan/report.c:517 [inline]
+ kasan_report+0x151/0x1d0 mm/kasan/report.c:530
+ vdso_fault+0xc1/0x1b0 arch/x86/entry/vdso/vma.c:67
+ __do_fault+0x138/0x3b0 mm/memory.c:3450
+ do_read_fault+0x5a6/0x9e0 mm/memory.c:3843
+ do_fault mm/memory.c:3971 [inline]
+ handle_pte_fault mm/memory.c:4211 [inline]
+ __handle_mm_fault mm/memory.c:4346 [inline]
+ handle_mm_fault+0x1d73/0x29a0 mm/memory.c:4444
+ do_user_addr_fault+0x515/0xa90 arch/x86/mm/fault.c:1372
+ handle_page_fault arch/x86/mm/fault.c:1429 [inline]
+ exc_page_fault+0x129/0x240 arch/x86/mm/fault.c:1482
+ asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:538
+RIP: 0033:0x7ffedaddb630
+Code: Bad RIP value.
+RSP: 002b:00007ffedad997b8 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000015
+RDX: 0000000058585858 RSI: 0000000000000000 RDI: 00007ffedad997e0
+RBP: 0000000000000000 R08: 000000000000fefe R09: 0000000000000030
+R10: 0000000000000000 R11: 0000000000000206 R12: 000055e855d83675
+R13: 00007ffedad99938 R14: 0000000000080000 R15: 000055e855d83660
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
