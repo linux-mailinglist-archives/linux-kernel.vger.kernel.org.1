@@ -2,63 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38036277632
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70CE227763B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728665AbgIXQFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:05:04 -0400
-Received: from smtprelay0247.hostedemail.com ([216.40.44.247]:37758 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728641AbgIXQFD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:05:03 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 6A350181D337B;
-        Thu, 24 Sep 2020 16:05:01 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3867:3873:4321:5007:10004:10400:10848:11026:11232:11658:11914:12043:12048:12297:12438:12740:12760:12895:13069:13311:13357:13439:13972:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: face47_290156b27160
-X-Filterd-Recvd-Size: 1629
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf04.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 24 Sep 2020 16:04:59 +0000 (UTC)
-Message-ID: <21cc553cc3a07e0952eb52a50149c323daff6041.camel@perches.com>
-Subject: Re: [PATCH 5/9] gpio: mockup: use pr_fmt()
-From:   Joe Perches <joe@perches.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 24 Sep 2020 09:04:58 -0700
-In-Reply-To: <20200924113842.11670-6-brgl@bgdev.pl>
-References: <20200924113842.11670-1-brgl@bgdev.pl>
-         <20200924113842.11670-6-brgl@bgdev.pl>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1728564AbgIXQHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:07:51 -0400
+Received: from foss.arm.com ([217.140.110.172]:49954 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728448AbgIXQHv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:07:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9E0B71396;
+        Thu, 24 Sep 2020 09:07:50 -0700 (PDT)
+Received: from localhost (unknown [10.1.199.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3964A3F718;
+        Thu, 24 Sep 2020 09:07:50 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:07:48 +0100
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] sched/topology,schedutil: wrap sched domains rebuild
+Message-ID: <20200924160748.GA17927@arm.com>
+References: <20200924123937.20938-1-ionela.voinescu@arm.com>
+ <20200924123937.20938-2-ionela.voinescu@arm.com>
+ <20200924133446.GA3920949@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924133446.GA3920949@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-24 at 13:38 +0200, Bartosz Golaszewski wrote:
-> We don't need a custom logging helper. Let's use the standard pr_fmt()
-> macro which allows us to use all pr_*() routines with custom format.
-[]
-> diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-[]
-> @@ -577,7 +577,7 @@ static int __init gpio_mockup_init(void)
->  
->  		pdev = platform_device_register_full(&pdevinfo);
->  		if (IS_ERR(pdev)) {
-> -			gpio_mockup_err("error registering device");
-> +			pr_err("error registering device");
+Hey,
 
-You could add the missing newline at the same time.
+On Thursday 24 Sep 2020 at 14:34:46 (+0100), Quentin Perret wrote:
+> On Thursday 24 Sep 2020 at 13:39:35 (+0100), Ionela Voinescu wrote:
+> > @@ -433,6 +437,7 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
+> >  }
+> >  #else
+> >  static void free_pd(struct perf_domain *pd) { }
+> > +void rebuild_sched_domains_energy(void) { }
+> 
+> Nit: maybe make that stub static inline in a header instead? I guess LTO
+> and friends ought to clean that up for you, but it shouldn't hurt to give
+> the compiler a little bit of help here.
+> 
 
+Makes sense and will do!
 
+Thank you,
+Ionela.
+
+> Otherwise, LGTM:
+> 
+> Acked-by: Quentin Perret <qperret@google.com>
+> 
+> >  #endif /* CONFIG_ENERGY_MODEL && CONFIG_CPU_FREQ_GOV_SCHEDUTIL*/
+> >  
+> >  static void free_rootdomain(struct rcu_head *rcu)
+> > -- 
+> > 2.17.1
+> > 
