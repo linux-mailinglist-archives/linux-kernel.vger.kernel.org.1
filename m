@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE0E27734F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E77C277377
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728201AbgIXN71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:59:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53296 "EHLO
+        id S1728286AbgIXOAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728153AbgIXN7T (ORCPT
+        with ESMTP id S1728170AbgIXN7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:59:19 -0400
+        Thu, 24 Sep 2020 09:59:22 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6419EC0613D7
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:59:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A33E8C0613D7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:59:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=dr6dZs3VFHA+kNUsKD0hzBTElVLKOQakCcBlV/ZNErM=; b=bBQO05VwDwAfaDqhekxajuofQQ
-        bb+lb4i3TKVtAyCr2iKg1X8aUn1bdOY06BtcZKEUPCPJtazgELgC/vFbSI7vij62OU7cmoS4Lvp4J
-        HeFUAy34D9c2sIi29BVo8WSJNoo9JaIHBXsP95f4sWbTsfn3hoxVg4re0K37rJI6FFIX4dKQNQ4qi
-        wfy/IU/xQP3fhkdpdco0xb2XcZ5VH/JIoM+BRD8a3NgAFOiUbXH1CBYUN6/Wme9eQ0VGwp1cdaydU
-        G8A1Rfo80MP8zwb3Qv4JgG75vxpJs/kFWWto8tgyBgmVyD0urYVmuY8SbsxiVEvcP/dgcqoII8P4f
-        gsCE6STw==;
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=EtVpkGxd0Kyhqnh/t2FVgPRi015JMv+YUxF5ITQDDnw=; b=UBIv7roDEfICpvkEV2sDX9ByQx
+        t0CU6jQaZONhs8WijOUJW3Hf5OmlymEYMn670wqAEy6jMP84qCMuVfB1aNXU3DB8PZkOzHe0z5Q8E
+        F8J6iF5qyiBSE0OmzjD8LNDZuERy9GCif22cGt1lgl60GXal+sV8G8wPwqvEKk2BzhDNFb+3tnsb4
+        50KCBLdQD7ck0FlSY6Uff1WVvMj1/IXCjBNKICstm4IcHwnMVDfin3Lg/IX/3OJ7TWRrcjpN8Nz8t
+        PO5JuoBYtJuo7Bh8o6jw163sU+8byzMB0qEe8ObJoA+W753TWIiEEGtzbIafEew2XKZt/+B1erI//
+        CS2YD4OQ==;
 Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLRlu-0003uT-GF; Thu, 24 Sep 2020 13:58:54 +0000
+        id 1kLRlv-0003ut-HU; Thu, 24 Sep 2020 13:58:55 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -46,10 +46,12 @@ Cc:     Peter Zijlstra <peterz@infradead.org>,
         xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
         intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-mm@kvack.org
-Subject: remove alloc_vm_area v2
-Date:   Thu, 24 Sep 2020 15:58:42 +0200
-Message-Id: <20200924135853.875294-1-hch@lst.de>
+Subject: [PATCH 01/11] mm: update the documentation for vfree
+Date:   Thu, 24 Sep 2020 15:58:43 +0200
+Message-Id: <20200924135853.875294-2-hch@lst.de>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200924135853.875294-1-hch@lst.de>
+References: <20200924135853.875294-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
@@ -57,44 +59,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-this series removes alloc_vm_area, which was left over from the big
-vmalloc interface rework.  It is a rather arkane interface, basicaly
-the equivalent of get_vm_area + actually faulting in all PTEs in
-the allocated area.  It was originally addeds for Xen (which isn't
-modular to start with), and then grew users in zsmalloc and i915
-which seems to mostly qualify as abuses of the interface, especially
-for i915 as a random driver should not set up PTE bits directly.
+ * Document that you can call vfree() on an address returned from vmap()
+ * Remove the note about the minimum size -- the minimum size of a vmalloc
+   allocation is one page
+ * Add a Context: section
+ * Fix capitalisation
+ * Reword the prohibition on calling from NMI context to avoid a double
+   negative
 
-Note that the i915 patches apply to the drm-tip branch of the drm-tip
-tree, as that tree has recent conflicting commits in the same area.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ mm/vmalloc.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-A git tree is also available here:
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index be4724b916b3e7..8770260419af06 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2321,20 +2321,21 @@ static void __vfree(const void *addr)
+ }
+ 
+ /**
+- * vfree - release memory allocated by vmalloc()
+- * @addr:  memory base address
++ * vfree - Release memory allocated by vmalloc()
++ * @addr:  Memory base address
+  *
+- * Free the virtually continuous memory area starting at @addr, as
+- * obtained from vmalloc(), vmalloc_32() or __vmalloc(). If @addr is
+- * NULL, no operation is performed.
++ * Free the virtually continuous memory area starting at @addr, as obtained
++ * from one of the vmalloc() family of APIs.  This will usually also free the
++ * physical memory underlying the virtual allocation, but that memory is
++ * reference counted, so it will not be freed until the last user goes away.
+  *
+- * Must not be called in NMI context (strictly speaking, only if we don't
+- * have CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG, but making the calling
+- * conventions for vfree() arch-depenedent would be a really bad idea)
++ * If @addr is NULL, no operation is performed.
+  *
++ * Context:
+  * May sleep if called *not* from interrupt context.
+- *
+- * NOTE: assumes that the object at @addr has a size >= sizeof(llist_node)
++ * Must not be called in NMI context (strictly speaking, it could be
++ * if we have CONFIG_ARCH_HAVE_NMI_SAFE_CMPXCHG, but making the calling
++ * conventions for vfree() arch-depenedent would be a really bad idea).
+  */
+ void vfree(const void *addr)
+ {
+-- 
+2.28.0
 
-    git://git.infradead.org/users/hch/misc.git alloc_vm_area
-
-Gitweb:
-
-    http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/alloc_vm_area
-
-Changes since v1:
- - fix a bug in the zsmalloc changes
- - fix a bug and rebase to include the recent changes in i915
- - add a new vmap flag that allows to free the page array and pages
-   using vfree
- - add a vfree documentation updated from Matthew
-
-Diffstat:
- arch/x86/xen/grant-table.c                |   27 ++++--
- drivers/gpu/drm/i915/Kconfig              |    1 
- drivers/gpu/drm/i915/gem/i915_gem_pages.c |  131 +++++++++++++-----------------
- drivers/gpu/drm/i915/gt/shmem_utils.c     |   76 ++++-------------
- drivers/xen/xenbus/xenbus_client.c        |   30 +++---
- include/linux/vmalloc.h                   |    7 -
- mm/Kconfig                                |    3 
- mm/memory.c                               |   16 ++-
- mm/nommu.c                                |    7 -
- mm/vmalloc.c                              |  123 ++++++++++++++--------------
- mm/zsmalloc.c                             |   10 +-
- 11 files changed, 200 insertions(+), 231 deletions(-)
