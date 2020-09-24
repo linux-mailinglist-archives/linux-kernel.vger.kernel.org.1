@@ -2,116 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EBFB276EF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB7F276EFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbgIXKrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:47:33 -0400
-Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:2314 "EHLO
-        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgIXKrc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:47:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1600944451;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=L8xE/00A85vyhQuQ/6lgUNXwsSSmV95Xl/TUzk3RuH8=;
-  b=iNq7w93bELpIkcnJgq9SOfXSICZq2z1cER9w8Hy/xVBLq8WfBhY073Vn
-   4Q/If64zQ4AKJ/RLcBZwi4dNnvs7h6k+gRAmIwK1B6+vfi2exy+z2m6LO
-   f9p9R4GsYk3WVG+bP4xL/2vjvtMtI2S+ez0Xc7bnssLp7KPuJ3PiKJlg5
-   A=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: opxQhHwtNFjKFi2WaTku1pymlx+LjDFtbAFzcvc/PQkiHp2uYJ0KdGnHs+Nkz+k99b4l26y18v
- 2ZScdqi2Bhx77+V9dTrc6KhF+rQq4xUf4vgW+o3/31mphJBRc+MW1sNtW+Cs7MSUh6ePbrfxGE
- i854802MMt9WN30p7+1I2VLdqaEbxmZH07axiKBL7m/buMcYHQ0VKyNtF7/remPTjbdFDu433s
- 5aIpn5KtbkEv0erRKGCeeMh01bjqMM6bE5OlPUdJjfTMoh/mdp2CqkljKuBK/YSISXRCbo8JRS
- buY=
-X-SBRS: None
-X-MesageID: 27746696
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,297,1596513600"; 
-   d="scan'208";a="27746696"
-Date:   Thu, 24 Sep 2020 12:47:20 +0200
-From:   Roger Pau =?utf-8?B?TW9ubsOp?= <roger.pau@citrix.com>
-To:     SeongJae Park <sjpark@amazon.com>
-CC:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        SeongJae Park <sjpark@amazon.de>, <axboe@kernel.dk>,
-        <aliguori@amazon.com>, <amit@kernel.org>, <mheyne@amazon.de>,
-        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] xen-blkback: add a parameter for disabling of persistent
- grants
-Message-ID: <20200924104720.GO19254@Air-de-Roger>
-References: <20200924101344.GN19254@Air-de-Roger>
- <20200924102714.28141-1-sjpark@amazon.com>
+        id S1726670AbgIXKr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:47:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60762 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726303AbgIXKr7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 06:47:59 -0400
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98F7A239A1;
+        Thu, 24 Sep 2020 10:47:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600944478;
+        bh=crA6jQgUS1FFfr6DRg0MQCRnOUDeb7w6bUzRsFm5xKE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=bKPDntr9XYycPElj3RXGS8Km6PrEOQQzu7sg5MsQWDi1Ki9DE9qD1W5I+MKQWdZJC
+         /qm9XZyDoUOqK+LxF8HigXlZY7JxaqEEtvxixVdmq0UPYTwcoVVdY0o8aY4BBBXgb+
+         T7Xv0tonCuc1WPT4hyhR2yKq9UnnO1dLSFTBKCXE=
+Received: by mail-ot1-f42.google.com with SMTP id s66so2736743otb.2;
+        Thu, 24 Sep 2020 03:47:58 -0700 (PDT)
+X-Gm-Message-State: AOAM532cbIt0Fx7dMG7XFsewB7cp4h8Ig0X3waYMRy4jlGG9IJWJNkXu
+        kudbLAr1bfjxKTGx5uMr93aCJnNTEMHFf66ZGYA=
+X-Google-Smtp-Source: ABdhPJzlB3sNdM6Y8ZczMUhZi5xLlk1yPJfn5LQFHG2nfujWOJKSwSKRUGCMAg4Q7lc7uwfm4oYnzmNrRLyGXUnIVPo=
+X-Received: by 2002:a9d:6193:: with SMTP id g19mr2623454otk.108.1600944477888;
+ Thu, 24 Sep 2020 03:47:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200924102714.28141-1-sjpark@amazon.com>
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL06.citrite.net (10.13.108.179)
+References: <20200924082833.12722-1-jlee@suse.com>
+In-Reply-To: <20200924082833.12722-1-jlee@suse.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 24 Sep 2020 12:47:46 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXE64kMU7wnMQK+k=0tjaH9OMOrzN86yJPPRkx5Nq8XBqw@mail.gmail.com>
+Message-ID: <CAMj1kXE64kMU7wnMQK+k=0tjaH9OMOrzN86yJPPRkx5Nq8XBqw@mail.gmail.com>
+Subject: Re: [PATCH] efi/efivars: Create efivars mount point in the
+ registration of efivars abstraction
+To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Lee, Chun-Yi" <jlee@suse.com>,
+        Matthias Brugger <mbrugger@suse.com>,
+        Fabian Vogt <fvogt@suse.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arthur Heymans <arthur@aheymans.xyz>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 12:27:14PM +0200, SeongJae Park wrote:
-> On Thu, 24 Sep 2020 12:13:44 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
-> 
-> > On Wed, Sep 23, 2020 at 04:09:30PM -0400, Konrad Rzeszutek Wilk wrote:
-> > > On Tue, Sep 22, 2020 at 09:01:25AM +0200, SeongJae Park wrote:
-> > > > From: SeongJae Park <sjpark@amazon.de>
-> > > > 
-> > > > Persistent grants feature provides high scalability.  On some small
-> > > > systems, however, it could incur data copy overhead[1] and thus it is
-> > > > required to be disabled.  But, there is no option to disable it.  For
-> > > > the reason, this commit adds a module parameter for disabling of the
-> > > > feature.
-> > > 
-> > > Would it be better suited to have it per guest?
-> > 
-> > I think having a per-backend policy that could be specified at the
-> > toolstack level would be nice, but I see that as a further
-> > improvement.
-> 
-> Agreed.
-> 
-> > 
-> > Having a global backend domain policy of whether persistent grants are
-> > enabled or not seems desirable, and if someone wants even more fine
-> > grained control this change is AFAICT not incompatible with a
-> > per-backend option anyway.
-> 
-> I think we could extend this design by receiving list of exceptional domains.
-> For example, if 'feature_persistent' is True and exceptions list has '123,
-> 456', domains of domid 123 and 456 will not use persistent grants, and vice
-> versa.
+On Thu, 24 Sep 2020 at 10:28, Lee, Chun-Yi <joeyli.kernel@gmail.com> wrote:
+>
+> This patch moved the logic of creating efivars mount point to the
+> registration of efivars abstraction. It's useful for userland to
+> determine the availability of efivars filesystem by checking the
+> existence of mount point.
+>
+> The 'efivars' platform device be created on generic EFI runtime services
+> platform, so it can be used to determine the availability of efivarfs.
+> But this approach is not available for google gsmi efivars abstraction.
+>
+> This patch be tested on Here on qemu-OVMF and qemu-uboot.
+>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: Matthias Brugger <mbrugger@suse.com>
+> Cc: Fabian Vogt <fvogt@suse.com>
+> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Arthur Heymans <arthur@aheymans.xyz>
+> Cc: Patrick Rudolph <patrick.rudolph@9elements.com>
+> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> ---
 
-I think that would be quite fragile IMO, I wouldn't recommend relying
-on domain IDs.
+I take it this is v3 of [0]? If so, please explain how it deviates
+from v2. If it doesn't deviate from v2, it is better to continue the
+discussion in the other thread.
 
-What I would do instead is add a new attribute to
-xl-disk-configuration [0] that allows setting the persistent grants
-usage on a per-disk basis, and that should be passed to blkback in a
-xenstore node.
+For the sake of discussion, it helps to clarify the confusing nomenclature:
 
-> I could implement this, but... to be honest, I don't really understand the
-> needs of the fine-grained control.  AFAIU, the problem is 'scalability' vs
-> 'data copy overhead'.  So, only small systems would want to turn persistent
-> grants off.  In such a small system, why would we need fine-grained control?
-> I'm worrying if I would implement and maintain a feature without real use case.
-> 
-> For the reason, I'd like to suggest to keep this as is for now and expand it
-> with the 'exceptions list' idea or something better, if a real use case comes
-> out later.
+a) 'efivars abstraction' - an internal kernel API that exposes EFI
+variables, and can potentially be backed by an implementation that is
+not EFI based (i.e., Google gsmi)
 
-I agree. I'm happy to take patches to implement more fine grained
-control, but that shouldn't prevent us from having a global policy if
-that's useful to users.
+b) efivars.ko module, built on top of the efivars abstraction, which
+exposes EFI variables (real ones or gsmi ones) via the deprecated
+sysfs interface
 
-Roger.
+c) efivarfs filesystem, also built on top of the efivars abstraction,
+which exposes EFI variables (real ones or gsmi ones) via a special
+filesystem independently of sysfs.
 
-[0] https://xenbits.xen.org/docs/unstable/man/xl-disk-configuration.5.html
+Of course, the sysfs mount point we create for efivarfs is not called
+'efivarfs' but 'efivars'. The sysfs subdirectory we create for
+efivars.ko is called 'vars'. Sigh.
+
+
+In this patch, you create the mount point for c) based on whether a)
+gets registered (which occurs on systems with EFI Get/SetVariable
+support or GSMI), right? So, to Greg's point, wouldn't it be easier to
+simply check whether efivarfs is listed in /proc/filesystems?
+
+It also helps if you could clarify what the actual use case is, rather
+than saying that it is generally useful.
+
+
+
+
+
+[0] https://lore.kernel.org/linux-efi/20200825160719.7188-1-jlee@suse.com/
+
+>  drivers/firmware/efi/efi.c  |  7 -------
+>  drivers/firmware/efi/vars.c | 17 +++++++++++++++++
+>  2 files changed, 17 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
+> index 3aa07c3b5136..23c11a2a3f4d 100644
+> --- a/drivers/firmware/efi/efi.c
+> +++ b/drivers/firmware/efi/efi.c
+> @@ -405,13 +405,6 @@ static int __init efisubsys_init(void)
+>         if (error)
+>                 goto err_remove_group;
+>
+> -       /* and the standard mountpoint for efivarfs */
+> -       error = sysfs_create_mount_point(efi_kobj, "efivars");
+> -       if (error) {
+> -               pr_err("efivars: Subsystem registration failed.\n");
+> -               goto err_remove_group;
+> -       }
+> -
+>         if (efi_enabled(EFI_DBG) && efi_enabled(EFI_PRESERVE_BS_REGIONS))
+>                 efi_debugfs_init();
+>
+> diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
+> index 973eef234b36..6fa7f288d635 100644
+> --- a/drivers/firmware/efi/vars.c
+> +++ b/drivers/firmware/efi/vars.c
+> @@ -1179,6 +1179,8 @@ int efivars_register(struct efivars *efivars,
+>                      const struct efivar_operations *ops,
+>                      struct kobject *kobject)
+>  {
+> +       int error;
+> +
+>         if (down_interruptible(&efivars_lock))
+>                 return -EINTR;
+>
+> @@ -1191,6 +1193,19 @@ int efivars_register(struct efivars *efivars,
+>
+>         up(&efivars_lock);
+>
+> +       /* and the standard mountpoint for efivarfs */
+> +       if (efi_kobj) {
+> +               error = sysfs_create_mount_point(efi_kobj, "efivars");
+> +               if (error) {
+> +                       if (down_interruptible(&efivars_lock))
+> +                               return -EINTR;
+> +                       __efivars = NULL;
+> +                       up(&efivars_lock);
+> +                       pr_err("efivars: Subsystem registration failed.\n");
+> +                       return error;
+> +               }
+> +       }
+> +
+>         return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(efivars_register);
+> @@ -1222,6 +1237,8 @@ int efivars_unregister(struct efivars *efivars)
+>
+>         pr_info("Unregistered efivars operations\n");
+>         __efivars = NULL;
+> +       if (efi_kobj)
+> +               sysfs_remove_mount_point(efi_kobj, "efivars");
+>
+>         rv = 0;
+>  out:
+> --
+> 2.16.4
+>
