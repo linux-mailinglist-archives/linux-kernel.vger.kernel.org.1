@@ -2,79 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5B427711C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 185F027711A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbgIXMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:34:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56028 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727683AbgIXMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:34:41 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01703221EB;
-        Thu, 24 Sep 2020 12:34:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600950881;
-        bh=vUr9YRwd8hF9XVYF5mU6UJwtg0FyUtpF0E+w/IWZWq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IMLUNwVGVpBWEcEDHnBGCIEwvLQ53r6P2qMp1LdjUS1aZkB1DQXc7wZm3dwpv22Kl
-         zx6HW380Wd0V9v0bEAic87a0Mtn7nU4oJj20yGVPnI1rqP7r3NcKmGxOZ8CYFBg85Z
-         AL7ZqhHa2LovElH/FMpx1MfgjR2wxMaNqVouAbrQ=
-Date:   Thu, 24 Sep 2020 13:33:46 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sound/soc/codecs: fix spelling typo in comments
-Message-ID: <20200924123346.GE4754@sirena.org.uk>
-References: <1600929860-28862-1-git-send-email-wangqing@vivo.com>
+        id S1727824AbgIXMeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:34:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50095 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727728AbgIXMeX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:34:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600950861;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XJM2zsAmjHPtnBVFf6cltcdoLV4SPiJ7BDBnMHvxMEQ=;
+        b=Ht4zUUcFI8NnJDTQiaXdh/3X6CUlFV5a65Vtih95kXxjxrUXkrCsZ2YdbvB06E1ZlJ7WOp
+        F6lC+Mg4PX7wjy04WC0IECqsUscQ4aOCGfgPlkKFONkYna8xJacEj1fzJgKXpBwXQktNlY
+        60fbBUQSjKIAVvBPJmmkW2w3l5KgCjs=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-237-ihPweWdNPUCvDyrSRlOUCQ-1; Thu, 24 Sep 2020 08:34:19 -0400
+X-MC-Unique: ihPweWdNPUCvDyrSRlOUCQ-1
+Received: by mail-ej1-f70.google.com with SMTP id w17so1232965eja.10
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:34:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=XJM2zsAmjHPtnBVFf6cltcdoLV4SPiJ7BDBnMHvxMEQ=;
+        b=dI0Lt/dzUN7lBin7RTETZyXhZwCFz/Uzl9Lbh28SKG1WHTbcY4EHMp3lgA/2DsOt4A
+         ErE+DpmSnJAfrhbmnutBvP/o/LCNwnIUY8ysEDhShovgU3ZLxUvMSHu5f44vUCRkDaxS
+         ToEppx/Pdl9jTffyy2Oto7sDhq1EWpNoiyuix261P9zYSeVB9A2txD3s54+mvauhleV3
+         AUGsxd+IpzoRkgPCS/PLYRLdFO1i4WpK4PYN8tCnY6jjvsYQfDDkFREdSNPPDj8F11F5
+         cfG6nYHb8jqJ6+bTFRHbtz1BgTJ2lAp0E4KhuiEFfFNQcMEC6tpmsKcKi/+iJOvjIrLa
+         +yug==
+X-Gm-Message-State: AOAM533ouzTT/ymB1DtkcYeQIVyhdL5BTP06vUJBkG4Mo2a2bxP9Z/mR
+        4WspEJZPqC3GW4tom3PBLiaAEhWmR8yCflWJAnEKPCmirUfRgISwoQ/9y4kioECoQV4pnJ73FZd
+        W9CAs7p/3h+hIIbtcbtPn0H1I
+X-Received: by 2002:a05:6402:1148:: with SMTP id g8mr775016edw.271.1600950857414;
+        Thu, 24 Sep 2020 05:34:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz9aag4YDAgIGYQ9EHrDOFNyx4QU0hniTeVNf02iQ7RJLkNK/cPK0RyizBQjwquCkPtgxllpw==
+X-Received: by 2002:a05:6402:1148:: with SMTP id g8mr774981edw.271.1600950857170;
+        Thu, 24 Sep 2020 05:34:17 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id t3sm2383180edv.59.2020.09.24.05.34.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 05:34:15 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Huacai Chen <chenhc@lemote.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [RFC PATCH 3/3] KVM: x86: Use KVM_BUG/KVM_BUG_ON to handle bugs that are fatal to the VM
+In-Reply-To: <20200923224530.17735-4-sean.j.christopherson@intel.com>
+References: <20200923224530.17735-1-sean.j.christopherson@intel.com> <20200923224530.17735-4-sean.j.christopherson@intel.com>
+Date:   Thu, 24 Sep 2020 14:34:14 +0200
+Message-ID: <878scze4l5.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
-Content-Disposition: inline
-In-Reply-To: <1600929860-28862-1-git-send-email-wangqing@vivo.com>
-X-Cookie: Programmers do it bit by bit.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
---imjhCm/Pyz7Rq5F2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Add support for KVM_REQ_VM_BUGG in x86, and replace a variety of WARNs
+> with KVM_BUG() and KVM_BUG_ON().  Return -EIO if a KVM_BUG is hit to
+> align with the common KVM behavior of rejecting iocts() with -EIO if the
+> VM is bugged.
+>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/svm/svm.c |  2 +-
+>  arch/x86/kvm/vmx/vmx.c | 23 ++++++++++++++---------
+>  arch/x86/kvm/x86.c     |  4 ++++
+>  3 files changed, 19 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 3da5b2f1b4a1..e684794c6249 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -1380,7 +1380,7 @@ static void svm_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
+>  		load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu));
+>  		break;
+>  	default:
+> -		WARN_ON_ONCE(1);
+> +		KVM_BUG_ON(1, vcpu->kvm);
+>  	}
+>  }
+>  
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 6f9a0c6d5dc5..810d46ab0a47 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -2250,7 +2250,7 @@ static void vmx_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
+>  		vcpu->arch.cr4 |= vmcs_readl(GUEST_CR4) & guest_owned_bits;
+>  		break;
+>  	default:
+> -		WARN_ON_ONCE(1);
+> +		KVM_BUG_ON(1, vcpu->kvm);
+>  		break;
+>  	}
+>  }
+> @@ -4960,6 +4960,7 @@ static int handle_cr(struct kvm_vcpu *vcpu)
+>  			return kvm_complete_insn_gp(vcpu, err);
+>  		case 3:
+>  			WARN_ON_ONCE(enable_unrestricted_guest);
+> +
+>  			err = kvm_set_cr3(vcpu, val);
+>  			return kvm_complete_insn_gp(vcpu, err);
+>  		case 4:
+> @@ -4985,14 +4986,13 @@ static int handle_cr(struct kvm_vcpu *vcpu)
+>  		}
+>  		break;
+>  	case 2: /* clts */
+> -		WARN_ONCE(1, "Guest should always own CR0.TS");
+> -		vmx_set_cr0(vcpu, kvm_read_cr0_bits(vcpu, ~X86_CR0_TS));
+> -		trace_kvm_cr_write(0, kvm_read_cr0(vcpu));
+> -		return kvm_skip_emulated_instruction(vcpu);
+> +		KVM_BUG(1, vcpu->kvm, "Guest always owns CR0.TS");
+> +		return -EIO;
+>  	case 1: /*mov from cr*/
+>  		switch (cr) {
+>  		case 3:
+>  			WARN_ON_ONCE(enable_unrestricted_guest);
+> +
 
-On Thu, Sep 24, 2020 at 02:43:59PM +0800, Wang Qing wrote:
-> Modify the comment typo: "compliment" -> "complement".
+Here, were you intended to replace WARN_ON_ONCE() with KVM_BUG_ON() or
+this is just a stray newline added?
 
-These are both English words, and compliment appears to be the one that
-is used in the datasheet for this part...=20
+>  			val = kvm_read_cr3(vcpu);
+>  			kvm_register_write(vcpu, reg, val);
+>  			trace_kvm_cr_read(cr, val);
+> @@ -5330,7 +5330,9 @@ static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
+>  
+>  static int handle_nmi_window(struct kvm_vcpu *vcpu)
+>  {
+> -	WARN_ON_ONCE(!enable_vnmi);
+> +	if (KVM_BUG_ON(!enable_vnmi, vcpu->kvm))
+> +		return -EIO;
+> +
+>  	exec_controls_clearbit(to_vmx(vcpu), CPU_BASED_NMI_WINDOW_EXITING);
+>  	++vcpu->stat.nmi_window_exits;
+>  	kvm_make_request(KVM_REQ_EVENT, vcpu);
+> @@ -5908,7 +5910,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+>  	 * below) should never happen as that means we incorrectly allowed a
+>  	 * nested VM-Enter with an invalid vmcs12.
+>  	 */
+> -	WARN_ON_ONCE(vmx->nested.nested_run_pending);
+> +	if (KVM_BUG_ON(vmx->nested.nested_run_pending, vcpu->kvm))
+> +		return -EIO;
+>  
+>  	/* If guest state is invalid, start emulating */
+>  	if (vmx->emulation_required)
+> @@ -6258,7 +6261,9 @@ static int vmx_sync_pir_to_irr(struct kvm_vcpu *vcpu)
+>  	int max_irr;
+>  	bool max_irr_updated;
+>  
+> -	WARN_ON(!vcpu->arch.apicv_active);
+> +	if (KVM_BUG_ON(!vcpu->arch.apicv_active, vcpu->kvm))
+> +		return -EIO;
+> +
+>  	if (pi_test_on(&vmx->pi_desc)) {
+>  		pi_clear_on(&vmx->pi_desc);
+>  		/*
+> @@ -6345,7 +6350,7 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
+>  	gate_desc *desc;
+>  	u32 intr_info = vmx_get_intr_info(vcpu);
+>  
+> -	if (WARN_ONCE(!is_external_intr(intr_info),
+> +	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
+>  	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
+>  		return;
+>  
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 17f4995e80a7..672eb5142b34 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -8363,6 +8363,10 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>  	bool req_immediate_exit = false;
+>  
+>  	if (kvm_request_pending(vcpu)) {
+> +		if (kvm_check_request(KVM_REQ_VM_BUGGED, vcpu)) {
 
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
+Do we want to allow userspace to continue executing the guest or should
+we make KVM_REQ_VM_BUGGED permanent by replacing kvm_check_request()
+with kvm_test_request()?
 
---imjhCm/Pyz7Rq5F2
-Content-Type: application/pgp-signature; name="signature.asc"
+> +			r = -EIO;
+> +			goto out;
+> +		}
+>  		if (kvm_check_request(KVM_REQ_GET_VMCS12_PAGES, vcpu)) {
+>  			if (unlikely(!kvm_x86_ops.nested_ops->get_vmcs12_pages(vcpu))) {
+>  				r = 0;
 
------BEGIN PGP SIGNATURE-----
+-- 
+Vitaly
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9skikACgkQJNaLcl1U
-h9AxRQf/S8gmS+UH+JNtXpZHuFOgB5egaqnkf4SwuZYxea8zSzPdU+E/Mt7JlpCP
-avHwW2gQ62VSV3dv3eZLhc7JXwBU0+26cOSaUouzsyR6Xn0Qjh29+Zp1PsQyu8if
-YvD/mdzEfb+j1WX75BQiA7y34PTRhLLKMdjET4jLUsf6T+R2btEde/jKGB1os+Gx
-OMSPXu/IFPqIjZGnKCG1nCZKOQUhV7PGTr1x29ZMfnonsvTX33dbsALLO5xiJcPw
-gefvylbfnma4XnXYQlzt6pJ4VwwsPcsUFb2AAeaEv2zVQuU1qNa5vRd2WAm6aC9c
-j6dSFfl87W97J4JDH8AM8FzO1AFqTQ==
-=VsqG
------END PGP SIGNATURE-----
-
---imjhCm/Pyz7Rq5F2--
