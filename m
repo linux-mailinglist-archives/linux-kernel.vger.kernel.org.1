@@ -2,93 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AD8276698
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E3D627669D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726462AbgIXCq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 22:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbgIXCq2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 22:46:28 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70265C0613CE;
-        Wed, 23 Sep 2020 19:46:28 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id u8so2180808lff.1;
-        Wed, 23 Sep 2020 19:46:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9+eNHoJ3hPvMPQqYtY4sJ1VsIJccrVuHfsFJyXxlV7E=;
-        b=pR6nXCY3wR0y8cB6ivNkWm2/LCSJzNGakD3yYn1i0VkIWdJgdfEdgOenMhMAkxahv4
-         a1zIhV5TOezq+fIfL9QlYGHv/EBJyE64jif9ComBhj3FyzO48xLSTKzc+r5sMxgTYLfg
-         kQq4ycdxSQ9Hnw2aOEnSlPUeULpR6O/a7eM5yWvxo8xHY8/Ova9R43llg55n576uV5zM
-         L37V28MDD7vEa5nEVhgJuUWnMGQaV4phq2Bd4NtiKem5rxUTQKKJLtSi97fgVwcMdG1u
-         sb+Q68E4+83OsxcxUqHv57Cvw+q19yusxn7Nzwr0AVvUrHT0+XuKuv4a69Sn/g0oOnnh
-         M12g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9+eNHoJ3hPvMPQqYtY4sJ1VsIJccrVuHfsFJyXxlV7E=;
-        b=dtaWHya9Skw0PJZHTFNb1Blscug2nEg21qJcA1Zmk0otmruqdvQBScsRrKrUhhrXT0
-         lRo0C/F4YLNbsvQd1KVgUKL06G/IS9zgq5yzqndBiCTbFLR600LbFFB5tc8fnRmdI1Rw
-         t0eleYUIzF9VrZkjYPpU7+7bKbqXkQP+rKvHdLvhPV+A+cAQSnVym4AcdxonCHmgT0bB
-         3sbVe1AYvltIydPV3MaLstRsJ7JtJHDGaKcD6Jg1GiLCBIV9ESUfitv69Hr1zi0MmwaO
-         jse3uoz/WfMQDjkBg31TvWwF/4GDa7bKSKhkkwlo+HXCn0AZ6smB83mZVPhCR1sxZKuR
-         ZdbQ==
-X-Gm-Message-State: AOAM533GbPt7N505XQOz4mSPpvyoMsxfbARDQaBJPFoi1eE2X+Y+yudB
-        UdJahF4uShu7H6OsU6pNIdH2mriakXGydV9ATrA=
-X-Google-Smtp-Source: ABdhPJwi19bzgz5V7MW7dnYyJjavTgZavChOt28VLPqtL3VrYGIVzKq5M/3CrgBSLd/1UoX52D73GzO9TQYkpo5RaMQ=
-X-Received: by 2002:a19:8089:: with SMTP id b131mr786352lfd.390.1600915586739;
- Wed, 23 Sep 2020 19:46:26 -0700 (PDT)
+        id S1726393AbgIXCvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 22:51:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:60567 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726281AbgIXCvG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 22:51:06 -0400
+IronPort-SDR: VzzOMvbIgAYDyCWlR6gTxBz3sJZA5jmRhVoBsxsUM2kYvVW4FSLrUKoaxZkLDW9ebzn2v7RCjW
+ 3lsfvyn7bBAw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="141085824"
+X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
+   d="scan'208";a="141085824"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 19:51:06 -0700
+IronPort-SDR: MY0WoXmH2RYuPS1fhnWOvwlsOolPlf3vcJzS0Cba7JRDXC+Q5P0iZOonb+CkBkMVvm6Oy8YNTi
+ YpMFYuLYH8CQ==
+X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
+   d="scan'208";a="382888683"
+Received: from jdelagui-mobl.amr.corp.intel.com (HELO [10.255.231.15]) ([10.255.231.15])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 19:51:05 -0700
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <20200922233333.GA2239404@bjorn-Precision-5520>
+ <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
+ <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
+ <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+ <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
+Date:   Wed, 23 Sep 2020 19:51:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200922162542.GA18664@paulmck-ThinkPad-P72>
-In-Reply-To: <20200922162542.GA18664@paulmck-ThinkPad-P72>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Wed, 23 Sep 2020 19:46:15 -0700
-Message-ID: <CAADnVQJfmFjVRqJopeqy_7bHVdQ9x+i9d94Sv7Dshnh40FisTA@mail.gmail.com>
-Subject: Re: [GIT PULL rcu-tasks-trace] 50x speedup for synchronize_rcu_tasks_trace()
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 9:25 AM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Hello, Alexei,
->
-> This pull request contains eight commits that speed up RCU Tasks Trace
-> grace periods by a factor of 50, fix a few race conditions exposed
-> by this speedup, and clean up a couple of minor issues.  These have
-> been exposed to 0day and -next testing, and have passed well over 1,000
-> hours of rcutorture testing, some of which has contained ad-hoc changes
-> to further increase race probabilities.  So they should be solid!
-> (Famous last words...)
->
-> I would normally have sent this series up through -tip, but as we
-> discussed, going up through the BFP and networking trees provides the
-> needed exposure to real-world testing of these changes.  Please note
-> that the first patch is already in mainline, but given identical SHA-1
-> commit IDs, git should have no problem figuring this out.  I will also
-> be retaining these commits in -rcu in order to continue exposing them
-> to rcutorture testing, but again the identical SHA-1 commit IDs will
-> make everything work out.
 
-Pulled into bpf-next. Thanks a lot.
 
-Also confirming 50x speedup.
-Really nice to see that selftests/bpf are now fast again.
+On 9/23/20 7:16 PM, Sinan Kaya wrote:
+> On 9/23/2020 10:04 PM, Kuppuswamy, Sathyanarayanan wrote:
+>>> AFAIK, DLLSC is a requirement not optional. Why is this not supported by
+>>> non-hotplug ports?
+>> Its required for hotplug capable ports. Please check PCIe spec v5.0 sec
+>> 6.7.3.3.
+>>
+>> The Data Link Layer State Changed event provides an indication that the
+>> state of
+>> the Data Link Layer Link Active bit in the Link Status Register has
+>> changed.
+>> Support for Data Link Layer State Changed events and software
+>> notification of these
+>> events are required for hot-plug capable Downstream Ports.
+> 
+> I see. Can I assume that your system supports DPC?
+> DPC is supposed to recover the link via dpc_reset_link().
+Yes. But the affected device/drivers cleanup during error recovery
+is handled by hotplug handler. So we are facing issue when dealing
+with non hotplug capable ports.
+> 
 
-Not only all bpf developers will be running these patches now,
-but the bpf CI system will be exercising them as well.
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
