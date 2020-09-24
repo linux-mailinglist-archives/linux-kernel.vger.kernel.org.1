@@ -2,183 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 779482778CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB3CD2778CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728761AbgIXS6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:58:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56782 "EHLO mail.kernel.org"
+        id S1728771AbgIXS6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:58:31 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:35612 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726831AbgIXS6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:58:18 -0400
-Received: from rorschach.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1726831AbgIXS6a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:58:30 -0400
+Received: from zn.tnic (p200300ec2f0c9500731208bb5d5e764a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9500:7312:8bb:5d5e:764a])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D88323600;
-        Thu, 24 Sep 2020 18:58:12 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 14:58:10 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     peterz@infradead.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list\:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-Message-ID: <20200924145810.2f0b806f@rorschach.local.home>
-In-Reply-To: <875z8383gh.fsf@nanos.tec.linutronix.de>
-References: <20200919091751.011116649@linutronix.de>
-        <CAHk-=wiYGyrFRbA1cc71D2-nc5U9LM9jUJesXGqpPnB7E4X1YQ@mail.gmail.com>
-        <87mu1lc5mp.fsf@nanos.tec.linutronix.de>
-        <87k0wode9a.fsf@nanos.tec.linutronix.de>
-        <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com>
-        <87eemwcpnq.fsf@nanos.tec.linutronix.de>
-        <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
-        <87a6xjd1dw.fsf@nanos.tec.linutronix.de>
-        <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
-        <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
-        <20200923084032.GU1362448@hirez.programming.kicks-ass.net>
-        <20200923115251.7cc63a7e@oasis.local.home>
-        <874kno9pr9.fsf@nanos.tec.linutronix.de>
-        <20200923171234.0001402d@oasis.local.home>
-        <871riracgf.fsf@nanos.tec.linutronix.de>
-        <20200924083241.314f2102@gandalf.local.home>
-        <875z8383gh.fsf@nanos.tec.linutronix.de>
-X-Mailer: Claws Mail 3.17.4git76 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 367141EC02F2;
+        Thu, 24 Sep 2020 20:58:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600973909;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pvXTnmWGvKtgmruVF9CFH80cOq+coBlIBCsP6YrIMN8=;
+        b=Bthia61HoShSvGYZn5f8yiSeXycGFpDA/+s/JDURnJYeh3pcJtbsG0zKvQ3pNvJqEiw5NO
+        wOWGlvegmhAVt972XZqY/WZwHwyc4SiJJ9gtutGLw1slMteXePkmS7wEyWLtxjuJ5HPnv6
+        KqtywLs7OyRQdZGDTzbQqr25f3YYoMM=
+Date:   Thu, 24 Sep 2020 20:58:22 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
+        fenghua.yu@intel.com, kevin.tian@intel.com,
+        David.Laight@ACULAB.COM, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 2/5] x86/asm: Add enqcmds() to support ENQCMDS
+ instruction
+Message-ID: <20200924185822.GQ5030@zn.tnic>
+References: <20200924180041.34056-1-dave.jiang@intel.com>
+ <20200924180041.34056-3-dave.jiang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924180041.34056-3-dave.jiang@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 19:55:10 +0200
-Thomas Gleixner <tglx@linutronix.de> wrote:
+On Thu, Sep 24, 2020 at 11:00:38AM -0700, Dave Jiang wrote:
+> +/**
+> + * enqcmds - copy a 512 bits data unit to single MMIO location
 
-> On Thu, Sep 24 2020 at 08:32, Steven Rostedt wrote:
-> > On Thu, 24 Sep 2020 08:57:52 +0200
-> > Thomas Gleixner <tglx@linutronix.de> wrote:
-> >  
-> >> > Now as for migration disabled nesting, at least now we would have
-> >> > groupings of this, and perhaps the theorists can handle that. I mean,
-> >> > how is this much different that having a bunch of tasks blocked on a
-> >> > mutex with the owner is pinned on a CPU?
-> >> >
-> >> > migrate_disable() is a BKL of pinning affinity.    
-> >> 
-> >> No. That's just wrong. preempt disable is a concurrency control,  
-> >
-> > I think you totally misunderstood what I was saying. The above wasn't about
-> > comparing preempt_disable to migrate_disable. It was comparing
-> > migrate_disable to a chain of tasks blocked on mutexes where the top owner
-> > has preempt_disable set. You still have a bunch of tasks that can't move to
-> > other CPUs.  
-> 
-> What? The top owner does not prevent any task from moving. The tasks
-> cannot move because they are blocked on the mutex, which means they are
-> not runnable and non runnable tasks are not migrated at all.
+You forgot to fix this.
 
-And neither are migrated disabled tasks preempted by a high priority
-task.
+> + * @dst: destination, in MMIO space (must be 512-bit aligned)
+> + * @src: source
+> + *
+> + * The ENQCMDS instruction allows software to write a 512 bits command to
+> + * a 512 bits aligned special MMIO region that supports the instruction.
+> + * A return status is loaded into the ZF flag in the RFLAGS register.
+> + * ZF = 0 equates to success, and ZF = 1 indicates retry or error.
+> + *
+> + * The enqcmds() function uses the ENQCMDS instruction to submit data from
+> + * kernel space to MMIO space, in a unit of 512 bits. Order of data access
+> + * is not guaranteed, nor is a memory barrier performed afterwards. The
+> + * function returns 0 on success and -EAGAIN on failure.
+> + *
+> + * Warning: Do not use this helper unless your driver has checked that the CPU
+> + * instruction is supported on the platform and the device accepts ENQCMDS.
+> + */
+> +static inline int enqcmds(void __iomem *dst, const void *src)
+> +{
+> +	int zf;
+> +
+> +	/* ENQCMDS [rdx], rax */
+> +	asm volatile(".byte 0xf3, 0x0f, 0x38, 0xf8, 0x02, 0x66, 0x90"
+> +		     CC_SET(z)
+> +		     : CC_OUT(z) (zf)
+> +		     : "a" (dst), "d" (src));
 
-> 
-> I really don't understand what you are trying to say.
+Those operands need to be specified the same way as for movdir64b.
 
-Don't worry about it. I was just making a high level comparison of how
-migrate disabled tasks blocked on a higher priority task is similar to
-that of tasks blocked on a mutex held by a pinned task that is
-preempted by a high priority task. But we can forget this analogy as
-it's not appropriate for the current conversation.
+I've done that to save roundtrip time - simply replace yours with this
+one after having tested it on actual hardware, of course.
 
-> 
-> >> > If we only have local_lock() available (even on !RT), then it makes
-> >> > the blocking in groups. At least this way you could grep for all the
-> >> > different local_locks in the system and plug that into the algorithm
-> >> > for WCS, just like one would with a bunch of mutexes.    
-> >> 
-> >> You cannot do that on RT at all where migrate disable is substituting
-> >> preempt disable in spin and rw locks. The result would be the same as
-> >> with a !RT kernel just with horribly bad performance.  
-> >
-> > Note, the spin and rwlocks already have a lock associated with them. Why
-> > would it be any different on RT? I wasn't suggesting adding another lock
-> > inside a spinlock. Why would I recommend THAT? I wasn't recommending
-> > blindly replacing migrate_disable() with local_lock(). I just meant expose
-> > local_lock() but not migrate_disable().  
-> 
-> We already exposed local_lock() to non RT and it's for places which do
-> preempt_disable() or local_irq_disable() without having a lock
-> associated. But both primitives are scope less and therefore behave like
-> CPU local BKLs. What local_lock() provides in these cases is:
-> 
->   - Making the protection scope clear by associating a named local
->     lock which is coverred by lockdep.
-> 
->   - It still maps to preempt_disable() or local_irq_disable() in !RT
->     kernels
-> 
->   - The scope and the named lock allows RT kernels to substitute with
->     real (recursion aware) locking primitives which keep preemption and
->     interupts enabled, but provide the fine grained protection for the
->     scoped critical section.
+---
+From 39cbdc81d657efcb73c0f7d7ab5e5c53f439f267 Mon Sep 17 00:00:00 2001
+From: Dave Jiang <dave.jiang@intel.com>
+Date: Thu, 24 Sep 2020 11:00:38 -0700
+Subject: [PATCH] x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-I'm very much aware of the above.
+Currently, the MOVDIR64B instruction is used to atomically submit
+64-byte work descriptors to devices. Although it can encounter errors
+like device queue full, command not accepted, device not ready, etc when
+writing to a device MMIO, MOVDIR64B can not report back on errors from
+the device itself. This means that MOVDIR64B users need to separately
+interact with a device to see if a descriptor was successfully queued,
+which slows down device interactions.
 
->   
-> So how would you substitute migrate_disable() with a local_lock()? You
-> can't. Again migrate_disable() is NOT a concurrency control and
-> therefore it cannot be substituted by any concurrency control primitive.
+ENQCMD and ENQCMDS also atomically submit 64-byte work descriptors
+to devices. But, they *can* report back errors directly from the
+device, such as if the device was busy, or device not enabled or does
+not support the command. This immediate feedback from the submission
+instruction itself reduces the number of interactions with the device
+and can greatly increase efficiency.
 
-When I was first writing my email, I was writing about a way to replace
-migrate_disable with a construct similar to local locks without
-actually mentioning local locks, but then rewrote it to state local
-locks, trying to simplify what I was writing. I shouldn't have done
-that, because it portrayed that I wanted to use local_lock()
-unmodified. I was actually thinking of a new construct that was similar
-but not exactly the same as local lock.
+ENQCMD can be used at any privilege level, but can effectively only
+submit work on behalf of the current process. ENQCMDS is a ring0-only
+instruction and can explicitly specify a process context instead of
+being tied to the current process or needing to reprogram the IA32_PASID
+MSR.
 
-But this will just make things more complex and we can forget about it.
+Use ENQCMDS for work submission within the kernel because a Process
+Address ID (PASID) is setup to translate the kernel virtual address
+space. This PASID is provided to ENQCMDS from the descriptor structure
+submitted to the device and not retrieved from IA32_PASID MSR, which is
+setup for the current user address space.
 
-I'll wait to see what Peter produces.
+See Intel Software Developer’s Manual for more information on the
+instructions.
 
--- Steve
+ [ bp:
+   - Make operand constraints like movdir64b() because both insns are
+     basically doing the same thing, more or less.
+   - Fixup comments and cleanup. ]
+
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Link: https://lkml.kernel.org/r/20200924180041.34056-3-dave.jiang@intel.com
+---
+ arch/x86/include/asm/special_insns.h | 42 ++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
+
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index 2f0c8a39c796..2c18c780b2d5 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -262,6 +262,48 @@ static inline void movdir64b(void *dst, const void *src)
+ 		     :  "m" (*__src), "a" (__dst), "d" (__src));
+ }
+ 
++/**
++ * enqcmds - Enqueue a command in supervisor (CPL0) mode
++ * @dst: destination, in MMIO space (must be 512-bit aligned)
++ * @src: 512 bits memory operand
++ *
++ * The ENQCMDS instruction allows software to write a 512-bit command to
++ * a 512-bit-aligned special MMIO region that supports the instruction.
++ * A return status is loaded into the ZF flag in the RFLAGS register.
++ * ZF = 0 equates to success, and ZF = 1 indicates retry or error.
++ *
++ * This function issues the ENQCMDS instruction to submit data from
++ * kernel space to MMIO space, in a unit of 512 bits. Order of data access
++ * is not guaranteed, nor is a memory barrier performed afterwards. It
++ * returns 0 on success and -EAGAIN on failure.
++ *
++ * Warning: Do not use this helper unless your driver has checked that the
++ * ENQCMDS instruction is supported on the platform and the device accepts
++ * ENQCMDS.
++ */
++static inline int enqcmds(void __iomem *dst, const void *src)
++{
++	const struct { char _[64]; } *__src = src;
++	struct { char _[64]; } *__dst = dst;
++	int zf;
++
++	/*
++	 * ENQCMDS %(rdx), rax
++	 *
++	 * See movdir64b()'s comment on operand specification.
++	 */
++	asm volatile(".byte 0xf3, 0x0f, 0x38, 0xf8, 0x02, 0x66, 0x90"
++		     CC_SET(z)
++		     : CC_OUT(z) (zf), "+m" (*__dst)
++		     : "m" (*__src), "a" (__dst), "d" (__src));
++
++	/* Submission failure is indicated via EFLAGS.ZF=1 */
++	if (zf)
++		return -EAGAIN;
++
++	return 0;
++}
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* _ASM_X86_SPECIAL_INSNS_H */
+-- 
+2.21.0
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
