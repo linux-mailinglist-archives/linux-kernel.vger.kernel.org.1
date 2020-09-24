@@ -2,140 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B162427726A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:34:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EF127726B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727968AbgIXNeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:34:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45453 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727861AbgIXNeI (ORCPT
+        id S1727977AbgIXNeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727533AbgIXNeR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:34:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600954446;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0qQd56OzMSLcU3rzRhhInn/z9/iX7fFc+lowTpqV1Ek=;
-        b=Q0fn19MDdTJoBWRXWBz+S80D9/fF0tPz1uxGOEAugmdmrzKmKmcIrS9vk852X1aM+9pnDo
-        ylZ/cqnIF3aP2KhpWS9Ed5lYOGxaNLaNRA7dMYZ3Atu1rdkqoP+uNfwF35o8G8+hAB8bwf
-        uQ82nInyQuSCFnGoYQBkdeHWdPmYUS0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-273-JZeW4TubNsa6BfUSyZMOyw-1; Thu, 24 Sep 2020 09:34:01 -0400
-X-MC-Unique: JZeW4TubNsa6BfUSyZMOyw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97FDF10A7AF6;
-        Thu, 24 Sep 2020 13:33:53 +0000 (UTC)
-Received: from krava (ovpn-115-138.ams2.redhat.com [10.36.115.138])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1B02B27C5A;
-        Thu, 24 Sep 2020 13:33:50 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 15:33:49 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 7/7] perf inject: Remove stale build-id processing
-Message-ID: <20200924133349.GC3150401@krava>
-References: <20200923080537.155264-1-namhyung@kernel.org>
- <20200923080537.155264-8-namhyung@kernel.org>
+        Thu, 24 Sep 2020 09:34:17 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5211C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:34:16 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id s205so2756766lja.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:34:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ucsiRNp5Hmy/M31y3Eu3vnrnRbGbKmAl5qmp/RjXrTA=;
+        b=S02vy9Kv3llWRlzvqF+sLjuorHwjd9epvGaI2w+62I2kWh0fjWnUVl+bVyLVpUeXaB
+         FxbaidFIYFX47WFWraTZtKAMoVkKtmG2dW2wqJbAOty6bRlWn8XDox+rzlgZ2PRaL9bJ
+         iAUBU7KgfF1aWo6JaYNQ6/6BqgzdhezeH115RlSzLgNJ49g2iOWJrCTrtFGDgRoIJEcg
+         9WW1rFYlkaKG2ae+vc3pY2lfpVnGMeMsUdCvlMiitPyxku1oTmIPwscQF4qIQEpiA5bs
+         oaNh4/4NYJvohnLhmesYkVrWEvyb8oW7nwAnCb9suq+huLb1gplJtBK1yI5b0+CX9Iw+
+         ewqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ucsiRNp5Hmy/M31y3Eu3vnrnRbGbKmAl5qmp/RjXrTA=;
+        b=dKQXiI7T5Pnj3xs6VsaxJk9Fi9mhOdzoDsMr3njUHT9uDSeWhjuZ9kXIzESwZEGLwG
+         KPXjv5gudp5raW19xD7qPfn69Zmr9/QstaVJANa7UCW4JfLf7H0kHAx9a8yKAejUVCjG
+         HdOgPhMmp202Jr8NdxpBHm+6f66vcNvlnc47vSRJhjPk6+QB+Cp061n5wPVJvPVg/Hyt
+         vjpP4Htk/96BK17wqwaG6Cr8UwZRmwUiHExCy6IXz2h6r3TCmIVGSRZPsDiX0MTRDQDa
+         STJBYNcNjKTpF5gzmcy4yvF8LE7BKmuBzG3ov07PKvZdtV1lQs1fXgcke239/FyX3baB
+         ZdIg==
+X-Gm-Message-State: AOAM533d/TjHeq8ImX4wMs+nl+ye60b8/9a0+aaDaSA3+tv8U/q7IzTj
+        rILCvlOJQEllJ3RV9WdRobHTNVAKxxATg1kTV84=
+X-Google-Smtp-Source: ABdhPJxLbWrllUFAIyhc26p5MBXhkhuwzhhb9AdaoMklO6zQmh50u9jqfejUMeFZa8ILa2Ws4NbrWrrEmNwCmhzF4TM=
+X-Received: by 2002:a2e:9ed5:: with SMTP id h21mr329910ljk.178.1600954455161;
+ Thu, 24 Sep 2020 06:34:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200923080537.155264-8-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20200901144324.1071694-1-maz@kernel.org> <20200901144324.1071694-17-maz@kernel.org>
+ <aa8ff875-bee8-26f8-46b0-df579f2067a7@collabora.com>
+In-Reply-To: <aa8ff875-bee8-26f8-46b0-df579f2067a7@collabora.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 24 Sep 2020 10:34:03 -0300
+Message-ID: <CAOMZO5COBv=JqxjvsNrqc66FeQqdVEd6=cWyy9zhAY=yNKKEvw@mail.gmail.com>
+Subject: Re: [PATCH v3 16/16] ARM: Remove custom IRQ stat accounting
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Saravana Kannan <saravanak@google.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernelci-results@groups.io, Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, kernel-team@android.com,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 05:05:37PM +0900, Namhyung Kim wrote:
-> I think we don't need to call build_id__mark_dso_hit() in the
-> perf_event__repipe_sample() as it's not used by -b option.  In case of
-> the -b option is used, it uses perf_event__inject_buildid() instead.
-> This can remove unnecessary overhead of finding thread/map for each
-> sample event.
-> 
-> Also I suspect HEADER_BUILD_ID feature bit setting since we already
-> generated/injected BUILD_ID event into the output stream.  So this
-> header information seems redundant.  I'm not 100% sure about the
-> auxtrace usage, but it looks like not related to this directly.
-> 
-> And we now have --buildid-all so users can get the same behavior if
-> they want.
-> 
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/builtin-inject.c | 12 ------------
->  1 file changed, 12 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-inject.c b/tools/perf/builtin-inject.c
-> index 500428aaa576..0191d72be7c4 100644
-> --- a/tools/perf/builtin-inject.c
-> +++ b/tools/perf/builtin-inject.c
-> @@ -277,8 +277,6 @@ static int perf_event__repipe_sample(struct perf_tool *tool,
->  		return f(tool, event, sample, evsel, machine);
->  	}
->  
-> -	build_id__mark_dso_hit(tool, event, sample, evsel, machine);
-> -
+Hi Guillaume,
 
-I recalled using simple 'perf inject -i .. -o .. ' to get uncompressed data
-from 'perf record -z' and I though this change will force inject not to store
-all build ids ... but it's happening even without your change ;-)
+On Thu, Sep 24, 2020 at 6:01 AM Guillaume Tucker
+<guillaume.tucker@collabora.com> wrote:
 
-	$ ./perf record ls
-	...
-	[ perf record: Woken up 1 times to write data ]
-	[ perf record: Captured and wrote 0.016 MB perf.data (15 samples) ]
+> This appears to be causing a NULL pointer dereference on
+> beaglebone-black, it got bisected automatically several times.
+> None of the other platforms in the KernelCI labs appears to be
+> affected.
 
-	$ ./perf inject -o perf.data.new -i perf.data
+Actually imx53-qsb is also affected:
+https://storage.kernelci.org/next/master/next-20200924/arm/imx_v6_v7_defconfig/gcc-8/lab-pengutronix/baseline-imx53-qsrb.html
 
-	$ ./perf buildid-list
+kernelci marks it Boot result: PASS though.
 
-	17f4e448cc746582ea1881528deb549f7fdb3fd5 [kernel.kallsyms]
-	b516839521ded07bb1fbd0a0276be9820ee8908e /usr/bin/ls
-	1805c738c8f3ec0f47b7ea09080c28f34d18a82b /usr/lib64/ld-2.31.so
-	f22785ea7e42e8aa9097a567a3cc8ae214cae4b6 [vdso]
-	d278249792061c6b74d1693ca59513be1def13f2 /usr/lib64/libc-2.31.so
+Shouldn't kernelci flag a warning or error instead?
 
-	$ ./perf buildid-list -i perf.data.new
-	f22785ea7e42e8aa9097a567a3cc8ae214cae4b6 [vdso]
-
-jirka
-
-
->  	if (inject->itrace_synth_opts.set && sample->aux_sample.size)
->  		event = perf_inject__cut_auxtrace_sample(inject, event, sample);
->  
-> @@ -767,16 +765,6 @@ static int __cmd_inject(struct perf_inject *inject)
->  		return ret;
->  
->  	if (!data_out->is_pipe) {
-> -		if (inject->build_ids)
-> -			perf_header__set_feat(&session->header,
-> -					      HEADER_BUILD_ID);
-> -		/*
-> -		 * Keep all buildids when there is unprocessed AUX data because
-> -		 * it is not known which ones the AUX trace hits.
-> -		 */
-> -		if (perf_header__has_feat(&session->header, HEADER_BUILD_ID) &&
-> -		    inject->have_auxtrace && !inject->itrace_synth_opts.set)
-> -			dsos__hit_all(session);
->  		/*
->  		 * The AUX areas have been removed and replaced with
->  		 * synthesized hardware events, so clear the feature flag and
-> -- 
-> 2.28.0.681.g6f77f65b4e-goog
-> 
-
+Thanks
