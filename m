@@ -2,204 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FFCC27747C
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF60277473
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728388AbgIXO6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:58:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29421 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728382AbgIXO63 (ORCPT
+        id S1728269AbgIXO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727859AbgIXO6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:58:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600959507;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3FsVVZ/2CXeiMiDnOQGnRlUEYa5V0ZjIHEUV17wU5y0=;
-        b=CVX7E3QaPagS+r+jlnJs/wwzndL2D3BpQsPYK3BynHh4Qtbf8kvrc4CQONunMBW+SvYlEL
-        cqhrHyAkK1nOgS5QS7nbp4wU6AwyQPk/TikhBmayTHDZh0rZ1fWPJ5noAoJzIWYQ73tMzT
-        eDiyAWtDoc5Mp1b7lA1OTQpl/g07wV8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-72-UEvE9EtPOiS63v-GgFcrDg-1; Thu, 24 Sep 2020 10:58:25 -0400
-X-MC-Unique: UEvE9EtPOiS63v-GgFcrDg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B87D1084CA7;
-        Thu, 24 Sep 2020 14:58:24 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.192.160])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 92FEC5576C;
-        Thu, 24 Sep 2020 14:58:19 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] KVM: selftests: test KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
-Date:   Thu, 24 Sep 2020 16:57:57 +0200
-Message-Id: <20200924145757.1035782-8-vkuznets@redhat.com>
-In-Reply-To: <20200924145757.1035782-1-vkuznets@redhat.com>
-References: <20200924145757.1035782-1-vkuznets@redhat.com>
+        Thu, 24 Sep 2020 10:58:02 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C575CC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:58:02 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id f11so2048834qvw.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=h9qkcbMHlRJM7O8sVKuFGurhPQrKy5/mr+PHNIoNebU=;
+        b=oIn1+5/5s08WNPyUD6MubZE3J1pjr8QTozz7D1Fu9YMdM5SimVa96WBNW1m7SSA6y6
+         XYAnNK448hxc1uzLgCYLhOtG6F06YRlu5VY7u9SSEBoOXCn13N/hVF03CjslJEet+aR4
+         tvuEnY9VZLWXvdGIyHqfeyiVxWDfST8zxgwbROTceYneQ/BZgg2H9pHVwzsaZddJHztT
+         2FE9ZxN/OyODmISjbVeIE74PoOAa+OViOReCthQP1tBco4sWf/PSb19yKSVp/EcADJ9R
+         aSWnAF04W+/N0fIRxoz2K8h1NP8QXiw02SoFrEsQF830rTsrZMHA0XnJ+gGIaBiQJc8J
+         Yfww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=h9qkcbMHlRJM7O8sVKuFGurhPQrKy5/mr+PHNIoNebU=;
+        b=ItdCvul3whaSla3HzZGo+Q1ixYGMKB4BxWtw22HbHZBE60Wge3mz48l6r9fOzQo3ze
+         oPs7x5CVrmjsKVTrsbyaD47RlKNJpAOZ4g/kUSkqQv7u+k285om6qnX4XcdSK1UZm3VF
+         TgRLieo3XO+oKiJ9jd3Fqdz+gZ5nGXjYcXUSVd/sj/Q4Nsl5340Vihpd2HT33mMj2fZ9
+         aeKCTg9UoXtmK2lk+pSwiwhcWmOIxYvV+rMOiiR752iitmbOapRUFLcKCfKUavohRVsv
+         4qPWLkl+hqyl2bnEd9/fSTsMtwKJjmLLNiKcPiPYt4WmN2Hnx58TWl8vh1Qi7VHNex1I
+         B2AA==
+X-Gm-Message-State: AOAM533rEuoJGcjPdWU+j89KO+nQdR4olpEKhE1Xq01Cx9TSyXAYsbWP
+        50JQPa5OPH2bfYlnnrWNbcXdPjmtjPP22g==
+X-Google-Smtp-Source: ABdhPJzf8empZZWk1V9NB1DOBKRyZOGNCuGE2w0nPTvSMMtt7DSCh1ikW7S9/rp4FY7tbp8+J76Umw==
+X-Received: by 2002:ad4:518c:: with SMTP id b12mr5919034qvp.38.1600959481701;
+        Thu, 24 Sep 2020 07:58:01 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:3600])
+        by smtp.gmail.com with ESMTPSA id 85sm2141994qkn.64.2020.09.24.07.58.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 07:58:01 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 24 Sep 2020 10:57:58 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Rik van Riel <riel@surriel.com>
+Subject: Re: sched: rq->nr_iowait transiently going negative after the recent
+ p->on_cpu optimization
+Message-ID: <20200924145758.GG4268@mtj.duckdns.org>
+References: <20200918172759.GA4247@mtj.thefacebook.com>
+ <20200924115042.GG2628@hirez.programming.kicks-ass.net>
+ <20200924142751.GF4268@mtj.duckdns.org>
+ <20200924145041.GP2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924145041.GP2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-KVM_GET_SUPPORTED_HV_CPUID is now supported as both vCPU and VM ioctl,
-test that.
+On Thu, Sep 24, 2020 at 04:50:41PM +0200, Peter Zijlstra wrote:
+> > Rik suggested that it'd be sufficient to return 0 on underflow especially
+> > given that 0 is actually the right number to describe the state. So, maybe
+> > that can be a nicer code-wise?
+> 
+> I worry about things where one CPU has a positive value and one or more
+> (other) CPUs have a temporary negative value.
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
- .../testing/selftests/kvm/include/kvm_util.h  |  2 +
- tools/testing/selftests/kvm/lib/kvm_util.c    | 26 +++++++++++
- .../selftests/kvm/x86_64/hyperv_cpuid.c       | 46 +++++++++++++------
- 3 files changed, 59 insertions(+), 15 deletions(-)
+I think it'd make more sense to max'ing them per-cpu as that's the right
+per-cpu state. nr_iowait_cpu() needs that anyway, so maybe the summing
+function can just use nr_iowait_cpu()?
 
-diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-index 919e161dd289..59482e4eb308 100644
---- a/tools/testing/selftests/kvm/include/kvm_util.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util.h
-@@ -112,6 +112,8 @@ void vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
- int _vcpu_ioctl(struct kvm_vm *vm, uint32_t vcpuid, unsigned long ioctl,
- 		void *arg);
- void vm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
-+void kvm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
-+int _kvm_ioctl(struct kvm_vm *vm, unsigned long ioctl, void *arg);
- void vm_mem_region_set_flags(struct kvm_vm *vm, uint32_t slot, uint32_t flags);
- void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa);
- void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot);
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 74776ee228f2..d49e24a15836 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -1518,6 +1518,32 @@ void vm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
- 		cmd, ret, errno, strerror(errno));
- }
- 
-+/*
-+ * KVM system ioctl
-+ *
-+ * Input Args:
-+ *   vm - Virtual Machine
-+ *   cmd - Ioctl number
-+ *   arg - Argument to pass to the ioctl
-+ *
-+ * Return: None
-+ *
-+ * Issues an arbitrary ioctl on a KVM fd.
-+ */
-+void kvm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
-+{
-+	int ret;
-+
-+	ret = ioctl(vm->kvm_fd, cmd, arg);
-+	TEST_ASSERT(ret == 0, "KVM ioctl %lu failed, rc: %i errno: %i (%s)",
-+		cmd, ret, errno, strerror(errno));
-+}
-+
-+int _kvm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
-+{
-+	return ioctl(vm->kvm_fd, cmd, arg);
-+}
-+
- /*
-  * VM Dump
-  *
-diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c b/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
-index 8b24cb2e6a19..414b7587f0f9 100644
---- a/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
-+++ b/tools/testing/selftests/kvm/x86_64/hyperv_cpuid.c
-@@ -102,20 +102,23 @@ static void test_hv_cpuid(struct kvm_cpuid2 *hv_cpuid_entries)
- 
- }
- 
--void test_hv_cpuid_e2big(struct kvm_vm *vm)
-+void test_hv_cpuid_e2big(struct kvm_vm *vm, bool system)
- {
- 	static struct kvm_cpuid2 cpuid = {.nent = 0};
- 	int ret;
- 
--	ret = _vcpu_ioctl(vm, VCPU_ID, KVM_GET_SUPPORTED_HV_CPUID, &cpuid);
-+	if (!system)
-+		ret = _vcpu_ioctl(vm, VCPU_ID, KVM_GET_SUPPORTED_HV_CPUID, &cpuid);
-+	else
-+		ret = _kvm_ioctl(vm, KVM_GET_SUPPORTED_HV_CPUID, &cpuid);
- 
- 	TEST_ASSERT(ret == -1 && errno == E2BIG,
--		    "KVM_GET_SUPPORTED_HV_CPUID didn't fail with -E2BIG when"
--		    " it should have: %d %d", ret, errno);
-+		    "%s KVM_GET_SUPPORTED_HV_CPUID didn't fail with -E2BIG when"
-+		    " it should have: %d %d", system ? "KVM" : "vCPU", ret, errno);
- }
- 
- 
--struct kvm_cpuid2 *kvm_get_supported_hv_cpuid(struct kvm_vm *vm)
-+struct kvm_cpuid2 *kvm_get_supported_hv_cpuid(struct kvm_vm *vm, bool system)
- {
- 	int nent = 20; /* should be enough */
- 	static struct kvm_cpuid2 *cpuid;
-@@ -129,7 +132,10 @@ struct kvm_cpuid2 *kvm_get_supported_hv_cpuid(struct kvm_vm *vm)
- 
- 	cpuid->nent = nent;
- 
--	vcpu_ioctl(vm, VCPU_ID, KVM_GET_SUPPORTED_HV_CPUID, cpuid);
-+	if (!system)
-+		vcpu_ioctl(vm, VCPU_ID, KVM_GET_SUPPORTED_HV_CPUID, cpuid);
-+	else
-+		kvm_ioctl(vm, KVM_GET_SUPPORTED_HV_CPUID, cpuid);
- 
- 	return cpuid;
- }
-@@ -150,22 +156,32 @@ int main(int argc, char *argv[])
- 		exit(KSFT_SKIP);
- 	}
- 
--	for (stage = 0; stage < 2; stage++) {
-+	vm = vm_create_default(VCPU_ID, 0, guest_code);
-+
-+	for (stage = 0; stage < 4; stage++) {
-+		bool do_sys_ioctl = stage > 1;
-+
-+		/* Stages 0/1 test vCPU ioctl, stages 2/3 system ioctl */
-+		if (do_sys_ioctl && !kvm_check_cap(KVM_CAP_SYS_HYPERV_CPUID)) {
-+			print_skip("KVM_CAP_SYS_HYPERV_CPUID not supported");
-+			break;
-+		}
- 
--		vm = vm_create_default(VCPU_ID, 0, guest_code);
- 		switch (stage) {
- 		case 0:
--			test_hv_cpuid_e2big(vm);
--			continue;
-+		case 2:
-+			test_hv_cpuid_e2big(vm, do_sys_ioctl);
-+			break;
- 		case 1:
-+		case 3:
-+			hv_cpuid_entries = kvm_get_supported_hv_cpuid(vm, do_sys_ioctl);
-+			test_hv_cpuid(hv_cpuid_entries);
-+			free(hv_cpuid_entries);
- 			break;
- 		}
--
--		hv_cpuid_entries = kvm_get_supported_hv_cpuid(vm);
--		test_hv_cpuid(hv_cpuid_entries);
--		free(hv_cpuid_entries);
--		kvm_vm_free(vm);
- 	}
- 
-+	kvm_vm_free(vm);
-+
- 	return 0;
- }
+Thanks.
+
 -- 
-2.25.4
-
+tejun
