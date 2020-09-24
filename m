@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EDA276EAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37573276EB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727448AbgIXKZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbgIXKZj (ORCPT
+        id S1727407AbgIXK1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:27:39 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:29046 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727349AbgIXK1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:25:39 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756D1C0613CE;
-        Thu, 24 Sep 2020 03:25:38 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w2so2973799wmi.1;
-        Thu, 24 Sep 2020 03:25:38 -0700 (PDT)
+        Thu, 24 Sep 2020 06:27:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4/7mHE7BxkmccTTH2BLUO+DA7CrohaCzbOjCPDUfgN0=;
-        b=U77b18qoLIwiwEgjDl1y0OmVs0s+KcFyNqBtmJC+gEZsC59CmvhDuUmV9kPsu+nRja
-         AlTM2xqOR+n1UsA8OiD6ll5MsvaXcTYcPn9x59MUz33PbYOZqOFV1zuym/tvbHeEJOrX
-         rS2ebaaHtDwd4Nu+9dZDesyYDFxoMibS30iyrUX5i9cGIcTXddHWgT2+NbveDPYnc3JK
-         9W+hQGyTRosm4EwV/P7bhTE0GADzXO9+FNdUMAl3kCWa/mI7zkMZCvGpPBJnb0kFtl6J
-         5A06+gUmTGe6UKhZA/5Vu00FhyoVokvTJdE72buu6lbnhMjX2jj2CCo8yejjoZUPIpLK
-         eUIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4/7mHE7BxkmccTTH2BLUO+DA7CrohaCzbOjCPDUfgN0=;
-        b=uFf+/GsJtvTa5+hBliwGKj9HmzubY2f0T2UmPGdGeNBsHdiwPa1I0h9ltguY1SrJJD
-         IhOrnCx8Hc2rubpFifP4iIrewmR2ryaC3cSg3OzEQIF+B3dmd9DudEKYHn5ydfUCpNM4
-         l+w1dYf4LnUk2x/wTHaDcSElA4UMnidi8V4GUu/8BIsD5MS7QLNEO2CpJpSqMR/unsxv
-         j3O0Jz35U6svjPbuJ/v90/Rhp8skERGXFqBEtGhM6BVLWajViJqIQXzgIpAqWfZNBMxd
-         RyB7/LGVw4wP37hlCsfmnbNYuno/al4FZz48fQzrwcdrHMMHUpfRhUNZe3CwkcdbQZ0O
-         GCZA==
-X-Gm-Message-State: AOAM533XU1SDBbKXz7hCIsZnj/YPCCOfGoZI4IlIV94vo+7UG+pkP3/y
-        s3UHCxuahPcFcLBSon8aJq8=
-X-Google-Smtp-Source: ABdhPJyhb+PV6AabI5OtSsT0y1M2LOJjr35vXCf598N9AvMGTg3pKW/7E6qXjKSx6r7UnQabmUmiew==
-X-Received: by 2002:a1c:e904:: with SMTP id q4mr4199133wmc.151.1600943137217;
-        Thu, 24 Sep 2020 03:25:37 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id j14sm3209005wrr.66.2020.09.24.03.25.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 03:25:36 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 12:25:34 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com
-Subject: Re: [PATCH 3/3] iommu/tegra-smmu: Allow to group clients in same
- swgroup
-Message-ID: <20200924102534.GI2483160@ulmo>
-References: <20200911071643.17212-1-nicoleotsuka@gmail.com>
- <20200911071643.17212-4-nicoleotsuka@gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1600943259; x=1632479259;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   in-reply-to:content-transfer-encoding;
+  bh=VJUxKkMgAakbT3L/fC0FIlc1ypeBbbtBZnjUiDl52NU=;
+  b=fb5sAyVCrxy+m4pUK3gJZNPiyH7ZBuNt7jXfNRy2TnH4dYY8VsFS/jWh
+   xgo4Z4a9Q7U5+gQx1N+U0cPQXI2s0DMjrOmSBgN/8Nc9DxhMmEErwDHM6
+   h3J7z2L4677ZRxYipY4ur3IMu3p+S568yhS5ko0fs0HOxUAYGisxB8ACX
+   o=;
+X-IronPort-AV: E=Sophos;i="5.77,297,1596499200"; 
+   d="scan'208";a="78889262"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 24 Sep 2020 10:27:37 +0000
+Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id A14B3A1FF9;
+        Thu, 24 Sep 2020 10:27:36 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.244) by
+ EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 24 Sep 2020 10:27:30 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     =?UTF-8?q?Roger=20Pau=20Monn=C3=A9?= <roger.pau@citrix.com>
+CC:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>, <axboe@kernel.dk>,
+        <aliguori@amazon.com>, <amit@kernel.org>, <mheyne@amazon.de>,
+        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] xen-blkback: add a parameter for disabling of persistent grants
+Date:   Thu, 24 Sep 2020 12:27:14 +0200
+Message-ID: <20200924102714.28141-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="r4QXMf6/kyF/FvJJ"
-Content-Disposition: inline
-In-Reply-To: <20200911071643.17212-4-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20200924101344.GN19254@Air-de-Roger>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.160.244]
+X-ClientProxiedBy: EX13D40UWC004.ant.amazon.com (10.43.162.175) To
+ EX13D31EUA004.ant.amazon.com (10.43.165.161)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 24 Sep 2020 12:13:44 +0200 "Roger Pau Monné" <roger.pau@citrix.com> wrote:
 
---r4QXMf6/kyF/FvJJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Wed, Sep 23, 2020 at 04:09:30PM -0400, Konrad Rzeszutek Wilk wrote:
+> > On Tue, Sep 22, 2020 at 09:01:25AM +0200, SeongJae Park wrote:
+> > > From: SeongJae Park <sjpark@amazon.de>
+> > > 
+> > > Persistent grants feature provides high scalability.  On some small
+> > > systems, however, it could incur data copy overhead[1] and thus it is
+> > > required to be disabled.  But, there is no option to disable it.  For
+> > > the reason, this commit adds a module parameter for disabling of the
+> > > feature.
+> > 
+> > Would it be better suited to have it per guest?
+> 
+> I think having a per-backend policy that could be specified at the
+> toolstack level would be nice, but I see that as a further
+> improvement.
 
-On Fri, Sep 11, 2020 at 12:16:43AM -0700, Nicolin Chen wrote:
-> There can be clients using the same swgroup in DT, for example i2c0
-> and i2c1. The current driver will add them to separate IOMMU groups,
-> though it has implemented device_group() callback which is to group
-> devices using different swgroups like DC and DCB.
->=20
-> All clients having the same swgroup should be also added to the same
-> IOMMU group so as to share an asid. Otherwise, the asid register may
-> get overwritten every time a new device is attached.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/iommu/tegra-smmu.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
+Agreed.
 
-Makes sense:
+> 
+> Having a global backend domain policy of whether persistent grants are
+> enabled or not seems desirable, and if someone wants even more fine
+> grained control this change is AFAICT not incompatible with a
+> per-backend option anyway.
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+I think we could extend this design by receiving list of exceptional domains.
+For example, if 'feature_persistent' is True and exceptions list has '123,
+456', domains of domid 123 and 456 will not use persistent grants, and vice
+versa.
 
---r4QXMf6/kyF/FvJJ
-Content-Type: application/pgp-signature; name="signature.asc"
+I could implement this, but... to be honest, I don't really understand the
+needs of the fine-grained control.  AFAIU, the problem is 'scalability' vs
+'data copy overhead'.  So, only small systems would want to turn persistent
+grants off.  In such a small system, why would we need fine-grained control?
+I'm worrying if I would implement and maintain a feature without real use case.
 
------BEGIN PGP SIGNATURE-----
+For the reason, I'd like to suggest to keep this as is for now and expand it
+with the 'exceptions list' idea or something better, if a real use case comes
+out later.
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9sdB4ACgkQ3SOs138+
-s6FXSA/9HImjNheVtwru469lJEW3LBct1GkjgSPN4oFezSxMJgy/vj/YRrTy9Ezd
-X55ZrMV9GkKyXW5Bj9LUrnI8svadFcgn8Lyq19ywPJuDRz9KRwjpNYhsTbHycbDM
-qTaWGh6xzL2RCvRq0LvofEtJBdn972bpZWoBgNNN/obKs76RGEFasx6YhX8MI9L3
-I59OWzZMYraOjbVfiupZ+25wpVEHf2L4ADleLTJjM7SprxZX2wzqpH4k+simc01d
-V1yw1JaQk6YSKKy5+qHUWq9zU2g+j92YhZ38CVsdRcmqOnwljDkvHXSQREIOvBoL
-aGQcGE6F/KPI5G5bl2u6vI0Z+pDd886/zLKAUNThqhsi3CApLfr/r9ZnaUWjE/5O
-G6zEzghEY6lA88dWqQzg4Q0EVpSbJAt2a/QkoN0tdmtaoi0Kv6w2chKnzxU8Ql2s
-uVQd46EKITbnIFxYW713HAyfQ6mCbT0BGUwYhItM1H4du5Sc2x0e2Llv4WhM/7pP
-9vfs1bJjp5ZRhU4zb7ktuypFepunlYIW41lHA1PJkIm+O7kPf+leVUL86JeOjgyo
-142PMzUDPgKFbJa3VpmCerNtVE9+jp25tu0E+nsUvOvZhINvCYxE08sz1fMjn+84
-MKRzue+EB7DjFQefNE7Fww9+GoJ9qjffNunue6EX9QfZIw5Sr8Y=
-=nmeb
------END PGP SIGNATURE-----
 
---r4QXMf6/kyF/FvJJ--
+Thanks,
+SeongJae Park
