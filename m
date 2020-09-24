@@ -2,95 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A559277215
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A82C277217
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbgIXNZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727846AbgIXNZg (ORCPT
+        id S1727984AbgIXNZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:25:47 -0400
+Received: from mailgw02.mediatek.com ([216.200.240.185]:22843 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727846AbgIXNZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:25:36 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B450EC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:25:35 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id l17so3306061edq.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P/tGoQrJpdGYYfUAvw2qVEeVgn4GEtbYMszWw+xnR0k=;
-        b=b4eP8EMIrQcqHXeKCgWPF2pre1/THZMlYelpeGjpX0ITqb5559DvtkCgHzods0pTal
-         VcULZxsFhJc/Ft+rO6NmVvoKAOXSGdKp//Scus8F5EeQX+lQwVTDyvV9QZ2wJg08scbl
-         dX3/JV8Ez9ruuDaX7SlWyy/8qgcNd9DcXvgGygrrp0wo2j55KXK7XDHJxFVIFA2C2en3
-         ka+ax/uxeTAnxWDU7u+VfxO2NWyGqwRg/zDh+PMvalA1N/V6K9RYYg/xPyfJGB5bHpEE
-         2ymoCUAXfFUsBYjjT8OTAccmb1wMnAbU0s+cRSMl4dV11nwLJJ2RoEMx/Tac7Wzh0fGl
-         fn0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P/tGoQrJpdGYYfUAvw2qVEeVgn4GEtbYMszWw+xnR0k=;
-        b=D8HC9HoBUYlsBBrAfdg3jXyRGXWIk+AR3vJcwylzPkZyCT1Cg3FZzbI11HyH3vnGht
-         IFbg2JfiiJ5BoP8yJ0SIYCUAj5NtAKUHV5JxAqFbGAGwpzmedUSFccZvWKAarrskE/AB
-         4huu8It0uj4hQ0bBaj4KCZ4EC9nUPTQJzoOtlZVuINl+a1FSsaCwfsBz0rW7Ioo2d4h0
-         0yLtIS/DmsBWzb0fmjGdSx2oieWhBSd3zQpbagT7E47yoCeghqXxnwv5hHrygMpHV0xl
-         gqLuaJ7kEd0gqJvsMJZDrd7i0hj8MBVIT6+hd6r73Z9oJXbFzJqNRHoTOCgVCveRYq2w
-         AVvQ==
-X-Gm-Message-State: AOAM533iGXDCTMT3s2qtYcFauarfarP9R1XyXB2d8jch5zvw0SMIfeHw
-        BliiXzxk5hpNtjzdNcAK/s1auQO9Spbyu6G8eq9a6A==
-X-Google-Smtp-Source: ABdhPJxHcJJd/t6XJJ5glQNT60CX8Gg5PBlM/2nPfTGKWak5ON1a/oflvMG3lHj80ELgvHkH9h8g0EKqdeZHKRHfWhI=
-X-Received: by 2002:a50:e79c:: with SMTP id b28mr1046419edn.371.1600953934375;
- Thu, 24 Sep 2020 06:25:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200916094952.458003-1-jonathanh@nvidia.com> <20200916094952.458003-3-jonathanh@nvidia.com>
-In-Reply-To: <20200916094952.458003-3-jonathanh@nvidia.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 24 Sep 2020 15:25:23 +0200
-Message-ID: <CAMpxmJX2AndfE6pNEGJnRhGZiH+WStO644nJ_Twq6b-Ksen4OQ@mail.gmail.com>
-Subject: Re: [PATCH V2 2/5] dt-bindings: eeprom: at24: Add label property for AT24
-To:     Jon Hunter <jonathanh@nvidia.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-tegra@vger.kernel.org
+        Thu, 24 Sep 2020 09:25:46 -0400
+X-UUID: b3e13f1d512a445aa0a2469b08f363b8-20200924
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=13CQbbbCVICRMofyq52vrwixbhSdHJNGZxZmv9+sfFk=;
+        b=uKdAiTCcp84WiecPLMb8VJ4qqgSK3b1CbHzaTPHk0YiSpmKIGNFrmX4OcU4sb+/ZcX0SOgBPTo0kaB0+v/DIeCLXJUQltLi9kDrzY2FEaiqj/yMdAE2Y2Tr/219fqF6b9R+x/NBpNNZELXZmqS5Xy5FDbZI9uljg0j0rSUcgsck=;
+X-UUID: b3e13f1d512a445aa0a2469b08f363b8-20200924
+Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
+        (envelope-from <landen.chao@mediatek.com>)
+        (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1637863272; Thu, 24 Sep 2020 05:25:44 -0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 24 Sep 2020 06:25:41 -0700
+Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 24 Sep 2020 21:25:32 +0800
+Message-ID: <1600953934.19244.2.camel@mtksdccf07>
+Subject: Re: [PATCH v2] net: dsa: mt7530: Add some return-value checks
+From:   Landen Chao <landen.chao@mediatek.com>
+To:     Alex Dewar <alex.dewar90@gmail.com>
+CC:     Sean Wang <Sean.Wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
+        "Vivien Didelot" <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Thu, 24 Sep 2020 21:25:34 +0800
+In-Reply-To: <9db38be8-9926-b74b-c860-018486b17f3a@gmail.com>
+References: <1600327978.11746.22.camel@mtksdccf07>
+         <20200919192809.29120-1-alex.dewar90@gmail.com>
+         <1600949604.11746.27.camel@mtksdccf07>
+         <9db38be8-9926-b74b-c860-018486b17f3a@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 11:50 AM Jon Hunter <jonathanh@nvidia.com> wrote:
->
-> Add a label property for the AT24 EEPROM to allow a custom name to be
-> used for identifying the EEPROM on a board. This is useful when there
-> is more than one EEPROM present.
->
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
->  Documentation/devicetree/bindings/eeprom/at24.yaml | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/eeprom/at24.yaml b/Documentation/devicetree/bindings/eeprom/at24.yaml
-> index 4cee72d53318..6edfa705b486 100644
-> --- a/Documentation/devicetree/bindings/eeprom/at24.yaml
-> +++ b/Documentation/devicetree/bindings/eeprom/at24.yaml
-> @@ -114,6 +114,9 @@ properties:
->            - const: renesas,r1ex24128
->            - const: atmel,24c128
->
-> +  label:
-> +    description: Descriptive name of the EEPROM.
-> +
->    reg:
->      maxItems: 1
->
-> --
-> 2.25.1
->
+T24gVGh1LCAyMDIwLTA5LTI0IGF0IDE0OjExICswMTAwLCBBbGV4IERld2FyIHdyb3RlOg0KPiBP
+biAyMDIwLTA5LTI0IDEzOjEzLCBMYW5kZW4gQ2hhbyB3cm90ZToNCj4gPiBIaSBBbGV4LA0KPiA+
+DQo+ID4gVGhhbmtzIGZvciB5b3VyIHBhdGNoLiBCeSBsaW51eC9zY3JpcHRzL2NoZWNrcGF0Y2gu
+cGwNCj4gPg0KPiA+IE9uIFN1biwgMjAyMC0wOS0yMCBhdCAwMzoyOCArMDgwMCwgQWxleCBEZXdh
+ciB3cm90ZToNCj4gPiBbLi5dDQo+ID4+IEBAIC0xNjMxLDkgKzE2MzUsMTEgQEAgbXQ3NTMwX3Nl
+dHVwKHN0cnVjdCBkc2Ffc3dpdGNoICpkcykNCj4gPj4gICAJCW10NzUzMF9ybXcocHJpdiwgTVQ3
+NTMwX1BDUl9QKGkpLCBQQ1JfTUFUUklYX01BU0ssDQo+ID4+ICAgCQkJICAgUENSX01BVFJJWF9D
+TFIpOw0KPiA+PiAgIA0KPiA+PiAtCQlpZiAoZHNhX2lzX2NwdV9wb3J0KGRzLCBpKSkNCj4gPj4g
+LQkJCW10NzUzeF9jcHVfcG9ydF9lbmFibGUoZHMsIGkpOw0KPiA+PiAtCQllbHNlDQo+ID4+ICsJ
+CWlmIChkc2FfaXNfY3B1X3BvcnQoZHMsIGkpKSB7DQo+ID4+ICsJCQlyZXQgPSBtdDc1M3hfY3B1
+X3BvcnRfZW5hYmxlKGRzLCBpKTsNCj4gPj4gKwkJCWlmIChyZXQpDQo+ID4+ICsJCQkJcmV0dXJu
+IHJldDsNCj4gPj4gKwkJfSBlbHNlDQo+ID4+ICAgCQkJbXQ3NTMwX3BvcnRfZGlzYWJsZShkcywg
+aSk7DQo+ID4gQ0hFQ0s6IGJyYWNlcyB7fSBzaG91bGQgYmUgdXNlZCBvbiBhbGwgYXJtcyBvZiB0
+aGlzIHN0YXRlbWVudA0KPiA+IENIRUNLOiBVbmJhbGFuY2VkIGJyYWNlcyBhcm91bmQgZWxzZSBz
+dGF0ZW1lbnQNCj4gPj4gICANCj4gPj4gICAJCS8qIEVuYWJsZSBjb25zaXN0ZW50IGVncmVzcyB0
+YWcgKi8NCj4gPj4gQEAgLTE3ODUsOSArMTc5MSwxMSBAQCBtdDc1MzFfc2V0dXAoc3RydWN0IGRz
+YV9zd2l0Y2ggKmRzKQ0KPiA+PiAgIA0KPiA+PiAgIAkJbXQ3NTMwX3NldChwcml2LCBNVDc1MzFf
+REJHX0NOVChpKSwgTVQ3NTMxX0RJU19DTFIpOw0KPiA+PiAgIA0KPiA+PiAtCQlpZiAoZHNhX2lz
+X2NwdV9wb3J0KGRzLCBpKSkNCj4gPj4gLQkJCW10NzUzeF9jcHVfcG9ydF9lbmFibGUoZHMsIGkp
+Ow0KPiA+PiAtCQllbHNlDQo+ID4+ICsJCWlmIChkc2FfaXNfY3B1X3BvcnQoZHMsIGkpKSB7DQo+
+ID4+ICsJCQlyZXQgPSBtdDc1M3hfY3B1X3BvcnRfZW5hYmxlKGRzLCBpKTsNCj4gPj4gKwkJCWlm
+IChyZXQpDQo+ID4+ICsJCQkJcmV0dXJuIHJldDsNCj4gPj4gKwkJfSBlbHNlDQo+ID4+ICAgCQkJ
+bXQ3NTMwX3BvcnRfZGlzYWJsZShkcywgaSk7DQo+ID4gQ0hFQ0s6IGJyYWNlcyB7fSBzaG91bGQg
+YmUgdXNlZCBvbiBhbGwgYXJtcyBvZiB0aGlzIHN0YXRlbWVudA0KPiA+IENIRUNLOiBVbmJhbGFu
+Y2VkIGJyYWNlcyBhcm91bmQgZWxzZSBzdGF0ZW1lbnQNCj4gPg0KPiA+IFsuLl0NCj4gPiByZWdh
+cmRzIGxhbmRlbg0KPiBIaSBMYW5kZW4sDQo+IA0KPiBTb3JyeSBhYm91dCB0aGlzLi4uIEkgdXN1
+YWxseSBydW4gY2hlY2twYXRjaCBvdmVyIG15IHBhdGNoZXMuIFdvdWxkIHlvdSANCj4gbGlrZSBt
+ZSB0byBzZW5kIGEgc2VwYXJhdGUgZml4IG9yIGEgdjM/DQo+IA0KPiBCZXN0LA0KPiBBbGV4DQpI
+aSBBbGV4LA0KDQpCZWNhdXNlIHYyIGhhcyBub3QgYmVlbiBtZXJnZWQgeWV0LCBjb3VsZCB5b3Ug
+aGVscCB0byBmaXggaXQgaW4gdjM/DQoNCnJlZ2FyZHMgbGFuZGVuDQoNCg==
 
-Queued for v5.10, thanks!
-
-Bartosz
