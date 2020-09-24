@@ -2,124 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5492765E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3D332765E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgIXBbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 21:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
+        id S1726193AbgIXBee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 21:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgIXBbf (ORCPT
+        with ESMTP id S1725208AbgIXBed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 21:31:35 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC82C0613D1;
-        Wed, 23 Sep 2020 18:31:35 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id j7so727170plk.11;
-        Wed, 23 Sep 2020 18:31:35 -0700 (PDT)
+        Wed, 23 Sep 2020 21:34:33 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2D3C0613CE;
+        Wed, 23 Sep 2020 18:34:33 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id j11so2269429ejk.0;
+        Wed, 23 Sep 2020 18:34:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=cK1MHKRYrqYjskSliGEjt6+mSN57/qpKSAsstsuFM24=;
-        b=rD//kS7IeFXd9hF2ed31+EIcIBuTITtO+mRjbhaDBwM4TAXB0MI0PKGGSXDx1NHoJi
-         kcOOEkJ60oO7Hzpbqfnj8g1YCXDxXqBevUzyD/RH8Q9CmarGXcgY4Evj9girgOhSr6Ae
-         cyj09ChE8znNk4N8Qx3oHOIGLbK9ZQmLFOsQmjmWA8xzAgaHD1EQomrQNEe/LzV8HTLB
-         NiuM3k2PY+SbIoR/qPP7UM1YKZE5M5pZOcm5sOSKCmWRq0pEh/k1YXgyDMcEA/oqGI1G
-         kdiHDoUHXryUR8fUp0hGA/F6XqxAC7//3HTxc1oN4f80mtMCIj+xlq7h1DHVIKu4g18E
-         iEgQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BdVDi/8E9qWkSdKxeY/lJ0KoRE68VzIF4q1Pns2xhD4=;
+        b=cchMfWJLbTknIU61451rYND7QC8qYeJgN6egxZppAsXuwTvDsYc8htefTrxT/eSqO2
+         UpbmZvOVIOme+TpfwdjZlHCxpi3/pZ0cFL0T7Cy53lpD+RIIJivxhkE8VFGDITwx1+2G
+         GqQMPHSYce5cwuh3vbcF6Q8rzMquc/XpFaWkWnnti0GdilXS/yHP8J/lGSO9/ThbbeqG
+         ERtZ4fUOdGA25Tjn/USYwtASuI4VqyagxKDF9VZ3QMEgaZN1Af5Xo3f4oIKA1ZVUqrQe
+         /xHhL5Lglc4moV/iF/KCCMYx2F47VucWY1rCPnFkkyUKzs5l38akdbY0/EBCzzC8lau+
+         0FHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=cK1MHKRYrqYjskSliGEjt6+mSN57/qpKSAsstsuFM24=;
-        b=PJc2groKBtUQ1GBTbTYylG5ie3Ayl3TjsFTzo2FQHt1l7dXARd4WEzxMwV56yXMwjW
-         o/lQ4Bh1tuTbsIixDeii2Ypke4BZNy7SQ/9kGEaMoBTj9oXuiVvFex2rSYPPGz9HVN8B
-         cR8lv+qneTxP7XkSxKMbFSegz2hrzyVJF7xOBBrqxFkJaUXaT2IWB8u3CkRet071KP2/
-         gd4ATsnrqIOyiydDhaJzbIXebVCsxAUelsVI1WA/Wuu7mPs22S3nWv1UHfbwIOlFCE/c
-         Rd4nHNFxkQFQEGY72SzsWKhfu0oYxGd1FecE4Sb9TfOY7qk5/x07wsBOMlm7Hbyq8qPp
-         l7Rg==
-X-Gm-Message-State: AOAM531lQ6IdfW7UbK5sdcnL+FLnW0NbjMUCI8foe7iwUei4Fx/of23M
-        7/Vd1vIsRYovNLjD4SkEh4kVynA8m0A=
-X-Google-Smtp-Source: ABdhPJwj6If3BCt+I9dyAdwdKDTg4PKZseGf/Jfv46eNOjjevmvqspHXfp1j6svWXVOATQCGoBbfrQ==
-X-Received: by 2002:a17:902:16b:b029:d2:565e:a70b with SMTP id 98-20020a170902016bb02900d2565ea70bmr2427614plb.42.1600911095117;
-        Wed, 23 Sep 2020 18:31:35 -0700 (PDT)
-Received: from [130.216.45.21] (nmr1-400i.che.auckland.ac.nz. [130.216.45.21])
-        by smtp.gmail.com with ESMTPSA id k4sm849011pfp.189.2020.09.23.18.31.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 23 Sep 2020 18:31:34 -0700 (PDT)
-Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform driver
-To:     Finn Thain <fthain@telegraphics.com.au>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
- <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com>
- <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet>
- <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
- <alpine.LNX.2.23.453.2009160758350.6@nippy.intranet>
- <alpine.LNX.2.23.453.2009240929310.7@nippy.intranet>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <1ae450be-0c26-f9e3-1544-3b58dbbf7e53@gmail.com>
-Date:   Thu, 24 Sep 2020 13:29:21 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BdVDi/8E9qWkSdKxeY/lJ0KoRE68VzIF4q1Pns2xhD4=;
+        b=WTatE0FBzVXzu8Ll87+idsqSOzwJNVNPqNJQq31B8nb4QlIjEnxBKpMCifcNKzs4U+
+         GJ7981db3sWT9vrhi9eRqq3Hp0HcVRbgTou30lhHgtVaD6uBp8t9wlPZvUIi5tUAqwUC
+         5vnzEgWjM3Jf7Ofo+1U2DnHdRDE2Alc0RvGAtXmBoLehtJikKpNdDjznipOBoJcH+qUB
+         60OXMQM+V6Umt55y/ADsf4vgXlr125XZwcalbq+5I/3uzXKdolak7G7KWEDMrutZBrak
+         ioF+bZABn86IvDJODoHjVEQ8tXkL2sDaNU6L2rgdte35NS20zHl+VvrE2UpmrEBOyhlz
+         6Rug==
+X-Gm-Message-State: AOAM533b/jH3jcGM5ldP9cS8QUU6wRBoM1cdcR1j9/yY6DXLCWABl1HT
+        t+p6ie65ALpmrG0kDBu7ocyui8BbGFm5NJcTOnk=
+X-Google-Smtp-Source: ABdhPJzMxMdP4kSFMn/hJnAwQtYoFTQZYIFjGNisG2wS8nogdPXCZQxSXQvjrd6XQufmIDZ0SbrxRnwJ3VNn3PbOR1w=
+X-Received: by 2002:a17:906:390d:: with SMTP id f13mr2326309eje.86.1600911271918;
+ Wed, 23 Sep 2020 18:34:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.23.453.2009240929310.7@nippy.intranet>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20200914104352.2165818-1-drew@beagleboard.org>
+ <CA+7tXii8rwBexgAHeqYsvBywhWLmk-Hf5_VWUU5bQkBREeFcSA@mail.gmail.com>
+ <20200917092004.GA2468349@x1> <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
+ <20200917103942.GA2477958@x1> <20200923065755.GR7101@atomide.com>
+In-Reply-To: <20200923065755.GR7101@atomide.com>
+From:   Trent Piepho <tpiepho@gmail.com>
+Date:   Wed, 23 Sep 2020 18:34:21 -0700
+Message-ID: <CA+7tXigeNhQQVuAu0toZrvBKvMYkDU-8EWTpJR29HLTAMgoOBA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
+ #pinctrl-cells = 2
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Robert Nelson <robertcnelson@gmail.com>,
+        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Christina Quast <cquast@hanoverdisplays.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
-
-On 24/09/20 1:07 PM, Finn Thain wrote:
-> Looking further at the drivers using ide_host_register(), I see that
-> falconide.c is missing a set_drvdata() call, while tx4939ide.c calls
-> set_drvdata() after ide_host_register(). The latter example is not a bug.
+On Tue, Sep 22, 2020 at 11:57 PM Tony Lindgren <tony@atomide.com> wrote:
 >
-> The pattern I used, that is, calling set_drvdata() after ide_host_add(),
-> is actually more popular among IDE drivers than the pattern you suggested,
-> that is, set_drvdata() followed by ide_host_register(). Either way, I
-> don't see any bugs besides the one in falconide.c.
+> Also FYI, folks have also complained for a long time that the pinctrl-single
+> binding mixes mux and conf values while they should be handled separately.
 >
-> Regarding falconide.c, my inclination is to send a fix following the more
-> common pattern (among IDE drivers), as below. I guess that may prompt the
-> subsystem maintainers to make known their views on the style question.
 
-Please do - that is clearly a bug. I must admit I never tried to boot my 
-Falcon off a SCSI partition to test falconide module unload.
+Instead of combining two fields when the dts is generated they are now
+combined when the pinctrl-single driver reads the dts.  Other than
+this detail, the result is the same.  The board dts source is the
+same.  The value programmed into the pinctrl register is the same.
+There is no mechanism currently that can alter that value in any way.
 
-Cheers,
-
-     Michael
-
-
->
-> diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
-> index dbeb2605e5f6e..607c44bc50f1b 100644
-> --- a/drivers/ide/falconide.c
-> +++ b/drivers/ide/falconide.c
-> @@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
->   	if (rc)
->   		goto err_free;
->   
-> +	platform_set_drvdata(pdev, host);
->   	return 0;
->   err_free:
->   	ide_host_free(host);
-> @@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
->   
->   static int falconide_remove(struct platform_device *pdev)
->   {
-> -	struct ide_host *host = dev_get_drvdata(&pdev->dev);
-> +	struct ide_host *host = platform_get_drvdata(pdev);
->   
->   	ide_host_remove(host);
->   
+What does combining them later allow that is not possible now?
