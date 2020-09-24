@@ -2,101 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DF62770B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97B1E2770C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727610AbgIXMOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:14:16 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:56006 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727267AbgIXMOQ (ORCPT
+        id S1727560AbgIXMRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:17:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727267AbgIXMRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:14:16 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08OCEArm071778;
-        Thu, 24 Sep 2020 07:14:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1600949650;
-        bh=Ebm4Jt49V9jdfk1u5fYmECSGaXT/aBA9QSDjJDwEzL0=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=reGeaNefy73+xfyyOj8WFUPb8Dyr3nK+ZES34qB2PuCFbEp00pDlBtrbyI87vx8F8
-         G+TpBu/ekygaCLSRi713UrXBuLXm5PwLfMQyNudvCNjoyDK6QQfGtNrUxg/g6aOZ8U
-         0pAMTGm+PZ+0enTMWhvGePUeD99sh0/31DzFvwg4=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OCEANR128922;
-        Thu, 24 Sep 2020 07:14:10 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Sep 2020 07:14:09 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Sep 2020 07:14:10 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OCE9sZ064855;
-        Thu, 24 Sep 2020 07:14:09 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
-        <devicetree@vger.kernel.org>
-CC:     Nishanth Menon <nm@ti.com>, <robh+dt@kernel.org>, <t-kristo@ti.com>
-Subject: Re: [PATCH v2 0/2] Add support for MMC/SD on j7200-evm
-Date:   Thu, 24 Sep 2020 07:14:08 -0500
-Message-ID: <160094958540.7259.9993811347863300452.b4-ty@ti.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924112644.11076-1-faiz_abbas@ti.com>
-References: <20200924112644.11076-1-faiz_abbas@ti.com>
+        Thu, 24 Sep 2020 08:17:43 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AEAC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:17:43 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id g26so717264ooa.9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7HN/HI4dwoGWhFGZaqsVrimFaGkQhy54n7OCWCnDDtM=;
+        b=dSH8FEbIB4cFd19+AsZS6btZzKrYEzAmPhSb0WCqhiYF36qSv5h8pDfTJbFz+Qxp+j
+         oxN6+UiHZtTkF9oWnbdvAlPloEM5oh9p5+GS7rqslhd3+YniZBsVzX8PaQ9Q2Sf4qVN6
+         hhHA8TQUm1N2J//yMqennU0VH4XKduafoG0DA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7HN/HI4dwoGWhFGZaqsVrimFaGkQhy54n7OCWCnDDtM=;
+        b=i89PRQXs/w1/FSvmTVRAKZpHYLuDzKqNbe0TQwYfs94FSk0k0SNunmfduHbR/581X6
+         rvBlgCkx8MYbc+YlY9as6+DX42xE5yceILyhy+Cu2NGV9WDJPryCPT7duJuI3uyhJhh8
+         pMN9N0E/n/Wo3WWDNKHB3z/2wCeJgqzFdB8p2t8qOYOeNVDkNg2+Y3Jgrt+3hErrpEg+
+         lUwRcypQzdiDjBf50UibLTOOuqCslofEFKOsTLCGrCmKvkXQnA+90EF6gyB+tKUIR/q4
+         OTZTkdxsEoF24w00iuucA5UOVt6etExg3C2DhPfLtrS03xQQYSrGf73luoHqIAiycTI9
+         zy2A==
+X-Gm-Message-State: AOAM531RPa2LtZdPQZ+YaJQpWoCSFyuAPjwvbh+FTRjJrWFXRJ+4NIs8
+        T03L9faCXY5Qk57Zzjglf59GdN7T2pETXMSwDwxrXw==
+X-Google-Smtp-Source: ABdhPJz/V0WNYrr+r6E1miqNu5wyBbxnQTWKTNNcEVyvUVBoTyyd8eXv6ECanpkYGPZ/3EmRuPKhQ7KjKtsVRaMTFVA=
+X-Received: by 2002:a4a:e592:: with SMTP id o18mr3075813oov.28.1600949862219;
+ Thu, 24 Sep 2020 05:17:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <CGME20200924112530eucas1p13af17d649767ed51c619d303392fa1e1@eucas1p1.samsung.com>
+ <7b709254-9412-8473-250c-0c4e006259b3@samsung.com>
+In-Reply-To: <7b709254-9412-8473-250c-0c4e006259b3@samsung.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 24 Sep 2020 14:17:31 +0200
+Message-ID: <CAKMK7uEMXdFQV3rO9fCMYbf52n3DOhyGi-9WBTreeHJkm1+n-Q@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: mark FRAMEBUFFER LAYER as Orphan
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 16:56:42 +0530, Faiz Abbas wrote:
-> The following patches add dt support for MMC/SD on TI's j7200-evm.
-> 
-> Currently, eMMC support upto HS200 speed and SD card supports upto high
-> speed speed mode.
-> 
-> v2:
-> Fixed node names to use mmc@* format
-> Fixed reg address format to align with others in the file
-> 
-> [...]
+On Thu, Sep 24, 2020 at 1:25 PM Bartlomiej Zolnierkiewicz
+<b.zolnierkie@samsung.com> wrote:
+>
+> It has been a fun ride since 2017 but unfortunately I don't have
+> enough time to look after it properly anymore.
+>
+> Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 
-Hi Faiz Abbas,
+Thanks a lot for all the work you put in in picking up patches and
+cleaning up drivers for compile testing! Very much appreciated.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+I think for now we can just leave fbdev in drm-misc, with people
+picking up patches ad-hoc (and maintainers serving as fallbacks).
 
-[1/2] arm64: dts: ti: k3-j7200-main: Add support for MMC/SD controller nodes
-      commit: 7cd03dc78b290400875b6b54e257ba5ea4e810c3
-[2/2] arm64: dts: ti: k3-j7200-common-proc-board: Add support for eMMC and SD card
-      commit: a2178b83ae8f61b2a9fae2aa9a4d4ed2511690a4
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+I guess you'll push this yourself as the last one, for closure and all :-)
+
+Also drm-misc commit rights will stay around for you (except if you
+want to hand that in) so if you have and display/gpu patches you can
+still push them through the usual flow.
+
+Cheers, Daniel
+> ---
+>  MAINTAINERS |    3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+>
+> Index: b/MAINTAINERS
+> ===================================================================
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6894,10 +6894,9 @@ F:       drivers/net/wan/dlci.c
+>  F:     drivers/net/wan/sdla.c
+>
+>  FRAMEBUFFER LAYER
+> -M:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+>  L:     dri-devel@lists.freedesktop.org
+>  L:     linux-fbdev@vger.kernel.org
+> -S:     Maintained
+> +S:     Orphan
+>  Q:     http://patchwork.kernel.org/project/linux-fbdev/list/
+>  T:     git git://anongit.freedesktop.org/drm/drm-misc
+>  F:     Documentation/fb/
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
