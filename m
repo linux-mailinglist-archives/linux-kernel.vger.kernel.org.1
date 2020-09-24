@@ -2,219 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058F72778F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:08:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F682778F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727177AbgIXTIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:08:32 -0400
-Received: from mail.efficios.com ([167.114.26.124]:57764 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgIXTIc (ORCPT
+        id S1728727AbgIXTJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:09:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21444 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727756AbgIXTJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:08:32 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0BD502D74C6;
-        Thu, 24 Sep 2020 15:08:31 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id AWGcBecf2P6b; Thu, 24 Sep 2020 15:08:30 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 786A42D74C5;
-        Thu, 24 Sep 2020 15:08:30 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 786A42D74C5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1600974510;
-        bh=QQ832Ql0B4lOHZSpslyUU8YUFE+Gdy5myHTqnjEwSPY=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=tpavRvlH+3rhDI0+Q1CYUKE4K+SzdLzd6PIkMXUuQHFpVKirqzKRB7qP/EteQpbAx
-         eP5c15bQ8eDJc9jy8PGB4fFHwW9uT6Od3hxA5ErUSdiZ1FzSdfQDS0//rJNPaLAstQ
-         9AtvjK3EvP2zLO2L8xaSJvlsMyffdt1xvxnGzUMQ64wfCGMlczSbkia9U2rP6cf+B1
-         ca3ZU2LJdHXArxEHRkx9lgu/Dbhq+IrwsUbSuS0FmEklCnJ/t8OYY1ZA17kPjpUkt4
-         ABM6XHC2m/MMwYrwfNcf48rSNf/t0rWQcBe8/dfc1+a+Lye7VPY7KRjFgbxD8j6mwG
-         V4xgSD4sLdqNA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id KN9TxhwJ7evq; Thu, 24 Sep 2020 15:08:30 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 611652D7726;
-        Thu, 24 Sep 2020 15:08:30 -0400 (EDT)
-Date:   Thu, 24 Sep 2020 15:08:30 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Message-ID: <166273261.68446.1600974510284.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200924143025.58dc3c1f@gandalf.local.home>
-References: <20200924170928.466191266@goodmis.org> <20200924171846.993048030@goodmis.org> <2006335081.68212.1600969345189.JavaMail.zimbra@efficios.com> <20200924143025.58dc3c1f@gandalf.local.home>
-Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
- enabled in a header
+        Thu, 24 Sep 2020 15:09:48 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600974586;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1xBZCyYKlE5WRUUtzWjHwjgmCmL0z091Bn3uVsUx0eo=;
+        b=NevDrEEF8pQjw21jntcX3nUp0XH0yHxojjlII3cEnBTYXDqsMDsmx/lnX3LG2ZXgWDp1oJ
+        VQXUOnBOWTUP8pMeOKLtLem+agsUVcaKmpBlW3xueK+CBQj6JG57lbgZHwkLC93dD66TP3
+        I3Hz97TUlTEGOKRizIkUE4hXOWVy32M=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-V9gDJwwwM46Cw7RYWDdzCQ-1; Thu, 24 Sep 2020 15:09:42 -0400
+X-MC-Unique: V9gDJwwwM46Cw7RYWDdzCQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C569D425E6;
+        Thu, 24 Sep 2020 19:09:40 +0000 (UTC)
+Received: from [10.10.110.8] (unknown [10.10.110.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1E87610013C1;
+        Thu, 24 Sep 2020 19:09:37 +0000 (UTC)
+Subject: Re: [PATCH V2 1/3] efi: Support for MOK variable config table
+To:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        linux-security-module@vger.kernel.org, andy.shevchenko@gmail.com,
+        James Morris <jmorris@namei.org>, serge@hallyn.com,
+        Kees Cook <keescook@chromium.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Jones <pjones@redhat.com>,
+        David Howells <dhowells@redhat.com>, prarit@redhat.com
+References: <20200905013107.10457-1-lszubowi@redhat.com>
+ <20200905013107.10457-2-lszubowi@redhat.com>
+ <20200921161859.GA544292@rani.riverdale.lan>
+ <CAMj1kXFV7LqsyHM8iM5yQwJX4tKbY=w9vfjERvjyabVDKcbJpA@mail.gmail.com>
+ <20200921165506.GA549786@rani.riverdale.lan>
+From:   Lenny Szubowicz <lszubowi@redhat.com>
+Message-ID: <e01b3f50-20ee-0168-b6ee-4d3d2d4dc13f@redhat.com>
+Date:   Thu, 24 Sep 2020 15:09:36 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200921165506.GA549786@rani.riverdale.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
-Thread-Topic: tracepoints: Add helper to test if tracepoint is enabled in a header
-Thread-Index: sYabWHEckaDFXTKHcpAU36fPALdS1g==
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/21/20 12:55 PM, Arvind Sankar wrote:
+> On Mon, Sep 21, 2020 at 06:27:17PM +0200, Ard Biesheuvel wrote:
+>> On Mon, 21 Sep 2020 at 18:19, Arvind Sankar <nivedita@alum.mit.edu> wrote:
+>>>
+>>> On Fri, Sep 04, 2020 at 09:31:05PM -0400, Lenny Szubowicz wrote:
+>>>> +     /*
+>>>> +      * The EFI MOK config table must fit within a single EFI memory
+>>>> +      * descriptor range.
+>>>> +      */
+>>>> +     err = efi_mem_desc_lookup(efi.mokvar_table, &md);
+>>>> +     if (err) {
+>>>> +             pr_warn("EFI MOKvar config table is not within the EFI memory map\n");
+>>>> +             return;
+>>>> +     }
+>>>> +     end_pa = efi_mem_desc_end(&md);
+>>>> +     if (efi.mokvar_table >= end_pa) {
+>>>> +             pr_err("EFI memory descriptor containing MOKvar config table is invalid\n");
+>>>> +             return;
+>>>> +     }
+>>>
+>>> efi_mem_desc_lookup() can't return success if efi.mokvar_table >= end_pa,
+>>> why check it again?
 
+I agree it's unnecessary and I see that Ard has addressed this in a patch.
 
------ On Sep 24, 2020, at 2:30 PM, rostedt rostedt@goodmis.org wrote:
-
-> On Thu, 24 Sep 2020 13:42:25 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+>>>
+>>>> +     offset_limit = end_pa - efi.mokvar_table;
+>>>> +     /*
+>>>> +      * Validate the MOK config table. Since there is no table header
+>>>> +      * from which we could get the total size of the MOK config table,
+>>>> +      * we compute the total size as we validate each variably sized
+>>>> +      * entry, remapping as necessary.
+>>>> +      */
+>>>> +     while (cur_offset + sizeof(*mokvar_entry) <= offset_limit) {
+>>>> +             mokvar_entry = va + cur_offset;
+>>>> +             map_size_needed = cur_offset + sizeof(*mokvar_entry);
+>>>> +             if (map_size_needed > map_size) {
+>>>> +                     if (va)
+>>>> +                             early_memunmap(va, map_size);
+>>>> +                     /*
+>>>> +                      * Map a little more than the fixed size entry
+>>>> +                      * header, anticipating some data. It's safe to
+>>>> +                      * do so as long as we stay within current memory
+>>>> +                      * descriptor.
+>>>> +                      */
+>>>> +                     map_size = min(map_size_needed + 2*EFI_PAGE_SIZE,
+>>>> +                                    offset_limit);
+>>>> +                     va = early_memremap(efi.mokvar_table, map_size);
+>>>
+>>> Can't we just map the entire region from efi.mokvar_table to end_pa in
+>>> one early_memremap call before the loop and avoid all the remapping
+>>> logic?
+>>>
+>>
+>> I suppose that depends on whether there is a reasonable upper bound on
+>> the size which is guaranteed to be mappable using early_memremap()
+>> (e.g., 128 KB on 32-bit ARM, or 256 KB on other architectures)
 > 
->> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->> > ---
->> > Documentation/trace/tracepoints.rst | 25 ++++++++++++++++++++++
->> > include/linux/tracepoint-defs.h     | 33 +++++++++++++++++++++++++++++
->> > 2 files changed, 58 insertions(+)
->> > 
->> > diff --git a/Documentation/trace/tracepoints.rst
->> > b/Documentation/trace/tracepoints.rst
->> > index 6e3ce3bf3593..833d39ee1c44 100644
->> > --- a/Documentation/trace/tracepoints.rst
->> > +++ b/Documentation/trace/tracepoints.rst
->> > @@ -146,3 +146,28 @@ with jump labels and avoid conditional branches.
->> >       define tracepoints. Check http://lwn.net/Articles/379903,
->> >       http://lwn.net/Articles/381064 and http://lwn.net/Articles/383362
->> >       for a series of articles with more details.
->> > +
->> > +If you require calling a tracepoint from a header file, it is not
->> > +recommended to call one directly or to use the trace_<tracepoint>_enabled()
->> > +function call, as tracepoints in header files can have side effects if a
->> > +header is included from a file that has CREATE_TRACE_POINTS set. Instead,
->> > +include tracepoint-defs.h and use trace_enabled().
->> 
->> Tracepoints per-se have no issues being used from header files. The TRACE_EVENT
->> infrastructure seems to be the cause of this problem. We should fix trace events
->> rather than require all users to use weird work-arounds thorough the kernel code
->> base.
-> 
-> That's like saying "let's solve include hell". Note, in the past there has
-> also been issues with the headers included also having issues including
-> other headers and cause a dependency loop.
+> Ah, sorry, I thought only the number of early mappings was limited, not
+> the size as well. We could still just map the maximum possible
+> (NR_FIX_BTMAPS * PAGE_SIZE), since it will fail anyway if the config
+> table turns out to be bigger than that?
 
-AFAIU, there are a few scenarios we care about here:
+In practice, the loop will only do one or two mappings. That's because of
+two factors.
 
-1) Includes done by tracepoint.h (directly and indirectly). Some additional
-   includes may have crept in and bloated tracepoint.h since its original
-   implementation. We should identify and fix those.
-
-2) Includes done by trace event headers when CREATE_TRACE_POINTS is defined.
-   define_trace.h already takes care of #undef/#define CREATE_TRACE_POINTS to
-   prevent recursion, so it should not be an issue.
-
-3) Includes done by a compile unit after #define CREATE_TRACE_POINTS, but which
-   are not meant to create trace point probes. For this case, requiring to
-   #undef CREATE_TRACE_POINTS after all the relevant headers are included should
-   solve it.
-
-So what additional issues am I missing here ?
-
-> 
-> But the magic of trace events (for both perf and ftrace, sorry if you
-> refused to use it),
-
-I cannot not use it to this day because changes I needed to upstream in order
-to make it useful to me were rejected.
-
-> is that people who add tracepoints do not need to know
-> how tracepoints work. There's no adding of registering of them, or anything
-> else. The formats and everything they record appear in the tracefs file
-> system.
-
-That's all fine by me.
-
-> 
-> How are your trace events created?  All manual, or do you have helper
-> macros.
-
-I suspect you mean LTTng's trace events. Those are created with helper macros
-(LTTNG_TRACEPOINT_EVENT) which have a few improvements over TRACE_EVENT, namely:
-
-- Ability to create arrays of events (because lots of semicolons are removed), removing
-  the need to dynamically register each event at init time,
-- Ability to do pre-filtering of events, before they hit the ring buffer, allowed by
-  combining TP_struct and TP_fast_assign into a single structured TP_FIELDS.
-
-LTTng also has an include pass which uses TRACE_EVENT from the kernel to perform
-tracepoint prototype signature validation of LTTNG_TRACEPOINT_EVENT against TRACE_EVENT
-prototypes.
-
-> Would these be safe if a bunch were included?
-
-Can you elaborate on this question ? I have a hard time figuring out what
-scenario(s) you are after.
+First the code attempts to map a little more than it needs (2*EFI_PAGE_SIZE).
+Secondly, right now only one entry in the MOKvar config table might be quite
+large, i.e. the entry named MoKListRT. It's extremely likely that the header
+of MokListRT entry will be encountered on the first mapping. If that entry
+goes beyond what was originally mapped, then a second mapping will cover all
+the data in that large entry as well as the remaining small entries that might
+follow it.
 
 > 
->> 
->> I am not against the idea of a tracepoint_enabled(tp), but I am against the
->> motivation behind this patch and the new tracepoint user requirements it
->> documents.
+>>
+>>
+>>>> +     if (va)
+>>>> +             early_memunmap(va, map_size);
+>>>> +     if (err) {
+>>>> +             pr_err("EFI MOKvar config table is not valid\n");
+>>>> +             return;
+>>>> +     }
+>>>
+>>> err will never be non-zero here: it was cleared when the
+>>> efi_mem_desc_lookup() was done. I think the initialization of err to
+>>> -EINVAL needs to be moved just prior to the loop.
+>>>
+>>>> +     efi_mem_reserve(efi.mokvar_table, map_size_needed);
+>>>> +     efi_mokvar_table_size = map_size_needed;
+>>>> +}
 > 
-> It removes the open coded code that has been in the kernel for the last 4
-> years.
 
-There are indeed many cases where a tracepoint_enabled() macro makes sense. In
-some situations we encounter in user-space for lttng-ust, there is need to
-prepare data before it is passed as tracepoint arguments. Having this "enabled"
-macros allows to only prepare the data when needed.
-
-> 
->> 
->> > +
->> > +In a C file::
->> > +
->> > +	void do_trace_foo_bar_wrapper(args)
->> > +	{
->> > +		trace_foo_bar(args);
->> > +	}
->> > +
->> > +In the header file::
->> > +
->> > +	DECLEARE_TRACEPOINT(foo_bar);
->> > +
->> > +	static inline void some_inline_function()
->> > +	{
->> > +		[..]
->> > +		if (trace_enabled(foo_bar))
->> 
->> Is it trace_enabled() or tracepoint_enabled() ? There is a mismatch
->> between the commit message/code and the documentation.
-> 
-> Yes, it should be tracepoint_enabled(). Thanks for catching that.
-> 
-> Anyway, this shouldn't affect you in any way, as it's just adding wrappers
-> around locations that have been doing this for years.
-> 
-> If you want, I can change the name to trace_event_enabled() and put the
-> code in trace_events-defs.h instead. Which would simply include
-> tracepoints-defs.h and have the exact same code.
-
-I'm ok with tracepoint_enabled(). However, I would have placed it in tracepoint.h
-rather than tracepoint-defs.h, and we should figure out why people complain that
-tracepoint.h is including headers too eagerly.
-
-Thanks,
-
-Mathieu
-
-> 
-> -- Steve
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
