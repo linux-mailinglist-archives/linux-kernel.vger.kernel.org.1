@@ -2,80 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB98A27729F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:39:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED472772BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728089AbgIXNjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727888AbgIXNja (ORCPT
+        id S1728099AbgIXNke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:40:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32953 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728072AbgIXNkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:39:30 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9105DC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:39:30 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id c18so3836793wrm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:39:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pfqIdita6c/68e2NAo4Uu90/hWr0DYIKt/L27IUDUD8=;
-        b=tgoBMDvkwf7H0OZXkk2mkhIauR+Wst5CQkEvZQ5j2UqhfovQL2vLK536s017HHzsAi
-         vjjHX+9inNnCHrDw2BwHz1g54ZgeeaEnWveVt8YoklWi0bVJI3y3A2sSCc/MGRBZiHBe
-         iRyK/2wBM3y29rdMkz0JrZ3wunnqTsbngTVWFil8gAw3h6eA2ouSVy1Di1EWYkk704RE
-         +RolO85TuYSz9lrFG9n+Ko0SfMDNxRh98HPb2rIm3v9krNGMrfYscA2xwfaSOgcyQtpI
-         qr/k813cTVYaQsRPiZCCk73dim1bZuYE3iHlIZGXxd/sJQb0B/4xGDA4YwbVThMe5lUE
-         kmEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pfqIdita6c/68e2NAo4Uu90/hWr0DYIKt/L27IUDUD8=;
-        b=pN/eu7YE4KF32dAHR2XEiCK1RFnXLw9op2ru6srL7eRcHv6BTQ8nQ9LGo6EyrqT6VH
-         8WaDvnCZeeiF5eeqhRaNfrUvGXCNhW6f1bAmWloA0OBNF1MfVdkpb0drQ4gEC05af92s
-         4tv+kNCzHEV0AuS0PnlRi5VOgRVVwNKUsHzKXZSjobf0ZZtqPDcJ1Y7ZJp5yAqO6p+MI
-         1lwKdVedECiTDTjDxWhBqitR/PUyt7YbhUzkpeCDfovh/EH6NMaOGm0eH60OdAsnsMfx
-         OE25RP/XMvcZuywC/NbCpSmwcfOXzKm65EGy4Cg1GWrvsTs7uADgA2ZCNfhbXecWpFoi
-         2b4A==
-X-Gm-Message-State: AOAM531dPFBV4NcTURNavN+TsL89GQSUtNN28QmHo0dhpnPo6K377hcJ
-        PHLtbfsjYtU+RPD8UYq7rSobgw==
-X-Google-Smtp-Source: ABdhPJywsWYBXZf2D+jFaHHQXUz0+dY7LajwjQZiNSTlT1AIlNxYxWQZc6tfm5+QO22WOg4o0KQPlw==
-X-Received: by 2002:a5d:4151:: with SMTP id c17mr5584996wrq.302.1600954769183;
-        Thu, 24 Sep 2020 06:39:29 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id 2sm3432548wmf.25.2020.09.24.06.39.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 06:39:28 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 14:39:25 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] arm64: rebuild sched domains on invariance status
- changes
-Message-ID: <20200924133925.GC3920949@google.com>
-References: <20200924123937.20938-1-ionela.voinescu@arm.com>
- <20200924123937.20938-4-ionela.voinescu@arm.com>
+        Thu, 24 Sep 2020 09:40:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600954831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYAYqqd7z+BNCAHCjT3gWlmfrOPX+NjKniGPI1/zmmY=;
+        b=OCby7DVfSsKIKrUJcwwYmKMRRMBt6sY7pEmJiI1G0FmAKvjmexbcofNSmM1qb9EuldMIz3
+        f3H+eZiw3KVyUEI730y2pl7ZG8+4DnBdDnsabnx6+Epe6FZ8Dlp88eaeURowmGMfihYDg5
+        EjriH7NsEn38GuQFIFCxgfCeRNKzXK8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-WFyBiUTWPeC4OksGnGVzMg-1; Thu, 24 Sep 2020 09:40:27 -0400
+X-MC-Unique: WFyBiUTWPeC4OksGnGVzMg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 450AD800475;
+        Thu, 24 Sep 2020 13:40:26 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C1A717B7A2;
+        Thu, 24 Sep 2020 13:40:22 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 09:40:22 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, Eric Biggers <ebiggers@google.com>,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
+Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
+ support
+Message-ID: <20200924134021.GA13849@redhat.com>
+References: <20200909234422.76194-1-satyat@google.com>
+ <20200909234422.76194-3-satyat@google.com>
+ <20200924012103.GE10500@redhat.com>
+ <20200924074810.GB1894729@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924123937.20938-4-ionela.voinescu@arm.com>
+In-Reply-To: <20200924074810.GB1894729@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 24 Sep 2020 at 13:39:37 (+0100), Ionela Voinescu wrote:
-> For arm64 this affects the task scheduler behavior which builds its
-> scheduling domain hierarchy well before the late counter-based FI init.
-> During that process it will disable EAS due to its dependency on FI.
+On Thu, Sep 24 2020 at  3:48am -0400,
+Satya Tangirala <satyat@google.com> wrote:
 
-Does it mean we get a warn on every boot, even though this is a
-perfectly normal scenario?
+> On Wed, Sep 23, 2020 at 09:21:03PM -0400, Mike Snitzer wrote:
+> > On Wed, Sep 09 2020 at  7:44pm -0400,
+> > Satya Tangirala <satyat@google.com> wrote:
+> > 
+> > > From: Eric Biggers <ebiggers@google.com>
+> > > 
+> > > Update the device-mapper core to support exposing the inline crypto
+> > > support of the underlying device(s) through the device-mapper device.
+> > > 
+> > > This works by creating a "passthrough keyslot manager" for the dm
+> > > device, which declares support for encryption settings which all
+> > > underlying devices support.  When a supported setting is used, the bio
+> > > cloning code handles cloning the crypto context to the bios for all the
+> > > underlying devices.  When an unsupported setting is used, the blk-crypto
+> > > fallback is used as usual.
+> > > 
+> > > Crypto support on each underlying device is ignored unless the
+> > > corresponding dm target opts into exposing it.  This is needed because
+> > > for inline crypto to semantically operate on the original bio, the data
+> > > must not be transformed by the dm target.  Thus, targets like dm-linear
+> > > can expose crypto support of the underlying device, but targets like
+> > > dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
+> > > 
+> > > When a key is evicted from the dm device, it is evicted from all
+> > > underlying devices.
+> > > 
+> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
+> > > Co-developed-by: Satya Tangirala <satyat@google.com>
+> > > Signed-off-by: Satya Tangirala <satyat@google.com>
+> > > ---
+> > >  block/blk-crypto.c              |  1 +
+> > >  block/keyslot-manager.c         | 34 ++++++++++++
+> > >  drivers/md/dm-core.h            |  4 ++
+> > >  drivers/md/dm-table.c           | 52 +++++++++++++++++++
+> > >  drivers/md/dm.c                 | 92 ++++++++++++++++++++++++++++++++-
+> > >  include/linux/device-mapper.h   |  6 +++
+> > >  include/linux/keyslot-manager.h |  7 +++
+> > >  7 files changed, 195 insertions(+), 1 deletion(-)
+> > > 
 
-Thanks,
-Quentin
+> > > diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
+> > > index c4ef1fceead6..4542050eebfc 100644
+> > > --- a/drivers/md/dm-core.h
+> > > +++ b/drivers/md/dm-core.h
+> > > @@ -12,6 +12,7 @@
+> > >  #include <linux/kthread.h>
+> > >  #include <linux/ktime.h>
+> > >  #include <linux/blk-mq.h>
+> > > +#include <linux/keyslot-manager.h>
+> > >  
+> > >  #include <trace/events/block.h>
+> > >  
+> > > @@ -49,6 +50,9 @@ struct mapped_device {
+> > >  
+> > >  	int numa_node_id;
+> > >  	struct request_queue *queue;
+> > > +#ifdef CONFIG_BLK_INLINE_ENCRYPTION
+> > > +	struct blk_keyslot_manager ksm;
+> > > +#endif
+> > >  
+> > >  	atomic_t holders;
+> > >  	atomic_t open_count;
+> > 
+> > Any reason you placed the ksm member where you did?
+>
+> As in, any reason why it's placed right after the struct request_queue
+> *queue? The ksm is going to be set up in the request_queue and is a part
+> of the request_queue is some sense, so it seemed reasonable to me to
+> group them together....but I don't think there's any reason it *has* to
+> be there, if you think it should be put elsewhere (or maybe I'm
+> misunderstanding your question :) ).
+
+Placing the full struct where you did is highly disruptive to the prior
+care taken to tune alignment of struct members within mapped_device.
+
+Switching to a pointer will be less so, but even still it might be best
+to either find a hole in the struct (not looked recently, but there may
+not be one) or simply put it at the end of the structure.
+
+The pahole utility is very useful for this kind of struct member
+placement, etc.  But it is increasingly unavailable in modern Linux
+distros...
+
+Mike
+
