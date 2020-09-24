@@ -2,138 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17C6277B82
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:09:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB32277B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:13:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbgIXWJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 18:09:26 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:60360 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726280AbgIXWJZ (ORCPT
+        id S1726684AbgIXWNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 18:13:46 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:32818 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgIXWNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 18:09:25 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-33-rUFRHqo6MiC-lQEt20YkRg-1; Thu, 24 Sep 2020 23:09:20 +0100
-X-MC-Unique: rUFRHqo6MiC-lQEt20YkRg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 23:09:19 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 24 Sep 2020 23:09:19 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Dave Jiang' <dave.jiang@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "ashok.raj@intel.com" <ashok.raj@intel.com>,
-        "sanjay.k.kumar@intel.com" <sanjay.k.kumar@intel.com>,
-        "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
-        "kevin.tian@intel.com" <kevin.tian@intel.com>
-CC:     "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v6 2/5] x86/asm: Add enqcmds() to support ENQCMDS
- instruction
-Thread-Topic: [PATCH v6 2/5] x86/asm: Add enqcmds() to support ENQCMDS
- instruction
-Thread-Index: AQHWkpyytHRIYDTNN0W1+DWKJw+VJ6l4WLfg
-Date:   Thu, 24 Sep 2020 22:09:19 +0000
-Message-ID: <c55cedaddf3c4b04936b9879e5d57a45@AcuMS.aculab.com>
-References: <20200924180041.34056-1-dave.jiang@intel.com>
- <20200924180041.34056-3-dave.jiang@intel.com>
-In-Reply-To: <20200924180041.34056-3-dave.jiang@intel.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 24 Sep 2020 18:13:46 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 0D9A61C0BE0; Fri, 25 Sep 2020 00:13:43 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 00:13:42 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, oleg@redhat.com,
+        x86@kernel.org, libffi-discuss@sourceware.org, luto@kernel.org,
+        David.Laight@ACULAB.COM, mark.rutland@arm.com, mic@digikod.net
+Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
+Message-ID: <20200924221342.GB13185@amd>
+References: <20200916150826.5990-1-madvenka@linux.microsoft.com>
+ <87v9gdz01h.fsf@mid.deneb.enyo.de>
+ <96ea02df-4154-5888-1669-f3beeed60b33@linux.microsoft.com>
+ <20200923014616.GA1216401@rani.riverdale.lan>
+ <20200923091125.GB1240819@rani.riverdale.lan>
+ <a742b9cd-4ffb-60e0-63b8-894800009700@linux.microsoft.com>
+ <20200923195147.GA1358246@rani.riverdale.lan>
+ <2ed2becd-49b5-7e76-9836-6a43707f539f@linux.microsoft.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="nVMJ2NtxeReIH9PS"
+Content-Disposition: inline
+In-Reply-To: <2ed2becd-49b5-7e76-9836-6a43707f539f@linux.microsoft.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2ZSBKaWFuZw0KPiBTZW50OiAyNCBTZXB0ZW1iZXIgMjAyMCAxOTowMQ0KPiANCj4g
-Q3VycmVudGx5LCB0aGUgTU9WRElSNjRCIGluc3RydWN0aW9uIGlzIHVzZWQgdG8gYXRvbWljYWxs
-eQ0KPiBzdWJtaXQgNjQtYnl0ZSB3b3JrIGRlc2NyaXB0b3JzIHRvIGRldmljZXMuIEFsdGhvdWdo
-IGl0IGNhbg0KPiBlbmNvdW50ZXIgZXJyb3JzIGxpa2UgZGV2aWNlIHF1ZXVlIGZ1bGwsIGNvbW1h
-bmQgbm90IGFjY2VwdGVkLA0KPiBkZXZpY2Ugbm90IHJlYWR5LCBldGMgd2hlbiB3cml0aW5nIHRv
-IGEgZGV2aWNlIE1NSU8sIE1PVkRJUjY0Qg0KPiBjYW4gbm90IHJlcG9ydCBiYWNrIG9uIGVycm9y
-cyBmcm9tIHRoZSBkZXZpY2UgaXRzZWxmLiBUaGlzDQo+IG1lYW5zIHRoYXQgTU9WRElSNjRCIHVz
-ZXJzIG5lZWQgdG8gc2VwYXJhdGVseSBpbnRlcmFjdCB3aXRoIGENCj4gZGV2aWNlIHRvIHNlZSBp
-ZiBhIGRlc2NyaXB0b3Igd2FzIHN1Y2Nlc3NmdWxseSBxdWV1ZWQsIHdoaWNoDQo+IHNsb3dzIGRv
-d24gZGV2aWNlIGludGVyYWN0aW9ucy4NCj4gDQo+IEVOUUNNRCBhbmQgRU5RQ01EUyBhbHNvIGF0
-b21pY2FsbHkgc3VibWl0IDY0LWJ5dGUgd29yaw0KPiBkZXNjcmlwdG9ycyB0byBkZXZpY2VzLiBC
-dXQsIHRoZXkgKmNhbiogcmVwb3J0IGJhY2sgZXJyb3JzDQo+IGRpcmVjdGx5IGZyb20gdGhlIGRl
-dmljZSwgc3VjaCBhcyBpZiB0aGUgZGV2aWNlIHdhcyBidXN5LA0KPiBvciBkZXZpY2Ugbm90IGVu
-YWJsZWQgb3IgZG9lcyBub3Qgc3VwcG9ydCB0aGUgY29tbWFuZC4gVGhpcw0KPiBpbW1lZGlhdGUg
-ZmVlZGJhY2sgZnJvbSB0aGUgc3VibWlzc2lvbiBpbnN0cnVjdGlvbiBpdHNlbGYNCj4gcmVkdWNl
-cyB0aGUgbnVtYmVyIG9mIGludGVyYWN0aW9ucyB3aXRoIHRoZSBkZXZpY2UgYW5kIGNhbg0KPiBn
-cmVhdGx5IGluY3JlYXNlIGVmZmljaWVuY3kuDQo+IA0KPiBFTlFDTUQgY2FuIGJlIHVzZWQgYXQg
-YW55IHByaXZpbGVnZSBsZXZlbCwgYnV0IGNhbiBlZmZlY3RpdmVseQ0KPiBvbmx5IHN1Ym1pdCB3
-b3JrIG9uIGJlaGFsZiBvZiB0aGUgY3VycmVudCBwcm9jZXNzLiBFTlFDTURTIGlzIGENCj4gcmlu
-ZzAtb25seSBpbnN0cnVjdGlvbiBhbmQgY2FuIGV4cGxpY2l0bHkgc3BlY2lmeSBhIHByb2Nlc3MN
-Cj4gY29udGV4dCBpbnN0ZWFkIG9mIGJlaW5nIHRpZWQgdG8gdGhlIGN1cnJlbnQgcHJvY2VzcyBv
-ciBuZWVkaW5nDQo+IHRvIHJlcHJvZ3JhbSB0aGUgSUEzMl9QQVNJRCBNU1IuDQo+IA0KPiBVc2Ug
-RU5RQ01EUyBmb3Igd29yayBzdWJtaXNzaW9uIHdpdGhpbiB0aGUga2VybmVsIGJlY2F1c2UgYQ0K
-PiBQcm9jZXNzIEFkZHJlc3MgSUQgKFBBU0lEKSBpcyBzZXR1cCB0byB0cmFuc2xhdGUgdGhlIGtl
-cm5lbA0KPiB2aXJ0dWFsIGFkZHJlc3Mgc3BhY2UuIFRoaXMgUEFTSUQgaXMgcHJvdmlkZWQgdG8g
-RU5RQ01EUyBmcm9tDQo+IHRoZSBkZXNjcmlwdG9yIHN0cnVjdHVyZSBzdWJtaXR0ZWQgdG8gdGhl
-IGRldmljZSBhbmQgbm90IHJldHJpZXZlZA0KPiBmcm9tIElBMzJfUEFTSUQgTVNSLCB3aGljaCBp
-cyBzZXR1cCBmb3IgdGhlIGN1cnJlbnQgdXNlciBhZGRyZXNzIHNwYWNlLg0KPiANCj4gU2VlIElu
-dGVsIFNvZnR3YXJlIERldmVsb3BlcuKAmXMgTWFudWFsIGZvciBtb3JlIGluZm9ybWF0aW9uIG9u
-IHRoZQ0KPiBpbnN0cnVjdGlvbnMuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBEYXZlIEppYW5nIDxk
-YXZlLmppYW5nQGludGVsLmNvbT4NCj4gUmV2aWV3ZWQtYnk6IFRvbnkgTHVjayA8dG9ueS5sdWNr
-QGludGVsLmNvbT4NCj4gLS0tDQo+ICBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9zcGVjaWFsX2luc25z
-LmggfCAzNCArKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAxIGZpbGUgY2hhbmdlZCwg
-MzQgaW5zZXJ0aW9ucygrKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2luY2x1ZGUvYXNt
-L3NwZWNpYWxfaW5zbnMuaCBiL2FyY2gveDg2L2luY2x1ZGUvYXNtL3NwZWNpYWxfaW5zbnMuaA0K
-PiBpbmRleCAyMjU4YzdkNmUyODEuLmI0ZDJjZTMwMGM5NCAxMDA2NDQNCj4gLS0tIGEvYXJjaC94
-ODYvaW5jbHVkZS9hc20vc3BlY2lhbF9pbnNucy5oDQo+ICsrKyBiL2FyY2gveDg2L2luY2x1ZGUv
-YXNtL3NwZWNpYWxfaW5zbnMuaA0KPiBAQCAtMjU2LDYgKzI1Niw0MCBAQCBzdGF0aWMgaW5saW5l
-IHZvaWQgbW92ZGlyNjRiKHZvaWQgKmRzdCwgY29uc3Qgdm9pZCAqc3JjKQ0KPiAgCQkgICAgIDog
-ICJtIiAoKl9fc3JjKSwgImEiIChfX2RzdCksICJkIiAoX19zcmMpKTsNCj4gIH0NCj4gDQo+ICsv
-KioNCj4gKyAqIGVucWNtZHMgLSBjb3B5IGEgNTEyIGJpdHMgZGF0YSB1bml0IHRvIHNpbmdsZSBN
-TUlPIGxvY2F0aW9uDQo+ICsgKiBAZHN0OiBkZXN0aW5hdGlvbiwgaW4gTU1JTyBzcGFjZSAobXVz
-dCBiZSA1MTItYml0IGFsaWduZWQpDQo+ICsgKiBAc3JjOiBzb3VyY2UNCj4gKyAqDQo+ICsgKiBU
-aGUgRU5RQ01EUyBpbnN0cnVjdGlvbiBhbGxvd3Mgc29mdHdhcmUgdG8gd3JpdGUgYSA1MTIgYml0
-cyBjb21tYW5kIHRvDQo+ICsgKiBhIDUxMiBiaXRzIGFsaWduZWQgc3BlY2lhbCBNTUlPIHJlZ2lv
-biB0aGF0IHN1cHBvcnRzIHRoZSBpbnN0cnVjdGlvbi4NCj4gKyAqIEEgcmV0dXJuIHN0YXR1cyBp
-cyBsb2FkZWQgaW50byB0aGUgWkYgZmxhZyBpbiB0aGUgUkZMQUdTIHJlZ2lzdGVyLg0KPiArICog
-WkYgPSAwIGVxdWF0ZXMgdG8gc3VjY2VzcywgYW5kIFpGID0gMSBpbmRpY2F0ZXMgcmV0cnkgb3Ig
-ZXJyb3IuDQo+ICsgKg0KPiArICogVGhlIGVucWNtZHMoKSBmdW5jdGlvbiB1c2VzIHRoZSBFTlFD
-TURTIGluc3RydWN0aW9uIHRvIHN1Ym1pdCBkYXRhIGZyb20NCj4gKyAqIGtlcm5lbCBzcGFjZSB0
-byBNTUlPIHNwYWNlLCBpbiBhIHVuaXQgb2YgNTEyIGJpdHMuIE9yZGVyIG9mIGRhdGEgYWNjZXNz
-DQo+ICsgKiBpcyBub3QgZ3VhcmFudGVlZCwgbm9yIGlzIGEgbWVtb3J5IGJhcnJpZXIgcGVyZm9y
-bWVkIGFmdGVyd2FyZHMuIFRoZQ0KPiArICogZnVuY3Rpb24gcmV0dXJucyAwIG9uIHN1Y2Nlc3Mg
-YW5kIC1FQUdBSU4gb24gZmFpbHVyZS4NCj4gKyAqDQo+ICsgKiBXYXJuaW5nOiBEbyBub3QgdXNl
-IHRoaXMgaGVscGVyIHVubGVzcyB5b3VyIGRyaXZlciBoYXMgY2hlY2tlZCB0aGF0IHRoZSBDUFUN
-Cj4gKyAqIGluc3RydWN0aW9uIGlzIHN1cHBvcnRlZCBvbiB0aGUgcGxhdGZvcm0gYW5kIHRoZSBk
-ZXZpY2UgYWNjZXB0cyBFTlFDTURTLg0KPiArICovDQo+ICtzdGF0aWMgaW5saW5lIGludCBlbnFj
-bWRzKHZvaWQgX19pb21lbSAqZHN0LCBjb25zdCB2b2lkICpzcmMpDQo+ICt7DQo+ICsJaW50IHpm
-Ow0KPiArDQo+ICsJLyogRU5RQ01EUyBbcmR4XSwgcmF4ICovDQo+ICsJYXNtIHZvbGF0aWxlKCIu
-Ynl0ZSAweGYzLCAweDBmLCAweDM4LCAweGY4LCAweDAyLCAweDY2LCAweDkwIg0KPiArCQkgICAg
-IENDX1NFVCh6KQ0KPiArCQkgICAgIDogQ0NfT1VUKHopICh6ZikNCj4gKwkJICAgICA6ICJhIiAo
-ZHN0KSwgImQiIChzcmMpKTsNCj4gKwkvKiBTdWJtaXNzaW9uIGZhaWx1cmUgaXMgaW5kaWNhdGVk
-IHZpYSBFRkxBR1MuWkY9MSAqLw0KPiArCWlmICh6ZikNCj4gKwkJcmV0dXJuIC1FQUdBSU47DQo+
-ICsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKw0KDQoNCkRvZXNuJ3QgdGhpcyBuZWVkIGFuICJt
-IiBpbnB1dCBjb25zdHJhaW50IGZvciB0aGUgc291cmNlIGJ1ZmZlci4NCk90aGVyd2lzZSBpZiBp
-dCBpcyBhIGxvY2FsIG9uLXN0YWNrIGJ1ZmZlciB0aGUgY29tcGlsZXINCndpbGwgb3B0aW1pc2Ug
-YXdheSB0aGUgaW5zdHJ1Y3Rpb25zIHRoYXQgd3JpdGUgdG8gaXQuDQoNClRoZSBtaXNzaW5nIG91
-dHB1dCBtZW1vcnkgY29uc3RyYWludCBpcyBsZXNzIG9mIGEgcHJvYmxlbS4NClRoZSBkcml2ZXIg
-bmVlZHMgdG8gYmUgdXNpbmcgYmFycmllcnMgb2YgaXRzIG93bi4NCg0KCURhdmlkDQoNCi0NClJl
-Z2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0
-b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykN
-Cg==
 
+--nVMJ2NtxeReIH9PS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+> PC-relative data referencing
+> ----------------------------
+>=20
+> I agree that the current PC value can be loaded in a GPR using the trick
+> of call, pop on i386.
+>=20
+> Perhaps, on other architectures, we can do similar things. For instance,
+> in architectures that load the return address in a designated register
+> instead of pushing it on the stack, the trampoline could call a leaf func=
+tion
+> that moves the value of that register into data_reg so that at the locati=
+on
+> after the call instruction, the current PC is already loaded in data_reg.
+> SPARC is one example I can think of.
+>=20
+> My take is - if the ISA supports PC-relative data referencing explicitly =
+(like
+> X64 or ARM64), then we can use it. Or, if the ABI specification documents=
+ an
+> approved way to load the PC into a GPR, we can use it.
+>=20
+> Otherwise, using an ABI quirk or a calling convention side effect to load=
+ the
+> PC into a GPR is, IMO, non-standard or non-compliant or non-approved or
+> whatever you want to call it. I would be conservative and not use
+
+ISAs are very well defined, and basically not changing. If you want to
+argue we should not use something, you should have very clear picture
+_why_ it is bad. "Non-standard or non-approved or whatever" just does
+not cut it.
+
+And yes, certain tricks may be seriously slow on modern CPUs, and we
+might want to avoid those. But other than that... you should have
+better argument than "it is non-standard".
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--nVMJ2NtxeReIH9PS
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl9tGhYACgkQMOfwapXb+vJZHwCfU5jKO40qUDcezUI+s8fyyfU7
+zC8An2cC26db1I80i/2GbnoRTakpnf34
+=8gy5
+-----END PGP SIGNATURE-----
+
+--nVMJ2NtxeReIH9PS--
