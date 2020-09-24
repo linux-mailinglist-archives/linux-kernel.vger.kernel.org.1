@@ -2,141 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A3A276AFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4653B276B03
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727128AbgIXHkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:40:22 -0400
-Received: from mail-vi1eur05on2095.outbound.protection.outlook.com ([40.107.21.95]:47585
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726655AbgIXHkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:40:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ESMbszK3UPM9WrFp29LMvuBajsOGX3xaqq5Ww+IWlF3iTWkWP63+7EZz10s8A2LRDEpkjr7otFfJtVc8/sQ7m4Y3HnWTCWdjsBoRppgh33zsM12ecldaGBlRW5pNSDCNl4IV49ycNTbhkwWT8HenP1RR78MtEJcZTwiFH9vaAxyku9JPSl/leMEBBpxa3KoJN2C8JQD9WjqI7yh37TRGT+6pVA9q0k5hicFqgJkTKBygx7ln4MODQbsVmWafcqpXHM3nyxSA70NaxfET3OD2G+MAazdzjzIiiBL4sHaEyKSmru5i6qZc7/jI497aivL7nK8atBBhXNaYkbfk5MeqGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F8ITny2QJnNQ3gEXK15kvwsUC/6DjiHrPCzRQw9Dmsk=;
- b=UTMoIQ2ePVCTt7nWJUYVfBr7xXOZrKI8KdYqRPcUafir7C/S/gLgj0jxOCwiv8me4MvLBgKs7/XK+qq/Se+1rmdqSLve1GgnXgLIL/VZo9ERvL4iGy3Y3L+qa+IIVCuRocKd/3SlJ+MQOymNBgjxHRrLEjg4nPkuVt4fwTCG03vuJhIlolgddu7qcJ3Ip1Er8zJpqF3zE8f2pULFQe4GMuFmz80RrQkZNeKfH/hKS+uciBQRoG6nt8rnFxnrMbdzLOjTrfvrcLnbZig70EfDnZgV62/2gyc8PYXrgx80AO43h4eK0vfb+hbBx3DWjjta+ogvYntKNQUirHvc/JYISQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
- header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F8ITny2QJnNQ3gEXK15kvwsUC/6DjiHrPCzRQw9Dmsk=;
- b=KI1teLAO7oW5FcSiimrNxF9h/gd3NFGrUddUZM+1HFRteCwYVkY1L1LlmCpLpnJuCzz83h6rv0P00RuONMD+qvjcz3FqlNue8Kro+RAJtj16UXv0wx9vII+2Rva1wq6hNz1j8BEM/6UbyJXyxxyo8GhLL6ctJdLHzT/1TbMieJo=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=virtuozzo.com;
-Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
- by AM6PR08MB3335.eurprd08.prod.outlook.com (2603:10a6:209:4c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 24 Sep
- 2020 07:40:18 +0000
-Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
- ([fe80::71e0:46d9:2c06:2322]) by AM6PR08MB4756.eurprd08.prod.outlook.com
- ([fe80::71e0:46d9:2c06:2322%7]) with mapi id 15.20.3391.027; Thu, 24 Sep 2020
- 07:40:18 +0000
-Subject: Re: [PATCH v2] ovl: introduce new "index=nouuid" option for inodes
- index feature
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        overlayfs <linux-unionfs@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200923152308.3389-1-ptikhomirov@virtuozzo.com>
- <CAOQ4uxjxYjRkkB3tFqdZiOwj=2_+Ghzf5AvmptVLQM22K5DWfg@mail.gmail.com>
- <CAOQ4uxhjWsK1dfQu4K8uvRyGeGnFrM6opq32RxMOT4pWdqm+3A@mail.gmail.com>
-From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Message-ID: <1302ac46-f24c-bb49-9fac-6a3db748e57c@virtuozzo.com>
-Date:   Thu, 24 Sep 2020 10:40:16 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-In-Reply-To: <CAOQ4uxhjWsK1dfQu4K8uvRyGeGnFrM6opq32RxMOT4pWdqm+3A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR04CA0114.eurprd04.prod.outlook.com
- (2603:10a6:208:55::19) To AM6PR08MB4756.eurprd08.prod.outlook.com
- (2603:10a6:20b:cd::17)
+        id S1727249AbgIXHkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:40:41 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:33639 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727235AbgIXHkg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:40:36 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08O7eMfE5019868, This message is accepted by code: ctloc85258
+Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08O7eMfE5019868
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 24 Sep 2020 15:40:23 +0800
+Received: from localhost (172.29.40.150) by RSEXMBS01.realsil.com.cn
+ (172.29.17.195) with Microsoft SMTP Server id 15.1.2044.4; Thu, 24 Sep 2020
+ 15:40:22 +0800
+From:   <rui_feng@realsil.com.cn>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <ulf.hansson@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, Rui Feng <rui_feng@realsil.com.cn>
+Subject: [PATCH] mmc: rtsx: Add SD Express mode support for RTS5261
+Date:   Thu, 24 Sep 2020 15:40:21 +0800
+Message-ID: <1600933221-3496-1-git-send-email-rui_feng@realsil.com.cn>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.41] (95.179.127.150) by AM0PR04CA0114.eurprd04.prod.outlook.com (2603:10a6:208:55::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Thu, 24 Sep 2020 07:40:17 +0000
-X-Originating-IP: [95.179.127.150]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b019744-d731-43de-4b1f-08d8605d159e
-X-MS-TrafficTypeDiagnostic: AM6PR08MB3335:
-X-Microsoft-Antispam-PRVS: <AM6PR08MB3335F93C7E9344E8F48A8C49B7390@AM6PR08MB3335.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BKQumXwv5hjhVx/KDfSHziMcxDnhqtI+7I4DMp+En5iBf97+hpCERHxWiR8zEYjcRSfjjUDG77OU6duygRNB69t1GpoThzBO+T0fMfGRt5eeO2UuYjUPCvLWIetSMH0qDwQwwUxMSMBnRUlhSGPRdvNN6aHLj+J2nDZr3CEsCx2o0nNUrCRy7E7Y1OxvYEyG+EzmrCD9903yN07RklpzetIAB7u60a4BXWikXKJZhBAE6otyKyIAHacpH0k4GgEkUwK3py2foEwvTr181kezc+Q0Y48e39CdNqZlQzHAevL/iWhlPE7Tr0uWDDP0w1QdQTfryLNmf8OVFSLWSd2fTgyOL6Pf1a30o0Varx5u/UB9hct5EPJUzpaZCKqu1xNm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(39840400004)(346002)(376002)(136003)(26005)(6486002)(316002)(86362001)(52116002)(16576012)(2906002)(4326008)(36756003)(478600001)(6916009)(31686004)(66556008)(5660300002)(16526019)(186003)(83380400001)(8676002)(54906003)(2616005)(956004)(66946007)(8936002)(53546011)(31696002)(66476007)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: SNxXi6aswnuoTYrU3p8sTaGFttC0YuEiHzkB1ulDUGzV3VhPEGC2BHEkgQTTJv/9E9h+CNLRHNPnKFcH389VdPfabjLYr94ZM/vyVmZSWor08plceprYlRWqKHlEw42NTnuPSYww5hktBorSmHQsz1XMt/6kHO+DcEH1G6mGoGP2j/kmvNMAyRd4x1ROULWguBp6g+XrTdeFg+4sGL0zhiQ8QnzC707eo8LgVKhKF0zISIlrsB8A54eS9VeGfEfynYYaEjbow3RGAoJKQrdjg7KM59IEwaKM49h+3vZdGDJRrIhE/qm47WqdG96+TR1jAQJrpeYfO5Qpc3PRJTrWM5aEol35lfSRPktaDtDZt2OCLdN9U7izLYSkq65sV7/0GJNhBtKQ/4mwm83jf6Uz2hxQhZyRbM7ML3qR0gTv1ypKVJuwLEFE87GMIU1BJy0JAo8o3NlEK03TVj1TzMpzdPiga6/OCeEuFzxWj2mWccPr+aaeVkVJhm1cOhyzUglYeb+B1txMX5LYzbrAZLIvdg3s4WDroDTCnxsiRgineMeBnI+MDQDyx2py74LEyrwOgqYXpWnDJzpZ+Jx6vYgHVDFhZwDvzS09NhkYuUw+1ozPxv2aDRbAyaKkFviNoZExQMNEevdxcvPqKxJQRSIRoA==
-X-OriginatorOrg: virtuozzo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b019744-d731-43de-4b1f-08d8605d159e
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 07:40:18.6014
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mOVUqjmi4QwiAaA6e0MGlixL6mRz0cERwUCAnCh/CCcua0L41OuGCRlrWo9zo71YWNHa/E72bqXIZDhLzRzopVw1VB5QLN58IdwGTeibras=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3335
+Content-Type: text/plain
+X-Originating-IP: [172.29.40.150]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Rui Feng <rui_feng@realsil.com.cn>
 
+RTS5261 support legacy SD mode and SD Express mode.
+In SD7.x, SD association introduce SD Express as a new mode.
+This patch makes RTS5261 support SD Express mode,
+and this patch is based on patch "mmc: core: Initial support
+for SD express card/host" committed by Ulf Hansson.
 
-On 9/23/20 7:36 PM, Amir Goldstein wrote:
->>> @@ -414,7 +415,7 @@ static int ovl_check_origin(struct ovl_fs *ofs, struct dentry *upperdentry,
->>>    * Return 0 on match, -ESTALE on mismatch, < 0 on error.
->>>    */
->>>   static int ovl_verify_fh(struct dentry *dentry, const char *name,
->>> -                        const struct ovl_fh *fh)
->>> +                        const struct ovl_fh *fh, bool nouuid)
->>>   {
->>>          struct ovl_fh *ofh = ovl_get_fh(dentry, name);
->>>          int err = 0;
->>> @@ -425,8 +426,14 @@ static int ovl_verify_fh(struct dentry *dentry, const char *name,
->>>          if (IS_ERR(ofh))
->>>                  return PTR_ERR(ofh);
->>>
->>> -       if (fh->fb.len != ofh->fb.len || memcmp(&fh->fb, &ofh->fb, fh->fb.len))
->>> +       if (fh->fb.len != ofh->fb.len) {
->>>                  err = -ESTALE;
->>> +       } else {
->>> +               if (nouuid && !uuid_equal(&fh->fb.uuid, &ofh->fb.uuid))
->>> +                       ofh->fb.uuid = fh->fb.uuid;
->>> +               if (memcmp(&fh->fb, &ofh->fb, fh->fb.len))
->>> +                       err = -ESTALE;
->>> +       }
->>>
-> 
-> On second thought I am wondering if we should do that differently.
-> If users want to work with index=nouuid, they need to work with it from day 1.
-> index=nouuid should export null uuid in NFS handles and write null uuid
-> in trusted.overlay.origin xattr.
-> 
-> So in ovl_encode_real_fh() you set null uuid and
-> instead of relaxing uuid_equal() in ovl_decode_real_fh()
-> you change it to uuid_is_null().
-> 
-> Do you have a problem with that for Virtuozzo use case?
+Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
+---
+ drivers/misc/cardreader/rts5261.c  |  4 ++
+ drivers/misc/cardreader/rts5261.h  | 23 ------------
+ drivers/misc/cardreader/rtsx_pcr.c |  5 +++
+ drivers/mmc/host/rtsx_pci_sdmmc.c  | 59 ++++++++++++++++++++++++++++++
+ include/linux/rtsx_pci.h           | 28 ++++++++++++++
+ 5 files changed, 96 insertions(+), 23 deletions(-)
 
-Actually we've enabled index=on by default in kernel config in Virtuozzo 
-only in the new update which is not yet released. So probably we can 
-switch to index=nouuid with null uuid in fh.
-
-> 
-> Thanks,
-> Amir.
-> 
-
+diff --git a/drivers/misc/cardreader/rts5261.c b/drivers/misc/cardreader/rts5261.c
+index 471961487ff8..536c90d4fd76 100644
+--- a/drivers/misc/cardreader/rts5261.c
++++ b/drivers/misc/cardreader/rts5261.c
+@@ -738,8 +738,12 @@ void rts5261_init_params(struct rtsx_pcr *pcr)
+ {
+ 	struct rtsx_cr_option *option = &pcr->option;
+ 	struct rtsx_hw_param *hw_param = &pcr->hw_param;
++	u8 val;
+ 
+ 	pcr->extra_caps = EXTRA_CAPS_SD_SDR50 | EXTRA_CAPS_SD_SDR104;
++	rtsx_pci_read_register(pcr, RTS5261_FW_STATUS, &val);
++	if (!(val & RTS5261_EXPRESS_LINK_FAIL_MASK))
++		pcr->extra_caps |= EXTRA_CAPS_SD_EXPRESS;
+ 	pcr->num_slots = 1;
+ 	pcr->ops = &rts5261_pcr_ops;
+ 
+diff --git a/drivers/misc/cardreader/rts5261.h b/drivers/misc/cardreader/rts5261.h
+index ebfdd236a553..8d80f0d5d5d6 100644
+--- a/drivers/misc/cardreader/rts5261.h
++++ b/drivers/misc/cardreader/rts5261.h
+@@ -65,23 +65,6 @@
+ #define RTS5261_FW_EXPRESS_TEST_MASK	(0x01<<0)
+ #define RTS5261_FW_EA_MODE_MASK		(0x01<<5)
+ 
+-/* FW config register */
+-#define RTS5261_FW_CFG0			0xFF54
+-#define RTS5261_FW_ENTER_EXPRESS	(0x01<<0)
+-
+-#define RTS5261_FW_CFG1			0xFF55
+-#define RTS5261_SYS_CLK_SEL_MCU_CLK	(0x01<<7)
+-#define RTS5261_CRC_CLK_SEL_MCU_CLK	(0x01<<6)
+-#define RTS5261_FAKE_MCU_CLOCK_GATING	(0x01<<5)
+-/*MCU_bus_mode_sel: 0=real 8051 1=fake mcu*/
+-#define RTS5261_MCU_BUS_SEL_MASK	(0x01<<4)
+-/*MCU_clock_sel:VerA 00=aux16M 01=aux400K 1x=REFCLK100M*/
+-/*MCU_clock_sel:VerB 00=aux400K 01=aux16M 10=REFCLK100M*/
+-#define RTS5261_MCU_CLOCK_SEL_MASK	(0x03<<2)
+-#define RTS5261_MCU_CLOCK_SEL_16M	(0x01<<2)
+-#define RTS5261_MCU_CLOCK_GATING	(0x01<<1)
+-#define RTS5261_DRIVER_ENABLE_FW	(0x01<<0)
+-
+ /* FW status register */
+ #define RTS5261_FW_STATUS		0xFF56
+ #define RTS5261_EXPRESS_LINK_FAIL_MASK	(0x01<<7)
+@@ -121,12 +104,6 @@
+ #define RTS5261_DV3318_19		(0x04<<4)
+ #define RTS5261_DV3318_33		(0x07<<4)
+ 
+-#define RTS5261_LDO1_CFG0		0xFF72
+-#define RTS5261_LDO1_OCP_THD_MASK	(0x07<<5)
+-#define RTS5261_LDO1_OCP_EN		(0x01<<4)
+-#define RTS5261_LDO1_OCP_LMT_THD_MASK	(0x03<<2)
+-#define RTS5261_LDO1_OCP_LMT_EN		(0x01<<1)
+-
+ /* CRD6603-433 190319 request changed */
+ #define RTS5261_LDO1_OCP_THD_740	(0x00<<5)
+ #define RTS5261_LDO1_OCP_THD_800	(0x01<<5)
+diff --git a/drivers/misc/cardreader/rtsx_pcr.c b/drivers/misc/cardreader/rtsx_pcr.c
+index 37ccc67f4914..6e5c16b4b7d1 100644
+--- a/drivers/misc/cardreader/rtsx_pcr.c
++++ b/drivers/misc/cardreader/rtsx_pcr.c
+@@ -990,6 +990,11 @@ static irqreturn_t rtsx_pci_isr(int irq, void *dev_id)
+ 		} else {
+ 			pcr->card_removed |= SD_EXIST;
+ 			pcr->card_inserted &= ~SD_EXIST;
++			if (PCI_PID(pcr) == PID_5261) {
++				rtsx_pci_write_register(pcr, RTS5261_FW_STATUS,
++					RTS5261_EXPRESS_LINK_FAIL_MASK, 0);
++				pcr->extra_caps |= EXTRA_CAPS_SD_EXPRESS;
++			}
+ 		}
+ 		pcr->dma_error_count = 0;
+ 	}
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index 2763a376b054..efde374a4a5e 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -895,7 +895,9 @@ static int sd_set_bus_width(struct realtek_pci_sdmmc *host,
+ static int sd_power_on(struct realtek_pci_sdmmc *host)
+ {
+ 	struct rtsx_pcr *pcr = host->pcr;
++	struct mmc_host *mmc = host->mmc;
+ 	int err;
++	u32 val;
+ 
+ 	if (host->power_state == SDMMC_POWER_ON)
+ 		return 0;
+@@ -922,6 +924,14 @@ static int sd_power_on(struct realtek_pci_sdmmc *host)
+ 	if (err < 0)
+ 		return err;
+ 
++	if (PCI_PID(pcr) == PID_5261) {
++		val = rtsx_pci_readl(pcr, RTSX_BIPR);
++		if (val & SD_WRITE_PROTECT) {
++			pcr->extra_caps &= ~EXTRA_CAPS_SD_EXPRESS;
++			mmc->caps2 &= ~(MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V);
++		}
++	}
++
+ 	host->power_state = SDMMC_POWER_ON;
+ 	return 0;
+ }
+@@ -1127,6 +1137,8 @@ static int sdmmc_get_cd(struct mmc_host *mmc)
+ 	if (val & SD_EXIST)
+ 		cd = 1;
+ 
++	if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
++		mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
+ 	mutex_unlock(&pcr->pcr_mutex);
+ 
+ 	return cd;
+@@ -1308,6 +1320,50 @@ static int sdmmc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+ 	return err;
+ }
+ 
++static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
++{
++	u32 relink_time, val;
++	struct realtek_pci_sdmmc *host = mmc_priv(mmc);
++	struct rtsx_pcr *pcr = host->pcr;
++
++	/*
++	 * If card has PCIe availability and WP if off,
++	 * reader switch to PCIe mode.
++	 */
++	val = rtsx_pci_readl(pcr, RTSX_BIPR);
++	if (!(val & SD_WRITE_PROTECT)) {
++		/* Set relink_time for changing to PCIe card */
++		relink_time = 0x8FFF;
++
++		rtsx_pci_write_register(pcr, 0xFF01, 0xFF, relink_time);
++		rtsx_pci_write_register(pcr, 0xFF02, 0xFF, relink_time >> 8);
++		rtsx_pci_write_register(pcr, 0xFF03, 0x01, relink_time >> 16);
++
++		rtsx_pci_write_register(pcr, PETXCFG, 0x80, 0x80);
++		rtsx_pci_write_register(pcr, LDO_VCC_CFG0,
++			RTS5261_LDO1_OCP_THD_MASK,
++			pcr->option.sd_800mA_ocp_thd);
++
++		if (pcr->ops->disable_auto_blink)
++			pcr->ops->disable_auto_blink(pcr);
++
++		/* For PCIe/NVMe mode can't enter delink issue */
++		pcr->hw_param.interrupt_en &= ~(SD_INT_EN);
++		rtsx_pci_writel(pcr, RTSX_BIER, pcr->hw_param.interrupt_en);
++
++		rtsx_pci_write_register(pcr, RTS5260_AUTOLOAD_CFG4,
++			RTS5261_AUX_CLK_16M_EN, RTS5261_AUX_CLK_16M_EN);
++		rtsx_pci_write_register(pcr, RTS5261_FW_CFG0,
++			RTS5261_FW_ENTER_EXPRESS, RTS5261_FW_ENTER_EXPRESS);
++		rtsx_pci_write_register(pcr, RTS5261_FW_CFG1,
++			RTS5261_MCU_BUS_SEL_MASK | RTS5261_MCU_CLOCK_SEL_MASK
++			| RTS5261_MCU_CLOCK_GATING | RTS5261_DRIVER_ENABLE_FW,
++			RTS5261_MCU_CLOCK_SEL_16M | RTS5261_MCU_CLOCK_GATING
++			| RTS5261_DRIVER_ENABLE_FW);
++	}
++	return 0;
++}
++
+ static const struct mmc_host_ops realtek_pci_sdmmc_ops = {
+ 	.pre_req = sdmmc_pre_req,
+ 	.post_req = sdmmc_post_req,
+@@ -1317,6 +1373,7 @@ static const struct mmc_host_ops realtek_pci_sdmmc_ops = {
+ 	.get_cd = sdmmc_get_cd,
+ 	.start_signal_voltage_switch = sdmmc_switch_voltage,
+ 	.execute_tuning = sdmmc_execute_tuning,
++	.init_sd_express = sdmmc_init_sd_express,
+ };
+ 
+ static void init_extra_caps(struct realtek_pci_sdmmc *host)
+@@ -1338,6 +1395,8 @@ static void init_extra_caps(struct realtek_pci_sdmmc *host)
+ 		mmc->caps |= MMC_CAP_8_BIT_DATA;
+ 	if (pcr->extra_caps & EXTRA_CAPS_NO_MMC)
+ 		mmc->caps2 |= MMC_CAP2_NO_MMC;
++	if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
++		mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
+ }
+ 
+ static void realtek_init_host(struct realtek_pci_sdmmc *host)
+diff --git a/include/linux/rtsx_pci.h b/include/linux/rtsx_pci.h
+index 745f5e73f99a..cea8147e5992 100644
+--- a/include/linux/rtsx_pci.h
++++ b/include/linux/rtsx_pci.h
+@@ -658,6 +658,24 @@
+ #define   PM_WAKE_EN			0x01
+ #define PM_CTRL4			0xFF47
+ 
++#define RTS5261_FW_CFG0			0xFF54
++#define   RTS5261_FW_ENTER_EXPRESS	(0x01 << 0)
++
++#define RTS5261_FW_CFG1			0xFF55
++#define   RTS5261_SYS_CLK_SEL_MCU_CLK	(0x01 << 7)
++#define   RTS5261_CRC_CLK_SEL_MCU_CLK	(0x01 << 6)
++#define   RTS5261_FAKE_MCU_CLOCK_GATING	(0x01 << 5)
++#define   RTS5261_MCU_BUS_SEL_MASK	(0x01 << 4)
++#define   RTS5261_MCU_BUS_SEL_MASK	(0x01 << 4)
++#define   RTS5261_MCU_CLOCK_SEL_MASK	(0x03 << 2)
++#define   RTS5261_MCU_CLOCK_SEL_16M	(0x01 << 2)
++#define   RTS5261_MCU_CLOCK_GATING	(0x01 << 1)
++#define   RTS5261_DRIVER_ENABLE_FW	(0x01 << 0)
++#define   RTS5261_MCU_CLOCK_SEL_MASK	(0x03 << 2)
++#define   RTS5261_MCU_CLOCK_SEL_16M	(0x01 << 2)
++#define   RTS5261_MCU_CLOCK_GATING	(0x01 << 1)
++#define   RTS5261_DRIVER_ENABLE_FW	(0x01 << 0)
++
+ #define REG_CFG_OOBS_OFF_TIMER 0xFEA6
+ #define REG_CFG_OOBS_ON_TIMER 0xFEA7
+ #define REG_CFG_VCM_ON_TIMER 0xFEA8
+@@ -701,6 +719,13 @@
+ #define   RTS5260_DVCC_TUNE_MASK	0x70
+ #define   RTS5260_DVCC_33		0x70
+ 
++/*RTS5261*/
++#define RTS5261_LDO1_CFG0		0xFF72
++#define   RTS5261_LDO1_OCP_THD_MASK	(0x07 << 5)
++#define   RTS5261_LDO1_OCP_EN		(0x01 << 4)
++#define   RTS5261_LDO1_OCP_LMT_THD_MASK	(0x03 << 2)
++#define   RTS5261_LDO1_OCP_LMT_EN	(0x01 << 1)
++
+ #define LDO_VCC_CFG1			0xFF73
+ #define   LDO_VCC_REF_TUNE_MASK		0x30
+ #define   LDO_VCC_REF_1V2		0x20
+@@ -741,6 +766,8 @@
+ 
+ #define RTS5260_AUTOLOAD_CFG4		0xFF7F
+ #define   RTS5260_MIMO_DISABLE		0x8A
++/*RTS5261*/
++#define   RTS5261_AUX_CLK_16M_EN		(1 << 5)
+ 
+ #define RTS5260_REG_GPIO_CTL0		0xFC1A
+ #define   RTS5260_REG_GPIO_MASK		0x01
+@@ -1191,6 +1218,7 @@ struct rtsx_pcr {
+ #define EXTRA_CAPS_MMC_HS200		(1 << 4)
+ #define EXTRA_CAPS_MMC_8BIT		(1 << 5)
+ #define EXTRA_CAPS_NO_MMC		(1 << 7)
++#define EXTRA_CAPS_SD_EXPRESS		(1 << 8)
+ 	u32				extra_caps;
+ 
+ #define IC_VER_A			0
 -- 
-Best regards, Tikhomirov Pavel
-Software Developer, Virtuozzo.
+2.17.1
+
