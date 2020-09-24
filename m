@@ -2,140 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCAC0277443
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CBE277445
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728283AbgIXOqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60594 "EHLO
+        id S1728305AbgIXOrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727889AbgIXOqj (ORCPT
+        with ESMTP id S1727889AbgIXOrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:46:39 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79145C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:46:39 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id g29so2045849pgl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:46:39 -0700 (PDT)
+        Thu, 24 Sep 2020 10:47:11 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02502C0613CE;
+        Thu, 24 Sep 2020 07:47:11 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id n61so3354208ota.10;
+        Thu, 24 Sep 2020 07:47:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ngNYMfezr0dWUzkw58Hh3Wb5jo5nLokmWQKPqodIyrU=;
-        b=XHqTFZgiCk29xr8xwegNKhHxCVmADiUEzEDgPL2bXRIzQjxD8inoCxpnNs1BMx3VVR
-         Jyp2t/KCc4XFYldQV+hJUfHSrqdF2GBSHP0X3CvQg5cwu2YxFPR61WqwOGJr0cFT4P8P
-         QHEmaQWiHBOeyDGO4Czl5Dvd1jqk+bAQ5+gR5d/QvxeTm6xFxnkmtlc+6ut6D5UY62f8
-         lg/trXDGrv3FVmXe08JRyZP4S0lZNaSQKoMz+Rhy9a0yZeYqmgg49KTSoOP61PTrkfXa
-         xhxUVoVWdBwfUp0w7Pgmi+TRelyKrtasUL7rojrHC3sQzbQOFiJyHeUb4u/fIlExz9cR
-         xeOg==
+         :content-disposition:in-reply-to:user-agent;
+        bh=K1ZZ0pT/WIW6zRbkjcCA32PZ6NuKc6zLQ2bXMQ8ym4U=;
+        b=CvKyj2Wv6mHnggy+SJ7FJ5OSbuEnq7ou8OsQNyH5HIB5jDk6XbTzJa5tUlsRFSTYux
+         EQpyAsiKIHGP7RlNJqYGfNXF9g8sMuhTbXqrFX/NNdyDzA+sZqOgXPr9KuMF690B9m9v
+         2byJyxZUgglw6e4SpRWS1D8XxW0yW3xEGYX4ZJCzqud/r8l6IfLdsB4WpAJT/JBI5pP/
+         uy4jDIyMnfXfmOJO6KsJQ909s+3eO8ri0bifpktad+Xok5dfYLkygtJBEmT0TARt5unU
+         tLb4C2teGO727k7/GPS7+UsRORx05Shw9v308GvLvOo/28rfPzBK8y5ukM9OgjTxhamE
+         WMEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ngNYMfezr0dWUzkw58Hh3Wb5jo5nLokmWQKPqodIyrU=;
-        b=Om1q0BFjsV+M2y5OSCPbYbVD23gdz/3V1r1N1JyWyHl4wacjQgrdS16J3kGyTPGDx7
-         jrorTbKVqoduwrYFUAgjFo1RjJ6sgmFsszNK18vmZuxh3K6xu9tt1je+apgmklQNF7lD
-         kkwRtYrzBUWTLFAYCIE8YmyUUGbVEFHNeb2V2IsYvteGlHFzQd5gVBTz1X0O6vr4QZu2
-         InSFQetDvmlenwMl/j/SM4d2EGG5zCDMcxQ+QSyrkUDEbCl2oP5TKV0iZiLaGtQ4cNR3
-         41+JKzcRpgK9WSISkDaQT4+cXUmVNl+gQEUeIgH6kBZFQXyhhdAc7IBIPwJu+iXxxfQn
-         oY6g==
-X-Gm-Message-State: AOAM532k+g2VwnF56hYrlPZRmmqIUPzfb/BdxUleeNY8nEASkdmicZxi
-        nbzKEDZJLv3L1YTFHDaqH48=
-X-Google-Smtp-Source: ABdhPJz92OnjYH0+E1BO0+DQejxlZgiaUp5sZAuDQC0esaMCiXlNmv+PkK2ECwK18owxmsZ/WydqOA==
-X-Received: by 2002:a62:1d51:0:b029:13e:d13d:a0fc with SMTP id d78-20020a621d510000b029013ed13da0fcmr5137625pfd.24.1600958798980;
-        Thu, 24 Sep 2020 07:46:38 -0700 (PDT)
-Received: from google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id w206sm3300661pfc.1.2020.09.24.07.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 07:46:37 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-Date:   Thu, 24 Sep 2020 23:46:32 +0900
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 4/7] perf inject: Do not load map/dso when injecting
- build-id
-Message-ID: <20200924144632.GA357981@google.com>
-References: <20200923080537.155264-1-namhyung@kernel.org>
- <20200923080537.155264-5-namhyung@kernel.org>
- <20200924130909.GB3150401@krava>
- <CAM9d7ciWQa8rC91nOiak1ephg-+SfFXVkFLtU4H4Snaw2i_pWA@mail.gmail.com>
- <20200924134444.GE3150401@krava>
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=K1ZZ0pT/WIW6zRbkjcCA32PZ6NuKc6zLQ2bXMQ8ym4U=;
+        b=qD8SlWa76jky0D7qA7dj2IQifE79RyjAE77d0JPLhuN79W+AXxlKzBD4ksrZt6S2Ba
+         OfyACUhvy0q37o4FEYYWQ1Vmc55mq+EF6pIRvN/p/btAm3PSScnKYAqCSShKAjPVjVKw
+         lO6iw4VlI+pliTZPCF9B8r7uV729RLZGxwzKL07dP5mETffEAGJ6SI71vSN0+AwA1td/
+         28LAfSt0CeCDEu7CO3L0xW7BPPqsL1Upq8dK2bRBKDFCHqNFNJ2NiYfZguprxaPuxmMK
+         Gn7lVMswchcLx11bYkpVcEiRbnZYhphdo1fPOYGOEPI78QjQLqAXeq2gxii0AiTT4Plu
+         HX8Q==
+X-Gm-Message-State: AOAM531uBHEu/MPV2V81M9MfDsZcKNWQB8zHNQCz+RHeulQhS6c64wkW
+        WEWeK511SFgLLir3jBw42vc+I1PLFW8=
+X-Google-Smtp-Source: ABdhPJz/uE8+tpT+Jr0O8gYcOa/jXMLcC7MBHeMjH9d7Efh4hjJOKY+pJbzBxdpUe7dL21ChOoG8Zg==
+X-Received: by 2002:a05:6830:2104:: with SMTP id i4mr14567otc.266.1600958830385;
+        Thu, 24 Sep 2020 07:47:10 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g21sm921049oos.36.2020.09.24.07.47.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 24 Sep 2020 07:47:09 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 24 Sep 2020 07:47:08 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] hwmon: (adm9240) Use loops to avoid duplicated code
+Message-ID: <20200924144708.GA191738@roeck-us.net>
+References: <20200924085102.15219-1-chris.packham@alliedtelesis.co.nz>
+ <20200924085102.15219-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924134444.GE3150401@krava>
+In-Reply-To: <20200924085102.15219-2-chris.packham@alliedtelesis.co.nz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 03:44:44PM +0200, Jiri Olsa wrote:
-> On Thu, Sep 24, 2020 at 10:20:51PM +0900, Namhyung Kim wrote:
-> > On Thu, Sep 24, 2020 at 10:09 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > >
-> > > On Wed, Sep 23, 2020 at 05:05:34PM +0900, Namhyung Kim wrote:
-> > >
-> > > SNIP
-> > >
-> > > > -static inline int is_no_dso_memory(const char *filename)
-> > > > -{
-> > > > -     return !strncmp(filename, "[stack", 6) ||
-> > > > -            !strncmp(filename, "/SYSV",5)   ||
-> > > > -            !strcmp(filename, "[heap]");
-> > > > -}
-> > > > -
-> > > >  static inline int is_android_lib(const char *filename)
-> > > >  {
-> > > >       return strstarts(filename, "/data/app-lib/") ||
-> > > > @@ -158,7 +143,7 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
-> > > >               int anon, no_dso, vdso, android;
-> > > >
-> > > >               android = is_android_lib(filename);
-> > > > -             anon = is_anon_memory(filename, flags);
-> > > > +             anon = is_anon_memory(filename) || flags & MAP_HUGETLB;
-> > >
-> > > what's the reason to take 'flags & MAP_HUGETLB' out of is_anon_memory?
-> > 
-> > The MAP_HUGETLB is defined in uapi/linux/mman.h and I had trouble
-> > when including the header in the map.h file.
+Hi Chris,
+
+On Thu, Sep 24, 2020 at 08:51:00PM +1200, Chris Packham wrote:
+> Use loops for reading temp_max and initialising FAN_MIN/TEMP_MAX rather
+> than duplicating code.
 > 
-> could you share the error? it might be corner case, but it
-> could bite us in future
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-Sure.
+Series applied (and module tested).
 
-  CC       util/session.o
-In file included from /home/namhyung/project/linux/tools/include/uapi/asm-generic/mman-common-tools.h:5,
-                 from /home/namhyung/project/linux/tools/include/uapi/asm-generic/mman.h:5,
-                 from /home/namhyung/project/linux/tools/arch/x86/include/uapi/asm/mman.h:5,
-                 from /home/namhyung/project/linux/tools/include/uapi/linux/mman.h:5,
-                 from util/map.h:13,
-                 from util/session.c:21:
-/home/namhyung/project/linux/tools/include/uapi/asm-generic/mman-common.h:26: error: "MAP_POPULATE" redefined [-Werror]
-   26 | #define MAP_POPULATE  0x008000 /* populate (prefault) pagetables */
-      | 
-In file included from /usr/include/x86_64-linux-gnu/bits/mman.h:31,
-                 from /usr/include/x86_64-linux-gnu/sys/mman.h:41,
-                 from util/session.c:12:
-/usr/include/x86_64-linux-gnu/bits/mman-map-flags-generic.h:34: note: this is the location of the previous definition
-   34 | # define MAP_POPULATE 0x08000  /* Populate (prefault) pagetables.  */
-      | 
+Thanks a lot for the clean submission.
 
-This is repeated for each macro definitions..
+Guenter
 
-
+> ---
+>  drivers/hwmon/adm9240.c | 24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
 > 
-> also flags are stored just in map not dso so you'd need to
-> add that as arg to dso__inject_build_id
-
-Will do.
-
-Thanks
-Namhyung
+> diff --git a/drivers/hwmon/adm9240.c b/drivers/hwmon/adm9240.c
+> index 496d47490e10..f95dde1b9c7f 100644
+> --- a/drivers/hwmon/adm9240.c
+> +++ b/drivers/hwmon/adm9240.c
+> @@ -223,10 +223,10 @@ static struct adm9240_data *adm9240_update_device(struct device *dev)
+>  			data->fan_min[i] = i2c_smbus_read_byte_data(client,
+>  					ADM9240_REG_FAN_MIN(i));
+>  		}
+> -		data->temp_max[0] = i2c_smbus_read_byte_data(client,
+> -				ADM9240_REG_TEMP_MAX(0));
+> -		data->temp_max[1] = i2c_smbus_read_byte_data(client,
+> -				ADM9240_REG_TEMP_MAX(1));
+> +		for (i = 0; i < 2; i++) {
+> +			data->temp_max[i] = i2c_smbus_read_byte_data(client,
+> +					ADM9240_REG_TEMP_MAX(i));
+> +		}
+>  
+>  		/* read fan divs and 5-bit VID */
+>  		i = i2c_smbus_read_byte_data(client, ADM9240_REG_VID_FAN_DIV);
+> @@ -687,14 +687,14 @@ static void adm9240_init_client(struct i2c_client *client)
+>  			i2c_smbus_write_byte_data(client,
+>  					ADM9240_REG_IN_MAX(i), 255);
+>  		}
+> -		i2c_smbus_write_byte_data(client,
+> -				ADM9240_REG_FAN_MIN(0), 255);
+> -		i2c_smbus_write_byte_data(client,
+> -				ADM9240_REG_FAN_MIN(1), 255);
+> -		i2c_smbus_write_byte_data(client,
+> -				ADM9240_REG_TEMP_MAX(0), 127);
+> -		i2c_smbus_write_byte_data(client,
+> -				ADM9240_REG_TEMP_MAX(1), 127);
+> +		for (i = 0; i < 2; i++) {
+> +			i2c_smbus_write_byte_data(client,
+> +					ADM9240_REG_FAN_MIN(i), 255);
+> +		}
+> +		for (i = 0; i < 2; i++) {
+> +			i2c_smbus_write_byte_data(client,
+> +					ADM9240_REG_TEMP_MAX(i), 127);
+> +		}
+>  
+>  		/* start measurement cycle */
+>  		i2c_smbus_write_byte_data(client, ADM9240_REG_CONFIG, 1);
