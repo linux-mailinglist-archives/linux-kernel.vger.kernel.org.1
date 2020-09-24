@@ -2,99 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2923277B2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46A3277B30
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgIXVl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 17:41:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgIXVl3 (ORCPT
+        id S1726699AbgIXVls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 17:41:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36752 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726185AbgIXVls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 17:41:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B73C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:41:29 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600983687;
+        Thu, 24 Sep 2020 17:41:48 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600983706;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PH7EM+jC9sAvN+hNyU7Ecq4szctd2TEmbXpjLXpwHLk=;
-        b=s9aB8dgH+LEJxttQJWGE11+AGwucCe4uEwpFHGxM5Il9nb81ncN7r8Hx+3OJ4kNyYgM9dO
-        kDfcog9G7Ae/sxkBpu4vLApMbwWN5le+lk70lojuOGsLJL9W9c6CKNvdQeBi3D7xvEu3cQ
-        FOU6VlOqEjjJ5knJS9TSLoCP2sg04q4KZmCPxRcRB/WFQb8j9hv6/jKLOJw0xJ8dXflnix
-        X4/ncxiUBavxFpN/gfRiblq6Sk192R/KgwTsfJX7aKtPEOTLzvHHMMr2igcXsG8uge6sN0
-        byXLKaFRd6o/zeeXaTJuGR7U5fRMTbVuR4LHKBHGLiXrhaCRWJQQiu7ZdRW4rQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600983687;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PH7EM+jC9sAvN+hNyU7Ecq4szctd2TEmbXpjLXpwHLk=;
-        b=vCvDhw1zpzFDJBuOG8UL0KkN9R1JI3ss+WSRGs73GkIopLFT6yj1AwBS6aQnWh9Fqt8jHQ
-        pkn9QBcJV5uqC/CQ==
-To:     Walter Wu <walter-zh.wu@mediatek.com>,
+        bh=g/Xbd+gOY1D7k7S7s+pOd/hTecpIxif1KV3RUcYn5rQ=;
+        b=IiLvEmPeDTaKbhHWbvgdG6iLxIlAOD039pYflmOr6JsXqMfaEr3011qaFzgTuB71W6RnVs
+        jNNrqHPwhhpwkUM1GpQXRmU0GhTeXmDO3k8Ea0vLipm60xosR9E65W8Cv8cU5XWxts6MLA
+        lMw5C+jdeRZwt87BLgxvxl5FOKsA8R0=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-355-1c2RNAABMqSdZhIDNsMeWQ-1; Thu, 24 Sep 2020 17:41:44 -0400
+X-MC-Unique: 1c2RNAABMqSdZhIDNsMeWQ-1
+Received: by mail-wm1-f70.google.com with SMTP id r10so261145wmh.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:41:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=g/Xbd+gOY1D7k7S7s+pOd/hTecpIxif1KV3RUcYn5rQ=;
+        b=jt/JAkQkCQ8Hd00MNgfG+yqAvLBwL3ZKF8zKgFb4UuhzPa+Pe/yck5TaKJKChwL92l
+         wJIEyHU6piGH+OmqHK9x2eDd63fFggJtzkq4T2bnNrOQRA3OAkj1cXIibGp3p5XaMo7i
+         c0MJfyVgt1o7VqqtF41q71FrvKs/l6NqPl3gCzIrobgOPlN6wnwAAPdr+ackAT88EDs4
+         f1XVwRYnUXcj4vetLMFqe/dz0DvN9abL27SKg1HPMrBXbaJmXHwB3HiP2c8z7PKa6BfT
+         FZ+KBWcqcTvTK1BsGa1yBgKzJFG9ACiLSKim+Bkf2Trn1IYAbU0hFGRY7bs46GjPaQJV
+         IPTg==
+X-Gm-Message-State: AOAM530kiFn1RqcJ0hGCiRDCjx8nsR2iL7Om4+LPXTKlUPyX3lZoV5ih
+        J/UyJl/VbTcpnp8+eNXB3Gi+35Q70mBcFqryMb/SfWf+Ta49BfthUok+FGhfL/EMJdgnTy7vu83
+        hQAQKDJWUUan20XnJR14NyYht
+X-Received: by 2002:adf:ff90:: with SMTP id j16mr1019739wrr.105.1600983703597;
+        Thu, 24 Sep 2020 14:41:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwcmOcMLK9ieZTe6UE9SIsXG/tKkkWvHxZX+em+xkUyTPxjCgMj7blLOZyUvF+KwveIZvdq7w==
+X-Received: by 2002:adf:ff90:: with SMTP id j16mr1019712wrr.105.1600983703320;
+        Thu, 24 Sep 2020 14:41:43 -0700 (PDT)
+Received: from localhost.localdomain (p4ff23f51.dip0.t-ipconnect.de. [79.242.63.81])
+        by smtp.gmail.com with ESMTPSA id e13sm490886wre.60.2020.09.24.14.41.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 14:41:42 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v4 11/23] device-dax: Kill dax_kmem_res
+Date:   Thu, 24 Sep 2020 23:41:41 +0200
+Message-Id: <79BEC711-C769-432B-9A50-63C6A3AEB0E3@redhat.com>
+References: <CAPcyv4iQ4VnXMU0+_7rfXwPowgcdoABSFUH4WO_3P9vHtWAzPg@mail.gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Marco Elver <elver@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     kasan-dev@googlegroups.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Walter Wu <walter-zh.wu@mediatek.com>
-Subject: Re: [PATCH v4 1/6] timer: kasan: record timer stack
-In-Reply-To: <20200924040335.30934-1-walter-zh.wu@mediatek.com>
-References: <20200924040335.30934-1-walter-zh.wu@mediatek.com>
-Date:   Thu, 24 Sep 2020 23:41:27 +0200
-Message-ID: <87h7rm97js.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>
+In-Reply-To: <CAPcyv4iQ4VnXMU0+_7rfXwPowgcdoABSFUH4WO_3P9vHtWAzPg@mail.gmail.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+X-Mailer: iPhone Mail (18A373)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24 2020 at 12:03, Walter Wu wrote:
-> When analyze use-after-free or double-free issue, recording the timer
-> stacks is helpful to preserve usage history which potentially gives
-> a hint about the affected code.
->
-> Record the most recent two timer init calls in KASAN which are printed
-> on failure in the KASAN report.
->
-> For timers it has turned out to be useful to record the stack trace
-> of the timer init call.
 
-In which way? And what kind of bug does it catch which cannot be catched
-by existing debug mechanisms already?
 
-> Because if the UAF root cause is in timer init, then user can see
-> KASAN report to get where it is registered and find out the root
-> cause.
+> Am 24.09.2020 um 23:26 schrieb Dan Williams <dan.j.williams@intel.com>:
+>=20
+> =EF=BB=BF[..]
+>>> I'm not suggesting to busy the whole "virtio" range, just the portion
+>>> that's about to be passed to add_memory_driver_managed().
+>>=20
+>> I'm afraid I don't get your point. For virtio-mem:
+>>=20
+>> Before:
+>>=20
+>> 1. Create virtio0 container resource
+>>=20
+>> 2. (somewhen in the future) add_memory_driver_managed()
+>> - Create resource (System RAM (virtio_mem)), marking it busy/driver
+>>   managed
+>>=20
+>> After:
+>>=20
+>> 1. Create virtio0 container resource
+>>=20
+>> 2. (somewhen in the future) Create resource (System RAM (virtio_mem)),
+>>   marking it busy/driver managed
+>> 3. add_memory_driver_managed()
+>>=20
+>> Not helpful or simpler IMHO.
+>=20
+> The concern I'm trying to address is the theoretical race window and
+> layering violation in this sequence in the kmem driver:
+>=20
+> 1/ res =3D request_mem_region(...);
+> 2/ res->flags =3D IORESOURCE_MEM;
+> 3/ add_memory_driver_managed();
+>=20
+> Between 2/ and 3/ something can race and think that it owns the
+> region. Do I think it will happen in practice, no, but it's still a
+> pattern that deserves come cleanup.
 
-What? If the UAF root cause is in timer init, then registering it after
-using it in that very same function is pretty pointless.
+I think in that unlikely event (rather impossible), add_memory_driver_manage=
+d() should fail, detecting a conflicting (busy) resource. Not sure what will=
+ happen next ( and did not double-check).
 
-> It don't need to enable DEBUG_OBJECTS_TIMERS, but they have a chance
-> to find out the root cause.
+But yeah, the way the BUSY bit is cleared here is wrong - simply overwriting=
+ other bits. And it would be even better if we could avoid manually messing w=
+ith flags here.
+>=20
 
-There is a lot of handwaving how useful this is, but TBH I don't see the
-value at all.
-
-DEBUG_OBJECTS_TIMERS does a lot more than crashing on UAF. If KASAN
-provides additional value over DEBUG_OBJECTS_TIMERS then spell it out,
-but just saying that you don't need to enable DEBUG_OBJECTS_TIMERS is
-not making an argument for that change.
-
-Try again please.
-
-Thanks,
-
-        tglx
