@@ -2,170 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C43277196
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F33327719A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727999AbgIXMvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727872AbgIXMu7 (ORCPT
+        id S1727872AbgIXMvN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 08:51:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56120 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727874AbgIXMvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:50:59 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FFDC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:50:59 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id m17so3188109ioo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yci97FVNoqLlRiH8ruEJ8twEw2eGRL1tijxr6XUkGBI=;
-        b=JHElf2PWOjGwZ2uGqH7qobKJsX+ZvpW9hBbaturH0ymHl3jqQXKYGjzEjtMjRa3HE8
-         z4LTPsAm2BVQe4Fpb+b+3kkRvex1/8a8QSb4hXcdZdo61FeCdyA4ZJYldevS5XEtWH4K
-         yQdu2NmvSA1oNvP2CpbjmDw4PMCl1cNaotJ0vdWvwtOtGvPKWsJKM/PhWl6R8jPgRwHV
-         cvAPl56Hx5QGJ1K+1lB2iARhS0XCZM02Lm0g2y+QDu2flTcBWp/KH/IplJMl393jqB4D
-         MI2JCMBT25qIeN5e93GN9vttRCrrkb0yR8TWyCshVOJ99lk4owc9yo+sUasPbPVEuFM5
-         wQNg==
+        Thu, 24 Sep 2020 08:51:12 -0400
+Received: from mail-pf1-f199.google.com ([209.85.210.199])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kLQiL-0003vU-Eo
+        for linux-kernel@vger.kernel.org; Thu, 24 Sep 2020 12:51:09 +0000
+Received: by mail-pf1-f199.google.com with SMTP id s204so1762347pfs.18
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:51:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yci97FVNoqLlRiH8ruEJ8twEw2eGRL1tijxr6XUkGBI=;
-        b=CPifVx7hZpAOuXE0jWaF754lfiqDBqnR81gwrwxc8jw6kW3EdU0zUW8b2PKhCkoUHD
-         szD8I8XZq49/0z01OhgbiCa+U9fwNdcQUEgxVP4Nqo9Zphxb1fKhlr5zs9dnx4sA7Yte
-         D+8ggoWx0q4DIOMHtY/dantCBTctgfYhazJ3hbsrZI0JnesF0pZ0eH5D2G3BVLFH7+L/
-         tV513uoeXmu/BC5RbXwHMhK6qpEVYVxwlZW98AOSo5kL7USgzTcZqUv7bTlf+VJSqBRS
-         pmotblHDAnzaoK8a8QTqNE2zryB80nO3TT0KGvduzZXr+Vg1c5FwJ7/txzkOc7UuZFtj
-         RYVw==
-X-Gm-Message-State: AOAM533P6ghxL7ihAA5I23kHRHaHMxR7auhCaOt6PQQENXDPoqcBEZ8i
-        ElaFtcIMz1df64eYOG3zSCrR9w==
-X-Google-Smtp-Source: ABdhPJzaged4vDsro/WE+/3g9Zsw+yRfl5m3gs3sYiODiGd7MU1eY5SZdtkuu865SPBj3w6YjL19yQ==
-X-Received: by 2002:a6b:7c07:: with SMTP id m7mr3226609iok.32.1600951858531;
-        Thu, 24 Sep 2020 05:50:58 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id l131sm1355977ioa.31.2020.09.24.05.50.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 05:50:58 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH 1/3] [PATCH] staging: greybus: fix warnings
- about endianness detected by sparse
-To:     Coiby Xu <coiby.xu@gmail.com>, devel@driverdev.osuosl.org
-Cc:     Alex Elder <elder@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20200924102039.43895-1-coiby.xu@gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <3fda9226-6f6f-6c5f-aa02-c9047a3d2dce@linaro.org>
-Date:   Thu, 24 Sep 2020 07:50:57 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200924102039.43895-1-coiby.xu@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=DjILAW2W1Nia4thAbmZLofAgJjNgLzZMs6DEDIxBnIo=;
+        b=lb1Vl7c/pd62I2GEXhxKEnzjMr/UOb67mcLUgbNX2FC6u9EBXQwYzqDg9iNti9lBb0
+         hOPND9AreQcQO/RfLEwsELaXn7KT+S0kDPkg+zLQSuz2UDhwrGfK3X+3UczK193SNUUR
+         ZLDc7Xy+hqMnH2yQMvb34IZIvarOrkkubrRANqyJioxafI72RcC4EFaouZ2xliNSYAkK
+         72hpO5JsCbA6HGyfTM5w+CIu4RrkGYbwwVi0etwOD7JJfdQFTwtR505C4PHgPxCTCtl8
+         LZ/viVh6onhQVuf80ArZoKKyDpC1LG1wWz7RB+57leFIW+1IC/VXp7hpOznUnMWpfjVU
+         irSQ==
+X-Gm-Message-State: AOAM532q9YyywkwmyoPuY0vrFzIEbbGwu0njhGFSjhAcDBGmtKiFjvJA
+        LKjki4I29TMnjI1WN7ldhmWzjS1ZiubitPnO9EzJ0Jt5GCsYnhdludDPwWxJ5cLNYypfDRfq/u7
+        gC58X4ROVYdwZpEylY2Ei3JY4faDJ2H++5Uu1eAqaUQ==
+X-Received: by 2002:a17:902:b109:b029:d1:e5e7:be53 with SMTP id q9-20020a170902b109b02900d1e5e7be53mr4459777plr.45.1600951867655;
+        Thu, 24 Sep 2020 05:51:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy+Y5i1WCdrHedy2G1MLAQKaJqLzvRJx54jTzBEz2xfl0cI8jcWhte7k+YO7+uWHFPAIn3tqQ==
+X-Received: by 2002:a17:902:b109:b029:d1:e5e7:be53 with SMTP id q9-20020a170902b109b02900d1e5e7be53mr4459743plr.45.1600951867169;
+        Thu, 24 Sep 2020 05:51:07 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id y4sm2879537pgl.67.2020.09.24.05.51.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 24 Sep 2020 05:51:06 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] e1000e: Power cycle phy on PM resume
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <20200923153703.GC3764123@lunn.ch>
+Date:   Thu, 24 Sep 2020 20:50:59 +0800
+Cc:     Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "moderated list:INTEL ETHERNET DRIVERS" 
+        <intel-wired-lan@lists.osuosl.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <B5008979-2999-4141-B373-2F649462DD0A@canonical.com>
+References: <20200923074751.10527-1-kai.heng.feng@canonical.com>
+ <20200923121748.GE3770354@lunn.ch>
+ <F6075687-7BC4-4348-86A8-29D83B7E5AAC@canonical.com>
+ <20200923153703.GC3764123@lunn.ch>
+To:     Andrew Lunn <andrew@lunn.ch>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 5:20 AM, Coiby Xu wrote:
-> This patch fix the following warnings from sparse,
+Hi Andrew,
 
-You need to address Greg's comment.
-
-But in general this looks good.  I have one comment below, which
-you can address in v2.  If you (or others) disagree with it, I'm
-fine with your code as-is.  Either way, you can add this:
-
-Reviewed-by: Alex Elder <elder@linaro.org>
-
-> $ make C=2 drivers/staging/greybus/
-> drivers/staging/greybus/audio_module.c:222:25: warning: incorrect type in assignment (different base types)
-> drivers/staging/greybus/audio_module.c:222:25:    expected restricted __le16 [usertype] data_cport
-> drivers/staging/greybus/audio_module.c:222:25:    got unsigned short [usertype] intf_cport_id
-> drivers/staging/greybus/audio_topology.c:460:40: warning: restricted __le32 degrades to integer
-> drivers/staging/greybus/audio_topology.c:691:41: warning: incorrect type in assignment (different base types)
-
-. . .
-
-> diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
-> index 83b38ae8908c..56bf1a4f95ad 100644
-> --- a/drivers/staging/greybus/audio_topology.c
-> +++ b/drivers/staging/greybus/audio_topology.c
-> @@ -466,7 +466,7 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
->  		goto exit;
->  
->  	/* update ucontrol */
-> -	if (gbvalue.value.integer_value[0] != val) {
-> +	if (gbvalue.value.integer_value[0] != cpu_to_le32(val)) {
-
-It's equivalent, but I have a small preference to convert
-the value from gbvalue into CPU byte order rather than
-what you have here.
-
->  		for (wi = 0; wi < wlist->num_widgets; wi++) {
->  			widget = wlist->widgets[wi];
->  			snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol,
-> @@ -689,7 +689,7 @@ static int gbaudio_tplg_create_kcontrol(struct gbaudio_module_info *gb,
->  				return -ENOMEM;
->  			ctldata->ctl_id = ctl->id;
->  			ctldata->data_cport = le16_to_cpu(ctl->data_cport);
-> -			ctldata->access = ctl->access;
-> +			ctldata->access = le32_to_cpu(ctl->access);
->  			ctldata->vcount = ctl->count_values;
->  			ctldata->info = &ctl->info;
->  			*kctl = (struct snd_kcontrol_new)
-> @@ -744,10 +744,10 @@ static int gbcodec_enum_dapm_ctl_get(struct snd_kcontrol *kcontrol,
->  		return ret;
->  	}
->  
-> -	ucontrol->value.enumerated.item[0] = gbvalue.value.enumerated_item[0];
-> +	ucontrol->value.enumerated.item[0] = le32_to_cpu(gbvalue.value.enumerated_item[0]);
->  	if (e->shift_l != e->shift_r)
->  		ucontrol->value.enumerated.item[1] =
-> -			gbvalue.value.enumerated_item[1];
-> +			le32_to_cpu(gbvalue.value.enumerated_item[1]);
->  
->  	return 0;
->  }
-> @@ -801,10 +801,10 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
->  	mask = e->mask << e->shift_l;
->  
->  	if (gbvalue.value.enumerated_item[0] !=
-> -	    ucontrol->value.enumerated.item[0]) {
-> +	    cpu_to_le32(ucontrol->value.enumerated.item[0])) {
->  		change = 1;
->  		gbvalue.value.enumerated_item[0] =
-> -			ucontrol->value.enumerated.item[0];
-> +			cpu_to_le32(ucontrol->value.enumerated.item[0]);
->  	}
->  
->  	if (e->shift_l != e->shift_r) {
-> @@ -813,10 +813,10 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
->  		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
->  		mask |= e->mask << e->shift_r;
->  		if (gbvalue.value.enumerated_item[1] !=
-> -		    ucontrol->value.enumerated.item[1]) {
-> +		    cpu_to_le32(ucontrol->value.enumerated.item[1])) {
->  			change = 1;
->  			gbvalue.value.enumerated_item[1] =
-> -				ucontrol->value.enumerated.item[1];
-> +				cpu_to_le32(ucontrol->value.enumerated.item[1]);
->  		}
->  	}
->  
-> @@ -887,7 +887,7 @@ static int gbaudio_tplg_create_mixer_ctl(struct gbaudio_module_info *gb,
->  		return -ENOMEM;
->  	ctldata->ctl_id = ctl->id;
->  	ctldata->data_cport = le16_to_cpu(ctl->data_cport);
-> -	ctldata->access = ctl->access;
-> +	ctldata->access = le32_to_cpu(ctl->access);
->  	ctldata->vcount = ctl->count_values;
->  	ctldata->info = &ctl->info;
->  	*kctl = (struct snd_kcontrol_new)
+> On Sep 23, 2020, at 23:37, Andrew Lunn <andrew@lunn.ch> wrote:
 > 
+> On Wed, Sep 23, 2020 at 10:44:10PM +0800, Kai-Heng Feng wrote:
+>> Hi Andrew,
+>> 
+>>> On Sep 23, 2020, at 20:17, Andrew Lunn <andrew@lunn.ch> wrote:
+>>> 
+>>> On Wed, Sep 23, 2020 at 03:47:51PM +0800, Kai-Heng Feng wrote:
+>>>> We are seeing the following error after S3 resume:
+>>>> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+>>>> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
+>>>> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+>>>> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
+>>>> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+>>>> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
+>>>> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
+>>>> ...
+>>>> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
+>>>> 
+>>>> Since we don't know what platform firmware may do to the phy, so let's
+>>>> power cycle the phy upon system resume to resolve the issue.
+>>>> 
+>>>> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>>>> ---
+>>>> drivers/net/ethernet/intel/e1000e/netdev.c | 2 ++
+>>>> 1 file changed, 2 insertions(+)
+>>>> 
+>>>> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
+>>>> index 664e8ccc88d2..c2a87a408102 100644
+>>>> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
+>>>> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+>>>> @@ -6968,6 +6968,8 @@ static __maybe_unused int e1000e_pm_resume(struct device *dev)
+>>>> 	    !e1000e_check_me(hw->adapter->pdev->device))
+>>>> 		e1000e_s0ix_exit_flow(adapter);
+>>>> 
+>>>> +	e1000_power_down_phy(adapter);
+>>>> +
+>>> 
+>>> static void e1000_power_down_phy(struct e1000_adapter *adapter)
+>>> {
+>>> 	struct e1000_hw *hw = &adapter->hw;
+>>> 
+>>> 	/* Power down the PHY so no link is implied when interface is down *
+>>> 	 * The PHY cannot be powered down if any of the following is true *
+>>> 	 * (a) WoL is enabled
+>>> 	 * (b) AMT is active
+>>> 	 * (c) SoL/IDER session is active
+>>> 	 */
+>>> 	if (!adapter->wol && hw->mac_type >= e1000_82540 &&
+>>> 	   hw->media_type == e1000_media_type_copper) {
+>> 
+>> Looks like the the function comes from e1000, drivers/net/ethernet/intel/e1000/e1000_main.c.
+>> However, this patch is for e1000e, so the function with same name is different.
+> 
+> Ah! Sorry. Missed that. Also it is not nice there are two functions in
+> the kernel with the same name.
+> 
+>>> Could it be coming out of S3 because it just received a WoL?
+>> 
+>> No, the issue can be reproduced by pressing keyboard or rtcwake.
+> 
+> Not relevant now, since i was looking at the wrong function. But i was
+> meaning the call is a NOP in the case WoL caused the wake up. So if
+> the issues can also happen after WoL, your fix is not going to fix it.
+> 
+>>> It seems unlikely that it is the MII_CR_POWER_DOWN which is helping,
+>>> since that is an MDIO write itself. Do you actually know how this call
+>>> to e1000_power_down_phy() fixes the issues?
+>> 
+> 
+>> I don't know from hardware's perspective, but I think the comment on
+>> e1000_power_down_phy_copper() can give us some insight:
+> 
+> And there is only one function called e1000_power_down_phy_copper()
+> :-)
+> 
+>> 
+>> /**
+>> * e1000_power_down_phy_copper - Restore copper link in case of PHY power down
+>> * @hw: pointer to the HW structure
+>> *
+>> * In the case of a PHY power down to save power, or to turn off link during a
+>> * driver unload, or wake on lan is not enabled, restore the link to previous
+>> * settings.                       
+>> **/
+>> void e1000_power_down_phy_copper(struct e1000_hw *hw)
+>> {
+>>        u16 mii_reg = 0;
+>> 
+>>        /* The PHY will retain its settings across a power down/up cycle */
+>>        e1e_rphy(hw, MII_BMCR, &mii_reg);
+>>        mii_reg |= BMCR_PDOWN;
+>>        e1e_wphy(hw, MII_BMCR, mii_reg);
+>>        usleep_range(1000, 2000);
+>> }
+> 
+> I don't really see how this explains this:
+> 
+>>>> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+>>>> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
+> 
+> https://elixir.bootlin.com/linux/latest/source/drivers/net/ethernet/intel/e1000e/phy.c#L181
+> 
+> So first off, the comments are all cut/paste from
+> e1000e_read_phy_reg_mdic(). It would be nice to s/read/write/g in that
+> function.
+
+Ah yes...
+
+> 
+> So it sets up the transaction and starts it. MDIO is a serial bus with
+> no acknowledgements. You clock out around 64 bits, and hope the PHY
+> receives it. The time it takes to send those 64 bits is fixed by the
+> bus speed, typically 2.5MHz.
+
+Thanks for the info.
+
+> 
+> So the driver polls waiting for the hardware to say the bits have been
+> sent. And this is timing out. How long that takes has nothing to do
+> with the PHY, or what state it is in. Powering down the PHY has no
+> effect on the MDIO bus master, and how long it takes to shift those
+> bits out. Which is why i don't think this patch is correct. This is
+> probably an MDIO bus issue, not a PHY issue.
+
+Thanks for pointing out the possible root cause.
+Indeed this looks like an MDIO issue so this patch is completely wrong.
+
+I'll send a V2, thanks.
+
+Kai-Heng
+
+> 
+> Try dumping the value of MDIC in the good/bad case before the
+> transaction starts.
+> 
+> 	 Andrew
 
