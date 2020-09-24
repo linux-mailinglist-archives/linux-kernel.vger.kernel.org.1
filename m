@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E27277782
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BD1277787
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728352AbgIXRKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:10:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727010AbgIXRKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:10:49 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1728588AbgIXRNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:13:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29911 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727136AbgIXRNv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 13:13:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600967629;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=12L9VeJpf7N5GiUvawNcQLZPZYtJc7Q5WG3UX7MsT7M=;
+        b=Piprq4iMeCw8lXRzPa53y2uk3V804qOiT4LMCqhecIVUjfHn3OHUWS8bI2i3Of4DHF5VbZ
+        rOVNoB72xxaumjvwDCH6nvt3ay6R6IplVXOFcegzRL68o0EKjAvsNcoxgujpVJjZKZrrxE
+        aWO+tFy8sBtmyGvUibQDykgJ0smhrow=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-426-Lt4dIp6PPcSxxn3JMnPMuA-1; Thu, 24 Sep 2020 13:13:48 -0400
+X-MC-Unique: Lt4dIp6PPcSxxn3JMnPMuA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 756D4238A1;
-        Thu, 24 Sep 2020 17:10:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600967448;
-        bh=gmJXib/WMHnc57gI6G8dSA/dxn41ZRyFW5IEJ+VpDnc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KRA5bR3F3NVMGGCIypPfBLDauJPm1IsbjVA1d7kqa9fOov/CWol/X8NkWimyELVou
-         vPktAA4i0EEjq+jIe9pdsITZCfZCwUAAnoHc6XGcXK+mG9E4uUDGXiJ7bTClTK65a0
-         R13ZJxYvoaByRJlYKOGg9cSlZ3WuKTnJy6VuqDPM=
-Date:   Fri, 25 Sep 2020 02:10:45 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     =?UTF-8?B?QmFybmFiw6FzIFDFkWN6ZQ==?= <pobrn@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH] fault-injection: handle EI_ETYPE_TRUE
-Message-Id: <20200925021045.d45f862caf4011767bbafba3@kernel.org>
-In-Reply-To: <njB1czX0ZgWPR9h61euHIBb5bEyePw9D4D2m3i5lc9Cl96P8Q1308dTcmsEZW7Vtz3Ifz4do-rOtSfuFTyGoEDYokkK2aUqBePVptzZEWfU=@protonmail.com>
-References: <njB1czX0ZgWPR9h61euHIBb5bEyePw9D4D2m3i5lc9Cl96P8Q1308dTcmsEZW7Vtz3Ifz4do-rOtSfuFTyGoEDYokkK2aUqBePVptzZEWfU=@protonmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C798618C89C4;
+        Thu, 24 Sep 2020 17:13:45 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-112-166.phx2.redhat.com [10.3.112.166])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 42A7978828;
+        Thu, 24 Sep 2020 17:13:41 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 13:13:39 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
+ sched domain
+Message-ID: <20200924171339.GD29958@lorien.usersys.redhat.com>
+References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
+ <20200916110039.GG3117@suse.de>
+ <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
+ <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
+ <CAKfTPtA2yE_sFfP5MFN=K+ph7rqpYUhapUdDBJ5hFLxnQPktJw@mail.gmail.com>
+ <af0237e0-1451-9d11-2ee2-1468a8bb6180@linux.intel.com>
+ <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
+ <40ee756f-1f27-b17e-6292-d8069a56e3c8@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40ee756f-1f27-b17e-6292-d8069a56e3c8@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 16:48:56 +0000
-Barnabás Pőcze <pobrn@protonmail.com> wrote:
+On Thu, Sep 24, 2020 at 09:37:33AM -0700 Tim Chen wrote:
+> 
+> 
+> On 9/22/20 12:14 AM, Vincent Guittot wrote:
+> 
+> >>
+> >>>>
+> >>>> And a quick test with hackbench on my octo cores arm64 gives for 12
+> 
+> Vincent,
+> 
+> Is it octo (=10) or octa (=8) cores on a single socket for your system?
 
-> Commit af3b854492f351d1ff3b4744a83bf5ff7eed4920
-> ("mm/page_alloc.c: allow error injection")
-> introduced EI_ETYPE_TRUE, but did not extend
->  * lib/error-inject.c:error_type_string(), and
->  * kernel/fail_function.c:adjust_error_retval()
-> to accommodate for this change.
-> 
-> Handle EI_ETYPE_TRUE in both functions appropriately by
->  * returning "TRUE" in error_type_string(),
->  * adjusting the return value to true (1) in adjust_error_retval().
-> 
-> Furthermore, simplify the logic of handling EI_ETYPE_NULL
-> in adjust_error_retval().
+In what Romance language does octo mean 10?  :)
 
-This looks good to me.
 
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
-
-Thank you!
-
+> The L2 is per core or there are multiple L2s shared among groups of cores?
 > 
-> Signed-off-by: Barnabás Pőcze <pobrn@protonmail.com>
-> ---
->  kernel/fail_function.c | 6 +++---
->  lib/error-inject.c     | 2 ++
->  2 files changed, 5 insertions(+), 3 deletions(-)
+> Wonder if placing the threads within a L2 or not within
+> an L2 could cause differences seen with Aubrey's test.
 > 
-> diff --git a/kernel/fail_function.c b/kernel/fail_function.c
-> index 63b349168da7..4fdea01c0561 100644
-> --- a/kernel/fail_function.c
-> +++ b/kernel/fail_function.c
-> @@ -37,9 +37,7 @@ static unsigned long adjust_error_retval(unsigned long addr, unsigned long retv)
->  {
->  	switch (get_injectable_error_type(addr)) {
->  	case EI_ETYPE_NULL:
-> -		if (retv != 0)
-> -			return 0;
-> -		break;
-> +		return 0;
->  	case EI_ETYPE_ERRNO:
->  		if (retv < (unsigned long)-MAX_ERRNO)
->  			return (unsigned long)-EINVAL;
-> @@ -48,6 +46,8 @@ static unsigned long adjust_error_retval(unsigned long addr, unsigned long retv)
->  		if (retv != 0 && retv < (unsigned long)-MAX_ERRNO)
->  			return (unsigned long)-EINVAL;
->  		break;
-> +	case EI_ETYPE_TRUE:
-> +		return 1;
->  	}
+> Tim
 > 
->  	return retv;
-> diff --git a/lib/error-inject.c b/lib/error-inject.c
-> index aa63751c916f..c73651b15b76 100644
-> --- a/lib/error-inject.c
-> +++ b/lib/error-inject.c
-> @@ -180,6 +180,8 @@ static const char *error_type_string(int etype)
->  		return "ERRNO";
->  	case EI_ETYPE_ERRNO_NULL:
->  		return "ERRNO_NULL";
-> +	case EI_ETYPE_TRUE:
-> +		return "TRUE";
->  	default:
->  		return "(unknown)";
->  	}
-> --
-> 2.28.0
-> 
-> 
-
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+
