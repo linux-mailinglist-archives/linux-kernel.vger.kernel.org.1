@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC1527788B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D577927788A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728755AbgIXSe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:34:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31578 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728264AbgIXSeY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728745AbgIXSeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 24 Sep 2020 14:34:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600972462;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8K7ULO9gOYr1TfXMbCWrHocAusNVWavCoisSi1BnpHw=;
-        b=Htrz0GAyohAW2O0YD3C17YdUa1cLes9dLNhht/a4HM5/22Pb6ukAGSq/1b1/3thcc+sodB
-        aE7caex3Hb6XNBld21xW2SJYf0wx8k3NVz+e7FDDa8SnNPYzTvGENBkcue9hEiI1tBP50o
-        uVyvcEWVlRI47q/7CuCfcXHawWgiZww=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-Dpf6WJ5aNbOCP3ReIwljzg-1; Thu, 24 Sep 2020 14:34:21 -0400
-X-MC-Unique: Dpf6WJ5aNbOCP3ReIwljzg-1
-Received: by mail-qk1-f200.google.com with SMTP id 125so272647qkh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:34:21 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728696AbgIXSeX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:34:23 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C3AFC0613CE;
+        Thu, 24 Sep 2020 11:34:23 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id t16so4362664edw.7;
+        Thu, 24 Sep 2020 11:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7Edzs7KfQpjr+XIKPMKA2WjNrXyAz2LAzufBwtX3x8M=;
+        b=cKEMiCs0WomV4/xV4B0+gLHm3U1+FwdE9YcfmloN/ox1tUpsDEkjTt6vz5QoJjLxN0
+         szDVrEVDEfVrDnmm7NJ1k9pI3gJHHhnA1sn0cqNSCNsBOrd7R4TcvVTgLNmfBmNSpdxJ
+         aJbc4Xlc+i6zZHVGOwlnwalw7Oq//ZDjP33bLCFWbSRfdsTUEJsiNtrkme/AF8YDZXfG
+         XxaUqihhVomVV+e0LUw4NXACy/NOZ2+0WJKeUUqDSBgZpbKRjsiiZzIdeLF5Z5Pes5pu
+         VYs2ZVWVVEFJF7ifODvVPpC8ao4GaG7g5yfragoti+Q6YuusP1y/ULP8BB0bdam80nVb
+         YCtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8K7ULO9gOYr1TfXMbCWrHocAusNVWavCoisSi1BnpHw=;
-        b=DrTMyj3kCd42XcQzJVQInKo/mhV1Y8s7zKpefaGKmFZFnnEQkZqrQf5BUKN0iiiNES
-         Jgr5zdqggLwMAXBYQwaafTdA1NpE+3E8IQepBKY5q94LySZL29Z89vncH7uWBzlLoiZV
-         2oPhF6LjKJLyCWCb8InoRgKW9Ej7Y5S/stGUy0qLCws38ade67ZAV68AR9aiwgZ4a8xT
-         ewc5t7njH27C5gq+hOi6+za2RYM8m8uHUn7z0KEvXJvMQTKBWNa3VvN8/WnGOsQd1Hdg
-         dZxzr5s2IrlVqJ54wnTNAjBzdFc9huDddJSIelGkOjk/TlcRLpN2tskeBF+BxfKtA8DD
-         mZHw==
-X-Gm-Message-State: AOAM532vgHHeiqEnVqRTVMrx9u4dX6JnaMa42WoJM1oIjt2UwF2qJ9OF
-        58MyFvN1zKc294amrCWhmg4JuL4qmabKGR6ljTMH3GIKyhh2dXkGtBQ2EEzx4rEfyjTvWN5JWMH
-        5i/CEgIqKF+CY5e71QNGpkotG
-X-Received: by 2002:a37:a0cf:: with SMTP id j198mr464631qke.408.1600972460559;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7Edzs7KfQpjr+XIKPMKA2WjNrXyAz2LAzufBwtX3x8M=;
+        b=r9DP4jKUSNWPEL2UAK6/AoBFERKvQPXWv+cEh7MUngWxKksv9hd3Cnw7c+VkJy8XUr
+         mQBB8fkU4Odd2FDAfrZB/WKQMaGuTSLCGFtUWxIZbQ/j7uQagYCdRxZzCAwDTPoJp+F1
+         M7yaqVlZGBG15zMHiOIjZ1XhXo2V5StiJHFNn9E6KrKiu2ZRRyxEKvYaXsQlIV/rKK2h
+         jzFWCWOaGlkPF843MI0bYItFKHvSJupQtTcxa0igKRVGZ7iKGjHJbMxl3bj1BCgsBFTv
+         reIWBjJA/AC8nwnNtvZ0Lns/dDCe5fYAlx7qc1jTWBnWqYNg5C9mSEJdxuippFIfBHkf
+         eXPw==
+X-Gm-Message-State: AOAM531ZT/YkfM6dWzS0aRD0MxWzUgNaF2GSGA63AYc94h8KlOpjGTO8
+        JSRD391BWAg7O9Y5+2BoNUhFtwE1hsY=
+X-Google-Smtp-Source: ABdhPJyKwzEy+y+B9Q0jwkyUJk1rOpdJ0dfjD2y/PT2FrJuN+v8PxilZgDLI8SMS5MXCt9vfMNP/rw==
+X-Received: by 2002:a50:ce09:: with SMTP id y9mr119151edi.91.1600972461685;
+        Thu, 24 Sep 2020 11:34:21 -0700 (PDT)
+Received: from [192.168.0.48] (HSI-KBW-046-005-005-048.hsi8.kabel-badenwuerttemberg.de. [46.5.5.48])
+        by smtp.gmail.com with ESMTPSA id i26sm11546edq.47.2020.09.24.11.34.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
         Thu, 24 Sep 2020 11:34:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz189qd83FsBU+Y1WUPx1hxxa2IHQ66Cfq7DuTjUWqlGX5heqwtD0IdF9ou967Lsr72f6+HHw==
-X-Received: by 2002:a37:a0cf:: with SMTP id j198mr464597qke.408.1600972460310;
-        Thu, 24 Sep 2020 11:34:20 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id z3sm211216qkj.0.2020.09.24.11.34.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 11:34:19 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 14:34:18 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-Message-ID: <20200924183418.GJ79898@xz-x1>
-References: <20200922151736.GD19098@xz-x1>
- <20200922161046.GB731578@ziepe.ca>
- <20200922175415.GI19098@xz-x1>
- <20200922191116.GK8409@ziepe.ca>
- <20200923002735.GN19098@xz-x1>
- <20200923170759.GA9916@ziepe.ca>
- <20200924143517.GD79898@xz-x1>
- <20200924165152.GE9916@ziepe.ca>
- <20200924175531.GH79898@xz-x1>
- <20200924181501.GF9916@ziepe.ca>
+Subject: Re: PATCH reiser4 support for Linux 5.8.10
+To:     David Niklas <Hgntkwis@vfemail.net>, reiserfs-devel@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200728222041.5d88b2e1@Phenom-II-x6.niklas.com>
+ <20200728223440.0fd8681e@Phenom-II-x6.niklas.com>
+ <20200805125317.10bf1d34@Phenom-II-x6.niklas.com>
+ <CAHk-=wiGsj_R7pspFegPgtT4on1iYk5MmBz8uZZ3338EH3HO+Q@mail.gmail.com>
+ <20200817105604.454981dd@Phenom-II-x6.niklas.com>
+ <20200924132158.38fa279f@Phenom-II-x6.niklas.com>
+From:   Edward Shishkin <edward.shishkin@gmail.com>
+Message-ID: <8c0f0263-1da0-11e9-c7b0-98a0aad9a888@gmail.com>
+Date:   Thu, 24 Sep 2020 20:34:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.5.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200924181501.GF9916@ziepe.ca>
+In-Reply-To: <20200924132158.38fa279f@Phenom-II-x6.niklas.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 03:15:01PM -0300, Jason Gunthorpe wrote:
-> On Thu, Sep 24, 2020 at 01:55:31PM -0400, Peter Xu wrote:
-> > On Thu, Sep 24, 2020 at 01:51:52PM -0300, Jason Gunthorpe wrote:
-> > > > Regarding the solution here, I think we can also cover read-only fast-gup too
-> > > > in the future - IIUC what we need to do is to make it pte_protnone() instead of
-> > > > pte_wrprotect(), then in the fault handler we should identify this special
-> > > > pte_protnone() against numa balancing (change_prot_numa()).  I think it should
-> > > > work fine too, iiuc, because I don't think we should migrate a page at all if
-> > > > it's pinned for any reason...
-> > 
-> > [1]
-> > 
-> > > 
-> > > With your COW breaking patch the read only fast-gup should break the
-> > > COW because of the write protect, just like for the write side. Not
-> > > seeing why we need to do something more?
-> > 
-> > Consider this sequence of a parent process managed to fork() a child:
-> > 
-> >        buf = malloc();
-
-Sorry! I think I missed something like:
-
-           mprotect(buf, !WRITE);
-
-Here.
-
-> >        // RDONLY gup
-> >        pin_user_pages(buf, !WRITE);
-> >        // pte of buf duplicated on both sides
-> >        fork();
-> >        mprotect(buf, WRITE);
-> >        *buf = 1;
-> >        // buf page replaced as cow triggered
-> > 
-> > Currently when fork() we'll happily share a pinned read-only page with the
-> > child by copying the pte directly.  
+On 09/24/2020 07:21 PM, David Niklas wrote:
+> I'm a kernel dev newbie. Please double check my work if in doubt.
 > 
-> Why? This series prevents that, the page will be maybe_dma_pinned, so
-> fork() will copy it.
+> The patch for reiser4 support for Linux 5.8.1 didn't apply to 5.8.10. It
+> needed only a one line change, but because of all the fuzzy matching and
+> offset matching I thought I'd make a new one.
+> The file that failed to patch is fs/fs-writeback.c. A struct got one of
+> it's members removed. As the entire struct was removed by the patch
 
-With the extra mprotect(!WRITE), I think we'll see a !pte_write() entry.  Then
-it'll not go into maybe_dma_pinned() at all since cow==false.
+Hi David,
 
-> 
-> > As a summary: imho the important thing is we should not allow any kind of
-> > sharing of any dma page, even it's pinned for read.
-> 
-> Any sharing that results in COW. MAP_SHARED is fine, for instance
+Precisely speaking, it is not removed, but moved to a header file.
 
-Oh right, MAP_SHARED is definitely special.
+Anyway, I guess that the missing member wasn't used by reiser4, so feel
+free to ignore it.
 
 Thanks,
+Edward.
 
--- 
-Peter Xu
 
+  I
+> thought it good to ignore the missing member instead of trying to dig up
+> what it was used for and why it was removed.
+> 
+> Thanks,
+> David
+> 
