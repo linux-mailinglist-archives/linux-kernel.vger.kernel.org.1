@@ -2,327 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A680D2768D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC762768DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgIXGXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:23:47 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:50598 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726900AbgIXGXr (ORCPT
+        id S1726889AbgIXGZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:25:59 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:31481 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIXGZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:23:47 -0400
-Received: by mail-wm1-f66.google.com with SMTP id e17so2276972wme.0
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:23:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r+gWnAMrrCSDKKsDSsLVE5LbgZumVMG6QbyOp56BCl4=;
-        b=B+iGEdyZaOH9gjzqyMC4BAqeJAi3jFHwFeU2XMjLsBsVLGevAa3WLZS+BE4jM79x2E
-         Ur5Fbj5mmYoJNRfxLaDOUP2LIFc3IBI8VHRSsq6s0jWMIkL2T+eQsGLjmjq/dycuaupp
-         e8mD8b1qYraiur4zp8YPFBCiCpjkaZUC1Rfq8AUhMEI1lS3NjW2Fpt/4Usjp8L0auRFC
-         5qJ2K4oZoNc5nN8Ta3uguBxyjg4bhakxFYM0N028KT06LoLXb8qREbzUFyxAxesu5y08
-         EZYkJ6cC2e3YleL1ryPn36lecYEjyQ1HCBV95NeDPmRgHEQoqV0jMcEC7CI0q4NbSCnl
-         lCNw==
-X-Gm-Message-State: AOAM530XWTiL5/vp2qKD7U/zre+J/uGaicQ1ivVPzs3MY5LYZAAxUrgL
-        dzdZzLGKFCvTzR8cuUImRHeOKfRmznZCpV18WI4=
-X-Google-Smtp-Source: ABdhPJxlKWypvkf6VvUi30hFdYfPHEXovD2A/3y0A0Z2JdNrk5motcLSWruVyjElZ04YsYMFskGkzK4uM3FkANvKELE=
-X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr3090179wmt.92.1600928624175;
- Wed, 23 Sep 2020 23:23:44 -0700 (PDT)
+        Thu, 24 Sep 2020 02:25:59 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id D9F0E4E185A;
+        Thu, 24 Sep 2020 14:25:42 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wang Wenhu <wenhu.wang@vivo.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Wang Qing <wangqing@vivo.com>,
+        Chucheng Luo <luochucheng@vivo.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] doc: zh_CN: add translatation for tmpfs.rst
+Date:   Thu, 24 Sep 2020 14:23:37 +0800
+Message-Id: <1600928720-21134-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20200923080537.155264-1-namhyung@kernel.org> <20200923080537.155264-2-namhyung@kernel.org>
- <CAP-5=fUZuRr_FPOkKFbfjhkMKOpBrad95pcv8AjyfPbhz0uDvQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fUZuRr_FPOkKFbfjhkMKOpBrad95pcv8AjyfPbhz0uDvQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 24 Sep 2020 15:23:32 +0900
-Message-ID: <CAM9d7cimhk0OeOv-LvDJADRf2+jhWhJ4nCO0fO74V4sGJ2ZfhA@mail.gmail.com>
-Subject: Re: [PATCH 1/7] perf bench: Add build-id injection benchmark
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTRlPH0gYGENKTUpKVkpNS0tCSUNMT0hJQkNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6K0k6ITo4TD8oMAxLHU49CUxC
+        PkoaCgFVSlVKTUtLQklDTE9ITEJCVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFCSEhPNwY+
+X-HM-Tid: 0a74bec9ff2b9376kuwsd9f0e4e185a
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+Translate Documentation/filesystems/tmpfs.rst into Chinese.
 
-On Thu, Sep 24, 2020 at 7:13 AM Ian Rogers <irogers@google.com> wrote:
->
-> On Wed, Sep 23, 2020 at 1:05 AM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Sometimes I can see perf record piped with perf inject take long time
-> > processing build-id.  So add inject-build-id benchmark to the
-> > internals benchmark suite to measure its overhead regularly.
-> >
-> > It runs perf inject command internally and feeds the given number of
-> > synthesized events (MMAP2 + SAMPLE basically).
-> >
-> >   Usage: perf bench internals inject-build-id <options>
-> >
-> >     -i, --iterations <n>  Number of iterations used to compute average (default: 100)
-> >     -m, --nr-mmaps <n>    Number of mmap events for each iteration (default: 100)
-> >     -n, --nr-samples <n>  Number of sample events per mmap event (default: 100)
-> >     -v, --verbose         be more verbose (show iteration count, DSO name, etc)
-> >
-> > By default, it measures average processing time of 100 MMAP2 events
-> > and 10000 SAMPLE events.  Below is a result on my laptop.
-> >
-> >   $ perf bench internals inject-build-id
-> >   # Running 'internals/inject-build-id' benchmark:
-> >     Average build-id injection took: 22.997 msec (+- 0.067 msec)
-> >     Average time per event: 2.255 usec (+- 0.007 usec)
->
-> This is great! Some suggestions below.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ .../translations/zh_CN/filesystems/index.rst       |   3 +-
+ .../translations/zh_CN/filesystems/tmpfs.rst       | 146 +++++++++++++++++++++
+ 2 files changed, 148 insertions(+), 1 deletion(-)
 
-Thanks!
+diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
+index 186501d..c45b550
+--- a/Documentation/translations/zh_CN/filesystems/index.rst
++++ b/Documentation/translations/zh_CN/filesystems/index.rst
+@@ -21,8 +21,9 @@ Linux Kernel中的文件系统
+ 文件系统实现文档。
+ 
+ .. toctree::
+-   :maxdepth: 2
++   :maxdepth: 3
+ 
+    virtiofs
+    debugfs
++   tmpfs
+ 
+diff --git a/Documentation/translations/zh_CN/filesystems/tmpfs.rst b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
+index 0000000..700d870
+--- /dev/null
++++ b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
+@@ -0,0 +1,146 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/filesystems/tmpfs.rst <tmpfs_index>`
++
++translated by 王擎 Wang Qing<wangqing@vivo.com>
++
++=====
++Tmpfs
++=====
++
++Tmpfs是一个将所有文件都保存在虚拟内存中的文件系统。
++
++tmpfs中的所有内容都是临时的，也就是说没有任何文件会在硬盘上创建。
++如果卸载tmpfs实例，所有保存在其中的文件都会丢失。
++
++tmpfs将所有文件保存在内核缓存中，随着文件内容增长或缩小可以将不需要的
++页面swap出去。它具有最大限制，可以通过“mount -o remount ...”调整。
++
++和ramfs（创建tmpfs的模板）相比，tmpfs包含交换和限制检查。和tmpfs相似的另
++一个东西是RAM磁盘（/dev/ram*），可以在物理RAM中模拟固定大小的硬盘，并在
++此之上创建一个普通的文件系统。Ramdisks无法swap，因此无法调整它们的大小。
++
++由于tmpfs完全保存于页面缓存和swap中，因此所有tmpfs页面将在/proc/meminfo
++中显示为“Shmem”，而在free(1)中显示为“Shared”。请注意，这些计数还包括
++共享内存(shmem，请参阅ipcs(1))。获得计数的最可靠方法是使用df(1)和du(1)。
++
++tmpfs具有以下用途：
++
++1) 内核总有一个无法看到的内部挂载，用于共享匿名映射和SYSV共享内存。
++
++   挂载不依赖于CONFIG_TMPFS。如果CONFIG_TMPFS未设置，tmpfs对用户不可见。
++   但是内部机制始终存在。
++
++2) glibc 2.2及更高版本期望将tmpfs挂载在/dev/shm上以用于POSIX共享内存
++   (shm_open，shm_unlink)。添加内容到/etc/fstab应注意如下：
++
++	tmpfs	/dev/shm	tmpfs	defaults	0 0
++
++   使用时需要记住创建挂载tmpfs的目录。
++   
++   SYSV共享内存无需挂载，内部已默认支持。(在2.3内核版本中，必须挂载
++   tmpfs的前身(shm fs)才能使用SYSV共享内存)
++
++3) 很多人（包括我）都觉的在/tmp和/var/tmp上挂载非常方便，并具有较大的
++   swap分区。目前循环挂载tmpfs可以正常工作，所以大多数发布都应当可以
++   使用mkinitrd通过/tmp访问/tmp。
++
++4) 也许还有更多我不知道的地方:-)
++
++
++tmpfs有三个用于调整大小的挂载选项：
++
++=========  ============================================================
++size       tmpfs实例分配的字节数限制。默认值是不swap时物理RAM的一半。
++           如果tmpfs实例过大，机器将死锁，因为OOM处理将无法释放该内存。
++nr_blocks  与size相同，但以PAGE_SIZE为单位。
++nr_inodes  tmpfs实例的最大inode个数。默认值是物理内存页数的一半，或者
++           (有高端内存的机器)低端内存RAM的页数，二者以较低者为准。
++=========  ============================================================
++
++这些参数接受后缀k，m或g表示千，兆和千兆字节，可以在remount时更改。
++size参数也接受后缀％用来限制tmpfs实例占用物理RAM的百分比：
++未指定size或nr_blocks时，默认值为size=50％
++
++如果nr_blocks=0（或size=0），block个数将不受限制；如果nr_inodes=0，
++inode个数将不受限制。这样挂载通常是不明智的，因为它允许任何具有写权限的
++用户通过访问tmpfs耗尽机器上的所有内存；但同时这样做也会增强在多个CPU的
++场景下的访问。
++
++tmpfs具有为所有文件设置NUMA内存分配策略挂载选项(如果启用了CONFIG_NUMA),
++可以通过“mount -o remount ...”调整
++
++======================== ==============================================
++mpol=default             采用进程分配策略
++                         (请参阅 set_mempolicy(2))
++mpol=prefer:Node         倾向从给定的节点分配
++mpol=bind:NodeList       只允许从指定的链表分配
++mpol=interleave          倾向于依次从每个节点分配
++mpol=interleave:NodeList 依次从每个节点分配
++mpol=local		 prefers 从本地节点分配内存
++======================== ==============================================
++
++NodeList格式是以逗号分隔的十进制数字表示大小和范围，最大和最小范围是用-
++分隔符的十进制数来表示。例如，mpol=bind0-3,5,7,9-15
++
++带有有效NodeList的内存策略将按指定格式保存，在创建文件时使用。当任务在该
++文件系统上创建文件时，会使用到挂载时的内存策略NodeList选项，如果设置的话，
++由调用任务的cpuset[请参见Documentation/admin-guide/cgroup-v1/cpusets.rst]
++以及下面列出的可选标志约束。如果NodeLists为设置为空集，则文件的内存策略将
++恢复为“默认”策略。
++
++NUMA内存分配策略有可选标志，可以用于模式结合。在挂载tmpfs时指定这些可选
++标志可以在NodeList之前生效。
++Documentation/admin-guide/mm/numa_memory_policy.rst列出所有可用的内存
++分配策略模式标志及其对内存策略。
++
++::
++
++	=static		相当于	MPOL_F_STATIC_NODES
++	=relative	相当于	MPOL_F_RELATIVE_NODES
++
++例如，mpol=bind=staticNodeList相当于MPOL_BIND|MPOL_F_STATIC_NODES的分配策略
++
++请注意，如果内核不支持NUMA，那么使用mpol选项挂载tmpfs将会失败；nodelist指定不
++在线的节点也会失败。如果您的系统依赖于此，但内核会运行不带NUMA功能(也许是安全
++revocery内核)，或者具有较少的节点在线，建议从自动模式中省略mpol选项挂载选项。
++可以在以后通过“mount -o remount,mpol=Policy:NodeList MountPoint”添加到挂载点。
++
++要指定初始根目录，可以使用如下挂载选项：
++
++====	==================================
++模式	权限用八进制数字表示
++uid		应用ID
++gid		组ID
++====	==================================
++
++这些选项对remount没有任何影响。您可以通过chmod(1),chown(1)和chgrp(1)的更改
++已经挂载的参数。
++
++tmpfs具有选择32位还是64位inode的挂载选项：
++
++=======   ========================
++inode64   Use 64-bit inode numbers
++inode32   Use 32-bit inode numbers
++=======   ========================
++
++在32位内核上，默认是inode32，挂载时指定inode64会被拒绝。
++在64位内核上，默认配置是CONFIG_TMPFS_INODE64。inode64避免了单个设备上可能有多个
++具有相同inode编号的文件；比如32位应用程序使用glibc如果长期访问tmpfs，一旦达到33
++位inode编号，就有EOVERFLOW失败的危险，无法打开大于2GiB的文件，并返回EINVAL。
++
++所以'mount -t tmpfs -o size=10G,nr_inodes=10k,mode=700 tmpfs /mytmpfs'将在
++/mytmpfs上挂载tmpfs实例，分配只能由root用户访问的10GB RAM/SWAP，可以有10240个
++inode的实例。
++
++
++:作者:
++   Christoph Rohland <cr@sap.com>, 1.12.01
++:更新:
++   Hugh Dickins, 4 June 2007
++:更新:
++   KOSAKI Motohiro, 16 Mar 2010
++:更新:
++   Chris Down, 13 July 2020
+-- 
+2.7.4
 
->
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-[SNIP]
-> > +
-> > +static const char *const bench_usage[] = {
-> > +       "perf bench internals inject-build-id <options>",
-> > +       NULL
-> > +};
-> > +
->
-> Perhaps a comment:
-> /* Helper for collect_dso that adds the given file as a dso to
-> dso_list if it contains a buildid. Stops after 4 such dsos.*/
-
-Will add.. please see below.
-
->
-> > +static int add_dso(const char *fpath, const struct stat *sb __maybe_unused,
-> > +                  int typeflag, struct FTW *ftwbuf __maybe_unused)
-> > +{
-> > +       struct bench_dso *dso;
-> > +       unsigned char build_id[BUILD_ID_SIZE];
-> > +
-> > +       if (typeflag == FTW_D || typeflag == FTW_SL) {
-> > +               return 0;
-> > +       }
-> > +
-> > +       if (filename__read_build_id(fpath, build_id, BUILD_ID_SIZE) < 0)
-> > +               return 0;
-> > +
-> > +       dso = malloc(sizeof(*dso));
-> > +       if (dso == NULL)
-> > +               return -1;
-> > +
-> > +       dso->name = realpath(fpath, NULL);
-> > +       if (dso->name == NULL) {
-> > +               free(dso);
-> > +               return -1;
-> > +       }
-> > +
-> > +       dso->ino = nr_dsos++;
-> > +       list_add(&dso->list, &dso_list);
-> > +       pr_debug2("  Adding DSO: %s\n", fpath);
-> > +
-> > +       /* stop if we collected 4x DSOs than needed */
-> > +       if ((unsigned)nr_dsos > 4 * nr_mmaps)
-> > +               return 1;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +static void collect_dso(void)
-> > +{
-> > +       if (nftw("/usr/lib/", add_dso, 10, FTW_PHYS) < 0)
-> > +               return;
-> > +
-> > +       pr_debug("  Collected %d DSOs\n", nr_dsos);
->
-> Should this fail if the count isn't 4?
-
-The add_dso would stop if it collected enough DSOs.
-I chose it as 4 x nr_mmaps (default: 100).
-
-It's gonna pick a DSO in the list randomly during benchmark
-and I want to reduce the chance it selects the same one in the
-same iteration. So instead of having nr_mmaps DSOs, it keeps
-4 times more DSOs than needed.
-
->
-> > +}
-> > +
-> > +static void release_dso(void)
-> > +{
-> > +       struct bench_dso *dso;
-> > +
-> > +       while (!list_empty(&dso_list)) {
-> > +               dso = list_first_entry(&dso_list, struct bench_dso, list);
-> > +               list_del(&dso->list);
-> > +               free(dso->name);
-> > +               free(dso);
-> > +       }
-> > +}
-> > +
->
-> Perhaps a comment and move next to synthesize_mmap.
-> /* Fake address used by mmap events. */
-
-OK, will do.  (and it's used by sample events too)
-
->
-> > +static u64 dso_map_addr(struct bench_dso *dso)
-> > +{
-> > +       return 0x400000ULL + dso->ino * 8192ULL;
-> > +}
-[SNIP]
-
-> > +static int setup_injection(struct bench_data *data)
-> > +{
-> > +       int ready_pipe[2];
-> > +       int dev_null_fd;
-> > +       char buf;
-> > +
-> > +       if (pipe(ready_pipe) < 0)
-> > +               return -1;
-> > +
-> > +       if (pipe(data->input_pipe) < 0)
-> > +               return -1;
-> > +
-> > +       if (pipe(data->output_pipe) < 0)
-> > +               return -1;
-> > +
-> > +       data->pid = fork();
-> > +       if (data->pid < 0)
-> > +               return -1;
-> > +
-> > +       if (data->pid == 0) {
-> > +               const char **inject_argv;
-> > +
-> > +               close(data->input_pipe[1]);
-> > +               close(data->output_pipe[0]);
-> > +               close(ready_pipe[0]);
-> > +
-> > +               dup2(data->input_pipe[0], STDIN_FILENO);
-> > +               close(data->input_pipe[0]);
-> > +               dup2(data->output_pipe[1], STDOUT_FILENO);
-> > +               close(data->output_pipe[1]);
-> > +
-> > +               dev_null_fd = open("/dev/null", O_WRONLY);
-> > +               if (dev_null_fd < 0)
-> > +                       exit(1);
-> > +
-> > +               dup2(dev_null_fd, STDERR_FILENO);
-> > +
-> > +               inject_argv = calloc(3, sizeof(*inject_argv));
-> > +               if (inject_argv == NULL)
-> > +                       exit(1);
-> > +
-> > +               inject_argv[0] = strdup("inject");
-> > +               inject_argv[1] = strdup("-b");
-> > +
-> > +               /* signal that we're ready to go */
-> > +               close(ready_pipe[1]);
-> > +
-> > +               cmd_inject(2, inject_argv);
-> > +
-> > +               exit(0);
-> > +       }
-> > +
-> > +       signal(SIGPIPE, sigpipe_handler);
-> > +
-> > +       close(ready_pipe[1]);
-> > +       close(data->input_pipe[0]);
-> > +       close(data->output_pipe[1]);
-> > +
-> > +       /* wait for child ready */
-> > +       if (read(ready_pipe[0], &buf, 1) < 0)
-> > +               return -1;
-> > +       close(ready_pipe[0]);
-> > +
-> > +       return 0;
-> > +}
->
-> This feels like generic scaffolding that could be shared by other perf
-> command benchmarks.
-
-Maybe.. the thing is perf inject usually works on pipes so it needed
-a new process to run the test.  Probably we can simply run others
-in the same process.
-
->
-> > +
-> > +static int inject_build_id(struct bench_data *data)
-> > +{
-> > +       int flag, status;
-> > +       unsigned int i, k;
-> > +       char buf[8192];
-> > +       u64 nread = 0;
-> > +       u64 len = nr_mmaps / 2 * sizeof(struct perf_record_header_build_id);
-> > +
-> > +       flag = fcntl(data->output_pipe[0], F_GETFL, 0);
-> > +       if (fcntl(data->output_pipe[0], F_SETFL, flag | O_NONBLOCK) < 0)
-> > +               return -1;
-> > +
-> > +       /* this makes the child to run */
-> > +       if (perf_header__write_pipe(data->input_pipe[1]) < 0)
-> > +               return -1;
-> > +
-> > +       len += synthesize_attr(data);
-> > +       len += synthesize_fork(data);
-> > +
-> > +       for (i = 0; i < nr_mmaps; i++) {
-> > +               struct bench_dso *dso;
-> > +               int idx = rand() % (nr_dsos - 1);
-> > +
-> > +               dso = list_first_entry(&dso_list, struct bench_dso, list);
-> > +               while (idx--)
-> > +                       dso = list_next_entry(dso, list);
-> > +
-> > +               pr_debug("   [%2d] injecting: %s\n", i+1, dso->name);
-> > +               len += synthesize_mmap(data, dso);
-> > +
-> > +               for (k = 0; k < nr_samples; k++)
-> > +                       len += synthesize_sample(data, dso);
-> > +
-> > +               /* read out data from child */
-> > +               while (true) {
-> > +                       int n;
-> > +
-> > +                       n = read(data->output_pipe[0], buf, sizeof(buf));
-> > +                       if (n <= 0)
-> > +                               break;
-> > +                       nread += n;
-> > +               }
-> > +       }
-> > +
-> > +       /* wait to read data at least as we wrote + some build-ids */
-> > +       while (nread < len) {
-> > +               int n;
-> > +
-> > +               n = read(data->output_pipe[0], buf, sizeof(buf));
-> > +               if (n < 0)
-> > +                       break;
-> > +               nread += n;
-> > +       }
-> > +       close(data->input_pipe[1]);
-> > +       close(data->output_pipe[0]);
-> > +
-> > +       wait(&status);
-> > +       pr_debug("   Child %d exited with %d\n", data->pid, status);
-> > +
-> > +       return 0;
-> > +}
-> >
->
-> Perhaps we can read the highwater mark (VmHWM) from /proc/[pid]/status
-> as this would capture cases like buildid injection doing unnecessary
-> symbol generation.
-
-Good idea!  I'll add it and check we can see the difference.
-
-Thanks
-Namhyung
