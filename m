@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394DA276924
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B6A276928
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgIXGlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:41:42 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:52818 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726896AbgIXGll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:41:41 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kLKwi-00048m-KT; Thu, 24 Sep 2020 08:41:36 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        Elaine Zhang <zhangqing@rock-chips.com>
-Subject: Re: [PATCH] clk: rockchip: Initialize hw to error to avoid undefined behavior
-Date:   Thu, 24 Sep 2020 08:41:36 +0200
-Message-ID: <1741951.WK9IEl5h0a@diego>
-In-Reply-To: <20200924004441.1476015-1-sboyd@kernel.org>
-References: <20200924004441.1476015-1-sboyd@kernel.org>
+        id S1727026AbgIXGlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727014AbgIXGlv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:41:51 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C643C0613CE;
+        Wed, 23 Sep 2020 23:41:51 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id j2so2165608ioj.7;
+        Wed, 23 Sep 2020 23:41:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nc/zXBadEVOmIc4OHWI+QEDHr9bs5kygtZ+w9n+QyNA=;
+        b=bt1H2ClYpG6wRBMl3caRAX4oc9cclKQ6XJRi8LQ5BQkrpCJxtex3tyrMwzGPAVaax6
+         tRNaBZriP+Xkd4JTfFowUvkRuRV0vvU41uk+CXSIm7gcTxm5aG79V6Ap6fxA7Mehmn+X
+         WJ69uyB0ZlPtvrGPuUAYcgQkrEjGFoAJWBPb8rtXq7xXicAkuVyee/N0YE1hVBMyiETD
+         ldtFhrgTZ6OFkXJ98rEtgBcpscpLNRscXohkBRnn19V0iDJHisgA1ZyZ6CTVgIn7Bjtb
+         70WO9FbMuw9f+alGIudE/2zj1ae8t7oBk4uF3xY3cvUJCL5pIpz0Si3KflORXaUakP+/
+         6WsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nc/zXBadEVOmIc4OHWI+QEDHr9bs5kygtZ+w9n+QyNA=;
+        b=mOCC4Zdj9IAkJzh3kaG72mt3AC3K0YJgQM/nrwqZx/THtwdHqkOtebkFUuvwSs3Qxn
+         apM67mIR0P68zawW/Qr//xL7X/IO2NjmRIsFzorkRRPM3Pdwsy+6zjVqKe6N39UKByl7
+         I5ZY4jN2vADe3YhT9XF7ZSS3o/fsawgEcowspHsgQavibcsYwTp4zj/gYwGUAW7JBOcV
+         ZN/7J1xRrhg9gSKbFK8fmzdCGphoAfRTw+ghvdRCzPBhm9rU/UbQTFxAiRmemf+/lMZ1
+         pWbgng31FAgO8IRPdiGm6a5vnvMOHsmtVjZD7EvQaytLKla8WzL038D0Ua4KWdvDXOis
+         kPGg==
+X-Gm-Message-State: AOAM533zXbX9oFdp1ECc+PtoFAGKRIjwt085z8WzOMKkgZ6xOwsXgBSH
+        /xy8WAhCdt88Bvuh0ZSEdusHj6+BIBeZtJOPm7g=
+X-Google-Smtp-Source: ABdhPJz9Z48rA7YNFkkLeQn2ItT1DskwJV6AnHnzPbQ2u5MHEkr6m8hq1mErYNocrznn0VblhKBV5Qgv1f8gkKFFKX0=
+X-Received: by 2002:a02:ccca:: with SMTP id k10mr2538463jaq.111.1600929710016;
+ Wed, 23 Sep 2020 23:41:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20200924051343.16052.9571.stgit@localhost.localdomain>
+In-Reply-To: <20200924051343.16052.9571.stgit@localhost.localdomain>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Thu, 24 Sep 2020 16:41:39 +1000
+Message-ID: <CAOSf1CEv3v940FR_we70qCBME0qFXPizPT8EFbf3XyK2-fPDrw@mail.gmail.com>
+Subject: Re: [PATCH] rpadlpar_io:Add MODULE_DESCRIPTION entries to kernel modules
+To:     Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, 24. September 2020, 02:44:41 CEST schrieb Stephen Boyd:
-> We can get down to this return value from ERR_CAST() without
-> initializing hw. Set it to -ENOMEM so that we always return something
-> sane.
-> 
-> Fixes the following smatch warning:
-> 
-> drivers/clk/rockchip/clk-half-divider.c:228 rockchip_clk_register_halfdiv() error: uninitialized symbol 'hw'.
-> drivers/clk/rockchip/clk-half-divider.c:228 rockchip_clk_register_halfdiv() warn: passing zero to 'ERR_CAST'
-> 
-> Cc: Elaine Zhang <zhangqing@rock-chips.com>
-> Cc: Heiko Stuebner <heiko@sntech.de>
-> Fixes: 956060a52795 ("clk: rockchip: add support for half divider")
-> Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
-
-
+On Thu, Sep 24, 2020 at 3:15 PM Mamatha Inamdar
+<mamatha4@linux.vnet.ibm.com> wrote:
+>
+> This patch adds a brief MODULE_DESCRIPTION to rpadlpar_io kernel modules
+> (descriptions taken from Kconfig file)
+>
+> Signed-off-by: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
 > ---
->  drivers/clk/rockchip/clk-half-divider.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/rockchip/clk-half-divider.c b/drivers/clk/rockchip/clk-half-divider.c
-> index e97fd3dfbae7..ccd5c270c213 100644
-> --- a/drivers/clk/rockchip/clk-half-divider.c
-> +++ b/drivers/clk/rockchip/clk-half-divider.c
-> @@ -166,7 +166,7 @@ struct clk *rockchip_clk_register_halfdiv(const char *name,
->  					  unsigned long flags,
->  					  spinlock_t *lock)
->  {
-> -	struct clk_hw *hw;
-> +	struct clk_hw *hw = ERR_PTR(-ENOMEM);
->  	struct clk_mux *mux = NULL;
->  	struct clk_gate *gate = NULL;
->  	struct clk_divider *div = NULL;
-> 
-> base-commit: ca52a47af60f791b08a540a8e14d8f5751ee63e9
-> 
+>  drivers/pci/hotplug/rpadlpar_core.c |    1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
+> index f979b70..bac65ed 100644
+> --- a/drivers/pci/hotplug/rpadlpar_core.c
+> +++ b/drivers/pci/hotplug/rpadlpar_core.c
+> @@ -478,3 +478,4 @@ static void __exit rpadlpar_io_exit(void)
+>  module_init(rpadlpar_io_init);
+>  module_exit(rpadlpar_io_exit);
+>  MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("RPA Dynamic Logical Partitioning driver for I/O slots");
 
+RPA as a spec was superseded by PAPR in the early 2000s. Can we rename
+this already?
 
+The only potential problem I can see is scripts doing: modprobe
+rpadlpar_io or similar
 
+However, we should be able to fix that with a module alias.
 
+Oliver
