@@ -2,122 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB64276E9D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B97276EA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727439AbgIXKXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIXKXi (ORCPT
+        id S1727440AbgIXKYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:24:20 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17189 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727089AbgIXKYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:23:38 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28930C0613CE;
-        Thu, 24 Sep 2020 03:23:38 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id y15so3035229wmi.0;
-        Thu, 24 Sep 2020 03:23:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=gZTr6jKVJWBT4b9FYe4os7KKq9EIettyh4MTHWoR4TY=;
-        b=PKDFs6f19rp55uBqg1s6mc/02OdH3LiLE4xwl102tLJqolty41BUdcS3PJo2zzp+ev
-         wXIISPXFCiCYvP576m8UOEGFjEHsmkIMsiDzTC2eVFF/rw8R15A7ofeVpNxEcMaEttuA
-         aruUCFs2ZDBJQBNOsEwaKfr9lLIsVHmUh4UaqghCS9OFdZwfqZ7nD6IVLS5p+PWQXSy4
-         dKCygqDumJijzPP5I/7wiO17FMS+4tBz9dpKX1nBXMibDCEFSFchXqE5K3eYN+FvoNKX
-         IXa3zvXNzgovrGwJ0M5aCu1CfGY8zwe5967rFlhzHAImPIHLPDhgpEr/A1oti/jGxfjq
-         K7Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gZTr6jKVJWBT4b9FYe4os7KKq9EIettyh4MTHWoR4TY=;
-        b=G2+vbKDO0iKV7gPgkMxxJA6GprQXpJdz/aHRbmDHoX1d/5qzyMICWRO+TTfLDfrvgl
-         +js7nEchOui+ORZLRCZzlDEOUEXG4xrKcuFTqjf+pRqU6dPEnDaHSNiv5b9y8SPgsmMU
-         ojTq70gZS7CJu/MV7KzcNGRzgC+Ibq7zl5j00jPWgsBnA+br75xnutEn1baA6XOzVcZ6
-         x7ZswFzgvQHORuh+Fjgb1iVuXEl2Tw6Tbu0YmIufJTR5EaWudjT0Y9dj9X4L0mXIbSj3
-         PM2thSKD1zcXfH1MP77+sFJOeAWwLwACUc8gdLOLePcihsPhBdwuSP60QTJoDYzdL4ld
-         FB3A==
-X-Gm-Message-State: AOAM5332GVwnymOtobjL4KEi0eQX+rolVAS9zVCV38X/EoPD6GIHWP/d
-        5tKzfCEiDr36amTO5+YLA00=
-X-Google-Smtp-Source: ABdhPJwhuRMERw9p/nHHMg6pVZuFa6hzITzvP8M0CBrfe0EcJtOoL2dRd+frNm3C7Xww3RN6AFaeew==
-X-Received: by 2002:a1c:9c4b:: with SMTP id f72mr3950986wme.188.1600943016827;
-        Thu, 24 Sep 2020 03:23:36 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id u186sm2895522wmu.34.2020.09.24.03.23.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 03:23:35 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 12:23:33 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Nicolin Chen <nicoleotsuka@gmail.com>
-Cc:     joro@8bytes.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
-        jonathanh@nvidia.com, vdumpa@nvidia.com
-Subject: Re: [PATCH 2/3] iommu/tegra-smmu: Fix iova->phys translation
-Message-ID: <20200924102333.GH2483160@ulmo>
-References: <20200911071643.17212-1-nicoleotsuka@gmail.com>
- <20200911071643.17212-3-nicoleotsuka@gmail.com>
+        Thu, 24 Sep 2020 06:24:20 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6c73740000>; Thu, 24 Sep 2020 03:22:44 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 24 Sep
+ 2020 10:24:17 +0000
+Date:   Thu, 24 Sep 2020 13:24:13 +0300
+From:   Eli Cohen <elic@nvidia.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+CC:     Leon Romanovsky <leonro@nvidia.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        <virtualization@lists.linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
+ errors
+Message-ID: <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
+References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
+ <20200918082245.GP869610@unreal>
+ <20200924052932-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hAW+M2+FUO+onfmf"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200911071643.17212-3-nicoleotsuka@gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+In-Reply-To: <20200924052932-mutt-send-email-mst@kernel.org>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1600942964; bh=xFEXTrh+NFdeK1/P8HCH4+uK/KDiUSTWNwiqN+Dfnco=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=Z6aKkXsqj6CePgZSTh5BKLnR3ekfwpY1807/Dnnp5tf+EovMIDHB+hGzJBrJuHNF6
+         6hi5AG4mRMBN2WBVwPfVNe7p4Qwzz++whYxjyt4w/+wqp+Wtu0IKEOaHGunw34otQQ
+         SAqByaskjPdhWMiu/1bYh/zdv4WjAmDL/ZBeF5szOK+wKQS3GLEuONnY343PlmU5A2
+         B2TzYzjPsYgUWgqLsvBAmgrPDnPp1RSfjQqR+jWAJPmxYTyFvNXsMrNf/nBmVXoEbd
+         78iGy79noz7Ey2hRR2IvNh+UbH5y94Mm8aHUKdU+vIFKF1N6peBQHjImumvZIksdhl
+         2UI97+VI86Kwg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 24, 2020 at 05:30:55AM -0400, Michael S. Tsirkin wrote:
+> > > --- linux-next-20200917.orig/drivers/vdpa/Kconfig
+> > > +++ linux-next-20200917/drivers/vdpa/Kconfig
+> > > @@ -31,7 +31,7 @@ config IFCVF
+> > >
+> > >  config MLX5_VDPA
+> > >  	bool "MLX5 VDPA support library for ConnectX devices"
+> > > -	depends on MLX5_CORE
+> > > +	depends on VHOST_IOTLB && MLX5_CORE
+> > >  	default n
+> > 
+> > While we are here, can anyone who apply this patch delete the "default n" line?
+> > It is by default "n".
 
---hAW+M2+FUO+onfmf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I can do that
 
-On Fri, Sep 11, 2020 at 12:16:42AM -0700, Nicolin Chen wrote:
-> IOVA might not be always 4KB aligned. So tegra_smmu_iova_to_phys
-> function needs to add on the lower 12-bit offset from input iova.
->=20
-> Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
-> ---
->  drivers/iommu/tegra-smmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-> index 789d21c01b77..50b962b0647e 100644
-> --- a/drivers/iommu/tegra-smmu.c
-> +++ b/drivers/iommu/tegra-smmu.c
-> @@ -795,7 +795,7 @@ static phys_addr_t tegra_smmu_iova_to_phys(struct iom=
-mu_domain *domain,
-> =20
->  	pfn =3D *pte & as->smmu->pfn_mask;
-> =20
-> -	return SMMU_PFN_PHYS(pfn);
-> +	return SMMU_PFN_PHYS(pfn) + SMMU_OFFSET_IN_PAGE(iova);
->  }
-> =20
->  static struct tegra_smmu *tegra_smmu_find(struct device_node *np)
+> > 
+> > Thanks
+> 
+> Hmm other drivers select VHOST_IOTLB, why not do the same?
 
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---hAW+M2+FUO+onfmf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9sc6UACgkQ3SOs138+
-s6H3aQ//YiyhKfdv1T0l5I+sWJLgPMt5Tv9V3Hul5HxECkRzIWLUFijryp3tLNlU
-unup51XBCpV0Y/q1B8S7X0AhIqaoUM7aRXIiAbp6LwZuZDHyAKN7iS2e1IXdZ3lh
-gl1c6r6boPVKiMRPcnOYKeukZSMsWO6RsnWlOZO5VgYjcYT2L+a94bCZ0Ogg3vpW
-g47FFf22V+RnDF3UOFI/3sROkOLptSqEU7PgNUC67cS3rffTNoiW9FoxHYASJ70J
-BapvXPZHDWKovcD4FdEIcoEc0phEO9knjPvh0ssOM07lzWUDqME7I2X1CcGtncd3
-z/jmVjw8NwXyZEh50CkN3shUJdOeZ+1jO3jBb0EOAXWjjmK4zbDQgV3qdyC2CQLU
-afRp4bq0wprYj+FCWDCA2i3ndNIWTgu3ArObLz5YiSf3Mny5dbO0S+d2pOGwGERZ
-oeQEy3C/pK0vhy/ziLsTt6k8byU6JCRA4RMdCuTZSNH2v4Sk7eCwVupdf+QvZk0g
-5Sj7nr00b5d1qSJFm8LoVxLAKxVW0AQdmN8x8TYbAiY/R1KzaSBnU+bJMNXZIrqo
-iJ2XLQlyYwNyXSzAOPwiYA2FP2k1G/QF8rBUFZgBgP5RVtIiGDcnyw6MSYJpQ88X
-qgI6SuOmQqwxYH64pYrThfrVyzZC49sVuf4pqzgDSA3NyDh2QW4=
-=W1ct
------END PGP SIGNATURE-----
-
---hAW+M2+FUO+onfmf--
+I can't see another driver doing that. Perhaps I can set dependency on
+VHOST which by itself depends on VHOST_IOTLB?
+> 
+> 
+> > >  	help
+> > >  	  Support library for Mellanox VDPA drivers. Provides code that is
+> > >
+> 
