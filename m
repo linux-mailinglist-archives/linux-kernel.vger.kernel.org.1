@@ -2,91 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C01427662F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE88D276637
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgIXCEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 22:04:40 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52288 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgIXCEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 22:04:40 -0400
-IronPort-SDR: SBloBsLui30GihXNSzR1dKJ9Wl7StnB+HpAQJMAfNcwzSlgMYCrlYTDB82U3By/P3D6bPzZBHb
- Kg3tsdQJ9BQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="225204563"
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
-   d="scan'208";a="225204563"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 19:04:39 -0700
-IronPort-SDR: hz/RI71VQEz5S+0FXXacOm2hX8rmBeP1olv5jScvAu/g9sdK3wmEXYWmavhPCcjL5cd+rFH1b6
- MjWukxp3Rl3Q==
-X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
-   d="scan'208";a="382878614"
-Received: from jdelagui-mobl.amr.corp.intel.com (HELO [10.255.231.15]) ([10.255.231.15])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Sep 2020 19:04:39 -0700
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
-Date:   Wed, 23 Sep 2020 19:04:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726562AbgIXCGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 22:06:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23098 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726500AbgIXCGb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 22:06:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600913189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=x8ZHcIulSGOzBD8uxM6rgIoMK8J76Sbkt6GTxH94yuI=;
+        b=CfRSMVkRA1d3uhsTz8cFF9z3ftAHQBBa4YzXwo6EsNb/sijJj0hhBn5w66SEHMz2/0UlRC
+        UNyUlujR6C1udl5Ds8OcQpYUGelqsKFLUTM4wjWPswEPVtb0Cw8CcTVl3I6ENioLlCE/fM
+        aMZSmdJEGKS8qF2iS3Q/aoPJM/AgT20=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-pYJrqiROO7OZqblLvyigNw-1; Wed, 23 Sep 2020 22:06:26 -0400
+X-MC-Unique: pYJrqiROO7OZqblLvyigNw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32F51188C122;
+        Thu, 24 Sep 2020 02:06:24 +0000 (UTC)
+Received: from ovpn-66-35.rdu2.redhat.com (unknown [10.10.67.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AD1B860C17;
+        Thu, 24 Sep 2020 02:06:19 +0000 (UTC)
+Message-ID: <76fef5dfd8efdb4130e41d1811b2a78ce39c8b0d.camel@redhat.com>
+Subject: Re: BUG: Bad page state in process dirtyc0w_child
+From:   Qian Cai <cai@redhat.com>
+To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Alex Shi <alex.shi@linux.alibaba.com>
+Date:   Wed, 23 Sep 2020 22:06:19 -0400
+In-Reply-To: <20200923153938.5be5dd2c@thinkpad>
+References: <a46e9bbef2ed4e17778f5615e818526ef848d791.camel@redhat.com>
+         <20200916142806.GD7076@osiris> <20200922190350.7a0e0ca5@thinkpad>
+         <20200923153938.5be5dd2c@thinkpad>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/23/20 6:15 PM, Sinan Kaya wrote:
-> On 9/22/2020 7:44 PM, Kuppuswamy, Sathyanarayanan wrote:
->>> here does the restore happen here?  I.e., what function does this?
->>
->> DLLSC link down event will remove affected devices/drivers. And link up
->> event
->> will re-create all devices.
->>
->> on DLLSC link down event
->> ->pciehp_ist()
->>    ->pciehp_handle_presence_or_link_change()
->>      ->pciehp_disable_slot()
->>        ->__pciehp_disable_slot()
->>          ->remove_board()
->>            ->pciehp_unconfigure_device()
->>
->> on DLLSC link up event
->> ->pciehp_ist()
->>    ->pciehp_handle_presence_or_link_change()
->>      ->pciehp_enable_slot()
->>        ->__pciehp_enable_slot()
->>          ->board_added()
->>            ->pciehp_configure_device()
+On Wed, 2020-09-23 at 15:39 +0200, Gerald Schaefer wrote:
+> OK, I can now reproduce this, and unfortunately also with the gup_fast
+> fix, so it is something different. Bisecting is a bit hard, as it will
+> not always show immediately, sometimes takes up to an hour.
 > 
-> AFAIK, DLLSC is a requirement not optional. Why is this not supported by
-> non-hotplug ports?
-Its required for hotplug capable ports. Please check PCIe spec v5.0 sec 6.7.3.3.
+> Still, I think I found the culprit, merge commit b25d1dc9474e "Merge
+> branch 'simplify-do_wp_page'". Without those 4 patches, it works fine,
+> running over night.
+> 
+> Not sure why this only shows on s390, should not be architecture-specific,
+> but we do often see subtle races earlier than others due to hypervisor
+> impact.
 
-The Data Link Layer State Changed event provides an indication that the state of
-the Data Link Layer Link Active bit in the Link Status Register has changed.
-Support for Data Link Layer State Changed events and software notification of these
-events are required for hot-plug capable Downstream Ports.
+Apparently, someone can reproduce something similar on x86 as well:
+
+https://lore.kernel.org/linux-mm/c41149a8-211e-390b-af1d-d5eee690fecb@linux.alibaba.com/
+
+Probably, Alex could revert the bad commits and confirm it there.
 
 > 
+> The first commit 09854ba94c6a ("mm: do_wp_page() simplification") already
+> introduces this error. The dirtyc0w_child test seems to play with cow
+> and racing madvise(MADV_DONTNEED), but I have not yet fully understood
+> it and also not the changes from commit 09854ba94c6a. As Linus already
+> mentioned in the merge commit message, this is some bad timing for such
+> a change, so I don't want to delay this further with trying to understand
+> it better before reporting. Maybe Peter or Linus can spot some obvious
+> issue.
+> 
+> One thing that seems strange to me is that the page flags from the
+> bad page state output are (uptodate|swapbacked), see below, or
+> (referenced|uptodate|dirty|swapbacked) in the original report. But IIUC,
+> that should not qualify for the "PAGE_FLAGS_CHECK_AT_FREE flag(s) set"
+> reason. So it seems that the flags have changed between check_free_page()
+> and __dump_page(), which would be very odd. Or maybe some issue with
+> compound pages, because __dump_page() looks at head->flags.
+> 
+> [ 1863.237707] BUG: Bad page state in process dirtyc0w_child  pfn:58527d
+> [ 1863.237721] page:000000008866956b refcount:0 mapcount:0
+> mapping:0000000000000000 index:0x0 pfn:0x58527d
+> [ 1863.237727] flags: 0x3ffff00000080004(uptodate|swapbacked)
+> [ 1863.237734] raw: 3ffff00000080004 0000000000000100 0000000000000122
+> 0000000000000000
+> [ 1863.237738] raw: 0000000000000000 0000000000000000 ffffffff00000000
+> 0000000000000000
+> [ 1863.237742] page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
+> [ 1863.237745] Modules linked in:
+> [ 1863.237752] CPU: 16 PID: 9074 Comm: dirtyc0w_child Tainted:
+> G    B             5.9.0-rc6-00020-geff48ddeab78-dirty #104
+> [ 1863.237756] Hardware name: IBM 3906 M03 703 (LPAR)
+> [ 1863.237759] Call Trace:
+> [ 1863.237768]  [<0000000000115f28>] show_stack+0x100/0x158 
+> [ 1863.237775]  [<000000000096b41a>] dump_stack+0xa2/0xd8 
+> [ 1863.237781]  [<00000000003d497c>] bad_page+0xdc/0x140 
+> [ 1863.237785]  [<00000000003d5b62>] free_pcp_prepare+0x31a/0x360 
+> [ 1863.237789]  [<00000000003d906a>] free_unref_page+0x32/0xb8 
+> [ 1863.237794]  [<00000000003b05f4>] zap_p4d_range+0x64c/0xcf8 
+> [ 1863.237797]  [<00000000003b0e7a>] unmap_page_range+0x9a/0x110 
+> [ 1863.237801]  [<00000000003b0f84>] unmap_single_vma+0x94/0x100 
+> [ 1863.237805]  [<00000000003b14c2>] zap_page_range+0x14a/0x1f0 
+> [ 1863.237809]  [<00000000003e3a24>] do_madvise+0x75c/0x918 
+> [ 1863.237812]  [<00000000003e3c06>] __s390x_sys_madvise+0x26/0x38 
+> [ 1863.237817]  [<0000000000d280d4>] system_call+0xe0/0x2c0 
+> [ 1863.237820] INFO: lockdep is turned off.
+> 
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
