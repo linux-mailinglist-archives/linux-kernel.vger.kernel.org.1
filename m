@@ -2,74 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A39E2768BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E382768C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgIXGQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:16:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40882 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726683AbgIXGQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:16:47 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726906AbgIXGQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726683AbgIXGQx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:16:53 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED7EC0613CE;
+        Wed, 23 Sep 2020 23:16:52 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A2B2E20702;
-        Thu, 24 Sep 2020 06:16:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600928206;
-        bh=RkWUf/g+/ncpRiNuk50QQRF/sO/JoANOvDAyyxWxHR4=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=0LqjUFupIva7qKiEdnspqC7W81HOkD529hyP6WTEt7Tsd4PV2MJzG1VW/TK7IBIAw
-         lB3faCEdgNWv/MXRkL7ffGtgnjGoamWt0SPGYT9w4QD+iyzAlDmdIjL1jD5wpXyVG/
-         rRN3VNTz01lFN0I6cmblIMv+aAum4TrEB5gUOYzQ=
-Content-Type: text/plain; charset="utf-8"
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BxlDw4X06z9sTM;
+        Thu, 24 Sep 2020 16:16:48 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600928209;
+        bh=vIEPy/d+ouY1HAsMITJ2LBk3ast64x0SEFEfKuM2ToE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=HYvNVW/KQT220hVWs6sn+TM8Gs+4aPIS8hQRbP3OVITCNF4A+goGdJQONcyc1Bi5L
+         VRoZ1mWeWF2QgDTTlxSx3nUCttBCqFgI5yAkPfWg+yc+4Il9FNXZL8i8I/KfWAQTSc
+         AStFCeIqXSXnIczI+fvIFYcz4ZkeYfWO5wP1nIgi1tvtZUOwiO/Dc1VkHsZ+DTDzkv
+         gKxuT6m6cWH8brUUCwtKaU5ETEqgI3lAUF3EsuB90eoa/Yr9clsw/A2icPzcovfPOs
+         S8lZa1APdS4huJC5vwMPRDAk6i3HjN6sOG80uYethOckNHf5wwVIofWtJGsJdQZn1d
+         GWyQgaTPNWuBg==
+Date:   Thu, 24 Sep 2020 16:16:47 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build warning after merge of the pwm tree
+Message-ID: <20200924161647.39d44a7c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <2f429321-49c1-98b9-63e6-fd9c885af59c@marek.ca>
-References: <20200911153412.21672-1-jonathan@marek.ca> <20200911153412.21672-8-jonathan@marek.ca> <160080125949.310579.17354323673790889544@swboyd.mtv.corp.google.com> <2f429321-49c1-98b9-63e6-fd9c885af59c@marek.ca>
-Subject: Re: [PATCH v3 7/7] clk: qcom: Add display clock controller driver for SM8250
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
-Date:   Wed, 23 Sep 2020 23:16:45 -0700
-Message-ID: <160092820545.310579.6383587246524246608@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: multipart/signed; boundary="Sig_/E=q3ubulOBpTUtt5.QlDmxo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jonathan Marek (2020-09-23 09:10:04)
-> On 9/22/20 3:00 PM, Stephen Boyd wrote:
-> > Quoting Jonathan Marek (2020-09-11 08:34:07)
-> >> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispc=
-c-sm8250.c
-> >> new file mode 100644
-> >> index 000000000000..7c0f384a3a42
-> >> --- /dev/null
-> >> +++ b/drivers/clk/qcom/dispcc-sm8250.c
-> >> @@ -0,0 +1,1100 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +/*
-> >> + * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
-> >> + */
-> >> +
-> > [...]
-> >> +
-> >> +static const struct clk_parent_data disp_cc_parent_data_6[] =3D {
-> >> +       { .fw_name =3D "bi_tcxo" },
-> >> +       { .fw_name =3D "dsi0_phy_pll_out_dsiclk" },
-> >> +       { .fw_name =3D "dsi1_phy_pll_out_dsiclk" },
-> >=20
-> > Can we remove clk postfix on these clk names?
-> >=20
->=20
-> This is consistent with the names used in both sdm845 and sc7180=20
-> drivers. If this should change then those should be changed too?
+--Sig_/E=q3ubulOBpTUtt5.QlDmxo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If DT isn't using it already then it sounds OK to change the other
-SoCs. Otherwise fix it just for this one.
+Hi all,
+
+After merging the pwm tree, today's linux-next build (x86_64 allmodconfig)
+produced this warning:
+
+WARNING: modpost: missing MODULE_LICENSE() in drivers/pwm/pwm-intel-lgm.o
+
+Introduced by commit
+
+  9fba318f0f7f ("Add PWM fan controller driver for LGM SoC")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/E=q3ubulOBpTUtt5.QlDmxo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9sOc8ACgkQAVBC80lX
+0Gxxbwf+MLRDw9xhaw8V0qUyU1/qJOsJjVF3akcdKnOfYA8prwPmbZzFYSdDpQAI
+aIwgJIg9eOL+EWJMBQe3MMa0MJLkrYVVlmmLNb8t2GQvFsuV5qzkt6Cub3KqSWn1
+WBJuClflNeIbXP38u3seWoyNsbPAU612VgaSnGAc3wSpp3s2B6rIwAYGFWnqBAVq
+FxgAgqR26YKx3o57PS4g379zdGRkKh3G64OWxDMmZyHUC5oXXbGTVsWwvFrea8of
+WOpGWboK+Tw5bddRuED6qV0KcuTWX07vxv6x1DmKpOYN40XzcpL3scY1Q+lMpgmr
+LroqYxsdnMNxxLFe469w7QGFsvQFag==
+=8jyX
+-----END PGP SIGNATURE-----
+
+--Sig_/E=q3ubulOBpTUtt5.QlDmxo--
