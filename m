@@ -2,131 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD37276618
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E06627661D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbgIXB4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 21:56:52 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:37585 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725208AbgIXB4v (ORCPT
+        id S1726466AbgIXB5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 21:57:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIXB5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 21:56:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U9uuGE7_1600912620;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U9uuGE7_1600912620)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Sep 2020 09:57:01 +0800
-Date:   Thu, 24 Sep 2020 09:57:00 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Hildenbrand <david@redhat.com>, osalvador@suse.de,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: Re: [PATCH RFC 0/4] mm: place pages to the freelist tail when onling
- and undoing isolation
-Message-ID: <20200924015700.GA3145@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <5c0910c2cd0d9d351e509392a45552fb@suse.de>
- <DAC9E747-BDDF-41B6-A89B-604880DD7543@redhat.com>
- <67928cbd-950a-3279-bf9b-29b04c87728b@suse.cz>
+        Wed, 23 Sep 2020 21:57:21 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63AFC0613CE;
+        Wed, 23 Sep 2020 18:57:35 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BxdTn1Gb7z9ryj;
+        Thu, 24 Sep 2020 11:57:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600912653;
+        bh=jlcQuGRALYM6HUtjWL7OiAitKroAn1Z2CNU1vCM1I/Y=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TiW0b2vFcuX78GIhF2qpyDV6X351gltI/07G8y3Xm3m48efXUuDxIuCMNAbCD2htP
+         hJa1wGhhwc8AMe7zxaQsWqUxfeuFgqAmE/MxoWbK2DAkwGzbGrSk25Sfq16woMSAUv
+         jvXk0AjxzQ2Zsws9Fb0GH7yirJuarYQiOBQadCT2ikRBhKmWgzifXBlkkKo9iZTsoa
+         RcUmWwbX/yr1wa7zUlmLGlCZotTmfiDA5I/ZehA3qO9BTGdWhZEl4YUHNVuO4wSmGo
+         tf8XKd1XQ/vosnjK45HDApN5WmgKtqWkDdALraSA1AtatOtGB7rTBnerv1eBI5zrkk
+         55EhXiDHu0vIg==
+Date:   Thu, 24 Sep 2020 11:57:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Wasim Khan <wasim.khan@nxp.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Xiaowei Bao <xiaowei.bao@nxp.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the pci tree with the imx-mxs tree
+Message-ID: <20200924115731.194ecd6f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <67928cbd-950a-3279-bf9b-29b04c87728b@suse.cz>
+Content-Type: multipart/signed; boundary="Sig_/K8bMVqusV0Gxwgrjehxi5oo";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 04:31:25PM +0200, Vlastimil Babka wrote:
->On 9/16/20 9:31 PM, David Hildenbrand wrote:
->> 
->> 
->>> Am 16.09.2020 um 20:50 schrieb osalvador@suse.de:
->>> 
->>> ﻿On 2020-09-16 20:34, David Hildenbrand wrote:
->>>> When adding separate memory blocks via add_memory*() and onlining them
->>>> immediately, the metadata (especially the memmap) of the next block will be
->>>> placed onto one of the just added+onlined block. This creates a chain
->>>> of unmovable allocations: If the last memory block cannot get
->>>> offlined+removed() so will all dependant ones. We directly have unmovable
->>>> allocations all over the place.
->>>> This can be observed quite easily using virtio-mem, however, it can also
->>>> be observed when using DIMMs. The freshly onlined pages will usually be
->>>> placed to the head of the freelists, meaning they will be allocated next,
->>>> turning the just-added memory usually immediately un-removable. The
->>>> fresh pages are cold, prefering to allocate others (that might be hot)
->>>> also feels to be the natural thing to do.
->>>> It also applies to the hyper-v balloon xen-balloon, and ppc64 dlpar: when
->>>> adding separate, successive memory blocks, each memory block will have
->>>> unmovable allocations on them - for example gigantic pages will fail to
->>>> allocate.
->>>> While the ZONE_NORMAL doesn't provide any guarantees that memory can get
->>>> offlined+removed again (any kind of fragmentation with unmovable
->>>> allocations is possible), there are many scenarios (hotplugging a lot of
->>>> memory, running workload, hotunplug some memory/as much as possible) where
->>>> we can offline+remove quite a lot with this patchset.
->>> 
->>> Hi David,
->>> 
->> 
->> Hi Oscar.
->> 
->>> I did not read through the patchset yet, so sorry if the question is nonsense, but is this not trying to fix the same issue the vmemmap patches did? [1]
->> 
->> Not nonesense at all. It only helps to some degree, though. It solves the dependencies due to the memmap. However, it‘s not completely ideal, especially for single memory blocks.
->> 
->> With single memory blocks (virtio-mem, xen-balloon, hv balloon, ppc dlpar) you still have unmovable (vmemmap chunks) all over the physical address space. Consider the gigantic page example after hotplug. You directly fragmented all hotplugged memory.
->> 
->> Of course, there might be (less extreme) dependencies due page tables for the identity mapping, extended struct pages and similar.
->> 
->> Having that said, there are other benefits when preferring other memory over just hotplugged memory. Think about adding+onlining memory during boot (dimms under QEMU, virtio-mem), once the system is up you will have most (all) of that memory completely untouched.
->> 
->> So while vmemmap on hotplugged memory would tackle some part of the issue, there are cases where this approach is better, and there are even benefits when combining both.
->
->I see the point, but I don't think the head/tail mechanism is great for this. It
->might sort of work, but with other interfering activity there are no guarantees
->and it relies on a subtle implementation detail. There are better mechanisms
->possible I think, such as preparing a larger MIGRATE_UNMOVABLE area in the
->existing memory before we allocate those long-term management structures. Or
->onlining a bunch of blocks as zone_movable first and only later convert to
->zone_normal in a controlled way when existing normal zone becomes depeted?
->
+--Sig_/K8bMVqusV0Gxwgrjehxi5oo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-To be honest, David's approach is easy to understand for me.
+Hi all,
 
-And I don't see some negative effect.
+Today's linux-next merge of the pci tree got a conflict in:
 
->I guess it's an issue that the e.g. 128M block onlines are so disconnected from
->each other it's hard to employ a strategy that works best for e.g. a whole bunch
->of GB onlined at once. But I noticed some effort towards new API, so maybe that
->will be solved there too?
->
->> Thanks!
->> 
->> David
->> 
->>> 
->>> I was about to give it a new respin now that thw hwpoison stuff has been settled.
->>> 
->>> [1] https://patchwork.kernel.org/cover/11059175/
->>> 
->> 
+  arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
 
--- 
-Wei Yang
-Help you, Help me
+between commit:
+
+  f7d48ffcfc6e ("arm64: dts: layerscape: Add label to pcie nodes")
+
+from the imx-mxs tree and commit:
+
+  c9443b6500ff ("arm64: dts: layerscape: Add PCIe EP node for ls1088a")
+
+from the pci tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index ff5805206a28,f21dd143ab6d..000000000000
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@@ -517,7 -499,18 +517,18 @@@
+  			status =3D "disabled";
+  		};
+ =20
++ 		pcie-ep@3400000 {
++ 			compatible =3D "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
++ 			reg =3D <0x00 0x03400000 0x0 0x00100000
++ 			       0x20 0x00000000 0x8 0x00000000>;
++ 			reg-names =3D "regs", "addr_space";
++ 			num-ib-windows =3D <24>;
++ 			num-ob-windows =3D <128>;
++ 			max-functions =3D /bits/ 8 <2>;
++ 			status =3D "disabled";
++ 		};
++=20
+ -		pcie@3500000 {
+ +		pcie2: pcie@3500000 {
+  			compatible =3D "fsl,ls1088a-pcie";
+  			reg =3D <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+  			       0x28 0x00000000 0x0 0x00002000>; /* configuration space */
+@@@ -543,7 -536,17 +554,17 @@@
+  			status =3D "disabled";
+  		};
+ =20
++ 		pcie-ep@3500000 {
++ 			compatible =3D "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
++ 			reg =3D <0x00 0x03500000 0x0 0x00100000
++ 			       0x28 0x00000000 0x8 0x00000000>;
++ 			reg-names =3D "regs", "addr_space";
++ 			num-ib-windows =3D <6>;
++ 			num-ob-windows =3D <8>;
++ 			status =3D "disabled";
++ 		};
++=20
+ -		pcie@3600000 {
+ +		pcie3: pcie@3600000 {
+  			compatible =3D "fsl,ls1088a-pcie";
+  			reg =3D <0x00 0x03600000 0x0 0x00100000   /* controller registers */
+  			       0x30 0x00000000 0x0 0x00002000>; /* configuration space */
+
+--Sig_/K8bMVqusV0Gxwgrjehxi5oo
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9r/QsACgkQAVBC80lX
+0GxA/Qf/XpS8U+zhGNJ/aAQZySZYBtqoe0Ii2GP62XZjOp9VvwlGQACEgTd9uqAt
+TwyioJbYis7/WondxLEz29HhGvbPXV8mEmPGzmWNdPyi16SrTTROeltwiamhXf3a
+MCRi432Rh81xZmjfnKNUCnJq6Kg4J4XZS9/lO1ATT4YzkCYDlzRtfyMRF+s0jgEN
+ro9Itvuy1F7QOERgy952mLSKm9jw1MSkIuMUnkcQ8lO1AFoVM6ZiTbcSWa4WEyuo
+isLXLW5ZzfH8ItZUxC+XnoCuK66zo34O4aAUE351qf0/nCcSMBaBbSU+huFpnfZB
+i56mDukhUAT/SRUkbRaezCog6KbaLA==
+=Y+El
+-----END PGP SIGNATURE-----
+
+--Sig_/K8bMVqusV0Gxwgrjehxi5oo--
