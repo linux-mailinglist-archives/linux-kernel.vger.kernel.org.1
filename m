@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A71A277AD5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5015C277AE9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:07:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbgIXUyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 16:54:41 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:57194 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgIXUyk (ORCPT
+        id S1726442AbgIXVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 17:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIXVHG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:54:40 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 6B97720079;
-        Thu, 24 Sep 2020 22:54:37 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 22:54:36 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Arnd Bergmann <arnd@arndb.de>, linux-fbdev@vger.kernel.org,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        "David S . Miller" <davem@davemloft.net>, hch@lst.de,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] fbdev: stop using compat_alloc_user_space
-Message-ID: <20200924205436.GP1223313@ravnborg.org>
-References: <20200918100812.1447443-1-arnd@arndb.de>
- <20200918124808.GD438822@phenom.ffwll.local>
+        Thu, 24 Sep 2020 17:07:06 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62F8C0613CE;
+        Thu, 24 Sep 2020 14:07:05 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id p15so130884ejm.7;
+        Thu, 24 Sep 2020 14:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rkxYLB+lfWbz4FohLDcSfT4fdzwjyILNCZtO54fvfxI=;
+        b=b3e6P0jAHc8fH18e6EnBasnbrSS1Y89qgdBYDQFnRKGmFP41FMVRypE94oPHjgX+Hx
+         hdiNvUUOhHYZqft6UYcpKYV43DwrASN9Vr6pJWtbAI9rkU/riEWtdQrhgUwz1pORMC9s
+         YBLDDIk2o9eQzjC27luzrfPxr53HqqOQs5WGBVhLek/efR5xasv5av+tyueAcfV7kjGn
+         DHShoSHhuIIgDhzMMYl2UC/0A9Xd7n5vfjbH8T7lVZKwNO5MifIBPQzXfwef3ciYswjA
+         UaUj1DIKnx50aivBXGCKZYQz7oJt0ZkbV2y2PCUG+XtkVqjMq+F2pDLKbioFbuPcroz2
+         bjrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rkxYLB+lfWbz4FohLDcSfT4fdzwjyILNCZtO54fvfxI=;
+        b=SlADdq8/hhDSloa3XSkMqPEH5dO6kU3hGD6OxuLazuP0YOR0/SWEMdUwuWqY57q5fP
+         obOzk+sfnqNHBvuoEHlyLhlF9Xz005xn8okZpwmTKKwfHyWVYIY8v8E9SdFk6MrdlX8k
+         bBsSczop6lLkMNBZkciVq8ogICI9v29iBQPX/smR7yk5cjy2jmOn+E9P8rbU47eBbmLN
+         BuMdyKTnYHSxCV4RiuLDYCiehx1n6dM+F1jQTZOMFOHdffsYZj0LDAu1sm9BYE2Yeq0t
+         lxjHaEwfTzf9fBlnl5awjPah/nzZtmJMmRKNdLt/0Awj1QktJH+w/F/sOQicDLyTHxxp
+         SGdQ==
+X-Gm-Message-State: AOAM531r3U3k2bgVDIMM4OaPsRl3XTjXeknz1iuJgt9t/DAGWpxq1ehM
+        iaA2I6U7Z/FeBrNdghp6ALVzlEMpQHw=
+X-Google-Smtp-Source: ABdhPJwjvP7IOrZfSs603V1qE80+ZUlp0UcDrAemKRbBr7YUrivRy2EUsrUUcusf41pNBk/6Wbui1Q==
+X-Received: by 2002:a17:906:29ca:: with SMTP id y10mr499729eje.327.1600981624057;
+        Thu, 24 Sep 2020 14:07:04 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a9d2.dip0.t-ipconnect.de. [217.229.169.210])
+        by smtp.gmail.com with ESMTPSA id t3sm257414edv.59.2020.09.24.14.07.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 14:07:03 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-serial@vger.kernel.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>
+References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
+ <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
+ <dad42dce-15d0-245a-4d91-4733e54883a0@gmail.com>
+ <CAK8P3a2ryzmsrHHApT9O=dvsw+=z18Sjd4ygVxvFrrDetKA+rQ@mail.gmail.com>
+ <c4c1d999-9ab7-8988-906a-3cb6a70bc93d@gmail.com>
+ <CAK8P3a2XegsP71yvd8Ku08_k6ecQfkU+V+t+QnjQBrJKF2MwCg@mail.gmail.com>
+ <d07adfb3-9f79-c00a-cb70-e044aa0b19f8@gmail.com>
+ <CAK8P3a23V8vug2U-9tXUOdO3DvQvEc5+GhZuQh7_HKtTavCqVQ@mail.gmail.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <0a861a86-e9eb-668c-f725-46336b48a86a@gmail.com>
+Date:   Thu, 24 Sep 2020 23:07:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918124808.GD438822@phenom.ffwll.local>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=CaYmGojl c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=e5mUnYsNAAAA:8 a=25-AhOLfAAAA:8
-        a=ocQuWhCnBm-ropBlqfgA:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
-        a=dnuY3_Gu-P7Vi9ynLKQe:22
+In-Reply-To: <CAK8P3a23V8vug2U-9tXUOdO3DvQvEc5+GhZuQh7_HKtTavCqVQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel/Arnd.
-
-On Fri, Sep 18, 2020 at 02:48:08PM +0200, Daniel Vetter wrote:
-> On Fri, Sep 18, 2020 at 12:08:10PM +0200, Arnd Bergmann wrote:
-> > The fbdev code uses compat_alloc_user_space in a few of its
-> > compat_ioctl handlers, which tends to be a bit more complicated
-> > and error-prone than calling the underlying handlers directly,
-> > so I would like to remove it completely.
-> > 
-> > This modifies two such functions in fbdev, and removes another
-> > one that is completely unused.
-> > 
-> >     Arnd
-> > 
-> > Arnd Bergmann (3):
-> >   fbdev: simplify fb_getput_cmap()
-> >   fbdev: sbuslib: remove unused FBIOSCURSOR32 helper
-> >   fbdev: sbuslib: remove compat_alloc_user_space usage
+On 9/24/20 9:38 PM, Arnd Bergmann wrote:
+> On Thu, Sep 24, 2020 at 8:59 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+>> On 9/24/20 10:26 AM, Arnd Bergmann wrote:
+>>> On Thu, Sep 24, 2020 at 1:28 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
 > 
-> Looks all good, but we're also kinda looking for a new volunteer for
-> handling fbdev patches ... drm-misc commit rights, still not interested?
-
-Hi Daniel - I read the above as an a-b. And Arnd did not take the bait
-it seems.
-
-Hi Arnd. checkpatch complained about some whitespace, which I fixed
-while applying.
-Will push to drm-misc-next tomorrow unless I hear anything else.
-
-	Sam
-
-
-> -Daniel
+>>> Note that drivers that connect to the bus typically don't live in the
+>>> same subdirectory as the driver that operates the bus. E.g. the
+>>> battery driver would go into drivers/power/supply and the input
+>>> would go into drivers/input/ or drivers/hid.
+>>
+>> Right. I wonder if this also holds for devices that are directly
+>> dependent on a special platform though? It could make sense to have them
+>> under plaform/surface rather than in the individual subsystems as they
+>> are only ever going to be used on this platform. On the other hand, one
+>> could argue that having them in the subsystem directories is better for
+>> maintainability.
 > 
-> > 
-> >  drivers/video/fbdev/core/fbmem.c |  44 +++++------
-> >  drivers/video/fbdev/sbuslib.c    | 124 ++++++++++++++++++-------------
-> >  2 files changed, 90 insertions(+), 78 deletions(-)
-> > 
-> > -- 
-> > 2.27.0
-> > 
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> 
-> -- 
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> Yes, absolutely. The subsystem maintainers are the ones that are
+> most qualified of reviewing code that uses their subsystem, regardless
+> of which bus is used underneath the device, and having all drivers
+> for a subsystem in one place makes it much easier to refactor them
+> all at once in case the internal interfaces are changed or common bugs
+> are found in multiple drivers.
+
+Got it.
+
+Thank you for bearing with me and answering all my (probably a bit
+silly) questions! I really appreciate it!
+
+Regards,
+Max
