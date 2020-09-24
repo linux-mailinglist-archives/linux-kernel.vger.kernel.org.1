@@ -2,169 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FBA276F58
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7959C276F5E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbgIXLGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:06:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:42312 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727480AbgIXLG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:06:28 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 33F0D1570;
-        Thu, 24 Sep 2020 04:06:27 -0700 (PDT)
-Received: from monolith.localdoman (unknown [10.37.8.98])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 672C73F73B;
-        Thu, 24 Sep 2020 04:06:25 -0700 (PDT)
-From:   Alexandru Elisei <alexandru.elisei@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, sumit.garg@linaro.org, maz@kernel.org,
-        swboyd@chromium.org, catalin.marinas@arm.com, will@kernel.org,
-        Julien Thierry <julien.thierry@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Will Deacon <will.deacon@arm.com>
-Subject: [PATCH v7 7/7] arm_pmu: arm64: Use NMIs for PMU
-Date:   Thu, 24 Sep 2020 12:07:06 +0100
-Message-Id: <20200924110706.254996-8-alexandru.elisei@arm.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924110706.254996-1-alexandru.elisei@arm.com>
-References: <20200924110706.254996-1-alexandru.elisei@arm.com>
+        id S1727589AbgIXLHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:07:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726672AbgIXLHY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:07:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E1DC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xHIvmY7SxVL7QZZfXEa16TQCn1PJXqfXa3DjNUUN44k=; b=WThpDVP8mqSB79pWIGHyJJ/AN5
+        dayM0iJlJ2Uno57sSCPp5a6sv2TaMjaZW1tFbmsY3bkXQ38+XAbhiZ4Ueybtrafrx9YyP4okZgST1
+        OjM2lt8rizcNcYmaE+wCDPsW9//mo4aS1fB0nl6OQvSaFa8zB33xSnO8GxgaF7sYQB44n6UMZq+8v
+        cMyj4wJW3JnuOikTvkfma41UBLB3na4DDzOmruIAVGD8qKTQLVuFOwrK+TPXu7yu76M/KUm+SZ4ee
+        1D24ePf/LLN25uP+cObw7FXf0ALjJyhgzRHk8K+XlnwAEsFu+TaKjIl7aZ/DQXIHMiL5fy7/RayCb
+        bhMzLh2A==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLP5k-0000FL-QV; Thu, 24 Sep 2020 11:07:14 +0000
+Date:   Thu, 24 Sep 2020 12:07:12 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     peterz@infradead.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Daisuke Nishimura <nishimura@mxp.nes.nec.co.jp>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, npiggin@gmail.com
+Subject: Re: [PATCH] page_alloc: Fix freeing non-compound pages
+Message-ID: <20200924110712.GU32101@casper.infradead.org>
+References: <20200922140017.26387-1-willy@infradead.org>
+ <20200924090002.GG1362448@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924090002.GG1362448@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Thierry <julien.thierry@arm.com>
+On Thu, Sep 24, 2020 at 11:00:02AM +0200, peterz@infradead.org wrote:
+> On Tue, Sep 22, 2020 at 03:00:17PM +0100, Matthew Wilcox (Oracle) wrote:
+> > Here is a very rare race which leaks memory:
+> > 
+> > Page P0 is allocated to the page cache.
+> > Page P1 is free.
+> > 
+> > Thread A		Thread B		Thread C
+> > find_get_entry():
+> > xas_load() returns P0
+> > 						Removes P0 from page cache
+> > 						Frees P0
+> > 						P0 merged with its buddy P1
+> > 			alloc_pages(GFP_KERNEL, 1) returns P0
+> > 			P0 has refcount 1
+> > page_cache_get_speculative(P0)
+> > P0 has refcount 2
+> > 			__free_pages(P0)
+> > 			P0 has refcount 1
+> > put_page(P0)
+> > P1 is not freed
+> > 
+> > Fix this by freeing all the pages in __free_pages() that won't be freed
+> > by the call to put_page().  It's usually not a good idea to split a page,
+> > but this is a very unlikely scenario.
+> > 
+> > Fixes: e286781d5f2e ("mm: speculative page references")
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > ---
+> >  mm/page_alloc.c | 9 +++++++++
+> >  1 file changed, 9 insertions(+)
+> > 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index fab5e97dc9ca..5db74797db39 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -4943,10 +4943,19 @@ static inline void free_the_page(struct page *page, unsigned int order)
+> >  		__free_pages_ok(page, order);
+> >  }
+> >  
+> > +/*
+> > + * If we free a non-compound allocation, another thread may have a
+> > + * speculative reference to the first page.  It has no way of knowing
+> > + * about the rest of the allocation, so we have to free all but the
+> > + * first page here.
+> > + */
+> >  void __free_pages(struct page *page, unsigned int order)
+> >  {
+> >  	if (put_page_testzero(page))
+> >  		free_the_page(page, order);
+> > +	else if (!PageHead(page))
+> > +		while (order-- > 0)
+> > +			free_the_page(page + (1 << order), order);
+> >  }
+> >  EXPORT_SYMBOL(__free_pages);
+> 
+> So the obvious question I have here is why not teach put_page() to free
+> the whole thing?
 
-Add required PMU interrupt operations for NMIs. Request interrupt lines as
-NMIs when possible, otherwise fall back to normal interrupts.
+That's more complicated.  It looks like this:
 
-NMIs are only supported on the arm64 architecture with a GICv3 irqchip.
+    Fix this by converting P0 into a compound page if it is not freed by
+    __free_pages().
+    
+    Fixes: e286781d5f2e ("mm: speculative page references")
+    Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Cc: Julien Thierry <julien.thierry.kdev@gmail.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Signed-off-by: Julien Thierry <julien.thierry@arm.com>
-Tested-by: Sumit Garg <sumit.garg@linaro.org> (Developerbox)
-[Alexandru E.: Added that NMIs only work on arm64 + GICv3, print message
-	when PMU is using NMIs]
-Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
----
- drivers/perf/arm_pmu.c | 71 +++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 63 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-index a770726e98d4..cb2f55f450e4 100644
---- a/drivers/perf/arm_pmu.c
-+++ b/drivers/perf/arm_pmu.c
-@@ -45,6 +45,17 @@ static const struct pmu_irq_ops pmuirq_ops = {
- 	.free_pmuirq = armpmu_free_pmuirq
- };
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index fab5e97dc9ca..3e9f6e6694e7 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4943,10 +4943,25 @@ static inline void free_the_page(struct page *page, unsigned int order)
+                __free_pages_ok(page, order);
+ }
  
-+static void armpmu_free_pmunmi(unsigned int irq, int cpu, void __percpu *devid)
-+{
-+	free_nmi(irq, per_cpu_ptr(devid, cpu));
-+}
-+
-+static const struct pmu_irq_ops pmunmi_ops = {
-+	.enable_pmuirq = enable_nmi,
-+	.disable_pmuirq = disable_nmi_nosync,
-+	.free_pmuirq = armpmu_free_pmunmi
-+};
-+
- static void armpmu_enable_percpu_pmuirq(unsigned int irq)
++/*
++ * Have to be careful when freeing a non-compound allocation in case somebody
++ * else takes a temporary reference on the first page and then calls put_page()
++ */
+ void __free_pages(struct page *page, unsigned int order)
  {
- 	enable_percpu_irq(irq, IRQ_TYPE_NONE);
-@@ -63,10 +74,37 @@ static const struct pmu_irq_ops percpu_pmuirq_ops = {
- 	.free_pmuirq = armpmu_free_percpu_pmuirq
- };
- 
-+static void armpmu_enable_percpu_pmunmi(unsigned int irq)
-+{
-+	if (!prepare_percpu_nmi(irq))
-+		enable_percpu_nmi(irq, IRQ_TYPE_NONE);
-+}
+-       if (put_page_testzero(page))
+-               free_the_page(page, order);
++       if (likely(page_ref_freeze(page, 1)))
++               goto free;
++       if (likely(order == 0 || PageHead(page))) {
++               if (put_page_testzero(page))
++                       goto free;
++               return;
++       }
 +
-+static void armpmu_disable_percpu_pmunmi(unsigned int irq)
-+{
-+	disable_percpu_nmi(irq);
-+	teardown_percpu_nmi(irq);
-+}
-+
-+static void armpmu_free_percpu_pmunmi(unsigned int irq, int cpu,
-+				      void __percpu *devid)
-+{
-+	if (armpmu_count_irq_users(irq) == 1)
-+		free_percpu_nmi(irq, devid);
-+}
-+
-+static const struct pmu_irq_ops percpu_pmunmi_ops = {
-+	.enable_pmuirq = armpmu_enable_percpu_pmunmi,
-+	.disable_pmuirq = armpmu_disable_percpu_pmunmi,
-+	.free_pmuirq = armpmu_free_percpu_pmunmi
-+};
-+
- static DEFINE_PER_CPU(struct arm_pmu *, cpu_armpmu);
- static DEFINE_PER_CPU(int, cpu_irq);
- static DEFINE_PER_CPU(const struct pmu_irq_ops *, cpu_irq_ops);
- 
-+static bool has_nmi;
-+
- static inline u64 arm_pmu_event_max_period(struct perf_event *event)
- {
- 	if (event->hw.flags & ARMPMU_EVT_64BIT)
-@@ -637,15 +675,31 @@ int armpmu_request_irq(int irq, int cpu)
- 			    IRQF_NO_THREAD;
- 
- 		irq_set_status_flags(irq, IRQ_NOAUTOEN);
--		err = request_irq(irq, handler, irq_flags, "arm-pmu",
-+
-+		err = request_nmi(irq, handler, irq_flags, "arm-pmu",
- 				  per_cpu_ptr(&cpu_armpmu, cpu));
- 
--		irq_ops = &pmuirq_ops;
-+		/* If cannot get an NMI, get a normal interrupt */
-+		if (err) {
-+			err = request_irq(irq, handler, irq_flags, "arm-pmu",
-+					  per_cpu_ptr(&cpu_armpmu, cpu));
-+			irq_ops = &pmuirq_ops;
-+		} else {
-+			has_nmi = true;
-+			irq_ops = &pmunmi_ops;
-+		}
- 	} else if (armpmu_count_irq_users(irq) == 0) {
--		err = request_percpu_irq(irq, handler, "arm-pmu",
--					 &cpu_armpmu);
--
--		irq_ops = &percpu_pmuirq_ops;
-+		err = request_percpu_nmi(irq, handler, "arm-pmu", &cpu_armpmu);
-+
-+		/* If cannot get an NMI, get a normal interrupt */
-+		if (err) {
-+			err = request_percpu_irq(irq, handler, "arm-pmu",
-+						 &cpu_armpmu);
-+			irq_ops = &percpu_pmuirq_ops;
-+		} else {
-+			has_nmi= true;
-+			irq_ops = &percpu_pmunmi_ops;
-+		}
- 	} else {
- 		/* Per cpudevid irq was already requested by another CPU */
- 		irq_ops = armpmu_find_irq_ops(irq);
-@@ -928,8 +982,9 @@ int armpmu_register(struct arm_pmu *pmu)
- 	if (!__oprofile_cpu_pmu)
- 		__oprofile_cpu_pmu = pmu;
- 
--	pr_info("enabled with %s PMU driver, %d counters available\n",
--		pmu->name, pmu->num_events);
-+	pr_info("enabled with %s PMU driver, %d counters available%s\n",
-+		pmu->name, pmu->num_events,
-+		has_nmi ? ", using NMIs" : "");
- 
- 	return 0;
- 
--- 
-2.28.0
++       prep_compound_page(page, order);
++       put_page(page);
++       return;
++free:
++       free_the_page(page, order);
+ }
+ EXPORT_SYMBOL(__free_pages);
 
