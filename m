@@ -2,109 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FB93276CCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4D8276CCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727386AbgIXJH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:07:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36286 "EHLO
+        id S1727440AbgIXJG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:06:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727256AbgIXJH1 (ORCPT
+        with ESMTP id S1727336AbgIXJG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:07:27 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 063EAC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:07:27 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id z193so689560vsz.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:07:26 -0700 (PDT)
+        Thu, 24 Sep 2020 05:06:56 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A294AC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:06:56 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m34so757472pgl.9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:06:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/X7t9uVIEd+S4xSIbror7zIP86C/H0V5Buw9Pzp4CZQ=;
-        b=IZ3+kGRz+xW/GPCA5Ct34Vn6POsjNIyMIC2BJf25muLLT1VW+fy9hPEApxK+ov//uW
-         lLPpwShllPTEp/t+51PPukiPuRNiI0MDzcQl9B5wEVqspVLEfA2x4mF9h5q27fLuEUr/
-         JPggxVugLZuzBZU8rXEkSz3pCfWLGnXKaCKemSygdQszB7ZDsqY7Q1tY2B/KT58is8md
-         N54rjXlWGNRw91+Vg3aIe6mBpgkmmi8Ox5krSuqAi7HS5+rvaXqMwZcjIbqu0pyzKttP
-         Jv+fGUe/vOzCvjTenc0Yrfy9e2wDyh+UNoY/eQidXc7wHzv2po4QmFV7TUkKrBAmC2Ht
-         BQXw==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=glvDYGNjTmcJYt9UHJ/EtDQnKtOXTLQW97MGgahDhHg=;
+        b=Ootls2FApOIHImzS6dH9p9IhwyZvLjCjxdwOj2hKsGhXNx+tS1luncq8bSBjkYO8sS
+         Xzx96XlWJtq9cG2ZG/u/ul+GKLRC15cAnRVjKEvCRJqnDltLa6faRhl1CFw1R5jKCL/R
+         +s3R8ss6PILJ+BGihZgwcGN+P49JIfJ+8gFih2pzchew8daEhZ5s+hnmqRVfRVaJ/fri
+         RfiAAYsIBOqoaClXN+YD9jDe5cTieuODhD3rje9KXfbuQ8nhCRmb+PHWEqZ6Bd+2Kd5M
+         7X5+CWikSRmfruOdMKDQOBE/W7P9ZLVb2OyofVKPor3tl/Rtmwehyl2pJKNdPrI4vB5E
+         DGzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/X7t9uVIEd+S4xSIbror7zIP86C/H0V5Buw9Pzp4CZQ=;
-        b=LtteaHW363kWhqY+9yVF0gfVn5I8bsWyoyf00zkbDPOW+f+Mx+qbylWzo5uLbZJKw8
-         sh2Kda7te1d+TP6XEARBxxWCJsgNRepCfHHgYZSeIv7obJiHeU/mJAWgsdh0KhPMEOwO
-         DTg/QqIAaY47NybbyN7frZ1y+TFKbA26eiHuAwx7rh2UeqdiNYoS1CeGc/a7M4sWv6+3
-         46QgnZP0SsuzLsZbNeAmsRqOyWZjND+8fG23ryPpnWqglNOQRgWrG2P3FfepUH7/agsF
-         yQv5ARiHmfISxZY2o+qkf5tlwQcVPScXvUi67zSsNM4yjtdQce1te80hTEiiSCuIXwQu
-         wvPQ==
-X-Gm-Message-State: AOAM532suXP5V6p6N8C40ISOLvWEEU37SvY2kWica6RaUSDyne+c9m11
-        5C4Nsf3moWvX1A50C1bqPVNGzdyC3R95WYHenW94Ew==
-X-Google-Smtp-Source: ABdhPJyos8gdOhVSu8Yw+Ta+UgVcQV1l8SNxPLoifsBHaUuGMdJ2eI8bSRsCAI4Ru+05RrslWyoUN9AQu0Xj/PPLRLc=
-X-Received: by 2002:a67:3009:: with SMTP id w9mr3249705vsw.19.1600938446195;
- Thu, 24 Sep 2020 02:07:26 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=glvDYGNjTmcJYt9UHJ/EtDQnKtOXTLQW97MGgahDhHg=;
+        b=Civ/tAOsnyTefq25Ac/VIAza67G5jCsZTb9RhQ+cuawLmIBTs6QY/l3gOK21NJTe8Z
+         0wB2u7lYQwZJUqEaVWiWEzFn1FAxx/tDeQHi2T106//06bFfhJN2PkRqsCWiFXoVDa2x
+         BdNc7TvRch9Gnrb9KSLe76T3ERaIkPwC7rHc5BCCN/L3PxIbJy87DphYFlzvLWEfb+2e
+         I3fCC3/FdD5u/U6vb4pLhlCTk+1+g2t6OcxzcmriV8p+IoQ0f84QrmT1qzzgNY0wo5Rv
+         MktYCyXvL2jAxVT3UJ7X4bzlieD1HBXw31AALFGjyeY7qLHzvoxT+XpwbLXto7z/uDLs
+         kwhg==
+X-Gm-Message-State: AOAM530gmu8ipuiE812PbrIVErkEdQdVNUakI/gF7N250QhvKuF/hpxU
+        nl9FLxnmN40lkTp7tno4Qqs=
+X-Google-Smtp-Source: ABdhPJzen2q3Ea9oLPyMwYiiNrZ8J8ZQ74BBxBdfvP1b/YXYBd4JkN1Dgg+GPW3wZbkaW+Y65yad6A==
+X-Received: by 2002:a05:6a00:8b:b029:14f:be90:a83a with SMTP id c11-20020a056a00008bb029014fbe90a83amr3600406pfj.70.1600938416124;
+        Thu, 24 Sep 2020 02:06:56 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id i9sm2274413pgb.37.2020.09.24.02.06.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 02:06:55 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 18:06:53 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
+Message-ID: <20200924090653.GC541@jagdpanzerIV.localdomain>
+References: <20200922153816.5883-1-john.ogness@linutronix.de>
+ <20200922153816.5883-4-john.ogness@linutronix.de>
+ <20200924061746.GF577@jagdpanzerIV.localdomain>
+ <20200924085445.GK6442@alley>
 MIME-Version: 1.0
-References: <20200918201633.27017-1-khilman@baylibre.com> <CAJZ5v0gzk_h09kJnWnagAL3E7TVmCqFO2E52Dewwyj6NRgKd=w@mail.gmail.com>
-In-Reply-To: <CAJZ5v0gzk_h09kJnWnagAL3E7TVmCqFO2E52Dewwyj6NRgKd=w@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 24 Sep 2020 11:06:50 +0200
-Message-ID: <CAPDyKFqR6WTt1_p8jTkZVvvBvAGF2ROChfYLvnW8Mu0KUFvhFA@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: drop myself from PM AVS drivers
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924085445.GK6442@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 at 20:10, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Fri, Sep 18, 2020 at 10:16 PM Kevin Hilman <khilman@baylibre.com> wrote:
-> >
-> > I haven't had the time or the expertise to adequately review and
-> > maintain these drivers for awhile, so make it official.
->
-> Well, fair enough, so applied as 5.10 material.
->
-> But this means that I'm going to stop picking up AVS drivers changes myself.
->
-> I'll be expecting someone to step in and become a proper maintainer of
-> them and send pull requests either to me or to arm-soc.
+On (20/09/24 10:54), Petr Mladek wrote:
+> > Just a question:
+> > 
+> > Can dynamic_textbuf be a PER_CPU array of five textbuf[1024] buffers
+> > (for normal printk, nmi, hard irq, soft irq and one extra buffer for
+> > recursive printk calls)?
+> 
+> That would be my preferred fallback when the approach with
+> vsprintf(NULL, ) is not acceptable for some reasons.
 
-How about if we instead move these avs drivers to drivers/soc/* instead?
+OK.
 
-There are currently only three avs drivers, they are SoC specific and
-we already have kind of similar drivers in drivers/soc/*.
+> But I still think that calling vsprintf(NULL, ) is the most trivial
+> and good enough solution.
 
-I can take care of the move, to release you from the burden. :-)
+It's probably good enough.
 
-Kind regards
-Uffe
+> IMHO, the solution with per-CPU buffers is not that trivial, for
+> example:
+> 
+>   What if recursive printk() is interrupted by NMI and it causes
+>   yet another recursion?
+> 
+>   Is one level of recursion enough?
 
->
-> Cheers!
->
-> > Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-> > ---
-> >  MAINTAINERS | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index deaafb617361..f1bf6071c438 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -5361,7 +5361,6 @@ F:        include/linux/kobj*
-> >  F:     lib/kobj*
-> >
-> >  DRIVERS FOR ADAPTIVE VOLTAGE SCALING (AVS)
-> > -M:     Kevin Hilman <khilman@kernel.org>
-> >  M:     Nishanth Menon <nm@ti.com>
-> >  L:     linux-pm@vger.kernel.org
-> >  S:     Maintained
-> > --
-> > 2.28.0
-> >
+We might try the current approach - when we, for example, have
+recursion in printk_safe() we just end up writing data to the
+same per-CPU buffer. We need to limit the depth of recursion
+one way or another. With per-CPU counter we will just bail out
+of "deeply recursive printk" without attempting to store its
+messages; with the buffers approach we will write the data to
+a static buffer and see how badly it will be overlapped at the
+end. Just a thought.
+
+	-ss
