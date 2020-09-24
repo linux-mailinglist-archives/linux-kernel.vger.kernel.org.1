@@ -2,119 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5015C277AE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD573277AEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgIXVHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 17:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIXVHG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 17:07:06 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62F8C0613CE;
-        Thu, 24 Sep 2020 14:07:05 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id p15so130884ejm.7;
-        Thu, 24 Sep 2020 14:07:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rkxYLB+lfWbz4FohLDcSfT4fdzwjyILNCZtO54fvfxI=;
-        b=b3e6P0jAHc8fH18e6EnBasnbrSS1Y89qgdBYDQFnRKGmFP41FMVRypE94oPHjgX+Hx
-         hdiNvUUOhHYZqft6UYcpKYV43DwrASN9Vr6pJWtbAI9rkU/riEWtdQrhgUwz1pORMC9s
-         YBLDDIk2o9eQzjC27luzrfPxr53HqqOQs5WGBVhLek/efR5xasv5av+tyueAcfV7kjGn
-         DHShoSHhuIIgDhzMMYl2UC/0A9Xd7n5vfjbH8T7lVZKwNO5MifIBPQzXfwef3ciYswjA
-         UaUj1DIKnx50aivBXGCKZYQz7oJt0ZkbV2y2PCUG+XtkVqjMq+F2pDLKbioFbuPcroz2
-         bjrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rkxYLB+lfWbz4FohLDcSfT4fdzwjyILNCZtO54fvfxI=;
-        b=SlADdq8/hhDSloa3XSkMqPEH5dO6kU3hGD6OxuLazuP0YOR0/SWEMdUwuWqY57q5fP
-         obOzk+sfnqNHBvuoEHlyLhlF9Xz005xn8okZpwmTKKwfHyWVYIY8v8E9SdFk6MrdlX8k
-         bBsSczop6lLkMNBZkciVq8ogICI9v29iBQPX/smR7yk5cjy2jmOn+E9P8rbU47eBbmLN
-         BuMdyKTnYHSxCV4RiuLDYCiehx1n6dM+F1jQTZOMFOHdffsYZj0LDAu1sm9BYE2Yeq0t
-         lxjHaEwfTzf9fBlnl5awjPah/nzZtmJMmRKNdLt/0Awj1QktJH+w/F/sOQicDLyTHxxp
-         SGdQ==
-X-Gm-Message-State: AOAM531r3U3k2bgVDIMM4OaPsRl3XTjXeknz1iuJgt9t/DAGWpxq1ehM
-        iaA2I6U7Z/FeBrNdghp6ALVzlEMpQHw=
-X-Google-Smtp-Source: ABdhPJwjvP7IOrZfSs603V1qE80+ZUlp0UcDrAemKRbBr7YUrivRy2EUsrUUcusf41pNBk/6Wbui1Q==
-X-Received: by 2002:a17:906:29ca:: with SMTP id y10mr499729eje.327.1600981624057;
-        Thu, 24 Sep 2020 14:07:04 -0700 (PDT)
-Received: from [192.168.2.202] (pd9e5a9d2.dip0.t-ipconnect.de. [217.229.169.210])
-        by smtp.gmail.com with ESMTPSA id t3sm257414edv.59.2020.09.24.14.07.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 14:07:03 -0700 (PDT)
-Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
- Aggregator Module
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
- <dad42dce-15d0-245a-4d91-4733e54883a0@gmail.com>
- <CAK8P3a2ryzmsrHHApT9O=dvsw+=z18Sjd4ygVxvFrrDetKA+rQ@mail.gmail.com>
- <c4c1d999-9ab7-8988-906a-3cb6a70bc93d@gmail.com>
- <CAK8P3a2XegsP71yvd8Ku08_k6ecQfkU+V+t+QnjQBrJKF2MwCg@mail.gmail.com>
- <d07adfb3-9f79-c00a-cb70-e044aa0b19f8@gmail.com>
- <CAK8P3a23V8vug2U-9tXUOdO3DvQvEc5+GhZuQh7_HKtTavCqVQ@mail.gmail.com>
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-Message-ID: <0a861a86-e9eb-668c-f725-46336b48a86a@gmail.com>
-Date:   Thu, 24 Sep 2020 23:07:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726567AbgIXVHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 17:07:16 -0400
+Received: from mga01.intel.com ([192.55.52.88]:14419 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgIXVHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 17:07:15 -0400
+IronPort-SDR: mlEh2Im5M+qAtXzucGcnhMIUVvpxmpvdfM7aXXXmhN95gLd4hHM4hvuKCzQCVViAPcgYWEwJdJ
+ OmoqBFsH+14w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="179440121"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="179440121"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 14:07:15 -0700
+IronPort-SDR: RIaUgM3EHIJHI/0MsE4kpaigZmmc9+INXgdb1x33SaUi7GanGArNF4CMvQtVGFMQOYVIsduaJL
+ K2SoJTmoXvUQ==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="487108533"
+Received: from aagrawa3-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.44.157])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 14:07:09 -0700
+Date:   Fri, 25 Sep 2020 00:07:07 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 18/24] x86/vdso: Add support for exception fixup in
+ vDSO functions
+Message-ID: <20200924210656.GF108958@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-19-jarkko.sakkinen@linux.intel.com>
+ <20200923220712.GU28545@zn.tnic>
+ <20200924120851.GE56811@linux.intel.com>
+ <20200924160057.GK5030@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a23V8vug2U-9tXUOdO3DvQvEc5+GhZuQh7_HKtTavCqVQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924160057.GK5030@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 9:38 PM, Arnd Bergmann wrote:
-> On Thu, Sep 24, 2020 at 8:59 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->> On 9/24/20 10:26 AM, Arnd Bergmann wrote:
->>> On Thu, Sep 24, 2020 at 1:28 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+On Thu, Sep 24, 2020 at 06:00:57PM +0200, Borislav Petkov wrote:
+> On Thu, Sep 24, 2020 at 03:09:01PM +0300, Jarkko Sakkinen wrote:
+> > This is not technically SGX specific patch. Is SGX documentation the
+> > correct place for this?
 > 
->>> Note that drivers that connect to the bus typically don't live in the
->>> same subdirectory as the driver that operates the bus. E.g. the
->>> battery driver would go into drivers/power/supply and the input
->>> would go into drivers/input/ or drivers/hid.
->>
->> Right. I wonder if this also holds for devices that are directly
->> dependent on a special platform though? It could make sense to have them
->> under plaform/surface rather than in the individual subsystems as they
->> are only ever going to be used on this platform. On the other hand, one
->> could argue that having them in the subsystem directories is better for
->> maintainability.
+> So what is it then? It is SGX implementation-specific. Why would you not
+> put it in the documentation?!
 > 
-> Yes, absolutely. The subsystem maintainers are the ones that are
-> most qualified of reviewing code that uses their subsystem, regardless
-> of which bus is used underneath the device, and having all drivers
-> for a subsystem in one place makes it much easier to refactor them
-> all at once in case the internal interfaces are changed or common bugs
-> are found in multiple drivers.
+> > From checkpatch I only get:
+> 
+> Please concentrate and start reading more carefully:
+> 
+> ".git/rebase-apply/patch:122: new blank line at EOF."
+> 
+> Would that error come from checkpatch?
 
-Got it.
+Nope. And I did fully read what you wrote. I just mentioned that more in
+the tone that I should (and will) do also git am test from now on, at
+least for mainline tree (when applicable) and x86 tip.
 
-Thank you for bearing with me and answering all my (probably a bit
-silly) questions! I really appreciate it!
+Right now the static tests that I do are checkpatch and sparse. Any
+other suggestions are welcome.
 
-Regards,
-Max
+I would also also coccicheck but have had some version issues with it in
+Ubuntu, which I use as my host OS. Cannot recall what was the exact
+issue, has been a while since I last tried it.
+
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+/Jarkko
