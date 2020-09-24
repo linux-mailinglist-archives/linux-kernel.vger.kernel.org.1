@@ -2,135 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCAC27774B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075CD27774D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728063AbgIXQ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52900 "EHLO
+        id S1728426AbgIXQ7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:59:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgIXQ7d (ORCPT
+        with ESMTP id S1727010AbgIXQ7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:59:33 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B49C0613CE;
-        Thu, 24 Sep 2020 09:59:33 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id bd2so44317plb.7;
-        Thu, 24 Sep 2020 09:59:33 -0700 (PDT)
+        Thu, 24 Sep 2020 12:59:50 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4470C0613CE;
+        Thu, 24 Sep 2020 09:59:50 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id e23so5514813eja.3;
+        Thu, 24 Sep 2020 09:59:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EoPsF8kT+VOZ0TY1NiW28PV/QlfjktpBLxI4qeILRo4=;
-        b=Xxj7YqZYUTyfP+NUXTtSCBseX1FoZILvOYExB17luljVEgXT6MQPrxbe2SwZePvnG7
-         pjB9h1S3PEtrGDy8r+b8fOnWXogVtc/yZ0g3K8zkDRq9+4nxJhWq5NOp/E3LMxrW0dP/
-         AHZn4V2FMZlJUJWGu+qPmtKly8U59JwqOL3AHVLiKB5PBX+6o7qxMuB//P+sliP2JrOk
-         Lcv/6x81xSKV+nZg9LX8xr58/NVn9VcPGB6201AkKwb43AZ5QjKyW0WVj2dXutj0Fzvw
-         LOuh33hAdh8QMvFioPeiFQeErKlXVUqdJQG1FFqpge0fOUr5X9s1XWXE6QYN6tG5vE7s
-         KzoA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+1TNRMBksp0ZgyPa79AqDX/KsIzG5AY4VLIzrVQYq/s=;
+        b=opeaTU8hCe8259r7Jy3Bwmk8TeN10WvSFkY4pGk0h2k+pVLxnmrcR7anMAVBEGfW3l
+         zAIVq3cj1CvSDhR2B7YEYynA9wE+GFw6xsjZiQ9jQJtyGPfPOUr+PWnu0AscIM89h7gb
+         K8gYXq6GWR9Sxjp7fd7wmlnIMPYkZo4gqskb+D+WKGQA9u3MbiZ0excKw+IczPRks99X
+         e+VMH86xPl1LV+DzCOIva90my3DNxiyFvdqhieuO7igLDCsQr4qQWFISXBhJAUThcP/a
+         Bfbc5EdrmmuP6PwTArek6/4nJzq5g9OIoqIBtq9x0BGXGRgc3kdTY1ce5q3pp5Tsp7aI
+         agPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EoPsF8kT+VOZ0TY1NiW28PV/QlfjktpBLxI4qeILRo4=;
-        b=nPURLzHaVC6a2InnO4HA7oa8tfkY0QlGI0h8H13WficpNE3PYHDqWBQYcoSglA3CDJ
-         r49E938TtppqDzs+ROtsyXSbDk/T8FhDItJx5DUyAdDCLHnl6EuyESeoHtCKPl2pX7Qq
-         H/OLaqYYpmOeIuBZikq9VDneAB4xppC5g/cXM89UKptomzyqGziOxgCRo3vwk9f59rYI
-         Gz9pqLztyiRg25XDUy622LUym59HlpIQ5il1mjRlykvv4TtSf7eH43beNS1GjdmkCdKT
-         upUGpecmoiULGlWb5UQR9PJJQYdw92uzE+pC9lTZx6gJLo7ZIlqS8l/cmKux1mlj4iE0
-         qOfg==
-X-Gm-Message-State: AOAM533fzs8rpgDh439IJQqlQ2U275Ibt0qHQ9ITZNWT7+K3lhx9Vwty
-        bLXGOl+4ogGXtLPUjRG7Nw==
-X-Google-Smtp-Source: ABdhPJy0Cetm+6slveWErW0ubf/EmjYXGJAeOS5m+z8+iSgrtaRZr6rzhyYdogiEl3WzOse4BlCKaQ==
-X-Received: by 2002:a17:90b:245:: with SMTP id fz5mr100677pjb.131.1600966772308;
-        Thu, 24 Sep 2020 09:59:32 -0700 (PDT)
-Received: from PWN (n11212042027.netvigator.com. [112.120.42.27])
-        by smtp.gmail.com with ESMTPSA id x198sm3569037pgx.28.2020.09.24.09.59.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 09:59:31 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 12:59:19 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
- buffers
-Message-ID: <20200924165919.GA880812@PWN>
-References: <0000000000006b9e8d059952095e@google.com>
- <cover.1600953813.git.yepeilin.cs@gmail.com>
- <20200924140937.GA749208@kroah.com>
- <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
- <20200924153035.GA879703@PWN>
- <20200924154516.GL4282@kadam>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+1TNRMBksp0ZgyPa79AqDX/KsIzG5AY4VLIzrVQYq/s=;
+        b=MkN/lZb707HRnlfL2dYgtNq4pn7b0FldPI8Ki2VWSABYotiRV8OmQ0XoMr1vBCxWLo
+         MB4BGKPK22u//LB353P4Q+hWUl5xtH3QM3yYzcnDeu3JVFtDXDExR/fLmDTLjdQdzC+k
+         p5TzJVbgGI11Z2SluQFdNws8GUSlnH5XFy3gob7LaJyboPaWb1H001LEsQ35AprxKn2y
+         SsGjFSqT53EElem1VQY/zjoj0jzmPmyoG8Yhl34UUJuQVdg1tF6CJrjfMi+qPwANjXJl
+         4GUkGWAOfZK29s1FDmJ5T37vuxG4hA+eX6fODr8uhTyBfFrQsJASWrDpTte1+BLnJwUc
+         TurQ==
+X-Gm-Message-State: AOAM532rJ7MM/oOl0YBm2ppHbk4n7GoqSFXoYuG3nMmUvEWXUFrtwFOh
+        R0Tp4VGYhVVaQr6i7tmW7+C6KezvSto066rprpk=
+X-Google-Smtp-Source: ABdhPJyvmZQkFTapW8MqkbWB0p7BH9gIdf2jN0mm+srARTEERotirnhHqtVSSegNQTH+02fWXv/y2S9UoAa79UKY82E=
+X-Received: by 2002:a17:907:9ed:: with SMTP id ce13mr859425ejc.180.1600966789263;
+ Thu, 24 Sep 2020 09:59:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924154516.GL4282@kadam>
+References: <20200921054821.26071-1-qiang.zhao@nxp.com> <20200923094449.GP9675@piout.net>
+ <DB8PR04MB67635518BE38EEF5292C8D0991390@DB8PR04MB6763.eurprd04.prod.outlook.com>
+ <20200924070456.rovgp6n5q25s53vc@pengutronix.de> <VE1PR04MB6768783CAE7CA611365661AF91390@VE1PR04MB6768.eurprd04.prod.outlook.com>
+ <20200924074715.GT9675@piout.net>
+In-Reply-To: <20200924074715.GT9675@piout.net>
+From:   Bruno Thomsen <bruno.thomsen@gmail.com>
+Date:   Thu, 24 Sep 2020 18:59:33 +0200
+Message-ID: <CAH+2xPAi+f2eKdeYiipc=W7eeeNdiXngTLkchpdoFMjJn9Og9w@mail.gmail.com>
+Subject: Re: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for nxp,pcf2127
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Qiang Zhao <qiang.zhao@nxp.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 06:45:16PM +0300, Dan Carpenter wrote:
-> Smatch has a tool to show where struct members are set.
-> 
-> `~/smatch/smatch_data/db/smdb.py where console_font height`
-> 
-> It's not perfect and this output comes from allmodconfig on yesterday's
-> linux-next.
-> 
-> regards,
-> dan carpenter
+Den tor. 24. sep. 2020 kl. 09.47 skrev Alexandre Belloni
+<alexandre.belloni@bootlin.com>:
+>
+> Hi,
+>
+> On 24/09/2020 07:23:18+0000, Qiang Zhao wrote:
+> > > > Yes, you are right, There is not a fundamental solution.
+> > > > However it somewhat avoid this situation at least.
+> > > >
+> > > > And if without this issue,
+> > > > is it correct to register a rtc device as watchdog no matter it is used as
+> > > watchdog on the board?
+> > > > Every time Linux are booted up, watchdog device should be configured to the
+> > > right one manually.
+> > > > So the patch are useful, even though it is not for the issue.
+> > > >
+> > > > What should we do to really resolve this issue?
+> > >
+> > > I still think we need a kernel solution here. I would expect that most assembled
+> > > pcf2127 chips are unable to act as a watchdog (i.e. don't have the RST output
+> > > connected to something that resets the machine).
+> > >
+> > > So my favoured solution would be a positive property like:
+> > >
+> > >     has-watchdog;
+> > >
+> > > or something similar. In my eyes this is definitely something we want to specify
+> > > in the device tree because it is a relevant hardware property.
+> > > I consider it a bug to give a watchdog device to userspace that isn't functional.
+> > >
+> > > Best regards
+> > > Uwe
+> >
+> > I strongly agree with you! It should be positive property.
+> > However, we couldn't identify which board are using pcf2127 as watchdog,
+> > So we are unable to modify the boards' dts to correct (watchdog or not) in this patchset.
+> >
+> > I noticed that only LS series platforms and imx6 have pcf2127 node, as far as I know, the LS platforms don't use it as watchdog,
+> > But I am not sure about imx6
+> >
+>
+> I don't think there is any user upstream and it is recent engouh that we
+> can probably make that a positive property.
+>
+> Bruno, is it ok for you? you are the only know user of the feature.
 
-Wow, thank you for the really interesting information!
+Hi
 
-> drivers/video/console/vgacon.c | vgacon_init                    | (struct console_font)->height | 0-32
-> drivers/video/console/vgacon.c | vgacon_adjust_height           | (struct console_font)->height | 1-32
-> drivers/video/fbdev/core/fbcon.c | fbcon_startup                  | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
-> drivers/video/fbdev/core/fbcon.c | fbcon_init                     | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
-> drivers/video/fbdev/core/fbcon.c | fbcon_do_set_font              | (struct console_font)->height | 0-u32max
-> drivers/video/fbdev/core/fbcon.c | fbcon_set_def_font             | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
-> drivers/usb/misc/sisusbvga/sisusb_con.c | sisusbcon_init                 | (struct console_font)->height | 0-u32max
+This seems like an okay solution to me.
 
-In looking at this one,
-	c->vc_font.height = sisusb->current_font_height;
+I have a patch series on the way with a new product dts[1] that is
+using the watchdog
+feature in the pcf2127 chip.
 
-`sisusb->current_font_height` is only set in sisusbcon_do_font_op():
-		sisusb->current_font_height = fh;
+I know that the watchdog feature is used by other products with
+out-of-tree dts, but I
+will make sure to give them a heads up.
 
-and...
+/Bruno
 
-> drivers/usb/misc/sisusbvga/sisusb_con.c | sisusbcon_do_font_op           | (struct console_font)->height | 1-32
-
-...sisusbcon_do_font_op() is called in four places, with an `fh` of either
-16, `sisusb->font_backup_height`, or `font->height`. The latter two cases
-all come from sisusbcon_font_set(), whose dispatcher, con_font_set()
-gurantees that `font->height` is less than or equal to 32, as shown by
-Smatch here.
-
-> drivers/tty/vt/vt_ioctl.c      | vt_k_ioctl                     | (struct console_font)->height | ignore
-> drivers/tty/vt/vt_ioctl.c      | vt_resizex                     | (struct console_font)->height | 0-u32max
-> drivers/tty/vt/vt_ioctl.c      | vt_ioctl                       | (struct console_font)->height | ignore
-> drivers/tty/vt/vt_ioctl.c      | vt_compat_ioctl                | (struct console_font)->height | ignore
-> drivers/tty/vt/vt.c            | vc_allocate                    | (struct console_font)->height | 0
-> drivers/tty/vt/vt.c            | vt_resize                      | (struct console_font)->height | ignore
-> drivers/tty/vt/vt.c            | do_con_write                   | (struct console_font)->height | ignore
-> drivers/tty/vt/vt.c            | con_unthrottle                 | (struct console_font)->height | ignore
-> drivers/tty/vt/vt.c            | con_flush_chars                | (struct console_font)->height | ignore
-> drivers/tty/vt/vt.c            | con_shutdown                   | (struct console_font)->height | ignore
-> drivers/tty/vt/vt.c            | con_cleanup                    | (struct console_font)->height | ignore
-> drivers/tty/vt/vt.c            | con_init                       | (struct console_font)->height | 0
-> drivers/tty/vt/vt.c            | con_font_set                   | (struct console_font)->height | 1-32
-> drivers/tty/vt/vt.c            | con_font_default               | (struct console_font)->height | 0-u32max
-> drivers/tty/vt/selection.c     | paste_selection                | (struct console_font)->height | ignore
-
-I will go through the list starting from these "0-u32max" cases. Thanks
-again!
-
-Peilin Ye
-
+[1] https://lore.kernel.org/linux-arm-kernel/20200923154024.11417-2-bruno.thomsen@gmail.com/
