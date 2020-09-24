@@ -2,142 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FB75277971
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1641B277997
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728781AbgIXThA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:37:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30041 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728217AbgIXThA (ORCPT
+        id S1726562AbgIXTn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:43:57 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:50382 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgIXTn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:37:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600976218;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=twNrygaxLsVZPNKYCHY3ZfHX7UvhS+LdDIfmkCz5FTg=;
-        b=Kr4u0+wKDT4eE4Ovfk8dVq+zwEnG3+m9nBXV98aP7EduhHCHW16A+CAkoAsez2npbw8dyM
-        F42oliu8ePZ+iErn6O4Kku3QUN9ZIpqaI29BaqqCM/MwyQAJ1jE7qUu8VTcTnyor0Tjv1G
-        AGafI+2TkSoImau4U/fywK786XFkk6M=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-aCqEG522OG-oR_XHKMWW6A-1; Thu, 24 Sep 2020 15:36:56 -0400
-X-MC-Unique: aCqEG522OG-oR_XHKMWW6A-1
-Received: by mail-wm1-f69.google.com with SMTP id t8so123890wmj.6
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 12:36:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=twNrygaxLsVZPNKYCHY3ZfHX7UvhS+LdDIfmkCz5FTg=;
-        b=UnNavV34VC52wkhbv7/ksvTP8aLkznM//KrvYXznQv1oaIIOJ88wPHVdJw9E5wVQCl
-         i6UUr48a7KFHYJ1TQZkIaUpoBLEEdl9mmE/qJwJ8zpCn881N6kQh+DiMPABb1bIyCpEU
-         GFBJDY8B+MvWHe53DYx7GE7LjhZcMb6XmD/E4fApQAKcdVHOHTLjX6j3sBKtxMoIe+fA
-         jPxNQVniri9ZY+rsckYPnYSJE1YvZlfJBniNlt4bkLIUMwPaXqXcGuj6tXn1LByhO+CV
-         YEN6bEUIPrPEyWkEMUctlYcpZWtxLg6YZFgn3C7Xlc0PiTADAhcMwG6kXCP9gJTvi613
-         gK5w==
-X-Gm-Message-State: AOAM530aWkGVoVS/K0Pd54QvN+yA/56e/nHuHVJf08t1dYdkM9DHFO7a
-        JMQKlsESv/j372pEMyvGEemNqt96eJ0FJnLvZbKfscGo1lu0jYdFIzKZfhOGto1e/6vr2pqqzAy
-        HEe8dec3Tlm5/P3SYMLQkgPTe
-X-Received: by 2002:adf:f34a:: with SMTP id e10mr491649wrp.91.1600976215161;
-        Thu, 24 Sep 2020 12:36:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynpHjsvPmbyspQelrDSoXiAKotSicrrWAZZ3D0g/KyVrY5rzQz/w0XAUEKgRr9DXJGglK1Gg==
-X-Received: by 2002:adf:f34a:: with SMTP id e10mr491615wrp.91.1600976214950;
-        Thu, 24 Sep 2020 12:36:54 -0700 (PDT)
-Received: from x1.bristot.me (host-87-17-196-109.retail.telecomitalia.it. [87.17.196.109])
-        by smtp.gmail.com with ESMTPSA id h204sm302746wmf.35.2020.09.24.12.36.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 12:36:54 -0700 (PDT)
-Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
- kmap_atomic & friends
-To:     peterz@infradead.org, Steven Rostedt <rostedt@goodmis.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Thu, 24 Sep 2020 15:43:56 -0400
+X-Greylist: delayed 342 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 15:43:55 EDT
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id D99292007A;
+        Thu, 24 Sep 2020 21:38:08 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 21:38:07 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-sparc <sparclinux@vger.kernel.org>
-References: <87mu1lc5mp.fsf@nanos.tec.linutronix.de>
- <87k0wode9a.fsf@nanos.tec.linutronix.de>
- <CAHk-=wgbmwsTOKs23Z=71EBTrULoeaH2U3TNqT2atHEWvkBKdw@mail.gmail.com>
- <87eemwcpnq.fsf@nanos.tec.linutronix.de>
- <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
- <87a6xjd1dw.fsf@nanos.tec.linutronix.de>
- <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
- <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
- <20200923084032.GU1362448@hirez.programming.kicks-ass.net>
- <20200923115251.7cc63a7e@oasis.local.home>
- <20200924082717.GA1362448@hirez.programming.kicks-ass.net>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <7541acd1-65a0-0d55-4028-71cab544e90d@redhat.com>
-Date:   Thu, 24 Sep 2020 21:36:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 3/3] dt-binding: display: Require two rests on
+ mantix panel
+Message-ID: <20200924193807.GA1223313@ravnborg.org>
+References: <cover.1600707235.git.agx@sigxcpu.org>
+ <71a9108f3472ba9af4bead01b1b770d1e73eb08e.1600707235.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-In-Reply-To: <20200924082717.GA1362448@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <71a9108f3472ba9af4bead01b1b770d1e73eb08e.1600707235.git.agx@sigxcpu.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=CaYmGojl c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=8nJEP1OIZ-IA:10 a=ze386MxoAAAA:8 a=6LdyRFKnEOD0PBeQgTUA:9
+        a=wPNLvfGTeEIA:10 a=iBZjaW-pnkserzjvUTHh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 10:27 AM, peterz@infradead.org wrote:
-> So my current todo list is:
-> 
->  - Change RT PULL
->  - Change DL PULL
->  - Add migrate_disable() tracer; exactly like preempt/irqoff, except
->    measuring task-runtime instead of cpu-time.
->  - Add a mode that measures actual interference.
->  - Add a traceevent to detect preemption in migrate_disable().
-> 
-> 
-> And then I suppose I should twist Daniel's arm to update his model to
-> include these scenarios and numbers.
+Hi Guido.
 
-Challenge accepted :-)
+On Mon, Sep 21, 2020 at 06:55:52PM +0200, Guido Günther wrote:
+> We need to reset both for the panel to show an image.
+> 
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> ---
+>  .../bindings/display/panel/mantix,mlaf057we51-x.yaml       | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> index 937323cc9aaa..ba5a18fac9f9 100644
+> --- a/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> +++ b/Documentation/devicetree/bindings/display/panel/mantix,mlaf057we51-x.yaml
+> @@ -35,7 +35,9 @@ properties:
+>    vddi-supply:
+>      description: 1.8V I/O voltage supply
+>  
+> -  reset-gpios: true
+> +  reset-gpios:
+> +    minItems: 2
+> +    maxItems: 2
 
--- Daniel
+reset-gpios is, as you already wrote, defined in panel-common.yaml.
+Do not try to change it here.
+It would be much better, I think, to introduce a mantix,reset-gpios
+property.
 
+This would avoid that we had two different reset-gpios definitions.
+
+	Sam
+
+>  
+>    backlight: true
+>  
+> @@ -62,7 +64,8 @@ examples:
+>              avdd-supply = <&reg_avdd>;
+>              avee-supply = <&reg_avee>;
+>              vddi-supply = <&reg_1v8_p>;
+> -            reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
+> +            reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>,
+> +                          <&gpio1 24 GPIO_ACTIVE_LOW>;
+>              backlight = <&backlight>;
+>          };
+>      };
+> -- 
+> 2.26.2
