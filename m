@@ -2,138 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED072776FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B69277706
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:41:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728642AbgIXQkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50122 "EHLO mail.kernel.org"
+        id S1727460AbgIXQlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:41:45 -0400
+Received: from ms.lwn.net ([45.79.88.28]:59178 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728628AbgIXQkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:40:12 -0400
-Received: from localhost.localdomain (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726915AbgIXQlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:41:44 -0400
+Received: from lwn.net (localhost [127.0.0.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04DD923741;
-        Thu, 24 Sep 2020 16:40:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600965612;
-        bh=a+1LX1DnCur49Aq500Kist/V+ukd+P/EHhzeF/Zvxsw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wvw8WZo23M62Szih8LrxyXURQ4kPRHKhmwddrgv9XjmVLmEz+grtlar3fe1vxRZCR
-         38yqAxy6iS8i5wxpShUigNdlZtHvm0O2Dtd4u8WdL6cCCxEw5fV+bOjSJfLvDtEW4N
-         czun17Qo2jD8Rpou/YWZdK/G1erwMlIm5g8dr0WY=
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH] tracing/boot: Initialize per-instance event list in early boot
-Date:   Fri, 25 Sep 2020 01:40:08 +0900
-Message-Id: <160096560826.182763.17110991546046128881.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200924085214.f2e901534037bede0bb55447@kernel.org>
-References: <20200924085214.f2e901534037bede0bb55447@kernel.org>
-User-Agent: StGit/0.19
+        by ms.lwn.net (Postfix) with ESMTPSA id 7D89277D;
+        Thu, 24 Sep 2020 16:41:43 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 10:41:41 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bailu Lin <bailu.lin@vivo.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, harryxiyou@gmail.com,
+        alex.shi@linux.alibaba.com, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@vivo.com
+Subject: Re: [PATCH v2] Documentation: Chinese translation of
+ Documentation/arm64/amu.rst
+Message-ID: <20200924104141.7abc7271@lwn.net>
+In-Reply-To: <20200918092136.23190-1-bailu.lin@vivo.com>
+References: <20200915025822.29885-1-bailu.lin@vivo.com>
+        <20200918092136.23190-1-bailu.lin@vivo.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize per-instance event list in early boot time (before
-initializing instance directory on tracefs). This fixes boot-time
-tracing to correctly handle the boot-time per-instance settings.
+On Fri, 18 Sep 2020 02:21:36 -0700
+Bailu Lin <bailu.lin@vivo.com> wrote:
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/trace/trace.c        |    3 ++-
- kernel/trace/trace.h        |    1 +
- kernel/trace/trace_events.c |   30 ++++++++++++++++--------------
- 3 files changed, 19 insertions(+), 15 deletions(-)
+> This is a Chinese translated version of Documentation/arm64/amu.rst
+> 
+> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+> ---
+> Changes in v2:
+>  - Add index to arm64 directoy.
+>  - Fix a document format error.
+>  - Correct email encoding format.
+> ---
+>  Documentation/arm64/amu.rst                   |   4 +
+>  .../translations/zh_CN/arm64/amu.rst          | 102 ++++++++++++++++++
+>  .../translations/zh_CN/arm64/index.rst        |   2 +
+>  3 files changed, 108 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/arm64/amu.rst
+> 
+> diff --git a/Documentation/arm64/amu.rst b/Documentation/arm64/amu.rst
+> index 452ec8b115c2..a97d1e18876d 100644
+> --- a/Documentation/arm64/amu.rst
+> +++ b/Documentation/arm64/amu.rst
+> @@ -1,3 +1,7 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.. _amu_index:
+> +
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index f7696db52e7d..400ed1ec3b64 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -8700,7 +8700,8 @@ static struct trace_array *trace_array_create(const char *name)
- 		ret = trace_array_create_dir(tr);
- 		if (ret)
- 			goto out_free_tr;
--	}
-+	} else
-+		__trace_early_add_events(tr);
- 
- 	list_add(&tr->list, &ftrace_trace_arrays);
- 
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index e1b3061ce06d..5b887cfbe5ec 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1658,6 +1658,7 @@ extern void trace_event_enable_tgid_record(bool enable);
- extern int event_trace_init(void);
- extern int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr);
- extern int event_trace_del_tracer(struct trace_array *tr);
-+extern void __trace_early_add_events(struct trace_array *tr);
- 
- extern struct trace_event_file *__find_event_file(struct trace_array *tr,
- 						  const char *system,
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index 720b0d72ea52..8ce334297bf3 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -3131,14 +3131,13 @@ static inline int register_event_cmds(void) { return 0; }
- #endif /* CONFIG_DYNAMIC_FTRACE */
- 
- /*
-- * The top level array has already had its trace_event_file
-- * descriptors created in order to allow for early events to
-- * be recorded. This function is called after the tracefs has been
-- * initialized, and we now have to create the files associated
-- * to the events.
-+ * The top level array and trace arrays created by boot-time tracing
-+ * have already had its trace_event_file descriptors created in order
-+ * to allow for early events to be recorded.
-+ * This function is called after the tracefs has been initialized,
-+ * and we now have to create the files associated to the events.
-  */
--static __init void
--__trace_early_add_event_dirs(struct trace_array *tr)
-+static void __trace_early_add_event_dirs(struct trace_array *tr)
- {
- 	struct trace_event_file *file;
- 	int ret;
-@@ -3153,13 +3152,12 @@ __trace_early_add_event_dirs(struct trace_array *tr)
- }
- 
- /*
-- * For early boot up, the top trace array requires to have
-- * a list of events that can be enabled. This must be done before
-- * the filesystem is set up in order to allow events to be traced
-- * early.
-+ * For early boot up, the top trace array and the trace arrays created
-+ * by boot-time tracing require to have a list of events that can be
-+ * enabled. This must be done before the filesystem is set up in order
-+ * to allow events to be traced early.
-  */
--static __init void
--__trace_early_add_events(struct trace_array *tr)
-+void __trace_early_add_events(struct trace_array *tr)
- {
- 	struct trace_event_call *call;
- 	int ret;
-@@ -3290,7 +3288,11 @@ int event_trace_add_tracer(struct dentry *parent, struct trace_array *tr)
- 		goto out;
- 
- 	down_write(&trace_event_sem);
--	__trace_add_event_dirs(tr);
-+	/* If tr already has the event list, it is initialized in early boot. */
-+	if (unlikely(!list_empty(&tr->events)))
-+		__trace_early_add_event_dirs(tr);
-+	else
-+		__trace_add_event_dirs(tr);
- 	up_write(&trace_event_sem);
- 
-  out:
+So that's not a translation, it's an unrelated change that doesn't belong
+in this patch.  Asserting a license always needs to be done carefully, and
+it needs to be called out as such.
 
+Thanks,
+
+jon
