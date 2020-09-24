@@ -2,65 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE66276882
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C89276885
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbgIXFna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 01:43:30 -0400
-Received: from muru.com ([72.249.23.125]:45294 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726683AbgIXFna (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 01:43:30 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id A9E6D80A0;
-        Thu, 24 Sep 2020 05:43:30 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 08:43:24 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Trent Piepho <tpiepho@gmail.com>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Christina Quast <cquast@hanoverdisplays.com>
-Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
- #pinctrl-cells = 2
-Message-ID: <20200924054324.GB9471@atomide.com>
-References: <20200914104352.2165818-1-drew@beagleboard.org>
- <CA+7tXii8rwBexgAHeqYsvBywhWLmk-Hf5_VWUU5bQkBREeFcSA@mail.gmail.com>
- <20200917092004.GA2468349@x1>
- <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
- <20200917103942.GA2477958@x1>
- <20200923065755.GR7101@atomide.com>
- <CA+7tXigeNhQQVuAu0toZrvBKvMYkDU-8EWTpJR29HLTAMgoOBA@mail.gmail.com>
+        id S1726852AbgIXFpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 01:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726683AbgIXFpR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 01:45:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C236CC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 22:45:17 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[127.0.0.1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kLK49-00052U-RW; Thu, 24 Sep 2020 07:45:13 +0200
+Subject: Re: [Linux-stm32] [PATCH 3/3] ARM: dts: stm32: update stm32mp151 for
+ remote proc synchronisation support
+To:     Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        Rob Herring <robh@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>, devicetree@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fabien Dessenne <fabien.dessenne@st.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20200827072101.26588-1-arnaud.pouliquen@st.com>
+ <20200827072101.26588-4-arnaud.pouliquen@st.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <be888a4b-b931-521b-42c7-fd4e60afd945@pengutronix.de>
+Date:   Thu, 24 Sep 2020 07:45:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+7tXigeNhQQVuAu0toZrvBKvMYkDU-8EWTpJR29HLTAMgoOBA@mail.gmail.com>
+In-Reply-To: <20200827072101.26588-4-arnaud.pouliquen@st.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Trent Piepho <tpiepho@gmail.com> [200924 01:34]:
-> On Tue, Sep 22, 2020 at 11:57 PM Tony Lindgren <tony@atomide.com> wrote:
-> >
-> > Also FYI, folks have also complained for a long time that the pinctrl-single
-> > binding mixes mux and conf values while they should be handled separately.
-> >
+Hello Arnaud,
+
+On 8/27/20 9:21 AM, Arnaud Pouliquen wrote:
+> Two backup registers are used to store the Cortex-M4 state and the resource
+> table address.
+> Declare the tamp node and add associated properties in m4_rproc node
+> to allow Linux to attach to a firmware loaded by the first boot stages.
 > 
-> Instead of combining two fields when the dts is generated they are now
-> combined when the pinctrl-single driver reads the dts.  Other than
-> this detail, the result is the same.  The board dts source is the
-> same.  The value programmed into the pinctrl register is the same.
-> There is no mechanism currently that can alter that value in any way.
+> Associated driver implementation is available in commit 9276536f455b3
+> ("remoteproc: stm32: Parse syscon that will manage M4 synchronisation").
 > 
-> What does combining them later allow that is not possible now?
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+> ---
+>  arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+> index bfe29023fbd5..842ecffae73a 100644
+> --- a/arch/arm/boot/dts/stm32mp151.dtsi
+> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
+> @@ -1541,6 +1541,11 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		tamp: tamp@5c00a000 {
+> +			compatible = "st,stm32-tamp", "syscon";
+> +			reg = <0x5c00a000 0x400>;
+> +		};
+> +
 
-It now allows further driver changes to manage conf and mux separately :)
+Just saw this now. I have a pending patch adding this node as well:
+https://lore.kernel.org/patchwork/patch/1306971/
 
-Regards,
+For my use case, I need a "simple-mfd" compatible to allow child
+nodes to be probed.
 
-Tony
+Could you CC me when you send out your v2, so I can rebase?
+(Or if you don't mind, just add the "simple-mfd" into the compatible
+list yourself :-)
+
+Cheers
+Ahmad
+
+>  		/*
+>  		 * Break node order to solve dependency probe issue between
+>  		 * pinctrl and exti.
+> @@ -1717,6 +1722,8 @@
+>  			st,syscfg-holdboot = <&rcc 0x10C 0x1>;
+>  			st,syscfg-tz = <&rcc 0x000 0x1>;
+>  			st,syscfg-pdds = <&pwr_mcu 0x0 0x1>;
+> +			st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
+> +			st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
+>  			status = "disabled";
+>  		};
+>  	};
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
