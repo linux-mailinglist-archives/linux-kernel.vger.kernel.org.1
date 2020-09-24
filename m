@@ -2,82 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AAC276FBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A13E276FBF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727449AbgIXLTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726701AbgIXLTT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:19:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39D4C0613CE;
-        Thu, 24 Sep 2020 04:19:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=xqlwroC0ti6SZtly8XWUIPDjGy4hLoHAIsho3lQ0o/s=; b=k8+teQdsNC7qK5PdZXoGPRYCLa
-        cBlVyfaSePz1y3nZ9iLA7O2VOegTBcHVk6YgGwHuAZN2L3v2D3b8uhIyaI02bM1F7/DROVNUMT6E9
-        aqaKaUQ4UgwsuTcwTC9Snrr7xFw/voABeb9fXzxzT/1/UrrszjLeJ+2pWYL9w89dO4GH+KkmiTmg/
-        L1bZvX6sTfju8bElLob694WDYLqfT3+AiJS7fxHauF8YDI2M0SqSt11hNXAwpXCwmR3kjgNfQAKms
-        kHlfy8z6h5EYkANfjXBn3fuR0CSMWCn7aEBxSW7FIUS/8ok/j77p6ulYCCvIiaArD02YYTmPb9SF9
-        Xv5Jxadg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLPHI-0001As-5Z; Thu, 24 Sep 2020 11:19:08 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1727428AbgIXLWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:22:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726483AbgIXLWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:22:12 -0400
+Received: from mail.kernel.org (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A695B300DB4;
-        Thu, 24 Sep 2020 13:19:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 93D6A203161DB; Thu, 24 Sep 2020 13:19:07 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 13:19:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200924111907.GE2628@hirez.programming.kicks-ass.net>
-References: <20200921074716.GC12990@dhcp22.suse.cz>
- <20200921154558.GD29330@paulmck-ThinkPad-P72>
- <20200921160318.GO12990@dhcp22.suse.cz>
- <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
- <20200923103706.GJ3179@techsingularity.net>
- <20200923154105.GO29330@paulmck-ThinkPad-P72>
- <20200923232251.GK3179@techsingularity.net>
- <20200924081614.GA14819@pc636>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB78E2396E;
+        Thu, 24 Sep 2020 11:22:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600946532;
+        bh=tSrMjh6Tp12F91iwQGjfztE81iQr93TgUJgtnz2nFkw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bSeH9EaLIUTTpJLk0icANW25BYYnoH9u2e/WtucDsWSrE5G7wiedatFCst+b/UxV6
+         s8AnEtvh0fbHz09JedBhw4QnSquf+sWgOPoH0dODQhEz1yzjGEUSjsZ25rsY0swISB
+         Fkgm6jUCLCDmmiXnQU1bej48tZ6PGjFHhzVtDsTE=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kLPKD-000AES-Fp; Thu, 24 Sep 2020 13:22:09 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: [PATCH 0/2] Start supporting builds with Sphinx 3.1+
+Date:   Thu, 24 Sep 2020 13:22:03 +0200
+Message-Id: <cover.1600945712.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200924090230.6f3b0ca1@coco.lan>
+References: <20200924090230.6f3b0ca1@coco.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924081614.GA14819@pc636>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
-> The key point is "enough". We need pages to make a) fast progress b) support
-> single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
-> on scheduler latency and vague pre-allocated number of pages, it might
-> be not enough what would require to refill it more and more or we can overshoot
-> that would lead to memory overhead. So we have here timing issues and
-> not accurate model. IMHO.
+Hi Jon,
 
-I'm firmly opposed to the single argument kvfree_rcu() idea, that's
-requiring memory to free memory.
+This is a small patch series with just two patches.
+
+The first one adds support at cdomain.py for two notations found on
+Sphinx 3.1:
+
+	:c:expr:
+	.. c:namespace::
+
+With that, it should now be possible to use those two C domain
+tags at the media documentation, which will make it produce a
+decent result with both Sphinx 1.x/2.x and Sphinx 3.1+.
+
+The second patch manually changes the CEC documentation in
+order for it to use those macros, instead of relying at the original
+cdomain extensions.
+
+I tested building the docs with both Sphinx 2.4.4 and 3.2.1.
+They are identical, except by a minor difference:  the output of
+:c:expr: uses a bold monospaced font with 3.1+, while it uses a
+non-bold monospaced font with older versions.
+
+Yet, the output looks decent on both versions.
+
+I'm planning to use the same approach on all the other documents
+under userspace-api/media. So, I guess it would be easier if
+I could merge both the cdomain.py and the media patches via
+the media tree, if this is ok for you.
+
+-
+
+With regards to patch 1, I tried first to use a hook at 'doctree-resolved',
+just like the automarkup.py, but that is too late for  changing the
+namespace. So, I ended hooking the extra logic at 'source-read'.
+
+I suspect that this could be implemented on some other ways, but
+this can be optimized later on, if needed.
+
+Mauro Carvalho Chehab (2):
+  docs: cdomain.py: add support for two new Sphinx 3.1+ tags
+  media: docs: make CEC documents compatible with Sphinx 3.1+
+
+ Documentation/sphinx/cdomain.py               | 56 ++++++++++++++++++-
+ .../media/cec/cec-func-close.rst              |  7 ++-
+ .../media/cec/cec-func-ioctl.rst              |  7 ++-
+ .../userspace-api/media/cec/cec-func-open.rst |  7 ++-
+ .../userspace-api/media/cec/cec-func-poll.rst | 11 ++--
+ .../media/cec/cec-ioc-adap-g-caps.rst         |  9 ++-
+ .../media/cec/cec-ioc-adap-g-conn-info.rst    | 11 ++--
+ .../media/cec/cec-ioc-adap-g-log-addrs.rst    | 14 +++--
+ .../media/cec/cec-ioc-adap-g-phys-addr.rst    | 14 +++--
+ .../media/cec/cec-ioc-dqevent.rst             |  9 ++-
+ .../media/cec/cec-ioc-g-mode.rst              | 14 +++--
+ .../media/cec/cec-ioc-receive.rst             | 14 +++--
+ 12 files changed, 128 insertions(+), 45 deletions(-)
+
+-- 
+2.26.2
+
 
