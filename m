@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A37AB277B1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACF7277B21
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 23:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726634AbgIXVfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 17:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
+        id S1726661AbgIXVgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 17:36:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgIXVfV (ORCPT
+        with ESMTP id S1726239AbgIXVgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 17:35:21 -0400
+        Thu, 24 Sep 2020 17:36:11 -0400
 Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F16CC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:35:21 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d6so788163pfn.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:35:21 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12FC2C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:36:11 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id l126so806863pfd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 14:36:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3CW8CM9pV/u4FfPt/5+0+4IcrrDDgdR3Q+VzmdoOROI=;
-        b=CRtDJNrzy8wbkCV74afPa/S3o604Di/g6RRZLW1jbvaELJCnfqJ5X54uFz+2y4YVd+
-         JMjENCSOJ8WiO+/T8ChnYyaZuJsyEhQOs0Plk7trxC06nHNaxqpOcT8y+sEuG5d/YU/D
-         b9pHibkXtd7atL74qEQo+eWeQ6auJ2I9asgk8=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BvSPAHOajbMQLOM6/h2D7KmM/xxmcFLZr4eiztRedpU=;
+        b=WKIXJIcJm5TZgP1Os/fruX0TlaPAO5NQr7vZmvylXA6627JbLbHkwnb6AohgYSlEHQ
+         LXap3g04t7LbrQzM1WxxEEdO67DKKpI5WjwGn3+Cp+WQPRAP/cx3zQeO1t7Q9nNzRiXK
+         C5MZChdKXpWH7ZqwUL+IkWSZ5QMHMDv0vpx5+H9fBVaMfC2BA8SP/qIJOjNDUj14qm1M
+         LSNRqnu1+QxwCu+lh5X7eaQ1d5cy9DRr2qdDEuwgr3WwA5Bl1BBXEr+oh+4lq1N2ufvn
+         8ebnzC3wJ5Ee0BbucT26u18EOyct4TAZDoPa3xH+5S2xSWKIB9dKg/by/hXD/4+UhFcU
+         Ez0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3CW8CM9pV/u4FfPt/5+0+4IcrrDDgdR3Q+VzmdoOROI=;
-        b=oXO04SwE5yn0e5rHsXBDCHGE1uzZeEHIFbNSgSI9WA5gYI8QhUi67nGzsexJn4Atlp
-         23+3K0+3fRFVK8dPmGr2YNkU/KEuXQHoVTxlCgn6tSBkCghPeGJ9Pe4dcHEVa9Z7Px9B
-         bjsWmen27nqT+DyUAOxN3aPGzARrh0VTxM0J5E03k4rJA5IVHEdTNPFvZNHxywPxZp9F
-         7Ig5qvTx77yTQKJciFBeVoww6FGbrv8pqYqgHQukiYjof/Ti9ZsM114OhXFE789tCntK
-         h+uwqOYaP19cCFJrBTuguQdV8ob8GvAJv5WgTRMD46/Q178CMwSk66WZuy8718R8YEBg
-         oJSQ==
-X-Gm-Message-State: AOAM532zsX+XNXXenEisU4J3P8D/eElQLVUFDBlLPg+agok1PO7lfchG
-        D9qsqvkgVy3vTdPHSb4in2vxNg==
-X-Google-Smtp-Source: ABdhPJxPeQACYa4PqAeVCmVjvEbFidWdEHIEqDxU1SIdF2rEbkc88hcnIkpEODEOh3ASDI7d2YovtA==
-X-Received: by 2002:a62:e107:0:b029:13c:1611:658b with SMTP id q7-20020a62e1070000b029013c1611658bmr954182pfh.8.1600983320933;
-        Thu, 24 Sep 2020 14:35:20 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 64sm378291pfz.204.2020.09.24.14.35.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 14:35:19 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 14:35:18 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Tom Hromatka <tom.hromatka@oracle.com>,
-        Jann Horn <jannh@google.com>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action
- results
-Message-ID: <202009241434.CF8C1BA1D@keescook>
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-5-keescook@chromium.org>
- <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
- <202009240038.864365E@keescook>
- <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
- <202009241251.F719CC4@keescook>
- <CAHC9VhQudGg55atznkuWWW5h0d+vZZhO2NF4yNAqreg4NDsHKg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BvSPAHOajbMQLOM6/h2D7KmM/xxmcFLZr4eiztRedpU=;
+        b=m3fmrrmh5528Jz8Bj8uem3o0rOQNgoMqabnVIrWKOF/xR4hjs6cW9Xfo9+pJ1SB6F6
+         eH7KXywes2rLgInVIayCVbvmQTF5cQ+0MvzRPZA1SR4Te/y1hclIxB+X7hFeAu0o6Dyp
+         Q8kjpcJbVsS5bL2XYhRE7sefmNq8fdRMOO3m21+HGQ0ogvmhKNBe2Bkoyd8jqHB3uUeJ
+         fZN9JFc6aegNvWcusVZCWTs+cLVZoHQwsfB5HMsHKS+tpHpcggrrTA4ca/4lgYSfuXcB
+         t6f2zCw1yZbmnDHiQEpqCpyM18KGTXtgDnKG8nwaQ5B4v8Vx6YlKClStkRmNVBaz42zi
+         f7Ng==
+X-Gm-Message-State: AOAM531dX6iLOZVSg/MKHPyAEbpO2M0GS6IB2wSxWQmZkwobfL34rafm
+        lLK7c9Ou+LvAcrpzpyjnPZAxRtSpxV7FZKN4eQXq4A==
+X-Google-Smtp-Source: ABdhPJxStqN7EjHISyFjmOsHS2y1ySXc3npDJaEbipePmIAgVDI+mEZ3RLhDZemqEDngJfk021kqPC6nnuF8e+PunKY=
+X-Received: by 2002:a63:5d07:: with SMTP id r7mr871225pgb.440.1600983370451;
+ Thu, 24 Sep 2020 14:36:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHC9VhQudGg55atznkuWWW5h0d+vZZhO2NF4yNAqreg4NDsHKg@mail.gmail.com>
+References: <cover.1600204505.git.andreyknvl@google.com> <0a35b29d161bf2559d6e16fbd903e49351c7f6b8.1600204505.git.andreyknvl@google.com>
+ <20200918105206.GB2384246@elver.google.com> <CAAeHK+wqzZJWWh+u3HaLvSAt=4SxaFT4JUgTqzMYcPNGhBFFBg@mail.gmail.com>
+In-Reply-To: <CAAeHK+wqzZJWWh+u3HaLvSAt=4SxaFT4JUgTqzMYcPNGhBFFBg@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Thu, 24 Sep 2020 23:35:59 +0200
+Message-ID: <CAAeHK+yce9oUVG6J6oofjGLqU5gLLx8b22cqF6AgVWXT778g2g@mail.gmail.com>
+Subject: Re: [PATCH v2 31/37] kasan, x86, s390: update undef CONFIG_KASAN
+To:     Marco Elver <elver@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 04:46:05PM -0400, Paul Moore wrote:
-> On Thu, Sep 24, 2020 at 3:52 PM Kees Cook <keescook@chromium.org> wrote:
-> > On Thu, Sep 24, 2020 at 11:28:55AM -0400, Paul Moore wrote:
-> > > On Thu, Sep 24, 2020 at 3:46 AM Kees Cook <keescook@chromium.org> wrote:
-> > > > On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
-> > > > > On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> > > > > > This emulates absolutely the most basic seccomp filters to figure out
-> > > > > > if they will always give the same results for a given arch/nr combo.
-> > > > > >
-> > > > > > Nearly all seccomp filters are built from the following ops:
-> > > > > >
-> > > > > > BPF_LD  | BPF_W    | BPF_ABS
-> > > > > > BPF_JMP | BPF_JEQ  | BPF_K
-> > > > > > BPF_JMP | BPF_JGE  | BPF_K
-> > > > > > BPF_JMP | BPF_JGT  | BPF_K
-> > > > > > BPF_JMP | BPF_JSET | BPF_K
-> > > > > > BPF_JMP | BPF_JA
-> > > > > > BPF_RET | BPF_K
-> > > > > >
-> > > > > > These are now emulated to check for accesses beyond seccomp_data::arch
-> > > > > > or unknown instructions.
-> > > > > >
-> > > > > > Not yet implemented are:
-> > > > > >
-> > > > > > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
-> > > > >
-> > > > > BPF_AND is normally only used on syscall arguments, not on the syscall
-> > > > > number or the architecture, right? And when a syscall argument is
-> > > > > loaded, we abort execution anyway. So I think there is no need to
-> > > > > implement those?
-> > > >
-> > > > Is that right? I can't actually tell what libseccomp is doing with
-> > > > ALU|AND. It looks like it's using it for building jump lists?
-> > >
-> > > There is an ALU|AND op in the jump resolution code, but that is really
-> > > just if libseccomp needs to fixup the accumulator because a code block
-> > > is expecting a masked value (right now that would only be a syscall
-> > > argument, not the syscall number itself).
-> > >
-> > > > Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
-> > >
-> > > Presently the only place where libseccomp uses ALU|AND is when the
-> > > masked equality comparison is used for comparing syscall arguments
-> > > (SCMP_CMP_MASKED_EQ).  I can't honestly say I have any good
-> > > information about how often that is used by libseccomp callers, but if
-> > > I do a quick search on GitHub for "SCMP_CMP_MASKED_EQ" I see 2k worth
-> > > of code hits; take that for whatever it is worth.  Tom may have some
-> > > more/better information.
-> > >
-> > > Of course no promises on future use :)  As one quick example, I keep
-> > > thinking about adding the instruction pointer to the list of things
-> > > that can be compared as part of a libseccomp rule, and if we do that I
-> > > would expect that we would want to also allow a masked comparison (and
-> > > utilize another ALU|AND bpf op there).  However, I'm not sure how
-> > > useful that would be in practice.
+On Fri, Sep 18, 2020 at 5:07 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Fri, Sep 18, 2020 at 12:52 PM Marco Elver <elver@google.com> wrote:
 > >
-> > Okay, cool. Thanks for checking on that. It sounds like the arg-less
-> > bitmap optimization can continue to ignore ALU|AND for now. :)
-> 
-> What's really the worst that could happen anyways? (/me ducks)  The
-> worst case is the filter falls back to the current performance levels
-> right?
+> > On Tue, Sep 15, 2020 at 11:16PM +0200, Andrey Konovalov wrote:
+> > [...]
+> > >  arch/s390/boot/string.c         | 1 +
+> > >  arch/x86/boot/compressed/misc.h | 1 +
+> > >  2 files changed, 2 insertions(+)
+> > >
+> > > diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
+> > > index b11e8108773a..faccb33b462c 100644
+> > > --- a/arch/s390/boot/string.c
+> > > +++ b/arch/s390/boot/string.c
+> > > @@ -3,6 +3,7 @@
+> > >  #include <linux/kernel.h>
+> > >  #include <linux/errno.h>
+> > >  #undef CONFIG_KASAN
+> > > +#undef CONFIG_KASAN_GENERIC
+> >
+> > Is CONFIG_KASAN still used to guard instrumented versions of functions?
+> >
+> > It looks like #undef CONFIG_KASAN is no longer needed -- at least
+> > <linux/string.h> no longer mentions it.
+>
+> I'm pretty sure this is still necessary (something didn't work when I
+> forgot to make this change), but I'll check again.
 
-Worse case for adding complexity to verifier is the bitmaps can be
-tricked into a bad state, but I've tried to design this so that it can
-only fail toward just running the filter. :)
-
--- 
-Kees Cook
+Yes, it still fails, as compressed code provides its own memmove.
