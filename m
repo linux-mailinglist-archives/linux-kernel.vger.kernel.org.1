@@ -2,84 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673A8276B53
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:02:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990D9276B59
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgIXICK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:02:10 -0400
-Received: from a.mx.secunet.com ([62.96.220.36]:45656 "EHLO a.mx.secunet.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727013AbgIXICJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:02:09 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 0EDFC2054D;
-        Thu, 24 Sep 2020 10:02:07 +0200 (CEST)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id N2Hha3N5lro5; Thu, 24 Sep 2020 10:02:06 +0200 (CEST)
-Received: from mail-essen-02.secunet.de (unknown [10.53.40.205])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 94CD62026E;
-        Thu, 24 Sep 2020 10:02:06 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- mail-essen-02.secunet.de (10.53.40.205) with Microsoft SMTP Server (TLS) id
- 14.3.487.0; Thu, 24 Sep 2020 10:02:06 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Thu, 24 Sep
- 2020 10:02:06 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)      id 0ADA23180126;
- Thu, 24 Sep 2020 10:02:06 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 10:02:05 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     syzbot <syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <syzkaller-bugs@googlegroups.com>
-Subject: Re: KASAN: stack-out-of-bounds Read in xfrm_selector_match (2)
-Message-ID: <20200924080205.GD20687@gauss3.secunet.de>
-References: <0000000000009fc91605afd40d89@google.com>
- <20200924074026.GC20687@gauss3.secunet.de>
- <20200924074351.GB9879@gondor.apana.org.au>
+        id S1727234AbgIXIC7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:02:59 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:35518 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727013AbgIXIC6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:02:58 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08O81uVe022453;
+        Thu, 24 Sep 2020 10:02:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=bCUBFmWtTPnQyN/Hu8xkI73KOtRV/y37x8FA0MEEGc0=;
+ b=llMOrdYoJzW79whZF/bf6pCncPh2n5rzm25bAt0PRELvjaNQqfoSaECwKw9Fjl0jc8jl
+ aviNvJI1M3n9uGOLp0vdSWEa0uhOlYyfJLWDo36N6D5GG0+CIeJ/LrHEekDZEHAw+MEP
+ 5xsMxLaEgDifVPQL3zvw1Llrs1riSu1QNQn4xFJNL/ckd8BdT2pE1MB0K0WcDJB/AdBI
+ gZr6Mr4Wzk+dHWDFL7gt2hI8kQpkgXdXeTyswpJu0GeAJbEyI3UcAasCQkGWj6GJpRDV
+ IK5zojwBI5DDHERAQbf4NKyEXE1Dsq77qmHoIkVW2EVrXaf8tF3DKk+cWp6QSjdAS7ol tw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 33n8vf43f4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 10:02:45 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 0BFD510002A;
+        Thu, 24 Sep 2020 10:02:45 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DFE8A21FEB1;
+        Thu, 24 Sep 2020 10:02:44 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.48) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 24 Sep
+ 2020 10:02:43 +0200
+Subject: Re: [Linux-stm32] [PATCH 3/3] ARM: dts: stm32: update stm32mp151 for
+ remote proc synchronisation support
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        Rob Herring <robh@kernel.org>,
+        Alexandre TORGUE <alexandre.torgue@st.com>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Fabien DESSENNE <fabien.dessenne@st.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "linux-stm32@st-md-mailman.stormreply.com" 
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200827072101.26588-1-arnaud.pouliquen@st.com>
+ <20200827072101.26588-4-arnaud.pouliquen@st.com>
+ <be888a4b-b931-521b-42c7-fd4e60afd945@pengutronix.de>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <c8fbe2df-a648-913a-d9f9-19e2202f1687@st.com>
+Date:   Thu, 24 Sep 2020 10:02:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20200924074351.GB9879@gondor.apana.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+In-Reply-To: <be888a4b-b931-521b-42c7-fd4e60afd945@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG6NODE3.st.com (10.75.127.18) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-24_05:2020-09-24,2020-09-24 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 05:43:51PM +1000, Herbert Xu wrote:
-> On Thu, Sep 24, 2020 at 09:40:26AM +0200, Steffen Klassert wrote:
-> >
-> > This is yet another ipv4 mapped ipv6 address with IPsec socket policy
-> > combination bug, and I'm sure it is not the last one. We could fix this
-> > one by adding another check to match the address family of the policy
-> > and the SA selector, but maybe it is better to think about how this
-> > should work at all.
-> > 
-> > We can have only one socket policy for each direction and that
-> > policy accepts either ipv4 or ipv6. We treat this ipv4 mapped ipv6
-> > address as ipv4 and pass it down the ipv4 stack, so this dual usage
-> > will not work with a socket policy. Maybe we can require IPV6_V6ONLY
-> > for sockets with policy attached. Thoughts?
+Hi Ahmad,
+
+On 9/24/20 7:45 AM, Ahmad Fatoum wrote:
+> Hello Arnaud,
 > 
-> I'm looking at the history of this and it used to work at the start
-> because you'd always interpret the flow object with a family.  This
-> appears to have been lost with 8444cf712c5f71845cba9dc30d8f530ff0d5ff83. 
+> On 8/27/20 9:21 AM, Arnaud Pouliquen wrote:
+>> Two backup registers are used to store the Cortex-M4 state and the resource
+>> table address.
+>> Declare the tamp node and add associated properties in m4_rproc node
+>> to allow Linux to attach to a firmware loaded by the first boot stages.
+>>
+>> Associated driver implementation is available in commit 9276536f455b3
+>> ("remoteproc: stm32: Parse syscon that will manage M4 synchronisation").
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>> ---
+>>  arch/arm/boot/dts/stm32mp151.dtsi | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/stm32mp151.dtsi b/arch/arm/boot/dts/stm32mp151.dtsi
+>> index bfe29023fbd5..842ecffae73a 100644
+>> --- a/arch/arm/boot/dts/stm32mp151.dtsi
+>> +++ b/arch/arm/boot/dts/stm32mp151.dtsi
+>> @@ -1541,6 +1541,11 @@
+>>  			status = "disabled";
+>>  		};
+>>  
+>> +		tamp: tamp@5c00a000 {
+>> +			compatible = "st,stm32-tamp", "syscon";
+>> +			reg = <0x5c00a000 0x400>;
+>> +		};
+>> +
+> 
+> Just saw this now. I have a pending patch adding this node as well:
+> https://lore.kernel.org/patchwork/patch/1306971/
+> 
+> For my use case, I need a "simple-mfd" compatible to allow child
+> nodes to be probed.
+> 
+> Could you CC me when you send out your v2, so I can rebase?
+> (Or if you don't mind, just add the "simple-mfd" into the compatible
+> list yourself :-)
 
-I'm sure it can be fixed to work with either ipv4 or ipv6.
-If I understand that right, it should be possible to talk
-ipv4 and ipv6 through that socket, but the policy will
-accept only one address family.
+I prefer that you propose the "simple-mfd" compatibility. I do not master the
+consequence of adding it...
+I will add you in cc of my v2 , but as your patch could trig some discussions
+I would suggest to send in advance a patchset including this patch and your patch
+on top of, just add a reference to this series in the cover letter and explain
+potential impact (or non impact) on the legacy.
 
-> I'm working on a fix.
-
-Thanks!
+Regards,
+Arnaud
+ 
+> 
+> Cheers
+> Ahmad
+> 
+>>  		/*
+>>  		 * Break node order to solve dependency probe issue between
+>>  		 * pinctrl and exti.
+>> @@ -1717,6 +1722,8 @@
+>>  			st,syscfg-holdboot = <&rcc 0x10C 0x1>;
+>>  			st,syscfg-tz = <&rcc 0x000 0x1>;
+>>  			st,syscfg-pdds = <&pwr_mcu 0x0 0x1>;
+>> +			st,syscfg-rsc-tbl = <&tamp 0x144 0xFFFFFFFF>;
+>> +			st,syscfg-m4-state = <&tamp 0x148 0xFFFFFFFF>;
+>>  			status = "disabled";
+>>  		};
+>>  	};
+>>
+> 
