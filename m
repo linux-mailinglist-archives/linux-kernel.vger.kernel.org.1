@@ -2,126 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30013276DDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D436276DE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgIXJvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:51:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45490 "EHLO mail.kernel.org"
+        id S1727374AbgIXJwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:52:50 -0400
+Received: from foss.arm.com ([217.140.110.172]:40392 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgIXJvl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:51:41 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB8DE2396E;
-        Thu, 24 Sep 2020 09:51:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600941100;
-        bh=TgimIo4LtMHR70zUjNJMS20tf+W7300XmLWfy8v9sGY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RaSEtGHdwDuOalyNKwB4D+91VvPEZc8LHgmr9sFNvoDdAPXoF3w0tfJMTegCsgM2H
-         z3uJSjoFYs6jjZdCcVArtbadiz6gWj7UnEiZ2En6DgEAiUNfLliPgsN+TkKE+mblIy
-         3l9o03DLJkf296TIgFeZFDWP64uGgBQJti7GKwZU=
-Date:   Thu, 24 Sep 2020 11:51:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-Cc:     Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Fabian Vogt <fvogt@suse.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>
-Subject: Re: [PATCH] efi/efivars: Create efivars mount point in the
- registration of efivars abstraction
-Message-ID: <20200924095157.GA304421@kroah.com>
-References: <20200924082833.12722-1-jlee@suse.com>
+        id S1726380AbgIXJwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:52:49 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1CB2D113E;
+        Thu, 24 Sep 2020 02:52:49 -0700 (PDT)
+Received: from ubuntu.arm.com (unknown [10.57.15.115])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 201213F73B;
+        Thu, 24 Sep 2020 02:52:46 -0700 (PDT)
+From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        sudeep.holla@arm.com, rjw@rjwysocki.net, vireshk@kernel.org,
+        robh+dt@kernel.org, daniel.lezcano@linaro.org
+Cc:     morten.rasmussen@arm.com, chris.redpath@arm.com,
+        nicola.mazzucato@arm.com
+Subject: [PATCH v2 0/2] CPUFreq: Add support for cpu performance dependencies
+Date:   Thu, 24 Sep 2020 10:53:45 +0100
+Message-Id: <20200924095347.32148-1-nicola.mazzucato@arm.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924082833.12722-1-jlee@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 04:28:33PM +0800, Lee, Chun-Yi wrote:
-> This patch moved the logic of creating efivars mount point to the
-> registration of efivars abstraction. It's useful for userland to
-> determine the availability of efivars filesystem by checking the
-> existence of mount point.
+Hi Rob, Rafael, Viresh, Daniel and Sudeep,
 
-Why not do what all other tools do, and look in /proc/filesystems?
+I am proposing the addition of performance dependencies in cpufreq core
+and one if its drivers (the implementation/approach is RFC).
+This is to support systems where exposed cpu performance controls are more
+fine-grained that the platform's ability to scale cpus independently.
 
-Why is efivars "special" in this way?  What tool isn't properly looking
-for the filesystem in that way today?
+In this V2 posting of the proposed dt-binding to support this, I have
+included an outline of how this information can be stored and passed onto
+relevant OSPM frameworks.
 
-> The 'efivars' platform device be created on generic EFI runtime services
-> platform, so it can be used to determine the availability of efivarfs.
-> But this approach is not available for google gsmi efivars abstraction.
+Please see each patch for detailed information.
 
-I do not understand this last sentence, can you try to explain it
-better?
+[v2]
+  * Fix errors when running make dt_binding_check
+  * Improve commit message description for the dt-binding
+  * Add RFC for implementation in cpufreq-core and one of its
+    drivers.
 
-> This patch be tested on Here on qemu-OVMF and qemu-uboot.
+Nicola Mazzucato (2):
+  dt-bindings: arm: Add devicetree binding for
+    cpu-performance-dependencies
+  [RFC] CPUFreq: Add support for cpu-perf-dependencies
 
-How about real hardware?  :)
+ .../bindings/arm/cpu-perf-dependencies.yaml   | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/arm/cpu-perf-dependencies.yaml
 
-> 
-> Cc: Ard Biesheuvel <ardb@kernel.org>
-> Cc: Matthias Brugger <mbrugger@suse.com>
-> Cc: Fabian Vogt <fvogt@suse.com>
-> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Arthur Heymans <arthur@aheymans.xyz>
-> Cc: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> ---
->  drivers/firmware/efi/efi.c  |  7 -------
->  drivers/firmware/efi/vars.c | 17 +++++++++++++++++
->  2 files changed, 17 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-> index 3aa07c3b5136..23c11a2a3f4d 100644
-> --- a/drivers/firmware/efi/efi.c
-> +++ b/drivers/firmware/efi/efi.c
-> @@ -405,13 +405,6 @@ static int __init efisubsys_init(void)
->  	if (error)
->  		goto err_remove_group;
->  
-> -	/* and the standard mountpoint for efivarfs */
-> -	error = sysfs_create_mount_point(efi_kobj, "efivars");
-> -	if (error) {
-> -		pr_err("efivars: Subsystem registration failed.\n");
-> -		goto err_remove_group;
-> -	}
-> -
->  	if (efi_enabled(EFI_DBG) && efi_enabled(EFI_PRESERVE_BS_REGIONS))
->  		efi_debugfs_init();
->  
-> diff --git a/drivers/firmware/efi/vars.c b/drivers/firmware/efi/vars.c
-> index 973eef234b36..6fa7f288d635 100644
-> --- a/drivers/firmware/efi/vars.c
-> +++ b/drivers/firmware/efi/vars.c
-> @@ -1179,6 +1179,8 @@ int efivars_register(struct efivars *efivars,
->  		     const struct efivar_operations *ops,
->  		     struct kobject *kobject)
->  {
-> +	int error;
-> +
->  	if (down_interruptible(&efivars_lock))
->  		return -EINTR;
->  
-> @@ -1191,6 +1193,19 @@ int efivars_register(struct efivars *efivars,
->  
->  	up(&efivars_lock);
->  
-> +	/* and the standard mountpoint for efivarfs */
-> +	if (efi_kobj) {
+-- 
+2.27.0
 
-Why test for this?  Can it race?
-
-thanks,
-
-greg k-h
