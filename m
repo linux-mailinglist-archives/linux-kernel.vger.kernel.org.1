@@ -2,91 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B92FD276BEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEE6F276BEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbgIXIap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:30:45 -0400
-Received: from ozlabs.org ([203.11.71.1]:42011 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727046AbgIXIao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:30:44 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BxpCQ3ssRz9sTN;
-        Thu, 24 Sep 2020 18:30:42 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600936242;
-        bh=LRmGIax4dalz/UGz8d4SkRxKBlzjQ3EaT2pKFE6JCVY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GCTyVhVlw4pcxLjg9XAd2nKYguMZt56PFeqCUaULY2JYt3blylX5BJO12ufzkb80g
-         obU6sUptThY8I27ouvXGQwcKT3YYlV7pxVJwCejsEiuzHgIQ5G+mLtZpa3FAcPbZkK
-         es0InT7D2f10atKzgdZ83PxNkLrRZwcWwpPtep0KTu7nO/Cjy1h2O+RnP1sOpgud4s
-         stNkvifJPcwt9M93GOca/00sJFtU74wZj1bVJyS0xV1GHe/lvzeCJPDSihVcNvFS9u
-         d5DDpCohiLocLek5ZHKSIHjwdn6n3dHoUO6JKx00ZOPnr0AnjlxSU6F/qwzM+YSVa7
-         QnlhlvPjZXN+w==
-Date:   Thu, 24 Sep 2020 18:30:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>
-Subject: linux-next: build failure after merge of the vfs tree
-Message-ID: <20200924183038.3c6da86e@canb.auug.org.au>
+        id S1727277AbgIXIbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:31:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727046AbgIXIbJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:31:09 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CB1C0613CE;
+        Thu, 24 Sep 2020 01:31:09 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id f1so1270152plo.13;
+        Thu, 24 Sep 2020 01:31:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IVI88Ab0ORn7n0SaJ8glbDknDRZ2U53PHQjSfMHEPWQ=;
+        b=QsP1udv4sC1wPywLdkSvUzX8PPWRzMDOEm8ry73Pb7GpZ8K9jlE4hyOM4y5HVNn0BV
+         JyYRDWIMWhtgt8j6QIGCcO6s9oUzSBDeBvmlolD1Dd3umqcjuKiVoDJ35+QL7D6I8XOz
+         p9t562M/QHZj39mRxdt21hU/sEGIgLhtM7hmu8NGx/pEPuF2rwTd95EyPgvqXUQpc9+8
+         GgGCVxwT8jFuznoRBUEvq1pvgMZndVYksUrt6D/Py2bj0dwTXXTWa9Vg4hoItFYhcyiR
+         28xdtlMtzKApWtiL7J+JmDCqx295rF7hxVX9rrhx2/uyT/BcSGqw/nekWHPCGeZiHHah
+         fh2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IVI88Ab0ORn7n0SaJ8glbDknDRZ2U53PHQjSfMHEPWQ=;
+        b=dvvs+UH6+8cmFZJmWsPEAKdqgUXekO6ItnG0d5YY0lLSIrqIhF1ACE7KXupdHHIkYG
+         ahff3zvschwUK8GApR7t3WD86BnEzmr8LW7E28/RU8Y/aCtsnjfXNIuFjeY5TFigvp+v
+         FHE+0yPuofp/rggN4W3HpvkOEpHkbSlTlCQ+m9AoDIoCLBqIil9qHAjOKKEGuw1HVa50
+         l3D9dGhIHrVXVY1JgZsAwu0HzPdX95F0V+kaSwp19z15kNmaPonnJKtD56lmSMBQFiSc
+         11BWRGjl8PHwSAo14N0J7xeTkRalX1NfOqpGCaaBKKFcGoUkdU4wxO0yVQDF+7LJW/I+
+         VPAw==
+X-Gm-Message-State: AOAM533tJfR6IcCE4/U8iezbOUFqErKQerkhc/VdxKF27hCZVPTSUKZp
+        yEPeyL3YmcGi7fHr7Xg+lU8r/TyVMn1Msr+RjIo=
+X-Google-Smtp-Source: ABdhPJxY/SFBzi1/e1CZgyq3kKnpbcADTlsz9mk4MTd6CKSbIGdJxuUP64RnGNYQ+VHTNfV/Ob34qfdZ9vvWJ62IaC0=
+X-Received: by 2002:a17:90b:fc4:: with SMTP id gd4mr3015493pjb.129.1600936268874;
+ Thu, 24 Sep 2020 01:31:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GDv44smj=nUa+/WgA8CwQxw";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200923151511.3842150-1-luzmaximilian@gmail.com> <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
+In-Reply-To: <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 24 Sep 2020 11:30:52 +0300
+Message-ID: <CAHp75Vfp86h38Rd-VEgER7ASADdmz5ymAkuHvD0Q6WPDqZBqHw@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
+ Aggregator Module
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GDv44smj=nUa+/WgA8CwQxw
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Sep 23, 2020 at 6:32 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Wed, Sep 23, 2020 at 5:15 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+> >
+> > Hello,
+> >
+> > The Surface System Aggregator Module (we'll refer to it as Surface
+> > Aggregator or SAM below) is an embedded controller (EC) found on various
+> > Microsoft Surface devices. Specifically, all 4th and later generation
+> > Surface devices, i.e. Surface Pro 4, Surface Book 1 and later, with the
+> > exception of the Surface Go series and the Surface Duo. Notably, it
+> > seems like this EC can also be found on the ARM-based Surface Pro X [1].
+>
+> I think this should go to drivers/platform/x86 or drivers/platform/surface/
+> along with other laptop vendor specific code rather than drivers/misc/.
 
-Hi all,
++1 here. drivers/platform/surface is a good place to start.
+And you may begin with moving a few Surface drivers out of PDx86 to
+the new folder.
 
-After merging the vfs tree, today's linux-next build (x86_64 allnoconfig)
-failed like this:
-
-arch/x86/include/asm/barrier.h: Assembler messages:
-arch/x86/include/asm/barrier.h:41: Error: operand type mismatch for `cmp'
-arch/x86/include/asm/barrier.h:41: Error: operand type mismatch for `cmp'
-
-and many more ...
-
-Caused by commit
-
-  e33ea6e5ba6a ("x86/uaccess: Use pointer masking to limit uaccess speculat=
-ion")
-
-I am not exactly sure why (but reverting it fixes the build).
-
-I have reverted that commit for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/GDv44smj=nUa+/WgA8CwQxw
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9sWS4ACgkQAVBC80lX
-0GxmRAf/TYX4R2adWmPplzadr5+Wa9dR2gae6g1XAtlZp+TQ16InkZGD4IaDa5B1
-2TaS1r0vS3OE5AXtLrHGw1K257FnXERr1C7z6tcsINxQ5cHbpIdigZX6QW2+aqH5
-nB70hkniMpFJqVfQoNcXJIouARAdo2qfddgm36dkOTSFT2InAIsqxvCLp5j2qpFU
-9NHe5Z0N3sbahLqtVzsRKNBu8mDUqzcgpsctFSoooT/h8rcsUgY+1h3SMboH8U1N
-yTh4gq8/IfvY4UxXpvIEjOoJTVzn0sJrYyv/g+YYcuSqAiubN5FriW5NnQu6V9EL
-iki/l8ViyTn54vSKysuNN4KQaW8ENg==
-=yBbZ
------END PGP SIGNATURE-----
-
---Sig_/GDv44smj=nUa+/WgA8CwQxw--
+-- 
+With Best Regards,
+Andy Shevchenko
