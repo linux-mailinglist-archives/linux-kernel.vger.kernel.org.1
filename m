@@ -2,97 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DB982768FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EA92768E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbgIXGfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbgIXGfN (ORCPT
+        id S1726923AbgIXGas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:30:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32487 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726119AbgIXGas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:35:13 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA09C0613D3
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:35:13 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z19so1265949pfn.8
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=labau-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=WdbXNUPD6MY2k7zfhudyHvM2eQJZTVebaDaCbQjjSc4=;
-        b=R4ZRBj8YXWIGdZwMOechCKdR8uAv2fnfhQwdmfxjzpD1CjkGzjhKxac1qzn/LpOIsQ
-         kzMuCcp3Q1QSx7fgXJ2H47e+BHVMvzTeRvR/cVyHyzGHEpcHm3qHHcaAdNlHeUxns+6E
-         e5WTCqYUGcfnVEvTmUJq1cG7OW1smjI/ZDRITipA1GqH9APx6JLucfGeC6E9OFzHjUgQ
-         Y9oMhUw4jewY845zC5Zu00ZmLv0Ndh8NikpTff+ungAF6alTS5na1cqZsJvvsWZXNsBl
-         sTkwRw9jMUuSR8KqLnu2d8Ne1fPQAjmw+KeksySBlqLLGgYpiEiX8ehAR5M7L2/pAS9m
-         ZCRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=WdbXNUPD6MY2k7zfhudyHvM2eQJZTVebaDaCbQjjSc4=;
-        b=dmxKctL1QA7Ho4bjXMQZYA7ZnEelC7GS+wNR5yWDvBKEYtx8S+lacUYTTJsaUX9hUI
-         LiS95LaYM6qO/cFTdQi8b3Oi/EqwvipOZEe1S0y5sbyS2c1z96PWXD/CErxRo9dyNQZd
-         Eua5/7+Ys9v1ASLsYruAjV/Pop1WIqUUouS6n8SjPhz3QFOTUagfaKTi1MEqDrL96MFA
-         lCdQ5skBBBN1uwsmabrTK6ERpGmGZjRx5G4zYh+2vmR++pDGsiV5ueFs/A7nFWVLGJOb
-         eqzfTHQ+EjOX0jU0o0MTax4XqWiY0YR+BRa84EmJwQoBRiVtuK4sMW0ekIYiWyPgkqH0
-         EHFA==
-X-Gm-Message-State: AOAM530A3WLjCfDSHg93Q1SZ0oYurrYPAFBO2vwTWtB7Q1iE34p43EzA
-        4MaKJ+bMnE4POyxULA0L2H1b7yO4Ec8dpSrFQm0=
-X-Google-Smtp-Source: ABdhPJzikG7gxmnbljPjmCLOet8UO5lrllVUo0qfMOp0FRkGfzZZ/16CkCAL5dUv0RHCsC0TmnEMNg==
-X-Received: by 2002:a63:4d5b:: with SMTP id n27mr2722132pgl.360.1600929313019;
-        Wed, 23 Sep 2020 23:35:13 -0700 (PDT)
-Received: from localhost.localdomain (60-251-64-13.HINET-IP.hinet.net. [60.251.64.13])
-        by smtp.gmail.com with ESMTPSA id z9sm1493939pfk.118.2020.09.23.23.35.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Sep 2020 23:35:12 -0700 (PDT)
-From:   Scott Chen <scott@labau.com.tw>
-Cc:     young@labau.com.tw, jocelyn@labau.com.tw,
-        Scott Chen <scott@labau.com.tw>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] USB: serial: pl2303: add device-id for HP GC device
-Date:   Thu, 24 Sep 2020 14:27:45 +0800
-Message-Id: <20200924062745.5791-1-scott@labau.com.tw>
-X-Mailer: git-send-email 2.17.1
-To:     unlisted-recipients:; (no To-header on input)
+        Thu, 24 Sep 2020 02:30:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600929047;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rFFyYTrms2NUjPJLW1DPbzsCtUaxd33WbnTy6rIAmEs=;
+        b=Qy0SMjVCGP7rqzu9BpV6sqDYuQFyR/SN/uVsPvsZxgveH57B28YatpzFdH1c9qTZQ5C8dE
+        /vqO1sT+NTeGcdRdIvBTZ7YHNRqNxlToyzmkSdHrBlM3vnV0jMgv0++6yy+XXi6T1gXADh
+        PbmAIXFrQM/XbyuI0VnFxPi3An0t0Lw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-Y4uhOkLUOfKTtV0MCvFwnQ-1; Thu, 24 Sep 2020 02:30:45 -0400
+X-MC-Unique: Y4uhOkLUOfKTtV0MCvFwnQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 62A6C64096;
+        Thu, 24 Sep 2020 06:30:43 +0000 (UTC)
+Received: from optiplex-lnx (unknown [10.3.128.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1776678827;
+        Thu, 24 Sep 2020 06:30:41 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 02:30:38 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
+ dereference
+Message-ID: <20200924063038.GD1023012@optiplex-lnx>
+References: <20200922184838.978540-1-aquini@redhat.com>
+ <878sd1qllb.fsf@yhuang-dev.intel.com>
+ <20200923043459.GL795820@optiplex-lnx>
+ <87sgb9oz1u.fsf@yhuang-dev.intel.com>
+ <20200923130138.GM795820@optiplex-lnx>
+ <87blhwng5f.fsf@yhuang-dev.intel.com>
+ <20200924020928.GC1023012@optiplex-lnx>
+ <877dsjessq.fsf@yhuang-dev.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dsjessq.fsf@yhuang-dev.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is adds a device id for HP LD381 which is a pl2303GC-base device.
+On Thu, Sep 24, 2020 at 11:51:17AM +0800, Huang, Ying wrote:
+> Rafael Aquini <aquini@redhat.com> writes:
+> > The bug here is quite simple: split_swap_cluster() misses checking for
+> > lock_cluster() returning NULL before committing to change cluster_info->flags.
+> 
+> I don't think so.  We shouldn't run into this situation firstly.  So the
+> "fix" hides the real bug instead of fixing it.  Just like we call
+> VM_BUG_ON_PAGE(!PageLocked(head), head) in split_huge_page_to_list()
+> instead of returning if !PageLocked(head) silently.
+>
 
-Signed-off-by: Scott Chen <scott@labau.com.tw>
----
- drivers/usb/serial/pl2303.c | 1 +
- drivers/usb/serial/pl2303.h | 1 +
- 2 files changed, 2 insertions(+)
+Not the same thing, obviously, as you are going for an apples-to-carrots
+comparison, but since you mentioned:
 
-diff --git a/drivers/usb/serial/pl2303.c b/drivers/usb/serial/pl2303.c
-index 048452d8a4a4..be8067017eaa 100644
---- a/drivers/usb/serial/pl2303.c
-+++ b/drivers/usb/serial/pl2303.c
-@@ -100,6 +100,7 @@ static const struct usb_device_id id_table[] = {
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD220_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD220TA_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD381_PRODUCT_ID) },
-+	{ USB_DEVICE(HP_VENDOR_ID, HP_LD381GC_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD960_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LD960TA_PRODUCT_ID) },
- 	{ USB_DEVICE(HP_VENDOR_ID, HP_LCM220_PRODUCT_ID) },
-diff --git a/drivers/usb/serial/pl2303.h b/drivers/usb/serial/pl2303.h
-index 7d3090ee7e0c..b0f399a8c628 100644
---- a/drivers/usb/serial/pl2303.h
-+++ b/drivers/usb/serial/pl2303.h
-@@ -127,6 +127,7 @@
+split_huge_page_to_list() asserts (in debug builds) *page is locked, 
+and later checks if *head bears the SwapCache flag. 
+deferred_split_scan(), OTOH, doesn't hand down the compound head locked, 
+but the 2nd page in the group instead. 
+This doesn't necessarely means it's a problem, though, but might help
+on hitting the issue. 
+
  
- /* Hewlett-Packard POS Pole Displays */
- #define HP_VENDOR_ID		0x03f0
-+#define HP_LD381GC_PRODUCT_ID   0x0183
- #define HP_LM920_PRODUCT_ID	0x026b
- #define HP_TD620_PRODUCT_ID	0x0956
- #define HP_LD960_PRODUCT_ID	0x0b39
--- 
-2.17.1
+> > The fundamental problem has nothing to do with allocating, or not allocating
+> > a swap cluster, but it has to do with the fact that the THP deferred split scan
+> > can transiently race with swapcache insertion, and the fact that when you run
+> > your swap area on rotational storage cluster_info is _always_ NULL.
+> > split_swap_cluster() needs to check for lock_cluster() returning NULL because
+> > that's one possible case, and it clearly fails to do so.
+> 
+> If there's a race, we should fix the race.  But the code path for
+> swapcache insertion is,
+> 
+> add_to_swap()
+>   get_swap_page() /* Return if fails to allocate */
+>   add_to_swap_cache()
+>     SetPageSwapCache()
+> 
+> While the code path to split THP is,
+> 
+> split_huge_page_to_list()
+>   if PageSwapCache()
+>     split_swap_cluster()
+> 
+> Both code paths are protected by the page lock.  So there should be some
+> other reasons to trigger the bug.
+
+As mentioned above, no they seem to not be protected (at least, not the
+same page, depending on the case). While add_to_swap() will assure a 
+page_lock on the compound head, split_huge_page_to_list() does not.
+
+
+> And again, for HDD, a THP shouldn't have PageSwapCache() set at the
+> first place.  If so, the bug is that the flag is set and we should fix
+> the setting.
+> 
+
+I fail to follow your claim here. Where is the guarantee, in the code, that 
+you'll never have a compound head in the swapcache? 
+
+> > Run a workload that cause multiple THP COW, and add a memory hogger to create
+> > memory pressure so you'll force the reclaimers to kick the registered
+> > shrinkers. The trigger is not heavy swapping, and that's probably why
+> > most swap test cases don't hit it. The window is tight, but you will get the
+> > NULL pointer dereference.
+> 
+> Do you have a script to reproduce the bug?
+> 
+
+Nope, a convoluted set of internal regression tests we have usually
+triggers it. In the wild, customers running HANNA are seeing it,
+occasionally.
+
+> > Regardless you find furhter bugs, or not, this patch is needed to correct a
+> > blunt coding mistake.
+> 
+> As above.  I don't agree with that.
+> 
+
+It's OK to disagree, split_swap_cluster still misses the cluster_info NULL check,
+though.
 
