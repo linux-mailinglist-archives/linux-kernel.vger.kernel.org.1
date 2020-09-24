@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CB7277C09
+	by mail.lfdr.de (Postfix) with ESMTP id 82057277C08
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgIXWwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 18:52:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
+        id S1727012AbgIXWwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 18:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726991AbgIXWwB (ORCPT
+        with ESMTP id S1726921AbgIXWwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 18:52:01 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D32C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 15:52:00 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id w8so465185qvt.18
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 15:52:00 -0700 (PDT)
+        Thu, 24 Sep 2020 18:52:04 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0709FC0613D7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 15:52:04 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id b7so291864wrn.6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 15:52:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=2ZNxfm3ay5zbZVAoyeFT7OvnOs6QmAy2d7QmbFd4VOE=;
-        b=Z8L7kQ44nyuIvfERbISlBdEpDhN/XfbDsHV4a99zPo0Vg4dEDCsvfVmuNfbQFFgxFk
-         ZkK00zQGFAjll4+o2JgaQH1MgmuBEix0rl9THPhzRRa8d7oHk9R3XyE6xPF8EKMvXCB4
-         9hD6/l7orxic8F4AU/N2fFj9nxLd7nSfJmlQN9znl4ZYzMdhAOQNRmBjtlfQiJ0U/rGn
-         74dSPWgO70nBIvOH3EYX+NHTfsKLhXMOVM7Pwblgo8JmoJKKH4i9JnmxYmRifJmOmyox
-         nqhx0TswaCyrRYW5QC1x8sfnS6UNgWe8I3H0+CerxXrmTWUuwby6w1La6v8Knov0pkDe
-         8tyQ==
+        bh=Ly+bj57ldRRD0C//yHfyyg/i7uFUjVGmXo7UI/fmS0E=;
+        b=GmW/zNYR0tVVt8FMeMW7nK4wd+T4uWR5GmQfkUP0WFe4f/0htLWPPAmqSVLRkxPosE
+         ozm8tXLoe9PMCID9USfk+qvU7aHOvPjUiE4IYGqpbShsp4qeAXIvokItZFV357DJRtXY
+         2mdM+py+mDbJ2Ftfxn69ntEkWDGyj+L0Lm8D25Y5nvBZO3P8THHzlmA+yTMS4K97BG/J
+         0jsHzDZ3ekmOfc9tSVBqMrdcxSqu2F/DVxXmsZYiFZgj2cEi1TB5b+7UTHZeTyn5hHwU
+         gYpxVqTO/W64ZZg9djXQT3aV8WcVyUXTh0j8eTfUkh+UzF5Br/b1ruWx9wpz+xlT08So
+         mNpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2ZNxfm3ay5zbZVAoyeFT7OvnOs6QmAy2d7QmbFd4VOE=;
-        b=HrTWuuRzQcu2yQboC4GCC7jrv0o8CoCsNP9j+rmsw20ku2CeO/crCRnV6hRUtaDMyc
-         5sjxv/NImnYBW7oUuRmGZoy8u59RP96/Q3/GAksqYWxfR0DuQ/CA3kBKlBweq4gepYei
-         FnJDw0UAp8CxXbu7r85ZM1915yhYzbn9UvN9gjlQ7cqNojArZY7DM6eEXmzrLyh0kjbN
-         3vqt7ce/VJnKAUAVcTzi4nt9WzSqy0D1Padz+PFRxXkWAIF6aOtWUtLuh3Q8rQUvs3Ri
-         Z96hzoSdlfsBEGKSL9J7ucpXb3zFVf7n8oQVr2E5VYYigmmUfwXYaJjC/+rMac78JjsQ
-         scsA==
-X-Gm-Message-State: AOAM5307HklKb6I5/8vtlBs+lB9eJGIAX1s5d08w8zd6raURZG3LDy4i
-        P8KQLjOGoJMERNWtwiaRqxebO9H5bacl+vLa
-X-Google-Smtp-Source: ABdhPJx10xvNozKX714SL+YyVx2fWqjOb0CmeOHj98QNEqlvpnsMykm5dN60A1Bc8fjKejCdDQgnb8qifLCnTPj+
+        bh=Ly+bj57ldRRD0C//yHfyyg/i7uFUjVGmXo7UI/fmS0E=;
+        b=RxCup65BwJC8GRQ4sKv4ey5vAf3Ok/8ch5nno1LZE+1HFkE/6MwkJ8pHBc5vpW+62w
+         RJz8fHIH1TEiJhR4TdVAesy3mSA1Q6mSPGc5+GeIYkapGI+ebGNmEHrKViAhw07ZxpIf
+         EvllywevKjZE1BARWinlwx0Y6Lrer7E22t4Sj+It8XCaag3RQdtlN8KfbQcbr9Mht+VZ
+         /haFNbuJzJcBC7y2reE2//wpPFn2C/FghpJ5NRc/i6Y1cAyZjRM97hfNJFCHZeiuQP1d
+         FH0NCgEbYi03h4bBsT+YHQiz+JKaaSx8jnBCEjYrlvP0HPkwGnMyxlP9QTvD1oTTCkvi
+         PWLQ==
+X-Gm-Message-State: AOAM531NXPzD6D6uzyuMMOywBAexiV/rXFpNBYCK6VufYGitDoRYDntH
+        YNUST9N1woGAASEJOEl8yhnj66o3XKVz8W9C
+X-Google-Smtp-Source: ABdhPJwoq217LoQ4v6iUkP8dzD88+k0aWtVv0yRVDcK2quefJIO3mSeZj4KICVjzymxRkK2/4sEdygqF1uiXVcKe
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:ad4:58aa:: with SMTP id
- ea10mr1648526qvb.58.1600987920066; Thu, 24 Sep 2020 15:52:00 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 00:50:35 +0200
+ (user=andreyknvl job=sendgmr) by 2002:a05:600c:252:: with SMTP id
+ 18mr802602wmj.63.1600987922540; Thu, 24 Sep 2020 15:52:02 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 00:50:36 +0200
 In-Reply-To: <cover.1600987622.git.andreyknvl@google.com>
-Message-Id: <27e272bfd203cc0ff32181f07db588363ef3776b.1600987622.git.andreyknvl@google.com>
+Message-Id: <4e503a54297cf46ea1261f43aa325c598d9bd73e.1600987622.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1600987622.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v3 28/39] arm64: mte: Convert gcr_user into an exclude mask
+Subject: [PATCH v3 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and exit
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Dmitry Vyukov <dvyukov@google.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -77,140 +77,223 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-The gcr_user mask is a per thread mask that represents the tags that are
-excluded from random generation when the Memory Tagging Extension is
-present and an 'irg' instruction is invoked.
+When MTE is present, the GCR_EL1 register contains the tags mask that
+allows to exclude tags from the random generation via the IRG instruction.
 
-gcr_user affects the behavior on EL0 only.
+With the introduction of the new Tag-Based KASAN API that provides a
+mechanism to reserve tags for special reasons, the MTE implementation
+has to make sure that the GCR_EL1 setting for the kernel does not affect
+the userspace processes and viceversa.
 
-Currently that mask is an include mask and it is controlled by the user
-via prctl() while GCR_EL1 accepts an exclude mask.
-
-Convert the include mask into an exclude one to make it easier the
-register setting.
-
-Note: This change will affect gcr_kernel (for EL1) introduced with a
-future patch.
+Save and restore the kernel/user mask in GCR_EL1 in kernel entry and exit.
 
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
-Change-Id: Id15c0b47582fb51594bb26fb8353d78c7d0953c1
+Change-Id: I0081cba5ace27a9111bebb239075c9a466af4c84
 ---
- arch/arm64/include/asm/processor.h |  2 +-
- arch/arm64/kernel/mte.c            | 29 +++++++++++++++--------------
- 2 files changed, 16 insertions(+), 15 deletions(-)
+ arch/arm64/include/asm/mte-kasan.h |  6 ++++
+ arch/arm64/include/asm/mte.h       |  2 ++
+ arch/arm64/kernel/asm-offsets.c    |  3 ++
+ arch/arm64/kernel/cpufeature.c     |  3 ++
+ arch/arm64/kernel/entry.S          | 47 ++++++++++++++++++++++++++++++
+ arch/arm64/kernel/mte.c            | 18 ++++++++++--
+ 6 files changed, 76 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/include/asm/processor.h b/arch/arm64/include/asm/processor.h
-index fec204d28fce..ed9efa5be8eb 100644
---- a/arch/arm64/include/asm/processor.h
-+++ b/arch/arm64/include/asm/processor.h
-@@ -153,7 +153,7 @@ struct thread_struct {
+diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+index b0f27de8de33..88ccd8afbddb 100644
+--- a/arch/arm64/include/asm/mte-kasan.h
++++ b/arch/arm64/include/asm/mte-kasan.h
+@@ -33,6 +33,8 @@ u8 mte_get_mem_tag(void *addr);
+ u8 mte_get_random_tag(void);
+ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
+ 
++void mte_init_tags(u64 max_tag);
++
+ #else /* CONFIG_ARM64_MTE */
+ 
+ static inline u8 mte_get_ptr_tag(void *ptr)
+@@ -53,6 +55,10 @@ static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+ 	return addr;
+ }
+ 
++static inline void mte_init_tags(u64 max_tag)
++{
++}
++
+ #endif /* CONFIG_ARM64_MTE */
+ 
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+index 3a2bf3ccb26c..a27ec109ffe8 100644
+--- a/arch/arm64/include/asm/mte.h
++++ b/arch/arm64/include/asm/mte.h
+@@ -15,6 +15,8 @@
+ 
+ #include <asm/pgtable-types.h>
+ 
++extern u64 gcr_kernel_excl;
++
+ void mte_clear_page_tags(void *addr);
+ unsigned long mte_copy_tags_from_user(void *to, const void __user *from,
+ 				      unsigned long n);
+diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+index 7d32fc959b1a..dfe6ed8446ac 100644
+--- a/arch/arm64/kernel/asm-offsets.c
++++ b/arch/arm64/kernel/asm-offsets.c
+@@ -47,6 +47,9 @@ int main(void)
+ #ifdef CONFIG_ARM64_PTR_AUTH
+   DEFINE(THREAD_KEYS_USER,	offsetof(struct task_struct, thread.keys_user));
+   DEFINE(THREAD_KEYS_KERNEL,	offsetof(struct task_struct, thread.keys_kernel));
++#endif
++#ifdef CONFIG_ARM64_MTE
++  DEFINE(THREAD_GCR_EL1_USER,	offsetof(struct task_struct, thread.gcr_user_excl));
  #endif
- #ifdef CONFIG_ARM64_MTE
- 	u64			sctlr_tcf0;
--	u64			gcr_user_incl;
-+	u64			gcr_user_excl;
+   BLANK();
+   DEFINE(S_X0,			offsetof(struct pt_regs, regs[0]));
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index eca06b8c74db..e76634ad5bc7 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -1721,6 +1721,9 @@ static void cpu_enable_mte(struct arm64_cpu_capabilities const *cap)
+ 
+ 	/* Enable in-kernel MTE only if KASAN_HW_TAGS is enabled */
+ 	if (IS_ENABLED(CONFIG_KASAN_HW_TAGS)) {
++		/* Enable the kernel exclude mask for random tags generation */
++		write_sysreg_s(SYS_GCR_EL1_RRND | gcr_kernel_excl, SYS_GCR_EL1);
++
+ 		/* Enable MTE Sync Mode for EL1 */
+ 		sysreg_clear_set(sctlr_el1, SCTLR_ELx_TCF_MASK, SCTLR_ELx_TCF_SYNC);
+ 		isb();
+diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+index ff34461524d4..c7cc1fdfbd1a 100644
+--- a/arch/arm64/kernel/entry.S
++++ b/arch/arm64/kernel/entry.S
+@@ -175,6 +175,49 @@ alternative_else_nop_endif
  #endif
- };
+ 	.endm
+ 
++	.macro mte_set_gcr, tmp, tmp2
++#ifdef CONFIG_ARM64_MTE
++alternative_if_not ARM64_MTE
++	b	1f
++alternative_else_nop_endif
++	/*
++	 * Calculate and set the exclude mask preserving
++	 * the RRND (bit[16]) setting.
++	 */
++	mrs_s	\tmp2, SYS_GCR_EL1
++	bfi	\tmp2, \tmp, #0, #16
++	msr_s	SYS_GCR_EL1, \tmp2
++	isb
++1:
++#endif
++	.endm
++
++	.macro mte_set_kernel_gcr, tsk, tmp, tmp2
++#ifdef CONFIG_KASAN_HW_TAGS
++#ifdef CONFIG_ARM64_MTE
++alternative_if_not ARM64_MTE
++	b	1f
++alternative_else_nop_endif
++	ldr_l	\tmp, gcr_kernel_excl
++
++	mte_set_gcr \tmp, \tmp2
++1:
++#endif
++#endif
++	.endm
++
++	.macro mte_set_user_gcr, tsk, tmp, tmp2
++#ifdef CONFIG_ARM64_MTE
++alternative_if_not ARM64_MTE
++	b	1f
++alternative_else_nop_endif
++	ldr	\tmp, [\tsk, #THREAD_GCR_EL1_USER]
++
++	mte_set_gcr \tmp, \tmp2
++1:
++#endif
++	.endm
++
+ 	.macro	kernel_entry, el, regsize = 64
+ 	.if	\regsize == 32
+ 	mov	w0, w0				// zero upper 32 bits of x0
+@@ -214,6 +257,8 @@ alternative_else_nop_endif
+ 
+ 	ptrauth_keys_install_kernel tsk, x20, x22, x23
+ 
++	mte_set_kernel_gcr tsk, x22, x23
++
+ 	scs_load tsk, x20
+ 	.else
+ 	add	x21, sp, #S_FRAME_SIZE
+@@ -332,6 +377,8 @@ alternative_else_nop_endif
+ 	/* No kernel C function calls after this as user keys are set. */
+ 	ptrauth_keys_install_user tsk, x0, x1, x2
+ 
++	mte_set_user_gcr tsk, x0, x1
++
+ 	apply_ssbd 0, x0, x1
+ 	.endif
  
 diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 833b63fdd5e2..393d0c794be4 100644
+index 393d0c794be4..c3b4f056fc54 100644
 --- a/arch/arm64/kernel/mte.c
 +++ b/arch/arm64/kernel/mte.c
-@@ -136,23 +136,22 @@ static void set_sctlr_el1_tcf0(u64 tcf0)
- 	preempt_enable();
+@@ -22,6 +22,8 @@
+ #include <asm/ptrace.h>
+ #include <asm/sysreg.h>
+ 
++u64 gcr_kernel_excl __ro_after_init;
++
+ static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+ {
+ 	pte_t old_pte = READ_ONCE(*ptep);
+@@ -116,6 +118,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+ 	return ptr;
  }
  
--static void update_gcr_el1_excl(u64 incl)
-+static void update_gcr_el1_excl(u64 excl)
++void mte_init_tags(u64 max_tag)
++{
++	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
++
++	gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
++}
++
+ static void update_sctlr_el1_tcf0(u64 tcf0)
  {
--	u64 excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
- 
- 	/*
--	 * Note that 'incl' is an include mask (controlled by the user via
--	 * prctl()) while GCR_EL1 accepts an exclude mask.
-+	 * Note that the mask controlled by the user via prctl() is an
-+	 * include while GCR_EL1 accepts an exclude mask.
- 	 * No need for ISB since this only affects EL0 currently, implicit
- 	 * with ERET.
- 	 */
- 	sysreg_clear_set_s(SYS_GCR_EL1, SYS_GCR_EL1_EXCL_MASK, excl);
- }
- 
--static void set_gcr_el1_excl(u64 incl)
-+static void set_gcr_el1_excl(u64 excl)
+ 	/* ISB required for the kernel uaccess routines */
+@@ -151,7 +160,11 @@ static void update_gcr_el1_excl(u64 excl)
+ static void set_gcr_el1_excl(u64 excl)
  {
--	current->thread.gcr_user_incl = incl;
--	update_gcr_el1_excl(incl);
-+	current->thread.gcr_user_excl = excl;
-+	update_gcr_el1_excl(excl);
+ 	current->thread.gcr_user_excl = excl;
+-	update_gcr_el1_excl(excl);
++
++	/*
++	 * SYS_GCR_EL1 will be set to current->thread.gcr_user_incl value
++	 * by mte_restore_gcr() in kernel_exit,
++	 */
  }
  
  void flush_mte_state(void)
-@@ -167,7 +166,7 @@ void flush_mte_state(void)
- 	/* disable tag checking */
- 	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
- 	/* reset tag generation mask */
--	set_gcr_el1_excl(0);
-+	set_gcr_el1_excl(SYS_GCR_EL1_EXCL_MASK);
- }
- 
- void mte_thread_switch(struct task_struct *next)
-@@ -178,7 +177,7 @@ void mte_thread_switch(struct task_struct *next)
+@@ -177,7 +190,6 @@ void mte_thread_switch(struct task_struct *next)
  	/* avoid expensive SCTLR_EL1 accesses if no change */
  	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
  		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
--	update_gcr_el1_excl(next->thread.gcr_user_incl);
-+	update_gcr_el1_excl(next->thread.gcr_user_excl);
+-	update_gcr_el1_excl(next->thread.gcr_user_excl);
  }
  
  void mte_suspend_exit(void)
-@@ -186,13 +185,14 @@ void mte_suspend_exit(void)
+@@ -185,7 +197,7 @@ void mte_suspend_exit(void)
  	if (!system_supports_mte())
  		return;
  
--	update_gcr_el1_excl(current->thread.gcr_user_incl);
-+	update_gcr_el1_excl(current->thread.gcr_user_excl);
+-	update_gcr_el1_excl(current->thread.gcr_user_excl);
++	update_gcr_el1_excl(gcr_kernel_excl);
  }
  
  long set_mte_ctrl(struct task_struct *task, unsigned long arg)
- {
- 	u64 tcf0;
--	u64 gcr_incl = (arg & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT;
-+	u64 gcr_excl = ~((arg & PR_MTE_TAG_MASK) >> PR_MTE_TAG_SHIFT) &
-+		       SYS_GCR_EL1_EXCL_MASK;
- 
- 	if (!system_supports_mte())
- 		return 0;
-@@ -213,10 +213,10 @@ long set_mte_ctrl(struct task_struct *task, unsigned long arg)
- 
- 	if (task != current) {
- 		task->thread.sctlr_tcf0 = tcf0;
--		task->thread.gcr_user_incl = gcr_incl;
-+		task->thread.gcr_user_excl = gcr_excl;
- 	} else {
- 		set_sctlr_el1_tcf0(tcf0);
--		set_gcr_el1_excl(gcr_incl);
-+		set_gcr_el1_excl(gcr_excl);
- 	}
- 
- 	return 0;
-@@ -225,11 +225,12 @@ long set_mte_ctrl(struct task_struct *task, unsigned long arg)
- long get_mte_ctrl(struct task_struct *task)
- {
- 	unsigned long ret;
-+	u64 incl = ~task->thread.gcr_user_excl & SYS_GCR_EL1_EXCL_MASK;
- 
- 	if (!system_supports_mte())
- 		return 0;
- 
--	ret = task->thread.gcr_user_incl << PR_MTE_TAG_SHIFT;
-+	ret = incl << PR_MTE_TAG_SHIFT;
- 
- 	switch (task->thread.sctlr_tcf0) {
- 	case SCTLR_EL1_TCF0_NONE:
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
