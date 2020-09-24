@@ -2,184 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5746D277788
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4124227778B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728617AbgIXROS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:14:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727136AbgIXROS (ORCPT
+        id S1728195AbgIXRQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:16:37 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:42244 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726915AbgIXRQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:14:18 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410BDC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 10:14:18 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id y2so3959521ila.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 10:14:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d7qA2pCOjfGY2J4C9a3hK7Y31a5puzQn53pmrgclQZw=;
-        b=Cm+EnbO8R6Rhe0M3XhAjM3bhfQgVVGxtQDrSKSJqwGM9vAVa9SlC1uUI+DBcqA0dbn
-         RjBnswnPvPCsXOX02ryIBI1MkVvQgfyc7IxC03zwSisFAQ97O6/BzPpgsW37W/gQK7o0
-         tskxlrU4MHu8vfsfYfTYBX+R5l4bqjjwC/VL1uM13kp2DAL21bfcJgmVf7j+5xnHbd43
-         cjWCwkgjQv7UAMtJVQA8fl+qGxtXhBx5KLhF+sT0TD2AheDtjvt66YkNMAkaB736Ghv2
-         KTM3XVCWPak4lmsSiS2jy3acc9xYX8IMmS0SeAh+k8TPMH54RgvbUOlTeTh26dexoI2b
-         MBHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d7qA2pCOjfGY2J4C9a3hK7Y31a5puzQn53pmrgclQZw=;
-        b=J6e8nHjzR4nqvULCJfgS8dxFGgV8mT9nwb8rrkYb648JtGgTe0RrGQH6+S1pWWdlDn
-         5dzxV6I475/QwNScrM8BJMOfis6PJc1nCI/nfJjamira3bSpx5m4KcfDqMfbk3NZf4SG
-         iVV7y2i31e2rxXYoxj1hwGGebOvXx8gjcFYMxLjY6TsjfRXTR05qqK4Kj04QK2DESFEo
-         ZEOXTl5ataPQ2/kQvzzWkypPgbKudzjGYrfasttCIK4J8hmtupA1XZH1awvtHDK+dTFx
-         lhQFGWLI0lxmVK6k87JfJXMAni7BW0hTTvwEicSdHPh7NNHlyzqYM68zoIeNUBmpFBvV
-         GZfA==
-X-Gm-Message-State: AOAM531/tTrsdOw2sdS7o+Sh5Z5S7NHuWPwaI5UKTM9vXC2QotgZ8e0C
-        BkAnbobuLgvItDiQ/mTn+klmbng995oCCoXm3Tp3aA==
-X-Google-Smtp-Source: ABdhPJyz06U7SojBoggPNrHicGI7L+FubuV3kHzJJXmpoSKX350ajHa+FkeOsjjHvc/Ph1OMKcqvzA620FRalNv082U=
-X-Received: by 2002:a92:9a82:: with SMTP id c2mr259843ill.285.1600967657126;
- Thu, 24 Sep 2020 10:14:17 -0700 (PDT)
+        Thu, 24 Sep 2020 13:16:36 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OHDepu002825;
+        Thu, 24 Sep 2020 17:16:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=amW70FmbGDogjo5Q8xTnEpZcxgKAVRej5X76hhQrk08=;
+ b=dboR68KZ/BcroeEjfAzp60eEl74y5h6X+nzkEQot63USMXv27x3ox9I2t5JS6S2UsrDE
+ k7uTPCk87Y1Zj3xLaFzzZnGH7Cn8F6BAKRjG0gOcNqKm5F9JrXEjAI5znWyZRVWqM1fQ
+ RvkxJyg3yYY0WqUOzcSchCR9/Ekkd/b8M1nK+Y1GAaYgBwAo1S53EoHdA8lNfSDOgJLD
+ VjfZBBRSyOcWHcAT6dyN0tStnEwucsuMJHp11C031ae9GX1WNJcQWyBepJj6LAR0Fi70
+ 2SwxK5xjWFRAW68OPW0ubuucsqLN1AtsQdg75E37mpkLyLJLDX9zaRUrmJKByLfCiD18 HQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 33qcpu6gbk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Sep 2020 17:16:21 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OHBUvr019516;
+        Thu, 24 Sep 2020 17:16:20 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 33nux34c7v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Sep 2020 17:16:20 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08OHG8rn012734;
+        Thu, 24 Sep 2020 17:16:08 GMT
+Received: from [10.74.108.139] (/10.74.108.139)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 24 Sep 2020 10:16:08 -0700
+Subject: Re: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
+To:     Michael Kelley <mikelley@microsoft.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Dave Young <dyoung@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>,
+        HATAYAMA Daisuke <d.hatayama@jp.fujitsu.com>
+References: <20200918032546.GA4180@dhcp-128-65.nay.redhat.com>
+ <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
+ <20200921201811.GB3437@char.us.oracle.com>
+ <87v9g6fuub.fsf@x220.int.ebiederm.org>
+ <20200923024329.GB3642@dhcp-128-65.nay.redhat.com>
+ <20200923154825.GC7635@char.us.oracle.com>
+ <MW2PR2101MB10521373DD95F5AF014254DDD7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
+ <874knndtvo.fsf@x220.int.ebiederm.org>
+ <MW2PR2101MB1052ED1C8953135A58276F04D7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <4f964490-7464-0071-db38-4b16d665503e@oracle.com>
+Date:   Thu, 24 Sep 2020 13:16:04 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <cover.1598868203.git.yulei.kernel@gmail.com> <CANRm+CwhTVHXOV6HzawHS5E_ELA3nEw0AxY1-w8vX=EsADWGSw@mail.gmail.com>
- <CANRm+CydqYmVbYz2pkT28wjKFS4AvmZ_iS4Sn1rnHT6G1S_=Mw@mail.gmail.com>
-In-Reply-To: <CANRm+CydqYmVbYz2pkT28wjKFS4AvmZ_iS4Sn1rnHT6G1S_=Mw@mail.gmail.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Thu, 24 Sep 2020 10:14:06 -0700
-Message-ID: <CANgfPd8uvkYyHLJh60vSKp1ZDi9T0ZWM9SeXEUm-1da+DqxTEQ@mail.gmail.com>
-Subject: Re: [RFC V2 0/9] x86/mmu:Introduce parallel memory virtualization to
- boost performance
-To:     Wanpeng Li <kernellwp@gmail.com>
-Cc:     Yulei Zhang <yulei.kernel@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <MW2PR2101MB1052ED1C8953135A58276F04D7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009240127
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
+ adultscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 spamscore=0 malwarescore=0 clxscore=1011 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009240127
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 11:28 PM Wanpeng Li <kernellwp@gmail.com> wrote:
+
+On 9/24/20 12:43 PM, Michael Kelley wrote:
+> From: Eric W. Biederman <ebiederm@xmission.com> Sent: Thursday, September 24, 2020 9:26 AM
+>> Michael Kelley <mikelley@microsoft.com> writes:
+>>
+>>>>> Added Hyper-V people and people who created the param, it is below
+>>>>> commit, I also want to remove it if possible, let's see how people
+>>>>> think, but the least way should be to disable the auto setting in both systemd
+>>>>> and kernel:
+>>> Hyper-V uses a notifier to inform the host system that a Linux VM has
+>>> panic'ed.  Informing the host is particularly important in a public cloud
+>>> such as Azure so that the cloud software can alert the customer, and can
+>>> track cloud-wide reliability statistics.   Whether a kdump is taken is controlled
+>>> entirely by the customer and how he configures the VM, and we want
+>>> the host to be informed either way.
+>> Why?
+>>
+>> Why does the host care?
+>> Especially if the VM continues executing into a kdump kernel?
+> The host itself doesn't care.  But the host is a convenient out-of-band
+> channel for recording that a panic has occurred and to collect basic data
+> about the panic.  This out-of-band channel is then used to notify the end
+> customer that his VM has panic'ed.  Sure, the customer should be running
+> his own monitoring software, but customers don't always do what they
+> should.  Equally important, the out-of-band channel allows the cloud
+> infrastructure software to notice trends, such as that the rate of Linux
+> panics has increased, and that perhaps there is a cloud problem that
+> should be investigated.
+
+
+In many cases (especially in cloud environment) your dump device is remote (e.g. iscsi) and kdump sometimes (often?) gets stuck because of connectivity issues (which could be cause of the panic in the first place). So it is quite desirable to inform the infrastructure that the VM is on its way out without waiting for kdump to complete.
+
+
 >
-> Any comments? Paolo! :)
+>> Further like I have mentioned everytime something like this has come up
+>> a call on the kexec on panic code path should be a direct call (That can
+>> be audited) not something hidden in a notifier call chain (which can not).
+>>
 
-Hi, sorry to be so late in replying! I wanted to post the first part
-of the TDP MMU series I've been working on before responding so we
-could discuss the two together, but I haven't been able to get it out
-as fast as I would have liked. (I'll send it ASAP!) I'm hopeful that
-it will ultimately help address some of the page fault handling and
-lock contention issues you're addressing with these patches. I'd also
-be happy to work together to add a prepopulation feature to it. I'll
-put in some more comments inline below.
+We btw already have a direct call from panic() to kmsg_dump() which is indirectly controlled by crash_kexec_post_notifiers, and it would also be preferable to be able to call it before kdump as well.
 
-> On Wed, 9 Sep 2020 at 11:04, Wanpeng Li <kernellwp@gmail.com> wrote:
-> >
-> > Any comments? guys!
-> > On Tue, 1 Sep 2020 at 19:52, <yulei.kernel@gmail.com> wrote:
-> > >
-> > > From: Yulei Zhang <yulei.kernel@gmail.com>
-> > >
-> > > Currently in KVM memory virtulization we relay on mmu_lock to
-> > > synchronize the memory mapping update, which make vCPUs work
-> > > in serialize mode and slow down the execution, especially after
-> > > migration to do substantial memory mapping will cause visible
-> > > performance drop, and it can get worse if guest has more vCPU
-> > > numbers and memories.
-> > >
-> > > The idea we present in this patch set is to mitigate the issue
-> > > with pre-constructed memory mapping table. We will fast pin the
-> > > guest memory to build up a global memory mapping table according
-> > > to the guest memslots changes and apply it to cr3, so that after
-> > > guest starts up all the vCPUs would be able to update the memory
-> > > simultaneously without page fault exception, thus the performance
-> > > improvement is expected.
 
-My understanding from this RFC is that your primary goal is to
-eliminate page fault latencies and lock contention arising from the
-first page faults incurred by vCPUs when initially populating the EPT.
-Is that right?
+-boris
 
-I have the impression that the pinning and generally static memory
-mappings are more a convenient simplification than part of a larger
-goal to avoid incurring page faults down the line. Is that correct?
 
-I ask because I didn't fully understand, from our conversation on v1
-of this RFC, why reimplementing the page fault handler and associated
-functions was necessary for the above goals, as I understood them.
-My impression of the prepopulation approach is that, KVM will
-sequentially populate all the EPT entries to map guest memory. I
-understand how this could be optimized to be quite efficient, but I
-don't understand how it would scale better than the existing
-implementation with one vCPU accessing memory.
-
-> > >
-> > > We use memory dirty pattern workload to test the initial patch
-> > > set and get positive result even with huge page enabled. For example,
-> > > we create guest with 32 vCPUs and 64G memories, and let the vcpus
-> > > dirty the entire memory region concurrently, as the initial patch
-> > > eliminate the overhead of mmu_lock, in 2M/1G huge page mode we would
-> > > get the job done in about 50% faster.
-
-In this benchmark did you include the time required to pre-populate
-the EPT or just the time required for the vCPUs to dirty memory?
-I ask because I'm curious if your priority is to decrease the total
-end-to-end time, or you just care about the guest experience, and not
-so much the VM startup time.
-How does this compare to the case where 1 vCPU reads every page of
-memory and then 32 vCPUs concurrently dirty every page?
-
-> > >
-> > > We only validate this feature on Intel x86 platform. And as Ben
-> > > pointed out in RFC V1, so far we disable the SMM for resource
-> > > consideration, drop the mmu notification as in this case the
-> > > memory is pinned.
-
-I'm excited to see big MMU changes like this, and I look forward to
-combining our needs towards a better MMU for the x86 TDP case. Have
-you thought about how you would build SMM and MMU notifier support
-onto this patch series? I know that the invalidate range notifiers, at
-least, added a lot of non-trivial complexity to the direct MMU
-implementation I presented last year.
-
-> > >
-> > > V1->V2:
-> > > * Rebase the code to kernel version 5.9.0-rc1.
-> > >
-> > > Yulei Zhang (9):
-> > >   Introduce new fields in kvm_arch/vcpu_arch struct for direct build EPT
-> > >     support
-> > >   Introduce page table population function for direct build EPT feature
-> > >   Introduce page table remove function for direct build EPT feature
-> > >   Add release function for direct build ept when guest VM exit
-> > >   Modify the page fault path to meet the direct build EPT requirement
-> > >   Apply the direct build EPT according to the memory slots change
-> > >   Add migration support when using direct build EPT
-> > >   Introduce kvm module parameter global_tdp to turn on the direct build
-> > >     EPT mode
-> > >   Handle certain mmu exposed functions properly while turn on direct
-> > >     build EPT mode
-> > >
-> > >  arch/mips/kvm/mips.c            |  13 +
-> > >  arch/powerpc/kvm/powerpc.c      |  13 +
-> > >  arch/s390/kvm/kvm-s390.c        |  13 +
-> > >  arch/x86/include/asm/kvm_host.h |  13 +-
-> > >  arch/x86/kvm/mmu/mmu.c          | 533 ++++++++++++++++++++++++++++++--
-> > >  arch/x86/kvm/svm/svm.c          |   2 +-
-> > >  arch/x86/kvm/vmx/vmx.c          |   7 +-
-> > >  arch/x86/kvm/x86.c              |  55 ++--
-> > >  include/linux/kvm_host.h        |   7 +-
-> > >  virt/kvm/kvm_main.c             |  43 ++-
-> > >  10 files changed, 639 insertions(+), 60 deletions(-)
-> > >
-> > > --
-> > > 2.17.1
-> > >
+> The use case I describe has no particular requirement that it be
+> implemented via the notifier call chain.  If there's a better way to run
+> some out-of-band notification code on all Linux panics regardless of
+> whether a kdump is taken, we're open to such an alternative.
