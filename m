@@ -2,138 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2B1B27754B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A077527753E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728505AbgIXP2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:28:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728381AbgIXP2a (ORCPT
+        id S1728429AbgIXP2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:28:00 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:39601 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1728285AbgIXP2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:28:30 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF9FC0613D3;
-        Thu, 24 Sep 2020 08:28:30 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id m15so1848316pls.8;
-        Thu, 24 Sep 2020 08:28:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ydse9JJ+ftTyRWsvhcjm/YwUAWDIwbgK0aq4Xyc/pN8=;
-        b=knL//JbbhIACLiQWUd5tja3co0hcd2If1nx/SGslZd13vEJI3NG9V0tLfyx38WXjOp
-         d5sOdxkLd1CwWw6QFJ/IS6BcPPGHSd+0A5Z65VB/ZjlfR4LpbCKgqtJYiPdEu8ZD7Zdr
-         7b1y37RbdH1IzBFOsLRbb0JlFj7FquwrV9kheoYHfsiIhTRW+ZJGpJRl22lfWUacMhDu
-         Wq1mng24/fMotHwEcTWgTNmeE3gSkuNwnhwfDTu8fYLhGj/oHn0LwWOhceG4t5JF2Y5r
-         5LEGswbVc8YoTsIAV2d5j1PFugoocmqh8NzgOdA8f6UdtLMpeKOW72S/OL1EbIoqEPkx
-         7MCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ydse9JJ+ftTyRWsvhcjm/YwUAWDIwbgK0aq4Xyc/pN8=;
-        b=Y+ehIx+gr8TjgJkSytCDes8+USmBn6Rr8O+/3T5cOuK0XO+ornkJfRhOuuBjMeM1Ig
-         q+a8b6j92Me1JmcMRa8V4E62ykiGMXRdDP7DfzxWIVSPqMsxnoA3OUYjE/o1T1MQ0pjN
-         G30zc8KHTiM35n/KTHIWxdp70Q113uumH17/g/SKlH80V42JIiMQ9xSiikx8nVeuZ+ox
-         3IHqm26CyP9kMBwrFgWQAN/6/1N5iiyXrhAClpG7cekzdcPXFmJKRwRFFb/otq9COJ0n
-         Rwi1vKn8BXdnnwLSykx2QVwplXm/d3CgIENUf9joZaIL0FKvrAm0QJA0aiCKPyttg7Wy
-         u75w==
-X-Gm-Message-State: AOAM533kuFknt4AWaZSKrK/o4UoYCfciA+Zm2jxpxX0Uv2wfSmATlGyn
-        8mUU5370QxfqFW+uVQ3lMoKioJ9jigofwg==
-X-Google-Smtp-Source: ABdhPJwj0O9VBAEbiiRMiUQP412SndgpBFZlx6tI3A6GsG2itd7F6Gc5r4f6bDJSVHSJD6gBN4IWrg==
-X-Received: by 2002:a17:90a:c255:: with SMTP id d21mr4647745pjx.212.1600961309445;
-        Thu, 24 Sep 2020 08:28:29 -0700 (PDT)
-Received: from guoguo-omen.lan ([156.96.148.94])
-        by smtp.gmail.com with ESMTPSA id e62sm3233212pfh.76.2020.09.24.08.28.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 08:28:29 -0700 (PDT)
-From:   Chuanhong Guo <gch981213@gmail.com>
-To:     linux-spi@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bayi.cheng@mediatek.com, Chuanhong Guo <gch981213@gmail.com>
-Subject: [PATCH 3/3] spi: spi-mtk-nor: fix op checks in supports_op
-Date:   Thu, 24 Sep 2020 23:27:30 +0800
-Message-Id: <20200924152730.733243-4-gch981213@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200924152730.733243-1-gch981213@gmail.com>
-References: <20200924152730.733243-1-gch981213@gmail.com>
+        Thu, 24 Sep 2020 11:28:00 -0400
+Received: (qmail 1340421 invoked by uid 1000); 24 Sep 2020 11:27:58 -0400
+Date:   Thu, 24 Sep 2020 11:27:58 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-usb@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Bastien Nocera <hadess@hadess.net>,
+        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
+        Peter Chen <peter.chen@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        devicetree@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [PATCH v3 2/2] USB: misc: Add onboard_usb_hub driver
+Message-ID: <20200924152758.GA1337044@rowland.harvard.edu>
+References: <20200923180952.v3.1.I248292623d3d0f6a4f0c5bc58478ca3c0062b49a@changeid>
+ <20200923180952.v3.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923180952.v3.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit a59b2c7c56bf7 ("spi: spi-mtk-nor: support standard spi properties")
-tries to inverse the logic of supports_op when adding
-spi_mem_default_supports_op check, but it didn't get it done properly.
-There are two regressions introduced by this commit:
-1. reading ops supported by program mode is rejected.
-2. all ops with special controller routines are incorrectly further
-   checked against program mode.
+On Wed, Sep 23, 2020 at 06:10:12PM -0700, Matthias Kaehlcke wrote:
+> The main issue this driver addresses is that a USB hub needs to be
+> powered before it can be discovered. For discrete onboard hubs (an
+> example for such a hub is the Realtek RTS5411) this is often solved
+> by supplying the hub with an 'always-on' regulator, which is kind
+> of a hack. Some onboard hubs may require further initialization
+> steps, like changing the state of a GPIO or enabling a clock, which
+> requires even more hacks. This driver creates a platform device
+> representing the hub which performs the necessary initialization.
+> Currently it only supports switching on a single regulator, support
+> for multiple regulators or other actions can be added as needed.
+> Different initialization sequences can be supported based on the
+> compatible string.
+> 
+> Besides performing the initialization the driver can be configured
+> to power the hub off during system suspend. This can help to extend
+> battery life on battery powered devices which have no requirements
+> to keep the hub powered during suspend. The driver can also be
+> configured to leave the hub powered when a wakeup capable USB device
+> is connected when suspending, and power it off otherwise.
+> 
+> Technically the driver consists of two drivers, the platform driver
+> described above and a very thin USB driver that subclasses the
+> generic driver. The purpose of this driver is to provide the platform
+> driver with the USB devices corresponding to the hub(s) (a hub
+> controller may provide multiple 'logical' hubs, e.g. one to support
+> USB 2.0 and another for USB 3.x).
+> 
+> Co-developed-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+> Signed-off-by: Ravi Chandra Sadineni <ravisadineni@chromium.org>
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> ---
 
-This commits inverses the logic back:
-1. check spi_mem_default_supports_op and reject unsupported ops first.
-2. return true for ops with special controller routines.
-3. check the left ops against controller program mode.
+> --- a/drivers/usb/misc/Kconfig
+> +++ b/drivers/usb/misc/Kconfig
+> @@ -275,3 +275,19 @@ config USB_CHAOSKEY
+>  
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called chaoskey.
+> +
+> +config USB_ONBOARD_HUB
+> +	tristate "Onboard USB hub support"
+> +	depends on OF || COMPILE_TEST
+> +	help
+> +	  Say Y here if you want to support discrete onboard USB hubs that
+> +	  don't require an additional control bus for initialization (an
 
-Fixes: a59b2c7c56bf7 ("spi: spi-mtk-nor: support standard spi properties")
-Signed-off-by: Chuanhong Guo <gch981213@gmail.com>
----
- drivers/spi/spi-mtk-nor.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+... but does require nontrivial form of initialization, such as
+enabling a power regulator.
 
-diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index 4bbf38ef5b4b1..ea39736de2918 100644
---- a/drivers/spi/spi-mtk-nor.c
-+++ b/drivers/spi/spi-mtk-nor.c
-@@ -273,7 +273,8 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
- static bool mtk_nor_supports_op(struct spi_mem *mem,
- 				const struct spi_mem_op *op)
- {
--	size_t len;
-+	if (!spi_mem_default_supports_op(mem, op))
-+		return false;
- 
- 	if (op->cmd.buswidth != 1)
- 		return false;
-@@ -281,25 +282,21 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
- 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
- 		switch(op->data.dir) {
- 		case SPI_MEM_DATA_IN:
--			if (!mtk_nor_match_read(op))
--				return false;
-+			if (mtk_nor_match_read(op))
-+				return true;
- 			break;
- 		case SPI_MEM_DATA_OUT:
--			if ((op->addr.buswidth != 1) ||
--			    (op->dummy.nbytes != 0) ||
--			    (op->data.buswidth != 1))
--				return false;
-+			if ((op->addr.buswidth == 1) &&
-+			    (op->dummy.nbytes == 0) &&
-+			    (op->data.buswidth == 1))
-+				return true;
- 			break;
- 		default:
- 			break;
- 		}
- 	}
--	len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
--	if ((len > MTK_NOR_PRG_MAX_SIZE) ||
--	    ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
--		return false;
- 
--	return spi_mem_default_supports_op(mem, op);
-+	return mtk_nor_match_prg(op);
- }
- 
- static void mtk_nor_setup_bus(struct mtk_nor *sp, const struct spi_mem_op *op)
--- 
-2.26.2
 
+> +static void onboard_hub_remove_usbdev(struct onboard_hub *hub, struct usb_device *udev)
+> +{
+> +	struct udev_node *node;
+> +
+> +	smp_rmb();
+> +	if (hub->going_away) {
+> +		/*
+> +		 * We are most likely being called as a result of unbinding a USB device from
+> +		 * onboard_hub_remove(). This function also holds the lock and iterates over
+> +		 * 'udev_list'. Skip deleting the node in this case to avoid a self deadlock,
+> +		 * keeping the node in the list isn't a problem, since the device is about to go
+> +		 * away.
+> +		 */
+> +		return;
+> +	}
+
+This part has a suspicious look.  For one thing, there's no comment
+explaining the purpose of the smp_rmb().  For another, that barrier
+doesn't seem to pair with any other memory barrier in the driver.
+
+I get that you want to avoid self-deadlock here.  But there must be a
+better way.  See below.
+
+> +static int onboard_hub_remove(struct platform_device *pdev)
+> +{
+> +	struct onboard_hub *hub = dev_get_drvdata(&pdev->dev);
+> +	struct udev_node *node;
+> +
+> +	hub->going_away = true;
+> +
+> +	mutex_lock(&hub->lock);
+> +
+> +	/* unbind the USB devices to avoid dangling references to this device */
+> +	list_for_each_entry(node, &hub->udev_list, list)
+> +		device_release_driver(&node->udev->dev);
+> +
+> +	mutex_unlock(&hub->lock);
+
+Alternative approach:
+
+	/* unbind the USB devices to avoid dangling references to this device */
+	mutex_lock(&hub->lock);
+	while (!list_empty(&hub->udev_list)) {
+		node = list_first_entry(&hub->udev_list, struct udev_node, list);
+		udev = node->udev;
+
+		/*
+		 * Unbinding the driver will call onboard_hub_remove_usbdev(),
+		 * which acquires hub->lock.  We must release the lock first.
+		 */
+		usb_get_device(udev);
+		mutex_unlock(&hub->lock);
+		device_release_driver(&udev->dev);
+		usb_put_device(udev);
+		mutex_lock(&hub->lock);
+	}
+	mutex_unlock(&hub->lock);
+
+> +static int onboard_hub_usbdev_probe(struct usb_device *udev)
+> +{
+> +	struct device *dev = &udev->dev;
+> +	struct onboard_hub *hub;
+> +
+> +	/* ignore supported hubs without device tree node */
+> +	if (!dev->of_node)
+> +		return -ENODEV;
+> +
+> +	hub = _find_onboard_hub(dev);
+> +	if (IS_ERR(hub))
+> +		return PTR_ERR(dev);
+
+hub, not dev.
+
+Alan Stern
