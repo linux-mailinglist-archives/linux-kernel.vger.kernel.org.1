@@ -2,220 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE49276A28
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC32276A21
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727179AbgIXHLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727131AbgIXHLb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:11:31 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B83BC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:11:31 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k15so2528853wrn.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:11:31 -0700 (PDT)
+        id S1727089AbgIXHL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:11:26 -0400
+Received: from mail-vi1eur05on2093.outbound.protection.outlook.com ([40.107.21.93]:5664
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727014AbgIXHLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:11:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Iml0V4p+KoReXaMai5WYbfVYI2MNAx9YYsrnqWSAUEHOMdgjbEaeCNVwYEX87wX3x4dxrD9MWxCLr/Q+SCYhIMh+mD5kuSalAFRv0HNdjLKZJK0s2eWGKT0bUoH9Qs4Q0BFwwzC5oKObWtaHRrloDTSPVxjDWfaVD4BxYCb4KpQfFF7F1hj553lVqjKOLvbIKySxCZm+0SGhfiJ/bpooYel1C/lqHHrfyi5ZrKeUnhoHDYNYNt082m+/kOts/X5vKO0R/KK2nKoGhsnp3VZWogVLHklJL+kgt2L3lgFLDUvO6Dfl7uJyU2dnYA6klfItNVbqhRMHEpOPXjGMlsO9kQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cf6VnarkOA/qjhh9/C82lh/NbJkqqpKEeE96+IvSAvE=;
+ b=iWixY9uFevjFgCReIkBIyFW9u8MrtuWDiOupZ0k9nv5vVgp5tRxOQFGt0jX1oCIJu0397BOLeibGSuJ2d5GiSrfhOUQ6VaTM1kC8T2++wFWcqoHnhohYoO/57MurDhHglfKbBX3PR/XuCOlfjjjW1+Ad6fHFSGK528FJwjlHLmzZKbBxBL7R7+Eh3dtMGaavRAFO6QM7E4OPcYSXYyzixKjh4ijzp64E6j1YGkxM3KxQtitNFXVNCfjYbbrBxBU1rHRJTapTcmaKUgO1s1c+86RVZjBnovUx32DG8amczXfEq0n5lji2VYd6hBn1sDuLLa67YCELfWHeHCYJXvLF7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=habana.ai; dmarc=pass action=none header.from=habana.ai;
+ dkim=pass header.d=habana.ai; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=E4u6onsjNQAkiyKVPFStn7UMSA1vGrvkOxMgEEn1VI8=;
-        b=VvV8gFrLifCsCoj+X0Wi0ZEDDpxi+3XlTGnBd8ZM9d82iDEu/KWjUUP2XbmxZ8VywW
-         JLSwa3ddcLlVBP1MwmoYQbvlLwGLLYgbRNhpoh7oLu/oeOXUvblT9LfvSVYLP0j8F1O4
-         /AlE6z4kG30aKIFyhKnAE+AOwJbsvEpbI+FZ/uxcHjh58JATQEJffmRI+z6S1pL/EvAK
-         jpMjc43ozw2Q0593PcSS/fjV5QsbIZayDoq7YHWbzfMvPJfbAwbFTWhQn0RlnZbYfW8/
-         ohT3WomFdG588TtdQZI+LxK1pBLepQu/n4X+Tyo/vd9Iy2coWC6Ac4KKRZL6n1v3eRuQ
-         YYTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=E4u6onsjNQAkiyKVPFStn7UMSA1vGrvkOxMgEEn1VI8=;
-        b=NliIiTxDvO3Aw4o1jSB6wIP3z8dw7XGgKJZ/92TAob+RxS645VW655hO5LKDMqMQNi
-         cwnbNmCpWiwCe5r+eZkeRYHnnthGkS+uzRYaNRrbk5Ehd7S9TAaI1fHe7MN/EkgtEc7G
-         WPA/3KcMVrAA9y7SWF+hrVs9YX1xO+BO8kJW7/pJW2MCw+Qbhjurl2inU7rjTQxkZbfY
-         pqIzPQfjC44sP1u3S13dF26weCAIMNC0EoGE7TlOvsGQnmwb+OsHGOpXR27o5gjeXf1m
-         tmwwzOh3JJ+RL/nSRpZ3PVDT7PovNcM2mALNMyVtprcPIfX+4F9kCQ4o5Wyn8GuRU4MY
-         O9VA==
-X-Gm-Message-State: AOAM530pA9wMjgtc6TyhpOyek+/DaS/GS6pkMR85OZ/2ifuzMQ0gG7bD
-        cImQ8QsWCjpAgMO6CCnonkYfEg==
-X-Google-Smtp-Source: ABdhPJx1lB2GSaJXhR5AfoItpRpCWhYYEu68XMGAO+MpVTExlkmJSxL8aHckdqMdQycv6vQHUWEjGw==
-X-Received: by 2002:adf:cd0e:: with SMTP id w14mr3788781wrm.0.1600931489909;
-        Thu, 24 Sep 2020 00:11:29 -0700 (PDT)
-Received: from localhost (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id i15sm2457469wrb.91.2020.09.24.00.11.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 24 Sep 2020 00:11:29 -0700 (PDT)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     broonie@kernel.org
-Cc:     amit.kumar-mahapatra@xilinx.com, linux-kernel@vger.kernel.org,
-        monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [RESEND v2 PATCH 3/3] spi: spi-zynqmp-gqspi: Fix incorrect indentation
-Date:   Thu, 24 Sep 2020 09:11:19 +0200
-Message-Id: <2b246b6f0925c8a2a767a4240e8738ffeefd62be.1600931476.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <cover.1600931476.git.michal.simek@xilinx.com>
-References: <cover.1600931476.git.michal.simek@xilinx.com>
+ d=habanalabs.onmicrosoft.com; s=selector2-habanalabs-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Cf6VnarkOA/qjhh9/C82lh/NbJkqqpKEeE96+IvSAvE=;
+ b=FlcIxbx7JXzm9eRRy9vJuYMsE7a7NQ2RTD4qsmp5Q6EMiYHAgQF41XnVBChUtRpnmGvcTgSqyk9jqDDlA1a2suiIy+huPgByidxoCy/+vKNvRvKgyv18G3lUzMnj9aoZt+C2JUZqsdjLx4XR/5f+ap+DX3E5BlJEOKzdMVu6W40=
+Received: from DB8PR02MB5468.eurprd02.prod.outlook.com (2603:10a6:10:ef::22)
+ by DB7PR02MB4774.eurprd02.prod.outlook.com (2603:10a6:10:29::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.19; Thu, 24 Sep
+ 2020 07:11:20 +0000
+Received: from DB8PR02MB5468.eurprd02.prod.outlook.com
+ ([fe80::64b0:7fee:4c:c4b]) by DB8PR02MB5468.eurprd02.prod.outlook.com
+ ([fe80::64b0:7fee:4c:c4b%6]) with mapi id 15.20.3412.020; Thu, 24 Sep 2020
+ 07:11:20 +0000
+From:   Tomer Tayar <ttayar@habana.ai>
+To:     Oded Gabbay <oded.gabbay@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     SW_Drivers <SW_Drivers@habana.ai>
+Subject: RE: [PATCH 4/4] habanalabs: add notice of device not idle
+Thread-Topic: [PATCH 4/4] habanalabs: add notice of device not idle
+Thread-Index: AQHWkkDCsiSDxIZC2kWIDjFZc32+uKl3Xw7Q
+Date:   Thu, 24 Sep 2020 07:11:20 +0000
+Message-ID: <DB8PR02MB54688F6E7D1140C1F0483C3ED2390@DB8PR02MB5468.eurprd02.prod.outlook.com>
+References: <20200924070259.19833-1-oded.gabbay@gmail.com>
+ <20200924070259.19833-4-oded.gabbay@gmail.com>
+In-Reply-To: <20200924070259.19833-4-oded.gabbay@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=habana.ai;
+x-originating-ip: [89.138.176.254]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: de4d5271-8d3e-4fc4-5dae-08d8605909bf
+x-ms-traffictypediagnostic: DB7PR02MB4774:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB7PR02MB477436199C8EBB84D1964BDBD2390@DB7PR02MB4774.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:403;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lCqwbogDHyeBfq/A1Au9U2oMUbiAafuhRT92QowSZUk7ncuTeZjpI/i+N/9Wv9yJxjfT/xlDfnXzkJTElBxHPGixN9zcjBWwd9+tYiOyXg2s5f8pqnRIo6yxojNQS21J1qei8jPY3fOPhnwADMUuowqGrn1jZR1dRsrR2W4HAaZU55pXEc7rqlCmmRrqdkddINFenKXLV7XlVtbDxJTwJMZv9M+Gh1aaoqXhf0a0Clfa+udZODfxp4jJHk12hkhTP4hgsrDlAZy0cs6sXjypjsqtkS2fAIFjdINN8WV03grYlz4Ep9yksLvcH5KXdJHi0pG4FlbQeTCQ2yJQvjLuI6qSBAItVh8JCc6FypOROMpeQCZlaI0p0CNzPQbjB9AJ
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5468.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(376002)(136003)(396003)(366004)(346002)(110136005)(26005)(15650500001)(316002)(33656002)(558084003)(83380400001)(8936002)(8676002)(186003)(478600001)(53546011)(7696005)(6506007)(4326008)(9686003)(66946007)(66446008)(66476007)(76116006)(66556008)(2906002)(64756008)(52536014)(71200400001)(5660300002)(55016002)(107886003)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: qKhQUiZ0Tj2m8NcNkFxx1dZ1zxX3dqfUuh3V6DJ0op8lv3kEiY2l+UvdE4/iQbZ8e9zpFDWVpKTGh+3CXcwaxtYgV7qkgXsoOOcQ3+0LuZDu65QcZZ4cpFADafQW86cSXYGkZ8MVvLFriSBLr5BjmcNq2mdoR2mbhx5R7ZW4Gozc/zRs79u7PVE6HezZvOc5m01lkfG/gs42N3RdnxLm5XB/6gexF7tgj1TtA5DEqOiNwA3FQ13PiXgORwECqoK/hJ42gLGZX5lCyASwlRKh3pVCOtBxqinzFyIqPcHWLkEvU4kJ5Le9jwW7PBeFpqPUCGfd1tK03DeRtozMSIfwkq8KPpoAyQPLTHsrDzg/9Tp2nWZR2RBnTwZbxs8TA9ifTmadFVqtnfz2rLPgG8G8tMSH0d09WKTHlEGoX3buW+fYOpgLP81VflBMecOXsPp+/GiPKdN/fh4SyN+PERrTOEwkyB3WVgEVZZDlKi7z4JWOZZdIEcqUmLnQHH0hTgXAHDKTCxlqlMX9s0BvOUR+p1UfNc5qIDGjNB8djMztLbzF8QYx9jcrPVMD/wJ9QUOWL8sN3AL60EqDmSmYswctkK/6j4iN6rI+pQYCwji7uhwWmCYkUymoOSQ/aVkJSj+gJevmjAGv6zj19VLMp4OWtw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: habana.ai
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5468.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de4d5271-8d3e-4fc4-5dae-08d8605909bf
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2020 07:11:20.3288
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4d4539-213c-4ed8-a251-dc9766ba127a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9RDaaDr6sFCmcKcZppi3pPVNGKaYU9yuajPgsLgJqYY+MX7UT0F0+AHwoFJqhXGbTMP6o2tk4UvVT285dk9fNA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB4774
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
+On Thu, Sep 24, 2020 at 10:03 AM Oded Gabbay <oded.gabbay@gmail.com> wrote:
+> The device should be idle after a context is closed. If not, print a
+> notice.
+>=20
+> Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 
-Fixed incorrect indentation in ZynqMP qspi controller driver.
-
-Addresses-checkpatch: "Alignment should match open parenthesis"
-Signed-off-by: Amit Kumar Mahapatra <amit.kumar-mahapatra@xilinx.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
-
- drivers/spi/spi-zynqmp-gqspi.c | 46 +++++++++++++++++-----------------
- 1 file changed, 23 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/spi/spi-zynqmp-gqspi.c b/drivers/spi/spi-zynqmp-gqspi.c
-index 7f57923f76ea..c8fa6ee18ae7 100644
---- a/drivers/spi/spi-zynqmp-gqspi.c
-+++ b/drivers/spi/spi-zynqmp-gqspi.c
-@@ -326,8 +326,8 @@ static void zynqmp_qspi_init_hw(struct zynqmp_qspi *xqspi)
- 				 GQSPI_SELECT_FLASH_BUS_LOWER);
- 	/* Initialize DMA */
- 	zynqmp_gqspi_write(xqspi,
--			GQSPI_QSPIDMA_DST_CTRL_OFST,
--			GQSPI_QSPIDMA_DST_CTRL_RESET_VAL);
-+			   GQSPI_QSPIDMA_DST_CTRL_OFST,
-+			   GQSPI_QSPIDMA_DST_CTRL_RESET_VAL);
- 
- 	/* Enable the GQSPI */
- 	zynqmp_gqspi_write(xqspi, GQSPI_EN_OFST, GQSPI_EN_MASK);
-@@ -374,8 +374,8 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
- 
- 	/* Manually start the generic FIFO command */
- 	zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
--			zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST) |
--			GQSPI_CFG_START_GEN_FIFO_MASK);
-+			   zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST) |
-+			   GQSPI_CFG_START_GEN_FIFO_MASK);
- 
- 	timeout = jiffies + msecs_to_jiffies(1000);
- 
-@@ -384,10 +384,9 @@ static void zynqmp_qspi_chipselect(struct spi_device *qspi, bool is_high)
- 		statusreg = zynqmp_gqspi_read(xqspi, GQSPI_ISR_OFST);
- 
- 		if ((statusreg & GQSPI_ISR_GENFIFOEMPTY_MASK) &&
--			(statusreg & GQSPI_ISR_TXEMPTY_MASK))
-+		    (statusreg & GQSPI_ISR_TXEMPTY_MASK))
- 			break;
--		else
--			cpu_relax();
-+		cpu_relax();
- 	} while (!time_after_eq(jiffies, timeout));
- 
- 	if (time_after_eq(jiffies, timeout))
-@@ -549,7 +548,7 @@ static void zynqmp_qspi_readrxfifo(struct zynqmp_qspi *xqspi, u32 size)
- 
- 	while ((count < size) && (xqspi->bytes_to_receive > 0)) {
- 		if (xqspi->bytes_to_receive >= 4) {
--			(*(u32 *) xqspi->rxbuf) =
-+			(*(u32 *)xqspi->rxbuf) =
- 			zynqmp_gqspi_read(xqspi, GQSPI_RXD_OFST);
- 			xqspi->rxbuf += 4;
- 			xqspi->bytes_to_receive -= 4;
-@@ -645,14 +644,14 @@ static void zynqmp_process_dma_irq(struct zynqmp_qspi *xqspi)
- 	u32 config_reg, genfifoentry;
- 
- 	dma_unmap_single(xqspi->dev, xqspi->dma_addr,
--				xqspi->dma_rx_bytes, DMA_FROM_DEVICE);
-+			 xqspi->dma_rx_bytes, DMA_FROM_DEVICE);
- 	xqspi->rxbuf += xqspi->dma_rx_bytes;
- 	xqspi->bytes_to_receive -= xqspi->dma_rx_bytes;
- 	xqspi->dma_rx_bytes = 0;
- 
- 	/* Disabling the DMA interrupts */
- 	zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_I_DIS_OFST,
--					GQSPI_QSPIDMA_DST_I_EN_DONE_MASK);
-+			   GQSPI_QSPIDMA_DST_I_EN_DONE_MASK);
- 
- 	if (xqspi->bytes_to_receive > 0) {
- 		/* Switch to IO mode,for remaining bytes to receive */
-@@ -670,14 +669,15 @@ static void zynqmp_process_dma_irq(struct zynqmp_qspi *xqspi)
- 
- 		/* Manual start */
- 		zynqmp_gqspi_write(xqspi, GQSPI_CONFIG_OFST,
--			(zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST) |
--			GQSPI_CFG_START_GEN_FIFO_MASK));
-+				   (zynqmp_gqspi_read(xqspi,
-+						      GQSPI_CONFIG_OFST) |
-+				   GQSPI_CFG_START_GEN_FIFO_MASK));
- 
- 		/* Enable the RX interrupts for IO mode */
- 		zynqmp_gqspi_write(xqspi, GQSPI_IER_OFST,
--				GQSPI_IER_GENFIFOEMPTY_MASK |
--				GQSPI_IER_RXNEMPTY_MASK |
--				GQSPI_IER_RXEMPTY_MASK);
-+				   GQSPI_IER_GENFIFOEMPTY_MASK |
-+				   GQSPI_IER_RXNEMPTY_MASK |
-+				   GQSPI_IER_RXEMPTY_MASK);
- 	}
- }
- 
-@@ -708,7 +708,7 @@ static irqreturn_t zynqmp_qspi_irq(int irq, void *dev_id)
- 		dma_status =
- 			zynqmp_gqspi_read(xqspi, GQSPI_QSPIDMA_DST_I_STS_OFST);
- 		zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_I_STS_OFST,
--								dma_status);
-+				   dma_status);
- 	}
- 
- 	if (mask & GQSPI_ISR_TXNOT_FULL_MASK) {
-@@ -725,8 +725,8 @@ static irqreturn_t zynqmp_qspi_irq(int irq, void *dev_id)
- 		ret = IRQ_HANDLED;
- 	}
- 
--	if ((xqspi->bytes_to_receive == 0) && (xqspi->bytes_to_transfer == 0)
--			&& ((status & GQSPI_IRQ_MASK) == GQSPI_IRQ_MASK)) {
-+	if (xqspi->bytes_to_receive == 0 && xqspi->bytes_to_transfer == 0 &&
-+	    ((status & GQSPI_IRQ_MASK) == GQSPI_IRQ_MASK)) {
- 		zynqmp_gqspi_write(xqspi, GQSPI_IDR_OFST, GQSPI_ISR_IDR_MASK);
- 		complete(&xqspi->data_completion);
- 		ret = IRQ_HANDLED;
-@@ -744,8 +744,8 @@ static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
- 	dma_addr_t addr;
- 	u64 dma_align =  (u64)(uintptr_t)xqspi->rxbuf;
- 
--	if ((xqspi->bytes_to_receive < 8) ||
--		((dma_align & GQSPI_DMA_UNALIGN) != 0x0)) {
-+	if (xqspi->bytes_to_receive < 8 ||
-+	    ((dma_align & GQSPI_DMA_UNALIGN) != 0x0)) {
- 		/* Setting to IO mode */
- 		config_reg = zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
- 		config_reg &= ~GQSPI_CFG_MODE_EN_MASK;
-@@ -759,17 +759,17 @@ static void zynqmp_qspi_setuprxdma(struct zynqmp_qspi *xqspi)
- 	rx_bytes = (xqspi->bytes_to_receive - rx_rem);
- 
- 	addr = dma_map_single(xqspi->dev, (void *)xqspi->rxbuf,
--						rx_bytes, DMA_FROM_DEVICE);
-+			      rx_bytes, DMA_FROM_DEVICE);
- 	if (dma_mapping_error(xqspi->dev, addr))
- 		dev_err(xqspi->dev, "ERR:rxdma:memory not mapped\n");
- 
- 	xqspi->dma_rx_bytes = rx_bytes;
- 	xqspi->dma_addr = addr;
- 	zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_ADDR_OFST,
--				(u32)(addr & 0xffffffff));
-+			   (u32)(addr & 0xffffffff));
- 	addr = ((addr >> 16) >> 16);
- 	zynqmp_gqspi_write(xqspi, GQSPI_QSPIDMA_DST_ADDR_MSB_OFST,
--				((u32)addr) & 0xfff);
-+			   ((u32)addr) & 0xfff);
- 
- 	/* Enabling the DMA mode */
- 	config_reg = zynqmp_gqspi_read(xqspi, GQSPI_CONFIG_OFST);
--- 
-2.28.0
-
+This patch-set is:
+Reviewed-by: Tomer Tayar <ttayar@habana.ai>
