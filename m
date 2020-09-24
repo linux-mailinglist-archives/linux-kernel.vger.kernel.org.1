@@ -2,164 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B151276AB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8C2F276AB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727199AbgIXHX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:23:27 -0400
-Received: from mail-eopbgr10085.outbound.protection.outlook.com ([40.107.1.85]:23942
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726993AbgIXHX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:23:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cms/ec9cEfdhB0SIOeKbtQ0n8kQuFA+TZR6G24Ta/m2YXY0HknRqPKoCyWjXY7zULELMT6/qvh8GJetSUUmAFajpsd8kH2q73LVys3CFEWPghWROhyo6cOSXYWQqNgtr1MwZ9glBg6EfXls7wWXBedGIOmJZXVdoqmyGXX/o3T6jnBq+w/lppfyzcYlMohmAUtk/UM2gxwi4bwLBfmUJ64w6uFJTGMLgulf43niXgPMN0RkI3N4zUhsfdr46ato7OpgWyR2u6mPjYB0rJaX96VUc2Ow2MGcZqKpqflT5c3G+UNb6kv00MT30IEc46UoAW0u17ODZIIhXjmdfuaUiYA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZREFUneW/MgzohLmb3zE5TVJl7BtcXNttDKVRjrIzDw=;
- b=Q+TG7m2bkpsvmv3yblSqoeM4DH+WLQg1F6oQF0xPj4nsiDhumaUbvQT6wdV2Lj7E8h7B/1s5mkWk4uiDLwdrCHsweKvDH0CxKUs+5rL+sppdgLg2hQdw+BymssHXMOOx7fSlYqIlkErIpoCwvTaWK3Oo4jyuVg7JQv0kWy6EZS+OXnK4/uMbWEoOtcd6ZUH+fxFzyi3XE38bysyHxbUUJbIS62ixGcqJMfRZ41EPc0O9OZDXtVL3sV/lecHH6RV27EYMgQFywTXn2uJktGa8/nn8nd6rLaV6fZ5f9VGz/hbqLSzD+xNkOR0sUc+Hq7xmxmbicMv+dV1KzjEVOPpiZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZREFUneW/MgzohLmb3zE5TVJl7BtcXNttDKVRjrIzDw=;
- b=cUARNIRRiL9iRDuNecpgbI8q64sEfJBy01hYR1LWMxLNyVvk84clkwOAw2ClY9+8E/HPOlyYFTkD/ry7E4RZVgWhSPiGBWnOewRMHF1HyLKZtUvKKEYPef0i/wqcpa94uKmKJrN0vkWPmtwY8UALfSfgpxCUhILBsBDLrgsdxqE=
-Received: from VE1PR04MB6768.eurprd04.prod.outlook.com (2603:10a6:803:129::26)
- by VI1PR0402MB2720.eurprd04.prod.outlook.com (2603:10a6:800:b3::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Thu, 24 Sep
- 2020 07:23:20 +0000
-Received: from VE1PR04MB6768.eurprd04.prod.outlook.com
- ([fe80::f16e:a79:2203:5d35]) by VE1PR04MB6768.eurprd04.prod.outlook.com
- ([fe80::f16e:a79:2203:5d35%6]) with mapi id 15.20.3412.022; Thu, 24 Sep 2020
- 07:23:18 +0000
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     =?utf-8?B?VXdlIEtsZWluZS1Lw7ZuaWc=?= 
-        <u.kleine-koenig@pengutronix.de>
-CC:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>
-Subject: RE: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for
- nxp,pcf2127
-Thread-Topic: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for
- nxp,pcf2127
-Thread-Index: AQHWj9v8ujWDbe4KQkWWGAO9y9OzgKl1/KOAgAEbugCAAEnvAIAAAGkg
-Date:   Thu, 24 Sep 2020 07:23:18 +0000
-Message-ID: <VE1PR04MB6768783CAE7CA611365661AF91390@VE1PR04MB6768.eurprd04.prod.outlook.com>
-References: <20200921054821.26071-1-qiang.zhao@nxp.com>
- <20200923094449.GP9675@piout.net>
- <DB8PR04MB67635518BE38EEF5292C8D0991390@DB8PR04MB6763.eurprd04.prod.outlook.com>
- <20200924070456.rovgp6n5q25s53vc@pengutronix.de>
-In-Reply-To: <20200924070456.rovgp6n5q25s53vc@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: da3c2ed1-1e91-403c-9d28-08d8605ab5e7
-x-ms-traffictypediagnostic: VI1PR0402MB2720:
-x-microsoft-antispam-prvs: <VI1PR0402MB27204BDCEE004EFC0E8DB1EC91390@VI1PR0402MB2720.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5797;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: R2Gk/DebX7TM1DZfg9AF/j86yQNplMlQGhdMcXYJixS2CviaUxj71mRbgE7XITy0T5o4Kxz5tJyUG0Qd+6nethFa3/UjC5QurgsvYkZqSrgjeMVCI6jxmYJInv0RK7l65mLkjb86CDm3FPIdl0XzNNRW9hsBoL8K0fYCg/mNzfVMXlX7XrTUpcsh09NxUplUTSECopYLz/0ut1DjlOtzLhH+r1v4Otew3jGarWXzJ+UnBXnjBStnXD3QEFIK4EeYH/usGsXsQqx0MueirwQVCBInCDQti2wb0M5NPxYRdLamreVzeuamM5RFhbOfIYnXN1DGXl17x7UbaMZNkiY7u2cpfrlD1xgpssYQTcFle+UxC4pf8X6hsMklj0AtUOqpBIXuZOkNEOKUWj/R9mj6V48Ds0bS7alf9I7z2g54MdrVTAoeH8ndT+v63NisrqO1qqutc9Lr6FI0GrnalYhqTja+oX9X57PydABrR+Qs1PDj+pa9bX8F6cAJacbslhza
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6768.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(366004)(136003)(396003)(45080400002)(54906003)(33656002)(6916009)(66446008)(316002)(64756008)(186003)(8936002)(5660300002)(7416002)(52536014)(71200400001)(4326008)(478600001)(7696005)(9686003)(86362001)(66476007)(66556008)(76116006)(2906002)(8676002)(66574015)(966005)(66946007)(53546011)(6506007)(83380400001)(83080400001)(44832011)(26005)(55016002)(142933001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: 05DrYEBIlU7qBL3zpuzNoPfjfgE0jDwrfeIw1grCSKM2fdBdAKVZeXuCwZYe5SrvxAoQBqam87YqQBSbKe4nFvR+98zSl7C7a928nbIICuxIMEgWSUqrCHdHoelV4RRlEtvy1J6NTle8uygSd/b43ycpiHFNn6q64oI1ztnTDrYR6bp7pgmHHZt1YJ7I/cAMhsyOvQDFhMfVLWCKxK079IhE5lBciyR7/0/zadZph+9bE68GoN+REshreqPyXCIEzDjdHgndtASy/ioebhhFw/vsEqMekR7ZsXIXmoLE8kVKFu2OuOtrMNuNiNJJwpD5kSpiB3e1JfJLSelYRorJibMyaZmLjCcwS79wVeOxzD5KP534KdUZ0Z5hH39fZ1eo0hfLd+dmEXYURYug/ZDsZSZenGEmHUqaCeukdY8AW0q8E/1LCrlM5IOVcYBwPC9IdzRigj1WBj/bDRvsdnMC9bN2KzpGnC2taCkiVHxW7mhJFpsqlc/8Sfih2WRge5yE/mY/uQBmev1Jd/2jmairB79Kd53Gv2clLFUjps56okXn4B9nQ0UVUNqcrE1ToSHDnhC0iJwI0tRm1KhWjO13JR+N4OdG9mXruCgx9DmjRAXKqRVBH+PxkWBVw11bD+P/EPbSc9glNMe89r/C5tA39g==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727091AbgIXH0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:26:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37526 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727024AbgIXH0J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:26:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600932367;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=sfgIAySa/A08wWDXkoelNWjNVbM5AALzahJpdX5IxUs=;
+        b=N5n4zuOM5s+kbiHaOF+/BRwURB+LT9cwcrhThrQaPnKYkCNi+GYwTwTT2X1S2BEXr7ArGF
+        lj5YbeGjIOaE5KvTpxn7HEhxFP/3nEepJXvTZf05SFNMeKwtixnAgwXeQfn0B1OBtFb8v/
+        nqfQQDTJOmt397YHdaIJx78oDqgakbs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-zmkHPT1BP3STx7H0xp7Phw-1; Thu, 24 Sep 2020 03:26:03 -0400
+X-MC-Unique: zmkHPT1BP3STx7H0xp7Phw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E0B2186DD28;
+        Thu, 24 Sep 2020 07:26:01 +0000 (UTC)
+Received: from [10.36.114.4] (ovpn-114-4.ams2.redhat.com [10.36.114.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 91BC578828;
+        Thu, 24 Sep 2020 07:25:58 +0000 (UTC)
+Subject: Re: [PATCH v4 11/23] device-dax: Kill dax_kmem_res
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Joao Martins <joao.m.martins@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>
+References: <159643094279.4062302.17779410714418721328.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <159643100485.4062302.976628339798536960.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <a3ad70a2-77a8-d50e-f372-731a8e27c03b@redhat.com>
+ <17686fcc-202e-0982-d0de-54d5349cfb5d@oracle.com>
+ <9acc6148-72eb-7016-dba9-46fa87ded5a5@redhat.com>
+ <CAPcyv4h5GGV3F-0rFY_pyv9Bj8LAkrwXruxGE=K2y9=dA8oDHw@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <d160c05b-9caa-1ffb-9c01-5bb261c744b5@redhat.com>
+Date:   Thu, 24 Sep 2020 09:25:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6768.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: da3c2ed1-1e91-403c-9d28-08d8605ab5e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2020 07:23:18.7054
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: yHCt3FJvom1R+d6tbpyyAzoFRQ8CKnK197cCK8/vd8EzBLCxZULAOeBm75ZaGz6GDdabV/l8MmnGwTpBgrfPPA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB2720
+In-Reply-To: <CAPcyv4h5GGV3F-0rFY_pyv9Bj8LAkrwXruxGE=K2y9=dA8oDHw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCBTZXAgMjQsIDIwMjAgYXQgMTU6MDVBTSArMDAwMCwgVXdlIEtsZWluZS1Lw7ZuaWcg
-PHUua2xlaW5lLWtvZW5pZ0BwZW5ndXRyb25peC5kZT4gd3JvdGU6DQoNCj4gLS0tLS1PcmlnaW5h
-bCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogVXdlIEtsZWluZS1Lw7ZuaWcgPHUua2xlaW5lLWtvZW5p
-Z0BwZW5ndXRyb25peC5kZT4NCj4gU2VudDogMjAyMOW5tDnmnIgyNOaXpSAxNTowNQ0KPiBUbzog
-UWlhbmcgWmhhbyA8cWlhbmcuemhhb0BueHAuY29tPg0KPiBDYzogQWxleGFuZHJlIEJlbGxvbmkg
-PGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29tPjsgV2ltIFZhbiBTZWJyb2Vjaw0KPiA8d2lt
-QGxpbnV4LXdhdGNoZG9nLm9yZz47IEd1ZW50ZXIgUm9lY2sgPGxpbnV4QHJvZWNrLXVzLm5ldD47
-DQo+IGxpbnV4LXdhdGNoZG9nQHZnZXIua2VybmVsLm9yZzsgYS56dW1tb0B0b3dlcnRlY2guaXQ7
-IHJvYmgrZHRAa2VybmVsLm9yZzsNCj4gbGludXgtcnRjQHZnZXIua2VybmVsLm9yZzsgZGV2aWNl
-dHJlZUB2Z2VyLmtlcm5lbC5vcmc7DQo+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGtl
-cm5lbEBwZW5ndXRyb25peC5kZQ0KPiBTdWJqZWN0OiBSZTogW1BhdGNoIHYyIDEvM10gZHQtYmlu
-ZGluZ3M6IHJ0YzogcGNmMjEyNzogQWRkIGJpbmRpbmdzIGZvcg0KPiBueHAscGNmMjEyNw0KPiAN
-Cj4gSGVsbG8sDQo+IA0KPiBPbiBUaHUsIFNlcCAyNCwgMjAyMCBhdCAwMzoyMDozM0FNICswMDAw
-LCBRaWFuZyBaaGFvIHdyb3RlOg0KPiA+IE9uIDIxLzA5LzIwMjAgMTM6NDg6MTkrMDgwMCwgUWlh
-bmcgWmhhbyB3cm90ZToNCj4gPg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4g
-PiA+IEZyb206IEFsZXhhbmRyZSBCZWxsb25pIDxhbGV4YW5kcmUuYmVsbG9uaUBib290bGluLmNv
-bT4NCj4gPiA+IFNlbnQ6IDIwMjDlubQ55pyIMjPml6UgMTc6NDUNCj4gPiA+IFRvOiBRaWFuZyBa
-aGFvIDxxaWFuZy56aGFvQG54cC5jb20+DQo+ID4gPiBDYzogV2ltIFZhbiBTZWJyb2VjayA8d2lt
-QGxpbnV4LXdhdGNoZG9nLm9yZz47IEd1ZW50ZXIgUm9lY2sNCj4gPiA+IDxsaW51eEByb2Vjay11
-cy5uZXQ+OyBsaW51eC13YXRjaGRvZ0B2Z2VyLmtlcm5lbC5vcmc7DQo+ID4gPiBhLnp1bW1vQHRv
-d2VydGVjaC5pdDsgcm9iaCtkdEBrZXJuZWwub3JnOyBsaW51eC1ydGNAdmdlci5rZXJuZWwub3Jn
-Ow0KPiA+ID4gZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtl
-cm5lbC5vcmc7IFV3ZQ0KPiA+ID4gS2xlaW5lLUvDtm5pZyA8dS5rbGVpbmUta29lbmlnQHBlbmd1
-dHJvbml4LmRlPg0KPiA+ID4gU3ViamVjdDogUmU6IFtQYXRjaCB2MiAxLzNdIGR0LWJpbmRpbmdz
-OiBydGM6IHBjZjIxMjc6IEFkZCBiaW5kaW5ncw0KPiA+ID4gZm9yDQo+ID4gPiBueHAscGNmMjEy
-Nw0KPiA+ID4NCj4gPiA+IEhpLA0KPiA+ID4NCj4gPiA+IFlvdSBmb3Jnb3QgdG8gY29weSB0aGUg
-d2F0Y2hkb2cgbWFpbnRhaW5lcnMsIEkgdGhpbmsgc3VjaCBhIHByb3BlcnR5DQo+ID4gPiBzaG91
-bGQgYmUgZGlzY3Vzc2VkIHdpdGggdGhlbS4NCj4gPiA+DQo+ID4gPiBOb3RlIHRoYXQgSSdtIHN0
-aWxsIGNvbnZpbmNlZCB0aGlzIGlzIG5vdCBhIGNvbXBsZXRlIHNvbHV0aW9uLCBzZWU6DQo+ID4g
-PiBodHRwczovL2V1cjAxLnNhZmVsaW5rcy5wcm90ZWN0aW9uLm91dGxvb2suY29tLz91cmw9aHR0
-cHMlM0ElMkYlMkZsbw0KPiA+ID4gcmUua2Vybg0KPiA+ID4NCj4gZWwub3JnJTJGbGludXgtcnRj
-JTJGMjAyMDA3MTYxODE4MTYuR0YzNDI4JTQwcGlvdXQubmV0JTJGJmFtcDtkYXRhPQ0KPiA+ID4N
-Cj4gMDIlN0MwMSU3Q3FpYW5nLnpoYW8lNDBueHAuY29tJTdDYjcxZjc5YTA0NGIwNDkzZDZkNGYw
-OGQ4NWZhNTUxYw0KPiA+ID4NCj4gYiU3QzY4NmVhMWQzYmMyYjRjNmZhOTJjZDk5YzVjMzAxNjM1
-JTdDMCU3QzElN0M2MzczNjQ1MTA5MzExNzQNCj4gPiA+DQo+IDM1NSZhbXA7c2RhdGE9JTJCT3hy
-ekI4Ukl1eE05TGV0NXNsaGZDVm1NbTZQTU5vRVJEZUhDOSUyRmR4bmcNCj4gPiA+ICUzRCZhbXA7
-cmVzZXJ2ZWQ9MA0KPiANCj4gaGFoYQ0KPiANCj4gPiBZZXMsIHlvdSBhcmUgcmlnaHQsIFRoZXJl
-IGlzIG5vdCBhIGZ1bmRhbWVudGFsIHNvbHV0aW9uLg0KPiA+IEhvd2V2ZXIgaXQgc29tZXdoYXQg
-YXZvaWQgdGhpcyBzaXR1YXRpb24gYXQgbGVhc3QuDQo+ID4NCj4gPiBBbmQgaWYgd2l0aG91dCB0
-aGlzIGlzc3VlLA0KPiA+IGlzIGl0IGNvcnJlY3QgdG8gcmVnaXN0ZXIgYSBydGMgZGV2aWNlIGFz
-IHdhdGNoZG9nIG5vIG1hdHRlciBpdCBpcyB1c2VkIGFzDQo+IHdhdGNoZG9nIG9uIHRoZSBib2Fy
-ZD8NCj4gPiBFdmVyeSB0aW1lIExpbnV4IGFyZSBib290ZWQgdXAsIHdhdGNoZG9nIGRldmljZSBz
-aG91bGQgYmUgY29uZmlndXJlZCB0byB0aGUNCj4gcmlnaHQgb25lIG1hbnVhbGx5Lg0KPiA+IFNv
-IHRoZSBwYXRjaCBhcmUgdXNlZnVsLCBldmVuIHRob3VnaCBpdCBpcyBub3QgZm9yIHRoZSBpc3N1
-ZS4NCj4gPg0KPiA+IFdoYXQgc2hvdWxkIHdlIGRvIHRvIHJlYWxseSByZXNvbHZlIHRoaXMgaXNz
-dWU/DQo+IA0KPiBJIHN0aWxsIHRoaW5rIHdlIG5lZWQgYSBrZXJuZWwgc29sdXRpb24gaGVyZS4g
-SSB3b3VsZCBleHBlY3QgdGhhdCBtb3N0IGFzc2VtYmxlZA0KPiBwY2YyMTI3IGNoaXBzIGFyZSB1
-bmFibGUgdG8gYWN0IGFzIGEgd2F0Y2hkb2cgKGkuZS4gZG9uJ3QgaGF2ZSB0aGUgUlNUIG91dHB1
-dA0KPiBjb25uZWN0ZWQgdG8gc29tZXRoaW5nIHRoYXQgcmVzZXRzIHRoZSBtYWNoaW5lKS4NCj4g
-DQo+IFNvIG15IGZhdm91cmVkIHNvbHV0aW9uIHdvdWxkIGJlIGEgcG9zaXRpdmUgcHJvcGVydHkg
-bGlrZToNCj4gDQo+IAloYXMtd2F0Y2hkb2c7DQo+IA0KPiBvciBzb21ldGhpbmcgc2ltaWxhci4g
-SW4gbXkgZXllcyB0aGlzIGlzIGRlZmluaXRlbHkgc29tZXRoaW5nIHdlIHdhbnQgdG8gc3BlY2lm
-eQ0KPiBpbiB0aGUgZGV2aWNlIHRyZWUgYmVjYXVzZSBpdCBpcyBhIHJlbGV2YW50IGhhcmR3YXJl
-IHByb3BlcnR5Lg0KPiBJIGNvbnNpZGVyIGl0IGEgYnVnIHRvIGdpdmUgYSB3YXRjaGRvZyBkZXZp
-Y2UgdG8gdXNlcnNwYWNlIHRoYXQgaXNuJ3QgZnVuY3Rpb25hbC4NCj4gDQo+IEJlc3QgcmVnYXJk
-cw0KPiBVd2UNCiANCkkgc3Ryb25nbHkgYWdyZWUgd2l0aCB5b3UhIEl0IHNob3VsZCBiZSBwb3Np
-dGl2ZSBwcm9wZXJ0eS4NCkhvd2V2ZXIsIHdlIGNvdWxkbid0IGlkZW50aWZ5IHdoaWNoIGJvYXJk
-IGFyZSB1c2luZyBwY2YyMTI3IGFzIHdhdGNoZG9nLA0KU28gd2UgYXJlIHVuYWJsZSB0byBtb2Rp
-ZnkgdGhlIGJvYXJkcycgZHRzIHRvIGNvcnJlY3QgKHdhdGNoZG9nIG9yIG5vdCkgaW4gdGhpcyBw
-YXRjaHNldC4NCg0KSSBub3RpY2VkIHRoYXQgb25seSBMUyBzZXJpZXMgcGxhdGZvcm1zIGFuZCBp
-bXg2IGhhdmUgcGNmMjEyNyBub2RlLCBhcyBmYXIgYXMgSSBrbm93LCB0aGUgTFMgcGxhdGZvcm1z
-IGRvbid0IHVzZSBpdCBhcyB3YXRjaGRvZywNCkJ1dCBJIGFtIG5vdCBzdXJlIGFib3V0IGlteDYN
-Cg0KPiANCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgVXdlIEtsZWluZS1Lw7ZuaWcNCj4gfA0KPiBJbmR1c3RyaWFsIExpbnV4IFNvbHV0aW9ucyAg
-ICAgICAgICAgICAgICAgfCBodHRwczovL3d3dy5wZW5ndXRyb25peC5kZS8gfA0KQmVzdCBSZWdh
-cmRzDQpRaWFuZyBaaGFvDQo=
+On 23.09.20 23:41, Dan Williams wrote:
+> On Wed, Sep 23, 2020 at 1:04 AM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 08.09.20 17:33, Joao Martins wrote:
+>>> [Sorry for the late response]
+>>>
+>>> On 8/21/20 11:06 AM, David Hildenbrand wrote:
+>>>> On 03.08.20 07:03, Dan Williams wrote:
+>>>>> @@ -37,109 +45,94 @@ int dev_dax_kmem_probe(struct device *dev)
+>>>>>      * could be mixed in a node with faster memory, causing
+>>>>>      * unavoidable performance issues.
+>>>>>      */
+>>>>> -   numa_node = dev_dax->target_node;
+>>>>>     if (numa_node < 0) {
+>>>>>             dev_warn(dev, "rejecting DAX region with invalid node: %d\n",
+>>>>>                             numa_node);
+>>>>>             return -EINVAL;
+>>>>>     }
+>>>>>
+>>>>> -   /* Hotplug starting at the beginning of the next block: */
+>>>>> -   kmem_start = ALIGN(range->start, memory_block_size_bytes());
+>>>>> -
+>>>>> -   kmem_size = range_len(range);
+>>>>> -   /* Adjust the size down to compensate for moving up kmem_start: */
+>>>>> -   kmem_size -= kmem_start - range->start;
+>>>>> -   /* Align the size down to cover only complete blocks: */
+>>>>> -   kmem_size &= ~(memory_block_size_bytes() - 1);
+>>>>> -   kmem_end = kmem_start + kmem_size;
+>>>>> -
+>>>>> -   new_res_name = kstrdup(dev_name(dev), GFP_KERNEL);
+>>>>> -   if (!new_res_name)
+>>>>> +   res_name = kstrdup(dev_name(dev), GFP_KERNEL);
+>>>>> +   if (!res_name)
+>>>>>             return -ENOMEM;
+>>>>>
+>>>>> -   /* Region is permanently reserved if hotremove fails. */
+>>>>> -   new_res = request_mem_region(kmem_start, kmem_size, new_res_name);
+>>>>> -   if (!new_res) {
+>>>>> -           dev_warn(dev, "could not reserve region [%pa-%pa]\n",
+>>>>> -                    &kmem_start, &kmem_end);
+>>>>> -           kfree(new_res_name);
+>>>>> +   res = request_mem_region(range.start, range_len(&range), res_name);
+>>>>
+>>>> I think our range could be empty after aligning. I assume
+>>>> request_mem_region() would check that, but maybe we could report a
+>>>> better error/warning in that case.
+>>>>
+>>> dax_kmem_range() already returns a memory-block-aligned @range but
+>>> IIUC request_mem_region() isn't checking for that. Having said that
+>>> the returned @res wouldn't be different from the passed range.start.
+>>>
+>>>>>     /*
+>>>>>      * Ensure that future kexec'd kernels will not treat this as RAM
+>>>>>      * automatically.
+>>>>>      */
+>>>>> -   rc = add_memory_driver_managed(numa_node, new_res->start,
+>>>>> -                                  resource_size(new_res), kmem_name);
+>>>>> +   rc = add_memory_driver_managed(numa_node, res->start,
+>>>>> +                                  resource_size(res), kmem_name);
+>>>>> +
+>>>>> +   res->flags |= IORESOURCE_BUSY;
+>>>>
+>>>> Hm, I don't think that's correct. Any specific reason why to mark the
+>>>> not-added, unaligned parts BUSY? E.g., walk_system_ram_range() could
+>>>> suddenly stumble over it - and e.g., similarly kexec code when trying to
+>>>> find memory for placing kexec images. I think we should leave this
+>>>> !BUSY, just as it is right now.
+>>>>
+>>> Agreed.
+>>>
+>>>>>     if (rc) {
+>>>>> -           release_resource(new_res);
+>>>>> -           kfree(new_res);
+>>>>> -           kfree(new_res_name);
+>>>>> +           release_mem_region(range.start, range_len(&range));
+>>>>> +           kfree(res_name);
+>>>>>             return rc;
+>>>>>     }
+>>>>> -   dev_dax->dax_kmem_res = new_res;
+>>>>> +
+>>>>> +   dev_set_drvdata(dev, res_name);
+>>>>>
+>>>>>     return 0;
+>>>>>  }
+>>>>>
+>>>>>  #ifdef CONFIG_MEMORY_HOTREMOVE
+>>>>> -static int dev_dax_kmem_remove(struct device *dev)
+>>>>> +static void dax_kmem_release(struct dev_dax *dev_dax)
+>>>>>  {
+>>>>> -   struct dev_dax *dev_dax = to_dev_dax(dev);
+>>>>> -   struct resource *res = dev_dax->dax_kmem_res;
+>>>>> -   resource_size_t kmem_start = res->start;
+>>>>> -   resource_size_t kmem_size = resource_size(res);
+>>>>> -   const char *res_name = res->name;
+>>>>>     int rc;
+>>>>> +   struct device *dev = &dev_dax->dev;
+>>>>> +   const char *res_name = dev_get_drvdata(dev);
+>>>>> +   struct range range = dax_kmem_range(dev_dax);
+>>>>>
+>>>>>     /*
+>>>>>      * We have one shot for removing memory, if some memory blocks were not
+>>>>>      * offline prior to calling this function remove_memory() will fail, and
+>>>>>      * there is no way to hotremove this memory until reboot because device
+>>>>> -    * unbind will succeed even if we return failure.
+>>>>> +    * unbind will proceed regardless of the remove_memory result.
+>>>>>      */
+>>>>> -   rc = remove_memory(dev_dax->target_node, kmem_start, kmem_size);
+>>>>> -   if (rc) {
+>>>>> -           any_hotremove_failed = true;
+>>>>> -           dev_err(dev,
+>>>>> -                   "DAX region %pR cannot be hotremoved until the next reboot\n",
+>>>>> -                   res);
+>>>>> -           return rc;
+>>>>> +   rc = remove_memory(dev_dax->target_node, range.start, range_len(&range));
+>>>>> +   if (rc == 0) {
+>>>>
+>>>> if (!rc) ?
+>>>>
+>>> Better off would be to keep the old order:
+>>>
+>>>       if (rc) {
+>>>               any_hotremove_failed = true;
+>>>               dev_err(dev, "%#llx-%#llx cannot be hotremoved until the next reboot\n",
+>>>                               range.start, range.end);
+>>>               return;
+>>>       }
+>>>
+>>>       release_mem_region(range.start, range_len(&range));
+>>>       dev_set_drvdata(dev, NULL);
+>>>       kfree(res_name);
+>>>       return;
+>>>
+>>>
+>>>>> +           release_mem_region(range.start, range_len(&range));
+>>>>
+>>>> remove_memory() does a release_mem_region_adjustable(). Don't you
+>>>> actually want to release the *unaligned* region you requested?
+>>>>
+>>> Isn't it what we're doing here?
+>>> (The release_mem_region_adjustable() is using the same
+>>> dax_kmem-aligned range and there's no split/adjust)
+>>>
+>>> Meaning right now (+ parent marked as !BUSY), and if I am understanding
+>>> this correctly:
+>>>
+>>> request_mem_region(range.start, range_len)
+>>>    __request_region(iomem_res, range.start, range_len) -> alloc @parent
+>>> add_memory_driver_managed(parent.start, resource_size(parent))
+>>>    __request_region(parent.start, resource_size(parent)) -> alloc @child
+>>>
+>>> [...]
+>>>
+>>> remove_memory(range.start, range_len)
+>>>  request_mem_region_adjustable(range.start, range_len)
+>>>   __release_region(range.start, range_len) -> remove @child
+>>>
+>>> release_mem_region(range.start, range_len)
+>>>   __release_region(range.start, range_len) -> doesn't remove @parent because !BUSY?
+>>>
+>>> The add/removal of this relies on !BUSY. But now I am wondering if the parent remaining
+>>> unreleased is deliberate even on CONFIG_MEMORY_HOTREMOVE=y.
+>>>
+>>>       Joao
+>>>
+>>
+>> Thinking about it, if we don't set the parent resource BUSY (which is
+>> what I think is the right way of doing things), and don't want to store
+>> the parent resource pointer, we could add something like
+>> lookup_resource() - e.g., lookup_mem_resource() - , however, searching
+>> properly in the whole hierarchy (instead of only the first level), and
+>> traversing down to the last hierarchy. Then it would be as simple as
+>>
+>> remove_memory(range.start, range_len)
+>> res = lookup_mem_resource(range.start);
+>> release_resource(res);
+> 
+> Another thought... I notice that you've taught
+> register_memory_resource() a IORESOURCE_MEM_DRIVER_MANAGED special
+> case. Lets just make the assumption of add_memory_driver_managed()
+> that it is the driver's responsibility to mark the range busy before
+> calling, and the driver's responsibility to release the region. I.e.
+> validate (rather than request) that the range is busy in
+> register_memory_resource(), and teach release_memory_resource() to
+> skip releasing the region when the memory is marked driver managed.
+> That would let dax_kmem drop its manipulation of the 'busy' flag which
+> is a layering violation no matter how many comments we put around it.
+
+IIUC, that won't work for virtio-mem, whereby the parent resource spans
+multiple possible (future) add_memory_driver_managed() calls and is
+(just like for kmem) a pure indication to which device memory ranges belong.
+
+For example, when exposing 2GB via a virtio-mem device with max 4GB:
+
+(/proc/iomem)
+240000000-33fffffff : virtio0
+  240000000-2bfffffff : System RAM (virtio_mem)
+
+And after hotplugging additional 2GB:
+
+240000000-33fffffff : virtio0
+  240000000-33fffffff : System RAM (virtio_mem)
+
+So marking "virtio0" always BUSY (especially right from the start) would
+be wrong. The assumption is that anything that's IORESOURCE_SYSTEM_RAM
+and IORESOUCE_BUSY is currently added to the system as system RAM (e.g.,
+after add_memory() and friends, or during boot).
+
+I do agree that manually clearing the busy flag is ugly. What we most
+probably want is request_mem_region() that performs similar checks (no
+overlaps with existing BUSY resources), but doesn't set the region busy.
+
+-- 
+Thanks,
+
+David / dhildenb
+
