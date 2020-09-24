@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857BF27659D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 925EB2765A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgIXBHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 21:07:15 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:46644 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgIXBHO (ORCPT
+        id S1726854AbgIXBHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 21:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbgIXBHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 21:07:14 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 153AA2A45B;
-        Wed, 23 Sep 2020 21:07:11 -0400 (EDT)
-Date:   Thu, 24 Sep 2020 11:07:14 +1000 (AEST)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-cc:     "David S. Miller" <davem@davemloft.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org
-Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform
- driver
-In-Reply-To: <alpine.LNX.2.23.453.2009160758350.6@nippy.intranet>
-Message-ID: <alpine.LNX.2.23.453.2009240929310.7@nippy.intranet>
-References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au> <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com> <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet> <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
- <alpine.LNX.2.23.453.2009160758350.6@nippy.intranet>
+        Wed, 23 Sep 2020 21:07:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D02C0613CE;
+        Wed, 23 Sep 2020 18:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CpRt9L3oSpo9XB/wJ4tlJ8BLy+Ga6XgFjsS66dr9R/g=; b=wC6+TkHqrGD3haqlkJx8wiylpt
+        OieNI52BAZTw2567ZzFYTGBthskGEQQUw+uqPH+4AqIqB6vJ79XAuZhXWhZeCTeeAKqgMTM8XSn85
+        HYyTGODlwKP8hCgVqZgicVfUJ3VkLIFimHr1Dih+ycnp3HzkwcxJWqhw/vxFrmc+9rlDcfz5rnvgW
+        5W7vt7CczMfqoovNsSSXln0UzWYqaitlwBC/WvhjD1QJZ93mMwQwzs1tS0KO5u5VHqTxw3bbIKo7h
+        PQ57lVkX8p4vRfaHvUjf9seoE7o6023/TX0nSweYVUHOiA+PA3WB9xLdwEZhT92DgVKGKR2xKE9kZ
+        y0oraI7Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLFjN-0000zh-0A; Thu, 24 Sep 2020 01:07:29 +0000
+Date:   Thu, 24 Sep 2020 02:07:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Qian Cai <cai@redhat.com>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org,
+        Dave Kleikamp <shaggy@kernel.org>,
+        jfs-discussion@lists.sourceforge.net,
+        Dave Chinner <dchinner@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org
+Subject: Re: [PATCH v2 5/9] iomap: Support arbitrarily many blocks per page
+Message-ID: <20200924010728.GS32101@casper.infradead.org>
+References: <20200910234707.5504-1-willy@infradead.org>
+ <20200910234707.5504-6-willy@infradead.org>
+ <163f852ba12fd9de5dec7c4a2d6b6c7cdb379ebc.camel@redhat.com>
+ <20200922170526.GK32101@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922170526.GK32101@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
-
-On Wed, 16 Sep 2020, Finn Thain wrote:
-
-> On Tue, 15 Sep 2020, Geert Uytterhoeven wrote:
-> 
-> > > > > --- a/drivers/ide/macide.c
-> > > > > +++ b/drivers/ide/macide.c
-> > > >
-> > > > > @@ -109,42 +110,61 @@ static const char *mac_ide_name[] =
-> > > > >   * Probe for a Macintosh IDE interface
-> > > > >   */
-> > > > >
-> > > > > -static int __init macide_init(void)
-> > > > > +static int mac_ide_probe(struct platform_device *pdev)
-> > > > >  {
-> > > >
-> > > > >         printk(KERN_INFO "ide: Macintosh %s IDE controller\n",
-> > > > >                          mac_ide_name[macintosh_config->ide_type - 1]);
-> > > > >
-> > > > > -       macide_setup_ports(&hw, base, irq);
-> > > > > +       macide_setup_ports(&hw, mem->start, irq->start);
-> > > > >
-> > > > > -       return ide_host_add(&d, hws, 1, NULL);
-> > > > > +       rc = ide_host_add(&d, hws, 1, &host);
-> > > > > +       if (rc)
-> > > > > +               return rc;
-> > > > > +
-> > > > > +       platform_set_drvdata(pdev, host);
-> > > >
-> > > > Move one up, to play it safe?
-> > > >
-> > >
-> > > You mean, before calling ide_host_add? The 'host' pointer is 
-> > > uninitialized prior to that call.
+On Tue, Sep 22, 2020 at 06:05:26PM +0100, Matthew Wilcox wrote:
+> On Tue, Sep 22, 2020 at 12:23:45PM -0400, Qian Cai wrote:
+> > On Fri, 2020-09-11 at 00:47 +0100, Matthew Wilcox (Oracle) wrote:
+> > > Size the uptodate array dynamically to support larger pages in the
+> > > page cache.  With a 64kB page, we're only saving 8 bytes per page today,
+> > > but with a 2MB maximum page size, we'd have to allocate more than 4kB
+> > > per page.  Add a few debugging assertions.
+> > > 
+> > > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > > Reviewed-by: Dave Chinner <dchinner@redhat.com>
 > > 
-> > Oh right, so the IDE subsystem doesn't let you use the drvdata inside 
-> > your driver (besides in remove()) in a safe way :-(
+> > Some syscall fuzzing will trigger this on powerpc:
 > > 
+> > .config: https://gitlab.com/cailca/linux-mm/-/blob/master/powerpc.config
+> > 
+> > [ 8805.895344][T445431] WARNING: CPU: 61 PID: 445431 at fs/iomap/buffered-io.c:78 iomap_page_release+0x250/0x270
 > 
-> The IDE subsystem does allow other patterns here. I could have changed 
-> ide_host_alloc() into ide_host_register() followed by ide_host_add() but 
-> I could not see any benefit from that change.
-> 
+> Well, I'm glad it triggered.  That warning is:
+>         WARN_ON_ONCE(bitmap_full(iop->uptodate, nr_blocks) !=
+>                         PageUptodate(page));
+> so there was definitely a problem of some kind.
 
-Sorry, I meant to say, "I could have changed ide_host_add() into 
-ide_host_alloc() followed by ide_host_register() ..."
+OK, I'm pretty sure the problem predated this commit, and it's simply
+that I added a warning (looking for something else) that caught this.
 
-> A quick search for "platform_device" shows that the driver does not use 
-> any uninitialized driver_data pointer (because ide_ifr is a global). In 
-> your message of September 9th you readily reached the same conclusion 
-> when you reviewed v1.
-> 
-> If mac_ide_probe() followed the usual pattern it might make review 
-> easier (as reviewers may not wish to consider the entire driver) but 
-> does that really make the code more "safe"?
-> 
-
-I still think that "if it ain't broke, don't fix it" is actually the 
-"safe" option for macide.c. But I'm happy to make additional changes, test 
-them and send v5 if that's preferred.
-
-Looking further at the drivers using ide_host_register(), I see that 
-falconide.c is missing a set_drvdata() call, while tx4939ide.c calls 
-set_drvdata() after ide_host_register(). The latter example is not a bug. 
-
-The pattern I used, that is, calling set_drvdata() after ide_host_add(), 
-is actually more popular among IDE drivers than the pattern you suggested, 
-that is, set_drvdata() followed by ide_host_register(). Either way, I 
-don't see any bugs besides the one in falconide.c.
-
-Regarding falconide.c, my inclination is to send a fix following the more 
-common pattern (among IDE drivers), as below. I guess that may prompt the 
-subsystem maintainers to make known their views on the style question.
-
-diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
-index dbeb2605e5f6e..607c44bc50f1b 100644
---- a/drivers/ide/falconide.c
-+++ b/drivers/ide/falconide.c
-@@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
- 	if (rc)
- 		goto err_free;
- 
-+	platform_set_drvdata(pdev, host);
- 	return 0;
- err_free:
- 	ide_host_free(host);
-@@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
- 
- static int falconide_remove(struct platform_device *pdev)
- {
--	struct ide_host *host = dev_get_drvdata(&pdev->dev);
-+	struct ide_host *host = platform_get_drvdata(pdev);
- 
- 	ide_host_remove(host);
- 
+I have a tree completly gunked up with debugging code now to try to
+understand the problem better, but my guess is that if you put this
+warning into a previous version, you'd see the same problem occurring
+(and it is a real problem, because we skip writeback of parts of the
+page which are !uptodate).
