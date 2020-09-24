@@ -2,74 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93A90277DEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60CF277DF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:33:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbgIYCag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 22:30:36 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:33630 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726448AbgIYCag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 22:30:36 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 2A154FD2CAD2270D1B42;
-        Fri, 25 Sep 2020 10:30:33 +0800 (CST)
-Received: from [10.174.179.103] (10.174.179.103) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 25 Sep 2020 10:30:22 +0800
-Subject: Re: [RFC PATCH V4] iomap: add support to track dirty state of sub
- pages
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     <hch@infradead.org>, <darrick.wong@oracle.com>,
-        <david@fromorbit.com>, <linux-xfs@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <yi.zhang@huawei.com>
-References: <20200821123306.1658495-1-yukuai3@huawei.com>
- <20200821124424.GQ17456@casper.infradead.org>
- <7fb4bb5a-adc7-5914-3aae-179dd8f3adb1@huawei.com>
- <20200911120529.GZ6583@casper.infradead.org>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <7b160e03-28b8-32b0-244c-bfa7f4127434@huawei.com>
-Date:   Fri, 25 Sep 2020 10:30:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726806AbgIYCcy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 22:32:54 -0400
+Received: from webmail.santamaria.rs.gov.br ([177.36.46.196]:39178 "EHLO
+        mail-mta1.santamaria.rs.gov.br" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726448AbgIYCcy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 22:32:54 -0400
+X-Greylist: delayed 15178 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 22:32:53 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail-mta1.santamaria.rs.gov.br (Postfix) with ESMTP id BD9651F29A0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 18:38:00 -0300 (-03)
+Received: from mail-mta1.santamaria.rs.gov.br ([127.0.0.1])
+        by localhost (mail-mta1.santamaria.rs.gov.br [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id cwI2J37tn-mu for <linux-kernel@vger.kernel.org>;
+        Thu, 24 Sep 2020 18:38:00 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail-mta1.santamaria.rs.gov.br (Postfix) with ESMTP id 144031F073E
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:16:09 -0300 (-03)
+X-Virus-Scanned: amavisd-new at mail-mta1.santamaria.rs.gov.br
+Received: from mail-mta1.santamaria.rs.gov.br ([127.0.0.1])
+        by localhost (mail-mta1.santamaria.rs.gov.br [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Gb8By7TjJGQI for <linux-kernel@vger.kernel.org>;
+        Thu, 24 Sep 2020 16:16:09 -0300 (-03)
+Received: from [172.20.10.2] (unknown [45.133.180.227])
+        by mail-mta1.santamaria.rs.gov.br (Postfix) with ESMTPSA id DB9111AE75B
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 13:17:13 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-In-Reply-To: <20200911120529.GZ6583@casper.infradead.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.103]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Hello!
+To:     linux-kernel@vger.kernel.org
+From:   "Mr & Mrs Bill Gates Foundation" 
+        <gerson.peixoto@santamaria.rs.gov.br>
+Date:   Thu, 24 Sep 2020 21:47:10 +0530
+Reply-To: mr.msbillgtdonation09@hotmail.com
+Message-Id: <20200924161713.DB9111AE75B@mail-mta1.santamaria.rs.gov.br>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Reply me urgently i have a very important Donation to share with you: Here is my personal mail box: mr.msbillgtdonation09@hotmail.com
 
-On 2020/09/11 20:05, Matthew Wilcox wrote:
->> @@ -683,7 +736,7 @@ static size_t __iomap_write_end(struct inode *inode,
->> loff_t pos, size_t len,
->>   	if (unlikely(copied < len && !PageUptodate(page)))
->>   		return 0;
->>   	iomap_set_range_uptodate(page, offset_in_page(pos), len);
->> -	iomap_set_page_dirty(page);
->> +	iomap_set_range_dirty(page, offset_in_page(pos), len);
-> I_think_  the call to set_range_uptodate here is now unnecessary.  The
-> blocks should already have been set uptodate in write_begin.  But please
-> check!
+Have A Blessed Day
 
-Hi, Matthew
-
-Sorry it took me so long to get back to this.
-
-I found that set_range_uptodate() might be skipped in write_begin()
-in this case:
-
-                  if (!(flags & IOMAP_WRITE_F_UNSHARE) &&
-                   ©®   (from <= poff || from >= poff + plen) &&
-                   ©®   (to <= poff || to >= poff + plen))
-                           continue;
-
-And iomap_adjust_read_range() can set 'poff' greater than 'from'
-and 'poff + len' less than 'to'.
-
-Thanks
-Yu Kuai
+Regards
+Mr & Mrs Bill Gates Foundation
