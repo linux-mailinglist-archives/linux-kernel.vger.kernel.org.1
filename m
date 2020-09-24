@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58A3276B71
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50215276B75
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727260AbgIXIG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55044 "EHLO
+        id S1727249AbgIXIHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIXIG2 (ORCPT
+        with ESMTP id S1727089AbgIXIHf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:06:28 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA5CC0613CE;
-        Thu, 24 Sep 2020 01:06:28 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id k14so2474323edo.1;
-        Thu, 24 Sep 2020 01:06:28 -0700 (PDT)
+        Thu, 24 Sep 2020 04:07:35 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0814BC0613CE;
+        Thu, 24 Sep 2020 01:07:35 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id d13so1431329pgl.6;
+        Thu, 24 Sep 2020 01:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DhS5zCUfUZ5BpudzCueI3P+8aqCX/31QjaGKTQtiybo=;
-        b=Lm09FPDzX2HQ6SYT4Dp4mSGZpkmXWi9C7O2x8X2iUia+mTEg5Isp6ofoZ51RbAN0GU
-         f/qEGEtJTeFvY1njXD9WoBXhDwnn2BYsQO3bJ1gQ62iBHzXvT90Zcj95YsWXAxwQVNYd
-         K5DoaexSnWKE/ePaXTXwh1DdMhJjHHyOHZkkr2yU7t5IT/W7cNz24ffXcg76+eOgI1d8
-         hvjvGjNiL5TwLf7R8bZHP6Z92rLeOzMtN0YH/Tky7G5P8dOfBh1Gvbctww8LzfeaEDpO
-         W8UDQyYLEQZzpYKUgEMMkeMTTfQ9PsD+MqEOgyzdkpXSTtBkFI9ceuT8fuTG7mZx+16p
-         574w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SREJUM/2T/IFvbNUgYQe7MPC6WtRuEMBlyz8JPh0RI8=;
+        b=Mnc+BC6FoAz03iKMGZfNCLiJ0hcECAQItB8p3zC7NQkU7aOIjVnu4MQQApiKu8VkdD
+         IIbfAI5fACDSFTmNXSY2BP5jYZTYoh+H7Nufn+A/Eyf9JUSMarPYRHf0WfKR6PV9VVKx
+         4eVOTx0SJ6tbgYYR8LShT3V6LZo3FywyOvm6gyFSVnHQXucycp1xLdlmQpVE+xxeTpDI
+         Vn4OIg5eRiA6sxRTLhmf2rbLQeB8aQS/1mJhff2kWLWxUhDHJToSjCqq8EMjfoFMr/cA
+         pRF9+pdALsdYgc/ACOpNS3ZybtsRlnTTs9QRWEoaTCYfEbpqMxB6oCMFuSCQzDotR+Pr
+         kI4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DhS5zCUfUZ5BpudzCueI3P+8aqCX/31QjaGKTQtiybo=;
-        b=HCbW+xGo5kxFnpNWOTIp9V6IlWwreoeze9smd6HZ3Bv+DSSFm8u1SFEPxGqS24LdRG
-         YTdK2T3XbHdkLmHuq0W58MjBF4srwwfOACPbDoPQikBLFOTxyFTY2wNM/YvcSGIs91fR
-         W7hcTvve6j6lWRvjjWQhGluMmgMmB9S6lceDsxU9vkGmGBhvsqja339p76Nclhj4rS0R
-         SQHXoY7oUkPgLvDHhRdnaGkXy6iTjwqJYwS3CVe1ES6vNMy7uROqR7YAceC5nPUd0eUk
-         v0RaqH4nax8CR60GkLEnSkrWodeegK5rrN6DXsbuQMRkpA1KrgFVPm7KoVOj/u9yuO9T
-         0wlQ==
-X-Gm-Message-State: AOAM532GMcI2Jr7ovN6H+VMaVE+9+W+dPUg62KTPzbexamhCGC685X1z
-        ZKmDRTxj/kdxmsfdgRcNU44=
-X-Google-Smtp-Source: ABdhPJzIprzDU3RErUhZ32VFhVr2cg98LN+NVaRKC6CfXxw5WUEhgcEVYjL/KcqC5+uueBKFH1uNBQ==
-X-Received: by 2002:a05:6402:3c8:: with SMTP id t8mr3244616edw.266.1600934787086;
-        Thu, 24 Sep 2020 01:06:27 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2479:6801:d8fe:4132:9f23:7e8f? ([2001:a61:2479:6801:d8fe:4132:9f23:7e8f])
-        by smtp.gmail.com with ESMTPSA id f17sm1952836eds.45.2020.09.24.01.06.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 01:06:26 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com
-Subject: Re: [PATCH 22/24] membarrier.2: Note that glibc does not provide a
- wrapper
-To:     "G. Branden Robinson" <g.branden.robinson@gmail.com>,
-        "linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20200910211344.3562-1-colomar.6.4.3@gmail.com>
- <20200910211344.3562-23-colomar.6.4.3@gmail.com>
- <4ace434523f5491b9efcc7af175ad781@bfs.de>
- <20200921143617.2iskdncu3diginqn@localhost.localdomain>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <2862c745-a23a-95d2-157e-7f91f671f839@gmail.com>
-Date:   Thu, 24 Sep 2020 10:06:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SREJUM/2T/IFvbNUgYQe7MPC6WtRuEMBlyz8JPh0RI8=;
+        b=j3wIq+qnpYM8by/JtOKPSyhKc1TRSu01Cp+cNwddGj6//d6wa/OOou+Lf6IKNNLePl
+         e8yni2BcQKbVqn9QM2b4fuOcBqsZtqz56gQpATWvwPrtYz0qzvy5uIG2OBkWXuLxbk6R
+         V4YcPqvVYa39fUpUDUQpoiblrFrDY3sS9nsqmbtYHyPGbOQwfQDE0n1qAvm/suv1RmN4
+         MFcCJzhfa/8puIoESxnX0PSParb280qLp2AoJirTZsoreNfANkZa3F7ki0hzl4GMTTrt
+         Nr/59jMzu/HzoDKGlpLmA9F26m3zilQpEHX4z7tvnSDGsA8++8+gMfelKYqSUZ6bCHlk
+         Hy/g==
+X-Gm-Message-State: AOAM5330m5V2jgRJd0w6ncOlU9+p+8jbVCI8+bXyLAk4r71eJil6s1Qa
+        0/6xtJYpe7IVkGIRhvhfnDSDrmaPnJGPSINTucQ=
+X-Google-Smtp-Source: ABdhPJzZ3GxH/oMcyPcHsQNCDSKN+Hop/BoyiHOBELjZoiXsEPwNcDL/lPsrx3FEqSA+3lQeJ3rj/jYXD7zR6Yfvz7k=
+X-Received: by 2002:aa7:8645:0:b029:13c:de96:6fde with SMTP id
+ a5-20020aa786450000b029013cde966fdemr3426229pfo.14.1600934854466; Thu, 24 Sep
+ 2020 01:07:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200921143617.2iskdncu3diginqn@localhost.localdomain>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-4-keescook@chromium.org> <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
+ <202009240018.A4D8274F@keescook>
+In-Reply-To: <202009240018.A4D8274F@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 24 Sep 2020 03:07:23 -0500
+Message-ID: <CABqSeARV4prXOWf9qOBnm5Mm_aAdjwquqFFLQSuL0EegqeWEkA@mail.gmail.com>
+Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Linux API <linux-api@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Branden,
+On Thu, Sep 24, 2020 at 2:37 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > This belongs over into patch 1.
+>
+> Thanks! I was rushing to get this posted so YiFei Zhu wouldn't spend
+> time fighting with arch and Kconfig stuff. :) I'll clean this (and the
+> other random cruft) up.
 
-On 9/21/20 4:36 PM, G. Branden Robinson wrote:
-> At 2020-09-11T12:58:08+0000, Walter Harms wrote:
->> the groff commands are ducument in man 7 groff
->> .nf       No filling or adjusting of output-lines.
->> .fi       Fill output lines
->>
->> (for me) a typical use is like this:
->> .nf
->>
->> struct timeval {
->>     time_t      tv_sec;     /* seconds */
->>     suseconds_t tv_usec;    /* microseconds */
->> };
->> .fi
->>
->> In the top section you prevent indenting (if any).
-> 
-> The above will not work as desired for typesetter output, a.k.a., "troff
-> devices", such as PostScript or PDF.  The initial code indent might work
-> okay but the alignment of the field names will become
-> ragged/mis-registered and the comments even more so.
+Wait, what? I'm sorry. We have already begun fixing the mentioned
+issues (mostly the split bitmaps for different arches). Although yes
+it's nice to have another implementation to refer to so we get the
+best of both worlds (and yes I'm already copying some of the code I
+think are better here over there), don't you think it's not nice to
+say "Hey I've worked on this in June, it needed rework but I didn't
+send the newer version. Now you sent yours so I'll rush mine so your
+work is redundant."?
 
-Yes.
+That said, I do think this should be configurable. Users would be free
+to experiment with the bitmap on or off, just like users may turn
+seccomp off entirely. A choice also allows users to select different
+implementations, a few whom I work with have ideas on how to
+accelerate / cache argument dependent syscalls, for example.
 
-> This is because a proportional font is used by default for troff
-> devices.  The classical man macros, going back to Version 7 Unix (1979)
-> had no good solution for this problem and Unix room tradition at Murray
-> Hill going all the way back to (what we now call) the First Edition
-> manual in 1971 was to read the man pages on a typewriter--a Teletype
-> Model 33 or Model 37.  Typewriters, of course, always[1] used monospaced
-> fonts.
-> 
-> Version 9 Unix (1986) introduced .EX and .EE for setting material in a
-> monospaced font even if the device used proportional type by default.
-> (Plan 9 troff inherited them.)  GNU roff has supporteds .EX and .EE as
-> well, for over 13 years, and its implementations are ultra-permissively
-> licensed so other *roffs like Heirloom Doctools have picked them up.
-> Therefore I recommend .EX and .EE for all code examples.
-> 
-> They are very simple to use.  In the above, simply replace ".nf" with
-> ".EX" and ".fi" with ".EE".
-> 
-> Regards,
-> Branden
-> 
-> [1] Not completely true; variable-pitch typewriters (such as 10/12 point
-> selectable) were fairly common and some expensive models like the IBM
-> Executive even featured true proportional type.
-
-Thanks for the interesting history, Branden!
-
-From time toi time I wonder if the function prototypes in
-the SYNOPSIS should also be inside .EX/.EE. Your thoughts?
-
-Thanks,
-
-Michael
-
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+YiFei Zhu
