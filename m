@@ -2,44 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A08276D5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607A4276D67
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:28:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbgIXJ1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:27:39 -0400
-Received: from mail-io1-f79.google.com ([209.85.166.79]:34166 "EHLO
-        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727499AbgIXJ01 (ORCPT
+        id S1726661AbgIXJ1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:27:53 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:46630 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727489AbgIXJ01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 24 Sep 2020 05:26:27 -0400
-Received: by mail-io1-f79.google.com with SMTP id i1so1959490iom.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:27 -0700 (PDT)
+Received: by mail-il1-f208.google.com with SMTP id z8so149623ilh.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=lKlrAGi+eyrd8zC5Zvr/WU9bXgo79OUvMpHFZeKuFmw=;
-        b=mcYUZrQyo1zlACg9IjcE9wuBnH0ekNxJ+M+WxAIBdY52C0AYYoAPOWU4dd42Bl/WsP
-         5RxuTh5CdOsVPtJfhQR6DfYM2CJrTU3+08taOYxsb6OSzJUWibwjEJjXWgw8Tz53PUvu
-         gy8qaMSNvmMNZTTXYdFgAZCNApQUoLzUDERAW4NkCcn6KCev5Uvd047sERCwQvwdzB8E
-         Swym7eQU9cPCkDV45k47BMOGfTMjAGOGNQAMkNBuLmBTvNedJyeBQj6PKIbC6qKf3qs4
-         GWrF8VxtTWzQk+88lEe8OalKPc87/ddO+T6KU1/k42QONplrFGpkHa4SyHW0LBu9Otlz
-         DHLQ==
-X-Gm-Message-State: AOAM532fuzHwu6iMhfbHvQgo5SvVb334lZZG4K63vkgqNcKz+VqeKJ7G
-        gPmPMMrPXH3SkufE/WUyaTl5sawayq8blU0kRsbBYKF6inQp
-X-Google-Smtp-Source: ABdhPJw9jg/gq+1ZA5IdnhW4HLsVV4Cdn6aEtihx4wg6L+dXlAjcGYm79ogPqjFkSH35WhM+zX7Ilecn7xhuEa/czHZyMab1y5OI
+        bh=1vZBoUfllgQW1HoxmcWnFRiHdvFknjpt5KNWNGuStuA=;
+        b=hIeofk2o2ktsluR1qDaFM6A2P/h9Q4FJ53HX08uNJUrgpfiv80MdenQiDLbbn/sq5e
+         qbCvj7Jm44yupe0IXSa4wOX/XVq5fOb3wfl7/vCl1KNFRVcWN7rj3Vsvris0sVoSuxMP
+         vUiX0PBCS05WiQbhU3cUgxTpS3ND7pZmt+G1VoBqqf2tiLYV02a2aDXGNO3gBcfhJvXt
+         /KkVPuvFiRkT/cNWPD8lTsZGwAv3oIONmx+4nq4FB89wqxmHFxFsJNziHZ2hqCOVdhh4
+         XCJOqGCfMo/z3aw9OQNZ3jqLmW3v7YksnAr37lLXz5YdYhqJO4sSmkeZSsn67z8Z2A98
+         uq5w==
+X-Gm-Message-State: AOAM533z6Q/hMgxrN0KT4fYEBl5bXXA33dKfiAqDCU+3Fhgs/kQ7OvKW
+        xh4vJkVgojfOjJk30DoUdNppDdfaOE7DaZuP39YYPh9jrTh3
+X-Google-Smtp-Source: ABdhPJwOx8rANuVrAsei7C1g+CVbAzLOuF18+sdMCU8TSORbUwU6ZvDr5+K0pkfk5oYluj6k2Rofx9x79zsvdMNZFPGsktwVak2E
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2d55:: with SMTP id d21mr2522579iow.134.1600939586782;
+X-Received: by 2002:a02:c789:: with SMTP id n9mr2750231jao.36.1600939586191;
  Thu, 24 Sep 2020 02:26:26 -0700 (PDT)
 Date:   Thu, 24 Sep 2020 02:26:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000608c1705b00bcb89@google.com>
-Subject: KMSAN: uninit-value in ieee80211_skb_resize
-From:   syzbot <syzbot+32fd1a1bfe355e93f1e2@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, johannes@sipsolutions.net,
+Message-ID: <000000000000578a4f05b00bcb4b@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Read in bpf_trace_run5
+From:   syzbot <syzbot+856297c51366950e115e@syzkaller.appspotmail.com>
+To:     a@unstable.cc, andriin@fb.com, ast@kernel.org,
+        b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org,
+        daniel@iogearbox.net, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
         kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+        linux-raid@vger.kernel.org, mareklindner@neomailbox.ch,
+        mingo@redhat.com, netdev@vger.kernel.org, rostedt@goodmis.org,
+        shli@fb.com, shli@kernel.org, songliubraving@fb.com,
+        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,84 +54,85 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    c5a13b33 kmsan: clang-format core
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1366df53900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
-dashboard link: https://syzkaller.appspot.com/bug?extid=32fd1a1bfe355e93f1e2
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e95cd3900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11abf481900000
+HEAD commit:    b10b8ad8 Add linux-next specific files for 20200921
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1371eb1d900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3cf0782933432b43
+dashboard link: https://syzkaller.appspot.com/bug?extid=856297c51366950e115e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1510d3d9900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1328ecbb900000
+
+The issue was bisected to:
+
+commit 1e6d690b9334b7e1b31d25fd8d93e980e449a5f9
+Author: Song Liu <songliubraving@fb.com>
+Date:   Thu Nov 17 23:24:39 2016 +0000
+
+    md/r5cache: caching phase of r5cache
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=109283d9900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=129283d9900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=149283d9900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+32fd1a1bfe355e93f1e2@syzkaller.appspotmail.com
+Reported-by: syzbot+856297c51366950e115e@syzkaller.appspotmail.com
+Fixes: 1e6d690b9334 ("md/r5cache: caching phase of r5cache")
 
-=====================================================
-BUG: KMSAN: uninit-value in ieee80211_skb_resize+0x8c0/0x980 net/mac80211/tx.c:1955
-CPU: 0 PID: 8539 Comm: syz-executor053 Not tainted 5.9.0-rc4-syzkaller #0
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in __bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in bpf_trace_run5+0x401/0x410 kernel/trace/bpf_trace.c:1977
+Read of size 8 at addr ffffc90000e80030 by task rs:main Q:Reg/6567
+
+CPU: 1 PID: 6567 Comm: rs:main Q:Reg Not tainted 5.9.0-rc5-next-20200921-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
- __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
- ieee80211_skb_resize+0x8c0/0x980 net/mac80211/tx.c:1955
- ieee80211_build_hdr+0x2939/0x41f0 net/mac80211/tx.c:2825
- __ieee80211_subif_start_xmit+0x172a/0x7300 net/mac80211/tx.c:3999
- ieee80211_subif_start_xmit+0x14b/0x19a0 net/mac80211/tx.c:4144
- __netdev_start_xmit include/linux/netdevice.h:4634 [inline]
- netdev_start_xmit include/linux/netdevice.h:4648 [inline]
- xmit_one+0x3cf/0x750 net/core/dev.c:3561
- dev_hard_start_xmit+0x196/0x420 net/core/dev.c:3577
- sch_direct_xmit+0x5d3/0x1a50 net/sched/sch_generic.c:314
- qdisc_restart net/sched/sch_generic.c:377 [inline]
- __qdisc_run+0x35b/0x490 net/sched/sch_generic.c:385
- qdisc_run include/net/pkt_sched.h:134 [inline]
- __dev_xmit_skb net/core/dev.c:3752 [inline]
- __dev_queue_xmit+0x2cfa/0x4470 net/core/dev.c:4105
- dev_queue_xmit+0x4b/0x60 net/core/dev.c:4169
- packet_snd net/packet/af_packet.c:2989 [inline]
- packet_sendmsg+0x8542/0x9a80 net/packet/af_packet.c:3014
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- __sys_sendto+0x9dc/0xc80 net/socket.c:1992
- __do_sys_sendto net/socket.c:2004 [inline]
- __se_sys_sendto+0x107/0x130 net/socket.c:2000
- __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:385
+ __kasan_report mm/kasan/report.c:545 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:562
+ __bpf_trace_run kernel/trace/bpf_trace.c:1937 [inline]
+ bpf_trace_run5+0x401/0x410 kernel/trace/bpf_trace.c:1977
+ __bpf_trace_ext4_journal_start+0x142/0x180 include/trace/events/ext4.h:1788
+ __traceiter_ext4_journal_start+0x83/0xd0 include/trace/events/ext4.h:1788
+ trace_ext4_journal_start include/trace/events/ext4.h:1788 [inline]
+ __ext4_journal_start_sb+0x228/0x440 fs/ext4/ext4_jbd2.c:96
+ __ext4_journal_start fs/ext4/ext4_jbd2.h:328 [inline]
+ ext4_dirty_inode+0xbc/0x130 fs/ext4/inode.c:5850
+ __mark_inode_dirty+0x888/0x1190 fs/fs-writeback.c:2260
+ generic_update_time+0x21c/0x370 fs/inode.c:1764
+ update_time fs/inode.c:1777 [inline]
+ file_update_time+0x434/0x520 fs/inode.c:1992
+ file_modified fs/inode.c:2015 [inline]
+ file_modified+0x7d/0xa0 fs/inode.c:2000
+ ext4_write_checks fs/ext4/file.c:248 [inline]
+ ext4_buffered_write_iter+0xf9/0x4a0 fs/ext4/file.c:264
+ ext4_file_write_iter+0x1f3/0x13e0 fs/ext4/file.c:660
+ call_write_iter include/linux/fs.h:1895 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:517
+ vfs_write+0x57d/0x700 fs/read_write.c:595
+ ksys_write+0x12d/0x250 fs/read_write.c:648
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441ea9
-Code: e8 bc 00 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 07 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fffc4414388 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000441ea9
-RDX: 000000000000000e RSI: 00000000200000c0 RDI: 0000000000000003
+RIP: 0033:0x7fed08e3a1cd
+Code: c2 20 00 00 75 10 b8 01 00 00 00 0f 05 48 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 ae fc ff ff 48 89 04 24 b8 01 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 f7 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
+RSP: 002b:00007fed063f5590 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007fecfc0238a0 RCX: 00007fed08e3a1cd
+RDX: 0000000000000dd6 RSI: 00007fecfc0238a0 RDI: 0000000000000006
 RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000004800 R11: 0000000000000246 R12: 0000000000000032
-R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
+R10: 0000000000000000 R11: 0000000000000293 R12: 00007fecfc023620
+R13: 00007fed063f55b0 R14: 0000560a2b025360 R15: 0000000000000dd6
 
-Uninit was created at:
- kmsan_save_stack_with_flags mm/kmsan/kmsan.c:143 [inline]
- kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:126
- kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
- slab_alloc_node mm/slub.c:2907 [inline]
- __kmalloc_node_track_caller+0x9aa/0x12f0 mm/slub.c:4511
- __kmalloc_reserve net/core/skbuff.c:142 [inline]
- __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
- alloc_skb include/linux/skbuff.h:1094 [inline]
- alloc_skb_with_frags+0x1f2/0xc10 net/core/skbuff.c:5771
- sock_alloc_send_pskb+0xc83/0xe50 net/core/sock.c:2348
- packet_alloc_skb net/packet/af_packet.c:2837 [inline]
- packet_snd net/packet/af_packet.c:2932 [inline]
- packet_sendmsg+0x6abb/0x9a80 net/packet/af_packet.c:3014
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg net/socket.c:671 [inline]
- __sys_sendto+0x9dc/0xc80 net/socket.c:1992
- __do_sys_sendto net/socket.c:2004 [inline]
- __se_sys_sendto+0x107/0x130 net/socket.c:2000
- __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-=====================================================
+
+Memory state around the buggy address:
+ ffffc90000e7ff00: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000e7ff80: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+>ffffc90000e80000: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+                                     ^
+ ffffc90000e80080: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+ ffffc90000e80100: f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8 f8
+==================================================================
 
 
 ---
@@ -136,5 +142,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
