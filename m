@@ -2,133 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA308277853
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D52C2277854
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728722AbgIXSPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
+        id S1728728AbgIXSPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727753AbgIXSPE (ORCPT
+        with ESMTP id S1727753AbgIXSPQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:15:04 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA31C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:15:04 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id c62so407914qke.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:15:04 -0700 (PDT)
+        Thu, 24 Sep 2020 14:15:16 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F27C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:15:16 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id e22so4330055edq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:15:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9NJQT1B3t3dYmrEGe9dnjwFh4ipeAAV2W/ZTEBMDE8E=;
-        b=f8n3PrqhsiKL7Dh0x9lJKBPskIhVVKnftymIA3j9bRtyUJn1yT9Ddh01jjE8qhv4w9
-         S7naQXy5ZGI9k/u1NLWLhQcdFok6O2JH8wlPD4DCP1/qMp5CN34bFZ0kNNsuknoZYh/7
-         vaV8JTK0BwZpPCbXjhyNnp+0PvEpl7afAQPik0fVQbGILY+XsXzCpNwBvmfdJgBdRknn
-         eLttNv4CfF7eaV/qUEkrAIhcwWbS20AKpw6TYaMO9wt2i47/GoLeqRqjJQIVq1R1/wfQ
-         iGJzoeZSNBYk0kMVub/FO4BpDBNArQ0zq4i092o1xV2XISv1vh+o0Wu50B1ZCoQDQDgX
-         oylg==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OaXLD8QbuaycYNHzCawUu8+MoAplmNgO4X/Bg2jsZ9A=;
+        b=vFghIhBxr0gqp1683Dad+nNv4fvmuJPctkBwURPXYF7sOpmQ7DXtLSumsfjZ5oI4s8
+         JoPdwGYs1F08uIF2gUrodOg47NYjoWHzjpXiPm32tE2DxW6uTmGn06pU76bYC188LST2
+         iUbP8rc50m5EfHv08KMxKrSUd5y6BATKa8oblIYMRYRZdBHMvTg0/86ACEbN7oUHEU2Z
+         V+UM0LQpzJSST/+KIv09+ylAnNHP5R6rpmipZHUlXqdYlG+dKK2IZSUjZzIALQ0yz0n+
+         nR3Ifaao3iVRBRpVpaKI76NEc2eCveeAKWO/f00dUul3vy/GEqUg3pLdD3N1IdcNgsSr
+         dEqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9NJQT1B3t3dYmrEGe9dnjwFh4ipeAAV2W/ZTEBMDE8E=;
-        b=tYcBky/uwdOTtNyweVlHz5mMH6MHoTnho7wJF1B5sxwZAyauKZKFm954juYgfCC4oe
-         BVAlTFamIct3JVRTysfWJfwSPmxxergWD+l72RwhB8Nn8Z4Amy5jKYqey0NfyWLToPtS
-         vUVeEkN88iX15nHdd8S0QGjg4ZTzYa2gkVx6nAgwWph2IluSXSSqSEDdlO8hd0+Gpjm7
-         E4Tz7oktH5fdPrbEbOrce2/90hsDobdwVaNNL1/aAWOIMtww7IpccfJtjOoV2Ve34cHb
-         H48Ypu5H3MN005a1FH4KaQC4RiVeT4or4UrMbqVNBodGjLOW60qL1HzEfLdULGqPIWF5
-         UZxA==
-X-Gm-Message-State: AOAM533kz1YW7Vqxoio+YO1SPQgp+wvj71BHRf45jjNjyAprcjCMgqTZ
-        cr6ZYojxbBkFCr/pQlzbAAIYag==
-X-Google-Smtp-Source: ABdhPJxtioWuLnfbPVJThKB4P6JwxJpFNgCu3TtJPTEAMHuHXT4ys9heysqu1otOGnY9NOS0o5s9MA==
-X-Received: by 2002:a37:68c7:: with SMTP id d190mr335280qkc.127.1600971303370;
-        Thu, 24 Sep 2020 11:15:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id c11sm165844qkb.58.2020.09.24.11.15.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 11:15:02 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kLVll-000Pxz-Nv; Thu, 24 Sep 2020 15:15:01 -0300
-Date:   Thu, 24 Sep 2020 15:15:01 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-Message-ID: <20200924181501.GF9916@ziepe.ca>
-References: <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
- <20200922151736.GD19098@xz-x1>
- <20200922161046.GB731578@ziepe.ca>
- <20200922175415.GI19098@xz-x1>
- <20200922191116.GK8409@ziepe.ca>
- <20200923002735.GN19098@xz-x1>
- <20200923170759.GA9916@ziepe.ca>
- <20200924143517.GD79898@xz-x1>
- <20200924165152.GE9916@ziepe.ca>
- <20200924175531.GH79898@xz-x1>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OaXLD8QbuaycYNHzCawUu8+MoAplmNgO4X/Bg2jsZ9A=;
+        b=UCY+0+QtumLtncsAyHe2KSlDRiUeXxOAAqtysbStBUg2yv/6sygOOhTkHuaNeKpypn
+         zhEYn9NhhXSqBBR3wER1rl1APFQTGSxI1OWrQiI0Dp24Z9eHOpvTbbW3WsrEzaEjDiiz
+         jduWFGTLfaFoQWEq+KBHGqFZRBmmnUjVfOlR4cVeW7smsuF5/o3U2UlPoQ1D87TnngTM
+         xz0D2mld/kDd7nSEGO3kp3xyYjkVN5u7DOWzuPwUIeRYPoza3UpBaYNpQd6beiey4Rv0
+         yt0kEoW3gDtXK/osOhRjvD55OZxcSM5WSoUIFnOeXIWadcTOfgpjDE877VR2NvOnmBgR
+         Pcmg==
+X-Gm-Message-State: AOAM530DmtZmcoRk+qDbIoOPa2sTRtrttAloyuwnoQRlYhM3ImTBJW0e
+        mc86HinEX0xq00vjiWt4COxygkzTTgs=
+X-Google-Smtp-Source: ABdhPJyDuP8OdBNQZAdV/D+O3J7bYDykHOoupotu5J4nHRX+mJII1J3MIWVrlkP3prbuXa2Gzz3/Cw==
+X-Received: by 2002:aa7:c256:: with SMTP id y22mr95123edo.16.1600971314842;
+        Thu, 24 Sep 2020 11:15:14 -0700 (PDT)
+Received: from [192.168.2.202] (pd9e5a9d2.dip0.t-ipconnect.de. [217.229.169.210])
+        by smtp.gmail.com with ESMTPSA id j18sm3145471edj.62.2020.09.24.11.15.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 11:15:13 -0700 (PDT)
+Subject: Re: [RFC PATCH 6/9] surface_aggregator: Add dedicated bus and device
+ type
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        =?UTF-8?Q?Bla=c5=be_Hrastnik?= <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>
+References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
+ <20200923151511.3842150-7-luzmaximilian@gmail.com>
+ <20200923173308.GA3965283@kroah.com>
+ <bdb02c89-2290-f53f-65a1-fd2b42fc98a2@gmail.com>
+ <20200924071213.GA597212@kroah.com>
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+Message-ID: <10c7c84f-153d-c2a0-827f-2d75962e4d0b@gmail.com>
+Date:   Thu, 24 Sep 2020 20:15:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924175531.GH79898@xz-x1>
+In-Reply-To: <20200924071213.GA597212@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 01:55:31PM -0400, Peter Xu wrote:
-> On Thu, Sep 24, 2020 at 01:51:52PM -0300, Jason Gunthorpe wrote:
-> > > Regarding the solution here, I think we can also cover read-only fast-gup too
-> > > in the future - IIUC what we need to do is to make it pte_protnone() instead of
-> > > pte_wrprotect(), then in the fault handler we should identify this special
-> > > pte_protnone() against numa balancing (change_prot_numa()).  I think it should
-> > > work fine too, iiuc, because I don't think we should migrate a page at all if
-> > > it's pinned for any reason...
+On 9/24/20 9:12 AM, Greg Kroah-Hartman wrote:
+> On Wed, Sep 23, 2020 at 11:12:49PM +0200, Maximilian Luz wrote:
+>> On 9/23/20 7:33 PM, Greg Kroah-Hartman wrote:
+>>> On Wed, Sep 23, 2020 at 05:15:08PM +0200, Maximilian Luz wrote:
+>> [...]
+>>
+>>> Overall, nice work on this patch, the integration to the driver core
+>>> looks totally correct.  Great job.
+>>
+>> Thanks!
+>>
+>>> A few minor nits below:
+>>>
+>>>> --- /dev/null
+>>>> +++ b/drivers/misc/surface_aggregator/bus.c
+>>>> @@ -0,0 +1,419 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>>>> +
+>>>
+>>> No copyright?
+>>
+>> As with the other files, I forgot to add that.
+>>
+>> [...]
+>>
+>>>> +int ssam_device_add(struct ssam_device *sdev)
+>>>> +{
+>>>> +	int status;
+>>>> +
+>>>> +	/*
+>>>> +	 * Ensure that we can only add new devices to a controller if it has
+>>>> +	 * been started and is not going away soon. This works in combination
+>>>> +	 * with ssam_controller_remove_clients to ensure driver presence for the
+>>>> +	 * controller device, i.e. it ensures that the controller (sdev->ctrl)
+>>>> +	 * is always valid and can be used for requests as long as the client
+>>>> +	 * device we add here is registered as child under it. This essentially
+>>>> +	 * guarantees that the client driver can always expect the preconditions
+>>>> +	 * for functions like ssam_request_sync (controller has to be started
+>>>> +	 * and is not suspended) to hold and thus does not have to check for
+>>>> +	 * them.
+>>>> +	 *
+>>>> +	 * Note that for this to work, the controller has to be a parent device.
+>>>> +	 * If it is not a direct parent, care has to be taken that the device is
+>>>> +	 * removed via ssam_device_remove(), as device_unregister does not
+>>>> +	 * remove child devices recursively.
+>>>> +	 */
+>>>> +	ssam_controller_statelock(sdev->ctrl);
+>>>> +
+>>>> +	if (READ_ONCE(sdev->ctrl->state) != SSAM_CONTROLLER_STARTED) {
+>>>
+>>> You locked the state, why the READ_ONCE()?  Is taht needed?
+>>
+>> At this point, no. I have, at some point, decided that, since I do
+>> access the state outside of that lock at some point (specifically when
+>> submitting the request in ssam_request_sync_submit() to detect mis-use
+>> of the AP), that I'm going to mark them all as READ_ONCE. Mostly
+>> because, due to that one check, I have to set the state via WRITE_ONCE.
+>> Note that that check accessing it outside of the lock is a very basic
+>> validity check and actually doesn't guarantee _anything_. Again, it's
+>> just there to try and spot bad API usage. Every actually valid access to
+>> the state should be locked, so the rest doesn't need the READ_ONCE. I
+>> can remove those if you want me to.
 > 
-> [1]
+> I would remove the ones you don't really need, but as you are doing this
+> also to show intent, that should be fine.
+
+Alright, I'll do that.
+
+>>>> +		ssam_controller_stateunlock(sdev->ctrl);
+>>>> +		return -ENXIO;
+>>>
+>>> odd error value, why this one?
+>>
+>> I generally use -ENXIO to indicate that the controller device is not
+>> present, has not been initialized yet, or is being/has been shut down.
+>> The error here will be caused by the controller going away (or having
+>> been suspended) after the device has been created and befor the device
+>> is added. I guess in case of shutdown, -ESHUTDOWN may be better, but
+>> then I'm not sure what to return when the controller is suspended.
 > 
-> > 
-> > With your COW breaking patch the read only fast-gup should break the
-> > COW because of the write protect, just like for the write side. Not
-> > seeing why we need to do something more?
+> Do you really need different error values?
+
+No, not really. -ESHUTDOWN just kind of feels wrong to me for a
+suspended device (specifically as that's already returned when packets
+are force-evicted when the controller is shutting down).
+
+> Anyway, it's fine, that just seemed like an odd error for that case, but
+> any error is ok.
+
+Okay, I guess I'll keep it for now. If you or anyone else have any ideas
+for replacements, I'm open to them.
+
+>>>> +/**
+>>>> + * struct ssam_device_uid - Unique identifier for SSAM device.
+>>>> + * @domain:   Domain of the device.
+>>>> + * @category: Target category of the device.
+>>>> + * @target:   Target ID of the device.
+>>>> + * @instance: Instance ID of the device.
+>>>> + * @function: Sub-function of the device. This field can be used to split a
+>>>> + *            single SAM device into multiple virtual subdevices to separate
+>>>> + *            different functionality of that device and allow one driver per
+>>>> + *            such functionality.
+>>>> + */
+>>>> +struct ssam_device_uid {
+>>>> +	u8 domain;
+>>>> +	u8 category;
+>>>> +	u8 target;
+>>>> +	u8 instance;
+>>>> +	u8 function;
+>>>> +};
+>>>> +
+>>>> +/*
+>>>> + * Special values for device matching.
+>>>> + */
+>>>> +#define SSAM_ANY_TID		0xffff
+>>>> +#define SSAM_ANY_IID		0xffff
+>>>> +#define SSAM_ANY_FUN		0xffff
+>>>
+>>> These are 16 bits, but the uid values above are 8 bits.  How does that
+>>> match up?
+>>
+>> Those values are only intended for use with the SSAM_DEVICE() macro,
+>> where they are used to set the match flags. They're u16 so that they
+>> don't interfere with any potentially valid ID value (0x00 to 0xff). The
+>> lowest byte is specifically 0xff to make it easier to spot potential
+>> mis-use in the struct above, as that's an ID that, as far as I know,
+>> doesn't have any valid use (at least yet). They should never be used
+>> directly with the struct above, something I should probably clarify in
+>> the documentation.
 > 
-> Consider this sequence of a parent process managed to fork() a child:
-> 
->        buf = malloc();
->        // RDONLY gup
->        pin_user_pages(buf, !WRITE);
->        // pte of buf duplicated on both sides
->        fork();
->        mprotect(buf, WRITE);
->        *buf = 1;
->        // buf page replaced as cow triggered
-> 
-> Currently when fork() we'll happily share a pinned read-only page with the
-> child by copying the pte directly.  
+> Yes, documenting it would make more sense, the 8 vs. 16 threw me off
+> here.
 
-Why? This series prevents that, the page will be maybe_dma_pinned, so
-fork() will copy it.
+Will do that.
 
-> As a summary: imho the important thing is we should not allow any kind of
-> sharing of any dma page, even it's pinned for read.
-
-Any sharing that results in COW. MAP_SHARED is fine, for instance
-
-My feeling for READ when FOLL_PIN is used GUP_fast will go to the slow
-path any time it sees a read-only page.
-
-The slow path will determine if it is read-only because it could be
-COW'd or read-only for some other reason
-
-Jason
+Thank you,
+Max
