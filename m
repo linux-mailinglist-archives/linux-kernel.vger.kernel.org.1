@@ -2,162 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90628276DCF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E0F276DD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:48:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727378AbgIXJsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:48:21 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:50563 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727314AbgIXJsR (ORCPT
+        id S1727388AbgIXJsY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:48:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727367AbgIXJsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:48:17 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08O9m3FI1005552, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08O9m3FI1005552
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 24 Sep 2020 17:48:03 +0800
-Received: from RSEXDAG01.realsil.com.cn (172.29.17.199) by
- RSEXMBS01.realsil.com.cn (172.29.17.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Thu, 24 Sep 2020 17:48:02 +0800
-Received: from RSEXMBS02.realsil.com.cn (172.29.17.196) by
- RSEXDAG01.realsil.com.cn (172.29.17.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Thu, 24 Sep 2020 17:48:02 +0800
-Received: from RSEXMBS02.realsil.com.cn ([fe80::7c48:1e22:fa36:f292]) by
- RSEXMBS02.realsil.com.cn ([fe80::7c48:1e22:fa36:f292%7]) with mapi id
- 15.01.2044.004; Thu, 24 Sep 2020 17:48:02 +0800
-From:   =?gb2312?B?t+vI8Q==?= <rui_feng@realsil.com.cn>
-To:     "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXSBtbWM6IHJ0c3g6IEFkZCBTRCBFeHByZXNzIG1vZGUg?= =?gb2312?Q?support_for_RTS5261?=
-Thread-Topic: [PATCH] mmc: rtsx: Add SD Express mode support for RTS5261
-Thread-Index: AQHWkkX1CQnG+pLyk0SZhe5t6OzISKl3AjAAgACG61A=
-Date:   Thu, 24 Sep 2020 09:48:02 +0000
-Message-ID: <26c3f3e19bbb440798a791c5c7359b14@realsil.com.cn>
-References: <1600933221-3496-1-git-send-email-rui_feng@realsil.com.cn>
- <202009241736.oeTpczA1%lkp@intel.com>
-In-Reply-To: <202009241736.oeTpczA1%lkp@intel.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.40.150]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        Thu, 24 Sep 2020 05:48:20 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12EBDC0613CE;
+        Thu, 24 Sep 2020 02:48:19 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 34so1555797pgo.13;
+        Thu, 24 Sep 2020 02:48:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kQiPyurhs5rhqA5JA6J1njXKtCOs2kAEJBL/PJHCkBg=;
+        b=eojKqX0yb7ohLHLPYWPcv7mKTeaa2TiR3xLMkj+vSMDEi7iEu/bORv+FAPJJMc+o0s
+         PQ9Pi8LN1OC232mOaRyyZqgxsl75xFGXvr/XXQjGNCaiKaFsgPPr4CMHoPQJ2xb/Lksv
+         cp/A6EiGf9FSqJuNKX7u6V6ZWxDOS4a8sPmdwcsLvWidk0OoV18bLoexB8JAlMclomC+
+         6fV2kpeuLQfw/R0QaVbW6WS9VmmzLPkF7JFpLot9LUNUEoUYzRxljVV7cSaHfDAxJXS/
+         /gT1dgAwnR/Wm/d+riURnn/4F4xN8xNkwi9LObXWekaCu+R8GLp4SgwmmGqzw5nsIC86
+         xPow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kQiPyurhs5rhqA5JA6J1njXKtCOs2kAEJBL/PJHCkBg=;
+        b=pAYYZQzUlT/ivYvbyiREMVshVF/0osHF3johqOrRv9VJr/AwjwHkqxg11ZITOMQMIQ
+         2onOh2KqXSI76acNKbCXZlcGSvOzbcqjcK+vTWM+i1BuLb7V4Hx0Kosu3hnxwSgBOwz/
+         XpCgow4+XBaQWkVUbPNVpwEfzZ/Mgq6P9CegLUipn6w98sdJfVVkHoDZwGOQZ0lfpuvL
+         O2dj6a9dMsYmuC7lVPl3Mirqm21d0Ep6lfEwvVFr67oql03cWoy4ITQM+3HgDZPvNNAz
+         uCQFQS+gxdbQiYGByUlnBFianDQD/CMD6lcgA1XQdflaM4sHZ3Rh38aIGmVJ2uhi7far
+         hRVg==
+X-Gm-Message-State: AOAM532dmWxY2Ks1O7WFu9wRqKmZenLN8tlElSJkS+7S8K543wtNUWjt
+        9aviYOeZwPQKEP7DBF0dfgM=
+X-Google-Smtp-Source: ABdhPJyNRZv45lba9bEArRNK9F71yQE9jmg2y3YhHYdc+YOuQrqRmEth4yRT2ET0nIS5KY5OGr9fTg==
+X-Received: by 2002:a65:42c9:: with SMTP id l9mr3156332pgp.41.1600940899256;
+        Thu, 24 Sep 2020 02:48:19 -0700 (PDT)
+Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
+        by smtp.gmail.com with ESMTPSA id x185sm2365357pfc.188.2020.09.24.02.48.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 02:48:18 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:48:13 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v9 08/20] gpiolib: cdev: support
+ GPIO_V2_GET_LINEINFO_IOCTL and GPIO_V2_GET_LINEINFO_WATCH_IOCTL
+Message-ID: <20200924094813.GC20188@sol>
+References: <20200922023151.387447-1-warthog618@gmail.com>
+ <20200922023151.387447-9-warthog618@gmail.com>
+ <CAHp75Vc05P4-X_ZC6k-EWdDCAXOgPgAJhm4RxF3izvk=vW+X+g@mail.gmail.com>
+ <20200924023914.GA11575@sol>
+ <CAHp75VfoOCJDmpDJ6wTEKTDUO1zFRZ6MRSN7dy3cAdepv0s2rQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfoOCJDmpDJ6wTEKTDUO1zFRZ6MRSN7dy3cAdepv0s2rQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSGFuc3NvbiwNCg0KVGhpcyBwYXRjaCBpcyBiYXNlZCBvbiB5b3VyIHBhdGNoICJtbWM6IGNv
-cmU6IEluaXRpYWwgc3VwcG9ydCBmb3IgU0QgZXhwcmVzcyBjYXJkL2hvc3QiLA0KSWYgdGhpcyBw
-YXRjaCBpcyBjb21waWxlZCBhbG9uZSwgdGhlcmUgbXVzdCBiZSBlcnJvcnMuDQpXaGF0IHNob3Vs
-ZCBJIGRvIGluIHRoaXMgc2l0dWF0aW9uPw0KDQpUaGFua3MNCg0KPiANCj4gVGhhbmsgeW91IGZv
-ciB0aGUgcGF0Y2ghIFlldCBzb21ldGhpbmcgdG8gaW1wcm92ZToNCj4gDQo+IFthdXRvIGJ1aWxk
-IHRlc3QgRVJST1Igb24gY2hhci1taXNjL2NoYXItbWlzYy10ZXN0aW5nXSBbYWxzbyBidWlsZCB0
-ZXN0IEVSUk9SDQo+IG9uIHNvYy9mb3ItbmV4dCBsaW51cy9tYXN0ZXIgdjUuOS1yYzYgbmV4dC0y
-MDIwMDkyM10gW0lmIHlvdXIgcGF0Y2ggaXMgYXBwbGllZA0KPiB0byB0aGUgd3JvbmcgZ2l0IHRy
-ZWUsIGtpbmRseSBkcm9wIHVzIGEgbm90ZS4NCj4gQW5kIHdoZW4gc3VibWl0dGluZyBwYXRjaCwg
-d2Ugc3VnZ2VzdCB0byB1c2UgJy0tYmFzZScgYXMgZG9jdW1lbnRlZCBpbg0KPiBodHRwczovL2dp
-dC1zY20uY29tL2RvY3MvZ2l0LWZvcm1hdC1wYXRjaF0NCj4gDQo+IHVybDoNCj4gaHR0cHM6Ly9n
-aXRodWIuY29tLzBkYXktY2kvbGludXgvY29tbWl0cy9ydWlfZmVuZy1yZWFsc2lsLWNvbS1jbi9t
-bWMtcnRzeC1BDQo+IGRkLVNELUV4cHJlc3MtbW9kZS1zdXBwb3J0LWZvci1SVFM1MjYxLzIwMjAw
-OTI0LTE1NDEyMg0KPiBiYXNlOiAgIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51
-eC9rZXJuZWwvZ2l0L2dyZWdraC9jaGFyLW1pc2MuZ2l0DQo+IDI2ZWQ1MTQ2YmQxN2NiY2QwZmI4
-NGUzNTg5MDJhYzI0NDcyOGEzZjMNCj4gY29uZmlnOiBhcmMtYWxseWVzY29uZmlnIChhdHRhY2hl
-ZCBhcyAuY29uZmlnKQ0KPiBjb21waWxlcjogYXJjZWItZWxmLWdjYyAoR0NDKSA5LjMuMA0KPiBy
-ZXByb2R1Y2UgKHRoaXMgaXMgYSBXPTEgYnVpbGQpOg0KPiAgICAgICAgIHdnZXQNCj4gaHR0cHM6
-Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2ludGVsL2xrcC10ZXN0cy9tYXN0ZXIvc2Jpbi9t
-YWtlLmNyb3NzIC1PDQo+IH4vYmluL21ha2UuY3Jvc3MNCj4gICAgICAgICBjaG1vZCAreCB+L2Jp
-bi9tYWtlLmNyb3NzDQo+ICAgICAgICAgIyBzYXZlIHRoZSBhdHRhY2hlZCAuY29uZmlnIHRvIGxp
-bnV4IGJ1aWxkIHRyZWUNCj4gICAgICAgICBDT01QSUxFUl9JTlNUQUxMX1BBVEg9JEhPTUUvMGRh
-eSBDT01QSUxFUj1nY2MtOS4zLjANCj4gbWFrZS5jcm9zcyBBUkNIPWFyYw0KPiANCj4gSWYgeW91
-IGZpeCB0aGUgaXNzdWUsIGtpbmRseSBhZGQgZm9sbG93aW5nIHRhZyBhcyBhcHByb3ByaWF0ZQ0K
-PiBSZXBvcnRlZC1ieToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+IA0KPiBB
-bGwgZXJyb3JzIChuZXcgb25lcyBwcmVmaXhlZCBieSA+Pik6DQo+IA0KPiAgICBkcml2ZXJzL21t
-Yy9ob3N0L3J0c3hfcGNpX3NkbW1jLmM6IEluIGZ1bmN0aW9uICdzZF9wb3dlcl9vbic6DQo+ID4+
-IGRyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYzo5MzE6MjA6IGVycm9yOiAnTU1DX0NB
-UDJfU0RfRVhQJw0KPiB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbik7IGRp
-ZCB5b3UgbWVhbiAnTU1DX0NBUDJfTk9fU0QnPw0KPiAgICAgIDkzMSB8ICAgIG1tYy0+Y2FwczIg
-Jj0gfihNTUNfQ0FQMl9TRF9FWFAgfA0KPiBNTUNfQ0FQMl9TRF9FWFBfMV8yVik7DQo+ICAgICAg
-ICAgIHwgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fg0KPiAgICAgICAgICB8ICAg
-ICAgICAgICAgICAgICAgICBNTUNfQ0FQMl9OT19TRA0KPiAgICBkcml2ZXJzL21tYy9ob3N0L3J0
-c3hfcGNpX3NkbW1jLmM6OTMxOjIwOiBub3RlOiBlYWNoIHVuZGVjbGFyZWQNCj4gaWRlbnRpZmll
-ciBpcyByZXBvcnRlZCBvbmx5IG9uY2UgZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBpbg0K
-PiA+PiBkcml2ZXJzL21tYy9ob3N0L3J0c3hfcGNpX3NkbW1jLmM6OTMxOjM4OiBlcnJvcjoNCj4g
-J01NQ19DQVAyX1NEX0VYUF8xXzJWJyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5j
-dGlvbik7IGRpZCB5b3UNCj4gbWVhbiAnTU1DX0NBUDJfSFM0MDBfMV8yVic/DQo+ICAgICAgOTMx
-IHwgICAgbW1jLT5jYXBzMiAmPSB+KE1NQ19DQVAyX1NEX0VYUCB8DQo+IE1NQ19DQVAyX1NEX0VY
-UF8xXzJWKTsNCj4gICAgICAgICAgfA0KPiBefn5+fn5+fn5+fn5+fn5+fn5+fg0KPiAgICAgICAg
-ICB8DQo+IE1NQ19DQVAyX0hTNDAwXzFfMlYNCj4gICAgZHJpdmVycy9tbWMvaG9zdC9ydHN4X3Bj
-aV9zZG1tYy5jOiBJbiBmdW5jdGlvbiAnc2RtbWNfZ2V0X2NkJzoNCj4gICAgZHJpdmVycy9tbWMv
-aG9zdC9ydHN4X3BjaV9zZG1tYy5jOjExNDE6MTc6IGVycm9yOiAnTU1DX0NBUDJfU0RfRVhQJw0K
-PiB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbik7IGRpZCB5b3UgbWVhbiAn
-TU1DX0NBUDJfTk9fU0QnPw0KPiAgICAgMTE0MSB8ICAgbW1jLT5jYXBzMiB8PSBNTUNfQ0FQMl9T
-RF9FWFAgfA0KPiBNTUNfQ0FQMl9TRF9FWFBfMV8yVjsNCj4gICAgICAgICAgfCAgICAgICAgICAg
-ICAgICAgXn5+fn5+fn5+fn5+fn5+DQo+ICAgICAgICAgIHwgICAgICAgICAgICAgICAgIE1NQ19D
-QVAyX05PX1NEDQo+ICAgIGRyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYzoxMTQxOjM1
-OiBlcnJvcjoNCj4gJ01NQ19DQVAyX1NEX0VYUF8xXzJWJyB1bmRlY2xhcmVkIChmaXJzdCB1c2Ug
-aW4gdGhpcyBmdW5jdGlvbik7IGRpZCB5b3UNCj4gbWVhbiAnTU1DX0NBUDJfSFM0MDBfMV8yVic/
-DQo+ICAgICAxMTQxIHwgICBtbWMtPmNhcHMyIHw9IE1NQ19DQVAyX1NEX0VYUCB8DQo+IE1NQ19D
-QVAyX1NEX0VYUF8xXzJWOw0KPiAgICAgICAgICB8DQo+IF5+fn5+fn5+fn5+fn5+fn5+fn5+DQo+
-ICAgICAgICAgIHwNCj4gTU1DX0NBUDJfSFM0MDBfMV8yVg0KPiAgICBkcml2ZXJzL21tYy9ob3N0
-L3J0c3hfcGNpX3NkbW1jLmM6IEF0IHRvcCBsZXZlbDoNCj4gPj4gZHJpdmVycy9tbWMvaG9zdC9y
-dHN4X3BjaV9zZG1tYy5jOjEzNzY6MzogZXJyb3I6ICdjb25zdCBzdHJ1Y3QNCj4gbW1jX2hvc3Rf
-b3BzJyBoYXMgbm8gbWVtYmVyIG5hbWVkICdpbml0X3NkX2V4cHJlc3MnDQo+ICAgICAxMzc2IHwg
-IC5pbml0X3NkX2V4cHJlc3MgPSBzZG1tY19pbml0X3NkX2V4cHJlc3MsDQo+ICAgICAgICAgIHwg
-ICBefn5+fn5+fn5+fn5+fn4NCj4gICAgZHJpdmVycy9tbWMvaG9zdC9ydHN4X3BjaV9zZG1tYy5j
-OiBJbiBmdW5jdGlvbiAnaW5pdF9leHRyYV9jYXBzJzoNCj4gICAgZHJpdmVycy9tbWMvaG9zdC9y
-dHN4X3BjaV9zZG1tYy5jOjEzOTk6MTc6IGVycm9yOiAnTU1DX0NBUDJfU0RfRVhQJw0KPiB1bmRl
-Y2xhcmVkIChmaXJzdCB1c2UgaW4gdGhpcyBmdW5jdGlvbik7IGRpZCB5b3UgbWVhbiAnTU1DX0NB
-UDJfTk9fU0QnPw0KPiAgICAgMTM5OSB8ICAgbW1jLT5jYXBzMiB8PSBNTUNfQ0FQMl9TRF9FWFAg
-fA0KPiBNTUNfQ0FQMl9TRF9FWFBfMV8yVjsNCj4gICAgICAgICAgfCAgICAgICAgICAgICAgICAg
-Xn5+fn5+fn5+fn5+fn5+DQo+ICAgICAgICAgIHwgICAgICAgICAgICAgICAgIE1NQ19DQVAyX05P
-X1NEDQo+ICAgIGRyaXZlcnMvbW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYzoxMzk5OjM1OiBlcnJv
-cjoNCj4gJ01NQ19DQVAyX1NEX0VYUF8xXzJWJyB1bmRlY2xhcmVkIChmaXJzdCB1c2UgaW4gdGhp
-cyBmdW5jdGlvbik7IGRpZCB5b3UNCj4gbWVhbiAnTU1DX0NBUDJfSFM0MDBfMV8yVic/DQo+ICAg
-ICAxMzk5IHwgICBtbWMtPmNhcHMyIHw9IE1NQ19DQVAyX1NEX0VYUCB8DQo+IE1NQ19DQVAyX1NE
-X0VYUF8xXzJWOw0KPiAgICAgICAgICB8DQo+IF5+fn5+fn5+fn5+fn5+fn5+fn5+DQo+ICAgICAg
-ICAgIHwNCj4gTU1DX0NBUDJfSFM0MDBfMV8yVg0KPiANCj4gIw0KPiBodHRwczovL2dpdGh1Yi5j
-b20vMGRheS1jaS9saW51eC9jb21taXQvMzdkYWEyMjRmNzhlZjIyODM0OWNlZTk4MWQ2OTBiNw0K
-PiAzNWZiOWJiMmINCj4gZ2l0IHJlbW90ZSBhZGQgbGludXgtcmV2aWV3IGh0dHBzOi8vZ2l0aHVi
-LmNvbS8wZGF5LWNpL2xpbnV4IGdpdCBmZXRjaCAtLW5vLXRhZ3MNCj4gbGludXgtcmV2aWV3DQo+
-IHJ1aV9mZW5nLXJlYWxzaWwtY29tLWNuL21tYy1ydHN4LUFkZC1TRC1FeHByZXNzLW1vZGUtc3Vw
-cG9ydC1mb3ItUlRTNTI2MS8NCj4gMjAyMDA5MjQtMTU0MTIyDQo+IGdpdCBjaGVja291dCAzN2Rh
-YTIyNGY3OGVmMjI4MzQ5Y2VlOTgxZDY5MGI3MzVmYjliYjJiDQo+IHZpbSArOTMxIGRyaXZlcnMv
-bW1jL2hvc3QvcnRzeF9wY2lfc2RtbWMuYw0KPiANCj4gICAgODk0DQo+ICAgIDg5NQlzdGF0aWMg
-aW50IHNkX3Bvd2VyX29uKHN0cnVjdCByZWFsdGVrX3BjaV9zZG1tYyAqaG9zdCkNCj4gICAgODk2
-CXsNCj4gICAgODk3CQlzdHJ1Y3QgcnRzeF9wY3IgKnBjciA9IGhvc3QtPnBjcjsNCj4gICAgODk4
-CQlzdHJ1Y3QgbW1jX2hvc3QgKm1tYyA9IGhvc3QtPm1tYzsNCj4gICAgODk5CQlpbnQgZXJyOw0K
-PiAgICA5MDAJCXUzMiB2YWw7DQo+ICAgIDkwMQ0KPiAgICA5MDIJCWlmIChob3N0LT5wb3dlcl9z
-dGF0ZSA9PSBTRE1NQ19QT1dFUl9PTikNCj4gICAgOTAzCQkJcmV0dXJuIDA7DQo+ICAgIDkwNA0K
-PiAgICA5MDUJCXJ0c3hfcGNpX2luaXRfY21kKHBjcik7DQo+ICAgIDkwNgkJcnRzeF9wY2lfYWRk
-X2NtZChwY3IsIFdSSVRFX1JFR19DTUQsIENBUkRfU0VMRUNULCAweDA3LA0KPiBTRF9NT0RfU0VM
-KTsNCj4gICAgOTA3CQlydHN4X3BjaV9hZGRfY21kKHBjciwgV1JJVEVfUkVHX0NNRCwNCj4gQ0FS
-RF9TSEFSRV9NT0RFLA0KPiAgICA5MDgJCQkJQ0FSRF9TSEFSRV9NQVNLLCBDQVJEX1NIQVJFXzQ4
-X1NEKTsNCj4gICAgOTA5CQlydHN4X3BjaV9hZGRfY21kKHBjciwgV1JJVEVfUkVHX0NNRCwgQ0FS
-RF9DTEtfRU4sDQo+ICAgIDkxMAkJCQlTRF9DTEtfRU4sIFNEX0NMS19FTik7DQo+ICAgIDkxMQkJ
-ZXJyID0gcnRzeF9wY2lfc2VuZF9jbWQocGNyLCAxMDApOw0KPiAgICA5MTIJCWlmIChlcnIgPCAw
-KQ0KPiAgICA5MTMJCQlyZXR1cm4gZXJyOw0KPiAgICA5MTQNCj4gICAgOTE1CQllcnIgPSBydHN4
-X3BjaV9jYXJkX3B1bGxfY3RsX2VuYWJsZShwY3IsIFJUU1hfU0RfQ0FSRCk7DQo+ICAgIDkxNgkJ
-aWYgKGVyciA8IDApDQo+ICAgIDkxNwkJCXJldHVybiBlcnI7DQo+ICAgIDkxOA0KPiAgICA5MTkJ
-CWVyciA9IHJ0c3hfcGNpX2NhcmRfcG93ZXJfb24ocGNyLCBSVFNYX1NEX0NBUkQpOw0KPiAgICA5
-MjAJCWlmIChlcnIgPCAwKQ0KPiAgICA5MjEJCQlyZXR1cm4gZXJyOw0KPiAgICA5MjINCj4gICAg
-OTIzCQllcnIgPSBydHN4X3BjaV93cml0ZV9yZWdpc3RlcihwY3IsIENBUkRfT0UsIFNEX09VVFBV
-VF9FTiwNCj4gU0RfT1VUUFVUX0VOKTsNCj4gICAgOTI0CQlpZiAoZXJyIDwgMCkNCj4gICAgOTI1
-CQkJcmV0dXJuIGVycjsNCj4gICAgOTI2DQo+ICAgIDkyNwkJaWYgKFBDSV9QSUQocGNyKSA9PSBQ
-SURfNTI2MSkgew0KPiAgICA5MjgJCQl2YWwgPSBydHN4X3BjaV9yZWFkbChwY3IsIFJUU1hfQklQ
-Uik7DQo+ICAgIDkyOQkJCWlmICh2YWwgJiBTRF9XUklURV9QUk9URUNUKSB7DQo+ICAgIDkzMAkJ
-CQlwY3ItPmV4dHJhX2NhcHMgJj0gfkVYVFJBX0NBUFNfU0RfRVhQUkVTUzsNCj4gID4gOTMxCQkJ
-CW1tYy0+Y2FwczIgJj0gfihNTUNfQ0FQMl9TRF9FWFAgfA0KPiBNTUNfQ0FQMl9TRF9FWFBfMV8y
-Vik7DQo+ICAgIDkzMgkJCX0NCj4gICAgOTMzCQl9DQo+ICAgIDkzNA0KPiAgICA5MzUJCWhvc3Qt
-PnBvd2VyX3N0YXRlID0gU0RNTUNfUE9XRVJfT047DQo+ICAgIDkzNgkJcmV0dXJuIDA7DQo+ICAg
-IDkzNwl9DQo+ICAgIDkzOA0KPiANCj4gLS0tDQo+IDAtREFZIENJIEtlcm5lbCBUZXN0IFNlcnZp
-Y2UsIEludGVsIENvcnBvcmF0aW9uDQo+IGh0dHBzOi8vbGlzdHMuMDEub3JnL2h5cGVya2l0dHkv
-bGlzdC9rYnVpbGQtYWxsQGxpc3RzLjAxLm9yZw0KPiANCj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVy
-IHRoZSBlbnZpcm9ubWVudCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuDQo=
+On Thu, Sep 24, 2020 at 11:39:03AM +0300, Andy Shevchenko wrote:
+> On Thu, Sep 24, 2020 at 5:39 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > On Wed, Sep 23, 2020 at 06:41:45PM +0300, Andy Shevchenko wrote:
+> > > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+> 
+> ...
+> 
+
+[snip]
+> 
+> > > > +static int lineinfo_ensure_abi_version(struct gpio_chardev_data *cdata,
+> > > > +                                      unsigned int version)
+> > > > +{
+> > >
+> > > > +       int abiv = atomic_read(&cdata->watch_abi_version);
+> > > > +
+> > > > +       if (abiv == 0) {
+> > >
+> > > > +               atomic_cmpxchg(&cdata->watch_abi_version, 0, version);
+> > > > +               abiv = atomic_read(&cdata->watch_abi_version);
+> > >
+> > > atomic_cmpxchng() returns a value.
+> >
+> > Yep, it returns the old value - which we don't care about - see below.
+> 
+> Then what's the point to read back?..
+> 
+> > > Also there are no barriers here...
+> > >
+> >
+> > No barriers required - the atomic_cmpxchg() is sufficient.
+> >
+> > > > +       }
+> > > > +       if (abiv != version)
+> > > > +               return -EPERM;
+> > >
+> > > I'm not sure I understand why this is atomic.
+> > >
+> >
+> > The algorithm requires some level of protection and atomic is
+> > sufficient.
+> >
+> > > Also this seems to be racy if cdata changed in background.
+> > >
+> >
+> > Can you provide a case?
+> 
+> CPU0:                CPU1:
+>  xchg()               ...
+>  ...                      xchg()
+>  ...                      read() -> OK
+> read() ->NOK
+> 
+
+Lets say CPU0 is setting 1 and CPU1 setting 2, and assuming the xchg()
+completes...
+Your case is not possible - CPU1 would see the value 1 set by CPU0 in the
+read() and so NOK.  Its xchg() would fail as it compares against 0
+and that also sees the 1 and so fails.
+
+What am I missing?
+
+> > The atomic_cmpxchg() ensures cdata->watch_abi_version is only set
+> > once - first in wins.  The atomic_read() is so we can check that
+> > the set version matches what the caller wants.
+> > Note that multiple callers may request the same version - and all
+> > should succeed.
+> 
+> So, that's basically what you need when using _old_ value.
+> 
+> 0 means you were first, right?
+> Anything else you simply compare and bail out if it's not the same as
+> what has been asked.
+> 
+
+Could you provide a complete implementation that behaves as I expect,
+rather than snippets and verbage?
+
+> >
+> > > Shouldn't be rather
+> > >
+> > > if (atomic_cmpxchg() == 0) {
+> > >   if (atomic_read() != version)
+> > >     return ...;
+> > > }
+> > >
+> >
+> > My algorithm allows for multiple callers requesting the same version
+> > to all succeed.  Yours would fail the first conditional for all but
+> > the first, and you haven't provided an else for that case...
+> >
+> > ... but it would probably look the same so the conditional is pointless,
+> > or it would reject the request - which would be wrong.
+> >
+> > > But here is still the question: why do you expect the version to be
+> > > changed on background? And what about barriers?
+> > >
+> >
+> > While it is unlikely that userspace will be attempting to use both ABI
+> > versions simultaneously on the same chip request, it is a possiblity and
+> > so needs to be protected against. And better to have the watch request
+> > fail than the read fail or worse - return the wrong struct version.
+> >
+> > The atomic_cmpxchg() is sufficient for this algorithm - no barriers
+> > required.  It could also be written with a spinlock but I was trying to
+> > avoid locks unless they were absolutely necessary.  A spinlock version
+> > may arguably be more readable, but it would certainly be more verbose,
+> > larger and slower.
+> >
+> > I'm happy to add some documentation to the function if that would help.
+> 
+> Yes, I guess documentation is what is eagerly needed here.
+> 
+
+No problem.
+
+Cheers,
+Kent.
