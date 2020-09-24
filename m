@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E852767E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4342767E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbgIXE3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 00:29:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48768 "EHLO mail.kernel.org"
+        id S1726704AbgIXEgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 00:36:04 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:48908 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgIXE3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 00:29:36 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A4C020888;
-        Thu, 24 Sep 2020 04:29:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600921776;
-        bh=vMTPxsuZ6SRzpJC0xTX5yCd+YWzo04WVJM/7L6AUrsY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=MsOmAxgg+jysqlFTskUiS43OIWcfhjb3IBqqvPrxciN9Ur/8QQpDAgVGugXdCw6Vy
-         k7+jMW9x2yPqiZYQaSP0jA2AfwTTIMLpO9aX2iUwBLNWdjMV94A/7Ijpg5sGpTTGkG
-         4wV85SHLPay1YhrIxUkkCIkUZtEHcPJ7NuBkU21w=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E88A935226CB; Wed, 23 Sep 2020 21:29:35 -0700 (PDT)
-Date:   Wed, 23 Sep 2020 21:29:35 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>, rcu@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jiri Olsa <jolsa@redhat.com>, bpf <bpf@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [GIT PULL rcu-tasks-trace] 50x speedup for
- synchronize_rcu_tasks_trace()
-Message-ID: <20200924042935.GV29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200922162542.GA18664@paulmck-ThinkPad-P72>
- <CAADnVQJfmFjVRqJopeqy_7bHVdQ9x+i9d94Sv7Dshnh40FisTA@mail.gmail.com>
+        id S1726466AbgIXEgE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 00:36:04 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kLIz6-000260-1l; Thu, 24 Sep 2020 14:35:57 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 24 Sep 2020 14:35:55 +1000
+Date:   Thu, 24 Sep 2020 14:35:55 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     syzbot <syzbot+c32502fd255cb3a44048@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, steffen.klassert@secunet.com,
+        syzkaller-bugs@googlegroups.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Subject: Re: possible deadlock in xfrm_policy_delete
+Message-ID: <20200924043554.GA9443@gondor.apana.org.au>
+References: <00000000000056c1dc05afc47ddb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQJfmFjVRqJopeqy_7bHVdQ9x+i9d94Sv7Dshnh40FisTA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <00000000000056c1dc05afc47ddb@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 07:46:15PM -0700, Alexei Starovoitov wrote:
-> On Tue, Sep 22, 2020 at 9:25 AM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > Hello, Alexei,
-> >
-> > This pull request contains eight commits that speed up RCU Tasks Trace
-> > grace periods by a factor of 50, fix a few race conditions exposed
-> > by this speedup, and clean up a couple of minor issues.  These have
-> > been exposed to 0day and -next testing, and have passed well over 1,000
-> > hours of rcutorture testing, some of which has contained ad-hoc changes
-> > to further increase race probabilities.  So they should be solid!
-> > (Famous last words...)
-> >
-> > I would normally have sent this series up through -tip, but as we
-> > discussed, going up through the BFP and networking trees provides the
-> > needed exposure to real-world testing of these changes.  Please note
-> > that the first patch is already in mainline, but given identical SHA-1
-> > commit IDs, git should have no problem figuring this out.  I will also
-> > be retaining these commits in -rcu in order to continue exposing them
-> > to rcutorture testing, but again the identical SHA-1 commit IDs will
-> > make everything work out.
+On Sun, Sep 20, 2020 at 01:22:14PM -0700, syzbot wrote:
+> Hello,
 > 
-> Pulled into bpf-next. Thanks a lot.
+> syzbot found the following issue on:
 > 
-> Also confirming 50x speedup.
-> Really nice to see that selftests/bpf are now fast again.
+> HEAD commit:    5fa35f24 Add linux-next specific files for 20200916
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1122e2d9900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=6bdb7e39caf48f53
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c32502fd255cb3a44048
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
 > 
-> Not only all bpf developers will be running these patches now,
-> but the bpf CI system will be exercising them as well.
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c32502fd255cb3a44048@syzkaller.appspotmail.com
+> 
+> =====================================================
+> WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock order detected
+> 5.9.0-rc5-next-20200916-syzkaller #0 Not tainted
+> -----------------------------------------------------
+> syz-executor.1/13775 [HC0[0]:SC0[4]:HE1:SE0] is trying to acquire:
+> ffff88805ee15a58 (&net->xfrm.xfrm_policy_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
+> ffff88805ee15a58 (&net->xfrm.xfrm_policy_lock){+...}-{2:2}, at: xfrm_policy_delete+0x3a/0x90 net/xfrm/xfrm_policy.c:2236
+> 
+> and this task is already holding:
+> ffff8880a811b1e0 (k-slock-AF_INET6){+.-.}-{2:2}, at: spin_lock include/linux/spinlock.h:354 [inline]
+> ffff8880a811b1e0 (k-slock-AF_INET6){+.-.}-{2:2}, at: tcp_close+0x6e3/0x1200 net/ipv4/tcp.c:2503
+> which would create a new lock dependency:
+>  (k-slock-AF_INET6){+.-.}-{2:2} -> (&net->xfrm.xfrm_policy_lock){+...}-{2:2}
+> 
+> but this new dependency connects a SOFTIRQ-irq-safe lock:
+>  (k-slock-AF_INET6){+.-.}-{2:2}
+> 
+> ... which became SOFTIRQ-irq-safe at:
+>   lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
+>   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+>   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+>   spin_lock include/linux/spinlock.h:354 [inline]
+>   sctp_rcv+0xd96/0x2d50 net/sctp/input.c:231
 
-Sounds very good, thank you!  If problems arise, you know where
-to find me.  As do most of the people running these patches, I
-would guess.  ;-)
+What's going on with all these bogus lockdep reports?
 
-							Thanx, Paul
+These are two completely different locks, one is for TCP and the
+other is for SCTP.  Why is lockdep suddenly beoming confused about
+this?
+
+FWIW this flood of bogus reports started on 16/Sep.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
