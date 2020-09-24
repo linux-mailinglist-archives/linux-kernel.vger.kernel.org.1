@@ -2,115 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F98C2776C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 343402776C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:31:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727353AbgIXQbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:31:12 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:55593 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726811AbgIXQbK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:31:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600965069; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=7yLmKI/5vET6oVISCZDrM5SQf3FU2iPOM2oBQ/UT4Go=; b=QWIpyY23Q9LTnV+vXMIEP6H49/F3PRlGZMFOhVjnA0yLjNg52RsaLPbsKxF1L+DXdwsCFFU9
- U3sHMXvkbpJiWFgw/FdRkoubys/jCTdsjDm/9v9ZW+QrGZI/ZhGB7PXkDpMwCtGBDYYPzqv9
- lHoUNn8Z/qnsJk2IwZAB0Z87wAM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f6cc9cbe051fb32a009b851 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 16:31:07
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 80D57C433CA; Thu, 24 Sep 2020 16:31:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727305AbgIXQbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726458AbgIXQbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:31:35 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35D2C0613CE;
+        Thu, 24 Sep 2020 09:31:35 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c950018c19313925c730a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9500:18c1:9313:925c:730a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5C272C433CB;
-        Thu, 24 Sep 2020 16:31:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5C272C433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Amit Pundir <amit.pundir@linaro.org>
-Cc:     David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        ath10k@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi Poco F1
-References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
-Date:   Thu, 24 Sep 2020 19:31:02 +0300
-In-Reply-To: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org> (Amit
-        Pundir's message of "Thu, 17 Sep 2020 13:11:41 +0530")
-Message-ID: <87d02bnnll.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 26BA81EC0469;
+        Thu, 24 Sep 2020 18:31:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1600965094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Wyic6RS8dnxuPl9A3GuZuq4BV1OsZd9ESbttja8eKEE=;
+        b=l737tOpBpD/V+sYHc+UbPMpWBhNrCvZuUTwN9dgzCEFfYTpJca29PDR0IkjMj//nBl0l18
+        /EOgjw8oCmnPEU53HI1xAZWQhyRDGubc6JavDu/5qGDV1lZdHO6cYkF+ri0eQIV/PYEajV
+        97+Gd89uv9ly2gsHERD+TFzz4ShQW0A=
+Date:   Thu, 24 Sep 2020 18:31:28 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 20/24] x86/traps: Attempt to fixup exceptions in vDSO
+ before signaling
+Message-ID: <20200924163128.GM5030@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-21-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200915112842.897265-21-jarkko.sakkinen@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amit Pundir <amit.pundir@linaro.org> writes:
-
-> Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
-> phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
-> message in ath10k_qmi_host_cap_send_sync(), but we can still
-> bring up WiFi services successfully on AOSP if we ignore it.
->
-> We suspect either the host cap is not implemented or there
-> may be firmware specific issues. Firmware version is
-> QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
->
-> qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
-> quirk, then the host capability request does get accepted,
-> but we run into fatal "msa info req rejected" error and
-> WiFi interface doesn't come up.
->
-> Attempts are being made to debug the failure reasons but no
-> luck so far. Hence this device specific workaround instead
-> of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
-> Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
-> linux-firmware project but it didn't help and neither did
-> building board-2.bin file from stock bdwlan* files.
->
-> This workaround will be removed once we have a viable fix.
-> Thanks to postmarketOS guys for catching this.
->
-> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-
-Bjorn, is this ok to take?
-
-> --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> @@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
+On Tue, Sep 15, 2020 at 02:28:38PM +0300, Jarkko Sakkinen wrote:
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 9e5ec861aba0..ebe290a68c36 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -30,6 +30,7 @@
+>  #include <asm/cpu_entry_area.h>		/* exception stack		*/
+>  #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
+>  #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
+> +#include <asm/vdso.h>			/* fixup_vdso_exception()	*/
 >  
->  	/* older FW didn't support this request, which is not fatal */
->  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
-> -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
-> +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
-> +	    !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
->  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
+>  #define CREATE_TRACE_POINTS
+>  #include <asm/trace/exceptions.h>
+> @@ -775,6 +776,10 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+>  
+>  		sanitize_error_code(address, &error_code);
+>  
+> +		if (fixup_vdso_exception(regs, X86_TRAP_PF, error_code,
+> +		    address))
 
-ath10k-check complained about a too long line, so in the pending branch
-I moved the comment before the if statement.
+No need to break that line.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+Regards/Gruss,
+    Boris.
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+https://people.kernel.org/tglx/notes-about-netiquette
