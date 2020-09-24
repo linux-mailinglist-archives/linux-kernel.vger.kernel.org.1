@@ -2,143 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C342768F8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48212768FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgIXGd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:33:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46582 "EHLO mail.kernel.org"
+        id S1726948AbgIXGee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:34:34 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:59140 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIXGd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:33:57 -0400
-Received: from localhost (unknown [84.241.198.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726906AbgIXGee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:34:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1600929273; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=SCZE0l76mOT8sBQ7aJKBqrLFMUKoKWKDRKCvf8+bXBk=; b=ko3l9p3RWzNcMReY/GjOM8r/ZcG/+Q6hXz8KB1+jAoSFFHIB4OTqZcqahmXkcJON1DGbf6No
+ mRVyGUtwjqtuD29RJxPawOOMfTWwBfucRAf8roaLhRzEybGKWJ/IA+Tlwc/SwDemGMUnFCOl
+ 3cXH8dyLoa+kMU63075DYPCBz9o=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 5f6c3dea244d44dc65074235 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 06:34:18
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BE6F6C43385; Thu, 24 Sep 2020 06:34:17 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from localhost (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7C4A82311A;
-        Thu, 24 Sep 2020 06:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600929237;
-        bh=4/P3ZUYO2V2jRyA7YB32zRBOvcFdYM0p0Ma1pDQrDbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FAo4sEazkhdK5B0M9MG9nHzvZJzn+idWiYi7GAE0HvYBHYZVHtM4H61RitFksOEug
-         vSWE0oyfS2DsID2B00xSqxOzSaip13wFW+oapcQ8+KkE9y5RhieLYgRhwLecv7OCHr
-         /42XPUKdWpl9ldaKVip6S26E4mACsXPTT9BIqiRs=
-Date:   Thu, 24 Sep 2020 08:33:52 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Prasad Sodagudi <psodagud@codeaurora.org>
-Cc:     rostedt@goodmis.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, tkjos@google.com,
-        Mohammed Khajapasha <mkhaja@codeaurora.org>
-Subject: Re: [PATCH 2/2] printk: Make the console flush configurable in
- hotplug path
-Message-ID: <20200924063352.GB592892@kroah.com>
-References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org>
- <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600906112-126722-2-git-send-email-psodagud@codeaurora.org>
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B2FA2C433C8;
+        Thu, 24 Sep 2020 06:34:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B2FA2C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+To:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neeraj Upadhyay <neeraju@codeaurora.org>
+Subject: [PATCH] rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
+Date:   Thu, 24 Sep 2020 12:04:10 +0530
+Message-Id: <1600929250-20344-1-git-send-email-neeraju@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 05:08:32PM -0700, Prasad Sodagudi wrote:
-> From: Mohammed Khajapasha <mkhaja@codeaurora.org>
-> 
-> The thread which initiates the hot plug can get scheduled
-> out, while trying to acquire the console lock,
-> thus increasing the hot plug latency. This option
-> allows to selectively disable the console flush and
-> in turn reduce the hot plug latency.
-> 
-> Signed-off-by: Mohammed Khajapasha <mkhaja@codeaurora.org>
-> Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
-> ---
->  init/Kconfig           | 10 ++++++++++
->  kernel/printk/printk.c | 10 ++++++++--
->  2 files changed, 18 insertions(+), 2 deletions(-)
-> 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index d6a0b31..9ce39ba 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -699,6 +699,16 @@ config LOG_BUF_SHIFT
->  		     13 =>  8 KB
->  		     12 =>  4 KB
->  
-> +config CONSOLE_FLUSH_ON_HOTPLUG
-> +	bool "Enable console flush configurable in hot plug code path"
-> +	depends on HOTPLUG_CPU
-> +	def_bool n
+Clarify the "x" in rcuox/N naming in RCU_NOCB_CPU config
+description.
 
-n is the default, no need to list it.
+Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+---
+ kernel/rcu/Kconfig | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-> +	help
-> +	In cpu hot plug path console lock acquire and release causes the
-> +	console to flush. If console lock is not free hot plug latency
-> +	increases. So make console flush configurable in hot plug path
-> +	and default disabled to help in cpu hot plug latencies.
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index b71e21f..5b22747 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -227,11 +227,12 @@ config RCU_NOCB_CPU
+ 	  specified at boot time by the rcu_nocbs parameter.  For each
+ 	  such CPU, a kthread ("rcuox/N") will be created to invoke
+ 	  callbacks, where the "N" is the CPU being offloaded, and where
+-	  the "p" for RCU-preempt (PREEMPTION kernels) and "s" for RCU-sched
+-	  (!PREEMPTION kernels).  Nothing prevents this kthread from running
+-	  on the specified CPUs, but (1) the kthreads may be preempted
+-	  between each callback, and (2) affinity or cgroups can be used
+-	  to force the kthreads to run on whatever set of CPUs is desired.
++	  the "x" is "p" for RCU-preempt (PREEMPTION kernels) and "s" for
++	  RCU-sched (!PREEMPTION kernels).  Nothing prevents this kthread
++	  from running on the specified CPUs, but (1) the kthreads may be
++	  preempted between each callback, and (2) affinity or cgroups can
++	  be used to force the kthreads to run on whatever set of CPUs is
++	  desired.
+ 
+ 	  Say Y here if you want to help to debug reduced OS jitter.
+ 	  Say N here if you are unsure.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Why would you not want this option?
-
-Why isn't this just a bugfix?
-
-> +
->  config LOG_CPU_MAX_BUF_SHIFT
->  	int "CPU kernel log buffer size contribution (13 => 8 KB, 17 => 128KB)"
->  	depends on SMP
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 9b75f6b..f02d3ef 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -2283,6 +2283,8 @@ void resume_console(void)
->  	console_unlock();
->  }
->  
-> +#ifdef CONFIG_CONSOLE_FLUSH_ON_HOTPLUG
-> +
->  /**
->   * console_cpu_notify - print deferred console messages after CPU hotplug
->   * @cpu: unused
-> @@ -2302,6 +2304,8 @@ static int console_cpu_notify(unsigned int cpu)
->  	return 0;
->  }
->  
-> +#endif
-> +
->  /**
->   * console_lock - lock the console system for exclusive use.
->   *
-> @@ -2974,7 +2978,7 @@ void __init console_init(void)
->  static int __init printk_late_init(void)
->  {
->  	struct console *con;
-> -	int ret;
-> +	int ret = 0;
->  
->  	for_each_console(con) {
->  		if (!(con->flags & CON_BOOT))
-> @@ -2996,13 +3000,15 @@ static int __init printk_late_init(void)
->  			unregister_console(con);
->  		}
->  	}
-> +#ifdef CONFIG_CONSOLE_FLUSH_ON_HOTPLUG
-
-#ifdef in .c code is a mess to maintain.
-
->  	ret = cpuhp_setup_state_nocalls(CPUHP_PRINTK_DEAD, "printk:dead", NULL,
->  					console_cpu_notify);
->  	WARN_ON(ret < 0);
->  	ret = cpuhp_setup_state_nocalls(CPUHP_AP_ONLINE_DYN, "printk:online",
->  					console_cpu_notify, NULL);
->  	WARN_ON(ret < 0);
-> -	return 0;
-> +#endif
-
-What happens if we don't make these calls entirely?  Why not just remove
-them as who wants extra latency for their system?
-
-thanks,
-
-greg k-h
