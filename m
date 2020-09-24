@@ -2,140 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6292277140
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1148277147
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727783AbgIXMm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:42:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35065 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727722AbgIXMm0 (ORCPT
+        id S1727806AbgIXMnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727738AbgIXMnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:42:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600951344;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1oG8raWp9jQLZJ6ZPnSu5CGYjsnTW1Sct0OlPCPovyo=;
-        b=SzlGagWv7Z8u3XstQbvMF75iFOQXlADszKM1ncmIL6zDFnmy5qsMvYAGH2ZfptLsflhVxU
-        paJZUYIJveTHCxJt5p/wLHrOAgvN/UweRYBm3OFk23cfJF7Of5ZF+uyGmR+dK8ozMO8KNM
-        DgpcSPy3ia7EOhoH/NX2s2GSCvUHmck=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-EPADIVuwPSW5HM3iDCR-_g-1; Thu, 24 Sep 2020 08:42:22 -0400
-X-MC-Unique: EPADIVuwPSW5HM3iDCR-_g-1
-Received: by mail-ed1-f72.google.com with SMTP id r21so1129142eda.20
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:42:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=1oG8raWp9jQLZJ6ZPnSu5CGYjsnTW1Sct0OlPCPovyo=;
-        b=Kbt/TsN3qE41+FodwYrQTwIur0y7G+J/6HQ45Be//4gXoGZpSBNb3jJUeawHrMQiKZ
-         1/RT8dkJ8Jui7C2gWD3DljoiQek3c45IUX98kvz2/jN6VMV8psv6p38YO+S8GK1j25jC
-         NITDldaZYc9SJoaEgGzNpcjKQNTnRF8VuGz3deeeN61F8NT3YOblGcC4VZIWetumGUMu
-         pRCyRGAyZV11IzAIm8U9mQuz1niH8qq2rRi5IchrrRY4SujgoK7wDYMNoxGgLahAHvHt
-         eeyvpsUDukKkigFu8o4nYLowtB45qIhRhGeV9rJQpazZCBbP+vgRizU6HW+905nBAiqP
-         kTzQ==
-X-Gm-Message-State: AOAM533XxRK6OeQk4kh3powe+grrKOOIYwEc+FiiTMz2S4OYgNG1KzDc
-        mGczGedeRxWhINfrxkirI5DfdlwqReyZhESTlJO/+URpzTKp8ZAVStUu0akc7WL0XBZ/HXni9/O
-        LXQUrjR43ql3uIJSFZaH4BsXl
-X-Received: by 2002:a17:907:394:: with SMTP id ss20mr819244ejb.120.1600951340889;
-        Thu, 24 Sep 2020 05:42:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxp8lEE/44Rl5KNBVpGxQ/u4Y3jmeeyLqwhKssEJwf2ePb/11oX3g6CNB50t9lD6awRJ4hdiQ==
-X-Received: by 2002:a17:907:394:: with SMTP id ss20mr819224ejb.120.1600951340696;
-        Thu, 24 Sep 2020 05:42:20 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id u13sm2373819ejn.82.2020.09.24.05.42.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 05:42:20 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86/mmu: Stash 'kvm' in a local variable in kvm_mmu_free_roots()
-In-Reply-To: <20200923191204.8410-1-sean.j.christopherson@intel.com>
-References: <20200923191204.8410-1-sean.j.christopherson@intel.com>
-Date:   Thu, 24 Sep 2020 14:42:19 +0200
-Message-ID: <875z83e47o.fsf@vitty.brq.redhat.com>
+        Thu, 24 Sep 2020 08:43:50 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A01C0613CE;
+        Thu, 24 Sep 2020 05:43:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=SdhPXkSs5ZPBi948PCp3uVHmQU1pxaOPhPPF1KHSOtI=; b=cfpXNMYzVRlId2AJBOa+GyLPt6
+        zTFRf6xk7foaFg4tpi+0P2wk3EKKrMLVo5gmNxHWe7qOcz3Hmx3VWmRHmwVx/FwsBrIZ4LPXgFqji
+        cbVT02P2X6YSp/qAxsPzP7xWma/nd4gLtLGrrxZddBcakdrjDZddjCYlGyyVHu59U4aaO6z8FZ60s
+        49IhfEr0KMLRog0k4Y5qS0akYgifDqnz2qj8WKdCAn3F5dxbkr8x0mpQnMaztMPQpwH5mtFjW59VG
+        NHALCniQ15G9RJsPp0Y7Yvd0LIio3hjjsinuCY0H4Jgz5zGhVlW6aMgLPr7GKSkFGiFv6cxeg9duh
+        Tyn/G/Dw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLQaG-0005M9-J5; Thu, 24 Sep 2020 12:42:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C0F753007CD;
+        Thu, 24 Sep 2020 14:42:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A98B620297EC5; Thu, 24 Sep 2020 14:42:41 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 14:42:41 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-sparc <sparclinux@vger.kernel.org>
+Subject: Re: [patch RFC 00/15] mm/highmem: Provide a preemptible variant of
+ kmap_atomic & friends
+Message-ID: <20200924124241.GK2628@hirez.programming.kicks-ass.net>
+References: <CAHk-=wgF-upZVpqJWK=TK7MS9H-Rp1ZxGfOG+dDW=JThtxAzVQ@mail.gmail.com>
+ <87a6xjd1dw.fsf@nanos.tec.linutronix.de>
+ <CAHk-=wjhxzx3KHHOMvdDj3Aw-_Mk5eRiNTUBB=tFf=vTkw1FeA@mail.gmail.com>
+ <87sgbbaq0y.fsf@nanos.tec.linutronix.de>
+ <20200923084032.GU1362448@hirez.programming.kicks-ass.net>
+ <20200923115251.7cc63a7e@oasis.local.home>
+ <874kno9pr9.fsf@nanos.tec.linutronix.de>
+ <20200923171234.0001402d@oasis.local.home>
+ <871riracgf.fsf@nanos.tec.linutronix.de>
+ <20200924083241.314f2102@gandalf.local.home>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924083241.314f2102@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
+On Thu, Sep 24, 2020 at 08:32:41AM -0400, Steven Rostedt wrote:
+> Anyway, instead of blocking. What about having a counter of number of
+> migrate disabled tasks per cpu, and when taking a migrate_disable(), and there's
+> already another task with migrate_disabled() set, and the current task has
+> an affinity greater than 1, it tries to migrate to another CPU?
 
-> To make kvm_mmu_free_roots() a bit more readable, capture 'kvm' in a
-> local variable instead of doing vcpu->kvm over and over (and over).
->
-> No functional change intended.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 76c5826e29a2..cdc498093450 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3603,6 +3603,7 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
->  void kvm_mmu_free_roots(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->  			ulong roots_to_free)
->  {
-> +	struct kvm *kvm = vcpu->kvm;
->  	int i;
->  	LIST_HEAD(invalid_list);
->  	bool free_active_root = roots_to_free & KVM_MMU_ROOT_CURRENT;
-> @@ -3620,22 +3621,21 @@ void kvm_mmu_free_roots(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->  			return;
->  	}
->  
-> -	spin_lock(&vcpu->kvm->mmu_lock);
-> +	spin_lock(&kvm->mmu_lock);
->  
->  	for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++)
->  		if (roots_to_free & KVM_MMU_ROOT_PREVIOUS(i))
-> -			mmu_free_root_page(vcpu->kvm, &mmu->prev_roots[i].hpa,
-> +			mmu_free_root_page(kvm, &mmu->prev_roots[i].hpa,
->  					   &invalid_list);
->  
->  	if (free_active_root) {
->  		if (mmu->shadow_root_level >= PT64_ROOT_4LEVEL &&
->  		    (mmu->root_level >= PT64_ROOT_4LEVEL || mmu->direct_map)) {
-> -			mmu_free_root_page(vcpu->kvm, &mmu->root_hpa,
-> -					   &invalid_list);
-> +			mmu_free_root_page(kvm, &mmu->root_hpa, &invalid_list);
->  		} else {
->  			for (i = 0; i < 4; ++i)
->  				if (mmu->pae_root[i] != 0)
-> -					mmu_free_root_page(vcpu->kvm,
-> +					mmu_free_root_page(kvm,
->  							   &mmu->pae_root[i],
->  							   &invalid_list);
->  			mmu->root_hpa = INVALID_PAGE;
-> @@ -3643,8 +3643,8 @@ void kvm_mmu_free_roots(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->  		mmu->root_pgd = 0;
->  	}
->  
-> -	kvm_mmu_commit_zap_page(vcpu->kvm, &invalid_list);
-> -	spin_unlock(&vcpu->kvm->mmu_lock);
-> +	kvm_mmu_commit_zap_page(kvm, &invalid_list);
-> +	spin_unlock(&kvm->mmu_lock);
->  }
->  EXPORT_SYMBOL_GPL(kvm_mmu_free_roots);
+That doesn't solve the problem. On wakeup we should already prefer an
+idle CPU over one running a (RT) task, but you can always wake more
+tasks than there's CPUs around and you'll _have_ to stack at some point.
 
-What about kvm_mmu_get_page(), make_mmu_pages_available(),
-mmu_alloc_root(), kvm_mmu_sync_roots(), direct_page_fault(),
-kvm_mmu_pte_write() which seem to be using the same ugly pattern? :-)
+The trick is how to unstack them correctly. We need to detect when a
+migrate_disable() task _should_ start running again, and migrate away
+whoever is in the way at that point.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
--- 
-Vitaly
-
+It turns out, that getting selected for pull-balance is exactly that
+condition, and clearly a migrate_disable() task cannot be pulled, but we
+can use that signal to try and pull away the running task that's in the
+way.
