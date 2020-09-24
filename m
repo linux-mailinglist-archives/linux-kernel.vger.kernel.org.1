@@ -2,115 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 369832775B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 167862775B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728488AbgIXPpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:45:50 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37764 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgIXPpu (ORCPT
+        id S1728516AbgIXPqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:46:12 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:42788 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728139AbgIXPqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:45:50 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OFZ23Y158292;
-        Thu, 24 Sep 2020 15:45:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=ptE4rBnIcvQs1r3P1XI5UZCVxhNT0iC7WiQxJa50zew=;
- b=azWkeHZmC4B21Ls1F5NpziOnh0GPmAKktox4SDp1B2wsB7xTxHCviZWLxEjyeI1lRkKr
- jdBRozHvrcFs7JkdOCZhPY3XsR6aMBb5BL2A9MjMUrpSNWV1kdhuqM25exJHTnXqSEr9
- r0OYAa5cM14a5xYZa5Bo+purM3NnfEg5dHQ+AtYJ6XRahrIf8QjRobUe4ZgXykUDUlXd
- e7BGihSe81vycIPnTfpsKWrNLUdVDeNBTjdxs5O8kF4ETbea7jyc9XehgcJ/jJ9M+4z7
- q/TA6PY2o0xI9aDw/WLPKAXoDy9nwA2puGkFCBkZvcbhYB4zZj+7BWmwPk3dSJYRigSj Xg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33ndnus4k2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Sep 2020 15:45:34 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OFUAKT131611;
-        Thu, 24 Sep 2020 15:45:34 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 33r28x5gas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Sep 2020 15:45:33 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08OFjOVg029780;
-        Thu, 24 Sep 2020 15:45:24 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 24 Sep 2020 08:45:23 -0700
-Date:   Thu, 24 Sep 2020 18:45:16 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
- buffers
-Message-ID: <20200924154516.GL4282@kadam>
-References: <0000000000006b9e8d059952095e@google.com>
- <cover.1600953813.git.yepeilin.cs@gmail.com>
- <20200924140937.GA749208@kroah.com>
- <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
- <20200924153035.GA879703@PWN>
+        Thu, 24 Sep 2020 11:46:11 -0400
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 08OFjmFE031136;
+        Fri, 25 Sep 2020 00:45:48 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 08OFjmFE031136
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1600962349;
+        bh=2/84ainX+exPuFKLItFERxz7wYFsqiAakLmaR16zSEE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sUUURivfHeDm3Lj17zEQvc3dpnGqHwk8yYFOMfAnzwDIb4H1KuZevs0sn49a++o6x
+         fiPyiRgTgnKCZrzdxkxdx65Zab+uJzzC/Gw//PF7L1DtTSg4Jb60NUPvQt3UEzTyKB
+         uwzNOqmS837TGk1fJddSuNuB6YIrkndJe0Z813ch7suIULLfAUv3mYUhH91MaWMyXB
+         GXudWqvvOIlauZEZwgZxVqgxlqZj34slviv49d+6w7y/UcZ/TIEB5cRlRYXztuHeSi
+         fUBycW6U3WvArCaG+Gk+s1tA4ETsuGIMtoGNiK92cjiTckV46neHqiuOymzXixsBhQ
+         TWIFMD1Tb9azA==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kbuild: split the build log of kallsyms
+Date:   Fri, 25 Sep 2020 00:45:46 +0900
+Message-Id: <20200924154546.275123-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924153035.GA879703@PWN>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240118
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
- clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009240118
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Smatch has a tool to show where struct members are set.
+Currently, the build log shows KSYM + object name.
 
-`~/smatch/smatch_data/db/smdb.py where console_font height`
+Precisely speaking, kallsyms generates a .S file and then the compiler
+compiles it into a .o file. Split the build log into two.
 
-It's not perfect and this output comes from allmodconfig on yesterday's
-linux-next.
+[Before]
 
-regards,
-dan carpenter
+  GEN     modules.builtin
+  LD      .tmp_vmlinux.kallsyms1
+  KSYM    .tmp_vmlinux.kallsyms1.o
+  LD      .tmp_vmlinux.kallsyms2
+  KSYM    .tmp_vmlinux.kallsyms2.o
+  LD      vmlinux
 
-drivers/video/console/vgacon.c | vgacon_init                    | (struct console_font)->height | 0-32
-drivers/video/console/vgacon.c | vgacon_adjust_height           | (struct console_font)->height | 1-32
-drivers/video/fbdev/core/fbcon.c | fbcon_startup                  | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
-drivers/video/fbdev/core/fbcon.c | fbcon_init                     | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
-drivers/video/fbdev/core/fbcon.c | fbcon_do_set_font              | (struct console_font)->height | 0-u32max
-drivers/video/fbdev/core/fbcon.c | fbcon_set_def_font             | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
-drivers/usb/misc/sisusbvga/sisusb_con.c | sisusbcon_init                 | (struct console_font)->height | 0-u32max
-drivers/usb/misc/sisusbvga/sisusb_con.c | sisusbcon_do_font_op           | (struct console_font)->height | 1-32
-drivers/tty/vt/vt_ioctl.c      | vt_k_ioctl                     | (struct console_font)->height | ignore
-drivers/tty/vt/vt_ioctl.c      | vt_resizex                     | (struct console_font)->height | 0-u32max
-drivers/tty/vt/vt_ioctl.c      | vt_ioctl                       | (struct console_font)->height | ignore
-drivers/tty/vt/vt_ioctl.c      | vt_compat_ioctl                | (struct console_font)->height | ignore
-drivers/tty/vt/vt.c            | vc_allocate                    | (struct console_font)->height | 0
-drivers/tty/vt/vt.c            | vt_resize                      | (struct console_font)->height | ignore
-drivers/tty/vt/vt.c            | do_con_write                   | (struct console_font)->height | ignore
-drivers/tty/vt/vt.c            | con_unthrottle                 | (struct console_font)->height | ignore
-drivers/tty/vt/vt.c            | con_flush_chars                | (struct console_font)->height | ignore
-drivers/tty/vt/vt.c            | con_shutdown                   | (struct console_font)->height | ignore
-drivers/tty/vt/vt.c            | con_cleanup                    | (struct console_font)->height | ignore
-drivers/tty/vt/vt.c            | con_init                       | (struct console_font)->height | 0
-drivers/tty/vt/vt.c            | con_font_set                   | (struct console_font)->height | 1-32
-drivers/tty/vt/vt.c            | con_font_default               | (struct console_font)->height | 0-u32max
-drivers/tty/vt/selection.c     | paste_selection                | (struct console_font)->height | ignore
+[After]
+
+  GEN     modules.builtin
+  LD      .tmp_vmlinux.kallsyms1
+  KSYMS   .tmp_vmlinux.kallsyms1.S
+  AS      .tmp_vmlinux.kallsyms1.o
+  LD      .tmp_vmlinux.kallsyms2
+  KSYMS   .tmp_vmlinux.kallsyms2.S
+  AS      .tmp_vmlinux.kallsyms2.o
+  LD      vmlinux
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/link-vmlinux.sh | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
+index e6e2d9e5ff48..d9bcf36a1583 100755
+--- a/scripts/link-vmlinux.sh
++++ b/scripts/link-vmlinux.sh
+@@ -169,10 +169,9 @@ gen_btf()
+ 	printf '\1' | dd of=${2} conv=notrunc bs=1 seek=16 status=none
+ }
+ 
+-# Create ${2} .o file with all symbols from the ${1} object file
++# Create ${2} .S file with all symbols from the ${1} object file
+ kallsyms()
+ {
+-	info KSYM ${2}
+ 	local kallsymopt;
+ 
+ 	if [ -n "${CONFIG_KALLSYMS_ALL}" ]; then
+@@ -187,13 +186,8 @@ kallsyms()
+ 		kallsymopt="${kallsymopt} --base-relative"
+ 	fi
+ 
+-	local aflags="${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL}               \
+-		      ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS}"
+-
+-	local afile="`basename ${2} .o`.S"
+-
+-	${NM} -n ${1} | scripts/kallsyms ${kallsymopt} > ${afile}
+-	${CC} ${aflags} -c -o ${2} ${afile}
++	info KSYMS ${2}
++	${NM} -n ${1} | scripts/kallsyms ${kallsymopt} > ${2}
+ }
+ 
+ # Perform one step in kallsyms generation, including temporary linking of
+@@ -203,9 +197,15 @@ kallsyms_step()
+ 	kallsymso_prev=${kallsymso}
+ 	kallsyms_vmlinux=.tmp_vmlinux.kallsyms${1}
+ 	kallsymso=${kallsyms_vmlinux}.o
++	kallsyms_S=${kallsyms_vmlinux}.S
+ 
+ 	vmlinux_link ${kallsyms_vmlinux} "${kallsymso_prev}" ${btf_vmlinux_bin_o}
+-	kallsyms ${kallsyms_vmlinux} ${kallsymso}
++	kallsyms ${kallsyms_vmlinux} ${kallsyms_S}
++
++	info AS ${kallsyms_S}
++	${CC} ${NOSTDINC_FLAGS} ${LINUXINCLUDE} ${KBUILD_CPPFLAGS} \
++	      ${KBUILD_AFLAGS} ${KBUILD_AFLAGS_KERNEL} \
++	      -c -o ${kallsymso} ${kallsyms_S}
+ }
+ 
+ # Create map file with all symbols from ${1}
+-- 
+2.25.1
 
