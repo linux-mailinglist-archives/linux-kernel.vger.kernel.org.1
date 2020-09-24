@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A13E276FBF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F708276FC7
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbgIXLWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:22:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49456 "EHLO mail.kernel.org"
+        id S1727483AbgIXLWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:22:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49454 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726483AbgIXLWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:22:12 -0400
+        id S1726652AbgIXLWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:22:13 -0400
 Received: from mail.kernel.org (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB78E2396E;
+        by mail.kernel.org (Postfix) with ESMTPSA id EA7492395B;
         Thu, 24 Sep 2020 11:22:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1600946532;
-        bh=tSrMjh6Tp12F91iwQGjfztE81iQr93TgUJgtnz2nFkw=;
+        bh=+dpjmYWc6xwsu3KtKMm2ZusLC9NPxNgjvUVnQyxzmaQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bSeH9EaLIUTTpJLk0icANW25BYYnoH9u2e/WtucDsWSrE5G7wiedatFCst+b/UxV6
-         s8AnEtvh0fbHz09JedBhw4QnSquf+sWgOPoH0dODQhEz1yzjGEUSjsZ25rsY0swISB
-         Fkgm6jUCLCDmmiXnQU1bej48tZ6PGjFHhzVtDsTE=
+        b=JcFWQGIq68MZzIdgA+9ANbwcshi4qO+onlXtZZBa4xrysR7ZjnPOWf+LW1m7evREE
+         JVG4BIeYaR7gBktfQTtPfGUFJF6rAaXuPzI+94jDPEaWQ+81mKXTfPZB5aRFAi1Pyf
+         7MxV1Mox78Zd/TwF7BaIy2TGvFt9GlC4sYO591t8=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kLPKD-000AES-Fp; Thu, 24 Sep 2020 13:22:09 +0200
+        id 1kLPKD-000AEU-H2; Thu, 24 Sep 2020 13:22:09 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: [PATCH 0/2] Start supporting builds with Sphinx 3.1+
-Date:   Thu, 24 Sep 2020 13:22:03 +0200
-Message-Id: <cover.1600945712.git.mchehab+huawei@kernel.org>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] docs: cdomain.py: add support for two new Sphinx 3.1+ tags
+Date:   Thu, 24 Sep 2020 13:22:04 +0200
+Message-Id: <4b8a20013ca0b631724e8a986544ada08ac3dfd7.1600945712.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200924090230.6f3b0ca1@coco.lan>
-References: <20200924090230.6f3b0ca1@coco.lan>
+In-Reply-To: <cover.1600945712.git.mchehab+huawei@kernel.org>
+References: <cover.1600945712.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
@@ -47,64 +44,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jon,
+Since Sphinx 3.0, the C domain code was rewritten, but only
+after version 3.1 it got support for setting namespaces on
+C domains, with is something that it is required, in order to
+document system calls, like ioctl() and others.
 
-This is a small patch series with just two patches.
+As part of changing the documentation subsystem to properly
+build with Sphinx 3.1+, add support for two tags:
 
-The first one adds support at cdomain.py for two notations found on
-Sphinx 3.1:
+	- :c:expr:`foo`
+	- .. c:namespace::"
 
-	:c:expr:
-	.. c:namespace::
+The first one just replaces the expresion by ``foo``, with
+produces a monotext expression.
 
-With that, it should now be possible to use those two C domain
-tags at the media documentation, which will make it produce a
-decent result with both Sphinx 1.x/2.x and Sphinx 3.1+.
+The second one replaces the optional "name" tag for functions,
+setting a domain for all C references found after its usage.
 
-The second patch manually changes the CEC documentation in
-order for it to use those macros, instead of relying at the original
-cdomain extensions.
+With that, it should be possible to convert the existing
+documentation to be compatible with both Sphinx 1.x/2.x and
+3.1+.
 
-I tested building the docs with both Sphinx 2.4.4 and 3.2.1.
-They are identical, except by a minor difference:  the output of
-:c:expr: uses a bold monospaced font with 3.1+, while it uses a
-non-bold monospaced font with older versions.
+Unfortunately, building the documentation with Sphinx 3.0
+will produce lots of warnings, because the namespace tag
+doesn't exist there, with will cause both warnings for the
+usage of a non-existing tag and warnings about multiple
+definitions for system calls. There's not much we can
+do to solve such issues.
 
-Yet, the output looks decent on both versions.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ Documentation/sphinx/cdomain.py | 56 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
-I'm planning to use the same approach on all the other documents
-under userspace-api/media. So, I guess it would be easier if
-I could merge both the cdomain.py and the media patches via
-the media tree, if this is ok for you.
-
--
-
-With regards to patch 1, I tried first to use a hook at 'doctree-resolved',
-just like the automarkup.py, but that is too late for  changing the
-namespace. So, I ended hooking the extra logic at 'source-read'.
-
-I suspect that this could be implemented on some other ways, but
-this can be optimized later on, if needed.
-
-Mauro Carvalho Chehab (2):
-  docs: cdomain.py: add support for two new Sphinx 3.1+ tags
-  media: docs: make CEC documents compatible with Sphinx 3.1+
-
- Documentation/sphinx/cdomain.py               | 56 ++++++++++++++++++-
- .../media/cec/cec-func-close.rst              |  7 ++-
- .../media/cec/cec-func-ioctl.rst              |  7 ++-
- .../userspace-api/media/cec/cec-func-open.rst |  7 ++-
- .../userspace-api/media/cec/cec-func-poll.rst | 11 ++--
- .../media/cec/cec-ioc-adap-g-caps.rst         |  9 ++-
- .../media/cec/cec-ioc-adap-g-conn-info.rst    | 11 ++--
- .../media/cec/cec-ioc-adap-g-log-addrs.rst    | 14 +++--
- .../media/cec/cec-ioc-adap-g-phys-addr.rst    | 14 +++--
- .../media/cec/cec-ioc-dqevent.rst             |  9 ++-
- .../media/cec/cec-ioc-g-mode.rst              | 14 +++--
- .../media/cec/cec-ioc-receive.rst             | 14 +++--
- 12 files changed, 128 insertions(+), 45 deletions(-)
-
+diff --git a/Documentation/sphinx/cdomain.py b/Documentation/sphinx/cdomain.py
+index cbac8e608dc4..3f6228787282 100644
+--- a/Documentation/sphinx/cdomain.py
++++ b/Documentation/sphinx/cdomain.py
+@@ -40,14 +40,61 @@ from sphinx import addnodes
+ from sphinx.domains.c import c_funcptr_sig_re, c_sig_re
+ from sphinx.domains.c import CObject as Base_CObject
+ from sphinx.domains.c import CDomain as Base_CDomain
++from itertools import chain
++import re
+ 
+-__version__  = '1.0'
++__version__  = '1.1'
+ 
+ # Get Sphinx version
+ major, minor, patch = sphinx.version_info[:3]
+ 
++# Namespace to be prepended to the full name
++namespace = None
++
++#
++# Handle trivial newer c domain tags that are part of Sphinx 3.1 c domain tags
++# - Convert :c:expr:`foo` into ``foo``
++# - Store the namespace if ".. c:namespace::" tag is found
++
++RE_namespace = re.compile(r'^\s*..\s*c:namespace::\s*(\S+)\s*$')
++RE_expr = re.compile(r':c:expr:`([^\`]+)`')
++
++def markup_namespace(match):
++    namespace = match.group(1)
++
++    return ""
++
++def markup_c_expr(match):
++
++    return '\ ``' + match.group(1) + '``\ '
++
++def c_markups(app, docname, source):
++    result = ""
++    markup_func = {
++        RE_namespace: markup_namespace,
++        RE_expr: markup_c_expr
++    }
++
++    lines = iter(source[0].splitlines(True))
++    for n in lines:
++        match_iterators = [regex.finditer(n) for regex in markup_func]
++        matches = sorted(chain(*match_iterators), key=lambda m: m.start())
++        for m in matches:
++            n = n[:m.start()] + markup_func[m.re](m) + n[m.end():]
++
++        result = result + n
++
++    source[0] = result
++
++#
++# Now implements support for the cdomain namespacing logic
++#
++
+ def setup(app):
+ 
++    # Handle easy Sphinx 3.1+ simple new tags: :c:expr and .. c:namespace::
++    app.connect('source-read', c_markups)
++
+     if (major == 1 and minor < 8):
+         app.override_domain(CDomain)
+     else:
+@@ -107,6 +154,9 @@ class CObject(Base_CObject):
+             param += nodes.emphasis(argname, argname)
+             paramlist += param
+ 
++        if namespace:
++            fullname = namespace + "." + fullname
++
+         return fullname
+ 
+     def handle_signature(self, sig, signode):
+@@ -122,6 +172,10 @@ class CObject(Base_CObject):
+             else:
+                 # FIXME: handle :name: value of other declaration types?
+                 pass
++        else:
++            if namespace:
++                fullname = namespace + "." + fullname
++
+         return fullname
+ 
+     def add_target_and_index(self, name, sig, signode):
 -- 
 2.26.2
-
 
