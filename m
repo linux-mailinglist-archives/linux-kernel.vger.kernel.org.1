@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769C2277467
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA6B2774A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728256AbgIXOz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728126AbgIXOz4 (ORCPT
+        id S1728518AbgIXO70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:59:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53214 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728364AbgIXO6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:55:56 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EC7C0613CE;
-        Thu, 24 Sep 2020 07:55:56 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id d4so3810136wmd.5;
-        Thu, 24 Sep 2020 07:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:subject:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cxvl2MAleQcMTiG0WSrWtQ8ZVgZ+BIbKryf5RRhV2Ew=;
-        b=UF9OPLc72qF28w6y+ivkNrmXc5fop6lS4sjwHWDd9rzAFwH/YxcaJyc57rdANGsIN4
-         rYSEqsboWQ/6Rad3EEZAYH6sJkptJizRO8lNfWk6XYA0XKnfcTxYON3ug44BYQg9EMER
-         pVgAFcgLfPn4DVLiJ3Hib3T01PXbwRe+Vojn0wE3Yok5pMEIejrXlJffXDd6qKuKAg44
-         VtKof8h0scpGdPAcmiLAwTnzsODA8lRMiZPWSwQRsP90h1aLFuABF5VbrFI/sWnrFX0b
-         uEmRRAQsmZaOnouVl0mGoQ3uar4fcGrE+qSzboc3C0J0BGGDyYXkJ66tiP5wIrQLNFZH
-         wH4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:subject:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cxvl2MAleQcMTiG0WSrWtQ8ZVgZ+BIbKryf5RRhV2Ew=;
-        b=hTSqDBFuxLwaGxifgFSmpvbzTdTEM9PeZVn3VLkeG9V7YuGflMyrf2/22YvEnmaECP
-         LOwE8IDY20r1fyOvlnnI+xIRcvzMa/H59XFnwvo5yfKlE2hXTgkydzy2A9JSLtMBoZS6
-         Z1cb0nUjKWkOCVFXvTSveieyyT0WgiZA2xIAmcLePmgz+wJ31wdFtG3bHnii98flaA9V
-         AmB4cbxuMzri1VYIiaqEZrfKhhtiT7gtYwZ+r5Zph0QJsTiUx+EHRmDqAeG5R/H7wU3K
-         DLk1NB36E2eWK6ngBIPMjSxGEo79x0jzRYSJSadmmlXH9SMjhtIXZI9UdqshQ4AmtFut
-         yhSA==
-X-Gm-Message-State: AOAM530WYbpEYFUTx96mjoHRc1qwS2+CZtSQVLgCdF2LD2E17WwLzX2z
-        5dZl4wdsVFF5DO2rTkZBpz0=
-X-Google-Smtp-Source: ABdhPJwA7ld5rBdiNBafXko+QQDLwn3uoHLR26xm9fJkwIdPYX0Ec6468qIEwFlntmVrZ1YEq/Neew==
-X-Received: by 2002:a1c:4b17:: with SMTP id y23mr5136571wma.162.1600959354790;
-        Thu, 24 Sep 2020 07:55:54 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id h76sm4156994wme.10.2020.09.24.07.55.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 07:55:54 -0700 (PDT)
-To:     rppt@kernel.org
-Cc:     akpm@linux-foundation.org, arnd@arndb.de, bp@alien8.de,
-        catalin.marinas@arm.com, cl@linux.com, dan.j.williams@intel.com,
-        dave.hansen@linux.intel.com, david@redhat.com,
-        elena.reshetova@intel.com, hpa@zytor.com, idan.yaniv@ibm.com,
-        jejb@linux.ibm.com, kirill@shutemov.name,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
-        linux-riscv@lists.infradead.org, luto@kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, mtk.manpages@gmail.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com, peterz@infradead.org,
-        rppt@linux.ibm.com, shuah@kernel.org, tglx@linutronix.de,
-        tycho@tycho.ws, viro@zeniv.linux.org.uk, will@kernel.org,
-        willy@infradead.org, x86@kernel.org
-References: <20200924133513.1589-1-rppt@kernel.org>
-Subject: Re: [PATCH] man2: new page describing memfd_secret() system call
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <efb6d051-2104-af26-bfb0-995f4716feb2@gmail.com>
-Date:   Thu, 24 Sep 2020 16:55:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 24 Sep 2020 10:58:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600959501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kiRvf77/BW2pJi/JFFEx+okLfqnrBcg7+cHOh16//18=;
+        b=DMWoFyBBC/bnmxXe56oxOy+I4DU3JwBKhryJzoiIGXdDQ6qDEB/HjQGOb2BKQn/VEpS+uY
+        5mPGSa0P4+V140OSLpSsC6tXdOc06Yr/BeAxnrsHWJ9O45RpbYB8S6xugx+zbvCnCzrCl6
+        L+WBAJe9JL4V9z5NEG96Y5gwiV6hPJo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-171--Sk-b6pwOVm3bA48u1k4Lg-1; Thu, 24 Sep 2020 10:58:03 -0400
+X-MC-Unique: -Sk-b6pwOVm3bA48u1k4Lg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F17D1008562;
+        Thu, 24 Sep 2020 14:58:01 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.192.160])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4B0BA55786;
+        Thu, 24 Sep 2020 14:57:59 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/7] KVM: x86: hyper-v: make KVM_GET_SUPPORTED_HV_CPUID more useful
+Date:   Thu, 24 Sep 2020 16:57:50 +0200
+Message-Id: <20200924145757.1035782-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200924133513.1589-1-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Mike Rapoport:
- > +.PP
- > +.IR Note :
- > +There is no glibc wrapper for this system call; see NOTES.
+Changes since v1:
+- Rebased to kvm/queue [KVM_CAP_SYS_HYPERV_CPUID -> 188]
 
-You added a reference to NOTES, but then in notes there is nothing about 
-it.  I guess you wanted to add the following to NOTES (taken from 
-membarrier.2):
+QEMU series using the feature:
+https://lists.gnu.org/archive/html/qemu-devel/2020-09/msg02017.html
 
-.PP
-Glibc does not provide a wrapper for this system call; call it using
-.BR syscall (2).
+Original description:
 
-Cheers,
+KVM_GET_SUPPORTED_HV_CPUID was initially implemented as a vCPU ioctl but
+this is not very useful when VMM is just trying to query which Hyper-V
+features are supported by the host prior to creating VM/vCPUs. The data
+in KVM_GET_SUPPORTED_HV_CPUID is mostly static with a few exceptions but
+it seems we can change this. Add support for KVM_GET_SUPPORTED_HV_CPUID as
+a system ioctl as well.
 
-Alex
+QEMU specific description:
+In some cases QEMU needs to collect the information about which Hyper-V
+features are supported by KVM and pass it up the stack. For non-hyper-v
+features this is done with system-wide KVM_GET_SUPPORTED_CPUID/
+KVM_GET_MSRS ioctls but Hyper-V specific features don't get in the output
+(as Hyper-V CPUIDs intersect with KVM's). In QEMU, CPU feature expansion
+happens before any KVM vcpus are created so KVM_GET_SUPPORTED_HV_CPUID
+can't be used in its current shape.
+
+Vitaly Kuznetsov (7):
+  KVM: x86: hyper-v: Mention SynDBG CPUID leaves in api.rst
+  KVM: x86: hyper-v: disallow configuring SynIC timers with no SynIC
+  KVM: x86: hyper-v: make KVM_GET_SUPPORTED_HV_CPUID output independent
+    of eVMCS enablement
+  KVM: x86: hyper-v: always advertise HV_STIMER_DIRECT_MODE_AVAILABLE
+  KVM: x86: hyper-v: drop now unneeded vcpu parameter from
+    kvm_vcpu_ioctl_get_hv_cpuid()
+  KVM: x86: hyper-v: allow KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
+  KVM: selftests: test KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
+
+ Documentation/virt/kvm/api.rst                | 12 +--
+ arch/x86/include/asm/kvm_host.h               |  2 +-
+ arch/x86/kvm/hyperv.c                         | 30 ++++----
+ arch/x86/kvm/hyperv.h                         |  3 +-
+ arch/x86/kvm/vmx/evmcs.c                      |  8 +-
+ arch/x86/kvm/vmx/evmcs.h                      |  2 +-
+ arch/x86/kvm/x86.c                            | 44 ++++++-----
+ include/uapi/linux/kvm.h                      |  3 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |  2 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 26 +++++++
+ .../selftests/kvm/x86_64/hyperv_cpuid.c       | 77 +++++++++----------
+ 11 files changed, 120 insertions(+), 89 deletions(-)
+
+-- 
+2.25.4
+
