@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF8927710A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:30:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C07E27710B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727803AbgIXMa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:30:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:44636 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727561AbgIXMay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:30:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 566EB113E;
-        Thu, 24 Sep 2020 05:30:54 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C202A3F73B;
-        Thu, 24 Sep 2020 05:30:52 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     catalin.marinas@arm.com, sudeep.holla@arm.com, will@kernel.org,
-        linux@armlinux.org.uk, rjw@rjwysocki.net, viresh.kumar@linaro.org
-Cc:     dietmar.eggemann@arm.com, valentin.schneider@arm.com,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com
-Subject: [PATCH 2/2] arm: disable frequency invariance for CONFIG_BL_SWITCHER
-Date:   Thu, 24 Sep 2020 13:30:16 +0100
-Message-Id: <20200924123016.13427-3-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200924123016.13427-1-ionela.voinescu@arm.com>
-References: <20200924123016.13427-1-ionela.voinescu@arm.com>
+        id S1727766AbgIXMba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgIXMba (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:31:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00489C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:31:29 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600950688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5z81b0l/ou8a1NGQIAUTYGK50fEsB6aV5MR6+jiqW8U=;
+        b=V6bjnZooJtr1WM7nDsx5fWI6vLi1VItA1R8bQtqGIu+sXQ4Lmo1QTicCjetO8yhFWKz7O2
+        ZiyxJ7kdRoqONsYfpj72YajZE7muZGfmTGOxu37qF1Du0YJxyIAEko8xLvyart5pZfPlxC
+        UD0fi2YmXJxL1XEEmOvGnXCznP8eivd0qi8/A9PqC5yA1wd26FOIZczlhyYRNfMYfbgHD5
+        UvoO4oEhZVuqmtoNBpiuhSKczs3X04WKeLjZH6Y3Ud2xinlZQtfgpenMJFhBZ5p7pD1FgD
+        FhQJJkZ6ht9N76CTz6zDpJjyQj6NQh5bN2ZLzp5iMk+VeamNyvmEjw/FeI7fQg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600950688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5z81b0l/ou8a1NGQIAUTYGK50fEsB6aV5MR6+jiqW8U=;
+        b=Ix8Ykr+c5+mW05+gua7Jy3Ryh1WB3CFcHLWhygzt0KwubfPERGmDX2CXFuy37l3gLFjXGB
+        B0hmn48tl7KeyBDQ==
+To:     qianjun.kernel@gmail.com, peterz@infradead.org, will@kernel.org,
+        luto@kernel.org, linux-kernel@vger.kernel.org
+Cc:     laoar.shao@gmail.com, qais.yousef@arm.com, urezki@gmail.com,
+        jun qian <qianjun.kernel@gmail.com>
+Subject: Re: [PATCH V7 2/4] softirq: Factor loop termination condition
+In-Reply-To: <87v9g38tcc.fsf@nanos.tec.linutronix.de>
+References: <20200915115609.85106-1-qianjun.kernel@gmail.com> <20200915115609.85106-3-qianjun.kernel@gmail.com> <87v9g38tcc.fsf@nanos.tec.linutronix.de>
+Date:   Thu, 24 Sep 2020 14:31:27 +0200
+Message-ID: <87r1qr8ig0.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-big.LITTLE switching complicates the setting of a correct cpufreq-based
-frequency invariance scale factor due to (as observed in
-drivers/cpufreq/vexpress-spc-cpufreq.c):
- - Incorrect current and maximum frequencies as a result of the
-   exposure of a virtual frequency table to the cpufreq core,
- - Missed updates as a result of asynchronous frequency adjustments
-   caused by frequency changes in other CPU pairs.
+On Thu, Sep 24 2020 at 10:36, Thomas Gleixner wrote:
 
-Given that its functionality is atypical in regards to frequency
-invariance and this is an old technology, disable frequency
-invariance for when big.LITTLE switching is configured in to prevent
-incorrect scale setting.
+> On Tue, Sep 15 2020 at 19:56, qianjun kernel wrote:
+>>  asmlinkage __visible void __softirq_entry __do_softirq(void)
+>>  {
+>>  	u64 start = sched_clock();
+>>  	unsigned long old_flags = current->flags;
+>> -	int max_restart = MAX_SOFTIRQ_RESTART;
+>> +	unsigned int max_restart = MAX_SOFTIRQ_RESTART;
+>
+> And this change is related to making the timeout check a function in
+> which way?
 
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Suggested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
----
- arch/arm/include/asm/topology.h | 3 +++
- 1 file changed, 3 insertions(+)
+Aside of that looking at:
 
-diff --git a/arch/arm/include/asm/topology.h b/arch/arm/include/asm/topology.h
-index e5e3d5ce4d55..470299ee2fba 100644
---- a/arch/arm/include/asm/topology.h
-+++ b/arch/arm/include/asm/topology.h
-@@ -7,10 +7,13 @@
- #include <linux/cpumask.h>
- #include <linux/arch_topology.h>
- 
-+/* big.LITTLE switcher is incompatible with frequency invariance */
-+#ifndef CONFIG_BL_SWITCHER
- /* Replace task scheduler's default frequency-invariant accounting */
- #define arch_set_freq_scale topology_set_freq_scale
- #define arch_scale_freq_capacity topology_get_freq_scale
- #define arch_scale_freq_invariant topology_scale_freq_invariant
-+#endif
- 
- /* Replace task scheduler's default cpu-invariant accounting */
- #define arch_scale_cpu_capacity topology_get_cpu_scale
--- 
-2.17.1
+      https://lore.kernel.org/r/20200911155555.GX2674@hirez.programming.kicks-ass.net
+
+Peter gave you a series of patches, granted they are untested and
+lacking proper changelogs. But you go and repost them mostly unmodified
+and taking authorship of them.
+
+This not the way it works. You cannot claim authorship of something you
+did not write yourself. See Documentation/process/ for detailed
+explanation how to handle patches which you got from someone else.
+
+Thanks,
+
+        tglx
+
 
