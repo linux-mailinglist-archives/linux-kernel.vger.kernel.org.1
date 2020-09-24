@@ -2,88 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0194277036
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7375277038
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727388AbgIXLqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:46:47 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8828 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726406AbgIXLqr (ORCPT
+        id S1727442AbgIXLrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgIXLrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:46:47 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08OBgKL0028663;
-        Thu, 24 Sep 2020 07:46:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=cy9i3HKP06eSsk3EkUuP4ft7WU/EvISxSMpaosLKxSg=;
- b=QwUZCb8Q0xh6cMlgBmGwtgF3hQsUGhD7AXJADvr5CuXwTXIMMi0salXUAhjaigoNBBiL
- Eo55mdZAt70TgDWb321Xo4D43PxFy3uediLOMJLO4ek6gfk5hdHtVnqKiqLLC9gt7Q1f
- 5+9qszMsHrpHqcn7krv2m69rmZ6bZ2McBr4dxt0FHFe5grWo/E850dEf4rqy0ayVlt41
- WEwLEONXo6oYldYs/0gRcqpyERKQtFkPJ6VDpEUjXs5Lh/VrNJDiPhWDKt6Y7WOqER1s
- VbEbZATbHEeLEIeVvkdXYgfE/5o/Uzae7dZI6EJSjQiBJ6I4IP3xkPWMSimZ5GxF2CZZ Mw== 
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33rttgr2u8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 07:46:09 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08OBhfn3009184;
-        Thu, 24 Sep 2020 11:46:07 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 33n9m7tpfu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 24 Sep 2020 11:46:07 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08OBk5BB30802264
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 24 Sep 2020 11:46:05 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F81F52051;
-        Thu, 24 Sep 2020 11:46:05 +0000 (GMT)
-Received: from vajain21.in.ibm.com (unknown [9.85.113.96])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 9954A5204F;
-        Thu, 24 Sep 2020 11:46:01 +0000 (GMT)
-Received: by vajain21.in.ibm.com (sSMTP sendmail emulation); Thu, 24 Sep 2020 17:16:00 +0530
-From:   Vaibhav Jain <vaibhav@linux.ibm.com>
-To:     Wang Wensheng <wangwensheng4@huawei.com>,
-        linuxppc-dev@lists.ozlabs.org
-Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        aneesh.kumar@linux.ibm.com, dan.j.williams@intel.com,
-        ira.weiny@intel.com, santosh@fossix.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] powerpc/papr_scm: Fix warnings about undeclared
- variable
-In-Reply-To: <20200918085951.44983-1-wangwensheng4@huawei.com>
-References: <20200918085951.44983-1-wangwensheng4@huawei.com>
-Date:   Thu, 24 Sep 2020 17:16:00 +0530
-Message-ID: <87lfgz9z47.fsf@vajain21.in.ibm.com>
+        Thu, 24 Sep 2020 07:47:41 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B34BC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:47:41 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id e17so3232716wme.0
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 04:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gen+1cfeiOVlze5PT7LGWC4Io/Jy9zJpWLjYnIvdBUo=;
+        b=TqfH7ms/kwOFy3YTgEn6UqG4brHkQnjy8aBZKTbxHkbSxe6JG6g0MkBGQNhA+tdZvR
+         Wc4gr8CVvLBkf87fYMzPxzVW/UgWr6VgBNCsZbtokIx8fjt8Kwqczd5qf1YvYamucjuQ
+         NlDP42JVeL/9yurovMfouUcI0uZsKT1jrxk1HunQohITz+j9mwWPDqtzAqnHQxQSuctr
+         0Na+JMknAlwuJsSpsZEnLUSHrVBSuPv674aqJdq20IKnA7rd7fMFdvLqmRfsBq2deV0m
+         3kY2VwGlM6yZ+VeZoYDSeETpKInsKH9X+S7dgsDGIETRa0fgU+JKButY361X6OTV/S+0
+         R6sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gen+1cfeiOVlze5PT7LGWC4Io/Jy9zJpWLjYnIvdBUo=;
+        b=Xt2qmM8lxB1iRUxn2Npe3vktDwVY98W1fNkUwjsst0OgRoaXhta8OnZMiR8nolp2pe
+         6FP/1uIcSTXv+UDde3M/9JvdLBWxk5YfpeafA1DMz8eZFy5EvFMxZUBN23E7Zau1bw9Z
+         yF33KbmrSXqj4RE2xGJqTs8K6gw8NSJOzWHss2bixnymSEDU90ZUKDD68W66eo7s6NiP
+         NqdK8D9Gc1PiOK7kfeG5IvSuLFU93GZnCbLG+xbU158FF+bhKfVQOqxRwoOy034dUeuR
+         fCYBU/xnFczoMn+LLwBrNR62n7rV5HOS++YIVABBmY1B184pDmMRksmmTs8bJPX88TEL
+         SpkA==
+X-Gm-Message-State: AOAM533kGYbxxvJUNAzjemVB5R4bz3eL4zCnEd97ZFwYofvazS0I/YLK
+        2YxVDUmG+gSoVCT6aVMMG8G0OK9GIutbBWekNY6Zug==
+X-Google-Smtp-Source: ABdhPJzlAB1LaKS3vVnOhteN+LKInSJ3iqRi3Bi3sbvOZu3M59dlgKL3UiNjzSfzCIOJabK/i1UMh2XSl+c0rvu4m3o=
+X-Received: by 2002:a7b:c749:: with SMTP id w9mr4067938wmk.29.1600948059478;
+ Thu, 24 Sep 2020 04:47:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-24_08:2020-09-24,2020-09-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=1 phishscore=0
- impostorscore=0 mlxscore=0 mlxlogscore=984 bulkscore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240085
+References: <20200924040513.31051-1-walter-zh.wu@mediatek.com>
+In-Reply-To: <20200924040513.31051-1-walter-zh.wu@mediatek.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 24 Sep 2020 13:47:27 +0200
+Message-ID: <CAG_fn=W2dcGKFKHpDXzNvbPUp3USYyWi2DEpEewboqYBodnSsQ@mail.gmail.com>
+Subject: Re: [PATCH v4 3/6] kasan: print timer and workqueue stack
+To:     Walter Wu <walter-zh.wu@mediatek.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 24, 2020 at 6:05 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
+>
+> The aux_stack[2] is reused to record the call_rcu() call stack,
+> timer init call stack, and enqueuing work call stacks. So that
+> we need to change the auxiliary stack title for common title,
+> print them in KASAN report.
+>
+> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+> Suggested-by: Marco Elver <elver@google.com>
+> Acked-by: Marco Elver <elver@google.com>
+> Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
+> Reviewed-by: Andrey Konovalov <andreyknvl@google.com>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Alexander Potapenko <glider@google.com>
+> ---
+>
+> v2:
+> - Thanks for Marco suggestion.
+> - We modify aux stack title name in KASAN report
+>   in order to print call_rcu()/timer/workqueue stack.
+>
+> ---
+>  mm/kasan/report.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+> index 4f49fa6cd1aa..886809d0a8dd 100644
+> --- a/mm/kasan/report.c
+> +++ b/mm/kasan/report.c
+> @@ -183,12 +183,12 @@ static void describe_object(struct kmem_cache *cache, void *object,
+>
+>  #ifdef CONFIG_KASAN_GENERIC
+>                 if (alloc_info->aux_stack[0]) {
+> -                       pr_err("Last call_rcu():\n");
+> +                       pr_err("Last potentially related work creation:\n");
 
-Thanks for the patch. This looks good to me.
-
-Wang Wensheng <wangwensheng4@huawei.com> writes:
-
-> Build the kernel with 'make C=2':
-> arch/powerpc/platforms/pseries/papr_scm.c:825:1: warning: symbol
-> 'dev_attr_perf_stats' was not declared. Should it be static?
-
-> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
-Reviewed-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-
--- 
-Cheers
-~ Vaibhav
+This doesn't have to be a work creation (expect more callers of
+kasan_record_aux_stack() in the future), so maybe change the wording
+here to "Last potentially related auxiliary stack"?
