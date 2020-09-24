@@ -2,115 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C37276DB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07BE276DBA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:46:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgIXJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:45:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726442AbgIXJpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:45:23 -0400
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C253823977;
-        Thu, 24 Sep 2020 09:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600940722;
-        bh=yxZaR8oHCKmbjvofeBI7154Pzfy5ckgYTMwdIng5lfc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DpMHvs/+ynAjvKVx5Aj3p/dwAFZejJzwsOMF/qi81GBlcMl7MYV3/F2PzydqyMbPD
-         as6wT9rJsSAsrri9EkAaA+hvf7onEy/YXw6ESMBr/SPWeMCckfOa2x0nG5YihA4VXl
-         fgy64/b/73LPl/1kb9s3m1c603dfvjz7AXhmWuaE=
-Received: by mail-ot1-f51.google.com with SMTP id y5so2571579otg.5;
-        Thu, 24 Sep 2020 02:45:22 -0700 (PDT)
-X-Gm-Message-State: AOAM532JrB0yWDJZi/lOmCeE0B5r3Tqpi8erXj0KfpKQI3+AA7HaFbIn
-        9XSFlgKmt/80+z8VPEhzGplGG+LWa3QXmgNaxek=
-X-Google-Smtp-Source: ABdhPJxoellXIpyU0LHX8I0XsNYx3OIWNYU0Klr4nYoPB5A75M1KYnpRpffRjnqMc5d/R8WVBiDyUMG8J33nChSQM7M=
-X-Received: by 2002:a9d:335:: with SMTP id 50mr2389727otv.90.1600940722000;
- Thu, 24 Sep 2020 02:45:22 -0700 (PDT)
+        id S1726681AbgIXJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:46:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgIXJq0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:46:26 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A108C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:46:26 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id r19so1412150pls.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dXtDG4WXuNqSQN3RaeiVNpThPEJ77urnmm8s8YfK9as=;
+        b=OVr4txBidiEBxnfJqJ9/EnzP3gI/lBYaT06g2AKQ8Lbe7l2szbZn3gFrz6AvOc86Ho
+         kghJ+6i1SVcXrtjV5uBzfgaxqyGWlgNvVcD89h+7RdrrKZ7aBbsXVOCw1LSvsA8m0J7B
+         TJ773YLQ7hYp1u6O3LoWRuXBMswTEkdIWnbRzrtazDSadSqGZTWwsKNIInNzinyccioY
+         ZuQwhY2ZN6m48SvSy4MGPNstQpBAFu33lQFUdbXaZTIaB1c8nBfUjJO6fl7wsGqU5+K2
+         PutQ6cW5XIe6rnJKamufFrPZQuv2yvvZkd3jlTEbG05aykgyhjrsdMpT7K90MgQwa1qL
+         pJqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=dXtDG4WXuNqSQN3RaeiVNpThPEJ77urnmm8s8YfK9as=;
+        b=e7C8rDSOlaUyY7ZuncMsRrMsxM+2HM90OD+pHxQ5bgwutgURysU9xw/T6VAA6sXhky
+         XBNFnkv3mMcHGOWEZmaXpL+RI17s5W63iJhC7oU2fIb/QM1wga/XDrI+ToNLuebiNF1d
+         I/giTuTV25XqIyixc6uT9Am/DS0MxqqQLtV+AAU7YCv+Fum115T1Bq+GnzXzsY7OiDJ8
+         a0JPF5JHBAxDhf4I4hmLAKRGZhsrF+1wSeSN1Oi2YEgkDLA3fRh5KmYHM87SQJ8BjJeT
+         RSZ8Kz7kGFbPhQHzoa7q7FO3LG79RR28FYdnH7igIM5Z0xTL9+vkVaHYmnNP3BD+JYDl
+         2SHA==
+X-Gm-Message-State: AOAM533dcindOgxMbfKn15HR0u12hoJyHrQaaNVVavHqrfdheBER6Lic
+        GtIcVFf3wo4ux1M/o63vQ1S+nQ==
+X-Google-Smtp-Source: ABdhPJwvoFGmBEq5M8K5CejYig9XJcZP8vHTUKRMae2JWD/ZRrSG5k2Y9sOLOCqMALRPy8BB97sT8g==
+X-Received: by 2002:a17:902:6844:b029:d2:4300:b936 with SMTP id f4-20020a1709026844b02900d24300b936mr3852762pln.32.1600940785590;
+        Thu, 24 Sep 2020 02:46:25 -0700 (PDT)
+Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
+        by smtp.gmail.com with ESMTPSA id x4sm2413008pfm.86.2020.09.24.02.46.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 02:46:24 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 18:46:20 +0900
+From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
+To:     Ben Chuang <benchuanggli@gmail.com>
+Cc:     Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw, Renius.Chen@genesyslogic.com.tw
+Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
+ additional operations
+Message-ID: <20200924094620.GA38298@laputa>
+Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Ben Chuang <benchuanggli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw, Renius.Chen@genesyslogic.com.tw
+References: <20200710111054.29562-1-benchuanggli@gmail.com>
+ <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
+ <20200917051253.GA3094018@laputa>
+ <CACT4zj9LuJoy9mX4Fqm+jZf1bDa5oUZcR6mPa-otW1mXfNLh1g@mail.gmail.com>
+ <20200918011502.GA27646@laputa>
+ <CACT4zj9L0zk1UaYLjsBpt8_tLPbfou-WDv0XwXbQE146bsT0+Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200923161404.17811-1-ardb@kernel.org> <20200923161404.17811-2-ardb@kernel.org>
- <202009231140.B4648C6@keescook> <CAMj1kXFFs2rLMn5kdY9CGsz32ctBshb93iN7yBtZNHYwW2mWnw@mail.gmail.com>
- <202009231400.E52D1C7E7@keescook>
-In-Reply-To: <202009231400.E52D1C7E7@keescook>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 24 Sep 2020 11:45:11 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGGk2v69u+67LAyiyCTCteWxuMoRmVmWFGNdFbMPm6hCA@mail.gmail.com>
-Message-ID: <CAMj1kXGGk2v69u+67LAyiyCTCteWxuMoRmVmWFGNdFbMPm6hCA@mail.gmail.com>
-Subject: Re: [PATCH 1/7] efi: pstore: disentangle from deprecated efivars module
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Matthew Garrett <mjg59@google.com>,
-        Peter Jones <pjones@redhat.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4zj9L0zk1UaYLjsBpt8_tLPbfou-WDv0XwXbQE146bsT0+Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 at 23:02, Kees Cook <keescook@chromium.org> wrote:
->
-> On Wed, Sep 23, 2020 at 08:43:21PM +0200, Ard Biesheuvel wrote:
-> > On Wed, 23 Sep 2020 at 20:41, Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > On Wed, Sep 23, 2020 at 06:13:58PM +0200, Ard Biesheuvel wrote:
-> > > > The EFI pstore implementation relies on the 'efivars' abstraction,
-> > > > which encapsulates the EFI variable store in a way that can be
-> > > > overridden by other backing stores, like the Google SMI one.
-> > > >
-> > > > On top of that, the EFI pstore implementation also relies on the
-> > > > efivars.ko module, which is a separate layer built on top of the
-> > > > 'efivars' abstraction that exposes the [deprecated] sysfs entries
-> > > > for each variable that exists in the backing store.
-> > > >
-> > > > Since the efivars.ko module is deprecated, and all users appear to
-> > > > have moved to the efivarfs file system instead, let's prepare for
-> > > > its removal, by removing EFI pstore's dependency on it.
-> > > >
-> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > >
-> > > With this and the other pstore patch, do the pstore self-tests still
-> > > pass on an EFI system?
-> > >
-> > > If so, please consider both:
-> > >
-> > > Acked-by: Kees Cook <keescook@chromium.org>
-> > >
+Ben,
+
+On Fri, Sep 18, 2020 at 06:27:01PM +0800, Ben Chuang wrote:
+> On Fri, Sep 18, 2020 at 9:15 AM AKASHI Takahiro
+> <takahiro.akashi@linaro.org> wrote:
 > >
-> > Selftests? Excellent! Are they documented too?
->
-> Not really, but they're pretty simple:
->
-> cd tools/testing/selftests/pstore
-> *double-check "config" against running kernel config*
-> ./pstore_tests
-> ./pstore_crash_test
-> *wait for system to reboot*
-> cd tools/testing/selftests/pstore
-> ./pstore_post_reboot_tests
->
-> (though please test before/after, just to make sure other deltas haven't
-> broken things before your series -- I don't test EFI pstore with high
-> frequency)
->
+> > Ben,
+> >
+> > On Thu, Sep 17, 2020 at 06:12:27PM +0800, Ben Chuang wrote:
+> > > Hi Takahiro,
+> > >
+> > > On Thu, Sep 17, 2020 at 1:12 PM AKASHI Takahiro
+> > > <takahiro.akashi@linaro.org> wrote:
+> > > >
+> > > > Adrian, Ben,
+> > > >
+> > > > Regarding _reset() function,
+> > > >
+> > > > On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
+> > > > > On 10/07/20 2:10 pm, Ben Chuang wrote:
+> > > > > > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > > > > >
+> > > > > > In this commit, UHS-II related operations will be called via a function
+> > > > > > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
+> > > > > > a kernel module.
+> > > > > > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
+> > > > > > and when the UHS-II module is loaded. Otherwise, all the functions
+> > > > > > stay void.
+> > > > > >
+> > > > > > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > > > > > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > > > > > ---
+> > > > > >  drivers/mmc/host/sdhci.c | 152 ++++++++++++++++++++++++++++++++++-----
+> > > > > >  1 file changed, 136 insertions(+), 16 deletions(-)
+> > > > > >
+> > > >
+> > > >   (snip)
+> > > >
+> > > > > >     if (host->ops->platform_send_init_74_clocks)
+> > > > > >             host->ops->platform_send_init_74_clocks(host, ios->power_mode);
+> > > > > >
+> > > > > > @@ -2331,7 +2411,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+> > > > > >     }
+> > > > > >
+> > > > > >     if (host->version >= SDHCI_SPEC_300) {
+> > > > > > -           u16 clk, ctrl_2;
+> > > > > > +           u16 clk;
+> > > > > >
+> > > > > >             if (!host->preset_enabled) {
+> > > > > >                     sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
+> > > > > > @@ -3173,11 +3253,19 @@ static bool sdhci_request_done(struct sdhci_host *host)
+> > > > > >                     /* This is to force an update */
+> > > > > >                     host->ops->set_clock(host, host->clock);
+> > > > > >
+> > > > > > -           /* Spec says we should do both at the same time, but Ricoh
+> > > > > > -              controllers do not like that. */
+> > > > > > -           sdhci_do_reset(host, SDHCI_RESET_CMD);
+> > > > > > -           sdhci_do_reset(host, SDHCI_RESET_DATA);
+> > > > > > -
+> > > > > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > > > > +               host->mmc->flags & MMC_UHS2_INITIALIZED) {
+> > > > > > +                   if (sdhci_uhs2_ops.reset)
+> > > > > > +                           sdhci_uhs2_ops.reset(host,
+> > > > > > +                                                SDHCI_UHS2_SW_RESET_SD);
+> > > > > > +           } else {
+> > > > > > +                   /*
+> > > > > > +                    * Spec says we should do both at the same time, but
+> > > > > > +                    * Ricoh controllers do not like that.
+> > > > > > +                    */
+> > > > > > +                   sdhci_do_reset(host, SDHCI_RESET_CMD);
+> > > > > > +                   sdhci_do_reset(host, SDHCI_RESET_DATA);
+> > > > > > +           }
+> > > > >
+> > > > > Please look at using the existing ->reset() sdhci host op instead.
+> > > >
+> > > > Well, the second argument to those reset functions is a bit-wise value
+> > > > to different "reset" registers, SDHCI_SOFTWARE_RESET and SDHCI_UHS2_SW_RESET,
+> > > > respectively.
+> > > >
+> > > > This fact raises a couple of questions to me:
+> > > >
+> > > > 1) Does it make sense to merge two functionality into one, i.e.
+> > > >    sdhci_do_reset(), which is set to call ->reset hook?
+> > > >
+> > > >         -> Adrian
+> > > >
+> > > > 2) UHS2_SW_RESET_SD is done only at this place while there are many callsites
+> > > >    of reset(RESET_CMD|RESET_DATA) in sdhci.c.
+> > > >    Why does the current code work?
+> > > >
+> > > >    I found, in sdhci-pci-gli.c,
+> > > >    sdhci_gl9755_reset()
+> > > >         /* reset sd-tran on UHS2 mode if need to reset cmd/data */
+> > > >         if ((mask & SDHCI_RESET_CMD) | (mask & SDHCI_RESET_DATA))
+> > > >                 gl9755_uhs2_reset_sd_tran(host);
+> >
+> > (A)
+> >
+> > > >
+> > > >    Is this the trick to avoid the issue?
+> > > >    (It looks redundant in terms of the hack above in sdhci_request_done()
+> > > >    and even quite dirty to me. Moreover, no corresponding code for gl9750
+> > > >    and gl9763.)
+> > >
+> > > GL9755 currently does SD reset and UHS-II reset together.
+> >
+> > Do you mean that, in UHS-II operations, you need only the reset on
+> > SDHCI_UHS2_SW_RESET register?
+> 
+> No, GL9755 does SD reset and UHS-II reset together.
 
-I have done the 'before' test on three different EFI Linux systems
-(x86, arm64 and ARM), and they all give me something like the below
+Is this also true for all sdhci controller drivers in general?
+As I said, I didn't find any precise description about this
+in SD specification.
 
-=== Pstore unit tests (pstore_tests) ===
-UUID=109d02e6-9395-4274-9554-2c078e87a662
-Checking pstore backend is registered ... ok
-  backend=efi
-  cmdline=BOOT_IMAGE=/vmlinuz-5.3.0-59-generic
-root=/dev/mapper/crypt-root ro quiet splash vt.handoff=1
-Checking pstore console is registered ... FAIL
-Checking /dev/pmsg0 exists ... FAIL
-Writing unique string to /dev/pmsg0 ... FAIL
+-Takahiro Akashi
 
-So I'm not sure if there is any point to doing the 'after' test if
-this is the baseline.
+> > But the hunk above (A) does the UHS-II reset along with UHS-I reset.
+> >
+> > > There is no UHS-II interface on gl9750 and gl9763e.
+> > >
+> > > >
+> > > >         -> Ben
+> > > >
+> > > > 3) (More or less SD specification issue)
+> > > >    In UHS-II mode, do we have to call reset(SHCI_RESET_ALL) along with
+> > > >    reset(UHS2_SW_RESET_FULL)?
+> > > >    Under the current implementation, both will be called at the end.
+> > > >
+> > >
+> > > As I know, the UHS2_SW_RESET_FULL is only for UHS-II.
+> > > Can you list the lines that reset(SHCI_RESET_ALL) and
+> > > reset(UHS2_SW_RESET_FULL) are both called?
+> >
+> > I was not clear here. (The above is also another example.)
+> >
+> > Look at sdhci_remove_host() and shdci_uhs2_remote_host().
+> > If the argument 'dead' is 0, we will do both of the resets for UHS-II.
+> 
+>  Do UHS2_SW_RESET_FULL in sdhci_uhs2_remove_host() and then do
+> SDHCI_RESET_ALL in sdhci_remove_host() is ok.
+> 
+> 
+> >
+> > -Takahiro Akashi
+> >
+> > > >         -> Adrian, Ben
+> > > >
+> > > > 4) (Not directly linked to UHS-II support)
+> > > >   In some places, we see the sequence:
+> > > >         sdhci_do_reset(host, SDHCI_RESET_CMD);
+> > > >         sdhci_do_reset(host, SDHCI_RESET_DATA);
+> > > >   while in other places,
+> > > >         sdhci_do_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
+> > > >
+> > > >   If the statement below is true,
+> > > > > > -           /* Spec says we should do both at the same time, but Ricoh
+> > > > > > -              controllers do not like that. */
+> > > >   the latter should be wrong.
+> > > >
+> > > >         -> Adrian
+> > > >
+> > > > -Takahiro Akashi
+> > > >
+> > > >
+> > > >
+> > > > > >             host->pending_reset = false;
+> > > > > >     }
+> > > > > >
+> > > > > > @@ -3532,6 +3620,13 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
+> > > > > >                               SDHCI_INT_BUS_POWER);
+> > > > > >             sdhci_writel(host, mask, SDHCI_INT_STATUS);
+> > > > > >
+> > > > > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > > > > +               intmask & SDHCI_INT_ERROR &&
+> > > > > > +               host->mmc->flags & MMC_UHS2_SUPPORT) {
+> > > > > > +                   if (sdhci_uhs2_ops.irq)
+> > > > > > +                           sdhci_uhs2_ops.irq(host);
+> > > > > > +           }
+> > > > > > +
+> > > > >
+> > > > > Please look at using the existing ->irq() sdhci host op instead
+> > > > >
+> > > > > >             if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
+> > > > > >                     u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
+> > > > > >                                   SDHCI_CARD_PRESENT;
+> > > > > > @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
+> > > > > >             /* This may alter mmc->*_blk_* parameters */
+> > > > > >             sdhci_allocate_bounce_buffer(host);
+> > > > > >
+> > > > > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > > > > +       host->version >= SDHCI_SPEC_400 &&
+> > > > > > +       sdhci_uhs2_ops.add_host) {
+> > > > > > +           ret = sdhci_uhs2_ops.add_host(host, host->caps1);
+> > > > > > +           if (ret)
+> > > > > > +                   goto unreg;
+> > > > > > +   }
+> > > > > > +
+> > > > >
+> > > > > I think you should look at creating uhs2_add_host() instead
+> > > > >
+> > > > > >     return 0;
+> > > > > >
+> > > > > >  unreg:
+> > > > > > @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
+> > > > > >  {
+> > > > > >     struct mmc_host *mmc = host->mmc;
+> > > > > >
+> > > > > > +   /* FIXME: Do we have to do some cleanup for UHS2 here? */
+> > > > > > +
+> > > > > >     if (!IS_ERR(mmc->supply.vqmmc))
+> > > > > >             regulator_disable(mmc->supply.vqmmc);
+> > > > > >
+> > > > > > @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
+> > > > > >             mmc->cqe_ops = NULL;
+> > > > > >     }
+> > > > > >
+> > > > > > +   if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
+> > > > > > +           /* host doesn't want to enable UHS2 support */
+> > > > > > +           mmc->caps &= ~MMC_CAP_UHS2;
+> > > > > > +           mmc->flags &= ~MMC_UHS2_SUPPORT;
+> > > > > > +
+> > > > > > +           /* FIXME: Do we have to do some cleanup here? */
+> > > > > > +   }
+> > > > > > +
+> > > > > >     host->complete_wq = alloc_workqueue("sdhci", flags, 0);
+> > > > > >     if (!host->complete_wq)
+> > > > > >             return -ENOMEM;
+> > > > > > @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
+> > > > > >  unled:
+> > > > > >     sdhci_led_unregister(host);
+> > > > > >  unirq:
+> > > > > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > > > > +       sdhci_uhs2_ops.remove_host)
+> > > > > > +           sdhci_uhs2_ops.remove_host(host, 0);
+> > > > > >     sdhci_do_reset(host, SDHCI_RESET_ALL);
+> > > > > >     sdhci_writel(host, 0, SDHCI_INT_ENABLE);
+> > > > > >     sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
+> > > > > > @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
+> > > > > >
+> > > > > >     sdhci_led_unregister(host);
+> > > > > >
+> > > > > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > > > > +       sdhci_uhs2_ops.remove_host)
+> > > > > > +           sdhci_uhs2_ops.remove_host(host, dead);
+> > > > > > +
+> > > > >
+> > > > > I think you should look at creating uhs2_remove_host() instead
+> > > > >
+> > > > > >     if (!dead)
+> > > > > >             sdhci_do_reset(host, SDHCI_RESET_ALL);
+> > > > > >
+> > > > > >
+> > > > >
