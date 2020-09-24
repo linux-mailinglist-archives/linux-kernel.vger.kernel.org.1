@@ -2,70 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CFD9276BEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92FD276BEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgIXIbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:31:14 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:52852 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726960AbgIXIbO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:31:14 -0400
-X-UUID: 0b4befb0c9e14a26bd31ae84c28b7256-20200924
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=DVsde8Sxk23MLuOP2061BcZ00WNs3yYnS+BwpO2OdC0=;
-        b=ZagBkT8LsKGA5lk7INzrhXmHg4ALNaUbomCfytyc14roUgl0Art4krlD0eoquvJi8es/V96qqoyoDaeMNNDcnwks2XndgtxPiQSsd2octfXd1SRuWp/Qev5ZpuI5yvqpz5d1Rex/Vwav1po9LccT35Kb8Uzoho5xpStfnnWBw3g=;
-X-UUID: 0b4befb0c9e14a26bd31ae84c28b7256-20200924
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1474091165; Thu, 24 Sep 2020 16:31:03 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
- (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 24 Sep
- 2020 16:31:02 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Sep 2020 16:31:01 +0800
-Message-ID: <1600936119.21970.4.camel@mhfsdcap03>
-Subject: Re: [PATCH] usb: gadget: bcm63xx_udc: fix up the error of
- undeclared usb_debug_root
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Felipe Balbi <balbi@kernel.org>
-CC:     Kevin Cernekee <cernekee@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        stable <stable@vger.kernel.org>
-Date:   Thu, 24 Sep 2020 16:28:39 +0800
-In-Reply-To: <871rirehqq.fsf@kernel.org>
-References: <1600061930-778-1-git-send-email-chunfeng.yun@mediatek.com>
-         <871rirehqq.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1727246AbgIXIap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:30:45 -0400
+Received: from ozlabs.org ([203.11.71.1]:42011 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727046AbgIXIao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:30:44 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BxpCQ3ssRz9sTN;
+        Thu, 24 Sep 2020 18:30:42 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600936242;
+        bh=LRmGIax4dalz/UGz8d4SkRxKBlzjQ3EaT2pKFE6JCVY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GCTyVhVlw4pcxLjg9XAd2nKYguMZt56PFeqCUaULY2JYt3blylX5BJO12ufzkb80g
+         obU6sUptThY8I27ouvXGQwcKT3YYlV7pxVJwCejsEiuzHgIQ5G+mLtZpa3FAcPbZkK
+         es0InT7D2f10atKzgdZ83PxNkLrRZwcWwpPtep0KTu7nO/Cjy1h2O+RnP1sOpgud4s
+         stNkvifJPcwt9M93GOca/00sJFtU74wZj1bVJyS0xV1GHe/lvzeCJPDSihVcNvFS9u
+         d5DDpCohiLocLek5ZHKSIHjwdn6n3dHoUO6JKx00ZOPnr0AnjlxSU6F/qwzM+YSVa7
+         QnlhlvPjZXN+w==
+Date:   Thu, 24 Sep 2020 18:30:38 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: linux-next: build failure after merge of the vfs tree
+Message-ID: <20200924183038.3c6da86e@canb.auug.org.au>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: B7859B15AFDE944996573D812135A52BDB5B7466C5FA3F1467BE71D06B2672CE2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/GDv44smj=nUa+/WgA8CwQxw";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA5LTI0IGF0IDEwOjUwICswMzAwLCBGZWxpcGUgQmFsYmkgd3JvdGU6DQo+
-IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4gd3JpdGVzOg0KPiANCj4g
-PiBGaXggdXAgdGhlIGJ1aWxkIGVycm9yIGNhdXNlZCBieSB1bmRlY2xhcmVkIHVzYl9kZWJ1Z19y
-b290DQo+ID4NCj4gPiBDYzogc3RhYmxlIDxzdGFibGVAdmdlci5rZXJuZWwub3JnPg0KPiA+IEZp
-eGVzOiBhNjZhZGE0ZjI0MWMoInVzYjogZ2FkZ2V0OiBiY202M3h4X3VkYzogY3JlYXRlIGRlYnVn
-ZnMgZGlyZWN0b3J5IHVuZGVyIHVzYiByb290IikNCj4gPiBSZXBvcnRlZC1ieToga2VybmVsIHRl
-c3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+ID4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVu
-IDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPg0KPiANCj4gJCBwYXRjaCAtcDEgLS1kcnktcnVu
-IHAucGF0Y2gNCj4gL3Vzci9iaW4vcGF0Y2g6ICoqKiogT25seSBnYXJiYWdlIHdhcyBmb3VuZCBp
-biB0aGUgcGF0Y2ggaW5wdXQuDQo+IA0KUGxlYXNlIHRyeSB0byBhcHBseSB2MiwgaHR0cHM6Ly9w
-YXRjaHdvcmsua2VybmVsLm9yZy9wYXRjaC8xMTc3MjkxMS8NCkkgaW5kZWVkIGFkZCBhIGxpbmUg
-Y29kZQ0KDQoNCg==
+--Sig_/GDv44smj=nUa+/WgA8CwQxw
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+After merging the vfs tree, today's linux-next build (x86_64 allnoconfig)
+failed like this:
+
+arch/x86/include/asm/barrier.h: Assembler messages:
+arch/x86/include/asm/barrier.h:41: Error: operand type mismatch for `cmp'
+arch/x86/include/asm/barrier.h:41: Error: operand type mismatch for `cmp'
+
+and many more ...
+
+Caused by commit
+
+  e33ea6e5ba6a ("x86/uaccess: Use pointer masking to limit uaccess speculat=
+ion")
+
+I am not exactly sure why (but reverting it fixes the build).
+
+I have reverted that commit for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/GDv44smj=nUa+/WgA8CwQxw
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9sWS4ACgkQAVBC80lX
+0GxmRAf/TYX4R2adWmPplzadr5+Wa9dR2gae6g1XAtlZp+TQ16InkZGD4IaDa5B1
+2TaS1r0vS3OE5AXtLrHGw1K257FnXERr1C7z6tcsINxQ5cHbpIdigZX6QW2+aqH5
+nB70hkniMpFJqVfQoNcXJIouARAdo2qfddgm36dkOTSFT2InAIsqxvCLp5j2qpFU
+9NHe5Z0N3sbahLqtVzsRKNBu8mDUqzcgpsctFSoooT/h8rcsUgY+1h3SMboH8U1N
+yTh4gq8/IfvY4UxXpvIEjOoJTVzn0sJrYyv/g+YYcuSqAiubN5FriW5NnQu6V9EL
+iki/l8ViyTn54vSKysuNN4KQaW8ENg==
+=yBbZ
+-----END PGP SIGNATURE-----
+
+--Sig_/GDv44smj=nUa+/WgA8CwQxw--
