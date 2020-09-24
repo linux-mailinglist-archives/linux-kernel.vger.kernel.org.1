@@ -2,75 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 156852768DD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3A52768DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgIXG1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:27:18 -0400
-Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:13396 "EHLO
-        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgIXG1S (ORCPT
+        id S1726951AbgIXG1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:27:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIXG1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:27:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1600928837; x=1632464837;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=zknW5jJHzdymA6wvIjLBr4rV/FXE51ARi7wGFxmt7nQ=;
-  b=KrqgABaE2Ncw17dXyNT3rI/zOqgCoUgcqVrJdb0tYbXiWX4nZK/pGBl4
-   eIrxvdZrmTCLG/J5NwWMU7ofUkrXyWTVMRrt3hETNHoIE8R81LHIPwD6s
-   xKxTY/XjpHZD//eI/n97XR4fu9l86XOkj6GuEr9TLwfhRc4Rggf/zk/Fn
-   s=;
-X-IronPort-AV: E=Sophos;i="5.77,296,1596499200"; 
-   d="scan'208";a="56021443"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-119b4f96.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 24 Sep 2020 06:27:15 +0000
-Received: from EX13D31EUA004.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2a-119b4f96.us-west-2.amazon.com (Postfix) with ESMTPS id EB1FB1A03DC;
-        Thu, 24 Sep 2020 06:27:14 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.146) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 24 Sep 2020 06:27:08 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-CC:     SeongJae Park <sjpark@amazon.com>, <roger.pau@citrix.com>,
-        SeongJae Park <sjpark@amazon.de>, <axboe@kernel.dk>,
-        <aliguori@amazon.com>, <amit@kernel.org>, <mheyne@amazon.de>,
-        <linux-block@vger.kernel.org>, <xen-devel@lists.xenproject.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] xen-blkback: add a parameter for disabling of persistent grants
-Date:   Thu, 24 Sep 2020 08:26:53 +0200
-Message-ID: <20200924062653.9449-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200923200930.GB11767@char.us.oracle.com>
+        Thu, 24 Sep 2020 02:27:32 -0400
+Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D80C0613CE;
+        Wed, 23 Sep 2020 23:27:32 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4BxlTD12DVzQl8x;
+        Thu, 24 Sep 2020 08:27:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-disposition:content-type:content-type:mime-version
+        :message-id:subject:subject:from:from:date:date:received; s=
+        mail20150812; t=1600928845; bh=7B4yQBLdUFDs9feFHdCThn3G16i3rfICn
+        JryaWCFccU=; b=i19K6hvxv0JeNYWCbFto+jzpY/6dvgTDvKpOCZHwx1Goj7TQ2
+        0lgDTYsxJ0UwRWBaxDWcZv5ksXBoEg4iQrFquFuJL+80DAA0okODsrNJj/9Ghn0T
+        eCTrX/qW8iAsfbJ7eoxjnF/8U9LW7E+bZ4jBqDhMY2/As+uFf7sKzGE+UR325hzG
+        U8aY7dDJYMsZbOdaGDpK6Q7LEyqvM1zVjxS3XmkQEkpgFIt/uG+GgCpourd4+NXb
+        4w69Xs0bZIrV8eWzxxvAe4Ly/USnSBYtO4fyEIxr0YRxXaelKcHOGS8VXsACqCLV
+        ZkNwxe3Qll7MiFxcK3b3fQwVNcsaSaVdyTr0Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1600928846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=MLYLXufmHm+IPMon/KMutx5OLmK1QEFqDnmoQOhlCkU=;
+        b=ffkSfaqNfJ/SvVmOpe2CktybseFDO+p5W5LNLp+smcwuJO+1zv0Ep/sR8m5vn6ByGTKQsQ
+        nxAbDevxUS9axGTYXhzcAZt5mWkpoFpYOht0tcojBqBhwLF7Yz0jotJLR3k6KN+DZnCUAO
+        gABpfY4UtyU5ux75c+E5ZbkkMQXDE6rZjSRe3PCdzX7GTfnCsUQGmFRI2IyOQjZe6AUKFl
+        YvteErxpz6d6s8SDzoIgU0rcp9Rfn3UJEdSxaNxLlP55xcOH9Fmu5WzsyRInDzbwrlPoci
+        GQaqYQoUMPdGxvwsmkE82cvn1klJNiSRk/dDIngYtqaLYwUZ+sDu2+J68qYdRg==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by spamfilter06.heinlein-hosting.de (spamfilter06.heinlein-hosting.de [80.241.56.125]) (amavisd-new, port 10030)
+        with ESMTP id KC95yWCztS8c; Thu, 24 Sep 2020 08:27:25 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 08:27:22 +0200
+From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH] net: usb: ax88179_178a: add Toshiba usb 3.0 adapter
+Message-ID: <20200924062722.GA20280@monster.powergraphx.local>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.146]
-X-ClientProxiedBy: EX13D17UWB004.ant.amazon.com (10.43.161.132) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -4.58 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 21E39170A
+X-Rspamd-UID: 37bc61
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 16:09:30 -0400 Konrad Rzeszutek Wilk <konrad.wilk@oracle.com> wrote:
+Reposted and added netdev as suggested by Jakub Kicinski.
 
-> On Tue, Sep 22, 2020 at 09:01:25AM +0200, SeongJae Park wrote:
-> > From: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Persistent grants feature provides high scalability.  On some small
-> > systems, however, it could incur data copy overhead[1] and thus it is
-> > required to be disabled.  But, there is no option to disable it.  For
-> > the reason, this commit adds a module parameter for disabling of the
-> > feature.
-> 
-> Would it be better suited to have it per guest?
+---
+Adds the driver_info and usb ids of the AX88179 based Toshiba USB 3.0
+ethernet adapter.
 
-The latest version of this patchset[1] supports blkfront side disablement.
-Could that partially solves your concern?
+Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+---
+ drivers/net/usb/ax88179_178a.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-[1] https://lore.kernel.org/xen-devel/20200923061841.20531-1-sjpark@amazon.com/
+diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
+index ac7bc436da33..ed078e5a3629 100644
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -1829,6 +1829,19 @@ static const struct driver_info belkin_info = {
+ 	.tx_fixup = ax88179_tx_fixup,
+ };
+ 
++static const struct driver_info toshiba_info = {
++	.description = "Toshiba USB Ethernet Adapter",
++	.bind	= ax88179_bind,
++	.unbind = ax88179_unbind,
++	.status = ax88179_status,
++	.link_reset = ax88179_link_reset,
++	.reset	= ax88179_reset,
++	.stop = ax88179_stop,
++	.flags	= FLAG_ETHER | FLAG_FRAMING_AX,
++	.rx_fixup = ax88179_rx_fixup,
++	.tx_fixup = ax88179_tx_fixup,
++};
++
+ static const struct usb_device_id products[] = {
+ {
+ 	/* ASIX AX88179 10/100/1000 */
+@@ -1862,6 +1875,10 @@ static const struct usb_device_id products[] = {
+ 	/* Belkin B2B128 USB 3.0 Hub + Gigabit Ethernet Adapter */
+ 	USB_DEVICE(0x050d, 0x0128),
+ 	.driver_info = (unsigned long)&belkin_info,
++}, {
++	/* Toshiba USB 3.0 GBit Ethernet Adapter */
++	USB_DEVICE(0x0930, 0x0a13),
++	.driver_info = (unsigned long)&toshiba_info,
+ },
+ 	{ },
+ };
+-- 
+2.28.0
 
-
-Thanks,
-SeongJae Park
