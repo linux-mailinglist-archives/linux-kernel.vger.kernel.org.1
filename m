@@ -2,156 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CAF277418
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8011E27741D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbgIXOeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:34:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728088AbgIXOeD (ORCPT
+        id S1728258AbgIXOf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:35:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49777 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728088AbgIXOfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:34:03 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE3FC0613CE;
-        Thu, 24 Sep 2020 07:34:03 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id 185so3818813oie.11;
-        Thu, 24 Sep 2020 07:34:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fq0zugItcF1BHyiJdFIvA0GVCu5hDXXnGo1JwlqfSGg=;
-        b=Mu5iS2/0yA25dRJ+hSiXFp1spYUCVWRChGOvq0ZDyVdw2zBXq2WEOgY89IvmQv3HCh
-         YONAaO9oxQJhopBcThva44JMtywEzVb59OwGMjMM2EjUwS81d7ESQVZpwG0RIYx0294w
-         WOPXCZKnULZbzo9X3uYvMBl70H1y9gGKvlW/bj8uT6QQHUqDmvqn8oMhNmcJZvuKkaAk
-         tW48ooe45RG4ARae8WQpl9Dxbduo+HncUvIseUD63ABm1BAwgv4t7jwq/SOPES/Yo0yM
-         n+jUb+Nz3+6wr2Czqu0VSMZO0Cm16KE/2nIb6wUlFztwIlOZt2S4xHL/dEV3TtBj8+s0
-         sIcw==
+        Thu, 24 Sep 2020 10:35:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600958123;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zvhmXdurMqfIrlufAAPJfQcazZ/8TT7PFFG3tysOQUc=;
+        b=H9hXmr4AZAeDPeIhNSYWtR2rqFtspOtdtx0gZxd2/5QlDorswpLwzdwr7P0bV1zCbjQmx1
+        mBqy4XJ8RKZOQjPQ9caFahkzHCbZWEztALL1TZ4ZLh2vUfCsYcPh33IIzIkEJIzujaEV+Y
+        Di0JpD1W2pOYSFGnXwvOfTheIsox4hc=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-I8MfxvijMP6eEttnneecIw-1; Thu, 24 Sep 2020 10:35:21 -0400
+X-MC-Unique: I8MfxvijMP6eEttnneecIw-1
+Received: by mail-qv1-f72.google.com with SMTP id a20so2206788qvk.17
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:35:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fq0zugItcF1BHyiJdFIvA0GVCu5hDXXnGo1JwlqfSGg=;
-        b=psb0FnMtentpE7e48ONCxv0pBIhHhYYbRN0ikruBbDbWWInaO/s3fjYaxVNsC/vxE2
-         zXhXxyZVRTqQO5uO5Dmox3raRibE5lhaFeKqMrGdw/B3Pvx7F9gdEGEOpvc5zVCgovkO
-         9ATexRjvIdpdcQMe/7xzL0S9yAIB1a0LsgfeOU09Qbdh/y/CeR+f9jZt9NLknOm0RK9u
-         ykA/HOcmuZ0mfRQUQi3PrhDWZkpmUakAP6PK6GvaXAGIzT7lXID0sni3ksn9amGHp3iU
-         k1Y0l5AMhiB9kFGsYD5kUKzxB8RmwQueBCroC1skVKXxonI/ehJi56DpLD0HiKJT7L71
-         XQKA==
-X-Gm-Message-State: AOAM530/rlZNWRnmiixSAkrbuMziq2QMHEzarw5PGwYfMTi6TECukXpa
-        NvdWsJel2HcHfLtE8HPPFjKpX/AMf34=
-X-Google-Smtp-Source: ABdhPJw3yFrHa8qGybEJzkGOucvz9sGZrrMAAPNfMEj4FrmozO0rUHrCqSrK2GQjl/FxbMDo9ElN8w==
-X-Received: by 2002:aca:1716:: with SMTP id j22mr2743559oii.44.1600958041613;
-        Thu, 24 Sep 2020 07:34:01 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d22sm730454oij.0.2020.09.24.07.34.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 07:34:01 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH -next] usb: typec: Remove set but not used variable
-To:     Li Heng <liheng40@huawei.com>, heikki.krogerus@linux.intel.com
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1600956767-10427-1-git-send-email-liheng40@huawei.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <fe671faa-9975-be20-22f5-31a97e3c8859@roeck-us.net>
-Date:   Thu, 24 Sep 2020 07:33:59 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zvhmXdurMqfIrlufAAPJfQcazZ/8TT7PFFG3tysOQUc=;
+        b=Zc6JhISkFd4Io0tEcTFyGzMjdLbYfQkR6mVNZCHZXQ+2LlHoWTfQzn2uYAsAgrYQuc
+         UFh6/umT+yeBsHn/elkuKrfwgoUpG6vSxdYaYbzveNF3l9foXgG30a+YrDrO1kBXFlh+
+         7qZVoV/Q8GH5WuqPlg7raivO2yN8dgFVmTt7ocXhHZiHw/orcfwjN937PPXMGxwOV4lN
+         UHuvAos3lT4lKFURTsMqjTGH8q68n7uf/nW+wlpvc359bRR1S85rrXR7wLWq5IMTBdeG
+         w5iwykkh2RqWQRD4MgbJC03OeKFcEomXeyoIHiu3LBh6fZ7KOJoq7bhM5wkzWI7Qo24d
+         s12Q==
+X-Gm-Message-State: AOAM53083AJKOTMXaIclLHrj+xL85XGFtfx2Rkq6OTcDAfATWvKNeBo6
+        18dQnQeXyjaE6VGylSSzsFjqYz6+8eSfXxsN/kTREi8oTzv2H0hT6eVMgGud3nTQSnjTzwZwlg0
+        m+MyyX+KhRzdaWK82635Gr0YA
+X-Received: by 2002:ae9:f701:: with SMTP id s1mr5256068qkg.446.1600958120814;
+        Thu, 24 Sep 2020 07:35:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz/n7SJnWJZzZBSNTparOQ6wMGNiV1kVJQwLJonregx+J8ZQSUFVAhRN6bKAXZ3EEGQYF8Vew==
+X-Received: by 2002:ae9:f701:: with SMTP id s1mr5256036qkg.446.1600958120399;
+        Thu, 24 Sep 2020 07:35:20 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id m6sm2108265qkh.106.2020.09.24.07.35.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 07:35:19 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 10:35:17 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     John Hubbard <jhubbard@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+Message-ID: <20200924143517.GD79898@xz-x1>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921211744.24758-2-peterx@redhat.com>
+ <224908c1-5d0f-8e01-baa9-94ec2374971f@nvidia.com>
+ <20200922151736.GD19098@xz-x1>
+ <20200922161046.GB731578@ziepe.ca>
+ <20200922175415.GI19098@xz-x1>
+ <20200922191116.GK8409@ziepe.ca>
+ <20200923002735.GN19098@xz-x1>
+ <20200923170759.GA9916@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <1600956767-10427-1-git-send-email-liheng40@huawei.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20200923170759.GA9916@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 7:12 AM, Li Heng wrote:
-> Fixes gcc '-Wunused-but-set-variable' warning:
+On Wed, Sep 23, 2020 at 02:07:59PM -0300, Jason Gunthorpe wrote:
+> On Tue, Sep 22, 2020 at 08:27:35PM -0400, Peter Xu wrote:
+> > On Tue, Sep 22, 2020 at 04:11:16PM -0300, Jason Gunthorpe wrote:
+> > > On Tue, Sep 22, 2020 at 01:54:15PM -0400, Peter Xu wrote:
+> > > > diff --git a/mm/memory.c b/mm/memory.c
+> > > > index 8f3521be80ca..6591f3f33299 100644
+> > > > +++ b/mm/memory.c
+> > > > @@ -888,8 +888,8 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+> > > >                  * Because we'll need to release the locks before doing cow,
+> > > >                  * pass this work to upper layer.
+> > > >                  */
+> > > > -               if (READ_ONCE(src_mm->has_pinned) && wp &&
+> > > > -                   page_maybe_dma_pinned(page)) {
+> > > > +               if (wp && page_maybe_dma_pinned(page) &&
+> > > > +                   READ_ONCE(src_mm->has_pinned)) {
+> > > >                         /* We've got the page already; we're safe */
+> > > >                         data->cow_old_page = page;
+> > > >                         data->cow_oldpte = *src_pte;
+> > > > 
+> > > > I can also add some more comment to emphasize this.
+> > > 
+> > > It is not just that, but the ptep_set_wrprotect() has to be done
+> > > earlier.
+> > 
+> > Now I understand your point, I think..  So I guess it's not only about
+> > has_pinned, but it should be a race between the fast-gup and the fork() code,
+> > even if has_pinned is always set.
 > 
-> drivers/usb/typec/tcpm/tcpm.c:1620:39: warning:
-> ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
+> Yes
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Li Heng <liheng40@huawei.com>
+> > > The best algorithm I've thought of is something like:
+> > > 
+> > >  pte_map_lock()
+> > >   if (page) {
+> > >       if (wp) {
+> > > 	  ptep_set_wrprotect()
+> > > 	  /* Order with try_grab_compound_head(), either we see
+> > > 	   * page_maybe_dma_pinned(), or they see the wrprotect */
+> > > 	  get_page();
+> > 
+> > Is this get_page() a must to be after ptep_set_wrprotect()
+> > explicitly?  
+> 
+> No, just before page_maybe_dma_pinned()
+> 
+> > IIUC what we need is to order ptep_set_wrprotect() and
+> > page_maybe_dma_pinned() here.  E.g., would a "mb()" work?
+> 
+> mb() is not needed because page_maybe_dma_pinned() has an atomic
+> barrier too. I like to see get_page() followed immediately by
+> page_maybe_dma_pinned() since they are accessing the same atomic and
+> could be fused together someday
 
-I thought there was a patch series underway which started using it,
-but maybe my memory defeats me. Either case, it doesn't make much sense
-to remove the ops variable without removing the associated functions
-as well.
+If so, I'd hope you won't disagree that I still move the get_page() out of the
+"if (wp)".  Not only it's a shared operation no matter whether "if (wp)" or
+not, but I'm afraid it would confuse future readers on a special ordering on
+the get_page() and the wrprotect(), especially with the comment above.
 
-Guenter
+> 
+> > Another thing is, do we need similar thing for e.g. gup_pte_range(), so that
+> > to guarantee ordering of try_grab_compound_head() and the pte change
+> > check?
+> 
+> gup_pte_range() is as I quoted? The gup slow path ends up in
+> follow_page_pte() which uses the pte lock so is OK.
+> > 
+> > Another question is, how about read fast-gup for pinning?  Because we can't use
+> > the write-protect mechanism to block a read gup.  I remember we've discussed
+> > similar things and iirc your point is "pinned pages should always be with
+> > WRITE".  However now I still doubt it...  Because I feel like read gup is still
+> > legal (as I mentioned previously - when device purely writes to the page and
+> > the processor only reads from it).
+> 
+> We need a definition for what FOLL_PIN means. After this work on fork
+> I propose that FOLL_PIN means:
+> 
+>   The page is in-use for DMA and the CPU PTE should not be changed
+>   without explicit involvement of the application (eg via mmap/munmap)
+> 
+> If GUP encounters a read-only page during FOLL_PIN the behavior should
+> depend on what the fault handler would do. If the fault handler would
+> trigger COW and replace the PTE then it violates the above. GUP should
+> do the COW before pinning.
+> 
+> If the fault handler would SIGSEGV then GUP can keep the read-only
+> page and allow !FOLL_WRITE access. The PTE should not be replaced for
+> other reasons (though I think there is work there too).
+> 
+> For COW related issues the idea is the mm_struct doing the pin will
+> never trigger a COW. When other processes hit the COW they copy the
+> page into their mm and don't touch the source MM's PTE.
+> 
+> Today we do this roughly with FOLL_FORCE and FOLL_WRITE in the users,
+> but a more nuanced version and documentation would be much clearer.
+> 
+> Unfortunately just doing simple read GUP potentially exposes things to
+> various COW related data corruption races.
+> 
+> This is a discussion beyond this series though..
 
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 6 ------
->  1 file changed, 6 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 9280654..1542eaa 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -1617,12 +1617,6 @@ static int tcpm_altmode_vdm(struct typec_altmode *altmode,
->  	return 0;
->  }
-> 
-> -static const struct typec_altmode_ops tcpm_altmode_ops = {
-> -	.enter = tcpm_altmode_enter,
-> -	.exit = tcpm_altmode_exit,
-> -	.vdm = tcpm_altmode_vdm,
-> -};
-> -
->  /*
->   * PD (data, control) command handling functions
->   */
-> --
-> 2.7.4
-> 
+Yes.  It's kind of related here on whether we can still use wrprotect() to
+guard against fast-gup, though.  So my understanding is that we should still at
+least need the other patch [1] that I proposed in the other thread to force
+break-cow for read-only gups (that patch is not only for fast-gup, of course).
 
+But I agree that should be another bigger topic.  I hope we don't need to pick
+that patch up someday by another dma report on read-only pinned pages...
+
+Regarding the solution here, I think we can also cover read-only fast-gup too
+in the future - IIUC what we need to do is to make it pte_protnone() instead of
+pte_wrprotect(), then in the fault handler we should identify this special
+pte_protnone() against numa balancing (change_prot_numa()).  I think it should
+work fine too, iiuc, because I don't think we should migrate a page at all if
+it's pinned for any reason...
+
+So I think I'll focus on the wrprotect() solution for now.  Thanks!
+
+[1] https://lore.kernel.org/lkml/20200915151746.GB2949@xz-x1/
+
+-- 
+Peter Xu
 
