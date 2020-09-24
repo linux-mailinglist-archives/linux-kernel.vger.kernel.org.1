@@ -2,113 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68D5277541
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D35F277551
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbgIXP2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:28:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:58165 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728285AbgIXP2B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:28:01 -0400
-IronPort-SDR: LgHY0KrwQPGYD8SVZHo9lC2CB9hS6VurKlP5T24v6rn3lPQtiPzUQ+fIP3LGZEhGydGACpNRA8
- DUicohK0+Cow==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="225381798"
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="225381798"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 08:28:00 -0700
-IronPort-SDR: LA1eFb5xMaqYkH1ryN0Tb0/RIqDte/AgdxwEvMOTpof540OpjqnWCwyWoZf1UHzvpvcAWIRBBU
- sPiUZx0xqZ9Q==
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="486940874"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 08:28:00 -0700
-Date:   Thu, 24 Sep 2020 08:27:59 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Hao Li <lihao2018.fnst@cn.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        david@fromorbit.com, linux-xfs@vger.kernel.org,
-        viro@zeniv.linux.org.uk, y-goto@fujitsu.com
-Subject: Re: [PATCH v2] fs: Kill DCACHE_DONTCACHE dentry even if
- DCACHE_REFERENCED is set
-Message-ID: <20200924152759.GJ2540965@iweiny-DESK2.sc.intel.com>
-References: <20200924055958.825515-1-lihao2018.fnst@cn.fujitsu.com>
+        id S1728511AbgIXP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:29:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728350AbgIXP3I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:29:08 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B082DC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:29:07 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id ay8so3770032edb.8
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DWwrSFR+XsVbo72EXCPGN7Yvsrb6I0oZs+oVxjkh+2I=;
+        b=hN3JCT4/0mr9lHn1el6A+W9IHJhVcZfLNiBn+2+2ptYhZ2E3ln93PIdOTyrZm4MsWg
+         0pPA5aEFZnOI3KgY8otAO4fYpSdYshKnZ4CmKXSbw5JqMttXF9UPXapl5M86DohboovX
+         I3ro4WAml5gPUcfGG3zbCTYxhnoAJoBotyNRCrSyqpZDz/gaQeuJnjABGulXeW+vgul2
+         WfLGjGxh/urIx8OZzhTSMu8/a21/AzyXO11afB8SfNqZpdfRIv+08n215LLwBniNZZEh
+         jK3alXiJ//9LzmOTJndQYIOo7J2mNf+tk68S7tAY55J1Ph4eY4IoKrvEDEnzodg3nw3v
+         1Idg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DWwrSFR+XsVbo72EXCPGN7Yvsrb6I0oZs+oVxjkh+2I=;
+        b=JmyxrOt2YRq3hGXPkweA94dR8LWkHsH+5yJ4Sl3gpEQOgmR7OU4/Mbl7TajfY7DwyD
+         s12Ti+Os7RXl+X3nw5JS/GfKSPvlgbABefznbMbkhB0fLZ7O6QYgGL40IRppII8IuCQE
+         XUO59NHz81gCXNQbnubuLxwxEiSDIZa3CtyUIXOwHG132zehe1kHmcPnc/FynnrimksI
+         FvxYJj8o6761gSUNGsc3zUU5lbCj9fmq0DE8XWmrrBvp9aaIOXV1LxqkbI8vgoH9gBo9
+         arWjMwSgtPNonxTe3mtV0un13FqM4GFW8MAgdombaRdP2pGWMx++C0ybkWPoG09TyCIL
+         mbmA==
+X-Gm-Message-State: AOAM531lG642n7LiPFREQfGc3IEQO4S7Km7M+xwmMrW3ZLTaYc8uUtco
+        8ZYjlqy6BododAS2428kl6fpm+3rxmtSitbSC8Es
+X-Google-Smtp-Source: ABdhPJxwnRvlu4GIjD+pyeEz7LhCUZQ/skYgUffP4gTtRClyXesIuk5Q/rFSvs+tgZ6Sn7QvuUd3X5CwxfSMAX6NAl0=
+X-Received: by 2002:aa7:ce97:: with SMTP id y23mr494977edv.128.1600961346147;
+ Thu, 24 Sep 2020 08:29:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924055958.825515-1-lihao2018.fnst@cn.fujitsu.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-5-keescook@chromium.org> <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
+ <202009240038.864365E@keescook>
+In-Reply-To: <202009240038.864365E@keescook>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 24 Sep 2020 11:28:55 -0400
+Message-ID: <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
+Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action results
+To:     Kees Cook <keescook@chromium.org>,
+        Tom Hromatka <tom.hromatka@oracle.com>
+Cc:     Jann Horn <jannh@google.com>, YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 01:59:58PM +0800, Hao Li wrote:
-> If DCACHE_REFERENCED is set, fast_dput() will return true, and then
-> retain_dentry() have no chance to check DCACHE_DONTCACHE. As a result,
-> the dentry won't be killed and the corresponding inode can't be evicted.
-> In the following example, the DAX policy can't take effects unless we
-> do a drop_caches manually.
-> 
->   # DCACHE_LRU_LIST will be set
->   echo abcdefg > test.txt
-> 
->   # DCACHE_REFERENCED will be set and DCACHE_DONTCACHE can't do anything
->   xfs_io -c 'chattr +x' test.txt
-> 
->   # Drop caches to make DAX changing take effects
->   echo 2 > /proc/sys/vm/drop_caches
-> 
-> What this patch does is preventing fast_dput() from returning true if
-> DCACHE_DONTCACHE is set. Then retain_dentry() will detect the
-> DCACHE_DONTCACHE and will return false. As a result, the dentry will be
-> killed and the inode will be evicted. In this way, if we change per-file
-> DAX policy, it will take effects automatically after this file is closed
-> by all processes.
-> 
-> I also add some comments to make the code more clear.
-> 
-> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+On Thu, Sep 24, 2020 at 3:46 AM Kees Cook <keescook@chromium.org> wrote:
+> On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
+> > On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
+> > > This emulates absolutely the most basic seccomp filters to figure out
+> > > if they will always give the same results for a given arch/nr combo.
+> > >
+> > > Nearly all seccomp filters are built from the following ops:
+> > >
+> > > BPF_LD  | BPF_W    | BPF_ABS
+> > > BPF_JMP | BPF_JEQ  | BPF_K
+> > > BPF_JMP | BPF_JGE  | BPF_K
+> > > BPF_JMP | BPF_JGT  | BPF_K
+> > > BPF_JMP | BPF_JSET | BPF_K
+> > > BPF_JMP | BPF_JA
+> > > BPF_RET | BPF_K
+> > >
+> > > These are now emulated to check for accesses beyond seccomp_data::arch
+> > > or unknown instructions.
+> > >
+> > > Not yet implemented are:
+> > >
+> > > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
+> >
+> > BPF_AND is normally only used on syscall arguments, not on the syscall
+> > number or the architecture, right? And when a syscall argument is
+> > loaded, we abort execution anyway. So I think there is no need to
+> > implement those?
+>
+> Is that right? I can't actually tell what libseccomp is doing with
+> ALU|AND. It looks like it's using it for building jump lists?
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+There is an ALU|AND op in the jump resolution code, but that is really
+just if libseccomp needs to fixup the accumulator because a code block
+is expecting a masked value (right now that would only be a syscall
+argument, not the syscall number itself).
 
-> ---
-> v1 is split into two standalone patch as discussed in [1], and the first
-> patch has been reviewed in [2]. This is the second patch.
-> 
-> [1]: https://lore.kernel.org/linux-fsdevel/20200831003407.GE12096@dread.disaster.area/
-> [2]: https://lore.kernel.org/linux-fsdevel/20200906214002.GI12131@dread.disaster.area/
-> 
->  fs/dcache.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/dcache.c b/fs/dcache.c
-> index ea0485861d93..97e81a844a96 100644
-> --- a/fs/dcache.c
-> +++ b/fs/dcache.c
-> @@ -793,10 +793,17 @@ static inline bool fast_dput(struct dentry *dentry)
->  	 * a reference to the dentry and change that, but
->  	 * our work is done - we can leave the dentry
->  	 * around with a zero refcount.
-> +	 *
-> +	 * Nevertheless, there are two cases that we should kill
-> +	 * the dentry anyway.
-> +	 * 1. free disconnected dentries as soon as their refcount
-> +	 *    reached zero.
-> +	 * 2. free dentries if they should not be cached.
->  	 */
->  	smp_rmb();
->  	d_flags = READ_ONCE(dentry->d_flags);
-> -	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
-> +	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST |
-> +			DCACHE_DISCONNECTED | DCACHE_DONTCACHE;
->  
->  	/* Nothing to do? Dropping the reference was all we needed? */
->  	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
-> -- 
-> 2.28.0
-> 
-> 
-> 
+> Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
+
+Presently the only place where libseccomp uses ALU|AND is when the
+masked equality comparison is used for comparing syscall arguments
+(SCMP_CMP_MASKED_EQ).  I can't honestly say I have any good
+information about how often that is used by libseccomp callers, but if
+I do a quick search on GitHub for "SCMP_CMP_MASKED_EQ" I see 2k worth
+of code hits; take that for whatever it is worth.  Tom may have some
+more/better information.
+
+Of course no promises on future use :)  As one quick example, I keep
+thinking about adding the instruction pointer to the list of things
+that can be compared as part of a libseccomp rule, and if we do that I
+would expect that we would want to also allow a masked comparison (and
+utilize another ALU|AND bpf op there).  However, I'm not sure how
+useful that would be in practice.
+
+-- 
+paul moore
+www.paul-moore.com
