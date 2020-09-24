@@ -2,80 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC122770B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30DF62770B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727667AbgIXMNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:13:48 -0400
-Received: from mailgw01.mediatek.com ([216.200.240.184]:38286 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727518AbgIXMNn (ORCPT
+        id S1727610AbgIXMOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:14:16 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:56006 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727267AbgIXMOQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:13:43 -0400
-X-UUID: e7bdb2f486e34841ac4f9509690828b5-20200924
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=oEQqIT87UU1+x8zERr/VFYRlzuHTWeays79SiUEYuMQ=;
-        b=RsjZ75svAwDKdF3bN2RFz2hobMgKpNPaKJ6TJ1LX+qyEObEQM1bUBWVN0y8i/TUhD1fkB/ox4IujBpaANw9dek+Z0I5rM6nGs0cGcl8Yu2aVPZJgjIXaBXWLxsvr0ulzGNe091ytqTti+N9fRyCKn3JW1/JjqOBbEjY2eikdV4k=;
-X-UUID: e7bdb2f486e34841ac4f9509690828b5-20200924
-Received: from mtkcas67.mediatek.inc [(172.29.193.45)] by mailgw01.mediatek.com
-        (envelope-from <landen.chao@mediatek.com>)
-        (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1365213064; Thu, 24 Sep 2020 04:13:39 -0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS62N2.mediatek.inc (172.29.193.42) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Sep 2020 05:13:36 -0700
-Received: from [172.21.84.99] (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Sep 2020 20:13:23 +0800
-Message-ID: <1600949604.11746.27.camel@mtksdccf07>
-Subject: Re: [PATCH v2] net: dsa: mt7530: Add some return-value checks
-From:   Landen Chao <landen.chao@mediatek.com>
-To:     Alex Dewar <alex.dewar90@gmail.com>
-CC:     Sean Wang <Sean.Wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-        "Vivien Didelot" <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Thu, 24 Sep 2020 20:13:24 +0800
-In-Reply-To: <20200919192809.29120-1-alex.dewar90@gmail.com>
-References: <1600327978.11746.22.camel@mtksdccf07>
-         <20200919192809.29120-1-alex.dewar90@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Thu, 24 Sep 2020 08:14:16 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08OCEArm071778;
+        Thu, 24 Sep 2020 07:14:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600949650;
+        bh=Ebm4Jt49V9jdfk1u5fYmECSGaXT/aBA9QSDjJDwEzL0=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=reGeaNefy73+xfyyOj8WFUPb8Dyr3nK+ZES34qB2PuCFbEp00pDlBtrbyI87vx8F8
+         G+TpBu/ekygaCLSRi713UrXBuLXm5PwLfMQyNudvCNjoyDK6QQfGtNrUxg/g6aOZ8U
+         0pAMTGm+PZ+0enTMWhvGePUeD99sh0/31DzFvwg4=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OCEANR128922;
+        Thu, 24 Sep 2020 07:14:10 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
+ Sep 2020 07:14:09 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 24 Sep 2020 07:14:10 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OCE9sZ064855;
+        Thu, 24 Sep 2020 07:14:09 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
+        <devicetree@vger.kernel.org>
+CC:     Nishanth Menon <nm@ti.com>, <robh+dt@kernel.org>, <t-kristo@ti.com>
+Subject: Re: [PATCH v2 0/2] Add support for MMC/SD on j7200-evm
+Date:   Thu, 24 Sep 2020 07:14:08 -0500
+Message-ID: <160094958540.7259.9993811347863300452.b4-ty@ti.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200924112644.11076-1-faiz_abbas@ti.com>
+References: <20200924112644.11076-1-faiz_abbas@ti.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQWxleCwNCg0KVGhhbmtzIGZvciB5b3VyIHBhdGNoLiBCeSBsaW51eC9zY3JpcHRzL2NoZWNr
-cGF0Y2gucGwNCg0KT24gU3VuLCAyMDIwLTA5LTIwIGF0IDAzOjI4ICswODAwLCBBbGV4IERld2Fy
-IHdyb3RlOg0KWy4uXQ0KPiBAQCAtMTYzMSw5ICsxNjM1LDExIEBAIG10NzUzMF9zZXR1cChzdHJ1
-Y3QgZHNhX3N3aXRjaCAqZHMpDQo+ICAJCW10NzUzMF9ybXcocHJpdiwgTVQ3NTMwX1BDUl9QKGkp
-LCBQQ1JfTUFUUklYX01BU0ssDQo+ICAJCQkgICBQQ1JfTUFUUklYX0NMUik7DQo+ICANCj4gLQkJ
-aWYgKGRzYV9pc19jcHVfcG9ydChkcywgaSkpDQo+IC0JCQltdDc1M3hfY3B1X3BvcnRfZW5hYmxl
-KGRzLCBpKTsNCj4gLQkJZWxzZQ0KPiArCQlpZiAoZHNhX2lzX2NwdV9wb3J0KGRzLCBpKSkgew0K
-PiArCQkJcmV0ID0gbXQ3NTN4X2NwdV9wb3J0X2VuYWJsZShkcywgaSk7DQo+ICsJCQlpZiAocmV0
-KQ0KPiArCQkJCXJldHVybiByZXQ7DQo+ICsJCX0gZWxzZQ0KPiAgCQkJbXQ3NTMwX3BvcnRfZGlz
-YWJsZShkcywgaSk7DQpDSEVDSzogYnJhY2VzIHt9IHNob3VsZCBiZSB1c2VkIG9uIGFsbCBhcm1z
-IG9mIHRoaXMgc3RhdGVtZW50DQpDSEVDSzogVW5iYWxhbmNlZCBicmFjZXMgYXJvdW5kIGVsc2Ug
-c3RhdGVtZW50DQo+ICANCj4gIAkJLyogRW5hYmxlIGNvbnNpc3RlbnQgZWdyZXNzIHRhZyAqLw0K
-PiBAQCAtMTc4NSw5ICsxNzkxLDExIEBAIG10NzUzMV9zZXR1cChzdHJ1Y3QgZHNhX3N3aXRjaCAq
-ZHMpDQo+ICANCj4gIAkJbXQ3NTMwX3NldChwcml2LCBNVDc1MzFfREJHX0NOVChpKSwgTVQ3NTMx
-X0RJU19DTFIpOw0KPiAgDQo+IC0JCWlmIChkc2FfaXNfY3B1X3BvcnQoZHMsIGkpKQ0KPiAtCQkJ
-bXQ3NTN4X2NwdV9wb3J0X2VuYWJsZShkcywgaSk7DQo+IC0JCWVsc2UNCj4gKwkJaWYgKGRzYV9p
-c19jcHVfcG9ydChkcywgaSkpIHsNCj4gKwkJCXJldCA9IG10NzUzeF9jcHVfcG9ydF9lbmFibGUo
-ZHMsIGkpOw0KPiArCQkJaWYgKHJldCkNCj4gKwkJCQlyZXR1cm4gcmV0Ow0KPiArCQl9IGVsc2UN
-Cj4gIAkJCW10NzUzMF9wb3J0X2Rpc2FibGUoZHMsIGkpOw0KQ0hFQ0s6IGJyYWNlcyB7fSBzaG91
-bGQgYmUgdXNlZCBvbiBhbGwgYXJtcyBvZiB0aGlzIHN0YXRlbWVudA0KQ0hFQ0s6IFVuYmFsYW5j
-ZWQgYnJhY2VzIGFyb3VuZCBlbHNlIHN0YXRlbWVudA0KDQpbLi5dDQpyZWdhcmRzIGxhbmRlbg0K
+On Thu, 24 Sep 2020 16:56:42 +0530, Faiz Abbas wrote:
+> The following patches add dt support for MMC/SD on TI's j7200-evm.
+> 
+> Currently, eMMC support upto HS200 speed and SD card supports upto high
+> speed speed mode.
+> 
+> v2:
+> Fixed node names to use mmc@* format
+> Fixed reg address format to align with others in the file
+> 
+> [...]
+
+Hi Faiz Abbas,
+
+I have applied the following to branch ti-k3-dts-next on [1].
+Thank you!
+
+[1/2] arm64: dts: ti: k3-j7200-main: Add support for MMC/SD controller nodes
+      commit: 7cd03dc78b290400875b6b54e257ba5ea4e810c3
+[2/2] arm64: dts: ti: k3-j7200-common-proc-board: Add support for eMMC and SD card
+      commit: a2178b83ae8f61b2a9fae2aa9a4d4ed2511690a4
+
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent up the chain during
+the next merge window (or sooner if it is a relevant bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+[1] git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
 
