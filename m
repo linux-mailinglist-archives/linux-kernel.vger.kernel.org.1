@@ -2,153 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7B1276D32
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC6D276D75
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:28:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727559AbgIXJ0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:26:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727521AbgIXJ03 (ORCPT
+        id S1727494AbgIXJ2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:28:25 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:55803 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727470AbgIXJ00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:26:29 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0045CC0613CE;
-        Thu, 24 Sep 2020 02:26:28 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f2so1553633pgd.3;
-        Thu, 24 Sep 2020 02:26:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iWU3zIvwO08AFxP76LNIjlZpqXWxIPusRl5qwBLz4uA=;
-        b=j27E7SbymGOCewdPhssZnR8noviCNZM2Qpq82u5n4tWOK/Pgf1RO7YVz/0+nZNOjvG
-         kQ/Dd4vOr63NZvAgVHd5RS2SanI2l8z2JB0wGXOvOAZBJUxMZYfyteVzxKYcIGCbJLWs
-         IdJzUqIo9fZGqt3lObaieFp9VvAhnKQfSQFax3OWi/+IjJSYLuVRmzi/bnWZcR9m2SV5
-         m/bVXTfsAqy3x+EirHceXL7n9E+U72APgUTYqFVq9XkO7780rvh9Y6Dm7/bX6nTM6m8R
-         SDzMOYRMUCHv5SYPxl3eG5c16oS/ELyQQ0K+Cu1TH0H1Ch8zoozcOl/sIjIaCr1Td3vV
-         GWdw==
+        Thu, 24 Sep 2020 05:26:26 -0400
+Received: by mail-io1-f78.google.com with SMTP id t187so1904926iof.22
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iWU3zIvwO08AFxP76LNIjlZpqXWxIPusRl5qwBLz4uA=;
-        b=MBi/523Avbr59hZ1xapt/V/wAY1OPVttWXUFXHtFnnrt21FaPkgmKVm2VY4iLRoJmF
-         dD4t1Y8H9IY5JMvStIj9Ey/BYyEFYdVDSWgInvuf9GrHpIlqH0aumRLakRxK29KFCsTX
-         UPBvStkIkV3/avMcHY4yxJRKRKhYeBj19TsN4D7tfOy3dgKEjEd6hGKmwYMfCJEL5qeL
-         MvRTiCobRxsk7Luz9ALc5G3u7jblde8X/harf5LiFhoqEcVz0No1r08R53LQETmigZrg
-         ud6E6KeeCO0gpfARWmE0vUhum/x7RqrRQ01MOAmsk8xFWutVGoVQXbj9vrMFreb31NXz
-         3zDw==
-X-Gm-Message-State: AOAM531+cnzJ/qAjnBQmUNs26ClzEEHOoVEm/DANbcF/7MwcJ/hCnijt
-        /rhSIup1pnqxl3UGhj1Nj5g=
-X-Google-Smtp-Source: ABdhPJwkKiJIbaS7X2xDqi2WG4LKaOxInCZfJgMjCkdtje7/IsKXB4hQ7rmsTw810qVgiQfakZaiqA==
-X-Received: by 2002:a63:104d:: with SMTP id 13mr3155912pgq.445.1600939588409;
-        Thu, 24 Sep 2020 02:26:28 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id r4sm1820846pjf.4.2020.09.24.02.26.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 02:26:27 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 17:26:22 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 10/20] gpiolib: cdev: support
- GPIO_V2_LINE_SET_CONFIG_IOCTL
-Message-ID: <20200924092622.GB20188@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <20200922023151.387447-11-warthog618@gmail.com>
- <CAHp75VdaPR+iihenPYos1mAGLbDhJPvCfDTtURpk_MBa=3wYEg@mail.gmail.com>
- <CAHp75Vcktxp1C6NTOrW-WEnfueOu0UvtquFLpsL5+vv6Fdaajw@mail.gmail.com>
- <20200924032414.GC11575@sol>
- <CAHp75Vd1=CpsMecw=dua66i-P992e71uQcOzWR7tvd6ZGyKWoA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Xx3C4JNesC+v7KtUAOM42iev2K1jVtLzKqz0VdkuiaU=;
+        b=Fu5safu0D3bo8oJZtq0eiFY1zQK8kJfsui5O3pp2kjFXqnLpz/qX7/ECBCpsjF4mNC
+         P9k3IRmiZ/6HS0tjv8FQDcxWoUBwt40QjodUQ42nP4WFkF5NI8qRoTPJda8QNwXMZPdH
+         fYDKoOvnKIIBy7JmyKwG0Xk288elFM+c5ZRBwjPDhvbI08kxHaxkAnds9PITWS3A0Z9q
+         sogknfZnRYfy7kx/yalLb3FwoxEbTsb7YxdDxzEtxkqxPFlcqa5By4AS1VJMom9+YfMV
+         4ko/IKI8omzFKkgFTJAw+kbi+uF+KQNASB5TA7AtFNGaZaCv1zH3ZbJ6sHQf9j5hsWSi
+         TxBA==
+X-Gm-Message-State: AOAM5328BEXEONJW86a2ypfQsvZ/ad5A//rllNB1HhxQd3n5K7Njn5w0
+        7wnlRltaM0XuRz5+WUQBJvpevsU9z8CZU5Jd2da4WLxJ72ZL
+X-Google-Smtp-Source: ABdhPJw1wh70zo2cujRhmnbxOdFtQlKJnCID2iuvOdd8eQJEWZQSzAiembA2d8txLrPHeqqSzusfx4yxX2+HZ1NVoF1xF4jUijVr
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vd1=CpsMecw=dua66i-P992e71uQcOzWR7tvd6ZGyKWoA@mail.gmail.com>
+X-Received: by 2002:a6b:3e06:: with SMTP id l6mr2565402ioa.160.1600939585354;
+ Thu, 24 Sep 2020 02:26:25 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 02:26:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000004ac2d105b00bcb72@google.com>
+Subject: KMSAN: uninit-value in hwsim_cloned_frame_received_nl
+From:   syzbot <syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, johannes@sipsolutions.net,
+        kuba@kernel.org, kvalo@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:26:49AM +0300, Andy Shevchenko wrote:
-> On Thu, Sep 24, 2020 at 6:24 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > On Wed, Sep 23, 2020 at 07:15:46PM +0300, Andy Shevchenko wrote:
-> > > On Wed, Sep 23, 2020 at 7:14 PM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:
-> > > > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > > >
-> > > > > Add support for GPIO_V2_LINE_SET_CONFIG_IOCTL, the uAPI v2
-> > > > > line set config ioctl.
-> > >
-> > > > > +static long linereq_set_config_unlocked(struct linereq *lr,
-> > > > > +                                       struct gpio_v2_line_config *lc)
-> > > > > +{
-> > > > > +       struct gpio_desc *desc;
-> > > > > +       unsigned int i;
-> > > > > +       u64 flags;
-> > > > > +       bool polarity_change;
-> > > > > +       int ret;
-> > > > > +
-> > > > > +       for (i = 0; i < lr->num_lines; i++) {
-> > > > > +               desc = lr->lines[i].desc;
-> > > > > +               flags = gpio_v2_line_config_flags(lc, i);
-> > > >
-> > > > > +               polarity_change =
-> > > > > +                       (test_bit(FLAG_ACTIVE_LOW, &desc->flags) !=
-> > > > > +                        ((flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW) != 0));
-> > > >
-> > > > Comparison
-> > >
-> > > Comparison between int / long (not all archs are agreed on this) and
-> > > boolean is not the best we can do.
-> > >
-> >
-> > There is no bool to int comparision here.
-> 
-> test_bit() returns int or long depending on arch... Then you compare
-> it to bool (which is a product of != 0).
-> 
+Hello,
 
-Really - I thought it returned bool.
-It is a test - why would it return int or long?
-Surely it is guaranteed to return 0 or 1?
+syzbot found the following issue on:
 
-> > There are two comparisons - the inner int vs int => bool and the
-> > outer bool vs bool.  The "!= 0" is effectively an implicit cast to
-> > bool, as is your new_polarity initialisation below.
-> >
-> > > What about
-> > >
-> > >   bool old_polarity = test_bit(FLAG_ACTIVE_LOW, &desc->flags);
-> > >   bool new_polarity = flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW;
-> > >
-> > >   old_polarity ^ new_polarity
-> >
-> > So using bitwise operators on bools is ok??
-> 
-> XOR is special. There were never bitwise/boolean XORs.
-> 
+HEAD commit:    c5a13b33 kmsan: clang-format core
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=12a19c03900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
+dashboard link: https://syzkaller.appspot.com/bug?extid=b2645b5bf1512b81fa22
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=118689ab900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=104fc409900000
 
-We must live in different universes, cos there has been a bitwise XOR in
-mine since K&R.  The logical XOR is '!='.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b2645b5bf1512b81fa22@syzkaller.appspotmail.com
 
-> > > and move this under INPUT conditional?
-> > >
-> >
-> > It has to be before the gpio_v2_line_config_flags_to_desc_flags() call,
-> > as that modifies the desc flags, including the new polarity, so
-> > polarity_change would then always be false :-).
-> 
-> I really don't see in the code how polarity_change value is used in
-> FLAG_OUTPUT branch below.
-> 
+=====================================================
+BUG: KMSAN: uninit-value in hwsim_cloned_frame_received_nl+0x104e/0x13e0 drivers/net/wireless/mac80211_hwsim.c:3553
+CPU: 1 PID: 8531 Comm: syz-executor177 Not tainted 5.9.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+ hwsim_cloned_frame_received_nl+0x104e/0x13e0 drivers/net/wireless/mac80211_hwsim.c:3553
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
+ genl_rcv_msg+0x1703/0x18a0 net/netlink/genetlink.c:731
+ netlink_rcv_skb+0x6d7/0x7e0 net/netlink/af_netlink.c:2470
+ genl_rcv+0x63/0x80 net/netlink/genetlink.c:742
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x11c8/0x1490 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x173a/0x1840 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ __sys_sendto+0x9dc/0xc80 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:2000
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x401a73
+Code: ff ff ff f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb cd 66 0f 1f 44 00 00 83 3d bd 8c 2d 00 00 75 17 49 89 ca b8 2c 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 f1 0b 00 00 c3 48 83 ec 08 e8 57 01 00 00
+RSP: 002b:00007ffc0c9fdd58 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+RAX: ffffffffffffffda RBX: 00007ffc0c9fddd0 RCX: 0000000000401a73
+RDX: 0000000000000034 RSI: 00007ffc0c9fde20 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 00007ffc0c9fdd60 R09: 000000000000000c
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007ffc0c9fde20 R15: 0000000000000003
 
-It isn't.  But desc->flags is modified before both - and so the
-polarity_change initialization has to go before both SINCE IT TESTS
-THE FLAGS.
+Uninit was created at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:143 [inline]
+ kmsan_internal_poison_shadow+0x66/0xd0 mm/kmsan/kmsan.c:126
+ kmsan_slab_alloc+0x8a/0xe0 mm/kmsan/kmsan_hooks.c:80
+ slab_alloc_node mm/slub.c:2907 [inline]
+ __kmalloc_node_track_caller+0x9aa/0x12f0 mm/slub.c:4511
+ __kmalloc_reserve net/core/skbuff.c:142 [inline]
+ __alloc_skb+0x35f/0xb30 net/core/skbuff.c:210
+ alloc_skb include/linux/skbuff.h:1094 [inline]
+ hwsim_cloned_frame_received_nl+0x20e/0x13e0 drivers/net/wireless/mac80211_hwsim.c:3498
+ genl_family_rcv_msg_doit net/netlink/genetlink.c:669 [inline]
+ genl_family_rcv_msg net/netlink/genetlink.c:714 [inline]
+ genl_rcv_msg+0x1703/0x18a0 net/netlink/genetlink.c:731
+ netlink_rcv_skb+0x6d7/0x7e0 net/netlink/af_netlink.c:2470
+ genl_rcv+0x63/0x80 net/netlink/genetlink.c:742
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x11c8/0x1490 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x173a/0x1840 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ __sys_sendto+0x9dc/0xc80 net/socket.c:1992
+ __do_sys_sendto net/socket.c:2004 [inline]
+ __se_sys_sendto+0x107/0x130 net/socket.c:2000
+ __x64_sys_sendto+0x6e/0x90 net/socket.c:2000
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+=====================================================
 
-Cheers,
-Kent.
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
