@@ -2,113 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8ED277839
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E863B277841
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 20:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728735AbgIXSEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 14:04:32 -0400
-Received: from mga03.intel.com ([134.134.136.65]:45606 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727753AbgIXSEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 14:04:31 -0400
-IronPort-SDR: EYQcTzeuJxdi0LyKEH6vU8EYlXbRcqmSNTIi8+6MR4ilgEfnQaI+K4f5AYP6Xac/70Nzb8GuYl
- Xi4lEGSGfO4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="161365971"
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="161365971"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 11:04:30 -0700
-IronPort-SDR: FVWvApzr7I7krFoC4sTcxfib8ECY6LWic7dQfyRAgWsZsGuvkFQSuor72shP+nk5Ou7PhJmV3u
- MaZgTlXFREbA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="487023894"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by orsmga005.jf.intel.com with ESMTP; 24 Sep 2020 11:04:30 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: VMX: Explicitly check for hv_remote_flush_tlb when loading pgd()
-Date:   Thu, 24 Sep 2020 11:04:29 -0700
-Message-Id: <20200924180429.10016-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S1728669AbgIXSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 14:07:55 -0400
+Received: from smtprelay0224.hostedemail.com ([216.40.44.224]:60986 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728577AbgIXSHz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 14:07:55 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 4FBFD100E7B4A;
+        Thu, 24 Sep 2020 18:07:54 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3867:3868:3870:3871:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6119:7903:7974:8828:9025:10004:10400:10848:11232:11658:11914:12043:12048:12050:12297:12555:12679:12740:12760:12895:13069:13161:13229:13311:13357:13439:14180:14181:14659:14721:21080:21325:21433:21451:21627:21740:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: flesh53_541162527161
+X-Filterd-Recvd-Size: 2054
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf03.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 24 Sep 2020 18:07:51 +0000 (UTC)
+Message-ID: <734165bbee434a920f074940624bcef01fcd9d60.camel@perches.com>
+Subject: Re: [PATCH v3] nfs: remove incorrect fallthrough label
+From:   Joe Perches <joe@perches.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Hongxiang Lou <louhongxiang@huawei.com>,
+        linux-nfs@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mark Brown <broonie@kernel.org>
+Date:   Thu, 24 Sep 2020 11:07:50 -0700
+In-Reply-To: <ca629208707903da56823dd57540d677df2da283.camel@perches.com>
+References: <ce28bb9bc25cb3f1197f75950a0cfe14947f9002.camel@perches.com>
+         <20200917214545.199463-1-ndesaulniers@google.com>
+         <CAKwvOdnziDJbRAP77K+V885SCuORfV4SmHDnSLUxhUGSSLMq_Q@mail.gmail.com>
+         <ca629208707903da56823dd57540d677df2da283.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explicitly check that kvm_x86_ops.tlb_remote_flush() points at Hyper-V's
-implementation for PV flushing instead of assuming that a non-NULL
-implementation means running on Hyper-V.  Wrap the related logic in
-ifdeffery as hv_remote_flush_tlb() is defined iff CONFIG_HYPERV!=n.
+On Thu, 2020-09-24 at 10:40 -0700, Joe Perches wrote:
+> On Thu, 2020-09-24 at 10:19 -0700, Nick Desaulniers wrote:
+> > Hello maintainers,
+> > Would you mind please picking up this patch?  KernelCI has been
+> > erroring for over a week without it.
+> 
+> As it's trivial and necessary, why not go through Linus directly?
+[]
+> Fixes: 2a1390c95a69 ("nfs: Convert to use the preferred fallthrough macro")
 
-Short term, the explicit check makes it more obvious why a non-NULL
-tlb_remote_flush() triggers EPTP shenanigans.  Long term, this will
-allow TDX to define its own implementation of tlb_remote_flush() without
-running afoul of Hyper-V.
+Real reason why not:
 
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/vmx.c | 7 +++++--
- arch/x86/kvm/vmx/vmx.h | 2 ++
- 2 files changed, 7 insertions(+), 2 deletions(-)
+the commit to be fixed is not in Linus' tree.
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 6f9a0c6d5dc5..a56fa9451b84 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -3073,14 +3073,15 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
- 		eptp = construct_eptp(vcpu, pgd, pgd_level);
- 		vmcs_write64(EPT_POINTER, eptp);
- 
--		if (kvm_x86_ops.tlb_remote_flush) {
-+#if IS_ENABLED(CONFIG_HYPERV)
-+		if (kvm_x86_ops.tlb_remote_flush == hv_remote_flush_tlb) {
- 			spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
- 			to_vmx(vcpu)->ept_pointer = eptp;
- 			to_kvm_vmx(kvm)->ept_pointers_match
- 				= EPT_POINTERS_CHECK;
- 			spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
- 		}
--
-+#endif
- 		if (!enable_unrestricted_guest && !is_paging(vcpu))
- 			guest_cr3 = to_kvm_vmx(kvm)->ept_identity_map_addr;
- 		else if (test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
-@@ -6956,7 +6957,9 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
- 
- static int vmx_vm_init(struct kvm *kvm)
- {
-+#if IS_ENABLED(CONFIG_HYPERV)
- 	spin_lock_init(&to_kvm_vmx(kvm)->ept_pointer_lock);
-+#endif
- 
- 	if (!ple_gap)
- 		kvm->arch.pause_in_guest = true;
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index d7ec66db5eb8..51107b7309bc 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -316,8 +316,10 @@ struct kvm_vmx {
- 	bool ept_identity_pagetable_done;
- 	gpa_t ept_identity_map_addr;
- 
-+#if IS_ENABLED(CONFIG_HYPERV)
- 	enum ept_pointers_status ept_pointers_match;
- 	spinlock_t ept_pointer_lock;
-+#endif
- };
- 
- bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
--- 
-2.28.0
+> https://lore.kernel.org/patchwork/patch/1307549/
+
 
