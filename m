@@ -2,86 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4E6277129
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33D727712A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727767AbgIXMht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:37:49 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:21008 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727718AbgIXMhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:37:48 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-42-w-QZRmrqOgiSZ0QwhDWzxw-1; Thu, 24 Sep 2020 13:37:43 +0100
-X-MC-Unique: w-QZRmrqOgiSZ0QwhDWzxw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 13:37:42 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 24 Sep 2020 13:37:42 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jann Horn' <jannh@google.com>, Kees Cook <keescook@chromium.org>
-CC:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        "Andy Lutomirski" <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        "Andrea Arcangeli" <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        "Hubertus Franke" <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        "Josep Torrellas" <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 3/6] seccomp: Implement constant action bitmaps
-Thread-Topic: [PATCH 3/6] seccomp: Implement constant action bitmaps
-Thread-Index: AQHWkm52E4NdUTUYRkuK8ZQr+ESnnKl3uRCg
-Date:   Thu, 24 Sep 2020 12:37:42 +0000
-Message-ID: <ec31caaea19247f0b9bd9c73ccaa7dbd@AcuMS.aculab.com>
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-4-keescook@chromium.org>
- <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
- <202009240018.A4D8274F@keescook>
- <CAG48ez1MWhrtkbWTNpc1v-WqWYiLM_JrCKvuE6DdH6vBY3MJzQ@mail.gmail.com>
-In-Reply-To: <CAG48ez1MWhrtkbWTNpc1v-WqWYiLM_JrCKvuE6DdH6vBY3MJzQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1727774AbgIXMij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:38:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727660AbgIXMij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:38:39 -0400
+Received: from coco.lan (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BE1AB21D24;
+        Thu, 24 Sep 2020 12:38:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600951119;
+        bh=k3WZRZdZuF6s4FKyf4FEZOVMN8m6qD690wYuX9PC6+w=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lbhWWp1KMyX6vYFySbwNlt11ppdhu1gnN1vcJDY7dn/wuoTjoR795MJmepqcn2jyN
+         4hwhwcAaEA7NeobiF4U9WpUCKpIHMjZnlN61MxUYAk1aHKm/NcMmZrNdryLte35xKu
+         bbO5ogfBUF3JMHCk3j7IkV76WpkbfTRsXeL6i97E=
+Date:   Thu, 24 Sep 2020 14:38:34 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL for v5.9-rc7] media fixes
+Message-ID: <20200924143834.79ef0744@coco.lan>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSmFubiBIb3JuDQo+IFNlbnQ6IDI0IFNlcHRlbWJlciAyMDIwIDEzOjI5DQouLi4NCj4g
-SSB0aGluayBvdXIgZ29hbCBoZXJlIHNob3VsZCBiZSB0aGF0IGlmIGEgc3lzY2FsbCBpcyBhbHdh
-eXMgYWxsb3dlZCwNCj4gc2VjY29tcCBzaG91bGQgZXhlY3V0ZSB0aGUgc21hbGxlc3QgYW1vdW50
-IG9mIGluc3RydWN0aW9ucyB3ZSBjYW4gZ2V0DQo+IGF3YXkgd2l0aCwgYW5kIHRvdWNoIHRoZSBz
-bWFsbGVzdCBhbW91bnQgb2YgbWVtb3J5IHBvc3NpYmxlIChhbmQNCj4gcHJlZmVyYWJseSB0aGF0
-IG1lbW9yeSBzaG91bGQgYmUgc2hhcmVkIGJldHdlZW4gdGhyZWFkcykuIFRoZSBiaXRtYXANCj4g
-ZmFzdHBhdGggc2hvdWxkIHByb2JhYmx5IGFsc28gYXZvaWQgcG9wdWxhdGVfc2VjY29tcF9kYXRh
-KCkuDQoNCklmIG1vc3Qgc3lzY2FsbHMgYXJlIGV4cGVjdGVkIHRvIGJlIGFsbG93ZWQgdGhlbiBh
-biBpbml0aWFsOg0KCWlmIChnbG9iYWxfbWFzayAmICgxdSA8PCAoc3lzY2FsbF9udW1iZXIgJiA2
-MykpDQp0ZXN0IGNhbiBiZSB1c2VkIHRvIHNraXAgYW55IGZ1cnRoZXIgbG9va3Vwcy4NCg0KQWx0
-aG91Z2ggSVNUUiBzb21lb25lIHN1Z2dlc3RpbmcgdGhhdCB0aGUgZ2xvYmFsX21hc2sgc2hvdWxk
-DQpiZSBwZXItY3B1IGJlY2F1c2UgZXZlbiBzaGFyZWQgcmVhZC1vbmx5IGNhY2hlIGxpbmVzIHdl
-cmUNCmV4cGVuc2l2ZSBvbiBzb21lIGFyY2hpdGVjdHVyZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lz
-dGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24g
-S2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Hi Linus,
+
+Please pull from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.9-3
+
+It fixes a regression at the CEC adapter core:
+
+      media: cec-adap.c: don't use flush_scheduled_work()
+
+While not too late, it also contains two uAPI patches for the 
+changes already merged for Kernel 5.9:
+
+      media: dt-bindings: media: imx274: Convert to json-schema
+      media: media/v4l2: remove V4L2_FLAG_MEMORY_NON_CONSISTENT flag
+
+The first one has a change to lowercase on one of the DT new
+additions for Kernel 5.9. The second one actually reverts one
+uAPI change that was nacked by mm people, because the changeset
+has problems.
+
+Thanks!
+Mauro
+
+---
+
+The following changes since commit ddecfc76979d5585847c76c4c489dcac389f86dd:
+
+  media: mceusb: Avoid GFP_ATOMIC where it is not needed (2020-08-28 14:06:36 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.9-3
+
+for you to fetch changes up to d0254f82d702a1d0d92e42f87676111de88846cf:
+
+  media: dt-bindings: media: imx274: Convert to json-schema (2020-09-22 11:13:46 +0200)
+
+----------------------------------------------------------------
+media fixes for v5.9-rc7
+
+----------------------------------------------------------------
+Hans Verkuil (1):
+      media: cec-adap.c: don't use flush_scheduled_work()
+
+Jacopo Mondi (1):
+      media: dt-bindings: media: imx274: Convert to json-schema
+
+Sergey Senozhatsky (1):
+      media: media/v4l2: remove V4L2_FLAG_MEMORY_NON_CONSISTENT flag
+
+ .../devicetree/bindings/media/i2c/imx274.txt       | 38 -----------
+ .../devicetree/bindings/media/i2c/sony,imx274.yaml | 76 ++++++++++++++++++++++
+ Documentation/userspace-api/media/v4l/buffer.rst   | 17 -----
+ .../userspace-api/media/v4l/vidioc-create-bufs.rst |  6 +-
+ .../userspace-api/media/v4l/vidioc-reqbufs.rst     | 12 +---
+ MAINTAINERS                                        |  2 +-
+ drivers/media/cec/core/cec-adap.c                  |  2 +-
+ drivers/media/common/videobuf2/videobuf2-core.c    | 46 ++-----------
+ .../media/common/videobuf2/videobuf2-dma-contig.c  | 19 ------
+ drivers/media/common/videobuf2/videobuf2-dma-sg.c  |  3 +-
+ drivers/media/common/videobuf2/videobuf2-v4l2.c    | 18 +----
+ drivers/media/dvb-core/dvb_vb2.c                   |  2 +-
+ drivers/media/v4l2-core/v4l2-compat-ioctl32.c      | 10 +--
+ drivers/media/v4l2-core/v4l2-ioctl.c               |  5 +-
+ include/media/videobuf2-core.h                     |  7 +-
+ include/uapi/linux/videodev2.h                     | 13 +---
+ 16 files changed, 101 insertions(+), 175 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/i2c/imx274.txt
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
 
