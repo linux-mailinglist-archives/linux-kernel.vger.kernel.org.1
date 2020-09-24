@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C87276C47
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D5E276C48
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbgIXIpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726387AbgIXIpp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:45:45 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3036C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 01:45:44 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id z19so1466678pfn.8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 01:45:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qcEFUagRFegtRA+c7Q/RWfZQtrVtJdKhlhnvr1c1Zzg=;
-        b=tcXIn8tK5lvFVCLf9TZ113Haf08OtFPxoyDDXrkV37Us2tXKaGt+H+BDt8B03DjT+t
-         Tnp+rqMxvAAgik9JI11a2Jh/r7kVtYQ/Ee7fI5tRrqNqks5aqFdnasKGLdtS13i1GN6n
-         IzahVoDO7Qd+5KuxmQ3KWsW0fOJR+3qK+CdAIfE7wMiLCtdsKUhWZ2IBP/xGwR5RisUN
-         4V7h9aNOQCxrU1e1dQEpH/UzEKfouCsdVli23c09Dp5LYga6U8W+58r9drKPkHcfl7uw
-         QOM+0iV20wJG/xCyZO4uFMFHH8tJCH19c+aS7x+YeHvQhvz3kJtnFV7yz7tlSHuOV55D
-         Ewjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qcEFUagRFegtRA+c7Q/RWfZQtrVtJdKhlhnvr1c1Zzg=;
-        b=KqAulGx3IjAxsh8BK7BIcJrugE1iL6hhEQ96+3l/yik7jWWJV7lz7fbNiEfbjiLdyg
-         hTdbn8p3m7/jeiRZTN/VBfrWcvmhpzq116iUZavomKmOMJPLs0q47eI1UsNbdjyxe2JY
-         HGY9XWGrT2VgxsJVuQG2CFD8NByJZpmYneV1R/nRkWLcEK3/kKwfhHRCHfzuMcXpvqtL
-         rEyQTNHg7PgEYIsPwRxWbibVkq//51eOVFQD75/oRfLWoBg3tSqUMv9TC/mSarxNAu0s
-         cpJyik950okzlPLKJVY/Xg3wSRnY4HwSnl0z0Z+3+z1EwKuoovi6NrjiA4ZMQ1Dfgx3s
-         jkqA==
-X-Gm-Message-State: AOAM531RS3GhYH8VUwp819EeNK69iN0kyZ6zUsj70iA8Kd8vxQhT0Q0N
-        cP4lUVOaOSN3pOGuU5DK75A=
-X-Google-Smtp-Source: ABdhPJwHIj2BhAHbMC1354hH6cMTwV+pRu84kxWYlo+kvN49AGuZQOFnUUBFE4A8iirLvW6Az3EKfg==
-X-Received: by 2002:a63:3856:: with SMTP id h22mr3055946pgn.451.1600937144394;
-        Thu, 24 Sep 2020 01:45:44 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id o67sm2208680pgo.8.2020.09.24.01.45.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 01:45:43 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 17:45:41 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Petr Mladek <pmladek@suse.com>,
+        id S1727267AbgIXIp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:45:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50566 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726387AbgIXIp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:45:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600937156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LiDYwk9lySi3d8BWgZSBd7bGIz2hU9PObtVbPv44pU0=;
+        b=qRbvu818hxb4yQXYEV6arBnycD4gPXoawp779lJY5QVHURh4kC+3d4wN4aM9tKR16SzLl6
+        npXu34KsVvaEvmIm60mGfnbYEio2ElAPs7oB5CEl23vZc32ZiGCUKbAgGIzxu4Y8ethp/X
+        DPPYc78oNBZZwdXp91VbUq0oC7VyIl4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 40316AD6B;
+        Thu, 24 Sep 2020 08:46:34 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 10:45:55 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
         Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk 4/5] printk: remove logbuf_lock, add syslog_lock
-Message-ID: <20200924084541.GA541@jagdpanzerIV.localdomain>
+Subject: Re: [PATCH printk 3/5] printk: use buffer pool for sprint buffers
+Message-ID: <20200924084555.GJ6442@alley>
 References: <20200922153816.5883-1-john.ogness@linutronix.de>
- <20200922153816.5883-5-john.ogness@linutronix.de>
+ <20200922153816.5883-4-john.ogness@linutronix.de>
+ <20200923151129.GC6442@alley>
+ <20200924054058.GE577@jagdpanzerIV.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922153816.5883-5-john.ogness@linutronix.de>
+In-Reply-To: <20200924054058.GE577@jagdpanzerIV.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/09/22 17:44), John Ogness wrote:
-[..]
->  void printk_safe_flush_on_panic(void)
->  {
-> -	/*
-> -	 * Make sure that we could access the main ring buffer.
-> -	 * Do not risk a double release when more CPUs are up.
-> -	 */
-> -	if (raw_spin_is_locked(&logbuf_lock)) {
-> -		if (num_online_cpus() > 1)
-> -			return;
-> -
-> -		debug_locks_off();
-> -		raw_spin_lock_init(&logbuf_lock);
+On Thu 2020-09-24 14:40:58, Sergey Senozhatsky wrote:
+> On (20/09/23 17:11), Petr Mladek wrote:
+> >
+> > AFAIK, there is one catch. We need to use va_copy() around
+> > the 1st call because va_format can be proceed only once.
+> >
+> 
+> Current printk() should be good enough for reporting, say, "Kernel
+> stack overflow" errors. Is extra pressure that va_copy() adds something
+> that we need to consider?
 
-If we panic() with syslog_lock locked then we need to zap syslog_lock
-and disable debug_locks for kmsg_dump() to succeed. Otherwise panic()
-may deadlock:
+The thing is that vsprintf() traverses the arguments using va_arg().
+It modifies internal values so that the next va_arg() will read
+the next value.
 
-	syslog_lock_irq()
-	-> NMI
-		panic()
-		...
-			printk_safe_flush_on_panic();
-			kmsg_dump(KMSG_DUMP_PANIC);	// syslog_lock_irqsave(flags)
-		...
+If we want to call vsprintf() twice then we need to reset the internal
+va_list states. My understanding is that va_copy() is the only legal
+way when we are already nested inside va_start()/va_end().
 
-Did I miss the point where we make sure that kmsg_dump() will not
-deadlock?
+See also the commit 5756b76e4db643d8f7 ("vsprintf: make %pV handling
+compatible with kasprintf()").
 
-	-ss
+Best Regards,
+Petr
