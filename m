@@ -2,100 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDCCE276EDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F403F276EDD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:37:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgIXKhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:37:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58458 "EHLO mail.kernel.org"
+        id S1726604AbgIXKha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:37:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43480 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726154AbgIXKhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:37:25 -0400
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C04762053B;
-        Thu, 24 Sep 2020 10:37:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600943844;
-        bh=GxzdceeR4inlmujUvpF3RJQGR6+MXYGTsrLSa6e1U1I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=TOHm0UDS+bnJQStr7iv06+r1cm1Je7M99SRBgLCwve/UuJXDzeFW79rVyjuviAfaW
-         qA15G8tVBfaxg90RJo0rhzlLTNxFUUB9yX069xpyMvovoYdHUhXG9IWPv7mX23W18b
-         HXdaPqYjVaLkStK2g47Q/cPvSCCSC3XM2glSYR04=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Tang Bin <tangbin@cmss.chinamobile.com>,
-        gregkh@linuxfoundation.org, jonathanh@nvidia.com,
-        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH] usb: phy: tegra: Use IS_ERR() to check and simplify code
-In-Reply-To: <20200924102139.GF2483160@ulmo>
-References: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
- <87imc3eiug.fsf@kernel.org> <20200924102139.GF2483160@ulmo>
-Date:   Thu, 24 Sep 2020 13:37:17 +0300
-Message-ID: <87pn6bcvfm.fsf@kernel.org>
+        id S1726154AbgIXKh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 06:37:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600943847;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OvK7t9Loa7SNSd60wI7vWX6CBAYZcCl23YU7tpkB1ho=;
+        b=iMyHKi8RgrsVu9diQmSB2XaPM5ssIH2ncGBdfVB5wZdjpXpk6orNWQDHqrT1Kc1urbGPNN
+        1TVnhgYnBtiDuCvjiUEVoHF475+C84DhtT6q8FUPoulteNRdzr2ZlrfytRQhyDy7FZLIMm
+        ZmoaH2aPJNEVB6mFcoB2jKr94UkKgy0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 87D57AC7D;
+        Thu, 24 Sep 2020 10:38:05 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 12:37:26 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Mark Salyzyn <salyzyn@android.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Changki Kim <changki.kim@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] printk: Store all three timestamps
+Message-ID: <20200924103726.GM6442@alley>
+References: <20200923135617.27149-1-pmladek@suse.com>
+ <20200923135617.27149-2-pmladek@suse.com>
+ <878sd0m4c3.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878sd0m4c3.fsf@jogness.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Thu 2020-09-24 02:06:12, John Ogness wrote:
+> On 2020-09-23, Petr Mladek <pmladek@suse.com> wrote:
+> > diff --git a/kernel/printk/printk_ringbuffer.h b/kernel/printk/printk_ringbuffer.h
+> > index 0adaa685d1ca..09082c8472d3 100644
+> > --- a/kernel/printk/printk_ringbuffer.h
+> > +++ b/kernel/printk/printk_ringbuffer.h
+> > @@ -14,7 +15,7 @@
+> >   */
+> >  struct printk_info {
+> >  	u64	seq;		/* sequence number */
+> > -	u64	ts_nsec;	/* timestamp in nanoseconds */
+> > +	struct ktime_timestamps ts; /* timestamps */
+> 
+> Until now struct printk_info has contained generic types. If we add
+> struct ktime_timestamps, we may start storing more than we need. For
+> example, if more (possibly internal) fields are added to struct
+> ktime_timestamps that printk doesn't care about. We may prefer to
+> generically and explicitly store the information we care about:
+> 
+>     u64 ts_mono;
+>     u64 ts_boot;
+>     u64 ts_real;
+> 
+> Or create our own struct printk_ts to copy the fields of interest to.
 
-Thierry Reding <thierry.reding@gmail.com> writes:
+I would like to have a structure if we have more timestamps.
 
-> On Thu, Sep 24, 2020 at 10:26:15AM +0300, Felipe Balbi wrote:
->> Tang Bin <tangbin@cmss.chinamobile.com> writes:
->>=20
->> > Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
->> > simplify code, avoid redundant judgements.
->> >
->> > Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
->> > Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->>=20
->> Applied for next merge window. Make sure to get this driver out of
->> drivers/usb/phy and moved into drivers/phy ASAP.
->
-> Sergei had commented on this patch with valid concerns, see here in case
-> you don't have his reply in your inbox:
->
->     http://patchwork.ozlabs.org/project/linux-tegra/patch/20200910115607.=
-11392-1-tangbin@cmss.chinamobile.com/#2526208
->
-> I agree with those concerns. This patch is broken because it will output
-> the wrong error code on failure. I don't fully agree with Sergei's point
-> that this patch isn't worth redoing. I do like the idiomatic error
-> handling better, but I think we shouldn't be breaking the error messages
-> like this.
+Honestly, printk-specific structure sounds like an overhead to me.
+How big is the chance that struct ktime_timestamps ts would get
+modified? It has been created for printk after all.
 
-Sure thing, dropped for now.
+That said, I could live with printk-specific structure.
+We might even need it if we need to store also local_clock().
 
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9sdt0RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQbZCg/+ImSwyaEYV6RDMjwOS5MSrkEXEUjxOfUU
-8I3U0ehVCPiI7lOc9uWUn0QtLxN6/MSvfRxYLaSxc0w3LAIHHYWr4i07PowIEz5b
-FdCPzcsqYtkfsr20ENpoz78l90579YbVu+eXfwcmxtXTR/0btQTAhTrsdDQC/LaC
-epJgNBEJgsPN08JRPb0fdBBSehsdcul+JlRnBsx3PklwrAoX/nHMTM1x4fiboMHQ
-IlN7Qug6E8xLK/+0z995a6Sg9nZeyZMX57kx11tQiZcJ14xG7PfQGz0eeqKiujna
-bkgcxfe13hTQELFLM7oqhp/EBG5MibwjrN7Ez5tB1CeCc5916YCKZn6m7VUwgnTB
-yCTo7lQ97WAlJg7tQdcFO7kwCS+s6CF+qJ/Fh4rEpv1P+DprQx9Fk7mSw/7IoLTW
-fbRcGiKoREfMOJUAxFU7bNeYLQawqVUB2ykPIdlBzDGLZdysCGhgd3cbZwaSCNMT
-Q3/Y5vo6FcNkm4lfmzGG00z+j346ObVq3DSne4JBEuEYPqp5/i3N32UpoBSfhoJ9
-ukySrGgzMlt5w8cSgWVEvAv/kDWB0dxIdd2eXN53C2+Fvj1C6I7LvAQWc5pcLpxP
-6zKyZFUx/XoB6/Wa+wuCuD7ZX21svVcgjJl9QEC/wdHLe08CMelglZuHrzMLEnNC
-2O8JUY5b9q4=
-=lCLm
------END PGP SIGNATURE-----
---=-=-=--
+Best Regards,
+Petr
