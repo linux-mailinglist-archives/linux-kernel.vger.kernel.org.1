@@ -2,56 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3E627742F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676DD277433
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728248AbgIXOj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:39:26 -0400
-Received: from mga07.intel.com ([134.134.136.100]:52514 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727859AbgIXOj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:39:26 -0400
-IronPort-SDR: lYxwhl60KN6YQKEWJLRVb4subtGPKhodt6KGimpn+y0dX4ffBEBxA893xy6y55t3TniFGn9fJI
- uJggyDxNaLZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="225363025"
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="225363025"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 07:39:25 -0700
-IronPort-SDR: aw/mqSt0VD6UBmHQwsU0wYx6f6DwfujzsoTj23//ldTuw5Nx0Xxgh9c4y3m5b78/1u0mHirB4M
- Sm0/LN52yJcQ==
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="486924110"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 07:39:25 -0700
-Date:   Thu, 24 Sep 2020 07:39:24 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86/mmu: Stash 'kvm' in a local variable in
- kvm_mmu_free_roots()
-Message-ID: <20200924143922.GA22539@linux.intel.com>
-References: <20200923191204.8410-1-sean.j.christopherson@intel.com>
- <875z83e47o.fsf@vitty.brq.redhat.com>
+        id S1728177AbgIXOmY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 10:42:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:57386 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727889AbgIXOmY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 10:42:24 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-263-piLz1VFuP7WR1Dja3TezJQ-1; Thu, 24 Sep 2020 15:42:19 +0100
+X-MC-Unique: piLz1VFuP7WR1Dja3TezJQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 24 Sep 2020 15:42:18 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 24 Sep 2020 15:42:18 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+CC:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Thread-Topic: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Thread-Index: AQHWknxPKqK+ilVBT0etUz37fvqXO6l33I9A
+Date:   Thu, 24 Sep 2020 14:42:18 +0000
+Message-ID: <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
+References: <0000000000006b9e8d059952095e@google.com>
+ <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <20200924140937.GA749208@kroah.com>
+In-Reply-To: <20200924140937.GA749208@kroah.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875z83e47o.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:42:19PM +0200, Vitaly Kuznetsov wrote:
-> What about kvm_mmu_get_page(), make_mmu_pages_available(),
-> mmu_alloc_root(), kvm_mmu_sync_roots(), direct_page_fault(),
-> kvm_mmu_pte_write() which seem to be using the same ugly pattern? :-)
+> On Thu, Sep 24, 2020 at 09:38:22AM -0400, Peilin Ye wrote:
+> > Hi all,
+> >
+> > syzbot has reported [1] a global out-of-bounds read issue in
+> > fbcon_get_font(). A malicious user may resize `vc_font.height` to a large
+> > value in vt_ioctl(), causing fbcon_get_font() to overflow our built-in
+> > font data buffers, declared in lib/fonts/font_*.c:
+...
+> > (drivers/video/fbdev/core/fbcon.c)
+> >  	if (font->width <= 8) {
+> >  		j = vc->vc_font.height;
+> > +		if (font->charcount * j > FNTSIZE(fontdata))
+> > +			return -EINVAL;
 
-Heh, good question.  I guess only kvm_mmu_free_roots() managed to cross over
-the threshold from "that's ugly" to "this is ridiculous".
+Can that still go wrong because the multiply wraps?
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
