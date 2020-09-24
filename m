@@ -2,90 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5CD12777F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 738CF2777F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728609AbgIXRm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:42:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbgIXRmZ (ORCPT
+        id S1728647AbgIXRma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:42:30 -0400
+Received: from mail.efficios.com ([167.114.26.124]:58850 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgIXRm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:42:25 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92DCDC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 10:42:25 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id q63so292015qkf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 10:42:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ufQSouJEr6iOhClGNkcFys0+GmEFSbJ326GsTOQ2uLs=;
-        b=nOuIzwWdqsKX//nOnPPcem2yIWA2yfus/bkl7atiAWOGJyts9EJzkywbm3/178bHdP
-         GIu7YfCjro+GjducZXySGvlhKxo41hPz9qqgcCspT6ybspy4HJUpojHUeGNViEOVcXNy
-         fO4CPjviAUOJPD8GxRMJF/DjJv6o/GlXwBkFaw7FJkBLnqMk5te1Fje9KkBzlkM5704K
-         u2h3MKqbKzCIz7wJJPZiCHE15+a7tl6pKs8EgAMJiWPXX2n+81eU4hO3BQ5Ha40yYxla
-         zTxeG4CNde9VZn0X6xyGpVZFPsqxt645OZjRsdX1PUkGvsz7HtBTIrUXZkdOKL1mPt+k
-         BKhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ufQSouJEr6iOhClGNkcFys0+GmEFSbJ326GsTOQ2uLs=;
-        b=HfYqrFtIseshnjsUOwgxpSOWqtxzKeSpMhFCHiblnSxLW6AW3Egdjn/0nyPleMoXh9
-         a1JUFxbpBVn9siG4vnjXZpgsY2Nk5lFC3LesH8jO6AzRnoAjuyf/0I+bYStdBapJm8oD
-         pI4s5il231QZECZP1pbp0Yk6XBTqS13KnyBXf+sGHKzv/smzl9AW+K+xqU4RazPSrqjB
-         3YuCSJHCOe0as22UtedtKb0ZJmu69axADzwLPg5Ov8LodPwKUEOWodx8y2pK0sdUyot2
-         QrgWu3elz0czXFucBXN7SSqzi53a9FKDVWgNQl+EmvuDLHTwmHYxaaqBI/gid4ruLtpf
-         FZWA==
-X-Gm-Message-State: AOAM532986yzJAzHhJAhh6WWSegBccIW5Ov0mzUv87m1ldYLP6tPuhyI
-        /GpNUTJBRfwfAOXMZDHtkmHiow==
-X-Google-Smtp-Source: ABdhPJy3+e6AffcDB4O9E1FMQxXBkkIU1OHmqDYWUevKy9OJXSv9xTsK0X7FvrcZqGkh92CxjFaiRg==
-X-Received: by 2002:a37:5fc6:: with SMTP id t189mr231569qkb.78.1600969344786;
-        Thu, 24 Sep 2020 10:42:24 -0700 (PDT)
-Received: from skullcanyon (marriott-chateau-champlain-montreal.sites.intello.com. [66.171.169.34])
-        by smtp.gmail.com with ESMTPSA id a24sm85243qko.82.2020.09.24.10.42.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 10:42:24 -0700 (PDT)
-Message-ID: <871d369fc987ac7cc24bdab9bc9df9fadf939c01.camel@ndufresne.ca>
-Subject: Re: [PATCH v2 0/2] Add new controls for QP and layer bitrate
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        ezequiel@collabora.com, stanimir.varbanov@linaro.org,
-        vgarodia@codeaurora.org, majja@codeaurora.org
-Date:   Thu, 24 Sep 2020 13:42:22 -0400
-In-Reply-To: <1600693440-3015-1-git-send-email-dikshita@codeaurora.org>
-References: <1600693440-3015-1-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        Thu, 24 Sep 2020 13:42:27 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id BF3F62D6A22;
+        Thu, 24 Sep 2020 13:42:25 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id P8f5KtIgWglj; Thu, 24 Sep 2020 13:42:25 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 5CE432D68CA;
+        Thu, 24 Sep 2020 13:42:25 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 5CE432D68CA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1600969345;
+        bh=nmtZAeR5sqORLoqN1My7cIPw8sFNxyB2cG9kgvPYQHE=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=D6MfuqvV7PRSF/updhnzbHfLJlAwLaVF1KYnh4s2NmMHeRUmweqVSdcCRc3DUXIdZ
+         DqEunMHEqZXFw2Xy1ngOoQcwC/SQ0+QVQORpBRYVJzUYFEiChYJUaZqWXZ8vE3HUv7
+         MmPs+4BQ/B7SRpj6fD0P3EBlTofjjVjmwI5ZY8zbAuPUvE+LOQzei4xkXqOJOid8wS
+         Xczw7AQQ5y2gDsvkSHtLbG/LAEAO3L+jlnK6Bq9JeMnHwVb+/Bo+QCXbs/GBKNMCN9
+         J8MpD4csfN9mD6ehgJ703v8ciYmmRjCiC1ZJOMwBAkuranMxEOmLgDuwj1OzxZVTpb
+         HfyllFNlKZIuA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gcDQfxz5416M; Thu, 24 Sep 2020 13:42:25 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id 479852D676E;
+        Thu, 24 Sep 2020 13:42:25 -0400 (EDT)
+Date:   Thu, 24 Sep 2020 13:42:25 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Message-ID: <2006335081.68212.1600969345189.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200924171846.993048030@goodmis.org>
+References: <20200924170928.466191266@goodmis.org> <20200924171846.993048030@goodmis.org>
+Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
+ enabled in a header
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
+Thread-Topic: tracepoints: Add helper to test if tracepoint is enabled in a header
+Thread-Index: kInbMT4XAiD6v8/BFtAt63F7ketfIA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le lundi 21 septembre 2020 à 18:33 +0530, Dikshita Agarwal a écrit :
-> This series adds frame specific min/max qp controls for hevc and layer
-> wise bitrate control for h264.
+----- On Sep 24, 2020, at 1:09 PM, rostedt rostedt@goodmis.org wrote:
 
-Any chance you could append your driver changes with this set ? I don't
-think new APIs ever make it without a driver using it.
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> As tracepoints are discouraged from being added in a header because it can
+> cause side effects if other tracepoints are in headers, the common
+> workaround is to add a function call that calls a wrapper function in a
+> C file that then calls the tracepoint. But as function calls add overhead,
+> this function should only be called when the tracepoint in question is
+> enabled. To get around the overhead, a static_branch can be used that only
+> gets set when the tracepoint is enabled, and then inside the block of the
+> static branch can contain the call to the tracepoint wrapper.
+> 
+> Add a tracepoint_enabled(tp) macro that gets passed the name of the
+> tracepoint, and this becomes a static_branch that is enabled when the
+> tracepoint is enabled and is a nop when the tracepoint is disabled.
+> 
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> ---
+> Documentation/trace/tracepoints.rst | 25 ++++++++++++++++++++++
+> include/linux/tracepoint-defs.h     | 33 +++++++++++++++++++++++++++++
+> 2 files changed, 58 insertions(+)
+> 
+> diff --git a/Documentation/trace/tracepoints.rst
+> b/Documentation/trace/tracepoints.rst
+> index 6e3ce3bf3593..833d39ee1c44 100644
+> --- a/Documentation/trace/tracepoints.rst
+> +++ b/Documentation/trace/tracepoints.rst
+> @@ -146,3 +146,28 @@ with jump labels and avoid conditional branches.
+>       define tracepoints. Check http://lwn.net/Articles/379903,
+>       http://lwn.net/Articles/381064 and http://lwn.net/Articles/383362
+>       for a series of articles with more details.
+> +
+> +If you require calling a tracepoint from a header file, it is not
+> +recommended to call one directly or to use the trace_<tracepoint>_enabled()
+> +function call, as tracepoints in header files can have side effects if a
+> +header is included from a file that has CREATE_TRACE_POINTS set. Instead,
+> +include tracepoint-defs.h and use trace_enabled().
 
-> 
-> Chnage since v1:
->  corrected email.
-> 
-> Dikshita Agarwal (2):
->   media: v4l2-ctrl: Add frame-specific min/max qp controls for hevc
->   media: v4l2-ctrl: Add layer wise bitrate controls for h264
-> 
->  .../userspace-api/media/v4l/ext-ctrls-codec.rst    | 74 +++++++++++++++++++++-
->  drivers/media/v4l2-core/v4l2-ctrls.c               | 15 +++++
->  include/uapi/linux/v4l2-controls.h                 | 17 +++++
->  3 files changed, 104 insertions(+), 2 deletions(-)
-> 
+Tracepoints per-se have no issues being used from header files. The TRACE_EVENT
+infrastructure seems to be the cause of this problem. We should fix trace events
+rather than require all users to use weird work-arounds thorough the kernel code
+base.
 
+I am not against the idea of a tracepoint_enabled(tp), but I am against the
+motivation behind this patch and the new tracepoint user requirements it documents.
+
+> +
+> +In a C file::
+> +
+> +	void do_trace_foo_bar_wrapper(args)
+> +	{
+> +		trace_foo_bar(args);
+> +	}
+> +
+> +In the header file::
+> +
+> +	DECLEARE_TRACEPOINT(foo_bar);
+> +
+> +	static inline void some_inline_function()
+> +	{
+> +		[..]
+> +		if (trace_enabled(foo_bar))
+
+Is it trace_enabled() or tracepoint_enabled() ? There is a mismatch
+between the commit message/code and the documentation.
+
+Thanks,
+
+Mathieu
+
+> +			do_trace_foo_bar_wrapper(args);
+> +		[..]
+> +	}
+> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+> index b29950a19205..ca2f1f77f6f8 100644
+> --- a/include/linux/tracepoint-defs.h
+> +++ b/include/linux/tracepoint-defs.h
+> @@ -48,4 +48,37 @@ struct bpf_raw_event_map {
+> 	u32			writable_size;
+> } __aligned(32);
+> 
+> +/*
+> + * If a tracepoint needs to be called from a header file, it is not
+> + * recommended to call it directly, as tracepoints in header files
+> + * may cause side-effects. Instead, use trace_enabled() to test
+> + * if the tracepoint is enabled, then if it is, call a wrapper
+> + * function defined in a C file that will then call the tracepoint.
+> + *
+> + * For "trace_foo()", you would need to create a wrapper function
+> + * in a C file to call trace_foo():
+> + *   void trace_bar(args) { trace_foo(args); }
+> + * Then in the header file, declare the tracepoint:
+> + *   DECLARE_TRACEPOINT(foo);
+> + * And call your wrapper:
+> + *   static inline void some_inlined_function() {
+> + *            [..]
+> + *            if (tracepoint_enabled(foo))
+> + *                    trace_bar(args);
+> + *            [..]
+> + *   }
+> + *
+> + * Note: tracepoint_enabled(foo) is equivalent to trace_foo_enabled()
+> + *   but is safe to have in headers, where trace_foo_enabled() is not.
+> + */
+> +#define DECLARE_TRACEPOINT(tp) \
+> +	extern struct tracepoint __tracepoint_##tp
+> +
+> +#ifdef CONFIG_TRACEPOINTS
+> +# define tracepoint_enabled(tp) \
+> +	static_key_false(&(__tracepoint_##tp).key)
+> +#else
+> +# define tracepoint_enabled(tracepoint) false
+> +#endif
+> +
+> #endif
+> --
+> 2.28.0
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
