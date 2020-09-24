@@ -2,279 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA40927752A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5A427753A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728469AbgIXPXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728344AbgIXPXh (ORCPT
+        id S1728402AbgIXP0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:26:50 -0400
+Received: from mail.efficios.com ([167.114.26.124]:45984 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728285AbgIXP0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:23:37 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FC3C0613CE;
-        Thu, 24 Sep 2020 08:23:37 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e2so4031370wme.1;
-        Thu, 24 Sep 2020 08:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7286v2n5MsKNIWaDNjy3w7lnkrAjciTfY1U8kqoxZQs=;
-        b=V1HbQ0SGQPBcZyu/T+PtWOHlNSTDGeXxYBiZVZbJDmjiRpNDDhzl2qHiUkzU6s93YA
-         pTquOpoRoknVz8i6YirNK7quZfh2VTEW85j+O0tJ9/Y8VXB+JZf7DVJU6M5swufm3YCT
-         bpYr/TGzwR8wwxWPRRia8EqHi97KSuWm9aw19jDueELlRSLH8h4te86Q7R/tdCCHwrLc
-         k1Hv6a3cuXzhaE9Y6YpEHjFStuKxFsl3ZU6qLHs0RvaZo+kyH+14mBIDGjdJjdVLmDiT
-         STy5kyLvE1UEtfMI4wSrTHSCU1u5UU6JA8WL7EbAV8mDqOT/fwu+ZFjG+SXqy4SDWMFu
-         xs+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7286v2n5MsKNIWaDNjy3w7lnkrAjciTfY1U8kqoxZQs=;
-        b=FFKxAU9SVAY3r0J/JAxKxS7BKJpv3/QpCj0EMkS3OYkT1ipYOFfCdBUN1yPaHZsMV1
-         l4rgPKGb6s1XtXdU4WvHKoIh854FbN0lUF6kniZxtoZ0hi8yYDU9VYcvp2SO0teCfvmj
-         4RFTUAwfoUNbgI+59smLsGxA2SM1vkiQgnPOCMHqPEmkJvIXj6py0hTj8lrEINofdv1D
-         dG8F66L8gn4BhtjGruG/9iIMFssZqr9EqQws9kPpiGOFFD8/wGXz6gYXXI3TMDQAssxD
-         QsQ55F7K/Ew9Nz05XnxjmwZ3E6/bYGFKGApROtfMlUjnNkmcmHRS/wTbgvv/2DdDVaLU
-         TKDQ==
-X-Gm-Message-State: AOAM531gWs9NNROo+ajV6+TS70xjTB6EiiFh+lKHqOqS9X6wQhNI3Sle
-        tak5LxGn9APEg0BP1HfkHIohUtWCeZCOC4vCLFY=
-X-Google-Smtp-Source: ABdhPJzAAHwCZBGWgG8Ih+dVEfLlrq+rE83hkHZb956tO4J6xMktEkZnLNyK+z5MV/UDBVB0SP+UeWo+jR5L67QbWSo=
-X-Received: by 2002:a05:600c:2183:: with SMTP id e3mr5625462wme.49.1600961015780;
- Thu, 24 Sep 2020 08:23:35 -0700 (PDT)
+        Thu, 24 Sep 2020 11:26:49 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 328082D55C7;
+        Thu, 24 Sep 2020 11:26:48 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id NDMqWxTKxly2; Thu, 24 Sep 2020 11:26:47 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id C815F2D55C6;
+        Thu, 24 Sep 2020 11:26:47 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com C815F2D55C6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1600961207;
+        bh=PGfwt5U5NML2mjINchc3+DAt5mrL+wPPGXgN9Dzye8Q=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=YL6+wquo3pWf1a9fN7i309Hayq2cM0cu8HIBYKR/15niCwOJbEYY3Qxd4pyXahXbn
+         A9YDCuynB1wmIf6sxqWflQVzcmwxCl/o26JImoOGv5ru/yRvACR/h3rLab6Zjp2EVd
+         e1C2R3NxVTYtXXsfrLwO7+aqgiGOvScrx0D/Eu1s8qWhN/dA0aEuVVhks68SB7YLPr
+         zCQEtlVY1Cu9wP7nBT6gFm70Icd0L3gWju1zeqBBSuQEeEMqG9ZyBRxcvM/qywkqZc
+         8mFGg9N9Gc07TqZhWULazRaWslVaTN/M0ezdeZUt3q0Uad1DoRkZKD5PP9PdPLCucb
+         D3zuPMq/wdm/g==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id cDyxUEfj1uaN; Thu, 24 Sep 2020 11:26:47 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id B9A392D52C0;
+        Thu, 24 Sep 2020 11:26:47 -0400 (EDT)
+Date:   Thu, 24 Sep 2020 11:26:47 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Boqun Feng <boqun.feng@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Nicholas Piggin <npiggin@gmail.com>
+Message-ID: <977127494.68046.1600961207672.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200825020640.GA72178@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+References: <20200814164358.4783-1-mathieu.desnoyers@efficios.com> <20200814164358.4783-3-mathieu.desnoyers@efficios.com> <20200816152907.GB87259@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net> <764014395.16126.1598282869127.JavaMail.zimbra@efficios.com> <20200825020640.GA72178@debian-boqun.qqnc3lrjykvubdpftowmye0fmh.lx.internal.cloudapp.net>
+Subject: Re: [RFC PATCH 2/3] sched: membarrier: cover kthread_use_mm (v2)
 MIME-Version: 1.0
-References: <20200919193727.2093945-1-robdclark@gmail.com> <20200921092154.GJ438822@phenom.ffwll.local>
- <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
- <CAKMK7uEqDD-oDAQKyA9DQbxkCgEjC5yyjvKR7d8T0Gj0SqEZ4A@mail.gmail.com>
- <CAF6AEGtYAn+W8HxP7SXtxPr5FsEB1hYGU91WrHCtwX89UmUR5w@mail.gmail.com>
- <20200923152545.GQ438822@phenom.ffwll.local> <CAF6AEGs9xDOoG3n4E_+6iDaiJXp_hqvSV1VKE=vpvG-twYPoew@mail.gmail.com>
- <20200924084950.GY438822@phenom.ffwll.local>
-In-Reply-To: <20200924084950.GY438822@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 24 Sep 2020 08:24:37 -0700
-Message-ID: <CAF6AEGt9-2Fo=eWt0cZaS4mEDoSbEOVTJoraqm7gB_Cuue4snA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] drm: commit_work scheduling
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
+Thread-Topic: sched: membarrier: cover kthread_use_mm (v2)
+Thread-Index: 8RKETO3lb9tRkpQ7wxH9UU76ffJhMQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 1:49 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Wed, Sep 23, 2020 at 07:33:17PM -0700, Rob Clark wrote:
-> > On Wed, Sep 23, 2020 at 8:25 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > On Tue, Sep 22, 2020 at 07:48:10AM -0700, Rob Clark wrote:
-> > > > On Mon, Sep 21, 2020 at 11:59 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > >
-> > > > > On Mon, Sep 21, 2020 at 5:16 PM Rob Clark <robdclark@gmail.com> wrote:
-> > > > > >
-> > > > > > On Mon, Sep 21, 2020 at 2:21 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > > > >
-> > > > > > > On Sat, Sep 19, 2020 at 12:37:23PM -0700, Rob Clark wrote:
-> > > > > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > > > > >
-> > > > > > > > The android userspace treats the display pipeline as a realtime problem.
-> > > > > > > > And arguably, if your goal is to not miss frame deadlines (ie. vblank),
-> > > > > > > > it is.  (See https://lwn.net/Articles/809545/ for the best explaination
-> > > > > > > > that I found.)
-> > > > > > > >
-> > > > > > > > But this presents a problem with using workqueues for non-blocking
-> > > > > > > > atomic commit_work(), because the SCHED_FIFO userspace thread(s) can
-> > > > > > > > preempt the worker.  Which is not really the outcome you want.. once
-> > > > > > > > the required fences are scheduled, you want to push the atomic commit
-> > > > > > > > down to hw ASAP.
-> > > > > > > >
-> > > > > > > > But the decision of whether commit_work should be RT or not really
-> > > > > > > > depends on what userspace is doing.  For a pure CFS userspace display
-> > > > > > > > pipeline, commit_work() should remain SCHED_NORMAL.
-> > > > > > > >
-> > > > > > > > To handle this, convert non-blocking commit_work() to use per-CRTC
-> > > > > > > > kthread workers, instead of system_unbound_wq.  Per-CRTC workers are
-> > > > > > > > used to avoid serializing commits when userspace is using a per-CRTC
-> > > > > > > > update loop.
-> > > > > > > >
-> > > > > > > > A client-cap is introduced so that userspace can opt-in to SCHED_FIFO
-> > > > > > > > priority commit work.
-> > > > > > > >
-> > > > > > > > A potential issue is that since 616d91b68cd ("sched: Remove
-> > > > > > > > sched_setscheduler*() EXPORTs") we have limited RT priority levels,
-> > > > > > > > meaning that commit_work() ends up running at the same priority level
-> > > > > > > > as vblank-work.  This shouldn't be a big problem *yet*, due to limited
-> > > > > > > > use of vblank-work at this point.  And if it could be arranged that
-> > > > > > > > vblank-work is scheduled before signaling out-fences and/or sending
-> > > > > > > > pageflip events, it could probably work ok to use a single priority
-> > > > > > > > level for both commit-work and vblank-work.
-> > > > > > >
-> > > > > > > The part I don't like about this is that it all feels rather hacked
-> > > > > > > together, and if we add more stuff (or there's some different thing in the
-> > > > > > > system that also needs rt scheduling) then it doesn't compose.
-> > > > > >
-> > > > > > The ideal thing would be that userspace is in control of the
-> > > > > > priorities.. the setclientcap approach seemed like a reasonable way to
-> > > > > > give the drm-master a way to opt in.
-> > > > > >
-> > > > > > I suppose instead userspace could use sched_setscheduler().. but that
-> > > > > > would require userspace to be root, and would require some way to find
-> > > > > > the tid.
-> > > > >
-> > > > > Userspace already needs that for the SCHED_FIFO for surface-flinger.
-> > > > > Or is the problem that CAP_SYS_NICE is only good for your own
-> > > > > processes?
-> > > >
-> > > > tbh, I'm not completely sure offhand what gives surfaceflinger
-> > > > permission to set itself SCHED_FIFO
-> > > >
-> > > > (But on CrOS there are a few more pieces to the puzzle)
-> > > >
-> > > > > Other question I have for this is whether there's any recommendations
-> > > > > for naming the kthreads (since I guess that name is what becomes the
-> > > > > uapi for userspace to control this)?
-> > > > >
-> > > > > Otherwise I think "userspace calls sched_setscheduler on the right
-> > > > > kthreads" sounds like a good interface, since it lets userspace decide
-> > > > > how it all needs to fit together and compose. Anything we hard-code in
-> > > > > an ioctl is kinda lost cause. And we can choose the default values to
-> > > > > work reasonably well when the compositor runs at normal priority
-> > > > > (lowest niceness or something like that for the commit work).
-> > > >
-> > > > I don't really like the naming convention approach.. what is to stop
-> > > > some unrelated process to name it's thread the same thing to get a
-> > > > SCHED_FIFO boost..
-> > > >
-> > > > But we can stick with my idea to expose the thread id as a read-only
-> > > > CRTC property, for userspace to find the things to call
-> > > > sched_setscheduler() on.  If for whatever reason the drm master is not
-> > > > privileged (or is running in a sandbox, etc), a small helper that has
-> > > > the necessary permissions could open the drm device to find the CRTC
-> > > > thread-ids and call sched_setscheduler()..
-> > >
-> > > Hm thread ids don't translate too well across PID namespaces I think ...
-> > > So that's another can of worms. And pidfd doesn't really work as a
-> > > property.
-> >
-> > hmm, I was kinda hoping there was already a solution for translating
-> > thread-id's, but hadn't had a chance to dig through it yet
->
-> You can translate them, and it happens automatically in process context
-> (iirc at least). But when we set the read-only prop we don't know which
-> process namespace the compositor is sitting in, so that translation isn't
-> doing us any good.
+----- On Aug 24, 2020, at 10:06 PM, Boqun Feng boqun.feng@gmail.com wrote:
 
-Well, that only requires writing some code.. when I mentioned
-read-only, I just meant that it is read-only from the userspace
-standpoint.  But we would need some hook when the property is read to
-do the translation so userspace sees the appropriate value
+> On Mon, Aug 24, 2020 at 11:27:49AM -0400, Mathieu Desnoyers wrote:
+>> ----- On Aug 16, 2020, at 11:29 AM, Boqun Feng boqun.feng@gmail.com wrote:
+>> 
+>> > On Fri, Aug 14, 2020 at 12:43:57PM -0400, Mathieu Desnoyers wrote:
+>> >> Add comments and memory barrier to kthread_use_mm and kthread_unuse_mm
+>> >> to allow the effect of membarrier(2) to apply to kthreads accessing
+>> >> user-space memory as well.
+>> >> 
+>> >> Given that no prior kthread use this guarantee and that it only affects
+>> >> kthreads, adding this guarantee does not affect user-space ABI.
+>> >> 
+>> >> Refine the check in membarrier_global_expedited to exclude runqueues
+>> >> running the idle thread rather than all kthreads from the IPI cpumask.
+>> >> 
+>> >> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> >> Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+>> >> Cc: Will Deacon <will@kernel.org>
+>> >> Cc: Paul E. McKenney <paulmck@kernel.org>
+>> >> Cc: Nicholas Piggin <npiggin@gmail.com>
+>> >> Cc: Andy Lutomirski <luto@amacapital.net>
+>> >> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> >> ---
+>> >> Changes since v1:
+>> >> - Add WARN_ON_ONCE(current->mm) in play_idle_precise (PeterZ),
+>> >> - Use smp_mb__after_spinlock rather than smp_mb after task_lock.
+>> >> ---
+>> >>  kernel/kthread.c          | 19 +++++++++++++++++++
+>> >>  kernel/sched/idle.c       |  1 +
+>> >>  kernel/sched/membarrier.c |  8 ++------
+>> >>  3 files changed, 22 insertions(+), 6 deletions(-)
+>> >> 
+>> >> diff --git a/kernel/kthread.c b/kernel/kthread.c
+>> >> index 3edaa380dc7b..77aaaa7bc8d9 100644
+>> >> --- a/kernel/kthread.c
+>> >> +++ b/kernel/kthread.c
+>> >> @@ -1255,8 +1255,19 @@ void kthread_use_mm(struct mm_struct *mm)
+>> >>  	finish_arch_post_lock_switch();
+>> >>  #endif
+>> >>  
+>> >> +	/*
+>> >> +	 * When a kthread starts operating on an address space, the loop
+>> >> +	 * in membarrier_{private,global}_expedited() may not observe
+>> >> +	 * that tsk->mm, and not issue an IPI. Membarrier requires a
+>> >> +	 * memory barrier after storing to tsk->mm, before accessing
+>> >> +	 * user-space memory. A full memory barrier for membarrier
+>> >> +	 * {PRIVATE,GLOBAL}_EXPEDITED is implicitly provided by
+>> >> +	 * mmdrop(), or explicitly with smp_mb().
+>> >> +	 */
+>> >>  	if (active_mm != mm)
+>> >>  		mmdrop(active_mm);
+>> >> +	else
+>> >> +		smp_mb();
+>> > 
+>> > Similar question here: could smp_mb() guarantee the correctness of
+>> > GLOBAL_EXPEDITED? Don't you need membarrier_switch_mm() here and in
+>> > kthread_unuse_mm(), too?
+>> > 
+>> > Am I miss something here?
+>> 
+>> I think you have a good point there. Which brings me to wonder why we
+>> don't have membarrier_switch_mm() when entering/leaving lazy TLB mode.
+>> This means an IPI can be sent to a kthread even if it does not use an
+>> mm, just because the membarrier state in the runqueue is that of the
+>> active_mm.
+>> 
+>> Thoughts ?
+>> 
+> 
+> Right, I think we should also handle the percpu membarrier_state. The
+> basic rule is whenever we change current->mm or current (i.e. rq->curr)
+> itself, we need to update the percpu membarrier_state accordingly.
 
-BR,
--R
+OK, so as we introduce IPIs to kthreads which are using kthread_use_mm, we need to
+reconsider how the scheduler deals with runqueues entering lazy TLB state. Currently,
+membarrier_switch_mm() is not issued when entering lazy TLB state. But as we
+start considering kthreads as candidates for sending IPIs, we need to update
+the rq->membarrier_state whenever we enter lazy TLB state as well.
 
-> I think there's a root namespace that the kernel uses, but tbh I'm not
-> sure how this all works.
->
-> > > I also thought kernel threads can be distinguished from others, so
-> > > userspace shouldn't be able to sneak in and get elevated by accident.
-> >
-> > I guess maybe you could look at the parent?  I still would like to
-> > think that we could come up with something a bit less shaking than
-> > matching thread names by regexp..
->
-> ps marks up kernel threads with [], so there is a way. But I haven't
-> looked at what it is exactly that tells kernel threads apart from others.
->
-> But aside from that sounds like "match right kernel thread with regex and
-> set its scheduler class" is how this is currently done, if I'm
-> understanding what Tejun and Peter said correctly.
->
-> Not pretty, but also *shrug* ...
-> -Daniel
->
-> > BR,
-> > -R
-> >
-> > > -Daniel
-> > >
-> > > >
-> > > > BR,
-> > > > -R
-> > > >
-> > > > > -Daniel
-> > > > >
-> > > > > > Is there some way we could arrange for the per-crtc kthread's to be
-> > > > > > owned by the drm master?  That would solve the "must be root" issue.
-> > > > > > And since the target audience is an atomic userspace, I suppose we
-> > > > > > could expose the tid as a read-only property on the crtc?
-> > > > > >
-> > > > > > BR,
-> > > > > > -R
-> > > > > >
-> > > > > > > So question to rt/worker folks: What's the best way to let userspace set
-> > > > > > > the scheduling mode and priorities of things the kernel does on its
-> > > > > > > behalf? Surely we're not the first ones where if userspace runs with some
-> > > > > > > rt priority it'll starve out the kernel workers that it needs. Hardcoding
-> > > > > > > something behind a subsystem ioctl (which just means every time userspace
-> > > > > > > changes what it does, we need a new such flag or mode) can't be the right
-> > > > > > > thing.
-> > > > > > >
-> > > > > > > Peter, Tejun?
-> > > > > > >
-> > > > > > > Thanks, Daniel
-> > > > > > >
-> > > > > > > >
-> > > > > > > > Rob Clark (3):
-> > > > > > > >   drm/crtc: Introduce per-crtc kworker
-> > > > > > > >   drm/atomic: Use kthread worker for nonblocking commits
-> > > > > > > >   drm: Add a client-cap to set scheduling mode
-> > > > > > > >
-> > > > > > > >  drivers/gpu/drm/drm_atomic_helper.c | 13 ++++++----
-> > > > > > > >  drivers/gpu/drm/drm_auth.c          |  4 ++++
-> > > > > > > >  drivers/gpu/drm/drm_crtc.c          | 37 +++++++++++++++++++++++++++++
-> > > > > > > >  drivers/gpu/drm/drm_ioctl.c         | 13 ++++++++++
-> > > > > > > >  include/drm/drm_atomic.h            | 31 ++++++++++++++++++++++++
-> > > > > > > >  include/drm/drm_crtc.h              | 10 ++++++++
-> > > > > > > >  include/uapi/drm/drm.h              | 13 ++++++++++
-> > > > > > > >  7 files changed, 117 insertions(+), 4 deletions(-)
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > 2.26.2
-> > > > > > > >
-> > > > > > > > _______________________________________________
-> > > > > > > > dri-devel mailing list
-> > > > > > > > dri-devel@lists.freedesktop.org
-> > > > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > > > > >
-> > > > > > > --
-> > > > > > > Daniel Vetter
-> > > > > > > Software Engineer, Intel Corporation
-> > > > > > > http://blog.ffwll.ch
-> > > > > > _______________________________________________
-> > > > > > dri-devel mailing list
-> > > > > > dri-devel@lists.freedesktop.org
-> > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > > >
-> > > > >
-> > > > >
-> > > > > --
-> > > > > Daniel Vetter
-> > > > > Software Engineer, Intel Corporation
-> > > > > http://blog.ffwll.ch
-> > >
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+So I plan to do this change to cover this:
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 84758f34cdb0..44521dc5602a 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3736,6 +3736,8 @@ context_switch(struct rq *rq, struct task_struct *prev,
+         */
+        arch_start_context_switch(prev);
+ 
++       membarrier_switch_mm(rq, prev->mm, next->mm);
++
+        /*
+         * kernel -> kernel   lazy + transfer active
+         *   user -> kernel   lazy + mmgrab() active
+@@ -3752,7 +3754,6 @@ context_switch(struct rq *rq, struct task_struct *prev,
+                else
+                        prev->active_mm = NULL;
+        } else {                                        // to user
+-               membarrier_switch_mm(rq, prev->active_mm, next->mm);
+                /*
+                 * sys_membarrier() requires an smp_mb() between setting
+                 * rq->curr / membarrier_switch_mm() and returning to userspace.
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 3fd283892761..481149066086 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2592,12 +2592,13 @@ static inline void membarrier_switch_mm(struct rq *rq,
+                                        struct mm_struct *prev_mm,
+                                        struct mm_struct *next_mm)
+ {
+-       int membarrier_state;
++       int membarrier_state = 0;
+ 
+        if (prev_mm == next_mm)
+                return;
+ 
+-       membarrier_state = atomic_read(&next_mm->membarrier_state);
++       if (next_mm)
++               membarrier_state = atomic_read(&next_mm->membarrier_state);
+        if (READ_ONCE(rq->membarrier_state) == membarrier_state)
+                return;
+
+Thoughts ?
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
