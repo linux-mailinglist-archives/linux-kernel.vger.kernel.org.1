@@ -2,73 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D9C4277586
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FACD27758E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728428AbgIXPgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:36:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728333AbgIXPgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:36:20 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49C6D221EB;
-        Thu, 24 Sep 2020 15:36:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600961779;
-        bh=WNZTZTSVuWO/IZHrM0LOYgxpeDcxocJGS0YFoO5Jgyk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cX8W6QKfoyUYTckQzaOtewjAWhre2Tpr3Dnlh95n4L4vGd5cV1+xjAbMvCPWWIQZw
-         /8nu25+xQ4Bw98A3I5Yz+agLp8YJxsVo2PGVHSPxLamPBJ8lYnbZnSLMYUj/vpBtDi
-         DiLSsu8nzASTO0St+GdpFQGb0HpOFMyUCh+cX8iE=
-Date:   Thu, 24 Sep 2020 17:36:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Srinivasan Raju <srini.raju@purelifi.com>
-Cc:     mostafa.afgani@purelifi.com, pureLiFi Ltd <info@purelifi.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>
-Subject: Re: [PATCH] staging: Initial driver submission for pureLiFi devices
-Message-ID: <20200924153636.GA1171035@kroah.com>
-References: <20200924151910.21693-1-srini.raju@purelifi.com>
+        id S1728463AbgIXPhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:37:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42056 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728333AbgIXPhA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:37:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600961818;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WjW6jQGewuIh7wjRg7lkekbFgljfn1Q0WKM0iJVFmTc=;
+        b=ACfkTPILaR5Si1D8Xb5INYylQtFJWjeF5/dRxJsGx5D/OtI7Y6XixJHtyiP4DIIdPfJgU9
+        i3NwZqMDIEvFAeKKmyonsoMKSa2SeAgj/1/mJhizeLsdOLoG7xqJ9ZYWh/Mg/+F3EQL2cf
+        G1sXcKajWsHBz9QwbfZf+72+WYuEosA=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-462-qwX920ehOJquMZVlLRwOWA-1; Thu, 24 Sep 2020 11:36:55 -0400
+X-MC-Unique: qwX920ehOJquMZVlLRwOWA-1
+Received: by mail-wm1-f71.google.com with SMTP id x6so1384416wmi.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:36:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=WjW6jQGewuIh7wjRg7lkekbFgljfn1Q0WKM0iJVFmTc=;
+        b=W+kCAB/UPwcBbjrg91lU9cb4xO/+bzRgaVdXzck1EX0Nvf8C/5k1pv7F4/+pKQD64x
+         paz0WmQBce9FU8DmvWH77CKtK7LBzu1H1Tm8wrtuw3ytHT3yRZ7MziaVv3lfzG/TNROw
+         Jt0Ln7NXexYkTG+BKNjMAf0v3fqjrPCjmf6YwTbn300sx1OCKJhXXAWG+/wRKgtkJdew
+         alqATQi+2EUZC6NPSUDMkauCYviToanRLhOu3Mk5f/ib4EPEIsUUDrNFDfXmGLc0Ye3U
+         q57bVC+aF0FuZfW6MSABxiRJYqsiuVTsx3Rq9K+bwuLNsQyTI6lg6YwkNIxXtSwb7B1w
+         sY6Q==
+X-Gm-Message-State: AOAM53179IM8ZJCC1ve/ql2/Po/Admj1H2twkKN96AumKYuTpxGYlnU0
+        qBVfr8wVOrnuG5yV/7Gv/RYs2sj6xe03WI1UavN97UjopMDyLEn+OrxpMq2cPQuYm3ok8PhS4gE
+        td2V5X7MFUH/CyeAXpw2aliY7
+X-Received: by 2002:adf:a49d:: with SMTP id g29mr371144wrb.219.1600961813261;
+        Thu, 24 Sep 2020 08:36:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQQEvyY8FDVVtfnFw8D9lgSckf6rQqNpCOTNS/+eiROwRhVhxvj6qaFAQCKBgwIDwyj55iNg==
+X-Received: by 2002:adf:a49d:: with SMTP id g29mr371109wrb.219.1600961812913;
+        Thu, 24 Sep 2020 08:36:52 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id b84sm4406575wmd.0.2020.09.24.08.36.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 08:36:52 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Mohammed Gamal <mgamal@redhat.com>, linux-hyperv@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        Tianyu.Lan@microsoft.com, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org,
+        Mohammed Gamal <mgamal@redhat.com>
+Subject: Re: [PATCH] hv: clocksource: Add notrace attribute to read_hv_sched_clock_*() functions
+In-Reply-To: <20200924151117.767442-1-mgamal@redhat.com>
+References: <20200924151117.767442-1-mgamal@redhat.com>
+Date:   Thu, 24 Sep 2020 17:36:51 +0200
+Message-ID: <87pn6bchkc.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924151910.21693-1-srini.raju@purelifi.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 08:48:51PM +0530, Srinivasan Raju wrote:
-> +PUREILIFI USB DRIVER
-> +M:	pureLiFi Ltd <info@purelifi.com>
+Mohammed Gamal <mgamal@redhat.com> writes:
 
-I need a real person here, having aliases as maintainers results in a
-lack of accountability :(
+> When selecting function_graph tracer with the command:
+>  # echo function_graph > /sys/kernel/debug/tracing/current_tracer
+>
+> The kernel crashes with the following stack trace:
+>
+> [69703.122389] BUG: stack guard page was hit at 000000001056545c (stack is 00000000fa3f8fed..0000000005d39503)
+> [69703.122403] kernel stack overflow (double-fault): 0000 [#1] SMP PTI
+> [69703.122413] CPU: 0 PID: 16982 Comm: bash Kdump: loaded Not tainted 4.18.0-236.el8.x86_64 #1
+> [69703.122420] Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.0 12/17/2019
+> [69703.122433] RIP: 0010repare_ftrace_return+0xa/0x110
+> [69703.122458] Code: 05 00 0f 0b 48 c7 c7 10 ca 69 ae 0f b6 f0 e8 4b 52 0c 00 31 c0 eb ca 66 0f 1f 84 00 00 00 00 00 55 48 89 e5 41 56 41 55 41 54 <53> 48 83 ec 18 65 48 8b 04 25 28 00 00 00 48 89 45 d8 31 c0 48 85
+> [69703.122467] RSP: 0018:ffffbd6d01118000 EFLAGS: 00010086
+> [69703.122476] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000003
+> [69703.122484] RDX: 0000000000000000 RSI: ffffbd6d011180d8 RDI: ffffffffadce7550
+> [69703.122491] RBP: ffffbd6d01118018 R08: 0000000000000000 R09: ffff9d4b09266000
+> [69703.122498] R10: ffff9d4b0fc04540 R11: ffff9d4b0fc20a00 R12: ffff9d4b6e42aa90
+> [69703.122506] R13: ffff9d4b0fc20ab8 R14: 00000000000003e8 R15: ffffbd6d0111837c
+> [69703.122514] FS:  00007fd5f2588740(0000) GS:ffff9d4b6e400000(0000) knlGS:0000000000000000
+> [69703.122521] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [69703.122528] CR2: ffffbd6d01117ff8 CR3: 00000000565d8001 CR4: 00000000003606f0
+> [69703.122538] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [69703.122545] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [69703.122552] Call Trace:
+> [69703.122568]  ftrace_graph_caller+0x6b/0xa0
+> [69703.122589]  ? read_hv_sched_clock_tsc+0x5/0x20
+> [69703.122599]  read_hv_sched_clock_tsc+0x5/0x20
+> [69703.122611]  sched_clock+0x5/0x10
+> [69703.122621]  sched_clock_local+0x12/0x80
+> [69703.122631]  sched_clock_cpu+0x8c/0xb0
+> [69703.122644]  trace_clock_global+0x21/0x90
+> [69703.122655]  ring_buffer_lock_reserve+0x100/0x3c0
+> [69703.122671]  trace_buffer_lock_reserve+0x16/0x50
+> [69703.122683]  __trace_graph_entry+0x28/0x90
+> [69703.122695]  trace_graph_entry+0xfd/0x1a0
+> [69703.122705]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.122714]  ? sched_clock+0x5/0x10
+> [69703.122723]  prepare_ftrace_return+0x99/0x110
+> [69703.122734]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.122743]  ? sched_clock+0x5/0x10
+> [69703.122752]  ftrace_graph_caller+0x6b/0xa0
+> [69703.122768]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.122777]  ? sched_clock+0x5/0x10
+> [69703.122786]  ? read_hv_sched_clock_tsc+0x5/0x20
+> [69703.122796]  ? ring_buffer_unlock_commit+0x1d/0xa0
+> [69703.122805]  read_hv_sched_clock_tsc+0x5/0x20
+> [69703.122814]  ftrace_graph_caller+0xa0/0xa0
+> [69703.122823]  ? trace_clock_local+0x5/0x10
+> [69703.122831]  ? ftrace_push_return_trace+0x5d/0x120
+> [69703.122842]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.122850]  ? sched_clock+0x5/0x10
+> [69703.122860]  ? prepare_ftrace_return+0xd5/0x110
+> [69703.122871]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.122879]  ? sched_clock+0x5/0x10
+> [69703.122889]  ? ftrace_graph_caller+0x6b/0xa0
+> [69703.122904]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.122912]  ? sched_clock+0x5/0x10
+> [69703.122922]  ? read_hv_sched_clock_tsc+0x5/0x20
+> [69703.122931]  ? ring_buffer_unlock_commit+0x1d/0xa0
+> [69703.122940]  ? read_hv_sched_clock_tsc+0x5/0x20
+> [69703.122966]  ? ftrace_graph_caller+0xa0/0xa0
+> [69703.122975]  ? trace_clock_local+0x5/0x10
+> [69703.122984]  ? ftrace_push_return_trace+0x5d/0x120
+> [69703.122995]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.123006]  ? sched_clock+0x5/0x10
+> [69703.123016]  ? prepare_ftrace_return+0xd5/0x110
+> [69703.123026]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.123035]  ? sched_clock+0x5/0x10
+> [69703.123044]  ? ftrace_graph_caller+0x6b/0xa0
+> [69703.123059]  ? read_hv_clock_tsc_cs+0x10/0x10
+> [69703.123068]  ? sched_clock+0x5/0x10
 
-> --- /dev/null
-> +++ b/drivers/staging/purelifi/TODO
-> @@ -0,0 +1,5 @@
-> +TODO:
-> +	- checkpatch.pl cleanups
-> +
-> +Please send any patches or complaints about this driver to pureLiFi Ltd
-> +<info@purelifi.com>
+Obviously we're seeing a recursion, we can trim this log a bit.
 
-Why not just do these fixups on your own right now and submit it to the
-"real" part of the kernel?  That should take what, a day or so max?
+>
+> Setting the notrace attribute for read_hv_sched_clock_msr() and
+> read_hv_sched_clock_tsc() fixes it
+>
+> Fixes: bd00cd52d5be ("clocksource/drivers/hyperv: Add Hyper-V specific
+> sched clock function")
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-Just sending stuff to staging because you don't want to do coding style
-cleanups feels very odd.  It takes much more work and energy to do it
-this way than to just do it right the first time and get it merged to
-the networking subsystem, right?
+Rather 'Suggested-by:' but not a big deal.
 
-So why do you want to send it to staging?
+> Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+> ---
+>  drivers/clocksource/hyperv_timer.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/clocksource/hyperv_timer.c b/drivers/clocksource/hyperv_timer.c
+> index 09aa44cb8a91d..ba04cb381cd3f 100644
+> --- a/drivers/clocksource/hyperv_timer.c
+> +++ b/drivers/clocksource/hyperv_timer.c
+> @@ -341,7 +341,7 @@ static u64 notrace read_hv_clock_tsc_cs(struct clocksource *arg)
+>  	return read_hv_clock_tsc();
+>  }
+>  
+> -static u64 read_hv_sched_clock_tsc(void)
+> +static u64 notrace read_hv_sched_clock_tsc(void)
+>  {
+>  	return (read_hv_clock_tsc() - hv_sched_clock_offset) *
+>  		(NSEC_PER_SEC / HV_CLOCK_HZ);
+> @@ -404,7 +404,7 @@ static u64 notrace read_hv_clock_msr_cs(struct clocksource *arg)
+>  	return read_hv_clock_msr();
+>  }
+>  
+> -static u64 read_hv_sched_clock_msr(void)
+> +static u64 notrace read_hv_sched_clock_msr(void)
+>  {
+>  	return (read_hv_clock_msr() - hv_sched_clock_offset) *
+>  		(NSEC_PER_SEC / HV_CLOCK_HZ);
 
-thanks,
+-- 
+Vitaly
 
-greg k-h
