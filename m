@@ -2,116 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229D3276FDC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B87276FE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727449AbgIXL0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:26:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726850AbgIXL0O (ORCPT
+        id S1727502AbgIXL1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:27:04 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42104 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726850AbgIXL1C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:26:14 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C44AC0613CE;
-        Thu, 24 Sep 2020 04:26:14 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id f18so1701672pfa.10;
-        Thu, 24 Sep 2020 04:26:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S59CLvJk1ju+tb0DRKEkJbopm1JVSnijReq8sE5oqI8=;
-        b=t++PTP8tPJ+iwEph9QoBFhWCTUyYV2fQkZ2iBSq57pAwmIbTUx0kPCQf09yfu2fq1F
-         OIxpMxl3aj1ZGzDHGG5NZihgM9UA/3OS8Y6ZM/3iVpmurVHkaR5WPgWIiHHmQbSllJeQ
-         VyPf1Juwtf6kH3E36/xgegEkrj/jBafH3vmQ2LH+gdTai0FDVcSP6NEDtRuh9bzq3lsJ
-         pCVJ9wI0tCSJ9UTaaaOw9ShuA8aP7OwEWUpJUWHt7nlJyB0o++EwiKnj8kZQz5bDBleI
-         lbn/bV+bWac3y+oAzXhcTcGqEFd3ovKWzBaz9fbotXf6vdQj9lxo+dT4MEb7BpQLDtgl
-         2dOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S59CLvJk1ju+tb0DRKEkJbopm1JVSnijReq8sE5oqI8=;
-        b=ry4bpfYadARHYYRr9XOe8/DUgqVJS+vn2Y+9Qzk6i2gxzHOcaNuxiWOaoEiKOFRnUs
-         uvR+an9K0Kq7Fdps948xBTdzsBedvHjvl4P70Disqy6fofmN43UC50J/27z7LQm8xF56
-         wl+U1FTpdIj7U523hXAN98IZ8ZkxBqZxy5lpjA8aEeO2bVSl2PYODpAVfyjBX1yePiAO
-         vc2xY4LIHIy+i9yeLr9lJPfiUxUMMuqkeNTr39llzAxInkI9iJb5eo2wCacx7A7uXsX2
-         2CNu7gNqlkPovuMoXc49C9EUG5/aQh4UMXgufHxSYaaDnHM8rHvGqSwy609lGcR7uq6B
-         LYXw==
-X-Gm-Message-State: AOAM532L7UtEzLUh7EPufzM2exGtLNiKY9k8VnjMot7PDyNrpZEmAobs
-        M9zBjsFo597ONg2g/5MFX/o=
-X-Google-Smtp-Source: ABdhPJx/zQj0vFpIP5uEVYYgXRSvDmLS2gwhxhLt6NsgVR9TjnOA6keppJ0CV589fNd4/sIsy3SKoQ==
-X-Received: by 2002:a62:dd02:0:b029:142:2501:398c with SMTP id w2-20020a62dd020000b02901422501398cmr3958291pff.81.1600946773777;
-        Thu, 24 Sep 2020 04:26:13 -0700 (PDT)
-Received: from adolin ([49.207.208.43])
-        by smtp.gmail.com with ESMTPSA id br22sm2146559pjb.35.2020.09.24.04.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 04:26:13 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 16:56:08 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     Julia.Lawall@lip6.fr
-Cc:     corbet@lwn.net, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
-        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] scripts: coccicheck: Change default value for parallelism
-Message-ID: <3beb97122995eafe3f0b831e36167b1edadb47c5.1600945451.git.sylphrenadin@gmail.com>
-References: <cover.1600945451.git.sylphrenadin@gmail.com>
+        Thu, 24 Sep 2020 07:27:02 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08OBQmrC048666;
+        Thu, 24 Sep 2020 06:26:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1600946808;
+        bh=fbCwOIpOdjy56NxH93HAZUZIpBF54AB0JlwVudWMdmg=;
+        h=From:To:CC:Subject:Date;
+        b=T4k/gTJSkJaVMipbAp98bc0hsWkCX2wTOt0MsA1kOatXxt5Kw58RfHTakWUwgRlVS
+         jNychK9dvyKf74JkzrQE/DOtlZXslXnuNQVz4dw+3WsYiY3LN3xXjzpTRwzYOBKIKo
+         AqLLhXXEdOU2+DOTx6Qro5DCy2kBUMS8wX9Ux32g=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08OBQmLI126111
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Sep 2020 06:26:48 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
+ Sep 2020 06:26:48 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 24 Sep 2020 06:26:48 -0500
+Received: from a0230074-OptiPlex-7010.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08OBQjMP036450;
+        Thu, 24 Sep 2020 06:26:46 -0500
+From:   Faiz Abbas <faiz_abbas@ti.com>
+To:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <robh+dt@kernel.org>, <nm@ti.com>, <t-kristo@ti.com>,
+        <faiz_abbas@ti.com>
+Subject: [PATCH v2 0/2] Add support for MMC/SD on j7200-evm
+Date:   Thu, 24 Sep 2020 16:56:42 +0530
+Message-ID: <20200924112644.11076-1-faiz_abbas@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1600945451.git.sylphrenadin@gmail.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By default, coccicheck utilizes all available threads to implement
-parallelisation. However, when all available threads are used,
-a decrease in performance is noted. The elapsed time is  minimum
-when at most one thread per core is used.
+The following patches add dt support for MMC/SD on TI's j7200-evm.
 
-For example, on benchmarking the semantic patch kfree.cocci for
-usb/serial using hyperfine, the outputs obtained for J=5 and J=2
-are 1.32 and 1.90 times faster than those for J=10 and J=9
-respectively for two separate runs. For the larger drivers/staging
-directory, minimium elapsed time is obtained for J=3 which is 1.86
-times faster than that for J=12. The optimal J value does not
-exceed 6 in any of the test runs. The benchmarks are run on a machine
-with 6 cores, with 2 threads per core, i.e, 12 hyperthreads in all.
+Currently, eMMC support upto HS200 speed and SD card supports upto high
+speed speed mode.
 
-To improve performance, modify coccicheck to use at most only
-one thread per core by default.
+v2:
+Fixed node names to use mmc@* format
+Fixed reg address format to align with others in the file
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+Faiz Abbas (2):
+  arm64: dts: ti: k3-j7200-main: Add support for MMC/SD controller nodes
+  arm64: dts: ti: k3-j7200-common-proc-board: Add support for eMMC and
+    SD card
 
----
-Changes in V2:
-	- Change commit message as suggested by Julia Lawall
-Changes in V3:
-	- Use J/2 as optimal value for machines with more
-than 8 hyperthreads as well.
----
- scripts/coccicheck | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../dts/ti/k3-j7200-common-proc-board.dts     | 28 ++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j7200-main.dtsi     | 37 +++++++++++++++++++
+ 2 files changed, 65 insertions(+)
 
-diff --git a/scripts/coccicheck b/scripts/coccicheck
-index e04d328210ac..a72aa6c037ff 100755
---- a/scripts/coccicheck
-+++ b/scripts/coccicheck
-@@ -75,8 +75,13 @@ else
-         OPTIONS="--dir $KBUILD_EXTMOD $COCCIINCLUDE"
-     fi
- 
-+    # Use only one thread per core by default if hyperthreading is enabled
-+    THREADS_PER_CORE=$(lscpu | grep "Thread(s) per core: " | tr -cd [:digit:])
-     if [ -z "$J" ]; then
-         NPROC=$(getconf _NPROCESSORS_ONLN)
-+	if [ $THREADS_PER_CORE -gt 1 -a $NPROC -gt 2 ] ; then
-+		NPROC=$((NPROC/2))
-+	fi
-     else
-         NPROC="$J"
-     fi
 -- 
-2.25.1
+2.17.1
 
