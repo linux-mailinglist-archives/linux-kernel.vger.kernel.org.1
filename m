@@ -2,117 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9110E2767FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B39276802
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726697AbgIXEwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 00:52:01 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:41275 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgIXEwA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 00:52:00 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600923120; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=OcuRehvXWjquPfAiTK+K+IF0XIj5WnIhvodV0AT8ZIE=; b=jC5xGFwFa+OOZBLMjrZOsR32YKTHYV/ZT5CEZ7nXzkHVf3M0qZl11V4lgIMX4r+mh9kzpKFz
- gMZmxHAxAX63etgnJwEl6FeWlmg6BxiqWSUhlsdjLJRtoaNtrVn0OR2nOYNrDl4qVcFZ87fJ
- swWyTYAEm7AUd4xe1HCahbuFLi4=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f6c25e051ea4325f37a01fe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 04:51:44
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E3DD3C433C8; Thu, 24 Sep 2020 04:51:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.110] (unknown [49.37.203.218])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 27279C433CA;
-        Thu, 24 Sep 2020 04:51:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 27279C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-Subject: Re: [PATCH] iommu: of: skip iommu_device_list traversal in
- of_iommu_xlate()
-To:     Robin Murphy <robin.murphy@arm.com>, joro@8bytes.org,
-        iommu@lists.linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org
-References: <1600872826-2254-1-git-send-email-charante@codeaurora.org>
- <8722e4bc-efe0-27c4-2b7d-626188da5bfb@arm.com>
-From:   Charan Teja Kalla <charante@codeaurora.org>
-Message-ID: <352d1518-8191-19e0-b9f3-29dfe91a2ad4@codeaurora.org>
-Date:   Thu, 24 Sep 2020 10:21:31 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726743AbgIXExQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 00:53:16 -0400
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:50961 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbgIXExQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 00:53:16 -0400
+Received: by mail-pj1-f68.google.com with SMTP id fa1so1011038pjb.0;
+        Wed, 23 Sep 2020 21:53:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qpLQEylf7V9Nzutns+p3Vp5V52QPP2PMMRwKiRQia2s=;
+        b=Yi69gGUpPHe1ZEu5ltGpFwnmfHpLuu2CEeGDJNUGOGjp21FQwiEIkdHTfX1CwNBeUy
+         +gMWn/IB3rjkjjVMDIvGYoxsxHL6ylElNgOdNuz9YWSr1ujGtEKvUWdGTZ49gYU1cZP9
+         TrLakcGfnDEjs/7rrrCFAg7GTuc9A0hrqv7YoKWx+jAc9+8SrayupuKXeLw+9IZ4gR0w
+         vXwQ9EMayWKMIMfkBBsMqqtaFYux1QoSBH3vlb+sMi/J4tJt5Xkc+Q6n7sGf79XTkqEp
+         5WWE/M11v+oZlp93CESVCA2OEPlSKIr/9KGoRVyyG/y1ljP4tQDtIUeWvDSJbLbaNmMc
+         qBFA==
+X-Gm-Message-State: AOAM531/+6A4j2FgiTWHX+SH6R4jyC7b06ir+QyVLdFzWfp1Wb1bes5T
+        utO20aaxvEoMTJABdmySf72N5XClxAE=
+X-Google-Smtp-Source: ABdhPJzmb6rbFEmYm35Cp2vNybbyYDMin/HM/I8ORcRPZ3twGtzYy1P/Z6qvngNyY44jbF/TI4DdxA==
+X-Received: by 2002:a17:90a:de92:: with SMTP id n18mr2323271pjv.35.1600923195618;
+        Wed, 23 Sep 2020 21:53:15 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id il14sm880444pjb.54.2020.09.23.21.53.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2020 21:53:14 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 21:53:14 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Alexandru Ardelean <ardeleanalex@gmail.com>,
+        Moritz Fischer <mdf@kernel.org>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-clk@vger.kernel.org, linux-fpga@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Mircea Caprioru <mircea.caprioru@analog.com>
+Subject: Re: [PATCH v2 0/6] clk: axi-clk-gen: misc updates to the driver
+Message-ID: <20200924045314.GA91389@epycbox.lan>
+References: <20200810134252.68614-1-alexandru.ardelean@analog.com>
+ <20200810134252.68614-8-alexandru.ardelean@analog.com>
+ <CA+U=Dsr41kKGXmgE1KjdTzAso3rwtNXAEoSy+Li=uym7G=D=Jw@mail.gmail.com>
+ <20200915024138.GA1827@epycbox.lan>
+ <160080374459.310579.14438590389388419207@swboyd.mtv.corp.google.com>
+ <CA+U=DsrRo0t0Zit8ay5jytmCd5n=BcMHHbXpJMW90oAiur32+w@mail.gmail.com>
+ <160090551301.310579.3934488165908158116@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <8722e4bc-efe0-27c4-2b7d-626188da5bfb@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <160090551301.310579.3934488165908158116@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Stephen,
 
-
-On 9/23/2020 9:54 PM, Robin Murphy wrote:
-> On 2020-09-23 15:53, Charan Teja Reddy wrote:
->> In of_iommu_xlate(), check if iommu device is enabled before traversing
->> the iommu_device_list through iommu_ops_from_fwnode(). It is of no use
->> in traversing the iommu_device_list only to return NO_IOMMU because of
->> iommu device node is disabled.
+On Wed, Sep 23, 2020 at 04:58:33PM -0700, Stephen Boyd wrote:
+> Quoting Alexandru Ardelean (2020-09-22 23:22:33)
+> > On Tue, Sep 22, 2020 at 10:42 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> > >
+> > > Quoting Moritz Fischer (2020-09-14 19:41:38)
+> > > > On Mon, Sep 14, 2020 at 11:11:05AM +0300, Alexandru Ardelean wrote:
+> > > > > On Mon, Aug 10, 2020 at 4:41 PM Alexandru Ardelean
+> > > > > <alexandru.ardelean@analog.com> wrote:
+> > > > > >
+> > > > > > These patches synchronize the driver with the current state in the
+> > > > > > Analog Devices Linux tree:
+> > > > > >   https://github.com/analogdevicesinc/linux/
+> > > > > >
+> > > > > > They have been in the tree for about 2-3, so they did receive some
+> > > > > > testing.
+> > > > >
+> > > > > Ping on this series.
+> > > > > Do I need to do a re-send?
+> > >
+> > > I got this patch series twice. Not sure why.
+> > 
+> > My fault here.
+> > Some Ctrl + R usage and not being attentive with the arguments.
+> > I think I added "*.patch" twice on the send-mail command.
+> > I did something similar [by accident] for some DMA patches.
+> > Apologies.
+> > 
+> > I can do a re-send for this, if it helps.
 > 
-> Well, the "use" is that it keeps the code that much smaller and simpler
-> to have a single path for returning this condition. This whole callstack
-> isn't exactly a high-performance code path to begin with, and we've
-> always assumed that IOMMUs present but disabled in DT would be a pretty
-> rare exception. 
-
-Fine..I thought that it is logical to return when IOMMU DT node is
-disabled over code simplicity. And agree that it is not high-performance
-path.
-
-> Do you have a system that challenges those assumptions
-> and shows any benefit from this change?
-
-No, I don't have a system that challenges these assumptions.
-
+> Sure. Please resend it.
 > 
-> Robin.
+> > 
+> > >
+> > > >
+> > > > I've applied the FPGA one, the other ones should go through the clock
+> > > > tree I think?
+> > >
+> > > Doesn't patch 6 rely on the FPGA patch? How can that driver build
+> > > without the header file?
+> > 
+> > Yes it does depend on the FPGA patch.
+> > We can drop patch 6 for now, pending a merge to Linus' tree and then
+> > wait for the trickle-down.
+> > I don't mind waiting for these patches.
+> > I have plenty of backlog that I want to run through, and cleanup and
+> > then upstream.
+> > So, there is no hurry.
 > 
->> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
->> ---
->>   drivers/iommu/of_iommu.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
->> index e505b91..225598c 100644
->> --- a/drivers/iommu/of_iommu.c
->> +++ b/drivers/iommu/of_iommu.c
->> @@ -94,9 +94,10 @@ static int of_iommu_xlate(struct device *dev,
->>       struct fwnode_handle *fwnode = &iommu_spec->np->fwnode;
->>       int ret;
->>   +    if (!of_device_is_available(iommu_spec->np))
->> +        return NO_IOMMU;
->>       ops = iommu_ops_from_fwnode(fwnode);
->> -    if ((ops && !ops->of_xlate) ||
->> -        !of_device_is_available(iommu_spec->np))
->> +    if (ops && !ops->of_xlate)
->>           return NO_IOMMU;
->>         ret = iommu_fwspec_init(dev, &iommu_spec->np->fwnode, ops);
->>
+> Can you send me a signed tag with that patch? I can base this patch
+> series on top of that. Or I can just apply it to clk tree and if nobody
+> changes it in the meantime merge should work out in linux-next and
+> linus' tree upstream.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-Forum, a Linux Foundation Collaborative Project
+Long story short I messed up my pull-request to Greg and had to back out
+the patch anyways. In retrospect I think the patch should have gone
+through your tree anyways, so here's our chance to get it right.
+
+Feel free to take it with the rest of the changes through your tree.
+
+Note: When I applied the patch I fixed up the whitespace that checkpatch
+complained about so you might want to do that (or ask Alexandru to
+resend the patch).
+
+Acked-by: Moritz Fischer <mdf@kernel.org>
+
+Sorry for the confusion and let me know if you still prefer a signed
+tag.
+
+- Moritz
