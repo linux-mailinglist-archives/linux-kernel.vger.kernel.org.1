@@ -2,90 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3DD27726F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE19277278
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:35:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgIXNew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727742AbgIXNev (ORCPT
+        id S1728049AbgIXNff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:35:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49280 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728037AbgIXNfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:34:51 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EB22C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:34:51 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id c18so3819573wrm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:34:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AHmQxIHTPufi+UR2RfGLNgHO/eGPtc+JmSaoagltYVc=;
-        b=wWMf+nQe5B/34hqIN8sqpervlaXL5/2jAPnWv88YCj6AJTvL9Viemp26b9S/QzgjJT
-         Kvn0I9+JfmDm7IvImZnITMdUtGXfvGsZv2gBPwDhzaXG2bUGvPWjyCQwN0sYWdJu57IX
-         ViFp2j1SODpDHoK2ZMPTh6/j229FaCU9pHDQBdjdytT+Eo1dFyqwKKl0WXdelRTT6f1J
-         x5Hs8COVRdDhy1UQwpQ+0itqy9Cj6GBMRZHLHWSJWuyoAEToYU5lm4OVDCZb+HPvJ+n1
-         1A7qBk0UVwrsz9a3Ci56pRhlnuCLuVtG0gNbu4se+m2dhLTI/GO4IC/PAkIRIOIR6WxK
-         QQ4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AHmQxIHTPufi+UR2RfGLNgHO/eGPtc+JmSaoagltYVc=;
-        b=QupbyQIBBkzTb1L9oXf/AH8dKdr7HaFxUGKjZGVIhh/O4ir+CVchGpWc5iixydpWRK
-         fYnFW5c112EZVvdBJWBGEBM5hJwCqsK2b2WqRvhvGGFbzm56h44F2YLi6jZnR/dJHKkd
-         sMihk1V8LJz8tw4oPny0C9Pdx0ak00E1bDiET6Wo/iHCHgaCuN5vkaNYYeGdF7R01snO
-         a4TkP22gpMcYAMgx5v35LX5uLiMLn+kWdczQht3d4RWY1jNZJwYK0DYes2309WOfmIl7
-         GixfguT7yJGg/GC6fbcagu6NVUXRVFubnHIzpdwKHiZdR/tKiAbkIgiWpbF0rcZkKtPQ
-         FAow==
-X-Gm-Message-State: AOAM533etQC0kdewqFRM2cmfoVgVzdI9jP342eTDvarp+DS4180LRrqF
-        bcrAiXLe2dAWjLyZe61pZzr5wg==
-X-Google-Smtp-Source: ABdhPJzz1iuxB8yMgk8VfJVBob6+7W+AlkLoqZKC4tAXB33eouYnScSHMBpBmeoACCVJjNkW7/U/eg==
-X-Received: by 2002:adf:f986:: with SMTP id f6mr4949309wrr.270.1600954490182;
-        Thu, 24 Sep 2020 06:34:50 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id j26sm4411495wrc.79.2020.09.24.06.34.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 06:34:49 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 14:34:46 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] sched/topology,schedutil: wrap sched domains rebuild
-Message-ID: <20200924133446.GA3920949@google.com>
-References: <20200924123937.20938-1-ionela.voinescu@arm.com>
- <20200924123937.20938-2-ionela.voinescu@arm.com>
+        Thu, 24 Sep 2020 09:35:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600954533;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yzBvnuUfa45ZSmPhP8GQJzcypn51oFxXOujgo6huJIU=;
+        b=JPt8aPDELdf12QZ1jW7dGvrI3UrFCz6qhtJ+axICXgq3Me5qLb9QnZbO0ZtHv/PSSbU9zc
+        qilx+XMCjOKrq+S2Tj1BIRkCuhw+4Yg77zCInoaMvrrWCJ3GEw4e9zVhkrqSdYOiKK55KI
+        +JiZOxHOWEMf6BYqXZnG2SitvEGrwfE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-194-EvOrQrLiMNmtUTHL6b2fPg-1; Thu, 24 Sep 2020 09:35:31 -0400
+X-MC-Unique: EvOrQrLiMNmtUTHL6b2fPg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8361289CCFE;
+        Thu, 24 Sep 2020 13:35:06 +0000 (UTC)
+Received: from krava (ovpn-115-138.ams2.redhat.com [10.36.115.138])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7CD5D73691;
+        Thu, 24 Sep 2020 13:35:04 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 15:35:03 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET v2 0/7] perf inject: Speed build-id injection
+Message-ID: <20200924133503.GD3150401@krava>
+References: <20200923080537.155264-1-namhyung@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924123937.20938-2-ionela.voinescu@arm.com>
+In-Reply-To: <20200923080537.155264-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 24 Sep 2020 at 13:39:35 (+0100), Ionela Voinescu wrote:
-> @@ -433,6 +437,7 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
->  }
->  #else
->  static void free_pd(struct perf_domain *pd) { }
-> +void rebuild_sched_domains_energy(void) { }
-
-Nit: maybe make that stub static inline in a header instead? I guess LTO
-and friends ought to clean that up for you, but it shouldn't hurt to give
-the compiler a little bit of help here.
-
-Otherwise, LGTM:
-
-Acked-by: Quentin Perret <qperret@google.com>
-
->  #endif /* CONFIG_ENERGY_MODEL && CONFIG_CPU_FREQ_GOV_SCHEDUTIL*/
->  
->  static void free_rootdomain(struct rcu_head *rcu)
-> -- 
-> 2.17.1
+On Wed, Sep 23, 2020 at 05:05:30PM +0900, Namhyung Kim wrote:
+> Hello,
 > 
+> This is my second attempt to speed up build-id injection.  As this is
+> to improve performance, I've added a benchmark for it.  Please look at
+> the usage in the first commit.
+> 
+> By default, it measures average processing time of 100 MMAP2 events
+> and 10000 SAMPLE events.  Below is the current result on my laptop.
+> 
+>   $ perf bench internals inject-build-id
+>   # Running 'internals/inject-build-id' benchmark:
+>     Average build-id injection took: 22.997 msec (+- 0.067 msec)
+>     Average time per event: 2.255 usec (+- 0.007 usec)
+> 
+> With this patchset applied, it got this:
+> 
+>   $ perf bench internals inject-build-id
+>   # Running 'internals/inject-build-id' benchmark:
+>     Average build-id injection took: 18.441 msec (+- 0.106 msec)
+>     Average time per event: 1.808 usec (+- 0.010 usec)
+>     Average build-id-all injection took: 13.451 msec (+- 0.132 msec)
+>     Average time per event: 1.319 usec (+- 0.013 usec)
+
+nice, I can see that speed up as well
+
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
