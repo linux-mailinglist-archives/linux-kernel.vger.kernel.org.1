@@ -2,105 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743D2276B96
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4723C276B98
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbgIXIQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIXIQx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:16:53 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6612C0613CE;
-        Thu, 24 Sep 2020 01:16:52 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id m5so2888630lfp.7;
-        Thu, 24 Sep 2020 01:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rMqAMciGIaVKFsQmbbgyhHPDfrXrVXzSGxoaIl6aI+E=;
-        b=kbzLcPoqT/OshWG1EfWbsDgl1eiOy5tptHj0NRaxhUTaEadzvxoVd/S/FGXr6adVaD
-         yC4VsSVGtyW70fPWWcoecHw+Z8FbfLMlJsEmIsULAlraDsl5FZ8AIE4xaVaBaEiepRYh
-         0uTAbHbTtIy7D0xE9Quo7ietkgEh1jS17QoGYnMPb9IwX6ouukV2eASKuS9tltjx2lq1
-         Q4Zytccn16R1O8Nfa3C3y1EdkQpZfF3mAqt1ydhNtaUHNNh9MkTMeK3d77heMJLQnZcd
-         bOxNi8fMKZryJIVWM4S8nqV/1nDKcKmVXjbrLfk7OknOXcpNfrCFnPgNAbMpygR/+ug3
-         cPBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rMqAMciGIaVKFsQmbbgyhHPDfrXrVXzSGxoaIl6aI+E=;
-        b=A1W9GuwcELE5jiuJVUIeYV/ZTH3RMhHiXprGR2u/vN8mb5BtvcTIn9uoXcbgOzFVoN
-         lVMENSmQinG1q44P7z4z4bLWMVUiY4PSfCBBof9/yLsKT5U3E20mvGim+YaU6+XkYQad
-         9nEWHzBGssuMcwEbus+Nl4zgT1ARSE0+a9+qLkLanMiA9fgIoObxo/pFrSHEZkFyQsBc
-         C18/uOUT9MmsnmLD/792sU279GxZDx5guRVY0IiUrH9BYK8VQxOqi470GSdHHSgbWXTK
-         GgO0TLP3jfAbupe/6nHyFsI/IkCqGpUO0MizBkHg57mn/Vy+nBokmedNpFtptC7T6kcZ
-         zxbg==
-X-Gm-Message-State: AOAM530GFzH3o7wmYSICnBFm4G6YjhJzC6LFtjWz5v3N9amN2RoUeU8e
-        hdJLMtU06Se3mMxK7Jiva/MXoIrFRGs=
-X-Google-Smtp-Source: ABdhPJzJt+eS43rDClp/AtgDKukb99W1vQJ85ucF5/Z5hhVilAnT5DMwwtZFpockH5V6DnqJlR8ffg==
-X-Received: by 2002:a05:6512:49a:: with SMTP id v26mr1130620lfq.490.1600935410957;
-        Thu, 24 Sep 2020 01:16:50 -0700 (PDT)
-Received: from ?IPv6:2a00:1fa0:4206:13f7:a4a9:537f:61c8:7dc4? ([2a00:1fa0:4206:13f7:a4a9:537f:61c8:7dc4])
-        by smtp.gmail.com with ESMTPSA id 73sm1386727lff.118.2020.09.24.01.16.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 01:16:50 -0700 (PDT)
-Subject: Re: [PATCH -next] MIPS: OCTEON: fix error - use 'ret' after remove it
-To:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200924064142.90491-1-miaoqinglang@huawei.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <95b3e25b-b501-d2f3-421d-d06558bddf8f@gmail.com>
-Date:   Thu, 24 Sep 2020 11:16:38 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727294AbgIXIRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:17:02 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:39868 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727089AbgIXIRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:17:01 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 93799F34A5210270DB07;
+        Thu, 24 Sep 2020 16:16:59 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020
+ 16:16:49 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <rick.chang@mediatek.com>, <bin.liu@mediatek.com>,
+        <mchehab@kernel.org>, <matthias.bgg@gmail.com>,
+        <tfiga@chromium.org>, <xia.jiang@mediatek.com>,
+        <hverkuil-cisco@xs4all.nl>
+CC:     <linux-media@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH 1/3] media: platform: add missing put_device() call in mtk_jpeg_clk_init()
+Date:   Thu, 24 Sep 2020 16:17:53 +0800
+Message-ID: <20200924081753.1060917-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-In-Reply-To: <20200924064142.90491-1-miaoqinglang@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+if of_find_device_by_node() succeed, mtk_jpeg_clk_init() doesn't have
+a corresponding put_device(). Thus add put_device() to fix the exception
+handling for this function implementation.
 
-On 24.09.2020 9:41, Qinglang Miao wrote:
+Fixes: 648372a87cee("media: platform: Change the call functions of getting/enable/disable the jpeg's clock")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+---
+ drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> Variable ret was removed in commit 0ee69c589ec("MIPS: OCTEON:
+diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+index 227245ccaedc..106543391c46 100644
+--- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
++++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+@@ -1306,6 +1306,7 @@ static int mtk_jpeg_clk_init(struct mtk_jpeg_dev *jpeg)
+ 				jpeg->variant->clks);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "failed to get jpeg clock:%d\n", ret);
++		put_device(&pdev->dev);
+ 		return ret;
+ 	}
+ 
+-- 
+2.25.4
 
-    I'm only seeing the variable 'res' below...
-
-> use devm_platform_ioremap_resource") but still being used in
-> devm_release_mem_region which is unneeded. So remove this
-> line to fix error.
-> 
-> Fixes: 0ee69c589ec("MIPS: OCTEON: use devm_platform_ioremap_resource")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-> ---
->   arch/mips/cavium-octeon/octeon-usb.c | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/arch/mips/cavium-octeon/octeon-usb.c b/arch/mips/cavium-octeon/octeon-usb.c
-> index 97f6dc31e1b4..987a94cbf3d0 100644
-> --- a/arch/mips/cavium-octeon/octeon-usb.c
-> +++ b/arch/mips/cavium-octeon/octeon-usb.c
-> @@ -534,8 +534,6 @@ static int __init dwc3_octeon_device_init(void)
->   			dev_info(&pdev->dev, "clocks initialized.\n");
->   			mutex_unlock(&dwc3_octeon_clocks_mutex);
->   			devm_iounmap(&pdev->dev, base);
-> -			devm_release_mem_region(&pdev->dev, res->start,
-> -						resource_size(res));
->   		}
->   	} while (node != NULL);
->   
-
-MBR, Sergei
