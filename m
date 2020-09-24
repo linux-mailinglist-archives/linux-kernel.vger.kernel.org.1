@@ -2,101 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50215276B75
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:07:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1692276B7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727249AbgIXIHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
+        id S1727195AbgIXIJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIXIHf (ORCPT
+        with ESMTP id S1727089AbgIXIJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:07:35 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0814BC0613CE;
-        Thu, 24 Sep 2020 01:07:35 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id d13so1431329pgl.6;
-        Thu, 24 Sep 2020 01:07:35 -0700 (PDT)
+        Thu, 24 Sep 2020 04:09:28 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87566C0613CE;
+        Thu, 24 Sep 2020 01:09:28 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w7so1425319pfi.4;
+        Thu, 24 Sep 2020 01:09:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SREJUM/2T/IFvbNUgYQe7MPC6WtRuEMBlyz8JPh0RI8=;
-        b=Mnc+BC6FoAz03iKMGZfNCLiJ0hcECAQItB8p3zC7NQkU7aOIjVnu4MQQApiKu8VkdD
-         IIbfAI5fACDSFTmNXSY2BP5jYZTYoh+H7Nufn+A/Eyf9JUSMarPYRHf0WfKR6PV9VVKx
-         4eVOTx0SJ6tbgYYR8LShT3V6LZo3FywyOvm6gyFSVnHQXucycp1xLdlmQpVE+xxeTpDI
-         Vn4OIg5eRiA6sxRTLhmf2rbLQeB8aQS/1mJhff2kWLWxUhDHJToSjCqq8EMjfoFMr/cA
-         pRF9+pdALsdYgc/ACOpNS3ZybtsRlnTTs9QRWEoaTCYfEbpqMxB6oCMFuSCQzDotR+Pr
-         kI4A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=89mYYyU5CP/vNh9r0QB1xyWvou3jF1r0AJ18PMNgyq8=;
+        b=T/mll2pp8Rw5b/I3IM284sBZ3oFqKBpr/SGwnXyysm8fPXOS2Qf3cwECp4w5womlkk
+         Vu2wALdADfSgjcTCoeqgVjZwrXnNDf5OtLcPXBydIjGoms46b/6XbdZficVct4WnFnT5
+         ibg/k0FK59+c9VKe1vIhW4qLy7Pi5J9bpHm7g86e44PfBUNtbYdIF2XbepqMnbmOmJro
+         +9t7e51SEBJFJKFawO5jqNeGOOMxIjnkH49H/hBGkteJo7qgbxPidS/MjN18FGSycwbW
+         wKm6GSX12XLSJSddD5GDmzhfT+Ga8oQ1OdA0XmcSb1wqDQJJY2FpeH1Z1P4kv9fWvM9c
+         XEEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SREJUM/2T/IFvbNUgYQe7MPC6WtRuEMBlyz8JPh0RI8=;
-        b=j3wIq+qnpYM8by/JtOKPSyhKc1TRSu01Cp+cNwddGj6//d6wa/OOou+Lf6IKNNLePl
-         e8yni2BcQKbVqn9QM2b4fuOcBqsZtqz56gQpATWvwPrtYz0qzvy5uIG2OBkWXuLxbk6R
-         V4YcPqvVYa39fUpUDUQpoiblrFrDY3sS9nsqmbtYHyPGbOQwfQDE0n1qAvm/suv1RmN4
-         MFcCJzhfa/8puIoESxnX0PSParb280qLp2AoJirTZsoreNfANkZa3F7ki0hzl4GMTTrt
-         Nr/59jMzu/HzoDKGlpLmA9F26m3zilQpEHX4z7tvnSDGsA8++8+gMfelKYqSUZ6bCHlk
-         Hy/g==
-X-Gm-Message-State: AOAM5330m5V2jgRJd0w6ncOlU9+p+8jbVCI8+bXyLAk4r71eJil6s1Qa
-        0/6xtJYpe7IVkGIRhvhfnDSDrmaPnJGPSINTucQ=
-X-Google-Smtp-Source: ABdhPJzZ3GxH/oMcyPcHsQNCDSKN+Hop/BoyiHOBELjZoiXsEPwNcDL/lPsrx3FEqSA+3lQeJ3rj/jYXD7zR6Yfvz7k=
-X-Received: by 2002:aa7:8645:0:b029:13c:de96:6fde with SMTP id
- a5-20020aa786450000b029013cde966fdemr3426229pfo.14.1600934854466; Thu, 24 Sep
- 2020 01:07:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=89mYYyU5CP/vNh9r0QB1xyWvou3jF1r0AJ18PMNgyq8=;
+        b=Y31YlgKOwiAU9LvCueNR0D4HmdMDCmccNIkWTpdBNgP6X5tby75F/erdMVcEFyjn+Z
+         ovtR4YLLLEmogbJFlqPdvQDHnEN5EKx395QRnu66ZsI80pkahkeL1+xvivW4AHwFkVkf
+         r5l38AHs8qaFxSKBc0XU3lHpJmqXsMd3Jg0QYtFMGdpRiQ8Kox5+aFOWTSsuuBQSeXGW
+         ItFZJnCJNZq3SbnXMMyE22dbdQpgIWvMWKqSUEgQOhfHw0zLgei7zJLxjUPbahdhEZin
+         cB5fkZl/8T+K20TBOMNYQbq9pOWxHgv1fVJnugPcE6EcprBQ1/6kJfHNm0CC2GSAEtxJ
+         vbfw==
+X-Gm-Message-State: AOAM530DBNUBu7xZCxD8kTP8G+W/UbDLEBW1j1ir0vJhP5sTS8qshU75
+        D0roFk9Geql176vCuk0N/IU=
+X-Google-Smtp-Source: ABdhPJzBoOYPN+peoGAGQF5/hhIqkb1Of3W2IaB9n8MRdnao3Om13RxhCH8frW4uqclwRTnUY4Wx9Q==
+X-Received: by 2002:aa7:948d:0:b029:13e:cb8d:60e0 with SMTP id z13-20020aa7948d0000b029013ecb8d60e0mr3533226pfk.9.1600934966923;
+        Thu, 24 Sep 2020 01:09:26 -0700 (PDT)
+Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
+        by smtp.gmail.com with ESMTPSA id n2sm1855653pfe.208.2020.09.24.01.09.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 01:09:26 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 16:09:21 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v9 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
+ and GPIO_V2_LINE_GET_VALUES_IOCTL
+Message-ID: <20200924080921.GE17562@sol>
+References: <20200922023151.387447-1-warthog618@gmail.com>
+ <20200922023151.387447-8-warthog618@gmail.com>
+ <CAHp75VdQUbDnjQEr5X5q6WdU6rD=uBNznNn5=Vy=pvdwVj_hEA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-4-keescook@chromium.org> <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
- <202009240018.A4D8274F@keescook>
-In-Reply-To: <202009240018.A4D8274F@keescook>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Thu, 24 Sep 2020 03:07:23 -0500
-Message-ID: <CABqSeARV4prXOWf9qOBnm5Mm_aAdjwquqFFLQSuL0EegqeWEkA@mail.gmail.com>
-Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jann Horn <jannh@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdQUbDnjQEr5X5q6WdU6rD=uBNznNn5=Vy=pvdwVj_hEA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 2:37 AM Kees Cook <keescook@chromium.org> wrote:
+On Wed, Sep 23, 2020 at 02:11:54PM +0300, Andy Shevchenko wrote:
+> On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
 > >
-> > This belongs over into patch 1.
->
-> Thanks! I was rushing to get this posted so YiFei Zhu wouldn't spend
-> time fighting with arch and Kconfig stuff. :) I'll clean this (and the
-> other random cruft) up.
+> > Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
+> > returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
+> >
+> > The struct linereq implementation is based on the v1 struct linehandle
+> > implementation.
+> 
+> ...
+> 
 
-Wait, what? I'm sorry. We have already begun fixing the mentioned
-issues (mostly the split bitmaps for different arches). Although yes
-it's nice to have another implementation to refer to so we get the
-best of both worlds (and yes I'm already copying some of the code I
-think are better here over there), don't you think it's not nice to
-say "Hey I've worked on this in June, it needed rework but I didn't
-send the newer version. Now you sent yours so I'll rush mine so your
-work is redundant."?
+Ooops, nearly missed this one...
 
-That said, I do think this should be configurable. Users would be free
-to experiment with the bitmap on or off, just like users may turn
-seccomp off entirely. A choice also allows users to select different
-implementations, a few whom I work with have ideas on how to
-accelerate / cache argument dependent syscalls, for example.
+> > +       /*
+> > +        * Do not allow OPEN_SOURCE & OPEN_DRAIN flags in a single request. If
+> 
+> You see, in some cases you are using "OR:ed" as understandable for
+> programmers, and here & which should be and in plain English and
+> really confusing from a programmer's perspective. That's why I prefer
+> to see plain English rather than something which is full of encoded
+> meanings.
+> 
 
-YiFei Zhu
+Understand these are pulled directly from the v1 implementation, so I
+think that is actually one of Bart's.
+
+But, yeah, it should be 'and'.
+
+> > +        * the hardware actually supports enabling both at the same time the
+> > +        * electrical result would be disastrous.
+> > +        */
+> 
+> ...
+> 
+> > +       /* Bias requires explicit direction. */
+> > +       if ((flags & GPIO_V2_LINE_BIAS_FLAGS) &&
+> > +           !(flags & GPIO_V2_LINE_DIRECTION_FLAGS))
+> > +               return -EINVAL;
+> 
+> Okay, since this is strict we probably may relax it in the future if
+> it will be a use case.
+> ...
+> 
+
+Again, this is drawn directly from the v1 implementation, and I didn't go
+changing anything from v1 without good reason.
+
+> > +       /* Only one bias flag can be set. */
+> 
+> Ditto. (Some controllers allow to set both simultaneously, though I
+> can't imagine good use case for that)
+> 
+> > +       if (((flags & GPIO_V2_LINE_FLAG_BIAS_DISABLED) &&
+> > +            (flags & (GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN |
+> > +                      GPIO_V2_LINE_FLAG_BIAS_PULL_UP))) ||
+> > +           ((flags & GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN) &&
+> > +            (flags & GPIO_V2_LINE_FLAG_BIAS_PULL_UP)))
+> > +               return -EINVAL;
+> 
+> ...
+> 
+> > +static void gpio_v2_line_config_flags_to_desc_flags(u64 flags,
+> > +                                                   unsigned long *flagsp)
+> > +{
+> 
+> > +       assign_bit(FLAG_ACTIVE_LOW, flagsp,
+> > +                  flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW);
+> 
+> What I meant is to attach also this to the other assign_bit():s below.
+> And just in case a question: why not __asign_bit() do we really need atomicity?
+> 
+
+These are initialized as per their order in the flags so it is easier to
+tell if any are missing.
+
+The atomicity is not required here, but it is elsewhere so you are
+oblidged to use it for all accesses, no?
+
+> > +       if (flags & GPIO_V2_LINE_FLAG_OUTPUT)
+> > +               set_bit(FLAG_IS_OUT, flagsp);
+> > +       else if (flags & GPIO_V2_LINE_FLAG_INPUT)
+> > +               clear_bit(FLAG_IS_OUT, flagsp);
+> > +
+> > +       assign_bit(FLAG_OPEN_DRAIN, flagsp,
+> > +                  flags & GPIO_V2_LINE_FLAG_OPEN_DRAIN);
+> > +       assign_bit(FLAG_OPEN_SOURCE, flagsp,
+> > +                  flags & GPIO_V2_LINE_FLAG_OPEN_SOURCE);
+> > +       assign_bit(FLAG_PULL_UP, flagsp,
+> > +                  flags & GPIO_V2_LINE_FLAG_BIAS_PULL_UP);
+> > +       assign_bit(FLAG_PULL_DOWN, flagsp,
+> > +                  flags & GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN);
+> > +       assign_bit(FLAG_BIAS_DISABLE, flagsp,
+> > +                  flags & GPIO_V2_LINE_FLAG_BIAS_DISABLED);
+> > +}
+> 
+> ...
+> 
+> > +static long linereq_get_values(struct linereq *lr, void __user *ip)
+> > +{
+> > +       struct gpio_v2_line_values lv;
+> > +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
+> > +       struct gpio_desc **descs;
+> > +       unsigned int i, didx, num_get;
+> > +       int ret;
+> 
+> > +       /* NOTE: It's ok to read values of output lines. */
+> > +       if (copy_from_user(&lv, ip, sizeof(lv)))
+> > +               return -EFAULT;
+> > +
+> > +       for (num_get = 0, i = 0; i < lr->num_lines; i++) {
+> > +               if (lv.mask & BIT_ULL(i)) {
+> > +                       num_get++;
+> > +                       descs = &lr->lines[i].desc;
+> > +               }
+> > +       }
+> 
+> So what you can do here is something like
+> 
+> DECLARE_BITMAP(mask, u64);
+> 
+> ...
+> 
+> bitmap_from_u64(mask, lv.mask);
+> num_get = bitmap_weight(mask, lr->num_lines);
+> if (num_get == 0)
+>   return -EINVAL;
+> 
+> for_each_set_bit(i, mask, lr->num_lines)
+>       descs = &lr->lines[i].desc;
+> // I'm not sure I understood a purpose of the above
+> // ah, looks like malloc() avoidance, but you may move it below...
+> 
+> > +       if (num_get == 0)
+> > +               return -EINVAL;
+> > +
+> 
+> > +       if (num_get != 1) {
+> 
+> ...something like
+> 
+> if (num_get == 1)
+>   descs = ...[find_first_bit(mask, lr->num_lines)];
+> else {
+>  ...
+>  for_each_set_bit() {
+>   ...
+>  }
+> }
+> 
+
+As per elsewhere - will give it a shot.
+
+> > +               descs = kmalloc_array(num_get, sizeof(*descs), GFP_KERNEL);
+> > +               if (!descs)
+> > +                       return -ENOMEM;
+> > +               for (didx = 0, i = 0; i < lr->num_lines; i++) {
+> > +                       if (lv.mask & BIT_ULL(i)) {
+> > +                               descs[didx] = lr->lines[i].desc;
+> > +                               didx++;
+> > +                       }
+> > +               }
+> > +       }
+> > +       ret = gpiod_get_array_value_complex(false, true, num_get,
+> > +                                           descs, NULL, vals);
+> > +
+> > +       if (num_get != 1)
+> > +               kfree(descs);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> 
+> > +       lv.bits = 0;
+> > +       for (didx = 0, i = 0; i < lr->num_lines; i++) {
+> > +               if (lv.mask & BIT_ULL(i)) {
+> > +                       if (test_bit(didx, vals))
+> > +                               lv.bits |= BIT_ULL(i);
+> > +                       didx++;
+> > +               }
+> > +       }
+> 
+> So here...
+> 
+> > +       if (copy_to_user(ip, &lv, sizeof(lv)))
+> > +               return -EFAULT;
+> > +
+> > +       return 0;
+> > +}
+> 
+> ...
+> 
+> > +       /* Make sure this is terminated */
+> > +       ulr.consumer[sizeof(ulr.consumer)-1] = '\0';
+> > +       if (strlen(ulr.consumer)) {
+> > +               lr->label = kstrdup(ulr.consumer, GFP_KERNEL);
+> > +               if (!lr->label) {
+> > +                       ret = -ENOMEM;
+> > +                       goto out_free_linereq;
+> > +               }
+> > +       }
+> 
+> Still don't get why we can\t use kstrndup() here...
+> 
+
+I know ;-).
+
+Another one directly from v1, and the behaviour there is to leave
+lr->label nulled if consumer is empty.
+It just avoids a pointless malloc for the null terminator.
+
+Cheers,
+Kent.
