@@ -2,136 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 050B8277B74
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC431277B79
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbgIXWFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 18:05:47 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:60532 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726645AbgIXWFq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 18:05:46 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 251041C0BD9; Fri, 25 Sep 2020 00:05:42 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 00:05:40 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
-Cc:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, luto@kernel.org, David.Laight@ACULAB.COM,
-        fweimer@redhat.com, mark.rutland@arm.com
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-Message-ID: <20200924220540.GA13185@amd>
-References: <210d7cd762d5307c2aa1676705b392bd445f1baa>
- <20200922215326.4603-1-madvenka@linux.microsoft.com>
- <20200923084232.GB30279@amd>
- <34257bc9-173d-8ef9-0c97-fb6bd0f69ecb@linux.microsoft.com>
- <20200923205156.GA12034@duo.ucw.cz>
- <c5ddf0c2-962a-f93a-e666-1c6f64482d97@digikod.net>
+        id S1726711AbgIXWFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 18:05:54 -0400
+Received: from mga06.intel.com ([134.134.136.31]:46631 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726702AbgIXWFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 18:05:52 -0400
+IronPort-SDR: FGmcqjYZTPQ1qH/MCUqmH8gCgVQD3NjaiNhZQatO93qpCDKsUQAZV5J9gUKz6h2lSEGGqgE92J
+ iGgmME5krYxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="222952993"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="222952993"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 15:05:51 -0700
+IronPort-SDR: Oezyrdj/M3l0gJXPKkRKciKgrwvoJBY2QePT600tfvRabNY+6iI7vPej8IgrW/DHLoq49L+HGR
+ IxzFX0ltXvrA==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="336185644"
+Received: from djiang5-mobl1.amr.corp.intel.com (HELO [10.212.218.169]) ([10.212.218.169])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 15:05:50 -0700
+Subject: Re: [PATCH v6 0/5] Add shared workqueue support for idxd driver
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
+        ashok.raj@intel.com, fenghua.yu@intel.com, kevin.tian@intel.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200924180041.34056-1-dave.jiang@intel.com>
+ <a2a6f147-c4ad-a225-e348-b074a8017a10@intel.com>
+ <20200924215136.GS5030@zn.tnic>
+From:   Dave Jiang <dave.jiang@intel.com>
+Message-ID: <71a1831b-b57f-610f-70b6-7d42cb889f20@intel.com>
+Date:   Thu, 24 Sep 2020 15:05:49 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
-Content-Disposition: inline
-In-Reply-To: <c5ddf0c2-962a-f93a-e666-1c6f64482d97@digikod.net>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20200924215136.GS5030@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---SUOF0GtieIMvvwua
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On 9/24/2020 2:51 PM, Borislav Petkov wrote:
+> On Thu, Sep 24, 2020 at 02:32:35PM -0700, Dave Jiang wrote:
+>> Hi Vinod,
+>> Looks like we are cleared on the x86 patches for this series with sign offs
+>> from maintainer Boris. Please consider the series for 5.10 inclusion. Thank
+>> you!
+> 
+> As I said here, I'd strongly suggest we do this:
+> 
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org/thread/5FKNWNCCRV3AXUAEXUGQFF4EDQNANF3F/
+> 
+> and Vinod should merge the x86/pasid branch. Otherwise is his branch
+> and incomplete you could not have tested it properly.
+> 
 
-> >>> I believe you should simply delete confusing "introduction" and
-> >>> provide details of super-secure system where your patches would be
-> >>> useful, instead.
-> >>
-> >> This RFC talks about converting dynamic code (which cannot be authenti=
-cated)
-> >> to static code that can be authenticated using signature verification.=
- That
-> >> is the scope of this RFC.
-> >>
-> >> If I have not been clear before, by dynamic code, I mean machine code =
-that is
-> >> dynamic in nature. Scripts are beyond the scope of this RFC.
-> >>
-> >> Also, malware compiled from sources is not dynamic code. That is ortho=
-gonal
-> >> to this RFC. If such malware has a valid signature that the kernel per=
-mits its
-> >> execution, we have a systemic problem.
-> >>
-> >> I am not saying that script authentication or compiled malware are not=
- problems.
-> >> I am just saying that this RFC is not trying to solve all of the secur=
-ity problems.
-> >> It is trying to define one way to convert dynamic code to static code =
-to address
-> >> one class of problems.
-> >=20
-> > Well, you don't have to solve all problems at once.
-> >=20
-> > But solutions have to exist, and AFAIK in this case they don't. You
-> > are armoring doors, but ignoring open windows.
->=20
-> FYI, script execution is being addressed (for the kernel part) by this
-> patch series:
-> https://lore.kernel.org/lkml/20200924153228.387737-1-mic@digikod.net/
-
-Ok.
-
-> > Or very probably you are thinking about something different than
-> > normal desktop distros (Debian 10). Because on my systems, I have
-> > python, gdb and gcc...
->=20
-> It doesn't make sense for a tailored security system to leave all these
-> tools available to an attacker.
-
-And it also does not make sense to use "trampoline file descriptor" on
-generic system... while W^X should make sense there.
-
-> > It would be nice to specify what other pieces need to be present for
-> > this to make sense -- because it makes no sense on Debian 10.
->=20
-> Not all kernel features make sense for a generic/undefined usage,
-> especially specific security mechanisms (e.g. SELinux, Smack, Tomoyo,
-> SafeSetID, LoadPin, IMA, IPE, secure/trusted boot, lockdown, etc.), but
-> they can still be definitely useful.
-
-Yep... so... I'd expect something like... "so you have single-purpose
-system with all script interpreters removed, IMA hashing all the files
-to make sure they are not modified, and W^X enabled. Attacker can
-still execute code after buffer overflow by .... and trapoline file
-descriptor addrsses that"... so that people running generic systems
-can stop reading after first sentence.
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---SUOF0GtieIMvvwua
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl9tGDQACgkQMOfwapXb+vJJrACguUwBUXADnMj7K1we9pMBCXao
-yuMAoLYUAsqVN8r3PK8Ax9IBA9TWFYbf
-=yH8g
------END PGP SIGNATURE-----
-
---SUOF0GtieIMvvwua--
+Thanks Boris. Locally I have based on the latest dmaengine/next branch, merged 
+in the x86/pasid branch, and then applied the series on top for testing. But 
+yes, if Vinod accepts the series into his dmaengine/next tree, we will need all 
+the parts for testing.
