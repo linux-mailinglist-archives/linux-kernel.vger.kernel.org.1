@@ -2,129 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5162772C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9ACC2772CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbgIXNlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728122AbgIXNk6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:40:58 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8492EC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:40:58 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z17so3919484lfi.12
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:40:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cDrHVTOD+iSWXelVapd6LAkJ7VfbRManFz9vUWJEqwc=;
-        b=KCxqPAVEUh0NN2sRqfB2Er3kRv3k3VxWZOlCy1TnuFltpouAeT9UrqF3gbDCWNhLso
-         Q4gthE2otk3e6NybEISvLpG5ofuUJ4TsMDfT/fjZlK00Lj8I+w0dolYj3GdjwFPq6Ih8
-         CvX8q1UtLGea0tijaEcOFvSd32Yq46wp4o0mI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cDrHVTOD+iSWXelVapd6LAkJ7VfbRManFz9vUWJEqwc=;
-        b=YPEcPvm4QfIQe31bqPV3hSQZolNeq4cKCEWfFRB5+odIQ6EONaLjr4VujpY4l4Qas8
-         N2k/9af4qcilL6BituTsq2MCpk/bS1zEsFmKbwYP0F9Yb//8vXFUhhXaupeMiDBbWn79
-         Y6bUQWHtTbbLfENxdDm+apRRdzi8sbDQjapb1toAZdz8OB0rZTCj9k5oXgSaM+431mg7
-         wtN7EqjUTRHopofwBc/KmBm5xSu0d1deGvGFngfNbaFaW3QiFBbTEmhaw9D0pWQShyAH
-         aY07uuXK7rNwzExEfwGIHR0pjJoNzJfD/H3LMlkzkTe/6WOIvvAB+2oxm+rpoEWnnG+t
-         zMQw==
-X-Gm-Message-State: AOAM532QJK4wR5iMe7Kl6zrYgS+iSvRjPO0UPqHOb2JiQ0TVZTXXSkqP
-        WlK20apI81dw2+MsxWW8eb6iPigkQ2ayyXmyzu8=
-X-Google-Smtp-Source: ABdhPJyhP2oOUzht7mmnYmL06kxXBu44hSqGNAaV4Vj6cp2z2M4mFMwQjvAP9vCt1lBA3/mkfw8qIQ==
-X-Received: by 2002:a19:6b17:: with SMTP id d23mr362374lfa.190.1600954856089;
-        Thu, 24 Sep 2020 06:40:56 -0700 (PDT)
-Received: from [172.16.11.132] ([81.216.59.226])
-        by smtp.gmail.com with ESMTPSA id s20sm2085680lfs.135.2020.09.24.06.40.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 06:40:55 -0700 (PDT)
-Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
-To:     Kees Cook <keescook@chromium.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>
-Cc:     Jann Horn <jannh@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf@vger.kernel.org,
-        containers@lists.linux-foundation.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200923232923.3142503-1-keescook@chromium.org>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
-Date:   Thu, 24 Sep 2020 15:40:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728135AbgIXNmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:42:22 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14274 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727749AbgIXNmV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:42:21 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id ABEC7382033A6CEF029B;
+        Thu, 24 Sep 2020 21:42:18 +0800 (CST)
+Received: from [10.174.185.226] (10.174.185.226) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 24 Sep 2020 21:42:10 +0800
+Subject: Re: [PATCH v10 11/11] vfio: Document nested stage control
+To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <joro@8bytes.org>, <alex.williamson@redhat.com>,
+        <jacob.jun.pan@linux.intel.com>, <yi.l.liu@intel.com>,
+        <robin.murphy@arm.com>
+References: <20200320161911.27494-1-eric.auger@redhat.com>
+ <20200320161911.27494-12-eric.auger@redhat.com>
+From:   Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <26a85a63-6cc1-0348-e703-cb31ddd75339@huawei.com>
+Date:   Thu, 24 Sep 2020 21:42:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200923232923.3142503-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200320161911.27494-12-eric.auger@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2020 01.29, Kees Cook wrote:
-> rfc: https://lore.kernel.org/lkml/20200616074934.1600036-1-keescook@chromium.org/
-> alternative: https://lore.kernel.org/containers/cover.1600661418.git.yifeifz2@illinois.edu/
-> v1:
-> - rebase to for-next/seccomp
-> - finish X86_X32 support for both pinning and bitmaps
-> - replace TLB magic with Jann's emulator
-> - add JSET insn
+Hi Eric,
+
+On 2020/3/21 0:19, Eric Auger wrote:
+> The VFIO API was enhanced to support nested stage control: a bunch of
+> new iotcls, one DMA FAULT region and an associated specific IRQ.
 > 
-> TODO:
-> - add ALU|AND insn
-> - significantly more testing
+> Let's document the process to follow to set up nested mode.
 > 
-> Hi,
-> 
-> This is a refresh of my earlier constant action bitmap series. It looks
-> like the RFC was missed on the container list, so I've CCed it now. :)
-> I'd like to work from this series, as it handles the multi-architecture
-> stuff.
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
 
-So, I agree with Jann's point that the only thing that matters is that
-always-allowed syscalls are indeed allowed fast.
+[...]
 
-But one thing I'm wondering about and I haven't seen addressed anywhere:
-Why build the bitmap on the kernel side (with all the complexity of
-having to emulate the filter for all syscalls)? Why can't userspace just
-hand the kernel "here's a new filter: the syscalls in this bitmap are
-always allowed noquestionsasked, for the rest, run this bpf". Sure, that
-might require a new syscall or extending seccomp(2) somewhat, but isn't
-that a _lot_ simpler? It would probably also mean that the bpf we do get
-handed is a lot smaller. Userspace might need to pass a couple of
-bitmaps, one for each relevant arch, but you get the overall idea.
+> +The userspace must be prepared to receive faults. The VFIO-PCI device
+> +exposes one dedicated DMA FAULT region: it contains a ring buffer and
+> +its header that allows to manage the head/tail indices. The region is
+> +identified by the following index/subindex:
+> +- VFIO_REGION_TYPE_NESTED/VFIO_REGION_SUBTYPE_NESTED_DMA_FAULT
+> +
+> +The DMA FAULT region exposes a VFIO_REGION_INFO_CAP_PRODUCER_FAULT
+> +region capability that allows the userspace to retrieve the ABI version
+> +of the fault records filled by the host.
 
-I'm also a bit worried about the performance of doing that emulation;
-that's constant extra overhead for, say, launching a docker container.
+Nit: I don't see this capability in the code.
 
-Regardless of how the kernel's bitmap gets created, something like
 
-+	if (nr < NR_syscalls) {
-+		if (test_bit(nr, bitmaps->allow)) {
-+			*filter_ret = SECCOMP_RET_ALLOW;
-+			return true;
-+		}
-
-probably wants some nospec protection somewhere to avoid the irony of
-seccomp() being used actively by bad guys.
-
-Rasmus
+Thanks,
+Zenghui
