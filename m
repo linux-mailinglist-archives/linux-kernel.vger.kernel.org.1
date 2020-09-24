@@ -2,98 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D23277980
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C78AB277983
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbgIXTin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:38:43 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:43825 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgIXTin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:38:43 -0400
-X-Greylist: delayed 40034 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 15:38:42 EDT
-Received: from mail-qv1-f47.google.com ([209.85.219.47]) by
- mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MxVbb-1kfODR2rKz-00xvac; Thu, 24 Sep 2020 21:38:40 +0200
-Received: by mail-qv1-f47.google.com with SMTP id ef16so122056qvb.8;
-        Thu, 24 Sep 2020 12:38:40 -0700 (PDT)
-X-Gm-Message-State: AOAM531kDPXkhiZYw7gvR8oXc2heYsLvEpV9mIKBjCPto49n89+ceUsI
-        l8ZvAVFamL2KGyu/TPyXdkbklxkhLbil8skWJ34=
-X-Google-Smtp-Source: ABdhPJwb2a07lzpQCrzg3jtFtJXS1gTYpcGBk/RGooNlixhivRVF08OHCGO55og0kHNqshgFEi2ogMfqzGxcRooZPQk=
-X-Received: by 2002:a05:6214:1873:: with SMTP id eh19mr870293qvb.16.1600976319259;
- Thu, 24 Sep 2020 12:38:39 -0700 (PDT)
+        id S1726252AbgIXTj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:39:28 -0400
+Received: from mga03.intel.com ([134.134.136.65]:55141 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725273AbgIXTj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 15:39:28 -0400
+IronPort-SDR: 7zJo9jQ9LX/BGboq5x/UVivEgd42IhJEA6mDCOsECJl7e0MCdu76t0ySM31CPryuk2pFHSDoNH
+ y/8EWP5UKdOw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="161396212"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="161396212"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 12:39:27 -0700
+IronPort-SDR: 46tkQ1ZzYGZkhuvkz0f1Q+/CS+IrnsBsphTDvcEc8nDko/7nUDVpxJQ4FqZTB6CflWsmTG5+Z2
+ +BclWgoTCeFQ==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="487066218"
+Received: from ejarlos-mobl.amr.corp.intel.com (HELO [10.212.15.103]) ([10.212.15.103])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 12:39:25 -0700
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+References: <20200918235337.GA21189@sjchrist-ice>
+ <20200921124946.GF6038@linux.intel.com>
+ <20200921165758.GA24156@linux.intel.com>
+ <20200921210736.GB58176@linux.intel.com>
+ <20200921211849.GA25403@linux.intel.com>
+ <20200922052957.GA97272@linux.intel.com>
+ <20200922053515.GA97687@linux.intel.com>
+ <20200922164301.GB30874@linux.intel.com>
+ <20200923135056.GD5160@linux.intel.com>
+ <op.0rgp5h0hwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
+ <20200924192853.GA18826@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <c680f7bd-2d82-6477-707f-cd03aae4b4aa@intel.com>
+Date:   Thu, 24 Sep 2020 12:39:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
- <dad42dce-15d0-245a-4d91-4733e54883a0@gmail.com> <CAK8P3a2ryzmsrHHApT9O=dvsw+=z18Sjd4ygVxvFrrDetKA+rQ@mail.gmail.com>
- <c4c1d999-9ab7-8988-906a-3cb6a70bc93d@gmail.com> <CAK8P3a2XegsP71yvd8Ku08_k6ecQfkU+V+t+QnjQBrJKF2MwCg@mail.gmail.com>
- <d07adfb3-9f79-c00a-cb70-e044aa0b19f8@gmail.com>
-In-Reply-To: <d07adfb3-9f79-c00a-cb70-e044aa0b19f8@gmail.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 24 Sep 2020 21:38:23 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a23V8vug2U-9tXUOdO3DvQvEc5+GhZuQh7_HKtTavCqVQ@mail.gmail.com>
-Message-ID: <CAK8P3a23V8vug2U-9tXUOdO3DvQvEc5+GhZuQh7_HKtTavCqVQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
- Aggregator Module
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-serial@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:3BIMiRbgQycvNucXKzcS5vkFqPEIq3DE+mg6SzlMWwm40f+ulB+
- Nrj3ZhQEPewWAlItOhTfoo6fJX2dZNuRXreOKr256QJ+TZXb8DXiUB3zyEzbCQcjrG8bpA5
- BpR0XJhxNl3gNe2MHCJV8KFKSNqujJy/XM7wNUmXctOkn0E/zBMS9jIblaXJuyM3qKWq51V
- Os3pkhdAqZXrcikTGLZ8g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OLGtHSwCH/k=:V51WjINOskBmYYiF4aUWtl
- 0nkM1XPgkorf7lcmMX+SQrvSi2HzsJXLxHs2Ebs5iiuGtV0fbXtWaNhBlvUvoMAjctODVDf7T
- UJHRxgf80Gk+q8EssMsT5OgX7VxP6/1EApjda+uTC5i35PA9gOPEaU6A2/+bII4K5P77apX6i
- OiTUxcJ4Du3CXJrZceOnE5+GgZS50B7RdTAQjd2Tohi9le8kcjdQcXqLMGwdN2fw/ULJmYPB1
- X6L5wucGA5RukUe7V/sOSJbXcPWdKW+rVi0FVDvHbkuBLtnyceKKyBF9/ZoIx/qn2h/6ygHMm
- fCjlXh7lgKZEB5OyXooEsHMjgDivugwdKORiSwQ1oArJhmCKbq1qT5CZK53qYSfBsQguPSaBI
- Z7dlDwDYYjP8+g1/vtT/t8bY1u2pKIUyeaG1jXYC89gfRc/ou8mbZYGQpZMd5yZuPes3KY2Bw
- JJfK0T2KSXC1SEVzILjwgyeOuhljg0VjXYFgWSgmmEJDrvcKTadd8XcwpOcvQKNQKT7WTBTr3
- FPuD1MxZnmBTZwpA2QilhTwJcZFAmbuRxFeFI4+5atuc5Ra5qB1OXzVcSyo0b1UfneAHrqBI5
- yXrmAYMSVtVTyzjnt4wrVhYu3Tj6Sj10XttrXK8Ml9nY4x9Ev/LyD15TX3nO7tfsPElmYUTph
- YDj5vKdnoYeDmqpy3Ddbv16sjDn6443xXq9mkWjd/AX4V2mm6CF4H6Qx0YvVbATbTrSSCXe6R
- rhJV0uTzjmSpPKFR+AhOA+QyDjoE5TzsTei2hV+FUFtQEw1xu932/E2/O0MZuvRWkUVsivVhK
- WNQ9ls/8lQwFPvuJPu76XNw0cDCCgFb4B2M6EHeZ4IaN6tjEVtOSN5dC3ou432nfaYOqx21
+In-Reply-To: <20200924192853.GA18826@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 8:59 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
-> On 9/24/20 10:26 AM, Arnd Bergmann wrote:
-> > On Thu, Sep 24, 2020 at 1:28 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+On 9/24/20 12:28 PM, Sean Christopherson wrote:
+> On Thu, Sep 24, 2020 at 02:11:37PM -0500, Haitao Huang wrote:
+>> On Wed, 23 Sep 2020 08:50:56 -0500, Jarkko Sakkinen
+>> <jarkko.sakkinen@linux.intel.com> wrote:
+>>> I'll categorically deny noexec in the next patch set version.
+>>>
+>>> /Jarkko
+>> There are use cases supported currently in which enclave binary is received
+>> via IPC/RPC and held in buffers before EADD. Denying noexec altogether would
+>> break those, right?
+> No.  noexec only applies to file-backed VMAs, what you're describing is loading
+> an enclave from an anon VMA, which will still have VM_MAYEXEC.
 
-> > Note that drivers that connect to the bus typically don't live in the
-> > same subdirectory as the driver that operates the bus. E.g. the
-> > battery driver would go into drivers/power/supply and the input
-> > would go into drivers/input/ or drivers/hid.
->
-> Right. I wonder if this also holds for devices that are directly
-> dependent on a special platform though? It could make sense to have them
-> under plaform/surface rather than in the individual subsystems as they
-> are only ever going to be used on this platform. On the other hand, one
-> could argue that having them in the subsystem directories is better for
-> maintainability.
+Maybe I'm just stupid, but I still don't get the scenario that's being
+thwarted or why it is valuable.  The SDM is worthless on what EMODPE
+does or what its restrictions are.
 
-Yes, absolutely. The subsystem maintainers are the ones that are
-most qualified of reviewing code that uses their subsystem, regardless
-of which bus is used underneath the device, and having all drivers
-for a subsystem in one place makes it much easier to refactor them
-all at once in case the internal interfaces are changed or common bugs
-are found in multiple drivers.
+In pseudo-C, it's something logically like this for the "nice" case:
 
-       Arnd
+	ptr = mmap("/some/executable", PROT_EXEC);
+	ioctl(sgx_fd, ADD_ENCLAVE_PAGE, SGX_PROT_EXEC, ptr, size);
+	mmap(sgx_fd);
+	EENTER;
+
+And we're trying to thwart:
+
+	ptr = mmap("/mnt/noexec/file", PROT_READ);
+	ioctl(sgx_fd, ADD_ENCLAVE_PAGE, SGX_PROT_EXEC, ptr, size);
+	mmap(sgx_fd);
+	EENTER;
+
+because that loads data into the enclave which is executable but which
+was not executable normally.  But, we're allowing this from anonymous
+memory, so this would seem to work:
+
+	ptr = mmap("/mnt/noexec/file", PROT_READ);
+	buffer = malloc(PAGE_SIZE);
+	memcpy(buffer, ptr, PAGE_SIZE);
+	// need mprotect(buf, PROT_EXEC)???
+	ioctl(sgx_fd, ADD_ENCLAVE_PAGE, SGX_PROT_EXEC, buffer, size);
+	mmap(sgx_fd);
+	EENTER;
+
+and give the same result.  What am I missing?
