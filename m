@@ -2,88 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616F1277BB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9655A277BBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 00:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgIXWk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 18:40:57 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:33557 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726205AbgIXWk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 18:40:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4By94Q4mZlz9sTC;
-        Fri, 25 Sep 2020 08:40:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1600987254;
-        bh=hv63+vXvcDdLa0bBXJKAk5YHBg1OMiyKhExHjV/FYk0=;
-        h=Date:From:To:Cc:Subject:From;
-        b=S9ISAO2vkhQ0EjQE4LB/C9OVef6wktk1rjOFCMcN1caPc5Z7wk6WogD6rDHYqQ9As
-         jsVB2uCZz2JZxkrdrYX1S4mL7+g1NlV7ErACnxTP8NhcYkayWfVVcbaOuUjmey79Ns
-         Sv4c3ulTW9wT5rl+JEWl6yTw5BWzV5pS7RLLeyRXwtp8K9velkhfctddeWdh2TZz2F
-         vpHmXjQYgW08sCMEg6/gBgW+L75hhwW/4H0OlYyMLegd3/WKYbYQRH1dQdUBXj450T
-         7KQ/lfAOs1TQGuc+IAQ8Le4spV54SfffV5j3/AQka90uHJ7oO2WTAs8IqD+GfIKr4C
-         Ttcpoir6wTCsQ==
-Date:   Fri, 25 Sep 2020 08:40:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>
-Subject: linux-next: Signed-off-by missing for commits in the block tree
-Message-ID: <20200925084053.7169dd01@canb.auug.org.au>
+        id S1726691AbgIXWr0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 18:47:26 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45245 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbgIXWrZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 18:47:25 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1kLa1E-0004R6-0d; Thu, 24 Sep 2020 22:47:16 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 82A805FED0; Thu, 24 Sep 2020 15:47:14 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 7BD479FB5C;
+        Thu, 24 Sep 2020 15:47:14 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     Stephen Hemminger <stephen@networkplumber.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH net-next 4/5] bonding: make Kconfig toggle to disable legacy interfaces
+In-reply-to: <CAKfmpSdSube9ZPYKZTs+z4e2GjZjCsPOv2wWTzoRQQLtG2Q7NA@mail.gmail.com>
+References: <20200922133731.33478-1-jarod@redhat.com> <20200922133731.33478-5-jarod@redhat.com> <20200922162459.3f0cf0a8@hermes.lan> <17374.1600818427@famine> <20200922170119.079fe32f@hermes.lan> <CAKfmpSdSube9ZPYKZTs+z4e2GjZjCsPOv2wWTzoRQQLtG2Q7NA@mail.gmail.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Wed, 23 Sep 2020 12:44:06 -0400."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ykyyY4MtI8=kvaHeH9XZcum";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <14171.1600987634.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Thu, 24 Sep 2020 15:47:14 -0700
+Message-ID: <14172.1600987634@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ykyyY4MtI8=kvaHeH9XZcum
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Jarod Wilson <jarod@redhat.com> wrote:
 
-Hi all,
+>On Tue, Sep 22, 2020 at 8:01 PM Stephen Hemminger
+><stephen@networkplumber.org> wrote:
+>>
+>> On Tue, 22 Sep 2020 16:47:07 -0700
+>> Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
+>>
+>> > Stephen Hemminger <stephen@networkplumber.org> wrote:
+>> >
+>> > >On Tue, 22 Sep 2020 09:37:30 -0400
+>> > >Jarod Wilson <jarod@redhat.com> wrote:
+>> > >
+>> > >> By default, enable retaining all user-facing API that includes the use of
+>> > >> master and slave, but add a Kconfig knob that allows those that wish to
+>> > >> remove it entirely do so in one shot.
+>> > >>
+>> > >> Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+>> > >> Cc: Veaceslav Falico <vfalico@gmail.com>
+>> > >> Cc: Andy Gospodarek <andy@greyhouse.net>
+>> > >> Cc: "David S. Miller" <davem@davemloft.net>
+>> > >> Cc: Jakub Kicinski <kuba@kernel.org>
+>> > >> Cc: Thomas Davis <tadavis@lbl.gov>
+>> > >> Cc: netdev@vger.kernel.org
+>> > >> Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>> > >
+>> > >Why not just have a config option to remove all the /proc and sysfs options
+>> > >in bonding (and bridging) and only use netlink? New tools should be only able
+>> > >to use netlink only.
+>> >
+>> >       I agree that new tooling should be netlink, but what value is
+>> > provided by such an option that distros are unlikely to enable, and
+>> > enabling will break the UAPI?
+>
+>Do you mean the initial proposed option, or what Stephen is
+>suggesting? I think Red Hat actually will consider the former, the
+>latter is less likely in the immediate future, since so many people
+>still rely on the output of /proc/net/bonding/* for an overall view of
+>their bonds' health and status. I don't know how close we are to
+>having something comparable that could be spit out with a single
+>invocation of something like 'ip' that would only be using netlink.
+>It's entirely possible there's something akin to 'ip link bondX
+>overview' already that outputs something similar, and I'm just not
+>aware of it, but something like that would definitely need to exist
+>and be well-documented for Red Hat to remove the procfs bits, I think.
 
-Commits
+	At the present time, as much as the idea spurs the imagination,
+removing the bonding /proc and sysfs stuff wholesale is not feasible.
+As you explain, not everything in the proc file is available from other
+sources.  I would rather freeze the /proc and sysfs bonding
+functionality and move to a netlink / iproute API for all of it, and
+then down the road remove the then-legacy APIs.
 
-  caec515ad9ed ("md/raid5: reallocate page array after setting new stripe_s=
-ize")
-  6a4b2e201b37 ("md/raid5: resize stripe_head when reshape array")
-  1df3ccb18cf4 ("md/raid5: let multiple devices of stripe_head share page")
-  e56e7ebce809 ("md/raid6: let async recovery function support different pa=
-ge offset")
-  2b2059f32e20 ("md/raid6: let syndrome computor support different page off=
-set")
-  f849daa2c23c ("md/raid5: convert to new xor compution interface")
-  4737539e07a3 ("md/raid5: add new xor function to support different page o=
-ffset")
-  a5a1925b9a1a ("md/raid5: make async_copy_data() to support different page=
- offset")
+	Even though "down the road" may practically be "never" (because
+the removal breaks backwards compatibility for user space), unifying all
+of the configuration and reporting to one place would be worthwhile.
 
-are missing a Signed-off-by from their committer.
+	For "initial proposed option," I'm not sure right off if that's
+referring to CONFIG_BONDING_LEGACY_INTERFACES or "duplicate lines in
+/proc/net/bonding."  I'm not sure it matters, since both have the same
+problem, in that they create a Venn diagram of mutually incompatible
+bonding UAPIs.  Portable user space code ends up having to handle all of
+the permutations.
 
---=20
-Cheers,
-Stephen Rothwell
+	-J
 
---Sig_/ykyyY4MtI8=kvaHeH9XZcum
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+>> > >Then you might convince maintainers to update documentation as well.
+>> > >Last I checked there were still references to ifenslave.
+>> >
+>> >       Distros still include ifenslave, but it's now a shell script
+>> > that uses sysfs.  I see it used in scripts from time to time.
+>>
+>> Some bleeding edge distros have already dropped ifenslave and even ifconfig.
+>> The Enterprise ones never will.
+>>
+>> The one motivation would be for the embedded folks which are always looking
+>> to trim out the fat. Although not sure if the minimal versions of commands
+>> in busybox are pure netlink yet.
+>
+>Yeah, the bonding documentation is still filled with references to
+>ifenslave. I believe Red Hat still includes it, though it's
+>"deprecated" in documentation in favor of using ip. Similar with
+>ifconfig. I could see them both getting dropped in a future major
+>release of Red Hat Enterprise Linux, but they're definitely still here
+>for at least the life of RHEL8.
 
------BEGIN PGP SIGNATURE-----
+	As ifconfig is typically bundled in with the much-loved netstat
+in the net-tools package, it will be difficult to remove.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9tIHYACgkQAVBC80lX
-0Gz5sAf+J4YRdYQBn4YvqLhOkGKTEdKwlnvKc0SZvtFSpmNtxfzSdVx2qICiWEie
-1yUpJ6sKsxImJjL9+0/Qj6K+KBtBSR5BGcBNQfbL5XrJCj+VbXU+uYU72n4m5IfB
-V9JhHDSYzDk0ztN8Bc/Mf1zJmSAu3YXSnX2g1mfFekFCAqj4imF57UEb+V/5vMKj
-jo3mIw/QY+MT4sAxvr2TTV4mkObElKGvGhmQaKKBf8WvXE7FyPP+KPyv1jnBUwDJ
-IydDnDsMKBiSlBHMbHQIeFqQHm41GpA4hwzTjMW76Lcaol8kXSLy4y3ou7pXtOHf
-e5S04XWjDgiRnWBMe9EvZmaHrcQqNg==
-=mPkU
------END PGP SIGNATURE-----
+	Having an /sbin/ifenslave program isn't really the issue so much
+as its reliance on the bonding sysfs UAPI.  It's a shell script, and
+could likely be reworked to use ip link.
 
---Sig_/ykyyY4MtI8=kvaHeH9XZcum--
+	-J
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
