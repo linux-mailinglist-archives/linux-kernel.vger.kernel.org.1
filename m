@@ -2,103 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257BE27729A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB98A27729F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728041AbgIXNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:38:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52416 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727888AbgIXNix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:38:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600954731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LWItYUbY3YNkAAw7wM9cL9xVXm/akhjF8HLSfu/R4BU=;
-        b=X1pTtNBesdsh7D2hQaOwWIEOBqg8QTEnYvOAQ3smjrbRJUoKs7CfUtKSRqqc13qTMgWBV+
-        hFkTnwECJAZ2fJ2+xPq20xt5biHb/KeHGVIj1brHiAdPSyaUtl9Qs9y9cq/IC5zksYtHKL
-        UIqlXzvXEYQndaOPPBqNcosdGoLKbfQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51634AD07;
-        Thu, 24 Sep 2020 13:38:51 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 15:38:50 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Mark Salyzyn <salyzyn@android.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Changki Kim <changki.kim@samsung.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
-Message-ID: <20200924133850.GF29288@alley>
-References: <20200923135617.27149-1-pmladek@suse.com>
- <20200923135617.27149-3-pmladek@suse.com>
- <20200924042414.GA6039@lx-t490>
- <20200924125259.GC29288@alley>
+        id S1728089AbgIXNjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727888AbgIXNja (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:39:30 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9105DC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:39:30 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c18so3836793wrm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:39:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pfqIdita6c/68e2NAo4Uu90/hWr0DYIKt/L27IUDUD8=;
+        b=tgoBMDvkwf7H0OZXkk2mkhIauR+Wst5CQkEvZQ5j2UqhfovQL2vLK536s017HHzsAi
+         vjjHX+9inNnCHrDw2BwHz1g54ZgeeaEnWveVt8YoklWi0bVJI3y3A2sSCc/MGRBZiHBe
+         iRyK/2wBM3y29rdMkz0JrZ3wunnqTsbngTVWFil8gAw3h6eA2ouSVy1Di1EWYkk704RE
+         +RolO85TuYSz9lrFG9n+Ko0SfMDNxRh98HPb2rIm3v9krNGMrfYscA2xwfaSOgcyQtpI
+         qr/k813cTVYaQsRPiZCCk73dim1bZuYE3iHlIZGXxd/sJQb0B/4xGDA4YwbVThMe5lUE
+         kmEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=pfqIdita6c/68e2NAo4Uu90/hWr0DYIKt/L27IUDUD8=;
+        b=pN/eu7YE4KF32dAHR2XEiCK1RFnXLw9op2ru6srL7eRcHv6BTQ8nQ9LGo6EyrqT6VH
+         8WaDvnCZeeiF5eeqhRaNfrUvGXCNhW6f1bAmWloA0OBNF1MfVdkpb0drQ4gEC05af92s
+         4tv+kNCzHEV0AuS0PnlRi5VOgRVVwNKUsHzKXZSjobf0ZZtqPDcJ1Y7ZJp5yAqO6p+MI
+         1lwKdVedECiTDTjDxWhBqitR/PUyt7YbhUzkpeCDfovh/EH6NMaOGm0eH60OdAsnsMfx
+         OE25RP/XMvcZuywC/NbCpSmwcfOXzKm65EGy4Cg1GWrvsTs7uADgA2ZCNfhbXecWpFoi
+         2b4A==
+X-Gm-Message-State: AOAM531dPFBV4NcTURNavN+TsL89GQSUtNN28QmHo0dhpnPo6K377hcJ
+        PHLtbfsjYtU+RPD8UYq7rSobgw==
+X-Google-Smtp-Source: ABdhPJywsWYBXZf2D+jFaHHQXUz0+dY7LajwjQZiNSTlT1AIlNxYxWQZc6tfm5+QO22WOg4o0KQPlw==
+X-Received: by 2002:a5d:4151:: with SMTP id c17mr5584996wrq.302.1600954769183;
+        Thu, 24 Sep 2020 06:39:29 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id 2sm3432548wmf.25.2020.09.24.06.39.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 06:39:28 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 14:39:25 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: rebuild sched domains on invariance status
+ changes
+Message-ID: <20200924133925.GC3920949@google.com>
+References: <20200924123937.20938-1-ionela.voinescu@arm.com>
+ <20200924123937.20938-4-ionela.voinescu@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924125259.GC29288@alley>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200924123937.20938-4-ionela.voinescu@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-09-24 14:53:01, Petr Mladek wrote:
-> On Thu 2020-09-24 06:24:14, Ahmed S. Darwish wrote:
-> > On Wed, Sep 23, 2020 at 03:56:17PM +0200, Petr Mladek wrote:
-> > ...
-> > >
-> > > -static inline u32 printk_caller_id(void)
-> > > +static enum printk_caller_ctx get_printk_caller_ctx(void)
-> > > +{
-> > > +	if (in_nmi())
-> > > +		return printk_ctx_nmi;
-> > > +
-> > > +	if (in_irq())
-> > > +		return printk_ctx_hardirq;
-> > > +
-> > > +	if (in_softirq())
-> > > +		return printk_ctx_softirq;
-> > > +
-> > > +	return printk_ctx_task;
-> > > +}
-> > > +
-> > 
-> > in_softirq() here will be true for both softirq contexts *and*
-> > BH-disabled regions. Did you mean in_serving_softirq() instead?
-> 
-> Good question!
-> 
-> I am not sure if people would want to distinguish these two
-> situations.
-> 
-> Otherwise, I think that is_softirq() more close to the meaning of
-> in_irq(). They both describe a context where a new interrupt has
-> to wait until the handling gets enabled again.
+On Thursday 24 Sep 2020 at 13:39:37 (+0100), Ionela Voinescu wrote:
+> For arm64 this affects the task scheduler behavior which builds its
+> scheduling domain hierarchy well before the late counter-based FI init.
+> During that process it will disable EAS due to its dependency on FI.
 
-Grrrr, I wonder why I thought that in_irq() covered also the situation
-when IRQ was disabled. It was likely my wish because disabled
-interrupts are problem for printk() because the console might
-cause a softlockup.
+Does it mean we get a warn on every boot, even though this is a
+perfectly normal scenario?
 
-in_irq() actually behaves like in_serving_softirq().
-
-I am confused and puzzled now. I wonder what contexts are actually
-interesting for developers.  It goes back to the ideas from Sergey
-about preemption disabled, ...
-
-/me feels shameful and is going to hide under a stone.
-
-Best Regards,
-Petr
+Thanks,
+Quentin
