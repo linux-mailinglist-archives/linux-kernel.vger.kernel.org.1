@@ -2,111 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C9B2771C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 072C12771CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbgIXNG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:06:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33544 "EHLO mx2.suse.de"
+        id S1727866AbgIXNHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:07:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:45824 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727704AbgIXNG1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:06:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600952786;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vWhiMTbLKygzkeBmeWC4lp5Kk4n1lEhbQG0ng2LQOwg=;
-        b=JnQ+jMZI1Zc6Y4y3PEceyIqKyNVXM2TxZpCDIbLQRE/Po5zKgakoC4xUenVAufJ1yItiSA
-        HAR4J/iP6F1eBhn/Mt6YLcJ8dDMUhYXORd6P+Vq3SsOpHbQQsWtn6IpYMJ/DuaS/Fko9Rv
-        r7D1qzVRqbjoj8wfniprG6vHMKGUx84=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4AE7EAF2C;
-        Thu, 24 Sep 2020 13:06:26 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 15:06:25 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Mark Salyzyn <salyzyn@android.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Changki Kim <changki.kim@samsung.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
-Message-ID: <20200924130625.GD29288@alley>
-References: <20200923135617.27149-1-pmladek@suse.com>
- <20200923135617.27149-3-pmladek@suse.com>
- <20200924021756.GD577@jagdpanzerIV.localdomain>
+        id S1727704AbgIXNHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:07:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F31212FC;
+        Thu, 24 Sep 2020 06:07:41 -0700 (PDT)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E4223F718;
+        Thu, 24 Sep 2020 06:07:38 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 14:07:34 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org, bhelgaas@google.com, shawnguo@kernel.org,
+        kishon@ti.com, leoyang.li@nxp.com, gustavo.pimentel@synopsys.com,
+        arnd@arndb.de, gregkh@linuxfoundation.org, andrew.murray@arm.com,
+        minghuan.Lian@nxp.com, mingkai.hu@nxp.com, roy.zang@nxp.com,
+        Xiaowei Bao <xiaowei.bao@nxp.com>
+Subject: Re: [PATCHv8 10/12] arm64: dts: layerscape: Add PCIe EP node for
+ ls1088a
+Message-ID: <20200924130734.GA17981@e121166-lin.cambridge.arm.com>
+References: <20200918080024.13639-1-Zhiqiang.Hou@nxp.com>
+ <20200918080024.13639-11-Zhiqiang.Hou@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924021756.GD577@jagdpanzerIV.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200918080024.13639-11-Zhiqiang.Hou@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-09-24 11:17:56, Sergey Senozhatsky wrote:
-> On (20/09/23 15:56), Petr Mladek wrote:
-> [..]
-> >  	/*
-> >  	 * To reduce unnecessarily reopening, first check if the descriptor
-> > -	 * state and caller ID are correct.
-> > +	 * state and caller infromation are correct.
-> >  	 */
-> > -	d_state = desc_read(desc_ring, id, &desc, NULL, &cid);
-> > -	if (d_state != desc_committed || cid != caller_id)
-> > +	d_state = desc_read(desc_ring, id, &desc, NULL, &cal);
-> > +	if (d_state != desc_committed ||
-> > +	    cal.pid != caller->pid ||
-> > +	    cal.cpu_ctx != caller->cpu_ctx) {
+On Fri, Sep 18, 2020 at 04:00:22PM +0800, Zhiqiang Hou wrote:
+> From: Xiaowei Bao <xiaowei.bao@nxp.com>
 > 
-> You probably might want to factor out ctx check into a static
-> inline helper. Since you use this check in several places, and
-> we may check more context fields in the future.
+> Add PCIe EP node for ls1088a to support EP mode.
+> 
+> Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
+> Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+> Reviewed-by: Andrew Murray <andrew.murray@arm.com>
+> ---
+> V8:
+>  - s/pcie_ep/pcie-ep.
+> 
+>  .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 31 +++++++++++++++++++
+>  1 file changed, 31 insertions(+)
 
-Makes sense.
+Dropped this patch. dts files updates should be sent via arm-soc along
+with platform support.
 
-> [..]
-> > +/* Information about the process and context that adds the message */
-> > +struct printk_caller {
-> > +	pid_t pid;	/* thread id */
-> > +	u32 cpu_ctx;	/* processor id and interrupt context */
-> > +};
-> 
-> A question. Suppose we have a task which does
-> 
-> 	CPU0
-> 
-> 	pr_err(...);
-> 
-> 	preempt_disable();
-> 	pr_err(...);
-> 	preempt_enable();
-> 
-> 	pr_err(...);
-> 
-> 	rcu_read_lock();
-> 	pr_info(...);
-> 	rcu_read_unlock();
-> 
-> Should we distinguish those as 3 different contexts?
-> 
-> - normal printk
-> - printk under disabled preemption (affects scheduling)
-> - printk under RCU read side lock (affects RCU grace periods)
+Thanks,
+Lorenzo
 
-Good question. Well, these contexts could not get detected in
-PREEMPT_NONE or PREEMPT_VOLUNTARY. Also I wonder where it would
-stop. There are several RCU flavors.
-
-I would not distinguish them unless there is a real demand.
-
-Best Regards,
-Petr
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> index 169f4742ae3b..f21dd143ab6d 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> @@ -499,6 +499,17 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		pcie-ep@3400000 {
+> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
+> +			reg = <0x00 0x03400000 0x0 0x00100000
+> +			       0x20 0x00000000 0x8 0x00000000>;
+> +			reg-names = "regs", "addr_space";
+> +			num-ib-windows = <24>;
+> +			num-ob-windows = <128>;
+> +			max-functions = /bits/ 8 <2>;
+> +			status = "disabled";
+> +		};
+> +
+>  		pcie@3500000 {
+>  			compatible = "fsl,ls1088a-pcie";
+>  			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+> @@ -525,6 +536,16 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		pcie-ep@3500000 {
+> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
+> +			reg = <0x00 0x03500000 0x0 0x00100000
+> +			       0x28 0x00000000 0x8 0x00000000>;
+> +			reg-names = "regs", "addr_space";
+> +			num-ib-windows = <6>;
+> +			num-ob-windows = <8>;
+> +			status = "disabled";
+> +		};
+> +
+>  		pcie@3600000 {
+>  			compatible = "fsl,ls1088a-pcie";
+>  			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
+> @@ -551,6 +572,16 @@
+>  			status = "disabled";
+>  		};
+>  
+> +		pcie-ep@3600000 {
+> +			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
+> +			reg = <0x00 0x03600000 0x0 0x00100000
+> +			       0x30 0x00000000 0x8 0x00000000>;
+> +			reg-names = "regs", "addr_space";
+> +			num-ib-windows = <6>;
+> +			num-ob-windows = <8>;
+> +			status = "disabled";
+> +		};
+> +
+>  		smmu: iommu@5000000 {
+>  			compatible = "arm,mmu-500";
+>  			reg = <0 0x5000000 0 0x800000>;
+> -- 
+> 2.17.1
+> 
