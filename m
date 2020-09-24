@@ -2,103 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54302765DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5492765E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgIXBac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 21:30:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14266 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725273AbgIXBac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 21:30:32 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A5CBDF4800612618B408;
-        Thu, 24 Sep 2020 09:30:29 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 24 Sep 2020 09:30:23 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>,
-        <chiqijun@huawei.com>, <zengweiliang.zengweiliang@huawei.com>
-Subject: [PATCH net] hinic: fix wrong return value of mac-set cmd
-Date:   Thu, 24 Sep 2020 09:31:51 +0800
-Message-ID: <20200924013151.25754-1-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1726513AbgIXBbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 21:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726193AbgIXBbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 21:31:35 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC82C0613D1;
+        Wed, 23 Sep 2020 18:31:35 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id j7so727170plk.11;
+        Wed, 23 Sep 2020 18:31:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=cK1MHKRYrqYjskSliGEjt6+mSN57/qpKSAsstsuFM24=;
+        b=rD//kS7IeFXd9hF2ed31+EIcIBuTITtO+mRjbhaDBwM4TAXB0MI0PKGGSXDx1NHoJi
+         kcOOEkJ60oO7Hzpbqfnj8g1YCXDxXqBevUzyD/RH8Q9CmarGXcgY4Evj9girgOhSr6Ae
+         cyj09ChE8znNk4N8Qx3oHOIGLbK9ZQmLFOsQmjmWA8xzAgaHD1EQomrQNEe/LzV8HTLB
+         NiuM3k2PY+SbIoR/qPP7UM1YKZE5M5pZOcm5sOSKCmWRq0pEh/k1YXgyDMcEA/oqGI1G
+         kdiHDoUHXryUR8fUp0hGA/F6XqxAC7//3HTxc1oN4f80mtMCIj+xlq7h1DHVIKu4g18E
+         iEgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=cK1MHKRYrqYjskSliGEjt6+mSN57/qpKSAsstsuFM24=;
+        b=PJc2groKBtUQ1GBTbTYylG5ie3Ayl3TjsFTzo2FQHt1l7dXARd4WEzxMwV56yXMwjW
+         o/lQ4Bh1tuTbsIixDeii2Ypke4BZNy7SQ/9kGEaMoBTj9oXuiVvFex2rSYPPGz9HVN8B
+         cR8lv+qneTxP7XkSxKMbFSegz2hrzyVJF7xOBBrqxFkJaUXaT2IWB8u3CkRet071KP2/
+         gd4ATsnrqIOyiydDhaJzbIXebVCsxAUelsVI1WA/Wuu7mPs22S3nWv1UHfbwIOlFCE/c
+         Rd4nHNFxkQFQEGY72SzsWKhfu0oYxGd1FecE4Sb9TfOY7qk5/x07wsBOMlm7Hbyq8qPp
+         l7Rg==
+X-Gm-Message-State: AOAM531lQ6IdfW7UbK5sdcnL+FLnW0NbjMUCI8foe7iwUei4Fx/of23M
+        7/Vd1vIsRYovNLjD4SkEh4kVynA8m0A=
+X-Google-Smtp-Source: ABdhPJwj6If3BCt+I9dyAdwdKDTg4PKZseGf/Jfv46eNOjjevmvqspHXfp1j6svWXVOATQCGoBbfrQ==
+X-Received: by 2002:a17:902:16b:b029:d2:565e:a70b with SMTP id 98-20020a170902016bb02900d2565ea70bmr2427614plb.42.1600911095117;
+        Wed, 23 Sep 2020 18:31:35 -0700 (PDT)
+Received: from [130.216.45.21] (nmr1-400i.che.auckland.ac.nz. [130.216.45.21])
+        by smtp.gmail.com with ESMTPSA id k4sm849011pfp.189.2020.09.23.18.31.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 23 Sep 2020 18:31:34 -0700 (PDT)
+Subject: Re: [PATCH v2] ide/macide: Convert Mac IDE driver to platform driver
+To:     Finn Thain <fthain@telegraphics.com.au>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Joshua Thompson <funaho@jurai.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-ide@vger.kernel.org
+References: <3cf40b9df80a99a3eee6d3af79437016038f0a44.1600051331.git.fthain@telegraphics.com.au>
+ <CAMuHMdUOdOkBE72ouk0W_bXnoSTFqLsLKag+2LSRz+Qox6MoxQ@mail.gmail.com>
+ <alpine.LNX.2.23.453.2009150945480.6@nippy.intranet>
+ <CAMuHMdX1GXMGg1mviE_msM1vx0ZLEKEPT4AacSBjYDzN6sZVmw@mail.gmail.com>
+ <alpine.LNX.2.23.453.2009160758350.6@nippy.intranet>
+ <alpine.LNX.2.23.453.2009240929310.7@nippy.intranet>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <1ae450be-0c26-f9e3-1544-3b58dbbf7e53@gmail.com>
+Date:   Thu, 24 Sep 2020 13:29:21 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+In-Reply-To: <alpine.LNX.2.23.453.2009240929310.7@nippy.intranet>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It should also be regarded as an error when hw return status=4 for PF's
-setting mac cmd. Only if PF return status=4 to VF should this cmd be
-taken special treatment.
+Hi Finn,
 
-Fixes: 7dd29ee12865 ("hinic: add sriov feature support")
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
- drivers/net/ethernet/huawei/hinic/hinic_port.c  |  6 +++---
- drivers/net/ethernet/huawei/hinic/hinic_sriov.c | 12 ++----------
- 2 files changed, 5 insertions(+), 13 deletions(-)
+On 24/09/20 1:07 PM, Finn Thain wrote:
+> Looking further at the drivers using ide_host_register(), I see that
+> falconide.c is missing a set_drvdata() call, while tx4939ide.c calls
+> set_drvdata() after ide_host_register(). The latter example is not a bug.
+>
+> The pattern I used, that is, calling set_drvdata() after ide_host_add(),
+> is actually more popular among IDE drivers than the pattern you suggested,
+> that is, set_drvdata() followed by ide_host_register(). Either way, I
+> don't see any bugs besides the one in falconide.c.
+>
+> Regarding falconide.c, my inclination is to send a fix following the more
+> common pattern (among IDE drivers), as below. I guess that may prompt the
+> subsystem maintainers to make known their views on the style question.
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-index 02cd635d6914..eb97f2d6b1ad 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-@@ -58,9 +58,9 @@ static int change_mac(struct hinic_dev *nic_dev, const u8 *addr,
- 				 sizeof(port_mac_cmd),
- 				 &port_mac_cmd, &out_size);
- 	if (err || out_size != sizeof(port_mac_cmd) ||
--	    (port_mac_cmd.status  &&
--	    port_mac_cmd.status != HINIC_PF_SET_VF_ALREADY &&
--	    port_mac_cmd.status != HINIC_MGMT_STATUS_EXIST)) {
-+	    (port_mac_cmd.status &&
-+	     (port_mac_cmd.status != HINIC_PF_SET_VF_ALREADY || !HINIC_IS_VF(hwif)) &&
-+	     port_mac_cmd.status != HINIC_MGMT_STATUS_EXIST)) {
- 		dev_err(&pdev->dev, "Failed to change MAC, err: %d, status: 0x%x, out size: 0x%x\n",
- 			err, port_mac_cmd.status, out_size);
- 		return -EFAULT;
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-index 4d63680f2143..f8a26459ff65 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_sriov.c
-@@ -38,8 +38,7 @@ static int hinic_set_mac(struct hinic_hwdev *hwdev, const u8 *mac_addr,
- 	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_SET_MAC, &mac_info,
- 				 sizeof(mac_info), &mac_info, &out_size);
- 	if (err || out_size != sizeof(mac_info) ||
--	    (mac_info.status && mac_info.status != HINIC_PF_SET_VF_ALREADY &&
--	    mac_info.status != HINIC_MGMT_STATUS_EXIST)) {
-+	    (mac_info.status && mac_info.status != HINIC_MGMT_STATUS_EXIST)) {
- 		dev_err(&hwdev->func_to_io.hwif->pdev->dev, "Failed to set MAC, err: %d, status: 0x%x, out size: 0x%x\n",
- 			err, mac_info.status, out_size);
- 		return -EIO;
-@@ -503,8 +502,7 @@ struct hinic_sriov_info *hinic_get_sriov_info_by_pcidev(struct pci_dev *pdev)
- 
- static int hinic_check_mac_info(u8 status, u16 vlan_id)
- {
--	if ((status && status != HINIC_MGMT_STATUS_EXIST &&
--	     status != HINIC_PF_SET_VF_ALREADY) ||
-+	if ((status && status != HINIC_MGMT_STATUS_EXIST) ||
- 	    (vlan_id & CHECK_IPSU_15BIT &&
- 	     status == HINIC_MGMT_STATUS_EXIST))
- 		return -EINVAL;
-@@ -546,12 +544,6 @@ static int hinic_update_mac(struct hinic_hwdev *hwdev, u8 *old_mac,
- 		return -EINVAL;
- 	}
- 
--	if (mac_info.status == HINIC_PF_SET_VF_ALREADY) {
--		dev_warn(&hwdev->hwif->pdev->dev,
--			 "PF has already set VF MAC. Ignore update operation\n");
--		return HINIC_PF_SET_VF_ALREADY;
--	}
--
- 	if (mac_info.status == HINIC_MGMT_STATUS_EXIST)
- 		dev_warn(&hwdev->hwif->pdev->dev, "MAC is repeated. Ignore update operation\n");
- 
--- 
-2.17.1
+Please do - that is clearly a bug. I must admit I never tried to boot my 
+Falcon off a SCSI partition to test falconide module unload.
 
+Cheers,
+
+     Michael
+
+
+>
+> diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
+> index dbeb2605e5f6e..607c44bc50f1b 100644
+> --- a/drivers/ide/falconide.c
+> +++ b/drivers/ide/falconide.c
+> @@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
+>   	if (rc)
+>   		goto err_free;
+>   
+> +	platform_set_drvdata(pdev, host);
+>   	return 0;
+>   err_free:
+>   	ide_host_free(host);
+> @@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
+>   
+>   static int falconide_remove(struct platform_device *pdev)
+>   {
+> -	struct ide_host *host = dev_get_drvdata(&pdev->dev);
+> +	struct ide_host *host = platform_get_drvdata(pdev);
+>   
+>   	ide_host_remove(host);
+>   
