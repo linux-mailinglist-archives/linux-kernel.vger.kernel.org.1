@@ -2,338 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C07BE276DBA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB68276DC3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726681AbgIXJq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:46:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgIXJq0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:46:26 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A108C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:46:26 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id r19so1412150pls.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:46:26 -0700 (PDT)
+        id S1727171AbgIXJrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:47:49 -0400
+Received: from mail-eopbgr680065.outbound.protection.outlook.com ([40.107.68.65]:5019
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726315AbgIXJrt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 05:47:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LKDb5C3BBQyUIni22YSXjPhIjyPNfDHfyjLDg9+fBReBumCWjelNXlMFBAjlXZrg7Dz3HlAcqGp3MbYp+/KAK+Nme51fuVemcGHlijrsjvsxJYNEcQEfubZKveTlYkSwzmOdo7K5oeBfBAPHoMRI3tKOQ96Om1rtkkO+EokdbljggbgbiOATmhlSuKITmEpakeRyK6Opeg6jqfNA6+o3yjKHsA/UG+FR3Ap3sOv7HOEtQES2cuj3JzpQbsrX6iJ4Muro4gh70KT5Ah18rtLq5EsrW/wWDFsR3GXT6H5z2TJVvIe/dRY+2XtebbPNkScDFFUl/E2H06817WQseTKy/g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ELgnvY4PlJ/IvkxSJ//+RDS1Ey8sm369jHoQtkHgDY=;
+ b=Kd9jE1SUA21zF5kOMdvju/9+b1Kq7nVyxW3oLmHZJf5hfEBHVWDP27j4lEuxW0/qXQGa5vdSaRgXcPzqBOWcFZ1ZNRKtcqFp5G0lYeXdVdtS0rgixMbbJYCFHXbTkpdJQhDo8QDmJ/+IOOow4bywr/QJGPTXpiUPor59UyvECbNo46OM7RwMgc/fBKbRyJTW/3/gV7HEp/PoB1iJYk0+nLtaX4UWpSNGt0/MzaBXp/X6eYlYGIy2Tku26+HKQHK2p9slqVrFK6OYlAAHlTdgaUFEa73gh5yRR3pjRplrYWPiTynSMscF3TAoNoRc4AV5pW/FyBYbjBYcJp6H1keSRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=tw.synaptics.com; dmarc=pass action=none
+ header.from=tw.synaptics.com; dkim=pass header.d=tw.synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dXtDG4WXuNqSQN3RaeiVNpThPEJ77urnmm8s8YfK9as=;
-        b=OVr4txBidiEBxnfJqJ9/EnzP3gI/lBYaT06g2AKQ8Lbe7l2szbZn3gFrz6AvOc86Ho
-         kghJ+6i1SVcXrtjV5uBzfgaxqyGWlgNvVcD89h+7RdrrKZ7aBbsXVOCw1LSvsA8m0J7B
-         TJ773YLQ7hYp1u6O3LoWRuXBMswTEkdIWnbRzrtazDSadSqGZTWwsKNIInNzinyccioY
-         ZuQwhY2ZN6m48SvSy4MGPNstQpBAFu33lQFUdbXaZTIaB1c8nBfUjJO6fl7wsGqU5+K2
-         PutQ6cW5XIe6rnJKamufFrPZQuv2yvvZkd3jlTEbG05aykgyhjrsdMpT7K90MgQwa1qL
-         pJqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=dXtDG4WXuNqSQN3RaeiVNpThPEJ77urnmm8s8YfK9as=;
-        b=e7C8rDSOlaUyY7ZuncMsRrMsxM+2HM90OD+pHxQ5bgwutgURysU9xw/T6VAA6sXhky
-         XBNFnkv3mMcHGOWEZmaXpL+RI17s5W63iJhC7oU2fIb/QM1wga/XDrI+ToNLuebiNF1d
-         I/giTuTV25XqIyixc6uT9Am/DS0MxqqQLtV+AAU7YCv+Fum115T1Bq+GnzXzsY7OiDJ8
-         a0JPF5JHBAxDhf4I4hmLAKRGZhsrF+1wSeSN1Oi2YEgkDLA3fRh5KmYHM87SQJ8BjJeT
-         RSZ8Kz7kGFbPhQHzoa7q7FO3LG79RR28FYdnH7igIM5Z0xTL9+vkVaHYmnNP3BD+JYDl
-         2SHA==
-X-Gm-Message-State: AOAM533dcindOgxMbfKn15HR0u12hoJyHrQaaNVVavHqrfdheBER6Lic
-        GtIcVFf3wo4ux1M/o63vQ1S+nQ==
-X-Google-Smtp-Source: ABdhPJwvoFGmBEq5M8K5CejYig9XJcZP8vHTUKRMae2JWD/ZRrSG5k2Y9sOLOCqMALRPy8BB97sT8g==
-X-Received: by 2002:a17:902:6844:b029:d2:4300:b936 with SMTP id f4-20020a1709026844b02900d24300b936mr3852762pln.32.1600940785590;
-        Thu, 24 Sep 2020 02:46:25 -0700 (PDT)
-Received: from laputa (p784a66b9.tkyea130.ap.so-net.ne.jp. [120.74.102.185])
-        by smtp.gmail.com with ESMTPSA id x4sm2413008pfm.86.2020.09.24.02.46.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 02:46:24 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 18:46:20 +0900
-From:   AKASHI Takahiro <takahiro.akashi@linaro.org>
-To:     Ben Chuang <benchuanggli@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw, Renius.Chen@genesyslogic.com.tw
-Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
- additional operations
-Message-ID: <20200924094620.GA38298@laputa>
-Mail-Followup-To: AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Ben Chuang <benchuanggli@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        greg.tu@genesyslogic.com.tw, Renius.Chen@genesyslogic.com.tw
-References: <20200710111054.29562-1-benchuanggli@gmail.com>
- <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
- <20200917051253.GA3094018@laputa>
- <CACT4zj9LuJoy9mX4Fqm+jZf1bDa5oUZcR6mPa-otW1mXfNLh1g@mail.gmail.com>
- <20200918011502.GA27646@laputa>
- <CACT4zj9L0zk1UaYLjsBpt8_tLPbfou-WDv0XwXbQE146bsT0+Q@mail.gmail.com>
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6ELgnvY4PlJ/IvkxSJ//+RDS1Ey8sm369jHoQtkHgDY=;
+ b=lVZ6UmdDbe6G/TFO/Hwe084B9VcAs6/ZFYgUdl3rhkciq3ZCFFVREqau7WRJkq42YvA64OVROcayPmAoj82Ll7VZZLcW97sbKwKwSuI53woeGcffFAWsGAMQvSD5KvbfybwhC/ZV7KHEpNFOB9YtDi/fGzv8OeqXTUdgIQ1QzIc=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=tw.synaptics.com;
+Received: from SN6PR03MB3952.namprd03.prod.outlook.com (2603:10b6:805:75::26)
+ by SN6PR03MB4496.namprd03.prod.outlook.com (2603:10b6:805:103::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Thu, 24 Sep
+ 2020 09:47:46 +0000
+Received: from SN6PR03MB3952.namprd03.prod.outlook.com
+ ([fe80::3c54:f5cf:3148:407e]) by SN6PR03MB3952.namprd03.prod.outlook.com
+ ([fe80::3c54:f5cf:3148:407e%7]) with mapi id 15.20.3391.027; Thu, 24 Sep 2020
+ 09:47:46 +0000
+From:   Vincent Huang <vincent.huang@tw.synaptics.com>
+To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Vincent Huang <vincent.huang@tw.synaptics.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <btissoir@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Chris Heiny <chris.heiny@synaptics.com>
+Subject: [PATCH 0/3] Add support for F3A
+Date:   Thu, 24 Sep 2020 17:46:25 +0800
+Message-Id: <20200924094628.1085000-1-vincent.huang@tw.synaptics.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: HK2PR02CA0181.apcprd02.prod.outlook.com
+ (2603:1096:201:21::17) To SN6PR03MB3952.namprd03.prod.outlook.com
+ (2603:10b6:805:75::26)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4zj9L0zk1UaYLjsBpt8_tLPbfou-WDv0XwXbQE146bsT0+Q@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from test-ThinkPad.synaptics-inc.local (60.250.40.146) by HK2PR02CA0181.apcprd02.prod.outlook.com (2603:1096:201:21::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Thu, 24 Sep 2020 09:47:42 +0000
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [60.250.40.146]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 440725bb-8a0e-4f6e-a508-08d8606ee3b9
+X-MS-TrafficTypeDiagnostic: SN6PR03MB4496:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR03MB4496BD6515B87AC328AB4837D6390@SN6PR03MB4496.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 74zElQedt0ip1PWC7DdMMH0Uek86C5DpleFqq0P9DG/oavp6fNkFNT2hVlU6JGoD5MHvzZvuZnJI5qrL15L1+6j5F9bzYf7thcUB7iyWMdgMI58ATHyyA1sFcOFxIcnJnOQQ7AUQXLa1S1mWnLCDJwcmCu70wFYlUXqJGG3pn+aTl/7d3ehxp2vapyUslZkw6W4ASpNBQQn5Ji5Yz+gpq8Kj6W0YE3tcHzrm+iyzBLWRfUIAKsrEjxynOE6kdb8MPzoxP4xowFXgH1MUuqeIIBs6ox5QRUNOalveYcFxxypFiJj+3F2s4SJfcV43ahjK0sIf4ttnULiqCs6OKfY5Ba+lyvVQDfUKXqdCr59vhIZt2EA26a35JGNIuo/0L6/e
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR03MB3952.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(2616005)(956004)(66556008)(44832011)(26005)(6512007)(83380400001)(16526019)(186003)(8676002)(8936002)(6506007)(52116002)(1076003)(498600001)(66476007)(54906003)(86362001)(5660300002)(66946007)(2906002)(6486002)(107886003)(6666004)(4744005)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: jSOsAHXZjaWtZe5wmAkreo/j74LWBAiEtupQ2b+DjjN3sKyU9Bnt/QR5LUMLOXVut0ZJuPogwkvyImTG6kXCFG/fwOvkEvLwUcLi3BXYW1UkqoBUDIJ8lrvYBiPGBzITxMbfR3oCZx06J33sqnMcXSvooL4TV9YFO0RN/ZNQ1Ek1+zOfQ2LXnoK0+02wrP7Pqzv6pphhbtQ5xls0mU8WbHch7RTjOqdBLfU8Hzem6bRJFibLI/8vZ7DifFlcs9tDa2c71pLqeOPoOYcrXtLmlXx+vZxgRDw31d5qFFd5NLRlZJz82ABApYLk3txLRmqcIh1Oz4Gv9TeKksXqctddpU4kr0ZS2SxBFzmkKl5RmDDa3l+gjYUJa3ihwp6mqNuWqirFpWSllsuAnz/xHPT2pSa/MOYpD4SpBNDM6drM9XWOIaVC1pS8UQjq77tQ2tVJbP9Hz9MJGiViuTxo3cQBWy1o8ivCDt9wPDyK6EKA9xPQHctIhxcnS3B/oE0VKzTnRPD1Tbgea5KHGrvvxhdUlx9euge2w1AwQcWBn0ARS8tG4fNSMP8HGnyU8CMoLKofoGSHdFQ8DTsKD7BLtK61zb6M0GitgMq8dQxtL60xPYIqeDH1CU/RVSZEShU2ylKS4iWycpEdSGaQGgr7ZXmSjQ==
+X-OriginatorOrg: tw.synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 440725bb-8a0e-4f6e-a508-08d8606ee3b9
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR03MB3952.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 09:47:46.0440
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IafFd90Hc2kb9wN/rrCNNVvIIFt3TT6ovLKM69OAYeqVKxv1/dUDu50xtpBzqU+uhML4pXvGY8IjPXaQWOOUvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR03MB4496
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ben,
+RMI4 F3A supports the touchpad GPIO function, it's designed to support
+more GPIOs and used on newer touchpads. The patches add support of
+touchpad buttons and rename f30_data to avoid confusion.
 
-On Fri, Sep 18, 2020 at 06:27:01PM +0800, Ben Chuang wrote:
-> On Fri, Sep 18, 2020 at 9:15 AM AKASHI Takahiro
-> <takahiro.akashi@linaro.org> wrote:
-> >
-> > Ben,
-> >
-> > On Thu, Sep 17, 2020 at 06:12:27PM +0800, Ben Chuang wrote:
-> > > Hi Takahiro,
-> > >
-> > > On Thu, Sep 17, 2020 at 1:12 PM AKASHI Takahiro
-> > > <takahiro.akashi@linaro.org> wrote:
-> > > >
-> > > > Adrian, Ben,
-> > > >
-> > > > Regarding _reset() function,
-> > > >
-> > > > On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
-> > > > > On 10/07/20 2:10 pm, Ben Chuang wrote:
-> > > > > > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > > > > >
-> > > > > > In this commit, UHS-II related operations will be called via a function
-> > > > > > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
-> > > > > > a kernel module.
-> > > > > > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
-> > > > > > and when the UHS-II module is loaded. Otherwise, all the functions
-> > > > > > stay void.
-> > > > > >
-> > > > > > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > > > > > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > > > > > ---
-> > > > > >  drivers/mmc/host/sdhci.c | 152 ++++++++++++++++++++++++++++++++++-----
-> > > > > >  1 file changed, 136 insertions(+), 16 deletions(-)
-> > > > > >
-> > > >
-> > > >   (snip)
-> > > >
-> > > > > >     if (host->ops->platform_send_init_74_clocks)
-> > > > > >             host->ops->platform_send_init_74_clocks(host, ios->power_mode);
-> > > > > >
-> > > > > > @@ -2331,7 +2411,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
-> > > > > >     }
-> > > > > >
-> > > > > >     if (host->version >= SDHCI_SPEC_300) {
-> > > > > > -           u16 clk, ctrl_2;
-> > > > > > +           u16 clk;
-> > > > > >
-> > > > > >             if (!host->preset_enabled) {
-> > > > > >                     sdhci_writeb(host, ctrl, SDHCI_HOST_CONTROL);
-> > > > > > @@ -3173,11 +3253,19 @@ static bool sdhci_request_done(struct sdhci_host *host)
-> > > > > >                     /* This is to force an update */
-> > > > > >                     host->ops->set_clock(host, host->clock);
-> > > > > >
-> > > > > > -           /* Spec says we should do both at the same time, but Ricoh
-> > > > > > -              controllers do not like that. */
-> > > > > > -           sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > > > > > -           sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > > > > > -
-> > > > > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > > > > +               host->mmc->flags & MMC_UHS2_INITIALIZED) {
-> > > > > > +                   if (sdhci_uhs2_ops.reset)
-> > > > > > +                           sdhci_uhs2_ops.reset(host,
-> > > > > > +                                                SDHCI_UHS2_SW_RESET_SD);
-> > > > > > +           } else {
-> > > > > > +                   /*
-> > > > > > +                    * Spec says we should do both at the same time, but
-> > > > > > +                    * Ricoh controllers do not like that.
-> > > > > > +                    */
-> > > > > > +                   sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > > > > > +                   sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > > > > > +           }
-> > > > >
-> > > > > Please look at using the existing ->reset() sdhci host op instead.
-> > > >
-> > > > Well, the second argument to those reset functions is a bit-wise value
-> > > > to different "reset" registers, SDHCI_SOFTWARE_RESET and SDHCI_UHS2_SW_RESET,
-> > > > respectively.
-> > > >
-> > > > This fact raises a couple of questions to me:
-> > > >
-> > > > 1) Does it make sense to merge two functionality into one, i.e.
-> > > >    sdhci_do_reset(), which is set to call ->reset hook?
-> > > >
-> > > >         -> Adrian
-> > > >
-> > > > 2) UHS2_SW_RESET_SD is done only at this place while there are many callsites
-> > > >    of reset(RESET_CMD|RESET_DATA) in sdhci.c.
-> > > >    Why does the current code work?
-> > > >
-> > > >    I found, in sdhci-pci-gli.c,
-> > > >    sdhci_gl9755_reset()
-> > > >         /* reset sd-tran on UHS2 mode if need to reset cmd/data */
-> > > >         if ((mask & SDHCI_RESET_CMD) | (mask & SDHCI_RESET_DATA))
-> > > >                 gl9755_uhs2_reset_sd_tran(host);
-> >
-> > (A)
-> >
-> > > >
-> > > >    Is this the trick to avoid the issue?
-> > > >    (It looks redundant in terms of the hack above in sdhci_request_done()
-> > > >    and even quite dirty to me. Moreover, no corresponding code for gl9750
-> > > >    and gl9763.)
-> > >
-> > > GL9755 currently does SD reset and UHS-II reset together.
-> >
-> > Do you mean that, in UHS-II operations, you need only the reset on
-> > SDHCI_UHS2_SW_RESET register?
-> 
-> No, GL9755 does SD reset and UHS-II reset together.
+Vincent Huang (3):
+  Input: synaptics-rmi4 - rename f30_data to gpio_data
+  HID: rmi - rename f30_data to gpio_data
+  Input: synaptics-rmi4 - add support for F3A
 
-Is this also true for all sdhci controller drivers in general?
-As I said, I didn't find any precise description about this
-in SD specification.
+ drivers/hid/hid-rmi.c           |   2 +-
+ drivers/input/mouse/synaptics.c |   2 +-
+ drivers/input/rmi4/Kconfig      |   8 ++
+ drivers/input/rmi4/Makefile     |   1 +
+ drivers/input/rmi4/rmi_bus.c    |   3 +
+ drivers/input/rmi4/rmi_driver.h |   1 +
+ drivers/input/rmi4/rmi_f30.c    |  14 +-
+ drivers/input/rmi4/rmi_f3a.c    | 241 ++++++++++++++++++++++++++++++++
+ include/linux/rmi.h             |  11 +-
+ 9 files changed, 269 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/input/rmi4/rmi_f3a.c
 
--Takahiro Akashi
+-- 
+2.25.1
 
-> > But the hunk above (A) does the UHS-II reset along with UHS-I reset.
-> >
-> > > There is no UHS-II interface on gl9750 and gl9763e.
-> > >
-> > > >
-> > > >         -> Ben
-> > > >
-> > > > 3) (More or less SD specification issue)
-> > > >    In UHS-II mode, do we have to call reset(SHCI_RESET_ALL) along with
-> > > >    reset(UHS2_SW_RESET_FULL)?
-> > > >    Under the current implementation, both will be called at the end.
-> > > >
-> > >
-> > > As I know, the UHS2_SW_RESET_FULL is only for UHS-II.
-> > > Can you list the lines that reset(SHCI_RESET_ALL) and
-> > > reset(UHS2_SW_RESET_FULL) are both called?
-> >
-> > I was not clear here. (The above is also another example.)
-> >
-> > Look at sdhci_remove_host() and shdci_uhs2_remote_host().
-> > If the argument 'dead' is 0, we will do both of the resets for UHS-II.
-> 
->  Do UHS2_SW_RESET_FULL in sdhci_uhs2_remove_host() and then do
-> SDHCI_RESET_ALL in sdhci_remove_host() is ok.
-> 
-> 
-> >
-> > -Takahiro Akashi
-> >
-> > > >         -> Adrian, Ben
-> > > >
-> > > > 4) (Not directly linked to UHS-II support)
-> > > >   In some places, we see the sequence:
-> > > >         sdhci_do_reset(host, SDHCI_RESET_CMD);
-> > > >         sdhci_do_reset(host, SDHCI_RESET_DATA);
-> > > >   while in other places,
-> > > >         sdhci_do_reset(host, SDHCI_RESET_CMD | SDHCI_RESET_DATA);
-> > > >
-> > > >   If the statement below is true,
-> > > > > > -           /* Spec says we should do both at the same time, but Ricoh
-> > > > > > -              controllers do not like that. */
-> > > >   the latter should be wrong.
-> > > >
-> > > >         -> Adrian
-> > > >
-> > > > -Takahiro Akashi
-> > > >
-> > > >
-> > > >
-> > > > > >             host->pending_reset = false;
-> > > > > >     }
-> > > > > >
-> > > > > > @@ -3532,6 +3620,13 @@ static irqreturn_t sdhci_irq(int irq, void *dev_id)
-> > > > > >                               SDHCI_INT_BUS_POWER);
-> > > > > >             sdhci_writel(host, mask, SDHCI_INT_STATUS);
-> > > > > >
-> > > > > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > > > > +               intmask & SDHCI_INT_ERROR &&
-> > > > > > +               host->mmc->flags & MMC_UHS2_SUPPORT) {
-> > > > > > +                   if (sdhci_uhs2_ops.irq)
-> > > > > > +                           sdhci_uhs2_ops.irq(host);
-> > > > > > +           }
-> > > > > > +
-> > > > >
-> > > > > Please look at using the existing ->irq() sdhci host op instead
-> > > > >
-> > > > > >             if (intmask & (SDHCI_INT_CARD_INSERT | SDHCI_INT_CARD_REMOVE)) {
-> > > > > >                     u32 present = sdhci_readl(host, SDHCI_PRESENT_STATE) &
-> > > > > >                                   SDHCI_CARD_PRESENT;
-> > > > > > @@ -4717,6 +4812,14 @@ int sdhci_setup_host(struct sdhci_host *host)
-> > > > > >             /* This may alter mmc->*_blk_* parameters */
-> > > > > >             sdhci_allocate_bounce_buffer(host);
-> > > > > >
-> > > > > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > > > > +       host->version >= SDHCI_SPEC_400 &&
-> > > > > > +       sdhci_uhs2_ops.add_host) {
-> > > > > > +           ret = sdhci_uhs2_ops.add_host(host, host->caps1);
-> > > > > > +           if (ret)
-> > > > > > +                   goto unreg;
-> > > > > > +   }
-> > > > > > +
-> > > > >
-> > > > > I think you should look at creating uhs2_add_host() instead
-> > > > >
-> > > > > >     return 0;
-> > > > > >
-> > > > > >  unreg:
-> > > > > > @@ -4738,6 +4841,8 @@ void sdhci_cleanup_host(struct sdhci_host *host)
-> > > > > >  {
-> > > > > >     struct mmc_host *mmc = host->mmc;
-> > > > > >
-> > > > > > +   /* FIXME: Do we have to do some cleanup for UHS2 here? */
-> > > > > > +
-> > > > > >     if (!IS_ERR(mmc->supply.vqmmc))
-> > > > > >             regulator_disable(mmc->supply.vqmmc);
-> > > > > >
-> > > > > > @@ -4766,6 +4871,14 @@ int __sdhci_add_host(struct sdhci_host *host)
-> > > > > >             mmc->cqe_ops = NULL;
-> > > > > >     }
-> > > > > >
-> > > > > > +   if ((mmc->caps & MMC_CAP_UHS2) && !host->v4_mode) {
-> > > > > > +           /* host doesn't want to enable UHS2 support */
-> > > > > > +           mmc->caps &= ~MMC_CAP_UHS2;
-> > > > > > +           mmc->flags &= ~MMC_UHS2_SUPPORT;
-> > > > > > +
-> > > > > > +           /* FIXME: Do we have to do some cleanup here? */
-> > > > > > +   }
-> > > > > > +
-> > > > > >     host->complete_wq = alloc_workqueue("sdhci", flags, 0);
-> > > > > >     if (!host->complete_wq)
-> > > > > >             return -ENOMEM;
-> > > > > > @@ -4812,6 +4925,9 @@ int __sdhci_add_host(struct sdhci_host *host)
-> > > > > >  unled:
-> > > > > >     sdhci_led_unregister(host);
-> > > > > >  unirq:
-> > > > > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > > > > +       sdhci_uhs2_ops.remove_host)
-> > > > > > +           sdhci_uhs2_ops.remove_host(host, 0);
-> > > > > >     sdhci_do_reset(host, SDHCI_RESET_ALL);
-> > > > > >     sdhci_writel(host, 0, SDHCI_INT_ENABLE);
-> > > > > >     sdhci_writel(host, 0, SDHCI_SIGNAL_ENABLE);
-> > > > > > @@ -4869,6 +4985,10 @@ void sdhci_remove_host(struct sdhci_host *host, int dead)
-> > > > > >
-> > > > > >     sdhci_led_unregister(host);
-> > > > > >
-> > > > > > +   if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
-> > > > > > +       sdhci_uhs2_ops.remove_host)
-> > > > > > +           sdhci_uhs2_ops.remove_host(host, dead);
-> > > > > > +
-> > > > >
-> > > > > I think you should look at creating uhs2_remove_host() instead
-> > > > >
-> > > > > >     if (!dead)
-> > > > > >             sdhci_do_reset(host, SDHCI_RESET_ALL);
-> > > > > >
-> > > > > >
-> > > > >
