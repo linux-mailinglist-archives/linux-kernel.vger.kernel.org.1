@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019DA2769FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2781276A09
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727151AbgIXHEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:04:50 -0400
-Received: from muru.com ([72.249.23.125]:45356 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727001AbgIXHEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:04:49 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 8E4708027;
-        Thu, 24 Sep 2020 07:04:49 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 10:04:43 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Trent Piepho <tpiepho@gmail.com>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Christina Quast <cquast@hanoverdisplays.com>
-Subject: Re: [PATCH] ARM: dts: document pinctrl-single,pins when
- #pinctrl-cells = 2
-Message-ID: <20200924070443.GF9471@atomide.com>
-References: <CA+7tXii8rwBexgAHeqYsvBywhWLmk-Hf5_VWUU5bQkBREeFcSA@mail.gmail.com>
- <20200917092004.GA2468349@x1>
- <CA+7tXihwHbcuxZ10jGZrQkET9+Dbs31SfsYDt_6XB+-JM99gqA@mail.gmail.com>
- <20200917103942.GA2477958@x1>
- <20200923065755.GR7101@atomide.com>
- <CA+7tXigeNhQQVuAu0toZrvBKvMYkDU-8EWTpJR29HLTAMgoOBA@mail.gmail.com>
- <20200924054324.GB9471@atomide.com>
- <CA+7tXigg+h3v61AVMaYRKa_ZwznehOUPEESMqXKsNDNCrFph3w@mail.gmail.com>
- <20200924060645.GD9471@atomide.com>
- <CA+7tXijkS8UMFk4t=DuKjZZNnThbRarPQvxwxjg-uJFTKJRsXA@mail.gmail.com>
+        id S1727183AbgIXHFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:05:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbgIXHFP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:05:15 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C6F2C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:05:15 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kLLJK-0004aN-Cs; Thu, 24 Sep 2020 09:04:58 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kLLJI-0002lM-JX; Thu, 24 Sep 2020 09:04:56 +0200
+Date:   Thu, 24 Sep 2020 09:04:56 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Qiang Zhao <qiang.zhao@nxp.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel@pengutronix.de
+Subject: Re: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for
+ nxp,pcf2127
+Message-ID: <20200924070456.rovgp6n5q25s53vc@pengutronix.de>
+References: <20200921054821.26071-1-qiang.zhao@nxp.com>
+ <20200923094449.GP9675@piout.net>
+ <DB8PR04MB67635518BE38EEF5292C8D0991390@DB8PR04MB6763.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lje45e5iguifutl5"
 Content-Disposition: inline
-In-Reply-To: <CA+7tXijkS8UMFk4t=DuKjZZNnThbRarPQvxwxjg-uJFTKJRsXA@mail.gmail.com>
+In-Reply-To: <DB8PR04MB67635518BE38EEF5292C8D0991390@DB8PR04MB6763.eurprd04.prod.outlook.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Trent Piepho <tpiepho@gmail.com> [200924 06:31]:
-> On Wed, Sep 23, 2020 at 11:06 PM Tony Lindgren <tony@atomide.com> wrote:
-> >
-> > * Trent Piepho <tpiepho@gmail.com> [200924 05:49]:
-> > > On Wed, Sep 23, 2020 at 10:43 PM Tony Lindgren <tony@atomide.com> wrote:
-> > > >
-> > > > * Trent Piepho <tpiepho@gmail.com> [200924 01:34]:
-> > > > > On Tue, Sep 22, 2020 at 11:57 PM Tony Lindgren <tony@atomide.com> wrote:
-> > > > > >
-> > > > > > Also FYI, folks have also complained for a long time that the pinctrl-single
-> > > > > > binding mixes mux and conf values while they should be handled separately.
-> > > > > >
-> > > > >
-> > > > > Instead of combining two fields when the dts is generated they are now
-> > > > > combined when the pinctrl-single driver reads the dts.  Other than
-> > > > > this detail, the result is the same.  The board dts source is the
-> > > > > same.  The value programmed into the pinctrl register is the same.
-> > > > > There is no mechanism currently that can alter that value in any way.
-> > > > >
-> > > > > What does combining them later allow that is not possible now?
-> > > >
-> > > > It now allows further driver changes to manage conf and mux separately :)
-> > >
-> > > The pinctrl-single driver?  How will that work with boards that are
-> > > not am335x and don't use conf and mux fields in the same manner as
-> > > am335x?
-> >
-> > For those cases we still have #pinctrl-cells = <1>.
-> 
-> If pincntrl-single is going to be am335x specific, then shouldn't it
-> be a different compatible string?
 
-Certainly different compatible strings can be used as needed.
-But pinctrl-single is not going to be am335x specific though :)
-We have quite a few SoCs using it:
+--lje45e5iguifutl5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-$ git grep pinctrl-single,function-mask arch/*/boot/dts/ | wc -l
-41
+Hello,
 
-> Are the driver changes something that can be not be done with the
-> pinconf-single properties?  They all include a mask.
+On Thu, Sep 24, 2020 at 03:20:33AM +0000, Qiang Zhao wrote:
+> On 21/09/2020 13:48:19+0800, Qiang Zhao wrote:
+>=20
+> > -----Original Message-----
+> > From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+> > Sent: 2020=E5=B9=B49=E6=9C=8823=E6=97=A5 17:45
+> > To: Qiang Zhao <qiang.zhao@nxp.com>
+> > Cc: Wim Van Sebroeck <wim@linux-watchdog.org>; Guenter Roeck
+> > <linux@roeck-us.net>; linux-watchdog@vger.kernel.org;
+> > a.zummo@towertech.it; robh+dt@kernel.org; linux-rtc@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Uwe Kleine-K=
+=C3=B6nig
+> > <u.kleine-koenig@pengutronix.de>
+> > Subject: Re: [Patch v2 1/3] dt-bindings: rtc: pcf2127: Add bindings for
+> > nxp,pcf2127
+> >=20
+> > Hi,
+> >=20
+> > You forgot to copy the watchdog maintainers, I think such a property sh=
+ould be
+> > discussed with them.
+> >=20
+> > Note that I'm still convinced this is not a complete solution, see:
+> > https://eur01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Flor=
+e.kern
+> > el.org%2Flinux-rtc%2F20200716181816.GF3428%40piout.net%2F&amp;data=3D
+> > 02%7C01%7Cqiang.zhao%40nxp.com%7Cb71f79a044b0493d6d4f08d85fa551c
+> > b%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C1%7C637364510931174
+> > 355&amp;sdata=3D%2BOxrzB8RIuxM9Let5slhfCVmMm6PMNoERDeHC9%2Fdxng
+> > %3D&amp;reserved=3D0
 
-Sure but in the long term we're better off with using #pinctrl-cells
-along the lines what we have for example for #interrupt-cells and
-#gpio-cells.
+haha
 
-Regards,
+> Yes, you are right, There is not a fundamental solution.
+> However it somewhat avoid this situation at least.
+>=20
+> And if without this issue,=20
+> is it correct to register a rtc device as watchdog no matter it is used a=
+s watchdog on the board?=20
+> Every time Linux are booted up, watchdog device should be configured to t=
+he right one manually.
+> So the patch are useful, even though it is not for the issue.
+>=20
+> What should we do to really resolve this issue?
 
-Tony
+I still think we need a kernel solution here. I would expect that most
+assembled pcf2127 chips are unable to act as a watchdog (i.e. don't have
+the RST output connected to something that resets the machine).
+
+So my favoured solution would be a positive property like:
+
+	has-watchdog;
+
+or something similar. In my eyes this is definitely something we want to
+specify in the device tree because it is a relevant hardware property.
+I consider it a bug to give a watchdog device to userspace that isn't
+functional.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--lje45e5iguifutl5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9sRRUACgkQwfwUeK3K
+7An6Rwf/fsctRYrSR7AiIff2827svhEuVNbZXRm5UlPsbaWaVFkvVIvmOc7gaBoJ
++RF3QzL4ljhdrcM6wYiCby37UgMWXi8NSom64TcqAsvlhL2I+3UNeEbexf82NZKf
+4D+LkH2CVQIOsD0VM6xaRsoBw6PcQ+5CXWw7+TKiVS+dl/Wx07Lh3gZLaStnKup8
+aSgPjC2lZLkq1uj9iXVKNpnqCO8SDdRH9kdIeUg53Bp3lWa4J6hGlvFOVXo1RV6d
+q6N4j+/7ykHrY2SQW8x1D3QGtAES7E+z8bQfkB6kNSOLKgZWj8q6lSW0m07zYXtU
+cR+lUMIwBeGEdQw7wudA/XZxJ3P8pA==
+=yeqQ
+-----END PGP SIGNATURE-----
+
+--lje45e5iguifutl5--
