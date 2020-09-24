@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F73276ADB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44248276AE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727153AbgIXHdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:33:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726896AbgIXHdd (ORCPT
+        id S1727160AbgIXHfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:35:42 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:41367 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726655AbgIXHfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:33:33 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5214BC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:33:33 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id 60so2301855otw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:33:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kiO+fgs6Ve5h4RCBGtQS8AkvVbCFKZKtQnQ6I4kNBkE=;
-        b=WbI0mMqCP0hE8walnGfwhKZDWdBAz1/5/o52hFGk7GMEIoEy32qVsIwxX+lixs3lNl
-         sayw1GABk7BUBphSajcXCMtyZp12zaOPiXNByZYLat2Amo2yQ/0+FNbt27xeP9Le9mCI
-         QCaRgTsFcrjmZxf4PR8gKIfXP8AxBgXGCpbHineljgGHevuCvhW6obYV0yMLM9CwZR3w
-         cuMnbfe7FEdYdZ/OfwH5p0wZUscENwDPXQ3hMaYOcbc8xUD0877qQgBJ5BPemCUeAR/h
-         LLy10fNH84dZioQT+xn1AKEjh7Pc9t+aJNL13VrvP+McPr1eWXDGtXniT9H4MzZKjA36
-         rpig==
+        Thu, 24 Sep 2020 03:35:41 -0400
+Received: by mail-oi1-f195.google.com with SMTP id x69so2691692oia.8;
+        Thu, 24 Sep 2020 00:35:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kiO+fgs6Ve5h4RCBGtQS8AkvVbCFKZKtQnQ6I4kNBkE=;
-        b=REK3hIufqRI+2eSrG79hSKNa5aqj2FEqkfQXPyM6uFVTpngPZgq4Br+cPa5HIeXKW5
-         rTFweKlkii6driWztaEc7MRCutv19bmzrYAEQmBg7SeGnub40O7nxLLBZEkecFQJYSe9
-         WPXK1aPQoEoxYIxDAjb66ID8ruj0RqodXhFIk4I5XP/uPmhppshNAmipMAxkGOAOIJqo
-         AmFiKHaxidFI5lPHjIO0wjqDGXZX/QSe3qTcHEVuRpnGvXEQeaWr13Dp/KXGTVZWipTO
-         wyqhQ17dkp2oTshtxAy8uLGl7R7KeuQruNaK2huTMYNYkxmWqd356yGqLieIzOPKwkRl
-         pRVg==
-X-Gm-Message-State: AOAM532HLaX3LGL8MeB4BYtT3dJA5EYwDo4WDlgWNGvj7yVmQoEjBMVh
-        7Hyr1rg6oDmLMj1WA6+EBOI2p+ELeHLzzWGWPbdqHw==
-X-Google-Smtp-Source: ABdhPJyhhLM+NVE/SSkz+8Z1J5JHAlIMZuwULdczWru3oqwHl0IiZf7KmK332/phJj26FSUgiC0IGvuYrza1lEpW0H0=
-X-Received: by 2002:a9d:7c7:: with SMTP id 65mr2307574oto.268.1600932812723;
- Thu, 24 Sep 2020 00:33:32 -0700 (PDT)
+        bh=Xl2EFGQPvuqoLJbUjzAYBTmBWNQ75rGGXOTTdtaKRjo=;
+        b=EtX+R1o8DrgxkFJoOqwHUOyCbkDffDjgUmKOZey98Kfn6JXqsG+JokTB1H15qokvWL
+         PUYTCSWkyv/3ozR5hgmYAgPuKrTqFYlu3vYk8DZB+JYPFPYRpG3YKwUKu80fEQovgJ78
+         IURn9aGSMc73WOEWRQNvISxFstposqv+U3IhZaHiSnWHXpQAe8XoEcAAleP5oHUvj3iT
+         ye0EjdKwiNilVmkovGYD6RVa5iRdmIUkESpUXqWnYaHZmEZxKnke3taUj1HHdzYY8Cg9
+         hhM+xNo1oJ48M74hir4+Taww17JKfYyWKMFUhIhvEGx0KFOtoce008cWAvArd5iC3bJL
+         2Bgg==
+X-Gm-Message-State: AOAM530dNWj985EwwVl0y8PXESFWpIQ3/9K7QL9cYkVgSqey7p1IupyK
+        aNJT4bALPv6+SFaoRoKkUgLYxoKKlnvbiZIhfwc=
+X-Google-Smtp-Source: ABdhPJzqmYNIURPJwfJmYo3J8MZendZ3Uzlq/W5kTwxcKmw67lfhsTT/uOphb9Idz+1OB+4cVXtKh+J0dCZQT1dRyzI=
+X-Received: by 2002:aca:3bc3:: with SMTP id i186mr1689092oia.148.1600932941074;
+ Thu, 24 Sep 2020 00:35:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200917081356.2083345-1-liushixin2@huawei.com>
-In-Reply-To: <20200917081356.2083345-1-liushixin2@huawei.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Thu, 24 Sep 2020 09:33:21 +0200
-Message-ID: <CAHUa44GmCC0-WLjGJJN8-mWyHdRxS84+2hi1vUG1zKx3=t09RQ@mail.gmail.com>
-Subject: Re: [PATCH -next] tee: optee: fix type warning of sizeof in pool_op_alloc()
-To:     Liu Shixin <liushixin2@huawei.com>
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CAMuHMdXyM1dUPJ7ZDAk6-cEjaG_bVBfsE=bqdpf7pA0ChdRLVw@mail.gmail.com>
+ <20200923113142.GC1473821@mwanda>
+In-Reply-To: <20200923113142.GC1473821@mwanda>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 24 Sep 2020 09:35:30 +0200
+Message-ID: <CAMuHMdVgZTLExon1JCDmAZaM+iB_yngTQvoXEuFYw7fRF39aGw@mail.gmail.com>
+Subject: Re: [PATCH v2] soc: renesas: rmobile-sysc: Fix some leaks in rmobile_init_pm_domains()
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Simon Horman <horms+renesas@verge.net.au>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 9:52 AM Liu Shixin <liushixin2@huawei.com> wrote:
+On Wed, Sep 23, 2020 at 1:31 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> This code needs to call iounmap() on one error path.
 >
-> sizeof() when applied to a pointer typed expression should gives the
-> size of the pointed data, even if the data is a pointer.
->
-> Signed-off-by: Liu Shixin <liushixin2@huawei.com>
+> Fixes: 2173fc7cb681 ("ARM: shmobile: R-Mobile: Add DT support for PM domains")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 > ---
->  drivers/tee/optee/shm_pool.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
-> index d767eebf30bd..9fdc667b5df0 100644
-> --- a/drivers/tee/optee/shm_pool.c
-> +++ b/drivers/tee/optee/shm_pool.c
-> @@ -31,7 +31,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
->                 unsigned int nr_pages = 1 << order, i;
->                 struct page **pages;
->
-> -               pages = kcalloc(nr_pages, sizeof(pages), GFP_KERNEL);
-> +               pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+> v2:  The v1 patch potentially led to a use after free.
 
-In this case we want an array of pointers as you also can see in the
-type of "pages".
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.11.
 
-Thanks,
-Jens
+Gr{oetje,eeting}s,
 
->                 if (!pages)
->                         return -ENOMEM;
->
-> --
-> 2.25.1
->
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
