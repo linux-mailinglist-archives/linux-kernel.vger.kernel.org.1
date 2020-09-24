@@ -2,195 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B272772B4
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 257BE27729A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728092AbgIXNkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727888AbgIXNkE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:40:04 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9AFBC0613CE;
-        Thu, 24 Sep 2020 06:40:03 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x22so1905431pfo.12;
-        Thu, 24 Sep 2020 06:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2yfOuAbI9UUg6VrnUSeHXgk4nmP275+ivWKv7Dcy/q8=;
-        b=PMmQQ6aOHZ+zTXVL+c9oRrZOqYrsOc2Cl/QsXZ6udk4Xk9kFPNuF6QdQu1S9eKKVMR
-         oLTKhLfMNejwvYa5JDZFy9W23DstgXeGbBDY9ewFKSW2KDftKh3cqNIunrSxBgLzQ9vm
-         g5zdpCrarDa4cg6nOaRoMdtLr78b0TfSuzuwcxTs1HuPR5c6GMBSRVDswl55Eylv3tN7
-         ivh0GMHmT6cPtXwbKNzueQdpCshHtCAUXkm52oEYUzqHlamEKt0BBm18wJW+/0MspIqJ
-         Q+j0H/wRF8TM3E9Zy7i40/pr1WcCqvwdckV0AF5aQHOUEDnQTsC06Oxh7i04xPqM/o8m
-         R76A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2yfOuAbI9UUg6VrnUSeHXgk4nmP275+ivWKv7Dcy/q8=;
-        b=jITGKAvZdLf9hhnObuPQkZs3ZztoKSlDDU5tYZ2o/IW1bWBfl2zQpARRjrb/Ah3Z/O
-         LNwlTmgSBwDrXDc8DhxGScdx/uDbVN7fbajrbM1xTxdLM6juU4mKLaULTEZ+XL5zlA4o
-         RsxwPH06faWJTUhn6845BXMlGMOiPAQQV8D2wqAlJoM3mmBsbPF/XfcTlPpT9UzXx/3x
-         8Qz7Yn6nPR97OI9e9Cqx87WqpbKqYb7+gQzuAXnsNYxu+LP/PnRS0poB/oo7DU+uo4H3
-         aXwmHX4vyQ9fmG2sx9M4zTZ/51Bxv8NGF8bT4fOvW8SEeFfyWQS2IudKl4oAcZNRBluU
-         9KDA==
-X-Gm-Message-State: AOAM530YCULJEM3r0jzZ2CDQSbrl1MPB6kVSkQMrz9skFyh25odUwV/h
-        KIotScQf7++oYSya9IitgEJe+ccFGRAG
-X-Google-Smtp-Source: ABdhPJyy7G4q8VNVUkrM4snz9Kk8FrXM/XKbi5D6uu4gFFKxLMUw8zdONA+NQ6GnVmTzabg2B5ALxA==
-X-Received: by 2002:a65:580c:: with SMTP id g12mr4170995pgr.257.1600954803400;
-        Thu, 24 Sep 2020 06:40:03 -0700 (PDT)
-Received: from localhost.localdomain (n11212042027.netvigator.com. [112.120.42.27])
-        by smtp.gmail.com with ESMTPSA id d7sm3171827pgg.1.2020.09.24.06.39.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 06:40:02 -0700 (PDT)
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] Prevent out-of-bounds access for built-in font data buffers
-Date:   Thu, 24 Sep 2020 09:38:22 -0400
-Message-Id: <cover.1600953813.git.yepeilin.cs@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <0000000000006b9e8d059952095e@google.com>
-References: <0000000000006b9e8d059952095e@google.com>
+        id S1728041AbgIXNix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:38:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52416 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727888AbgIXNix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 09:38:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600954731;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LWItYUbY3YNkAAw7wM9cL9xVXm/akhjF8HLSfu/R4BU=;
+        b=X1pTtNBesdsh7D2hQaOwWIEOBqg8QTEnYvOAQ3smjrbRJUoKs7CfUtKSRqqc13qTMgWBV+
+        hFkTnwECJAZ2fJ2+xPq20xt5biHb/KeHGVIj1brHiAdPSyaUtl9Qs9y9cq/IC5zksYtHKL
+        UIqlXzvXEYQndaOPPBqNcosdGoLKbfQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 51634AD07;
+        Thu, 24 Sep 2020 13:38:51 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 15:38:50 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     "Ahmed S. Darwish" <a.darwish@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Mark Salyzyn <salyzyn@android.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Changki Kim <changki.kim@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
+Message-ID: <20200924133850.GF29288@alley>
+References: <20200923135617.27149-1-pmladek@suse.com>
+ <20200923135617.27149-3-pmladek@suse.com>
+ <20200924042414.GA6039@lx-t490>
+ <20200924125259.GC29288@alley>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924125259.GC29288@alley>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+On Thu 2020-09-24 14:53:01, Petr Mladek wrote:
+> On Thu 2020-09-24 06:24:14, Ahmed S. Darwish wrote:
+> > On Wed, Sep 23, 2020 at 03:56:17PM +0200, Petr Mladek wrote:
+> > ...
+> > >
+> > > -static inline u32 printk_caller_id(void)
+> > > +static enum printk_caller_ctx get_printk_caller_ctx(void)
+> > > +{
+> > > +	if (in_nmi())
+> > > +		return printk_ctx_nmi;
+> > > +
+> > > +	if (in_irq())
+> > > +		return printk_ctx_hardirq;
+> > > +
+> > > +	if (in_softirq())
+> > > +		return printk_ctx_softirq;
+> > > +
+> > > +	return printk_ctx_task;
+> > > +}
+> > > +
+> > 
+> > in_softirq() here will be true for both softirq contexts *and*
+> > BH-disabled regions. Did you mean in_serving_softirq() instead?
+> 
+> Good question!
+> 
+> I am not sure if people would want to distinguish these two
+> situations.
+> 
+> Otherwise, I think that is_softirq() more close to the meaning of
+> in_irq(). They both describe a context where a new interrupt has
+> to wait until the handling gets enabled again.
 
-syzbot has reported [1] a global out-of-bounds read issue in
-fbcon_get_font(). A malicious user may resize `vc_font.height` to a large
-value in vt_ioctl(), causing fbcon_get_font() to overflow our built-in
-font data buffers, declared in lib/fonts/font_*.c:
+Grrrr, I wonder why I thought that in_irq() covered also the situation
+when IRQ was disabled. It was likely my wish because disabled
+interrupts are problem for printk() because the console might
+cause a softlockup.
 
-(e.g. lib/fonts/font_8x8.c)
-#define FONTDATAMAX 2048
+in_irq() actually behaves like in_serving_softirq().
 
-static const unsigned char fontdata_8x8[FONTDATAMAX] = {
+I am confused and puzzled now. I wonder what contexts are actually
+interesting for developers.  It goes back to the ideas from Sergey
+about preemption disabled, ...
 
-        /* 0 0x00 '^@' */
-        0x00, /* 00000000 */
-        0x00, /* 00000000 */
-        0x00, /* 00000000 */
-        0x00, /* 00000000 */
-        0x00, /* 00000000 */
-        0x00, /* 00000000 */
-        0x00, /* 00000000 */
-        0x00, /* 00000000 */
-        [...]
+/me feels shameful and is going to hide under a stone.
 
-In order to perform a reliable range check, fbcon_get_font() needs to know
-`FONTDATAMAX` for each built-in font under lib/fonts/. Unfortunately, we
-do not keep that information in our font descriptor,
-`struct console_font`:
-
-(include/uapi/linux/kd.h)
-struct console_font {
-	unsigned int width, height;	/* font size */
-	unsigned int charcount;
-	unsigned char *data;	/* font data with height fixed to 32 */
-};
-
-To make things worse, `struct console_font` is part of the UAPI, so we
-cannot add a new field to keep track of `FONTDATAMAX`.
-
-Fortunately, the framebuffer layer itself gives us a hint of how to
-resolve this issue without changing UAPI. When allocating a buffer for a
-user-provided font, fbcon_set_font() reserves four "extra words" at the
-beginning of the buffer:
-
-(drivers/video/fbdev/core/fbcon.c)
-	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
-        [...]
-	new_data += FONT_EXTRA_WORDS * sizeof(int);
-	FNTSIZE(new_data) = size;
-	FNTCHARCNT(new_data) = charcount;
-	REFCOUNT(new_data) = 0;	/* usage counter */
-        [...]
-	FNTSUM(new_data) = csum;
-
-Later, to get the size of a data buffer, the framebuffer layer simply
-calls FNTSIZE() on it:
-
-(drivers/video/fbdev/core/fbcon.h)
-	/* Font */
-	#define REFCOUNT(fd)	(((int *)(fd))[-1])
-	#define FNTSIZE(fd)	(((int *)(fd))[-2])
-	#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
-	#define FNTSUM(fd)	(((int *)(fd))[-4])
-	#define FONT_EXTRA_WORDS 4
-
-Currently, this is only done for user-provided fonts. Let us do the same
-thing for built-in fonts, prepend these "extra words" (including
-`FONTDATAMAX`) to their data buffers, so that other subsystems, like the
-framebuffer layer, can use these macros on all fonts, no matter built-in
-or user-provided. As an example, this series fixes the syzbot issue in
-fbcon_get_font():
-
-(drivers/video/fbdev/core/fbcon.c)
- 	if (font->width <= 8) {
- 		j = vc->vc_font.height;
-+		if (font->charcount * j > FNTSIZE(fontdata))
-+			return -EINVAL;
-	[...]
-
-Similarly, newport_con also use these macros. It only uses three of them:
-
-(drivers/video/console/newport_con.c)
-	/* borrowed from fbcon.c */
-	#define REFCOUNT(fd)	(((int *)(fd))[-1])
-	#define FNTSIZE(fd)	(((int *)(fd))[-2])
-	#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
-	#define FONT_EXTRA_WORDS 3
-
-To keep things simple, move all these macro definitions to <linux/font.h>,
-use four words instead of three, and initialize the fourth word in
-newport_set_font() properly.
-
-Many thanks to Greg Kroah-Hartman <gregkh@linuxfoundation.org>, who
-reviewed and improved this series!
-
-[1]: KASAN: global-out-of-bounds Read in fbcon_get_font
-     https://syzkaller.appspot.com/bug?id=08b8be45afea11888776f897895aef9ad1c3ecfd
-
-Peilin Ye (3):
-  fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
-  Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
-  fbcon: Fix global-out-of-bounds read in fbcon_get_font()
-
- drivers/video/console/newport_con.c     |  7 +------
- drivers/video/fbdev/core/fbcon.c        | 12 ++++++++++++
- drivers/video/fbdev/core/fbcon.h        |  7 -------
- drivers/video/fbdev/core/fbcon_rotate.c |  1 +
- drivers/video/fbdev/core/tileblit.c     |  1 +
- include/linux/font.h                    | 13 +++++++++++++
- lib/fonts/font_10x18.c                  |  9 ++++-----
- lib/fonts/font_6x10.c                   |  9 +++++----
- lib/fonts/font_6x11.c                   |  9 ++++-----
- lib/fonts/font_7x14.c                   |  9 ++++-----
- lib/fonts/font_8x16.c                   |  9 ++++-----
- lib/fonts/font_8x8.c                    |  9 ++++-----
- lib/fonts/font_acorn_8x8.c              |  9 ++++++---
- lib/fonts/font_mini_4x6.c               |  8 ++++----
- lib/fonts/font_pearl_8x8.c              |  9 ++++-----
- lib/fonts/font_sun12x22.c               |  9 ++++-----
- lib/fonts/font_sun8x16.c                |  7 ++++---
- lib/fonts/font_ter16x32.c               |  9 ++++-----
- 18 files changed, 79 insertions(+), 67 deletions(-)
-
--- 
-2.25.1
-
+Best Regards,
+Petr
