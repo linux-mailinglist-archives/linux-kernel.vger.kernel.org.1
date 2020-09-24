@@ -2,203 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A7A276A1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B58F4276A22
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgIXHLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727014AbgIXHLD (ORCPT
+        id S1727105AbgIXHLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:11:16 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:55128 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727014AbgIXHLP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:11:03 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95075C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:11:03 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id u4so1196732plr.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:11:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mqsr49yCo2iSjf83d4dKwy3/hReLF+9ZnbvUsAtVECg=;
-        b=fHf6+8JTZGz4OZkc5RmqWDmjG2fNb0kA8IZ9XG1XzWZ1L9jU/DFRoaUaQL3dguCzW1
-         KXX48DwoGZNKKYWmcgQIrTNZc6mbItX/wyDrJs5ia9YGU+pRfubkzAvJYqXf+oFYv3h7
-         Gdrct237K6JumwHGC7pwM7AuAmOiTK1HTe46A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mqsr49yCo2iSjf83d4dKwy3/hReLF+9ZnbvUsAtVECg=;
-        b=k4ZghLrcXgv8/rzHfyyzqFuWf4EAhdLn3xOW7liQ6eBzBfPFQ3GOnOci8lI9JkCHnM
-         aiPPGU11Pxr4eNCEbPenTehS79N9yaINOv0B169XUXoOaLmDQLZF8vjkDhtVGPyWAJ4Z
-         af0RnF2GM0quF/m49ybWY3Hk70nvev4eO0BGMvCZPLD2v+nZhk/i2eSZWV+UIfB5izrJ
-         BGZd4OCCHoy+8xzJchMB8eTCHYNsoUK3SWA4Wc/MKPJp4vVkfTVGl/25vQpTkogdpjfg
-         WZsCGFyWvtobyY68FvxqZdgy/JuK/rjoh8YL0JZSsasakFVqyUHJMWMwSFe/YTtrAJ23
-         SffA==
-X-Gm-Message-State: AOAM533Ls4MrhUbPdxZGgjsANjn8Fi8dswVWHBK8mxzOqOnSB+uv1DV/
-        lriscIa4QJNVdGdxcuP8SjNZqQ==
-X-Google-Smtp-Source: ABdhPJzv4SGxNbsgD8BkFEnfQt1qQLIfqoihgRZX9/LQECsfJCm5UcKJwzmliMUvjnnGLYmBo5PfBw==
-X-Received: by 2002:a17:902:ff07:b029:d1:e5fa:aa1d with SMTP id f7-20020a170902ff07b02900d1e5faaa1dmr3259173plj.84.1600931463013;
-        Thu, 24 Sep 2020 00:11:03 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id gn24sm1360225pjb.8.2020.09.24.00.11.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 00:11:02 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 00:11:01 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] seccomp: Introduce SECCOMP_PIN_ARCHITECTURE
-Message-ID: <202009232353.FD011DAA0@keescook>
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-2-keescook@chromium.org>
- <CAG48ez17XK2Co+1LbUWTc4x_W7nza=TObNh2Kpz6P+ba3OKPsw@mail.gmail.com>
+        Thu, 24 Sep 2020 03:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1600931474; x=1603523474;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=OMthT7YUyFnK+E3+Gi8XWgeSHho8uppt/CoxlwcYZxA=;
+        b=CYXmttNUWPi/coMUHaDLYOJfNlI2v9DmehSyge3T8euQVPHCMQW4w/dcoOR+Fcad
+        uAyHtxQuIME+Npmv7D8g/GzdyK9QjbqQN6FIpFOSxpET5AY6LRW1TCxleGX9w88H
+        FhdOaT84sDScJ5JxwPbG2lk4foU5cIstlH/yC6oeirw=;
+X-AuditID: c39127d2-253ff70000001c25-ef-5f6c469251b7
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 00.80.07205.2964C6F5; Thu, 24 Sep 2020 09:11:14 +0200 (CEST)
+Received: from [172.16.23.108] ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2020092409111413-487872 ;
+          Thu, 24 Sep 2020 09:11:14 +0200 
+Subject: Re: [EXT] Re: [PATCH] net: fec: Keep device numbering consistent with
+ datasheet
+To:     Andy Duan <fugang.duan@nxp.com>,
+        David Miller <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "c.hemp@phytec.de" <C.Hemp@phytec.de>
+References: <20200923142528.303730-1-s.riedmueller@phytec.de>
+ <20200923.133147.842604978902817779.davem@davemloft.net>
+ <AM8PR04MB73153F8A9E3A4DB0F7AA8003FF390@AM8PR04MB7315.eurprd04.prod.outlook.com>
+From:   =?UTF-8?Q?Stefan_Riedm=c3=bcller?= <s.riedmueller@phytec.de>
+Message-ID: <6a4e3e6e-4371-f0ad-4150-4fffc0739901@phytec.de>
+Date:   Thu, 24 Sep 2020 09:11:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez17XK2Co+1LbUWTc4x_W7nza=TObNh2Kpz6P+ba3OKPsw@mail.gmail.com>
+In-Reply-To: <AM8PR04MB73153F8A9E3A4DB0F7AA8003FF390@AM8PR04MB7315.eurprd04.prod.outlook.com>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 24.09.2020 09:11:14,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 24.09.2020 09:11:14,
+        Serialize complete at 24.09.2020 09:11:14
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrELMWRmVeSWpSXmKPExsWyRoCBS3eSW068wb2rQhbn7x5itphzvoXF
+        YuXzu+wWF7b1sVpsenyN1eLyrjlsFscWiDmwe2xZeZPJY9OqTjaPzUvqPXbu+MzksfHdDiaP
+        z5vkAtiiuGxSUnMyy1KL9O0SuDKOT9/BWnCNr+Jzv28D4wXuLkZODgkBE4kfD34wdjFycQgJ
+        bGOUaPizkwnCOcMo0bpxBwtIlbBAlMTiE5OYQWwRgVSJlyvWgsWZBfqZJNb0qUM0nGaUmH37
+        HTtIgk3ASWLx+Q42EJtXwEZiyvcnYDaLgKpEw8I/QIM4OEQFIiV27rCEKBGUODnzCdhMToFY
+        iWldH8AukhBoZJJobd/ICHGqkMTpxWeZIRbLS2x/OwfKNpOYt/khlC0ucevJfKYJjEKzkMyd
+        haRlFpKWWUhaFjCyrGIUys1Mzk4tyszWK8ioLElN1ktJ3cQIjJfDE9Uv7WDsm+NxiJGJg/EQ
+        owQHs5II7w217Hgh3pTEyqrUovz4otKc1OJDjNIcLErivBt4S8KEBNITS1KzU1MLUotgskwc
+        nFINjIvE7np8tbjgeOHIqYdahzm3zLV0KXdRdspY5jszyUY5rfjK5ocTahM8DmvP5uGd5/Xb
+        bJuAb9jSvYYdhxNXBU5r2pJ5qu3DtmDhQIMv3/yPdy3/uWbxV4UOef7ll65dOvp+/2+dZ6WM
+        PgauE4/vO5z1tliz78DmD+ylfKHmVzoCT/69nvb70kElluKMREMt5qLiRAC1AbhWhQIAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:41:36AM +0200, Jann Horn wrote:
-> On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> > For systems that provide multiple syscall maps based on audit
-> > architectures (e.g. AUDIT_ARCH_X86_64 and AUDIT_ARCH_I386 via
-> > CONFIG_COMPAT) or via syscall masks (e.g. x86_x32), allow a fast way
-> > to pin the process to a specific syscall table, instead of needing
-> > to generate all filters with an architecture check as the first filter
-> > action.
-> >
-> > This creates the internal representation that seccomp itself can use
-> > (which is separate from the filters, which need to stay runtime
-> > agnostic). Additionally paves the way for constant-action bitmaps.
-> 
-> I don't really see the point in providing this UAPI - the syscall
-> number checking will probably have much more performance cost than the
-> architecture number check, and it's not like this lets us avoid the
-> check, we're just moving it over into C code.
+Hi Andy, David and Andrew,
 
-It's desirable for libseccomp and is a request from systemd (which is,
-at this point, the largest seccomp user I know of), as they have no way
-to force an arch without doing it in filters, which doesn't help much
-with reducing filter runtime.
+first of all, thanks for your review. I really appreciate it!
 
+On 24.09.20 08:36, Andy Duan wrote:
+> From: David Miller <davem@davemloft.net> Sent: Thursday, September 24, 2020 4:32 AM
+>> From: Stefan Riedmueller <s.riedmueller@phytec.de>
+>> Date: Wed, 23 Sep 2020 16:25:28 +0200
+>>
+>>> From: Christian Hemp <c.hemp@phytec.de>
+>>>
+>>> Make use of device tree alias for device enumeration to keep the
+>>> device order consistent with the naming in the datasheet.
+>>>
+>>> Otherwise for the i.MX 6UL/ULL the ENET1 interface is enumerated as
+>>> eth1 and ENET2 as eth0.
+>>>
+>>> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+>>> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+>>
+>> Device naming and ordering for networking devices was never, ever,
+>> guaranteed.
+>>
+>> Use udev or similar.
+>>
+>>> @@ -3691,6 +3692,10 @@ fec_probe(struct platform_device *pdev)
+>>>
+>>>        ndev->max_mtu = PKT_MAXBUF_SIZE - ETH_HLEN - ETH_FCS_LEN;
+>>>
+>>> +     eth_id = of_alias_get_id(pdev->dev.of_node, "ethernet");
+>>> +     if (eth_id >= 0)
+>>> +             sprintf(ndev->name, "eth%d", eth_id);
+>>
+>> You can't ever just write into ndev->name, what if another networking device is
+>> already using that name?
+>>
+>> This change is incorrect on many levels.
 > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> >  include/linux/seccomp.h                       |  9 +++
-> >  include/uapi/linux/seccomp.h                  |  1 +
-> >  kernel/seccomp.c                              | 79 ++++++++++++++++++-
-> >  tools/testing/selftests/seccomp/seccomp_bpf.c | 33 ++++++++
-> >  4 files changed, 120 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/include/linux/seccomp.h b/include/linux/seccomp.h
-> > index 02aef2844c38..0be20bc81ea9 100644
-> > --- a/include/linux/seccomp.h
-> > +++ b/include/linux/seccomp.h
-> > @@ -20,12 +20,18 @@
-> >  #include <linux/atomic.h>
-> >  #include <asm/seccomp.h>
-> >
-> > +#define SECCOMP_ARCH_IS_NATIVE         1
-> > +#define SECCOMP_ARCH_IS_COMPAT         2
+> David is correct.
 > 
-> FYI, mips has three different possible "arch" values (per kernel build
-> config; the __AUDIT_ARCH_LE flag can also be set, but that's fixed
-> based on the config):
-> 
->  - AUDIT_ARCH_MIPS
->  - AUDIT_ARCH_MIPS | __AUDIT_ARCH_64BIT
->  - AUDIT_ARCH_MIPS | __AUDIT_ARCH_64BIT | __AUDIT_ARCH_CONVENTION_MIPS64_N32
-> 
-> But I guess we can deal with that once someone wants to actually add
-> support for this on mips.
+> For example, imx8DXL has ethernet0 is EQOS TSN, ethernet1 is FEC.
+> EQOS TSN is andother driver and is registered early, the dev->name is eth0.
+> So the patch will bring conflict in such case.
 
-Yup!
+I was not aware of that conflict, but now that you mention it it makes total 
+sense.
+
+I wanted to make life a little easier for myself but underestimated the 
+global context. I will try to find a solution with udev or something similar.
+
+So please drop this patch and sorry for the noise.
+
+Stefan
 
 > 
-> > +#define SECCOMP_ARCH_IS_MULTIPLEX      3
+> Andy
 > 
-> Why should X32 be handled specially? If the seccomp filter allows
-
-Because it's a masked lookup into a separate table; the syscalls don't
-map to x86_64's table; so for seccomp to correctly figure out which
-bitmap to use, it has to do this decoding.
-
-> specific syscalls (as it should), we don't have to care about X32.
-> Only in weird cases where the seccomp filter wants to deny specific
-> syscalls (a horrible idea), X32 is a concern, and in such cases, the
-> userspace code can generate a single conditional jump to deal with it.
-
-I feel like I must not understand what you mean. The x32-aware seccomp
-filters are using syscall tests with 0x40000000 included in the values.
-So seccomp's bitmap cannot handle this because it must know how many
-syscalls to include in a linearly-allocated bitmap.
-
-> And when seccomp is used properly to allow specific syscalls, the
-> kernel will just waste time uselessly checking this X32 stuff.
-
-It not measurable in my tests -- seccomp_data::nr is rather hot in the
-cache. ;) That said, if it's unwanted, then CONFIG_X86_X32=n is the way
-to go.
-
-> [...]
-> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> [...]
-> > +static long seccomp_pin_architecture(void)
-> > +{
-> > +#ifdef SECCOMP_ARCH
-> > +       struct task_struct *task = current;
-> > +
-> > +       u8 arch = seccomp_get_arch(syscall_get_arch(task),
-> > +                                  syscall_get_nr(task, task_pt_regs(task)));
-> > +
-> > +       /* How did you even get here? */
-> 
-> Via a racing TSYNC, that's how.
-
-Yes; thanks. This will need to take &current->sighand->siglock.
-
-> 
-> > +       if (task->seccomp.arch && task->seccomp.arch != arch)
-> > +               return -EBUSY;
-> > +
-> > +       task->seccomp.arch = arch;
-> > +#endif
-> > +       return 0;
-> > +}
-> 
-> Why does this return 0 if SECCOMP_ARCH is not defined? That suggests
-> to userspace that we have successfully pinned the ABI, even though
-> we're actually unable to do so.
-
-Yup; thanks for the catch. This is a logical leftover from the RFC. This
-should be, I think:
-
-+       task->seccomp.arch = arch;
-+       return 0;
-+#else
-+	return -EINVAL;
-+#endif
-
-
--- 
-Kees Cook
