@@ -2,86 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949A4277C77
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87AA277C88
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726785AbgIXXwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 19:52:15 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:34427 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726738AbgIXXwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 19:52:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1600991534; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=L7mXJDBu867OSTokvQfz0S7+yYLGG9rv1tZ7NHvcvOg=; b=T21FzCNn6+xK/fcMKFhoayTAyJOh3DIPZml1LDCphtao/yNwgHxCFIQcWBnyVOlf8SNYpR8T
- gouHG9XUmF+OCr0gllzdNe8yDvNwzqLUn0xmoXfn048bS2StcO196L4pvRxJAv2Uq3UPRKl9
- QoLnBziVVRu50dZl17QDdzhBW/w=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f6d310dd106659f8209ee59 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 24 Sep 2020 23:51:41
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 049E7C43385; Thu, 24 Sep 2020 23:51:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from sidgup-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B3602C433FE;
-        Thu, 24 Sep 2020 23:51:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B3602C433FE
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, ohad@wizery.com,
-        linux-remoteproc@vger.kernel.org
-Cc:     Siddharth Gupta <sidgup@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, rishabhb@codeaurora.org,
-        linux-doc@vger.kernel.org, Gurbir Arora <gurbaror@codeaurora.org>
-Subject: [PATCH v5 3/3] remoteproc: qcom: Add minidump id for sm8150 modem remoteproc
-Date:   Thu, 24 Sep 2020 16:51:28 -0700
-Message-Id: <1600991488-17877-4-git-send-email-sidgup@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1600991488-17877-1-git-send-email-sidgup@codeaurora.org>
-References: <1600991488-17877-1-git-send-email-sidgup@codeaurora.org>
+        id S1726736AbgIXX4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 19:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726676AbgIXX4y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 19:56:54 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE03FC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:56:54 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mm21so825454pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 16:56:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PEQHQdRyQ9xsSCdQzKyvMmoiCwe5AhDytk6haiQYAYA=;
+        b=ZoSBF1dT+8ZzaoiNAlcF2KrzB+hxJVDnGMsShZQ+860GdXPO2wmj7dDRwbYZeZ6FP0
+         tzTDEEpd16UQ9NlRiaEe6R1ZIMkEjYQrDuWy5groU3A3GHraaAl994ENGTGfOqf1E+be
+         7Fd1TTa/XVDOW8VwnCn8keFubI4lgYN/gRBv4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PEQHQdRyQ9xsSCdQzKyvMmoiCwe5AhDytk6haiQYAYA=;
+        b=eAfSlxFw+WtAfMEir3f4CWkJrh5yJPCn375UhOdiPgCYL87ECsYiDUyHuJfRRtydt0
+         aVPtDQLhmfTxe3srLo8xe21Wd/rIn7m3kZwIZbb11BX06G3GfZhaUcXR4o0BvOzFhLPa
+         Tna2L3dt22AWTg1FXpuNnhd6LHR9MRSMhdxewf5WrKPvDzpfd1cZdABzADDuy7sktN1I
+         0tDjNmnUdV57hqveEp8n+EGmlByUX2Gmhg2XjHWOXTl5hT70vha2dA+zH7hv3ETKMpSy
+         L3fp3EpTUXObAIlUV6rU83DeFoZVavJTMoe+hX8npEGfuIxqToNycAAZV66ZQllKMvsg
+         4wBQ==
+X-Gm-Message-State: AOAM533pCCgL92S5aMDWD7NSaXgziri7LW8wGc6TdDvUhczJE1y90Usc
+        nkc5nPz9yv4mNHr38vpPkPDqoQ==
+X-Google-Smtp-Source: ABdhPJzyfryL0iIu0PMOcXe+glEbhoRCWk4I6igRlfPAIK3CdtHgMQxMMQcPAkl7466Tlrc0Ju8TcA==
+X-Received: by 2002:a17:90a:db56:: with SMTP id u22mr95780pjx.85.1600991814140;
+        Thu, 24 Sep 2020 16:56:54 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d25sm418889pgl.23.2020.09.24.16.56.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 16:56:53 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 16:56:52 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     containers@lists.linux-foundation.org,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v2 seccomp 6/6] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202009241647.2239747F0@keescook>
+References: <cover.1600951211.git.yifeifz2@illinois.edu>
+ <b11ebe533838af7829a5e7381a7914bca27cb621.1600951211.git.yifeifz2@illinois.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b11ebe533838af7829a5e7381a7914bca27cb621.1600951211.git.yifeifz2@illinois.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add minidump id for modem in sm8150 chipset.
+On Thu, Sep 24, 2020 at 07:44:21AM -0500, YiFei Zhu wrote:
+> From: YiFei Zhu <yifeifz2@illinois.edu>
+> 
+> Currently the kernel does not provide an infrastructure to translate
+> architecture numbers to a human-readable name. Translating syscall
+> numbers to syscall names is possible through FTRACE_SYSCALL
+> infrastructure but it does not provide support for compat syscalls.
+> 
+> This will create a file for each PID as /proc/pid/seccomp_cache.
+> The file will be empty when no seccomp filters are loaded, or be
+> in the format of:
+> <hex arch number> <decimal syscall number> <ALLOW | FILTER>
+> where ALLOW means the cache is guaranteed to allow the syscall,
+> and filter means the cache will pass the syscall to the BPF filter.
+> 
+> For the docker default profile on x86_64 it looks like:
+> c000003e 0 ALLOW
+> c000003e 1 ALLOW
+> c000003e 2 ALLOW
+> c000003e 3 ALLOW
+> [...]
+> c000003e 132 ALLOW
+> c000003e 133 ALLOW
+> c000003e 134 FILTER
+> c000003e 135 FILTER
+> c000003e 136 FILTER
+> c000003e 137 ALLOW
+> c000003e 138 ALLOW
+> c000003e 139 FILTER
+> c000003e 140 ALLOW
+> c000003e 141 ALLOW
+> [...]
+> 
+> This file is guarded by CONFIG_PROC_SECCOMP_CACHE with a default
+> of N because I think certain users of seecomp might not want the
+> application to know which syscalls are definitely usable.
+> 
+> I'm not sure if adding all the "human readable names" is worthwhile,
+> considering it can be easily done in userspace.
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Signed-off-by: Gurbir Arora <gurbaror@codeaurora.org>
-Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
----
- drivers/remoteproc/qcom_q6v5_pas.c | 1 +
- 1 file changed, 1 insertion(+)
+The question of permissions is my central concern here: who should see
+this? Some contained processes have been intentionally blocked from
+self-introspection so even the "standard" high bar of "ptrace attach
+allowed?" can't always be sufficient.
 
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index 752c862..26958e1 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -709,6 +709,7 @@ static const struct adsp_data mpss_resource_init = {
- 	.crash_reason_smem = 421,
- 	.firmware_name = "modem.mdt",
- 	.pas_id = 4,
-+	.minidump_id = 3,
- 	.has_aggre2_clk = false,
- 	.auto_boot = false,
- 	.active_pd_names = (char*[]){
+My compromise about filter visibility in the past was saying that
+CAP_SYS_ADMIN was required (see seccomp_get_filter()). I'm nervous to
+weaken this. (There is some work that hasn't been sent upstream yet that
+is looking to expose the filter _contents_ via /proc that has been
+nervous too.)
+
+Now full contents vs "allow"/"filter" are certainly different things,
+but I don't feel like I've got enough evidence to show that this
+introspection would help debugging enough to justify the partially
+imagined safety of not exposing it to potential attackers.
+
+I suspect it _is_ the right thing to do (just look at my own RFC's
+"debug" patch), but I'd like this to be well justified in the commit
+log.
+
+And yes, while it does hide behind a CONFIG, I'd still want it justified,
+especially since distros have a tendency to just turn everything on
+anyway. ;)
+
+> +	for (arch = 0; arch < ARRAY_SIZE(syscall_arches); arch++) {
+> +		for (nr = 0; nr < NR_syscalls; nr++) {
+> +			bool cached = test_bit(nr, f->cache.syscall_ok[arch]);
+> +			char *status = cached ? "ALLOW" : "FILTER";
+> +
+> +			seq_printf(m, "%08x %d %s\n", syscall_arches[arch],
+> +				   nr, status
+> +			);
+> +		}
+> +	}
+
+But behavior-wise, yeah, I like it; I'm fine with human-readable and
+full AUDIT_ARCH values. (Though, as devil's advocate again, to repeat
+Jann's own words back: do we want to add this only to have a new UAPI to
+support going forward?)
+
 -- 
-Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Kees Cook
