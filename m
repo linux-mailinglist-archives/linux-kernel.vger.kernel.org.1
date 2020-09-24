@@ -2,72 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 413A4276C4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF30276C50
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbgIXIqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:46:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53354 "EHLO mail.kernel.org"
+        id S1727300AbgIXIs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:48:56 -0400
+Received: from mga09.intel.com ([134.134.136.24]:55811 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726387AbgIXIqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:46:30 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CCEA23600;
-        Thu, 24 Sep 2020 08:46:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600937190;
-        bh=ecsj6lH3Ts3LcLamN9E6ndiUHOHtod9v0zk5bSVqHq0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hMlx3apBD1Gu5WVoY/Bwik8j7xQwRFFxV5rBMnLWkhdG2lwKF8sD/H6lff3Bj2v5k
-         bku+rQJ3Y0dkDkzX98EzRXL3Lenz+FKXionGGpmdCAOcY9qV/zQaUiBKEcQwt3es8c
-         3VWss38chUq4bqzhKxKXUqoZ7tfdZEsdrtkfBuG0=
-Received: by pali.im (Postfix)
-        id 80DC68A3; Thu, 24 Sep 2020 10:46:27 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: aardvark: Update comment about disabling link training
-Date:   Thu, 24 Sep 2020 10:46:18 +0200
-Message-Id: <20200924084618.12442-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1726710AbgIXIsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:48:55 -0400
+IronPort-SDR: 6o+mOtAf8+B4S+dj9O/KzqPWDrpRsUT3uppIeTcfKSMByGo+H4VJC3e/JQMrNLMggyCsr8KQ9x
+ f4gRvf8Hjzfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="162049882"
+X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
+   d="scan'208";a="162049882"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 01:48:54 -0700
+IronPort-SDR: MCNCzghyUlxZznh5lzzkEFFO82hGpdc27QO1MhFlLcS/c0wTg3vGf3p28dBfSdK7uizmSTiMRN
+ VX/hK0JNiTCA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
+   d="scan'208";a="291963611"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga008.fm.intel.com with ESMTP; 24 Sep 2020 01:48:50 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     miquel.raynal@bootlin.com, linux-kernel@vger.kernel.org
+Cc:     linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com,
+        boris.brezillon@collabora.com, christophe.kerello@st.com,
+        piotrs@cadence.com, robert.jarzmik@free.fr,
+        brendanhiggins@google.com, devicetree@vger.kernel.org,
+        tglx@linutronix.de, hauke.mehrtens@intel.com, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, arnd@arndb.de,
+        andriy.shevchenko@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com,
+        Ramuthevar Vadivel Murugan 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [PATCH v14 1/2] dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+Date:   Thu, 24 Sep 2020 16:48:41 +0800
+Message-Id: <20200924084842.41741-2-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20200924084842.41741-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20200924084842.41741-1-vadivel.muruganx.ramuthevar@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not HW bug or workaround for some cards but it is requirement by PCI
-Express spec. After fundamental reset is needed 100ms delay prior enabling
-link training. So update comment in code to reflect this requirement.
+From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
+Add YAML file for dt-bindings to support NAND Flash Controller
+on Intel's Lightning Mountain SoC.
+
+Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- drivers/pci/controller/pci-aardvark.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    | 99 ++++++++++++++++++++++
+ 1 file changed, 99 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
 
-diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-index 50ab6d7519ae..19b9b79226e5 100644
---- a/drivers/pci/controller/pci-aardvark.c
-+++ b/drivers/pci/controller/pci-aardvark.c
-@@ -259,7 +259,12 @@ static void advk_pcie_issue_perst(struct advk_pcie *pcie)
- 	if (!pcie->reset_gpio)
- 		return;
- 
--	/* PERST does not work for some cards when link training is enabled */
-+	/*
-+	 * As required by PCI Express spec a delay for at least 100ms after
-+	 * de-asserting PERST# signal is needed before link training is enabled.
-+	 * So ensure that link training is disabled prior de-asserting PERST#
-+	 * signal to fulfill that PCI Express spec requirement.
-+	 */
- 	reg = advk_readl(pcie, PCIE_CORE_CTRL0_REG);
- 	reg &= ~LINK_TRAINING_EN;
- 	advk_writel(pcie, reg, PCIE_CORE_CTRL0_REG);
+diff --git a/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+new file mode 100644
+index 000000000000..313daec4d783
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+@@ -0,0 +1,99 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/intel,lgm-nand.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Intel LGM SoC NAND Controller Device Tree Bindings
++
++allOf:
++  - $ref: "nand-controller.yaml"
++
++maintainers:
++  - Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
++
++properties:
++  compatible:
++    const: intel,lgm-nand
++
++  reg:
++    maxItems: 6
++
++  reg-names:
++    items:
++       - const: ebunand
++       - const: hsnand
++       - const: nand_cs0
++       - const: nand_cs1
++       - const: addr_sel0
++       - const: addr_sel1
++
++  clocks:
++    maxItems: 1
++
++  dmas:
++    maxItems: 2
++
++  dma-names:
++    items:
++      - const: tx
++      - const: rx
++
++  "#address-cells":
++    const: 1
++
++  "#size-cells":
++    const: 0
++
++patternProperties:
++  "^nand@[a-f0-9]+$":
++    type: object
++    properties:
++      reg:
++        minimum: 0
++        maximum: 7
++
++      nand-ecc-mode: true
++
++      nand-ecc-algo:
++        const: hw
++
++    additionalProperties: false
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - clocks
++  - dmas
++  - dma-names
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    nand-controller@e0f00000 {
++      compatible = "intel,lgm-nand";
++      reg = <0xe0f00000 0x100>,
++            <0xe1000000 0x300>,
++            <0xe1400000 0x8000>,
++            <0xe1c00000 0x1000>,
++            <0x17400000 0x4>,
++            <0x17c00000 0x4>;
++      reg-names = "ebunand", "hsnand", "nand_cs0", "nand_cs1",
++        "addr_sel0", "addr_sel1";
++      clocks = <&cgu0 125>;
++      dmas = <&dma0 8>, <&dma0 9>;
++      dma-names = "tx", "rx";
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      nand@0 {
++        reg = <0>;
++        nand-ecc-mode = "hw";
++      };
++    };
++
++...
 -- 
-2.20.1
+2.11.0
 
