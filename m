@@ -2,76 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8401B277117
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD5B427711C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727781AbgIXMdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:33:52 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38261 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727570AbgIXMdv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:33:51 -0400
-X-UUID: c6d82b8a50b644eab02e850af9bf1686-20200924
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3xhvL/jxHoFM4lCpaJFVgA5szl9rK3NZUTpqOY0oS0A=;
-        b=YgF878XPHogI4aTUl5UXQky6mdiiEW+RWb6ulCfUOWiPS5hWL6B3fqUN5C0ngx5Nlx2pbx55PDn1qNdeFUCuublJ5JySfEtLL3ftvy2zXc/0j/oI4H5haOX1q70dbsv9rbe6xcB6I2GLmW6hC8qVP6sB5tms4ariWW/MlE6q86A=;
-X-UUID: c6d82b8a50b644eab02e850af9bf1686-20200924
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1621613781; Thu, 24 Sep 2020 20:33:47 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 24 Sep 2020 20:33:42 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 24 Sep 2020 20:33:43 +0800
-Message-ID: <1600950825.19591.2.camel@mtksdccf07>
-Subject: Re: [PATCH v4 0/6] kasan: add workqueue and timer stack for generic
- KASAN
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Alexander Potapenko <glider@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        "Andrey Konovalov" <andreyknvl@google.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "Linux Memory Management List" <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Thu, 24 Sep 2020 20:33:45 +0800
-In-Reply-To: <CAG_fn=U_dshqBB8HBhGyYnn_vScTOcLJX=mfU+8Wi5wjZL2oYA@mail.gmail.com>
-References: <20200924040152.30851-1-walter-zh.wu@mediatek.com>
-         <CAG_fn=U_dshqBB8HBhGyYnn_vScTOcLJX=mfU+8Wi5wjZL2oYA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1727831AbgIXMem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:34:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727683AbgIXMel (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:34:41 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01703221EB;
+        Thu, 24 Sep 2020 12:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600950881;
+        bh=vUr9YRwd8hF9XVYF5mU6UJwtg0FyUtpF0E+w/IWZWq0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IMLUNwVGVpBWEcEDHnBGCIEwvLQ53r6P2qMp1LdjUS1aZkB1DQXc7wZm3dwpv22Kl
+         zx6HW380Wd0V9v0bEAic87a0Mtn7nU4oJj20yGVPnI1rqP7r3NcKmGxOZ8CYFBg85Z
+         AL7ZqhHa2LovElH/FMpx1MfgjR2wxMaNqVouAbrQ=
+Date:   Thu, 24 Sep 2020 13:33:46 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sound/soc/codecs: fix spelling typo in comments
+Message-ID: <20200924123346.GE4754@sirena.org.uk>
+References: <1600929860-28862-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 06AAE36FCA1A35D7BBA6DD440E2BA708F1295AAE573EAC13CD5AE6AAD26BA90B2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="imjhCm/Pyz7Rq5F2"
+Content-Disposition: inline
+In-Reply-To: <1600929860-28862-1-git-send-email-wangqing@vivo.com>
+X-Cookie: Programmers do it bit by bit.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA5LTI0IGF0IDEzOjUxICswMjAwLCAnQWxleGFuZGVyIFBvdGFwZW5rbycg
-dmlhIGthc2FuLWRldg0Kd3JvdGU6DQo+ID4gLS0tDQo+ID4gRG9jdW1lbnRhdGlvbi9kZXYtdG9v
-bHMva2FzYW4ucnN0IHwgIDUgKysrLS0NCj4gPiBrZXJuZWwvdGltZS90aW1lci5jICAgICAgICAg
-ICAgICAgfCAgMyArKysNCj4gPiBrZXJuZWwvd29ya3F1ZXVlLmMgICAgICAgICAgICAgICAgfCAg
-MyArKysNCj4gPiBsaWIvdGVzdF9rYXNhbl9tb2R1bGUuYyAgICAgICAgICAgfCA1NSArKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gbW0v
-a2FzYW4vcmVwb3J0LmMgICAgICAgICAgICAgICAgIHwgIDQgKystLQ0KPiA+IDUgZmlsZXMgY2hh
-bmdlZCwgNjYgaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkNCj4gDQo+IFdoaWxlIGF0IGl0
-LCBjYW4geW91IHJlbW92ZSBhIG1lbnRpb24gb2YgY2FsbF9yY3UoKSBmcm9tIHRoZQ0KPiBrYXNh
-bl9yZWNvcmRfYXV4X3N0YWNrKCkgaW1wbGVtZW50YXRpb24sIGFzIGl0IGlzIG5vIG1vcmUNCj4g
-UkNVLXNwZWNpZmljPw0KPiANCg0KVGhhbmsgeW91IGZvciB5b3VyIHJlbWluZGVyLiB2NSB3aWxs
-IGRvIGl0LiANCg0KV2FsdGVyDQo=
 
+--imjhCm/Pyz7Rq5F2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Sep 24, 2020 at 02:43:59PM +0800, Wang Qing wrote:
+> Modify the comment typo: "compliment" -> "complement".
+
+These are both English words, and compliment appears to be the one that
+is used in the datasheet for this part...=20
+
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
+
+--imjhCm/Pyz7Rq5F2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9skikACgkQJNaLcl1U
+h9AxRQf/S8gmS+UH+JNtXpZHuFOgB5egaqnkf4SwuZYxea8zSzPdU+E/Mt7JlpCP
+avHwW2gQ62VSV3dv3eZLhc7JXwBU0+26cOSaUouzsyR6Xn0Qjh29+Zp1PsQyu8if
+YvD/mdzEfb+j1WX75BQiA7y34PTRhLLKMdjET4jLUsf6T+R2btEde/jKGB1os+Gx
+OMSPXu/IFPqIjZGnKCG1nCZKOQUhV7PGTr1x29ZMfnonsvTX33dbsALLO5xiJcPw
+gefvylbfnma4XnXYQlzt6pJ4VwwsPcsUFb2AAeaEv2zVQuU1qNa5vRd2WAm6aC9c
+j6dSFfl87W97J4JDH8AM8FzO1AFqTQ==
+=VsqG
+-----END PGP SIGNATURE-----
+
+--imjhCm/Pyz7Rq5F2--
