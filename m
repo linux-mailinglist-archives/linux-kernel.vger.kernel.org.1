@@ -2,94 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E53D2766CA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370EF2766CD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 05:16:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgIXDNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 23:13:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgIXDNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 23:13:55 -0400
-Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2786206CD;
-        Thu, 24 Sep 2020 03:13:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600917234;
-        bh=xdMeleM0FhXHxLcJCZNIfSQPP+PzVPbzvjgttifE0tU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=vVSuMSUBPeb7GH/ormLkd7AykL/eyHAgTyUw7mkdYVoKZMgn5hwJjEYKNemW3vbNE
-         dpUjaK7Nk/lfEGnEaieWL1k39QflVERFUYB7GWq8wXwGwb8DfebHyKJ6mQvzEFT6WR
-         tN1SV9AcplWatfu1PbmPXcX0umlR15LUhowhCnjY=
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
-From:   Sinan Kaya <okaya@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
-Date:   Wed, 23 Sep 2020 23:13:52 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726466AbgIXDQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 23:16:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62094 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726196AbgIXDQH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 23:16:07 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08O31C0g173811;
+        Wed, 23 Sep 2020 23:15:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to; s=pp1;
+ bh=g9tmMRJjOxwYyc0NxqdXuEhIq1MgBAjOQBkUCajvask=;
+ b=h0/G95Tbtarkl6kRIdKa0VSkaTRs4sSARCEaFqEKbFJ/9HwwiPPRVsidP+mZ0QyeKVD5
+ bTCom0efZ7C0o5eJVw14W/7P/xE2mCE+QMzoj7y2pNbBHT/ZisupD20zzejsJ0VVJaI6
+ R0kS2MncMdjUyqWSiYZSgwW02K3Yp68sesgDiz7Bm4WkH/RZL/uD9ezUxEMHeFV2pA6Z
+ C6y9SaPmz087ilrqtzfTL0dWmHepy2elP406Bd3CKyUTHs+7RItnmjo2fFY/s9jxMori
+ /73BTiWIU0NiL3A7NyoPln8TihKXT5AbklmrIFSiIy/FALEj2HUudvk6r8TO61PRPc48 FQ== 
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33rjg2h3cf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 23 Sep 2020 23:15:45 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08O38t3O001075;
+        Thu, 24 Sep 2020 03:15:44 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06fra.de.ibm.com with ESMTP id 33n98gtgcr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 03:15:43 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08O3FfXa13762896
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Sep 2020 03:15:41 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9D60CA4051;
+        Thu, 24 Sep 2020 03:15:41 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D2676A405B;
+        Thu, 24 Sep 2020 03:15:38 +0000 (GMT)
+Received: from [9.77.196.90] (unknown [9.77.196.90])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 24 Sep 2020 03:15:38 +0000 (GMT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH -next v2] powerpc/perf: Fix symbol undeclared warning
+From:   Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+In-Reply-To: <20200923071453.2540-1-wangwensheng4@huawei.com>
+Date:   Thu, 24 Sep 2020 08:45:36 +0530
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, benh@kernel.crashing.org,
+        paulus@samba.org, Madhavan Srinivasan <maddy@linux.ibm.com>,
+        "anju@linux.vnet.ibm.com" <anju@linux.vnet.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        rui.xiang@huawei.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6BDE5740-1EC8-494B-87CC-88B839D0E595@linux.vnet.ibm.com>
+References: <20200923071453.2540-1-wangwensheng4@huawei.com>
+To:     Wang Wensheng <wangwensheng4@huawei.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-24_01:2020-09-23,2020-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ spamscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 malwarescore=0 clxscore=1011
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240019
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/23/2020 10:51 PM, Kuppuswamy, Sathyanarayanan wrote:
->>
->> I see. Can I assume that your system supports DPC?
->> DPC is supposed to recover the link via dpc_reset_link().
-> Yes. But the affected device/drivers cleanup during error recovery
-> is handled by hotplug handler. So we are facing issue when dealing
-> with non hotplug capable ports.
 
-This is confusing.
 
-Why would hotplug driver be involved unless port supports hotplug and
-the link goes down? You said that DLLSC is only supported on hotplug
-capable ports.
+> On 23-Sep-2020, at 12:44 PM, Wang Wensheng <wangwensheng4@huawei.com> =
+wrote:
+>=20
+> Build kernel with `C=3D2`:
+> arch/powerpc/perf/isa207-common.c:24:18: warning: symbol
+> 'isa207_pmu_format_attr' was not declared. Should it be static?
+> arch/powerpc/perf/power9-pmu.c:101:5: warning: symbol 'p9_dd21_bl_ev'
+> was not declared. Should it be static?
+> arch/powerpc/perf/power9-pmu.c:115:5: warning: symbol 'p9_dd22_bl_ev'
+> was not declared. Should it be static?
+>=20
+> Those symbols are used only in the files that define them so we =
+declare
+> them as static to fix the warnings.
 
-Need a better description of symptoms and what triggers hotplug driver
-to activate.
+Hi,=20
 
-Can you expand this a little bit?
+Looks fine to me.=20
+
+Reviewed-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+
+Thanks
+Athira
+>=20
+> Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+> ---
+> arch/powerpc/perf/isa207-common.c | 2 +-
+> arch/powerpc/perf/power9-pmu.c    | 4 ++--
+> 2 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/powerpc/perf/isa207-common.c =
+b/arch/powerpc/perf/isa207-common.c
+> index 964437adec18..85dc860b265b 100644
+> --- a/arch/powerpc/perf/isa207-common.c
+> +++ b/arch/powerpc/perf/isa207-common.c
+> @@ -21,7 +21,7 @@ PMU_FORMAT_ATTR(thresh_stop,	"config:32-35");
+> PMU_FORMAT_ATTR(thresh_start,	"config:36-39");
+> PMU_FORMAT_ATTR(thresh_cmp,	"config:40-49");
+>=20
+> -struct attribute *isa207_pmu_format_attr[] =3D {
+> +static struct attribute *isa207_pmu_format_attr[] =3D {
+> 	&format_attr_event.attr,
+> 	&format_attr_pmcxsel.attr,
+> 	&format_attr_mark.attr,
+> diff --git a/arch/powerpc/perf/power9-pmu.c =
+b/arch/powerpc/perf/power9-pmu.c
+> index 2a57e93a79dc..4a315fad1f99 100644
+> --- a/arch/powerpc/perf/power9-pmu.c
+> +++ b/arch/powerpc/perf/power9-pmu.c
+> @@ -98,7 +98,7 @@ extern u64 PERF_REG_EXTENDED_MASK;
+> /* PowerISA v2.07 format attribute structure*/
+> extern struct attribute_group isa207_pmu_format_group;
+>=20
+> -int p9_dd21_bl_ev[] =3D {
+> +static int p9_dd21_bl_ev[] =3D {
+> 	PM_MRK_ST_DONE_L2,
+> 	PM_RADIX_PWC_L1_HIT,
+> 	PM_FLOP_CMPL,
+> @@ -112,7 +112,7 @@ int p9_dd21_bl_ev[] =3D {
+> 	PM_DISP_HELD_SYNC_HOLD,
+> };
+>=20
+> -int p9_dd22_bl_ev[] =3D {
+> +static int p9_dd22_bl_ev[] =3D {
+> 	PM_DTLB_MISS_16G,
+> 	PM_DERAT_MISS_2M,
+> 	PM_DTLB_MISS_2M,
+> --=20
+> 2.25.0
+>=20
+
