@@ -2,71 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F00276EB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F5C276EBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbgIXK2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:28:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727390AbgIXK2f (ORCPT
+        id S1727429AbgIXK3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:29:22 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:9872 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727349AbgIXK3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:28:35 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BF3C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 03:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aXpwPr11MPhd3XZ7JuIbfl5lJouU8jwcHCIWXQAJv38=; b=MUT67gQA83FMmsdvm/INbwTJbX
-        cm+mj+YCfR2XZDuy/kzeKSBzx29zskDlefSCrm0ZZ/XdVXWzSYRGCCCHo78b4LJo9IvXxm/BB3VOW
-        ORXE9B2ZFN1VMbTmJX/Y+Yza5feKbjtYLjr0LAfNAdcqy7l6LlTlxN3FOlPQ7eIcZk575gSoGqcMh
-        cz5c5X5b+WT4sbXjc7UGFV0EJtLqySAJfy5C1nUikHaz/pN3gYQEhQVBGZXtpFI/uIW+5+iQ579gU
-        HW/IN0PcMC8sk9J5Emj85j+6rZAc9dLVGeXkpKQNexDy2WCpl5lXNQ0tqvpW3IleNzzphR2f77ImO
-        VtB+ozzw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLOUE-0004nj-DT; Thu, 24 Sep 2020 10:28:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5A9643007CD;
-        Thu, 24 Sep 2020 12:28:22 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3EBCD202A40A3; Thu, 24 Sep 2020 12:28:22 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 12:28:22 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] x86/irq: Use printk_deferred() on raw_spin_lock()
- protected sections
-Message-ID: <20200924102822.GA2628@hirez.programming.kicks-ass.net>
-References: <e68888438cec9a1da53aaa1647720ade638d6ad4.1600705105.git.bristot@redhat.com>
+        Thu, 24 Sep 2020 06:29:22 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08OAQtVv011761;
+        Thu, 24 Sep 2020 06:29:14 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33r5p6bjus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 06:29:14 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 08OATDh5049816
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 24 Sep 2020 06:29:13 -0400
+Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 24 Sep 2020 06:29:11 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 24 Sep 2020 06:29:11 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 24 Sep 2020 06:29:11 -0400
+Received: from saturn.ad.analog.com ([10.48.65.107])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08OAT7YT005895;
+        Thu, 24 Sep 2020 06:29:07 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <eugen.hristev@microchip.com>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH] iio: adc: at91-sama5d2_adc: merge buffer & trigger init into a function
+Date:   Thu, 24 Sep 2020 13:29:02 +0300
+Message-ID: <20200924102902.136169-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e68888438cec9a1da53aaa1647720ade638d6ad4.1600705105.git.bristot@redhat.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-24_08:2020-09-24,2020-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 spamscore=0 mlxlogscore=999 impostorscore=0 clxscore=1011
+ suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240079
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:22:12PM +0200, Daniel Bristot de Oliveira wrote:
-> While testing hotplug I got this BUG:
+This change is mostly cosmetic, but it's also a pre-cursor to the
+the change for 'iio_buffer_set_attrs()', where the helper gets updated to
+better support multiple IIO buffers for 1 IIO device.
 
-> 
-> It was caused by printk() inside a code section protected by a
-> raw_spin_lock() that ended up calling a serial console that
-> uses a regular spin_lock().
-> 
-> Use the printk_deferred() to avoid calling the serial console
-> in a raw_spin_lock() protected section.
+The only functional change is that the error message for the trigger alloc
+failure is bound to the parent device vs the IIO device object.
 
-I consider printk_deferred() to be a bug, can't we just wait for the new
-printk implementation to land so we don't need all this nonsense?
+Also, the new at91_adc_buffer_and_trigger_init() function was moved after
+the definition of the 'at91_adc_fifo_attributes'.
+
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+ drivers/iio/adc/at91-sama5d2_adc.c | 78 ++++++++++++++----------------
+ 1 file changed, 36 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+index ad7d9819f83c..b9c3cc6d5913 100644
+--- a/drivers/iio/adc/at91-sama5d2_adc.c
++++ b/drivers/iio/adc/at91-sama5d2_adc.c
+@@ -1014,21 +1014,6 @@ static struct iio_trigger *at91_adc_allocate_trigger(struct iio_dev *indio,
+ 
+ 	return trig;
+ }
+-
+-static int at91_adc_trigger_init(struct iio_dev *indio)
+-{
+-	struct at91_adc_state *st = iio_priv(indio);
+-
+-	st->trig = at91_adc_allocate_trigger(indio, st->selected_trig->name);
+-	if (IS_ERR(st->trig)) {
+-		dev_err(&indio->dev,
+-			"could not allocate trigger\n");
+-		return PTR_ERR(st->trig);
+-	}
+-
+-	return 0;
+-}
+-
+ static void at91_adc_trigger_handler_nodma(struct iio_dev *indio_dev,
+ 					   struct iio_poll_func *pf)
+ {
+@@ -1156,13 +1141,6 @@ static irqreturn_t at91_adc_trigger_handler(int irq, void *p)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int at91_adc_buffer_init(struct iio_dev *indio)
+-{
+-	return devm_iio_triggered_buffer_setup(&indio->dev, indio,
+-		&iio_pollfunc_store_time,
+-		&at91_adc_trigger_handler, &at91_buffer_setup_ops);
+-}
+-
+ static unsigned at91_adc_startup_time(unsigned startup_time_min,
+ 				      unsigned adc_clk_khz)
+ {
+@@ -1683,6 +1661,40 @@ static const struct iio_info at91_adc_info = {
+ 	.hwfifo_set_watermark = &at91_adc_set_watermark,
+ };
+ 
++static int at91_adc_buffer_and_trigger_init(struct device *dev,
++					    struct iio_dev *indio)
++{
++	struct at91_adc_state *st = iio_priv(indio);
++	int ret;
++
++	ret = devm_iio_triggered_buffer_setup(&indio->dev, indio,
++		&iio_pollfunc_store_time,
++		&at91_adc_trigger_handler, &at91_buffer_setup_ops);
++	if (ret < 0) {
++		dev_err(dev, "couldn't initialize the buffer.\n");
++		return ret;
++	}
++
++	if (!st->selected_trig->hw_trig)
++		return 0;
++
++	iio_buffer_set_attrs(indio->buffer, at91_adc_fifo_attributes);
++
++	st->trig = at91_adc_allocate_trigger(indio, st->selected_trig->name);
++	if (IS_ERR(st->trig)) {
++		dev_err(dev, "could not allocate trigger\n");
++		return PTR_ERR(st->trig);
++	}
++
++	/*
++	 * Initially the iio buffer has a length of 2 and
++	 * a watermark of 1
++	 */
++	st->dma_st.watermark = 1;
++
++	return 0;
++}
++
+ static int at91_adc_probe(struct platform_device *pdev)
+ {
+ 	struct iio_dev *indio_dev;
+@@ -1818,27 +1830,9 @@ static int at91_adc_probe(struct platform_device *pdev)
+ 
+ 	platform_set_drvdata(pdev, indio_dev);
+ 
+-	ret = at91_adc_buffer_init(indio_dev);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "couldn't initialize the buffer.\n");
++	ret = at91_adc_buffer_and_trigger_init(&pdev->dev, indio_dev);
++	if (ret < 0)
+ 		goto per_clk_disable_unprepare;
+-	}
+-
+-	if (st->selected_trig->hw_trig) {
+-		ret = at91_adc_trigger_init(indio_dev);
+-		if (ret < 0) {
+-			dev_err(&pdev->dev, "couldn't setup the triggers.\n");
+-			goto per_clk_disable_unprepare;
+-		}
+-		/*
+-		 * Initially the iio buffer has a length of 2 and
+-		 * a watermark of 1
+-		 */
+-		st->dma_st.watermark = 1;
+-
+-		iio_buffer_set_attrs(indio_dev->buffer,
+-				     at91_adc_fifo_attributes);
+-	}
+ 
+ 	if (dma_coerce_mask_and_coherent(&indio_dev->dev, DMA_BIT_MASK(32)))
+ 		dev_info(&pdev->dev, "cannot set DMA mask to 32-bit\n");
+-- 
+2.25.1
+
