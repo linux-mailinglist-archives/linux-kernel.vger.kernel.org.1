@@ -2,130 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6A327718D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:50:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C43277196
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727975AbgIXMuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42616 "EHLO
+        id S1727999AbgIXMvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727966AbgIXMuc (ORCPT
+        with ESMTP id S1727872AbgIXMu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:50:32 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAFDC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:50:32 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id r78so851451vke.11
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:50:32 -0700 (PDT)
+        Thu, 24 Sep 2020 08:50:59 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FFDC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:50:59 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id m17so3188109ioo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:50:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FV+W9qCfwLlahXA9uVHzI8exYIRdq3lpUWqEdGTM0BM=;
-        b=RmvdLcHq3Gllm1JRWrmjcRNf0L0d40Et/6As1CJqJuYzhqBbH+eSiCK0x/k6s2O5By
-         S8BfPjvtzN38uDOIUNsS1dCKTloVtvMQdxZocRFYbS9C+gGoLZf6aETjK6gdL+lau1TP
-         bECl2GY2P9ovBmDxvbZdYNGLsgyvs3IbY9Xyoo7pG6aGervos3ES889uLnEb7SjQdqB8
-         c04oQSB+PnAtVssLohRqVsNTxxpZEXMlYEYZPaIQawRcqWXpoMMCB+Ij+QaUvFXaWX+9
-         EkwQURLaFTPtw3uOe88PQxDRiEQbFWGdtkez6eYqA5ZmRd2ICq0f8B5PwzMC/2IfXMJV
-         3HrA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=yci97FVNoqLlRiH8ruEJ8twEw2eGRL1tijxr6XUkGBI=;
+        b=JHElf2PWOjGwZ2uGqH7qobKJsX+ZvpW9hBbaturH0ymHl3jqQXKYGjzEjtMjRa3HE8
+         z4LTPsAm2BVQe4Fpb+b+3kkRvex1/8a8QSb4hXcdZdo61FeCdyA4ZJYldevS5XEtWH4K
+         yQdu2NmvSA1oNvP2CpbjmDw4PMCl1cNaotJ0vdWvwtOtGvPKWsJKM/PhWl6R8jPgRwHV
+         cvAPl56Hx5QGJ1K+1lB2iARhS0XCZM02Lm0g2y+QDu2flTcBWp/KH/IplJMl393jqB4D
+         MI2JCMBT25qIeN5e93GN9vttRCrrkb0yR8TWyCshVOJ99lk4owc9yo+sUasPbPVEuFM5
+         wQNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FV+W9qCfwLlahXA9uVHzI8exYIRdq3lpUWqEdGTM0BM=;
-        b=X59zWY3fCU7yjbWbmSQ8WHN74nXkMHPHaL06nNXCUac5TiWUEbYkQOZJHllkckAeep
-         5Edkx/sLyahhJh2/I8NAsx1iIlcTnOkFuT/N819aWymHRQDBIGkhfNI7NrRY3+UK4Kju
-         81nYXESwlhtuLEAGDPdKXqOFTRDOdxKz67exNK4FficP82l8dOABtUGfMGW09a+xM/C0
-         UCV4Uj6t7co2WWEvVQofYmP687aqPUT9stwYhCw36GItnjT8IwV098z6dcPP0MdY89gU
-         yyfFEkhO9SCIV7x2xer746tBwqTM4NuA5WovGGNCxsKra/RsfZu6hHAM7IbzgL86xtf/
-         9NmA==
-X-Gm-Message-State: AOAM530BlBSXnJbb4v7D+Klwwggcix9WS0deVL5bozi8XjvXi9ulfq4a
-        p43w448umkbCcg3kEL4XvW5DblehEYuT85qCUwq5ng==
-X-Google-Smtp-Source: ABdhPJy1E77lXHw7zxYl3yAzOBYjjsrq0taGD22v7OOK8eJ5f2Oi5l3FQezUUXPcsOCVonCdRcIouLG27uOu052PqAQ=
-X-Received: by 2002:a1f:1f46:: with SMTP id f67mr3562226vkf.6.1600951831604;
- Thu, 24 Sep 2020 05:50:31 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=yci97FVNoqLlRiH8ruEJ8twEw2eGRL1tijxr6XUkGBI=;
+        b=CPifVx7hZpAOuXE0jWaF754lfiqDBqnR81gwrwxc8jw6kW3EdU0zUW8b2PKhCkoUHD
+         szD8I8XZq49/0z01OhgbiCa+U9fwNdcQUEgxVP4Nqo9Zphxb1fKhlr5zs9dnx4sA7Yte
+         D+8ggoWx0q4DIOMHtY/dantCBTctgfYhazJ3hbsrZI0JnesF0pZ0eH5D2G3BVLFH7+L/
+         tV513uoeXmu/BC5RbXwHMhK6qpEVYVxwlZW98AOSo5kL7USgzTcZqUv7bTlf+VJSqBRS
+         pmotblHDAnzaoK8a8QTqNE2zryB80nO3TT0KGvduzZXr+Vg1c5FwJ7/txzkOc7UuZFtj
+         RYVw==
+X-Gm-Message-State: AOAM533P6ghxL7ihAA5I23kHRHaHMxR7auhCaOt6PQQENXDPoqcBEZ8i
+        ElaFtcIMz1df64eYOG3zSCrR9w==
+X-Google-Smtp-Source: ABdhPJzaged4vDsro/WE+/3g9Zsw+yRfl5m3gs3sYiODiGd7MU1eY5SZdtkuu865SPBj3w6YjL19yQ==
+X-Received: by 2002:a6b:7c07:: with SMTP id m7mr3226609iok.32.1600951858531;
+        Thu, 24 Sep 2020 05:50:58 -0700 (PDT)
+Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id l131sm1355977ioa.31.2020.09.24.05.50.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Sep 2020 05:50:58 -0700 (PDT)
+Subject: Re: [greybus-dev] [PATCH 1/3] [PATCH] staging: greybus: fix warnings
+ about endianness detected by sparse
+To:     Coiby Xu <coiby.xu@gmail.com>, devel@driverdev.osuosl.org
+Cc:     Alex Elder <elder@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+References: <20200924102039.43895-1-coiby.xu@gmail.com>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <3fda9226-6f6f-6c5f-aa02-c9047a3d2dce@linaro.org>
+Date:   Thu, 24 Sep 2020 07:50:57 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200923153739.30327-1-krzk@kernel.org> <20200923153739.30327-2-krzk@kernel.org>
-In-Reply-To: <20200923153739.30327-2-krzk@kernel.org>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 24 Sep 2020 14:49:51 +0200
-Message-ID: <CAPDyKFqFrpMotaiLwj=Q1cUqVc1S-Oeqhq3kt6QqyW=A0T1Y9w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mmc: sdhci: fix indentation mistakes
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200924102039.43895-1-coiby.xu@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 at 17:38, Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> Fix inconsistent indenting, reported by Smatch:
->
->   drivers/mmc/host/sdhci-esdhc-imx.c:1380 sdhci_esdhc_imx_hwinit() warn: inconsistent indenting
->   drivers/mmc/host/sdhci-sprd.c:390 sdhci_sprd_request_done() warn: inconsistent indenting
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+On 9/24/20 5:20 AM, Coiby Xu wrote:
+> This patch fix the following warnings from sparse,
 
-Applied for next, thanks!
+You need to address Greg's comment.
 
-Kind regards
-Uffe
+But in general this looks good.  I have one comment below, which
+you can address in v2.  If you (or others) disagree with it, I'm
+fine with your code as-is.  Either way, you can add this:
 
+Reviewed-by: Alex Elder <elder@linaro.org>
 
-> ---
->  drivers/mmc/host/sdhci-esdhc-imx.c | 2 +-
->  drivers/mmc/host/sdhci-sprd.c      | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
-> index 62b3d4767916..fce8fa7e6b30 100644
-> --- a/drivers/mmc/host/sdhci-esdhc-imx.c
-> +++ b/drivers/mmc/host/sdhci-esdhc-imx.c
-> @@ -1377,7 +1377,7 @@ static void sdhci_esdhc_imx_hwinit(struct sdhci_host *host)
->                          * response, block the tuning procedure or the first command
->                          * after the whole tuning procedure always can't get any response.
->                          */
-> -                        tmp |= ESDHC_TUNING_CMD_CRC_CHECK_DISABLE;
-> +                       tmp |= ESDHC_TUNING_CMD_CRC_CHECK_DISABLE;
->                         writel(tmp, host->ioaddr + ESDHC_TUNING_CTRL);
->                 } else if (imx_data->socdata->flags & ESDHC_FLAG_MAN_TUNING) {
->                         /*
-> diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
-> index 1efaf602c206..58109c5b53e2 100644
-> --- a/drivers/mmc/host/sdhci-sprd.c
-> +++ b/drivers/mmc/host/sdhci-sprd.c
-> @@ -387,7 +387,7 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
->         if (mmc_hsq_finalize_request(host->mmc, mrq))
->                 return;
->
-> -        mmc_request_done(host->mmc, mrq);
-> +       mmc_request_done(host->mmc, mrq);
+> $ make C=2 drivers/staging/greybus/
+> drivers/staging/greybus/audio_module.c:222:25: warning: incorrect type in assignment (different base types)
+> drivers/staging/greybus/audio_module.c:222:25:    expected restricted __le16 [usertype] data_cport
+> drivers/staging/greybus/audio_module.c:222:25:    got unsigned short [usertype] intf_cport_id
+> drivers/staging/greybus/audio_topology.c:460:40: warning: restricted __le32 degrades to integer
+> drivers/staging/greybus/audio_topology.c:691:41: warning: incorrect type in assignment (different base types)
+
+. . .
+
+> diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+> index 83b38ae8908c..56bf1a4f95ad 100644
+> --- a/drivers/staging/greybus/audio_topology.c
+> +++ b/drivers/staging/greybus/audio_topology.c
+> @@ -466,7 +466,7 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+>  		goto exit;
+>  
+>  	/* update ucontrol */
+> -	if (gbvalue.value.integer_value[0] != val) {
+> +	if (gbvalue.value.integer_value[0] != cpu_to_le32(val)) {
+
+It's equivalent, but I have a small preference to convert
+the value from gbvalue into CPU byte order rather than
+what you have here.
+
+>  		for (wi = 0; wi < wlist->num_widgets; wi++) {
+>  			widget = wlist->widgets[wi];
+>  			snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol,
+> @@ -689,7 +689,7 @@ static int gbaudio_tplg_create_kcontrol(struct gbaudio_module_info *gb,
+>  				return -ENOMEM;
+>  			ctldata->ctl_id = ctl->id;
+>  			ctldata->data_cport = le16_to_cpu(ctl->data_cport);
+> -			ctldata->access = ctl->access;
+> +			ctldata->access = le32_to_cpu(ctl->access);
+>  			ctldata->vcount = ctl->count_values;
+>  			ctldata->info = &ctl->info;
+>  			*kctl = (struct snd_kcontrol_new)
+> @@ -744,10 +744,10 @@ static int gbcodec_enum_dapm_ctl_get(struct snd_kcontrol *kcontrol,
+>  		return ret;
+>  	}
+>  
+> -	ucontrol->value.enumerated.item[0] = gbvalue.value.enumerated_item[0];
+> +	ucontrol->value.enumerated.item[0] = le32_to_cpu(gbvalue.value.enumerated_item[0]);
+>  	if (e->shift_l != e->shift_r)
+>  		ucontrol->value.enumerated.item[1] =
+> -			gbvalue.value.enumerated_item[1];
+> +			le32_to_cpu(gbvalue.value.enumerated_item[1]);
+>  
+>  	return 0;
 >  }
->
->  static struct sdhci_ops sdhci_sprd_ops = {
-> @@ -433,7 +433,7 @@ static void sdhci_sprd_request(struct mmc_host *mmc, struct mmc_request *mrq)
->  }
->
->  static int sdhci_sprd_request_atomic(struct mmc_host *mmc,
-> -                                     struct mmc_request *mrq)
-> +                                    struct mmc_request *mrq)
->  {
->         sdhci_sprd_check_auto_cmd23(mmc, mrq);
->
-> --
-> 2.17.1
->
+> @@ -801,10 +801,10 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+>  	mask = e->mask << e->shift_l;
+>  
+>  	if (gbvalue.value.enumerated_item[0] !=
+> -	    ucontrol->value.enumerated.item[0]) {
+> +	    cpu_to_le32(ucontrol->value.enumerated.item[0])) {
+>  		change = 1;
+>  		gbvalue.value.enumerated_item[0] =
+> -			ucontrol->value.enumerated.item[0];
+> +			cpu_to_le32(ucontrol->value.enumerated.item[0]);
+>  	}
+>  
+>  	if (e->shift_l != e->shift_r) {
+> @@ -813,10 +813,10 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+>  		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
+>  		mask |= e->mask << e->shift_r;
+>  		if (gbvalue.value.enumerated_item[1] !=
+> -		    ucontrol->value.enumerated.item[1]) {
+> +		    cpu_to_le32(ucontrol->value.enumerated.item[1])) {
+>  			change = 1;
+>  			gbvalue.value.enumerated_item[1] =
+> -				ucontrol->value.enumerated.item[1];
+> +				cpu_to_le32(ucontrol->value.enumerated.item[1]);
+>  		}
+>  	}
+>  
+> @@ -887,7 +887,7 @@ static int gbaudio_tplg_create_mixer_ctl(struct gbaudio_module_info *gb,
+>  		return -ENOMEM;
+>  	ctldata->ctl_id = ctl->id;
+>  	ctldata->data_cport = le16_to_cpu(ctl->data_cport);
+> -	ctldata->access = ctl->access;
+> +	ctldata->access = le32_to_cpu(ctl->access);
+>  	ctldata->vcount = ctl->count_values;
+>  	ctldata->info = &ctl->info;
+>  	*kctl = (struct snd_kcontrol_new)
+> 
+
