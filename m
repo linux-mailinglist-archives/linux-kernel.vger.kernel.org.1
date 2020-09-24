@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52E3277135
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EBD27712F
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbgIXMkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:40:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:45062 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727570AbgIXMkR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:40:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E63A1396;
-        Thu, 24 Sep 2020 05:40:16 -0700 (PDT)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.199.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C778A3F73B;
-        Thu, 24 Sep 2020 05:40:14 -0700 (PDT)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org
-Cc:     dietmar.eggemann@arm.com, qperret@google.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com
-Subject: [PATCH 2/3] sched/topology: condition EAS enablement on FIE support
+        id S1727789AbgIXMjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgIXMjl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:39:41 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD49C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:39:40 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id w2so3385867wmi.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=zWTsbwqu5u31iU7OL0QOQ6Z5T6BsEEYTr2C+q8i32Ms=;
+        b=A3sI1Nbs6OeluEErpb9S8ydWCHVOVgifN0EiclOoqeLwIYvSfvt80rDHa2tSUUxPbm
+         DompAts1y/IGboXsPK6hEpVV1x+4RxKvesJ5bvpqOx3EC70hxN69do3zCuOY3ae0F8Pw
+         fwTPyGq7r75jillegw2Snmd0x8WaPSPciNJ8gGY6KFDr+w0qs0QDf6/AMzaxfzyRvadk
+         XhEbAPbtdVP0tcC5ZM7NSry6RYvnaiyv+I72bwo1R4xV0XWlifd2EmNVR6fcNgnaWlZ1
+         Qk1ZX6pzTBYCI2ZRLX3qvn7h+k4BX/pDDtY8JoEo8v4cr+oC8aLxLQ1Kt5prI7tWrnCd
+         mCzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=zWTsbwqu5u31iU7OL0QOQ6Z5T6BsEEYTr2C+q8i32Ms=;
+        b=ByNwrevwruyO4FajLBTzbAvxhM3UtxUujJIn/hf1kQAaUUC80D++aW8Ad5yhX8YQh7
+         ZC5uoPgJdfpXm97E5AsYskcVTV/h4XFsbfWbc8HAUWzFrj3pre0dkwZKbQJgV2+iE4Qz
+         F0psJ/4c0XFxjVwon1/NgeVeip581i9j2HktsTR0A0VdaMHUTOdTjcs0p1FNKjKfXmru
+         L0V+Ns9vDSjOGyqkZ3PvKOweBwhXlswL3vq77LK5xchKvGGiSa4Ild3FzE6kEjc7oP6a
+         2bmOif6WogezZrWgqAVtcwfi9I04jv9w11Ssy0gJqg979hM+TlTFj2xi8KBxhGBpj0AU
+         u8ZQ==
+X-Gm-Message-State: AOAM5333tinfgJD6bVMINmkCXtN/y9/U3R/jnB+YgE3+XT7PTTQM1vLH
+        yJhpPMeuQ70Ol5jykxIDGAK/Yw==
+X-Google-Smtp-Source: ABdhPJzRewLMSesYUgH51L0Nb4lc9SwRXVKb/C8N6/c4ECvtlaXsKtencSQUQBWbkrMIfs03Twyikg==
+X-Received: by 2002:a1c:f612:: with SMTP id w18mr4443877wmc.47.1600951179539;
+        Thu, 24 Sep 2020 05:39:39 -0700 (PDT)
+Received: from dell ([91.110.221.204])
+        by smtp.gmail.com with ESMTPSA id u8sm3169859wmj.45.2020.09.24.05.39.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 05:39:38 -0700 (PDT)
 Date:   Thu, 24 Sep 2020 13:39:36 +0100
-Message-Id: <20200924123937.20938-3-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200924123937.20938-1-ionela.voinescu@arm.com>
-References: <20200924123937.20938-1-ionela.voinescu@arm.com>
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Arnd Bergmann <arnd@arndb.de>, Suman Anna <s-anna@ti.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH] mfd: syscon: Don't free allocated name for regmap_config
+Message-ID: <20200924123936.GJ4678@dell>
+References: <20200903160237.932818-1-maz@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200903160237.932818-1-maz@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to make accurate predictions across CPUs and for all performance
-states, Energy Aware Scheduling (EAS) needs frequency-invariant load
-tracking signals.
+On Thu, 03 Sep 2020, Marc Zyngier wrote:
 
-EAS task placement aims to minimize energy consumption, and does so in
-part by limiting the search space to only CPUs with the highest spare
-capacity (CPU capacity - CPU utilization) in their performance domain.
-Those candidates are the placement choices that will keep frequency at
-its lowest possible and therefore save the most energy.
+> The name allocated for the regmap_config structure is freed
+> pretty early, right after the registration of the MMIO region.
+> 
+> Unfortunately, that doesn't follow the life cycle that debugfs
+> expects, as it can access the name field long after the free
+> has occured.
+> 
+> Move the free on the error path, and keep it forever otherwise.
+> 
+> Fixes: e15d7f2b81d2 ("mfd: syscon: Use a unique name with regmap_config")
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/mfd/syscon.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-But without frequency invariance, a CPU's utilization is relative to the
-CPU's current performance level, and not relative to its maximum
-performance level, which determines its capacity. As a result, it will
-fail to correctly indicate any potential spare capacity obtained by an
-increase in a CPU's performance level. Therefore, a non-invariant
-utilization signal would render the EAS task placement logic invalid.
+Fixed the spelling mistake and applied, thanks.
 
-Now that we properly report support for the Frequency Invariance Engine
-(FIE) through arch_scale_freq_invariant() for arm and arm64 systems, we
-can assert it is the case when initializing EAS. Warn and bail out
-otherwise.
-
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
-Suggested-by: Quentin Perret <qperret@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
----
- kernel/sched/topology.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 4073f693e2b5..348d563c2210 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -328,6 +328,7 @@ static void sched_energy_set(bool has_eas)
-  *    3. no SMT is detected.
-  *    4. the EM complexity is low enough to keep scheduling overheads low;
-  *    5. schedutil is driving the frequency of all CPUs of the rd;
-+ *    6. frequency invariance support is present;
-  *
-  * The complexity of the Energy Model is defined as:
-  *
-@@ -376,6 +377,12 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
- 		goto free;
- 	}
- 
-+	if (!arch_scale_freq_invariant()) {
-+		pr_warn("rd %*pbl: Disabling EAS: frequency-invariant load tracking not supported",
-+			cpumask_pr_args(cpu_map));
-+		goto free;
-+	}
-+
- 	for_each_cpu(i, cpu_map) {
- 		/* Skip already covered CPUs. */
- 		if (find_pd(pd, i))
 -- 
-2.17.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
