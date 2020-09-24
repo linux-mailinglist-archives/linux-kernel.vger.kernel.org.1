@@ -2,283 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1692276B7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044EA276B80
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 10:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727195AbgIXIJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 04:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727089AbgIXIJ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 04:09:28 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87566C0613CE;
-        Thu, 24 Sep 2020 01:09:28 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id w7so1425319pfi.4;
-        Thu, 24 Sep 2020 01:09:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=89mYYyU5CP/vNh9r0QB1xyWvou3jF1r0AJ18PMNgyq8=;
-        b=T/mll2pp8Rw5b/I3IM284sBZ3oFqKBpr/SGwnXyysm8fPXOS2Qf3cwECp4w5womlkk
-         Vu2wALdADfSgjcTCoeqgVjZwrXnNDf5OtLcPXBydIjGoms46b/6XbdZficVct4WnFnT5
-         ibg/k0FK59+c9VKe1vIhW4qLy7Pi5J9bpHm7g86e44PfBUNtbYdIF2XbepqMnbmOmJro
-         +9t7e51SEBJFJKFawO5jqNeGOOMxIjnkH49H/hBGkteJo7qgbxPidS/MjN18FGSycwbW
-         wKm6GSX12XLSJSddD5GDmzhfT+Ga8oQ1OdA0XmcSb1wqDQJJY2FpeH1Z1P4kv9fWvM9c
-         XEEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=89mYYyU5CP/vNh9r0QB1xyWvou3jF1r0AJ18PMNgyq8=;
-        b=Y31YlgKOwiAU9LvCueNR0D4HmdMDCmccNIkWTpdBNgP6X5tby75F/erdMVcEFyjn+Z
-         ovtR4YLLLEmogbJFlqPdvQDHnEN5EKx395QRnu66ZsI80pkahkeL1+xvivW4AHwFkVkf
-         r5l38AHs8qaFxSKBc0XU3lHpJmqXsMd3Jg0QYtFMGdpRiQ8Kox5+aFOWTSsuuBQSeXGW
-         ItFZJnCJNZq3SbnXMMyE22dbdQpgIWvMWKqSUEgQOhfHw0zLgei7zJLxjUPbahdhEZin
-         cB5fkZl/8T+K20TBOMNYQbq9pOWxHgv1fVJnugPcE6EcprBQ1/6kJfHNm0CC2GSAEtxJ
-         vbfw==
-X-Gm-Message-State: AOAM530DBNUBu7xZCxD8kTP8G+W/UbDLEBW1j1ir0vJhP5sTS8qshU75
-        D0roFk9Geql176vCuk0N/IU=
-X-Google-Smtp-Source: ABdhPJzBoOYPN+peoGAGQF5/hhIqkb1Of3W2IaB9n8MRdnao3Om13RxhCH8frW4uqclwRTnUY4Wx9Q==
-X-Received: by 2002:aa7:948d:0:b029:13e:cb8d:60e0 with SMTP id z13-20020aa7948d0000b029013ecb8d60e0mr3533226pfk.9.1600934966923;
-        Thu, 24 Sep 2020 01:09:26 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id n2sm1855653pfe.208.2020.09.24.01.09.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 01:09:26 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 16:09:21 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-Message-ID: <20200924080921.GE17562@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <20200922023151.387447-8-warthog618@gmail.com>
- <CAHp75VdQUbDnjQEr5X5q6WdU6rD=uBNznNn5=Vy=pvdwVj_hEA@mail.gmail.com>
+        id S1727218AbgIXIMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 04:12:24 -0400
+Received: from mga02.intel.com ([134.134.136.20]:22501 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727013AbgIXIMX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 04:12:23 -0400
+IronPort-SDR: K9+fLubVdWcQxyqCclXGH0y9Im/vVqzOXyOGK6ljuGVlYhYOdsfQp7Hmrf+gv8AELtURTzIngb
+ Un18KYA8HT+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="148788393"
+X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
+   d="scan'208";a="148788393"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 01:12:19 -0700
+IronPort-SDR: BtwXldKVE7FWHcMuvMuakmnXOuV12N8g1pU9clav6f9fP5xx1yxoT61v16dd0q5EH/jHe2z0Db
+ eHSu5KC11YzA==
+X-IronPort-AV: E=Sophos;i="5.77,296,1596524400"; 
+   d="scan'208";a="335847157"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.3]) ([10.239.13.3])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 01:12:16 -0700
+Subject: Re: [PATCH v3 3/9] lib: zstd: Upgrade to latest upstream zstd version
+ 1.4.6
+To:     Nick Terrell <nickrterrell@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>, kbuild-all@lists.01.org,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        squashfs-devel@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Kernel Team <Kernel-team@fb.com>,
+        Chris Mason <chris.mason@fusionio.com>,
+        Petr Malat <oss@malat.biz>
+References: <20200923224206.68968-4-nickrterrell@gmail.com>
+ <202009241007.ZmzDeiuB%lkp@intel.com>
+ <CANr2Dbd1DXb66_Gf9aAB7PCn6=yz_Or5_JWZtm_cHndYrO+28A@mail.gmail.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <270836be-7c35-f204-39d9-ab095af66d1a@intel.com>
+Date:   Thu, 24 Sep 2020 16:11:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdQUbDnjQEr5X5q6WdU6rD=uBNznNn5=Vy=pvdwVj_hEA@mail.gmail.com>
+In-Reply-To: <CANr2Dbd1DXb66_Gf9aAB7PCn6=yz_Or5_JWZtm_cHndYrO+28A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 02:11:54PM +0300, Andy Shevchenko wrote:
-> On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Add support for requesting lines using the GPIO_V2_GET_LINE_IOCTL, and
-> > returning their current values using GPIO_V2_LINE_GET_VALUES_IOCTL.
-> >
-> > The struct linereq implementation is based on the v1 struct linehandle
-> > implementation.
-> 
-> ...
-> 
+Hi Nick,
 
-Ooops, nearly missed this one...
+Thanks for the feedback, we'll take a look at these errors that maybe 
+false positives.
 
-> > +       /*
-> > +        * Do not allow OPEN_SOURCE & OPEN_DRAIN flags in a single request. If
-> 
-> You see, in some cases you are using "OR:ed" as understandable for
-> programmers, and here & which should be and in plain English and
-> really confusing from a programmer's perspective. That's why I prefer
-> to see plain English rather than something which is full of encoded
-> meanings.
-> 
+Best Regards,
+Rong Chen
 
-Understand these are pulled directly from the v1 implementation, so I
-think that is actually one of Bart's.
+On 9/24/20 11:05 AM, Nick Terrell wrote:
+> On Wed, Sep 23, 2020 at 7:28 PM kernel test robot <lkp@intel.com> wrote:
+>> Hi Nick,
+>>
+>> Thank you for the patch! Yet something to improve:
+>>
+>> [auto build test ERROR on kdave/for-next]
+>> [also build test ERROR on f2fs/dev-test linus/master v5.9-rc6 next-20200923]
+>> [cannot apply to cryptodev/master crypto/master]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url:    https://github.com/0day-ci/linux/commits/Nick-Terrell/Update-to-zstd-1-4-6/20200924-064102
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+>> config: h8300-randconfig-p002-20200923 (attached as .config)
+>> compiler: h8300-linux-gcc (GCC) 9.3.0
+>> reproduce (this is a W=1 build):
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # save the attached .config to linux build tree
+>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=h8300
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     h8300-linux-ld: lib/zstd/common/entropy_common.o: in function `MEM_swap32':
+>>>> lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
+>>>> h8300-linux-ld: lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
+>>>> h8300-linux-ld: lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
+>>>> h8300-linux-ld: lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/common/fse_decompress.o: in function `MEM_swap32':
+>>>> lib/zstd/common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/common/fse_decompress.o:lib/zstd/common/mem.h:179: more undefined references to `__bswapsi2' follow
+>>     h8300-linux-ld: lib/zstd/compress/zstd_compress.o: in function `MEM_swap64':
+>>>> lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/compress/zstd_compress.o: in function `MEM_swap32':
+>>>> lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/compress/zstd_compress.o:lib/zstd/compress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
+>>     h8300-linux-ld: lib/zstd/compress/zstd_double_fast.o: in function `MEM_swap64':
+>>>> lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/compress/zstd_double_fast.o:lib/zstd/compress/../common/mem.h:192: more undefined references to `__bswapdi2' follow
+>>     h8300-linux-ld: lib/zstd/compress/zstd_opt.o: in function `MEM_swap32':
+>>>> lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/compress/zstd_opt.o: in function `MEM_swap64':
+>>>> lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>>> h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/compress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/compress/zstd_opt.o:lib/zstd/compress/../common/mem.h:192: more undefined references to `__bswapdi2' follow
+>>     h8300-linux-ld: lib/zstd/decompress/huf_decompress.o: in function `MEM_swap32':
+>>     lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/huf_decompress.o:lib/zstd/decompress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
+>>     lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
+>>     lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o:lib/zstd/decompress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
+>>     lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
+>>     lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
+>>     lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
+>>     lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
+>>     lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
+>>     lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
+>>     lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
+>>     lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o:lib/zstd/decompress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap64':
+>>     lib/zstd/decompress/../common/mem.h:192: undefined reference to `__bswapdi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress.o: in function `MEM_swap32':
+>>     lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress_block.o: in function `MEM_swap32':
+>>     lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/../common/mem.h:179: undefined reference to `__bswapsi2'
+>>     h8300-linux-ld: lib/zstd/decompress/zstd_decompress_block.o:lib/zstd/decompress/../common/mem.h:179: more undefined references to `__bswapsi2' follow
+> Looks like I need to fix these. It looks like I should use the swab*()
+> functions from include/linux/swab.h. I'll put up a v4 shortly.
+>
+>> cppcheck warnings: (new ones prefixed by >>)
+>>
+>>>> lib/zstd/decompress/zstd_ddict.c:147:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
+>>         if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
+>>                                    ^
+> This one is a bit silly, but I will fix it.
+>
+>>>> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
+>>     ^
+>>>> lib/zstd/compress/zstd_ldm.c:571:0: warning: Array 'rep[3]' accessed at index 3, which is out of bounds. [arrayIndexOutOfBounds]
+>>         ZSTD_blockCompressor const blockCompressor =
+>>     ^
+> This seems like a false positive.
+>
+>>>> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
+>>     ^
+>>>> lib/zstd/decompress/zstd_decompress.c:133:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
+>>         if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
+>>                                    ^
+>>>> lib/zstd/decompress/zstd_decompress.c:1751:28: warning: Variable 'zds->inPos' is reassigned a value before the old one has been used. [redundantAssignment]
+>>                     zds->inPos = 0;   /* input is consumed */
+>>                                ^
+>>     lib/zstd/decompress/zstd_decompress.c:1747:28: note: Variable 'zds->inPos' is reassigned a value before the old one has been used.
+>>                     zds->inPos += loadedSize;
+>>                                ^
+>>     lib/zstd/decompress/zstd_decompress.c:1751:28: note: Variable 'zds->inPos' is reassigned a value before the old one has been used.
+>>                     zds->inPos = 0;   /* input is consumed */
+>>                                ^
+> This is a false positive. It is incorrectly analyzing the control flow.
+>
+>>>> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
+>>     ^
+>>>> lib/zstd/compress/zstd_compress.c:84:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
+>>         if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
+>>                                    ^
+>>     lib/zstd/compress/zstd_compress.c:200:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
+>>         if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
+>>                                    ^
+>>     lib/zstd/compress/zstd_compress.c:3345:32: warning: Boolean result is used in bitwise operation. Clarify expression with parentheses. [clarifyCondition]
+>>         if (!customMem.customAlloc ^ !customMem.customFree) return NULL;
+>>                                    ^
+>>>> lib/zstd/common/zstd_internal.h:401:27: warning: Array 'DeBruijnClz[32]' accessed at index 509099, which is out of bounds. [arrayIndexOutOfBounds]
+>>             return DeBruijnClz[(v * 0x07C4ACDDU) >> 27];
+>>                               ^
+> This is a false positive. v is a 32-bit integer, so the index must be
+> less than 2^(32-27) = 32, which is the size of the array.
+>
+>>     lib/zstd/compress/zstd_compress.c:3494:40: note: Assignment 'limitedSrcSize=(uint32_t)(pledgedSrcSize<524288U?pledgedSrcSize:524288U)', assigned value is 524288
+>>                 U32 const limitedSrcSize = (U32)MIN(pledgedSrcSize, 1U << 19);
+>>                                            ^
+>>     lib/zstd/compress/zstd_compress.c:3495:90: note: Calling function 'ZSTD_highbit32', 1st argument 'limitedSrcSize-1' value is 524287
+>>                 U32 const limitedSrcLog = limitedSrcSize > 1 ? ZSTD_highbit32(limitedSrcSize - 1) + 1 : 1;
+>>                                                                                              ^
+>>     lib/zstd/common/zstd_internal.h:395:17: note: Assignment 'v=val', assigned value is 524287
+>>             U32 v = val;
+>>                     ^
+>>     lib/zstd/common/zstd_internal.h:396:0: note: Assignment 'v=v|(v>>1)', assigned value is 524287
+>>             v |= v >> 1;
+>>     ^
+>>     lib/zstd/common/zstd_internal.h:397:0: note: Assignment 'v=v|(v>>2)', assigned value is 524287
+>>             v |= v >> 2;
+>>     ^
+>>     lib/zstd/common/zstd_internal.h:398:0: note: Assignment 'v=v|(v>>4)', assigned value is 524287
+>>             v |= v >> 4;
+>>     ^
+>>     lib/zstd/common/zstd_internal.h:399:0: note: Assignment 'v=v|(v>>8)', assigned value is 524287
+>>             v |= v >> 8;
+>>     ^
+>>     lib/zstd/common/zstd_internal.h:400:0: note: Assignment 'v=v|(v>>16)', assigned value is 524287
+>>             v |= v >> 16;
+>>     ^
+>>     lib/zstd/common/zstd_internal.h:401:27: note: Array index out of bounds
+>>             return DeBruijnClz[(v * 0x07C4ACDDU) >> 27];
+>>                               ^
+>>>> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
+>>     ^
+>>>> lib/zstd/compress/zstd_lazy.c:663:74: warning: Overflow in pointer arithmetic, NULL pointer is subtracted. [nullPointerArithmetic]
+>>         const U32 dictAndPrefixLength = (U32)((ip - prefixLowest) + (dictEnd - dictLowest));
+>>                                                                              ^
+>>     lib/zstd/compress/zstd_lazy.c:658:70: note: Assignment 'dictEnd=dictMode==ZSTD_dictMatchState?dms->window.nextSrc:NULL', assigned value is 0
+>>         const BYTE* const dictEnd      = dictMode == ZSTD_dictMatchState ?
+>>                                                                          ^
+>>     lib/zstd/compress/zstd_lazy.c:663:74: note: Null pointer subtraction
+>>         const U32 dictAndPrefixLength = (U32)((ip - prefixLowest) + (dictEnd - dictLowest));
+>>                                                                              ^
+>>>> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
+>>     ^
+>>>> lib/zstd/compress/zstd_double_fast.c:97:75: warning: Overflow in pointer arithmetic, NULL pointer is subtracted. [nullPointerArithmetic]
+>>         const U32 dictAndPrefixLength  = (U32)((ip - prefixLowest) + (dictEnd - dictStart));
+>>                                                                               ^
+>>     lib/zstd/compress/zstd_double_fast.c:88:70: note: Assignment 'dictEnd=dictMode==ZSTD_dictMatchState?dms->window.nextSrc:NULL', assigned value is 0
+>>         const BYTE* const dictEnd      = dictMode == ZSTD_dictMatchState ?
+>>                                                                          ^
+>>     lib/zstd/compress/zstd_double_fast.c:97:75: note: Null pointer subtraction
+>>         const U32 dictAndPrefixLength  = (U32)((ip - prefixLowest) + (dictEnd - dictStart));
+>>                                                                               ^
+> Seems like another false positive.
+>
+>>>> lib/zstd/common/zstd_deps.h:131:0: warning: syntax error [syntaxError]
+>>     ^
+>>
+>> # https://github.com/0day-ci/linux/commit/400786d3b08436113bcb3c9c16a97eefc31317c1
+>> git remote add linux-review https://github.com/0day-ci/linux
+>> git fetch --no-tags linux-review Nick-Terrell/Update-to-zstd-1-4-6/20200924-064102
+>> git checkout 400786d3b08436113bcb3c9c16a97eefc31317c1
+>> vim +179 lib/zstd/common/mem.h
+>>
+>>     173
+>>     174
+>>     175  MEM_STATIC U32 MEM_swap32(U32 in)
+>>     176  {
+>>     177  #if (defined (__GNUC__) && (__GNUC__ * 100 + __GNUC_MINOR__ >= 403)) \
+>>     178    || (defined(__clang__) && __has_builtin(__builtin_bswap32))
+>>   > 179      return __builtin_bswap32(in);
+>>     180  #else
+>>     181      return  ((in << 24) & 0xff000000 ) |
+>>     182              ((in <<  8) & 0x00ff0000 ) |
+>>     183              ((in >>  8) & 0x0000ff00 ) |
+>>     184              ((in >> 24) & 0x000000ff );
+>>     185  #endif
+>>     186  }
+>>     187
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-But, yeah, it should be 'and'.
-
-> > +        * the hardware actually supports enabling both at the same time the
-> > +        * electrical result would be disastrous.
-> > +        */
-> 
-> ...
-> 
-> > +       /* Bias requires explicit direction. */
-> > +       if ((flags & GPIO_V2_LINE_BIAS_FLAGS) &&
-> > +           !(flags & GPIO_V2_LINE_DIRECTION_FLAGS))
-> > +               return -EINVAL;
-> 
-> Okay, since this is strict we probably may relax it in the future if
-> it will be a use case.
-> ...
-> 
-
-Again, this is drawn directly from the v1 implementation, and I didn't go
-changing anything from v1 without good reason.
-
-> > +       /* Only one bias flag can be set. */
-> 
-> Ditto. (Some controllers allow to set both simultaneously, though I
-> can't imagine good use case for that)
-> 
-> > +       if (((flags & GPIO_V2_LINE_FLAG_BIAS_DISABLED) &&
-> > +            (flags & (GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN |
-> > +                      GPIO_V2_LINE_FLAG_BIAS_PULL_UP))) ||
-> > +           ((flags & GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN) &&
-> > +            (flags & GPIO_V2_LINE_FLAG_BIAS_PULL_UP)))
-> > +               return -EINVAL;
-> 
-> ...
-> 
-> > +static void gpio_v2_line_config_flags_to_desc_flags(u64 flags,
-> > +                                                   unsigned long *flagsp)
-> > +{
-> 
-> > +       assign_bit(FLAG_ACTIVE_LOW, flagsp,
-> > +                  flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW);
-> 
-> What I meant is to attach also this to the other assign_bit():s below.
-> And just in case a question: why not __asign_bit() do we really need atomicity?
-> 
-
-These are initialized as per their order in the flags so it is easier to
-tell if any are missing.
-
-The atomicity is not required here, but it is elsewhere so you are
-oblidged to use it for all accesses, no?
-
-> > +       if (flags & GPIO_V2_LINE_FLAG_OUTPUT)
-> > +               set_bit(FLAG_IS_OUT, flagsp);
-> > +       else if (flags & GPIO_V2_LINE_FLAG_INPUT)
-> > +               clear_bit(FLAG_IS_OUT, flagsp);
-> > +
-> > +       assign_bit(FLAG_OPEN_DRAIN, flagsp,
-> > +                  flags & GPIO_V2_LINE_FLAG_OPEN_DRAIN);
-> > +       assign_bit(FLAG_OPEN_SOURCE, flagsp,
-> > +                  flags & GPIO_V2_LINE_FLAG_OPEN_SOURCE);
-> > +       assign_bit(FLAG_PULL_UP, flagsp,
-> > +                  flags & GPIO_V2_LINE_FLAG_BIAS_PULL_UP);
-> > +       assign_bit(FLAG_PULL_DOWN, flagsp,
-> > +                  flags & GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN);
-> > +       assign_bit(FLAG_BIAS_DISABLE, flagsp,
-> > +                  flags & GPIO_V2_LINE_FLAG_BIAS_DISABLED);
-> > +}
-> 
-> ...
-> 
-> > +static long linereq_get_values(struct linereq *lr, void __user *ip)
-> > +{
-> > +       struct gpio_v2_line_values lv;
-> > +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
-> > +       struct gpio_desc **descs;
-> > +       unsigned int i, didx, num_get;
-> > +       int ret;
-> 
-> > +       /* NOTE: It's ok to read values of output lines. */
-> > +       if (copy_from_user(&lv, ip, sizeof(lv)))
-> > +               return -EFAULT;
-> > +
-> > +       for (num_get = 0, i = 0; i < lr->num_lines; i++) {
-> > +               if (lv.mask & BIT_ULL(i)) {
-> > +                       num_get++;
-> > +                       descs = &lr->lines[i].desc;
-> > +               }
-> > +       }
-> 
-> So what you can do here is something like
-> 
-> DECLARE_BITMAP(mask, u64);
-> 
-> ...
-> 
-> bitmap_from_u64(mask, lv.mask);
-> num_get = bitmap_weight(mask, lr->num_lines);
-> if (num_get == 0)
->   return -EINVAL;
-> 
-> for_each_set_bit(i, mask, lr->num_lines)
->       descs = &lr->lines[i].desc;
-> // I'm not sure I understood a purpose of the above
-> // ah, looks like malloc() avoidance, but you may move it below...
-> 
-> > +       if (num_get == 0)
-> > +               return -EINVAL;
-> > +
-> 
-> > +       if (num_get != 1) {
-> 
-> ...something like
-> 
-> if (num_get == 1)
->   descs = ...[find_first_bit(mask, lr->num_lines)];
-> else {
->  ...
->  for_each_set_bit() {
->   ...
->  }
-> }
-> 
-
-As per elsewhere - will give it a shot.
-
-> > +               descs = kmalloc_array(num_get, sizeof(*descs), GFP_KERNEL);
-> > +               if (!descs)
-> > +                       return -ENOMEM;
-> > +               for (didx = 0, i = 0; i < lr->num_lines; i++) {
-> > +                       if (lv.mask & BIT_ULL(i)) {
-> > +                               descs[didx] = lr->lines[i].desc;
-> > +                               didx++;
-> > +                       }
-> > +               }
-> > +       }
-> > +       ret = gpiod_get_array_value_complex(false, true, num_get,
-> > +                                           descs, NULL, vals);
-> > +
-> > +       if (num_get != 1)
-> > +               kfree(descs);
-> > +       if (ret)
-> > +               return ret;
-> > +
-> 
-> > +       lv.bits = 0;
-> > +       for (didx = 0, i = 0; i < lr->num_lines; i++) {
-> > +               if (lv.mask & BIT_ULL(i)) {
-> > +                       if (test_bit(didx, vals))
-> > +                               lv.bits |= BIT_ULL(i);
-> > +                       didx++;
-> > +               }
-> > +       }
-> 
-> So here...
-> 
-> > +       if (copy_to_user(ip, &lv, sizeof(lv)))
-> > +               return -EFAULT;
-> > +
-> > +       return 0;
-> > +}
-> 
-> ...
-> 
-> > +       /* Make sure this is terminated */
-> > +       ulr.consumer[sizeof(ulr.consumer)-1] = '\0';
-> > +       if (strlen(ulr.consumer)) {
-> > +               lr->label = kstrdup(ulr.consumer, GFP_KERNEL);
-> > +               if (!lr->label) {
-> > +                       ret = -ENOMEM;
-> > +                       goto out_free_linereq;
-> > +               }
-> > +       }
-> 
-> Still don't get why we can\t use kstrndup() here...
-> 
-
-I know ;-).
-
-Another one directly from v1, and the behaviour there is to leave
-lr->label nulled if consumer is empty.
-It just avoids a pointless malloc for the null terminator.
-
-Cheers,
-Kent.
