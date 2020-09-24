@@ -2,112 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33D727712A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67EA027712D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727774AbgIXMij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:38:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57296 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727660AbgIXMij (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:38:39 -0400
-Received: from coco.lan (ip5f5ad5c4.dynamic.kabel-deutschland.de [95.90.213.196])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE1AB21D24;
-        Thu, 24 Sep 2020 12:38:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600951119;
-        bh=k3WZRZdZuF6s4FKyf4FEZOVMN8m6qD690wYuX9PC6+w=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lbhWWp1KMyX6vYFySbwNlt11ppdhu1gnN1vcJDY7dn/wuoTjoR795MJmepqcn2jyN
-         4hwhwcAaEA7NeobiF4U9WpUCKpIHMjZnlN61MxUYAk1aHKm/NcMmZrNdryLte35xKu
-         bbO5ogfBUF3JMHCk3j7IkV76WpkbfTRsXeL6i97E=
-Date:   Thu, 24 Sep 2020 14:38:34 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        id S1727773AbgIXMjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727570AbgIXMjg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:39:36 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98188C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:39:36 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 34so1807741pgo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:39:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wGzZiYBPJE4cQ+YRmGtp/CWBBsveyvA8iRp2wwUff/E=;
+        b=DNKKUODG6HPoT3PUyAB80GXXRwbumYHowFZ+ox/2YuanlxUjv0e26yT2Fzf8CgfF7O
+         Jsmc+z4qNkXKmFyrppwQjwBeIhfHWV+71DnbZdWHQz5dHFgzS2xxoQJfbOOOdsZQcC9L
+         bqUY1SL7sIX4g8VIQ2uCpGPDnv7iLRy+sOwSH5uEqe1UobatMdq9so7Y57KpPIy6tMzW
+         U4fLcSkrHNjjjBBQkUt3GXTd53WiHmpzfHcyJ4egcatanHpN+MBk4AgsFTxPbrdpY11r
+         a6oNFtRQnuQaz3pW255zx9MmCCN4DSDadzduUdGsvD+ea6pz6+y0w208k3f74I0mH4cw
+         8ALQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wGzZiYBPJE4cQ+YRmGtp/CWBBsveyvA8iRp2wwUff/E=;
+        b=jI7MO9b7hOQa6QG8PhvBjfLZTP/18VzI90rinbxupDbsNNMUDdDnIf4/Qe1UyB6dP6
+         mPuEwYgVKG4z98I6uBmcsIxtA1NB18PBCf6WUpqwmWMXiGwHXe5XCsmn8AxXAhD7cr/V
+         FcHJbqLqdoNydFiVdkIUlQ2wvK1+NZ4Y/N8d83JNWN90KcXbK6PV3s/Hj0IL+NGNMi62
+         cHL+0okG1JOTSGppSMqTjBIvceAfcebdJ0Rib0hUkBthYVdTP2RgUsC8u1sdZ3SxyJKV
+         gaWN5NROC0iU04EqszPRAZwKq2zVRoPoODnBjwWJTd2aHDH3cQk7CiHU8bBESbfb36TB
+         vf1Q==
+X-Gm-Message-State: AOAM5317KegKwAObHT0ybiLNT1NgeuP+UT0NdWRFN77pnXQYtsNykK6G
+        7t+tETf8pfhPHsWqJ4oIOjkS+Q==
+X-Google-Smtp-Source: ABdhPJyJpFmOSbzCDLbyX/k1tfFG8tIz1hLeysz8FvA26p5V683V/7JM99KH5U10QgS+SnFVAK9cVA==
+X-Received: by 2002:a62:4e8a:0:b029:13c:1611:653b with SMTP id c132-20020a624e8a0000b029013c1611653bmr4420557pfb.13.1600951176069;
+        Thu, 24 Sep 2020 05:39:36 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id r16sm2407148pjo.19.2020.09.24.05.39.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 24 Sep 2020 05:39:34 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 18:09:21 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Lukasz Luba <lukasz.luba@arm.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        cristian.marussi@arm.com, Sudeep Holla <sudeep.holla@arm.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL for v5.9-rc7] media fixes
-Message-ID: <20200924143834.79ef0744@coco.lan>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to
+ cpufreq_stats_record_transition()
+Message-ID: <20200924123921.iiaqw2ufe2utnjtg@vireshk-i7>
+References: <cover.1600238586.git.viresh.kumar@linaro.org>
+ <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
+ <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
+ <a4c5a6b9-10f8-34f8-f01d-8b373214d173@arm.com>
+ <CAJZ5v0iFjzqTKTPFF5hB5C0TYSQn2rxL_6099gqUwoTARKRnZA@mail.gmail.com>
+ <ae5771c8-6297-e447-4449-e39ae2ea5a0e@arm.com>
+ <CAJZ5v0hkBnU_W-ZXHTfppu9pVWnQcJHho7DQPi7N7yeLOt5cgg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0hkBnU_W-ZXHTfppu9pVWnQcJHho7DQPi7N7yeLOt5cgg@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 24-09-20, 13:07, Rafael J. Wysocki wrote:
+> On Thu, Sep 24, 2020 at 1:00 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> > On 9/24/20 11:24 AM, Rafael J. Wysocki wrote:
+> > > On Thu, Sep 24, 2020 at 11:25 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
 
-Please pull from:
+> > >> I wonder if we could just drop the reset feature. Is there a tool
+> > >> which uses this file? The 'reset' sysfs would probably have to stay
+> > >> forever, but an empty implementation is not an option?
+> > >
+> > > Well, having an empty sysfs attr would be a bit ugly, but the
+> > > implementation of it could be simplified.
+> > >
+> > >> The documentation states:
+> > >> 'This can be useful for evaluating system behaviour under different
+> > >> governors without the need for a reboot.'
+> > >> With the scenario of fast-switch this resetting complicates the
+> > >> implementation and the justification of having it just for experiments
+> > >> avoiding reboot is IMO weak. The real production code would have to pay
+> > >> extra cycles every time. Also, we would probably not experiment with
+> > >> cpufreq different governors, since the SchedUtil is considered the best
+> > >> option.
+> > >
+> > > It would still be good to have a way to test it against the other
+> > > available options, though.
+> > >
+> >
+> > Experimenting with different governors would still be possible, just
+> > the user-space would have to take a snapshot of the stats when switching
+> > to a new governor. Then the values presented in the stats would just
+> > need to be calculated in this user tool against the snapshot.
+> >
+> > The resetting is also not that bad, since nowadays more components
+> > maintain some kind of local statistics/history (scheduler, thermal).
+> > I would recommend to reset the whole system and repeat the same tests
+> > with different governor, just to be sure that everything starts from
+> > similar state (utilization, temperature, other devfreq devices
+> > frequencies etc).
+> 
+> Well, if everyone agrees on removing the reset feature, let's drop the
+> sysfs attr too, as it would be useless going forward.
+> 
+> Admittedly, I don't have a strong opinion and since intel_pstate
+> doesn't use a frequency table, this is not relevant for systems using
+> that driver anyway.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.9-3
+I added this file sometime back as it made my life a lot easier while testing
+some scheduler related changes and see how they affect cpufreq updates. IMO this
+is a useful feature and we don't really need to get rid of it.
 
-It fixes a regression at the CEC adapter core:
+Lets see where the discussion goes about the feedback you gave.
 
-      media: cec-adap.c: don't use flush_scheduled_work()
-
-While not too late, it also contains two uAPI patches for the 
-changes already merged for Kernel 5.9:
-
-      media: dt-bindings: media: imx274: Convert to json-schema
-      media: media/v4l2: remove V4L2_FLAG_MEMORY_NON_CONSISTENT flag
-
-The first one has a change to lowercase on one of the DT new
-additions for Kernel 5.9. The second one actually reverts one
-uAPI change that was nacked by mm people, because the changeset
-has problems.
-
-Thanks!
-Mauro
-
----
-
-The following changes since commit ddecfc76979d5585847c76c4c489dcac389f86dd:
-
-  media: mceusb: Avoid GFP_ATOMIC where it is not needed (2020-08-28 14:06:36 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.9-3
-
-for you to fetch changes up to d0254f82d702a1d0d92e42f87676111de88846cf:
-
-  media: dt-bindings: media: imx274: Convert to json-schema (2020-09-22 11:13:46 +0200)
-
-----------------------------------------------------------------
-media fixes for v5.9-rc7
-
-----------------------------------------------------------------
-Hans Verkuil (1):
-      media: cec-adap.c: don't use flush_scheduled_work()
-
-Jacopo Mondi (1):
-      media: dt-bindings: media: imx274: Convert to json-schema
-
-Sergey Senozhatsky (1):
-      media: media/v4l2: remove V4L2_FLAG_MEMORY_NON_CONSISTENT flag
-
- .../devicetree/bindings/media/i2c/imx274.txt       | 38 -----------
- .../devicetree/bindings/media/i2c/sony,imx274.yaml | 76 ++++++++++++++++++++++
- Documentation/userspace-api/media/v4l/buffer.rst   | 17 -----
- .../userspace-api/media/v4l/vidioc-create-bufs.rst |  6 +-
- .../userspace-api/media/v4l/vidioc-reqbufs.rst     | 12 +---
- MAINTAINERS                                        |  2 +-
- drivers/media/cec/core/cec-adap.c                  |  2 +-
- drivers/media/common/videobuf2/videobuf2-core.c    | 46 ++-----------
- .../media/common/videobuf2/videobuf2-dma-contig.c  | 19 ------
- drivers/media/common/videobuf2/videobuf2-dma-sg.c  |  3 +-
- drivers/media/common/videobuf2/videobuf2-v4l2.c    | 18 +----
- drivers/media/dvb-core/dvb_vb2.c                   |  2 +-
- drivers/media/v4l2-core/v4l2-compat-ioctl32.c      | 10 +--
- drivers/media/v4l2-core/v4l2-ioctl.c               |  5 +-
- include/media/videobuf2-core.h                     |  7 +-
- include/uapi/linux/videodev2.h                     | 13 +---
- 16 files changed, 101 insertions(+), 175 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/media/i2c/imx274.txt
- create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx274.yaml
-
+-- 
+viresh
