@@ -2,1028 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6087E2768CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E88C2768D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgIXGVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726852AbgIXGVX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:21:23 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF04CC0613CE;
-        Wed, 23 Sep 2020 23:21:22 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id y2so2073634ila.0;
-        Wed, 23 Sep 2020 23:21:22 -0700 (PDT)
+        id S1726896AbgIXGXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:23:17 -0400
+Received: from mail-dm6nam12on2078.outbound.protection.outlook.com ([40.107.243.78]:28768
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726119AbgIXGXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:23:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kaIzW7I4pA8et9YemuZFbGjOlpQmznCBNHpeBUuyc9hM2usC80NrtnBkq37gJ+LAjawSIjZFX1PT+XgMaKYxHzpy203F0DM3cf/VdWVG54+33nmYxF/Pz31ojXBf1I7/P9karK5L8keRiXyWb30z6+EnqhKkkQjOf6tGVHtCf6sOXv0xBqFjZ2Dv3ojZch6mOk+f+DgzxcwGtOmPEF25aV5yn/qJaLkmnHnq4lHDHzvkki4mbEnsAt/KO3BgVWmnIfYx5pD0K6TN4i2jbIk4S+btGLUfqsJob7W3xZ1Aa3jDBs5io47qZlaFOqZVwQEtLLa53AufwDs/Fmypk8fzlA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=20cgK2nF83bMWnXKIDliznycd7AmNID2AR2OUIDxoPo=;
+ b=lAccIMdVMNmT4rBJSuhOauLfIxMREFvUYS51nsrLcShuZw1Izt9CZAnlpHNiTQYD/fd6/UPjoY3Mn7oBHVUwKHm/CvhW8ZyWYLa84xbb5LnOURlsToRF/nQAkiD+WnCRhMm6TDweZCeHKXshJCFgUnieF4cj8bj1KdOC1AU+gV58gmMic77ASVwkn83cXDaib2bRJpwZZsSWHCowk+2AhhDnGMmzZq8Juzc5FjDLTb9sz6eeVohEQJJPDVzv5o7HWZd/cIkpRScT1rghs+ZZlbsPUX7fyGd8rWpiJn+joV/nYUilIIYfOrG8xLs2W1uXrmxCKq72HY9clYT2QCucuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2QCuAsAnPZ84dWE2f3z8HYI+deWW3HrO+4EJeaF6gpY=;
-        b=FgU40QuXZXwjqIBe3WzexGwce2Aot5+ChvB0BMApSXLSWE3zK3SquoVtzA+rib1Di5
-         bwsjMiShAyRAL4K3UzUx+xOyJDA18xJHEldqVk4YlA2y8yRiq6YQySCIe1tL/LZLt0qd
-         qzgleBS97I9zp6fyUIge+CnIUBQsY93Z0hvNC+q9zmbUKWTfeXVzKv32txSb5XyumXn0
-         Vf3cVmGkz+zZWtLbjEQFbzirTkKqhh8JNOz04xDANOQpvDqNETXxDGMHLRc7UOeQoDbh
-         5j4cADS6IKrnw/p8zFHnmiUxNDO2JNaBXdH/u0e/gHdGLJlOLHs0FtSVChbu2s5u5JOV
-         cj8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2QCuAsAnPZ84dWE2f3z8HYI+deWW3HrO+4EJeaF6gpY=;
-        b=MSExQ+gjiVWVY9N2IRbaH5ux9VSuu6p53OPF0wnf6JzZEqIHWAbhTa9/5ZQW2niViH
-         1BKQIJyQep7GoBT3RBARJ4bpOAxr1vXgGrUuyD/xrEjmD8kMi4mK0NUyLg1UFOXL71dg
-         ClYLHxaggpcXEOdhhpr0ooeXrlTnROrkeFyQP8vC8KmKzij8ikEzrm51AVAyh2YL1ccZ
-         y5aAKJxL7kLK+pXBibM9/u1gGKUD86f1xshuR3S75afFm+ZkEuZ3Q961Q6AzqBTBj2AL
-         xwP9TtGyzydnbTs+jnXR99CZYzzaxN8zBjvqRj2QbvmYCGqOcgygMuzMDbDiw96E0Xcg
-         tSDg==
-X-Gm-Message-State: AOAM531LJEEWBoWv3xtYoxVi0VzPP+0PnrKt8y0nyJSChvxciTJSl127
-        oW+TMNlquDwRb3YM+18X1ZKlgW2GusNqvymD0I4=
-X-Google-Smtp-Source: ABdhPJwQzZ3vzTT4R3CTI14Of/NB/rBSlUaYsBSkzUR3fqMfM7kxIqUkW50W2d9gPsRF586SKwCGbXiCV8xhZM8lfNA=
-X-Received: by 2002:a92:1589:: with SMTP id 9mr2791271ilv.292.1600928481841;
- Wed, 23 Sep 2020 23:21:21 -0700 (PDT)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=20cgK2nF83bMWnXKIDliznycd7AmNID2AR2OUIDxoPo=;
+ b=YtB/+3oI0WiPL5nD1xZLC2VoRWUc6Ci7ZCsZDXS4pBjP+aOb+eoiaZwiB8g3qOqfilfBFiLTcB0Ly7kI2Ns0Z6NxS3agIvhIhiydxDXdZihMFM4mJb21bSTqBDcBvqccoSxvqycCYYtaJseCSlSBeyaBgvz7WX03DbO1HdbY3Z4=
+Received: from BYAPR02MB5863.namprd02.prod.outlook.com (2603:10b6:a03:128::14)
+ by BYAPR02MB3927.namprd02.prod.outlook.com (2603:10b6:a02:f3::33) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 24 Sep
+ 2020 06:23:12 +0000
+Received: from BYAPR02MB5863.namprd02.prod.outlook.com
+ ([fe80::7dba:90:1155:1bd]) by BYAPR02MB5863.namprd02.prod.outlook.com
+ ([fe80::7dba:90:1155:1bd%3]) with mapi id 15.20.3391.024; Thu, 24 Sep 2020
+ 06:23:12 +0000
+From:   Shubhrajyoti Datta <shubhraj@xilinx.com>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>
+Subject: RE: [PATCH v6 5/8] clk: clock-wizard: Add support for fractional
+ support
+Thread-Topic: [PATCH v6 5/8] clk: clock-wizard: Add support for fractional
+ support
+Thread-Index: AQHWfUDOGI6eaIPWs0K4G5m1xbgT36lzvsEAgAJmejA=
+Date:   Thu, 24 Sep 2020 06:23:11 +0000
+Message-ID: <BYAPR02MB5863905CA4E7F129C9E2FF3FAA390@BYAPR02MB5863.namprd02.prod.outlook.com>
+References: <1598621996-31040-1-git-send-email-shubhrajyoti.datta@xilinx.com>
+ <1598621996-31040-6-git-send-email-shubhrajyoti.datta@xilinx.com>
+ <160072305811.310579.18192761455478284239@swboyd.mtv.corp.google.com>
+In-Reply-To: <160072305811.310579.18192761455478284239@swboyd.mtv.corp.google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [124.123.161.174]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 1ea99489-da37-49b2-6060-08d860525017
+x-ms-traffictypediagnostic: BYAPR02MB3927:
+x-microsoft-antispam-prvs: <BYAPR02MB39277596C931064984658F8FAA390@BYAPR02MB3927.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9yQb8aCpLln+y1+40ti7TR7OZ5K1e/AygTCFs7v/LNyaftQr55iB/YpA/RhDS5hBgSgzurIMIMZUFJSNk1yOJqKjQ73mPfFamP1kRSnE9kmerCpB3l2mtMdS5UlByL8fHaUT4OSMp8dko5MFJQd2Enfv4rVLkVqYRtFpXeSOqBU4ny8usO2s6tlll+h4eIznbFwCz57ulAKrKbtVZO1zdKl9rigUKldcJf448OyKQtrRiS9iKoHi7NkBhArnzakLGl/18VdKpiyny2nVxvpgf0xgk+wfErcaf47T9tO6BCRCkCkcFxpH89syL5JKI84ilKV9rHLktycRo5hS7XdnHw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5863.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(376002)(39860400002)(4326008)(186003)(76116006)(86362001)(71200400001)(66446008)(478600001)(52536014)(26005)(55016002)(9686003)(66946007)(33656002)(53546011)(6506007)(64756008)(66476007)(7696005)(83380400001)(8936002)(66556008)(54906003)(316002)(5660300002)(8676002)(2906002)(110136005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: +RB7KKOqe1z9m7txposmGnLt1B0hIS9GDnt4SdFnDgzZNcBNO4yvFg0Wys90Yv9fQD6buBTYwtGerok4Ok7b4eRCI5N7dX0l8qUL6URmGyNpqZ/AABasDTuieV87f6MUn4Aks3GM1fpyUPlhep7vLxRDqiiIAXHFWaGTrQi74Sotado7NNm4nr4c82X+ifecIJBK5SPhHN+qY3DNFZmdo7OMzy7q23676rM9SpJyLsxmYOaNpvlSq9OpgOHUCPJ/bnlNhRHLgefia4yIbjZpTKzGsI+HHi9ZISL+9tS06dlINPClbpokvKUjabTAE+PYB3cTc5mIvfKoF3OUHaFLS1mznqeUaCJL6m/Z6aI4fuGzjarWHos6wsOzWP7I2idwiLXfrYl8/nqT1CkerMe9ZTPYX+yJQ7GJOcLq+2AYDb/JpwOtK6ERFII9/k/toBUONt+fzNZU+/p84PqHEZK2GCGC4R0OLXae2mMrCgCy4NWhPtMu1BzZQ4Geb3rkgsIJLn0FT8uExopgTwCrrOluiN6UQ4vkvftFFyjVoS+VGojbh1v7JXTO5cmxhTcCOR59jtS2mkOCJW82qM49Fc+c+KEBCJIoyXHDl0PABqrgI1GoIpbpGQMPgXPsl+tPLHUnD6MNdKqf5ipmYgzn2f3Hcw==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1600865452-19649-1-git-send-email-gene.chen.richtek@gmail.com>
- <1600865452-19649-3-git-send-email-gene.chen.richtek@gmail.com> <e82fd413-8343-5115-150e-02d96eecf6e8@gmail.com>
-In-Reply-To: <e82fd413-8343-5115-150e-02d96eecf6e8@gmail.com>
-From:   Gene Chen <gene.chen.richtek@gmail.com>
-Date:   Thu, 24 Sep 2020 14:21:10 +0800
-Message-ID: <CAE+NS35BwgGD3GjKv5E08ECqKCortJxB-yHP9-kteqPiKm9edQ@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] leds: mt6360: Add LED driver for MT6360
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Gene Chen <gene_chen@richtek.com>, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5863.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ea99489-da37-49b2-6060-08d860525017
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2020 06:23:11.8090
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: oy+IftFpu5HsT6wBJEZxlHfmcOo7nlalTzTZrAAsZBhGmdZt/lR3sG6Wuea51WSllaWDw5qa55UWSzEJEBcFqQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB3927
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jacek Anaszewski <jacek.anaszewski@gmail.com> =E6=96=BC 2020=E5=B9=B49=E6=
-=9C=8824=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=885:49=E5=AF=AB=E9=81=
-=93=EF=BC=9A
-
->
-> Hi Gene,
->
-> Thank you for the update. I have some more comments below.
->
-> On 9/23/20 2:50 PM, Gene Chen wrote:
-> > From: Gene Chen <gene_chen@richtek.com>
-> >
-> > Add MT6360 LED driver include 2-channel Flash LED with torch/strobe mod=
-e,
-> > and 4-channel RGB LED support Register/Flash/Breath Mode
-> >
-> > Signed-off-by: Gene Chen <gene_chen@richtek.com>
-> > ---
-> >   drivers/leds/Kconfig       |  11 +
-> >   drivers/leds/Makefile      |   1 +
-> >   drivers/leds/leds-mt6360.c | 705 ++++++++++++++++++++++++++++++++++++=
-+++++++++
-> >   3 files changed, 717 insertions(+)
-> >   create mode 100644 drivers/leds/leds-mt6360.c
-> >
-> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> > index 1c181df..5561b08 100644
-> > --- a/drivers/leds/Kconfig
-> > +++ b/drivers/leds/Kconfig
-> > @@ -271,6 +271,17 @@ config LEDS_MT6323
-> >         This option enables support for on-chip LED drivers found on
-> >         Mediatek MT6323 PMIC.
-> >
-> > +config LEDS_MT6360
-> > +     tristate "LED Support for Mediatek MT6360 PMIC"
-> > +     depends on LEDS_CLASS_FLASH && OF
-> > +     depends on V4L2_FLASH_LED_CLASS || !V4L2_FLASH_LED_CLASS
-> > +     depends on MFD_MT6360
-> > +     help
-> > +       This option enables support for dual Flash LED drivers found on
-> > +       Mediatek MT6360 PMIC.
-> > +       Independent current sources supply for each flash LED support t=
-orch
-> > +       and strobe mode.
-> > +
-> >   config LEDS_S3C24XX
-> >       tristate "LED Support for Samsung S3C24XX GPIO LEDs"
-> >       depends on LEDS_CLASS
-> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> > index c2c7d7a..5596427 100644
-> > --- a/drivers/leds/Makefile
-> > +++ b/drivers/leds/Makefile
-> > @@ -66,6 +66,7 @@ obj-$(CONFIG_LEDS_MIKROTIK_RB532)   +=3D leds-rb532.o
-> >   obj-$(CONFIG_LEDS_MLXCPLD)          +=3D leds-mlxcpld.o
-> >   obj-$(CONFIG_LEDS_MLXREG)           +=3D leds-mlxreg.o
-> >   obj-$(CONFIG_LEDS_MT6323)           +=3D leds-mt6323.o
-> > +obj-$(CONFIG_LEDS_MT6360)            +=3D leds-mt6360.o
-> >   obj-$(CONFIG_LEDS_NET48XX)          +=3D leds-net48xx.o
-> >   obj-$(CONFIG_LEDS_NETXBIG)          +=3D leds-netxbig.o
-> >   obj-$(CONFIG_LEDS_NIC78BX)          +=3D leds-nic78bx.o
-> > diff --git a/drivers/leds/leds-mt6360.c b/drivers/leds/leds-mt6360.c
-> > new file mode 100644
-> > index 0000000..1c3486e
-> > --- /dev/null
-> > +++ b/drivers/leds/leds-mt6360.c
-> > @@ -0,0 +1,705 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +
-> > +#include <linux/delay.h>
-> > +#include <linux/init.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/led-class-flash.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/property.h>
-> > +#include <linux/regmap.h>
-> > +#include <media/v4l2-flash-led-class.h>
-> > +
-> > +enum {
-> > +     MT6360_LED_ISNK1 =3D 0,
-> > +     MT6360_LED_ISNK2,
-> > +     MT6360_LED_ISNK3,
-> > +     MT6360_LED_ISNK4,
->
-> One question about these ISINKs - how are they exploited in your device?
-> Are these LEDs used to indicate camera activity or it is one RGB LED
-> for status? And what functionality has the remaining amber one (sticking
-> to the naming from your DT bindings)?
->
-> Can you share how the documenation for this device describes the purpose
-> of these sinks, if it does it at all?
->
-> I got probably mislead by your naming in the driver and got fixed on
-> their function as camera activity indicators, for which V4L2 has
-> support. If that is not the case, then you'd better switch to using
-> multicolor framework for all four "indicator" LEDs.
->
-
-It's one RGB LED for status, not for camera.
-
-The MT6360 integrates a three-channel RGB LED driver, designed to
-provide a variety of lighting effects for mobile device applications.
-The RGB LED driver includes a smart LED string controller, and it can
-drive 3 channels of LEDs with a sink current of up to 24mA. The
-default setting of RGB_ISINK1 is auto mode for TA charging indicator,
-and RGB_ISINK1 also supports software mode. It provides three
-operation modes for the RGB LEDs: flash mode, breath mode, and
-register mode. The device can increase or decrease the brightness of
-the RGB LEDs upon command via the I2C interface. The RGB_ISINK4
-provide more sink current up to 150mA, which we can moonlight mode.
-
-Do you mean we should remove "isink register v4l2 device, only need
-register ledclass device"?
-
-> > +     MT6360_LED_FLASH1,
-> > +     MT6360_LED_FLASH2,
-> > +     MT6360_MAX_LEDS
-> > +};
-> > +
-> > +#define MT6360_REG_RGBEN             0x380
-> > +#define MT6360_REG_ISNK(_led_no)     (0x381 + (_led_no))
-> > +#define MT6360_ISNK_ENMASK(_led_no)  BIT(7 - (_led_no))
-> > +#define MT6360_ISNK_MASK             GENMASK(4, 0)
-> > +#define MT6360_CHRINDSEL_MASK                BIT(3)
-> > +
-> > +#define MT6360_REG_FLEDEN            0x37E
-> > +#define MT6360_REG_STRBTO            0x373
-> > +#define MT6360_REG_FLEDBASE(_id)     (0x372 + 4 * (_id - MT6360_LED_FL=
-ASH1))
-> > +#define MT6360_REG_FLEDISTRB(_id)    (MT6360_REG_FLEDBASE(_id) + 2)
-> > +#define MT6360_REG_FLEDITOR(_id)     (MT6360_REG_FLEDBASE(_id) + 3)
-> > +#define MT6360_REG_CHGSTAT2          0x3E1
-> > +#define MT6360_REG_FLEDSTAT1         0x3E9
-> > +#define MT6360_ITORCH_MASK           GENMASK(4, 0)
-> > +#define MT6360_ISTROBE_MASK          GENMASK(6, 0)
-> > +#define MT6360_STRBTO_MASK           GENMASK(6, 0)
-> > +#define MT6360_TORCHEN_MASK          BIT(3)
-> > +#define MT6360_STROBEN_MASK          BIT(2)
-> > +#define MT6360_FLCSEN_MASK(_id)              BIT(MT6360_LED_FLASH2 - _=
-id)
-> > +#define MT6360_FLEDCHGVINOVP_MASK    BIT(3)
-> > +#define MT6360_FLED1STRBTO_MASK              BIT(11)
-> > +#define MT6360_FLED2STRBTO_MASK              BIT(10)
-> > +#define MT6360_FLED1STRB_MASK                BIT(9)
-> > +#define MT6360_FLED2STRB_MASK                BIT(8)
-> > +#define MT6360_FLED1SHORT_MASK               BIT(7)
-> > +#define MT6360_FLED2SHORT_MASK               BIT(6)
-> > +#define MT6360_FLEDLVF_MASK          BIT(3)
-> > +
-> > +#define MT6360_ISNK1_STEPUA          2000
-> > +#define MT6360_ISNK1_MAXUA           24000
-> > +#define MT6360_ISNK4_STEPUA          5000
-> > +#define MT6360_ISNK4_MAXUA           150000
-> > +
-> > +#define MT6360_ITORCH_MINUA          25000
-> > +#define MT6360_ITORCH_STEPUA         12500
-> > +#define MT6360_ITORCH_MAXUA          400000
-> > +#define MT6360_ISTRB_MINUA           50000
-> > +#define MT6360_ISTRB_STEPUA          12500
-> > +#define MT6360_ISTRB_MAXUA           1500000
-> > +#define MT6360_STRBTO_MINUS          64000
-> > +#define MT6360_STRBTO_STEPUS         32000
-> > +#define MT6360_STRBTO_MAXUS          2432000
-> > +
-> > +#define STATE_OFF                    0
-> > +#define STATE_KEEP                   1
-> > +#define STATE_ON                     2
-> > +
-> > +struct mt6360_led {
-> > +     union {
-> > +             struct led_classdev isnk;
-> > +             struct led_classdev_flash flash;
-> > +     };
-> > +     struct v4l2_flash *v4l2_flash;
-> > +     struct mt6360_priv *priv;
-> > +     u32 led_no;
-> > +     u32 default_state;
-> > +};
-> > +
-> > +struct mt6360_priv {
-> > +     struct device *dev;
-> > +     struct regmap *regmap;
-> > +     unsigned int fled_strobe_used;
-> > +     unsigned int fled_torch_used;
-> > +     unsigned int leds_active;
-> > +     unsigned int leds_count;
-> > +     struct mt6360_led leds[];
-> > +};
-> > +
-> > +static int mt6360_isnk_brightness_set(struct led_classdev *lcdev, enum=
- led_brightness level)
-> > +{
-> > +     struct mt6360_led *led =3D container_of(lcdev, struct mt6360_led,=
- isnk);
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     u32 enable_mask =3D MT6360_ISNK_ENMASK(led->led_no);
-> > +     u32 val =3D level ? MT6360_ISNK_ENMASK(led->led_no) : 0;
-> > +     int ret;
->
-> You meed mutex protection in all functions acessing device registers.
->
-
-ACK
-
-> > +     ret =3D regmap_update_bits(priv->regmap, MT6360_REG_ISNK(led->led=
-_no),
-> > +                              MT6360_ISNK_MASK, level);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     return regmap_update_bits(priv->regmap, MT6360_REG_RGBEN, enable_=
-mask, val);
-> > +}
-> > +
-> > +static int mt6360_torch_brightness_set(struct led_classdev *lcdev, enu=
-m led_brightness level)
-> > +{
-> > +     struct mt6360_led *led =3D container_of(lcdev, struct mt6360_led,=
- flash.led_cdev);
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     u32 enable_mask =3D MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led-=
->led_no);
-> > +     u32 val =3D level ? MT6360_FLCSEN_MASK(led->led_no) : 0;
-> > +     u32 prev =3D priv->fled_torch_used, curr;
->
-> Above assignment must be made under mutex.
->
-
-ACK
-
-> > +     int ret;
-> > +
-> > +     /* Only one set of flash control logic, use the flag to avoid str=
-obe is currently used */
-> > +     if (priv->fled_strobe_used) {
-> > +             dev_warn(lcdev->dev, "Please disable strobe first [%d]\n"=
-, priv->fled_strobe_used);
-> > +             return -EBUSY;
-> > +     }
-> > +
-> > +     if (level)
-> > +             curr =3D prev | BIT(led->led_no);
-> > +     else
-> > +             curr =3D prev & ~BIT(led->led_no);
-> > +
-> > +     if (curr)
-> > +             val |=3D MT6360_TORCHEN_MASK;
-> > +
-> > +     if (level) {
-> > +             ret =3D regmap_update_bits(priv->regmap, MT6360_REG_FLEDI=
-TOR(led->led_no),
-> > +                                      MT6360_ITORCH_MASK, level - 1);
-> > +             if (ret)
-> > +                     return ret;
-> > +     }
-> > +
-> > +     ret =3D regmap_update_bits(priv->regmap, MT6360_REG_FLEDEN, enabl=
-e_mask, val);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     priv->fled_torch_used =3D curr;
->
-> Ditto. And everything between as well of course.
->
-
-ACK
-
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_flash_brightness_set(struct led_classdev_flash *fl_c=
-dev, u32 brightness)
-> > +{
-> > +     /*
-> > +      * Due to the current spike when turning on flash, only let brigh=
-tness keep by framework
->
-> s/keep by/to be kept/
->
-> > +      * This empty function is used to prevent led_classdev_flash regi=
-ster ops check
->
-> s/led_classdev_flash/led_classdev_flash()/
-> s/check/check failure/
->
-> And please put dots at the end of sentences.
->
-
-ACK
-
-> > +      */
-> > +     return 0;
-> > +}
-> > +
-> > +static int _mt6360_flash_brightness_set(struct led_classdev_flash *fl_=
-cdev, u32 brightness)
-> > +{
-> > +     struct mt6360_led *led =3D container_of(fl_cdev, struct mt6360_le=
-d, flash);
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     struct led_flash_setting *s =3D &fl_cdev->brightness;
-> > +     u32 val =3D (brightness - s->min) / s->step;
-> > +
-> > +     return regmap_update_bits(priv->regmap, MT6360_REG_FLEDISTRB(led-=
->led_no),
-> > +                              MT6360_ISTROBE_MASK, val);
-> > +}
-> > +
-> > +static int mt6360_strobe_set(struct led_classdev_flash *fl_cdev, bool =
-state)
-> > +{
-> > +     struct mt6360_led *led =3D container_of(fl_cdev, struct mt6360_le=
-d, flash);
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     struct led_classdev *lcdev =3D &fl_cdev->led_cdev;
-> > +     struct led_flash_setting *s =3D &fl_cdev->brightness;
-> > +     u32 enable_mask =3D MT6360_STROBEN_MASK | MT6360_FLCSEN_MASK(led-=
->led_no);
-> > +     u32 val =3D state ? MT6360_FLCSEN_MASK(led->led_no) : 0;
-> > +     u32 prev =3D priv->fled_strobe_used, curr;
-> > +     int ret;
-> > +
-> > +     /* Only one set of flash control logic, use the flag to avoid tor=
-ch is currently used */
-> > +     if (priv->fled_torch_used) {
-> > +             dev_warn(lcdev->dev, "Please disable torch first [0x%x]\n=
-", priv->fled_torch_used);
-> > +             return -EBUSY;
-> > +     }
-> > +
-> > +     if (state)
-> > +             curr =3D prev | BIT(led->led_no);
-> > +     else
-> > +             curr =3D prev & ~BIT(led->led_no);
-> > +
-> > +     if (curr)
-> > +             val |=3D MT6360_STROBEN_MASK;
-> > +
-> > +     ret =3D regmap_update_bits(priv->regmap, MT6360_REG_FLEDEN, enabl=
-e_mask, val);
-> > +     if (ret) {
-> > +             dev_err(lcdev->dev, "[%d] control current source %d fail\=
-n", led->led_no, state);
-> > +             return ret;
-> > +     }
-> > +
-> > +     /*
-> > +      * If the flash need to be on, config the flash current ramping u=
-p to the setting value
-> > +      * Else, always recover back to the minimum one
-> > +      */
-> > +     ret =3D _mt6360_flash_brightness_set(fl_cdev, state ? s->val : s-=
->min);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* For the flash turn on/off, HW rampping up/down time is 5ms/500=
-us, respectively */
-> > +     if (!prev && curr)
-> > +             usleep_range(5000, 6000);
-> > +     else if (prev && !curr)
-> > +             udelay(500);
-> > +
-> > +     priv->fled_strobe_used =3D curr;
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_strobe_get(struct led_classdev_flash *fl_cdev, bool =
-*state)
-> > +{
-> > +     struct mt6360_led *led =3D container_of(fl_cdev, struct mt6360_le=
-d, flash);
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +
-> > +     *state =3D !!(priv->fled_strobe_used & BIT(led->led_no));
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_timeout_set(struct led_classdev_flash *fl_cdev, u32 =
-timeout)
-> > +{
-> > +     struct mt6360_led *led =3D container_of(fl_cdev, struct mt6360_le=
-d, flash);
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     struct led_flash_setting *s =3D &fl_cdev->timeout;
-> > +     u32 val =3D (timeout - s->min) / s->step;
-> > +
-> > +     return regmap_update_bits(priv->regmap, MT6360_REG_STRBTO, MT6360=
-_STRBTO_MASK, val);
-> > +
-> > +}
-> > +
-> > +static int mt6360_fault_get(struct led_classdev_flash *fl_cdev, u32 *f=
-ault)
-> > +{
-> > +     struct mt6360_led *led =3D container_of(fl_cdev, struct mt6360_le=
-d, flash);
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     u16 fled_stat;
-> > +     unsigned int chg_stat, strobe_timeout_mask, fled_short_mask;
-> > +     u32 rfault =3D 0;
-> > +     int ret;
-> > +
-> > +     ret =3D regmap_read(priv->regmap, MT6360_REG_CHGSTAT2, &chg_stat)=
-;
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D regmap_raw_read(priv->regmap, MT6360_REG_FLEDSTAT1, &fled=
-_stat, sizeof(fled_stat));
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     if (led->led_no =3D=3D MT6360_LED_FLASH1) {
-> > +             strobe_timeout_mask =3D MT6360_FLED1STRBTO_MASK;
-> > +             fled_short_mask =3D MT6360_FLED1SHORT_MASK;
-> > +     } else {
-> > +             strobe_timeout_mask =3D MT6360_FLED2STRBTO_MASK;
-> > +             fled_short_mask =3D MT6360_FLED2SHORT_MASK;
-> > +     }
-> > +
-> > +     if (chg_stat & MT6360_FLEDCHGVINOVP_MASK)
-> > +             rfault |=3D LED_FAULT_INPUT_VOLTAGE;
-> > +
-> > +     if (fled_stat & strobe_timeout_mask)
-> > +             rfault |=3D LED_FAULT_TIMEOUT;
-> > +
-> > +     if (fled_stat & fled_short_mask)
-> > +             rfault |=3D LED_FAULT_SHORT_CIRCUIT;
-> > +
-> > +     if (fled_stat & MT6360_FLEDLVF_MASK)
-> > +             rfault |=3D LED_FAULT_UNDER_VOLTAGE;
-> > +
-> > +     *fault =3D rfault;
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct led_flash_ops mt6360_flash_ops =3D {
-> > +     .flash_brightness_set =3D mt6360_flash_brightness_set,
-> > +     .strobe_set =3D mt6360_strobe_set,
-> > +     .strobe_get =3D mt6360_strobe_get,
-> > +     .timeout_set =3D mt6360_timeout_set,
-> > +     .fault_get =3D mt6360_fault_get,
-> > +};
-> > +
-> > +static int mt6360_isnk_init_default_state(struct mt6360_led *led)
-> > +{
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     unsigned int regval;
-> > +     u32 level;
-> > +     int ret;
-> > +
-> > +     ret =3D regmap_read(priv->regmap, MT6360_REG_ISNK(led->led_no), &=
-regval);
-> > +     if (ret)
-> > +             return ret;
-> > +     level =3D regval & MT6360_ISNK_MASK;
-> > +
-> > +     ret =3D regmap_read(priv->regmap, MT6360_REG_RGBEN, &regval);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     if (!(regval & MT6360_ISNK_ENMASK(led->led_no)))
-> > +             level =3D LED_OFF;
-> > +
-> > +     switch (led->default_state) {
-> > +     case STATE_ON:
-> > +             led->isnk.brightness =3D led->isnk.max_brightness;
-> > +             break;
-> > +     case STATE_KEEP:
-> > +             led->isnk.brightness =3D min(level, led->isnk.max_brightn=
-ess);
-> > +             break;
-> > +     default:
-> > +             led->isnk.brightness =3D LED_OFF;
-> > +     }
-> > +
-> > +     return mt6360_isnk_brightness_set(&led->isnk, led->isnk.brightnes=
-s);
-> > +}
-> > +
-> > +static int mt6360_flash_init_default_state(struct mt6360_led *led)
-> > +{
-> > +     struct led_classdev_flash *flash =3D &led->flash;
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     u32 enable_mask =3D MT6360_TORCHEN_MASK | MT6360_FLCSEN_MASK(led-=
->led_no);
-> > +     u32 level;
-> > +     unsigned int regval;
-> > +     int ret;
-> > +
-> > +     ret =3D regmap_read(priv->regmap, MT6360_REG_FLEDITOR(led->led_no=
-), &regval);
-> > +     if (ret)
-> > +             return ret;
-> > +     level =3D regval & MT6360_ITORCH_MASK;
-> > +
-> > +     ret =3D regmap_read(priv->regmap, MT6360_REG_FLEDEN, &regval);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     if ((regval & enable_mask) =3D=3D enable_mask)
-> > +             level +=3D 1;
->
-> level++ fits better here.
->
-
-ACK
-
-> > +     else
-> > +             level =3D LED_OFF;
-> > +
-> > +     switch (led->default_state) {
-> > +     case STATE_ON:
-> > +             flash->led_cdev.brightness =3D flash->led_cdev.max_bright=
-ness;
-> > +             break;
-> > +     case STATE_KEEP:
-> > +             flash->led_cdev.brightness =3D min(level, flash->led_cdev=
-.max_brightness);
-> > +             break;
-> > +     default:
-> > +             flash->led_cdev.brightness =3D LED_OFF;
-> > +     }
-> > +
-> > +     return mt6360_torch_brightness_set(&flash->led_cdev, flash->led_c=
-dev.brightness);
-> > +}
-> > +
-> > +#if IS_ENABLED(CONFIG_V4L2_FLASH_LED_CLASS)
-> > +static int mt6360_flash_external_strobe_set(struct v4l2_flash *v4l2_fl=
-ash, bool enable)
-> > +{
-> > +     struct led_classdev_flash *flash =3D v4l2_flash->fled_cdev;
-> > +     struct mt6360_led *led =3D container_of(flash, struct mt6360_led,=
- flash);
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     u32 mask =3D MT6360_FLCSEN_MASK(led->led_no);
-> > +     u32 val =3D enable ? mask : 0;
-> > +     int ret;
-> > +
-> > +     ret =3D regmap_update_bits(priv->regmap, MT6360_REG_FLEDEN, mask,=
- val);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     if (enable)
-> > +             priv->fled_strobe_used |=3D BIT(led->led_no);
-> > +     else
-> > +             priv->fled_strobe_used &=3D ~BIT(led->led_no);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct v4l2_flash_ops v4l2_flash_ops =3D {
-> > +     .external_strobe_set =3D mt6360_flash_external_strobe_set,
-> > +};
-> > +
-> > +static void mt6360_init_v4l2_config(struct mt6360_led *led, struct v4l=
-2_flash_config *config)
-> > +{
-> > +     struct led_classdev *lcdev;
-> > +     struct led_flash_setting *s =3D &config->intensity;
-> > +
-> > +     switch (led->led_no) {
-> > +     case MT6360_LED_ISNK1 ... MT6360_LED_ISNK4:
-> > +             lcdev =3D &led->isnk;
-> > +
-> > +             if (led->led_no =3D=3D MT6360_LED_ISNK4)
-> > +                     s->step =3D MT6360_ISNK4_STEPUA;
-> > +             else
-> > +                     s->step =3D MT6360_ISNK1_STEPUA;
-> > +
-> > +             s->min =3D 0;
-> > +             s->val =3D lcdev->brightness * s->step;
-> > +             s->max =3D lcdev->max_brightness * s->step;
-> > +             break;
-> > +     default:
-> > +             lcdev =3D &led->flash.led_cdev;
-> > +
-> > +             s->min =3D MT6360_ITORCH_MINUA;
-> > +             s->step =3D MT6360_ITORCH_STEPUA;
-> > +             s->val =3D s->max =3D s->min + (lcdev->max_brightness - 1=
-) * s->step;
-> > +
-> > +             config->has_external_strobe =3D 1;
-> > +     }
-> > +
-> > +     snprintf(config->dev_name, sizeof(config->dev_name), "%s", lcdev-=
->name);
->
-> You're using devm_led_classdev_register_ext() so lcdev->name remains
-> uninitialized, but even if you used non-ext API, it wouldn't necessary
-> contain the final LED name, if renaming had occurred.
->
-> Please use below instead:
->
-> strscpy(config->dev_name, lcdev->dev->kobj.name,  sizeof(config->dev_name=
-));
->
->
-
-ACK
-
-> > +}
-> > +#else
-> > +static const struct v4l2_flash_ops v4l2_flash_ops;
-> > +
-> > +static void mt6360_init_v4l2_config(struct mt6360_led *led, struct v4l=
-2_flash_config *config)
-> > +{
-> > +}
-> > +#endif
-> > +
-> > +static int mt6360_led_register(struct device *parent, struct mt6360_le=
-d *led,
-> > +                             struct led_init_data *init_data)
-> > +{
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     struct v4l2_flash_config v4l2_config =3D {0};
-> > +     int ret;
-> > +
-> > +     switch (led->led_no) {
-> > +     case MT6360_LED_ISNK1 ... MT6360_LED_ISNK4:
-> > +             if (led->led_no =3D=3D MT6360_LED_ISNK1) {
-> > +                     /* Change isink1 to SW control mode, disconnect i=
-t with charger state */
-> > +                     ret =3D regmap_update_bits(priv->regmap, MT6360_R=
-EG_RGBEN,
-> > +                                              MT6360_CHRINDSEL_MASK, M=
-T6360_CHRINDSEL_MASK);
-> > +                     if (ret) {
-> > +                             dev_err(parent, "Failed to config ISNK1 t=
-o SW mode\n");
-> > +                             return ret;
-> > +                     }
-> > +             }
-> > +
-> > +             ret =3D mt6360_isnk_init_default_state(led);
-> > +             if (ret) {
-> > +                     dev_err(parent, "Failed to init %d isnk state\n",=
- led->led_no);
-> > +                     return ret;
-> > +             }
-> > +
-> > +             ret =3D devm_led_classdev_register_ext(parent, &led->isnk=
-, init_data);
-> > +             if (ret) {
-> > +                     dev_err(parent, "Couldn't register isink %d\n", l=
-ed->led_no);
-> > +                     return ret;
-> > +             }
-> > +
-> > +             mt6360_init_v4l2_config(led, &v4l2_config);
-> > +             led->v4l2_flash =3D v4l2_flash_indicator_init(parent, ini=
-t_data->fwnode, &led->isnk,
-> > +                                                         &v4l2_config)=
-;
-> > +             break;
-> > +     default:
-> > +             ret =3D mt6360_flash_init_default_state(led);
-> > +             if (ret) {
-> > +                     dev_err(parent, "Failed to init %d flash state\n"=
-, led->led_no);
-> > +                     return ret;
-> > +             }
-> > +
-> > +             ret =3D devm_led_classdev_flash_register_ext(parent, &led=
-->flash, init_data);
-> > +             if (ret) {
-> > +                     dev_err(parent, "Couldn't register flash %d\n", l=
-ed->led_no);
-> > +                     return ret;
-> > +             }
-> > +
-> > +             mt6360_init_v4l2_config(led, &v4l2_config);
-> > +             led->v4l2_flash =3D v4l2_flash_init(parent, init_data->fw=
-node, &led->flash,
-> > +                                               &v4l2_flash_ops, &v4l2_=
-config);
-> > +     }
-> > +
-> > +     if (IS_ERR(led->v4l2_flash)) {
-> > +             dev_err(parent, "Failed to register %d v4l2 sd\n", led->l=
-ed_no);
-> > +             return PTR_ERR(led->v4l2_flash);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static u32 clamp_align(u32 val, u32 min, u32 max, u32 step)
-> > +{
-> > +     u32 retval;
-> > +
-> > +     retval =3D clamp_val(val, min, max);
-> > +     if (step > 1)
-> > +             retval =3D rounddown(retval - min, step) + min;
-> > +
-> > +     return retval;
-> > +}
-> > +
-> > +static int mt6360_init_isnk_properties(struct mt6360_led *led, struct =
-led_init_data *init_data)
-> > +{
-> > +     struct led_classdev *isnk =3D &led->isnk;
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     u32 step_uA, max_uA;
-> > +     u32 val;
-> > +     int ret;
-> > +
-> > +     if (led->led_no =3D=3D MT6360_LED_ISNK4) {
-> > +             step_uA =3D MT6360_ISNK4_STEPUA;
-> > +             max_uA =3D MT6360_ISNK4_MAXUA;
-> > +     } else {
-> > +             step_uA =3D MT6360_ISNK1_STEPUA;
-> > +             max_uA =3D MT6360_ISNK1_MAXUA;
-> > +     }
-> > +
-> > +     ret =3D fwnode_property_read_u32(init_data->fwnode, "led-max-micr=
-oamp", &val);
-> > +     if (ret) {
-> > +             dev_warn(priv->dev, "Not specified led-max-microamp, conf=
-ig to the minimum step\n");
-> > +             val =3D 1 * step_uA;
-> > +     } else
-> > +             val =3D clamp_align(val, 0, max_uA, step_uA);
-> > +
-> > +     isnk->max_brightness =3D val / step_uA;
-> > +     isnk->brightness_set_blocking =3D mt6360_isnk_brightness_set;
-> > +
-> > +     fwnode_property_read_string(init_data->fwnode, "linux,default-tri=
-gger",
-> > +                                 &isnk->default_trigger);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_init_flash_properties(struct mt6360_led *led, struct=
- led_init_data *init_data)
-> > +{
-> > +     struct led_classdev_flash *flash =3D &led->flash;
-> > +     struct led_classdev *lcdev =3D &flash->led_cdev;
-> > +     struct mt6360_priv *priv =3D led->priv;
-> > +     struct led_flash_setting *s;
-> > +     u32 val;
-> > +     int ret;
-> > +
-> > +     ret =3D fwnode_property_read_u32(init_data->fwnode, "led-max-micr=
-oamp", &val);
-> > +     if (ret) {
-> > +             dev_warn(priv->dev, "Not specified led-max-microamp, conf=
-ig to the minimum\n");
-> > +             val =3D MT6360_ITORCH_MINUA;
-> > +     } else
-> > +             val =3D clamp_align(val, MT6360_ITORCH_MINUA, MT6360_ITOR=
-CH_MAXUA,
-> > +                               MT6360_ITORCH_STEPUA);
-> > +
-> > +     lcdev->max_brightness =3D (val - MT6360_ITORCH_MINUA) / MT6360_IT=
-ORCH_STEPUA + 1;
-> > +     lcdev->brightness_set_blocking =3D mt6360_torch_brightness_set;
-> > +     lcdev->flags |=3D LED_DEV_CAP_FLASH;
-> > +
-> > +     ret =3D fwnode_property_read_u32(init_data->fwnode, "flash-max-mi=
-croamp", &val);
-> > +     if (ret) {
-> > +             dev_warn(priv->dev, "Not specified flash-max-microamp, co=
-nfig to the minimum\n");
-> > +             val =3D MT6360_ISTRB_MINUA;
-> > +     } else
-> > +             val =3D clamp_align(val, MT6360_ISTRB_MINUA, MT6360_ISTRB=
-_MAXUA, MT6360_ISTRB_STEPUA);
-> > +
-> > +     s =3D &flash->brightness;
-> > +     s->min =3D MT6360_ISTRB_MINUA;
-> > +     s->step =3D MT6360_ISTRB_STEPUA;
-> > +     s->val =3D s->max =3D val;
-> > +
-> > +     /* Always configure as min level when off to prevent flash curren=
-t spike */
-> > +     ret =3D _mt6360_flash_brightness_set(flash, s->min);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     ret =3D fwnode_property_read_u32(init_data->fwnode, "flash-max-ti=
-meout-us", &val);
-> > +     if (ret) {
-> > +             dev_warn(priv->dev, "Not specified flash-max-timeout-us, =
-config to the minimum\n");
-> > +             val =3D MT6360_STRBTO_MINUS;
-> > +     } else
-> > +             val =3D clamp_align(val, MT6360_STRBTO_MINUS, MT6360_STRB=
-TO_MAXUS,
-> > +                               MT6360_STRBTO_STEPUS);
-> > +
-> > +     s =3D &flash->timeout;
-> > +     s->min =3D MT6360_STRBTO_MINUS;
-> > +     s->step =3D MT6360_STRBTO_STEPUS;
-> > +     s->val =3D s->max =3D val;
-> > +
-> > +     flash->ops =3D &mt6360_flash_ops;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int mt6360_init_common_properties(struct mt6360_led *led, struc=
-t led_init_data *init_data)
-> > +{
-> > +     const char * const states[] =3D { "off", "keep", "on" };
-> > +     const char *str;
-> > +     int ret;
-> > +
-> > +     if (!fwnode_property_read_string(init_data->fwnode, "default-stat=
-e", &str)) {
-> > +             ret =3D match_string(states, ARRAY_SIZE(states), str);
-> > +             if (ret < 0)
-> > +                     ret =3D STATE_OFF;
-> > +
-> > +             led->default_state =3D ret;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void mt6360_v4l2_flash_release(struct mt6360_priv *priv)
-> > +{
-> > +     int i;
-> > +
-> > +     for (i =3D 0; i < priv->leds_count; i++) {
-> > +             struct mt6360_led *led =3D priv->leds + i;
-> > +
-> > +             if (led->v4l2_flash)
-> > +                     v4l2_flash_release(led->v4l2_flash);
-> > +
-> > +     }
-> > +}
-> > +
-> > +static int mt6360_led_probe(struct platform_device *pdev)
-> > +{
-> > +     struct mt6360_priv *priv;
-> > +     struct fwnode_handle *child;
-> > +     size_t count;
-> > +     int i =3D 0, ret;
-> > +
-> > +     count =3D device_get_child_node_count(&pdev->dev);
-> > +     if (!count || count > MT6360_MAX_LEDS)
->
-> Please add dev_err() here.
->
-
-dev_err(&pdev->dev, "No child node or node count over max led number
-%d\n", count);
-
-> > +             return -EINVAL;
-> > +
-> > +     priv =3D devm_kzalloc(&pdev->dev, struct_size(priv, leds, count),=
- GFP_KERNEL);
-> > +     if (!priv)
-> > +             return -ENOMEM;
-> > +
-> > +     priv->leds_count =3D count;
-> > +     priv->dev =3D &pdev->dev;
-> > +
-> > +     priv->regmap =3D dev_get_regmap(pdev->dev.parent, NULL);
-> > +     if (!priv->regmap) {
-> > +             dev_err(&pdev->dev, "Failed to get parent regmap\n");
-> > +             return -ENODEV;
-> > +     }
-> > +
-> > +     device_for_each_child_node(&pdev->dev, child) {
-> > +             struct mt6360_led *led =3D priv->leds + i;
-> > +             struct led_init_data init_data =3D { .fwnode =3D child, }=
-;
-> > +             u32 reg;
-> > +
-> > +             ret =3D fwnode_property_read_u32(child, "reg", &reg);
-> > +             if (ret)
-> > +                     goto out_flash_release;
-> > +
-> > +             if (reg >=3D MT6360_MAX_LEDS || priv->leds_active & BIT(r=
-eg))
-> > +                     return -EINVAL;
-> > +             priv->leds_active |=3D BIT(reg);
-> > +
-> > +             led->led_no =3D reg;
-> > +             led->priv =3D priv;
-> > +
-> > +             ret =3D mt6360_init_common_properties(led, &init_data);
-> > +             if (ret)
-> > +                     goto out_flash_release;
-> > +
-> > +             switch (reg) {
-> > +             case MT6360_LED_ISNK1 ... MT6360_LED_ISNK4:
-> > +                     ret =3D mt6360_init_isnk_properties(led, &init_da=
-ta);
-> > +                     break;
-> > +             default:
-> > +                     ret =3D mt6360_init_flash_properties(led, &init_d=
-ata);
-> > +             }
-> > +
-> > +             if (ret)
-> > +                     goto out_flash_release;
-> > +
-> > +             ret =3D mt6360_led_register(&pdev->dev, led, &init_data);
-> > +             if (ret)
-> > +                     goto out_flash_release;
-> > +
-> > +             i++;
-> > +     }
-> > +
-> > +     platform_set_drvdata(pdev, priv);
-> > +     return 0;
-> > +
-> > +out_flash_release:
-> > +     mt6360_v4l2_flash_release(priv);
-> > +     return ret;
-> > +}
-> > +
-> > +static int mt6360_led_remove(struct platform_device *pdev)
-> > +{
-> > +     struct mt6360_priv *priv =3D platform_get_drvdata(pdev);
-> > +
-> > +     mt6360_v4l2_flash_release(priv);
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct of_device_id __maybe_unused mt6360_led_of_id[] =3D=
- {
-> > +     { .compatible =3D "mediatek,mt6360-led", },
-> > +     {}
-> > +};
-> > +MODULE_DEVICE_TABLE(of, mt6360_led_of_id);
-> > +
-> > +static struct platform_driver mt6360_led_driver =3D {
-> > +     .driver =3D {
-> > +             .name =3D "mt6360-led",
-> > +             .of_match_table =3D mt6360_led_of_id,
-> > +     },
-> > +     .probe =3D mt6360_led_probe,
-> > +     .remove =3D mt6360_led_remove,
-> > +};
-> > +module_platform_driver(mt6360_led_driver);
-> > +
-> > +MODULE_AUTHOR("Gene Chen <gene_chen@richtek.com>");
-> > +MODULE_DESCRIPTION("MT6360 LED Driver");
-> > +MODULE_LICENSE("GPL v2");
-> >
->
-> --
-> Best regards,
-> Jacek Anaszewski
+SGkgLA0KVGhhbmtzIGZvciB0aGUgcmV2aWV3Lg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
+LS0tDQo+IEZyb206IFN0ZXBoZW4gQm95ZCA8c2JveWRAa2VybmVsLm9yZz4NCj4gU2VudDogVHVl
+c2RheSwgU2VwdGVtYmVyIDIyLCAyMDIwIDI6NDggQU0NCj4gVG86IFNodWJocmFqeW90aSBEYXR0
+YSA8c2h1YmhyYWpAeGlsaW54LmNvbT47IGxpbnV4LWNsa0B2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6
+IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
+Ow0KPiBkZXZlbEBkcml2ZXJkZXYub3N1b3NsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiBn
+cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgbXR1cnF1ZXR0ZUBiYXlsaWJyZS5jb207IFNodWJo
+cmFqeW90aQ0KPiBEYXR0YSA8c2h1YmhyYWpAeGlsaW54LmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
+QVRDSCB2NiA1LzhdIGNsazogY2xvY2std2l6YXJkOiBBZGQgc3VwcG9ydCBmb3IgZnJhY3Rpb25h
+bA0KPiBzdXBwb3J0DQo+IA0KPiBRdW90aW5nIFNodWJocmFqeW90aSBEYXR0YSAoMjAyMC0wOC0y
+OCAwNjozOTo1MykNCj4gPiBDdXJyZW50bHkgdGhlIHNldCByYXRlIGdyYW51bGFyaXR5IGlzIHRv
+IGludGVncmFsIGRpdmlzb3JzLg0KPiA+IEFkZCBzdXBwb3J0IGZvciB0aGUgZnJhY3Rpb25hbCBk
+aXZpc29ycy4NCj4gPiBPbmx5IHRoZSBmaXJzdCBvdXRwdXQwIGlzIGZyYWN0aW9uYWwgaW4gdGhl
+IGhhcmR3YXJlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2h1YmhyYWp5b3RpIERhdHRhIDxz
+aHViaHJhanlvdGkuZGF0dGFAeGlsaW54LmNvbT4NCj4gDQo+IEdldHRpbmcgY2xvc2VyLg0KPiAN
+Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvY2xrLXhsbngtY2xvY2std2l6YXJkLmMNCj4g
+PiBiL2RyaXZlcnMvY2xrL2Nsay14bG54LWNsb2NrLXdpemFyZC5jDQo+ID4gaW5kZXggOGRmY2Vj
+OC4uMWFmNTlhNCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2Nsay9jbGsteGxueC1jbG9jay13
+aXphcmQuYw0KPiA+ICsrKyBiL2RyaXZlcnMvY2xrL2Nsay14bG54LWNsb2NrLXdpemFyZC5jDQo+
+ID4gQEAgLTE4NSw2ICsxOTEsMTM0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgY2xrX29wcw0KPiBj
+bGtfd3pyZF9jbGtfZGl2aWRlcl9vcHMgPSB7DQo+ID4gICAgICAgICAucmVjYWxjX3JhdGUgPSBj
+bGtfd3pyZF9yZWNhbGNfcmF0ZSwgIH07DQo+ID4NCj4gPiArc3RhdGljIHVuc2lnbmVkIGxvbmcg
+Y2xrX3d6cmRfcmVjYWxjX3JhdGVmKHN0cnVjdCBjbGtfaHcgKmh3LA0KPiA+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBsb25nIHBhcmVudF9yYXRl
+KQ0KPiA+ICt7DQo+ID4gKyAgICAgICB1bnNpZ25lZCBpbnQgdmFsOw0KPiA+ICsgICAgICAgdTMy
+IGRpdiwgZnJhYzsNCj4gPiArICAgICAgIHN0cnVjdCBjbGtfd3pyZF9kaXZpZGVyICpkaXZpZGVy
+ID0gdG9fY2xrX3d6cmRfZGl2aWRlcihodyk7DQo+ID4gKyAgICAgICB2b2lkIF9faW9tZW0gKmRp
+dl9hZGRyID0gZGl2aWRlci0+YmFzZSArIGRpdmlkZXItPm9mZnNldDsNCj4gPiArDQo+ID4gKyAg
+ICAgICB2YWwgPSByZWFkbChkaXZfYWRkcik7DQo+ID4gKyAgICAgICBkaXYgPSB2YWwgJiBkaXZf
+bWFzayhkaXZpZGVyLT53aWR0aCk7DQo+ID4gKyAgICAgICBmcmFjID0gKHZhbCA+PiBXWlJEX0NM
+S09VVF9GUkFDX1NISUZUKSAmDQo+ID4gKyBXWlJEX0NMS09VVF9GUkFDX01BU0s7DQo+ID4gKw0K
+PiA+ICsgICAgICAgcmV0dXJuICgocGFyZW50X3JhdGUgKiAxMDAwKSAvICgoZGl2ICogMTAwMCkg
+KyBmcmFjKSk7DQo+IA0KPiBQbGVhc2UgcmVtb3ZlIGV4dHJhIHBhcmVudGhlc2lzLiBBbmQgaXMg
+dGhpcyBtdWx0X2ZyYWMoKT8NCj4gDQpXaWxsIGZpeA0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0
+aWMgaW50IGNsa193enJkX2R5bmFtaWNfcmVjb25maWdfZihzdHJ1Y3QgY2xrX2h3ICpodywgdW5z
+aWduZWQgbG9uZw0KPiByYXRlLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHVuc2lnbmVkIGxvbmcgcGFyZW50X3JhdGUpIHsNCj4gPiArICAgICAgIGludCBlcnI7
+DQo+ID4gKyAgICAgICB1MzIgdmFsdWUsIHByZTsNCj4gPiArICAgICAgIHVuc2lnbmVkIGxvbmcg
+cmF0ZV9kaXYsIGYsIGNsb2Nrb3V0MF9kaXY7DQo+ID4gKyAgICAgICBzdHJ1Y3QgY2xrX3d6cmRf
+ZGl2aWRlciAqZGl2aWRlciA9IHRvX2Nsa193enJkX2RpdmlkZXIoaHcpOw0KPiA+ICsgICAgICAg
+dm9pZCBfX2lvbWVtICpkaXZfYWRkciA9IGRpdmlkZXItPmJhc2UgKyBkaXZpZGVyLT5vZmZzZXQ7
+DQo+ID4gKw0KPiA+ICsgICAgICAgcmF0ZV9kaXYgPSAoKHBhcmVudF9yYXRlICogMTAwMCkgLyBy
+YXRlKTsNCj4gPiArICAgICAgIGNsb2Nrb3V0MF9kaXYgPSByYXRlX2RpdiAvIDEwMDA7DQo+ID4g
+Kw0KPiA+ICsgICAgICAgcHJlID0gRElWX1JPVU5EX0NMT1NFU1QoKHBhcmVudF9yYXRlICogMTAw
+MCksIHJhdGUpOw0KPiA+ICsgICAgICAgZiA9ICh1MzIpKHByZSAtIChjbG9ja291dDBfZGl2ICog
+MTAwMCkpOw0KPiA+ICsgICAgICAgZiA9IGYgJiBXWlJEX0NMS09VVF9GUkFDX01BU0s7DQo+ID4g
+Kw0KPiA+ICsgICAgICAgdmFsdWUgPSAoKGYgPDwgV1pSRF9DTEtPVVRfRElWSURFX1dJRFRIKSB8
+IChjbG9ja291dDBfZGl2ICYNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBXWlJEX0NMS09V
+VF9ESVZJREVfTUFTSykpOw0KPiANCj4gUGxlYXNlIHNwbGl0IHRoaXMgdG8gbXVsdGlwbGUgbGlu
+ZXMuDQpXaWxsIGZpeA0KPiANCj4gPiArDQo+ID4gKyAgICAgICAvKiBTZXQgZGl2aXNvciBhbmQg
+Y2xlYXIgcGhhc2Ugb2Zmc2V0ICovDQo+ID4gKyAgICAgICB3cml0ZWwodmFsdWUsIGRpdl9hZGRy
+KTsNCj4gPiArICAgICAgIHdyaXRlbCgweDAsIGRpdl9hZGRyICsgV1pSRF9EUl9ESVZfVE9fUEhB
+U0VfT0ZGU0VUKTsNCj4gPiArDQo+ID4gKyAgICAgICAvKiBDaGVjayBzdGF0dXMgcmVnaXN0ZXIg
+Ki8NCj4gPiArICAgICAgIGVycj0gcmVhZGxfcG9sbF90aW1lb3V0KGRpdmlkZXItPmJhc2UgKw0K
+PiBXWlJEX0RSX1NUQVRVU19SRUdfT0ZGU0VULCB2YWx1ZSwNCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHZhbHVlICYgV1pSRF9EUl9MT0NLX0JJVF9NQVNLLA0KPiA+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgV1pSRF9VU0VDX1BPTEwsIFdaUkRfVElNRU9VVF9Q
+T0xMKTsNCj4gPiArICAgICAgIGlmIChlcnIpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiBl
+cnI7DQo+ID4gKw0KPiA+ICsgICAgICAgLyogSW5pdGlhdGUgcmVjb25maWd1cmF0aW9uICovDQo+
+ID4gKyAgICAgICB3cml0ZWwoV1pSRF9EUl9CRUdJTl9EWU5BX1JFQ09ORiwNCj4gPiArICAgICAg
+ICAgICAgICBkaXZpZGVyLT5iYXNlICsgV1pSRF9EUl9JTklUX1JFR19PRkZTRVQpOw0KPiA+ICsN
+Cj4gPiArICAgICAgIC8qIENoZWNrIHN0YXR1cyByZWdpc3RlciAqLw0KPiA+ICsgICAgICAgZXJy
+PSByZWFkbF9wb2xsX3RpbWVvdXQoZGl2aWRlci0+YmFzZSArDQo+IFdaUkRfRFJfU1RBVFVTX1JF
+R19PRkZTRVQsIHZhbHVlLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFs
+dWUgJiBXWlJEX0RSX0xPQ0tfQklUX01BU0ssDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBXWlJEX1VTRUNfUE9MTCwgV1pSRF9USU1FT1VUX1BPTEwpOw0KPiA+ICsNCj4gPiAr
+ICAgICAgIHJldHVybiBlcnI7DQo+IA0KPiBKdXN0IHJldHVybiByZWFkbF9wb2xsX3RpbWVvdXQo
+KSBwbGVhc2UuDQpXaWxsIGZpeA0KPiANCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGxvbmcg
+Y2xrX3d6cmRfcm91bmRfcmF0ZV9mKHN0cnVjdCBjbGtfaHcgKmh3LCB1bnNpZ25lZCBsb25nDQo+
+IHJhdGUsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGxv
+bmcgKnByYXRlKSB7DQo+ID4gKyAgICAgICByZXR1cm4gcmF0ZTsNCj4gDQo+IENhbiBldmVyeSBy
+YXRlIGJlIHN1cHBvcnRlZD8gVGhpcyBmdW5jdGlvbiBpcyBzdXBwb3NlZCB0byB0ZWxsIHRoZSBj
+bGsNCj4gZnJhbWV3b3JrIHdoYXQgcmF0ZSB3aWxsIGJlIGFjaGlldmVkIGlmIHdlIGNhbGwgY2xr
+X3NldF9yYXRlKCkgd2l0aCAncmF0ZScNCj4gcGFzc2VkIHRvIHRoaXMgZnVuY3Rpb24uIEFsbW9z
+dCBhbHdheXMgcmV0dXJuaW5nICdyYXRlJyBpcyBub3QgdGhlIGNhc2UuDQo+IA0KDQpXZSBjYW4g
+c3VwcG9ydCByYXRlIHVwdG8gMyBkZWNpbWFsIHBsYWNlcyB0byBwcmV2ZW50IHRydW5jYXRpb24g
+aGVyZSB3ZSBhcmUgDQpSZXR1cm5pbmcgcmF0ZS4NCj4gPg0KPiA+ICsNCj4gPiArc3RhdGljIGNv
+bnN0IHN0cnVjdCBjbGtfb3BzIGNsa193enJkX2Nsa19kaXZpZGVyX29wc19mID0gew0KPiA+ICsg
+ICAgICAgLnJvdW5kX3JhdGUgPSBjbGtfd3pyZF9yb3VuZF9yYXRlX2YsDQo+ID4gKyAgICAgICAu
+c2V0X3JhdGUgPSBjbGtfd3pyZF9keW5hbWljX3JlY29uZmlnX2YsDQo+ID4gKyAgICAgICAucmVj
+YWxjX3JhdGUgPSBjbGtfd3pyZF9yZWNhbGNfcmF0ZWYsIH07DQo+ID4gKw0KPiA+ICtzdGF0aWMg
+c3RydWN0IGNsayAqY2xrX3d6cmRfcmVnaXN0ZXJfZGl2ZihzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+
+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciAq
+bmFtZSwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25z
+dCBjaGFyICpwYXJlbnRfbmFtZSwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB1bnNpZ25lZCBsb25nIGZsYWdzLA0KPiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIHZvaWQgX19pb21lbSAqYmFzZSwgdTE2IG9mZnNldCwNCj4g
+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1OCBzaGlmdCwgdTgg
+d2lkdGgsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdTgg
+Y2xrX2RpdmlkZXJfZmxhZ3MsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgY29uc3Qgc3RydWN0IGNsa19kaXZfdGFibGUgKnRhYmxlLA0KPiA+ICsgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNwaW5sb2NrX3QgKmxvY2spIHsNCj4g
+PiArICAgICAgIHN0cnVjdCBjbGtfd3pyZF9kaXZpZGVyICpkaXY7DQo+ID4gKyAgICAgICBzdHJ1
+Y3QgY2xrX2h3ICpodzsNCj4gPiArICAgICAgIHN0cnVjdCBjbGtfaW5pdF9kYXRhIGluaXQ7DQo+
+ID4gKyAgICAgICBpbnQgcmV0Ow0KPiA+ICsNCj4gPiArICAgICAgIGlmIChjbGtfZGl2aWRlcl9m
+bGFncyAmIENMS19ESVZJREVSX0hJV09SRF9NQVNLKSB7DQo+IA0KPiBJcyB0aGlzIHVzZWQ/IEl0
+J3MgYSByb2NrY2hpcCBzcGVjaWZpYyBmbGFnIG1vc3RseSBzbyBwcm9iYWJseSBub3Q/DQo+IA0K
+PiA+ICsgICAgICAgICAgICAgICBpZiAod2lkdGggKyBzaGlmdCA+IDE2KSB7DQo+ID4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgcHJfd2FybigiZGl2aWRlciB2YWx1ZSBleGNlZWRzIExPV09SRCBm
+aWVsZFxuIik7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIEVSUl9QVFIoLUVJ
+TlZBTCk7DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiArICAgICAgIH0NCj4gPiArDQo+ID4g
+KyAgICAgICAvKiBhbGxvY2F0ZSB0aGUgZGl2aWRlciAqLw0KPiANCj4gUGxlYXNlIHJlbW92ZSB1
+c2VsZXNzIGNvbW1lbnRzIGxpa2UgdGhpcy4NCldpbGwgZml4DQo+IA0KPiA+ICsgICAgICAgZGl2
+ID0ga3phbGxvYyhzaXplb2YoKmRpdiksIEdGUF9LRVJORUwpOw0KPiA+ICsgICAgICAgaWYgKCFk
+aXYpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiBFUlJfUFRSKC1FTk9NRU0pOw0KPiA+ICsN
+Cj4gPiArICAgICAgIGluaXQubmFtZSA9IG5hbWU7DQo+ID4gKw0KPiA+ICsgICAgICAgaWYgKGNs
+a19kaXZpZGVyX2ZsYWdzICYgQ0xLX0RJVklERVJfUkVBRF9PTkxZKQ0KPiANCj4gSXMgdGhpcyBm
+bGFnIHVzZWQ/DQpXaWxsIGZpeA0KPiANCj4gPiArICAgICAgICAgICAgICAgaW5pdC5vcHMgPSAm
+Y2xrX2RpdmlkZXJfcm9fb3BzOw0KPiA+ICsgICAgICAgZWxzZQ0KPiA+ICsgICAgICAgICAgICAg
+ICBpbml0Lm9wcyA9ICZjbGtfd3pyZF9jbGtfZGl2aWRlcl9vcHNfZjsNCj4gPiArDQo+ID4gKyAg
+ICAgICBpbml0LmZsYWdzID0gZmxhZ3M7DQo+ID4gKyAgICAgICBpbml0LnBhcmVudF9uYW1lcyA9
+IChwYXJlbnRfbmFtZSA/ICZwYXJlbnRfbmFtZSA6IE5VTEwpOw0KPiA+ICsgICAgICAgaW5pdC5u
+dW1fcGFyZW50cyA9IChwYXJlbnRfbmFtZSA/IDEgOiAwKTsNCj4gDQo+IERvIHlvdSBoYXZlIGNh
+c2VzIHdoZXJlIHRoZXJlIGlzbid0IGEgcGFyZW50PyBIb3BlZnVsbHkgbm90LCBzbyB0aGlzIGNh
+biBiZQ0KPiBzaW1wbGlmaWVkLg0KPiANCldpbGwgZml4DQo+ID4NCj4gPiArICAgICAgIC8qIHN0
+cnVjdCBjbGtfZGl2aWRlciBhc3NpZ25tZW50cyAqLw0KPiANCj4gRHJvcCB0aGlzIGNvbW1lbnQ/
+DQpXaWxsIGZpeA0KPiANCj4gPiArICAgICAgIGRpdi0+YmFzZSA9IGJhc2U7DQo+ID4gKyAgICAg
+ICBkaXYtPm9mZnNldCA9IG9mZnNldDsNCj4gPiArICAgICAgIGRpdi0+c2hpZnQgPSBzaGlmdDsN
+Cj4gPiArICAgICAgIGRpdi0+d2lkdGggPSB3aWR0aDsNCj4gPiArICAgICAgIGRpdi0+ZmxhZ3Mg
+PSBjbGtfZGl2aWRlcl9mbGFnczsNCj4gPiArICAgICAgIGRpdi0+bG9jayA9IGxvY2s7DQo+ID4g
+KyAgICAgICBkaXYtPmh3LmluaXQgPSAmaW5pdDsNCj4gPiArICAgICAgIGRpdi0+dGFibGUgPSB0
+YWJsZTsNCj4gPiArDQo+ID4gKyAgICAgICAvKiByZWdpc3RlciB0aGUgY2xvY2sgKi8NCj4gDQo+
+IERyb3AgdGhpcyBjb21tZW50Pw0KV2lsbCBmaXgNCj4gDQo+ID4gKyAgICAgICBodyA9ICZkaXYt
+Pmh3Ow0KPiA+ICsgICAgICAgcmV0ID0gY2xrX2h3X3JlZ2lzdGVyKGRldiwgaHcpOw0KPiANCj4g
+QW55IHJlYXNvbiB3ZSBjYW4ndCB1c2UgZGV2bV9jbGtfaHdfcmVnaXN0ZXIoKSBoZXJlPw0KPiAN
+CldpbGwgZG8NCj4gPiArICAgICAgIGlmIChyZXQpIHsNCj4gPiArICAgICAgICAgICAgICAga2Zy
+ZWUoZGl2KTsNCj4gPiArICAgICAgICAgICAgICAgcmV0dXJuIEVSUl9QVFIocmV0KTsNCj4gPiAr
+ICAgICAgIH0NCj4gPiArDQo+ID4gKyAgICAgICByZXR1cm4gaHctPmNsazsNCj4gPiArfQ0KPiA+
+ICsNCj4gPiAgc3RhdGljIHN0cnVjdCBjbGsgKmNsa193enJkX3JlZ2lzdGVyX2RpdmlkZXIoc3Ry
+dWN0IGRldmljZSAqZGV2LA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGNvbnN0IGNoYXIgKm5hbWUsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciAqcGFyZW50X25hbWUsDQo+ID4gQEAgLTM1
+NSwxNyArNDg5LDEzIEBAIHN0YXRpYyBpbnQgY2xrX3d6cmRfcHJvYmUoc3RydWN0DQo+IHBsYXRm
+b3JtX2RldmljZSAqcGRldikNCj4gPiAgICAgICAgICAgICAgICAgZ290byBlcnJfZGlzYWJsZV9j
+bGs7DQo+ID4gICAgICAgICB9DQo+ID4NCj4gPiAtICAgICAgIC8qIHdlIGRvbid0IHN1cHBvcnQg
+ZnJhY3Rpb25hbCBkaXYvbXVsIHlldCAqLw0KPiA+IC0gICAgICAgcmVnID0gcmVhZGwoY2xrX3d6
+cmQtPmJhc2UgKyBXWlJEX0NMS19DRkdfUkVHKDApKSAmDQo+ID4gLSAgICAgICAgICAgICAgICAg
+ICBXWlJEX0NMS0ZCT1VUX0ZSQUNfRU47DQo+ID4gLSAgICAgICByZWcgfD0gcmVhZGwoY2xrX3d6
+cmQtPmJhc2UgKyBXWlJEX0NMS19DRkdfUkVHKDIpKSAmDQo+ID4gLSAgICAgICAgICAgICAgICAg
+ICAgV1pSRF9DTEtPVVQwX0ZSQUNfRU47DQo+ID4gLSAgICAgICBpZiAocmVnKQ0KPiA+IC0gICAg
+ICAgICAgICAgICBkZXZfd2FybigmcGRldi0+ZGV2LCAiZnJhY3Rpb25hbCBkaXYvbXVsIG5vdCBz
+dXBwb3J0ZWRcbiIpOw0KPiA+IC0NCj4gPiAgICAgICAgIC8qIHJlZ2lzdGVyIG11bHRpcGxpZXIg
+Ki8NCj4gPiAgICAgICAgIHJlZyA9IChyZWFkbChjbGtfd3pyZC0+YmFzZSArIFdaUkRfQ0xLX0NG
+R19SRUcoMCkpICYNCj4gPiAgICAgICAgICAgICAgICAgICAgICBXWlJEX0NMS0ZCT1VUX01VTFRf
+TUFTSykgPj4NCj4gPiBXWlJEX0NMS0ZCT1VUX01VTFRfU0hJRlQ7DQo+ID4gKyAgICAgICByZWdf
+ZiA9IChyZWFkbChjbGtfd3pyZC0+YmFzZSArIFdaUkRfQ0xLX0NGR19SRUcoMCkpICYNCj4gPiAr
+ICAgICAgICAgICAgICAgICAgICBXWlJEX0NMS0ZCT1VUX0ZSQUNfTUFTSykgPj4NCj4gPiArIFda
+UkRfQ0xLRkJPVVRfRlJBQ19TSElGVDsNCj4gDQo+IFVzZSB0d28gbGluZXMgcGxlYXNlLiBSZWFk
+IGludG8gdmFyaWFibGUgb24gb25lIGxpbmUsIHNoaWZ0IG9uIGFub3RoZXIuDQo+IA0KV2lsbCBm
+aXgNCj4gPiArDQo+ID4gKyAgICAgICBtdWx0ID0gKChyZWcgKiAxMDAwKSArIHJlZ19mKTsNCj4g
+DQo+IFBsZWFzZSByZW1vdmUgZXh0cmEgcGFyZW50aGVzaXMuDQo+IA0KPiA+ICAgICAgICAgY2xr
+X25hbWUgPSBrYXNwcmludGYoR0ZQX0tFUk5FTCwgIiVzX211bCIsIGRldl9uYW1lKCZwZGV2LQ0K
+PiA+ZGV2KSk7DQo+ID4gICAgICAgICBpZiAoIWNsa19uYW1lKSB7DQo+ID4gICAgICAgICAgICAg
+ICAgIHJldCA9IC1FTk9NRU07DQo+ID4gQEAgLTQxMyw4ICs1NDMsMTggQEAgc3RhdGljIGludCBj
+bGtfd3pyZF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiA+ICAgICAg
+ICAgICAgICAgICAgICAgICAgIHJldCA9IC1FSU5WQUw7DQo+ID4gICAgICAgICAgICAgICAgICAg
+ICAgICAgZ290byBlcnJfcm1faW50X2Nsa3M7DQo+ID4gICAgICAgICAgICAgICAgIH0NCj4gPiAt
+ICAgICAgICAgICAgICAgY2xrX3d6cmQtPmNsa291dFtpXSA9IGNsa193enJkX3JlZ2lzdGVyX2Rp
+dmlkZXIoJnBkZXYtPmRldiwNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xrb3V0X25hbWUsDQo+ID4gKyAgICAgICAg
+ICAgICAgIGlmICghaSkNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBjbGtfd3pyZC0+Y2xr
+b3V0W2ldID0gY2xrX3d6cmRfcmVnaXN0ZXJfZGl2Zg0KPiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKCZwZGV2LT5kZXYsIGNsa291dF9uYW1lLA0KPiA+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgY2xrX25hbWUsIDAsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBjbGtfd3pyZC0+YmFzZSwgKFdaUkRfQ0xLX0NGR19SRUcoMikgKyBpICogMTIp
+LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgV1pSRF9DTEtPVVRfRElWSURF
+X1NISUZULA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgV1pSRF9DTEtPVVRf
+RElWSURFX1dJRFRILA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ0xLX0RJ
+VklERVJfT05FX0JBU0VEIHwNCj4gQ0xLX0RJVklERVJfQUxMT1dfWkVSTywNCj4gPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIE5VTEwsICZjbGt3enJkX2xvY2spOw0KPiA+ICsgICAg
+ICAgICAgICAgICBlbHNlDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgY2xrX3d6cmQtPmNs
+a291dFtpXSA9IGNsa193enJkX3JlZ2lzdGVyX2RpdmlkZXINCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICgmcGRldi0+ZGV2LCBjbGtvdXRfbmFtZSwNCj4gPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIGNsa19uYW1lLCAwLA0KPiA+ICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgY2xrX3d6cmQtPmJhc2UsIChXWlJEX0NMS19DRkdfUkVHKDIpICsgaSAq
+IDEyKSwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFdaUkRfQ0xLT1VUX0RJ
+VklERV9TSElGVCwNCj4gPg0KPiANCj4gSSB3b25kZXIgaWYgYSBkby13aGlsZSBsb29wIHdpdGgg
+ZmxhZ3Mgc2V0IHRvIE9ORV9CQVNFRCBhbmQgQUxMT1dfWkVSTw0KPiBjb3VsZCB3b3JrIGFuZCB0
+aGVuIGZsYWdzIGdldHMgb3ZlcndyaXR0ZW4gdG8gYmUganVzdCBESVZJREVfU0hJRlQ/IFRoZW4N
+Cj4gd2UgZG9uJ3QgaGF2ZSB0byBkdXBsaWNhdGUgdGhlIHJlZ2lzdHJhdGlvbiBsaW5lLg0KDQpJ
+IGRpZCBub3QgdW5kZXJzdGFuZCB0aGlzIGNvbW1lbnQgaW4gb25lIGNhc2UgSSBhbSByZWdpc3Rl
+cmluZyAgZm9yIHRoZSBmcmFjdGlvbmFsIG9wZXJhdGlvbnMNCkluIGFub3RoZXIgd2UgYXJlIHVz
+aW5nIHRoZSBpbnRlZ3JhbCBvcGVyYXRpb25zDQo=
