@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E037276D35
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89CB9276D63
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727618AbgIXJ0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:26:41 -0400
-Received: from mail-il1-f206.google.com ([209.85.166.206]:42398 "EHLO
-        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727524AbgIXJ0a (ORCPT
+        id S1726380AbgIXJ1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:27:44 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:49377 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727729AbgIXJ11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:26:30 -0400
-Received: by mail-il1-f206.google.com with SMTP id 18so2084073ilt.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:26:29 -0700 (PDT)
+        Thu, 24 Sep 2020 05:27:27 -0400
+Received: by mail-il1-f207.google.com with SMTP id o18so1494354ilm.16
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:27:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0j+21c+DQEGyv8+YfTh2XFRv26AfNd/g9NxPn8tyeGM=;
-        b=WbuWXaWdn/c3Xs3hQM3YEldz9ZdiYDmJ1wR4LrtSemcHmEKpjVSuV/hbbTp7jUlE8u
-         1ZFhhv2bMahBKi43rppSqA+3ACj56RCn7WR8lhxtnH2e1kNvbeVwbhqR6o85e2yLfokO
-         3DI1OE4RFdjolQFF03fKk810ArJ3s1t08N1xAuEEjyAlmrQf/ApX1s1niwJhpHWbkUTO
-         +UjMW/fjo95e+RtSoVE3e/lvnleTrpXdAgkc7lNxR0xrHGzYFVmH4JYFzqUZwzRZdcvr
-         8PnBcjgazU6hMdQpVNRxHyz0OBLSgcLTvn38eVLIVOddF9moWgCMLW+JlhK9JkEc85j5
-         UzLQ==
-X-Gm-Message-State: AOAM532oaFV2xNv+VyhTMHn8FPJ7umOSKQmK921murJ1JrfQKBEgyihi
-        SOSrTKpHCWED1loIFTKMQ9s+1ZL5ACQe2zmFzhlh6XRHb8xW
-X-Google-Smtp-Source: ABdhPJxoICtWyO3FtjAwdEqjUFruLN+WepBvCdFwTSxtlAWaaMjwekbWiuFmqw0e5stUZKMnxXhnOsK2azHPEekQFNsdjhpYCASI
+        bh=OaKfqdE7CLZushADhNNBSnZh3AuMO8V3gSaW07XV6g8=;
+        b=TzxVBJu9QGWlqRIOY+8j5MsKkO2mChtCUBHoRqwToA1FhoghTYExfOySZFpmjNjel6
+         EBghzb1kdYdJ2W/llunY3cXF3Ci+kOLKlGCYQU+Mv40TeeKA9r4+oUvrXH6fic4co+fV
+         DU2bp40b15sNcKGJkGHEl64uJc7iRUuZ3rcfiC12fG82VA5dcjyJp/ikCnRWdiN2Y8xl
+         xYWq+6UoFYU4f0h5bnDE7rH9vZwYJ5CIHhdBgWPmiVDY47ORpAOvx/G579chqG59oa/H
+         748PorCXW8I594Dxi7unKko62vJsoMaujUEDMaQr9eqboKR7z4CYyciYEpPvMm8lZEaO
+         2L3Q==
+X-Gm-Message-State: AOAM533smPd9Bl4n2fv8lmJ+GFOhbnkmw29ndm4jb7g6U9BxzH3BZmog
+        ZOb15QaTKByOit7C1AxTtUDTod5HxDjCZVjsJUQuQfmelmpn
+X-Google-Smtp-Source: ABdhPJx5Nb7P3J812ECVfEozTzbOuutEBwKKaino3Jf2oTOQ+Ktj694gRIJpEOOgKhQWGJm7jzil1V9rdpQEchHsN1W3c4nCmUQ4
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1381:: with SMTP id w1mr2933256jad.34.1600939589413;
- Thu, 24 Sep 2020 02:26:29 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 02:26:29 -0700
+X-Received: by 2002:a05:6e02:e0a:: with SMTP id a10mr3418632ilk.113.1600939646242;
+ Thu, 24 Sep 2020 02:27:26 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 02:27:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000088b1f405b00bcbb8@google.com>
-Subject: WARNING in __cfg80211_ibss_joined (2)
-From:   syzbot <syzbot+7f064ba1704c2466e36d@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000ebd6da05b00bcea6@google.com>
+Subject: WARNING in reiserfs_put_super
+From:   syzbot <syzbot+fcdd69a8426baab36109@syzkaller.appspotmail.com>
+To:     jack@suse.cz, jeffm@suse.com, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,24 +47,23 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    eff48dde Merge tag 'trace-v5.9-rc5' of git://git.kernel.or..
+HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1665b19b900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=154f348d900000
 kernel config:  https://syzkaller.appspot.com/x/.config?x=5f4c828c9e3cef97
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
+dashboard link: https://syzkaller.appspot.com/bug?extid=fcdd69a8426baab36109
 compiler:       gcc (GCC) 10.1.0-syz 20200507
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7f064ba1704c2466e36d@syzkaller.appspotmail.com
+Reported-by: syzbot+fcdd69a8426baab36109@syzkaller.appspotmail.com
 
 ------------[ cut here ]------------
-WARNING: CPU: 0 PID: 29877 at net/wireless/ibss.c:36 __cfg80211_ibss_joined+0x487/0x520 net/wireless/ibss.c:36
+WARNING: CPU: 1 PID: 6884 at kernel/workqueue.c:4393 destroy_workqueue.cold+0x5/0x76 kernel/workqueue.c:4393
 Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 29877 Comm: kworker/u4:3 Not tainted 5.9.0-rc6-syzkaller #0
+CPU: 1 PID: 6884 Comm: syz-executor.3 Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: cfg80211 cfg80211_event_work
 Call Trace:
  __dump_stack lib/dump_stack.c:77 [inline]
  dump_stack+0x198/0x1fd lib/dump_stack.c:118
@@ -75,23 +73,36 @@ Call Trace:
  handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
  exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
  asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:__cfg80211_ibss_joined+0x487/0x520 net/wireless/ibss.c:36
-Code: 0f 0b e9 0c fe ff ff e8 77 54 06 fa e9 41 fc ff ff e8 4d 54 06 fa e9 7d fc ff ff e8 63 54 06 fa e9 0d ff ff ff e8 e9 84 c5 f9 <0f> 0b e9 7e fc ff ff e8 dd 84 c5 f9 0f 0b e8 56 54 06 fa e9 e4 fb
-RSP: 0018:ffffc900177c7bc8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88809a2d0c10 RCX: ffffffff815b7ea2
-RDX: ffff888097302400 RSI: ffffffff87b0b957 RDI: 0000000000000000
-RBP: ffff88809a2d0000 R08: 0000000000000001 R09: ffffffff8d0b7a3f
-R10: fffffbfff1a16f47 R11: 0000000000000000 R12: 1ffff92002ef8f7b
-R13: ffff888000085a18 R14: 0000000000000000 R15: 0000000000000006
- cfg80211_process_wdev_events+0x3de/0x5b0 net/wireless/util.c:910
- cfg80211_process_rdev_events+0x6e/0x100 net/wireless/util.c:936
- cfg80211_event_work+0x1a/0x20 net/wireless/core.c:320
- process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
- kthread+0x3b5/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+RIP: 0010:destroy_workqueue.cold+0x5/0x76 kernel/workqueue.c:4393
+Code: 00 0b 8b 88 f7 f1 89 c6 e8 1d f3 10 00 c6 44 24 37 01 e9 af ae ff ff 48 c7 c7 80 e1 e0 89 e8 88 b9 68 00 eb c2 e8 01 ea 27 00 <0f> 0b 48 c7 c6 00 10 8b 88 48 c7 c7 40 0b 8b 88 49 8d 96 60 01 00
+RSP: 0018:ffffc90005687cd0 EFLAGS: 00010093
+RAX: 0000000000000000 RBX: 0000000000000002 RCX: ffffffff814e0963
+RDX: ffff888059c70380 RSI: ffffffff814e543f RDI: 0000000000000005
+RBP: 000000000000000f R08: 0000000000000001 R09: 0000000000000003
+R10: 0000000000000001 R11: 0000000000000000 R12: dffffc0000000000
+R13: ffffe8ffffcdc000 R14: ffff8880a6506000 R15: 0000000000000000
+ reiserfs_put_super+0x234/0x5c0 fs/reiserfs/super.c:631
+ generic_shutdown_super+0x144/0x370 fs/super.c:464
+ kill_block_super+0x97/0xf0 fs/super.c:1444
+ deactivate_locked_super+0x94/0x160 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
+ exit_to_user_mode_prepare+0x1e1/0x200 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x460ba7
+Code: 64 89 04 25 d0 02 00 00 58 5f ff d0 48 89 c7 e8 2f be ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 dd 87 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffc99c1e078 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000460ba7
+RDX: 00000000004031b8 RSI: 0000000000000002 RDI: 00007ffc99c1e120
+RBP: 00000000000006e1 R08: 0000000000000000 R09: 000000000000000b
+R10: 0000000000000005 R11: 0000000000000246 R12: 00007ffc99c1f1b0
+R13: 000000000215fa60 R14: 0000000000000000 R15: 00007ffc99c1f1b0
+
+======================================================
 
 
 ---
