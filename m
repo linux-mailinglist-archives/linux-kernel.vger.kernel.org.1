@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05142771A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476A52771B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727840AbgIXMyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        id S1727858AbgIXM4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:56:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727705AbgIXMyP (ORCPT
+        with ESMTP id S1727798AbgIXM4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:54:15 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35850C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:54:15 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z25so3103470iol.10
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:54:15 -0700 (PDT)
+        Thu, 24 Sep 2020 08:56:47 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADEEC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:56:47 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l17so3204631edq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:56:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=O6qc5V6tfCA1Jw0Tr5d5kTXhGEVTE6N82d1Qd3A5Yhc=;
-        b=Nle+JmIcHP0/Fe2F6JmdcyNj+CYk5TEak1DbAHElVeCkJzzdN+Xz9UvMCjrUgNDggC
-         iKcB/lAz8697WZJ427vPIrOUU0u6XKO+zwODXXd9Xhx2hGIAr7D+nfuv6XwhH+IB19+Y
-         Qc2P3LFixSfOhOtW0JPJDtdQUyhGJ/LF7B02I1uuasCYHCN1l4u4U6F4yCbVYna4YPAn
-         bTy/oiwCaHIHNFhaxgSLAxU1W+C1Hc/qriW2SvNxmywHRr+WUR2CE/S4nOirtUO70yCz
-         9FraFgKhtJQZd6mXgYegghvRbIRgMyYkpyLVS3PH9huTFLWq1PHzM0VR2svauFG78Ja2
-         9h2w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6PIyzkE03cr+kvJe1Aijo1Xyt0QaH2RNf7w1MklGRBQ=;
+        b=kJB1nGYxP0Y6X5WheYqJQFpCi5sL6A711gpSeHDvuzgkectzUE/MXMOOEAnyElFD9v
+         iqJyfIN/NSmWXrpVuFZ0aho0aDIFIpkMOw1pyuVo0+VxTny2vbcrMcsb9bSkOD2pXiG3
+         Dvl8rC/5qu8B0ATDNukQW590sTpDnKOF0N0ECVTvm6I8NaeU/cOkLhrQclT3Uw6+H6sk
+         /qht2lFhpsGuqbERJ1ekX/lZmTpUh5+Dak+m/8EL3mc+x8jKSLvoDXJXDjOHzU8GK7vZ
+         udXjSph+fxFzM8V094eG/lbsSo3u9cohPOEWwxr8UoH1Ss++gokbpNmfxCbBkzFK3vEe
+         Rtuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=O6qc5V6tfCA1Jw0Tr5d5kTXhGEVTE6N82d1Qd3A5Yhc=;
-        b=WxkAKqAK8/6olcpI3JH5KYKBqw1JCS9pwcyWQphQc8KFiY8fGrfm+xhi8//hlkwNFc
-         EWgPr52NA3fGwNnbt5eQkejJ5uVYzaI/7SHJNW+Msi/+hZTOHCzpq70Uc6eTA0iNfOQD
-         7zkieJ2P2teU1wR0RbM8u9Y0oDgcfK87aPrxjD89mNQ52lK+3HSvC/WqphMMU6/OU3eu
-         WqQmdJZXSTxIlXj+i6VCAbg9f3ZFyj6GTEWEB7SnP09ZSxMsThCgcHr2x/YRdpGDzmim
-         55QWQhYCBYBMr0IaeuE3+IdcXdIiCrNsyQTmbE+fRC957IYqiw/MsQRel2x3dW8vbVNT
-         c9gg==
-X-Gm-Message-State: AOAM531vT4QlvjV0OWzLWgJC+YHZcfHSrLb1P9fhIn7eMMxYUmWRlbUO
-        riEfrRdC4bhCtHiVxFI+PWdxegg3kFXU/w==
-X-Google-Smtp-Source: ABdhPJw3O6MeQi0jSsnnLGvcmNgXVXHSenqXHcAAg9Pu4Fagrb5pmK5cHc+OeaOyuCYtb1j8aAir/w==
-X-Received: by 2002:a05:6602:2013:: with SMTP id y19mr3154035iod.148.1600952054344;
-        Thu, 24 Sep 2020 05:54:14 -0700 (PDT)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id i10sm1372395ioi.39.2020.09.24.05.54.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 05:54:11 -0700 (PDT)
-Subject: Re: [greybus-dev] [PATCH 2/3] staging: greybus: codecs: use
- SNDRV_PCM_FMTBIT_S16_LE for format bitmask
-To:     Coiby Xu <coiby.xu@gmail.com>, devel@driverdev.osuosl.org
-Cc:     Alex Elder <elder@kernel.org>, Johan Hovold <johan@kernel.org>,
-        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200924102039.43895-1-coiby.xu@gmail.com>
- <20200924102039.43895-2-coiby.xu@gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <c197ba96-0dfb-7bad-28b2-d225a9159e35@linaro.org>
-Date:   Thu, 24 Sep 2020 07:54:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6PIyzkE03cr+kvJe1Aijo1Xyt0QaH2RNf7w1MklGRBQ=;
+        b=mvWjqTWSolCdceSXbFxzz83a5SAFNzQGT4Qe2FlqDLfuG7v9IHP0UKCsJsrl9Rj8kw
+         2uRZzKRrUUtQra1IBK8AxZ/fUKWZDO4ZE/0AP8spyQ1IEq3pPw9gnFivzkVgnRwX+zGZ
+         U20fi1+HlXE2DZWGn1Wk4m3XZ74og/2b7/zAPG+PAdjg5EbOA3puaF7+6yU52tpQMocS
+         o8+sD5EpWoKvSpjsmVkszVY/7ve2SqurqCeJBm3HcAC58UhpBXSy7K5zsqHDSwNE/Ai+
+         kKt5awLiehK1kEBq6y1qZykdfUK+V/92EoMxgm8ggmVBm+d/YdfiJKE/le/B3FyAGffb
+         snTw==
+X-Gm-Message-State: AOAM531zYcXaqnYLXm/31X1Kx18zbVLyWnrxt3/+5H4rm7F2RuDwymM+
+        SRYQYxtohpB2bOoxma7AmmkWfazrdyDBTDYkovqv1Q==
+X-Google-Smtp-Source: ABdhPJyZT+GnEERoDowCMN+gaCS8CKBwR2yALNltlIzprycdqYNWKl35K4oZS3REzkERw/iLp6ynqEQMU4tQidSctwU=
+X-Received: by 2002:a50:ccd2:: with SMTP id b18mr885315edj.51.1600952205967;
+ Thu, 24 Sep 2020 05:56:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200924102039.43895-2-coiby.xu@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-4-keescook@chromium.org> <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
+ <202009240018.A4D8274F@keescook> <CAG48ez1MWhrtkbWTNpc1v-WqWYiLM_JrCKvuE6DdH6vBY3MJzQ@mail.gmail.com>
+ <ec31caaea19247f0b9bd9c73ccaa7dbd@AcuMS.aculab.com>
+In-Reply-To: <ec31caaea19247f0b9bd9c73ccaa7dbd@AcuMS.aculab.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 24 Sep 2020 14:56:19 +0200
+Message-ID: <CAG48ez0n-oqivqDCFjHo1UOuNN3HnP+mi2UGB_Xqf3TwwO+ZuQ@mail.gmail.com>
+Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 5:20 AM, Coiby Xu wrote:
-> snd_soc_pcm_stream.formats should use the bitmask SNDRV_PCM_FMTBIT_*
-> instead of the sequential integers SNDRV_PCM_FORMAT_* as explained by
-> commit e712bfca1ac1f63f622f87c2f33b57608f2a4d19
-> ("ASoC: codecs: use SNDRV_PCM_FMTBIT_* for format bitmask").
-> 
-> Found by sparse,
+On Thu, Sep 24, 2020 at 2:37 PM David Laight <David.Laight@aculab.com> wrote:
+> From: Jann Horn
+> > Sent: 24 September 2020 13:29
+> ...
+> > I think our goal here should be that if a syscall is always allowed,
+> > seccomp should execute the smallest amount of instructions we can get
+> > away with, and touch the smallest amount of memory possible (and
+> > preferably that memory should be shared between threads). The bitmap
+> > fastpath should probably also avoid populate_seccomp_data().
+>
+> If most syscalls are expected to be allowed
 
-Looks good.
+E.g. OpenSSH's privilege-separated network process only permits
+something like 26 specific syscalls.
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+> then an initial:
+>         if (global_mask & (1u << (syscall_number & 63))
+> test can be used to skip any further lookups.
 
-> 
-> $ make C=2 drivers/staging/greybus/
-> drivers/staging/greybus/audio_codec.c:691:36: warning: incorrect type in initializer (different base types)
-> drivers/staging/greybus/audio_codec.c:691:36:    expected unsigned long long [usertype] formats
-> drivers/staging/greybus/audio_codec.c:691:36:    got restricted snd_pcm_format_t [usertype]
-> drivers/staging/greybus/audio_codec.c:701:36: warning: incorrect type in initializer (different base types)
-> drivers/staging/greybus/audio_codec.c:701:36:    expected unsigned long long [usertype] formats
-> drivers/staging/greybus/audio_codec.c:701:36:    got restricted snd_pcm_format_t [usertype]
-> 
-> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
-> ---
->  drivers/staging/greybus/audio_codec.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_codec.c b/drivers/staging/greybus/audio_codec.c
-> index 74538f8c5fa4..494aa823e998 100644
-> --- a/drivers/staging/greybus/audio_codec.c
-> +++ b/drivers/staging/greybus/audio_codec.c
-> @@ -688,7 +688,7 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
->  		.playback = {
->  			.stream_name = "I2S 0 Playback",
->  			.rates = SNDRV_PCM_RATE_48000,
-> -			.formats = SNDRV_PCM_FORMAT_S16_LE,
-> +			.formats = SNDRV_PCM_FMTBIT_S16_LE,
->  			.rate_max = 48000,
->  			.rate_min = 48000,
->  			.channels_min = 1,
-> @@ -698,7 +698,7 @@ static struct snd_soc_dai_driver gbaudio_dai[] = {
->  		.capture = {
->  			.stream_name = "I2S 0 Capture",
->  			.rates = SNDRV_PCM_RATE_48000,
-> -			.formats = SNDRV_PCM_FORMAT_S16_LE,
-> +			.formats = SNDRV_PCM_FMTBIT_S16_LE,
->  			.rate_max = 48000,
->  			.rate_min = 48000,
->  			.channels_min = 1,
-> 
+I guess that would work in principle, but I'm not convinced that it's
+worth adding another layer of global caching just to avoid one load
+instruction for locating the correct bitmask from the current process.
+Especially when it only really provides a benefit when people use
+seccomp improperly - for application sandboxing, you're supposed to
+only permit a list of specific syscalls, the smaller the better.
 
+> Although ISTR someone suggesting that the global_mask should
+> be per-cpu because even shared read-only cache lines were
+> expensive on some architecture.
+
+If an architecture did make that expensive, I think we have bigger
+problems to worry about than a little bitmap in seccomp. (Like the
+system call table.) So I think we don't have to worry about that here.
