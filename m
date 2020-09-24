@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00938276ABC
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0561276AC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbgIXH0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:26:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726993AbgIXH0X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:26:23 -0400
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi [91.155.214.58])
+        id S1727109AbgIXHaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726655AbgIXHaV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:30:21 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ABAC0613CE;
+        Thu, 24 Sep 2020 00:30:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=XgcGJ4sjIBTMAlJ2aTWqRW+QA3vpY8W+uIP1Muzktyc=; b=S1BVR9KRk5gwMpGsS4TSkkHnYV
+        GDdeP+4hzqnOLjmkgTQF3vDuegYsLCixunemrnJ8KmIxgsRHnP6pob4AX3L/eUO6stS//0ww54+he
+        2hpf9yMmqGDJwm8+OnURJ8c8auXCyRm99AOuuUnnsxtlsEoOsFiJyjBLqFZpO36BK8CqjmZMK9Tlx
+        dZqKOsjIwjGlyvpyLH0+gZhlhpAWGbdMIMAURyV8BGEHMk6c+1ExazZEo0eooHv4MUcfj1iqUSxcO
+        u0jL061DHP2DkQXaofjA1MUvSXt8c0zPc4LpbLUKBiXf/EPDqGD0Qm1Pf70N9PNSwEQYHTZXQhJtm
+        fudIAkVA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLLhe-00064O-Bp; Thu, 24 Sep 2020 07:30:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C885C235F7;
-        Thu, 24 Sep 2020 07:26:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600932382;
-        bh=94TZ4ZEsVidxddkdHx2pb6heCf8JpMWyUYacOZRXr3s=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Y8rmXLgqJNRl7XEVIMy8C3hXuW62VIxKwmwiK9qe53Fx8qv9CVARL0AphHQkZQc1R
-         5Y2x36/aoppFdMOOkaO4s9vsFLuZo9gN68PpJFcccVQQLY5lhOFA+YCwn7dM2GF/gk
-         A/hF9iYAycOb2j1rfSdR6pEUXYxH8rsHcnuTqExs=
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>,
-        gregkh@linuxfoundation.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com
-Cc:     linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: Re: [PATCH] usb: phy: tegra: Use IS_ERR() to check and simplify code
-In-Reply-To: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
-References: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
-Date:   Thu, 24 Sep 2020 10:26:15 +0300
-Message-ID: <87imc3eiug.fsf@kernel.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB37D300455;
+        Thu, 24 Sep 2020 09:30:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AA1F82BC0B6AD; Thu, 24 Sep 2020 09:30:03 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 09:30:03 +0200
+From:   peterz@infradead.org
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        syzbot <syzbot+c32502fd255cb3a44048@syzkaller.appspotmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Subject: Re: possible deadlock in xfrm_policy_delete
+Message-ID: <20200924073003.GZ1362448@hirez.programming.kicks-ass.net>
+References: <00000000000056c1dc05afc47ddb@google.com>
+ <20200924043554.GA9443@gondor.apana.org.au>
+ <CACT4Y+aw+Z_7JwDiu65hL7K99f1oBfRFavZz4Pr4o8Us5peH4g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+aw+Z_7JwDiu65hL7K99f1oBfRFavZz4Pr4o8Us5peH4g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Thu, Sep 24, 2020 at 06:44:12AM +0200, Dmitry Vyukov wrote:
+> On Thu, Sep 24, 2020 at 6:36 AM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> > >  (k-slock-AF_INET6){+.-.}-{2:2}
 
-Tang Bin <tangbin@cmss.chinamobile.com> writes:
+That's a seqlock.
 
-> Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
-> simplify code, avoid redundant judgements.
->
-> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+> > What's going on with all these bogus lockdep reports?
+> >
+> > These are two completely different locks, one is for TCP and the
+> > other is for SCTP.  Why is lockdep suddenly beoming confused about
+> > this?
+> >
+> > FWIW this flood of bogus reports started on 16/Sep.
+> 
+> 
+> FWIW one of the dups of this issue was bisected to:
+> 
+> commit 1909760f5fc3f123e47b4e24e0ccdc0fc8f3f106
+> Author: Ahmed S. Darwish <a.darwish@linutronix.de>
+> Date:   Fri Sep 4 15:32:31 2020 +0000
+> 
+>     seqlock: PREEMPT_RT: Do not starve seqlock_t writers
+> 
+> Can it be related?
 
-Applied for next merge window. Make sure to get this driver out of
-drivers/usb/phy and moved into drivers/phy ASAP.
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl9sShcRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYsEBAAxoRLenIpfVmDh4VvaW4PJtOg2x9IqBV7
-0vU1xAcQsgURSg+ob+VeuycHELzi0rf1W5G4aSz3ylrh84Nf9obCDOAsJCQf2bym
-ncLOWvX4o1gR6ine/WyBVonQ47O4z6HZjl0z/FT5fOmG0BEpFCyq7oq/f7K6+a1H
-1UbUAWAS5Gy0svm5OB4qwK1AW1qm62qCwIij8bbL7ktPu1ZJqmBrPr+aFE6LLGZ6
-uVmfZQuO+Z10Apoi3FI0++k60sWz6P8VsyHFMdsV0jQVjXDHwgrOlnIaGki4nhTY
-TrVsHxUjEqLLejIDgD53pZ1b5XCJfOipM1xiMC1PFQhr2Y0yK6F3wCdbfY670Ckh
-ysZSeTUryS5OOezIZegMdu5CboUwYdH3eJZnoh1C43UvwJgaqByOGHqfgFFklYw2
-FTONart0JO7znEhNVNno/KghLJiRRRGpPeR8y2Tw47aeMosrRCZHvT07/KxHPVsj
-Uj0QFMzRKz+XFiJoh7g1Vu2Ya9pmIwJVUC2v93kJsr0cMiZy+PErntVA6w+NZDD5
-kkzoxjSlj3pQCkQof1rh+YsvxiqFLIW/RpafPQWZjpk8Fou0HNvvAFdIYYInHwk+
-GLxXJ66S2+bKoaU0BMhM6OuMFyLxF6O/1IsfHtkU2UHEi2g3BSC48wLYQQ7lcjqT
-buCiuuC8wMc=
-=Vm5E
------END PGP SIGNATURE-----
---=-=-=--
+Did that tree you're testing include 267580db047e ("seqlock: Unbreak
+lockdep") ?
