@@ -2,278 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E88C2768D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A680D2768D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgIXGXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:23:17 -0400
-Received: from mail-dm6nam12on2078.outbound.protection.outlook.com ([40.107.243.78]:28768
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726119AbgIXGXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:23:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kaIzW7I4pA8et9YemuZFbGjOlpQmznCBNHpeBUuyc9hM2usC80NrtnBkq37gJ+LAjawSIjZFX1PT+XgMaKYxHzpy203F0DM3cf/VdWVG54+33nmYxF/Pz31ojXBf1I7/P9karK5L8keRiXyWb30z6+EnqhKkkQjOf6tGVHtCf6sOXv0xBqFjZ2Dv3ojZch6mOk+f+DgzxcwGtOmPEF25aV5yn/qJaLkmnHnq4lHDHzvkki4mbEnsAt/KO3BgVWmnIfYx5pD0K6TN4i2jbIk4S+btGLUfqsJob7W3xZ1Aa3jDBs5io47qZlaFOqZVwQEtLLa53AufwDs/Fmypk8fzlA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=20cgK2nF83bMWnXKIDliznycd7AmNID2AR2OUIDxoPo=;
- b=lAccIMdVMNmT4rBJSuhOauLfIxMREFvUYS51nsrLcShuZw1Izt9CZAnlpHNiTQYD/fd6/UPjoY3Mn7oBHVUwKHm/CvhW8ZyWYLa84xbb5LnOURlsToRF/nQAkiD+WnCRhMm6TDweZCeHKXshJCFgUnieF4cj8bj1KdOC1AU+gV58gmMic77ASVwkn83cXDaib2bRJpwZZsSWHCowk+2AhhDnGMmzZq8Juzc5FjDLTb9sz6eeVohEQJJPDVzv5o7HWZd/cIkpRScT1rghs+ZZlbsPUX7fyGd8rWpiJn+joV/nYUilIIYfOrG8xLs2W1uXrmxCKq72HY9clYT2QCucuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=20cgK2nF83bMWnXKIDliznycd7AmNID2AR2OUIDxoPo=;
- b=YtB/+3oI0WiPL5nD1xZLC2VoRWUc6Ci7ZCsZDXS4pBjP+aOb+eoiaZwiB8g3qOqfilfBFiLTcB0Ly7kI2Ns0Z6NxS3agIvhIhiydxDXdZihMFM4mJb21bSTqBDcBvqccoSxvqycCYYtaJseCSlSBeyaBgvz7WX03DbO1HdbY3Z4=
-Received: from BYAPR02MB5863.namprd02.prod.outlook.com (2603:10b6:a03:128::14)
- by BYAPR02MB3927.namprd02.prod.outlook.com (2603:10b6:a02:f3::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 24 Sep
- 2020 06:23:12 +0000
-Received: from BYAPR02MB5863.namprd02.prod.outlook.com
- ([fe80::7dba:90:1155:1bd]) by BYAPR02MB5863.namprd02.prod.outlook.com
- ([fe80::7dba:90:1155:1bd%3]) with mapi id 15.20.3391.024; Thu, 24 Sep 2020
- 06:23:12 +0000
-From:   Shubhrajyoti Datta <shubhraj@xilinx.com>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mturquette@baylibre.com" <mturquette@baylibre.com>
-Subject: RE: [PATCH v6 5/8] clk: clock-wizard: Add support for fractional
- support
-Thread-Topic: [PATCH v6 5/8] clk: clock-wizard: Add support for fractional
- support
-Thread-Index: AQHWfUDOGI6eaIPWs0K4G5m1xbgT36lzvsEAgAJmejA=
-Date:   Thu, 24 Sep 2020 06:23:11 +0000
-Message-ID: <BYAPR02MB5863905CA4E7F129C9E2FF3FAA390@BYAPR02MB5863.namprd02.prod.outlook.com>
-References: <1598621996-31040-1-git-send-email-shubhrajyoti.datta@xilinx.com>
- <1598621996-31040-6-git-send-email-shubhrajyoti.datta@xilinx.com>
- <160072305811.310579.18192761455478284239@swboyd.mtv.corp.google.com>
-In-Reply-To: <160072305811.310579.18192761455478284239@swboyd.mtv.corp.google.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [124.123.161.174]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1ea99489-da37-49b2-6060-08d860525017
-x-ms-traffictypediagnostic: BYAPR02MB3927:
-x-microsoft-antispam-prvs: <BYAPR02MB39277596C931064984658F8FAA390@BYAPR02MB3927.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9yQb8aCpLln+y1+40ti7TR7OZ5K1e/AygTCFs7v/LNyaftQr55iB/YpA/RhDS5hBgSgzurIMIMZUFJSNk1yOJqKjQ73mPfFamP1kRSnE9kmerCpB3l2mtMdS5UlByL8fHaUT4OSMp8dko5MFJQd2Enfv4rVLkVqYRtFpXeSOqBU4ny8usO2s6tlll+h4eIznbFwCz57ulAKrKbtVZO1zdKl9rigUKldcJf448OyKQtrRiS9iKoHi7NkBhArnzakLGl/18VdKpiyny2nVxvpgf0xgk+wfErcaf47T9tO6BCRCkCkcFxpH89syL5JKI84ilKV9rHLktycRo5hS7XdnHw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR02MB5863.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(136003)(376002)(39860400002)(4326008)(186003)(76116006)(86362001)(71200400001)(66446008)(478600001)(52536014)(26005)(55016002)(9686003)(66946007)(33656002)(53546011)(6506007)(64756008)(66476007)(7696005)(83380400001)(8936002)(66556008)(54906003)(316002)(5660300002)(8676002)(2906002)(110136005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: +RB7KKOqe1z9m7txposmGnLt1B0hIS9GDnt4SdFnDgzZNcBNO4yvFg0Wys90Yv9fQD6buBTYwtGerok4Ok7b4eRCI5N7dX0l8qUL6URmGyNpqZ/AABasDTuieV87f6MUn4Aks3GM1fpyUPlhep7vLxRDqiiIAXHFWaGTrQi74Sotado7NNm4nr4c82X+ifecIJBK5SPhHN+qY3DNFZmdo7OMzy7q23676rM9SpJyLsxmYOaNpvlSq9OpgOHUCPJ/bnlNhRHLgefia4yIbjZpTKzGsI+HHi9ZISL+9tS06dlINPClbpokvKUjabTAE+PYB3cTc5mIvfKoF3OUHaFLS1mznqeUaCJL6m/Z6aI4fuGzjarWHos6wsOzWP7I2idwiLXfrYl8/nqT1CkerMe9ZTPYX+yJQ7GJOcLq+2AYDb/JpwOtK6ERFII9/k/toBUONt+fzNZU+/p84PqHEZK2GCGC4R0OLXae2mMrCgCy4NWhPtMu1BzZQ4Geb3rkgsIJLn0FT8uExopgTwCrrOluiN6UQ4vkvftFFyjVoS+VGojbh1v7JXTO5cmxhTcCOR59jtS2mkOCJW82qM49Fc+c+KEBCJIoyXHDl0PABqrgI1GoIpbpGQMPgXPsl+tPLHUnD6MNdKqf5ipmYgzn2f3Hcw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726924AbgIXGXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:23:47 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:50598 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbgIXGXr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:23:47 -0400
+Received: by mail-wm1-f66.google.com with SMTP id e17so2276972wme.0
+        for <linux-kernel@vger.kernel.org>; Wed, 23 Sep 2020 23:23:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r+gWnAMrrCSDKKsDSsLVE5LbgZumVMG6QbyOp56BCl4=;
+        b=B+iGEdyZaOH9gjzqyMC4BAqeJAi3jFHwFeU2XMjLsBsVLGevAa3WLZS+BE4jM79x2E
+         Ur5Fbj5mmYoJNRfxLaDOUP2LIFc3IBI8VHRSsq6s0jWMIkL2T+eQsGLjmjq/dycuaupp
+         e8mD8b1qYraiur4zp8YPFBCiCpjkaZUC1Rfq8AUhMEI1lS3NjW2Fpt/4Usjp8L0auRFC
+         5qJ2K4oZoNc5nN8Ta3uguBxyjg4bhakxFYM0N028KT06LoLXb8qREbzUFyxAxesu5y08
+         EZYkJ6cC2e3YleL1ryPn36lecYEjyQ1HCBV95NeDPmRgHEQoqV0jMcEC7CI0q4NbSCnl
+         lCNw==
+X-Gm-Message-State: AOAM530XWTiL5/vp2qKD7U/zre+J/uGaicQ1ivVPzs3MY5LYZAAxUrgL
+        dzdZzLGKFCvTzR8cuUImRHeOKfRmznZCpV18WI4=
+X-Google-Smtp-Source: ABdhPJxlKWypvkf6VvUi30hFdYfPHEXovD2A/3y0A0Z2JdNrk5motcLSWruVyjElZ04YsYMFskGkzK4uM3FkANvKELE=
+X-Received: by 2002:a1c:2dc6:: with SMTP id t189mr3090179wmt.92.1600928624175;
+ Wed, 23 Sep 2020 23:23:44 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR02MB5863.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1ea99489-da37-49b2-6060-08d860525017
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2020 06:23:11.8090
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oy+IftFpu5HsT6wBJEZxlHfmcOo7nlalTzTZrAAsZBhGmdZt/lR3sG6Wuea51WSllaWDw5qa55UWSzEJEBcFqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB3927
+References: <20200923080537.155264-1-namhyung@kernel.org> <20200923080537.155264-2-namhyung@kernel.org>
+ <CAP-5=fUZuRr_FPOkKFbfjhkMKOpBrad95pcv8AjyfPbhz0uDvQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fUZuRr_FPOkKFbfjhkMKOpBrad95pcv8AjyfPbhz0uDvQ@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Thu, 24 Sep 2020 15:23:32 +0900
+Message-ID: <CAM9d7cimhk0OeOv-LvDJADRf2+jhWhJ4nCO0fO74V4sGJ2ZfhA@mail.gmail.com>
+Subject: Re: [PATCH 1/7] perf bench: Add build-id injection benchmark
+To:     Ian Rogers <irogers@google.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgLA0KVGhhbmtzIGZvciB0aGUgcmV2aWV3Lg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0t
-LS0tDQo+IEZyb206IFN0ZXBoZW4gQm95ZCA8c2JveWRAa2VybmVsLm9yZz4NCj4gU2VudDogVHVl
-c2RheSwgU2VwdGVtYmVyIDIyLCAyMDIwIDI6NDggQU0NCj4gVG86IFNodWJocmFqeW90aSBEYXR0
-YSA8c2h1YmhyYWpAeGlsaW54LmNvbT47IGxpbnV4LWNsa0B2Z2VyLmtlcm5lbC5vcmcNCj4gQ2M6
-IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3Jn
-Ow0KPiBkZXZlbEBkcml2ZXJkZXYub3N1b3NsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiBn
-cmVna2hAbGludXhmb3VuZGF0aW9uLm9yZzsgbXR1cnF1ZXR0ZUBiYXlsaWJyZS5jb207IFNodWJo
-cmFqeW90aQ0KPiBEYXR0YSA8c2h1YmhyYWpAeGlsaW54LmNvbT4NCj4gU3ViamVjdDogUmU6IFtQ
-QVRDSCB2NiA1LzhdIGNsazogY2xvY2std2l6YXJkOiBBZGQgc3VwcG9ydCBmb3IgZnJhY3Rpb25h
-bA0KPiBzdXBwb3J0DQo+IA0KPiBRdW90aW5nIFNodWJocmFqeW90aSBEYXR0YSAoMjAyMC0wOC0y
-OCAwNjozOTo1MykNCj4gPiBDdXJyZW50bHkgdGhlIHNldCByYXRlIGdyYW51bGFyaXR5IGlzIHRv
-IGludGVncmFsIGRpdmlzb3JzLg0KPiA+IEFkZCBzdXBwb3J0IGZvciB0aGUgZnJhY3Rpb25hbCBk
-aXZpc29ycy4NCj4gPiBPbmx5IHRoZSBmaXJzdCBvdXRwdXQwIGlzIGZyYWN0aW9uYWwgaW4gdGhl
-IGhhcmR3YXJlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2h1YmhyYWp5b3RpIERhdHRhIDxz
-aHViaHJhanlvdGkuZGF0dGFAeGlsaW54LmNvbT4NCj4gDQo+IEdldHRpbmcgY2xvc2VyLg0KPiAN
-Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9jbGsvY2xrLXhsbngtY2xvY2std2l6YXJkLmMNCj4g
-PiBiL2RyaXZlcnMvY2xrL2Nsay14bG54LWNsb2NrLXdpemFyZC5jDQo+ID4gaW5kZXggOGRmY2Vj
-OC4uMWFmNTlhNCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL2Nsay9jbGsteGxueC1jbG9jay13
-aXphcmQuYw0KPiA+ICsrKyBiL2RyaXZlcnMvY2xrL2Nsay14bG54LWNsb2NrLXdpemFyZC5jDQo+
-ID4gQEAgLTE4NSw2ICsxOTEsMTM0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgY2xrX29wcw0KPiBj
-bGtfd3pyZF9jbGtfZGl2aWRlcl9vcHMgPSB7DQo+ID4gICAgICAgICAucmVjYWxjX3JhdGUgPSBj
-bGtfd3pyZF9yZWNhbGNfcmF0ZSwgIH07DQo+ID4NCj4gPiArc3RhdGljIHVuc2lnbmVkIGxvbmcg
-Y2xrX3d6cmRfcmVjYWxjX3JhdGVmKHN0cnVjdCBjbGtfaHcgKmh3LA0KPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBsb25nIHBhcmVudF9yYXRl
-KQ0KPiA+ICt7DQo+ID4gKyAgICAgICB1bnNpZ25lZCBpbnQgdmFsOw0KPiA+ICsgICAgICAgdTMy
-IGRpdiwgZnJhYzsNCj4gPiArICAgICAgIHN0cnVjdCBjbGtfd3pyZF9kaXZpZGVyICpkaXZpZGVy
-ID0gdG9fY2xrX3d6cmRfZGl2aWRlcihodyk7DQo+ID4gKyAgICAgICB2b2lkIF9faW9tZW0gKmRp
-dl9hZGRyID0gZGl2aWRlci0+YmFzZSArIGRpdmlkZXItPm9mZnNldDsNCj4gPiArDQo+ID4gKyAg
-ICAgICB2YWwgPSByZWFkbChkaXZfYWRkcik7DQo+ID4gKyAgICAgICBkaXYgPSB2YWwgJiBkaXZf
-bWFzayhkaXZpZGVyLT53aWR0aCk7DQo+ID4gKyAgICAgICBmcmFjID0gKHZhbCA+PiBXWlJEX0NM
-S09VVF9GUkFDX1NISUZUKSAmDQo+ID4gKyBXWlJEX0NMS09VVF9GUkFDX01BU0s7DQo+ID4gKw0K
-PiA+ICsgICAgICAgcmV0dXJuICgocGFyZW50X3JhdGUgKiAxMDAwKSAvICgoZGl2ICogMTAwMCkg
-KyBmcmFjKSk7DQo+IA0KPiBQbGVhc2UgcmVtb3ZlIGV4dHJhIHBhcmVudGhlc2lzLiBBbmQgaXMg
-dGhpcyBtdWx0X2ZyYWMoKT8NCj4gDQpXaWxsIGZpeA0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0
-aWMgaW50IGNsa193enJkX2R5bmFtaWNfcmVjb25maWdfZihzdHJ1Y3QgY2xrX2h3ICpodywgdW5z
-aWduZWQgbG9uZw0KPiByYXRlLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIHVuc2lnbmVkIGxvbmcgcGFyZW50X3JhdGUpIHsNCj4gPiArICAgICAgIGludCBlcnI7
-DQo+ID4gKyAgICAgICB1MzIgdmFsdWUsIHByZTsNCj4gPiArICAgICAgIHVuc2lnbmVkIGxvbmcg
-cmF0ZV9kaXYsIGYsIGNsb2Nrb3V0MF9kaXY7DQo+ID4gKyAgICAgICBzdHJ1Y3QgY2xrX3d6cmRf
-ZGl2aWRlciAqZGl2aWRlciA9IHRvX2Nsa193enJkX2RpdmlkZXIoaHcpOw0KPiA+ICsgICAgICAg
-dm9pZCBfX2lvbWVtICpkaXZfYWRkciA9IGRpdmlkZXItPmJhc2UgKyBkaXZpZGVyLT5vZmZzZXQ7
-DQo+ID4gKw0KPiA+ICsgICAgICAgcmF0ZV9kaXYgPSAoKHBhcmVudF9yYXRlICogMTAwMCkgLyBy
-YXRlKTsNCj4gPiArICAgICAgIGNsb2Nrb3V0MF9kaXYgPSByYXRlX2RpdiAvIDEwMDA7DQo+ID4g
-Kw0KPiA+ICsgICAgICAgcHJlID0gRElWX1JPVU5EX0NMT1NFU1QoKHBhcmVudF9yYXRlICogMTAw
-MCksIHJhdGUpOw0KPiA+ICsgICAgICAgZiA9ICh1MzIpKHByZSAtIChjbG9ja291dDBfZGl2ICog
-MTAwMCkpOw0KPiA+ICsgICAgICAgZiA9IGYgJiBXWlJEX0NMS09VVF9GUkFDX01BU0s7DQo+ID4g
-Kw0KPiA+ICsgICAgICAgdmFsdWUgPSAoKGYgPDwgV1pSRF9DTEtPVVRfRElWSURFX1dJRFRIKSB8
-IChjbG9ja291dDBfZGl2ICYNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBXWlJEX0NMS09V
-VF9ESVZJREVfTUFTSykpOw0KPiANCj4gUGxlYXNlIHNwbGl0IHRoaXMgdG8gbXVsdGlwbGUgbGlu
-ZXMuDQpXaWxsIGZpeA0KPiANCj4gPiArDQo+ID4gKyAgICAgICAvKiBTZXQgZGl2aXNvciBhbmQg
-Y2xlYXIgcGhhc2Ugb2Zmc2V0ICovDQo+ID4gKyAgICAgICB3cml0ZWwodmFsdWUsIGRpdl9hZGRy
-KTsNCj4gPiArICAgICAgIHdyaXRlbCgweDAsIGRpdl9hZGRyICsgV1pSRF9EUl9ESVZfVE9fUEhB
-U0VfT0ZGU0VUKTsNCj4gPiArDQo+ID4gKyAgICAgICAvKiBDaGVjayBzdGF0dXMgcmVnaXN0ZXIg
-Ki8NCj4gPiArICAgICAgIGVycj0gcmVhZGxfcG9sbF90aW1lb3V0KGRpdmlkZXItPmJhc2UgKw0K
-PiBXWlJEX0RSX1NUQVRVU19SRUdfT0ZGU0VULCB2YWx1ZSwNCj4gPiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIHZhbHVlICYgV1pSRF9EUl9MT0NLX0JJVF9NQVNLLA0KPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgV1pSRF9VU0VDX1BPTEwsIFdaUkRfVElNRU9VVF9Q
-T0xMKTsNCj4gPiArICAgICAgIGlmIChlcnIpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiBl
-cnI7DQo+ID4gKw0KPiA+ICsgICAgICAgLyogSW5pdGlhdGUgcmVjb25maWd1cmF0aW9uICovDQo+
-ID4gKyAgICAgICB3cml0ZWwoV1pSRF9EUl9CRUdJTl9EWU5BX1JFQ09ORiwNCj4gPiArICAgICAg
-ICAgICAgICBkaXZpZGVyLT5iYXNlICsgV1pSRF9EUl9JTklUX1JFR19PRkZTRVQpOw0KPiA+ICsN
-Cj4gPiArICAgICAgIC8qIENoZWNrIHN0YXR1cyByZWdpc3RlciAqLw0KPiA+ICsgICAgICAgZXJy
-PSByZWFkbF9wb2xsX3RpbWVvdXQoZGl2aWRlci0+YmFzZSArDQo+IFdaUkRfRFJfU1RBVFVTX1JF
-R19PRkZTRVQsIHZhbHVlLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFs
-dWUgJiBXWlJEX0RSX0xPQ0tfQklUX01BU0ssDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBXWlJEX1VTRUNfUE9MTCwgV1pSRF9USU1FT1VUX1BPTEwpOw0KPiA+ICsNCj4gPiAr
-ICAgICAgIHJldHVybiBlcnI7DQo+IA0KPiBKdXN0IHJldHVybiByZWFkbF9wb2xsX3RpbWVvdXQo
-KSBwbGVhc2UuDQpXaWxsIGZpeA0KPiANCj4gPiArfQ0KPiA+ICsNCj4gPiArc3RhdGljIGxvbmcg
-Y2xrX3d6cmRfcm91bmRfcmF0ZV9mKHN0cnVjdCBjbGtfaHcgKmh3LCB1bnNpZ25lZCBsb25nDQo+
-IHJhdGUsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGxv
-bmcgKnByYXRlKSB7DQo+ID4gKyAgICAgICByZXR1cm4gcmF0ZTsNCj4gDQo+IENhbiBldmVyeSBy
-YXRlIGJlIHN1cHBvcnRlZD8gVGhpcyBmdW5jdGlvbiBpcyBzdXBwb3NlZCB0byB0ZWxsIHRoZSBj
-bGsNCj4gZnJhbWV3b3JrIHdoYXQgcmF0ZSB3aWxsIGJlIGFjaGlldmVkIGlmIHdlIGNhbGwgY2xr
-X3NldF9yYXRlKCkgd2l0aCAncmF0ZScNCj4gcGFzc2VkIHRvIHRoaXMgZnVuY3Rpb24uIEFsbW9z
-dCBhbHdheXMgcmV0dXJuaW5nICdyYXRlJyBpcyBub3QgdGhlIGNhc2UuDQo+IA0KDQpXZSBjYW4g
-c3VwcG9ydCByYXRlIHVwdG8gMyBkZWNpbWFsIHBsYWNlcyB0byBwcmV2ZW50IHRydW5jYXRpb24g
-aGVyZSB3ZSBhcmUgDQpSZXR1cm5pbmcgcmF0ZS4NCj4gPg0KPiA+ICsNCj4gPiArc3RhdGljIGNv
-bnN0IHN0cnVjdCBjbGtfb3BzIGNsa193enJkX2Nsa19kaXZpZGVyX29wc19mID0gew0KPiA+ICsg
-ICAgICAgLnJvdW5kX3JhdGUgPSBjbGtfd3pyZF9yb3VuZF9yYXRlX2YsDQo+ID4gKyAgICAgICAu
-c2V0X3JhdGUgPSBjbGtfd3pyZF9keW5hbWljX3JlY29uZmlnX2YsDQo+ID4gKyAgICAgICAucmVj
-YWxjX3JhdGUgPSBjbGtfd3pyZF9yZWNhbGNfcmF0ZWYsIH07DQo+ID4gKw0KPiA+ICtzdGF0aWMg
-c3RydWN0IGNsayAqY2xrX3d6cmRfcmVnaXN0ZXJfZGl2ZihzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+
-ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciAq
-bmFtZSwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25z
-dCBjaGFyICpwYXJlbnRfbmFtZSwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB1bnNpZ25lZCBsb25nIGZsYWdzLA0KPiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHZvaWQgX19pb21lbSAqYmFzZSwgdTE2IG9mZnNldCwNCj4g
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1OCBzaGlmdCwgdTgg
-d2lkdGgsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdTgg
-Y2xrX2RpdmlkZXJfZmxhZ3MsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgY29uc3Qgc3RydWN0IGNsa19kaXZfdGFibGUgKnRhYmxlLA0KPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNwaW5sb2NrX3QgKmxvY2spIHsNCj4g
-PiArICAgICAgIHN0cnVjdCBjbGtfd3pyZF9kaXZpZGVyICpkaXY7DQo+ID4gKyAgICAgICBzdHJ1
-Y3QgY2xrX2h3ICpodzsNCj4gPiArICAgICAgIHN0cnVjdCBjbGtfaW5pdF9kYXRhIGluaXQ7DQo+
-ID4gKyAgICAgICBpbnQgcmV0Ow0KPiA+ICsNCj4gPiArICAgICAgIGlmIChjbGtfZGl2aWRlcl9m
-bGFncyAmIENMS19ESVZJREVSX0hJV09SRF9NQVNLKSB7DQo+IA0KPiBJcyB0aGlzIHVzZWQ/IEl0
-J3MgYSByb2NrY2hpcCBzcGVjaWZpYyBmbGFnIG1vc3RseSBzbyBwcm9iYWJseSBub3Q/DQo+IA0K
-PiA+ICsgICAgICAgICAgICAgICBpZiAod2lkdGggKyBzaGlmdCA+IDE2KSB7DQo+ID4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgcHJfd2FybigiZGl2aWRlciB2YWx1ZSBleGNlZWRzIExPV09SRCBm
-aWVsZFxuIik7DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIEVSUl9QVFIoLUVJ
-TlZBTCk7DQo+ID4gKyAgICAgICAgICAgICAgIH0NCj4gPiArICAgICAgIH0NCj4gPiArDQo+ID4g
-KyAgICAgICAvKiBhbGxvY2F0ZSB0aGUgZGl2aWRlciAqLw0KPiANCj4gUGxlYXNlIHJlbW92ZSB1
-c2VsZXNzIGNvbW1lbnRzIGxpa2UgdGhpcy4NCldpbGwgZml4DQo+IA0KPiA+ICsgICAgICAgZGl2
-ID0ga3phbGxvYyhzaXplb2YoKmRpdiksIEdGUF9LRVJORUwpOw0KPiA+ICsgICAgICAgaWYgKCFk
-aXYpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiBFUlJfUFRSKC1FTk9NRU0pOw0KPiA+ICsN
-Cj4gPiArICAgICAgIGluaXQubmFtZSA9IG5hbWU7DQo+ID4gKw0KPiA+ICsgICAgICAgaWYgKGNs
-a19kaXZpZGVyX2ZsYWdzICYgQ0xLX0RJVklERVJfUkVBRF9PTkxZKQ0KPiANCj4gSXMgdGhpcyBm
-bGFnIHVzZWQ/DQpXaWxsIGZpeA0KPiANCj4gPiArICAgICAgICAgICAgICAgaW5pdC5vcHMgPSAm
-Y2xrX2RpdmlkZXJfcm9fb3BzOw0KPiA+ICsgICAgICAgZWxzZQ0KPiA+ICsgICAgICAgICAgICAg
-ICBpbml0Lm9wcyA9ICZjbGtfd3pyZF9jbGtfZGl2aWRlcl9vcHNfZjsNCj4gPiArDQo+ID4gKyAg
-ICAgICBpbml0LmZsYWdzID0gZmxhZ3M7DQo+ID4gKyAgICAgICBpbml0LnBhcmVudF9uYW1lcyA9
-IChwYXJlbnRfbmFtZSA/ICZwYXJlbnRfbmFtZSA6IE5VTEwpOw0KPiA+ICsgICAgICAgaW5pdC5u
-dW1fcGFyZW50cyA9IChwYXJlbnRfbmFtZSA/IDEgOiAwKTsNCj4gDQo+IERvIHlvdSBoYXZlIGNh
-c2VzIHdoZXJlIHRoZXJlIGlzbid0IGEgcGFyZW50PyBIb3BlZnVsbHkgbm90LCBzbyB0aGlzIGNh
-biBiZQ0KPiBzaW1wbGlmaWVkLg0KPiANCldpbGwgZml4DQo+ID4NCj4gPiArICAgICAgIC8qIHN0
-cnVjdCBjbGtfZGl2aWRlciBhc3NpZ25tZW50cyAqLw0KPiANCj4gRHJvcCB0aGlzIGNvbW1lbnQ/
-DQpXaWxsIGZpeA0KPiANCj4gPiArICAgICAgIGRpdi0+YmFzZSA9IGJhc2U7DQo+ID4gKyAgICAg
-ICBkaXYtPm9mZnNldCA9IG9mZnNldDsNCj4gPiArICAgICAgIGRpdi0+c2hpZnQgPSBzaGlmdDsN
-Cj4gPiArICAgICAgIGRpdi0+d2lkdGggPSB3aWR0aDsNCj4gPiArICAgICAgIGRpdi0+ZmxhZ3Mg
-PSBjbGtfZGl2aWRlcl9mbGFnczsNCj4gPiArICAgICAgIGRpdi0+bG9jayA9IGxvY2s7DQo+ID4g
-KyAgICAgICBkaXYtPmh3LmluaXQgPSAmaW5pdDsNCj4gPiArICAgICAgIGRpdi0+dGFibGUgPSB0
-YWJsZTsNCj4gPiArDQo+ID4gKyAgICAgICAvKiByZWdpc3RlciB0aGUgY2xvY2sgKi8NCj4gDQo+
-IERyb3AgdGhpcyBjb21tZW50Pw0KV2lsbCBmaXgNCj4gDQo+ID4gKyAgICAgICBodyA9ICZkaXYt
-Pmh3Ow0KPiA+ICsgICAgICAgcmV0ID0gY2xrX2h3X3JlZ2lzdGVyKGRldiwgaHcpOw0KPiANCj4g
-QW55IHJlYXNvbiB3ZSBjYW4ndCB1c2UgZGV2bV9jbGtfaHdfcmVnaXN0ZXIoKSBoZXJlPw0KPiAN
-CldpbGwgZG8NCj4gPiArICAgICAgIGlmIChyZXQpIHsNCj4gPiArICAgICAgICAgICAgICAga2Zy
-ZWUoZGl2KTsNCj4gPiArICAgICAgICAgICAgICAgcmV0dXJuIEVSUl9QVFIocmV0KTsNCj4gPiAr
-ICAgICAgIH0NCj4gPiArDQo+ID4gKyAgICAgICByZXR1cm4gaHctPmNsazsNCj4gPiArfQ0KPiA+
-ICsNCj4gPiAgc3RhdGljIHN0cnVjdCBjbGsgKmNsa193enJkX3JlZ2lzdGVyX2RpdmlkZXIoc3Ry
-dWN0IGRldmljZSAqZGV2LA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGNvbnN0IGNoYXIgKm5hbWUsDQo+ID4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciAqcGFyZW50X25hbWUsDQo+ID4gQEAgLTM1
-NSwxNyArNDg5LDEzIEBAIHN0YXRpYyBpbnQgY2xrX3d6cmRfcHJvYmUoc3RydWN0DQo+IHBsYXRm
-b3JtX2RldmljZSAqcGRldikNCj4gPiAgICAgICAgICAgICAgICAgZ290byBlcnJfZGlzYWJsZV9j
-bGs7DQo+ID4gICAgICAgICB9DQo+ID4NCj4gPiAtICAgICAgIC8qIHdlIGRvbid0IHN1cHBvcnQg
-ZnJhY3Rpb25hbCBkaXYvbXVsIHlldCAqLw0KPiA+IC0gICAgICAgcmVnID0gcmVhZGwoY2xrX3d6
-cmQtPmJhc2UgKyBXWlJEX0NMS19DRkdfUkVHKDApKSAmDQo+ID4gLSAgICAgICAgICAgICAgICAg
-ICBXWlJEX0NMS0ZCT1VUX0ZSQUNfRU47DQo+ID4gLSAgICAgICByZWcgfD0gcmVhZGwoY2xrX3d6
-cmQtPmJhc2UgKyBXWlJEX0NMS19DRkdfUkVHKDIpKSAmDQo+ID4gLSAgICAgICAgICAgICAgICAg
-ICAgV1pSRF9DTEtPVVQwX0ZSQUNfRU47DQo+ID4gLSAgICAgICBpZiAocmVnKQ0KPiA+IC0gICAg
-ICAgICAgICAgICBkZXZfd2FybigmcGRldi0+ZGV2LCAiZnJhY3Rpb25hbCBkaXYvbXVsIG5vdCBz
-dXBwb3J0ZWRcbiIpOw0KPiA+IC0NCj4gPiAgICAgICAgIC8qIHJlZ2lzdGVyIG11bHRpcGxpZXIg
-Ki8NCj4gPiAgICAgICAgIHJlZyA9IChyZWFkbChjbGtfd3pyZC0+YmFzZSArIFdaUkRfQ0xLX0NG
-R19SRUcoMCkpICYNCj4gPiAgICAgICAgICAgICAgICAgICAgICBXWlJEX0NMS0ZCT1VUX01VTFRf
-TUFTSykgPj4NCj4gPiBXWlJEX0NMS0ZCT1VUX01VTFRfU0hJRlQ7DQo+ID4gKyAgICAgICByZWdf
-ZiA9IChyZWFkbChjbGtfd3pyZC0+YmFzZSArIFdaUkRfQ0xLX0NGR19SRUcoMCkpICYNCj4gPiAr
-ICAgICAgICAgICAgICAgICAgICBXWlJEX0NMS0ZCT1VUX0ZSQUNfTUFTSykgPj4NCj4gPiArIFda
-UkRfQ0xLRkJPVVRfRlJBQ19TSElGVDsNCj4gDQo+IFVzZSB0d28gbGluZXMgcGxlYXNlLiBSZWFk
-IGludG8gdmFyaWFibGUgb24gb25lIGxpbmUsIHNoaWZ0IG9uIGFub3RoZXIuDQo+IA0KV2lsbCBm
-aXgNCj4gPiArDQo+ID4gKyAgICAgICBtdWx0ID0gKChyZWcgKiAxMDAwKSArIHJlZ19mKTsNCj4g
-DQo+IFBsZWFzZSByZW1vdmUgZXh0cmEgcGFyZW50aGVzaXMuDQo+IA0KPiA+ICAgICAgICAgY2xr
-X25hbWUgPSBrYXNwcmludGYoR0ZQX0tFUk5FTCwgIiVzX211bCIsIGRldl9uYW1lKCZwZGV2LQ0K
-PiA+ZGV2KSk7DQo+ID4gICAgICAgICBpZiAoIWNsa19uYW1lKSB7DQo+ID4gICAgICAgICAgICAg
-ICAgIHJldCA9IC1FTk9NRU07DQo+ID4gQEAgLTQxMyw4ICs1NDMsMTggQEAgc3RhdGljIGludCBj
-bGtfd3pyZF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiA+ICAgICAg
-ICAgICAgICAgICAgICAgICAgIHJldCA9IC1FSU5WQUw7DQo+ID4gICAgICAgICAgICAgICAgICAg
-ICAgICAgZ290byBlcnJfcm1faW50X2Nsa3M7DQo+ID4gICAgICAgICAgICAgICAgIH0NCj4gPiAt
-ICAgICAgICAgICAgICAgY2xrX3d6cmQtPmNsa291dFtpXSA9IGNsa193enJkX3JlZ2lzdGVyX2Rp
-dmlkZXIoJnBkZXYtPmRldiwNCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xrb3V0X25hbWUsDQo+ID4gKyAgICAgICAg
-ICAgICAgIGlmICghaSkNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBjbGtfd3pyZC0+Y2xr
-b3V0W2ldID0gY2xrX3d6cmRfcmVnaXN0ZXJfZGl2Zg0KPiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgKCZwZGV2LT5kZXYsIGNsa291dF9uYW1lLA0KPiA+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgY2xrX25hbWUsIDAsDQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBjbGtfd3pyZC0+YmFzZSwgKFdaUkRfQ0xLX0NGR19SRUcoMikgKyBpICogMTIp
-LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgV1pSRF9DTEtPVVRfRElWSURF
-X1NISUZULA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgV1pSRF9DTEtPVVRf
-RElWSURFX1dJRFRILA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ0xLX0RJ
-VklERVJfT05FX0JBU0VEIHwNCj4gQ0xLX0RJVklERVJfQUxMT1dfWkVSTywNCj4gPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIE5VTEwsICZjbGt3enJkX2xvY2spOw0KPiA+ICsgICAg
-ICAgICAgICAgICBlbHNlDQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgY2xrX3d6cmQtPmNs
-a291dFtpXSA9IGNsa193enJkX3JlZ2lzdGVyX2RpdmlkZXINCj4gPiArICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICgmcGRldi0+ZGV2LCBjbGtvdXRfbmFtZSwNCj4gPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGNsa19uYW1lLCAwLA0KPiA+ICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgY2xrX3d6cmQtPmJhc2UsIChXWlJEX0NMS19DRkdfUkVHKDIpICsgaSAq
-IDEyKSwNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFdaUkRfQ0xLT1VUX0RJ
-VklERV9TSElGVCwNCj4gPg0KPiANCj4gSSB3b25kZXIgaWYgYSBkby13aGlsZSBsb29wIHdpdGgg
-ZmxhZ3Mgc2V0IHRvIE9ORV9CQVNFRCBhbmQgQUxMT1dfWkVSTw0KPiBjb3VsZCB3b3JrIGFuZCB0
-aGVuIGZsYWdzIGdldHMgb3ZlcndyaXR0ZW4gdG8gYmUganVzdCBESVZJREVfU0hJRlQ/IFRoZW4N
-Cj4gd2UgZG9uJ3QgaGF2ZSB0byBkdXBsaWNhdGUgdGhlIHJlZ2lzdHJhdGlvbiBsaW5lLg0KDQpJ
-IGRpZCBub3QgdW5kZXJzdGFuZCB0aGlzIGNvbW1lbnQgaW4gb25lIGNhc2UgSSBhbSByZWdpc3Rl
-cmluZyAgZm9yIHRoZSBmcmFjdGlvbmFsIG9wZXJhdGlvbnMNCkluIGFub3RoZXIgd2UgYXJlIHVz
-aW5nIHRoZSBpbnRlZ3JhbCBvcGVyYXRpb25zDQo=
+Hi Ian,
+
+On Thu, Sep 24, 2020 at 7:13 AM Ian Rogers <irogers@google.com> wrote:
+>
+> On Wed, Sep 23, 2020 at 1:05 AM Namhyung Kim <namhyung@kernel.org> wrote:
+> >
+> > Sometimes I can see perf record piped with perf inject take long time
+> > processing build-id.  So add inject-build-id benchmark to the
+> > internals benchmark suite to measure its overhead regularly.
+> >
+> > It runs perf inject command internally and feeds the given number of
+> > synthesized events (MMAP2 + SAMPLE basically).
+> >
+> >   Usage: perf bench internals inject-build-id <options>
+> >
+> >     -i, --iterations <n>  Number of iterations used to compute average (default: 100)
+> >     -m, --nr-mmaps <n>    Number of mmap events for each iteration (default: 100)
+> >     -n, --nr-samples <n>  Number of sample events per mmap event (default: 100)
+> >     -v, --verbose         be more verbose (show iteration count, DSO name, etc)
+> >
+> > By default, it measures average processing time of 100 MMAP2 events
+> > and 10000 SAMPLE events.  Below is a result on my laptop.
+> >
+> >   $ perf bench internals inject-build-id
+> >   # Running 'internals/inject-build-id' benchmark:
+> >     Average build-id injection took: 22.997 msec (+- 0.067 msec)
+> >     Average time per event: 2.255 usec (+- 0.007 usec)
+>
+> This is great! Some suggestions below.
+
+Thanks!
+
+>
+> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > ---
+[SNIP]
+> > +
+> > +static const char *const bench_usage[] = {
+> > +       "perf bench internals inject-build-id <options>",
+> > +       NULL
+> > +};
+> > +
+>
+> Perhaps a comment:
+> /* Helper for collect_dso that adds the given file as a dso to
+> dso_list if it contains a buildid. Stops after 4 such dsos.*/
+
+Will add.. please see below.
+
+>
+> > +static int add_dso(const char *fpath, const struct stat *sb __maybe_unused,
+> > +                  int typeflag, struct FTW *ftwbuf __maybe_unused)
+> > +{
+> > +       struct bench_dso *dso;
+> > +       unsigned char build_id[BUILD_ID_SIZE];
+> > +
+> > +       if (typeflag == FTW_D || typeflag == FTW_SL) {
+> > +               return 0;
+> > +       }
+> > +
+> > +       if (filename__read_build_id(fpath, build_id, BUILD_ID_SIZE) < 0)
+> > +               return 0;
+> > +
+> > +       dso = malloc(sizeof(*dso));
+> > +       if (dso == NULL)
+> > +               return -1;
+> > +
+> > +       dso->name = realpath(fpath, NULL);
+> > +       if (dso->name == NULL) {
+> > +               free(dso);
+> > +               return -1;
+> > +       }
+> > +
+> > +       dso->ino = nr_dsos++;
+> > +       list_add(&dso->list, &dso_list);
+> > +       pr_debug2("  Adding DSO: %s\n", fpath);
+> > +
+> > +       /* stop if we collected 4x DSOs than needed */
+> > +       if ((unsigned)nr_dsos > 4 * nr_mmaps)
+> > +               return 1;
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static void collect_dso(void)
+> > +{
+> > +       if (nftw("/usr/lib/", add_dso, 10, FTW_PHYS) < 0)
+> > +               return;
+> > +
+> > +       pr_debug("  Collected %d DSOs\n", nr_dsos);
+>
+> Should this fail if the count isn't 4?
+
+The add_dso would stop if it collected enough DSOs.
+I chose it as 4 x nr_mmaps (default: 100).
+
+It's gonna pick a DSO in the list randomly during benchmark
+and I want to reduce the chance it selects the same one in the
+same iteration. So instead of having nr_mmaps DSOs, it keeps
+4 times more DSOs than needed.
+
+>
+> > +}
+> > +
+> > +static void release_dso(void)
+> > +{
+> > +       struct bench_dso *dso;
+> > +
+> > +       while (!list_empty(&dso_list)) {
+> > +               dso = list_first_entry(&dso_list, struct bench_dso, list);
+> > +               list_del(&dso->list);
+> > +               free(dso->name);
+> > +               free(dso);
+> > +       }
+> > +}
+> > +
+>
+> Perhaps a comment and move next to synthesize_mmap.
+> /* Fake address used by mmap events. */
+
+OK, will do.  (and it's used by sample events too)
+
+>
+> > +static u64 dso_map_addr(struct bench_dso *dso)
+> > +{
+> > +       return 0x400000ULL + dso->ino * 8192ULL;
+> > +}
+[SNIP]
+
+> > +static int setup_injection(struct bench_data *data)
+> > +{
+> > +       int ready_pipe[2];
+> > +       int dev_null_fd;
+> > +       char buf;
+> > +
+> > +       if (pipe(ready_pipe) < 0)
+> > +               return -1;
+> > +
+> > +       if (pipe(data->input_pipe) < 0)
+> > +               return -1;
+> > +
+> > +       if (pipe(data->output_pipe) < 0)
+> > +               return -1;
+> > +
+> > +       data->pid = fork();
+> > +       if (data->pid < 0)
+> > +               return -1;
+> > +
+> > +       if (data->pid == 0) {
+> > +               const char **inject_argv;
+> > +
+> > +               close(data->input_pipe[1]);
+> > +               close(data->output_pipe[0]);
+> > +               close(ready_pipe[0]);
+> > +
+> > +               dup2(data->input_pipe[0], STDIN_FILENO);
+> > +               close(data->input_pipe[0]);
+> > +               dup2(data->output_pipe[1], STDOUT_FILENO);
+> > +               close(data->output_pipe[1]);
+> > +
+> > +               dev_null_fd = open("/dev/null", O_WRONLY);
+> > +               if (dev_null_fd < 0)
+> > +                       exit(1);
+> > +
+> > +               dup2(dev_null_fd, STDERR_FILENO);
+> > +
+> > +               inject_argv = calloc(3, sizeof(*inject_argv));
+> > +               if (inject_argv == NULL)
+> > +                       exit(1);
+> > +
+> > +               inject_argv[0] = strdup("inject");
+> > +               inject_argv[1] = strdup("-b");
+> > +
+> > +               /* signal that we're ready to go */
+> > +               close(ready_pipe[1]);
+> > +
+> > +               cmd_inject(2, inject_argv);
+> > +
+> > +               exit(0);
+> > +       }
+> > +
+> > +       signal(SIGPIPE, sigpipe_handler);
+> > +
+> > +       close(ready_pipe[1]);
+> > +       close(data->input_pipe[0]);
+> > +       close(data->output_pipe[1]);
+> > +
+> > +       /* wait for child ready */
+> > +       if (read(ready_pipe[0], &buf, 1) < 0)
+> > +               return -1;
+> > +       close(ready_pipe[0]);
+> > +
+> > +       return 0;
+> > +}
+>
+> This feels like generic scaffolding that could be shared by other perf
+> command benchmarks.
+
+Maybe.. the thing is perf inject usually works on pipes so it needed
+a new process to run the test.  Probably we can simply run others
+in the same process.
+
+>
+> > +
+> > +static int inject_build_id(struct bench_data *data)
+> > +{
+> > +       int flag, status;
+> > +       unsigned int i, k;
+> > +       char buf[8192];
+> > +       u64 nread = 0;
+> > +       u64 len = nr_mmaps / 2 * sizeof(struct perf_record_header_build_id);
+> > +
+> > +       flag = fcntl(data->output_pipe[0], F_GETFL, 0);
+> > +       if (fcntl(data->output_pipe[0], F_SETFL, flag | O_NONBLOCK) < 0)
+> > +               return -1;
+> > +
+> > +       /* this makes the child to run */
+> > +       if (perf_header__write_pipe(data->input_pipe[1]) < 0)
+> > +               return -1;
+> > +
+> > +       len += synthesize_attr(data);
+> > +       len += synthesize_fork(data);
+> > +
+> > +       for (i = 0; i < nr_mmaps; i++) {
+> > +               struct bench_dso *dso;
+> > +               int idx = rand() % (nr_dsos - 1);
+> > +
+> > +               dso = list_first_entry(&dso_list, struct bench_dso, list);
+> > +               while (idx--)
+> > +                       dso = list_next_entry(dso, list);
+> > +
+> > +               pr_debug("   [%2d] injecting: %s\n", i+1, dso->name);
+> > +               len += synthesize_mmap(data, dso);
+> > +
+> > +               for (k = 0; k < nr_samples; k++)
+> > +                       len += synthesize_sample(data, dso);
+> > +
+> > +               /* read out data from child */
+> > +               while (true) {
+> > +                       int n;
+> > +
+> > +                       n = read(data->output_pipe[0], buf, sizeof(buf));
+> > +                       if (n <= 0)
+> > +                               break;
+> > +                       nread += n;
+> > +               }
+> > +       }
+> > +
+> > +       /* wait to read data at least as we wrote + some build-ids */
+> > +       while (nread < len) {
+> > +               int n;
+> > +
+> > +               n = read(data->output_pipe[0], buf, sizeof(buf));
+> > +               if (n < 0)
+> > +                       break;
+> > +               nread += n;
+> > +       }
+> > +       close(data->input_pipe[1]);
+> > +       close(data->output_pipe[0]);
+> > +
+> > +       wait(&status);
+> > +       pr_debug("   Child %d exited with %d\n", data->pid, status);
+> > +
+> > +       return 0;
+> > +}
+> >
+>
+> Perhaps we can read the highwater mark (VmHWM) from /proc/[pid]/status
+> as this would capture cases like buildid injection doing unnecessary
+> symbol generation.
+
+Good idea!  I'll add it and check we can see the difference.
+
+Thanks
+Namhyung
