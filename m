@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937B4276CE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86098276CF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 11:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727354AbgIXJPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 05:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
+        id S1727329AbgIXJVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 05:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727326AbgIXJPB (ORCPT
+        with ESMTP id S1726710AbgIXJVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 05:15:01 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EEC5C0613DA
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:15:01 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id i1so2666922edv.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:15:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=blIPJEbomAKiMgTEwz666YDx51JxK5KUKkCacV2k5DGrYF1dgoN3TPlbCce3UdPyqn
-         l+sjX0//ZpWoRSpXvagCpGylKqMTkNMo/2HAZJY28dwC1rti3ofKw4Z1RDbjcvxMDnbn
-         DBnAhALu6UdIa4wCDzo7dIv9qp2U03O4u7rDCQdwmjFPbrVpv5bepecSdGtwKnTJB9rH
-         nH/oGusFJ6JM43Xna+7eDdLYcEoJL8AsTmou4kcpDb2UtDY0KPfodc/NGQ4TUEcOm3hs
-         6cMsgEJtG/d3gouoUvTe4+Wy9RSjcJnO5Ygg3P7zVsSedlaT/hDy9teH4tkT8r3LGB8W
-         6cvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=zdxUWMWXTEs/zs0LJh1bxLoOHpDg1k5nkLimqXptzik=;
-        b=YBdwvqrTQdDMluiBeyYjye2eGjXfQqlEhj34eaZC+oYIFXqJpSHZvWef32RxcCcwVy
-         DIdwmrVpikzqx3gRKU8032K9ZLBjYCqq4hNWI4+ZSbbEjMXG3/2kyLf5+wCyn5/Ecc1h
-         ysGylHsLPGLxwmJaue6aY2KELuT5wxV6WussBnGbZLcF71Kl34I7SDoBOFGriK2O9g/E
-         ApXVrgwuM+KzzvkXKYTy/iPIqrN0EvD2YzajrtPFe45d5tha4AnRYp++xa/1gfuwyt+P
-         dwsASf44wqHv8BdRMrTS5T7FLSQPxMYVEav/UIWc5RrvP9pPjgcciUjBdhIaFkb4u45+
-         cMBQ==
-X-Gm-Message-State: AOAM531a4NH2kaELVWbpPUOWQBwyX/eq0ro7cEm2i0rKnKoS0uUy3Sye
-        gHYjGzV9CjhQoZrVhXHkPSfx4M7GjbQzo9AV+V0=
-X-Google-Smtp-Source: ABdhPJyTPH8PP/2mieNLbOyLqms9pUviMKvSeTWD9wb8h+Pr7H1ZfKMbyjpiQTFtDXkxINcaJ73NV9FfmSogeqXajbU=
-X-Received: by 2002:a05:6402:c15:: with SMTP id co21mr1946edb.268.1600938899597;
- Thu, 24 Sep 2020 02:14:59 -0700 (PDT)
+        Thu, 24 Sep 2020 05:21:53 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE96C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 02:21:53 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600939312;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fMAvwwFV30HK4hEY4FeabCBTMHVTzPS6tY9DUMcJlTM=;
+        b=qlx733Zr8+YqmCkWvzeX3ZdiQudovl7ZSFdTEMjGtEr4OXU7CvxQmmZ+cRNoO9Q8o30YmQ
+        IfJ35w6W4xBqS2Fyhq0XtU2drHWkRdrC85eOl5OuwIShY/33mmt4eKZNvmUhsuJs/cVrX+
+        jsbRPyeQsEdpR0AQRnvCvrflwVUKvIYf9HfySilYnD0rXY9rVZKCXb4TzaB6nWv5gxhxvm
+        PRxWL67G/B8/qYzGFxnbemX+ViJnXIgv8hdH/n4APBcOiBzk5xgJZQuK4Va9sUr0tzKZGL
+        yxKrwHkvYDqb66QcyfG3YpLXhKxhVneeuizu9i0Ssu7hFOvBuNgge7ITNJa6Pw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600939312;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fMAvwwFV30HK4hEY4FeabCBTMHVTzPS6tY9DUMcJlTM=;
+        b=Hw8BadpY62hy9A5xiGbX1YcvD/LmaDrFsBshXnmEh83j4JbSIcZAH4/5/+N+6DJYALAkQ5
+        g3bym75Y5gX4FeDQ==
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk 4/5] printk: remove logbuf_lock, add syslog_lock
+In-Reply-To: <20200924084541.GA541@jagdpanzerIV.localdomain>
+References: <20200922153816.5883-1-john.ogness@linutronix.de> <20200922153816.5883-5-john.ogness@linutronix.de> <20200924084541.GA541@jagdpanzerIV.localdomain>
+Date:   Thu, 24 Sep 2020 11:27:51 +0206
+Message-ID: <87d02b7cnk.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Received: by 2002:a54:2811:0:0:0:0:0 with HTTP; Thu, 24 Sep 2020 02:14:58
- -0700 (PDT)
-Reply-To: ayishagddafio@mail.ru
-From:   AISHA GADDAFI <floradarpin.d@gmail.com>
-Date:   Thu, 24 Sep 2020 02:14:58 -0700
-Message-ID: <CAPX4zWxG6--oZzPaoMmta9n5fWHajuiA-wFBP=cbGe-CKGcWaw@mail.gmail.com>
-Subject: Lieber Freund (Assalamu Alaikum),?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Lieber Freund (Assalamu Alaikum),
+On 2020-09-24, Sergey Senozhatsky <sergey.senozhatsky@gmail.com> wrote:
+> [..]
+>>  void printk_safe_flush_on_panic(void)
+>>  {
+>> -	/*
+>> -	 * Make sure that we could access the main ring buffer.
+>> -	 * Do not risk a double release when more CPUs are up.
+>> -	 */
+>> -	if (raw_spin_is_locked(&logbuf_lock)) {
+>> -		if (num_online_cpus() > 1)
+>> -			return;
+>> -
+>> -		debug_locks_off();
+>> -		raw_spin_lock_init(&logbuf_lock);
+>
+> If we panic() with syslog_lock locked then we need to zap syslog_lock
+> and disable debug_locks for kmsg_dump() to succeed. Otherwise panic()
+> may deadlock:
+>
+> 	syslog_lock_irq()
+> 	-> NMI
+> 		panic()
+> 		...
+> 			printk_safe_flush_on_panic();
+> 			kmsg_dump(KMSG_DUMP_PANIC);	// syslog_lock_irqsave(flags)
+> 		...
+>
+> Did I miss the point where we make sure that kmsg_dump() will not
+> deadlock?
 
-Ich bin vor einer privaten Suche auf Ihren E-Mail-Kontakt gesto=C3=9Fen
-Ihre Hilfe. Mein Name ist Aisha Al-Qaddafi, eine alleinerziehende
-Mutter und eine Witwe
-mit drei Kindern. Ich bin die einzige leibliche Tochter des Sp=C3=A4tlibysc=
-hen
-Pr=C3=A4sident (verstorbener Oberst Muammar Gaddafi).
+You are correct. Thanks.
 
-Ich habe Investmentfonds im Wert von siebenundzwanzig Millionen
-f=C3=BCnfhunderttausend
-United State Dollar ($ 27.500.000.00) und ich brauche eine
-vertrauensw=C3=BCrdige Investition
-Manager / Partner aufgrund meines aktuellen Fl=C3=BCchtlingsstatus bin ich =
-jedoch
-M=C3=B6glicherweise interessieren Sie sich f=C3=BCr die Unterst=C3=BCtzung =
-von
-Investitionsprojekten in Ihrem Land
-Von dort aus k=C3=B6nnen wir in naher Zukunft Gesch=C3=A4ftsbeziehungen auf=
-bauen.
+@clear_seq should either become atomic64 or kmsg_dump() should start
+from the oldest available message (seq=0).
 
-Ich bin bereit, mit Ihnen =C3=BCber das Verh=C3=A4ltnis zwischen Investitio=
-n und
-Unternehmensgewinn zu verhandeln
-Basis f=C3=BCr die zuk=C3=BCnftige Investition Gewinne zu erzielen.
-
-Wenn Sie bereit sind, dieses Projekt in meinem Namen zu bearbeiten,
-antworten Sie bitte dringend
-Damit ich Ihnen mehr Informationen =C3=BCber die Investmentfonds geben kann=
-.
-
-Ihre dringende Antwort wird gesch=C3=A4tzt. schreibe mir an diese email adr=
-esse (
-ayishagddafio@mail.ru ) zur weiteren Diskussion.
-
-Freundliche Gr=C3=BC=C3=9Fe
-Frau Aisha Al-Qaddafi
+John Ogness
