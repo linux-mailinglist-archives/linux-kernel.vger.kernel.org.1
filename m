@@ -2,303 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80762779D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:58:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C43F2779D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 21:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgIXT6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 15:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726187AbgIXT6I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 15:58:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB35C0613CE;
-        Thu, 24 Sep 2020 12:58:07 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 19:58:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600977485;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jyi2TET1KUaHPx4heTAbnal+/8yvv2uU5a9TrwOkP+g=;
-        b=VgHMU3Jme6LUOyteWH1H9Dpuf60NbH5cHEKxg6yBCP0WDKktydU++ZgdkZdijGeUnCt4S5
-        WdQSZwWYAxoFaRbWIzs9lJR/jnnM8j+3ZW2iw3quYDUbMnj3WYEnEyAfFtF6Pd9G0CEAow
-        lpUInm5QKgrkm/kDc+QtpmGBXhTM8V/Y/BvuQ2V++WwvRz0V/01oWEFheoD66dKZx9g+/y
-        wTwnXYi9oj4iB1TMb5HNygq0nORhgpyWquoi7etyUOsxNaD2tcD5e1U2xcbiHU76r6ta46
-        wRaxZbZrksPfoMpLjhEDuprN05YuvcLzkIC2ZWNzDfLSRlGuGbOraoeF64LMlA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600977485;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Jyi2TET1KUaHPx4heTAbnal+/8yvv2uU5a9TrwOkP+g=;
-        b=EjnqHmw0i3TsXiqM/Do204nDEgYCZPAZEFWeHgiX2yLfFrnFJQG8ysmLEeGVOzsMoa01To
-        TCXff/ftwxxoY0Aw==
-From:   "tip-bot2 for Stephen Boyd" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/debugobjects] debugobjects: Allow debug_obj_descr to be const
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kees Cook <keescook@chromium.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200815004027.2046113-2-swboyd@chromium.org>
-References: <20200815004027.2046113-2-swboyd@chromium.org>
+        id S1726379AbgIXT7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 15:59:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:53964 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgIXT7l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 15:59:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1FF171045;
+        Thu, 24 Sep 2020 12:59:40 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3716D3F73B;
+        Thu, 24 Sep 2020 12:59:38 -0700 (PDT)
+References: <20200921163557.234036895@infradead.org> <20200921163845.830487105@infradead.org>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
+Subject: Re: [PATCH 8/9] sched: Fix migrate_disable() vs set_cpus_allowed_ptr()
+In-reply-to: <20200921163845.830487105@infradead.org>
+Date:   Thu, 24 Sep 2020 20:59:33 +0100
+Message-ID: <jhj3637lzdm.mognet@arm.com>
 MIME-Version: 1.0
-Message-ID: <160097748498.7002.9732116646308360622.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/debugobjects branch of tip:
 
-Commit-ID:     aedcade6f4fa9a1e65f327fc42de3fb47660646c
-Gitweb:        https://git.kernel.org/tip/aedcade6f4fa9a1e65f327fc42de3fb47660646c
-Author:        Stephen Boyd <swboyd@chromium.org>
-AuthorDate:    Fri, 14 Aug 2020 17:40:26 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 24 Sep 2020 21:56:24 +02:00
+On 21/09/20 17:36, Peter Zijlstra wrote:
+> +struct set_affinity_pending {
+> +	refcount_t		refs;
+> +	struct completion	done;
+> +	struct cpu_stop_work	stop_work;
+> +	struct migration_arg	arg;
+> +};
+> +
+> +static int move_task(struct rq *rq, struct rq_flags *rf, struct task_struct *p,
+> +		     int dest_cpu, unsigned int flags)
+> +{
+> +	struct set_affinity_pending my_pending, *pending = NULL;
+> +	struct migration_arg arg = {
+> +		.task = p,
+> +		.dest_cpu = dest_cpu,
+> +	};
+> +
+> +	if (!(flags & SCA_MIGRATE_ENABLE)) {
+> +		/* serialized by p->pi_lock */
+> +		if (!p->migration_pending) {
+> +			refcount_set(&my_pending.refs, 1);
+> +			init_completion(&my_pending.done);
+> +			p->migration_pending = &my_pending;
+> +		} else {
+> +			pending = p->migration_pending;
+> +			refcount_inc(&pending->refs);
+> +		}
+> +	}
+> +	pending = p->migration_pending;
+> +	/*
+> +	 * - !MIGRATE_ENABLE:
+> +	 *   we'll have installed a pending if there wasn't one already.
+> +	 *
+> +	 * - MIGRATE_ENABLE:
+> +	 *   we're here because the current CPU isn't matching anymore,
+> +	 *   the only way that can happen is because of a concurrent
+> +	 *   set_cpus_allowed_ptr() call, which should then still be
+> +	 *   pending completion.
+> +	 *
+> +	 * Either way, we really should have a @pending here.
+> +	 */
+> +	if (WARN_ON_ONCE(!pending))
+> +		return -EINVAL;
+> +
+> +	arg.done = &pending->done;
+> +
+> +	if (flags & SCA_MIGRATE_ENABLE) {
+> +
+> +		task_rq_unlock(rq, p, rf);
+> +		pending->arg = arg;
+> +		stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+> +				    &pending->arg, &pending->stop_work);
+> +
+> +		return 0;
+> +	}
+> +
+> +	if (task_running(rq, p) || p->state == TASK_WAKING) {
+> +
+> +		task_rq_unlock(rq, p, rf);
+> +		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
+> +
 
-debugobjects: Allow debug_obj_descr to be const
+Shouldn't we check for is_migrate_disabled(p) before doing any of that?
+migration_cpu_stop() does check for it, is there something that prevents us
+from acting on it earlier than that?
 
-The debugobject core could be slightly harder to corrupt if the
-debug_obj_descr would be a pointer to const memory.
+> +	} else {
+> +		bool complete = false;
+> +
+> +		if (!is_migration_disabled(p)) {
+> +			if (task_on_rq_queued(p))
+> +				rq = move_queued_task(rq, rf, p, dest_cpu);
+> +
+> +			p->migration_pending = NULL;
+> +			complete = true;
+> +		}
+> +		task_rq_unlock(rq, p, rf);
+> +
+> +		if (complete)
+> +			complete_all(&pending->done);
+> +	}
+> +
+> +	wait_for_completion(&pending->done);
+> +
+> +	if (refcount_dec_and_test(&pending->refs))
+> +		wake_up_var(&pending->refs);
+> +
+> +	wait_var_event(&my_pending.refs, !refcount_read(&my_pending.refs));
+> +
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Change a given task's CPU affinity. Migrate the thread to a
+>   * proper CPU and schedule it away if the CPU it's executing on
+> @@ -2025,19 +2138,8 @@ static int __set_cpus_allowed_ptr(struct
+>       if (cpumask_test_cpu(task_cpu(p), new_mask))
+>               goto out;
 
-Depending on the architecture, const data structures are placed into
-read-only memory and thus are harder to corrupt or hijack.
+I think this needs a cancellation of any potential pending migration
+requests. Consider a task P0 running on CPU0:
 
-This descriptor is used to fix up stuff like timers and workqueues when
-core kernel data structures are busted, so moving the descriptors to
-read-only memory will make debugobjects more resilient to something going
-wrong and then corrupting the function pointers inside struct
-debug_obj_descr.
+   P0                     P1                               P2
 
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Link: https://lore.kernel.org/r/20200815004027.2046113-2-swboyd@chromium.org
+   migrate_disable();
+   <preempt>
+                          set_cpus_allowed_ptr(P0, CPU1);
+                          // waits for completion
+                                                           set_cpus_allowed_ptr(P0, CPU0);
+                                                           // Already good, no waiting for completion
+   <resumes>
+   migrate_enable();
+   // task_cpu(p) allowed, no move_task()
+
+AIUI in this scenario P1 would stay forever waiting. I *think* this can be
+cured by making this function slightly more hideous:
 
 ---
- include/linux/debugobjects.h | 32 ++++++++++++++++----------------
- lib/debugobjects.c           | 30 +++++++++++++++---------------
- 2 files changed, 31 insertions(+), 31 deletions(-)
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 01113e6f941f..829334f00f7b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2102,6 +2102,8 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+                                  u32 flags)
+ {
+        const struct cpumask *cpu_valid_mask = cpu_active_mask;
++	struct set_affinity_pending *pending;
++	bool cancel_pending = false;
+        unsigned int dest_cpu;
+        struct rq_flags rf;
+        struct rq *rq;
+@@ -2158,14 +2160,20 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+        }
 
-diff --git a/include/linux/debugobjects.h b/include/linux/debugobjects.h
-index afc416e..8d2dde2 100644
---- a/include/linux/debugobjects.h
-+++ b/include/linux/debugobjects.h
-@@ -30,7 +30,7 @@ struct debug_obj {
- 	enum debug_obj_state	state;
- 	unsigned int		astate;
- 	void			*object;
--	struct debug_obj_descr	*descr;
-+	const struct debug_obj_descr *descr;
- };
- 
- /**
-@@ -64,14 +64,14 @@ struct debug_obj_descr {
- };
- 
- #ifdef CONFIG_DEBUG_OBJECTS
--extern void debug_object_init      (void *addr, struct debug_obj_descr *descr);
-+extern void debug_object_init      (void *addr, const struct debug_obj_descr *descr);
- extern void
--debug_object_init_on_stack(void *addr, struct debug_obj_descr *descr);
--extern int debug_object_activate  (void *addr, struct debug_obj_descr *descr);
--extern void debug_object_deactivate(void *addr, struct debug_obj_descr *descr);
--extern void debug_object_destroy   (void *addr, struct debug_obj_descr *descr);
--extern void debug_object_free      (void *addr, struct debug_obj_descr *descr);
--extern void debug_object_assert_init(void *addr, struct debug_obj_descr *descr);
-+debug_object_init_on_stack(void *addr, const struct debug_obj_descr *descr);
-+extern int debug_object_activate  (void *addr, const struct debug_obj_descr *descr);
-+extern void debug_object_deactivate(void *addr, const struct debug_obj_descr *descr);
-+extern void debug_object_destroy   (void *addr, const struct debug_obj_descr *descr);
-+extern void debug_object_free      (void *addr, const struct debug_obj_descr *descr);
-+extern void debug_object_assert_init(void *addr, const struct debug_obj_descr *descr);
- 
- /*
-  * Active state:
-@@ -79,26 +79,26 @@ extern void debug_object_assert_init(void *addr, struct debug_obj_descr *descr);
-  * - Must return to 0 before deactivation.
-  */
- extern void
--debug_object_active_state(void *addr, struct debug_obj_descr *descr,
-+debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
- 			  unsigned int expect, unsigned int next);
- 
- extern void debug_objects_early_init(void);
- extern void debug_objects_mem_init(void);
- #else
- static inline void
--debug_object_init      (void *addr, struct debug_obj_descr *descr) { }
-+debug_object_init      (void *addr, const struct debug_obj_descr *descr) { }
- static inline void
--debug_object_init_on_stack(void *addr, struct debug_obj_descr *descr) { }
-+debug_object_init_on_stack(void *addr, const struct debug_obj_descr *descr) { }
- static inline int
--debug_object_activate  (void *addr, struct debug_obj_descr *descr) { return 0; }
-+debug_object_activate  (void *addr, const struct debug_obj_descr *descr) { return 0; }
- static inline void
--debug_object_deactivate(void *addr, struct debug_obj_descr *descr) { }
-+debug_object_deactivate(void *addr, const struct debug_obj_descr *descr) { }
- static inline void
--debug_object_destroy   (void *addr, struct debug_obj_descr *descr) { }
-+debug_object_destroy   (void *addr, const struct debug_obj_descr *descr) { }
- static inline void
--debug_object_free      (void *addr, struct debug_obj_descr *descr) { }
-+debug_object_free      (void *addr, const struct debug_obj_descr *descr) { }
- static inline void
--debug_object_assert_init(void *addr, struct debug_obj_descr *descr) { }
-+debug_object_assert_init(void *addr, const struct debug_obj_descr *descr) { }
- 
- static inline void debug_objects_early_init(void) { }
- static inline void debug_objects_mem_init(void) { }
-diff --git a/lib/debugobjects.c b/lib/debugobjects.c
-index fe45579..e2a3171 100644
---- a/lib/debugobjects.c
-+++ b/lib/debugobjects.c
-@@ -90,7 +90,7 @@ static int			debug_objects_pool_size __read_mostly
- 				= ODEBUG_POOL_SIZE;
- static int			debug_objects_pool_min_level __read_mostly
- 				= ODEBUG_POOL_MIN_LEVEL;
--static struct debug_obj_descr	*descr_test  __read_mostly;
-+static const struct debug_obj_descr *descr_test  __read_mostly;
- static struct kmem_cache	*obj_cache __read_mostly;
- 
- /*
-@@ -223,7 +223,7 @@ static struct debug_obj *__alloc_object(struct hlist_head *list)
-  * Must be called with interrupts disabled.
-  */
- static struct debug_obj *
--alloc_object(void *addr, struct debug_bucket *b, struct debug_obj_descr *descr)
-+alloc_object(void *addr, struct debug_bucket *b, const struct debug_obj_descr *descr)
- {
- 	struct debug_percpu_free *percpu_pool = this_cpu_ptr(&percpu_obj_pool);
- 	struct debug_obj *obj;
-@@ -475,7 +475,7 @@ static struct debug_bucket *get_bucket(unsigned long addr)
- 
- static void debug_print_object(struct debug_obj *obj, char *msg)
- {
--	struct debug_obj_descr *descr = obj->descr;
-+	const struct debug_obj_descr *descr = obj->descr;
- 	static int limit;
- 
- 	if (limit < 5 && descr != descr_test) {
-@@ -529,7 +529,7 @@ static void debug_object_is_on_stack(void *addr, int onstack)
+        /* Can the task run on the task's current CPU? If so, we're done */
+-	if (cpumask_test_cpu(task_cpu(p), new_mask))
++	if (cpumask_test_cpu(task_cpu(p), new_mask)) {
++		cancel_pending = true;
+                goto out;
++	}
+
+        return move_task(rq, &rf, p, dest_cpu, flags);
+
+ out:
++	pending = p->migration_pending;
+        task_rq_unlock(rq, p, &rf);
+
++	if (cancel_pending && pending)
++		complete_all(&pending->done);
++
+        return ret;
  }
- 
- static void
--__debug_object_init(void *addr, struct debug_obj_descr *descr, int onstack)
-+__debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack)
- {
- 	enum debug_obj_state state;
- 	bool check_stack = false;
-@@ -587,7 +587,7 @@ __debug_object_init(void *addr, struct debug_obj_descr *descr, int onstack)
-  * @addr:	address of the object
-  * @descr:	pointer to an object specific debug description structure
-  */
--void debug_object_init(void *addr, struct debug_obj_descr *descr)
-+void debug_object_init(void *addr, const struct debug_obj_descr *descr)
- {
- 	if (!debug_objects_enabled)
- 		return;
-@@ -602,7 +602,7 @@ EXPORT_SYMBOL_GPL(debug_object_init);
-  * @addr:	address of the object
-  * @descr:	pointer to an object specific debug description structure
-  */
--void debug_object_init_on_stack(void *addr, struct debug_obj_descr *descr)
-+void debug_object_init_on_stack(void *addr, const struct debug_obj_descr *descr)
- {
- 	if (!debug_objects_enabled)
- 		return;
-@@ -617,7 +617,7 @@ EXPORT_SYMBOL_GPL(debug_object_init_on_stack);
-  * @descr:	pointer to an object specific debug description structure
-  * Returns 0 for success, -EINVAL for check failed.
-  */
--int debug_object_activate(void *addr, struct debug_obj_descr *descr)
-+int debug_object_activate(void *addr, const struct debug_obj_descr *descr)
- {
- 	enum debug_obj_state state;
- 	struct debug_bucket *db;
-@@ -695,7 +695,7 @@ EXPORT_SYMBOL_GPL(debug_object_activate);
-  * @addr:	address of the object
-  * @descr:	pointer to an object specific debug description structure
-  */
--void debug_object_deactivate(void *addr, struct debug_obj_descr *descr)
-+void debug_object_deactivate(void *addr, const struct debug_obj_descr *descr)
- {
- 	struct debug_bucket *db;
- 	struct debug_obj *obj;
-@@ -747,7 +747,7 @@ EXPORT_SYMBOL_GPL(debug_object_deactivate);
-  * @addr:	address of the object
-  * @descr:	pointer to an object specific debug description structure
-  */
--void debug_object_destroy(void *addr, struct debug_obj_descr *descr)
-+void debug_object_destroy(void *addr, const struct debug_obj_descr *descr)
- {
- 	enum debug_obj_state state;
- 	struct debug_bucket *db;
-@@ -797,7 +797,7 @@ EXPORT_SYMBOL_GPL(debug_object_destroy);
-  * @addr:	address of the object
-  * @descr:	pointer to an object specific debug description structure
-  */
--void debug_object_free(void *addr, struct debug_obj_descr *descr)
-+void debug_object_free(void *addr, const struct debug_obj_descr *descr)
- {
- 	enum debug_obj_state state;
- 	struct debug_bucket *db;
-@@ -838,7 +838,7 @@ EXPORT_SYMBOL_GPL(debug_object_free);
-  * @addr:	address of the object
-  * @descr:	pointer to an object specific debug description structure
-  */
--void debug_object_assert_init(void *addr, struct debug_obj_descr *descr)
-+void debug_object_assert_init(void *addr, const struct debug_obj_descr *descr)
- {
- 	struct debug_bucket *db;
- 	struct debug_obj *obj;
-@@ -886,7 +886,7 @@ EXPORT_SYMBOL_GPL(debug_object_assert_init);
-  * @next:	state to move to if expected state is found
-  */
- void
--debug_object_active_state(void *addr, struct debug_obj_descr *descr,
-+debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
- 			  unsigned int expect, unsigned int next)
- {
- 	struct debug_bucket *db;
-@@ -934,7 +934,7 @@ EXPORT_SYMBOL_GPL(debug_object_active_state);
- static void __debug_check_no_obj_freed(const void *address, unsigned long size)
- {
- 	unsigned long flags, oaddr, saddr, eaddr, paddr, chunks;
--	struct debug_obj_descr *descr;
-+	const struct debug_obj_descr *descr;
- 	enum debug_obj_state state;
- 	struct debug_bucket *db;
- 	struct hlist_node *tmp;
-@@ -1052,7 +1052,7 @@ struct self_test {
- 	unsigned long	dummy2[3];
- };
- 
--static __initdata struct debug_obj_descr descr_type_test;
-+static __initconst const struct debug_obj_descr descr_type_test;
- 
- static bool __init is_static_object(void *addr)
- {
-@@ -1177,7 +1177,7 @@ out:
- 	return res;
- }
- 
--static __initdata struct debug_obj_descr descr_type_test = {
-+static __initconst const struct debug_obj_descr descr_type_test = {
- 	.name			= "selftest",
- 	.is_static_object	= is_static_object,
- 	.fixup_init		= fixup_init,
+
+---
+
+>
+> -	if (task_running(rq, p) || p->state == TASK_WAKING) {
+> -		struct migration_arg arg = { p, dest_cpu };
+> -		/* Need help from migration thread: drop lock and wait. */
+> -		task_rq_unlock(rq, p, &rf);
+> -		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
+> -		return 0;
+> -	} else if (task_on_rq_queued(p)) {
+> -		/*
+> -		 * OK, since we're going to drop the lock immediately
+> -		 * afterwards anyway.
+> -		 */
+> -		rq = move_queued_task(rq, &rf, p, dest_cpu);
+> -	}
+> +	return move_task(rq, &rf, p, dest_cpu, flags);
+> +
+>  out:
+>       task_rq_unlock(rq, p, &rf);
+>
