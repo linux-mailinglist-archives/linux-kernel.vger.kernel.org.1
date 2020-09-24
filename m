@@ -2,96 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5045277A91
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B76D277A9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 22:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726632AbgIXUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 16:40:32 -0400
-Received: from mga07.intel.com ([134.134.136.100]:25817 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgIXUkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 16:40:31 -0400
-IronPort-SDR: F5NqhzqKfocXtUwAssTqgSwAASDyx6qUmcxOi/JnqqRgQip9n58Q15JfI4ihnRU6Pb+9fAN4cg
- jfysVq/QnMkw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="225476625"
-X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="225476625"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 13:40:31 -0700
-IronPort-SDR: Ncq7pUS/J7GeyXjQY9EWCGqsA6GvmdU92K2DdO4C3cY+fqn2nPWLihlMvCyyazpG8iDqDMtylT
- M/IOqx6DyFbg==
-X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="487093551"
-Received: from deepamin-mobl1.gar.corp.intel.com (HELO localhost) ([10.252.44.18])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 13:40:24 -0700
-Date:   Thu, 24 Sep 2020 23:40:22 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver'
-Message-ID: <20200924204022.GE108958@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-18-jarkko.sakkinen@linux.intel.com>
- <20200922154424.GL22660@zn.tnic>
- <20200923132037.GA5160@linux.intel.com>
- <20200923161733.GP28545@zn.tnic>
- <20200924115119.GD56811@linux.intel.com>
- <20200924155751.GJ5030@zn.tnic>
- <20200924203859.GD108958@linux.intel.com>
+        id S1726590AbgIXUlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 16:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIXUlt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 16:41:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB4B9C0613CE;
+        Thu, 24 Sep 2020 13:41:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1600980108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7WNniJWdtgjbCmAKCV5jnu3oJVt7te+w/KnOSYyq8oA=;
+        b=v6GsUj4E+a6Ddc28kWc8d+YBtldn0eV+kqcjGfmQTVigq9s6EuKdfT9nl5vDnN68lig1yg
+        rKNSe/206egSdsVvu7h8LrOQMDT8CmIl6lcFXJ1xlcC/BFOx8moTpICOwtvgQxwsbStjkr
+        egm9903o5v7m3x1gOPryTaLG1U6WYOWsXBgfjta6p/E+8GScN59e24agDF2Pzr5Rxpa1zn
+        kuyKdpP0DJIhwZWm2/YRpQHnOIUFEmTE7fgwuzMIDs42UT3bWHwVZylKqPnModAKkz/a5o
+        ANgfiYGmFqmi41hIDxfslh6rfhQNw0WDFUAdp12g9Tf01boCDhc8wEh8V9GDyg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1600980108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7WNniJWdtgjbCmAKCV5jnu3oJVt7te+w/KnOSYyq8oA=;
+        b=ENLxqsoFgO8+73NZNe5v++5gNI5im64u7V6WHDCTITTDQpCLurEvjU2TdPmDJ0WF/8KH0c
+        qyET6F8Udu81VXBg==
+To:     Tom Hromatka <tom.hromatka@oracle.com>, tom.hromatka@oracle.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        fweisbec@gmail.com, mingo@kernel.org, adobriyan@gmail.com
+Subject: Re: [PATCH v2 1/2] tick-sched: Do not clear the iowait and idle times
+In-Reply-To: <20200915193627.85423-2-tom.hromatka@oracle.com>
+References: <20200915193627.85423-1-tom.hromatka@oracle.com> <20200915193627.85423-2-tom.hromatka@oracle.com>
+Date:   Thu, 24 Sep 2020 22:41:47 +0200
+Message-ID: <87r1qq7vqs.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924203859.GD108958@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:39:07PM +0300, Jarkko Sakkinen wrote:
-> On Thu, Sep 24, 2020 at 05:57:51PM +0200, Borislav Petkov wrote:
-> > On Thu, Sep 24, 2020 at 02:51:28PM +0300, Jarkko Sakkinen wrote:
-> > > On Wed, Sep 23, 2020 at 06:17:33PM +0200, Borislav Petkov wrote:
-> > > > > Add 'access' implementation to vm_ops with the help of these functions.
-> > > > 
-> > > > "Add an ->access virtual MM function for accessing the enclave's memory... "
-> > > 
-> > > Thank you. I wrote the last paragraph like this:
-> > > 
-> > > "Add an '->access' virtual function for accessing the enclave's memory
-> > > to vm_ops by using these functions. This allows to use ptrace() with
-> > 
-> > "to vm_ops" must come after "function".
-> > 
-> > But lemme ask what is "vm_ops"?
-> 
-> I assume this is a rethorical question and I notice what I suggested
-> looks as bad as my earlier commit message :-)
-> 
-> So, I gave it some thought that and decided to "open code" the paragraph
-> as
-> 
-> "Add sgx_vma_access() function that implements 'access' virtual function
-> of struct vm_operations_struct. Use formentioned leaf instructions to
-> achieve read and write primitives for the enclave memory."
-> 
-> I think this starts to have the right balance and is understandable.
-> 
-> Still open for futher suggestion of course.
+On Tue, Sep 15 2020 at 13:36, Tom Hromatka wrote:
+> Prior to this commit, the cpu idle and iowait data in /proc/stat were
+> cleared when a CPU goes down.  When the CPU came back online, both idle
+> and iowait times were restarted from 0.
 
-I'm not sure if I said it already but I also added cc to linux-mm (same
-CC's in the patch as with mprotect callback commit). This should also
-have mm ack I think.
+Starting a commit message with 'Prior to this commit' is
+pointless. Describe the factual problem which made you come up with this
+change.
 
-/Jarkko
+>
+> This commit preserves the CPU's idle and iowait values when a CPU goes
+> offline and comes back online.
+
+'This commit does' is just a variation of 'This patch does'.
+
+git grep 'This patch' Documentation/process/
+
+Thanks,
+
+        tglx
