@@ -2,85 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D12276932
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EB5276937
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgIXGsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:48:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44936 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgIXGsS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:48:18 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kLL31-00029j-H1; Thu, 24 Sep 2020 06:48:08 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     johannes.berg@intel.com, emmanuel.grumbach@intel.com,
-        luciano.coelho@intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ben Greear <greearb@candelatech.com>,
-        Tova Mussai <tova.mussai@intel.com>,
-        Haim Dreyfuss <haim.dreyfuss@intel.com>,
-        Andrei Otcheretianski <andrei.otcheretianski@intel.com>,
-        Shaul Triebitz <shaul.triebitz@intel.com>,
-        Naftali Goldstein <naftali.goldstein@intel.com>,
-        linux-wireless@vger.kernel.org (open list:INTEL WIRELESS WIFI LINK
-        (iwlwifi)), netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] iwlwifi: mvm: Increase session protection duration for association
-Date:   Thu, 24 Sep 2020 14:48:00 +0800
-Message-Id: <20200924064802.3441-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727010AbgIXGsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:48:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53802 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726119AbgIXGsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:48:42 -0400
+Received: from localhost (unknown [84.241.198.81])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C910420708;
+        Thu, 24 Sep 2020 06:48:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600930121;
+        bh=jBCz5LY8N9IUAfeiRv9iPCrY8XTkPMdC+ePT54L4hus=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hS2Eq8O+EVxrHkBPgQTWfZykTFLAHV0mUNKvrxlV/zKqBQ2/+JwLoY3hQr7cHUP/t
+         7dD8xopWl+BAxJ4mfGcMsIEItktj6mlIYpWAOZ5QWS9B33k+TFmVs5hxYgK21KjsXa
+         IWGigLHjYo6QMVpXyH0JggfkprldBNpIHQgnPyvE=
+Date:   Thu, 24 Sep 2020 08:48:38 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Maximilian Luz <luzmaximilian@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
+        Dorian Stoll <dorian.stoll@tmsp.io>
+Subject: Re: [RFC PATCH 1/9] misc: Add Surface Aggregator subsystem
+Message-ID: <20200924064838.GB593984@kroah.com>
+References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
+ <20200923151511.3842150-2-luzmaximilian@gmail.com>
+ <20200923165745.GA3732240@kroah.com>
+ <de24d687-62c2-1f34-cac2-d32246c68a09@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <de24d687-62c2-1f34-cac2-d32246c68a09@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sometimes Intel AX201 fails to associate with AP:
-[  839.290042] wlp0s20f3: authenticate with xx:xx:xx:xx:xx:xx
-[  839.291737] wlp0s20f3: send auth to xx:xx:xx:xx:xx:xx (try 1/3)
-[  839.350010] wlp0s20f3: send auth to xx:xx:xx:xx:xx:xx (try 2/3)
-[  839.360826] wlp0s20f3: authenticated
-[  839.363205] wlp0s20f3: associate with xx:xx:xx:xx:xx:xx (try 1/3)
-[  839.370342] wlp0s20f3: RX AssocResp from xx:xx:xx:xx:xx:xx (capab=0x431 status=0 aid=12)
-[  839.378925] wlp0s20f3: associated
-[  839.431788] wlp0s20f3: deauthenticated from xx:xx:xx:xx:xx:xx (Reason: 2=PREV_AUTH_NOT_VALID)
+On Wed, Sep 23, 2020 at 10:34:23PM +0200, Maximilian Luz wrote:
+> In short: Concurrent execution of the counter functions works, as far as
+> I can tell at least, and, as you see by the long answer, I have to spend
+> some time and think about the duplicate-value problem (again). If you've
+> managed to read through this wall of text (sorry about that) and you
+> have any ideas/preferences, please let me know.
 
-It fails because EAPOL hasn't finished. Increase the  session protection
-duration to 1200TU can eliminate the problem.
+No, this all answers my question really well, thanks, what you have now
+is fine, no need to change it.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=209237
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+thanks,
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-index 9374c85c5caf..54acd9a68955 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mac80211.c
-@@ -3297,13 +3297,13 @@ static void iwl_mvm_mac_mgd_prepare_tx(struct ieee80211_hw *hw,
- 	 * session for a much longer time since the firmware will internally
- 	 * create two events: a 300TU one with a very high priority that
- 	 * won't be fragmented which should be enough for 99% of the cases,
--	 * and another one (which we configure here to be 900TU long) which
-+	 * and another one (which we configure here to be 1200TU long) which
- 	 * will have a slightly lower priority, but more importantly, can be
- 	 * fragmented so that it'll allow other activities to run.
- 	 */
- 	if (fw_has_capa(&mvm->fw->ucode_capa,
- 			IWL_UCODE_TLV_CAPA_SESSION_PROT_CMD))
--		iwl_mvm_schedule_session_protection(mvm, vif, 900,
-+		iwl_mvm_schedule_session_protection(mvm, vif, 1200,
- 						    min_duration, false);
- 	else
- 		iwl_mvm_protect_session(mvm, vif, duration,
--- 
-2.17.1
-
+greg k-h
