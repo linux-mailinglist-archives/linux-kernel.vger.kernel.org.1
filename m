@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2491F2774CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3962774D3
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728281AbgIXPHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:07:46 -0400
-Received: from mga17.intel.com ([192.55.52.151]:61088 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728164AbgIXPHq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:07:46 -0400
-IronPort-SDR: Dq7d68xETq22hAZ9ZEP9rqB7sWIXUvEA3x2MAZM+0ErIDaoLZumuWm9djagsmJ3VfJKHyW54QC
- vRWMEsBlqLxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="141249501"
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="141249501"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 08:07:46 -0700
-IronPort-SDR: qxBV4ZZ4P1R7IgueUS2vQPZwvQSxI6oYaw87jtCVrwW2WUcK8stV9bonpmW+csntTGSw8BMv52
- c+CM+IKMVg+w==
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="292124548"
-Received: from abslota-mobl1.amr.corp.intel.com (HELO [10.212.218.169]) ([10.212.218.169])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 08:07:45 -0700
-Subject: Re: [PATCH v5 1/5] x86/asm: Carve out a generic movdir64b() helper
- for general usage
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     vkoul@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        dan.j.williams@intel.com, tony.luck@intel.com, jing.lin@intel.com,
-        ashok.raj@intel.com, sanjay.k.kumar@intel.com,
-        fenghua.yu@intel.com, kevin.tian@intel.com,
-        David.Laight@ACULAB.COM, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Michael Matz <matz@suse.de>
-References: <160090233730.44288.4446779116422752486.stgit@djiang5-desk3.ch.intel.com>
- <160090264332.44288.7575027054245105525.stgit@djiang5-desk3.ch.intel.com>
- <20200924130746.GF5030@zn.tnic>
-From:   Dave Jiang <dave.jiang@intel.com>
-Message-ID: <e561e7a3-32c7-dac5-053d-47a0484b26c8@intel.com>
-Date:   Thu, 24 Sep 2020 08:07:44 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728334AbgIXPIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:08:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33244 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728296AbgIXPIe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:08:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600960113;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MQoQDFgY9yaaRRiEJU3spleYVLTHQmZvjCiRju5YF+Q=;
+        b=IEnrwnaSlnAk+kuVAacWmmWO5mBqwgeed9VR4vWq0uwk0Gm7i9ljvfCIB6MpU8Dz+neHZ/
+        yvRMUyWfzxumjoSqbSA1H4YnzQJKjiVAlP0Meh4dUDnO033TnhTmsYJWIKTzw1qeCKnC3j
+        rw2s0FmTdF6Ev1vNqp+flzI1rxBaQUY=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-594-4uNmq2zHOfONkY5duQnPkA-1; Thu, 24 Sep 2020 11:08:30 -0400
+X-MC-Unique: 4uNmq2zHOfONkY5duQnPkA-1
+Received: by mail-qt1-f199.google.com with SMTP id a16so2654328qtj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:08:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MQoQDFgY9yaaRRiEJU3spleYVLTHQmZvjCiRju5YF+Q=;
+        b=amWGzmLCvcIU24szuWUnOy4JQSbL457q64SWDTjQ8s/XFfSWoZd2QLztAXk3onq+Z3
+         uD/7C986fAWIJpoZcJ5NQNPbYXFjQGssB4+OxDp5LgNgxAsKA8TmjL30yUzCPdwIK+E8
+         dWcJRqgzal7+B6aViuoKXg+XkAaIQJWFJiTnmpPLtsR42UjI/ElYC0/Dry1GZV2kyfX6
+         rNGsltqm6KqLKx94GmxvsamAlr8Fz/d5jw4ochIb0IGOqjOu8wN9mAWycdN0K17CkB3B
+         2v9jI3D/NdRFeVyXc+sEOJ06NlCou/oUQHLUtc0bRRIAjAQIg/rfd9hvnGznbr8t4rsj
+         gh8w==
+X-Gm-Message-State: AOAM532V0QsKAF3v5sw+9oTVaFk5mRpFbZvbVmzX1yDbWhGipuRP+yNH
+        SOf51ElXPBJT2mCjA0ipgxuwph7xMHXaF71rIfO9y2d0/mcxLgE02vl1bNoCVyd5hgCzUQGE5Hd
+        GVBWQ+rh9LhPHL/IIWOZ99EAt
+X-Received: by 2002:a05:620a:919:: with SMTP id v25mr46595qkv.461.1600960110108;
+        Thu, 24 Sep 2020 08:08:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzPKyFUERco+7cJyYy2qb6iiaNZvQWTPdRkcsArJJYM6TktrNZefehjko3nxuDJ6Se8rtvUPA==
+X-Received: by 2002:a05:620a:919:: with SMTP id v25mr46579qkv.461.1600960109906;
+        Thu, 24 Sep 2020 08:08:29 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id w6sm2456247qti.63.2020.09.24.08.08.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 08:08:29 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 11:08:27 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jann Horn <jannh@google.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Hugh Dickins <hughd@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 4/5] mm: Do early cow for pinned pages during fork() for
+ ptes
+Message-ID: <20200924150827.GE79898@xz-x1>
+References: <20200921211744.24758-1-peterx@redhat.com>
+ <20200921212028.25184-1-peterx@redhat.com>
+ <20200922114839.GC11679@redhat.com>
+ <20200922124013.GD11679@redhat.com>
+ <20200922155842.GG19098@xz-x1>
+ <20200922165216.GF11679@redhat.com>
+ <20200922183438.GL19098@xz-x1>
+ <20200922184359.GI11679@redhat.com>
+ <20200923010332.GP19098@xz-x1>
+ <CAHk-=whBth_SpXYCmYLiZTRadAvncCDAmK_Kw1QNTg-HS23aKA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200924130746.GF5030@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whBth_SpXYCmYLiZTRadAvncCDAmK_Kw1QNTg-HS23aKA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 23, 2020 at 01:25:52PM -0700, Linus Torvalds wrote:
+> IOW, the third patch would be something (COMPLETELY UNTESTED) like the attached.
 
+Thanks.  I'll rework on top.
 
-On 9/24/2020 6:07 AM, Borislav Petkov wrote:
-> On Wed, Sep 23, 2020 at 04:10:43PM -0700, Dave Jiang wrote:
->> +/* The dst parameter must be 64-bytes aligned */
->> +static inline void movdir64b(void *dst, const void *src)
->> +{
->> +	/*
->> +	 * Note that this isn't an "on-stack copy", just definition of "dst"
->> +	 * as a pointer to 64-bytes of stuff that is going to be overwritten.
->> +	 * In the MOVDIR64B case that may be needed as you can use the
->> +	 * MOVDIR64B instruction to copy arbitrary memory around. This trick
->> +	 * lets the compiler know how much gets clobbered.
->> +	 */
->> +	volatile struct { char _[64]; } *__dst = dst;
->> +
->> +	/* MOVDIR64B [rdx], rax */
->> +	asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
->> +		     :
->> +		     : "m" (*(struct { char _[64];} **)src), "a" (__dst)
->> +		     : "memory");
->> +}
-> 
-> Ok, Micha and I hashed it out on IRC, here's what you do. Please keep
-> the comments too because we will forget soon again.
-> 
-> static inline void movdir64b(void *__dst, const void *src)
-> {
-> 	struct { char _[64]; } *__src = src;
-> 	struct { char _[64]; } *__dst = dst;
-> 
-> 	/*
-> 	 * MOVDIR64B %(rdx), rax.
-> 	 *
-> 	 * Both __src and __dst must be memory constraints in order to tell the
-> 	 * compiler that no other memory accesses should be reordered around
-> 	 * this one.
-> 	 *
-> 	 * Also, both must be supplied as lvalues because this tells
-> 	 * the compiler what the object is (its size) the instruction accesses.
-> 	 * I.e., not the pointers but what they point, thus the deref'ing '*'.
-> 	 */
-> 	asm volatile(".byte 0x66, 0x0f, 0x38, 0xf8, 0x02"
-> 		     : "+m" (*__dst)
-> 		     :  "m" (*__src), "a" (__dst), "d" (__src));
-> }
+-- 
+Peter Xu
 
-Thanks Boris. I will update and resend.
-
-> 
-> Thx.
-> 
