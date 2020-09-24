@@ -2,126 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE88D276637
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC9127663A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726562AbgIXCGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 22:06:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23098 "EHLO
+        id S1726396AbgIXCJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 22:09:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56641 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726500AbgIXCGb (ORCPT
+        by vger.kernel.org with ESMTP id S1726281AbgIXCJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 22:06:31 -0400
+        Wed, 23 Sep 2020 22:09:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1600913189;
+        s=mimecast20190719; t=1600913375;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=x8ZHcIulSGOzBD8uxM6rgIoMK8J76Sbkt6GTxH94yuI=;
-        b=CfRSMVkRA1d3uhsTz8cFF9z3ftAHQBBa4YzXwo6EsNb/sijJj0hhBn5w66SEHMz2/0UlRC
-        UNyUlujR6C1udl5Ds8OcQpYUGelqsKFLUTM4wjWPswEPVtb0Cw8CcTVl3I6ENioLlCE/fM
-        aMZSmdJEGKS8qF2iS3Q/aoPJM/AgT20=
+        bh=pr+TFvgT15Y3MIUsJ7R07JPi6Z9CSwvWJeXmktBGVqc=;
+        b=Jx+DaF4LkIQzsGWVTCay8BnYL5Rkv4ZPg38v40Djp1CfuhIZTGgY34GIMYAw+2uEMbcuYo
+        J/+s7SYRrtvbL+9o+iqcKa1LHw7hTZXQkZKGAXpQn8pxR+IzlTj5i2hr1NtclmL+ePPhe3
+        kdujLAZaDg8ifzxmWI6fknRG9QeV9q8=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-pYJrqiROO7OZqblLvyigNw-1; Wed, 23 Sep 2020 22:06:26 -0400
-X-MC-Unique: pYJrqiROO7OZqblLvyigNw-1
+ us-mta-377-b-Cy_P4sOhGY6UhuTZlcEA-1; Wed, 23 Sep 2020 22:09:34 -0400
+X-MC-Unique: b-Cy_P4sOhGY6UhuTZlcEA-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32F51188C122;
-        Thu, 24 Sep 2020 02:06:24 +0000 (UTC)
-Received: from ovpn-66-35.rdu2.redhat.com (unknown [10.10.67.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AD1B860C17;
-        Thu, 24 Sep 2020 02:06:19 +0000 (UTC)
-Message-ID: <76fef5dfd8efdb4130e41d1811b2a78ce39c8b0d.camel@redhat.com>
-Subject: Re: BUG: Bad page state in process dirtyc0w_child
-From:   Qian Cai <cai@redhat.com>
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Alex Shi <alex.shi@linux.alibaba.com>
-Date:   Wed, 23 Sep 2020 22:06:19 -0400
-In-Reply-To: <20200923153938.5be5dd2c@thinkpad>
-References: <a46e9bbef2ed4e17778f5615e818526ef848d791.camel@redhat.com>
-         <20200916142806.GD7076@osiris> <20200922190350.7a0e0ca5@thinkpad>
-         <20200923153938.5be5dd2c@thinkpad>
-Content-Type: text/plain; charset="UTF-8"
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E3DF0801AF7;
+        Thu, 24 Sep 2020 02:09:32 +0000 (UTC)
+Received: from optiplex-lnx (unknown [10.3.128.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A7E6060BF1;
+        Thu, 24 Sep 2020 02:09:31 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 22:09:28 -0400
+From:   Rafael Aquini <aquini@redhat.com>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
+ dereference
+Message-ID: <20200924020928.GC1023012@optiplex-lnx>
+References: <20200922184838.978540-1-aquini@redhat.com>
+ <878sd1qllb.fsf@yhuang-dev.intel.com>
+ <20200923043459.GL795820@optiplex-lnx>
+ <87sgb9oz1u.fsf@yhuang-dev.intel.com>
+ <20200923130138.GM795820@optiplex-lnx>
+ <87blhwng5f.fsf@yhuang-dev.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87blhwng5f.fsf@yhuang-dev.intel.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-23 at 15:39 +0200, Gerald Schaefer wrote:
-> OK, I can now reproduce this, and unfortunately also with the gup_fast
-> fix, so it is something different. Bisecting is a bit hard, as it will
-> not always show immediately, sometimes takes up to an hour.
+On Thu, Sep 24, 2020 at 08:59:40AM +0800, Huang, Ying wrote:
+> Rafael Aquini <aquini@redhat.com> writes:
 > 
-> Still, I think I found the culprit, merge commit b25d1dc9474e "Merge
-> branch 'simplify-do_wp_page'". Without those 4 patches, it works fine,
-> running over night.
+> > On Wed, Sep 23, 2020 at 01:13:49PM +0800, Huang, Ying wrote:
+> >> Rafael Aquini <aquini@redhat.com> writes:
+> >> 
+> >> > On Wed, Sep 23, 2020 at 10:21:36AM +0800, Huang, Ying wrote:
+> >> >> Hi, Rafael,
+> >> >> 
+> >> >> Rafael Aquini <aquini@redhat.com> writes:
+> >> >> 
+> >> >> > The swap area descriptor only gets struct swap_cluster_info *cluster_info
+> >> >> > allocated if the swapfile is backed by non-rotational storage.
+> >> >> > When the swap area is laid on top of ordinary disk spindles, lock_cluster()
+> >> >> > will naturally return NULL.
+> >> >> 
+> >> >> Thanks for reporting.  But the bug looks strange.  Because in a system
+> >> >> with only HDD swap devices, during THP swap out, the swap cluster
+> >> >> shouldn't be allocated, as in
+> >> >> 
+> >> >> shrink_page_list()
+> >> >>   add_to_swap()
+> >> >>     get_swap_page()
+> >> >>       get_swap_pages()
+> >> >>         swap_alloc_cluster()
+> >> >>
+> >> >
+> >> > The underlying problem is that swap_info_struct.cluster_info is always NULL 
+> >> > on the rotational storage case.
+> >> 
+> >> Yes.
+> >> 
+> >> > So, it's very easy to follow that constructions 
+> >> > like this one, in split_swap_cluster 
+> >> >
+> >> > ...
+> >> >         ci = lock_cluster(si, offset);
+> >> >         cluster_clear_huge(ci);
+> >> > ...
+> >> >
+> >> > will go for a NULL pointer dereference, in that case, given that lock_cluster 
+> >> > reads:
+> >> >
+> >> > ...
+> >> > 	struct swap_cluster_info *ci;
+> >> >         ci = si->cluster_info;
+> >> >         if (ci) {
+> >> >                 ci += offset / SWAPFILE_CLUSTER;
+> >> >                 spin_lock(&ci->lock);
+> >> >         }
+> >> >         return ci;
+> >> > ...
+> >> 
+> >> But on HDD, we shouldn't call split_swap_cluster() at all, because we
+> >> will not allocate swap cluster firstly.  So, if we run into this,
+> >> there should be some other bug, we need to figure it out.
+> >>
+> >
+> > split_swap_cluster() gets called by split_huge_page_to_list(),
+> > if the page happens to be in the swapcache, and it will always
+> > go that way, regardless the backing storage type:
+> >
+> > ...
+> >             __split_huge_page(page, list, end, flags);
+> >             if (PageSwapCache(head)) {
+> >                     swp_entry_t entry = { .val = page_private(head) };
+> >
+> >                     ret = split_swap_cluster(entry);
+> >             } else
+> >                     ret = 0;
+> > ...
+> >
+> > The problem is not about allocating the swap_cluster -- it's obviously
+> > not allocated in these cases. The problem is that on rotational
+> > storage you don't even have the base structure that allows you to
+> > keep the swap clusters (cluster_info does not get allocated, at all,
+> > so si->cluster_info is always NULL)
+> >
+> > You can argue about other bugs all you want, it doesn't change
+> > the fact that this code is incomplete as it sits, because it 
+> > misses checking for a real case where lock_cluster() will return NULL.
 > 
-> Not sure why this only shows on s390, should not be architecture-specific,
-> but we do often see subtle races earlier than others due to hypervisor
-> impact.
+> I don't want to argue about anything.  I just want to fix the bug.  The
+> fix here will hide the real bug instead of fixing it.  For the situation
+> you described (PageSwapCache() returns true for a THP backed by a normal
+> swap entry (not swap cluster)), we will run into other troubles too.  So
+> we need to find the root cause and fix it.
+>
 
-Apparently, someone can reproduce something similar on x86 as well:
+The bug here is quite simple: split_swap_cluster() misses checking for 
+lock_cluster() returning NULL before committing to change cluster_info->flags.
 
-https://lore.kernel.org/linux-mm/c41149a8-211e-390b-af1d-d5eee690fecb@linux.alibaba.com/
+The fundamental problem has nothing to do with allocating, or not allocating 
+a swap cluster, but it has to do with the fact that the THP deferred split scan
+can transiently race with swapcache insertion, and the fact that when you run 
+your swap area on rotational storage cluster_info is _always_ NULL. 
+split_swap_cluster() needs to check for lock_cluster() returning NULL because 
+that's one possible case, and it clearly fails to do so. 
 
-Probably, Alex could revert the bad commits and confirm it there.
+Run a workload that cause multiple THP COW, and add a memory hogger to create 
+memory pressure so you'll force the reclaimers to kick the registered
+shrinkers. The trigger is not heavy swapping, and that's probably why
+most swap test cases don't hit it. The window is tight, but you will get the 
+NULL pointer dereference.
 
-> 
-> The first commit 09854ba94c6a ("mm: do_wp_page() simplification") already
-> introduces this error. The dirtyc0w_child test seems to play with cow
-> and racing madvise(MADV_DONTNEED), but I have not yet fully understood
-> it and also not the changes from commit 09854ba94c6a. As Linus already
-> mentioned in the merge commit message, this is some bad timing for such
-> a change, so I don't want to delay this further with trying to understand
-> it better before reporting. Maybe Peter or Linus can spot some obvious
-> issue.
-> 
-> One thing that seems strange to me is that the page flags from the
-> bad page state output are (uptodate|swapbacked), see below, or
-> (referenced|uptodate|dirty|swapbacked) in the original report. But IIUC,
-> that should not qualify for the "PAGE_FLAGS_CHECK_AT_FREE flag(s) set"
-> reason. So it seems that the flags have changed between check_free_page()
-> and __dump_page(), which would be very odd. Or maybe some issue with
-> compound pages, because __dump_page() looks at head->flags.
-> 
-> [ 1863.237707] BUG: Bad page state in process dirtyc0w_child  pfn:58527d
-> [ 1863.237721] page:000000008866956b refcount:0 mapcount:0
-> mapping:0000000000000000 index:0x0 pfn:0x58527d
-> [ 1863.237727] flags: 0x3ffff00000080004(uptodate|swapbacked)
-> [ 1863.237734] raw: 3ffff00000080004 0000000000000100 0000000000000122
-> 0000000000000000
-> [ 1863.237738] raw: 0000000000000000 0000000000000000 ffffffff00000000
-> 0000000000000000
-> [ 1863.237742] page dumped because: PAGE_FLAGS_CHECK_AT_FREE flag(s) set
-> [ 1863.237745] Modules linked in:
-> [ 1863.237752] CPU: 16 PID: 9074 Comm: dirtyc0w_child Tainted:
-> G    B             5.9.0-rc6-00020-geff48ddeab78-dirty #104
-> [ 1863.237756] Hardware name: IBM 3906 M03 703 (LPAR)
-> [ 1863.237759] Call Trace:
-> [ 1863.237768]  [<0000000000115f28>] show_stack+0x100/0x158 
-> [ 1863.237775]  [<000000000096b41a>] dump_stack+0xa2/0xd8 
-> [ 1863.237781]  [<00000000003d497c>] bad_page+0xdc/0x140 
-> [ 1863.237785]  [<00000000003d5b62>] free_pcp_prepare+0x31a/0x360 
-> [ 1863.237789]  [<00000000003d906a>] free_unref_page+0x32/0xb8 
-> [ 1863.237794]  [<00000000003b05f4>] zap_p4d_range+0x64c/0xcf8 
-> [ 1863.237797]  [<00000000003b0e7a>] unmap_page_range+0x9a/0x110 
-> [ 1863.237801]  [<00000000003b0f84>] unmap_single_vma+0x94/0x100 
-> [ 1863.237805]  [<00000000003b14c2>] zap_page_range+0x14a/0x1f0 
-> [ 1863.237809]  [<00000000003e3a24>] do_madvise+0x75c/0x918 
-> [ 1863.237812]  [<00000000003e3c06>] __s390x_sys_madvise+0x26/0x38 
-> [ 1863.237817]  [<0000000000d280d4>] system_call+0xe0/0x2c0 
-> [ 1863.237820] INFO: lockdep is turned off.
-> 
+Regardless you find furhter bugs, or not, this patch is needed to correct a
+blunt coding mistake.
 
