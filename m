@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FB9276FF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B558D277006
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbgIXLbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726617AbgIXLbG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:31:06 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2787AC0613CE;
-        Thu, 24 Sep 2020 04:31:06 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        id S1727269AbgIXLew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:34:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56940 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726617AbgIXLew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:34:52 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 7280122F9C;
-        Thu, 24 Sep 2020 13:31:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1600947062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y9uiVuDlDurWMBLr4DK3ZvbWHNzJ3UuorXgrA6S7yTo=;
-        b=ALBCS4kz/N/WYzAl+Gfzrx0IfLLa5cL3I2vF7nmngeS2eABzmOVm2TNFLrmsXdP0i1RPlR
-        c61YLjyGNaPRgzTAECQKGS61p6D0xx+HQZlik8zLenvVbTXVMTPHkIRaBC/TSj3NgRj5BA
-        V0/NwlJ7kG9i21VqnWXopznrvkLRmto=
+        by mail.kernel.org (Postfix) with ESMTPSA id 4DE6E2220D;
+        Thu, 24 Sep 2020 11:34:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600947291;
+        bh=zpGCrVK8tz1aZrON992tX07fTfb1T/oz6LsOj41Eb9c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jtcDbfmy3QrqbK8tvcbhP0NsjYHl7W1Eaj9KnesXah2QJMh37kDDG45s7HTElChnQ
+         QZENgO6x1gjPu6qR6Z7h40oI4c7zrQkR3QpVrs6ywSGDSlQaQBhVWBUg+na5oNWdC0
+         QoqpcEE7J6a4m44fNnl7pG7LGW48WGgBIHFiXgf4=
+Date:   Thu, 24 Sep 2020 12:33:56 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
+        Ray Jui <ray.jui@broadcom.com>, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/4] dt-bindings: spi: Add compatible string for brcmstb
+ SoCs
+Message-ID: <20200924113356.GC4754@sirena.org.uk>
+References: <20200910152539.45584-1-ray.jui@broadcom.com>
+ <160009511834.5702.10954218363830361529.b4-ty@kernel.org>
+ <a1e13626-e87a-8114-74ae-560902ab9551@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 24 Sep 2020 13:31:00 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Leo Li <leoyang.li@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
-In-Reply-To: <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
-References: <20200923095711.11355-1-michael@walle.cc>
- <20200923095711.11355-2-michael@walle.cc>
- <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <e9347e4c2e070ee9e8aa7a8007d89f02@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="TYecfFk8j8mZq+dy"
+Content-Disposition: inline
+In-Reply-To: <a1e13626-e87a-8114-74ae-560902ab9551@gmail.com>
+X-Cookie: Programmers do it bit by bit.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-09-24 02:35, schrieb Leo Li:
->> -----Original Message-----
->> From: Michael Walle <michael@walle.cc>
->> Sent: Wednesday, September 23, 2020 4:57 AM
->> To: linux-arm-kernel@lists.infradead.org; devicetree@vger.kernel.org; 
->> linux-
->> kernel@vger.kernel.org; linux-can@vger.kernel.org
->> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob
->> Herring <robh+dt@kernel.org>; Marc Kleine-Budde <mkl@pengutronix.de>;
->> Joakim Zhang <qiangqing.zhang@nxp.com>; Michael Walle
->> <michael@walle.cc>
->> Subject: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
->> 
->> The LS1028A has two FlexCAN controller. These are compatible with the 
->> ones
->> from the LX2160A. Add the nodes.
->> 
->> The first controller was tested on the Kontron sl28 board.
->> 
->> Signed-off-by: Michael Walle <michael@walle.cc>
->> ---
->>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 18 
->> ++++++++++++++++++
->>  1 file changed, 18 insertions(+)
->> 
->> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
->> b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
->> index 0efeb8fa773e..807ee921ec12 100644
->> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
->> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
->> @@ -386,6 +386,24 @@
->>  			status = "disabled";
->>  		};
->> 
->> +		can0: can@2180000 {
->> +			compatible = "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-
->> flexcan";
-> 
-> The explicit compatible strings cannot be found in the binding, but
-> matched by the "fsl,<processor>-flexcan" pattern in the binding.  Is
-> this considered to be acceptable now?
 
-What is the consequence if it is not acceptable? replacing the pattern
-with individual compatible strings?
+--TYecfFk8j8mZq+dy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--michael
+On Wed, Sep 23, 2020 at 01:38:55PM -0700, Florian Fainelli wrote:
+> On 9/14/20 7:52 AM, Mark Brown wrote:
+
+> > [1/4] spi: Add compatible string for brcmstb SoCs
+> >       commit: d9f0cf9f1176d36d3824459d5b061f4719fcbb8a
+> > [2/4] spi: bcm-qspi: Add compatible string for BRCMSTB 7445 SoCs
+> >       commit: e0eeb76b818ad93718f9640b0bdad909b453a3b8
+> > [3/4] spi: bcm-qspi: Fix probe regression on iProc platforms
+> >       commit: 9a852d44b26f8e60e2ae13df563824c0f8489135
+> > [4/4] spi: bcm-qspi: Clean up 7425, 7429, and 7435 settings
+> >       commit: 3cf5d198785a6b454e6a97246795b0043aff9ac1
+
+> Mark, can you also submit "spi: bcm-qspi: Fix probe regression on iProc
+> platforms" towards Linus because this is a bug fix that is currently
+> affecting the 5.9 kernel.
+
+*sigh*, OK.  Please don't send fixes in the middle of serieses, send
+them at the start of the series before any cleanups or new features.
+This ensures that they don't have any dependencies on other patches in
+the series and means that they can easily be sent as fixes without
+getting tangled up with the development work.
+
+--TYecfFk8j8mZq+dy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9shCQACgkQJNaLcl1U
+h9B4Twf+NFkJy7KuNAOffATLKqqcClJiumK7L7QA6oQzn5MyuQ85EZ2YlPh8spJF
+vNw1WzK+a0CQxCTi7s4jwEUZIR8G0Q1CqLAFxGk/F0bI3vHH7TpbGRvMpZ0/ixj+
+fSTroeoBmtizi21WE7qOFqqmnMM89icDbtpuszMf/uXqqsfyb38GdZPa28s97m3K
+wT91kmromhOILWvxFr+KZZBfm7auA9zCfS7D19thW4L7XZ8t//hFECZSgZ9/J9lR
+BbjNPwusRL/r+b3dfIdAr4J2CSPEUolBX8s664HR/y8P9BmM4TEiMYHIuywmWYPA
+CzDVA8Gdka3aB8Yb8apP6hMCG9EnHg==
+=JdlS
+-----END PGP SIGNATURE-----
+
+--TYecfFk8j8mZq+dy--
