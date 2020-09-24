@@ -2,99 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15055276896
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 07:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD74D27689E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgIXFtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 01:49:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35260 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726683AbgIXFtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 01:49:39 -0400
-Received: from sx1.lan (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BC961235FD;
-        Thu, 24 Sep 2020 05:49:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600926579;
-        bh=VuY5deMJpz9RpbOl6ZDHNd/ktzmGDQjVZoET55OsRWA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=jTLCPGelAzygXjPA2HO7IY5wi7yWYHK5PC4oxtY34gJoes5bpf+lKxVYIUfll6KIO
-         QGqL8VcoNjtRZoybO9cZmHdjLLYnLR4H/VvE9ZloteQCUSacBhUO5JmUXVDoezbVAj
-         C6IfzOyB8gVydyoilEG7BAGSBpZHUf51jgI6q4Ys=
-Message-ID: <2cf4178e970d2737e7ba866ebc83a7ec30ca8ad1.camel@kernel.org>
-Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
- present to linkwatch_do_dev"
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     David Miller <davem@davemloft.net>
-Cc:     hkallweit1@gmail.com, geert+renesas@glider.be,
-        f.fainelli@gmail.com, andrew@lunn.ch, kuba@kernel.org,
-        gaku.inami.xh@renesas.com, yoshihiro.shimoda.uh@renesas.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 23 Sep 2020 22:49:37 -0700
-In-Reply-To: <20200923.172349.872678515629678579.davem@davemloft.net>
-References: <e6f50a85-aa25-5fb7-7fd2-158668d55378@gmail.com>
-         <a7ff1afd2e1fc2232103ceb9aa763064daf90212.camel@kernel.org>
-         <20200923.172125.1341776337290371000.davem@davemloft.net>
-         <20200923.172349.872678515629678579.davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1726850AbgIXGAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:00:06 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:41129 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726799AbgIXGAG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:00:06 -0400
+X-IronPort-AV: E=Sophos;i="5.77,296,1596470400"; 
+   d="scan'208";a="99567075"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 24 Sep 2020 14:00:02 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 0A1AF48990E8;
+        Thu, 24 Sep 2020 14:00:01 +0800 (CST)
+Received: from G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Thu, 24 Sep 2020 13:59:58 +0800
+Received: from localhost.localdomain (10.167.225.206) by
+ G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Thu, 24 Sep 2020 13:59:58 +0800
+From:   Hao Li <lihao2018.fnst@cn.fujitsu.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <david@fromorbit.com>, <ira.weiny@intel.com>,
+        <linux-xfs@vger.kernel.org>, <viro@zeniv.linux.org.uk>,
+        <y-goto@fujitsu.com>, <lihao2018.fnst@cn.fujitsu.com>
+Subject: [PATCH v2] fs: Kill DCACHE_DONTCACHE dentry even if DCACHE_REFERENCED is set
+Date:   Thu, 24 Sep 2020 13:59:58 +0800
+Message-ID: <20200924055958.825515-1-lihao2018.fnst@cn.fujitsu.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 0A1AF48990E8.ADB91
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-09-23 at 17:23 -0700, David Miller wrote:
-> From: David Miller <davem@davemloft.net>
-> Date: Wed, 23 Sep 2020 17:21:25 -0700 (PDT)
-> 
-> > If an async code path tests 'present', gets true, and then the RTNL
-> > holding synchronous code path puts the device into D3hot
-> immediately
-> > afterwards, the async code path will still continue and access the
-> > chips registers and fault.
-> 
-> Wait, is the sequence:
-> 
->         ->ndo_stop()
->                 mark device not present and put into D3hot
->                 triggers linkwatch event
->           ...
->                          ->ndo_get_stats64()
-> 
-> ???
-> 
+If DCACHE_REFERENCED is set, fast_dput() will return true, and then
+retain_dentry() have no chance to check DCACHE_DONTCACHE. As a result,
+the dentry won't be killed and the corresponding inode can't be evicted.
+In the following example, the DAX policy can't take effects unless we
+do a drop_caches manually.
 
-I assume it is, since normally device drivers do carrier_off() on
-ndo_stop()
+  # DCACHE_LRU_LIST will be set
+  echo abcdefg > test.txt
 
-1) One problematic sequence would be 
-(for drivers doing D3hot on ndo_stop())
+  # DCACHE_REFERENCED will be set and DCACHE_DONTCACHE can't do anything
+  xfs_io -c 'chattr +x' test.txt
 
-__dev_close_many()
-   ->ndo_stop()
-      netif_device_detach() //Mark !present;
-      ... D3hot
-      carrier_off()->linkwatch_event()
-            ... // !present && IFF_UP 
-      
-2) Another problematic scenario which i see is repeated in many
-drivers:
+  # Drop caches to make DAX changing take effects
+  echo 2 > /proc/sys/vm/drop_caches
 
-shutdown/suspend()
-    rtnl_lock()
-    netif_device_detach()//Mark !present;
-    stop()->carrier_off()->linkwatch_event()
-    // at this point device is still IFF_UP and !present
-    // due to the early detach above..  
-    rtnl_unlock();
-   
-For scenario 1) we can fix by marking IFF_UP at the beginning, but for
-2), i think we need to fix the drivers to detach only after stop :(
-   
-> Then yeah we might have to clear IFF_UP at the beginning of taking
-> a netdev down.
+What this patch does is preventing fast_dput() from returning true if
+DCACHE_DONTCACHE is set. Then retain_dentry() will detect the
+DCACHE_DONTCACHE and will return false. As a result, the dentry will be
+killed and the inode will be evicted. In this way, if we change per-file
+DAX policy, it will take effects automatically after this file is closed
+by all processes.
+
+I also add some comments to make the code more clear.
+
+Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+---
+v1 is split into two standalone patch as discussed in [1], and the first
+patch has been reviewed in [2]. This is the second patch.
+
+[1]: https://lore.kernel.org/linux-fsdevel/20200831003407.GE12096@dread.disaster.area/
+[2]: https://lore.kernel.org/linux-fsdevel/20200906214002.GI12131@dread.disaster.area/
+
+ fs/dcache.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/dcache.c b/fs/dcache.c
+index ea0485861d93..97e81a844a96 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -793,10 +793,17 @@ static inline bool fast_dput(struct dentry *dentry)
+ 	 * a reference to the dentry and change that, but
+ 	 * our work is done - we can leave the dentry
+ 	 * around with a zero refcount.
++	 *
++	 * Nevertheless, there are two cases that we should kill
++	 * the dentry anyway.
++	 * 1. free disconnected dentries as soon as their refcount
++	 *    reached zero.
++	 * 2. free dentries if they should not be cached.
+ 	 */
+ 	smp_rmb();
+ 	d_flags = READ_ONCE(dentry->d_flags);
+-	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST | DCACHE_DISCONNECTED;
++	d_flags &= DCACHE_REFERENCED | DCACHE_LRU_LIST |
++			DCACHE_DISCONNECTED | DCACHE_DONTCACHE;
+ 
+ 	/* Nothing to do? Dropping the reference was all we needed? */
+ 	if (d_flags == (DCACHE_REFERENCED | DCACHE_LRU_LIST) && !d_unhashed(dentry))
+-- 
+2.28.0
+
 
 
