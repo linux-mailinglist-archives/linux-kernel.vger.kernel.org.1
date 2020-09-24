@@ -2,97 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 697F52765C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D642765CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 03:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726841AbgIXBPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 21:15:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgIXBPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 21:15:12 -0400
-Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726718AbgIXBXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 21:23:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23874 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725208AbgIXBXD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 21:23:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600910581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=p9WO4qQNqPNvxeAmCHyDKaeS+OQCXdDkVSudf43hciY=;
+        b=GLH0RrUq53M+3Bcp74jeuzTlk7X+Kyf+L8NZLFJoLYpLQBaXxtpFGMe1YY0CAt54foeUpW
+        8Wmd2Oyx4+2sX/9gh5q785C3Puq0Ea+Y/0E/CBjM1RKltt6VYdl4u+cRz3Sp7e5RRWECg9
+        pUarrgarnVGeblUiXtBH0nHka4GZPn4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-_QOUAg3aNFeQnO8SChft0w-1; Wed, 23 Sep 2020 21:21:08 -0400
+X-MC-Unique: _QOUAg3aNFeQnO8SChft0w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30E1520702;
-        Thu, 24 Sep 2020 01:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600910111;
-        bh=6VO9dZwnsXlsKXsq0Q9aS8CX2S/ibUxCCgYUgCz+1cI=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Y508G1MMUD4YhUuUYF9rcawq9VpUqinyJ3AAw/CQOB0okNc9aC3Kp8gKpUWAFePw0
-         mxhh2lJHF54imbrwSgqb55GKqvHNxHih7AL2YwJxpIZYjwmd4KfDaCVaJ9Fgp839Du
-         Io+IKAvRKrXOBLVqPtqpwgOWyTmIgzmr+m0U23Rk=
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
-From:   Sinan Kaya <okaya@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
-Date:   Wed, 23 Sep 2020 21:15:09 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2E221801AF7;
+        Thu, 24 Sep 2020 01:21:07 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3649810027AB;
+        Thu, 24 Sep 2020 01:21:04 +0000 (UTC)
+Date:   Wed, 23 Sep 2020 21:21:03 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dm-devel@redhat.com, Jens Axboe <axboe@kernel.dk>,
+        Alasdair Kergon <agk@redhat.com>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
+ support
+Message-ID: <20200924012103.GE10500@redhat.com>
+References: <20200909234422.76194-1-satyat@google.com>
+ <20200909234422.76194-3-satyat@google.com>
 MIME-Version: 1.0
-In-Reply-To: <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200909234422.76194-3-satyat@google.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/2020 7:44 PM, Kuppuswamy, Sathyanarayanan wrote:
->> here does the restore happen here?  I.e., what function does this?
-> 
-> DLLSC link down event will remove affected devices/drivers. And link up
-> event
-> will re-create all devices.
-> 
-> on DLLSC link down event
-> ->pciehp_ist()
->   ->pciehp_handle_presence_or_link_change()
->     ->pciehp_disable_slot()
->       ->__pciehp_disable_slot()
->         ->remove_board()
->           ->pciehp_unconfigure_device()
-> 
-> on DLLSC link up event
-> ->pciehp_ist()
->   ->pciehp_handle_presence_or_link_change()
->     ->pciehp_enable_slot()
->       ->__pciehp_enable_slot()
->         ->board_added()
->           ->pciehp_configure_device()
+On Wed, Sep 09 2020 at  7:44pm -0400,
+Satya Tangirala <satyat@google.com> wrote:
 
-AFAIK, DLLSC is a requirement not optional. Why is this not supported by
-non-hotplug ports?
+> From: Eric Biggers <ebiggers@google.com>
+> 
+> Update the device-mapper core to support exposing the inline crypto
+> support of the underlying device(s) through the device-mapper device.
+> 
+> This works by creating a "passthrough keyslot manager" for the dm
+> device, which declares support for encryption settings which all
+> underlying devices support.  When a supported setting is used, the bio
+> cloning code handles cloning the crypto context to the bios for all the
+> underlying devices.  When an unsupported setting is used, the blk-crypto
+> fallback is used as usual.
+> 
+> Crypto support on each underlying device is ignored unless the
+> corresponding dm target opts into exposing it.  This is needed because
+> for inline crypto to semantically operate on the original bio, the data
+> must not be transformed by the dm target.  Thus, targets like dm-linear
+> can expose crypto support of the underlying device, but targets like
+> dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
+> 
+> When a key is evicted from the dm device, it is evicted from all
+> underlying devices.
+> 
+> Signed-off-by: Eric Biggers <ebiggers@google.com>
+> Co-developed-by: Satya Tangirala <satyat@google.com>
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  block/blk-crypto.c              |  1 +
+>  block/keyslot-manager.c         | 34 ++++++++++++
+>  drivers/md/dm-core.h            |  4 ++
+>  drivers/md/dm-table.c           | 52 +++++++++++++++++++
+>  drivers/md/dm.c                 | 92 ++++++++++++++++++++++++++++++++-
+>  include/linux/device-mapper.h   |  6 +++
+>  include/linux/keyslot-manager.h |  7 +++
+>  7 files changed, 195 insertions(+), 1 deletion(-)
+> 
+> diff --git a/block/blk-crypto.c b/block/blk-crypto.c
+> index 2d5e60023b08..33555cf0e3e7 100644
+> --- a/block/blk-crypto.c
+> +++ b/block/blk-crypto.c
+> @@ -402,3 +402,4 @@ int blk_crypto_evict_key(struct request_queue *q,
+>  	 */
+>  	return blk_crypto_fallback_evict_key(key);
+>  }
+> +EXPORT_SYMBOL_GPL(blk_crypto_evict_key);
+> diff --git a/block/keyslot-manager.c b/block/keyslot-manager.c
+> index 60ac406d54b9..e0f776c38d8a 100644
+> --- a/block/keyslot-manager.c
+> +++ b/block/keyslot-manager.c
+> @@ -416,6 +416,40 @@ void blk_ksm_unregister(struct request_queue *q)
+>  {
+>  	q->ksm = NULL;
+>  }
+> +EXPORT_SYMBOL_GPL(blk_ksm_unregister);
+> +
+> +/**
+> + * blk_ksm_intersect_modes() - restrict supported modes by child device
+> + * @parent: The keyslot manager for parent device
+> + * @child: The keyslot manager for child device, or NULL
+> + *
+> + * Clear any crypto mode support bits in @parent that aren't set in @child.
+> + * If @child is NULL, then all parent bits are cleared.
+> + *
+> + * Only use this when setting up the keyslot manager for a layered device,
+> + * before it's been exposed yet.
+> + */
+> +void blk_ksm_intersect_modes(struct blk_keyslot_manager *parent,
+> +			     const struct blk_keyslot_manager *child)
+> +{
+> +	if (child) {
+> +		unsigned int i;
+> +
+> +		parent->max_dun_bytes_supported =
+> +			min(parent->max_dun_bytes_supported,
+> +			    child->max_dun_bytes_supported);
+> +		for (i = 0; i < ARRAY_SIZE(child->crypto_modes_supported);
+> +		     i++) {
+> +			parent->crypto_modes_supported[i] &=
+> +				child->crypto_modes_supported[i];
+> +		}
+> +	} else {
+> +		parent->max_dun_bytes_supported = 0;
+> +		memset(parent->crypto_modes_supported, 0,
+> +		       sizeof(parent->crypto_modes_supported));
+> +	}
+> +}
+> +EXPORT_SYMBOL_GPL(blk_ksm_intersect_modes);
+>  
+>  /**
+>   * blk_ksm_init_passthrough() - Init a passthrough keyslot manager
+> diff --git a/drivers/md/dm-core.h b/drivers/md/dm-core.h
+> index c4ef1fceead6..4542050eebfc 100644
+> --- a/drivers/md/dm-core.h
+> +++ b/drivers/md/dm-core.h
+> @@ -12,6 +12,7 @@
+>  #include <linux/kthread.h>
+>  #include <linux/ktime.h>
+>  #include <linux/blk-mq.h>
+> +#include <linux/keyslot-manager.h>
+>  
+>  #include <trace/events/block.h>
+>  
+> @@ -49,6 +50,9 @@ struct mapped_device {
+>  
+>  	int numa_node_id;
+>  	struct request_queue *queue;
+> +#ifdef CONFIG_BLK_INLINE_ENCRYPTION
+> +	struct blk_keyslot_manager ksm;
+> +#endif
+>  
+>  	atomic_t holders;
+>  	atomic_t open_count;
+
+Any reason you placed the ksm member where you did?
+
+Looking at 'struct blk_keyslot_manager' I'm really hating adding that
+bloat to every DM device for a feature that really won't see much broad
+use (AFAIK).
+
+Any chance you could allocate 'struct blk_keyslot_manager' as needed so
+that most users of DM would only be carrying 1 extra pointer (set to
+NULL)?
+
+Thanks,
+Mike
+
