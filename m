@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7047277C31
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EEB277C36
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 01:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbgIXXKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 19:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42566 "EHLO mail.kernel.org"
+        id S1726814AbgIXXL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 19:11:29 -0400
+Received: from mga17.intel.com ([192.55.52.151]:43845 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726604AbgIXXKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 19:10:51 -0400
-Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8EE83207FB;
-        Thu, 24 Sep 2020 23:10:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600989051;
-        bh=k7HlL1eolWqQK5DvcGOA0sV0tdXDjjYHruV19LRwoTQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ELhm/5ZCh+lPslLk//JEuimuuC3HffxRwed0XCSXaJkiUabB3urRCDJDik6e/2bgJ
-         9vS2d9d/titgu6EM9c2NU7D8fWFv4WfboExBuGr/gnVGLto4FBLucnflxkPezXJ3cw
-         j5SOoU/5nh1ZucUD7t2tnkZOyja1fQV+yVxUHJqg=
-Date:   Fri, 25 Sep 2020 01:10:48 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     qianjun.kernel@gmail.com, peterz@infradead.org, will@kernel.org,
-        luto@kernel.org, linux-kernel@vger.kernel.org,
-        laoar.shao@gmail.com, qais.yousef@arm.com, urezki@gmail.com
-Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing
- loop
-Message-ID: <20200924231048.GD19346@lenoir>
-References: <20200915115609.85106-1-qianjun.kernel@gmail.com>
- <20200915115609.85106-5-qianjun.kernel@gmail.com>
- <878scz89tl.fsf@nanos.tec.linutronix.de>
- <20200924230811.GC19346@lenoir>
+        id S1726655AbgIXXL3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 19:11:29 -0400
+IronPort-SDR: 9Hc2pzNECPv5G4I4WAX65G5tO+9UlmZ4HaNrWtbQwd0RxOiSQNNrQ1Hwh+JkAHL5k87BMerV4l
+ 1x9tZQcQb1oQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141385314"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="141385314"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 16:11:17 -0700
+IronPort-SDR: nDslaICw6OZoGWsFRlqPXAUKCLSwtpovhnuBBMu184OuC61vJMzD3zzeHyIMt+OhfFhj63rwRW
+ ZBRKsIhYdScA==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="487166697"
+Received: from nspindel-mobl.ger.corp.intel.com (HELO localhost) ([10.252.44.90])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 16:11:11 -0700
+Date:   Fri, 25 Sep 2020 02:11:08 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 20/24] x86/traps: Attempt to fixup exceptions in vDSO
+ before signaling
+Message-ID: <20200924231059.GG119995@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-21-jarkko.sakkinen@linux.intel.com>
+ <20200924163128.GM5030@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924230811.GC19346@lenoir>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200924163128.GM5030@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 01:08:11AM +0200, Frederic Weisbecker wrote:
-> On Thu, Sep 24, 2020 at 05:37:42PM +0200, Thomas Gleixner wrote:
-> > Subject: softirq; Prevent starvation of higher softirq vectors
-> > From: Thomas Gleixner <tglx@linutronix.de>
-> > Date: Thu, 24 Sep 2020 10:40:24 +0200
-> > 
-> > From: Thomas Gleixner <tglx@linutronix.de>
-> > 
-> > The early termination of the softirq processing loop can lead to starvation
-> > of the higher numbered soft interrupt vectors because each run starts at
-> > the lowest bit. If the loop terminates then the already processed bits can
-> > be raised again before the next loop starts. If these lower bits run into
-> > the termination again, then a re-raise might starve the higher bits forever.
-> > 
-> > To prevent this, store the leftovers of the previous run in the upper 16
-> > bit of the local softirq_pending storage and ensure that these are
-> > processed before any newly raised bits are handled.
-> > 
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> > ---
-> >  kernel/softirq.c |   58 +++++++++++++++++++++++++++++++++++++++++++++++--------
-> >  1 file changed, 50 insertions(+), 8 deletions(-)
-> > 
-> > --- a/kernel/softirq.c
-> > +++ b/kernel/softirq.c
-> > @@ -259,11 +259,23 @@ static inline bool __softirq_needs_break
-> >  	return need_resched() || __softirq_timeout(tbreak);
-> >  }
+On Thu, Sep 24, 2020 at 06:31:28PM +0200, Borislav Petkov wrote:
+> On Tue, Sep 15, 2020 at 02:28:38PM +0300, Jarkko Sakkinen wrote:
+> > diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> > index 9e5ec861aba0..ebe290a68c36 100644
+> > --- a/arch/x86/mm/fault.c
+> > +++ b/arch/x86/mm/fault.c
+> > @@ -30,6 +30,7 @@
+> >  #include <asm/cpu_entry_area.h>		/* exception stack		*/
+> >  #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
+> >  #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
+> > +#include <asm/vdso.h>			/* fixup_vdso_exception()	*/
 > >  
-> > +/*
-> > + * local_softirq_pending() is split into two 16 bit words. The low word
-> > + * contains the bits set by raise_softirq(), the high word contains pending
-> > + * bits which have not been processed in an early terminated run. This is
-> > + * required to prevent starvation of the higher numbered softirqs.
-> > + */
-> > +#define SIRQ_PREV_SHIFT		16
+> >  #define CREATE_TRACE_POINTS
+> >  #include <asm/trace/exceptions.h>
+> > @@ -775,6 +776,10 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+> >  
+> >  		sanitize_error_code(address, &error_code);
+> >  
+> > +		if (fixup_vdso_exception(regs, X86_TRAP_PF, error_code,
+> > +		    address))
 > 
-> Note that in the case of x86, irq_start.__softirq_pending is a u16.
+> No need to break that line.
 
-irq_stat even
+Thanks, fixed.
+
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+/Jarkko
