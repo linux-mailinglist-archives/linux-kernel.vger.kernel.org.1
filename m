@@ -2,155 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7BC276A7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B9E276A94
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727172AbgIXHR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727093AbgIXHR0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:17:26 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDAC7C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:17:26 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id bw23so1199512pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:17:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CFgKLZ7Chsmv5ba86marh1hlJNBQ4kPm3t3GCKLPml0=;
-        b=tnzOUnibaVnZjz/w0brUvBmsEmOq/BGhQqgrZjaQ0SwTgQHhjOQV2zIsY8oXJ3Sgk6
-         NSlYAUzZLabEJE7iFo8sov1kyce5oWbMnmYNSiAe4vbYtv9mYlsQQ4ZqsTM5aEBONFWp
-         rnnHeagk+Zm0UBuzUW2dDmKaTKkEL8Iwltn+0i3z9Cs/9cHaBYgMBF9iE2qPI786WCrF
-         RveXqYdIA0h3WnLTrcFZbgNWNjbBISbVlDkbozW3dh7oQRrH9EFhg1yCRcT2IzS3qgce
-         gDIkHwgMur4TcZ7DU4NS45kHswIKrYiRU1rjqAND05NDiZlTbohex6UejvKBcV9kZAmI
-         JuRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CFgKLZ7Chsmv5ba86marh1hlJNBQ4kPm3t3GCKLPml0=;
-        b=l6mdfpMPnl7R9qv+75CFZC0cixSTvLHXnbSnYfnaU8PrMmQKiAI6v+qzk6PgP4Uj1t
-         Yc/BoAsb5BdV4NpU37iaO40gnCpWQbRNF2VMkfAS5hZ1GImR+eD2kGwBd14dm58AcXLK
-         bYjTGylYGXCIZ0H4A384gdV/Nlgz58VIWfhP90rDkCuvYMN8RX7h4Q0kVZhN0KWiiq7J
-         3gzSJqyZo41+XemuDTidA71oUAV627ACysOiVM6VIgWGjBGMNl17JQBYHpI2DGVAN541
-         bN0mmACcg9VZCDvUDFSCu36iofStTTRjfINtDXm0urWXVuUffIIxKqmQelco/4ywSLhu
-         17EQ==
-X-Gm-Message-State: AOAM532YXTs4bHOnX5D8EmM/nUt4GYd2SfkBx/B83572PDFnxkCYehf2
-        +15D2NGrKdwEKyT+wbv//D6C1ILupklQAQ==
-X-Google-Smtp-Source: ABdhPJxQiQR+5YMuZzB7wYPdkRNQV4iS231LLBb539HsxqXhmnu9M/EZBMrF5eFgYRnlpfZ3ffkakg==
-X-Received: by 2002:a17:902:d68c:b029:d2:23a6:f6d7 with SMTP id v12-20020a170902d68cb02900d223a6f6d7mr3360335ply.45.1600931846100;
-        Thu, 24 Sep 2020 00:17:26 -0700 (PDT)
-Received: from google.com (124.190.199.35.bc.googleusercontent.com. [35.199.190.124])
-        by smtp.gmail.com with ESMTPSA id q193sm1724860pfq.127.2020.09.24.00.17.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 00:17:25 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 07:17:21 +0000
-From:   Satya Tangirala <satyat@google.com>
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Eric Biggers <ebiggers@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        dm-devel@redhat.com, Alasdair Kergon <agk@redhat.com>
-Subject: Re: [PATCH 2/3] dm: add support for passing through inline crypto
- support
-Message-ID: <20200924071721.GA1883346@google.com>
-References: <20200909234422.76194-1-satyat@google.com>
- <20200909234422.76194-3-satyat@google.com>
- <20200922003255.GC32959@sol.localdomain>
- <20200924011438.GD10500@redhat.com>
+        id S1727132AbgIXHTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:19:35 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:45504 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726902AbgIXHTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 03:19:35 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id B8A3414C03520B5C6204;
+        Thu, 24 Sep 2020 15:19:32 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.253) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 24 Sep 2020 15:19:25 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Alexey Brodkin" <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-snps-arc <linux-snps-arc@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: [PATCH v6 0/6] irqchip: dw-apb-ictl: support hierarchy irq domain
+Date:   Thu, 24 Sep 2020 15:17:48 +0800
+Message-ID: <20200924071754.4509-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924011438.GD10500@redhat.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 09:14:39PM -0400, Mike Snitzer wrote:
-> On Mon, Sep 21 2020 at  8:32pm -0400,
-> Eric Biggers <ebiggers@kernel.org> wrote:
-> 
-> > On Wed, Sep 09, 2020 at 11:44:21PM +0000, Satya Tangirala wrote:
-> > > From: Eric Biggers <ebiggers@google.com>
-> > > 
-> > > Update the device-mapper core to support exposing the inline crypto
-> > > support of the underlying device(s) through the device-mapper device.
-> > > 
-> > > This works by creating a "passthrough keyslot manager" for the dm
-> > > device, which declares support for encryption settings which all
-> > > underlying devices support.  When a supported setting is used, the bio
-> > > cloning code handles cloning the crypto context to the bios for all the
-> > > underlying devices.  When an unsupported setting is used, the blk-crypto
-> > > fallback is used as usual.
-> > > 
-> > > Crypto support on each underlying device is ignored unless the
-> > > corresponding dm target opts into exposing it.  This is needed because
-> > > for inline crypto to semantically operate on the original bio, the data
-> > > must not be transformed by the dm target.  Thus, targets like dm-linear
-> > > can expose crypto support of the underlying device, but targets like
-> > > dm-crypt can't.  (dm-crypt could use inline crypto itself, though.)
-> > > 
-> > > When a key is evicted from the dm device, it is evicted from all
-> > > underlying devices.
-> > > 
-> > > Signed-off-by: Eric Biggers <ebiggers@google.com>
-> > > Co-developed-by: Satya Tangirala <satyat@google.com>
-> > > Signed-off-by: Satya Tangirala <satyat@google.com>
-> > 
-> > Looks good as far as Satya's changes from my original patch are concerned.
-> > 
-> > Can the device-mapper maintainers take a look at this?
-> 
-> In general it looks like these changes were implemented very carefully
-> and are reasonable if we _really_ want to enable passing through inline
-> crypto.
-> 
-> I do have concerns about the inability to handle changes at runtime (due
-> to a table reload that introduces new devices without the encryption
-> settings the existing devices in the table are using).  But the fallback
-> mechanism saves it from being a complete non-starter.
-Unfortunately, the fallback doesn't completely handle that situation
-right now. The DM device could be suspended while an upper layer like
-fscrypt is doing something like "checking if encryption algorithm 'A'
-is supported by the DM device". It's possible that fscrypt thinks
-the DM device supports 'A' even though the DM device is suspended, and
-the table is about to be reloaded to introduce a new device that doesn't
-support 'A'. Before the DM device is resumed with the new table, fscrypt
-might send a bio that uses encryption algorithm 'A' without initializing
-the blk-crypto-fallback ciphers for 'A', because it believes that the DM
-device supports 'A'. When the bio gets processed by the DM (or when
-blk-crypto does its checks to decide whether to use the fallback on that
-bio), the bio will fail because the fallback ciphers aren't initialized.
+v5 --> v6:
+1. add Reviewed-by: Rob Herring <robh@kernel.org> for Patch 4.
+2. Some modifications are made to Patch 5:
+   1) add " |" for each "description:" property if its content exceeds one line,
+      to tell the yaml keep the "newline" character.
+   2) add "..." to mark the end of the yaml file.
+   3) Change the name list of maintainers to the author of "snps,dw-apb-ictl.txt"
+	 maintainers:
+	-  - Marc Zyngier <marc.zyngier@arm.com>
+	+  - Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+   4) add "maxItems: 1" for property "reg".
+   5) for property "interrupts":
+	 interrupts:
+	-    minItems: 1
+	-    maxItems: 65
+	+    maxItems: 1
+   6) move below descriptions under the top level property "description:"
+	description: |
+	  Synopsys DesignWare provides interrupt controller IP for APB known as
+	  dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs
+	  with APB bus, e.g. Marvell Armada 1500. It can also be used as primary
+	  interrupt controller in some SoCs, e.g. Hisilicon SD5203.
 
-Off the top of my head, one thing we could do is to always allocate the
-fallback ciphers when the device mapper is the target device for the bio
-(by maybe adding a "encryption_capabilities_may_change_at_runtime" flag
-to struct blk_keyslot_manager that the DM will set to true, and that
-the block layer will check for and decide to appropriately allocate
-the fallback ciphers), although this does waste memory on systems
-where we know the DM device tables will never change....
+	+  The interrupt sources map to the corresponding bits in the interrupt
+	+  registers, i.e.
+	+  - 0 maps to bit 0 of low interrupts,
+	+  - 1 maps to bit 1 of low interrupts,
+	+  - 32 maps to bit 0 of high interrupts,
+	+  - 33 maps to bit 1 of high interrupts,
+	+  - (optional) fast interrupts start at 64.
+	+
 
-This patch also doesn't handle the case when the encryption capabilities
-of the new table are a superset of the old capabilities.  Currently, a
-DM device's capabilities can only shrink after the device is initially
-created. They can never "expand" to make use of capabilities that might
-be added due to introduction of new devices via table reloads.  I might
-be forgetting something I thought of before, but looking at it again
-now, I don't immediately see anything wrong with expanding the
-advertised capabilities on table reload....I'll look carefully into that
-again.
-> 
-> Can you help me better understand the expected consumer of this code?
-> If you have something _real_ please be explicit.  It makes justifying
-> supporting niche code like this more tolerable.
-So the motivation for this code was that Android currently uses a device
-mapper target on top of a phone's disk for user data. On many phones,
-that disk has inline encryption support, and it'd be great to be able to
-make use of that. The DM device configuration isn't changed at runtime.
-> 
-> Thanks,
-> Mike
-> 
+   For more details of 2-6), please refer https://lkml.org/lkml/2020/9/24/13
+
+v4 --> v5:
+1. Add WARN_ON(1) in set_handle_irq() if !GENERIC_IRQ_MULTI_HANDLER
+2. Convert "snps,dw-apb-ictl.txt" to "snps,dw-apb-ictl.yaml"
+3. Fix the errors detected by "snps,dw-apb-ictl.yaml" on arch/arc
+
+v3 --> v4:
+1. remove "gc->chip_types[0].chip.irq_eoi = irq_gc_noop;", the "chip.irq_eoi" hook
+   is not needed by handle_level_irq(). Thanks for Marc Zyngier's review.
+2. Add a new patch: define an empty function set_handle_irq() if !GENERIC_IRQ_MULTI_HANDLER
+   to avoid compilation error on arch/arc system.
+
+v2 --> v3:
+1. change (1 << hwirq) to BIT(hwirq).
+2. change __exception_irq_entry to __irq_entry, so we can "#include <linux/interrupt.h>"
+   instead of "#include <asm/exception.h>". Ohterwise, an compilation error will be
+   reported on arch/csky.
+   drivers/irqchip/irq-dw-apb-ictl.c:20:10: fatal error: asm/exception.h: No such file or directory
+3. use "if (!parent || (np == parent))" to determine whether it is primary interrupt controller.
+4. make the primary interrupt controller case also use function handle_level_irq(), I used 
+   handle_fasteoi_irq() as flow_handler before.
+5. Other minor changes are not detailed.
+
+v1 --> v2:
+According to Marc Zyngier's suggestion, discard adding an independent SD5203-VIC
+driver, but make the dw-apb-ictl irqchip driver to support hierarchy irq domain.
+It was originally available only for secondary interrupt controller, now it can
+also be used as primary interrupt controller. The related dt-bindings is updated
+appropriately.
+
+Add "Suggested-by: Marc Zyngier <maz@kernel.org>".
+Add "Tested-by: Haoyu Lv <lvhaoyu@huawei.com>".
+
+
+v1:
+The interrupt controller of SD5203 SoC is VIC(vector interrupt controller), it's
+based on Synopsys DesignWare APB interrupt controller (dw_apb_ictl) IP, but it
+can not directly use dw_apb_ictl driver. The main reason is that VIC is used as
+primary interrupt controller and dw_apb_ictl driver worked for secondary
+interrupt controller. So add a new driver: "hisilicon,sd5203-vic".
+
+Zhen Lei (6):
+  genirq: define an empty function set_handle_irq() if
+    !GENERIC_IRQ_MULTI_HANDLER
+  irqchip: dw-apb-ictl: prepare for support hierarchy irq domain
+  irqchip: dw-apb-ictl: support hierarchy irq domain
+  dt-bindings: dw-apb-ictl: support hierarchy irq domain
+  dt-bindings: dw-apb-ictl: convert to json-schema
+  ARC: [dts] fix the errors detected by dtbs_check
+
+ .../interrupt-controller/snps,dw-apb-ictl.txt      | 31 --------
+ .../interrupt-controller/snps,dw-apb-ictl.yaml     | 74 +++++++++++++++++++
+ arch/arc/boot/dts/axc001.dtsi                      |  2 +-
+ arch/arc/boot/dts/axc003.dtsi                      |  2 +-
+ arch/arc/boot/dts/axc003_idu.dtsi                  |  2 +-
+ arch/arc/boot/dts/vdk_axc003.dtsi                  |  2 +-
+ arch/arc/boot/dts/vdk_axc003_idu.dtsi              |  2 +-
+ drivers/irqchip/Kconfig                            |  2 +-
+ drivers/irqchip/irq-dw-apb-ictl.c                  | 83 ++++++++++++++++++----
+ include/linux/irq.h                                |  6 ++
+ 10 files changed, 157 insertions(+), 49 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+
+-- 
+1.8.3
+
+
