@@ -2,77 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B1AA27727F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D71A27728C
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 15:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbgIXNgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 09:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49738 "EHLO
+        id S1728073AbgIXNhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 09:37:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727846AbgIXNgg (ORCPT
+        with ESMTP id S1728000AbgIXNhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 09:36:36 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017CFC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:36:36 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id z23so4455908ejr.13
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:36:35 -0700 (PDT)
+        Thu, 24 Sep 2020 09:37:33 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5016BC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:37:33 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e2so3649525wme.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 06:37:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ooaRReL2c6jKQ+vGGFRTPGKn0/Fj0W20wCnHuBSeuZo=;
-        b=TaG2yVd4h5AqdMpjmVPoldgfNLdtU4GgM8Vyz8+aPaL7nTNdBAHR74lX98EucvUEh/
-         fCL/N83YHlg5gLabqs8HOqhJFH3A4W2sw9273PqFeL05AwbEv/w4nGB6A+90BTn+CL+M
-         +u/L9M1ZxJSvgM3zQPqtM3oMpW/xVmUkzouEv01+OyCP/cpaVGfXeCsEQSrR6/AobHiB
-         vg1Gxmh2wbAFyfnn9LC/wS44NXXW4UfHNywywrb9OWtQZyJ7NPv5qE4d0CN6jlser+y/
-         Dz86FEsUtmcsCv4/MJVA0GJnt1yn8RosKz7XPQq3N6apWq+5KECE+J+5MEBYHQn0Gh9p
-         MkBA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tnbVYVydzTndZjHx54L+pKVp5ROdQOJCG9ZC1h7UrbQ=;
+        b=wR16WBUvPW96FpFtNzjiQzudOIawwDkmbPXXQ2ZfBCOvV+OQ0LL26RP3gMyMs3Ulik
+         rAT4HnKQy0XijG3Ov8PnZ3IzN02enYl40WUrUr7LPjbUu1wcViOPWbIsHZCq6B4mco+l
+         Zqk79ET7GhMre4uK959OlDNxJ31fRHLVICBfdmn9nQT2Ra4UDMhfNdeAI28pV+LJFH8g
+         6+iADeDCPC55ZtVpJBALUHviKDXjKW93owC3+D32VYsjTdL2ictDyLVs12o+e0pr3mFU
+         0+LLcBsUQlhVJW5gTocCENwGrZM5hCURgpLMU2Zw06tVErESPgv6t8/qvuyLXhF9Mnnf
+         6s1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ooaRReL2c6jKQ+vGGFRTPGKn0/Fj0W20wCnHuBSeuZo=;
-        b=Brc9sl2k8P7a5Bxc4k3XaGa/0jjBKfwabAJgsPvQje95qhypeF4nvXDr0yIbWoc917
-         JNeKCjIhBHG2spOJeJ6rUZ7wCxKB3ZM3Gp6KC/QYKLBbs7YJvvLmCdoFTZcyKTiF3sIw
-         GJUTglrQcfLFACB/H+/BjZseqixJhh5ttxRo56MuI9SJZf5vnMhBzElfIzdrMUxBHfsV
-         p5wssPIZqsIco4LBoIwTfxUt3yXHdZwBx4gQkQJT9eg76v6F0SdGaIyPMGoNnA0sUmDy
-         +0Khk8aFI8W2B0pUzzpLR8RaGBxuhZ7LtRkPEr8ZJGsE2zgTcJUtVsN9gtOgUgSuJKHI
-         YeBw==
-X-Gm-Message-State: AOAM5330unwmBJ2JTOq6u4Wn3Fezdi8joMG0BobSuHOESDo7LjJkHR3v
-        3DOLeeMsE2MFbmtXGRySn5Ra+QJ4VpLy7HCvuJx4OA==
-X-Google-Smtp-Source: ABdhPJx2Xg0bTE6pcTgSHF6cRwl2iJFV9udaOoibso/nwzLkWSGVsMqSvZmy1qnIna9CRrtx0DG73k6UxXjtvV4Ob6Y=
-X-Received: by 2002:a17:906:f11:: with SMTP id z17mr1153495eji.88.1600954594733;
- Thu, 24 Sep 2020 06:36:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tnbVYVydzTndZjHx54L+pKVp5ROdQOJCG9ZC1h7UrbQ=;
+        b=Rx6tM13GRH8WAI7RZjK5AzSI7cerUOrojeHCnjEkamG1IMqgGO2RSwdCyv5aLVx9J2
+         vWlfdT8wG3iOpPeglOLpVtL8wJ9Kd9CvjfN/OcPXRFku2Hd91O1cuWqnp9aztfTG0OVC
+         JVP4Su9Q8JkFslig9NE1vOix6wdZWW/y2hkWMhE4PeGwXPin/HSVKbGXJlkKa2pmpbB/
+         199fgXetSGIO6jynxNOznrGt/Ad1f/16uN4fOScLrrn7+oPj8EuNsE1VLxloOb1FjOgM
+         S+tP1n6uqMVUd3EPk6mDnP//ePkTUXPdo4XU1+6qYR2Ks4Hx15hb0WFyDZfUMciWz9t3
+         4LQQ==
+X-Gm-Message-State: AOAM531JEcVhEywkhKA+Chkxgo83/9h+nLk7n7XG+OFbJd7QZP9VYlo9
+        hByZwLHnIcWW9mQP3HGOTiOU+Q==
+X-Google-Smtp-Source: ABdhPJyeiAxCwP3APzpEwu31OqsdL0w0TL03OQ5W9+90C2WYE080DSWXdPSO/EIHJ4vPJaAwLMSNIA==
+X-Received: by 2002:a1c:19c1:: with SMTP id 184mr5103148wmz.114.1600954651863;
+        Thu, 24 Sep 2020 06:37:31 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id o15sm3423479wmh.29.2020.09.24.06.37.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 06:37:31 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 14:37:27 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] condition EAS enablement on FI support
+Message-ID: <20200924133727.GB3920949@google.com>
+References: <20200924123937.20938-1-ionela.voinescu@arm.com>
 MIME-Version: 1.0
-References: <20200905133549.24606-1-warthog618@gmail.com> <20200905133549.24606-8-warthog618@gmail.com>
- <CAHp75Vdm=61wibz70ScvayXk_D77rZw_pG7wPkLXkbkzagRPNA@mail.gmail.com> <20200920111204.GB793608@sol>
-In-Reply-To: <20200920111204.GB793608@sol>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 24 Sep 2020 15:36:24 +0200
-Message-ID: <CAMpxmJW1g-Z4XR1BvOvxjweqMYA6dvS9A=ooLKyjdxU1n9-3HA@mail.gmail.com>
-Subject: Re: [PATCH v7 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924123937.20938-1-ionela.voinescu@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 1:12 PM Kent Gibson <warthog618@gmail.com> wrote:
->
-> >
-> > Can we use static_assert() at the top of the file? Presumably after
-> > inclusion block.
-> >
->
-> Good idea - will do.
+On Thursday 24 Sep 2020 at 13:39:34 (+0100), Ionela Voinescu wrote:
+> Given the maturity gained by cpufreq-based Frequency Invariance (FI)
+> support following the patches at [1], this series conditions Energy
+> Aware Scheduling (EAS) enablement on a frequency invariant system.
+> 
+> Currently, EAS can be enabled on a system without FI support, leading
+> to incorrect (energy-wise) task placements. As no warning is emitted,
+> it could take some debugging effort to track the behavior back to the
+> lack of FI support; this series changes that by disabling EAS
+> (and advertising it) when FI support is missing.
+> 
+> The series is structured as follows:
+>  - 1/3 - create function that can rebuild the scheduling and EAS'
+>    performance domains if EAS' initial conditions change
+>  - 2/3 - condition EAS enablement on FI support
+>  - 3/3 - arm64: rebuild scheduling and performance domains in the
+>          case of late, counter-driven FI initialisation.
 
-Thanks Andy for bringing this to my attention, the amount of kernel
-interfaces I still don't know after all these years still amazes me.
+I'm still reading through this, but shouldn't patch 2 and 3 be swapped?
+Otherwise we have a weird state at patch 2 where EAS will fail to start
+(IIUC), which might not be ideal for bisection.
 
-Bartosz
+Thoughts?
+
+Cheers,
+Quentin
