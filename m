@@ -2,144 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98DD7276EE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:37:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 372E1276EEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 12:41:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgIXKhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 06:37:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43776 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726154AbgIXKho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 06:37:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 20DD2ADAB;
-        Thu, 24 Sep 2020 10:38:21 +0000 (UTC)
-Subject: Re: [PATCH RFC 2/4] mm/page_alloc: place pages to tail in
- __putback_isolated_page()
-To:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-3-david@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <6edfc921-eacc-23bd-befa-f947fbcb50ba@suse.cz>
-Date:   Thu, 24 Sep 2020 12:37:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726526AbgIXKlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 06:41:51 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55484 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbgIXKlv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 06:41:51 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id AEF841C0BDE; Thu, 24 Sep 2020 12:41:48 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 12:41:48 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     kernel list <linux-kernel@vger.kernel.org>, stable@kernel.org,
+        Greg KH <greg@kroah.com>
+Cc:     linus.walleij@linaro.org, lenaptr@google.com, will@kernel.org
+Subject: [PATCH 4.4] pinctrl: devicetree: Avoid taking direct reference to
+ device name string
+Message-ID: <20200924104148.GC30460@duo.ucw.cz>
 MIME-Version: 1.0
-In-Reply-To: <20200916183411.64756-3-david@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="lCAWRPmW1mITcIfM"
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/16/20 8:34 PM, David Hildenbrand wrote:
-> __putback_isolated_page() already documents that pages will be placed to
-> the tail of the freelist - this is, however, not the case for
-> "order >= MAX_ORDER - 2" (see buddy_merge_likely()) - which should be
-> the case for all existing users.
 
-I think here should be a sentence saying something along "Thus this patch
-introduces a FOP_TO_TAIL flag to really ensure moving pages to tail."
+--lCAWRPmW1mITcIfM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> This change affects two users:
-> - free page reporting
-> - page isolation, when undoing the isolation.
-> 
-> This behavior is desireable for pages that haven't really been touched
-> lately, so exactly the two users that don't actually read/write page
-> content, but rather move untouched pages.
-> 
-> The new behavior is especially desirable for memory onlining, where we
-> allow allocation of newly onlined pages via undo_isolate_page_range()
-> in online_pages(). Right now, we always place them to the head of the
-> free list, resulting in undesireable behavior: Assume we add
-> individual memory chunks via add_memory() and online them right away to
-> the NORMAL zone. We create a dependency chain of unmovable allocations
-> e.g., via the memmap. The memmap of the next chunk will be placed onto
-> previous chunks - if the last block cannot get offlined+removed, all
-> dependent ones cannot get offlined+removed. While this can already be
-> observed with individual DIMMs, it's more of an issue for virtio-mem
-> (and I suspect also ppc DLPAR).
-> 
-> Note: If we observe a degradation due to the changed page isolation
-> behavior (which I doubt), we can always make this configurable by the
-> instance triggering undo of isolation (e.g., alloc_contig_range(),
-> memory onlining, memory offlining).
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Scott Cheloha <cheloha@linux.ibm.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
-> ---
->  mm/page_alloc.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 91cefb8157dd..bba9a0f60c70 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -89,6 +89,12 @@ typedef int __bitwise fop_t;
->   */
->  #define FOP_SKIP_REPORT_NOTIFY	((__force fop_t)BIT(0))
->  
-> +/*
-> + * Place the freed page to the tail of the freelist after buddy merging. Will
-> + * get ignored with page shuffling enabled.
-> + */
-> +#define FOP_TO_TAIL		((__force fop_t)BIT(1))
-> +
->  /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
->  static DEFINE_MUTEX(pcp_batch_high_lock);
->  #define MIN_PERCPU_PAGELIST_FRACTION	(8)
-> @@ -1040,6 +1046,8 @@ static inline void __free_one_page(struct page *page, unsigned long pfn,
->  
->  	if (is_shuffle_order(order))
->  		to_tail = shuffle_pick_tail();
-> +	else if (fop_flags & FOP_TO_TAIL)
-> +		to_tail = true;
+commit be4c60b563edee3712d392aaeb0943a768df7023 upstream.
 
-Should we really let random shuffling decision have a larger priority than
-explicit FOP_TO_TAIL request? Wei Yang mentioned that there's a call to
-shuffle_zone() anyway to process a freshly added memory, so we don't need to do
-that also during the process of addition itself? Might help with your goal of
-reducing dependencies even on systems that do have shuffling enabled?
+When populating the pinctrl mapping table entries for a device, the
+'dev_name' field for each entry is initialised to point directly at the
+string returned by 'dev_name()' for the device and subsequently used by
+'create_pinctrl()' when looking up the mappings for the device being
+probed.
 
-Thanks,
-Vlastimil
+This is unreliable in the presence of calls to 'dev_set_name()', which may
+reallocate the device name string leaving the pinctrl mappings with a
+dangling reference. This then leads to a use-after-free every time the
+name is dereferenced by a device probe:
 
->  	else
->  		to_tail = buddy_merge_likely(pfn, buddy_pfn, page, order);
->  
-> @@ -3289,7 +3297,7 @@ void __putback_isolated_page(struct page *page, unsigned int order, int mt)
->  
->  	/* Return isolated page to tail of freelist. */
->  	__free_one_page(page, page_to_pfn(page), zone, order, mt,
-> -			FOP_SKIP_REPORT_NOTIFY);
-> +			FOP_SKIP_REPORT_NOTIFY | FOP_TO_TAIL);
->  }
->  
->  /*
-> 
+  | BUG: KASAN: invalid-access in strcmp+0x20/0x64
+  | Read of size 1 at addr 13ffffc153494b00 by task modprobe/590
+  | Pointer tag: [13], memory tag: [fe]
+  |
+  | Call trace:
+  |  __kasan_report+0x16c/0x1dc
+  |  kasan_report+0x10/0x18
+  |  check_memory_region
+  |  __hwasan_load1_noabort+0x4c/0x54
+  |  strcmp+0x20/0x64
+  |  create_pinctrl+0x18c/0x7f4
+  |  pinctrl_get+0x90/0x114
+  |  devm_pinctrl_get+0x44/0x98
+  |  pinctrl_bind_pins+0x5c/0x450
+  |  really_probe+0x1c8/0x9a4
+  |  driver_probe_device+0x120/0x1d8
 
+Follow the example of sysfs, and duplicate the device name string before
+stashing it away in the pinctrl mapping entries.
+
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Reported-by: Elena Petrova <lenaptr@google.com>
+Tested-by: Elena Petrova <lenaptr@google.com>
+Signed-off-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20191002124206.22928-1-will@kernel.org
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+
+diff --git a/drivers/pinctrl/devicetree.c b/drivers/pinctrl/devicetree.c
+index fe04e748dfe4..6c0c84cb2601 100644
+--- a/drivers/pinctrl/devicetree.c
++++ b/drivers/pinctrl/devicetree.c
+@@ -40,6 +40,13 @@ struct pinctrl_dt_map {
+ static void dt_free_map(struct pinctrl_dev *pctldev,
+ 		     struct pinctrl_map *map, unsigned num_maps)
+ {
++	int i;
++
++	for (i =3D 0; i < num_maps; ++i) {
++		kfree_const(map[i].dev_name);
++		map[i].dev_name =3D NULL;
++	}
++
+ 	if (pctldev) {
+ 		const struct pinctrl_ops *ops =3D pctldev->desc->pctlops;
+ 		ops->dt_free_map(pctldev, map, num_maps);
+@@ -73,7 +80,13 @@ static int dt_remember_or_free_map(struct pinctrl *p, co=
+nst char *statename,
+=20
+ 	/* Initialize common mapping table entry fields */
+ 	for (i =3D 0; i < num_maps; i++) {
+-		map[i].dev_name =3D dev_name(p->dev);
++		const char *devname;
++
++		devname =3D kstrdup_const(dev_name(p->dev), GFP_KERNEL);
++		if (!devname)
++			goto err_free_map;
++
++		map[i].dev_name =3D devname;
+ 		map[i].name =3D statename;
+ 		if (pctldev)
+ 			map[i].ctrl_dev_name =3D dev_name(pctldev->dev);
+@@ -81,11 +94,8 @@ static int dt_remember_or_free_map(struct pinctrl *p, co=
+nst char *statename,
+=20
+ 	/* Remember the converted mapping table entries */
+ 	dt_map =3D kzalloc(sizeof(*dt_map), GFP_KERNEL);
+-	if (!dt_map) {
+-		dev_err(p->dev, "failed to alloc struct pinctrl_dt_map\n");
+-		dt_free_map(pctldev, map, num_maps);
+-		return -ENOMEM;
+-	}
++	if (!dt_map)
++		goto err_free_map;
+=20
+ 	dt_map->pctldev =3D pctldev;
+ 	dt_map->map =3D map;
+@@ -93,6 +103,11 @@ static int dt_remember_or_free_map(struct pinctrl *p, c=
+onst char *statename,
+ 	list_add_tail(&dt_map->node, &p->dt_maps);
+=20
+ 	return pinctrl_register_map(map, num_maps, false);
++
++err_free_map:
++	dev_err(p->dev, "failed to alloc struct pinctrl_dt_map\n");
++	dt_free_map(pctldev, map, num_maps);
++	return -ENOMEM;
+ }
+=20
+ struct pinctrl_dev *of_pinctrl_get(struct device_node *np)
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--lCAWRPmW1mITcIfM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX2x37AAKCRAw5/Bqldv6
+8qkZAKC9dWwc97Pl/GLmfkCVElewKsmzIACdGHscbamgAyV0ffBqD3sXDC3fSdg=
+=dg3p
+-----END PGP SIGNATURE-----
+
+--lCAWRPmW1mITcIfM--
