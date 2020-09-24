@@ -2,77 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 682782775C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333562775CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728556AbgIXPs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgIXPs4 (ORCPT
+        id S1728560AbgIXPub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:50:31 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:51862 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728139AbgIXPub (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:48:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43CFC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:48:55 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 17:48:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1600962532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=xaY2+HjTSKqN94B8ygX+wilHy1PVYUZux5iZUZOa2FI=;
-        b=0X2h41+0LObRVZ1V23+hPqkqUBU7ZH2wUl5QRw9qDlJT4R5ft0UcL/Rwt/IGqDLxsHRg7L
-        y1czAQI133nTsDAdcAjcUZP78TACJdC/E7X3IyMnqpmFX0sCNv+WSiSNKX32f+Hvi9hDBh
-        A/HjfZ9T3ttoEtNdEG7nVQjlE6TV9yxOGvIc5rexeRuVaMCiNJAXxyTkri+59ZjBeF8cBb
-        kTIsqpaYQECbZwCE/CJoWP3A94pNMcTJCv/893e5lq+zVOS09/+ABXtZiODiy6ZNy2WHLv
-        43lq/uTOX7g2HCnXXOPwXwN3EiCpTnUlghTmICblMbrabFn9kMVmKaimu82JgA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1600962532;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=xaY2+HjTSKqN94B8ygX+wilHy1PVYUZux5iZUZOa2FI=;
-        b=gqMgh/vPbiDThyNKgZBBG6l1N7wTEqo6uHswle8DmXMbQPdYIJDbSRwExpc/smf/MeYvMO
-        zAVM9dJWUAnIYoAQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH] locking/seqlock: Tweak DEFINE_SEQLOCK() kernel doc
-Message-ID: <20200924154851.skmswuyj322yuz4g@linutronix.de>
+        Thu, 24 Sep 2020 11:50:31 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OFZLxn125776;
+        Thu, 24 Sep 2020 15:50:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=vn1696U5CRhKmLmc6mdwCozBnLCLObO7LgftVl1wh2o=;
+ b=jGpN8isNZtCM5z7nsb1wBtRcRov8B0bLS4Y8Jgq8H3hJMgkHBgpw+B0j+n0iQtU6oW4a
+ QX84oMRfxrda29DxxN+D1WO6Juo95LBcan1pWECxN045bzOeYSFit8QXthhoJDaQRbnU
+ seFTga76zsuEvub1vBYax7ppb/U+L6mAumw2Mhgx2mEcIYPYMg5hWrJvCiudE1KCKong
+ 6dgAASGoNxvU+gi3A53HQylRFymVIzYtV5b4NqtIoeyAAlCFpl+JO5CMpcTFKUHNrPPx
+ wq25IEd46NnTfcYJ10+Cju65COp21F54g/3/Y9TEogN0+CpBlb7kUPWjmg4Oti/cRVCh Lw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 33q5rgqf43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Sep 2020 15:50:00 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OFUZHt054350;
+        Thu, 24 Sep 2020 15:49:59 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 33nurwbrpy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Sep 2020 15:49:59 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08OFnq1D012263;
+        Thu, 24 Sep 2020 15:49:53 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 24 Sep 2020 08:49:51 -0700
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@tron.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1ft77maz5.fsf@ca-mkp.ca.oracle.com>
+References: <20200924065140.726436-1-hch@lst.de>
+        <20200924065140.726436-4-hch@lst.de>
+Date:   Thu, 24 Sep 2020 11:49:48 -0400
+In-Reply-To: <20200924065140.726436-4-hch@lst.de> (Christoph Hellwig's message
+        of "Thu, 24 Sep 2020 08:51:30 +0200")
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=1
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240118
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=1 phishscore=0
+ malwarescore=0 mlxlogscore=999 adultscore=0 bulkscore=0 lowpriorityscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ctags creates a warning:
-|ctags: Warning: include/linux/seqlock.h:738: null expansion of name pattern "\2"
 
-The DEFINE_SEQLOCK() macro is passed to ctags and being told to expect
-an argument.
+Christoph,
 
-Add a dummy argument to keep ctags quiet.
+> Inherit the optimal I/O size setting just like the readahead window,
+> as any reason to do larger I/O does not apply to just readahead.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/seqlock.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks fine.
 
-diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-index 962d9768945f0..4a69e74dc7ce9 100644
---- a/include/linux/seqlock.h
-+++ b/include/linux/seqlock.h
-@@ -735,7 +735,7 @@ typedef struct {
- 	} while (0)
- 
- /**
-- * DEFINE_SEQLOCK() - Define a statically allocated seqlock_t
-+ * DEFINE_SEQLOCK(sl) - Define a statically allocated seqlock_t
-  * @sl: Name of the seqlock_t instance
-  */
- #define DEFINE_SEQLOCK(sl) \
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
+
 -- 
-2.28.0
-
+Martin K. Petersen	Oracle Linux Engineering
