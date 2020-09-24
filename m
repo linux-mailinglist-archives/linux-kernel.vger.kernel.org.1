@@ -2,134 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D35F277551
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945FC277538
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728511AbgIXP3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728350AbgIXP3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:29:08 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B082DC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:29:07 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id ay8so3770032edb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:29:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DWwrSFR+XsVbo72EXCPGN7Yvsrb6I0oZs+oVxjkh+2I=;
-        b=hN3JCT4/0mr9lHn1el6A+W9IHJhVcZfLNiBn+2+2ptYhZ2E3ln93PIdOTyrZm4MsWg
-         0pPA5aEFZnOI3KgY8otAO4fYpSdYshKnZ4CmKXSbw5JqMttXF9UPXapl5M86DohboovX
-         I3ro4WAml5gPUcfGG3zbCTYxhnoAJoBotyNRCrSyqpZDz/gaQeuJnjABGulXeW+vgul2
-         WfLGjGxh/urIx8OZzhTSMu8/a21/AzyXO11afB8SfNqZpdfRIv+08n215LLwBniNZZEh
-         jK3alXiJ//9LzmOTJndQYIOo7J2mNf+tk68S7tAY55J1Ph4eY4IoKrvEDEnzodg3nw3v
-         1Idg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DWwrSFR+XsVbo72EXCPGN7Yvsrb6I0oZs+oVxjkh+2I=;
-        b=JmyxrOt2YRq3hGXPkweA94dR8LWkHsH+5yJ4Sl3gpEQOgmR7OU4/Mbl7TajfY7DwyD
-         s12Ti+Os7RXl+X3nw5JS/GfKSPvlgbABefznbMbkhB0fLZ7O6QYgGL40IRppII8IuCQE
-         XUO59NHz81gCXNQbnubuLxwxEiSDIZa3CtyUIXOwHG132zehe1kHmcPnc/FynnrimksI
-         FvxYJj8o6761gSUNGsc3zUU5lbCj9fmq0DE8XWmrrBvp9aaIOXV1LxqkbI8vgoH9gBo9
-         arWjMwSgtPNonxTe3mtV0un13FqM4GFW8MAgdombaRdP2pGWMx++C0ybkWPoG09TyCIL
-         mbmA==
-X-Gm-Message-State: AOAM531lG642n7LiPFREQfGc3IEQO4S7Km7M+xwmMrW3ZLTaYc8uUtco
-        8ZYjlqy6BododAS2428kl6fpm+3rxmtSitbSC8Es
-X-Google-Smtp-Source: ABdhPJxwnRvlu4GIjD+pyeEz7LhCUZQ/skYgUffP4gTtRClyXesIuk5Q/rFSvs+tgZ6Sn7QvuUd3X5CwxfSMAX6NAl0=
-X-Received: by 2002:aa7:ce97:: with SMTP id y23mr494977edv.128.1600961346147;
- Thu, 24 Sep 2020 08:29:06 -0700 (PDT)
+        id S1728380AbgIXP0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:26:13 -0400
+Received: from mga12.intel.com ([192.55.52.136]:52937 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728285AbgIXP0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:26:13 -0400
+IronPort-SDR: Q1QgdfoFTjES77cpSnZOMml8lOBxo12t0xdEmlanTkQpFP+5n4s4WFu2h/X+1vz6j6rr39ezAn
+ jfaChtGigH/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="140682072"
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
+   d="scan'208";a="140682072"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 08:26:13 -0700
+IronPort-SDR: B0aRA+X0VcnD4Kv9nyTI3ri6M6OhVSh5exjBqLT3Lh4qNYPaR4St9y42RoFkfshJ4sGuSWnoTN
+ DPhAw0JTSDKg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
+   d="scan'208";a="336024808"
+Received: from marshy.an.intel.com (HELO [10.122.105.159]) ([10.122.105.159])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Sep 2020 08:26:13 -0700
+Subject: Re: [RESEND PATCHv1] MAINTAINERS: altera: change maintainer for
+ Altera drivers
+To:     mchehab+huawei@kernel.org, davem@davemloft.net, robh@kernel.org,
+        gregkh@linuxfoundation.org, thor.thayer@linux.intel.com,
+        linux-kernel@vger.kernel.org
+Cc:     Richard Gong <richard.gong@intel.com>
+References: <1595606355-1329-1-git-send-email-richard.gong@linux.intel.com>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <0d445238-fcf5-39f4-92b3-69346e681efa@linux.intel.com>
+Date:   Thu, 24 Sep 2020 10:45:49 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <20200923232923.3142503-5-keescook@chromium.org> <CAG48ez251v19U60GYH4aWE6+C-3PYw5mr_Ax_kxnebqDOBn_+Q@mail.gmail.com>
- <202009240038.864365E@keescook>
-In-Reply-To: <202009240038.864365E@keescook>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 24 Sep 2020 11:28:55 -0400
-Message-ID: <CAHC9VhQpto1KuL7PhjtdjtAjJ2nC+rZNSM7+nSZ_ksqGXbhY+Q@mail.gmail.com>
-Subject: Re: [PATCH 4/6] seccomp: Emulate basic filters for constant action results
-To:     Kees Cook <keescook@chromium.org>,
-        Tom Hromatka <tom.hromatka@oracle.com>
-Cc:     Jann Horn <jannh@google.com>, YiFei Zhu <yifeifz2@illinois.edu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1595606355-1329-1-git-send-email-richard.gong@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 3:46 AM Kees Cook <keescook@chromium.org> wrote:
-> On Thu, Sep 24, 2020 at 01:47:47AM +0200, Jann Horn wrote:
-> > On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
-> > > This emulates absolutely the most basic seccomp filters to figure out
-> > > if they will always give the same results for a given arch/nr combo.
-> > >
-> > > Nearly all seccomp filters are built from the following ops:
-> > >
-> > > BPF_LD  | BPF_W    | BPF_ABS
-> > > BPF_JMP | BPF_JEQ  | BPF_K
-> > > BPF_JMP | BPF_JGE  | BPF_K
-> > > BPF_JMP | BPF_JGT  | BPF_K
-> > > BPF_JMP | BPF_JSET | BPF_K
-> > > BPF_JMP | BPF_JA
-> > > BPF_RET | BPF_K
-> > >
-> > > These are now emulated to check for accesses beyond seccomp_data::arch
-> > > or unknown instructions.
-> > >
-> > > Not yet implemented are:
-> > >
-> > > BPF_ALU | BPF_AND (generated by libseccomp and Chrome)
-> >
-> > BPF_AND is normally only used on syscall arguments, not on the syscall
-> > number or the architecture, right? And when a syscall argument is
-> > loaded, we abort execution anyway. So I think there is no need to
-> > implement those?
->
-> Is that right? I can't actually tell what libseccomp is doing with
-> ALU|AND. It looks like it's using it for building jump lists?
+Hi,
 
-There is an ALU|AND op in the jump resolution code, but that is really
-just if libseccomp needs to fixup the accumulator because a code block
-is expecting a masked value (right now that would only be a syscall
-argument, not the syscall number itself).
+Sorry for asking.
 
-> Paul, Tom, under what cases does libseccomp emit ALU|AND into filters?
+This patch was submitted on July and is pending for approval. Would you 
+mind reviewing that?
 
-Presently the only place where libseccomp uses ALU|AND is when the
-masked equality comparison is used for comparing syscall arguments
-(SCMP_CMP_MASKED_EQ).  I can't honestly say I have any good
-information about how often that is used by libseccomp callers, but if
-I do a quick search on GitHub for "SCMP_CMP_MASKED_EQ" I see 2k worth
-of code hits; take that for whatever it is worth.  Tom may have some
-more/better information.
+Regards,
+Richard
 
-Of course no promises on future use :)  As one quick example, I keep
-thinking about adding the instruction pointer to the list of things
-that can be compared as part of a libseccomp rule, and if we do that I
-would expect that we would want to also allow a masked comparison (and
-utilize another ALU|AND bpf op there).  However, I'm not sure how
-useful that would be in practice.
-
--- 
-paul moore
-www.paul-moore.com
+On 7/24/20 10:59 AM, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
+> 
+> Thor is moving to a new position and I will take over the maintainership.
+> Add myself as maintainer for 3 Altera drivers below:
+> 1. Altera I2C driver
+> 2. Altera System Manager driver
+> 3. Altera System Resource driver
+> 
+> Signed-off-by: Richard Gong <richard.gong@intel.com>
+> Acked-by: Thor Thayer <thor.thayer@linux.intel.com>
+> ---
+>   MAINTAINERS | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b4a43a9..d87a307 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -750,7 +750,7 @@ R:	Pali Rohár <pali@kernel.org>
+>   F:	drivers/input/mouse/alps.*
+>   
+>   ALTERA I2C CONTROLLER DRIVER
+> -M:	Thor Thayer <thor.thayer@linux.intel.com>
+> +M:	Richard Gong <richard.gong@linux.intel.com>
+>   S:	Maintained
+>   F:	Documentation/devicetree/bindings/i2c/i2c-altera.txt
+>   F:	drivers/i2c/busses/i2c-altera.c
+> @@ -767,13 +767,13 @@ S:	Maintained
+>   F:	drivers/gpio/gpio-altera.c
+>   
+>   ALTERA SYSTEM MANAGER DRIVER
+> -M:	Thor Thayer <thor.thayer@linux.intel.com>
+> +M:	Richard Gong <richard.gong@linux.intel.com>
+>   S:	Maintained
+>   F:	drivers/mfd/altera-sysmgr.c
+>   F:	include/linux/mfd/altera-sysmgr.h
+>   
+>   ALTERA SYSTEM RESOURCE DRIVER FOR ARRIA10 DEVKIT
+> -M:	Thor Thayer <thor.thayer@linux.intel.com>
+> +M:	Richard Gong <richard.gong@linux.intel.com>
+>   S:	Maintained
+>   F:	drivers/gpio/gpio-altera-a10sr.c
+>   F:	drivers/mfd/altera-a10sr.c
+> 
