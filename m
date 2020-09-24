@@ -2,85 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CF60277473
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF0027747D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728269AbgIXO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgIXO6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:58:02 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C575CC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:58:02 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id f11so2048834qvw.3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:58:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h9qkcbMHlRJM7O8sVKuFGurhPQrKy5/mr+PHNIoNebU=;
-        b=oIn1+5/5s08WNPyUD6MubZE3J1pjr8QTozz7D1Fu9YMdM5SimVa96WBNW1m7SSA6y6
-         XYAnNK448hxc1uzLgCYLhOtG6F06YRlu5VY7u9SSEBoOXCn13N/hVF03CjslJEet+aR4
-         tvuEnY9VZLWXvdGIyHqfeyiVxWDfST8zxgwbROTceYneQ/BZgg2H9pHVwzsaZddJHztT
-         2FE9ZxN/OyODmISjbVeIE74PoOAa+OViOReCthQP1tBco4sWf/PSb19yKSVp/EcADJ9R
-         aSWnAF04W+/N0fIRxoz2K8h1NP8QXiw02SoFrEsQF830rTsrZMHA0XnJ+gGIaBiQJc8J
-         Yfww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=h9qkcbMHlRJM7O8sVKuFGurhPQrKy5/mr+PHNIoNebU=;
-        b=ItdCvul3whaSla3HzZGo+Q1ixYGMKB4BxWtw22HbHZBE60Wge3mz48l6r9fOzQo3ze
-         oPs7x5CVrmjsKVTrsbyaD47RlKNJpAOZ4g/kUSkqQv7u+k285om6qnX4XcdSK1UZm3VF
-         TgRLieo3XO+oKiJ9jd3Fqdz+gZ5nGXjYcXUSVd/sj/Q4Nsl5340Vihpd2HT33mMj2fZ9
-         aeKCTg9UoXtmK2lk+pSwiwhcWmOIxYvV+rMOiiR752iitmbOapRUFLcKCfKUavohRVsv
-         4qPWLkl+hqyl2bnEd9/fSTsMtwKJjmLLNiKcPiPYt4WmN2Hnx58TWl8vh1Qi7VHNex1I
-         B2AA==
-X-Gm-Message-State: AOAM533rEuoJGcjPdWU+j89KO+nQdR4olpEKhE1Xq01Cx9TSyXAYsbWP
-        50JQPa5OPH2bfYlnnrWNbcXdPjmtjPP22g==
-X-Google-Smtp-Source: ABdhPJzf8empZZWk1V9NB1DOBKRyZOGNCuGE2w0nPTvSMMtt7DSCh1ikW7S9/rp4FY7tbp8+J76Umw==
-X-Received: by 2002:ad4:518c:: with SMTP id b12mr5919034qvp.38.1600959481701;
-        Thu, 24 Sep 2020 07:58:01 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:3600])
-        by smtp.gmail.com with ESMTPSA id 85sm2141994qkn.64.2020.09.24.07.58.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 07:58:01 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 24 Sep 2020 10:57:58 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Rik van Riel <riel@surriel.com>
-Subject: Re: sched: rq->nr_iowait transiently going negative after the recent
- p->on_cpu optimization
-Message-ID: <20200924145758.GG4268@mtj.duckdns.org>
-References: <20200918172759.GA4247@mtj.thefacebook.com>
- <20200924115042.GG2628@hirez.programming.kicks-ass.net>
- <20200924142751.GF4268@mtj.duckdns.org>
- <20200924145041.GP2628@hirez.programming.kicks-ass.net>
+        id S1728397AbgIXO6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:58:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37456 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728385AbgIXO62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 10:58:28 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1FDEF2396D;
+        Thu, 24 Sep 2020 14:58:26 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 10:58:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     peterz@infradead.org
+Cc:     Prasad Sodagudi <psodagud@codeaurora.org>, tglx@linutronix.de,
+        qais.yousef@arm.com, mingo@kernel.org, cai@lca.pw,
+        tyhicks@canonical.com, arnd@arndb.de, rameezmustafa@codeaurora.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] measure latency of cpu hotplug path
+Message-ID: <20200924105823.0e11f2e4@oasis.local.home>
+In-Reply-To: <20200924083414.GB1362448@hirez.programming.kicks-ass.net>
+References: <1600904266-102397-1-git-send-email-psodagud@codeaurora.org>
+        <20200924083414.GB1362448@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924145041.GP2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 04:50:41PM +0200, Peter Zijlstra wrote:
-> > Rik suggested that it'd be sufficient to return 0 on underflow especially
-> > given that 0 is actually the right number to describe the state. So, maybe
-> > that can be a nicer code-wise?
+On Thu, 24 Sep 2020 10:34:14 +0200
+peterz@infradead.org wrote:
+
+> On Wed, Sep 23, 2020 at 04:37:44PM -0700, Prasad Sodagudi wrote:
+> > There are all changes related to cpu hotplug path and would like to seek
+> > upstream review. These are all patches in Qualcomm downstream kernel
+> > for a quite long time. First patch sets the rt prioity to hotplug
+> > task and second patch adds cpuhp trace events.
+> > 
+> > 1) cpu-hotplug: Always use real time scheduling when hotplugging a CPU
+> > 2) cpu/hotplug: Add cpuhp_latency trace event  
 > 
-> I worry about things where one CPU has a positive value and one or more
-> (other) CPUs have a temporary negative value.
+> Why? Hotplug is a known super slow path. If you care about hotplug
+> latency you're doing it wrong.
 
-I think it'd make more sense to max'ing them per-cpu as that's the right
-per-cpu state. nr_iowait_cpu() needs that anyway, so maybe the summing
-function can just use nr_iowait_cpu()?
+I'd like to know the answer to Peter's question too. Why?
 
-Thanks.
-
--- 
-tejun
+-- Steve
