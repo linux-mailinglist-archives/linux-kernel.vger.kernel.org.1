@@ -2,59 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EB5276937
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:48:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A8D276938
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbgIXGsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:48:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIXGsm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:48:42 -0400
-Received: from localhost (unknown [84.241.198.81])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C910420708;
-        Thu, 24 Sep 2020 06:48:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600930121;
-        bh=jBCz5LY8N9IUAfeiRv9iPCrY8XTkPMdC+ePT54L4hus=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hS2Eq8O+EVxrHkBPgQTWfZykTFLAHV0mUNKvrxlV/zKqBQ2/+JwLoY3hQr7cHUP/t
-         7dD8xopWl+BAxJ4mfGcMsIEItktj6mlIYpWAOZ5QWS9B33k+TFmVs5hxYgK21KjsXa
-         IWGigLHjYo6QMVpXyH0JggfkprldBNpIHQgnPyvE=
-Date:   Thu, 24 Sep 2020 08:48:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        =?utf-8?B?Qmxhxb4=?= Hrastnik <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>
-Subject: Re: [RFC PATCH 1/9] misc: Add Surface Aggregator subsystem
-Message-ID: <20200924064838.GB593984@kroah.com>
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <20200923151511.3842150-2-luzmaximilian@gmail.com>
- <20200923165745.GA3732240@kroah.com>
- <de24d687-62c2-1f34-cac2-d32246c68a09@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de24d687-62c2-1f34-cac2-d32246c68a09@gmail.com>
+        id S1727028AbgIXGs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:48:57 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:53312 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726119AbgIXGs4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 02:48:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U9wa7Ds_1600930127;
+Received: from localhost(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U9wa7Ds_1600930127)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 24 Sep 2020 14:48:53 +0800
+From:   Xunlei Pang <xlpang@linux.alibaba.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Jiang Biao <benbjiang@tencent.com>
+Cc:     Wetp Zhang <wetp.zy@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] sched/fair: Fix wrong cpu selecting from isolated domain
+Date:   Thu, 24 Sep 2020 14:48:47 +0800
+Message-Id: <1600930127-76857-1-git-send-email-xlpang@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 10:34:23PM +0200, Maximilian Luz wrote:
-> In short: Concurrent execution of the counter functions works, as far as
-> I can tell at least, and, as you see by the long answer, I have to spend
-> some time and think about the duplicate-value problem (again). If you've
-> managed to read through this wall of text (sorry about that) and you
-> have any ideas/preferences, please let me know.
+We've met problems that occasionally tasks with full cpumask
+(e.g. by putting it into a cpuset or setting to full affinity)
+were migrated to our isolated cpus in production environment.
 
-No, this all answers my question really well, thanks, what you have now
-is fine, no need to change it.
+After some analysis, we found that it is due to the current
+select_idle_smt() not considering the sched_domain mask.
 
-thanks,
+Steps to reproduce on my 31-CPU hyperthreads machine:
+1. with boot parameter: "isolcpus=domain,2-31"
+   (thread lists: 0,16 and 1,17)
+2. cgcreate -g cpu:test; cgexec -g cpu:test "test_threads"
+3. some threads will be migrated to the isolated cpu16~17.
 
-greg k-h
+Fix it by checking the valid domain mask in select_idle_smt().
+
+Fixes: 10e2f1acd010 ("sched/core: Rewrite and improve select_idle_siblings())
+Reported-by: Wetp Zhang <wetp.zy@linux.alibaba.com>
+Reviewed-by: Jiang Biao <benbjiang@tencent.com>
+Signed-off-by: Xunlei Pang <xlpang@linux.alibaba.com>
+---
+ kernel/sched/fair.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 1a68a05..fa942c4 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6075,7 +6075,7 @@ static int select_idle_core(struct task_struct *p, struct sched_domain *sd, int
+ /*
+  * Scan the local SMT mask for idle CPUs.
+  */
+-static int select_idle_smt(struct task_struct *p, int target)
++static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+ {
+ 	int cpu;
+ 
+@@ -6083,7 +6083,8 @@ static int select_idle_smt(struct task_struct *p, int target)
+ 		return -1;
+ 
+ 	for_each_cpu(cpu, cpu_smt_mask(target)) {
+-		if (!cpumask_test_cpu(cpu, p->cpus_ptr))
++		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
++		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
+ 			continue;
+ 		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+ 			return cpu;
+@@ -6099,7 +6100,7 @@ static inline int select_idle_core(struct task_struct *p, struct sched_domain *s
+ 	return -1;
+ }
+ 
+-static inline int select_idle_smt(struct task_struct *p, int target)
++static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
+ {
+ 	return -1;
+ }
+@@ -6274,7 +6275,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ 	if ((unsigned)i < nr_cpumask_bits)
+ 		return i;
+ 
+-	i = select_idle_smt(p, target);
++	i = select_idle_smt(p, sd, target);
+ 	if ((unsigned)i < nr_cpumask_bits)
+ 		return i;
+ 
+-- 
+1.8.3.1
+
