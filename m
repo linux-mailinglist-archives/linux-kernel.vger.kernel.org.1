@@ -2,78 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792A6276AE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:36:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4934B276AE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 09:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgIXHga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 03:36:30 -0400
-Received: from mail-out.m-online.net ([212.18.0.10]:34490 "EHLO
-        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbgIXHga (ORCPT
+        id S1727174AbgIXHg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 03:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727112AbgIXHg7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 03:36:30 -0400
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Bxn0p4dj1z1rtZW;
-        Thu, 24 Sep 2020 09:36:25 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4Bxn0n4X4Kz1qyXD;
-        Thu, 24 Sep 2020 09:36:25 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id j-KCvUrx7nDZ; Thu, 24 Sep 2020 09:36:24 +0200 (CEST)
-X-Auth-Info: 8ronH07tWdu1XzNhwoSiBMOdcXov5iGOJ61TwDCB0oH2QygpST0od5Si4bxqvrCq
-Received: from igel.home (ppp-46-244-184-54.dynamic.mnet-online.de [46.244.184.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 24 Sep 2020 09:36:24 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id EA4C42C278E; Thu, 24 Sep 2020 09:36:23 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Anup Patel <anup@brainfault.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>,
-        Nick Hu <nickhu@andestech.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org
-Subject: Re: [PATCH V2 1/3] riscv: Fixup static_obj() fail
-References: <1593266228-61125-1-git-send-email-guoren@kernel.org>
-        <1593266228-61125-2-git-send-email-guoren@kernel.org>
-        <20200911204512.GA2705@aurel32.net>
-        <CAJF2gTQiLV8sDE5cnvP=aBog4zaiMvMeieg_JtXwRODky1u3Hg@mail.gmail.com>
-        <20200914103836.GB2705@aurel32.net>
-X-Yow:  ..  are the STEWED PRUNES still in the HAIR DRYER?
-Date:   Thu, 24 Sep 2020 09:36:23 +0200
-In-Reply-To: <20200914103836.GB2705@aurel32.net> (Aurelien Jarno's message of
-        "Mon, 14 Sep 2020 12:38:36 +0200")
-Message-ID: <87lfgzeidk.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 24 Sep 2020 03:36:59 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 292F7C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:36:59 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id u24so1401172pgi.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 00:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WLJqIscJmXcvk+sqZWhshYhF2CZRRuw+A8ZGwocEwRQ=;
+        b=G+UWjHqRmZtL7aOwJRe0U89n54w3ZzxUfJM96kgA17jcRmleJkjoPM8xG/IgtKX+ka
+         Ru6WiurvmQ7B/2qcOKO6h91E7rZHfAvvKXRQSk6IwPOMzwJAsA6GS4xx79fuZEIZsMMa
+         O32mwaxtv3Spvme5j6mLBMKNpV4AWuTd4s9VA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WLJqIscJmXcvk+sqZWhshYhF2CZRRuw+A8ZGwocEwRQ=;
+        b=kH82Kd994ESDHsu2hhMDpG5Tfp0oLLZe/WTmuCT1wj5ryog7LdxTYuf+lyVWtwFqgy
+         qd62UzYpbC3zLWuQqsZBIOKHQLIre0MhVLO4lgArNp0OaZjaeFp0nw12+0Jja9rnOJVk
+         JQDWZN49EIUF4Ln+uAZzLd6LU7s1op8mN7/emEh8rJZGQzEUwqNqByJ/3rOVLbjbJCcm
+         DBAZNAgC69oXNpL0NPy1bFygEn/Dofg8LDba7fHDP9/ljD3QFU6fysM+cdF+PmIFFhOl
+         bu5IcAB88jauY5l/DCHE0P+EZCIeCWn1mAdu05XtiNWsPW5z+yxYyasxDK/Ctal5jMay
+         X9ww==
+X-Gm-Message-State: AOAM5329g6crr4cRTVHHx6FyUIoBQ7RtxWBtuWiiR5jZooF1NL1GZLrJ
+        KKe6ZDWeCdP2Lkhq+MsqNOjGrw==
+X-Google-Smtp-Source: ABdhPJwOSKne6H8RnHQDk/kqxXJPImal+FWVDntmH5GURex1vAcAC3rXIH/UTAWQhS5owGkqenlz7w==
+X-Received: by 2002:a63:5d08:: with SMTP id r8mr2852677pgb.174.1600933018492;
+        Thu, 24 Sep 2020 00:36:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a27sm1817356pfk.52.2020.09.24.00.36.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 00:36:57 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 00:36:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
+Message-ID: <202009240018.A4D8274F@keescook>
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-4-keescook@chromium.org>
+ <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAG48ez0d80fOSTyn5QbH33WPz5UkzJJOo+V8of7YMR8pVQxumw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 14 2020, Aurelien Jarno wrote:
+On Thu, Sep 24, 2020 at 02:25:03AM +0200, Jann Horn wrote:
+> On Thu, Sep 24, 2020 at 1:29 AM Kees Cook <keescook@chromium.org> wrote:
+> > +/* When no bits are set for a syscall, filters are run. */
+> > +struct seccomp_bitmaps {
+> > +#ifdef SECCOMP_ARCH
+> > +       /* "allow" are initialized to set and only ever get cleared. */
+> > +       DECLARE_BITMAP(allow, NR_syscalls);
+> 
+> This bitmap makes sense.
+> 
+> > +       /* These are initialized to clear and only ever get set. */
+> > +       DECLARE_BITMAP(kill_thread, NR_syscalls);
+> > +       DECLARE_BITMAP(kill_process, NR_syscalls);
+> 
+> I don't think these bitmaps make sense, this is not part of any fastpath.
 
-> How should we proceed to get that fixed in time for 5.9? For the older
-> branches where it has been backported (so far 5.7 and 5.8), should we
-> just get that commit reverted instead?
+That's a fair point. I think I arrived at this design because it ended
+up making filter addition faster ("don't bother processing this one,
+it's already 'kill'"), but it's likely not worse the memory usage
+trade-off.
 
-Can this please be resolved ASAP?
+> (However, a "which syscalls have a fixed result" bitmap might make
+> sense if we want to export the list of permitted syscalls as a text
+> file in procfs, as I mentioned over at
+> <https://lore.kernel.org/lkml/CAG48ez3Ofqp4crXGksLmZY6=fGrF_tWyUCg7PBkAetvbbOPeOA@mail.gmail.com/>.)
 
-Andreas.
+I haven't found a data structure I'm happy with for this. It seemed like
+NR_syscalls * sizeof(u32) was rather a lot (i.e. to store the BPF_RET
+value). However, let me discuss that more in the "why in in thread?"
+below...
+
+> The "NR_syscalls" part assumes that the compat syscall tables will not
+> be bigger than the native syscall table, right? I guess that's usually
+> mostly true nowadays, thanks to the syscall table unification...
+> (might be worth a comment though)
+
+Hrm, I had convinced myself it was a max() of compat. But I see no
+evidence of that now. Which means that I can add these to the per-arch
+seccomp defines with something like:
+
+# define SECCOMP_NR_NATIVE	NR_syscalls
+# define SECCOMP_NR_COMPAT	X32_NR_syscalls
+...
+
+> > +#endif
+> > +};
+> > +
+> >  struct seccomp_filter;
+> >  /**
+> >   * struct seccomp - the state of a seccomp'ed process
+> > @@ -45,6 +56,13 @@ struct seccomp {
+> >  #endif
+> >         atomic_t filter_count;
+> >         struct seccomp_filter *filter;
+> > +       struct seccomp_bitmaps native;
+> > +#ifdef CONFIG_COMPAT
+> > +       struct seccomp_bitmaps compat;
+> > +#endif
+> > +#ifdef SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH
+> > +       struct seccomp_bitmaps multiplex;
+> > +#endif
+> 
+> Why do we have one bitmap per thread (in struct seccomp) instead of
+> putting the bitmap for a given filter and all its ancestors into the
+> seccomp_filter?
+
+I explicitly didn't want to add code that was run per-filter; I wanted
+O(1), not O(n) even if the n work was a small constant. There is
+obviously a memory/perf tradeoff here. I wonder if the middle ground
+would be to put a bitmap and "constant action" results in the filter....
+oh duh. The "top" filter is already going to be composed with its
+ancestors. That's all that needs to be checked. Then the tri-state can
+be:
+
+bitmap accept[NR_syscalls]: accept or check "known" bitmap
+bitmap filter[NR_syscalls]: run filter or return known action
+u32 known_action[NR_syscalls];
+
+(times syscall numbering "architecture" counts)
+
+Though perhaps it would be just as fast as:
+
+bitmap run_filter[NR_syscalls]: run filter or return known_action
+u32 known_action[NR_syscalls];
+
+where accept isn't treated special...
+
+> 
+> >  };
+> >
+> >  #ifdef CONFIG_HAVE_ARCH_SECCOMP_FILTER
+> > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> > index 0a3ff8eb8aea..111a238bc532 100644
+> > --- a/kernel/seccomp.c
+> > +++ b/kernel/seccomp.c
+> > @@ -318,7 +318,7 @@ static inline u8 seccomp_get_arch(u32 syscall_arch, u32 syscall_nr)
+> >
+> >  #ifdef SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH
+> >         if (syscall_arch == SECCOMP_MULTIPLEXED_SYSCALL_TABLE_ARCH) {
+> > -               seccomp_arch |= (sd->nr & SECCOMP_MULTIPLEXED_SYSCALL_TABLE_MASK) >>
+> > +               seccomp_arch |= (syscall_nr & SECCOMP_MULTIPLEXED_SYSCALL_TABLE_MASK) >>
+> >                                 SECCOMP_MULTIPLEXED_SYSCALL_TABLE_SHIFT;
+> 
+> This belongs over into patch 1.
+
+Thanks! I was rushing to get this posted so YiFei Zhu wouldn't spend
+time fighting with arch and Kconfig stuff. :) I'll clean this (and the
+other random cruft) up.
 
 -- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Kees Cook
