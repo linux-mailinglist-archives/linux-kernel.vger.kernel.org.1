@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BF7F2764FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 02:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB232764FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 02:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbgIXAT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 20:19:26 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:48672 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726466AbgIXAT0 (ORCPT
+        id S1726706AbgIXAV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 20:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726605AbgIXAV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 20:19:26 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08O0FDcT021047;
-        Thu, 24 Sep 2020 00:19:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=lzYUIq+tEc6xTX0bbMcY/R7xOwvOwpJ8gk9Ayo/019g=;
- b=I9BYGfP67uGWTPJKHj/jcUWqzk9LHV3w05P6MhP+aBCQZIoH7OVUcyuyEsJgYu/oA6HR
- y6U4SjrYZ46DIN/z70hgAi4KLSYYerKqBIosgl64zw0zyJZi7TIA/rbov3eLArDPtJH4
- gNJMKP5FrLvyHceOY02OOLtiOJly10W9J8b0lY32hM1GtYpKDv/xqtFq1JlssHxX1DQQ
- PgRnZkJz5dBRjIj5x1+O6n9M1ihA47bHQoDdbK1MIa0PlIx2/VNhAUKnGua3vO2unc6z
- BqfbOiKROkuha4UfAdk+UFo5XG4twV7y7Pw1UCWU6DyG7XW0DkcOTDD/LRheJiCqdNix rQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 33q5rgkra7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Sep 2020 00:19:22 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08O0ERD2095741;
-        Thu, 24 Sep 2020 00:19:21 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 33nujq7trm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 24 Sep 2020 00:19:21 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08O0JLhZ105613;
-        Thu, 24 Sep 2020 00:19:21 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by aserp3030.oracle.com with ESMTP id 33nujq7tr8-1;
-        Thu, 24 Sep 2020 00:19:21 +0000
-From:   john.p.donnelly@oracle.com
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Cc:     martin.petersen@oracle.com, john.p.donnelly@oracle.com,
-        michael.christie@oracle.com, bstroesser@ts.fujitsu.com
-Subject: [PATCH ] scsi: page warning: 'page' may be used uninitialized
-Date:   Wed, 23 Sep 2020 17:19:20 -0700
-Message-Id: <20200924001920.43594-1-john.p.donnelly@oracle.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- clxscore=1011 suspectscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009240000
+        Wed, 23 Sep 2020 20:21:27 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65290C0613CE;
+        Wed, 23 Sep 2020 17:21:27 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 17AAA11E49F6E;
+        Wed, 23 Sep 2020 17:04:39 -0700 (PDT)
+Date:   Wed, 23 Sep 2020 17:21:25 -0700 (PDT)
+Message-Id: <20200923.172125.1341776337290371000.davem@davemloft.net>
+To:     saeed@kernel.org
+Cc:     hkallweit1@gmail.com, geert+renesas@glider.be,
+        f.fainelli@gmail.com, andrew@lunn.ch, kuba@kernel.org,
+        gaku.inami.xh@renesas.com, yoshihiro.shimoda.uh@renesas.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "net: linkwatch: add check for netdevice being
+ present to linkwatch_do_dev"
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <a7ff1afd2e1fc2232103ceb9aa763064daf90212.camel@kernel.org>
+References: <20200923.131529.637266321442993059.davem@davemloft.net>
+        <e6f50a85-aa25-5fb7-7fd2-158668d55378@gmail.com>
+        <a7ff1afd2e1fc2232103ceb9aa763064daf90212.camel@kernel.org>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Wed, 23 Sep 2020 17:04:39 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Donnelly <john.p.donnelly@oracle.com>
+From: Saeed Mahameed <saeed@kernel.org>
+Date: Wed, 23 Sep 2020 15:42:17 -0700
 
-corrects: drivers/target/target_core_user.c:688:6: warning: 'page' may be used
-uninitialized
+> Maybe we need to clear IFF_UP before calling ops->ndo_stop(dev),
+> instead of after on __dev_close_many(). Assuming no driver is checking
+> IFF_UP state on its own ndo_stop(), other than this, the order
+> shouldn't really matter, since clearing the flag and calling ndo_stop()
+> should be considered as one atomic operation.
 
-Fixes: 3c58f737231e ("scsi: target: tcmu: Optimize use of
-flush_dcache_page")
+This is my biggest concern, that some ndo_stop, or some helper called
+by ndo_stop, checks IFF_UP or similar.
 
-To: linux-scsi@vger.kernel.org
-Cc: Mike Christie <michael.christie@oracle.com>
-Signed-off-by: John Donnelly <john.p.donnelly@oracle.com>
----
- drivers/target/target_core_user.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There is also something else.  We have both synchronous and async code
+that checks state like IFF_UP and 'present' and makes a decision based
+upon that.
 
-diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
-index 9b7592350502..86b28117787e 100644
---- a/drivers/target/target_core_user.c
-+++ b/drivers/target/target_core_user.c
-@@ -681,7 +681,7 @@ static void scatter_data_area(struct tcmu_dev *udev,
- 	void *from, *to = NULL;
- 	size_t copy_bytes, to_offset, offset;
- 	struct scatterlist *sg;
--	struct page *page;
-+	struct page *page = NULL;
- 
- 	for_each_sg(data_sg, sg, data_nents, i) {
- 		int sg_remaining = sg->length;
--- 
-2.27.0
+If an async code path tests 'present', gets true, and then the RTNL
+holding synchronous code path puts the device into D3hot immediately
+afterwards, the async code path will still continue and access the
+chips registers and fault.
 
+I'm saying all of this because the only way this bug makes sense
+is if the ->ndo_stop() sequence that marks the device !present and
+then clears IFF_UP runs with the RTNL mutex held, and the code path
+that tests this state in the linkwatch bits in question do not.
