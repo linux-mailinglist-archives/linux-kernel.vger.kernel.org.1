@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D257C27744F
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81730277453
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbgIXOus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:50:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727859AbgIXOus (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:50:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68B4C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2lUiJbXVuPS/X3uezMazV19nz/vWtVBuqC8qQTeRTSA=; b=VSpMV9qGL0zbtY+4j5BOsCh+2b
-        jXtc+4O+L0UzzT92iKGzjkK2D6LAfq0KrNCuIaicWg1ktmvNjSilFs+InFnK0j0kzEeSrTgmXdZSc
-        LdSDINgXeYUxQujT4UcWVav4PnMRjjDGliK+1NdHfP38aVQYT62Mk747iKXY+tJkFme0CvsL1w4qX
-        e/q2E2/VKBW5xDWCvFNXZ1WAE1fyjLmk2EKzUbm3U+fGmd7nCKzvC5BGNJ6essSKJZYO+Mkj0EKQT
-        pwAaIayrUs3CwkzuhglxudCk94xzUSq7HMwBo67HHaKnKRaJGawBkEiG83OcWD3kbR1LPArv5NAw4
-        2w1AqwbQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLSa2-0007N6-Nl; Thu, 24 Sep 2020 14:50:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        id S1728221AbgIXOxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:53:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727859AbgIXOxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 10:53:00 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6E7A3305C10;
-        Thu, 24 Sep 2020 16:50:41 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5A8CF2010B5FA; Thu, 24 Sep 2020 16:50:41 +0200 (CEST)
-Date:   Thu, 24 Sep 2020 16:50:41 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Rik van Riel <riel@surriel.com>
-Subject: Re: sched: rq->nr_iowait transiently going negative after the recent
- p->on_cpu optimization
-Message-ID: <20200924145041.GP2628@hirez.programming.kicks-ass.net>
-References: <20200918172759.GA4247@mtj.thefacebook.com>
- <20200924115042.GG2628@hirez.programming.kicks-ass.net>
- <20200924142751.GF4268@mtj.duckdns.org>
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6130B2074B;
+        Thu, 24 Sep 2020 14:52:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600959180;
+        bh=x/UiVkDrbxTj+emBP7iWoafHZgoeH3lVYV0w1Grnozk=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=xvdoTTUs/U1QUBxcAL5QGbrhHPi82TsZ7OxBNfd+QGwBHFIIGl4zfoZiUK6iFtNAW
+         pfcvPyvN6rkGIdhSo55fqYXKZamE8Nlvum/IBvbNJRiOcvaa6jeLs1LX/j545+CUfO
+         ONdghCRuVX8Lj/ApfYIgW7BQXKHulP33KV4HDI3E=
+Date:   Thu, 24 Sep 2020 16:52:56 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Vincent Huang <vincent.huang@tw.synaptics.com>
+cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Andrew Duggan <aduggan@synaptics.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Benjamin Tissoires <btissoir@redhat.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Chris Heiny <chris.heiny@synaptics.com>
+Subject: Re: [PATCH 2/3] HID: rmi - rename f30_data to gpio_data
+In-Reply-To: <20200924094628.1085000-3-vincent.huang@tw.synaptics.com>
+Message-ID: <nycvar.YFH.7.76.2009241652270.3336@cbobk.fhfr.pm>
+References: <20200924094628.1085000-1-vincent.huang@tw.synaptics.com> <20200924094628.1085000-3-vincent.huang@tw.synaptics.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924142751.GF4268@mtj.duckdns.org>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:27:51AM -0400, Tejun Heo wrote:
-> Hello,
-> 
-> On Thu, Sep 24, 2020 at 01:50:42PM +0200, Peter Zijlstra wrote:
-> > Hurmph.. I suppose you're right :/ And this is an actual problem?
-> 
-> Yeah, this got exposed to userspace as a full 64bit number which overflowed
-> u32 conversion in the rust procfs library which aborted a program I was
-> working on multiple times over several months.
-> 
-> On a more theoretical side, it might also surprise nr_iowait_cpu() users.
-> However, a real problem that may be.
-> 
-> > I think the below should cure that, but blergh, not nice. If you could
-> > confirm, I'll try and think of something nicer.
-> 
-> Rik suggested that it'd be sufficient to return 0 on underflow especially
-> given that 0 is actually the right number to describe the state. So, maybe
-> that can be a nicer code-wise?
+On Thu, 24 Sep 2020, Vincent Huang wrote:
 
-I worry about things where one CPU has a positive value and one or more
-(other) CPUs have a temporary negative value.
+> f30_data in rmi_device_platform_data could be also referenced by RMI
+> function 3A, so rename it and the structure name to avoid confusion.
+> 
+> Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
+> ---
+>  drivers/hid/hid-rmi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hid/hid-rmi.c b/drivers/hid/hid-rmi.c
+> index 9ce22acdfaca..62315e31d520 100644
+> --- a/drivers/hid/hid-rmi.c
+> +++ b/drivers/hid/hid-rmi.c
+> @@ -722,7 +722,7 @@ static int rmi_probe(struct hid_device *hdev, const struct hid_device_id *id)
+>  	}
+>  
+>  	if (data->device_flags & RMI_DEVICE_HAS_PHYS_BUTTONS)
+> -		rmi_hid_pdata.f30_data.disable = true;
+> +		rmi_hid_pdata.gpio_data.disable = true;
+>  
+>  	data->xport.dev = hdev->dev.parent;
+>  	data->xport.pdata = rmi_hid_pdata;
 
+Please fold this into the first patch; this way you break bisectability.
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
 
