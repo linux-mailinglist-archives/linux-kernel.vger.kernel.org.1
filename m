@@ -2,60 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8C4D27692B
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC41C27692E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 08:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbgIXGob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 02:44:31 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:61254 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgIXGob (ORCPT
+        id S1726962AbgIXGpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 02:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIXGpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 02:44:31 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 9E06D4E17A5;
-        Thu, 24 Sep 2020 14:44:28 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Wang Qing <wangqing@vivo.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] sound/soc/codecs: fix spelling typo in comments
-Date:   Thu, 24 Sep 2020 14:43:59 +0800
-Message-Id: <1600929860-28862-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUhOTxpJT0lNTUMeVkpNS0tCSUJDTUNCQ0xVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MxA6Vio5ND8oEgMSKhMQLk9C
-        CDNPFDBVSlVKTUtLQklCQ01CSEJMVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKT0JINwY+
-X-HM-Tid: 0a74bedb2c4b9376kuws9e06d4e17a5
+        Thu, 24 Sep 2020 02:45:32 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185FBC0613CE;
+        Wed, 23 Sep 2020 23:45:32 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Bxlt201Qfz9sR4;
+        Thu, 24 Sep 2020 16:45:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1600929930;
+        bh=YYwHCgRAlaTI+jYtkJ8beDa9QHa7D0VMnI0MLn9JPaU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TNa7/yE9iQ0VxOnVUoxBz62+uKXwe1azWmpssPFXuWu+cwQbihqUiYXPA/e57fVgq
+         O/VXobrDsZkKNy06Q1tnoXO8F+BmozT/nL4lHPW7aljqCykV3ICCB+2QfK4zV4Qmwe
+         1pXdX0mXcc8bpeCE5XI5+d0UfmufqMYq3GNIpaRYjwl2U8H8zvhdsXHHwHD2P78i8d
+         nk8rNmjFHw+hkyq1lhZdgWcZZgkwP3k9Mu3pl32IXG04QRywgdrt3sVxLkMMoD0KuP
+         sFx3Y8HDTxWhIdDIEo5Ohf5IWKUv6MqvQKXq4iolJS8ZOLTg229OkEhYmVFu9Qmlh0
+         cdsD/ZPhxd6Ug==
+Date:   Thu, 24 Sep 2020 16:45:29 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the nvdimm tree with the vfs tree
+Message-ID: <20200924164529.61ea980f@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/jwHNRXEmEeE4rEu/nXFGYKK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the comment typo: "compliment" -> "complement".
+--Sig_/jwHNRXEmEeE4rEu/nXFGYKK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- sound/soc/codecs/ak4458.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/sound/soc/codecs/ak4458.h b/sound/soc/codecs/ak4458.h
-index f906215..e43144c
---- a/sound/soc/codecs/ak4458.h
-+++ b/sound/soc/codecs/ak4458.h
-@@ -49,7 +49,7 @@
- 
- /* DIF2	1 0
-  *  x	1 0 MSB justified  Figure 3 (default)
-- *  x	1 1 I2S Compliment  Figure 4
-+ *  x	1 1 I2S Complement  Figure 4
-  */
- #define AK4458_DIF_SHIFT	1
- #define AK4458_DIF_MASK		GENMASK(3, 1)
--- 
-2.7.4
+Today's linux-next merge of the nvdimm tree got a conflict in:
 
+  lib/iov_iter.c
+
+between commit:
+
+  e33ea6e5ba6a ("x86/uaccess: Use pointer masking to limit uaccess speculat=
+ion")
+
+from the vfs tree and commit:
+
+  0a78de3d4b7b ("x86, powerpc: Rename memcpy_mcsafe() to copy_mc_to_{user, =
+kernel}()")
+
+from the nvdimm tree.
+
+I fixed it up (I just used the latter, but I suspect that more work is
+needed) and can carry the fix as necessary. This is now fixed as far as
+linux-next is concerned, but any non trivial conflicts should be mentioned
+to your upstream maintainer when your tree is submitted for merging.
+You may also want to consider cooperating with the maintainer of the
+conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/jwHNRXEmEeE4rEu/nXFGYKK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9sQIkACgkQAVBC80lX
+0Gyhlwf+LjOqtwQ3Vipamv9ks9ATKaj7h00KSJw0Ui2C0nNH8i+vZyFp3xLtEIpD
+29gdr34GivCvHKTXpWSXG6PbORS3C7MAuiytoH9+yiI5zNst9zUNgnJncHQzCqgy
+fMpBPq4b22qHQpO7CBWvqjaT9HPvBCP625ajUGUg6WLCrwEpAjEvBIacYJXhcN3w
+XJlgAkq3qwrHOFmpAgBT0R+yt9TI96+F7lQq5MZjCcLKgslAS6aZ//TUmbLuSJL+
+zMrWtj1PER+y5ZUPbAwGgTXN1LfS3SYgKbJ2UgngO5TElzw6aPsN3QC43MjPQ7WC
+yy5xHn8GtQ6E+pldPfMMDh7h+M2ANA==
+=r0vP
+-----END PGP SIGNATURE-----
+
+--Sig_/jwHNRXEmEeE4rEu/nXFGYKK--
