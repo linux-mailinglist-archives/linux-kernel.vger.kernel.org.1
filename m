@@ -2,93 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40DDF27715A
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA1DA277166
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727836AbgIXMqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41862 "EHLO
+        id S1728040AbgIXMqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727948AbgIXMpu (ORCPT
+        with ESMTP id S1727987AbgIXMqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:45:50 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F5FC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:50 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id w2so3405286wmi.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 05:45:49 -0700 (PDT)
+        Thu, 24 Sep 2020 08:46:11 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2730BC0613D3;
+        Thu, 24 Sep 2020 05:46:11 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id v14so1542858pjd.4;
+        Thu, 24 Sep 2020 05:46:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=g6W9E8qN6DxNYH9h0PRSxLy9Xd7ta7u+vF8y/L8tvpA=;
-        b=yEcGDKq5tSMNsVvMcEp7ED4s+txp5++nzkRhHtx3xr9k7hH6xT8TZ+BM2noaYRI4Vw
-         O3DiG+MWyFiFOActix2x6jglV/SOdK1iKholPoNpG3OvvbgmUEW0Xkvq77Guu4asGQDi
-         2NTuX7QA+KklRyaPzMFdUgyDtt7Ef05rxIPu+P7L527Ky2QDPQI6Ltg/KL9XJlTv2uGk
-         g5a3H5XEQ/JySbwfbu+qSjFxLvKq70p7uIYu+RyoFstSmHLtSaqmXS3jCrJPctX06lhT
-         sCFSB9/BeauT4kf5nNG35Nis2oi/WJKMiEeCtAKECYORbVFN2/6Iha0BhqB9PQLmCNri
-         2kOg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u2R826hNWDvUWxoTX3vKcw74OqKnezw5rqLakbWlfas=;
+        b=hmtGpzDHV3+upF1VOsB6pw/E4E8IdF/fK3mj1gRX1FYC/FXdo1S1yLg1OdgO/LQGMS
+         po4qTLzH7riF4L1+NQR72MyT1UYvz3PWXrE2R0uh4mtdWqqpuivdIgrro+VBGK5DGT6l
+         gL5P9xagaGE0xyfRTGpnVwVEr7l0bM8H917g6OSbIFN8MbrOIusmRLdZ/Mrp1LnB8Asq
+         rRV5Nrvx7NJnZ6VOhw2vlS4/cLXoKmzA3MU1n0aK+O0ZmC3tbDRlIKyG+AG/GDNht9La
+         bmO3OvQXF1dtejyAEpqAONFConi0rw3/4eESA6OqTaHAOBn+vUaSkjp6cduYvq6k0PTf
+         lGog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g6W9E8qN6DxNYH9h0PRSxLy9Xd7ta7u+vF8y/L8tvpA=;
-        b=gDP6wt5r0fRLGngHTEmtGR9aDN0onhzwrOv7yW9Z244LNuBMd0p0YZRnmdHz0f4HSL
-         eP+cP8+mnaDc1E3COCh5SnJL286Ob3fuCBvVe6oX498dMYqXQWKdcK35X+vRxcs1Q5Ua
-         rnRSs+vbvBW7QWDmGr9G1RHDF53CDMq9nfv9Yc9CZLGEPelHQLREX1kBgkJ5H9vHWFXB
-         5M5KIzCXXrRKzsN6frUyZXBF7IP0gqeE5bAG/Fi1+WtWLHHl5vLEXAX/4h2+hlw5Yr6h
-         C9bq8YntMyQ6WiTRbAHZZEatRAZBfbEFl3HWdLli5IIskB73ysw27jEOlwLxxjQ2Yqk1
-         ygYA==
-X-Gm-Message-State: AOAM530jIulA/8mENNfMPxzAg9cqJR6R/GzOiosEYDy4v24OTZlVE3CN
-        nvEooR1IGN/4BOxZe/c3HW7Dtw==
-X-Google-Smtp-Source: ABdhPJzkNx2iVcWqdYVwKH3h4/LBIvTPA/JRjZNrFshr8n+HWfK/DwsAxHQRG5yrNop8N8Zopp8RDg==
-X-Received: by 2002:a1c:2d94:: with SMTP id t142mr4567680wmt.74.1600951548758;
-        Thu, 24 Sep 2020 05:45:48 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-68-20.w2-15.abo.wanadoo.fr. [2.15.159.20])
-        by smtp.gmail.com with ESMTPSA id 9sm3316834wmf.7.2020.09.24.05.45.47
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=u2R826hNWDvUWxoTX3vKcw74OqKnezw5rqLakbWlfas=;
+        b=SZqFI+Kf3fy/+PTrBjZ3railHf1DAT4ijyZfI7ij030WaS8v4HwjWzX2dPkb9REbye
+         jNO7HCZT4CRhaBIbzcpOgC90QpK+vsKqZdoF/OPZuF7W1eX5ieEw5XDZcD/fRqElK+GC
+         x6fRx1tcXWtkengARNgffXJYxlsh8sUDnIbX8zJ/o4Dy4iQMaJA7+2qCA86TH4eX/u9x
+         lOyLFVzkU252X34sm2xjxHxSrbkC9HIVkmx2UihkudS+iXcPeJlnvANHImzh0OniIARi
+         iJNkNb1adZcTq71hgITPfX9ZUimi0H/qYdpj1yYUKvWl35e09XIlFg6yoZVGUnb4MPkc
+         Xhwg==
+X-Gm-Message-State: AOAM533JvumyZVQSBDVkPClKrcwfUxc1UoLRj6Adkx1NHMPMeVx4ghY5
+        6zSRXBeX4Fo+Gy99v+ZVX8o=
+X-Google-Smtp-Source: ABdhPJz+jl5H7lbkTBrZb3OvoUP58rT5CWBffPToXsGV4FkM8dQwdAD3hGJHlsoQDfbsmO67uO2tXw==
+X-Received: by 2002:a17:90a:1548:: with SMTP id y8mr3810358pja.113.1600951570511;
+        Thu, 24 Sep 2020 05:46:10 -0700 (PDT)
+Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
+        by smtp.gmail.com with ESMTPSA id b18sm2921189pfr.4.2020.09.24.05.46.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 05:45:48 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Joel Becker <jlbec@evilplan.org>, Christoph Hellwig <hch@lst.de>
-Cc:     linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 12/12] samples: configfs: prefer pr_err() over bare printk(KERN_ERR
-Date:   Thu, 24 Sep 2020 14:45:26 +0200
-Message-Id: <20200924124526.17365-13-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200924124526.17365-1-brgl@bgdev.pl>
-References: <20200924124526.17365-1-brgl@bgdev.pl>
+        Thu, 24 Sep 2020 05:46:09 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 20:46:04 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v9 11/20] gpiolib: cdev: support
+ GPIO_V2_LINE_SET_VALUES_IOCTL
+Message-ID: <20200924124604.GA227073@sol>
+References: <20200922023151.387447-1-warthog618@gmail.com>
+ <20200922023151.387447-12-warthog618@gmail.com>
+ <CAHp75Vd6tb09n+okJmoPse992DeoPkJQHReNBo20FQNz1V2c5w@mail.gmail.com>
+ <20200924073248.GA17562@sol>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924073248.GA17562@sol>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Thu, Sep 24, 2020 at 03:32:48PM +0800, Kent Gibson wrote:
+> On Wed, Sep 23, 2020 at 07:18:08PM +0300, Andy Shevchenko wrote:
+> > On Tue, Sep 22, 2020 at 5:36 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > >
+> > > Add support for the GPIO_V2_LINE_SET_VALUES_IOCTL.
+> > 
+> > > +static long linereq_set_values_unlocked(struct linereq *lr,
+> > > +                                       struct gpio_v2_line_values *lv)
+> > > +{
+> > > +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
+> > > +       struct gpio_desc **descs;
+> > > +       unsigned int i, didx, num_set;
+> > > +       int ret;
+> > > +
+> > > +       bitmap_zero(vals, GPIO_V2_LINES_MAX);
+> > > +       for (num_set = 0, i = 0; i < lr->num_lines; i++) {
+> > > +               if (lv->mask & BIT_ULL(i)) {
+> > 
+> > Similar idea
+> > 
+> > DECLARE_BITMAP(mask, 64) = BITMAP_FROM_U64(lv->mask);
+> > 
+> > num_set = bitmap_weight();
+> > 
+> 
+> I had played with this option, but bitmap_weight() counts all
+> the bits set in the mask - which considers bits >= lr->num_lines.
+> So you would need to mask lv->mask before converting it to a bitmap.
+> (I'm ok with ignoring those bits in case userspace wants to be lazy and
+> use an all 1s mask.)
+> 
+> But since we're looping over the bitmap anyway we may as well just
+> count as we go.
+> 
+> > for_each_set_bit(i, mask, lr->num_lines)
+> > 
+> 
+> Yeah, that should work.  I vaguely recall trying this and finding it
+> generated larger object code, but I'll give it another try and if it
+> works out then include it in v10.
+> 
 
-pr_*() printing helpers are preferred over using bare printk().
+Tried it again and, while it works, it does increase the size of
+gpiolib-cdev.o as follows:
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- samples/configfs/configfs_sample.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+          u64   ->   bitmap
+x86_64   28360       28616
+i386     22056       22100
+aarch64  37392       37600
+mips32   28008       28016
 
-diff --git a/samples/configfs/configfs_sample.c b/samples/configfs/configfs_sample.c
-index da4e0f4ec20a..2f3b26d1d45e 100644
---- a/samples/configfs/configfs_sample.c
-+++ b/samples/configfs/configfs_sample.c
-@@ -340,9 +340,8 @@ static int __init configfs_example_init(void)
- 		mutex_init(&subsys->su_mutex);
- 		ret = configfs_register_subsystem(subsys);
- 		if (ret) {
--			printk(KERN_ERR "Error %d while registering subsystem %s\n",
--			       ret,
--			       subsys->su_group.cg_item.ci_namebuf);
-+			pr_err("Error %d while registering subsystem %s\n",
-+			       ret, subsys->su_group.cg_item.ci_namebuf);
- 			goto out_unregister;
- 		}
- 	}
--- 
-2.17.1
+So for 64-bit platforms changing to bitmap generates larger code,
+probably as we are forcing them to use 32-bit array semantics where
+before they could use the native u64.  For 32-bit there is a much
+smaller difference as they were already using 32-bit array semantics
+to realise the u64.
+
+Those are for some of my test builds, so obviously YMMV.
+
+It is also only for changing linereq_get_values(), which has three
+instances of the loop.  linereq_set_values_unlocked() has another two,
+so you could expect another increase of ~2/3 of that seen here if we
+change that as well.
+
+The sizeable increase in x86_64 was what made me revert this last time,
+and I'm still satisfied with that choice.  Are you still eager to switch
+to for_each_set_bit()?
+
+Cheers,
+Kent.
 
