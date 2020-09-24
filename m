@@ -2,92 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B558D277006
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B63227700E
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbgIXLew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:34:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726617AbgIXLew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:34:52 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DE6E2220D;
-        Thu, 24 Sep 2020 11:34:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600947291;
-        bh=zpGCrVK8tz1aZrON992tX07fTfb1T/oz6LsOj41Eb9c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jtcDbfmy3QrqbK8tvcbhP0NsjYHl7W1Eaj9KnesXah2QJMh37kDDG45s7HTElChnQ
-         QZENgO6x1gjPu6qR6Z7h40oI4c7zrQkR3QpVrs6ywSGDSlQaQBhVWBUg+na5oNWdC0
-         QoqpcEE7J6a4m44fNnl7pG7LGW48WGgBIHFiXgf4=
-Date:   Thu, 24 Sep 2020 12:33:56 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Ray Jui <ray.jui@broadcom.com>, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/4] dt-bindings: spi: Add compatible string for brcmstb
- SoCs
-Message-ID: <20200924113356.GC4754@sirena.org.uk>
-References: <20200910152539.45584-1-ray.jui@broadcom.com>
- <160009511834.5702.10954218363830361529.b4-ty@kernel.org>
- <a1e13626-e87a-8114-74ae-560902ab9551@gmail.com>
+        id S1727464AbgIXLhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:37:24 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:54196 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726701AbgIXLhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 07:37:24 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 58C29EBD63B2E3745623;
+        Thu, 24 Sep 2020 19:37:23 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020
+ 19:37:14 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/swap_slots.c: Remove always zero and unused return value of enable_swap_slots_cache()
+Date:   Thu, 24 Sep 2020 07:35:54 -0400
+Message-ID: <20200924113554.50614-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TYecfFk8j8mZq+dy"
-Content-Disposition: inline
-In-Reply-To: <a1e13626-e87a-8114-74ae-560902ab9551@gmail.com>
-X-Cookie: Programmers do it bit by bit.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+enable_swap_slots_cache() always return zero and its return value is just
+ignored by the caller. So make enable_swap_slots_cache() void.
 
---TYecfFk8j8mZq+dy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ include/linux/swap_slots.h | 2 +-
+ mm/swap_slots.c            | 3 +--
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-On Wed, Sep 23, 2020 at 01:38:55PM -0700, Florian Fainelli wrote:
-> On 9/14/20 7:52 AM, Mark Brown wrote:
+diff --git a/include/linux/swap_slots.h b/include/linux/swap_slots.h
+index e36b200c2a77..347f1a304190 100644
+--- a/include/linux/swap_slots.h
++++ b/include/linux/swap_slots.h
+@@ -23,7 +23,7 @@ struct swap_slots_cache {
+ 
+ void disable_swap_slots_cache_lock(void);
+ void reenable_swap_slots_cache_unlock(void);
+-int enable_swap_slots_cache(void);
++void enable_swap_slots_cache(void);
+ int free_swap_slot(swp_entry_t entry);
+ 
+ extern bool swap_slot_cache_enabled;
+diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+index 3e6453573a89..0357fbe70645 100644
+--- a/mm/swap_slots.c
++++ b/mm/swap_slots.c
+@@ -237,7 +237,7 @@ static int free_slot_cache(unsigned int cpu)
+ 	return 0;
+ }
+ 
+-int enable_swap_slots_cache(void)
++void enable_swap_slots_cache(void)
+ {
+ 	mutex_lock(&swap_slots_cache_enable_mutex);
+ 	if (!swap_slot_cache_initialized) {
+@@ -255,7 +255,6 @@ int enable_swap_slots_cache(void)
+ 	__reenable_swap_slots_cache();
+ out_unlock:
+ 	mutex_unlock(&swap_slots_cache_enable_mutex);
+-	return 0;
+ }
+ 
+ /* called with swap slot cache's alloc lock held */
+-- 
+2.19.1
 
-> > [1/4] spi: Add compatible string for brcmstb SoCs
-> >       commit: d9f0cf9f1176d36d3824459d5b061f4719fcbb8a
-> > [2/4] spi: bcm-qspi: Add compatible string for BRCMSTB 7445 SoCs
-> >       commit: e0eeb76b818ad93718f9640b0bdad909b453a3b8
-> > [3/4] spi: bcm-qspi: Fix probe regression on iProc platforms
-> >       commit: 9a852d44b26f8e60e2ae13df563824c0f8489135
-> > [4/4] spi: bcm-qspi: Clean up 7425, 7429, and 7435 settings
-> >       commit: 3cf5d198785a6b454e6a97246795b0043aff9ac1
-
-> Mark, can you also submit "spi: bcm-qspi: Fix probe regression on iProc
-> platforms" towards Linus because this is a bug fix that is currently
-> affecting the 5.9 kernel.
-
-*sigh*, OK.  Please don't send fixes in the middle of serieses, send
-them at the start of the series before any cleanups or new features.
-This ensures that they don't have any dependencies on other patches in
-the series and means that they can easily be sent as fixes without
-getting tangled up with the development work.
-
---TYecfFk8j8mZq+dy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9shCQACgkQJNaLcl1U
-h9B4Twf+NFkJy7KuNAOffATLKqqcClJiumK7L7QA6oQzn5MyuQ85EZ2YlPh8spJF
-vNw1WzK+a0CQxCTi7s4jwEUZIR8G0Q1CqLAFxGk/F0bI3vHH7TpbGRvMpZ0/ixj+
-fSTroeoBmtizi21WE7qOFqqmnMM89icDbtpuszMf/uXqqsfyb38GdZPa28s97m3K
-wT91kmromhOILWvxFr+KZZBfm7auA9zCfS7D19thW4L7XZ8t//hFECZSgZ9/J9lR
-BbjNPwusRL/r+b3dfIdAr4J2CSPEUolBX8s664HR/y8P9BmM4TEiMYHIuywmWYPA
-CzDVA8Gdka3aB8Yb8apP6hMCG9EnHg==
-=JdlS
------END PGP SIGNATURE-----
-
---TYecfFk8j8mZq+dy--
