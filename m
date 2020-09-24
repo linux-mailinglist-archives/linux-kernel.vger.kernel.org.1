@@ -2,116 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8632775B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369832775B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728356AbgIXPp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728139AbgIXPp2 (ORCPT
+        id S1728488AbgIXPpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:45:50 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37764 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728139AbgIXPpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:45:28 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5857C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:45:28 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id w2so2360566qvr.19
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 08:45:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=IPIdIz5OhfOKSKcHOSaPSxaObhox3VIBNFJW0Bv678o=;
-        b=GC41UOarc4WKhNYnxvEW/4WUAlLIVnDiP96nIWBJWBZKSCqNVAq3etCfs00XVAU6AJ
-         qKGVXR+SNJhdjWGZ84xvp0BXMqbuDUl/dXEHJTxwV5wC/0hF9icow2DrQBwQDXIwUQws
-         HWrIA4EUxWsmD9VX/BXuLORjybycNkDeU3XfJ6mYiSffPLnmFpCuy8wYzKAdozQOBAL+
-         4YBRt47erpnQgKRPMfC4Fguks/j/NLzvUsQsyBE+MTIBWmq6vUVCW1QXp+oD+C4CceNB
-         tmG6ldsoxxNvykMMEEscD5BOfHBPidaT2DCmO2hUUE/+AszVU7IbSF/zgjSKkf98o4ou
-         ALtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=IPIdIz5OhfOKSKcHOSaPSxaObhox3VIBNFJW0Bv678o=;
-        b=gQSetlOKOo4D738XjlfQoDQZr3lHrWM3WSI4fB+17MgldwRDsePowPdwNwtFZembO1
-         83ggqmwcR3FM98RE5U+wo9DsiYBjJjdrxuzlRQqBl5JZ3Pw7mnmO4c7JeqvVAYFK/6vI
-         cHWDS5kGFFJrRZ+qIQrTnI29TXWCt8UbdsiQzzjzaxdR7IOy1JIJjLhJEFOLCReBnkPr
-         U1jj5BbDEqctvLeCH0DFwmMiEWLaQmsvjk/8FZCRHsk4cQoxa+4Y4yPk3R6OYFU+0mNQ
-         x29yry7jhb+7myo0YZuA8eXHZHhYZElgqlUf2LGd5g6j/Fh60NxTQeelCE6AOnxpBs67
-         EHdQ==
-X-Gm-Message-State: AOAM532tSa45VJ74IqwoFt/zWF+giFbiQzHHgmk8SMBRz1k5jVaTGOVg
-        s3DppKFjlDRZ7hfAFcHwRawN0rAnVBoV
-X-Google-Smtp-Source: ABdhPJyY5JZ0S9e/owclSjTYngJe2UFwWvvVt9uCChNotfeqC5Yqdv/aynxsmCjHsAiVtJNANInw5H+phbuZ
-Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
-X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:2347])
- (user=apusaka job=sendgmr) by 2002:a0c:8001:: with SMTP id
- 1mr5750424qva.21.1600962327869; Thu, 24 Sep 2020 08:45:27 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 23:45:01 +0800
-Message-Id: <20200924234422.v1.1.Id1d24a896cd1d20f9ce7a4eb74523fe7896af89d@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH v1] Bluetooth: send proper config param to unknown config request
-From:   Archie Pusaka <apusaka@google.com>
-To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>
-Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 24 Sep 2020 11:45:50 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OFZ23Y158292;
+        Thu, 24 Sep 2020 15:45:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=ptE4rBnIcvQs1r3P1XI5UZCVxhNT0iC7WiQxJa50zew=;
+ b=azWkeHZmC4B21Ls1F5NpziOnh0GPmAKktox4SDp1B2wsB7xTxHCviZWLxEjyeI1lRkKr
+ jdBRozHvrcFs7JkdOCZhPY3XsR6aMBb5BL2A9MjMUrpSNWV1kdhuqM25exJHTnXqSEr9
+ r0OYAa5cM14a5xYZa5Bo+purM3NnfEg5dHQ+AtYJ6XRahrIf8QjRobUe4ZgXykUDUlXd
+ e7BGihSe81vycIPnTfpsKWrNLUdVDeNBTjdxs5O8kF4ETbea7jyc9XehgcJ/jJ9M+4z7
+ q/TA6PY2o0xI9aDw/WLPKAXoDy9nwA2puGkFCBkZvcbhYB4zZj+7BWmwPk3dSJYRigSj Xg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 33ndnus4k2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 24 Sep 2020 15:45:34 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08OFUAKT131611;
+        Thu, 24 Sep 2020 15:45:34 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 33r28x5gas-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 24 Sep 2020 15:45:33 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08OFjOVg029780;
+        Thu, 24 Sep 2020 15:45:24 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 24 Sep 2020 08:45:23 -0700
+Date:   Thu, 24 Sep 2020 18:45:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Peilin Ye <yepeilin.cs@gmail.com>
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Message-ID: <20200924154516.GL4282@kadam>
+References: <0000000000006b9e8d059952095e@google.com>
+ <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <20200924140937.GA749208@kroah.com>
+ <394733ab6fae47488d078cb22f22a85b@AcuMS.aculab.com>
+ <20200924153035.GA879703@PWN>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924153035.GA879703@PWN>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240118
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9753 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009240118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Archie Pusaka <apusaka@chromium.org>
+Smatch has a tool to show where struct members are set.
 
-When receiving an L2CAP_CONFIGURATION_REQ with an unknown config
-type, currently we will reply with L2CAP_CONFIGURATION_RSP with
-a list of unknown types as the config param. However, this is not
-a correct format of config param.
+`~/smatch/smatch_data/db/smdb.py where console_font height`
 
-As described in the bluetooth spec v5.2, Vol 3, Part A, Sec 5,
-the config param should consists of type, length, and optionally
-data.
+It's not perfect and this output comes from allmodconfig on yesterday's
+linux-next.
 
-This patch copies the length and data from the received
-L2CAP_CONFIGURATION_REQ and also appends them to the config param
-of the corresponding L2CAP_CONFIGURATION_RSP to match the format
-of the config param according to the spec.
+regards,
+dan carpenter
 
-Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Alain Michaud <alainm@chromium.org>
-
----
-
- net/bluetooth/l2cap_core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index ade83e224567..2f3ddd4f0f4c 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -3627,7 +3627,8 @@ static int l2cap_parse_conf_req(struct l2cap_chan *chan, void *data, size_t data
- 			if (hint)
- 				break;
- 			result = L2CAP_CONF_UNKNOWN;
--			*((u8 *) ptr++) = type;
-+			l2cap_add_conf_opt(&ptr, type, olen, val,
-+					   endptr - ptr);
- 			break;
- 		}
- 	}
-@@ -3658,7 +3659,7 @@ static int l2cap_parse_conf_req(struct l2cap_chan *chan, void *data, size_t data
- 	}
- 
- done:
--	if (chan->mode != rfc.mode) {
-+	if (chan->mode != rfc.mode && result != L2CAP_CONF_UNKNOWN) {
- 		result = L2CAP_CONF_UNACCEPT;
- 		rfc.mode = chan->mode;
- 
--- 
-2.28.0.681.g6f77f65b4e-goog
+drivers/video/console/vgacon.c | vgacon_init                    | (struct console_font)->height | 0-32
+drivers/video/console/vgacon.c | vgacon_adjust_height           | (struct console_font)->height | 1-32
+drivers/video/fbdev/core/fbcon.c | fbcon_startup                  | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
+drivers/video/fbdev/core/fbcon.c | fbcon_init                     | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
+drivers/video/fbdev/core/fbcon.c | fbcon_do_set_font              | (struct console_font)->height | 0-u32max
+drivers/video/fbdev/core/fbcon.c | fbcon_set_def_font             | (struct console_font)->height | 6,8,10-11,14,16,18,22,32
+drivers/usb/misc/sisusbvga/sisusb_con.c | sisusbcon_init                 | (struct console_font)->height | 0-u32max
+drivers/usb/misc/sisusbvga/sisusb_con.c | sisusbcon_do_font_op           | (struct console_font)->height | 1-32
+drivers/tty/vt/vt_ioctl.c      | vt_k_ioctl                     | (struct console_font)->height | ignore
+drivers/tty/vt/vt_ioctl.c      | vt_resizex                     | (struct console_font)->height | 0-u32max
+drivers/tty/vt/vt_ioctl.c      | vt_ioctl                       | (struct console_font)->height | ignore
+drivers/tty/vt/vt_ioctl.c      | vt_compat_ioctl                | (struct console_font)->height | ignore
+drivers/tty/vt/vt.c            | vc_allocate                    | (struct console_font)->height | 0
+drivers/tty/vt/vt.c            | vt_resize                      | (struct console_font)->height | ignore
+drivers/tty/vt/vt.c            | do_con_write                   | (struct console_font)->height | ignore
+drivers/tty/vt/vt.c            | con_unthrottle                 | (struct console_font)->height | ignore
+drivers/tty/vt/vt.c            | con_flush_chars                | (struct console_font)->height | ignore
+drivers/tty/vt/vt.c            | con_shutdown                   | (struct console_font)->height | ignore
+drivers/tty/vt/vt.c            | con_cleanup                    | (struct console_font)->height | ignore
+drivers/tty/vt/vt.c            | con_init                       | (struct console_font)->height | 0
+drivers/tty/vt/vt.c            | con_font_set                   | (struct console_font)->height | 1-32
+drivers/tty/vt/vt.c            | con_font_default               | (struct console_font)->height | 0-u32max
+drivers/tty/vt/selection.c     | paste_selection                | (struct console_font)->height | ignore
 
