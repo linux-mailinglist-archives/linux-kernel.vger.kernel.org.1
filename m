@@ -2,156 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3282F27652D
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 02:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F28C3276536
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 02:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgIXAfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 20:35:24 -0400
-Received: from mail-eopbgr60047.outbound.protection.outlook.com ([40.107.6.47]:23734
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726466AbgIXAfX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 20:35:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mMuEuh2oOIYyGAuJEnKevKL1buMExz2OzAui8SmF2FZ1m5bCiENqZSUhyHk3PXBei/3lVVy/8t7by1ClJs6UKJrAa2YYow3NMGZEYbijUC3xL9aXTNtasyWdgGBD8I94tudi9pjkkrVdJ95YAkmYSgJojNDLwOW+fSLpJVK05SusAcYDsM4s0ZdwstyqlYFFgsR2LjtouPnBwbG4SSI8fwyDEw1XerMrDsiuNhE51/nkaHqESB+N7Oanuw9d/4epV5IEPavCx76AG6v8J4gP7oB6QmKA1nuax4scoVAgdUl1e08pLzY3il/T5tzUEt3At4L+x4oK7ENMxzh4SyA0JA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HfvxyWdMvaJMVLpWLBCUyBze8Wxr0zyBs8lviV49uxY=;
- b=hUw7cHkrGuyAzzNJzdhEmUCwmdZ/V/1CgYFk0EiY1JaA2gngRTQ0rKW2Wihq7y5dpPmvlm+pbHPEjchI2AQZbkc5pAKUOF+OYhhC/j8hYY3enXzejQ4pba5Ew/X0OtNt0m9TsspdRmSGFw8txkRxexFeGH2hOT6yDeRr/TF+nGid4mniZpWM7U81Fz896JTXPPgYthg+5KMuo9mfIeSVq6I20CmomIcpqF8iDFAnhY2VIqAzurvU3nszTvxL/4gVOjUtwuDphYpXv50hT5SHhU0duXdXH2gfyjxVIa72Yf1FNrsYT6cLXC/iCuZwq3X+of7/i3zmhyJqQo2zsVNnnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HfvxyWdMvaJMVLpWLBCUyBze8Wxr0zyBs8lviV49uxY=;
- b=fANMi02OYs4M5Th+WssSCOBYTJnDRv4V/iTY66zlW3Jno2Re0030GuizHNJlICXwCPnT2GsIZX3JNPJb5YZzpUB+gS0z+RBPaPMSJW+s3en2N0m3Od2TbKSIBUOo4Jw8ebF1a+shZxbeZKLaNopCk3PiE/ZveJkQJpFPJa7Ac5I=
-Received: from VE1PR04MB6687.eurprd04.prod.outlook.com (2603:10a6:803:121::30)
- by VI1PR04MB4061.eurprd04.prod.outlook.com (2603:10a6:803:4d::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 24 Sep
- 2020 00:35:18 +0000
-Received: from VE1PR04MB6687.eurprd04.prod.outlook.com
- ([fe80::8db9:c62f:dac5:ee3d]) by VE1PR04MB6687.eurprd04.prod.outlook.com
- ([fe80::8db9:c62f:dac5:ee3d%3]) with mapi id 15.20.3412.022; Thu, 24 Sep 2020
- 00:35:18 +0000
-From:   Leo Li <leoyang.li@nxp.com>
-To:     Michael Walle <michael@walle.cc>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-CC:     Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: RE: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
-Thread-Topic: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
-Thread-Index: AQHWkY/3EoU1wnrBSEO6n1vlKlAjpql28PzQ
-Date:   Thu, 24 Sep 2020 00:35:17 +0000
-Message-ID: <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
-References: <20200923095711.11355-1-michael@walle.cc>
- <20200923095711.11355-2-michael@walle.cc>
-In-Reply-To: <20200923095711.11355-2-michael@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [136.49.234.194]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: f4e205d5-aef5-43bc-33d0-08d86021b6ac
-x-ms-traffictypediagnostic: VI1PR04MB4061:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB4061B63486578638BA2ACAF58F390@VI1PR04MB4061.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Lr/gh4LUMhYAidPMjucNOWJop56PnnXy9Q9FV2s/+TFFlYNwyNGqF0LWEgdQy8cURpYFHjON3Xqp/hYw7yLQm8koNIIH9cClN+l0SUa2BDQBl/VeSGlKWTbp9F6mfEC2llMn+VOTxabI4J4/1VKdv/4mWJPmCV0If7daRBqMYRt/JjKvKPaY+yFB8XAFrGbUTDC8e1AmSGyz+7f7NGr+HMnzzV/FnfHOGA9mnN2t29/CsmBhUL4bD1fuMmcDUn38XCeeRki5OaQ7835Ma1G7jpbZuj1fn9RJVLZiBlky+7r/KSQJTu0P7xcnqMLjnbYr+0bZFcBA6JqcKpWLhE584MeXwa+YKpbfdmKpMAEnHxqRu7RpYdnIwd5R988rJg90
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6687.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(396003)(346002)(136003)(86362001)(110136005)(26005)(71200400001)(33656002)(316002)(8936002)(186003)(83380400001)(55016002)(53546011)(6506007)(9686003)(8676002)(54906003)(4326008)(2906002)(52536014)(76116006)(5660300002)(478600001)(66946007)(7696005)(64756008)(66556008)(66476007)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: pOSTb1bRTzp7oUjn9xLx1oydW6liMqUFutRuliBqcSCLSu05765ZzXZxNJuK7JWFFOl+UMq5JIzc56G+3A3EsvcKQlemij+buPeEEP/WtvGblM1OZ9YKecEsLvYU7Y7uPNWs5ScwfvtHvBBHfHQBOjIf4DX+O1jmAZVU6XoipmUOZwDExdW2LLVOagjxdKDf7DZ3BTOSWi7sMRyC5zdACZzDHqY/MGDm3AAPFsGmZsJsBZo/qTH0t26COfX2YHhRvHf6l/OiCFPDLcqym1K9++3dYjsmD+cDm1nu0jPfGnz5O2eFDdLEjmXGV/Hw5+w2zu+TFWH15YGGtHnrrihuqxFvTdF0KwPahSazA9CRI4eggGRKr1GFDImlbnlNGH2iEl63P08RMjXunf1gjExcf/cKlXoGMJR1jZq4rMYGjyy0rbJ6ZRALO8J+hvLJ2VYfY4K5L+ELQFAXcgK/nKm0s/V0Fy7gwvogC8DZnn34N0ONzblui4MK+GqkFpx35eaEkzwWSTrUCGDGRnSZdtUoAtSczy7SMdjomY/y+czbKwutBNiDZB1XSE5S0lrjmDxLUlD9VPlDKP0L0UaTgbsN5yYGM5aUrq7OKktW4L9tWi0a2Fxlwi5WlcuYuQl+bM4V595tEm9wXYBS+hnvquqmdw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726802AbgIXAhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 20:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726775AbgIXAg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 20:36:59 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D65C0613CE;
+        Wed, 23 Sep 2020 17:36:59 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kk9so632137pjb.2;
+        Wed, 23 Sep 2020 17:36:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dDFv/RhyMEgSIdYNNun/DQyCy7wkiVHBQ14Pm7oiRaY=;
+        b=S+45JSXzgkr09sRCcCdhdTWZqKjGiqaOTVPh6x4Hr3IKq7yQGY+AZH+183mxSCLvjf
+         2wRiljZuy+jzjhGx4hWUxnqPHkZSewMIC4SsfqC7sYaruiXEAYfAz0dUFhu/LdBzxnSc
+         T/iryvQXvuvaXswywD1clzhRhQfWhW1MViaAwsLawhN5ieaIH6OPi+WcbeNL4aBPmXiP
+         IVU24kMSqalWd6B+dv+TIWsi49MBYZ37xmHIgUmCrtpfjvOHVPm0V4BOjrEe9R+/Xg35
+         LHOtkejtneIjgUaU/n2/kZeHlVMc7Olyns38MZQUuio2vVwhMNsgaSAGXF2IFjL2Nxes
+         I68g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dDFv/RhyMEgSIdYNNun/DQyCy7wkiVHBQ14Pm7oiRaY=;
+        b=A84O3SBhwMamp41MvRAt2WVCBeKGEbguu12+TwdUjSVR0taq7Nzhb2Uh0WP3pmmzQB
+         9VnwTDm1Vc0cyJTgOsjc7NRZHpU4WmOoByhfEaUH/gPMbtmI6wxGvzExfTqmfHM+AMeN
+         ARB9UeLnFjygbV0H5PuVBz6EUDSrS08o2FO1cuKdqyv3Hp6t2rSZtE0TMnYjAl9E9B+F
+         xpv4mzXnFxUS9mQbN/m7JGcrMO5Jy0OGo80bTYyGRYfM7cAdgoWyBo58dIgEPC3JL4NE
+         daQ+pygxmbt6TLbvu8mqIjfiVi/E8nilC6dwU2ouGuczXRdzBlPbXyCkxKFnqjpokTVn
+         na2A==
+X-Gm-Message-State: AOAM533Q992lPM2jW4rg0s5vmHROG4B71t/QtmxMh9pJykIC/nKt6L+Q
+        Wm1g//T3F2jvt8cKoStB7NYKkul8TawO+8En3/8=
+X-Google-Smtp-Source: ABdhPJzcUri7TwdVOiQl74BHN9CWV7BcbuqvjJ4JyKP1RXR2dA1KPOUbcmXOantN/zjW6Rv9EXYhMdraD4cB2D9KhSs=
+X-Received: by 2002:a17:902:7445:b029:d1:dea3:a3ca with SMTP id
+ e5-20020a1709027445b02900d1dea3a3camr2137109plt.19.1600907819053; Wed, 23 Sep
+ 2020 17:36:59 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VE1PR04MB6687.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4e205d5-aef5-43bc-33d0-08d86021b6ac
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2020 00:35:18.0105
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: XjMRSILYLvNVIAVm00phrl4aJZSdd7npI6cYfc7P1742ROlOKV0Eg0muUpB8aXmgELIvAyzDsgrI2k4JrSwbOg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4061
+References: <20200923232923.3142503-1-keescook@chromium.org>
+ <20200923232923.3142503-4-keescook@chromium.org> <DM6PR11MB271492D0565E91475D949F5DEF390@DM6PR11MB2714.namprd11.prod.outlook.com>
+In-Reply-To: <DM6PR11MB271492D0565E91475D949F5DEF390@DM6PR11MB2714.namprd11.prod.outlook.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Wed, 23 Sep 2020 19:36:47 -0500
+Message-ID: <CABqSeAS=b6NQ=mqrD=hV60md3isYSDyAnE9QE_AT4=oYYFkAfQ@mail.gmail.com>
+Subject: Re: [PATCH 3/6] seccomp: Implement constant action bitmaps
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        linux-api@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        YiFei Zhu <yifeifz2@illinois.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Sep 23, 2020 at 6:29 PM Kees Cook <keescook@chromium.org> wrote:
+> In order to optimize these cases from O(n) to O(1), seccomp can
+> use bitmaps to immediately determine the desired action. A critical
+> observation in the prior paragraph bears repeating: the common case for
+> syscall tests do not check arguments. For any given filter, there is a
+> constant mapping from the combination of architecture and syscall to the
+> seccomp action result. (For kernels/architectures without CONFIG_COMPAT,
+> there is a single architecture.). As such, it is possible to construct
+> a mapping of arch/syscall to action, which can be updated as new filters
+> are attached to a process.
+
+Would you mind educating me how this patch plan one handling MIPS? For
+one kernel they seem to have up to three arch numbers per build,
+AUDIT_ARCH_MIPS{,64,64N32}. Though ARCH_TRACE_IGNORE_COMPAT_SYSCALLS
+does not seem to be defined for MIPS so I'm assuming the syscall
+numbers are the same, but I think it is possible some client uses that
+arch number to pose different constraints for different processes, so
+it would better not accelerate them rather than break them.
 
 
-> -----Original Message-----
-> From: Michael Walle <michael@walle.cc>
-> Sent: Wednesday, September 23, 2020 4:57 AM
-> To: linux-arm-kernel@lists.infradead.org; devicetree@vger.kernel.org; lin=
-ux-
-> kernel@vger.kernel.org; linux-can@vger.kernel.org
-> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>; Rob
-> Herring <robh+dt@kernel.org>; Marc Kleine-Budde <mkl@pengutronix.de>;
-> Joakim Zhang <qiangqing.zhang@nxp.com>; Michael Walle
-> <michael@walle.cc>
-> Subject: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
->=20
-> The LS1028A has two FlexCAN controller. These are compatible with the one=
-s
-> from the LX2160A. Add the nodes.
->=20
-> The first controller was tested on the Kontron sl28 board.
->=20
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
->  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> index 0efeb8fa773e..807ee921ec12 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
-> @@ -386,6 +386,24 @@
->  			status =3D "disabled";
->  		};
->=20
-> +		can0: can@2180000 {
-> +			compatible =3D "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-
-> flexcan";
-
-The explicit compatible strings cannot be found in the binding, but matched=
- by the "fsl,<processor>-flexcan" pattern in the binding.  Is this consider=
-ed to be acceptable now?
-
-> +			reg =3D <0x0 0x2180000 0x0 0x10000>;
-> +			interrupts =3D <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks =3D <&sysclk>, <&clockgen 4 1>;
-> +			clock-names =3D "ipg", "per";
-> +			status =3D "disabled";
-> +		};
-> +
-> +		can1: can@2190000 {
-> +			compatible =3D "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-
-> flexcan";
-> +			reg =3D <0x0 0x2190000 0x0 0x10000>;
-> +			interrupts =3D <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks =3D <&sysclk>, <&clockgen 4 1>;
-> +			clock-names =3D "ipg", "per";
-> +			status =3D "disabled";
-> +		};
-> +
->  		duart0: serial@21c0500 {
->  			compatible =3D "fsl,ns16550", "ns16550a";
->  			reg =3D <0x00 0x21c0500 0x0 0x100>;
-> --
-> 2.20.1
-
+YiFei Zhu
