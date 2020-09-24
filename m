@@ -2,85 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54E7276633
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:06:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF51527662A
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 04:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgIXCGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 23 Sep 2020 22:06:10 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:36340 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgIXCGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 23 Sep 2020 22:06:10 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id B85551A0489;
-        Thu, 24 Sep 2020 04:06:08 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E42D11A0CD5;
-        Thu, 24 Sep 2020 04:06:03 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id B8A4D4029A;
-        Thu, 24 Sep 2020 04:05:57 +0200 (CEST)
-From:   Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-To:     xiaoliang.yang_1@nxp.com, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        allan.nielsen@microchip.com, joergen.andreasen@microchip.com,
-        UNGLinuxDriver@microchip.com, alexandru.marginean@nxp.com,
-        po.liu@nxp.com, claudiu.manoil@nxp.com, vladimir.oltean@nxp.com,
-        leoyang.li@nxp.com
-Subject: [net] net: dsa: felix: convert TAS link speed based on phylink speed
-Date:   Thu, 24 Sep 2020 09:57:46 +0800
-Message-Id: <20200924015746.7994-1-xiaoliang.yang_1@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726344AbgIXCBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 23 Sep 2020 22:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726200AbgIXCBF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 23 Sep 2020 22:01:05 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08EB0C0613CE;
+        Wed, 23 Sep 2020 19:01:05 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLGZ8-004w53-GJ; Thu, 24 Sep 2020 02:00:58 +0000
+Date:   Thu, 24 Sep 2020 03:00:58 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the vfs tree
+Message-ID: <20200924020058.GT3421308@ZenIV.linux.org.uk>
+References: <20200924114050.3b6f82b4@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924114050.3b6f82b4@canb.auug.org.au>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-state->speed holds a value of 10, 100, 1000 or 2500, but
-QSYS_TAG_CONFIG_LINK_SPEED expects a value of 0, 1, 2, 3. So convert the
-speed to a proper value.
+On Thu, Sep 24, 2020 at 11:40:50AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the vfs tree, today's linux-next build (x86_64 allmodconfig)
+> produced this warning:
+> 
+> lib/strnlen_user.o: warning: objtool: strnlen_user()+0xf3: call to do_strnlen_user() with UACCESS enabled
+> lib/strncpy_from_user.o: warning: objtool: strncpy_from_user()+0x188: call to do_strncpy_from_user() with UACCESS enabled
 
-Fixes: de143c0e274b ("net: dsa: felix: Configure Time-Aware Scheduler via taprio offload")
-Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
----
- drivers/net/dsa/ocelot/felix_vsc9959.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+s/inline/__always_inline/ in those two...
 
-diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-index 6855c94256f8..36db631a55e6 100644
---- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-+++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-@@ -1284,8 +1284,28 @@ void vsc9959_mdio_bus_free(struct ocelot *ocelot)
- static void vsc9959_sched_speed_set(struct ocelot *ocelot, int port,
- 				    u32 speed)
- {
-+	u8 tas_speed;
-+
-+	switch (speed) {
-+	case SPEED_10:
-+		tas_speed = OCELOT_SPEED_10;
-+		break;
-+	case SPEED_100:
-+		tas_speed = OCELOT_SPEED_100;
-+		break;
-+	case SPEED_1000:
-+		tas_speed = OCELOT_SPEED_1000;
-+		break;
-+	case SPEED_2500:
-+		tas_speed = OCELOT_SPEED_2500;
-+		break;
-+	default:
-+		tas_speed = OCELOT_SPEED_1000;
-+		break;
-+	}
-+
- 	ocelot_rmw_rix(ocelot,
--		       QSYS_TAG_CONFIG_LINK_SPEED(speed),
-+		       QSYS_TAG_CONFIG_LINK_SPEED(tas_speed),
- 		       QSYS_TAG_CONFIG_LINK_SPEED_M,
- 		       QSYS_TAG_CONFIG, port);
- }
--- 
-2.17.1
-
+Will be there tonight; they should've been inlined anyway on any sane config...
