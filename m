@@ -2,67 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 044032775E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119292775E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 17:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728546AbgIXPyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 11:54:09 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53444 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728285AbgIXPyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 11:54:08 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kLTZD-00G2qi-MO; Thu, 24 Sep 2020 17:53:55 +0200
-Date:   Thu, 24 Sep 2020 17:53:55 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     jeffrey.t.kirsher@intel.com,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "moderated list:INTEL ETHERNET DRIVERS" 
-        <intel-wired-lan@lists.osuosl.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] e1000e: Increase iteration on polling MDIC ready bit
-Message-ID: <20200924155355.GC3821492@lunn.ch>
-References: <20200923074751.10527-1-kai.heng.feng@canonical.com>
- <20200924150958.18016-1-kai.heng.feng@canonical.com>
+        id S1728555AbgIXPyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 11:54:54 -0400
+Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:2464 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728285AbgIXPyy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 11:54:54 -0400
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08OFWZfn028781;
+        Thu, 24 Sep 2020 10:54:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=+V5ScHl8y00XCF6tNTYIzWEom6mPrtUUj1HFsN2ymvs=;
+ b=SQ4BHcQG9fvuuH+5P2oGuyvzKelzXw3Jse0XYL5mmZoglLa0wsj88I/txzceCMg6Yg7F
+ 8ofxutNjf04qMhlCb+2A41zuORsGomDaD9je11ZjtnBJza8eiTBjRYVE+WN48+E/byB+
+ bFdWSDAbBebzKYqNuR5ZueKdG0MUYybEfJuoC1p5qAisJDX0lKvyggj5YYz7dBUckjn1
+ pvmAEmnRQMrts+wNOdEDJ0vwqZ9V4Cq8Ud+zCmNntB0JiwQBMajKECEqGJVQ/HUFDSit
+ o1K7dmIWLURbR4415/jgsu8AbHsXPJAQEm3O5DjmA8dL+78wsVi8XHY++j45uKSb1fF7 Xw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0a-001ae601.pphosted.com with ESMTP id 33nfd26wk6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 24 Sep 2020 10:54:46 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Thu, 24 Sep
+ 2020 16:54:44 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Thu, 24 Sep 2020 16:54:44 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B696D45;
+        Thu, 24 Sep 2020 15:54:44 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 15:54:44 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+CC:     Lee Jones <lee.jones@linaro.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>
+Subject: Re: [PATCH 4/8] mfd: wm: Constify static struct resource
+Message-ID: <20200924155444.GU10899@ediswmail.ad.cirrus.com>
+References: <20200922192659.14535-1-rikard.falkeborn@gmail.com>
+ <20200922192659.14535-5-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20200924150958.18016-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20200922192659.14535-5-rikard.falkeborn@gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=930 adultscore=0 clxscore=1011 malwarescore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009240118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:09:58PM +0800, Kai-Heng Feng wrote:
-> We are seeing the following error after S3 resume:
-> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
-> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
-> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
-> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
-> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
-> ...
-> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
+On Tue, Sep 22, 2020 at 09:26:55PM +0200, Rikard Falkeborn wrote:
+> Constify a number of static struct resource. The only usage of the
+> structs are to assign their address to the resources field in the
+> mfd_cell struct. This allows the compiler to put them in read-only
+> memory. Done with the help of Coccinelle.
 > 
-> As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
-> increase polling iteration can resolve the issue.
-> 
-> While at it, also move the delay to the end of loop, to potentially save
-> 50 us.
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+> ---
 
-You are unlikely to save any time. 64 bits at 2.5MHz is 25.6uS. So it
-is very unlikely doing a read directly after setting is going is going
-to have E1000_MDIC_READY set. So this change likely causes an addition
-read on MDIC. Did you profile this at all, for the normal case?
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-I also don't fully understand the fix. You are now looping up to 6400
-times, each with a delay of 50uS. So that is around 12800 times more
-than it actually needs to transfer the 64 bits! I've no idea how this
-hardware works, but my guess would be, something is wrong with the
-clock setup?
-
-     Andrew
+Thanks,
+Charles
