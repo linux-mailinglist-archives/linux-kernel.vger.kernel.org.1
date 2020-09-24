@@ -2,95 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475702770CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885812770D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 14:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbgIXMWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 08:22:48 -0400
-Received: from mga14.intel.com ([192.55.52.115]:20620 "EHLO mga14.intel.com"
+        id S1727669AbgIXMXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 08:23:17 -0400
+Received: from mga05.intel.com ([192.55.52.43]:65043 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727267AbgIXMWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 08:22:48 -0400
-IronPort-SDR: eEEsFWOyMPUEIOeNmDc8yTx/FCCwAYoGxBYeOEDik985CO4QmegrEa2hSVopu2k9jVfWzDz0wX
- nD8MdEYKGZ/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="160475602"
+        id S1727267AbgIXMXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 08:23:17 -0400
+IronPort-SDR: yXlb2gr95FFpeyHc223HniVlsD6pA8MDyQgRhnlNQPPWbh+ljJ01odseu186aVpEAwF2Jvx9El
+ rsCNkqBVMnkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9753"; a="245978468"
 X-IronPort-AV: E=Sophos;i="5.77,297,1596524400"; 
-   d="scan'208";a="160475602"
+   d="scan'208";a="245978468"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 05:22:47 -0700
-IronPort-SDR: yIaT7aSfYZLzy7NAr4/+/fx09KzEzHT9W6js9dSXcbin5XmBb1ZJrTzhIomLZahY1XxX9OeT67
- NyrfUrRrFMnA==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 05:23:16 -0700
+IronPort-SDR: tL64HsL88rFswz9buK9wCSiw6bSsBblAzA8Rf4ZycrWnd6lgyn5dfaZormymnXf1e3szx5i/vS
+ 4uT6TlU+juDA==
 X-IronPort-AV: E=Sophos;i="5.77,297,1596524400"; 
-   d="scan'208";a="455327432"
-Received: from dsmahang-mobl2.ger.corp.intel.com (HELO [10.252.48.167]) ([10.252.48.167])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 05:22:44 -0700
-Subject: Re: [Intel-gfx] [PATCH 4/6] drm/i915: use vmap in i915_gem_object_map
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-mm@kvack.org, Peter Zijlstra <peterz@infradead.org>,
-        intel-gfx@lists.freedesktop.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        dri-devel@lists.freedesktop.org, xen-devel@lists.xenproject.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Nitin Gupta <ngupta@vflare.org>
-References: <20200918163724.2511-1-hch@lst.de>
- <20200918163724.2511-5-hch@lst.de>
- <9b5d40af-7378-9e68-ca51-73b2148287f3@linux.intel.com>
- <20200923134117.GB9893@lst.de>
- <1a421e7f-6255-c534-5403-715c2e809bd0@linux.intel.com>
- <20200923144455.GA15036@lst.de>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <17f81582-f087-aeac-c06a-4cd1a5457fbb@linux.intel.com>
-Date:   Thu, 24 Sep 2020 13:22:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="486881950"
+Received: from mkoeck-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.48.209])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 05:23:09 -0700
+Date:   Thu, 24 Sep 2020 15:23:07 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jethro Beekman <jethro@fortanix.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 14/24] x86/sgx: Add SGX_IOC_ENCLAVE_INIT
+Message-ID: <20200924122307.GF56811@linux.intel.com>
+References: <20200915112842.897265-15-jarkko.sakkinen@linux.intel.com>
+ <20200921173514.GI5901@zn.tnic>
+ <20200921181021.GA24481@linux.intel.com>
+ <20200921182753.GK5901@zn.tnic>
+ <20200921191658.GA24823@linux.intel.com>
+ <20200922082918.GC22660@zn.tnic>
+ <a6f4d3e5-c128-fcd7-a1ca-5515a6c4c09a@fortanix.com>
+ <20200922142909.GI22660@zn.tnic>
+ <20200923144707.GF5160@linux.intel.com>
+ <20200923155511.GN28545@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20200923144455.GA15036@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200923155511.GN28545@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 23/09/2020 15:44, Christoph Hellwig wrote:
-> On Wed, Sep 23, 2020 at 02:58:43PM +0100, Tvrtko Ursulin wrote:
->>>> Series did not get a CI run from our side because of a different base so I
->>>> don't know if you would like to have a run there? If so you would need to
->>>> rebase against git://anongit.freedesktop.org/drm-tip drm-tip and you could
->>>> even send a series to intel-gfx-trybot@lists.freedesktop.org, suppressing
->>>> cc, to check it out without sending a copy to the real mailing list.
->>>
->>> It doesn't seem like I can post to any freedesktop list, as I always
->>> get rejection messages.  But I'll happily prepare a branch if one
->>> of you an feed it into your CI.
->>
->> That's fine, just ping me and I will forward it for testing, thanks!
+On Wed, Sep 23, 2020 at 05:55:11PM +0200, Borislav Petkov wrote:
+> On Wed, Sep 23, 2020 at 05:47:07PM +0300, Jarkko Sakkinen wrote:
+> > OK, so I did not follow this particular discussion in high detail,
 > 
->      git://git.infradead.org/users/hch/misc.git i915-vmap-wip
+> What do you mean you did not follow it? It is not a huge subthread in
+> your mbox.
+
+I focused on other subthreads but I've read it now through. It has been
+waiting in the queue. Can't do everything simultaneously. I did skim
+each message as they came for this one though.
+
+> > so as a sanity check I'll preview my changes.
 > 
-> Gitweb:
+> Sorry, but you'll have to read threads properly like everyone else.
 > 
->      http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/i915-vmap-wip
+> In any case, my preference would be make it the simplest possible: no
+> cache and try EINIT only once.
+
+
+The main reason skimming was that I was thinking that perhaps Sean might
+send a patch for this one and I would then read the thread again in
+better detail and check that the patch matches the conclusions, as he
+has been more active on this one.
+
+Anyway, now that I've read it through in detail, I did just change the
+init simply as:
+
+secs_addr = sgx_get_epc_addr(encl->secs.epc_page);
+
+preempt_disable();
+ret = __einit(sigstruct, token, secs_addr);
+preempt_enable();
+
+I use a local for address to make the code  more readable instead of
+calling sgx_get_epc_addr() inside __einit().
+
+> -- 
+> Regards/Gruss,
+>     Boris.
 > 
-> note that this includes a new commit to clean up one of the recent
-> commits in the code.
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-CI says series looks good from the i915 perspective (*).
-
-I don't know how will you handle it logistically, but when you have 
-final version I am happy to re-read and r-b the i915 patches.
-
-
-Regards,
-
-Tvrtko
-
-*)
-https://patchwork.freedesktop.org/series/82051/
+/Jarkko
