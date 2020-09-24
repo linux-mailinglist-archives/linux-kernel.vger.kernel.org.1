@@ -2,191 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F306F277390
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8958B27738D
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728174AbgIXOHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54508 "EHLO
+        id S1728100AbgIXOG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727952AbgIXOHD (ORCPT
+        with ESMTP id S1727952AbgIXOG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:07:03 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4EDC0613D3;
-        Thu, 24 Sep 2020 07:07:03 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id c18so3944539wrm.9;
-        Thu, 24 Sep 2020 07:07:03 -0700 (PDT)
+        Thu, 24 Sep 2020 10:06:27 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A78EC0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:06:27 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id r7so4623039ejs.11
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 07:06:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=NwiE/qAzUiZ6lU+Jo3RIVIuBWkBT0u68h0OW67hqGOw=;
-        b=ke7h7xkZBjNa24ASDTNPMQnBcxFqrydn1XzvZ7PQXFu14U5B0Zh+iyze6O5QMBQ1Kj
-         kbcytqhlXZg66t5bFbVVC5fLAZLsm13fOwisu/lz4oj1wsYAUocq3P+0TDHSLrNc3O81
-         wcvfQfMkjCoyJH2E+jcRR4kP0WOJ1jcpdt0BKj+OG7ciN0TVb7oiGFeN5SF5T5K7GBw/
-         hVtY5yspmMGnG5vmJYlWYdIi5JNwgpX/atB4UIjtgCXls7YMRCvUSjFnl0bIjX5YJ8W7
-         45J1cVUaa8jVQMxgmsh5yP6XCJKsDgGvsU8ceJhI2jzvr+XW1eLDSZdGsIsuiS/Aezpc
-         5w+g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oTKhozomiksQmEwUGZ3qRDCL7Z7QGtyosMbot5Bgjyk=;
+        b=fdN4Y3Kn7nTC3mmnwcEAVtvHKFTOVqvEfnnuyMGVG7zBy90zeoG1JAX+VL+L714dQX
+         4KrJyZex66L5th/3yiM6GTAyUmHH7cIpCZf6bWWempwGqcsy0petGFjbk8SPWfYl/g6v
+         nHTcr0Ht7tS8M141EgEoM2g1XzgVqh+VOUkcZ6nv2IZ7mZuVthmc+1Bo3AFfP4FIx1A9
+         ZvzPoDNLA4JlU9mj23VSuTxWEyhzaDiRq3b1OFJbe9n5ugBclzEMAMgvwisDPjxbnCXy
+         pMGse6Kh2JIdlYgRWxy8zxQ2lpyxHMdzFg4ook3wHyXs+AlV3e8mCP1SCiPb7ldjVNO4
+         BlRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=NwiE/qAzUiZ6lU+Jo3RIVIuBWkBT0u68h0OW67hqGOw=;
-        b=Xjk8hxoHuelleO7b3g6odXiWmus39qg8B7f7MJLOQVvJFkmfZ+WuDl+GyGPdlh/DMd
-         DU6LF09Ysq2IeqFDgF57RkT5mgMHWZ6VXpAIbl88wOBxa6o4EzB4rbrIJqZfOcs8s8w/
-         dqPUUY1dQnLggnGim6OUewdM7fPc9B75DMYbb+JesW6cXUF0k4pjTShzczeETTbqLFgq
-         m0YByKlockduViI0FOg69mW5crvc0cpboxM2YKQmRV/vqhfS41x2pugapHhL3zZ05YCb
-         igRPunkJt4Xq4P5pF1oTT90X3ixbV8yLcr+jGCNF6Kd3ybtmnMMghACAxBQ4oez3y791
-         NPDQ==
-X-Gm-Message-State: AOAM531yrfxqR5UbEyBlki5rqSbBJyh7/3Hrz7zLNHolG63jiA938ap2
-        16raXYi/2sXa5teKLzzJkmWYzQMKsf4n7yFU
-X-Google-Smtp-Source: ABdhPJyQeaYSH0dtZQLkXzcaBkKZaxSqciD3iu7nfzOFVZf/o4sk8J8/sx1MP+QlS+c/W0EgbBs6ww==
-X-Received: by 2002:a5d:4388:: with SMTP id i8mr5265503wrq.365.1600956421923;
-        Thu, 24 Sep 2020 07:07:01 -0700 (PDT)
-Received: from localhost.localdomain ([176.12.107.132])
-        by smtp.gmail.com with ESMTPSA id k84sm3711217wmf.6.2020.09.24.07.06.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 07:07:00 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-To:     Landen Chao <landen.chao@mediatek.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] net: dsa: mt7530: Add some return-value checks
-Date:   Thu, 24 Sep 2020 15:05:35 +0100
-Message-Id: <20200924140535.5940-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <1600953934.19244.2.camel@mtksdccf07>
-References: <1600953934.19244.2.camel@mtksdccf07>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oTKhozomiksQmEwUGZ3qRDCL7Z7QGtyosMbot5Bgjyk=;
+        b=YUfyE2XDa+04oG9ewe6q9lTXkWpydxrfh2SSfdC7IhXc79QnpXPBH6HHwv5euV1uE4
+         llHUrqUyUmoeWVpOvsFW3XByIJjEP4DyNpmXQz3MvBoOtGAiU638ys8t8wvwraeI1biV
+         CVIT8P+HDy7/+V6DdJQIQgyciYTKg+X/zJ3hyNV3Xkyuq4GtsJfxUDTaySFWaAnlRyPj
+         v/T4PaI6WFa8eInCfIQ9rv5+ROHi1qiYEgmzD4+e5Lyjj4XLRt3ib6lvU9Lu4ClXzPk7
+         Y6hIN2AKYRQY1BpmVeQHp4vugkL68NvgQqScCVk3FQ6RJPvyOv5HSyJUbsznWAyoDAfG
+         NByw==
+X-Gm-Message-State: AOAM533xOoSB+JAcdVYnthpon87XssLFlY16tbZ1xvehhyqjlDTAobMM
+        EigpU6fJCE3e68AULJCQlF060JlrezPbYVdAfmc9BQ==
+X-Google-Smtp-Source: ABdhPJwwyHaADMpJhLyRUcgsXvG5IwoHzjYXcthXS5FPqRPTRojTWAbOTxrURqPaQIBCU/TwFEcT0uEP/6pO6oOXUGw=
+X-Received: by 2002:a17:906:1f94:: with SMTP id t20mr4800ejr.493.1600956385788;
+ Thu, 24 Sep 2020 07:06:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200923232923.3142503-1-keescook@chromium.org> <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
+In-Reply-To: <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 24 Sep 2020 16:05:59 +0200
+Message-ID: <CAG48ez3Z5Cxxc47x8gZiy9xgEVPL5gH-g0HNPNqndkAnJCbwKw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In mt7531_cpu_port_config(), if the variable port is neither 5 nor 6,
-then variable interface will be used uninitialised. Change the function
-to return -EINVAL in this case.
+On Thu, Sep 24, 2020 at 3:40 PM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
+> On 24/09/2020 01.29, Kees Cook wrote:
+> > rfc: https://lore.kernel.org/lkml/20200616074934.1600036-1-keescook@chromium.org/
+> > alternative: https://lore.kernel.org/containers/cover.1600661418.git.yifeifz2@illinois.edu/
+> > v1:
+> > - rebase to for-next/seccomp
+> > - finish X86_X32 support for both pinning and bitmaps
+> > - replace TLB magic with Jann's emulator
+> > - add JSET insn
+> >
+> > TODO:
+> > - add ALU|AND insn
+> > - significantly more testing
+> >
+> > Hi,
+> >
+> > This is a refresh of my earlier constant action bitmap series. It looks
+> > like the RFC was missed on the container list, so I've CCed it now. :)
+> > I'd like to work from this series, as it handles the multi-architecture
+> > stuff.
+>
+> So, I agree with Jann's point that the only thing that matters is that
+> always-allowed syscalls are indeed allowed fast.
+>
+> But one thing I'm wondering about and I haven't seen addressed anywhere:
+> Why build the bitmap on the kernel side (with all the complexity of
+> having to emulate the filter for all syscalls)? Why can't userspace just
+> hand the kernel "here's a new filter: the syscalls in this bitmap are
+> always allowed noquestionsasked, for the rest, run this bpf". Sure, that
+> might require a new syscall or extending seccomp(2) somewhat, but isn't
+> that a _lot_ simpler? It would probably also mean that the bpf we do get
+> handed is a lot smaller. Userspace might need to pass a couple of
+> bitmaps, one for each relevant arch, but you get the overall idea.
 
-As the return value of mt7531_cpu_port_config() is never checked
-(even though it returns an int) add a check in the correct place so that
-the error can be passed up the call stack. Now that we correctly handle
-errors thrown in this function, also check the return value of
-mt7531_mac_config() in case an error occurs here. Also add misisng
-checks to mt7530_setup() and mt7531_setup(), which are another level
-further up the call stack.
+It's not really a lot of logic though; and there are a bunch of
+different things in userspace that talk to the seccomp() syscall that
+would have to be updated if we made this part of the UAPI. libseccomp,
+Chrome, Android, OpenSSH, bubblewrap, ... - overall, if we can make
+the existing interface faster, it'll be less effort, and there will be
+less code duplication (because otherwise every user of seccomp will
+have to implement the same thing in userspace).
 
-Fixes: c288575f7810 ("net: dsa: mt7530: Add the support of MT7531 switch")
-Addresses-Coverity: 1496993 ("Uninitialized variables")
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
+Doing this internally with the old UAPI also means that we're not
+creating any additional commitments in terms of UAPI - if we come up
+with something better in the future, we can just rip this stuff out.
+If we created a new UAPI, we'd have to stay, in some form, compatible
+with it forever.
 
-Hi Landen,
+> I'm also a bit worried about the performance of doing that emulation;
+> that's constant extra overhead for, say, launching a docker container.
+>
+> Regardless of how the kernel's bitmap gets created, something like
+>
+> +       if (nr < NR_syscalls) {
+> +               if (test_bit(nr, bitmaps->allow)) {
+> +                       *filter_ret = SECCOMP_RET_ALLOW;
+> +                       return true;
+> +               }
+>
+> probably wants some nospec protection somewhere to avoid the irony of
+> seccomp() being used actively by bad guys.
 
-Here you go!
-
-v3:
-	- fix checkpatch warning about braces (Landen)
-v2:
-	- fix typo in commit message
-	- split variable declarations onto multiple lines (Gustavo)
-	- add additional checks for mt753*_setup (Landen)
-
- drivers/net/dsa/mt7530.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/dsa/mt7530.c b/drivers/net/dsa/mt7530.c
-index 61388945d316..23b2386318b2 100644
---- a/drivers/net/dsa/mt7530.c
-+++ b/drivers/net/dsa/mt7530.c
-@@ -945,10 +945,14 @@ static int
- mt753x_cpu_port_enable(struct dsa_switch *ds, int port)
- {
- 	struct mt7530_priv *priv = ds->priv;
-+	int ret;
- 
- 	/* Setup max capability of CPU port at first */
--	if (priv->info->cpu_port_config)
--		priv->info->cpu_port_config(ds, port);
-+	if (priv->info->cpu_port_config) {
-+		ret = priv->info->cpu_port_config(ds, port);
-+		if (ret)
-+			return ret;
-+	}
- 
- 	/* Enable Mediatek header mode on the cpu port */
- 	mt7530_write(priv, MT7530_PVC_P(port),
-@@ -1631,10 +1635,13 @@ mt7530_setup(struct dsa_switch *ds)
- 		mt7530_rmw(priv, MT7530_PCR_P(i), PCR_MATRIX_MASK,
- 			   PCR_MATRIX_CLR);
- 
--		if (dsa_is_cpu_port(ds, i))
--			mt753x_cpu_port_enable(ds, i);
--		else
-+		if (dsa_is_cpu_port(ds, i)) {
-+			ret = mt753x_cpu_port_enable(ds, i);
-+			if (ret)
-+				return ret;
-+		} else {
- 			mt7530_port_disable(ds, i);
-+		}
- 
- 		/* Enable consistent egress tag */
- 		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
-@@ -1785,10 +1792,13 @@ mt7531_setup(struct dsa_switch *ds)
- 
- 		mt7530_set(priv, MT7531_DBG_CNT(i), MT7531_DIS_CLR);
- 
--		if (dsa_is_cpu_port(ds, i))
--			mt753x_cpu_port_enable(ds, i);
--		else
-+		if (dsa_is_cpu_port(ds, i)) {
-+			ret = mt753x_cpu_port_enable(ds, i);
-+			if (ret)
-+				return ret;
-+		} else {
- 			mt7530_port_disable(ds, i);
-+		}
- 
- 		/* Enable consistent egress tag */
- 		mt7530_rmw(priv, MT7530_PVC_P(i), PVC_EG_TAG_MASK,
-@@ -2276,6 +2286,7 @@ mt7531_cpu_port_config(struct dsa_switch *ds, int port)
- 	struct mt7530_priv *priv = ds->priv;
- 	phy_interface_t interface;
- 	int speed;
-+	int ret;
- 
- 	switch (port) {
- 	case 5:
-@@ -2293,6 +2304,8 @@ mt7531_cpu_port_config(struct dsa_switch *ds, int port)
- 
- 		priv->p6_interface = interface;
- 		break;
-+	default:
-+		return -EINVAL;
- 	}
- 
- 	if (interface == PHY_INTERFACE_MODE_2500BASEX)
-@@ -2300,7 +2313,9 @@ mt7531_cpu_port_config(struct dsa_switch *ds, int port)
- 	else
- 		speed = SPEED_1000;
- 
--	mt7531_mac_config(ds, port, MLO_AN_FIXED, interface);
-+	ret = mt7531_mac_config(ds, port, MLO_AN_FIXED, interface);
-+	if (ret)
-+		return ret;
- 	mt7530_write(priv, MT7530_PMCR_P(port),
- 		     PMCR_CPU_PORT_SETTING(priv->id));
- 	mt753x_phylink_mac_link_up(ds, port, MLO_AN_FIXED, interface, NULL,
--- 
-2.28.0
-
+Good point...
