@@ -2,126 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE39276FCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F83276FCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 13:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgIXLWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 07:22:55 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:35757 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726406AbgIXLWy (ORCPT
+        id S1727357AbgIXLXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 07:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbgIXLXX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 07:22:54 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20200924112252euoutp01bb3eda96204d3d3d1b73663d072f2538~3tG0FPF3r2116021160euoutp01w
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20200924112252euoutp01bb3eda96204d3d3d1b73663d072f2538~3tG0FPF3r2116021160euoutp01w
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600946572;
-        bh=1HVgujXL6+VFHAinjipBTSMhpDiAZWzmTesRTiQUnYE=;
-        h=To:Cc:From:Subject:Date:References:From;
-        b=DLsznSWRI6mXxbNlOe8NdYt5RqPV9zoRdtTInzW17/lh5T2+rn8eHnF4Ivpdb72cU
-         CNANoOa+JIBK6WQ9lJrDiGu9yHuyabTurZoDogl3M1SsXfmtukaTa2o0BvFGfGplRf
-         WkM7+1D2OqTMuD5W6+ch/ZCQhZ3j/nEAwRbjivlk=
-Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200924112252eucas1p2fb6d4757dff7fa9643fd533149b49ab1~3tGz6Q8hm2922129221eucas1p2X;
-        Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges3new.samsung.com (EUCPMTA) with SMTP id 12.E7.06318.C818C6F5; Thu, 24
-        Sep 2020 12:22:52 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee~3tGzkec1U1794217942eucas1p2X;
-        Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200924112252eusmtrp1348420c81288c5e35fabede0444b26b0~3tGzj5E-e2014820148eusmtrp1f;
-        Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
-X-AuditID: cbfec7f5-371ff700000018ae-26-5f6c818c004d
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 6A.75.06314.C818C6F5; Thu, 24
-        Sep 2020 12:22:52 +0100 (BST)
-Received: from [106.120.51.71] (unknown [106.120.51.71]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200924112252eusmtip18983928ef9ee893900e3033b552c28d3~3tGzYZA3a3166431664eusmtip19;
-        Thu, 24 Sep 2020 11:22:52 +0000 (GMT)
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: [PATCH] MAINTAINERS: remove LIBATA PATA DRIVERS entry
-Message-ID: <1c6cdd00-93a2-55f7-9494-1c0058de384a@samsung.com>
-Date:   Thu, 24 Sep 2020 13:22:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.8.0
+        Thu, 24 Sep 2020 07:23:23 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABE5C0613CE;
+        Thu, 24 Sep 2020 04:23:23 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id q12so1493308plr.12;
+        Thu, 24 Sep 2020 04:23:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=0Yw4y12mYXqqzBAefSKmQPErnuJA8Bd/3bClQhft1f4=;
+        b=rMBUvIGc+BcQpRaPLrLivcdmH5/cNfPYvjpayM+lekuyx8VuxAhksOC6eg4D/J9YEe
+         Mx4Xx3+Ru6ERuUByDfqCq5nDbZfyAoWjwZkapKrhQ4x20ah5C+kkeds3Op/Ip+IHxR0K
+         eYZs1Sts6KLRBwFzGasrN1PUVPZylc+Su+BsvPnXeR9qjCakGD5GttsJKcS1SPdWL0aN
+         jBup4W2fDsIe+iqtQmc2Ts8DDrtg5QekDonZnvDcfwKFkZlJUszutBsiIJRThNxgjmXs
+         i8czb5FnZOoyVWEHlafhNN3qbPx9ZBcwhkTu6qJhUzFwsDw20o4i+nzfkVXynAWn0fJq
+         nS4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=0Yw4y12mYXqqzBAefSKmQPErnuJA8Bd/3bClQhft1f4=;
+        b=nI/qoArTWMzBfsFEYYVlQGcE2FTL38T8iJ3Upb7FRMHLmU0kipiaTRoh4kxzLmkRH6
+         jqi+HhbUdE/TaWN3qwb+7SlQtS3tClxwqvDjuXcuKJf6iYNLhp9zQMB3kVKUED6+Vzk2
+         2asS+8P9kf0A7xv1oZcYg50LkDIMN1aQjuG9Kl6t8Zi4qDg5XpyaYj4iMUD9p14UJJkT
+         Z4l+CJXB1GoPqgCgkYADd4Pm8wOaqiNazaHrDOP9F5ymTcb254IjyY2m6HkWScbiaG2h
+         0rzcZsfp/UwA1F4svLAVmBg/zHWuXRpBSr0H4e1Rd7WxjGLK87g7G7yocPzBXrm1cU5M
+         q72A==
+X-Gm-Message-State: AOAM533eCA1DfvxB0yG+jvhGb7C2SVaJaB0fwz4ufQoijdujTLJoUHhI
+        UFEQfoGTr/zufA0Tdju10On7eietA3ofXPDA
+X-Google-Smtp-Source: ABdhPJxNrpc1T1RzR987qCLYFRPoqeSupCopENIpU/JLVTz9WxgvLwLNb59t0zxAPzjfTznserHVnA==
+X-Received: by 2002:a17:902:82c7:b029:d2:2a0b:f0c7 with SMTP id u7-20020a17090282c7b02900d22a0bf0c7mr4053217plz.30.1600946602591;
+        Thu, 24 Sep 2020 04:23:22 -0700 (PDT)
+Received: from adolin ([49.207.208.43])
+        by smtp.gmail.com with ESMTPSA id k3sm2768096pfp.41.2020.09.24.04.23.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 04:23:21 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 16:53:16 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     Julia.Lawall@lip6.fr
+Cc:     corbet@lwn.net, Gilles.Muller@lip6.fr, nicolas.palix@imag.fr,
+        michal.lkml@markovi.net, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH 0/2] Improve Coccinelle Parallelisation
+Message-ID: <cover.1600945451.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpjleLIzCtJLcpLzFFi42LZduzned2expx4g5M31CxW3+1nszi24xGT
-        xeVdc9gcmD0uny31+LxJLoApissmJTUnsyy1SN8ugSvj2PFpTAWLOCo+HlnN1MDYw97FyMkh
-        IWAiseLMfbYuRi4OIYEVjBL3Vs8HSwgJfGGUmLYyHiLxmVFiyrXLzF2MHGAdLZfdIeLLGSW2
-        nljPAuG8ZZQ4+38ZC0i3iICCRM/vlWwgNrOAtcTW1mlgU9kErCQmtq9iBLGFBewknk5ZzwRi
-        8wLZe3q+sYLYLAKqEtuPLwCLiwpESHx6cJgVokZQ4uTMJywQM8Ulbj2ZzwRhy0tsfzuHGeQI
-        CYHHbBJXr/yG+s1FYtWUTkYIW1ji1fEtUHEZidOTe1ggGtYxSvzteAHVvZ1RYvnkf2wQVdYS
-        d879YgP5mVlAU2L9Ln2IsKNE3/9b0KDgk7jxVhDiCD6JSdumQ4V5JTrahCCq1SQ2LNvABrO2
-        a+dKZgjbQ+LSyz3sExgVZyF5bRaS12YheW0Wwg0LGFlWMYqnlhbnpqcWG+ellusVJ+YWl+al
-        6yXn525iBKaO0/+Of93BuO9P0iFGAQ5GJR5eDt3seCHWxLLiytxDjBIczEoivE5nT8cJ8aYk
-        VlalFuXHF5XmpBYfYpTmYFES5zVe9DJWSCA9sSQ1OzW1ILUIJsvEwSnVwHjhSvozfRWnhD1/
-        pLSn9vxL7jv5aMPXz5EZxw6skNRpU4iwdnqVl9Ixdevx0w6nF+wwUPnq5aPRf2zzUV+1HZ+U
-        paKk7hxRyPgYrJBx2fPYUYVZBucehm7rC7TWCRa9/0bgcewupmb/T3IrAvqW3SlO7vbu0Txf
-        usel97zBo9/sb779WKB6zV+JpTgj0VCLuag4EQBhaKAYGQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsVy+t/xu7o9jTnxBh+mCFusvtvPZnFsxyMm
-        i8u75rA5MHtcPlvq8XmTXABTlJ5NUX5pSapCRn5xia1StKGFkZ6hpYWekYmlnqGxeayVkamS
-        vp1NSmpOZllqkb5dgl7GsePTmAoWcVR8PLKaqYGxh72LkYNDQsBEouWyexcjF4eQwFJGieXT
-        HrNBxGUkjq8v62LkBDKFJf5c62KDqHnNKPFh+k42kISIgIJEz++VYDazgLXE1tZp7CA2m4CV
-        xMT2VYwgtrCAncTTKeuZQGxeIHtPzzdWEJtFQFVi+/EFYHFRgQiJwztmMULUCEqcnPmEBWKm
-        usSfeZeYIWxxiVtP5jNB2PIS29/OYZ7AKDALScssJC2zkLTMQtKygJFlFaNIamlxbnpusaFe
-        cWJucWleul5yfu4mRmDgbzv2c/MOxksbgw8xCnAwKvHwcuhmxwuxJpYVV+YeYpTgYFYS4XU6
-        ezpOiDclsbIqtSg/vqg0J7X4EKMp0EMTmaVEk/OBUZlXEm9oamhuYWlobmxubGahJM7bIXAw
-        RkggPbEkNTs1tSC1CKaPiYNTqoGRx8aERanl5vmMrLvtnrqfDrkYx9QfyRSfsp3Z9dRCjawe
-        s/hpl/f9y56xpyJMzSlY9N7FhIszDBsyL/6raLy+Z/K5y347Znh3XW0L2CE+d3FS9/HubUs3
-        rWIp3zTtrkd//Ns7F3cuvXb7e+g0zuj/3Nq+Qme//MqLE9UOzjnvNOlLT5PVm8MWSizFGYmG
-        WsxFxYkAepmCfZICAAA=
-X-CMS-MailID: 20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee
-References: <CGME20200924112252eucas1p2e372d1ce6d6f8cf8106572adeb200fee@eucas1p2.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though there is not much happening for libata PATA drivers
-I don't have time to look after them anymore.
+Coccinelle utilises all available threads to implement parallelisation.
+However, this results in a decrease in performance.
 
-Since Jens is maintaining the whole libata anyway just remove
-"LIBATA PATA DRIVERS" entry.
+This patchset aims to improve performance by modifying cocciccheck to
+use at most one thread per core by default.
 
-Signed-off-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
----
- MAINTAINERS |    9 ---------
- 1 file changed, 9 deletions(-)
+Sumera Priyadarsini (2):
+  scripts: coccicheck: Change default value for parallelism
+  Documentation: Coccinelle: Modify parallelisation information in docs
 
-Index: b/MAINTAINERS
-===================================================================
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9912,15 +9912,6 @@ T:	git git://git.kernel.org/pub/scm/linu
- F:	drivers/ata/pata_arasan_cf.c
- F:	include/linux/pata_arasan_cf_data.h
- 
--LIBATA PATA DRIVERS
--M:	Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
--M:	Jens Axboe <axboe@kernel.dk>
--L:	linux-ide@vger.kernel.org
--S:	Maintained
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git
--F:	drivers/ata/ata_generic.c
--F:	drivers/ata/pata_*.c
--
- LIBATA PATA FARADAY FTIDE010 AND GEMINI SATA BRIDGE DRIVERS
- M:	Linus Walleij <linus.walleij@linaro.org>
- L:	linux-ide@vger.kernel.org
+ Documentation/dev-tools/coccinelle.rst | 4 ++--
+ scripts/coccicheck                     | 5 +++++
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
