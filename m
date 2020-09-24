@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 343402776C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810E12776CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727305AbgIXQbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:31:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgIXQbf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:31:35 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35D2C0613CE;
-        Thu, 24 Sep 2020 09:31:35 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c950018c19313925c730a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9500:18c1:9313:925c:730a])
+        id S1726958AbgIXQf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:35:58 -0400
+Received: from ms.lwn.net ([45.79.88.28]:59126 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726458AbgIXQf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:35:58 -0400
+Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 26BA81EC0469;
-        Thu, 24 Sep 2020 18:31:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1600965094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Wyic6RS8dnxuPl9A3GuZuq4BV1OsZd9ESbttja8eKEE=;
-        b=l737tOpBpD/V+sYHc+UbPMpWBhNrCvZuUTwN9dgzCEFfYTpJca29PDR0IkjMj//nBl0l18
-        /EOgjw8oCmnPEU53HI1xAZWQhyRDGubc6JavDu/5qGDV1lZdHO6cYkF+ri0eQIV/PYEajV
-        97+Gd89uv9ly2gsHERD+TFzz4ShQW0A=
-Date:   Thu, 24 Sep 2020 18:31:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 20/24] x86/traps: Attempt to fixup exceptions in vDSO
- before signaling
-Message-ID: <20200924163128.GM5030@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-21-jarkko.sakkinen@linux.intel.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id 05B52382;
+        Thu, 24 Sep 2020 16:35:57 +0000 (UTC)
+Date:   Thu, 24 Sep 2020 10:35:56 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+Cc:     linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH v3] documentation: arm: sunxi: Allwinner H2+/H3 update
+Message-ID: <20200924103556.272065ca@lwn.net>
+In-Reply-To: <20200923065954.GA22809@monster.powergraphx.local>
+References: <20200923065954.GA22809@monster.powergraphx.local>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200915112842.897265-21-jarkko.sakkinen@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 02:28:38PM +0300, Jarkko Sakkinen wrote:
-> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-> index 9e5ec861aba0..ebe290a68c36 100644
-> --- a/arch/x86/mm/fault.c
-> +++ b/arch/x86/mm/fault.c
-> @@ -30,6 +30,7 @@
->  #include <asm/cpu_entry_area.h>		/* exception stack		*/
->  #include <asm/pgtable_areas.h>		/* VMALLOC_START, ...		*/
->  #include <asm/kvm_para.h>		/* kvm_handle_async_pf		*/
-> +#include <asm/vdso.h>			/* fixup_vdso_exception()	*/
->  
->  #define CREATE_TRACE_POINTS
->  #include <asm/trace/exceptions.h>
-> @@ -775,6 +776,10 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
->  
->  		sanitize_error_code(address, &error_code);
->  
-> +		if (fixup_vdso_exception(regs, X86_TRAP_PF, error_code,
-> +		    address))
+On Wed, 23 Sep 2020 08:59:54 +0200
+Wilken Gottwalt <wilken.gottwalt@mailbox.org> wrote:
 
-No need to break that line.
+> Replaced the link to the datasheet by a link to the current version.
+> 
+> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
+> ---
+> Changes in v3:
+>         - removed the description of the H2+/H3 differences
+> Changes in v2:
+>         - addressed comments/proposals from Maxime
+> ---
+>  Documentation/arm/sunxi.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/arm/sunxi.rst b/Documentation/arm/sunxi.rst
+> index b037428aee98..62b533d0ba94 100644
+> --- a/Documentation/arm/sunxi.rst
+> +++ b/Documentation/arm/sunxi.rst
+> @@ -108,7 +108,7 @@ SunXi family
+>  
+>          * Datasheet
+>  
+> -          http://dl.linux-sunxi.org/H3/Allwinner_H3_Datasheet_V1.0.pdf
+> +          https://linux-sunxi.org/images/4/4b/Allwinner_H3_Datasheet_V1.2.pdf
 
--- 
-Regards/Gruss,
-    Boris.
+Applied, thanks.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+jon
