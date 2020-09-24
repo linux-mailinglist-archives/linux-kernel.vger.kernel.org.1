@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCEE2776D5
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BA52776DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 18:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727213AbgIXQho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 12:37:44 -0400
-Received: from mga03.intel.com ([134.134.136.65]:35899 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726458AbgIXQho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 12:37:44 -0400
-IronPort-SDR: 7YGs3SZBXbVdcfMM8f0c9KTuKqpFHecLv9q9rJTfa5PUcXSZSXx9zET/mfYfW1SyL8i35xLbd8
- H99Tt3w2PnyQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="161329336"
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="161329336"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 09:37:43 -0700
-IronPort-SDR: y4ozkSmUoKFsjLWUM+TiqrRgqDPo4Cf/YYkIkwUT5TJAvnJOj6ZrzJFtSTO3SvSyZ5+9Ji4cNK
- QcdBVWTj+/Nw==
-X-IronPort-AV: E=Sophos;i="5.77,298,1596524400"; 
-   d="scan'208";a="336054758"
-Received: from schen9-mobl.amr.corp.intel.com ([10.254.89.92])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 09:37:42 -0700
-Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
- sched domain
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>
-References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
- <20200916110039.GG3117@suse.de>
- <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
- <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
- <CAKfTPtA2yE_sFfP5MFN=K+ph7rqpYUhapUdDBJ5hFLxnQPktJw@mail.gmail.com>
- <af0237e0-1451-9d11-2ee2-1468a8bb6180@linux.intel.com>
- <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <40ee756f-1f27-b17e-6292-d8069a56e3c8@linux.intel.com>
-Date:   Thu, 24 Sep 2020 09:37:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728058AbgIXQiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 12:38:16 -0400
+Received: from mail-eopbgr50101.outbound.protection.outlook.com ([40.107.5.101]:64359
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726458AbgIXQiQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 12:38:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hCZtcj6sVzzOvkO74iAKUXgIF6GB8ouXCFRTTD6YFdM+RR93ANY+rtjmbW8pHH3jyDG+1vc3vBA4U7hWer4dDLKlvWIrV/snZPdlIkLOSA2tGsqHxbIJUyQgX0qYtGWmCL1lGrvIg9IdentqLZuGQgL7kGW3+kdeHnnFI0qUpZk2IlBuZrurKxyuzAeTKZyCtLgchfKUfzzVZzwZI0cdqfijr82CQLsJtTx7tNRlWBBTGacLkTOpx7NFlWKYVBD+pcBH41BEDhGM9JnNaJrKt8FVCudJYiwCZ3NB96gBUngPqIYEutLpnRO4Zk9VZMw0sUsiBs4Cs5ln4N9pOpfDow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j65g5N2xjjPc+P80xUOn25JpzaPzmbFRVZPh8vlif4M=;
+ b=ZlJ9cBMznMOKntCHiOeqE2vgI7B2V0qftajHS1KlY9LTVqNN7d1T1kHerIdmUp0y8uyG1oZA1Awu/6a3GzZN8iQvSqTP3fkPwlLuVIB5yF3Q3sUf/v/Zvzaov5qU6Yi9jTeZ0DelNXSBL63sL0aKJMPXCkyHucWE1eriqr5M+VIymLk5e1idmqvaL2PWiQozJ0ZNIkx2JfkvwPQYqmJxnVf4kvqFzEdD1rRXoK3SwAzYR69J66gB5/xnPwxm4iS7QHwK/y6peX3XsdKxaTBeWYkP8QjhHg2qa/CD7IzcB5EYr7mZkk8AcgmrIun+VkIpsCLOCrKjx2OKEkYgvNWN4w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j65g5N2xjjPc+P80xUOn25JpzaPzmbFRVZPh8vlif4M=;
+ b=tL8n6vmIAlaIqhU4RGkzJ5kBAqYZC3bxUkVDGIgs/JPsifcJxBDnsG9ESuYHVlDbWomDUkkISpMVhGJ09yQmLcIB1UgnDLzQ0DiuGZvpmBb1g2dNZY3aTgR21Q8nxqilMR5TyzoCDVS1aUU5J3EXEcqximsS6J4yE25EoXiKHis=
+Authentication-Results: szeredi.hu; dkim=none (message not signed)
+ header.d=none;szeredi.hu; dmarc=none action=none header.from=virtuozzo.com;
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
+ by AM7PR08MB5430.eurprd08.prod.outlook.com (2603:10a6:20b:106::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Thu, 24 Sep
+ 2020 16:38:12 +0000
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322]) by AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322%7]) with mapi id 15.20.3391.027; Thu, 24 Sep 2020
+ 16:38:12 +0000
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] ovl introduce "uuid=off"
+Date:   Thu, 24 Sep 2020 19:37:53 +0300
+Message-Id: <20200924163755.7717-1-ptikhomirov@virtuozzo.com>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM3PR07CA0084.eurprd07.prod.outlook.com
+ (2603:10a6:207:6::18) To AM6PR08MB4756.eurprd08.prod.outlook.com
+ (2603:10a6:20b:cd::17)
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (95.179.127.150) by AM3PR07CA0084.eurprd07.prod.outlook.com (2603:10a6:207:6::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.15 via Frontend Transport; Thu, 24 Sep 2020 16:38:11 +0000
+X-Mailer: git-send-email 2.26.2
+X-Originating-IP: [95.179.127.150]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0bdb5d62-657b-4e23-7252-08d860a83a59
+X-MS-TrafficTypeDiagnostic: AM7PR08MB5430:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM7PR08MB5430A18DCBC6690982756A46B7390@AM7PR08MB5430.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 43dE3Dhn67zyMJCEV1N9sQwrhJ4kixa84IKKi7qKcC9RqChauaRZuyW3UyPm11ua+4oD32zbAfdr10eQQkJYKJllUZbfxhcDJSdKtqvssvvmpBvT7sTRrdh7b4TBWkAaz5Yc9NhnsiO0Dzq2obkjYZosjoSMviF3BNwmjJlUeiNaTa3wwDJ9XlCGAir9IJ0im51jACayDAA+9XYE8crRtE2rV4OEKS7NjRCpgATD8aQ63KWoJEY4cUFmCGcCsyzVqwF8D4gruLanP0zer2LFJh6LL/Hh+slUNNp56lYnx1Abf1XayPUcwjFMk3lhIeUqhj6ecmGVorR48Y0YqOMtevNvCIv9xAX6wyN2SYJFRJRg0K+Unjk1XBiRAurX+Ppd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(39840400004)(376002)(136003)(52116002)(316002)(478600001)(186003)(6506007)(1076003)(36756003)(4326008)(6512007)(86362001)(6916009)(2906002)(16526019)(66556008)(5660300002)(26005)(8936002)(69590400008)(6666004)(6486002)(83380400001)(956004)(66946007)(2616005)(54906003)(8676002)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: KMrYcA62NKDDLVZRb/DhdtNpbX0irRN09BEU5Ua/iJBGYpOySzR5Oc1fD/H3kePJxMT6lWbYdJg38yZ331++98lX9F03PpcDezRxeMOa3uqBUP0uj0ZjTqKvmtCEQuoQOIWLjn0+U/LPGLPgXe+oCnGldmDsoZWy8XDMwNscQqD5qPzyKKfHD5uBsdVVXh6oZe6fP5icvutsFrKsjnGTZ9q/8P1pHL1rDCIHJrQiWZ24wWSGgNEVwp5jG1WqDcXBLPh6vTpJZGxQwGdEtW3o5n+/AbyOPyUt57EjGeTg4qEbzWek2U9I0f0F7Hqtwbi2+wuQSCZnOxTG8tUOj6x9rQFYq9ukFWS8n2iLg7pbsKM92nM/z6saaxh4UIiHcdaJO0Psd4SKeH+wSePe2RT5py+UufLMvOHdgfgOqZJ8Qg4POTn/5gQ3cTyUkm/otNdhSVdeGlhePdAMsBgOg3FuDWUxqly1ZRWb2qjwf5IMYuswfto/T9IIMVZFE2qahEugX2lPxjhBT9xXxXF688tf2x5xwUQjrYrRaPM9WiODOhGI2y9IBoQ7gIN7/Pthmrf+V+0c6+ggTFli2hjglDa75GUGroSq72/qcXWAnt609jR4Mucq9oNvUx/DOAEegbzRqe4PSO5JW/EkvwoMbdQNEQ==
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0bdb5d62-657b-4e23-7252-08d860a83a59
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Sep 2020 16:38:12.4386
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uKnISxa3sW5z6ZFu935AHPTf/19AnFHx8+ufR3Uv2pswkBL8FzEe1ZhCGfY8onh8kp2Gt2TAoOhY3H5NoXQGEdekaA4bI8Vqh+jWuEIGnrg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR08MB5430
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a v3 of:
+ovl: introduce new "index=nouuid" option for inodes index feature
 
+Changes in v3: rebase to overlayfs-next, replace uuid with null in file
+handles, propagate ovl_fs to needed functions in a separate patch, add
+separate bool "uuid=on/off" option, fix numfs check fallback, add a note
+to docs.
 
-On 9/22/20 12:14 AM, Vincent Guittot wrote:
+CC: Amir Goldstein <amir73il@gmail.com>
+CC: Vivek Goyal <vgoyal@redhat.com>
+CC: Miklos Szeredi <miklos@szeredi.hu>
+CC: linux-unionfs@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
 
->>
->>>>
->>>> And a quick test with hackbench on my octo cores arm64 gives for 12
+Pavel Tikhomirov (2):
+  ovl: propagate ovl_fs to ovl_decode_real_fh and ovl_encode_real_fh
+  ovl: introduce new "uuid=off" option for inodes index feature
 
-Vincent,
+ Documentation/filesystems/overlayfs.rst |  6 ++++++
+ fs/overlayfs/Kconfig                    | 17 +++++++++++++++++
+ fs/overlayfs/copy_up.c                  | 25 ++++++++++++++-----------
+ fs/overlayfs/export.c                   | 10 ++++++----
+ fs/overlayfs/namei.c                    | 24 ++++++++++++++----------
+ fs/overlayfs/overlayfs.h                | 14 ++++++++------
+ fs/overlayfs/ovl_entry.h                |  1 +
+ fs/overlayfs/super.c                    | 25 +++++++++++++++++++++++++
+ fs/overlayfs/util.c                     |  3 ++-
+ 9 files changed, 93 insertions(+), 32 deletions(-)
 
-Is it octo (=10) or octa (=8) cores on a single socket for your system?
-The L2 is per core or there are multiple L2s shared among groups of cores?
-
-Wonder if placing the threads within a L2 or not within
-an L2 could cause differences seen with Aubrey's test.
-
-Tim
+-- 
+2.26.2
 
