@@ -2,99 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE5D2767F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:41:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A3D276803
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 06:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgIXElU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 00:41:20 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:48938 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbgIXElT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 00:41:19 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kLJ4A-00028T-RJ; Thu, 24 Sep 2020 14:41:11 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Thu, 24 Sep 2020 14:41:10 +1000
-Date:   Thu, 24 Sep 2020 14:41:10 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     syzbot <syzbot+f4d0f0f7c860608404c4@syzkaller.appspotmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, steffen.klassert@secunet.com,
-        syzkaller-bugs@googlegroups.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
-Subject: Re: inconsistent lock state in xfrm_policy_lookup_inexact_addr
-Message-ID: <20200924044110.GA9534@gondor.apana.org.au>
-References: <000000000000c59e2c05af6a5e7e@google.com>
+        id S1726765AbgIXEys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 00:54:48 -0400
+Received: from mgwym03.jp.fujitsu.com ([211.128.242.42]:62677 "EHLO
+        mgwym03.jp.fujitsu.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726466AbgIXEyr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 00:54:47 -0400
+X-Greylist: delayed 663 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 00:54:46 EDT
+Received: from yt-mxoi1.gw.nic.fujitsu.com (unknown [192.168.229.67]) by mgwym03.jp.fujitsu.com with smtp
+         id 2783_2cfd_64562af8_ea9a_4753_b429_e475f2a5d975;
+        Thu, 24 Sep 2020 13:43:38 +0900
+Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
+        by yt-mxoi1.gw.nic.fujitsu.com (Postfix) with ESMTP id 935C3AC0111
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 13:43:37 +0900 (JST)
+Received: by pumpkin.openstacklocal (Postfix, from userid 1016)
+        id E760C1C014; Thu, 24 Sep 2020 13:42:38 +0900 (JST)
+From:   Yuichi Ito <ito-yuichi@fujitsu.com>
+To:     maz@kernel.org, sumit.garg@linaro.org, tglx@linutronix.de,
+        jason@lakedaemon.net, catalin.marinas@arm.com, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yuichi Ito <ito-yuichi@fujitsu.com>
+Subject: [PATCH 0/2] Enable support IPI_CPU_CRASH_STOP to be pseudo-NMI
+Date:   Thu, 24 Sep 2020 13:42:34 +0900
+Message-Id: <20200924044236.1245808-1-ito-yuichi@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000c59e2c05af6a5e7e@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 01:51:14AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    6b02addb Add linux-next specific files for 20200915
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15888efd900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=7086d0e9e44d4a14
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f4d0f0f7c860608404c4
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f4d0f0f7c860608404c4@syzkaller.appspotmail.com
-> 
-> ================================
-> WARNING: inconsistent lock state
-> 5.9.0-rc5-next-20200915-syzkaller #0 Not tainted
-> --------------------------------
-> inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-R} usage.
-> kworker/1:1/23 [HC0[0]:SC1[1]:HE0:SE0] takes:
-> ffff8880a6ff5f28 (&s->seqcount#12){+.+-}-{0:0}, at: xfrm_policy_lookup_inexact_addr+0x57/0x200 net/xfrm/xfrm_policy.c:1909
-> {SOFTIRQ-ON-W} state was registered at:
->   lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
->   write_seqcount_t_begin_nested include/linux/seqlock.h:509 [inline]
->   write_seqcount_t_begin include/linux/seqlock.h:535 [inline]
->   write_seqlock include/linux/seqlock.h:883 [inline]
->   xfrm_set_spdinfo+0x302/0x660 net/xfrm/xfrm_user.c:1185
+Enable support IPI_CPU_CRASH_STOP to be pseudo-NMI
 
-This is &net->xfrm.policy_hthresh.lock.
+This patchset enables IPI_CPU_CRASH_STOP IPI to be pseudo-NMI.
+This allows kdump to collect system information even when the CPU is in
+a HARDLOCKUP state.
 
-...
+Only IPI_CPU_CRASH_STOP uses NMI and the other IPIs remain normal IRQs.
 
-> stack backtrace:
-> CPU: 1 PID: 23 Comm: kworker/1:1 Not tainted 5.9.0-rc5-next-20200915-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Workqueue: wg-crypt-wg0 wg_packet_tx_worker
-> Call Trace:
->  <IRQ>
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x198/0x1fb lib/dump_stack.c:118
->  print_usage_bug kernel/locking/lockdep.c:3694 [inline]
->  valid_state kernel/locking/lockdep.c:3705 [inline]
->  mark_lock_irq kernel/locking/lockdep.c:3908 [inline]
->  mark_lock.cold+0x13/0x10d kernel/locking/lockdep.c:4375
->  mark_usage kernel/locking/lockdep.c:4252 [inline]
->  __lock_acquire+0x1402/0x55d0 kernel/locking/lockdep.c:4750
->  lock_acquire+0x1f2/0xaa0 kernel/locking/lockdep.c:5398
->  seqcount_lockdep_reader_access+0x139/0x1a0 include/linux/seqlock.h:103
->  xfrm_policy_lookup_inexact_addr+0x57/0x200 net/xfrm/xfrm_policy.c:1909
+The patch has been tested on ThunderX.
 
-And this is a completely different seqlock.
+This patch assumes Marc's latest IPIs patch-set. [1]
+It also uses some of Sumit's IPI patch set for NMI.[2]
 
-Again lockdep is creating a bogus report by lumping two unrelated
-locks (but of the same type, in this case seqlock) together.
+[1] https://lore.kernel.org/linux-arm-kernel/20200901144324.1071694-1-maz@kernel.org/
+[2] https://lore.kernel.org/linux-arm-kernel/1599830924-13990-3-git-send-email-sumit.garg@linaro.org/
 
-Cheers,
+$ echo 1 > /proc/sys/kernel/panic_on_rcu_stal
+$ echo HARDLOCKUP > /sys/kernel/debug/provoke-crash/DIRECT
+   : kernel panics and crash kernel boot
+   : makedumpfile saves the system state at HARDLOCKUP in vmcore.
+
+crash utility:
+crash> bt
+  PID: 3213   TASK: fffffd001adc5940  CPU: 8   COMMAND: "bash"
+  #0 [fffffe0022fefcf0] lkdtm_HARDLOCKUP at fffffe0010888ab4
+  #1 [fffffe0022fefd10] lkdtm_do_action at fffffe00108882bc
+  #2 [fffffe0022fefd20] direct_entry at fffffe0010888720
+  #3 [fffffe0022fefd70] full_proxy_write at fffffe001058cfe4
+  #4 [fffffe0022fefdb0] vfs_write at fffffe00104a4c2c
+  #5 [fffffe0022fefdf0] ksys_write at fffffe00104a4f0c
+  #6 [fffffe0022fefe40] __arm64_sys_write at fffffe00104a4fbc
+  #7 [fffffe0022fefe50] el0_svc_common.constprop.0 at fffffe0010159e38
+  #8 [fffffe0022fefe80] do_el0_svc at fffffe0010159fa0
+  #9 [fffffe0022fefe90] el0_svc at fffffe00101481d0
+  #10 [fffffe0022fefea0] el0_sync_handler at fffffe00101484b4
+  #11 [fffffe0022fefff0] el0_sync at fffffe0010142b7c
+
+
+Sumit Garg (1):
+  irqchip/gic-v3: Enable support for SGIs to act as NMIs
+
+Yuichi Ito (1):
+  Register IPI_CPU_CRASH_STOP IPI as pseudo-NMI
+
+ arch/arm64/kernel/smp.c      | 39 ++++++++++++++++++++++++++++--------
+ drivers/irqchip/irq-gic-v3.c | 13 ++++++++++--
+ 2 files changed, 42 insertions(+), 10 deletions(-)
+
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.25.1
+
