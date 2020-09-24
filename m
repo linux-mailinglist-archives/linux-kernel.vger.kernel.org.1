@@ -2,352 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5171277456
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6995A27745B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 16:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbgIXOxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 10:53:12 -0400
-Received: from mail-am6eur05on2082.outbound.protection.outlook.com ([40.107.22.82]:47393
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727859AbgIXOxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 10:53:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=du23vmPLZEWwWM/bavK+D/vG9dP8kn0nCuT5fbwm7u5ZfFCRtrjK63TqGm7zfzhwqNXoRwZb5y3zp0ySeUkOKN6kyWK6oOJNyuOyphSQGT8IIkBjQQg4GleJ21yr6Uo9JJcSyMbpXSGCkWGGLCQsE2V1/6e1XPHddA+UL/XH5XJ9qDoG8FBiIvFB8fpaU17IN4E5ZbHtFkWrghcoGH04RSoDZtKZRGHWeRICxX13thAeHbnUfjgKrBFJ+tuquULKAw4q9wrQdV956dNAHBepliq+yMxZHLZs4tdTJrYx4mY8Lyxkk/yJNaV4spPhVLEIcSqDv8xHAmQx3tah2F/JAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X0YyrsgP4oQZIs88auseYcUCg0Pn4DYVfuFyJEqn4iA=;
- b=ao6u98WGbOrumzD7CtxgBwimUjZ+4e9OsuM0etTAD1kgADx1n3AUxoAgmCfNDElD0guoGbvNrDKaCGfddAboXO5aLjspoF7fMcBCV7HkGLbU6g71Ke4l/z8ERZj2ytvh74LyhyFb0QMRLisyF/Op7l0e+P3E264Xgrd7H1zR+b2gevx3zhL4S9n5+wIQ+StQ8J8ivi9D9utNxK0TUk+GR37V6RzUpY1o4TOzOwATT9w+CFNqOzWy3lHCw4OKWITbvmbq+L8dq8l7estOm+3RS7Vhrdyyg9/cEjT/VPLy5s/U1cfDQnAqNwj5JaCdOLpCI8SRPbMHec5LAKQgL1uJbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X0YyrsgP4oQZIs88auseYcUCg0Pn4DYVfuFyJEqn4iA=;
- b=elLj2Sqor+JoRkeEastJnW0YdHI2lSI9k1nz5u7JOQwhD9/7BhBwqvnKEbxSkxmw4pBIFiPJw9Hi2BV5cl5vEcCvmQIMuiLCPee6zudx4Mg6wjt3AgFyjoJ7zLWwW4CjUmNBnupMhTWYsTlC74vdRUqySmFKksWVcSr21NXpWu0=
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
- by HE1PR0402MB2890.eurprd04.prod.outlook.com (2603:10a6:3:da::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Thu, 24 Sep
- 2020 14:53:05 +0000
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::c872:d354:7cf7:deb9%3]) with mapi id 15.20.3412.022; Thu, 24 Sep 2020
- 14:53:05 +0000
-From:   "Z.q. Hou" <zhiqiang.hou@nxp.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Xiaowei Bao <xiaowei.bao@nxp.com>
-CC:     "M.h. Lian" <minghuan.lian@nxp.com>,
-        Mingkai Hu <mingkai.hu@nxp.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        Leo Li <leoyang.li@nxp.com>, "kishon@ti.com" <kishon@ti.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        Roy Zang <roy.zang@nxp.com>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "jingoohan1@gmail.com" <jingoohan1@gmail.com>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        "andrew.murray@arm.com" <andrew.murray@arm.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: RE: [PATCH v6 04/11] PCI: designware-ep: Modify MSI and MSIX CAP way
- of finding
-Thread-Topic: [PATCH v6 04/11] PCI: designware-ep: Modify MSI and MSIX CAP way
- of finding
-Thread-Index: AQHV+bLnyx1TV6zoxEWeumtDvFoh26l32V6AgAE1rFA=
-Date:   Thu, 24 Sep 2020 14:53:05 +0000
-Message-ID: <HE1PR0402MB3371720320099B4D4C2E2B4A84390@HE1PR0402MB3371.eurprd04.prod.outlook.com>
-References: <20200314033038.24844-5-xiaowei.bao@nxp.com>
- <20200923201613.GA2291357@bjorn-Precision-5520>
-In-Reply-To: <20200923201613.GA2291357@bjorn-Precision-5520>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8ab2eaf5-5c4b-4daa-48e7-08d860998b6f
-x-ms-traffictypediagnostic: HE1PR0402MB2890:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR0402MB2890355CD32A990D977F03A184390@HE1PR0402MB2890.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:169;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: q6tNNths3kHeiujlTM0oVNs3sZcg1HWxto2oIjy/JTUAXPIydUk1S02HphoiCm+dpxSutp7Cg/IY5kymFCZPdmm+HHQvqmrtA0mu4EWQRnJz9mk5ajz7R3pAAX0DFCgl2k6VeT6xDooMmPYBhmNkAJWNKsY5XH2O+00LmCGando/Y7JrzdhcOZ+vpfNI3BEf5aFudRrmQUBkvUQuuruesgyZBrSRK8tINzOhuqxZTxhokLe4kUaam6GDERzrBL1Ez7MFzMTyXLTo1MKazzfodNhXWhSZitSEXzQ+wqvZlzMaVJkpNcLg49KXU2nlI70FBk+pcGpBvsRgSznmyvA2hA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(366004)(396003)(64756008)(66446008)(54906003)(110136005)(2906002)(478600001)(316002)(26005)(186003)(6506007)(7696005)(55016002)(4326008)(9686003)(8936002)(8676002)(7416002)(53546011)(66476007)(83380400001)(30864003)(86362001)(5660300002)(66556008)(52536014)(66946007)(6636002)(71200400001)(76116006)(33656002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: rCNjXSKUeAnoecylZXXnPvFp28rfDTbp4JTssAr+FukG7OXgLXYVX9lWLs3Q75VAzDMSZpBkGkvDtXJPF9NZOAisJhUu/WPbtlX+Lwr6Q85PNm3B73Tz8teU4CmwVDASWulltuUOHvtkH/wIF86BuRPVUACDJlRtvmcNu/D/qy+2CzjW2A9dDFkJCWo7OpW+onK+Sj87zDLNoPyUaNQI+fJv+uFjJriENFoFw6HPbHBriwWWQSsPsMNrw9T0enP02+UcDoBncDpMwz0EQxlruSexBycL7jV578meCKiiAtfOhVIjCFqSVT9PTUatTV67r+lWuJQxM5Rc0uJoo+6d4NHnfXbTkQDIHvKRVxy3/Np41dcyxh9kMbcEyvQIAPvze8/C6RrGd+LvyAie5RHtcTgzeQO8rN4CFAiABlUwSkPHDrFVFxCGQqnQXKgxaRrSe+qO8FjKhV/Bp+0RCqG3l+r2AgGXGgklwhX1f7OzjqI3p6KeJmMfI6yBTVuK7K7IEFk/AHYUB9/OnPu5YN2zxzDX9dkIz7zmr6jIVvbte9YXfQwPSH9evzJjxxFcNgw3ditK0YXblk/SAEjViCePY8LZauJAGL4B3FIvPfQOSM8UUYPcZMJzLlSLT8abR97gDg23KzdF3ne+wvkwDMMklQ==
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1728308AbgIXOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 10:53:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45024 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727859AbgIXOxw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 10:53:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1FAE0ACCF;
+        Thu, 24 Sep 2020 14:53:48 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 992521E12DD; Thu, 24 Sep 2020 16:53:46 +0200 (CEST)
+Date:   Thu, 24 Sep 2020 16:53:46 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH 07/13] block: lift setting the readahead size into the
+ block layer
+Message-ID: <20200924145346.GA3361@quack2.suse.cz>
+References: <20200924065140.726436-1-hch@lst.de>
+ <20200924065140.726436-8-hch@lst.de>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8ab2eaf5-5c4b-4daa-48e7-08d860998b6f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2020 14:53:05.6015
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /irrDoUYL3ym4unh0J0KRVMBD0BhuKM4RZD6H1BxqQLHSlOkF+swxQYZ9nrahiLZCfXCxpEgd+JSI4Idgztr7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0402MB2890
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924065140.726436-8-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQmpvcm4sDQoNClRoYW5rcyBhIGxvdCBmb3IgeW91ciBjb21tZW50cyENCg0KPiAtLS0tLU9y
-aWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBCam9ybiBIZWxnYWFzIDxoZWxnYWFzQGtlcm5l
-bC5vcmc+DQo+IFNlbnQ6IDIwMjDE6jnUwjI0yNUgNDoxNg0KPiBUbzogWGlhb3dlaSBCYW8gPHhp
-YW93ZWkuYmFvQG54cC5jb20+DQo+IENjOiBaLnEuIEhvdSA8emhpcWlhbmcuaG91QG54cC5jb20+
-OyBNLmguIExpYW4NCj4gPG1pbmdodWFuLmxpYW5AbnhwLmNvbT47IE1pbmdrYWkgSHUgPG1pbmdr
-YWkuaHVAbnhwLmNvbT47DQo+IGJoZWxnYWFzQGdvb2dsZS5jb207IHJvYmgrZHRAa2VybmVsLm9y
-Zzsgc2hhd25ndW9Aa2VybmVsLm9yZzsgTGVvIExpDQo+IDxsZW95YW5nLmxpQG54cC5jb20+OyBr
-aXNob25AdGkuY29tOyBsb3JlbnpvLnBpZXJhbGlzaUBhcm0uY29tOyBSb3kNCj4gWmFuZyA8cm95
-LnphbmdAbnhwLmNvbT47IGFtdXJyYXlAdGhlZ29vZHBlbmd1aW4uY28udWs7DQo+IGppbmdvb2hh
-bjFAZ21haWwuY29tOyBndXN0YXZvLnBpbWVudGVsQHN5bm9wc3lzLmNvbTsNCj4gYW5kcmV3Lm11
-cnJheUBhcm0uY29tOyBsaW51eC1wY2lAdmdlci5rZXJuZWwub3JnOw0KPiBkZXZpY2V0cmVlQHZn
-ZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgtYXJt
-LWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eHBwYy1kZXZAbGlzdHMub3psYWJzLm9y
-Zw0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY2IDA0LzExXSBQQ0k6IGRlc2lnbndhcmUtZXA6IE1v
-ZGlmeSBNU0kgYW5kIE1TSVgNCj4gQ0FQIHdheSBvZiBmaW5kaW5nDQo+IA0KPiBzL01TSVgvTVNJ
-LVgvIChzdWJqZWN0IGFuZCBiZWxvdykNCj4gDQo+IE9uIFNhdCwgTWFyIDE0LCAyMDIwIGF0IDEx
-OjMwOjMxQU0gKzA4MDAsIFhpYW93ZWkgQmFvIHdyb3RlOg0KPiA+IEVhY2ggUEYgb2YgRVAgZGV2
-aWNlIHNob3VsZCBoYXZlIGl0J3Mgb3duIE1TSSBvciBNU0lYIGNhcGFiaXRpbHkNCj4gPiBzdHJ1
-Y3QsIHNvIGNyZWF0ZSBhIGR3X3BjaWVfZXBfZnVuYyBzdHJ1Y3QgYW5kIHJlbW92ZSB0aGUgbXNp
-X2NhcCBhbmQNCj4gPiBtc2l4X2NhcCB0byB0aGlzIHN0cnVjdCBmcm9tIGR3X3BjaWVfZXAsIGFu
-ZCBtYW5hZ2UgdGhlIFBGcyB3aXRoIGENCj4gPiBsaXN0Lg0KPiANCj4gcy9jYXBhYml0aWx5L2Nh
-cGFiaWxpdHkvDQo+IA0KPiBJIGtub3cgTG9yZW56byBoYXMgYWxyZWFkeSBhcHBsaWVkIHRoaXMs
-IGJ1dCBmb3IgdGhlIGZ1dHVyZSwgb3IgaW4gY2FzZSB0aGVyZQ0KPiBhcmUgb3RoZXIgcmVhc29u
-cyB0byB1cGRhdGUgdGhpcyBwYXRjaC4NCj4gDQo+IFRoZXJlIGFyZSBhIGJ1bmNoIG9mIHVubmVj
-ZXNzYXJ5IGluaXRpYWxpemF0aW9ucyBiZWxvdyBmb3IgZnV0dXJlIGNsZWFudXAuDQoNClllcywg
-YW5kIHRoZXJlIGFyZSBtYW55IGNhbGxpbmcgb2YgZHdfcGNpZV9lcF9mdW5jX3NlbGVjdCgpIHRv
-IGdldCBmdW5jX29mZnNldCwgSSBwbGFuIHRvIHN1Ym1pdCBhIHNlcGFyYXRlIHBhdGNoIHRvIGNs
-ZWFuIHVwLg0KDQpUaGFua3MsDQpaaGlxaWFuZw0KDQo+IA0KPiA+IFNpZ25lZC1vZmYtYnk6IFhp
-YW93ZWkgQmFvIDx4aWFvd2VpLmJhb0BueHAuY29tPg0KPiA+IC0tLQ0KPiA+IHYzOg0KPiA+ICAt
-IFRoaXMgaXMgYSBuZXcgcGF0Y2gsIHRvIGZpeCB0aGUgaXNzdWUgb2YgTVNJIGFuZCBNU0lYIENB
-UCB3YXkgb2YNCj4gPiAgICBmaW5kaW5nLg0KPiA+IHY0Og0KPiA+ICAtIENvcnJlY3Qgc29tZSB3
-b3JkIG9mIGNvbW1pdCBtZXNzYWdlLg0KPiA+IHY1Og0KPiA+ICAtIE5vIGNoYW5nZS4NCj4gPiB2
-NjoNCj4gPiAgLSBGaXggdXAgdGhlIGNvbXBpbGUgZXJyb3IuDQo+ID4NCj4gPiAgZHJpdmVycy9w
-Y2kvY29udHJvbGxlci9kd2MvcGNpZS1kZXNpZ253YXJlLWVwLmMgfCAxMzUNCj4gKysrKysrKysr
-KysrKysrKysrKysrLS0tDQo+ID4gIGRyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVz
-aWdud2FyZS5oICAgIHwgIDE4ICsrKy0NCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCAxMzQgaW5zZXJ0
-aW9ucygrKSwgMTkgZGVsZXRpb25zKC0pDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9w
-Y2kvY29udHJvbGxlci9kd2MvcGNpZS1kZXNpZ253YXJlLWVwLmMNCj4gPiBiL2RyaXZlcnMvcGNp
-L2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdud2FyZS1lcC5jDQo+ID4gaW5kZXggOTMzYmI4OS4u
-ZmI5MTVmMiAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3BjaS9jb250cm9sbGVyL2R3Yy9wY2ll
-LWRlc2lnbndhcmUtZXAuYw0KPiA+ICsrKyBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3Bj
-aWUtZGVzaWdud2FyZS1lcC5jDQo+ID4gQEAgLTE5LDYgKzE5LDE5IEBAIHZvaWQgZHdfcGNpZV9l
-cF9saW5rdXAoc3RydWN0IGR3X3BjaWVfZXAgKmVwKQ0KPiA+ICAJcGNpX2VwY19saW5rdXAoZXBj
-KTsNCj4gPiAgfQ0KPiA+DQo+ID4gK3N0cnVjdCBkd19wY2llX2VwX2Z1bmMgKg0KPiA+ICtkd19w
-Y2llX2VwX2dldF9mdW5jX2Zyb21fZXAoc3RydWN0IGR3X3BjaWVfZXAgKmVwLCB1OCBmdW5jX25v
-KSB7DQo+ID4gKwlzdHJ1Y3QgZHdfcGNpZV9lcF9mdW5jICplcF9mdW5jOw0KPiA+ICsNCj4gPiAr
-CWxpc3RfZm9yX2VhY2hfZW50cnkoZXBfZnVuYywgJmVwLT5mdW5jX2xpc3QsIGxpc3QpIHsNCj4g
-PiArCQlpZiAoZXBfZnVuYy0+ZnVuY19ubyA9PSBmdW5jX25vKQ0KPiA+ICsJCQlyZXR1cm4gZXBf
-ZnVuYzsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlyZXR1cm4gTlVMTDsNCj4gPiArfQ0KPiA+ICsN
-Cj4gPiAgc3RhdGljIHVuc2lnbmVkIGludCBkd19wY2llX2VwX2Z1bmNfc2VsZWN0KHN0cnVjdCBk
-d19wY2llX2VwICplcCwgdTgNCj4gPiBmdW5jX25vKSAgew0KPiA+ICAJdW5zaWduZWQgaW50IGZ1
-bmNfb2Zmc2V0ID0gMDsNCj4gPiBAQCAtNTksNiArNzIsNDcgQEAgdm9pZCBkd19wY2llX2VwX3Jl
-c2V0X2JhcihzdHJ1Y3QgZHdfcGNpZSAqcGNpLA0KPiBlbnVtIHBjaV9iYXJubyBiYXIpDQo+ID4g
-IAkJX19kd19wY2llX2VwX3Jlc2V0X2JhcihwY2ksIGZ1bmNfbm8sIGJhciwgMCk7ICB9DQo+ID4N
-Cj4gPiArc3RhdGljIHU4IF9fZHdfcGNpZV9lcF9maW5kX25leHRfY2FwKHN0cnVjdCBkd19wY2ll
-X2VwICplcCwgdTgNCj4gZnVuY19ubywNCj4gPiArCQl1OCBjYXBfcHRyLCB1OCBjYXApDQo+ID4g
-K3sNCj4gPiArCXN0cnVjdCBkd19wY2llICpwY2kgPSB0b19kd19wY2llX2Zyb21fZXAoZXApOw0K
-PiA+ICsJdW5zaWduZWQgaW50IGZ1bmNfb2Zmc2V0ID0gMDsNCj4gDQo+IFVubmVjZXNzYXJ5IGlu
-aXRpYWxpemF0aW9uLg0KPiANCj4gPiArCXU4IGNhcF9pZCwgbmV4dF9jYXBfcHRyOw0KPiA+ICsJ
-dTE2IHJlZzsNCj4gPiArDQo+ID4gKwlpZiAoIWNhcF9wdHIpDQo+ID4gKwkJcmV0dXJuIDA7DQo+
-ID4gKw0KPiA+ICsJZnVuY19vZmZzZXQgPSBkd19wY2llX2VwX2Z1bmNfc2VsZWN0KGVwLCBmdW5j
-X25vKTsNCj4gPiArDQo+ID4gKwlyZWcgPSBkd19wY2llX3JlYWR3X2RiaShwY2ksIGZ1bmNfb2Zm
-c2V0ICsgY2FwX3B0cik7DQo+ID4gKwljYXBfaWQgPSAocmVnICYgMHgwMGZmKTsNCj4gPiArDQo+
-ID4gKwlpZiAoY2FwX2lkID4gUENJX0NBUF9JRF9NQVgpDQo+ID4gKwkJcmV0dXJuIDA7DQo+ID4g
-Kw0KPiA+ICsJaWYgKGNhcF9pZCA9PSBjYXApDQo+ID4gKwkJcmV0dXJuIGNhcF9wdHI7DQo+ID4g
-Kw0KPiA+ICsJbmV4dF9jYXBfcHRyID0gKHJlZyAmIDB4ZmYwMCkgPj4gODsNCj4gPiArCXJldHVy
-biBfX2R3X3BjaWVfZXBfZmluZF9uZXh0X2NhcChlcCwgZnVuY19ubywgbmV4dF9jYXBfcHRyLCBj
-YXApOyB9DQo+ID4gKw0KPiA+ICtzdGF0aWMgdTggZHdfcGNpZV9lcF9maW5kX2NhcGFiaWxpdHko
-c3RydWN0IGR3X3BjaWVfZXAgKmVwLCB1OA0KPiA+ICtmdW5jX25vLCB1OCBjYXApIHsNCj4gPiAr
-CXN0cnVjdCBkd19wY2llICpwY2kgPSB0b19kd19wY2llX2Zyb21fZXAoZXApOw0KPiA+ICsJdW5z
-aWduZWQgaW50IGZ1bmNfb2Zmc2V0ID0gMDsNCj4gDQo+IFVubmVjZXNzYXJ5IGluaXRpYWxpemF0
-aW9uLg0KPiANCj4gPiArCXU4IG5leHRfY2FwX3B0cjsNCj4gPiArCXUxNiByZWc7DQo+ID4gKw0K
-PiA+ICsJZnVuY19vZmZzZXQgPSBkd19wY2llX2VwX2Z1bmNfc2VsZWN0KGVwLCBmdW5jX25vKTsN
-Cj4gPiArDQo+ID4gKwlyZWcgPSBkd19wY2llX3JlYWR3X2RiaShwY2ksIGZ1bmNfb2Zmc2V0ICsg
-UENJX0NBUEFCSUxJVFlfTElTVCk7DQo+ID4gKwluZXh0X2NhcF9wdHIgPSAocmVnICYgMHgwMGZm
-KTsNCj4gPiArDQo+ID4gKwlyZXR1cm4gX19kd19wY2llX2VwX2ZpbmRfbmV4dF9jYXAoZXAsIGZ1
-bmNfbm8sIG5leHRfY2FwX3B0ciwgY2FwKTsgfQ0KPiA+ICsNCj4gPiAgc3RhdGljIGludCBkd19w
-Y2llX2VwX3dyaXRlX2hlYWRlcihzdHJ1Y3QgcGNpX2VwYyAqZXBjLCB1OCBmdW5jX25vLA0KPiA+
-ICAJCQkJICAgc3RydWN0IHBjaV9lcGZfaGVhZGVyICpoZHIpDQo+ID4gIHsNCj4gPiBAQCAtMjQ2
-LDEzICszMDAsMTggQEAgc3RhdGljIGludCBkd19wY2llX2VwX2dldF9tc2koc3RydWN0IHBjaV9l
-cGMNCj4gKmVwYywgdTggZnVuY19ubykNCj4gPiAgCXN0cnVjdCBkd19wY2llICpwY2kgPSB0b19k
-d19wY2llX2Zyb21fZXAoZXApOw0KPiA+ICAJdTMyIHZhbCwgcmVnOw0KPiA+ICAJdW5zaWduZWQg
-aW50IGZ1bmNfb2Zmc2V0ID0gMDsNCj4gDQo+IFVubmVjZXNzYXJ5IGluaXRpYWxpemF0aW9uIChu
-b3QgZnJvbSB5b3VyIHBhdGNoKS4NCj4gDQo+ID4gKwlzdHJ1Y3QgZHdfcGNpZV9lcF9mdW5jICpl
-cF9mdW5jOw0KPiA+DQo+ID4gLQlpZiAoIWVwLT5tc2lfY2FwKQ0KPiA+ICsJZXBfZnVuYyA9IGR3
-X3BjaWVfZXBfZ2V0X2Z1bmNfZnJvbV9lcChlcCwgZnVuY19ubyk7DQo+ID4gKwlpZiAoIWVwX2Z1
-bmMpDQo+ID4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJaWYgKCFlcF9mdW5jLT5t
-c2lfY2FwKQ0KPiA+ICAJCXJldHVybiAtRUlOVkFMOw0KPiA+DQo+ID4gIAlmdW5jX29mZnNldCA9
-IGR3X3BjaWVfZXBfZnVuY19zZWxlY3QoZXAsIGZ1bmNfbm8pOw0KPiA+DQo+ID4gLQlyZWcgPSBl
-cC0+bXNpX2NhcCArIGZ1bmNfb2Zmc2V0ICsgUENJX01TSV9GTEFHUzsNCj4gPiArCXJlZyA9IGVw
-X2Z1bmMtPm1zaV9jYXAgKyBmdW5jX29mZnNldCArIFBDSV9NU0lfRkxBR1M7DQo+ID4gIAl2YWwg
-PSBkd19wY2llX3JlYWR3X2RiaShwY2ksIHJlZyk7DQo+ID4gIAlpZiAoISh2YWwgJiBQQ0lfTVNJ
-X0ZMQUdTX0VOQUJMRSkpDQo+ID4gIAkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gQEAgLTI2OCwxMyAr
-MzI3LDE4IEBAIHN0YXRpYyBpbnQgZHdfcGNpZV9lcF9zZXRfbXNpKHN0cnVjdCBwY2lfZXBjDQo+
-ICplcGMsIHU4IGZ1bmNfbm8sIHU4IGludGVycnVwdHMpDQo+ID4gIAlzdHJ1Y3QgZHdfcGNpZSAq
-cGNpID0gdG9fZHdfcGNpZV9mcm9tX2VwKGVwKTsNCj4gPiAgCXUzMiB2YWwsIHJlZzsNCj4gPiAg
-CXVuc2lnbmVkIGludCBmdW5jX29mZnNldCA9IDA7DQo+IA0KPiBVbm5lY2Vzc2FyeSBpbml0aWFs
-aXphdGlvbiAobm90IGZyb20geW91ciBwYXRjaCkuDQo+IA0KPiA+ICsJc3RydWN0IGR3X3BjaWVf
-ZXBfZnVuYyAqZXBfZnVuYzsNCj4gPiArDQo+ID4gKwllcF9mdW5jID0gZHdfcGNpZV9lcF9nZXRf
-ZnVuY19mcm9tX2VwKGVwLCBmdW5jX25vKTsNCj4gPiArCWlmICghZXBfZnVuYykNCj4gPiArCQly
-ZXR1cm4gLUVJTlZBTDsNCj4gPg0KPiA+IC0JaWYgKCFlcC0+bXNpX2NhcCkNCj4gPiArCWlmICgh
-ZXBfZnVuYy0+bXNpX2NhcCkNCj4gPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gPg0KPiA+ICAJZnVu
-Y19vZmZzZXQgPSBkd19wY2llX2VwX2Z1bmNfc2VsZWN0KGVwLCBmdW5jX25vKTsNCj4gPg0KPiA+
-IC0JcmVnID0gZXAtPm1zaV9jYXAgKyBmdW5jX29mZnNldCArIFBDSV9NU0lfRkxBR1M7DQo+ID4g
-KwlyZWcgPSBlcF9mdW5jLT5tc2lfY2FwICsgZnVuY19vZmZzZXQgKyBQQ0lfTVNJX0ZMQUdTOw0K
-PiA+ICAJdmFsID0gZHdfcGNpZV9yZWFkd19kYmkocGNpLCByZWcpOw0KPiA+ICAJdmFsICY9IH5Q
-Q0lfTVNJX0ZMQUdTX1FNQVNLOw0KPiA+ICAJdmFsIHw9IChpbnRlcnJ1cHRzIDw8IDEpICYgUENJ
-X01TSV9GTEFHU19RTUFTSzsgQEAgLTI5MSwxMyArMzU1LDE4DQo+ID4gQEAgc3RhdGljIGludCBk
-d19wY2llX2VwX2dldF9tc2l4KHN0cnVjdCBwY2lfZXBjICplcGMsIHU4IGZ1bmNfbm8pDQo+ID4g
-IAlzdHJ1Y3QgZHdfcGNpZSAqcGNpID0gdG9fZHdfcGNpZV9mcm9tX2VwKGVwKTsNCj4gPiAgCXUz
-MiB2YWwsIHJlZzsNCj4gPiAgCXVuc2lnbmVkIGludCBmdW5jX29mZnNldCA9IDA7DQo+IA0KPiBV
-bm5lY2Vzc2FyeSBpbml0aWFsaXphdGlvbiAobm90IGZyb20geW91ciBwYXRjaCkuDQo+IA0KPiA+
-ICsJc3RydWN0IGR3X3BjaWVfZXBfZnVuYyAqZXBfZnVuYzsNCj4gPiArDQo+ID4gKwllcF9mdW5j
-ID0gZHdfcGNpZV9lcF9nZXRfZnVuY19mcm9tX2VwKGVwLCBmdW5jX25vKTsNCj4gPiArCWlmICgh
-ZXBfZnVuYykNCj4gPiArCQlyZXR1cm4gLUVJTlZBTDsNCj4gPg0KPiA+IC0JaWYgKCFlcC0+bXNp
-eF9jYXApDQo+ID4gKwlpZiAoIWVwX2Z1bmMtPm1zaXhfY2FwKQ0KPiA+ICAJCXJldHVybiAtRUlO
-VkFMOw0KPiA+DQo+ID4gIAlmdW5jX29mZnNldCA9IGR3X3BjaWVfZXBfZnVuY19zZWxlY3QoZXAs
-IGZ1bmNfbm8pOw0KPiA+DQo+ID4gLQlyZWcgPSBlcC0+bXNpeF9jYXAgKyBmdW5jX29mZnNldCAr
-IFBDSV9NU0lYX0ZMQUdTOw0KPiA+ICsJcmVnID0gZXBfZnVuYy0+bXNpeF9jYXAgKyBmdW5jX29m
-ZnNldCArIFBDSV9NU0lYX0ZMQUdTOw0KPiA+ICAJdmFsID0gZHdfcGNpZV9yZWFkd19kYmkocGNp
-LCByZWcpOw0KPiA+ICAJaWYgKCEodmFsICYgUENJX01TSVhfRkxBR1NfRU5BQkxFKSkNCj4gPiAg
-CQlyZXR1cm4gLUVJTlZBTDsNCj4gPiBAQCAtMzEzLDEzICszODIsMTggQEAgc3RhdGljIGludCBk
-d19wY2llX2VwX3NldF9tc2l4KHN0cnVjdCBwY2lfZXBjDQo+ICplcGMsIHU4IGZ1bmNfbm8sIHUx
-NiBpbnRlcnJ1cHRzKQ0KPiA+ICAJc3RydWN0IGR3X3BjaWUgKnBjaSA9IHRvX2R3X3BjaWVfZnJv
-bV9lcChlcCk7DQo+ID4gIAl1MzIgdmFsLCByZWc7DQo+ID4gIAl1bnNpZ25lZCBpbnQgZnVuY19v
-ZmZzZXQgPSAwOw0KPiANCj4gVW5uZWNlc3NhcnkgaW5pdGlhbGl6YXRpb24gKG5vdCBmcm9tIHlv
-dXIgcGF0Y2gpLg0KPiANCj4gPiArCXN0cnVjdCBkd19wY2llX2VwX2Z1bmMgKmVwX2Z1bmM7DQo+
-ID4NCj4gPiAtCWlmICghZXAtPm1zaXhfY2FwKQ0KPiA+ICsJZXBfZnVuYyA9IGR3X3BjaWVfZXBf
-Z2V0X2Z1bmNfZnJvbV9lcChlcCwgZnVuY19ubyk7DQo+ID4gKwlpZiAoIWVwX2Z1bmMpDQo+ID4g
-KwkJcmV0dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJaWYgKCFlcF9mdW5jLT5tc2l4X2NhcCkN
-Cj4gPiAgCQlyZXR1cm4gLUVJTlZBTDsNCj4gPg0KPiA+ICAJZnVuY19vZmZzZXQgPSBkd19wY2ll
-X2VwX2Z1bmNfc2VsZWN0KGVwLCBmdW5jX25vKTsNCj4gPg0KPiA+IC0JcmVnID0gZXAtPm1zaXhf
-Y2FwICsgZnVuY19vZmZzZXQgKyBQQ0lfTVNJWF9GTEFHUzsNCj4gPiArCXJlZyA9IGVwX2Z1bmMt
-Pm1zaXhfY2FwICsgZnVuY19vZmZzZXQgKyBQQ0lfTVNJWF9GTEFHUzsNCj4gPiAgCXZhbCA9IGR3
-X3BjaWVfcmVhZHdfZGJpKHBjaSwgcmVnKTsNCj4gPiAgCXZhbCAmPSB+UENJX01TSVhfRkxBR1Nf
-UVNJWkU7DQo+ID4gIAl2YWwgfD0gaW50ZXJydXB0czsNCj4gPiBAQCAtNDA0LDYgKzQ3OCw3IEBA
-IGludCBkd19wY2llX2VwX3JhaXNlX21zaV9pcnEoc3RydWN0IGR3X3BjaWVfZXANCj4gKmVwLCB1
-OCBmdW5jX25vLA0KPiA+ICAJCQkgICAgIHU4IGludGVycnVwdF9udW0pDQo+ID4gIHsNCj4gPiAg
-CXN0cnVjdCBkd19wY2llICpwY2kgPSB0b19kd19wY2llX2Zyb21fZXAoZXApOw0KPiA+ICsJc3Ry
-dWN0IGR3X3BjaWVfZXBfZnVuYyAqZXBfZnVuYzsNCj4gPiAgCXN0cnVjdCBwY2lfZXBjICplcGMg
-PSBlcC0+ZXBjOw0KPiA+ICAJdW5zaWduZWQgaW50IGFsaWduZWRfb2Zmc2V0Ow0KPiA+ICAJdW5z
-aWduZWQgaW50IGZ1bmNfb2Zmc2V0ID0gMDsNCj4gDQo+IFVubmVjZXNzYXJ5IGluaXRpYWxpemF0
-aW9uIChub3QgZnJvbSB5b3VyIHBhdGNoKS4NCj4gDQo+ID4gQEAgLTQxMywyNSArNDg4LDI5IEBA
-IGludCBkd19wY2llX2VwX3JhaXNlX21zaV9pcnEoc3RydWN0DQo+IGR3X3BjaWVfZXAgKmVwLCB1
-OCBmdW5jX25vLA0KPiA+ICAJYm9vbCBoYXNfdXBwZXI7DQo+ID4gIAlpbnQgcmV0Ow0KPiA+DQo+
-ID4gLQlpZiAoIWVwLT5tc2lfY2FwKQ0KPiA+ICsJZXBfZnVuYyA9IGR3X3BjaWVfZXBfZ2V0X2Z1
-bmNfZnJvbV9lcChlcCwgZnVuY19ubyk7DQo+ID4gKwlpZiAoIWVwX2Z1bmMpDQo+ID4gKwkJcmV0
-dXJuIC1FSU5WQUw7DQo+ID4gKw0KPiA+ICsJaWYgKCFlcF9mdW5jLT5tc2lfY2FwKQ0KPiA+ICAJ
-CXJldHVybiAtRUlOVkFMOw0KPiA+DQo+ID4gIAlmdW5jX29mZnNldCA9IGR3X3BjaWVfZXBfZnVu
-Y19zZWxlY3QoZXAsIGZ1bmNfbm8pOw0KPiA+DQo+ID4gIAkvKiBSYWlzZSBNU0kgcGVyIHRoZSBQ
-Q0kgTG9jYWwgQnVzIFNwZWNpZmljYXRpb24gUmV2aXNpb24gMy4wLCA2LjguMS4gKi8NCj4gPiAt
-CXJlZyA9IGVwLT5tc2lfY2FwICsgZnVuY19vZmZzZXQgKyBQQ0lfTVNJX0ZMQUdTOw0KPiA+ICsJ
-cmVnID0gZXBfZnVuYy0+bXNpX2NhcCArIGZ1bmNfb2Zmc2V0ICsgUENJX01TSV9GTEFHUzsNCj4g
-PiAgCW1zZ19jdHJsID0gZHdfcGNpZV9yZWFkd19kYmkocGNpLCByZWcpOw0KPiA+ICAJaGFzX3Vw
-cGVyID0gISEobXNnX2N0cmwgJiBQQ0lfTVNJX0ZMQUdTXzY0QklUKTsNCj4gPiAtCXJlZyA9IGVw
-LT5tc2lfY2FwICsgZnVuY19vZmZzZXQgKyBQQ0lfTVNJX0FERFJFU1NfTE87DQo+ID4gKwlyZWcg
-PSBlcF9mdW5jLT5tc2lfY2FwICsgZnVuY19vZmZzZXQgKyBQQ0lfTVNJX0FERFJFU1NfTE87DQo+
-ID4gIAltc2dfYWRkcl9sb3dlciA9IGR3X3BjaWVfcmVhZGxfZGJpKHBjaSwgcmVnKTsNCj4gPiAg
-CWlmIChoYXNfdXBwZXIpIHsNCj4gPiAtCQlyZWcgPSBlcC0+bXNpX2NhcCArIGZ1bmNfb2Zmc2V0
-ICsgUENJX01TSV9BRERSRVNTX0hJOw0KPiA+ICsJCXJlZyA9IGVwX2Z1bmMtPm1zaV9jYXAgKyBm
-dW5jX29mZnNldCArIFBDSV9NU0lfQUREUkVTU19ISTsNCj4gPiAgCQltc2dfYWRkcl91cHBlciA9
-IGR3X3BjaWVfcmVhZGxfZGJpKHBjaSwgcmVnKTsNCj4gPiAtCQlyZWcgPSBlcC0+bXNpX2NhcCAr
-IGZ1bmNfb2Zmc2V0ICsgUENJX01TSV9EQVRBXzY0Ow0KPiA+ICsJCXJlZyA9IGVwX2Z1bmMtPm1z
-aV9jYXAgKyBmdW5jX29mZnNldCArIFBDSV9NU0lfREFUQV82NDsNCj4gPiAgCQltc2dfZGF0YSA9
-IGR3X3BjaWVfcmVhZHdfZGJpKHBjaSwgcmVnKTsNCj4gPiAgCX0gZWxzZSB7DQo+ID4gIAkJbXNn
-X2FkZHJfdXBwZXIgPSAwOw0KPiA+IC0JCXJlZyA9IGVwLT5tc2lfY2FwICsgZnVuY19vZmZzZXQg
-KyBQQ0lfTVNJX0RBVEFfMzI7DQo+ID4gKwkJcmVnID0gZXBfZnVuYy0+bXNpX2NhcCArIGZ1bmNf
-b2Zmc2V0ICsgUENJX01TSV9EQVRBXzMyOw0KPiA+ICAJCW1zZ19kYXRhID0gZHdfcGNpZV9yZWFk
-d19kYmkocGNpLCByZWcpOw0KPiA+ICAJfQ0KPiA+ICAJYWxpZ25lZF9vZmZzZXQgPSBtc2dfYWRk
-cl9sb3dlciAmIChlcGMtPm1lbS0+cGFnZV9zaXplIC0gMSk7IEBADQo+ID4gLTQ2Nyw2ICs1NDYs
-NyBAQCBpbnQgZHdfcGNpZV9lcF9yYWlzZV9tc2l4X2lycShzdHJ1Y3QgZHdfcGNpZV9lcCAqZXAs
-DQo+IHU4IGZ1bmNfbm8sDQo+ID4gIAkJCSAgICAgIHUxNiBpbnRlcnJ1cHRfbnVtKQ0KPiA+ICB7
-DQo+ID4gIAlzdHJ1Y3QgZHdfcGNpZSAqcGNpID0gdG9fZHdfcGNpZV9mcm9tX2VwKGVwKTsNCj4g
-PiArCXN0cnVjdCBkd19wY2llX2VwX2Z1bmMgKmVwX2Z1bmM7DQo+ID4gIAlzdHJ1Y3QgcGNpX2Vw
-YyAqZXBjID0gZXAtPmVwYzsNCj4gPiAgCXUxNiB0Ymxfb2Zmc2V0LCBiaXI7DQo+ID4gIAl1bnNp
-Z25lZCBpbnQgZnVuY19vZmZzZXQgPSAwOw0KPiANCj4gVW5uZWNlc3NhcnkgaW5pdGlhbGl6YXRp
-b24gKG5vdCBmcm9tIHlvdXIgcGF0Y2gpLg0KPiANCj4gPiBAQCAtNDc3LDkgKzU1NywxNiBAQCBp
-bnQgZHdfcGNpZV9lcF9yYWlzZV9tc2l4X2lycShzdHJ1Y3QNCj4gZHdfcGNpZV9lcCAqZXAsIHU4
-IGZ1bmNfbm8sDQo+ID4gIAl2b2lkIF9faW9tZW0gKm1zaXhfdGJsOw0KPiA+ICAJaW50IHJldDsN
-Cj4gPg0KPiA+ICsJZXBfZnVuYyA9IGR3X3BjaWVfZXBfZ2V0X2Z1bmNfZnJvbV9lcChlcCwgZnVu
-Y19ubyk7DQo+ID4gKwlpZiAoIWVwX2Z1bmMpDQo+ID4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ID4g
-Kw0KPiA+ICsJaWYgKCFlcF9mdW5jLT5tc2l4X2NhcCkNCj4gPiArCQlyZXR1cm4gLUVJTlZBTDsN
-Cj4gPiArDQo+ID4gIAlmdW5jX29mZnNldCA9IGR3X3BjaWVfZXBfZnVuY19zZWxlY3QoZXAsIGZ1
-bmNfbm8pOw0KPiA+DQo+ID4gLQlyZWcgPSBlcC0+bXNpeF9jYXAgKyBmdW5jX29mZnNldCArIFBD
-SV9NU0lYX1RBQkxFOw0KPiA+ICsJcmVnID0gZXBfZnVuYy0+bXNpeF9jYXAgKyBmdW5jX29mZnNl
-dCArIFBDSV9NU0lYX1RBQkxFOw0KPiA+ICAJdGJsX29mZnNldCA9IGR3X3BjaWVfcmVhZGxfZGJp
-KHBjaSwgcmVnKTsNCj4gPiAgCWJpciA9ICh0Ymxfb2Zmc2V0ICYgUENJX01TSVhfVEFCTEVfQklS
-KTsNCj4gPiAgCXRibF9vZmZzZXQgJj0gUENJX01TSVhfVEFCTEVfT0ZGU0VUOyBAQCAtNTU4LDYg
-KzY0NSw3IEBAIGludA0KPiA+IGR3X3BjaWVfZXBfaW5pdChzdHJ1Y3QgZHdfcGNpZV9lcCAqZXAp
-DQo+ID4gIAlpbnQgaTsNCj4gPiAgCWludCByZXQ7DQo+ID4gIAl1MzIgcmVnOw0KPiA+ICsJdTgg
-ZnVuY19ubzsNCj4gPiAgCXZvaWQgKmFkZHI7DQo+ID4gIAl1OCBoZHJfdHlwZTsNCj4gPiAgCXVu
-c2lnbmVkIGludCBuYmFyczsNCj4gPiBAQCAtNTY2LDYgKzY1NCw5IEBAIGludCBkd19wY2llX2Vw
-X2luaXQoc3RydWN0IGR3X3BjaWVfZXAgKmVwKQ0KPiA+ICAJc3RydWN0IGR3X3BjaWUgKnBjaSA9
-IHRvX2R3X3BjaWVfZnJvbV9lcChlcCk7DQo+ID4gIAlzdHJ1Y3QgZGV2aWNlICpkZXYgPSBwY2kt
-PmRldjsNCj4gPiAgCXN0cnVjdCBkZXZpY2Vfbm9kZSAqbnAgPSBkZXYtPm9mX25vZGU7DQo+ID4g
-KwlzdHJ1Y3QgZHdfcGNpZV9lcF9mdW5jICplcF9mdW5jOw0KPiA+ICsNCj4gPiArCUlOSVRfTElT
-VF9IRUFEKCZlcC0+ZnVuY19saXN0KTsNCj4gPg0KPiA+ICAJaWYgKCFwY2ktPmRiaV9iYXNlIHx8
-ICFwY2ktPmRiaV9iYXNlMikgew0KPiA+ICAJCWRldl9lcnIoZGV2LCAiZGJpX2Jhc2UvZGJpX2Jh
-c2UyIGlzIG5vdCBwb3B1bGF0ZWRcbiIpOyBAQCAtNjMyLDkNCj4gPiArNzIzLDE5IEBAIGludCBk
-d19wY2llX2VwX2luaXQoc3RydWN0IGR3X3BjaWVfZXAgKmVwKQ0KPiA+ICAJaWYgKHJldCA8IDAp
-DQo+ID4gIAkJZXBjLT5tYXhfZnVuY3Rpb25zID0gMTsNCj4gPg0KPiA+IC0JZXAtPm1zaV9jYXAg
-PSBkd19wY2llX2ZpbmRfY2FwYWJpbGl0eShwY2ksIFBDSV9DQVBfSURfTVNJKTsNCj4gPiArCWZv
-ciAoZnVuY19ubyA9IDA7IGZ1bmNfbm8gPCBlcGMtPm1heF9mdW5jdGlvbnM7IGZ1bmNfbm8rKykg
-ew0KPiA+ICsJCWVwX2Z1bmMgPSBkZXZtX2t6YWxsb2MoZGV2LCBzaXplb2YoKmVwX2Z1bmMpLCBH
-RlBfS0VSTkVMKTsNCj4gPiArCQlpZiAoIWVwX2Z1bmMpDQo+ID4gKwkJCXJldHVybiAtRU5PTUVN
-Ow0KPiA+DQo+ID4gLQllcC0+bXNpeF9jYXAgPSBkd19wY2llX2ZpbmRfY2FwYWJpbGl0eShwY2ks
-IFBDSV9DQVBfSURfTVNJWCk7DQo+ID4gKwkJZXBfZnVuYy0+ZnVuY19ubyA9IGZ1bmNfbm87DQo+
-ID4gKwkJZXBfZnVuYy0+bXNpX2NhcCA9IGR3X3BjaWVfZXBfZmluZF9jYXBhYmlsaXR5KGVwLCBm
-dW5jX25vLA0KPiA+ICsJCQkJCQkJICAgICAgUENJX0NBUF9JRF9NU0kpOw0KPiA+ICsJCWVwX2Z1
-bmMtPm1zaXhfY2FwID0gZHdfcGNpZV9lcF9maW5kX2NhcGFiaWxpdHkoZXAsIGZ1bmNfbm8sDQo+
-ID4gKwkJCQkJCQkgICAgICAgUENJX0NBUF9JRF9NU0lYKTsNCj4gPiArDQo+ID4gKwkJbGlzdF9h
-ZGRfdGFpbCgmZXBfZnVuYy0+bGlzdCwgJmVwLT5mdW5jX2xpc3QpOw0KPiA+ICsJfQ0KPiA+DQo+
-ID4gIAlpZiAoZXAtPm9wcy0+ZXBfaW5pdCkNCj4gPiAgCQllcC0+b3BzLT5lcF9pbml0KGVwKTsN
-Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvY29udHJvbGxlci9kd2MvcGNpZS1kZXNpZ253
-YXJlLmgNCj4gPiBiL2RyaXZlcnMvcGNpL2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdud2FyZS5o
-DQo+ID4gaW5kZXggY2IzMmFmYS4uZGQ5YjdiNCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Bj
-aS9jb250cm9sbGVyL2R3Yy9wY2llLWRlc2lnbndhcmUuaA0KPiA+ICsrKyBiL2RyaXZlcnMvcGNp
-L2NvbnRyb2xsZXIvZHdjL3BjaWUtZGVzaWdud2FyZS5oDQo+ID4gQEAgLTIzMCw4ICsyMzAsMTYg
-QEAgc3RydWN0IGR3X3BjaWVfZXBfb3BzIHsNCj4gPiAgCXVuc2lnbmVkIGludCAoKmZ1bmNfY29u
-Zl9zZWxlY3QpKHN0cnVjdCBkd19wY2llX2VwICplcCwgdTggZnVuY19ubyk7DQo+ID4gfTsNCj4g
-Pg0KPiA+ICtzdHJ1Y3QgZHdfcGNpZV9lcF9mdW5jIHsNCj4gPiArCXN0cnVjdCBsaXN0X2hlYWQJ
-bGlzdDsNCj4gPiArCXU4CQkJZnVuY19ubzsNCj4gPiArCXU4CQkJbXNpX2NhcDsJLyogTVNJIGNh
-cGFiaWxpdHkgb2Zmc2V0ICovDQo+ID4gKwl1OAkJCW1zaXhfY2FwOwkvKiBNU0ktWCBjYXBhYmls
-aXR5IG9mZnNldCAqLw0KPiA+ICt9Ow0KPiA+ICsNCj4gPiAgc3RydWN0IGR3X3BjaWVfZXAgew0K
-PiA+ICAJc3RydWN0IHBjaV9lcGMJCSplcGM7DQo+ID4gKwlzdHJ1Y3QgbGlzdF9oZWFkCWZ1bmNf
-bGlzdDsNCj4gPiAgCWNvbnN0IHN0cnVjdCBkd19wY2llX2VwX29wcyAqb3BzOw0KPiA+ICAJcGh5
-c19hZGRyX3QJCXBoeXNfYmFzZTsNCj4gPiAgCXNpemVfdAkJCWFkZHJfc2l6ZTsNCj4gPiBAQCAt
-MjQ0LDggKzI1Miw2IEBAIHN0cnVjdCBkd19wY2llX2VwIHsNCj4gPiAgCXUzMgkJCW51bV9vYl93
-aW5kb3dzOw0KPiA+ICAJdm9pZCBfX2lvbWVtCQkqbXNpX21lbTsNCj4gPiAgCXBoeXNfYWRkcl90
-CQltc2lfbWVtX3BoeXM7DQo+ID4gLQl1OAkJCW1zaV9jYXA7CS8qIE1TSSBjYXBhYmlsaXR5IG9m
-ZnNldCAqLw0KPiA+IC0JdTgJCQltc2l4X2NhcDsJLyogTVNJLVggY2FwYWJpbGl0eSBvZmZzZXQg
-Ki8NCj4gPiAgfTsNCj4gPg0KPiA+ICBzdHJ1Y3QgZHdfcGNpZV9vcHMgew0KPiA+IEBAIC00Mzcs
-NiArNDQzLDggQEAgaW50IGR3X3BjaWVfZXBfcmFpc2VfbXNpeF9pcnEoc3RydWN0IGR3X3BjaWVf
-ZXANCj4gPiAqZXAsIHU4IGZ1bmNfbm8sICBpbnQgZHdfcGNpZV9lcF9yYWlzZV9tc2l4X2lycV9k
-b29yYmVsbChzdHJ1Y3QNCj4gZHdfcGNpZV9lcCAqZXAsIHU4IGZ1bmNfbm8sDQo+ID4gIAkJCQkg
-ICAgICAgdTE2IGludGVycnVwdF9udW0pOw0KPiA+ICB2b2lkIGR3X3BjaWVfZXBfcmVzZXRfYmFy
-KHN0cnVjdCBkd19wY2llICpwY2ksIGVudW0gcGNpX2Jhcm5vIGJhcik7DQo+ID4gK3N0cnVjdCBk
-d19wY2llX2VwX2Z1bmMgKg0KPiA+ICtkd19wY2llX2VwX2dldF9mdW5jX2Zyb21fZXAoc3RydWN0
-IGR3X3BjaWVfZXAgKmVwLCB1OCBmdW5jX25vKTsNCj4gPiAgI2Vsc2UNCj4gPiAgc3RhdGljIGlu
-bGluZSB2b2lkIGR3X3BjaWVfZXBfbGlua3VwKHN0cnVjdCBkd19wY2llX2VwICplcCkgIHsgQEAN
-Cj4gPiAtNDc4LDUgKzQ4NiwxMSBAQCBzdGF0aWMgaW5saW5lIGludA0KPiA+IGR3X3BjaWVfZXBf
-cmFpc2VfbXNpeF9pcnFfZG9vcmJlbGwoc3RydWN0IGR3X3BjaWVfZXAgKmVwLCAgc3RhdGljDQo+
-ID4gaW5saW5lIHZvaWQgZHdfcGNpZV9lcF9yZXNldF9iYXIoc3RydWN0IGR3X3BjaWUgKnBjaSwg
-ZW51bSBwY2lfYmFybm8NCj4gPiBiYXIpICB7ICB9DQo+ID4gKw0KPiA+ICtzdGF0aWMgaW5saW5l
-IHN0cnVjdCBkd19wY2llX2VwX2Z1bmMgKg0KPiA+ICtkd19wY2llX2VwX2dldF9mdW5jX2Zyb21f
-ZXAoc3RydWN0IGR3X3BjaWVfZXAgKmVwLCB1OCBmdW5jX25vKSB7DQo+ID4gKwlyZXR1cm4gTlVM
-TDsNCj4gPiArfQ0KPiA+ICAjZW5kaWYNCj4gPiAgI2VuZGlmIC8qIF9QQ0lFX0RFU0lHTldBUkVf
-SCAqLw0KPiA+IC0tDQo+ID4gMi45LjUNCj4gPg0K
+On Thu 24-09-20 08:51:34, Christoph Hellwig wrote:
+> Drivers shouldn't really mess with the readahead size, as that is a VM
+> concept.  Instead set it based on the optimal I/O size by lifting the
+> algorithm from the md driver when registering the disk.  Also set
+> bdi->io_pages there as well by applying the same scheme based on
+> max_sectors.  To ensure the limits work well for stacking drivers a
+> new helper is added to update the readahead limits from the block
+> limits, which is also called from disk_stack_limits.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: Coly Li <colyli@suse.de>
+> Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+
+The patch looks good to me now. You can add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  block/blk-settings.c         | 18 ++++++++++++++++--
+>  block/blk-sysfs.c            |  2 ++
+>  drivers/block/aoe/aoeblk.c   |  1 -
+>  drivers/block/drbd/drbd_nl.c | 10 +---------
+>  drivers/md/bcache/super.c    |  3 ---
+>  drivers/md/dm-table.c        |  3 +--
+>  drivers/md/raid0.c           | 16 ----------------
+>  drivers/md/raid10.c          | 24 +-----------------------
+>  drivers/md/raid5.c           | 13 +------------
+>  drivers/nvme/host/core.c     |  1 +
+>  include/linux/blkdev.h       |  1 +
+>  11 files changed, 24 insertions(+), 68 deletions(-)
+> 
+> diff --git a/block/blk-settings.c b/block/blk-settings.c
+> index 5ea3de48afba22..4f6eb4bb17236a 100644
+> --- a/block/blk-settings.c
+> +++ b/block/blk-settings.c
+> @@ -372,6 +372,19 @@ void blk_queue_alignment_offset(struct request_queue *q, unsigned int offset)
+>  }
+>  EXPORT_SYMBOL(blk_queue_alignment_offset);
+>  
+> +void blk_queue_update_readahead(struct request_queue *q)
+> +{
+> +	/*
+> +	 * For read-ahead of large files to be effective, we need to read ahead
+> +	 * at least twice the optimal I/O size.
+> +	 */
+> +	q->backing_dev_info->ra_pages =
+> +		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
+> +	q->backing_dev_info->io_pages =
+> +		queue_max_sectors(q) >> (PAGE_SHIFT - 9);
+> +}
+> +EXPORT_SYMBOL_GPL(blk_queue_update_readahead);
+> +
+>  /**
+>   * blk_limits_io_min - set minimum request size for a device
+>   * @limits: the queue limits
+> @@ -450,6 +463,8 @@ EXPORT_SYMBOL(blk_limits_io_opt);
+>  void blk_queue_io_opt(struct request_queue *q, unsigned int opt)
+>  {
+>  	blk_limits_io_opt(&q->limits, opt);
+> +	q->backing_dev_info->ra_pages =
+> +		max(queue_io_opt(q) * 2 / PAGE_SIZE, VM_READAHEAD_PAGES);
+>  }
+>  EXPORT_SYMBOL(blk_queue_io_opt);
+>  
+> @@ -631,8 +646,7 @@ void disk_stack_limits(struct gendisk *disk, struct block_device *bdev,
+>  		       top, bottom);
+>  	}
+>  
+> -	t->backing_dev_info->io_pages =
+> -		t->limits.max_sectors >> (PAGE_SHIFT - 9);
+> +	blk_queue_update_readahead(disk->queue);
+>  }
+>  EXPORT_SYMBOL(disk_stack_limits);
+>  
+> diff --git a/block/blk-sysfs.c b/block/blk-sysfs.c
+> index 81722cdcf0cb21..869ed21a9edcab 100644
+> --- a/block/blk-sysfs.c
+> +++ b/block/blk-sysfs.c
+> @@ -854,6 +854,8 @@ int blk_register_queue(struct gendisk *disk)
+>  		percpu_ref_switch_to_percpu(&q->q_usage_counter);
+>  	}
+>  
+> +	blk_queue_update_readahead(q);
+> +
+>  	ret = blk_trace_init_sysfs(dev);
+>  	if (ret)
+>  		return ret;
+> diff --git a/drivers/block/aoe/aoeblk.c b/drivers/block/aoe/aoeblk.c
+> index d8cfc233e64b93..c34e71b0c4a98c 100644
+> --- a/drivers/block/aoe/aoeblk.c
+> +++ b/drivers/block/aoe/aoeblk.c
+> @@ -406,7 +406,6 @@ aoeblk_gdalloc(void *vp)
+>  	WARN_ON(d->gd);
+>  	WARN_ON(d->flags & DEVFL_UP);
+>  	blk_queue_max_hw_sectors(q, BLK_DEF_MAX_SECTORS);
+> -	q->backing_dev_info->ra_pages = SZ_2M / PAGE_SIZE;
+>  	blk_queue_io_opt(q, SZ_2M);
+>  	d->bufpool = mp;
+>  	d->blkq = gd->queue = q;
+> diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
+> index aaff5bde391506..54a4930c04fe07 100644
+> --- a/drivers/block/drbd/drbd_nl.c
+> +++ b/drivers/block/drbd/drbd_nl.c
+> @@ -1362,15 +1362,7 @@ static void drbd_setup_queue_param(struct drbd_device *device, struct drbd_backi
+>  
+>  	if (b) {
+>  		blk_stack_limits(&q->limits, &b->limits, 0);
+> -
+> -		if (q->backing_dev_info->ra_pages !=
+> -		    b->backing_dev_info->ra_pages) {
+> -			drbd_info(device, "Adjusting my ra_pages to backing device's (%lu -> %lu)\n",
+> -				 q->backing_dev_info->ra_pages,
+> -				 b->backing_dev_info->ra_pages);
+> -			q->backing_dev_info->ra_pages =
+> -						b->backing_dev_info->ra_pages;
+> -		}
+> +		blk_queue_update_readahead(q);
+>  	}
+>  	fixup_discard_if_not_supported(q);
+>  	fixup_write_zeroes(device, q);
+> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+> index 48113005ed86ad..6bfa771673623e 100644
+> --- a/drivers/md/bcache/super.c
+> +++ b/drivers/md/bcache/super.c
+> @@ -1427,9 +1427,6 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
+>  	if (ret)
+>  		return ret;
+>  
+> -	dc->disk.disk->queue->backing_dev_info->ra_pages =
+> -		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
+> -		    q->backing_dev_info->ra_pages);
+>  	blk_queue_io_opt(dc->disk.disk->queue,
+>  		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
+>  
+> diff --git a/drivers/md/dm-table.c b/drivers/md/dm-table.c
+> index 5edc3079e7c199..ef2757012f59d5 100644
+> --- a/drivers/md/dm-table.c
+> +++ b/drivers/md/dm-table.c
+> @@ -1925,8 +1925,7 @@ void dm_table_set_restrictions(struct dm_table *t, struct request_queue *q,
+>  	}
+>  #endif
+>  
+> -	/* Allow reads to exceed readahead limits */
+> -	q->backing_dev_info->io_pages = limits->max_sectors >> (PAGE_SHIFT - 9);
+> +	blk_queue_update_readahead(q);
+>  }
+>  
+>  unsigned int dm_table_get_num_targets(struct dm_table *t)
+> diff --git a/drivers/md/raid0.c b/drivers/md/raid0.c
+> index f54a449f97aa79..aa2d7279176880 100644
+> --- a/drivers/md/raid0.c
+> +++ b/drivers/md/raid0.c
+> @@ -410,22 +410,6 @@ static int raid0_run(struct mddev *mddev)
+>  		 mdname(mddev),
+>  		 (unsigned long long)mddev->array_sectors);
+>  
+> -	if (mddev->queue) {
+> -		/* calculate the max read-ahead size.
+> -		 * For read-ahead of large files to be effective, we need to
+> -		 * readahead at least twice a whole stripe. i.e. number of devices
+> -		 * multiplied by chunk size times 2.
+> -		 * If an individual device has an ra_pages greater than the
+> -		 * chunk size, then we will not drive that device as hard as it
+> -		 * wants.  We consider this a configuration error: a larger
+> -		 * chunksize should be used in that case.
+> -		 */
+> -		int stripe = mddev->raid_disks *
+> -			(mddev->chunk_sectors << 9) / PAGE_SIZE;
+> -		if (mddev->queue->backing_dev_info->ra_pages < 2* stripe)
+> -			mddev->queue->backing_dev_info->ra_pages = 2* stripe;
+> -	}
+> -
+>  	dump_zones(mddev);
+>  
+>  	ret = md_integrity_register(mddev);
+> diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+> index 9956a04ac13bd6..5d1bdee313ec33 100644
+> --- a/drivers/md/raid10.c
+> +++ b/drivers/md/raid10.c
+> @@ -3873,19 +3873,6 @@ static int raid10_run(struct mddev *mddev)
+>  	mddev->resync_max_sectors = size;
+>  	set_bit(MD_FAILFAST_SUPPORTED, &mddev->flags);
+>  
+> -	if (mddev->queue) {
+> -		int stripe = conf->geo.raid_disks *
+> -			((mddev->chunk_sectors << 9) / PAGE_SIZE);
+> -
+> -		/* Calculate max read-ahead size.
+> -		 * We need to readahead at least twice a whole stripe....
+> -		 * maybe...
+> -		 */
+> -		stripe /= conf->geo.near_copies;
+> -		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
+> -			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
+> -	}
+> -
+>  	if (md_integrity_register(mddev))
+>  		goto out_free_conf;
+>  
+> @@ -4723,17 +4710,8 @@ static void end_reshape(struct r10conf *conf)
+>  	conf->reshape_safe = MaxSector;
+>  	spin_unlock_irq(&conf->device_lock);
+>  
+> -	/* read-ahead size must cover two whole stripes, which is
+> -	 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
+> -	 */
+> -	if (conf->mddev->queue) {
+> -		int stripe = conf->geo.raid_disks *
+> -			((conf->mddev->chunk_sectors << 9) / PAGE_SIZE);
+> -		stripe /= conf->geo.near_copies;
+> -		if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
+> -			conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
+> +	if (conf->mddev->queue)
+>  		raid10_set_io_opt(conf);
+> -	}
+>  	conf->fullsync = 0;
+>  }
+>  
+> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+> index 9a7d1250894ef1..7ace1f76b14736 100644
+> --- a/drivers/md/raid5.c
+> +++ b/drivers/md/raid5.c
+> @@ -7522,8 +7522,6 @@ static int raid5_run(struct mddev *mddev)
+>  		int data_disks = conf->previous_raid_disks - conf->max_degraded;
+>  		int stripe = data_disks *
+>  			((mddev->chunk_sectors << 9) / PAGE_SIZE);
+> -		if (mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
+> -			mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
+>  
+>  		chunk_size = mddev->chunk_sectors << 9;
+>  		blk_queue_io_min(mddev->queue, chunk_size);
+> @@ -8111,17 +8109,8 @@ static void end_reshape(struct r5conf *conf)
+>  		spin_unlock_irq(&conf->device_lock);
+>  		wake_up(&conf->wait_for_overlap);
+>  
+> -		/* read-ahead size must cover two whole stripes, which is
+> -		 * 2 * (datadisks) * chunksize where 'n' is the number of raid devices
+> -		 */
+> -		if (conf->mddev->queue) {
+> -			int data_disks = conf->raid_disks - conf->max_degraded;
+> -			int stripe = data_disks * ((conf->chunk_sectors << 9)
+> -						   / PAGE_SIZE);
+> -			if (conf->mddev->queue->backing_dev_info->ra_pages < 2 * stripe)
+> -				conf->mddev->queue->backing_dev_info->ra_pages = 2 * stripe;
+> +		if (conf->mddev->queue)
+>  			raid5_set_io_opt(conf);
+> -		}
+>  	}
+>  }
+>  
+> diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+> index ea1fa41fbba8df..741c9bfa8e14c7 100644
+> --- a/drivers/nvme/host/core.c
+> +++ b/drivers/nvme/host/core.c
+> @@ -2147,6 +2147,7 @@ static int __nvme_revalidate_disk(struct gendisk *disk, struct nvme_id_ns *id)
+>  		nvme_update_disk_info(ns->head->disk, ns, id);
+>  		blk_stack_limits(&ns->head->disk->queue->limits,
+>  				 &ns->queue->limits, 0);
+> +		blk_queue_update_readahead(ns->head->disk->queue);
+>  		nvme_update_bdev_size(ns->head->disk);
+>  	}
+>  #endif
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index be5ef6f4ba1905..282f5ca424f14a 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -1140,6 +1140,7 @@ extern void blk_queue_max_zone_append_sectors(struct request_queue *q,
+>  extern void blk_queue_physical_block_size(struct request_queue *, unsigned int);
+>  extern void blk_queue_alignment_offset(struct request_queue *q,
+>  				       unsigned int alignment);
+> +void blk_queue_update_readahead(struct request_queue *q);
+>  extern void blk_limits_io_min(struct queue_limits *limits, unsigned int min);
+>  extern void blk_queue_io_min(struct request_queue *q, unsigned int min);
+>  extern void blk_limits_io_opt(struct queue_limits *limits, unsigned int opt);
+> -- 
+> 2.28.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
