@@ -2,66 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688AA277769
-	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A0B27776B
+	for <lists+linux-kernel@lfdr.de>; Thu, 24 Sep 2020 19:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728602AbgIXRGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 13:06:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbgIXRGW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 13:06:22 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2DAC0613CE;
-        Thu, 24 Sep 2020 10:06:22 -0700 (PDT)
-Received: from lwn.net (localhost [127.0.0.1])
+        id S1728622AbgIXRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 13:06:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726458AbgIXRGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 13:06:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id D7CBC750;
-        Thu, 24 Sep 2020 17:06:21 +0000 (UTC)
-Date:   Thu, 24 Sep 2020 11:06:19 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH] Documentation: kernel-parameters: clarify "module."
- parameters
-Message-ID: <20200924110619.0339b3cc@lwn.net>
-In-Reply-To: <67d40b6d-c073-a3bf-cbb6-6cad941cceeb@infradead.org>
-References: <67d40b6d-c073-a3bf-cbb6-6cad941cceeb@infradead.org>
-Organization: LWN.net
+        by mail.kernel.org (Postfix) with ESMTPSA id A582B238D6;
+        Thu, 24 Sep 2020 17:06:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600967190;
+        bh=QGHHjt3laS9Cal2zzVRmEFTHuxdzTVaeVSxpKSsS+HQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oRVoe+V+iVpQ1og9mtsr6WTkUOIueO9RxsZYewGtzL2LAALlZPH5M4P9PqF3hBVYa
+         B3eg9EPxE6vqcZHIirrureNKks6TdX+k+GYQ+dT1ga5t7tLVWx71mG5lCsyMFdTTyi
+         1vgVK0Yaxqkd4O0B/jePOoP5UtXJ8OxkIRv/+NGI=
+Date:   Thu, 24 Sep 2020 19:06:46 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 5.8 000/118] 5.8.11-rc1 review
+Message-ID: <20200924170646.GC1182944@kroah.com>
+References: <20200921162036.324813383@linuxfoundation.org>
+ <20200922201943.GF127538@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922201943.GF127538@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Sep 2020 19:49:02 -0700
-Randy Dunlap <rdunlap@infradead.org> wrote:
-
-> From: Randy Dunlap <rdunlap@infradead.org>
+On Tue, Sep 22, 2020 at 01:19:43PM -0700, Guenter Roeck wrote:
+> On Mon, Sep 21, 2020 at 06:26:52PM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.8.11 release.
+> > There are 118 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Wed, 23 Sep 2020 16:20:12 +0000.
+> > Anything received after that time might be too late.
+> > 
 > 
-> The command-line parameters "dyndbg" and "async_probe" are not
-> parameters for kernel/module.c but instead they are for the
-> module that is being loaded. Try to make that distinction in the
-> help text.
+> Build results:
+> 	total: 154 pass: 154 fail: 0
+> Qemu test results:
+> 	total: 430 pass: 430 fail: 0
 > 
-> OTOH, "module.sig_enforce" is handled as a parameter of kernel/module.c
-> so "module." is correct for it.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Jessica Yu <jeyu@kernel.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> ---
->  Documentation/admin-guide/kernel-parameters.txt |    4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Applied, thanks.
+Great, thanks for testing them and letting me know.
 
-jon
+greg k-h
