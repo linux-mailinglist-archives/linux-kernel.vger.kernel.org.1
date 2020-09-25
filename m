@@ -2,143 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D0F278007
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:49:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F9327800D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgIYFtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:49:08 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:49604 "EHLO m42-4.mailgun.net"
+        id S1727102AbgIYF4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:56:30 -0400
+Received: from mga09.intel.com ([134.134.136.24]:41493 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYFtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:49:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601012947; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=yaFni00gAx1AGPeqT5ylrZn2luK1UE/VMDtAh34DsZU=; b=Vkv2CAbk8pqy3BwFuSHYjPWFVhqTNHCzVE1HXT5MRNX12CnGAbVmCJpWLDIukfZRbNOe5g38
- 2phnTBICuUXzQwIxp8ydxu2ePGGCCg1Wh6mIfgTyR3sgCX3Puo3L6AueiUwJBJerj6kkMkEY
- 9kGkWyOiZfIrw9CBJyy8/DYqCNg=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f6d84601dcd99b9f2630c25 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Sep 2020 05:47:12
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B2F0DC433FF; Fri, 25 Sep 2020 05:47:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.0.103] (unknown [124.123.174.40])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0836AC433C8;
-        Fri, 25 Sep 2020 05:47:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0836AC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH] rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1600929250-20344-1-git-send-email-neeraju@codeaurora.org>
- <20200924225959.GY29330@paulmck-ThinkPad-P72>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <e5406694-0382-fafe-d22a-ad8913ccc4c2@codeaurora.org>
-Date:   Fri, 25 Sep 2020 11:17:06 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726925AbgIYF4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:56:30 -0400
+IronPort-SDR: sVPH6mAot7GIq0Bd4Z2wMCrYja4tpUSefJXQZoBEm44GF1Ijlx+xizGBtGuk+vKTJqTZ52GYOZ
+ r4wHrFaTWjUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="162346411"
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="162346411"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:56:29 -0700
+IronPort-SDR: CucfpYDGRDGLHDVYU+H5Nlz2kcPRy0f7CTiAsGWKeAPlPYzzjNKxnDVnHAc25kMTb0+Fn6oy5W
+ ztmh5xT7nDNg==
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="487322318"
+Received: from erybin-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.47.248])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:56:28 -0700
+Date:   Fri, 25 Sep 2020 08:56:26 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
+Message-ID: <20200925055626.GC165011@linux.intel.com>
+References: <20200922094128.26245-1-ardb@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20200924225959.GY29330@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922094128.26245-1-ardb@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
+> The TPM event log is provided to the OS by the firmware, by loading
+> it into an area in memory and passing the physical address via a node
+> in the device tree.
+> 
+> Currently, we use __va() to access the memory via the kernel's linear
+> map: however, it is not guaranteed that the linear map covers this
+> particular address, as we may be running under HIGHMEM on a 32-bit
+> architecture, or running firmware that uses a memory type for the
+> event log that is omitted from the linear map (such as EfiReserved).
 
-On 9/25/2020 4:29 AM, Paul E. McKenney wrote:
-> On Thu, Sep 24, 2020 at 12:04:10PM +0530, Neeraj Upadhyay wrote:
->> Clarify the "x" in rcuox/N naming in RCU_NOCB_CPU config
->> description.
->>
->> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> 
-> Applied with a few additional updates as shown below.  As always, please
-> let me know if I messed anything up.
-> 
+Makes perfect sense to the level that I wonder if this should have a
+fixes tag and/or needs to be backported to the stable kernels?
 
-Looks good! thanks!
+> So instead, use memremap(), which will reuse the linear mapping if
+> it is valid, or create another mapping otherwise.
+> 
+> Cc: Peter Huewe <peterhuewe@gmx.de>
+> Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  drivers/char/tpm/eventlog/of.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/tpm/eventlog/of.c b/drivers/char/tpm/eventlog/of.c
+> index a9ce66d09a75..9178547589a3 100644
+> --- a/drivers/char/tpm/eventlog/of.c
+> +++ b/drivers/char/tpm/eventlog/of.c
+> @@ -11,6 +11,7 @@
+>   */
+>  
+>  #include <linux/slab.h>
+> +#include <linux/io.h>
+>  #include <linux/of.h>
+>  #include <linux/tpm_eventlog.h>
+>  
+> @@ -25,6 +26,7 @@ int tpm_read_log_of(struct tpm_chip *chip)
+>  	struct tpm_bios_log *log;
+>  	u32 size;
+>  	u64 base;
+> +	void *p;
 
+I'd just use 'ptr' for readability sake.
 
-Thanks
-Neeraj
-
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 8d1d776b4998896a6f8f4608edb0b258bd37ec9f
-> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Date:   Thu Sep 24 12:04:10 2020 +0530
-> 
->      rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
->      
->      This commit clarifies that the "p" and the "s" in the in the RCU_NOCB_CPU
->      config-option description refer to the "x" in the "rcuox/N" kthread name.
->      
->      Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
->      [ paulmck: While in the area, update description and advice. ]
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
-> index b71e21f..cdc57b4 100644
-> --- a/kernel/rcu/Kconfig
-> +++ b/kernel/rcu/Kconfig
-> @@ -221,19 +221,23 @@ config RCU_NOCB_CPU
->   	  Use this option to reduce OS jitter for aggressive HPC or
->   	  real-time workloads.	It can also be used to offload RCU
->   	  callback invocation to energy-efficient CPUs in battery-powered
-> -	  asymmetric multiprocessors.
-> +	  asymmetric multiprocessors.  The price of this reduced jitter
-> +	  is that the overhead of call_rcu() increases and that some
-> +	  workloads will incur significant increases in context-switch
-> +	  rates.
->   
->   	  This option offloads callback invocation from the set of CPUs
->   	  specified at boot time by the rcu_nocbs parameter.  For each
->   	  such CPU, a kthread ("rcuox/N") will be created to invoke
->   	  callbacks, where the "N" is the CPU being offloaded, and where
-> -	  the "p" for RCU-preempt (PREEMPTION kernels) and "s" for RCU-sched
-> -	  (!PREEMPTION kernels).  Nothing prevents this kthread from running
-> -	  on the specified CPUs, but (1) the kthreads may be preempted
-> -	  between each callback, and (2) affinity or cgroups can be used
-> -	  to force the kthreads to run on whatever set of CPUs is desired.
-> -
-> -	  Say Y here if you want to help to debug reduced OS jitter.
-> +	  the "x" is "p" for RCU-preempt (PREEMPTION kernels) and "s" for
-> +	  RCU-sched (!PREEMPTION kernels).  Nothing prevents this kthread
-> +	  from running on the specified CPUs, but (1) the kthreads may be
-> +	  preempted between each callback, and (2) affinity or cgroups can
-> +	  be used to force the kthreads to run on whatever set of CPUs is
-> +	  desired.
-> +
-> +	  Say Y here if you need reduced OS jitter, despite added overhead.
->   	  Say N here if you are unsure.
->   
->   config TASKS_TRACE_RCU_READ_MB
+>  	log = &chip->log;
+>  	if (chip->dev.parent && chip->dev.parent->of_node)
+> @@ -65,7 +67,11 @@ int tpm_read_log_of(struct tpm_chip *chip)
+>  		return -EIO;
+>  	}
+>  
+> -	log->bios_event_log = kmemdup(__va(base), size, GFP_KERNEL);
+> +	p = memremap(base, size, MEMREMAP_WB);
+> +	if (!p)
+> +		return -ENOMEM;
+> +	log->bios_event_log = kmemdup(p, size, GFP_KERNEL);
+> +	memunmap(p);
+>  	if (!log->bios_event_log)
+>  		return -ENOMEM;
+>  
+> -- 
+> 2.17.1
 > 
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+This is a really great catch!
+
+I'm a bit late of my PR a bit because of SGX upstreaming madness
+(sending v39 soon). If you can answer to my question above, I can do
+that nitpick change to patch and get it to my v5.10 PR.
+
+PS. Just so that you know, once I've applied it, it will be available
+here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
+
+I'll include MAINTAINERS update to that PR.
+
+/Jarkko
