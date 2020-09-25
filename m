@@ -2,78 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B52278297
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3593278299
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727513AbgIYIVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:21:19 -0400
-Received: from foss.arm.com ([217.140.110.172]:38510 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727290AbgIYIVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:21:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 794371045;
-        Fri, 25 Sep 2020 01:21:16 -0700 (PDT)
-Received: from [10.57.53.72] (unknown [10.57.53.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B3FED3F718;
-        Fri, 25 Sep 2020 01:21:14 -0700 (PDT)
-Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to
- cpufreq_stats_record_transition()
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cristian.marussi@arm.com, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org
-References: <cover.1600238586.git.viresh.kumar@linaro.org>
- <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <6f794935-a5d2-0f4d-70d7-de4705ba9511@arm.com>
-Date:   Fri, 25 Sep 2020 09:21:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727645AbgIYIVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:21:30 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:41130 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727164AbgIYIV3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:21:29 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 9FD0E29D0E8
+Subject: Re: [PATCH 11/12] soc: mediatek: pm-domains: Add support for mt8183
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        Nicolas Boichat <drinkcat@chromium.org>, weiyi.lu@mediatek.com,
+        Matthias Brugger <mbrugger@suse.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+ <20200910172826.3074357-12-enric.balletbo@collabora.com>
+ <730273b4-914a-8a7a-1583-351e6f20df5b@gmail.com>
+ <5e1510f4-b0c4-2cff-b3f8-b6715d228149@gmail.com>
+ <CAJMQK-jFwToRxBdVgtHT3wJ970M0NYGu3kLtkGRBDKMMNOHkJw@mail.gmail.com>
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Message-ID: <2a52c8e7-59db-9ed9-dd35-fc74738c152d@collabora.com>
+Date:   Fri, 25 Sep 2020 10:21:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAJMQK-jFwToRxBdVgtHT3wJ970M0NYGu3kLtkGRBDKMMNOHkJw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Hsin-Yi and Matthias,
 
+Hsin-Yi, many thanks to provide the register names.
 
-On 9/16/20 7:45 AM, Viresh Kumar wrote:
-> In order to prepare for lock-less stats update, add support to defer any
-> updates to it until cpufreq_stats_record_transition() is called.
+On 25/9/20 9:37, Hsin-Yi Wang wrote:
+> On Wed, Sep 16, 2020 at 8:19 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
+>>
+>>
+>>
+>> On 16/09/2020 11:46, Matthias Brugger wrote:
+>>>
+>>>
+>>> On 10/09/2020 19:28, Enric Balletbo i Serra wrote:
+>>>> From: Matthias Brugger <mbrugger@suse.com>
+>>>>
+>>>> Add the needed board data to support mt8183 SoC.
+>>>>
+>>>> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+>>>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>>>> ---
+>>>>
+>>>>   drivers/soc/mediatek/mtk-pm-domains.c | 162 ++++++++++++++++++++++++++
+>>>>   include/linux/soc/mediatek/infracfg.h |  28 +++++
+>>>>   2 files changed, 190 insertions(+)
+>>>>
+>>>> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c
+>>>> b/drivers/soc/mediatek/mtk-pm-domains.c
+>>>> index 29e88adc8ea6..aa434f616fee 100644
+>>>> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+>>>> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+>>> [...]
+>>>> +/*
+>>>> + * MT8183 power domain support
+>>>> + */
+>>>> +static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>>>> +    [MT8183_POWER_DOMAIN_AUDIO] = {
+>>>> +        .sta_mask = PWR_STATUS_AUDIO,
+>>>> +        .ctl_offs = 0x0314,
+>>>> +        .sram_pdn_bits = GENMASK(11, 8),
+>>>> +        .sram_pdn_ack_bits = GENMASK(15, 12),
+>>>> +    },
+>>>> +    [MT8183_POWER_DOMAIN_CONN] = {
+>>>> +        .sta_mask = PWR_STATUS_CONN,
+>>>> +        .ctl_offs = 0x032c,
+>>>> +        .sram_pdn_bits = 0,
+>>>> +        .sram_pdn_ack_bits = 0,
+>>>> +        .bp_infracfg = {
+>>>> +            BUS_PROT_WR(MT8183_TOP_AXI_PROT_EN_CONN, 0x2a0, 0x2a4, 0x228),
+>>>
+>>> We have repeating values triplets for set, clear and status register in infracfg
+>>> and SMI.
+>>>
+>>> Weiyi can you help to get names to this registers? I wasn't able to find
+>>> anything in the datasheet.
+>>
+>> I think for the infracfg part I figured it out:
+>>
+>> #define INFRA_TOPAXI_PROTECTEN_SET      0x2a0
+>> #define INFRA_TOPAXI_PROTECTEN_CLR      0x2a4
+>> #define INFRA_TOPAXI_PROTECTEN_STA1     0x228
+>>
+>> #define INFRA_TOPAXI_PROTECTEN_1_SET    0x2a8
+>> #define INFRA_TOPAXI_PROTECTEN_1_CLR    0x2ac
+>> #define INFRA_TOPAXI_PROTECTEN_STA1_1   0x258
+>>
+>> #define INFRA_TOPAXI_PROTECTEN_MCU_SET  0x2d4
+>> #define INFRA_TOPAXI_PROTECTEN_MCU_CLR  0x2d8
+>> #define INFRA_TOPAXI_PROTECTEN_MM_STA1  0x2ec
+>>
+
+I think this is SoC specific, right? So, I should add the MT8183_ prefix.
+
+>> Weiyi, can you still provide the register names for the SMI?
+>>
+>> Thanks in advance!
+>> Matthias
+>>
+> Hi Matthias,
 > 
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->   drivers/cpufreq/cpufreq_stats.c | 75 ++++++++++++++++++++++++---------
->   1 file changed, 56 insertions(+), 19 deletions(-)
+> SMI names are
+> #define SMI_COMMON_CLAMP_EN 0x3c0
+> #define SMI_COMMON_CLAMP_EN_SET 0x3c4
+> #define SMI_COMMON_CLAMP_EN_CLR 0x3c8
 > 
 
-[snip]
+The same here, this is specific for MT8183, right?
 
-> @@ -228,10 +264,11 @@ void cpufreq_stats_record_transition(struct cpufreq_policy *policy,
->   	struct cpufreq_stats *stats = policy->stats;
->   	int old_index, new_index;
->   
-> -	if (!stats) {
-> -		pr_debug("%s: No stats found\n", __func__);
-> +	if (!stats)
->   		return;
-> -	}
-> +
-> +	if (READ_ONCE(stats->reset_pending))
-> +		cpufreq_stats_reset_table(stats);
->   
+Thanks,
+  Enric
 
-This is in the hot path code, called from the scheduler. I wonder if we
-avoid it or make that branch 'unlikely'?
-
-if (unlikely(READ_ONCE(stats->reset_pending)))
-
-Probably the CPU (when it has good prefetcher) would realize about it,
-but maybe we can help a bit here.
-
+> Thanks
+> 
