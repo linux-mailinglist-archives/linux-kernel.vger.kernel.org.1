@@ -2,116 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD892782EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6446F2782CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbgIYIjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:39:39 -0400
-Received: from mail-bn7nam10on2059.outbound.protection.outlook.com ([40.107.92.59]:53760
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S1727164AbgIYIfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:35:45 -0400
+Received: from mail-eopbgr70123.outbound.protection.outlook.com ([40.107.7.123]:60481
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727063AbgIYIjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:39:37 -0400
+        id S1726990AbgIYIfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:35:45 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Q9JoB8AE20SNpLsRryyjAY1ssDV65SHxbpR0EzSuaV29IrZKNgqLh5lMD2mqTptuGLOJnfZNl24zJtnGPCM0tNz5kO144l2wcHPamliLyCkcPfcxBWo7+k3YStYy3xcQDXfLSSP+3eaPb3TrpVvdDwgH8L0FK+cJF5BvpWGM23BB4KIgS49166o1wFHSnRkiLjAv/0Iy5b1UHTwvABew8DsVbhtvI+o9jqPXGWJcocXvWbXw6vxaKltSFZMl76+UKK7GjZK/HeHoXhv8pMQmNecxLIIhXyixPLnHKCsVHZzdRMtDSV9w33Ir81oUpvfzrF4su6tvOmbu/f0fjr2aMg==
+ b=E35XtRwctuZi3pesfaWg+pRssrPM3RH84NtEJlj0raNRwxCnp13dyQEXR5+uuoqoMwPA/0uKihNnAcrUdNMrZJVvXck+bijPD5/xQQtV69Uh2C74Oo4NcHS75e3x3TY4XJyb8FJ5Qm1YeO6svP26hAALASoJSKz3flf4L5zY2Q/MADApl1A8bv9KsbJ7T/wjYLizalcvYVXNN2/eKcYOTpBXjZVE91N3sSrrCyCxXfvkHUQ5X3PzI4SfKoNCXsRmXMgxR85s9wxszsJiBwoWyciDPKZIQgrpGWkdiyaE9yFokuPsw6hPthzueFJGDshBLYqyrh+RWmEXbz/XVjFZTg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aRS8+AnwQMnDRxpQgH7h6prfzI/vFwqRz8AdrNj3+w4=;
- b=YxrD6fy+qsreZD8ax/NCe9GkFSmFftNUbvmW9gdjXNtCHXc7Z/NGqN2gt1Rku9X7y9k6/E2ZhadtwzrDU871KqBhwEbacJXBpQAwwmkpBpKFtZbzyQW+tVZmILT5jEnipftc7E7Z2kj/W4FYygqK8SqLEfpRBRZ0fCBq8aYdxGEjR2M9WVi96YPtCxQRMgIaS/Q6yAWvE/TMTZklkTJgIshD24gILjiaar5fBZ+jaBSBCWMEQLL1lvBUP8Gf/DwmfyUq8liNHJ1TF/HKftuB4GtB5t8ayGCgIaUyV6B5O2/AqyitYge1ps9jk2sV6AOWDzmGkKDALTKvWWhSEec68A==
+ bh=otd5qFyj48fMJ+kGAQYZsGTNsUXLdb4sQJsg0R3vPEo=;
+ b=cHhihAHaJ2Ylm178WsT4oSgKLba2byU4erBFDL0TUDzv1sRK1jw3oqDhPJOpDQIrZ8oUajKI/NDegYbxs11Kzxik9s7Qq4jmagphlYYg761u4sIXCD5QmAj6MAmNsqEF+h0n29BNhAy7cIHV+j4uj8+MJwY1WO836SZTvSRLnIiCz5Wc44kS4yDyMXzI7ucckg9vNuaaPlKuxmxKD32Q/hqHsU1/m2s4KgETCG2pVBPRS9AMS2gWOCazYYvGqh7BiyxNxOLbssOwjA37j4T6clKLITA44OXCgQAojkcfFGBJQ/c16yaW3plullD2JHGxIikYwV8xeIarmv9hDt5Zsg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aRS8+AnwQMnDRxpQgH7h6prfzI/vFwqRz8AdrNj3+w4=;
- b=jt0tOYqWR6Amt0oBVFLRgA2sv/4GzwcGHPG6g+qL0NNy0ORoDSoIbfvdJ7gMnKdYePGbvXQHsJNr34Me+R+TqUYcjL90jTawjTxz6BxVoNE+xT0B3tekLcFu61jV2iERu1G0XE0KKb18mVOtNRBnOnHbB1oeGDpp2SO8j4FjH0U=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM6PR03MB4697.namprd03.prod.outlook.com (2603:10b6:5:187::17) with
+ bh=otd5qFyj48fMJ+kGAQYZsGTNsUXLdb4sQJsg0R3vPEo=;
+ b=kdhskfTOuIrs1Y09pFliXmm/VBgQrSIGf0c3OuUbXH6jVAu1nnqUtVWUIPoXT43CbP4ylos142yZkW8QVdaNY3FNcxZXX7q8TS3P4BJwbRIvID9wAq5PSWQ+ksmHBXovvx6rn99sTl0eGJinuQXO6IzD63ZDEKPDrheuy2SHQXA=
+Authentication-Results: szeredi.hu; dkim=none (message not signed)
+ header.d=none;szeredi.hu; dmarc=none action=none header.from=virtuozzo.com;
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
+ by AM6PR08MB3333.eurprd08.prod.outlook.com (2603:10a6:209:45::32) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Fri, 25 Sep
- 2020 08:39:34 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3391.028; Fri, 25 Sep 2020
- 08:39:34 +0000
-Date:   Fri, 25 Sep 2020 16:34:35 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/2] PCI: dwc: fix two MSI issues
-Message-ID: <20200925163435.680b8e08@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TY2PR0101CA0019.apcprd01.prod.exchangelabs.com
- (2603:1096:404:92::31) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+ 2020 08:35:35 +0000
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322]) by AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322%7]) with mapi id 15.20.3391.027; Fri, 25 Sep 2020
+ 08:35:35 +0000
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Vivek Goyal <vgoyal@redhat.com>, linux-unionfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/2] ovl introduce "uuid=off"
+Date:   Fri, 25 Sep 2020 11:35:05 +0300
+Message-Id: <20200925083507.13603-1-ptikhomirov@virtuozzo.com>
+X-Mailer: git-send-email 2.26.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR05CA0087.eurprd05.prod.outlook.com
+ (2603:10a6:208:136::27) To AM6PR08MB4756.eurprd08.prod.outlook.com
+ (2603:10a6:20b:cd::17)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TY2PR0101CA0019.apcprd01.prod.exchangelabs.com (2603:1096:404:92::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Fri, 25 Sep 2020 08:39:31 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
+Received: from snorch.sw.ru (95.179.127.150) by AM0PR05CA0087.eurprd05.prod.outlook.com (2603:10a6:208:136::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Fri, 25 Sep 2020 08:35:34 +0000
+X-Mailer: git-send-email 2.26.2
+X-Originating-IP: [95.179.127.150]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d249cf0c-4e61-4f6f-ed69-08d8612e8711
-X-MS-TrafficTypeDiagnostic: DM6PR03MB4697:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB46977CBCFD5E7391CA48995EED360@DM6PR03MB4697.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Office365-Filtering-Correlation-Id: 0fe0f759-a44f-4179-b902-08d8612df911
+X-MS-TrafficTypeDiagnostic: AM6PR08MB3333:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR08MB33331857CA61111334337D85B7360@AM6PR08MB3333.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2803;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9Kemh+7ylM9Axe/Nj6LaUQUhnZkJbKbeBXn60bYuKHiohjKIqjwax9vVNK9PtuZXzSaxqOpkD6bY6MljfKzpBrrtzOeAC10vGnXe658fwlfGqZwW3TtF0iv5TDD7HOqX+/b+ZErjRsXeatc59O8b3HCrxfd1B4lbcOx9+eHUT/p/LZyVcMFBLzUh4OzcQQtao3gvTe449SIdN1B/ZigGMfk8OqJJVlQtLGr8xzkXVh4WFiJv0Q0fvjOBF3h1FHRW+tVxkMT4jrPUR/UzV6t2ZvA6suKZQjTziWnkSKn9QNIYwHK0qhOwlWxQNUqAmbKWL/QB5Yw34uuvz9f9WwKFvG4ZnEFQRbIV4rSCnkLWlJ7WwMRaBd/fYd67NTuUL07z
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(396003)(366004)(376002)(6506007)(52116002)(110136005)(4326008)(478600001)(7696005)(83380400001)(26005)(66476007)(66946007)(8676002)(1076003)(956004)(316002)(9686003)(86362001)(8936002)(66556008)(5660300002)(16526019)(2906002)(186003)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: VTCqp1XBWJqLbFTuTE45XiQukE/CWQUhtDxY1idneR0La/DyUxqyKY3ZSExyf66zCnNWwTnJo2Bht/fd5v83zdaQUuN/SUTqGfhA3w21nqAcZQvRVMSm36pJnqy3PBnhsGVABP7sdCm7bwYzD2GZMMMG0ufNcsmIhDHsMP1n11pt8WQiI3gZTQjOIoBhu7K+ZayaBQ6/wGXlCmEYQntn9bcBn8+ztr8PN+G34wZW4GWY7Wu/x5Vfh/5/Ngb9wH2xx4vwkk+Nc2r7ct1Ec8FTZDQpzbBtgo0K6L7fwW1Dh0e+6jL8YUwhz9+FjAqkWHN/Qbu3Snds2mpOoeuYpfWb3hx01fBIHVrMwb7YKY1iOpmr+4mqTc+BJfN65vm49mQLU1LrCP/z4B9ZJBOHKCQjvCwI3iJlyZ2PZn3qCpip3Yp5bMW653MoqHKwSZBhCpxaIjyQNGnEnnnpi8+a9PX5wueJ7j8WB9pnyWa/NXxXGXIZBV38nDrf0i4wEhcI59rHYDyT9UebPcDTtaVMEpyb724A1SZk0ElYPr/tW1W+uANSBzhJAwluE1bV9lfMEmNjTp52QJcWu1o+U+IONjnSZ1/kzE4RL8Ef5XTxw8jyTI18Ms5JLxHVlsjOxUZD/UTKtYlJbxqtLPlxNjwaPpeyDQ==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d249cf0c-4e61-4f6f-ed69-08d8612e8711
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: gwK4cEI2/FMF9cTlKvaWOBaYc1L0k04+XQvShxxt76kBaEQI6CvmxB+9zsNoxgjjmvPn5pnXb1GxSSTj0Y0zJtMHeTwm5++6SCZBFwALDa/tZPck93KIS1e4UswFvFKhwhAVCWMvq6n14mg9kE8E1yN/LU4Ck6F1t/yQiryEtk1xjJaw477La/EjMQfON0Z+l1uPuBu74fTjsjVHGuCv1J+jjmIZpPj5XHbi6ifNRCyLljJHNwWfpYqzWs0mFAgUhL7q7jzxuVtHKKnE1TFUxMPQJZHkNBAtkAW2ygKQHl+2vv8D5tbuylw/Y9a1LAnMsm+lCAAI6JAmYCCHYvqaIIg6U7SWzq9UeUv1fRKEfEiFEcg+aLnSUv9ggjvmlok3
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(346002)(39840400004)(186003)(36756003)(66946007)(8676002)(86362001)(16526019)(956004)(66556008)(6916009)(8936002)(2906002)(66476007)(316002)(5660300002)(6486002)(2616005)(1076003)(6512007)(4326008)(83380400001)(54906003)(478600001)(6506007)(52116002)(6666004)(26005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: Xh0g/uaX7uFyJGDglySeuyjnT4fK3cxXkEGCS1n1NawrJC5TY2bvZ7bkCEXT46G/fqNyTjP0UJjLN+6AVhrniGFvSl2xfBgb3M7+jPmj3Jpx7c5vy4B4i1VThNTX4y2TdAYdIB2BxXB12Zx1phXgApcOPdu12mdiY8TAVwAs2ucKC3P5BrUW18n3W3tiAZ+DJ4Gd8UzW1zLGN3GezTMAchgDhi0zrnUME2nz0JKX9zfZ+KKxa0k/6BdE5m7QCUqwdjq1sGNaZ8+czIg4x84tH42SPq3crHNYTYUiypi4xCuoJZ0pVFawE8PPXv3UeMx2VNG+AK2UzYPPDsFN2k9MPrBJSxEgCHkI6r1E370bt6DX0T5vzzWjlQrneu9D8o14fR8rIMdLpFbGHF3oTkGnqflPpmu2Z3IddHvfdHEij51odK33vOdA3cG6zQ5ZrM0Q+Fb/Tj4gGszf9dZGJdHQgnc2gV+J049tG/rgQZmUqlSCVIgYWpPbh+qBBvm3WoDFNeYPaj+IXVhXaQA7VC7pggpwxgE85sBG8nFS4TCYZXNtISTb3goUg+xznhc7v8SBeG8Mf/9XFhPbnM5rY9oghG52PXRPhRFQoLiUDLh8QJEr13sTuY1Nka+BRXuS1ZetWGasRaXaZhP9lJaTrBeRZw==
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0fe0f759-a44f-4179-b902-08d8612df911
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 08:39:33.8992
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 08:35:35.4914
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fQCH0Ophdy3rHEDjqPvMpammP+P9ebWSXUxGHQUE3QtgsVPDSE7GBFky/347Sh+uqmy0DDI5cxG2ejYLiao/fA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4697
+X-MS-Exchange-CrossTenant-UserPrincipalName: XY4eH+TWpWzVSQdCr9eygCJXRnHZ1oQvMUWjQ+TDfNd7IBV7luj1fAHnS9h5kbVvdCdTkPL3swHQ6jl3WA5Qcgn3fOJunpYtXtTTs3VBz9E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3333
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix two MSI issues. One to skip PCIE_MSI_INTR0* programming is MSI is
-disabled, another to use an address in the driver data for MSI address,
-the side effect of this patch is fixing the MSI page leakage during
-suspend/resume.
+This is a v4 of:
+ovl: introduce new "index=nouuid" option for inodes index feature
 
-Since v2:
-  - add Acked-by tag
-  - use an address in the driver data for MSI address. Thank Ard and Rob
-    for pointing out this correct direction.
-  - Since the MSI page has gone, the leak issue doesn't exist anymore,
-    remove unnecessary patches.
-  - Remove dw_pcie_free_msi rename and the last patch. They could be
-    targeted to next. So will send out patches in a separate series.
+Changes in v3: rebase to overlayfs-next, replace uuid with null in file
+handles, propagate ovl_fs to needed functions in a separate patch, add
+separate bool "uuid=on/off" option, fix numfs check fallback, add a note
+to docs.
 
-Since v1:
-  - add proper error handling patches.
-  - solve the msi page leakage by moving dw_pcie_msi_init() from each
-    users to designware host
+Changes in v4: get rid of double negatives, remove nouuid leftower
+comment, fix missprint in kernel config name.
 
-Jisheng Zhang (2):
-  PCI: dwc: Skip PCIE_MSI_INTR0* programming if MSI is disabled
-  PCI: dwc: Use an address in the driver data for MSI address
+CC: Amir Goldstein <amir73il@gmail.com>
+CC: Vivek Goyal <vgoyal@redhat.com>
+CC: Miklos Szeredi <miklos@szeredi.hu>
+CC: linux-unionfs@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
 
- .../pci/controller/dwc/pcie-designware-host.c | 24 +++----------------
- drivers/pci/controller/dwc/pcie-designware.h  |  1 -
- 2 files changed, 3 insertions(+), 22 deletions(-)
+Pavel Tikhomirov (2):
+  ovl: propagate ovl_fs to ovl_decode_real_fh and ovl_encode_real_fh
+  ovl: introduce new "uuid=off" option for inodes index feature
+
+ Documentation/filesystems/overlayfs.rst |  6 ++++++
+ fs/overlayfs/Kconfig                    | 19 +++++++++++++++++++
+ fs/overlayfs/copy_up.c                  | 25 ++++++++++++++-----------
+ fs/overlayfs/export.c                   | 10 ++++++----
+ fs/overlayfs/namei.c                    | 23 +++++++++++++----------
+ fs/overlayfs/overlayfs.h                | 14 ++++++++------
+ fs/overlayfs/ovl_entry.h                |  1 +
+ fs/overlayfs/super.c                    | 25 +++++++++++++++++++++++++
+ fs/overlayfs/util.c                     |  3 ++-
+ 9 files changed, 94 insertions(+), 32 deletions(-)
 
 -- 
-2.28.0
+2.26.2
 
