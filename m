@@ -2,63 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6CE4277DF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D9FB277E08
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgIYCec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 22:34:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47716 "EHLO mail.kernel.org"
+        id S1726919AbgIYCk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 22:40:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48910 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726448AbgIYCec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 22:34:32 -0400
+        id S1726676AbgIYCkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 22:40:53 -0400
 Received: from X1 (unknown [104.245.68.101])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6CF7620888;
-        Fri, 25 Sep 2020 02:34:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64FD520809;
+        Fri, 25 Sep 2020 02:40:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601001271;
-        bh=Smg4DQZKLT8m1LXboOjRbYbEEA4933QtuIJr9GOx1d4=;
+        s=default; t=1601001652;
+        bh=pQ6z0ir2xfCPVTr5SFHMaCkXwYdTbS6aBAi6ME84jmI=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=t2Am+bOL7aQc+oLElXbYFnp8Y1wlGgthaRTiSGvzkHwzblFnwyTLhHkGuKwh6cPPK
-         dGNyh6ea1G8zhcYz+2jZ/HAlJJzZS2Hb5uMncrKXCFHO9WgB/ShnWeWBcyoD4aVexB
-         fTMs8EfOHnI33GKShzqA790tDOYNu8QPGgMsLH84=
-Date:   Thu, 24 Sep 2020 19:34:28 -0700
+        b=anFlFAk26hM03/gZSTtDSTWfEbCDm6NCgWWmhIiYHOzGjLoYA71QVZq0sNyqzMUgo
+         9Zwufj2fRF4UjFOig14Yciftyjvpqbm9AfNqHcLBcSsdZI5YvqVK0fZieuRPqd2G7+
+         NBEQCrN9tudI1Az3ILeOCBk+fvWrZe47aa+iS/hs=
+Date:   Thu, 24 Sep 2020 19:40:51 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 0/6] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-Id: <20200924193428.6642e0cc3436bb67ddf8024a@linux-foundation.org>
-In-Reply-To: <20200924132904.1391-1-rppt@kernel.org>
-References: <20200924132904.1391-1-rppt@kernel.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] mm/mempool: Add 'else' to split mutually exclusive
+ case
+Message-Id: <20200924194051.6b1aa0470114d90c6ef665af@linux-foundation.org>
+In-Reply-To: <20200924111641.28922-1-linmiaohe@huawei.com>
+References: <20200924111641.28922-1-linmiaohe@huawei.com>
 X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -67,41 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 16:28:58 +0300 Mike Rapoport <rppt@kernel.org> wrote:
+On Thu, 24 Sep 2020 07:16:41 -0400 Miaohe Lin <linmiaohe@huawei.com> wrote:
 
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> Hi,
-> 
-> This is an implementation of "secret" mappings backed by a file descriptor. 
-> I've dropped the boot time reservation patch for now as it is not strictly
-> required for the basic usage and can be easily added later either with or
-> without CMA.
+> Add else to split mutually exclusive case and avoid some unnecessary check.
+> It doesn't seem to change code generation (compiler is smart), but I think
+> it helps readability.
 > 
 > ...
-> 
-> The file descriptor backing secret memory mappings is created using a
-> dedicated memfd_secret system call The desired protection mode for the
-> memory is configured using flags parameter of the system call. The mmap()
-> of the file descriptor created with memfd_secret() will create a "secret"
-> memory mapping. The pages in that mapping will be marked as not present in
-> the direct map and will have desired protection bits set in the user page
-> table. For instance, current implementation allows uncached mappings.
-> 
-> Although normally Linux userspace mappings are protected from other users, 
-> such secret mappings are useful for environments where a hostile tenant is
-> trying to trick the kernel into giving them access to other tenants
-> mappings.
-> 
-> Additionally, the secret mappings may be used as a mean to protect guest
-> memory in a virtual machine host.
-> 
-> For demonstration of secret memory usage we've created a userspace library
-> [1] that does two things: the first is act as a preloader for openssl to
+>
+> --- a/mm/mempool.c
+> +++ b/mm/mempool.c
+> @@ -58,11 +58,10 @@ static void __check_element(mempool_t *pool, void *element, size_t size)
+>  static void check_element(mempool_t *pool, void *element)
+>  {
+>  	/* Mempools backed by slab allocator */
+> -	if (pool->free == mempool_free_slab || pool->free == mempool_kfree)
+> +	if (pool->free == mempool_free_slab || pool->free == mempool_kfree) {
+>  		__check_element(pool, element, ksize(element));
+> -
+>  	/* Mempools backed by page allocator */
+> -	if (pool->free == mempool_free_pages) {
+> +	} else if (pool->free == mempool_free_pages) {
+>  		int order = (int)(long)pool->pool_data;
+>  		void *addr = kmap_atomic((struct page *)element);
+>  
+> @@ -82,11 +81,10 @@ static void __poison_element(void *element, size_t size)
+>  static void poison_element(mempool_t *pool, void *element)
+>  {
+>  	/* Mempools backed by slab allocator */
+> -	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc)
+> +	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc) {
+>  		__poison_element(element, ksize(element));
+> -
+>  	/* Mempools backed by page allocator */
+> -	if (pool->alloc == mempool_alloc_pages) {
+> +	} else if (pool->alloc == mempool_alloc_pages) {
+>  		int order = (int)(long)pool->pool_data;
+>  		void *addr = kmap_atomic((struct page *)element);
+>  
 
-I can find no [1].
+OK, I guess.  But the comments are now in the wrong place.
 
-I'm not a fan of the enumerated footnote thing.  Why not inline the url
-right here so readers don't need to jump around?
-
+--- a/mm/mempool.c~mm-mempool-add-else-to-split-mutually-exclusive-case-fix
++++ a/mm/mempool.c
+@@ -60,8 +60,8 @@ static void check_element(mempool_t *poo
+ 	/* Mempools backed by slab allocator */
+ 	if (pool->free == mempool_free_slab || pool->free == mempool_kfree) {
+ 		__check_element(pool, element, ksize(element));
+-	/* Mempools backed by page allocator */
+ 	} else if (pool->free == mempool_free_pages) {
++		/* Mempools backed by page allocator */
+ 		int order = (int)(long)pool->pool_data;
+ 		void *addr = kmap_atomic((struct page *)element);
+ 
+@@ -83,8 +83,8 @@ static void poison_element(mempool_t *po
+ 	/* Mempools backed by slab allocator */
+ 	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc) {
+ 		__poison_element(element, ksize(element));
+-	/* Mempools backed by page allocator */
+ 	} else if (pool->alloc == mempool_alloc_pages) {
++		/* Mempools backed by page allocator */
+ 		int order = (int)(long)pool->pool_data;
+ 		void *addr = kmap_atomic((struct page *)element);
+ 
+_
 
