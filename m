@@ -2,63 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B27278296
+	by mail.lfdr.de (Postfix) with ESMTP id 94B52278297
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727567AbgIYIVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:21:20 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:45792 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727164AbgIYIVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:21:15 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 017A0478D1953CDB494F;
-        Fri, 25 Sep 2020 16:21:12 +0800 (CST)
-Received: from [127.0.0.1] (10.74.185.4) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Fri, 25 Sep 2020
- 16:21:06 +0800
-Subject: Re: [PATCH] btrfs: block-group: fix a doc warning in block-group.c
-To:     <dsterba@suse.cz>, <clm@fb.com>, <josef@toxicpanda.com>,
-        <dsterba@suse.com>, <linux-btrfs@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1600778241-24895-1-git-send-email-tanxiaofei@huawei.com>
- <20200923094543.GL6756@twin.jikos.cz>
-From:   Xiaofei Tan <tanxiaofei@huawei.com>
-Message-ID: <5F6DA872.7000504@huawei.com>
-Date:   Fri, 25 Sep 2020 16:21:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.5.1
+        id S1727513AbgIYIVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:21:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:38510 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727290AbgIYIVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:21:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 794371045;
+        Fri, 25 Sep 2020 01:21:16 -0700 (PDT)
+Received: from [10.57.53.72] (unknown [10.57.53.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B3FED3F718;
+        Fri, 25 Sep 2020 01:21:14 -0700 (PDT)
+Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to
+ cpufreq_stats_record_transition()
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        cristian.marussi@arm.com, sudeep.holla@arm.com,
+        linux-kernel@vger.kernel.org
+References: <cover.1600238586.git.viresh.kumar@linaro.org>
+ <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <6f794935-a5d2-0f4d-70d7-de4705ba9511@arm.com>
+Date:   Fri, 25 Sep 2020 09:21:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200923094543.GL6756@twin.jikos.cz>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.74.185.4]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
 
-On 2020/9/23 17:45, David Sterba wrote:
-> On Tue, Sep 22, 2020 at 08:37:21PM +0800, Xiaofei Tan wrote:
->> Fix following warning caused by mismatch bewteen function parameters
->> and comments.
->> fs/btrfs/block-group.c:1649: warning: Function parameter or member 'fs_info' not described in 'btrfs_rmap_block'
+
+On 9/16/20 7:45 AM, Viresh Kumar wrote:
+> In order to prepare for lock-less stats update, add support to defer any
+> updates to it until cpufreq_stats_record_transition() is called.
 > 
-> IIRC there are way more formatting errors for the kernel-doc, so I'd
-> rather fix them in one patch. Also for static functions or internal
-> helpers the proper formatting is not that important as it's read by
-> people and the acual parameters are what matters.
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>   drivers/cpufreq/cpufreq_stats.c | 75 ++++++++++++++++++++++++---------
+>   1 file changed, 56 insertions(+), 19 deletions(-)
 > 
 
-Sure, there are many warnings in the other files from dir fs/btrfs/.
-If fix them in one patch, it could be huge :)
+[snip]
 
-> .
-> 
+> @@ -228,10 +264,11 @@ void cpufreq_stats_record_transition(struct cpufreq_policy *policy,
+>   	struct cpufreq_stats *stats = policy->stats;
+>   	int old_index, new_index;
+>   
+> -	if (!stats) {
+> -		pr_debug("%s: No stats found\n", __func__);
+> +	if (!stats)
+>   		return;
+> -	}
+> +
+> +	if (READ_ONCE(stats->reset_pending))
+> +		cpufreq_stats_reset_table(stats);
+>   
 
--- 
- thanks
-tanxiaofei
+This is in the hot path code, called from the scheduler. I wonder if we
+avoid it or make that branch 'unlikely'?
+
+if (unlikely(READ_ONCE(stats->reset_pending)))
+
+Probably the CPU (when it has good prefetcher) would realize about it,
+but maybe we can help a bit here.
 
