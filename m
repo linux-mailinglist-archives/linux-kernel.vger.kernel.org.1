@@ -2,86 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4CE2791C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2CA2791E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgIYUMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41634 "EHLO mail.kernel.org"
+        id S1728109AbgIYURe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:17:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728153AbgIYUKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:10:30 -0400
-Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        id S1727415AbgIYUPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:15:31 -0400
+Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B37A239D0;
-        Fri, 25 Sep 2020 19:43:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4C0123A02;
+        Fri, 25 Sep 2020 19:48:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601063018;
-        bh=XcyxD7o3T4uxEDDHeyvxWOgJX8D+176T3V+2nhs+oro=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=EBQLJ1lwD9UoT5W8rggPDIUh3MigsRiKEnbCQBvVLLjqQoFJuAuRIDOhfGywFfr6C
-         TzM1PDVgxrHN7FlMYbuxGMeK8FqhLVmGAPxa+zPyJHHhu8emHagtgvzufS+rcuODsV
-         iHBw6vA5mcISTtNJwuJjocKmfNkjPX68ekU4eGTs=
-Date:   Fri, 25 Sep 2020 14:43:35 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Oliver O'Halloran <oohall@gmail.com>
-Cc:     Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH] rpadlpar_io:Add MODULE_DESCRIPTION entries to kernel
- modules
-Message-ID: <20200925194335.GA2453596@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOSf1CEv3v940FR_we70qCBME0qFXPizPT8EFbf3XyK2-fPDrw@mail.gmail.com>
+        s=default; t=1601063330;
+        bh=VRP3UV3UB6DTFB0UhK6oObbVaxGYiqjwDxHPG2aahMs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=R7h9+t7XQo1i+A8FqIzHwT2IUPrZSxIlQKp8m6ejQA5/gqHU8tdD4ajxVTImp+Kst
+         SSVGAs7hXwPognyZzJCEY5YTYFMPG3NQwKrjVkaACX5PDmVfjuLpsNcqn+34fJ4enM
+         SbTPNDV4Nsh/z1YCzgnogTU4mghRjvnAERyr+eHE=
+Message-ID: <cb89ebee230aedc9b5b6668bb333a258fc971b30.camel@kernel.org>
+Subject: Re: [RFC PATCH 0/1] tracing: support dynamic string field types for
+ synthetic events
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org
+Date:   Fri, 25 Sep 2020 14:48:48 -0500
+In-Reply-To: <20200925190806.1870935-1-axelrasmussen@google.com>
+References: <20200925190806.1870935-1-axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 04:41:39PM +1000, Oliver O'Halloran wrote:
-> On Thu, Sep 24, 2020 at 3:15 PM Mamatha Inamdar
-> <mamatha4@linux.vnet.ibm.com> wrote:
-> >
-> > This patch adds a brief MODULE_DESCRIPTION to rpadlpar_io kernel modules
-> > (descriptions taken from Kconfig file)
-> >
-> > Signed-off-by: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
-> > ---
-> >  drivers/pci/hotplug/rpadlpar_core.c |    1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
-> > index f979b70..bac65ed 100644
-> > --- a/drivers/pci/hotplug/rpadlpar_core.c
-> > +++ b/drivers/pci/hotplug/rpadlpar_core.c
-> > @@ -478,3 +478,4 @@ static void __exit rpadlpar_io_exit(void)
-> >  module_init(rpadlpar_io_init);
-> >  module_exit(rpadlpar_io_exit);
-> >  MODULE_LICENSE("GPL");
-> > +MODULE_DESCRIPTION("RPA Dynamic Logical Partitioning driver for I/O slots");
+Hi Axel,
+
+On Fri, 2020-09-25 at 12:08 -0700, Axel Rasmussen wrote:
+> Hi Steven and Tom,
 > 
-> RPA as a spec was superseded by PAPR in the early 2000s. Can we rename
-> this already?
+> In this thread: https://lkml.org/lkml/2020/9/17/1015 we discussed how
+> to plumb
+> dynamic strings into synthetic events. Tom, you proposed adding a new
+> dynamic
+> string type to synthetic event definition like "char foo[]".
 > 
-> The only potential problem I can see is scripts doing: modprobe
-> rpadlpar_io or similar
+> I'm sending this patch because it may be simpler than implementing
+> that (I'm
+> not too familiar with the tracing infrastructure, apologies if this
+> is not
+> true), and in my testing it seems sufficient to address my use case.
+> I tested
+> both setting up a synthetic event as Steven described in the other
+> thread, as
+> well as doing an analogous thing with a small bpftrace program, and
+> both work as
+> expected with this patch.
 > 
-> However, we should be able to fix that with a module alias.
+> This is because I happen to know there's an upper bound on the length
+> of the
+> string in question, so I can just define a "char memcg_path[256]" in
+> the
+> synthetic event, and I can be sure the string won't be truncated.
+> 
+> Let me know what you think. Happy to drop this and wait for Tom's
+> suggested
+> approach instead.
 
-Is MODULE_DESCRIPTION() connected with how modprobe works?
+Changing check_synth_field() is one of the things that will need to
+change for this to work - I'm working on a patch but am kind of in the
+middle of it, if you can wait - I expect to be able to post something
+Monday...
 
-If this patch just improves documentation, without breaking users of
-modprobe, I'm fine with it, even if it would be nice to rename to PAPR
-or something in the future.
+Thanks,
 
-But, please use "git log --oneline drivers/pci/hotplug/rpadlpar*" and
-match the style, and also look through the rest of drivers/pci/ to see
-if we should do the same thing to any other modules.
+Tom
 
-Bjorn
+> 
+> Axel Rasmussen (1):
+>   tracing: support dynamic string field types for synthetic events
+> 
+>  kernel/trace/trace_events_hist.c | 15 ++++++++++++---
+>  1 file changed, 12 insertions(+), 3 deletions(-)
+> 
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+> 
+
