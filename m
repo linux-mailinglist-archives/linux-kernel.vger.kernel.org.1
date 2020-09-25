@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 131FA2790A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96EF2790A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730082AbgIYSeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:34:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
+        id S1730089AbgIYSeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:34:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729753AbgIYSeP (ORCPT
+        with ESMTP id S1729753AbgIYSeU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:34:15 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5572C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:34:14 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id l71so3313547pge.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:34:14 -0700 (PDT)
+        Fri, 25 Sep 2020 14:34:20 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3052C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:34:20 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id l126so4008987pfd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=TTUQIRv6cRZ2oO4d9wlkIu2psEWIyambmB7I1qwTrKw=;
-        b=h/a7y78qfs4B7da7cpMR0TFIkKT/2JEzA7h7fAQus8i50nJzOCzVPFliGAmKBdCPgQ
-         ULmVUsKFK4lVbsIG+Z16DHq803p8zGK/xnwkGLTW2xEgdCeSESTSZJ8U0lKYTX59vL1p
-         KnLims2LJh16VYbJF8K+ZKlBRQ5eOtuoQ7YZ0MxbMIeKhwYUwBexuaVytpMeahpwnrIk
-         glrN1LzjRJyqm9d0977LjywMxk1a+ViYc66YWZleDfnG4U22134+NwxD24YkGCw5wNNq
-         59Ws8SnE8OxF09P9zYOY0sty88HIjJUIQYRxe9v7P6WMBpr4MOIUKImgmLcHxCqrv4g+
-         uieQ==
+        bh=33lB1n6MsJA8y1Cur/ULNq8jI1FuG8FB/2UR30PG+gU=;
+        b=v+by3Sm5hf9KgoKt1yqOfMTlq/YrLRAqeJhU+akW0/r2L1rNqiRJAVaUTKe152bhlE
+         6OnECoDtIUrh7Ty1RWqmfUIhUWT8qXlOA4YMuE/3Is4K0hG6C76rSi0f/pw8dp7BEBgU
+         vshjZeheMuC3hi/tAn2CQnu4g2Q5MFyDnNvbS5jerKvV+UrBBmFmToBxuLe1iy7eNi4D
+         0pETojEd3cUqmtrNGs6aQpLp/w7SA7K8lcJxZ4LsqvSiC5nh5k60JVH+COTF57I51T34
+         MmmcOyr4rryjwXKnhfoQ8lig06k2DaFGIWoSpDWs3iMMaix0ZT2e15QQYzSDmkIuLX5A
+         agvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=TTUQIRv6cRZ2oO4d9wlkIu2psEWIyambmB7I1qwTrKw=;
-        b=inmOD2dFFHHHUx5RM1GrEN5/ARBMNFF5pCn4HzwXSypBzd2EPZ4UKiAOgyX70K1J+5
-         88ZTdqrWpESL7jO+lCuoj66QXOQX+JGEWkmRbU30x7eUZgvDD8cdf+ftzoC7Bi0VbQLj
-         YE9+csvbCM5ejbAUBWee8V0KN5gFhibtcVtk6/XjuVAvfhZ8umfT8k5m2fXbzCCbBlj+
-         VnjDRWr+YS8pucy2Mxc4+pWHplwaZZhejGP0wgHrAZ/pWagWmhQAFbA4nfnPk2LpB2Wb
-         G6w0r1wXNa19A6qXfpX+qlOOfisYQjou406kSUR6tz5Fbl+NNVlj3wrJnBq2RKZ1cgc7
-         nYkw==
-X-Gm-Message-State: AOAM530vLOLjWydJ0M4s1bmWhmKQBpo8GkoI1pzA5lbqPjB7+9HzTQf8
-        FEUYio5KP5x2Ww7awwFWWb7dLA==
-X-Google-Smtp-Source: ABdhPJwKA9v5+82Lq4ws7oQxn5M/2efFOFbHRxTkPOy4ueaQvNb13A/q06iJUFjL8oFfKz5SwttyfA==
-X-Received: by 2002:a17:902:7281:b029:d2:2a0b:f050 with SMTP id d1-20020a1709027281b02900d22a0bf050mr738515pll.42.1601058854524;
-        Fri, 25 Sep 2020 11:34:14 -0700 (PDT)
+        bh=33lB1n6MsJA8y1Cur/ULNq8jI1FuG8FB/2UR30PG+gU=;
+        b=D95ejVwq0hszLzVl7NuRtWeIhoEiWoTFqizfEAZU0nFCeYOHrkdL2kPOWApk7stFoO
+         QMKEII7JFUUdKS7pNYEnHDIIwKIFALJHZoFzONrmzhgBXNm7Drkwg0fPtR0IFh7t9XqV
+         a4h8EIRRxCVlYfTl6psAbwa98H7mQaOTv0JlazeNPqNSnJefEYATHBvrYWvtfoZ9AdoZ
+         BppL1lYcla01DUBr7ad4xX8YACQJhA6zhvyTEkA+Y8EydD3fOViU0Es14iTIgLQhbF06
+         x5hzBBt8+EZvybmoLnFSEPEJoYHVnF9NyE15fMGHq4BjI1nZLd9BtQuNSHcP6vdFBE5O
+         8FTg==
+X-Gm-Message-State: AOAM530bQDTTBn5r4mXRgBjp6ZBrhfMa8HqiSAbM4JoXbRwrs1kV1lL+
+        q2IOUuyCLeEof3R5GSg/wjBQRw==
+X-Google-Smtp-Source: ABdhPJzI8D0FfG2yohm1Szf25h+WuVFA8LA4/tvF6/4fOPFUmOPwPsOyyMAX31jksGcEIHQWbNVIAQ==
+X-Received: by 2002:a17:902:e9d1:b029:d2:221f:9970 with SMTP id 17-20020a170902e9d1b02900d2221f9970mr688729plk.5.1601058860325;
+        Fri, 25 Sep 2020 11:34:20 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id r16sm2554546pjo.19.2020.09.25.11.34.09
+        by smtp.googlemail.com with ESMTPSA id r16sm2554546pjo.19.2020.09.25.11.34.15
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 11:34:14 -0700 (PDT)
+        Fri, 25 Sep 2020 11:34:19 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     gregkh@linuxfoundation.org, mchehab@kernel.org, hverkuil@xs4all.nl,
         laurent.pinchart@ideasonboard.com
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC v2 30/47] staging: media: zoran: use pci_request_regions
-Date:   Fri, 25 Sep 2020 18:30:40 +0000
-Message-Id: <1601058657-14042-31-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC v2 31/47] staging: media: zoran: use devm_ioremap
+Date:   Fri, 25 Sep 2020 18:30:41 +0000
+Message-Id: <1601058657-14042-32-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
 References: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
@@ -62,50 +62,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pci_request_regions so now we can see zoran in /proc/iomem.
+Using devm_ioremap simplify code.
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/staging/media/zoran/zoran_card.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/staging/media/zoran/zoran_card.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index a3e7b0027d69..f4639324bace 100644
+index f4639324bace..147bef1df33c 100644
 --- a/drivers/staging/media/zoran/zoran_card.c
 +++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -1011,6 +1011,7 @@ static void zoran_remove(struct pci_dev *pdev)
+@@ -1010,7 +1010,6 @@ static void zoran_remove(struct pci_dev *pdev)
+ 	pci_free_irq(zr->pci_dev, 0, zr);
  	/* unmap and free memory */
  	dma_free_coherent(&zr->pci_dev->dev, BUZ_NUM_STAT_COM * sizeof(u32), zr->stat_com, zr->p_sc);
- 	iounmap(zr->zr36057_mem);
-+	pci_release_regions(pdev);
+-	iounmap(zr->zr36057_mem);
+ 	pci_release_regions(pdev);
  	pci_disable_device(zr->pci_dev);
  	video_unregister_device(zr->video_dev);
- exit_free:
-@@ -1160,10 +1161,14 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	snprintf(ZR_DEVNAME(zr), sizeof(ZR_DEVNAME(zr)), "%s[%u]",
- 		 zr->card.name, zr->id);
+@@ -1165,7 +1164,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	if (err)
+ 		goto zr_unreg;
  
-+	err = pci_request_regions(pdev, ZR_DEVNAME(zr));
-+	if (err)
-+		goto zr_unreg;
-+
- 	zr->zr36057_mem = pci_ioremap_bar(zr->pci_dev, 0);
+-	zr->zr36057_mem = pci_ioremap_bar(zr->pci_dev, 0);
++	zr->zr36057_mem = devm_ioremap(&pdev->dev, pci_resource_start(pdev, 0), pci_resource_len(pdev, 0));
  	if (!zr->zr36057_mem) {
  		pci_err(pdev, "%s() - ioremap failed\n", __func__);
--		goto zr_unreg;
+ 		goto zr_pci_release;
+@@ -1181,7 +1180,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		} else {
+ 			pci_err(pdev, "%s - cannot assign IRQ, error code %d\n", __func__, result);
+ 		}
+-		goto zr_unmap;
 +		goto zr_pci_release;
  	}
  
- 	result = pci_request_irq(pdev, 0, zoran_irq, NULL, zr, ZR_DEVNAME(zr));
-@@ -1281,6 +1286,8 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	/* set PCI latency timer */
+@@ -1284,8 +1283,6 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ zr_free_irq:
+ 	btwrite(0, ZR36057_SPGPPCR);
  	pci_free_irq(zr->pci_dev, 0, zr);
- zr_unmap:
- 	iounmap(zr->zr36057_mem);
-+zr_pci_release:
-+	pci_release_regions(pdev);
+-zr_unmap:
+-	iounmap(zr->zr36057_mem);
+ zr_pci_release:
+ 	pci_release_regions(pdev);
  zr_unreg:
- 	v4l2_ctrl_handler_free(&zr->hdl);
- 	v4l2_device_unregister(&zr->v4l2_dev);
 -- 
 2.26.2
 
