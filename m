@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688EA277DB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:36:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2CE3277DB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbgIYBgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 21:36:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgIYBgH (ORCPT
+        id S1726869AbgIYBnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 21:43:50 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:40396 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbgIYBnt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 21:36:07 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F8AEC0613CE;
-        Thu, 24 Sep 2020 18:36:07 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id o20so1576598pfp.11;
-        Thu, 24 Sep 2020 18:36:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fgmv1ZdL7UUXwEEal/l25It5GrSTWQVpHodie+cr1w0=;
-        b=JRYOS6/EWijo06SB1EWdfUNPiLTpKE4BWfZ0U4z5NiWUiGwaLLEqBs82QOWSq7GHC/
-         Lg0nuso6br2icKGo48MjaGPbXt5XfW+FuOep9LZ2ZL0UgBjAiyXvLvw+nU+81bi+nlID
-         UiABi7ZcXRSWMSOkl541UuJvrGPaFFf8TcNRndTcWBo71DcNu87UqP4PY0icMqLb/S4N
-         vtzUMuvt3t3P8x6O73AmiMAueQDgU0z+uV7hj+1vegevWLFaqER5uz+8cjRUOqXWyv27
-         14y6BlTCkF2D9NOMS0AdWMvO3p//u2+Qf4Tcni0GdmPnH7KSeAVIUvMMT2acozLbmbiR
-         lUAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fgmv1ZdL7UUXwEEal/l25It5GrSTWQVpHodie+cr1w0=;
-        b=nyxdUYn3y4jQ7cPWFnZyBNZDiCoMnd1zC/f7moFGHX9UIWCnKsEKrmvB87oGXK3Xpv
-         5EE4y3MtnPLXqIUISHEtr2DbhROtOHA59Ud8XXhFZ0SQrseXHhf8mxd8KmePSfcBasqP
-         D7Amor6XLsEFNzdh6TAD3h4H1QMHQuJVuNPuaWTgq8ysupib82oHu70xCaTbigj9/FVN
-         5T44Pvb4cT5rNZyRosYhdld8F4qjstYAP/A3OzLAboOOJvZKEKy7PKed18SByY7z8IZx
-         sPvicbIiM2dNZFC0nMZQGIc+z/IqnSoPYxo9547B+BjnoOkRva9vA5Vooe1bdkfpS8G3
-         y0UA==
-X-Gm-Message-State: AOAM532RaQ0J5v+lVgvnnYnUNRfgfxAUKhxPq+UdTIlea8Ue4X/IWzVr
-        zFUSxM6WgH8MRSgjNZMp0nIqCVReBna1K0Pq6+Q=
-X-Google-Smtp-Source: ABdhPJxyv0KcwQtrdMtQkTLyrl57OgqJRSWjXZ4r4Z8vu+1JbH/U88tfk1cIxqTiWE1k97krRxR311A3MkeH2l3hX0c=
-X-Received: by 2002:a17:902:7445:b029:d1:dea3:a3ca with SMTP id
- e5-20020a1709027445b02900d1dea3a3camr1876986plt.19.1600997766672; Thu, 24 Sep
- 2020 18:36:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1600951211.git.yifeifz2@illinois.edu> <eedf3323eed8615a4be150b39a717de1a68f0c12.1600951211.git.yifeifz2@illinois.edu>
- <202009241646.5739BE3@keescook>
-In-Reply-To: <202009241646.5739BE3@keescook>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Thu, 24 Sep 2020 20:35:55 -0500
-Message-ID: <CABqSeAR8j=ALk5=Y=D4ivVU8m3DC8XgZp74FyAaeErS_TL4FRQ@mail.gmail.com>
-Subject: Re: [PATCH v2 seccomp 5/6] selftests/seccomp: Compare bitmap vs
- filter overhead
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 24 Sep 2020 21:43:49 -0400
+Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
+        id 6C1962A7EA; Thu, 24 Sep 2020 21:43:48 -0400 (EDT)
+To:     "David S. Miller" <davem@davemloft.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     "Michael Schmitz" <schmitzmic@gmail.com>,
+        "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
+        linux-m68k@lists.linux-m68k.org, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <df121aff561c73f3ff7d83f906942ed0d954d737.1600997998.git.fthain@telegraphics.com.au>
+From:   Finn Thain <fthain@telegraphics.com.au>
+Subject: [PATCH] ide/falconide: Fix module unload
+Date:   Fri, 25 Sep 2020 11:39:58 +1000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 6:47 PM Kees Cook <keescook@chromium.org> wrote:
-> BTW, did this benchmark tool's results match your expectations from what
-> you saw with your RFC? (I assume it helped since you've included in
-> here.)
+Unloading the falconide module results in a crash:
 
-Yes, I updated the commit message with the benchmarks of this patch
-series. Though, given that I'm running in a qemu-kvm on my laptop that
-has a lot of stuffs running on it (and with the cursed ThinkPad T480
-CPU throttling), I had to throw much more syscalls at it to pass the
-"approximately equals" expectation... though no idea about what's
-going on with 732 vs 737.
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+Oops: 00000000
+Modules linked in: falconide(-)
+PC: [<002930b2>] ide_host_remove+0x2e/0x1d2
+SR: 2000  SP: 00b49e28  a2: 009b0f90
+d0: 00000000    d1: 009b0f90    d2: 00000000    d3: 00b48000
+d4: 003cef32    d5: 00299188    a0: 0086d000    a1: 0086d000
+Process rmmod (pid: 322, task=009b0f90)
+Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
+wb 1 stat/addr/data: 0000 00000000 00000000
+wb 2 stat/addr/data: 0000 00000000 00000000
+wb 3 stat/addr/data: 0000 00000000 00018da9
+push data: 00000000 00000000 00000000 00000000
+Stack from 00b49e90:
+        004c456a 0027f176 0027cb0a 0027cb9e 00000000 0086d00a 2187d3f0 0027f0e0
+        00b49ebc 2187d1f6 00000000 00b49ec8 002811e8 0086d000 00b49ef0 0028024c
+        0086d00a 002800d6 00279a1a 00000001 00000001 0086d00a 2187d3f0 00279a58
+        00b49f1c 002802e0 0086d00a 2187d3f0 004c456a 0086d00a ef96af74 00000000
+        2187d3f0 002805d2 800de064 00b49f44 0027f088 2187d3f0 00ac1cf4 2187d3f0
+        004c43be 2187d3f0 00000000 2187d3f0 800b66a8 00b49f5c 00280776 2187d3f0
+Call Trace: [<0027f176>] __device_driver_unlock+0x0/0x48
+ [<0027cb0a>] device_links_busy+0x0/0x94
+ [<0027cb9e>] device_links_unbind_consumers+0x0/0x130
+ [<0027f0e0>] __device_driver_lock+0x0/0x5a
+ [<2187d1f6>] falconide_remove+0x12/0x18 [falconide]
+ [<002811e8>] platform_drv_remove+0x1c/0x28
+ [<0028024c>] device_release_driver_internal+0x176/0x17c
+ [<002800d6>] device_release_driver_internal+0x0/0x17c
+ [<00279a1a>] get_device+0x0/0x22
+ [<00279a58>] put_device+0x0/0x18
+ [<002802e0>] driver_detach+0x56/0x82
+ [<002805d2>] driver_remove_file+0x0/0x24
+ [<0027f088>] bus_remove_driver+0x4c/0xa4
+ [<00280776>] driver_unregister+0x28/0x5a
+ [<00281a00>] platform_driver_unregister+0x12/0x18
+ [<2187d2a0>] ide_falcon_driver_exit+0x10/0x16 [falconide]
+ [<000764f0>] sys_delete_module+0x110/0x1f2
+ [<000e83ea>] sys_rename+0x1a/0x1e
+ [<00002e0c>] syscall+0x8/0xc
+ [<00188004>] ext4_multi_mount_protect+0x35a/0x3ce
+Code: 0029 9188 4bf9 0027 aa1c 283c 003c ef32 <265c> 4a8b 6700 00b8 2043 2028 000c 0280 00ff ff00 6600 0176 40c0 7202 b2b9 004c
+Disabling lock debugging due to kernel taint
 
-Or if you mean if I expected these results, yes.
+This happens because the driver_data pointer is uninitialized.
+Add the missing platform_set_drvdata() call. For clarity, use the
+matching platform_get_drvdata() as well.
 
-YiFei Zhu
+Cc: Michael Schmitz <schmitzmic@gmail.com>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: linux-m68k@lists.linux-m68k.org
+Fixes: 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
+Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
+---
+This patch was tested using Aranym.
+---
+ drivers/ide/falconide.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
+index dbeb2605e5f6e..607c44bc50f1b 100644
+--- a/drivers/ide/falconide.c
++++ b/drivers/ide/falconide.c
+@@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
+ 	if (rc)
+ 		goto err_free;
+ 
++	platform_set_drvdata(pdev, host);
+ 	return 0;
+ err_free:
+ 	ide_host_free(host);
+@@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
+ 
+ static int falconide_remove(struct platform_device *pdev)
+ {
+-	struct ide_host *host = dev_get_drvdata(&pdev->dev);
++	struct ide_host *host = platform_get_drvdata(pdev);
+ 
+ 	ide_host_remove(host);
+ 
+-- 
+2.26.2
+
