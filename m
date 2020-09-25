@@ -2,77 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAE1279036
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E4E27903F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729704AbgIYSYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:24:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729593AbgIYSYZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:24:25 -0400
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73FEC2344C;
-        Fri, 25 Sep 2020 18:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601058264;
-        bh=3+UjR32phag7o0qtGDIn18Bhp3Te2gJhkXo8qfae49I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gYZyZw6q1BO+3QxLi6Yhxa52YdvWOGP6Bwynz1IgdeP4AoQ8O9LACjSjJq9kUdPAQ
-         2A9gwH2FC9gAFJD9v+rsBafSLadQqFs4m/Wfn1Ng9uYeWn8xQWdC+TallzF6jFqiCs
-         Engcd77zB1U31bxCR0JWjkmiWHv0KP9rxXqaifVg=
-Received: by mail-ot1-f48.google.com with SMTP id g96so3163099otb.12;
-        Fri, 25 Sep 2020 11:24:24 -0700 (PDT)
-X-Gm-Message-State: AOAM532wevVVVtVHP55vKKTUjCeACz7kwAnMOk4H8MCS/NVQQEjuB6TD
-        NnA+hQfddiZvFZknBAajlSaMBlVRXJZH3+GP+A==
-X-Google-Smtp-Source: ABdhPJzHcLMNb6xVVlodE5OyqgAY19wIaDZiXPKwHOA40n53jDTNUtNA3wjcwjLHWn8v5JC2xFhuQcSVkjaR6rPxT5I=
-X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr1190401otp.129.1601058263764;
- Fri, 25 Sep 2020 11:24:23 -0700 (PDT)
+        id S1729702AbgIYS0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:26:36 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57824 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbgIYS0f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:26:35 -0400
+Date:   Fri, 25 Sep 2020 18:26:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601058392;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gd9MKJMjiZ4BRJCGXiQBp/qZgmy5aeDgwR8dOx414sM=;
+        b=w9YkclN34Bo53KyvjGPooM626AOAHRpa3Vf1r1xUvWVFLhL9ayuU1vaRccotXSLAUL620a
+        cNiIcCPPMn5FH9VGAE5hmeDXn7936TxgOkHxA/7V4VV34WyHBAcNCGa2pTh7SWzb7bZypk
+        F41Dbqcr0cpUW3TgS5fleT5VJytC40FGrzGftN+44rSuULwKQbPExHBp57zC0gvJDmzARf
+        kP6gnpDpVmcUccxM2lccNlDTtuEtAErTfwyNTLd0Euyl7B0oRfWca1Hewa9iAuP8IIYRNh
+        ucdEklvkq09Ehbv43APY8P4Yza2RwDnnjlsXm/OACqssKytzcAZnlDVJJIp9Ow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601058392;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gd9MKJMjiZ4BRJCGXiQBp/qZgmy5aeDgwR8dOx414sM=;
+        b=S8ZZAKUsfttDEyNRL4jb8ae8isc3WiedPFUvG1yw+7sqAZDcV2QjGt8t6SYKCDSMA5B+vj
+        nP8bqaqvnLpP2fDA==
+From:   "tip-bot2 for Qinglang Miao" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] RAS/CEC: Convert to DEFINE_SHOW_ATTRIBUTE()
+Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200919012252.171437-1-miaoqinglang@huawei.com>
+References: <20200919012252.171437-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-References: <20200920095724.8251-1-ansuelsmth@gmail.com> <20200920095724.8251-4-ansuelsmth@gmail.com>
-In-Reply-To: <20200920095724.8251-4-ansuelsmth@gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 25 Sep 2020 12:24:12 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqKhyeh2=pJcpBKkh+s3FM__DY+VoYSYJLRUErrujTLn9A@mail.gmail.com>
-Message-ID: <CAL_JsqKhyeh2=pJcpBKkh+s3FM__DY+VoYSYJLRUErrujTLn9A@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] of_net: add mac-address-increment support
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160105839157.7002.12548841557640248021.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 3:57 AM Ansuel Smith <ansuelsmth@gmail.com> wrote:
->
-> Lots of embedded devices use the mac-address of other interface
-> extracted from nvmem cells and increments it by one or two. Add two
-> bindings to integrate this and directly use the right mac-address for
-> the interface. Some example are some routers that use the gmac
-> mac-address stored in the art partition and increments it by one for the
-> wifi. mac-address-increment-byte bindings is used to tell what byte of
-> the mac-address has to be increased (if not defined the last byte is
-> increased) and mac-address-increment tells how much the byte decided
-> early has to be increased.
+The following commit has been merged into the ras/core branch of tip:
 
-I'm inclined to say if there's a platform specific way to transform
-MAC addresses, then there should be platform specific code to do that
-which then stuffs the DT using standard properties. Otherwise, we have
-a never ending stream of 'generic' properties to try to handle
-different platforms' cases.
+Commit-ID:     4bd442e9a8388e8ec4ba7cf23a4774989d93b78e
+Gitweb:        https://git.kernel.org/tip/4bd442e9a8388e8ec4ba7cf23a4774989d93b78e
+Author:        Qinglang Miao <miaoqinglang@huawei.com>
+AuthorDate:    Sat, 19 Sep 2020 09:22:52 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 25 Sep 2020 19:05:31 +02:00
 
-Rob
+RAS/CEC: Convert to DEFINE_SHOW_ATTRIBUTE()
+
+Use the DEFINE_SHOW_ATTRIBUTE() macro and simplify the code.
+
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200919012252.171437-1-miaoqinglang@huawei.com
+---
+ drivers/ras/cec.c | 17 +++--------------
+ 1 file changed, 3 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
+index 6939aa5..ddecf25 100644
+--- a/drivers/ras/cec.c
++++ b/drivers/ras/cec.c
+@@ -435,7 +435,7 @@ DEFINE_DEBUGFS_ATTRIBUTE(action_threshold_ops, u64_get, action_threshold_set, "%
+ 
+ static const char * const bins[] = { "00", "01", "10", "11" };
+ 
+-static int array_dump(struct seq_file *m, void *v)
++static int array_show(struct seq_file *m, void *v)
+ {
+ 	struct ce_array *ca = &ce_arr;
+ 	int i;
+@@ -467,18 +467,7 @@ static int array_dump(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
+-static int array_open(struct inode *inode, struct file *filp)
+-{
+-	return single_open(filp, array_dump, NULL);
+-}
+-
+-static const struct file_operations array_ops = {
+-	.owner	 = THIS_MODULE,
+-	.open	 = array_open,
+-	.read	 = seq_read,
+-	.llseek	 = seq_lseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_ATTRIBUTE(array);
+ 
+ static int __init create_debugfs_nodes(void)
+ {
+@@ -513,7 +502,7 @@ static int __init create_debugfs_nodes(void)
+ 		goto err;
+ 	}
+ 
+-	array = debugfs_create_file("array", S_IRUSR, d, NULL, &array_ops);
++	array = debugfs_create_file("array", S_IRUSR, d, NULL, &array_fops);
+ 	if (!array) {
+ 		pr_warn("Error creating array debugfs node!\n");
+ 		goto err;
