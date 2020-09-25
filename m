@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E7E2783FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6AA2783FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727933AbgIYJ2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727678AbgIYJ2h (ORCPT
+        id S1727936AbgIYJ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:29:51 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14994 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726255AbgIYJ3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:28:37 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E8DC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:28:37 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j2so2792021wrx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:28:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9+lQmvGIW34Fed8sffLC/RmBoE8wLwQ9s9GB7PfHXuY=;
-        b=LNznKUHScZpcbVBxTTF2/ypBWXKkc8wBM9UV9nb/DgTkEiwfxUYkczzbFEG8RkMWUX
-         lP7MurZarRW7M0/dXDSmFrlZhe1Ow6Caz+Jl/Sj7Inx/i4+1hi22xwa+2ynB+3SA73T5
-         H/k7KNVtHyZNypCILFyhsCfPg9YgGLgyhZR21ACLyCTSiRDpF8+t2UDq7rtoMN4lHBba
-         7MqHRMod7qyO8iI7qB3pm8cmNMsnLiYwCp33yHv20vFnw9XjNZ3TMN8BDuNU8E7f3S1K
-         mrUDYXOL9gQDlj0b+vQC7r9OgRLAMvs6dlRH/ngDAzh5stAiNr9I5z6MqTpJSmhSBC6F
-         05Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9+lQmvGIW34Fed8sffLC/RmBoE8wLwQ9s9GB7PfHXuY=;
-        b=CWsvwvTX4vgMxZfZuQcV0fI3e2pmCyBetQgs+rQv+cAhOEBjwokcVgfIxKqcDvf+Oi
-         Zb3gsoW1udCw0n55Lzr6h2pGpBGviD+GZb1U+xQcoNTlqCkLdr/b1kINpQaHuvrWTCcU
-         +YkPRIsK9PiCQp0Beb9AOiMnALy2wC51Q3GV4FzDs+iVbDIC1YzNkpSNztSu3IbefTWy
-         dEKRsp8JwGBlpBh8l+zxVm6Q2ZJPYWdoiWSrXJhTe2FCL9aYyx9eXVhr+0epA8VuZ9zi
-         iqpiFpzPUrTZpwmH2ksfxThP+aiRaLsYks3XYoN/ASZgnl1Ha9mUpqhrzUMWJr/puEhG
-         D8gA==
-X-Gm-Message-State: AOAM530MOoZUfrunpCMVuAsylBQfaOX29+UdCUH9p/ruyChHj0nitYHo
-        vp4glU2ou5+tVTfM2LMdqMLVWA==
-X-Google-Smtp-Source: ABdhPJwe0tGhwlRBHQfo0XPNmflmh1mkrdlaabZjOOBmINRUpSzPw9GJzqrYNZkjHavFfPXH6KD/cQ==
-X-Received: by 2002:adf:9e06:: with SMTP id u6mr3515710wre.208.1601026115714;
-        Fri, 25 Sep 2020 02:28:35 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id n2sm2366859wma.29.2020.09.25.02.28.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 02:28:35 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, lgirdwood@gmail.com,
-        perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org, srivasam@codeaurora.org,
-        rohitkr@codeaurora.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/2] ASoC: lpass-platform: use devm_regmap_field_bulk_alloc
-Date:   Fri, 25 Sep 2020 10:28:04 +0100
-Message-Id: <20200925092804.23536-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200925092804.23536-1-srinivas.kandagatla@linaro.org>
-References: <20200925092804.23536-1-srinivas.kandagatla@linaro.org>
+        Fri, 25 Sep 2020 05:29:50 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08P9COZj018692;
+        Fri, 25 Sep 2020 05:29:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NguD6eXwu//VK1apBm8csu5L/BvCEbdbw9lIW1PzOjM=;
+ b=ooU7cx63NTZ9Vl/t7hU0pJBjhMzwydhCmhKXKUujpnk61tnA8gpdXHjSqeKpojS/84Zz
+ bOlVAaGuf+DKNHvd//9SB3BD/cIDk9UcEOzFJtlY47OweX+LqvBz0OWWJqSbZxrl4a7H
+ oMw1BxYWQ6ZOR7Wy+7S5pXrVnPtE52R4gGqtDtcEHzf9dR1rz2ECCkmRZU5/zz8zp4IX
+ CTjGPKMXXkur6clekF83rKzjzvE5AYHDxu743TCJbZcR9Pn4P7SduIMwfEYT1jKzDqtt
+ oVS+cG1hTK35ui86KpjCT8b395Z0ci43um+pyp+q3o2pJD0mkvstaEoqGqSedzZJkDrh jw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33sdq9rf5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Sep 2020 05:29:49 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08P9OEZp059160;
+        Fri, 25 Sep 2020 05:29:48 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33sdq9rf53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Sep 2020 05:29:48 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08P9H2ue001502;
+        Fri, 25 Sep 2020 09:29:46 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 33n9m8e47x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Sep 2020 09:29:46 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08P9Thq627460070
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Sep 2020 09:29:43 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA1E311C052;
+        Fri, 25 Sep 2020 09:29:43 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 009B211C05B;
+        Fri, 25 Sep 2020 09:29:43 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.53.230])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 25 Sep 2020 09:29:42 +0000 (GMT)
+Date:   Fri, 25 Sep 2020 11:29:41 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v10 05/16] s390/vfio-ap: implement in-use callback for
+ vfio_ap driver
+Message-ID: <20200925112941.71589591.pasic@linux.ibm.com>
+In-Reply-To: <20200821195616.13554-6-akrowiak@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-6-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-25_02:2020-09-24,2020-09-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ mlxscore=0 impostorscore=0 adultscore=0 bulkscore=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 mlxlogscore=787 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-use new devm_regmap_field_bulk_alloc to allocate fields as
-it make the code more readable!
+On Fri, 21 Aug 2020 15:56:05 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Tested-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
----
- sound/soc/qcom/lpass-platform.c | 31 +++++++------------------------
- 1 file changed, 7 insertions(+), 24 deletions(-)
+> +
+> +bool vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
+> +{
+> +	bool in_use;
+> +
+> +	mutex_lock(&matrix_dev->lock);
+> +	in_use = !!vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm);
+> +	mutex_unlock(&matrix_dev->lock);
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index df692ed95503..7ac26290082f 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -56,6 +56,7 @@ static int lpass_platform_alloc_dmactl_fields(struct device *dev,
- 	struct lpass_data *drvdata = dev_get_drvdata(dev);
- 	struct lpass_variant *v = drvdata->variant;
- 	struct lpaif_dmactl *rd_dmactl, *wr_dmactl;
-+	int rval;
- 
- 	drvdata->rd_dmactl = devm_kzalloc(dev, sizeof(struct lpaif_dmactl),
- 					  GFP_KERNEL);
-@@ -70,31 +71,13 @@ static int lpass_platform_alloc_dmactl_fields(struct device *dev,
- 	rd_dmactl = drvdata->rd_dmactl;
- 	wr_dmactl = drvdata->wr_dmactl;
- 
--	rd_dmactl->bursten = devm_regmap_field_alloc(dev, map, v->rdma_bursten);
--	rd_dmactl->wpscnt = devm_regmap_field_alloc(dev, map, v->rdma_wpscnt);
--	rd_dmactl->fifowm = devm_regmap_field_alloc(dev, map, v->rdma_fifowm);
--	rd_dmactl->intf = devm_regmap_field_alloc(dev, map, v->rdma_intf);
--	rd_dmactl->enable = devm_regmap_field_alloc(dev, map, v->rdma_enable);
--	rd_dmactl->dyncclk = devm_regmap_field_alloc(dev, map, v->rdma_dyncclk);
-+	rval = devm_regmap_field_bulk_alloc(dev, map, &rd_dmactl->bursten,
-+					    &v->rdma_bursten, 6);
-+	if (rval)
-+		return rval;
- 
--	if (IS_ERR(rd_dmactl->bursten) || IS_ERR(rd_dmactl->wpscnt) ||
--	    IS_ERR(rd_dmactl->fifowm) || IS_ERR(rd_dmactl->intf) ||
--	    IS_ERR(rd_dmactl->enable) || IS_ERR(rd_dmactl->dyncclk))
--		return -EINVAL;
--
--	wr_dmactl->bursten = devm_regmap_field_alloc(dev, map, v->wrdma_bursten);
--	wr_dmactl->wpscnt = devm_regmap_field_alloc(dev, map, v->wrdma_wpscnt);
--	wr_dmactl->fifowm = devm_regmap_field_alloc(dev, map, v->wrdma_fifowm);
--	wr_dmactl->intf = devm_regmap_field_alloc(dev, map, v->wrdma_intf);
--	wr_dmactl->enable = devm_regmap_field_alloc(dev, map, v->wrdma_enable);
--	wr_dmactl->dyncclk = devm_regmap_field_alloc(dev, map, v->wrdma_dyncclk);
--
--	if (IS_ERR(wr_dmactl->bursten) || IS_ERR(wr_dmactl->wpscnt) ||
--	    IS_ERR(wr_dmactl->fifowm) || IS_ERR(wr_dmactl->intf) ||
--	    IS_ERR(wr_dmactl->enable) || IS_ERR(wr_dmactl->dyncclk))
--		return -EINVAL;
--
--	return 0;
-+	return devm_regmap_field_bulk_alloc(dev, map, &wr_dmactl->bursten,
-+					    &v->wrdma_bursten, 6);
- }
- 
- static int lpass_platform_pcmops_open(struct snd_soc_component *component,
--- 
-2.21.0
+See also my comment for patch 4. AFAIU as soon as you release the lock
+the in_use may become outdated in any moment.
 
+> +
+> +	return in_use;
+> +}
