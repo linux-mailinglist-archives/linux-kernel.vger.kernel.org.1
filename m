@@ -2,176 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3B572786C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8E8E2786CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgIYMNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:13:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40507 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726368AbgIYMNk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:13:40 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601036018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9aKCeIUiQec4vK5wcBZEU6AS+RDJQHHmHHdQS8z/cKw=;
-        b=L74l5MjcOwWcbpp6+u3RcRb3yyV47qA0fkmyjMWWuQ6Io49APjTwrVKZSh/XjE1OKyjjeN
-        /VhsWk/UTUMLfu/LqPdFQvURD3ClJb7YMFLZnmB2mwk3lrT5VivoP68478a8s8rh03YPtf
-        7UzKxUsi+uCefja42MFW8RrwUksoH9E=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-157-J9QVNKOCMrmRaQiD3oYAmg-1; Fri, 25 Sep 2020 08:13:36 -0400
-X-MC-Unique: J9QVNKOCMrmRaQiD3oYAmg-1
-Received: by mail-oo1-f70.google.com with SMTP id h2so1177088oop.10
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:13:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9aKCeIUiQec4vK5wcBZEU6AS+RDJQHHmHHdQS8z/cKw=;
-        b=LpZL7OZtwRbnMHRuW2LfrQEKchm/mAU5zsqQkZg6erKN31DghYsA+ActLNH4U4yvg6
-         q9PlXY/SogGmBINz+4HXCBXv740XuttRNKjIIdeUvzMRheaCSG31wN8k1HxnzjAz5LEf
-         ZffiJFyCDBKOX+Ea4Wrpwblp8HcdgP9UJihyDXLwg6s1oTofYla9hwet6jr8QusU0Eqp
-         0Jkbge1+2DP9x3MJpgt7HNz3vbYm4NMPO6GXEuYsHGfw92slFWdRlAUViyUPBnl0BwoX
-         BNfZnQqxDqCPwJ3r4LD0VeBHKzihdqn7hb08T+1Xoli6LTgGzoEQyfoPHGEfJ5kriLOB
-         Hlqw==
-X-Gm-Message-State: AOAM531NZbu11swFGRl3uv/oxY5q+Lf5MvZ5Fp1bfYIfsFUC/EngFnsR
-        W7BnxGqt/BMhWIOEL5XKl18EOg0sFG4DAHRnRrKnD6UMJeZCxvZxnelPnhd3yLoK9OkzylR3eJA
-        G3h2Q4XVQO8FOFKIKw8yfVZU9s4li+SA/dBuylJdT
-X-Received: by 2002:a9d:3ca:: with SMTP id f68mr54443otf.330.1601036015807;
-        Fri, 25 Sep 2020 05:13:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnBNDgt0/M5Yqbni1/2wD1zhM5oVrbsT1+cJlMXufn1oau4EV6KH5Sl9xBOVhCR3j/eiDaTNOZYjD28Q+7HcM=
-X-Received: by 2002:a9d:3ca:: with SMTP id f68mr54429otf.330.1601036015525;
- Fri, 25 Sep 2020 05:13:35 -0700 (PDT)
+        id S1728412AbgIYMP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:15:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727132AbgIYMP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:15:57 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 989BA21D7A;
+        Fri, 25 Sep 2020 12:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601036156;
+        bh=kwR9lgq75oem2SESbbdu8Dipj1Q8zTQ+UnnWezcapFI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=no4C+nJyV2mcqN2CwSdvw/0kwskREmHydE8VA5s7AbOR06GF2CsyHrzSHOMM0Z3/t
+         emMPgDLX9SOBleJLLUfsVNObhQW1CVUljmp3BccgSxyS2FIa8fje8dvxvlCpzo4SP5
+         a6kO5w+gcFyndNxj5dH1yqRhVVV3CbXU4mcHjskI=
+Date:   Fri, 25 Sep 2020 13:15:50 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Gene Chen <gene.chen.richtek@gmail.com>
+Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com, knaack.h@gmx.de,
+        lars@metafoo.de, pmeerw@pmeerw.net, devicetree@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
+        shufan_lee@richtek.com, cy_huang@richtek.com,
+        benjamin.chao@mediatek.com
+Subject: Re: [PATCH v5 2/3] Documentation: ABI: testing: mt6360: Add ADC
+ sysfs guideline
+Message-ID: <20200925131550.10717161@archlinux>
+In-Reply-To: <1600687442-23658-3-git-send-email-gene.chen.richtek@gmail.com>
+References: <1600687442-23658-1-git-send-email-gene.chen.richtek@gmail.com>
+        <1600687442-23658-3-git-send-email-gene.chen.richtek@gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200922133731.33478-1-jarod@redhat.com> <14715.1600813163@famine>
-In-Reply-To: <14715.1600813163@famine>
-From:   Jarod Wilson <jarod@redhat.com>
-Date:   Fri, 25 Sep 2020 08:13:24 -0400
-Message-ID: <CAKfmpSd145TDcgi6t0+BFfXH2+4Q0J-UB6uA+bm4vfpDrgy1sA@mail.gmail.com>
-Subject: Re: [PATCH net-next 0/5] bonding: rename bond components
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 6:19 PM Jay Vosburgh <jay.vosburgh@canonical.com> wrote:
->
-> Jarod Wilson <jarod@redhat.com> wrote:
->
-> >The bonding driver's use of master and slave, while largely understood
-> >in technical circles, poses a barrier for inclusion to some potential
-> >members of the development and user community, due to the historical
-> >context of masters and slaves, particularly in the United States. This
-> >is a first full pass at replacing those phrases with more socially
-> >inclusive ones, opting for aggregator to replace master and link to
-> >replace slave, as the bonding driver itself is a link aggregation
-> >driver.
->
->         First, I think there should be some direction from the kernel
-> development leadership as to whether or not this type of large-scale
-> search and replace of socially sensitive terms of art or other
-> terminology is a task that should be undertaken, given the noted issues
-> it will cause in stable release maintenance going forwards.
+On Mon, 21 Sep 2020 19:24:01 +0800
+Gene Chen <gene.chen.richtek@gmail.com> wrote:
 
-Admittedly, part of the point of this patch is to help drive such
-conversations. Having a concrete example of how these changes would
-look makes it easier to discuss, I think. I understand the burden
-here, though as you noted later, bonding doesn't really churn that
-much, so in this specific case, the maintenance load wouldn't be
-terrible, and I think worth it in this case, from a social standpoint.
-I know this can start to get political and personal real fast
-though...
+> From: Gene Chen <gene_chen@richtek.com>
+> 
+> Add ABI documentation for mt6360 ADC sysfs interfaces.
+> 
+> Signed-off-by: Gene Chen <gene_chen@richtek.com>
+Hi Gene,
 
->         Second, on the merits of the proposed changes (presuming for the
-> moment that this goes forward), I would prefer different nomenclature
-> that does not reuse existing names for different purposes, i.e., "link"
-> and "aggregator."
->
->         Both of those have specific meanings in the current code, and
-> old kernels will retain that meaning.  Changing them to have new
-> meanings going forward will lead to confusion, in my opinion for no good
-> reason, as there are other names suited that do not conflict.
->
->         For example, instead of "master" call everything a "bond," which
-> matches common usage in discussion.  Changing "master" to "aggregator,"
-> the replacement results in cumbersome descriptions like "the
-> aggregator's active aggregator" in the context of LACP.
->
->         A replacement term for "slave" is trickier; my first choice
-> would be "port," but that may make more churn from a code change point
-> of view, although struct slave could become struct bond_port, and leave
-> the existing struct port for its current LACP use.
+My first thought was we don't need this now we are dealing with
+standard ABI only, but there is some useful additional documentation
+in here which is good to have.
 
-I did briefly have the idea of renaming 'port' in the LACP code to
-'lacp_port', which would allow reuse of 'port', and would then be
-consistent with the team driver (and bridge driver, iirc). I could
-certainly pursue that option, or try going with "bond_port", but I'd
-like something so widely used throughout the code to be shorter if
-possible, I think. It really is LACP that throws a wrench into most
-sensible naming schemes I could think of. Simply renaming current
-"master" to "bond" does make a fair bit of sense though, didn't really
-occur to me. But replacing "slave" is definitely the far more involved
-and messy one.
+Looks good to me!
 
-> >There are a few problems with this change. First up, "link" is used for
-> >link state already in the bonding driver, so the first step here is to
-> >rename link to link_state. Second, aggregator is already used in the
-> >802.3ad code, but I feel the usage is actually consistent with referring
-> >to the bonding aggregation virtual device as the aggregator. Third, we
-> >have the issue of not wanting to break any existing userspace, which I
-> >believe this patchset accomplishes, while also adding alternative
-> >interfaces using new terminology, and a Kconfig option that will let
-> >people make the conscious decision to break userspace and no longer
-> >expose the original master/slave interfaces, once their userspace is
-> >able to cope with their removal.
->
->         I'm opposed to the Kconfig option because it will lead to
-> balkanization of the UAPI, which would be worse than a clean break
-> (which I'm also opposed to).
+Thanks,
 
-I suspected this might be a point of contention. Easy enough to simply
-omit that bit from the series, if that's the consensus.
+Jonathan
 
-> >Lastly, we do still have the issue of ease of backporting fixes to
-> >-stable trees. I've not had a huge amount of time to spend on it, but
-> >brief forays into coccinelle didn't really pay off (since it's meant to
-> >operate on code, not patches), and the best solution I can come up with
-> >is providing a shell script someone could run over git-format-patch
-> >output before git-am'ing the result to a -stable tree, though scripting
-> >these changes in the first place turned out to be not the best thing to
-> >do anyway, due to subtle cases where use of master or slave can NOT yet
-> >be replaced, so a large amount of work was done by hand, inspection,
-> >trial and error, which is why this set is a lot longer in coming than
-> >I'd originally hoped. I don't expect -stable backports to be horrible to
-> >figure out one way or another though, and I don't believe that a bit of
-> >inconvenience on that front is enough to warrant not making these
-> >changes.
->
->         I'm skeptical that, given the scope of the changes involved,
-> that it's really feasible to have effective automated massaging of
-> patches.  I think the reality is that a large fraction of the bonding
-> fixes in the future will have to be backported entirely by hand.  The
-> only saving grace here is that the quantity of such patches is generally
-> low (~40 in 2020 year to date).
-
-Yeah, requiring manual backporting by hand is a very distinct
-possibility. As noted, such patches are usually pretty low in number,
-and I'll note that they're also generally fairly small patches too. I
-would be happy to help with any manual backporting as well, as a
-consolation if scripting them doesn't really work out.
-
--- 
-Jarod Wilson
-jarod@redhat.com
+> ---
+>  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 | 78 ++++++++++++++++++++++
+>  1 file changed, 78 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
+> new file mode 100644
+> index 0000000..e5a7b1c
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
+> @@ -0,0 +1,78 @@
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage0_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 USBID ADC which connected to connector ID pin.
+> +		Calculating with scale and offset returns voltage in uV
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage1_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 VBUS ADC with lower accuracy(+-75mA)
+> +		higher measure range(1~22mV)
+> +		Calculating with scale and offset returns voltage in uV
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage2_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 VBUS ADC with higher accuracy(+-30mA)
+> +		lower measure range(1~9.76V)
+> +		Calculating with scale and offset returns voltage in uV
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage3_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 VSYS ADC
+> +		Calculating with scale and offset returns voltage in uV
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage4_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 VBAT ADC
+> +		Calculating with scale and offset returns voltage in uV
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_current5_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 IBUS ADC
+> +		Calculating with scale and offset returns voltage in uA
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_current6_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 IBAT ADC
+> +		Calculating with scale and offset returns voltage in uA
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_current7_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 CHG_VDDP ADC
+> +		Calculating with scale and offset returns voltage in uV
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_temp8_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 IC junction temperature
+> +		Calculating with scale and offset returns temperature in degree
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage9_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 VREF_TS ADC
+> +		Calculating with scale and offset returns voltage in uV
+> +
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage10_raw
+> +KernelVersion:	5.8.0
+> +Contact:	gene_chen@richtek.com
+> +Description:
+> +		Indicated MT6360 TS ADC
+> +		Calculating with scale and offset returns voltage in uV
 
