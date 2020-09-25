@@ -2,89 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7607A27823D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5226E278242
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727390AbgIYIKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:10:41 -0400
-Received: from foss.arm.com ([217.140.110.172]:38212 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYIKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:10:41 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A3A51045;
-        Fri, 25 Sep 2020 01:10:40 -0700 (PDT)
-Received: from [10.57.53.72] (unknown [10.57.53.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98FFC3F718;
-        Fri, 25 Sep 2020 01:10:38 -0700 (PDT)
-Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to
- cpufreq_stats_record_transition()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cristian.marussi@arm.com, Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <cover.1600238586.git.viresh.kumar@linaro.org>
- <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
- <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
- <a4c5a6b9-10f8-34f8-f01d-8b373214d173@arm.com>
- <CAJZ5v0iFjzqTKTPFF5hB5C0TYSQn2rxL_6099gqUwoTARKRnZA@mail.gmail.com>
- <ae5771c8-6297-e447-4449-e39ae2ea5a0e@arm.com>
- <CAJZ5v0hkBnU_W-ZXHTfppu9pVWnQcJHho7DQPi7N7yeLOt5cgg@mail.gmail.com>
- <20200924123921.iiaqw2ufe2utnjtg@vireshk-i7>
- <f57626de-6021-e87d-63ab-33ccc46a2900@arm.com>
- <20200925060954.k5quasxz2epjdmdq@vireshk-i7>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <8ea6adc5-faf5-d982-9a0e-7cf0a6f20b5f@arm.com>
-Date:   Fri, 25 Sep 2020 09:10:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727446AbgIYILL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727044AbgIYILL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:11:11 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCF1C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:11:10 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kLioo-0007Qy-PY; Fri, 25 Sep 2020 10:11:02 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kLion-0008H6-SP; Fri, 25 Sep 2020 10:11:01 +0200
+Date:   Fri, 25 Sep 2020 10:11:01 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 1/3] i2c: imx: Fix reset of I2SR_IAL flag
+Message-ID: <20200925081101.dthsj4hokqz2vsgp@pengutronix.de>
+References: <20200917122029.11121-1-ceggers@arri.de>
+ <20200917122029.11121-2-ceggers@arri.de>
+ <20200917140235.igfq2hq63f4qqhrr@pengutronix.de>
+ <16013235.tl8pWZfNaG@n95hx1g2>
 MIME-Version: 1.0
-In-Reply-To: <20200925060954.k5quasxz2epjdmdq@vireshk-i7>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rpqafbpfmp6buotd"
+Content-Disposition: inline
+In-Reply-To: <16013235.tl8pWZfNaG@n95hx1g2>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--rpqafbpfmp6buotd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 9/25/20 7:09 AM, Viresh Kumar wrote:
-> On 24-09-20, 17:10, Lukasz Luba wrote:
->> Because of supporting this reset file, the code is going to be a bit
->> complex
-> 
-> I will say not very straight forward, but it isn't complex as well.
-> 
->> and also visited from the scheduler. I don't know if the
->> config for stats is enabled for production kernels but if yes,
->> then forcing all to keep that reset code might be too much.
->> For the engineering kernel version is OK.
-> 
-> I am not sure either if they are enabled for production kernels, but even if it
-> then also this code won't hit performance.
-> 
->> I would say for most normal checks these sysfs stats are very useful.
->> If there is a need for investigation like you described, the trace
->> event is there, just have to be enabled. Tools like LISA would
->> help with parsing the trace and mapping to some plots or even
->> merging with scheduler context.
-> 
-> Right, but stats is much easier in my opinion and providing this reset
-> functionality does make it easier to track. And that it is already there now.
-> 
->>  From time to time some engineers are asking why the stats
->> don't show the values (missing fast-switch tracking). I think
->> they are interested in a simple use case, otherwise they would use the
->> tracing.
-> 
-> Right and I completely agree with that and so this patchset. I think there
-> aren't any serious race conditions here that would make things bad for anyone
-> and that this patchset will eventually get in after a little rearrangement.
-> 
+On Thu, Sep 17, 2020 at 04:13:50PM +0200, Christian Eggers wrote:
+> Hello Uwe,
+>=20
+> On Thursday, 17 September 2020, 16:02:35 CEST, Uwe Kleine-K=F6nig wrote:
+> > Hello,
+> >
+> > On Thu, Sep 17, 2020 at 02:20:27PM +0200, Christian Eggers wrote:
+> > ...
+> > >             /* check for arbitration lost */
+> > >             if (temp & I2SR_IAL) {
+> > >                     temp &=3D ~I2SR_IAL;
+> > > +                   temp |=3D (i2c_imx->hwdata->i2sr_clr_opcode & I2S=
+R_IAL);
+> > >                     imx_i2c_write_reg(temp, i2c_imx, IMX_I2C_I2SR);
+> > >                     return -EAGAIN;
+> > ...
+>=20
+> > This looks strange. First the flag is cleared and then it is (in some
+> > cases) set again.
+> i.MX controllers require writing a 0 to clear these bits. Vybrid controll=
+ers
+> need writing a 1 for the same.
 
-Fair enough, let see the final implementation. We can check it with perf
-the speculative exec and cache util.
+Yes, I understood that.
+
+> > If I2SR_IIF is set in temp you ack this irq without handling it. (Which
+> > might happen if atomic is set and irqs are off?!)
+> This patch is only about using the correct processor specific value for
+> acknowledging an IRQ... But I think that returning EAGAIN (which aborts t=
+he
+> transfer) should be handling enough. At the next transfer, the controller=
+ will
+> be set back to master mode.
+
+Either you didn't understand what I meant, or I don't understand why you
+consider your patch right anyhow. So I try to explain in other and more
+words.
+
+IMHO the intention here (and also what happens on i.MX) is that exactly
+the AL interrupt pending bit should be cleared and the IF irq is
+supposed to be untouched.
+
+Given there are only two irq flags in the I2SR register (which is called
+IBSR on Vybrid) the status quo (i.e. without your patch) is:
+
+  On i.MX IAL is cleared
+  On Vybrid IIF (which is called IBIF there) is cleared.
+
+With your patch we get:
+
+  On i.MX IAL is cleared
+  On Vybrid both IIF (aka IBIF) and IAL (aka IBAL) are cleared.
+
+To get it right for both SoC types you have to do (e.g.):
+
+	temp =3D ~i2c_imx->hwdata->i2sr_clr_opcode ^ I2SR_IAL;
+
+(and in i2c_imx_isr() the same using I2SR_IIF instead of I2SR_IAL
+because there currently IAL might be cleared by mistake on Vybrid).
+
+I considered creating a patch, but as I don't have a Vybrid on my desk
+and on i.MX there is no change, I let you do this.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--rpqafbpfmp6buotd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9tphIACgkQwfwUeK3K
+7AneRwf+JcnV53qWQCh7RldBTTEDQwDlmjS9dhIIry/Q+bGBQK+1cCSKTnEsXPAD
+eK9uKw9avB1/AjErj47M0zg+jvq7Sj8t7xVmLFhXmN4WfHQ84tVPgqedTExMgLWz
+VD2Kz66Grhic1FS8/NPI/GtTHjuFVw5TsSmmzCVDZHPeDMXgnmamWpU7pvwyz8uS
+ytQIIFouibq4TY/otlP9xaib6kxQr4qJYJ/uz+TpMdBMatDl/L2PQ8po2p5VylvD
+8bAzJ7+uhqISfh6ERiTEga0GJCzg/3Px4ZQqIDSxPuPH3c7PUBvd50jPpFzZKAyA
+dLIkPtWTYyAY52l4kjK/PwOHpAmgXg==
+=hldl
+-----END PGP SIGNATURE-----
+
+--rpqafbpfmp6buotd--
