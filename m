@@ -2,104 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1B92785D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319AA2785D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:29:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728287AbgIYL3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:29:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727838AbgIYL3a (ORCPT
+        id S1727838AbgIYL3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:29:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30069 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728118AbgIYL3f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:29:30 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9A8C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:29:30 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id h17so1973348otr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VATywaeCtSZal4icWJrV1Gr0nCEObC/TuWU6wNtTQEE=;
-        b=lCOusS8hZtrC9qZoQGY3Ser/7yrF9BU9gLkQV5qqjgvZ8Y7dRiT7BIrvn9GiSrSH0L
-         5FncwH4gjLeePETztJ4Q610W1/s0fBPAyxRobyznOWI530KgtGCx5ekOPFIRZIr551VG
-         I3RqFyCSDX39gtr3FlhfhZceeKJBJNWFbR8iJWxFkpDhPr6IO1E6zyM7sTmxQcVz0Rk7
-         VmOMVSSJTcVvmWPjjXa0nn8SDOurSrILPGYIaKa1OtU7J2Pa288YjGyLvZMIp3Dm4LNO
-         a6JfdlgGyF1rDIHSaNYHpI+CXqUCxZqxv08OjquJ5V0Q3rlnyUFXrLziXR3w2JFgrIUm
-         iHQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VATywaeCtSZal4icWJrV1Gr0nCEObC/TuWU6wNtTQEE=;
-        b=g6EDd4lE2OCSTgc7eaZOhNY4d/ehJNsLALDg6ZZfdeR6v7HxOvEJTxhUbz8ePloBs5
-         Myd9O/mFiDilNqYIeTHQ3TII6QP0buk/8V3r7aPh3gY0dVv9qhKNJlpXDZ4mA8do4LDF
-         TFPWff48HhPYE/woOA34mp8ba/DzJtfSkH9eNC0opM1/ZrasvOOmTsgbXrFmQLwz/cQ5
-         Zbky5Bz83DiPu5RgN6aacmnAIhK3Vjtg8tsbpFfogwY06IqgwuXvck70F8+3TUZ93MFx
-         oIovyzGgZrFMmuoDpWi5/xxniCy7OPDC1i6WSLjp3sl/kNoL81U3CY8bbGz3nUVTI7Fm
-         zt4g==
-X-Gm-Message-State: AOAM5320WMLEqyce4+6tFK4z4x969/VPl2RJSW7K1Sp7W2wEMj6Ml65u
-        IuSbMq5gZsI5oWOD4+2+NQF4B/cLlktCaJhZVVcaBA==
-X-Google-Smtp-Source: ABdhPJzE3K5xm1eViWbfi0ZoJZKCUt9N8Q3Hq1ZW+DlbeaaZM4VGEsGgYmRjWMfgQH8SjBMIwkPzlPlgFzTmLVtNvK0=
-X-Received: by 2002:a9d:ecc:: with SMTP id 70mr2566408otj.66.1601033369873;
- Fri, 25 Sep 2020 04:29:29 -0700 (PDT)
+        Fri, 25 Sep 2020 07:29:35 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601033373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3NXvmRl1RoHr3cxBopNVva2P77kIGOs8tMv65YwxLi0=;
+        b=h109z7aCGiczl+ZBiY0KVNFucxsfk0lcC+YWIP9YU+19Id+ETphJmGqeBNhQuPG2D9jAo5
+        5P8Pc/B3/nBlYIfLr94+AX5V03f9LJp9CB5Jtj8lSAoOJI2u2Tar134jCL7qn7XEwfvHN8
+        H5iBrj1LzdlpYAHmxrmbOU/5x9d6Vz0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-192-1ex2OmjHNEeCj0OvC-clLQ-1; Fri, 25 Sep 2020 07:29:29 -0400
+X-MC-Unique: 1ex2OmjHNEeCj0OvC-clLQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 866C564149;
+        Fri, 25 Sep 2020 11:29:28 +0000 (UTC)
+Received: from [10.72.12.44] (ovpn-12-44.pek2.redhat.com [10.72.12.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id BE17A5D9F3;
+        Fri, 25 Sep 2020 11:29:25 +0000 (UTC)
+Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
+ errors
+To:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Eli Cohen <elic@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
+ <20200918082245.GP869610@unreal>
+ <20200924052932-mutt-send-email-mst@kernel.org>
+ <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
+ <079c831e-214d-22c1-028e-05d84e3b7f04@infradead.org>
+ <20200924120217-mutt-send-email-mst@kernel.org>
+ <20200925072005.GB2280698@unreal>
+ <20200925061847-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <821c501c-53ce-3e80-8a73-f0680193df20@redhat.com>
+Date:   Fri, 25 Sep 2020 19:29:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200915100623.708736-1-robert.marko@sartura.hr> <6693ac3b-bf07-4a02-caca-5285dabdbb14@ti.com>
-In-Reply-To: <6693ac3b-bf07-4a02-caca-5285dabdbb14@ti.com>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Fri, 25 Sep 2020 13:29:19 +0200
-Message-ID: <CA+HBbNEWsPvrx5U8dYfJ=Tsc4+ujCXzDJk0S_Jd5OKtVrQ0AqA@mail.gmail.com>
-Subject: Re: [PATCH] mtd: spi-nor: macronix: Add SECT_4K to mx25l12805d
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     tudor.ambarus@microchip.com,
-        Miquel Raynal <miquel.raynal@bootlin.com>, richard@nod.at,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Luka Perkov <luka.perkov@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200925061847-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 1:27 PM Vignesh Raghavendra <vigneshr@ti.com> wrote:
->
-> Hi,
->
-> On 9/15/20 3:36 PM, Robert Marko wrote:
-> > According to the mx25l12805d datasheet it supports using 4K or 64K sectors.
-> > So lets add the SECT_4K to enable 4K sector usage.
-> >
-> > Datasheet: https://www.mxic.com.tw/Lists/Datasheet/Attachments/7321/MX25L12805D,%203V,%20128Mb,%20v1.2.pdf
->
-> Have you tested this feature on a real HW?
-Hi,
-Yes, this has been tested on Alfa AP120C-AC which uses mx25l12805d.
-I have not spotted any issues with it.
 
-Regards,
-Robert
+On 2020/9/25 下午6:19, Michael S. Tsirkin wrote:
+> On Fri, Sep 25, 2020 at 10:20:05AM +0300, Leon Romanovsky wrote:
+>> On Thu, Sep 24, 2020 at 12:02:43PM -0400, Michael S. Tsirkin wrote:
+>>> On Thu, Sep 24, 2020 at 08:47:05AM -0700, Randy Dunlap wrote:
+>>>> On 9/24/20 3:24 AM, Eli Cohen wrote:
+>>>>> On Thu, Sep 24, 2020 at 05:30:55AM -0400, Michael S. Tsirkin wrote:
+>>>>>>>> --- linux-next-20200917.orig/drivers/vdpa/Kconfig
+>>>>>>>> +++ linux-next-20200917/drivers/vdpa/Kconfig
+>>>>>>>> @@ -31,7 +31,7 @@ config IFCVF
+>>>>>>>>
+>>>>>>>>   config MLX5_VDPA
+>>>>>>>>   	bool "MLX5 VDPA support library for ConnectX devices"
+>>>>>>>> -	depends on MLX5_CORE
+>>>>>>>> +	depends on VHOST_IOTLB && MLX5_CORE
+>>>>>>>>   	default n
+>>>>>>> While we are here, can anyone who apply this patch delete the "default n" line?
+>>>>>>> It is by default "n".
+>>>>> I can do that
+>>>>>
+>>>>>>> Thanks
+>>>>>> Hmm other drivers select VHOST_IOTLB, why not do the same?
+>>>> v1 used select, but Saeed requested use of depends instead because
+>>>> select can cause problems.
+>>>>
+>>>>> I can't see another driver doing that. Perhaps I can set dependency on
+>>>>> VHOST which by itself depends on VHOST_IOTLB?
+>>>>>>
+>>>>>>>>   	help
+>>>>>>>>   	  Support library for Mellanox VDPA drivers. Provides code that is
+>>>>>>>>
+>>> Saeed what kind of problems? It's used with select in other places,
+>>> isn't it?
+>> IMHO, "depends" is much more explicit than "select".
+>>
+>> Thanks
+> This is now how VHOST_IOTLB has been designed though.
+> If you want to change VHOST_IOTLB to depends I think
+> we should do it consistently all over.
 >
-> >
-> > Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> > Cc: Luka Perkov <luka.perkov@sartura.hr>
-> > ---
-> >  drivers/mtd/spi-nor/macronix.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mtd/spi-nor/macronix.c b/drivers/mtd/spi-nor/macronix.c
-> > index f97f3d127575..9203abaac229 100644
-> > --- a/drivers/mtd/spi-nor/macronix.c
-> > +++ b/drivers/mtd/spi-nor/macronix.c
-> > @@ -50,7 +50,7 @@ static const struct flash_info macronix_parts[] = {
-> >       { "mx25u4035",   INFO(0xc22533, 0, 64 * 1024,   8, SECT_4K) },
-> >       { "mx25u8035",   INFO(0xc22534, 0, 64 * 1024,  16, SECT_4K) },
-> >       { "mx25u6435f",  INFO(0xc22537, 0, 64 * 1024, 128, SECT_4K) },
-> > -     { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, 0) },
-> > +     { "mx25l12805d", INFO(0xc22018, 0, 64 * 1024, 256, SECT_4K) },
-> >       { "mx25l12855e", INFO(0xc22618, 0, 64 * 1024, 256, 0) },
-> >       { "mx25r1635f",  INFO(0xc22815, 0, 64 * 1024,  32,
-> >                             SECT_4K | SPI_NOR_DUAL_READ |
-> >
 >
-> Regards
-> Vignesh
+> config VHOST_IOTLB
+>          tristate
+>          help
+>            Generic IOTLB implementation for vhost and vringh.
+>            This option is selected by any driver which needs to support
+>            an IOMMU in software.
+
+
+Yes, since there's no prompt for VHOST_IOTLB which means, if there's no 
+other symbol that select VHOST_IOTLB, you can't enable MLX5 at all.
+
+See kconfig-language.rst:
+
+
+     In general use select only for non-visible symbols
+     (no prompts anywhere) and for symbols with no dependencies.
+     That will limit the usefulness but on the other hand avoid
+     the illegal configurations all over.
+
+Thanks
+
+
+>
+>
+>>>> --
+>>>> ~Randy
+
