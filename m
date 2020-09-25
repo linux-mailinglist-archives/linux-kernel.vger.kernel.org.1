@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BA727816B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DD2A27816D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbgIYHW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:22:29 -0400
-Received: from mga11.intel.com ([192.55.52.93]:38420 "EHLO mga11.intel.com"
+        id S1727439AbgIYHXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:23:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:54216 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727210AbgIYHW3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:22:29 -0400
-IronPort-SDR: vcs10zRlHQTra3oCaoxB4U23pCPmuOKyN5cYe9uY3Ws9bE0B7z5QkjyFXPYqdeknqJ8pdxqLS9
- yApBr3xyPVcg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158812855"
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="158812855"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 00:22:28 -0700
-IronPort-SDR: xRGeQaMP4MSN19+92GBWi587nSfcwAjwliO/2PrbY2eFIvoMIScjBSPDfh9Ckj4exm4+KKYwuo
- WQf4g1xF9Ofw==
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="487356474"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.146.107])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 00:22:25 -0700
-Date:   Fri, 25 Sep 2020 15:22:24 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
- features
-Message-ID: <20200925072224.GE15894@shbuild999.sh.intel.com>
-References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
- <51821d92-8c77-7661-5cf6-bd5dbe0cdbaf@intel.com>
+        id S1727068AbgIYHXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:23:03 -0400
+Received: from zn.tnic (p200300ec2f0b3a00d3756fc4b2470eaa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:d375:6fc4:b247:eaa])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A5DB91EC0473;
+        Fri, 25 Sep 2020 09:23:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601018581;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Wjlu/ndJbxVTFlpp3T1F/epZ459T0Uni2kaVnS/ZU6M=;
+        b=mdRVSHbtVf7FFy4Uxm049cBs2q8MUyePRVieH4Q2zgvP/UJJ2lw3FGflMQhwn7ofkbHP87
+        fI72aMJ4JbJnrCMxtCQWMiPS1XD9Ou/DxYW4AIw0+ilKgEMheHz3cqJg7TvNyGG8QHg+i3
+        gDZBrDnPEGIdqs77M5qk8wFH15Iqjl4=
+Date:   Fri, 25 Sep 2020 09:22:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Yazen Ghannam <yazen.ghannam@amd.com>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tony.luck@intel.com, x86@kernel.org,
+        Smita.KoralahalliChannabasappa@amd.com
+Subject: Re: [PATCH v2 8/8] x86/MCE/AMD Support new memory interleaving modes
+ during address translation
+Message-ID: <20200925072231.GC16872@zn.tnic>
+References: <20200903200144.310991-1-Yazen.Ghannam@amd.com>
+ <20200903200144.310991-9-Yazen.Ghannam@amd.com>
+ <20200923082039.GB28545@zn.tnic>
+ <20200923162510.GB1684790@yaz-nikka.amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <51821d92-8c77-7661-5cf6-bd5dbe0cdbaf@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200923162510.GB1684790@yaz-nikka.amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:38:30PM -0700, Dave Hansen wrote:
-> On 9/21/20 10:27 PM, Feng Tang wrote:
-> > +static void parse_text(void)
-> > +{
-> > +	FILE *file;
-> > +	char *line = NULL;
-> > +	size_t len = 0;
-> > +	int ret;
-> > +
-> > +	file = fopen("cpuid.txt", "r");
-> > +	if (!file) {
-> > +		printf("Error in opening 'cpuid.txt'\n");
-> > +		return;
-> > +	}
-> 
-> This mostly looks fine to me.  A few things about cpuid.txt, though...
-> It needs to be read out of *some* location which is not the current
-> directory.  Maybe:
-> 
-> 	/usr/share/hwdata/cpu.ids
+On Wed, Sep 23, 2020 at 11:25:10AM -0500, Yazen Ghannam wrote:
+> I don't remember the original reason, and I was recently asked about
+> this code living in a module. I did some looking after this ask, and I
+> found that we should be using this translation to get a proper value for
+> the memory error notifiers to use. So I think we still need to use this
+> function some way with the core code even if the EDAC interface isn't
+> used.
 
-Good point! User won't run it inside a kernel source tree folder. And yes,
-there are already similar pci.ids and usb.ids in the same folder, we coud 
-do this in the 'install' part of Makefile
+You'd need to be more specific here, you want to bypass amd64_edac to
+decode errors? Judging by the current RAS activity coming from you guys,
+I'm thinking firmware. But then wouldn't the firmware do the decoding
+for us and then this function is not even needed?
 
-> or something.  It also needs a "-f" argument to override this default
-> location. 
+> What do you think?
 
-Ok, will add.
+I think you should explain what the use case is first. :)
 
-> I don't know if there's a better per-kernel place to put this
-> file, though.
+Thx.
 
-Device tree's dtb file may be similar, but it's also outside of bzImage.
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-Feng
+https://people.kernel.org/tglx/notes-about-netiquette
