@@ -2,126 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07749277D37
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32287277D3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgIYAyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 20:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbgIYAyE (ORCPT
+        id S1726848AbgIYAyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 20:54:39 -0400
+Received: from mo-csw1516.securemx.jp ([210.130.202.155]:34964 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726700AbgIYAyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:54:04 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509ADC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:54:04 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id bw23so951716pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pci8wc6C3sL56nLHCcZggaiDkvGB6P5cNXj+K5byzNE=;
-        b=ZkGUt2PZtlRrXjXYuZhhn2xi5M3Ro/NfLR0zFG7qndd/iC5ST5IwbkDvA7aHSTFehS
-         FdslJhI8zB3VkjGiDRzvixS2KukLQhBVbUJUHyoS1SdsKAS041G5x4r4iOViiVjqsiPl
-         h0FvW4JsHNPxv5Z+GfPiaXseX636qzYPkwJAVU1mTimHXSNWeZ3CgJWuSxx6qBP3dSyh
-         GVWE7ZVPbEIys1JDKQaVPHQslMJKfExg+RY8JGqRpxF96QVfDU9JYKuCYHTejflwXqqt
-         pHAk6C3B724hnqbueS98e5GUiwnO1SN5qmEdCFKGuK+NVhdDbbpoeKkn1hJ+VA31zJk/
-         TxFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pci8wc6C3sL56nLHCcZggaiDkvGB6P5cNXj+K5byzNE=;
-        b=FrbNpjlvk5N7cbfvDSXgJPZQN05SAdBfy4P5rNSCEQdbqf/pJ5hAw9xWHRjo/L7yLJ
-         iVSJZxlXItDBlg3uV53NoCXG5MGq6fhVHDLGm6L5mBQ0eBP2qztiiIj1PPQak6bnCHVF
-         2pJssXdlsIU5NIAPa5FOiO8MrN7mii6kNxQ4oz1aseIEbYsznjBYmtR/h/qCnrVmnXEo
-         uT5OrVgJK+zECZj440hMtbgEYWK8nIL917eoZmnapP0NdgSmP6ggTguQzocGmDYvlCve
-         X/3JhLNF3Z2ZWPlo8BR4hu6tkYLPxt/69kQxYNuGnfGB06gvrzO3y7Zic6/4VX9UBE7m
-         NlRw==
-X-Gm-Message-State: AOAM532+Co/KfeV6+vE8LVsRSe1y6kB4Y/GdVxY/MlZElidlXivynT03
-        yxkLfoh9BGIcqSuHHLYhMFU=
-X-Google-Smtp-Source: ABdhPJyrfFVFuHh0Nje0Go9eXi46nHKKOCbGgn6ZtXsDxlrSMEwtiebjEb8OEvMlmyxA6z0nKYDESQ==
-X-Received: by 2002:a17:90a:b64:: with SMTP id 91mr268059pjq.93.1600995243767;
-        Thu, 24 Sep 2020 17:54:03 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id i15sm605270pfk.145.2020.09.24.17.54.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 17:54:02 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 09:54:00 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Mark Salyzyn <salyzyn@android.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Changki Kim <changki.kim@samsung.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
-Message-ID: <20200925005400.GD541@jagdpanzerIV.localdomain>
-References: <20200923135617.27149-1-pmladek@suse.com>
- <20200923135617.27149-3-pmladek@suse.com>
- <20200924042414.GA6039@lx-t490>
- <20200924125259.GC29288@alley>
- <20200924133850.GF29288@alley>
+        Thu, 24 Sep 2020 20:54:38 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1516) id 08P0sBXU010109; Fri, 25 Sep 2020 09:54:11 +0900
+X-Iguazu-Qid: 34trJYZuoCRlJhwH8R
+X-Iguazu-QSIG: v=2; s=0; t=1600995250; q=34trJYZuoCRlJhwH8R; m=5x7FASoPHBhzBBc9o2Kptvc5cYFjVXPhl+ozBC+N1SU=
+Received: from imx12.toshiba.co.jp (imx12.toshiba.co.jp [61.202.160.132])
+        by relay.securemx.jp (mx-mr1511) id 08P0s84l004113;
+        Fri, 25 Sep 2020 09:54:08 +0900
+Received: from enc02.toshiba.co.jp ([61.202.160.51])
+        by imx12.toshiba.co.jp  with ESMTP id 08P0s72w005008;
+        Fri, 25 Sep 2020 09:54:07 +0900 (JST)
+Received: from hop101.toshiba.co.jp ([133.199.85.107])
+        by enc02.toshiba.co.jp  with ESMTP id 08P0s7NM011090;
+        Fri, 25 Sep 2020 09:54:07 +0900
+From:   Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Smita Koralahalli Channabasappa <skoralah@amd.com>,
+        Smita Koralahalli <Smita.KoralahalliChannabasappa@amd.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org,
+        devel@acpica.org, Tony Luck <tony.luck@intel.com>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: Re: [PATCH v4] cper, apei, mce: Pass x86 CPER through the MCA handling chain
+References: <20200904140444.161291-1-Smita.KoralahalliChannabasappa@amd.com>
+        <87wo0kiz6y.fsf@kokedama.swc.toshiba.co.jp>
+        <20200923140512.GJ28545@zn.tnic>
+        <87pn6chwil.fsf@kokedama.swc.toshiba.co.jp>
+        <52c50f37-a86c-57ad-30e0-dac0857e4ef7@amd.com>
+        <20200924175023.GN5030@zn.tnic>
+Date:   Fri, 25 Sep 2020 09:54:06 +0900
+In-Reply-To: <20200924175023.GN5030@zn.tnic> (Borislav Petkov's message of
+        "Thu, 24 Sep 2020 19:50:23 +0200")
+X-TSB-HOP: ON
+Message-ID: <877dsiislt.fsf@kokedama.swc.toshiba.co.jp>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924133850.GF29288@alley>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/09/24 15:38), Petr Mladek wrote:
-[..]
+Borislav Petkov <bp@alien8.de> writes:
+
+> On Thu, Sep 24, 2020 at 12:23:27PM -0500, Smita Koralahalli Channabasappa wrote:
+>> > Even though it's not defined in the UEFI spec, it doesn't mean a
+>> > structure definition cannot be created.
 >
-> Grrrr, I wonder why I thought that in_irq() covered also the situation
-> when IRQ was disabled. It was likely my wish because disabled
-> interrupts are problem for printk() because the console might
-> cause a softlockup.
+> Created for what? That structure better have a big fat comment above it, what
+> firmware generates its layout.
 
-preempt_disable() can also trigger softlockup.
+Maybe I could've used a better choice of words - I meant to define a
+structure with meaningful member names to replace the *(ptr + i)
+accesses in the patch.
 
-> in_irq() actually behaves like in_serving_softirq().
+The requirement for documenting the record layout doesn't change -
+whether using raw pointer arithmetic vs a structure definition.
+
+>> > After all, the patch is relying on some guarantee of the meaning of
+>> > the values and their ordering.
 >
-> I am confused and puzzled now. I wonder what contexts are actually
-> interesting for developers.  It goes back to the ideas from Sergey
-> about preemption disabled, ...
+> AFAICT, this looks like an ad-hoc definition and the moment they change
+> it in some future revision, that struct of yours becomes invalid so we'd
+> need to add another one.
 
-Are we talking about context tracking for LOG_CONT or context on
-the serial console and /dev/kmsg?
+If there's no spec backing the current layout, then it'll indeed be an
+ad-hoc definition of a structure in the kernel. But considering that
+it's part of firmware / OS interface for an important part of the RAS
+story I would hope that the code is based on a spec - having that
+reference included would help maintainability.
 
-If the latter, then my 5 cents, is that something like preemptible(),
-which checks
+Incompatible changes will indeed break the assumptions in the kernel and
+code will need to be updated - regardless of the choice of kernel
+implementation; pointer arithmetic, structure definition - ad-hoc or
+spec provided.
 
-	(preempt_count() == 0 && !irqs_disabled())
+Having versioning will allow running older kernels on newer hardware and
+vice versa - but I don't see why that is important only when using a
+structure based access.
 
-does not look completely unreasonable.
-
-We had a rather OK context tracking in printk() before, but for a
-completely different purpose:
-
-       console_may_schedule = !oops_in_progress &&
-                       preemptible() &&
-                       !rcu_preempt_depth();
-
-We know that printk() can cause RCU stalls [0]. Tracking this part
-of the context state is sort of meaningful.
-
-Let's look at this from this POV - why do we add in_irq()/etc tracking
-info? Perhaps because we want to connect the dots between printk() caller
-state and watchdog reports. Do we cover all watchdogs? No, I don't think
-so. RCU stalls, local_irq_disable(), preempt_disable() are not covered.
-
-Do we have any technical reasons not to add those missing bits?
-
-[0] https://lkml.org/lkml/2018/1/9/485
-
-	-ss
+>
+>> > If the patch is relying on the definitions in the SMCA spec it is a good
+>
+> Yes, what SMCA spec is that?
+>
+>> > idea to reference it here - both for review and providing relevant
+>> > context for future developers.
+>> 
+>> Okay, I agree the structure definition will make the code less arbitrary
+>> and provides relevant context compared to pointer arithmetic. I did not
+>> think this way. I can try this out if no objections.
+>
+> Again, this struct better have "versioning" info because the moment your
+> fw people change it in some future platform, this code needs touching
+> again.
+>
+> It probably would need touching even with the offsets if those offsets
+> change but at least not having it adhere to some slow-moving spec is
+> probably easier in case they wanna add/change fields.
+>
+> So Smita, you probably should talk to fw people about how stable that
+> layout at ctx_info + 1 is going to be wrt future platforms so that
+> we make sure we only access the correct offsets, now and on future
+> platforms.
+>
+> Thx.
