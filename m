@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8173D27867D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF6C5278685
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbgIYL6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:58:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:43574 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727749AbgIYL6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:58:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0C44A101E;
-        Fri, 25 Sep 2020 04:58:11 -0700 (PDT)
-Received: from [192.168.178.2] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDF6C3F70D;
-        Fri, 25 Sep 2020 04:58:07 -0700 (PDT)
-Subject: Re: [PATCH 0/9] sched: Migrate disable support
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        valentin.schneider@arm.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vincent.donnefort@arm.com
-References: <20200921163557.234036895@infradead.org>
- <6f55a303-0e5c-8e84-65d3-798b589a5d75@arm.com>
- <20200925101030.GA2594@hirez.programming.kicks-ass.net>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <d26d81ec-01d6-f6c0-816b-fbd8bb71e132@arm.com>
-Date:   Fri, 25 Sep 2020 13:58:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728298AbgIYMAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:00:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbgIYMAU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:00:20 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72491C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:00:20 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id t138so2491134qka.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rIuYtEL8Ho/A+a5HBfrQNagOxrR0aWDpVzG6iTo4eE8=;
+        b=erbaTgqjcRvgzvAj3JDGURJKefgiqFgAtYhbtoxeo5AsoLv7f6EB9N3ZzNsEOPSp8v
+         6sq/HX7Uxi9akTTh+XFsHzFtUXMqbirMtYYzCCgWVy5GYLkDdYl2JH6K2QIQDYcm4fQH
+         WMWugilt5Hjg1+dQEw5amV4Dy3t8QgUTR4ai9V29Z9GA6Dg7YtEvZvM24An3iOOhmJs8
+         zzB2oFkbCby/mvR7NPzSowW9Rw8OJg+7xsDCgPYDhC5XSlDCp7GDpjUhmE6nxPeVmdp5
+         KWwCU7JsmsVmNzfXNstQisrXorK1WeS15j9w+R6P6UAWzAfGJNYKbLAd6MPAQAPQwc1s
+         O6oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rIuYtEL8Ho/A+a5HBfrQNagOxrR0aWDpVzG6iTo4eE8=;
+        b=raVEQMsKyAgCvfoqWL28PChpcotWVAo+IohUGVBwGgEBtqL/3bqplme8hn8ro9lnAF
+         yxFL1yt+WcQYgw+PWn79w+PcOVAsw28BFFghFsgyIO2YUMj3HrPlEwqJHJfle+mvNw5S
+         P/6RpSuc3SqQU2Z7sxT/V10gnZQ+5eNpg9bTPqjo09ZLc6o7G00/BzDDORCcQ5j242+q
+         0Uqjew1IU9lEvYZMTGU2zMzvaiM/SNkB5Q1E6rxkj5X8LoAqB+P7xfgOQh+KJ/W+/8aH
+         NH4GN5mKWHTq6ei47I3c4wLUKhaJZsJE7P1lgUSn/lm1lG6+7E+otVeLAoYJp045lyh6
+         aLtQ==
+X-Gm-Message-State: AOAM532zRyO/NVYWT1Y+ia3ZotV2glNshMghOQqstGR+PC/7wnf8AJmG
+        LRNRRZx3F5ixt4+9y0HR8JMROQ==
+X-Google-Smtp-Source: ABdhPJwMSZO4wBP1qq0t6fhMdo1TSXgA0/hT/4ls6tA8iNgqFTTpehyXXULUgKbSvrFWL38LELQ5qw==
+X-Received: by 2002:a37:a50b:: with SMTP id o11mr3520279qke.439.1601035219677;
+        Fri, 25 Sep 2020 05:00:19 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id g19sm1521418qka.84.2020.09.25.05.00.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 05:00:19 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kLmOg-000nSE-8H; Fri, 25 Sep 2020 09:00:18 -0300
+Date:   Fri, 25 Sep 2020 09:00:18 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>
+Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
+Message-ID: <20200925120018.GH9916@ziepe.ca>
+References: <20200922094128.26245-1-ardb@kernel.org>
+ <20200925055626.GC165011@linux.intel.com>
+ <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
+ <20200925102920.GA180915@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200925101030.GA2594@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925102920.GA180915@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/2020 12:10, Peter Zijlstra wrote:
-> On Fri, Sep 25, 2020 at 11:12:09AM +0200, Dietmar Eggemann wrote:
+On Fri, Sep 25, 2020 at 01:29:20PM +0300, Jarkko Sakkinen wrote:
+> On Fri, Sep 25, 2020 at 09:00:56AM +0200, Ard Biesheuvel wrote:
+> > On Fri, 25 Sep 2020 at 07:56, Jarkko Sakkinen
+> > <jarkko.sakkinen@linux.intel.com> wrote:
+> > >
+> > > On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
+> > > > The TPM event log is provided to the OS by the firmware, by loading
+> > > > it into an area in memory and passing the physical address via a node
+> > > > in the device tree.
+> > > >
+> > > > Currently, we use __va() to access the memory via the kernel's linear
+> > > > map: however, it is not guaranteed that the linear map covers this
+> > > > particular address, as we may be running under HIGHMEM on a 32-bit
+> > > > architecture, or running firmware that uses a memory type for the
+> > > > event log that is omitted from the linear map (such as EfiReserved).
+> > >
+> > > Makes perfect sense to the level that I wonder if this should have a
+> > > fixes tag and/or needs to be backported to the stable kernels?
+> > >
+> > 
+> > AIUI, the code was written specifically for ppc64, which is a
+> > non-highmem, non-EFI architecture. However, when we start reusing this
+> > driver for ARM, this issue could pop up.
+> > 
+> > The code itself has been refactored a couple of times, so I think it
+> > will require different versions of the patch for different generations
+> > of stable kernels.
+> > 
+> > So perhaps just add Cc: <stable@vger.kernel.org>, and wait and see how
+> > far back it applies cleanly?
 > 
->> I get this when running 6 (periodic) RT50 tasks with CPU hp stress on my
->> 6 CPU JUNO board (!CONFIG_PREEMPT_RT).
->>
->> [   55.490263] ------------[ cut here ]------------
->> [   55.505261] Modules linked in:
->> [   55.508322] CPU: 3 PID: 24 Comm: migration/3 Not tainted
->> 5.9.0-rc1-00132-gc096e6406c50-dirty #90
->> [   55.517119] Hardware name: ARM Juno development board (r0) (DT)
->> [   55.523058] Stopper: multi_cpu_stop+0x0/0x170 <- 0x0
->> [   55.528029] pstate: 20000085 (nzCv daIf -PAN -UAO BTYPE=--)
->> [   55.533612] pc : sched_cpu_dying+0x124/0x130
->> [   55.537887] lr : sched_cpu_dying+0xd8/0x130
->> [   55.542071] sp : ffff800011f0bca0
->> [   55.545385] x29: ffff800011f0bca0 x28: 0000000000000002
->> [   55.550703] x27: 0000000000000000 x26: 0000000000000060
->> [   55.556022] x25: 0000000000000000 x24: 0000000000000001
->> [   55.561340] x23: 0000000000000000 x22: 0000000000000003
->> [   55.566659] x21: 0000000000000080 x20: 0000000000000003
->> [   55.571977] x19: ffff00097ef9e1c0 x18: 0000000000000010
->> [   55.577295] x17: 0000000000000000 x16: 0000000000000000
->> [   55.582613] x15: 0000000000000000 x14: 000000000000015c
->> [   55.587932] x13: 0000000000000000 x12: 00000000000006f1
->> [   55.593250] x11: 0000000000000080 x10: 0000000000000000
->> [   55.598567] x9 : 0000000000000003 x8 : ffff0009743f5900
->> [   55.603886] x7 : 0000000000000003 x6 : 0000000000000000
->> [   55.609204] x5 : 0000000000000001 x4 : 0000000000000002
->> [   55.614521] x3 : 0000000000000000 x2 : 0000000000000013
->> [   55.619839] x1 : 0000000000000008 x0 : 0000000000000003
->> [   55.625158] Call trace:
->> [   55.627607]  sched_cpu_dying+0x124/0x130
->> [   55.631535]  cpuhp_invoke_callback+0x88/0x210
->> [   55.635897]  take_cpu_down+0x7c/0xd8
->> [   55.639475]  multi_cpu_stop+0xac/0x170
->> [   55.643227]  cpu_stopper_thread+0x98/0x130
->> [   55.647327]  smpboot_thread_fn+0x1c4/0x280
->> [   55.651427]  kthread+0x140/0x160
->> [   55.654658]  ret_from_fork+0x10/0x34
->> [   55.658239] Code: f000e1c1 913fc021 1400034a 17ffffde (d4210000)
->> [   55.664342] ---[ end trace c5b8988b7b701e56 ]---
->> [   55.668963] note: migration/3[24] exited with preempt_count 3
->>
->> 7309 int sched_cpu_dying(unsigned int cpu)
->>     ...
->>     BUG_ON(rq->nr_running != 1 || rq_has_pinned_tasks(rq));
->>     ...
->>
->> rq->nr_running is always 2 here in this cases.
->>
->> balance_hotplug_wait and sched_cpu_wait_empty run in cpuhp/X (CFS)
->> whereas sched_cpu_dying in migration/X ?
+> Yeah, I think I'll cc it with some note before the diffstat.
 > 
-> takedown_cpu() has:
-> 
->   kthread_park(per_cpu_ptr(&cpuhp_state, cpu)->thread);
-> 
-> before calling:
-> 
->   err = stop_machine_cpuslocked(take_cpu_down, NULL, cpumask_of(cpu));
-> 
-> So when we get to sched_cpu_dying(), the only task that _should_ still
-> be there is migration/X.
-> 
-> Do you have any idea what thread, other than migration/X, is still
-> active on that CPU? per sched_cpu_wait_empty() we should've pushed out
-> all userspace tasks, and the cpu hotplug machinery should've put all the
-> per-cpu kthreads to sleep at this point.
+> I'm thinking to cap it to only 5.x kernels (at least first) unless it is
+> dead easy to backport below that.
 
-With Valentin's print_rq() inspired test snippet I always see one of the
-RT user tasks as the second guy? BTW, it has to be RT tasks, never
-triggered with CFS tasks.
+I have this vauge recollection of pointing at this before and being
+told that it had to be __va for some PPC reason?
 
-[   57.849268] CPU2 nr_running=2
-[   57.852241]  p=migration/2
-[   57.854967]  p=task0-0
+Do check with the PPC people first, I see none on the CC list.
+
+Jason
