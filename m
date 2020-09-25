@@ -2,131 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8C02793E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B24A62793EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:04:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728795AbgIYWDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:03:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726687AbgIYWDe (ORCPT
+        id S1727459AbgIYWEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:04:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58641 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726412AbgIYWEx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:03:34 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CE4CC0613CE;
-        Fri, 25 Sep 2020 15:03:34 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id w1so4066843edr.3;
-        Fri, 25 Sep 2020 15:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PfB5GrheyIxnuAWoT4Dsjo6Mha9ADMRuQTrX6xNqieM=;
-        b=jYd4vVauL82htavV5DVWBFt35LGUeihssisY05RbiHtTLMH1W2WclaKNei4NEaX1xF
-         mjJN1hc11c8Vb7ATOQUoX8r7X2oJIlwZiXmuE9YtGGuejIuEsU6HKZKHlO/kFpnUWiSw
-         etcfK56weRaTSIM/YZ0kW1we6+hVqRwq7w3C9QNPWSwrN+Qpbv79oZVJB0iXntdgbD8u
-         KAl9vf7vyOhJ5S0dHAlKfoVmBHSklOR7hMVongLBZl29la+Wy5NjQVI++8mW5qL2acHd
-         jWgbR0KXJGcbQhH89ciba6kB6lxciOwnSS//IZynAhPVElj6Tc2e3V764l9hfFc3WsZY
-         qeVw==
+        Fri, 25 Sep 2020 18:04:53 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601071491;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rsCTglPcEJCWqonBlngTDn2QZU1zRO8YnrPeV0NU/2o=;
+        b=HGaYu/nGuuUhBk4MgaWEMgb8DSVlqp2WGaxs+TQMv36phPUBUgJWTsXl14EsefYoG5WQFX
+        tVi5q+AS4dejrODGB/1ApgZ6yH03UfhJF9yK6gCxPKHBOV8+e7Ttks8CtumPJgtMnn0x+w
+        gqAyj0pk1CpLvgIhoZ7AWGZ+7iGHP4U=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-eFxWwDC0N9Ci-BVXjFrS5w-1; Fri, 25 Sep 2020 18:04:40 -0400
+X-MC-Unique: eFxWwDC0N9Ci-BVXjFrS5w-1
+Received: by mail-wr1-f71.google.com with SMTP id w7so1634323wrp.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:04:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PfB5GrheyIxnuAWoT4Dsjo6Mha9ADMRuQTrX6xNqieM=;
-        b=ZIV5S1ijOpD+NL8Z7qKGcqJpFK+FCDJdXqrwietSgf/BJZNWnpXUMhBSiIM+crpxKY
-         yojPLa+f0JTE+ocX7e3LvvQlHqg09t41WPQP7LY2DZ5Ok2Pkogf5kaQwJCqO9Mq39Ien
-         DcCsDnuBsh5o54G4cRaWlJ6pH1f/jKJOANPmm5YqXTjBMyw6vtwobUwgyi1Akv201dJV
-         OcCTrK1+YDSDUhmReyksmd/IqAzNW/JwFJ7z9vmBvI8XpXSSsD2vKbZAoaDaHBSkGCnt
-         IthpR/Dg5NLlQse0KlbQpaNOjnKp8lkWTY0Zz5X5LV/0wD06nHbUbSGkNoVrqkE+lIrU
-         Csrg==
-X-Gm-Message-State: AOAM530zw2GUO5mDVR+6gcHwnxnZi9eon/3LCIjIkJ1ovacV84Dbeorm
-        QbAT56SikJywaxbCHwcB+VA=
-X-Google-Smtp-Source: ABdhPJyGUVsG+yL+Rkb1/RH2dwFszvvzId3+1LmhXmXvj3lb8f6D/iaxC1P/kNs7PvAxUn8g3w/wcw==
-X-Received: by 2002:a50:8c24:: with SMTP id p33mr3715365edp.330.1601071413119;
-        Fri, 25 Sep 2020 15:03:33 -0700 (PDT)
-Received: from skbuf ([188.25.217.212])
-        by smtp.gmail.com with ESMTPSA id bo8sm2769846edb.39.2020.09.25.15.03.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 15:03:31 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 01:03:29 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        f.fainelli@gmail.com
-Cc:     netdev@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux@armlinux.org.uk, peppe.cavallaro@st.com,
-        alexandre.torgue@st.com, joabreu@synopsys.com, davem@davemloft.net,
-        kuba@kernel.org
-Subject: Re: RGMII timing calibration (on 12nm Amlogic SoCs) - integration
- into dwmac-meson8b
-Message-ID: <20200925220329.wdnrqeauto55vdao@skbuf>
-References: <CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rsCTglPcEJCWqonBlngTDn2QZU1zRO8YnrPeV0NU/2o=;
+        b=i7newS9g+YgT2vEAmrrvLGfFgsofSBZvtdHvddCyhjl1gKf2rQkboZD8hnZ+cUV+yc
+         r61HU8uz066Z3kHdpgQeLAWLv/7s4159FB45wTq5IH5YkLVgeomC3Qx8YE/BIVqj/Oyu
+         kKAOegjwg75G9pUdGY2vmuJzDfb49yOzXVkfYkQUHJznifr3J1mUVFr29/5CIR9TUfSI
+         OViQw53pJRwjiBg1Cd7+vaIuZIjrZ6vIK1ItJXghrug7zavAQNe3le1pKL3gUN8m8iQV
+         7iijqAgizMLzHjTW2a9U7iyHAobK9OfWFxUoxWJ9O+wdrlUoy1q7zl7WdIT7NU9hpcaR
+         LN8g==
+X-Gm-Message-State: AOAM533Q2lZpUg5IlomEHw/VQhBsBsxzApROUZpuqEj0m+s2e+c5UFIY
+        Al9hf1MRDSXaav3gDcwsWKNJxFztplaUr/rg2gSH85pRUFU5Jtcfb0/fsXTmc/33mUzpyrpWGH5
+        YiiYffyc1vHy6w6mK1yWOmH0L
+X-Received: by 2002:adf:c44d:: with SMTP id a13mr6531946wrg.11.1601071479324;
+        Fri, 25 Sep 2020 15:04:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy4HGHGAjSu5siPnILL5rSlIRdGUutfl1v/dkb70yc637MqbrqkRY+9ZtBTRqTKfNhnY4UPDQ==
+X-Received: by 2002:adf:c44d:: with SMTP id a13mr6531925wrg.11.1601071479046;
+        Fri, 25 Sep 2020 15:04:39 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id t5sm1536915wrb.21.2020.09.25.15.04.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 15:04:37 -0700 (PDT)
+Subject: Re: [PATCH v2 03/15] KVM: VMX: Rename "vmx_find_msr_index" to
+ "vmx_find_loadstore_msr_slot"
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200923180409.32255-1-sean.j.christopherson@intel.com>
+ <20200923180409.32255-4-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <86b26125-1f02-f3d7-2834-c8a1ed8aebf4@redhat.com>
+Date:   Sat, 26 Sep 2020 00:04:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com>
+In-Reply-To: <20200923180409.32255-4-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+On 23/09/20 20:03, Sean Christopherson wrote:
+> Add "loadstore" to vmx_find_msr_index() to differentiate it from the so
+> called shared MSRs helpers (which will soon be renamed), and replace
+> "index" with "slot" to better convey that the helper returns slot in the
+> array, not the MSR index (the value that gets stuffed into ECX).
+> 
+> No functional change intended.
 
-On Fri, Sep 25, 2020 at 11:47:18PM +0200, Martin Blumenstingl wrote:
-> Hello,
->
-> Amlogic's 12nm SoC generation requires some RGMII timing calibration
-> within the Ethernet controller glue registers.
-> This calibration is only needed for the RGMII modes, not for the
-> (internal) RMII PHY.
-> With "incorrect" calibration settings Ethernet speeds up to 100Mbit/s
-> will still work fine, but no data is flowing on 1Gbit/s connections
-> (similar to when RX or TX delay settings are incorrect).
->
-> A high-level description of this calibration (the full code can be
-> seen in [0] and [1]):
-> - there are sixteen possible calibration values: [0..15]
-> - switch the Ethernet PHY to loopback mode
-> - for each of the sixteen possible calibration values repeat the
-> following steps five times:
-> -- write the value to the calibration register
-> -- construct an Ethernet loopback test frame with protocol 0x0808
-> ("Frame Relay ARP")
-> -- add 256 bytes of arbitrary data
-> -- use the MAC address of the controller as source and destination
-> -- send out this data packet
-> -- receive this data packet
-> -- compare the contents and remember if the data is valid or corrupted
-> - disable loopback mode on the Ethernet PHY
-> - find the best calibration value by getting the center point of the
-> "longest streak"
-> - write this value to the calibration register
->
-> My question is: how do I integrate this into the dwmac-meson8b (stmmac
-> based) driver?
-> I already found some interesting and relevant bits:
-> - stmmac_selftests.c uses phy_loopback() and also constructs data
-> which is sent-out in loopback mode
-> - there's a serdes_powerup callback in struct plat_stmmacenet_data
-> which is called after register_netdev()
-> - I'm not sure if there's any other Ethernet driver doing some similar
-> calibration (and therefore a way to avoid some code-duplication)
->
->
-> Any recommendations/suggestions/ideas/hints are welcome!
-> Thank you and best regards,
-> Martin
->
->
-> [0] https://github.com/khadas/u-boot/blob/4752efbb90b7d048a81760c67f8c826f14baf41c/drivers/net/designware.c#L707
-> [1] https://github.com/khadas/linux/blob/khadas-vims-4.9.y/drivers/net/ethernet/stmicro/stmmac/dwmac-meson.c#L466
+"slot" is definitely better, I'll adjust SVM to use it too.
 
-Florian attempted something like this before, for the PHY side of things:
-https://patchwork.ozlabs.org/project/netdev/patch/20191015224953.24199-3-f.fainelli@gmail.com/
+Paolo
 
-There are quite some assumptions to be made if the code is to be made
-generic, such as the fact that the controller should not drop frames
-with bad FCS in hardware. Or if it does, the code should be aware of
-that and check that counter.
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 16 ++++++++--------
+>  arch/x86/kvm/vmx/vmx.c    | 10 +++++-----
+>  arch/x86/kvm/vmx/vmx.h    |  2 +-
+>  3 files changed, 14 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index f818a406302a..87e5d606582e 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -938,11 +938,11 @@ static bool nested_vmx_get_vmexit_msr_value(struct kvm_vcpu *vcpu,
+>  	 * VM-exit in L0, use the more accurate value.
+>  	 */
+>  	if (msr_index == MSR_IA32_TSC) {
+> -		int index = vmx_find_msr_index(&vmx->msr_autostore.guest,
+> -					       MSR_IA32_TSC);
+> +		int i = vmx_find_loadstore_msr_slot(&vmx->msr_autostore.guest,
+> +						    MSR_IA32_TSC);
+>  
+> -		if (index >= 0) {
+> -			u64 val = vmx->msr_autostore.guest.val[index].value;
+> +		if (i >= 0) {
+> +			u64 val = vmx->msr_autostore.guest.val[i].value;
+>  
+>  			*data = kvm_read_l1_tsc(vcpu, val);
+>  			return true;
+> @@ -1031,12 +1031,12 @@ static void prepare_vmx_msr_autostore_list(struct kvm_vcpu *vcpu,
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>  	struct vmx_msrs *autostore = &vmx->msr_autostore.guest;
+>  	bool in_vmcs12_store_list;
+> -	int msr_autostore_index;
+> +	int msr_autostore_slot;
+>  	bool in_autostore_list;
+>  	int last;
+>  
+> -	msr_autostore_index = vmx_find_msr_index(autostore, msr_index);
+> -	in_autostore_list = msr_autostore_index >= 0;
+> +	msr_autostore_slot = vmx_find_loadstore_msr_slot(autostore, msr_index);
+> +	in_autostore_list = msr_autostore_slot >= 0;
+>  	in_vmcs12_store_list = nested_msr_store_list_has_msr(vcpu, msr_index);
+>  
+>  	if (in_vmcs12_store_list && !in_autostore_list) {
+> @@ -1057,7 +1057,7 @@ static void prepare_vmx_msr_autostore_list(struct kvm_vcpu *vcpu,
+>  		autostore->val[last].index = msr_index;
+>  	} else if (!in_vmcs12_store_list && in_autostore_list) {
+>  		last = --autostore->nr;
+> -		autostore->val[msr_autostore_index] = autostore->val[last];
+> +		autostore->val[msr_autostore_slot] = autostore->val[last];
+>  	}
+>  }
+>  
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index e99f3bbfa6e9..35291fd90ca0 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -824,7 +824,7 @@ static void clear_atomic_switch_msr_special(struct vcpu_vmx *vmx,
+>  	vm_exit_controls_clearbit(vmx, exit);
+>  }
+>  
+> -int vmx_find_msr_index(struct vmx_msrs *m, u32 msr)
+> +int vmx_find_loadstore_msr_slot(struct vmx_msrs *m, u32 msr)
+>  {
+>  	unsigned int i;
+>  
+> @@ -858,7 +858,7 @@ static void clear_atomic_switch_msr(struct vcpu_vmx *vmx, unsigned msr)
+>  		}
+>  		break;
+>  	}
+> -	i = vmx_find_msr_index(&m->guest, msr);
+> +	i = vmx_find_loadstore_msr_slot(&m->guest, msr);
+>  	if (i < 0)
+>  		goto skip_guest;
+>  	--m->guest.nr;
+> @@ -866,7 +866,7 @@ static void clear_atomic_switch_msr(struct vcpu_vmx *vmx, unsigned msr)
+>  	vmcs_write32(VM_ENTRY_MSR_LOAD_COUNT, m->guest.nr);
+>  
+>  skip_guest:
+> -	i = vmx_find_msr_index(&m->host, msr);
+> +	i = vmx_find_loadstore_msr_slot(&m->host, msr);
+>  	if (i < 0)
+>  		return;
+>  
+> @@ -925,9 +925,9 @@ static void add_atomic_switch_msr(struct vcpu_vmx *vmx, unsigned msr,
+>  		wrmsrl(MSR_IA32_PEBS_ENABLE, 0);
+>  	}
+>  
+> -	i = vmx_find_msr_index(&m->guest, msr);
+> +	i = vmx_find_loadstore_msr_slot(&m->guest, msr);
+>  	if (!entry_only)
+> -		j = vmx_find_msr_index(&m->host, msr);
+> +		j = vmx_find_loadstore_msr_slot(&m->host, msr);
+>  
+>  	if ((i < 0 && m->guest.nr == MAX_NR_LOADSTORE_MSRS) ||
+>  	    (j < 0 &&  m->host.nr == MAX_NR_LOADSTORE_MSRS)) {
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 9a418c274880..26887082118d 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -353,7 +353,7 @@ void vmx_set_virtual_apic_mode(struct kvm_vcpu *vcpu);
+>  struct shared_msr_entry *find_msr_entry(struct vcpu_vmx *vmx, u32 msr);
+>  void pt_update_intercept_for_msr(struct vcpu_vmx *vmx);
+>  void vmx_update_host_rsp(struct vcpu_vmx *vmx, unsigned long host_rsp);
+> -int vmx_find_msr_index(struct vmx_msrs *m, u32 msr);
+> +int vmx_find_loadstore_msr_slot(struct vmx_msrs *m, u32 msr);
+>  void vmx_ept_load_pdptrs(struct kvm_vcpu *vcpu);
+>  
+>  #define POSTED_INTR_ON  0
+> 
 
-Thanks,
--Vladimir
