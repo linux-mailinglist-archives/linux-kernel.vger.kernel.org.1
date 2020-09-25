@@ -2,72 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01381278203
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71892278205
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727345AbgIYHxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:53:05 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:59352 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727068AbgIYHxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:53:04 -0400
-Received: from zn.tnic (p200300ec2f0b3a00d3756fc4b2470eaa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:d375:6fc4:b247:eaa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 617721EC0430;
-        Fri, 25 Sep 2020 09:53:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601020383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=fdwFiJtPf7+dSMv7FNN3C/po5DSCeBzma9H2c6j2sfU=;
-        b=OcxF9+jGbAtT2C+0FEneJGbiHTHeLWW0tDVUMCdJ99MNM7QXAaYIA7vYVWLMW3EOaR9AOD
-        xjZCuz+JnY+XIzAOQo76+pe4yCg5c/uILfCrfGyb0u2qW8LXFENcIUUwhIw8mMyKbOo1iR
-        a1uG7Xg1YSonDzR6IMhzIP5kSUHRang=
-Date:   Fri, 25 Sep 2020 09:53:01 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
-        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
-        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, sean.j.christopherson@intel.com,
-        tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver'
-Message-ID: <20200925075301.GE16872@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-18-jarkko.sakkinen@linux.intel.com>
- <20200922154424.GL22660@zn.tnic>
- <20200923132037.GA5160@linux.intel.com>
- <20200923161733.GP28545@zn.tnic>
- <20200924115119.GD56811@linux.intel.com>
- <20200924155751.GJ5030@zn.tnic>
- <20200924203859.GD108958@linux.intel.com>
- <20200924204022.GE108958@linux.intel.com>
+        id S1727431AbgIYHxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:53:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727063AbgIYHxN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:53:13 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC315C0613CE;
+        Fri, 25 Sep 2020 00:53:13 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id h2so1459170ilo.12;
+        Fri, 25 Sep 2020 00:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c25OWVlYr3r4Zg73+hgQ+FOM6zKBeGJ84JdXLPHXx8I=;
+        b=El5vlfyFAp4rhbHtluPcO/SDAUVfZbEz0brwMeEUflGfzx/VqBAZF9s/RnrI2wdMB+
+         IDMVVpmjwHdDq4hsur3vvdQZc0uyMZyvFh5tOWqznd6OtXz3gY++1691QN8iikJGcKz7
+         epqpJNxrJKQ3h1sQXG9loYVOiG2kx3ng4H9oG5Nga3lXK7xbtIgJy86F4AgwHNMvLlt9
+         PRV5QnZKF9wbDJTONxKE/zxHd4XNL6oT5ffF4sSmd36kuC9SEo++bJ8l0aU36ahgQe38
+         +RlHD/uhUOZi7wMrZGfvCxqzv+ECiG+eOXxaCFA/g39wIJfqiNLg4eHTC8fFwkm2fs6E
+         eU3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c25OWVlYr3r4Zg73+hgQ+FOM6zKBeGJ84JdXLPHXx8I=;
+        b=dQlXAbndpJHhQq381XhEqevcNfGW2CMPQDtN1GnPPJGePuu8TCXVvlhl+Xe5rBWvDe
+         AwBu0wJ0WH7jYtjXi8AkR0LowhcaH+my2i0MIAn4SGwb1MDvigXZYh4rFcQh1S9B5x50
+         pI4ATAoWGUdloRMITpZf3D4SDZmvFZGm3CFVOci5MX178RUJx5zRaUmgomlHDLqKcmLb
+         koFVAKlQLpnxHVWbtAatB/VHeEtZoEwCuDNdnG2Jtf1jiF4+zuh+AKuKCdrx6imu2BKm
+         G7pK9GRL80rlLsit50r6mrjXAJ3Txi0Dmjtf4W5Tz3wY6sNbva/RcdcsSP941hjFB1WU
+         0DGw==
+X-Gm-Message-State: AOAM530L2UgLBI7E+2xyYm1ipdStDvPZRYHrv0TylmFU8LO1rHtZgKk9
+        iszQtVgpQKVSJb1scuvFVFa6GoIU78yVntsY6ICXvHZdkv0=
+X-Google-Smtp-Source: ABdhPJxVcorRXiGmUxNix8OWbEeDvEZT9K/TbGuPqcdFB8mbYgGuy2aK6sIlGnBZMRKPFpSbkIc506QeSjw0ph33bQw=
+X-Received: by 2002:a92:c10c:: with SMTP id p12mr2108245ile.274.1601020393169;
+ Fri, 25 Sep 2020 00:53:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200924204022.GE108958@linux.intel.com>
+References: <20200925065418.1077472-1-ikjn@chromium.org> <20200925145255.v3.3.I7a3fc5678a81654574e8852d920db94bcc4d3eb8@changeid>
+In-Reply-To: <20200925145255.v3.3.I7a3fc5678a81654574e8852d920db94bcc4d3eb8@changeid>
+From:   Chuanhong Guo <gch981213@gmail.com>
+Date:   Fri, 25 Sep 2020 15:53:02 +0800
+Message-ID: <CAJsYDVLmqCBW4OHVmKDCBb+BE=4gZeOao8khZdx77k3=V9vCgw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] spi: spi-mtk-nor: support 7 bytes transfer of
+ generic spi
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:40:22PM +0300, Jarkko Sakkinen wrote:
-> I'm not sure if I said it already but I also added cc to linux-mm (same
-> CC's in the patch as with mprotect callback commit). This should also
-> have mm ack I think.
+HI!
+One more comment:
+On Fri, Sep 25, 2020 at 2:55 PM Ikjoon Jang <ikjn@chromium.org> wrote:
+> +static bool mtk_nor_check_prg(const struct spi_mem_op *op)
+> +{
+> +       size_t len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+> +
+> +       if (len > MTK_NOR_PRG_MAX_SIZE)
+> +               return false;
+> +
+> +       if (!op->data.nbytes)
+> +               return true;
+> +
+> +       if (op->data.dir == SPI_MEM_DATA_OUT)
+> +               return ((len + op->data.nbytes) <= MTK_NOR_PRG_MAX_SIZE);
+> +       else if (op->data.dir == SPI_MEM_DATA_IN)
+> +               return ((len + op->data.nbytes) <= MTK_NOR_PRG_MAX_CYCLES);
 
-Why? This is adding ptrace functionality to enclaves which is purely
-arch/x86/.
+You need to consider the existence of adjust_op_size in supports_op as well.
+This mtk_nor_check_prg still rejects SFDP reading command from spi-nor
+driver altogether.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Regards,
+Chuanhong Guo
