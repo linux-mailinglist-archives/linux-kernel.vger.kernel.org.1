@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC936277D2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07749277D37
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726868AbgIYAu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 20:50:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        id S1726788AbgIYAyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 20:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726700AbgIYAuz (ORCPT
+        with ESMTP id S1726700AbgIYAyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:50:55 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF34CC0613CE;
-        Thu, 24 Sep 2020 17:50:55 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k133so1048504pgc.7;
-        Thu, 24 Sep 2020 17:50:55 -0700 (PDT)
+        Thu, 24 Sep 2020 20:54:04 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 509ADC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:54:04 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id bw23so951716pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:54:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ZEj7jJ2RajYtDSmZOrLZRT9SFF9pAXigrpnF3pG53vM=;
-        b=dDZ+FP4+FHl4gUgw2wF/Uuem6fqtpWvDOGt52UFUkBzGXHV+7Jth4pWeCB+5gryZAM
-         ho/vb6eJx797Q1muCG0bIyeZbQZt72VVccaeY6H9VP8YNWHY/k75gZ+zTo+GFx2Xn4XF
-         7171eRlBErtdeQDB10Mm6+oWyYhej7YIdSzPPlOaKAinmObCDKdb3l/Y9uDZKTyYUdZ1
-         NFYuIBNNdMB4pVHpx/DVdlf6MuWuhzDv0Dyn5Q2L5+MINFib8sOYfaL4avO/Q9gqkTpg
-         DQlszmtid4zzx4T18TF0cLdVEnQNNLc5AuLsT31HlQdKwurfwVw91TBvIGtu4g59URGl
-         SITg==
+        bh=pci8wc6C3sL56nLHCcZggaiDkvGB6P5cNXj+K5byzNE=;
+        b=ZkGUt2PZtlRrXjXYuZhhn2xi5M3Ro/NfLR0zFG7qndd/iC5ST5IwbkDvA7aHSTFehS
+         FdslJhI8zB3VkjGiDRzvixS2KukLQhBVbUJUHyoS1SdsKAS041G5x4r4iOViiVjqsiPl
+         h0FvW4JsHNPxv5Z+GfPiaXseX636qzYPkwJAVU1mTimHXSNWeZ3CgJWuSxx6qBP3dSyh
+         GVWE7ZVPbEIys1JDKQaVPHQslMJKfExg+RY8JGqRpxF96QVfDU9JYKuCYHTejflwXqqt
+         pHAk6C3B724hnqbueS98e5GUiwnO1SN5qmEdCFKGuK+NVhdDbbpoeKkn1hJ+VA31zJk/
+         TxFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ZEj7jJ2RajYtDSmZOrLZRT9SFF9pAXigrpnF3pG53vM=;
-        b=PVDtnYdim6ozjWfDgaEToCb8pW8Yd2gzY3LSD4vKVXHFYvs+fCjbmt6lGbzAMMUo5F
-         O920QxbRLgq0JZgCWU7oir3+MxCRAo+U9HllLEYIPNvF0AvQAnt7fiRnA/PiV9SOOjlu
-         sOtzbY3i6Rr+ZzMdK/WKIW/NlN9yg1+awzP6C+PUtetGeSOvfg/jqg7vS7qt2YzRpGq1
-         YiNHWe3ftkfBRRIeH2NucjqkSnDPi6KI2Vwn7lRH1NJh8jRemBWXC2ohkYsVTwLElAlI
-         02QA6peuXRW4sjWO5howTqoubJ0A6ryVIsRWXNuVEuaoi0+QEiUdqLqFFsFDIy/p6u5U
-         30Og==
-X-Gm-Message-State: AOAM530SjOA/VGrLIHSUgnBCp/5E+0vW+aKCoUnfK8JRG9pNUArJxxSG
-        ziE+SupkHMVE5rbsO0O0EYQ=
-X-Google-Smtp-Source: ABdhPJwtrAG2FWI+khpVtPUig0amsxnQGdDTAGByGD0X+rSPF0F08DoZ59Jg1jOIX7UA+NhmyRRWyA==
-X-Received: by 2002:aa7:8ec7:0:b029:13e:d13d:a137 with SMTP id b7-20020aa78ec70000b029013ed13da137mr1676726pfr.31.1600995055255;
-        Thu, 24 Sep 2020 17:50:55 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:49ed])
-        by smtp.gmail.com with ESMTPSA id c185sm610932pfb.123.2020.09.24.17.50.52
+        bh=pci8wc6C3sL56nLHCcZggaiDkvGB6P5cNXj+K5byzNE=;
+        b=FrbNpjlvk5N7cbfvDSXgJPZQN05SAdBfy4P5rNSCEQdbqf/pJ5hAw9xWHRjo/L7yLJ
+         iVSJZxlXItDBlg3uV53NoCXG5MGq6fhVHDLGm6L5mBQ0eBP2qztiiIj1PPQak6bnCHVF
+         2pJssXdlsIU5NIAPa5FOiO8MrN7mii6kNxQ4oz1aseIEbYsznjBYmtR/h/qCnrVmnXEo
+         uT5OrVgJK+zECZj440hMtbgEYWK8nIL917eoZmnapP0NdgSmP6ggTguQzocGmDYvlCve
+         X/3JhLNF3Z2ZWPlo8BR4hu6tkYLPxt/69kQxYNuGnfGB06gvrzO3y7Zic6/4VX9UBE7m
+         NlRw==
+X-Gm-Message-State: AOAM532+Co/KfeV6+vE8LVsRSe1y6kB4Y/GdVxY/MlZElidlXivynT03
+        yxkLfoh9BGIcqSuHHLYhMFU=
+X-Google-Smtp-Source: ABdhPJyrfFVFuHh0Nje0Go9eXi46nHKKOCbGgn6ZtXsDxlrSMEwtiebjEb8OEvMlmyxA6z0nKYDESQ==
+X-Received: by 2002:a17:90a:b64:: with SMTP id 91mr268059pjq.93.1600995243767;
+        Thu, 24 Sep 2020 17:54:03 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id i15sm605270pfk.145.2020.09.24.17.54.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 17:50:54 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 17:50:51 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com,
-        linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        acme@kernel.org
-Subject: Re: [PATCH v6 bpf-next 4/6] selftests/bpf: add bpf_snprintf_btf
- helper tests
-Message-ID: <20200925005051.nqf6ru46psex7oh4@ast-mbp.dhcp.thefacebook.com>
-References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com>
- <1600883188-4831-5-git-send-email-alan.maguire@oracle.com>
+        Thu, 24 Sep 2020 17:54:02 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 09:54:00 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Mark Salyzyn <salyzyn@android.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Changki Kim <changki.kim@samsung.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
+Message-ID: <20200925005400.GD541@jagdpanzerIV.localdomain>
+References: <20200923135617.27149-1-pmladek@suse.com>
+ <20200923135617.27149-3-pmladek@suse.com>
+ <20200924042414.GA6039@lx-t490>
+ <20200924125259.GC29288@alley>
+ <20200924133850.GF29288@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1600883188-4831-5-git-send-email-alan.maguire@oracle.com>
+In-Reply-To: <20200924133850.GF29288@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 06:46:26PM +0100, Alan Maguire wrote:
-> +static int __strncmp(const void *m1, const void *m2, size_t len)
-> +{
-> +	const unsigned char *s1 = m1;
-> +	const unsigned char *s2 = m2;
-> +	int i, delta = 0;
-> +
-> +#pragma clang loop unroll(full)
+On (20/09/24 15:38), Petr Mladek wrote:
+[..]
+>
+> Grrrr, I wonder why I thought that in_irq() covered also the situation
+> when IRQ was disabled. It was likely my wish because disabled
+> interrupts are problem for printk() because the console might
+> cause a softlockup.
 
-Shouldn't be needed?
-The verifier supports bounded loops.
+preempt_disable() can also trigger softlockup.
 
-> +	for (i = 0; i < len; i++) {
-> +		delta = s1[i] - s2[i];
-> +		if (delta || s1[i] == 0 || s2[i] == 0)
-> +			break;
-> +	}
-> +	return delta;
-> +}
-> +
-> +/* Use __builtin_btf_type_id to test snprintf_btf by type id instead of name */
-> +#if __has_builtin(__builtin_btf_type_id)
-> +#define TEST_BTF_BY_ID(_str, _typestr, _ptr, _hflags)			\
-> +	do {								\
-> +		int _expected_ret = ret;				\
-> +		_ptr.type = 0;						\
-> +		_ptr.type_id = __builtin_btf_type_id(_typestr, 0);	\
+> in_irq() actually behaves like in_serving_softirq().
+>
+> I am confused and puzzled now. I wonder what contexts are actually
+> interesting for developers.  It goes back to the ideas from Sergey
+> about preemption disabled, ...
 
-The test is passing for me, but I don't understand why :)
-__builtin_btf_type_id(, 0); means btf_id of the bpf program.
-While bpf_snprintf_btf() is treating it as btf_id of vmlinux_btf.
-So it really should have been __builtin_btf_type_id(,1);
+Are we talking about context tracking for LOG_CONT or context on
+the serial console and /dev/kmsg?
 
-The following diff works:
-diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-index b4f96f1f6830..bffa786e3b03 100644
---- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-+++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
-@@ -45,7 +45,7 @@ static int __strncmp(const void *m1, const void *m2, size_t len)
-        do {                                                            \
-                int _expected_ret = ret;                                \
-                _ptr.type = 0;                                          \
--               _ptr.type_id = __builtin_btf_type_id(_typestr, 0);      \
-+               _ptr.type_id = __builtin_btf_type_id(_typestr, 1);      \
-                ret = bpf_snprintf_btf(_str, STRSIZE, &_ptr,            \
-                                       sizeof(_ptr), _hflags);          \
-                if (ret != _expected_ret) {                             \
-@@ -88,7 +88,7 @@ static int __strncmp(const void *m1, const void *m2, size_t len)
-                        ret = -EBADMSG;                                 \
-                        break;                                          \
-                }                                                       \
--               TEST_BTF_BY_ID(_str, #_type, _ptr, _hflags);            \
-+               TEST_BTF_BY_ID(_str, _ptr, _ptr, _hflags);              \
+If the latter, then my 5 cents, is that something like preemptible(),
+which checks
 
-But still makes me suspicious of the test. I haven't debugged further.
+	(preempt_count() == 0 && !irqs_disabled())
+
+does not look completely unreasonable.
+
+We had a rather OK context tracking in printk() before, but for a
+completely different purpose:
+
+       console_may_schedule = !oops_in_progress &&
+                       preemptible() &&
+                       !rcu_preempt_depth();
+
+We know that printk() can cause RCU stalls [0]. Tracking this part
+of the context state is sort of meaningful.
+
+Let's look at this from this POV - why do we add in_irq()/etc tracking
+info? Perhaps because we want to connect the dots between printk() caller
+state and watchdog reports. Do we cover all watchdogs? No, I don't think
+so. RCU stalls, local_irq_disable(), preempt_disable() are not covered.
+
+Do we have any technical reasons not to add those missing bits?
+
+[0] https://lkml.org/lkml/2018/1/9/485
+
+	-ss
