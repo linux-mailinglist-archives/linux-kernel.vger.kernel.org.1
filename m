@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D31112792CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048002792CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727269AbgIYU5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57748 "EHLO
+        id S1727880AbgIYU6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgIYU5s (ORCPT
+        with ESMTP id S1726037AbgIYU57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:57:48 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98018C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:57:48 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id o25so3622347pgm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CgeT1UxhckyXDPY2lGvngm3rc9GEe2KOAzxyq6miOO4=;
-        b=Au9OPHd/+pjONlExdGz/vM8D9ilyoGa2CUF7Jx7d6vg2rYzwlZQRGCVHf1LrhRLO8d
-         FavKrJ8Uuo1jS6PJiuTCJz7JBoRle3blc3LHwA9CKFjq/W6mESOamnyw5LWBSiEq5e1o
-         3ROQBfdwNCHkqyA3xx7gYEpMvzGukWoXktcnwVdwHH5jvW/bJCTOkdnpS6bTrqYAdIt2
-         +TXRk+tZFpbaJ2NIhsEFtcrnite8Uo7tGsH2ZiLDFtnhWnIQYJmcmcAwBJuumRQXiQky
-         RsnOoQ2Dac2QtP7+4nZU5xQ/hxkTtAorcEuIfwmykpf7VRXfpR6TYKHGVNxIIAmUUWYU
-         2UsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CgeT1UxhckyXDPY2lGvngm3rc9GEe2KOAzxyq6miOO4=;
-        b=k+RMqzgYY0w8tuvwGo5wKzOg9WBcScODqRUe/p5O/Z7IEXooh3YM+8+fsEyizSFIC0
-         F/GYR15pg5p1wEixAWqL8+OO9To3EK7GxHwi+yxgjH+5vS+v228YCKzS9R5t9Wu+2zD3
-         JJMFge1tEK2i6VEBVScaHydnRmk1aqq7qFsYGY+CuLMOCTP/eyrxuuwhCRBC7YOpe3bW
-         0OZ/4My0t0KiOY/eeEYfhKPxxLoelHN/DZNQvvgfYSlR916NcwlA8+gaEtfLHEmOE0jm
-         P/wDsMJknLi/PGoUnlljhUY1vT+nZi+Ya/nqZAVp/M1SCYZoyrtr7vJtWfVXujenE/Xh
-         L9Yg==
-X-Gm-Message-State: AOAM5305gObXYEi9PTNV+zhnE/gPj88dDj1ULTdD22BPDw7p7w6oU+HP
-        Mv5+gzbVBsGHU8zyoX6Wn0SI+imuBbP5EEoM1Eq6NvMWUqs=
-X-Google-Smtp-Source: ABdhPJxVl09jpOLHdh3pmxuwO+MtuO71NfvXRHLPhEquwLrebe0jp1eQkra5btFdaRin+CH3oAuPSCT70dO/XFtjtn0=
-X-Received: by 2002:aa7:9556:0:b029:13e:d13d:a0fe with SMTP id
- w22-20020aa795560000b029013ed13da0femr401287pfq.26.1601067467880; Fri, 25 Sep
- 2020 13:57:47 -0700 (PDT)
+        Fri, 25 Sep 2020 16:57:59 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8192CC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:57:59 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0b3a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0CA0A1EC026D;
+        Fri, 25 Sep 2020 22:57:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601067478;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=LCnPz9m8MV/XyMH/TOF98vhD++WJdzg7Jyu26mIxFvQ=;
+        b=K2KOs+TtWN8d4YzCwVflQDKJyl85ZR0I8fEHqHg2jn0VXfsK4ZZeTOaGKYuRcYj0ULaYH2
+        i95EWM8Jcox95gbEb1XJ5P9wsPbE5UDYD13EAoTU48/GR837awWPGk+oIYkXq+Xf1P1Y/U
+        E1ev1L6vfJ0x4jcFGJzRSZwdj+bGFwU=
+Date:   Fri, 25 Sep 2020 22:57:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
+ features
+Message-ID: <20200925205751.GR16872@zn.tnic>
+References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+ <20200922201024.GS22660@zn.tnic>
+ <20200922221523.GA1185357@rani.riverdale.lan>
+ <20200923024529.GA15894@shbuild999.sh.intel.com>
+ <20200925171631.GL16872@zn.tnic>
+ <20200925194804.GA757220@rani.riverdale.lan>
+ <20200925201707.GQ16872@zn.tnic>
+ <20200925204047.GA769219@rani.riverdale.lan>
 MIME-Version: 1.0
-References: <20200925190806.1870935-1-axelrasmussen@google.com> <cb89ebee230aedc9b5b6668bb333a258fc971b30.camel@kernel.org>
-In-Reply-To: <cb89ebee230aedc9b5b6668bb333a258fc971b30.camel@kernel.org>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Fri, 25 Sep 2020 13:57:11 -0700
-Message-ID: <CAJHvVcgfphkarK9mFzcKPm9RimH_eZQbYTDrOaXLp5+m+20wTA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/1] tracing: support dynamic string field types for
- synthetic events
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200925204047.GA769219@rani.riverdale.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:48 PM Tom Zanussi <zanussi@kernel.org> wrote:
->
-> Hi Axel,
->
-> On Fri, 2020-09-25 at 12:08 -0700, Axel Rasmussen wrote:
-> > Hi Steven and Tom,
-> >
-> > In this thread: https://lkml.org/lkml/2020/9/17/1015 we discussed how
-> > to plumb
-> > dynamic strings into synthetic events. Tom, you proposed adding a new
-> > dynamic
-> > string type to synthetic event definition like "char foo[]".
-> >
-> > I'm sending this patch because it may be simpler than implementing
-> > that (I'm
-> > not too familiar with the tracing infrastructure, apologies if this
-> > is not
-> > true), and in my testing it seems sufficient to address my use case.
-> > I tested
-> > both setting up a synthetic event as Steven described in the other
-> > thread, as
-> > well as doing an analogous thing with a small bpftrace program, and
-> > both work as
-> > expected with this patch.
-> >
-> > This is because I happen to know there's an upper bound on the length
-> > of the
-> > string in question, so I can just define a "char memcg_path[256]" in
-> > the
-> > synthetic event, and I can be sure the string won't be truncated.
-> >
-> > Let me know what you think. Happy to drop this and wait for Tom's
-> > suggested
-> > approach instead.
->
-> Changing check_synth_field() is one of the things that will need to
-> change for this to work - I'm working on a patch but am kind of in the
-> middle of it, if you can wait - I expect to be able to post something
-> Monday...
->
-> Thanks,
->
-> Tom
+On Fri, Sep 25, 2020 at 04:40:47PM -0400, Arvind Sankar wrote:
+> They're not the same, but aren't there going to be quite a few common
+> flags between the definitions in cpufeatures.h and the definitions in
+> cpuid.txt? If they're both living in the kernel repo, it would be nice
+> for them to not duplicate what's common between them, no?
 
-Absolutely, no problem waiting. I didn't mean to come off as being
-impatient; mostly since I had already hacked this together a few days
-ago, I figured it was worth an e-mail in case it could save you some
-effort. I have no problem dropping it. :) Thanks for working on this!
+You will generate cpuid.txt exactly once and shortly after cpufeatures.h
+will already be ancient in comparison to it. So there would be no point
+to share.
 
->
-> >
-> > Axel Rasmussen (1):
-> >   tracing: support dynamic string field types for synthetic events
-> >
-> >  kernel/trace/trace_events_hist.c | 15 ++++++++++++---
-> >  1 file changed, 12 insertions(+), 3 deletions(-)
-> >
-> > --
-> > 2.28.0.681.g6f77f65b4e-goog
-> >
->
+Also, have a look at which leafs are in cpufeatures.h, which of those
+leafs are synthetic and how many leafs are in an actual CPUID hw
+implementation.
+
+Then, some of the bits in cpufeatures.h are not present while the leafs
+in CPUID have them for the above reason.
+
+And so on...
+
+> This shouldn't affect how easy it is to update, I think. The kernel
+> build will use whatever version is in the source tree, the tool will use
+> whatever version is installed under /usr/share, so the latter can be
+> updated without needing a new kernel.
+
+And I believe that keeping those apart because there are differences,
+would cause more confusion vs having the two things completely separate.
+
+So I actually think that sharing between the two is not even worth the
+effort.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
