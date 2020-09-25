@@ -2,83 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE2427858D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D90D2785AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbgIYLJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:09:42 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:46086 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgIYLJm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:09:42 -0400
-Received: by mail-oi1-f196.google.com with SMTP id u126so2337088oif.13;
-        Fri, 25 Sep 2020 04:09:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N0XOyqHWfOpDLt9M6Ig1oO+6ZMp3I1SUHg/BkMQAork=;
-        b=QRM7el//GDK2ayZ8x/LWKn1KAYaVT73F3+R4ocrRRA0R6G41eU5lXTBCuYgsKTYNeI
-         EV7U8udqJM4MkRkLAUvkoPMJbaiiy6mtiDMsbnIqHOembCIh/xvpKUFT+QK/kd3Yl0jU
-         InPVbhXYZgTOBwx+F9IYBzOPpYS28DfsNfPCk8m3rMmMRu7gTMA2fLrhKkom/mcSDOrh
-         p7Ga7OcFSCk/BYQSTtMeP+uA11Jci6xpX9rlYV/m60PHJYGjTMiry/I4kZVqaehzlCVr
-         q2TJn+4G+AkQnAwrPKyYGKp0pbOxyly7GnKCs5pO1Ag46ILPl9yNbVTqxa4X6+SE3Mnb
-         0c2A==
-X-Gm-Message-State: AOAM5328sG6I24r8LlLQ835W/NRNSGj8rAfj6iaBzmJpK2SwYzc3WB//
-        MztOnr09/QASUwX4jhlQCaKVaNouEMCkJ77Pwx8=
-X-Google-Smtp-Source: ABdhPJxciLZD1CftNy0xx8NjNfqeXSw6jM3Y3ux4IPYmuYNHFOYdVRyzws3CukCu0BvJrZKIUXnyf8knGbw5ODTJ0+o=
-X-Received: by 2002:aca:5b09:: with SMTP id p9mr1167842oib.68.1601032181317;
- Fri, 25 Sep 2020 04:09:41 -0700 (PDT)
+        id S1728112AbgIYLXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:23:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38622 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726255AbgIYLXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:23:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 06CBAADAB;
+        Fri, 25 Sep 2020 11:23:49 +0000 (UTC)
+Subject: Re: [PATCH 9/9] mm, page_alloc: optionally disable pcplists during
+ page isolation
+To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Michal Hocko <mhocko@suse.com>
+References: <20200922143712.12048-1-vbabka@suse.cz>
+ <20200922143712.12048-10-vbabka@suse.cz>
+ <10cdae53-c64b-e371-1b83-01d1af7a131e@redhat.com>
+ <e0ab17e9-6c05-cf32-9e2d-efbf011860a2@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <2ce92f9a-eaa2-45b2-207c-46a79d6a2bde@suse.cz>
+Date:   Fri, 25 Sep 2020 13:10:05 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <cover.1600238586.git.viresh.kumar@linaro.org> <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
- <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
- <20200924131543.eury5vhqy3xt35v6@vireshk-i7> <CAJZ5v0g8Bmxt=GEKcNrKjY1cHnsURV5oe3+n1R2+U_2VJnwfRQ@mail.gmail.com>
- <20200925105830.xsmiwkjohlqb5joj@vireshk-i7>
-In-Reply-To: <20200925105830.xsmiwkjohlqb5joj@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 25 Sep 2020 13:09:30 +0200
-Message-ID: <CAJZ5v0guU0GDs06W98boFpdCopHTiF_ojwTPrZFNP0Bk3DiQXQ@mail.gmail.com>
-Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <e0ab17e9-6c05-cf32-9e2d-efbf011860a2@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:58 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 25-09-20, 12:04, Rafael J. Wysocki wrote:
-> > I'm actually wondering if reset_time is necessary at all.
-> >
-> > If cpufreq_stats_record_transition() is the only updater of the stats,
-> > which will be the case after applying this series IIUC, it may as well
-> > simply set the new starting point and discard all of the data
-> > collected so far if reset_pending is set.
-> >
-> > IOW, the time when the reset has been requested isn't particularly
-> > relevant IMV (and it is not exact anyway), because the user is
-> > basically asking for discarding "history" and that may very well be
-> > interpreted to include the current sample.
->
-> There are times when this would be visible to userspace and won't look nice.
->
-> Like, set governor to performance, reset the stats and after 10 seconds, read
-> the stats again, everything will be 0.
+On 9/25/20 12:54 PM, David Hildenbrand wrote:
+>>> --- a/mm/page_isolation.c
+>>> +++ b/mm/page_isolation.c
+>>> @@ -15,6 +15,22 @@
+>>>  #define CREATE_TRACE_POINTS
+>>>  #include <trace/events/page_isolation.h>
+>>>  
+>>> +void zone_pcplist_disable(struct zone *zone)
+>>> +{
+>>> +	down_read(&pcp_batch_high_lock);
+>>> +	if (atomic_inc_return(&zone->pcplist_disabled) == 1) {
+>>> +		zone_update_pageset_high_and_batch(zone, 0, 1);
+>>> +		__drain_all_pages(zone, true);
+>>> +	}
+>> Hm, if one CPU is still inside the if-clause, the other one would
+>> continue, however pcp wpould not be disabled and zones not drained when
+>> returning.
 
-Unless I'm missing something, the real reset happens when
-cpufreq_stats_record_transition() runs next time, so the old stats
-will still be visible at that point, won't they?
+Ah, well spotted, thanks!
 
-> Because cpufreq_stats_record_transition()
-> doesn't get called at all here, we would never clear them until the time
-> governor is changed and so we need to keep a track of reset-time.
+>> (while we only allow a single Offline_pages() call, it will be different
+>> when we use the function in other context - especially,
+>> alloc_contig_range() for some users)
+>>
+>> Can't we use down_write() here? So it's serialized and everybody has to
+>> properly wait. (and we would not have to rely on an atomic_t)
+> Sorry, I meant down_write only temporarily in this code path. Not
+> keeping it locked in write when returning (I remember there is a way to
+> downgrade).
 
-Or trigger a forced update.
+Hmm that temporary write lock would still block new callers until previous
+finish with the downgraded-to-read lock.
+
+But I guess something like this would work:
+
+retry:
+  if (atomic_read(...) == 0) {
+    // zone_update... + drain
+    atomic_inc(...);
+  else if (atomic_inc_return == 1)
+    // atomic_cmpxchg from 0 to 1; if that fails, goto retry
+
+Tricky, but races could only read to unnecessary duplicated updates + flushing
+but nothing worse?
+
+Or add another spinlock to cover this part instead of the temp write lock...
