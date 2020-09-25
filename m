@@ -2,131 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F03D27838B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB9D727838C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727608AbgIYJFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:05:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgIYJFp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:05:45 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF580C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2VfsxKk+lvb78Dy2zYBJ7EZ0K1Ur8Rj4+jrmVbK9eiM=; b=kuTiZaIufgjZLlPze2YeEahUXc
-        rHmhyoulRiAVzPH4MbHnQm9riafnmEQ0dpz2BFRYcnq8qfX1hTla++0IJ4gWwEYQKnrc0mObao+2y
-        +yJzZhHJTFwWOBOJgKECkORmKI73N4QWC0YTsWu25sxZ5F6VG0XPxR7mTDZJTHx7gTOX8+I8ZOB5N
-        bBsyuIoPUOJZ0m2ZoGiVix6VHthau1BIWvN8p6K5PLst5huceENfVR+Upzeq/Cvm+vUwkq7mRNtid
-        pd7ur4wAHUMvct83VS9qtjoVgiDJHdQZzDxaWdEeVSRaO6TUr7adcXBIEUm3LQGmR6VbkJFjYLH7J
-        9mxzsLZA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLjfV-0001g7-Tc; Fri, 25 Sep 2020 09:05:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 71137300DB4;
-        Fri, 25 Sep 2020 11:05:28 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 30CEB202075FD; Fri, 25 Sep 2020 11:05:28 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 11:05:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
-Subject: Re: [PATCH 8/9] sched: Fix migrate_disable() vs
- set_cpus_allowed_ptr()
-Message-ID: <20200925090528.GV2628@hirez.programming.kicks-ass.net>
-References: <20200921163557.234036895@infradead.org>
- <20200921163845.830487105@infradead.org>
- <jhj3637lzdm.mognet@arm.com>
+        id S1727705AbgIYJGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:06:38 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:42880 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727132AbgIYJGh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:06:37 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 79C65292597CE6390E0C;
+        Fri, 25 Sep 2020 17:06:35 +0800 (CST)
+Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 25 Sep
+ 2020 17:06:33 +0800
+Subject: Re: [f2fs-dev] KMSAN: uninit-value in f2fs_lookup
+To:     syzbot <syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com>,
+        <chao@kernel.org>, <glider@google.com>, <jaegeuk@kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
+References: <000000000000f9f80905b01c7185@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <eb03a5c9-eb77-eb91-e17f-8a3273aab7da@huawei.com>
+Date:   Fri, 25 Sep 2020 17:06:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhj3637lzdm.mognet@arm.com>
+In-Reply-To: <000000000000f9f80905b01c7185@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.114.67]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 08:59:33PM +0100, Valentin Schneider wrote:
-> > @@ -2025,19 +2138,8 @@ static int __set_cpus_allowed_ptr(struct
-> >       if (cpumask_test_cpu(task_cpu(p), new_mask))
-> >               goto out;
-> 
-> I think this needs a cancellation of any potential pending migration
-> requests. Consider a task P0 running on CPU0:
-> 
->    P0                     P1                               P2
-> 
->    migrate_disable();
->    <preempt>
->                           set_cpus_allowed_ptr(P0, CPU1);
->                           // waits for completion
->                                                            set_cpus_allowed_ptr(P0, CPU0);
->                                                            // Already good, no waiting for completion
->    <resumes>
->    migrate_enable();
->    // task_cpu(p) allowed, no move_task()
-> 
-> AIUI in this scenario P1 would stay forever waiting.
+Hi,
 
-Hurmph, looking at it, I think you're right. But I'm fairly sure I did
-test that, maybe I just didn't run it long enough to hit the window ...
+I don't see any problem here, thanks for your report. :)
 
-> I *think* this can be
-> cured by making this function slightly more hideous:
+Thanks,
 
-It's a real beauty isn't it :-/
-
+On 2020/9/25 13:18, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    c5a13b33 kmsan: clang-format core
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14f5b19b900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
+> dashboard link: https://syzkaller.appspot.com/bug?extid=0eac6f0bbd558fd866d7
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com
+> 
+> =====================================================
+> BUG: KMSAN: uninit-value in f2fs_lookup+0xe05/0x1a80 fs/f2fs/namei.c:503
+> CPU: 0 PID: 20216 Comm: syz-executor.5 Not tainted 5.9.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>   __dump_stack lib/dump_stack.c:77 [inline]
+>   dump_stack+0x21c/0x280 lib/dump_stack.c:118
+>   kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+>   __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+>   f2fs_lookup+0xe05/0x1a80 fs/f2fs/namei.c:503
+>   lookup_open fs/namei.c:3082 [inline]
+>   open_last_lookups fs/namei.c:3177 [inline]
+>   path_openat+0x2729/0x6a90 fs/namei.c:3365
+>   do_filp_open+0x2b8/0x710 fs/namei.c:3395
+>   do_sys_openat2+0xa88/0x1140 fs/open.c:1168
+>   do_sys_open fs/open.c:1184 [inline]
+>   __do_compat_sys_openat fs/open.c:1242 [inline]
+>   __se_compat_sys_openat+0x2a4/0x310 fs/open.c:1240
+>   __ia32_compat_sys_openat+0x56/0x70 fs/open.c:1240
+>   do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+>   __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
+>   do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+>   do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+>   entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+> RIP: 0023:0xf7f73549
+> Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 eb 0d 90 90 90 90 90 90 90 90 90 90 90 90
+> RSP: 002b:00000000f554c0cc EFLAGS: 00000296 ORIG_RAX: 0000000000000127
+> RAX: ffffffffffffffda RBX: 00000000ffffff9c RCX: 0000000020000980
+> RDX: 000000000002f042 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+> R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> 
+> Local variable ----page@f2fs_lookup created at:
+>   f2fs_lookup+0x8f/0x1a80 fs/f2fs/namei.c:477
+>   f2fs_lookup+0x8f/0x1a80 fs/f2fs/namei.c:477
+> =====================================================
+> 
+> 
 > ---
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 01113e6f941f..829334f00f7b 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2102,6 +2102,8 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
->                                   u32 flags)
->  {
->         const struct cpumask *cpu_valid_mask = cpu_active_mask;
-> +	struct set_affinity_pending *pending;
-> +	bool cancel_pending = false;
->         unsigned int dest_cpu;
->         struct rq_flags rf;
->         struct rq *rq;
-> @@ -2158,14 +2160,20 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
->         }
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
->         /* Can the task run on the task's current CPU? If so, we're done */
-> -	if (cpumask_test_cpu(task_cpu(p), new_mask))
-> +	if (cpumask_test_cpu(task_cpu(p), new_mask)) {
-> +		cancel_pending = true;
->                 goto out;
-> +	}
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 > 
->         return move_task(rq, &rf, p, dest_cpu, flags);
 > 
->  out:
-> +	pending = p->migration_pending;
->         task_rq_unlock(rq, p, &rf);
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+> .
 > 
-> +	if (cancel_pending && pending)
-> +		complete_all(&pending->done);
-> +
->         return ret;
->  }
-
-He who completes pending should also clear ->migration_pending,
-otherwise the next caller will be able to observe a dangling pointer.
-
-The other approach is trying to handle that last condition in
-move_task(), but I'm quite sure that's going to be aweful too :/
-
-
