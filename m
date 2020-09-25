@@ -2,99 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6D827926F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C9727922F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbgIYUnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55528 "EHLO
+        id S1728787AbgIYUe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728842AbgIYUnf (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:43:35 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D183C0613B2
-        for <Linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:43:58 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id b79so203220wmb.4
-        for <Linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:43:58 -0700 (PDT)
+        with ESMTP id S1729068AbgIYUdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:33:35 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B34C0613B4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:48:07 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id y11so2996590qtn.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YHGugZKiuicTkqumqMhBD3Ej3zjHyyQJPQkMpt/Ee1s=;
-        b=FoObYSIkNkhUab7nCZY0LOTUDRIoHeC3JBUHgqXVTh+D9WaZubDjDHthm6vdOBgtFu
-         k9hcU7TpIc+DC0a1yOMM+egIuA5ebCPU3SK4HHm1ndqvU3pdBWKiIIq3M8N58+vHE7g/
-         AdXlqPBtq1hXlSbX68QW8q/xn7DtVJNVdnLkFJA4CJVdF97Nbo26P9lwQsaZLo6Q6M+z
-         BnT5SxapKziFoYKcyY4+eBAdanDXxTeYavZnf1z0A22LTYJjBoQH8MKQtKPscJujJfXJ
-         SW0KyNUdJW4mO/ahfZslo+foavfujq702Jz5MjbGLZb1l3tKv7C7QLm6tLgQhlHAAp4+
-         TF6w==
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3Vd95iFh6wCPIomS1/ZtyeUbAS6OsYbDOK3YIxNXum8=;
+        b=nuW7YkGz031Jl20DOftTYfX5f9CNSvGcoZCncgGHDTMvv3tIPHEnccn6gIyJEBTHPt
+         w6hVTFuWpOQ5S2y3+ygPVm0F8LfYne7+owYJ4ua6yP6Pu2ftxfNuptSjZpyUmbCGV63H
+         kORa+aSKdIHPdpTZW8CKwly9n19vee5orgQAoNckSm1sibXqtncTI78FjzO2eqkChQni
+         3y0D+agKRJO72YQz50kEM2Nq3cYxgm38RI3YoGBskOsTIUQLoW4sAt+5ReBN3rsXUi+Q
+         b52Yw9HJcZvKnUhrE4hjdKLa97PF90NVV4b5e6IBy3ndtR7XmFYcmrLiHEx5tCvllemA
+         YBYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YHGugZKiuicTkqumqMhBD3Ej3zjHyyQJPQkMpt/Ee1s=;
-        b=FxB0FaPpJR1WKTl9r/u9GWNlrewOkrMJiGxdUcgOh/jB1M0h0Ci2Pqm5LQY0GVJ77M
-         LKYK3GjtEZCYj8KWy/F5OGEhyO9BCW20Jf8zPEjx29rajjF54LMBJBS06sdoxUaXiOF6
-         BjwMkSVA9u4c633B4k0t56XX8Ba6GI67NvJ08lFqKibajHtbQzjTQOXCskLrLd5h8xxw
-         4SMrV7nyL/c3ZPoni6BtOfH/87UdruFEtnS6AkN4wz+J81cPU2xrfQqCAKkI9bJyK8bo
-         V7ndy92SZTkBtqXF0ioojcoSX3F7G0BG9Clp4Qo8VtyPS+ZGLzMhd/4XDZLEA4q4BvXq
-         eR+Q==
-X-Gm-Message-State: AOAM5305KXAErlSqR9G4wTlTVxIl8PsfDBjY1Q6zEliAAi9XRbDD2WtQ
-        3v1D+XfvgXZiFg8zGIg9loyJzS7oxKZHkPZuARuWKQ==
-X-Google-Smtp-Source: ABdhPJzImlM+ZQ0OOhKmX/3z6alBYFwNZWoPfhFOFBI+RdnpKYnnVP9f725fVLBzle7oIaVhApy0Rpw2ORQ/UU+LLGE=
-X-Received: by 2002:a1c:2cc2:: with SMTP id s185mr156909wms.77.1601063036898;
- Fri, 25 Sep 2020 12:43:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200922031918.3723-1-yao.jin@linux.intel.com>
- <20200922031918.3723-2-yao.jin@linux.intel.com> <20200922194232.GA2505291@kernel.org>
- <4db737f2-0705-5183-6971-9031acfd123b@linux.intel.com> <20200925180527.GA2883319@kernel.org>
- <20200925183614.czoqgq2kcttzfm2g@two.firstfloor.org>
-In-Reply-To: <20200925183614.czoqgq2kcttzfm2g@two.firstfloor.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Fri, 25 Sep 2020 12:43:45 -0700
-Message-ID: <CAP-5=fXp8brNy7tCTAp4H1uegnCkrBxCiacz14+K3TY4_t3hVA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] perf vendor events: Update CascadelakeX events to v1.08
-To:     Andi Kleen <andi@firstfloor.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "Jin, Yao" <yao.jin@linux.intel.com>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Jiri Olsa <jolsa@kernel.org>,
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=3Vd95iFh6wCPIomS1/ZtyeUbAS6OsYbDOK3YIxNXum8=;
+        b=U4uITLnagmkgThEHkN//tiZJqgDVGUCt0fSZQxHcDNgyC/6QPQq56aeToQtTAHbAXY
+         JE8pfKK5Xa3bt+25oWI5W99PcXhuzeh4s597Moor9hFvZ+xoM4jaIBr5tHj9x1DD/HR+
+         j5kNKzqpm10v9PdJR2Xu0XeQBTCFSsO5pQkQ04uin83RkfAI381VTwJqSuEUzNMrnSeV
+         JDe4AnoBVnxThZPbHfyGVi8pRwTki4fAhoCOP7poVoxGcvGBxgSuamt/XIRmhdIBFSsj
+         Gy4AFM4/IeSrdXpIljU9qu/ncPwoqi3VhwMJPKkY9NdYu6g+c+zt/yNLgUlTYzQXOS4g
+         aXNg==
+X-Gm-Message-State: AOAM532ALQnprWt1F5BuNWPXi6HgWj1Fcm0DQjeWx7ydnfNsAjgbYptj
+        KMtMiBb6xB97dDDpDC5QmzM=
+X-Google-Smtp-Source: ABdhPJwtW7DPURZopZdxpofFWzgWwz1Av+16wqQ04GhH2QpmFusIEZ/EhiDsUUJpQ/dJfeIhVQ2Etw==
+X-Received: by 2002:ac8:45d7:: with SMTP id e23mr1326589qto.177.1601063286707;
+        Fri, 25 Sep 2020 12:48:06 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id k12sm1029651qtu.47.2020.09.25.12.48.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 12:48:06 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 25 Sep 2020 15:48:04 -0400
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Feng Tang <feng.tang@intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <Linux-kernel@vger.kernel.org>,
-        Kan Liang <kan.liang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
+ features
+Message-ID: <20200925194804.GA757220@rani.riverdale.lan>
+References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+ <20200922201024.GS22660@zn.tnic>
+ <20200922221523.GA1185357@rani.riverdale.lan>
+ <20200923024529.GA15894@shbuild999.sh.intel.com>
+ <20200925171631.GL16872@zn.tnic>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200925171631.GL16872@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:36 AM Andi Kleen <andi@firstfloor.org> wrote:
->
-> > Thanks, it now works, but then... You forgot to add the Cc: entries for
-> > all the people in your actual e-mail Cc: list, and also the
-> > Reviewed-by: from Andy, I had to do it all manually, so when I applied
-> > your attachments with 'git am' I needed to go on and manually collect
-> > all the Cc, Reviewed-by and Acked-by tags.
->
-> For the event updates we should just use git pulls in my opinion.
->
-> They are just too large for the normal review procedures, and usually
-> don't really benefit much from community review anyways because they
-> are essentially hardware documentation.
->
-> Should just name intel / amd / etc. event list maintainers and you
-> could accept pulls from them.
->
-> -Andi
+On Fri, Sep 25, 2020 at 07:16:31PM +0200, Borislav Petkov wrote:
+> On Wed, Sep 23, 2020 at 10:45:29AM +0800, Feng Tang wrote:
+> > > Rather than a tool, would additional file(s) in, say,
+> > > /sys/devices/system/cpu/cpu<n> be nicer? They could show the raw CPUID
+> > > features, one file per leaf or sub-leaf, maybe even along with whether
+> > > they were disabled at boot-time.
+> > 
+> > My thought is we already have in-kernel powerful /proc/cpuinfo, while 
+> > a user space tool could be more flexible for text parsing/layout, and
+> > show different info on user's demand/options.
+> 
+> The important thing here is that a separate tool would be decoupled from
+> the kernel and thus will be independent from it, i.e., you can get the
+> tool and run it without having to install a new kernel.
+> 
+> And with the CPUID leafs specified in a text file, you won't even need
+> to update the tool even - just cpuid.txt. It can't get any better than
+> that.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
-Are the scripts to make the json available? Perhaps then Arnaldo could
-generate the changes.
-
-I believe Kajol Jain has some unmerged changes because there's a worry
-about the interaction with the scripts and assumptions in jevents.
-Having access to the scripts would mean that we could fix whatever
-issues there would be.
-
-Thanks,
-Ian
+Ok. Another suggestion: while designing the format for the cpuid.txt
+file, would it be possible to include enough information for
+cpufeatures.h to be auto-generated from it?
