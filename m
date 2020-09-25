@@ -2,158 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E8F27870B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D539278710
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728396AbgIYMVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:21:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39879 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727290AbgIYMVr (ORCPT
+        id S1728348AbgIYMXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727248AbgIYMXA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:21:47 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601036505;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=aV7Cs8mQSRN0ZsCuu7o/ezZPBB2ro4135YZdq3AsvhM=;
-        b=Fke9XmFD+rKc+yys6KO6xH3Vfr7t8XjU89QEankhYEUNF9wlAJn5H26OCc52YgW09yQpYq
-        svf4nzEMoFygLNVjrdsbcsX6ikrCrw6HKFxn0o+3WbqdX2aBkqGDRVYB6b+3wc2DvCRI45
-        zcFUvEqtX+xm05HMNKwgGPGREXWwp/o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-btNOiPLiOAOCeKEq-zbbPg-1; Fri, 25 Sep 2020 08:21:43 -0400
-X-MC-Unique: btNOiPLiOAOCeKEq-zbbPg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E4F41084C9A;
-        Fri, 25 Sep 2020 12:21:42 +0000 (UTC)
-Received: from [10.36.112.211] (ovpn-112-211.ams2.redhat.com [10.36.112.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 628D27882B;
-        Fri, 25 Sep 2020 12:21:41 +0000 (UTC)
-Subject: Re: [PATCH] mm: remove unused early_pfn_valid()
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <20200923162915.26935-1-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <244583cb-6603-783b-b3c6-7a82e1bfa77d@redhat.com>
-Date:   Fri, 25 Sep 2020 14:21:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Fri, 25 Sep 2020 08:23:00 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215D3C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:23:00 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id e7so1610574qtj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JiwHunS73dKhzMvuruWEdSZBTGiMntQmhlw2d9kKF/g=;
+        b=RaEYAZyMGMIoGSW2BGdldXQO3drMp78uAOUNdZWmtOvAmvrNMB83DkVs1sU+EdK+vX
+         jt/vAtjXKdHeGQxzML0VKsdyTahxAvwVtqnmJ9AZ/xT3FucZJtrqt/WtXImbKJnFuUK2
+         Gk6yAT0apPA+SN1McyqgpGm5FtNhaQgMXuHZh1JVR5iPuPrfgSv9zRVY2gJFZdY9N0Lc
+         n9LTpqZzss8dC5ECoDAP8f+jnuuMzR3EOUqC9VUE5zhNh/TgwO7cIjqUxLREgH+i8VMo
+         n4iTygX1f89Hywqi/5v37JQUzNjH8tcq84PP0oHrIj/etA5mwcTtjGBAgWUdmh7h6a4u
+         r41g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JiwHunS73dKhzMvuruWEdSZBTGiMntQmhlw2d9kKF/g=;
+        b=Fpoep27Tz/Ej8QaZGA7igDp5G76hS7XaLVrgKyKM02JybLZii60ZQQwP2eVDti+BSo
+         ZmDlPgtsrMm3GzUePjbRE9WA3rt6Y6k1j5rWwiAc9ukNtfwZA9qcASU6NLmDmkjNDM1+
+         eNnsbUFZhP4BWGH4gsp81QuBKl+BgUBV55eu2Sa4JVDl8tgCi9OFPmmuq+l93hdYNyew
+         eg+5v4spFzqVT4weho/z9Zb9vhLwpcbqeO1Utn0hrSAxfspFyzY7bvOJCikKxonuwI76
+         Tlz3cMFV3iNgaa1aqDZQ72Kj+o8qwsaTZ5ZI4JGvy4S82375urwtX1kD43tvdY2k2BHM
+         Pl6g==
+X-Gm-Message-State: AOAM532EKfJxvXPVsV50TM347Nn1HutyXM36IIZhNQE50IM12uNxoA0K
+        LtdDQqzC+CfHJGspPCrq6DyuIwQSNDJR4Zq0TUSwpQ==
+X-Google-Smtp-Source: ABdhPJws0L/vacfbEcOsg6IKEchMzkUlgnq6GAfHWUrhCoS9hDF5oSiav2fAMewuaMCaa714dxufzQb39vW92/dZNeA=
+X-Received: by 2002:aed:26a7:: with SMTP id q36mr4018858qtd.57.1601036578995;
+ Fri, 25 Sep 2020 05:22:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200923162915.26935-1-rppt@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <00000000000052569205afa67426@google.com> <20200919110831.GD7462@zn.tnic>
+ <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
+ <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
+ <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
+ <20200921221336.GN5901@zn.tnic> <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
+ <20200923090336.GD28545@zn.tnic> <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
+ <20200923103431.GF28545@zn.tnic> <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
+In-Reply-To: <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 25 Sep 2020 14:22:47 +0200
+Message-ID: <CACT4Y+bjyAfO-TRjBHT9wR194=prH2C284Oc9akVVHR1492WZA@mail.gmail.com>
+Subject: Re: general protection fault in perf_misc_flags
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.09.20 18:29, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> The early_pfn_valid() macro is defined by it is never used.
-> Remove it.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> ---
->  include/linux/mmzone.h | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 8379432f4f2f..38264363b0d4 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -1376,7 +1376,6 @@ static inline unsigned long next_present_section_nr(unsigned long section_nr)
->  #define pfn_to_nid(pfn)		(0)
->  #endif
->  
-> -#define early_pfn_valid(pfn)	pfn_valid(pfn)
->  void sparse_init(void);
->  #else
->  #define sparse_init()	do {} while (0)
-> @@ -1396,10 +1395,6 @@ struct mminit_pfnnid_cache {
->  	int last_nid;
->  };
->  
-> -#ifndef early_pfn_valid
-> -#define early_pfn_valid(pfn)	(1)
-> -#endif
-> -
->  /*
->   * If it is possible to have holes within a MAX_ORDER_NR_PAGES, then we
->   * need to check pfn validity within that MAX_ORDER_NR_PAGES block.
-> 
+On Wed, Sep 23, 2020 at 5:20 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Wed, Sep 23, 2020 at 12:34 PM Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > On Wed, Sep 23, 2020 at 11:24:48AM +0200, Dmitry Vyukov wrote:
+> > > 3. Run syzkaller locally with custom patches.
+> >
+> > Let's say I wanna build the kernel with clang-10 using your .config and
+> > run it in a vm locally. What are the steps in order to reproduce the
+> > same workload syzkaller runs in the guest on the GCE so that I can at
+> > least try get as close as possible to reproducing locally?
+>
+> It's a random fuzzing workload. You can get this workload by running
+> syzkaller locally:
+> https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md
+>
+> The exact clang compiler syzbot used is available here:
+> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
 
-Think the last user was removed with
+I've marked all other similar ones a dup of this one. Now you can see
+all manifestations on the dashboard:
+https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
 
-commit 73a6e474cb376921a311786652782155eac2fdf0
-Author: Baoquan He <bhe@redhat.com>
-Date:   Wed Jun 3 15:57:55 2020 -0700
-
-    mm: memmap_init: iterate over memblock regions rather that check
-each PFN
-
-    When called during boot the memmap_init_zone() function checks if
-each PFN
-    is valid and actually belongs to the node being initialized using
-    early_pfn_valid() and early_pfn_in_nid().
-
-Acked-by: David Hildenbrand <david@redhat.com>
-
--- 
-Thanks,
-
-David / dhildenb
-
+Another possible debugging vector on this:
+The location of crashes does not seem to be completely random and
+evenly spread across kernel code. I think there are many more static
+branches (mm, net), but we have 3 crashes in vdso and 9 in paravirt
+code + these 6 crashes in perf_misc_flags which looks a bit like an
+outlier (?). What's special about paravirt/vdso?..
