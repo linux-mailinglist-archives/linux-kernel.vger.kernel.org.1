@@ -2,83 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D120227819D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1CC82781B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727317AbgIYHcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:32:33 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:60111 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgIYHcd (ORCPT
+        id S1727204AbgIYHgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:36:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727067AbgIYHgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:32:33 -0400
-Received: from mail-qt1-f178.google.com ([209.85.160.178]) by
- mrelayeu.kundenserver.de (mreue108 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MQ5jC-1k8Z5T3k2q-00M6SL for <linux-kernel@vger.kernel.org>; Fri, 25 Sep
- 2020 09:32:32 +0200
-Received: by mail-qt1-f178.google.com with SMTP id b2so1134902qtp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:32:31 -0700 (PDT)
-X-Gm-Message-State: AOAM531cqrEfv3LJ9tCCjmq/mu/xUh5eMLbl6mU1ASqNRz3zZWcMheN2
-        ZnIKwmzL90xeUevRYVAdFdKtkmEFk27I5jfu930=
-X-Google-Smtp-Source: ABdhPJwNP8tIZnNGnYXs8Cd4GHdEedQDzc+eFbz3fC38Ps+5TWf/g0uQVaKnjQQbzGVFVCUulSt2khjeOUesmzfEHbI=
-X-Received: by 2002:aed:2414:: with SMTP id r20mr3159148qtc.304.1601019150592;
- Fri, 25 Sep 2020 00:32:30 -0700 (PDT)
+        Fri, 25 Sep 2020 03:36:24 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 494A0C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:36:24 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y15so2142325wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:36:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w7GmS3Y5ytourCWoZgml2IJFKj9PRdV0bPYFNYxby7k=;
+        b=zZqfiAq16vq3sKJeAwRbUXVHpPWnzA+Djn/TMdSHrdHohCoV/P3Ubf+GEFJN4n5k1t
+         ioUcGbDN5LpM5POmQ45vVPJavXDoRBFEKboUric4HKL15TnabdqJsgREoSLRpplic6lU
+         oJQGakyzqcGtnJ7pjsFzmegwBoUC9kDcZbUZ2qMbyL1ehm8ah9vKkqPMvQrjs9pXm7Nr
+         m/hpRXigavornwijxpKwA4ffbresnphVdohkB+fV7zlyQoJoQecZtpg5XHlrFDGmXZW5
+         5L+hSohlWcDuf75n6cA3gsnVir/zNdQWETFx0tFdehu+PSGdtVq1HEzy9dAWNQ18N6Vw
+         6UBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=w7GmS3Y5ytourCWoZgml2IJFKj9PRdV0bPYFNYxby7k=;
+        b=ODhtJSt1aHcKUAF85N7gF+t1jQ/nLqGHGxpxXe5mPGR2fbndSCdwvEFKCV4PidUPky
+         oKAgs4ovCHlS9fCQzuT6qQRhHriu5HpzB+Z5KL9BQgV8aUUQkHMCXiRifYjw8aUWPDWj
+         7a4vd6dWjizYwIvCLXAWVlLWBdwauQwj1eCh3Dv2h15m6PbxrMhtUr97MHcif7oRPrDA
+         ah0dQPTrSSCRBJK0DpU6JTJdb2gwuzM7rtZSTjRn1ePm+cxewMEIx9jk8t3XqPwjwLwP
+         hwIJEINwJXGxSO5wwYOzTotlKP3YLnXBR/YymrV+SCqIJd8DOAp//B97FSLC+b0fP34P
+         ireQ==
+X-Gm-Message-State: AOAM532H6YRTr2s/CQXQTNp86FalYosscLLlIPFeqxTnbVmusI0ljLi8
+        /YEdDNHFUhIXNAxQPtMvbGkGpuufROdaTVxT
+X-Google-Smtp-Source: ABdhPJxUJdAWpnXq7xzULMVdC7RA/6LjLAROS8vLhtRDFsuuhu+2MiTw5kgXF32CEOWvaFmZrgezaA==
+X-Received: by 2002:a1c:e1c2:: with SMTP id y185mr1683931wmg.182.1601019382729;
+        Fri, 25 Sep 2020 00:36:22 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:28ac:1772:9398:891a? ([2a01:e35:2ec0:82b0:28ac:1772:9398:891a])
+        by smtp.gmail.com with ESMTPSA id m18sm1829323wrx.58.2020.09.25.00.36.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 00:36:22 -0700 (PDT)
+Subject: Re: [PATCH 2/8] arm64: dts: meson: update leds node on Khadas
+ VIM3/VIM3L boards meson-khadas-vim3
+To:     Artem Lapkin <email2tema@gmail.com>
+Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+References: <20200925033017.1790973-1-art@khadas.com>
+ <20200925033017.1790973-3-art@khadas.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ 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
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <cc2f38e4-70c9-032c-0a76-da055e98b632@baylibre.com>
+Date:   Fri, 25 Sep 2020 09:36:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200925071831.8025-1-sherry.sun@nxp.com> <20200925071831.8025-5-sherry.sun@nxp.com>
-In-Reply-To: <20200925071831.8025-5-sherry.sun@nxp.com>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 25 Sep 2020 09:32:14 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2jJBxEDD+FXpHsFXRd9BF3aND2jTtswzP1L6_T4BiS9A@mail.gmail.com>
-Message-ID: <CAK8P3a2jJBxEDD+FXpHsFXRd9BF3aND2jTtswzP1L6_T4BiS9A@mail.gmail.com>
-Subject: Re: [PATCH 4/4] mic: vop: copy data to kernel space then write to io memory
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     Sudeep Dutt <sudeep.dutt@intel.com>,
-        Ashutosh Dixit <ashutosh.dixit@intel.com>,
-        gregkh <gregkh@linuxfoundation.org>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:sc3J4dRvnjpJofrQ61zSJdWsVoZk+PKecmW6VY/YQVlG3vTaUhi
- ockvc8qFB3caOcj28nc3yESHLYzi7ENVJ8vflGSkcWZjmO2JxCHjKX7wxP7etyU45arVfEU
- 93PL35CHtG2ajHCcZ5A3YFmQmvci6T/UK1IHmw+mrLed0A4m+6twpwMoW/m9oCRt6/JxUuh
- NIVB8Jx7VwCkgrZ37QpAw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5bwVC7u/PX4=:7lkb16BVOHOL2hBJBmiYLc
- vG6i2Mepde0GcMfr1RkW9CxUcgl7LxSDq+D7LMUC/k0bak1F/DHAJNTd8DsVgSJueWeOBwtYh
- JIvEw2mkYHndisWaMwofjwp3V73kb6ocapkh3OiGlHWTMZWsCNJA3+KY85S7rXnHAvnRCDVBA
- gc2LTxDiS/3AEqIKPAm7t9VUPUcjJcKcJgtG+2c92ojNcDg7T119E+0FmeK+zOcTJ60k0PRw+
- t6CHhVn8ji3aIY+/G1zrOC9nmr6MmGh6VoFWCd+cgQ+OLLhjeOq8sJXlTmw579pRDVzupIqj2
- 8ZpUDLrdmmuk0t8eqeZebadoS5aRYzYUsp71/Z/2I96Qj+vukmX0Tf12b9u3vi/fDTMcsbtSy
- 4KhX5utFCGpnunr1P1GSyVFOk4iWmaCABwm5jSFqk48JQM9ODEuFWN6kaCuW2D7goHul3SNwH
- VcfoN3Rnxwl4CsGSmZL+R/gqACIvkq/VGL/L+mZbGUrsPDBp2exzIomi/277mU9pFLN7V7zzj
- ooQaCzjDeKes8h86mthSruZhpT7hXTIwnQjDmN12FkiUZtgWzP0YmVrplbh6nrqBWGcUkxrC+
- TeQmwe0F8hdDK+ifl8SiISPLc8rD65/TCx5myGdpSBXClpP4zbR+ZG3qmIYrOUcMkeeAwCYHt
- +qxhRJD/hSdB7Jl+vYq7BwoWKbFMf7Y890+k2kFth6F/9nJMdL4MEpnwWsHSgHIogmPc5nzYC
- N0QewwyhPbipqKa7MOgnFpNQhK7as87asRzBnu/y+sAiEkLRzAxZTsn3/xR7RpPqQocXp4dCH
- PKUGrTBKns7XcM2f5sbVapT9A2HBGBYOrVTQ8oXy16jdEJ0Jfj+dred6f2/+46V6fHmIv1ANx
- rqUfRbgh4ijioWxvCin7S4xjchEgbOORwIZpNeARvbVoYMpAnJOEXVc/f1Mb0LdPdUvEswCtH
- 1Bc1kBRbcqPCC1wVlM6BOW5bANPwZ1RjghswUwTKCN+8Cm1zhLRYq
+In-Reply-To: <20200925033017.1790973-3-art@khadas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 9:22 AM Sherry Sun <sherry.sun@nxp.com> wrote:
->
+On 25/09/2020 05:30, Artem Lapkin wrote:
+> GPIO_ACTIVE_LOW replaced to GPIO_ACTIVE_HIGH for white and red leds
+> 
+> Signed-off-by: Artem Lapkin <art@khadas.com>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> index 94f75b44650..73783692e30 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> @@ -41,13 +41,13 @@ leds {
+>  
+>  		led-white {
+>  			label = "vim3:white:sys";
+> -			gpios = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_LOW>;
+> +			gpios = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_HIGH>;
+>  			linux,default-trigger = "heartbeat";
+>  		};
+>  
+>  		led-red {
+>  			label = "vim3:red";
+> -			gpios = <&gpio_expander 5 GPIO_ACTIVE_LOW>;
+> +			gpios = <&gpio_expander 5 GPIO_ACTIVE_HIGH>;
+>  		};
+>  	};
+>  
+> 
 
-> @@ -655,12 +656,15 @@ static int vop_virtio_copy_from_user(struct vop_vdev *vdev, void __user *ubuf,
->          * We are copying to IO below and should ideally use something
->          * like copy_from_user_toio(..) if it existed.
->          */
-> -       if (copy_from_user((void __force *)dbuf, ubuf, len)) {
-> +       temp = kmalloc(len, GFP_KERNEL);
-> +       if (copy_from_user(temp, ubuf, len))
+This has already been fixed and applied for 5.10:
+https://git.kernel.org/pub/scm/linux/kernel/git/khilman/linux-amlogic.git/commit/?h=v5.10/dt64&id=1f9d87d08e4a2299e86f8a1600aedf87ecd3b636
 
-This needs to have error handling for a kmalloc() failure. As the length
-appears to be user-provided, you might also want to limit the size of
-the allocation and instead do a loop with multiple copies if there is
-more data than fits into the allocation.
-
-       Arnd
+Neil
