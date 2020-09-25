@@ -2,112 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5922789F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:51:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 116162789FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgIYNvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:51:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57413 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727290AbgIYNvs (ORCPT
+        id S1728652AbgIYNwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:52:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727290AbgIYNwy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:51:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601041907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I3KFTIPLkmuPnc1IqMk/hPgvPxBrU+f5Vu4dTKm6s38=;
-        b=QzavQG/kseCihB4ydCY3yZ7WCprHrYp//1C4tPCOwke6liEZrjOmr29y+0AX13ICgUFjN5
-        435m1nfv5EtHLSEHpQXrj7ZQVgrp26ypR5hM8nQokJUD9Ex5d21X1vAvAlUSlAGk+vyCoN
-        aG9//fX4f1vFxKAg83nLTRbuy6TpQ8c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-208-07OgLh0dNQODWml9FFsw1A-1; Fri, 25 Sep 2020 09:51:45 -0400
-X-MC-Unique: 07OgLh0dNQODWml9FFsw1A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C41F1022E1D;
-        Fri, 25 Sep 2020 13:51:43 +0000 (UTC)
-Received: from krava (unknown [10.40.192.203])
-        by smtp.corp.redhat.com (Postfix) with SMTP id ACE2473695;
-        Fri, 25 Sep 2020 13:51:39 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 15:51:33 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        kernel test robot <rong.a.chen@intel.com>
-Subject: Re: [PATCH 3/5] perf tools: Copy metric events properly when expand
- cgroups
-Message-ID: <20200925135133.GC3273770@krava>
-References: <20200924124455.336326-1-namhyung@kernel.org>
- <20200924124455.336326-4-namhyung@kernel.org>
- <20200925132636.GB3273770@krava>
- <CAM9d7cgHBe6-SfCc3RTfLmrvaKr1hSprmJPd2BFnQtMUu_6TFw@mail.gmail.com>
+        Fri, 25 Sep 2020 09:52:54 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3262C0613CE;
+        Fri, 25 Sep 2020 06:52:53 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id z19so2896021lfr.4;
+        Fri, 25 Sep 2020 06:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lVuxNTWKiK7ZzebA+S325g8VsDZU2WkHa9Rw4/y6Yh4=;
+        b=pTIzvOQJ8QsKu3mgWbzEEJ3JvOe2YMiNzgtvwsVqRK+mV3ahvoDKYbpJT7+dM8teuu
+         7OlanG3JLRYT4r1cr8toZ9gME34gWzYaeiq2BuJMZJa1zg2It+40BhM0QLZEYQnZH15o
+         wi3oY4UJLTUOFH88dnU1eKZzuDmll8ulFuNG+F+5D7K9m/MYsLbVusZYDAy/CgyrxOY1
+         cgTBxpATSlDm+7r/r3nHGgaZmdyy+QVeOWfyZZhGiY/OB5Z2a1fnjqq1RRTpVMyf0Q4z
+         SWaSJO4N5YKvnIEZJRAlp5wImESRxxOWHP5M1RL/CLSluvNJ5DKubuXX7Uiz+CFpj9A4
+         2iHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lVuxNTWKiK7ZzebA+S325g8VsDZU2WkHa9Rw4/y6Yh4=;
+        b=eBSsgaZl+rUpf7kvYkdx2KJzSJVgiqcvHdm0rmq3Ichgiq1s2qe1Zk9vgeHMRsjJaX
+         B1lj4k0P33UpdsAtTzajdfLuvSkq+VLVVmxaAOVy0JT0avg9JoSKEYICta6xVUSWPIy4
+         0eJ3j4AEJYTmeDEXHpIXAI9nC8N3wH0r6NLedFisHGxkhZLvrUo7hZ+VtkwvVb2mx8+e
+         w6ivxgJXR/5gnOte8QeR3nMCmH6gybj0LFqlev2f6qRkqtyofl8ZF6bFRtrE+kEJ0GfS
+         QEWI6wotQA9kaZbModTACi0tqSoaZpeg05zkxab7EVc2+uzMs/iU+NbKBRC78ECIBLbJ
+         wz6w==
+X-Gm-Message-State: AOAM5320AzIZfGpB9P7LqbSqDn2eoQjN1a2ofsulfqCtIO+pgx9L87K2
+        9TDHZZJSv5NBZSo1zdElmAltPUaqsN4=
+X-Google-Smtp-Source: ABdhPJyDzk4d7CznX8Ks8Mm705Zqxc2zjQZQizPGHHFGmcHoZL/BsmhhRSbIGQIQRkv2RxGZsm0fZA==
+X-Received: by 2002:a05:6512:3e8:: with SMTP id n8mr1380475lfq.492.1601041971979;
+        Fri, 25 Sep 2020 06:52:51 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id n18sm2342159lfe.7.2020.09.25.06.52.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 06:52:51 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] dt-bindings: reserved-memory: Document "active"
+ property
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20200904130000.691933-1-thierry.reding@gmail.com>
+ <d3d69cb4-b0f9-40b0-b526-52fdc1a4b876@gmail.com>
+ <20200924140130.GA2527337@ulmo>
+ <ba16b795-34df-8f8c-3376-3d629cc30f8b@gmail.com>
+ <484b9e90-7395-6161-577c-4d3f3716997e@arm.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <4f35bf17-a354-6ffb-fd4a-063027d83ccc@gmail.com>
+Date:   Fri, 25 Sep 2020 16:52:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM9d7cgHBe6-SfCc3RTfLmrvaKr1hSprmJPd2BFnQtMUu_6TFw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <484b9e90-7395-6161-577c-4d3f3716997e@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:44:53PM +0900, Namhyung Kim wrote:
-> On Fri, Sep 25, 2020 at 10:26 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> >
-> > On Thu, Sep 24, 2020 at 09:44:53PM +0900, Namhyung Kim wrote:
-> >
-> > SNIP
-> >
-> > >
-> > > +     if (metric_events) {
-> > > +             orig_metric_events = *metric_events;
-> > > +             rblist__init(metric_events);
-> > > +     } else {
-> > > +             rblist__init(&orig_metric_events);
-> > > +     }
-> > > +
-> > >       for (;;) {
-> > >               p = strchr(str, ',');
-> > >               e = p ? p : eos;
-> > > @@ -255,6 +267,14 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> > >               cgroup__put(cgrp);
-> > >               nr_cgroups++;
-> > >
-> > > +             if (metric_events) {
-> > > +                     perf_stat__collect_metric_expr(tmp_list);
-> > > +                     if (metricgroup__copy_metric_events(tmp_list, cgrp,
-> > > +                                                         metric_events,
-> > > +                                                         &orig_metric_events) < 0)
-> > > +                             break;
-> > > +             }
-> >
-> > looks good, do you plan to actualy add support for record?
+25.09.2020 15:39, Robin Murphy пишет:
+...
+>> Yes, my understanding that this is what Robin suggested here:
+>>
+>> https://lore.kernel.org/linux-iommu/cb12808b-7316-19db-7413-b7f852a6f8ae@arm.com/
+>>
 > 
-> No actually, I still think perf record should use --all-cgroups.
+> Just to clarify, what I was talking about there is largely orthogonal to
+> the issue here. That was about systems with limited translation
+> resources letting translation be specifically opt-in by IOMMU-aware
+> drivers. It probably *would* happen to obviate the issue of disrupting
+> live DMA at boot time on these particular Tegra platforms, but we still
+> need something like Thierry's solution in general, since IOMMU drivers
+> may have no other way to determine whether devices are active at boot
+> and they have to take care to avoid breaking anything - e.g. SMMUv3 will
+> at a bare minimum need to set up *some* form of valid stream table entry
+> for the relevant device(s) right at the beginning where we first probe
+> and reset the SMMU itself, regardless of what happens with domains and
+> addresses later down the line.
+
+Yes, I only meant that yours suggestion also should be useful here.
+Anyways, thank you for the clarification :)
+
+I agree that the Thierry's proposal is good! But it needs some more
+thought yet because it's not very applicable to the current devices.
+
+>>> The primary goal here is to move towards using the DMA API rather than
+>>> the IOMMU API directly, so we don't really have the option of replacing
+>>> with an explicitly created domain. Unless we have code in the DMA/IOMMU
+>>> code that does this somehow.
+>>>
+>>> But I'm not sure what would be a good way to mark certain devices as
+>>> needing an identity domain by default. Do we still use the reserved-
+>>> memory node for that?
+>>
+>> The reserved-memory indeed shouldn't be needed for resolving the
+>> implicit IOMMU problem since we could mark certain devices within the
+>> kernel IOMMU driver.
+>>
+>> I haven't got around to trying to implement the implicit IOMMU support
+>> yet, but I suppose we could implement the def_domain_type() hook in the
+>> SMMU driver and then return IOMMU_DOMAIN_IDENTITY for the Display/VDE
+>> devices. Then the Display/VDE drivers will take over the identity domain
+>> and replace it with the explicit domain.
 > 
-> > my ack from last version stays
-> 
-> Thanks!  But I didn't see your ack for this patch set.
-> (I've only seen it for the perf inject patchset..)
+> FWIW I've already cooked up identity domain support for tegra-gart; I
+> was planning on tackling it for tegra-smmu as well for the next version
+> of my arm default domains series (which will be after the next -rc1 now
+> since I'm just about to take some long-overdue holiday).
 
-ah that was for the build id inject speed up.. too many
-patchsets flying around ;-)
-
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
+Very nice! Maybe we will have some more food for the discussion by the
+time you'll return. Have a good time!
