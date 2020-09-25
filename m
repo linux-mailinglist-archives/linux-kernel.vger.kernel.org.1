@@ -2,163 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E0E278B95
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:59:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B562278B74
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbgIYO6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:58:02 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:40875 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728974AbgIYO5j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:57:39 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6C28D580762;
-        Fri, 25 Sep 2020 10:57:25 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Fri, 25 Sep 2020 10:57:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tycho.pizza; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=tBfuOWmQyjKgArCfu4khNo2TUG7
-        Jq21FgCLcBIcnmPM=; b=OofIQppgkot+WhAGmGPKk5hZgjNlpN1ZlHwJkZhHUT7
-        KzQ9a4UKLvBtvt6IoY28ep/w/+2zSquvjNGRBmkSersamyUPK4mq6bGc213GAiGs
-        6eeA6co4G2jngyV6y9+g8szoci4GiiwwXywXX2pXq0HGjzmMhlmRWxQ85LK/DlDy
-        irsPbph5wkukocpS6KgwRtiTKpYoXd3eKdxCN9qwKIkQcRRXIio+zFQ2SjqkppTg
-        SNQPkGiduZegcLFBIHP5gJ/Op/FSZLeDDXJiOr9hfVgoldvcVMrRECA9TV6Wq7zO
-        8FAbll8jR/Sd8TZyP6RpX6gZdv/A69N8+b8xGORjw1A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=tBfuOW
-        mQyjKgArCfu4khNo2TUG7Jq21FgCLcBIcnmPM=; b=O2AlydY1ltQyDVNghirgyE
-        d0O51zrG8EUimzMadviff/NiqC0auMDDpsNj82EjtYhLCHLnvp4ul7cmJcKB4oic
-        8GyaGwvleCXSsdBrsydeqkvzbq2T7kD4/ki04+EPu9S3o67WbG3C4srDADzAbfLV
-        SaqsEs/JPQPxAl+TMoyLW00k6FlCJFMhhZSC9xeH5+0jlcUcku9NsJuXufMDdzoq
-        zdAtNnQpSuuO9acwwrKLSyqcC1vJ24Bg4hY3bq8wGRJsi/GvmWV6uSzubM/akmk0
-        XCtdH3b4xnADHi4BE95Cgt9gxaWKV/9k1KSsSHPJtWhz0FVMgsaL4L1E5bop9FyA
-        ==
-X-ME-Sender: <xms:UwVuXzT2_EVK-X89sY8bB0QEc5kSSYKtd5Y6-1axvefCEYWOlYSnYA>
-    <xme:UwVuX0yozWkEYrLjnjNMdRGhiQbd_yK2RWC7ovDaSPkcaNL6mvOJ2S11sWTDI9fTG
-    93ab4J4YjRsXoIH6_s>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvddtgdekudcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfihtghhohcu
-    tehnuggvrhhsvghnuceothihtghhohesthihtghhohdrphhiiiiirgeqnecuggftrfgrth
-    htvghrnhepgeekfeejgeektdejgfefudelkeeuteejgefhhfeugffffeelheegieefvdfg
-    tefhnecukfhppedukeegrdduieejrddvtddruddvjeenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehthigthhhosehthigthhhordhpihiiiigr
-X-ME-Proxy: <xmx:UwVuX41INdcWU29T0AMGhJaB3HJIGlhdpwpZMI-KwyruwPc6EXwYOw>
-    <xmx:UwVuXzD-ve1UN48X78PrtetY1smAql28prAO4tEFqGl7ymEh84gqxQ>
-    <xmx:UwVuX8geyBzOSq6I0Ijh-k5-hQ3NuL4eld4Pjyi37IJqiLjeZx6tRA>
-    <xmx:VQVuX1Bsar3AUsWBYtFGXXzyHoYMRcAzPxIbRAmmT678sqzqCjgIfI7lyA7qd_3J>
-Received: from cisco (184-167-020-127.res.spectrum.com [184.167.20.127])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B8B0B328005D;
-        Fri, 25 Sep 2020 10:57:18 -0400 (EDT)
-Date:   Fri, 25 Sep 2020 08:57:17 -0600
-From:   Tycho Andersen <tycho@tycho.pizza>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+        id S1729216AbgIYO6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:58:24 -0400
+Received: from mga07.intel.com ([134.134.136.100]:47916 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729114AbgIYO6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:58:14 -0400
+IronPort-SDR: G4GEr9bvc6t349AnG1us96uc09AB6Ix7j7ZXzj8WH6QyvIjSFsf8Do1LMZYGZMpdpBrWnPjDjo
+ Tx1+Wm/bbjUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="225704474"
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="225704474"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:58:13 -0700
+IronPort-SDR: URjgH0tF0D7TmKiW7s0Aj70ANXXmQDg/X2UeRBd2M/oHM/QpX6i8r0ifdPafqs1Tv4Binh7PPH
+ jxdvhJJ53usw==
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="512916953"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:58:13 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200925145717.GA284424@cisco>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <8435eff6-7fa9-d923-45e5-d8850e4c6d73@redhat.com>
- <20200925095029.GX2628@hirez.programming.kicks-ass.net>
- <20200925103114.GA7407@C02TD0UTHF1T.local>
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v13 0/8] Control-flow Enforcement: Indirect Branch Tracking
+Date:   Fri, 25 Sep 2020 07:57:56 -0700
+Message-Id: <20200925145804.5821-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925103114.GA7407@C02TD0UTHF1T.local>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:31:14AM +0100, Mark Rutland wrote:
-> Hi,
-> 
-> Sorry to come to this so late; I've been meaning to provide feedback on
-> this for a while but have been indisposed for a bit due to an injury.
-> 
-> On Fri, Sep 25, 2020 at 11:50:29AM +0200, Peter Zijlstra wrote:
-> > On Fri, Sep 25, 2020 at 11:00:30AM +0200, David Hildenbrand wrote:
-> > > On 25.09.20 09:41, Peter Zijlstra wrote:
-> > > > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
-> > > >> From: Mike Rapoport <rppt@linux.ibm.com>
-> > > >>
-> > > >> Removing a PAGE_SIZE page from the direct map every time such page is
-> > > >> allocated for a secret memory mapping will cause severe fragmentation of
-> > > >> the direct map. This fragmentation can be reduced by using PMD-size pages
-> > > >> as a pool for small pages for secret memory mappings.
-> > > >>
-> > > >> Add a gen_pool per secretmem inode and lazily populate this pool with
-> > > >> PMD-size pages.
-> > > > 
-> > > > What's the actual efficacy of this? Since the pmd is per inode, all I
-> > > > need is a lot of inodes and we're in business to destroy the directmap,
-> > > > no?
-> > > > 
-> > > > Afaict there's no privs needed to use this, all a process needs is to
-> > > > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
-> > > > page will utterly destroy the direct map.
-> > > > 
-> > > > I really don't like this, at all.
-> > > 
-> > > As I expressed earlier, I would prefer allowing allocation of secretmem
-> > > only from a previously defined CMA area. This would physically locally
-> > > limit the pain.
-> > 
-> > Given that this thing doesn't have a migrate hook, that seems like an
-> > eminently reasonable contraint. Because not only will it mess up the
-> > directmap, it will also destroy the ability of the page-allocator /
-> > compaction to re-form high order blocks by sprinkling holes throughout.
-> > 
-> > Also, this is all very close to XPFO, yet I don't see that mentioned
-> > anywhere.
-> 
-> Agreed. I think if we really need something like this, something between
-> XPFO and DEBUG_PAGEALLOC would be generally better, since:
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
 
-Perhaps we can brainstorm on this? XPFO has mostly been abandoned
-because there's no good/safe way to make it faster. There was work on
-eliminating TLB flushes, but that waters down the protection. When I
-was last thinking about it in anger, it just seemed like it was
-destined to be slow, especially on $large_num_cores machines, since
-you have to flush everyone else's map too.
+This is the second part of CET and enables Indirect Branch Tracking (IBT).
+It is built on top of the shadow stack series.
 
-I think the idea of "opt in to XPFO" is mostly attractive because then
-people only have to pay the slowness cost for memory they really care
-about. But if there's some way to make XPFO, or some alternative
-design, that may be better.
+Changes in v13:
+- Drop the patch that disables vsyscall emulation when CET is enabled, and
+  re-introduce an earlier patch that fixes shadow stack and IBT for the
+  emulation code.
+- Remove "INTEL" string from CET Kconfig options, update help text, and
+  change IBT default configuration to N.
 
-Tycho
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
+
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
+
+[2] Indirect Branch Tracking patches v12.
+
+    https://lkml.kernel.org/r/20200918192312.25978-1-yu-cheng.yu@intel.com/
+
+H.J. Lu (3):
+  x86/cet/ibt: Update arch_prctl functions for Indirect Branch Tracking
+  x86/vdso/32: Add ENDBR32 to __kernel_vsyscall entry point
+  x86/vdso: Insert endbr32/endbr64 to vDSO
+
+Yu-cheng Yu (5):
+  x86/cet/ibt: Add Kconfig option for user-mode Indirect Branch Tracking
+  x86/cet/ibt: User-mode Indirect Branch Tracking support
+  x86/cet/ibt: Handle signals for Indirect Branch Tracking
+  x86/cet/ibt: ELF header parsing for Indirect Branch Tracking
+  x86/vsyscall/64: Fixup Shadow Stack and Indirect Branch Tracking for
+    vsyscall emulation
+
+ arch/x86/Kconfig                              | 21 +++++++
+ arch/x86/entry/vdso/Makefile                  |  4 ++
+ arch/x86/entry/vdso/vdso32/system_call.S      |  3 +
+ arch/x86/entry/vsyscall/vsyscall_64.c         | 34 +++++++++++
+ arch/x86/entry/vsyscall/vsyscall_emu_64.S     |  9 +++
+ arch/x86/entry/vsyscall/vsyscall_trace.h      |  1 +
+ arch/x86/include/asm/cet.h                    |  3 +
+ arch/x86/include/asm/disabled-features.h      |  8 ++-
+ arch/x86/kernel/cet.c                         | 60 ++++++++++++++++++-
+ arch/x86/kernel/cet_prctl.c                   |  8 ++-
+ arch/x86/kernel/cpu/common.c                  | 17 ++++++
+ arch/x86/kernel/fpu/signal.c                  |  8 ++-
+ arch/x86/kernel/process_64.c                  |  8 +++
+ .../arch/x86/include/asm/disabled-features.h  |  8 ++-
+ 14 files changed, 184 insertions(+), 8 deletions(-)
+
+-- 
+2.21.0
+
