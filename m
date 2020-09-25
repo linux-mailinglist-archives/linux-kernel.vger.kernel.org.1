@@ -2,106 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A562785AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CB12785B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728161AbgIYLYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgIYLYC (ORCPT
+        id S1728215AbgIYL0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:26:01 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:45371 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbgIYLZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:24:02 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBACC0613CE;
-        Fri, 25 Sep 2020 04:24:01 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s12so3159682wrw.11;
-        Fri, 25 Sep 2020 04:24:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SFWcfeS5wxuI7eAUUDEBe0a+as5YNy5FGHPEInpElA8=;
-        b=YwusCQb4BNAs2qNa8S3uQAN1XOHgiKuS/bWyodzx+julOIpF8cMM+ULqoTh70csgmu
-         Tg7LuB4jVQLF7thah9OEj3nFW152KXkekpYFu35kCOSdxD+ycnC44LKNN3PIqZLfOl12
-         aW3JvhopCsNsu/CIHKE65qLtfjGq90wIacSzLzBjKAV0wAJC9AhL8sWSXQNlOJPH7J9j
-         lfRJJFWnMLq13GfmwodEF09YeJRX0pOsxDuzkN5zxlbQ1ebIFdWAhShHm6aJt+HZyykP
-         nJju+fVztQNgTUUzR07a17dNJyr8qTR0WIYQYGRBiNjxDWq7CL02l6imoZj4NOGBeysf
-         Wmjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SFWcfeS5wxuI7eAUUDEBe0a+as5YNy5FGHPEInpElA8=;
-        b=fzB1MNT8PVYxgxRD/8ZwS/Ol7j9Snu3BnMcwwwsCRJ0pVKhkXHPVusyVcXJkdBjddm
-         mGUsZ0ffzE6CNEgXEk/wd734BJjOM/JErLQZyPyR8HyPJaferNNBIwuKBu1YGJ1yoUKz
-         WjgCPzNr68j5tkgwh85ewgvaBWdHevOENTbWm+T9RQbGL+DE4p4tS/pz5R8IaT/pBQyW
-         If4Xe1e8/V2WWOKtta8SLaNmi4oIbfeX1eOR4DN3I+/yLmaxlBZhPy71JAcIz+vcMmcr
-         imJJAg/SfolqBx4oq7Tf6vZqBxU4ITn5gO67+sR1d906Gg3qqNpgdNTYQGte5vuCRwPC
-         5MbA==
-X-Gm-Message-State: AOAM531BhLih2FrnuvFJq04Xo7Xe6cApULKGMgLA9M2FmYHiTStPT/7q
-        ZpLgS147XWy5XVuXdT8zO3D3ByRYY6TgxHeNIm8=
-X-Google-Smtp-Source: ABdhPJzm9ewJSK7s1bAh20TjRk7fbdnLc3xpXegODgfo/yRdDK42Rrpg+9Cj7gBDCvmWeHhsbWumnOO3fGV9uaN0Ffk=
-X-Received: by 2002:adf:dcc7:: with SMTP id x7mr4036971wrm.203.1601033040375;
- Fri, 25 Sep 2020 04:24:00 -0700 (PDT)
+        Fri, 25 Sep 2020 07:25:58 -0400
+Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MgRYd-1kwCLc1vFX-00hvjC; Fri, 25 Sep 2020 13:25:55 +0200
+Received: by mail-qk1-f179.google.com with SMTP id c2so2336103qkf.10;
+        Fri, 25 Sep 2020 04:25:55 -0700 (PDT)
+X-Gm-Message-State: AOAM5334jI9lUYdfqrX8c/lihGQjzVpaGFwoxlem6D/vZ2S3FuglYzFR
+        7yrp8bmhO5GM3o/uSMd7SjmDENLgJlU8scQMdtg=
+X-Google-Smtp-Source: ABdhPJwWQvaM6Vz+GqP/QiHN8MWCzHaGRxzRTsvYnBX59Ke/YE3u+ANi9IHrX2XXPEGJOp/WEQFkuy3Z7sPF8uMEWds=
+X-Received: by 2002:a05:620a:15a7:: with SMTP id f7mr3352274qkk.3.1601033154195;
+ Fri, 25 Sep 2020 04:25:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200923090519.361-1-himadrispandya@gmail.com>
- <20200923090519.361-4-himadrispandya@gmail.com> <1600856557.26851.6.camel@suse.com>
- <CAOY-YVkHycXqem_Xr6nQLgKEunk3MNc7dBtZ=5Aym4Y06vs9xQ@mail.gmail.com>
- <1600870858.25088.1.camel@suse.com> <CAOY-YVkciMUgtS7USbBh_Uy_=fVWwMMDeHv=Ub_H3GaY0FKZyQ@mail.gmail.com>
- <7f9e20b2eab783303c4e5f5c3244366fa88a6567.camel@suse.com>
-In-Reply-To: <7f9e20b2eab783303c4e5f5c3244366fa88a6567.camel@suse.com>
-From:   Himadri Pandya <himadrispandya@gmail.com>
-Date:   Fri, 25 Sep 2020 16:53:48 +0530
-Message-ID: <CAOY-YVmBW52bXF95pTM3fNVUyRt=PNXZ5iGyq6mYsW2_iopnoQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] net: usb: rtl8150: use usb_control_msg_recv() and usb_control_msg_send()
-To:     Oliver Neukum <oneukum@suse.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        pankaj.laxminarayan.bharadiya@intel.com,
-        Kees Cook <keescook@chromium.org>, yuehaibing@huawei.com,
-        petkan@nucleusys.com, ogiannou@gmail.com,
-        USB list <linux-usb@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Greg KH <gregkh@linuxfoundation.org>
+References: <20200925072630.8157-1-sherry.sun@nxp.com>
+In-Reply-To: <20200925072630.8157-1-sherry.sun@nxp.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 25 Sep 2020 13:25:38 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3fog3jE_cPUTELDkFKoO2FbCJufQiDZhfL2FsZ5s5q3Q@mail.gmail.com>
+Message-ID: <CAK8P3a3fog3jE_cPUTELDkFKoO2FbCJufQiDZhfL2FsZ5s5q3Q@mail.gmail.com>
+Subject: Re: [PATCH 0/5] Add noncoherent platform support for vop driver
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     Sudeep Dutt <sudeep.dutt@intel.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>,
+        gregkh <gregkh@linuxfoundation.org>, wang.yi59@zte.com.cn,
+        huang.zijiang@zte.com.cn,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-ntb@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:A6CRrB5zADy/SfDsnagYcP4KiTRZHOWhi5jsw46kMTQLTD9LZoa
+ miVJV6TDFMsKOBdW+oSqjGdw5Bxin/aZnpnbwg5Q83hbZsKtU+kk8qpoW1SAB+m7u5okmdu
+ e3ppY2o/qiG+O1ee0d0fkDOdqBSwWHv2C7JQZI7mcQklaOZJHv1Xy+uaBixsFMP/cVDF06u
+ pXTeAFTOHiv1NejEzwVog==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qejb5m8lqS8=:mMH7eS+fWs0JkVVhR0qGRf
+ sT7Mc9xxLi0CnF3X8oh8qfaNL1FaZK64iZZLv51WHF1VuY0qPvStbjdSVqWP/GYZXrFgGq/OO
+ vr/zXUs6reodSYicJNU/W8ZbgCfUmhBgMfuN2C/7dV+CPIGp3HmwSo5YZ+g+CAlG7JU5SCiu9
+ nMwqXRM8yNJBSSsSyyMsPw7EmFhlQTAw+iBbhjwRxdjAcbwOvdY95hYYQjOR52NLNcalniSgx
+ BzLmxon65EhN5SCDXYiNlzgDZBEcnZ9MjeWFUXMxLHMILYh4U4P+qigQN6t6TwC9s1HArgDHL
+ 8InZQN3DAO7pP+7C7aCuNNw7ft5gEky3UDxaNWrVfhKQYK4KvXh06t0crSYut476uABgurZFW
+ URcafM0ylGHZBNrgJmj/8pEvrsM8Sa6E6PVNFmLHJ7Jkw/bHIPvCpqNfhgiS0K0X6oMvi5/67
+ P3LDkmTp+kuAXiPXGfkJxySVF9yCqVm+IMs/SYuou2E076bCDWkKbcnrlhihXWEx1SIamHHYM
+ A2b/oe4qi4VLhPEB33xsOKfi+p9qoRuO5ItqOAacox8q69pd73xOJsQm/PHe2U2skOBrPmtxc
+ bBkU5gUYkcB40LVAAPAdPUMCfoQkJA0v7942tf9AGvvAXcvgtrCaMjfVl2dpdueM2E/78GREB
+ vSQtQ9PYNSGH+t3aIn+arkiIBfeYKphsNxK/KmYq9rFOuJ5wSl084C5rCpTalyY2ievW513kT
+ Pvu74Ix3vurWYDPUtWmtG3M+XV3yMeSKfXBar0HtCDzWJbSM7hh1PqIsQEzg8RxQyOREqdIOU
+ xHQnR/YLzGNN9cIrCzMPnaYZqwsw3jbj0tNb6bWh1gmCassMEaQTjXNond3zrMELqCWBYbvEj
+ HxNKkIBtspuD/4mvMEpMsiaIB7Jx2PBP3D6CYPAxWPRBvOcLLu4rqpf/glYpFCgVImf57P0Oo
+ eVJQSoyqDNjfrfaLuFweTr4eoeznWCPA062nq8KOXQBCJ2h4x+LXX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 5:06 PM Oliver Neukum <oneukum@suse.com> wrote:
+On Fri, Sep 25, 2020 at 9:27 AM Sherry Sun <sherry.sun@nxp.com> wrote:
 >
-> Am Mittwoch, den 23.09.2020, 20:02 +0530 schrieb Himadri Pandya:
->
-> > I meant that it was stupid to change it without properly understanding
-> > the significance of GFP_NOIO in this context.
-> >
-> > So now, do we re-write the wrapper functions with flag passed as a parameter?
->
-> Hi,
->
-> I hope I set you in CC for a patch set doing exactly that.
->
+> Change the way of allocating vring to support noncoherent platform for vop
+> driver, and add some related dma changes to make sure noncoherent platform works
+> well.
 
-Yes.
+Could you describe why you are doing this? Are you using Intel MIC
+devices on Arm hosts, or trying to reuse the code for other add-on
+cards?
 
-> Do not let me or other maintainers discourage you from writing patches.
-> Look at it this way. Had you not written this patch, I would not have
-> looked into the matter. Patches are supposed to be reviewed.
-> If you want additional information, just ask. We do not want
-> people discouraged from writing substantial patches.
+Note that we have a couple of frameworks in the kernel that try to
+do some of the same things here, notably the NTB drivers and the
+PCI endpoint support, both of which are designed to be somewhat
+more generic than the MIC driver.
+
+Have you considered using that instead?
+
+         Arnd
+
+> Sherry Sun (5):
+>   misc: vop: change the way of allocating vring for noncoherent platform
+>   misc: vop: change the way of allocating used ring
+>   misc: vop: simply return the saved dma address instead of virt_to_phys
+>   misc: vop: set VIRTIO_F_ACCESS_PLATFORM for nocoherent platform
+>   misc: vop: mapping kernel memory to user space as noncached
 >
-
-Understood :).
-
-I'll send v2 after the update in API is merged.
-
-Thanks,
-Himadri
-
->         Regards
->                 Oliver
+>  drivers/misc/mic/bus/vop_bus.h    |   2 +
+>  drivers/misc/mic/host/mic_boot.c  |   8 ++
+>  drivers/misc/mic/vop/vop_main.c   |  51 +++++++++----
+>  drivers/misc/mic/vop/vop_vringh.c | 117 ++++++++++++++++++++----------
+>  4 files changed, 125 insertions(+), 53 deletions(-)
 >
+> --
+> 2.17.1
 >
