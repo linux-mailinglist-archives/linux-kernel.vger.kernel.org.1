@@ -2,278 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF02278A71
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949F6278A73
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729043AbgIYOJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
+        id S1729051AbgIYOJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728466AbgIYOJ1 (ORCPT
+        with ESMTP id S1728451AbgIYOJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:09:27 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36250C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:09:27 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id z1so973765uaa.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:09:27 -0700 (PDT)
+        Fri, 25 Sep 2020 10:09:41 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FED7C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:09:41 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 197so2677075pge.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:09:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W4ybNDBj3JkG7xwtC+pQm/GVM9Ki73UbHYGcb1DNgoE=;
-        b=VAE/JCw4Kc2YKn1yJ8L/Q9+LADI9BPVrPzMbIS0mOQDh1e+IitPGEnQLZfakaeotSX
-         fJpnesPgh6fudFH4hBFOTUzOvja6IHah1EG+sAlo5mDeRe30T7WE5Z+EmmrqyLBVjPT2
-         Y6MypsxJU5ecTFL5KTTnudzV3iHFKzBhkicIF7nAwXtRPFhwdOi9g9/Y/qXRPNUiOlZ/
-         S833Agy78MEYaybNf9Tk+M+dZyKRMHoBkxs25nGIJGGXWhSky07MsU9xI+7dnENL4I7l
-         bH2CDxH5hj1vhP5g8v/h/6Mm80YH+iZTF4wuYNk0h7j6DAwbRzp57D1NpHpN8KHRNu/G
-         TlSA==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0g8As1BPIW+mxp09I9Q/3/lncjQOHPnfpBrzGk+edKs=;
+        b=UWcWtzyKjvHUBFmX+yhHW/yzowiin/IE5KGdd9A9mJKNGdDMQPVpfZWbIJit7hr4Ii
+         LSsbh0EJRpzbmjqDq2U2BXsUs9RnW8JGWTXlB2mk3MRInsiepQ1z7o4/IDVMTiratAsU
+         weSnab8KXLNz/OXx2tBkWtU754BxNmim+LlybEjrGoMoBc8ct2yLIxjo407rNnWuFYX1
+         yWYvYx2Kar/duQcN3ybLb3t2rX7k/S180EdAJUaThcxxAKOJQ4Lcvd6wcCRcO/vv3FYG
+         SkVSSJ60+mhJ+Xxx8z80GM3bxdd2DPud8gb0iJsdclNPi99jA9WyLHuEBY4xRkQVoVDJ
+         pCdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W4ybNDBj3JkG7xwtC+pQm/GVM9Ki73UbHYGcb1DNgoE=;
-        b=RpzCW7SLiTW4PGoB60gmjMv4BXz+kKYt+gmDkZ5nBB4LqBn2ikg9oc0Hu7vTNxmT1F
-         kwVnrH4Hu7JwTv5bRNQ+H8S7JD45EURS5XuYvqBe5yYZiXEmtGeaqt9K635zOkYXv/Hu
-         ww2ibWqmvZTbatB2l0Q6WNeiK7Qpy6pbCLKG6SYXZ1m2kQtz99yN6174MQodna8BLCEh
-         R3iJxrM4TBVLn1oBtg14FJYjK0mICMNJ/OY396RT8kGKm1SbLihuTMCzzICXS87GkMts
-         605qXGuTp73OhiTSPJdwkewUwTM9pmau8qfMOyZu3nAGezScJ2S1vnEAABXUM7PYTb9N
-         rm/g==
-X-Gm-Message-State: AOAM532nnVBMHS7rhhPqEBx0QW9+RddUedCiK3pd6mgrv0d0mEeLEYJk
-        /LqSOi8TAyDaQ23ottcKqzfUpLWIrtdnN/PCUJY=
-X-Google-Smtp-Source: ABdhPJy0IxUr4anWia0Qm7ztGxjztU5H4LAKNIvZHwQZc9rZ+mSfXU53xRXTbzCYoiyClMt8qe//fl65KD/2aNPSkzU=
-X-Received: by 2002:ab0:6f91:: with SMTP id f17mr2536965uav.129.1601042966264;
- Fri, 25 Sep 2020 07:09:26 -0700 (PDT)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0g8As1BPIW+mxp09I9Q/3/lncjQOHPnfpBrzGk+edKs=;
+        b=bLO8VD5SXeDqtHPkMAvq7YlRzbOVhWu2fSL+kNa3xFTZk9TkUxMOlTBvexAH4hUy9B
+         cVUFrNi5wxvQLidfpb8oDN4wbD7SG9PYCo/UjBkYZRsCf9ReMQJ5cSQ57H2WhwSkM8DU
+         NKGUYLExvw33Pe9pNyk0nIHZ709e5gpQ/2FrNvr7Ab93jED+b2UiXbola4D4SeKA9toQ
+         ezJUI6GDYKTfnaSePt10VVIOA6H6gS4tP/fvCn+leJTckKHzqJLtrP7RFINNgi5yYeF1
+         oDaH/LOA9HHQ9b1fz1HIGbTCccD9OWMjh+ss3WDBDblAvAqbaqbGqdMNSYIv7w0rtYl8
+         ftoQ==
+X-Gm-Message-State: AOAM532dekNH8zMgtBh9sGa3PLru35eHXcirZfP3V1BM0qMe+iydrR0E
+        nuxrgr58Liz9JXarenug0Jbxdigzacn+anxr
+X-Google-Smtp-Source: ABdhPJwk68+UWFlYWcCpKkQ8+c+rYqCmlV6pLOaXJQRxXzB9Dulo4yoG8/DhVauFLxz7iyIvFrtHdw==
+X-Received: by 2002:a63:c74a:: with SMTP id v10mr207846pgg.240.1601042980847;
+        Fri, 25 Sep 2020 07:09:40 -0700 (PDT)
+Received: from localhost ([2001:e42:102:1532:160:16:113:140])
+        by smtp.gmail.com with ESMTPSA id a13sm2416696pgq.41.2020.09.25.07.09.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 07:09:40 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
+Date:   Fri, 25 Sep 2020 22:09:30 +0800
+To:     Alex Elder <elder@linaro.org>
+Cc:     devel@driverdev.osuosl.org, Alex Elder <elder@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Johan Hovold <johan@kernel.org>,
+        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [greybus-dev] [PATCH 1/3] [PATCH] staging: greybus: fix warnings
+ about endianness detected by sparse
+Message-ID: <20200925140930.z6yvqvm6crrq5k3a@Rk>
+References: <20200924102039.43895-1-coiby.xu@gmail.com>
+ <3fda9226-6f6f-6c5f-aa02-c9047a3d2dce@linaro.org>
 MIME-Version: 1.0
-References: <20200924135853.875294-1-hch@lst.de> <20200924135853.875294-9-hch@lst.de>
-In-Reply-To: <20200924135853.875294-9-hch@lst.de>
-From:   Matthew Auld <matthew.william.auld@gmail.com>
-Date:   Fri, 25 Sep 2020 15:08:59 +0100
-Message-ID: <CAM0jSHPaqpX2A5T4iybfLF+F=cBX05GW8u54cUe7AG0QKDJt2g@mail.gmail.com>
-Subject: Re: [Intel-gfx] [PATCH 08/11] drm/i915: use vmap in i915_gem_object_map
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-mm@kvack.org, Peter Zijlstra <peterz@infradead.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        x86@kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Minchan Kim <minchan@kernel.org>,
-        Matthew Auld <matthew.auld@intel.com>,
-        xen-devel@lists.xenproject.org,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Nitin Gupta <ngupta@vflare.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <3fda9226-6f6f-6c5f-aa02-c9047a3d2dce@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 at 14:59, Christoph Hellwig <hch@lst.de> wrote:
+On Thu, Sep 24, 2020 at 07:50:57AM -0500, Alex Elder wrote:
+>On 9/24/20 5:20 AM, Coiby Xu wrote:
+>> This patch fix the following warnings from sparse,
 >
-> i915_gem_object_map implements fairly low-level vmap functionality in
-> a driver.  Split it into two helpers, one for remapping kernel memory
-> which can use vmap, and one for I/O memory that uses vmap_pfn.
+>You need to address Greg's comment.
 >
-> The only practical difference is that alloc_vm_area prefeaults the
-> vmalloc area PTEs, which doesn't seem to be required here for the
-> kernel memory case (and could be added to vmap using a flag if actually
-> required).
+>But in general this looks good.  I have one comment below, which
+>you can address in v2.  If you (or others) disagree with it, I'm
+>fine with your code as-is.  Either way, you can add this:
 >
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/gpu/drm/i915/Kconfig              |   1 +
->  drivers/gpu/drm/i915/gem/i915_gem_pages.c | 126 ++++++++++------------
->  2 files changed, 59 insertions(+), 68 deletions(-)
->
-> diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
-> index 9afa5c4a6bf006..1e1cb245fca778 100644
-> --- a/drivers/gpu/drm/i915/Kconfig
-> +++ b/drivers/gpu/drm/i915/Kconfig
-> @@ -25,6 +25,7 @@ config DRM_I915
->         select CRC32
->         select SND_HDA_I915 if SND_HDA_CORE
->         select CEC_CORE if CEC_NOTIFIER
-> +       select VMAP_PFN
->         help
->           Choose this option if you have a system that has "Intel Graphics
->           Media Accelerator" or "HD Graphics" integrated graphics,
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_pages.c b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-> index 6550c0bc824ea2..b519417667eb4b 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-> @@ -232,34 +232,21 @@ int __i915_gem_object_put_pages(struct drm_i915_gem_object *obj)
->         return err;
->  }
->
-> -static inline pte_t iomap_pte(resource_size_t base,
-> -                             dma_addr_t offset,
-> -                             pgprot_t prot)
-> -{
-> -       return pte_mkspecial(pfn_pte((base + offset) >> PAGE_SHIFT, prot));
-> -}
-> -
->  /* The 'mapping' part of i915_gem_object_pin_map() below */
-> -static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
-> -                                enum i915_map_type type)
-> +static void *i915_gem_object_map_page(struct drm_i915_gem_object *obj,
-> +               enum i915_map_type type)
->  {
-> -       unsigned long n_pte = obj->base.size >> PAGE_SHIFT;
-> -       struct sg_table *sgt = obj->mm.pages;
-> -       pte_t *stack[32], **mem;
-> -       struct vm_struct *area;
-> +       unsigned long n_pages = obj->base.size >> PAGE_SHIFT, i;
-> +       struct page *stack[32], **pages = stack, *page;
-> +       struct sgt_iter iter;
->         pgprot_t pgprot;
-> +       void *vaddr;
->
-> -       if (!i915_gem_object_has_struct_page(obj) && type != I915_MAP_WC)
-> -               return NULL;
-> -
-> -       if (GEM_WARN_ON(type == I915_MAP_WC &&
-> -                       !static_cpu_has(X86_FEATURE_PAT)))
-> -               return NULL;
-> -
-> -       /* A single page can always be kmapped */
-> -       if (n_pte == 1 && type == I915_MAP_WB) {
-> -               struct page *page = sg_page(sgt->sgl);
-> -
-> +       switch (type) {
-> +       default:
-> +               MISSING_CASE(type);
-> +               fallthrough;    /* to use PAGE_KERNEL anyway */
-> +       case I915_MAP_WB:
->                 /*
->                  * On 32b, highmem using a finite set of indirect PTE (i.e.
->                  * vmap) to provide virtual mappings of the high pages.
-> @@ -277,30 +264,8 @@ static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
->                  * So if the page is beyond the 32b boundary, make an explicit
->                  * vmap.
->                  */
-> -               if (!PageHighMem(page))
-> -                       return page_address(page);
-> -       }
-> -
-> -       mem = stack;
-> -       if (n_pte > ARRAY_SIZE(stack)) {
-> -               /* Too big for stack -- allocate temporary array instead */
-> -               mem = kvmalloc_array(n_pte, sizeof(*mem), GFP_KERNEL);
-> -               if (!mem)
-> -                       return NULL;
-> -       }
-> -
-> -       area = alloc_vm_area(obj->base.size, mem);
-> -       if (!area) {
-> -               if (mem != stack)
-> -                       kvfree(mem);
-> -               return NULL;
-> -       }
-> -
-> -       switch (type) {
-> -       default:
-> -               MISSING_CASE(type);
-> -               fallthrough;    /* to use PAGE_KERNEL anyway */
-> -       case I915_MAP_WB:
-> +               if (n_pages == 1 && !PageHighMem(sg_page(obj->mm.pages->sgl)))
-> +                       return page_address(sg_page(obj->mm.pages->sgl));
->                 pgprot = PAGE_KERNEL;
->                 break;
->         case I915_MAP_WC:
-> @@ -308,30 +273,49 @@ static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
->                 break;
->         }
->
-> -       if (i915_gem_object_has_struct_page(obj)) {
-> -               struct sgt_iter iter;
-> -               struct page *page;
-> -               pte_t **ptes = mem;
-> +       if (n_pages > ARRAY_SIZE(stack)) {
-> +               /* Too big for stack -- allocate temporary array instead */
-> +               pages = kvmalloc_array(n_pages, sizeof(*pages), GFP_KERNEL);
-> +               if (!pages)
-> +                       return NULL;
-> +       }
->
-> -               for_each_sgt_page(page, iter, sgt)
-> -                       **ptes++ = mk_pte(page, pgprot);
-> -       } else {
-> -               resource_size_t iomap;
-> -               struct sgt_iter iter;
-> -               pte_t **ptes = mem;
-> -               dma_addr_t addr;
-> +       i = 0;
-> +       for_each_sgt_page(page, iter, obj->mm.pages)
-> +               pages[i++] = page;
-> +       vaddr = vmap(pages, n_pages, 0, pgprot);
-> +       if (pages != stack)
-> +               kvfree(pages);
-> +       return vaddr;
-> +}
->
-> -               iomap = obj->mm.region->iomap.base;
-> -               iomap -= obj->mm.region->region.start;
-> +static void *i915_gem_object_map_pfn(struct drm_i915_gem_object *obj,
-> +               enum i915_map_type type)
-> +{
-> +       resource_size_t iomap = obj->mm.region->iomap.base -
-> +               obj->mm.region->region.start;
-> +       unsigned long n_pfn = obj->base.size >> PAGE_SHIFT;
-> +       unsigned long stack[32], *pfns = stack, i;
-> +       struct sgt_iter iter;
-> +       dma_addr_t addr;
-> +       void *vaddr;
-> +
-> +       if (type != I915_MAP_WC)
-> +               return NULL;
->
-> -               for_each_sgt_daddr(addr, iter, sgt)
-> -                       **ptes++ = iomap_pte(iomap, addr, pgprot);
-> +       if (n_pfn > ARRAY_SIZE(stack)) {
-> +               /* Too big for stack -- allocate temporary array instead */
-> +               pfns = kvmalloc_array(n_pfn, sizeof(*pfns), GFP_KERNEL);
-> +               if (!pfns)
-> +                       return NULL;
->         }
->
-> -       if (mem != stack)
-> -               kvfree(mem);
-> -
-> -       return area->addr;
-> +       for_each_sgt_daddr(addr, iter, obj->mm.pages)
-> +               pfns[i++] = (iomap + addr) >> PAGE_SHIFT;
+>Reviewed-by: Alex Elder <elder@linaro.org>
 
-Missing the i = 0 fix from Dan?
+Thank you fore reviewing this patch!
 
-> +       vaddr = vmap_pfn(pfns, n_pfn, pgprot_writecombine(PAGE_KERNEL_IO));
-> +       if (pfns != stack)
-> +               kvfree(pfns);
-> +       return vaddr;
->  }
 >
->  /* get, pin, and map the pages of the object into kernel space */
-> @@ -383,7 +367,13 @@ void *i915_gem_object_pin_map(struct drm_i915_gem_object *obj,
->         }
+>> $ make C=2 drivers/staging/greybus/
+>> drivers/staging/greybus/audio_module.c:222:25: warning: incorrect type in assignment (different base types)
+>> drivers/staging/greybus/audio_module.c:222:25:    expected restricted __le16 [usertype] data_cport
+>> drivers/staging/greybus/audio_module.c:222:25:    got unsigned short [usertype] intf_cport_id
+>> drivers/staging/greybus/audio_topology.c:460:40: warning: restricted __le32 degrades to integer
+>> drivers/staging/greybus/audio_topology.c:691:41: warning: incorrect type in assignment (different base types)
 >
->         if (!ptr) {
-> -               ptr = i915_gem_object_map(obj, type);
-> +               if (GEM_WARN_ON(type == I915_MAP_WC &&
-> +                               !static_cpu_has(X86_FEATURE_PAT)))
-> +                       ptr = NULL;
-> +               else if (i915_gem_object_has_struct_page(obj))
-> +                       ptr = i915_gem_object_map_page(obj, type);
-> +               else
-> +                       ptr = i915_gem_object_map_pfn(obj, type);
->                 if (!ptr) {
->                         err = -ENOMEM;
->                         goto err_unpin;
-> --
-> 2.28.0
+>. . .
 >
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+>> diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+>> index 83b38ae8908c..56bf1a4f95ad 100644
+>> --- a/drivers/staging/greybus/audio_topology.c
+>> +++ b/drivers/staging/greybus/audio_topology.c
+>> @@ -466,7 +466,7 @@ static int gbcodec_mixer_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+>>  		goto exit;
+>>
+>>  	/* update ucontrol */
+>> -	if (gbvalue.value.integer_value[0] != val) {
+>> +	if (gbvalue.value.integer_value[0] != cpu_to_le32(val)) {
+>
+>It's equivalent, but I have a small preference to convert
+>the value from gbvalue into CPU byte order rather than
+>what you have here.
+
+Thank you for the suggestion! I'll use CPU byte order when submitting
+next version.
+>
+>>  		for (wi = 0; wi < wlist->num_widgets; wi++) {
+>>  			widget = wlist->widgets[wi];
+>>  			snd_soc_dapm_mixer_update_power(widget->dapm, kcontrol,
+>> @@ -689,7 +689,7 @@ static int gbaudio_tplg_create_kcontrol(struct gbaudio_module_info *gb,
+>>  				return -ENOMEM;
+>>  			ctldata->ctl_id = ctl->id;
+>>  			ctldata->data_cport = le16_to_cpu(ctl->data_cport);
+>> -			ctldata->access = ctl->access;
+>> +			ctldata->access = le32_to_cpu(ctl->access);
+>>  			ctldata->vcount = ctl->count_values;
+>>  			ctldata->info = &ctl->info;
+>>  			*kctl = (struct snd_kcontrol_new)
+>> @@ -744,10 +744,10 @@ static int gbcodec_enum_dapm_ctl_get(struct snd_kcontrol *kcontrol,
+>>  		return ret;
+>>  	}
+>>
+>> -	ucontrol->value.enumerated.item[0] = gbvalue.value.enumerated_item[0];
+>> +	ucontrol->value.enumerated.item[0] = le32_to_cpu(gbvalue.value.enumerated_item[0]);
+>>  	if (e->shift_l != e->shift_r)
+>>  		ucontrol->value.enumerated.item[1] =
+>> -			gbvalue.value.enumerated_item[1];
+>> +			le32_to_cpu(gbvalue.value.enumerated_item[1]);
+>>
+>>  	return 0;
+>>  }
+>> @@ -801,10 +801,10 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+>>  	mask = e->mask << e->shift_l;
+>>
+>>  	if (gbvalue.value.enumerated_item[0] !=
+>> -	    ucontrol->value.enumerated.item[0]) {
+>> +	    cpu_to_le32(ucontrol->value.enumerated.item[0])) {
+>>  		change = 1;
+>>  		gbvalue.value.enumerated_item[0] =
+>> -			ucontrol->value.enumerated.item[0];
+>> +			cpu_to_le32(ucontrol->value.enumerated.item[0]);
+>>  	}
+>>
+>>  	if (e->shift_l != e->shift_r) {
+>> @@ -813,10 +813,10 @@ static int gbcodec_enum_dapm_ctl_put(struct snd_kcontrol *kcontrol,
+>>  		val |= ucontrol->value.enumerated.item[1] << e->shift_r;
+>>  		mask |= e->mask << e->shift_r;
+>>  		if (gbvalue.value.enumerated_item[1] !=
+>> -		    ucontrol->value.enumerated.item[1]) {
+>> +		    cpu_to_le32(ucontrol->value.enumerated.item[1])) {
+>>  			change = 1;
+>>  			gbvalue.value.enumerated_item[1] =
+>> -				ucontrol->value.enumerated.item[1];
+>> +				cpu_to_le32(ucontrol->value.enumerated.item[1]);
+>>  		}
+>>  	}
+>>
+>> @@ -887,7 +887,7 @@ static int gbaudio_tplg_create_mixer_ctl(struct gbaudio_module_info *gb,
+>>  		return -ENOMEM;
+>>  	ctldata->ctl_id = ctl->id;
+>>  	ctldata->data_cport = le16_to_cpu(ctl->data_cport);
+>> -	ctldata->access = ctl->access;
+>> +	ctldata->access = le32_to_cpu(ctl->access);
+>>  	ctldata->vcount = ctl->count_values;
+>>  	ctldata->info = &ctl->info;
+>>  	*kctl = (struct snd_kcontrol_new)
+>>
+>
+
+--
+Best regards,
+Coiby
