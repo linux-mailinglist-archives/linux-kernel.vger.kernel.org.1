@@ -2,176 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B97F6278117
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6263B278107
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbgIYHGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:06:08 -0400
-Received: from alln-iport-3.cisco.com ([173.37.142.90]:41161 "EHLO
-        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgIYHGI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:06:08 -0400
-X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 03:06:06 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1317; q=dns/txt; s=iport;
-  t=1601017566; x=1602227166;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=BEM4EVmFnXsGR097QSMgvtxz1Ke7LGGJ29vEKdhNuNo=;
-  b=O3bwlX341v7VBCsUC1IX8vdaGvy080OgCTszoMgEj6qaXO0b0M5I38td
-   aD7vyLlqVf55RwZsY6GAg4S4liOODnL5pv7yKbiXblnhBw6NEZqOT82/J
-   bqJMbV0VINOPODk29quQ/G9jYPfLQ5RS0sgZWiNGzz/dGJR8oApNkwqzZ
-   0=;
-X-IPAS-Result: =?us-ascii?q?A0AlCgDWlG1f/51dJa1fHgEBCxIMQIMhUQeBSS8siAIDj?=
- =?us-ascii?q?XqYdoJTA1ULAQEBDQEBLQIEAQGESwKCLgIkOBMCAwEBAQMCAwEBAQEFAQEBA?=
- =?us-ascii?q?gEGBG2FXAyFcgEBAQQSKAYBATcBCwQCAQgRBAEBHxAyHQgCBAENBQgahVADL?=
- =?us-ascii?q?gGsagKBOYhhdIE0gwEBAQWFNhiCEAmBOIJyijwbggCBVIIfLj6EP4NIgi2mL?=
- =?us-ascii?q?5ENCoJnmnihD44uhFegBQIEAgQFAg4BAQWBayOBV3AVgyRQFwINjh+DcYpWd?=
- =?us-ascii?q?DcCBgoBAQMJfI8JAQE?=
-IronPort-PHdr: =?us-ascii?q?9a23=3AbueWvxU59AG3gsku1c5q4yAlMpvV8LGuZFwc94?=
- =?us-ascii?q?YnhrRSc6+q45XlOgnF6O5wiEPSBNyFufJZgvXbsubrXmlTqZqCsXVXdptKWl?=
- =?us-ascii?q?dFjMgNhAUvDYaDDlGzN//laSE2XaEgHF9o9n22Kw5ZTcD5YVCBomC78jMTXB?=
- =?us-ascii?q?74MFk9KuH8AIWHicOx2qi78IHSZAMdgj27bPtyIRy6oB+XuNMRhN5pK706zV?=
- =?us-ascii?q?3CpX4bdg=3D=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.77,301,1596499200"; 
-   d="scan'208";a="540312339"
-Received: from rcdn-core-6.cisco.com ([173.37.93.157])
-  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 25 Sep 2020 06:59:01 +0000
-Received: from XCH-RCD-001.cisco.com (xch-rcd-001.cisco.com [173.37.102.11])
-        by rcdn-core-6.cisco.com (8.15.2/8.15.2) with ESMTPS id 08P6x1dS026314
-        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
-        Fri, 25 Sep 2020 06:59:01 GMT
-Received: from xhs-aln-003.cisco.com (173.37.135.120) by XCH-RCD-001.cisco.com
- (173.37.102.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 25 Sep
- 2020 01:59:00 -0500
-Received: from xhs-aln-001.cisco.com (173.37.135.118) by xhs-aln-003.cisco.com
- (173.37.135.120) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 25 Sep
- 2020 01:59:00 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (173.37.151.57)
- by xhs-aln-001.cisco.com (173.37.135.118) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 25 Sep 2020 01:59:00 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PR+pGPMrjJXrx8iJe/vi6YPA9bu4uPqha+MjjjB/M0dm/fw42BzRGb4c1cyXnYC/OPkP+x+JEwJlhGZnsCOJNucMgNJ+kumaw2acyjwI21Dj7CQBg5chVO2gyfez/9vL/4wMhchyy1qA8eGzS4OJCCCfb0n0TPgMorPBgcPRBW8t+weqVDSsYAzO28j8HLNC1mcqFvwpIEDOfJVZS45gsusph5Tn9K4d0rOaXuHDICAGIJnyJfVptTvDCNntSnlfNjjlrVwEK4kL8vSdqdgjvEfooLcK3EvOlY+q0JBIKrNf3i7BgH0ob5QthHJwOLzRGxHOMZbPLicQ185IUXhzLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G2GSE2w+iBtas70vugsbANlIF/G+Kp0wOR78CMlrMyk=;
- b=UgavWNplrWiC3XEjft01QWem52aT/Floi36mfAn/WqyidhkiXqCtS4UguDRQbZVwFBjzPxZ9x3fk9gQuf8xY8Yc66DpXO5LX3z1T/0yMzD/62jYlhLSxrKseJYRzznynwzW8jWL+iZoguaqakqzBbIRQ8TDolU4KKbOOXldaGVxGJHSt+a1I2JU4YJEnLf7ulZYz4M4kPiD/zVMW6Dq2FB3csbma+7f5EVd+gqCn3+k67foYzfCIRHRajD5nW/BObpTHIgke+jItc+DOkyCeGcB1PvG+vO6S6pBp9SGgEV1md7gKeW2ahYSPA5gb963v44Flhsen4q42qUPqD4oVdw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
- s=selector2-cisco-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G2GSE2w+iBtas70vugsbANlIF/G+Kp0wOR78CMlrMyk=;
- b=fvPmUg5TLKgKgXBGpkZp2yPKpYbtOVdsZylMjLUmeJhTXYJhb1jH1/D5rAQYxJuGNbjVY/A+pxMh5R1cBLPPOix+/9fdvczfJudgf79PkQbBchnn7D1n+Sy6X9kX6sTusBhmFs6RkHeDaRD8FiMTac202s2j6JPTo5Qo7V5dQro=
-Received: from BY5PR11MB3863.namprd11.prod.outlook.com (2603:10b6:a03:18a::28)
- by BY5PR11MB3942.namprd11.prod.outlook.com (2603:10b6:a03:188::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Fri, 25 Sep
- 2020 06:58:59 +0000
-Received: from BY5PR11MB3863.namprd11.prod.outlook.com
- ([fe80::9d18:47d5:1a4f:3e08]) by BY5PR11MB3863.namprd11.prod.outlook.com
- ([fe80::9d18:47d5:1a4f:3e08%4]) with mapi id 15.20.3370.032; Fri, 25 Sep 2020
- 06:58:59 +0000
-From:   "Karan Tilak Kumar (kartilak)" <kartilak@cisco.com>
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        "Sesidhar Baddela (sebaddel)" <sebaddel@cisco.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] scsi: snic: Remove unnecessary condition to simplify the
- code
-Thread-Topic: [PATCH] scsi: snic: Remove unnecessary condition to simplify the
- code
-Thread-Index: AQHWkwJCBsIPwvv2WkCY7N+hS1iMFKl47HJQ
-Date:   Fri, 25 Sep 2020 06:58:59 +0000
-Message-ID: <BY5PR11MB38631F80136B45251549AC02C3360@BY5PR11MB3863.namprd11.prod.outlook.com>
-References: <20200925060754.156599-1-jingxiangfeng@huawei.com>
-In-Reply-To: <20200925060754.156599-1-jingxiangfeng@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=cisco.com;
-x-originating-ip: [2600:1700:ce00:1710:9c27:1581:1258:cc43]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 364a37c9-cea9-44b1-df0c-08d861207a83
-x-ms-traffictypediagnostic: BY5PR11MB3942:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR11MB39429E2A727F8723EF1B10DCC3360@BY5PR11MB3942.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4714;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: aROirSl7tJ3Rd4+/yf5HibVqkSixwHpkRzhsIyj4CMUnmBvnYHG8Mp0F+jX6lUmOJ9r2MPwfzYvOyCMcmPYUXSNRIQYZs2ZwhsxpTwktfucWM0i5og31YhtWwi6nPWkSdjwrCtkJp2hXjw0sQp8GnPOvibiU7tltJJLkf0zYJreG99f/mu2/ImORC3To4GRLoAHbhGQJR5hrlwen93YMk1GMXmn6etw7AaGL6kTniQumy2f1Y0hUChLYZGyNmewJ40iIFcSF5TVoc1EVj2SGVTTcYsWl1y3apnbjSzgW/L57kbpoIxNP6332lsJt5yqQB6c3DkTSsXrxCOhVuQWTNQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB3863.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(376002)(346002)(39860400002)(4326008)(110136005)(316002)(76116006)(54906003)(33656002)(86362001)(7696005)(66476007)(9686003)(83380400001)(64756008)(66446008)(55016002)(71200400001)(66556008)(66946007)(8676002)(478600001)(8936002)(5660300002)(2906002)(6506007)(53546011)(186003)(52536014);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ifNizuParxFHwazcv7+PxskAX9pxOcH42Vmv0x6o9qMnxt3d42f9MuJMHu7hgXh0v9zjkRDoa6lqPs1Kl0gG1gm7G2sAPIfcdtdMDUbcbNJPOklejCpZ9awYTiUMs6/72aLufWQ9lCcxBu0f4EJAHEjk2DuSN8XEKfgJZ8jB/oLrc4bhlhDMu8Xu5arpH07WaD9M0omRYE+YKn0CFKBVdLiY5Yyzt10Fg6N9sQwr60IABRxFXU+7oy9eTfCA9Ti8pBHYRil2dvW8vRA2BaStEKWFVx3NNM3rmZTEywNPE35BPWDUdfo7V5x53icFHKUuOFpIaHrXt5u+aJoN4Efit0Oo2w8PNoa11DU9yZ0rGInrfwLZZa33Xsv533f/fuDQDMZ92h9/3k7KWFYlzybR+1mH6L4Qk1973dWY2ReV7z1Hb0WMcCPa9nPzI0XMLtFrlqMeBuuKtDIDXl81yyrp4vjMb5pFl7Ox/L6egiJWniemzEetMcRFCA67bka5AGFYAGDOACB1KDVInuEbZK5wdjfd3ek6Ld5y2zPnTBkokWLyD3MsVcDIEb0Lprc2E68yPlGyvGyBC7MTTwgNpkarDFUZ3R0j6RkbW7nPz7bEUqZV+oPrCEs7Wi41DBUT1fbtwRX6BLVHcjv0FwhHP3q3cSueprWBlWifk1X+3V8UC+1DZ1DsXeW1KnGBYoB4iVUh2pd1SESLig9oWcK2sM5llw==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1727176AbgIYHBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727044AbgIYHBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:01:08 -0400
+Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8992221EB;
+        Fri, 25 Sep 2020 07:01:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601017268;
+        bh=aOUjjDgtVWkcQodJAgxOumrSwAyHIJQ5o0no1CvLCso=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=sXkdNhgR8BtkcwNFqSrytDMDRQf7rIwVzL9UuurNMUsy4vExrC6rA9+X2JMEcEHWk
+         vRz7Up4PJD2acJ8rdo2mrNnTUpFgWPR2gEopMxEOlsU3FjEfNOIZGZIwgNEIMOTG7k
+         CqGe2WeeaascagdB2X6giJFmqsioo0Sv1adSe1Us=
+Received: by mail-oi1-f173.google.com with SMTP id v20so1789737oiv.3;
+        Fri, 25 Sep 2020 00:01:07 -0700 (PDT)
+X-Gm-Message-State: AOAM530jDjqfP+e26scvhxZz3dKPNRzSWeBj5CoDIGgCSjted4fa6lWf
+        YPC1Xphz3d/YPzfnN81PdaK9PrDi4DOhU2E8r5Q=
+X-Google-Smtp-Source: ABdhPJzTIcPgRg3N/EEZgSGid4+8+hR0XtJxMO/6Gi0/0/erclCg7R46ka+Ii25iZa5FMsvpMy/oOuQlBzSbt2qEO4s=
+X-Received: by 2002:a54:4517:: with SMTP id l23mr780843oil.174.1601017267272;
+ Fri, 25 Sep 2020 00:01:07 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB3863.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 364a37c9-cea9-44b1-df0c-08d861207a83
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2020 06:58:59.2976
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wezYTsz3xzZvvke/Xnr8O4u9zAFbiud2+UyZ9LBMjZqI39zRiK3fpiGkg2d2+mUSwMDZQu+wJm8/7xi4syLX8A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3942
-X-OriginatorOrg: cisco.com
-X-Outbound-SMTP-Client: 173.37.102.11, xch-rcd-001.cisco.com
-X-Outbound-Node: rcdn-core-6.cisco.com
+References: <20200922094128.26245-1-ardb@kernel.org> <20200925055626.GC165011@linux.intel.com>
+In-Reply-To: <20200925055626.GC165011@linux.intel.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 25 Sep 2020 09:00:56 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
+Message-ID: <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
+Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks good to me.
+On Fri, 25 Sep 2020 at 07:56, Jarkko Sakkinen
+<jarkko.sakkinen@linux.intel.com> wrote:
+>
+> On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
+> > The TPM event log is provided to the OS by the firmware, by loading
+> > it into an area in memory and passing the physical address via a node
+> > in the device tree.
+> >
+> > Currently, we use __va() to access the memory via the kernel's linear
+> > map: however, it is not guaranteed that the linear map covers this
+> > particular address, as we may be running under HIGHMEM on a 32-bit
+> > architecture, or running firmware that uses a memory type for the
+> > event log that is omitted from the linear map (such as EfiReserved).
+>
+> Makes perfect sense to the level that I wonder if this should have a
+> fixes tag and/or needs to be backported to the stable kernels?
+>
 
-Signed off by: Karan Tilak Kumar <kartilak@cisco.com>
+AIUI, the code was written specifically for ppc64, which is a
+non-highmem, non-EFI architecture. However, when we start reusing this
+driver for ARM, this issue could pop up.
 
-Regards,
-Karan
+The code itself has been refactored a couple of times, so I think it
+will require different versions of the patch for different generations
+of stable kernels.
 
------Original Message-----
-From: Jing Xiangfeng <jingxiangfeng@huawei.com>=20
-Sent: Thursday, September 24, 2020 11:08 PM
-To: Karan Tilak Kumar (kartilak) <kartilak@cisco.com>; Sesidhar Baddela (se=
-baddel) <sebaddel@cisco.com>; jejb@linux.ibm.com; martin.petersen@oracle.co=
-m
-Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org; jingxiangfeng=
-@huawei.com
-Subject: [PATCH] scsi: snic: Remove unnecessary condition to simplify the c=
-ode
+So perhaps just add Cc: <stable@vger.kernel.org>, and wait and see how
+far back it applies cleanly?
 
-ret is always zero or an error in this code path. So the assignment to ret =
-is redundant, and the code jumping to a label is unneed.
-Let's remove them to simplify the code. No functional changes.
 
-Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
----
- drivers/scsi/snic/snic_scsi.c | 4 ----
- 1 file changed, 4 deletions(-)
+> > So instead, use memremap(), which will reuse the linear mapping if
+> > it is valid, or create another mapping otherwise.
+> >
+> > Cc: Peter Huewe <peterhuewe@gmx.de>
+> > Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  drivers/char/tpm/eventlog/of.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/char/tpm/eventlog/of.c b/drivers/char/tpm/eventlog/of.c
+> > index a9ce66d09a75..9178547589a3 100644
+> > --- a/drivers/char/tpm/eventlog/of.c
+> > +++ b/drivers/char/tpm/eventlog/of.c
+> > @@ -11,6 +11,7 @@
+> >   */
+> >
+> >  #include <linux/slab.h>
+> > +#include <linux/io.h>
+> >  #include <linux/of.h>
+> >  #include <linux/tpm_eventlog.h>
+> >
+> > @@ -25,6 +26,7 @@ int tpm_read_log_of(struct tpm_chip *chip)
+> >       struct tpm_bios_log *log;
+> >       u32 size;
+> >       u64 base;
+> > +     void *p;
+>
+> I'd just use 'ptr' for readability sake.
+>
 
-diff --git a/drivers/scsi/snic/snic_scsi.c b/drivers/scsi/snic/snic_scsi.c =
-index b3650c989ed4..0c2f31b8ea05 100644
---- a/drivers/scsi/snic/snic_scsi.c
-+++ b/drivers/scsi/snic/snic_scsi.c
-@@ -1387,10 +1387,6 @@ snic_issue_tm_req(struct snic *snic,
- 	}
-=20
- 	ret =3D snic_queue_itmf_req(snic, tmreq, sc, tmf, req_id);
--	if (ret)
--		goto tmreq_err;
--
--	ret =3D 0;
-=20
- tmreq_err:
- 	if (ret) {
---
-2.17.1
+If you prefer
 
+> >       log = &chip->log;
+> >       if (chip->dev.parent && chip->dev.parent->of_node)
+> > @@ -65,7 +67,11 @@ int tpm_read_log_of(struct tpm_chip *chip)
+> >               return -EIO;
+> >       }
+> >
+> > -     log->bios_event_log = kmemdup(__va(base), size, GFP_KERNEL);
+> > +     p = memremap(base, size, MEMREMAP_WB);
+> > +     if (!p)
+> > +             return -ENOMEM;
+> > +     log->bios_event_log = kmemdup(p, size, GFP_KERNEL);
+> > +     memunmap(p);
+> >       if (!log->bios_event_log)
+> >               return -ENOMEM;
+> >
+> > --
+> > 2.17.1
+> >
+>
+> This is a really great catch!
+>
+> I'm a bit late of my PR a bit because of SGX upstreaming madness
+> (sending v39 soon). If you can answer to my question above, I can do
+> that nitpick change to patch and get it to my v5.10 PR.
+>
+
+Yes, please.
+
+> PS. Just so that you know, once I've applied it, it will be available
+> here:
+>
+> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
+>
+> I'll include MAINTAINERS update to that PR.
+>
+> /Jarkko
