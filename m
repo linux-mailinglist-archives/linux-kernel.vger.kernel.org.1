@@ -2,17 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6732727871D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:24:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9FE278723
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:24:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728558AbgIYMYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:24:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55990 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728416AbgIYMX6 (ORCPT
+        id S1728514AbgIYMYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728451AbgIYMX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:23:58 -0400
-Date:   Fri, 25 Sep 2020 12:23:56 -0000
+        Fri, 25 Sep 2020 08:23:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A82C0613D4;
+        Fri, 25 Sep 2020 05:23:59 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 12:23:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1601036637;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6Q7/UDL5RjweAxfZfgdf5yt0ntIEvbyIwQ0RYipWXXE=;
-        b=psZjILGClxPc1Xpm9pU7ujGrq8Xfh6S2z/BAjKSo7i6wkyPUv/+OR7d07GilbCkXA06PAx
-        RkRWSZWNFqtSIRO2PDylx9uFcNqnbDRkl5N0zXgElc/ODLP6byG/fMAIWXs5pZOl0M8Tya
-        Duy8CRUoO5lLPOEmVnLJ/ydZhp8ilyHal6/OciyzMNur3L1YFljWdM9JEdXdpKoIDW8hNe
-        QAQdMWvb69ZnICjFa+00DXevIAwWpL4tog6SzNbDKWs6c7+Stc8N3Wq8FyShIXkPkVZZ+I
-        4e9ucpI8H226yxdpH1IpV/LML6GwRn450D5ch2YfQ++Jn9IjK6p4Y/c2nSLA/Q==
+        bh=emkQs3vKB7hw0BPiEKd92RTyPVBWsrF1ujI051y6DGU=;
+        b=exRLJRXFI2ybmaMM3aJZ8XLVZinR+FHzo59hQZpDgQieTZklsi8u7gL30jQ7uOIQS0+K5c
+        c1KlYVEl+d213OQLoemJWHP8z8x2wTIbkoWF74M64qklYnePUd5d0wjfXoyQqUAjcq62Ug
+        HOHf2SlTMgzMv23TK8/cQ3GzN5WTtKCErI+kjHLn/LsuzJpVIyV7FzAnBNmQhASXYtdzzL
+        FU11C+2u1JpwZPcNMkDKK3d3PNCcfG2HPd5MTeIrhP3UZc4Ziudser5GvUYn/oExgbNjWA
+        EDLFTpwDe+SSoS3iyXB4rio8OaNUoekcwp6r4oTjGAYMAXTj81HZsCd8nCylgw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1601036637;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,22 +36,23 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=6Q7/UDL5RjweAxfZfgdf5yt0ntIEvbyIwQ0RYipWXXE=;
-        b=t+J3zWQgIzIPU1SFZ8IH/Ty5ZdcdhUlOm8MMfQiMwpfbAby2sAWDWVClQaSBiyHSoARU69
-        ko3Qn8OxUEb8/tCQ==
-From:   "tip-bot2 for Kim Phillips" <tip-bot2@linutronix.de>
+        bh=emkQs3vKB7hw0BPiEKd92RTyPVBWsrF1ujI051y6DGU=;
+        b=FTXMxGGL/AweSnv1ANHCUutHHEnG00NLG70DU3YD6bgMXlcmSuW34ggE5LvIJb2K+ah2g/
+        1+/rTy4hQVYfhEDQ==
+From:   "tip-bot2 for Jarkko Sakkinen" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/amd/uncore: Allow F17h user threadmask and
- slicemask specification
-Cc:     Kim Phillips <kim.phillips@amd.com>,
+Subject: [tip: perf/core] kprobes: Use module_name() macro
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200921144330.6331-3-kim.phillips@amd.com>
-References: <20200921144330.6331-3-kim.phillips@amd.com>
+        Masami Hiramatsu <mhiramat@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200818050857.117998-1-jarkko.sakkinen@linux.intel.com>
+References: <20200818050857.117998-1-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <160103663627.7002.6693865457344797253.tip-bot2@tip-bot2>
+Message-ID: <160103663720.7002.11382280655100000628.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,87 +63,51 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     8170f386f19ca7120393c957d4bfbdc07f964ab6
-Gitweb:        https://git.kernel.org/tip/8170f386f19ca7120393c957d4bfbdc07f964ab6
-Author:        Kim Phillips <kim.phillips@amd.com>
-AuthorDate:    Mon, 21 Sep 2020 09:43:28 -05:00
+Commit-ID:     e9ffc8c1b83931599663c21ba9082bcafa51d333
+Gitweb:        https://git.kernel.org/tip/e9ffc8c1b83931599663c21ba9082bcafa51d333
+Author:        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+AuthorDate:    Mon, 21 Sep 2020 21:24:25 -04:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
 CommitterDate: Thu, 24 Sep 2020 15:55:49 +02:00
 
-perf/amd/uncore: Allow F17h user threadmask and slicemask specification
+kprobes: Use module_name() macro
 
-Continue to fully populate either one of threadmask or slicemask if the
-user doesn't.
+It is advised to use module_name() macro instead of dereferencing mod->name
+directly. This makes sense for consistencys sake and also it prevents a
+hard dependency to CONFIG_MODULES.
 
-Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200921144330.6331-3-kim.phillips@amd.com
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Link: https://lkml.kernel.org/r/20200818050857.117998-1-jarkko.sakkinen@linux.intel.com
 ---
- arch/x86/events/amd/uncore.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ kernel/trace/trace_kprobe.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/events/amd/uncore.c b/arch/x86/events/amd/uncore.c
-index 15c7982..1e35c93 100644
---- a/arch/x86/events/amd/uncore.c
-+++ b/arch/x86/events/amd/uncore.c
-@@ -181,13 +181,14 @@ static void amd_uncore_del(struct perf_event *event, int flags)
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index aefb606..19c00ee 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -106,9 +106,10 @@ static nokprobe_inline bool trace_kprobe_has_gone(struct trace_kprobe *tk)
+ static nokprobe_inline bool trace_kprobe_within_module(struct trace_kprobe *tk,
+ 						 struct module *mod)
+ {
+-	int len = strlen(mod->name);
++	int len = strlen(module_name(mod));
+ 	const char *name = trace_kprobe_symbol(tk);
+-	return strncmp(mod->name, name, len) == 0 && name[len] == ':';
++
++	return strncmp(module_name(mod), name, len) == 0 && name[len] == ':';
  }
  
- /*
-- * Return a full thread and slice mask until per-CPU is
-- * properly supported.
-+ * Return a full thread and slice mask unless user
-+ * has provided them
-  */
--static u64 l3_thread_slice_mask(void)
-+static u64 l3_thread_slice_mask(u64 config)
- {
- 	if (boot_cpu_data.x86 <= 0x18)
--		return AMD64_L3_SLICE_MASK | AMD64_L3_THREAD_MASK;
-+		return ((config & AMD64_L3_SLICE_MASK) ? : AMD64_L3_SLICE_MASK) |
-+		       ((config & AMD64_L3_THREAD_MASK) ? : AMD64_L3_THREAD_MASK);
- 
- 	return AMD64_L3_EN_ALL_SLICES | AMD64_L3_EN_ALL_CORES |
- 	       AMD64_L3_F19H_THREAD_MASK;
-@@ -220,7 +221,7 @@ static int amd_uncore_event_init(struct perf_event *event)
- 	 * For other events, the two fields do not affect the count.
- 	 */
- 	if (l3_mask && is_llc_event(event))
--		hwc->config |= l3_thread_slice_mask();
-+		hwc->config |= l3_thread_slice_mask(event->attr.config);
- 
- 	uncore = event_to_amd_uncore(event);
- 	if (!uncore)
-@@ -277,6 +278,8 @@ DEFINE_UNCORE_FORMAT_ATTR(event12,	event,		"config:0-7,32-35");
- DEFINE_UNCORE_FORMAT_ATTR(event14,	event,		"config:0-7,32-35,59-60"); /* F17h+ DF */
- DEFINE_UNCORE_FORMAT_ATTR(event8,	event,		"config:0-7");		   /* F17h+ L3 */
- DEFINE_UNCORE_FORMAT_ATTR(umask,	umask,		"config:8-15");
-+DEFINE_UNCORE_FORMAT_ATTR(slicemask,	slicemask,	"config:48-51");	   /* F17h L3 */
-+DEFINE_UNCORE_FORMAT_ATTR(threadmask8,	threadmask,	"config:56-63");	   /* F17h L3 */
- 
- static struct attribute *amd_uncore_df_format_attr[] = {
- 	&format_attr_event12.attr, /* event14 if F17h+ */
-@@ -287,6 +290,8 @@ static struct attribute *amd_uncore_df_format_attr[] = {
- static struct attribute *amd_uncore_l3_format_attr[] = {
- 	&format_attr_event12.attr, /* event8 if F17h+ */
- 	&format_attr_umask.attr,
-+	NULL, /* slicemask if F17h */
-+	NULL, /* threadmask8 if F17h */
- 	NULL,
- };
- 
-@@ -578,8 +583,12 @@ static int __init amd_uncore_init(void)
+ static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprobe *tk)
+@@ -688,7 +689,7 @@ static int trace_kprobe_module_callback(struct notifier_block *nb,
+ 			if (ret)
+ 				pr_warn("Failed to re-register probe %s on %s: %d\n",
+ 					trace_probe_name(&tk->tp),
+-					mod->name, ret);
++					module_name(mod), ret);
+ 		}
  	}
- 
- 	if (boot_cpu_has(X86_FEATURE_PERFCTR_LLC)) {
--		if (boot_cpu_data.x86 >= 0x17)
--			*l3_attr = &format_attr_event8.attr;
-+		if (boot_cpu_data.x86 >= 0x17) {
-+			*l3_attr++ = &format_attr_event8.attr;
-+			*l3_attr++ = &format_attr_umask.attr;
-+			*l3_attr++ = &format_attr_slicemask.attr;
-+			*l3_attr++ = &format_attr_threadmask8.attr;
-+		}
- 
- 		amd_uncore_llc = alloc_percpu(struct amd_uncore *);
- 		if (!amd_uncore_llc) {
+ 	mutex_unlock(&event_mutex);
