@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D47278E50
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D56278DA6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729350AbgIYQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:22:49 -0400
-Received: from m12-15.163.com ([220.181.12.15]:49220 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727751AbgIYQWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:22:48 -0400
-X-Greylist: delayed 917 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 12:22:47 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=TPYFb
-        PSp4V8vYQ4z0mS+XWUEYAjUGpB+g/xY+pc+6GE=; b=PVQYhqPDCUwiAEdCTv3nZ
-        UM+WBwcstQfT/KMzCBTVXr5/Obw6/vTsN3e/TxWPG8kZ6Rs2ZRplwls5wzjfy5Lw
-        +668EgpaU6EqLwJvcPjwdcOjjC5Cy1YB7H7L4iPdmgcPN7OO3OLqteOKxjsZ9xbN
-        6FwYolGypdX4NBacz+rx58=
-Received: from localhost (unknown [101.86.214.224])
-        by smtp11 (Coremail) with SMTP id D8CowAAH3peaFW5fMOwfDw--.9007S2;
-        Sat, 26 Sep 2020 00:06:51 +0800 (CST)
-Date:   Sat, 26 Sep 2020 00:06:50 +0800
-From:   Hui Su <sh_def@163.com>
-To:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH] mm: fix some comments in page_alloc.c and mempolicy.c
-Message-ID: <20200925160650.GA42847@rlk>
+        id S1729073AbgIYQI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728443AbgIYQI2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:08:28 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AA8C0613CE;
+        Fri, 25 Sep 2020 09:08:27 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0b3a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C49621EC0284;
+        Fri, 25 Sep 2020 18:08:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601050104;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=eqBo++0bLNLcrE7VXscLCEz7howWeoc6lAOi3PzLORk=;
+        b=CRXaAJ/lHqqbjXX2EAfkl4LJ5fcoibyKjIKgvZyIkMi5tDvJcPiYVH4BR4J8TIS5r++kSI
+        00rKHSFQJ9i1M1sBEDC3bErbdmdbKqII/es2WtrnoNvfYPOrqlRC4gfCkBiBGmH/cM8VKm
+        U8lDy27jIA6cZrQNNLxRAfDl0XzDYQ0=
+Date:   Fri, 25 Sep 2020 18:08:17 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     linux-mm@kvack.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        rafael@kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linuxarm@huawei.com, Dan Williams <dan.j.williams@intel.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Sean V Kelley <sean.v.kelley@linux.intel.com>,
+        linux-api@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>
+Subject: Re: [PATCH v10 2/6] x86: Support Generic Initiator only proximity
+ domains
+Message-ID: <20200925160817.GJ16872@zn.tnic>
+References: <20200907140307.571932-1-Jonathan.Cameron@huawei.com>
+ <20200907140307.571932-3-Jonathan.Cameron@huawei.com>
+ <20200923160609.GO28545@zn.tnic>
+ <20200925123226.0000636a@Huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-CM-TRANSID: D8CowAAH3peaFW5fMOwfDw--.9007S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZFWUurWrtF4fCw1rAF45GFg_yoW8tFWkpF
-        WkGa45A3WFvF1jk392ka1Dury0gw48Ja17KFn5Gwn5Z3W3tF4qkF9rWwnxZryYyF1Y9a4U
-        trZIvr4Yg3WDJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jSnmiUUUUU=
-X-Originating-IP: [101.86.214.224]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbitwSqX1aEFvbE+wABsK
+In-Reply-To: <20200925123226.0000636a@Huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1. the cpuset.c has been moved from kernel/cpuset.c to
-kernel/cgroup/cpuset.c long time ago, but the comment is stale,
-so we update it.
-2. get_page_from_freelist() may alloc many pages according to
-order, we may use pages for better.
+On Fri, Sep 25, 2020 at 12:32:26PM +0100, Jonathan Cameron wrote:
+> I don't think we can.  This is doing the same operation as
+> is done for memoryless cpu nodes in the init_cpu_to_node() call above
+> so it would make little sense from a code flow point of view, even if
+> it were possible.  However it isn't possible as far as I can see.
+> 
+> It is called after init_cpu_to_node() because...
+> * A GI node may also be a CPU node and / or a Memory Node, but we only
+>   have to do anything extra if it has neither of these.
+>   Easiest way to do that is use the same logic init_cpu_to_node() 
+>   does and rely on ordering wrt to the other two types of nodes that
+>   have already been handled.  We could have could just call it at the
+>   end of init_cpu_to_node() but I'd not be happy doing so without renaming
+>   that function and then we'd end up with a horrible name like
+>   init_cpu_to_node_and_gi() as they are rather different things.
+> 
+> It needs to happen before use is made of the node_data which is allocated
+> in init_gi_nodes() / init_memoryless_node() / alloc_node_data()
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- kernel/cgroup/cpuset.c | 2 +-
- mm/mempolicy.c         | 2 +-
- mm/page_alloc.c        | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+Let's put the gist of this requirement in the comment above
+init_gi_nodes() for future reference.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 642415b8c3c9..1d3011c1aab6 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1,5 +1,5 @@
- /*
-- *  kernel/cpuset.c
-+ *  kernel/cgroup/cpuset.c
-  *
-  *  Processor and Memory placement constraints for sets of tasks.
-  *
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index eddbe4e56c73..ac59b049b16c 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -2295,7 +2295,7 @@ int vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst)
-  * rebinds the mempolicy its copying by calling mpol_rebind_policy()
-  * with the mems_allowed returned by cpuset_mems_allowed().  This
-  * keeps mempolicies cpuset relative after its cpuset moves.  See
-- * further kernel/cpuset.c update_nodemask().
-+ * further kernel/cgroup/cpuset.c update_nodemask().
-  *
-  * current's mempolicy may be rebinded by the other task(the task that changes
-  * cpuset's mems), so we needn't do rebind work for current task.
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index fab5e97dc9ca..1e3c7493e1cb 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3709,7 +3709,7 @@ static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
- 
- /*
-  * get_page_from_freelist goes through the zonelist trying to allocate
-- * a page.
-+ * pages.
-  */
- static struct page *
- get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
-@@ -3723,7 +3723,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
- retry:
- 	/*
- 	 * Scan zonelist, looking for a zone with enough free.
--	 * See also __cpuset_node_allowed() comment in kernel/cpuset.c.
-+	 * See also __cpuset_node_allowed() comment in kernel/cgroup/cpuset.c.
- 	 */
- 	no_fallback = alloc_flags & ALLOC_NOFRAGMENT;
- 	z = ac->preferred_zoneref;
+...
+
+> It might be possible to allocate the zonelists for this special case later
+> in the boot flow, but it seems like we would be adding a lot of complexity
+> to avoid a single function call.
+
+Nah, probably not worth the hassle.
+
+> How about this?
+> 
+> +/*
+> + * A node may exist which has one or more Generic Initiators but no
+> + * CPUs and no memory.
+> + * When this function is called, any nodes containing either memory
+> + * and/or CPUs will already be online and there is no need to do
+> + * anything extra, even if they also contain one or more Generic
+> + * Initiators.
+> + */
+
+Yes, along with the above gist.
+
+Thx!
+
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
