@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03994277CB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3BF277CBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:17:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbgIYAQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 20:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbgIYAQT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:16:19 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9973EC0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:16:18 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id j2so685199eds.9
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7xIf+Wd02QlRb8dihS/DiLbBEmJ1zW6xAEVbZ5dS26E=;
-        b=F0LNJat78CdDpEaqZQuJ1tqYitJYzbyqPAVCgU18z7GFkfA1gi8abPuI4hVEqqNjrO
-         7qCIQUkxAI8zgQLp6PDo1dx9GDy0tpvikrn94cKA25Mw9Wd+CoYHKC1yZ9q7T16cQQTP
-         H/U9JPG7AON51/TYdL6xeqM6iEgi+a5lpR/BMpU/gSs626kra6z2IKHMZURbKhbDWw58
-         6hjmQKMFCy0B2LOAm2Bil0vYBlPkNu7nqxMWYn/VdN+36tDP8DNnEU9pi+Ogx8r10v1s
-         Lg4LyJNKT6TRNahT1JulTgdRE1uBn1YZNSvD0yr2jskQl+ue+H+AxIuqrs1ABIGv450a
-         0QMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7xIf+Wd02QlRb8dihS/DiLbBEmJ1zW6xAEVbZ5dS26E=;
-        b=lfwfYdSJ8LkVixFy95sIsSePVahSLwj5DkT7qts85kJ97VwdyvUZFDOJn2j0IidQ04
-         IVMH8LRM39wUULnRaxjlv1Gigk6Y1gzc0Ac787RaiqDKIU+YL6Uj0riYqid+HNXTJDvw
-         prd9iwf9/2UDBr7PggUBrTs+r3/OiXeD5dayZMohIENgu7FTk0tb/pdhglEbigg8FmeW
-         mB1UeNA9AAM3zdyvbK2WzsYkct9s2PdMIGDKfSbYI+Jw0p3VbmOxp0WSwjl6NOF9aNft
-         OqwzACCudM+s4TQxzbHyGy8nUJ1Ynj28oPU+EtFLAe0RZri35bjM8BpfyvinHAjJB4Ep
-         gcow==
-X-Gm-Message-State: AOAM533wFHhk8OFLyg9gl5BDtrYYZYBYb6XrF3h90buY7hp0PvgjLs2D
-        sjEj9hxGmou1Kr2GafVHH70eeu0R8LtsRGdpqUFiuA==
-X-Google-Smtp-Source: ABdhPJxKKrQDdHZi95Ynf871qKWysLRg5gjvkYXRdU159HiWVv61BCzjOFRKE4h3CAptn9KbJU134l/l0xSFubL6Qkw=
-X-Received: by 2002:a05:6402:176c:: with SMTP id da12mr1354480edb.386.1600992977013;
- Thu, 24 Sep 2020 17:16:17 -0700 (PDT)
+        id S1726799AbgIYARO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 20:17:14 -0400
+Received: from mga06.intel.com ([134.134.136.31]:58852 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726631AbgIYARH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 20:17:07 -0400
+IronPort-SDR: pPGwPLlIYbkNAv2KU1093WAWSWr7XnwEGWFoLYimeDK90BUFh7cZlg57UykKe7s666BYHMSZKH
+ kZhZJmLS2Eig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="222979884"
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="222979884"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 17:17:07 -0700
+IronPort-SDR: LTTCmJlt6Cj5rR7JUyFckU4Luzk5z0LZJynV203mZP124MzczaoZsM1WpZ7u3YvdVbN6bPh/n6
+ VVrIjUrxcWUg==
+X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
+   d="scan'208";a="455582952"
+Received: from mmahler-mobl1.amr.corp.intel.com ([10.254.96.152])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 17:17:07 -0700
+Date:   Thu, 24 Sep 2020 17:17:06 -0700 (PDT)
+From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
+X-X-Sender: mjmartin@mmahler-mobl1.amr.corp.intel.com
+To:     Geliang Tang <geliangtang@gmail.com>
+cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        mptcp@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [MPTCP][PATCH net-next 01/16] mptcp: rename addr_signal and the
+ related functions
+In-Reply-To: <bfecdd638bb74a02de1c3f1c84239911e304fcc3.1600853093.git.geliangtang@gmail.com>
+Message-ID: <alpine.OSX.2.23.453.2009241716300.62831@mmahler-mobl1.amr.corp.intel.com>
+References: <cover.1600853093.git.geliangtang@gmail.com> <bfecdd638bb74a02de1c3f1c84239911e304fcc3.1600853093.git.geliangtang@gmail.com>
+User-Agent: Alpine 2.23 (OSX 453 2020-06-18)
 MIME-Version: 1.0
-References: <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
- <202009241658.A062D6AE@keescook>
-In-Reply-To: <202009241658.A062D6AE@keescook>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 25 Sep 2020 02:15:50 +0200
-Message-ID: <CAG48ez2R1fF2kAUc7vOOFgaE482jA94Lx+0oWiy6M5JeM2HtvA@mail.gmail.com>
-Subject: Re: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
-To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 2:01 AM Kees Cook <keescook@chromium.org> wrote:
-> 2) seccomp needs to handle "multiplexed" tables like x86_x32 (distros
->    haven't removed CONFIG_X86_X32 widely yet, so it is a reality that
->    it must be dealt with), which means seccomp's idea of the arch
->    "number" can't be the same as the AUDIT_ARCH.
+On Thu, 24 Sep 2020, Geliang Tang wrote:
 
-Sure, distros ship it; but basically nobody uses it, it doesn't have
-to be fast. As long as we don't *break* it, everything's fine. And if
-we ignore the existence of X32 in the fastpath, that'll just mean that
-syscalls with the X32 marker bit always hit the seccomp slowpath
-(because it'll look like the syscall number is out-of-bounds ) - no
-problem.
+> This patch renamed addr_signal and the related functions with the explicit
+> word "add".
+>
+> Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
+> Suggested-by: Paolo Abeni <pabeni@redhat.com>
+> Signed-off-by: Geliang Tang <geliangtang@gmail.com>
+> ---
+> net/mptcp/options.c  | 14 +++++++-------
+> net/mptcp/pm.c       | 12 ++++++------
+> net/mptcp/protocol.h | 10 +++++-----
+> 3 files changed, 18 insertions(+), 18 deletions(-)
+
+Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+
+--
+Mat Martineau
+Intel
