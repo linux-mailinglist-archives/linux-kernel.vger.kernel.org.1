@@ -2,77 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ADE3278EEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C8D278EF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729491AbgIYQnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
+        id S1729102AbgIYQpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728212AbgIYQnb (ORCPT
+        with ESMTP id S1727495AbgIYQpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:43:31 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F70C0613CE;
-        Fri, 25 Sep 2020 09:43:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=bkS+waRwerACov79/m/rcNqbMgeSjcgfK2jH3Ym5UJE=; b=ORB843nsDvTeeyde3VZBJBU8c0
-        fowWSFjNYhEAqeFwfhfzfqHiR8Pr8pfFyLdkUaaKNZj79bxsIxDC/k+qGg+VnIiCdWEV2iVbGiNo8
-        qcu9gEV+FpcT8MZ3BNoUdJijDw+BeNz7ljZ6olsP+AxFjmxYFGcRLjWaPxfItw+WO4vjHI9tUi9jR
-        U6Lgo1CHdWQfsTrbUDDWjlI+s+eOmp+cUcRXO37boMTt4mPWQGO+N2IFfGB/Ri4dJfpdebDpHsBfP
-        wXKq1RODOTEiF5lIow66SosN17zrCm0oIPbCk1hNZh7Oh4U+RZFRtfyEJ2KDH29jUASK2Gi2Vz6aM
-        EjbubAig==;
-Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLqoi-0005LP-D0; Fri, 25 Sep 2020 16:43:28 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-mmc@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] mmc: host: fix depends for MMC_MESON_GX w/ COMPILE_TEST
-Date:   Fri, 25 Sep 2020 09:43:23 -0700
-Message-Id: <20200925164323.29843-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Fri, 25 Sep 2020 12:45:17 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B9FC0613CE;
+        Fri, 25 Sep 2020 09:45:17 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id y14so3052259pgf.12;
+        Fri, 25 Sep 2020 09:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ruCEryVFyAOn3Txfm384BRQUI0WS36tIHI9atsfBz/4=;
+        b=NOC83klTMa/B6Y6Kt6iQ/A5oCUqhE3U6VAb96tggPynZTwJM2eMUu5p4Z7lpPKAoEa
+         HzX4Z0ruwL7YNnauYGynp7rwc1cCrHiDOqjn42iminWT0UhtajgdEfmkP8J+SI0AeSph
+         qaT0GLEuXQCEbNgXXjDTFP9od6z43+v9ZGE4sAnqYH3s4f6oCM2r3MN9Fa7EtKQlt8B1
+         M998jx/BOxkqJWyOC3L/YpvcDbjvefT8RBs9BOX3k4Q05JGq8q5UuVuJYHOSLrU8KPzk
+         sM24X41y9k7PyGoK7GYsmRN6VW/nq2wmRIK0jH6rAukl+nU1Sb17uLYTWq41pwywp4DE
+         wncw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ruCEryVFyAOn3Txfm384BRQUI0WS36tIHI9atsfBz/4=;
+        b=PYdis7zCOfQ6FmHAkX5od4wz7+FSoMEyIPmr2oxjGu7QB13qJbP+oMYVT7VmCpGx2c
+         vAmc5Bj9m1T+8R/OwX1OaYeoM6DP5RBUZEcztBFQkwROpVi6YahQ62mBIYWbOG+rRhoM
+         99uvmZNDVOY1dQs/mx0XDAJNq7seF0yhqO0rcSapzdl5Sxii1caduYvGv3agNRcP2ht1
+         kUmqPtS27T4F6H1aLcoprrh1e1q397+2VJ0V/x9H2PXDiWLrgwpHanutXN+3Uu07L6+C
+         xVEkuz6J/npWq1rEKT+kmgKTSzqkXjaizMFfGkfNtTYMnMqYlz3ZdYVacVeHexkXFW7K
+         Nshg==
+X-Gm-Message-State: AOAM532aGAXN/VZIs+PM9UjDOsQumYCCGUyjwie5LUdHvqIa8rCrtfN+
+        iF94jeosqea3SdelSVHtSGTLBhhuS2EHIV3AT/M=
+X-Google-Smtp-Source: ABdhPJyLs9CmSuxL1C3wljdQpenEpIvO5wqWImFZHDW9uWc8lmXcNuFA4qC9zIGeu17/Yl8ddcf0atBt5fqjZbZZZpM=
+X-Received: by 2002:aa7:9491:0:b029:142:2501:396b with SMTP id
+ z17-20020aa794910000b02901422501396bmr151396pfk.48.1601052316926; Fri, 25 Sep
+ 2020 09:45:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1600951211.git.yifeifz2@illinois.edu> <c14518ba563d4c6bb75b9fac63b69cd4c82f9dcc.1600951211.git.yifeifz2@illinois.edu>
+ <202009241601.FFC0CF68@keescook> <CABqSeARb7GNU9+sVgGzgqqOmpQNpxq1JsMrZJvS2EC05AyfAVw@mail.gmail.com>
+In-Reply-To: <CABqSeARb7GNU9+sVgGzgqqOmpQNpxq1JsMrZJvS2EC05AyfAVw@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Fri, 25 Sep 2020 11:45:05 -0500
+Message-ID: <CABqSeASM9B77QrWRbqRF19N9-m-bm779-7a3qEDa8NumjBsorw@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build errors for meson-gx-mmc.c when CONFIG_COMMON_CLK is not
-set/enabled. This can happen when COMPILE_TEST is set/enabled.
+On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> > Why do the prepare here instead of during attach? (And note that it
+> > should not be written to fail.)
+>
+> Right.
 
-ERROR: modpost: "clk_divider_ops" [drivers/mmc/host/meson-gx-mmc.ko] undefined!
-ERROR: modpost: "devm_clk_register" [drivers/mmc/host/meson-gx-mmc.ko] undefined!
-ERROR: modpost: "clk_mux_ops" [drivers/mmc/host/meson-gx-mmc.ko] undefined!
-ERROR: modpost: "__clk_get_name" [drivers/mmc/host/meson-gx-mmc.ko] undefined!
+During attach a spinlock (current->sighand->siglock) is held. Do we
+really want to put the emulator in the "atomic section"?
 
-Fixes: 54d8454436a2 ("mmc: host: Enable compile testing of multiple drivers")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Kevin Hilman <khilman@baylibre.com>
-Cc: linux-amlogic@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-mmc@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/mmc/host/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
-
---- linux-next-20200925.orig/drivers/mmc/host/Kconfig
-+++ linux-next-20200925/drivers/mmc/host/Kconfig
-@@ -425,6 +425,7 @@ config MMC_SDHCI_IPROC
- config MMC_MESON_GX
- 	tristate "Amlogic S905/GX*/AXG SD/MMC Host Controller support"
- 	depends on ARCH_MESON|| COMPILE_TEST
-+	depends on COMMON_CLK
- 	help
- 	  This selects support for the Amlogic SD/MMC Host Controller
- 	  found on the S905/GX*/AXG family of SoCs.  This controller is
+YiFei Zhu
