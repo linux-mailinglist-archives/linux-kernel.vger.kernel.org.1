@@ -2,124 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDE92793B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BED2793B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728212AbgIYVqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:46:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37627 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726844AbgIYVqH (ORCPT
+        id S1728831AbgIYVrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727183AbgIYVra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:46:07 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601070365;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=moqh830CyEwENyrPdyv2FayOLM5NqaAIaF9WKpCRqUs=;
-        b=DIdhkUDugT3ftmvSexHMNivu51WKXohlm5An8SjJ5lCFV9nr4+vRxeZ4o3ymlm6kC1vqj4
-        PpZ/Cx1AvWtdEj0T0VDuI6yCa+EuUXBwDYBjhmG8W8aUUXX8d6gkqGNSSjRKS46A5m14iH
-        yhkMXD0WKyG0xTOY6KzAHYKsrapc9y0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-cPReNKP3Mba9aP0ge0dZvQ-1; Fri, 25 Sep 2020 17:46:03 -0400
-X-MC-Unique: cPReNKP3Mba9aP0ge0dZvQ-1
-Received: by mail-wm1-f70.google.com with SMTP id x81so138828wmg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:46:03 -0700 (PDT)
+        Fri, 25 Sep 2020 17:47:30 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCDFC0613CE;
+        Fri, 25 Sep 2020 14:47:30 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id j11so657446ejk.0;
+        Fri, 25 Sep 2020 14:47:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=LNXPPtSg3XU+Uc6GEQWdTQC/nAKU3Cd17KbO8jJq32o=;
+        b=dyvxyyLUZsWO6fdd2JH0Q/fQmVb1Edha+4eI8lIYmoOjleAGTR+mVWKbNKzjLp2jN0
+         2uPofKfkNE14Es3wsayFuXbBTLmYpo3rFgwgA0kwUxZXZsCi0Eiy0z7EYYeYgQMbyLLG
+         jO/iotzZaMII33twByY+yP3Mm0cOXhAMQ3k2WEG8C3YD5fJ3lijdIiSm3N4gjQCj9Dxh
+         +AbxQWhf+L5VaRvIcZ/DuFfyMPX4OBW8MX1fQo5hmSkgnI4CN2NL8T2+McEOl9qojdgn
+         TVtPDgCFfMrmgc0eVbhcEoIQynQ3EMZ5SHiVu4i/G0M4DvoDmMARHibofmMl25OKC6xB
+         O2GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=moqh830CyEwENyrPdyv2FayOLM5NqaAIaF9WKpCRqUs=;
-        b=rx7iPj1ciRhjdmQ1fkzOnSOkZ2dEUsi+zmJYlIxvB6u7+w3BLashrT/7pNeKUydXg4
-         5oJUuZc78XtL/74qzmOlZSVkJWsp6of/YHiXPt9XEnDGfZUnIW9YZtezAB6yYAx+0mnK
-         cYkKqPR2DkMwq+V4zSEhH1FUUTFpiS5ojdmJRYkSFVXVdCCHx7Jl3RdhssU0ZcEq9lfl
-         Dx1J+80Ev1VBhEDUP3uokQvmjCe4e2cx8J1N868SI0d4Dt0mquziWcLRgRiYdoelo2UO
-         ihIi9GAsd8abjFHDr8r1ka3u+bm01StzLv1rB3FBK9ZCyBn/Wxa1Nlimt5gZIrRB6+tO
-         RdKw==
-X-Gm-Message-State: AOAM533FPBe4jb1Y12xybpxHRwsVsB/oRrcZ9Vc+h6wZgOWEYtzuIePP
-        kDNDjGAj653GC2XkiSAjed3e4mldQqCgzExv6zLGLw4oyrMeKWj0RQFqvENrNay7Zw7RdzY69Ac
-        HhHyu/SSauvzMlekjpbvZ6tPz
-X-Received: by 2002:adf:ce01:: with SMTP id p1mr6646895wrn.61.1601070362566;
-        Fri, 25 Sep 2020 14:46:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzU/MqyltqArragcC9L5onAvVzXN/xJmb+Ltos1CJZ+Nu0lAEEFXtBinwL7HWfEFeIb6QEVA==
-X-Received: by 2002:adf:ce01:: with SMTP id p1mr6646881wrn.61.1601070362339;
-        Fri, 25 Sep 2020 14:46:02 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id g8sm353985wmd.12.2020.09.25.14.46.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 14:46:01 -0700 (PDT)
-Subject: Re: [PATCH v2 0/7] KVM: x86: Tracepoint improvements and fixes
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
-References: <20200923201349.16097-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c169b328-c14b-d427-d8c9-02eb8278ec75@redhat.com>
-Date:   Fri, 25 Sep 2020 23:46:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=LNXPPtSg3XU+Uc6GEQWdTQC/nAKU3Cd17KbO8jJq32o=;
+        b=QP9lIkcDyrzUEIQxa3HZJ+jNvxEekn3cynef9CwzHeEc8+xmro++qHhCzvL9/lA5Su
+         lRrJT53ahA1EUnoZlhImXo/zD6J9UgLe7KLAm1n2VVLp+6Y3Azpn7GIT037hytcgkp+A
+         y2Ux5AyYMth3x7xyEj6m0n4LzDJCghRQgEUzjGUEO5AIBosXDiImSyp0J/BiulEh6pQK
+         F/B504IJREe61gk/iRuqJumKUshAKZdSUikRFLZrciutCmrJJiowhc7u2NlANzqqStMP
+         DNzQgZIIX2CfAo7OTgahmaw7N2OiPMdxbEkKQAxnqNJ/k1mWyP4LiYVpOMoyDb9LRytx
+         0UPA==
+X-Gm-Message-State: AOAM533shySm1Cz854eQIviDUR7p8BlXzdLZUH/wnfNw9A38ORkteEvU
+        kA8x23EA9cighvq2LlTDxEd1V4ZBFNKS2Zp/8WV7gahys/k=
+X-Google-Smtp-Source: ABdhPJxKiXd4lq3hiQ8qvxppTfVjCOebvf4SBggMcVu7nbw0kMS5ZaA3KaUQkemsta3ZLvn7wiLEWvbpmfypA+VmI0g=
+X-Received: by 2002:a17:906:7b87:: with SMTP id s7mr881895ejo.328.1601070448883;
+ Fri, 25 Sep 2020 14:47:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200923201349.16097-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 25 Sep 2020 23:47:18 +0200
+Message-ID: <CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com>
+Subject: RGMII timing calibration (on 12nm Amlogic SoCs) - integration into dwmac-meson8b
+To:     netdev@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux@armlinux.org.uk, peppe.cavallaro@st.com,
+        alexandre.torgue@st.com, joabreu@synopsys.com, davem@davemloft.net,
+        kuba@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/20 22:13, Sean Christopherson wrote:
-> As noted by Vitaly, these changes break trace-cmd[*].  I hereby pinky
-> swear that, if this series is merged, I will send patches to update
-> trace-cmd.
-> 
-> [*] git://git.kernel.org/pub/scm/utils/trace-cmd/trace-cmd.git
+Hello,
 
-Actually I think we should just retire the kvm plugin of libtraceevent.
- I do use the plugin myself, but really only because it's enabled by
-default.  There's very little that the plugin does better than the
-tracepoints and could not be fixed in Linux.
+Amlogic's 12nm SoC generation requires some RGMII timing calibration
+within the Ethernet controller glue registers.
+This calibration is only needed for the RGMII modes, not for the
+(internal) RMII PHY.
+With "incorrect" calibration settings Ethernet speeds up to 100Mbit/s
+will still work fine, but no data is flowing on 1Gbit/s connections
+(similar to when RX or TX delay settings are incorrect).
 
-The role in particular is printed better by the plugin, some fields are
-missing in KVM_MMU_PAGE_PRINTK().  The only real functionality would be
-the disassembling of emulated instructions.
+A high-level description of this calibration (the full code can be
+seen in [0] and [1]):
+- there are sixteen possible calibration values: [0..15]
+- switch the Ethernet PHY to loopback mode
+- for each of the sixteen possible calibration values repeat the
+following steps five times:
+-- write the value to the calibration register
+-- construct an Ethernet loopback test frame with protocol 0x0808
+("Frame Relay ARP")
+-- add 256 bytes of arbitrary data
+-- use the MAC address of the controller as source and destination
+-- send out this data packet
+-- receive this data packet
+-- compare the contents and remember if the data is valid or corrupted
+- disable loopback mode on the Ethernet PHY
+- find the best calibration value by getting the center point of the
+"longest streak"
+- write this value to the calibration register
 
-Paolo
+My question is: how do I integrate this into the dwmac-meson8b (stmmac
+based) driver?
+I already found some interesting and relevant bits:
+- stmmac_selftests.c uses phy_loopback() and also constructs data
+which is sent-out in loopback mode
+- there's a serdes_powerup callback in struct plat_stmmacenet_data
+which is called after register_netdev()
+- I'm not sure if there's any other Ethernet driver doing some similar
+calibration (and therefore a way to avoid some code-duplication)
 
-> v2:
->   - Fixed some goofs in the changelogs.
->   - Rebased to kvm/queue, commit e1ba1a15af73 ("KVM: SVM: Enable INVPCID
->     feature on AMD").
-> 
-> Sean Christopherson (7):
->   KVM: x86: Add RIP to the kvm_entry, i.e. VM-Enter, tracepoint
->   KVM: x86: Read guest RIP from within the kvm_nested_vmexit tracepoint
->   KVM: VMX: Add a helper to test for a valid error code given an intr
->     info
->   KVM: x86: Add intr/vectoring info and error code to kvm_exit
->     tracepoint
->   KVM: x86: Add macro wrapper for defining kvm_exit tracepoint
->   KVM: x86: Use common definition for kvm_nested_vmexit tracepoint
->   KVM: nVMX: Read EXIT_QUAL and INTR_INFO only when needed for nested
->     exit
-> 
->  arch/x86/include/asm/kvm_host.h |   7 ++-
->  arch/x86/kvm/svm/svm.c          |  16 ++---
->  arch/x86/kvm/trace.h            | 107 +++++++++++++-------------------
->  arch/x86/kvm/vmx/nested.c       |  14 ++---
->  arch/x86/kvm/vmx/vmcs.h         |   7 +++
->  arch/x86/kvm/vmx/vmx.c          |  18 +++++-
->  arch/x86/kvm/x86.c              |   2 +-
->  7 files changed, 86 insertions(+), 85 deletions(-)
-> 
 
-Nice.  Queued, thanks.
+Any recommendations/suggestions/ideas/hints are welcome!
+Thank you and best regards,
+Martin
 
-Paolo
 
+[0] https://github.com/khadas/u-boot/blob/4752efbb90b7d048a81760c67f8c826f14baf41c/drivers/net/designware.c#L707
+[1] https://github.com/khadas/linux/blob/khadas-vims-4.9.y/drivers/net/ethernet/stmicro/stmmac/dwmac-meson.c#L466
