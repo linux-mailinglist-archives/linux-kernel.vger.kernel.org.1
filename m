@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A232781C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:39:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729792781CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727451AbgIYHjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
+        id S1727377AbgIYHkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727183AbgIYHjZ (ORCPT
+        with ESMTP id S1727135AbgIYHkb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:39:25 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C92C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:39:24 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g4so2445902wrs.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:39:24 -0700 (PDT)
+        Fri, 25 Sep 2020 03:40:31 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404AFC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:40:31 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e16so2474884wrm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:40:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:organization:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=YQr95Np1uzy0DGbQpIK9dPDSJg4vtBHqeTzHdKdJizM=;
-        b=qASRip7d/lMzgt6xJbw5o1Cwke2eYquvHpgeA8VP9iyLFZj8TvAzKCES5YJlGEMbBK
-         GCF28FCaNv1oy1pfzwY/CSokrvXeWw/RQgmm/yfhRG8OF8yUhWMc1aSLYoScpVwNT08J
-         j/cMrITlpsf6UwmV+UtRneEjt+7FxY2kqQUkCDAmG5y8rHVzZXUFE3H93mpvXG8briQd
-         SfFg1cODxsBhxAp+is0g5LAv0tpvSymNOfcMyMfqeBmj2MeyXtEK7l9CLtvygjgMnxHf
-         pp66bpGkfk6zFGQ2jfu53VcXK51KxWShQdkekAjk5RvL7JqS1s5tfmxVJPqptyeBOMpy
-         llXQ==
+        bh=6lPeOd/Ub1nG1i/cR1TdJmMYcRgIgs526aqjuBgL0fs=;
+        b=jzbjCI1PKanXRjM4YXO2U+lcqZBZWuA+V0nnM+omyYv1GPGi9zqv688+XfX3IUxiWO
+         9MucJ323nmpgs47hvkFBsF+QqYyoIhr9Y9PbJcTFqHpt7JouK0wIFd6+xTARoNaeKMEv
+         5IUaJgXi+7RJj8CF5tLAwUuyUSYBOeYfXkFGCmHcKwbO1cdGKs3MdqKaDSZoCFTBovt5
+         0NWe/3t+kdokKi+K+CAYA5eZ6FPlJ4W1d+Jh6yDfHzxU3ySixnL1ag9VkGXmET7Yw5uF
+         ynvZT6qxFlM62cH1huRe0onOMnN3chkSt97GuPGgq2yKzZhsRHihIZCVx/loq/exunZ8
+         Jcjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :organization:message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=YQr95Np1uzy0DGbQpIK9dPDSJg4vtBHqeTzHdKdJizM=;
-        b=FlLBFk1QuQVLN2nQVtu6r9PD6jvbuXJw8b3xq0/Aj5OpPprnrC83OyR9GqIih7cWna
-         2QRTeAVg1iZFW/WDTzXZNj/ESeHGRU9TNKe4cihAwPkrJRNRPKV3vHvnWJyly2nFuElO
-         7LjtSHeD6Gn8R9XFFUFgQeTTMrR/mHMA4FL3myvOU2K01QRAH+vBRxktR40Q/r6Obd+8
-         wMT3F8tEb1LCvO4doXjEOZ8jAK4vi1L/dAhio6BtRzJq992f5xOW2UyEEJyR1eMmsZx3
-         chuVx0VtI9NoejZCEZh7imbh/RtzLnIC2xaiGCBcNf4lWpvPwzjbCA/A9Er+d2pqPZqP
-         vReQ==
-X-Gm-Message-State: AOAM532bOpL4x3oiuH2rJN+QmgluVSUqaRYggnNc0slFmRXInZhPmpqN
-        apzrXoABw+rNEiWR1MRTRYkl6w==
-X-Google-Smtp-Source: ABdhPJzqvvbNeKT6MV2UmoitDPjX6y8AjBZXjnmDQGzD1rEGTZEGck5ICP2lHhAjlqqhaDU6Z0LJyw==
-X-Received: by 2002:adf:f190:: with SMTP id h16mr3011195wro.202.1601019563268;
-        Fri, 25 Sep 2020 00:39:23 -0700 (PDT)
+        bh=6lPeOd/Ub1nG1i/cR1TdJmMYcRgIgs526aqjuBgL0fs=;
+        b=ByWW8TMxonc+zWyXl2QBW26SKLImANrrDXnwqFuJJC0c2pceYzCX/wT9u6oBlTz2W/
+         uvY/TCzbz2jRNM9TR+dfst11am4zHz7O62Yw4TDplYASwzfRghWvkyts8FTfd00HKyj2
+         X3OR3KdHFKbXvLSh0ofyK2CAALrc+jRDCFhQ48QIYqpxt+rxOzl6ClUh5T3BlLRwJwRL
+         wfaaEjL0KT21YSZzxkOUb/T3/vlsFZXQB1DQnJbjeXM2sx0+6QyMjKs4Szs4mtql1hac
+         NeEefGORJcWjBj0XGnfUijs4HkZBS/VdWvUy3pXTudWUIMLNWg+42H5VV+4uueJBb8Kk
+         bXOQ==
+X-Gm-Message-State: AOAM532J2VxwT3MkU9chP2p00aCCWAMHGQUuFvRu4C673eSa628bPG8p
+        qUtn226UOTPhVvNtghyxXLSdpQ==
+X-Google-Smtp-Source: ABdhPJyRo+9HG3GB9orSVmv1XpiTErhNcdHt9eiu9XSe4JbAYg1KR+rFdTZXP7MMPqkRPxSOexXI8Q==
+X-Received: by 2002:a5d:4744:: with SMTP id o4mr2964358wrs.130.1601019629764;
+        Fri, 25 Sep 2020 00:40:29 -0700 (PDT)
 Received: from ?IPv6:2a01:e35:2ec0:82b0:28ac:1772:9398:891a? ([2a01:e35:2ec0:82b0:28ac:1772:9398:891a])
-        by smtp.gmail.com with ESMTPSA id u2sm2064209wre.7.2020.09.25.00.39.21
+        by smtp.gmail.com with ESMTPSA id d6sm1886974wrq.67.2020.09.25.00.40.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 00:39:22 -0700 (PDT)
-Subject: Re: [PATCH 3/8] arm64: dts: meson: update leds node on Khadas
- VIM3/VIM3L board meson-khadas-vim3
-To:     Artem Lapkin <email2tema@gmail.com>
-Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
+        Fri, 25 Sep 2020 00:40:29 -0700 (PDT)
+Subject: Re: [PATCH 4/8] arm64: dts: meson: remove fixed memory size for
+ Khadas VIM3/VIM3L meson-khadas-vim3
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Artem Lapkin <email2tema@gmail.com>, robh+dt@kernel.org
+Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         art@khadas.com, nick@khadas.com, gouwa@khadas.com
 References: <20200925033017.1790973-1-art@khadas.com>
- <20200925033017.1790973-4-art@khadas.com>
+ <20200925033017.1790973-5-art@khadas.com>
+ <CAFBinCBtGqDgPH0VhW2awPzYSVFN++HNCA5=L6VVMRW64=AY9A@mail.gmail.com>
 From:   Neil Armstrong <narmstrong@baylibre.com>
 Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
@@ -111,12 +112,12 @@ Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
  zR8QplXA5kogS4kLe/7/JmlDMO8Zgm9vKLHSUeesLOrjdZ59EcjldNNBszRZQgEhwaarfz46
  BSwxi7g3Mu7u5kUByanqHyA=
 Organization: Baylibre
-Message-ID: <0467e912-b19e-5389-388b-99b6316d24d8@baylibre.com>
-Date:   Fri, 25 Sep 2020 09:39:21 +0200
+Message-ID: <3aa15c85-5dec-52df-c97f-67d45572d5be@baylibre.com>
+Date:   Fri, 25 Sep 2020 09:40:28 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200925033017.1790973-4-art@khadas.com>
+In-Reply-To: <CAFBinCBtGqDgPH0VhW2awPzYSVFN++HNCA5=L6VVMRW64=AY9A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -124,60 +125,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 25/09/2020 05:30, Artem Lapkin wrote:
-> add aliases names led_white and led_red for white and red leds
-
-Sorry, can you explain why you need these ? They should not be used by the led framework.
-
+On 25/09/2020 09:37, Martin Blumenstingl wrote:
+> Hi Artem,
 > 
-> Signed-off-by: Artem Lapkin <art@khadas.com>
-> ---
->  arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> On Fri, Sep 25, 2020 at 5:31 AM Artem Lapkin <email2tema@gmail.com> wrote:
+>>
+>> no need force setup memory size!
+>> VIM3 boards have 2Gb and 4Gb variants
+>> memory size will be automatically defined
+>>
+>> mainline uboot works properly in any case
+>> but old vendor uboot works not properly for 4Gb variants
+> can you be more specific with what "does not work properly"? is Linux
+> then only able to use 2GB or is there any other problem?
 > 
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-> index 73783692e30..7e137399257 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-> +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-> @@ -12,6 +12,8 @@ / {
->  	aliases {
->  		serial0 = &uart_AO;
->  		ethernet0 = &ethmac;
-> +		led_red = &led_red;
-> +		led_white = &led_white;
+> overall this sounds like a bug in the vendor u-boot to me
+> I don't see that we have any other Amlogic .dts which needs this hack,
+> so I'd like to hear the feedback from the device-tree maintainers (for
+> example Rob) as well
 
-These aliases are not standard aliases.
-
->  	};
->  
->  	chosen {
-> @@ -39,13 +41,13 @@ button-function {
->  	leds {
->  		compatible = "gpio-leds";
->  
-> -		led-white {
-> +		led_white: led-white {
->  			label = "vim3:white:sys";
->  			gpios = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_HIGH>;
->  			linux,default-trigger = "heartbeat";
->  		};
->  
-> -		led-red {
-> +		led_red: led-red {
->  			label = "vim3:red";
->  			gpios = <&gpio_expander 5 GPIO_ACTIVE_HIGH>;
->  		};
-> 
-
-Instead you should convert these to the new function/color attributes are described in:
-Documentation/devicetree/bindings/leds/common.yaml
-
-{
-	function = LED_FUNCTION_STATUS;
-	color = <LED_COLOR_ID_WHITE>;
-}
+AFAIK the vendor u-boot updates the memory correctly, what it doesn't is adding
+the reserved memory zones.
 
 Neil
+
+> 
+> 
+> Best regards,
+> Martin
+> 
 
