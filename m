@@ -2,148 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA9F2784D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D756A2784D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728079AbgIYKNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727324AbgIYKNJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:13:09 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5156C0613CE;
-        Fri, 25 Sep 2020 03:13:09 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d9so2722255pfd.3;
-        Fri, 25 Sep 2020 03:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=720jfHfclRnuElbF5sBzZ7YrsJeN0GPjCiRxFVwpZoA=;
-        b=i7Zjo2El5BzxdVYuuVMLa8MGZcc6OstPdzLxRwuXbMZdkeeu04m+n0XhYNS/MxNSkI
-         +geUVpxEp6s3OgH7eUXw9uaBQrQGlBCVnmiYJWiL3enEzsGYVYIsC0NToHgONfeoZtNQ
-         08429bRaEKBsTttN92pFdakTfdyCrToHclfhyX4rr8XMkapPN+F4kiDVVqbmyDLyD3DY
-         dkEFSJmSw51IsvsTjnMzLX2WELq2j0Z0PtdNZQsCioN4TodyVPV5jr2EAiY+nnVMnv9J
-         0xrYTrx5pOJ46fagsf8opPRq6G3TwOCJP3ZFC0vp+96yjyM/fmXmr77viRZrad1yqkEO
-         CHPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=720jfHfclRnuElbF5sBzZ7YrsJeN0GPjCiRxFVwpZoA=;
-        b=HH7X2VxZiEpaW1mk4ZPfzfnv+YXW4cWLKs9FHgiZGvFlaUd5OWaOoLo6xoFMqBpJTJ
-         XJT0AlBxft9P2eYDUVprfEV+8M3g/ZgfEnvBnwJIcQHuU3cfSvSm4TskPQh9xrcoOlS/
-         oGHxOiELTnQeTCT/zFOf0sQ48wbR91MTXZAYkJN5tBudg9eICOPP2lLVNXV7HV8geq1J
-         e4cR2EybvA7GPhY62/Y7JL/UWFmKDNWJQ7rhrL4euCLn38z85kMih6Kb6E+aDBosx6sK
-         vYTXH0mMue41EfmdT+kTugcEWRGwzvwDS3dwhk+fN+fWqDnQX7OM83uiGT6+/9fnLJck
-         AmrA==
-X-Gm-Message-State: AOAM533Lr9Qv6yMOWIE5p1ukrnfFyDobzIBQEFMlU0pMRBEEV7/HHgxJ
-        mhpPqMO/ijQtt/vDskwlvQ==
-X-Google-Smtp-Source: ABdhPJyH9hSYbuzMVkeLBRiy0bfoGk8cDtw/2un0NnyLt7EEM2tTDwRAuEk/AUNhm/BuhmA41p3M3g==
-X-Received: by 2002:aa7:8249:0:b029:142:2501:35c9 with SMTP id e9-20020aa782490000b0290142250135c9mr3375837pfn.41.1601028789229;
-        Fri, 25 Sep 2020 03:13:09 -0700 (PDT)
-Received: from PWN (n11212042027.netvigator.com. [112.120.42.27])
-        by smtp.gmail.com with ESMTPSA id h1sm1665573pji.52.2020.09.25.03.13.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 03:13:08 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 06:13:00 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Jiri Slaby <jirislaby@kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
- buffers
-Message-ID: <20200925101300.GA890211@PWN>
-References: <0000000000006b9e8d059952095e@google.com>
- <cover.1600953813.git.yepeilin.cs@gmail.com>
- <3f754d60-1d35-899c-4418-147d922e29af@kernel.org>
+        id S1727668AbgIYKQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:16:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46410 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726990AbgIYKQE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 06:16:04 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4201620717;
+        Fri, 25 Sep 2020 10:16:01 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 11:15:58 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 24/39] arm64: mte: Add in-kernel MTE helpers
+Message-ID: <20200925101558.GB4846@gaia>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <ae603463aed82bdff74942f23338a681b8ed8820.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3f754d60-1d35-899c-4418-147d922e29af@kernel.org>
+In-Reply-To: <ae603463aed82bdff74942f23338a681b8ed8820.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all!
+On Fri, Sep 25, 2020 at 12:50:31AM +0200, Andrey Konovalov wrote:
+> diff --git a/arch/arm64/include/asm/esr.h b/arch/arm64/include/asm/esr.h
+> index 035003acfa87..bc0dc66a6a27 100644
+> --- a/arch/arm64/include/asm/esr.h
+> +++ b/arch/arm64/include/asm/esr.h
+> @@ -103,6 +103,7 @@
+>  #define ESR_ELx_FSC		(0x3F)
+>  #define ESR_ELx_FSC_TYPE	(0x3C)
+>  #define ESR_ELx_FSC_EXTABT	(0x10)
+> +#define ESR_ELx_FSC_MTE		(0x11)
+>  #define ESR_ELx_FSC_SERROR	(0x11)
+>  #define ESR_ELx_FSC_ACCESS	(0x08)
+>  #define ESR_ELx_FSC_FAULT	(0x04)
+> diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+> new file mode 100644
+> index 000000000000..b0f27de8de33
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/mte-kasan.h
+> @@ -0,0 +1,60 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2020 ARM Ltd.
+> + */
+> +#ifndef __ASM_MTE_ASM_H
+> +#define __ASM_MTE_ASM_H
+> +
+> +#include <asm/compiler.h>
+> +
+> +#define __MTE_PREAMBLE		ARM64_ASM_PREAMBLE ".arch_extension memtag\n"
 
-On Fri, Sep 25, 2020 at 08:46:04AM +0200, Jiri Slaby wrote:
-> > In order to perform a reliable range check, fbcon_get_font() needs to know
-> > `FONTDATAMAX` for each built-in font under lib/fonts/. Unfortunately, we
-> > do not keep that information in our font descriptor,
-> > `struct console_font`:
-> > 
-> > (include/uapi/linux/kd.h)
-> > struct console_font {
-> > 	unsigned int width, height;	/* font size */
-> > 	unsigned int charcount;
-> > 	unsigned char *data;	/* font data with height fixed to 32 */
-> > };
-> > 
-> > To make things worse, `struct console_font` is part of the UAPI, so we
-> > cannot add a new field to keep track of `FONTDATAMAX`.
-> 
-> Hi,
-> 
-> but you still can define struct kernel_console_font containing struct
-> console_font and the 4 more members you need in the kernel. See below.
-> 
-> > Fortunately, the framebuffer layer itself gives us a hint of how to
-> > resolve this issue without changing UAPI. When allocating a buffer for a
-> > user-provided font, fbcon_set_font() reserves four "extra words" at the
-> > beginning of the buffer:
-> > 
-> > (drivers/video/fbdev/core/fbcon.c)
-> > 	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
-> 
-> I might be missing something (like coffee in the morning), but why don't
-> you just:
-> 1) declare struct font_data as
-> {
->   unsigned sum, char_count, size, refcnt;
->   const unsigned char data[];
-> }
-> 
-> Or maybe "struct console_font font" instead of "const unsigned char
-> data[]", if need be.
-> 
-> 2) allocate by:
->   kmalloc(struct_size(struct font_data, data, size));
-> 
-> 3) use container_of wherever needed
-> 
-> That is you name the data on negative indexes using struct as you
-> already have to define one.
-> 
-> Then you don't need the ugly macros with negative indexes. And you can
-> pass this structure down e.g. to fbcon_do_set_font, avoiding potential
-> mistakes in accessing data[-1] and similar.
+Can this not live in mte.h?
 
-Sorry that I didn't mention it in the cover letter, but yes, I've tried
-this - a new `kernel_console_font` would be much cleaner than negative
-array indexing.
+> +#define MTE_GRANULE_SIZE	UL(16)
+> +#define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
+> +#define MTE_TAG_SHIFT		56
+> +#define MTE_TAG_SIZE		4
+> +#define MTE_TAG_MASK		GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
+> +#define MTE_TAG_MAX		(MTE_TAG_MASK >> MTE_TAG_SHIFT)
 
-The reason I ended up giving it up was, frankly speaking, these macros
-are being used at about 30 places, and I am not familiar enough with the
-framebuffer and newport_con code, so I wasn't confident how to clean
-them up and plug in `kernel_console_font` properly...
+I'd still like these MTE_* macros in a separate mte-hwdef.h file. The
+only reason I see they were not in mte.h is because they need to be
+included in asm/cache.h. They are not KASAN specific.
 
-Another reason was that, functions like fbcon_get_font() handle both user
-fonts and built-in fonts, so I wanted a single solution for both of
-them. I think we can't really introduce `kernel_console_font` while
-keeping these macros, that would make the error handling logics etc.
-very messy.
+> +
+> +#ifndef __ASSEMBLY__
+> +
+> +#include <linux/types.h>
+> +
+> +#ifdef CONFIG_ARM64_MTE
+> +
+> +static inline u8 mte_get_ptr_tag(void *ptr)
+> +{
+> +	u8 tag = (u8)(((u64)(ptr)) >> MTE_TAG_SHIFT);
+> +
+> +	return tag;
+> +}
 
-I'm not very sure what to do now. Should I give it another try cleaning
-up all the macros?
+So this returns the top 8 bits of the address (i.e. no masking with
+MTE_TAG_MASK). Fine by me.
 
-And thank you for reviewing this!
+> +
+> +u8 mte_get_mem_tag(void *addr);
+> +u8 mte_get_random_tag(void);
+> +void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
+> +
+> +#else /* CONFIG_ARM64_MTE */
+> +
+> +static inline u8 mte_get_ptr_tag(void *ptr)
+> +{
+> +	return 0xFF;
+> +}
+> +
+> +static inline u8 mte_get_mem_tag(void *addr)
+> +{
+> +	return 0xFF;
+> +}
+> +static inline u8 mte_get_random_tag(void)
+> +{
+> +	return 0xFF;
+> +}
+> +static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+> +{
+> +	return addr;
+> +}
 
-Peilin Ye
+Maybe these can stay in mte-kasan.h, although they are not a direct
+interface for KASAN AFAICT (the arch_* equivalent are defined in
+asm/memory.h. If there's no good reason, we could move them to mte.h.
 
+> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> index 1c99fcadb58c..3a2bf3ccb26c 100644
+> --- a/arch/arm64/include/asm/mte.h
+> +++ b/arch/arm64/include/asm/mte.h
+> @@ -5,14 +5,13 @@
+>  #ifndef __ASM_MTE_H
+>  #define __ASM_MTE_H
+>  
+> -#define MTE_GRANULE_SIZE	UL(16)
+> -#define MTE_GRANULE_MASK	(~(MTE_GRANULE_SIZE - 1))
+> -#define MTE_TAG_SHIFT		56
+> -#define MTE_TAG_SIZE		4
+> +#include <asm/mte-kasan.h>
+>  
+>  #ifndef __ASSEMBLY__
+>  
+> +#include <linux/bitfield.h>
+>  #include <linux/page-flags.h>
+> +#include <linux/types.h>
+>  
+>  #include <asm/pgtable-types.h>
+>  
+> @@ -45,7 +44,9 @@ long get_mte_ctrl(struct task_struct *task);
+>  int mte_ptrace_copy_tags(struct task_struct *child, long request,
+>  			 unsigned long addr, unsigned long data);
+>  
+> -#else
+> +void mte_assign_mem_tag_range(void *addr, size_t size);
+
+So mte_set_mem_tag_range() is KASAN specific but
+mte_assign_mem_tag_range() is not. Slightly confusing.
+
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 52a0638ed967..833b63fdd5e2 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -13,8 +13,10 @@
+>  #include <linux/swap.h>
+>  #include <linux/swapops.h>
+>  #include <linux/thread_info.h>
+> +#include <linux/types.h>
+>  #include <linux/uio.h>
+>  
+> +#include <asm/barrier.h>
+>  #include <asm/cpufeature.h>
+>  #include <asm/mte.h>
+>  #include <asm/ptrace.h>
+> @@ -72,6 +74,48 @@ int memcmp_pages(struct page *page1, struct page *page2)
+>  	return ret;
+>  }
+>  
+> +u8 mte_get_mem_tag(void *addr)
+> +{
+> +	if (!system_supports_mte())
+> +		return 0xFF;
+> +
+> +	asm volatile(__MTE_PREAMBLE "ldg %0, [%0]"
+> +		    : "+r" (addr));
+
+Nitpick: do we need volatile or plain asm would do?
+
+I wonder whether we'd need the "memory" clobber. I don't see how this
+would fail though, maybe later on with stack tagging if the compiler
+writes tags behind our back.
+
+> +
+> +	return 0xF0 | mte_get_ptr_tag(addr);
+
+Since mte_get_ptr_tag() returns the top byte of the address, we don't
+need the additional 0xF0 or'ing. LDG only sets bits 59:56.
+
+> +}
+> +
+> +u8 mte_get_random_tag(void)
+> +{
+> +	void *addr;
+> +
+> +	if (!system_supports_mte())
+> +		return 0xFF;
+> +
+> +	asm volatile(__MTE_PREAMBLE "irg %0, %0"
+> +		    : "+r" (addr));
+> +
+> +	return 0xF0 | mte_get_ptr_tag(addr);
+
+Same here.
+
+> +}
+> +
+> +void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+> +{
+> +	void *ptr = addr;
+> +
+> +	if ((!system_supports_mte()) || (size == 0))
+> +		return addr;
+> +
+> +	/* Make sure that size is aligned. */
+> +	WARN_ON(size & (MTE_GRANULE_SIZE - 1));
+
+Doesn't the address need to be aligned as well?
+
+> +
+> +	tag = 0xF0 | tag;
+> +	ptr = (void *)__tag_set(ptr, tag);
+> +
+> +	mte_assign_mem_tag_range(ptr, size);
+> +
+> +	return ptr;
+> +}
+> +
+>  static void update_sctlr_el1_tcf0(u64 tcf0)
+>  {
+>  	/* ISB required for the kernel uaccess routines */
+> diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
+> index 03ca6d8b8670..aa0ab01252fe 100644
+> --- a/arch/arm64/lib/mte.S
+> +++ b/arch/arm64/lib/mte.S
+> @@ -149,3 +149,22 @@ SYM_FUNC_START(mte_restore_page_tags)
+>  
+>  	ret
+>  SYM_FUNC_END(mte_restore_page_tags)
+> +
+> +/*
+> + * Assign allocation tags for a region of memory based on the pointer tag
+> + *   x0 - source pointer
+> + *   x1 - size
+> + *
+> + * Note: size must be non-zero and MTE_GRANULE_SIZE aligned
+
+Doesn't the address need to be aligned as well?
+
+> + */
+> +SYM_FUNC_START(mte_assign_mem_tag_range)
+> +	/* if (src == NULL) return; */
+> +	cbz	x0, 2f
+> +	/* if (size == 0) return; */
+> +	cbz	x1, 2f
+
+I find these checks unnecessary, as I said a couple of times before,
+just document the function pre-conditions. They are also incomplete
+(i.e. you check for NULL but not alignment).
+
+> +1:	stg	x0, [x0]
+> +	add	x0, x0, #MTE_GRANULE_SIZE
+> +	subs	x1, x1, #MTE_GRANULE_SIZE
+> +	b.gt	1b
+> +2:	ret
+> +SYM_FUNC_END(mte_assign_mem_tag_range)
+> -- 
+> 2.28.0.681.g6f77f65b4e-goog
+
+-- 
+Catalin
