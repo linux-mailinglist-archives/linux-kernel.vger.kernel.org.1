@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EBA4278437
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EEB278430
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727853AbgIYJkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:40:43 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:44980 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727346AbgIYJkn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:40:43 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 94B6E1C0C44; Fri, 25 Sep 2020 11:40:39 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 11:40:38 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Cc:     linux-leds@vger.kernel.org, dmurphy@ti.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: ledtrig-cpu: Limit to 4 CPUs
-Message-ID: <20200925094038.GC20659@amd>
-References: <20200919093833.GA14326@duo.ucw.cz>
- <27e19ac9-4bc0-2945-3985-6cd6bb5407df@gmail.com>
- <20200920183401.GA21494@duo.ucw.cz>
- <781dcb5e-7bad-f740-5914-778ec8a7306b@gmail.com>
- <20200921224212.GA13299@amd>
- <db0b2dca-b7d3-8d76-cc6c-b399c1fa9921@gmail.com>
- <c60858bd-9a9f-5537-9f96-2e44db0c0d9e@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="p2kqVDKq5asng8Dg"
-Content-Disposition: inline
-In-Reply-To: <c60858bd-9a9f-5537-9f96-2e44db0c0d9e@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1727839AbgIYJis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:38:48 -0400
+Received: from mga01.intel.com ([192.55.52.88]:9653 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727132AbgIYJir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:38:47 -0400
+IronPort-SDR: rcSuxplNg4ELtBsPvtkFNdwxgkgxI8P2nhi8CqMat9O+PFFEpLi7iSHUSVNQBCBCgcD3mnTQoK
+ /QBXtZQspm/g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="179567455"
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="179567455"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 02:38:47 -0700
+IronPort-SDR: UVYHkA+vVLvG0bs05VJZW5OxL9S6dps6B4bM8Uo+t3YxsbpK3IP8mFbOehDbvEBf6mdg4Npjod
+ OoiLMayKkDww==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="455752636"
+Received: from glass.png.intel.com ([172.30.181.92])
+  by orsmga004.jf.intel.com with ESMTP; 25 Sep 2020 02:38:42 -0700
+From:   Wong Vee Khee <vee.khee.wong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thierry Reding <treding@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Wong Vee Khee <vee.khee.wong@intel.com>,
+        Vijaya Balan Sadhishkhanna 
+        <sadhishkhanna.vijaya.balan@intel.com>,
+        Seow Chen Yong <chen.yong.seow@intel.com>,
+        Mark Gross <mgross@linux.intel.com>
+Subject: [PATCH net-next 0/1] net: stmmac: Enable VLAN filter fail queue for Intel platform data
+Date:   Fri, 25 Sep 2020 17:40:40 +0800
+Message-Id: <20200925094041.12038-1-vee.khee.wong@intel.com>
+X-Mailer: git-send-email 2.17.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a follow-up on a earlier patch submission at:-
+https://patchwork.ozlabs.org/patch/1275604/
 
---p2kqVDKq5asng8Dg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes since the previous patch submission:
+- Enable VLAN fail queue for Intel platform data (dwmac-intel).
+- Steer the VLAN failed packet to the last Rx queue.
 
-Hi!
 
-> >>So.. no, it is not causing kernel crashes or something. But it is
-> >>example of bad interface, and _that_ is causing problems. (And yes, if
-> >>I realized it is simply possible to limit it, maybe the BIN_ATTR
-> >>conversion would not be neccessary...)
-> >
-> >The limitation you proposed breaks the trigger on many plafforms.
->=20
-> Actually it precludes its use.
->=20
-> I still see the patch in your linux-next, so I reserve myself the
-> right to comment on your pull request.
+Chuah, Kim Tatt (1):
+  net: stmmac: Add option for VLAN filter fail queue enable
 
-You are free to comment on anything.
+ drivers/net/ethernet/stmicro/stmmac/common.h      |  2 ++
+ drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c |  5 +++++
+ drivers/net/ethernet/stmicro/stmmac/dwmac4.h      |  1 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c | 15 +++++++++++++--
+ drivers/net/ethernet/stmicro/stmmac/dwmac5.h      |  6 ++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c |  3 +++
+ include/linux/stmmac.h                            |  2 ++
+ 7 files changed, 32 insertions(+), 2 deletions(-)
 
-I believe probability someone uses that with more than 4 CPUs is <
-5%. Probability that someone uses it with more than 100 CPUs is << 1%
-I'd say. Systems just don't have that many LEDs. I'll take the risk.
+-- 
+2.17.0
 
-If I broke someone's real, existing setup, I'll raise the limit.
-
-(With exception of uled setups. In such cases, I'll just laugh.)
-
-If you know or can find out someone using it with more than 4 CPUs, I
-can obviously raise the limit before the merge.
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---p2kqVDKq5asng8Dg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl9tuxYACgkQMOfwapXb+vImXACfYPwAMqlGN0lqrqh4tyHCfT1y
-ee0AnjtjP7rVsDsuXcoRM+lmZlxIgYkB
-=GgT7
------END PGP SIGNATURE-----
-
---p2kqVDKq5asng8Dg--
