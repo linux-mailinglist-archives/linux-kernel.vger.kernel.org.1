@@ -2,99 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13932781EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14512781F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727210AbgIYHtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:49:00 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14235 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727044AbgIYHtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:49:00 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 845AF1FACC9B85756694;
-        Fri, 25 Sep 2020 15:48:58 +0800 (CST)
-Received: from [127.0.0.1] (10.57.60.129) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Fri, 25 Sep 2020
- 15:48:50 +0800
-Subject: Re: [PATCH] drm/hisilicon: Deleted the drm_device declaration
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Tian Tao <tiantao6@hisilicon.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <kraxel@redhat.com>,
-        <alexander.deucher@amd.com>, <tglx@linutronix.de>,
-        <dri-devel@lists.freedesktop.org>, <xinliang.liu@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-References: <1601016580-5937-1-git-send-email-tiantao6@hisilicon.com>
- <5db712e8-d6cb-3de9-f48e-c2060442e4e0@suse.de>
- <50c87a77-ffdd-42d2-0747-69c95305a48f@suse.de>
-From:   "tiantao (H)" <tiantao6@huawei.com>
-Message-ID: <d9243413-ae13-7eee-933a-13441ec4c151@huawei.com>
-Date:   Fri, 25 Sep 2020 15:48:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727413AbgIYHtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:49:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727044AbgIYHtJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:49:09 -0400
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7830208B6;
+        Fri, 25 Sep 2020 07:49:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601020148;
+        bh=0YaWO5ZKqM34f+iCaQRuK4WZ+QdaTdR/4VJClcjFB4c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qGyEsfAmVUtlrh0hv7RRpbANMOtZbG8hdjuBcylToA6+ceLvFlX8bYILjDrivTRbN
+         3vs/vuaABk6ElXaGJNpTeQ1QtgF2kSs5TAy61FfVQ0gSJLD7rtF1tlUydzgSuNIZ7R
+         oEpzUsPnwFDqjELUY8/rJUkjX3XB/xX4V8pJYyIk=
+Received: by mail-oi1-f182.google.com with SMTP id u126so1839255oif.13;
+        Fri, 25 Sep 2020 00:49:08 -0700 (PDT)
+X-Gm-Message-State: AOAM5310221G68ZrzS8TuYHei5yDI3aBNSsIQE1fnlizaRhwIFAQdlW8
+        aR3xhOvF7BRtzjZLKImN+lCAC2Pa565Si1Udl1Y=
+X-Google-Smtp-Source: ABdhPJyJ7wLcpN8hDRC8yWbIWEFVFfuwz++cbypMBk6skJfpMeM5wvx6rKGlXDsvixT+Uaa66IO4GDwGEWh8C6NzqA0=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr767207oig.47.1601020147940;
+ Fri, 25 Sep 2020 00:49:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <50c87a77-ffdd-42d2-0747-69c95305a48f@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.57.60.129]
-X-CFilter-Loop: Reflected
+References: <20200925074502.150448-1-misch@google.com>
+In-Reply-To: <20200925074502.150448-1-misch@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 25 Sep 2020 09:48:57 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH9B0TevUEN=CGn9TCYCgr37zX+kSfmqxeALPmUG4GWCA@mail.gmail.com>
+Message-ID: <CAMj1kXH9B0TevUEN=CGn9TCYCgr37zX+kSfmqxeALPmUG4GWCA@mail.gmail.com>
+Subject: Re: [PATCH v2] efivarfs: Replace invalid slashes with exclamation
+ marks in dentries.
+To:     Michael Schaller <misch@google.com>
+Cc:     michael@5challer.de, Matthew Garrett <matthew.garrett@nebula.com>,
+        Jeremy Kerr <jk@ozlabs.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 25 Sep 2020 at 09:45, Michael Schaller <misch@google.com> wrote:
+>
+> Without this patch efivarfs_alloc_dentry creates dentries with slashes in
+> their name if the respective EFI variable has slashes in its name. This in
+> turn causes EIO on getdents64, which prevents a complete directory listing
+> of /sys/firmware/efi/efivars/.
+>
+> This patch replaces the invalid shlashes with exclamation marks like
+> kobject_set_name_vargs does for /sys/firmware/efi/vars/ to have consistently
+> named dentries under /sys/firmware/efi/vars/ and /sys/firmware/efi/efivars/.
+>
+> Signed-off-by: Michael Schaller <misch@google.com>
+
+Thanks
+
+> Tested-by: Michael Schaller <misch@google.com>
+
+I will drop this - in general, it is assumed that you test your own
+patches before sending them to the list, so this is implicit. Also,
+tested-by's given on the list tend to carry more weight than ones that
+are givenin private and added to the patch by the authors themselves.
 
 
-在 2020/9/25 15:26, Thomas Zimmermann 写道:
-> Hi
-> 
-> Am 25.09.20 um 09:02 schrieb Thomas Zimmermann:
->> Hi,
->>
->> just a few nits.
->>
->> Am 25.09.20 um 08:49 schrieb Tian Tao:
->>> drm_framebuffer.h contains drm/drm_device.h and struct drm_device is
->>
->> contains -> includes
->>
->>> already declared in this file, so there is no need to declare struct
->>
->> declared -> defined
-> 
-> Wait a second. drm_framebuffer.h actually declares struct drm_device,
-> but does not include <drm/device.h>. So the commit messag should say
-> something like
-> 
->    drm_framebuffer.h already declares struct drm_device, so there's no
-> need to declare it in hibm_drm_drv.h
-> 
-Thank you very much.I will apply this.
->>
->>> drm_device in hibm_drm_drv.h.
->>>
->>> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->>
->> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->>
->>> ---
->>>   drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h | 2 --
->>>   1 file changed, 2 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>> index 87d2aad..6a63502 100644
->>> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->>> @@ -22,8 +22,6 @@
->>>   #include <drm/drm_fb_helper.h>
->>>   #include <drm/drm_framebuffer.h>
->>>   
->>> -struct drm_device;
->>> -
->>>   struct hibmc_connector {
->>>   	struct drm_connector base;
->>>   
->>>
->>
-> 
-
+> ---
+>  fs/efivarfs/super.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> index 28bb5689333a..15880a68faad 100644
+> --- a/fs/efivarfs/super.c
+> +++ b/fs/efivarfs/super.c
+> @@ -141,6 +141,9 @@ static int efivarfs_callback(efi_char16_t *name16, efi_guid_t vendor,
+>
+>         name[len + EFI_VARIABLE_GUID_LEN+1] = '\0';
+>
+> +       /* replace invalid slashes like kobject_set_name_vargs does for /sys/firmware/efi/vars. */
+> +       strreplace(name, '/', '!');
+> +
+>         inode = efivarfs_get_inode(sb, d_inode(root), S_IFREG | 0644, 0,
+>                                    is_removable);
+>         if (!inode)
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+>
