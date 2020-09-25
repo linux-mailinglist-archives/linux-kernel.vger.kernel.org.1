@@ -2,131 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E68CD279210
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBFB27920E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729013AbgIYUd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:33:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727286AbgIYUWM (ORCPT
+        id S1728994AbgIYUdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:33:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25381 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728591AbgIYUVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:22:12 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EBFC05BD0B;
-        Fri, 25 Sep 2020 13:20:29 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id cv8so2037189qvb.12;
-        Fri, 25 Sep 2020 13:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:date:from:to:cc:message-id:in-reply-to:references;
-        bh=LUHm00ZIJ4j/6Y7/pu4Dj8elDY57oj54PB0d9vo74fk=;
-        b=rVHeNYw6ax44V3kWWPVeu00y7iEOtaGrpyVj2tXAox6Y9+/sU28lxZfFyTgyeb35OB
-         0CbHo3jYypqge3AO+2xjSxf4D84kW3kNQ+PpzrPVZECtxkDM0RrLeHoz9/2+qdUvloo1
-         l2h0P2ZJELNk/IprcOiN6ETDq5KsoYWvgG6trZ+yjX6xqPeWrNQJbM2k/FfJRbSxfAgw
-         wH8NYx44qwSevLP50P1qC/oDW/bqFLCU+K+HBm5zOjkT0D/LRdePeHvEu87pEzR4yuER
-         L4oWifpJa+h+2sQyCDf5YWtAf2FupLgR64tBURwp75asDm2jiSWE5JlRFOAHejC9aB2R
-         zbpA==
+        Fri, 25 Sep 2020 16:21:41 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601065298;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VhnUc2BbOi73m+9TFwo34hZOzGKUsTVaCJO+A+GVqYs=;
+        b=N2VKVWU5YWAdGCDKeOTChntXLsrCQnt5q31a4BUGDhnBhnvbb9BIC5pCBn/lEYp4wlUUF1
+        wO6fvlTX9/h3qXJHHhZutTjukjvle4Fz9Vz7bFqHbrMNNr3AxjInrVNC/EQhQ4BJfS9Wg8
+        uiCPG64Syru9bSocItOTBR1zPlUwL3o=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-rVJrnQwcO2-nBxt9NU4z8w-1; Fri, 25 Sep 2020 16:21:36 -0400
+X-MC-Unique: rVJrnQwcO2-nBxt9NU4z8w-1
+Received: by mail-wr1-f71.google.com with SMTP id b7so1512878wrn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:21:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:date:from:to:cc:message-id:in-reply-to
-         :references;
-        bh=LUHm00ZIJ4j/6Y7/pu4Dj8elDY57oj54PB0d9vo74fk=;
-        b=ZP8wXh4oPx8aqBHGfV8d+6oGfFcggyCEudaaQ2sJ1YxfkO+sqt8uWeHYlu/uCCTdJX
-         wMyIvUppP0K2gaaQTBiI5L5SCoY1w8Ms21yRL5MoaoN/B6bzFaq0UnQZPfNl49rzF0OE
-         iHilkW539UTylzqkXgDhSvnq8wnnxX1S7MfwReKZVHxWiiogzYrolZaPDyRssrDECKQ6
-         RAT3QwGSVoBMWG1ud5+/L8H3Kvt0aLvcmsezYWsK9XDc1azviMSQdZ67CHkb2tQPwPg2
-         bGp5kfj03lqmGAM1Q85cSao2TgTABIWEqK+/S1OsTPEOkjVawPxf9KmCbq/w0/zd7V+u
-         qFEA==
-X-Gm-Message-State: AOAM531uUwfIvpe0MAW5x7z506o7ZuCaPm+ReiP6J26N8jsq0tyzgtZw
-        OdPasNdHihSdJxwmwFyuIhtX4Xx2R6/V2Q==
-X-Google-Smtp-Source: ABdhPJyuIgJBVjQG0Q3pdpKZLjNMr4Maqp/uvudQU++Wiwm7OzMd3yWUfeEsMBMlwuuaVFxvwDu3iw==
-X-Received: by 2002:a0c:b343:: with SMTP id a3mr339082qvf.41.1601065229122;
-        Fri, 25 Sep 2020 13:20:29 -0700 (PDT)
-Received: from gmail.com (chomsky.torservers.net. [77.247.181.162])
-        by smtp.gmail.com with ESMTPSA id v16sm2347837qkg.37.2020.09.25.13.20.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 13:20:28 -0700 (PDT)
-Subject: Re: [RFC] openprom: Fix 'opiocnextprop'; ensure integer conversions; use string size
-Date:   Fri, 25 Sep 2020 20:20:20 -0000
-From:   Michael Witten <mfwitten@gmail.com>
-To:     David Miller <davem@davemloft.net>
-Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <859f327c79da4d9c945e50568805456c@gmail.com>
-In-Reply-To: <20200914.170321.1710628974878239639.davem@davemloft.net>
-References: <a5515efeaad94666a87f264dbf65bdbd@gmail.com>
-  <20200914.170321.1710628974878239639.davem@davemloft.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VhnUc2BbOi73m+9TFwo34hZOzGKUsTVaCJO+A+GVqYs=;
+        b=K1Z5bG7OQL3s03lqDCjaI46ewI7zEgcDKB50nc1ANtdHlTIUD2YvKUgoWiramOLyH9
+         NsDeek1BVR+3ZaBWzBm7fIofzF2cSzKkEr4Om+YhtYAca1OO24G7ouffCFxaE/g05urX
+         E7lF4TKGHCemPwZQsoNz3QtDHZLQ75VLzi2Zd9vTBvreuuFGDnhE0tbdTmBAXNDPuRml
+         xM03tohjPr6bVRJMI3dkvTI49MLmHIFx5Dtf9661L48LuPO7yLqB1N4NKDBqiCamxMcd
+         PzcwtBZUuY/b7wwrW/r7f7j6OrC9+PuuRVJp4UnimhXlg1Zjxg6yGh0CEitAIqltvzQR
+         r61Q==
+X-Gm-Message-State: AOAM531177/hsKORBf7ssu4bDTwarO7hcX8+32gQaQlYRzDMh7d69p+6
+        cmmk+PRvs6z0HU9xO31mjmqbSc4Z6hrEdGi5zkeTCfg9ey4xFrL5qX0pCE98oGqbFKYy60eeozo
+        0Cq6urWMeR4V0TmuVqIR6w6el
+X-Received: by 2002:adf:e449:: with SMTP id t9mr6369255wrm.154.1601065294777;
+        Fri, 25 Sep 2020 13:21:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxjj+1kICKsk0vFm9QSXgJpCGrYthL/ij347pkP9nVBx0LscWSW1Z+WTzrstXac7yYtZ/F/EQ==
+X-Received: by 2002:adf:e449:: with SMTP id t9mr6369226wrm.154.1601065294447;
+        Fri, 25 Sep 2020 13:21:34 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id l126sm146057wmf.39.2020.09.25.13.21.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 13:21:33 -0700 (PDT)
+Subject: Re: [PATCH v2 4/4] KVM: VMX: Add a helper and macros to reduce
+ boilerplate for sec exec ctls
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <7d7daea0-57be-83be-a0d4-8a481249ef85@redhat.com>
+ <20200925003011.21016-1-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <9bbc8568-3d9b-2c0a-7fac-fd708cbd271d@redhat.com>
+Date:   Fri, 25 Sep 2020 22:21:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200925003011.21016-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Miller <davem@davemloft.net>
-Date: Mon, 14 Sep 2020 17:03:21 -0700
+On 25/09/20 02:30, Sean Christopherson wrote:
+> Add a helper function and several wrapping macros to consolidate the
+> copy-paste code in vmx_compute_secondary_exec_control() for adjusting
+> controls that are dependent on guest CPUID bits.
+> 
+> No functional change intended.
+> 
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+> 
+> v2: Comment the new helper and macros.
+> 
+>  arch/x86/kvm/vmx/vmx.c | 151 +++++++++++++++++------------------------
+>  1 file changed, 64 insertions(+), 87 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 5180529f6531..48673eea0c0d 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -4072,6 +4072,61 @@ u32 vmx_exec_control(struct vcpu_vmx *vmx)
+>  	return exec_control;
+>  }
+>  
+> +/*
+> + * Adjust a single secondary execution control bit to intercept/allow an
+> + * instruction in the guest.  This is usually done based on whether or not a
+> + * feature has been exposed to the guest in order to correctly emulate faults.
+> + */
+> +static inline void
+> +vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
+> +				  u32 control, bool enabled, bool exiting)
+> +{
+> +	/*
+> +	 * If the control is for an opt-in feature, clear the control if the
+> +	 * feature is not exposed to the guest, i.e. not enabled.  If the
+> +	 * control is opt-out, i.e. an exiting control, clear the control if
+> +	 * the feature _is_ exposed to the guest, i.e. exiting/interception is
+> +	 * disabled for the associated instruction.  Note, the caller is
+> +	 * responsible presetting exec_control to set all supported bits.
+> +	 */
+> +	if (enabled == exiting)
+> +		*exec_control &= ~control;
+> +
+> +	/*
+> +	 * Update the nested MSR settings so that a nested VMM can/can't set
+> +	 * controls for features that are/aren't exposed to the guest.
+> +	 */
+> +	if (nested) {
+> +		if (enabled)
+> +			vmx->nested.msrs.secondary_ctls_high |= control;
+> +		else
+> +			vmx->nested.msrs.secondary_ctls_high &= ~control;
+> +	}
+> +}
+> +
+> +/*
+> + * Wrapper macro for the common case of adjusting a secondary execution control
+> + * based on a single guest CPUID bit, with a dedicated feature bit.  This also
+> + * verifies that the control is actually supported by KVM and hardware.
+> + */
+> +#define vmx_adjust_sec_exec_control(vmx, exec_control, name, feat_name, ctrl_name, exiting) \
+> +({									 \
+> +	bool __enabled;							 \
+> +									 \
+> +	if (cpu_has_vmx_##name()) {					 \
+> +		__enabled = guest_cpuid_has(&(vmx)->vcpu,		 \
+> +					    X86_FEATURE_##feat_name);	 \
+> +		vmx_adjust_secondary_exec_control(vmx, exec_control,	 \
+> +			SECONDARY_EXEC_##ctrl_name, __enabled, exiting); \
+> +	}								 \
+> +})
+> +
+> +/* More macro magic for ENABLE_/opt-in versus _EXITING/opt-out controls. */
+> +#define vmx_adjust_sec_exec_feature(vmx, exec_control, lname, uname) \
+> +	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, ENABLE_##uname, false)
+> +
+> +#define vmx_adjust_sec_exec_exiting(vmx, exec_control, lname, uname) \
+> +	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, uname##_EXITING, true)
+>  
+>  static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>  {
+> @@ -4121,33 +4176,12 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>  
+>  		vcpu->arch.xsaves_enabled = xsaves_enabled;
+>  
+> -		if (!xsaves_enabled)
+> -			exec_control &= ~SECONDARY_EXEC_XSAVES;
+> -
+> -		if (nested) {
+> -			if (xsaves_enabled)
+> -				vmx->nested.msrs.secondary_ctls_high |=
+> -					SECONDARY_EXEC_XSAVES;
+> -			else
+> -				vmx->nested.msrs.secondary_ctls_high &=
+> -					~SECONDARY_EXEC_XSAVES;
+> -		}
+> +		vmx_adjust_secondary_exec_control(vmx, &exec_control,
+> +						  SECONDARY_EXEC_XSAVES,
+> +						  xsaves_enabled, false);
+>  	}
+>  
+> -	if (cpu_has_vmx_rdtscp()) {
+> -		bool rdtscp_enabled = guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP);
+> -		if (!rdtscp_enabled)
+> -			exec_control &= ~SECONDARY_EXEC_ENABLE_RDTSCP;
+> -
+> -		if (nested) {
+> -			if (rdtscp_enabled)
+> -				vmx->nested.msrs.secondary_ctls_high |=
+> -					SECONDARY_EXEC_ENABLE_RDTSCP;
+> -			else
+> -				vmx->nested.msrs.secondary_ctls_high &=
+> -					~SECONDARY_EXEC_ENABLE_RDTSCP;
+> -		}
+> -	}
+> +	vmx_adjust_sec_exec_feature(vmx, &exec_control, rdtscp, RDTSCP);
+>  
+>  	/*
+>  	 * Expose INVPCID if and only if PCID is also exposed to the guest.
+> @@ -4157,71 +4191,14 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>  	 */
+>  	if (!guest_cpuid_has(vcpu, X86_FEATURE_PCID))
+>  		guest_cpuid_clear(vcpu, X86_FEATURE_INVPCID);
+> +	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
+>  
+> -	if (cpu_has_vmx_invpcid()) {
+> -		/* Exposing INVPCID only when PCID is exposed */
+> -		bool invpcid_enabled =
+> -			guest_cpuid_has(vcpu, X86_FEATURE_INVPCID);
+>  
+> -		if (!invpcid_enabled)
+> -			exec_control &= ~SECONDARY_EXEC_ENABLE_INVPCID;
+> +	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
+> +	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdseed, RDSEED);
+>  
+> -		if (nested) {
+> -			if (invpcid_enabled)
+> -				vmx->nested.msrs.secondary_ctls_high |=
+> -					SECONDARY_EXEC_ENABLE_INVPCID;
+> -			else
+> -				vmx->nested.msrs.secondary_ctls_high &=
+> -					~SECONDARY_EXEC_ENABLE_INVPCID;
+> -		}
+> -	}
+> -
+> -	if (cpu_has_vmx_rdrand()) {
+> -		bool rdrand_enabled = guest_cpuid_has(vcpu, X86_FEATURE_RDRAND);
+> -		if (rdrand_enabled)
+> -			exec_control &= ~SECONDARY_EXEC_RDRAND_EXITING;
+> -
+> -		if (nested) {
+> -			if (rdrand_enabled)
+> -				vmx->nested.msrs.secondary_ctls_high |=
+> -					SECONDARY_EXEC_RDRAND_EXITING;
+> -			else
+> -				vmx->nested.msrs.secondary_ctls_high &=
+> -					~SECONDARY_EXEC_RDRAND_EXITING;
+> -		}
+> -	}
+> -
+> -	if (cpu_has_vmx_rdseed()) {
+> -		bool rdseed_enabled = guest_cpuid_has(vcpu, X86_FEATURE_RDSEED);
+> -		if (rdseed_enabled)
+> -			exec_control &= ~SECONDARY_EXEC_RDSEED_EXITING;
+> -
+> -		if (nested) {
+> -			if (rdseed_enabled)
+> -				vmx->nested.msrs.secondary_ctls_high |=
+> -					SECONDARY_EXEC_RDSEED_EXITING;
+> -			else
+> -				vmx->nested.msrs.secondary_ctls_high &=
+> -					~SECONDARY_EXEC_RDSEED_EXITING;
+> -		}
+> -	}
+> -
+> -	if (cpu_has_vmx_waitpkg()) {
+> -		bool waitpkg_enabled =
+> -			guest_cpuid_has(vcpu, X86_FEATURE_WAITPKG);
+> -
+> -		if (!waitpkg_enabled)
+> -			exec_control &= ~SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
+> -
+> -		if (nested) {
+> -			if (waitpkg_enabled)
+> -				vmx->nested.msrs.secondary_ctls_high |=
+> -					SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
+> -			else
+> -				vmx->nested.msrs.secondary_ctls_high &=
+> -					~SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
+> -		}
+> -	}
+> +	vmx_adjust_sec_exec_control(vmx, &exec_control, waitpkg, WAITPKG,
+> +				    ENABLE_USR_WAIT_PAUSE, false);
+>  
+>  	vmx->secondary_exec_control = exec_control;
+>  }
+> 
 
-> From: Michael Witten <mfwitten@gmail.com>
-> Date: Fri, 04 Sep 2020 19:40:00 -0000
->
->> @@ -34,10 +34,10 @@ EXPORT_SYMBOL(of_console_options);
->>  int of_getintprop_default(struct device_node *np, const char *name, int def)
->>  {
->>       struct property *prop;
->> -     int len;
->> +     int size;
->> 
->> -     prop = of_find_property(np, name, &len);
->> -     if (!prop || len != 4)
->> +     prop = of_find_property(np, name, &size);
->> +     if (!prop || size != 4)
->>               return def;
->
-> This is just changing the variable name and makes no functional change
-> at all, and therefore is gratuitous.
->
-> Please only include pure functional changes that fix the bug(s) in
-> question.
->
-> [...]
+Queued with the rest, thanks.
 
-There's a reason the variable is named "size" (or even "len") rather than:
+Paolo
 
-  v75127e6344
-
-A name is functional; it is the only way we have to structure a [human]
-reader's conceptual understanding of what's going on.
-
-The name "len" is a poor choice; it added to my uncertainty when I began
-trying to understand the code in question.
-
-As explained in the commit message:
-
-  | String Size
-  | ===========
-  |
-  | There is an important distinction to be made between the following:
-  |
-  |   * A nul-terminated string's size
-  |   * A nul-terminated string's length
-  |
-  | This commit tries to make this distinction as much as possible,
-  | and assumes that all strings are intended to be nul-terminated.
-  | The result is the following:
-  |
-  |   * Sometimes a variable's name is simply changed (e.g., from
-  |     'len' to 'size').
-  |
-  |   * Sometimes 'strlen()' is called rather than relying on
-  |     some buffer size.
-  |
-  |   * Sometimes, there is the replacement of code that erroneously
-  |     uses string length rather than string size.
-  |
-  | All together, these changes make the code more robust and correct.
-
-Are we trying to improve the code or not?
-
-Also, this name change is like a surgeon removing a benign anomaly
-while the abdomen is open for some other purpose; it's strategic,
-not "gratuitous".
-
-Sincerely,
-Michael Witten
