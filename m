@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3AF27842E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBA4278437
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727953AbgIYJgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:36:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727201AbgIYJgs (ORCPT
+        id S1727853AbgIYJkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:40:43 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:44980 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727346AbgIYJkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:36:48 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A115C0613CE;
-        Fri, 25 Sep 2020 02:36:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ByRd70h0Dz9sTM;
-        Fri, 25 Sep 2020 19:36:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601026604;
-        bh=G+o9bczA2sQhJzQrviePOhyjUsAreWHRtkEN+Ya1jdU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=IS7FTYSpUGfxBFXHrTV4rGPmfJWc1ezzjDt6PIEyUTgOM2Y+eWohluC1Dmb45Hy0t
-         88Uu6/piopZ09FcDZMmYoIejSAvsKdnubroh6XY1aZYQK1KLJ90P2qCSkY/EIOWMK3
-         pXUB5/jtTu57RPqMZXrRa0YT7bY0pIlqhCJaApc/SvOMLy26MGJHd9RRl0/x48FsuJ
-         YJCDV7cF1zMWSsn2S5noFXuz+9MiR+7pJaBK6Nlj+Y4gF0cx0cvC2uWWKwS5mtom0D
-         iRL7whwzJJdWiBMinjz52JTFwFMzBWnlTqawGMaNXmLVsPATXPGdmdV52M7jYwWZEn
-         P6OswXwOHejjg==
-Date:   Fri, 25 Sep 2020 19:36:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build warning after merge of the tip tree
-Message-ID: <20200925193638.4e0d6f5b@canb.auug.org.au>
+        Fri, 25 Sep 2020 05:40:43 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 94B6E1C0C44; Fri, 25 Sep 2020 11:40:39 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 11:40:38 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Cc:     linux-leds@vger.kernel.org, dmurphy@ti.com,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: ledtrig-cpu: Limit to 4 CPUs
+Message-ID: <20200925094038.GC20659@amd>
+References: <20200919093833.GA14326@duo.ucw.cz>
+ <27e19ac9-4bc0-2945-3985-6cd6bb5407df@gmail.com>
+ <20200920183401.GA21494@duo.ucw.cz>
+ <781dcb5e-7bad-f740-5914-778ec8a7306b@gmail.com>
+ <20200921224212.GA13299@amd>
+ <db0b2dca-b7d3-8d76-cc6c-b399c1fa9921@gmail.com>
+ <c60858bd-9a9f-5537-9f96-2e44db0c0d9e@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Mat4EHH+pDBvC3iG403l6FL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="p2kqVDKq5asng8Dg"
+Content-Disposition: inline
+In-Reply-To: <c60858bd-9a9f-5537-9f96-2e44db0c0d9e@gmail.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Mat4EHH+pDBvC3iG403l6FL
-Content-Type: text/plain; charset=US-ASCII
+
+--p2kqVDKq5asng8Dg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hi!
 
-After merging the tip tree, today's linux-next build (powerpc and
-powerpc64 allnoconfig) produced this warning:
+> >>So.. no, it is not causing kernel crashes or something. But it is
+> >>example of bad interface, and _that_ is causing problems. (And yes, if
+> >>I realized it is simply possible to limit it, maybe the BIN_ATTR
+> >>conversion would not be neccessary...)
+> >
+> >The limitation you proposed breaks the trigger on many plafforms.
+>=20
+> Actually it precludes its use.
+>=20
+> I still see the patch in your linux-next, so I reserve myself the
+> right to comment on your pull request.
 
-WARNING: unmet direct dependencies detected for PCI_MSI_ARCH_FALLBACKS
-  Depends on [n]: PCI [=3Dn]
-  Selected by [y]:
-  - PPC [=3Dy]
+You are free to comment on anything.
 
-Introduced by commit
+I believe probability someone uses that with more than 4 CPUs is <
+5%. Probability that someone uses it with more than 100 CPUs is << 1%
+I'd say. Systems just don't have that many LEDs. I'll take the risk.
 
-  077ee78e3928 ("PCI/MSI: Make arch_.*_msi_irq[s] fallbacks selectable")
+If I broke someone's real, existing setup, I'll raise the limit.
 
+(With exception of uled setups. In such cases, I'll just laugh.)
+
+If you know or can find out someone using it with more than 4 CPUs, I
+can obviously raise the limit before the merge.
+
+Best regards,
+									Pavel
 --=20
-Cheers,
-Stephen Rothwell
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
---Sig_/Mat4EHH+pDBvC3iG403l6FL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--p2kqVDKq5asng8Dg
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9tuiYACgkQAVBC80lX
-0GyzYwf/YVJJiKEB+DhKEYMYOr8U1Tm5tL+c050b+8spHGXuwWdKQYjiJAttniV9
-KxrDU0bnb48jCYZcv0G47rsMd455BTW/Jnw/UI6AfLmCT0+VOMbtagMrL7devtkk
-1cP9gOKf7eTwgmWsEvtO/MhE7UfE+OxWHFF0Bll8E/7tFxWScVBQ/+/rzHAP21nD
-l4Ni4kDoUdbQGqRFGKQGb03NEkLG9vw/MnsAZsolSmtkWi8sJXt+tBjN8u2CXt9u
-g8RybUHeyQ41GhpjETv/2uWXZPEQl3Wp08c63ywkPZ2LHzd+V91Vl4OEL8wVOsH5
-tJdFt1vo1Tfq4AZn1dVEFAJqNfo9sA==
-=muNT
+iEYEARECAAYFAl9tuxYACgkQMOfwapXb+vImXACfYPwAMqlGN0lqrqh4tyHCfT1y
+ee0AnjtjP7rVsDsuXcoRM+lmZlxIgYkB
+=GgT7
 -----END PGP SIGNATURE-----
 
---Sig_/Mat4EHH+pDBvC3iG403l6FL--
+--p2kqVDKq5asng8Dg--
