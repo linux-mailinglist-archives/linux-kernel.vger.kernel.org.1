@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67672784B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7DCA2784DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbgIYKGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgIYKGV (ORCPT
+        id S1727935AbgIYKQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:16:59 -0400
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:51037 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727749AbgIYKQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:06:21 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B27C0613CE;
-        Fri, 25 Sep 2020 03:06:21 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id y14so2117135pgf.12;
-        Fri, 25 Sep 2020 03:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lj9oeRjf3zqHOI1lrAhS50c7ExJjW+ZIVM2Q3CpvRlc=;
-        b=iL13dvMMELfX/+oazQ9ItLSLB5TFGSR4kWK+CASxfk9BH9kj4f3GA1+7/lLGdW1zQH
-         6Zv/AjUGCHZALk6DgQ8cr4p3q2bOed1x0/P6kyR0sQdX7VROkDeiyT0FUosGRJ0RkRrf
-         W906uBqoX2VeY3UKo+MsSSEnXAGHlL3o1xKJsI+kJre4wqa/mW6YmuFUIW+bUIrrEPyo
-         6Tqv32Sx5oyqaIFGxutkBEgtSKHnLPc5p7zAzKMonWNdgpEdtQ4HzXRXH4DswvvpRbme
-         XLQbAmWis0yWJbOVl05C1dmajpqvQ10oCx+GV09luFKin+FSEdA5/TBgfTJSjMIYrxYF
-         kOhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lj9oeRjf3zqHOI1lrAhS50c7ExJjW+ZIVM2Q3CpvRlc=;
-        b=QNAgT1vZIChqbiQwjKkosDC+4URhSbcqMuD/rCO5ZsyY5QGkbywU+30vgA8mZjjNXD
-         S9qP7bkefTQRi2XELRmhfikUspFVycHvHFbNzRbmqkZZj7Cg00XtwwYfVjh/uiZn9sUK
-         l52b1wRapEj90priimiGK9HThWnJLtX9Z+pzWd1+ZWhsWabnLgrHKR2TFfuPz0GaCrVh
-         gjW7GBEZtCMZfHVBL20hTp+wtDasbV8n9PWTaJAh4nu5nIFWnKe+UlNf+XdXtPlvTpsv
-         VjAgNmNuueV5TYlSO6tUEw9rCdBpI9BTfG0ltO8O9S6ErSGeLW2Uuu9OhLR4WlB6KJA+
-         +GEA==
-X-Gm-Message-State: AOAM531xivCyN/mMJethhOdp/0Z+PeGLiRZFx4nChpJ3eWRaZzTXx+Jt
-        pXcv/c+dPG3v/hC6lMQRZn3LLYsuXVYRCIxUUIs=
-X-Google-Smtp-Source: ABdhPJz3WqficnkMwXiecJ6ACoMQlFnCKY/THVTm9XTVmNFABc4oi3g7POUSuWzHOlgAg/4P4NTnJ0OGBq0pHwnb4uo=
-X-Received: by 2002:aa7:81d5:0:b029:142:2501:39fa with SMTP id
- c21-20020aa781d50000b0290142250139famr3435059pfn.73.1601028380525; Fri, 25
- Sep 2020 03:06:20 -0700 (PDT)
+        Fri, 25 Sep 2020 06:16:58 -0400
+X-Greylist: delayed 570 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 06:16:56 EDT
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kLkdQ-003yvo-HV; Fri, 25 Sep 2020 12:07:24 +0200
+Received: from p5b13a6b0.dip0.t-ipconnect.de ([91.19.166.176] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kLkdQ-000nA2-00; Fri, 25 Sep 2020 12:07:24 +0200
+Subject: Re: [PATCH] fs/affs: Fix basic permission bits to actually work
+To:     Max Staudt <max@enpas.org>, David Sterba <dsterba@suse.com>
+Cc:     linux-fsdevel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20200827154900.28233-1-max@enpas.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Autocrypt: addr=glaubitz@physik.fu-berlin.de; keydata=
+ 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
+ scOkTAZQGVpD/8AaLH4v1w==
+Message-ID: <c96b8ee5-5e96-07fd-de69-ffaa2a4f3bc6@physik.fu-berlin.de>
+Date:   Fri, 25 Sep 2020 12:07:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-8-warthog618@gmail.com>
- <CAHp75VdQUbDnjQEr5X5q6WdU6rD=uBNznNn5=Vy=pvdwVj_hEA@mail.gmail.com> <20200924080921.GE17562@sol>
-In-Reply-To: <20200924080921.GE17562@sol>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 25 Sep 2020 13:06:02 +0300
-Message-ID: <CAHp75VehvUTt19sBxgPTZszUmxDGZwqGAV7bgW5jVM8Mf63UJA@mail.gmail.com>
-Subject: Re: [PATCH v9 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
- and GPIO_V2_LINE_GET_VALUES_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200827154900.28233-1-max@enpas.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.176
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:09 AM Kent Gibson <warthog618@gmail.com> wrote:
-> On Wed, Sep 23, 2020 at 02:11:54PM +0300, Andy Shevchenko wrote:
-> > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+Hi Max!
 
-...
+On 8/27/20 5:49 PM, Max Staudt wrote:
+> The basic permission bits (protection bits in AmigaOS) have been broken
+> in Linux' affs - it would only set bits, but never delete them.
+> Also, contrary to the documentation, the Archived bit was not handled.
+> 
+> Let's fix this for good, and set the bits such that Linux and classic
+> AmigaOS can coexist in the most peaceful manner.
+> 
+> Also, update the documentation to represent the current state of things.
+Has there already been any progress on reviewing this?
 
-> > > +       assign_bit(FLAG_ACTIVE_LOW, flagsp,
-> > > +                  flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW);
-> >
-> > What I meant is to attach also this to the other assign_bit():s below.
-> > And just in case a question: why not __asign_bit() do we really need atomicity?
-> >
->
-> These are initialized as per their order in the flags so it is easier to
-> tell if any are missing.
->
-> The atomicity is not required here, but it is elsewhere so you are
-> oblidged to use it for all accesses, no?
-
-I'm not sure. I think if you are using non-atomic in one place, it
-means that all automatically drop the atomicity guarantee. So, it's
-all or none for atomicity, for non-atomicity it's rather none or at
-least one. That said, code should be carefully checked before doing
-such.
-
-> > > +       if (flags & GPIO_V2_LINE_FLAG_OUTPUT)
-> > > +               set_bit(FLAG_IS_OUT, flagsp);
-> > > +       else if (flags & GPIO_V2_LINE_FLAG_INPUT)
-> > > +               clear_bit(FLAG_IS_OUT, flagsp);
-> > > +
-> > > +       assign_bit(FLAG_OPEN_DRAIN, flagsp,
-> > > +                  flags & GPIO_V2_LINE_FLAG_OPEN_DRAIN);
-> > > +       assign_bit(FLAG_OPEN_SOURCE, flagsp,
-> > > +                  flags & GPIO_V2_LINE_FLAG_OPEN_SOURCE);
-> > > +       assign_bit(FLAG_PULL_UP, flagsp,
-> > > +                  flags & GPIO_V2_LINE_FLAG_BIAS_PULL_UP);
-> > > +       assign_bit(FLAG_PULL_DOWN, flagsp,
-> > > +                  flags & GPIO_V2_LINE_FLAG_BIAS_PULL_DOWN);
-> > > +       assign_bit(FLAG_BIAS_DISABLE, flagsp,
-> > > +                  flags & GPIO_V2_LINE_FLAG_BIAS_DISABLED);
-
-...
-
-> > > +       /* Make sure this is terminated */
-> > > +       ulr.consumer[sizeof(ulr.consumer)-1] = '\0';
-> > > +       if (strlen(ulr.consumer)) {
-> > > +               lr->label = kstrdup(ulr.consumer, GFP_KERNEL);
-> > > +               if (!lr->label) {
-> > > +                       ret = -ENOMEM;
-> > > +                       goto out_free_linereq;
-> > > +               }
-> > > +       }
-> >
-> > Still don't get why we can\t use kstrndup() here...
-> >
->
-> I know ;-).
->
-> Another one directly from v1, and the behaviour there is to leave
-> lr->label nulled if consumer is empty.
-> It just avoids a pointless malloc for the null terminator.
-
-Again, similar as for bitmap API usage, if it makes code cleaner and
-increases readability, I will go for it.
-Also don't forget the army of janitors that won't understand the case
-and simply convert everything that can be converted.
+Adrian
 
 -- 
-With Best Regards,
-Andy Shevchenko
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
