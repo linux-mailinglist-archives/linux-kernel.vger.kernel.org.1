@@ -2,50 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD1F279106
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A207B279110
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729780AbgIYSq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
+        id S1729730AbgIYSrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:47:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729728AbgIYSq0 (ORCPT
+        with ESMTP id S1729121AbgIYSrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:46:26 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A18DC0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:46:26 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id t10so4787722wrv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:46:26 -0700 (PDT)
+        Fri, 25 Sep 2020 14:47:16 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039A1C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:47:16 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so4508774wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:47:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=AlDiV2I2Pb3l4Sw1FS8MXXmwraDk5F1rgxliXh5N5CM=;
-        b=hNVaqgoiF4i4BUKziRlpXfyKzDqaE2Y0RasEA7QnYZaUqmrhYmxmR65VR3QsZGT0/N
-         elfdI2ZtE21gOt8NsKBS76ANRONmfTntZIUBb37OAepaErQ4mHfX26H/avNX5Om2F5Th
-         iF/y4L9RdXJwUeLTzBdv6H/xNDzBbfk+2GMdQ=
+        bh=g/BH1U9GUunsIrnO/GbdPQWxTeH46s0MtJm8Rv2PmQg=;
+        b=dRgYAI+Il/XnGvkuGcGG/lsBUKoJIpFGsPVq7bdfwYbSWBuKZWhEyZ/C6V2T06d7l+
+         MlGVte7aAMEe5kn/Xzgvbo6wkmehHB6utltBuTWLjuy10bgK9jfUtimOpRmqNVZ/PDb7
+         pPEsfddSQturiPpnwk/9j/tF8/GG+ViphzAqQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=AlDiV2I2Pb3l4Sw1FS8MXXmwraDk5F1rgxliXh5N5CM=;
-        b=TcLqNnPFKD7PDfXyPgrMQ43eoEp2BsWzsW3uXxZaagKjbkBKE7wq1xLV4PJvw4xGUS
-         qLTNMZU3GWhziAZ2qHkfkenxnHdj5GpvAY75bQz++y57t7mwMRKKhFKgg0o9f94AEvGP
-         k1xTaw7EkqoUgZxWyhvWfhLDmwrOflXmpHwXAC5O9EOEp+NxK+PaLXb9ktZ3UT48M/G+
-         WO9+mR5l+WT/SNooZ1CGvyodfOa20ucaTARgEN0BUvJ9115NyPzyhVKFscco+jCH8ROy
-         YE5XJp+4U+GBli6zHiI2p9mubvlYY+py4onEsZITFVi9poblJyxQHLEqffnk2pUgA+Mw
-         5mQg==
-X-Gm-Message-State: AOAM5338WeHz6eBNzhpHOq3b16EqOmDmFQORZ/wObRF6PPMFg3elBQCi
-        4RgI7Di3V4iqAxewmfde7pwHXw==
-X-Google-Smtp-Source: ABdhPJywG75RJx/fVTLzqgivIcRb/Gp708YyNw5VwVyHEf689ET8en+rXMvfgfeOwhu5XQytInH4aQ==
-X-Received: by 2002:a5d:56cd:: with SMTP id m13mr5730549wrw.261.1601059584552;
-        Fri, 25 Sep 2020 11:46:24 -0700 (PDT)
+        bh=g/BH1U9GUunsIrnO/GbdPQWxTeH46s0MtJm8Rv2PmQg=;
+        b=IpZKUWW5zt73+4MUctLukp3cCavN2WscaBb+xij9QYiAqUETFMHHiM8W1YGhz0/zz5
+         /VKmYbrDnD4sZWwVJPKFVYEsxuLXCtJlsM0Eox0ehGZLklmIAMHgAvz8eJFmMZsJZkyv
+         bRKCoanDvaZFNEWCuuOrZ9RjDQqyYh/JVu5lFI9ipD9OIJi3lENoWcf1/mu7qGdgpTtd
+         MycxWKVMVErxzrYB5vhP650sDiO4LpdHi84x2iiE0/xVaMnCpKmv11q74bv3l/Lta9en
+         CzRNh3OCKC8mEy6+Zduz6IiLhh2fh25L17609cn1qoiaUBeLvgm3rJGHpcL7GH3OH6Hm
+         vZ4w==
+X-Gm-Message-State: AOAM530gp9wSXGXyBmttFEWPJzeLIIQo2AysxPQpft/W4FN8BBPt9Joa
+        903tlk6LKvicagphBByBmQ8Lbg==
+X-Google-Smtp-Source: ABdhPJwizv9lDNCgaSezSHmDHMwhCyQSsePLifiuaYRBnBvcSMHXRWloRU3D/0rZv64JO/qSChFcJg==
+X-Received: by 2002:a1c:2d86:: with SMTP id t128mr4754086wmt.189.1601059634661;
+        Fri, 25 Sep 2020 11:47:14 -0700 (PDT)
 Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id z8sm3728264wrl.11.2020.09.25.11.46.23
+        by smtp.gmail.com with ESMTPSA id w15sm3841044wro.46.2020.09.25.11.47.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 11:46:23 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 18:46:22 +0000
+        Fri, 25 Sep 2020 11:47:13 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 18:47:12 +0000
 From:   Tomasz Figa <tfiga@chromium.org>
 To:     Christoph Hellwig <hch@lst.de>
 Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
@@ -64,63 +64,54 @@ Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
         nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
         linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 17/18] dma-iommu: implement ->alloc_noncoherent
-Message-ID: <20200925184622.GB3607091@chromium.org>
+        alsa-devel@alsa-project.org,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Subject: Re: [PATCH 01/18] media/v4l2: remove V4L2-FLAG-MEMORY-NON-CONSISTENT
+ flag
+Message-ID: <20200925184712.GC3607091@chromium.org>
 References: <20200915155122.1768241-1-hch@lst.de>
- <20200915155122.1768241-18-hch@lst.de>
+ <20200915155122.1768241-2-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200915155122.1768241-18-hch@lst.de>
+In-Reply-To: <20200915155122.1768241-2-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Christoph,
 
-On Tue, Sep 15, 2020 at 05:51:21PM +0200, Christoph Hellwig wrote:
-> Implement the alloc_noncoherent method to provide memory that is neither
-> coherent not contiguous.
+On Tue, Sep 15, 2020 at 05:51:05PM +0200, Christoph Hellwig wrote:
+> From: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> 
+> The patch partially reverts some of the UAPI bits of the buffer
+> cache management hints. Namely, the queue consistency (memory
+> coherency) user-space hint because, as it turned out, the kernel
+> implementation of this feature was misusing DMA_ATTR_NON_CONSISTENT.
+> 
+> The patch revers both kernel and user space parts: removes the
+> DMA consistency attr functions, rollbacks changes to v4l2_requestbuffers,
+> v4l2_create_buffers structures and corresponding UAPI functions
+> (plus compat32 layer) and cleanups the documentation.
 > 
 > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  drivers/iommu/dma-iommu.c | 41 +++++++++++++++++++++++++++++++++++----
->  1 file changed, 37 insertions(+), 4 deletions(-)
-> 
+>  .../userspace-api/media/v4l/buffer.rst        | 17 -------
+>  .../media/v4l/vidioc-create-bufs.rst          |  6 +--
+>  .../media/v4l/vidioc-reqbufs.rst              | 12 +----
+>  .../media/common/videobuf2/videobuf2-core.c   | 46 +++----------------
+>  .../common/videobuf2/videobuf2-dma-contig.c   | 19 --------
+>  .../media/common/videobuf2/videobuf2-dma-sg.c |  3 +-
+>  .../media/common/videobuf2/videobuf2-v4l2.c   | 18 +-------
+>  drivers/media/v4l2-core/v4l2-compat-ioctl32.c | 10 +---
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |  5 +-
+>  include/media/videobuf2-core.h                |  7 +--
+>  include/uapi/linux/videodev2.h                | 13 +-----
+>  11 files changed, 22 insertions(+), 134 deletions(-)
 
-Sorry for being late to the party and thanks a lot for the patch. Please see my
-comments inline.
-
-[snip]
-> @@ -1052,6 +1055,34 @@ static void *iommu_dma_alloc(struct device *dev, size_t size,
->  	return cpu_addr;
->  }
->  
-> +#ifdef CONFIG_DMA_REMAP
-> +static void *iommu_dma_alloc_noncoherent(struct device *dev, size_t size,
-> +		dma_addr_t *handle, enum dma_data_direction dir, gfp_t gfp)
-> +{
-> +	if (!gfpflags_allow_blocking(gfp)) {
-> +		struct page *page;
-> +
-> +		page = dma_common_alloc_pages(dev, size, handle, dir, gfp);
-> +		if (!page)
-> +			return NULL;
-> +		return page_address(page);
-> +	}
-> +
-> +	return iommu_dma_alloc_remap(dev, size, handle, gfp | __GFP_ZERO,
-> +				     PAGE_KERNEL, 0);
-
-iommu_dma_alloc_remap() makes use of the DMA_ATTR_ALLOC_SINGLE_PAGES attribute
-to optimize the allocations for devices which don't care about how contiguous
-the backing memory is. Do you think we could add an attrs argument to this
-function and pass it there?
-
-As ARM is being moved to the common iommu-dma layer as well, we'll probably
-make use of the argument to support the DMA_ATTR_NO_KERNEL_MAPPING attribute to
-conserve the vmalloc area.
+Acked-by: Tomasz Figa <tfiga@chromium.org>
 
 Best regards,
 Tomasz
