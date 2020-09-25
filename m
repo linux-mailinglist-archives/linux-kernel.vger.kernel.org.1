@@ -2,130 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303E4278E76
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC59278E7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729378AbgIYQaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:30:23 -0400
-Received: from relaydlg-01.paragon-software.com ([81.5.88.159]:56608 "EHLO
-        relaydlg-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726990AbgIYQaW (ORCPT
+        id S1729432AbgIYQad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729392AbgIYQac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:30:22 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relaydlg-01.paragon-software.com (Postfix) with ESMTPS id 32B0781E18;
-        Fri, 25 Sep 2020 19:30:20 +0300 (MSK)
+        Fri, 25 Sep 2020 12:30:32 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CF5C0613CE;
+        Fri, 25 Sep 2020 09:30:32 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id m6so4301117wrn.0;
+        Fri, 25 Sep 2020 09:30:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1601051420;
-        bh=ku5HcfPTrYYoHR4U6YrcFO4/qyieMTdjlj9S1ShhrAA=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=p0auxOBZUhx5pDvQLRLUT0ZmH3owNNRFUGVliazh1czvFEjX+eik4SzesuD47wAeJ
-         3wJ+SS5yUt/gL8/dkWNAphj9T0rNQPa53144F15Ku00Mpykl4xYHAR2f8acwaa0pFl
-         YPCxG8Pv1RVSCjwnRKrlj0UalcUpsXF/jd4IXZ9g=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 25 Sep 2020 19:30:19 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Fri, 25 Sep 2020 19:30:19 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     =?iso-8859-1?Q?Pali_Roh=E1r?= <pali@kernel.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "mark@harmstone.com" <mark@harmstone.com>,
-        "nborisov@suse.com" <nborisov@suse.com>
-Subject: RE: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-Thread-Topic: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-Thread-Index: AQHWiEVMa6NNOPBUmU2lQbRIYYQ96qly8s2AgAaqUoA=
-Date:   Fri, 25 Sep 2020 16:30:19 +0000
-Message-ID: <7facb550be6449c2b35f467ab1716224@paragon-software.com>
-References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
- <20200911141018.2457639-9-almaz.alexandrovich@paragon-software.com>
- <20200921132631.q6jfmbhqf6j6ay5t@pali>
-In-Reply-To: <20200921132631.q6jfmbhqf6j6ay5t@pali>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4jdg6HluSD0IAXD+xCNl8iJ0heD5lzYJS/e0fwkN9Ko=;
+        b=YLBOmdYQC6Ni3ZJrTi0GnJS/nbroYdTPlm+td7OsuC6S5LXI+maw/Kx+k1/A7B6IeE
+         hBZlsGuaSthhEQUPZamUD1H5Z2RFQV/vL4tzSzCK2nu+YXtxh5rhjcjS16kays5OhRP1
+         XI0IXs+lHy1/euABIl+cnJBTR+1+Ihdv8N2iElCrwN+QfYbAzFk4BfWvB0mCEelbksAj
+         MoNiszFEGbX9FWI5jwqrcevtXBqnZ/k9C+p2XFz6qFWnDZ94yr2iJGwWevD9mm5wDxm8
+         oiguJtJ28Jtl2PJCXIWQw2plA5UQSYn7yMN1RUkWry+7rws0eZ+eEm6+pAuu+0WZ6eJf
+         wu/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4jdg6HluSD0IAXD+xCNl8iJ0heD5lzYJS/e0fwkN9Ko=;
+        b=S2lvU8mUddEYfY8BPRaU1oZfehD26hRBgsCsRyxBYuTvbugIaGgIgUyM+l44odYphF
+         yOTo5V3zz9LIyZhh4wm+4rBYA2UkNGDTpSmRf+zBQmZYrKAulWsPFgSfmmI+rIdB66cn
+         7Lyq0uLVAz+bR4Vt7bFTR2hrf4Eiu5V5spZPVj9tw06L5nrahENn1pcoyiOEb6BKtYCm
+         giI6v+/q3h8HBus6G4mJNpNmwGds2EtQPlg0yyCS6hwD5i7RWi45FpAAQdsxbFUJ277E
+         mF3vHamFVGzySU9HlDnryLZ2RbDjl85fVLtVIbN8NWsqeCbXmCmCQDG9zvLgG8v9SpaM
+         LgPg==
+X-Gm-Message-State: AOAM531+OgE4BpP9o1p+A7G3TdBX85q7iHvCjwsPr+DDyvBR0m0ywjUU
+        7kUZOPZKPS1Yq7F1/8zMWWU=
+X-Google-Smtp-Source: ABdhPJwUYMkkzTAcy3o+2DS9BEZxnAyPQJfcTA1zfupyyyVTxpoOPurKoyhF0HOL9AigWj18wG4/2g==
+X-Received: by 2002:a5d:444b:: with SMTP id x11mr5353193wrr.402.1601051430708;
+        Fri, 25 Sep 2020 09:30:30 -0700 (PDT)
+Received: from [192.168.1.143] ([170.253.60.68])
+        by smtp.gmail.com with ESMTPSA id n3sm3439469wmn.28.2020.09.25.09.30.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 09:30:30 -0700 (PDT)
+Subject: Re: [PATCH v2] <sys/param.h>: Add nitems() and snitems() macros
+To:     Jonathan Wakely <jwakely@redhat.com>
+Cc:     libc-alpha@sourceware.org, libc-coord@lists.openwall.com,
+        libstdc++@gcc.gnu.org, gcc@gcc.gnu.org,
+        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
+        fweimer@redhat.com, ville.voutilainen@gmail.com, enh@google.com,
+        rusty@rustcorp.com.au
+References: <20200922145844.31867-1-colomar.6.4.3@gmail.com>
+ <20200925132000.235033-1-colomar.6.4.3@gmail.com>
+ <f6257d7d-1cea-b45c-a858-b80bbc1f18b1@gmail.com>
+ <20200925144822.GM6061@redhat.com>
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+Message-ID: <22c110fe-4c92-e5e6-dc35-dbf00a97cfa2@gmail.com>
+Date:   Fri, 25 Sep 2020 18:30:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20200925144822.GM6061@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pali Roh=E1r <pali@kernel.org>
-Sent: Monday, September 21, 2020 4:27 PM
-> To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@=
-vger.kernel.org; dsterba@suse.cz; aaptel@suse.com;
-> willy@infradead.org; rdunlap@infradead.org; joe@perches.com; mark@harmsto=
-ne.com; nborisov@suse.com
-> Subject: Re: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
->=20
-> On Friday 11 September 2020 17:10:16 Konstantin Komarov wrote:
-> > +Mount Options
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +The list below describes mount options supported by NTFS3 driver in ad=
-dition to
-> > +generic ones.
-> > +
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
-> > +
-> > +nls=3Dname		This option informs the driver how to interpret path
-> > +			strings and translate them to Unicode and back. If
-> > +			this option is not set, the default codepage will be
-> > +			used (CONFIG_NLS_DEFAULT).
-> > +			Examples:
-> > +				'nls=3Dutf8'
-> > +
-> > +nls_alt=3Dname		This option extends "nls". It will be used to translat=
-e
-> > +			path string to Unicode if primary nls failed.
-> > +			Examples:
-> > +				'nls_alt=3Dcp1251'
->=20
-> Hello! I'm looking at other filesystem drivers and no other with UNICODE
-> semantic (vfat, udf, isofs) has something like nls_alt option.
->=20
-> So do we really need it? And if yes, it should be added to all other
-> UNICODE filesystem drivers for consistency.
->=20
-> But I'm very sceptical if such thing is really needed. nls=3D option just
-> said how to convert UNICODE code points for userpace. This option is
-> passed by userspace (when mounting disk), so userspace already know what
-> it wanted. And it should really use this encoding for filenames (e.g.
-> utf8 or cp1251) which already told to kernel.
+Hello Jonathan,
 
-Hi Pali! Thanks for the feedback. We do not consider the nls_alt option as =
-the must have
-one. But it is very nice "QOL-type" mount option, which may help some amoun=
-t of
-dual-booters/Windows users to avoid tricky fails with files originated on n=
-on-English
-Windows systems. One of the cases where this one may be useful is the case =
-of zipping
-files with non-English names (e.g. Polish etc) under Windows and then unzip=
-ping the archive
-under Linux. In this case unzip will likely to fail on those files, as arch=
-ive stores filenames not
-in utf. Windows have that "Language for non-Unicode programs" setting, whic=
-h controls the
-encoding used for the described (and similar) cases.
-Overall, it's kinda niche mount option, but we suppose it's legit for Windo=
-ws-originated filesystems.
-What do you think on this, Pali?
+On 2020-09-25 16:48, Jonathan Wakely wrote:
+ > Do you really need to provide snitems?
+ >
+ > Users can use (ptrdiff_t)nitems if needed, can't they?
 
-Best regards!
+They can, but that adds casts in the code,
+which makes longer lines that are somewhat harder to read.
+To avoid that, users may sometimes omit the cast with possible UB.
+BTW, I use
+
+IMO, array indices should be declared as 'ptrdiff_t' always,
+and not 'size_t'.  More generically, I use unsigned integer types for two
+reasons:  bitwise operations, and library functions that require me to 
+do so.
+
+I don't intend to force anyone with my opinion, of course,
+but if I were to choose a type for 'nitems()', it would be 'ptrdiff_t'.
+
+However, for legacy reasons people will expect that macro to be unsigned,
+so I'd have 'nitems()' unsigned, and then a signed version prefixed with 
+an 's'.
+
+Some very interesting links about this topic:
+
+Bjarne Stroustrup (and others) about signed and unsigned integers:
+https://www.youtube.com/watch?v=Puio5dly9N8&t=12m56s
+https://www.youtube.com/watch?v=Puio5dly9N8&t=42m41s
+
+The two links above are two interesting moments of the same video.
+
+I guess that might be the reason they added std::ssize, BTW.
+
+Google's C++ Style Guide about unsigned integers:
+https://google.github.io/styleguide/cppguide.html#Integer_Types
+
+And the most voted StackOverflow answer to the question
+'What is the correct type for array indexes in C?':
+https://stackoverflow.com/a/3174900/6872717
+
+ >
+ > C++ provides std::ssize because there are reasons to want it in
+ > generic contexts when using the function on arbitrary container-like
+ > objects. But for an array size you know that ptrdiff_t is wide enough
+ > to represent the size of any array.>
+ > Do you have a use case that requries snitems, or can you assume YAGNI?
+ >
+
+I have a few use cases:
+
+1)
+
+int	alx_gnuplot_set_style		(struct Alx_Gnuplot *restrict gnuplot,
+					 int style, const char *restrict opt)
+{
+
+	if (style < 0  ||  style >= ARRAY_SSIZE(styles))
+		return	-1;
+
+	if (alx_strlcpys(gnuplot->style, styles[style],
+					ARRAY_SIZE(gnuplot->style), NULL))
+		return	-1;
+	if (opt)
+		return	alx_strbcatf(gnuplot->style, NULL, " %s", opt);
+	return	0;
+
+}
+
+[https://github.com/alejandro-colomar/libalx/blob/master/src/extra/plot/setup.c]
+
+2) I have many loops that access arrays; I'll just make up an example of
+how I normally access arrays:
+
+void foo(ptrdiff_t nmemb)
+{
+         int arr[nmemb];
+
+         for (ptrdiff_t i = 0; i < ARRAY_SSIZE(arr); i++)
+                 arr[i] = i;
+}
+
+Grepping through my code,
+I have a similar number of ARRAY_SIZE() and ARRAY_SSIZE().
+I could have '#define snitems(arr) ((ptrdiff_t)nitems(arr))' in my projects,
+but is it really necessary?
+
+
+Did I convince you? :-)
+
+Thanks,
+
+Alex
+
