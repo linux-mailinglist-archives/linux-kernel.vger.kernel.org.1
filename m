@@ -2,51 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7877F279431
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0304279436
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729068AbgIYW1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:27:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55018 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728925AbgIYW1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:27:47 -0400
-Subject: Re: [GIT PULL] regmap fixes for v5.9-rc6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601072867;
-        bh=P07eItEtqd+L/udD10HQtbhvQei6+f+No7K1AxOS4SE=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=LWmpqmNeAXTKF3afeI3SXCKLWxB0qqtkSS/qVP8yMm6dif4QMFn4m0576EFnEChh+
-         llTtD0c0YUXoHEea6PxFVNGbMsnsmGinEPSvfU16Rq9+/h5/xQ3TWJU3OnfqTPGlgz
-         YtDNv7F/XW3yxzRkaXWDQEnZP6FrKIEP26BUk7Xk=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200925201707.A2D8523888@mail.kernel.org>
-References: <20200925201707.A2D8523888@mail.kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200925201707.A2D8523888@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v5.9-rc6
-X-PR-Tracked-Commit-Id: 05669b63170771d554854c0e465b76dc98fc7c84
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9a3a0876b9c40b1471329e484f503e6f8ca3e56f
-Message-Id: <160107286703.23838.11606864178594714376.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Sep 2020 22:27:47 +0000
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+        id S1729298AbgIYW2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:28:53 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:13358 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727258AbgIYW2x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:28:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1601072932; x=1632608932;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=H/ByxnyqVs12wa6YXcMkkIXYTiIPz40wHkOjYuHpCoE=;
+  b=jxxR8GZAl/PYVcjcYf5TxvCzVcfaE3jDipdc8L5EAoXs76dkESN0McVa
+   6Bg/mEQn6gKWjvvhJe+HN/GxBoA9hPjpdEK6HMZ/uI04d8McNe9wpXnsC
+   1ekuArqDVz4gEApLOBsm3wv79gmDEksMGV0A+TqrM9K59r6NIKyZUSZMq
+   4=;
+X-IronPort-AV: E=Sophos;i="5.77,303,1596499200"; 
+   d="scan'208";a="56168877"
+Subject: Re: [PATCH v3 01/11] xen/manage: keep track of the on-going suspend mode
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 25 Sep 2020 22:28:51 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id 8D1EC281EA5;
+        Fri, 25 Sep 2020 22:28:44 +0000 (UTC)
+Received: from EX13D08UEB004.ant.amazon.com (10.43.60.142) by
+ EX13MTAUEB002.ant.amazon.com (10.43.60.12) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 25 Sep 2020 22:28:27 +0000
+Received: from EX13MTAUEB002.ant.amazon.com (10.43.60.12) by
+ EX13D08UEB004.ant.amazon.com (10.43.60.142) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 25 Sep 2020 22:28:26 +0000
+Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
+ (172.22.96.68) by mail-relay.amazon.com (10.43.60.234) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Fri, 25 Sep 2020 22:28:26 +0000
+Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
+        id B1F8B40269; Fri, 25 Sep 2020 22:28:26 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 22:28:26 +0000
+From:   Anchal Agarwal <anchalag@amazon.com>
+To:     <boris.ostrovsky@oracle.com>
+CC:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <hpa@zytor.com>, <x86@kernel.org>, <jgross@suse.com>,
+        <linux-pm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <kamatam@amazon.com>, <sstabellini@kernel.org>,
+        <konrad.wilk@oracle.com>, <roger.pau@citrix.com>,
+        <axboe@kernel.dk>, <davem@davemloft.net>, <rjw@rjwysocki.net>,
+        <len.brown@intel.com>, <pavel@ucw.cz>, <peterz@infradead.org>,
+        <eduval@amazon.com>, <sblbir@amazon.com>,
+        <xen-devel@lists.xenproject.org>, <vkuznets@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <dwmw@amazon.co.uk>, <benh@kernel.crashing.org>
+Message-ID: <20200925222826.GA11755@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+References: <4b2bbc8b-7817-271a-4ff0-5ee5df956049@oracle.com>
+ <20200914214754.GA19975@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <e9b94104-d20a-b6b2-cbe0-f79b1ed09c98@oracle.com>
+ <20200915180055.GB19975@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <5f1e4772-7bd9-e6c0-3fe6-eef98bb72bd8@oracle.com>
+ <20200921215447.GA28503@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <e3e447e5-2f7a-82a2-31c8-10c2ffcbfb2c@oracle.com>
+ <20200922231736.GA24215@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <20200925190423.GA31885@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <274ddc57-5c98-5003-c850-411eed1aea4c@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <274ddc57-5c98-5003-c850-411eed1aea4c@oracle.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 25 Sep 2020 21:16:00 +0100:
+On Fri, Sep 25, 2020 at 04:02:58PM -0400, boris.ostrovsky@oracle.com wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> 
+> 
+> 
+> On 9/25/20 3:04 PM, Anchal Agarwal wrote:
+> > On Tue, Sep 22, 2020 at 11:17:36PM +0000, Anchal Agarwal wrote:
+> >> On Tue, Sep 22, 2020 at 12:18:05PM -0400, boris.ostrovsky@oracle.com wrote:
+> >>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> >>>
+> >>>
+> >>>
+> >>> On 9/21/20 5:54 PM, Anchal Agarwal wrote:
+> >>>> Thanks for the above suggestion. You are right I didn't find a way to declare
+> >>>> a global state either. I just broke the above check in 2 so that once we have
+> >>>> support for ARM we should be able to remove aarch64 condition easily. Let me
+> >>>> know if I am missing nay corner cases with this one.
+> >>>>
+> >>>> static int xen_pm_notifier(struct notifier_block *notifier,
+> >>>>       unsigned long pm_event, void *unused)
+> >>>> {
+> >>>>     int ret = NOTIFY_OK;
+> >>>>     if (!xen_hvm_domain() || xen_initial_domain())
+> >>>>       ret = NOTIFY_BAD;
+> >>>>     if(IS_ENABLED(CONFIG_ARM64) && (pm_event == PM_SUSPEND_PREPARE || pm_event == HIBERNATION_PREPARE))
+> >>>>       ret = NOTIFY_BAD;
+> >>>>
+> >>>>     return ret;
+> >>>> }
+> >>>
+> >>>
+> >>> This will allow PM suspend to proceed on x86.
+> >> Right!! Missed it.
+> >> Also, wrt KASLR stuff, that issue is still seen sometimes but I haven't had
+> >> bandwidth to dive deep into the issue and fix it.
+> 
+> 
+> So what's the plan there? You first mentioned this issue early this year and judged by your response it is not clear whether you will ever spend time looking at it.
+> 
+I do want to fix it and did do some debugging earlier this year just haven't
+gotten back to it. Also, wanted to understand if the issue is a blocker to this
+series?
+I had some theories when debugging around this like if the random base address picked by kaslr for the
+resuming kernel mismatches the suspended kernel and just jogging my memory, I didn't find that as the case.
+Another hunch was if physical address of registered vcpu info at boot is different from what suspended kernel
+has and that can cause CPU's to get stuck when coming online. The issue was only
+reproducible 3% of the time out of 3000 runs hence its hard to just reproduce this.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v5.9-rc6
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9a3a0876b9c40b1471329e484f503e6f8ca3e56f
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Moreover, I also wanted to get an insight on if hibernation works correctly with KASLR
+generally and its only Xen causing the issue?
+> 
+> >>  I seem to have lost your email
+> >> in my inbox hence covering the question here.
+> >>>
+> > Can I add your Reviewed-by or Signed-off-by to it?
+> 
+> 
+> Are you asking me to add my R-b to the broken code above?
+> 
+Of course not!! After its fixed.
+Well can forget it for now then!
+> 
+> -boris
+> 
+Thanks,
+Anchal
