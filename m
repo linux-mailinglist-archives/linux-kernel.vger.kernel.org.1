@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162762785C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62DB2785C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728235AbgIYL1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgIYL1E (ORCPT
+        id S1726255AbgIYL1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:27:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51631 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726990AbgIYL1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:27:04 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8385CC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:27:04 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id y9so2009068ilq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:27:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uiVJLOBV5LcmVTiJhnHnDU44FmxZVBCf8/K2rl5lfoU=;
-        b=LwlV686z+l+2FKghH/so8g8fDFpHMDDWt7w5TMBjKRTHi4JZxQnYesIgGqgK+osGu+
-         jx7m6APWPYvpIXXM0+wqcD+vTSMp3roUI0HEJ2khbbImkdDGNP+WbnFsoF6IAHcWquQ+
-         CkPISGcKTwZV1/CiyCAW+aQBD/qZac4B6gbQJICGkgn5LdTByu/g0pPJ7E0z3B1DYoIu
-         lF34X8O3qlAXGAn/gNpNho7olYmveqm1L57mzDm+b/CKvaaLHM+Fnq+dYi3PahkbKhfW
-         Q5QMZJGS8wQsz0oQEVojJNc3DO5NLX1dhbExJjmrOhYm1LqMma0fXmTVM4CITCy54Kxw
-         prOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uiVJLOBV5LcmVTiJhnHnDU44FmxZVBCf8/K2rl5lfoU=;
-        b=ARZOOVrTU1a/uXzeaIqU0fkS/+PPsAAG9y1Eds8VNmjzKDkxx4P7BG2I2DWy611lWO
-         3DLMfwQ6/oPyzbpcL+LBAU02gtWxDJwsJwl71HGhhEBOYtG5O4Phem+HnMmkNciFWVJf
-         TWyGRjsk7W6VMd/soTzTGrQpIO7iIvig8L+WbPGFk9vLqgduJ3UxNeX0DWWhZnI486+Q
-         bcPifEq3RCXGFSvVBiXuz7Zer374wzZbtOsUl1auLsPvlPJtnBTF7ivrU6IwGzGg23Yd
-         6Slld8vPJs9DQIcx/foa7PJDC7Jly1cVWgBV0pjgZK52HnEDhnc8HWOHBcfHMFAkje99
-         3d6A==
-X-Gm-Message-State: AOAM5334D8M0GFFar6FMGi7lT8fCACWbu46izvp1vb2yPBOjqHYf5ZdX
-        +LAF+ti/iel3V5i56y7AFtmLfm9+WKseC0awJhoz+g==
-X-Google-Smtp-Source: ABdhPJwRwhqEygDtN+4fhAZ/kjJMmmas2CozDB/Ls+XD0FdOOYj3VCXukeYOfRAyINpvB4gAj20a+yQIoxbxi4s9LuU=
-X-Received: by 2002:a92:5bd0:: with SMTP id c77mr2742659ilg.31.1601033223767;
- Fri, 25 Sep 2020 04:27:03 -0700 (PDT)
+        Fri, 25 Sep 2020 07:27:41 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601033256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OIYjG/eOf0A02Qd+6Up4W+Jt7X/3F3zVaDbUU4OQaQY=;
+        b=O/WhS1SEB7dd6XjJKRiEeNJujnCiLweBn9Hf4gPr6c/wmKeSuj3oHRXFS5X/FK7laMtRgu
+        d4QYepDj5gyLXR/PpOheMcNJdkx6Q1j7vLByKHWixOXvO0/ltMmUHhsUQoz/77PfcGCCRI
+        pJtV5Pgze3E2S70giWRApa8QNM2mEyw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-z4Vu6R3RNealyVJDGYbeXg-1; Fri, 25 Sep 2020 07:27:33 -0400
+X-MC-Unique: z4Vu6R3RNealyVJDGYbeXg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD02A88EF0E;
+        Fri, 25 Sep 2020 11:27:31 +0000 (UTC)
+Received: from [10.72.12.44] (ovpn-12-44.pek2.redhat.com [10.72.12.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 930765D9F7;
+        Fri, 25 Sep 2020 11:27:15 +0000 (UTC)
+Subject: Re: [RFC PATCH 02/24] vhost-vdpa: fix vqs leak in vhost_vdpa_open()
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     lulu@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
+        mhabets@solarflare.com, eli@mellanox.com, amorenoz@redhat.com,
+        maxime.coquelin@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com
+References: <20200924032125.18619-1-jasowang@redhat.com>
+ <20200924032125.18619-3-jasowang@redhat.com>
+ <20200924053119-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <c2f3c4a3-604f-ad27-d34d-a829446a3c7e@redhat.com>
+Date:   Fri, 25 Sep 2020 19:27:13 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <cover.1600238586.git.viresh.kumar@linaro.org> <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
- <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
- <20200924131543.eury5vhqy3xt35v6@vireshk-i7> <CAJZ5v0g8Bmxt=GEKcNrKjY1cHnsURV5oe3+n1R2+U_2VJnwfRQ@mail.gmail.com>
- <20200925105830.xsmiwkjohlqb5joj@vireshk-i7> <CAJZ5v0guU0GDs06W98boFpdCopHTiF_ojwTPrZFNP0Bk3DiQXQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0guU0GDs06W98boFpdCopHTiF_ojwTPrZFNP0Bk3DiQXQ@mail.gmail.com>
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-Date:   Fri, 25 Sep 2020 16:56:51 +0530
-Message-ID: <CAKohpo=2Dm3+9XBpmkj5xp1vpamcR5tufc522uSz1Egkmmf-6A@mail.gmail.com>
-Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to cpufreq_stats_record_transition()
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200924053119-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 16:39, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Fri, Sep 25, 2020 at 12:58 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> >
-> > On 25-09-20, 12:04, Rafael J. Wysocki wrote:
-> > > I'm actually wondering if reset_time is necessary at all.
-> > >
-> > > If cpufreq_stats_record_transition() is the only updater of the stats,
-> > > which will be the case after applying this series IIUC, it may as well
-> > > simply set the new starting point and discard all of the data
-> > > collected so far if reset_pending is set.
-> > >
-> > > IOW, the time when the reset has been requested isn't particularly
-> > > relevant IMV (and it is not exact anyway), because the user is
-> > > basically asking for discarding "history" and that may very well be
-> > > interpreted to include the current sample.
-> >
-> > There are times when this would be visible to userspace and won't look nice.
-> >
-> > Like, set governor to performance, reset the stats and after 10 seconds, read
-> > the stats again, everything will be 0.
->
-> Unless I'm missing something, the real reset happens when
-> cpufreq_stats_record_transition() runs next time, so the old stats
-> will still be visible at that point, won't they?
 
-For userspace the stats shouldn't be visible after reset is requested
-by it and so with
-this series, we check for reset-pending in all the show_*() helpers and print
-stats since the time reset was requested.
+On 2020/9/24 下午5:31, Michael S. Tsirkin wrote:
+> On Thu, Sep 24, 2020 at 11:21:03AM +0800, Jason Wang wrote:
+>> We need to free vqs during the err path after it has been allocated
+>> since vhost won't do that for us.
+>>
+>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> This is a bugfix too right? I don't see it posted separately ...
 
-> > Because cpufreq_stats_record_transition()
-> > doesn't get called at all here, we would never clear them until the time
-> > governor is changed and so we need to keep a track of reset-time.
+
+A patch that is functional equivalent is posted here:
+
+https://www.mail-archive.com/virtualization@lists.linux-foundation.org/msg42558.html
+
+I'm a little bit lazy to use that one since this patch is probably wrote 
+before that one.
+
+Thanks
+
+
 >
-> Or trigger a forced update.
+>> ---
+>>   drivers/vhost/vdpa.c | 11 ++++++++---
+>>   1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>> index 796fe979f997..9c641274b9f3 100644
+>> --- a/drivers/vhost/vdpa.c
+>> +++ b/drivers/vhost/vdpa.c
+>> @@ -764,6 +764,12 @@ static void vhost_vdpa_free_domain(struct vhost_vdpa *v)
+>>   	v->domain = NULL;
+>>   }
+>>   
+>> +static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
+>> +{
+>> +	vhost_dev_cleanup(&v->vdev);
+>> +	kfree(v->vdev.vqs);
+>> +}
+>> +
+>>   static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>>   {
+>>   	struct vhost_vdpa *v;
+>> @@ -809,7 +815,7 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>>   	return 0;
+>>   
+>>   err_init_iotlb:
+>> -	vhost_dev_cleanup(&v->vdev);
+>> +	vhost_vdpa_cleanup(v);
+>>   err:
+>>   	atomic_dec(&v->opened);
+>>   	return r;
+>> @@ -840,8 +846,7 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
+>>   	vhost_vdpa_free_domain(v);
+>>   	vhost_vdpa_config_put(v);
+>>   	vhost_vdpa_clean_irq(v);
+>> -	vhost_dev_cleanup(&v->vdev);
+>> -	kfree(v->vdev.vqs);
+>> +	vhost_vdpa_cleanup(v);
+>>   	mutex_unlock(&d->mutex);
+>>   
+>>   	atomic_dec(&v->opened);
+>> -- 
+>> 2.20.1
 
-That would add races while updating the actual stats. And so I found the current
-way to be more reliable.
