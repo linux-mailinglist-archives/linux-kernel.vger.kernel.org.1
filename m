@@ -2,86 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CB1278E5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E427278E61
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729410AbgIYQ0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:26:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbgIYQ0G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:26:06 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3228AC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:26:06 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x22so3659373pfo.12
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FR8tV2dJ/U11TWa0ogl2BlvkMdFOuXzEoZRJvGo7p6I=;
-        b=HPl/Iy/WXJPfpgUtGMjYyt4aratJ1qBBtn1Z0w+zGlQEzXPIPiEvqgd8chlSk9bEKa
-         UJuJTDdKx7j5323xHfo46Zhx/wlKRQ36ZmEeAEp4F24M+bWHS4O2EJPyTFKzCh3uc+ks
-         d1wp6jjoktuY7cLfQn1UoeKfdsIbhLMpD3nb8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=FR8tV2dJ/U11TWa0ogl2BlvkMdFOuXzEoZRJvGo7p6I=;
-        b=PQpHvdd5BHAweWtfxWdiN5+V5Vk+FNGtNGY6sSjO6+f5XNGpEPqGfmu9ibBn4/oVBB
-         pc7LiySQx155fYhDLhuu5hApKl15jcDXcUNpeosLa3TieTcKmab3mT/jFRYGblT3B1Fz
-         /Zz83USrHKTVRwtW2WPiKE4GK6wodNzQsqbWt+mxHU5yJd2GdttIaS6aBY/nVeDfAM8k
-         3CJcJflrKJfBEB64SIG52Ls0r7jd4xtudEYwMQWfiTGP1Tj8zLF271OHDxXpPs++GlVw
-         gvk2mOA0oJvurJOKD+f88D1sVnTX3jJBbXRByV+FsrwgM/vxQlzIr4nCLLVpHwrdb95c
-         lqDQ==
-X-Gm-Message-State: AOAM533Z2bMLykMadDyTCygMMoQ5S60OfQJZjTCFsd/p8O8x8qdxKymC
-        JfY9T9HxYVy7VZsPFnU8HH9sJw==
-X-Google-Smtp-Source: ABdhPJzojrNphfsKZs+tcDxID5EAhu+3qnVwXwUFFj0qXQL6337a34yiur3o8McUXwfxcSgLAJc12g==
-X-Received: by 2002:a63:29c8:: with SMTP id p191mr708146pgp.45.1601051165748;
-        Fri, 25 Sep 2020 09:26:05 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id q5sm3076435pfb.184.2020.09.25.09.26.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 09:26:05 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Douglas Anderson <dianders@chromium.org>
-Subject: [PATCH] ARM: dts: cros-ec-keyboard: Add alternate keymap for KEY_LEFTMETA
-Date:   Fri, 25 Sep 2020 09:26:04 -0700
-Message-Id: <20200925162604.2311841-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+        id S1728731AbgIYQ0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:26:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727151AbgIYQ0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:26:51 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D6F50206E5;
+        Fri, 25 Sep 2020 16:26:49 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 12:26:47 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     paulmck <paulmck@kernel.org>,
+        Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
+ enabled in a header
+Message-ID: <20200925122647.230decde@oasis.local.home>
+In-Reply-To: <965650354.69699.1601047806662.JavaMail.zimbra@efficios.com>
+References: <20200924170928.466191266@goodmis.org>
+        <20200924153517.73f5f257@oasis.local.home>
+        <221547373.69067.1600977935633.JavaMail.zimbra@efficios.com>
+        <20200924161328.760f5e79@oasis.local.home>
+        <1430794518.69084.1600979254425.JavaMail.zimbra@efficios.com>
+        <20200924163331.0080b943@oasis.local.home>
+        <176393901.69671.1601044916547.JavaMail.zimbra@efficios.com>
+        <20200925111415.60f5334c@oasis.local.home>
+        <965650354.69699.1601047806662.JavaMail.zimbra@efficios.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On newer keyboards this key is in a different place. Add both options to
-the keymap so that both new and old keyboards work.
+On Fri, 25 Sep 2020 11:30:06 -0400 (EDT)
+Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 
-Cc: Douglas Anderson <dianders@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- arch/arm/boot/dts/cros-ec-keyboard.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+> > Anyway, I don't see any issues with the current patch set as is
+> > (besides the documentation fix, which I already updated locally). And
+> > will add this to my queue for linux-next.  
+> 
+> The only thing I would change in the documentation is to word this as
+> "here is a trampoline trick which can be used to work-around rare cases
+> of tracepoint header circular dependency issues" rather than "always use
+> this when instrumenting a header".
+> 
 
-diff --git a/arch/arm/boot/dts/cros-ec-keyboard.dtsi b/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-index 4a0c1037fbc0..165c5bcd510e 100644
---- a/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-+++ b/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-@@ -46,6 +46,7 @@ MATRIX_KEY(0x02, 0x08, KEY_LEFTBRACE)
- 			MATRIX_KEY(0x02, 0x09, KEY_F8)
- 			MATRIX_KEY(0x02, 0x0a, KEY_YEN)
- 
-+			MATRIX_KEY(0x03, 0x00, KEY_LEFTMETA)
- 			MATRIX_KEY(0x03, 0x01, KEY_GRAVE)
- 			MATRIX_KEY(0x03, 0x02, KEY_F2)
- 			MATRIX_KEY(0x03, 0x03, KEY_5)
--- 
-Sent by a computer, using git, on the internet
+I rather not have tracepoints in headers. Period!
+
+It's not just about circular dependencies, it also bloats the code.
+
+-- Steve
 
