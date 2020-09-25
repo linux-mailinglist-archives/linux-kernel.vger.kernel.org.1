@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA13278202
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:51:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01381278203
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727534AbgIYHv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgIYHv1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:51:27 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7512C0613CE;
-        Fri, 25 Sep 2020 00:51:26 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id e23so2379076eja.3;
-        Fri, 25 Sep 2020 00:51:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C3MDToKFnc8Ld4NhDNLDgxEU3GH0UiPaPFBJOq/aOu4=;
-        b=AJrBx3ogTrvrwTHp8UAK7s96cQayIHUcNQjkM+3RUjLDeIO1LXL2B4vu+07JnYMYaO
-         O7ox4sSIYIYxY/ML1lbDnMsonYado3Ku9rxKvfc3soBYOa/A/N6cm1XkI0dqZIYToY6T
-         v6ajjHspnIX9OOjal2Og2Q7B9LnxdxboXDtY1LoZWqKJNHTv+u+cNW4qG8Yroi2bIYr4
-         JpkJDN2zDN7Z97NiOZCQzgtBpGzqkqXX58wb/k6cq4d9DWb95lg3Pqyctt4uQzCedpOP
-         vtB0JSlc/LnYuwFVidQPnUVz9Koi1UWBG2Jsp0zh/qcTLrh12KOf68/Z4HLkOu36ILpD
-         aWrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C3MDToKFnc8Ld4NhDNLDgxEU3GH0UiPaPFBJOq/aOu4=;
-        b=brbmr2t6PBgdLASK5Du4Ok1YotfkgY7F79SAhUkbQRXKqUDN73yuiWB0FPrghrJw6g
-         Ab6J+PpFm2YmQEd1csi6CT2+fild0zhK/VAKEZbm6lwqIfRfPPjmAtRVFwi2L/z8XFmV
-         3GMqBqvwL1VChs9KOigAnmw/RBaXPAGfCuEGlmdB1fylCBzc1lIg/WQZSQb0KkSfxbv2
-         PKu35oHd8KSlk5JHAsiDYzyedG34AGxGz8AFjDCOHzdlEC+JsMK0kzM+2g9aArij924a
-         0WARfAeDdLeW7J1tIEeHNyXNxNYWnx4FtYgoIsZxxUrEW7ul61SmieJI8Skh00gacFhn
-         ZqyQ==
-X-Gm-Message-State: AOAM532L5WOFUSN5RoITi+Tsbn20FOq6iSvaZEg3j4q6uiw8uOfOpD7D
-        6enopm++1QytPVcfW/KePvj9PMenTmEBYNBH5Eg=
-X-Google-Smtp-Source: ABdhPJz8LTTXIBSbijfWq+tPT8oZ+iOkpd7xsUuTf6dC+qoeeI/DTkVqkf5sikzIkMmvbBTf6C131zlVJFtLGVM8puo=
-X-Received: by 2002:a17:906:16da:: with SMTP id t26mr1463323ejd.172.1601020285551;
- Fri, 25 Sep 2020 00:51:25 -0700 (PDT)
+        id S1727345AbgIYHxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:53:05 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59352 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727068AbgIYHxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:53:04 -0400
+Received: from zn.tnic (p200300ec2f0b3a00d3756fc4b2470eaa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:d375:6fc4:b247:eaa])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 617721EC0430;
+        Fri, 25 Sep 2020 09:53:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601020383;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fdwFiJtPf7+dSMv7FNN3C/po5DSCeBzma9H2c6j2sfU=;
+        b=OcxF9+jGbAtT2C+0FEneJGbiHTHeLWW0tDVUMCdJ99MNM7QXAaYIA7vYVWLMW3EOaR9AOD
+        xjZCuz+JnY+XIzAOQo76+pe4yCg5c/uILfCrfGyb0u2qW8LXFENcIUUwhIw8mMyKbOo1iR
+        a1uG7Xg1YSonDzR6IMhzIP5kSUHRang=
+Date:   Fri, 25 Sep 2020 09:53:01 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, sean.j.christopherson@intel.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 17/24] x86/sgx: ptrace() support for the SGX driver'
+Message-ID: <20200925075301.GE16872@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-18-jarkko.sakkinen@linux.intel.com>
+ <20200922154424.GL22660@zn.tnic>
+ <20200923132037.GA5160@linux.intel.com>
+ <20200923161733.GP28545@zn.tnic>
+ <20200924115119.GD56811@linux.intel.com>
+ <20200924155751.GJ5030@zn.tnic>
+ <20200924203859.GD108958@linux.intel.com>
+ <20200924204022.GE108958@linux.intel.com>
 MIME-Version: 1.0
-References: <20200925033017.1790973-1-art@khadas.com> <20200925033017.1790973-2-art@khadas.com>
-In-Reply-To: <20200925033017.1790973-2-art@khadas.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 25 Sep 2020 09:51:14 +0200
-Message-ID: <CAFBinCDcwHUJzK4HsvKxs1n4_jH9K47bNZcZobocLxKVj7+iNw@mail.gmail.com>
-Subject: Re: [PATCH 1/8] arm64: dts: meson: update spifc node on Khadas VIM2 meson-gxm-khadas-vim2
-To:     Artem Lapkin <email2tema@gmail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
-        robh+dt@kernel.org, jbrunet@baylibre.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200924204022.GE108958@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Artem,
+On Thu, Sep 24, 2020 at 11:40:22PM +0300, Jarkko Sakkinen wrote:
+> I'm not sure if I said it already but I also added cc to linux-mm (same
+> CC's in the patch as with mprotect callback commit). This should also
+> have mm ack I think.
 
-On Fri, Sep 25, 2020 at 5:30 AM Artem Lapkin <email2tema@gmail.com> wrote:
->
-> 1) The VIM2 Boards use w25q128 spi chip only not w25q32 or w25q16
->    it's not really seriously becouse have 'jedec,spi-nor' which
->    have auto chips identifications
-according to the "VIM2 - Transitioning From v1.2 to v1.4" document [0]
-(page 7) both board revisions are using different SPI flash sizes
-for which board revision are your changes?
+Why? This is adding ptrace functionality to enclaves which is purely
+arch/x86/.
 
-> 2) max-frequency is 104Mhz
-(note to self: according to the w25q16 datasheet it supports a maximum
-clock frequency of 104MHz, so this is fine)
+-- 
+Regards/Gruss,
+    Boris.
 
-
-Best regards,
-Martin
+https://people.kernel.org/tglx/notes-about-netiquette
