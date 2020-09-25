@@ -2,113 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF0D2792F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 422872792F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728646AbgIYVHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:07:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42894 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726694AbgIYVHM (ORCPT
+        id S1728333AbgIYVIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726743AbgIYVIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:07:12 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601068030;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WtDwwcJi59z1D/HKuiCOR5O73IrRrE1wXfUfD2k4jj0=;
-        b=C/6LGKJ1FcP3qI+aCgQKB99TThBiHCnaMbBQwg6RqrHJCUO3VIOBDF8jgJknh8gmr6/7nN
-        +EDb1uiNIDINYDC2PxMsmlHQU0uiKqhvFsV7MB5Le5mlhQwq/GYPBRGlQkyIuEjyhJJIxv
-        tA1TPEqN6h4Vew4ZhaZvRHyCMSe58RA=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-gThTercnPnS3LehKNNL1dg-1; Fri, 25 Sep 2020 17:07:08 -0400
-X-MC-Unique: gThTercnPnS3LehKNNL1dg-1
-Received: by mail-wm1-f69.google.com with SMTP id p20so141778wmg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:07:08 -0700 (PDT)
+        Fri, 25 Sep 2020 17:08:00 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5ED5C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:07:59 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id b79so577042wmb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=K97X2RHTYq4ARTwka6ZMNlPXc27d+vNcQg3ndyKU7S4=;
+        b=wWJDp7DJ/HSLsogZGC8Djl65CIcLMR4WYa3ADAj6UKKThfriQIIl0AP5YkYOCeZjQg
+         KvWcIpXuUmNNcLIcy0qIPpol6N1nCEXLafFw0RqOTH4dc3O8g1f6JLmWNIBhig9vRNwL
+         DH/d7LjlahlLTw4oUcx+CVrvoJOFZowbGEJCfrBLFxTQxvj+HdwfFKnqKyug0MqleX7P
+         7uIXwrDM/O+qcsf+ArWoYr85x58YYnxGkdVf8ILr8dVNn5HGGWFx/QBUt0YIZYC8ubGb
+         L8zS0WxjNwMO0RbpE7WFpzZIVgW+bBfk06GgnPTlhDZ6qBiWQ2S3l5yLVpSMzXpDOaK7
+         vL8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WtDwwcJi59z1D/HKuiCOR5O73IrRrE1wXfUfD2k4jj0=;
-        b=kykEOppYpCnvW4KdIF46JeGe6wFArhJSETTSm3CW7/2G2/YshRgHxbTCXX3qGyI4dU
-         01INEX9vpJee23TfABF3RXSmNMc6plEgve07WB23zHvmHmvKT5CdenaaRtkkM/euKA+2
-         ImW+489ntWYF84qvY9tdMbPffh7rQq6MDv+fLWyh9gLrdQiRELA+SXGj7FS4NA4qU9uY
-         hSAH6AuLsY793aZmMhvrsvrp4qauASQJ8SK3xyzYdefZzWoasGSSEtCc4Li32GSueu3U
-         ftiDHMrN2d5iO38zuF746mVTWng6Hj+OXB6fCLPmy0cjhHhtHhxbKt76HwfcX8NWOTzg
-         8Yrw==
-X-Gm-Message-State: AOAM530oQQfsv41WXdyEawCRQfsgdH9S+ZkBRg5hW/5bc/tAXvdQ8dXZ
-        jqS9oF0l4idBRofysKiriv0IlSldJde7SwsYgYKRUFCllsl5cXnprw3Kd0/M5RYD7g6cHJlu+0O
-        Fqohq300QOMmuNNQKfqxm4T0X
-X-Received: by 2002:a05:600c:2183:: with SMTP id e3mr457974wme.49.1601068026737;
-        Fri, 25 Sep 2020 14:07:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzepkHEOYf7m00OenFDw5LRaOwFSj9BZafaij8HANdVNw/0nzhGSsNqlZMboX6tC0BbrvI+uQ==
-X-Received: by 2002:a05:600c:2183:: with SMTP id e3mr457953wme.49.1601068026456;
-        Fri, 25 Sep 2020 14:07:06 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id b188sm239515wmb.2.2020.09.25.14.07.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 14:07:05 -0700 (PDT)
-Subject: Re: [PATCH 0/2] KVM: VMX: Super early file refactor for TDX
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
-References: <20200923183112.3030-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <dcf93010-7c6b-a1a5-250c-f6017ea8f881@redhat.com>
-Date:   Fri, 25 Sep 2020 23:07:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=K97X2RHTYq4ARTwka6ZMNlPXc27d+vNcQg3ndyKU7S4=;
+        b=TvGVc8YqBvK8BpFpADsny0IxNfElr9uULJUHc2nmYhpK8unL91qXS2pF3SnY7UUiNI
+         ZaKr1fglZT2BlqAkwUa+hDZa5rXz+lWJxryMLu46+Tx2vo7kH6olpTqbOEM2TpEsgOvG
+         TN4dYFjKNPodhYlus2cWY4nNB999kkyCxW3CHWU3BkUD2906nNR3Ncn6iCGplgV4g26r
+         itenGGnHIwOrxlGYFVrIBMOsNFu6CavsLi8lFLIwf5c2aN3FdtTWfRvLwQd87/2OKajR
+         A4xPTXbsEPrYLfUc9S6PDO85vQ5PE+Anf2uDr6kfgW0IACzpRczNIWruzgcgnGsObAfN
+         j1sw==
+X-Gm-Message-State: AOAM531gCni+Ary+i74MEAMvDlEsFkKhSL+AuOrVEdrKSVP1ZhKbAF0v
+        1hWMEPqFrXrZaU194/DhSmScOREpVpkSsQsqAZ15OQ==
+X-Google-Smtp-Source: ABdhPJybyFObTULGeYsdiwfil6bHB/bVxxQM+SWeMyX++xGCC6MaJ/cX0aYsdELwah2M/FxoIVL6b6QjN4YOeSHoolY=
+X-Received: by 2002:a1c:740c:: with SMTP id p12mr445421wmc.176.1601068078574;
+ Fri, 25 Sep 2020 14:07:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200923183112.3030-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <202009251223.8E46C831E2@keescook> <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
+ <202009251332.24CE0C58@keescook>
+In-Reply-To: <202009251332.24CE0C58@keescook>
+From:   Andy Lutomirski <luto@amacapital.net>
+Date:   Fri, 25 Sep 2020 14:07:46 -0700
+Message-ID: <CALCETrU_UpcLhXSG84SA6QkAYe8xXn4AXPKeud-=Adp57u54Mg@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+To:     Kees Cook <keescook@chromium.org>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/20 20:31, Sean Christopherson wrote:
-> Rename vmx/ops.h to vmx/vmx_ops.h, and move VMX's posted interrupt support
-> to dedicated files in preparation for future Trust Domain Extensions (TDX)
-> enabling.
-> 
-> These changes are somewhat premature, as full TDX enabling is months away,
-> but the posted interrupts change is (IMO) valuable irrespective of TDX.
-> 
-> The value of the vmx_ops.h rename without TDX is debatable.  I have no
-> problem deferring the change to the actual TDX series if there are
-> objections.  I'm submitting the patch now as getting the rename upstream
-> will save us minor merge conflict pain if there are changes to vmx/ops.h
-> between now and whenever the TDX enabling series comes along.
-> 
-> https://software.intel.com/content/www/us/en/develop/articles/intel-trust-domain-extensions.html
-> 
-> Sean Christopherson (1):
->   KVM: VMX: Rename ops.h to vmx_ops.h
-> 
-> Xiaoyao Li (1):
->   KVM: VMX: Extract posted interrupt support to separate files
-> 
->  arch/x86/kvm/Makefile                 |   3 +-
->  arch/x86/kvm/vmx/posted_intr.c        | 332 ++++++++++++++++++++++++++
->  arch/x86/kvm/vmx/posted_intr.h        |  99 ++++++++
->  arch/x86/kvm/vmx/vmx.c                | 321 +------------------------
->  arch/x86/kvm/vmx/vmx.h                |  92 +------
->  arch/x86/kvm/vmx/{ops.h => vmx_ops.h} |   0
->  6 files changed, 440 insertions(+), 407 deletions(-)
->  create mode 100644 arch/x86/kvm/vmx/posted_intr.c
->  create mode 100644 arch/x86/kvm/vmx/posted_intr.h
->  rename arch/x86/kvm/vmx/{ops.h => vmx_ops.h} (100%)
-> 
+On Fri, Sep 25, 2020 at 1:37 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, Sep 25, 2020 at 12:51:20PM -0700, Andy Lutomirski wrote:
+> >
+> >
+> > > On Sep 25, 2020, at 12:42 PM, Kees Cook <keescook@chromium.org> wrote=
+:
+> > >
+> > > =EF=BB=BFOn Fri, Sep 25, 2020 at 11:45:05AM -0500, YiFei Zhu wrote:
+> > >> On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> =
+wrote:
+> > >>>> Why do the prepare here instead of during attach? (And note that i=
+t
+> > >>>> should not be written to fail.)
+> > >>>
+> > >>> Right.
+> > >>
+> > >> During attach a spinlock (current->sighand->siglock) is held. Do we
+> > >> really want to put the emulator in the "atomic section"?
+> > >
+> > > It's a good point, but I had some other ideas around it that lead to =
+me
+> > > a different conclusion. Here's what I've got in my head:
+> > >
+> > > I don't view filter attach (nor the siglock) as fastpath: the lock is
+> > > rarely contested and the "long time" will only be during filter attac=
+h.
+> > >
+> > > When performing filter emulation, all the syscalls that are already
+> > > marked as "must run filter" on the previous filter can be skipped for
+> > > the new filter, since it cannot change the outcome, which makes the
+> > > emulation step faster.
+> > >
+> > > The previous filter's bitmap isn't "stable" until siglock is held.
+> > >
+> > > If we do the emulation step before siglock, we have to always do full
+> > > evaluation of all syscalls, and then merge the bitmap during attach.
+> > > That means all filters ever attached will take maximal time to perfor=
+m
+> > > emulation.
+> > >
+> > > I prefer the idea of the emulation step taking advantage of the bitma=
+p
+> > > optimization, since the kernel spends less time doing work over the l=
+ife
+> > > of the process tree. It's certainly marginal, but it also lets all th=
+e
+> > > bitmap manipulation stay in one place (as opposed to being split betw=
+een
+> > > "prepare" and "attach").
+> > >
+> > > What do you think?
+> > >
+> > >
+> >
+> > I=E2=80=99m wondering if we should be much much lazier. We could potent=
+ially wait until someone actually tries to do a given syscall before we try=
+ to evaluate whether the result is fixed.
+>
+> That seems like we'd need to track yet another bitmap of "did we emulate
+> this yet?" And it means the filter isn't really "done" until you run
+> another syscall? eeh, I'm not a fan: it scratches at my desire for
+> determinism. ;) Or maybe my implementation imagination is missing
+> something?
+>
 
-Queued, thanks.
+We'd need at least three states per syscall: unknown, always-allow,
+and need-to-run-filter.
 
-Paolo
+The downsides are less determinism and a bit of an uglier
+implementation.  The upside is that we don't need to loop over all
+syscalls at load -- instead the time that each operation takes is
+independent of the total number of syscalls on the system.  And we can
+entirely avoid, say, evaluating the x32 case until the task tries an
+x32 syscall.
 
+I think it's at least worth considering.
+
+--Andy
