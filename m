@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFD62789C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CC82789CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728534AbgIYNjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:39:42 -0400
-Received: from mail-bn7nam10on2074.outbound.protection.outlook.com ([40.107.92.74]:55435
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727982AbgIYNjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:39:42 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DqWVqTj2oUh5QWJyeX3d3q2pBect33YKNllwE00ooFjqNO4WaBuZN4FuU8j817Oeiuh1Hfi5tLyuFWuCqMDOpdp9Sl/unNjleV0qX2BLAH43/ELYXMGleaGaoL37YHBnIlJsDUMEaBrAYFDVW0Ip3KiVnsSMzm9IAyCxBTHSuPSv5MnfIWavKGAx2nbhD6R92ND7lEMI7t2QfNksYpOnZ9XT83Ct0JoJjQCPlsEF1JPbgR111mHNCEyj6ubhOxZ/R9Rr7YbNtcqDkHHPjGuJ5APKnnZBtt3+uxnp1RmHvnxDnCpOGF8Ti3bBpxOTUkf1ZBXzR/Z+Sg8d0Bg4WLaY6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p+67ZWPcXjp3vLKAXuQjqqY3uYd0slBVsiDe9v1kpVA=;
- b=fkkY9deIpuoKAxhXgaB3hEbaZTj2UGf4Ws5dTHevSBUIGqTGwloNGHzz2s5t+TF880yEiYlESSf6jOt7BpuNjG7jvr2OiGHeIjub1aMa6WL5MxAYBmbrLtYgGf5Gt+qtiANcQWMjyJrtN6CbGVSkGfmQ+xdtEeT1VofaRp2TmeKjJbnkGgKwSt4Qg+/IFykmSdI/qKDYqs6KWv3oWknUoQSbQSUSThmibZgjqnqCuMvCd9tUo02vkqDrQdOyLnUnf6mpOKnLGUfyYWLc2pkBMdh7VZ3hxvsBAn34wrnlNDJwCsWOA6QaePQNIliQAygWGytAxpDx525OxHwH6QiPCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p+67ZWPcXjp3vLKAXuQjqqY3uYd0slBVsiDe9v1kpVA=;
- b=J5a44l4dlCAA3bFlKvvwNIcvdS4A9wYMAn4wk0eJ4XvVCHEyh/jtGX5nY7eLrCGba8DkA4a9thXwi/s+ydqueBI1jG2RVMRLuLZFS+pI5B+PJQ+jmGEWoY+F7600/ULEYXCiokAIaRKtQF5jwiFvcHoMR8LBEyHLUBFdHXcf/pg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB4516.namprd12.prod.outlook.com (2603:10b6:5:2ac::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3412.23; Fri, 25 Sep 2020 13:39:39 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::299a:8ed2:23fc:6346]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::299a:8ed2:23fc:6346%3]) with mapi id 15.20.3391.024; Fri, 25 Sep 2020
- 13:39:39 +0000
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH] x86/sev-es: Use GHCB accessor for setting the MMIO scratch buffer
-Date:   Fri, 25 Sep 2020 08:38:26 -0500
-Message-Id: <ba84deabdf44a7a880454fb351d189c6ad79d4ba.1601041106.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.28.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM3PR14CA0133.namprd14.prod.outlook.com
- (2603:10b6:0:53::17) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        id S1728921AbgIYNk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:40:26 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:38487 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727982AbgIYNkZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 09:40:25 -0400
+Received: from mail-qk1-f169.google.com ([209.85.222.169]) by
+ mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MC3L9-1k9PMr07Gn-00CRU1; Fri, 25 Sep 2020 15:40:24 +0200
+Received: by mail-qk1-f169.google.com with SMTP id w12so2764989qki.6;
+        Fri, 25 Sep 2020 06:40:23 -0700 (PDT)
+X-Gm-Message-State: AOAM530500acsNwYCXug3/z+Zgh9+yPg2H/ioFdnWAyRBY4V5WQErZzU
+        HEqRXjSJK8zb36/LNeaKAIwQPmQnzCkjDKH9yto=
+X-Google-Smtp-Source: ABdhPJxIzKAUN9mD09+7O4OymSuZ1I/pDmcOEjpPUHVj02syVVQTEeh8QmLOAxe8V/n/N1LP9j4emlnxenewjYHzGJQ=
+X-Received: by 2002:a05:620a:15a7:: with SMTP id f7mr12935qkk.3.1601041222779;
+ Fri, 25 Sep 2020 06:40:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from tlendack-t1.amd.com (165.204.77.1) by DM3PR14CA0133.namprd14.prod.outlook.com (2603:10b6:0:53::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Fri, 25 Sep 2020 13:39:39 +0000
-X-Mailer: git-send-email 2.28.0
-X-Originating-IP: [165.204.77.1]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: de6a2a0e-96c1-4c75-05dc-08d861587366
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4516:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB451602B67C6A63DF22383E4BEC360@DM6PR12MB4516.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DkLw1GFUTR24sZiYHGkyA6SZi24CKqntCTJP8atfeyFV4vAUFzmAfbLpyaEQzpEpurg+QfulvqvSDYDDP+rhJfanMypyVLRn37RiEdUNaKHcpatgBn1WXIm3JK4SUiEmuH/l9LuKb0f9MFRmDpKIBYJoIhYtIyGvub/oCU4XIKsUthPpIBSRk3wxO7X1HxhZ/bRPwkgME05Crjb9aruZ9DFKcnhdtHwLlSGSYAt+b4efb3xeO3sRQPssJkHWwP69qYtiBoOgydOSxPuZVMvDrfLMWo8qYok/32MEZ0G287pV4alxa1QF/Urbj+uO+3cwrWwYONOLLPmE8mM9epqlCqFrWDp+ZO8VB3tdwKECGxbkE1g2G4c2L9/vss+Dkvan
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(366004)(39860400002)(396003)(316002)(86362001)(956004)(16526019)(4744005)(54906003)(6666004)(2616005)(83380400001)(66946007)(7696005)(5660300002)(478600001)(8936002)(66556008)(66476007)(26005)(6486002)(36756003)(4326008)(186003)(2906002)(8676002)(52116002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: op+6wDWk4E/cg+to6fX6vr2Qsllc4LNZi1LH8EjOcU9fP9pzXo+vHq/PvL20TBnV+A3bRDZpP0tUAWtra8ut8/AEDf6++K2A96kEQYE+9ZlRahthlaiESsxdIWzbZRiF0ndBzDSbVBdIVxjtlT4dYCKvLlVWRFlJpFFUBWj/aF4QpfBWfLD+jB4Yqf5v6oxw8knS9BPeuo9QLl+9IGD6q487LzCin/Z3/qabwhmGDF95ezr5+9fA82phbkxyiO0q1ffpvorNAQAs1fbgCP23CBk+LjUOANE8kcLuVFHLAAnjRDA6kvh+dPOmgD31b7vUrYP3WW6DykYyGZQPR65ChsTNSGFXKZLgRLr3UnJ4uEL0jkhqse6G/s6eYIWDQpCgfGuig8snxp2nU6NF8sSxV+dQjTROJiw8Y7qPZvHev4LqCzBCGaSuX8xmVx9CsVnnm8j+bRGxiOGssTBwFgc1YQdcGAmbsiibRFHtfy1rJCo/HfIUdwAY5/NsEy5VjpHQrLG56M7cicsZ81irz4Qd/3T2FJeunWOxwu3L4970cnIwPkao7iNiZUgVgf3ndmoaJ7ii4jhzsesWSNC3FUJroVKhTFGQy7SfzZjJsdeBkF1xly2ecjglcLXNy7pmIPV97KwBdKXM47Iv02GlQUcM1Q==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de6a2a0e-96c1-4c75-05dc-08d861587366
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 13:39:39.6816
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9mDA1fUdH2FSxCl2LjqHJzrGedW/OsdaCc5S8uvmZCpUk7oLW1Z5mq9qkX8BgWBl7WlsbNyieTgUpyw6DgOkOQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4516
+References: <20200918124624.1469673-1-arnd@arndb.de> <20200919052715.GF30063@infradead.org>
+In-Reply-To: <20200919052715.GF30063@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 25 Sep 2020 15:40:06 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1LM8SXbzcVv1B05fdmxBZ-PA+P4m4oP1Dgc4JmR2CGMw@mail.gmail.com>
+Message-ID: <CAK8P3a1LM8SXbzcVv1B05fdmxBZ-PA+P4m4oP1Dgc4JmR2CGMw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/9] ARM: remove set_fs callers and implementation
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:3NzBN9prIQYrQLxyTiAZ2qekukyha8zMOOKFTefaoN8A4cWDskU
+ LvRVk2YSWJUK5ahJIHR2B7rnCU78KMisNA1U+rTagdpd9peGNaqHqHCkRwRwpCiJ9Tci10m
+ 2CRQfikVzGKPTSxf+u+NGDRgVrFHdEt7bDNkLHdNPM0W26v4+rNQADfIdn5u2RJ7azhmXrV
+ wKtVOCtdXtquaSPB7JA1A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:b5RuZM+XTM4=:RUDc48Wx0DH6fMnrXUFe53
+ Ifc4CzYsoWg2OCRivZd71czdBfbSdMsmpym9w7syzpV8JDeSv7YPHoJPuRSoooeRcqzRZmDDq
+ 6VqdAdXExajOI7565jIWc+DsLUHMzF8IYzAHzfnZqB/p7ksIlMtya6ne2/Z9m0cMFbEmgZudZ
+ LfWJ6CQmpu4B7oycrYF7UVue1z5Ztknl+96h1kD5UiTPNF0cq4qVagSyHzGwvLQuO9P5nzwtO
+ 9K1wpu1qpvhu2xyQTVcHb9Q2oLSwJR1SNfs6zOTh0TfiLOAspmIXiqEzTq+TEcXnQzUNFRPyc
+ CexaTEiyWUx7SFKYQcCV28/jEvTYm150H1P85aaB5K8Xgqos6tyyie887c6Usn9JtWG+/egLS
+ lBdmSx1PF/wD30yUiDFWo8nXH1EBKMPL9rGRxusPKCRvL7mkFdbmnbfBmBhER3ZIv9/cntzai
+ w33xWqzK9PM9ZPitW3TbgHhu6WlV5ow4CYvuFoSmU1YcwSrFvDZPuvrH5ovCyxmRf5nuAqiud
+ PovdlNefEjsWbmJRUL626Jkkv3H73zELEzk1hJP6ETDYHNdZyppYgFTAVN0BK/9ACLMZAE2uU
+ 5lXm1FrqkAczFZSLlUjm6byvUQmAb8aEe4lIp5OAb05+HkW9G+QX2RETs4XGmwiAHzNkPhYdc
+ t7TKenHf63/bmC+w2OsVu6/toOLXrQs5o/tQ6/h6frZ1ikZdEW4OmtB6SF1k25P60Q0aqUN2w
+ QSP6S9SYYyJkJlQELTJBGw2AYdSETNJOZDzLFreXzyNPCCg8RLInGZ68qmF1vCNV1BOTO5RMN
+ dufYlE9dZiNsN6lmtdAFOIgJfdUMNL6UqwqNdZea5WIkly7Dj1+uQFn9ux++y2EPFU4nMMu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Lendacky <thomas.lendacky@amd.com>
+On Sat, Sep 19, 2020 at 7:27 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Fri, Sep 18, 2020 at 02:46:15PM +0200, Arnd Bergmann wrote:
+> > Hi Christoph, Russell,
+> >
+> > Here is an updated series for removing set_fs() from arch/arm,
+> > based on the previous feedback.
+> >
+> > I have tested the oabi-compat changes using the LTP tests for the three
+> > modified syscalls using an Armv7 kernel and a Debian 5 OABI user space,
+> > and I have lightly tested the get_kernel_nofault infrastructure by
+> > loading the test_lockup.ko module after setting CONFIG_DEBUG_SPINLOCK.
+>
+> What is the base line?  Just the base.set_fs branch in Als tree, or do
+> you need anything from my RISC-V series?
 
-Use ghcb_set_sw_scratch() to set the GHCB scratch field, which will also
-set the corresponding bit in the GHCB valid_bitmap field.
+I imported these additional patches from you:
 
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
----
- arch/x86/kernel/sev-es.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+e0d17576790e quota: simplify the quotactl compat handling
+b0f8a0c4046f compat: add a compat_need_64bit_alignment_fixup() helper
+ed8af9335e19 compat: lift compat_s64 and compat_u64 to <asm-generic/compat.h>
+ce526c75bbe2 uaccess: provide a generic TASK_SIZE_MAX definition
 
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 6fcfdd32769f..4a96726fbaf8 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -751,7 +751,7 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 	/* Can never be greater than 8 */
- 	exit_info_2 = bytes;
- 
--	ghcb->save.sw_scratch = ghcb_pa + offsetof(struct ghcb, shared_buffer);
-+	ghcb_set_sw_scratch(ghcb, ghcb_pa + offsetof(struct ghcb, shared_buffer));
- 
- 	return sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, exit_info_1, exit_info_2);
- }
--- 
-2.28.0
+I think I only actually needed the last one of those for the Arm
+patches, the other ones are dependencies for my other patches
+I have on the same branch.
 
+      Arnd
