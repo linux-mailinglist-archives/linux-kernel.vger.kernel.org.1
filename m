@@ -2,67 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BF3277E4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6314C277E4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbgIYDAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 23:00:32 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:46022 "EHLO mail5.wrs.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726676AbgIYDAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 23:00:32 -0400
-X-Greylist: delayed 875 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 23:00:21 EDT
-Received: from ALA-HCB.corp.ad.wrs.com (ala-hcb.corp.ad.wrs.com [147.11.189.41])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 08P2im3i024410
-        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
-        Thu, 24 Sep 2020 19:44:58 -0700
-Received: from pek-lpggp6.wrs.com (128.224.153.40) by ALA-HCB.corp.ad.wrs.com
- (147.11.189.41) with Microsoft SMTP Server id 14.3.487.0; Thu, 24 Sep 2020
- 19:44:20 -0700
-From:   Yongxin Liu <yongxin.liu@windriver.com>
-To:     <bgolaszewski@baylibre.com>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Revert "net: ethernet: ixgbe: check the return value of ixgbe_mii_bus_init()"
-Date:   Fri, 25 Sep 2020 10:42:47 +0800
-Message-ID: <20200925024247.993-1-yongxin.liu@windriver.com>
-X-Mailer: git-send-email 2.14.4
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S1727011AbgIYDCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 23:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbgIYDCU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 23:02:20 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D24C0613CE;
+        Thu, 24 Sep 2020 20:02:20 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 94145135F8F13;
+        Thu, 24 Sep 2020 19:45:32 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 20:02:18 -0700 (PDT)
+Message-Id: <20200924.200218.285331593689018732.davem@davemloft.net>
+To:     luobin9@huawei.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        yin.yinshi@huawei.com, cloud.wangxiaoyun@huawei.com,
+        chiqijun@huawei.com, zengweiliang.zengweiliang@huawei.com
+Subject: Re: [PATCH net] hinic: fix wrong return value of mac-set cmd
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200924013151.25754-1-luobin9@huawei.com>
+References: <20200924013151.25754-1-luobin9@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 24 Sep 2020 19:45:32 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 09ef193fef7efb0175a04634853862d717adbb95.
+From: Luo bin <luobin9@huawei.com>
+Date: Thu, 24 Sep 2020 09:31:51 +0800
 
-For C3000 family of SoCs, they have four ixgbe devices sharing a single MDIO bus.
-ixgbe_mii_bus_init() returns -ENODEV for other three devices. The propagation
-of the error code makes other three ixgbe devices unregistered.
+> It should also be regarded as an error when hw return status=4 for PF's
+> setting mac cmd. Only if PF return status=4 to VF should this cmd be
+> taken special treatment.
+> 
+> Fixes: 7dd29ee12865 ("hinic: add sriov feature support")
+> Signed-off-by: Luo bin <luobin9@huawei.com>
 
-Signed-off-by: Yongxin Liu <yongxin.liu@windriver.com>
----
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 2f8a4cfc5fa1..5e5223becf86 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -11031,14 +11031,10 @@ static int ixgbe_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 			IXGBE_LINK_SPEED_10GB_FULL | IXGBE_LINK_SPEED_1GB_FULL,
- 			true);
- 
--	err = ixgbe_mii_bus_init(hw);
--	if (err)
--		goto err_netdev;
-+	ixgbe_mii_bus_init(hw);
- 
- 	return 0;
- 
--err_netdev:
--	unregister_netdev(netdev);
- err_register:
- 	ixgbe_release_hw_control(adapter);
- 	ixgbe_clear_interrupt_scheme(adapter);
--- 
-2.14.4
-
+Applied and queued up for -stable.
