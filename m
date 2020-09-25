@@ -2,106 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35678278D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA27A278D53
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729440AbgIYPz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:55:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729426AbgIYPz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:55:27 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 276D221741;
-        Fri, 25 Sep 2020 15:55:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601049327;
-        bh=ZOaMTpjmL0zyawSe6TesNRPIJMd8LiPQDHGoQQoPA9k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DpbfOezwca7Q+jKjYXy+IngxuRfB2l0oJhJKOipIgoZOtqTejdpCrvavFmfJwutm2
-         KZTJj6kpqa3YmO4PvwT0wae57xcvfMuiYRCU99FvmQ4sAE7KEPtpaQVL/LL6IFru5D
-         qWCpCdhGHRc9kV9UmRc1vfxy+hkfWPGWXV5Ta7co=
-Received: from [185.69.144.225] (helo=localhost.localdomain)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kLq4D-00EuVG-7e; Fri, 25 Sep 2020 16:55:25 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Vineet Gupta <vgupta@synopsys.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        linux-snps-arc <linux-snps-arc@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Haoyu Lv <lvhaoyu@huawei.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Libin <huawei.libin@huawei.com>
-Subject: Re: [PATCH v6 0/6] irqchip: dw-apb-ictl: support hierarchy irq domain
-Date:   Fri, 25 Sep 2020 16:54:50 +0100
-Message-Id: <160104911402.38543.3098076840902954515.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200924071754.4509-1-thunder.leizhen@huawei.com>
-References: <20200924071754.4509-1-thunder.leizhen@huawei.com>
+        id S1729183AbgIYP5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:57:45 -0400
+Received: from relayfre-01.paragon-software.com ([176.12.100.13]:57210 "EHLO
+        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728423AbgIYP5p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:57:45 -0400
+Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
+        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 438E91D21;
+        Fri, 25 Sep 2020 18:57:43 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paragon-software.com; s=mail; t=1601049463;
+        bh=BzJMvYL8lwpxuyQPxWxXbPG81ZPmNHqhN7tEA8oz5dM=;
+        h=From:To:CC:Subject:Date;
+        b=ZIgc5KHhycSdDQzLsSLHtySnqVHgOib1fIVbZaSl1HYMJ0aXXgU3qbJo8+WnMz/Fw
+         IlG0MUkEZjbJQA+KFMbtepp7H7toc9Ji3uQow7kqdad8EN+VRbR+k/2ah2l2HRVz89
+         MYrvW8v7PjBHp6LcVvZPILfUbCBEkeEfwMeROBhs=
+Received: from fsd-lkpg.ufsd.paragon-software.com (172.30.114.105) by
+ vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Fri, 25 Sep 2020 18:57:42 +0300
+From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+To:     <linux-fsdevel@vger.kernel.org>
+CC:     <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
+        <pali@kernel.org>, <dsterba@suse.cz>, <aaptel@suse.com>,
+        <willy@infradead.org>, <rdunlap@infradead.org>, <joe@perches.com>,
+        <mark@harmstone.com>, <nborisov@suse.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Subject: [PATCH v7 00/10] NTFS read-write driver GPL implementation by Paragon Software
+Date:   Fri, 25 Sep 2020 18:55:27 +0300
+Message-ID: <20200925155537.1030046-1-almaz.alexandrovich@paragon-software.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 185.69.144.225
-X-SA-Exim-Rcpt-To: vgupta@synopsys.com, thunder.leizhen@huawei.com, robh+dt@kernel.org, abrodkin@synopsys.com, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, jason@lakedaemon.net, tglx@linutronix.de, wangkefeng.wang@huawei.com, lvhaoyu@huawei.com, sebastian.hesselbarth@gmail.com, huawei.libin@huawei.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-Originating-IP: [172.30.114.105]
+X-ClientProxiedBy: vdlg-exch-02.paragon-software.com (172.30.1.105) To
+ vdlg-exch-02.paragon-software.com (172.30.1.105)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 15:17:48 +0800, Zhen Lei wrote:
-> v5 --> v6:
-> 1. add Reviewed-by: Rob Herring <robh@kernel.org> for Patch 4.
-> 2. Some modifications are made to Patch 5:
->    1) add " |" for each "description:" property if its content exceeds one line,
->       to tell the yaml keep the "newline" character.
->    2) add "..." to mark the end of the yaml file.
->    3) Change the name list of maintainers to the author of "snps,dw-apb-ictl.txt"
-> 	 maintainers:
-> 	-  - Marc Zyngier <marc.zyngier@arm.com>
-> 	+  - Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
->    4) add "maxItems: 1" for property "reg".
->    5) for property "interrupts":
-> 	 interrupts:
-> 	-    minItems: 1
-> 	-    maxItems: 65
-> 	+    maxItems: 1
->    6) move below descriptions under the top level property "description:"
-> 	description: |
-> 	  Synopsys DesignWare provides interrupt controller IP for APB known as
-> 	  dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs
-> 	  with APB bus, e.g. Marvell Armada 1500. It can also be used as primary
-> 	  interrupt controller in some SoCs, e.g. Hisilicon SD5203.
-> 
-> [...]
+This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-Applied to irq/irqchip-next, thanks!
+Having decades of expertise in commercial file systems development and huge
+test coverage, we at Paragon Software GmbH want to make our contribution to
+the Open Source Community by providing implementation of NTFS Read-Write
+driver for the Linux Kernel.
 
-[1/6] genirq: Add stub for set_handle_irq() when !GENERIC_IRQ_MULTI_HANDLER
-      commit: ea0c80d1764449acf2f70fdb25aec33800cd0348
-[2/6] irqchip/dw-apb-ictl: Refactor priot to introducing hierarchical irq domains
-      commit: d59f7d159891466361808522b63cf3548ea3ecb0
-[3/6] irqchip/dw-apb-ictl: Add primary interrupt controller support
-      commit: 54a38440b84f8933b555c23273deca6a396f6708
-[4/6] dt-bindings: dw-apb-ictl: Update binding to describe use as primary interrupt controller
-      commit: 8156b80fd4885d0ca9748e736441cc37f4eb476a
+This is fully functional NTFS Read-Write driver. Current version works with
+NTFS(including v3.1) and normal/compressed/sparse files and supports journal replaying.
 
-I have dropped patch 5 as it doesn't have Rob's Ack yet (and is not that
-critical) as well as patch 6 which is better routed via the ARC tree.
+We plan to support this version after the codebase once merged, and add new
+features and fix bugs. For example, full journaling support over JBD will be
+added in later updates.
 
-Cheers,
+v2:
+ - patch splitted to chunks (file-wise)
+ - build issues fixed
+ - sparse and checkpatch.pl errors fixed
+ - NULL pointer dereference on mkfs.ntfs-formatted volume mount fixed
+ - cosmetics + code cleanup
 
-	M.
+v3:
+ - added acl, noatime, no_acs_rules, prealloc mount options
+ - added fiemap support
+ - fixed encodings support
+ - removed typedefs
+ - adapted Kernel-way logging mechanisms
+ - fixed typos and corner-case issues
+
+v4:
+ - atomic_open() refactored
+ - code style updated
+ - bugfixes
+
+v5:
+- nls/nls_alt mount options added
+- Unicode conversion fixes
+- Improved very fragmented files operations
+- logging cosmetics
+
+v6:
+- Security Descriptors processing changed
+  added system.ntfs_security xattr to set
+  SD
+- atomic_open() optimized
+- cosmetics
+
+v7:
+- Security Descriptors validity checks added (by Mark Harmstone)
+- atomic_open() fixed for the compressed file creation with directio
+  case
+- remount support
+- temporarily removed readahead usage
+- cosmetics
+
+Konstantin Komarov (10):
+  fs/ntfs3: Add headers and misc files
+  fs/ntfs3: Add initialization of super block
+  fs/ntfs3: Add bitmap
+  fs/ntfs3: Add file operations and implementation
+  fs/ntfs3: Add attrib operations
+  fs/ntfs3: Add compression
+  fs/ntfs3: Add NTFS journal
+  fs/ntfs3: Add Kconfig, Makefile and doc
+  fs/ntfs3: Add NTFS3 in fs/Kconfig and fs/Makefile
+  fs/ntfs3: Add MAINTAINERS
+
+ Documentation/filesystems/ntfs3.rst |  107 +
+ MAINTAINERS                         |    7 +
+ fs/Kconfig                          |    1 +
+ fs/Makefile                         |    1 +
+ fs/ntfs3/Kconfig                    |   23 +
+ fs/ntfs3/Makefile                   |   11 +
+ fs/ntfs3/attrib.c                   | 1316 +++++++
+ fs/ntfs3/attrlist.c                 |  462 +++
+ fs/ntfs3/bitfunc.c                  |  137 +
+ fs/ntfs3/bitmap.c                   | 1508 ++++++++
+ fs/ntfs3/debug.h                    |   60 +
+ fs/ntfs3/dir.c                      |  607 ++++
+ fs/ntfs3/file.c                     | 1201 ++++++
+ fs/ntfs3/frecord.c                  | 2399 ++++++++++++
+ fs/ntfs3/fslog.c                    | 5222 +++++++++++++++++++++++++++
+ fs/ntfs3/fsntfs.c                   | 2320 ++++++++++++
+ fs/ntfs3/index.c                    | 2639 ++++++++++++++
+ fs/ntfs3/inode.c                    | 1975 ++++++++++
+ fs/ntfs3/lznt.c                     |  452 +++
+ fs/ntfs3/namei.c                    |  576 +++
+ fs/ntfs3/ntfs.h                     | 1295 +++++++
+ fs/ntfs3/ntfs_fs.h                  | 1002 +++++
+ fs/ntfs3/record.c                   |  615 ++++
+ fs/ntfs3/run.c                      | 1159 ++++++
+ fs/ntfs3/super.c                    | 1485 ++++++++
+ fs/ntfs3/upcase.c                   |   78 +
+ fs/ntfs3/xattr.c                    | 1056 ++++++
+ 27 files changed, 27714 insertions(+)
+ create mode 100644 Documentation/filesystems/ntfs3.rst
+ create mode 100644 fs/ntfs3/Kconfig
+ create mode 100644 fs/ntfs3/Makefile
+ create mode 100644 fs/ntfs3/attrib.c
+ create mode 100644 fs/ntfs3/attrlist.c
+ create mode 100644 fs/ntfs3/bitfunc.c
+ create mode 100644 fs/ntfs3/bitmap.c
+ create mode 100644 fs/ntfs3/debug.h
+ create mode 100644 fs/ntfs3/dir.c
+ create mode 100644 fs/ntfs3/file.c
+ create mode 100644 fs/ntfs3/frecord.c
+ create mode 100644 fs/ntfs3/fslog.c
+ create mode 100644 fs/ntfs3/fsntfs.c
+ create mode 100644 fs/ntfs3/index.c
+ create mode 100644 fs/ntfs3/inode.c
+ create mode 100644 fs/ntfs3/lznt.c
+ create mode 100644 fs/ntfs3/namei.c
+ create mode 100644 fs/ntfs3/ntfs.h
+ create mode 100644 fs/ntfs3/ntfs_fs.h
+ create mode 100644 fs/ntfs3/record.c
+ create mode 100644 fs/ntfs3/run.c
+ create mode 100644 fs/ntfs3/super.c
+ create mode 100644 fs/ntfs3/upcase.c
+ create mode 100644 fs/ntfs3/xattr.c
+
 -- 
-Without deviation from the norm, progress is not possible.
-
+2.25.4
 
