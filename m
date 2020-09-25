@@ -2,216 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8106278C34
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABC99278BA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729213AbgIYPM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:12:27 -0400
-Received: from mga04.intel.com ([192.55.52.120]:18685 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728487AbgIYPM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:12:27 -0400
-IronPort-SDR: kubREooG0rEYqaTGxHRZQzTC/zynmWfmrNRYdk/xqZJ6mb/vuzXnXME76tItFFGbFdrccdK9DJ
- E1HO0vZpE28w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="158942349"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="158942349"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:57:30 -0700
-IronPort-SDR: MR86CdIhQuuL8dldgPZoImheQXatUVenuFAE0lvdaMHi1mvUBOAYCUhMxdCZC9QRFUlYKgMsxi
- RqWyu8YvGGjg==
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="487499254"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:57:29 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v13 24/26] x86/cet/shstk: Handle thread shadow stack
-Date:   Fri, 25 Sep 2020 07:56:47 -0700
-Message-Id: <20200925145649.5438-25-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200925145649.5438-1-yu-cheng.yu@intel.com>
-References: <20200925145649.5438-1-yu-cheng.yu@intel.com>
+        id S1729320AbgIYPAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:00:14 -0400
+Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:12140 "EHLO
+        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728333AbgIYPAO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:00:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1601046014; x=1632582014;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=1mQoI7SbEAT3GqLVx99dh/bFDFrq0tO1gEtKJuIRcU0=;
+  b=CKwbiJN6ErGcgESSDnQO1o3XAmInsa7PrDnaSqCxAK//kpBdKDbIB0vV
+   dvbj97MevcXlOirnf5Jqo8Wm874BZu6GmkPSWqLDJAdxbmm0AKBQsxz/r
+   xijCd96ZIvsxjYXXwO6Z/hACGyyQlVEG4oDAgmHriL2Yk7u9Ea2rXjcRR
+   s=;
+X-IronPort-AV: E=Sophos;i="5.77,302,1596499200"; 
+   d="scan'208";a="71129605"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-c300ac87.us-west-2.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 25 Sep 2020 15:00:04 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
+        by email-inbound-relay-2b-c300ac87.us-west-2.amazon.com (Postfix) with ESMTPS id 04B19A0621;
+        Fri, 25 Sep 2020 14:59:52 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.162.221) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Fri, 25 Sep 2020 14:59:35 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     SeongJae Park <sjpark@amazon.com>
+CC:     <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <fan.du@intel.com>, <foersleo@amazon.de>,
+        <gthelen@google.com>, <irogers@google.com>, <jolsa@redhat.com>,
+        <kirill@shutemov.name>, <mark.rutland@arm.com>, <mgorman@suse.de>,
+        <minchan@kernel.org>, <mingo@redhat.com>, <namhyung@kernel.org>,
+        <peterz@infradead.org>, <rdunlap@infradead.org>,
+        <riel@surriel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
+        <rppt@kernel.org>, <sblbir@amazon.com>, <shakeelb@google.com>,
+        <shuah@kernel.org>, <sj38.park@gmail.com>, <snu@amazon.de>,
+        <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v20 00/15] Introduce Data Access MONitor (DAMON)
+Date:   Fri, 25 Sep 2020 16:59:19 +0200
+Message-ID: <20200925145919.18515-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200831112235.2675-1-sjpark@amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.221]
+X-ClientProxiedBy: EX13D30UWC004.ant.amazon.com (10.43.162.4) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel allocates (and frees on thread exit) a new shadow stack for a
-pthread child.
+On Mon, 31 Aug 2020 13:22:35 +0200 SeongJae Park <sjpark@amazon.com> wrote:
 
-    It is possible for the kernel to complete the clone syscall and set the
-    child's shadow stack pointer to NULL and let the child thread allocate
-    a shadow stack for itself.  There are two issues in this approach: It
-    is not compatible with existing code that does inline syscall and it
-    cannot handle signals before the child can successfully allocate a
-    shadow stack.
+> On Thu, 20 Aug 2020 09:27:38 +0200 SeongJae Park <sjpark@amazon.com> wrote:
+> 
+> > On Mon, 17 Aug 2020 12:51:22 +0200 SeongJae Park <sjpark@amazon.com> wrote:
+> > 
+> > > From: SeongJae Park <sjpark@amazon.de>
+> > > 
+[...]
+> > > Introduction
+> > > ============
+> > > 
+> > > DAMON is a data access monitoring framework subsystem for the Linux kernel.
+> > > The core mechanisms of DAMON called 'region based sampling' and 'adaptive
+> > > regions adjustment' (refer to 'mechanisms.rst' in the 11th patch of this
+> > > patchset for the detail) make it
+> > > 
+> > >  - accurate (The monitored information is useful for DRAM level memory
+> > >    management. It might not appropriate for Cache-level accuracy, though.),
+> > >  - light-weight (The monitoring overhead is low enough to be applied online
+> > >    while making no impact on the performance of the target workloads.), and
+> > >  - scalable (the upper-bound of the instrumentation overhead is controllable
+> > >    regardless of the size of target workloads.).
+> > > 
+> > > Using this framework, therefore, the kernel's core memory management mechanisms
+> > > such as reclamation and THP can be optimized for better memory management.  The
+> > > experimental memory management optimization works that incurring high
+> > > instrumentation overhead will be able to have another try.  In user space,
+> > > meanwhile, users who have some special workloads will be able to write
+> > > personalized tools or applications for deeper understanding and specialized
+> > > optimizations of their systems.
+> > 
+> > DAMON will be presented in the next week LPC[1].  To be prepared for a screen
+> > sharing error (if I get no such error, I will do a live-demo), I recorded a
+> > simple demo video.  I would like to share it here to help your easier
+> > understanding of DAMON.
+> > 
+> >     https://youtu.be/l63eqbVBZRY
+> > 
+> > [1] https://linuxplumbersconf.org/event/7/contributions/659/
+> 
+> During the session, I introduced the list of future works and asked the
+> audiences to vote for the priority of the tasks:
+> https://youtu.be/jOBkKMA0uF0?t=13253
 
-A 64-bit shadow stack has a size of min(RLIMIT_STACK, 4 GB).  A compat-mode
-thread shadow stack has a size of 1/4 min(RLIMIT_STACK, 4 GB).  This allows
-more threads to run in a 32-bit address space.
+I also promised to make my automated tests for DAMON available as open source.
+I'm happy to announce that it is not available at Github[1] under GPL v2
+license.  Using that, you can easily test how well DAMON works on your machine.
+Hopefully, it could be used as a getting started guide for both users and
+developers of DAMON.
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
----
-v10:
-- Limit shadow stack size to 4 GB.
+[1] https://github.com/awslabs/damon-tests
 
- arch/x86/include/asm/cet.h         |  3 ++
- arch/x86/include/asm/mmu_context.h |  3 ++
- arch/x86/kernel/cet.c              | 44 ++++++++++++++++++++++++++++++
- arch/x86/kernel/process.c          |  7 +++++
- 4 files changed, 57 insertions(+)
 
-diff --git a/arch/x86/include/asm/cet.h b/arch/x86/include/asm/cet.h
-index 73435856ce54..ec4b5e62d0ce 100644
---- a/arch/x86/include/asm/cet.h
-+++ b/arch/x86/include/asm/cet.h
-@@ -18,12 +18,15 @@ struct cet_status {
- 
- #ifdef CONFIG_X86_CET
- int cet_setup_shstk(void);
-+int cet_setup_thread_shstk(struct task_struct *p, unsigned long clone_flags);
- void cet_disable_shstk(void);
- void cet_free_shstk(struct task_struct *p);
- int cet_verify_rstor_token(bool ia32, unsigned long ssp, unsigned long *new_ssp);
- void cet_restore_signal(struct sc_ext *sc);
- int cet_setup_signal(bool ia32, unsigned long rstor, struct sc_ext *sc);
- #else
-+static inline int cet_setup_thread_shstk(struct task_struct *p,
-+					 unsigned long clone_flags) { return 0; }
- static inline void cet_disable_shstk(void) {}
- static inline void cet_free_shstk(struct task_struct *p) {}
- static inline void cet_restore_signal(struct sc_ext *sc) { return; }
-diff --git a/arch/x86/include/asm/mmu_context.h b/arch/x86/include/asm/mmu_context.h
-index d98016b83755..ceb593e405e1 100644
---- a/arch/x86/include/asm/mmu_context.h
-+++ b/arch/x86/include/asm/mmu_context.h
-@@ -11,6 +11,7 @@
- 
- #include <asm/tlbflush.h>
- #include <asm/paravirt.h>
-+#include <asm/cet.h>
- #include <asm/debugreg.h>
- 
- extern atomic64_t last_mm_ctx_id;
-@@ -142,6 +143,8 @@ do {						\
- #else
- #define deactivate_mm(tsk, mm)			\
- do {						\
-+	if (!tsk->vfork_done)			\
-+		cet_free_shstk(tsk);		\
- 	load_gs_index(0);			\
- 	loadsegment(fs, 0);			\
- } while (0)
-diff --git a/arch/x86/kernel/cet.c b/arch/x86/kernel/cet.c
-index 51ddd17aee8f..b285c726bb88 100644
---- a/arch/x86/kernel/cet.c
-+++ b/arch/x86/kernel/cet.c
-@@ -172,6 +172,50 @@ int cet_setup_shstk(void)
- 	return 0;
- }
- 
-+int cet_setup_thread_shstk(struct task_struct *tsk, unsigned long clone_flags)
-+{
-+	unsigned long addr, size;
-+	struct cet_user_state *state;
-+	struct cet_status *cet = &tsk->thread.cet;
-+
-+	if (!cet->shstk_size)
-+		return 0;
-+
-+	if ((clone_flags & (CLONE_VFORK | CLONE_VM)) != CLONE_VM)
-+		return 0;
-+
-+	state = get_xsave_addr(&tsk->thread.fpu.state.xsave,
-+			       XFEATURE_CET_USER);
-+
-+	if (!state)
-+		return -EINVAL;
-+
-+	/* Cap shadow stack size to 4 GB */
-+	size = min(rlimit(RLIMIT_STACK), 1UL << 32);
-+
-+	/*
-+	 * Compat-mode pthreads share a limited address space.
-+	 * If each function call takes an average of four slots
-+	 * stack space, we need 1/4 of stack size for shadow stack.
-+	 */
-+	if (in_compat_syscall())
-+		size /= 4;
-+	size = round_up(size, PAGE_SIZE);
-+	addr = alloc_shstk(size, 0);
-+
-+	if (IS_ERR_VALUE(addr)) {
-+		cet->shstk_base = 0;
-+		cet->shstk_size = 0;
-+		return PTR_ERR((void *)addr);
-+	}
-+
-+	fpu__prepare_write(&tsk->thread.fpu);
-+	state->user_ssp = (u64)(addr + size);
-+	cet->shstk_base = addr;
-+	cet->shstk_size = size;
-+	return 0;
-+}
-+
- void cet_disable_shstk(void)
- {
- 	struct cet_status *cet = &current->thread.cet;
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index ff3b44d6740b..67632ba893b7 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -110,6 +110,7 @@ void exit_thread(struct task_struct *tsk)
- 
- 	free_vm86(t);
- 
-+	cet_free_shstk(tsk);
- 	fpu__drop(fpu);
- }
- 
-@@ -182,6 +183,12 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 	if (clone_flags & CLONE_SETTLS)
- 		ret = set_new_tls(p, tls);
- 
-+#ifdef CONFIG_X86_64
-+	/* Allocate a new shadow stack for pthread */
-+	if (!ret)
-+		ret = cet_setup_thread_shstk(p, clone_flags);
-+#endif
-+
- 	if (!ret && unlikely(test_tsk_thread_flag(current, TIF_IO_BITMAP)))
- 		io_bitmap_share(p);
- 
--- 
-2.21.0
+Thanks,
+SeongJae Park
 
+> 
+> To summarize here, the tasks are (highest priority first):
+> 
+> 1. Make current DAMON patchset series merged in the mainline (6 votes)
+> 2. User space interface improvement (4 votes)
+>  - Multiple monitoring contexts
+>  - Charging of the monitoring threads' CPU usage
+> 3. Support more address spaces (2 votes)
+>  - Cgroups, cached pages, specific file-backed pages, swap slots, ...
+> 3. DAMON-based MM optimizations (2 votes)
+>  - Page reclaim, THP, compaction, NUMA balancing, ...
+> 4. Optimize for special use-cases (1 vote)
+>  - Page granularity monitoring, accessed-or-not monitoring, ...
+> 
+> So, I'd like to focus on polishing current patchset so that it could be merged
+> in.  For that, I'd like to ask your more reviews.
+> 
+> While waiting for the reviews, I will start implementing other future features
+> that received many votes.  The support of multiple monitoring contexts for the
+> user space would be the first one.  Once the implementation is finished, I will
+> post it as separated RFC patchset (the user space interface will be compatible
+> with current one).
+> 
+> Any comment is welcome.
+> 
+> 
+> Thanks,
+> SeongJae Park
