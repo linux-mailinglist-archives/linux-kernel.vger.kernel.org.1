@@ -2,602 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D75279283
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2661E27928A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728306AbgIYUpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:45:20 -0400
-Received: from mga03.intel.com ([134.134.136.65]:46756 "EHLO mga03.intel.com"
+        id S1729132AbgIYUpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:45:33 -0400
+Received: from mga05.intel.com ([192.55.52.43]:41393 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727654AbgIYUpS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:45:18 -0400
-IronPort-SDR: KSY0aDblEhwtpL6Opyurtb8gLch0vH+K9N58KPkaDLENVBCbEEeAxrJAGrLl0gSA0mF7/gjB9T
- bdC2jNwxibPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="161701459"
+        id S1729066AbgIYUpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:45:22 -0400
+IronPort-SDR: Omj9FACDWyt2RInBLUyqxDQQm0xMvnxQ8SLBBQD2Yq9x3TeDjq3gsQSid077+5oVS7OLipgE/j
+ pGn+uUjGtw2g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="246406876"
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="161701459"
+   d="scan'208";a="246406876"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:31:04 -0700
-IronPort-SDR: wDDUO0IwgemsmCuNDE3buJ2kW4ZQSpGnWPcgSTUk4v9QcS8b85PXyswDC27AjJI6pce41UpQjf
- 4YuL0SpBvPWg==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:31:15 -0700
+IronPort-SDR: pGLgStw/jH6RTdEPgJ4fkdzkoHUgkXmP849CdWuZTEtl+Lu7TACjnvRbLHquBQMn+tDWP4nbbt
+ NoYgq83/drpA==
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="413980405"
+   d="scan'208";a="487582244"
 Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:31:03 -0700
-Subject: [PATCH v5 11/17] mm/memremap_pages: support multiple ranges per
- invocation
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:31:14 -0700
+Subject: [PATCH v5 13/17] device-dax: introduce 'mapping' devices
 From:   Dan Williams <dan.j.williams@intel.com>
 To:     akpm@linux-foundation.org
-Cc:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        =?utf-8?b?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+Cc:     Joao Martins <joao.m.martins@oracle.com>, vishal.l.verma@intel.com,
         dave.hansen@linux.intel.com, linux-mm@kvack.org,
         linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Date:   Fri, 25 Sep 2020 12:12:43 -0700
-Message-ID: <160106116293.30709.13350662794915396198.stgit@dwillia2-desk3.amr.corp.intel.com>
+Date:   Fri, 25 Sep 2020 12:12:54 -0700
+Message-ID: <160106117446.30709.2751020815463722537.stgit@dwillia2-desk3.amr.corp.intel.com>
 In-Reply-To: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
 References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
 User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In support of device-dax growing the ability to front physically
-dis-contiguous ranges of memory, update devm_memremap_pages() to track
-multiple ranges with a single reference counter and devm instance.
+In support of interrogating the physical address layout of a device with
+dis-contiguous ranges, introduce a sysfs directory with 'start', 'end',
+and 'page_offset' attributes.  The alternative is trying to parse
+/proc/iomem, and that file will not reflect the extent layout until the
+device is enabled.
 
-Convert all [devm_]memremap_pages() users to specify the number of
-ranges they are mapping in their 'struct dev_pagemap' instance.
-
-Link: https://lkml.kernel.org/r/159643103789.4062302.18426128170217903785.stgit@dwillia2-desk3.amr.corp.intel.com
-Cc: Paul Mackerras <paulus@ozlabs.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Vishal Verma <vishal.l.verma@intel.com>
-Cc: Vivek Goyal <vgoyal@redhat.com>
-Cc: Dave Jiang <dave.jiang@intel.com>
-Cc: Ben Skeggs <bskeggs@redhat.com>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Ira Weiny <ira.weiny@intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Stefano Stabellini <sstabellini@kernel.org>
-Cc: "Jérôme Glisse" <jglisse@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
+Link: https://lkml.kernel.org/r/159643104819.4062302.13691281391423291589.stgit@dwillia2-desk3.amr.corp.intel.com
+Cc: Joao Martins <joao.m.martins@oracle.com>
 Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
- arch/powerpc/kvm/book3s_hv_uvmem.c     |    1 
- drivers/dax/device.c                   |    1 
- drivers/gpu/drm/nouveau/nouveau_dmem.c |    1 
- drivers/nvdimm/pfn_devs.c              |    1 
- drivers/nvdimm/pmem.c                  |    1 
- drivers/pci/p2pdma.c                   |    1 
- drivers/xen/unpopulated-alloc.c        |    1 
- include/linux/memremap.h               |   10 +
- lib/test_hmm.c                         |    1 
- mm/memremap.c                          |  258 +++++++++++++++++++-------------
- 10 files changed, 166 insertions(+), 110 deletions(-)
+ drivers/dax/bus.c         |  191 +++++++++++++++++++++++++++++++++++++++++++++
+ drivers/dax/dax-private.h |   14 +++
+ 2 files changed, 203 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kvm/book3s_hv_uvmem.c b/arch/powerpc/kvm/book3s_hv_uvmem.c
-index 29ec555055c2..84e5a2dc8be5 100644
---- a/arch/powerpc/kvm/book3s_hv_uvmem.c
-+++ b/arch/powerpc/kvm/book3s_hv_uvmem.c
-@@ -1172,6 +1172,7 @@ int kvmppc_uvmem_init(void)
- 	kvmppc_uvmem_pgmap.type = MEMORY_DEVICE_PRIVATE;
- 	kvmppc_uvmem_pgmap.range.start = res->start;
- 	kvmppc_uvmem_pgmap.range.end = res->end;
-+	kvmppc_uvmem_pgmap.nr_range = 1;
- 	kvmppc_uvmem_pgmap.ops = &kvmppc_uvmem_ops;
- 	/* just one global instance: */
- 	kvmppc_uvmem_pgmap.owner = &kvmppc_uvmem_pgmap;
-diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-index a14448bca83d..5f808617672a 100644
---- a/drivers/dax/device.c
-+++ b/drivers/dax/device.c
-@@ -417,6 +417,7 @@ int dev_dax_probe(struct dev_dax *dev_dax)
- 		if (!pgmap)
- 			return -ENOMEM;
- 		pgmap->range = *range;
-+		pgmap->nr_range = 1;
- 	}
- 	pgmap->type = MEMORY_DEVICE_GENERIC;
- 	addr = devm_memremap_pages(dev, pgmap);
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-index 25811ed7e274..a13c6215bba8 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-@@ -251,6 +251,7 @@ nouveau_dmem_chunk_alloc(struct nouveau_drm *drm, struct page **ppage)
- 	chunk->pagemap.type = MEMORY_DEVICE_PRIVATE;
- 	chunk->pagemap.range.start = res->start;
- 	chunk->pagemap.range.end = res->end;
-+	chunk->pagemap.nr_range = 1;
- 	chunk->pagemap.ops = &nouveau_dmem_pagemap_ops;
- 	chunk->pagemap.owner = drm->dev;
+diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+index 06a789aba58a..005fa3e6d41c 100644
+--- a/drivers/dax/bus.c
++++ b/drivers/dax/bus.c
+@@ -579,6 +579,167 @@ struct dax_region *alloc_dax_region(struct device *parent, int region_id,
+ }
+ EXPORT_SYMBOL_GPL(alloc_dax_region);
  
-diff --git a/drivers/nvdimm/pfn_devs.c b/drivers/nvdimm/pfn_devs.c
-index 3c4787b92a6a..b499df630d4d 100644
---- a/drivers/nvdimm/pfn_devs.c
-+++ b/drivers/nvdimm/pfn_devs.c
-@@ -693,6 +693,7 @@ static int __nvdimm_setup_pfn(struct nd_pfn *nd_pfn, struct dev_pagemap *pgmap)
- 		.start = nsio->res.start + start_pad,
- 		.end = nsio->res.end - end_trunc,
- 	};
-+	pgmap->nr_range = 1;
- 	if (nd_pfn->mode == PFN_MODE_RAM) {
- 		if (offset < reserve)
- 			return -EINVAL;
-diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-index 69cc0e783709..1f45af363a94 100644
---- a/drivers/nvdimm/pmem.c
-+++ b/drivers/nvdimm/pmem.c
-@@ -442,6 +442,7 @@ static int pmem_attach_disk(struct device *dev,
- 	} else if (pmem_should_map_pages(dev)) {
- 		pmem->pgmap.range.start = res->start;
- 		pmem->pgmap.range.end = res->end;
-+		pmem->pgmap.nr_range = 1;
- 		pmem->pgmap.type = MEMORY_DEVICE_FS_DAX;
- 		pmem->pgmap.ops = &fsdax_pagemap_ops;
- 		addr = devm_memremap_pages(dev, &pmem->pgmap);
-diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-index 256850513813..9d53c16b7329 100644
---- a/drivers/pci/p2pdma.c
-+++ b/drivers/pci/p2pdma.c
-@@ -187,6 +187,7 @@ int pci_p2pdma_add_resource(struct pci_dev *pdev, int bar, size_t size,
- 	pgmap = &p2p_pgmap->pgmap;
- 	pgmap->range.start = pci_resource_start(pdev, bar) + offset;
- 	pgmap->range.end = pgmap->range.start + size - 1;
-+	pgmap->nr_range = 1;
- 	pgmap->type = MEMORY_DEVICE_PCI_P2PDMA;
++static void dax_mapping_release(struct device *dev)
++{
++	struct dax_mapping *mapping = to_dax_mapping(dev);
++	struct dev_dax *dev_dax = to_dev_dax(dev->parent);
++
++	ida_free(&dev_dax->ida, mapping->id);
++	kfree(mapping);
++}
++
++static void unregister_dax_mapping(void *data)
++{
++	struct device *dev = data;
++	struct dax_mapping *mapping = to_dax_mapping(dev);
++	struct dev_dax *dev_dax = to_dev_dax(dev->parent);
++	struct dax_region *dax_region = dev_dax->region;
++
++	dev_dbg(dev, "%s\n", __func__);
++
++	device_lock_assert(dax_region->dev);
++
++	dev_dax->ranges[mapping->range_id].mapping = NULL;
++	mapping->range_id = -1;
++
++	device_del(dev);
++	put_device(dev);
++}
++
++static struct dev_dax_range *get_dax_range(struct device *dev)
++{
++	struct dax_mapping *mapping = to_dax_mapping(dev);
++	struct dev_dax *dev_dax = to_dev_dax(dev->parent);
++	struct dax_region *dax_region = dev_dax->region;
++
++	device_lock(dax_region->dev);
++	if (mapping->range_id < 0) {
++		device_unlock(dax_region->dev);
++		return NULL;
++	}
++
++	return &dev_dax->ranges[mapping->range_id];
++}
++
++static void put_dax_range(struct dev_dax_range *dax_range)
++{
++	struct dax_mapping *mapping = dax_range->mapping;
++	struct dev_dax *dev_dax = to_dev_dax(mapping->dev.parent);
++	struct dax_region *dax_region = dev_dax->region;
++
++	device_unlock(dax_region->dev);
++}
++
++static ssize_t start_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct dev_dax_range *dax_range;
++	ssize_t rc;
++
++	dax_range = get_dax_range(dev);
++	if (!dax_range)
++		return -ENXIO;
++	rc = sprintf(buf, "%#llx\n", dax_range->range.start);
++	put_dax_range(dax_range);
++
++	return rc;
++}
++static DEVICE_ATTR(start, 0400, start_show, NULL);
++
++static ssize_t end_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct dev_dax_range *dax_range;
++	ssize_t rc;
++
++	dax_range = get_dax_range(dev);
++	if (!dax_range)
++		return -ENXIO;
++	rc = sprintf(buf, "%#llx\n", dax_range->range.end);
++	put_dax_range(dax_range);
++
++	return rc;
++}
++static DEVICE_ATTR(end, 0400, end_show, NULL);
++
++static ssize_t pgoff_show(struct device *dev,
++		struct device_attribute *attr, char *buf)
++{
++	struct dev_dax_range *dax_range;
++	ssize_t rc;
++
++	dax_range = get_dax_range(dev);
++	if (!dax_range)
++		return -ENXIO;
++	rc = sprintf(buf, "%#lx\n", dax_range->pgoff);
++	put_dax_range(dax_range);
++
++	return rc;
++}
++static DEVICE_ATTR(page_offset, 0400, pgoff_show, NULL);
++
++static struct attribute *dax_mapping_attributes[] = {
++	&dev_attr_start.attr,
++	&dev_attr_end.attr,
++	&dev_attr_page_offset.attr,
++	NULL,
++};
++
++static const struct attribute_group dax_mapping_attribute_group = {
++	.attrs = dax_mapping_attributes,
++};
++
++static const struct attribute_group *dax_mapping_attribute_groups[] = {
++	&dax_mapping_attribute_group,
++	NULL,
++};
++
++static struct device_type dax_mapping_type = {
++	.release = dax_mapping_release,
++	.groups = dax_mapping_attribute_groups,
++};
++
++static int devm_register_dax_mapping(struct dev_dax *dev_dax, int range_id)
++{
++	struct dax_region *dax_region = dev_dax->region;
++	struct dax_mapping *mapping;
++	struct device *dev;
++	int rc;
++
++	device_lock_assert(dax_region->dev);
++
++	if (dev_WARN_ONCE(&dev_dax->dev, !dax_region->dev->driver,
++				"region disabled\n"))
++		return -ENXIO;
++
++	mapping = kzalloc(sizeof(*mapping), GFP_KERNEL);
++	if (!mapping)
++		return -ENOMEM;
++	mapping->range_id = range_id;
++	mapping->id = ida_alloc(&dev_dax->ida, GFP_KERNEL);
++	if (mapping->id < 0) {
++		kfree(mapping);
++		return -ENOMEM;
++	}
++	dev_dax->ranges[range_id].mapping = mapping;
++	dev = &mapping->dev;
++	device_initialize(dev);
++	dev->parent = &dev_dax->dev;
++	dev->type = &dax_mapping_type;
++	dev_set_name(dev, "mapping%d", mapping->id);
++	rc = device_add(dev);
++	if (rc) {
++		put_device(dev);
++		return rc;
++	}
++
++	rc = devm_add_action_or_reset(dax_region->dev, unregister_dax_mapping,
++			dev);
++	if (rc)
++		return rc;
++	return 0;
++}
++
+ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+ 		resource_size_t size)
+ {
+@@ -588,7 +749,7 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+ 	struct dev_dax_range *ranges;
+ 	unsigned long pgoff = 0;
+ 	struct resource *alloc;
+-	int i;
++	int i, rc;
  
- 	p2p_pgmap->provider = pdev;
-diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
-index 091b8669eca3..8c512ea550bb 100644
---- a/drivers/xen/unpopulated-alloc.c
-+++ b/drivers/xen/unpopulated-alloc.c
-@@ -47,6 +47,7 @@ static int fill_list(unsigned int nr_pages)
- 		.start = res->start,
- 		.end = res->end,
- 	};
-+	pgmap->nr_range = 1;
- 	pgmap->owner = res;
+ 	device_lock_assert(dax_region->dev);
  
- #ifdef CONFIG_XEN_HAVE_PVMMU
-diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-index 375b9e87a5cf..86c6c368ce9b 100644
---- a/include/linux/memremap.h
-+++ b/include/linux/memremap.h
-@@ -94,7 +94,6 @@ struct dev_pagemap_ops {
- /**
-  * struct dev_pagemap - metadata for ZONE_DEVICE mappings
-  * @altmap: pre-allocated/reserved memory for vmemmap allocations
-- * @range: physical address range covered by @ref
-  * @ref: reference count that pins the devm_memremap_pages() mapping
-  * @internal_ref: internal reference if @ref is not provided by the caller
-  * @done: completion for @internal_ref
-@@ -104,10 +103,12 @@ struct dev_pagemap_ops {
-  * @owner: an opaque pointer identifying the entity that manages this
-  *	instance.  Used by various helpers to make sure that no
-  *	foreign ZONE_DEVICE memory is accessed.
-+ * @nr_range: number of ranges to be mapped
-+ * @range: range to be mapped when nr_range == 1
-+ * @ranges: array of ranges to be mapped when nr_range > 1
-  */
- struct dev_pagemap {
- 	struct vmem_altmap altmap;
--	struct range range;
- 	struct percpu_ref *ref;
- 	struct percpu_ref internal_ref;
- 	struct completion done;
-@@ -115,6 +116,11 @@ struct dev_pagemap {
- 	unsigned int flags;
- 	const struct dev_pagemap_ops *ops;
- 	void *owner;
-+	int nr_range;
-+	union {
-+		struct range range;
-+		struct range ranges[0];
-+	};
+@@ -633,6 +794,22 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+ 
+ 	dev_dbg(dev, "alloc range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
+ 			&alloc->start, &alloc->end);
++	/*
++	 * A dev_dax instance must be registered before mapping device
++	 * children can be added. Defer to devm_create_dev_dax() to add
++	 * the initial mapping device.
++	 */
++	if (!device_is_registered(&dev_dax->dev))
++		return 0;
++
++	rc = devm_register_dax_mapping(dev_dax, dev_dax->nr_range - 1);
++	if (rc) {
++		dev_dbg(dev, "delete range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
++				&alloc->start, &alloc->end);
++		dev_dax->nr_range--;
++		__release_region(res, alloc->start, resource_size(alloc));
++		return rc;
++	}
+ 
+ 	return 0;
+ }
+@@ -701,11 +878,14 @@ static int dev_dax_shrink(struct dev_dax *dev_dax, resource_size_t size)
+ 
+ 	for (i = dev_dax->nr_range - 1; i >= 0; i--) {
+ 		struct range *range = &dev_dax->ranges[i].range;
++		struct dax_mapping *mapping = dev_dax->ranges[i].mapping;
+ 		struct resource *adjust = NULL, *res;
+ 		resource_size_t shrink;
+ 
+ 		shrink = min_t(u64, to_shrink, range_len(range));
+ 		if (shrink >= range_len(range)) {
++			devm_release_action(dax_region->dev,
++					unregister_dax_mapping, &mapping->dev);
+ 			__release_region(&dax_region->res, range->start,
+ 					range_len(range));
+ 			dev_dax->nr_range--;
+@@ -1036,9 +1216,9 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+ 	/* a device_dax instance is dead while the driver is not attached */
+ 	kill_dax(dax_dev);
+ 
+-	/* from here on we're committed to teardown via dev_dax_release() */
+ 	dev_dax->dax_dev = dax_dev;
+ 	dev_dax->target_node = dax_region->target_node;
++	ida_init(&dev_dax->ida);
+ 	kref_get(&dax_region->kref);
+ 
+ 	inode = dax_inode(dax_dev);
+@@ -1061,6 +1241,13 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+ 	if (rc)
+ 		return ERR_PTR(rc);
+ 
++	/* register mapping device for the initial allocation range */
++	if (dev_dax->nr_range && range_len(&dev_dax->ranges[0].range)) {
++		rc = devm_register_dax_mapping(dev_dax, 0);
++		if (rc)
++			return ERR_PTR(rc);
++	}
++
+ 	return dev_dax;
+ 
+ err_alloc_dax:
+diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+index f863287107fd..13780f62b95e 100644
+--- a/drivers/dax/dax-private.h
++++ b/drivers/dax/dax-private.h
+@@ -40,6 +40,12 @@ struct dax_region {
+ 	struct device *youngest;
  };
  
- static inline struct vmem_altmap *pgmap_altmap(struct dev_pagemap *pgmap)
-diff --git a/lib/test_hmm.c b/lib/test_hmm.c
-index 5b4521991621..e3065d6123f0 100644
---- a/lib/test_hmm.c
-+++ b/lib/test_hmm.c
-@@ -489,6 +489,7 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
- 	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
- 	devmem->pagemap.range.start = res->start;
- 	devmem->pagemap.range.end = res->end;
-+	devmem->pagemap.nr_range = 1;
- 	devmem->pagemap.ops = &dmirror_devmem_ops;
- 	devmem->pagemap.owner = mdevice;
- 
-diff --git a/mm/memremap.c b/mm/memremap.c
-index 7c895e1477b0..282849f2e319 100644
---- a/mm/memremap.c
-+++ b/mm/memremap.c
-@@ -77,15 +77,19 @@ static void pgmap_array_delete(struct range *range)
- 	synchronize_rcu();
- }
- 
--static unsigned long pfn_first(struct dev_pagemap *pgmap)
-+static unsigned long pfn_first(struct dev_pagemap *pgmap, int range_id)
- {
--	return PHYS_PFN(pgmap->range.start) +
--		vmem_altmap_offset(pgmap_altmap(pgmap));
-+	struct range *range = &pgmap->ranges[range_id];
-+	unsigned long pfn = PHYS_PFN(range->start);
++struct dax_mapping {
++	struct device dev;
++	int range_id;
++	int id;
++};
 +
-+	if (range_id)
-+		return pfn;
-+	return pfn + vmem_altmap_offset(pgmap_altmap(pgmap));
- }
+ /**
+  * struct dev_dax - instance data for a subdivision of a dax region, and
+  * data while the device is activated in the driver.
+@@ -47,6 +53,7 @@ struct dax_region {
+  * @dax_dev - core dax functionality
+  * @target_node: effective numa node if dev_dax memory range is onlined
+  * @id: ida allocated id
++ * @ida: mapping id allocator
+  * @dev - device core
+  * @pgmap - pgmap for memmap setup / lifetime (driver owned)
+  * @nr_range: size of @ranges
+@@ -57,12 +64,14 @@ struct dev_dax {
+ 	struct dax_device *dax_dev;
+ 	int target_node;
+ 	int id;
++	struct ida ida;
+ 	struct device dev;
+ 	struct dev_pagemap *pgmap;
+ 	int nr_range;
+ 	struct dev_dax_range {
+ 		unsigned long pgoff;
+ 		struct range range;
++		struct dax_mapping *mapping;
+ 	} *ranges;
+ };
  
--static unsigned long pfn_end(struct dev_pagemap *pgmap)
-+static unsigned long pfn_end(struct dev_pagemap *pgmap, int range_id)
+@@ -70,4 +79,9 @@ static inline struct dev_dax *to_dev_dax(struct device *dev)
  {
--	const struct range *range = &pgmap->range;
-+	const struct range *range = &pgmap->ranges[range_id];
- 
- 	return (range->start + range_len(range)) >> PAGE_SHIFT;
+ 	return container_of(dev, struct dev_dax, dev);
  }
-@@ -117,8 +121,8 @@ bool pfn_zone_device_reserved(unsigned long pfn)
- 	return ret;
- }
- 
--#define for_each_device_pfn(pfn, map) \
--	for (pfn = pfn_first(map); pfn < pfn_end(map); pfn = pfn_next(pfn))
-+#define for_each_device_pfn(pfn, map, i) \
-+	for (pfn = pfn_first(map, i); pfn < pfn_end(map, i); pfn = pfn_next(pfn))
- 
- static void dev_pagemap_kill(struct dev_pagemap *pgmap)
- {
-@@ -144,20 +148,14 @@ static void dev_pagemap_cleanup(struct dev_pagemap *pgmap)
- 		pgmap->ref = NULL;
- }
- 
--void memunmap_pages(struct dev_pagemap *pgmap)
-+static void pageunmap_range(struct dev_pagemap *pgmap, int range_id)
- {
--	struct range *range = &pgmap->range;
-+	struct range *range = &pgmap->ranges[range_id];
- 	struct page *first_page;
--	unsigned long pfn;
- 	int nid;
- 
--	dev_pagemap_kill(pgmap);
--	for_each_device_pfn(pfn, pgmap)
--		put_page(pfn_to_page(pfn));
--	dev_pagemap_cleanup(pgmap);
--
- 	/* make sure to access a memmap that was actually initialized */
--	first_page = pfn_to_page(pfn_first(pgmap));
-+	first_page = pfn_to_page(pfn_first(pgmap, range_id));
- 
- 	/* pages are dead and unused, undo the arch mapping */
- 	nid = page_to_nid(first_page);
-@@ -177,6 +175,22 @@ void memunmap_pages(struct dev_pagemap *pgmap)
- 
- 	untrack_pfn(NULL, PHYS_PFN(range->start), range_len(range));
- 	pgmap_array_delete(range);
-+}
 +
-+void memunmap_pages(struct dev_pagemap *pgmap)
++static inline struct dax_mapping *to_dax_mapping(struct device *dev)
 +{
-+	unsigned long pfn;
-+	int i;
-+
-+	dev_pagemap_kill(pgmap);
-+	for (i = 0; i < pgmap->nr_range; i++)
-+		for_each_device_pfn(pfn, pgmap, i)
-+			put_page(pfn_to_page(pfn));
-+	dev_pagemap_cleanup(pgmap);
-+
-+	for (i = 0; i < pgmap->nr_range; i++)
-+		pageunmap_range(pgmap, i);
-+
- 	WARN_ONCE(pgmap->altmap.alloc, "failed to free all reserved pages\n");
- 	devmap_managed_enable_put();
- }
-@@ -195,96 +209,29 @@ static void dev_pagemap_percpu_release(struct percpu_ref *ref)
- 	complete(&pgmap->done);
- }
- 
--/*
-- * Not device managed version of dev_memremap_pages, undone by
-- * memunmap_pages().  Please use dev_memremap_pages if you have a struct
-- * device available.
-- */
--void *memremap_pages(struct dev_pagemap *pgmap, int nid)
-+static int pagemap_range(struct dev_pagemap *pgmap, struct mhp_params *params,
-+		int range_id, int nid)
- {
--	struct range *range = &pgmap->range;
-+	struct range *range = &pgmap->ranges[range_id];
- 	struct dev_pagemap *conflict_pgmap;
--	struct mhp_params params = {
--		/*
--		 * We do not want any optional features only our own memmap
--		 */
--		.altmap = pgmap_altmap(pgmap),
--		.pgprot = PAGE_KERNEL,
--	};
- 	int error, is_ram;
--	bool need_devmap_managed = true;
- 
--	switch (pgmap->type) {
--	case MEMORY_DEVICE_PRIVATE:
--		if (!IS_ENABLED(CONFIG_DEVICE_PRIVATE)) {
--			WARN(1, "Device private memory not supported\n");
--			return ERR_PTR(-EINVAL);
--		}
--		if (!pgmap->ops || !pgmap->ops->migrate_to_ram) {
--			WARN(1, "Missing migrate_to_ram method\n");
--			return ERR_PTR(-EINVAL);
--		}
--		if (!pgmap->owner) {
--			WARN(1, "Missing owner\n");
--			return ERR_PTR(-EINVAL);
--		}
--		break;
--	case MEMORY_DEVICE_FS_DAX:
--		if (!IS_ENABLED(CONFIG_ZONE_DEVICE) ||
--		    IS_ENABLED(CONFIG_FS_DAX_LIMITED)) {
--			WARN(1, "File system DAX not supported\n");
--			return ERR_PTR(-EINVAL);
--		}
--		break;
--	case MEMORY_DEVICE_GENERIC:
--		need_devmap_managed = false;
--		break;
--	case MEMORY_DEVICE_PCI_P2PDMA:
--		params.pgprot = pgprot_noncached(params.pgprot);
--		need_devmap_managed = false;
--		break;
--	default:
--		WARN(1, "Invalid pgmap type %d\n", pgmap->type);
--		break;
--	}
--
--	if (!pgmap->ref) {
--		if (pgmap->ops && (pgmap->ops->kill || pgmap->ops->cleanup))
--			return ERR_PTR(-EINVAL);
--
--		init_completion(&pgmap->done);
--		error = percpu_ref_init(&pgmap->internal_ref,
--				dev_pagemap_percpu_release, 0, GFP_KERNEL);
--		if (error)
--			return ERR_PTR(error);
--		pgmap->ref = &pgmap->internal_ref;
--	} else {
--		if (!pgmap->ops || !pgmap->ops->kill || !pgmap->ops->cleanup) {
--			WARN(1, "Missing reference count teardown definition\n");
--			return ERR_PTR(-EINVAL);
--		}
--	}
--
--	if (need_devmap_managed) {
--		error = devmap_managed_enable_get(pgmap);
--		if (error)
--			return ERR_PTR(error);
--	}
-+	if (WARN_ONCE(pgmap_altmap(pgmap) && range_id > 0,
-+				"altmap not supported for multiple ranges\n"))
-+		return -EINVAL;
- 
- 	conflict_pgmap = get_dev_pagemap(PHYS_PFN(range->start), NULL);
- 	if (conflict_pgmap) {
- 		WARN(1, "Conflicting mapping in same section\n");
- 		put_dev_pagemap(conflict_pgmap);
--		error = -ENOMEM;
--		goto err_array;
-+		return -ENOMEM;
- 	}
- 
- 	conflict_pgmap = get_dev_pagemap(PHYS_PFN(range->end), NULL);
- 	if (conflict_pgmap) {
- 		WARN(1, "Conflicting mapping in same section\n");
- 		put_dev_pagemap(conflict_pgmap);
--		error = -ENOMEM;
--		goto err_array;
-+		return -ENOMEM;
- 	}
- 
- 	is_ram = region_intersects(range->start, range_len(range),
-@@ -294,19 +241,18 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
- 		WARN_ONCE(1, "attempted on %s region %#llx-%#llx\n",
- 				is_ram == REGION_MIXED ? "mixed" : "ram",
- 				range->start, range->end);
--		error = -ENXIO;
--		goto err_array;
-+		return -ENXIO;
- 	}
- 
- 	error = xa_err(xa_store_range(&pgmap_array, PHYS_PFN(range->start),
- 				PHYS_PFN(range->end), pgmap, GFP_KERNEL));
- 	if (error)
--		goto err_array;
-+		return error;
- 
- 	if (nid < 0)
- 		nid = numa_mem_id();
- 
--	error = track_pfn_remap(NULL, &params.pgprot, PHYS_PFN(range->start), 0,
-+	error = track_pfn_remap(NULL, &params->pgprot, PHYS_PFN(range->start), 0,
- 			range_len(range));
- 	if (error)
- 		goto err_pfn_remap;
-@@ -326,7 +272,7 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
- 	 */
- 	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
- 		error = add_pages(nid, PHYS_PFN(range->start),
--				PHYS_PFN(range_len(range)), &params);
-+				PHYS_PFN(range_len(range)), params);
- 	} else {
- 		error = kasan_add_zero_shadow(__va(range->start), range_len(range));
- 		if (error) {
-@@ -335,7 +281,7 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
- 		}
- 
- 		error = arch_add_memory(nid, range->start, range_len(range),
--					&params);
-+					params);
- 	}
- 
- 	if (!error) {
-@@ -343,7 +289,7 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
- 
- 		zone = &NODE_DATA(nid)->node_zones[ZONE_DEVICE];
- 		move_pfn_range_to_zone(zone, PHYS_PFN(range->start),
--				PHYS_PFN(range_len(range)), params.altmap);
-+				PHYS_PFN(range_len(range)), params->altmap);
- 	}
- 
- 	mem_hotplug_done();
-@@ -357,20 +303,116 @@ void *memremap_pages(struct dev_pagemap *pgmap, int nid)
- 	memmap_init_zone_device(&NODE_DATA(nid)->node_zones[ZONE_DEVICE],
- 				PHYS_PFN(range->start),
- 				PHYS_PFN(range_len(range)), pgmap);
--	percpu_ref_get_many(pgmap->ref, pfn_end(pgmap) - pfn_first(pgmap));
--	return __va(range->start);
-+	percpu_ref_get_many(pgmap->ref, pfn_end(pgmap, range_id)
-+			- pfn_first(pgmap, range_id));
-+	return 0;
- 
-- err_add_memory:
-+err_add_memory:
- 	kasan_remove_zero_shadow(__va(range->start), range_len(range));
-- err_kasan:
-+err_kasan:
- 	untrack_pfn(NULL, PHYS_PFN(range->start), range_len(range));
-- err_pfn_remap:
-+err_pfn_remap:
- 	pgmap_array_delete(range);
-- err_array:
--	dev_pagemap_kill(pgmap);
--	dev_pagemap_cleanup(pgmap);
--	devmap_managed_enable_put();
--	return ERR_PTR(error);
-+	return error;
++	return container_of(dev, struct dax_mapping, dev);
 +}
-+
-+
-+/*
-+ * Not device managed version of dev_memremap_pages, undone by
-+ * memunmap_pages().  Please use dev_memremap_pages if you have a struct
-+ * device available.
-+ */
-+void *memremap_pages(struct dev_pagemap *pgmap, int nid)
-+{
-+	struct mhp_params params = {
-+		.altmap = pgmap_altmap(pgmap),
-+		.pgprot = PAGE_KERNEL,
-+	};
-+	const int nr_range = pgmap->nr_range;
-+	bool need_devmap_managed = true;
-+	int error, i;
-+
-+	if (WARN_ONCE(!nr_range, "nr_range must be specified\n"))
-+		return ERR_PTR(-EINVAL);
-+
-+	switch (pgmap->type) {
-+	case MEMORY_DEVICE_PRIVATE:
-+		if (!IS_ENABLED(CONFIG_DEVICE_PRIVATE)) {
-+			WARN(1, "Device private memory not supported\n");
-+			return ERR_PTR(-EINVAL);
-+		}
-+		if (!pgmap->ops || !pgmap->ops->migrate_to_ram) {
-+			WARN(1, "Missing migrate_to_ram method\n");
-+			return ERR_PTR(-EINVAL);
-+		}
-+		if (!pgmap->owner) {
-+			WARN(1, "Missing owner\n");
-+			return ERR_PTR(-EINVAL);
-+		}
-+		break;
-+	case MEMORY_DEVICE_FS_DAX:
-+		if (!IS_ENABLED(CONFIG_ZONE_DEVICE) ||
-+		    IS_ENABLED(CONFIG_FS_DAX_LIMITED)) {
-+			WARN(1, "File system DAX not supported\n");
-+			return ERR_PTR(-EINVAL);
-+		}
-+		break;
-+	case MEMORY_DEVICE_GENERIC:
-+		need_devmap_managed = false;
-+		break;
-+	case MEMORY_DEVICE_PCI_P2PDMA:
-+		params.pgprot = pgprot_noncached(params.pgprot);
-+		need_devmap_managed = false;
-+		break;
-+	default:
-+		WARN(1, "Invalid pgmap type %d\n", pgmap->type);
-+		break;
-+	}
-+
-+	if (!pgmap->ref) {
-+		if (pgmap->ops && (pgmap->ops->kill || pgmap->ops->cleanup))
-+			return ERR_PTR(-EINVAL);
-+
-+		init_completion(&pgmap->done);
-+		error = percpu_ref_init(&pgmap->internal_ref,
-+				dev_pagemap_percpu_release, 0, GFP_KERNEL);
-+		if (error)
-+			return ERR_PTR(error);
-+		pgmap->ref = &pgmap->internal_ref;
-+	} else {
-+		if (!pgmap->ops || !pgmap->ops->kill || !pgmap->ops->cleanup) {
-+			WARN(1, "Missing reference count teardown definition\n");
-+			return ERR_PTR(-EINVAL);
-+		}
-+	}
-+
-+	if (need_devmap_managed) {
-+		error = devmap_managed_enable_get(pgmap);
-+		if (error)
-+			return ERR_PTR(error);
-+	}
-+
-+	/*
-+	 * Clear the pgmap nr_range as it will be incremented for each
-+	 * successfully processed range. This communicates how many
-+	 * regions to unwind in the abort case.
-+	 */
-+	pgmap->nr_range = 0;
-+	error = 0;
-+	for (i = 0; i < nr_range; i++) {
-+		error = pagemap_range(pgmap, &params, i, nid);
-+		if (error)
-+			break;
-+		pgmap->nr_range++;
-+	}
-+
-+	if (i < nr_range) {
-+		memunmap_pages(pgmap);
-+		pgmap->nr_range = nr_range;
-+		return ERR_PTR(error);
-+	}
-+
-+	return __va(pgmap->ranges[0].start);
- }
- EXPORT_SYMBOL_GPL(memremap_pages);
- 
+ #endif
 
