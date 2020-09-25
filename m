@@ -2,145 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260A6278AD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2457278AD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728874AbgIYO0b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:26:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31781 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727290AbgIYO0a (ORCPT
+        id S1728941AbgIYO2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728654AbgIYO2J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:26:30 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601043989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hPiMcScZ5bPLI1dO+pFhF7pjVz9qlxXsZQT6qKA47Yw=;
-        b=RtFNCCGQf8/YrvV1/Jt6bfhw/s7uYZeK2AsPByZqUHfofqAQRol6DbC5Uu0iqwlRyi/zkI
-        zr56B2KP55b1nBfcd6nlDf2i2BYFBWVeolzsxvdrLG9nhe2PruH/W9+zp2ziCmy3ujWtm6
-        hRdNHQwQEb7MlNy6QnBqMhCPv1GRGkw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-373-IYq3JDeWMvWR2s4LUprfIQ-1; Fri, 25 Sep 2020 10:26:24 -0400
-X-MC-Unique: IYq3JDeWMvWR2s4LUprfIQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 722AD10A7AEA;
-        Fri, 25 Sep 2020 14:26:22 +0000 (UTC)
-Received: from krava (unknown [10.40.192.203])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 3060B5C1BB;
-        Fri, 25 Sep 2020 14:26:20 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 16:26:19 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH 4/7] perf inject: Do not load map/dso when injecting
- build-id
-Message-ID: <20200925142619.GD3273770@krava>
-References: <20200923080537.155264-1-namhyung@kernel.org>
- <20200923080537.155264-5-namhyung@kernel.org>
- <20200924130909.GB3150401@krava>
- <CAM9d7ciWQa8rC91nOiak1ephg-+SfFXVkFLtU4H4Snaw2i_pWA@mail.gmail.com>
- <20200924134444.GE3150401@krava>
- <20200924144632.GA357981@google.com>
+        Fri, 25 Sep 2020 10:28:09 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDA6C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:28:09 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id i17so2941237oig.10
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:28:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=G8QtUwrCHJLLR9YFfvu8PbgWqFlh+WruMBeIvJCk6Qg=;
+        b=QmfhfLNSjj02XYV+T3ndwMxF1Ai/GPHs+A0zqvrhuk01lBft0ASnbfK5vpwFDvUL8y
+         G8h6zj+X+X93ZLwM7kYb5NSNqkj/semEN/Sgwo8jFgcQqUsGcZAVY1UulTROLWkt4BQn
+         H2DAAMrFRLDgDZXQbS88fPc3lM3h3ikNzhcuM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G8QtUwrCHJLLR9YFfvu8PbgWqFlh+WruMBeIvJCk6Qg=;
+        b=nutpYQm9CJuUbq0D300E4Uejd87n9TEpUHFhunQGLR//o8c+SsZVDsYpsTdnX4X5jG
+         cjV9eajAbR8dMJml1tTz+CoJbpKVV4R/pcVvQs6z81fTkkn21If+/sBc3TBB3o13A69u
+         BsJo5Y2ByYK/AhoJ1vGWya6Py16AX5vtt+pRUPOQaUwzF6gav2TTOpK0dYi8dBSxM3+q
+         94vzDI3wygri3PbSHVbAf2qOmsfg0cTy9ZWXYtYaX3FldBcGIMxE5pgDO1wS0YJ6ZLb+
+         oaAzhTbZBPHH6XYMtJ1dAh8+HmMnxIy6HlU4ivMnBKoLIfOqHmz6HKgdfY8dd7VV8GUE
+         IMVw==
+X-Gm-Message-State: AOAM530E22I4wv5nHCSIk12KsToJR7zO1itUWkjXiMBar/UypIoQMgF/
+        tfMniQJoqkjXzqZQc9wqhTO0Co9CjbrN9Q==
+X-Google-Smtp-Source: ABdhPJwaouCNx9BOs9/fDlJv4TizFGG9Wao9IuUQxYVTKbkCA1/r0DPbAu6C9FU0ikaoHC3KRni0LA==
+X-Received: by 2002:a05:6808:69a:: with SMTP id k26mr385953oig.127.1601044088598;
+        Fri, 25 Sep 2020 07:28:08 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id a13sm614466oib.35.2020.09.25.07.28.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 07:28:08 -0700 (PDT)
+Subject: Re: [Linux-kernel-mentees] Help wanted in LED subsystem
+To:     Pavel Machek <pavel@denx.de>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-leds@vger.kernel.org
+References: <20200925104739.GA26609@amd>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <ae09855e-79d1-a77f-289c-0a2c7d131649@linuxfoundation.org>
+Date:   Fri, 25 Sep 2020 08:28:07 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924144632.GA357981@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200925104739.GA26609@amd>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:46:32PM +0900, Namhyung Kim wrote:
-> On Thu, Sep 24, 2020 at 03:44:44PM +0200, Jiri Olsa wrote:
-> > On Thu, Sep 24, 2020 at 10:20:51PM +0900, Namhyung Kim wrote:
-> > > On Thu, Sep 24, 2020 at 10:09 PM Jiri Olsa <jolsa@redhat.com> wrote:
-> > > >
-> > > > On Wed, Sep 23, 2020 at 05:05:34PM +0900, Namhyung Kim wrote:
-> > > >
-> > > > SNIP
-> > > >
-> > > > > -static inline int is_no_dso_memory(const char *filename)
-> > > > > -{
-> > > > > -     return !strncmp(filename, "[stack", 6) ||
-> > > > > -            !strncmp(filename, "/SYSV",5)   ||
-> > > > > -            !strcmp(filename, "[heap]");
-> > > > > -}
-> > > > > -
-> > > > >  static inline int is_android_lib(const char *filename)
-> > > > >  {
-> > > > >       return strstarts(filename, "/data/app-lib/") ||
-> > > > > @@ -158,7 +143,7 @@ struct map *map__new(struct machine *machine, u64 start, u64 len,
-> > > > >               int anon, no_dso, vdso, android;
-> > > > >
-> > > > >               android = is_android_lib(filename);
-> > > > > -             anon = is_anon_memory(filename, flags);
-> > > > > +             anon = is_anon_memory(filename) || flags & MAP_HUGETLB;
-> > > >
-> > > > what's the reason to take 'flags & MAP_HUGETLB' out of is_anon_memory?
-> > > 
-> > > The MAP_HUGETLB is defined in uapi/linux/mman.h and I had trouble
-> > > when including the header in the map.h file.
-> > 
-> > could you share the error? it might be corner case, but it
-> > could bite us in future
+Hi Pavel,
+
+On 9/25/20 4:47 AM, Pavel Machek wrote:
+> Hi!
 > 
-> Sure.
+> In linux-next, I published TODO list for LED subsystem. Is that
+> something linux-kernel-mentees could help with?
 > 
->   CC       util/session.o
-> In file included from /home/namhyung/project/linux/tools/include/uapi/asm-generic/mman-common-tools.h:5,
->                  from /home/namhyung/project/linux/tools/include/uapi/asm-generic/mman.h:5,
->                  from /home/namhyung/project/linux/tools/arch/x86/include/uapi/asm/mman.h:5,
->                  from /home/namhyung/project/linux/tools/include/uapi/linux/mman.h:5,
->                  from util/map.h:13,
->                  from util/session.c:21:
-> /home/namhyung/project/linux/tools/include/uapi/asm-generic/mman-common.h:26: error: "MAP_POPULATE" redefined [-Werror]
->    26 | #define MAP_POPULATE  0x008000 /* populate (prefault) pagetables */
->       | 
-> In file included from /usr/include/x86_64-linux-gnu/bits/mman.h:31,
->                  from /usr/include/x86_64-linux-gnu/sys/mman.h:41,
->                  from util/session.c:12:
-> /usr/include/x86_64-linux-gnu/bits/mman-map-flags-generic.h:34: note: this is the location of the previous definition
->    34 | # define MAP_POPULATE 0x08000  /* Populate (prefault) pagetables.  */
->       | 
+> Best regards,
+> 							Pavel
 > 
-> This is repeated for each macro definitions..
 
-hm, some black magic happened in the past and it looks like now we
-can't have <sys/mman.h> and <linux/mman.h> includes together
+Thanks for putting this list together. Will you be able to define
+some time estimates for there items? We can definitely add these
+as projects to get done.
 
-it looks related to this commit:
-  be709d48329a tools headers uapi: Sync asm-generic/mman-common.h and linux/mman.h
+I am working on mentorship project plan for next year and we also have
+an active extended mentorship program underway since June and will
+continue until June 2021.
 
-I'm not sure I understand the purpose of asm-generic/mman-common-tools.h file
-
-Arnaldo,
-any chance you might have some quick solution before I dive in?
-you can reproduce the issue with change below
+Things to consider is scope of each of these items in the TODO list
+and mentor availability.
 
 thanks,
-jirka
-
-
----
-diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
-index b1c0686db1b7..a0b0281d8eab 100644
---- a/tools/perf/util/map.h
-+++ b/tools/perf/util/map.h
-@@ -10,6 +10,7 @@
- #include <string.h>
- #include <stdbool.h>
- #include <linux/types.h>
-+#include <sys/mman.h>
-
+-- Shuah
