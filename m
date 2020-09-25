@@ -2,121 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22CA2794CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D5E2794D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729409AbgIYXb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:31:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726773AbgIYXb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:31:26 -0400
-Received: from [192.168.0.108] (unknown [49.65.245.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 85FCC20829;
-        Fri, 25 Sep 2020 23:31:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601076685;
-        bh=TH7CZqiUY/VEc0Y9Aa4ybddrmMZqqc1VEItbbut6hfE=;
-        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
-        b=n+nnmkpH+lH4dhzkyHWwCTrO/VVYu9Yg8oGcFsifzZoJnf5AtJ7UcGBMNabSetkY8
-         ip29ErO/UATsiznustBlRCGTzUCuCsKtZK8o+QAgEvgxDTGnw2SaFQgYjriRpH4LZ0
-         RZaQgTDrzLA+IUdu79vP8ycC7MHjmYiS0iPza08k=
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix uninit-value in f2fs_lookup
-To:     Eric Biggers <ebiggers@kernel.org>
-References: <20200925151926.2658-1-chao@kernel.org>
- <20200925171436.GC3315208@gmail.com>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <84cb9909-506b-b1e4-a8a6-1c5c7f5b870c@kernel.org>
-Date:   Sat, 26 Sep 2020 07:31:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1728171AbgIYXf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:35:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgIYXfz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:35:55 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55B3C0613CE;
+        Fri, 25 Sep 2020 16:35:55 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id e18so227748pgd.4;
+        Fri, 25 Sep 2020 16:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=i15b0JKcCEn7qZufA0fqER1Rf3NvdTXdprxERiGECxM=;
+        b=aJ8TqUp7lTEH3C/zQeCn6egXjz2Hg/sqtoFVyzR8uFxAdj7LUs5azJGf28nuv91mFv
+         kDo0esl5hQ+BlX1KVb/m6IrWaE4mnHjnP0wz0L6soz8x125HvdVJSLrUUo3SHmYtT7Rj
+         02YmRxYR6RMJ4+asqnZ08VqTZo+w6rQvSAG2VlhfUmffyvJQmZzjTPK+/tEDz2YPZjGM
+         9Yi2JAEOFB5iJtmY5U1UImqegvj1KXaby5DbqICZmsqyVQLpXwPM5g0oLOhDtVRAepmQ
+         Atk3YO/LgkN5BpSXulZUI2HflWNBmZz2zU/oEZwg8x5W7k7Mb3LLdVUV8yXHDb+xE43H
+         Legw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=i15b0JKcCEn7qZufA0fqER1Rf3NvdTXdprxERiGECxM=;
+        b=Dn2OuJmQvGu1kSzFDydIqqHlr2kZ45+Ad/dts4XcHi20WEkwzjznpyZ7rTEHYgtryf
+         d9vN7KFq4VzHe4CS+8+ZQcYV/GJLHi0pRRcDVAKx7vpLfjckBfyykNKXHZqLDlpRNf4a
+         ozG6BGEX/g5F0P2IxWTxPeHmsX/e4vUpHn3wCgGSIof76GqlWipDSNbkT/JxNANIHlPI
+         djIbdx3FNgGCDgkZaaVA4tsxlQN880mCYkk9w7NUtaB6Bpouqsts5/n754D4nQAu62y4
+         iBcBW4KJAtpXxLNIn5isrfd/rJc2X72qD84TK0kkOYi2zjmRUSc+QBK7PDkMbNbYm1nv
+         3s+A==
+X-Gm-Message-State: AOAM530aepLeJVq+L0fiYQ2GVFu3BdgSorV7D1Pi0Ag7ucxU/xF0mk3S
+        JyQT0ZcbNHL062KJ7IEkmco=
+X-Google-Smtp-Source: ABdhPJw67ZTqShxre5CpgvX+xqkOxGhl9OVquoh0aWJtLT4CCOK4PiW6jUmSC/eFr/oX+ouKwRK0Fw==
+X-Received: by 2002:a62:fc51:0:b029:142:4506:9a7b with SMTP id e78-20020a62fc510000b029014245069a7bmr863680pfh.28.1601076955127;
+        Fri, 25 Sep 2020 16:35:55 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id t24sm3721066pfq.37.2020.09.25.16.35.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 16:35:54 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 16:35:52 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Kenneth Albanowski <kenalba@google.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: hid-input: fix stylus battery reporting
+Message-ID: <20200925233552.GA4022480@dtor-ws>
 MIME-Version: 1.0
-In-Reply-To: <20200925171436.GC3315208@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-9-26 1:14, Eric Biggers wrote:
-> On Fri, Sep 25, 2020 at 11:19:26PM +0800, Chao Yu wrote:
->> From: Chao Yu <yuchao0@huawei.com>
->>
->> As syzbot reported:
->>
->> Call Trace:
->>  __dump_stack lib/dump_stack.c:77 [inline]
->>  dump_stack+0x21c/0x280 lib/dump_stack.c:118
->>  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
->>  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
->>  f2fs_lookup+0xe05/0x1a80 fs/f2fs/namei.c:503
->>  lookup_open fs/namei.c:3082 [inline]
->>  open_last_lookups fs/namei.c:3177 [inline]
->>  path_openat+0x2729/0x6a90 fs/namei.c:3365
->>  do_filp_open+0x2b8/0x710 fs/namei.c:3395
->>  do_sys_openat2+0xa88/0x1140 fs/open.c:1168
->>  do_sys_open fs/open.c:1184 [inline]
->>  __do_compat_sys_openat fs/open.c:1242 [inline]
->>  __se_compat_sys_openat+0x2a4/0x310 fs/open.c:1240
->>  __ia32_compat_sys_openat+0x56/0x70 fs/open.c:1240
->>  do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
->>  __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
->>  do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
->>  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
->>  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
->>
->> In f2fs_lookup(), @res_page could be used before being initialized,
->> because in __f2fs_find_entry(), once F2FS_I(dir)->i_current_depth was
->> been fuzzed to zero, then @res_page will never be initialized, causing
->> this kmsan warning, relocating @res_page initialization place to fix
->> this bug.
->>
->> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->> ---
->>  fs/f2fs/dir.c | 7 +++----
->>  1 file changed, 3 insertions(+), 4 deletions(-)
->>
->> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
->> index 703cf8e21fc0..83630341ffa3 100644
->> --- a/fs/f2fs/dir.c
->> +++ b/fs/f2fs/dir.c
->> @@ -357,16 +357,15 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
->>  	unsigned int max_depth;
->>  	unsigned int level;
->>
->> +	*res_page = NULL;
->> +
->>  	if (f2fs_has_inline_dentry(dir)) {
->> -		*res_page = NULL;
->>  		de = f2fs_find_in_inline_dir(dir, fname, res_page);
->>  		goto out;
->>  	}
->>
->> -	if (npages == 0) {
->> -		*res_page = NULL;
->> +	if (npages == 0)
->>  		goto out;
->> -	}
->>
->>  	max_depth = F2FS_I(dir)->i_current_depth;
->>  	if (unlikely(max_depth > MAX_DIR_HASH_DEPTH)) {
->
-> Can't the assignment to *res_page below be removed too?
+With commit 4f3882177240 hid-input started clearing of "ignored" usages
+to avoid using garbage that might have been left in them. However
+"battery strength" usages should not be ignored, as we do want to
+use them.
 
-Now I checked all branches in find_in_level(), it looks safe to remove *res_page
-assignment in the loop.
+Fixes: 4f3882177240 ("HID: hid-input: clear unmapped usages")
+Reported-by: Kenneth Albanowski <kenalba@google.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
 
-Thanks,
+Kenneth, can you please try this one and see if it fixes your issue?
 
->
->         for (level = 0; level < max_depth; level++) {
->                 *res_page = NULL;
->                 de = find_in_level(dir, level, fname, res_page);
->                 if (de || IS_ERR(*res_page))
->                         break;
->         }
->
+ drivers/hid/hid-input.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index dea9cc65bf80..5da631d2ec9b 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -797,7 +797,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+ 		case 0x3b: /* Battery Strength */
+ 			hidinput_setup_battery(device, HID_INPUT_REPORT, field);
+ 			usage->type = EV_PWR;
+-			goto ignore;
++			return;
+ 
+ 		case 0x3c: /* Invert */
+ 			map_key_clear(BTN_TOOL_RUBBER);
+@@ -1059,7 +1059,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+ 		case HID_DC_BATTERYSTRENGTH:
+ 			hidinput_setup_battery(device, HID_INPUT_REPORT, field);
+ 			usage->type = EV_PWR;
+-			goto ignore;
++			return;
+ 		}
+ 		goto unknown;
+ 
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
+
+-- 
+Dmitry
