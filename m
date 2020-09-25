@@ -2,98 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3835278EE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E4E278EEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729333AbgIYQmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:42:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727402AbgIYQmY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:42:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB53A2075F;
-        Fri, 25 Sep 2020 16:42:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601052144;
-        bh=c2rgj1TrFsx3rd7S+ls7DxSAVWsEziKWugveJnbh7kQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nefj7iINudouOnBVczHq0yRaRFAX3LLVlPa9t1Dh3TEwpgDSCalLiOGeQADo7qjQL
-         HZNAxK6TRR8mZtf4CaynVgxNpRebRR0dMp7FLvAKRYzgQuFC+EBjCPqvWIJII3T0SV
-         8p9EtjNCfIHQ9iGeluJREcYmSk89R0R8yE0I7Vl4=
-Date:   Fri, 25 Sep 2020 17:41:29 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     robh+dt@kernel.org, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lucas Tanure <tanureal@opensource.cirrus.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH 2/3] ASoC: cs4234: Add support for Cirrus Logic CS4234
- codec
-Message-ID: <20200925164129.GG4841@sirena.org.uk>
-References: <20200925105908.20640-1-rf@opensource.cirrus.com>
- <20200925105908.20640-2-rf@opensource.cirrus.com>
+        id S1729384AbgIYQnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727324AbgIYQnD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:43:03 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 072A1C0613CE;
+        Fri, 25 Sep 2020 09:43:03 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z13so3441913iom.8;
+        Fri, 25 Sep 2020 09:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pMJSBGncr9k8+i5yr4/WJpZH3QmmiD+UwEsuN6RTtI0=;
+        b=oycXR9qGnnYyNd2ph2xmGb9rTEZzdhlwRyH36Mb+SPJ8kZ63wrxcMg5AajYL3b041W
+         BfkPCBdpeMd78WIhhATPNfy9W0FxohBjieWXMfm60DhqdB/rO2dV0t76M96Lj3zuy9Zd
+         jiZRB/5j5l5JoOtdNXLCMSF0fMmxUnCZiAgUyWy+/EhjXQX6AXnQnb4fiNDiPeuYzUDi
+         bK/vQd4WKKo2b0O25G0iUqdGMTkE7R/NRoGp11wo0gxMaMPFbXBMMhdWzwDTJhguTK9l
+         gKUWoV8ued8nFhdXjJWqzhTsfCuAyfK1AqM6OlPcsD/x/0Q7UopHLNvJ1YUXTY8wLWBm
+         KYvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pMJSBGncr9k8+i5yr4/WJpZH3QmmiD+UwEsuN6RTtI0=;
+        b=XWtxr88/BdPO1RnSAFuqxa7XjTrNagL05GFK0doR5mVeveqKcMzdE/ypnPOHiM1stV
+         /+fUqgruNVjlZctMFfdIJnFrKmVJKBKPPWApcCd701EhUnNqin87fbKLWcFhhGHxtZ1W
+         tEuW55Afbj69/egyPApFZYyLhOF/14PrvipkzrACdUiwHLMmb/AjzYDaln2Id/pWPId6
+         9NJQZcSHb88GrWGiJL1tIIO6HsKNcLgor3tOTo58yvRB8RC/+MGrYd496vEYbd0ZsYjp
+         MrbsSVRGFJx5nbICp7BUOir66P6+UUMnL6CJdc+oZkHOkUAjJIYVwvGcqcmS0E7bGtMd
+         SzWA==
+X-Gm-Message-State: AOAM532GILENXxF3/gNUKz9cqyO5WQH/6IzTAPPqxJbvfbqlDIHwEEJj
+        6GiydA2s9vWdu+DpeyTDaoCfSrhGBxhMODEjcWYs0dacT8w=
+X-Google-Smtp-Source: ABdhPJy/l3coWToI1447uhcRxjzlPar6YPUdUv9u9WzmGqwBuilO0fs3UQqjebtyPKWOIDM5nI6QB/HoXbEhEd8HomA=
+X-Received: by 2002:a05:6602:2e81:: with SMTP id m1mr917217iow.64.1601052181955;
+ Fri, 25 Sep 2020 09:43:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LiQwW4YX+w4axhAx"
-Content-Disposition: inline
-In-Reply-To: <20200925105908.20640-2-rf@opensource.cirrus.com>
-X-Cookie: Onward through the fog.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200925083507.13603-1-ptikhomirov@virtuozzo.com> <20200925083507.13603-3-ptikhomirov@virtuozzo.com>
+In-Reply-To: <20200925083507.13603-3-ptikhomirov@virtuozzo.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 25 Sep 2020 19:42:51 +0300
+Message-ID: <CAOQ4uxgxw7hZysDPfkrE9=Rc8-iK3=3SMX+RQJqgaARFRb_rNA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] ovl: introduce new "uuid=off" option for inodes
+ index feature
+To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 25, 2020 at 11:35 AM Pavel Tikhomirov
+<ptikhomirov@virtuozzo.com> wrote:
+>
+> This replaces uuid with null in overelayfs file handles and thus relaxes
 
---LiQwW4YX+w4axhAx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+typo: overelayfs
 
-On Fri, Sep 25, 2020 at 11:59:07AM +0100, Richard Fitzgerald wrote:
+> uuid checks for overlay index feature. It is only possible in case there
+> is only one filesystem for all the work/upper/lower directories and bare
+> file handles from this backing filesystem are uniq. In other case when
+> we have multiple filesystems lets just fallback to "uuid=on" which is
+> and equivalent of how it worked before with all uuid checks.
+>
 
-This looks very good, a couple of small nits below which should be easy
-to address:
+typo: uniq
 
-> @@ -282,7 +283,6 @@ config SND_SOC_ALL_CODECS
->  	  uses them is also built since they are only usable with a machine
->  	  driver.  Selecting this option will allow these drivers to be built
->  	  without an explicit machine driver for test and development purposes.
-> -
->  	  Support for the bus types used to access the codecs to be built must
->  	  be selected separately.
-> =20
+> This is needed when overlayfs is/was mounted in a container with index
+> enabled (e.g.: to be able to resolve inotify watch file handles on it to
+> paths in CRIU), and this container is copied and started alongside with
+> the original one. This way the "copy" container can't have the same uuid
+> on the superblock and mounting the overlayfs from it later would fail.
+>
+> Note: In our (Virtuozzo) use case users inside a container can create
+> "regular" overlayfs mounts without any "index=" option, but we still
+> want to migrate this containers with CRIU so we set "index=on" as kernel
 
-Unrelated whitespace change.
+this container
 
-> +static int cs4234_i2c_remove(struct i2c_client *i2c_client)
-> +{
-> +	struct cs4234 *cs4234 =3D i2c_get_clientdata(i2c_client);
-> +
-> +	pm_runtime_disable(&i2c_client->dev);
-> +	cs4234_shutdown(cs4234);
+> default so that all the container overlayfs mounts get support of file
+> handles automatically. With "uuid=off" we want the same thing (to be
+> able to "copy" container with uuid change) - we would set kernel default
+> so that all the container overlayfs mounts get "uuid=off" automatically.
+>
+> That is an example of the problem on top of loop+ext4:
+>
+> dd if=/dev/zero of=loopbackfile.img bs=100M count=10
+> losetup -fP loopbackfile.img
+> losetup -a
+>   #/dev/loop0: [64768]:35 (/loop-test/loopbackfile.img)
+> mkfs.ext4 loopbackfile.img
+> mkdir loop-mp
+> mount -o loop /dev/loop0 loop-mp
+> mkdir loop-mp/{lower,upper,work,merged}
+> mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
+> upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
+> umount loop-mp/merged
+> umount loop-mp
+> e2fsck -f /dev/loop0
+> tune2fs -U random /dev/loop0
+>
+> mount -o loop /dev/loop0 loop-mp
+> mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
+> upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
+>   #mount: /loop-test/loop-mp/merged:
+>   #mount(2) system call failed: Stale file handle.
+>
+> If you just change the uuid of the backing filesystem, overlay is not
+> mounting any more. In Virtuozzo we copy container disks (ploops) when
+> crate the copy of container and we require fs uuid to be uniq for a new
 
-You used devm_snd_soc_register_component() which means that you won't
-unregister utill after this force powered down the device which isn't
-great - you should use snd_soc_register_component() and manually
-unregister here before force powering the device down.
+typos: crat, uniq
 
---LiQwW4YX+w4axhAx
-Content-Type: application/pgp-signature; name="signature.asc"
+> container.
+>
+> CC: Amir Goldstein <amir73il@gmail.com>
+> CC: Vivek Goyal <vgoyal@redhat.com>
+> CC: Miklos Szeredi <miklos@szeredi.hu>
+> CC: linux-unionfs@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+>
 
------BEGIN PGP SIGNATURE-----
+Apart from some typos, looks good to me.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9uHbgACgkQJNaLcl1U
-h9BwAgf/cvrCRNPtVmQZoCMjhnRTU3sG6jDhpuGmfUrnOdGyu8jSiZLkPqX/tWRI
-BXpR19icljIVCFyLzA/Y1W77ry9U8oGrywn6hVNLxp6cYntlPzTNiY+ZXHhZTv2i
-SNYxq6g1Bx3CRIg42QPO79PRQ6rxZgiuuXPieN1+m4mfdCTDdgYt9hhhMyYLpkDu
-9oAXiUlcvyWmVyPmlwq3MebWms77Mo7/9qH6TruQXZDXGAnAH7UcMdxrejFF481i
-6Cv9Ym39lubA20QU0w/AALqPvIxHyvme2ERSxXWBpTnYkotdC5X3dd2K1ewKwQ/+
-H8J6WqhPI3hSArB0Xr7yTMtdqpRYvA==
-=j4b0
------END PGP SIGNATURE-----
+You may add:
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
---LiQwW4YX+w4axhAx--
+Please do not post v5. you should wait for more feedback from others.
+
+> ---
+> v2: in v1 I missed actual uuid check skip
+> v3: rebase to overlayfs-next, replace uuid with null in file handles,
+> split ovl_fs propagation to function arguments to separate patch, add
+> separate bool "uuid=on/off" option, move numfs check up, add doc note.
+> v4: get rid of double negatives, remove nouuid leftower comment, fix
+> missprint in kernel config name
+>
+>  Documentation/filesystems/overlayfs.rst |  6 ++++++
+>  fs/overlayfs/Kconfig                    | 19 +++++++++++++++++++
+>  fs/overlayfs/copy_up.c                  |  3 ++-
+>  fs/overlayfs/namei.c                    |  4 +++-
+>  fs/overlayfs/ovl_entry.h                |  1 +
+>  fs/overlayfs/super.c                    | 25 +++++++++++++++++++++++++
+>  6 files changed, 56 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/filesystems/overlayfs.rst b/Documentation/filesystems/overlayfs.rst
+> index 580ab9a0fe31..4f9cc20f255c 100644
+> --- a/Documentation/filesystems/overlayfs.rst
+> +++ b/Documentation/filesystems/overlayfs.rst
+> @@ -563,6 +563,12 @@ This verification may cause significant overhead in some cases.
+>  Note: the mount options index=off,nfs_export=on are conflicting for a
+>  read-write mount and will result in an error.
+>
+> +Note: the mount option uuid=off (or corresponding module param, or kernel
+> +config) can be used to replace UUID of the underlying filesystem in file
+> +handles with null, and effectively disable UUID checks. This can be useful in
+> +case the underlying disk is copied and the UUID of this copy is changed. This
+> +is only applicable if all lower/upper/work directories are on the same
+> +filesystem, otherwise it will fallback to normal behaviour.
+>
+>  Volatile mount
+>  --------------
+> diff --git a/fs/overlayfs/Kconfig b/fs/overlayfs/Kconfig
+> index dd188c7996b3..c21abdb43206 100644
+> --- a/fs/overlayfs/Kconfig
+> +++ b/fs/overlayfs/Kconfig
+> @@ -61,6 +61,25 @@ config OVERLAY_FS_INDEX
+>
+>           If unsure, say N.
+>
+> +config OVERLAY_FS_INDEX_UUID
+> +       bool "Overlayfs: export uuid in file handles"
+> +       default y
+> +       depends on OVERLAY_FS
+> +       help
+> +         If this config option is disabled then overlay will replace uuid with
+> +         null in overlayfs file handles, effectively disabling uuid checks for
+> +         them. This affects overlayfs mounted with "index=on". This only can be
+> +         done if all upper and lower directories are on the same filesystem
+> +         where basic fhandles are uniq. In case the latter is not true
+
+There are some typos in it, but I think this phrase can be dropped:
+"where basic fhandles are uniq"
+
+Thanks,
+Amir.
