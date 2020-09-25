@@ -2,169 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DAF279012
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D84B27901B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729706AbgIYSJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
+        id S1729711AbgIYSMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729354AbgIYSJd (ORCPT
+        with ESMTP id S1726401AbgIYSMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:09:33 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4D24C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:09:32 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id q5so3726508qkc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:09:32 -0700 (PDT)
+        Fri, 25 Sep 2020 14:12:07 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C14C0613CE;
+        Fri, 25 Sep 2020 11:12:07 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id a9so4394399wmm.2;
+        Fri, 25 Sep 2020 11:12:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Wa9gWLx8z4A2Sdz4YX5ym9IbFeWjmAsR60a/YwhrF7g=;
-        b=YwqbC9lPy36VZWkKl+K8aVGMJIBi1EI+wnp/laEjsdhzwamlwgXBtcYaBq207t/YkN
-         O1kpjl5Umv897XlWSCzI8KDyqETPiyB3/woECIyysL2MYsrgihufs0yPtVaP34zwhzb9
-         hBHmLwXV3E2Q0EXbmz64ep+2P70dhdRVZdiHvc96Mr//knUp+EyHal2p0ov6Qng7hTBu
-         3+aGOtizgFi05EPrYm+CHzFyCWm/G1JPojWihtVPw1Rbbt3p34pVQy/DxxBVlHpV+jYJ
-         ncI3ORDBdDt870ca85FaNOZsGZpSkITH0GlcjaGUdW+dD09pcJxqeVse6ddpBKut4QFc
-         aXuA==
+        bh=peKSZZv/3gch7m7CK+PuIaqJRq3FyLjvEDI1jpnv750=;
+        b=pRpaIJUqQjkqw6bRm/2R7blJ6O3KEmLRnXtjDVxqqs2lGFyb74ac+dVMdxh77WKddm
+         qyTaJEsEMpObuYhhPXKtryw1urlZqbln3v9uRKEo6I2MOvWSczuKSjmBoSeGHV8WzRFT
+         2+c4PzFQaFmHveltaK33NrTPrZkz2zGgxJ08iap2vQcX8tM1BA4ofjlb0Err0Aqv/Knk
+         63B3mwkZFSe64n2Uhs6pRr0FeCQwSx5AJ1wcuNBzMa7iqUnZeEF7MjsZlYM42f5a4xL/
+         oR1MuT22vC2Xa2PYqhWP12B6Ni+Z2h1dWyTbecIq2A5phvXFk9a1msgGjTw4MIOp0HBW
+         5D0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Wa9gWLx8z4A2Sdz4YX5ym9IbFeWjmAsR60a/YwhrF7g=;
-        b=oMZGnSFpXnK0bPp335Z8K7LYdpzHiz+2KbvDy7oozYqA0S/ojsrLmFvFbg6/18FOpj
-         ADUhOnMA6zSoJr0VAG3+xZET1Nyg3AFSrYc9MlHIK5lsYfakhYdypZfMPFJee2MG3mQt
-         lm7kGY3lNYCOCTiFvZGNC0XSGNCCSFnLuE+evu2AkfWfLhWC8idQ4AToZTET2p2C/wbH
-         L49qMpNdBfVgX54oK9iqJFzd/7N6vw5OclWVZjW7iL11e9xTSl+iL2AmAO5yg9uJWo3o
-         bApmBycQb0vVSASw3GXG3s1pA8pA/EZn0gdI3H+PqcgO0XZGSEXt07Q9E5hvWeGhYnvt
-         ddBg==
-X-Gm-Message-State: AOAM531deatlYGefFoPbMwOg3JTrSm0iOZTC4c40i69SOWKXUgbf4xk/
-        hC7qMvNiyN8YmAcKDRQjiTOFiw==
-X-Google-Smtp-Source: ABdhPJwqUx1fk0fsqTKbsJfr9GkWo66OhRQUzkuYvej53ZH02a7apfdzcG2VGQfp/ZOKxMtMrY25ww==
-X-Received: by 2002:a37:e53:: with SMTP id 80mr1165768qko.243.1601057371751;
-        Fri, 25 Sep 2020 11:09:31 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:6423])
-        by smtp.gmail.com with ESMTPSA id g18sm2348430qtu.69.2020.09.25.11.09.30
+        bh=peKSZZv/3gch7m7CK+PuIaqJRq3FyLjvEDI1jpnv750=;
+        b=EQ8sMwX5f6AW/kssiFbbTPzQXXGpwQlAE5MrMJiipKfbWw8fB62prL/6ts6DPvqyYr
+         gCLf7mpMq30aeiW/hysTm30nZfPdIJD+JvMUTqAHOdt+EgndxdcdhYNdLNzz4gqgr7lb
+         5iyvuhozEOY/iee4LAJPQ2CuFyfZOcaQEiM6xLISCvsGQx01nLxkZqmshu0t+CSzM3r3
+         yYf1UaaQHUc+fAaUf0I235v3ags6CcwEkLySrvxxcUalilkYFs65qyFlUPj8tv6Hs2yY
+         hdpSl4ekGf3TqfWB+mDI79EcSMW7vjbRIiFvHS/Rfm4XcYozxtC/63WOiIcg+U0czmPs
+         mxDg==
+X-Gm-Message-State: AOAM530VbQq+gKEBkAudRIRv+4OYcZib/eQgqNTKhuMTBY0TAoeg/jY2
+        LDtvWVNkRjNiDRy1Lw+gXaE=
+X-Google-Smtp-Source: ABdhPJxZvrVfLyQNosyiqJ+YnRZQYo+QLgncx0LWJ0hyamcXwxXU8sIDE244LW5ALbbwIiq4VNYBDA==
+X-Received: by 2002:a7b:c0c5:: with SMTP id s5mr4355391wmh.152.1601057526226;
+        Fri, 25 Sep 2020 11:12:06 -0700 (PDT)
+Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
+        by smtp.googlemail.com with ESMTPSA id k8sm3858176wma.16.2020.09.25.11.12.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 11:09:31 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 14:07:57 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH v1 3/4] mm: introduce page memcg flags
-Message-ID: <20200925180757.GB362187@cmpxchg.org>
-References: <20200922203700.2879671-1-guro@fb.com>
- <20200922203700.2879671-4-guro@fb.com>
- <20200924200122.GC329853@cmpxchg.org>
- <20200924203905.GD1899519@carbon.dhcp.thefacebook.com>
+        Fri, 25 Sep 2020 11:12:05 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 20:12:03 +0200
+From:   Corentin Labbe <clabbe.montjoie@gmail.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc:     Will Deacon <will@kernel.org>, tj@kernel.org,
+        jiangshanlai@gmail.com, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>
+Subject: Re: WARNING: at kernel/workqueue.c:1473 __queue_work+0x3b8/0x3d0
+Message-ID: <20200925181203.GA26463@Red>
+References: <20200217204803.GA13479@Red>
+ <20200218163504.y5ofvaejleuf5tbh@ca-dmjordan1.us.oracle.com>
+ <20200220090350.GA19858@Red>
+ <20200221174223.r3y6tugavp3k5jdl@ca-dmjordan1.us.oracle.com>
+ <20200228123311.GE3275@willie-the-truck>
+ <20200228153331.uimy62rat2tdxxod@ca-dmjordan1.us.oracle.com>
+ <20200301175351.GA11684@Red>
+ <20200302172510.fspofleipqjcdxak@ca-dmjordan1.us.oracle.com>
+ <20200303074819.GB9935@Red>
+ <20200303213111.op2vtxfmwtn7i6db@ca-dmjordan1.us.oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924203905.GD1899519@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20200303213111.op2vtxfmwtn7i6db@ca-dmjordan1.us.oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 01:39:05PM -0700, Roman Gushchin wrote:
-> On Thu, Sep 24, 2020 at 04:01:22PM -0400, Johannes Weiner wrote:
-> > On Tue, Sep 22, 2020 at 01:36:59PM -0700, Roman Gushchin wrote:
-> > > The lowest bit in page->memcg_data is used to distinguish between
-> > > struct memory_cgroup pointer and a pointer to a objcgs array.
-> > > All checks and modifications of this bit are open-coded.
-> > > 
-> > > Let's formalize it using page memcg flags, defined in page_memcg_flags
-> > > enum and replace all open-coded accesses with test_bit()/__set_bit().
-> > > 
-> > > Few additional flags might be added later. Flags are intended to be
-> > > mutually exclusive.
-> > > 
-> > > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > > ---
-> > >  include/linux/memcontrol.h | 29 +++++++++++++++++++----------
-> > >  1 file changed, 19 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > > index ab3ea3e90583..9a49f1e1c0c7 100644
-> > > --- a/include/linux/memcontrol.h
-> > > +++ b/include/linux/memcontrol.h
-> > > @@ -343,6 +343,11 @@ struct mem_cgroup {
-> > >  
-> > >  extern struct mem_cgroup *root_mem_cgroup;
-> > >  
-> > > +enum page_memcg_flags {
-> > > +	/* page->memcg_data is a pointer to an objcgs vector */
-> > > +	PG_MEMCG_OBJ_CGROUPS,
-> > 
-> > How about enum memcg_data_flags and PGMEMCG_OBJCG?
+On Tue, Mar 03, 2020 at 04:31:11PM -0500, Daniel Jordan wrote:
+> On Tue, Mar 03, 2020 at 08:48:19AM +0100, Corentin Labbe wrote:
+> > The patch fix the issue. Thanks!
 > 
-> Honestly I prefer the original names. I'm ok with enum memcg_data_flags,
-> if you prefer it. PGMEMCG_OBJCG looks bulky with too many letters
-> without a separator, also we use object cgroups (plural) everywhere,
-> like OBJCGS vs OBJCG. PG_MEMCG_OBJCGS works for me.
-
-Fair enough, it's a bit dense.
-
-MEMCG_DATA_OBJCGS could work too. It wouldn't introduce a new prefix
-and would relate to the field those flags belong to.
-
-> > > @@ -371,13 +376,7 @@ static inline struct mem_cgroup *page_mem_cgroup_check(struct page *page)
-> > >  {
-> > >  	unsigned long memcg_data = page->memcg_data;
-> > >  
-> > > -	/*
-> > > -	 * The lowest bit set means that memcg isn't a valid
-> > > -	 * memcg pointer, but a obj_cgroups pointer.
-> > > -	 * In this case the page is shared and doesn't belong
-> > > -	 * to any specific memory cgroup.
-> > > -	 */
-> > > -	if (memcg_data & 0x1UL)
-> > > +	if (test_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data))
-> > >  		return NULL;
-> > >  
-> > >  	return (struct mem_cgroup *)memcg_data;
-> > > @@ -422,7 +421,13 @@ static inline void clear_page_mem_cgroup(struct page *page)
-> > >   */
-> > >  static inline struct obj_cgroup **page_obj_cgroups(struct page *page)
-> > >  {
-> > > -	return (struct obj_cgroup **)(page->memcg_data & ~0x1UL);
-> > > +	unsigned long memcg_data = page->memcg_data;
-> > > +
-> > > +	VM_BUG_ON_PAGE(memcg_data && !test_bit(PG_MEMCG_OBJ_CGROUPS,
-> > > +					       &memcg_data), page);
-> > > +	__clear_bit(PG_MEMCG_OBJ_CGROUPS, &memcg_data);
-> > 
-> > The flag names make sense to me, but this shouldn't be using test_bit,
-> > __clear_bit, __set_bit etc. on local variables. It suggests that it's
-> > modifying some shared/global state, when it's just masking out a bit
-> > during a read. We usually just open-code the bitwise ops for that.
+> Thanks for trying it!
 > 
-> It will be way more bulky otherwise, all those memcg_data & (1UL << PG_MEMCG_OBJ_CGROUPS) etc.
+> > So you could add:
+> > Reported-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> > Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+> > Tested-on: sun50i-h6-pine-h64
+> > Tested-on: imx8mn-ddr4-evk
+> > Tested-on: sun50i-a64-bananapi-m64
+> 
+> I definitely will if the patch turns out to be the right fix.
+> 
+> thanks,
+> Daniel
 
-Does anybody need the bit numbers? You can make them masks directly:
+Hello
 
-enum memcg_data_flags {
-	MEMCG_DATA_OBJCGS	= (1 << 0),
-	...
-}
+I forgot about this problem since the patch is in my branch since.
+But a co-worker hit this problem recently and without this patch my CI still have it.
 
-and do memcg_data | MEMCG_DATA_OBJCGS.
-
-cgroup-defs.h alone has 3 examples of this. It's very common.
-
-> I don't see why these bitops helpers can't be used on local variables.
-> Is the preference to not use them this way documented anywhere?
-
-The bitops are for shared state, that's why set_bit(), clear_bit(),
-test_bit() provide atomicity, and the __ versions of them usually
-indicate that outside locking is provided.
-
-Grep for __clear_bit() and most of the time it's on a shared data
-structure and surrounded by some sort of lock or atomic context.
-
-Why would you want to replace a single | expression with an RMW
-transaction involving three statements and a function call to
-__set_bit()?
+Regards
