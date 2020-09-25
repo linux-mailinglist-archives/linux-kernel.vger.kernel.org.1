@@ -2,116 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 769A2278FFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFED279007
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:03:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729651AbgIYSBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbgIYSBA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:01:00 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E448BC0613CE;
-        Fri, 25 Sep 2020 11:00:55 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id o20so3897382pfp.11;
-        Fri, 25 Sep 2020 11:00:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=/ZTlvcKfwV9W/xONlTPF/fpJtn0pjYTTI1+1eynco68=;
-        b=g/4XxB16rWBbvNXQleoZljf+99ldOEc0r3E/SQErOaRPMQC6deft5ywkY++mxKMzIK
-         Onc6D9ubAjIU1Ps4UVtrq1XVpHIVql07blYlxgCNNV/m9xYkKDgaJNRHspA4kwY76siZ
-         v7yA/ywhmmBle9IhXWGx0Uhz7nAlHMUj8KQThQ+UcyhxtDsQkhNFGUzdMUo4uIPsViIV
-         zyBMx8kvtSMCcKBR1DuwUPxLUlTyc11LcW9gNRayWnzcyqNlNjna15O+vtXBdyph7Efo
-         PtJEq1IW0Ai/tH4TVGsY1zrAIvw4phM/q/5nAHXTZTdNgzHv0xFuAVBTpwZnGU8+sIv4
-         t1jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/ZTlvcKfwV9W/xONlTPF/fpJtn0pjYTTI1+1eynco68=;
-        b=feuDgc1/v18yAhrk+fkrJnAUelINNhUgIjXBWk4+SoaK+w7MaRKicY0a3z4zj5HnB0
-         VnUtyL/z1quRHe6kenUOq2T+IkRld1Zk1+ewKTdaOUDGjxwFzeIE/KZ+gPkqw4qANcbx
-         9WTyqA8YrNvR/JkcrKVyNEY7aSz1F6nG+xWOABc+Fk/GvZrDieKP9vvz9bAT6eSKY8yQ
-         f5NTOgoaNo5E+g669Aeh3L50/fi5Aulc6LP2qEDeE0DGFpfw8a0/m0F9PjSa8pcW7sL9
-         NzmoC3BhRv5mP6dKXClAHlIUFlqbSJZVt9dRUOmQS7eRmKeJs5n0rrbTx2nOfqDdiS+w
-         yJgA==
-X-Gm-Message-State: AOAM530hoq18tME6kkZtHhjnbaV42R0kZMXBwYTWpduGLiYy3R/cRRfK
-        AdKkWYNhklJL5GFbAlKdtYeC0rTCs7r/aLBDpek=
-X-Google-Smtp-Source: ABdhPJzRQCpZNYmwfM15O/4KOgbMCd6nbafo8vLR56x/JR4hpQGq6J4Ia+spVhZ1N6AihMSArI0ztw==
-X-Received: by 2002:a17:902:9e95:b029:d2:4276:1ddc with SMTP id e21-20020a1709029e95b02900d242761ddcmr558632plq.81.1601056854754;
-        Fri, 25 Sep 2020 11:00:54 -0700 (PDT)
-Received: from [192.168.0.104] ([49.207.212.24])
-        by smtp.gmail.com with ESMTPSA id v6sm3411227pfi.38.2020.09.25.11.00.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 11:00:53 -0700 (PDT)
-Subject: Re: [Linux-kernel-mentees] [PATCH] Fix uninit-value in
- hci_chan_lookup_handle
-To:     linux-kernel-mentees@lists.linuxfoundation.org
-Cc:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200905020410.20350-1-anant.thazhemadam@gmail.com>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <b7c54f39-976c-644b-a451-83d8d508f0bb@gmail.com>
-Date:   Fri, 25 Sep 2020 23:30:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729684AbgIYSDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:03:23 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:20204 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727402AbgIYSDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:03:23 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601057001; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=qY4VJvItq00HpQ9BTONtJKsVJWDUImIVuhzVMFuGVJg=; b=XxMwxo0julerqOh4fDvREfpVXXiMV082Gm1cwGSuYXyvElaBYTnp5BvCJnuxhw4g7seJMEvS
+ UNLF5uavdLSwiAbqjPvouHCtSSQLddJwD8AXCrrB4CS/e55GauNuSnybzvmnvfDyw2XXby1g
+ JNAa++SU7F7+xwBYdSbnISXL0OI=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5f6e3095b51786209ca925c3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Sep 2020 18:01:57
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6DBB3C433FF; Fri, 25 Sep 2020 18:01:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DE82EC433C8;
+        Fri, 25 Sep 2020 18:01:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DE82EC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH] bus: mhi: core: debugfs: Use correct format specifiers
+ for addresses
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200925171608.30881-1-manivannan.sadhasivam@linaro.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <c63ae2c3-43ae-6a94-cf27-efb6cc038f83@codeaurora.org>
+Date:   Fri, 25 Sep 2020 12:01:54 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.1
 MIME-Version: 1.0
-In-Reply-To: <20200905020410.20350-1-anant.thazhemadam@gmail.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200925171608.30881-1-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 05/09/20 7:34 am, Anant Thazhemadam wrote:
-> When the amount of data stored in the location corresponding to
-> iov_iter *from is less then 4, some data seems to go uninitialized.
->
-> Updating this condition accordingly, makes sense both intuitively and 
-> logically as well, since the other check for extreme condition done is if
-> len > HCI_MAX_FRAME_SIZE, which is HCI_MAX_ACL_SIZE (which is 1024) + 4;
-> which itself gives some idea about what must be the ideal mininum size.
->
-> Reported-and-tested by: syzbot+4c14a8f574461e1c3659@syzkaller.appspotmail.com
-> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+On 9/25/2020 11:16 AM, Manivannan Sadhasivam wrote:
+> For exposing the addresses of read/write pointers and doorbell register,
+> let's use the correct format specifiers. This fixes the following issues
+> generated using W=1 build in ARM32 and reported by Kbuild bot:
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> drivers/bus/mhi/core/debugfs.c:75:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
+>                                mhi_event->db_cfg.db_val);
+>                                ^~~~~~~~~~~~~~~~~~~~~~~~
+>     drivers/bus/mhi/core/debugfs.c:123:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
+>                                mhi_chan->db_cfg.db_val);
+>                                ^~~~~~~~~~~~~~~~~~~~~~~
+>     2 warnings generated.
+> 
+> drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_events_show’:
+> drivers/bus/mhi/core/debugfs.c:74:51: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+>     seq_printf(m, " local rp: 0x%llx db: 0x%pad\n", (u64)ring->rp,
+>                                                     ^
+> drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_channels_show’:
+> drivers/bus/mhi/core/debugfs.c:122:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+>         (u64)ring->rp, (u64)ring->wp,
+>         ^
+> drivers/bus/mhi/core/debugfs.c:122:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+>         (u64)ring->rp, (u64)ring->wp,
+>                        ^
+> drivers/bus/mhi/core/debugfs.c:121:62: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘dma_addr_t {aka unsigned int}’ [-Wformat=]
+>     seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
+>                                                             ~~~^
+>                                                             %x
+> drivers/bus/mhi/core/debugfs.c:123:7:
+>         mhi_chan->db_cfg.db_val);
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 > ---
-> If there is some explicit reason why len < 4 doesn't work, and only len < 2 works, 
-> please do let me know.
-> The commit message that introduced the initial change 
-> (512b2268156a4e15ebf897f9a883bdee153a54b7) wasn't exactly very helpful in this 
-> respect, and I couldn't find a whole lot of discussion regarding this either.
->
->  drivers/bluetooth/hci_vhci.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/bluetooth/hci_vhci.c b/drivers/bluetooth/hci_vhci.c
-> index 8ab26dec5f6e..0c49821d7b98 100644
-> --- a/drivers/bluetooth/hci_vhci.c
-> +++ b/drivers/bluetooth/hci_vhci.c
-> @@ -159,7 +159,7 @@ static inline ssize_t vhci_get_user(struct vhci_data *data,
->  	__u8 pkt_type, opcode;
->  	int ret;
->  
-> -	if (len < 2 || len > HCI_MAX_FRAME_SIZE)
-> +	if (len < 4 || len > HCI_MAX_FRAME_SIZE)
->  		return -EINVAL;
->  
->  	skb = bt_skb_alloc(len, GFP_KERNEL);
-Hi,
+> 
+> Greg: This fixes the issue seen while testing the char-misc/char-misc-testing
+> branch.
+> 
+>   drivers/bus/mhi/core/debugfs.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/debugfs.c b/drivers/bus/mhi/core/debugfs.c
+> index 53d05a8e168d..2536ff92b76f 100644
+> --- a/drivers/bus/mhi/core/debugfs.c
+> +++ b/drivers/bus/mhi/core/debugfs.c
+> @@ -71,8 +71,8 @@ static int mhi_debugfs_events_show(struct seq_file *m, void *d)
+>   		seq_printf(m, " rp: 0x%llx wp: 0x%llx", er_ctxt->rp,
+>   			   er_ctxt->wp);
+>   
+> -		seq_printf(m, " local rp: 0x%llx db: 0x%llx\n", (u64)ring->rp,
+> -			   mhi_event->db_cfg.db_val);
+> +		seq_printf(m, " local rp: 0x%px db: 0x%pad\n", ring->rp,
+> +			   &mhi_event->db_cfg.db_val);
+>   	}
+>   
+>   	return 0;
+> @@ -118,9 +118,9 @@ static int mhi_debugfs_channels_show(struct seq_file *m, void *d)
+>   		seq_printf(m, " base: 0x%llx len: 0x%llx wp: 0x%llx",
+>   			   chan_ctxt->rbase, chan_ctxt->rlen, chan_ctxt->wp);
+>   
+> -		seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
+> -			   (u64)ring->rp, (u64)ring->wp,
+> -			   mhi_chan->db_cfg.db_val);
+> +		seq_printf(m, " local rp: 0x%px local wp: 0x%px db: 0x%pad\n",
+> +			   ring->rp, ring->wp,
+> +			   &mhi_chan->db_cfg.db_val);
+>   	}
+>   
+>   	return 0;
+> 
 
-Looks like this patch might have missed the attention of those
-who can tell me if this works or why it might not.
-For some more context; more details about the bug can be found at
-��� https://syzkaller.appspot.com/bug?id=287b84cc1c834c7878c4193d7b18760067f10a77
-I should've highlighted that in my initial mail. My apologies.
+Documentation/printk-formats.txt seems to point out that %px is 
+"insecure" and thus perhaps not preferred.  Are we assuming that debugfs 
+is only accessible by root, and thus the %px usage here is effectively 
+the same as %pK?
 
-Thanks,
-Anant
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
