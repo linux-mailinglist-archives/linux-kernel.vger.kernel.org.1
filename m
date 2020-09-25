@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 589E2277E87
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDAFE277E89
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbgIYDar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 23:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36926 "EHLO
+        id S1727029AbgIYDaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 23:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgIYDar (ORCPT
+        with ESMTP id S1726704AbgIYDaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 23:30:47 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA0EC0613CE;
-        Thu, 24 Sep 2020 20:30:46 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id b17so1079727pji.1;
-        Thu, 24 Sep 2020 20:30:46 -0700 (PDT)
+        Thu, 24 Sep 2020 23:30:52 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2D1C0613CE;
+        Thu, 24 Sep 2020 20:30:51 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id d9so1854966pfd.3;
+        Thu, 24 Sep 2020 20:30:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aisBv4MuoAdzRa1YD5k9n2OvoHveOSiNe5rPI2LCylk=;
-        b=EaT5wJjyX/Ce0/9nXMsJp0rwxCSTxdPdB2U1zZBfHUi1lMlkauqKsZgTS6FPZ1kwL+
-         POQ3aNGnfR7wOYyDNm3i568OSqGoDNmxCRUrvfx4FzJG4DBDzuUdu6zGY82Ah/3BVvpQ
-         Y4jyCr7Z4a5iGDV9RfU+WnD+naUhjlJWiGUgm22UXEG+vPBH5ibn70QxZHrzuGjdOaT5
-         wysW5rx6L7N4ryYSNibEIsZC7ESwZBZybFfc+as/GGvbGS+A8XM9ccPoC5UevnzOIPSH
-         wN4U7AdaAjRdmr6/RkDs0GvDppnb2cLLW8W1BFF2/KWcnixxBqafYlLkXQDK0Pvin0fh
-         p6WA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TxfWggxlCNiPgOT3zzYw/A1cG478tHhARlp7JZfrg1c=;
+        b=IBhuusYfYUggClU+tuE/hbihGaGSJrO+908pYJNnm+U4YyDjQn64WactETvGH8aV5Y
+         DOyUZQnOvMNRRcqyvbAOAnjflehDH61mo3x3TZRyn/AnfOI2A9Ex5ccIbQu4br9oxJD7
+         /CT3uWzzFCVNhDJP8BH2Y+NbCtQ2ZMAIYjj6Wz7ivPCZs372uasVqIIBoTjkP2mjqDOB
+         JsVJf/+p0OGFfb/avWfBOW/HwsDFNobAfKBs38+pNF1iluzNZnlGxHRfNcfWBPbPbFhJ
+         FZ6mRakMO3/WNp5DFlblnXgbeibVzDDRwri+A8c5cbhFaYs1ulPW4/BpNNrwarvhBckv
+         CEIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aisBv4MuoAdzRa1YD5k9n2OvoHveOSiNe5rPI2LCylk=;
-        b=FR+C20Uxyp5+P9C6HOWvUqCO5FpF6j8ziDEiomndu8R6SZUVcF2MtzXb0dmMSoH2ka
-         wPbjI7EZMxACypAZS1OUWuLzdMWs9EHK8JHV60VEM3IMgYEJg+NuapwXCe9YrW+HAjB1
-         ZTU37rbf5Umst/47z6+W4g2w8Jf52PNo+kgwZNz6IHHDbpi9JpMyebY0Hol/NYldNHuR
-         2zuu/fvynOuKzARQ5oVEtM+377rwyWtxCV8uciQmBV1Dyb6QwYhDAGVRStfRsgyQJ2Vs
-         9XFvX35sEg9bz2Dotm/xDlgy02Fd5jIVgb8zPpBp91S49gHsL6RFYD43O7E3PIIfi2ad
-         kkqQ==
-X-Gm-Message-State: AOAM5309/MdUa2K7wscPYV+Nb6II6XntnAxHMNIxTMBVMXy47G/9eqy8
-        znQvJkBw8iW6qIbGG2a4ioE=
-X-Google-Smtp-Source: ABdhPJzsq2lBfR0WYt1JwMFaDdGzuVNV17XX786+xa+9TS7JCcm6xRPC3A7NqMzy2pso/BBq2OM0QQ==
-X-Received: by 2002:a17:90a:6e45:: with SMTP id s5mr745620pjm.12.1601004646462;
-        Thu, 24 Sep 2020 20:30:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TxfWggxlCNiPgOT3zzYw/A1cG478tHhARlp7JZfrg1c=;
+        b=eNdGyQFYSt9jrPCWj+VIVaQG91OeTW67VK1WajVIFWd2gomsQi+WXGIv3kRYdSyrfJ
+         0SfRP6ZUHubJE0v/rmMWDcjRGZTrK4KXrK9dJZxmisevlttzVI03qatYH91lrQ4+Sc90
+         Amg1zwrfrB4mXRvnLxfvka1wF5TVxZBUp2zQdbfSbkAIFn5Q6LcxY5IJFic/44e+ANfK
+         R8KngjLkl9ggfq3r3yttlNTw8e8ebws21vC5tGo9Hk8OoM8z4mL2SUZMJeQXDkXQOFF5
+         hkTvs18LJMsTMEYl2O6enQ+pQslzb8M6W7Y7E/xFAfX+M5QS1F61UbOHD9jXyQ6si48C
+         hV2g==
+X-Gm-Message-State: AOAM530gJwRZFAGCqlfQijmb/B6ld4cpd6J/vwOAR3ywZkJXNDXRBXW5
+        Ov0Maud0Rh0C2tB4p+T+PBQ=
+X-Google-Smtp-Source: ABdhPJzZiw2VY3TseQ9QC6u++rycdtznfY0tG3gFg40eaOSkTX49BURQwQMVZIJ5wECgvbgIQrntRw==
+X-Received: by 2002:a17:902:6bc9:b029:d0:cb2d:f272 with SMTP id m9-20020a1709026bc9b02900d0cb2df272mr2242820plt.11.1601004651562;
+        Thu, 24 Sep 2020 20:30:51 -0700 (PDT)
 Received: from universe.lan (80.251.221.29.16clouds.com. [80.251.221.29])
-        by smtp.gmail.com with ESMTPSA id o5sm571670pjs.13.2020.09.24.20.30.40
+        by smtp.gmail.com with ESMTPSA id o5sm571670pjs.13.2020.09.24.20.30.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 20:30:45 -0700 (PDT)
+        Thu, 24 Sep 2020 20:30:51 -0700 (PDT)
 From:   Artem Lapkin <email2tema@gmail.com>
 X-Google-Original-From: Artem Lapkin <art@khadas.com>
 To:     narmstrong@baylibre.com
@@ -56,38 +56,49 @@ Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: [PATCH 0/8] dts updates and fixes for Khadas VIM1 VIM2 VIM3 VIML boards
-Date:   Fri, 25 Sep 2020 11:30:09 +0800
-Message-Id: <20200925033017.1790973-1-art@khadas.com>
+Subject: [PATCH 1/8] arm64: dts: meson: update spifc node on Khadas VIM2 meson-gxm-khadas-vim2
+Date:   Fri, 25 Sep 2020 11:30:10 +0800
+Message-Id: <20200925033017.1790973-2-art@khadas.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200925033017.1790973-1-art@khadas.com>
+References: <20200925033017.1790973-1-art@khadas.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dts updates and fixes for Khadas VIM1 VIM2 VIM3 VIML boards
+1) The VIM2 Boards use w25q128 spi chip only not w25q32 or w25q16
+   it's not really seriously becouse have 'jedec,spi-nor' which
+   have auto chips identifications
 
-Artem Lapkin (8):
-  arm64: dts: meson: update spifc node on Khadas VIM2
-    meson-gxm-khadas-vim2
-  arm64: dts: meson: update leds node on Khadas VIM3/VIM3L boards
-    meson-khadas-vim3
-  arm64: dts: meson: update leds node on Khadas VIM3/VIM3L board
-    meson-khadas-vim3
-  arm64: dts: meson: remove fixed memory size for Khadas VIM3/VIM3L
-    meson-khadas-vim3
-  arm64: dts: meson: remove reset-gpios from ethernet node for VIM2
-    meson-gxm-khadas-vim2
-  arm64: dts: meson: disable vrtc for VIM3L boards meson-khadas-vim3
-  arm64: dts: meson: enable RTC for VIM1 meson-gxl-s905x-khadas-vim
-  arm64: dts: meson: enable RTC for VIM2 meson-gxm-khadas-vim2
+2) max-frequency is 104Mhz
 
- .../amlogic/meson-gxl-s905x-khadas-vim.dts    |  2 +-
- .../dts/amlogic/meson-gxm-khadas-vim2.dts     | 10 +++++-----
- .../boot/dts/amlogic/meson-khadas-vim3.dtsi   | 19 +++++++++++++++----
- 3 files changed, 21 insertions(+), 10 deletions(-)
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index bff8ec2c1c7..a6baf865aa2 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -336,12 +336,12 @@ &spifc {
+ 	pinctrl-0 = <&nor_pins>;
+ 	pinctrl-names = "default";
+ 
+-	w25q32: spi-flash@0 {
++	w25q128: spi-flash@0 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+-		compatible = "winbond,w25q16", "jedec,spi-nor";
++		compatible = "winbond,w25q128fw", "jedec,spi-nor";
+ 		reg = <0>;
+-		spi-max-frequency = <3000000>;
++		spi-max-frequency = <104000000>;
+ 	};
+ };
+ 
 -- 
 2.25.1
 
