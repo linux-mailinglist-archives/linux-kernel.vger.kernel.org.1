@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FFB42791C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25EFB2791F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgIYUMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:12:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727201AbgIYUKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:10:30 -0400
-Received: from tzanussi-mobl (c-73-211-240-131.hsd1.il.comcast.net [73.211.240.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B182E23888;
-        Fri, 25 Sep 2020 19:53:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601063596;
-        bh=p6WXfRRraIUl2lU50knkM7m42pz+rDwh/eBQev4odNA=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=q/18Vp0G6F+/m7vRaVkMahLSJgqiYgqQBhgPMzxcis0UYtZBITQhGh20tpBSl0c5L
-         QH525wHEa5DiEmpc48uXoyliwU36xZSc/CAbT4Ei+91i5epXBb88UwZ7c8oTqTCxMB
-         fmOzGiP3VodtuWExkmhw4UF0xQKZ7/tWPJPQAQBc=
-Message-ID: <60fa4f01eef2c78dd63e8581d405d45a396f9f5c.camel@kernel.org>
-Subject: Re: [RFC PATCH 1/1] tracing: support dynamic string field types for
- synthetic events
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Fri, 25 Sep 2020 14:53:14 -0500
-In-Reply-To: <20200925190806.1870935-2-axelrasmussen@google.com>
-References: <20200925190806.1870935-1-axelrasmussen@google.com>
-         <20200925190806.1870935-2-axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
+        id S1728358AbgIYUVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726731AbgIYUTS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:19:18 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADD2C0610E1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:02:45 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id a2so3434013otr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:02:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kvuWgO+mOrlW1HLdWsiSGg/G55nMQXrfQicWrn8GsKM=;
+        b=Id5NqFIhBYN3shKOyHPF6EmbW8IuWdYIQd9l34Ru7GpPRdY2aBS/+lw28ChELEnYVl
+         5JxBEY2m7EozhGSNLlQPGtEicTMao48ZrfQa0R+h6/5Nkw8PpFb1RAR62B5r9bx9nBLX
+         uRJ4Jpfm/Q9abpQYt+OzQlWf1xR/SyGtFBVY8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kvuWgO+mOrlW1HLdWsiSGg/G55nMQXrfQicWrn8GsKM=;
+        b=L1ow9/ACYhU9O0g5i38J+df85y1zafJZfq8MtPdhKYrEsRlHfdoWuekNoNsX2m9cef
+         tCCF2h7vePPbXfaLRTWdD/sKj67SZ+QyrJkIuAAUZiLGWGB9TnV8tcnN0alsp+V5gxfD
+         Zvih/ondYs9BQ6rPoQulJDb6eVgM0zviHJOgk5Gcn8+U5duNl3/pvyjCtA9Y0Cviwd1t
+         c1Wwd+usZ8iNaTYiUUi4UADKEtjLYO3c3mi/szC6HPNk3cIG4ifk/3zPhCFm3pgeqiUs
+         o4K2tpTKgl88JEPCcdt/H4XdG90vXlvy5Uhp/RcS++V/61m56awTHPTInC5H+7yFtVKo
+         ThMw==
+X-Gm-Message-State: AOAM531VETuEwOZnkYjQAwqHwGljkYvdIx2bOhOxKBI5y+nnMe1oGiJz
+        6BQBIozL8eNGV2gE8g70rPt38Q==
+X-Google-Smtp-Source: ABdhPJxteMx/uCqXsJGsO/zeUrCIuslnZ799ur0gxBh/TxtFNgaoukL9bhstY0Qul4U4gDQ8mZggIA==
+X-Received: by 2002:a9d:764c:: with SMTP id o12mr1350396otl.159.1601064165164;
+        Fri, 25 Sep 2020 13:02:45 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id u2sm815420oig.48.2020.09.25.13.02.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 13:02:44 -0700 (PDT)
+Subject: Re: [PATCH 4.19 00/37] 4.19.148-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200925124720.972208530@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <57b9139c-b286-c19a-11b9-c304dc203420@linuxfoundation.org>
+Date:   Fri, 25 Sep 2020 14:02:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Axel,
-
-On Fri, 2020-09-25 at 12:08 -0700, Axel Rasmussen wrote:
-> It's typical [1] to define tracepoint string fields as "const char *",
-> using the __string, __assign_str, and __get_str helpers. For synthetic
-> event definitions, the only available mechanism to define a string type
-> is a fixed-size char array ("char[]") [2].
+On 9/25/20 6:48 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.148 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Without this patch, since the type strings aren't identical, and the
-> sizes don't match (since one is an array, and the other is a "dynamic
-> string" integer), they are considered incompatible [3].
+> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
+> Anything received after that time might be too late.
 > 
-> This patch modifies that check, so as to let us setup synthetic events,
-> and plumb through string values from typical tracepoints. It turns out
-> this is already handled correctly, as long as the check during
-> definition parsing doesn't prevent it.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.148-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
 > 
-> [1] grep -r "__string" include/trace/events/
-> [2] See synth_field_is_string in kernel/trace/trace_events_synth.c
-> [3] See check_synth_field in kernel/trace/trace_events_hist.c
+> thanks,
 > 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> ---
->  kernel/trace/trace_events_hist.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
+> greg k-h
 > 
-> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
-> index 0b933546142e..e064feb3cc65 100644
-> --- a/kernel/trace/trace_events_hist.c
-> +++ b/kernel/trace/trace_events_hist.c
-> @@ -3280,9 +3280,18 @@ static int check_synth_field(struct synth_event *event,
->  	field = event->fields[field_pos];
->  
->  	if (strcmp(field->type, hist_field->type) != 0) {
-> -		if (field->size != hist_field->size ||
-> -		    field->is_signed != hist_field->is_signed)
-> -			return -EINVAL;
 
-One thing is that this check doesn't just apply to strings, so dropping
-this will skip those other cases.  In any case, the patch I'm working
-on will handle this properly along with the other changes.
+Compiled and booted on my test system. No dmesg regressions.
 
-Thanks,
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-Tom
-
-> +		/*
-> +		 * If both are kinds of strings, they match. We can't use
-> +		 * is_string_field for the hist_field, as it's only sort of
-> +		 * partially initialized at this point.
-> +		 */
-> +		if (strstr(field->type, "char[") == NULL ||
-> +		    strstr(hist_field->type, "char[") == NULL) {
-> +			/* They still match if size and signedness match. */
-> +			if (field->size != hist_field->size ||
-> +			    field->is_signed != hist_field->is_signed)
-> +				return -EINVAL;
-> +		}
->  	}
->  
->  	return 0;
-
+thanks,
+-- Shuah
