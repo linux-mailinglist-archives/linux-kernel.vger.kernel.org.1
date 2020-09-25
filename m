@@ -2,787 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE3B32793EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:05:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 990962793E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728930AbgIYWFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:05:04 -0400
-Received: from mga04.intel.com ([192.55.52.120]:51169 "EHLO mga04.intel.com"
+        id S1728710AbgIYWBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:01:52 -0400
+Received: from mout.gmx.net ([212.227.17.20]:54995 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726576AbgIYWFD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:05:03 -0400
-IronPort-SDR: cccDfw+GDffw7+tqzOe1ePY6EUFAkU8KSQa5cEgtX9wQnxdCQISeQG8rtt8sgVPBNvVWpLSqjU
- 14y40MQQQ7zg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="159017422"
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="159017422"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:31:09 -0700
-IronPort-SDR: CUbBnLFkg5AaffrFiUsJxUo3W+hKp7VrRLD4ab0lffZpRHICmF0HfykYYV5H29Tg+0zQ5Nrfnv
- IXvueu5iOFIQ==
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="292892265"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:31:09 -0700
-Subject: [PATCH v5 12/17] device-dax: add dis-contiguous resource support
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     akpm@linux-foundation.org
-Cc:     Joao Martins <joao.m.martins@oracle.com>, vishal.l.verma@intel.com,
-        dave.hansen@linux.intel.com, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Date:   Fri, 25 Sep 2020 12:12:48 -0700
-Message-ID: <160106116875.30709.11456649969327399771.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S1726744AbgIYWBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:01:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1601071245;
+        bh=ztxbMcMpavSGlbVmgt0d84+xXgIqro2ItnQZq/Y9qY0=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=PCdaXY5rnW1fTrNQ00KUO709FxO/s324Z9VSduWfHoJDbDNDkUmH/t/Miypu034nB
+         SubvKInVRtSQlFKA79001MT8i5IYKm4w5ceScoFniGLFJcx+MZ64TATpcIX9jn3dkh
+         db/NUAdwpEQKiKKcHi377XHMuycs7RutNNjGU/SA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mi2O1-1kzxUL45RJ-00e22R; Sat, 26
+ Sep 2020 00:00:45 +0200
+Date:   Sat, 26 Sep 2020 00:00:33 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v3 5/7] rtc: New driver for RTC in Netronix embedded
+ controller
+Message-ID: <20200925220033.GB2510@latitude>
+References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
+ <20200924192455.2484005-6-j.neuschaefer@gmx.net>
+ <20200925093614.GZ9675@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ADZbWkCsHQ7r3kzd"
+Content-Disposition: inline
+In-Reply-To: <20200925093614.GZ9675@piout.net>
+X-Provags-ID: V03:K1:VQy9eNdUYXIIZDE382DMLCtuHkN2mfcSziIHnQhqgWJZIR+IF0X
+ oZhufLqAmhdf8JvnJff9j9IqPGiz9cf8tqjk3smwk2hfOwj4xlYuutjQP6sOQJwRIsQLKbe
+ WkKgrjJM5KOEhtqqhHo9t3YKj1MOmWB9rFcC97NWGwmD5ODxrzgiguui+brDl94yGXk+cXu
+ LDdstcfVJMzW2LypUFIZw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:q80hw9ErrqA=:MR3z7DEezfZXHgjrczDTGr
+ KcFIZm59Yy0hP65r2xcCIEN6M8cVfBz5hdhmymgQcKPEuB+CqVbGl8ezwmKPeBFbmjwXxmhbA
+ bQrs2l0SvzB4QeHOAJeuy9ZZq7LI2NWQ4WYk858Zn4vVgZhDl37EXpITMKMpZWvwouWpYrmY1
+ iZV+igo4Yyinsy/W/u0pFCrUf64MAlcQnL0ZH10a9P4qR4MVnMIHMTR5p6idA+nRJW8QjyT0I
+ wk/HAKvBDGdBBBysCS0KquuzBTZktyTbpvCtFc8+Hf/Z+M+izS9xMZVGiFrtaHZAh+dHaoVru
+ ogsnZQciXudhL2+SMQOKKIxb9oyJnjfnVpMTG4ocBxSAfI0MYoctUCiW1HAQ1n/Nhu+LvV0Pj
+ mPC3niwDJAZJ8UMLCpIXE55tCDIW79TLyxKh6X3kkdx0QGgMnh00xt/M1dK1csTYUvQChRkhk
+ rwZ7KOZK0jdyoaCMY98RxtjQErZxsgGpm1vg+YDULfwtJDOwuuRhZaJjJhx87e814nS+1rQ1H
+ un0W8wVNWY7xQIWVFPRUMflcbrjQgoaRlfqToRMYu8WwDvtG8KdDj9YNv+f2Q8lsmrXMy/7xg
+ T4G8sne8eVyAPdgv948dF3ew+sLFw1c3d+yHxUo0xxol9AoXtekiqv+yJJ46AFt5wsSQ739fI
+ eM3XAFQ91JT2EqRdz0hlurw7nMKtFJLAqdysbuf/3lgAeEFXgpxrmk6zZ+jBLVCkY27cmkpyJ
+ ixr2InTWnWvfVuGR6GLFTBApzAO5GjxFxo3asIFpyr58DNYILiaUeJkNZPNYio1UGuLSCT3kb
+ r8YgWEG84Kkb/24/7aB7eZnkzxOZX6lLF2HXzQKLMAE1M3590HcbvTZ2x1gxrkHXkPFfC9ZQ0
+ ThZZbOGaW6qNF/Ohj4Wbevy1hErmMW66ApFySPa4acN2ZJnY4MDTC1UNEesVfKCJmQD/K/VkU
+ KQZuwPPMtm/V4qW6g1zOPnIZ9R1VOr61Exfdbal0sgULdUetQv3FU1O+XWwUtIzxYcYi9FEw3
+ oA6nUWQc40bkggbIxtXwi2lioJx/U02eiJ3n9IHRKXVMBUmDJi/OG4i69zXphevsd8Nkfld2F
+ TYGsK3B9xodL6Usi1lfQKlD0Bv9i/m8dvDnMwJeJw30nlPWEtNdE70k6R7SGWS8yOjy0HwMB/
+ w6MGSOKe5Mre8/E3DF76ZueZX6A8S267qJTj7muvdHtXCr3KgJzx2Ya76r+9uzxgjWoBGAdpd
+ 140ZgP+oUr2fpGMm7cnoHzD5jG/gKKhSRva2Eig==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Break the requirement that device-dax instances are physically contiguous.
-With this constraint removed it allows fragmented available capacity to
-be fully allocated.
 
-This capability is useful to mitigate the "noisy neighbor" problem with
-memory-side-cache management for virtual machines, or any other scenario
-where a platform address boundary also designates a performance boundary.
-For example a direct mapped memory side cache might rotate cache colors at
-1GB boundaries.  With dis-contiguous allocations a device-dax instance
-could be configured to contain only 1 cache color.
+--ADZbWkCsHQ7r3kzd
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It also satisfies Joao's use case (see link) for partitioning memory for
-exclusive guest access.  It allows for a future potential mode where the
-host kernel need not allocate 'struct page' capacity up-front.
+On Fri, Sep 25, 2020 at 11:36:14AM +0200, Alexandre Belloni wrote:
+> Hi,
+>=20
+> On 24/09/2020 21:24:53+0200, Jonathan Neusch=C3=A4fer wrote:
+=2E..
+> > v3:
+=2E..
+> > - Relicense as GPLv2 or later
+>=20
+> I don't think you had to relicense. The kernel is GPL 2 only, you are
+> free to license your code under GPL 2 only if that is what you desire.
 
-Link: https://lore.kernel.org/lkml/20200110190313.17144-1-joao.m.martins@oracle.com/
-Link: https://lkml.kernel.org/r/159643104304.4062302.16561669534797528660.stgit@dwillia2-desk3.amr.corp.intel.com
-Reported-by: Joao Martins <joao.m.martins@oracle.com>
-Signed-off-by: Dan Williams <dan.j.williams@intel.com>
----
- drivers/dax/bus.c              |  233 +++++++++++++++++++++++++++++++---------
- drivers/dax/dax-private.h      |    9 +-
- drivers/dax/device.c           |   55 ++++++---
- drivers/dax/kmem.c             |  130 +++++++++++++++-------
- tools/testing/nvdimm/dax-dev.c |   20 ++-
- 5 files changed, 323 insertions(+), 124 deletions(-)
+I don't mind in this case.
 
-diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 00fa73a8dfb4..06a789aba58a 100644
---- a/drivers/dax/bus.c
-+++ b/drivers/dax/bus.c
-@@ -136,15 +136,27 @@ static bool is_static(struct dax_region *dax_region)
- 	return (dax_region->res.flags & IORESOURCE_DAX_STATIC) != 0;
- }
- 
-+static u64 dev_dax_size(struct dev_dax *dev_dax)
-+{
-+	u64 size = 0;
-+	int i;
-+
-+	device_lock_assert(&dev_dax->dev);
-+
-+	for (i = 0; i < dev_dax->nr_range; i++)
-+		size += range_len(&dev_dax->ranges[i].range);
-+
-+	return size;
-+}
-+
- static int dax_bus_probe(struct device *dev)
- {
- 	struct dax_device_driver *dax_drv = to_dax_drv(dev->driver);
- 	struct dev_dax *dev_dax = to_dev_dax(dev);
- 	struct dax_region *dax_region = dev_dax->region;
--	struct range *range = &dev_dax->range;
- 	int rc;
- 
--	if (range_len(range) == 0 || dev_dax->id < 0)
-+	if (dev_dax_size(dev_dax) == 0 || dev_dax->id < 0)
- 		return -ENXIO;
- 
- 	rc = dax_drv->probe(dev_dax);
-@@ -354,15 +366,19 @@ void kill_dev_dax(struct dev_dax *dev_dax)
- }
- EXPORT_SYMBOL_GPL(kill_dev_dax);
- 
--static void free_dev_dax_range(struct dev_dax *dev_dax)
-+static void free_dev_dax_ranges(struct dev_dax *dev_dax)
- {
- 	struct dax_region *dax_region = dev_dax->region;
--	struct range *range = &dev_dax->range;
-+	int i;
- 
- 	device_lock_assert(dax_region->dev);
--	if (range_len(range))
-+	for (i = 0; i < dev_dax->nr_range; i++) {
-+		struct range *range = &dev_dax->ranges[i].range;
-+
- 		__release_region(&dax_region->res, range->start,
- 				range_len(range));
-+	}
-+	dev_dax->nr_range = 0;
- }
- 
- static void unregister_dev_dax(void *dev)
-@@ -372,7 +388,7 @@ static void unregister_dev_dax(void *dev)
- 	dev_dbg(dev, "%s\n", __func__);
- 
- 	kill_dev_dax(dev_dax);
--	free_dev_dax_range(dev_dax);
-+	free_dev_dax_ranges(dev_dax);
- 	device_del(dev);
- 	put_device(dev);
- }
-@@ -423,7 +439,7 @@ static ssize_t delete_store(struct device *dev, struct device_attribute *attr,
- 	device_lock(dev);
- 	device_lock(victim);
- 	dev_dax = to_dev_dax(victim);
--	if (victim->driver || range_len(&dev_dax->range))
-+	if (victim->driver || dev_dax_size(dev_dax))
- 		rc = -EBUSY;
- 	else {
- 		/*
-@@ -569,51 +585,86 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
- 	struct dax_region *dax_region = dev_dax->region;
- 	struct resource *res = &dax_region->res;
- 	struct device *dev = &dev_dax->dev;
-+	struct dev_dax_range *ranges;
-+	unsigned long pgoff = 0;
- 	struct resource *alloc;
-+	int i;
- 
- 	device_lock_assert(dax_region->dev);
- 
- 	/* handle the seed alloc special case */
- 	if (!size) {
--		dev_dax->range = (struct range) {
--			.start = res->start,
--			.end = res->start - 1,
--		};
-+		if (dev_WARN_ONCE(dev, dev_dax->nr_range,
-+					"0-size allocation must be first\n"))
-+			return -EBUSY;
-+		/* nr_range == 0 is elsewhere special cased as 0-size device */
- 		return 0;
- 	}
- 
-+	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
-+			* (dev_dax->nr_range + 1), GFP_KERNEL);
-+	if (!ranges)
-+		return -ENOMEM;
-+
- 	alloc = __request_region(res, start, size, dev_name(dev), 0);
--	if (!alloc)
-+	if (!alloc) {
-+		/*
-+		 * If this was an empty set of ranges nothing else
-+		 * will release @ranges, so do it now.
-+		 */
-+		if (!dev_dax->nr_range) {
-+			kfree(ranges);
-+			ranges = NULL;
-+		}
-+		dev_dax->ranges = ranges;
- 		return -ENOMEM;
-+	}
- 
--	dev_dax->range = (struct range) {
--		.start = alloc->start,
--		.end = alloc->end,
-+	for (i = 0; i < dev_dax->nr_range; i++)
-+		pgoff += PHYS_PFN(range_len(&ranges[i].range));
-+	dev_dax->ranges = ranges;
-+	ranges[dev_dax->nr_range++] = (struct dev_dax_range) {
-+		.pgoff = pgoff,
-+		.range = {
-+			.start = alloc->start,
-+			.end = alloc->end,
-+		},
- 	};
- 
-+	dev_dbg(dev, "alloc range[%d]: %pa:%pa\n", dev_dax->nr_range - 1,
-+			&alloc->start, &alloc->end);
-+
- 	return 0;
- }
- 
- static int adjust_dev_dax_range(struct dev_dax *dev_dax, struct resource *res, resource_size_t size)
- {
-+	int last_range = dev_dax->nr_range - 1;
-+	struct dev_dax_range *dax_range = &dev_dax->ranges[last_range];
- 	struct dax_region *dax_region = dev_dax->region;
--	struct range *range = &dev_dax->range;
--	int rc = 0;
-+	bool is_shrink = resource_size(res) > size;
-+	struct range *range = &dax_range->range;
-+	struct device *dev = &dev_dax->dev;
-+	int rc;
- 
- 	device_lock_assert(dax_region->dev);
- 
--	if (size)
--		rc = adjust_resource(res, range->start, size);
--	else
--		__release_region(&dax_region->res, range->start, range_len(range));
-+	if (dev_WARN_ONCE(dev, !size, "deletion is handled by dev_dax_shrink\n"))
-+		return -EINVAL;
-+
-+	rc = adjust_resource(res, range->start, size);
- 	if (rc)
- 		return rc;
- 
--	dev_dax->range = (struct range) {
-+	*range = (struct range) {
- 		.start = range->start,
- 		.end = range->start + size - 1,
- 	};
- 
-+	dev_dbg(dev, "%s range[%d]: %#llx:%#llx\n", is_shrink ? "shrink" : "extend",
-+			last_range, (unsigned long long) range->start,
-+			(unsigned long long) range->end);
-+
- 	return 0;
- }
- 
-@@ -621,7 +672,11 @@ static ssize_t size_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
- {
- 	struct dev_dax *dev_dax = to_dev_dax(dev);
--	unsigned long long size = range_len(&dev_dax->range);
-+	unsigned long long size;
-+
-+	device_lock(dev);
-+	size = dev_dax_size(dev_dax);
-+	device_unlock(dev);
- 
- 	return sprintf(buf, "%llu\n", size);
- }
-@@ -639,32 +694,82 @@ static bool alloc_is_aligned(struct dax_region *dax_region,
- 
- static int dev_dax_shrink(struct dev_dax *dev_dax, resource_size_t size)
- {
-+	resource_size_t to_shrink = dev_dax_size(dev_dax) - size;
- 	struct dax_region *dax_region = dev_dax->region;
--	struct range *range = &dev_dax->range;
--	struct resource *res, *adjust = NULL;
- 	struct device *dev = &dev_dax->dev;
--
--	for_each_dax_region_resource(dax_region, res)
--		if (strcmp(res->name, dev_name(dev)) == 0
--				&& res->start == range->start) {
--			adjust = res;
--			break;
-+	int i;
-+
-+	for (i = dev_dax->nr_range - 1; i >= 0; i--) {
-+		struct range *range = &dev_dax->ranges[i].range;
-+		struct resource *adjust = NULL, *res;
-+		resource_size_t shrink;
-+
-+		shrink = min_t(u64, to_shrink, range_len(range));
-+		if (shrink >= range_len(range)) {
-+			__release_region(&dax_region->res, range->start,
-+					range_len(range));
-+			dev_dax->nr_range--;
-+			dev_dbg(dev, "delete range[%d]: %#llx:%#llx\n", i,
-+					(unsigned long long) range->start,
-+					(unsigned long long) range->end);
-+			to_shrink -= shrink;
-+			if (!to_shrink)
-+				break;
-+			continue;
- 		}
- 
--	if (dev_WARN_ONCE(dev, !adjust, "failed to find matching resource\n"))
--		return -ENXIO;
--	return adjust_dev_dax_range(dev_dax, adjust, size);
-+		for_each_dax_region_resource(dax_region, res)
-+			if (strcmp(res->name, dev_name(dev)) == 0
-+					&& res->start == range->start) {
-+				adjust = res;
-+				break;
-+			}
-+
-+		if (dev_WARN_ONCE(dev, !adjust || i != dev_dax->nr_range - 1,
-+					"failed to find matching resource\n"))
-+			return -ENXIO;
-+		return adjust_dev_dax_range(dev_dax, adjust, range_len(range)
-+				- shrink);
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * Only allow adjustments that preserve the relative pgoff of existing
-+ * allocations. I.e. the dev_dax->ranges array is ordered by increasing pgoff.
-+ */
-+static bool adjust_ok(struct dev_dax *dev_dax, struct resource *res)
-+{
-+	struct dev_dax_range *last;
-+	int i;
-+
-+	if (dev_dax->nr_range == 0)
-+		return false;
-+	if (strcmp(res->name, dev_name(&dev_dax->dev)) != 0)
-+		return false;
-+	last = &dev_dax->ranges[dev_dax->nr_range - 1];
-+	if (last->range.start != res->start || last->range.end != res->end)
-+		return false;
-+	for (i = 0; i < dev_dax->nr_range - 1; i++) {
-+		struct dev_dax_range *dax_range = &dev_dax->ranges[i];
-+
-+		if (dax_range->pgoff > last->pgoff)
-+			return false;
-+	}
-+
-+	return true;
- }
- 
- static ssize_t dev_dax_resize(struct dax_region *dax_region,
- 		struct dev_dax *dev_dax, resource_size_t size)
- {
- 	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
--	resource_size_t dev_size = range_len(&dev_dax->range);
-+	resource_size_t dev_size = dev_dax_size(dev_dax);
- 	struct resource *region_res = &dax_region->res;
- 	struct device *dev = &dev_dax->dev;
--	const char *name = dev_name(dev);
- 	struct resource *res, *first;
-+	resource_size_t alloc = 0;
-+	int rc;
- 
- 	if (dev->driver)
- 		return -EBUSY;
-@@ -685,35 +790,47 @@ static ssize_t dev_dax_resize(struct dax_region *dax_region,
- 	 * may involve adjusting the end of an existing resource, or
- 	 * allocating a new resource.
- 	 */
-+retry:
- 	first = region_res->child;
- 	if (!first)
- 		return alloc_dev_dax_range(dev_dax, dax_region->res.start, to_alloc);
--	for (res = first; to_alloc && res; res = res->sibling) {
-+
-+	rc = -ENOSPC;
-+	for (res = first; res; res = res->sibling) {
- 		struct resource *next = res->sibling;
--		resource_size_t free;
- 
- 		/* space at the beginning of the region */
--		free = 0;
--		if (res == first && res->start > dax_region->res.start)
--			free = res->start - dax_region->res.start;
--		if (free >= to_alloc && dev_size == 0)
--			return alloc_dev_dax_range(dev_dax, dax_region->res.start, to_alloc);
-+		if (res == first && res->start > dax_region->res.start) {
-+			alloc = min(res->start - dax_region->res.start, to_alloc);
-+			rc = alloc_dev_dax_range(dev_dax, dax_region->res.start, alloc);
-+			break;
-+		}
- 
--		free = 0;
-+		alloc = 0;
- 		/* space between allocations */
- 		if (next && next->start > res->end + 1)
--			free = next->start - res->end + 1;
-+			alloc = min(next->start - (res->end + 1), to_alloc);
- 
- 		/* space at the end of the region */
--		if (free < to_alloc && !next && res->end < region_res->end)
--			free = region_res->end - res->end;
-+		if (!alloc && !next && res->end < region_res->end)
-+			alloc = min(region_res->end - res->end, to_alloc);
- 
--		if (free >= to_alloc && strcmp(name, res->name) == 0)
--			return adjust_dev_dax_range(dev_dax, res, resource_size(res) + to_alloc);
--		else if (free >= to_alloc && dev_size == 0)
--			return alloc_dev_dax_range(dev_dax, res->end + 1, to_alloc);
-+		if (!alloc)
-+			continue;
-+
-+		if (adjust_ok(dev_dax, res)) {
-+			rc = adjust_dev_dax_range(dev_dax, res, resource_size(res) + alloc);
-+			break;
-+		}
-+		rc = alloc_dev_dax_range(dev_dax, res->end + 1, alloc);
-+		break;
- 	}
--	return -ENOSPC;
-+	if (rc)
-+		return rc;
-+	to_alloc -= alloc;
-+	if (to_alloc)
-+		goto retry;
-+	return 0;
- }
- 
- static ssize_t size_store(struct device *dev, struct device_attribute *attr,
-@@ -767,8 +884,15 @@ static ssize_t resource_show(struct device *dev,
- 		struct device_attribute *attr, char *buf)
- {
- 	struct dev_dax *dev_dax = to_dev_dax(dev);
-+	struct dax_region *dax_region = dev_dax->region;
-+	unsigned long long start;
-+
-+	if (dev_dax->nr_range < 1)
-+		start = dax_region->res.start;
-+	else
-+		start = dev_dax->ranges[0].range.start;
- 
--	return sprintf(buf, "%#llx\n", dev_dax->range.start);
-+	return sprintf(buf, "%#llx\n", start);
- }
- static DEVICE_ATTR(resource, 0400, resource_show, NULL);
- 
-@@ -833,6 +957,7 @@ static void dev_dax_release(struct device *dev)
- 	put_dax(dax_dev);
- 	free_dev_dax_id(dev_dax);
- 	dax_region_put(dax_region);
-+	kfree(dev_dax->ranges);
- 	kfree(dev_dax->pgmap);
- 	kfree(dev_dax);
- }
-@@ -941,7 +1066,7 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
- err_alloc_dax:
- 	kfree(dev_dax->pgmap);
- err_pgmap:
--	free_dev_dax_range(dev_dax);
-+	free_dev_dax_ranges(dev_dax);
- err_range:
- 	free_dev_dax_id(dev_dax);
- err_id:
-diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
-index 0cbb2ec81ca7..f863287107fd 100644
---- a/drivers/dax/dax-private.h
-+++ b/drivers/dax/dax-private.h
-@@ -49,7 +49,8 @@ struct dax_region {
-  * @id: ida allocated id
-  * @dev - device core
-  * @pgmap - pgmap for memmap setup / lifetime (driver owned)
-- * @range: resource range for the instance
-+ * @nr_range: size of @ranges
-+ * @ranges: resource-span + pgoff tuples for the instance
-  */
- struct dev_dax {
- 	struct dax_region *region;
-@@ -58,7 +59,11 @@ struct dev_dax {
- 	int id;
- 	struct device dev;
- 	struct dev_pagemap *pgmap;
--	struct range range;
-+	int nr_range;
-+	struct dev_dax_range {
-+		unsigned long pgoff;
-+		struct range range;
-+	} *ranges;
- };
- 
- static inline struct dev_dax *to_dev_dax(struct device *dev)
-diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-index 5f808617672a..bf389712a20b 100644
---- a/drivers/dax/device.c
-+++ b/drivers/dax/device.c
-@@ -55,15 +55,22 @@ static int check_vma(struct dev_dax *dev_dax, struct vm_area_struct *vma,
- __weak phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
- 		unsigned long size)
- {
--	struct range *range = &dev_dax->range;
--	phys_addr_t phys;
--
--	phys = pgoff * PAGE_SIZE + range->start;
--	if (phys >= range->start && phys <= range->end) {
-+	int i;
-+
-+	for (i = 0; i < dev_dax->nr_range; i++) {
-+		struct dev_dax_range *dax_range = &dev_dax->ranges[i];
-+		struct range *range = &dax_range->range;
-+		unsigned long long pgoff_end;
-+		phys_addr_t phys;
-+
-+		pgoff_end = dax_range->pgoff + PHYS_PFN(range_len(range)) - 1;
-+		if (pgoff < dax_range->pgoff || pgoff > pgoff_end)
-+			continue;
-+		phys = PFN_PHYS(pgoff - dax_range->pgoff) + range->start;
- 		if (phys + size - 1 <= range->end)
- 			return phys;
-+		break;
- 	}
--
- 	return -1;
- }
- 
-@@ -395,30 +402,40 @@ static void dev_dax_kill(void *dev_dax)
- int dev_dax_probe(struct dev_dax *dev_dax)
- {
- 	struct dax_device *dax_dev = dev_dax->dax_dev;
--	struct range *range = &dev_dax->range;
- 	struct device *dev = &dev_dax->dev;
- 	struct dev_pagemap *pgmap;
- 	struct inode *inode;
- 	struct cdev *cdev;
- 	void *addr;
--	int rc;
--
--	/* 1:1 map region resource range to device-dax instance range */
--	if (!devm_request_mem_region(dev, range->start, range_len(range),
--				dev_name(dev))) {
--		dev_warn(dev, "could not reserve range: %#llx - %#llx\n",
--				range->start, range->end);
--		return -EBUSY;
--	}
-+	int rc, i;
- 
- 	pgmap = dev_dax->pgmap;
-+	if (dev_WARN_ONCE(dev, pgmap && dev_dax->nr_range > 1,
-+			"static pgmap / multi-range device conflict\n"))
-+		return -EINVAL;
-+
- 	if (!pgmap) {
--		pgmap = devm_kzalloc(dev, sizeof(*pgmap), GFP_KERNEL);
-+		pgmap = devm_kzalloc(dev, sizeof(*pgmap) + sizeof(struct range)
-+				* (dev_dax->nr_range - 1), GFP_KERNEL);
- 		if (!pgmap)
- 			return -ENOMEM;
--		pgmap->range = *range;
--		pgmap->nr_range = 1;
-+		pgmap->nr_range = dev_dax->nr_range;
-+	}
-+
-+	for (i = 0; i < dev_dax->nr_range; i++) {
-+		struct range *range = &dev_dax->ranges[i].range;
-+
-+		if (!devm_request_mem_region(dev, range->start,
-+					range_len(range), dev_name(dev))) {
-+			dev_warn(dev, "mapping%d: %#llx-%#llx could not reserve range\n",
-+					i, range->start, range->end);
-+			return -EBUSY;
-+		}
-+		/* don't update the range for static pgmap */
-+		if (!dev_dax->pgmap)
-+			pgmap->ranges[i] = *range;
- 	}
-+
- 	pgmap->type = MEMORY_DEVICE_GENERIC;
- 	addr = devm_memremap_pages(dev, pgmap);
- 	if (IS_ERR(addr))
-diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-index c2ac465cc342..6c933f2b604e 100644
---- a/drivers/dax/kmem.c
-+++ b/drivers/dax/kmem.c
-@@ -19,24 +19,28 @@ static const char *kmem_name;
- /* Set if any memory will remain added when the driver will be unloaded. */
- static bool any_hotremove_failed;
- 
--static struct range dax_kmem_range(struct dev_dax *dev_dax)
-+static int dax_kmem_range(struct dev_dax *dev_dax, int i, struct range *r)
- {
--	struct range range;
-+	struct dev_dax_range *dax_range = &dev_dax->ranges[i];
-+	struct range *range = &dax_range->range;
- 
- 	/* memory-block align the hotplug range */
--	range.start = ALIGN(dev_dax->range.start, memory_block_size_bytes());
--	range.end = ALIGN_DOWN(dev_dax->range.end + 1, memory_block_size_bytes()) - 1;
--	return range;
-+	r->start = ALIGN(range->start, memory_block_size_bytes());
-+	r->end = ALIGN_DOWN(range->end + 1, memory_block_size_bytes()) - 1;
-+	if (r->start >= r->end) {
-+		r->start = range->start;
-+		r->end = range->end;
-+		return -ENOSPC;
-+	}
-+	return 0;
- }
- 
- static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- {
--	struct range range = dax_kmem_range(dev_dax);
- 	struct device *dev = &dev_dax->dev;
--	struct resource *res;
-+	int i, mapped = 0;
- 	char *res_name;
- 	int numa_node;
--	int rc;
- 
- 	/*
- 	 * Ensure good NUMA information for the persistent memory.
-@@ -55,31 +59,58 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- 	if (!res_name)
- 		return -ENOMEM;
- 
--	/* Region is permanently reserved if hotremove fails. */
--	res = request_mem_region(range.start, range_len(&range), res_name);
--	if (!res) {
--		dev_warn(dev, "could not reserve region [%#llx-%#llx]\n", range.start, range.end);
--		kfree(res_name);
--		return -EBUSY;
--	}
--
--	/*
--	 * Set flags appropriate for System RAM.  Leave ..._BUSY clear
--	 * so that add_memory() can add a child resource.  Do not
--	 * inherit flags from the parent since it may set new flags
--	 * unknown to us that will break add_memory() below.
--	 */
--	res->flags = IORESOURCE_SYSTEM_RAM;
--
--	/*
--	 * Ensure that future kexec'd kernels will not treat this as RAM
--	 * automatically.
--	 */
--	rc = add_memory_driver_managed(numa_node, range.start, range_len(&range), kmem_name);
--	if (rc) {
--		release_mem_region(range.start, range_len(&range));
--		kfree(res_name);
--		return rc;
-+	for (i = 0; i < dev_dax->nr_range; i++) {
-+		struct resource *res;
-+		struct range range;
-+		int rc;
-+
-+		rc = dax_kmem_range(dev_dax, i, &range);
-+		if (rc) {
-+			dev_info(dev, "mapping%d: %#llx-%#llx too small after alignment\n",
-+					i, range.start, range.end);
-+			continue;
-+		}
-+
-+		/* Region is permanently reserved if hotremove fails. */
-+		res = request_mem_region(range.start, range_len(&range), res_name);
-+		if (!res) {
-+			dev_warn(dev, "mapping%d: %#llx-%#llx could not reserve region\n",
-+					i, range.start, range.end);
-+			/*
-+			 * Once some memory has been onlined we can't
-+			 * assume that it can be un-onlined safely.
-+			 */
-+			if (mapped)
-+				continue;
-+			kfree(res_name);
-+			return -EBUSY;
-+		}
-+
-+		/*
-+		 * Set flags appropriate for System RAM.  Leave ..._BUSY clear
-+		 * so that add_memory() can add a child resource.  Do not
-+		 * inherit flags from the parent since it may set new flags
-+		 * unknown to us that will break add_memory() below.
-+		 */
-+		res->flags = IORESOURCE_SYSTEM_RAM;
-+
-+		/*
-+		 * Ensure that future kexec'd kernels will not treat
-+		 * this as RAM automatically.
-+		 */
-+		rc = add_memory_driver_managed(numa_node, range.start,
-+				range_len(&range), kmem_name);
-+
-+		if (rc) {
-+			dev_warn(dev, "mapping%d: %#llx-%#llx memory add failed\n",
-+					i, range.start, range.end);
-+			release_mem_region(range.start, range_len(&range));
-+			if (mapped)
-+				continue;
-+			kfree(res_name);
-+			return rc;
-+		}
-+		mapped++;
- 	}
- 
- 	dev_set_drvdata(dev, res_name);
-@@ -90,9 +121,8 @@ static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- #ifdef CONFIG_MEMORY_HOTREMOVE
- static int dev_dax_kmem_remove(struct dev_dax *dev_dax)
- {
--	int rc;
-+	int i, success = 0;
- 	struct device *dev = &dev_dax->dev;
--	struct range range = dax_kmem_range(dev_dax);
- 	const char *res_name = dev_get_drvdata(dev);
- 
- 	/*
-@@ -101,17 +131,31 @@ static int dev_dax_kmem_remove(struct dev_dax *dev_dax)
- 	 * there is no way to hotremove this memory until reboot because device
- 	 * unbind will succeed even if we return failure.
- 	 */
--	rc = remove_memory(dev_dax->target_node, range.start, range_len(&range));
--	if (rc) {
-+	for (i = 0; i < dev_dax->nr_range; i++) {
-+		struct range range;
-+		int rc;
-+
-+		rc = dax_kmem_range(dev_dax, i, &range);
-+		if (rc)
-+			continue;
-+
-+		rc = remove_memory(dev_dax->target_node, range.start,
-+				range_len(&range));
-+		if (rc == 0) {
-+			release_mem_region(range.start, range_len(&range));
-+			success++;
-+			continue;
-+		}
- 		any_hotremove_failed = true;
--		dev_err(dev, "%#llx-%#llx cannot be hotremoved until the next reboot\n",
--				range.start, range.end);
--		return rc;
-+		dev_err(dev,
-+			"mapping%d: %#llx-%#llx cannot be hotremoved until the next reboot\n",
-+				i, range.start, range.end);
- 	}
- 
--	/* Release and free dax resources */
--	release_mem_region(range.start, range_len(&range));
--	kfree(res_name);
-+	if (success >= dev_dax->nr_range) {
-+		kfree(res_name);
-+		dev_set_drvdata(dev, NULL);
-+	}
- 
- 	return 0;
- }
-diff --git a/tools/testing/nvdimm/dax-dev.c b/tools/testing/nvdimm/dax-dev.c
-index 38d8e55c4a0d..fb342a8c98d3 100644
---- a/tools/testing/nvdimm/dax-dev.c
-+++ b/tools/testing/nvdimm/dax-dev.c
-@@ -9,11 +9,18 @@
- phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
- 		unsigned long size)
- {
--	struct range *range = &dev_dax->range;
--	phys_addr_t addr;
-+	int i;
- 
--	addr = pgoff * PAGE_SIZE + range->start;
--	if (addr >= range->start && addr <= range->end) {
-+	for (i = 0; i < dev_dax->nr_range; i++) {
-+		struct dev_dax_range *dax_range = &dev_dax->ranges[i];
-+		struct range *range = &dax_range->range;
-+		unsigned long long pgoff_end;
-+		phys_addr_t addr;
-+
-+		pgoff_end = dax_range->pgoff + PHYS_PFN(range_len(range)) - 1;
-+		if (pgoff < dax_range->pgoff || pgoff > pgoff_end)
-+			continue;
-+		addr = PFN_PHYS(pgoff - dax_range->pgoff) + range->start;
- 		if (addr + size - 1 <= range->end) {
- 			if (get_nfit_res(addr)) {
- 				struct page *page;
-@@ -23,9 +30,10 @@ phys_addr_t dax_pgoff_to_phys(struct dev_dax *dev_dax, pgoff_t pgoff,
- 
- 				page = vmalloc_to_page((void *)addr);
- 				return PFN_PHYS(page_to_pfn(page));
--			} else
--				return addr;
-+			}
-+			return addr;
- 		}
-+		break;
- 	}
- 	return -1;
- }
+--ADZbWkCsHQ7r3kzd
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl9uaHAACgkQCDBEmo7z
+X9vzphAAoCYGjLQdcxjaBh9Jk+4k/cEK567Nzrk68QQMIyXemvEY15Rvd+Hmtuw4
+6Kz+TfyxGKQT+kapBiKmMUAmezz5c376BNN6yc330IAZ76mK+Zt3JtUut2vDC3m3
+/uk2xriYBB/vbwGeUCBmjzvmhN330o8ZqqEShJHNnnRZHCp66ACtyw7Vrius/Dyz
+dqzbJZ50EktrNkTXQO/oqumv82L0UO4IwThJTWLl1/+XWd6M1FG9OkBNuGlJs1kH
+PPn4lMdZ+QP/+G7ZSM2E12eFXojqD9Y8mpclnGmbfC0plNFK8z5fxnVKYO0vSrl8
+nyNuqyc2LnTQaUw9d/8Dgg1K9S8XdU8ImtYz4GJG4WqMJx5tHsLzdocvIh9/bSjP
+WU2RgRUt6TPc8eeRibBgiKqDGCFhLy/yj532rRrSwNOetNwEEMWd597YyCusWMbY
+kDJxDpKivTP3dd9iqTMMJIyYQjGOr8JH013kFkr0bSOdIaBPybgqvALxzZnLJ7AB
+axnS1Ev8HBJ9zlM7EReT8VZqdfY4BnjsDGLZoVUBCU9iikV9RwVNfD+g5G44zurG
+9XfmWBTcjwwN/3Esf//WDtjHTwYCJaIyk6eh15hrSxG+uxg+yW4nbX0EZwDbIMhi
+IDGN4OuZkCF/kNo2vX383ynU4CS6mzkaOECfsWbvISi7m3ffldc=
+=IVvh
+-----END PGP SIGNATURE-----
+
+--ADZbWkCsHQ7r3kzd--
