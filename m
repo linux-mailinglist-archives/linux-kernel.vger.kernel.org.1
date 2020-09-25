@@ -2,52 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95AF279269
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C08027926A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728764AbgIYUmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:42:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50756 "EHLO mail.kernel.org"
+        id S1728797AbgIYUm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:42:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIYUmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:42:51 -0400
+        id S1726119AbgIYUm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:42:56 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE72021D42;
-        Fri, 25 Sep 2020 20:42:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D5C7421D42;
+        Fri, 25 Sep 2020 20:42:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601066571;
-        bh=EfSzTCliWhiljJ3+L77GOzDVfo7KHWTv3mmxcKGz2jQ=;
+        s=default; t=1601066576;
+        bh=QSevX1flL8R5A+fqYXDssSpKP80IyBfwUR79zCY1bHU=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=XwCW8Jdk4w7MvkQoLKzQ7B9IEUn0u+mioiXi243K9sDBT7ApPTyXZkJszGC6B6g+p
-         u2H53IuYqY/4RsV1bQgUzgXVhAUkdlli4e/O0QJX7oaM6nTywJ0WCL06SxiXmD81C0
-         YWy9+6ZQNSZgcRr8JoAlqg19KPkBzpLpLn2qqNhQ=
-Date:   Fri, 25 Sep 2020 21:41:56 +0100
+        b=urarfz8PuyF+GFxvTcJYGPU6CbYQ8EubrmxlSDW9MN3ATbi+2rDYcNTjBeE48/ruw
+         crrsbsCFqMnUqSLnZQTb0cnZqgn/dcxsCC/GFG10dW40H5dXz45Mdu4W9z6BfPF+ok
+         YKR556UJKd7h3q8k7lWpnMA3X9s5YP8+egymxK/I=
+Date:   Fri, 25 Sep 2020 21:42:01 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20200925084925.26926-1-srinivas.kandagatla@linaro.org>
-References: <20200925084925.26926-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 0/2] ASoC: qdsp6: fix some warnings when build without CONFIG_OF
-Message-Id: <160106647647.2866.17205507189233379981.b4-ty@kernel.org>
+To:     lgirdwood@gmail.com, tiwai@suse.com,
+        linux-arm-kernel@lists.infradead.org, festevam@gmail.com,
+        Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org,
+        nicoleotsuka@gmail.com, shawnguo@kernel.org, perex@perex.cz,
+        linux-imx@nxp.com, s.hauer@pengutronix.de,
+        Xu Wang <vulab@iscas.ac.cn>, shengjiu.wang@gmail.com,
+        alsa-devel@alsa-project.org, kernel@pengutronix.de,
+        timur@kernel.org
+Cc:     linux-kernel@vger.kernel.org
+In-Reply-To: <20200921015918.24157-1-vulab@iscas.ac.cn>
+References: <20200921015918.24157-1-vulab@iscas.ac.cn>
+Subject: Re: [PATCH] fsl: imx-audmix : Use devm_kcalloc() instead of devm_kzalloc()
+Message-Id: <160106647647.2866.12055149870190769449.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 09:49:23 +0100, Srinivas Kandagatla wrote:
-> Here are fixes for two warnings types discovered while building qdsp6 drivers
-> without CONFIG_OF and with W=1
-> 
-> One of them was reported by Intel kernel test robot on q6afe-clocks patch, which
-> equally applies to rest of the qdsp6 drivers.
-> 
-> Srinivas Kandagatla (2):
->   ASoC: qdsp6: Drop of_match_ptr to fix -Wunused-const-variable
->   ASoC: q6asm: fix kernel doc warnings
-> 
-> [...]
+On Mon, 21 Sep 2020 01:59:18 +0000, Xu Wang wrote:
+> A multiplication for the size determination of a memory allocation
+> indicated that an array data structure should be processed.
+> Thus use the corresponding function "devm_kcalloc".
 
 Applied to
 
@@ -55,8 +53,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: q6asm: fix kernel doc warnings
-      commit: 5d0576bba9eb37bf07dc58a91568a2332a22fbcd
+[1/1] ASoC: fsl: imx-audmix: Use devm_kcalloc() instead of devm_kzalloc()
+      commit: f95cc5c18c15a425c3dceec48df6b4e27a202dda
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
