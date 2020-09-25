@@ -2,109 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AC727877C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496D5278783
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728480AbgIYMo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgIYMo5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:44:57 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEAAC0613CE;
-        Fri, 25 Sep 2020 05:44:57 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y11so2646850lfl.5;
-        Fri, 25 Sep 2020 05:44:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CCZD8UTHnmfs2h2ZSbFRWr2HJAvbw3OyNcDZ8aeNLW8=;
-        b=Wl8sisiizEKz1tx18uw4vdEpahVK4b8EtKIkWgqdHiF9fUTuY47DZL03xAQ+VzU44H
-         e5hDORWoXZIgXdGF/NGg44+YC8HId64bJCZGz2yClGWVSGoCi+O9IpdalI8rD90xwYg7
-         wBqBNGb0uJyknn0aIg8ue7Y+fKfGSr7xhq04Qi3JhiLDejyNd8EWIG08NtAN2nzQa/6t
-         Z1nv0a8R+CJk2Ky8UYEn5787kqsUHWTlz2EBeh98ybvYLfNoZVXN+INs/srAkv80Xy7D
-         j4uBiSPdrhKS+SA6WvBTWnkGvfNXl/pc/NdZ8RlBL+sSLgYsn1gtsnCBWbZ/14bD+VF6
-         YZ8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CCZD8UTHnmfs2h2ZSbFRWr2HJAvbw3OyNcDZ8aeNLW8=;
-        b=a/8jk4tcT5QgWaGLodwpRpogh0WZpE+Az+WSMMHZatL9lqXdiqbswWlHKvlQeMlbfn
-         b5ShB6rod1/sesB5vyEmem6gjfGdBO5S6NYM1xDSMF4enWyyBiear4XgtVHpem0b4WxO
-         EOeOe16uxKC7iLCysF830OS1RVDMc6GecvdK7QAGGHObMyjb3u4bcOpnQtGwbUeL1gq6
-         XjbBS5Eyp1cl1GV8cL+KNATJ9YMx07V5pezxqEijRxmcscdJsAuMjtnbVqtls/8EVQwT
-         90fJ3WzDahwDwIX5RdbXDscYKAQFpTB51ZnE2DmTkqA2f9VIe1NzQmyTxoYtY9FlxE3v
-         WKIw==
-X-Gm-Message-State: AOAM53303RY1JbaHu2s5E1MmJ2Q/FEwJ7GVmQJe2+/fXRwuqtzLJ4Xiy
-        TOkgzJTNd4i4lnOVtyj9eG6PdEhIeEm7Jg==
-X-Google-Smtp-Source: ABdhPJyxO/BXEnmblCPQ6UNE32w7YRIWXHbBE1l6kTXCW2Rcs9Cz3heg7PebOL7ktrdXrocqamQh9w==
-X-Received: by 2002:a19:dd5:: with SMTP id 204mr1223418lfn.579.1601037895702;
-        Fri, 25 Sep 2020 05:44:55 -0700 (PDT)
-Received: from localhost.localdomain ([94.153.11.208])
-        by smtp.gmail.com with ESMTPSA id m132sm2195163lfa.217.2020.09.25.05.44.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 05:44:55 -0700 (PDT)
-From:   Ivan Khoronzhuk <ivan.khoronzhuk@gmail.com>
-X-Google-Original-From: Ivan Khoronzhuk <ikhoronz@cisco.com>
-To:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org
-Cc:     alexander.sverdlin@nokia.com, linux-kernel@vger.kernel.org,
-        Ivan Khoronzhuk <ikhoronz@cisco.com>
-Subject: [PATCH] net: ethernet: cavium: octeon_mgmt: use phy_start and phy_stop
-Date:   Fri, 25 Sep 2020 15:44:39 +0300
-Message-Id: <20200925124439.19946-1-ikhoronz@cisco.com>
-X-Mailer: git-send-email 2.20.1
+        id S1728470AbgIYMq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:46:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727044AbgIYMq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:46:59 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 47A1321741;
+        Fri, 25 Sep 2020 12:46:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601038017;
+        bh=0uOGRkN6n0m+gj8Lc37bBPi7l0BX1R44gv/c+nI3e0w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=t4WkH08lGnrm1ERhux67BmYV4/h7hv77fxPQGCbHAFvad13DUv2kGKK6J2nJQJFCM
+         rM7W0l/o/VrEKOgwalIgxmmXa+MIhqCJKDPvu68ZBJnB7ccPmXOGGayKgmCz31dtup
+         wtXnNkoEUmux7pMA4Wm0mDSZuVLlFQpIMexsz3/w=
+Date:   Fri, 25 Sep 2020 13:46:51 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Daniel Campello <campello@chromium.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+Subject: Re: [PATCH] dt-bindings: iio: sx9310: Add various settings as DT
+ properties
+Message-ID: <20200925134651.1b1bf20c@archlinux>
+In-Reply-To: <160090354388.310579.2465697259775252128@swboyd.mtv.corp.google.com>
+References: <20200903221828.3657250-1-swboyd@chromium.org>
+        <20200906150247.3aaef3a3@archlinux>
+        <159963232334.454335.9794130058200265122@swboyd.mtv.corp.google.com>
+        <20200909121550.00005ede@Huawei.com>
+        <160090354388.310579.2465697259775252128@swboyd.mtv.corp.google.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To start also "phy state machine", with UP state as it should be,
-the phy_start() has to be used, in another case machine even is not
-triggered. After this change negotiation is supposed to be triggered
-by SM workqueue.
+On Wed, 23 Sep 2020 16:25:43 -0700
+Stephen Boyd <swboyd@chromium.org> wrote:
 
-It's not correct usage, but it appears after the following patch,
-so add it as a fix.
+> Quoting Jonathan Cameron (2020-09-09 04:15:50)
+> > On Tue, 8 Sep 2020 23:18:43 -0700
+> > Stephen Boyd <swboyd@chromium.org> wrote:  
+> > > >     
+> > > > > +
+> > > > > +  semtech,cs0-gain-factor:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [1, 2, 4, 8]
+> > > > > +    default: 1
+> > > > > +    description:
+> > > > > +      Gain factor for CS0 (and combined if any) sensor.    
+> > > > 
+> > > > Why is this something that should be in DT as opposed to via
+> > > > a userspace control?  We have hardwaregain for this purpose (I think)    
+> > > 
+> > > Thanks I'm not aware of hardwaregain. That looks like it should work.  
+> 
+> One weird thing I notice is that the channels can share some settings
+> like this hardware gain factor. Is there support for a subset of
+> channels sharing the same gain? I see there is mask_separate and
+> shared_by_all, type, etc. but I don't see how I can make the setting
+> apply to some subset of channels. I guess just do proper locking and
+> make sure when one is changed it changes the other channel too?
 
-Fixes: 74a992b3598a ("net: phy: add phy_check_link_status")
-Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
----
+Exactly.  It's impossible to describe ever combination of shared
+attributes so we just do the big versions.  For everything else the
+ABI relies on the fact that any change to a value can in theory impact
+any other attribute in the same IIO device.
 
-Based on net/master
+> 
+> > >   
+> > > >   
+> > > >     
+> > > > > +
+> > > > > +  semtech,compensate-common:
+> > > > > +    description: Any sensor triggers compensation of all channels.
+> > > > > +    type: boolean    
+> > > > 
+> > > > Compensation for what?    
+> > > 
+> > > This is for RegProxCtrl6 bit 6 AVGCOMPMETHOD. 
+> > > 
+> > >       Defines the average compensation method:
+> > > 
+> > >       0: Individual. Each sensor triggers only its own compensation
+> > >       1: Common. Any sensor triggers compensation of all channels. 
+> > > 
+> > > I believe this is for the offset compensation.  
+> > 
+> > I wonder if anyone will actually care which choice we make on that?
+> > Perhaps just pick one and don't make it controllable?
+> > 
+> > Reading that it sounds like a control that is there because it was easy
+> > to do in hardware rather than necessarily making any sense from
+> > a usecase point of view.  Do we have any info on how it is used?  
+> 
+> Fair enough. I will try to contact Semtech to understand how it is used.
+> This bit is different between two products I'm aware of but for all I
+> know it doesn't actually matter. Given that we detect proximity of each
+> channel individually it feels like we should leave this as 0. I'll try
+> that out and see how it works.
 
- drivers/net/ethernet/cavium/octeon/octeon_mgmt.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Great.
 
-diff --git a/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c b/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
-index 3e17ce0d2314..6cb2162a75d4 100644
---- a/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
-+++ b/drivers/net/ethernet/cavium/octeon/octeon_mgmt.c
-@@ -1219,7 +1219,7 @@ static int octeon_mgmt_open(struct net_device *netdev)
- 	 */
- 	if (netdev->phydev) {
- 		netif_carrier_off(netdev);
--		phy_start_aneg(netdev->phydev);
-+		phy_start(netdev->phydev);
- 	}
- 
- 	netif_wake_queue(netdev);
-@@ -1247,8 +1247,10 @@ static int octeon_mgmt_stop(struct net_device *netdev)
- 	napi_disable(&p->napi);
- 	netif_stop_queue(netdev);
- 
--	if (netdev->phydev)
-+	if (netdev->phydev) {
-+		phy_stop(netdev->phydev);
- 		phy_disconnect(netdev->phydev);
-+	}
- 
- 	netif_carrier_off(netdev);
- 
--- 
-2.20.1
+> 
+> >   
+> > >   
+> > > >     
+> > > > > +
+> > > > > +  semtech,avg-pos-strength:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [0, 16, 64, 128, 256, 512, 1024, 4294967295]
+> > > > > +    default: 16
+> > > > > +    description:
+> > > > > +      Average positive filter strength. A value of 0 represents off and
+> > > > > +      UINT_MAX (4294967295) represents infinite. Other values
+> > > > > +      represent 1-1/N.    
+> > > > 
+> > > > I'm not sure about using UINT_MAX to represent infinity. Rob any thoughts on
+> > > > this?
+> > > > 
+> > > > Again, why does it make sense to have the filter controls in DT?    
+> > > 
+> > > Is there an IIO property for this? Seems OK to move it to userspace.  
+> > 
+> > I'm not sure enough of what it means, but we have filter controls in
+> > terms of 3db point and oversampling. If you can figure out a match to
+> > those or something that seems more generic than the above to propose
+> > as new ABI that would be great.  
+> 
+> Ok let me see what I can do.
+> 
+> > >   
+> > > >     
+> > > > > +
+> > > > > +  semtech,cs1-prox-threshold:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [2, 4, 6, 8, 12, 16, 20, 24, 28, 32, 40,
+> > > > > +               48, 56, 64, 72, 80, 88, 96, 112, 128, 144,
+> > > > > +               160, 192, 224, 256, 320, 384, 512, 640,
+> > > > > +               768, 1024, 1536]
+> > > > > +    default: 12
+> > > > > +    description:
+> > > > > +      Proximity detection threshold for CS1 sensor.
+> > > > > +
+> > > > > +  semtech,cs2-prox-threshold:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [2, 4, 6, 8, 12, 16, 20, 24, 28, 32, 40,
+> > > > > +               48, 56, 64, 72, 80, 88, 96, 112, 128, 144,
+> > > > > +               160, 192, 224, 256, 320, 384, 512, 640,
+> > > > > +               768, 1024, 1536]
+> > > > > +    default: 12
+> > > > > +    description:
+> > > > > +      Proximity detection threshold for CS2 sensor.
+> > > > > +
+> > > > > +  semtech,cs0-body-threshold:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [0, 300, 600, 900, 1200, 1500, 1800, 30000]
+> > > > > +    default: 1800
+> > > > > +    description:
+> > > > > +      Body detection threshold for CS0 (and combined if any) sensor.    
+> > > > 
+> > > > As before, why DT plus child nodes    
+> > > 
+> > > How should I differentiate body vs. proximity thresholds in userspace?
+> > > Or should I make it /sys/.../events/in_proximity0_thresh_falling_value
+> > > vs. /sys/.../events/in_proximity0_thresh_rising_value?  
+> > 
+> > I'm not sure what they actually are. A problem with IIO that may be relevant
+> > is that we have never supported multiple events of the same type for a channel.
+> > Unfortunately that is hard to change now as we'd have to redefine the event
+> > codes.
+> > 
+> > It feels like these are potentially a bit smarter however. If they are we
+> > could handle them as a different event type.  Or potentially an event
+> > on a different channel (arguably they are some result of some sort of
+> > processing of more than a simple single value).  There is a patent but I've
+> > not read it in detail.  
+> 
+> Hmm.. ok. It looks like the driver doesn't enable the "smart sensor"
+> mode where the body threshold would matter. If I'm reading the datasheet
+> properly, the only threshold we need to configure is the proximity one.
+> If/when the driver supports the body threshold we can look into adding
+> the second threshold. So, let's punt this one? I'll implement a
+> threshold for the proximity in userspace via the IIO_EV_TYPE_THRESH.
+
+Great. That makes life easier.
+
+> 
+> >   
+> > >   
+> > > >     
+> > > > > +
+> > > > > +  semtech,cs1-body-threshold:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [0, 300, 600, 900, 1200, 1500, 1800, 30000]
+> > > > > +    default: 12
+> > > > > +    description:
+> > > > > +      Body detection threshold for CS1 sensor.
+> > > > > +
+> > > > > +  semtech,cs2-body-threshold:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [0, 300, 600, 900, 1200, 1500, 1800, 30000]
+> > > > > +    default: 12
+> > > > > +    description:
+> > > > > +      Body detection threshold for CS2 sensor.
+> > > > > +
+> > > > > +  semtech,hysteresis:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [0, 6, 12, 25]
+> > > > > +    default: 0
+> > > > > +    description:
+> > > > > +      The percentage of hysteresis +/- applied to proximity/body samples.    
+> > > > 
+> > > > Is this hysteresis on an event?  If so we have defined ABI to control that
+> > > > from userspace, though as an absolute value rather than a precentage so some
+> > > > magic will be needed.  Hysteresis is usually defined only the 'not event'
+> > > > direction rather than +/-    
+> > > 
+> > > Is this IIO_EV_INFO_HYSTERESIS? It looks like it is applied to the
+> > > threshold by shifting it right by 4, 3, or 2. I think the +/- is
+> > > actually dependent on the RegProxCtrl10 bit 6 FARCOND value, so maybe
+> > > that isn't a problem. We could make another value like hysteresis shift
+> > > or hysteresis percentage?  
+> > 
+> > I'd rather avoid extra ABI if we can make it work as it stands, even if it
+> > is a little involved to do so.  Extra ABI just means we end up with more
+> > incompatible userspace code over time.  
+> 
+> Alright. I will attempt to make this work with the
+> IIO_EV_INFO_HYSTERESIS knob.
+Great
+> 
+> >   
+> > >   
+> > > >     
+> > > > > +
+> > > > > +  semtech,close-debounce-samples:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [0, 2, 4, 8]
+> > > > > +    default: 0
+> > > > > +    description:
+> > > > > +      The number of close samples debounced for proximity/body thresholds.    
+> > > > 
+> > > > This feels like something that has more to do with the object motion than
+> > > > the sensor setup, so perhaps should be controlled from userspace?    
+> > > 
+> > > Sure. Is there an IIO sample property? Or I should make a custom
+> > > knob for this?  
+> > 
+> > It's kind of close to in_proximity0_thresh_period and that may be how they
+> > have implemented it.
+> > 
+> > That control specifies a number of samples for which a condition should be true
+> > before it is reported.  
+> 
+> Sounds good. I can do that. It looks like the driver reports close/far
+> via an event and these debounce values are the same for me so I can
+> write both fields (close and far) with the same thresh_period value from
+> userspace. If they need to be different between the two then this can be
+> reevaluated?
+
+Not totally sure I followed that, but sounds fine.
+If close and far are different events, you can have a separate
+controls.
+
+Jonathan
+
+
+> 
+> >   
+> > >   
+> > > >     
+> > > > > +
+> > > > > +  semtech,far-debounce-samples:
+> > > > > +    allOf:
+> > > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > > +      - enum: [0, 2, 4, 8]
+> > > > > +    default: 0
+> > > > > +    description:
+> > > > > +      The number of far samples debounced for proximity/body thresholds.
+> > > > > +
+> > > > >  required:
+> > > > >    - compatible  
 
