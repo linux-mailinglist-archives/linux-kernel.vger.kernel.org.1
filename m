@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 460FD27847A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9794278479
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:56:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbgIYJ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728037AbgIYJ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 25 Sep 2020 05:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39824 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727987AbgIYJ4K (ORCPT
+        with ESMTP id S1727922AbgIYJ4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:56:10 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFCAC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:10 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id v12so2590813wmh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:10 -0700 (PDT)
+        Fri, 25 Sep 2020 05:56:12 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F03C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:11 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id s12so2866748wrw.11
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XX1ieNlClYzjBgfq7/9KYbHeLNLgD4LlaxGQnuBGD84=;
-        b=Oj07BZ3Fnf4Wk7Y13SU4KQ4pP4T7VqjxIBRUuxODR5nZzY4lykgOme8J0BV/wM0dUb
-         k/v+cFCPn3/gndGgI16mXdLFvSl45r1DSOdoy23bZ4xTftFbsuQvkGrXH/3oxwzkqug0
-         Alng1NmkRlCavisrQD4Ip/EFqXLPk9ELt6Hxfor1uvl4RZNozgp+xf95dt0hfYid3405
-         O1xxs7cuv9ZyGHWRSsshysxsvtmfIoPDYWFPVnpyFBG8RJ2y3zQ+XwAw6dHgxDXAlcOo
-         39b3QNwevXOId6Z4HtDnhpbmTz00TZjlhOMQWSeNA2/kft+qc2B+RaQBM5BIUS2ipw9Z
-         lS1w==
+        bh=CJ7DSwGsXPHCvYT7/GxkQRuG9Us9EEJKdeB/uPAfkRo=;
+        b=qJG6CtA542rNgDpN/dOblgu7tTmxLNeF0AR7lJnP0N+0bs/wekSx94XJ6NhplIJCZH
+         C82AgIlevD6h5TU0VYmgsqcQylUZP4VQEQHLmiNOkS+JefQ7WzqxZ/okoxeKQ0fpatHB
+         Nlrn/J+TXN+FFykj+Naeb33EvAzRhTKy6TfuYa7qJIxQ08ojzEruyBH5txFo+7UloO77
+         0LavacGpFhAP8d45hda5T2tqXSJ0pIxeOxVNlf9wKMz/Is2DKlGSXFWBPUAyIORzgMAr
+         fKJFuho4kW/O7/xLwuglRZeER9zdDWFbDehGWbL/Oldi8sb+XgCIodAHcI3lKhQ5R80D
+         KLHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XX1ieNlClYzjBgfq7/9KYbHeLNLgD4LlaxGQnuBGD84=;
-        b=nJ7IULJ0d0X5nK52kXAj79ufIP7GjSn2ruuRem8gdzqp1Dwe0K+fZHyv1bZc0Cq2Y4
-         U333oLFf5C3rehycJJ8WhwKRZBgwhZ58LNYpfBg88g3+OltbNt+GpWORTopZhfiux+WY
-         8/m6TqM5ejZk+OgqgHhJ3A0qWyROW7nvKo9LFdEHvyNYkmig71+wZCzdW52x5gIQoWw/
-         08LgUXj4Eqft9VIJfXOry4mlCCYdQozrPBZlPFv6Tlh++vm2Q6gEpEsGO0PbelptQ6N/
-         hwIUZ/AjH1wEBKFoYB9x72DH+qcL9UjkNAySosBQd7i6fkVta/nb/f+va9qbLTT26WVu
-         TJQQ==
-X-Gm-Message-State: AOAM530cVHIGNs+qj9uTzp6Wsu/pednWOTHPKWxi7VRhXQxjAuOiV2Eu
-        zNrAZXvshGjG3BtymwthHCWQ3Q==
-X-Google-Smtp-Source: ABdhPJyu7pTtFKk8bzcEJgcxX5vvt3nwXB9Cj195rfScX6gsWGFP4ZEfyEAhNl9ibUwo/dhiz/nLBA==
-X-Received: by 2002:a1c:610b:: with SMTP id v11mr2301340wmb.181.1601027769283;
-        Fri, 25 Sep 2020 02:56:09 -0700 (PDT)
+        bh=CJ7DSwGsXPHCvYT7/GxkQRuG9Us9EEJKdeB/uPAfkRo=;
+        b=qgGPq9GkdZgSWXdxsKE5K4YuVmK+QCYtPHohZYont7fvvcjwFuERLDxhx7uNES+nhI
+         lTAE43tLA+yPlERi5pZGqJHL9/OKQoUsksPHq969dHh13GSAIWz5i5GUatkLzCng5iwh
+         80VRXmTz0z5eOqj2/sRGNOiZc1W6k/ombFk8YKUO84wOenS9NQa+fuDyubi+ZQzkFlD1
+         kRRpjbG6xqWW3MAcQFYBYxXu7k9IQTURe/lOa69OQGul+cjlScfKvYX6aVimTQM4b0TO
+         QveXdjPxl5aagG1pp+6Klljkseo46iP090Pn8llqt4kcNC43JUGqj3+gY2vgC5rp0Enz
+         6tng==
+X-Gm-Message-State: AOAM532rake/QFcyWNgQ8qGGgQgLXI+j/1T+xJAHxLrwsXPEPesGn+2S
+        UMLjl3uBY64Tj2zk8YdC+6P38w==
+X-Google-Smtp-Source: ABdhPJwnJ5qf0Z3hMgHlPxTdCHp02wYBh10QRU8lVQZnvMd5dbBFtJ6W5K6bg3c2gEau1FYFyhA2LA==
+X-Received: by 2002:a5d:69cd:: with SMTP id s13mr3436481wrw.379.1601027770597;
+        Fri, 25 Sep 2020 02:56:10 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id g14sm2227598wrv.25.2020.09.25.02.56.08
+        by smtp.gmail.com with ESMTPSA id g14sm2227598wrv.25.2020.09.25.02.56.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 02:56:08 -0700 (PDT)
+        Fri, 25 Sep 2020 02:56:09 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-kernel@vger.kernel.org,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/3] slimbus: core: do not enter to clock pause mode in core
-Date:   Fri, 25 Sep 2020 10:55:19 +0100
-Message-Id: <20200925095520.27316-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/3] slimbus: qcom-ngd-ctrl: disable ngd in qmi server down callback
+Date:   Fri, 25 Sep 2020 10:55:20 +0100
+Message-Id: <20200925095520.27316-4-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20200925095520.27316-1-srinivas.kandagatla@linaro.org>
 References: <20200925095520.27316-1-srinivas.kandagatla@linaro.org>
@@ -64,29 +64,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let the controller logic decide when to enter into clock pause mode!
-Entering in to pause mode during unregistration does not really make
-sense as the controller is totally going down at that point in time.
+In QMI new server notification we enable the NGD however during
+delete server notification we do not disable the NGD.
 
-Fixes: 4b14e62ad3c9e ("slimbus: Add support for 'clock-pause' feature")
+This can lead to multiple instances of NGD being enabled, so make
+sure that we disable NGD in delete server callback to fix this issue!
+
+Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/core.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/slimbus/qcom-ngd-ctrl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
-index 58b63ae0e75a..1d2bc181da05 100644
---- a/drivers/slimbus/core.c
-+++ b/drivers/slimbus/core.c
-@@ -301,8 +301,6 @@ int slim_unregister_controller(struct slim_controller *ctrl)
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index 743ee7b4e63f..218aefc3531c 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1277,9 +1277,13 @@ static void qcom_slim_ngd_qmi_del_server(struct qmi_handle *hdl,
  {
- 	/* Remove all clients */
- 	device_for_each_child(ctrl->dev, NULL, slim_ctrl_remove_device);
--	/* Enter Clock Pause */
--	slim_ctrl_clk_pause(ctrl, false, 0);
- 	ida_simple_remove(&ctrl_ida, ctrl->id);
+ 	struct qcom_slim_ngd_qmi *qmi =
+ 		container_of(hdl, struct qcom_slim_ngd_qmi, svc_event_hdl);
++	struct qcom_slim_ngd_ctrl *ctrl =
++		container_of(qmi, struct qcom_slim_ngd_ctrl, qmi);
  
- 	return 0;
+ 	qmi->svc_info.sq_node = 0;
+ 	qmi->svc_info.sq_port = 0;
++
++	qcom_slim_ngd_enable(ctrl, false);
+ }
+ 
+ static struct qmi_ops qcom_slim_ngd_qmi_svc_event_ops = {
 -- 
 2.21.0
 
