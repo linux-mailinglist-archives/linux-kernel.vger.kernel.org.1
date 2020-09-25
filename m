@@ -2,121 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1D32782ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68641278367
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgIYIjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:39:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46898 "EHLO mx2.suse.de"
+        id S1727696AbgIYI72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:59:28 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24563 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727395AbgIYIjg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:39:36 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 511CDB29D;
-        Fri, 25 Sep 2020 08:39:35 +0000 (UTC)
-Subject: Re: [PATCH RFC 3/4] mm/page_alloc: always move pages to the tail of
- the freelist in unset_migratetype_isolate()
-To:     David Hildenbrand <david@redhat.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-4-david@redhat.com>
- <9c6cc094-b02a-ac6c-e1ca-370ce7257881@suse.cz>
- <20200925024552.GA13540@L-31X9LVDL-1304.local>
- <dc550ba3-6b65-bb4e-30a3-2740b1e21be9@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <8e9a4427-3c95-22f5-1e0b-5e3c9fa86592@suse.cz>
-Date:   Fri, 25 Sep 2020 10:39:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727044AbgIYI72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:59:28 -0400
+IronPort-SDR: T+NPBjClqOVJKeJI8IfG3rf38lPNB8rUzg2/j12wvVcgZtuFGvU/+81s5/jlYMgBs6QfX1Rugk
+ RHnYXDi4B21A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141503838"
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="141503838"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 01:59:27 -0700
+IronPort-SDR: eJGqry7RCkHfSNAQd5teD3D9rGoqQNy00gZxxnehLb1Fmq5cnE1dUIoJVd5FKYFeuF2/D9aBo8
+ qiqPRtfGG8aw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="339420109"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 25 Sep 2020 01:59:24 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kLjGY-001sH3-2H; Fri, 25 Sep 2020 11:39:42 +0300
+Date:   Fri, 25 Sep 2020 11:39:42 +0300
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        linux-pwm@vger.kernel.org, lee.jones@linaro.org,
+        thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com, rtanwar@maxlinear.com
+Subject: Re: [PATCH v13 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200925083942.GW3956970@smile.fi.intel.com>
+References: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
+ <befa655d8beb326fc8aa405a25a8b3e62b7e6a4a.1600158087.git.rahul.tanwar@linux.intel.com>
+ <20200924065534.e2anwghhtysv63e7@pengutronix.de>
+ <20200924132334.GT3956970@smile.fi.intel.com>
+ <20200924141659.4wov7w2l2bllpre4@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <dc550ba3-6b65-bb4e-30a3-2740b1e21be9@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924141659.4wov7w2l2bllpre4@pengutronix.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/20 10:05 AM, David Hildenbrand wrote:
->>>>  static inline void del_page_from_free_list(struct page *page, struct zone *zone,
->>>>  					   unsigned int order)
->>>>  {
->>>> @@ -2323,7 +2332,7 @@ static inline struct page *__rmqueue_cma_fallback(struct zone *zone,
->>>>   */
->>>>  static int move_freepages(struct zone *zone,
->>>>  			  struct page *start_page, struct page *end_page,
->>>> -			  int migratetype, int *num_movable)
->>>> +			  int migratetype, int *num_movable, bool to_tail)
->>>>  {
->>>>  	struct page *page;
->>>>  	unsigned int order;
->>>> @@ -2354,7 +2363,10 @@ static int move_freepages(struct zone *zone,
->>>>  		VM_BUG_ON_PAGE(page_zone(page) != zone, page);
->>>>  
->>>>  		order = page_order(page);
->>>> -		move_to_free_list(page, zone, order, migratetype);
->>>> +		if (to_tail)
->>>> +			move_to_free_list_tail(page, zone, order, migratetype);
->>>> +		else
->>>> +			move_to_free_list(page, zone, order, migratetype);
->>>>  		page += 1 << order;
->>>>  		pages_moved += 1 << order;
->>>>  	}
->>>> @@ -2362,8 +2374,9 @@ static int move_freepages(struct zone *zone,
->>>>  	return pages_moved;
->>>>  }
->>>>  
->>>> -int move_freepages_block(struct zone *zone, struct page *page,
->>>> -				int migratetype, int *num_movable)
->>>> +static int __move_freepages_block(struct zone *zone, struct page *page,
->>>> +				  int migratetype, int *num_movable,
->>>> +				  bool to_tail)
->>>>  {
->>>>  	unsigned long start_pfn, end_pfn;
->>>>  	struct page *start_page, *end_page;
->>>> @@ -2384,7 +2397,20 @@ int move_freepages_block(struct zone *zone, struct page *page,
->>>>  		return 0;
->>>>  
->>>>  	return move_freepages(zone, start_page, end_page, migratetype,
->>>> -								num_movable);
->>>> +			      num_movable, to_tail);
->>>> +}
->>>> +
->>>> +int move_freepages_block(struct zone *zone, struct page *page,
->>>> +			 int migratetype, int *num_movable)
->>>> +{
->>>> +	return __move_freepages_block(zone, page, migratetype, num_movable,
->>>> +				      false);
->>>> +}
->>>> +
->>>> +int move_freepages_block_tail(struct zone *zone, struct page *page,
->>>> +			      int migratetype)
->>>> +{
->>>> +	return __move_freepages_block(zone, page, migratetype, NULL, true);
->>>>  }
->>>
->>> Likewise, just 5 callers of move_freepages_block(), all in the files you're
->>> already changing, so no need for this wrappers IMHO.
-> 
-> As long as we don't want to move the implementation to the header, we'll
-> need it for the constant propagation to work at compile time (we don't
-> really have link-time optimizations). Or am I missing something?
+On Thu, Sep 24, 2020 at 04:16:59PM +0200, Uwe Kleine-König wrote:
+> On Thu, Sep 24, 2020 at 04:23:34PM +0300, Andy Shevchenko wrote:
+> > On Thu, Sep 24, 2020 at 08:55:34AM +0200, Uwe Kleine-König wrote:
 
-I guess move_freepages_block() is not exactly fast path, so we could do without it.
+...
 
-> Thanks!
+> > True. And above dev_err_probe() is not needed.
 > 
+> You argue that dev_err_probe() gives no benefit as
+> lgm_reset_control_deassert won't return -EPROBE_DEFER, right?
+> 
+> Still I consider it a useful function because
+> 
+>  a) I (as an author or as a reviewer) don't need to think if the
+>     failing function might return -EPROBE_DEFER now or in the future.
+>     dev_err_probe does the right thing even for functions that don't
+>     return -EPROBE_DEFER.
+> 
+>  b) With dev_err_probe() I can accomplish things in a single line that
+>     need two lines when open coding it.
+> 
+>  c) dev_err_probe() emits the symbolic error name without having to
+>     resort to %pe + ERR_PTR.
+> 
+>  d) Using dev_err_probe() for all error paths gives a consistency that I
+>     like with a maintainer's hat on.
+> 
+> So I still want to request using dev_err_probe() in all error paths.
+
+As a maintainer it is your choice. I really would like to see more consensus
+among maintainers, some are insisting of what I said, some, like you, on the
+opposite, some hate that API and some simply don't care.
+
+And on top of that I saw already use of API without taking returned value into
+account.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
