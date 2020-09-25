@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8937278595
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FCB82785A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727957AbgIYLOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:14:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35614 "EHLO mail.kernel.org"
+        id S1728123AbgIYLPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:15:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:42402 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727201AbgIYLOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:14:42 -0400
-Received: from gaia (unknown [31.124.44.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8777E208B6;
-        Fri, 25 Sep 2020 11:14:39 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 12:14:37 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev@googlegroups.com,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 27/39] arm64: kasan: Enable in-kernel MTE
-Message-ID: <20200925111435.GE4846@gaia>
-References: <cover.1600987622.git.andreyknvl@google.com>
- <20326c060cd1535b15a0df43d1b9627a329f2277.1600987622.git.andreyknvl@google.com>
+        id S1727132AbgIYLPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:15:43 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34B1D101E;
+        Fri, 25 Sep 2020 04:15:42 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 986323F70D;
+        Fri, 25 Sep 2020 04:15:38 -0700 (PDT)
+Subject: Re: [PATCH 08/18] dma-mapping: add a new dma_alloc_noncoherent API
+To:     Christoph Hellwig <hch@lst.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        iommu@lists.linux-foundation.org
+Cc:     alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        netdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+References: <20200915155122.1768241-1-hch@lst.de>
+ <20200915155122.1768241-9-hch@lst.de>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <c8ea4023-3e19-d63b-d936-46a04f502a61@arm.com>
+Date:   Fri, 25 Sep 2020 12:15:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20326c060cd1535b15a0df43d1b9627a329f2277.1600987622.git.andreyknvl@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200915155122.1768241-9-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:50:34AM +0200, Andrey Konovalov wrote:
-> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
-> index 23c326a06b2d..12ba98bc3b3f 100644
-> --- a/arch/arm64/mm/proc.S
-> +++ b/arch/arm64/mm/proc.S
-> @@ -427,6 +427,10 @@ SYM_FUNC_START(__cpu_setup)
->  	 */
->  	mov_q	x5, MAIR_EL1_SET
->  #ifdef CONFIG_ARM64_MTE
-> +	mte_tcr	.req	x20
-> +
-> +	mov	mte_tcr, #0
-> +
->  	/*
->  	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
->  	 * (ID_AA64PFR1_EL1[11:8] > 1).
-> @@ -447,6 +451,9 @@ SYM_FUNC_START(__cpu_setup)
->  	/* clear any pending tag check faults in TFSR*_EL1 */
->  	msr_s	SYS_TFSR_EL1, xzr
->  	msr_s	SYS_TFSRE0_EL1, xzr
-> +
-> +	/* set the TCR_EL1 bits */
-> +	orr	mte_tcr, mte_tcr, #SYS_TCR_EL1_TCMA1
->  1:
->  #endif
->  	msr	mair_el1, x5
-> @@ -457,6 +464,10 @@ SYM_FUNC_START(__cpu_setup)
->  	mov_q	x10, TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \
->  			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
->  			TCR_TBI0 | TCR_A1 | TCR_KASAN_FLAGS
-> +#ifdef CONFIG_ARM64_MTE
-> +	orr	x10, x10, mte_tcr
-> +	.unreq	mte_tcr
-> +#endif
->  	tcr_clear_errata_bits x10, x9, x5
+On 2020-09-15 16:51, Christoph Hellwig wrote:
+[...]
+> +These APIs allow to allocate pages in the kernel direct mapping that are
+> +guaranteed to be DMA addressable.  This means that unlike dma_alloc_coherent,
+> +virt_to_page can be called on the resulting address, and the resulting
 
-I had a slightly different preference (see the previous version) to
-avoid the #ifdef altogether but this works as well.
+Nit: if we explicitly describe this as if it's a guarantee that can be 
+relied upon...
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> +struct page can be used for everything a struct page is suitable for.
+
+[...]
+> +This routine allocates a region of <size> bytes of consistent memory.  It
+> +returns a pointer to the allocated region (in the processor's virtual address
+> +space) or NULL if the allocation failed.  The returned memory may or may not
+> +be in the kernels direct mapping.  Drivers must not call virt_to_page on
+> +the returned memory region.
+
+...then forbid this document's target audience from relying on it, 
+something seems off. At the very least it's unhelpfully unclear :/
+
+Given patch #17, I suspect that the first paragraph is the one that's no 
+longer true.
+
+Robin.
