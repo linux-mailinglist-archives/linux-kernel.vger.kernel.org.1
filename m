@@ -2,108 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D56278DA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82163278DA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729073AbgIYQI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728443AbgIYQI2 (ORCPT
+        id S1729157AbgIYQIg convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 12:08:36 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:60154 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728443AbgIYQIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:08:28 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AA8C0613CE;
-        Fri, 25 Sep 2020 09:08:27 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0b3a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C49621EC0284;
-        Fri, 25 Sep 2020 18:08:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601050104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=eqBo++0bLNLcrE7VXscLCEz7howWeoc6lAOi3PzLORk=;
-        b=CRXaAJ/lHqqbjXX2EAfkl4LJ5fcoibyKjIKgvZyIkMi5tDvJcPiYVH4BR4J8TIS5r++kSI
-        00rKHSFQJ9i1M1sBEDC3bErbdmdbKqII/es2WtrnoNvfYPOrqlRC4gfCkBiBGmH/cM8VKm
-        U8lDy27jIA6cZrQNNLxRAfDl0XzDYQ0=
-Date:   Fri, 25 Sep 2020 18:08:17 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     linux-mm@kvack.org, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        rafael@kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        linuxarm@huawei.com, Dan Williams <dan.j.williams@intel.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Sean V Kelley <sean.v.kelley@linux.intel.com>,
-        linux-api@vger.kernel.org, Hanjun Guo <guohanjun@huawei.com>
-Subject: Re: [PATCH v10 2/6] x86: Support Generic Initiator only proximity
- domains
-Message-ID: <20200925160817.GJ16872@zn.tnic>
-References: <20200907140307.571932-1-Jonathan.Cameron@huawei.com>
- <20200907140307.571932-3-Jonathan.Cameron@huawei.com>
- <20200923160609.GO28545@zn.tnic>
- <20200925123226.0000636a@Huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200925123226.0000636a@Huawei.com>
+        Fri, 25 Sep 2020 12:08:36 -0400
+Received: from [172.20.10.2] (dynamic-046-114-136-219.46.114.pool.telefonica.de [46.114.136.219])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 1A972CECDD;
+        Fri, 25 Sep 2020 18:15:31 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH v3] Bluetooth: btusb: Add Qualcomm Bluetooth SoC WCN6855
+ support
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200925090829.3088-1-rjliao@codeaurora.org>
+Date:   Fri, 25 Sep 2020 18:08:28 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <8296D361-B28F-46CA-86E1-6F7FCE62D97F@holtmann.org>
+References: <20200914092744.17464-1-rjliao@codeaurora.org>
+ <20200925090829.3088-1-rjliao@codeaurora.org>
+To:     Rocky Liao <rjliao@codeaurora.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:32:26PM +0100, Jonathan Cameron wrote:
-> I don't think we can.  This is doing the same operation as
-> is done for memoryless cpu nodes in the init_cpu_to_node() call above
-> so it would make little sense from a code flow point of view, even if
-> it were possible.  However it isn't possible as far as I can see.
+Hi Rocky,
+
+> This patch add support for WCN6855 i.e. patch and nvm download
+> support.
+
+please always include the content of /sys/kernel/debug/usb/devices for this hardware.
+
 > 
-> It is called after init_cpu_to_node() because...
-> * A GI node may also be a CPU node and / or a Memory Node, but we only
->   have to do anything extra if it has neither of these.
->   Easiest way to do that is use the same logic init_cpu_to_node() 
->   does and rely on ordering wrt to the other two types of nodes that
->   have already been handled.  We could have could just call it at the
->   end of init_cpu_to_node() but I'd not be happy doing so without renaming
->   that function and then we'd end up with a horrible name like
->   init_cpu_to_node_and_gi() as they are rather different things.
+> Signed-off-by: Rocky Liao <rjliao@codeaurora.org>
+> ---
+> drivers/bluetooth/btusb.c | 66 +++++++++++++++++++++++++++++++--------
+> 1 file changed, 53 insertions(+), 13 deletions(-)
 > 
-> It needs to happen before use is made of the node_data which is allocated
-> in init_gi_nodes() / init_memoryless_node() / alloc_node_data()
-
-Let's put the gist of this requirement in the comment above
-init_gi_nodes() for future reference.
-
-...
-
-> It might be possible to allocate the zonelists for this special case later
-> in the boot flow, but it seems like we would be adding a lot of complexity
-> to avoid a single function call.
-
-Nah, probably not worth the hassle.
-
-> How about this?
+> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+> index 9f294b941943..e888e4c02d69 100644
+> --- a/drivers/bluetooth/btusb.c
+> +++ b/drivers/bluetooth/btusb.c
+> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
+> #define BTUSB_MEDIATEK		0x200000
+> #define BTUSB_WIDEBAND_SPEECH	0x400000
+> #define BTUSB_VALID_LE_STATES   0x800000
+> +#define BTUSB_QCA_WCN6855	0x1000000
 > 
-> +/*
-> + * A node may exist which has one or more Generic Initiators but no
-> + * CPUs and no memory.
-> + * When this function is called, any nodes containing either memory
-> + * and/or CPUs will already be online and there is no need to do
-> + * anything extra, even if they also contain one or more Generic
-> + * Initiators.
-> + */
+> static const struct usb_device_id btusb_table[] = {
+> 	/* Generic Bluetooth USB device */
+> @@ -291,6 +292,10 @@ static const struct usb_device_id blacklist_table[] = {
+> 	{ USB_DEVICE(0x13d3, 0x3501), .driver_info = BTUSB_QCA_ROME |
+> 						     BTUSB_WIDEBAND_SPEECH },
+> 
+> +	/* QCA WCN6855 chipset */
+> +	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
+> +						     BTUSB_WIDEBAND_SPEECH },
+> +
+> 	/* Broadcom BCM2035 */
+> 	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
+> 	{ USB_DEVICE(0x0a5c, 0x200a), .driver_info = BTUSB_WRONG_SCO_MTU },
+> @@ -3409,6 +3414,27 @@ static int btusb_set_bdaddr_ath3012(struct hci_dev *hdev,
+> 	return 0;
+> }
+> 
+> +static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+> +				const bdaddr_t *bdaddr)
+> +{
+> +	struct sk_buff *skb;
+> +	u8 buf[6];
+> +	long ret;
+> +
+> +	memcpy(buf, bdaddr, sizeof(bdaddr_t));
+> +
+> +	skb = __hci_cmd_sync_ev(hdev, 0xfc14, sizeof(buf), buf,
+> +				HCI_EV_CMD_COMPLETE, HCI_INIT_TIMEOUT);
+> +	if (IS_ERR(skb)) {
+> +		ret = PTR_ERR(skb);
+> +		bt_dev_err(hdev, "Change address command failed (%ld)", ret);
+> +		return ret;
+> +	}
+> +	kfree_skb(skb);
+> +
+> +	return 0;
+> +}
+> +
+> #define QCA_DFU_PACKET_LEN	4096
+> 
+> #define QCA_GET_TARGET_VERSION	0x09
+> @@ -3428,7 +3454,8 @@ struct qca_version {
+> } __packed;
+> 
+> struct qca_rampatch_version {
+> -	__le16	rom_version;
+> +	__le16	rom_version_high;
+> +	__le16  rom_version_low;
+> 	__le16	patch_version;
+> } __packed;
 
-Yes, along with the above gist.
+How does this work. The struct now has an extra 16-bit in the middle. Is this backwards compatible?
 
-Thx!
+> 
+> @@ -3440,12 +3467,14 @@ struct qca_device_info {
+> };
+> 
+> static const struct qca_device_info qca_devices_table[] = {
+> -	{ 0x00000100, 20, 4, 10 }, /* Rome 1.0 */
+> -	{ 0x00000101, 20, 4, 10 }, /* Rome 1.1 */
+> -	{ 0x00000200, 28, 4, 18 }, /* Rome 2.0 */
+> -	{ 0x00000201, 28, 4, 18 }, /* Rome 2.1 */
+> -	{ 0x00000300, 28, 4, 18 }, /* Rome 3.0 */
+> -	{ 0x00000302, 28, 4, 18 }, /* Rome 3.2 */
+> +	{ 0x00000100, 20, 4, 8 }, /* Rome 1.0 */
+> +	{ 0x00000101, 20, 4, 8 }, /* Rome 1.1 */
 
--- 
-Regards/Gruss,
-    Boris.
+Align it with 8  }
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> +	{ 0x00000200, 28, 4, 16 }, /* Rome 2.0 */
+> +	{ 0x00000201, 28, 4, 16 }, /* Rome 2.1 */
+> +	{ 0x00000300, 28, 4, 16 }, /* Rome 3.0 */
+> +	{ 0x00000302, 28, 4, 16 }, /* Rome 3.2 */
+> +	{ 0x00130100, 40, 4, 16 }, /* WCN6855 1.0 */
+> +	{ 0x00130200, 40, 4, 16 }  /* WCN6855 2.0 */
+
+And the last one should also be },
+
+> };
+> 
+> static int btusb_qca_send_vendor_req(struct usb_device *udev, u8 request,
+> @@ -3547,8 +3576,8 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+> {
+> 	struct qca_rampatch_version *rver;
+> 	const struct firmware *fw;
+> -	u32 ver_rom, ver_patch;
+> -	u16 rver_rom, rver_patch;
+> +	u32 ver_rom, ver_patch, rver_rom;
+> +	u16 rver_rom_low, rver_rom_high, rver_patch;
+> 	char fwname[64];
+> 	int err;
+> 
+> @@ -3567,9 +3596,16 @@ static int btusb_setup_qca_load_rampatch(struct hci_dev *hdev,
+> 	bt_dev_info(hdev, "using rampatch file: %s", fwname);
+> 
+> 	rver = (struct qca_rampatch_version *)(fw->data + info->ver_offset);
+> -	rver_rom = le16_to_cpu(rver->rom_version);
+> +	rver_rom_low = le16_to_cpu(rver->rom_version_low);
+> 	rver_patch = le16_to_cpu(rver->patch_version);
+> 
+> +	if (ver_rom & ~0xffffU) {
+> +		rver_rom_high = le16_to_cpu(rver->rom_version_high);
+> +		rver_rom = le32_to_cpu(rver_rom_high << 16 | rver_rom_low);
+> +	} else {
+> +		rver_rom = rver_rom_low;
+> +	}
+> +
+> 	bt_dev_info(hdev, "QCA: patch rome 0x%x build 0x%x, "
+> 		    "firmware rome 0x%x build 0x%x",
+> 		    rver_rom, rver_patch, ver_rom, ver_patch);
+> @@ -3643,9 +3679,6 @@ static int btusb_setup_qca(struct hci_dev *hdev)
+> 		return err;
+> 
+> 	ver_rom = le32_to_cpu(ver.rom_version);
+> -	/* Don't care about high ROM versions */
+> -	if (ver_rom & ~0xffffU)
+> -		return 0;
+> 
+> 	for (i = 0; i < ARRAY_SIZE(qca_devices_table); i++) {
+> 		if (ver_rom == qca_devices_table[i].rom_version)
+> @@ -4081,6 +4114,13 @@ static int btusb_probe(struct usb_interface *intf,
+> 		btusb_check_needs_reset_resume(intf);
+> 	}
+> 
+> +	if (id->driver_info & BTUSB_QCA_WCN6855) {
+> +		data->setup_on_usb = btusb_setup_qca;
+> +		hdev->set_bdaddr = btusb_set_bdaddr_wcn6855;
+> +		hdev->cmd_timeout = btusb_qca_cmd_timeout;
+> +		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
+> +	}
+> +
+> 	if (id->driver_info & BTUSB_AMP) {
+> 		/* AMP controllers do not support SCO packets */
+> 		data->isoc = NULL;
+
+Regards
+
+Marcel
+
