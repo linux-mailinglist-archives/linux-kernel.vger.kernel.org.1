@@ -2,82 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A5727831F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF695278321
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727660AbgIYIte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:49:34 -0400
-Received: from mga03.intel.com ([134.134.136.65]:53818 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgIYIte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:49:34 -0400
-IronPort-SDR: EJOCmMJ0p0qfhvTDoOJYkVS0aYspBkW0+F9Bh858hWkTfEWk/4n6A0+OGlHAeGZTT6+seZQdyu
- KrCGH0z3ItYg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="161552511"
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="161552511"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 01:49:33 -0700
-IronPort-SDR: Rc2/064Y9Fjl4jizWRZ+SdkfhtThtKjNQYZKV+mih+gN7pQ5L8jKPyRe7s1D+lFLnb4CyRlI7M
- Y9vePsuS8sVA==
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="487386607"
-Received: from silpixa00400314.ir.intel.com (HELO silpixa00400314) ([10.237.222.51])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 01:49:31 -0700
-Date:   Fri, 25 Sep 2020 09:49:24 +0100
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Liu Shixin <liushixin2@huawei.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        qat-linux <qat-linux@intel.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH -next] crypto: qat - convert to use DEFINE_SEQ_ATTRIBUTE
- macro
-Message-ID: <20200925084924.GA30008@silpixa00400314>
-References: <7a1e8142cb4944ee95cea13e7efad23d@irsmsx602.ger.corp.intel.com>
- <20200924050042.GA32206@silpixa00400314>
- <20200925081445.GA6496@gondor.apana.org.au>
+        id S1727699AbgIYItm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:49:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727132AbgIYIti (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:49:38 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25ED3C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:49:38 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j2so2661173wrx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:49:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Qms1gS4lsjyq2EFAJKsceqVkipGb5r5O0I7UP489Fdo=;
+        b=BBP+yI6T825MLog7mvJ2vPGBwhstGthx3TiYbLE+w4tC+KUeJrjlznXJdb2pJGr/eK
+         nGCix7rYk/S85var/SyzggRGil9X64GgXXmegH0YJ9B0kkLT0T6Qu9y/gHH1e7tfbrfG
+         eK2JtFV44g5y5SWZT+5ZiJG8wXq+oJN23qN5t/xgjABTcJqDpBVg6fpw0whlMCsQitdJ
+         9GVlreIwbD94a8srsHqEnEf5Fgr2lSx6gWfaLWxdinjheICfaKyqrf9iv0+9BFouVLt/
+         QgiWwgRT6ja5UV5zViXMC0jHqzDGhW0LFcsK2trOEcbmtvoWYYGUSLN/uDtN2JNGN8/W
+         Q6UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Qms1gS4lsjyq2EFAJKsceqVkipGb5r5O0I7UP489Fdo=;
+        b=Qumyb/JidWCH3hrsa08qHpYNvXmecBMsqwaEtjwEsjBgbNkWFlGiUAwr0nBTAgwrau
+         isEA2BPAfeqQrbY97pM2KC3khL35fGDSN+TjaAF7mCWiwRdFtCybaQd97Pz6Be5p5wIU
+         edJ9S5+xZMZl2+2/htykrPiNTdgbzrf8UFWXUhTYSn26avVOn6ZhLMBl7hbwgDwm+S1F
+         FKsnZ7+JxR7nQREKc4M6I97EHuBB39lLXPED3r/LSOD8mh/vybTID0PsXh2aHGpxpweT
+         w1X4cdoC/qzcRJbx3rK0LOvbJf7zpMUjuQuSje0nmuJz28Yu3wRNvbpXLxrPXMyOvsak
+         GMYw==
+X-Gm-Message-State: AOAM532yvAQG7iVYk21VWgIN5TRMd+c+280I3edvBds9ayD7wW+LtDei
+        Ats1/qWPrugiwhcoRusKlxg8tA==
+X-Google-Smtp-Source: ABdhPJxLFlslsmO+Ox1jM3w42tqn00wRtzs/jJ3tbNAy+X7g7nDVd+oB16s/z79eu4Gd5JZTqB+V+w==
+X-Received: by 2002:adf:fdcc:: with SMTP id i12mr3159750wrs.281.1601023776824;
+        Fri, 25 Sep 2020 01:49:36 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id u66sm2048623wme.12.2020.09.25.01.49.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 01:49:36 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 2/2] ASoC: q6asm: fix kernel doc warnings
+Date:   Fri, 25 Sep 2020 09:49:25 +0100
+Message-Id: <20200925084925.26926-3-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200925084925.26926-1-srinivas.kandagatla@linaro.org>
+References: <20200925084925.26926-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925081445.GA6496@gondor.apana.org.au>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 06:14:45PM +1000, Herbert Xu wrote:
-> On Thu, Sep 24, 2020 at 06:00:42AM +0100, Giovanni Cabiddu wrote:
-> > On Wed, Sep 16, 2020 at 03:50:17AM +0100, Liu Shixin wrote:
-> > > Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
-> > > 
-> > > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
-> > 
-> > Acked-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-> 
-> Hi Giovanni:
-> 
-> Your acks are not making it to patchwork, seemingly because your
-> emails have a bogus References header with an Intel message ID
-> instead of the original message ID of the email you're replying
-> to.
-> 
-> I've added your acks manually for this patch but please fix your
-> emails as I can't guarantee that I'll spot the problem every time.
-> 
-> Thanks,
+This patch fixes below kernel doc warnings on not describing all the parmeters
 
-Hi Herbert,
+sound/soc/qcom/qdsp6/q6asm.c:927: warning: Function parameter or member
+ 'stream_id' not described in 'q6asm_open_write'
+sound/soc/qcom/qdsp6/q6asm.c:927: warning: Function parameter or member
+ 'is_gapless' not described in 'q6asm_open_write'
+sound/soc/qcom/qdsp6/q6asm.c:1053: warning: Function parameter or member
+ 'stream_id' not described in 'q6asm_run'
 
-Thanks.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/q6asm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I just realized I replied to emails resent from qat-linux therefore the
-bogus References header.
-I'll make sure I'll be replying to the correct email next time.
-
-Regards,
-
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index 34a6e894242e..91999c9f016c 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -915,9 +915,11 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
+ /**
+  * q6asm_open_write() - Open audio client for writing
+  * @ac: audio client pointer
++ * @stream_id: stream id of q6asm session
+  * @format: audio sample format
+  * @codec_profile: compressed format profile
+  * @bits_per_sample: bits per sample
++ * @is_gapless: flag to indicate if this is a gapless stream
+  *
+  * Return: Will be an negative value on error or zero on success
+  */
+@@ -1042,6 +1044,7 @@ static int __q6asm_run(struct audio_client *ac, uint32_t stream_id,
+  * q6asm_run() - start the audio client
+  *
+  * @ac: audio client pointer
++ * @stream_id: stream id of q6asm session
+  * @flags: flags associated with write
+  * @msw_ts: timestamp msw
+  * @lsw_ts: timestamp lsw
 -- 
-Giovanni
+2.21.0
+
