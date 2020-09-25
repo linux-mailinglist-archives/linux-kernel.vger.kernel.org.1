@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DECD27949A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3556027949D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729316AbgIYXRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:17:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgIYXRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:17:15 -0400
-Received: from [192.168.0.108] (unknown [49.65.245.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71D042074B;
-        Fri, 25 Sep 2020 23:17:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601075834;
-        bh=EbJfwvBeHXIYBXTTELse8un9TJ2c/bhePB4Xfufh4yI=;
-        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
-        b=sGBG9THcIeHUpPQzlCVRHKRzBldFa0OoegE5xBKJJDE09XngNv7EhKTWvzGyqXUJP
-         SReJNDgIo2CBwnM1FFUKm9UpgaEZW/roKBqoHjNFHaB2AdddeTjFF6VPx0IbP0AgfT
-         Trqfe2ACwHH/Wd3NfuSZIbJVEjuvWVL4XUac/Ki8=
-Subject: Re: [f2fs-dev] KMSAN: uninit-value in f2fs_lookup
-To:     Eric Biggers <ebiggers@kernel.org>, Chao Yu <yuchao0@huawei.com>
-References: <000000000000f9f80905b01c7185@google.com>
- <eb03a5c9-eb77-eb91-e17f-8a3273aab7da@huawei.com>
- <20200925163819.GA3315208@gmail.com> <20200925164538.GB3315208@gmail.com>
-Cc:     syzbot <syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com>,
-        glider@google.com, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <36d3ddc1-e8d1-6d0e-c1ea-aff198740182@kernel.org>
-Date:   Sat, 26 Sep 2020 07:17:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1729337AbgIYXR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726348AbgIYXR7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:17:59 -0400
+Received: from mail.nic.cz (lists.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73DDC0613CE;
+        Fri, 25 Sep 2020 16:17:58 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 52F07140079;
+        Sat, 26 Sep 2020 01:17:56 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 01:17:55 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Tobias Jordan <kernel@cdqe.de>
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Jean-Jacques Hiblot <jjhiblot@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH] leds: tlc591xx: fix leak of device node iterator
+Message-ID: <20200926011755.01c5c645@nic.cz>
+In-Reply-To: <20200925231011.GA2450@agrajag.zerfleddert.de>
+References: <20200925231011.GA2450@agrajag.zerfleddert.de>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200925164538.GB3315208@gmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-9-26 0:45, Eric Biggers wrote:
-> On Fri, Sep 25, 2020 at 09:38:19AM -0700, Eric Biggers wrote:
->> On Fri, Sep 25, 2020 at 05:06:33PM +0800, Chao Yu wrote:
->>> Hi,
->>>
->>> I don't see any problem here, thanks for your report. :)
->>>
->>> Thanks,
->>
->> What about if max_depth == 0 in __f2fs_find_entry()?  Then __f2fs_find_entry()
->> would return NULL without initializing *res_page.
->
-> ... and I now see Dan Carpenter already pointed this out.  I was a bit late!
+On Sat, 26 Sep 2020 01:10:11 +0200
+Tobias Jordan <kernel@cdqe.de> wrote:
 
-Thanks for your check as well. :)
+> In one of the error paths of the for_each_child_of_node loop in
+> tlc591xx_probe, add missing call to of_node_put.
+> 
+> Fixes: 1ab4531ad132 ("leds: tlc591xx: simplify driver by using the
+> managed led API")
+> 
+> Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+> ---
+>  drivers/leds/leds-tlc591xx.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
+> index 0929f1275814..a8cc49752cd5 100644
+> --- a/drivers/leds/leds-tlc591xx.c
+> +++ b/drivers/leds/leds-tlc591xx.c
+> @@ -214,6 +214,7 @@ tlc591xx_probe(struct i2c_client *client,
+>  		err = devm_led_classdev_register_ext(dev, &led->ldev,
+>  						     &init_data);
+>  		if (err < 0) {
+> +			of_node_put(child);
+>  			if (err != -EPROBE_DEFER)
+>  				dev_err(dev, "couldn't register LED %s\n",
+>  					led->ldev.name);
 
-Thanks,
-
->
-> - Eric
->
+This won't apply on pavel's for-next tree, there is no check for
+EPROBE_DEFER, see
+https://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/tree/drivers/leds/leds-tlc591xx.c?h=for-next
