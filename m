@@ -2,108 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C57927902E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AFB27902F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729742AbgIYSRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:17:03 -0400
-Received: from mga05.intel.com ([192.55.52.43]:30408 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728353AbgIYSRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:17:02 -0400
-IronPort-SDR: D1LUz2e5iEgtd9MY1eYb289kmfTTgVgfWosmIZ3jWTRHvIE4KvLA/ULg88EybpWsqMA8NlfwKJ
- bc4S2q3/3vgA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="246385757"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="246385757"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 11:17:01 -0700
-IronPort-SDR: iPxBmzfK6F2DyPoIigBaHYym+cq9qAstU4U4Ztm+Hg0lx4gQzgo25OcEIbiNGvvSxI/W+93Dgb
- 4XolPQcd0Awg==
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="455947520"
-Received: from kritigup-mobl.amr.corp.intel.com (HELO [10.255.231.88]) ([10.255.231.88])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 11:16:59 -0700
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
- <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
- <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
- <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
- <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
-Date:   Fri, 25 Sep 2020 11:16:56 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729748AbgIYSRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:17:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57782 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728353AbgIYSRb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:17:31 -0400
+Date:   Fri, 25 Sep 2020 20:17:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601057849;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ApJSn3nP5f5v5qpiq3riDa73pSf6mSl6sm6etN1AWSw=;
+        b=kxLgHHO66Whjcurm2es2JMse9P5SXbGIcnL/VNvhag/yMkT3Wh7nFbp9H5oJuLt++j3r9q
+        LuhXzKx8gHksAdDEDUrPmdGeunY3LjjLFp/kUuvRh//FtrDQPmB8iO3pUQS7l1w3RAp+A6
+        dvBjGltxoV4YZkbFjtJkuSvIvQVeiklO+FY3pc+zrJl2ub/zyTLqa+wyLQGGC54un9wN14
+        cpzyB77re9dPjKy2FMlpAuZgQFAtsas7JcnsWKtaobraZW+SNP0vKsE/Oq5N/SQ7fkrho8
+        4YlAN+FJV3IInWfhiEFExt+oav2qE6ChBCKVHWpjJqU256AeBuqjpc+iQpgW1A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601057849;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ApJSn3nP5f5v5qpiq3riDa73pSf6mSl6sm6etN1AWSw=;
+        b=Gv8p+qRnpkPzvejwydj8EPN+XSrKn4v5/t3o6oIczrR9s3yAxYw+5Ut8Vkr7LBM6eGt56U
+        hVFmVGZoD+sTlwBg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        qais.yousef@arm.com, swood@redhat.com, valentin.schneider@arm.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
+Subject: Re: [PATCH 0/9] sched: Migrate disable support
+Message-ID: <20200925181727.ryuacrsipyaz65z7@linutronix.de>
+References: <20200921163557.234036895@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200921163557.234036895@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-09-21 18:35:57 [+0200], Peter Zijlstra wrote:
+> Hi,
+Hi,
 
+> Here's my take on migrate_disable(). It avoids growing a second means of
 
-On 9/25/20 10:47 AM, Sinan Kaya wrote:
-> On 9/25/2020 1:11 PM, Kuppuswamy, Sathyanarayanan wrote:
->>> Why? Isn't DPC slot reset enough?
->> It will do the reset at hardware level. But driver state is not
->> cleaned up. So doing bus reset will restore both driver and
->> hardware states.
-> 
-> I really don't like this. If hotplug driver is restoring the state
-> and DPC driver is not; let's fix the DPC driver rather than causing
-> two resets and hope for the best.
-> 
-> One approach is to share the restore code between hotplug driver and
-> DPC driver.
-> 
-> If this is a too involved change, DPC driver should restore state
-> when hotplug is not supported.
-Yes. we can add a condition for hotplug capability check.
-> 
-> DPC driver should be self-sufficient by itself.
-> 
->> Also for non-fatal errors, if reset is requested then we still need
->> some kind of bus reset call here
-> 
-> DPC should handle both fatal and non-fatal cases
-Currently DPC is only triggered for FATAL errors.
-  and cause a bus reset
-> in hardware already before triggering an interrupt.
-Error recovery is not triggered only DPC driver. AER also uses the
-same error recovery code. If DPC is not supported, then we still need
-reset logic.
-> 
-> I disagree that you need an additional reset on top of DPC reset.
-> Isn't one reset enough?
-> 
-> What will the second reset provide that first reset won't provide?
-> 
-> I see that you are trying to do the second reset only because second
-> reset restores state.
-> 
-> That looks like a short-term fix only to explode on the next iteration.
-> 
+I have here:
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+|005: numa_remove_cpu cpu 5 node 0: mask now 0,3-4,6-7
+|007: smpboot: CPU 5 is now offline
+|006: ------------[ cut here ]------------
+|006: rq->balance_callback
+|006: WARNING: CPU: 6 PID: 8392 at kernel/sched/sched.h:1234 try_to_wake_up+0x696/0x860
+|006: Modules linked in:
+|006:
+|006: CPU: 6 PID: 8392 Comm: hackbench Not tainted 5.9.0-rc6-rt9+ #60
+|006: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1 04/01/2014
+|006: RIP: 0010:try_to_wake_up+0x696/0x860
+|006: Code: c0 01 00 00 01 e9 d9 fb ff ff 80 3d 90 ef 6d 01 00 0f 85 6c fb ff ff 48 c7 c7 d4 4a 2c 82 c6 05 7c ef 6d 01 01 e8 dd 21 fc ff <0f> 0b e9 52 fb ff ff 0f 0b e9 b2
+|006: RSP: 0018:ffffc90005b978f8 EFLAGS: 00010082
+|006:
+|006: RAX: 0000000000000000 RBX: ffff8882755cca40 RCX: 0000000000000000
+|006: RDX: ffffffff8247aab8 RSI: 00000000ffffffff RDI: 00000000ffffffff
+|006: RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff8247a9a0
+|006: R10: ffffc90005b97838 R11: 332e39313320205b R12: ffff888276da8600
+|006: R13: 0000000000000093 R14: ffff8882755cd7a0 R15: ffff888276da8618
+|006: FS:  00007f6fa7805740(0000) GS:ffff888276d80000(0000) knlGS:0000000000000000
+|006: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+|006: CR2: 00007f6fa796af90 CR3: 0000000262588000 CR4: 00000000003506e0
+|006: Call Trace:
+|006:  ? cpu_stop_queue_work+0x8e/0x150
+|006:  __wake_up_q+0x96/0xc0
+|006:  cpu_stop_queue_work+0x9a/0x150
+|006:  finish_task_switch.isra.0+0x2f1/0x460
+|006:  __schedule+0x3bd/0xb20
+|006:  schedule+0x4a/0x100
+|006:  schedule_hrtimeout_range_clock+0x14f/0x160
+|006:  ? rt_spin_unlock+0x39/0x90
+|006:  ? rt_mutex_futex_unlock+0xcb/0xe0
+|006:  poll_schedule_timeout.constprop.0+0x4d/0x90
+|006:  do_sys_poll+0x314/0x430
+|006:  ? __lock_acquire+0x39b/0x2010
+|006:  ? poll_schedule_timeout.constprop.0+0x90/0x90
+|006:  ? mark_held_locks+0x49/0x70
+|006:  ? find_held_lock+0x2b/0x80
+|006:  ? rt_spin_unlock+0x39/0x90
+|006:  ? rt_mutex_futex_unlock+0xcb/0xe0
+|006:  ? rt_spin_unlock+0x51/0x90
+|006:  ? handle_mm_fault+0xfbd/0x1510
+|006:  ? find_held_lock+0x2b/0x80
+|006:  ? do_user_addr_fault+0x214/0x420
+|006:  __x64_sys_poll+0x37/0x130
+|006:  do_syscall_64+0x33/0x40
+|006:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+|006: RIP: 0033:0x7f6fa78fb483
+
+Is this somewhere among the fixes Valentin received?
+This SCHED_WARN_ON(rq->balance_callback); in rq_pin_lock().
+
+Sebastian
