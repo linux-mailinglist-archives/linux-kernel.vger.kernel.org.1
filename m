@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6F9127817B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A23C4278166
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727445AbgIYH0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:26:10 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:28410 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgIYH0J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:26:09 -0400
-X-Greylist: delayed 542 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 03:26:08 EDT
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200925071705epoutp0218d4c9deafdf6cd00aaaefc0f7bffe69~39ZfvmKIt1626216262epoutp02J
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:17:05 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200925071705epoutp0218d4c9deafdf6cd00aaaefc0f7bffe69~39ZfvmKIt1626216262epoutp02J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1601018225;
-        bh=c82u0uyr4KiZ6XbQJfNS/z4SX/aPM3kU9bW0MORguYg=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=ILsk0bjCtmAUz+36Ani88Zmjlu+IQgnssq+Gip4tMiW0l3m4HrAsaPBSmAWTn6iXc
-         7C4ngYFYeQWhvZcIuifM8FwXVJ68/CrkvdXMMoxMlbrr6DkuPre9bIT2huSIZ2CaPA
-         esQOgcGAPXHxgAhACtvYlRhMAbF8v1mTD6mD/qrY=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20200925071705epcas1p341d985bb8541acb40fabaa41b2c12f77~39ZfXDZtj0526005260epcas1p3B;
-        Fri, 25 Sep 2020 07:17:05 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.165]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4ByNWz5lXszMqYkg; Fri, 25 Sep
-        2020 07:17:03 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        ED.41.10463.F699D6F5; Fri, 25 Sep 2020 16:17:03 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200925071703epcas1p4721ad60640102fabf18d5b20b4a0bfa2~39Zd0Rn742375523755epcas1p4h;
-        Fri, 25 Sep 2020 07:17:03 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200925071703epsmtrp2f3a0ba18c893f947bb3d219393402d38~39ZdveGEh1937619376epsmtrp2Y;
-        Fri, 25 Sep 2020 07:17:03 +0000 (GMT)
-X-AuditID: b6c32a38-efbff700000028df-29-5f6d996f31b2
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        95.4A.08745.F699D6F5; Fri, 25 Sep 2020 16:17:03 +0900 (KST)
-Received: from namjaejeon01 (unknown [10.88.104.63]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200925071703epsmtip1c380da2800535406494ecaa31d2efa78~39ZdkPxIo3128331283epsmtip1y;
-        Fri, 25 Sep 2020 07:17:03 +0000 (GMT)
-From:   "Namjae Jeon" <namjae.jeon@samsung.com>
-To:     "'Sungjong Seo'" <sj1557.seo@samsung.com>,
-        "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <716101d692d6$ef1dc2d0$cd594870$@samsung.com>
-Subject: RE: [PATCH v2] exfat: remove 'rwoffset' in exfat_inode_info
-Date:   Fri, 25 Sep 2020 16:17:03 +0900
-Message-ID: <004301d6930b$ddf877e0$99e967a0$@samsung.com>
+        id S1727314AbgIYHVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:21:43 -0400
+Received: from mail-eopbgr140050.outbound.protection.outlook.com ([40.107.14.50]:17129
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727067AbgIYHVm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:21:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bnr0W2NgUeOZuWkF+nIOPOuQbgQ0IZnituCMZC9Vc+3D1n+nFtJ+HByuyPps+C0F/TN25Fl0j5RCcDC684dR3zUe92+IwY713id6sMe0lybswi0Vht+4LgucLgcl4IHAuUWLk/gF7E/M5Sg2OyIkAKGqFyTNGB/fIGgSciIV5VTkYZi0um5AQHimKhstXNrddHXQmhXDmmXkLLRLcE+k1xnKj1Lv41u03gq1wEC1+vIktsjnwAFLtWSPzaogUYj97Uea/GZ6GwTOAzF+1DxU0aflf0DXxMl5xvHVSautyNArHX7MommwEodDUWXrSrVIx6N8tFqRuv1n9zAuo+03Ow==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RjixaQ2EbZL93XNi9nuonEyoxLfdz4sQt8NmjR8aCQM=;
+ b=nNyxi0A6b4jxfsCzjhw6SK49r6IqywQAIYlilvXTC/xK0b+1fXjD5WW/S9OVzzCeZ+FZYe1B1s5lxQiHSULrMIBTORVYD7vNr9VyCyb8GDFXn9yx7GtyIaIZKvDr1Z5cW4ayH00akKHnXsUkRPky1VTplj2/hdv6s7357Uu83LbWFADWNR1KD0fZYZtvsk7MIW6ajf0FBdxCu4Q+yo9Sv8PaI17LRHLW/GUaEvMxIWbTT+L74ob3lhwAOSjumDg0tHOIDO+fQx295eTd8iD0Y45AdYz7LE8kJ7q3sBHI0ePq0W6QcArER07aNyEbP+3ZjWp80ZugTyEhKwaSPz2nIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RjixaQ2EbZL93XNi9nuonEyoxLfdz4sQt8NmjR8aCQM=;
+ b=hkDLqWSeZD0ZGqZLKq5tlHhkZ+XkFJTBzzOC35STjLxX3VLy2EknRfUmbrjaNmytQN4g91FRgXfxH2qnojV5qLQvtdu2HHO8gJVVWY6LUdm9N/a7q8CZSPJUxKxrgK6Z2oSBVHXFxQawS/NY1f3o5y+aaN7fkXT6wBGCOnlvMsQ=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR04MB3277.eurprd04.prod.outlook.com (2603:10a6:802:f::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Fri, 25 Sep
+ 2020 07:21:39 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3412.024; Fri, 25 Sep 2020
+ 07:21:39 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, rikard.falkeborn@gmail.com,
+        lee.jones@linaro.org, mst@redhat.com
+Cc:     linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: [PATCH 0/4] Fix some bugs of the vop driver and mpssd user space tool
+Date:   Fri, 25 Sep 2020 15:18:27 +0800
+Message-Id: <20200925071831.8025-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: AM3PR07CA0118.eurprd07.prod.outlook.com
+ (2603:10a6:207:7::28) To VI1PR04MB4960.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQI3QAIiS02qQVZr3s2cWPTf2qgwLQKUIcn3AXWqI5Wol0kEYA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmrm7+zNx4gw8PtSx+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBZb/h1hdWDz+DLnOLtH87GVbB47Z91l9+jbsorR4/MmuQDWqByb
-        jNTElNQihdS85PyUzLx0WyXv4HjneFMzA0NdQ0sLcyWFvMTcVFslF58AXbfMHKALlBTKEnNK
-        gUIBicXFSvp2NkX5pSWpChn5xSW2SqkFKTkFhgYFesWJucWleel6yfm5VoYGBkamQJUJORk7
-        /6xmKnjBXLHx8xymBsZ+5i5GTg4JAROJOdf2sXcxcnEICexglFiw8CMLhPOJUeL/uz/MEM5n
-        RokfC2ezwrRcurKNCcQWEtjFKDHpgTeE/ZJR4ss3DRCbTUBX4t+f/WwgtohAtMSxHecZQQYx
-        CyxhlLi67j1QMwcHp4CVxJYX6iA1wgIuEgs2bWIHsVkEVCWuP70LNp9XwFJi9ffTLBC2oMTJ
-        mU/AbGYBeYntb+dAvaAg8fPpMlaIXU4SMxtuskHUiEjM7mwDe0BCYCKHROe/R0wQDS4SG2/N
-        Y4GwhSVeHd/CDmFLSXx+t5cN5DYJgWqJj/uh5ncwSrz4bgthG0vcXL+BFaSEWUBTYv0ufYiw
-        osTO33MZIdbySbz72sMKMYVXoqNNCKJEVaLv0mGoA6Qluto/sE9gVJqF5LFZSB6bheSBWQjL
-        FjCyrGIUSy0ozk1PLTYsMEGO6k2M4LSpZbGDce7bD3qHGJk4GA8xSnAwK4nwHt+QEy/Em5JY
-        WZValB9fVJqTWnyI0RQY1BOZpUST84GJO68k3tDUyNjY2MLEzNzM1FhJnPfhLYV4IYH0xJLU
-        7NTUgtQimD4mDk6pBiZedq6QC/OXG5eeuzD/QlDh6S3FV4MMf3PahX4J49OaNH8HxwzOQxtK
-        A2POO/IG3NTYsWG24tISjVkqM06duFy6a92Hky4b5eWZVLQzUuO+mhuc1Fswz7PyzCqT2B/X
-        m6SeXr+17J3fm/5nFY1/lIxDzUS89gmVtt778mTCncPtpuGMj2vzpqU+9svca1UadphDObBr
-        quf8sGKXknd/5MJF4xvXiL1xzZfwD+L1l7nCxCfmWb3t3Lm26niO3M+qwue0nmTYi/m0SkZF
-        lu43yki049j9ZGWFv1dGtF/gycUFi6ed15lQ+e5xZSOjl7+K3/KL0ikMS35EF9VdV56sWjDh
-        ZqX7z8B3LevszsQuUGIpzkg01GIuKk4EALQhm5okBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHLMWRmVeSWpSXmKPExsWy7bCSnG7+zNx4g8mf+C1+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBZb/h1hdWDz+DLnOLtH87GVbB47Z91l9+jbsorR4/MmuQDWKC6b
-        lNSczLLUIn27BK6MnX9WMxW8YK7Y+HkOUwNjP3MXIyeHhICJxKUr25i6GLk4hAR2MEocnTmN
-        ESIhLXHsxBmgIg4gW1ji8OFiiJrnjBKNxy6ANbMJ6Er8+7OfDcQWEYiWuPr3LwtIEbPAMkaJ
-        DYc3MEJ0bGeU+NZ6hR1kEqeAlcSWF+ogDcICLhILNm1iB7FZBFQlrj+9ywRi8wpYSqz+fpoF
-        whaUODnzCZjNLKAt8fTmUyhbXmL72zlQHyhI/Hy6jBXiCCeJmQ032SBqRCRmd7YxT2AUnoVk
-        1Cwko2YhGTULScsCRpZVjJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjBUaSltYNxz6oP
-        eocYmTgYDzFKcDArifAe35ATL8SbklhZlVqUH19UmpNafIhRmoNFSZz366yFcUIC6Yklqdmp
-        qQWpRTBZJg5OqQYmK5sFz2x8F1f3LL9wxO5d2ImcwL0TO2666F5oF9gVqXBRJFpt0eTgidaP
-        vwqkWN76u6XH49qRjxEsnifqfjXtO3vTrerx1JczWqfNnnFp9rlblWIzV2U6OMlfKK+8wrU4
-        +K91iaCaZ8PGjpa46AkJiqLc05+Evtosrtd/8O+ju7KR7ZaWjA98eL56mu/LznPVs+73NmZg
-        3zs1szh0jui3aTKbtv16LGJRzq52pr/ucpXZuaNCC79/3/NcvSF/7fdoq+yDx8xlD0ea/1RU
-        PDD3VOidbYYH3ixn2rShx4vJkEN1B0Oqxvq6n0fvCu8yYHy4e2ZgzHHmmdrZv4teXW+fJfDP
-        TPiC8+foguUyuvoLlFiKMxINtZiLihMBhdAHRREDAAA=
-X-CMS-MailID: 20200925071703epcas1p4721ad60640102fabf18d5b20b4a0bfa2
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200917014010epcas1p335c9ba540cd41ff9bf6b0ce2e39d7519
-References: <CGME20200917014010epcas1p335c9ba540cd41ff9bf6b0ce2e39d7519@epcas1p3.samsung.com>
-        <20200917013916.4523-1-kohada.t2@gmail.com>
-        <716101d692d6$ef1dc2d0$cd594870$@samsung.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nxp.ap.freescale.net (119.31.174.71) by AM3PR07CA0118.eurprd07.prod.outlook.com (2603:10a6:207:7::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.18 via Frontend Transport; Fri, 25 Sep 2020 07:21:35 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [119.31.174.71]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 81860a84-064e-4405-2846-08d86123a4d7
+X-MS-TrafficTypeDiagnostic: VI1PR04MB3277:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB3277BBDDC8B47D97E1D064D792360@VI1PR04MB3277.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: B344PZixvag7x52QHL1WTHSlYZ+han5OFHGDGwxiccUtLPDeJnrchjHZRPj6DjrZrve9rBIBIA9oBiBJUCNYBQ7jbz3Qa+v/cBUZ6QtkzgsmtquKiHsiZHKUUzbCDqKFa2yaZgA8fMMPr5NXs5jsQPSGh/nwA9itmfhPBqyqllxjsRDOJfpUyisH75CPvKH2e+KaxW+kieARxHThuqq1UYthJYhaiF80dijs81be8NryDQx72BCfZmN9Wlb2NyNT66YrxLhRypios5TSyqUIz0GQk42NBFyVUr/o/2631cPsZNJIjcYBaHezyWLU2zixKfW8nWlt/+TamF8n1b7Urw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(346002)(396003)(39860400002)(316002)(2906002)(5660300002)(52116002)(6486002)(6506007)(186003)(16526019)(26005)(6512007)(36756003)(4744005)(1076003)(8936002)(2616005)(44832011)(66946007)(66556008)(478600001)(66476007)(86362001)(8676002)(6666004)(83380400001)(956004)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: tV+UxiV3v49r1SMCbm1wO4YrSvwnkuL2SIa2l7dNHPuToUkdOh8yLQ6EPNK1pLyHYkEUjmm9lSPLbAeMYJ7Vu+0ggcq7m92OkXQ0AA/+7erZYFSuP3AEb2dqXP9yg1spczVm2n6/OYRsLqRi8CYdTqBhLZipphGcUWAWDzoOaMalxg4E7gV/xc8GwYNyqbUqoRAUYcoRAAvuyrE9FFbpdhNBFbuxUaMdUeaAgDMuUUWBLx8QDaninCnryOOok6o81HN7t+PYp9PYBVYOhXn1RffTj/B8Umqd9CpBYP9iT7QA5/eRAc2MBHHJ2uuGsYtKX6qT6/+UDs89L/SOQ2Q1aqkSoQU3k9NzoJdOWxOkR4deYipnYwDQpxhJjNKU4wFzZ1K0ar5iQjZlh21tM9uPnv+nl0h1y2gjqIEvNE5zJPUl6HXKDfQzYdZaUMhuW6FpYJDPEweQqu68pjoYX9q1Ib7TXkXCOaRsnUOckrqmjCoTIRz7Ux/VPOVTqwRRan2VUHVu4GSYPMDYliMppbVvYt/7teXRH1rRNPO7g9VgXpLOky/+AmB6G8/l7xdeDyEmEQ/+h0bTwvR0T1FHoOS13zhFPwB0UIiWvNYje549nXlcp1DmhyhTnxiqsoZG+tfpYrMozgf5n8/UHpHveHs+dw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 81860a84-064e-4405-2846-08d86123a4d7
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 07:21:39.5505
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: I17/4YxlZAlTVPME3aVExSt56C8AFfy7J1XxXvUb3mndQ6dBlESOsmAmUgOHen/6JCz77wo3ZEeKa9l5tADT/w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3277
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Remove 'rwoffset' in exfat_inode_info and replace it with the
-> > parameter of exfat_readdir().
-> > Since rwoffset is referenced only by exfat_readdir(), it is not
-> > necessary a exfat_inode_info's member.
-> > Also, change cpos to point to the next of entry-set, and return the
-> > index of dir-entry via dir_entry->entry.
-> >
-> > Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
-> 
-> Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
-Applied, Thanks for your patch!
+This patchset fix some bugs about the vop driver and Intel MIC user space tool
+-- mpssd.
+
+Sherry Sun (4):
+  samples: mpssd: fix the build errors when enable DEBUG in mpssd.c
+  misc: vop: build VOP based on CONFIG_VOP
+  misc: vop: add round_up(x,4) for vring_size to avoid kernel panic
+  mic: vop: copy data to kernel space then write to io memory
+
+ drivers/misc/mic/vop/Makefile     |  2 +-
+ drivers/misc/mic/vop/vop_main.c   |  2 +-
+ drivers/misc/mic/vop/vop_vringh.c | 10 +++++++---
+ samples/mic/mpssd/mpssd.c         | 24 ++++++++++++------------
+ 4 files changed, 21 insertions(+), 17 deletions(-)
+
+-- 
+2.17.1
 
