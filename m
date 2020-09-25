@@ -2,193 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CCB278110
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AEF278114
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbgIYHET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:04:19 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:45080 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727110AbgIYHET (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:04:19 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08P744vN4022469, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08P744vN4022469
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 25 Sep 2020 15:04:05 +0800
-Received: from RSEXDAG01.realsil.com.cn (172.29.17.199) by
- RSEXMBS01.realsil.com.cn (172.29.17.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Fri, 25 Sep 2020 15:04:04 +0800
-Received: from RSEXMBS01.realsil.com.cn (172.29.17.195) by
- RSEXDAG01.realsil.com.cn (172.29.17.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Fri, 25 Sep 2020 15:04:04 +0800
-Received: from RSEXMBS01.realsil.com.cn ([fe80::e186:b533:fb3:8b37]) by
- RSEXMBS01.realsil.com.cn ([fe80::e186:b533:fb3:8b37%7]) with mapi id
- 15.01.2044.004; Fri, 25 Sep 2020 15:04:04 +0800
-From:   =?gb2312?B?wr3W7M6w?= <alex_lu@realsil.com.cn>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-CC:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH] Bluetooth: btusb: Avoid unnecessary reset upon system resume
-Thread-Topic: [PATCH] Bluetooth: btusb: Avoid unnecessary reset upon system
- resume
-Thread-Index: AdaTCgz9jigV3dr0CE6uDdt266LELw==
-Date:   Fri, 25 Sep 2020 07:04:04 +0000
-Message-ID: <6b46b6bca9d3486499d0374eb277b00c@realsil.com.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.36.107]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1727357AbgIYHFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:05:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727110AbgIYHFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:05:12 -0400
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 854A422211;
+        Fri, 25 Sep 2020 07:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601017511;
+        bh=zuSbzzHJit1jTTi9zp2/OL6gmoxtDNrAYKnrZaniXPA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=COwzg7EwHGXHnuZghZJvITz9sRCLyESwO0uVZazEayykQMqNOsPNMcxyNMlPaVqED
+         43qnSWklRHTACK9OREuOd71236kx+18dr8xg22/1iZKAj6i0mNPrUHHwdn3GBqwt09
+         9HI4fWKfLwiw/enilovPLUkhV0fSwKKnw9e6P3VU=
+Received: by mail-oi1-f179.google.com with SMTP id a3so1794090oib.4;
+        Fri, 25 Sep 2020 00:05:11 -0700 (PDT)
+X-Gm-Message-State: AOAM531PpET5mBNp14nWTzZ5wqL6aePT59x0njTmTLH/w1KWw5+/anaZ
+        1KFoy0PGShvedF5odMAmRltRjpTlu7bjVlY8z1U=
+X-Google-Smtp-Source: ABdhPJyCWVBClIovJDS4Ckc7x38d5+rCdPwrUW7K2rukfHvM6mTo/4WFTOfKelVr79t/hYl6HScpW9/hbc3R0gbrApw=
+X-Received: by 2002:aca:d845:: with SMTP id p66mr699567oig.47.1601017510722;
+ Fri, 25 Sep 2020 00:05:10 -0700 (PDT)
 MIME-Version: 1.0
+References: <20200918112459.918328-1-misch@google.com>
+In-Reply-To: <20200918112459.918328-1-misch@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 25 Sep 2020 09:04:59 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXEJ87J45D_tVZ-o9LJCQrDJig2Gscr=bHr1DMJ0wUOu-A@mail.gmail.com>
+Message-ID: <CAMj1kXEJ87J45D_tVZ-o9LJCQrDJig2Gscr=bHr1DMJ0wUOu-A@mail.gmail.com>
+Subject: Re: [PATCH] efivarfs: Replace invalid slashes with exclamation marks
+ in dentries.
+To:     Michael Schaller <misch@google.com>
+Cc:     michael@5challer.de, Matthew Garrett <matthew.garrett@nebula.com>,
+        Jeremy Kerr <jk@ozlabs.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS2FpLUhlbmcsDQoNCj4gT24gU2VwdGVtYmVyIDI1LCAyMDIwIDE0OjA0LCBLYWktSGVuZyBG
-ZW5nIHdyb3RlOg0KPiANCj4gSGkgQWJoaXNoZWssDQo+ID4gT24gU2VwIDI1LCAyMDIwLCBhdCAx
-MTozMywgQWJoaXNoZWsgUGFuZGl0LVN1YmVkaQ0KPiA8YWJoaXNoZWtwYW5kaXRAY2hyb21pdW0u
-b3JnPiB3cm90ZToNCj4gPg0KPiA+ICsgQWxleCBMdSAod2hvIGNvbnRyaWJ1dGVkIHRoZSBvcmln
-aW5hbCBjaGFuZ2UpDQo+ID4NCj4gPiBIaSBLYWktSGVuZywNCj4gPg0KPiA+DQo+ID4gT24gVGh1
-LCBTZXAgMjQsIDIwMjAgYXQgMTI6MTAgQU0gS2FpLUhlbmcgRmVuZw0KPiA+IDxrYWkuaGVuZy5m
-ZW5nQGNhbm9uaWNhbC5jb20+IHdyb3RlOg0KPiA+Pg0KPiA+PiBbK0NjIGxpbnV4LXVzYl0NCj4g
-Pj4NCj4gPj4gSGkgQWJoaXNoZWssDQo+ID4+DQo+ID4+PiBPbiBTZXAgMjQsIDIwMjAsIGF0IDA0
-OjQxLCBBYmhpc2hlayBQYW5kaXQtU3ViZWRpDQo+IDxhYmhpc2hla3BhbmRpdEBjaHJvbWl1bS5v
-cmc+IHdyb3RlOg0KPiA+Pj4NCj4gPj4+IEhpIEthaS1IZW5nLA0KPiA+Pj4NCj4gPj4+IFdoaWNo
-IFJlYWx0ZWsgY29udHJvbGxlciBpcyB0aGlzIG9uPycNCj4gPj4NCj4gPj4gVGhlIGlzc3VlIGhh
-cHBlbnMgb24gODgyMUNFLg0KPiA+Pg0KPiA+Pj4NCj4gPj4+IFNwZWNpZmljYWxseSBmb3IgUlRM
-ODgyMkNFLCB3ZSB0ZXN0ZWQgd2l0aG91dCByZXNldF9yZXN1bWUgYmVpbmcgc2V0DQo+ID4+PiBh
-bmQgdGhhdCB3YXMgY2F1c2luZyB0aGUgY29udHJvbGxlciBiZWluZyByZXNldCB3aXRob3V0IGJs
-dWV6IGV2ZXINCj4gPj4+IGxlYXJuaW5nIGFib3V0IGl0IChyZXN1bHRpbmcgaW4gZGV2aWNlcyBi
-ZWluZyB1bnVzYWJsZSB3aXRob3V0DQo+ID4+PiB0b2dnbGluZyB0aGUgQlQgcG93ZXIpLg0KPiA+
-Pg0KPiA+PiBUaGUgcmVzZXQgaXMgZG9uZSBieSB0aGUga2VybmVsLCBzbyBob3cgZG9lcyB0aGF0
-IGFmZmVjdCBibHVlej8NCj4gPj4NCj4gPj4gRnJvbSB3aGF0IHlvdSBkZXNjcmliZWQsIGl0IHNv
-dW5kcyBtb3JlIGxpa2UgcnVudGltZSByZXN1bWUgc2luY2UgYmx1ZXoNCj4gaXMgYWxyZWFkeSBy
-dW5uaW5nLg0KPiA+PiBJZiB3ZSBuZWVkIHJlc2V0IHJlc3VtZSBmb3IgcnVudGltZSByZXN1bWUs
-IG1heWJlIGl0J3MgYW5vdGhlciBidWcNCj4gd2hpY2ggbmVlZHMgdG8gYmUgYWRkcmVzc2VkPw0K
-PiA+DQo+ID4gRnJvbSBidHVzYi5jOg0KPiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20v
-bGludXgva2VybmVsL2dpdC9ibHVldG9vdGgvYmx1ZXRvb3RoLQ0KPiBuZXh0LmdpdC90cmVlL2Ry
-aXZlcnMvYmx1ZXRvb3RoL2J0dXNiLmMjbjQxODkNCj4gPiAvKiBSZWFsdGVrIGRldmljZXMgbG9z
-ZSB0aGVpciB1cGRhdGVkIGZpcm13YXJlIG92ZXIgZ2xvYmFsDQo+ID4gKiBzdXNwZW5kIHRoYXQg
-bWVhbnMgaG9zdCBkb2Vzbid0IHNlbmQgU0VUX0ZFQVRVUkUNCj4gPiAqIChERVZJQ0VfUkVNT1RF
-X1dBS0VVUCkNCj4gPiAqLw0KPiA+DQo+ID4gUnVudGltZSBzdXNwZW5kIGFsd2F5cyByZXF1aXJl
-cyByZW1vdGUgd2FrZXVwIHRvIGJlIHNldCBhbmQgcmVzZXQNCj4gPiByZXN1bWUgaXNuJ3QgdXNl
-ZCB0aGVyZS4NCj4gDQo+IFRoYW5rcyBmb3IgdGhlIGNsYXJpZmljYXRpb24uDQo+IA0KPiA+DQo+
-ID4gRHVyaW5nIHN5c3RlbSBzdXNwZW5kLCB3aGVuIHJlbW90ZSB3YWtldXAgaXMgbm90IHNldCwg
-UlRMODgyMkNFIGxvc2VzDQo+ID4gdGhlIEZXIGxvYWRlZCBieSB0aGUgZHJpdmVyIGFuZCBhbnkg
-c3RhdGUgY3VycmVudGx5IGluIHRoZSBjb250cm9sbGVyLg0KPiA+IFRoaXMgY2F1c2VzIHRoZSBr
-ZXJuZWwgYW5kIHRoZSBjb250cm9sbGVyIHN0YXRlIHRvIGdvIG91dCBvZiBzeW5jLg0KPiA+IE9u
-ZSBvZiB0aGUgaXNzdWVzIHdlIG9ic2VydmVkIG9uIHRoZSBSZWFsdGVrIGNvbnRyb2xsZXIgd2l0
-aG91dCB0aGUNCj4gPiByZXNldCByZXN1bWUgcXVpcmsgd2FzIHRoYXQgcGFpcmVkIG9yIGNvbm5l
-Y3RlZCBkZXZpY2VzIHdvdWxkIGp1c3QNCj4gPiBzdG9wIHdvcmtpbmcgYWZ0ZXIgcmVzdW1lLg0K
-PiA+DQo+ID4+DQo+ID4+PiBJZiB0aGUgZmlybXdhcmUgZG9lc24ndCBjdXQgb2ZmIHBvd2VyIGR1
-cmluZyBzdXNwZW5kLCBtYXliZSB5b3UNCj4gPj4+IHNob3VsZG4ndCBzZXQgdGhlIEJUVVNCX1dB
-S0VVUF9ESVNBQkxFIGZsYWcgZm9yIHRoYXQgY29udHJvbGxlci4NCj4gPj4NCj4gPj4gV2UgZG9u
-J3Qga25vdyBiZWZvcmVoYW5kIGlmIHRoZSBwbGF0Zm9ybSBmaXJtd2FyZSAoQklPUyBmb3IgbXkg
-Y2FzZSkNCj4gd2lsbCBjdXQgcG93ZXIgb2ZmIG9yIG5vdC4NCj4gPj4NCj4gPj4gSW4gZ2VuZXJh
-bCwgbGFwdG9wcyB3aWxsIGN1dCBvZmYgdGhlIFVTQiBwb3dlciBkdXJpbmcgUzMuDQo+ID4+IFdo
-ZW4gQUMgaXMgcGx1Z2dlZCwgc29tZSBsYXB0b3BzIGN1dHMgVVNCIHBvd2VyIG9mZiBhbmQgc29t
-ZSBkb24ndC4NCj4gVGhpcyBhbHNvIGFwcGxpZXMgdG8gbWFueSBkZXNrdG9wcy4gTm90IHRvIG1l
-bnRpb24gdGhlcmUgY2FuIGJlIEJJT1MNCj4gb3B0aW9ucyB0byBjb250cm9sIFVTQiBwb3dlciB1
-bmRlciBTMy9TNC9TNS4uLg0KPiA+Pg0KPiA+PiBTbyB3ZSBkb24ndCBrbm93IGJlZm9yZWhhbmQu
-DQo+ID4+DQo+ID4NCj4gPiBJIHRoaW5rIHRoZSBjb25mdXNpb24gaGVyZSBzdGVtcyBmcm9tIHdo
-YXQgaXMgYWN0dWFsbHkgYmVpbmcgdHVybmVkDQo+ID4gb2ZmIGJldHdlZW4gb3VyIHR3byBib2Fy
-ZHMgYW5kIHdoYXQgd2UncmUgcmVmZXJyaW5nIHRvIGFzIGZpcm13YXJlIDopDQo+IA0KPiBZZXMg
-OikNCj4gDQo+ID4NCj4gPiBJbiB5b3VyIGNhc2UsIHRoZSBSZWFsdGVrIGNvbnRyb2xsZXIgcmV0
-YWlucyBmaXJtd2FyZSB1bmxlc3MgdGhlDQo+ID4gcGxhdGZvcm0gY3V0cyBvZiBwb3dlciB0byBV
-U0IgKHdoaWNoIGl0IGRvZXMgZHVyaW5nIFMzKS4NCj4gDQo+IE5vdCBhbGwgcGxhdGZvcm0gZmly
-bXdhcmUgKGkuZS4gQklPUyBmb3IgeDg2KSBjdXQgVVNCIHBvd2VyIGR1cmluZyBTMywgYXMgSQ0K
-PiBkZXNjcmliZSBpbiBsYXN0IHJlcGx5Lg0KPiANCj4gPiBJbiBteSBjYXNlLCB0aGUgUmVhbHRl
-ayBjb250cm9sbGVyIGxvc2VzIGZpcm13YXJlIHdoZW4gUmVtb3RlIFdha2V1cA0KPiA+IGlzbid0
-IHNldCwgZXZlbiBpZiB0aGUgcGxhdGZvcm0gZG9lc24ndCBjdXQgcG93ZXIgdG8gVVNCLg0KPiAN
-Cj4gVGhhbmtzIGZvciB0aGUgY2xhcmlmaWNhdGlvbiwgSSBiZWxpZXZlIGl0J3MgYSBjYXNlIHRo
-YXQgc2hvdWxkIHRvIGJlIGhhbmRsZWQNCj4gc2VwYXJhdGVseS4NCj4gDQo+ID4NCj4gPiBJbiB5
-b3VyIGNhc2UsIHNpbmNlIHlvdSBkb24ndCBuZWVkIHRvIGVuZm9yY2UgdGhlICdSZW1vdGUgV2Fr
-ZXVwJyBiaXQsDQo+ID4gaWYgeW91IHVuc2V0IHRoZSBCVFVTQl9XQUtFVVBfRElTQUJMRSBmb3Ig
-dGhhdCBWSUQ6UElELCB5b3Ugc2hvdWxkIGdldA0KPiA+IHRoZSBkZXNpcmFibGUgYmVoYXZpb3Ig
-KHdoaWNoIGlzIGFjdHVhbGx5IHRoZSBkZWZhdWx0IGJlaGF2aW9yOyByZW1vdGUNCj4gPiB3YWtl
-IHdpbGwgYWx3YXlzIGJlIGFzc2VydGVkIGluc3RlYWQgb2Ygb25seSBkdXJpbmcgUnVudGltZSBT
-dXNwZW5kKS4NCj4gDQo+IFNvIHdlIGhhdmUgdGhyZWUgY2FzZXMgaGVyZS4gQXNzdW1pbmcgcmVz
-ZXRfcmVzdW1lIGlzbid0IGZsYWdnZWQgYnkgYnR1c2I6DQo+IA0KPiAxKSBCb3RoIFVTQiBwb3dl
-ciBhbmQgQlQgZmlybXdhcmUgd2VyZSBsb3N0IGR1cmluZyBzdXNwZW5kLg0KPiBVU0IgY29yZSBm
-aW5kcyBvdXQgcG93ZXIgd2FzIGxvc3QsIHRyeSB0byByZXNldCByZXN1bWUgdGhlIGRldmljZS4g
-U2luY2UNCj4gYnR1c2IgZG9lc24ndCBoYXZlIHJlc2V0X3Jlc3VtZSBjYWxsYmFjaywgVVNCIGNv
-cmUgY2FsbHMgcHJvYmUgaW5zdGVhZC4NCj4gDQo+IDIpIEJvdGggVVNCIHBvd2VyIGFuZCBCVCBm
-aXJtd2FyZSB3ZXJlIGtlcHQgZHVyaW5nIHN1c3BlbmQuIFRoaXMgaXMgbXkNCj4gY2FzZS4NCj4g
-UmVndWxhciByZXN1bWUgaGFuZGxlcyBldmVyeXRoaW5nLg0KPiANCj4gMykgVVNCIHBvd2VyIHdh
-cyBrZXB0IGJ1dCBCVCBmaXJtd2FyZSB3YXMgbG9zdC4gVGhpcyBpcyB5b3VyIGNhc2UuDQo+IFVT
-QiBjb3JlIGZpbmRzIG91dCBwb3dlciB3YXMga2VwdCwgdXNlIHJlZ3VsYXIgcmVzdW1lLiBIb3dl
-dmVyIHRoZSBCVA0KPiBmaXJtd2FyZSB3YXMgbG9zdCwgc28gcmVzdW1lIGZhaWxzLg0KPiBGb3Ig
-dGhpcyBjYXNlLCBtYXliZSB3ZSBjYW4gdXNlIGJ0cnRsX3NldHVwX3JlYWx0ZWsoKSBpbiBidHVz
-Yl9yZXN1bWUoKT8gSXQNCj4gd29uJ3QgcmUtdXBsb2FkIGZpcm13YXJlIGlmIGZpcm13YXJlIGlz
-IHJldGFpbmVkLCBhbmQgd2lsbCBkbyBwcm9wZXINCj4gaW5pdGlhbGl6aW5nIGlmIGZpcm13YXJl
-IHdhcyBsb3N0Lg0KDQpJbiBteSBvcGluaW9ucywNCkZvciB0aGUgMyksIHRoZXJlIGFyZSB0d28g
-Y2FzZXMsIG9uZSBpcyB0aGF0IGZpcm13YXJlIHdhcyBsb3N0IGluIGF1dG8gc3VzcGVuZC4gVGhh
-dCBzaG91bGQgbmV2ZXIgaGFwcGVuLCBiZWNhdXNlIHRoZSBkYXRhLT5pbnRmLT5uZWVkc19yZW1v
-dGVfd2FrZXVwIGlzIHNldCBpbiBidHVzYl9vcGVuKCkgYW5kIGJ0dXNiX2Nsb3NlKCkuIFRoZSBm
-bGFnIG1lYW5zIHRoYXQgaG9zdCB3aWxsIHNlbmQgcmVtb3RlIHdha2V1cCBkdXJpbmcgYXV0b3N1
-c3BlbmQsIGFuZCBmaXJtd2FyZSB3b3VsZG4ndCBkcm9wLg0KQW5vdGhlciBjYXNlIGlzIGZpcm13
-YXJlIGxvc3MgaW4gZ2xvYmFsIHN1c3BlbmQuIEkgdGhpbmsgdGhhdCdzIG5vIHByb2JsZW0sIGRy
-aXZlciBzZXRzIGRhdGEtPnVkZXYtPnJlc2V0X3Jlc3VtZSBpbiBidHVzYl9zdXNwZW5kKCkgYW5k
-IGJ0dXNiIHdpbGwgcmVwcm9iZSBhZnRlciByZXN1bWUuDQoNCj4gDQo+IEthaS1IZW5nDQo+IA0K
-PiA+DQo+ID4gQEFsZXggLS0gV2hhdCBpcyB0aGUgY29tbW9uIGJlaGF2aW9yIGZvciBSZWFsdGVr
-IGNvbnRyb2xsZXJzPyBTaG91bGQNCj4gPiB3ZSBzZXQgQlRVU0JfV0FLRVVQX0RJU0FCTEUgb25s
-eSBvbiBSVEw4ODIyQ0Ugb3Igc2hvdWxkIHdlIHVuc2V0IGl0DQo+ID4gb25seSBvbiBSVEw4ODIx
-Q0U/DQo+ID4NCj4gPj4+DQo+ID4+PiBJIHdvdWxkIHByZWZlciB0aGlzIGRvZXNuJ3QgZ2V0IGFj
-Y2VwdGVkIGluIGl0cyBjdXJyZW50IHN0YXRlLg0KPiA+Pg0KPiA+PiBPZiBjb3Vyc2UuDQo+ID4+
-IEkgdGhpbmsgd2UgbmVlZCB0byBmaW5kIHRoZSByb290IGNhdXNlIGZvciB5b3VyIGNhc2UgYmVm
-b3JlIGFwcGx5aW5nIHRoaXMNCj4gb25lLg0KPiA+Pg0KPiA+PiBLYWktSGVuZw0KPiA+Pg0KPiA+
-Pj4NCj4gPj4+IEFiaGlzaGVrDQo+ID4+Pg0KPiA+Pj4gT24gV2VkLCBTZXAgMjMsIDIwMjAgYXQg
-MTA6NTYgQU0gS2FpLUhlbmcgRmVuZw0KPiA+Pj4gPGthaS5oZW5nLmZlbmdAY2Fub25pY2FsLmNv
-bT4gd3JvdGU6DQo+ID4+Pj4NCj4gPj4+PiBSZWFsdGVrIGJsdWV0b290aCBjb250cm9sbGVyIG1h
-eSBmYWlsIHRvIHdvcmsgYWZ0ZXIgc3lzdGVtIHNsZWVwOg0KPiA+Pj4+IFsgMTI3Mi43MDc2NzBd
-IEJsdWV0b290aDogaGNpMDogY29tbWFuZCAweDEwMDEgdHggdGltZW91dA0KPiA+Pj4+IFsgMTI4
-MC44MzU3MTJdIEJsdWV0b290aDogaGNpMDogUlRMOiBIQ0lfT1BfUkVBRF9MT0NBTF9WRVJTSU9O
-DQo+IGZhaWxlZCAoLTExMCkNCj4gPj4+Pg0KPiA+Pj4+IElmIHBsYXRmb3JtIGZpcm13YXJlIGRv
-ZXNuJ3QgY3V0IHBvd2VyIG9mZiBkdXJpbmcgc3VzcGVuZCwgdGhlDQo+IGZpcm13YXJlDQo+ID4+
-Pj4gaXMgY29uc2lkZXJlZCByZXRhaW5lZCBpbiBjb250cm9sbGVyIGJ1dCB0aGUgZHJpdmVyIGlz
-IHN0aWxsIGFza2luZyBVU0INCj4gPj4+PiBjb3JlIHRvIHBlcmZvcm0gYSByZXNldC1yZXN1bWUu
-IFRoaXMgY2FuIG1ha2UgYmx1ZXRvb3RoIGNvbnRyb2xsZXINCj4gPj4+PiB1bnVzYWJsZS4NCj4g
-Pj4+Pg0KPiA+Pj4+IFNvIGF2b2lkIHVubmVjZXNzYXJ5IHJlc2V0IHRvIHJlc29sdmUgdGhlIGlz
-c3VlLg0KPiA+Pj4+DQo+ID4+Pj4gRm9yIGRldmljZXMgdGhhdCByZWFsbHkgbG9zZSBwb3dlciBk
-dXJpbmcgc3VzcGVuZCwgVVNCIGNvcmUgd2lsbCBkZXRlY3QNCj4gPj4+PiBhbmQgaGFuZGxlIHJl
-c2V0LXJlc3VtZSBjb3JyZWN0bHkuDQo+ID4+Pj4NCj4gPj4+PiBTaWduZWQtb2ZmLWJ5OiBLYWkt
-SGVuZyBGZW5nIDxrYWkuaGVuZy5mZW5nQGNhbm9uaWNhbC5jb20+DQo+ID4+Pj4gLS0tDQo+ID4+
-Pj4gZHJpdmVycy9ibHVldG9vdGgvYnR1c2IuYyB8IDggKysrLS0tLS0NCj4gPj4+PiAxIGZpbGUg
-Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPiA+Pj4+DQo+ID4+Pj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvYmx1ZXRvb3RoL2J0dXNiLmMgYi9kcml2ZXJzL2JsdWV0b290
-aC9idHVzYi5jDQo+ID4+Pj4gaW5kZXggOGQyNjA4ZGRmZDA4Li5kZTg2ZWY0Mzg4ZjkgMTAwNjQ0
-DQo+ID4+Pj4gLS0tIGEvZHJpdmVycy9ibHVldG9vdGgvYnR1c2IuYw0KPiA+Pj4+ICsrKyBiL2Ry
-aXZlcnMvYmx1ZXRvb3RoL2J0dXNiLmMNCj4gPj4+PiBAQCAtNDI1NSwxNyArNDI1NSwxNSBAQCBz
-dGF0aWMgaW50IGJ0dXNiX3N1c3BlbmQoc3RydWN0DQo+IHVzYl9pbnRlcmZhY2UgKmludGYsIHBt
-X21lc3NhZ2VfdCBtZXNzYWdlKQ0KPiA+Pj4+ICAgICAgICAgICAgICAgZW5hYmxlX2lycShkYXRh
-LT5vb2Jfd2FrZV9pcnEpOw0KPiA+Pj4+ICAgICAgIH0NCj4gPj4+Pg0KPiA+Pj4+IC0gICAgICAg
-LyogRm9yIGdsb2JhbCBzdXNwZW5kLCBSZWFsdGVrIGRldmljZXMgbG9zZSB0aGUgbG9hZGVkIGZ3
-DQo+ID4+Pj4gLSAgICAgICAgKiBpbiB0aGVtLiBCdXQgZm9yIGF1dG9zdXNwZW5kLCBmaXJtd2Fy
-ZSBzaG91bGQgcmVtYWluLg0KPiA+Pj4+IC0gICAgICAgICogQWN0dWFsbHksIGl0IGRlcGVuZHMg
-b24gd2hldGhlciB0aGUgdXNiIGhvc3Qgc2VuZHMNCj4gPj4+PiArICAgICAgIC8qIEZvciBnbG9i
-YWwgc3VzcGVuZCwgUmVhbHRlayBkZXZpY2VzIGxvc2UgdGhlIGxvYWRlZCBmdyBpbiB0aGVtDQo+
-IGlmDQo+ID4+Pj4gKyAgICAgICAgKiBwbGF0Zm9ybSBmaXJtd2FyZSBjdXQgcG93ZXIgb2ZmLiBC
-dXQgZm9yIGF1dG9zdXNwZW5kLA0KPiBmaXJtd2FyZQ0KPiA+Pj4+ICsgICAgICAgICogc2hvdWxk
-IHJlbWFpbi4gIEFjdHVhbGx5LCBpdCBkZXBlbmRzIG9uIHdoZXRoZXIgdGhlIHVzYiBob3N0DQo+
-IHNlbmRzDQo+ID4+Pj4gICAgICAgICogc2V0IGZlYXR1cmUgKGVuYWJsZSB3YWtldXApIG9yIG5v
-dC4NCj4gPj4+PiAgICAgICAgKi8NCj4gPj4+PiAgICAgICBpZiAodGVzdF9iaXQoQlRVU0JfV0FL
-RVVQX0RJU0FCTEUsICZkYXRhLT5mbGFncykpIHsNCj4gPj4+PiAgICAgICAgICAgICAgIGlmIChQ
-TVNHX0lTX0FVVE8obWVzc2FnZSkgJiYNCj4gPj4+PiAgICAgICAgICAgICAgICAgICBkZXZpY2Vf
-Y2FuX3dha2V1cCgmZGF0YS0+dWRldi0+ZGV2KSkNCj4gPj4+PiAgICAgICAgICAgICAgICAgICAg
-ICAgZGF0YS0+dWRldi0+ZG9fcmVtb3RlX3dha2V1cCA9IDE7DQo+ID4+Pj4gLSAgICAgICAgICAg
-ICAgIGVsc2UgaWYgKCFQTVNHX0lTX0FVVE8obWVzc2FnZSkpDQo+ID4+Pj4gLSAgICAgICAgICAg
-ICAgICAgICAgICAgZGF0YS0+dWRldi0+cmVzZXRfcmVzdW1lID0gMTsNCj4gPj4+PiAgICAgICB9
-DQo+ID4+Pj4NCj4gPj4+PiAgICAgICByZXR1cm4gMDsNCj4gPj4+PiAtLQ0KPiA+Pj4+IDIuMTcu
-MQ0KPiANCj4gDQo+IC0tLS0tLVBsZWFzZSBjb25zaWRlciB0aGUgZW52aXJvbm1lbnQgYmVmb3Jl
-IHByaW50aW5nIHRoaXMgZS1tYWlsLg0K
+On Fri, 18 Sep 2020 at 13:25, Michael Schaller <misch@google.com> wrote:
+>
+> Without this patch efivarfs_alloc_dentry creates dentries with slashes in
+> their name if the respective EFI variable has slashes in its name. This in
+> turn causes EIO on getdents64, which prevents a complete directory listing
+> of /sys/firmware/efi/efivars/.
+>
+> This patch replaces the invalid shlashes with exclamation marks like
+> kobject_set_name_vargs does for /sys/firmware/efi/vars/ to have consistently
+> named dentries under /sys/firmware/efi/vars/ and /sys/firmware/efi/efivars/.
+
+Thanks Michael
+
+Can you resend this with a signed-off-by line please?
+
+> ---
+>  fs/efivarfs/super.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> index 28bb5689333a..15880a68faad 100644
+> --- a/fs/efivarfs/super.c
+> +++ b/fs/efivarfs/super.c
+> @@ -141,6 +141,9 @@ static int efivarfs_callback(efi_char16_t *name16, efi_guid_t vendor,
+>
+>         name[len + EFI_VARIABLE_GUID_LEN+1] = '\0';
+>
+> +       /* replace invalid slashes like kobject_set_name_vargs does for /sys/firmware/efi/vars. */
+> +       strreplace(name, '/', '!');
+> +
+>         inode = efivarfs_get_inode(sb, d_inode(root), S_IFREG | 0644, 0,
+>                                    is_removable);
+>         if (!inode)
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+>
