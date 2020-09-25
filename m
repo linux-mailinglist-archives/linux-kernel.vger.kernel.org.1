@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4229279457
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C1E27945B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729204AbgIYWqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46544 "EHLO
+        id S1727599AbgIYWvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:51:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgIYWqU (ORCPT
+        with ESMTP id S1726773AbgIYWvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:46:20 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA19C0613CE;
-        Fri, 25 Sep 2020 15:46:20 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id lo4so738761ejb.8;
-        Fri, 25 Sep 2020 15:46:20 -0700 (PDT)
+        Fri, 25 Sep 2020 18:51:08 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FADC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:51:08 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id y190so2343679vsy.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:51:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lrVKWzlDcGFhCrWgMifQZRLCGQ0NtpunSOEi48viSH8=;
-        b=aNXJTlRNvZq5vFI7352QqBShKwE+D0YCXNgufsf0zU5cxvnSadfe/RttWPBqBdSjlp
-         w7VrhUPHAKSQmmFMTjSWmwUmsg9ZqoB1kdhzk3b5mIrhaLtdXNKyH+U20iyfTpYtSmim
-         wcI/e7JPqPPaVYOTaiNfGgNSb9ff2rts5FTpbkhH5h+V72M6z4A3mhDT2HjGBdvAlY3g
-         6y09YGie1G8Irk6wf5/Rzf3QCU5vwdQPzLDi/GWWgurYpYPUGMATQGC+C+09GUtcEglQ
-         VhRnwgl8GCw1VPbqasMr0TjfEsA+6ajnzoeF3SDlwZJVQj+VdVAFvwQFzK1XXdAJlO5B
-         k+Zw==
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=xnWM62JYvqicPiQzA7Sj/RrocMZqiUgEBu2ZXBloQSU=;
+        b=mBY99Lr7jdzwueBXLBYANDXf1aDIOTuJecRm8dExmwO4KuWTDF5exJhMM8Wc2XSPU2
+         Zk0U64SM2LnUFr0xO03VFMIrvDmnSySSVOLyv3380L1uZHIXLrDDbVAxU7A5ihshU2dZ
+         SEEEqQQdP6WB59ijiXN3baL6a6qiqT8acKg6bl6+fk+FPvEU/KPyiptocwFYzkQSs4uf
+         7GW/bBNyMVh+QQvFLWYwsKMwAzx8kxyjjfSQhF0+MFWMQVBkaqwEhk8GD/+A09ZGeZSo
+         HKlfJiMfG2lliKIsKhYyczdOcOVZUT64QMSyq/7VLbYwM2dIP+8kWu1Vy5zyhpjE5YRh
+         TiKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lrVKWzlDcGFhCrWgMifQZRLCGQ0NtpunSOEi48viSH8=;
-        b=eo8wCvVt6j+M+t55xIO7IMR32PhAVCwfsJ4a/gdJtI3BbRxOJX4158KVfaJpRPJG3G
-         HbSGOWCrPdRBOUq3Rufm2Y8tGQCy1DwXkAJXVTP2ZXk9IKY/m5cqJp7AzajP6nGkmdEX
-         fFTm0Ma183//LdZSlXSoBIuZ59DHJ9He2x3YPPrhERYLg5rp7rzjPOAy8MfX0aQGmHfP
-         U0etxuuOSSK59qT5t91MDf2QqLkLXIu3jw4RWi4Fgdufl4igxILz0M0Kfya00xwiWkw6
-         7eL5u75KyHGdrC1MLXAF/LlSShpDJReQKfvLhAqb0qRdh076ExMOps3g9suZQjCrXsy6
-         MKQg==
-X-Gm-Message-State: AOAM531DOY2PJAznQtkKVSXBtz4yO7Fg6bSiFkyus12GOUuVoYCGw1k7
-        AzRSyzjhPelRABut1AKgDGY=
-X-Google-Smtp-Source: ABdhPJwVwZ0jezDaQdRB6TwC5/deAJ5D6Lv5vjVPupgSdS91PARaHHgvQ06C6wY5XEH+1quAeU52Ug==
-X-Received: by 2002:a17:906:1f42:: with SMTP id d2mr4816511ejk.407.1601073979139;
-        Fri, 25 Sep 2020 15:46:19 -0700 (PDT)
-Received: from skbuf ([188.25.217.212])
-        by smtp.gmail.com with ESMTPSA id s7sm2744100ejd.103.2020.09.25.15.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 15:46:18 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 01:46:16 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     f.fainelli@gmail.com, netdev@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        peppe.cavallaro@st.com, alexandre.torgue@st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org
-Subject: Re: RGMII timing calibration (on 12nm Amlogic SoCs) - integration
- into dwmac-meson8b
-Message-ID: <20200925224616.fetyq4aiiwpspe7g@skbuf>
-References: <CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com>
- <20200925220329.wdnrqeauto55vdao@skbuf>
- <CAFBinCB4woR1sZfT3tvCkHiR2eRgQfXg3jsD+KO0iMzyQRAGDQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=xnWM62JYvqicPiQzA7Sj/RrocMZqiUgEBu2ZXBloQSU=;
+        b=uKJJe6f2WIDhmlkG7B+0FI07hTsXAoi0YJJlKmUeBbrhwcRz6IMbPymQ5Rkii6HJPg
+         2MR389dDOzQsbDimN0URjZYWOS98me8BzupAV7rlRLcaHZNMHB4tlf4FoLGyGK0jMJC9
+         6LxXebfFzGdInUa21ulr8eybKIPQH/BfSC72Q08kXfIlAELfjYChI7ou4JIqSb5F5v1a
+         Hpbc8e+NeUsJQGHbS6ug2jT1zeWrJoBD7/gE7VFtAULJsxKIvBdKsLI8IEbRy5CSj0Sz
+         Kg6Bkwi2UBM/9RC4/IFZi4gw6qtC1hiSpavaNt35iqK7BR3PZSF/5S9Ry0Umn4wMLKl1
+         S+8g==
+X-Gm-Message-State: AOAM533hx40c0Id63TfXG1JhjGNDy0WWAhkD5qcSntlJRePsxPJQVgtd
+        nMEtssAAshYjYUEK/fC3YSQ8dUO2CpvfGyNXHGo=
+X-Google-Smtp-Source: ABdhPJwmjdKMX2oRACS9WutOEhPpCzBeEx2Ke7CgyWeKPDwANmGjF3mQo39uDYpFbAcMxh7qi6p43prFILK/5Fi+Ygw=
+X-Received: by 2002:a67:d00a:: with SMTP id r10mr579529vsi.12.1601074267789;
+ Fri, 25 Sep 2020 15:51:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFBinCB4woR1sZfT3tvCkHiR2eRgQfXg3jsD+KO0iMzyQRAGDQ@mail.gmail.com>
+Received: by 2002:ab0:5a41:0:0:0:0:0 with HTTP; Fri, 25 Sep 2020 15:51:07
+ -0700 (PDT)
+Reply-To: iincc200@gmail.com
+From:   "Mrs.Heba Ibrahim" <emailinffo@gmail.com>
+Date:   Fri, 25 Sep 2020 15:51:07 -0700
+Message-ID: <CACh-=JwmKseeMbOVe7wCkM5xZeTRFrKGBdCkdbP3ZR4ixpDrrQ@mail.gmail.com>
+Subject: YOUR VISA CARD SUM OF US$1.200,000.00
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 12:15:59AM +0200, Martin Blumenstingl wrote:
-> I do not need the auto-detection of the phy-mode nor any RX/TX delay
-> (these are fixed values)
-> however, from that patch-set I would need most of
-> phy_rgmii_probe_interface() (and all of the helpers it's using)
+--=20
+Attention:Beneficiary
 
-So if it's not clock skews and it probably isn't equalization either,
-since to my knowledge RGMII MACs won't have because they are parallel
-and relatively low-speed interfaces, then we need to know what exactly
-it is that you calibrate.
+This is to official inform you that we have been having a meeting for
+the past Seven month which ended Two days ago with Dr. Robert B.
+Rollick the World Bank President and Hon. Mrs. Christine Laggard (IMF)
+Director General, in the meeting we treated on Scam victim problems.
 
-As you know, in a serial interface you are likely to find a BIST
-function implemented in the SERDES, this would basically offload to
-hardware the task of sending and decoding test patterns such as PRBS-11.
-With RGMII, you are less likely to see a BIST in hardware, hence the
-manual injection of packets that you need to do from software. Whatever
-solution you end up choosing, it would be nice if it created a nicely
-structured UAPI that could be extended in the future for other types of
-electrical interface selftests.
+United Nation have agreed to compensate you with the sum of One
+million two Hundred  Thousand Dollars (USD$1.200,000.00) this also
+includes international businesses that failed due to Government
+problems etc?. We have arranged your payment through Master Card ATM
+which is the latest instruction from World Bank Group.
 
-> also I'm wondering if the "protocol" 0x0808 is recommended over ETH_P_EDSA
+For the collection of your Master Card ATM contact our representative
+Dr.Usman Mohammed and forward the following details to him.
 
-It probably doesn't make any difference.
+1. Full Name:.........
+2. Country:........
+3. Delivery Address:..........
+4. Telephone:..............& Occupation.......
+5. Your Age...... /Sex..........
+
+Contact Dr.USMAN MOHAMMED with below email and phone number and
+forward all your details to him.
+
+Email:(  inforemitunitinfo@qq.com  )
+
+Telephone +226  61 10 85 06
+
+Note: for the immediate collection of your Master Card ATM contact our
+representative Agent. Usman Mohammed to enable you confirm your
+payment without further delay and note any other contact you made out
+side his office is at of your own risk.
+
+Thanks
+Mrs Mariam Mohammed.
+
+CC: Hon. Mrs. Christine Lagarde
+CC: World Bank Group
+CC: Mr. Ant=C3=B3nio Guterres Secretary-General
