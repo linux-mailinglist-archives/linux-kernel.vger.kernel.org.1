@@ -2,109 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F4A27904A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6EC279051
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:29:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729781AbgIYS1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:27:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25384 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729769AbgIYS1S (ORCPT
+        id S1729758AbgIYS3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgIYS3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:27:18 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601058437;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:in-reply-to:in-reply-to:references:references;
-        bh=rRcKZ8I6kczvYIrMGUe8rB/gq5sgstXC59hVf7TDlHU=;
-        b=WFAT6hK3J5IS3OJKEUtDBbYo7EHf1AcdLZhu5qB2oPFcOaww7CQZ9WKhOzlQw93gtPYMRG
-        pHBT7s8BGPNCexJhNEF5ecwDBaTWjqmBYAwsG7U10dh++GzF8TF2/NEzWhvm++urVFZu2J
-        A9Zy5kQeYm0mv+uKT3pAaZxSYnbmKKY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-FZhrcYxJO-OgZXPDVOWqFQ-1; Fri, 25 Sep 2020 14:27:13 -0400
-X-MC-Unique: FZhrcYxJO-OgZXPDVOWqFQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2F0188EF1F;
-        Fri, 25 Sep 2020 18:27:10 +0000 (UTC)
-Received: from virtlab719.virt.lab.eng.bos.redhat.com (virtlab719.virt.lab.eng.bos.redhat.com [10.19.153.15])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BBA878810;
-        Fri, 25 Sep 2020 18:27:09 +0000 (UTC)
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, nitesh@redhat.com, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com
-Subject: [PATCH v3 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
-Date:   Fri, 25 Sep 2020 14:26:54 -0400
-Message-Id: <20200925182654.224004-5-nitesh@redhat.com>
-In-Reply-To: <20200925182654.224004-1-nitesh@redhat.com>
-References: <20200925182654.224004-1-nitesh@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Fri, 25 Sep 2020 14:29:50 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8E6C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:29:50 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 5so3307364pgf.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:author;
+        bh=Rhv9HZEtrEL141zSMGw1g065/LfSYNOus3HpsgDc4Os=;
+        b=HVUBpvOg+s0a1z2RzoKEIEFlCJWP5rVxDKxRmwxMKnABEXn383FnVD5FLFSLg4M3yY
+         DiJztuPhznDB7e0NReBuNguMYtpthbjZWDgz321egNY6GGLm0jEyz48oTlgao0R0tQDO
+         21XRe3aF8XrGRVp5TH1ENC7Cl346shsAgl/ySE4HlZOISGRz8JWlooVQQBcsRwJzbILi
+         HH7HWhjb1BTRHpFtmSJZ/YBhEQiPHWyV8FSc2DBvNXW5lXG8sMVhBHmAzw1WZAHXK/a2
+         Y0ezbxZxbV5PzAIcLN12G8u+Lc+veBcqtiAJR9ZuPeIyRnnZ1wy7vecPxyT7XU7hkI/p
+         WbFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:author;
+        bh=Rhv9HZEtrEL141zSMGw1g065/LfSYNOus3HpsgDc4Os=;
+        b=obDofWWfl78zU3+H41MUfLclSv5P0psKQQG4VTJUq5JchuK3a42VdOBLgRJ3rjHcjh
+         1w8ReyHr3si7YtuEqf24+7AViBB8+fM3RiCBRfw/0dL9FOpNxQoUwJ0L+mJEUqRKWxxW
+         TuzbYXHsyWPBfPpQHNNOSiNoDNLSIjm1raJn3VvGOwIAr5oYAY9WaJnIId7vMH8AVgCv
+         Do9gOc+NndhfyDostVUWENYCjssxHwDgWpzsvAJ1Aa8uI+mMOkXuIzVvKSab4wo9VX8d
+         BiLLeOCCoNrfaQPr06AVjlmVn2DsFEII79+yUUb8jCdFmCoVPiq9EgIUbK1Uat99Bwyt
+         KJPw==
+X-Gm-Message-State: AOAM532wTDkNgh/Cfy3HLdLtltHghfov6Wk4qo6SAAcCvmbrhmbpIk64
+        tjlZO17shFqdFkHSnGInDBqzaw==
+X-Google-Smtp-Source: ABdhPJyT6RQYB9DC4di8a/7z5wXawdsq8FSxpEdIKmdSgymgn9ER5Udfvz37BcVVx/UkrRoJ02vI2g==
+X-Received: by 2002:a17:902:c404:b029:d2:564a:e41d with SMTP id k4-20020a170902c404b02900d2564ae41dmr681548plk.23.1601058589772;
+        Fri, 25 Sep 2020 11:29:49 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:6803:60dd:c56a:3b96:e0d6:72b4])
+        by smtp.gmail.com with ESMTPSA id f4sm2806762pgk.19.2020.09.25.11.29.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 11:29:48 -0700 (PDT)
+From:   Amit Pundir <amit.pundir@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        ath10k@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap QMI requests
+Date:   Fri, 25 Sep 2020 23:59:41 +0530
+Message-Id: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
+X-Mailer: git-send-email 2.7.4
+Author: Amit Pundir <amit.pundir@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we have isolated CPUs dedicated for use by real-time tasks, we try to
-move IRQs to housekeeping CPUs from the userspace to reduce latency
-overhead on the isolated CPUs.
+There are firmware versions which do not support host capability
+QMI request. We suspect either the host cap is not implemented or
+there may be firmware specific issues, but apparently there seem
+to be a generation of firmware that has this particular behavior.
 
-If we allocate too many IRQ vectors, moving them all to housekeeping CPUs
-may exceed per-CPU vector limits.
+For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
+"QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
 
-When we have isolated CPUs, limit the number of vectors allocated by
-pci_alloc_irq_vectors() to the minimum number required by the driver, or
-to one per housekeeping CPU if that is larger.
+If we do not skip the host cap QMI request on Poco F1, then we
+get a QMI_ERR_MALFORMED_MSG_V01 error message in the
+ath10k_qmi_host_cap_send_sync(). But this error message is not
+fatal to the firmware nor to the ath10k driver and we can still
+bring up the WiFi services successfully if we just ignore it.
 
-Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+Hence introducing this DeviceTree quirk to skip host capability
+QMI request for the firmware versions which do not support this
+feature.
+
+Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 ---
- include/linux/pci.h | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ .../devicetree/bindings/net/wireless/qcom,ath10k.txt        |  5 +++++
+ drivers/net/wireless/ath/ath10k/qmi.c                       | 13 ++++++++++---
+ drivers/net/wireless/ath/ath10k/snoc.c                      |  3 +++
+ drivers/net/wireless/ath/ath10k/snoc.h                      |  1 +
+ 4 files changed, 19 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 835530605c0d..a7b10240b778 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -38,6 +38,7 @@
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/resource_ext.h>
-+#include <linux/sched/isolation.h>
- #include <uapi/linux/pci.h>
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+index 65ee68efd574..135c7ecd4487 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -86,6 +86,11 @@ Optional properties:
+ 	Value type: <empty>
+ 	Definition: Quirk specifying that the firmware expects the 8bit version
+ 		    of the host capability QMI request
++- qcom,snoc-host-cap-skip-quirk:
++	Usage: Optional
++	Value type: <empty>
++	Definition: Quirk specifying that the firmware wants to skip the host
++		    capability QMI request
+ - qcom,xo-cal-data: xo cal offset to be configured in xo trim register.
  
- #include <linux/pci_ids.h>
-@@ -1797,6 +1798,22 @@ static inline int
- pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
- 		      unsigned int max_vecs, unsigned int flags)
+ - qcom,msa-fixed-perm: Boolean context flag to disable SCM call for statically
+diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+index 5468a41e928e..5adff7695e18 100644
+--- a/drivers/net/wireless/ath/ath10k/qmi.c
++++ b/drivers/net/wireless/ath/ath10k/qmi.c
+@@ -770,6 +770,7 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
+ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
  {
-+	unsigned int hk_cpus;
-+
-+	hk_cpus = housekeeping_num_online_cpus(HK_FLAG_MANAGED_IRQ);
+ 	struct ath10k *ar = qmi->ar;
++	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+ 	int ret;
+ 
+ 	ret = ath10k_qmi_ind_register_send_sync_msg(qmi);
+@@ -781,9 +782,15 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+ 		return;
+ 	}
+ 
+-	ret = ath10k_qmi_host_cap_send_sync(qmi);
+-	if (ret)
+-		return;
 +	/*
-+	 * If we have isolated CPUs for use by real-time tasks, to keep the
-+	 * latency overhead to a minimum, device-specific IRQ vectors are moved
-+	 * to the housekeeping CPUs from the userspace by changing their
-+	 * affinity mask. Limit the vector usage to keep housekeeping CPUs from
-+	 * running out of IRQ vectors.
++	 * Skip the host capability request for the firmware versions which
++	 * do not support this feature.
 +	 */
-+	if (hk_cpus < num_online_cpus()) {
-+		if (hk_cpus < min_vecs)
-+			max_vecs = min_vecs;
-+		else if (hk_cpus < max_vecs)
-+			max_vecs = hk_cpus;
++	if (!test_bit(ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK, &ar_snoc->flags)) {
++		ret = ath10k_qmi_host_cap_send_sync(qmi);
++		if (ret)
++			return;
 +	}
- 	return pci_alloc_irq_vectors_affinity(dev, min_vecs, max_vecs, flags,
- 					      NULL);
+ 
+ 	ret = ath10k_qmi_msa_mem_info_send_sync_msg(qmi);
+ 	if (ret)
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+index 354d49b1cd45..4efbf1339c80 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.c
++++ b/drivers/net/wireless/ath/ath10k/snoc.c
+@@ -1281,6 +1281,9 @@ static void ath10k_snoc_quirks_init(struct ath10k *ar)
+ 
+ 	if (of_property_read_bool(dev->of_node, "qcom,snoc-host-cap-8bit-quirk"))
+ 		set_bit(ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK, &ar_snoc->flags);
++
++	if (of_property_read_bool(dev->of_node, "qcom,snoc-host-cap-skip-quirk"))
++		set_bit(ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK, &ar_snoc->flags);
  }
+ 
+ int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
+diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+index a3dd06f6ac62..2a0045f0af7e 100644
+--- a/drivers/net/wireless/ath/ath10k/snoc.h
++++ b/drivers/net/wireless/ath/ath10k/snoc.h
+@@ -47,6 +47,7 @@ enum ath10k_snoc_flags {
+ 	ATH10K_SNOC_FLAG_UNREGISTERING,
+ 	ATH10K_SNOC_FLAG_RECOVERY,
+ 	ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK,
++	ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK,
+ };
+ 
+ struct clk_bulk_data;
 -- 
-2.18.2
+2.7.4
 
