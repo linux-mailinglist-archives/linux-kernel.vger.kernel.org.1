@@ -2,92 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7099D27829C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAAF2782A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727674AbgIYIV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53468 "EHLO
+        id S1727702AbgIYIWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:22:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727408AbgIYIVz (ORCPT
+        with ESMTP id S1727520AbgIYIWF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:21:55 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BA1C0613CE;
-        Fri, 25 Sep 2020 01:21:55 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id s88so1556827ilb.6;
-        Fri, 25 Sep 2020 01:21:55 -0700 (PDT)
+        Fri, 25 Sep 2020 04:22:05 -0400
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71E0AC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:22:05 -0700 (PDT)
+Received: by mail-ua1-x929.google.com with SMTP id h15so665663uab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=LJvK1S1wM77CEwiTWGHH4blwT2BpBAlEo89Zgh09KOA=;
-        b=c6UN+CI1Fp4uk5RW2Kl5hegia7PgWhtLlM7r1U47nBCKQW72a7A4XRQcXs33oeaDor
-         +Pekks1fUk4lcSdjBfDpJNj8Lb+IWNmLhQGoYiWisLkv3D41VUsroEnfczSCvn93iMA0
-         PdgoNS1YbL/b4ZMuMJFX/1ZXSLFAggeEoX2ktDD9FO+0pwsANqptIRMKFiFYN4KX7qqC
-         WDDJstdvvqNx8NXIKmPnfS63q2GhbEEE1YnuLTkynqPYmELrM+FlCF2ozTVc/6yewcjv
-         uyqAXpyf+XMSyM3oKmVb8hOYgFUVTQTL4LQrVbqn3Y8e3BtJGlXTQ5GVgKq2oCwFpg+W
-         1DAQ==
+        bh=WvDyteRu76pYPa4UAHUwSYLYJxuuyxc2Dt1PKdTqcpM=;
+        b=yTnQ4SV+hkPVxsQOZuljNgG+ll2vkUcmkTeES9wkAB2E6MwbdALDRKC5/qErzxHexZ
+         70H9PmgMHqXNxxZIIjZGiKvr2WozB4tuEMjUho6Xp9AT5Y/zRF5qQCJ7qulTMbtogqoz
+         isGEDVKW+sgSMRbs/PJV8waGVvK8XpmEIRI8gm1t6JTpicOBLWftuIWzMlMzjmw16tyt
+         BVKhk9gLbpJPVej+XcRMQlOxXCM3ZqVob/MbQz+/+hQPeKos8VHuZTutglw2wY5TUFq5
+         PxGaWlGgp7KiDuOq18dRuA6kjn9PGg9ur8FI/N4bggCtUJXjvo2hGb7IFjVa1fGufd3F
+         IYCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=LJvK1S1wM77CEwiTWGHH4blwT2BpBAlEo89Zgh09KOA=;
-        b=oEJMbbOE6iBWSLh+BOEzMvxmeeLbSi9h8DHyTDtIof6BvElyucOs/D50xi3drp8aaj
-         HTKT42yyzlW2vo18yf1Cv0ov97NHX3rrnmCCm6GEcpnXVrtvSZlWPbpICLZAfFtszuMi
-         ZEvK7lSsHo7w164sQqD4HQg8mEXArXPoJoRuyBopFgRyuS47WIAc2p1NaJZ0ZS5aNy69
-         2l6zCrqK5GuSWz3o43M1yheG74rNhA1Y8nEnX8KuMmPrCQJKFdD7XQQhLryJHGCDnlgm
-         hmiAzt88U5xGyE9XhhqyIrrz8+ZQr6q5CT9iLaW5RI+XqF2lCUb8yTCxV0E8uB26A8ls
-         hDYA==
-X-Gm-Message-State: AOAM532MVpaGyMU8idUNrRJSbsVEF8L9d/ujY6bM7wQy/qFp1JlVM149
-        JjAQ6AhstOz6C/ox9rAScOe4TVHK0ACtqCDBvC0=
-X-Google-Smtp-Source: ABdhPJxbkPFY03hpX61qBi/nCU+CsJEoNVRZmepsG6KM0Jr4eQ/tgOQDlyETWRPRhaB53PSTYIq/19x3diRibukeHKw=
-X-Received: by 2002:a92:cbcf:: with SMTP id s15mr2378625ilq.39.1601022114691;
- Fri, 25 Sep 2020 01:21:54 -0700 (PDT)
+        bh=WvDyteRu76pYPa4UAHUwSYLYJxuuyxc2Dt1PKdTqcpM=;
+        b=ddprs9oLXXwDnCwG+ZIWhGhWA48VpSpHdZSWSh+nuak6mYZHGaOmXt6khzxnevCU+E
+         tmrub5yuePhM9TdURlGdTUSLvW+Fso6VArjRZaX97h+AQpfV51wE8K2c1rOb1woPtyZ/
+         uHS3p1tIJ3GuWAnsOHR1FJRuaTTKakkEhzv7dOl2IhKOTIQOibnqiq+zh9XayacTH47F
+         itr46RI/FjX8o6pSePI9FlgndJ9OosAV99fzQ2wcR8UCVhBSvgiD5uhp+gv0SBZKDMqY
+         pMm7dodPWwvdjUw+DpwILqnk2V+E8H2Ptz+vDmNh74hGOzMSRtFXD3niDuGLcHI5iqjr
+         gimQ==
+X-Gm-Message-State: AOAM530stbG3cABpok8qPsAZ/5fT/F78/82u9BI7LvlVpCCHHnTBYow8
+        k5fyVthio6BJiAhVTHIzoFK8vQySeyaNc4QCrEgbxg==
+X-Google-Smtp-Source: ABdhPJzLpE+AUK3XJTcofgSAmKvjhVK7+3tvguttC5HmiCpeMiYmNklBnlRfzt2LXLjnlt0nX+EaErShGSTZoNR/zHY=
+X-Received: by 2002:ab0:1450:: with SMTP id c16mr1693683uae.27.1601022124294;
+ Fri, 25 Sep 2020 01:22:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200925065418.1077472-1-ikjn@chromium.org> <20200925145255.v3.4.I06cb65401ab5ad63ea30c4788d26633928d80f38@changeid>
-In-Reply-To: <20200925145255.v3.4.I06cb65401ab5ad63ea30c4788d26633928d80f38@changeid>
-From:   Chuanhong Guo <gch981213@gmail.com>
-Date:   Fri, 25 Sep 2020 16:21:43 +0800
-Message-ID: <CAJsYDVLaw_ViJECoX8VxtrhCDg7m-fOZ0XmF1+n9Y13oVgd4oQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/6] spi: spi-mtk-nor: use dma_alloc_coherent() for
- bounce buffer
-To:     Ikjoon Jang <ikjn@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
+References: <20200914021758.420874-1-liuhangbin@gmail.com/> <20200914022227.437143-1-liuhangbin@gmail.com>
+In-Reply-To: <20200914022227.437143-1-liuhangbin@gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 25 Sep 2020 13:51:53 +0530
+Message-ID: <CA+G9fYvT6Mw2BamoiVyw=wLUqD-3LB2oaDqcuabOyWfFxEN1qg@mail.gmail.com>
+Subject: Re: [PATCHv5 kselftest next] selftests/run_kselftest.sh: make each
+ test individually selectable
+To:     Hangbin Liu <liuhangbin@gmail.com>
+Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>, Tim.Bird@sony.com,
+        lkft-triage@lists.linaro.org, Kees Cook <keescook@chromium.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Justin Cook <justin.cook@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-On Fri, Sep 25, 2020 at 2:56 PM Ikjoon Jang <ikjn@chromium.org> wrote:
+On Mon, 14 Sep 2020 at 07:53, Hangbin Liu <liuhangbin@gmail.com> wrote:
 >
-> Use dma_alloc_coherent() for bounce buffer instead of kmalloc() to
-> make sure the bounce buffer to be allocated within its DMAable range.
+> Currently, after generating run_kselftest.sh, there is no way to choose
+> which test we could run. All the tests are listed together and we have
+> to run all every time. This patch enhanced the run_kselftest.sh to make
+> the tests individually selectable. e.g.
+>
+>   $ ./run_kselftest.sh -t "bpf size timers"
 
-I think the introduction of need_bounce can be in its own commit or
-at least mentioned here.
+My test run break on linux next
+
+./run_kselftest.sh: line 1331: syntax error near unexpected token `)'
+./run_kselftest.sh: line 1331: `-e -s | --summary )
+logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;'
+
+steps do run:
+# run_kselftest.sh file generated by kselftest Makefile and included in tarball
+./run_kselftest.sh 2>&1 | tee "${LOGFILE}"
+
+ref:
+https://github.com/nareshkamboju/test-definitions/blob/master/automated/linux/kselftest/kselftest.sh#L222
+
+full test run log:
+https://lkft.validation.linaro.org/scheduler/job/1786826#L1391
 
 >
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> Before the patch:
+> ================
 >
-> ---
+> $ cat run_kselftest.sh
+> \#!/bin/sh
+> BASE_DIR=$(realpath $(dirname $0))
+> cd $BASE_DIR
+> . ./kselftest/runner.sh
+> ROOT=$PWD
+> if [ "$1" = "--summary" ]; then
+>   logfile=$BASE_DIR/output.log
+>   cat /dev/null > $logfile
+> fi
+> [ -w /dev/kmsg ] && echo "kselftest: Running tests in android" >> /dev/kmsg
+> cd android
+> run_many        \
+>         "run.sh"
+> cd $ROOT
+> ...<snip>...
+> [ -w /dev/kmsg ] && echo "kselftest: Running tests in zram" >> /dev/kmsg
+> cd zram
+> run_many        \
+>         "zram.sh"
+> cd $ROOT
 >
-> (no changes since v1)
+> After the patch:
+> ===============
+>
+> $ cat run_kselftest.sh
+> \#!/bin/sh
+> BASE_DIR=$(realpath $(dirname $0))
+> . ./kselftest/runner.sh
+> TESTS="android ...<snip>... filesystems/binderfs ...<snip>... zram"
+>
+> run_android()
+> {
+>         [ -w /dev/kmsg ] && echo "kselftest: Running tests in android" >> /dev/kmsg
+>         cd android
+>         run_many        \
+>                 "run.sh"
+>         cd $ROOT
+> }
+>
+> ...<snip>...
+>
+> run_filesystems_binderfs()
+> {
+>         [ -w /dev/kmsg ] && echo "kselftest: Running tests in filesystems/binderfs" >> /dev/kmsg
+>         cd filesystems/binderfs
+>         run_many        \
+>                 "binderfs_test"
+>         cd $ROOT
+> }
+>
+> ...<snip>...
+>
+> run_zram()
+> {
+>         [ -w /dev/kmsg ] && echo "kselftest: Running tests in zram" >> /dev/kmsg
+>         cd zram
+>         run_many        \
+>                 "zram.sh"
+>         cd $ROOT
+> }
+>
+> usage()
+> {
+>         cat <<EOF
+> usage: ${0##*/} OPTS
+>         -s | --summary          Only print summary info and put detailed log in output.log
+>         -t | --tests            Test name you want to run specifically
+>         -h | --help             Show this usage info
+> EOF
+> }
+>
+> while true; do
+>         case "$1" in
+>         -s | --summary ) logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;
+>         -t | --tests ) TESTS=$2; shift 2 ;;
+>         -l | --list ) echo $TESTS; exit 0 ;;
+>         -h | --help ) usage; exit 0 ;;
+>         "" ) break;;
+>         * ) usage; exit 1;;
+>         esac
+> done
+>
+> cd $BASE_DIR
+> ROOT=$PWD
+> for folder in $TESTS; do
+>         folder=$(echo $folder | tr -s '/-' '_')
+>         run_$folder
+> done
+>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 
- There have been a lot of changes since v2 :)
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-Reviewed-by: Chuanhong Guo <gch981213@gmail.com>
 -- 
-Regards,
-Chuanhong Guo
+Linaro LKFT
+https://lkft.linaro.org
