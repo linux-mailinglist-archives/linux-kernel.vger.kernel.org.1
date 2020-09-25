@@ -2,109 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A930278E9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A7C278E99
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729586AbgIYQcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:32:02 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:50092 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbgIYQcC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:32:02 -0400
-Received: from [192.168.0.121] (unknown [209.134.121.133])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DBF9A20B7179;
-        Fri, 25 Sep 2020 09:32:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DBF9A20B7179
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1601051521;
-        bh=axHGvPGQ3Uucmw9dJfiXiWiyXRYSF8alJrmu9OrwpnY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=OckwlBNKRaG9cq0lrITdg3JNuRgehsftGDd9tpS2SU7+hPmZBXBRGCWV2eLZoJW88
-         8OYn62ojxVtLOn6up6/D07T6Qyy4HJ0U4ftZiCkQ2wloLAaPxs1nkIvhPRqJJ9G1qG
-         Dj8UCOQF3StjUHVzc5Rbp9I9gMzlDodHOgqihPCc=
-Subject: Re: [v3 1/2] mm: khugepaged: recalculate min_free_kbytes after memory
- hotplug as expected by khugepaged
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <1600305709-2319-1-git-send-email-vijayb@linux.microsoft.com>
- <1600305709-2319-2-git-send-email-vijayb@linux.microsoft.com>
- <20200925074215.GA3389@dhcp22.suse.cz>
-From:   Vijay Balakrishna <vijayb@linux.microsoft.com>
-Message-ID: <751cd286-5919-fc0a-21b4-75460934e305@linux.microsoft.com>
-Date:   Fri, 25 Sep 2020 09:31:39 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1729266AbgIYQb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:31:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727733AbgIYQbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:31:55 -0400
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B85023899
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:31:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601051514;
+        bh=Ik7sogL+z9aD/+1OiO4uM25gNcDglZeUy/6lyvSwMb4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nm1XxwGHIt9UmR/Ifr4xaeqfrQvzLDMgtpU5lpUmSpR33k/zrqbBOn3hX+AwEosps
+         2RQ7KCKnD7imgUyW9DiA/EdUWTNV7LG5Q7VMUEG/SR1m2R2ImEta9ouGe2Bl078/bI
+         0V179iT1PxrQibpFo9qCprANqXPllF8qydxgC0vw=
+Received: by mail-wr1-f54.google.com with SMTP id c18so4241366wrm.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:31:54 -0700 (PDT)
+X-Gm-Message-State: AOAM532SSWeEWSDOAKzTW8uoBvjWYwHuRI62DQYOOoO70ss/G0MXwyhS
+        AZq60iTtKrHPAOvCBNGgmgtBG3FeIUhpwWoYWeBobg==
+X-Google-Smtp-Source: ABdhPJwloz7GRCeaksqcAiQSK6BA/smLdlgKTRsnAcqj22VT9muQh8MWEkpeHivxaVg9kyXoGTbw7yd3PH1Uou0uWMU=
+X-Received: by 2002:a5d:5281:: with SMTP id c1mr5368504wrv.184.1601051512977;
+ Fri, 25 Sep 2020 09:31:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200925074215.GA3389@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200925145804.5821-1-yu-cheng.yu@intel.com> <20200925145804.5821-9-yu-cheng.yu@intel.com>
+In-Reply-To: <20200925145804.5821-9-yu-cheng.yu@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 25 Sep 2020 09:31:40 -0700
+X-Gmail-Original-Message-ID: <CALCETrXs11c8ZcB2QdWUm5CeCXRm1wo706g5J9ajR8+6yYTgtQ@mail.gmail.com>
+Message-ID: <CALCETrXs11c8ZcB2QdWUm5CeCXRm1wo706g5J9ajR8+6yYTgtQ@mail.gmail.com>
+Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect
+ Branch Tracking for vsyscall emulation
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 25, 2020 at 7:58 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
+>
+> Vsyscall entry points are effectively branch targets.  Mark them with
+> ENDBR64 opcodes.  When emulating the RET instruction, unwind shadow stack
+> and reset IBT state machine.
+>
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> ---
+> v13:
+> - Check shadow stack address is canonical.
+> - Change from writing to MSRs to writing to CET xstate.
+>
+>  arch/x86/entry/vsyscall/vsyscall_64.c     | 34 +++++++++++++++++++++++
+>  arch/x86/entry/vsyscall/vsyscall_emu_64.S |  9 ++++++
+>  arch/x86/entry/vsyscall/vsyscall_trace.h  |  1 +
+>  3 files changed, 44 insertions(+)
+>
+> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
+> index 44c33103a955..315ee3572664 100644
+> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
+> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+> @@ -38,6 +38,9 @@
+>  #include <asm/fixmap.h>
+>  #include <asm/traps.h>
+>  #include <asm/paravirt.h>
+> +#include <asm/fpu/xstate.h>
+> +#include <asm/fpu/types.h>
+> +#include <asm/fpu/internal.h>
+>
+>  #define CREATE_TRACE_POINTS
+>  #include "vsyscall_trace.h"
+> @@ -286,6 +289,37 @@ bool emulate_vsyscall(unsigned long error_code,
+>         /* Emulate a ret instruction. */
+>         regs->ip = caller;
+>         regs->sp += 8;
+> +
+> +#ifdef CONFIG_X86_CET
+> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
+> +               struct cet_user_state *cet;
+> +               struct fpu *fpu;
+> +
+> +               fpu = &tsk->thread.fpu;
+> +               fpregs_lock();
+> +
+> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
+> +                       copy_fpregs_to_fpstate(fpu);
+> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
+> +               }
+> +
+> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
+> +               if (!cet) {
+> +                       fpregs_unlock();
+> +                       goto sigsegv;
 
+I *think* your patchset tries to keep cet.shstk_size and
+cet.ibt_enabled in sync with the MSR, in which case it should be
+impossible to get here, but a comment and a warning would be much
+better than a random sigsegv.
 
-On 9/25/2020 12:42 AM, Michal Hocko wrote:
-> On Wed 16-09-20 18:21:48, Vijay Balakrishna wrote:
->> When memory is hotplug added or removed the min_free_kbytes must be
->> recalculated based on what is expected by khugepaged.  Currently
->> after hotplug, min_free_kbytes will be set to a lower default and higher
->> default set when THP enabled is lost.  This change restores min_free_kbytes
->> as expected for THP consumers.
->>
->> Fixes: f000565adb77 ("thp: set recommended min free kbytes")
->>
->> Signed-off-by: Vijay Balakrishna <vijayb@linux.microsoft.com>
->> Cc: stable@vger.kernel.org
->> Reviewed-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-> 
-> I am ok with this patch. I am not sure this is worth backporting to
-> stable trees becasuse this is not a functional bug. Surprising behavior,
-> yes, but not much more than that.
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks Michal.
-
-> 
-> One minor comment below
-> [...]
->> @@ -857,6 +858,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
->>   	zone_pcp_update(zone);
->>   
->>   	init_per_zone_wmark_min();
->> +	khugepaged_min_free_kbytes_update();
->>   
->>   	kswapd_run(nid);
->>   	kcompactd_run(nid);
->> @@ -1600,6 +1602,7 @@ static int __ref __offline_pages(unsigned long start_pfn,
->>   	pgdat_resize_unlock(zone->zone_pgdat, &flags);
->>   
->>   	init_per_zone_wmark_min();
->> +	khugepaged_min_free_kbytes_update();
->>   
->>   	if (!populated_zone(zone)) {
->>   		zone_pcp_reset(zone);
-> 
-> Can we move khugepaged_min_free_kbytes_update into
-> init_per_zone_wmark_min? If it stays external we might hit the same
-> problem when somebody else needs to modify min_free_kbytes. Early init
-> call will be likely too early for khugepaged but that shouldn't matter
-> AFAICS because it will call khugepaged_min_free_kbytes_update on its
-> own.
-
-Sure, let me take a look and post v4 next week.
-
-Thanks,
-Vijay
-
-> 
+Shouldn't we have a get_xsave_addr_or_allocate() that will never
+return NULL but instead will mark the state as in use and set up the
+init state if the feature was previously not in use?
