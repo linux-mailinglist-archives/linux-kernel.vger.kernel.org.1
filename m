@@ -2,141 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4402782AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79BD52782AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727710AbgIYIXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:23:41 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:58193 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgIYIXl (ORCPT
+        id S1727485AbgIYIXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727290AbgIYIXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:23:41 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08P8NRU00031147, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08P8NRU00031147
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 25 Sep 2020 16:23:27 +0800
-Received: from RSEXMBS01.realsil.com.cn (172.29.17.195) by
- RSEXMBS01.realsil.com.cn (172.29.17.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Fri, 25 Sep 2020 16:23:26 +0800
-Received: from RSEXMBS01.realsil.com.cn ([fe80::e186:b533:fb3:8b37]) by
- RSEXMBS01.realsil.com.cn ([fe80::e186:b533:fb3:8b37%7]) with mapi id
- 15.01.2044.004; Fri, 25 Sep 2020 16:23:26 +0800
-From:   =?utf-8?B?6ZmG5pyx5Lyf?= <alex_lu@realsil.com.cn>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-CC:     Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        "open list:BLUETOOTH DRIVERS" <linux-bluetooth@vger.kernel.org>,
+        Fri, 25 Sep 2020 04:23:30 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90DD8C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:23:30 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id x23so2122497wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/xceJ+nL8CAqEkUgZuOodpMwpUATKDkMiShfUA4n0is=;
+        b=IMoy3KPK/HSnt/jGJLKFcr63ejUioDK+hkFhAqQP7ySqv+9NovuKLi4xgoyx8pXGfa
+         IPZ061o5pjj1kntDniZySCXHOoeOLddNZxPzj6LRRW15BDvl6eh8gLOTYTwBzf7ziCbN
+         kWw1N1bh2re3A8BkK/fMcq5uEaZfyXj/LUp8c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=/xceJ+nL8CAqEkUgZuOodpMwpUATKDkMiShfUA4n0is=;
+        b=gkjs1I0NlnStP9+Y7+F9ezOkpSdhWxIroQ9hnubhX0DjhGUAk/23yJpSgLgK2E6F2U
+         NilP/RB8M/qVD2TqqBRv/n373cdD2DxdtTQxmeJNBIvfN9tIPRVodPBbZ/HwDs4P1DCp
+         g3Qz6fvQMUr7Z0QngecoKiHyC7tZCF69Yip+MQdmkUQKRb6Ri2A5qx5eq7B2LRXt5KoM
+         4YclqkghvcsGVY/s5fp2T3HCFzBsqP20N9/8KojIpsA5E5nTCk1o3+VSwy+MNN+QUYzu
+         1TNsV/Yrh1HJXxrS6MuunIOPBVJEQemzELa/GMAPZylEq55Uqxm2bKJlBoThyn9St3sX
+         JuXA==
+X-Gm-Message-State: AOAM533idgHSJyGJbUwvrwpashNPinF8uKy0DKSgHXkXoMukPuldDDTm
+        7JtVt3Bam7fPw46aReUaJ5Ap1A==
+X-Google-Smtp-Source: ABdhPJx/UOwLevgV8DQL2Dlb2vUO7KMkODvbhcZyU/EorN0L0j6u1I71NTHNWAU21XFJb2gYDUTCIg==
+X-Received: by 2002:a7b:c751:: with SMTP id w17mr1783626wmk.97.1601022209259;
+        Fri, 25 Sep 2020 01:23:29 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q12sm1949166wrs.48.2020.09.25.01.23.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 01:23:28 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 10:23:26 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
-        "open list:USB XHCI DRIVER" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH] Bluetooth: btusb: Avoid unnecessary reset upon system resume
-Thread-Topic: [PATCH] Bluetooth: btusb: Avoid unnecessary reset upon system
- resume
-Thread-Index: AdaTFDyzjigV3dr0CE6uDdt266LELw==
-Date:   Fri, 25 Sep 2020 08:23:26 +0000
-Message-ID: <30ce4ee1eede47c09c3e7f277c26918a@realsil.com.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.36.107]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH 0/3] drm: commit_work scheduling
+Message-ID: <20200925082326.GB438822@phenom.ffwll.local>
+Mail-Followup-To: Qais Yousef <qais.yousef@arm.com>,
+        Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tim Murray <timmurray@google.com>, Tejun Heo <tj@kernel.org>
+References: <20200919193727.2093945-1-robdclark@gmail.com>
+ <20200921092154.GJ438822@phenom.ffwll.local>
+ <CAF6AEGuDRk9D_aqyb6R8N5VHx2rvbZDf4uTqF3gQTrmzno+qtw@mail.gmail.com>
+ <CAKMK7uEqDD-oDAQKyA9DQbxkCgEjC5yyjvKR7d8T0Gj0SqEZ4A@mail.gmail.com>
+ <CAF6AEGtYAn+W8HxP7SXtxPr5FsEB1hYGU91WrHCtwX89UmUR5w@mail.gmail.com>
+ <20200923152545.GQ438822@phenom.ffwll.local>
+ <CAF6AEGs9xDOoG3n4E_+6iDaiJXp_hqvSV1VKE=vpvG-twYPoew@mail.gmail.com>
+ <20200924084950.GY438822@phenom.ffwll.local>
+ <20200924161356.5kezxwiqwtbi3o2p@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924161356.5kezxwiqwtbi3o2p@e107158-lin.cambridge.arm.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS2FpLUhlbmcsDQoNCj4gT24gU2VwdGVtYmVyIDI1LCAyMDIwIGF0IDE1OjU2LCBLYWktSGVu
-ZyBGZW5nIHdyb3RlOg0KPiANCj4gSGkgQWxleCwNCj4gDQo+ID4gT24gU2VwIDI1LCAyMDIwLCBh
-dCAxNTo0Miwg6ZmG5pyx5LyfIDxhbGV4X2x1QHJlYWxzaWwuY29tLmNuPiB3cm90ZToNCj4gPg0K
-PiA+IEhpIEthaS1IZW5nLA0KPiA+DQo+ID4+IE9uIDI1IFNlcHRlbWJlciAyMDIwIGF0IDE1OjE0
-LCBLYWktSGVuZyBGZW5nIHdyb3RlOg0KPiA+Pg0KPiA+PiBIaSBBbGV4LA0KPiANCj4gW3NuaXBw
-ZWRdDQo+IA0KPiA+PiBBcHBhcmVudGx5IGZvciBteSBjYXNlLCBSVEw4ODIxQ0UsIGZpcm13YXJl
-IHdhcyBrZXB0IHdpdGhvdXQgc2V0dGluZw0KPiA+PiByZW1vdGUgd2FrZXVwLg0KPiA+DQo+ID4g
-U28geW91IGdvdCB0aGUgYnR1c2IgZGlzY29ubmVjdCBhbmQgcmVwcm9iZSBzZXF1ZW5jZSBhZnRl
-ciByZXN1bWUsIGFuZCAiDQo+IEJsdWV0b290aDogaGNpMDogY29tbWFuZCAweDEwMDEgdHggdGlt
-ZW91dCAiIGJlZm9yZSBmaXJtd2FyZSBkb3dubG9hZGluZyA/DQo+IA0KPiBVU0IgcG93ZXIgd2Fz
-bid0IGxvc3QsIGJ1dCBpdCBnb3QgVVNCIHdhcm0gcmVzZXQgYmVjYXVzZSBidHVzYiBkcml2ZXIN
-Cj4gZXhwbGljaXRseSBmbGFnZ2VkICJyZXNldF9yZXN1bWUgPSAxIi4NCj4gVGhlbiB0aGUgaXNz
-dWUgYXBwZWFyZWQgYXMgIkJsdWV0b290aDogaGNpMDogY29tbWFuZCAweDEwMDEgdHggdGltZW91
-dCIsDQo+IGJlZm9yZSBkb3dubG9hZGluZyBmaXJtd2FyZS4NCj4gDQo+ID4NCj4gPj4gSXMgaXQg
-b2theSB0byBhbHNvIHNldCByZW1vdGUgd2FrZXVwIGZvciBnbG9iYWwgc3VzcGVuZCB0byByZXRh
-aW4gdGhlDQo+ID4+IGZpcm13YXJlPw0KPiA+DQo+ID4gWWVzLCBpdCdzIG9rLg0KPiANCj4gQWJo
-aXNoZWssIGRvZXMgc2V0dGluZyByZW1vdGUgd2FrZXVwIGR1cmluZyBnbG9iYWwgc3VzcGVuZCB3
-b3JrcyBmb3IgeW91Pw0KIA0KSXQgZGVwZW5kcyBvbiB5b3VyIGRlc2lyZSBvbiBwb3dlciBjb25z
-dW1wdGlvbiBkdXJpbmcgZ2xvYmFsIHN1c3BlbmQuDQpUaGUgQlQgY29udHJvbGxlciB0YWtlcyBs
-ZXNzIHBvd2VyIGlmIGZpcm13YXJlIHdhcyBsb3N0IGR1cmluZyBnbG9iYWwgc3VzcGVuZC4NCg0K
-PiANCj4gPg0KPiA+PiBJZiBmaXJtd2FyZSB3YXMgcmV0YWluZWQsIGRvZXMgVVNCIHdhcm0gcmVz
-ZXQgYWZmZWN0IEJUIGNvbnRyb2xsZXIgaW4NCj4gPj4gYW55d2F5Pw0KPiA+DQo+ID4gVVNCIHdh
-cm0gcmVzZXQgc2hvdWxkbid0IGFmZmVjdCBCVCBjb250cm9sbGVyLg0KPiA+IEJ1dCBoY2kgZGV2
-aWNlIHdpbGwgbm90IHdvcmsgYWZ0ZXIgcmVzdW1lLCBiZWNhdXNlIGJ0cnRsIHdpbGwgZmluZCAi
-dW5rbm93bg0KPiBJQyBpbmZvLCBsbXAgc3VidmVydCAuLi4iIGFuZCByZXR1cm4gZXJyb3Igd2hl
-biBoY2kgZGV2aWNlIHNldHVwIGlzIGNhbGxlZC4NCj4gPiBUaXBzOiBUaGUgbG1wIHN1YnZlciBp
-biBjb250cm9sbGVyIGNoYW5nZXMgYWZ0ZXIgZmlybXdhcmUgZG93bmxvYWRpbmcuDQo+IEFuZCBk
-cml2ZXIgd2lsbCBmaW5kICIgdW5rbm93biBJQyBpbmZvLCBsbXAgc3VidmVyICAuLi4iIHdoZW4g
-c2V0dXAgaXMgY2FsbGVkDQo+IHdpdGggZmlybXdhcmUgcmV0YWluZWQuDQo+IA0KPiBUaGlzIHNo
-b3VsZCBhbHJlYWR5IGJlIGZpeGVkIGJ5ICJCbHVldG9vdGg6IGJ0cnRsOiBSZXN0b3JlIG9sZCBs
-b2dpYyB0byBhc3N1bWUNCj4gZmlybXdhcmUgaXMgYWxyZWFkeSBsb2FkZWQiLg0KPiANCj4gS2Fp
-LUhlbmcNCj4gDQo+ID4NCj4gPj4NCj4gPj4gS2FpLUhlbmcNCj4gPj4NCj4gPj4+DQo+ID4+Pj4N
-Cj4gPj4+PiBLYWktSGVuZw0KPiA+Pj4+DQo+ID4+Pj4+DQo+ID4+Pj4+IEBBbGV4IC0tIFdoYXQg
-aXMgdGhlIGNvbW1vbiBiZWhhdmlvciBmb3IgUmVhbHRlayBjb250cm9sbGVycz8NCj4gU2hvdWxk
-DQo+ID4+Pj4+IHdlIHNldCBCVFVTQl9XQUtFVVBfRElTQUJMRSBvbmx5IG9uIFJUTDg4MjJDRSBv
-ciBzaG91bGQgd2UNCj4gdW5zZXQNCj4gPj4gaXQNCj4gPj4+Pj4gb25seSBvbiBSVEw4ODIxQ0U/
-DQo+ID4+Pj4+DQo+ID4+Pj4+Pj4NCj4gPj4+Pj4+PiBJIHdvdWxkIHByZWZlciB0aGlzIGRvZXNu
-J3QgZ2V0IGFjY2VwdGVkIGluIGl0cyBjdXJyZW50IHN0YXRlLg0KPiA+Pj4+Pj4NCj4gPj4+Pj4+
-IE9mIGNvdXJzZS4NCj4gPj4+Pj4+IEkgdGhpbmsgd2UgbmVlZCB0byBmaW5kIHRoZSByb290IGNh
-dXNlIGZvciB5b3VyIGNhc2UgYmVmb3JlIGFwcGx5aW5nDQo+IHRoaXMNCj4gPj4+PiBvbmUuDQo+
-ID4+Pj4+Pg0KPiA+Pj4+Pj4gS2FpLUhlbmcNCj4gPj4+Pj4+DQo+ID4+Pj4+Pj4NCj4gPj4+Pj4+
-PiBBYmhpc2hlaw0KPiA+Pj4+Pj4+DQo+ID4+Pj4+Pj4gT24gV2VkLCBTZXAgMjMsIDIwMjAgYXQg
-MTA6NTYgQU0gS2FpLUhlbmcgRmVuZw0KPiA+Pj4+Pj4+IDxrYWkuaGVuZy5mZW5nQGNhbm9uaWNh
-bC5jb20+IHdyb3RlOg0KPiA+Pj4+Pj4+Pg0KPiA+Pj4+Pj4+PiBSZWFsdGVrIGJsdWV0b290aCBj
-b250cm9sbGVyIG1heSBmYWlsIHRvIHdvcmsgYWZ0ZXIgc3lzdGVtIHNsZWVwOg0KPiA+Pj4+Pj4+
-PiBbIDEyNzIuNzA3NjcwXSBCbHVldG9vdGg6IGhjaTA6IGNvbW1hbmQgMHgxMDAxIHR4IHRpbWVv
-dXQNCj4gPj4+Pj4+Pj4gWyAxMjgwLjgzNTcxMl0gQmx1ZXRvb3RoOiBoY2kwOiBSVEw6DQo+IEhD
-SV9PUF9SRUFEX0xPQ0FMX1ZFUlNJT04NCj4gPj4+PiBmYWlsZWQgKC0xMTApDQo+ID4+Pj4+Pj4+
-DQo+ID4+Pj4+Pj4+IElmIHBsYXRmb3JtIGZpcm13YXJlIGRvZXNuJ3QgY3V0IHBvd2VyIG9mZiBk
-dXJpbmcgc3VzcGVuZCwgdGhlDQo+ID4+Pj4gZmlybXdhcmUNCj4gPj4+Pj4+Pj4gaXMgY29uc2lk
-ZXJlZCByZXRhaW5lZCBpbiBjb250cm9sbGVyIGJ1dCB0aGUgZHJpdmVyIGlzIHN0aWxsIGFza2lu
-ZyBVU0INCj4gPj4+Pj4+Pj4gY29yZSB0byBwZXJmb3JtIGEgcmVzZXQtcmVzdW1lLiBUaGlzIGNh
-biBtYWtlIGJsdWV0b290aA0KPiBjb250cm9sbGVyDQo+ID4+Pj4+Pj4+IHVudXNhYmxlLg0KPiA+
-Pj4+Pj4+Pg0KPiA+Pj4+Pj4+PiBTbyBhdm9pZCB1bm5lY2Vzc2FyeSByZXNldCB0byByZXNvbHZl
-IHRoZSBpc3N1ZS4NCj4gPj4+Pj4+Pj4NCj4gPj4+Pj4+Pj4gRm9yIGRldmljZXMgdGhhdCByZWFs
-bHkgbG9zZSBwb3dlciBkdXJpbmcgc3VzcGVuZCwgVVNCIGNvcmUgd2lsbA0KPiA+PiBkZXRlY3QN
-Cj4gPj4+Pj4+Pj4gYW5kIGhhbmRsZSByZXNldC1yZXN1bWUgY29ycmVjdGx5Lg0KPiA+Pj4+Pj4+
-Pg0KPiA+Pj4+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBLYWktSGVuZyBGZW5nIDxrYWkuaGVuZy5mZW5n
-QGNhbm9uaWNhbC5jb20+DQo+ID4+Pj4+Pj4+IC0tLQ0KPiA+Pj4+Pj4+PiBkcml2ZXJzL2JsdWV0
-b290aC9idHVzYi5jIHwgOCArKystLS0tLQ0KPiA+Pj4+Pj4+PiAxIGZpbGUgY2hhbmdlZCwgMyBp
-bnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQ0KPiA+Pj4+Pj4+Pg0KPiA+Pj4+Pj4+PiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9ibHVldG9vdGgvYnR1c2IuYyBiL2RyaXZlcnMvYmx1ZXRvb3RoL2J0
-dXNiLmMNCj4gPj4+Pj4+Pj4gaW5kZXggOGQyNjA4ZGRmZDA4Li5kZTg2ZWY0Mzg4ZjkgMTAwNjQ0
-DQo+ID4+Pj4+Pj4+IC0tLSBhL2RyaXZlcnMvYmx1ZXRvb3RoL2J0dXNiLmMNCj4gPj4+Pj4+Pj4g
-KysrIGIvZHJpdmVycy9ibHVldG9vdGgvYnR1c2IuYw0KPiA+Pj4+Pj4+PiBAQCAtNDI1NSwxNyAr
-NDI1NSwxNSBAQCBzdGF0aWMgaW50IGJ0dXNiX3N1c3BlbmQoc3RydWN0DQo+ID4+Pj4gdXNiX2lu
-dGVyZmFjZSAqaW50ZiwgcG1fbWVzc2FnZV90IG1lc3NhZ2UpDQo+ID4+Pj4+Pj4+ICAgICAgICAg
-ICAgIGVuYWJsZV9pcnEoZGF0YS0+b29iX3dha2VfaXJxKTsNCj4gPj4+Pj4+Pj4gICAgIH0NCj4g
-Pj4+Pj4+Pj4NCj4gPj4+Pj4+Pj4gLSAgICAgICAvKiBGb3IgZ2xvYmFsIHN1c3BlbmQsIFJlYWx0
-ZWsgZGV2aWNlcyBsb3NlIHRoZSBsb2FkZWQgZncNCj4gPj4+Pj4+Pj4gLSAgICAgICAgKiBpbiB0
-aGVtLiBCdXQgZm9yIGF1dG9zdXNwZW5kLCBmaXJtd2FyZSBzaG91bGQgcmVtYWluLg0KPiA+Pj4+
-Pj4+PiAtICAgICAgICAqIEFjdHVhbGx5LCBpdCBkZXBlbmRzIG9uIHdoZXRoZXIgdGhlIHVzYiBo
-b3N0IHNlbmRzDQo+ID4+Pj4+Pj4+ICsgICAgICAgLyogRm9yIGdsb2JhbCBzdXNwZW5kLCBSZWFs
-dGVrIGRldmljZXMgbG9zZSB0aGUgbG9hZGVkIGZ3IGluDQo+ID4+IHRoZW0NCj4gPj4+PiBpZg0K
-PiA+Pj4+Pj4+PiArICAgICAgICAqIHBsYXRmb3JtIGZpcm13YXJlIGN1dCBwb3dlciBvZmYuIEJ1
-dCBmb3IgYXV0b3N1c3BlbmQsDQo+ID4+Pj4gZmlybXdhcmUNCj4gPj4+Pj4+Pj4gKyAgICAgICAg
-KiBzaG91bGQgcmVtYWluLiAgQWN0dWFsbHksIGl0IGRlcGVuZHMgb24gd2hldGhlciB0aGUgdXNi
-DQo+IGhvc3QNCj4gPj4+PiBzZW5kcw0KPiA+Pj4+Pj4+PiAgICAgICogc2V0IGZlYXR1cmUgKGVu
-YWJsZSB3YWtldXApIG9yIG5vdC4NCj4gPj4+Pj4+Pj4gICAgICAqLw0KPiA+Pj4+Pj4+PiAgICAg
-aWYgKHRlc3RfYml0KEJUVVNCX1dBS0VVUF9ESVNBQkxFLCAmZGF0YS0+ZmxhZ3MpKSB7DQo+ID4+
-Pj4+Pj4+ICAgICAgICAgICAgIGlmIChQTVNHX0lTX0FVVE8obWVzc2FnZSkgJiYNCj4gPj4+Pj4+
-Pj4gICAgICAgICAgICAgICAgIGRldmljZV9jYW5fd2FrZXVwKCZkYXRhLT51ZGV2LT5kZXYpKQ0K
-PiA+Pj4+Pj4+PiAgICAgICAgICAgICAgICAgICAgIGRhdGEtPnVkZXYtPmRvX3JlbW90ZV93YWtl
-dXAgPSAxOw0KPiA+Pj4+Pj4+PiAtICAgICAgICAgICAgICAgZWxzZSBpZiAoIVBNU0dfSVNfQVVU
-TyhtZXNzYWdlKSkNCj4gPj4+Pj4+Pj4gLSAgICAgICAgICAgICAgICAgICAgICAgZGF0YS0+dWRl
-di0+cmVzZXRfcmVzdW1lID0gMTsNCj4gPj4+Pj4+Pj4gICAgIH0NCj4gPj4+Pj4+Pj4NCj4gPj4+
-Pj4+Pj4gICAgIHJldHVybiAwOw0KPiA+Pj4+Pj4+PiAtLQ0KPiA+Pj4+Pj4+PiAyLjE3LjENCj4g
-Pj4+Pg0KPiA+Pj4+DQo+ID4+Pj4gLS0tLS0tUGxlYXNlIGNvbnNpZGVyIHRoZSBlbnZpcm9ubWVu
-dCBiZWZvcmUgcHJpbnRpbmcgdGhpcyBlLW1haWwuDQoNCg==
+On Thu, Sep 24, 2020 at 05:15:00PM +0100, Qais Yousef wrote:
+> On 09/24/20 10:49, Daniel Vetter wrote:
+> 
+> [...]
+> 
+> > > > I also thought kernel threads can be distinguished from others, so
+> > > > userspace shouldn't be able to sneak in and get elevated by accident.
+> > > 
+> > > I guess maybe you could look at the parent?  I still would like to
+> > > think that we could come up with something a bit less shaking than
+> > > matching thread names by regexp..
+> > 
+> > ps marks up kernel threads with [], so there is a way. But I haven't
+> > looked at what it is exactly that tells kernel threads apart from others.
+> > 
+> > But aside from that sounds like "match right kernel thread with regex and
+> > set its scheduler class" is how this is currently done, if I'm
+> > understanding what Tejun and Peter said correctly.
+> > 
+> > Not pretty, but also *shrug* ...
+> 
+> Isn't there a real danger that a sneaky application names its threads to match
+> this regex and get a free promotion to RT without having the capability to do
+> so?
+
+A sneaky application can't fake being a kernel thread, at least that's
+what I thought. You need to check for that _and_ that the name matches.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
