@@ -2,111 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCFB1279248
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F326279247
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727512AbgIYUhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:37:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47826 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729096AbgIYUhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:37:13 -0400
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD50822211
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:37:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601066232;
-        bh=WZbwT2IHsLPVib9LWqjiQ9VL5NAX2HL7HRcoYiVNWkw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qNb+YYrX1jzXjp9FjsAl2BzlcqEssgXd1+vfLdR4Xy44/ZcEKjpTebtcmPhIR1H14
-         qDu+TTbe/P+cWMxj4asNU+S7SegNTtpQqbd6Hlro7NTGLUHUaDM1UjbykZJgEMz5f3
-         AEWddnez0BlRcuPJXCE4x3QDSn8sKiuW2OWoAzXo=
-Received: by mail-oo1-f53.google.com with SMTP id w25so1064500oos.10
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:37:12 -0700 (PDT)
-X-Gm-Message-State: AOAM531S0NtHkGxAeAulVH37Zo8Jmxn4XgtP6MsRyz4JU905VrUqdqFK
-        tGd9tvEBpuAdLZrKktbJFRACGxe20kJcw7rrV8U=
-X-Google-Smtp-Source: ABdhPJy5yn+k2qTffdPEkwz81q4jfUywaUdKX4eyqIezGZqX1pvY0kQk58CIUkInD4MoUX3cSwW3s41Wr8o4wcTAQO8=
-X-Received: by 2002:a4a:4910:: with SMTP id z16mr2063269ooa.41.1601066231895;
- Fri, 25 Sep 2020 13:37:11 -0700 (PDT)
+        id S1727325AbgIYUhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729082AbgIYUhK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:37:10 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20972C0613E4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:37:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z18so4369228pfg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=GfC/K5/eyr5f/R6KNnYNTFVKM8gTDhQ8O0T6Bc65g7I=;
+        b=iuXRcgXHEiB9o39H9hbvhItGSIju7sdYkPIXMM1iEESsQCqXomWCjd5+I/Y72J3MmH
+         pE8Ycf2qbqERCla+//BzWiE8E/xZAo9m473D7cg0uxM/yJXGtfUTlhDO2rRmdAOvY+dE
+         v9Kt55YnQOItQGdI3tA4n/0wtmB/7neNsMa94=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=GfC/K5/eyr5f/R6KNnYNTFVKM8gTDhQ8O0T6Bc65g7I=;
+        b=hKaNR/T4wNli4FAsNJGqjltlsb1VCf70KT3fOYuteW0P3DkvvPqDp1DI/sGVBwonTc
+         HvsL7TzVOc/LKIHV6uDYsOEDLl1yyUANGDEXbhF2do7eaPMjqxhEkEPhY72fqKemyeF2
+         I9BTUkCH1B81Msp/dWn+EFbsSwbCw9yAf5FDXJq8eMq0T2cKuAEngX/LR8L9pL4axFmC
+         r/6Sr8zYoEhv7WDHw+jUI+T6QSKysPG1leqDR3m9oSjPnG4DhgFtSiOMZES9qEKF7dhp
+         LS2dI3Io8M+PM9NPqHfsu4xAeP06MKP9flnr5bwL7jHb9SSn6out+fOnO+sRVIrx2s93
+         /bcA==
+X-Gm-Message-State: AOAM530Ec37tAaoUi5fqHzRGmo/tDiOpsvqDp+3BDOh/Gi5FmoeIjok2
+        gNhecXFvVHVz9uPLcBV0lHw3dg==
+X-Google-Smtp-Source: ABdhPJx5DRTSBJLZM4R1CgkCB9Vmp/ILkSaDUH73jMRCTvs/2F79SPo4ijjl1Tk1Fd/fHgDAR7Ze3g==
+X-Received: by 2002:aa7:8249:0:b029:142:2501:34db with SMTP id e9-20020aa782490000b0290142250134dbmr982040pfn.52.1601066229568;
+        Fri, 25 Sep 2020 13:37:09 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z8sm3049258pgr.70.2020.09.25.13.37.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 13:37:08 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 13:37:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+Message-ID: <202009251332.24CE0C58@keescook>
+References: <202009251223.8E46C831E2@keescook>
+ <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
 MIME-Version: 1.0
-References: <CAOuPNLjtG_VHL1M8-=pKNNRmWQg_8oC0YG7C8H3gQcbJ+0B3=A@mail.gmail.com>
- <202009251301.A1FD183582@keescook>
-In-Reply-To: <202009251301.A1FD183582@keescook>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 25 Sep 2020 22:37:01 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGtv84JHQfKoqOYyq=3m2w0Yuj_n4_Teo83zvdZ9kpZhw@mail.gmail.com>
-Message-ID: <CAMj1kXGtv84JHQfKoqOYyq=3m2w0Yuj_n4_Teo83zvdZ9kpZhw@mail.gmail.com>
-Subject: Re: KASLR support on ARM with Kernel 4.9 and 4.14
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Pintu Agarwal <pintu.ping@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Dave Martin <dave.martin@arm.com>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>, matt@codeblueprint.co.uk,
-        nico@linaro.org, Thomas Garnier <thgarnie@google.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 22:28, Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Sep 25, 2020 at 08:33:59PM +0530, Pintu Agarwal wrote:
-> > This is regarding the KASLR feature support on ARM for the kernel
-> > version 4.9 and 4.14.
-> >
-> > Is KASLR supported on ARM-32 Linux 4.9 and above ?
->
-> Sorry, this feature did not yet land in upstream:
-> https://github.com/KSPP/linux/issues/3
->
-> Here was the earlier effort:
-> https://lore.kernel.org/kernel-hardening/20170814125411.22604-1-ard.biesheuvel@linaro.org/
->
-> > Is it dependent on CONFIG_RANDOMIZE_BASE or
->
-> CONFIG_RANDOMIZE_BASE is what is used on other architectures to control
-> the feature.
->
-> > /proc/sys/kernel/randomize_va_space ?
-> > Is there any relation between these two?
->
-> No, the latter is about userspace addresses.
->
-> > Is the changing kernel symbols (in every boot), only possible if KASLR
-> > is enabled, or there is another way it can happen?
->
-> I think you meant kernel symbol addresses (not the symbols themselves).
-> But yes, I wouldn't expect the addresses to move if you didn't either
-> rebuild the kernel or had something else moving the kernel at boot (i.e.
-> the boot loader).
->
-> > I have these queries because,
-> > In one of the arm-32 devices with Kernel 4.14, I observed that
-> > CONFIG_RANDOMIZE_BASE is not available.
-> > But /proc/sys/kernel/randomize_va_space is set to 2.
-> > However, I also observed that symbol addresses are changing in every boot.
-> >
-> > 1st boot cycle:
-> > [root ~]# cat /proc/kallsyms | grep "sys_open"
-> > a5b4de92 T sys_open
-> > [root@sa515m ~]#
-> >
-> > 2nd boot cycle:
-> > [root ~]# cat /proc/kallsyms | grep "sys_open"
-> > f546ed66 T sys_open
-> >
-> > So, I am wondering how this is possible without KASLR
-> > (CONFIG_RANDOMIZE_BASE) support in Kernel ?
->
+On Fri, Sep 25, 2020 at 12:51:20PM -0700, Andy Lutomirski wrote:
+> 
+> 
+> > On Sep 25, 2020, at 12:42 PM, Kees Cook <keescook@chromium.org> wrote:
+> > 
+> > ﻿On Fri, Sep 25, 2020 at 11:45:05AM -0500, YiFei Zhu wrote:
+> >> On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> >>>> Why do the prepare here instead of during attach? (And note that it
+> >>>> should not be written to fail.)
+> >>> 
+> >>> Right.
+> >> 
+> >> During attach a spinlock (current->sighand->siglock) is held. Do we
+> >> really want to put the emulator in the "atomic section"?
+> > 
+> > It's a good point, but I had some other ideas around it that lead to me
+> > a different conclusion. Here's what I've got in my head:
+> > 
+> > I don't view filter attach (nor the siglock) as fastpath: the lock is
+> > rarely contested and the "long time" will only be during filter attach.
+> > 
+> > When performing filter emulation, all the syscalls that are already
+> > marked as "must run filter" on the previous filter can be skipped for
+> > the new filter, since it cannot change the outcome, which makes the
+> > emulation step faster.
+> > 
+> > The previous filter's bitmap isn't "stable" until siglock is held.
+> > 
+> > If we do the emulation step before siglock, we have to always do full
+> > evaluation of all syscalls, and then merge the bitmap during attach.
+> > That means all filters ever attached will take maximal time to perform
+> > emulation.
+> > 
+> > I prefer the idea of the emulation step taking advantage of the bitmap
+> > optimization, since the kernel spends less time doing work over the life
+> > of the process tree. It's certainly marginal, but it also lets all the
+> > bitmap manipulation stay in one place (as opposed to being split between
+> > "prepare" and "attach").
+> > 
+> > What do you think?
+> > 
+> > 
+> 
+> I’m wondering if we should be much much lazier. We could potentially wait until someone actually tries to do a given syscall before we try to evaluate whether the result is fixed.
 
-Those addresses were obfuscated by kptr_restrict
+That seems like we'd need to track yet another bitmap of "did we emulate
+this yet?" And it means the filter isn't really "done" until you run
+another syscall? eeh, I'm not a fan: it scratches at my desire for
+determinism. ;) Or maybe my implementation imagination is missing
+something?
+
+-- 
+Kees Cook
