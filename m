@@ -2,97 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D6E278574
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5973B27857B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727990AbgIYK6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbgIYK6i (ORCPT
+        id S1728152AbgIYK74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:59:56 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:60284 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727290AbgIYK7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:58:38 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A45C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:58:38 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id v14so1569237pjd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:58:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oAJrRFkjqiZjslJYlYFWCtkiFMgZCCH4FGFRNUlNi2M=;
-        b=vRrDqE9P0tnL8nDtFvM0Q367Z5ymCaxjktdq5fuZXjTDLvHEZSytN4AIovAUQ86Ngf
-         MFSf1MZNGY8+MRU3tuxCFlaKS/qQwMoqCe6gWMZGJGFZ0mTg7IiCW4c+qydrR6yszK01
-         syhjxFQO6NbzbcCNUzEsW9fCvD44j+0iqI40DW5HUf/C7LjVMGrPGiMWE38ds8ZCwb+h
-         Nms/SLE2q8Hjdmcgy8Sw2eeACFuzinCv2Xcc0l6HXO3DX2OTg0Kjxv81J+2fBjMIks+N
-         yzoaXKqzRt4Zy3uIVkkeTgb1Y+JbW0onSo8SpqtUyIsjIWpHR2z4iNnIU4UeReWlBgFu
-         4L5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oAJrRFkjqiZjslJYlYFWCtkiFMgZCCH4FGFRNUlNi2M=;
-        b=qBvI1ObfdKYa/RCDXSkzL+YbpkPJJ+2WDk07FFsWy7ZL7c1ziA5ZArtfay/GO1mJz8
-         JHQByPnC8fTqdJ4cu+RlDUXdCQA6O0JF4CL6h9+zY0wSs+UptghYf1RZvDzcqpyHe1m/
-         lyo+VVBEzwLHfGfDInMWKihjpHk2ar8Gu3RTEw8gt6gFRytIgy7Ytm4/sCjOqp2xUn/4
-         d1tb+BF4qUSmXuhkXbUmUhgo+/4rOwYACoic5WufpPRNXEa9d2CbbrbPB18A9taDRfGI
-         AINK0wcCPYNvVXu3H+OcQCie6cGGGNe47/9DIFVg1GwYiLeo81nuxG3sDNRmerZqK8vl
-         7j8A==
-X-Gm-Message-State: AOAM531i3qHoxg6YdXFxMfJfEDlyvqQ7iEfMKDvZgOr5xW9Wtv9iiheU
-        iCgIpliqjPhAhX+XOaBwkiOB6g==
-X-Google-Smtp-Source: ABdhPJwZFpFShelf2IuBLECWnc8DtK9yg/mtTTI8N/aWHMtli1doBnI/KO23D/dvCAYIQu2DZz26Sw==
-X-Received: by 2002:a17:90b:1649:: with SMTP id il9mr2115322pjb.50.1601031518092;
-        Fri, 25 Sep 2020 03:58:38 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id w19sm2384717pfq.60.2020.09.25.03.58.36
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 03:58:37 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 16:28:30 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to
- cpufreq_stats_record_transition()
-Message-ID: <20200925105830.xsmiwkjohlqb5joj@vireshk-i7>
-References: <cover.1600238586.git.viresh.kumar@linaro.org>
- <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
- <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
- <20200924131543.eury5vhqy3xt35v6@vireshk-i7>
- <CAJZ5v0g8Bmxt=GEKcNrKjY1cHnsURV5oe3+n1R2+U_2VJnwfRQ@mail.gmail.com>
+        Fri, 25 Sep 2020 06:59:53 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08PAtnxK012375;
+        Fri, 25 Sep 2020 05:59:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=aHsAD30eplTLAmyfrhAwqb/bjmQuLl4rTfeV9gEtaIw=;
+ b=cHFQInIfkQ80up1qAbRxFsgZlZeCNR3fXs9/TxlA/yDEDJa7xxTndM91Fj6h80ePZPUE
+ oxySyXN8gx/qnlm5J8MMmAA2LPoyzCX0T17TtI6BajpNm9bN1n81yksiMj+0Kjg0S1wC
+ KeQ5uBqZBYLtMxUQpuM2A7Zf2Wh/jBu9fucGl8FGbxD5gWvtI7nB38An7dnUnQxbFsl0
+ PJktqpoRxqQqtB64Z5F1lh5nOFtu8BfEpV8LJcAMAOMVplEU283nvkL+rJEXVDn70ClB
+ wSR0hgFXjEZpZkNUuXdBKqeE7tQc11q7yu89AfEhZjHhvE4KdDie/2r8wX7aHHUQ+Fmw Ww== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 33nedn7xpd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 25 Sep 2020 05:59:42 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 25 Sep
+ 2020 11:59:41 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 25 Sep 2020 11:59:41 +0100
+Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com [198.61.64.158])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 838AA2C3;
+        Fri, 25 Sep 2020 10:59:34 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <broonie@kernel.org>, <robh+dt@kernel.org>
+CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/3] ASoC: cs4234: Add dtschema binding document
+Date:   Fri, 25 Sep 2020 11:59:06 +0100
+Message-ID: <20200925105908.20640-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0g8Bmxt=GEKcNrKjY1cHnsURV5oe3+n1R2+U_2VJnwfRQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 spamscore=0
+ adultscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009250076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-09-20, 12:04, Rafael J. Wysocki wrote:
-> I'm actually wondering if reset_time is necessary at all.
-> 
-> If cpufreq_stats_record_transition() is the only updater of the stats,
-> which will be the case after applying this series IIUC, it may as well
-> simply set the new starting point and discard all of the data
-> collected so far if reset_pending is set.
-> 
-> IOW, the time when the reset has been requested isn't particularly
-> relevant IMV (and it is not exact anyway), because the user is
-> basically asking for discarding "history" and that may very well be
-> interpreted to include the current sample.
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-There are times when this would be visible to userspace and won't look nice.
+Document the bindings for the CS4234 ASoC codec driver.
 
-Like, set governor to performance, reset the stats and after 10 seconds, read
-the stats again, everything will be 0. Because cpufreq_stats_record_transition()
-doesn't get called at all here, we would never clear them until the time
-governor is changed and so we need to keep a track of reset-time.
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ .../bindings/sound/cirrus,cs4234.yaml         | 74 +++++++++++++++++++
+ 1 file changed, 74 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cirrus,cs4234.yaml
 
+diff --git a/Documentation/devicetree/bindings/sound/cirrus,cs4234.yaml b/Documentation/devicetree/bindings/sound/cirrus,cs4234.yaml
+new file mode 100644
+index 000000000000..156560b2a980
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/cirrus,cs4234.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: (GPL-2.0+ OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/cirrus,cs4234.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Cirrus Logic cs4234 audio CODEC
++
++maintainers:
++  - patches@opensource.cirrus.com
++
++description:
++  The CS4234 is a highly versatile CODEC that combines 4 channels of
++  high performance analog to digital conversion, 4 channels of high
++  performance digital to analog conversion for audio, and 1 channel of
++  digital to analog conversion to provide a nondelayed audio reference
++  signal to an external Class H tracking power supply. If not used to
++  drive a tracking power supply, the 5th DAC can instead be used as a
++  standard audio grade DAC, with performance specifications identical
++  to that of the 4 DACs in the audio path. Additionally, the CS4234
++  includes tunable group delay for each of the 4 audio DAC paths to
++  provide lead time for the external switch-mode power supply, and a
++  nondelayed path into the DAC outputs for input signals requiring a
++  low-latency path to the outputs.
++
++properties:
++  compatible:
++    enum:
++      - cirrus,cs4234
++
++  reg:
++    description:
++      The 7-bit I2C address depends on the state of the ADx pins, in
++      binary given by [0 0 1 0 AD2 AD1 AD0 0].
++    items:
++      minimum: 0x10
++      maximum: 0x17
++
++  VA-supply:
++    description:
++      Analogue power supply.
++
++  VL-supply:
++    description:
++      Interface power supply.
++
++  reset-gpios:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - VA-supply
++  - VL-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c@e0004000 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        reg = <0xe0004000 0x1000>;
++
++        cs4234: codec@11 {
++            compatible = "cirrus,cs4234";
++            reg = <0x11>;
++
++            VA-supply = <&vdd3v3>;
++            VL-supply = <&vdd3v3>;
++
++            reset-gpios = <&gpio 0>;
++        };
++    };
 -- 
-viresh
+2.20.1
+
