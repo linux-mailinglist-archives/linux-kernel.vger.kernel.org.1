@@ -2,169 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC59278E7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86216278ED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729432AbgIYQad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729392AbgIYQac (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:30:32 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CF5C0613CE;
-        Fri, 25 Sep 2020 09:30:32 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id m6so4301117wrn.0;
-        Fri, 25 Sep 2020 09:30:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4jdg6HluSD0IAXD+xCNl8iJ0heD5lzYJS/e0fwkN9Ko=;
-        b=YLBOmdYQC6Ni3ZJrTi0GnJS/nbroYdTPlm+td7OsuC6S5LXI+maw/Kx+k1/A7B6IeE
-         hBZlsGuaSthhEQUPZamUD1H5Z2RFQV/vL4tzSzCK2nu+YXtxh5rhjcjS16kays5OhRP1
-         XI0IXs+lHy1/euABIl+cnJBTR+1+Ihdv8N2iElCrwN+QfYbAzFk4BfWvB0mCEelbksAj
-         MoNiszFEGbX9FWI5jwqrcevtXBqnZ/k9C+p2XFz6qFWnDZ94yr2iJGwWevD9mm5wDxm8
-         oiguJtJ28Jtl2PJCXIWQw2plA5UQSYn7yMN1RUkWry+7rws0eZ+eEm6+pAuu+0WZ6eJf
-         wu/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4jdg6HluSD0IAXD+xCNl8iJ0heD5lzYJS/e0fwkN9Ko=;
-        b=S2lvU8mUddEYfY8BPRaU1oZfehD26hRBgsCsRyxBYuTvbugIaGgIgUyM+l44odYphF
-         yOTo5V3zz9LIyZhh4wm+4rBYA2UkNGDTpSmRf+zBQmZYrKAulWsPFgSfmmI+rIdB66cn
-         7Lyq0uLVAz+bR4Vt7bFTR2hrf4Eiu5V5spZPVj9tw06L5nrahENn1pcoyiOEb6BKtYCm
-         giI6v+/q3h8HBus6G4mJNpNmwGds2EtQPlg0yyCS6hwD5i7RWi45FpAAQdsxbFUJ277E
-         mF3vHamFVGzySU9HlDnryLZ2RbDjl85fVLtVIbN8NWsqeCbXmCmCQDG9zvLgG8v9SpaM
-         LgPg==
-X-Gm-Message-State: AOAM531+OgE4BpP9o1p+A7G3TdBX85q7iHvCjwsPr+DDyvBR0m0ywjUU
-        7kUZOPZKPS1Yq7F1/8zMWWU=
-X-Google-Smtp-Source: ABdhPJwUYMkkzTAcy3o+2DS9BEZxnAyPQJfcTA1zfupyyyVTxpoOPurKoyhF0HOL9AigWj18wG4/2g==
-X-Received: by 2002:a5d:444b:: with SMTP id x11mr5353193wrr.402.1601051430708;
-        Fri, 25 Sep 2020 09:30:30 -0700 (PDT)
-Received: from [192.168.1.143] ([170.253.60.68])
-        by smtp.gmail.com with ESMTPSA id n3sm3439469wmn.28.2020.09.25.09.30.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 09:30:30 -0700 (PDT)
-Subject: Re: [PATCH v2] <sys/param.h>: Add nitems() and snitems() macros
-To:     Jonathan Wakely <jwakely@redhat.com>
-Cc:     libc-alpha@sourceware.org, libc-coord@lists.openwall.com,
-        libstdc++@gcc.gnu.org, gcc@gcc.gnu.org,
-        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
-        fweimer@redhat.com, ville.voutilainen@gmail.com, enh@google.com,
-        rusty@rustcorp.com.au
-References: <20200922145844.31867-1-colomar.6.4.3@gmail.com>
- <20200925132000.235033-1-colomar.6.4.3@gmail.com>
- <f6257d7d-1cea-b45c-a858-b80bbc1f18b1@gmail.com>
- <20200925144822.GM6061@redhat.com>
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-Message-ID: <22c110fe-4c92-e5e6-dc35-dbf00a97cfa2@gmail.com>
-Date:   Fri, 25 Sep 2020 18:30:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1729554AbgIYQk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:40:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:59775 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728610AbgIYQk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:40:26 -0400
+IronPort-SDR: S6Cc/jld4fbCqJ9WFHDuTgkTJiYpL6D+GOjvKZ6VTmNO0d3njEPMxj0Q9ycKe1ty3cL4pmE81w
+ FQpgV+K5CGFA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="223179522"
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="223179522"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 09:40:25 -0700
+IronPort-SDR: Z+Yc73fM95djGruhbCqV/iSdayfy3k2jRivEjN95lh17YdEX3AKY4yVL8hTDLtqQ0TG5CONkpn
+ uv+nC6d25+rQ==
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="413872107"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 09:40:22 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kLmmE-001urC-Vk; Fri, 25 Sep 2020 15:24:38 +0300
+Date:   Fri, 25 Sep 2020 15:24:38 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ethan Zhao <haifeng.zhao@intel.com>
+Cc:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
+        lukas@wunner.de, stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
+        mika.westerberg@linux.intel.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pei.p.jia@intel.com
+Subject: Re: [PATCH 1/5] PCI: define a function to check and wait till port
+ finish DPC handling
+Message-ID: <20200925122438.GB3956970@smile.fi.intel.com>
+References: <20200925023423.42675-1-haifeng.zhao@intel.com>
+ <20200925023423.42675-2-haifeng.zhao@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200925144822.GM6061@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925023423.42675-2-haifeng.zhao@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jonathan,
+On Thu, Sep 24, 2020 at 10:34:19PM -0400, Ethan Zhao wrote:
+> Once root port DPC capability is enabled and triggered, at the beginning
+> of DPC is triggered, the DPC status bits are set by hardware and then
+> sends DPC/DLLSC/PDC interrupts to OS DPC and pciehp drivers, it will
+> take the port and software DPC interrupt handler 10ms to 50ms (test data
+> on ICX platform & stable 5.9-rc6) to complete the DPC containment procedure
+> till the DPC status is cleared at the end of the DPC interrupt handler.
+> 
+> We use this function to check if the root port is in DPC handling status
+> and wait till the hardware and software completed the procedure.
 
-On 2020-09-25 16:48, Jonathan Wakely wrote:
- > Do you really need to provide snitems?
- >
- > Users can use (ptrdiff_t)nitems if needed, can't they?
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/resource_ext.h>
 
-They can, but that adds casts in the code,
-which makes longer lines that are somewhat harder to read.
-To avoid that, users may sometimes omit the cast with possible UB.
-BTW, I use
+> +#include <linux/delay.h>
 
-IMO, array indices should be declared as 'ptrdiff_t' always,
-and not 'size_t'.  More generically, I use unsigned integer types for two
-reasons:  bitwise operations, and library functions that require me to 
-do so.
+Keep it sorted?
 
-I don't intend to force anyone with my opinion, of course,
-but if I were to choose a type for 'nitems()', it would be 'ptrdiff_t'.
+>  #include <uapi/linux/pci.h>
 
-However, for legacy reasons people will expect that macro to be unsigned,
-so I'd have 'nitems()' unsigned, and then a signed version prefixed with 
-an 's'.
+...
 
-Some very interesting links about this topic:
+> +#ifdef CONFIG_PCIE_DPC
+> +static inline bool pci_wait_port_outdpc(struct pci_dev *pdev)
+> +{
+> +	u16 cap = pdev->dpc_cap, status;
+> +	u16 loop = 0;
+> +
+> +	if (!cap) {
 
-Bjarne Stroustrup (and others) about signed and unsigned integers:
-https://www.youtube.com/watch?v=Puio5dly9N8&t=12m56s
-https://www.youtube.com/watch?v=Puio5dly9N8&t=42m41s
+> +		pci_WARN_ONCE(pdev, !cap, "No DPC capability initiated\n");
 
-The two links above are two interesting moments of the same video.
+But why? Is this feature mandatory to have? Then the same question about
+ifdeffery, otherwise it's pretty normal to not have a feature, right?
 
-I guess that might be the reason they added std::ssize, BTW.
+> +		return false;
+> +	}
+> +	pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
+> +	pci_dbg(pdev, "DPC status %x, cap %x\n", status, cap);
 
-Google's C++ Style Guide about unsigned integers:
-https://google.github.io/styleguide/cppguide.html#Integer_Types
+> +	while (status & PCI_EXP_DPC_STATUS_TRIGGER && loop < 100) {
+> +		msleep(10);
+> +		loop++;
+> +		pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
+> +	}
 
-And the most voted StackOverflow answer to the question
-'What is the correct type for array indexes in C?':
-https://stackoverflow.com/a/3174900/6872717
+Can we have rather something like readx_poll_timeout() for PCI and use them here?
 
- >
- > C++ provides std::ssize because there are reasons to want it in
- > generic contexts when using the function on arbitrary container-like
- > objects. But for an array size you know that ptrdiff_t is wide enough
- > to represent the size of any array.>
- > Do you have a use case that requries snitems, or can you assume YAGNI?
- >
+> +	if (!(status & PCI_EXP_DPC_STATUS_TRIGGER)) {
+> +		pci_dbg(pdev, "Out of DPC status %x, time cost %d ms\n", status, loop*10);
+> +		return true;
+> +	}
+> +	pci_dbg(pdev, "Timeout to wait port out of DPC status\n");
+> +	return false;
+> +}
+> +#else
+> +static inline bool pci_wait_port_outdpc(struct pci_dev *pdev)
+> +{
+> +	return true;
+> +}
+> +#endif
+>  #endif /* LINUX_PCI_H */
+> -- 
+> 2.18.4
+> 
 
-I have a few use cases:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-1)
-
-int	alx_gnuplot_set_style		(struct Alx_Gnuplot *restrict gnuplot,
-					 int style, const char *restrict opt)
-{
-
-	if (style < 0  ||  style >= ARRAY_SSIZE(styles))
-		return	-1;
-
-	if (alx_strlcpys(gnuplot->style, styles[style],
-					ARRAY_SIZE(gnuplot->style), NULL))
-		return	-1;
-	if (opt)
-		return	alx_strbcatf(gnuplot->style, NULL, " %s", opt);
-	return	0;
-
-}
-
-[https://github.com/alejandro-colomar/libalx/blob/master/src/extra/plot/setup.c]
-
-2) I have many loops that access arrays; I'll just make up an example of
-how I normally access arrays:
-
-void foo(ptrdiff_t nmemb)
-{
-         int arr[nmemb];
-
-         for (ptrdiff_t i = 0; i < ARRAY_SSIZE(arr); i++)
-                 arr[i] = i;
-}
-
-Grepping through my code,
-I have a similar number of ARRAY_SIZE() and ARRAY_SSIZE().
-I could have '#define snitems(arr) ((ptrdiff_t)nitems(arr))' in my projects,
-but is it really necessary?
-
-
-Did I convince you? :-)
-
-Thanks,
-
-Alex
 
