@@ -2,117 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030DF278499
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75FD278498
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728012AbgIYJ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:59:18 -0400
-Received: from mail-eopbgr750074.outbound.protection.outlook.com ([40.107.75.74]:20166
-        "EHLO NAM02-BL2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727132AbgIYJ7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:59:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A7jwqbovKAVCVp9a4BbtQ3k2U6860YlHJEha7EsSj52QAwI0d/dgNCiWjpHKND/WEfNOAHp526AnYBJz3+hUpimQo5DV3LiuWy6XfZ4cMgED2TnT6dOmTRsqka+++idho+IkmbH6WMkVJYgmAbT4Z3xF8euY9t8BdSmtQ1YHqBTUP/QpHG3Ka7a6ovt35F2LhRm9b6/sWgNvIUg2kvcHcOO71iUQKKD1Jim7CQ0RNONRwUeVV3PbbrWfyxlCSUXjmq3uu2rX1aB1Wf/OxCnZCvaqfBZ7lCaLRqH245GIB73U8EayTaSKRsIHNN7mN+pJqvG5UkR0f+9LJrpj17ZJ1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vCRHQVW0zDwQ+WT+4LCafY+uSCXYvjBkOIiCiAUSFB4=;
- b=TOzQEZ1OmyzEGCOIUL4nhQdTMx5MZJFa96708V2qqDW1TJvFJ0vtd/skBkSkaSVUPS6pk3gOSKXN4K1SaljceFTxkEx/v5mDhMy4nNkl7oNUGljioJAIoiX5iJSq5r4TbZckmD40+bAlmMCTDC4WJJxBEQ5uIipQXUerRImuwVDFKRkiVTSu3kzoQxVoR9gHFmu6mu/DIme0lC+OjNuv3GChFI/EW8bYcbTHNkPcnJn7ynTICqjShIpn8F2A/J+tq+jNvgvv3lSFFnJ3j34igyuArTTeN3WXol1pARATiOFa0plfmPbYV02w+84LdnFtpC0s8nH5TGh5aMEYcofqvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vCRHQVW0zDwQ+WT+4LCafY+uSCXYvjBkOIiCiAUSFB4=;
- b=se0Y8Lp+DxUsqUEb9VdeJDkt7/Illo3ExRB7KUNL6eA5aE6CO6uTuO6fHO0Gqi0fpFsNsQzUUVlCGcbVgKNRBLViFdTvja49zIZtYqJropRSKgMxTm0PVlgjEqnvyYB0KhzC5fQzx3aJZFA4PXzJi1vXzIN+VmvaSdPAX23GIBM=
-Authentication-Results: lists.linux-foundation.org; dkim=none (message not
- signed) header.d=none;lists.linux-foundation.org; dmarc=none action=none
- header.from=amd.com;
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com (2603:10b6:3:7a::18) by
- DM5PR1201MB0220.namprd12.prod.outlook.com (2603:10b6:4:4e::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3391.14; Fri, 25 Sep 2020 09:59:14 +0000
-Received: from DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e]) by DM5PR12MB1163.namprd12.prod.outlook.com
- ([fe80::48cf:d69:d457:1b1e%5]) with mapi id 15.20.3412.024; Fri, 25 Sep 2020
- 09:59:14 +0000
-Subject: Re: [PATCH 02/13] iommu: amd: Prepare for generic IO page table
- framework
-To:     Robin Murphy <robin.murphy@arm.com>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-References: <20200923101442.73157-1-suravee.suthikulpanit@amd.com>
- <20200923101442.73157-3-suravee.suthikulpanit@amd.com>
- <a2e28845-d162-281a-c762-698d1750bbea@arm.com>
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Message-ID: <af467992-8b37-0900-a0cf-cbfbfc948d0d@amd.com>
-Date:   Fri, 25 Sep 2020 16:58:53 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
-In-Reply-To: <a2e28845-d162-281a-c762-698d1750bbea@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [165.204.80.7]
-X-ClientProxiedBy: KL1PR01CA0127.apcprd01.prod.exchangelabs.com
- (2603:1096:820:4::19) To DM5PR12MB1163.namprd12.prod.outlook.com
- (2603:10b6:3:7a::18)
+        id S1727974AbgIYJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:59:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46995 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727749AbgIYJ7H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:59:07 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601027946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sIWorudu5DKNHzXnoue5cILqH4iEH+RSPM/BEmZzG2k=;
+        b=Adf09A94pDj6+uX1dJNVs6FSLaoneng1y2QyP9GRgQDWjvRQXvxecGOo6i5DzWQ2LF5VO+
+        LvnAMITNhSV3FSgjt+oVEUAV55Uf9I9wnaZ9NuPysHla/oKM+R3W96eqwOLtmM8dFYx02x
+        p1j+PdZ70QrmbSXu/H4a1dqP/a+3C3M=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-AIhGvrSeNnOrZnK5Bxdu-A-1; Fri, 25 Sep 2020 05:59:04 -0400
+X-MC-Unique: AIhGvrSeNnOrZnK5Bxdu-A-1
+Received: by mail-wm1-f72.google.com with SMTP id b20so898309wmj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:59:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=sIWorudu5DKNHzXnoue5cILqH4iEH+RSPM/BEmZzG2k=;
+        b=MYRWlH8bsCOHzNPZfkH9Znxwx7u9KkLEfm8aUQ+qxB98vez8hEPA8FQYg4RRUFpIgV
+         iJGj+4ryE9O2A4d4H21Ur9jcuPDwi8TcyRGolySL6sdaw/4urpIZ6JYSK1V5dhFhveie
+         IgQGovKLID2X5ow06+QxUzgLCElhWHIoB0c/3tsdoSIwzHTOBWw58sx7cz1lBIc6G5Rd
+         XGEqFHfNRX/cevh+IRNEXKEtekIXr3gSPCj9ohlrbVhBjYNwWwjAopII5VnU4KaqNI9H
+         pI2hDj0xx1A5hKqB0Q1InBUGU6r+BZ0WOb41wJQyoM3opT1Kp5R92Oj7BomKxwKHICcc
+         RSKw==
+X-Gm-Message-State: AOAM533TlAwzpNwgNsagwiZNkHk8Hjimw2PxZXa0bfThgOPNK3YmclHn
+        s+Vg89RGBoEzdtQsORMVHijlSNAmmVVj4ZMhsKX75PVplb0z8c9e++WagRMuQ8meuP2gKnAiMAP
+        KFXcNROam1iehgVxeSRZ0labY
+X-Received: by 2002:adf:ef4f:: with SMTP id c15mr3874318wrp.390.1601027942422;
+        Fri, 25 Sep 2020 02:59:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVETDUosAe8jX3GP6x/0E34Oq++Rjm2SNpkUgf2wYb9c5WIOgKuqLnY9yCg+YdCgXPUTpIUg==
+X-Received: by 2002:adf:ef4f:: with SMTP id c15mr3874297wrp.390.1601027942199;
+        Fri, 25 Sep 2020 02:59:02 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id b84sm2618107wmd.0.2020.09.25.02.59.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 02:59:01 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: VMX: Explicitly check for hv_remote_flush_tlb when loading pgd()
+In-Reply-To: <20200924180429.10016-1-sean.j.christopherson@intel.com>
+References: <20200924180429.10016-1-sean.j.christopherson@intel.com>
+Date:   Fri, 25 Sep 2020 11:59:00 +0200
+Message-ID: <87h7rmch3v.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Suravees-MacBook-Pro.local (165.204.80.7) by KL1PR01CA0127.apcprd01.prod.exchangelabs.com (2603:1096:820:4::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Fri, 25 Sep 2020 09:59:13 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b292f264-6e62-4dc9-b4cc-08d86139a88e
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0220:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB0220EEA7AF30A65093186CD6F3360@DM5PR1201MB0220.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9jwL9wRR46mwBoZY3tt1zS/Ilqq8ix1+gA2x8efZ6uzzYo7PLOAVEuE1/FnN7aAusRlYFUgr6IB9RfM2NE4g+p7OU8A1WyVm6I45xvdxFga3zOhVUGZ8kLapdecE4wq8fx05QUf5KNhq4AzPjcqFWUHYJ5j0kRdNNx7rVGcaJIFiNB4spSsIHyEXajAISZZbZE2ft8sEd5DbWu1yfY5tPIaXHlGf0Kvc7mchnU4ZvWGrH8GXmWykNGKltDg8TNAsaFZLy1jdY25arNX4gZ246pymMAxYalfx54dzmybXbwnDDA4rEKXDaG23WPs+vN+8a3SS03N5V+7V/HdEJf1/ErTmQ9Y33Jv9t8rsikHqTD9L8W9KVwbWyWDMUSvwjiUrr0XQEB7lHBZGflgYR2+CeYAP7+BXnEBDolt5xsm2kGbs/8daK9TtXyoo7gh/vVjdyDDCB3PSKGEvkKPyMLM1QQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1163.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(136003)(366004)(346002)(376002)(86362001)(8936002)(66946007)(6666004)(2906002)(6512007)(26005)(31696002)(66476007)(31686004)(186003)(8676002)(66556008)(5660300002)(53546011)(956004)(6486002)(478600001)(16526019)(44832011)(316002)(2616005)(36756003)(52116002)(6506007)(41533002)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: weNmVd7+tgoO/3e15SRcTVSCmy2OtQw8j81L6dIhYheHMSnsxOkaBnKar/0VGWrKHRBxjgsF45tvM3OGcMmSq+fFZzg0ZpZYWpO2lgwPDNvAIo2PmS4OKV9d1jkJAeXsCWkMKUbpeVLLgTrLR3KnQa61y6CcfXIYto8AsweDXHK8kuQS/7dIx5RoTTKyiWVCSy43BblBfyH78fDq+H+d4cm8jmFZKBH2gpQ/nkksfBBC9vRpGkpv2Srf3nrk3okcUStxlVbkmu8AdhpLqnhVKIs2A/c609/1cNWcWSOlwF5BBlHZLK5VTnMnvDZ1/Xv2qW17eyMu3E0SSd4QO0MvqkdMfA3j2hyMFs1F0W7nOi6pEdP2WNJS6sySwG3O7JYpFOLLwB15N7P2V7/tHNvOzrQLThDfrFVbUt+jB526hUh8Az4zxQmsyxn9wKPWmy2fAj+HfRr+dRv8SvXVFi11EQ+FBpTu/AV6QMOg8vHyAdf7OgkqaMhg2iYkdKhzReiJ/G2h1rwBntq1PHtEZhJYMMwHpqvaa1AgdFIhMHkVH7lw4FuK9sNgbwxpfSu1Bg62wYCsTtXz4XUBZJzRbfreRfdgtMoQ32fw9BEORcaBT2HGeKxceW+oUzGUsumIoopr3jNd+eBJrFHCj3DhbOOv3g==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b292f264-6e62-4dc9-b4cc-08d86139a88e
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1163.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 09:59:14.3479
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: h2zJFh3YN7EeBMEBE31dfwKGyo9GCwoFvkhXFMm29CE4UveqzQPFCni3qSvCoVqJNBmRC6Ly3bnlAL1+5arpHQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0220
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Robin,
+Sean Christopherson <sean.j.christopherson@intel.com> writes:
 
-On 9/24/20 7:25 PM, Robin Murphy wrote:
->> +struct io_pgtable_ops *amd_iommu_setup_io_pgtable_ops(struct iommu_dev_data *dev_data,
->> +                         struct protection_domain *domain)
->> +{
->> +        domain->iop.pgtbl_cfg = (struct io_pgtable_cfg) {
->> +        .pgsize_bitmap    = AMD_IOMMU_PGSIZES,
->> +        .ias        = IOMMU_IN_ADDR_BIT_SIZE,
->> +        .oas        = IOMMU_OUT_ADDR_BIT_SIZE,
->> +        .coherent_walk    = false,
-> 
-> Is that right? Given that you seem to use regular kernel addresses for pagetable pages and don't have any obvious cache 
-> maintenance around PTE manipulation, I suspect not ;)
-> > It's fair enough if your implementation doesn't use this and simply assumes coherency, but in that case it would be less
-> confusing to have the driver set it to true for the sake of honesty, or just leave it out 
-> entirely - explicitly setting false gives the illusion of being meaningful.
+> Explicitly check that kvm_x86_ops.tlb_remote_flush() points at Hyper-V's
+> implementation for PV flushing instead of assuming that a non-NULL
+> implementation means running on Hyper-V.  Wrap the related logic in
+> ifdeffery as hv_remote_flush_tlb() is defined iff CONFIG_HYPERV!=n.
+>
+> Short term, the explicit check makes it more obvious why a non-NULL
+> tlb_remote_flush() triggers EPTP shenanigans.  Long term, this will
+> allow TDX to define its own implementation of tlb_remote_flush() without
+> running afoul of Hyper-V.
+>
+> Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 7 +++++--
+>  arch/x86/kvm/vmx/vmx.h | 2 ++
+>  2 files changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 6f9a0c6d5dc5..a56fa9451b84 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -3073,14 +3073,15 @@ static void vmx_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long pgd,
+>  		eptp = construct_eptp(vcpu, pgd, pgd_level);
+>  		vmcs_write64(EPT_POINTER, eptp);
+>  
+> -		if (kvm_x86_ops.tlb_remote_flush) {
+> +#if IS_ENABLED(CONFIG_HYPERV)
+> +		if (kvm_x86_ops.tlb_remote_flush == hv_remote_flush_tlb) {
+>  			spin_lock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+>  			to_vmx(vcpu)->ept_pointer = eptp;
+>  			to_kvm_vmx(kvm)->ept_pointers_match
+>  				= EPT_POINTERS_CHECK;
+>  			spin_unlock(&to_kvm_vmx(kvm)->ept_pointer_lock);
+>  		}
+> -
+> +#endif
+>  		if (!enable_unrestricted_guest && !is_paging(vcpu))
+>  			guest_cr3 = to_kvm_vmx(kvm)->ept_identity_map_addr;
+>  		else if (test_bit(VCPU_EXREG_CR3, (ulong *)&vcpu->arch.regs_avail))
+> @@ -6956,7 +6957,9 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+>  
+>  static int vmx_vm_init(struct kvm *kvm)
+>  {
+> +#if IS_ENABLED(CONFIG_HYPERV)
+>  	spin_lock_init(&to_kvm_vmx(kvm)->ept_pointer_lock);
+> +#endif
+>  
+>  	if (!ple_gap)
+>  		kvm->arch.pause_in_guest = true;
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index d7ec66db5eb8..51107b7309bc 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -316,8 +316,10 @@ struct kvm_vmx {
+>  	bool ept_identity_pagetable_done;
+>  	gpa_t ept_identity_map_addr;
+>  
+> +#if IS_ENABLED(CONFIG_HYPERV)
+>  	enum ept_pointers_status ept_pointers_match;
+>  	spinlock_t ept_pointer_lock;
+> +#endif
 
-AMD IOMMU can be configured to disable snoop for page table walk of a particular device (DTE[SD]=1). However, the 
-current Linux driver does not set this bit, which should assume coherency. We can just leaving this out for now. I can 
-remove this when I send out V2 along w/ other changes.
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-> Otherwise, the io-pgtable parts all look OK to me - it's nice to finally 
-> fulfil the original intent of not being an Arm-specific thing :D
-> 
-> Robin.
+In case ept_pointers_match/ept_pointer_lock are useless for TDX we may
+want to find better names for them to make it clear this is a Hyper-V
+thingy (e.g. something like hv_tlb_ept_match/hv_tlb_ept_lock).
 
-Thanks,
-Suravee
+>  };
+>  
+>  bool nested_vmx_allowed(struct kvm_vcpu *vcpu);
+
+-- 
+Vitaly
+
