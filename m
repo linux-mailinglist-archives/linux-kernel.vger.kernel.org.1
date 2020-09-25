@@ -2,182 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4145E278527
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9191278536
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728178AbgIYKbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728161AbgIYKbk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:31:40 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2D5C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:31:40 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id y15so2729895wmi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:31:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GSNf91BNoP+VEJBm3varO7K3q1jYUmCrDeGvzncP4RA=;
-        b=QacEp1OaZsy3mDOo+7h0uVB2aukX9mC0D3Zj7Bb+cE58joZM/wxHBbkjHDuLhJfeEr
-         mqNncXMX/bDcerwQkg5Mag7L6n56ei6w+C57kwYWPCl/rZG8AG6AZCgEko8VAslvG7Or
-         PC3L3uOrKeQCeXvyUg60qCheQy3eb3b2WInGIyVgypcnW73TJ1El+XOD7tZXDJ0NLMJE
-         WKVgXx7xkt/giLgTDLVPw8YNl1dfnZcIEhyUWm84J6bkHp/jq8u5fC97YACJc8USBUOl
-         jCpZQdegv6nSKMKwbnQRtzm7H6G+kRda2XdftN5lUENPQk/C1s/0M+hruwkZDBLtpP9/
-         I/jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GSNf91BNoP+VEJBm3varO7K3q1jYUmCrDeGvzncP4RA=;
-        b=jTONQL5ASxZ+NmIaznRduEbS78BdlCxYttzUo9ss2tvzPxk5E0m/79KrsWLvsR7My1
-         J0jabxh3leybyCrjlKHtiljE+oJbhiy6UDMXWIYuZrlX2hyFsN48sB9YFntV04S88XBj
-         80wXzApGTLX5Jxku0mnrId/A3spZsag8PKoZ/uH/YuCeDzqR+DMCI8awWnUztdFGdse3
-         Q2ozT+OmfYVWXWAGcMJFgYNWYGXQUNP5Pgnye1lKuXlHwHDbXK6ke87D9bIBJ6b2GDVz
-         0DNJA3S2ru9A/7VsjXaks7hZXI4e00DMlpHAGaO9PrtT+MrcXLAiFkM+cQMTS+7nlKWx
-         fRDQ==
-X-Gm-Message-State: AOAM5338y+7QCuTmiSRkIpgx8+TGM5X42WWvjB4T0dtFK9hOqgn2+SJN
-        3KmoK4S5vqG+g/x9w4rNsBs75w==
-X-Google-Smtp-Source: ABdhPJz/GbRRFBqPk2DEY7OZXpKv5qvcB8Fhp/LMNbQbXFjHr6HeA+Vgjc2KSL6Iu2ua/FyY1oPIUw==
-X-Received: by 2002:a1c:8187:: with SMTP id c129mr2521448wmd.82.1601029898317;
-        Fri, 25 Sep 2020 03:31:38 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id 11sm2354907wmi.14.2020.09.25.03.31.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 03:31:37 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     sboyd@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 4/4] clk: qcom: Add support to LPASS AON_CC Glitch Free Mux clocks
-Date:   Fri, 25 Sep 2020 11:31:15 +0100
-Message-Id: <20200925103115.15191-5-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
-References: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
+        id S1728082AbgIYKdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:33:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33060 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727151AbgIYKdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 06:33:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4ABC7ACA1;
+        Fri, 25 Sep 2020 10:33:15 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 0CEDB1E12E1; Fri, 25 Sep 2020 12:33:15 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 12:33:15 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     syzbot <syzbot+91f02b28f9bb5f5f1341@syzkaller.appspotmail.com>
+Cc:     glider@google.com, jack@suse.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KMSAN: uninit-value in udf_evict_inode
+Message-ID: <20200925103315.GD11772@quack2.suse.cz>
+References: <000000000000f6599a05b01c71ed@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000f6599a05b01c71ed@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LPASS Always ON Clock controller has one GFM mux to control VA
-and TX clocks to codec macro on LPASS.
-This patch adds support to this mux.
+On Thu 24-09-20 22:18:21, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    c5a13b33 kmsan: clang-format core
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=142cf809900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=20f149ad694ba4be
+> dashboard link: https://syzkaller.appspot.com/bug?extid=91f02b28f9bb5f5f1341
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+91f02b28f9bb5f5f1341@syzkaller.appspotmail.com
+> 
+> UDF-fs: warning (device loop3): udf_load_vrs: No anchor found
+> UDF-fs: Scanning with blocksize 512 failed
+> UDF-fs: INFO Mounting volume 'LinuxUDF', timestamp 2020/09/19 18:44 (1000)
+> UDF-fs: error (device loop3): udf_read_inode: (ino 1328) failed !bh
+> =====================================================
+> BUG: KMSAN: uninit-value in udf_evict_inode+0x382/0x7d0 fs/udf/inode.c:150
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/clk/qcom/lpass-gfm-sm8250.c | 63 +++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
+Yeah, easy enough. I'll send a fix.
 
-diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass-gfm-sm8250.c
-index c79854e1494d..61a89347885e 100644
---- a/drivers/clk/qcom/lpass-gfm-sm8250.c
-+++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
-@@ -19,6 +19,7 @@
- #include <linux/platform_device.h>
- #include <linux/of_device.h>
- #include <dt-bindings/clock/qcom,sm8250-lpass-audiocc.h>
-+#include <dt-bindings/clock/qcom,sm8250-lpass-aoncc.h>
- 
- struct lpass_gfm {
- 	struct device *dev;
-@@ -66,6 +67,46 @@ static const struct clk_ops clk_gfm_ops = {
- 	.determine_rate = __clk_mux_determine_rate,
- };
- 
-+static struct clk_gfm lpass_gfm_va_mclk = {
-+	.mux_reg = 0x20000,
-+	.mux_mask = BIT(0),
-+	.hw.init = &(struct clk_init_data) {
-+		.name = "VA_MCLK",
-+		.ops = &clk_gfm_ops,
-+		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
-+		.num_parents = 2,
-+		.parent_data = (const struct clk_parent_data[]){
-+			{
-+				.index = 0,
-+				.name = "LPASS_CLK_ID_TX_CORE_MCLK",
-+			}, {
-+				.index = 1,
-+				.name = "LPASS_CLK_ID_VA_CORE_MCLK",
-+			},
-+		},
-+	},
-+};
-+
-+static struct clk_gfm lpass_gfm_tx_npl = {
-+	.mux_reg = 0x20000,
-+	.mux_mask = BIT(0),
-+	.hw.init = &(struct clk_init_data) {
-+		.name = "TX_NPL",
-+		.ops = &clk_gfm_ops,
-+		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
-+		.parent_data = (const struct clk_parent_data[]){
-+			{
-+				.index = 0,
-+				.name = "LPASS_CLK_ID_TX_CORE_NPL_MCLK",
-+			}, {
-+				.index = 1,
-+				.name = "LPASS_CLK_ID_VA_CORE_2X_MCLK",
-+			},
-+		},
-+		.num_parents = 2,
-+	},
-+};
-+
- static struct clk_gfm lpass_gfm_wsa_mclk = {
- 	.mux_reg = 0x220d8,
- 	.mux_mask = BIT(0),
-@@ -146,6 +187,19 @@ static struct clk_gfm lpass_gfm_rx_npl = {
- 	},
- };
- 
-+static struct clk_gfm *aoncc_gfm_clks[] = {
-+	[LPASS_CDC_VA_MCLK]		= &lpass_gfm_va_mclk,
-+	[LPASS_CDC_TX_NPL]		= &lpass_gfm_tx_npl,
-+};
-+
-+static struct clk_hw_onecell_data aoncc_hw_onecell_data = {
-+	.hws = {
-+		[LPASS_CDC_VA_MCLK]	= &lpass_gfm_va_mclk.hw,
-+		[LPASS_CDC_TX_NPL]	= &lpass_gfm_tx_npl.hw,
-+	},
-+	.num = ARRAY_SIZE(aoncc_gfm_clks),
-+};
-+
- static struct clk_gfm *audiocc_gfm_clks[] = {
- 	[LPASS_CDC_WSA_NPL]		= &lpass_gfm_wsa_npl,
- 	[LPASS_CDC_WSA_MCLK]		= &lpass_gfm_wsa_mclk,
-@@ -173,6 +227,11 @@ static struct lpass_gfm_data audiocc_data = {
- 	.gfm_clks = audiocc_gfm_clks,
- };
- 
-+static struct lpass_gfm_data aoncc_data = {
-+	.onecell_data = &aoncc_hw_onecell_data,
-+	.gfm_clks = aoncc_gfm_clks,
-+};
-+
- static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
- {
- 	const struct lpass_gfm_data *data;
-@@ -236,6 +295,10 @@ static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
- }
- 
- static const struct of_device_id lpass_gfm_clk_match_table[] = {
-+	{
-+		.compatible = "qcom,sm8250-lpass-aoncc",
-+		.data = &aoncc_data,
-+	},
- 	{
- 		.compatible = "qcom,sm8250-lpass-audiocc",
- 		.data = &audiocc_data,
+								Honza
 -- 
-2.21.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
