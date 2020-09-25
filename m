@@ -2,149 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A62277F28
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 06:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6DE8277F5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 06:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727046AbgIYEtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 00:49:52 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:43092 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgIYEtw (ORCPT
+        id S1727270AbgIYEwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 00:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727044AbgIYEwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 00:49:52 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08P4nbFZ105368;
-        Thu, 24 Sep 2020 23:49:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601009377;
-        bh=ACHLjhJJRa8dK07lqvRCS2u2C8SQ3vgKW2GNyQDj8AA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=cCErxzvXaSnmski9xjcFJKhPH2bG9jEicIGZ7fxcl8Qe01K1BQWVmwwafD9utAYvV
-         3p1UAdq6K8pdOLrkd0ribsUYyEdZ7ssyprFJNg/2itdAtd2M/whQs+rPf913brRmyC
-         iZrGJmhaY3ODz57A1KMb9EImOvorFUrdOCa9+1Zc=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08P4nb2g047209;
-        Thu, 24 Sep 2020 23:49:37 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 24
- Sep 2020 23:49:37 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 24 Sep 2020 23:49:37 -0500
-Received: from [10.250.232.147] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08P4nX2t013994;
-        Thu, 24 Sep 2020 23:49:34 -0500
-Subject: Re: [PATCH 5/6] mmc: sdhci_am654: Add support for software tuning
-To:     Faiz Abbas <faiz_abbas@ti.com>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-CC:     <adrian.hunter@intel.com>, <robh+dt@kernel.org>,
-        <ulf.hansson@linaro.org>
-References: <20200923105206.7988-1-faiz_abbas@ti.com>
- <20200923105206.7988-6-faiz_abbas@ti.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <7a105ee5-ac4e-53b7-5434-30a6261f298e@ti.com>
-Date:   Fri, 25 Sep 2020 10:19:32 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 25 Sep 2020 00:52:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA23C0613D5;
+        Thu, 24 Sep 2020 21:52:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=A+T/x3ppYi6QNsP2t+QiJ1AjmOgx9xWo2H6NAG0/aPM=; b=k9BJO212aIGjTM67lCOkTpCrht
+        B20Wf2zjNYR87uLFP2BRrzt5cCrEk0KFpOMk3+io62CblpW7Y77IqzHPhNFZqwDnVNpJgjcOWkhrs
+        Z8GRxpu7FjGxV+hNEbHeKyL912gkvTLvP4DBne8Te3c43Bttle2gfOVWfy6MwqIsof1MCTX4rxO24
+        Kx+lnKnrKhrsYvG/2XpbtSvE8DYXDyXxSwaM81JHTOVvJu9V5Jarcs/1LeXw6G549Mxci7m54zzCp
+        f1etRanliNQK8rGzJ9PmD1VPBy0Rci2ZVjpscKDGnzDGoBasw11g0MfksMIslOR+W3JyKfkaf/KsM
+        BhKY/8wQ==;
+Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLfi0-0002pf-1s; Fri, 25 Sep 2020 04:51:48 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: let import_iovec deal with compat_iovecs as well v4
+Date:   Fri, 25 Sep 2020 06:51:37 +0200
+Message-Id: <20200925045146.1283714-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20200923105206.7988-6-faiz_abbas@ti.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Al,
 
+this series changes import_iovec to transparently deal with compat iovec
+structures, and then cleanups up a lot of code dupliation.
 
-On 23/09/20 4:22 pm, Faiz Abbas wrote:
-> With the new SW tuning App note[1], a custom tuning algorithm is
-> required for eMMC HS200, HS400 and SD card UHS modes. The algorithm
-> involves running through the 32 possible input tap delay values and
-> sending the appropriate tuning command (CMD19/21) for each of them
-> to get a fail or pass result for each of the values. Typically, the
-> range will have a small contiguous failing window. Considering the
-> tuning range as a circular buffer, the algorithm then sets a final
-> tuned value directly opposite to the failing window.
-> 
-> [1] https://www.ti.com/lit/pdf/spract9
-> 
-> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+Changes since v3:
+ - fix up changed prototypes in compat.h as well
 
-Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  drivers/mmc/host/sdhci_am654.c | 41 ++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
-> 
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index 1213b711e60a..5af7638ad606 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -396,7 +396,46 @@ static u32 sdhci_am654_cqhci_irq(struct sdhci_host *host, u32 intmask)
->  	return 0;
->  }
->  
-> +#define ITAP_MAX	32
-> +static int sdhci_am654_platform_execute_tuning(struct sdhci_host *host,
-> +					       u32 opcode)
-> +{
-> +	struct sdhci_pltfm_host *pltfm_host = sdhci_priv(host);
-> +	struct sdhci_am654_data *sdhci_am654 = sdhci_pltfm_priv(pltfm_host);
-> +	int cur_val, prev_val = 1, fail_len = 0, pass_window = 0, pass_len;
-> +	u32 itap;
-> +
-> +	/* Enable ITAPDLY */
-> +	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, ITAPDLYENA_MASK,
-> +			   1 << ITAPDLYENA_SHIFT);
-> +
-> +	for (itap = 0; itap < ITAP_MAX; itap++) {
-> +		sdhci_am654_write_itapdly(sdhci_am654, itap);
-> +
-> +		cur_val = !mmc_send_tuning(host->mmc, opcode, NULL);
-> +		if (cur_val && !prev_val)
-> +			pass_window = itap;
-> +
-> +		if (!cur_val)
-> +			fail_len++;
-> +
-> +		prev_val = cur_val;
-> +	}
-> +	/*
-> +	 * Having determined the length of the failing window and start of
-> +	 * the passing window calculate the length of the passing window and
-> +	 * set the final value halfway through it considering the range as a
-> +	 * circular buffer
-> +	 */
-> +	pass_len = ITAP_MAX - fail_len;
-> +	itap = (pass_window + (pass_len >> 1)) % ITAP_MAX;
-> +	sdhci_am654_write_itapdly(sdhci_am654, itap);
-> +
-> +	return 0;
-> +}
-> +
->  static struct sdhci_ops sdhci_am654_ops = {
-> +	.platform_execute_tuning = sdhci_am654_platform_execute_tuning,
->  	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
->  	.get_timeout_clock = sdhci_pltfm_clk_get_max_clock,
->  	.set_uhs_signaling = sdhci_set_uhs_signaling,
-> @@ -426,6 +465,7 @@ static const struct sdhci_am654_driver_data sdhci_am654_drvdata = {
->  };
->  
->  static struct sdhci_ops sdhci_j721e_8bit_ops = {
-> +	.platform_execute_tuning = sdhci_am654_platform_execute_tuning,
->  	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
->  	.get_timeout_clock = sdhci_pltfm_clk_get_max_clock,
->  	.set_uhs_signaling = sdhci_set_uhs_signaling,
-> @@ -449,6 +489,7 @@ static const struct sdhci_am654_driver_data sdhci_j721e_8bit_drvdata = {
->  };
->  
->  static struct sdhci_ops sdhci_j721e_4bit_ops = {
-> +	.platform_execute_tuning = sdhci_am654_platform_execute_tuning,
->  	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
->  	.get_timeout_clock = sdhci_pltfm_clk_get_max_clock,
->  	.set_uhs_signaling = sdhci_set_uhs_signaling,
-> 
+Changes since v2:
+ - revert the switch of the access process vm sysclls to iov_iter
+ - refactor the import_iovec internals differently
+ - switch aio to use __import_iovec
+
+Changes since v1:
+ - improve a commit message
+ - drop a pointless unlikely
+ - drop the PF_FORCE_COMPAT flag
+ - add a few more cleanups (including two from David Laight)
+
+Diffstat:
+ arch/arm64/include/asm/unistd32.h                  |   10 
+ arch/mips/kernel/syscalls/syscall_n32.tbl          |   10 
+ arch/mips/kernel/syscalls/syscall_o32.tbl          |   10 
+ arch/parisc/kernel/syscalls/syscall.tbl            |   10 
+ arch/powerpc/kernel/syscalls/syscall.tbl           |   10 
+ arch/s390/kernel/syscalls/syscall.tbl              |   10 
+ arch/sparc/kernel/syscalls/syscall.tbl             |   10 
+ arch/x86/entry/syscall_x32.c                       |    5 
+ arch/x86/entry/syscalls/syscall_32.tbl             |   10 
+ arch/x86/entry/syscalls/syscall_64.tbl             |   10 
+ block/scsi_ioctl.c                                 |   12 
+ drivers/scsi/sg.c                                  |    9 
+ fs/aio.c                                           |   38 --
+ fs/io_uring.c                                      |   20 -
+ fs/read_write.c                                    |  362 +--------------------
+ fs/splice.c                                        |   57 ---
+ include/linux/compat.h                             |   24 -
+ include/linux/fs.h                                 |   11 
+ include/linux/uio.h                                |   10 
+ include/uapi/asm-generic/unistd.h                  |   12 
+ lib/iov_iter.c                                     |  161 +++++++--
+ mm/process_vm_access.c                             |   85 ----
+ net/compat.c                                       |    4 
+ security/keys/compat.c                             |   37 --
+ security/keys/internal.h                           |    5 
+ security/keys/keyctl.c                             |    2 
+ tools/include/uapi/asm-generic/unistd.h            |   12 
+ tools/perf/arch/powerpc/entry/syscalls/syscall.tbl |   10 
+ tools/perf/arch/s390/entry/syscalls/syscall.tbl    |   10 
+ tools/perf/arch/x86/entry/syscalls/syscall_64.tbl  |   10 
+ 30 files changed, 280 insertions(+), 706 deletions(-)
