@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF6B278C84
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87424278C8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729309AbgIYPYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:24:15 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:37201 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgIYPYP (ORCPT
+        id S1729341AbgIYPZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:25:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728678AbgIYPZC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:24:15 -0400
-Received: by mail-oi1-f196.google.com with SMTP id a3so3170013oib.4;
-        Fri, 25 Sep 2020 08:24:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3pZ+oKMneSbQw+VBTAklpjVM+xZE6n37L3PNMsbYGCk=;
-        b=IS5AJUwbxmqg/SlJ5QJYgUH5jffofCrFFxDsdaNFBrSMR7ZlJ/LPj1Xcietl7Dr2Su
-         ugYrqsRmDCv4F3UExVSL9fnB2oMzH+9js2bOYVcJGSQGVw4dLAc+909ofaeSuQCyIuTO
-         3U7J2OzeF9zTHOniU8rLjph92h/JfqMltnk0yOqMtDXBCH0rTZrCxSfYrz69UewcoA+Q
-         HqliPkwYsH4EdavbKS1UAjNaQxWV9K7kQgshkSv93BBvhnBnruEQ7J8Ljt0+1l5QL3RB
-         +sN6bQJ/cVX1eRih02EhiD/MkMNeuzc79kt3dsyw8MujhQcLyvNSEHUoOfcQP7iJOn1a
-         YZZQ==
-X-Gm-Message-State: AOAM531GF0CZ+595OjQ9rnn782bWGlavHuRa+WPIyIfGn7w0eR7gQ0Vm
-        dE6ddzdG+gkl6Q/VDieW0E8YE953ctZom6tli+8=
-X-Google-Smtp-Source: ABdhPJynZTdx2wxg22Twifp6xQ8/oH+tTUIQpiZntiGs7FXznEMy9Km6ptDPDqbUp9ofVaK9Gu8Txi1IadhRpLqTS0E=
-X-Received: by 2002:aca:5b09:: with SMTP id p9mr568875oib.68.1601047454038;
- Fri, 25 Sep 2020 08:24:14 -0700 (PDT)
+        Fri, 25 Sep 2020 11:25:02 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43697C0613CE;
+        Fri, 25 Sep 2020 08:25:02 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 15:24:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601047500;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BaWy/UjQC4Yp6A/J5tS7lyY6rywwt+tqXKggckqF9yc=;
+        b=Zm/kmWYErwl9tCqQL7dj7GvQzIFVDwFGOwbOooxngPtXdD7h6ajdgeasVKLml26quVr3Pu
+        7TQ44+NFPxyARhCw04ooeoOIHq68Yg4Pq+pm6h5+O/jLon3mVzfwzJm00CxFpq2JSQwt74
+        1pd6qo0QgTD8wSBX248+qSWDU81hDcYmJzLxdZrnZoXFq/C84yBY6DqYefmPC2Ld0XzGoG
+        dIM5x7x/RpJZ81TGolfjVZKCjp0NfP0JEUuLfZXBStWyem2TrUsS23/zzOVN+aVUPfpxoo
+        sUj2C/PZqhAGfyW7tzz3mnS6BPdybX52ZwMPcjlvvNzXvZa9p9RakN9c2p5wLQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601047500;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BaWy/UjQC4Yp6A/J5tS7lyY6rywwt+tqXKggckqF9yc=;
+        b=G/1Fve2MGzcjXLVjrb53FN8ZkhsDLDnjOlRpT/RpTl0otyAcMCUth11TOxpOXnETk5OKFD
+        kEzRlimd9EzE/4Dg==
+From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/seves] x86/sev-es: Use GHCB accessor for setting the MMIO
+ scratch buffer
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@suse.de>, Joerg Roedel <jroedel@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: =?utf-8?q?=3Cba84deabdf44a7a880454fb351d189c6ad79d4ba=2E16010?=
+ =?utf-8?q?41106=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
+References: =?utf-8?q?=3Cba84deabdf44a7a880454fb351d189c6ad79d4ba=2E160104?=
+ =?utf-8?q?1106=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
 MIME-Version: 1.0
-References: <20200915103157.345404192@infradead.org> <20200915103806.479637218@infradead.org>
- <20200925152000.GA171076@roeck-us.net>
-In-Reply-To: <20200925152000.GA171076@roeck-us.net>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 25 Sep 2020 17:24:03 +0200
-Message-ID: <CAJZ5v0g2sCth5nofpPt4ucjQC0W=aU3YmSPqSRp+OyFWgS6YxA@mail.gmail.com>
-Subject: Re: [RFC][PATCH 4/4] acpi: Take over RCU-idle for C3-BM idle
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Tony Luck <tony.luck@intel.com>, Len Brown <lenb@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160104749936.7002.15136223385577937831.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 5:20 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Tue, Sep 15, 2020 at 12:32:01PM +0200, Peter Zijlstra wrote:
-> > The C3 BusMaster idle code takes lock in a number of places, some deep
-> > inside the ACPI code. Instead of wrapping it all in RCU_NONIDLE, have
-> > the driver take over RCU-idle duty and avoid flipping RCU state back
-> > and forth a lot.
-> >
-> > ( by marking 'C3 && bm_check' as RCU_IDLE, we _must_ call enter_bm() for
-> >   that combination, otherwise we'll loose RCU-idle, this requires
-> >   shuffling some code around )
-> >
-> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->
-> ia64:defconfig:
->
-> ERROR: modpost: "rcu_idle_enter" [drivers/acpi/processor.ko] undefined!
-> ERROR: modpost: "rcu_idle_exit" [drivers/acpi/processor.ko] undefined!
->
-> I realize that this has already been reported more than a week ago, with
-> no visible reaction. Another problem introduced in the same file, resulting
-> in
->
-> drivers/acpi/processor_idle.c: In function 'lapic_timer_needs_broadcast':
-> drivers/acpi/processor_idle.c:179:1: warning:
->         no return statement in function returning non-void
->
-> may cause ia64 boot problems since a non-zero return value will trigger
-> a function call. AFAICS that is not supposed to happen on ia64.
+The following commit has been merged into the x86/seves branch of tip:
 
-There are fixes for the above in my tree, they will go to Linus shortly.
+Commit-ID:     0ddfb1cf3b6b07c97cff16ea69931d986f9622ee
+Gitweb:        https://git.kernel.org/tip/0ddfb1cf3b6b07c97cff16ea69931d986f9622ee
+Author:        Tom Lendacky <thomas.lendacky@amd.com>
+AuthorDate:    Fri, 25 Sep 2020 08:38:26 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 25 Sep 2020 17:12:41 +02:00
 
-Thanks!
+x86/sev-es: Use GHCB accessor for setting the MMIO scratch buffer
+
+Use ghcb_set_sw_scratch() to set the GHCB scratch field, which will also
+set the corresponding bit in the GHCB valid_bitmap field to denote that
+sw_scratch is actually valid.
+
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Joerg Roedel <jroedel@suse.de>
+Link: https://lkml.kernel.org/r/ba84deabdf44a7a880454fb351d189c6ad79d4ba.1601041106.git.thomas.lendacky@amd.com
+---
+ arch/x86/kernel/sev-es.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 6fcfdd3..4a96726 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -751,7 +751,7 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+ 	/* Can never be greater than 8 */
+ 	exit_info_2 = bytes;
+ 
+-	ghcb->save.sw_scratch = ghcb_pa + offsetof(struct ghcb, shared_buffer);
++	ghcb_set_sw_scratch(ghcb, ghcb_pa + offsetof(struct ghcb, shared_buffer));
+ 
+ 	return sev_es_ghcb_hv_call(ghcb, ctxt, exit_code, exit_info_1, exit_info_2);
+ }
