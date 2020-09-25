@@ -2,172 +2,391 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87648277D61
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89A2277D52
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:00:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbgIYBGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 21:06:12 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:17515 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbgIYBGK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 21:06:10 -0400
-X-Greylist: delayed 560 seconds by postgrey-1.27 at vger.kernel.org; Thu, 24 Sep 2020 21:06:08 EDT
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200925005646epoutp027874d748da49b8916c9660f10d42891f~34NcJH-Ad2753527535epoutp02i
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:56:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200925005646epoutp027874d748da49b8916c9660f10d42891f~34NcJH-Ad2753527535epoutp02i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600995406;
-        bh=z32H6aQay7XFfuA804nDkfeVeeydsEIaljd/QbT8aUI=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=NYXFfix7ixEYe9izi4jnW6jsrkYqj8c6VarhAP3a2h9DLP/tqHTwqazq+liYZEzs0
-         1WGYRspfrcbYL9JMrq7e47vdOA5hQD/s8uuO6IdNzMTvc/jhI9PCZkylpVYesXaS8I
-         qZJIxeZzFZCxhge97MEea9Z8/oHf/5KxvutbGt6g=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20200925005645epcas1p401c9e6c33a83d249ef4d53c4196da45b~34NbVFdUj0917209172epcas1p4z;
-        Fri, 25 Sep 2020 00:56:45 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.159]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4ByD584TnJzMqYkk; Fri, 25 Sep
-        2020 00:56:44 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A5.A3.09543.C404D6F5; Fri, 25 Sep 2020 09:56:44 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200925005644epcas1p43904a4a4e545c6533e2bfd87ffca4b45~34NZ2RH0r0917209172epcas1p4t;
-        Fri, 25 Sep 2020 00:56:44 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200925005644epsmtrp1807eda8f91f90720edc07ab36551a14b~34NZ1p7L_2495024950epsmtrp1c;
-        Fri, 25 Sep 2020 00:56:44 +0000 (GMT)
-X-AuditID: b6c32a35-35dff70000002547-42-5f6d404c6984
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E0.39.08604.C404D6F5; Fri, 25 Sep 2020 09:56:44 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200925005644epsmtip2c5a72b329430f5b16961fc79dcaab928~34NZnl4ZD1970419704epsmtip2F;
-        Fri, 25 Sep 2020 00:56:44 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        <motai.hirotaka@aj.mitsubishielectric.co.jp>,
-        "'Namjae Jeon'" <namjae.jeon@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <0f9d3d3e-075f-511d-12e5-21346bca081e@gmail.com>
-Subject: RE: [PATCH] exfat: remove 'rwoffset' in exfat_inode_info
-Date:   Fri, 25 Sep 2020 09:56:43 +0900
-Message-ID: <711c01d692d6$bc389610$34a9c230$@samsung.com>
+        id S1726899AbgIYBAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 21:00:50 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46732 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726703AbgIYBAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 21:00:49 -0400
+IronPort-SDR: HGcMQqGooSiD1UK+7erO6E7afNMjk1S9cQ2Ma71Wh9SMYhJMaspShrO+rOfdD/eJUbERanCzEO
+ tuNkKGc5Zsiw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="225534844"
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="225534844"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 18:00:49 -0700
+IronPort-SDR: EMAqhhT3m7DUP4pkNG+dkY/YO5bWIT5zkiinbu37ngVl5odtY4WJnCS+kJ5wWmvQA/trC5+SOy
+ 4aJ7SZhEdUkA==
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="455605694"
+Received: from ralfseng-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.47.148])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 18:00:42 -0700
+Date:   Fri, 25 Sep 2020 04:00:40 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200925010031.GH119995@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <20200924180407.GO5030@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQMi4/VQwbYo/U4C9ybSoLj7f91ObgIeTeE0AlzxujABsyhvGKauceYw
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDJsWRmVeSWpSXmKPExsWy7bCmga6PQ268wfV3yhY/5t5msXhzciqL
-        xZ69J1ksLu+aw2Zx+f8nFotlXyazWPyYXu/A7vFlznF2j7bJ/9g9mo+tZPPYOesuu0ffllWM
-        Hp83yQWwReXYZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl
-        5gCdoqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMDQo0CtOzC0uzUvXS87PtTI0
-        MDAyBapMyMlY0vmMsaCPr2LZj83MDYxvuboYOTkkBEwk5i+5xtTFyMUhJLCDUWLOuvusEM4n
-        RokFU94zQjjfGCUeLVjCBtMy6+1NdojEXkaJy8d/QLW8ZJS482UrE0gVm4CuxJMbP5lBbBEB
-        PYmTJ6+DdTMLNDJJnHiZDWJzCthKHJq4hBXEFhZwlPjVfg+snkVAVWLtsZMsIDavgKXE+nv9
-        rBC2oMTJmU9YIObIS2x/O4cZ4iIFid2fjrJC7HKTOHvlJCNEjYjE7M42qJq5HBL3GuMgbBeJ
-        RXf3QX0jLPHq+BZ2CFtK4mV/G5RdL/F//lqwLyUEWhglHn7aBvQYB5BjL/H+kgWIySygKbF+
-        lz5EuaLEzt9zodbySbz72sMKUc0r0dEmBFGiIvH9w04WmE1XflxlmsCoNAvJY7OQPDYLyQOz
-        EJYtYGRZxSiWWlCcm55abFhgiBzZmxjByVTLdAfjxLcf9A4xMnEwHmKU4GBWEuE9viEnXog3
-        JbGyKrUoP76oNCe1+BCjKTCoJzJLiSbnA9N5Xkm8oamRsbGxhYmZuZmpsZI478NbCvFCAumJ
-        JanZqakFqUUwfUwcnFINTAd+HZtlrrTEu1wu0JA/4mDpvPZv8rlpG+OntbQerli13SBnm7+b
-        3JvNVx51vp0nL1v5TLK49tWTGN39ZdNlk8JCPx6bWHDt7BXxr1eUO2qFnwTvuSFzdZLtoctC
-        y3dfObBxnZO4y6d/ohLqCkekP2c9jfi73frLh6berbd1SlpP+S96HHUxT/LsjT/B5TJFv73K
-        l+qWu9+7tHuFmm6qVNmt03/cOK+67NG+bbRm1eXV3Esndr9PYekN/nar88qXvrNHEmr7DWbE
-        3FVo3Ga6grFhnpJc3IMbWbWHk36J986pLmCyP6MUtcbJ7pxE+bNuyfu2a5cmCPEmrTlWb1FV
-        /yW++MURpSWFO2etfsLXsU2JpTgj0VCLuag4EQD5itxlLwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmplkeLIzCtJLcpLzFFi42LZdlhJXtfHITfe4PEGdosfc2+zWLw5OZXF
-        Ys/ekywWl3fNYbO4/P8Ti8WyL5NZLH5Mr3dg9/gy5zi7R9vkf+wezcdWsnnsnHWX3aNvyypG
-        j8+b5ALYorhsUlJzMstSi/TtErgylnQ+Yyzo46tY9mMzcwPjW64uRk4OCQETiVlvb7J3MXJx
-        CAnsZpR40/6RqYuRAyghJXFwnyaEKSxx+HAxRMlzRokNP54xgfSyCehKPLnxkxnEFhHQkzh5
-        8jobSBGzQDOTROuXZrA5QgIvGSUOcoDUcArYShyauIQVxBYWcJT41X4PrJdFQFVi7bGTLCA2
-        r4ClxPp7/awQtqDEyZlPwOLMAtoSvQ9bGSFseYntb+cwQ9yvILH701FWiBvcJM5eOQlVIyIx
-        u7ONeQKj8Cwko2YhGTULyahZSFoWMLKsYpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P3cQI
-        jiktzR2M21d90DvEyMTBeIhRgoNZSYT3+IaceCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8NwoX
-        xgkJpCeWpGanphakFsFkmTg4pRqYdIRLGmQW3tc7WzvrAJvK/5gDRXlnFx7eb7n9dKPKwb3x
-        0Wx/hVO/uPGpzxScaP3c8O1r7ya1k0fO7mH6u/SnTIVkprZwqsrqyrgbT7RfVu6bd06JZa1k
-        0B2hIEbnNL/SP2ZcZiqn803eV25mc9HbZXjqzOdZYT8vrNfu+fZs48UWoboPHDo98evt5jxu
-        YGq/e/323x9x/yerekjdtd/0fdqlj19i8hNnRxawWvK9nxN8WktgYsuz0n8z7r+2FPy37vRt
-        jTkP3qYFspwMshVW/poSsm6+bRJXleSrHquL3duXmCbEfpjK5dV9alLlB/HmBwaskfdfL+nO
-        SpHapv1bot0tX/rTv3uHkhf/WNP9TYmlOCPRUIu5qDgRAOaRTlMYAwAA
-X-CMS-MailID: 20200925005644epcas1p43904a4a4e545c6533e2bfd87ffca4b45
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200909075713epcas1p44c2503251f78baa2fde0ce4351bf936d
-References: <CGME20200909075713epcas1p44c2503251f78baa2fde0ce4351bf936d@epcas1p4.samsung.com>
-        <20200909075652.11203-1-kohada.t2@gmail.com>
-        <000001d688c1$c329cad0$497d6070$@samsung.com>
-        <0f9d3d3e-075f-511d-12e5-21346bca081e@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924180407.GO5030@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 2020/09/12 14:01, Sungjong Seo wrote:
-> >> Remove 'rwoffset' in exfat_inode_info and replace it with the
-> >> parameter(cpos) of exfat_readdir.
-> >> Since rwoffset of  is referenced only by exfat_readdir, it is not
-> >> necessary a exfat_inode_info's member.
-> >>
-> >> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
-> >> ---
-> >>   fs/exfat/dir.c      | 16 ++++++----------
-> >>   fs/exfat/exfat_fs.h |  2 --
-> >>   fs/exfat/file.c     |  2 --
-> >>   fs/exfat/inode.c    |  3 ---
-> >>   fs/exfat/super.c    |  1 -
-> >>   5 files changed, 6 insertions(+), 18 deletions(-)
-> >>
-> >> diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c index
-> >> a9b13ae3f325..fa5bb72aa295 100644
-> >> --- a/fs/exfat/dir.c
-> >> +++ b/fs/exfat/dir.c
-> > [snip]
-> >> sector @@ -262,13 +260,11 @@ static int exfat_iterate(struct file
-> >> *filp, struct dir_context *ctx)
-> >>   		goto end_of_dir;
-> >>   	}
-> >>
-> >> -	cpos = EXFAT_DEN_TO_B(ei->rwoffset);
-> >> -
-> >>   	if (!nb->lfn[0])
-> >>   		goto end_of_dir;
-> >>
-> >>   	i_pos = ((loff_t)ei->start_clu << 32) |
-> >> -		((ei->rwoffset - 1) & 0xffffffff);
-> >> +		(EXFAT_B_TO_DEN(cpos-1) & 0xffffffff);
-> >
-> > Need to fix the above line to be:
-> > (EXFAT_B_TO_DEN(cpos)-1)) & 0xffffffff);
+On Thu, Sep 24, 2020 at 08:04:07PM +0200, Borislav Petkov wrote:
+> On Tue, Sep 15, 2020 at 02:28:39PM +0300, Jarkko Sakkinen wrote:
+> > diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > new file mode 100644
+> > index 000000000000..adbd59d41517
+> > --- /dev/null
+> > +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
 > 
+> Why not simply
 > 
-> Here, we simply converted so that the calculation results would be the
-> same.
-> But after reading it carefully again, I noticed.
->   - Why use the previous entry?
->   - Why does cpos point to stream dir-entry in entry-set?
+> arch/x86/entry/vdso/sgx.S
 > 
-> For the former, there is no need to "++dentry" in exfat_readdir().
-> For the latter, I think cpos should point to the next to current entry-set.
-> 
-> I'll make V2 considering these.
-> How do you think?
+> ?
 
-The latter looks better.
+I renamed it as vsgx.S (for the sake of convention).
+
+> > @@ -0,0 +1,157 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +
+> > +#include <linux/linkage.h>
+> > +#include <asm/export.h>
+> > +#include <asm/errno.h>
+> > +#include <asm/enclu.h>
+> > +
+> > +#include "extable.h"
+> > +
+> > +/* Offset of 'struct sgx_enclave_run' relative to %rbp. */
+> > +#define SGX_ENCLAVE_RUN_PTR	2*8
+> > +
+> > +/* Offsets into 'struct sgx_enclave_run'. */
+> > +#define SGX_ENCLAVE_RUN_TSC		0*8
+> > +#define SGX_ENCLAVE_RUN_FLAGS		1*8
+> > +#define SGX_ENCLAVE_RUN_EXIT_REASON	1*8 + 4
+> > +#define SGX_ENCLAVE_RUN_USER_HANDLER	2*8
+> > +/* #define SGX_ENCLAVE_RUN_USER_DATA	3*8 */
 > 
-> BR
-> ---
-> Tetsuhiro Kohada <kohada.t2@gmail.com>
+> What's with that guy? Left here as documentation showing what's at 3*8
+> offset?
+
+Yes.
+
+> > +#define SGX_ENCLAVE_RUN_EXCEPTION	4*8
+> > +
+> > +#define SGX_SYNCHRONOUS_EXIT		0
+> > +#define SGX_EXCEPTION_EXIT		1
+> 
+> Those are in ...uapi/asm/sgx.h too. Unify?
+
+I have not authored this patch but what I would propose is to use just
+raw value in the place of these constants. It is practially just a
+boolean value.
+
+I can also add sgx_vdso.h to uapi directory. I just don't see the point.
+
+Holding on for feedback with this one.
+
+> > +
+> > +/* Offsets into sgx_enter_enclave.exception. */
+> > +#define SGX_EX_LEAF			0*8
+> > +#define SGX_EX_TRAPNR			0*8+4
+> > +#define SGX_EX_ERROR_CODE		0*8+6
+> > +#define SGX_EX_ADDRESS			1*8
+> > +
+> > +.code64
+> > +.section .text, "ax"
+> > +
+> > +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+> > +	/* Prolog */
+> > +	.cfi_startproc
+> 
+> Are the CFI annotations for userspace?
+
+Yes, for stack unwinding. However, I would leave them out. Holding on
+for further feedback with this tho.
+
+> > +	push	%rbp
+> > +	.cfi_adjust_cfa_offset	8
+> > +	.cfi_rel_offset		%rbp, 0
+> > +	mov	%rsp, %rbp
+> > +	.cfi_def_cfa_register	%rbp
+> > +	push	%rbx
+> > +	.cfi_rel_offset		%rbx, -8
+> > +
+> > +	mov	%ecx, %eax
+> > +.Lenter_enclave:
+> > +	/* EENTER <= leaf <= ERESUME */
+> > +	cmp	$EENTER, %eax
+> > +	jb	.Linvalid_input
+> > +	cmp	$ERESUME, %eax
+> > +	ja	.Linvalid_input
+> > +
+> > +	mov	SGX_ENCLAVE_RUN_PTR(%rbp), %rcx
+> > +
+> > +	/* No flags are currently defined/supported. */
+> > +	cmpl	$0, SGX_ENCLAVE_RUN_FLAGS(%rcx)
+> > +	jne	.Linvalid_input
+> > +
+> > +	/* Load TCS and AEP */
+> 
+> 		TSC
+> 
+> I can see why you would write "TCS" though - there's a thread control
+> structure thing too in that patch.
+
+Renamed.
+
+> > +	mov	SGX_ENCLAVE_RUN_TSC(%rcx), %rbx
+> > +	lea	.Lasync_exit_pointer(%rip), %rcx
+> > +
+> > +	/* Single ENCLU serving as both EENTER and AEP (ERESUME) */
+> > +.Lasync_exit_pointer:
+> > +.Lenclu_eenter_eresume:
+> > +	enclu
+> > +
+> > +	/* EEXIT jumps here unless the enclave is doing something fancy. */
+> > +	mov	SGX_ENCLAVE_RUN_PTR(%rbp), %rbx
+> > +
+> > +	/* Set exit_reason. */
+> > +	movl	$SGX_SYNCHRONOUS_EXIT, SGX_ENCLAVE_RUN_EXIT_REASON(%rbx)
+> > +
+> > +	/* Invoke userspace's exit handler if one was provided. */
+> > +.Lhandle_exit:
+> > +	cmpq	$0, SGX_ENCLAVE_RUN_USER_HANDLER(%rbx)
+> > +	jne	.Linvoke_userspace_handler
+> > +
+> > +	/* Success, in the sense that ENCLU was attempted. */
+> > +	xor	%eax, %eax
+> > +
+> > +.Lout:
+> > +	pop	%rbx
+> > +	leave
+> > +	.cfi_def_cfa		%rsp, 8
+> > +	ret
+> > +
+> > +	/* The out-of-line code runs with the pre-leave stack frame. */
+> > +	.cfi_def_cfa		%rbp, 16
+> > +
+> > +.Linvalid_input:
+> > +	mov	$(-EINVAL), %eax
+> > +	jmp	.Lout
+> > +
+> > +.Lhandle_exception:
+> > +	mov	SGX_ENCLAVE_RUN_PTR(%rbp), %rbx
+> > +
+> > +	/* Set the exit_reason and exception info. */
+> > +	movl	$SGX_EXCEPTION_EXIT, SGX_ENCLAVE_RUN_EXIT_REASON(%rbx)
+> > +
+> > +	mov	%eax, (SGX_ENCLAVE_RUN_EXCEPTION + SGX_EX_LEAF)(%rbx)
+> > +	mov	%di,  (SGX_ENCLAVE_RUN_EXCEPTION + SGX_EX_TRAPNR)(%rbx)
+> > +	mov	%si,  (SGX_ENCLAVE_RUN_EXCEPTION + SGX_EX_ERROR_CODE)(%rbx)
+> > +	mov	%rdx, (SGX_ENCLAVE_RUN_EXCEPTION + SGX_EX_ADDRESS)(%rbx)
+> > +	jmp	.Lhandle_exit
+> > +
+> > +.Linvoke_userspace_handler:
+> > +	/* Pass the untrusted RSP (at exit) to the callback via %rcx. */
+> > +	mov	%rsp, %rcx
+> > +
+> > +	/* Save @e, %rbx is about to be clobbered. */
+> 
+> I've been wondering what that "@e" thing is and I believe I've found it at the
+> end: "... @e, the optional sgx_enclave_exception struct"
+> 
+> Yes?
+> 
+> Please rewrite what that "e" is here - I think you wanna say "struct
+> sgx_enclave_run.exception" instead to clarify.
+
+I agree. Open coded them as "struct sgx_enclave_exception".
+
+> 
+> ...
+> 
+> > diff --git a/arch/x86/include/asm/enclu.h b/arch/x86/include/asm/enclu.h
+> > new file mode 100644
+> > index 000000000000..06157b3e9ede
+> > --- /dev/null
+> > +++ b/arch/x86/include/asm/enclu.h
+> > @@ -0,0 +1,8 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef _ASM_X86_ENCLU_H
+> > +#define _ASM_X86_ENCLU_H
+> > +
+> > +#define EENTER	0x02
+> > +#define ERESUME	0x03
+> > +
+> > +#endif /* _ASM_X86_ENCLU_H */
+> > diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+> > index d0916fb9629e..1564d7f88597 100644
+> > --- a/arch/x86/include/uapi/asm/sgx.h
+> > +++ b/arch/x86/include/uapi/asm/sgx.h
+> 
+> Are all those defines being added to the uapi header, also actually
+> needed by userspace?
+
+I'd remove the two constants, as it is clearly just a boolean value.
+
+> > @@ -72,4 +72,132 @@ struct sgx_enclave_provision {
+> >  	__u64 attribute_fd;
+> >  };
+> >  
+> > +#define SGX_SYNCHRONOUS_EXIT	0
+> > +#define SGX_EXCEPTION_EXIT	1
+> > +
+> > +struct sgx_enclave_run;
+> > +
+> > +/**
+> > + * typedef sgx_enclave_exit_handler_t - Exit handler function accepted by
+> > + *					__vdso_sgx_enter_enclave()
+> > + *
+> > + * @rdi:	RDI at the time of enclave exit
+> > + * @rsi:	RSI at the time of enclave exit
+> > + * @rdx:	RDX at the time of enclave exit
+> > + * @ursp:	RSP at the time of enclave exit (untrusted stack)
+> > + * @r8:		R8 at the time of enclave exit
+> > + * @r9:		R9 at the time of enclave exit
+> 
+> I'm sure you can avoid that "at the time of enclave exit" repetition.
+
+I edited this as
+
+/**
+ * typedef sgx_enclave_exit_handler_t - Exit handler function accepted by
+ *					__vdso_sgx_enter_enclave()
+ * @rdi:	RDI snapshot
+ * @rsi:	RSI snapshot
+ * @rdx:	RDX snapshot
+ * @rsp:	RSP snapshot (untrusted stack)
+ * @r8:		R8 snapshot
+ * @r9:		R9 snapshot
+ * @run:	Pointer to the caller provided struct sgx_enclave_run
+ *
+ * Return:
+ *  0 or negative to exit vDSO
+ *  positive to re-enter enclave (must be EENTER or ERESUME leaf)
+ */
+typedef int (*sgx_enclave_exit_handler_t)(long rdi, long rsi, long rdx,
+					  long rsp, long r8, long r9,
+					  struct sgx_enclave_run *run);
 
 
+> > +/**
+> > + * typedef vdso_sgx_enter_enclave_t - Prototype for __vdso_sgx_enter_enclave(),
+> > + *				      a vDSO function to enter an SGX enclave.
+> > + *
+> > + * @rdi:	Pass-through value for RDI
+> > + * @rsi:	Pass-through value for RSI
+> > + * @rdx:	Pass-through value for RDX
+> > + * @leaf:	ENCLU leaf, must be EENTER or ERESUME
+> > + * @r8:		Pass-through value for R8
+> > + * @r9:		Pass-through value for R9
+> > + * @r:		struct sgx_enclave_run, must be non-NULL
+> > + *
+> > + * NOTE: __vdso_sgx_enter_enclave() does not ensure full compliance with the
+> > + * x86-64 ABI, e.g. doesn't handle XSAVE state.  Except for non-volatile
+> > + * general purpose registers, EFLAGS.DF, and RSP alignment, preserving/setting
+> > + * state in accordance with the x86-64 ABI is the responsibility of the enclave
+> > + * and its runtime, i.e. __vdso_sgx_enter_enclave() cannot be called from C
+> > + * code without careful consideration by both the enclave and its runtime.
+> > + *
+> > + * All general purpose registers except RAX, RBX and RCX are passed as-is to
+> > + * the enclave.  RAX, RBX and RCX are consumed by EENTER and ERESUME and are
+> > + * loaded with @leaf, asynchronous exit pointer, and @tcs respectively.
+> 
+> That tcs is probably struct sgx_enclave_run.tcs?
+
+Yes.
+
+> > + * RBP and the stack are used to anchor __vdso_sgx_enter_enclave() to the
+> > + * pre-enclave state, e.g. to retrieve @e and @handler after an enclave exit.
+> 
+> Expand @e and do you mean "@user_handler" with "@handler"?
+
+I replaced this and similar fields as @run.user_handler and so forth.
+
+> 
+> > + * All other registers are available for use by the enclave and its runtime,
+> > + * e.g. an enclave can push additional data onto the stack (and modify RSP) to
+> > + * pass information to the optional exit handler (see below).
+> > + *
+> > + * Most exceptions reported on ENCLU, including those that occur within the
+> > + * enclave, are fixed up and reported synchronously instead of being delivered
+> > + * via a standard signal. Debug Exceptions (#DB) and Breakpoints (#BP) are
+> > + * never fixed up and are always delivered via standard signals. On synchrously
+> > + * reported exceptions, -EFAULT is returned and details about the exception are
+> > + * recorded in @e, the optional sgx_enclave_exception struct.
+> > + *
+> > + * If an exit handler is provided, the handler will be invoked on synchronous
+> > + * exits from the enclave and for all synchronously reported exceptions. In
+> > + * latter case, @e is filled prior to invoking the handler.
+> > + *
+> > + * The exit handler's return value is interpreted as follows:
+> > + *  >0:		continue, restart __vdso_sgx_enter_enclave() with @ret as @leaf
+> > + *   0:		success, return @ret to the caller
+> > + *  <0:		error, return @ret to the caller
+> > + *
+> > + * The exit handler may transfer control, e.g. via longjmp() or C++ exception,
+> > + * without returning to __vdso_sgx_enter_enclave().
+> > + *
+> > + * Return:
+> > + *  0 on success (ENCLU reached),
+> > + *  -EINVAL if ENCLU leaf is not allowed,
+> > + *  -errno for all other negative values returned by the userspace exit handler
+> > + */
+> > +typedef int (*vdso_sgx_enter_enclave_t)(unsigned long rdi, unsigned long rsi,
+> > +					unsigned long rdx, unsigned int leaf,
+> > +					unsigned long r8,  unsigned long r9,
+> > +					struct sgx_enclave_run *r);
+> > +
+> >  #endif /* _UAPI_ASM_X86_SGX_H */
+> > -- 
+> > 2.25.1
+> > 
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+Also, I renamed 'r' as 'run' in some places.
+
+End result:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/arch/x86/include/uapi/asm/sgx.h
+
+I'm wondering this sentence:
+
+"The calling convention is custom and does not follow System V x86-64 ABI."
+
+AFAIK, now the vDSO is fully C-callable but waiting for feedback before
+removing it.
+
+/Jarkko
