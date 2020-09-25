@@ -2,157 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472DE27850B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11465278514
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:29:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728132AbgIYKZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:25:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26599 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727925AbgIYKZs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:25:48 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601029547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=8X2tqQD9LWSpK9qkuBJW3RBQ4qz5TBw5wFMdTqEtcbY=;
-        b=KjLviycTzXUWm+6TWiPHPZIjH4Y/B/Og0eDS0jNEuWmZTG+Qo17ZjCrYCHgN6tvJUs3JW6
-        QFqB0biRaJG80In3Gp66mBDkL1DznEbnB7LX2qjaSME3KSM2yw8rS7CHEKbz7FYXrbPB2M
-        tY1ouTg9cQA+QmwwOOzOPqW/R5woOmM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-529-XnwKu1Y2P6y7mMqZjfa5Vg-1; Fri, 25 Sep 2020 06:25:43 -0400
-X-MC-Unique: XnwKu1Y2P6y7mMqZjfa5Vg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D58518BA283;
-        Fri, 25 Sep 2020 10:25:41 +0000 (UTC)
-Received: from [10.36.112.211] (ovpn-112-211.ams2.redhat.com [10.36.112.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0CB322634F;
-        Fri, 25 Sep 2020 10:25:39 +0000 (UTC)
-Subject: Re: [PATCH 5/9] mm, page_alloc: make per_cpu_pageset accessible only
- after init
-To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-6-vbabka@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <ef4503f3-41d5-c153-a992-3dbf3ed8fc7f@redhat.com>
-Date:   Fri, 25 Sep 2020 12:25:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727678AbgIYK3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:29:24 -0400
+Received: from mga12.intel.com ([192.55.52.136]:21115 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727132AbgIYK3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 06:29:24 -0400
+IronPort-SDR: vuOcnjED3Fx0CeCEZsVaptiom6ZqPLQHOh0joeyQC4aDCqcOWpKtr2EeWc2uTeTLwOfWR+thi1
+ OgKw3v/T6uaQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="140904959"
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="140904959"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 03:29:24 -0700
+IronPort-SDR: 6yOz4t4UbYext8bf560KO5M7v1plRNU+tSJgTyJBDE1vo7EE4RE7RggBMPB2j+H49EhzuSE9RH
+ yhPJD8TzwMHA==
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="455766872"
+Received: from tjhenson-mobl.amr.corp.intel.com (HELO localhost) ([10.252.48.117])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 03:29:22 -0700
+Date:   Fri, 25 Sep 2020 13:29:20 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
+Message-ID: <20200925102920.GA180915@linux.intel.com>
+References: <20200922094128.26245-1-ardb@kernel.org>
+ <20200925055626.GC165011@linux.intel.com>
+ <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200922143712.12048-6-vbabka@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.20 16:37, Vlastimil Babka wrote:
-> setup_zone_pageset() replaces the boot_pageset by allocating and initializing a
-> proper percpu one. Currently it assigns zone->pageset with the newly allocated
-> one before initializing it. That's currently not an issue, because the zone
-> should not be in any zonelist, thus not visible to allocators at this point.
+On Fri, Sep 25, 2020 at 09:00:56AM +0200, Ard Biesheuvel wrote:
+> On Fri, 25 Sep 2020 at 07:56, Jarkko Sakkinen
+> <jarkko.sakkinen@linux.intel.com> wrote:
+> >
+> > On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
+> > > The TPM event log is provided to the OS by the firmware, by loading
+> > > it into an area in memory and passing the physical address via a node
+> > > in the device tree.
+> > >
+> > > Currently, we use __va() to access the memory via the kernel's linear
+> > > map: however, it is not guaranteed that the linear map covers this
+> > > particular address, as we may be running under HIGHMEM on a 32-bit
+> > > architecture, or running firmware that uses a memory type for the
+> > > event log that is omitted from the linear map (such as EfiReserved).
+> >
+> > Makes perfect sense to the level that I wonder if this should have a
+> > fixes tag and/or needs to be backported to the stable kernels?
+> >
 > 
-> Memory ordering between the pcplist contents and its visibility is also not
-> guaranteed here, but that also shouldn't be an issue because online_pages()
-> does a spin_unlock(pgdat->node_size_lock) before building the zonelists.
+> AIUI, the code was written specifically for ppc64, which is a
+> non-highmem, non-EFI architecture. However, when we start reusing this
+> driver for ARM, this issue could pop up.
 > 
-> However it's best that we don't silently rely on operations that can be changed
-> in the future. Make sure only properly initialized pcplists are visible, using
-> smp_store_release(). The read side has a data dependency via the zone->pageset
-> pointer instead of an explicit read barrier.
+> The code itself has been refactored a couple of times, so I think it
+> will require different versions of the patch for different generations
+> of stable kernels.
 > 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/page_alloc.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 99b74c1c2b0a..de3b48bda45c 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6246,15 +6246,17 @@ static void zone_set_pageset_high_and_batch(struct zone *zone)
->  
->  void __meminit setup_zone_pageset(struct zone *zone)
->  {
-> +	struct per_cpu_pageset __percpu * new_pageset;
->  	struct per_cpu_pageset *p;
->  	int cpu;
->  
-> -	zone->pageset = alloc_percpu(struct per_cpu_pageset);
-> +	new_pageset = alloc_percpu(struct per_cpu_pageset);
->  	for_each_possible_cpu(cpu) {
-> -		p = per_cpu_ptr(zone->pageset, cpu);
-> +		p = per_cpu_ptr(new_pageset, cpu);
->  		pageset_init(p);
->  	}
->  
-> +	smp_store_release(&zone->pageset, new_pageset);
->  	zone_set_pageset_high_and_batch(zone);
->  }
->  
-> 
+> So perhaps just add Cc: <stable@vger.kernel.org>, and wait and see how
+> far back it applies cleanly?
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Yeah, I think I'll cc it with some note before the diffstat.
 
--- 
-Thanks,
+I'm thinking to cap it to only 5.x kernels (at least first) unless it is
+dead easy to backport below that.
 
-David / dhildenb
+> > This is a really great catch!
+> >
+> > I'm a bit late of my PR a bit because of SGX upstreaming madness
+> > (sending v39 soon). If you can answer to my question above, I can do
+> > that nitpick change to patch and get it to my v5.10 PR.
+> >
+> 
+> Yes, please.
 
+Great, will do, thanks again for fixing this issue!
+
+/Jarkko
