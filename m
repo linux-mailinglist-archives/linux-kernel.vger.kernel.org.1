@@ -2,261 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FCC278C99
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:26:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1469A278CA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729368AbgIYP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        id S1729027AbgIYP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727749AbgIYP0h (ORCPT
+        with ESMTP id S1728801AbgIYP1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:26:37 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFE7C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:26:36 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id q13so4150873ejo.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:26:36 -0700 (PDT)
+        Fri, 25 Sep 2020 11:27:42 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EE6C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:27:42 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id n2so3198648oij.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:27:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MzAtS5pp4wKZdqYxm3un6roUYuqJtBuwsuQz9RJF5Yc=;
-        b=DzeQK3aABgVqnhtf+JB9A0bO29QBHxl/mqzmoOtm+NL9CIIGpXMGoBqC1stGMySpRB
-         EwbqglUvAoaeO0gRjZy7CodfHU5mTCWx/Xrj6qhU+0OPAQRyzGw3/Qd8uc2iF7gR4M42
-         6ek29i+J1uZdWDK2HQd3M8r5yucLm6bZXQG2uH4gEoXMMEQefyEGtPv4SDpTjI9pPA0y
-         IMHymF/TA6gnJP5BNt314PwYAxuBGm0lJUwMAuq6RcNUcmw6gWW5oXbVO0kQfJp2EAde
-         iidJA8z43PZINmj0czjZG1nlfk7d1r9NQpyhvpPrwa6kbTr5cjDS7Ra/vbkmwmq9VZIz
-         sCPg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+6Gvod8Bmcfdc8dmCT/NbNCi24OBdt2HEY33KRNsSb0=;
+        b=LtsiSvd40J24vUdcrdY9gBNxAHpcZ6Zb9yoKXmnIQUoMF4WFdLxs8QsBRS6u6KtiFc
+         fzpoKREQyPnB8h7hwbATU0WdVwl3mwJAaDfn7iWB6VRU1ab1n0KNRgFxIvsQqRnAc1ES
+         fi7gxOZ5X4HZAJd0wVSZGewSySpGnwMukduIdm3f3m6LODh1uSkPWiPknp+mCbnHXsxs
+         S27PzgFBAn0WAkNdIF//5YWEsUDkMqY4Tu+aTB3YieZrI1dUuuRdIqfRm6uj3n4TPhf8
+         wbLk8SYKo4dio2aIcPcE6sAYRFnVYTqzAOGvnrjnikJ4FhiGP0MnyDRZp2uToWLABKF2
+         dlTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MzAtS5pp4wKZdqYxm3un6roUYuqJtBuwsuQz9RJF5Yc=;
-        b=M5lNZBrOjn2FOdLoWGlmqx0NVqa0/mwmgRh5CB+uSn/QPp6P2M/oGLvgpIyjNKJ5ty
-         DLqI7oSW4xkTxjPxquFGiy18x9/saTv7r740RMgntr41dp7a82LwC8AjLIRZk5ihlp7w
-         5lZXYcyrefmmFWXAfBGQH7314VwmjOVxTl4LZFMVdAI5YI6HpC9pDDphZaAlEnsoFnXE
-         z4YWNGQHPbDiiZYCOSlklEFomhrFm3vShQWuxi3rmwrJ42jApDHgRuFJQ95Dv30RTJk/
-         IADPgxR27ofVJwRr5SXXMBgWGYnbRnSe+lPd31meCPbIsJEomXpqdxhBPU+zjYrXT0oq
-         eT9w==
-X-Gm-Message-State: AOAM530LYbxZ83wjLKFSahjSBoybYmOHWFbBmxRn0/xoQhNUpAFP/wpM
-        wKaDUukY3wKSb3mIjp73WapePjZiUJq4VXzJ2Fo44A==
-X-Google-Smtp-Source: ABdhPJwAxm0uho96sgjawV6ygVNsek+KPJIlPtlIS8KiCCz4rT7hlrStPnUrm7e7riFl2ig9jvhhA7Sn7QwfoxTybP8=
-X-Received: by 2002:a17:906:1a4b:: with SMTP id j11mr3148301ejf.97.1601047594921;
- Fri, 25 Sep 2020 08:26:34 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+6Gvod8Bmcfdc8dmCT/NbNCi24OBdt2HEY33KRNsSb0=;
+        b=imEohxJCM7mPgFX2NZfHaG4qJh/G6IIhV9kV2hC0NXtLh0KfLUhFr8FQXAlvS/ZeWt
+         GQ3GtzbDUlEutZfRg3tjm6xpCv2G7YufnwKw+JnE4mU4IoMzcMXG8D5nzfdoDpY6nlUa
+         6LGiLhI3U1ndLrc00a9LntLpG+n5ttjHF5ASoYBufgD2eELo5MsCzVepcPzHJhrlTpQP
+         EljQX6DXDWnEyT3ILYrBBys6fHvqjKWF2Xd/nRFJCE+htGyr3Gbnj1nPKmztVlh+45G5
+         wUnQF7ZDcNTZjbwRmFOJWRZUXMjJPY829q7Qnyph7ngA8MII95JAKVz1rYq+7lKA8zs5
+         VkbA==
+X-Gm-Message-State: AOAM533CXSybYUTlN4wjD2B+u+lR0dea1sn02Xq+tQvJTvDYOLAq9yZE
+        jebQ9GN+z1fAnMihcG754Eg9AQ==
+X-Google-Smtp-Source: ABdhPJxPC5MyC8S4bjpg1guvEbH+1/PR/di2bgdC6u6i0LcfpuOGCns4aOm9QrUXbpQfAG0lPAd0mw==
+X-Received: by 2002:aca:dd42:: with SMTP id u63mr531139oig.135.1601047661927;
+        Fri, 25 Sep 2020 08:27:41 -0700 (PDT)
+Received: from yoga (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
+        by smtp.gmail.com with ESMTPSA id y24sm764388ooq.38.2020.09.25.08.27.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 08:27:41 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 10:27:39 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Amit Pundir <amit.pundir@linaro.org>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        ath10k@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi
+ Poco F1
+Message-ID: <20200925152739.GE2510@yoga>
+References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
+ <87d02bnnll.fsf@codeaurora.org>
 MIME-Version: 1.0
-References: <20200923130339.997902-1-alexandru.ardelean@analog.com> <20200925133301.4789c47a@archlinux>
-In-Reply-To: <20200925133301.4789c47a@archlinux>
-From:   Guenter Roeck <groeck@google.com>
-Date:   Fri, 25 Sep 2020 08:26:23 -0700
-Message-ID: <CABXOdTdr52ikhoSEMqqFakO42hZzpvtH=rxkAYWQsExrnWodFA@mail.gmail.com>
-Subject: Re: [PATCH] iio: cros_ec: unify hw fifo attributes into the core file
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87d02bnnll.fsf@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 5:33 AM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Wed, 23 Sep 2020 16:03:39 +0300
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > The intent here is to minimize the use of iio_buffer_set_attrs(). Since we
-> > are planning to add support for multiple IIO buffers per IIO device, the
-> > issue has to do with:
-> > 1. Accessing 'indio_dev->buffer' directly (as is done with
-> >    'iio_buffer_set_attrs(indio_dev->buffer, <attrs>)').
-> > 2. The way that the buffer attributes would get handled or expanded when
-> >    there are more buffers per IIO device. Current a sysfs kobj_type expands
-> >    into a 'device' object that expands into an 'iio_dev' object.
-> >    We will need to change this, so that the sysfs attributes for IIO
-> >    buffers expand into IIO buffers at some point.
-> >
-> > Right now, the current IIO framework works fine for the
-> > '1 IIO device == 1 IIO buffer' case (that is now).
-> >
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> Looks good to me, but I'll need a cros_ec ack for this one.
->
+On Thu 24 Sep 11:31 CDT 2020, Kalle Valo wrote:
 
-I like it.
+> Amit Pundir <amit.pundir@linaro.org> writes:
+> 
+> > Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
+> > phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
+> > message in ath10k_qmi_host_cap_send_sync(), but we can still
+> > bring up WiFi services successfully on AOSP if we ignore it.
+> >
+> > We suspect either the host cap is not implemented or there
+> > may be firmware specific issues. Firmware version is
+> > QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
+> >
+> > qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
+> > quirk, then the host capability request does get accepted,
+> > but we run into fatal "msa info req rejected" error and
+> > WiFi interface doesn't come up.
+> >
+> > Attempts are being made to debug the failure reasons but no
+> > luck so far. Hence this device specific workaround instead
+> > of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
+> > Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
+> > linux-firmware project but it didn't help and neither did
+> > building board-2.bin file from stock bdwlan* files.
+> >
+> > This workaround will be removed once we have a viable fix.
+> > Thanks to postmarketOS guys for catching this.
+> >
+> > Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
+> 
+> Bjorn, is this ok to take?
+> 
 
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
+As I wrote in the answer to Amit I think we should introduce a generic
+quirk to skip host_cap instead.
 
-Guenter
+So if you pick this up (which is an ok short term workaround) I think we
+should revert it once we have a generic mechanism.
 
-> thanks
->
-> Jonathan
->
-> > ---
-> >  drivers/iio/accel/cros_ec_accel_legacy.c              |  2 +-
-> >  .../iio/common/cros_ec_sensors/cros_ec_lid_angle.c    |  3 ++-
-> >  drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c  |  5 ++---
-> >  .../iio/common/cros_ec_sensors/cros_ec_sensors_core.c | 11 ++++++++---
-> >  drivers/iio/light/cros_ec_light_prox.c                |  5 ++---
-> >  drivers/iio/pressure/cros_ec_baro.c                   |  5 ++---
-> >  include/linux/iio/common/cros_ec_sensors_core.h       |  4 ++--
-> >  7 files changed, 19 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/drivers/iio/accel/cros_ec_accel_legacy.c b/drivers/iio/accel/cros_ec_accel_legacy.c
-> > index b6f3471b62dc..8f1232c38e0d 100644
-> > --- a/drivers/iio/accel/cros_ec_accel_legacy.c
-> > +++ b/drivers/iio/accel/cros_ec_accel_legacy.c
-> > @@ -215,7 +215,7 @@ static int cros_ec_accel_legacy_probe(struct platform_device *pdev)
-> >               return -ENOMEM;
-> >
-> >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> > -                                     cros_ec_sensors_capture, NULL);
-> > +                                     cros_ec_sensors_capture, NULL, false);
-> >       if (ret)
-> >               return ret;
-> >
-> > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c b/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-> > index af801e203623..752f59037715 100644
-> > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-> > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-> > @@ -97,7 +97,8 @@ static int cros_ec_lid_angle_probe(struct platform_device *pdev)
-> >       if (!indio_dev)
-> >               return -ENOMEM;
-> >
-> > -     ret = cros_ec_sensors_core_init(pdev, indio_dev, false, NULL, NULL);
-> > +     ret = cros_ec_sensors_core_init(pdev, indio_dev, false, NULL,
-> > +                                     NULL, false);
-> >       if (ret)
-> >               return ret;
-> >
-> > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-> > index 130ab8ce0269..57038ca48d93 100644
-> > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-> > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-> > @@ -236,12 +236,11 @@ static int cros_ec_sensors_probe(struct platform_device *pdev)
-> >
-> >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> >                                       cros_ec_sensors_capture,
-> > -                                     cros_ec_sensors_push_data);
-> > +                                     cros_ec_sensors_push_data,
-> > +                                     true);
-> >       if (ret)
-> >               return ret;
-> >
-> > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
-> > -
-> >       indio_dev->info = &ec_sensors_info;
-> >       state = iio_priv(indio_dev);
-> >       for (channel = state->channels, i = CROS_EC_SENSOR_X;
-> > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > index ea480c1d4349..0de800d41978 100644
-> > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > @@ -174,12 +174,11 @@ static ssize_t hwfifo_watermark_max_show(struct device *dev,
-> >
-> >  static IIO_DEVICE_ATTR_RO(hwfifo_watermark_max, 0);
-> >
-> > -const struct attribute *cros_ec_sensor_fifo_attributes[] = {
-> > +static const struct attribute *cros_ec_sensor_fifo_attributes[] = {
-> >       &iio_dev_attr_hwfifo_timeout.dev_attr.attr,
-> >       &iio_dev_attr_hwfifo_watermark_max.dev_attr.attr,
-> >       NULL,
-> >  };
-> > -EXPORT_SYMBOL_GPL(cros_ec_sensor_fifo_attributes);
-> >
-> >  int cros_ec_sensors_push_data(struct iio_dev *indio_dev,
-> >                             s16 *data,
-> > @@ -238,6 +237,7 @@ static void cros_ec_sensors_core_clean(void *arg)
-> >   *    for backward compatibility.
-> >   * @push_data:          function to call when cros_ec_sensorhub receives
-> >   *    a sample for that sensor.
-> > + * @has_hw_fifo:     Set true if this device has/uses a HW FIFO
-> >   *
-> >   * Return: 0 on success, -errno on failure.
-> >   */
-> > @@ -245,7 +245,8 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
-> >                             struct iio_dev *indio_dev,
-> >                             bool physical_device,
-> >                             cros_ec_sensors_capture_t trigger_capture,
-> > -                           cros_ec_sensorhub_push_data_cb_t push_data)
-> > +                           cros_ec_sensorhub_push_data_cb_t push_data,
-> > +                           bool has_hw_fifo)
-> >  {
-> >       struct device *dev = &pdev->dev;
-> >       struct cros_ec_sensors_core_state *state = iio_priv(indio_dev);
-> > @@ -358,6 +359,10 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
-> >                                       NULL);
-> >                       if (ret)
-> >                               return ret;
-> > +
-> > +                     if (has_hw_fifo)
-> > +                             iio_buffer_set_attrs(indio_dev->buffer,
-> > +                                                  cros_ec_sensor_fifo_attributes);
-> >               }
-> >       }
-> >
-> > diff --git a/drivers/iio/light/cros_ec_light_prox.c b/drivers/iio/light/cros_ec_light_prox.c
-> > index fed79ba27fda..75d6b5fcf2cc 100644
-> > --- a/drivers/iio/light/cros_ec_light_prox.c
-> > +++ b/drivers/iio/light/cros_ec_light_prox.c
-> > @@ -182,12 +182,11 @@ static int cros_ec_light_prox_probe(struct platform_device *pdev)
-> >
-> >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> >                                       cros_ec_sensors_capture,
-> > -                                     cros_ec_sensors_push_data);
-> > +                                     cros_ec_sensors_push_data,
-> > +                                     true);
-> >       if (ret)
-> >               return ret;
-> >
-> > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
-> > -
-> >       indio_dev->info = &cros_ec_light_prox_info;
-> >       state = iio_priv(indio_dev);
-> >       state->core.type = state->core.resp->info.type;
-> > diff --git a/drivers/iio/pressure/cros_ec_baro.c b/drivers/iio/pressure/cros_ec_baro.c
-> > index f0938b6fbba0..aa043cb9ac42 100644
-> > --- a/drivers/iio/pressure/cros_ec_baro.c
-> > +++ b/drivers/iio/pressure/cros_ec_baro.c
-> > @@ -139,12 +139,11 @@ static int cros_ec_baro_probe(struct platform_device *pdev)
-> >
-> >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> >                                       cros_ec_sensors_capture,
-> > -                                     cros_ec_sensors_push_data);
-> > +                                     cros_ec_sensors_push_data,
-> > +                                     true);
-> >       if (ret)
-> >               return ret;
-> >
-> > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
-> > -
-> >       indio_dev->info = &cros_ec_baro_info;
-> >       state = iio_priv(indio_dev);
-> >       state->core.type = state->core.resp->info.type;
-> > diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/linux/iio/common/cros_ec_sensors_core.h
-> > index caa8bb279a34..c9b80be82440 100644
-> > --- a/include/linux/iio/common/cros_ec_sensors_core.h
-> > +++ b/include/linux/iio/common/cros_ec_sensors_core.h
-> > @@ -96,7 +96,8 @@ struct platform_device;
-> >  int cros_ec_sensors_core_init(struct platform_device *pdev,
-> >                             struct iio_dev *indio_dev, bool physical_device,
-> >                             cros_ec_sensors_capture_t trigger_capture,
-> > -                           cros_ec_sensorhub_push_data_cb_t push_data);
-> > +                           cros_ec_sensorhub_push_data_cb_t push_data,
-> > +                           bool has_hw_fifo);
-> >
-> >  irqreturn_t cros_ec_sensors_capture(int irq, void *p);
-> >  int cros_ec_sensors_push_data(struct iio_dev *indio_dev,
-> > @@ -125,6 +126,5 @@ extern const struct dev_pm_ops cros_ec_sensors_pm_ops;
-> >
-> >  /* List of extended channel specification for all sensors. */
-> >  extern const struct iio_chan_spec_ext_info cros_ec_sensors_ext_info[];
-> > -extern const struct attribute *cros_ec_sensor_fifo_attributes[];
-> >
-> >  #endif  /* __CROS_EC_SENSORS_CORE_H */
->
+Regards,
+Bjorn
+
+> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> > @@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
+> >  
+> >  	/* older FW didn't support this request, which is not fatal */
+> >  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
+> > -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
+> > +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
+> > +	    !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
+> >  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
+> 
+> ath10k-check complained about a too long line, so in the pending branch
+> I moved the comment before the if statement.
+> 
+> -- 
+> https://patchwork.kernel.org/project/linux-wireless/list/
+> 
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
