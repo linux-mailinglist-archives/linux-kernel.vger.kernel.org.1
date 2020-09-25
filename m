@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62DB2785C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F4872785CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbgIYL1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:27:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51631 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726990AbgIYL1l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:27:41 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601033256;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OIYjG/eOf0A02Qd+6Up4W+Jt7X/3F3zVaDbUU4OQaQY=;
-        b=O/WhS1SEB7dd6XjJKRiEeNJujnCiLweBn9Hf4gPr6c/wmKeSuj3oHRXFS5X/FK7laMtRgu
-        d4QYepDj5gyLXR/PpOheMcNJdkx6Q1j7vLByKHWixOXvO0/ltMmUHhsUQoz/77PfcGCCRI
-        pJtV5Pgze3E2S70giWRApa8QNM2mEyw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-460-z4Vu6R3RNealyVJDGYbeXg-1; Fri, 25 Sep 2020 07:27:33 -0400
-X-MC-Unique: z4Vu6R3RNealyVJDGYbeXg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1728085AbgIYL2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:28:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727290AbgIYL2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:28:18 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AD02A88EF0E;
-        Fri, 25 Sep 2020 11:27:31 +0000 (UTC)
-Received: from [10.72.12.44] (ovpn-12-44.pek2.redhat.com [10.72.12.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 930765D9F7;
-        Fri, 25 Sep 2020 11:27:15 +0000 (UTC)
-Subject: Re: [RFC PATCH 02/24] vhost-vdpa: fix vqs leak in vhost_vdpa_open()
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     lulu@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
-        mhabets@solarflare.com, eli@mellanox.com, amorenoz@redhat.com,
-        maxime.coquelin@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-3-jasowang@redhat.com>
- <20200924053119-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <c2f3c4a3-604f-ad27-d34d-a829446a3c7e@redhat.com>
-Date:   Fri, 25 Sep 2020 19:27:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 6EADE20717;
+        Fri, 25 Sep 2020 11:28:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601033298;
+        bh=0qBWR99wLEdw3Mdk8ebyUqm3qW4QtbL6m4S65p6z35M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Jc3SKVW+FxNdmlp5Xxhb3DtrfvOgoiSfyY/pDUuYmedimLssoUNMDjP80yVqzX/pr
+         +s5kRKeekM98Xj+it3g8OerfS8kRF7h6Fl1d4mXkJKGgPZnO1Kp5lP7JEJdp5b+4d8
+         oIG6w+xbnn1gdPGOmLrkd95NDbFhLgvMYnHDYL7U=
+Date:   Fri, 25 Sep 2020 12:27:22 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Anna Schumaker <anna.schumaker@netapp.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Hongxiang Lou <louhongxiang@huawei.com>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3] nfs: remove incorrect fallthrough label
+Message-ID: <20200925112722.GA4841@sirena.org.uk>
+References: <ce28bb9bc25cb3f1197f75950a0cfe14947f9002.camel@perches.com>
+ <20200917214545.199463-1-ndesaulniers@google.com>
+ <CAKwvOdnziDJbRAP77K+V885SCuORfV4SmHDnSLUxhUGSSLMq_Q@mail.gmail.com>
+ <ca629208707903da56823dd57540d677df2da283.camel@perches.com>
+ <734165bbee434a920f074940624bcef01fcd9d60.camel@perches.com>
+ <CAFX2Jf=JjVOjDKj_rpst35a+fqbiq4OpVFjztaeKcbTSNapnCg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200924053119-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
+Content-Disposition: inline
+In-Reply-To: <CAFX2Jf=JjVOjDKj_rpst35a+fqbiq4OpVFjztaeKcbTSNapnCg@mail.gmail.com>
+X-Cookie: Onward through the fog.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 2020/9/24 下午5:31, Michael S. Tsirkin wrote:
-> On Thu, Sep 24, 2020 at 11:21:03AM +0800, Jason Wang wrote:
->> We need to free vqs during the err path after it has been allocated
->> since vhost won't do that for us.
->>
->> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> This is a bugfix too right? I don't see it posted separately ...
+--J2SCkAp4GZ/dPZZf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
+On Thu, Sep 24, 2020 at 02:11:59PM -0400, Anna Schumaker wrote:
+> On Thu, Sep 24, 2020 at 2:08 PM Joe Perches <joe@perches.com> wrote:
 
-A patch that is functional equivalent is posted here:
+> > Real reason why not:
 
-https://www.mail-archive.com/virtualization@lists.linux-foundation.org/msg42558.html
+> I'm planning to take this patch through the NFS tree for 5.10 (along
+> with the patch that apparently causes the problem). I didn't think it
+> was urgent so I haven't gotten around to pushing it out yet, but I'll
+> do so in the next few hours.
 
-I'm a little bit lazy to use that one since this patch is probably wrote 
-before that one.
+FWIW NFS is quite widely used by CI systems so any build breaks with it
+in -next have a pretty big knock on effect on testing, even beyond the
+distruption people working on the build test side of things.
 
-Thanks
+--J2SCkAp4GZ/dPZZf
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
->
->> ---
->>   drivers/vhost/vdpa.c | 11 ++++++++---
->>   1 file changed, 8 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->> index 796fe979f997..9c641274b9f3 100644
->> --- a/drivers/vhost/vdpa.c
->> +++ b/drivers/vhost/vdpa.c
->> @@ -764,6 +764,12 @@ static void vhost_vdpa_free_domain(struct vhost_vdpa *v)
->>   	v->domain = NULL;
->>   }
->>   
->> +static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
->> +{
->> +	vhost_dev_cleanup(&v->vdev);
->> +	kfree(v->vdev.vqs);
->> +}
->> +
->>   static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->>   {
->>   	struct vhost_vdpa *v;
->> @@ -809,7 +815,7 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->>   	return 0;
->>   
->>   err_init_iotlb:
->> -	vhost_dev_cleanup(&v->vdev);
->> +	vhost_vdpa_cleanup(v);
->>   err:
->>   	atomic_dec(&v->opened);
->>   	return r;
->> @@ -840,8 +846,7 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
->>   	vhost_vdpa_free_domain(v);
->>   	vhost_vdpa_config_put(v);
->>   	vhost_vdpa_clean_irq(v);
->> -	vhost_dev_cleanup(&v->vdev);
->> -	kfree(v->vdev.vqs);
->> +	vhost_vdpa_cleanup(v);
->>   	mutex_unlock(&d->mutex);
->>   
->>   	atomic_dec(&v->opened);
->> -- 
->> 2.20.1
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9t1BoACgkQJNaLcl1U
+h9AQfgf/QGhP/HeYW+S1uZwXjRE61tdtxw8+QQillMq6Sd9RuOXGNcbRKgJfQ7H2
+8Zt6U8pwlrPUGWpbrHzKM2dZ9qarLmCpqxdGWParPmJF6D1Hy8zo0R7tojGFQxA8
+kGQCzBlw0nYHitjwAEISJABPMJRugrKOXSFOZJ4jYN/XwJ1Hip+q4l6K8eVz24af
+QxpcMNdbpSYYBeMaPKI7JeHl6fAdTP9hdG9oMEf1yNJ7P8nfx35KZ3UilPMkUzMI
+yZrx4vNyWE0xXRE+xn4DKgwbTrXQZnAxbZvG8RE+ntoQa1I+52MKzfZ04FaqYnXz
+jsmdG833nCS8zVmHwt7nxNr8aqL2qQ==
+=CEEL
+-----END PGP SIGNATURE-----
 
+--J2SCkAp4GZ/dPZZf--
