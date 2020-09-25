@@ -2,166 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA29B27856E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE67427856B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgIYK4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:56:02 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:57363 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726255AbgIYK4C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:56:02 -0400
-X-UUID: 4845c4a290464180a08aaa0720a79215-20200925
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=QSsY9bGW8QogtB8BuZJoi6P8Bw0CZxSbHu+WA8g8Uzo=;
-        b=TWoLkNjQMHlV/2mvM+1ozpjNM0gv4MJw+MHWCreeILUfB5/wRevpCOiqLU9A8fkOXarDpLqWq+5g2uGq1WvHejxNpVrCzDXo13PckiUB92xvlmEXnuHUA6mEKF7g73ZUfy3c9wlXAA2at2BIvzsHcvtAcHxZVhEG1MhgkPp5H/k=;
-X-UUID: 4845c4a290464180a08aaa0720a79215-20200925
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 505310534; Fri, 25 Sep 2020 18:55:55 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 25 Sep 2020 18:55:53 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 25 Sep 2020 18:55:52 +0800
-Message-ID: <1601031353.1346.71.camel@mtksdaap41>
-Subject: Re: [PATCH 08/12] soc: mediatek: pm-domains: Add subsystem clocks
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        <fparent@baylibre.com>, <matthias.bgg@gmail.com>,
-        <drinkcat@chromium.org>, <hsinyi@chromium.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Date:   Fri, 25 Sep 2020 18:55:53 +0800
-In-Reply-To: <20200910172826.3074357-9-enric.balletbo@collabora.com>
-References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
-         <20200910172826.3074357-9-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S1727796AbgIYKzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:55:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726255AbgIYKzl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 06:55:41 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9414020809;
+        Fri, 25 Sep 2020 10:55:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601031340;
+        bh=1CGfR6nV/0roujv2jCFmWNNypuMeXMaY0JOYlD8nOqw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=o/Mjf8rloCokxg1rcOAx6WCaezFdt+QJGHbz5lBgfhDEad7fgc7D0QeuusD/T5pFr
+         lGQ84YY0Ah6PqppljUBdP3liHqW041nRnQKV/e9+GPoJ4Y7kNSo0NDSjrJnIfMvcAB
+         +LKm26Ts+R5E7Zzn7UWLcQzgpovT60J7hmevbzpI=
+Date:   Fri, 25 Sep 2020 12:55:55 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Julius Hemanth Pitti <jpitti@cisco.com>
+Cc:     akpm@linux-foundation.org, xlpang@linux.alibaba.com,
+        mhocko@suse.com, vdavydov.dev@gmail.com, ktkhai@virtuozzo.com,
+        hannes@cmpxchg.org, stable@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xe-linux-external@cisco.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH stable v5.4] mm: memcg: fix memcg reclaim soft lockup
+Message-ID: <20200925105555.GA2525199@kroah.com>
+References: <20200921180508.61905-1-jpitti@cisco.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200921180508.61905-1-jpitti@cisco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA5LTEwIGF0IDE5OjI4ICswMjAwLCBFbnJpYyBCYWxsZXRibyBpIFNlcnJh
-IHdyb3RlOg0KPiBGcm9tOiBNYXR0aGlhcyBCcnVnZ2VyIDxtYnJ1Z2dlckBzdXNlLmNvbT4NCj4g
-DQo+IEZvciB0aGUgYnVzIHByb3RlY3Rpb24gb3BlcmF0aW9ucywgc29tZSBzdWJzeXN0ZW0gY2xv
-Y2tzIG5lZWQgdG8gYmUgZW5hYmxlZA0KPiBiZWZvcmUgcmVsZWFzaW5nIHRoZSBwcm90ZWN0aW9u
-LiBUaGlzIHBhdGNoIGlkZW50aWZpZXMgdGhlIHN1YnN5c3RlbSBjbG9ja3MNCj4gYnkgaXQncyBu
-YW1lLg0KPiANCj4gU3VnZ2VzdGVkLWJ5OiBXZWl5aSBMdSA8d2VpeWkubHVAbWVkaWF0ZWsuY29t
-Pg0KPiBbQWRhcHRlZCB0aGUgcGF0Y2ggdG8gdGhlIG10ay1wbS1kb21haW5zIGRyaXZlcl0NCj4g
-U2lnbmVkLW9mZi1ieTogTWF0dGhpYXMgQnJ1Z2dlciA8bWJydWdnZXJAc3VzZS5jb20+DQo+IFNp
-Z25lZC1vZmYtYnk6IEVucmljIEJhbGxldGJvIGkgU2VycmEgPGVucmljLmJhbGxldGJvQGNvbGxh
-Ym9yYS5jb20+DQo+IC0tLQ0KPiANCj4gIGRyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbS1kb21h
-aW5zLmMgfCA4MiArKysrKysrKysrKysrKysrKysrKysrKy0tLS0NCj4gIDEgZmlsZSBjaGFuZ2Vk
-LCA3MCBpbnNlcnRpb25zKCspLCAxMiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5jIGIvZHJpdmVycy9zb2MvbWVkaWF0
-ZWsvbXRrLXBtLWRvbWFpbnMuYw0KPiBpbmRleCAwODAyZWNjYzNhMGIuLjUyYTkzYTg3ZTMxMyAx
-MDA2NDQNCj4gLS0tIGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLXBtLWRvbWFpbnMuYw0KPiAr
-KysgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5jDQo+IEBAIC0zLDYgKzMs
-NyBAQA0KPiAgICogQ29weXJpZ2h0IChjKSAyMDIwIENvbGxhYm9yYSBMdGQuDQo+ICAgKi8NCj4g
-ICNpbmNsdWRlIDxsaW51eC9jbGsuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9jbGstcHJvdmlkZXIu
-aD4NCj4gICNpbmNsdWRlIDxsaW51eC9pbml0Lmg+DQo+ICAjaW5jbHVkZSA8bGludXgvaW8uaD4N
-Cj4gICNpbmNsdWRlIDxsaW51eC9pb3BvbGwuaD4NCj4gQEAgLTgxLDYgKzgyLDggQEAgc3RydWN0
-IHNjcHN5c19idXNfcHJvdF9kYXRhIHsNCj4gIAlib29sIGJ1c19wcm90X3JlZ191cGRhdGU7DQo+
-ICB9Ow0KPiAgDQo+ICsjZGVmaW5lIE1BWF9TVUJTWVNfQ0xLUyAxMA0KPiArDQo+ICAvKioNCj4g
-ICAqIHN0cnVjdCBzY3BzeXNfZG9tYWluX2RhdGEgLSBzY3AgZG9tYWluIGRhdGEgZm9yIHBvd2Vy
-IG9uL29mZiBmbG93DQo+ICAgKiBAc3RhX21hc2s6IFRoZSBtYXNrIGZvciBwb3dlciBvbi9vZmYg
-c3RhdHVzIGJpdC4NCj4gQEAgLTEwNyw2ICsxMTAsOCBAQCBzdHJ1Y3Qgc2Nwc3lzX2RvbWFpbiB7
-DQo+ICAJc3RydWN0IHNjcHN5cyAqc2Nwc3lzOw0KPiAgCWludCBudW1fY2xrczsNCj4gIAlzdHJ1
-Y3QgY2xrX2J1bGtfZGF0YSAqY2xrczsNCj4gKwlpbnQgbnVtX3N1YnN5c19jbGtzOw0KPiArCXN0
-cnVjdCBjbGtfYnVsa19kYXRhICpzdWJzeXNfY2xrczsNCj4gIAlzdHJ1Y3QgcmVnbWFwICppbmZy
-YWNmZzsNCj4gIAlzdHJ1Y3QgcmVnbWFwICpzbWk7DQo+ICB9Ow0KPiBAQCAtMzA5LDE2ICszMTQs
-MjIgQEAgc3RhdGljIGludCBzY3BzeXNfcG93ZXJfb24oc3RydWN0IGdlbmVyaWNfcG1fZG9tYWlu
-ICpnZW5wZCkNCj4gIAl2YWwgfD0gUFdSX1JTVF9CX0JJVDsNCj4gIAl3cml0ZWwodmFsLCBjdGxf
-YWRkcik7DQo+ICANCj4gKwlyZXQgPSBjbGtfYnVsa19lbmFibGUocGQtPm51bV9zdWJzeXNfY2xr
-cywgcGQtPnN1YnN5c19jbGtzKTsNCj4gKwlpZiAocmV0KQ0KPiArCQlnb3RvIGVycl9wd3JfYWNr
-Ow0KPiArDQo+ICAJcmV0ID0gc2Nwc3lzX3NyYW1fZW5hYmxlKHBkLCBjdGxfYWRkcik7DQo+ICAJ
-aWYgKHJldCA8IDApDQo+IC0JCWdvdG8gZXJyX3B3cl9hY2s7DQo+ICsJCWdvdG8gZXJyX3NyYW07
-DQo+ICANCj4gIAlyZXQgPSBzY3BzeXNfYnVzX3Byb3RlY3RfZGlzYWJsZShwZCk7DQo+ICAJaWYg
-KHJldCA8IDApDQo+IC0JCWdvdG8gZXJyX3B3cl9hY2s7DQo+ICsJCWdvdG8gZXJyX3NyYW07DQo+
-ICANCj4gIAlyZXR1cm4gMDsNCj4gIA0KPiArZXJyX3NyYW06DQo+ICsJY2xrX2J1bGtfZGlzYWJs
-ZShwZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiAgZXJyX3B3cl9hY2s6
-DQo+ICAJY2xrX2J1bGtfZGlzYWJsZShwZC0+bnVtX2Nsa3MsIHBkLT5jbGtzKTsNCj4gIAlkZXZf
-ZXJyKHNjcHN5cy0+ZGV2LCAiRmFpbGVkIHRvIHBvd2VyIG9uIGRvbWFpbiAlc1xuIiwgZ2VucGQt
-Pm5hbWUpOw0KPiBAQCAtMzQyLDYgKzM1Myw4IEBAIHN0YXRpYyBpbnQgc2Nwc3lzX3Bvd2VyX29m
-ZihzdHJ1Y3QgZ2VuZXJpY19wbV9kb21haW4gKmdlbnBkKQ0KPiAgCWlmIChyZXQgPCAwKQ0KPiAg
-CQlyZXR1cm4gcmV0Ow0KPiAgDQo+ICsJY2xrX2J1bGtfZGlzYWJsZShwZC0+bnVtX3N1YnN5c19j
-bGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiArDQo+ICAJLyogc3Vic3lzIHBvd2VyIG9mZiAqLw0K
-PiAgCXZhbCA9IHJlYWRsKGN0bF9hZGRyKTsNCj4gIAl2YWwgfD0gUFdSX0lTT19CSVQ7DQo+IEBA
-IC0zNzQsOCArMzg3LDExIEBAIHN0YXRpYyBpbnQgc2Nwc3lzX2FkZF9vbmVfZG9tYWluKHN0cnVj
-dCBzY3BzeXMgKnNjcHN5cywgc3RydWN0IGRldmljZV9ub2RlICpub2RlDQo+ICB7DQo+ICAJY29u
-c3Qgc3RydWN0IHNjcHN5c19kb21haW5fZGF0YSAqZG9tYWluX2RhdGE7DQo+ICAJc3RydWN0IHNj
-cHN5c19kb21haW4gKnBkOw0KPiAtCWludCBpLCByZXQ7DQo+ICsJaW50IGksIHJldCwgbnVtX2Ns
-a3M7DQo+ICAJdTMyIGlkOw0KPiArCWludCBjbGtfaW5kID0gMDsNCj4gKwlzdHJ1Y3QgcHJvcGVy
-dHkgKnByb3A7DQo+ICsJY29uc3QgY2hhciAqY2xrX25hbWU7DQo+ICANCj4gIAlyZXQgPSBvZl9w
-cm9wZXJ0eV9yZWFkX3UzMihub2RlLCAicmVnIiwgJmlkKTsNCj4gIAlpZiAocmV0KSB7DQo+IEBA
-IC00MTAsMjggKzQyNiw2MCBAQCBzdGF0aWMgaW50IHNjcHN5c19hZGRfb25lX2RvbWFpbihzdHJ1
-Y3Qgc2Nwc3lzICpzY3BzeXMsIHN0cnVjdCBkZXZpY2Vfbm9kZSAqbm9kZQ0KPiAgCWlmIChJU19F
-UlIocGQtPnNtaSkpDQo+ICAJCXBkLT5zbWkgPSBOVUxMOw0KPiAgDQo+IC0JcGQtPm51bV9jbGtz
-ID0gb2ZfY2xrX2dldF9wYXJlbnRfY291bnQobm9kZSk7DQo+IC0JaWYgKHBkLT5udW1fY2xrcyA+
-IDApIHsNCj4gKwludW1fY2xrcyA9IG9mX2Nsa19nZXRfcGFyZW50X2NvdW50KG5vZGUpOw0KPiAr
-CWlmIChudW1fY2xrcyA+IDApIHsNCj4gKwkJLyogQ2FsY3VsYXRlIG51bWJlciBvZiBzdWJzeXNf
-Y2xrcyAqLw0KPiArCQlvZl9wcm9wZXJ0eV9mb3JfZWFjaF9zdHJpbmcobm9kZSwgImNsb2NrLW5h
-bWVzIiwgcHJvcCwgY2xrX25hbWUpIHsNCj4gKwkJCWNoYXIgKnN1YnN5czsNCj4gKw0KPiArCQkJ
-c3Vic3lzID0gc3RyY2hyKGNsa19uYW1lLCAnLScpOw0KPiArCQkJaWYgKHN1YnN5cykNCj4gKwkJ
-CQlwZC0+bnVtX3N1YnN5c19jbGtzKys7DQo+ICsJCQllbHNlDQo+ICsJCQkJcGQtPm51bV9jbGtz
-Kys7DQo+ICsJCX0NCj4gKw0KDQpJbiBmYWN0LCBJIGRvbid0IGxpa2UgdGhlIGNsb2NrIG5hbWlu
-ZyBydWxlcywgYXMgTWF0dGhpYXMgbWVudGlvbmVkDQpiZWZvcmUuIFNvIGluIG15IHdvcmsgdjE3
-WzFdDQpJIHB1dCBzdWJzeXN0ZW0gY2xvY2tzIHVuZGVyIGVhY2ggcG93ZXIgZG9tYWluIHN1Yi1u
-b2RlIHdpdGhvdXQgZ2l2aW5nDQp0aGUgY2xvY2sgbmFtZSBidXQgcHV0IHRoZSBiYXNpYyBjbG9j
-a3MgdW5kZXIgdGhlIHBvd2VyIGNvbnRyb2xsZXIgbm9kZS4NCg0KWzFdIGh0dHBzOi8vcGF0Y2h3
-b3JrLmtlcm5lbC5vcmcvcGF0Y2gvMTE3MDMxOTEvDQoNCg0KPiAgCQlwZC0+Y2xrcyA9IGRldm1f
-a2NhbGxvYyhzY3BzeXMtPmRldiwgcGQtPm51bV9jbGtzLCBzaXplb2YoKnBkLT5jbGtzKSwgR0ZQ
-X0tFUk5FTCk7DQo+ICAJCWlmICghcGQtPmNsa3MpDQo+ICAJCQlyZXR1cm4gLUVOT01FTTsNCj4g
-LQl9IGVsc2Ugew0KPiAtCQlwZC0+bnVtX2Nsa3MgPSAwOw0KPiArDQo+ICsJCXBkLT5zdWJzeXNf
-Y2xrcyA9IGRldm1fa2NhbGxvYyhzY3BzeXMtPmRldiwgcGQtPm51bV9zdWJzeXNfY2xrcywNCj4g
-KwkJCQkJICAgICAgIHNpemVvZigqcGQtPnN1YnN5c19jbGtzKSwgR0ZQX0tFUk5FTCk7DQo+ICsJ
-CWlmICghcGQtPnN1YnN5c19jbGtzKQ0KPiArCQkJcmV0dXJuIC1FTk9NRU07DQo+ICAJfQ0KPiAg
-DQo+ICAJZm9yIChpID0gMDsgaSA8IHBkLT5udW1fY2xrczsgaSsrKSB7DQo+IC0JCXBkLT5jbGtz
-W2ldLmNsayA9IG9mX2Nsa19nZXQobm9kZSwgaSk7DQo+IC0JCWlmIChJU19FUlIocGQtPmNsa3Nb
-aV0uY2xrKSkgew0KPiAtCQkJcmV0ID0gUFRSX0VSUihwZC0+Y2xrc1tpXS5jbGspOw0KPiArCQlz
-dHJ1Y3QgY2xrICpjbGsgPSBvZl9jbGtfZ2V0KG5vZGUsIGkpOw0KPiArCQlpZiAoSVNfRVJSKGNs
-aykpIHsNCj4gKwkJCXJldCA9IFBUUl9FUlIoY2xrKTsNCj4gIAkJCWRldl9lcnIoc2Nwc3lzLT5k
-ZXYsICIlcE9GbjogZmFpbGVkIHRvIGdldCBjbGsgYXQgaW5kZXggJWQ6ICVkXG4iLCBub2RlLCBp
-LA0KPiAgCQkJCXJldCk7DQo+IC0JCQlyZXR1cm4gcmV0Ow0KPiArCQkJZ290byBlcnJfcHV0X2Ns
-b2NrczsNCj4gKwkJfQ0KPiArDQo+ICsJCXBkLT5jbGtzW2Nsa19pbmQrK10uY2xrID0gY2xrOw0K
-PiArCX0NCj4gKw0KPiArCWZvciAoaSA9IDA7IGkgPCBwZC0+bnVtX3N1YnN5c19jbGtzOyBpKysp
-IHsNCj4gKwkJc3RydWN0IGNsayAqY2xrID0gb2ZfY2xrX2dldChub2RlLCBpICsgY2xrX2luZCk7
-DQo+ICsJCWlmIChJU19FUlIoY2xrKSkgew0KPiArCQkJcmV0ID0gUFRSX0VSUihjbGspOw0KPiAr
-CQkJZGV2X2VycihzY3BzeXMtPmRldiwgIiVwT0ZuOiBmYWlsZWQgdG8gZ2V0IGNsayBhdCBpbmRl
-eCAlZDogJWRcbiIsIG5vZGUsDQo+ICsJCQkJaSArIGNsa19pbmQsIHJldCk7DQo+ICsJCQlnb3Rv
-IGVycl9wdXRfc3Vic3lzX2Nsb2NrczsNCj4gIAkJfQ0KPiArDQo+ICsJCXBkLT5zdWJzeXNfY2xr
-c1tpXS5jbGsgPSBjbGs7DQo+ICAJfQ0KPiAgDQo+ICsJcmV0ID0gY2xrX2J1bGtfcHJlcGFyZShw
-ZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiArCWlmIChyZXQpDQo+ICsJ
-CWdvdG8gZXJyX3B1dF9zdWJzeXNfY2xvY2tzOw0KPiArDQo+ICAJcmV0ID0gY2xrX2J1bGtfcHJl
-cGFyZShwZC0+bnVtX2Nsa3MsIHBkLT5jbGtzKTsNCj4gIAlpZiAocmV0KQ0KPiAtCQlnb3RvIGVy
-cl9wdXRfY2xvY2tzOw0KPiArCQlnb3RvIGVycl91bnByZXBhcmVfc3Vic3lzX2Nsb2NrczsNCj4g
-IA0KPiAgCS8qDQo+ICAJICogSW5pdGlhbGx5IHR1cm4gb24gYWxsIGRvbWFpbnMgdG8gbWFrZSB0
-aGUgZG9tYWlucyB1c2FibGUNCj4gQEAgLTQ1Niw2ICs1MDQsMTIgQEAgc3RhdGljIGludCBzY3Bz
-eXNfYWRkX29uZV9kb21haW4oc3RydWN0IHNjcHN5cyAqc2Nwc3lzLCBzdHJ1Y3QgZGV2aWNlX25v
-ZGUgKm5vZGUNCj4gIA0KPiAgZXJyX3VucHJlcGFyZV9jbG9ja3M6DQo+ICAJY2xrX2J1bGtfdW5w
-cmVwYXJlKHBkLT5udW1fY2xrcywgcGQtPmNsa3MpOw0KPiArZXJyX3VucHJlcGFyZV9zdWJzeXNf
-Y2xvY2tzOg0KPiArCWNsa19idWxrX3VucHJlcGFyZShwZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+
-c3Vic3lzX2Nsa3MpOw0KPiArZXJyX3B1dF9zdWJzeXNfY2xvY2tzOg0KPiArCWNsa19idWxrX3B1
-dChwZC0+bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiArCWRldm1fa2ZyZWUo
-c2Nwc3lzLT5kZXYsIHBkLT5zdWJzeXNfY2xrcyk7DQo+ICsJcGQtPm51bV9zdWJzeXNfY2xrcyA9
-IDA7DQo+ICBlcnJfcHV0X2Nsb2NrczoNCj4gIAljbGtfYnVsa19wdXQocGQtPm51bV9jbGtzLCBw
-ZC0+Y2xrcyk7DQo+ICAJZGV2bV9rZnJlZShzY3BzeXMtPmRldiwgcGQtPmNsa3MpOw0KPiBAQCAt
-NTM3LDYgKzU5MSwxMCBAQCBzdGF0aWMgdm9pZCBzY3BzeXNfcmVtb3ZlX29uZV9kb21haW4oc3Ry
-dWN0IHNjcHN5c19kb21haW4gKnBkKQ0KPiAgCWNsa19idWxrX3VucHJlcGFyZShwZC0+bnVtX2Ns
-a3MsIHBkLT5jbGtzKTsNCj4gIAljbGtfYnVsa19wdXQocGQtPm51bV9jbGtzLCBwZC0+Y2xrcyk7
-DQo+ICAJcGQtPm51bV9jbGtzID0gMDsNCj4gKw0KPiArCWNsa19idWxrX3VucHJlcGFyZShwZC0+
-bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiArCWNsa19idWxrX3B1dChwZC0+
-bnVtX3N1YnN5c19jbGtzLCBwZC0+c3Vic3lzX2Nsa3MpOw0KPiArCXBkLT5udW1fc3Vic3lzX2Ns
-a3MgPSAwOw0KPiAgfQ0KPiAgDQo+ICBzdGF0aWMgdm9pZCBzY3BzeXNfZG9tYWluX2NsZWFudXAo
-c3RydWN0IHNjcHN5cyAqc2Nwc3lzKQ0KDQo=
+On Mon, Sep 21, 2020 at 11:05:08AM -0700, Julius Hemanth Pitti wrote:
+> From: Xunlei Pang <xlpang@linux.alibaba.com>
+> 
+> commit e3336cab2579012b1e72b5265adf98e2d6e244ad upstream
+> 
+> We've met softlockup with "CONFIG_PREEMPT_NONE=y", when the target memcg
+> doesn't have any reclaimable memory.
+> 
+> It can be easily reproduced as below:
+> 
+>   watchdog: BUG: soft lockup - CPU#0 stuck for 111s![memcg_test:2204]
+>   CPU: 0 PID: 2204 Comm: memcg_test Not tainted 5.9.0-rc2+ #12
+>   Call Trace:
+>     shrink_lruvec+0x49f/0x640
+>     shrink_node+0x2a6/0x6f0
+>     do_try_to_free_pages+0xe9/0x3e0
+>     try_to_free_mem_cgroup_pages+0xef/0x1f0
+>     try_charge+0x2c1/0x750
+>     mem_cgroup_charge+0xd7/0x240
+>     __add_to_page_cache_locked+0x2fd/0x370
+>     add_to_page_cache_lru+0x4a/0xc0
+>     pagecache_get_page+0x10b/0x2f0
+>     filemap_fault+0x661/0xad0
+>     ext4_filemap_fault+0x2c/0x40
+>     __do_fault+0x4d/0xf9
+>     handle_mm_fault+0x1080/0x1790
+> 
+> It only happens on our 1-vcpu instances, because there's no chance for
+> oom reaper to run to reclaim the to-be-killed process.
+> 
+> Add a cond_resched() at the upper shrink_node_memcgs() to solve this
+> issue, this will mean that we will get a scheduling point for each memcg
+> in the reclaimed hierarchy without any dependency on the reclaimable
+> memory in that memcg thus making it more predictable.
+> 
+> [jpitti@cisco.com:
+>    - backported to v5.4.y
+>    - Upstream patch applies fix in shrink_node_memcgs(), which
+>      is not present to v5.4.y. Appled to shrink_node()]
 
+Thanks for this, now queued up here and for 4.19
+
+greg k-h
