@@ -2,176 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776EC279343
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6B06279356
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729446AbgIYVYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
+        id S1729550AbgIYVYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:24:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729361AbgIYVXu (ORCPT
+        with ESMTP id S1729117AbgIYVX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:23:50 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379B0C0613D7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:50 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id a16so3447034pfk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:50 -0700 (PDT)
+        Fri, 25 Sep 2020 17:23:26 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B18C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:26 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j2so5367220wrx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=Qb8go8HycpjH5yveF+PfyYHMqnWZLnSFt7U7sjuOnrE=;
-        b=rXGM+YU5BRbaFP3RvtKtUPBu576cAytErIUb3kUMO/E1cSI+ZFLxB0tnLxPI1LI6t0
-         z2M2xLrk9a1hsIaIkdFcuZoa2QppeVZYyTjWqrxoJdyL07HBV1G9CFxpMxIlQgEfeURM
-         mv/Vpgo2dvH5I+ii4RdBDnR35BNsJ7LpSyJHBqQG19B7wDFRlXgwtOWiFIkp5dpjCC3z
-         ImSDfNzIiZthK3CUmuUO/+X4Za4emZUkyOan3n6KgL+ckGJzS1q00jhEL3BNtfjXNpu+
-         DaA7K+S7LmrcGnFRaU16qRHRwpjfP3UOFgEP8W07uwVAD90VlyqEbrJIakBGZabbvJqa
-         70GA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xu3WUdYX5svcbV4xrw1b6YX5aAbNB7AgpH2Adx4jZFo=;
+        b=Oh/rOaeXFzcu9qSAmCq/rolkH8P14hud6p8K5BfNI2WFG5a9+CDyEGSSQhX2ckSOFm
+         zhaUJj91cpSE7fjOgEU1lXwLJ+IWz8fvIt0d9ZLig66lfafGswbdX3HjuUIetLcvXIRK
+         iTH/uLltlOJ4fw+ePue65S94O7opuSVXxQHSpsONmulokYemM7SGq9yQ+hWEmXvhV86F
+         z03M9NhNkvuyYCe3g7sBFrF7SAacgZVx0Vpqiomtz+6y2XL78RtnxnguoI2dZ69jA0P6
+         sb1aT7CbUe0tNayEoXajWXtZalCNyj5M83zbwKR5M/a2WvCpOpF2gPQoaJNqY08mROL1
+         4Blg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Qb8go8HycpjH5yveF+PfyYHMqnWZLnSFt7U7sjuOnrE=;
-        b=llD/OojWUpwe/nmVaFvjaUoTWAyic+90n6Hg316qS6pIMP9iXDtdSrAZcCHbfTgaaC
-         oxonCQp5T7zOYpjESHymubCWEnzB9O3XZPyIAO+OEht/I7TVpzthbM4aVB9gpsL8UsRp
-         g9vfub1jJlHRvwvbaFD+J1iODZpIBMHrLKsvFl75LB1uClNpn7vO1H6JwgVF1TdMpc6F
-         /rYc8cKJiNZ/aSqE08xdXkaXSxkan3O0jLOcxnk7nDaAqUwKgsrVKw7iHfEaF1FaLcYA
-         EvNZT4Zs1YklE9FLU+iI2QYQMqK1YrBkczPAkc2TH4m7glnNyuTP1bB0psYoQOrYSGZy
-         sBwg==
-X-Gm-Message-State: AOAM531+0h3CVGbgf9ghyTINTrDarooPquu7UYOQXoOCeaGsKgDTRlJh
-        5ddoUraPXYuJmmv5pAD0KNQ/aruaSL7bYe0t3EreqTtn0mPk0kpEPgcRZpshMxzdNbsLm/AxQlL
-        c9g6QA/TmvOzIrUvghouMS+P/dIC3afQFA4CYAAUrev95m88EAtIB3rXdMyWOWlVCAGFz/mrt
-X-Google-Smtp-Source: ABdhPJysWah3jm8O7Wa66GBxjE9TeS1ZTdGpfHZiqr2pWyjnRuqDAwGoFqvCzWelnOy1dlxCz88T8C8/a2zk
-Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a17:90b:15c6:: with SMTP id
- lh6mr30176pjb.0.1601069029061; Fri, 25 Sep 2020 14:23:49 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 14:23:02 -0700
-In-Reply-To: <20200925212302.3979661-1-bgardon@google.com>
-Message-Id: <20200925212302.3979661-23-bgardon@google.com>
-Mime-Version: 1.0
-References: <20200925212302.3979661-1-bgardon@google.com>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH 22/22] kvm: mmu: Don't clear write flooding count for direct roots
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Cannon Matthews <cannonmatthews@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Ben Gardon <bgardon@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xu3WUdYX5svcbV4xrw1b6YX5aAbNB7AgpH2Adx4jZFo=;
+        b=tiVp0QFSts2PbuA/lpTQhx0Ig5eEYyJ8KMYtHYQA0QKghFXqvvpzfpDTHH3nY84aP/
+         mnfrxF7YsfxvZIjcsP3Pvka8Htj+YbfseI+w7qKMaCd0v22DMnk6IIUVEMXF8roGRDLN
+         JhbKS2KcyGj0K2qdQp5cfEEfP37+8zGWhvDbIqE/OnVsvDgEjlkHlJ4Id3LatZ372ywH
+         otCrgofpdmBws/+Y3ZbJnmstxYstHWNE5XvcQ6b+5uPykF7N1XguWROcZMNYU7G7pljT
+         mpHED9XlK5ZaE2iVSmFo7JRsMhp5v2zE/V6HZVGeryRsaQikP1I+TZvVu9yepoI9I+Z6
+         qalQ==
+X-Gm-Message-State: AOAM531MmHfLJ7+olRRE25jqnxCJTKcwr7pQjZ2jmCLhX4D5wfHzkrCP
+        A+ldh0F1GjplxfSER47Nw8B/L1eszJ9BOL/qfo0=
+X-Google-Smtp-Source: ABdhPJwCPyTdQSA04vqPSfWKSY3pipKmyGpRObz8EdYnATmeFvpcGyznCvz/MGH6xrabFJhMlum7YCBfq8aVNQdHzTI=
+X-Received: by 2002:adf:fc0a:: with SMTP id i10mr6384708wrr.111.1601069005049;
+ Fri, 25 Sep 2020 14:23:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200513132114.6046-1-m.szyprowski@samsung.com>
+ <20200513133245.6408-1-m.szyprowski@samsung.com> <CGME20200513133259eucas1p273f0e05005b7b1158d884295d35745fd@eucas1p2.samsung.com>
+ <20200513133245.6408-5-m.szyprowski@samsung.com> <alpine.DEB.2.20.2009211803580.19454@agoins-DiGiTS>
+ <afb59d1b-1fcf-fd6d-2b48-e078e129f1eb@samsung.com>
+In-Reply-To: <afb59d1b-1fcf-fd6d-2b48-e078e129f1eb@samsung.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 25 Sep 2020 17:23:14 -0400
+Message-ID: <CADnq5_OP4pEg7Cg9E=TUB0viSX8rTALQoFck=ueTh=phTtUfEA@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH v5 05/38] drm: prime: use sgtable
+ iterators in drm_prime_sg_to_page_addr_arrays()
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Alex Goins <agoins@nvidia.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Direct roots don't have a write flooding count because the guest can't
-affect that paging structure. Thus there's no need to clear the write
-flooding count on a fast CR3 switch for direct roots.
+On Tue, Sep 22, 2020 at 2:28 AM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Hi Alex,
+>
+> On 22.09.2020 01:15, Alex Goins wrote:
+> > Tested-by: Alex Goins <agoins@nvidia.com>
+> >
+> > This change fixes a regression with drm_prime_sg_to_page_addr_arrays() and
+> > AMDGPU in v5.9.
+>
+> Thanks for testing!
+>
+> > Commit 39913934 similarly revamped AMDGPU to use sgtable helper functions. When
+> > it changed from dma_map_sg_attrs() to dma_map_sgtable(), as a side effect it
+> > started correctly updating sgt->nents to the return value of dma_map_sg_attrs().
+> > However, drm_prime_sg_to_page_addr_arrays() incorrectly uses sgt->nents to
+> > iterate over pages, rather than sgt->orig_nents, resulting in it now returning
+> > the incorrect number of pages on AMDGPU.
+> >
+> > I had written a patch that changes drm_prime_sg_to_page_addr_arrays() to use
+> > for_each_sgtable_sg() instead of for_each_sg(), iterating using sgt->orig_nents:
+> >
+> > -       for_each_sg(sgt->sgl, sg, sgt->nents, count) {
+> > +       for_each_sgtable_sg(sgt, sg, count) {
+> >
+> > This patch takes it further, but still has the effect of fixing the number of
+> > pages that drm_prime_sg_to_page_addr_arrays() returns. Something like this
+> > should be included in v5.9 to prevent a regression with AMDGPU.
+>
+> Probably the easiest way to handle a fix for v5.9 would be to simply
+> merge the latest version of this patch also to v5.9-rcX:
+> https://lore.kernel.org/dri-devel/20200904131711.12950-3-m.szyprowski@samsung.com/
+>
+>
+> This way we would get it fixed and avoid possible conflict in the -next.
+> Do you have any AMDGPU fixes for v5.9 in the queue? Maybe you can add
+> that patch to the queue? Dave: would it be okay that way?
 
-Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-machine. This series introduced no new failures.
+I think this should go into drm-misc for 5.9 since it's an update to
+drm_prime.c.  Is that patch ready to merge?
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
 
-This series can be viewed in Gerrit at:
-	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
+Alex
 
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- arch/x86/kvm/mmu/mmu.c     | 15 +++++++++++----
- arch/x86/kvm/mmu/tdp_mmu.c | 12 ++++++++++++
- arch/x86/kvm/mmu/tdp_mmu.h |  2 ++
- 3 files changed, 25 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 0ce7720a72d4e..345c934fabf4c 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4267,7 +4267,8 @@ static void nonpaging_init_context(struct kvm_vcpu *vcpu,
- 	context->nx = false;
- }
- 
--static inline bool is_root_usable(struct kvm_mmu_root_info *root, gpa_t pgd,
-+static inline bool is_root_usable(struct kvm *kvm,
-+				  struct kvm_mmu_root_info *root, gpa_t pgd,
- 				  union kvm_mmu_page_role role)
- {
- 	return (role.direct || pgd == root->pgd) &&
-@@ -4293,13 +4294,13 @@ static bool cached_root_available(struct kvm_vcpu *vcpu, gpa_t new_pgd,
- 	root.pgd = mmu->root_pgd;
- 	root.hpa = mmu->root_hpa;
- 
--	if (is_root_usable(&root, new_pgd, new_role))
-+	if (is_root_usable(vcpu->kvm, &root, new_pgd, new_role))
- 		return true;
- 
- 	for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++) {
- 		swap(root, mmu->prev_roots[i]);
- 
--		if (is_root_usable(&root, new_pgd, new_role))
-+		if (is_root_usable(vcpu->kvm, &root, new_pgd, new_role))
- 			break;
- 	}
- 
-@@ -4356,7 +4357,13 @@ static void __kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd,
- 	 */
- 	vcpu_clear_mmio_info(vcpu, MMIO_GVA_ANY);
- 
--	__clear_sp_write_flooding_count(to_shadow_page(vcpu->arch.mmu->root_hpa));
-+	/*
-+	 * If this is a direct root page, it doesn't have a write flooding
-+	 * count. Otherwise, clear the write flooding count.
-+	 */
-+	if (!new_role.direct)
-+		__clear_sp_write_flooding_count(
-+				to_shadow_page(vcpu->arch.mmu->root_hpa));
- }
- 
- void kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd, bool skip_tlb_flush,
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 42dde27decd75..c07831b0c73e1 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -124,6 +124,18 @@ static struct kvm_mmu_page *find_tdp_mmu_root_with_role(
- 	return NULL;
- }
- 
-+hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
-+				    union kvm_mmu_page_role role)
-+{
-+	struct kvm_mmu_page *root;
-+
-+	root = find_tdp_mmu_root_with_role(kvm, role);
-+	if (root)
-+		return __pa(root->spt);
-+
-+	return INVALID_PAGE;
-+}
-+
- static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
- 						   int level)
- {
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index cc0b7241975aa..2395ffa71bb05 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -9,6 +9,8 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
- void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
- 
- bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
-+hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
-+				    union kvm_mmu_page_role role);
- hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
- void kvm_tdp_mmu_put_root_hpa(struct kvm *kvm, hpa_t root_hpa);
- 
--- 
-2.28.0.709.gb0816b6eb0-goog
-
+>
+> Best regards
+> --
+> Marek Szyprowski, PhD
+> Samsung R&D Institute Poland
+>
+> _______________________________________________
+> Linaro-mm-sig mailing list
+> Linaro-mm-sig@lists.linaro.org
+> https://lists.linaro.org/mailman/listinfo/linaro-mm-sig
