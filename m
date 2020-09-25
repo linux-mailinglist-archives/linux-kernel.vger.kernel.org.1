@@ -2,164 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A492782F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B452782EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727847AbgIYIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:39:50 -0400
-Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:34080
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S1727761AbgIYIjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:39:19 -0400
+Received: from mail-eopbgr70092.outbound.protection.outlook.com ([40.107.7.92]:16800
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727828AbgIYIjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:39:47 -0400
+        id S1727063AbgIYIjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:39:18 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=F68iZ5y5QNGcYYmRbOkx5/YN8qxdnVmTXfTrcOAdvoYr38EPqXzVCsWZlVNOarisDImMeiFSsBEx8BQQnTYQsR7MpZ76Go46Gtg5m8+7xO8dtWClnA3iPp+fJ3p56jVs5xMtry+R2NqnSNB6EN5PEiwxkEiKqSS9sSfBqei+9+u+PCG4WgEA93s317eJIPPV7g5eWGUU6KfMO25yHTvv+sy7deA+D6MlZHpxFE/AdzW4SbWScgTZCw4nIVJZ9cdHRNM6N1vMhNU25CBiMXVlZqoGkF9pFE9YNZjA9RxYqN0sLGzdUKVdb+sgvvAhG9i7Am5+Ac7jmZmQYt0gVBaI2w==
+ b=X8QBKGLemzQwne0Oz4kglkKeQq+I5wNK/TTEBmj0UtnUidsRrPKRbeSO4kqhTee3nEhpo5TDfYBYcfi9VQP82TVaWNd1bop/0KEt78VOsFM8hrSTUbwmPwZ5wicTT+2V7diuK2kg/0OaWHNvKp/2y0dMnD0DrPgPMJgT66hBodwbC6UFnw8W7n5oD9SsuPw76+X1I1ogPGyQAAJ5aqmkI4T5SbvPtPr6Np5+dmBtmlgY/cv8iCKnrDMgQ5DLa7pbrt5Bl8hDFfOliAZ0uTZZxy5+3CFj94p9zbcrwV9KX74w9goF6JwdKQ3cdDP/iTpCPLQuuar5rwxm5xEiiHbhqw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rb+wZhW0itwAMhFOtnFDVhb3o/dqljZAHvqIk2sHcRY=;
- b=DlGo8IipPSZpVfqKHS8HIGkHxsGiGd70Hl/dkSYcA3a5wWl4iepR2TxOiR9RtOziQe4bu7riC/gwCZC1GlvDpQTyJNDh0YiTZd9tCIY9E+CC96lcDDWEbUpUu7GJ6OFBQxv7wcEV87Wk9DVukamq9MBwQ+dOgLDRWxFhVsPhsBPq1Jf6ODBHKHFXXdyd83O2oHlYkzFwY94c9hcJnrKLmjtSsPchYi1hjHNbpVuWYyplHS2yhn6tBi5A9+mG3yCsE9DOfp9UH6Jho86qX2m2r2oCbMYTsDnDnnjco94CRUXXenW6sg7qIqOai0PqnfmzNxYTwDBmglE4P2tGHV8Nxg==
+ bh=dg7TaSyH+fYwjCpdjoxg4x5TNasJTBj1NdKwrZt/sEs=;
+ b=fkBJ6A3SGfhWCx+6m/iqMCqUiApgQaUqFL35rK4FDanZT1laNlganFWMgJYjCXxAMVfB152igB57M7yaDuGeJ62uCGDvHnAwrSyp7G3BazL5OqEk4GWw3KuR76MLGoSlbaQe1VeoXzrpv/wH2FPsshhU5peHwxUgnrg6gIAcoJJwX3Ex6JUHqT2c91VbchIhhCVWvU5K/gAU5L5+cvaFjdU3FJDWAuNyQoCeYk5bq4FJmKcLq/nmbySqbWJn+1Wtfi4OAcWnlrOu2K2L3WrqdI7WlYGS9at46FwcHr2rpBfrVs4E/wJRgDH1jlGDSt4QPIxSCB/5AnNqO27pGv79eg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Rb+wZhW0itwAMhFOtnFDVhb3o/dqljZAHvqIk2sHcRY=;
- b=QllNWp19W7FQJfDMU+8/ZgsxqROHXuWwGnCA3iznAWe+UxV8GNcYAaNuobydt7ZoesdCVbb1+Hyc+gnFzLqKzPbRMWGfNMAk1OwxWZBNdDo0/SSmZPdKQL+NW7xZhe6IC/KhVFtDgy+7910GaJ1pyoFvXWkxknJhdNjk1ewIQNY=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM6PR03MB4697.namprd03.prod.outlook.com (2603:10b6:5:187::17) with
+ bh=dg7TaSyH+fYwjCpdjoxg4x5TNasJTBj1NdKwrZt/sEs=;
+ b=EcstNhPPPw00AA+G5DDNqhSyCoDSBxEdkH8ifmXOLbpkB385H/pXxiZbX2aKEDtVi+xOzAT0xsPC8be5bwCtjqgMX6U0hqledmJ1IqOrCfXcAlQ0Bj4iHOEVnk+GvsH33g64F/qy1/HTnE6X3aSeTo1b2EwKOvHHCsH1PSt7t+s=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=virtuozzo.com;
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
+ by AM6PR08MB3333.eurprd08.prod.outlook.com (2603:10a6:209:45::32) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Fri, 25 Sep
- 2020 08:39:44 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3391.028; Fri, 25 Sep 2020
- 08:39:44 +0000
-Date:   Fri, 25 Sep 2020 16:38:52 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] PCI: dwc: Use an address in the driver data for MSI
- address
-Message-ID: <20200925163852.051e3da2@xhacker.debian>
-In-Reply-To: <20200925163435.680b8e08@xhacker.debian>
-References: <20200925163435.680b8e08@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
+ 2020 08:39:13 +0000
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322]) by AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322%7]) with mapi id 15.20.3391.027; Fri, 25 Sep 2020
+ 08:39:13 +0000
+Subject: Re: [PATCH v3 2/2] ovl: introduce new "uuid=off" option for inodes
+ index feature
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200924163755.7717-1-ptikhomirov@virtuozzo.com>
+ <20200924163755.7717-3-ptikhomirov@virtuozzo.com>
+ <CAOQ4uxgb9+_=YhVe0bcO+W-vy3k2X2=nw1YHJOq27SjA33VDYg@mail.gmail.com>
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Message-ID: <32a5de5d-a86a-b6f3-2f7f-d80e48d80a0e@virtuozzo.com>
+Date:   Fri, 25 Sep 2020 11:39:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <CAOQ4uxgb9+_=YhVe0bcO+W-vy3k2X2=nw1YHJOq27SjA33VDYg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TY2PR0101CA0019.apcprd01.prod.exchangelabs.com
- (2603:1096:404:92::31) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+X-ClientProxiedBy: AM4PR0701CA0001.eurprd07.prod.outlook.com
+ (2603:10a6:200:42::11) To AM6PR08MB4756.eurprd08.prod.outlook.com
+ (2603:10a6:20b:cd::17)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TY2PR0101CA0019.apcprd01.prod.exchangelabs.com (2603:1096:404:92::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Fri, 25 Sep 2020 08:39:41 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
+Received: from [192.168.1.41] (95.179.127.150) by AM4PR0701CA0001.eurprd07.prod.outlook.com (2603:10a6:200:42::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.13 via Frontend Transport; Fri, 25 Sep 2020 08:39:12 +0000
+X-Originating-IP: [95.179.127.150]
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d899aaac-10ea-471f-760f-08d8612e8d57
-X-MS-TrafficTypeDiagnostic: DM6PR03MB4697:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB4697C7FCAB65DFC0711A3224ED360@DM6PR03MB4697.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 2c3e7a76-5d14-4a2c-f219-08d8612e7ad0
+X-MS-TrafficTypeDiagnostic: AM6PR08MB3333:
+X-Microsoft-Antispam-PRVS: <AM6PR08MB3333A2BCC5887C84ADEB8239B7360@AM6PR08MB3333.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vbn9a5GYiltSKoOb/EMGorObrzwMT7CxQTWziBLZMpVeTra7JEAYzUwkor1gZecqItD8qHVOD5Cve7DTlohGUhBeJDoM2/lBr6brVqcl5Ka0KcO/pk8BvvUtYhxxd42702voB9jYKYgUrklCp0UTgdKLQwPZnVN5yE/ifv0Tpd78QjbQQ9YnMe0skxiO6PK2wXQGVcTu9JnVnCpCC/klOjTM8TtAhemJb/jNn2x8vht9INYpq2o9YZbFbPCPdrESLyDWJB4IuHx66gdAMAsKsb92TIR7m+8jwehdcRJG14E4kDu+7mkcGoLgGMXyf9Sm8yW76gDs8Qil28TzHSXQyUIhrwx/Z5b+IurdvtgpKRH4GAMP11RcTs+fis1CVvWM
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(396003)(366004)(376002)(6506007)(52116002)(6666004)(110136005)(4326008)(478600001)(7696005)(83380400001)(26005)(66476007)(66946007)(8676002)(1076003)(956004)(316002)(9686003)(86362001)(8936002)(66556008)(5660300002)(16526019)(2906002)(186003)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 8yGvGSXP82zl+b9EMjESAOnREhzKkiGekF+8g18A1WwRrTjIJnR2mU8c2FZzgcJVuTGx943l2pVLU4oqD1J90vl6aCn0OF1OmDgXoLXXCs5G0ipA7hRQWA4HaEuCh/pxu4VWTvLL2KLdDCh9EqtkSWtQz+6aH4yCx7m8Jub8Ykq364BwKfOSXiibwZRHs1ytPdrZMVnsCbuJloiH+49PPWA732RiIZ68dZ+FULz6B0dDfrQ5/QkXK5tt3Usqk8a/7SqRzXxcRBPMKxA7RaQ7yzofKe+VEMsbQCcVJCb9FDWvX79LrD5LHTwRZdEyMOR54b4sMkZTGaMZITcZhL5VZUFJOZKGHLQW46jKS96OJKVZ7CFYbrfXv7eWWhB7u7p+zIj+pmDV2w0UYyCRUo+aYo4KHVFM9eS9C9jGjtSwdVQnvuEIR1RrKID+i5Kb97Q9UtjZvAvOI9hwpPV+OUfb9+TRuoq1iYXTbf0IDrGodpWqgemHCpHy4AumIzcNg00IiSK0o8sqnE4drt/hlG/CzmRZu1fWQ0hnnwlNvjgSrZji4y3k8X6QqsGnDa5qbWCNVzfReRT63oDR8H8g5BEcvODatFEpgrwLgY7P2LVeWICjd2w8c7XqOECnoePYsLlm37cERvDba17MlxHyKoaQTA==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d899aaac-10ea-471f-760f-08d8612e8d57
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: 8BPK/XuhcIW9uIP6IvXuK5Nn7JB5ZC49JNS7svdpaXjnkaRxIi6NqYMcGiEp/eAu9KrplVqsqXrnFIJkJU7DMuGDXyAHHAKGG18efZfm42IoZbZpLKsuISdCi0irDJpyn9FPMSsBSmNtulh8GsJO3qaXVeAsHRt3h/qY1JqJa5Z2szff3ORYSfDh+eOq5ExocXPXJg18btHFiUTClKSQSIEMifyBz2kxaorSxzhksyGmWfC4YY1dWG/3aoNvC510fXtZoJsKVpRPNNR2DU3J2fA1YoIHWFpCJt+opmPL2GbcXBlG5JDvgd1ydAG6XuFpZCvYBRAOJjmVk6uQ01zOrVfg5LWvgRbqG0Bieov4mGwAaWPeLepP7dwGDXMkHJI8o/TiB/Ot0H3t2vpeZuFKTEkMle4dPmA+2oK8/NmcYX2ZMa/k4snFJQVHYpEJ5EuQ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(346002)(39840400004)(16576012)(186003)(36756003)(31696002)(66946007)(8676002)(86362001)(16526019)(956004)(66556008)(6916009)(8936002)(2906002)(66476007)(316002)(5660300002)(6486002)(2616005)(31686004)(4326008)(53546011)(83380400001)(54906003)(478600001)(52116002)(26005)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: uvfxifwGtAP0lKrLaKh/Y88gOqv3+1DMD6JkNaWL8lfRjD+H/QUZ9RSYFf+Kv3KGJoe2JMcSi5/frvn393WcU69Fz0VJEzMO+gC+HLsAZNlFaU3iQXH4He8EwEWY38uW8/70bcC28hsXMMMy9jKkFvZYdkYEh+FcUFDj/Diek9gOVsV3UMk7xVbhByQYHWjrJRTsniRiDbuO6aEPpnk2MnXo7VbV/p5eAWux6tQnmkjFhsMwDVQGSW3Z3nbg5hEYJk9SLg+SHcoyqAsCgqRbD/7Bd4Rg+1QkHflax4/kOwMhnuwubbhha26kgTNCo9IjOto/pMyMjWDtiACHBlbNnw37eUdQSxJ3oj4VaowR8uZpdi7t3qW0zR0nrLTwpOESYLcE8X3wIc5vgnlILE1uTgQt11r+wI6B6EnRoCzPlyfuEg82uZbd3jhx8WdHOVik4YHcSCdWiJeG4gpPjYcWi8iz8PW13VywmbGhrnANGxShSr8+2O/mbeGfWvFamAR2SvHU6WIgzjM4HcI020xR/tMIHE38M8n6/5jL8hIKwFw0GrLDGkbDSZ8EiIlKMg37vm+c625zCqaaQj8sGLOTRuU4GO7vp3EkGlsgH26GIpZ62HP93d1eDA2Zx6ii4KxMyVTikrIKWj+DVBJqQWFDfA==
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c3e7a76-5d14-4a2c-f219-08d8612e7ad0
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 08:39:44.2173
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 08:39:13.1847
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LQUVVk7EhNSbkhnejhnAmEU4O8ZimAvv0UjGszjl2JeidZlWglviMBnnElK54rZ38cIltvIIWd8CZAVBfBJSCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4697
+X-MS-Exchange-CrossTenant-UserPrincipalName: m4I2HDp0p/VEpRvGsoyIqpa9EekLSjTsu0U5iUXqcchC93upnryiLmhRyJkwCxfU0RjMHVgMomyIQqRGnXGIkTSeyj8vrhK1ZxHHt4pztKY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3333
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's no need to allocate a page for the MSI address, we could use
-an address in the driver data.
+Thanks for review! I've sent v4 to address all your comments. I've also 
+noticed that I had inconsistent config option naming:
 
-One side effect of this patch is fixing the MSI page leakage during
-suspend/resume. Take the pcie-tegra194.c for example, it calls
-dw_pcie_msi_init() in resume path, thus the previous MSI page is
-leaked.
++config OVERLAY_FS_INDEX_UUID_OFF
++static bool ovl_uuid_off_def = IS_ENABLED(CONFIG_OVERLAY_FS_UUID_OFF);
 
-Fixes: 56e15a238d92 ("PCI: tegra: Add Tegra194 PCIe support")
-Suggested-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- .../pci/controller/dwc/pcie-designware-host.c | 22 ++-----------------
- drivers/pci/controller/dwc/pcie-designware.h  |  1 -
- 2 files changed, 2 insertions(+), 21 deletions(-)
+this is also fixed.
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index f08f4d97f321..bf25d783b5c5 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -126,9 +126,7 @@ static void dw_pci_setup_msi_msg(struct irq_data *d, struct msi_msg *msg)
- {
- 	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
- 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
--	u64 msi_target;
--
--	msi_target = (u64)pp->msi_data;
-+	u64 msi_target = virt_to_phys(&pp->msi_data);
- 
- 	msg->address_lo = lower_32_bits(msi_target);
- 	msg->address_hi = upper_32_bits(msi_target);
-@@ -287,27 +285,11 @@ void dw_pcie_free_msi(struct pcie_port *pp)
- 
- 	irq_domain_remove(pp->msi_domain);
- 	irq_domain_remove(pp->irq_domain);
--
--	if (pp->msi_page)
--		__free_page(pp->msi_page);
- }
- 
- void dw_pcie_msi_init(struct pcie_port *pp)
- {
--	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
--	struct device *dev = pci->dev;
--	u64 msi_target;
--
--	pp->msi_page = alloc_page(GFP_KERNEL);
--	pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
--				    DMA_FROM_DEVICE);
--	if (dma_mapping_error(dev, pp->msi_data)) {
--		dev_err(dev, "Failed to map MSI data\n");
--		__free_page(pp->msi_page);
--		pp->msi_page = NULL;
--		return;
--	}
--	msi_target = (u64)pp->msi_data;
-+	u64 msi_target = virt_to_phys(&pp->msi_data);
- 
- 	/* Program the msi_data */
- 	dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index f911760dcc69..a88e15a09745 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -195,7 +195,6 @@ struct pcie_port {
- 	struct irq_domain	*irq_domain;
- 	struct irq_domain	*msi_domain;
- 	dma_addr_t		msi_data;
--	struct page		*msi_page;
- 	struct irq_chip		*msi_irq_chip;
- 	u32			num_vectors;
- 	u32			irq_mask[MAX_MSI_CTRLS];
+On 9/24/20 8:02 PM, Amir Goldstein wrote:
+> On Thu, Sep 24, 2020 at 7:38 PM Pavel Tikhomirov
+> <ptikhomirov@virtuozzo.com> wrote:
+>>
+>> This replaces uuid with null in overelayfs file handles and thus relaxes
+>> uuid checks for overlay index feature. It is only possible in case there
+>> is only one filesystem for all the work/upper/lower directories and bare
+>> file handles from this backing filesystem are uniq. In other case when
+>> we have multiple filesystems lets just fallback to "uuid=on" which is
+>> and equivalent of how it worked before with all uuid checks.
+>>
+>> This is needed when overlayfs is/was mounted in a container with index
+>> enabled (e.g.: to be able to resolve inotify watch file handles on it to
+>> paths in CRIU), and this container is copied and started alongside with
+>> the original one. This way the "copy" container can't have the same uuid
+>> on the superblock and mounting the overlayfs from it later would fail.
+>>
+>> Note: In our (Virtuozzo) use case users inside a container can create
+>> "regular" overlayfs mounts without any "index=" option, but we still
+>> want to migrate this containers with CRIU so we set "index=on" as kernel
+>> default so that all the container overlayfs mounts get support of file
+>> handles automatically. With "uuid=off" we want the same thing (to be
+>> able to "copy" container with uuid change) - we would set kernel default
+>> so that all the container overlayfs mounts get "uuid=off" automatically.
+>>
+>> That is an example of the problem on top of loop+ext4:
+>>
+>> dd if=/dev/zero of=loopbackfile.img bs=100M count=10
+>> losetup -fP loopbackfile.img
+>> losetup -a
+>>    #/dev/loop0: [64768]:35 (/loop-test/loopbackfile.img)
+>> mkfs.ext4 loopbackfile.img
+>> mkdir loop-mp
+>> mount -o loop /dev/loop0 loop-mp
+>> mkdir loop-mp/{lower,upper,work,merged}
+>> mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
+>> upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
+>> umount loop-mp/merged
+>> umount loop-mp
+>> e2fsck -f /dev/loop0
+>> tune2fs -U random /dev/loop0
+>>
+>> mount -o loop /dev/loop0 loop-mp
+>> mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
+>> upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
+>>    #mount: /loop-test/loop-mp/merged:
+>>    #mount(2) system call failed: Stale file handle.
+>>
+>> If you just change the uuid of the backing filesystem, overlay is not
+>> mounting any more. In Virtuozzo we copy container disks (ploops) when
+>> crate the copy of container and we require fs uuid to be uniq for a new
+>> container.
+>>
+>> v2: in v1 I missed actual uuid check skip
+>> v3: rebase to overlayfs-next, replace uuid with null in file handles,
+>> split ovl_fs propagation to function arguments to separate patch, add
+>> separate bool "uuid=on/off" option, move numfs check up, add doc note.
+> 
+> change log does not belong in commit message.
+> Move after --- please.
+> 
+>>
+>> CC: Amir Goldstein <amir73il@gmail.com>
+>> CC: Vivek Goyal <vgoyal@redhat.com>
+>> CC: Miklos Szeredi <miklos@szeredi.hu>
+>> CC: linux-unionfs@vger.kernel.org
+>> CC: linux-kernel@vger.kernel.org
+>> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+>> ---
+>>   Documentation/filesystems/overlayfs.rst |  6 ++++++
+>>   fs/overlayfs/Kconfig                    | 17 +++++++++++++++++
+>>   fs/overlayfs/copy_up.c                  |  3 ++-
+>>   fs/overlayfs/namei.c                    |  5 ++++-
+>>   fs/overlayfs/ovl_entry.h                |  1 +
+>>   fs/overlayfs/super.c                    | 25 +++++++++++++++++++++++++
+>>   6 files changed, 55 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/filesystems/overlayfs.rst b/Documentation/filesystems/overlayfs.rst
+>> index 580ab9a0fe31..4f9cc20f255c 100644
+>> --- a/Documentation/filesystems/overlayfs.rst
+>> +++ b/Documentation/filesystems/overlayfs.rst
+>> @@ -563,6 +563,12 @@ This verification may cause significant overhead in some cases.
+>>   Note: the mount options index=off,nfs_export=on are conflicting for a
+>>   read-write mount and will result in an error.
+>>
+>> +Note: the mount option uuid=off (or corresponding module param, or kernel
+>> +config) can be used to replace UUID of the underlying filesystem in file
+>> +handles with null, and effectively disable UUID checks. This can be useful in
+>> +case the underlying disk is copied and the UUID of this copy is changed. This
+>> +is only applicable if all lower/upper/work directories are on the same
+>> +filesystem, otherwise it will fallback to normal behaviour.
+>>
+>>   Volatile mount
+>>   --------------
+>> diff --git a/fs/overlayfs/Kconfig b/fs/overlayfs/Kconfig
+>> index dd188c7996b3..888c6e5e71ee 100644
+>> --- a/fs/overlayfs/Kconfig
+>> +++ b/fs/overlayfs/Kconfig
+>> @@ -61,6 +61,23 @@ config OVERLAY_FS_INDEX
+>>
+>>            If unsure, say N.
+>>
+>> +config OVERLAY_FS_INDEX_UUID_OFF
+> 
+> Please get rid of all the double negatives.
+> config/param uuid_off should be uuid and default to Y.
+> Otherwise this looks fine to me.
+> 
+>> +       bool "Overlayfs: export null uuid in file handles"
+>> +       depends on OVERLAY_FS
+>> +       help
+>> +         If this config option is enabled then overlay will replace uuid with
+>> +         null in overlayfs file handles, effectively disabling uuid checks for
+>> +         them. This affects overlayfs mounted with "index=on". This only can be
+>> +         done if all upper and lower directories are on the same filesystem
+>> +         where basic fhandles are uniq. In case the latter is not true
+>> +         overlayfs would fallback to normal uuid checking mode.
+>> +
+>> +         It is needed to overcome possible change of uuid on superblock of the
+>> +         backing filesystem, e.g. when you copied the virtual disk and mount
+>> +         both the copy of the disk and the original one at the same time.
+>> +
+>> +         If unsure, say N.
+>> +
+>>   config OVERLAY_FS_NFS_EXPORT
+>>          bool "Overlayfs: turn on NFS export feature by default"
+>>          depends on OVERLAY_FS
+>> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+>> index 3380039036d6..0b7e7a90a435 100644
+>> --- a/fs/overlayfs/copy_up.c
+>> +++ b/fs/overlayfs/copy_up.c
+>> @@ -320,7 +320,8 @@ struct ovl_fh *ovl_encode_real_fh(struct ovl_fs *ofs, struct dentry *real,
+>>          if (is_upper)
+>>                  fh->fb.flags |= OVL_FH_FLAG_PATH_UPPER;
+>>          fh->fb.len = sizeof(fh->fb) + buflen;
+>> -       fh->fb.uuid = *uuid;
+>> +       if (ofs->config.uuid)
+>> +               fh->fb.uuid = *uuid;
+>>
+>>          return fh;
+>>
+>> diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
+>> index f058bf8e8b87..0262c39886d0 100644
+>> --- a/fs/overlayfs/namei.c
+>> +++ b/fs/overlayfs/namei.c
+>> @@ -159,8 +159,11 @@ struct dentry *ovl_decode_real_fh(struct ovl_fs *ofs, struct ovl_fh *fh,
+>>          /*
+>>           * Make sure that the stored uuid matches the uuid of the lower
+>>           * layer where file handle will be decoded.
+>> +        * In case of index=nouuid option just make sure that stored
+> 
+> leftover index=nouuid
+> 
+> Thanks,
+> Amir.
+> 
+
 -- 
-2.28.0
-
+Best regards, Tikhomirov Pavel
+Software Developer, Virtuozzo.
