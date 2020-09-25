@@ -2,145 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEDF27924E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1F7279250
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgIYUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
+        id S1727302AbgIYUig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728710AbgIYUif (ORCPT
+        with ESMTP id S1727183AbgIYUif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Sep 2020 16:38:35 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1772C0613E0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:19:22 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id r128so3142537pfr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=c9CDfynf/KUxdFh8n3XOljSdCkgSvr8lNgdQYSCmCYk=;
-        b=fl2TaMkw1JkltuSEzdvWcmFU9+d3U4yl5mjSBoCcGilxxYeoBy74RE52xS+Ln6YSrb
-         xEy+4y7Pvmsv+LwnX76eQOdXe30Zv3CtkS1gl6iEVW5MN4l1N785IqZoKriNLCcNC9FH
-         S6ibrfOLkK/rrw2nucf69VVUnqeUM5DO82RikP4ZH6i98QBEDjsRVRwnsKvdBMAVvYHv
-         DhwgdImhtYWhDpVVoh5yX/JxpO7VW+ob3jvyRoDZ0/Lk1tvwArMtjiZtmef7yqZsuXkh
-         nuhyhbn0O68fp167oKpymHn64S0FLQIdUGSCx8xSoq+lBpM5IcgZULlrvNq0/945p8Zx
-         OOGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=c9CDfynf/KUxdFh8n3XOljSdCkgSvr8lNgdQYSCmCYk=;
-        b=Q3VXf9lP7P0fyeSPZsHJB4kB8fdGYI+NcMbNkXGg5HOvUnSzy25Jb8XorWdPYPp40A
-         5m21yLaMH8KwL0tmbNq1BNlUnpWHu6wQ9/jWyt6kWqEVE2PIPVaRdOjsWY7qLdrTxhZr
-         QBfUeVstt72wx/Z/mzXLN3lpFajCyydQ0HbHb+IUrYt+vC7BS2o/mc55/j0p4SW1SujR
-         1AYsKzm2d4YQDfaRYw1idZKUB6O6zzcRSuwDHD+GQjvf/RRJlgGjauKQuYVovTAAiHcp
-         6HdvX+Ztai4zuk+XB6Kr9iC7wP083JHhuNTjkN73UQCgQhgIPCk1zsr16NV2evgExnpD
-         /mZw==
-X-Gm-Message-State: AOAM530uoafqpH1nafcIj98EmQN9EbVSWwti895CWg0yob+N0m2bNs5X
-        CrNe5S0iI5pbP7golfKkQtG/7FxzkPtnEA==
-X-Google-Smtp-Source: ABdhPJyLFbH0nTn+I3Lwc3lBcbpV1gXP2gky2AKFlBb1OO3GB1kXpbwWnmfIuyJwos/1CTeA/XwLjOz7K97s6w==
-Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
-X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee8:36f0])
- (user=shakeelb job=sendgmr) by 2002:a17:90a:4cc6:: with SMTP id
- k64mr62957pjh.103.1601061562249; Fri, 25 Sep 2020 12:19:22 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 12:19:02 -0700
-In-Reply-To: <CALvZod5pERERkxWAJcBrZHpcWQH75kXkys2gUg__qM9OL+MmtQ@mail.gmail.com>
-Message-Id: <20200925191902.543953-1-shakeelb@google.com>
-Mime-Version: 1.0
-References: <CALvZod5pERERkxWAJcBrZHpcWQH75kXkys2gUg__qM9OL+MmtQ@mail.gmail.com>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Roman Gushchin <guro@fb.com>, Ming Lei <ming.lei@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>, Jens Axboe <axboe@kernel.dk>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EF2FC0613DD
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:19:20 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0b3a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 000641EC02C1;
+        Fri, 25 Sep 2020 21:19:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601061559;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=o6dxeuW4w4YTyZlUnMwe5bDuH5gje8wdVrfJtINpDoE=;
+        b=D2NaNJcbApdtaYaViyQyZkrqtiqlW1JuIRncAQ4X9fUcF7+Nd+N03ykguuXblxs5DEsEnH
+        8wbQyy3eohWxwiKYhUexLbEGODDjYjTzkpAOitCdxS1ZbnpkZRF91QxtIbJV1mETmf2Mda
+        +k/bNk2jhAD6CizI3Zd3f/hJHb1iBUE=
+Date:   Fri, 25 Sep 2020 21:19:12 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     "Song, Youquan" <youquan.song@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] x86/mce: Add Skylake quirk for patrol scrub reported
+ errors
+Message-ID: <20200925191912.GO16872@zn.tnic>
+References: <20200615184056.26531-1-tony.luck@intel.com>
+ <20200616192952.GO13515@zn.tnic>
+ <3908561D78D1C84285E8C5FCA982C28F7F670974@ORSMSX115.amr.corp.intel.com>
+ <20200617074158.GB10118@zn.tnic>
+ <20200617184901.GA387@agluck-desk2.amr.corp.intel.com>
+ <20200828202150.GA11854@agluck-desk2.amr.corp.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200828202150.GA11854@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:58 AM Shakeel Butt <shakeelb@google.com>
-wrote:
->
-[snip]
->
-> I don't think you can ignore the flushing. The __free_once() in
-> ___cache_free() assumes there is a space available.
->
-> BTW do_drain() also have the same issue.
->
-> Why not move slabs_destroy() after we update ac->avail and memmove()?
+On Fri, Aug 28, 2020 at 01:21:50PM -0700, Luck, Tony wrote:
+> +static void adjust_mce_log(struct mce *m)
+> +{
+> +	struct cpuinfo_x86 *c = &boot_cpu_data;
+> +
+> +	if (c->x86_vendor == X86_VENDOR_INTEL && c->x86 == 6 &&
+> +	    c->x86_model == INTEL_FAM6_SKYLAKE_X && c->x86_stepping >= 4) {
+> +		/*
+> +		 * Check the error code to see if this is an uncorrected patrol
+> +		 * scrub error from one of the memory controller banks. If so,
+> +		 * then adjust the severity level to MCE_AO_SEVERITY
+> +		 */
+> +		if (((m->status & MCACOD_SCRUBMSK) == MCACOD_SCRUB) &&
+> +		    ((m->status & MSCOD_MASK) == MSCOD_UCE_SCRUB) &&
+> +		    m->bank >= 13 && m->bank <= 18)
+> +			m->severity = MCE_AO_SEVERITY;
+> +	}
+> +}
+> +
+>  DEFINE_PER_CPU(unsigned, mce_poll_count);
+>  
+>  /*
+> @@ -772,6 +801,7 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
+>  		if (mca_cfg.dont_log_ce && !mce_usable_address(&m))
+>  			goto clear_it;
+>  
+> +		adjust_mce_log(&m);
+>  		mce_log(&m);
 
-Ming, can you please try the following patch?
+Coming back to this and looking at it, I can't say that I like it. We're
+sticking hooks to look at and massage the logged data everywhere on the
+MCE processing path and it is getting really unwieldy.
 
+And after staring at this a bit, it looks like all it wants to do is to
+adjust the severity. And we have a severity grading mechanism. So let's
+see how ugly it would become if we extended it to check that too.
 
-From: Shakeel Butt <shakeelb@google.com>
+So how's that below instead?
 
-[PATCH] mm: slab: fix potential infinite recursion in ___cache_free
+It builds here, I haven't even thought about testing it and I might've
+missed out on some aspects but tbh this looks much better to me. Because
+it is not bolted on the handling path but integral part of it.
 
-With the commit 10befea91b61 ("mm: memcg/slab: use a single set of
-kmem_caches for all allocations"), it becomes possible to call kfree()
-from the slabs_destroy(). However if slabs_destroy() is being called for
-the array_cache of the local CPU then this opens the potential scenario
-of infinite recursion because kfree() called from slabs_destroy() can
-call slabs_destroy() with the same array_cache of the local CPU. Since
-the array_cache of the local CPU is not updated before calling
-slabs_destroy(), it will try to free the same pages.
+Thoughts?
 
-To fix the issue, simply update the cache before calling
-slabs_destroy().
-
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
 ---
- mm/slab.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/mm/slab.c b/mm/slab.c
-index 3160dff6fd76..f658e86ec8ce 100644
---- a/mm/slab.c
-+++ b/mm/slab.c
-@@ -1632,6 +1632,10 @@ static void slab_destroy(struct kmem_cache *cachep, struct page *page)
- 		kmem_cache_free(cachep->freelist_cache, freelist);
- }
+diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
+index e1da619add19..8c1a41aa5e40 100644
+--- a/arch/x86/kernel/cpu/mce/severity.c
++++ b/arch/x86/kernel/cpu/mce/severity.c
+@@ -9,9 +9,11 @@
+ #include <linux/seq_file.h>
+ #include <linux/init.h>
+ #include <linux/debugfs.h>
+-#include <asm/mce.h>
+ #include <linux/uaccess.h>
  
-+/*
-+ * Update the size of the caches before calling slabs_destroy as it may
-+ * recursively call kfree.
-+ */
- static void slabs_destroy(struct kmem_cache *cachep, struct list_head *list)
- {
- 	struct page *page, *n;
-@@ -2153,8 +2157,8 @@ static void do_drain(void *arg)
- 	spin_lock(&n->list_lock);
- 	free_block(cachep, ac->entry, ac->avail, node, &list);
- 	spin_unlock(&n->list_lock);
--	slabs_destroy(cachep, &list);
- 	ac->avail = 0;
-+	slabs_destroy(cachep, &list);
- }
- 
- static void drain_cpu_caches(struct kmem_cache *cachep)
-@@ -3402,9 +3406,9 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
- 	}
- #endif
- 	spin_unlock(&n->list_lock);
--	slabs_destroy(cachep, &list);
- 	ac->avail -= batchcount;
- 	memmove(ac->entry, &(ac->entry[batchcount]), sizeof(void *)*ac->avail);
-+	slabs_destroy(cachep, &list);
- }
++#include <asm/mce.h>
++#include <asm/intel-family.h>
++
+ #include "internal.h"
  
  /*
--- 
-2.28.0.681.g6f77f65b4e-goog
+@@ -40,9 +42,14 @@ static struct severity {
+ 	unsigned char context;
+ 	unsigned char excp;
+ 	unsigned char covered;
++	unsigned char cpu_model;
++	unsigned char cpu_stepping;
++	unsigned char bank_lo, bank_hi;
+ 	char *msg;
+ } severities[] = {
+ #define MCESEV(s, m, c...) { .sev = MCE_ ## s ## _SEVERITY, .msg = m, ## c }
++#define BANK_RANGE(l, h) .bank_lo = l, .bank_hi = h
++#define MODEL_STEPPING(m,s) .cpu_model = m, .cpu_stepping = s
+ #define  KERNEL		.context = IN_KERNEL
+ #define  USER		.context = IN_USER
+ #define  KERNEL_RECOV	.context = IN_KERNEL_RECOV
+@@ -97,7 +104,10 @@ static struct severity {
+ 		KEEP, "Corrected error",
+ 		NOSER, BITCLR(MCI_STATUS_UC)
+ 		),
+-
++	MCESEV(AO, "UnCorrected Patrol Scrub Error",
++		NOSER, MASK(0xffffeff0, 0x001000c0),
++		MODEL_STEPPING(INTEL_FAM6_SKYLAKE_X, 4),BANK_RANGE(13,18)
++	),
+ 	/*
+ 	 * known AO MCACODs reported via MCE or CMC:
+ 	 *
+@@ -324,6 +334,12 @@ static int mce_severity_intel(struct mce *m, int tolerant, char **msg, bool is_e
+ 			continue;
+ 		if (s->excp && excp != s->excp)
+ 			continue;
++		if (s->cpu_model && boot_cpu_data.x86_model != s->cpu_model)
++			continue;
++		if (s->cpu_stepping && boot_cpu_data.x86_stepping <= s->cpu_stepping)
++			continue;
++		if (s->bank_lo && (s->bank_lo <= m->bank && m->bank <= s->bank_hi))
++			continue;
+ 		if (msg)
+ 			*msg = s->msg;
+ 		s->covered = 1;
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
