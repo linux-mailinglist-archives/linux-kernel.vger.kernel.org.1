@@ -2,75 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D31278DE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E351278DF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729442AbgIYQSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:18:01 -0400
-Received: from verein.lst.de ([213.95.11.211]:56719 "EHLO verein.lst.de"
+        id S1729461AbgIYQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:18:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728524AbgIYQSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:18:01 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 39A7E68AFE; Fri, 25 Sep 2020 18:17:55 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 18:17:54 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org, alsa-devel@alsa-project.org,
-        linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-doc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        netdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 08/18] dma-mapping: add a new dma_alloc_noncoherent API
-Message-ID: <20200925161754.GA18721@lst.de>
-References: <20200915155122.1768241-1-hch@lst.de> <20200915155122.1768241-9-hch@lst.de> <c8ea4023-3e19-d63b-d936-46a04f502a61@arm.com>
+        id S1728169AbgIYQSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:18:55 -0400
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E62B2311D
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:18:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601050734;
+        bh=GUc4jpnEvctVnzgDAzmULezA1tRJBanFMPyHYi3PskM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cET+LyFrgZBvlCFjcW/UfnU9JVLddwQbaqcsDW7+dYYfjiX3C89dpiH44QVfwhyiM
+         W+slZaP8r08NiHpX29xBrXll+lgSJ8OE1mRjirUFy0R4pepwnRjSknAHzI1blzfSph
+         2eH0Fx8m9sMCrg+RjSHd3gWrDQsuwnIiJD2aY4QM=
+Received: by mail-wr1-f49.google.com with SMTP id o5so4160309wrn.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:18:54 -0700 (PDT)
+X-Gm-Message-State: AOAM531u5ksX6MZfae0P909dL/xVT7YRdXYo2KhU5qXkX+AtbzNsbojy
+        c8ezrDEmatQ5uZ4uCE9Mu1I654OoM3OP8g/FmxeuGw==
+X-Google-Smtp-Source: ABdhPJzJVQ4SroX19lHOoDdodedOBW7zt9uLDHTfG6pZa6tPMOiFKYUvMXunh9BhjogLm/n0RMCIDmE5ewnQIks5cFk=
+X-Received: by 2002:adf:ce8e:: with SMTP id r14mr5289436wrn.257.1601050732711;
+ Fri, 25 Sep 2020 09:18:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c8ea4023-3e19-d63b-d936-46a04f502a61@arm.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20200925145804.5821-1-yu-cheng.yu@intel.com> <20200925145804.5821-8-yu-cheng.yu@intel.com>
+In-Reply-To: <20200925145804.5821-8-yu-cheng.yu@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 25 Sep 2020 09:18:40 -0700
+X-Gmail-Original-Message-ID: <CALCETrUyLfbodgH3vWqneFgpJb0DEiqRs-ZikhrhhVUR_13xjQ@mail.gmail.com>
+Message-ID: <CALCETrUyLfbodgH3vWqneFgpJb0DEiqRs-ZikhrhhVUR_13xjQ@mail.gmail.com>
+Subject: Re: [PATCH v13 7/8] x86/vdso: Insert endbr32/endbr64 to vDSO
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:15:37PM +0100, Robin Murphy wrote:
-> On 2020-09-15 16:51, Christoph Hellwig wrote:
-> [...]
->> +These APIs allow to allocate pages in the kernel direct mapping that are
->> +guaranteed to be DMA addressable.  This means that unlike dma_alloc_coherent,
->> +virt_to_page can be called on the resulting address, and the resulting
+On Fri, Sep 25, 2020 at 7:58 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
 >
-> Nit: if we explicitly describe this as if it's a guarantee that can be 
-> relied upon...
+> From: "H.J. Lu" <hjl.tools@gmail.com>
 >
->> +struct page can be used for everything a struct page is suitable for.
->
-> [...]
->> +This routine allocates a region of <size> bytes of consistent memory.  It
->> +returns a pointer to the allocated region (in the processor's virtual address
->> +space) or NULL if the allocation failed.  The returned memory may or may not
->> +be in the kernels direct mapping.  Drivers must not call virt_to_page on
->> +the returned memory region.
->
-> ...then forbid this document's target audience from relying on it, 
-> something seems off. At the very least it's unhelpfully unclear :/
->
-> Given patch #17, I suspect that the first paragraph is the one that's no 
-> longer true.
+> When Indirect Branch Tracking (IBT) is enabled, vDSO functions may be
+> called indirectly, and must have ENDBR32 or ENDBR64 as the first
+> instruction.  The compiler must support -fcf-protection=branch so that it
+> can be used to compile vDSO.
 
-Yes.  dma_alloc_pages is the replacement for allocations that need the
-direct mapping.  I'll send a patch to document dma_alloc_pages and
-fixes this up
+Acked-by: Andy Lutomirski <luto@kernel.org>
