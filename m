@@ -2,98 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9794278479
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:56:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C006727847C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728037AbgIYJ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39830 "EHLO
+        id S1728057AbgIYJ4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727922AbgIYJ4M (ORCPT
+        with ESMTP id S1726990AbgIYJ4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:56:12 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4F03C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:11 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id s12so2866748wrw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CJ7DSwGsXPHCvYT7/GxkQRuG9Us9EEJKdeB/uPAfkRo=;
-        b=qJG6CtA542rNgDpN/dOblgu7tTmxLNeF0AR7lJnP0N+0bs/wekSx94XJ6NhplIJCZH
-         C82AgIlevD6h5TU0VYmgsqcQylUZP4VQEQHLmiNOkS+JefQ7WzqxZ/okoxeKQ0fpatHB
-         Nlrn/J+TXN+FFykj+Naeb33EvAzRhTKy6TfuYa7qJIxQ08ojzEruyBH5txFo+7UloO77
-         0LavacGpFhAP8d45hda5T2tqXSJ0pIxeOxVNlf9wKMz/Is2DKlGSXFWBPUAyIORzgMAr
-         fKJFuho4kW/O7/xLwuglRZeER9zdDWFbDehGWbL/Oldi8sb+XgCIodAHcI3lKhQ5R80D
-         KLHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CJ7DSwGsXPHCvYT7/GxkQRuG9Us9EEJKdeB/uPAfkRo=;
-        b=qgGPq9GkdZgSWXdxsKE5K4YuVmK+QCYtPHohZYont7fvvcjwFuERLDxhx7uNES+nhI
-         lTAE43tLA+yPlERi5pZGqJHL9/OKQoUsksPHq969dHh13GSAIWz5i5GUatkLzCng5iwh
-         80VRXmTz0z5eOqj2/sRGNOiZc1W6k/ombFk8YKUO84wOenS9NQa+fuDyubi+ZQzkFlD1
-         kRRpjbG6xqWW3MAcQFYBYxXu7k9IQTURe/lOa69OQGul+cjlScfKvYX6aVimTQM4b0TO
-         QveXdjPxl5aagG1pp+6Klljkseo46iP090Pn8llqt4kcNC43JUGqj3+gY2vgC5rp0Enz
-         6tng==
-X-Gm-Message-State: AOAM532rake/QFcyWNgQ8qGGgQgLXI+j/1T+xJAHxLrwsXPEPesGn+2S
-        UMLjl3uBY64Tj2zk8YdC+6P38w==
-X-Google-Smtp-Source: ABdhPJwnJ5qf0Z3hMgHlPxTdCHp02wYBh10QRU8lVQZnvMd5dbBFtJ6W5K6bg3c2gEau1FYFyhA2LA==
-X-Received: by 2002:a5d:69cd:: with SMTP id s13mr3436481wrw.379.1601027770597;
-        Fri, 25 Sep 2020 02:56:10 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id g14sm2227598wrv.25.2020.09.25.02.56.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 02:56:09 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 3/3] slimbus: qcom-ngd-ctrl: disable ngd in qmi server down callback
-Date:   Fri, 25 Sep 2020 10:55:20 +0100
-Message-Id: <20200925095520.27316-4-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200925095520.27316-1-srinivas.kandagatla@linaro.org>
-References: <20200925095520.27316-1-srinivas.kandagatla@linaro.org>
+        Fri, 25 Sep 2020 05:56:33 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A314C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=O4BPsI0ywNAvUxqgeLw3VCGMfjCiwlBP2my+mf2Wvug=; b=U68x3N1d4kfWLJAW4yfwlp6PYh
+        /jC2zzbq5mmfMLBu0zrs0DujqZqTNv6jZrEDGwwOVuB9VKCqlIpP0q3lnXg8iIgIJfHP9NA2RNtSK
+        +cHkessRty0c8PytddTldWWSZi4iEDi211trGTtv3nZNbFgiI54898UYaFDgfksPphhK1q5Sv8tEy
+        LZ3bzKv0mlH5Iv9uH3Ny8u9hUYJx/o8au/BEGXmLhE8tf3zXeN9Y+COhNSqsshtl/7LS0aR4XLdAE
+        Qt+FXlu/stL3eyIDwFgWSOMJ9xvwv4GwnvKyqMByDEqSjyE0BhDk/eWtAQCiJcV9zK+RCoyRwqCo0
+        34+2hvIA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLkSf-0002iF-6d; Fri, 25 Sep 2020 09:56:17 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B7B14305C16;
+        Fri, 25 Sep 2020 11:56:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9CDDA203EB17E; Fri, 25 Sep 2020 11:56:15 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 11:56:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
+Subject: Re: [PATCH 8/9] sched: Fix migrate_disable() vs
+ set_cpus_allowed_ptr()
+Message-ID: <20200925095615.GA2651@hirez.programming.kicks-ass.net>
+References: <20200921163557.234036895@infradead.org>
+ <20200921163845.830487105@infradead.org>
+ <jhj3637lzdm.mognet@arm.com>
+ <20200925090528.GV2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925090528.GV2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In QMI new server notification we enable the NGD however during
-delete server notification we do not disable the NGD.
+On Fri, Sep 25, 2020 at 11:05:28AM +0200, Peter Zijlstra wrote:
+> On Thu, Sep 24, 2020 at 08:59:33PM +0100, Valentin Schneider wrote:
+> > > @@ -2025,19 +2138,8 @@ static int __set_cpus_allowed_ptr(struct
+> > >       if (cpumask_test_cpu(task_cpu(p), new_mask))
+> > >               goto out;
+> > 
+> > I think this needs a cancellation of any potential pending migration
+> > requests. Consider a task P0 running on CPU0:
+> > 
+> >    P0                     P1                               P2
+> > 
+> >    migrate_disable();
+> >    <preempt>
+> >                           set_cpus_allowed_ptr(P0, CPU1);
+> >                           // waits for completion
+> >                                                            set_cpus_allowed_ptr(P0, CPU0);
+> >                                                            // Already good, no waiting for completion
+> >    <resumes>
+> >    migrate_enable();
+> >    // task_cpu(p) allowed, no move_task()
+> > 
+> > AIUI in this scenario P1 would stay forever waiting.
+> 
 
-This can lead to multiple instances of NGD being enabled, so make
-sure that we disable NGD in delete server callback to fix this issue!
+> The other approach is trying to handle that last condition in
+> move_task(), but I'm quite sure that's going to be aweful too :/
 
-Fixes: 917809e2280b ("slimbus: ngd: Add qcom SLIMBus NGD driver")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/slimbus/qcom-ngd-ctrl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Something like so perhaps?
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index 743ee7b4e63f..218aefc3531c 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1277,9 +1277,13 @@ static void qcom_slim_ngd_qmi_del_server(struct qmi_handle *hdl,
- {
- 	struct qcom_slim_ngd_qmi *qmi =
- 		container_of(hdl, struct qcom_slim_ngd_qmi, svc_event_hdl);
-+	struct qcom_slim_ngd_ctrl *ctrl =
-+		container_of(qmi, struct qcom_slim_ngd_ctrl, qmi);
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2039,6 +2039,10 @@ static int move_task(struct rq *rq, stru
+ 	if (WARN_ON_ONCE(!pending))
+ 		return -EINVAL;
  
- 	qmi->svc_info.sq_node = 0;
- 	qmi->svc_info.sq_port = 0;
++	/* Can the task run on the task's current CPU? If so, we're done */
++	if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask))
++		goto easy;
 +
-+	qcom_slim_ngd_enable(ctrl, false);
- }
+ 	arg.done = &pending->done;
  
- static struct qmi_ops qcom_slim_ngd_qmi_svc_event_ops = {
--- 
-2.21.0
-
+ 	if (flags & SCA_MIGRATE_ENABLE) {
+@@ -2063,6 +2067,7 @@ static int move_task(struct rq *rq, stru
+ 			if (task_on_rq_queued(p))
+ 				rq = move_queued_task(rq, rf, p, dest_cpu);
+ 
++easy:
+ 			p->migration_pending = NULL;
+ 			complete = true;
+ 		}
+@@ -2151,10 +2156,6 @@ static int __set_cpus_allowed_ptr(struct
+ 			p->nr_cpus_allowed != 1);
+ 	}
+ 
+-	/* Can the task run on the task's current CPU? If so, we're done */
+-	if (cpumask_test_cpu(task_cpu(p), new_mask))
+-		goto out;
+-
+ 	return move_task(rq, &rf, p, dest_cpu, flags);
+ 
+ out:
