@@ -2,109 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC6D278B49
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96943278B52
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729085AbgIYOx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728731AbgIYOx3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:53:29 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AACC0613CE;
-        Fri, 25 Sep 2020 07:53:28 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z19so3418367pfn.8;
-        Fri, 25 Sep 2020 07:53:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eFwDxojg/pSUZmy/jgMQ1wV+tRHc4oxueQ4CcPNn7Ts=;
-        b=ZB/C+nlid9Nz8DsPMXDb19d+bNnVxGXq0Tu5Qjzd85rWSXbavrWVS7xTLlwXo4CBbb
-         ryJwD78H62q2xycvAWQqvxCDhJwvyLMm3ibjV/gUUazdvYedD564AFxf47AQYe51Xjyo
-         Bv+14t6CZrny/vP/DgZE+iiiaoWdzfhPRVRYQYqpXY1bHscPHar7j1VHz0XsqFPr+saQ
-         NK1UyizuMtzDVqqEdcKdZGblboUF0Ms5qc0SldLfbEQp67lUIq4dmyHZbtuNkmH6mRXW
-         YN8z4RJp8C7ofMu15teFqSpLpJL9w/N3s8Hqh3U8p0jXM3wkeGRbhQg+ABTFNeP2wy4C
-         uCog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eFwDxojg/pSUZmy/jgMQ1wV+tRHc4oxueQ4CcPNn7Ts=;
-        b=GjWND2cvOV73qF3BAjDdcKr0o+/L7bIEsBrrXEKTaQDv1F+9TJGqP3fGjLnmKlfi1/
-         403MOghyogk0PSEZXCXdcIgk1yLrsg/DEMhTV2rsUsasQNHZPWno4FYEShYwZjQjhdH+
-         8/Oua1muWUi6eo1nf6YY9uZeCj+llGtSecWqbJS/h1DzPYmVxaeSaDa6AjCj2OIoJ49Q
-         cVrZbdSN+kQVPm4Oi/jGc8zDc25nI7XtYuoUqa2zFahfv1PC5f+SmuTufwW3GvLFGf69
-         U6pjfDE+owTkQjp69ugT2VEFzmoDeFTZcMQbxMOjXVachGMuceCk7b++TLsusPrn1w+q
-         FAnA==
-X-Gm-Message-State: AOAM53272iTy6Pg8wNF73HEwF3awP8sz324T5ZNzXuLhsbHWtVIsxFty
-        g0vRG5ZDthH56s1dbchnDZE5jYu7le2vnkGJ878=
-X-Google-Smtp-Source: ABdhPJxP0fn266K0iBSoUgJkOacTuXN6kSZsM/RGexNUsaWG0MfEIFeN5mpq9A7BVeMDLXnj96RU2rkHvwYOfw2WQI4=
-X-Received: by 2002:a63:4b14:: with SMTP id y20mr357764pga.203.1601045608211;
- Fri, 25 Sep 2020 07:53:28 -0700 (PDT)
+        id S1729046AbgIYOzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37408 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728330AbgIYOzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:55:02 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 145BC2074B;
+        Fri, 25 Sep 2020 14:55:00 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 10:54:58 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org
+Subject: Re: [stable 4.19] [PANIC]: tracing: Centralize preemptirq
+ tracepoints and unify their usage
+Message-ID: <20200925105458.567d0bf4@oasis.local.home>
+In-Reply-To: <CA+G9fYuokHUBwNkTs=gWqCHxj80gg+RetU4pRd+uLP7gNas4KQ@mail.gmail.com>
+References: <20180823023839.GA13343@shao2-debian>
+        <20180828195347.GA228832@joelaf.mtv.corp.google.com>
+        <CA+G9fYtV_sjTKLMXWMP0w0A-H+p+CN-uVJ6dvHovDy9epJZ2GQ@mail.gmail.com>
+        <20200925051518.GA605188@kroah.com>
+        <CA+G9fYuokHUBwNkTs=gWqCHxj80gg+RetU4pRd+uLP7gNas4KQ@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
- <dad42dce-15d0-245a-4d91-4733e54883a0@gmail.com> <CAK8P3a2ryzmsrHHApT9O=dvsw+=z18Sjd4ygVxvFrrDetKA+rQ@mail.gmail.com>
- <c4c1d999-9ab7-8988-906a-3cb6a70bc93d@gmail.com> <CAK8P3a2XegsP71yvd8Ku08_k6ecQfkU+V+t+QnjQBrJKF2MwCg@mail.gmail.com>
- <d07adfb3-9f79-c00a-cb70-e044aa0b19f8@gmail.com> <CAK8P3a23V8vug2U-9tXUOdO3DvQvEc5+GhZuQh7_HKtTavCqVQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a23V8vug2U-9tXUOdO3DvQvEc5+GhZuQh7_HKtTavCqVQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 25 Sep 2020 17:53:10 +0300
-Message-ID: <CAHp75VdGjQwzG_hESp8sQzfWjP6ccE5rMXjig94FKWmzhWOHSg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
- Aggregator Module
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:38 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Sep 24, 2020 at 8:59 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
-> > On 9/24/20 10:26 AM, Arnd Bergmann wrote:
-> > > On Thu, Sep 24, 2020 at 1:28 AM Maximilian Luz <luzmaximilian@gmail.com> wrote:
->
-> > > Note that drivers that connect to the bus typically don't live in the
-> > > same subdirectory as the driver that operates the bus. E.g. the
-> > > battery driver would go into drivers/power/supply and the input
-> > > would go into drivers/input/ or drivers/hid.
+On Fri, 25 Sep 2020 12:55:13 +0530
+Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+
+> On Fri, 25 Sep 2020 at 10:45, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
 > >
-> > Right. I wonder if this also holds for devices that are directly
-> > dependent on a special platform though? It could make sense to have them
-> > under plaform/surface rather than in the individual subsystems as they
-> > are only ever going to be used on this platform. On the other hand, one
-> > could argue that having them in the subsystem directories is better for
-> > maintainability.
->
-> Yes, absolutely. The subsystem maintainers are the ones that are
-> most qualified of reviewing code that uses their subsystem, regardless
-> of which bus is used underneath the device, and having all drivers
-> for a subsystem in one place makes it much easier to refactor them
-> all at once in case the internal interfaces are changed or common bugs
-> are found in multiple drivers.
+> > On Fri, Sep 25, 2020 at 10:13:05AM +0530, Naresh Kamboju wrote:  
+> > > >From stable rc 4.18.1 onwards to today's stable rc 4.19.147  
+> > >
+> > > There are two problems  while running LTP tracing tests
+> > > 1) kernel panic  on i386, qemu_i386, x86_64 and qemu_x86_64 [1]
+> > > 2) " segfault at 0 ip " and "Code: Bad RIP value" on x86_64 and qemu_x86_64 [2]
+> > > Please refer to the full test logs from below links.
+> > >
+> > > The first bad commit found by git bisect.
+> > >    commit: c3bc8fd637a9623f5c507bd18f9677effbddf584
+> > >    tracing: Centralize preemptirq tracepoints and unify their usage
+> > >
+> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>  
+> >
+> > So this also is reproducable in 5.4 and Linus's tree right now?  
+> 
+> No.
+> The reported issues are not reproducible on 5.4, 5.8 and Linus's tree.
 
-The problem is that some of the drivers are mostly reincarnation of
-board files due to the platform being Windows-oriented with badly
-written ACPI tables / firmware as a whole (which means a lot of quirks
-are required).
+The crash looks like its cr3 related, which I believe Peter Zijlstra
+did a restructuring of that code to not let it be an issue anymore.
+I'll have to look deeper. The rework may be too intrusive to backport,
+but we do have other work arounds for this issue if that would be
+acceptable for backporting.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> 
+> >
+> > Or are newer kernels working fine?  
+> 
+> No.
+> There are different issues while testing LTP tracing on 5.4, 5.8 and
+> Linus 's 5.9.
+> 
+> NETDEV WATCHDOG: eth0 (igb): transmit queue 2 timed out
+> WARNING: CPU: 1 PID: 331 at net/sched/sch_generic.c:442 dev_watchdog+0x4c7/0x4d0
+> https://lore.kernel.org/stable/CA+G9fYtS_nAX=sPV8zTTs-nOdpJ4uxk9sqeHOZNuS4WLvBcPGg@mail.gmail.com/
+> 
+> I see this on 5.4, 5.8 and Linus 's 5.9.
+> rcu: INFO: rcu_sched self-detected stall on CPU
+> ? ftrace_graph_caller+0xc0/0xc0
+> https://lore.kernel.org/stable/CA+G9fYsdTLRj55_bvod8Sf+0zvK0RRMp5+FeJcOx5oAcAKOGXA@mail.gmail.com/T/#u
+
+I've seen that too and couldn't bisect it down to any such commit. I'm
+not sure if it is even a bug per-se, because in my test suite, I've
+commented out the warning, and the system still remains stable.
+
+-- Steve
