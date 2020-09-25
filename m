@@ -2,98 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48253279522
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C54279527
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729457AbgIYXu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:50:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54432 "EHLO mail.kernel.org"
+        id S1729577AbgIYXvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:51:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728780AbgIYXu5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:50:57 -0400
-Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        id S1726316AbgIYXvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:51:14 -0400
+Received: from [192.168.0.108] (unknown [49.65.245.23])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1307A20866;
-        Fri, 25 Sep 2020 23:50:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52ED12086A;
+        Fri, 25 Sep 2020 23:51:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601077856;
-        bh=GfAjzYpvzXjmi87tcxPpWjdbb2BOqtsmnBF/0nq3rzg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=C4C+uK+Q8QeDxc9+hwrzC501NMnw0U9kZGHyapjODn5eIDLLrcwrVaIKoG4c2Qk0A
-         rn3RpGFD1iM0Y9CgL99qEWmuzfAsLkMVkyvLyXu09S9Q9RTzsQa++njJxd/zi5MHo4
-         Ce6/mSVPVUAi1BEBfo2PpWiZYfKQGRJNztahW1qw=
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
- <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
- <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
- <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
- <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
- <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
-From:   Sinan Kaya <okaya@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <1bbbdfde-2493-7ff5-fd13-b6340b1228e7@kernel.org>
-Date:   Fri, 25 Sep 2020 19:50:55 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        s=default; t=1601077874;
+        bh=AnoaLjW2T6AYP8LU4qjZcI4e10DD7MaqQAW8psn5yPA=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=svmIVoCyXf7OAiRBGSbvGiyel3iYVkVF8HrnmYNC3TYo8dfHqnl4R463jyMCGrdq6
+         7SMnDXvaV4KMAHRE6Q9YrZCA8i1ot1TX7jop8BRbHLhZ0OfV9Ul/nt0Pd0yxaZG+jq
+         3CPzwjTC4j18rI38vratMOk7dbDQmoA8lTrnfRqM=
+Subject: Re: [f2fs-dev] [PATCH] f2fs: point man pages for some f2fs utils
+To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, linux-f2fs-devel@lists.sourceforge.net
+References: <20200925232256.4136799-1-jaegeuk@kernel.org>
+ <20200925232608.GC4136545@google.com>
+From:   Chao Yu <chao@kernel.org>
+Message-ID: <8c6ab915-1bb8-608e-9cc4-2883962deb79@kernel.org>
+Date:   Sat, 26 Sep 2020 07:51:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.8.0
 MIME-Version: 1.0
-In-Reply-To: <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200925232608.GC4136545@google.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/2020 2:16 PM, Kuppuswamy, Sathyanarayanan wrote:
->> One approach is to share the restore code between hotplug driver and
->> DPC driver.
+On 2020-9-26 7:26, Jaegeuk Kim wrote:
+> On 09/25, Jaegeuk Kim wrote:
+>> This patch adds some missing contexts related to f2fs-tools in f2fs
+>> documentation.
 >>
->> If this is a too involved change, DPC driver should restore state
->> when hotplug is not supported.
-> Yes. we can add a condition for hotplug capability check.
+>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>> ---
+>>  Documentation/filesystems/f2fs.rst | 46 ++++++++++++++++++++++++++++--
+>>  1 file changed, 44 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+>> index 0f37c7443d5c5..2b3aef2f5fa1f 100644
+>> --- a/Documentation/filesystems/f2fs.rst
+>> +++ b/Documentation/filesystems/f2fs.rst
+>> @@ -315,7 +315,7 @@ mkfs.f2fs
+>>  The mkfs.f2fs is for the use of formatting a partition as the f2fs filesystem,
+>>  which builds a basic on-disk layout.
+>>
+>> -The options consist of:
+>> +The quick options consist of:
+>>
+>>  ===============    ===========================================================
+>>  ``-l [label]``     Give a volume label, up to 512 unicode name.
+>> @@ -337,6 +337,8 @@ The options consist of:
+>>                     1 is set by default, which conducts discard.
+>>  ===============    ===========================================================
+>>
+>> +Note that, please refer manpage of mkfs.f2fs(8) to get full option list.
+>> +
+>>  fsck.f2fs
+>>  ---------
+>>  The fsck.f2fs is a tool to check the consistency of an f2fs-formatted
+>> @@ -344,10 +346,12 @@ partition, which examines whether the filesystem metadata and user-made data
+>>  are cross-referenced correctly or not.
+>>  Note that, initial version of the tool does not fix any inconsistency.
+>>
+>> -The options consist of::
+>> +The quick options consist of::
+>>
+>>    -d debug level [default:0]
+>>
+>> +Note that, please refer manpage of fsck.f2fs(8) to get full option list.
+>> +
+>>  dump.f2fs
+>>  ---------
+>>  The dump.f2fs shows the information of specific inode and dumps SSA and SIT to
+>> @@ -371,6 +375,44 @@ Examples::
+>>      # dump.f2fs -s 0~-1 /dev/sdx (SIT dump)
+>>      # dump.f2fs -a 0~-1 /dev/sdx (SSA dump)
+>>
+>> +Note that, please refer manpage of dump.f2fs(8) to get full option list.
+>> +
+>> +sload.f2fs
+>> +----------
+>> +The sload.f2fs gives a way to insert files and directories in the exisiting disk
+>> +image. This tool is useful when building f2fs images given compiled files.
+>> +
+>> +Note that, please refer manpage of sload.f2fs(8) to get full option list.
+>> +
+>> +resize.f2fs
 
-Now that I think about this more...
+^^^^^^^^^
 
-This won't work. Link is brought down automatically by the DPC hardware.
-Therefore, all software state is lost. Restore won't help here.
+>> +-----------
+>> +The resize.f2fs can be used when user want to resize the f2fs-formatted disk
+>> +image, while keeping the stored files and directories.
+>> +
+>> +Note that, please refer manpage of resize.f2fs(8) to get full option list.
+>> +
+>> +resize.f2fs
 
-The only solution I can see is to force driver disconnect and rescan.
+^^^^^^^^^
+
+>> +-----------
+>> +The resize.f2fs let user resize the f2fs-formatted disk image, while preserving
+>> +all the files and directories stored in the image.
+
+Can merge with above section?
+
+I noticed that 	("f2fs: Documentation edits/fixes") from Randy Dunlap has fixed 
+this, but I think we'd better revise this in-development patch as much as 
+possible before upstreaming it.
+
+Otherwise, it looks good to me.
+
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+
+Thanks,
+
+>> +
+>> +Note that, please refer manpage of resize.f2fs(8) to get full option list.
+>> +
+>> +defrag.f2fs
+>> +-----------
+>> +The defrag.f2fs can be used to defragmente scattered writtend data as well as
+>> +filesystem metadata across the disk. This can improve the write speed by giving
+>> +more free consecutive space.
+>> +
+>> +Note that, please refer manpage of defrag.f2fs(8) to get full option list.
+>> +
+>> +f2fs_io
+>> +-------
+>> +The f2fs_io is a simple tool to issue various filesystem APIs as well as
+>> +f2fs-specific ones, which is very useful for QA tests.
+>> +
+>> +Note that, please refer manpage of f2fs_io(8) to get full option list.
+>> +
+>>  Design
+>>  ======
+>>
+>> --
+>> 2.28.0.681.g6f77f65b4e-goog
+>
+>
+> _______________________________________________
+> Linux-f2fs-devel mailing list
+> Linux-f2fs-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>
