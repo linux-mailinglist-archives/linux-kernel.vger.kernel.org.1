@@ -2,61 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 003552780E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 368202780E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727231AbgIYGwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 02:52:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14234 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726983AbgIYGwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 02:52:19 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 6C26F6F39300D69BB47A;
-        Fri, 25 Sep 2020 14:52:15 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 25 Sep 2020 14:52:08 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@huawei.com>
-Subject: [PATCH] drm/hisilicon: Deleted the drm_device declaration
-Date:   Fri, 25 Sep 2020 14:49:40 +0800
-Message-ID: <1601016580-5937-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727232AbgIYGvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 02:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727176AbgIYGvI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 02:51:08 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CFBC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:51:08 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b22so1551713lfs.13
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dMULH01Wq7nTloeFkP19h8fM7ByqolfRu/BqukyTcPQ=;
+        b=fAXscyKKYhC2jxJ7WxAKHgsKNDvga6TN7EyNw5EH0tMyvLsP7DIwYs3QBXeU5KXvJP
+         9kovWLLhlprZyX68eEBUjfTcHLtrQDBCCGKoMqvxjhJTf3LK7isnYM7/JHAqdVsfZqp3
+         Fre61Ei8jzsbQe3Z7zEI8zv1KJrTJ+yrVVNn3aARHkunJovO0fldZdLOHCnbD22TUm7m
+         k4r9izC/2Cu6tPuf11qpE4ayJcK5skOKEz2XWHyuiuJqzmGQgckHUXW7HSSI4GmFL/ci
+         J7ufnQsk045N671XDE2SuSjNM63aW9rbyge3RbopcpzBAgIt7Ako6VAwsOUSh7JFw8l5
+         DEuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dMULH01Wq7nTloeFkP19h8fM7ByqolfRu/BqukyTcPQ=;
+        b=Z5eKPaAZjobe0XP9iETOL6fmSSCUc/3FCe0+Ou/863Y16jCwVeoflxRd9E8PV+4vmg
+         Q6t5T8ORlSOyaglYeGnXU3Lg/4K4NVgHvIKmp3Ct1nCupJE3XMpbsBZlhtj89ptj8wXm
+         2ROhSRoxWWoPPWOFqNUhQpEAdOT9OlF6VOONB+8F1P8bMPdm0h5JM5mbeBUeBev854e5
+         GaExoe79qTvKLWvsMfkHlDG1C1Jkq47nSQqQEVSyr1xAq/AU36YQCsfNYcz/7XYriKkU
+         gSbvidzSOj1BvkgWS8K7EHlY7eVUoPQLDhyaNdJWqbziQztOriJ8M8ityoTBPgZi3e+i
+         nHog==
+X-Gm-Message-State: AOAM5328KQxcrezvyvsq0CFIVnAFn1nGbr8kjVI/lFVbvbTbsHPoguxx
+        J0K4qzAXezQ/G68BvySc80NBebBaM70ZCNUSUJhmuw==
+X-Google-Smtp-Source: ABdhPJxrtgtXWdAgLSGmTRS1MGIMO8Yckz8P7xWJyBKOYvU5U6/hkA9wFc3kz/BVJvE+lyC/pw7DGFgK36Txhp27a60=
+X-Received: by 2002:a19:7006:: with SMTP id h6mr763893lfc.83.1601016666611;
+ Thu, 24 Sep 2020 23:51:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
+ <20200916110039.GG3117@suse.de> <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
+ <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
+ <CAKfTPtA2yE_sFfP5MFN=K+ph7rqpYUhapUdDBJ5hFLxnQPktJw@mail.gmail.com>
+ <af0237e0-1451-9d11-2ee2-1468a8bb6180@linux.intel.com> <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
+ <40ee756f-1f27-b17e-6292-d8069a56e3c8@linux.intel.com>
+In-Reply-To: <40ee756f-1f27-b17e-6292-d8069a56e3c8@linux.intel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 25 Sep 2020 08:50:55 +0200
+Message-ID: <CAKfTPtCvQ41-mqvYXc-DWnz3y5byw_OsmHNfc7UvczC-nwWMUg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
+ sched domain
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_framebuffer.h contains drm/drm_device.h and struct drm_device is
-already declared in this file, so there is no need to declare struct
-drm_device in hibm_drm_drv.h.
+Hi Tim
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h | 2 --
- 1 file changed, 2 deletions(-)
+On Thu, 24 Sep 2020 at 18:37, Tim Chen <tim.c.chen@linux.intel.com> wrote:
+>
+>
+>
+> On 9/22/20 12:14 AM, Vincent Guittot wrote:
+>
+> >>
+> >>>>
+> >>>> And a quick test with hackbench on my octo cores arm64 gives for 12
+>
+> Vincent,
+>
+> Is it octo (=10) or octa (=8) cores on a single socket for your system?
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-index 87d2aad..6a63502 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
-@@ -22,8 +22,6 @@
- #include <drm/drm_fb_helper.h>
- #include <drm/drm_framebuffer.h>
- 
--struct drm_device;
--
- struct hibmc_connector {
- 	struct drm_connector base;
- 
--- 
-2.7.4
+it's a 8 cores and the cores are splitted in 2 cache domains
 
+> The L2 is per core or there are multiple L2s shared among groups of cores?
+>
+> Wonder if placing the threads within a L2 or not within
+> an L2 could cause differences seen with Aubrey's test.
+
+I haven't checked recently but the 2 tasks involved in sched pipe run
+on CPUs which belong to the same cache domain
+
+Vincent
+
+>
+> Tim
+>
