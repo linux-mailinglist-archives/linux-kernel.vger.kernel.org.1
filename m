@@ -2,169 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A206F27848D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DB4278490
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728182AbgIYJ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        id S1728207AbgIYJ5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728143AbgIYJ44 (ORCPT
+        with ESMTP id S1727290AbgIYJ5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:56:56 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F218C0613D8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:55 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id d4so2388942wmd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7RJH7pZMCVV5iroyiFLpiFRNTiQn0SSX+69PgDO+op4=;
-        b=Z5Tay6EcQTWazV7dTKt9RehYD/4epP7kRU3Ga/PrUGWrecnu5q/y5u3cYUdQDXeJ9c
-         Tyz/nwhilwMzR4ntbwLfx6EoZ16+hl0EzUT8i/ih1BZiBOcm/WzdG1KAcIMWDxNltI6s
-         e+yJCM3wjpKF1BppOv7Dp6OVp7eTZLCqSO4w8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7RJH7pZMCVV5iroyiFLpiFRNTiQn0SSX+69PgDO+op4=;
-        b=ubjtStfJEUDNvKxCh5FDXqzX4utElXT18vu2iAAls1DKk0ysypOv6kBd2q36EVwvtB
-         IqkQh4bAaEucpOVVw8EdkPiPL6Q9497sxWOJvgAuXOuks6DISjPXvjABz5naV5P0Pmmj
-         NTElWAeRg+97pA3IMSkfg6OrU0BgXA5buFEsY1pEYyb3pKqBIRMBWMETgTuI/+Sn3XHO
-         FObg30OzuBp3XMg6NPMBbeAtlrHYNXTrwY8XuXg8E+m3KPmT0e4gidSgMtdZVDSkHlii
-         tEoSQ6D+ISq54Cd7b2CtN+wvLKwwhWqmo0bh1pBM9IBpJyOeuSyrZOyl7uLbDXGLyuNb
-         Yqfw==
-X-Gm-Message-State: AOAM533ujUxKvuaPFsxH30I+G3PtH5wUx2yzNRPk+mUJa5qorsc2qUok
-        Qu589U/Vtm01/JXF8Ia9wTa7pg==
-X-Google-Smtp-Source: ABdhPJyXHCb7Koa9bhkkDBnbpeFU8UXjBvkZiVeQ6G92Q1rH+QgQoM9tP3HlGHJwhr+7X2lyLuGuKQ==
-X-Received: by 2002:a7b:cc17:: with SMTP id f23mr2095213wmh.166.1601027813944;
-        Fri, 25 Sep 2020 02:56:53 -0700 (PDT)
-Received: from antares.lan (e.0.c.6.b.e.c.e.a.c.9.7.c.2.1.0.f.f.6.2.a.5.a.7.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:7a5a:26ff:12c:79ca:eceb:6c0e])
-        by smtp.gmail.com with ESMTPSA id l10sm2225084wru.59.2020.09.25.02.56.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 02:56:53 -0700 (PDT)
-From:   Lorenz Bauer <lmb@cloudflare.com>
-To:     Shuah Khan <shuah@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>
-Cc:     kernel-team@cloudflare.com, Lorenz Bauer <lmb@cloudflare.com>,
-        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH bpf-next 4/4] selftest: bpf: Test copying a sockmap and sockhash
-Date:   Fri, 25 Sep 2020 10:56:30 +0100
-Message-Id: <20200925095630.49207-5-lmb@cloudflare.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200925095630.49207-1-lmb@cloudflare.com>
-References: <20200925095630.49207-1-lmb@cloudflare.com>
+        Fri, 25 Sep 2020 05:57:40 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44719C0613CE;
+        Fri, 25 Sep 2020 02:57:40 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ByS5F3rMZz9s0b;
+        Fri, 25 Sep 2020 19:57:37 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601027858;
+        bh=tPMRWdb0OBDO5hgFb+9yAZRW+VyTw7O2p362IBm44Wg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=WN82z5SKNZsYz3nQAjfEfKBZpt0LflcCiKGkPuRAsfaDb8o+tUECZ6Oa/Wvt0x5TY
+         IbD8/TxH31XBYDR2UM43zbX1zDSPytEl6p3gw9SrZW0cWISyKtcAzTUtIp39gU9zET
+         JWIj4AXanykKXQRYwybVJ71z+vkmhkf9bVr5STonWsnPsQSAUAKhV+R+NJD9/2ewy3
+         JVGgNIlsRx0lHOO9lcjgnigtRxvtfGjOBRha61e+1vTKNBPJKuegz2/TR5g5AKMmeK
+         N4umIxuW4iS6iE+987EyvAtvjcO9hJbac3/MSTaZtM+FvyCnKMAI4Fu9QkLmo8/Tyv
+         FB1OO1JNHiIeA==
+Date:   Fri, 25 Sep 2020 19:57:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the akpm-current tree with the block
+ tree
+Message-ID: <20200925195736.05a66c23@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/YB/fX9mEGPmjz3T/wEG8=Im";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we can now call map_update_elem(sockmap) from bpf_iter context
-it's possible to copy a sockmap or sockhash in the kernel. Add a
-selftest which exercises this.
+--Sig_/YB/fX9mEGPmjz3T/wEG8=Im
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Lorenz Bauer <lmb@cloudflare.com>
----
- .../selftests/bpf/prog_tests/sockmap_basic.c  | 14 +++++-----
- .../selftests/bpf/progs/bpf_iter_sockmap.c    | 27 +++++++++++++++----
- 2 files changed, 30 insertions(+), 11 deletions(-)
+Hi all,
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-index e8a4bfb4d9f4..854a508e81ce 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockmap_basic.c
-@@ -194,7 +194,7 @@ static void test_sockmap_invalid_update(void)
- 		test_sockmap_invalid_update__destroy(skel);
- }
- 
--static void test_sockmap_iter(enum bpf_map_type map_type)
-+static void test_sockmap_copy(enum bpf_map_type map_type)
- {
- 	DECLARE_LIBBPF_OPTS(bpf_iter_attach_opts, opts);
- 	int err, len, src_fd, iter_fd, duration = 0;
-@@ -242,7 +242,7 @@ static void test_sockmap_iter(enum bpf_map_type map_type)
- 	linfo.map.map_fd = src_fd;
- 	opts.link_info = &linfo;
- 	opts.link_info_len = sizeof(linfo);
--	link = bpf_program__attach_iter(skel->progs.count_elems, &opts);
-+	link = bpf_program__attach_iter(skel->progs.copy, &opts);
- 	if (CHECK(IS_ERR(link), "attach_iter", "attach_iter failed\n"))
- 		goto out;
- 
-@@ -265,6 +265,8 @@ static void test_sockmap_iter(enum bpf_map_type map_type)
- 		  skel->bss->socks, num_sockets))
- 		goto close_iter;
- 
-+	compare_cookies(src, skel->maps.dst);
-+
- close_iter:
- 	close(iter_fd);
- free_link:
-@@ -294,8 +296,8 @@ void test_sockmap_basic(void)
- 		test_sockmap_update(BPF_MAP_TYPE_SOCKHASH);
- 	if (test__start_subtest("sockmap update in unsafe context"))
- 		test_sockmap_invalid_update();
--	if (test__start_subtest("sockmap iter"))
--		test_sockmap_iter(BPF_MAP_TYPE_SOCKMAP);
--	if (test__start_subtest("sockhash iter"))
--		test_sockmap_iter(BPF_MAP_TYPE_SOCKHASH);
-+	if (test__start_subtest("sockmap copy"))
-+		test_sockmap_copy(BPF_MAP_TYPE_SOCKMAP);
-+	if (test__start_subtest("sockhash copy"))
-+		test_sockmap_copy(BPF_MAP_TYPE_SOCKHASH);
- }
-diff --git a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
-index 1af7555f6057..f3af0e30cead 100644
---- a/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
-+++ b/tools/testing/selftests/bpf/progs/bpf_iter_sockmap.c
-@@ -22,21 +22,38 @@ struct {
- 	__type(value, __u64);
- } sockhash SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_SOCKHASH);
-+	__uint(max_entries, 64);
-+	__type(key, __u32);
-+	__type(value, __u64);
-+} dst SEC(".maps");
-+
- __u32 elems = 0;
- __u32 socks = 0;
- 
- SEC("iter/sockmap")
--int count_elems(struct bpf_iter__sockmap *ctx)
-+int copy(struct bpf_iter__sockmap *ctx)
- {
- 	struct sock *sk = ctx->sk;
- 	__u32 tmp, *key = ctx->key;
- 	int ret;
- 
--	if (key)
--		elems++;
-+	if (!key)
-+		return 0;
- 
--	if (sk)
-+	elems++;
-+
-+	/* We need a temporary buffer on the stack, since the verifier doesn't
-+	 * let us use the pointer from the context as an argument to the helper.
-+	 */
-+	tmp = *key;
-+
-+	if (sk) {
- 		socks++;
-+		return bpf_map_update_elem(&dst, &tmp, sk, 0) != 0;
-+	}
- 
--	return 0;
-+	ret = bpf_map_delete_elem(&dst, &tmp);
-+	return ret && ret != -ENOENT;
- }
--- 
-2.25.1
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
+  mm/page-writeback.c
+
+between commit:
+
+  1cb039f3dc16 ("bdi: replace BDI_CAP_STABLE_WRITES with a queue and a sb f=
+lag")
+
+from the block tree and commit:
+
+  7a3714df632a ("mm/page-writeback: support tail pages in wait_for_stable_p=
+age")
+
+from the akpm-current tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc mm/page-writeback.c
+index 358d6f28c627,dac075e451d3..000000000000
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@@ -2849,7 -2849,8 +2849,8 @@@ EXPORT_SYMBOL_GPL(wait_on_page_writebac
+   */
+  void wait_for_stable_page(struct page *page)
+  {
++ 	page =3D thp_head(page);
+ -	if (bdi_cap_stable_pages_required(inode_to_bdi(page->mapping->host)))
+ +	if (page->mapping->host->i_sb->s_iflags & SB_I_STABLE_WRITES)
+  		wait_on_page_writeback(page);
+  }
+  EXPORT_SYMBOL_GPL(wait_for_stable_page);
+
+--Sig_/YB/fX9mEGPmjz3T/wEG8=Im
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9tvxAACgkQAVBC80lX
+0GwTswgAk6J3OSgexRa4Oj0Yd/j6fHSchuNR39ikZ8nDjV9twY3/tlP1yBcULIj6
+uGzl39kmTbvPvaky8JclMf4dI33jFpyigzdMPtzU6G2qCxsgaclRMNSKDphQJKoy
+1lC/1E2h5S9EBg4wjU976OswXMy6dLmsgkMLmGSGiiwU6z4sYKvx5Ur50Kn/n7LU
+JPMb//TqSF9H5xC2fTVFGwc1s+PHVE0l3Gbo0vqdhcybobrYn/Z9q2/Hr9pGd7Z9
+s9uP5qO1lEXDcHRWJjdB5OpKyPGL1DYsmnB+maufnhKyJq0622x+ASfzefnnmrT4
+DhknUWIYHPhzt+4xlhqY1LKDBtIMqA==
+=8E17
+-----END PGP SIGNATURE-----
+
+--Sig_/YB/fX9mEGPmjz3T/wEG8=Im--
