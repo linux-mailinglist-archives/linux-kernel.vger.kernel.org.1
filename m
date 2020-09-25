@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773B427885A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581BC278804
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729632AbgIYMy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:54:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33996 "EHLO mail.kernel.org"
+        id S1728867AbgIYMwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:52:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729616AbgIYMyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:54:52 -0400
+        id S1729277AbgIYMwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:52:02 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2DF3206DB;
-        Fri, 25 Sep 2020 12:54:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 402E6206DB;
+        Fri, 25 Sep 2020 12:52:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038492;
-        bh=oCEO3l2SqYTgG5TOA0nDptZZvjG6lrB864tuU+mM7Ss=;
+        s=default; t=1601038321;
+        bh=AYe5I3zPyTIC8FEv4xdzcMMvnWr2dMBJk6QoVn2JaMY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kT1hJ9B90MkA0kqQfUGcNJWsS1h1/d9HHcTQC2RdAoYOACg2YU5PTMIayeQZ2G+yg
-         SHURK4XBF3vH7fRyVXYO9KqpF6M3FYf0sH1PQFKCd2vWJeQ1eEiVQRTvLVuLMkefDG
-         uOAWTxgvEH03PUdCPHZAPEjNxggVqkBvxTCd1lHk=
+        b=viO8+XGL0UYk7uomfsnG/7HvcaV6E6bwf9gENubAd7D+Lptp3f8Fg42tCtnNhnf7J
+         cs1Ke1yT4gywXXoard8XCmOrML0rD/WAXcsJe1R5UXckabVjHJ5GEELOb/oelfNukQ
+         egmwiklbuuTIjfS6JjIzamSq4uVOvtqxw2rjIEEY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        stable@vger.kernel.org,
+        syzbot+8267241609ae8c23b248@syzkaller.appspotmail.com,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 10/37] net: DCB: Validate DCB_ATTR_DCB_BUFFER argument
+Subject: [PATCH 5.4 26/43] taprio: Fix allowing too small intervals
 Date:   Fri, 25 Sep 2020 14:48:38 +0200
-Message-Id: <20200925124722.503844295@linuxfoundation.org>
+Message-Id: <20200925124727.561955761@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
-References: <20200925124720.972208530@linuxfoundation.org>
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
+References: <20200925124723.575329814@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +44,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Machata <petrm@nvidia.com>
+From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 
-[ Upstream commit 297e77e53eadb332d5062913447b104a772dc33b ]
+[ Upstream commit b5b73b26b3ca34574124ed7ae9c5ba8391a7f176 ]
 
-The parameter passed via DCB_ATTR_DCB_BUFFER is a struct dcbnl_buffer. The
-field prio2buffer is an array of IEEE_8021Q_MAX_PRIORITIES bytes, where
-each value is a number of a buffer to direct that priority's traffic to.
-That value is however never validated to lie within the bounds set by
-DCBX_MAX_BUFFERS. The only driver that currently implements the callback is
-mlx5 (maintainers CCd), and that does not do any validation either, in
-particual allowing incorrect configuration if the prio2buffer value does
-not fit into 4 bits.
+It's possible that the user specifies an interval that couldn't allow
+any packet to be transmitted. This also avoids the issue of the
+hrtimer handler starving the other threads because it's running too
+often.
 
-Instead of offloading the need to validate the buffer index to drivers, do
-it right there in core, and bounce the request if the value is too large.
+The solution is to reject interval sizes that according to the current
+link speed wouldn't allow any packet to be transmitted.
 
-CC: Parav Pandit <parav@nvidia.com>
-CC: Saeed Mahameed <saeedm@nvidia.com>
-Fixes: e549f6f9c098 ("net/dcb: Add dcbnl buffer attribute")
-Signed-off-by: Petr Machata <petrm@nvidia.com>
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Reported-by: syzbot+8267241609ae8c23b248@syzkaller.appspotmail.com
+Fixes: 5a781ccbd19e ("tc: Add support for configuring the taprio scheduler")
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dcb/dcbnl.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/sched/sch_taprio.c |   28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
---- a/net/dcb/dcbnl.c
-+++ b/net/dcb/dcbnl.c
-@@ -1421,6 +1421,7 @@ static int dcbnl_ieee_set(struct net_dev
+--- a/net/sched/sch_taprio.c
++++ b/net/sched/sch_taprio.c
+@@ -777,9 +777,11 @@ static const struct nla_policy taprio_po
+ 	[TCA_TAPRIO_ATTR_TXTIME_DELAY]		     = { .type = NLA_U32 },
+ };
+ 
+-static int fill_sched_entry(struct nlattr **tb, struct sched_entry *entry,
++static int fill_sched_entry(struct taprio_sched *q, struct nlattr **tb,
++			    struct sched_entry *entry,
+ 			    struct netlink_ext_ack *extack)
  {
- 	const struct dcbnl_rtnl_ops *ops = netdev->dcbnl_ops;
- 	struct nlattr *ieee[DCB_ATTR_IEEE_MAX + 1];
-+	int prio;
++	int min_duration = length_to_duration(q, ETH_ZLEN);
+ 	u32 interval = 0;
+ 
+ 	if (tb[TCA_TAPRIO_SCHED_ENTRY_CMD])
+@@ -794,7 +796,10 @@ static int fill_sched_entry(struct nlatt
+ 		interval = nla_get_u32(
+ 			tb[TCA_TAPRIO_SCHED_ENTRY_INTERVAL]);
+ 
+-	if (interval == 0) {
++	/* The interval should allow at least the minimum ethernet
++	 * frame to go out.
++	 */
++	if (interval < min_duration) {
+ 		NL_SET_ERR_MSG(extack, "Invalid interval for schedule entry");
+ 		return -EINVAL;
+ 	}
+@@ -804,8 +809,9 @@ static int fill_sched_entry(struct nlatt
+ 	return 0;
+ }
+ 
+-static int parse_sched_entry(struct nlattr *n, struct sched_entry *entry,
+-			     int index, struct netlink_ext_ack *extack)
++static int parse_sched_entry(struct taprio_sched *q, struct nlattr *n,
++			     struct sched_entry *entry, int index,
++			     struct netlink_ext_ack *extack)
+ {
+ 	struct nlattr *tb[TCA_TAPRIO_SCHED_ENTRY_MAX + 1] = { };
  	int err;
+@@ -819,10 +825,10 @@ static int parse_sched_entry(struct nlat
  
- 	if (!ops)
-@@ -1469,6 +1470,13 @@ static int dcbnl_ieee_set(struct net_dev
- 		struct dcbnl_buffer *buffer =
- 			nla_data(ieee[DCB_ATTR_DCB_BUFFER]);
+ 	entry->index = index;
  
-+		for (prio = 0; prio < ARRAY_SIZE(buffer->prio2buffer); prio++) {
-+			if (buffer->prio2buffer[prio] >= DCBX_MAX_BUFFERS) {
-+				err = -EINVAL;
-+				goto err;
-+			}
-+		}
-+
- 		err = ops->dcbnl_setbuffer(netdev, buffer);
- 		if (err)
- 			goto err;
+-	return fill_sched_entry(tb, entry, extack);
++	return fill_sched_entry(q, tb, entry, extack);
+ }
+ 
+-static int parse_sched_list(struct nlattr *list,
++static int parse_sched_list(struct taprio_sched *q, struct nlattr *list,
+ 			    struct sched_gate_list *sched,
+ 			    struct netlink_ext_ack *extack)
+ {
+@@ -847,7 +853,7 @@ static int parse_sched_list(struct nlatt
+ 			return -ENOMEM;
+ 		}
+ 
+-		err = parse_sched_entry(n, entry, i, extack);
++		err = parse_sched_entry(q, n, entry, i, extack);
+ 		if (err < 0) {
+ 			kfree(entry);
+ 			return err;
+@@ -862,7 +868,7 @@ static int parse_sched_list(struct nlatt
+ 	return i;
+ }
+ 
+-static int parse_taprio_schedule(struct nlattr **tb,
++static int parse_taprio_schedule(struct taprio_sched *q, struct nlattr **tb,
+ 				 struct sched_gate_list *new,
+ 				 struct netlink_ext_ack *extack)
+ {
+@@ -883,8 +889,8 @@ static int parse_taprio_schedule(struct
+ 		new->cycle_time = nla_get_s64(tb[TCA_TAPRIO_ATTR_SCHED_CYCLE_TIME]);
+ 
+ 	if (tb[TCA_TAPRIO_ATTR_SCHED_ENTRY_LIST])
+-		err = parse_sched_list(
+-			tb[TCA_TAPRIO_ATTR_SCHED_ENTRY_LIST], new, extack);
++		err = parse_sched_list(q, tb[TCA_TAPRIO_ATTR_SCHED_ENTRY_LIST],
++				       new, extack);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -1474,7 +1480,7 @@ static int taprio_change(struct Qdisc *s
+ 		goto free_sched;
+ 	}
+ 
+-	err = parse_taprio_schedule(tb, new_admin, extack);
++	err = parse_taprio_schedule(q, tb, new_admin, extack);
+ 	if (err < 0)
+ 		goto free_sched;
+ 
 
 
