@@ -2,106 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368202780E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1261F2780E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727232AbgIYGvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 02:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727176AbgIYGvI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 02:51:08 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33CFBC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:51:08 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b22so1551713lfs.13
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dMULH01Wq7nTloeFkP19h8fM7ByqolfRu/BqukyTcPQ=;
-        b=fAXscyKKYhC2jxJ7WxAKHgsKNDvga6TN7EyNw5EH0tMyvLsP7DIwYs3QBXeU5KXvJP
-         9kovWLLhlprZyX68eEBUjfTcHLtrQDBCCGKoMqvxjhJTf3LK7isnYM7/JHAqdVsfZqp3
-         Fre61Ei8jzsbQe3Z7zEI8zv1KJrTJ+yrVVNn3aARHkunJovO0fldZdLOHCnbD22TUm7m
-         k4r9izC/2Cu6tPuf11qpE4ayJcK5skOKEz2XWHyuiuJqzmGQgckHUXW7HSSI4GmFL/ci
-         J7ufnQsk045N671XDE2SuSjNM63aW9rbyge3RbopcpzBAgIt7Ako6VAwsOUSh7JFw8l5
-         DEuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dMULH01Wq7nTloeFkP19h8fM7ByqolfRu/BqukyTcPQ=;
-        b=Z5eKPaAZjobe0XP9iETOL6fmSSCUc/3FCe0+Ou/863Y16jCwVeoflxRd9E8PV+4vmg
-         Q6t5T8ORlSOyaglYeGnXU3Lg/4K4NVgHvIKmp3Ct1nCupJE3XMpbsBZlhtj89ptj8wXm
-         2ROhSRoxWWoPPWOFqNUhQpEAdOT9OlF6VOONB+8F1P8bMPdm0h5JM5mbeBUeBev854e5
-         GaExoe79qTvKLWvsMfkHlDG1C1Jkq47nSQqQEVSyr1xAq/AU36YQCsfNYcz/7XYriKkU
-         gSbvidzSOj1BvkgWS8K7EHlY7eVUoPQLDhyaNdJWqbziQztOriJ8M8ityoTBPgZi3e+i
-         nHog==
-X-Gm-Message-State: AOAM5328KQxcrezvyvsq0CFIVnAFn1nGbr8kjVI/lFVbvbTbsHPoguxx
-        J0K4qzAXezQ/G68BvySc80NBebBaM70ZCNUSUJhmuw==
-X-Google-Smtp-Source: ABdhPJxrtgtXWdAgLSGmTRS1MGIMO8Yckz8P7xWJyBKOYvU5U6/hkA9wFc3kz/BVJvE+lyC/pw7DGFgK36Txhp27a60=
-X-Received: by 2002:a19:7006:: with SMTP id h6mr763893lfc.83.1601016666611;
- Thu, 24 Sep 2020 23:51:06 -0700 (PDT)
+        id S1727250AbgIYGwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 02:52:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34756 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726983AbgIYGwC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 02:52:02 -0400
+Received: from mail.kernel.org (ip5f5ad5bf.dynamic.kabel-deutschland.de [95.90.213.191])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 513BC21D91;
+        Fri, 25 Sep 2020 06:52:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601016721;
+        bh=6xPjWQx4pdqPWhe57hN7t0TY4FqQaqlHz6FS3YcZ3GM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l5Es0kVxSXLh5hpXELdE3Soy0XNuLthuknTRPhxeRK8vc4Dgm8KFgMZLw688+qikk
+         x3Y67Vkm7fK/Mx283IoMxwHKRuROSLH8oupofKPN8i+I70d5jN+m6ozrT82WrvN8TR
+         W7HPe27VXKL1xFSsbTofvO95jgbXZPe5DeBQ99es=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kLhaH-000RZE-Qq; Fri, 25 Sep 2020 08:51:57 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-media@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: glossary.rst: use the right case for glossary entries
+Date:   Fri, 25 Sep 2020 08:51:56 +0200
+Message-Id: <8aa69e13e14d3c687721b64780b03ad5dd59af78.1601016714.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200916043103.606132-1-aubrey.li@linux.intel.com>
- <20200916110039.GG3117@suse.de> <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
- <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
- <CAKfTPtA2yE_sFfP5MFN=K+ph7rqpYUhapUdDBJ5hFLxnQPktJw@mail.gmail.com>
- <af0237e0-1451-9d11-2ee2-1468a8bb6180@linux.intel.com> <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
- <40ee756f-1f27-b17e-6292-d8069a56e3c8@linux.intel.com>
-In-Reply-To: <40ee756f-1f27-b17e-6292-d8069a56e3c8@linux.intel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 25 Sep 2020 08:50:55 +0200
-Message-ID: <CAKfTPtCvQ41-mqvYXc-DWnz3y5byw_OsmHNfc7UvczC-nwWMUg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
- sched domain
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tim
+Sphinx 3.x is pedantic with glossary entries:
 
-On Thu, 24 Sep 2020 at 18:37, Tim Chen <tim.c.chen@linux.intel.com> wrote:
->
->
->
-> On 9/22/20 12:14 AM, Vincent Guittot wrote:
->
-> >>
-> >>>>
-> >>>> And a quick test with hackbench on my octo cores arm64 gives for 12
->
-> Vincent,
->
-> Is it octo (=10) or octa (=8) cores on a single socket for your system?
+    Documentation/userspace-api/media/glossary.rst:17: WARNING: term device driver not found in case sensitive match.made a reference to Device Driver instead.
+    Documentation/userspace-api/media/glossary.rst:59: WARNING: term media hardware not found in case sensitive match.made a reference to Media Hardware instead.
+    Documentation/userspace-api/media/glossary.rst:59: WARNING: term IP block not found in case sensitive match.made a reference to IP Block instead.
+    Documentation/userspace-api/media/glossary.rst:64: WARNING: term hardware component not found in case sensitive match.made a reference to Hardware Component instead.
+    Documentation/userspace-api/media/glossary.rst:64: WARNING: term ip block not found in case sensitive match.made a reference to IP Block instead.
+    Documentation/userspace-api/media/glossary.rst:70: WARNING: term peripheral not found in case sensitive match.made a reference to Peripheral instead.
+    Documentation/userspace-api/media/glossary.rst:130: WARNING: term V4L2 hardware not found in case sensitive match.made a reference to V4L2 Hardware instead.
+    Documentation/userspace-api/media/glossary.rst:151: WARNING: term hardware peripheral not found in case sensitive match.made a reference to Hardware Peripheral instead.
+    Documentation/userspace-api/media/glossary.rst:183: WARNING: term device node not found in case sensitive match.made a reference to Device Node instead.
+    Documentation/userspace-api/media/glossary.rst:191: WARNING: term bridge driver not found in case sensitive match.made a reference to Bridge Driver instead.
 
-it's a 8 cores and the cores are splitted in 2 cache domains
+While it works with case-insensitive entires, it complains.
 
-> The L2 is per core or there are multiple L2s shared among groups of cores?
->
-> Wonder if placing the threads within a L2 or not within
-> an L2 could cause differences seen with Aubrey's test.
+Let's fix it, in order to cleanup the warnings. Also, I won't
+doubt that a later change on Sphinx will end breaking support
+for it.
 
-I haven't checked recently but the 2 tasks involved in sched pipe run
-on CPUs which belong to the same cache domain
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ .../userspace-api/media/glossary.rst          | 20 +++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Vincent
+diff --git a/Documentation/userspace-api/media/glossary.rst b/Documentation/userspace-api/media/glossary.rst
+index 59a95dba5909..cb165d7176b7 100644
+--- a/Documentation/userspace-api/media/glossary.rst
++++ b/Documentation/userspace-api/media/glossary.rst
+@@ -14,7 +14,7 @@ Glossary
+ .. glossary::
+ 
+     Bridge Driver
+-	A :term:`device driver` that implements the main logic to talk with
++	A :term:`Device Driver` that implements the main logic to talk with
+ 	media hardware.
+ 
+     CEC API
+@@ -56,18 +56,18 @@ Glossary
+ 	See https://en.wikipedia.org/wiki/Field-programmable_gate_array.
+ 
+     Hardware Component
+-	A subset of the :term:`media hardware`. For example an :term:`I²C` or
+-	:term:`SPI` device, or an :term:`IP block` inside an
++	A subset of the :term:`Media Hardware`. For example an :term:`I²C` or
++	:term:`SPI` device, or an :term:`IP Block` inside an
+ 	:term:`SoC` or :term:`FPGA`.
+ 
+     Hardware Peripheral
+-	A group of :term:`hardware components <hardware component>` that
++	A group of :term:`hardware components <Hardware Component>` that
+ 	together make a larger user-facing functional peripheral. For
+-	instance, the :term:`SoC` :term:`ISP` :term:`IP block <ip block>`
++	instance, the :term:`SoC` :term:`ISP` :term:`IP Block`
+ 	and the external camera sensors together make a camera hardware
+ 	peripheral.
+ 
+-	Also known as :term:`peripheral`.
++	Also known as :term:`Peripheral`.
+ 
+     I²C
+ 	**Inter-Integrated Circuit**
+@@ -127,7 +127,7 @@ Glossary
+ 	See :ref:`media_controller`.
+ 
+     MC-centric
+-	:term:`V4L2 hardware` device driver that requires :term:`MC API`.
++	:term:`V4L2 Hardware` device driver that requires :term:`MC API`.
+ 
+ 	Such drivers have ``V4L2_CAP_IO_MC`` device_caps field set
+ 	(see :ref:`VIDIOC_QUERYCAP`).
+@@ -148,7 +148,7 @@ Glossary
+ 	instructions on a single integrated circuit.
+ 
+     Peripheral
+-	The same as :term:`hardware peripheral`.
++	The same as :term:`Hardware Peripheral`.
+ 
+     RC API
+ 	**Remote Controller API**
+@@ -180,7 +180,7 @@ Glossary
+ 	control a V4L2 hardware.
+ 
+     V4L2 Device Node
+-	A :term:`device node` that is associated to a V4L driver.
++	A :term:`Device Node` that is associated to a V4L driver.
+ 
+ 	The V4L2 device node naming is specified at :ref:`v4l2_device_naming`.
+ 
+@@ -189,7 +189,7 @@ Glossary
+ 
+     V4L2 Sub-device
+ 	V4L2 hardware components that aren't controlled by a
+-	:term:`bridge driver`. See :ref:`subdev`.
++	:term:`Bridge Driver`. See :ref:`subdev`.
+ 
+     Video-node-centric
+ 	V4L2 device driver that doesn't require a media controller to be used.
+-- 
+2.26.2
 
->
-> Tim
->
