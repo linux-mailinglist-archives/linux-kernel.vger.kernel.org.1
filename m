@@ -2,79 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657CB277D5B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32F91277D85
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:16:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbgIYBFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 21:05:01 -0400
-Received: from mga06.intel.com ([134.134.136.31]:62454 "EHLO mga06.intel.com"
+        id S1727006AbgIYBQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 21:16:03 -0400
+Received: from mga04.intel.com ([192.55.52.120]:19131 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgIYBFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 21:05:01 -0400
-IronPort-SDR: QB75LTtqNeMAl9+FZcIWJWWMJA5+BIub92o3B62K9Jsha0WYuxmofKR92RLmz6oADntDTZmb2g
- +T3RcrrRv23A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="222986176"
+        id S1726703AbgIYBQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 21:16:02 -0400
+IronPort-SDR: LR3nOIc2RDzAkGVlKfox2ym8TFf1dt1y4dhy7rnzRz4vuzCjd1SWS5Unxj5ZGGCT8ty5VHg/ze
+ LmLKAuMgCLLA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158783710"
 X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
-   d="scan'208";a="222986176"
+   d="scan'208";a="158783710"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 18:05:00 -0700
-IronPort-SDR: 8XkjjGirQDtRiVC9YuLvCH8qJ9Ft5By8CeYEY3492waNQvt7640TT0KQhgBfC60mLuPWroDb/3
- JTURhxEu+Kaw==
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 18:16:02 -0700
+IronPort-SDR: NZiMjqbn0XOVlDBtUX7zjoy1iC028gY+0yUIsaChkilRAW690kEwU+Ebuf7GqU8PCaib8RhSY3
+ jII3vzjkPEyA==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
-   d="scan'208";a="487220707"
-Received: from ralfseng-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.47.148])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 18:04:54 -0700
-Date:   Fri, 25 Sep 2020 04:04:52 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20200925010452.GB147464@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
- <20200924180407.GO5030@zn.tnic>
- <20200925003808.GB20333@linux.intel.com>
+   d="scan'208";a="413553113"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
+  by fmsmga001.fm.intel.com with ESMTP; 24 Sep 2020 18:15:59 -0700
+Cc:     baolu.lu@linux.intel.com,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v5 0/5] iommu aux-domain APIs extensions
+To:     Joerg Roedel <joro@8bytes.org>
+References: <20200922061042.31633-1-baolu.lu@linux.intel.com>
+ <20200924095532.GK27174@8bytes.org>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <71f1fa5e-f468-0498-1ab4-1c2af9424d2d@linux.intel.com>
+Date:   Fri, 25 Sep 2020 09:09:54 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925003808.GB20333@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200924095532.GK27174@8bytes.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 05:38:10PM -0700, Sean Christopherson wrote:
-> On Thu, Sep 24, 2020 at 08:04:07PM +0200, Borislav Petkov wrote:
-> > On Tue, Sep 15, 2020 at 02:28:39PM +0300, Jarkko Sakkinen wrote:
-> > > diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> > > new file mode 100644
-> > > index 000000000000..adbd59d41517
-> > > --- /dev/null
-> > > +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> > 
-> > Why not simply
-> > 
-> > arch/x86/entry/vdso/sgx.S
-> > 
-> > ?
+Hi Joerg,
+
+On 9/24/20 5:55 PM, Joerg Roedel wrote:
+> On Tue, Sep 22, 2020 at 02:10:37PM +0800, Lu Baolu wrote:
+>> Hi Jorge and Alex,
+>>
+>> A description of this patch series could be found here.
+>>
+>> https://lore.kernel.org/linux-iommu/20200901033422.22249-1-baolu.lu@linux.intel.com/
 > 
-> I really like typing?
+> Hmm, I am wondering if we can avoid all this hassle and special APIs by
+> making the mdev framework more visible outside of the vfio code. There
+> is an underlying bus implementation for mdevs, so is there a reason
+> those can't use the standard iommu-core code to setup IOMMU mappings?
 
-I fixed bunch of things. For that sentence I need feedback + for any
-other possible changes please send a patch if required.
+The original purpose of this series is to enable the device driver to
+retrieve the aux-domain through iommu core after iommu
+ops.aux_attach_dev().
 
-/Jarkko
+The domain was allocated in vfio/mdev, but it's also needed by the
+device driver in mediated callbacks. The idea of this patch series is to
+extend the aux-API so that the domain could be saved in group->domain
+and get by the mediated driver through the existing
+iommu_get_domain_for_dev().
+
+Back when we were developing the aux-domain, I proposed to keep the
+domain in vfio/mdev.
+
+https://lore.kernel.org/linux-iommu/20181105073408.21815-7-baolu.lu@linux.intel.com/
+
+It wasn't discussed at that time due to the lack of real consumer. Intel
+is now adding aux-domain support in idxd (DMA streaming accelerator)
+driver which becomes the first real consumer. So this problem is brought
+back to the table.
+
+> 
+> What speaks against doing:
+> 
+> 	- IOMMU drivers capable of handling mdevs register iommu-ops
+> 	  for the mdev_bus.
+> 
+> 	- iommu_domain_alloc() takes bus_type as parameter, so there can
+> 	  be special domains be allocated for mdevs.
+> 
+> 	- Group creation and domain allocation will happen
+> 	  automatically in the iommu-core when a new mdev is registered
+> 	  through device-driver core code.
+> 
+> 	- There should be no need for special iommu_aux_* APIs, as one
+> 	  can attach a domain directly to &mdev->dev with
+> 	  iommu_attach_device(domain, &mdev->dev).
+> 
+> Doing it this way will probably also keep the mdev-special code in VFIO
+> small.
+
+Fully understand now. Thanks for guide.
+
+> 
+> Regards,
+> 
+> 	Joerg
+> 
+
+Best regards,
+baolu
