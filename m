@@ -2,185 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8804327954E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FFF279545
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729714AbgIYX7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:59:15 -0400
-Received: from mail.v3.sk ([167.172.186.51]:38142 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729557AbgIYX7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:59:12 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 16A3DDFA70;
-        Fri, 25 Sep 2020 23:57:33 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id c3PihDaj9pXB; Fri, 25 Sep 2020 23:57:32 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 60FD3DFA9E;
-        Fri, 25 Sep 2020 23:57:32 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id s9AAv6d7JPOp; Fri, 25 Sep 2020 23:57:32 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 224DADFA70;
-        Fri, 25 Sep 2020 23:57:32 +0000 (UTC)
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
-Subject: [RESEND 2 PATCH v3 3/3] phy: Add USB HSIC PHY driver for Marvell MMP3 SoC
-Date:   Sat, 26 Sep 2020 01:58:29 +0200
-Message-Id: <20200925235828.228626-4-lkundrak@v3.sk>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200925235828.228626-1-lkundrak@v3.sk>
-References: <20200925235828.228626-1-lkundrak@v3.sk>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        id S1729534AbgIYX6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:58:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726687AbgIYX6m (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:58:42 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C876C0613CE;
+        Fri, 25 Sep 2020 16:58:42 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 31B2C13BA1172;
+        Fri, 25 Sep 2020 16:41:54 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 16:58:40 -0700 (PDT)
+Message-Id: <20200925.165840.1911569696596024615.davem@davemloft.net>
+To:     fabf@skynet.be
+Cc:     kuba@kernel.org, mkubecek@suse.cz, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 0/5 net-next] vxlan: clean-up
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200925131541.56410-1-fabf@skynet.be>
+References: <20200925131541.56410-1-fabf@skynet.be>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 25 Sep 2020 16:41:54 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PHY driver for the HSICs found on Marvell MMP3 SoC. The driver is
-rather straightforward -- the PHY essentially just needs to be enabled.
+From: Fabian Frederick <fabf@skynet.be>
+Date: Fri, 25 Sep 2020 15:15:41 +0200
 
-Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> This small patchet does some clean-up on vxlan.
+> Second version removes VXLAN_NL2FLAG macro relevant patches as suggested by Michal and David
+> 
+> I hope to have some feedback/ACK from vxlan developers.
 
----
-Changes since v1:
-- Explicitely cast drvdata pointer to make sparse happy
-
- drivers/phy/marvell/Kconfig         | 12 +++++
- drivers/phy/marvell/Makefile        |  1 +
- drivers/phy/marvell/phy-mmp3-hsic.c | 82 +++++++++++++++++++++++++++++
- 3 files changed, 95 insertions(+)
- create mode 100644 drivers/phy/marvell/phy-mmp3-hsic.c
-
-diff --git a/drivers/phy/marvell/Kconfig b/drivers/phy/marvell/Kconfig
-index 8f6273c837ec3..6c96f2bf52665 100644
---- a/drivers/phy/marvell/Kconfig
-+++ b/drivers/phy/marvell/Kconfig
-@@ -116,3 +116,15 @@ config PHY_MMP3_USB
- 	  The PHY driver will be used by Marvell udc/ehci/otg driver.
-=20
- 	  To compile this driver as a module, choose M here.
-+
-+config PHY_MMP3_HSIC
-+	tristate "Marvell MMP3 USB HSIC PHY Driver"
-+	depends on MACH_MMP3_DT || COMPILE_TEST
-+	select GENERIC_PHY
-+	help
-+	  Enable this to support Marvell MMP3 USB HSIC PHY driver for
-+	  Marvell MMP3 SoC. This driver will be used my the Marvell EHCI
-+	  driver to initialize the interface to internal USB HSIC
-+	  components on MMP3-based boards.
-+
-+	  To compile this driver as a module, choose M here.
-diff --git a/drivers/phy/marvell/Makefile b/drivers/phy/marvell/Makefile
-index 5a106b1549f41..7f296ef028292 100644
---- a/drivers/phy/marvell/Makefile
-+++ b/drivers/phy/marvell/Makefile
-@@ -3,6 +3,7 @@ obj-$(CONFIG_ARMADA375_USBCLUSTER_PHY)	+=3D phy-armada375=
--usb2.o
- obj-$(CONFIG_PHY_BERLIN_SATA)		+=3D phy-berlin-sata.o
- obj-$(CONFIG_PHY_BERLIN_USB)		+=3D phy-berlin-usb.o
- obj-$(CONFIG_PHY_MMP3_USB)		+=3D phy-mmp3-usb.o
-+obj-$(CONFIG_PHY_MMP3_HSIC)		+=3D phy-mmp3-hsic.o
- obj-$(CONFIG_PHY_MVEBU_A3700_COMPHY)	+=3D phy-mvebu-a3700-comphy.o
- obj-$(CONFIG_PHY_MVEBU_A3700_UTMI)	+=3D phy-mvebu-a3700-utmi.o
- obj-$(CONFIG_PHY_MVEBU_A38X_COMPHY)	+=3D phy-armada38x-comphy.o
-diff --git a/drivers/phy/marvell/phy-mmp3-hsic.c b/drivers/phy/marvell/ph=
-y-mmp3-hsic.c
-new file mode 100644
-index 0000000000000..47c1e8894939f
---- /dev/null
-+++ b/drivers/phy/marvell/phy-mmp3-hsic.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (C) 2020 Lubomir Rintel <lkundrak@v3.sk>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/phy/phy.h>
-+#include <linux/platform_device.h>
-+
-+#define HSIC_CTRL	0x08
-+#define HSIC_ENABLE	BIT(7)
-+#define PLL_BYPASS	BIT(4)
-+
-+static int mmp3_hsic_phy_init(struct phy *phy)
-+{
-+	void __iomem *base =3D (void __iomem *)phy_get_drvdata(phy);
-+	u32 hsic_ctrl;
-+
-+	hsic_ctrl =3D readl_relaxed(base + HSIC_CTRL);
-+	hsic_ctrl |=3D HSIC_ENABLE;
-+	hsic_ctrl |=3D PLL_BYPASS;
-+	writel_relaxed(hsic_ctrl, base + HSIC_CTRL);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ops mmp3_hsic_phy_ops =3D {
-+	.init		=3D mmp3_hsic_phy_init,
-+	.owner		=3D THIS_MODULE,
-+};
-+
-+static const struct of_device_id mmp3_hsic_phy_of_match[] =3D {
-+	{ .compatible =3D "marvell,mmp3-hsic-phy", },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(of, mmp3_hsic_phy_of_match);
-+
-+static int mmp3_hsic_phy_probe(struct platform_device *pdev)
-+{
-+	struct device *dev =3D &pdev->dev;
-+	struct phy_provider *provider;
-+	struct resource *resource;
-+	void __iomem *base;
-+	struct phy *phy;
-+
-+	resource =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	base =3D devm_ioremap_resource(dev, resource);
-+	if (IS_ERR(base)) {
-+		dev_err(dev, "failed to remap PHY regs\n");
-+		return PTR_ERR(base);
-+	}
-+
-+	phy =3D devm_phy_create(dev, NULL, &mmp3_hsic_phy_ops);
-+	if (IS_ERR(phy)) {
-+		dev_err(dev, "failed to create PHY\n");
-+		return PTR_ERR(phy);
-+	}
-+
-+	phy_set_drvdata(phy, (void *)base);
-+	provider =3D devm_of_phy_provider_register(dev, of_phy_simple_xlate);
-+	if (IS_ERR(provider)) {
-+		dev_err(dev, "failed to register PHY provider\n");
-+		return PTR_ERR(provider);
-+	}
-+
-+	return 0;
-+}
-+
-+static struct platform_driver mmp3_hsic_phy_driver =3D {
-+	.probe		=3D mmp3_hsic_phy_probe,
-+	.driver		=3D {
-+		.name	=3D "mmp3-hsic-phy",
-+		.of_match_table =3D mmp3_hsic_phy_of_match,
-+	},
-+};
-+module_platform_driver(mmp3_hsic_phy_driver);
-+
-+MODULE_AUTHOR("Lubomir Rintel <lkundrak@v3.sk>");
-+MODULE_DESCRIPTION("Marvell MMP3 USB HSIC PHY Driver");
-+MODULE_LICENSE("GPL");
---=20
-2.26.2
-
+Series applied, thanks.
