@@ -2,224 +2,398 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4242780BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 020002780A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727373AbgIYGcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 02:32:51 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:52320 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726925AbgIYGcu (ORCPT
+        id S1727090AbgIYGau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 02:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726925AbgIYGat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 02:32:50 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UA07i-0_1601015565;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA07i-0_1601015565)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 25 Sep 2020 14:32:45 +0800
-Subject: Re: [PATCH V2] doc: zh_CN: add translatation for tmpfs.rst
-To:     Wang Qing <wangqing@vivo.com>, Harry Wei <harryxiyou@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wang Wenhu <wenhu.wang@vivo.com>,
+        Fri, 25 Sep 2020 02:30:49 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 393DFC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:30:49 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kLhFh-0004L4-Nz; Fri, 25 Sep 2020 08:30:41 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kLhFe-0004uE-0b; Fri, 25 Sep 2020 08:30:38 +0200
+Date:   Fri, 25 Sep 2020 08:30:37 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Chucheng Luo <luochucheng@vivo.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1600928720-21134-1-git-send-email-wangqing@vivo.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <9acdd26b-c71b-d2fc-e61a-1e9aea5fcf80@linux.alibaba.com>
-Date:   Fri, 25 Sep 2020 14:30:30 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Sam Ravnborg <sam@ravnborg.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
+        allen <allen.chen@ite.com.tw>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Mark Brown <broonie@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 4/7] pwm: ntxec: Add driver for PWM function in
+ Netronix EC
+Message-ID: <20200925063037.fcrmqvpe5noi3ef4@pengutronix.de>
+References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
+ <20200924192455.2484005-5-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-In-Reply-To: <1600928720-21134-1-git-send-email-wangqing@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="iyspp2jcs5lu5zk3"
+Content-Disposition: inline
+In-Reply-To: <20200924192455.2484005-5-j.neuschaefer@gmx.net>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The same issue:
-error: dev/null: does not exist in index
-Patch failed at 0001 doc: zh_CN: add translatation for tmpfs.rst
-The copy of the patch that failed is found in:
 
-Maybe it is editor issue of your patch, Could you try you git send-email directly?
+--iyspp2jcs5lu5zk3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks
-Alex
+Hello Jonathan,
 
-在 2020/9/24 下午2:23, Wang Qing 写道:
-> Translate Documentation/filesystems/tmpfs.rst into Chinese.
-> 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+On Thu, Sep 24, 2020 at 09:24:52PM +0200, Jonathan Neusch=E4fer wrote:
+> The Netronix EC provides a PWM output which is used for the backlight
+> on some ebook readers. This patches adds a driver for the PWM output.
+>=20
+> The .get_state callback is not implemented, because the PWM state can't
+> be read back from the hardware.
+>=20
+> Signed-off-by: Jonathan Neusch=E4fer <j.neuschaefer@gmx.net>
 > ---
->  .../translations/zh_CN/filesystems/index.rst       |   3 +-
->  .../translations/zh_CN/filesystems/tmpfs.rst       | 146 +++++++++++++++++++++
->  2 files changed, 148 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
-> index 186501d..c45b550
-> --- a/Documentation/translations/zh_CN/filesystems/index.rst
-> +++ b/Documentation/translations/zh_CN/filesystems/index.rst
-> @@ -21,8 +21,9 @@ Linux Kernel中的文件系统
->  文件系统实现文档。
->  
->  .. toctree::
-> -   :maxdepth: 2
-> +   :maxdepth: 3
->  
->     virtiofs
->     debugfs
-> +   tmpfs
->  
-> diff --git a/Documentation/translations/zh_CN/filesystems/tmpfs.rst b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
-> index 0000000..700d870
+>=20
+> v3:
+> - Relicense as GPLv2 or later
+> - Add email address to copyright line
+> - Remove OF compatible string and don't include linux/of_device.h
+> - Fix bogus ?: in return line
+> - Don't use a comma after sentinels
+> - Avoid ret |=3D ... pattern
+> - Move 8-bit register conversion to ntxec.h
+>=20
+> v2:
+> - https://lore.kernel.org/lkml/20200905133230.1014581-6-j.neuschaefer@gmx=
+=2Enet/
+> - Various grammar and style improvements, as suggested by Uwe Kleine-K=F6=
+nig,
+>   Lee Jones, and Alexandre Belloni
+> - Switch to regmap
+> - Prefix registers with NTXEC_REG_
+> - Add help text to the Kconfig option
+> - Use the .apply callback instead of the old API
+> - Add a #define for the time base (125ns)
+> - Don't change device state in .probe; this avoids multiple problems
+> - Rework division and overflow check logic to perform divisions in 32 bits
+> - Avoid setting duty cycle to zero, to work around a hardware quirk
+> ---
+>  drivers/pwm/Kconfig     |   8 ++
+>  drivers/pwm/Makefile    |   1 +
+>  drivers/pwm/pwm-ntxec.c | 161 ++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 170 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-ntxec.c
+>=20
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index 7dbcf6973d335..530dfda38d65e 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -350,6 +350,14 @@ config PWM_MXS
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-mxs.
+>=20
+> +config PWM_NTXEC
+> +	tristate "Netronix embedded controller PWM support"
+> +	depends on MFD_NTXEC
+> +	help
+> +	  Say yes here if you want to support the PWM output of the embedded
+> +	  controller found in certain e-book readers designed by the ODM
+> +	  Netronix.
+
+Is it only me who had to look up what ODM means? If not, maybe spell it
+out?
+
+> +
+>  config PWM_OMAP_DMTIMER
+>  	tristate "OMAP Dual-Mode Timer PWM support"
+>  	depends on OF
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index 2c2ba0a035577..1cc50dba22d1b 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -32,6 +32,7 @@ obj-$(CONFIG_PWM_MESON)		+=3D pwm-meson.o
+>  obj-$(CONFIG_PWM_MEDIATEK)	+=3D pwm-mediatek.o
+>  obj-$(CONFIG_PWM_MTK_DISP)	+=3D pwm-mtk-disp.o
+>  obj-$(CONFIG_PWM_MXS)		+=3D pwm-mxs.o
+> +obj-$(CONFIG_PWM_NTXEC)		+=3D pwm-ntxec.o
+>  obj-$(CONFIG_PWM_OMAP_DMTIMER)	+=3D pwm-omap-dmtimer.o
+>  obj-$(CONFIG_PWM_PCA9685)	+=3D pwm-pca9685.o
+>  obj-$(CONFIG_PWM_PXA)		+=3D pwm-pxa.o
+> diff --git a/drivers/pwm/pwm-ntxec.c b/drivers/pwm/pwm-ntxec.c
+> new file mode 100644
+> index 0000000000000..50da2dc14bb03
 > --- /dev/null
-> +++ b/Documentation/translations/zh_CN/filesystems/tmpfs.rst
-> @@ -0,0 +1,146 @@
-> +.. SPDX-License-Identifier: GPL-2.0
+> +++ b/drivers/pwm/pwm-ntxec.c
+> @@ -0,0 +1,161 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * The Netronix embedded controller is a microcontroller found in some
+> + * e-book readers designed by the ODM Netronix, Inc. It contains RTC,
+> + * battery monitoring, system power management, and PWM functionality.
+> + *
+> + * This driver implements PWM output.
+> + *
+> + * Copyright 2020 Jonathan Neusch=E4fer <j.neuschaefer@gmx.net>
+> + */
 > +
-> +.. include:: ../disclaimer-zh_CN.rst
+> +#include <linux/mfd/ntxec.h>
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwm.h>
+> +#include <linux/regmap.h>
+> +#include <linux/types.h>
 > +
-> +:Original: :ref:`Documentation/filesystems/tmpfs.rst <tmpfs_index>`
+> +struct ntxec_pwm {
+> +	struct device *dev;
+> +	struct ntxec *ec;
+> +	struct pwm_chip chip;
+> +};
 > +
-> +translated by 王擎 Wang Qing<wangqing@vivo.com>
+> +static struct ntxec_pwm *pwmchip_to_pwm(struct pwm_chip *chip)
+> +{
+> +	return container_of(chip, struct ntxec_pwm, chip);
+> +}
 > +
-> +=====
-> +Tmpfs
-> +=====
+> +#define NTXEC_REG_AUTO_OFF_HI	0xa1
+> +#define NTXEC_REG_AUTO_OFF_LO	0xa2
+> +#define NTXEC_REG_ENABLE	0xa3
+> +#define NTXEC_REG_PERIOD_LOW	0xa4
+> +#define NTXEC_REG_PERIOD_HIGH	0xa5
+> +#define NTXEC_REG_DUTY_LOW	0xa6
+> +#define NTXEC_REG_DUTY_HIGH	0xa7
 > +
-> +Tmpfs是一个将所有文件都保存在虚拟内存中的文件系统。
+> +/*
+> + * The time base used in the EC is 8MHz, or 125ns. Period and duty cycle=
+ are
+> + * measured in this unit.
+> + */
+> +#define TIME_BASE_NS 125
 > +
-> +tmpfs中的所有内容都是临时的，也就是说没有任何文件会在硬盘上创建。
-> +如果卸载tmpfs实例，所有保存在其中的文件都会丢失。
+> +/*
+> + * The maximum input value (in nanoseconds) is determined by the time ba=
+se and
+> + * the range of the hardware registers that hold the converted value.
+> + * It fits into 32 bits, so we can do our calculations in 32 bits as wel=
+l.
+> + */
+> +#define MAX_PERIOD_NS (TIME_BASE_NS * 0x10000 - 1)
+
+The maximal configurable period length is 0xffff, so I would have
+expected MAX_PERIOD_NS to be 0xffff * TIME_BASE_NS?
+
+> +static int ntxec_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm=
+_dev,
+> +			   const struct pwm_state *state)
+> +{
+> +	struct ntxec_pwm *pwm =3D pwmchip_to_pwm(pwm_dev->chip);
+> +	unsigned int duty =3D state->duty_cycle;
+> +	unsigned int period =3D state->period;
+> +	int res =3D 0;
 > +
-> +tmpfs将所有文件保存在内核缓存中，随着文件内容增长或缩小可以将不需要的
-> +页面swap出去。它具有最大限制，可以通过“mount -o remount ...”调整。
+
+I assume your device only supports normal polarity? If so, please check
+for it here and point out this limitation in the header (in the format
+that is for example used in pwm-sifive.c to make it easy to grep for
+that).
+
+> +	if (period > MAX_PERIOD_NS) {
+> +		dev_warn(pwm->dev,
+> +			 "Period is not representable in 16 bits after division by %u: %u\n",
+> +			 TIME_BASE_NS, period);
+
+No error messages in .apply() please; this might spam the kernel log.
+
+Also the expectation when a too big period is requested is to configure
+for the biggest possible period. So just do:
+
+	if (period > MAX_PERIOD_NS) {
+		period =3D MAX_PERIOD_NS;
+
+		if (duty > period)
+			duty =3D period;
+	}
+
+(or something equivalent).
+
+> +		return -ERANGE;
+> +	}
 > +
-> +和ramfs（创建tmpfs的模板）相比，tmpfs包含交换和限制检查。和tmpfs相似的另
-> +一个东西是RAM磁盘（/dev/ram*），可以在物理RAM中模拟固定大小的硬盘，并在
-> +此之上创建一个普通的文件系统。Ramdisks无法swap，因此无法调整它们的大小。
+> +	period /=3D TIME_BASE_NS;
+> +	duty /=3D TIME_BASE_NS;
 > +
-> +由于tmpfs完全保存于页面缓存和swap中，因此所有tmpfs页面将在/proc/meminfo
-> +中显示为“Shmem”，而在free(1)中显示为“Shared”。请注意，这些计数还包括
-> +共享内存(shmem，请参阅ipcs(1))。获得计数的最可靠方法是使用df(1)和du(1)。
+> +	res =3D regmap_write(pwm->ec->regmap, NTXEC_REG_PERIOD_HIGH, ntxec_reg8=
+(period >> 8));
+> +	if (res)
+> +		return res;
 > +
-> +tmpfs具有以下用途：
+> +	res =3D regmap_write(pwm->ec->regmap, NTXEC_REG_PERIOD_LOW, ntxec_reg8(=
+period));
+> +	if (res)
+> +		return res;
 > +
-> +1) 内核总有一个无法看到的内部挂载，用于共享匿名映射和SYSV共享内存。
+> +	res =3D regmap_write(pwm->ec->regmap, NTXEC_REG_DUTY_HIGH, ntxec_reg8(d=
+uty >> 8));
+> +	if (res)
+> +		return res;
 > +
-> +   挂载不依赖于CONFIG_TMPFS。如果CONFIG_TMPFS未设置，tmpfs对用户不可见。
-> +   但是内部机制始终存在。
+> +	res =3D regmap_write(pwm->ec->regmap, NTXEC_REG_DUTY_LOW, ntxec_reg8(du=
+ty));
+> +	if (res)
+> +		return res;
 > +
-> +2) glibc 2.2及更高版本期望将tmpfs挂载在/dev/shm上以用于POSIX共享内存
-> +   (shm_open，shm_unlink)。添加内容到/etc/fstab应注意如下：
+> +	/*
+> +	 * Writing a duty cycle of zone puts the device into a state where
+
+What is "zone"? A mixture of zero and one and so approximately 0.5?
+
+> +	 * writing a higher duty cycle doesn't result in the brightness that it
+> +	 * usually results in. This can be fixed by cycling the ENABLE register.
+> +	 *
+> +	 * As a workaround, write ENABLE=3D0 when the duty cycle is zero.
+> +	 */
+> +	if (state->enabled && duty !=3D 0) {
+> +		res =3D regmap_write(pwm->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(1));
+> +		if (res)
+> +			return res;
 > +
-> +	tmpfs	/dev/shm	tmpfs	defaults	0 0
+> +		/* Disable the auto-off timer */
+> +		res =3D regmap_write(pwm->ec->regmap, NTXEC_REG_AUTO_OFF_HI, ntxec_reg=
+8(0xff));
+> +		if (res)
+> +			return res;
 > +
-> +   使用时需要记住创建挂载tmpfs的目录。
-> +   
-> +   SYSV共享内存无需挂载，内部已默认支持。(在2.3内核版本中，必须挂载
-> +   tmpfs的前身(shm fs)才能使用SYSV共享内存)
+> +		return regmap_write(pwm->ec->regmap, NTXEC_REG_AUTO_OFF_LO, ntxec_reg8=
+(0xff));
+> +	} else {
+> +		return regmap_write(pwm->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(0));
+> +	}
+
+This code is wrong for state->enabled =3D false.
+
+How does the PWM behave when .apply is called? Does it complete the
+currently running period? Can it happen that when you switch from say
+
+	.duty_cycle =3D 900 * TIME_BASE_NS (0x384)
+	.period =3D 1800 * TIME_BASE_NS (0x708)
+
+to
+
+	.duty_cycle =3D 300 * TIME_BASE_NS (0x12c)
+	.period =3D 600 * TIME_BASE_NS (0x258)
+
+that a period with
+
+	.duty_cycle =3D 388 * TIME_BASE_NS (0x184)
+	.period =3D 1800 * TIME_BASE_NS (0x708)
+=09
+(because only NTXEC_REG_PERIOD_HIGH was written when the new period
+started) or something similar is emitted?
+
+> +}
 > +
-> +3) 很多人（包括我）都觉的在/tmp和/var/tmp上挂载非常方便，并具有较大的
-> +   swap分区。目前循环挂载tmpfs可以正常工作，所以大多数发布都应当可以
-> +   使用mkinitrd通过/tmp访问/tmp。
+> +static struct pwm_ops ntxec_pwm_ops =3D {
+> +	.apply =3D ntxec_pwm_apply,
+
+Please implement a .get_state() callback. And enable PWM_DEBUG during
+your tests.
+
+> +	.owner =3D THIS_MODULE,
+> +};
 > +
-> +4) 也许还有更多我不知道的地方:-)
+> +static int ntxec_pwm_probe(struct platform_device *pdev)
+> +{
+> +	struct ntxec *ec =3D dev_get_drvdata(pdev->dev.parent);
+> +	struct ntxec_pwm *pwm;
+
+Please don't call this variable pwm. I would expect that a variable with
+this name is of type pwm_device. I would have called it "ddata" (and the
+type would be named ntxec_pwm_ddata for me); another usual name is "priv".
+
+> +	struct pwm_chip *chip;
+> +	int res;
 > +
+> +	pwm =3D devm_kzalloc(&pdev->dev, sizeof(*pwm), GFP_KERNEL);
+> +	if (!pwm)
+> +		return -ENOMEM;
 > +
-> +tmpfs有三个用于调整大小的挂载选项：
+> +	pwm->ec =3D ec;
+> +	pwm->dev =3D &pdev->dev;
 > +
-> +=========  ============================================================
-> +size       tmpfs实例分配的字节数限制。默认值是不swap时物理RAM的一半。
-> +           如果tmpfs实例过大，机器将死锁，因为OOM处理将无法释放该内存。
-> +nr_blocks  与size相同，但以PAGE_SIZE为单位。
-> +nr_inodes  tmpfs实例的最大inode个数。默认值是物理内存页数的一半，或者
-> +           (有高端内存的机器)低端内存RAM的页数，二者以较低者为准。
-> +=========  ============================================================
+> +	chip =3D &pwm->chip;
+> +	chip->dev =3D &pdev->dev;
+> +	chip->ops =3D &ntxec_pwm_ops;
+> +	chip->base =3D -1;
+> +	chip->npwm =3D 1;
 > +
-> +这些参数接受后缀k，m或g表示千，兆和千兆字节，可以在remount时更改。
-> +size参数也接受后缀％用来限制tmpfs实例占用物理RAM的百分比：
-> +未指定size或nr_blocks时，默认值为size=50％
+> +	res =3D pwmchip_add(chip);
+> +	if (res < 0)
+> +		return res;
 > +
-> +如果nr_blocks=0（或size=0），block个数将不受限制；如果nr_inodes=0，
-> +inode个数将不受限制。这样挂载通常是不明智的，因为它允许任何具有写权限的
-> +用户通过访问tmpfs耗尽机器上的所有内存；但同时这样做也会增强在多个CPU的
-> +场景下的访问。
+> +	platform_set_drvdata(pdev, pwm);
+
+If you do the platform_set_drvdata earlier you can just do
+
+	return pwmchip_add(chip);
+
 > +
-> +tmpfs具有为所有文件设置NUMA内存分配策略挂载选项(如果启用了CONFIG_NUMA),
-> +可以通过“mount -o remount ...”调整
-> +
-> +======================== ==============================================
-> +mpol=default             采用进程分配策略
-> +                         (请参阅 set_mempolicy(2))
-> +mpol=prefer:Node         倾向从给定的节点分配
-> +mpol=bind:NodeList       只允许从指定的链表分配
-> +mpol=interleave          倾向于依次从每个节点分配
-> +mpol=interleave:NodeList 依次从每个节点分配
-> +mpol=local		 prefers 从本地节点分配内存
-> +======================== ==============================================
-> +
-> +NodeList格式是以逗号分隔的十进制数字表示大小和范围，最大和最小范围是用-
-> +分隔符的十进制数来表示。例如，mpol=bind0-3,5,7,9-15
-> +
-> +带有有效NodeList的内存策略将按指定格式保存，在创建文件时使用。当任务在该
-> +文件系统上创建文件时，会使用到挂载时的内存策略NodeList选项，如果设置的话，
-> +由调用任务的cpuset[请参见Documentation/admin-guide/cgroup-v1/cpusets.rst]
-> +以及下面列出的可选标志约束。如果NodeLists为设置为空集，则文件的内存策略将
-> +恢复为“默认”策略。
-> +
-> +NUMA内存分配策略有可选标志，可以用于模式结合。在挂载tmpfs时指定这些可选
-> +标志可以在NodeList之前生效。
-> +Documentation/admin-guide/mm/numa_memory_policy.rst列出所有可用的内存
-> +分配策略模式标志及其对内存策略。
-> +
-> +::
-> +
-> +	=static		相当于	MPOL_F_STATIC_NODES
-> +	=relative	相当于	MPOL_F_RELATIVE_NODES
-> +
-> +例如，mpol=bind=staticNodeList相当于MPOL_BIND|MPOL_F_STATIC_NODES的分配策略
-> +
-> +请注意，如果内核不支持NUMA，那么使用mpol选项挂载tmpfs将会失败；nodelist指定不
-> +在线的节点也会失败。如果您的系统依赖于此，但内核会运行不带NUMA功能(也许是安全
-> +revocery内核)，或者具有较少的节点在线，建议从自动模式中省略mpol选项挂载选项。
-> +可以在以后通过“mount -o remount,mpol=Policy:NodeList MountPoint”添加到挂载点。
-> +
-> +要指定初始根目录，可以使用如下挂载选项：
-> +
-> +====	==================================
-> +模式	权限用八进制数字表示
-> +uid		应用ID
-> +gid		组ID
-> +====	==================================
-> +
-> +这些选项对remount没有任何影响。您可以通过chmod(1),chown(1)和chgrp(1)的更改
-> +已经挂载的参数。
-> +
-> +tmpfs具有选择32位还是64位inode的挂载选项：
-> +
-> +=======   ========================
-> +inode64   Use 64-bit inode numbers
-> +inode32   Use 32-bit inode numbers
-> +=======   ========================
-> +
-> +在32位内核上，默认是inode32，挂载时指定inode64会被拒绝。
-> +在64位内核上，默认配置是CONFIG_TMPFS_INODE64。inode64避免了单个设备上可能有多个
-> +具有相同inode编号的文件；比如32位应用程序使用glibc如果长期访问tmpfs，一旦达到33
-> +位inode编号，就有EOVERFLOW失败的危险，无法打开大于2GiB的文件，并返回EINVAL。
-> +
-> +所以'mount -t tmpfs -o size=10G,nr_inodes=10k,mode=700 tmpfs /mytmpfs'将在
-> +/mytmpfs上挂载tmpfs实例，分配只能由root用户访问的10GB RAM/SWAP，可以有10240个
-> +inode的实例。
-> +
-> +
-> +:作者:
-> +   Christoph Rohland <cr@sap.com>, 1.12.01
-> +:更新:
-> +   Hugh Dickins, 4 June 2007
-> +:更新:
-> +   KOSAKI Motohiro, 16 Mar 2010
-> +:更新:
-> +   Chris Down, 13 July 2020
-> 
+> +	return 0;
+> +}
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--iyspp2jcs5lu5zk3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9tjosACgkQwfwUeK3K
+7An6eQgAiyVqAnvWSzB6ypXG63i//HCOee0falc+84GtztQmatgUqLoO0aut1Qpn
+y/K+67THG0a3g+jEWn8jIlv+TiuK6ZjSZZYlGyJ6fl48d11QO3rPAn0lhSEy3xb7
+a/FKhKExJjMpQfKKUwIcqakv37fK5QEd5ZRQaULigi9TDdHHSVWmNOxVKjxp2KtL
+Q1xx0tCEVDS/7cjHtA3A5tpHbPIyTUeaeny/6YEiVzjlbaFBwzb00/d5cQE1Ls4s
+IQi/KS7CQCgmxba5xCE3ZClQ1Dswh5Ys2sAviSOozHTsp42mKWern5nsXrGYHuD8
+vmCiBkT9c4sk9BFRc2fYceTzEpP7Ow==
+=qy2w
+-----END PGP SIGNATURE-----
+
+--iyspp2jcs5lu5zk3--
