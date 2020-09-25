@@ -2,122 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8469227810A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B2027810B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727251AbgIYHBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:01:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37528 "EHLO mail.kernel.org"
+        id S1727300AbgIYHCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:02:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47044 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYHBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:01:49 -0400
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A64A22211;
-        Fri, 25 Sep 2020 07:01:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601017308;
-        bh=bYQA1KksxrM7SaxkyjkI60HSt3WPTblP3/0Gtd4vSYA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=U+N4QjyAMehcRUJ7lWfXzXqfrXTwmbK+cSFKnqYsq/OHprFpZM2RmkZR631IXVGR0
-         R02MK4zByBAfhpfglcN7gbXj5Ai9DQ2FpaYMc7asAOB0TUGLqdqaUNScaR84rk6zbx
-         SUCD/IdFUrvzNced8pIn3MS6r4hj8HJ1AAQ7PKEo=
-Received: by mail-ot1-f48.google.com with SMTP id 95so1334206ota.13;
-        Fri, 25 Sep 2020 00:01:48 -0700 (PDT)
-X-Gm-Message-State: AOAM53018XrzWX4QRU6TEFypyK0RBb1N6rMyRVeOhvA9w+4QE0mKdJHk
-        A1DDoRXq1XDtybj8r5tPPIv6c20PvO209ATFHIw=
-X-Google-Smtp-Source: ABdhPJzkqyhbmwrKdXg/AqpTpftDgl2KsVGMboGt67hHWUuXK8UktR/+mXSBxIVLdAqfUUEUlPEbYWdoSQO85lrh4lY=
-X-Received: by 2002:a9d:6193:: with SMTP id g19mr1920750otk.108.1601017307399;
- Fri, 25 Sep 2020 00:01:47 -0700 (PDT)
+        id S1727067AbgIYHCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:02:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6B20EAE0C;
+        Fri, 25 Sep 2020 07:02:38 +0000 (UTC)
+Subject: Re: [PATCH] drm/hisilicon: Deleted the drm_device declaration
+To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
+        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
+        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
+        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
+Cc:     linuxarm@huawei.com
+References: <1601016580-5937-1-git-send-email-tiantao6@hisilicon.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <5db712e8-d6cb-3de9-f48e-c2060442e4e0@suse.de>
+Date:   Fri, 25 Sep 2020 09:02:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200924082833.12722-1-jlee@suse.com> <CAMj1kXE64kMU7wnMQK+k=0tjaH9OMOrzN86yJPPRkx5Nq8XBqw@mail.gmail.com>
- <20200925005049.GD31226@linux-l9pv.suse>
-In-Reply-To: <20200925005049.GD31226@linux-l9pv.suse>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 25 Sep 2020 09:01:36 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFtg854N4PjrV_8ZKdibYKGoEHH5NV_kjTOTt7EKPANaQ@mail.gmail.com>
-Message-ID: <CAMj1kXFtg854N4PjrV_8ZKdibYKGoEHH5NV_kjTOTt7EKPANaQ@mail.gmail.com>
-Subject: Re: [PATCH] efi/efivars: Create efivars mount point in the
- registration of efivars abstraction
-To:     joeyli <jlee@suse.com>
-Cc:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        Fabian Vogt <fvogt@suse.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1601016580-5937-1-git-send-email-tiantao6@hisilicon.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="WJyAY9mgk22MS0izZdpsBgwmaRuY6OqcU"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 02:51, joeyli <jlee@suse.com> wrote:
->
-> Hi Ard,
->
-> On Thu, Sep 24, 2020 at 12:47:46PM +0200, Ard Biesheuvel wrote:
-> > On Thu, 24 Sep 2020 at 10:28, Lee, Chun-Yi <joeyli.kernel@gmail.com> wrote:
-> > >
-> > > This patch moved the logic of creating efivars mount point to the
-> > > registration of efivars abstraction. It's useful for userland to
-> > > determine the availability of efivars filesystem by checking the
-> > > existence of mount point.
-> > >
-> > > The 'efivars' platform device be created on generic EFI runtime services
-> > > platform, so it can be used to determine the availability of efivarfs.
-> > > But this approach is not available for google gsmi efivars abstraction.
-> > >
-> > > This patch be tested on Here on qemu-OVMF and qemu-uboot.
-> > >
-> > > Cc: Ard Biesheuvel <ardb@kernel.org>
-> > > Cc: Matthias Brugger <mbrugger@suse.com>
-> > > Cc: Fabian Vogt <fvogt@suse.com>
-> > > Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Cc: Arthur Heymans <arthur@aheymans.xyz>
-> > > Cc: Patrick Rudolph <patrick.rudolph@9elements.com>
-> > > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> > > ---
-> >
-> > I take it this is v3 of [0]? If so, please explain how it deviates
-> > from v2. If it doesn't deviate from v2, it is better to continue the
-> > discussion in the other thread.
-> >
-> > For the sake of discussion, it helps to clarify the confusing nomenclature:
-> >
-> > a) 'efivars abstraction' - an internal kernel API that exposes EFI
-> > variables, and can potentially be backed by an implementation that is
-> > not EFI based (i.e., Google gsmi)
-> >
-> > b) efivars.ko module, built on top of the efivars abstraction, which
-> > exposes EFI variables (real ones or gsmi ones) via the deprecated
-> > sysfs interface
-> >
-> > c) efivarfs filesystem, also built on top of the efivars abstraction,
-> > which exposes EFI variables (real ones or gsmi ones) via a special
-> > filesystem independently of sysfs.
-> >
-> > Of course, the sysfs mount point we create for efivarfs is not called
-> > 'efivarfs' but 'efivars'. The sysfs subdirectory we create for
-> > efivars.ko is called 'vars'. Sigh.
-> >
->
-> Thanks for your clarification. It's useful to me!
->
-> >
-> > In this patch, you create the mount point for c) based on whether a)
-> > gets registered (which occurs on systems with EFI Get/SetVariable
-> > support or GSMI), right? So, to Greg's point, wouldn't it be easier to
-> > simply check whether efivarfs is listed in /proc/filesystems?
-> >
->
-> Yes, I think that Greg's suggestion is good enough for a userland tool
-> to detect the availability of efivarfs. You can ignore my patch.
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--WJyAY9mgk22MS0izZdpsBgwmaRuY6OqcU
+Content-Type: multipart/mixed; boundary="7HjCsCUqS7d21irtESSAsWMbj8NdCyHqv";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
+ kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
+ dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
+ linux-kernel@vger.kernel.org
+Cc: linuxarm@huawei.com
+Message-ID: <5db712e8-d6cb-3de9-f48e-c2060442e4e0@suse.de>
+Subject: Re: [PATCH] drm/hisilicon: Deleted the drm_device declaration
+References: <1601016580-5937-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1601016580-5937-1-git-send-email-tiantao6@hisilicon.com>
 
-Excellent! Thanks for confirming.
+--7HjCsCUqS7d21irtESSAsWMbj8NdCyHqv
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+just a few nits.
+
+Am 25.09.20 um 08:49 schrieb Tian Tao:
+> drm_framebuffer.h contains drm/drm_device.h and struct drm_device is
+
+contains -> includes
+
+> already declared in this file, so there is no need to declare struct
+
+declared -> defined
+
+> drm_device in hibm_drm_drv.h.
+>=20
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+
+Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
+
+> ---
+>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h | 2 --
+>  1 file changed, 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers/=
+gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> index 87d2aad..6a63502 100644
+> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
+> @@ -22,8 +22,6 @@
+>  #include <drm/drm_fb_helper.h>
+>  #include <drm/drm_framebuffer.h>
+> =20
+> -struct drm_device;
+> -
+>  struct hibmc_connector {
+>  	struct drm_connector base;
+> =20
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--7HjCsCUqS7d21irtESSAsWMbj8NdCyHqv--
+
+--WJyAY9mgk22MS0izZdpsBgwmaRuY6OqcU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl9tlgwUHHR6aW1tZXJt
+YW5uQHN1c2UuZGUACgkQaA3BHVMLeiMTsAf/bvEpfoZuwQbLKkxb4fEx2XKegFL0
+2rE1UM32l7OZKsratrfcVi1PMdunPaciUqlgiq+SoSoqSxyfYOckhn2ZE6YiHgmd
+FTA9PAZIgBT3ZJRjA3bFhVvZMBZ07xRQKwQt3HwORG4eNySa0DkGrygSA5SKmu/l
+riDvo3IuqapPxoiaxsYbnf9SMnvTHoTZ9FCrQHjox+ypGLwyLjKbLtmezG/tKdtI
+G7tYqXC39r6oMHzjoKU+ZGg1o5t3753jlZAewPp0HKkXukMQJshhOWWAYP7/9Zsd
+nWAcnQ9XQN7fe17ziG0pknylRuFLfESo1hgMJxHvzArreOYqwEsBjV891A==
+=PzKt
+-----END PGP SIGNATURE-----
+
+--WJyAY9mgk22MS0izZdpsBgwmaRuY6OqcU--
