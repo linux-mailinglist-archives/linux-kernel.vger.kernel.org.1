@@ -2,129 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C562791C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B7C2791C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgIYUMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:12:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:51378 "EHLO foss.arm.com"
+        id S1726776AbgIYUMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:12:45 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:24813 "EHLO m42-4.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728431AbgIYUKi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:10:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 03E7311B3;
-        Fri, 25 Sep 2020 12:32:29 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 22C1A3F73B;
-        Fri, 25 Sep 2020 12:32:27 -0700 (PDT)
-References: <20200921163557.234036895@infradead.org> <20200925181727.ryuacrsipyaz65z7@linutronix.de>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        qais.yousef@arm.com, swood@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com
-Subject: Re: [PATCH 0/9] sched: Migrate disable support
-In-reply-to: <20200925181727.ryuacrsipyaz65z7@linutronix.de>
-Date:   Fri, 25 Sep 2020 20:32:24 +0100
-Message-ID: <jhjzh5dmz3r.mognet@arm.com>
+        id S1728300AbgIYUKd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:10:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601064632; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=g+9rhQIvr1fpY91HSg3TCT9sEG1QB73VLn80CsYZKxw=; b=CzYImcKcBUCQ8FxNOMxWmaAt41R5MCjwb/S8WLn9lT97VNjdAhnqcY/jk+FRFpgTGngnhiz8
+ HDfnek9zHUZK4GyZJ1rg/u1vjSgyRZ/JiUfWQxGX70T2wlZ24wJMnADPPthSSNTfLKIhTV66
+ mvURgI+g0idOp4gaFJQ3cADWjL4=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f6e45ffebb17452ba5fd194 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Sep 2020 19:33:19
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 414E3C433CB; Fri, 25 Sep 2020 19:33:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.7.221] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3B42C433CA;
+        Fri, 25 Sep 2020 19:33:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F3B42C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v3] usb: dwc3: Stop active transfers before halting the
+ controller
+To:     Felipe Balbi <balbi@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>
+Cc:     gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        jackp@codeaurora.org
+References: <20200903210954.24504-1-wcheng@codeaurora.org>
+ <87o8mi151l.fsf@kernel.org>
+ <010101746fab2ee1-91b46c27-fef0-4266-94cb-14dea5ca350e-000000@us-west-2.amazonses.com>
+ <877dsjei8j.fsf@kernel.org> <20200924155005.GB1337044@rowland.harvard.edu>
+ <87mu1ecruw.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <41e8c184-1e14-6d4b-3945-48e3d6b54523@codeaurora.org>
+Date:   Fri, 25 Sep 2020 12:33:15 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <87mu1ecruw.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 25/09/20 19:17, Sebastian Andrzej Siewior wrote:
-> On 2020-09-21 18:35:57 [+0200], Peter Zijlstra wrote:
->> Hi,
+
+On 9/24/2020 11:06 PM, Felipe Balbi wrote:
+> 
 > Hi,
->
->> Here's my take on migrate_disable(). It avoids growing a second means of
->
-> I have here:
->
-> |005: numa_remove_cpu cpu 5 node 0: mask now 0,3-4,6-7
-> |007: smpboot: CPU 5 is now offline
-> |006: ------------[ cut here ]------------
-> |006: rq->balance_callback
-> |006: WARNING: CPU: 6 PID: 8392 at kernel/sched/sched.h:1234 try_to_wake_up+0x696/0x860
-> |006: Modules linked in:
-> |006:
-> |006: CPU: 6 PID: 8392 Comm: hackbench Not tainted 5.9.0-rc6-rt9+ #60
-> |006: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1 04/01/2014
-> |006: RIP: 0010:try_to_wake_up+0x696/0x860
-> |006: Code: c0 01 00 00 01 e9 d9 fb ff ff 80 3d 90 ef 6d 01 00 0f 85 6c fb ff ff 48 c7 c7 d4 4a 2c 82 c6 05 7c ef 6d 01 01 e8 dd 21 fc ff <0f> 0b e9 52 fb ff ff 0f 0b e9 b2
-> |006: RSP: 0018:ffffc90005b978f8 EFLAGS: 00010082
-> |006:
-> |006: RAX: 0000000000000000 RBX: ffff8882755cca40 RCX: 0000000000000000
-> |006: RDX: ffffffff8247aab8 RSI: 00000000ffffffff RDI: 00000000ffffffff
-> |006: RBP: 0000000000000000 R08: 0000000000000001 R09: ffffffff8247a9a0
-> |006: R10: ffffc90005b97838 R11: 332e39313320205b R12: ffff888276da8600
-> |006: R13: 0000000000000093 R14: ffff8882755cd7a0 R15: ffff888276da8618
-> |006: FS:  00007f6fa7805740(0000) GS:ffff888276d80000(0000) knlGS:0000000000000000
-> |006: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> |006: CR2: 00007f6fa796af90 CR3: 0000000262588000 CR4: 00000000003506e0
-> |006: Call Trace:
-> |006:  ? cpu_stop_queue_work+0x8e/0x150
-> |006:  __wake_up_q+0x96/0xc0
-> |006:  cpu_stop_queue_work+0x9a/0x150
-> |006:  finish_task_switch.isra.0+0x2f1/0x460
-> |006:  __schedule+0x3bd/0xb20
-> |006:  schedule+0x4a/0x100
-> |006:  schedule_hrtimeout_range_clock+0x14f/0x160
-> |006:  ? rt_spin_unlock+0x39/0x90
-> |006:  ? rt_mutex_futex_unlock+0xcb/0xe0
-> |006:  poll_schedule_timeout.constprop.0+0x4d/0x90
-> |006:  do_sys_poll+0x314/0x430
-> |006:  ? __lock_acquire+0x39b/0x2010
-> |006:  ? poll_schedule_timeout.constprop.0+0x90/0x90
-> |006:  ? mark_held_locks+0x49/0x70
-> |006:  ? find_held_lock+0x2b/0x80
-> |006:  ? rt_spin_unlock+0x39/0x90
-> |006:  ? rt_mutex_futex_unlock+0xcb/0xe0
-> |006:  ? rt_spin_unlock+0x51/0x90
-> |006:  ? handle_mm_fault+0xfbd/0x1510
-> |006:  ? find_held_lock+0x2b/0x80
-> |006:  ? do_user_addr_fault+0x214/0x420
-> |006:  __x64_sys_poll+0x37/0x130
-> |006:  do_syscall_64+0x33/0x40
-> |006:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> |006: RIP: 0033:0x7f6fa78fb483
->
-> Is this somewhere among the fixes Valentin received?
-> This SCHED_WARN_ON(rq->balance_callback); in rq_pin_lock().
->
+> 
+> Alan Stern <stern@rowland.harvard.edu> writes:
+>>>> Hence, the reason if there was already a pending IRQ triggered, the
+>>>> dwc3_gadget_disable_irq() won't ensure the IRQ is handled.  We can do
+>>>> something like:
+>>>> if (!is_on)
+>>>> 	dwc3_gadget_disable_irq()
+>>>> synchronize_irq()
+>>>> spin_lock_irqsave()
+>>>> if(!is_on) {
+>>>> ...
+>>>>
+>>>> But the logic to only apply this on the pullup removal case is a little
+>>>> messy.  Also, from my understanding, the spin_lock_irqsave() will only
+>>>> disable the local CPU IRQs, but not the interrupt line on the GIC, which
+>>>> means other CPUs can handle it, unless we explicitly set the IRQ
+>>>> affinity to CPUX.
+>>>
+>>> Yeah, the way I understand this can't really happen. But I'm open to
+>>> being educated. Maybe Alan can explain if this is really possibility?
+>>
 
-The IRC handout so far is:
-https://paste.debian.net/1164646/
-https://paste.debian.net/1164656/
+Hi Felipe/Alan,
 
-As for your splat, I think this is what I was worrying about wrt
-suppressing callbacks in the switch but not preventing them from being
-queued. Perhaps the below is "better" than what I previously sent.
+Thanks for the detailed explanations and inputs.  Useful information to
+have!
 
-Technically should be doable with a cpu_active() check instead given this
-all gets flipped in sched_cpu_deactivate(), but at least this makes it
-obvious that PUSH suppresses any other callback.
+>> It depends on the details of the hardware, but yes, it is possible in
+>> general for an interrupt handler to run after you have turned off the
+>> device's interrupt-request line.  For example:
+>>
+>> 	CPU A				CPU B
+>> 	---------------------------	----------------------
+>> 	Gets an IRQ from the device
+>> 	Calls handler routine		spin_lock_irq
+>> 	  spin_lock_irq			Turns off the IRQ line
+>> 	  ...spins...			spin_unlock_irq
+>> 	  Rest of handler runs
+>> 	  spin_unlock_irq
+>>
+>> That's why we have synchronize_irq().  The usual pattern is something
+>> like this:
+>>
+>> 	spin_lock_irq(&priv->lock);
+>> 	priv->disconnected = true;
+>> 	my_disable_irq(priv);
+>> 	spin_unlock_irq(&priv->lock);
+>> 	synchronize_irq(priv->irq);
+>>
+>> And of course this has to be done in a context that can sleep.
+>>
+>> Does this answer your question?
+> 
+> It does, thank you Alan. It seems like we don't need a call to
+> disable_irq(), only synchronize_irq() is enough, however it should be
+> called with spinlocks released, not held.
+> 
 
----
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 50aac5b6db26..40d78a20fbcb 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1403,7 +1403,7 @@ queue_balance_callback(struct rq *rq,
- {
-        lockdep_assert_held(&rq->lock);
+I mean...I'm not against using the synchronize_irq() +
+dwc3_gadget_disable_irq() route, since that will address the concern as
+well.  It was just with the disable/enable IRQ route, I didn't need to
+explicitly check the is_on flag again, since I didn't need to worry
+about overwriting the DEVTEN reg (for the pullup enable case).  Will
+include this on the next version.
 
--	if (unlikely(head->next))
-+	if (unlikely(head->next) || (rq->balance_flags & BALANCE_PUSH))
-                return;
+Thanks
+Wesley Cheng
 
-        head->func = (void (*)(struct callback_head *))func;
----
+> Thanks
+> 
 
-> Sebastian
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
