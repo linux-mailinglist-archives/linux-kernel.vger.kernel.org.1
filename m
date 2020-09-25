@@ -2,107 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF695278321
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85B0278323
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbgIYItm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgIYIti (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:49:38 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25ED3C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:49:38 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id j2so2661173wrx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Qms1gS4lsjyq2EFAJKsceqVkipGb5r5O0I7UP489Fdo=;
-        b=BBP+yI6T825MLog7mvJ2vPGBwhstGthx3TiYbLE+w4tC+KUeJrjlznXJdb2pJGr/eK
-         nGCix7rYk/S85var/SyzggRGil9X64GgXXmegH0YJ9B0kkLT0T6Qu9y/gHH1e7tfbrfG
-         eK2JtFV44g5y5SWZT+5ZiJG8wXq+oJN23qN5t/xgjABTcJqDpBVg6fpw0whlMCsQitdJ
-         9GVlreIwbD94a8srsHqEnEf5Fgr2lSx6gWfaLWxdinjheICfaKyqrf9iv0+9BFouVLt/
-         QgiWwgRT6ja5UV5zViXMC0jHqzDGhW0LFcsK2trOEcbmtvoWYYGUSLN/uDtN2JNGN8/W
-         Q6UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Qms1gS4lsjyq2EFAJKsceqVkipGb5r5O0I7UP489Fdo=;
-        b=Qumyb/JidWCH3hrsa08qHpYNvXmecBMsqwaEtjwEsjBgbNkWFlGiUAwr0nBTAgwrau
-         isEA2BPAfeqQrbY97pM2KC3khL35fGDSN+TjaAF7mCWiwRdFtCybaQd97Pz6Be5p5wIU
-         edJ9S5+xZMZl2+2/htykrPiNTdgbzrf8UFWXUhTYSn26avVOn6ZhLMBl7hbwgDwm+S1F
-         FKsnZ7+JxR7nQREKc4M6I97EHuBB39lLXPED3r/LSOD8mh/vybTID0PsXh2aHGpxpweT
-         w1X4cdoC/qzcRJbx3rK0LOvbJf7zpMUjuQuSje0nmuJz28Yu3wRNvbpXLxrPXMyOvsak
-         GMYw==
-X-Gm-Message-State: AOAM532yvAQG7iVYk21VWgIN5TRMd+c+280I3edvBds9ayD7wW+LtDei
-        Ats1/qWPrugiwhcoRusKlxg8tA==
-X-Google-Smtp-Source: ABdhPJxLFlslsmO+Ox1jM3w42tqn00wRtzs/jJ3tbNAy+X7g7nDVd+oB16s/z79eu4Gd5JZTqB+V+w==
-X-Received: by 2002:adf:fdcc:: with SMTP id i12mr3159750wrs.281.1601023776824;
-        Fri, 25 Sep 2020 01:49:36 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id u66sm2048623wme.12.2020.09.25.01.49.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 01:49:36 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/2] ASoC: q6asm: fix kernel doc warnings
-Date:   Fri, 25 Sep 2020 09:49:25 +0100
-Message-Id: <20200925084925.26926-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200925084925.26926-1-srinivas.kandagatla@linaro.org>
-References: <20200925084925.26926-1-srinivas.kandagatla@linaro.org>
+        id S1727746AbgIYItr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:49:47 -0400
+Received: from mga04.intel.com ([192.55.52.120]:52159 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727705AbgIYItn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:49:43 -0400
+IronPort-SDR: BR4YvuB2mwU8zmAs1xtN7hqH7wwdXTFb7stmxayQHaZzcRX5DOhBozwvEMgUYxXt3aDxONsjIQ
+ ULRYWNYZ1Vsw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158861197"
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="158861197"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 01:49:43 -0700
+IronPort-SDR: SOCX4YkFqpFtyVmVKqxBwiim2OMbh+XB7z5F4jcvoJaGEpZe0qkVtK3e8SNoKbIPKosVLsmhDe
+ jId6rzeTma0w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="413726937"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP; 25 Sep 2020 01:49:42 -0700
+Received: from [10.215.249.131] (rtanwar-MOBL.gar.corp.intel.com [10.215.249.131])
+        by linux.intel.com (Postfix) with ESMTP id DB2B858043C;
+        Fri, 25 Sep 2020 01:49:38 -0700 (PDT)
+Subject: Re: [PATCH v13 2/2] Add PWM fan controller driver for LGM SoC
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     linux-pwm@vger.kernel.org, lee.jones@linaro.org,
+        thierry.reding@gmail.com, p.zabel@pengutronix.de,
+        robh+dt@kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, andriy.shevchenko@intel.com,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com
+References: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
+ <befa655d8beb326fc8aa405a25a8b3e62b7e6a4a.1600158087.git.rahul.tanwar@linux.intel.com>
+ <20200924065534.e2anwghhtysv63e7@pengutronix.de>
+From:   "Tanwar, Rahul" <rahul.tanwar@linux.intel.com>
+Message-ID: <7c424d83-f96b-4b0c-1fbb-b3ec7ef6f07d@linux.intel.com>
+Date:   Fri, 25 Sep 2020 16:49:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20200924065534.e2anwghhtysv63e7@pengutronix.de>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes below kernel doc warnings on not describing all the parmeters
 
-sound/soc/qcom/qdsp6/q6asm.c:927: warning: Function parameter or member
- 'stream_id' not described in 'q6asm_open_write'
-sound/soc/qcom/qdsp6/q6asm.c:927: warning: Function parameter or member
- 'is_gapless' not described in 'q6asm_open_write'
-sound/soc/qcom/qdsp6/q6asm.c:1053: warning: Function parameter or member
- 'stream_id' not described in 'q6asm_run'
+Hi Uwe,
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6asm.c | 3 +++
- 1 file changed, 3 insertions(+)
+Thanks for review & feedback.
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 34a6e894242e..91999c9f016c 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -915,9 +915,11 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
- /**
-  * q6asm_open_write() - Open audio client for writing
-  * @ac: audio client pointer
-+ * @stream_id: stream id of q6asm session
-  * @format: audio sample format
-  * @codec_profile: compressed format profile
-  * @bits_per_sample: bits per sample
-+ * @is_gapless: flag to indicate if this is a gapless stream
-  *
-  * Return: Will be an negative value on error or zero on success
-  */
-@@ -1042,6 +1044,7 @@ static int __q6asm_run(struct audio_client *ac, uint32_t stream_id,
-  * q6asm_run() - start the audio client
-  *
-  * @ac: audio client pointer
-+ * @stream_id: stream id of q6asm session
-  * @flags: flags associated with write
-  * @msw_ts: timestamp msw
-  * @lsw_ts: timestamp lsw
--- 
-2.21.0
+On 24/9/2020 2:55 pm, Uwe Kleine-König wrote:
+> Hello,
+>
+> (hhm Thierry already announced to have taken this patch, so my review is
+> late.)
+>
+> On Tue, Sep 15, 2020 at 04:23:37PM +0800, Rahul Tanwar wrote:
+>> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+>> This PWM controller does not have any other consumer, it is a
+>> dedicated PWM controller for fan attached to the system. Add
+>> driver for this PWM fan controller.
+>>
+>> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@intel.com>
+>> ---
+>>  drivers/pwm/Kconfig         |  11 ++
+>>  drivers/pwm/Makefile        |   1 +
+>>  drivers/pwm/pwm-intel-lgm.c | 246 ++++++++++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 258 insertions(+)
+>>  create mode 100644 drivers/pwm/pwm-intel-lgm.c
+>>
+>> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+>> index 7dbcf6973d33..4949c51fe90b 100644
+>> --- a/drivers/pwm/Kconfig
+>> +++ b/drivers/pwm/Kconfig
+>> @@ -232,6 +232,17 @@ config PWM_IMX_TPM
+>>  	  To compile this driver as a module, choose M here: the module
+>>  	  will be called pwm-imx-tpm.
+>>  
+>> +config PWM_INTEL_LGM
+>> +	tristate "Intel LGM PWM support"
+>> +	depends on HAS_IOMEM
+>> +	depends on (OF && X86) || COMPILE_TEST
+>> +	select REGMAP_MMIO
+>> +	help
+>> +	  Generic PWM fan controller driver for LGM SoC.
+>> +
+>> +	  To compile this driver as a module, choose M here: the module
+>> +	  will be called pwm-intel-lgm.
+>> +
+>>  config PWM_IQS620A
+>>  	tristate "Azoteq IQS620A PWM support"
+>>  	depends on MFD_IQS62X || COMPILE_TEST
+>> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+>> index 2c2ba0a03557..e9431b151694 100644
+>> --- a/drivers/pwm/Makefile
+>> +++ b/drivers/pwm/Makefile
+>> @@ -20,6 +20,7 @@ obj-$(CONFIG_PWM_IMG)		+= pwm-img.o
+>>  obj-$(CONFIG_PWM_IMX1)		+= pwm-imx1.o
+>>  obj-$(CONFIG_PWM_IMX27)		+= pwm-imx27.o
+>>  obj-$(CONFIG_PWM_IMX_TPM)	+= pwm-imx-tpm.o
+>> +obj-$(CONFIG_PWM_INTEL_LGM)	+= pwm-intel-lgm.o
+>>  obj-$(CONFIG_PWM_IQS620A)	+= pwm-iqs620a.o
+>>  obj-$(CONFIG_PWM_JZ4740)	+= pwm-jz4740.o
+>>  obj-$(CONFIG_PWM_LP3943)	+= pwm-lp3943.o
+>> diff --git a/drivers/pwm/pwm-intel-lgm.c b/drivers/pwm/pwm-intel-lgm.c
+>> new file mode 100644
+>> index 000000000000..ea3df75a5971
+>> --- /dev/null
+>> +++ b/drivers/pwm/pwm-intel-lgm.c
+>> @@ -0,0 +1,246 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (C) 2020 Intel Corporation.
+>> + *
+>> + * Limitations:
+>> + * - The hardware supports fixed period which is dependent on 2/3 or 4
+>> + *   wire fan mode.
+> The driver now hardcodes 2-wire mode. IMHO that is worth mentioning.
+
+Will update.
+
+>> +static void lgm_clk_disable(void *data)
+>> +{
+>> +	struct lgm_pwm_chip *pc = data;
+>> +
+>> +	clk_disable_unprepare(pc->clk);
+>> +}
+>> +
+>> +static int lgm_clk_enable(struct device *dev, struct lgm_pwm_chip *pc)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = clk_prepare_enable(pc->clk);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return devm_add_action_or_reset(dev, lgm_clk_disable, pc);
+>> +}
+> My first reflex here was to point out that lgm_clk_disable() isn't the
+> counter part to lgm_clk_enable() and so lgm_clk_disable() needs
+> adaption. On a second look this is correct and so I think the function
+> names are wrong. The usual naming would be to use _release instead of
+> _disable. Having said that the enable function could be named
+> devm_clk_enable and live in drivers/clk/clk-devres.c. (Or
+> devm_clk_get_enabled()?)
+
+
+Will change function name from _disable to _release. But i think addition
+of a generic devm_clk_enable in drivers/clk/clk-devres.c can be taken as
+a separate task in a future patch (not clubbed with this driver)..
+
+
+>> +static void lgm_reset_control_assert(void *data)
+>> +{
+>> +	struct lgm_pwm_chip *pc = data;
+>> +
+>> +	reset_control_assert(pc->rst);
+>> +}
+>> +
+>> +static int lgm_reset_control_deassert(struct device *dev, struct lgm_pwm_chip *pc)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = reset_control_deassert(pc->rst);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return devm_add_action_or_reset(dev, lgm_reset_control_assert, pc);
+>> +}
+> A similar comment applies here.
+>
+>> +static int lgm_pwm_probe(struct platform_device *pdev)
+>> +{
+>> +	struct device *dev = &pdev->dev;
+>> +	struct lgm_pwm_chip *pc;
+>> +	void __iomem *io_base;
+>> +	int ret;
+>> +
+>> +	pc = devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
+>> +	if (!pc)
+>> +		return -ENOMEM;
+>> +
+>> +	platform_set_drvdata(pdev, pc);
+>> +
+>> +	io_base = devm_platform_ioremap_resource(pdev, 0);
+>> +	if (IS_ERR(io_base))
+>> +		return PTR_ERR(io_base);
+>> +
+>> +	pc->regmap = devm_regmap_init_mmio(dev, io_base, &lgm_pwm_regmap_config);
+>> +	if (IS_ERR(pc->regmap))
+>> +		return dev_err_probe(dev, PTR_ERR(pc->regmap),
+>> +				     "failed to init register map\n");
+>> +
+>> +	pc->clk = devm_clk_get(dev, NULL);
+>> +	if (IS_ERR(pc->clk))
+>> +		return dev_err_probe(dev, PTR_ERR(pc->clk), "failed to get clock\n");
+>> +
+>> +	ret = lgm_clk_enable(dev, pc);
+>> +	if (ret) {
+>> +		dev_err(dev, "failed to enable clock\n");
+> You used dev_err_probe four times for six error paths. I wonder why you
+> didn't use it here (and below for a failing pwmchip_add()).
+
+Well noted, will update.
+
+>> +		return ret;
+>> +	}
+>> +
+>> +	pc->rst = devm_reset_control_get_exclusive(dev, NULL);
+>> +	if (IS_ERR(pc->rst))
+>> +		return dev_err_probe(dev, PTR_ERR(pc->rst),
+>> +				     "failed to get reset control\n");
+>> +
+>> +	ret = lgm_reset_control_deassert(dev, pc);
+>> +	if (ret)
+>> +		return dev_err_probe(dev, ret, "cannot deassert reset control\n");
+> After lgm_reset_control_deassert is called pc->rst is unused. So there
+> is no need to have this member in struct lgm_pwm_chip. The same applies
+> to ->clk. (You have to pass rst (or clk) to devm_add_action_or_reset for
+> that to work. Looks like a nice idea anyhow.)
+
+Agreed, will update.
+
+>> +	pc->chip.dev = dev;
+>> +	pc->chip.ops = &lgm_pwm_ops;
+>> +	pc->chip.npwm = 1;
+> pc->chip.base should probably be set to -1.
+
+Got it, will update. Thanks.
+
+Regards,
+Rahul
+
+> Best regards
+> Uwe
+>
 
