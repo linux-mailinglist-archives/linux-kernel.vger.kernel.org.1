@@ -2,168 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1EC279454
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C510627945E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729140AbgIYWpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:45:07 -0400
-Received: from mga04.intel.com ([192.55.52.120]:53529 "EHLO mga04.intel.com"
+        id S1729117AbgIYWxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:53:02 -0400
+Received: from mga14.intel.com ([192.55.52.115]:7170 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgIYWpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:45:07 -0400
-IronPort-SDR: 8oNG5lL73a2zMqeLrCsFY6iKaE/OT1r/tyY4b6g4qcPuTl5MTds+L3QWJpuA4JAJQErvTJ8mSB
- P+5ukRk6gE0w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="159019383"
+        id S1726064AbgIYWxB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:53:01 -0400
+IronPort-SDR: QbGlwhVlm//DpH00aQrUDeNtU6+8NNhbwA2N8lxeh+ed2+yYT3Ccvq/sV9tCOSTES0O33YvMnT
+ MCFWft7SXgtw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="160884395"
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="159019383"
+   d="scan'208";a="160884395"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:43:06 -0700
-IronPort-SDR: 0cmbbxIOq+DRBwDZXU8oN+OtguZDJAfmZzzlqB5HURVs+a31qryQUHYiY8WcGsB/JaPgA3UctT
- bNXULHS8KJnA==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 13:11:29 -0700
+IronPort-SDR: Wv4YOe2jObohQKrRd0YLw2kCB5bLvsVjsTvYWcwb5StO+wGhW9tGM5jEpC3GzIFhEboM66rP8L
+ m+rP7HMdGnMw==
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="291893055"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:43:05 -0700
-Date:   Fri, 25 Sep 2020 12:43:04 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200925194304.GE31528@linux.intel.com>
-References: <20200924192853.GA18826@linux.intel.com>
- <c680f7bd-2d82-6477-707f-cd03aae4b4aa@intel.com>
- <20200924200156.GA19127@linux.intel.com>
- <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
- <20200924202549.GB19127@linux.intel.com>
- <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
- <20200924230501.GA20095@linux.intel.com>
- <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
- <20200925000052.GA20333@linux.intel.com>
- <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
+   d="scan'208";a="349890400"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 13:11:27 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 2BFC820728; Fri, 25 Sep 2020 23:11:25 +0300 (EEST)
+Date:   Fri, 25 Sep 2020 23:11:25 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Stefan Riedmueller <s.riedmueller@phytec.de>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Hemp <c.hemp@phytec.de>,
+        Jan Luebbe <jlu@pengutronix.de>
+Subject: Re: [PATCH 1/5] media: mt9p031: Add support for 8 bit and 10 bit
+ formats
+Message-ID: <20200925201125.GX26842@paasikivi.fi.intel.com>
+References: <20200925075029.32181-1-s.riedmueller@phytec.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200925075029.32181-1-s.riedmueller@phytec.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:18:28AM -0700, Dave Hansen wrote:
-> Thanks for the walkthrough.  The thing that clicked for me seeing those
-> examples was how the earlier ioctl(ADD_PAGE) is "bound" to later
-> enforcement actions at enclave PTE creation time.
-> 
-> On 9/24/20 5:00 PM, Sean Christopherson wrote:
-> > My concern is that if we merge this
-> > 
-> >         ioctl(sgx_fd, ENCLAVE_ADD_PAGE, SGX_PROT_READ | SGX_PROT_EXEC, ptr, size);
-> > 
-> > without ->mprotect(), we can't actually enforce the declared protections.  And
-> > if we drop the field altogether:
-> > 
-> >         ioctl(sgx_fd, ENCLAVE_ADD_PAGE, ptr, size);
-> > 
-> > then we can't implement security_enclave_load().
-> 
-> To me, it's perfectly OK to have parts of the ABI which are unused.  It
-> sure makes them harder to test if there are no actual users in the code,
-> but if it solves a real problem with the ABI, I'm fine with it.
-> 
-> Let's see if I can put all the pieces together.
-> 
-> Background:
-> 
-> 1. SGX enclave pages are populated with data by copying data to them
->    from normal memory via: ioctl(sgx_fd, ENCLAVE_ADD_PAGE, src_ptr...);
-> 2. We want to be able to restrict those normal memory data sources.  For
->    instance, before copying data to an executable enclave page, we might
->    ensure that the source is executable.
-> 3. Enclave page permissions are dynamic just like normal permissions and
->    can be adjusted at runtime with mprotect() (along with a
->    corresponding special instruction inside the enclave)
-> 4. The original data source may have have long since vanished at the
->    time when enclave page permission are established (mmap() or
->    mprotect())
-> 
-> Solution:
-> 
-> The solution is to force enclaves creators to declare their intent up
-> front to ioctl(ENCLAVE_ADD_PAGE).  This intent can me immediately
-> compared to the source data mapping (and rejected if necessary).  It is
-> also stashed off and then later compared with enclave PTEs to ensure
-> that any future mmap()/mprotect() operations performed by the enclave
-> creator or the enclave itself are consistent with the earlier declared
-> permissions.
-> 
-> Essentially, this means that whenever the kernel is asked to change an
-> enclave PTE, it needs to ensure the change is consistent with that
-> stashed intent.  There is an existing vm_ops->mmap() hook which allows
-> SGX to do that for mmap().  However, there is no ->mprotect() hook.  Add
-> a vm_ops->mprotect() hook so that mprotect() operations which are
-> inconsistent with any page's stashed intent can be rejected by the driver.
+Hi Stefan,
 
-Yes to all of the above.
-
-> Implications:
+On Fri, Sep 25, 2020 at 09:50:25AM +0200, Stefan Riedmueller wrote:
+> From: Christian Hemp <c.hemp@phytec.de>
 > 
-> However, there is currently no implementation of the intent checks at
-> the time of ioctl(ENCLAVE_ADD_PAGE).
-
-Correct.
-
-> That means that the intent argument (SGX_PROT_*) is currently unused.
-
-No, the intent argument is used (eventually) by SGX's ->mprotect()
-implementation, i.e. sgx_mprotect() enforces that the actual protections are a
-subset of the declared/intended protections.
-
-If ->mprotect() is not merged, then it yes, it will be unused.  And therein
-lies the problem as the kernel can't start using/enforcing the intent without
-breaking userspace.  E.g. an enclave loaded with SGX_PROT_READ but mprotect()'d
-with PROT_READ | PROT_EXEC would break if sgx_mprotect() came along.
-
-One way to avoid introducing ->mprotect() would be to require all enclaves to
-declare all pages with READ|WRITE|EXEC.  Then we could drop sgx_mprotect()
-since the mprotect() permissions are guaranteed to be a subset of the declared
-permissions.  That would have the added bonus of eliminating the per-page
-checks in sgx_mmap()/sgx_mprotect(), though I've no idea if that is a
-meaningful optmization or it's lost in the noise.
-
-The big downside of requiring READ|WRITE|EXEC is that it will make life hell
-for a LSM policy owner if they ever want to apply EXECMEM or EXECMOD style
-restritions on enclaves, i.e. if SELinux folks want to add
-security_enclave_load().
-
-I find that I'm more or less ok with that approach, in no small part because
-introducing security_enclave_load() might be a pretty big "if", e.g. security
-folks may decide that they'd rather allow/deny enclaves based on the
-measurement or signer of the enclave and eschew per-page checks entirely.
-
-> --
+> Aside from 12 bit monochrome or color format the sensor implicitly
+> supports 10 and 8 bit formats as well by simply dropping the
+> corresponding LSBs.
 > 
-> Is that all correct?  Did I miss anything?
+> Signed-off-by: Christian Hemp <c.hemp@phytec.de>
+> [jlu@pengutronix.de: simplified by dropping v4l2_colorspace handling]
+> Signed-off-by: Jan Luebbe <jlu@pengutronix.de>
+> Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+> ---
+>  drivers/media/i2c/mt9p031.c | 50 +++++++++++++++++++++++++++++--------
+>  1 file changed, 40 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
+> index dc23b9ed510a..0002dd299ffa 100644
+> --- a/drivers/media/i2c/mt9p031.c
+> +++ b/drivers/media/i2c/mt9p031.c
+> @@ -116,6 +116,18 @@ enum mt9p031_model {
+>  	MT9P031_MODEL_MONOCHROME,
+>  };
+>  
+> +static const u32 mt9p031_color_fmts[] = {
+> +	MEDIA_BUS_FMT_SGRBG8_1X8,
+> +	MEDIA_BUS_FMT_SGRBG10_1X10,
+> +	MEDIA_BUS_FMT_SGRBG12_1X12,
+> +};
+> +
+> +static const u32 mt9p031_monochrome_fmts[] = {
+> +	MEDIA_BUS_FMT_Y8_1X8,
+> +	MEDIA_BUS_FMT_Y10_1X10,
+> +	MEDIA_BUS_FMT_Y12_1X12,
+> +};
+> +
+>  struct mt9p031 {
+>  	struct v4l2_subdev subdev;
+>  	struct media_pad pad;
+> @@ -138,6 +150,9 @@ struct mt9p031 {
+>  	struct v4l2_ctrl *blc_auto;
+>  	struct v4l2_ctrl *blc_offset;
+>  
+> +	const u32 *fmts;
+> +	int num_fmts;
+
+Unsigned int, please.
+
+> +
+>  	/* Registers cache */
+>  	u16 output_control;
+>  	u16 mode2;
+> @@ -148,6 +163,17 @@ static struct mt9p031 *to_mt9p031(struct v4l2_subdev *sd)
+>  	return container_of(sd, struct mt9p031, subdev);
+>  }
+>  
+> +static const u32 mt9p031_find_datafmt(struct mt9p031 *mt9p031, u32 code)
+> +{
+> +	int i;
+
+Same here.
+
+> +
+> +	for (i = 0; i < mt9p031->num_fmts; i++)
+> +		if (mt9p031->fmts[i] == code)
+> +			return mt9p031->fmts[i];
+> +
+> +	return mt9p031->fmts[mt9p031->num_fmts-1];
+> +}
+> +
+>  static int mt9p031_read(struct i2c_client *client, u8 reg)
+>  {
+>  	return i2c_smbus_read_word_swapped(client, reg);
+> @@ -476,10 +502,11 @@ static int mt9p031_enum_mbus_code(struct v4l2_subdev *subdev,
+>  {
+>  	struct mt9p031 *mt9p031 = to_mt9p031(subdev);
+>  
+> -	if (code->pad || code->index)
+> +	if (code->pad || code->index >= mt9p031->num_fmts)
+>  		return -EINVAL;
+>  
+> -	code->code = mt9p031->format.code;
+> +	code->code = mt9p031->fmts[code->index];
+> +
+>  	return 0;
+>  }
+>  
+> @@ -573,6 +600,8 @@ static int mt9p031_set_format(struct v4l2_subdev *subdev,
+>  	__format->width = __crop->width / hratio;
+>  	__format->height = __crop->height / vratio;
+>  
+> +	__format->code = mt9p031_find_datafmt(mt9p031, format->format.code);
+> +
+>  	format->format = *__format;
+>  
+>  	return 0;
+> @@ -951,10 +980,7 @@ static int mt9p031_open(struct v4l2_subdev *subdev, struct v4l2_subdev_fh *fh)
+>  
+>  	format = v4l2_subdev_get_try_format(subdev, fh->pad, 0);
+>  
+> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+> -		format->code = MEDIA_BUS_FMT_Y12_1X12;
+> -	else
+> -		format->code = MEDIA_BUS_FMT_SGRBG12_1X12;
+> +	format->code = mt9p031_find_datafmt(mt9p031, 0);
+>  
+>  	format->width = MT9P031_WINDOW_WIDTH_DEF;
+>  	format->height = MT9P031_WINDOW_HEIGHT_DEF;
+> @@ -1121,10 +1147,14 @@ static int mt9p031_probe(struct i2c_client *client,
+>  	mt9p031->crop.left = MT9P031_COLUMN_START_DEF;
+>  	mt9p031->crop.top = MT9P031_ROW_START_DEF;
+>  
+> -	if (mt9p031->model == MT9P031_MODEL_MONOCHROME)
+> -		mt9p031->format.code = MEDIA_BUS_FMT_Y12_1X12;
+> -	else
+> -		mt9p031->format.code = MEDIA_BUS_FMT_SGRBG12_1X12;
+> +	if (mt9p031->model == MT9P031_MODEL_MONOCHROME) {
+> +		mt9p031->fmts = mt9p031_monochrome_fmts;
+> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_monochrome_fmts);
+> +	} else {
+> +		mt9p031->fmts = mt9p031_color_fmts;
+> +		mt9p031->num_fmts = ARRAY_SIZE(mt9p031_color_fmts);
+> +	}
+> +	mt9p031->format.code = mt9p031_find_datafmt(mt9p031, 0);
+>  
+>  	mt9p031->format.width = MT9P031_WINDOW_WIDTH_DEF;
+>  	mt9p031->format.height = MT9P031_WINDOW_HEIGHT_DEF;
+
+-- 
+Kind regards,
+
+Sakari Ailus
