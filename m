@@ -2,133 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 990962793E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446A12793DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728710AbgIYWBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:01:52 -0400
-Received: from mout.gmx.net ([212.227.17.20]:54995 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726744AbgIYWBu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:01:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601071245;
-        bh=ztxbMcMpavSGlbVmgt0d84+xXgIqro2ItnQZq/Y9qY0=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=PCdaXY5rnW1fTrNQ00KUO709FxO/s324Z9VSduWfHoJDbDNDkUmH/t/Miypu034nB
-         SubvKInVRtSQlFKA79001MT8i5IYKm4w5ceScoFniGLFJcx+MZ64TATpcIX9jn3dkh
-         db/NUAdwpEQKiKKcHi377XHMuycs7RutNNjGU/SA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mi2O1-1kzxUL45RJ-00e22R; Sat, 26
- Sep 2020 00:00:45 +0200
-Date:   Sat, 26 Sep 2020 00:00:33 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v3 5/7] rtc: New driver for RTC in Netronix embedded
- controller
-Message-ID: <20200925220033.GB2510@latitude>
-References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
- <20200924192455.2484005-6-j.neuschaefer@gmx.net>
- <20200925093614.GZ9675@piout.net>
+        id S1727961AbgIYWBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:01:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726412AbgIYWBp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:01:45 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601071303;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O2mtU+l23qdpdF/soGPUwQLNSza8gowsjn0XDmKpFbs=;
+        b=ib9jlStaGaJJNw6hHUMBoZZ0IeYY8LV72aOh4vJKpUGfqVcDTfXFo3nFTAQr9pAQ4zhuV/
+        mcUIiEDctTal06QDn/2nSAqi9V8gWe1geumzvXmeFdBKPe5zmxm8AwgFuY7a4BVjKcui4S
+        /hNwph+c3cW/vldpwb0t8oayhX1z4dg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-593-sGBBnNI-NoGdqSbJHrG9yg-1; Fri, 25 Sep 2020 18:01:42 -0400
+X-MC-Unique: sGBBnNI-NoGdqSbJHrG9yg-1
+Received: by mail-wm1-f72.google.com with SMTP id x6so169577wmi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:01:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=O2mtU+l23qdpdF/soGPUwQLNSza8gowsjn0XDmKpFbs=;
+        b=Cw94Ncu2xNWFtasOcyz17liP6Tt7AwRmYIQpdd+frxVYn7Sf8tOOQPqTXWp2Omn0Mm
+         E5wzgy+u4womBB2ZDfwtZ4kSvz4nVvicv/s3nfNtgIcga3o2gv6d410jfbScKKjWXsoq
+         j+6woc/EAvV60W2Cac7bmg/8aib97ghf+k9ArbTxFRMjd1c83BUEfTpA9D3H9Ui5sbFB
+         cObuLJsc1a5uBYKMk0De1ebPV7EIHN1SpEcNh1qIrvDaaBKCf+SKI/DZ7ivKulozH4tT
+         jI9U1Hl9KsqZYIMPczrMvv3UDGjaj/3jia1kLKWanJXGxSojHWABNmFnOJPNaxWadZgI
+         Hauw==
+X-Gm-Message-State: AOAM531gCkBRN61gU176J3Mg3XMsVWulahRv5N+paQXS5e3A30OWA9wX
+        hoFE4SwKxrBYNoS2cXd+8xad3N/gLDa2LMitzxdAIo6TgWopzq38auwM03dKhyyuXcJJ/21AnDa
+        +uuDcHy/quUVG4Q3x7cxsPJnB
+X-Received: by 2002:a7b:c40b:: with SMTP id k11mr571093wmi.135.1601071300940;
+        Fri, 25 Sep 2020 15:01:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywlGkb1JCiU4aBTldw7f2kJM+w+qDbxO0od18FUu5Obh0pjN9QwAD3Hko+9BY7vXVuiAy63g==
+X-Received: by 2002:a7b:c40b:: with SMTP id k11mr571059wmi.135.1601071300630;
+        Fri, 25 Sep 2020 15:01:40 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id z8sm4169592wrl.11.2020.09.25.15.01.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 15:01:40 -0700 (PDT)
+Subject: Re: [PATCH v8 5/8] KVM: x86: SVM: Prevent MSR passthrough when MSR
+ access is denied
+To:     Alexander Graf <graf@amazon.com>, kvm list <kvm@vger.kernel.org>
+Cc:     Aaron Lewis <aaronlewis@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200925143422.21718-1-graf@amazon.com>
+ <20200925143422.21718-6-graf@amazon.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <bf5c6a97-6aed-ee23-56c8-14f6e0cce27b@redhat.com>
+Date:   Sat, 26 Sep 2020 00:01:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ADZbWkCsHQ7r3kzd"
-Content-Disposition: inline
-In-Reply-To: <20200925093614.GZ9675@piout.net>
-X-Provags-ID: V03:K1:VQy9eNdUYXIIZDE382DMLCtuHkN2mfcSziIHnQhqgWJZIR+IF0X
- oZhufLqAmhdf8JvnJff9j9IqPGiz9cf8tqjk3smwk2hfOwj4xlYuutjQP6sOQJwRIsQLKbe
- WkKgrjJM5KOEhtqqhHo9t3YKj1MOmWB9rFcC97NWGwmD5ODxrzgiguui+brDl94yGXk+cXu
- LDdstcfVJMzW2LypUFIZw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:q80hw9ErrqA=:MR3z7DEezfZXHgjrczDTGr
- KcFIZm59Yy0hP65r2xcCIEN6M8cVfBz5hdhmymgQcKPEuB+CqVbGl8ezwmKPeBFbmjwXxmhbA
- bQrs2l0SvzB4QeHOAJeuy9ZZq7LI2NWQ4WYk858Zn4vVgZhDl37EXpITMKMpZWvwouWpYrmY1
- iZV+igo4Yyinsy/W/u0pFCrUf64MAlcQnL0ZH10a9P4qR4MVnMIHMTR5p6idA+nRJW8QjyT0I
- wk/HAKvBDGdBBBysCS0KquuzBTZktyTbpvCtFc8+Hf/Z+M+izS9xMZVGiFrtaHZAh+dHaoVru
- ogsnZQciXudhL2+SMQOKKIxb9oyJnjfnVpMTG4ocBxSAfI0MYoctUCiW1HAQ1n/Nhu+LvV0Pj
- mPC3niwDJAZJ8UMLCpIXE55tCDIW79TLyxKh6X3kkdx0QGgMnh00xt/M1dK1csTYUvQChRkhk
- rwZ7KOZK0jdyoaCMY98RxtjQErZxsgGpm1vg+YDULfwtJDOwuuRhZaJjJhx87e814nS+1rQ1H
- un0W8wVNWY7xQIWVFPRUMflcbrjQgoaRlfqToRMYu8WwDvtG8KdDj9YNv+f2Q8lsmrXMy/7xg
- T4G8sne8eVyAPdgv948dF3ew+sLFw1c3d+yHxUo0xxol9AoXtekiqv+yJJ46AFt5wsSQ739fI
- eM3XAFQ91JT2EqRdz0hlurw7nMKtFJLAqdysbuf/3lgAeEFXgpxrmk6zZ+jBLVCkY27cmkpyJ
- ixr2InTWnWvfVuGR6GLFTBApzAO5GjxFxo3asIFpyr58DNYILiaUeJkNZPNYio1UGuLSCT3kb
- r8YgWEG84Kkb/24/7aB7eZnkzxOZX6lLF2HXzQKLMAE1M3590HcbvTZ2x1gxrkHXkPFfC9ZQ0
- ThZZbOGaW6qNF/Ohj4Wbevy1hErmMW66ApFySPa4acN2ZJnY4MDTC1UNEesVfKCJmQD/K/VkU
- KQZuwPPMtm/V4qW6g1zOPnIZ9R1VOr61Exfdbal0sgULdUetQv3FU1O+XWwUtIzxYcYi9FEw3
- oA6nUWQc40bkggbIxtXwi2lioJx/U02eiJ3n9IHRKXVMBUmDJi/OG4i69zXphevsd8Nkfld2F
- TYGsK3B9xodL6Usi1lfQKlD0Bv9i/m8dvDnMwJeJw30nlPWEtNdE70k6R7SGWS8yOjy0HwMB/
- w6MGSOKe5Mre8/E3DF76ZueZX6A8S267qJTj7muvdHtXCr3KgJzx2Ya76r+9uzxgjWoBGAdpd
- 140ZgP+oUr2fpGMm7cnoHzD5jG/gKKhSRva2Eig==
+In-Reply-To: <20200925143422.21718-6-graf@amazon.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25/09/20 16:34, Alexander Graf wrote:
+> We will introduce the concept of MSRs that may not be handled in kernel
+> space soon. Some MSRs are directly passed through to the guest, effectively
+> making them handled by KVM from user space's point of view.
+> 
+> This patch introduces all logic required to ensure that MSRs that
+> user space wants trapped are not marked as direct access for guests.
+> 
+> Signed-off-by: Alexander Graf <graf@amazon.com>
 
---ADZbWkCsHQ7r3kzd
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+VMX and SVM agree about the awful naming of MSR functions...  There is
+some confusion between msrs and indexes in msrpm_offsets.  I'll revisit
+this after looking at Sean's pending series that cleans up VMX.
 
-On Fri, Sep 25, 2020 at 11:36:14AM +0200, Alexandre Belloni wrote:
-> Hi,
->=20
-> On 24/09/2020 21:24:53+0200, Jonathan Neusch=C3=A4fer wrote:
-=2E..
-> > v3:
-=2E..
-> > - Relicense as GPLv2 or later
->=20
-> I don't think you had to relicense. The kernel is GPL 2 only, you are
-> free to license your code under GPL 2 only if that is what you desire.
+Paolo
 
-I don't mind in this case.
+> ---
+> 
+> v7 -> v8:
+> 
+>   - s/KVM_MSR_ALLOW/KVM_MSR_FILTER/g
+> ---
+>  arch/x86/kvm/svm/svm.c | 77 +++++++++++++++++++++++++++++++++++++-----
+>  arch/x86/kvm/svm/svm.h |  7 ++++
+>  2 files changed, 76 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 41aaee666751..45b0c180f42c 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -91,7 +91,7 @@ static DEFINE_PER_CPU(u64, current_tsc_ratio);
+>  static const struct svm_direct_access_msrs {
+>  	u32 index;   /* Index of the MSR */
+>  	bool always; /* True if intercept is always on */
+> -} direct_access_msrs[] = {
+> +} direct_access_msrs[MAX_DIRECT_ACCESS_MSRS] = {
+>  	{ .index = MSR_STAR,				.always = true  },
+>  	{ .index = MSR_IA32_SYSENTER_CS,		.always = true  },
+>  #ifdef CONFIG_X86_64
+> @@ -553,15 +553,41 @@ static int svm_cpu_init(int cpu)
+>  
+>  }
+>  
+> -static bool valid_msr_intercept(u32 index)
+> +static int direct_access_msr_idx(u32 msr)
+>  {
+> -	int i;
+> +	u32 i;
+>  
+>  	for (i = 0; direct_access_msrs[i].index != MSR_INVALID; i++)
+> -		if (direct_access_msrs[i].index == index)
+> -			return true;
+> +		if (direct_access_msrs[i].index == msr)
+> +			return i;
+>  
+> -	return false;
+> +	return -EINVAL;
+> +}
+> +
+> +static void set_shadow_msr_intercept(struct kvm_vcpu *vcpu, u32 msr, int read,
+> +				     int write)
+> +{
+> +	struct vcpu_svm *svm = to_svm(vcpu);
+> +	int idx = direct_access_msr_idx(msr);
+> +
+> +	if (idx == -EINVAL)
+> +		return;
+> +
+> +	/* Set the shadow bitmaps to the desired intercept states */
+> +	if (read)
+> +		set_bit(idx, svm->shadow_msr_intercept.read);
+> +	else
+> +		clear_bit(idx, svm->shadow_msr_intercept.read);
+> +
+> +	if (write)
+> +		set_bit(idx, svm->shadow_msr_intercept.write);
+> +	else
+> +		clear_bit(idx, svm->shadow_msr_intercept.write);
+> +}
+> +
+> +static bool valid_msr_intercept(u32 index)
+> +{
+> +	return direct_access_msr_idx(index) != -EINVAL;
+>  }
+>  
+>  static bool msr_write_intercepted(struct kvm_vcpu *vcpu, u32 msr)
+> @@ -583,8 +609,8 @@ static bool msr_write_intercepted(struct kvm_vcpu *vcpu, u32 msr)
+>  	return !!test_bit(bit_write,  &tmp);
+>  }
+>  
+> -static void set_msr_interception(struct kvm_vcpu *vcpu, u32 *msrpm, u32 msr,
+> -				 int read, int write)
+> +static void set_msr_interception_nosync(struct kvm_vcpu *vcpu, u32 *msrpm,
+> +					u32 msr, int read, int write)
+>  {
+>  	u8 bit_read, bit_write;
+>  	unsigned long tmp;
+> @@ -596,6 +622,13 @@ static void set_msr_interception(struct kvm_vcpu *vcpu, u32 *msrpm, u32 msr,
+>  	 */
+>  	WARN_ON(!valid_msr_intercept(msr));
+>  
+> +	/* Enforce non allowed MSRs to trap */
+> +	if (read && !kvm_msr_allowed(vcpu, msr, KVM_MSR_FILTER_READ))
+> +		read = 0;
+> +
+> +	if (write && !kvm_msr_allowed(vcpu, msr, KVM_MSR_FILTER_WRITE))
+> +		write = 0;
+> +
+>  	offset    = svm_msrpm_offset(msr);
+>  	bit_read  = 2 * (msr & 0x0f);
+>  	bit_write = 2 * (msr & 0x0f) + 1;
+> @@ -609,6 +642,13 @@ static void set_msr_interception(struct kvm_vcpu *vcpu, u32 *msrpm, u32 msr,
+>  	msrpm[offset] = tmp;
+>  }
+>  
+> +static void set_msr_interception(struct kvm_vcpu *vcpu, u32 *msrpm, u32 msr,
+> +				 int read, int write)
+> +{
+> +	set_shadow_msr_intercept(vcpu, msr, read, write);
+> +	set_msr_interception_nosync(vcpu, msrpm, msr, read, write);
+> +}
+> +
+>  static u32 *svm_vcpu_alloc_msrpm(void)
+>  {
+>  	struct page *pages = alloc_pages(GFP_KERNEL_ACCOUNT, MSRPM_ALLOC_ORDER);
+> @@ -639,6 +679,25 @@ static void svm_vcpu_free_msrpm(u32 *msrpm)
+>  	__free_pages(virt_to_page(msrpm), MSRPM_ALLOC_ORDER);
+>  }
+>  
+> +static void svm_msr_filter_changed(struct kvm_vcpu *vcpu)
+> +{
+> +	struct vcpu_svm *svm = to_svm(vcpu);
+> +	u32 i;
+> +
+> +	/*
+> +	 * Set intercept permissions for all direct access MSRs again. They
+> +	 * will automatically get filtered through the MSR filter, so we are
+> +	 * back in sync after this.
+> +	 */
+> +	for (i = 0; direct_access_msrs[i].index != MSR_INVALID; i++) {
+> +		u32 msr = direct_access_msrs[i].index;
+> +		u32 read = test_bit(i, svm->shadow_msr_intercept.read);
+> +		u32 write = test_bit(i, svm->shadow_msr_intercept.write);
+> +
+> +		set_msr_interception_nosync(vcpu, svm->msrpm, msr, read, write);
+> +	}
+> +}
+> +
+>  static void add_msr_offset(u32 offset)
+>  {
+>  	int i;
+> @@ -4212,6 +4271,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>  	.need_emulation_on_page_fault = svm_need_emulation_on_page_fault,
+>  
+>  	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
+> +
+> +	.msr_filter_changed = svm_msr_filter_changed,
+>  };
+>  
+>  static struct kvm_x86_init_ops svm_init_ops __initdata = {
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 45496775f0db..07bec0d5aad4 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -31,6 +31,7 @@ static const u32 host_save_user_msrs[] = {
+>  
+>  #define NR_HOST_SAVE_USER_MSRS ARRAY_SIZE(host_save_user_msrs)
+>  
+> +#define MAX_DIRECT_ACCESS_MSRS	15
+>  #define MSRPM_OFFSETS	16
+>  extern u32 msrpm_offsets[MSRPM_OFFSETS] __read_mostly;
+>  extern bool npt_enabled;
+> @@ -157,6 +158,12 @@ struct vcpu_svm {
+>  	 */
+>  	struct list_head ir_list;
+>  	spinlock_t ir_list_lock;
+> +
+> +	/* Save desired MSR intercept (read: pass-through) state */
+> +	struct {
+> +		DECLARE_BITMAP(read, MAX_DIRECT_ACCESS_MSRS);
+> +		DECLARE_BITMAP(write, MAX_DIRECT_ACCESS_MSRS);
+> +	} shadow_msr_intercept;
+>  };
+>  
+>  struct svm_cpu_data {
+> 
 
---ADZbWkCsHQ7r3kzd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl9uaHAACgkQCDBEmo7z
-X9vzphAAoCYGjLQdcxjaBh9Jk+4k/cEK567Nzrk68QQMIyXemvEY15Rvd+Hmtuw4
-6Kz+TfyxGKQT+kapBiKmMUAmezz5c376BNN6yc330IAZ76mK+Zt3JtUut2vDC3m3
-/uk2xriYBB/vbwGeUCBmjzvmhN330o8ZqqEShJHNnnRZHCp66ACtyw7Vrius/Dyz
-dqzbJZ50EktrNkTXQO/oqumv82L0UO4IwThJTWLl1/+XWd6M1FG9OkBNuGlJs1kH
-PPn4lMdZ+QP/+G7ZSM2E12eFXojqD9Y8mpclnGmbfC0plNFK8z5fxnVKYO0vSrl8
-nyNuqyc2LnTQaUw9d/8Dgg1K9S8XdU8ImtYz4GJG4WqMJx5tHsLzdocvIh9/bSjP
-WU2RgRUt6TPc8eeRibBgiKqDGCFhLy/yj532rRrSwNOetNwEEMWd597YyCusWMbY
-kDJxDpKivTP3dd9iqTMMJIyYQjGOr8JH013kFkr0bSOdIaBPybgqvALxzZnLJ7AB
-axnS1Ev8HBJ9zlM7EReT8VZqdfY4BnjsDGLZoVUBCU9iikV9RwVNfD+g5G44zurG
-9XfmWBTcjwwN/3Esf//WDtjHTwYCJaIyk6eh15hrSxG+uxg+yW4nbX0EZwDbIMhi
-IDGN4OuZkCF/kNo2vX383ynU4CS6mzkaOECfsWbvISi7m3ffldc=
-=IVvh
------END PGP SIGNATURE-----
-
---ADZbWkCsHQ7r3kzd--
