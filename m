@@ -2,118 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC5E8279539
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:54:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92D827953A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729571AbgIYXyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:54:04 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:42007 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIYXyB (ORCPT
+        id S1729593AbgIYXzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgIYXzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:54:01 -0400
-Received: by mail-ua1-f68.google.com with SMTP id f15so206191uaq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:54:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k3a4T/qYjLdTTJwj1OQmoXaHAUT02pWpKA08ylkAqoE=;
-        b=Ku14yAe8H6bQHt5dQXoGlCr1IWqVb4RKF8Gp49V+6UWyjdsTrbyqwYlPAYELbZL2MJ
-         LO6sKBHDv530tpI/P2B35nsJn7nQcw/Xy4f+xfAyfhIqbc7FTWWU45WyQnWfHT2P84A/
-         LWmJP4fKP45r05i0IqgU7N5ErtZJYqxIWobRa3s9amLxFoOgdR6dTtlMKoNtMbMO50U1
-         djPCjc5Q1T+4aP18rVifICEuQHvRw6mXDhvdXJ9+MR6sVh09LAQ0IfCVcfon8fPXqHZP
-         JP1eKSTYfrgwwIEYxfQ8hGMAeXXWkp+0jUhIui8WMXfSYn6jqqYvHPceKNjfBtheGFch
-         vILQ==
-X-Gm-Message-State: AOAM530Ou41rKuszrX9RORvaY9FqH5nGHzRuF/Ooo0+HbE1EE/EJUve2
-        As9EiB7Fx0vmZDFTOyZ+TTFt8ijrH60Rvcsid3Q=
-X-Google-Smtp-Source: ABdhPJwPZLu2RiCnmxt1vGCrhOphqmf64XIDBpJTmDRTMaVG8mO61nql1FdhcQeKjUCxnIL8mHJNDkfziqyduuXBIFk=
-X-Received: by 2002:ab0:2741:: with SMTP id c1mr764744uap.98.1601078040403;
- Fri, 25 Sep 2020 16:54:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200922210510.156220-1-lyude@redhat.com> <CAKb7UvhAb0wFd9Qi1FGJ=TAYZJ9DYXL6XXMfnG49xEO=a9TuYg@mail.gmail.com>
- <7b10668ee337e531b14705ebecb1f6c1004728d6.camel@redhat.com>
- <CAKb7Uvj++15aEXiLGgSZb37wwzDSRCetVT+trP6JNwhk8n-whA@mail.gmail.com> <8bd8ee03f88e7e674e0ea8c6d63d783777cfe414.camel@redhat.com>
-In-Reply-To: <8bd8ee03f88e7e674e0ea8c6d63d783777cfe414.camel@redhat.com>
-From:   Ilia Mirkin <imirkin@alum.mit.edu>
-Date:   Fri, 25 Sep 2020 19:53:49 -0400
-Message-ID: <CAKb7UvgL_rV73BqvVoZsagy+_+cnBios1pKazq064D51NdAuqw@mail.gmail.com>
-Subject: Re: [PATCH] drm/nouveau/kms/nv50-: Fix clock checking algorithm in nv50_dp_mode_valid()
-To:     Lyude <lyude@redhat.com>
-Cc:     nouveau <nouveau@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 25 Sep 2020 19:55:18 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1817CC0613CE;
+        Fri, 25 Sep 2020 16:55:18 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 184D613BA0E7B;
+        Fri, 25 Sep 2020 16:38:30 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 16:55:16 -0700 (PDT)
+Message-Id: <20200925.165516.1977040744847893527.davem@davemloft.net>
+To:     ivan.khoronzhuk@gmail.com
+Cc:     netdev@vger.kernel.org, kuba@kernel.org,
+        alexander.sverdlin@nokia.com, linux-kernel@vger.kernel.org,
+        ikhoronz@cisco.com
+Subject: Re: [PATCH] net: ethernet: cavium: octeon_mgmt: use phy_start and
+ phy_stop
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200925124439.19946-1-ikhoronz@cisco.com>
+References: <20200925124439.19946-1-ikhoronz@cisco.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 25 Sep 2020 16:38:30 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 6:08 PM Lyude Paul <lyude@redhat.com> wrote:
->
-> On Tue, 2020-09-22 at 17:22 -0400, Ilia Mirkin wrote:
-> > On Tue, Sep 22, 2020 at 5:14 PM Lyude Paul <lyude@redhat.com> wrote:
-> > > On Tue, 2020-09-22 at 17:10 -0400, Ilia Mirkin wrote:
-> > > > Can we use 6bpc on arbitrary DP monitors, or is there a capability for
-> > > > it? Maybe only use 6bpc if display_info.bpc == 6 and otherwise use 8?
-> > >
-> > > I don't think that display_info.bpc actually implies a minimum bpc, only a
-> > > maximum bpc iirc (Ville would know the answer to this one). The other thing
-> > > to
-> > > note here is that we want to assume the lowest possible bpc here since we're
-> > > only concerned if the mode passed to ->mode_valid can be set under -any-
-> > > conditions (including those that require lowering the bpc beyond it's
-> > > maximum
-> > > value), so we definitely do want to always use 6bpc here even once we get
-> > > support for optimizing the bpc based on the available display bandwidth.
-> >
-> > Yeah, display_info is the max bpc. But would an average monitor
-> > support 6bpc? And if it does, does the current link training code even
-> > try that when display_info.bpc != 6?
->
-> So I did confirm that 6bpc support is mandatory for DP, so yes-6 bpc will always
-> work.
->
-> But also, your second comment doesn't really apply here. So: to be clear, we're
-> not really concerned here about whether nouveau will actually use 6bpc or not.
-> In truth I'm not actually sure either if we have any code that uses 6bpc (iirc
-> we don't), since we don't current optimize bpc. I think it's very possible for
-> us to use 6bpc for eDP displays if I recall though, but I'm not sure on that.
->
-> But that's also not the point of this code. ->mode_valid() is only used in two
-> situations in DRM modesetting: when probing connector modes, and when checking
-> if a mode is valid or not during the atomic check for atomic modesetting. Its
-> purpose is only to reject display modes that are physically impossible to set in
-> hardware due to static hardware constraints. Put another way, we only check the
-> given mode against constraints which will always remain constant regardless of
-> the rest of the display state. An example of a static constraint would be the
-> max pixel clock supported by the hardware, since on sensible hardware this never
-> changes. A dynamic constraint would be something like how much bandwidth is
-> currently unused on an MST topology, since that value is entirely dependent on
-> the rest of the display state.
->
-> So - with that said, bpc is technically a dynamic constraint because while a
-> sink and source both likely have their own bpc limits, any bpc which is equal or
-> below that limit can be used depending on what the driver decides - which will
-> be based on the max_bpc property, and additionally for MST displays it will also
-> depend on the available bandwidth on the topology. The only non-dynamic thing
-> about bpc is that at a minimum, it will be 6 - so any mode that doesn't fit on
-> the link with a bpc of 6 is guaranteed to be a mode that we'll never be able to
-> set and therefore want to prune.
->
-> So, even if we're not using 6 in the majority of situations, I'm fairly
-> confident it's the right value here. It's also what i915 does as well (and they
-> previously had to fix a bug that was the result of assuming a minimum of 8bpc
-> instead of 6).
+From: Ivan Khoronzhuk <ivan.khoronzhuk@gmail.com>
+Date: Fri, 25 Sep 2020 15:44:39 +0300
 
-Here's the situation I'm trying to avoid:
+> To start also "phy state machine", with UP state as it should be,
+> the phy_start() has to be used, in another case machine even is not
+> triggered. After this change negotiation is supposed to be triggered
+> by SM workqueue.
+> 
+> It's not correct usage, but it appears after the following patch,
+> so add it as a fix.
+> 
+> Fixes: 74a992b3598a ("net: phy: add phy_check_link_status")
+> Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
 
-1. Mode is considered "OK" from a bandwidth perspective @6bpc
-2. Modesetting logic never tries 6bpc and the modeset fails
-
-As long as the two bits of logic agree on what is settable, I'm happy.
-
-Cheers,
-
-  -ilia
+Applied and queued up for -stable, thanks.
