@@ -2,129 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C8D2278620
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD48927862A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728276AbgIYLl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:41:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58547 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728038AbgIYLl7 (ORCPT
+        id S1728363AbgIYLnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:43:05 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:53043 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIYLnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:41:59 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601034117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4y1m9JMkkDOJsL4k1JE6OPASJ9H32SGI/WQkPFQ5hvU=;
-        b=BehAv66nOqG6+fVz9X/JJ18JBB8nqRlvBbI1jkIqwwuAo6o5JUespK6ltjCjkPoDHY1Ofh
-        R4ujNICOJ5TgB3rt0ECTv6P2UJa7uzixSTYIyfRA+pDWfUqjwewI1PxxExwsH3p+DmpZ0t
-        NVXeMwkqHDSzPB28yrn1nx0PeYyFvdI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-oSmASuxLNzWLqtK_WBmrYA-1; Fri, 25 Sep 2020 07:41:55 -0400
-X-MC-Unique: oSmASuxLNzWLqtK_WBmrYA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6C8B1007382;
-        Fri, 25 Sep 2020 11:41:53 +0000 (UTC)
-Received: from [10.72.12.44] (ovpn-12-44.pek2.redhat.com [10.72.12.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E5FB527BB7;
-        Fri, 25 Sep 2020 11:41:38 +0000 (UTC)
-Subject: Re: [RFC PATCH 02/24] vhost-vdpa: fix vqs leak in vhost_vdpa_open()
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
-        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
-        mhabets@solarflare.com, eli@mellanox.com, amorenoz@redhat.com,
-        maxime.coquelin@redhat.com, stefanha@redhat.com,
-        sgarzare@redhat.com
-References: <20200924032125.18619-1-jasowang@redhat.com>
- <20200924032125.18619-3-jasowang@redhat.com>
- <20200924074816.GC170403@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <7237334f-10df-6d5b-dce9-c16b38166ae0@redhat.com>
-Date:   Fri, 25 Sep 2020 19:41:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 25 Sep 2020 07:43:05 -0400
+Received: from mail-qk1-f170.google.com ([209.85.222.170]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1N17gw-1kSl6T1KJ8-012YOU for <linux-kernel@vger.kernel.org>; Fri, 25 Sep
+ 2020 13:43:03 +0200
+Received: by mail-qk1-f170.google.com with SMTP id w12so2413009qki.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:43:03 -0700 (PDT)
+X-Gm-Message-State: AOAM531NaU9cXLDXzaCnwTYFq7cJwMHATvitceR8yBK5zu3tMnImCmV1
+        bwbr18FqgMiPACXOll8i1StWknm6ZKPKeQc0SqE=
+X-Google-Smtp-Source: ABdhPJxwy6CLQ+3z9ls6t+I4y0zYbeMKdRiXGVftoa5NoJuLU2aRCidwAqxez624CRsRpyfFFmcB359CShOmCNqj0Lc=
+X-Received: by 2002:a37:5d8:: with SMTP id 207mr3738577qkf.352.1601034182156;
+ Fri, 25 Sep 2020 04:43:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200924074816.GC170403@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20200922202208.1861595-1-arnd@arndb.de> <20200923054440.GA2619878@kroah.com>
+In-Reply-To: <20200923054440.GA2619878@kroah.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 25 Sep 2020 13:42:46 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a19dDzW2gm-bC9PqVZ+sV+FJ7qdvzrSFrwd=XAdRcvLWA@mail.gmail.com>
+Message-ID: <CAK8P3a19dDzW2gm-bC9PqVZ+sV+FJ7qdvzrSFrwd=XAdRcvLWA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] staging: vchiq: fix __user annotations
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        driverdevel <devel@driverdev.osuosl.org>,
+        Marcelo Diop-Gonzalez <marcgonzalez@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nachammai Karuppiah <nachukannan@gmail.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Jamal Shareef <jamal.k.shareef@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:V0FVmJazE8lZV4J7fbLc8COxuEYEhcTD32qHonrB824cb4eReAr
+ T7+fX4DR1bhXxlNHXZZ/YCwpgUBtkZcrp2hyr1bHoJ1DgvhHpB74fuxpEy3nItvrbv59LQn
+ 4G54UVHe0PjQvzfClFJiqyoj4t4EcDmyGm5jzdVslgQ/ep5pzFIfT47pRRkhkcEnuSLAqsD
+ 0edHitRAjYiZ8bs612Wnw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+NIJgbFrmlw=:v6hAAbagFlDEzMDl897VsV
+ NYpQrq0clwjnJBRPMrjJM2qN89aNWyNQ94vv6mZ9a5ZDx0AgYnVEnOh2lUavOaa1SEdmHbr+a
+ YfAKnd+SkhLHUXy2u+j52LC38cDbvcxWxK0JdDQE/Y1l6eC5dYNPpTYF4dPPUF8tipsYbgg7r
+ o5YUzSs7pbj1g8QQMDrdM70hhNgcL4R8Shjrln+fJcY/crlyO9EDihj0XAgZ56l5T63uH1R/k
+ LAYa80iExhvyflEG2YqSlElLPpZc8qWfFAU5K0AXklFXXbuUsXyk2CjdMrtjyGaVbhJHlMolA
+ 0K0jXIFZECMD+we6jWzvKS6bEkUDNiWl75j6T9Yl8C3HXVr7oh9ZJ0WXSPA8555xVU79mMJxK
+ 2VDXIKNbgZiiqJBMyCr+iKo0ZSPJ9LQAJX9tVVO/55gVTX7NPdHKaF0Eaz65V2A+l0KU2yFQ6
+ wyDBnA5IWDojkYsyjAVj6ZZF/nxaxwKVFCC1eIWAunfL6Md6hNMiV6QJU4cCvKlZ7psbR62jX
+ ES46qTIVkjUEEEHLhHHA8iQcB2NHYk6doDlZaZAT83q48AW3wz0539OMUxyz0F2ChMSNvbhBT
+ po/T05fg9aC4MoOGmfchqZ5zLDE7KF/byvK0bworTF/n61PbZKZ3oSDeiawoS8Rcq2npZxCoz
+ 4kzUulBD/OGxeu4OvMbRjTc8Sqot7tVSaTZlQ/dxJ81BjPzGYJHUD9hDhlAuRp5qtteV0JhGO
+ HRfGc9v9nBYg3aR16eJ9RE9l7XPlW+vb9VFz7wJXkgNn2JaEDWSZXTLuGtb3DO9UkvhCshWeL
+ Jfz7kP0O3zyVffkjZnzREJM8CP68ns46ae1CQQ6/pHZkbLROzxqU/oZBLIQf+UdWVYXTdIcmv
+ G0lGbIb/CadMO/xq8jVFaRTAs9YTpqYQOrny2pgnO4aj75ubLvpScPBG4RyfnF6dmMq3mhDhp
+ 6Wj/LOjct5G2YCHKdcRReyXU8LIDbjihJevrCXrukkSO+6vq5uFpp
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2020/9/24 下午3:48, Eli Cohen wrote:
-> On Thu, Sep 24, 2020 at 11:21:03AM +0800, Jason Wang wrote:
->> We need to free vqs during the err path after it has been allocated
->> since vhost won't do that for us.
->>
->> Signed-off-by: Jason Wang <jasowang@redhat.com>
->> ---
->>   drivers/vhost/vdpa.c | 11 ++++++++---
->>   1 file changed, 8 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
->> index 796fe979f997..9c641274b9f3 100644
->> --- a/drivers/vhost/vdpa.c
->> +++ b/drivers/vhost/vdpa.c
->> @@ -764,6 +764,12 @@ static void vhost_vdpa_free_domain(struct vhost_vdpa *v)
->>   	v->domain = NULL;
->>   }
->>   
->> +static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
->> +{
->> +	vhost_dev_cleanup(&v->vdev);
->> +	kfree(v->vdev.vqs);
->> +}
->> +
-> Wouldn't it be cleaner to call kfree(vqs) explicilty inside
-> vhost_vdpa_open() in case of failure and keep the symetry of
-> vhost_dev_init()/vhost_dev_cleanup()?
-
-
-That's also fine.
-
-See 
-https://www.mail-archive.com/virtualization@lists.linux-foundation.org/msg42558.html
-
-I will use that for the next version.
-
-Thanks.
-
-
+On Wed, Sep 23, 2020 at 7:44 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> and so on...
 >
->>   static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->>   {
->>   	struct vhost_vdpa *v;
->> @@ -809,7 +815,7 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
->>   	return 0;
->>   
->>   err_init_iotlb:
->> -	vhost_dev_cleanup(&v->vdev);
->> +	vhost_vdpa_cleanup(v);
->>   err:
->>   	atomic_dec(&v->opened);
->>   	return r;
->> @@ -840,8 +846,7 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
->>   	vhost_vdpa_free_domain(v);
->>   	vhost_vdpa_config_put(v);
->>   	vhost_vdpa_clean_irq(v);
->> -	vhost_dev_cleanup(&v->vdev);
->> -	kfree(v->vdev.vqs);
->> +	vhost_vdpa_cleanup(v);
->>   	mutex_unlock(&d->mutex);
->>   
->>   	atomic_dec(&v->opened);
->> -- 
->> 2.20.1
->>
+> Care to try a v2?
 
+I had a look now and found the problem, as there are two drivers that I did not
+have enabled but that need a trivial change to match my other modifications.
+
+I'll send the new version in a bit, changes below for reference.
+
+    Arnd
+
+index 292fcee9d6f2..d567a2e3f70c 100644
+--- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
++++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
+@@ -122,7 +122,7 @@ static int
+ vc_vchi_audio_init(struct vchiq_instance *vchiq_instance,
+                   struct bcm2835_audio_instance *instance)
+ {
+-       struct vchiq_service_params params = {
++       struct vchiq_service_params_kernel params = {
+                .version                = VC_AUDIOSERV_VER,
+                .version_min            = VC_AUDIOSERV_MIN_VER,
+                .fourcc                 = VCHIQ_MAKE_FOURCC('A', 'U', 'D', 'S'),
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index e798d494f00f..3a4202551cfc 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -1858,7 +1858,7 @@ int vchiq_mmal_init(struct vchiq_mmal_instance
+**out_instance)
+        int status;
+        struct vchiq_mmal_instance *instance;
+        static struct vchiq_instance *vchiq_instance;
+-       struct vchiq_service_params params = {
++       struct vchiq_service_params_kernel params = {
+                .version                = VC_MMAL_VER,
+                .version_min            = VC_MMAL_MIN_VER,
+                .fourcc                 = VCHIQ_MAKE_FOURCC('m', 'm', 'a', 'l'),
