@@ -2,197 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F81B278416
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D78B27841C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbgIYJcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
+        id S1727879AbgIYJel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727428AbgIYJcq (ORCPT
+        with ESMTP id S1727426AbgIYJek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:32:46 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48758C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:32:46 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id m6so2863696wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=4AYpniAMfRyIZxoSbDsD0cbBOi0L5LjnstW16/XYys8=;
-        b=EqrRwzScHGQ9bNOBSrkfHUojoFDVtMtIJjal/XLNQHibNbnPapmCQPNa0CyTkJtJOq
-         FT4mGiKvtFN4/WSMx0KLxBk0HfKOi4QCazpGg+RVc10a/l9yF2+Q1XY1qkrFv1kjE7c1
-         imD377Y5IEN9kdFoMkLsbCouPuLjf8TW2biLdU+/kGfPIXZFmsjULqL68r95mXxA3TbQ
-         jHsEhHSX84Ud/4Cvy4E9d+Os7KNwIba6m8QXdVZqxMMyHv3+0msyNCtVtgYC2PeESc2j
-         q03Ir7j+T11lq8X6sjt/8NzPStaqAcw4QPIlNdecU63HZWsvGcPzvd4e2Uo4WyD3noBH
-         Afvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4AYpniAMfRyIZxoSbDsD0cbBOi0L5LjnstW16/XYys8=;
-        b=W0QuEDwEs9ck4vAejnNgW6vG9l1zjMvNckik/4jwGmN9QjCI8rn2hITZaewaUAAZ+Z
-         qDBcXe7p2mmqngNBn281lftTMsoBQ/RhVlOQtE0q2nI+XLMO1bPeRMdCMsuBHIgEDO2C
-         0CqrjmdBSDx8dNuOjK7eoO3DrR9RJr1kqeNhGV5g2pKSY7YAtfiYRCKMBhOWNgZK+7Tf
-         eQV682DBjFhsNB8o5q3+cvbfxDkBIQOTphKg6ewoeOLAUpwZclL/MrdwOYHEC1u7MtD5
-         xyXYwz7QjOQKX0EFRMsssgAh3NdhiyZBZZKkc8Do+lHIkPS2lfex8/HDzpxZAeAo+udg
-         BFOw==
-X-Gm-Message-State: AOAM5314Z6tKjhdZUQaMjR4eEjz0dBtQ8Lb8iPM/tTTV9ooF48FhK1VM
-        hHw/TQl1yKh668aVFadZmuchFoJNLQ0D1Q==
-X-Google-Smtp-Source: ABdhPJyHf1RHjhrB9mxzXcDRQWxr1EKzsHmyFu2MCCn1HMQUocjW34d4O+b4SpLPa+V9Yx36qoIh9g==
-X-Received: by 2002:adf:ff90:: with SMTP id j16mr3741279wrr.105.1601026364364;
-        Fri, 25 Sep 2020 02:32:44 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id h204sm2172308wmf.35.2020.09.25.02.32.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 02:32:43 -0700 (PDT)
-Subject: Re: [PATCH v3] nvmem: core: fix possibly memleak when use
- nvmem_cell_info_to_nvmem_cell()
-To:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20200923204456.14032-1-vadym.kochan@plvision.eu>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <12edae35-a927-11bf-f80a-037011c4f07a@linaro.org>
-Date:   Fri, 25 Sep 2020 10:32:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Fri, 25 Sep 2020 05:34:40 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71072C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:34:40 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1kLk7b-0000gX-Lg; Fri, 25 Sep 2020 11:34:31 +0200
+Received: from [IPv6:2a03:f580:87bc:d400:bb52:8761:ee49:c953] (unknown [IPv6:2a03:f580:87bc:d400:bb52:8761:ee49:c953])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
+         client-signature RSA-PSS (4096 bits))
+        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
+        (Authenticated sender: mkl@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 348C256A369;
+        Fri, 25 Sep 2020 09:34:30 +0000 (UTC)
+Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
+To:     Michael Walle <michael@walle.cc>, Leo Li <leoyang.li@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+References: <20200923095711.11355-1-michael@walle.cc>
+ <20200923095711.11355-2-michael@walle.cc>
+ <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+ <e9347e4c2e070ee9e8aa7a8007d89f02@walle.cc>
+ <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+ <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
+ mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
+ zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
+ QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
+ 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
+ Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
+ XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
+ nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
+ Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
+ eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
+ kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
+ ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
+ CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJfEWX4BQkQo2czAAoJECte4hHF
+ iupUvfMP/iNtiysSr5yU4tbMBzRkGov1/FjurfH1kPweLVHDwiQJOGBz9HgM5+n8boduRv36
+ 0lU32g3PehN0UHZdHWhygUd6J09YUi2mJo1l2Fz1fQ8elUGUOXpT/xoxNQjslZjJGItCjza8
+ +D1DO+0cNFgElcNPa7DFBnglatOCZRiMjo4Wx0i8njEVRU+4ySRU7rCI36KPts+uVmZAMD7V
+ 3qiR1buYklJaPCJsnXURXYsilBIE9mZRmQjTDVqjLWAit++flqUVmDjaD/pj2AQe2Jcmd2gm
+ sYW5P1moz7ACA1GzMjLDmeFtpJOIB7lnDX0F/vvsG3V713/701aOzrXqBcEZ0E4aWeZJzaXw
+ n1zVIrl/F3RKrWDhMKTkjYy7HA8hQ9SJApFXsgP334Vo0ea82H3dOU755P89+Eoj0y44MbQX
+ 7xUy4UTRAFydPl4pJskveHfg4dO6Yf0PGIvVWOY1K04T1C5dpnHAEMvVNBrfTA8qcahRN82V
+ /iIGB+KSC2xR79q1kv1oYn0GOnWkvZmMhqGLhxIqHYitwH4Jn5uRfanKYWBk12LicsjRiTyW
+ Z9cJf2RgAtQgvMPvmaOL8vB3U4ava48qsRdgxhXMagU618EszVdYRNxGLCqsKVYIDySTrVzu
+ ZGs2ibcRhN4TiSZjztWBAe1MaaGk05Ce4h5IdDLbOOxhuQENBF8SDLABCADohJLQ5yffd8Sq
+ 8Lo9ymzgaLcWboyZ46pY4CCCcAFDRh++QNOJ8l4mEJMNdEa/yrW4lDQDhBWV75VdBuapYoal
+ LFrSzDzrqlHGG4Rt4/XOqMo6eSeSLipYBu4Xhg59S9wZOWbHVT/6vZNmiTa3d40+gBg68dQ8
+ iqWSU5NhBJCJeLYdG6xxeUEtsq/25N1erxmhs/9TD0sIeX36rFgWldMwKmZPe8pgZEv39Sdd
+ B+ykOlRuHag+ySJxwovfdVoWT0o0LrGlHzAYo6/ZSi/Iraa9R/7A1isWOBhw087BMNkRYx36
+ B77E4KbyBPx9h3wVyD/R6T0Q3ZNPu6SQLnsWojMzABEBAAGJAjwEGAEKACYWIQTBQAugs5ie
+ b7x9W1wrXuIRxYrqVAUCXxIMsAIbDAUJAucGAAAKCRArXuIRxYrqVOu0D/48xSLyVZ5NN2Bb
+ yqo3zxdv/PMGJSzM3JqSv7hnMZPQGy9XJaTc5Iz/hyXaNRwpH5X0UNKqhQhlztChuAKZ7iu+
+ 2VKzq4JJe9qmydRUwylluc4HmGwlIrDNvE0N66pRvC3h8tOVIsippAQlt5ciH74bJYXr0PYw
+ Aksw1jugRxMbNRzgGECg4O6EBNaHwDzsVPX1tDj0d9t/7ClzJUy20gg8r9Wm/I/0rcNkQOpV
+ RJLDtSbGSusKxor2XYmVtHGauag4YO6Vdq+2RjArB3oNLgSOGlYVpeqlut+YYHjWpaX/cTf8
+ /BHtIQuSAEu/WnycpM3Z9aaLocYhbp5lQKL6/bcWQ3udd0RfFR/Gv7eR7rn3evfqNTtQdo4/
+ YNmd7P8TS7ALQV/5bNRe+ROLquoAZvhaaa6SOvArcmFccnPeyluX8+o9K3BCdXPwONhsrxGO
+ wrPI+7XKMlwWI3O076NqNshh6mm8NIC0mDUr7zBUITa67P3Q2VoPoiPkCL9RtsXdQx5BI9iI
+ h/6QlzDxcBdw2TVWyGkVTCdeCBpuRndOMVmfjSWdCXXJCLXO6sYeculJyPkuNvumxgwUiK/H
+ AqqdUfy1HqtzP2FVhG5Ce0TeMJepagR2CHPXNg88Xw3PDjzdo+zNpqPHOZVKpLUkCvRv1p1q
+ m1qwQVWtAwMML/cuPga78rkBDQRfEXGWAQgAt0Cq8SRiLhWyTqkf16Zv/GLkUgN95RO5ntYM
+ fnc2Tr3UlRq2Cqt+TAvB928lN3WHBZx6DkuxRM/Y/iSyMuhzL5FfhsICuyiBs5f3QG70eZx+
+ Bdj4I7LpnIAzmBdNWxMHpt0m7UnkNVofA0yH6rcpCsPrdPRJNOLFI6ZqXDQk9VF+AB4HVAJY
+ BDU3NAHoyVGdMlcxev0+gEXfBQswEcysAyvzcPVTAqmrDsupnIB2f0SDMROQCLO6F+/cLG4L
+ Stbz+S6YFjESyXblhLckTiPURvDLTywyTOxJ7Mafz6ZCene9uEOqyd/h81nZOvRd1HrXjiTE
+ 1CBw+Dbvbch1ZwGOTQARAQABiQNyBBgBCgAmFiEEwUALoLOYnm+8fVtcK17iEcWK6lQFAl8R
+ cZYCGwIFCQLnoRoBQAkQK17iEcWK6lTAdCAEGQEKAB0WIQQreQhYm33JNgw/d6GpyVqK+u3v
+ qQUCXxFxlgAKCRCpyVqK+u3vqatQCAC3QIk2Y0g/07xNLJwhWcD7JhIqfe7Qc5Vz9kf8ZpWr
+ +6w4xwRfjUSmrXz3s6e/vrQsfdxjVMDFOkyG8c6DWJo0TVm6Ucrf9G06fsjjE/6cbE/gpBkk
+ /hOVz/a7UIELT+HUf0zxhhu+C9hTSl8Nb0bwtm6JuoY5AW0LP2KoQ6LHXF9KNeiJZrSzG6WE
+ h7nf3KRFS8cPKe+trbujXZRb36iIYUfXKiUqv5xamhohy1hw+7Sy8nLmw8rZPa40bDxX0/Gi
+ 98eVyT4/vi+nUy1gF1jXgNBSkbTpbVwNuldBsGJsMEa8lXnYuLzn9frLdtufUjjCymdcV/iT
+ sFKziU9AX7TLZ5AP/i1QMP9OlShRqERH34ufA8zTukNSBPIBfmSGUe6G2KEWjzzNPPgcPSZx
+ Do4jfQ/m/CiiibM6YCa51Io72oq43vMeBwG9/vLdyev47bhSfMLTpxdlDJ7oXU9e8J61iAF7
+ vBwerBZL94I3QuPLAHptgG8zPGVzNKoAzxjlaxI1MfqAD9XUM80MYBVjunIQlkU/AubdvmMY
+ X7hY1oMkTkC5hZNHLgIsDvWUG0g3sACfqF6gtMHY2lhQ0RxgxAEx+ULrk/svF6XGDe6iveyc
+ z5Mg5SUggw3rMotqgjMHHRtB3nct6XqgPXVDGYR7nAkXitG+nyG5zWhbhRDglVZ0mLlW9hij
+ z3Emwa94FaDhN2+1VqLFNZXhLwrNC5mlA6LUjCwOL+zb9a07HyjekLyVAdA6bZJ5BkSXJ1CO
+ 5YeYolFjr4YU7GXcSVfUR6fpxrb8N+yH+kJhY3LmS9vb2IXxneE/ESkXM6a2YAZWfW8sgwTm
+ 0yCEJ41rW/p3UpTV9wwE2VbGD1XjzVKl8SuAUfjjcGGys3yk5XQ5cccWTCwsVdo2uAcY1MVM
+ HhN6YJjnMqbFoHQq0H+2YenTlTBn2Wsp8TIytE1GL6EbaPWbMh3VLRcihlMj28OUWGSERxat
+ xlygDG5cBiY3snN3xJyBroh5xk/sHRgOdHpmujnFyu77y4RTZ2W8
+Message-ID: <790ce102-7542-b65e-0945-a04faf6e4b89@pengutronix.de>
+Date:   Fri, 25 Sep 2020 11:34:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200923204456.14032-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="Vso2bsiwF03I2VMccksJJl8mHVNqsckVZ"
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Vso2bsiwF03I2VMccksJJl8mHVNqsckVZ
+Content-Type: multipart/mixed; boundary="h9EVbyu9eVCGkuNapgPNHY0q89dB8ZzoH";
+ protected-headers="v1"
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Michael Walle <michael@walle.cc>, Leo Li <leoyang.li@nxp.com>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+ Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Joakim Zhang <qiangqing.zhang@nxp.com>,
+ Oleksij Rempel <o.rempel@pengutronix.de>
+Message-ID: <790ce102-7542-b65e-0945-a04faf6e4b89@pengutronix.de>
+Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
+References: <20200923095711.11355-1-michael@walle.cc>
+ <20200923095711.11355-2-michael@walle.cc>
+ <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+ <e9347e4c2e070ee9e8aa7a8007d89f02@walle.cc>
+ <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+ <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
+In-Reply-To: <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
+
+--h9EVbyu9eVCGkuNapgPNHY0q89dB8ZzoH
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+On 9/25/20 11:31 AM, Michael Walle wrote:
+> Marc, I'd convert this to yaml format,
+
+Oleksij (CC'ed) is working already on this.
+
+> may I put your name as the maintainer in the binding?
+
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
 
-On 23/09/2020 21:44, Vadym Kochan wrote:
-> Fix missing 'kfree_const(cell->name)' when call to
-> nvmem_cell_info_to_nvmem_cell() in several places:
-> 
->       * after nvmem_cell_info_to_nvmem_cell() failed during
->         nvmem_add_cells()
-> 
->       * during nvmem_device_cell_{read,write} when cell->name is
->         kstrdup'ed() without calling kfree_const() at the end, but
->         really there is no reason to do that 'dup, because the cell
->         instance is allocated on the stack for some short period to be
->         read/write without exposing it to the caller.
-> 
-> So the new nvmem_cell_info_to_nvmem_cell_nodup() helper is introduced
-> which is used to convert cell_info -> cell without name duplication as
-> a lighweight version of nvmem_cell_info_to_nvmem_cell().
-> 
-> Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
-> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+--h9EVbyu9eVCGkuNapgPNHY0q89dB8ZzoH--
 
-Looks good to me! Thanks for the patch.
+--Vso2bsiwF03I2VMccksJJl8mHVNqsckVZ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+-----BEGIN PGP SIGNATURE-----
 
-Greg,
+iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9tuaIACgkQqclaivrt
+76lexQf/YD2d/wkEXxvLSkrJtEnHGKg81c6SreDG7nQBhPSbhZlMJ+3hpvvGGxK3
+1fY7VmT9KGPmSHAR5gPbIvIXL86TB3DBu2OGKqIlHyLR0fss/IJRhviCEWy8Jwcu
+6Mhb/bCU8RcR1R13/TO3hCbKPXarQAkW9FwX/nEyMehuWYynXDLCM8UckwZa0Zik
+zbMzX0psOmrbjgXHBygMRFiTEKgFxgLmKdeloFPr3arf8Az3KO4Q9DBR+w+AnQ8E
+G/hkvpErfGHAa2h+m8FioeoEPoOKZLNNvwp0ZWJZ27rks53BEVlXGDosL+/fyN93
+Bk0e3jnyso1CTwpDbeju5UhmCVhCug==
+=lrs1
+-----END PGP SIGNATURE-----
 
-Can you please pick this one? As don't have any nvmem pending patches to 
-send it together.
-
-thanks,
-srini
-
-
-> ---
-> v3:
->      * rename __nvmem_cell_info_to_nvmem_cell() -> nvmem_cell_info_to_nvmem_cell_nodup()
-> 
->      * rephrase commit description a bit
-> 
->      * get rid of wrong func line wrapping
-> 
-> v2:
->      * remove not needed 'kfree_const(cell->name)' after nvmem_cell_info_to_nvmem_cell()
->        failed.
-> 
->   drivers/nvmem/core.c | 33 ++++++++++++++++++++++++---------
->   1 file changed, 24 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-> index 6cd3edb2eaf6..10cd935cf30e 100644
-> --- a/drivers/nvmem/core.c
-> +++ b/drivers/nvmem/core.c
-> @@ -361,16 +361,14 @@ static void nvmem_cell_add(struct nvmem_cell *cell)
->   	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_CELL_ADD, cell);
->   }
->   
-> -static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
-> -				   const struct nvmem_cell_info *info,
-> -				   struct nvmem_cell *cell)
-> +static int nvmem_cell_info_to_nvmem_cell_nodup(struct nvmem_device *nvmem,
-> +					const struct nvmem_cell_info *info,
-> +					struct nvmem_cell *cell)
->   {
->   	cell->nvmem = nvmem;
->   	cell->offset = info->offset;
->   	cell->bytes = info->bytes;
-> -	cell->name = kstrdup_const(info->name, GFP_KERNEL);
-> -	if (!cell->name)
-> -		return -ENOMEM;
-> +	cell->name = info->name;
->   
->   	cell->bit_offset = info->bit_offset;
->   	cell->nbits = info->nbits;
-> @@ -382,13 +380,30 @@ static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
->   	if (!IS_ALIGNED(cell->offset, nvmem->stride)) {
->   		dev_err(&nvmem->dev,
->   			"cell %s unaligned to nvmem stride %d\n",
-> -			cell->name, nvmem->stride);
-> +			cell->name ?: "<unknown>", nvmem->stride);
->   		return -EINVAL;
->   	}
->   
->   	return 0;
->   }
->   
-> +static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
-> +				const struct nvmem_cell_info *info,
-> +				struct nvmem_cell *cell)
-> +{
-> +	int err;
-> +
-> +	err = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, cell);
-> +	if (err)
-> +		return err;
-> +
-> +	cell->name = kstrdup_const(info->name, GFP_KERNEL);
-> +	if (!cell->name)
-> +		return -ENOMEM;
-> +
-> +	return 0;
-> +}
-> +
->   /**
->    * nvmem_add_cells() - Add cell information to an nvmem device
->    *
-> @@ -1460,7 +1475,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
->   	if (!nvmem)
->   		return -EINVAL;
->   
-> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
-> +	rc = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, &cell);
->   	if (rc)
->   		return rc;
->   
-> @@ -1490,7 +1505,7 @@ int nvmem_device_cell_write(struct nvmem_device *nvmem,
->   	if (!nvmem)
->   		return -EINVAL;
->   
-> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
-> +	rc = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, &cell);
->   	if (rc)
->   		return rc;
->   
-> 
+--Vso2bsiwF03I2VMccksJJl8mHVNqsckVZ--
