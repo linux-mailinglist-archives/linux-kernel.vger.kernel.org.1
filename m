@@ -2,118 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E8272792DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AAA2792D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728856AbgIYVBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58372 "EHLO
+        id S1728693AbgIYVBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgIYVBt (ORCPT
+        with ESMTP id S1726210AbgIYVBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:01:49 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C51BC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:01:49 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id r7so447998ejs.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:01:49 -0700 (PDT)
+        Fri, 25 Sep 2020 17:01:47 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0947C0613CE;
+        Fri, 25 Sep 2020 14:01:46 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b22so4251820lfs.13;
+        Fri, 25 Sep 2020 14:01:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k1HBr67Ra9XD8Qto5IYLfIorshpKmidVCi7EV9X3ssA=;
-        b=VVRXzrYwvG3Z0Gn4lOVTifjiE4oRRKeIhUzTVLkI1NNLFEbWjqmM5ejCHh2j1zsT1k
-         lIG4wxOiyNkRDEK9QSA+pqeW/q64To+33QaVyXoRmeecwHK1cOzbebXMNJid+WHzAap3
-         wJkw/4fRQoItzRRgQjRrM0/QdLy+8K6zRBg1BOdfVmRjU5p8wa/+apJOY0B12VmmRvN4
-         sUu5sK48nEz23VAXLUmVAV/mBna3N/1vOYo59dyfP+klGaNvHtJkqNXzY9Zh7nIWDQrA
-         V3Jlkj+OtqhCfj7rtAKzmtZDswAnmPcR00SSA34lr4sLZIOrCLeGZK8cZxInK53Ax/NX
-         gQYw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=t4fUgn2zvUGm8EaIiZS75zCwLKOu3lWSYCpd6JL4qXM=;
+        b=GnQvocB6klVSi3rD6g52ixIvaDNCL1buLXjpWZELU3HgA3y7rMKXYKK7tMKZiXxQo8
+         jHW+/EA+ATUuGvAV8gdvgDvsuD1hVvlmdmc3M9iEQl3Oisebh+DU5xfvQan3FgRoA4CB
+         BxQgbI7dWqzfDThfXivpJhXmJtRo7PPwg/BMe5neKiy4mFbveAm3CIPfqPnvSoF89t64
+         rRMHfiS39D+txsctBAlXb4a9NgqSFAvsGUMgn14H5DWrc6081RNlGJ3ywplZeJwRI5ai
+         /Kkt1MochgjegzlfIDTt9kkW6ZQig7hBSYTzM2zq2sCrkruGcG8+LS3djMKgm+nzE5r3
+         FBKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k1HBr67Ra9XD8Qto5IYLfIorshpKmidVCi7EV9X3ssA=;
-        b=sHzU39KB61rwZtU8pvHF6FHEi37UCuT22ZZLd/M51DBXEdaOG8lpxslvB3fBD935/1
-         c+kpSDsCT+neYHhzC7AWh/UDjFXT3UzQZBAMFCV+Dtj0tkkytQqCQ+toU40s6N4mz/Yo
-         fQWaoCn1qktLWGJFEOcgl+V9X1i5msyr6+MbwuR1X+eUKgHIAVEoo7iLWm1zbgKy6wAz
-         eyRJZlu5JBx0DGLuI6Fl6ge0Kyp4bTnizv8EM8a62wNiNAkZL0quSEJ5TzkqKIH+uFeY
-         oaiuDxAo/xGR41NptdfKuMJJTzaF3NA6Y1VSKuI1OMJM+SoyTx51jPKZGjWY/oAXqipp
-         6HtQ==
-X-Gm-Message-State: AOAM533ILrPHPgC+JG1S3pshIrZRo7nBhR7fsHAiq7Cf6VAAYa5g3GBZ
-        lr8yT042vZM005HlmACrsw+GqvnHZU263hs++OEvNQ==
-X-Google-Smtp-Source: ABdhPJw4qrnS+JVSq3hVhm/S1Jy5YBAyn1Y+JpVWvmDirB7KTpYDgjyYVq8lHHJ3/fHmFPJSuEmf5s72xt5cfkv/IQo=
-X-Received: by 2002:a17:906:14c9:: with SMTP id y9mr4802942ejc.523.1601067707943;
- Fri, 25 Sep 2020 14:01:47 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t4fUgn2zvUGm8EaIiZS75zCwLKOu3lWSYCpd6JL4qXM=;
+        b=c1kI1KaYIFSsVHxS7HUmKoLz9Hc4a5C5kp2WM6md0SZzqPg/zGHVUwPeWYcWLLFlNY
+         DazPW4tgHnGBMxPcHxIXG3VhjSs3iSpfM5aMucNjpIb3Cv3b32TcoaHF+weXRmmzXUMR
+         vsMVN9IFNu8ghybkegsqP25wEyngOIph52k3dQ3MihFwBT7Yp2oOYC+FzIlG65r3XQFc
+         JtSWSODQNmI1YdwhXw/Z4lccMlAfT0rO4+ht/lhgrHBui3Ub1CK3aOych1baYh7BR0cA
+         u/RrDtQxJi2K0yryV0HAEhBTbxp7bsx/qCwKe3gFPtOeX4R5NmKHXSx7l6+ZiGoIk0z2
+         zZaQ==
+X-Gm-Message-State: AOAM532kwq5z2LE8GN0kmYdT+c8U46/rcDg8L5B2G/U714GbblP8C/cC
+        HVb9HfeAI5EtA4mhwsaHYyA=
+X-Google-Smtp-Source: ABdhPJyFhX4FLY8dpYXxKQv27CuKjDJ/KS9bLQrVlc/ub6So1ARhy1KKhPp/6acjw8j7JzEE6kruzA==
+X-Received: by 2002:ac2:52ab:: with SMTP id r11mr252967lfm.118.1601067705342;
+        Fri, 25 Sep 2020 14:01:45 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id s21sm181473lfb.76.2020.09.25.14.01.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 14:01:44 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] dt-bindings: input: atmel: add compatible for
+ mXT1386
+To:     Jiada Wang <jiada_wang@mentor.com>, dmitry.torokhov@gmail.com,
+        robh+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com
+Cc:     nick@shmanahar.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        erosca@de.adit-jv.com, andrew_gabbasov@mentor.com
+References: <20200925135257.21138-1-jiada_wang@mentor.com>
+ <20200925135257.21138-2-jiada_wang@mentor.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1fd244e2-abf0-5e8e-c8c8-e3c2a1e95f08@gmail.com>
+Date:   Sat, 26 Sep 2020 00:01:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
- <8370d493-e38d-cbac-1233-14cbbef63936@oracle.com>
-In-Reply-To: <8370d493-e38d-cbac-1233-14cbbef63936@oracle.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Fri, 25 Sep 2020 14:01:36 -0700
-Message-ID: <CAPcyv4je4PzCRo=Na7WfCpnvS0VpBN8qArr5HZv7jhwTNui4eg@mail.gmail.com>
-Subject: Re: [PATCH v5 00/17] device-dax: support sub-dividing soft-reserved ranges
-To:     Joao Martins <joao.m.martins@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Jia He <justin.he@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Juergen Gross <jgross@suse.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200925135257.21138-2-jiada_wang@mentor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 1:52 PM Joao Martins <joao.m.martins@oracle.com> wrote:
->
-> Hey Dan,
->
-> On 9/25/20 8:11 PM, Dan Williams wrote:
-> > Changes since v4 [1]:
-> > - Rebased on
-> >   device-dax-move-instance-creation-parameters-to-struct-dev_dax_data.patch
-> >   in -mm [2]. I.e. patches that did not need fixups from v4 are not
-> >   included.
-> >
-> > - Folded all fixes
-> >
->
-> Hmm, perhaps you missed the fixups before the above mentioned patch?
->
-> From:
->
->         https://www.ozlabs.org/~akpm/mmots/series
->
-> under "mm/dax", I am listing those fixups here:
->
-> x86-numa-add-nohmat-option-fix.patch
-> acpi-hmat-refactor-hmat_register_target_device-to-hmem_register_device-fix.patch
-> mm-memory_hotplug-introduce-default-phys_to_target_node-implementation-fix.patch
-> acpi-hmat-attach-a-device-for-each-soft-reserved-range-fix.patch
->
-> (in https://www.ozlabs.org/~akpm/mmots/broken-out/)
+25.09.2020 16:52, Jiada Wang пишет:
+> Document the mXT1386 compatible string.
+> 
+> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+> ---
+>  Documentation/devicetree/bindings/input/atmel,maxtouch.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/input/atmel,maxtouch.txt b/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
+> index c88919480d37..c13fc0f3f00b 100644
+> --- a/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
+> +++ b/Documentation/devicetree/bindings/input/atmel,maxtouch.txt
+> @@ -3,6 +3,7 @@ Atmel maXTouch touchscreen/touchpad
+>  Required properties:
+>  - compatible:
+>      atmel,maxtouch
+> +    atmel,mXT1386
+>  
+>      The following compatibles have been used in various products but are
+>      deprecated:
+> 
 
-I left those for Andrew to handle. I actually should have started this
-set one more down in his stack because that's where my new changes
-start.
+Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
