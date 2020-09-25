@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC87278801
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8B9C2788C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729270AbgIYMv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:51:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56412 "EHLO mail.kernel.org"
+        id S1729599AbgIYM5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:57:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729245AbgIYMvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:51:54 -0400
+        id S1729043AbgIYMuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:50:18 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11FBB2072E;
-        Fri, 25 Sep 2020 12:51:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3CFC21D7A;
+        Fri, 25 Sep 2020 12:50:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038313;
-        bh=FxJ6C7eb474ZPbTRHkZvfuv3o+nhcFshD6Gfbrc1PkY=;
+        s=default; t=1601038218;
+        bh=MqW5lPO7iN+bXu26nDh8UKB/w74ZaqgSPG8YP/YJbtE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I7mO9PwifhtDMl7vNI45N3Aw0iibW2Q5QnmE3sX0cThAQhhjgzcIscpB/VvcsYmSO
-         OJNSQkMSLQcVPLLOtSbUCzEVXgFY9/CDPhw0lIbGVufvW0F04ir3xuVxCwjDRt2zVH
-         lQDbb5ihFy7XVF6RjjMFf8EJKpFHvMhbLd9Qwwys=
+        b=QhWYMgZgXABX6CRr4D8puuYCimo8OCVw2RBzCJgxOpPs1n6ZSdSY1caNvxe4/ACJ9
+         BcUqTQNCMR5bQAt1h5pbmcLUBkciFghVc9sFKkKRNvyJzKx+mthmLkT2/1tBBAB29k
+         Shb3KLiX2MzfN/gnJZH4Xy/pW5UNDxiqXrcwLzVI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Henry Ptasinski <hptasinski@google.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        stable@vger.kernel.org, Vadym Kochan <vadym.kochan@plvision.eu>,
+        Alex Elder <elder@linaro.org>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 24/43] net: sctp: Fix IPv6 ancestor_size calc in sctp_copy_descendant
+Subject: [PATCH 5.8 46/56] net: ipa: fix u32_replace_bits by u32p_xxx version
 Date:   Fri, 25 Sep 2020 14:48:36 +0200
-Message-Id: <20200925124727.244835819@linuxfoundation.org>
+Message-Id: <20200925124734.742303168@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
-References: <20200925124723.575329814@linuxfoundation.org>
+In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
+References: <20200925124727.878494124@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,67 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Henry Ptasinski <hptasinski@google.com>
+From: Vadym Kochan <vadym.kochan@plvision.eu>
 
-[ Upstream commit fe81d9f6182d1160e625894eecb3d7ff0222cac5 ]
+[ Upstream commit c047dc1d260f2593035d63747d616c3512f9d6b6 ]
 
-When calculating ancestor_size with IPv6 enabled, simply using
-sizeof(struct ipv6_pinfo) doesn't account for extra bytes needed for
-alignment in the struct sctp6_sock. On x86, there aren't any extra
-bytes, but on ARM the ipv6_pinfo structure is aligned on an 8-byte
-boundary so there were 4 pad bytes that were omitted from the
-ancestor_size calculation.  This would lead to corruption of the
-pd_lobby pointers, causing an oops when trying to free the sctp
-structure on socket close.
+Looks like u32p_replace_bits() should be used instead of
+u32_replace_bits() which does not modifies the value but returns the
+modified version.
 
-Fixes: 636d25d557d1 ("sctp: not copy sctp_sock pd_lobby in sctp_copy_descendant")
-Signed-off-by: Henry Ptasinski <hptasinski@google.com>
-Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Fixes: 2b9feef2b6c2 ("soc: qcom: ipa: filter and routing tables")
+Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+Reviewed-by: Alex Elder <elder@linaro.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/sctp/structs.h |    8 +++++---
- net/sctp/socket.c          |    9 +++------
- 2 files changed, 8 insertions(+), 9 deletions(-)
+ drivers/net/ipa/ipa_table.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/include/net/sctp/structs.h
-+++ b/include/net/sctp/structs.h
-@@ -224,12 +224,14 @@ struct sctp_sock {
- 		data_ready_signalled:1;
+--- a/drivers/net/ipa/ipa_table.c
++++ b/drivers/net/ipa/ipa_table.c
+@@ -521,7 +521,7 @@ static void ipa_filter_tuple_zero(struct
+ 	val = ioread32(endpoint->ipa->reg_virt + offset);
  
- 	atomic_t pd_mode;
-+
-+	/* Fields after this point will be skipped on copies, like on accept
-+	 * and peeloff operations
-+	 */
-+
- 	/* Receive to here while partial delivery is in effect. */
- 	struct sk_buff_head pd_lobby;
+ 	/* Zero all filter-related fields, preserving the rest */
+-	u32_replace_bits(val, 0, IPA_REG_ENDP_FILTER_HASH_MSK_ALL);
++	u32p_replace_bits(&val, 0, IPA_REG_ENDP_FILTER_HASH_MSK_ALL);
  
--	/* These must be the last fields, as they will skipped on copies,
--	 * like on accept and peeloff operations
--	 */
- 	struct list_head auto_asconf_list;
- 	int do_auto_asconf;
- };
---- a/net/sctp/socket.c
-+++ b/net/sctp/socket.c
-@@ -9337,13 +9337,10 @@ void sctp_copy_sock(struct sock *newsk,
- static inline void sctp_copy_descendant(struct sock *sk_to,
- 					const struct sock *sk_from)
- {
--	int ancestor_size = sizeof(struct inet_sock) +
--			    sizeof(struct sctp_sock) -
--			    offsetof(struct sctp_sock, pd_lobby);
--
--	if (sk_from->sk_family == PF_INET6)
--		ancestor_size += sizeof(struct ipv6_pinfo);
-+	size_t ancestor_size = sizeof(struct inet_sock);
- 
-+	ancestor_size += sk_from->sk_prot->obj_size;
-+	ancestor_size -= offsetof(struct sctp_sock, pd_lobby);
- 	__inet_sk_copy_descendant(sk_to, sk_from, ancestor_size);
+ 	iowrite32(val, endpoint->ipa->reg_virt + offset);
  }
+@@ -572,7 +572,7 @@ static void ipa_route_tuple_zero(struct
+ 	val = ioread32(ipa->reg_virt + offset);
  
+ 	/* Zero all route-related fields, preserving the rest */
+-	u32_replace_bits(val, 0, IPA_REG_ENDP_ROUTER_HASH_MSK_ALL);
++	u32p_replace_bits(&val, 0, IPA_REG_ENDP_ROUTER_HASH_MSK_ALL);
+ 
+ 	iowrite32(val, ipa->reg_virt + offset);
+ }
 
 
