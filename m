@@ -2,92 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2C1277FC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43EB6277FCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727145AbgIYFKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:10:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34988 "EHLO mail.kernel.org"
+        id S1727160AbgIYFLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:11:34 -0400
+Received: from mga01.intel.com ([192.55.52.88]:52590 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726980AbgIYFKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:10:36 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F19C2074B;
-        Fri, 25 Sep 2020 05:10:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601010635;
-        bh=gsfRTqNQ/CMzpSCeg2FHUN3hV7LlLxiSbQbWFtUxbsM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hqnkqUm/ARnaTL4riT/XCqvJiEh0v3EHeccYOka/8WjWetSVfob758Zn4cxGiN56C
-         GbBRdxBLTtGHClvSpgW6FqRM3k8hIawuJhy7rlL3kERiAkFWVPK3o/VmsnEaQp4qeH
-         lY5F4IRdodylkGUPQWvMkH7pBp3OnYRyn924xP5c=
-Date:   Fri, 25 Sep 2020 07:10:31 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        James Hu <james.hu@broadcom.com>
-Subject: Re: [PATCH v3 2/3] misc: bcm-vk: add Broadcom VK driver
-Message-ID: <20200925051031.GA603947@kroah.com>
-References: <20200825194400.28960-1-scott.branden@broadcom.com>
- <20200825194400.28960-3-scott.branden@broadcom.com>
- <20200907125530.GC2371705@kroah.com>
- <767f6b6a-07fc-f1b6-f43c-b974761f1505@broadcom.com>
- <20200924050851.GA271310@kroah.com>
- <8ce85527-cb0a-7cf4-541b-b346e060e772@broadcom.com>
+        id S1726980AbgIYFLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:11:34 -0400
+IronPort-SDR: z1zjwufh3XYBfnat5kGQYUt1z0EbJB/2iJ7loeOtwdRliM5twIKWPFVpXK/+1kW/BqZZDpKlt4
+ EbMupY6bMvYQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="179527374"
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="179527374"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:11:34 -0700
+IronPort-SDR: /nCpROfC3SgDLAmMaP0FrqslV94eDqiFjYLWqQsjHApa0D3EholJeYQUbW5ieHqSobsAPhnTh7
+ nuDFo1hSnNsw==
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="487301794"
+Received: from eowgint-mobl.gar.corp.intel.com (HELO [10.254.87.250]) ([10.254.87.250])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:11:33 -0700
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <20200922233333.GA2239404@bjorn-Precision-5520>
+ <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
+ <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
+ <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+ <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+ <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
+ <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
+ <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
+ <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
+Date:   Thu, 24 Sep 2020 22:11:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8ce85527-cb0a-7cf4-541b-b346e060e772@broadcom.com>
+In-Reply-To: <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:40:08PM -0700, Scott Branden wrote:
-> > Ugh, yes, it is uncommon because those are two different things.  Why do
-> > you need/want a misc driver to control a tty device?  Why do you need a
-> > tty device?  What really is this beast?
-> The beast consists of a PCI card.  The PCI card communicates to the host via shared memory in BAR space and MSIX interrupts.
-> The host communicates through shared memory in BAR space and generates mailbox interrupts.
 
-That describes any PCI card :)
 
-> In addition the PCI card has DMA access to host memory to access data for processing.
-> The misc driver handles these operations.  Multiple user space processes are accessing the misc device at the same time
-> to perform simultaenous offload operations.  Each process opens the device and sends multiple commands with write operations
-> and receives solicited and unsolicited responses read read operations.  In addition there are sysfs entries to collect statistics and errors.
-> Ioctl operations are present for loading new firmware images to the card and reset operations.
+On 9/24/20 1:52 PM, Sinan Kaya wrote:
+> On 9/24/2020 12:06 AM, Kuppuswamy, Sathyanarayanan wrote:
+>> For problem description, please check the following details
+>>
+>> Current pcie_do_recovery() implementation has following two issues:
+>>
+>> 1. Fatal (DPC) error recovery is currently broken for non-hotplug
+>> capable devices. Current fatal error recovery implementation relies
+>> on PCIe hotplug (pciehp) handler for detaching and re-enumerating
+>> the affected devices/drivers. pciehp handler listens for DLLSC state
+>> changes and handles device/driver detachment on DLLSC_LINK_DOWN event
+>> and re-enumeration on DLLSC_LINK_UP event. So when dealing with
+>> non-hotplug capable devices, recovery code does not restore the state
+>> of the affected devices correctly. Correct implementation should
+>> restore the device state and call report_slot_reset() function after
+>> resetting the link to restore the state of the device/driver.
+>>
 > 
-> In addition, the card has multiple physical UART connections to access consoles on multi processors on the card.
-> But, in a real system there is no serial cable connected from the card to the server.  And, there could be 16 PCIe cards
-> plugged into a server so that would make it even more unrealistic to access these consoles via a UART.
+> So, this is a matter of moving the save/restore logic from the hotplug
+> driver into common code so that DPC slot reset takes advantage of it?
+We are not moving it out of hotplug path. But fixing it in this code path.
+With this fix, we will not depend on hotplug driver to restore the state.
 > 
-> Fortunately the data sent out to each physical UART exists in a circular buffer.  These circular buffer can be access via the host in BAR space.
-> So we added tty device nodes per UART (2 per PCIe).  These are not the misc device node, these are seperate tty device nodes that are opened
-> and behave like tty devices.
+> If that's direction we are going, this is fine change IMO.
 > 
-> We are not using the misc driver to control tty.
->   1) The PCI driver is the foundaton of it which provides the physical interface to the card, 2) misc driver is a presentation to user space to do its regular message - this allows user to treat it as a char-device, so its like fopen/read/write/close etc. and 3) tty is an additional debug channel which could be on or off.
+>> You can find fatal non-hotplug related issues reported in following links:
+>>
+>> https://lore.kernel.org/linux-pci/20200527083130.4137-1-Zhiqiang.Hou@nxp.com/
+>>
+>> https://lore.kernel.org/linux-pci/12115.1588207324@famine/
+>> https://lore.kernel.org/linux-pci/0e6f89cd6b9e4a72293cc90fafe93487d7c2d295.1585000084.git.sathyanarayanan.kuppuswamy@linux.intel.com/
+>>
+>>
+>> 2. For non-fatal errors if report_error_detected() or
+>> report_mmio_enabled() functions requests PCI_ERS_RESULT_NEED_RESET then
+>> current pcie_do_recovery() implementation does not do the requested
+>> explicit device reset, instead just calls the report_slot_reset() on all
+>> affected devices. Notifying about the reset via report_slot_reset()
+>> without doing the actual device reset is incorrect.
+>>
 > 
-> Please suggest how we can access the misc device and tty device nodes other than how we have implemented it in a single driver?
+> This makes sens too. There seems to be an ordering issue per your
+> description.
+Yes
+> 
+>> To fix above issues, use PCI_ERS_RESULT_NEED_RESET as error state after
+>> successful reset_link() operation. This will ensure ->slot_reset() be
+>> called after reset_link() operation for fatal errors.
+> 
+> You lost me here. Why do we want to do secondary bus reset on top of
+> DPC reset?
+For non-hotplug capable slots, when reset (PCI_ERS_RESULT_NEED_RESET) is
+requested, we want to reset it before calling ->slot_reset() callback.
+> 
+>> Also call
+>> pci_bus_reset() to do slot/bus reset() before triggering device specific
+>> ->slot_reset() callback. Also, using pci_bus_reset() will restore the state
+>> of the devices after performing the reset operation.
+>>
+>> Even though using pci_bus_reset() will do redundant reset operation after
+>> ->reset_link() for fatal errors, it should should affect the functional
+>> behavior.
+> 
 
-You haven't described what the card actually is for.  You describe how
-you have tried to hook it up to userspace, but what is the use-case
-here?  Why even have a kernel driver at all and not do everything in a
-uio driver?
-
-Creating random misc devices and tty devices implies that the device
-does not fit into any of the different existing kernel apis, so you need
-to write your own "special" one, which is always worrying.
-
-Without actually knowing what this device is, it's hard to judge if you
-really should be using something existing or not.
-
-thanks,
-
-greg k-h
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
