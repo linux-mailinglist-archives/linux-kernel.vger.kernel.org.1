@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06AD279379
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:26:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8239B27937C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgIYV0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:26:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35846 "EHLO mail.kernel.org"
+        id S1729112AbgIYV0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgIYV0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:26:20 -0400
-Received: from localhost.localdomain (unknown [194.230.155.132])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726149AbgIYV0n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 17:26:43 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2164321741;
-        Fri, 25 Sep 2020 21:26:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601069179;
-        bh=N9JaW+8SGbvwdQLMGjpUpaTkyxkJEPp68PVp3/IQptU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cABLsbryWFwTywQxxkCDGE/Abyt7GQeZpCzuuhiTBU3ZJvUh0TViIaMbHcdZ75GzE
-         QViKgvnBL6yLExJ1j64OTwCPR0tsSJYayDRspg+d6rsClU8d2Rf+S5gfQkWDEg/dmh
-         g4TXtjM38v2e/Q+nyZXNQtvXdX0bnfvFMF2oDF5A=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] dt-bindings: pwm: imx: document i.MX compatibles
-Date:   Fri, 25 Sep 2020 23:26:09 +0200
-Message-Id: <20200925212609.23093-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E25D21741;
+        Fri, 25 Sep 2020 21:26:42 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 17:26:40 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Linux MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Re: [PATCH 0/3 v2] tracing/mm: Add tracepoint_enabled() helper
+ function for headers
+Message-ID: <20200925172640.701ca0a7@oasis.local.home>
+In-Reply-To: <20200925211206.423598568@goodmis.org>
+References: <20200925211206.423598568@goodmis.org>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles to fix dtbs_check
-warnings like:
 
-  arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml: pwm@2080000: compatible:0:
-    'fsl,imx6q-pwm' is not one of ['fsl,imx8mm-pwm', 'fsl,imx8mn-pwm', 'fsl,imx8mp-pwm', 'fsl,imx8mq-pwm']
+Bah, My cut-and-paste of my "quilt mail --send" chopped off Mathieu's email.
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Mathieu, I didn't meant to not Cc you on this. Do you need me to bounce
+the rest to you or you can get it from lore?
 
-diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-index 473863eb67e5..379d693889f6 100644
---- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-+++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-@@ -25,6 +25,17 @@ properties:
-           - fsl,imx27-pwm
-       - items:
-           - enum:
-+              - fsl,imx25-pwm
-+              - fsl,imx31-pwm
-+              - fsl,imx50-pwm
-+              - fsl,imx51-pwm
-+              - fsl,imx53-pwm
-+              - fsl,imx6q-pwm
-+              - fsl,imx6sl-pwm
-+              - fsl,imx6sll-pwm
-+              - fsl,imx6sx-pwm
-+              - fsl,imx6ul-pwm
-+              - fsl,imx7d-pwm
-               - fsl,imx8mm-pwm
-               - fsl,imx8mn-pwm
-               - fsl,imx8mp-pwm
--- 
-2.17.1
+-- Steve
+
+
+On Fri, 25 Sep 2020 17:12:06 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> Tracepoints are not safe to be called directly from header files as they may
+> be included by C code that has CREATE_TRACE_POINTS defined, and this would
+> cause side effects and possibly break the build in hard to debug ways. Not
+> to mention it also will bloat the code being in commonly used inline
+> functions.
+> 
+> Instead, it is recommended to call a tracepoint helper function that is
+> defined in a C file that calls the tracepoint. But we would only want this
+> function to be called if the tracepoint is enabled, as function calls add
+> overhead.
+> 
+> The trace_<tracepoint>_enabled() function is also not safe to be called in a
+> header file as it is created by the tracepoint header, which suffers the
+> same fate if CREATE_TRACE_POINTS is defined. Instead, the tracepoint needs
+> to be declared as an extern, and the helper function can test the static key
+> to call the helper function that calls the tracepoint.
+> 
+> This has been done by open coding the tracepoint extern and calling the
+> static key directly:
+> 
+>  commit 95813b8faa0cd ("mm/page_ref: add tracepoint to track down page reference manipulation")
+>  commit 7f47d8cc039f ("x86, tracing, perf: Add trace point for MSR accesses")
+> 
+> does this (back in 2015). Now we have another use case, so a helper function
+> should be created to keep the internals of the tracepoints from being spread
+> out in other subsystems.
+> 
+>  Link: https://lore.kernel.org/r/20200922125113.12ef1e03@gandalf.local.home
+> 
+> This adds tracepoint_enabled() helper macro and DECLARE_TRACEPOINT() macro
+> to allow this to be done without exposing the internals of the tracepoints.
+> 
+> The first patch adds the infrastructure, the second converts page_ref over
+> to it, and third converts over msr.h.
+> 
+> Steven Rostedt (VMware) (3):
+>       tracepoints: Add helper to test if tracepoint is enabled in a header
+>       mm/page_ref: Convert the open coded tracepoint enabled to the new helper
+>       x86: Use tracepoint_enabled() for msr tracepoints instead of open coding it
+> 
+> ----
+> 
+> Changes since v1 (https://lore.kernel.org/r/20200924170928.466191266@goodmis.org):
+> 
+>  - Fixed using "trace_enabled()" instead of "tracepoint_enabled()"
+>    (Mathieu Desnoyers reported)
+> 
+>  - Reworded to include comments about bloating the kernel when tracepoints
+>    are used in commonly used inlined functions.
+> 
+>  - Added the msr update as well.
+> 
+> 
+>  Documentation/trace/tracepoints.rst | 27 ++++++++++++++++++++++++
+>  arch/x86/include/asm/msr.h          | 18 +++++++---------
+>  include/linux/page_ref.h            | 42 ++++++++++++++++++-------------------
+>  include/linux/tracepoint-defs.h     | 34 ++++++++++++++++++++++++++++++
+>  4 files changed, 90 insertions(+), 31 deletions(-)
 
