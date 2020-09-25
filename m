@@ -2,151 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6122782B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E462782B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727452AbgIYI0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:26:22 -0400
-Received: from mx1.tq-group.com ([62.157.118.193]:8233 "EHLO mx1.tq-group.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYI0V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:26:21 -0400
-IronPort-SDR: oukt6M82CajUSxmUI3NFGy+/eRMaQNpCdyRFjRXdYhvcXH+yPZNxZqv/9mDpWDEj/FS3ZQUoAO
- 5x3Z2HDIcow8spsV3lHRjho++hR80/EBfPVQlEEUT8axsGruIzYF6ULT4vqXwA147V5sVvTXRc
- L4lJtfJillK8mrS7gTf22lzNsyWFFpWaLZLYKGodOZtXVIB+iiHvuuLBqiWWVLB1VtnjJ0z7ro
- 3bbEuQqTmoKNsC2+nn3rHYs9PBIpTAg7FeCtRF0ESrI0mBSaw9gaoV5JYUMSncZa4wqpOiQ3SG
- 4dU=
-X-IronPort-AV: E=Sophos;i="5.77,301,1596492000"; 
-   d="scan'208";a="14020024"
-Received: from unknown (HELO tq-pgp-pr1.tq-net.de) ([192.168.6.15])
-  by mx1-pgp.tq-group.com with ESMTP; 25 Sep 2020 10:26:19 +0200
-Received: from mx1.tq-group.com ([192.168.6.7])
-  by tq-pgp-pr1.tq-net.de (PGP Universal service);
-  Fri, 25 Sep 2020 10:26:19 +0200
-X-PGP-Universal: processed;
-        by tq-pgp-pr1.tq-net.de on Fri, 25 Sep 2020 10:26:19 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1601022379; x=1632558379;
-  h=from:to:cc:subject:date:message-id;
-  bh=wa4VDC7nYhm5Z0O3jCNMttNKrenLGZ76s9lR1PPSFmk=;
-  b=Ndz2p70TJxcP/HF+mJCDKAnS9exTlUWaZba0QMxZSo06G0DlX7OsiSC0
-   Ep9Jv6q1X9BupahCBqeFfPxB+75i5YKo0DWZ15R/BgOhtu6zMDCzD6CyM
-   4kC8Amr8oSeAoP+k8teu5ggq+9pxOiCJTOVjOi8DLQeOqpN3HFSey/wxN
-   0IUBcEhe6zx3XmcMFm+qgw1KXS9+todCJ92wJHcPrLiwveDMDQERUKzxT
-   SEZ/LtYutHV38/+uncqoNYQ7xaXWNHer1RZvbsNs0EhJAWOe8bl1pI5MD
-   DzCvNxMhJo6xPQRD5mzJnPBn/9EVw85eVXZrZ5GHM00NYYsoxEsBx0t9C
-   g==;
-IronPort-SDR: WOXDDWsnRCO4+uDrIDHyKZ5W0HGF4eNYnH3SogLviEQcXGb+xihJQgo/wf1N6D5GoZWYekR32j
- 5ClPcid/rnmYWzk66AgoojnEwhooxHw1qWSuM5iBuq+XpIzZGPCKhltWQHgDsU8OB8Do1p/c09
- UqYBB7GtMQdqo+sbwDsQgr8OEYTMMNKMt6c8R1aEQT7QVa3v/QR3nAVKFopZ6YN1lxKj5nUWwU
- FF5saJ3TiFy+jvrgw/Ut1Dzuvgj4l4edpKKO8ndLJ1S4DBblKjLjZ+nQUHbmGXBp5/BLCoFpDD
- 43w=
-X-IronPort-AV: E=Sophos;i="5.77,301,1596492000"; 
-   d="scan'208";a="14020023"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 25 Sep 2020 10:26:19 +0200
-Received: from schifferm-ubuntu4.tq-net.de (schifferm-ubuntu4.tq-net.de [10.117.48.12])
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPA id D3CDB280070;
+        id S1727502AbgIYI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727044AbgIYI0c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:26:32 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473FCC0613CE;
+        Fri, 25 Sep 2020 01:26:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=B26/iC+1mNbAVpwoje/bCXQml3NwgBVwZs92eAZmgtk=; b=PRR15rGJbRe4N3EQkHV+s2uXWX
+        kPkr/QZht+Vz4q4dSYjAvMygE1DTeJcdgscWkQD7taAnDNUgfwG8k+x8zUS0rJ3/yZ9K8nrHSwEQq
+        /SnQ6f8x++W54UMgfgyYI+wyOyi8WZNZv6qvs7mSASGKfmGfB6JgAFOknB+q7hBVrlE5opl2OnlCh
+        a2LEfy2rUT17HgyAv9U+1V0Y4zTmhcFUOuB7SW/c479ytBV7Pun7QJffBUR1Kqlde2tWDgC5W2fOB
+        tNo/TY4MZNZEt/jYydweut7xZVHnQeUdAQwdpzxgFjK6algKnRBPIPvylW3U/nEbYxviVl8fJgz0Y
+        FVgsi/+Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLj3c-0003P0-Bs; Fri, 25 Sep 2020 08:26:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FCDA301A27;
         Fri, 25 Sep 2020 10:26:18 +0200 (CEST)
-From:   Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
-Subject: [PATCH] tty: serial: imx: disable TXDC IRQ in imx_uart_shutdown() to avoid IRQ storm
-Date:   Fri, 25 Sep 2020 10:24:12 +0200
-Message-Id: <20200925082412.12960-1-matthias.schiffer@ew.tq-group.com>
-X-Mailer: git-send-email 2.17.1
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 38B1A200D4BD1; Fri, 25 Sep 2020 10:26:18 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 10:26:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200925082618.GT2628@hirez.programming.kicks-ass.net>
+References: <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200924111907.GE2628@hirez.programming.kicks-ass.net>
+ <20200924153834.GW29330@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924153834.GW29330@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IPG clock is disabled at the end of imx_uart_shutdown(); we really
-don't want to run any IRQ handlers after this point.
+On Thu, Sep 24, 2020 at 08:38:34AM -0700, Paul E. McKenney wrote:
+> On Thu, Sep 24, 2020 at 01:19:07PM +0200, Peter Zijlstra wrote:
+> > On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
+> > > The key point is "enough". We need pages to make a) fast progress b) support
+> > > single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
+> > > on scheduler latency and vague pre-allocated number of pages, it might
+> > > be not enough what would require to refill it more and more or we can overshoot
+> > > that would lead to memory overhead. So we have here timing issues and
+> > > not accurate model. IMHO.
+> > 
+> > I'm firmly opposed to the single argument kvfree_rcu() idea, that's
+> > requiring memory to free memory.
+> 
+> Not quite.
+> 
+> First, there is a fallback when memory allocation fails.  Second,
+> in heavy-use situations, there is only one allocation per about
+> 500 kvfree_rcu() calls on 64-bit systems.  Third, there are other
+> long-standing situations that require allocating memory in order to
+> free memory.
 
-At least on i.MX8MN, the UART will happily continue to generate interrupts
-even with its clocks disabled, but in this state, all register writes are
-ignored (which will cause the shadow registers to differ from the actual
-register values, resulting in all kinds of weirdness).
+Some of which are quite broken. And yes, I'm aware of all that, I'm the
+one that started swap-over-NFS, which requires network traffic to free
+memory, which is one insane step further.
 
-In a transfer without DMA, this could lead to the following sequence of
-events:
+But the way to make that 'work' is carefully account and pre-allocate
+(or size the reserve) the required memory to make progress and to
+strictly limit concurrency to ensure you stay in your bounds.
 
-- The UART finishes its transmission while imx_uart_shutdown() is run,
-  triggering the TXDC interrupt (we can trigger this fairly reliably by
-  writing a single byte to the TTY and closing it right away)
-- imx_uart_shutdown() finishes, disabling the UART clocks
-- imx_uart_int() -> imx_uart_transmit_buffer() -> imx_uart_stop_tx()
+> So I agree that it is a good general rule of thumb to avoid allocating
+> on free paths, but there are exceptions.  This is one of them.
 
-imx_uart_stop_tx() should now clear UCR4_TCEN to disable the TXDC
-interrupt, but this register write is ineffective. This results in an
-interrupt storm.
+The very first thing you need to do is proof your memory usage is
+bounded, and then calculate your bound.
 
-To disable all interrupts in the same place, and to avoid setting UCR4
-twice, clearing UCR4_OREN is moved below del_timer_sync() as well; this
-should be harmless.
+The problem is that with RCU you can't limit concurrency. call_rcu()
+can't block, you can't wait for a grace period to end when you've ran
+out of your reserve.
 
-Signed-off-by: Matthias Schiffer <matthias.schiffer@ew.tq-group.com>
----
+That is, you don't have a bound, so no reserve what so ever is going to
+help.
 
-While debugging this, I found one more instance of register writes with
-disabled clock: The IPG clock is disabled before calling
-uart_add_one_port() at the end of imx_uart_probe(). This results in the
-following call stack:
-
-    imx_uart_writel+0x168/0x188
-    imx_uart_set_mctrl+0x3c/0xb8
-    uart_add_one_port+0x394/0x4c8
-    imx_uart_probe+0x530/0x810
-
-Fortunately, in this case the register already matches the value that is
-written, so no inconsistent state results. I assume we'll have to do
-something about the way we handle the clocks in this driver to fix
-this...
-
-
- drivers/tty/serial/imx.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 4e6ead1f650e..1731d9728865 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -1552,10 +1552,6 @@ static void imx_uart_shutdown(struct uart_port *port)
- 	ucr2 = imx_uart_readl(sport, UCR2);
- 	ucr2 &= ~(UCR2_TXEN | UCR2_ATEN);
- 	imx_uart_writel(sport, ucr2, UCR2);
--
--	ucr4 = imx_uart_readl(sport, UCR4);
--	ucr4 &= ~UCR4_OREN;
--	imx_uart_writel(sport, ucr4, UCR4);
- 	spin_unlock_irqrestore(&sport->port.lock, flags);
- 
- 	/*
-@@ -1568,10 +1564,15 @@ static void imx_uart_shutdown(struct uart_port *port)
- 	 */
- 
- 	spin_lock_irqsave(&sport->port.lock, flags);
-+
- 	ucr1 = imx_uart_readl(sport, UCR1);
- 	ucr1 &= ~(UCR1_TRDYEN | UCR1_RRDYEN | UCR1_RTSDEN | UCR1_UARTEN | UCR1_RXDMAEN | UCR1_ATDMAEN);
--
- 	imx_uart_writel(sport, ucr1, UCR1);
-+
-+	ucr4 = imx_uart_readl(sport, UCR4);
-+	ucr4 &= ~(UCR4_OREN | UCR4_TCEN);
-+	imx_uart_writel(sport, ucr4, UCR4);
-+
- 	spin_unlock_irqrestore(&sport->port.lock, flags);
- 
- 	clk_disable_unprepare(sport->clk_per);
--- 
-2.17.1
-
+You must have that callback_head fallback.
