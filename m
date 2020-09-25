@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFED279007
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B3B279009
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729684AbgIYSDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:03:23 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:20204 "EHLO z5.mailgun.us"
+        id S1729627AbgIYSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:05:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727402AbgIYSDX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:03:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601057001; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=qY4VJvItq00HpQ9BTONtJKsVJWDUImIVuhzVMFuGVJg=; b=XxMwxo0julerqOh4fDvREfpVXXiMV082Gm1cwGSuYXyvElaBYTnp5BvCJnuxhw4g7seJMEvS
- UNLF5uavdLSwiAbqjPvouHCtSSQLddJwD8AXCrrB4CS/e55GauNuSnybzvmnvfDyw2XXby1g
- JNAa++SU7F7+xwBYdSbnISXL0OI=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5f6e3095b51786209ca925c3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Sep 2020 18:01:57
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6DBB3C433FF; Fri, 25 Sep 2020 18:01:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726368AbgIYSFb (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:05:31 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DE82EC433C8;
-        Fri, 25 Sep 2020 18:01:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DE82EC433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH] bus: mhi: core: debugfs: Use correct format specifiers
- for addresses
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        gregkh@linuxfoundation.org
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200925171608.30881-1-manivannan.sadhasivam@linaro.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <c63ae2c3-43ae-6a94-cf27-efb6cc038f83@codeaurora.org>
-Date:   Fri, 25 Sep 2020 12:01:54 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.1
+        by mail.kernel.org (Postfix) with ESMTPSA id CF76720878;
+        Fri, 25 Sep 2020 18:05:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601057130;
+        bh=AJ8iMHWxIBWBhlee4eDxoEUbf+emEiFCjxQRudZZgrM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DQwISomXjlSsneUnFKv4idX1YISuBNVwtYVSAhN7jFPnNNZvHfSoYeHIIrrWUFXv7
+         HGA8qI6lpJWqJk/dT6UhG1hFFyMbUQ79TaiNaFVe/24wTs/70wM7w2VxP+izWTrhb+
+         uiM4RggSdENpiwx5TeyU+xiDKGQ7V5KY73ZOAJN8=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 97419400E9; Fri, 25 Sep 2020 15:05:27 -0300 (-03)
+Date:   Fri, 25 Sep 2020 15:05:27 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH v2 1/2] perf vendor events: Update CascadelakeX events to
+ v1.08
+Message-ID: <20200925180527.GA2883319@kernel.org>
+References: <20200922031918.3723-1-yao.jin@linux.intel.com>
+ <20200922031918.3723-2-yao.jin@linux.intel.com>
+ <20200922194232.GA2505291@kernel.org>
+ <4db737f2-0705-5183-6971-9031acfd123b@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20200925171608.30881-1-manivannan.sadhasivam@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4db737f2-0705-5183-6971-9031acfd123b@linux.intel.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/2020 11:16 AM, Manivannan Sadhasivam wrote:
-> For exposing the addresses of read/write pointers and doorbell register,
-> let's use the correct format specifiers. This fixes the following issues
-> generated using W=1 build in ARM32 and reported by Kbuild bot:
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> drivers/bus/mhi/core/debugfs.c:75:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
->                                mhi_event->db_cfg.db_val);
->                                ^~~~~~~~~~~~~~~~~~~~~~~~
->     drivers/bus/mhi/core/debugfs.c:123:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
->                                mhi_chan->db_cfg.db_val);
->                                ^~~~~~~~~~~~~~~~~~~~~~~
->     2 warnings generated.
-> 
-> drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_events_show’:
-> drivers/bus/mhi/core/debugfs.c:74:51: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
->     seq_printf(m, " local rp: 0x%llx db: 0x%pad\n", (u64)ring->rp,
->                                                     ^
-> drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_channels_show’:
-> drivers/bus/mhi/core/debugfs.c:122:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
->         (u64)ring->rp, (u64)ring->wp,
->         ^
-> drivers/bus/mhi/core/debugfs.c:122:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
->         (u64)ring->rp, (u64)ring->wp,
->                        ^
-> drivers/bus/mhi/core/debugfs.c:121:62: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘dma_addr_t {aka unsigned int}’ [-Wformat=]
->     seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
->                                                             ~~~^
->                                                             %x
-> drivers/bus/mhi/core/debugfs.c:123:7:
->         mhi_chan->db_cfg.db_val);
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-> 
-> Greg: This fixes the issue seen while testing the char-misc/char-misc-testing
-> branch.
-> 
->   drivers/bus/mhi/core/debugfs.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/debugfs.c b/drivers/bus/mhi/core/debugfs.c
-> index 53d05a8e168d..2536ff92b76f 100644
-> --- a/drivers/bus/mhi/core/debugfs.c
-> +++ b/drivers/bus/mhi/core/debugfs.c
-> @@ -71,8 +71,8 @@ static int mhi_debugfs_events_show(struct seq_file *m, void *d)
->   		seq_printf(m, " rp: 0x%llx wp: 0x%llx", er_ctxt->rp,
->   			   er_ctxt->wp);
->   
-> -		seq_printf(m, " local rp: 0x%llx db: 0x%llx\n", (u64)ring->rp,
-> -			   mhi_event->db_cfg.db_val);
-> +		seq_printf(m, " local rp: 0x%px db: 0x%pad\n", ring->rp,
-> +			   &mhi_event->db_cfg.db_val);
->   	}
->   
->   	return 0;
-> @@ -118,9 +118,9 @@ static int mhi_debugfs_channels_show(struct seq_file *m, void *d)
->   		seq_printf(m, " base: 0x%llx len: 0x%llx wp: 0x%llx",
->   			   chan_ctxt->rbase, chan_ctxt->rlen, chan_ctxt->wp);
->   
-> -		seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
-> -			   (u64)ring->rp, (u64)ring->wp,
-> -			   mhi_chan->db_cfg.db_val);
-> +		seq_printf(m, " local rp: 0x%px local wp: 0x%px db: 0x%pad\n",
-> +			   ring->rp, ring->wp,
-> +			   &mhi_chan->db_cfg.db_val);
->   	}
->   
->   	return 0;
-> 
+Em Wed, Sep 23, 2020 at 09:25:06AM +0800, Jin, Yao escreveu:
+> On 9/23/2020 3:42 AM, Arnaldo Carvalho de Melo wrote:
+> > Em Tue, Sep 22, 2020 at 11:19:17AM +0800, Jin Yao escreveu:
+> > > - Update CascadelakeX events to v1.08.
+> > > - Update CascadelakeX JSON metrics from TMAM 4.0.
 
-Documentation/printk-formats.txt seems to point out that %px is 
-"insecure" and thus perhaps not preferred.  Are we assuming that debugfs 
-is only accessible by root, and thus the %px usage here is effectively 
-the same as %pK?
+> > > Other fixes:
+> > > - Add NO_NMI_WATCHDOG metric constraint to Backend_Bound
+> > > - Change 'MB/sec' to 'MB' in UNC_M_PMM_BANDWIDTH.
 
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+> > [acme@five perf]$ am /wb/1.patch
+> > Applying: perf vendor events: Update CascadelakeX events to v1.08
+> > error: patch fragment without header at line 283: @@ -213,14 +220,14 @@
+> > Patch failed at 0001 perf vendor events: Update CascadelakeX events to v1.08
+> > hint: Use 'git am --show-current-patch=diff' to see the failed patch
+> > When you have resolved this problem, run "git am --continue".
+> > If you prefer to skip this patch, run "git am --skip" instead.
+> > To restore the original branch and stop patching, run "git am --abort".
+> > [acme@five perf]$ git am --abort
+> > [acme@five perf]$ set -o vi
+> > [acme@five perf]$ patch -p1 < /wb/1.patch
+> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/cache.json
+> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+> > Hunk #7 FAILED at 87.
+> > 1 out of 7 hunks FAILED -- saving rejects to file tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json.rej
+> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/frontend.json
+> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/memory.json
+> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/other.json
+> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/pipeline.json
+> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/uncore-memory.json
+> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/uncore-other.json
+> > [acme@five perf]$
+
+> > [acme@five perf]$ head tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json.rej
+> > --- tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+> > +++ tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+> > @@ -87,86 +70,110 @@
+> >           "MetricName": "CLKS"
+> >       },
+> >       {
+> > -        "BriefDescription": "Total issue-pipeline slots (per-Physical Core)",
+> > +        "BriefDescription": "Total issue-pipeline slots (per-Physical Core till ICL; per-Logical Processor ICL onward)",
+> >           "MetricExpr": "4 * cycles",
+> >           "MetricGroup": "TopDownL1",
+> > [acme@five perf]$ wc -l tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json.rej
+> > 133 tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json.rej
+> > [acme@five perf]$
+
+> > Can you please check?
+
+> I applied the patch on latest perf/core, it seemed OK.
+
+> # git log --oneline
+> 4cbdb1c21926 (HEAD -> perf/core) perf vendor events: Update CascadelakeX events to v1.08
+> b1f815c479c1 (tag: perf-tools-tests-v5.10-2020-09-10, origin/perf/core) perf vendor events power9:
+> Add hv_24x7 core level metric events
+> f5a489dc8189 perf metricgroup: Pass pmu_event structure as a parameter for
+> arch_get_runtimeparam() 560ccbc4a52c perf jevents: Add support for parsing
+> perchip/percore events ...
+ 
+> I strongly suspect that part of patch content is truncated by mail system.
+ 
+> Let me resend the patch as attachment. Sorry about that!
+
+Thanks, it now works, but then... You forgot to add the Cc: entries for
+all the people in your actual e-mail Cc: list, and also the
+Reviewed-by: from Andy, I had to do it all manually, so when I applied
+your attachments with 'git am' I needed to go on and manually collect
+all the Cc, Reviewed-by and Acked-by tags.
+
+This complicates things, slows me down, doesn't scale. While I do all
+this manual stuff normally, I don't think this can continue, and its not
+something specific to you, submitters have to pay attention to these
+details. Or tools.
+
+Things like b4 help with this and probably have to take into account
+attachments as well, that is why I'm adding Konstantin to the Cc: list
+of this message.
+
+Konstantin, is this case covered? I.e. patches that get botched and then
+require attachments to be sent to then gets processed?
+
+Thanks, applied.
+
+- Arnaldo
