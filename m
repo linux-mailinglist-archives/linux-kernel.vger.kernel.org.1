@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4252789D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA832789DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728663AbgIYNoj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 09:44:39 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:45695 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728121AbgIYNoj (ORCPT
+        id S1728872AbgIYNot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728121AbgIYNot (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:44:39 -0400
-X-Originating-IP: 90.65.92.90
-Received: from localhost (lfbn-lyo-1-1913-90.w90-65.abo.wanadoo.fr [90.65.92.90])
-        (Authenticated sender: gregory.clement@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 7F84E1BF216;
-        Fri, 25 Sep 2020 13:44:36 +0000 (UTC)
-From:   Gregory CLEMENT <gregory.clement@bootlin.com>
-To:     Pali =?utf-8?Q?Roh=C3=A1r?= <pali@kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andre Heider <a.heider@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Update link to V7 schematic
-In-Reply-To: <20200925084306.16309-1-pali@kernel.org>
-References: <20200925084306.16309-1-pali@kernel.org>
-Date:   Fri, 25 Sep 2020 15:44:36 +0200
-Message-ID: <87wo0iezsr.fsf@BL-laptop>
+        Fri, 25 Sep 2020 09:44:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1B1C0613CE;
+        Fri, 25 Sep 2020 06:44:48 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 15:44:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601041487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J5yjXWUCliemUXkVS/rJm2/vf4VSrQMEbNG38722oq0=;
+        b=cedLl12FGt/UdUx9yMki5S9aT3zj+WqF3v8VCUxOYH+HI+xQ2pD1CLhr8UrS/wpLa0LqXV
+        GM3ZKOLg3TTYDjm/BQwVyGNMqDq33tlaNMfLHnYl6nTImvm9SkhFnbPzxERuGx6AUnV+A2
+        bYU9ZbfC3txRmxpYKYrB6cWdz1M4/I02sw+y5nQIeJdGbN9DsR/eaGevAmch9u5wDXY3QN
+        RSItRGAij22JsD38qXk3sAC1UpWirf8PSC5BZVS4SkKzaYVKh0gw9vc55elizR58vao9t+
+        gwHO2AR2dS7nmmCaXifvhknpuUnp1cabsAKOjqeqKH7E/Fcre5eBh4H2MyR6eQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601041487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J5yjXWUCliemUXkVS/rJm2/vf4VSrQMEbNG38722oq0=;
+        b=28Dm8OwXHBIvLvccBaiOwqv/3V9yPbmae8puYhHpd0y1kvgrkGpw5Ojgb/rpzqDSRX/KV8
+        gkMv2Uv3eVK0gQCg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Brad Harper <bjharper@gmail.com>,
+        linux-amlogic@lists.infradead.org, linux-mmc@vger.kernel.org,
+        linux-rt-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: host: meson-gx-mmc: fix possible deadlock condition
+ for preempt_rt
+Message-ID: <20200925134445.rk366jip5ne4x7em@linutronix.de>
+References: <24a844c3-c2e0-c735-ccb7-83736218b548@gmail.com>
+ <7hk0wj9ki2.fsf@baylibre.com>
+ <1jzh5e8bld.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Disposition: inline
+In-Reply-To: <1jzh5e8bld.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Pali,
+On 2020-09-25 11:11:42 [+0200], Jerome Brunet wrote:
+> I'm not sure about this.
+> As you have explained on IRC, I understand that IRQF_ONESHOT is causing
+> trouble with RT as the hard IRQ part of the thread will not be migrated
+> to a thread. That was certainly not the intent when putting this flag.
 
-could you add a commit log besides the topic ?
+That is my understanding as well.
 
-Also note that I've just sent the pull requests for 5.10 and I was
-already a little late for that, so I fear this patch will be for 5.11.
+> This seems pretty unsafe to me. Maybe we could improve the driver so it
+> copes with this case gracefully. ATM, I don't think it would.
 
-Unless the former url was broken it this case it could be considered as
-a fixe and could be applied for 5.9. If you think it, you should also
-add a "Fixes:" tag.
+Running the primary handler in hardirq context is bad, because it
+invokes meson_mmc_request_done() at the very end. And here:
+- mmc_complete_cmd() -> complete_all()
+  There is a lockdep_assert_RT_in_threaded_ctx() which should trigger.
 
-Thank,
+- led_trigger_event() -> led_trigger_event()
+  This should trigger a might_sleep() warning somewhere.
 
-Gregory
+So removing IRQF_ONESHOT is okay but it should additionally disable the
+IRQ source in meson_mmc_irq() and re-enable back in
+meson_mmc_irq_thread(). Otherwise the IRQ remains asserted and may fire
+multiple times before the thread has a chance to run.
 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> ---
->  arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts | 2 +-
->  arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts      | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> index 61d49d6a2a2a..6062a7df7342 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
-> @@ -8,7 +8,7 @@
->   *
->   */
->  /*
-> - * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
-> + * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
->   */
->  
->  /dts-v1/;
-> diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> index 44dbe9a21cc7..c47a93978386 100644
-> --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
-> @@ -8,7 +8,7 @@
->   *
->   */
->  /*
-> - * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
-> + * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
->   */
->  
->  /dts-v1/;
-> -- 
-> 2.20.1
->
-
--- 
-Gregory Clement, Bootlin
-Embedded Linux and Kernel engineering
-http://bootlin.com
+Sebastian
