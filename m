@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AD12782BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6822782BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbgIYI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgIYI1L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:27:11 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F8EC0613CE;
-        Fri, 25 Sep 2020 01:27:11 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id l16so1528747ilt.13;
-        Fri, 25 Sep 2020 01:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SrY0n+Lxp4Ps0vKWrqg8qzPispapVC5K8BCl7226S1Y=;
-        b=T0fhmfBTGttasq8Kei96OjnUWqoXnD1EhQm31QUfLpIDhsjWLMFk9PV2pa+s0Hdg4A
-         fjPpdwt7ABi70fGaUKKmKv2bZFl1TX1+6zeJIsfMkkdroMBVgloDbus7BReFk/VnR6SK
-         U3/FeQaNf+VwOjhpb7jEHXM9O0kdlPRDgdL57bNQPOItMru8HlJjVYwQ+N+2344BnMPn
-         VLAi5RiU3HyfXVpuXxk7zerjlavpgg2bAlP3+3cJTt25Ft9WDn+uxWyPYbRLNm7Ai0Pc
-         vXXXfPvNhZtFZkSVRsZBYd2w5ycRNts4T71gXQtVVij69COOyaOfL2kzw9iAAtRqdG7F
-         mAAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SrY0n+Lxp4Ps0vKWrqg8qzPispapVC5K8BCl7226S1Y=;
-        b=qMeJyPa4fO89sO7aVdN+57AjvY9VAlC995fcW8sLf9bCympoZrPP6pPZxLxIhjy7g+
-         +cuSCLdBkZGvqnFZzrr9bThrnCk6vkigordvUX+X6HDEnw4jONyMaYlRPAo8iSxRCZ1E
-         8FUdgCCm85KL7/gpCUsds2wwyio4RrnC1NiAxEZE1uTjIT77BruegSICKfAqJJhLNuzx
-         56OtoAUrGtmZKCtPC2+KWRx0lN3OhUkuLU7V1SCQMV3hYNe4CSjFDn6C4e3Hp1fUkV4b
-         xhY++rqNdUiVVSdkIa04esl6SulsPPvDKojoHPl7VfbNEraJoV+ukFIUVHV9fjzgiq7h
-         akAg==
-X-Gm-Message-State: AOAM533LNusq2Fm1nAdJ7eFltG5rrPtGMhRYUCmizaGxRl4UC3lWrEDf
-        l5xtGow+wjqgm4vzVbC4hsZb87Q3Nkag1i576F4=
-X-Google-Smtp-Source: ABdhPJzfUq4g2hUm0yylW2BZjBYzZffhnMg9JFRt8eQ2YfVzP7n3YGn8DdvLynY3V96ZCJFM7lK9ybFe7wDfCGFFvXY=
-X-Received: by 2002:a92:910:: with SMTP id y16mr2375456ilg.22.1601022430617;
- Fri, 25 Sep 2020 01:27:10 -0700 (PDT)
+        id S1727472AbgIYI2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:28:15 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:36820 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727044AbgIYI2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:28:15 -0400
+Received: from zn.tnic (p200300ec2f0b3a0093be1e56408cfaf4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:93be:1e56:408c:faf4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B47501EC0430;
+        Fri, 25 Sep 2020 10:28:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601022493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=aBvHXwx9a9PqqUZzuoVpY410vW5jppv7nSFihXyq/xQ=;
+        b=UUkNyaTo5MHxuo5KXBUniRQ5MFQbOkTYQvRMMJhSYw00RwnQtQdAVPyGDWxEt8VS1JcpRe
+        ++qVWlkXZz9wcal/MNO0QjzcLLFHUREbPPtHvKZLAicOzfqZn0eS+Fp71IvZW7TJMfcyLK
+        RjxBAlC2V5hnTwqNkca3FdXgVTI+YnA=
+Date:   Fri, 25 Sep 2020 10:28:07 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200925082807.GG16872@zn.tnic>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <20200924180407.GO5030@zn.tnic>
+ <20200925010031.GH119995@linux.intel.com>
 MIME-Version: 1.0
-References: <20200925065418.1077472-1-ikjn@chromium.org> <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
-In-Reply-To: <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
-From:   Chuanhong Guo <gch981213@gmail.com>
-Date:   Fri, 25 Sep 2020 16:26:59 +0800
-Message-ID: <CAJsYDV+EifAeMKEGwi0oH6A5EvPN8tMZQ+oqY5JGe=+kqzjMLw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] spi: spi-mtk-nor: support 36bit dma addressing
-To:     Ikjoon Jang <ikjn@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200925010031.GH119995@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Fri, Sep 25, 2020 at 04:00:40AM +0300, Jarkko Sakkinen wrote:
+> I renamed it as vsgx.S (for the sake of convention).
 
-On Fri, Sep 25, 2020 at 2:56 PM Ikjoon Jang <ikjn@chromium.org> wrote:
->
-> This patch enables 36bit dma address support to spi-mtk-nor.
-> Currently this is enabled only for mt8192-nor.
->
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> ---
->
-> (no changes since v1)
->
->  drivers/spi/spi-mtk-nor.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-> index 8dbafee7f431..35205635ed42 100644
-> --- a/drivers/spi/spi-mtk-nor.c
-> +++ b/drivers/spi/spi-mtk-nor.c
-> @@ -78,6 +78,8 @@
->  #define MTK_NOR_REG_DMA_FADR           0x71c
->  #define MTK_NOR_REG_DMA_DADR           0x720
->  #define MTK_NOR_REG_DMA_END_DADR       0x724
-> +#define MTK_NOR_REG_DMA_DADR_HB                0x738
-> +#define MTK_NOR_REG_DMA_END_DADR_HB    0x73c
->
->  /* maximum bytes of TX in PRG mode */
->  #define MTK_NOR_PRG_MAX_SIZE           6
-> @@ -106,6 +108,7 @@ struct mtk_nor {
->         unsigned int spi_freq;
->         bool wbuf_en;
->         bool has_irq;
-> +       bool high_dma;
->         struct completion op_done;
->  };
->
-> @@ -305,6 +308,11 @@ static int mtk_nor_dma_exec(struct mtk_nor *sp, u32 from, unsigned int length,
->         writel(dma_addr, sp->base + MTK_NOR_REG_DMA_DADR);
->         writel(dma_addr + length, sp->base + MTK_NOR_REG_DMA_END_DADR);
->
-> +       if (sp->high_dma) {
-> +               writel(dma_addr >> 32, sp->base + MTK_NOR_REG_DMA_DADR_HB);
-> +               writel((dma_addr + length) >> 32, sp->base + MTK_NOR_REG_DMA_END_DADR_HB);
-> +       }
+Right.
 
-I remembered kbuild test robot reported a warning on this on 32-bit platforms
-in your v1. [0]
-I don't know what's the fix for this though :(
+> I have not authored this patch but what I would propose is to use just
+> raw value in the place of these constants. It is practially just a
+> boolean value.
+> 
+> I can also add sgx_vdso.h to uapi directory. I just don't see the point.
 
-[0] https://marc.info/?l=linux-spi&m=159982425706940&w=2
+Just be very cautious what you add to the uapi/ directory because it
+becomes API and there's no changing it. That's why I point you guys to
+it, to think hard what you expose there and that it becomes contract
+with luserspace.
+
+> > I can see why you would write "TCS" though - there's a thread control
+> > structure thing too in that patch.
+> 
+> Renamed.
+
+See Sean's reply.
+
+> /**
+>  * typedef sgx_enclave_exit_handler_t - Exit handler function accepted by
+>  *					__vdso_sgx_enter_enclave()
+>  * @rdi:	RDI snapshot
+>  * @rsi:	RSI snapshot
+>  * @rdx:	RDX snapshot
+>  * @rsp:	RSP snapshot (untrusted stack)
+>  * @r8:		R8 snapshot
+>  * @r9:		R9 snapshot
+
+I'd say here:
+
+"The registers' content is the snapshot made at enclave exit."
+
+> Also, I renamed 'r' as 'run' in some places.
+> 
+> End result:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/arch/x86/include/uapi/asm/sgx.h
+> 
+> I'm wondering this sentence:
+> 
+> "The calling convention is custom and does not follow System V x86-64 ABI."
+
+Yeah, I was wondering what that meant too.
+
 -- 
-Regards,
-Chuanhong Guo
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
