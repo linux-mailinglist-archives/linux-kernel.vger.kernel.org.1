@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D026F2790A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F752790A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730062AbgIYSd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35498 "EHLO
+        id S1730072AbgIYSeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730054AbgIYSd5 (ORCPT
+        with ESMTP id S1730054AbgIYSeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:33:57 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 790B2C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:33:57 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m34so3298386pgl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:33:57 -0700 (PDT)
+        Fri, 25 Sep 2020 14:34:03 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53827C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:34:03 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id v14so2147580pjd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:34:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=xR6EMaCnGVufYq99NXULxv+YlatOQC8lYjKs2v1Lyho=;
-        b=rAgmu4pHNqZ+1cKh/avPUCHuk5OAhQXuq+sWTvqh3t3Jjz3diyv58LFpWHBvvraGtI
-         ctdq/YWWzvbYEZ0kUhwULgZKS4Jdhf4oynyHmP46aJ9t+rdJ3Xo2bhb87ZE58snCcAdp
-         CPmMxfizpIi9qQc1J2y16VQjtZd19onywe2o8Rmtks++r/+IDvoZygcwfQw0481oIi0A
-         +r1i6YKor9nysChq69Gu6TtYDKwTpJqi48TQLSl0YjHFeTVBh0q5dosXicnRkI3VQ8G5
-         WefZh8S8NzQWsF60HCSiG0CYaxJDbZ+hbUsI7S0S9G7RIC2ieYFDfYna1wPTTlDxvroa
-         ew5g==
+        bh=2WgdDjK1XgGHDaV6//v7/ddHloSVnhsSOt6qKeVAN5M=;
+        b=GGQD8Zn6RT4a2zfkZ1kqX0OCG3TtfDAAOwAiN7cO/qtHrG8QyqIMQVqoUV9A0XTOTs
+         tvsGDVZPZ/EVpZgTZAS/ito0R7Q/+ajPYRFrE6yikhVZFeFte2E8cucVT7ceQTGDeicm
+         M0i1wupcDKk4ZZIIjfWZaLSi54TUvBgW32hnX/hXbnmt0RmV8sXdNON4hIFOqfKIiJs7
+         exYlLP4/BiOzvwbIdkmLRRj3gwVh9hhmkZoQg7wX7S4aHi9Mvyq9OVWD8bcQgrJ3OpWc
+         /1RS7MzBY5Q3wCZs7gaCcNgpehXkYaKFZUzHQ0ll7RVYs1kjm1xNtAVlijVpOpnll+Yj
+         CzKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=xR6EMaCnGVufYq99NXULxv+YlatOQC8lYjKs2v1Lyho=;
-        b=HVFYZClXYc3wMXPdwf3mJpfrTSV2hz9nyx9NehsiS/707dQrHfG2WUwQLHS+JPjWuD
-         9sB+HqPCbgUIxkDRz2jmDXeq1TCUnsim0rHZ3mUCCFozR+veRnyaxSaZ7Sp/I9aln/Jd
-         7JRiy6eNDuZuFK6PgeTySOGFkPh5He6uoh7tYIQUc+/O0DRrK3OVS+x+Ctlhb73RK3UI
-         mkecA0YXxy4pmU4B2Csxuu/JIj15FntlUqcvfDoVb8UlyQlzROD69om0MZS8etaEJA5W
-         3PIjIo07dB5b3OuvD4XrRecOFtJa1lLRMXBHG+8s8SqDtDdedFMyFoKAj8hsLc6w+uXE
-         x7Yg==
-X-Gm-Message-State: AOAM531MbzBpFaxUneIZ6IDo4m+esTJrF10nKHJ9x0H8+iXoycNiiNWE
-        KigJYEufkZmGLfP5CaPZHiyblw==
-X-Google-Smtp-Source: ABdhPJxDP6bhJHcTflXKJSNrLvLPtFybrGDdwIdvlW1c1OEuQkae8BtoII0afWUs+wwfbquOE/2u1Q==
-X-Received: by 2002:a63:e813:: with SMTP id s19mr233034pgh.33.1601058836989;
-        Fri, 25 Sep 2020 11:33:56 -0700 (PDT)
+        bh=2WgdDjK1XgGHDaV6//v7/ddHloSVnhsSOt6qKeVAN5M=;
+        b=Mq0O9UlvK4zcM2qvzuFSDvdB0/lkyNy6UJ3I+xeeoVpJHGloI2Dm8M/l9+0hlsNf99
+         sVBgfLfZfduavWHD8tbO4pg7UIJAQk47gNwQh5uo4dLClIMsc6XuuxSFnWT/D1nhGQbY
+         egmum0QY8aBeABuHqasf7bplzsrYpsR7eY1JfV51RBn6+/Bm3hsaJrESSzmptzuF8D+4
+         FQozLVz718+gVlo5xtpav4uq7c48fsxXfuqWLfqFovKvdid+o7WD8UVAopwiB5M/OWpi
+         4vTwA981KUQIg+LPEP+4x6PKxVB8Vbc0L0TfwdfCGvw8wNyIpz5bVXPGJb3GRFYzsjHy
+         QhUw==
+X-Gm-Message-State: AOAM530+lCNaTlrmHz6IdJZGNn5JQDrZPBkdHRIWNaaJXfMZe3nzzH3F
+        mmMsw7azN1aCXtL5KpBu3mMrgQ==
+X-Google-Smtp-Source: ABdhPJwHEA/3I/bUPFTqLSSgHSU8z9ERjyAVkrO8MXOstvP+Z6ipHjkoXCShERNyM7pX5OIBe+e9Xg==
+X-Received: by 2002:a17:90a:aa94:: with SMTP id l20mr777114pjq.95.1601058842891;
+        Fri, 25 Sep 2020 11:34:02 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id r16sm2554546pjo.19.2020.09.25.11.33.51
+        by smtp.googlemail.com with ESMTPSA id r16sm2554546pjo.19.2020.09.25.11.33.57
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 11:33:56 -0700 (PDT)
+        Fri, 25 Sep 2020 11:34:02 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     gregkh@linuxfoundation.org, mchehab@kernel.org, hverkuil@xs4all.nl,
         laurent.pinchart@ideasonboard.com
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC v2 27/47] staging: media: zoran: convert zoran alloc to devm
-Date:   Fri, 25 Sep 2020 18:30:37 +0000
-Message-Id: <1601058657-14042-28-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC v2 28/47] staging: media: zoran: convert mdelay to udelay
+Date:   Fri, 25 Sep 2020 18:30:38 +0000
+Message-Id: <1601058657-14042-29-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
 References: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
@@ -62,43 +62,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allocate the zoran structure with devm_ functions permit to simplify
-code.
+As asked by checkpath, let's use udelay.
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/staging/media/zoran/zoran_card.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/staging/media/zoran/zoran_device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
-index 706b040f5baa..fe0c5a7c967c 100644
---- a/drivers/staging/media/zoran/zoran_card.c
-+++ b/drivers/staging/media/zoran/zoran_card.c
-@@ -1024,7 +1024,6 @@ static void zoran_remove(struct pci_dev *pdev)
- exit_free:
- 	v4l2_ctrl_handler_free(&zr->hdl);
- 	v4l2_device_unregister(&zr->v4l2_dev);
--	kfree(zr);
- }
+diff --git a/drivers/staging/media/zoran/zoran_device.c b/drivers/staging/media/zoran/zoran_device.c
+index 0ecb044f8e8f..4c9f6eafd130 100644
+--- a/drivers/staging/media/zoran/zoran_device.c
++++ b/drivers/staging/media/zoran/zoran_device.c
+@@ -1332,9 +1332,9 @@ void zoran_init_hardware(struct zoran *zr)
+ void zr36057_restart(struct zoran *zr)
+ {
+ 	btwrite(0, ZR36057_SPGPPCR);
+-	mdelay(1);
++	udelay(1000);
+ 	btor(ZR36057_SPGPPCR_SoftReset, ZR36057_SPGPPCR);
+-	mdelay(1);
++	udelay(1000);
  
- void zoran_vdev_release(struct video_device *vdev)
-@@ -1109,7 +1108,7 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		return -ENOENT;
- 	}
- 
--	zr = kzalloc(sizeof(*zr), GFP_KERNEL);
-+	zr = devm_kzalloc(&pdev->dev, sizeof(*zr), GFP_KERNEL);
- 	if (!zr)
- 		return -ENOMEM;
- 
-@@ -1298,7 +1297,6 @@ static int zoran_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 	v4l2_ctrl_handler_free(&zr->hdl);
- 	v4l2_device_unregister(&zr->v4l2_dev);
- zr_free_mem:
--	kfree(zr);
- 
- 	return -ENODEV;
- }
+ 	/* assert P_Reset */
+ 	btwrite(0, ZR36057_JPC);
 -- 
 2.26.2
 
