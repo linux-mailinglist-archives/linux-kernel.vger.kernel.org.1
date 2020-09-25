@@ -2,148 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD3C278652
+	by mail.lfdr.de (Postfix) with ESMTP id ADEAA278653
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728343AbgIYLxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728118AbgIYLxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:53:07 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEEE1C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:53:07 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id x16so1566265pgj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:53:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A1oOkyfsqFH1LfQrqPkW7aNFfIeXKev/R5cazxL0aFM=;
-        b=VNgZuBxUpAgJ8TImvaNn2mHkfg9QdQXl830VbRYRx2TXZC7HlzA0A11WFHU3nH9AYz
-         Cc3KAsNx7MblsfZCJ+9RFgyH70bkLziaw2lR6NWTlmwozfDYdjaeNUEUuZyIE03fWCqL
-         F9JjA5ryhGFZPYkXihGXzaKj4V1T2+Y1T8x2uZrBAm/SkvIVkUDUiRWOkOBSfCT8f0hU
-         H/+Kr/rWddToxWq705+hpL4PrXmXFwpIcx+bZJ4xlYWWAv6eV7UR8xg7h/OV3I9GRNQa
-         zVnpLvCcENqK5uXej0r63VuhHMzJH5wI6CKS+QceAoxK+raeyg9olUJUF1HPGKpkwH77
-         7x4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A1oOkyfsqFH1LfQrqPkW7aNFfIeXKev/R5cazxL0aFM=;
-        b=rrUaL5sCtLouPU7Bs6ft/xM6bs6/cxbt68cbjJEFl4dV/TCrln9vzY86iCQcAYxuaK
-         ky79NkoYgIpvbA5+k68DCjxSYUc6tqKR23s7RtjAePFRx8iHmDYlGfdAH0G3SiSxk4KG
-         8J/xTZUkAlYj+ivLfv4qyBKTamZGLKDFFAUK8tixUxmdJTkijfo6dDlgDGLwlJG20NCI
-         zxAiRbUWWVfScy1fVdowYInNwNf3aLYIe4EfUl+KNn20Q/HhYDBNYgCB8sitJqMV1l8e
-         7hKFa5mxcDHZasbxx2xqfvBkEu5Y0ANxlOnlsefK/BYgEe4VlMexDMlzrKVV8yawqxhq
-         1VLQ==
-X-Gm-Message-State: AOAM533bcaPf6vaOIOV4jEHhhtlDHzBuzenW6hVAuVZfgqVF8gYP6s3h
-        C8RAe6JfBJrU2NhGGtmTJJDQqX8Ya4Abgv3X3s0jCg==
-X-Google-Smtp-Source: ABdhPJx0QjhXx2O6yAB1JFuqfI8C4Gskzovi86WJ/DlXN39Y17g2CJxltdIp9/zADsheICMyr2n9j8vzcXCPG7woAGM=
-X-Received: by 2002:a17:902:b117:b029:d1:e5e7:bdf5 with SMTP id
- q23-20020a170902b117b02900d1e5e7bdf5mr3803333plr.85.1601034787254; Fri, 25
- Sep 2020 04:53:07 -0700 (PDT)
+        id S1728361AbgIYLxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:53:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:43426 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728118AbgIYLxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:53:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B57F101E;
+        Fri, 25 Sep 2020 04:53:09 -0700 (PDT)
+Received: from [10.57.48.76] (unknown [10.57.48.76])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A52A53F70D;
+        Fri, 25 Sep 2020 04:53:07 -0700 (PDT)
+Subject: Re: [PATCH 1/2] iommu/iova: Flush CPU rcache for when a depot fills
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org
+Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        chenxiang66@hisilicon.com, linuxarm@huawei.com,
+        xiyou.wangcong@gmail.com, thunder.leizhen@huawei.com
+References: <1601027469-221812-1-git-send-email-john.garry@huawei.com>
+ <1601027469-221812-2-git-send-email-john.garry@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <bede311f-9a07-98e1-e728-9acd4ad13b51@arm.com>
+Date:   Fri, 25 Sep 2020 12:53:06 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <cover.1600987622.git.andreyknvl@google.com> <17ec8af55dc0a4d3ade679feb0858f0df4c80d27.1600987622.git.andreyknvl@google.com>
- <20200925104933.GD4846@gaia> <CAAeHK+zLFRgR9eiLNyn7-iqbXJe6HGYpHYbBXXOVqOk4MyrhAA@mail.gmail.com>
- <20200925114703.GI4846@gaia>
-In-Reply-To: <20200925114703.GI4846@gaia>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 25 Sep 2020 13:52:56 +0200
-Message-ID: <CAAeHK+x=bchXN4DDui2Gfr_yNW4+9idc_3nQAyjRTwMN6UuvHg@mail.gmail.com>
-Subject: Re: [PATCH v3 26/39] arm64: mte: Add in-kernel tag fault handler
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1601027469-221812-2-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 1:47 PM Catalin Marinas <catalin.marinas@arm.com> wrote:
->
-> On Fri, Sep 25, 2020 at 01:26:02PM +0200, Andrey Konovalov wrote:
-> > On Fri, Sep 25, 2020 at 12:49 PM Catalin Marinas
-> > <catalin.marinas@arm.com> wrote:
-> > > > diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-> > > > index a3bd189602df..d110f382dacf 100644
-> > > > --- a/arch/arm64/mm/fault.c
-> > > > +++ b/arch/arm64/mm/fault.c
-> > > > @@ -33,6 +33,7 @@
-> > > >  #include <asm/debug-monitors.h>
-> > > >  #include <asm/esr.h>
-> > > >  #include <asm/kprobes.h>
-> > > > +#include <asm/mte.h>
-> > > >  #include <asm/processor.h>
-> > > >  #include <asm/sysreg.h>
-> > > >  #include <asm/system_misc.h>
-> > > > @@ -294,6 +295,11 @@ static void die_kernel_fault(const char *msg, unsigned long addr,
-> > > >       do_exit(SIGKILL);
-> > > >  }
-> > > >
-> > > > +static void report_tag_fault(unsigned long addr, unsigned int esr,
-> > > > +                          struct pt_regs *regs)
-> > > > +{
-> > > > +}
-> > >
-> > > Do we need to introduce report_tag_fault() in this patch? It's fine but
-> > > add a note in the commit log that it will be populated in a subsequent
-> > > patch.
-> >
-> > I did, see the last line of the commit description.
->
-> Sorry, I missed that.
+On 2020-09-25 10:51, John Garry wrote:
+> Leizhen reported some time ago that IOVA performance may degrade over time
+> [0], but unfortunately his solution to fix this problem was not given
+> attention.
+> 
+> To summarize, the issue is that as time goes by, the CPU rcache and depot
+> rcache continue to grow. As such, IOVA RB tree access time also continues
+> to grow.
+> 
+> At a certain point, a depot may become full, and also some CPU rcaches may
+> also be full when we try to insert another IOVA. For this scenario,
+> currently we free the "loaded" CPU rcache and create a new one. This
+> free'ing means that we need to free many IOVAs in the RB tree, which
+> makes IO throughput performance fall off a cliff in our storage scenario:
+> 
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
+> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
+> 
+> And continue in this fashion, without recovering. Note that in this
+> example we had to wait 16 hours for this to occur. Also note that IO
+> throughput also becomes gradually becomes more unstable leading up to this
+> point.
+> 
+> As a solution this issue, we judge that the IOVA rcaches have grown too
+> big, and just flush all the CPUs rcaches instead.
+> 
+> The depot rcaches, however, are not flushed, as they can be used to
+> immediately replenish active CPUs.
+> 
+> In future, some IOVA rcache compaction could be implemented to solve the
+> instabilty issue, which I figure could be quite complex to implement.
+> 
+> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
+> 
+> Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
+> Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>   drivers/iommu/iova.c | 25 ++++++++++++++++---------
+>   1 file changed, 16 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+> index 45a251da5453..05e0b462e0d9 100644
+> --- a/drivers/iommu/iova.c
+> +++ b/drivers/iommu/iova.c
+> @@ -892,9 +892,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>   				 struct iova_rcache *rcache,
+>   				 unsigned long iova_pfn)
+>   {
+> -	struct iova_magazine *mag_to_free = NULL;
+>   	struct iova_cpu_rcache *cpu_rcache;
+> -	bool can_insert = false;
+> +	bool can_insert = false, flush = false;
+>   	unsigned long flags;
+>   
+>   	cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
+> @@ -913,13 +912,19 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>   			if (rcache->depot_size < MAX_GLOBAL_MAGS) {
+>   				rcache->depot[rcache->depot_size++] =
+>   						cpu_rcache->loaded;
+> +				can_insert = true;
+> +				cpu_rcache->loaded = new_mag;
+>   			} else {
+> -				mag_to_free = cpu_rcache->loaded;
+> +				/*
+> +				 * The depot is full, meaning that a very large
+> +				 * cache of IOVAs has built up, which slows
+> +				 * down RB tree accesses significantly
+> +				 * -> let's flush at this point.
+> +				 */
+> +				flush = true;
+> +				iova_magazine_free(new_mag);
+>   			}
+>   			spin_unlock(&rcache->lock);
+> -
+> -			cpu_rcache->loaded = new_mag;
+> -			can_insert = true;
+>   		}
+>   	}
+>   
+> @@ -928,9 +933,11 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
+>   
+>   	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
+>   
+> -	if (mag_to_free) {
+> -		iova_magazine_free_pfns(mag_to_free, iovad);
+> -		iova_magazine_free(mag_to_free);
+> +	if (flush) {
 
-No problem!
+Do you really need this flag, or is it effectively just mirroring 
+"!can_insert" - in theory if there wasn't enough memory to allocate a 
+new magazine, then freeing some more IOVAs wouldn't necessarily be a bad 
+thing to do anyway.
 
-> > > > +
-> > > >  static void __do_kernel_fault(unsigned long addr, unsigned int esr,
-> > > >                             struct pt_regs *regs)
-> > > >  {
-> > > > @@ -641,10 +647,40 @@ static int do_sea(unsigned long addr, unsigned int esr, struct pt_regs *regs)
-> > > >       return 0;
-> > > >  }
-> > > >
-> > > > +static void do_tag_recovery(unsigned long addr, unsigned int esr,
-> > > > +                        struct pt_regs *regs)
-> > > > +{
-> > > > +     static bool reported = false;
-> > > > +
-> > > > +     if (!READ_ONCE(reported)) {
-> > > > +             report_tag_fault(addr, esr, regs);
-> > > > +             WRITE_ONCE(reported, true);
-> > > > +     }
-> > >
-> > > I don't mind the READ_ONCE/WRITE_ONCE here but not sure what they help
-> > > with.
-> >
-> > The fault can happen on multiple cores at the same time, right? In
-> > that case without READ/WRITE_ONCE() we'll have a data-race here.
->
-> READ/WRITE_ONCE won't magically solve such races. If two CPUs enter
-> simultaneously in do_tag_recovery(), they'd both read 'reported' as
-> false and both print the fault info.
+Other than that, I think this looks reasonable. Every time I look at 
+__iova_rcache_insert() I'm convinced there must be a way to restructure 
+it to be more streamlined overall, but I can never quite see exactly how...
 
-They won't solve the race condition, but they will solve the data
-race. I guess here we don't really care about the race condition, as
-printing a tag fault twice is OK. But having a data race here will
-lead to KCSAN reports, although won't probably break anything in
-practice.
+Thanks,
+Robin.
 
-> If you really care about this race, you need to atomically both read and
-> update the variable with an xchg() or cmpxchg().
+> +		int cpu;
+> +
+> +		for_each_online_cpu(cpu)
+> +			free_cpu_cached_iovas(cpu, iovad);
+>   	}
+>   
+>   	return can_insert;
+> 
