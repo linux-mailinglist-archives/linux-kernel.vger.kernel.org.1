@@ -2,233 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE7127845F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8EC278476
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727969AbgIYJuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:50:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52833 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727733AbgIYJuq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:50:46 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601027443;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GDhBPOe3jcVROJ0BN62HKOTXC7jV4GnEORkL67PFQTY=;
-        b=hy9T6va049DZNQOY6T8XrovzR+2yMkc/PN2npUI4oPFdpx/qZv752x9N8dkB9v8GW70Sfe
-        IVPrbi+xFwjONS4itvraQKYvtrIZ0pkGk8npy5gK/ny+KjDZ+1F/i4kROIiqBOA63ntfw6
-        hh5muZpVs8W8uZUcganAGd0OqxK4Euw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-346-kHgBI-YLMCyRU6LoaHG0Kw-1; Fri, 25 Sep 2020 05:50:42 -0400
-X-MC-Unique: kHgBI-YLMCyRU6LoaHG0Kw-1
-Received: by mail-wr1-f72.google.com with SMTP id l17so859109wrw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:50:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=GDhBPOe3jcVROJ0BN62HKOTXC7jV4GnEORkL67PFQTY=;
-        b=kNmDSrAwwmvrhlLveEI1Fb+By8rpFrY/lSQLpCnvKynGLIYHoO77xNtYYw/+dFo9tX
-         tBorq8LdwHqjBFt0oOQUxpp3Fc3daTecSchUOkYlGsLN4+6u2e5AnvtsiCs4L3zDrdWf
-         lwSS99canRoifYpxMaZK4qESMhkCsO2Vgsf50mOXIvBvQIQMAjdaCKBErfOAhmpg3w+j
-         rMwDscLqJYY9HpQ4lq5/Hp4QDEGLiIM5YGi/jhJdqYoK1Be+fG9rMZ9YNQ8CLKwY6yWx
-         pxZWzvkLZydBkSHHPsK7yRO6TwgubtyoNSlrdVj7G3qEoUVcVd/agKa/UzyEVHK2SzeH
-         y43g==
-X-Gm-Message-State: AOAM530ImbpJmi9GkE5QxJg4s6xefV6xFeoVHBpuetwKDW8xD2TkIPcG
-        dnFIUiBapWy+j4cgYjp05Nc3CDU9bNQyXKgSmwODKDRNsAmwv3m5DMIyBfVoWG0Dxegane2ImAu
-        18fvoiAoTeO/Vkbfa7cmi+o9V
-X-Received: by 2002:a5d:4a49:: with SMTP id v9mr3841580wrs.153.1601027440795;
-        Fri, 25 Sep 2020 02:50:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzKKVcO2kM6IPpdp2Gg3hQPq2vUbpZkkTaJ2CerST66mM7BDhtIYbJ3z0B9ciUri96lZVcLGw==
-X-Received: by 2002:a5d:4a49:: with SMTP id v9mr3841553wrs.153.1601027440543;
-        Fri, 25 Sep 2020 02:50:40 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id k4sm2180432wrx.51.2020.09.25.02.50.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 02:50:39 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Huacai Chen <chenhc@lemote.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH 3/3] KVM: x86: Use KVM_BUG/KVM_BUG_ON to handle bugs that are fatal to the VM
-In-Reply-To: <20200924181134.GB9649@linux.intel.com>
-References: <20200923224530.17735-1-sean.j.christopherson@intel.com> <20200923224530.17735-4-sean.j.christopherson@intel.com> <878scze4l5.fsf@vitty.brq.redhat.com> <20200924181134.GB9649@linux.intel.com>
-Date:   Fri, 25 Sep 2020 11:50:38 +0200
-Message-ID: <87k0wichht.fsf@vitty.brq.redhat.com>
+        id S1727905AbgIYJ4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:56:05 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:38734 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727495AbgIYJ4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:56:01 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id CF78663B340DED11E1FA;
+        Fri, 25 Sep 2020 17:55:56 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 25 Sep 2020 17:55:47 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <joro@8bytes.org>, <robin.murphy@arm.com>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <chenxiang66@hisilicon.com>, <linuxarm@huawei.com>,
+        <xiyou.wangcong@gmail.com>, <thunder.leizhen@huawei.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH 0/2] iommu/iova: Solve longterm IOVA issue
+Date:   Fri, 25 Sep 2020 17:51:07 +0800
+Message-ID: <1601027469-221812-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
+This series contains a patch to solve the longterm IOVA issue which
+leizhen originally tried to address at [0].
 
-> On Thu, Sep 24, 2020 at 02:34:14PM +0200, Vitaly Kuznetsov wrote:
->> Sean Christopherson <sean.j.christopherson@intel.com> writes:
->> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->> > index 6f9a0c6d5dc5..810d46ab0a47 100644
->> > --- a/arch/x86/kvm/vmx/vmx.c
->> > +++ b/arch/x86/kvm/vmx/vmx.c
->> > @@ -2250,7 +2250,7 @@ static void vmx_cache_reg(struct kvm_vcpu *vcpu, enum kvm_reg reg)
->> >  		vcpu->arch.cr4 |= vmcs_readl(GUEST_CR4) & guest_owned_bits;
->> >  		break;
->> >  	default:
->> > -		WARN_ON_ONCE(1);
->> > +		KVM_BUG_ON(1, vcpu->kvm);
->> >  		break;
->> >  	}
->> >  }
->> > @@ -4960,6 +4960,7 @@ static int handle_cr(struct kvm_vcpu *vcpu)
->> >  			return kvm_complete_insn_gp(vcpu, err);
->> >  		case 3:
->> >  			WARN_ON_ONCE(enable_unrestricted_guest);
->> > +
->> >  			err = kvm_set_cr3(vcpu, val);
->> >  			return kvm_complete_insn_gp(vcpu, err);
->> >  		case 4:
->> > @@ -4985,14 +4986,13 @@ static int handle_cr(struct kvm_vcpu *vcpu)
->> >  		}
->> >  		break;
->> >  	case 2: /* clts */
->> > -		WARN_ONCE(1, "Guest should always own CR0.TS");
->> > -		vmx_set_cr0(vcpu, kvm_read_cr0_bits(vcpu, ~X86_CR0_TS));
->> > -		trace_kvm_cr_write(0, kvm_read_cr0(vcpu));
->> > -		return kvm_skip_emulated_instruction(vcpu);
->> > +		KVM_BUG(1, vcpu->kvm, "Guest always owns CR0.TS");
->> > +		return -EIO;
->> >  	case 1: /*mov from cr*/
->> >  		switch (cr) {
->> >  		case 3:
->> >  			WARN_ON_ONCE(enable_unrestricted_guest);
->> > +
->> 
->> Here, were you intended to replace WARN_ON_ONCE() with KVM_BUG_ON() or
->> this is just a stray newline added?
->
-> I think it's just a stray newline.  At one point I had converted this to a
-> KVM_BUG_ON(), but then reversed direction because it's not fatal to the guest,
-> i.e. KVM should continue to function even though it's spuriously intercepting
-> CR3 loads.
->
-> Which, rereading this patch, completely contradicts the KVM_BUG() for CLTS.
->
-> That's probably something we should sort out in this RFC: is KVM_BUG() only
-> to be used if the bug is fatal/dangerous, or should it be used any time the
-> error is definitely a KVM (or hardware) bug.
+I also included the small optimisation from Cong Wang, which never seems
+to be have been accepted [1]. There was some debate of the other patches
+in that series, but this one is quite straightforward.
 
-Personally, I'm feeling adventurous so my vote goes to the later :-)
-Whenever a KVM bug was discovered by a VM it's much safer to stop
-executing it as who knows what the implications might be?
+@Cong Wang, Please resend your series if prefer I didn't upstream your
+patch.
 
-In this particular case I can think of a nested scenario when L1 didn't
-ask for CR3 intercept but L0 is still injecting it. It is not fatal by
-itself but probably there is bug in calculating intercepts in L0 so
-if we're getting something extra maybe we're also missing some? And this
-doesn't sound good at all.
+[0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
+[1] https://lore.kernel.org/linux-iommu/4b74d40a-22d1-af53-fcb6-5d70183705a8@huawei.com/
 
->
->> >  			val = kvm_read_cr3(vcpu);
->> >  			kvm_register_write(vcpu, reg, val);
->> >  			trace_kvm_cr_read(cr, val);
->> > @@ -5330,7 +5330,9 @@ static int handle_ept_misconfig(struct kvm_vcpu *vcpu)
->> >  
->> >  static int handle_nmi_window(struct kvm_vcpu *vcpu)
->> >  {
->> > -	WARN_ON_ONCE(!enable_vnmi);
->> > +	if (KVM_BUG_ON(!enable_vnmi, vcpu->kvm))
->> > +		return -EIO;
->> > +
->> >  	exec_controls_clearbit(to_vmx(vcpu), CPU_BASED_NMI_WINDOW_EXITING);
->> >  	++vcpu->stat.nmi_window_exits;
->> >  	kvm_make_request(KVM_REQ_EVENT, vcpu);
->> > @@ -5908,7 +5910,8 @@ static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
->> >  	 * below) should never happen as that means we incorrectly allowed a
->> >  	 * nested VM-Enter with an invalid vmcs12.
->> >  	 */
->> > -	WARN_ON_ONCE(vmx->nested.nested_run_pending);
->> > +	if (KVM_BUG_ON(vmx->nested.nested_run_pending, vcpu->kvm))
->> > +		return -EIO;
->> >  
->> >  	/* If guest state is invalid, start emulating */
->> >  	if (vmx->emulation_required)
->> > @@ -6258,7 +6261,9 @@ static int vmx_sync_pir_to_irr(struct kvm_vcpu *vcpu)
->> >  	int max_irr;
->> >  	bool max_irr_updated;
->> >  
->> > -	WARN_ON(!vcpu->arch.apicv_active);
->> > +	if (KVM_BUG_ON(!vcpu->arch.apicv_active, vcpu->kvm))
->> > +		return -EIO;
->> > +
->> >  	if (pi_test_on(&vmx->pi_desc)) {
->> >  		pi_clear_on(&vmx->pi_desc);
->> >  		/*
->> > @@ -6345,7 +6350,7 @@ static void handle_external_interrupt_irqoff(struct kvm_vcpu *vcpu)
->> >  	gate_desc *desc;
->> >  	u32 intr_info = vmx_get_intr_info(vcpu);
->> >  
->> > -	if (WARN_ONCE(!is_external_intr(intr_info),
->> > +	if (KVM_BUG(!is_external_intr(intr_info), vcpu->kvm,
->> >  	    "KVM: unexpected VM-Exit interrupt info: 0x%x", intr_info))
->> >  		return;
->> >  
->> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> > index 17f4995e80a7..672eb5142b34 100644
->> > --- a/arch/x86/kvm/x86.c
->> > +++ b/arch/x86/kvm/x86.c
->> > @@ -8363,6 +8363,10 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->> >  	bool req_immediate_exit = false;
->> >  
->> >  	if (kvm_request_pending(vcpu)) {
->> > +		if (kvm_check_request(KVM_REQ_VM_BUGGED, vcpu)) {
->> 
->> Do we want to allow userspace to continue executing the guest or should
->> we make KVM_REQ_VM_BUGGED permanent by replacing kvm_check_request()
->> with kvm_test_request()?
->
-> In theory, it should be impossible to reach this again as "r = -EIO" will
-> bounce this out to userspace, the common checks to deny all ioctls() will
-> prevent reinvoking KVM_RUN.
+Cong Wang (1):
+  iommu: avoid taking iova_rbtree_lock twice
 
-Do we actually want to prevent *all* ioctls? E.g. when 'vm bugged'
-condition is triggered userspace may want to extract some information to
-assist debugging but even things like KVM_GET_[S]REGS will just return
--EIO. I'm not sure it is generally safe to enable *everything* (except
-for KVM_RUN which should definitely be forbidden) so maybe your approach
-is preferable.
+John Garry (1):
+  iommu/iova: Flush CPU rcache for when a depot fills
 
->
->> > +			r = -EIO;
->> > +			goto out;
->> > +		}
->> >  		if (kvm_check_request(KVM_REQ_GET_VMCS12_PAGES, vcpu)) {
->> >  			if (unlikely(!kvm_x86_ops.nested_ops->get_vmcs12_pages(vcpu))) {
->> >  				r = 0;
->> 
->> -- 
->> Vitaly
->> 
->
+ drivers/iommu/iova.c | 33 ++++++++++++++++++++++-----------
+ 1 file changed, 22 insertions(+), 11 deletions(-)
 
 -- 
-Vitaly
+2.26.2
 
