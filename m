@@ -2,131 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90305277FE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:23:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49A14277FE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgIYFXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:23:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44893 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726983AbgIYFXb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:23:31 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601011409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qeVZ/oNWYrQPapNzlO3BHP5CuXNC3u8y+M6g9AfJmiM=;
-        b=ZJERDcnHhftLlphUCzbgfO2qhJUvV8S+2Cp2ZWViDOQ6KmrWSLCIV6UR4xXI5p6oM5JKam
-        tcMNk3/Od035L4Bq7d2rchJyO7TEAbNzgrXtSEGuYDvR0k+QLWHffQO2WvIyiQwo90CBSf
-        LIxzwKL9j9GySNxh61gbX1gk2u9h770=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-131-FW3B2X4bMgCBO7fufZsn8w-1; Fri, 25 Sep 2020 01:23:27 -0400
-X-MC-Unique: FW3B2X4bMgCBO7fufZsn8w-1
-Received: by mail-ot1-f70.google.com with SMTP id d10so450911otf.17
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 22:23:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qeVZ/oNWYrQPapNzlO3BHP5CuXNC3u8y+M6g9AfJmiM=;
-        b=pISehOsdbPYxkUrQnDbjIjZfQnwgI+vzLZ0C85nJ5Zwq3cf0i9y9NS7n/PO+02E6XJ
-         m3ooZaIu1qaCxm1hSNEdr5BOqTuHEexdS3NZEnHla4AaCsbmcWBic07O5qZrID5GFIVt
-         8HeFtw4r1DD0ttN086PKsI5oz70aQ/FM/+Z8nW+aVRlFlIVuWEtDbqe0yG/JO62fVML7
-         KLVLmyxdsBRFKNzJ4q1bbh0FSAZ9Y3cvRscoRaLFO8hEWf10gaZ4aIgXuVOcG73kfZjO
-         lMiGZ2apsXbpzbIsgoRrvVNqEsB2GbKhA2+sKcw0o4pJwM2kJUZvQ2amSMrzr+Pholu6
-         Bq0g==
-X-Gm-Message-State: AOAM532sg/QoRuD6ldLjU9mwprbu6X8+8Es7zFk6m3xpz88mlkdIHdTG
-        jRWpXEAtkB429gUjFJrBaSRwbXjxREfhpjngWT4ERwe4u0poh+ZChm1OYG9cutmQdVJHL+kJMCB
-        tNhZVYhdnmRXNoe6yHdjmeeZHwnw7/ksR4KUnaP2E
-X-Received: by 2002:aca:dc8b:: with SMTP id t133mr618402oig.158.1601011406272;
-        Thu, 24 Sep 2020 22:23:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy13wCPB9+BIoLDsXjH5tJgof8j8NkbNBYAKVJlMOIZ5hpPK5IcdaTrr3cklV3+pKnxu4dYBBpwixHjCsoVvl4=
-X-Received: by 2002:aca:dc8b:: with SMTP id t133mr618387oig.158.1601011405935;
- Thu, 24 Sep 2020 22:23:25 -0700 (PDT)
+        id S1727109AbgIYFZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:25:48 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:58313 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726983AbgIYFZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:25:48 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ByL3Y71Qhz9sSn;
+        Fri, 25 Sep 2020 15:25:45 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601011546;
+        bh=2gx4dW3Za2qhUic+/NJoGelBionjh8kGB6m105OPlfI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Lv+oos/2NpHE1cUbMH6CcaSvNnF/xmNONLtQR5KuMhCIqhYWdW3L8O9auhKXgTgpL
+         ijV3kSfTEck4N9iYtAbWGTjuDqW9RujACTMFTGAo+qUhkphGjRiiO73oTKx5lg838Q
+         Xg6zXS/m8VwFnOUKzab+AfWIH0lMryH5hqWflYOoUhx0Fe5LXJfZe+77mVx6XwTgjT
+         L6UbOZDX0nB3TiIpZkI2giO5GdqWIo9mH3Hi/J4Do/UdvHriSiQ0AgQ7LXAQaDwefk
+         J6eR5oYjWvrnHzKMXV2EuFS+7mB6rLxBFkqCcvgERjrqlaetqwcMWBSd7FIMB/LDv9
+         LgQSQkp0Axh3w==
+Date:   Fri, 25 Sep 2020 15:25:45 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the tip tree with the kbuild tree
+Message-ID: <20200925152545.60cccb7b@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20200924124647.300080-1-egorenar@linux.ibm.com>
-In-Reply-To: <20200924124647.300080-1-egorenar@linux.ibm.com>
-From:   Bhupesh Sharma <bhsharma@redhat.com>
-Date:   Fri, 25 Sep 2020 10:53:14 +0530
-Message-ID: <CACi5LpN9sRz12EWJrWQOQPLbOPEboDikb7oG1tG=XZV+sOWLgA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] kdump: append uts_namespace.name offset to VMCOREINFO
-To:     Alexander Egorenkov <egorenar@linux.ibm.com>
-Cc:     RuiRui Yang <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        kexec mailing list <kexec@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ktkhai@virtuozzo.com, Eric Biederman <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        christian.brauner@ubuntu.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/1L_4i_TQkRuXrSoDSXYhZnS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexander,
+--Sig_/1L_4i_TQkRuXrSoDSXYhZnS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 24, 2020 at 6:18 PM Alexander Egorenkov
-<egorenar@linux.ibm.com> wrote:
->
-> The offset of the field 'init_uts_ns.name' has changed
-> since
->
-> commit 9a56493f6942c0e2df1579986128721da96e00d8
-> Author: Kirill Tkhai <ktkhai@virtuozzo.com>
-> Date:   Mon Aug 3 13:16:21 2020 +0300
->
->     uts: Use generic ns_common::count
+Hi all,
 
-A minor nitpick:
-You can add the following line to your .gitconfig:
-one = show -s --pretty='format:%h (\"%s\")'
+Today's linux-next merge of the tip tree got a conflict in:
 
-running a command '$ git one <SHA-ID>' will then give you an
-abbreviated form to be used while referring to existing git commits in
-the log message. For e.g. in this case, the output would be something
-like:
+  arch/arm/Makefile
 
-$ git one 9a56493f6942c0e2df1579986128721da96e00d8
-9a56493f6942 ("uts: Use generic ns_common::count")
+between commit:
 
-Then you can use '9a56493f6942 ("uts: Use generic ns_common::count")'
-to refer to an existing upstream patch in the log message.
+  596b0474d3d9 ("kbuild: preprocess module linker script")
 
-But I think this can be fixed while applying the patch (if there are
-no further revisions required).
+from the kbuild tree and commit:
 
-> Link: https://lore.kernel.org/r/159644978167.604812.1773586504374412107.stgit@localhost.localdomain
->
-> Make the offset of the field 'uts_namespace.name' available
-> in VMCOREINFO because tools like 'crash-utility' and
-> 'makedumpfile' must be able to read it from crash dumps.
->
-> Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
-> ---
->  kernel/crash_core.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-> index 106e4500fd53..173fdc261882 100644
-> --- a/kernel/crash_core.c
-> +++ b/kernel/crash_core.c
-> @@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_init(void)
->         VMCOREINFO_PAGESIZE(PAGE_SIZE);
->
->         VMCOREINFO_SYMBOL(init_uts_ns);
-> +       VMCOREINFO_OFFSET(uts_namespace, name);
->         VMCOREINFO_SYMBOL(node_online_map);
->  #ifdef CONFIG_MMU
->         VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
-> --
-> 2.26.2
+  5a17850e251a ("arm/build: Warn on orphan section placement")
 
-Thanks for making the changes we discussed in the v1 review. Otherwise
-the patch looks fine to me, so:
+from the tip tree.
 
-Reviewed-by: Bhupesh Sharma <bhsharma@redhat.com>
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/arm/Makefile
+index e15f76ca2887,e589da3c8949..000000000000
+--- a/arch/arm/Makefile
++++ b/arch/arm/Makefile
+@@@ -16,6 -16,14 +16,10 @@@ LDFLAGS_vmlinux	+=3D --be
+  KBUILD_LDFLAGS_MODULE	+=3D --be8
+  endif
+ =20
++ # We never want expected sections to be placed heuristically by the
++ # linker. All sections should be explicitly named in the linker script.
++ LDFLAGS_vmlinux +=3D $(call ld-option, --orphan-handling=3Dwarn)
++=20
+ -ifeq ($(CONFIG_ARM_MODULE_PLTS),y)
+ -KBUILD_LDS_MODULE	+=3D $(srctree)/arch/arm/kernel/module.lds
+ -endif
+ -
+  GZFLAGS		:=3D-9
+  #KBUILD_CFLAGS	+=3D-pipe
+ =20
+
+--Sig_/1L_4i_TQkRuXrSoDSXYhZnS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9tf1kACgkQAVBC80lX
+0GxtIQf/bB83Up1yh+U7tvU/W2qepHb7I0UpA6ap2dJJ/gVm1T/GJx+wdLkhtMEV
+bWtirx2ei+8J+Da7hYzAUKyVDHMx9FegmsdbScjCvlVSE0uiemvV7l/O/1f17k3V
+ioDeZYgxso0/s2tj/Q297Mv0c5B22wSXCeY8zrPdPXsVtTCRafOE0XiZU3g18dUF
+oE/LR0sXhEdRGYvEhwbIp/5BCvqmnDeXAckbYKiUbnwhJ0mOG/jaaZO1Mx8T/jMa
+9SCyQ4SBmKLSJOZqcGF8zFe3N7/6hOt/TdjEIx7O45W3UGzb06rQUcczRGJnMh+O
+4duL9fh/L1Ds4qKG5JJhZglCfTOAbA==
+=v4a4
+-----END PGP SIGNATURE-----
+
+--Sig_/1L_4i_TQkRuXrSoDSXYhZnS--
