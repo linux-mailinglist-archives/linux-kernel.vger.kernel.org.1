@@ -2,191 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381F42784CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA9F2784D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728066AbgIYKMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        id S1728079AbgIYKNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727819AbgIYKMc (ORCPT
+        with ESMTP id S1727324AbgIYKNJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:12:32 -0400
+        Fri, 25 Sep 2020 06:13:09 -0400
 Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1D0C0613CE;
-        Fri, 25 Sep 2020 03:12:32 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k13so2731609pfg.1;
-        Fri, 25 Sep 2020 03:12:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5156C0613CE;
+        Fri, 25 Sep 2020 03:13:09 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id d9so2722255pfd.3;
+        Fri, 25 Sep 2020 03:13:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ul4FWsiiwY8Jo4Eq8juNVSqvOl3DuvcCHfuOSOchXXY=;
-        b=GhIDGWa+iwIgA3l9KGa+mgFl1Oz+IHjEWTANtQMqpmt96UP66EV51q5qwBglajoGwZ
-         7oxFiyMf4SA49jfxMSS3vJtk+yHcN7FT0Fv+UIpMwgB4+9bG4k6FW1TlmWY8eLuQ/In8
-         TxT13hjIUbV67qSVgKW1emZIzbjnSfpTYp30OK/5IXG+k1vM8Ph5Udaq4LJu3s3ZenOC
-         ELb1kfjHDHi+kpxTpB2vikTJ2GUqgGW13+rbxThsFWdf9Qe/OWFGrSgmj/+QfwmICxS4
-         4vnZiFIr+3ZcXowpXoD/R89zn/zzsOT4wiVanVR7I5qOoaxMXqpjoeAaRihrxGroiw7h
-         voww==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=720jfHfclRnuElbF5sBzZ7YrsJeN0GPjCiRxFVwpZoA=;
+        b=i7Zjo2El5BzxdVYuuVMLa8MGZcc6OstPdzLxRwuXbMZdkeeu04m+n0XhYNS/MxNSkI
+         +geUVpxEp6s3OgH7eUXw9uaBQrQGlBCVnmiYJWiL3enEzsGYVYIsC0NToHgONfeoZtNQ
+         08429bRaEKBsTttN92pFdakTfdyCrToHclfhyX4rr8XMkapPN+F4kiDVVqbmyDLyD3DY
+         dkEFSJmSw51IsvsTjnMzLX2WELq2j0Z0PtdNZQsCioN4TodyVPV5jr2EAiY+nnVMnv9J
+         0xrYTrx5pOJ46fagsf8opPRq6G3TwOCJP3ZFC0vp+96yjyM/fmXmr77viRZrad1yqkEO
+         CHPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ul4FWsiiwY8Jo4Eq8juNVSqvOl3DuvcCHfuOSOchXXY=;
-        b=A368QPsSUAJu8QaYb/PrvdbWbKXDDEB4ZUuSe+0nOkfozGnPJ+P+Mtox0CaLrTkj3/
-         nYRlGEI2XFfBeezJeBLPTbGjc4HdHxZCwiwwGTlBR6+rttvfcO4Ar5Ha6CxHNB9nlUt8
-         Hwv1g6kimfxmxtmfM/ym5YxIG6blWfZZ5fJZKlkWPXd9uYKt71yHoYbDPFiAEONbE/eH
-         3jqkkbPNcszmn+FzDz1KnkMsXKTvYGu+Dsln9ubYrVtwm59b09tpm7IWpfJrUnFgOjzB
-         oZUaEJVZDCjQvK3hSVVjbNFnyTwnMtxCrvCdKcr2Tt27s5/yReyt3XvQ5dJb9RjT60Z1
-         fDwg==
-X-Gm-Message-State: AOAM530W+fgiFBfyYd8lv7UVQfSUihdzUrmJoFkqIvdGpc5MkW6sHuU5
-        GrbgVBMYLUM0SYWD2zFsgv+o5QcLGKypM0gC0UY=
-X-Google-Smtp-Source: ABdhPJzQ5GrWtzE+JZxiH04u2PFEx58tfLNqY1MiAlIXjH4oX/s+YC7jERywZWOXfAi14X4Gjzb9xJi4/gX6DxSi73E=
-X-Received: by 2002:a17:902:d708:b029:d2:635f:6692 with SMTP id
- w8-20020a170902d708b02900d2635f6692mr2992572ply.17.1601028752161; Fri, 25 Sep
- 2020 03:12:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=720jfHfclRnuElbF5sBzZ7YrsJeN0GPjCiRxFVwpZoA=;
+        b=HH7X2VxZiEpaW1mk4ZPfzfnv+YXW4cWLKs9FHgiZGvFlaUd5OWaOoLo6xoFMqBpJTJ
+         XJT0AlBxft9P2eYDUVprfEV+8M3g/ZgfEnvBnwJIcQHuU3cfSvSm4TskPQh9xrcoOlS/
+         oGHxOiELTnQeTCT/zFOf0sQ48wbR91MTXZAYkJN5tBudg9eICOPP2lLVNXV7HV8geq1J
+         e4cR2EybvA7GPhY62/Y7JL/UWFmKDNWJQ7rhrL4euCLn38z85kMih6Kb6E+aDBosx6sK
+         vYTXH0mMue41EfmdT+kTugcEWRGwzvwDS3dwhk+fN+fWqDnQX7OM83uiGT6+/9fnLJck
+         AmrA==
+X-Gm-Message-State: AOAM533Lr9Qv6yMOWIE5p1ukrnfFyDobzIBQEFMlU0pMRBEEV7/HHgxJ
+        mhpPqMO/ijQtt/vDskwlvQ==
+X-Google-Smtp-Source: ABdhPJyH9hSYbuzMVkeLBRiy0bfoGk8cDtw/2un0NnyLt7EEM2tTDwRAuEk/AUNhm/BuhmA41p3M3g==
+X-Received: by 2002:aa7:8249:0:b029:142:2501:35c9 with SMTP id e9-20020aa782490000b0290142250135c9mr3375837pfn.41.1601028789229;
+        Fri, 25 Sep 2020 03:13:09 -0700 (PDT)
+Received: from PWN (n11212042027.netvigator.com. [112.120.42.27])
+        by smtp.gmail.com with ESMTPSA id h1sm1665573pji.52.2020.09.25.03.13.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 03:13:08 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 06:13:00 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Jiri Slaby <jirislaby@kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
+ buffers
+Message-ID: <20200925101300.GA890211@PWN>
+References: <0000000000006b9e8d059952095e@google.com>
+ <cover.1600953813.git.yepeilin.cs@gmail.com>
+ <3f754d60-1d35-899c-4418-147d922e29af@kernel.org>
 MIME-Version: 1.0
-References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-9-warthog618@gmail.com>
- <CAHp75Vc05P4-X_ZC6k-EWdDCAXOgPgAJhm4RxF3izvk=vW+X+g@mail.gmail.com>
- <20200924023914.GA11575@sol> <CAHp75VfoOCJDmpDJ6wTEKTDUO1zFRZ6MRSN7dy3cAdepv0s2rQ@mail.gmail.com>
- <20200924094813.GC20188@sol>
-In-Reply-To: <20200924094813.GC20188@sol>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 25 Sep 2020 13:12:14 +0300
-Message-ID: <CAHp75VcmJyNdK8hOKneT3T=t8QyRcU+X+UwfmKCL5SJsniev9g@mail.gmail.com>
-Subject: Re: [PATCH v9 08/20] gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL
- and GPIO_V2_GET_LINEINFO_WATCH_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f754d60-1d35-899c-4418-147d922e29af@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 12:48 PM Kent Gibson <warthog618@gmail.com> wrote:
-> On Thu, Sep 24, 2020 at 11:39:03AM +0300, Andy Shevchenko wrote:
-> > On Thu, Sep 24, 2020 at 5:39 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > On Wed, Sep 23, 2020 at 06:41:45PM +0300, Andy Shevchenko wrote:
-> > > > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+Hi all!
 
-...
+On Fri, Sep 25, 2020 at 08:46:04AM +0200, Jiri Slaby wrote:
+> > In order to perform a reliable range check, fbcon_get_font() needs to know
+> > `FONTDATAMAX` for each built-in font under lib/fonts/. Unfortunately, we
+> > do not keep that information in our font descriptor,
+> > `struct console_font`:
+> > 
+> > (include/uapi/linux/kd.h)
+> > struct console_font {
+> > 	unsigned int width, height;	/* font size */
+> > 	unsigned int charcount;
+> > 	unsigned char *data;	/* font data with height fixed to 32 */
+> > };
+> > 
+> > To make things worse, `struct console_font` is part of the UAPI, so we
+> > cannot add a new field to keep track of `FONTDATAMAX`.
+> 
+> Hi,
+> 
+> but you still can define struct kernel_console_font containing struct
+> console_font and the 4 more members you need in the kernel. See below.
+> 
+> > Fortunately, the framebuffer layer itself gives us a hint of how to
+> > resolve this issue without changing UAPI. When allocating a buffer for a
+> > user-provided font, fbcon_set_font() reserves four "extra words" at the
+> > beginning of the buffer:
+> > 
+> > (drivers/video/fbdev/core/fbcon.c)
+> > 	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
+> 
+> I might be missing something (like coffee in the morning), but why don't
+> you just:
+> 1) declare struct font_data as
+> {
+>   unsigned sum, char_count, size, refcnt;
+>   const unsigned char data[];
+> }
+> 
+> Or maybe "struct console_font font" instead of "const unsigned char
+> data[]", if need be.
+> 
+> 2) allocate by:
+>   kmalloc(struct_size(struct font_data, data, size));
+> 
+> 3) use container_of wherever needed
+> 
+> That is you name the data on negative indexes using struct as you
+> already have to define one.
+> 
+> Then you don't need the ugly macros with negative indexes. And you can
+> pass this structure down e.g. to fbcon_do_set_font, avoiding potential
+> mistakes in accessing data[-1] and similar.
 
-> > > > > +static int lineinfo_ensure_abi_version(struct gpio_chardev_data *cdata,
-> > > > > +                                      unsigned int version)
-> > > > > +{
-> > > >
-> > > > > +       int abiv = atomic_read(&cdata->watch_abi_version);
-> > > > > +
-> > > > > +       if (abiv == 0) {
-> > > >
-> > > > > +               atomic_cmpxchg(&cdata->watch_abi_version, 0, version);
-> > > > > +               abiv = atomic_read(&cdata->watch_abi_version);
-> > > >
-> > > > atomic_cmpxchng() returns a value.
-> > >
-> > > Yep, it returns the old value - which we don't care about - see below.
-> >
-> > Then what's the point to read back?..
-> >
-> > > > Also there are no barriers here...
-> > > >
-> > >
-> > > No barriers required - the atomic_cmpxchg() is sufficient.
-> > >
-> > > > > +       }
-> > > > > +       if (abiv != version)
-> > > > > +               return -EPERM;
-> > > >
-> > > > I'm not sure I understand why this is atomic.
-> > > >
-> > >
-> > > The algorithm requires some level of protection and atomic is
-> > > sufficient.
-> > >
-> > > > Also this seems to be racy if cdata changed in background.
-> > > >
-> > >
-> > > Can you provide a case?
-> >
-> > CPU0:                CPU1:
-> >  xchg()               ...
-> >  ...                      xchg()
-> >  ...                      read() -> OK
-> > read() ->NOK
-> >
->
-> Lets say CPU0 is setting 1 and CPU1 setting 2, and assuming the xchg()
-> completes...
-> Your case is not possible - CPU1 would see the value 1 set by CPU0 in the
-> read() and so NOK.  Its xchg() would fail as it compares against 0
-> and that also sees the 1 and so fails.
->
-> What am I missing?
+Sorry that I didn't mention it in the cover letter, but yes, I've tried
+this - a new `kernel_console_font` would be much cleaner than negative
+array indexing.
 
-Barriers? That's what documentation says about xchg().
-https://stackoverflow.com/q/20950603/2511795
+The reason I ended up giving it up was, frankly speaking, these macros
+are being used at about 30 places, and I am not familiar enough with the
+framebuffer and newport_con code, so I wasn't confident how to clean
+them up and plug in `kernel_console_font` properly...
 
-> > > The atomic_cmpxchg() ensures cdata->watch_abi_version is only set
-> > > once - first in wins.  The atomic_read() is so we can check that
-> > > the set version matches what the caller wants.
-> > > Note that multiple callers may request the same version - and all
-> > > should succeed.
-> >
-> > So, that's basically what you need when using _old_ value.
-> >
-> > 0 means you were first, right?
-> > Anything else you simply compare and bail out if it's not the same as
-> > what has been asked.
-> >
->
-> Could you provide a complete implementation that behaves as I expect,
-> rather than snippets and verbage?
+Another reason was that, functions like fbcon_get_font() handle both user
+fonts and built-in fonts, so I wanted a single solution for both of
+them. I think we can't really introduce `kernel_console_font` while
+keeping these macros, that would make the error handling logics etc.
+very messy.
 
-if (atomic_cmpxchg(&cdata..., version) == 0)
- return 0; // we were first!
-return -EPERM; // somebody has changed the version before us!
+I'm not very sure what to do now. Should I give it another try cleaning
+up all the macros?
 
-> > > > Shouldn't be rather
-> > > >
-> > > > if (atomic_cmpxchg() == 0) {
-> > > >   if (atomic_read() != version)
-> > > >     return ...;
-> > > > }
-> > > >
-> > >
-> > > My algorithm allows for multiple callers requesting the same version
-> > > to all succeed.  Yours would fail the first conditional for all but
-> > > the first, and you haven't provided an else for that case...
-> > >
-> > > ... but it would probably look the same so the conditional is pointless,
-> > > or it would reject the request - which would be wrong.
-> > >
-> > > > But here is still the question: why do you expect the version to be
-> > > > changed on background? And what about barriers?
-> > > >
-> > >
-> > > While it is unlikely that userspace will be attempting to use both ABI
-> > > versions simultaneously on the same chip request, it is a possiblity and
-> > > so needs to be protected against. And better to have the watch request
-> > > fail than the read fail or worse - return the wrong struct version.
-> > >
-> > > The atomic_cmpxchg() is sufficient for this algorithm - no barriers
-> > > required.  It could also be written with a spinlock but I was trying to
-> > > avoid locks unless they were absolutely necessary.  A spinlock version
-> > > may arguably be more readable, but it would certainly be more verbose,
-> > > larger and slower.
-> > >
-> > > I'm happy to add some documentation to the function if that would help.
-> >
-> > Yes, I guess documentation is what is eagerly needed here.
-> >
->
-> No problem.
+And thank you for reviewing this!
 
--- 
-With Best Regards,
-Andy Shevchenko
+Peilin Ye
+
