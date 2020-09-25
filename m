@@ -2,147 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68071278364
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D663127835E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727672AbgIYI7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:59:15 -0400
-Received: from mail-bn8nam11on2047.outbound.protection.outlook.com ([40.107.236.47]:23563
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727044AbgIYI7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:59:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k69ehfUG7myWLyzcUmM2W0Rr7rFyIO8OLPbq5mvQhdh2euWQEEyPwy8sfDf7jitw437zZ8QmrZaTD7QPDL0CaSDtnRRwxrfRCXCt7t16iMQc4eNIzVlDAvHxaqlE351JYIyiBrSp9eYMgJYS5GUA8ZI5L4iycH2rmW1iZmpejjQdnv6vTxwePubBCUWHo3vhQ142apGRbvS25gnv9awYkWU5e3hbLbIK4dih2n3pEsrpdfv/ZTBa/hesog8D1aLmEO1w/8Awwu1pXnN4aUDvlZLtz5xYQEwKqRbiq7xRqyC5H8F2L3uwvsaJWlFH+taxItmBAxQrkSAe3m2wpp4T/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ULlTMrfe9062LCl2EX8wo8BdtFeK98qf5K3RdOJxmMA=;
- b=hnND4F92LvHSSnTwmgvvkh5ilBphhOerDqnWrOjyu3k9tLp+hODjnZcPbiubclcC50vEn+YxZqKFIDn/5uvHf5QVtP927FbMZxTdx9Uecimytnf6C8NZHHA8weaPxQKiH9eiKljUNJ1J/+kPIV/P5dIpsa80kjgDTCAb6q+aZqj+241KKblRNHbb7Fvvg9qZpJ/IfvQ5BsMkJi1rdfmeHc/dNv6Jazl2MAxdXqoyccLpU3RcHzXTZ4Fg0jUufjaSDuW95HyCWNF3uTy9EKD8l5SSH588tgK05L71wfehP4dOHBxzGL+i6aRuWib0H0k/zbs7PqARKpuCZQRyEPHZ/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ULlTMrfe9062LCl2EX8wo8BdtFeK98qf5K3RdOJxmMA=;
- b=exoHN8W9S2jWqDhSeJTl5XYBx3HeMqbrz0y/q1WpCoVttjfbVR2Tjx2GSOeKclwjVusLp4WZ2l3QZnjdq74DQtAJkLvTIt4m4hO3kQTPqFY53nJjznAJ7DaSplv/x/RDMHh2losUXSCqy9it2VU8tssQzOpSyPvdGqlnYJRxfkU=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM5PR03MB2682.namprd03.prod.outlook.com (2603:10b6:3:41::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Fri, 25 Sep
- 2020 08:59:10 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3391.028; Fri, 25 Sep 2020
- 08:59:10 +0000
-Date:   Fri, 25 Sep 2020 16:56:44 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Rob Herring <robh@kernel.org>,
-        Niklas Cassel <niklas.cassel@axis.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] PCI: dwc: Move allocate and map page for msi out of
- dw_pcie_msi_init()
-Message-ID: <20200925165644.312f76a4@xhacker.debian>
-In-Reply-To: <CAL_JsqLkQ_NqrDDJZkm5ef-mf4_Vh0sW1DqQjitz-GzGBNbWhA@mail.gmail.com>
-References: <20200923142607.10c89bd2@xhacker.debian>
-        <CAMj1kXEyQGEu7=-kbDuTDW9_xXkmns1HM2dQMrLn=XL9W88vJw@mail.gmail.com>
-        <CAL_JsqLkQ_NqrDDJZkm5ef-mf4_Vh0sW1DqQjitz-GzGBNbWhA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TYAPR01CA0160.jpnprd01.prod.outlook.com
- (2603:1096:404:7e::28) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+        id S1727497AbgIYI5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:57:17 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:46165 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbgIYI5R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:57:17 -0400
+Received: by mail-io1-f79.google.com with SMTP id j8so1364343iof.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:57:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=OqcmLpdXy+hASix4NnCNuf33xA9NJKVh8iYoEeczfKM=;
+        b=JNPEJziSLWl63quczKUCd9OdR1DYSismEwP76m+yHd1P7qJjhjYy+ugXK45qAY7AY6
+         oqBm2gl93fq9hAfjGElxKnknEWnO0pPhz5Ilxbt9FhEaHBg16MxmQ1MjHKMzZC1yuo0P
+         pGvUuPpJKJiOBWInMK1nNg0ad+iItqDCEqrqzIx9XU/j1Z2i9dzmszXL+8cMACiGxn3Z
+         niaDsJ6X1q1Lp1eoz98cRSQy4oaKxFnIFxQH/tKYXSRKCEMlRULiWxRaUYzHrmvU0w5S
+         R8C0+hW5G/A2rm9GSAqR9xf/0zPcTgKC21UV/B1EFMLc6nvZxVX1X8rpz/dkwTEnnjDT
+         uc8A==
+X-Gm-Message-State: AOAM5320DGpGwDeGdDTgVe83cnQPkgbQMFdunWMcCx0EdcfTS40Z13sZ
+        ZexNTzwKV73+RaVuKJ4+pDMy0dhN2iajmKa/u6Gb4roNtRTt
+X-Google-Smtp-Source: ABdhPJzqO3jRueqWHyhWMBum48eXT3lVJMOTEJzpiOi+/+cVqP/HTUFVPgZjrDn5gvWox2ifCRBejKn/7CgC568RW+UR1dDlz4wM
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TYAPR01CA0160.jpnprd01.prod.outlook.com (2603:1096:404:7e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Fri, 25 Sep 2020 08:59:06 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bc6b7ce1-1805-4d68-1135-08d861314461
-X-MS-TrafficTypeDiagnostic: DM5PR03MB2682:
-X-Microsoft-Antispam-PRVS: <DM5PR03MB268213055DBDCB7289C21B1AED360@DM5PR03MB2682.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qyoh+CPYmYQvefACXFvAYOJoTsQGBqCAv4XDErshp+JyXNzJVpAuT56KN8bDpNWMXZCvWyvS+2ff5adETrl/DVLw4QpXKXfhemYRVddAaCMCI2zl/cOZ1FUchBxuojHAmSjU3eY+WHd4kEAbFYOL5RJbM4kDf6kvvkvqV/dXhrOc1pMZ5KQyOH8j3Y3MvbwDGYYnNb99Z21YPiTgBxzuvODRfkQaVG8jz9HHJmPirxdyT5MdZaLS0YJ2Kbum6i23MvuYf0roOD0cDkkUrC2+rTZefEh35Dd/gpuIY0K5HHEtkfa+DMwmGXX2BkfQRtEN1AuaDbWeLr2hQqMkJW5jqX3eD+G2ynJtr3HG56sdaGBu7/U078Wc+BEcZRlfWk4KIWRatETvy+M8r9zI9so2pbd3Y8PaNmMp31CQBwxebFiB3fdB5Dv0ACerp1c7Ka+PHupenBnH7b2gNIUE+bYtFg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(366004)(376002)(396003)(346002)(39860400002)(316002)(54906003)(2906002)(110136005)(956004)(83380400001)(6666004)(9686003)(55016002)(478600001)(8936002)(1076003)(8676002)(7416002)(26005)(86362001)(7696005)(4326008)(53546011)(16526019)(186003)(52116002)(6506007)(5660300002)(66556008)(66476007)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: BdPrT0Yh4rmvEI6YYpkXg3kLOxLHCGSZGcp9oO9vgWeX8Rkvk0G8XjnDz8X1nqgWQkxkRBoqA9zxIcrqJ0NVDVBSU8Q52YCZfdBdObPZm9H/2HT8yXPX5QGDo0/YyOmc/qCh0AVrDOJg6/INwRhh2yZPOqNYw1WIqYGBFhmNmTbka+xBelVDtMSYLXRuVNB3r8EXwfKTNeHOnI050VHg0ZYaCPqoCqv8CMTcNjAle0m9YVOmK3mA8tK30RgEdgMG/M9d74CZkz7aaO/8FtC2VJJzn0xRLagjJvWkGLFUYmpvUC5qM65Xj87jPm24hBmhrkd7XGEgVzlZgh1KEm4NVM+eMpGDh57y9ApuzT1/bGG/N8Xn8QvryeMK4rYvhmEqHYynjLQn+jVH3Dd2wHMDFYqCuksbz95BFsPrxVLSBWI+rg+hxhl6sCYzEZF0aJsK4suLzZQFdFK3gmi7k+NTh6hNIQWRvwJ/+4MzF1DmeHxmX2LOTxxQRNvAjLBmfeJZTbjakfJGJaVBQBNpN8MNX4+TzUSPIQb70bHQsiuOR9h3bxQoqTAeuvh0ngUG00+vwsUhtOae8ZIyQArX0XlkwFkafpNGVgShwsblIFEpmD1uWOqOXXdi+tJ6/6TJJyFIInzHUjAuL+jkBYTTo11rPA==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc6b7ce1-1805-4d68-1135-08d861314461
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 08:59:10.3068
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WVoef3eU/5pi49sVBxYtkF4NbCqwEsgTDrne5wuKAu0ijhABimEccEGN3it9utnmXlZH207zycXv8nVWfhQCsw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB2682
+X-Received: by 2002:a5e:9419:: with SMTP id q25mr2438115ioj.205.1601024236397;
+ Fri, 25 Sep 2020 01:57:16 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 01:57:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e32a8b05b01f808a@google.com>
+Subject: KASAN: use-after-free Read in fscache_alloc_cookie
+From:   syzbot <syzbot+2d0585e5efcd43d113c2@syzkaller.appspotmail.com>
+To:     dhowells@redhat.com, linux-cachefs@redhat.com,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 07:28:25 -0600
-Rob Herring <robh@kernel.org> wrote:
+Hello,
 
-> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
-> 
-> 
-> On Thu, Sep 24, 2020 at 5:00 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Wed, 23 Sep 2020 at 08:28, Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:  
-> > >
-> > > Currently, dw_pcie_msi_init() allocates and maps page for msi, then
-> > > program the PCIE_MSI_ADDR_LO and PCIE_MSI_ADDR_HI. The Root Complex
-> > > may lose power during suspend-to-RAM, so when we resume, we want to
-> > > redo the latter but not the former. If designware based driver (for
-> > > example, pcie-tegra194.c) calls dw_pcie_msi_init() in resume path, the
-> > > previous msi page will be leaked.
-> > >
-> > > Move the allocate and map msi page from dw_pcie_msi_init() to
-> > > dw_pcie_host_init() to fix this problem.
-> > >
-> > > Fixes: 56e15a238d92 ("PCI: tegra: Add Tegra194 PCIe support")
-> > > Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>  
-> >
-> > Why do you allocate a page for this in the first place? Isn't
-> > PCIE_MSI_ADDR_HI:PCIE_MSI_ADDR_LO simply a magic DMA address that
-> > never gets forwarded across to the CPU side of the host bridge, and
-> > triggers a SPI instead, which gets handled by reading
-> > PCIE_MSI_INTR0_STATUS ?  
-> 
-> My question too after digging into this some more. I've asked the
-> question on the thread that further complicated all this changing from
-> virt_to_phys() to dma_map_page()[1].
-> 
-> > Couldn't you just map the zero page instead?  
-> 
-> Why a page even? You could use PCIE_MSI_ADDR_LO address itself even.
-> Or just an address in the driver data which is what some other drivers
-> do.
-> 
+syzbot found the following issue on:
 
-Thank Ard and Rob. I have sent out V3 (https://lkml.org/lkml/2020/9/25/272)
-which uses an address in the driver data for MSI address.
+HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17d457b5900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5f4c828c9e3cef97
+dashboard link: https://syzkaller.appspot.com/bug?extid=2d0585e5efcd43d113c2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a33ad3900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2d0585e5efcd43d113c2@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in memcpy include/linux/string.h:406 [inline]
+BUG: KASAN: use-after-free in fscache_set_key fs/fscache/cookie.c:93 [inline]
+BUG: KASAN: use-after-free in fscache_alloc_cookie+0xff/0x730 fs/fscache/cookie.c:153
+Read of size 10 at addr ffff8880a6c28200 by task kworker/1:6/8760
+
+CPU: 1 PID: 8760 Comm: kworker/1:6 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: afs afs_manage_cell
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ check_memory_region_inline mm/kasan/generic.c:186 [inline]
+ check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+ memcpy+0x20/0x60 mm/kasan/common.c:105
+ memcpy include/linux/string.h:406 [inline]
+ fscache_set_key fs/fscache/cookie.c:93 [inline]
+ fscache_alloc_cookie+0xff/0x730 fs/fscache/cookie.c:153
+ __fscache_acquire_cookie+0x16c/0x610 fs/fscache/cookie.c:288
+ fscache_acquire_cookie include/linux/fscache.h:334 [inline]
+ afs_activate_cell fs/afs/cell.c:609 [inline]
+ afs_manage_cell+0x4fa/0x11c0 fs/afs/cell.c:697
+ process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Allocated by task 10197:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ __do_kmalloc mm/slab.c:3655 [inline]
+ __kmalloc+0x1b0/0x360 mm/slab.c:3664
+ kmalloc include/linux/slab.h:559 [inline]
+ afs_alloc_cell fs/afs/cell.c:157 [inline]
+ afs_lookup_cell+0x5e9/0x1440 fs/afs/cell.c:262
+ afs_parse_source fs/afs/super.c:290 [inline]
+ afs_parse_param+0x404/0x8c0 fs/afs/super.c:326
+ vfs_parse_fs_param fs/fs_context.c:117 [inline]
+ vfs_parse_fs_param+0x203/0x550 fs/fs_context.c:98
+ vfs_parse_fs_string+0xe6/0x150 fs/fs_context.c:161
+ generic_parse_monolithic+0x16f/0x1f0 fs/fs_context.c:201
+ do_new_mount fs/namespace.c:2871 [inline]
+ path_mount+0x133f/0x20a0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount fs/namespace.c:3390 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3390
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 16:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x10e/0x2b0 mm/slab.c:3756
+ afs_cell_destroy+0x1b0/0x240 fs/afs/cell.c:500
+ rcu_do_batch kernel/rcu/tree.c:2428 [inline]
+ rcu_core+0x5ca/0x1130 kernel/rcu/tree.c:2656
+ __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
+
+The buggy address belongs to the object at ffff8880a6c28200
+ which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 0 bytes inside of
+ 32-byte region [ffff8880a6c28200, ffff8880a6c28220)
+The buggy address belongs to the page:
+page:00000000c2f50dc7 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880a6c28fc1 pfn:0xa6c28
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00028969c8 ffffea00025ca748 ffff8880aa040100
+raw: ffff8880a6c28fc1 ffff8880a6c28000 000000010000003f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880a6c28100: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff8880a6c28180: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+>ffff8880a6c28200: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+                   ^
+ ffff8880a6c28280: 00 00 00 00 fc fc fc fc 00 fc fc fc fc fc fc fc
+ ffff8880a6c28300: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+==================================================================
 
 
-Hi Niklas,
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-can you please try v3 to see whether it solves your problem as well?
-
-Thanks
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
