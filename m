@@ -2,83 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB7627846B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C83E5278477
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727837AbgIYJwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:52:12 -0400
-Received: from mga07.intel.com ([134.134.136.100]:23483 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727290AbgIYJwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:52:12 -0400
-IronPort-SDR: AdVpkIc18TDQ0M8k1F1q9824CYU2UfG+aSdKw3TVkHEU7AHkGiy2ruqEz8ESHRQnJEfni0dobA
- 0mdJtX7WsjLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="225634026"
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="225634026"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 02:52:11 -0700
-IronPort-SDR: TrybvGWJmcvbbP21dLsqR2BSOs49k6JaoNa9vpYaiLY29F8SLJYjDkqXQDDJdcByDDf7zA40Ti
- xge0rwy/6tRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="487402522"
-Received: from glass.png.intel.com ([172.30.181.92])
-  by orsmga005.jf.intel.com with ESMTP; 25 Sep 2020 02:52:07 -0700
-From:   Wong Vee Khee <vee.khee.wong@intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        Voon Wei Feng <weifeng.voon@intel.com>,
-        Wong Vee Khee <vee.khee.wong@intel.com>,
-        Vijaya Balan Sadhishkhanna 
-        <sadhishkhanna.vijaya.balan@intel.com>,
-        Seow Chen Yong <chen.yong.seow@intel.com>,
-        Mark Gross <mgross@linux.intel.com>
-Subject: [PATCH net 1/1] net: stmmac: Fix clock handling on remove path
-Date:   Fri, 25 Sep 2020 17:54:06 +0800
-Message-Id: <20200925095406.27834-1-vee.khee.wong@intel.com>
-X-Mailer: git-send-email 2.17.0
+        id S1727955AbgIYJ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727922AbgIYJ4I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:56:08 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 631AFC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:08 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s12so2866550wrw.11
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:56:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z9+H6h4cgVmMWVMCKArQ1jX8o5awoy/k5dT1ORGPQ8M=;
+        b=VzDCVBZHq1xwrAYRIskF6LmQWraYp2yScKpgz73ZgUMlV9/hr3fOyojeEfTCr4SdvW
+         ZNXVqyzaDHTFG7DfE/klcXSLSAJsc2C5b8a9zdchR9LbjZOZ516XDkkWigtKwzmS1GJN
+         Fik3fYVpLd5XnGaoi6D6dVO/RGI1XkZpiLTTe8fBX6LOwKW5w00FbR2kcw9AuYzDMMX0
+         TRKSSt+df09EuJrPuaPBldl7pNopYNB0hDES8sHwUF277Vyi5OEUDwxPxv5nQaRORQZe
+         396nWxcvrZzy2zCpI+CCTx6AB67e+8booYOTRBH+nVJEQw2PdtoSHoucDxIlYtc3G4Oc
+         Qe7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=z9+H6h4cgVmMWVMCKArQ1jX8o5awoy/k5dT1ORGPQ8M=;
+        b=VlAUdpW93gDmh8nh22Lhl6rkmOq+H4qAZh2BYq8zOIzOtCYQk7oA6A+USx/4V+1pzq
+         CYpMvugcKrdRwfIMs7YGz9GFq6qvqMs/MhGikVGkYPa12LQgfTU22aprU0TacBNgi/R9
+         GZOX4lMICHDTMjz/a2A+nuqHsXxk6Uo+cnOXoyHVeGC4q5FnBaFGAYUboVbTABFPPjRz
+         p7bFwcWC1cz1lcb0qWaErxjte6KYIOibS/6BGAh5byFZpzHJkW8tjdDKlo4j20aYGXAi
+         /kJHAsnnzjcG8HSYIaaUMnPbMpvgR0QsqzAKemNXG8H9RAPyPVhxgvuPSUFydFB1ceDt
+         ydLg==
+X-Gm-Message-State: AOAM531pkDXdQcs9j/Yzdw9L6qbNjpGNJ5lkhztsWHGEt6/qyE0KNC1q
+        OoHUxY1VyiBbHthMmwJj+OsLzQ==
+X-Google-Smtp-Source: ABdhPJwi9yN0JgR4HgcFChTb5oflFvaQsrOZ8ZUPJhfD3NFm1Sauq5JLjUxjFU1fndEBIJytOzKg3g==
+X-Received: by 2002:a5d:4388:: with SMTP id i8mr3505366wrq.365.1601027767088;
+        Fri, 25 Sep 2020 02:56:07 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id g14sm2227598wrv.25.2020.09.25.02.56.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 02:56:06 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/3] slimbus: fixes for 5.10
+Date:   Fri, 25 Sep 2020 10:55:17 +0100
+Message-Id: <20200925095520.27316-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While unloading the dwmac-intel driver, clk_disable_unprepare() is
-being called twice in stmmac_dvr_remove() and
-intel_eth_pci_remove(). This causes kernel panic on the second call.
+Hi Greg, 
 
-Removing the second call of clk_disable_unprepare() in
-intel_eth_pci_remove().
+Here are few fixes found recently while testing Qualcomm SSR (SubSystem Restart)
+feature on SDM845 SoC. Mostly the fixes are around when device absense is reported.
 
-Fixes: 09f012e64e4b ("stmmac: intel: Fix clock handling on error and remove paths")
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Voon Weifeng <weifeng.voon@intel.com>
-Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 1 -
- 1 file changed, 1 deletion(-)
+If its not too late, can you take them for 5.10.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 2ac9dfb3462c..9e6d60e75f85 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -653,7 +653,6 @@ static void intel_eth_pci_remove(struct pci_dev *pdev)
- 
- 	pci_free_irq_vectors(pdev);
- 
--	clk_disable_unprepare(priv->plat->stmmac_clk);
- 	clk_unregister_fixed_rate(priv->plat->stmmac_clk);
- 
- 	pcim_iounmap_regions(pdev, BIT(0));
+Many thanks,
+Srini
+
+
+Srinivas Kandagatla (3):
+  slimbus: core: check get_addr before removing laddr ida
+  slimbus: core: do not enter to clock pause mode in core
+  slimbus: qcom-ngd-ctrl: disable ngd in qmi server down callback
+
+ drivers/slimbus/core.c          | 6 ++----
+ drivers/slimbus/qcom-ngd-ctrl.c | 4 ++++
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
 -- 
-2.17.0
+2.21.0
 
