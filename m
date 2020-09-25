@@ -2,144 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73985278055
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D63C6278057
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727287AbgIYGJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 02:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33080 "EHLO
+        id S1727293AbgIYGKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 02:10:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727135AbgIYGJs (ORCPT
+        with ESMTP id S1727135AbgIYGKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 02:09:48 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E347C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:09:48 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id u48so569826uau.0
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:09:48 -0700 (PDT)
+        Fri, 25 Sep 2020 02:10:03 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16EC1C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:10:03 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t14so1629510pgl.10
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:10:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+Gekh1/5HoSJgzGHBdPAl6wdzLsESdx094pfUMDJNyY=;
-        b=dD5keCca5UgZ+EkGaoslYMH6ugraBNwjEpWR+NeC67ssf+Snq7vYe3XpYQ7kzkqMKz
-         Sm19c1aeIJMEIuC7O+mIAJDQ4GaduImiLb8BwTm/ijJo/9/RLR6zG9UFvkrMiIl/LfGV
-         a8iQ4bTXB38uRWc2wFr/Tg+pgiR4/WnsCAUXlAz4D2AzOHt372+ILQ3QpEr85DCqDmoI
-         0qrscfR//nr/b1WyvAfUKdycS2Gqnk/zzMU5nxViEninjYR2SqXS5Vwc0k0zj5pbO/WJ
-         jxHVuJs1GCPTxtgHn5l9JxRSNMQbaMoBlUmELwE8Jd2o2T8e4Jv5Oac3vVxusY3hsN3z
-         R95Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gEje2tQ6P9L6RCswV6XKybFquVMo4l5f1E6EwfoI7TI=;
+        b=lmuiFQOautmpJ4q7kOwzyE0hq/RC1OFtqTVhktOah6RQSzR14te1pF9MRdoJOUGmsD
+         491+XFxLj248tnwVGcW5F1GtrHGfR62Mww9xS6Yejopx1eA3ZFEkxTYy7QGUmYocvOPB
+         n6qkTYuQhxfU6NBFN41a3EPRQWwffOMiVzcTk8BNfRfJhMz5FBqz7FXDuNjVj7uT+Uyj
+         G+ZJg+xaH1T6TIK+Rf0qiLtqze2sFrJtLQOLTSwwLCF9hxNp2mdUe4rBKv7JC2PtorRH
+         vl2+tYqzdmmgYPe0T1OwDV4ts9dM87iaz/bMujFvE6FocAsUqotoYSQ9XRK/0QOxyNcH
+         BaSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+Gekh1/5HoSJgzGHBdPAl6wdzLsESdx094pfUMDJNyY=;
-        b=jkRmuiUcYPo2vf11c4Ibkt2hlcgwubvBy7keNZYgdbhVQwwKFGsdN9ylwm40mbszNq
-         18VNjT9zXK8eB+0HF4XyJCW4ZxnJE/BGBlGSTQsND+v7ASm0B8DFBAwIvJ5LhTzxLz50
-         KXpzx5PE41Z6I5WxMoVwUhBDjAktfi3IiS6N8HlP2KOwA8Y5L1YDx3/GgtbIPYZmgwhU
-         lrd/B1jpUiDhjTW5Mo9kkGJWp9HmmyqzcDS7XkslsS5pgWF4y9CHJchD70xBHYozdstJ
-         WP+iTHfGJHtEEpuf3MENLX1nJjBqRTxPGRGbu4ksd9Z2DhzcdRY6XZR9mx1HjtlzIF38
-         O7fg==
-X-Gm-Message-State: AOAM53086Vm1qhcEcZx4DnifHZAwI4jCnwZmJJDSxqp7JYOvofoB4UpZ
-        QCzghqG7k9KAozF8oi0SP3r4eao5xLKxUlPffttJGw==
-X-Google-Smtp-Source: ABdhPJws0yBakJxLSgvK/0x/1OQPz7YxRxkZQcqwZiHxwegfJTqjSbUaJljKms2pqCM5u1+NBYuCQeQxme7+GWDW+OM=
-X-Received: by 2002:a9f:29c5:: with SMTP id s63mr1581180uas.34.1601014186979;
- Thu, 24 Sep 2020 23:09:46 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gEje2tQ6P9L6RCswV6XKybFquVMo4l5f1E6EwfoI7TI=;
+        b=bJPrMP0HDdzwCLr/ZMBGRPH1O9W0DRAco8Z+JiZaZhGHGcWs+aCbaISkdA9AHuW+nK
+         14UXDYXNQd56U2dmb/dduahSPt92ZKHeoZrECtPoFrnpigLPk4QsvCflM5qgmORwb/3/
+         GVCjyt3tizMN65tvxoVKdHW8iIKbgtH21ZSMODF7kCAYfqEU5V2avK3g2RLYkgTfLZt3
+         JDkOb+oyRRRGMHfk4LuSnIAAX9gGn5YsLBr+9H0bqrLRgWDt99aUfXdAk03xEj05+t56
+         LXXhOTE04IphFd2j+NTioV5fN9qIo6N4fMLdTW3Vm+Lt2sJxhN+RoIJ032vjZNgH2XjS
+         av0A==
+X-Gm-Message-State: AOAM530A0sFauPJP7dhLCM3lRZwWvHo+H7dN0S0tnJaSv7ckapeTjMZd
+        Mp1p2d1EdgVJauTNTjHbIl/jHw==
+X-Google-Smtp-Source: ABdhPJw8PSlHPX7vdpw3iNTAvkxKTtz7+XYs77IQpPe0B1mmVlusC/As4pERGp6iDX967U9mKOrf3A==
+X-Received: by 2002:a17:902:9a06:b029:d0:cb2d:f276 with SMTP id v6-20020a1709029a06b02900d0cb2df276mr2758912plp.15.1601014202602;
+        Thu, 24 Sep 2020 23:10:02 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id g9sm1397329pfo.144.2020.09.24.23.10.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 24 Sep 2020 23:10:01 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 11:39:54 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        cristian.marussi@arm.com, Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to
+ cpufreq_stats_record_transition()
+Message-ID: <20200925060954.k5quasxz2epjdmdq@vireshk-i7>
+References: <cover.1600238586.git.viresh.kumar@linaro.org>
+ <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
+ <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
+ <a4c5a6b9-10f8-34f8-f01d-8b373214d173@arm.com>
+ <CAJZ5v0iFjzqTKTPFF5hB5C0TYSQn2rxL_6099gqUwoTARKRnZA@mail.gmail.com>
+ <ae5771c8-6297-e447-4449-e39ae2ea5a0e@arm.com>
+ <CAJZ5v0hkBnU_W-ZXHTfppu9pVWnQcJHho7DQPi7N7yeLOt5cgg@mail.gmail.com>
+ <20200924123921.iiaqw2ufe2utnjtg@vireshk-i7>
+ <f57626de-6021-e87d-63ab-33ccc46a2900@arm.com>
 MIME-Version: 1.0
-References: <CA+G9fYtF44bTzjswt26tOwfEQxrWvcSOROmEtH0HKfGn24QbRQ@mail.gmail.com>
- <20200924143317.getruzwu423g3o3e@wittgenstein> <20200924162126.mbthwz32w7rba7oe@wittgenstein>
-In-Reply-To: <20200924162126.mbthwz32w7rba7oe@wittgenstein>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 25 Sep 2020 11:39:35 +0530
-Message-ID: <CA+G9fYsCRxD+ViHgtOUtVba4wxzH1vua2gQwj6OvbBLoLj7=AA@mail.gmail.com>
-Subject: Re: selftests: pidfd: pidfd_wait hangs on linux next kernel on all devices
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-api@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Jens Axboe <axboe@kernel.dk>, Shuah Khan <shuah@kernel.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f57626de-6021-e87d-63ab-33ccc46a2900@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 at 21:51, Christian Brauner
-<christian.brauner@ubuntu.com> wrote:
->
-> On Thu, Sep 24, 2020 at 04:33:17PM +0200, Christian Brauner wrote:
-> > On Wed, Sep 23, 2020 at 07:52:05PM +0530, Naresh Kamboju wrote:
-> > > selftests: pidfd: pidfd_wait hangs on linux next kernel on x86_64,
-> > > i386 and arm64 Juno-r2
-> > > These devices are using NFS mounted rootfs.
-> > > I have tested pidfd testcases independently and all test PASS.
-> > >
-> > > The Hang or exit from test run noticed when run by run_kselftest.sh
-> > >
-> > > pidfd_wait.c:208:wait_nonblock:Expected sys_waitid(P_PIDFD, pidfd,
-> > > &info, WSTOPPED, NULL) (-1) == 0 (0)
-> > > wait_nonblock: Test terminated by assertion
-> > >
-> > > metadata:
-> > >   git branch: master
-> > >   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-> > >   git commit: e64997027d5f171148687e58b78c8b3c869a6158
-> > >   git describe: next-20200922
-> > >   make_kernelversion: 5.9.0-rc6
-> > >   kernel-config:
-> > > http://snapshots.linaro.org/openembedded/lkft/lkft/sumo/intel-core2-32/lkft/linux-next/865/config
-> > >
-> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> >
-> > Thanks for reproting this. I'm taking a look now!
->
-> Ok, this is a simple race in the selftests, that I overlooked and which
-> is more likely to hit when there's a lot of processes running on the
-> system. Basically the child process hasn't SIGSTOPed itself yet but the
-> parent is already calling waitid() on a O_NONBLOCK pidfd. Since it
-> doesn't find a WSTOPPED process it returns -EAGAIN correctly.
->
-> The fix for this is to move the line where we're removing the O_NONBLOCK
-> property from the fd before the waitid() WSTOPPED call so we hang until
-> the child becomes stopped.
->
-> So I believe the fix is:
+On 24-09-20, 17:10, Lukasz Luba wrote:
+> Because of supporting this reset file, the code is going to be a bit
+> complex
 
-This patch applied and scheduled for kselftest full test run.
+I will say not very straight forward, but it isn't complex as well.
 
->
-> diff --git a/tools/testing/selftests/pidfd/pidfd_wait.c b/tools/testing/selftests/pidfd/pidfd_wait.c
-> index 4063d6f31fa4..be2943f072f6 100644
-> --- a/tools/testing/selftests/pidfd/pidfd_wait.c
-> +++ b/tools/testing/selftests/pidfd/pidfd_wait.c
-> @@ -205,6 +205,8 @@ TEST(wait_nonblock)
->         ret = sys_waitid(P_PIDFD, pidfd, &info, WEXITED | WNOHANG, NULL);
->         ASSERT_EQ(ret, 0);
->
-> +       ASSERT_EQ(fcntl(pidfd, F_SETFL, (flags & ~O_NONBLOCK)), 0);
-> +
->         ASSERT_EQ(sys_waitid(P_PIDFD, pidfd, &info, WSTOPPED, NULL), 0);
->         ASSERT_EQ(info.si_signo, SIGCHLD);
->         ASSERT_EQ(info.si_code, CLD_STOPPED);
-> @@ -212,8 +214,6 @@ TEST(wait_nonblock)
->
->         ASSERT_EQ(sys_pidfd_send_signal(pidfd, SIGCONT, NULL, 0), 0);
->
-> -       ASSERT_EQ(fcntl(pidfd, F_SETFL, (flags & ~O_NONBLOCK)), 0);
-> -
->         ASSERT_EQ(sys_waitid(P_PIDFD, pidfd, &info, WEXITED, NULL), 0);
->         ASSERT_EQ(info.si_signo, SIGCHLD);
->         ASSERT_EQ(info.si_code, CLD_EXITED);
->
-> Christian
+> and also visited from the scheduler. I don't know if the
+> config for stats is enabled for production kernels but if yes,
+> then forcing all to keep that reset code might be too much.
+> For the engineering kernel version is OK.
 
-- Naresh
+I am not sure either if they are enabled for production kernels, but even if it
+then also this code won't hit performance.
+
+> I would say for most normal checks these sysfs stats are very useful.
+> If there is a need for investigation like you described, the trace
+> event is there, just have to be enabled. Tools like LISA would
+> help with parsing the trace and mapping to some plots or even
+> merging with scheduler context.
+
+Right, but stats is much easier in my opinion and providing this reset
+functionality does make it easier to track. And that it is already there now.
+
+> From time to time some engineers are asking why the stats
+> don't show the values (missing fast-switch tracking). I think
+> they are interested in a simple use case, otherwise they would use the
+> tracing.
+
+Right and I completely agree with that and so this patchset. I think there
+aren't any serious race conditions here that would make things bad for anyone
+and that this patchset will eventually get in after a little rearrangement.
+
+-- 
+viresh
