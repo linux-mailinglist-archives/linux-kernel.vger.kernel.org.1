@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF71279306
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7167B279387
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727733AbgIYVK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:10:57 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47454 "EHLO mga04.intel.com"
+        id S1728150AbgIYV26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:28:58 -0400
+Received: from mga04.intel.com ([192.55.52.120]:48740 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgIYVK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:10:57 -0400
-IronPort-SDR: 8lpKJqa3emzRqQiqNGA7kGvUEPosMG9sU1PePgDSbA7xA3NRM3GdjZvnUsd8ZqDXf9SEXS43Ib
- 1H2NPb54o9uw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="159017172"
+        id S1726412AbgIYV25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 17:28:57 -0400
+IronPort-SDR: WsezGWQddZfQYs+RjecsZynXLp7epZ0Y10ajFYh3EdFtNrluNJleKtJVAQcCO8tXyv9JXBCr4x
+ u4Y2ldzgbkNg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="159017300"
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="159017172"
+   d="scan'208";a="159017300"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:30:34 -0700
-IronPort-SDR: DsQInKHtxp+L/93F9cb6oSBu0oo2zJMFOp0N/ySAYpoxvdhKsPPgZW1bBARjHjFGCEcsstKs2R
- aliaOxo52PbA==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:30:53 -0700
+IronPort-SDR: 5+4BuFSbZWtwv8DETjDiiw64djEXgzdMA6A125+LcpK9eeSsRPGTm3wTH+dSJJjw+FQc+r3Jmc
+ f9MAWJb6E5KA==
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="323503157"
+   d="scan'208";a="339619079"
 Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:30:34 -0700
-Subject: [PATCH v5 06/17] device-dax: introduce 'struct dev_dax'
- typed-driver operations
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:30:52 -0700
+Subject: [PATCH v5 09/17] device-dax: add resize support
 From:   Dan Williams <dan.j.williams@intel.com>
 To:     akpm@linux-foundation.org
-Cc:     Jason Yan <yanaijie@huawei.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
+Cc:     Vishal Verma <vishal.l.verma@intel.com>,
         Brice Goglin <Brice.Goglin@inria.fr>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         Dave Jiang <dave.jiang@intel.com>,
@@ -39,10 +37,10 @@ Cc:     Jason Yan <yanaijie@huawei.com>,
         Ira Weiny <ira.weiny@intel.com>, Jia He <justin.he@arm.com>,
         Joao Martins <joao.m.martins@oracle.com>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Date:   Fri, 25 Sep 2020 12:12:13 -0700
-Message-ID: <160106113357.30709.4541750544799737855.stgit@dwillia2-desk3.amr.corp.intel.com>
+        linux-mm@kvack.org, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 25 Sep 2020 12:12:32 -0700
+Message-ID: <160106115239.30709.9850106928133493138.stgit@dwillia2-desk3.amr.corp.intel.com>
 In-Reply-To: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
 References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
 User-Agent: StGit/0.18-3-g996c
@@ -53,12 +51,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for introducing seed devices the dax-bus core needs to be
-able to intercept ->probe() and ->remove() operations. Towards that end
-arrange for the bus and drivers to switch from raw 'struct device'
-driver operations to 'struct dev_dax' typed operations.
+Make the device-dax 'size' attribute writable to allow capacity to be
+split between multiple instances in a region.  The intended consumers of
+this capability are users that want to split a scarce memory resource
+between device-dax and System-RAM access, or users that want to have
+multiple security domains for a large region.
 
-Cc: Jason Yan <yanaijie@huawei.com>
+By default the hmem instance provider allocates an entire region to the
+first instance.  The process of creating a new instance (assuming a
+region-id of 0) is find the region and trigger the 'create' attribute
+which yields an empty instance to configure.  For example:
+
+    cd /sys/bus/dax/devices
+    echo dax0.0 > dax0.0/driver/unbind
+    echo $new_size > dax0.0/size
+    echo 1 > $(readlink -f dax0.0)../dax_region/create
+    seed=$(cat $(readlink -f dax0.0)../dax_region/seed)
+    echo $new_size > $seed/size
+    echo dax0.0 > ../drivers/{device_dax,kmem}/bind
+    echo dax0.1 > ../drivers/{device_dax,kmem}/bind
+
+Instances can be destroyed by:
+
+    echo $device > $(readlink -f $device)../dax_region/delete
+
+Link: https://lkml.kernel.org/r/159643102625.4062302.7431838945566033852.stgit@dwillia2-desk3.amr.corp.intel.com
 Cc: Vishal Verma <vishal.l.verma@intel.com>
 Cc: Brice Goglin <Brice.Goglin@inria.fr>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
@@ -68,176 +85,228 @@ Cc: Ira Weiny <ira.weiny@intel.com>
 Cc: Jia He <justin.he@arm.com>
 Cc: Joao Martins <joao.m.martins@oracle.com>
 Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Dan Williams <dan.j.williams@intel.com>
 ---
- drivers/dax/bus.c         |   18 ++++++++++++++++++
- drivers/dax/bus.h         |    4 +++-
- drivers/dax/device.c      |   12 +++++-------
- drivers/dax/kmem.c        |   18 ++++++++----------
- drivers/dax/pmem/compat.c |    2 +-
- 5 files changed, 35 insertions(+), 19 deletions(-)
+ drivers/dax/bus.c |  161 ++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 152 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-index 0a48ce378686..9549f11ebed0 100644
+index dce9413a4394..53d07f2f1285 100644
 --- a/drivers/dax/bus.c
 +++ b/drivers/dax/bus.c
-@@ -135,10 +135,28 @@ static bool is_static(struct dax_region *dax_region)
- 	return (dax_region->res.flags & IORESOURCE_DAX_STATIC) != 0;
+@@ -6,6 +6,7 @@
+ #include <linux/list.h>
+ #include <linux/slab.h>
+ #include <linux/dax.h>
++#include <linux/io.h>
+ #include "dax-private.h"
+ #include "bus.h"
+ 
+@@ -562,7 +563,8 @@ struct dax_region *alloc_dax_region(struct device *parent, int region_id,
  }
+ EXPORT_SYMBOL_GPL(alloc_dax_region);
  
-+static int dax_bus_probe(struct device *dev)
-+{
-+	struct dax_device_driver *dax_drv = to_dax_drv(dev->driver);
-+	struct dev_dax *dev_dax = to_dev_dax(dev);
-+
-+	return dax_drv->probe(dev_dax);
-+}
-+
-+static int dax_bus_remove(struct device *dev)
-+{
-+	struct dax_device_driver *dax_drv = to_dax_drv(dev->driver);
-+	struct dev_dax *dev_dax = to_dev_dax(dev);
-+
-+	return dax_drv->remove(dev_dax);
-+}
-+
- static struct bus_type dax_bus_type = {
- 	.name = "dax",
- 	.uevent = dax_bus_uevent,
- 	.match = dax_bus_match,
-+	.probe = dax_bus_probe,
-+	.remove = dax_bus_remove,
- 	.drv_groups = dax_drv_groups,
- };
- 
-diff --git a/drivers/dax/bus.h b/drivers/dax/bus.h
-index 44592a8cac0f..da27ea70a19a 100644
---- a/drivers/dax/bus.h
-+++ b/drivers/dax/bus.h
-@@ -38,6 +38,8 @@ struct dax_device_driver {
- 	struct device_driver drv;
- 	struct list_head ids;
- 	int match_always;
-+	int (*probe)(struct dev_dax *dev);
-+	int (*remove)(struct dev_dax *dev);
- };
- 
- int __dax_driver_register(struct dax_device_driver *dax_drv,
-@@ -48,7 +50,7 @@ void dax_driver_unregister(struct dax_device_driver *dax_drv);
- void kill_dev_dax(struct dev_dax *dev_dax);
- 
- #if IS_ENABLED(CONFIG_DEV_DAX_PMEM_COMPAT)
--int dev_dax_probe(struct device *dev);
-+int dev_dax_probe(struct dev_dax *dev_dax);
- #endif
- 
- /*
-diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-index 287cf0a3db23..9833fa83b537 100644
---- a/drivers/dax/device.c
-+++ b/drivers/dax/device.c
-@@ -392,11 +392,11 @@ static void dev_dax_kill(void *dev_dax)
- 	kill_dev_dax(dev_dax);
- }
- 
--int dev_dax_probe(struct device *dev)
-+int dev_dax_probe(struct dev_dax *dev_dax)
+-static int alloc_dev_dax_range(struct dev_dax *dev_dax, resource_size_t size)
++static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
++		resource_size_t size)
  {
--	struct dev_dax *dev_dax = to_dev_dax(dev);
- 	struct dax_device *dax_dev = dev_dax->dax_dev;
- 	struct range *range = &dev_dax->range;
-+	struct device *dev = &dev_dax->dev;
- 	struct dev_pagemap *pgmap;
- 	struct inode *inode;
- 	struct cdev *cdev;
-@@ -446,17 +446,15 @@ int dev_dax_probe(struct device *dev)
- }
- EXPORT_SYMBOL_GPL(dev_dax_probe);
+ 	struct dax_region *dax_region = dev_dax->region;
+ 	struct resource *res = &dax_region->res;
+@@ -580,12 +582,7 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, resource_size_t size)
+ 		return 0;
+ 	}
  
--static int dev_dax_remove(struct device *dev)
-+static int dev_dax_remove(struct dev_dax *dev_dax)
- {
- 	/* all probe actions are unwound by devm */
- 	return 0;
- }
- 
- static struct dax_device_driver device_dax_driver = {
--	.drv = {
--		.probe = dev_dax_probe,
--		.remove = dev_dax_remove,
--	},
-+	.probe = dev_dax_probe,
-+	.remove = dev_dax_remove,
- 	.match_always = 1,
- };
- 
-diff --git a/drivers/dax/kmem.c b/drivers/dax/kmem.c
-index e56fc688bdc5..c2ac465cc342 100644
---- a/drivers/dax/kmem.c
-+++ b/drivers/dax/kmem.c
-@@ -29,10 +29,10 @@ static struct range dax_kmem_range(struct dev_dax *dev_dax)
- 	return range;
- }
- 
--int dev_dax_kmem_probe(struct device *dev)
-+static int dev_dax_kmem_probe(struct dev_dax *dev_dax)
- {
--	struct dev_dax *dev_dax = to_dev_dax(dev);
- 	struct range range = dax_kmem_range(dev_dax);
-+	struct device *dev = &dev_dax->dev;
- 	struct resource *res;
- 	char *res_name;
- 	int numa_node;
-@@ -88,12 +88,12 @@ int dev_dax_kmem_probe(struct device *dev)
- }
- 
- #ifdef CONFIG_MEMORY_HOTREMOVE
--static int dev_dax_kmem_remove(struct device *dev)
-+static int dev_dax_kmem_remove(struct dev_dax *dev_dax)
- {
--	struct dev_dax *dev_dax = to_dev_dax(dev);
-+	int rc;
-+	struct device *dev = &dev_dax->dev;
- 	struct range range = dax_kmem_range(dev_dax);
- 	const char *res_name = dev_get_drvdata(dev);
--	int rc;
- 
- 	/*
- 	 * We have one shot for removing memory, if some memory blocks were not
-@@ -116,7 +116,7 @@ static int dev_dax_kmem_remove(struct device *dev)
- 	return 0;
- }
- #else
--static int dev_dax_kmem_remove(struct device *dev)
-+static int dev_dax_kmem_remove(struct dev_dax *dev_dax)
- {
- 	/*
- 	 * Without hotremove purposely leak the request_mem_region() for the
-@@ -131,10 +131,8 @@ static int dev_dax_kmem_remove(struct device *dev)
- #endif /* CONFIG_MEMORY_HOTREMOVE */
- 
- static struct dax_device_driver device_dax_kmem_driver = {
--	.drv = {
--		.probe = dev_dax_kmem_probe,
--		.remove = dev_dax_kmem_remove,
--	},
-+	.probe = dev_dax_kmem_probe,
-+	.remove = dev_dax_kmem_remove,
- };
- 
- static int __init dax_kmem_init(void)
-diff --git a/drivers/dax/pmem/compat.c b/drivers/dax/pmem/compat.c
-index d7b15e6f30c5..863c114fd88c 100644
---- a/drivers/dax/pmem/compat.c
-+++ b/drivers/dax/pmem/compat.c
-@@ -22,7 +22,7 @@ static int dax_pmem_compat_probe(struct device *dev)
+-	/* TODO: handle multiple allocations per region */
+-	if (res->child)
+-		return -ENOMEM;
+-
+-	alloc = __request_region(res, res->start, size, dev_name(dev), 0);
+-
++	alloc = __request_region(res, start, size, dev_name(dev), 0);
+ 	if (!alloc)
  		return -ENOMEM;
  
- 	device_lock(&dev_dax->dev);
--	rc = dev_dax_probe(&dev_dax->dev);
-+	rc = dev_dax_probe(dev_dax);
- 	device_unlock(&dev_dax->dev);
+@@ -597,6 +594,29 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, resource_size_t size)
+ 	return 0;
+ }
  
- 	devres_close_group(&dev_dax->dev, dev_dax);
++static int adjust_dev_dax_range(struct dev_dax *dev_dax, struct resource *res, resource_size_t size)
++{
++	struct dax_region *dax_region = dev_dax->region;
++	struct range *range = &dev_dax->range;
++	int rc = 0;
++
++	device_lock_assert(dax_region->dev);
++
++	if (size)
++		rc = adjust_resource(res, range->start, size);
++	else
++		__release_region(&dax_region->res, range->start, range_len(range));
++	if (rc)
++		return rc;
++
++	dev_dax->range = (struct range) {
++		.start = range->start,
++		.end = range->start + size - 1,
++	};
++
++	return 0;
++}
++
+ static ssize_t size_show(struct device *dev,
+ 		struct device_attribute *attr, char *buf)
+ {
+@@ -605,7 +625,127 @@ static ssize_t size_show(struct device *dev,
+ 
+ 	return sprintf(buf, "%llu\n", size);
+ }
+-static DEVICE_ATTR_RO(size);
++
++static bool alloc_is_aligned(struct dax_region *dax_region,
++		resource_size_t size)
++{
++	/*
++	 * The minimum mapping granularity for a device instance is a
++	 * single subsection, unless the arch says otherwise.
++	 */
++	return IS_ALIGNED(size, max_t(unsigned long, dax_region->align,
++				memremap_compat_align()));
++}
++
++static int dev_dax_shrink(struct dev_dax *dev_dax, resource_size_t size)
++{
++	struct dax_region *dax_region = dev_dax->region;
++	struct range *range = &dev_dax->range;
++	struct resource *res, *adjust = NULL;
++	struct device *dev = &dev_dax->dev;
++
++	for_each_dax_region_resource(dax_region, res)
++		if (strcmp(res->name, dev_name(dev)) == 0
++				&& res->start == range->start) {
++			adjust = res;
++			break;
++		}
++
++	if (dev_WARN_ONCE(dev, !adjust, "failed to find matching resource\n"))
++		return -ENXIO;
++	return adjust_dev_dax_range(dev_dax, adjust, size);
++}
++
++static ssize_t dev_dax_resize(struct dax_region *dax_region,
++		struct dev_dax *dev_dax, resource_size_t size)
++{
++	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
++	resource_size_t dev_size = range_len(&dev_dax->range);
++	struct resource *region_res = &dax_region->res;
++	struct device *dev = &dev_dax->dev;
++	const char *name = dev_name(dev);
++	struct resource *res, *first;
++
++	if (dev->driver)
++		return -EBUSY;
++	if (size == dev_size)
++		return 0;
++	if (size > dev_size && size - dev_size > avail)
++		return -ENOSPC;
++	if (size < dev_size)
++		return dev_dax_shrink(dev_dax, size);
++
++	to_alloc = size - dev_size;
++	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dax_region, to_alloc),
++			"resize of %pa misaligned\n", &to_alloc))
++		return -ENXIO;
++
++	/*
++	 * Expand the device into the unused portion of the region. This
++	 * may involve adjusting the end of an existing resource, or
++	 * allocating a new resource.
++	 */
++	first = region_res->child;
++	if (!first)
++		return alloc_dev_dax_range(dev_dax, dax_region->res.start, to_alloc);
++	for (res = first; to_alloc && res; res = res->sibling) {
++		struct resource *next = res->sibling;
++		resource_size_t free;
++
++		/* space at the beginning of the region */
++		free = 0;
++		if (res == first && res->start > dax_region->res.start)
++			free = res->start - dax_region->res.start;
++		if (free >= to_alloc && dev_size == 0)
++			return alloc_dev_dax_range(dev_dax, dax_region->res.start, to_alloc);
++
++		free = 0;
++		/* space between allocations */
++		if (next && next->start > res->end + 1)
++			free = next->start - res->end + 1;
++
++		/* space at the end of the region */
++		if (free < to_alloc && !next && res->end < region_res->end)
++			free = region_res->end - res->end;
++
++		if (free >= to_alloc && strcmp(name, res->name) == 0)
++			return adjust_dev_dax_range(dev_dax, res, resource_size(res) + to_alloc);
++		else if (free >= to_alloc && dev_size == 0)
++			return alloc_dev_dax_range(dev_dax, res->end + 1, to_alloc);
++	}
++	return -ENOSPC;
++}
++
++static ssize_t size_store(struct device *dev, struct device_attribute *attr,
++		const char *buf, size_t len)
++{
++	ssize_t rc;
++	unsigned long long val;
++	struct dev_dax *dev_dax = to_dev_dax(dev);
++	struct dax_region *dax_region = dev_dax->region;
++
++	rc = kstrtoull(buf, 0, &val);
++	if (rc)
++		return rc;
++
++	if (!alloc_is_aligned(dax_region, val)) {
++		dev_dbg(dev, "%s: size: %lld misaligned\n", __func__, val);
++		return -EINVAL;
++	}
++
++	device_lock(dax_region->dev);
++	if (!dax_region->dev->driver) {
++		device_unlock(dax_region->dev);
++		return -ENXIO;
++	}
++	device_lock(dev);
++	rc = dev_dax_resize(dax_region, dev_dax, val);
++	device_unlock(dev);
++	device_unlock(dax_region->dev);
++
++	return rc == 0 ? len : rc;
++}
++static DEVICE_ATTR_RW(size);
+ 
+ static int dev_dax_target_node(struct dev_dax *dev_dax)
+ {
+@@ -654,11 +794,14 @@ static umode_t dev_dax_visible(struct kobject *kobj, struct attribute *a, int n)
+ {
+ 	struct device *dev = container_of(kobj, struct device, kobj);
+ 	struct dev_dax *dev_dax = to_dev_dax(dev);
++	struct dax_region *dax_region = dev_dax->region;
+ 
+ 	if (a == &dev_attr_target_node.attr && dev_dax_target_node(dev_dax) < 0)
+ 		return 0;
+ 	if (a == &dev_attr_numa_node.attr && !IS_ENABLED(CONFIG_NUMA))
+ 		return 0;
++	if (a == &dev_attr_size.attr && is_static(dax_region))
++		return 0444;
+ 	return a->mode;
+ }
+ 
+@@ -739,7 +882,7 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+ 	device_initialize(dev);
+ 	dev_set_name(dev, "dax%d.%d", dax_region->id, dev_dax->id);
+ 
+-	rc = alloc_dev_dax_range(dev_dax, data->size);
++	rc = alloc_dev_dax_range(dev_dax, dax_region->res.start, data->size);
+ 	if (rc)
+ 		goto err_range;
+ 
 
