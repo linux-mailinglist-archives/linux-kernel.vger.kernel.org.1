@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57F727948D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2CFA27948E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:14:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729304AbgIYXNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:13:25 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:51127 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726587AbgIYXNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:13:25 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601075604; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=9ESAXVuPNbIaJCckFcr9EMppXR0GTV61rO2wi/Mq0bA=;
- b=lonfu6brWq6geS6+NlADwwvQuGoVakM9gQ0rqN2mFy+G25xHOAAUF4DbEu/CiJwblEri04gV
- b/3v912ID21FT90pGWhqcB6l30KdI0gQMSrsxmQ91X6TMgjHdXCuxlJttqFEbyvTAfOHcW3X
- 4rjRol5BPpp1chNEtHOsLXRi1/M=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f6e7994ebb17452baccb4f9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Sep 2020 23:13:24
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9E04CC43382; Fri, 25 Sep 2020 23:13:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 28610C433C8;
-        Fri, 25 Sep 2020 23:13:23 +0000 (UTC)
+        id S1729329AbgIYXN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgIYXN6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:13:58 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A408CC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:13:57 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id k14so4183499edo.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:13:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:mime-version:date:message-id:subject:to:cc;
+        bh=L+IBKxZ0QcO0B3h5t+5jOzhzbzhKa2XA+CIt/FMH1ZU=;
+        b=QUvhulOg1NGwk/mf4srFts8KcoGxxZiH8tNot324c6UXUzdCnR2i74d8kyZm5AS0O+
+         mKLGW/kzPRw/o6KPsbBhuMnEdRVRzMVylfNrGDc//9vOvYe5hFxlyn4l+L/gulbovgMB
+         ZboS38medD690GgkrdnX3OiESGxCDtFJr2xXaUpAOGUZhVrJEgAeWUg1lNXRVdPHw1ZA
+         AUcumQEefbPNtBUFZaWmYCHFj3MrwV2XjRk9WKJipjJtPXMP9Sk0IGE4PtkuY8EuGkH0
+         xvYjVU8koXY2XaGs8c9EypzHVGSyCwU2WLJIKVbpim45Ku68vunua8ur7NBWbBB95be4
+         Cutg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:mime-version:date:message-id:subject:to:cc;
+        bh=L+IBKxZ0QcO0B3h5t+5jOzhzbzhKa2XA+CIt/FMH1ZU=;
+        b=aAm3Fw3sdyjgEpYALv3ZF8nZr3vuNVV0gF/xRv65Krsur0RIWvwKsmFLtSt8rqIM+1
+         4qxAVvHjfaJL21wjT4tWRzy3qjKKS9e65FlGcgQwo+fHf0Jc5YAIIjlAjDT3ma/lDq9I
+         HebbXyg1m6jNxqpu22yh0NIue55jAZOhSnoSYFOA7bpxyLV/0DWmFOmi2Imgfs5/nW48
+         ayD+p+D/+NjwlwBzL5NnOybT9DGRtOqYWPuw1qf4SVCmOG5PaGp39/VolZjc3+BZDUyP
+         ddp4C/h0u1FdfPjJCVrgXA9QvOkM8MmUQFq1FhvT6Nk9u6JK2YEa4NLZyODNmxZ/fysT
+         89kQ==
+X-Gm-Message-State: AOAM5313wQ0cTFt6EvoIUG46u9l+oFMA8x+AqrHkqrg95X0ies7gxG6H
+        1JiAGrcQmrZGGuXkeIRLZn5RUFjpBKeljjsSQunYqQ==
+X-Google-Smtp-Source: ABdhPJwfShpjQL3TbayUPK58WzanTDcYUE/rKStFhRifVnZvS65bVakkOVt0vLIUM/TnAYUxztYRt6rzxFoPbFuqfo8=
+X-Received: by 2002:a50:ccd2:: with SMTP id b18mr3904033edj.51.1601075636081;
+ Fri, 25 Sep 2020 16:13:56 -0700 (PDT)
+Received: from 913411032810 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 25 Sep 2020 16:13:55 -0700
+From:   Jann Horn <jannh@google.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 25 Sep 2020 16:13:23 -0700
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pratikp@codeaurora.org, pdaly@codeaurora.org,
-        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com,
-        Vinayak Menon <vinmenon@codeaurora.org>
-Subject: Re: [PATCH v3] mm: cma: indefinitely retry allocations in cma_alloc
-In-Reply-To: <566091ab-11f2-f071-6072-3c1b0f80cc4e@redhat.com>
-References: <cover.1600922611.git.cgoldswo@codeaurora.org>
- <6904d64c97ca71b14ed0548a0287162bb6fb4b7b.1600922611.git.cgoldswo@codeaurora.org>
- <566091ab-11f2-f071-6072-3c1b0f80cc4e@redhat.com>
-Message-ID: <f8255f9c95f22035f57ed3167595e8e3@codeaurora.org>
-X-Sender: cgoldswo@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Date:   Fri, 25 Sep 2020 16:13:55 -0700
+Message-ID: <CAG48ez3hxeXU29UGWRH-gRXX2jb5Lc==npbXFt8UDrWO4eHZdQ@mail.gmail.com>
+Subject: [PATCH] nios2: Take mmap lock in cacheflush syscall
+To:     Ley Foon Tan <ley.foon.tan@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-25 05:18, David Hildenbrand wrote:
-> On 24.09.20 07:16, Chris Goldsworthy wrote:
->> -				     GFP_KERNEL | (no_warn ? __GFP_NOWARN : 0));
->> +				     GFP_KERNEL | (gfp_mask & __GFP_NOWARN));
-> 
-> Right, we definetly don't want to pass the flag further down.
-> 
-> Alternative would be cma_alloc_nofail(). That helps avoid people 
-> passing
->  stuff like GFP_USER and wondering why it doesn't have an effect.
+We need to take the mmap lock around find_vma() and subsequent use of the
+VMA. Otherwise, we can race with concurrent operations like munmap(), which
+can lead to use-after-free accesses to freed VMAs.
 
-But since we're doing a logical AND with __GFP_NOWARN, we're not passing 
-any other values down - this makes it equivalent to the previous 
-version, in that only __GFP_NOWARN can be passed to 
-alloc_contig_range().
+Fixes: 1000197d8013 ("nios2: System calls handling")
+Signed-off-by: Jann Horn <jannh@google.com>
+---
+To the maintainers:
+I can't easily test this patch - I don't even have a nios2 compiler.
+If you have tested this patch, you may want to add a CC stable tag to this.
 
+ arch/nios2/kernel/sys_nios2.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/arch/nios2/kernel/sys_nios2.c b/arch/nios2/kernel/sys_nios2.c
+index cd390ec4f88b..2c8f8bd850c9 100644
+--- a/arch/nios2/kernel/sys_nios2.c
++++ b/arch/nios2/kernel/sys_nios2.c
+@@ -22,6 +22,7 @@ asmlinkage int sys_cacheflush(unsigned long addr,
+unsigned long len,
+ 				unsigned int op)
+ {
+ 	struct vm_area_struct *vma;
++	struct mm_struct *mm = current->mm;
+
+ 	if (len == 0)
+ 		return 0;
+@@ -34,16 +35,21 @@ asmlinkage int sys_cacheflush(unsigned long addr,
+unsigned long len,
+ 	if (addr + len < addr)
+ 		return -EFAULT;
+
++	if (mmap_read_lock_killable(mm))
++		return -EINTR;
+ 	/*
+ 	 * Verify that the specified address region actually belongs
+ 	 * to this process.
+ 	 */
+-	vma = find_vma(current->mm, addr);
+-	if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end)
++	vma = find_vma(mm, addr);
++	if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end) {
++		mmap_read_unlock();
+ 		return -EFAULT;
++	}
+
+ 	flush_cache_range(vma, addr, addr + len);
+
++	mmap_read_unlock();
+ 	return 0;
+ }
+
+
+base-commit: 6d28cf7dfede6cfca5119a0d415a6a447c68f3a0
 -- 
-The Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+2.28.0.681.g6f77f65b4e-goog
