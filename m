@@ -2,87 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF6D278B3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A09278B42
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729100AbgIYOuK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 10:50:10 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:33712 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgIYOuK (ORCPT
+        id S1729049AbgIYOv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:51:57 -0400
+Received: from asavdk4.altibox.net ([109.247.116.15]:38054 "EHLO
+        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728966AbgIYOv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:50:10 -0400
-Received: by mail-ot1-f67.google.com with SMTP id m12so2559979otr.0;
-        Fri, 25 Sep 2020 07:50:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DD9KHkrgEjO85INACg+anC10SVaoGdHKojOeKrOBrvY=;
-        b=sZfRJyCOWwXR43jrtJK+Edk4UkiU6vWAeYuyL8DGSuUrJUYX1wZMmnzBaEOKQ6lWxk
-         Ba7zr5v9Wr0i8hDx/2pFE4hxYT9FVawfBOIP7ni/2ku6wcSIxjXhhgvnpjuTq4to5MYe
-         ByvYZdAoqZ/bs0uL+izonl5nP8L+eaFcjNrN/Tj1WtZlBF38TKT09IZmDpIcC59TlS+U
-         89FNS5Z2SL1v3yni9FvFQpUqCUjI1rzql/Y+s8X3XC3tQ5N0Mf21+apAsj56LG8/bQDN
-         NIT6xuMmF61oStIFrUZfZIpCHfJZo9UvpMoLv/KRWM5tlwrBWi5WTDBM8xHinlZVgAcB
-         dfDg==
-X-Gm-Message-State: AOAM531vqOYdcmMCW3pCU4znbRjY+GF7lyl3da7e4NH4za8kulNbTjBs
-        wmSNk3pR9r+yk5pBn/pdHaDZ5ZYsWimmIeBmbJo=
-X-Google-Smtp-Source: ABdhPJwINyIYzDim36xJW+5JE9oDdqbLJasat6dwpV5QHJe5jdfFOktYMTv728/Kh2NwTXjGPU/VyyQEmm8Oq08rmC8=
-X-Received: by 2002:a05:6830:150a:: with SMTP id k10mr502542otp.167.1601045409451;
- Fri, 25 Sep 2020 07:50:09 -0700 (PDT)
+        Fri, 25 Sep 2020 10:51:56 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk4.altibox.net (Postfix) with ESMTPS id 05264806AD;
+        Fri, 25 Sep 2020 16:51:50 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 16:51:49 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Yannick Fertre <yannick.fertre@st.com>
+Cc:     Philippe Cornu <philippe.cornu@st.com>,
+        Antonio Borneo <antonio.borneo@st.com>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/stm: dsi: Use dev_ based logging
+Message-ID: <20200925145149.GB1929717@ravnborg.org>
+References: <20200925102233.18016-1-yannick.fertre@st.com>
 MIME-Version: 1.0
-References: <20200922044652.3393-1-shipujin.t@gmail.com>
-In-Reply-To: <20200922044652.3393-1-shipujin.t@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 25 Sep 2020 16:49:58 +0200
-Message-ID: <CAJZ5v0jdcbpOosEgHnc+6FOjJxcH0jCk+GDeh3umfZsrP5JVtw@mail.gmail.com>
-Subject: Re: [PATCH v4] powercap: include header to fix -Wmissing-prototypes
-To:     Pujin Shi <shipujin.t@gmail.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Herrington <hankinsea@gmail.com>, Pujin Shi <shipj@lemote.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925102233.18016-1-yannick.fertre@st.com>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=A5ZCwZeG c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=8b9GpE9nAAAA:8 a=e5mUnYsNAAAA:8
+        a=XBlgKtycwjOaN05_gGEA:9 a=CjuIK1q_8ugA:10 a=T3LWEMljR5ZiDmsYVIUa:22
+        a=Vxmtnl_E_bksehYqCbjh:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 6:47 AM Pujin Shi <shipujin.t@gmail.com> wrote:
->
-> Include the linux/idle_inject.h header to fix W=1 build warning:
->
->     drivers/powercap/idle_inject.c:152:6: warning: no previous prototype for ‘idle_inject_set_duration’ [-Wmissing-prototypes]
->     drivers/powercap/idle_inject.c:167:6: warning: no previous prototype for ‘idle_inject_get_duration’ [-Wmissing-prototypes]
->     drivers/powercap/idle_inject.c:179:6: warning: no previous prototype for ‘idle_inject_set_latency’ [-Wmissing-prototypes]
->     drivers/powercap/idle_inject.c:195:5: warning: no previous prototype for ‘idle_inject_start’ [-Wmissing-prototypes]
->     drivers/powercap/idle_inject.c:227:6: warning: no previous prototype for ‘idle_inject_stop’ [-Wmissing-prototypes]
->     drivers/powercap/idle_inject.c:299:28: warning: no previous prototype for ‘idle_inject_register’ [-Wmissing-prototypes]
->     drivers/powercap/idle_inject.c:345:6: warning: no previous prototype for ‘idle_inject_unregister’ [-Wmissing-prototypes]
->
-> Signed-off-by: Pujin Shi <shipj@lemote.com>
+Hi Yannick.
+
+On Fri, Sep 25, 2020 at 12:22:33PM +0200, Yannick Fertre wrote:
+> Standardize on the dev_ based logging and drop the include of drm_print.h.
+The patchs filas to drop the include mentioned here.
+
+> Remove useless dsi_color_from_mipi function.
+IMO the dsi_color_from_mipi() was nice, and inlining the helper
+is no gain for readability.
+
+	Sam
+
+> 
+> Signed-off-by: Yannick Fertre <yannick.fertre@st.com>
 > ---
->  drivers/powercap/idle_inject.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/powercap/idle_inject.c b/drivers/powercap/idle_inject.c
-> index 4310901a074e..6e1a0043c411 100644
-> --- a/drivers/powercap/idle_inject.c
-> +++ b/drivers/powercap/idle_inject.c
-> @@ -43,6 +43,7 @@
->  #include <linux/sched.h>
->  #include <linux/slab.h>
->  #include <linux/smpboot.h>
-> +#include <linux/idle_inject.h>
->
->  #include <uapi/linux/sched/types.h>
->
-> --
-
-Note that the contact information in the S-o-b tag should match the
-From: header exactly.
-
-I've fixed that up manually this time and applied the patch (as 5.10
-material), but please be more careful about it in the future.
-
-Thanks!
+>  drivers/gpu/drm/stm/dw_mipi_dsi-stm.c | 87 ++++++++++++++-------------
+>  1 file changed, 45 insertions(+), 42 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> index 164f79ef6269..93fa8bfd3127 100644
+> --- a/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> +++ b/drivers/gpu/drm/stm/dw_mipi_dsi-stm.c
+> @@ -76,6 +76,7 @@ enum dsi_color {
+>  
+>  struct dw_mipi_dsi_stm {
+>  	void __iomem *base;
+> +	struct device *dev;
+>  	struct clk *pllref_clk;
+>  	struct dw_mipi_dsi *dsi;
+>  	u32 hw_version;
+> @@ -110,23 +111,6 @@ static inline void dsi_update_bits(struct dw_mipi_dsi_stm *dsi, u32 reg,
+>  	dsi_write(dsi, reg, (dsi_read(dsi, reg) & ~mask) | val);
+>  }
+>  
+> -static enum dsi_color dsi_color_from_mipi(enum mipi_dsi_pixel_format fmt)
+> -{
+> -	switch (fmt) {
+> -	case MIPI_DSI_FMT_RGB888:
+> -		return DSI_RGB888;
+> -	case MIPI_DSI_FMT_RGB666:
+> -		return DSI_RGB666_CONF2;
+> -	case MIPI_DSI_FMT_RGB666_PACKED:
+> -		return DSI_RGB666_CONF1;
+> -	case MIPI_DSI_FMT_RGB565:
+> -		return DSI_RGB565_CONF1;
+> -	default:
+> -		DRM_DEBUG_DRIVER("MIPI color invalid, so we use rgb888\n");
+> -	}
+> -	return DSI_RGB888;
+> -}
+> -
+>  static int dsi_pll_get_clkout_khz(int clkin_khz, int idf, int ndiv, int odf)
+>  {
+>  	int divisor = idf * odf;
+> @@ -205,14 +189,14 @@ static int dw_mipi_dsi_phy_init(void *priv_data)
+>  	ret = readl_poll_timeout(dsi->base + DSI_WISR, val, val & WISR_RRS,
+>  				 SLEEP_US, TIMEOUT_US);
+>  	if (ret)
+> -		DRM_DEBUG_DRIVER("!TIMEOUT! waiting REGU, let's continue\n");
+> +		dev_dbg(dsi->dev, "!TIMEOUT! waiting REGU, let's continue\n");
+>  
+>  	/* Enable the DSI PLL & wait for its lock */
+>  	dsi_set(dsi, DSI_WRPCR, WRPCR_PLLEN);
+>  	ret = readl_poll_timeout(dsi->base + DSI_WISR, val, val & WISR_PLLLS,
+>  				 SLEEP_US, TIMEOUT_US);
+>  	if (ret)
+> -		DRM_DEBUG_DRIVER("!TIMEOUT! waiting PLL, let's continue\n");
+> +		dev_dbg(dsi->dev, "!TIMEOUT! waiting PLL, let's continue\n");
+>  
+>  	return 0;
+>  }
+> @@ -221,7 +205,7 @@ static void dw_mipi_dsi_phy_power_on(void *priv_data)
+>  {
+>  	struct dw_mipi_dsi_stm *dsi = priv_data;
+>  
+> -	DRM_DEBUG_DRIVER("\n");
+> +	dev_dbg(dsi->dev, "\n");
+>  
+>  	/* Enable the DSI wrapper */
+>  	dsi_set(dsi, DSI_WCR, WCR_DSIEN);
+> @@ -231,7 +215,7 @@ static void dw_mipi_dsi_phy_power_off(void *priv_data)
+>  {
+>  	struct dw_mipi_dsi_stm *dsi = priv_data;
+>  
+> -	DRM_DEBUG_DRIVER("\n");
+> +	dev_dbg(dsi->dev, "\n");
+>  
+>  	/* Disable the DSI wrapper */
+>  	dsi_clear(dsi, DSI_WCR, WCR_DSIEN);
+> @@ -244,6 +228,7 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+>  {
+>  	struct dw_mipi_dsi_stm *dsi = priv_data;
+>  	unsigned int idf, ndiv, odf, pll_in_khz, pll_out_khz;
+> +	enum mipi_dsi_pixel_format fmt;
+>  	int ret, bpp;
+>  	u32 val;
+>  
+> @@ -267,11 +252,11 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+>  
+>  	if (pll_out_khz > dsi->lane_max_kbps) {
+>  		pll_out_khz = dsi->lane_max_kbps;
+> -		DRM_WARN("Warning max phy mbps is used\n");
+> +		dev_warn(dsi->dev, "Warning max phy mbps is used\n");
+>  	}
+>  	if (pll_out_khz < dsi->lane_min_kbps) {
+>  		pll_out_khz = dsi->lane_min_kbps;
+> -		DRM_WARN("Warning min phy mbps is used\n");
+> +		dev_warn(dsi->dev, "Warning min phy mbps is used\n");
+>  	}
+>  
+>  	/* Compute best pll parameters */
+> @@ -281,7 +266,7 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+>  	ret = dsi_pll_get_params(dsi, pll_in_khz, pll_out_khz,
+>  				 &idf, &ndiv, &odf);
+>  	if (ret)
+> -		DRM_WARN("Warning dsi_pll_get_params(): bad params\n");
+> +		dev_warn(dsi->dev, "Warning dsi_pll_get_params(): bad params\n");
+>  
+>  	/* Get the adjusted pll out value */
+>  	pll_out_khz = dsi_pll_get_clkout_khz(pll_in_khz, idf, ndiv, odf);
+> @@ -297,14 +282,31 @@ dw_mipi_dsi_get_lane_mbps(void *priv_data, const struct drm_display_mode *mode,
+>  	/* Select video mode by resetting DSIM bit */
+>  	dsi_clear(dsi, DSI_WCFGR, WCFGR_DSIM);
+>  
+> +	switch (format) {
+> +	case MIPI_DSI_FMT_RGB888:
+> +		fmt = DSI_RGB888;
+> +		break;
+> +	case MIPI_DSI_FMT_RGB666:
+> +		fmt = DSI_RGB666_CONF2;
+> +		break;
+> +	case MIPI_DSI_FMT_RGB666_PACKED:
+> +		fmt = DSI_RGB666_CONF1;
+> +		break;
+> +	case MIPI_DSI_FMT_RGB565:
+> +		fmt = DSI_RGB565_CONF1;
+> +		break;
+> +	default:
+> +		fmt = DSI_RGB888;
+> +		dev_err(dsi->dev, "MIPI color invalid, so we use rgb888\n");
+> +	}
+> +
+>  	/* Select the color coding */
+> -	dsi_update_bits(dsi, DSI_WCFGR, WCFGR_COLMUX,
+> -			dsi_color_from_mipi(format) << 1);
+> +	dsi_update_bits(dsi, DSI_WCFGR, WCFGR_COLMUX, fmt << 1);
+>  
+>  	*lane_mbps = pll_out_khz / 1000;
+>  
+> -	DRM_DEBUG_DRIVER("pll_in %ukHz pll_out %ukHz lane_mbps %uMHz\n",
+> -			 pll_in_khz, pll_out_khz, *lane_mbps);
+> +	dev_dbg(dsi->dev, "pll_in %ukHz pll_out %ukHz lane_mbps %uMHz\n", pll_in_khz, pll_out_khz,
+> +		*lane_mbps);
+>  
+>  	return 0;
+>  }
+> @@ -352,11 +354,13 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>  	if (!dsi)
+>  		return -ENOMEM;
+>  
+> +	dsi->dev = dev;
+> +
+>  	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>  	dsi->base = devm_ioremap_resource(dev, res);
+>  	if (IS_ERR(dsi->base)) {
+>  		ret = PTR_ERR(dsi->base);
+> -		DRM_ERROR("Unable to get dsi registers %d\n", ret);
+> +		dev_err(dev, "Unable to get dsi registers %d\n", ret);
+>  		return ret;
+>  	}
+>  
+> @@ -364,13 +368,13 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>  	if (IS_ERR(dsi->vdd_supply)) {
+>  		ret = PTR_ERR(dsi->vdd_supply);
+>  		if (ret != -EPROBE_DEFER)
+> -			DRM_ERROR("Failed to request regulator: %d\n", ret);
+> +			dev_err(dev, "Failed to request regulator: %d\n", ret);
+>  		return ret;
+>  	}
+>  
+>  	ret = regulator_enable(dsi->vdd_supply);
+>  	if (ret) {
+> -		DRM_ERROR("Failed to enable regulator: %d\n", ret);
+> +		dev_err(dev, "Failed to enable regulator: %d\n", ret);
+>  		return ret;
+>  	}
+>  
+> @@ -378,27 +382,26 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>  	if (IS_ERR(dsi->pllref_clk)) {
+>  		ret = PTR_ERR(dsi->pllref_clk);
+>  		if (ret != -EPROBE_DEFER)
+> -			DRM_ERROR("Unable to get pll reference clock: %d\n",
+> -				  ret);
+> +			dev_err(dev, "Unable to get pll reference clock: %d\n", ret);
+>  		goto err_clk_get;
+>  	}
+>  
+>  	ret = clk_prepare_enable(dsi->pllref_clk);
+>  	if (ret) {
+> -		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
+> +		dev_err(dev, "Failed to enable pllref_clk: %d\n", ret);
+>  		goto err_clk_get;
+>  	}
+>  
+>  	pclk = devm_clk_get(dev, "pclk");
+>  	if (IS_ERR(pclk)) {
+>  		ret = PTR_ERR(pclk);
+> -		DRM_ERROR("Unable to get peripheral clock: %d\n", ret);
+> +		dev_err(dev, "Unable to get peripheral clock: %d\n", ret);
+>  		goto err_dsi_probe;
+>  	}
+>  
+>  	ret = clk_prepare_enable(pclk);
+>  	if (ret) {
+> -		DRM_ERROR("%s: Failed to enable peripheral clk\n", __func__);
+> +		dev_err(dev, "%s: Failed to enable peripheral clk\n", __func__);
+>  		goto err_dsi_probe;
+>  	}
+>  
+> @@ -407,7 +410,7 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>  
+>  	if (dsi->hw_version != HWVER_130 && dsi->hw_version != HWVER_131) {
+>  		ret = -ENODEV;
+> -		DRM_ERROR("bad dsi hardware version\n");
+> +		dev_err(dev, "bad dsi hardware version\n");
+>  		goto err_dsi_probe;
+>  	}
+>  
+> @@ -420,7 +423,7 @@ static int dw_mipi_dsi_stm_probe(struct platform_device *pdev)
+>  	if (IS_ERR(dsi->dsi)) {
+>  		ret = PTR_ERR(dsi->dsi);
+>  		if (ret != -EPROBE_DEFER)
+> -			DRM_ERROR("Failed to initialize mipi dsi host: %d\n", ret);
+> +			dev_err(dev, "Failed to initialize mipi dsi host: %d\n", ret);
+>  		goto err_dsi_probe;
+>  	}
+>  
+> @@ -449,7 +452,7 @@ static int __maybe_unused dw_mipi_dsi_stm_suspend(struct device *dev)
+>  {
+>  	struct dw_mipi_dsi_stm *dsi = dw_mipi_dsi_stm_plat_data.priv_data;
+>  
+> -	DRM_DEBUG_DRIVER("\n");
+> +	dev_dbg(dsi->dev, "\n");
+>  
+>  	clk_disable_unprepare(dsi->pllref_clk);
+>  	regulator_disable(dsi->vdd_supply);
+> @@ -462,18 +465,18 @@ static int __maybe_unused dw_mipi_dsi_stm_resume(struct device *dev)
+>  	struct dw_mipi_dsi_stm *dsi = dw_mipi_dsi_stm_plat_data.priv_data;
+>  	int ret;
+>  
+> -	DRM_DEBUG_DRIVER("\n");
+> +	dev_dbg(dsi->dev, "\n");
+>  
+>  	ret = regulator_enable(dsi->vdd_supply);
+>  	if (ret) {
+> -		DRM_ERROR("Failed to enable regulator: %d\n", ret);
+> +		dev_err(dev, "Failed to enable regulator: %d\n", ret);
+>  		return ret;
+>  	}
+>  
+>  	ret = clk_prepare_enable(dsi->pllref_clk);
+>  	if (ret) {
+>  		regulator_disable(dsi->vdd_supply);
+> -		DRM_ERROR("Failed to enable pllref_clk: %d\n", ret);
+> +		dev_err(dev, "Failed to enable pllref_clk: %d\n", ret);
+>  		return ret;
+>  	}
+>  
+> -- 
+> 2.17.1
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
