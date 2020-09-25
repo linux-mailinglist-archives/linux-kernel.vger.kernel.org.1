@@ -2,107 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512F0278EB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A65B7278EB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729064AbgIYQgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728610AbgIYQf7 (ORCPT
+        id S1729394AbgIYQhe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 12:37:34 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:59995 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728038AbgIYQhd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:35:59 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD92C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:35:59 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id w5so4259330wrp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:35:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kFHi/Lnlt8f1kQDKiGDd11Cptp9H00xnl26W3F/tZaI=;
-        b=QftbfSRhc9RJbjqj2FGPZckdcjn/yMYTBEzTjgy3SeATCPxuZswj0/GK4vByczRtu7
-         LwkStd+D2xxSr5/g7eU2P8ZDHTc67ZodPKerkMtkO5S3eMRDTdphXErY9xG+GJl9OWwd
-         +T60/crKY5Q0DldxVYYyPnOwlIikybVQ7NCtYrsYKbQCugyG4z9dN5o0ZnvHtfTPoXTy
-         s7QlaSQsIsx+DzkDS2L/FSPiqQJONOyovX8r47ve+nqSCpHNLHM9ujvSY7+Nqhv2cANL
-         d4nj4UY42/ZtFin2Kx5qb3MlP0vgp35WIe8Ii8fr/0HxX8Gm6ksnELcmN/tL6trt7ekZ
-         qtPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kFHi/Lnlt8f1kQDKiGDd11Cptp9H00xnl26W3F/tZaI=;
-        b=MBjlvhwG0knaVslkvy/ga2i/qWiSeQ+z6KxbWjiPqcNd/T4Hy7v/lNuOxI9VVH3bvb
-         CCtWQ2woxGUNoLx8fRDeA+TuuEBTOGiWOpaSp9PDqsy6KOiLyDPSgLiuWmm5iAZpPmpC
-         c29cz1Xn81M15EIa7U/71mg1uYCZ4vky4yKPc6hcI2pHGdgQvkwgJuzEYchp/LaXogjQ
-         9yNm2hf/WtJicwe4r5NSFLGxnZ7R4nPXxq5lWhJ2a4j3V/ktGzqZVaUOM9bWdAL3++3q
-         SeOXcrPEco0Wjl3dekeJx3TQS+fH5MXuH3s648EBrqTKoMSXrZP6rAfowMz8usv7D7T6
-         jI2Q==
-X-Gm-Message-State: AOAM532zxE8KDK8y/oeHo5zHHwsClpLchiTVEw8+IOfqlqyk14PP1B1B
-        g0i6n2mmxfXn2a3ChIrKSNpDiQ==
-X-Google-Smtp-Source: ABdhPJwDUNZy1TRZ9PrSR+BOSCCszXZM2mAcvg9nXER2+5EpX7pDXX6x3SrXpFgEaorXLaSXqG88bQ==
-X-Received: by 2002:adf:8544:: with SMTP id 62mr5416564wrh.262.1601051757907;
-        Fri, 25 Sep 2020 09:35:57 -0700 (PDT)
-Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id m4sm3733883wro.18.2020.09.25.09.35.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 09:35:57 -0700 (PDT)
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-To:     broonie@kernel.org
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 2/2] ASoC: q6asm: fix kernel doc warnings
-Date:   Fri, 25 Sep 2020 17:35:52 +0100
-Message-Id: <20200925163552.20717-3-srinivas.kandagatla@linaro.org>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200925163552.20717-1-srinivas.kandagatla@linaro.org>
-References: <20200925163552.20717-1-srinivas.kandagatla@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 25 Sep 2020 12:37:33 -0400
+Received: from [172.20.10.2] (dynamic-046-114-136-219.46.114.pool.telefonica.de [46.114.136.219])
+        by mail.holtmann.org (Postfix) with ESMTPSA id ABFAECECDE;
+        Fri, 25 Sep 2020 18:44:29 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH v3] Bluetooth: Check for encryption key size on connect
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200922155548.v3.1.I67a8b8cd4def8166970ca37109db46d731b62bb6@changeid>
+Date:   Fri, 25 Sep 2020 18:37:29 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <BC59363A-B32A-4DAA-BAF5-F7FBA01752E6@holtmann.org>
+References: <20200922155548.v3.1.I67a8b8cd4def8166970ca37109db46d731b62bb6@changeid>
+To:     Archie Pusaka <apusaka@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes below kernel doc warnings on not describing all the parmeters
+Hi Archie,
 
-sound/soc/qcom/qdsp6/q6asm.c:927: warning: Function parameter or member
- 'stream_id' not described in 'q6asm_open_write'
-sound/soc/qcom/qdsp6/q6asm.c:927: warning: Function parameter or member
- 'is_gapless' not described in 'q6asm_open_write'
-sound/soc/qcom/qdsp6/q6asm.c:1053: warning: Function parameter or member
- 'stream_id' not described in 'q6asm_run'
+> When receiving connection, we only check whether the link has been
+> encrypted, but not the encryption key size of the link.
+> 
+> This patch adds check for encryption key size, and reject L2CAP
+> connection which size is below the specified threshold (default 7)
+> with security block.
+> 
+> Here is some btmon trace.
+> @ MGMT Event: New Link Key (0x0009) plen 26    {0x0001} [hci0] 5.847722
+>        Store hint: No (0x00)
+>        BR/EDR Address: 38:00:25:F7:F1:B0 (OUI 38-00-25)
+>        Key type: Unauthenticated Combination key from P-192 (0x04)
+>        Link key: 7bf2f68c81305d63a6b0ee2c5a7a34bc
+>        PIN length: 0
+>> HCI Event: Encryption Change (0x08) plen 4        #29 [hci0] 5.871537
+>        Status: Success (0x00)
+>        Handle: 256
+>        Encryption: Enabled with E0 (0x01)
+> < HCI Command: Read Encryp... (0x05|0x0008) plen 2  #30 [hci0] 5.871609
+>        Handle: 256
+>> HCI Event: Command Complete (0x0e) plen 7         #31 [hci0] 5.872524
+>      Read Encryption Key Size (0x05|0x0008) ncmd 1
+>        Status: Success (0x00)
+>        Handle: 256
+>        Key size: 3
+> 
+> ////// WITHOUT PATCH //////
+>> ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 5.895023
+>      L2CAP: Connection Request (0x02) ident 3 len 4
+>        PSM: 4097 (0x1001)
+>        Source CID: 64
+> < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 5.895213
+>      L2CAP: Connection Response (0x03) ident 3 len 8
+>        Destination CID: 64
+>        Source CID: 64
+>        Result: Connection successful (0x0000)
+>        Status: No further information available (0x0000)
+> 
+> ////// WITH PATCH //////
+>> ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 4.887024
+>      L2CAP: Connection Request (0x02) ident 3 len 4
+>        PSM: 4097 (0x1001)
+>        Source CID: 64
+> < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 4.887127
+>      L2CAP: Connection Response (0x03) ident 3 len 8
+>        Destination CID: 0
+>        Source CID: 64
+>        Result: Connection refused - security block (0x0003)
+>        Status: No further information available (0x0000)
+> 
+> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+> 
+> ---
+> 
+> Changes in v3:
+> * Move the check to hci_conn_check_link_mode()
+> 
+> Changes in v2:
+> * Add btmon trace to the commit message
+> 
+> net/bluetooth/hci_conn.c | 4 ++++
+> 1 file changed, 4 insertions(+)
+> 
+> diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+> index 9832f8445d43..89085fac797c 100644
+> --- a/net/bluetooth/hci_conn.c
+> +++ b/net/bluetooth/hci_conn.c
+> @@ -1348,6 +1348,10 @@ int hci_conn_check_link_mode(struct hci_conn *conn)
+> 	    !test_bit(HCI_CONN_ENCRYPT, &conn->flags))
+> 		return 0;
+> 
+> +	if (test_bit(HCI_CONN_ENCRYPT, &conn->flags) &&
+> +	    conn->enc_key_size < conn->hdev->min_enc_key_size)
+> +		return 0;
+> +
+> 	return 1;
+> }
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6asm.c | 3 +++
- 1 file changed, 3 insertions(+)
+I am a bit concerned since we had that check and I on purpose moved it. See commit 693cd8ce3f88 for the change where I removed and commit d5bb334a8e17 where I initially added it.
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 790abc135223..c547c560cb24 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -915,9 +915,11 @@ static int q6asm_ac_send_cmd_sync(struct audio_client *ac, struct apr_pkt *pkt)
- /**
-  * q6asm_open_write() - Open audio client for writing
-  * @ac: audio client pointer
-+ * @stream_id: stream id of q6asm session
-  * @format: audio sample format
-  * @codec_profile: compressed format profile
-  * @bits_per_sample: bits per sample
-+ * @is_gapless: flag to indicate if this is a gapless stream
-  *
-  * Return: Will be an negative value on error or zero on success
-  */
-@@ -1042,6 +1044,7 @@ static int __q6asm_run(struct audio_client *ac, uint32_t stream_id,
-  * q6asm_run() - start the audio client
-  *
-  * @ac: audio client pointer
-+ * @stream_id: stream id of q6asm session
-  * @flags: flags associated with write
-  * @msw_ts: timestamp msw
-  * @lsw_ts: timestamp lsw
--- 
-2.21.0
+Naively adding the check in that location caused a major regression with Bluetooth 2.0 devices. This makes me a bit reluctant to re-add it here since I restructured the whole change to check the key size a different location.
+
+Now I have to ask, are you running an upstream kernel with both commits above that address KNOB vulnerability?
+
+Regards
+
+Marcel
 
