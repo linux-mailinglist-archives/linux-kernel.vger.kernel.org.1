@@ -2,172 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6EC279051
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9BD27905A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729758AbgIYS3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727201AbgIYS3u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:29:50 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B8E6C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:29:50 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 5so3307364pgf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:29:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:author;
-        bh=Rhv9HZEtrEL141zSMGw1g065/LfSYNOus3HpsgDc4Os=;
-        b=HVUBpvOg+s0a1z2RzoKEIEFlCJWP5rVxDKxRmwxMKnABEXn383FnVD5FLFSLg4M3yY
-         DiJztuPhznDB7e0NReBuNguMYtpthbjZWDgz321egNY6GGLm0jEyz48oTlgao0R0tQDO
-         21XRe3aF8XrGRVp5TH1ENC7Cl346shsAgl/ySE4HlZOISGRz8JWlooVQQBcsRwJzbILi
-         HH7HWhjb1BTRHpFtmSJZ/YBhEQiPHWyV8FSc2DBvNXW5lXG8sMVhBHmAzw1WZAHXK/a2
-         Y0ezbxZxbV5PzAIcLN12G8u+Lc+veBcqtiAJR9ZuPeIyRnnZ1wy7vecPxyT7XU7hkI/p
-         WbFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:author;
-        bh=Rhv9HZEtrEL141zSMGw1g065/LfSYNOus3HpsgDc4Os=;
-        b=obDofWWfl78zU3+H41MUfLclSv5P0psKQQG4VTJUq5JchuK3a42VdOBLgRJ3rjHcjh
-         1w8ReyHr3si7YtuEqf24+7AViBB8+fM3RiCBRfw/0dL9FOpNxQoUwJ0L+mJEUqRKWxxW
-         TuzbYXHsyWPBfPpQHNNOSiNoDNLSIjm1raJn3VvGOwIAr5oYAY9WaJnIId7vMH8AVgCv
-         Do9gOc+NndhfyDostVUWENYCjssxHwDgWpzsvAJ1Aa8uI+mMOkXuIzVvKSab4wo9VX8d
-         BiLLeOCCoNrfaQPr06AVjlmVn2DsFEII79+yUUb8jCdFmCoVPiq9EgIUbK1Uat99Bwyt
-         KJPw==
-X-Gm-Message-State: AOAM532wTDkNgh/Cfy3HLdLtltHghfov6Wk4qo6SAAcCvmbrhmbpIk64
-        tjlZO17shFqdFkHSnGInDBqzaw==
-X-Google-Smtp-Source: ABdhPJyT6RQYB9DC4di8a/7z5wXawdsq8FSxpEdIKmdSgymgn9ER5Udfvz37BcVVx/UkrRoJ02vI2g==
-X-Received: by 2002:a17:902:c404:b029:d2:564a:e41d with SMTP id k4-20020a170902c404b02900d2564ae41dmr681548plk.23.1601058589772;
-        Fri, 25 Sep 2020 11:29:49 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:6803:60dd:c56a:3b96:e0d6:72b4])
-        by smtp.gmail.com with ESMTPSA id f4sm2806762pgk.19.2020.09.25.11.29.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 11:29:48 -0700 (PDT)
-From:   Amit Pundir <amit.pundir@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        ath10k@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap QMI requests
-Date:   Fri, 25 Sep 2020 23:59:41 +0530
-Message-Id: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
-X-Mailer: git-send-email 2.7.4
-Author: Amit Pundir <amit.pundir@linaro.org>
+        id S1729744AbgIYSa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:30:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727201AbgIYSaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:30:25 -0400
+Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E6320208A9;
+        Fri, 25 Sep 2020 18:30:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601058624;
+        bh=rXcFv8OheuhLrzWzB3xaBLB97MzI/dNcICm7DSrTx3k=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=k52FA68Qt7WN/ka8Vqi6Df1TbvWssCa2ZhdmAwPynzOqUiN1rEmIAYQxOGaMGVkI8
+         KRlw/RbfyDcF0YB1F2E7xh5rsoBaJYOP4IHOQ/5ppZ6E/ylXSL0fPWz/YXumTIL0pP
+         MmeE4OhHAlupAVf8cXkCxYF7gjaahrYAzLJhXux0=
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <20200922233333.GA2239404@bjorn-Precision-5520>
+ <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
+ <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
+ <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+ <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+ <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
+ <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
+ <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
+ <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
+ <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
+ <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
+ <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
+ <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
+ <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
+From:   Sinan Kaya <okaya@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
+Date:   Fri, 25 Sep 2020 14:30:21 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are firmware versions which do not support host capability
-QMI request. We suspect either the host cap is not implemented or
-there may be firmware specific issues, but apparently there seem
-to be a generation of firmware that has this particular behavior.
+On 9/25/2020 2:16 PM, Kuppuswamy, Sathyanarayanan wrote:
+>>
+>> If this is a too involved change, DPC driver should restore state
+>> when hotplug is not supported.
+> Yes. we can add a condition for hotplug capability check.
+>>
+>> DPC driver should be self-sufficient by itself.
+>>
 
-For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
-"QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
+Sounds good.
 
-If we do not skip the host cap QMI request on Poco F1, then we
-get a QMI_ERR_MALFORMED_MSG_V01 error message in the
-ath10k_qmi_host_cap_send_sync(). But this error message is not
-fatal to the firmware nor to the ath10k driver and we can still
-bring up the WiFi services successfully if we just ignore it.
+>>> Also for non-fatal errors, if reset is requested then we still need
+>>> some kind of bus reset call here
+>>
+>> DPC should handle both fatal and non-fatal cases
+> Currently DPC is only triggered for FATAL errors.
+>  and cause a bus reset
 
-Hence introducing this DeviceTree quirk to skip host capability
-QMI request for the firmware versions which do not support this
-feature.
+Thanks for the heads up.
+This seems to have changed since I looked at the DPC code.
 
-Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
----
- .../devicetree/bindings/net/wireless/qcom,ath10k.txt        |  5 +++++
- drivers/net/wireless/ath/ath10k/qmi.c                       | 13 ++++++++++---
- drivers/net/wireless/ath/ath10k/snoc.c                      |  3 +++
- drivers/net/wireless/ath/ath10k/snoc.h                      |  1 +
- 4 files changed, 19 insertions(+), 3 deletions(-)
+>> in hardware already before triggering an interrupt.
+> Error recovery is not triggered only DPC driver. AER also uses the
+> same error recovery code. If DPC is not supported, then we still need
+> reset logic.
 
-diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-index 65ee68efd574..135c7ecd4487 100644
---- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-+++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
-@@ -86,6 +86,11 @@ Optional properties:
- 	Value type: <empty>
- 	Definition: Quirk specifying that the firmware expects the 8bit version
- 		    of the host capability QMI request
-+- qcom,snoc-host-cap-skip-quirk:
-+	Usage: Optional
-+	Value type: <empty>
-+	Definition: Quirk specifying that the firmware wants to skip the host
-+		    capability QMI request
- - qcom,xo-cal-data: xo cal offset to be configured in xo trim register.
- 
- - qcom,msa-fixed-perm: Boolean context flag to disable SCM call for statically
-diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
-index 5468a41e928e..5adff7695e18 100644
---- a/drivers/net/wireless/ath/ath10k/qmi.c
-+++ b/drivers/net/wireless/ath/ath10k/qmi.c
-@@ -770,6 +770,7 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
- static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
- {
- 	struct ath10k *ar = qmi->ar;
-+	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
- 	int ret;
- 
- 	ret = ath10k_qmi_ind_register_send_sync_msg(qmi);
-@@ -781,9 +782,15 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
- 		return;
- 	}
- 
--	ret = ath10k_qmi_host_cap_send_sync(qmi);
--	if (ret)
--		return;
-+	/*
-+	 * Skip the host capability request for the firmware versions which
-+	 * do not support this feature.
-+	 */
-+	if (!test_bit(ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK, &ar_snoc->flags)) {
-+		ret = ath10k_qmi_host_cap_send_sync(qmi);
-+		if (ret)
-+			return;
-+	}
- 
- 	ret = ath10k_qmi_msa_mem_info_send_sync_msg(qmi);
- 	if (ret)
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 354d49b1cd45..4efbf1339c80 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -1281,6 +1281,9 @@ static void ath10k_snoc_quirks_init(struct ath10k *ar)
- 
- 	if (of_property_read_bool(dev->of_node, "qcom,snoc-host-cap-8bit-quirk"))
- 		set_bit(ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK, &ar_snoc->flags);
-+
-+	if (of_property_read_bool(dev->of_node, "qcom,snoc-host-cap-skip-quirk"))
-+		set_bit(ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK, &ar_snoc->flags);
- }
- 
- int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
-index a3dd06f6ac62..2a0045f0af7e 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.h
-+++ b/drivers/net/wireless/ath/ath10k/snoc.h
-@@ -47,6 +47,7 @@ enum ath10k_snoc_flags {
- 	ATH10K_SNOC_FLAG_UNREGISTERING,
- 	ATH10K_SNOC_FLAG_RECOVERY,
- 	ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK,
-+	ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK,
- };
- 
- struct clk_bulk_data;
--- 
-2.7.4
+It sounds like we are cross-talking two issues.
 
+1. no state restore on DPC after FATAL error.
+Let's fix this.
+
+2. no bus reset on NON_FATAL error through AER driver path.
+This already tells me that you need to split your change into
+multiple patches.
+
+Let's talk about this too. bus reset should be triggered via
+AER driver before informing the recovery.
+
+	if (status == PCI_ERS_RESULT_NEED_RESET) {
+		/*
+		 * TODO: Should call platform-specific
+		 * functions to reset slot before calling
+		 * drivers' slot_reset callbacks?
+		 */
+		status = PCI_ERS_RESULT_RECOVERED;
+		pci_dbg(dev, "broadcast slot_reset message\n");
+		pci_walk_bus(bus, report_slot_reset, &status);
+	}
