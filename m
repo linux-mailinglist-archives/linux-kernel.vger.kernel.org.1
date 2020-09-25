@@ -2,103 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17560278DBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6BAA278DBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbgIYQMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:12:12 -0400
-Received: from relayfre-01.paragon-software.com ([176.12.100.13]:57532 "EHLO
-        relayfre-01.paragon-software.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727201AbgIYQML (ORCPT
+        id S1729233AbgIYQMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:12:24 -0400
+Received: from mail-io1-f77.google.com ([209.85.166.77]:54583 "EHLO
+        mail-io1-f77.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgIYQMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:12:11 -0400
-Received: from dlg2.mail.paragon-software.com (vdlg-exch-02.paragon-software.com [172.30.1.105])
-        by relayfre-01.paragon-software.com (Postfix) with ESMTPS id 0841B1D21;
-        Fri, 25 Sep 2020 19:12:08 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paragon-software.com; s=mail; t=1601050328;
-        bh=FC5t8suzVZZJmgErK3qG2Jap3Va5qDoQI2aBJbDel/0=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=bqS0kM2CYqFE85WU9tnpTzIVG1MH4gYl0nqAwcWCK+LvP0FvijEpLfYkkcEBCZ0KS
-         Ue2Q2JwLXlZwCrXvuXhj4zojOTKTk+7/wCiDAzZd0ttXKsjNK8PevBgAGPjJz6t7F0
-         L8kTXydMUIPbjk/lvE9rrKtyYzqMuf4k9tbJaVJg=
-Received: from vdlg-exch-02.paragon-software.com (172.30.1.105) by
- vdlg-exch-02.paragon-software.com (172.30.1.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Fri, 25 Sep 2020 19:12:07 +0300
-Received: from vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b])
- by vdlg-exch-02.paragon-software.com ([fe80::586:6d72:3fe5:bd9b%6]) with mapi
- id 15.01.1847.003; Fri, 25 Sep 2020 19:12:07 +0300
-From:   Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-To:     Mark Harmstone <mark@harmstone.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pali@kernel.org" <pali@kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "nborisov@suse.com" <nborisov@suse.com>
-Subject: RE: [PATCH v6 05/10] fs/ntfs3: Add attrib operations
-Thread-Topic: [PATCH v6 05/10] fs/ntfs3: Add attrib operations
-Thread-Index: AQHWjdglN/dStLJq+0+dmsar6G90RqluhMEAgAsLTpA=
-Date:   Fri, 25 Sep 2020 16:12:06 +0000
-Message-ID: <779cf3a270d2426b9da1bce6b1801ccc@paragon-software.com>
-References: <20200918162204.3706029-1-almaz.alexandrovich@paragon-software.com>
- <20200918162204.3706029-6-almaz.alexandrovich@paragon-software.com>
- <fd0d9b84-8018-3f6d-0b3d-03c35b1db7f2@harmstone.com>
-In-Reply-To: <fd0d9b84-8018-3f6d-0b3d-03c35b1db7f2@harmstone.com>
-Accept-Language: ru-RU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.30.8.36]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 25 Sep 2020 12:12:24 -0400
+Received: by mail-io1-f77.google.com with SMTP id q6so2237712iod.21
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:12:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=y32m1nJzwKigyWDUgWkDCjgxQTraUD1nhrxbkLtURI0=;
+        b=c0jgm3PzO76zlWDQKDgC2SXcU4K1y22kvmPUlOK00Jw080UavD1sNu7yg7/K6hQuXi
+         Uzi+r1vFYOPSvaNjm4sLMJfAC+ZxrpMQoIjph+HydhFmko+irR4wIpNCSYp0B3fNVUDc
+         z8Vos5CUGsd4C3Z9CWKzDiY4kIiWPD64SlZ/jYgoB5WCqXkjzqI06p3CH/I1c7KGxH+V
+         fhpb4VxmbKbIxJSTfzFLTVcv1HJ4L3MAiEsSK93f+0O4WcvTM6o7blBZJeNzsBBypIy0
+         71wCPMuwovUsEccWij+c18+GDIanpiS5snKtQ62EhLDF+uz+BvNKQBl9LT5g1ZycDuY0
+         d2VQ==
+X-Gm-Message-State: AOAM533720EHsYLeHmdC3+75qpae3/1nwaxX2W62Y9U6/lKaGjgsVvb0
+        bpk5XBo4ZJgSubs5A08h8Ltut6A+zLkzzI0Dl3tlKgaaa/Qu
+X-Google-Smtp-Source: ABdhPJwV3l/4UO4e2KYuzLXHOTYj9F/FG51bkfxYM2gCNgJxiG0q81nX7OHsPFGL6TVfwLuUdA9mKfvRvt1d2UyTjvpV+mhS2VER
 MIME-Version: 1.0
+X-Received: by 2002:a05:6602:15c5:: with SMTP id f5mr821173iow.42.1601050342432;
+ Fri, 25 Sep 2020 09:12:22 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 09:12:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000eda45205b0259440@google.com>
+Subject: KASAN: use-after-free Read in squashfs_get_id
+From:   syzbot <syzbot+a296f64433c9cfd55cc8@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWFyayBIYXJtc3RvbmUgPG1hcmsuaGFybXN0b25lQGdtYWlsLmNvbT4gT24gQmVoYWxm
-IE9mIE1hcmsgSGFybXN0b25lDQpTZW50OiBGcmlkYXksIFNlcHRlbWJlciAxOCwgMjAyMCA5OjI4
-IFBNDQo+IA0KPiBDb3VsZCBJIHN1Z2dlc3QgdGhhdCBzeXN0ZW0ubnRmc19zZWN1cml0eSBiZSBy
-ZW5hbWVkIHRvIHNlY3VyaXR5Lk5UQUNMPyBUaGF0J3MNCj4gd2hhdCBXaW5CdHJmcyB1c2VzLCBh
-bmQgaXQgbWVhbnMgeW91J2QgYmUgYWJsZSB0byBjcmVhdGUgYSB3b3JraW5nIEJ0cmZzIGNvcHkN
-Cj4gb2YgYSBXaW5kb3dzIGluc3RhbGxhdGlvbiBqdXN0IGJ5IHVzaW5nIHJzeW5jLiBJSVJDIFNh
-bWJhIGFsc28gdW5kZXJzdGFuZHMNCj4geGF0dHJzIGNhbGxlZCBzZWN1cml0eS5OVEFDTCwgd2hl
-biB5b3UndmUgcHV0IGl0IGluIHRoZSByaWdodCBtb2RlLg0KPiANCj4gUXVpdGUgYXBhcnQgZnJv
-bSBhbnl0aGluZyBlbHNlLCBpdCdzIGFuIE5UIHNlY3VyaXR5IGRlc2NyaXB0b3IsIG5vdCBzcGVj
-aWZpY2FsbHkNCj4gTlRGUyAtIEknbSBmYWlybHkgc3VyZSBSZUZTIHVzZXMgdGhlIHNhbWUgZm9y
-bWF0IChmb3Igd2hhdCBpdCdzIHdvcnRoKS4NCj4gDQoNCkhpIE1hcmshIFNlZW1zIHJlYXNvbmFi
-bGUuIFdpbGwgYmUgY2hhbmdlZCBpbiBWOC4NCg0KPiBPbiAxOC85LzIwIDU6MjEgcG0sIEtvbnN0
-YW50aW4gS29tYXJvdiB3cm90ZToNCj4gPiBUaGlzIGFkZHMgYXR0cmliIG9wZXJhdGlvbnMNCj4g
-Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IEtvbnN0YW50aW4gS29tYXJvdiA8YWxtYXouYWxleGFuZHJv
-dmljaEBwYXJhZ29uLXNvZnR3YXJlLmNvbT4NCj4gPiAtLS0NCj4gPiAgZnMvbnRmczMvYXR0cmli
-LmMgICB8IDEzMTIgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKw0K
-PiA+ICBmcy9udGZzMy9hdHRybGlzdC5jIHwgIDQ2MiArKysrKysrKysrKysrKysNCj4gPiAgZnMv
-bnRmczMveGF0dHIuYyAgICB8IDEwNDEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-Kw0KPiA+ICAzIGZpbGVzIGNoYW5nZWQsIDI4MTUgaW5zZXJ0aW9ucygrKQ0KPiA+ICBjcmVhdGUg
-bW9kZSAxMDA2NDQgZnMvbnRmczMvYXR0cmliLmMNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGZz
-L250ZnMzL2F0dHJsaXN0LmMNCj4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGZzL250ZnMzL3hhdHRy
-LmMNCltdDQo+ID4gKwlpZiAoZXJyIDwgMCkNCj4gPiArCQlnb3RvIG91dDE7DQo+ID4gKwlpZiAo
-IWVycikgew0KPiA+ICsJCXBvc2l4X2FjbF9yZWxlYXNlKGFjbCk7DQo+ID4gKwkJYWNsID0gTlVM
-TDsNCj4gPiArCX0NCj4gPiArDQo+ID4gKwlpZiAoIVNfSVNESVIoaW5vZGUtPmlfbW9kZSkpIHsN
-Cj4gPiArCQlwb3NpeF9hY2xfcmVsZWFzZShkZWZhdWx0X2FjbCk7DQo+ID4gKwkJZGVmYXVsdF9h
-Y2wgPSBOVUxMOw0KPiA+ICsJfQ0KPiA+ICsNCj4gPiArCWlmIChkZWZhdWx0X2FjbCkNCj4gPiAr
-CQllcnIgPSBudGZzX3NldF9hY2xfZXgoaW5vZGUsIGRlZmF1bHRfYWNsLCBBQ0xfVFlQRV9ERUZB
-VUxULCAxKTsNCj4gPiArDQo+ID4gKwlpZiAoIWFjbCkNCj4gPiArCQlpbm9kZS0+aV9hY2wgPSBO
-VUxMOw0KPiA+ICsJZWxzZSBpZiAoIWVycikNCj4gPiArCQllcnIgPSBudGZzX3NldF9hY2xfZXgo
-aW5vZGUsIGFjbCwgQUNMX1RZUEVfQUNDRVNTLCAxKTsNCj4gPiArDQo+ID4gKwlwb3NpeF9hY2xf
-cmVsZWFzZShhY2wpOw0KPiA+ICtvdXQxOg0KPiA+ICsJcG9zaXhfYWNsX3JlbGVhc2UoZGVmYXVs
-dF9hY2wpOw0KPiA+ICsNCj4gPiArb3V0Og0KPiA+ICsJcmV0dXJuIGVycjsNCj4gPiArfQ0KPiA+
-ICsNCj4gPiArc3RhdGljIGJvb2wgbnRmc194YXR0cl91c2VyX2xpc3Qoc3RydWN0IGRlbnRyeSAq
-ZGVudHJ5KQ0KPiA+ICt7DQo+ID4gKwlyZXR1cm4gMTsNCj4gPiArfQ0KPiA+ICsNCj4gPiArc3Rh
-dGljIGNvbnN0IHN0cnVjdCB4YXR0cl9oYW5kbGVyIG50ZnNfeGF0dHJfaGFuZGxlciA9IHsNCj4g
-PiArCS5wcmVmaXggPSAiIiwNCj4gPiArCS5nZXQgPSBudGZzX2dldHhhdHRyLA0KPiA+ICsJLnNl
-dCA9IG50ZnNfc2V0eGF0dHIsDQo+ID4gKwkubGlzdCA9IG50ZnNfeGF0dHJfdXNlcl9saXN0LA0K
-PiA+ICt9Ow0KPiA+ICsNCj4gPiArY29uc3Qgc3RydWN0IHhhdHRyX2hhbmRsZXIgKm50ZnNfeGF0
-dHJfaGFuZGxlcnNbXSA9IHsgJm50ZnNfeGF0dHJfaGFuZGxlciwNCj4gPiArCQkJCQkJICAgICAg
-TlVMTCB9Ow0KPiANCg0KVGhhbmtzLg0K
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=122ff481900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=a296f64433c9cfd55cc8
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a296f64433c9cfd55cc8@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in squashfs_get_id+0xb9/0x1c0 fs/squashfs/id.c:38
+Read of size 8 at addr ffff88809daca0d8 by task syz-executor.1/31404
+
+CPU: 0 PID: 31404 Comm: syz-executor.1 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ print_address_description+0x66/0x620 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ squashfs_get_id+0xb9/0x1c0 fs/squashfs/id.c:38
+ squashfs_new_inode fs/squashfs/inode.c:51 [inline]
+ squashfs_read_inode+0x155/0x2170 fs/squashfs/inode.c:120
+ squashfs_fill_super+0x1478/0x1790 fs/squashfs/super.c:310
+ get_tree_bdev+0x3e9/0x5f0 fs/super.c:1342
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x179d/0x29e0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x460bca
+Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 dd 87 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 ba 87 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007f17af019a88 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f17af019b20 RCX: 0000000000460bca
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007f17af019ae0
+RBP: 00007f17af019ae0 R08: 00007f17af019b20 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
+R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020000040
+
+Allocated by task 23539:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
+ __do_kmalloc mm/slab.c:3655 [inline]
+ __kmalloc+0x205/0x300 mm/slab.c:3664
+ kmalloc include/linux/slab.h:559 [inline]
+ kzalloc include/linux/slab.h:666 [inline]
+ tomoyo_encode2+0x25a/0x560 security/tomoyo/realpath.c:45
+ tomoyo_encode security/tomoyo/realpath.c:80 [inline]
+ tomoyo_realpath_from_path+0x5d6/0x630 security/tomoyo/realpath.c:288
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x1b6/0x900 security/tomoyo/file.c:771
+ security_file_open+0x50/0xc0 security/security.c:1574
+ do_dentry_open+0x36b/0x1010 fs/open.c:804
+ do_open fs/namei.c:3251 [inline]
+ path_openat+0x2794/0x3840 fs/namei.c:3368
+ do_filp_open+0x191/0x3a0 fs/namei.c:3395
+ do_sys_openat2+0x463/0x830 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_open fs/open.c:1192 [inline]
+ __se_sys_open fs/open.c:1188 [inline]
+ __x64_sys_open+0x1af/0x1e0 fs/open.c:1188
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 23539:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
+ kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xdd/0x110 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x113/0x200 mm/slab.c:3756
+ tomoyo_check_open_permission+0x6e2/0x900 security/tomoyo/file.c:786
+ security_file_open+0x50/0xc0 security/security.c:1574
+ do_dentry_open+0x36b/0x1010 fs/open.c:804
+ do_open fs/namei.c:3251 [inline]
+ path_openat+0x2794/0x3840 fs/namei.c:3368
+ do_filp_open+0x191/0x3a0 fs/namei.c:3395
+ do_sys_openat2+0x463/0x830 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_sys_open fs/open.c:1192 [inline]
+ __se_sys_open fs/open.c:1188 [inline]
+ __x64_sys_open+0x1af/0x1e0 fs/open.c:1188
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88809daca0c0
+ which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 24 bytes inside of
+ 32-byte region [ffff88809daca0c0, ffff88809daca0e0)
+The buggy address belongs to the page:
+page:00000000f04bb05a refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88809dacafc1 pfn:0x9daca
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00024d0308 ffffea00028b2cc8 ffff8880aa440100
+raw: ffff88809dacafc1 ffff88809daca000 000000010000003f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88809dac9f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88809daca000: fa fb fb fb fc fc fc fc 00 fc fc fc fc fc fc fc
+>ffff88809daca080: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+                                                    ^
+ ffff88809daca100: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff88809daca180: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
