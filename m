@@ -2,196 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E47E277FFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38673278000
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727103AbgIYFjL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 01:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgIYFjL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:39:11 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85EBC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 22:39:10 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kLgRg-0006Ae-CK; Fri, 25 Sep 2020 07:39:00 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kLgRf-0002ub-3B; Fri, 25 Sep 2020 07:38:59 +0200
-Date:   Fri, 25 Sep 2020 07:38:59 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Oleksij Rempel <linux@rempel-privat.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] i2c: imx: Fix external abort on interrupt in exit
- paths
-Message-ID: <20200925053859.dfk3cnjsv6xy7lqy@pengutronix.de>
-References: <20200920211238.13920-1-krzk@kernel.org>
+        id S1727092AbgIYFnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:43:19 -0400
+Received: from mga12.intel.com ([192.55.52.136]:63311 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726925AbgIYFnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:43:18 -0400
+IronPort-SDR: 596ihZ6WvUD0getK0hMzORkCv99ZI34ONHhOfgcUeRpcxtiWGLwEw9axZLY0znpzHYvJ3c8O4L
+ kCx2tv1aQxvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="140863320"
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="140863320"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:43:18 -0700
+IronPort-SDR: fd4ITIhTxcQZZfnwoepJLdugVs8r1WtFhOoLToH1S5iY96G0wBOocQXZXY11Ztf63VOZq7kx8f
+ zpi90Z27C95w==
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="487319116"
+Received: from erybin-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.47.248])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:43:15 -0700
+Date:   Fri, 25 Sep 2020 08:43:13 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Ross Philipson <ross.philipson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
+        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        luto@amacapital.net, trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH 05/13] x86: Add early TPM1.2/TPM2.0 interface support for
+ Secure Launch
+Message-ID: <20200925054313.GB165011@linux.intel.com>
+References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
+ <1600959521-24158-6-git-send-email-ross.philipson@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200920211238.13920-1-krzk@kernel.org>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 07:11:08 up 314 days, 20:29, 325 users,  load average: 0.30, 0.11,
- 0.03
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <1600959521-24158-6-git-send-email-ross.philipson@oracle.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 20, 2020 at 11:12:38PM +0200, Krzysztof Kozlowski wrote:
-> If interrupt comes late, during probe error path or device remove (could
-> be triggered with CONFIG_DEBUG_SHIRQ), the interrupt handler
-> i2c_imx_isr() will access registers with the clock being disabled.  This
-> leads to external abort on non-linefetch on Toradex Colibri VF50 module
-> (with Vybrid VF5xx):
+On Thu, Sep 24, 2020 at 10:58:33AM -0400, Ross Philipson wrote:
+> From: "Daniel P. Smith" <dpsmith@apertussolutions.com>
 > 
->     Unhandled fault: external abort on non-linefetch (0x1008) at 0x8882d003
->     Internal error: : 1008 [#1] ARM
->     Modules linked in:
->     CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0 #607
->     Hardware name: Freescale Vybrid VF5xx/VF6xx (Device Tree)
->       (i2c_imx_isr) from [<8017009c>] (free_irq+0x25c/0x3b0)
->       (free_irq) from [<805844ec>] (release_nodes+0x178/0x284)
->       (release_nodes) from [<80580030>] (really_probe+0x10c/0x348)
->       (really_probe) from [<80580380>] (driver_probe_device+0x60/0x170)
->       (driver_probe_device) from [<80580630>] (device_driver_attach+0x58/0x60)
->       (device_driver_attach) from [<805806bc>] (__driver_attach+0x84/0xc0)
->       (__driver_attach) from [<8057e228>] (bus_for_each_dev+0x68/0xb4)
->       (bus_for_each_dev) from [<8057f3ec>] (bus_add_driver+0x144/0x1ec)
->       (bus_add_driver) from [<80581320>] (driver_register+0x78/0x110)
->       (driver_register) from [<8010213c>] (do_one_initcall+0xa8/0x2f4)
->       (do_one_initcall) from [<80c0100c>] (kernel_init_freeable+0x178/0x1dc)
->       (kernel_init_freeable) from [<80807048>] (kernel_init+0x8/0x110)
->       (kernel_init) from [<80100114>] (ret_from_fork+0x14/0x20)
+> This commit introduces an abstraction for TPM1.2 and TPM2.0 devices
+> above the TPM hardware interface.
 > 
-> Additionally, the i2c_imx_isr() could wake up the wait queue
-> (imx_i2c_struct->queue) before its initialization happens.
-> 
-> The resource-managed framework should not be used for interrupt handling,
-> because the resource will be released too late - after disabling clocks.
-> The interrupt handler is not prepared for such case.
-> 
-> Fixes: 1c4b6c3bcf30 ("i2c: imx: implement bus recovery")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Signed-off-by: Daniel P. Smith <dpsmith@apertussolutions.com>
+> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+This is way, way too PoC. I wonder why there is no RFC tag.
 
-Thank you!
+Please also read section 2 of
 
-> ---
-> 
-> Changes since v2:
-> 1. Rebase
-> 
-> Changes since v1:
-> 1. Remove the devm- and use regular methods.
-> ---
->  drivers/i2c/busses/i2c-imx.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-> index 63f4367c312b..c98529c76348 100644
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -1169,14 +1169,6 @@ static int i2c_imx_probe(struct platform_device *pdev)
->  		return ret;
->  	}
->  
-> -	/* Request IRQ */
-> -	ret = devm_request_irq(&pdev->dev, irq, i2c_imx_isr, IRQF_SHARED,
-> -				pdev->name, i2c_imx);
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "can't claim irq %d\n", irq);
-> -		goto clk_disable;
-> -	}
-> -
->  	/* Init queue */
->  	init_waitqueue_head(&i2c_imx->queue);
->  
-> @@ -1195,6 +1187,14 @@ static int i2c_imx_probe(struct platform_device *pdev)
->  	if (ret < 0)
->  		goto rpm_disable;
->  
-> +	/* Request IRQ */
-> +	ret = request_threaded_irq(irq, i2c_imx_isr, NULL, IRQF_SHARED,
-> +				   pdev->name, i2c_imx);
-> +	if (ret) {
-> +		dev_err(&pdev->dev, "can't claim irq %d\n", irq);
-> +		goto rpm_disable;
-> +	}
-> +
->  	/* Set up clock divider */
->  	i2c_imx->bitrate = I2C_MAX_STANDARD_MODE_FREQ;
->  	ret = of_property_read_u32(pdev->dev.of_node,
-> @@ -1237,13 +1237,12 @@ static int i2c_imx_probe(struct platform_device *pdev)
->  
->  clk_notifier_unregister:
->  	clk_notifier_unregister(i2c_imx->clk, &i2c_imx->clk_change_nb);
-> +	free_irq(irq, i2c_imx);
->  rpm_disable:
->  	pm_runtime_put_noidle(&pdev->dev);
->  	pm_runtime_disable(&pdev->dev);
->  	pm_runtime_set_suspended(&pdev->dev);
->  	pm_runtime_dont_use_autosuspend(&pdev->dev);
-> -
-> -clk_disable:
->  	clk_disable_unprepare(i2c_imx->clk);
->  	return ret;
->  }
-> @@ -1251,7 +1250,7 @@ static int i2c_imx_probe(struct platform_device *pdev)
->  static int i2c_imx_remove(struct platform_device *pdev)
->  {
->  	struct imx_i2c_struct *i2c_imx = platform_get_drvdata(pdev);
-> -	int ret;
-> +	int irq, ret;
->  
->  	ret = pm_runtime_get_sync(&pdev->dev);
->  	if (ret < 0)
-> @@ -1271,6 +1270,9 @@ static int i2c_imx_remove(struct platform_device *pdev)
->  	imx_i2c_write_reg(0, i2c_imx, IMX_I2C_I2SR);
->  
->  	clk_notifier_unregister(i2c_imx->clk, &i2c_imx->clk_change_nb);
-> +	irq = platform_get_irq(pdev, 0);
-> +	if (irq >= 0)
-> +		free_irq(irq, i2c_imx);
->  	clk_disable_unprepare(i2c_imx->clk);
->  
->  	pm_runtime_put_noidle(&pdev->dev);
-> -- 
-> 2.17.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
+https://www.kernel.org/doc/html/v5.8/process/submitting-patches.html
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+You should leverage existing TPM code in a way or another. Refine it so
+that it scales for your purpose and then compile it into your thing
+(just include the necesary C-files with relative paths).
+
+How it is now is never going to fly.
+
+/Jarkko
