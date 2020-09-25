@@ -2,77 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FB2278CA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8522278CA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729357AbgIYP2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:28:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728612AbgIYP2S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:28:18 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C6DC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:28:17 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id b12so2870632edz.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:28:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zXmuOZs0DtJBI5d4YWGL14ALmZnj964Bo0N22tOY/CU=;
-        b=sT0nysylsyeePQrg0Wyo/iQOddOxzcLVRdDOu2h3ce5aCydGJhpmWHad3J2VPu1BmL
-         pnPP1w2Hm9TFX4LAU9QzKE/5nd5BXJkvSx/LkWy2HWunkz3cpMPhRS7zpGhgxCh5+bUz
-         SyNOgp43hnDX3Kf8SfOoWpOM+ueD7KKTKDpg20709uuuV9u54JD8+C5qyIGK+88x0dvo
-         SaG7jtSlJvbIoY5XHlawwDHhefiuxlFxR2RGP4UtJFBk/OFL6OIBbd8BRJtk8EnzDaRI
-         Cb3HK2+QWfi41X/SUJ2pxVAPjD2KsF6AtiQ+xbFBKFB98mhRywxcFas/j1WPFMxVHKJt
-         dY3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zXmuOZs0DtJBI5d4YWGL14ALmZnj964Bo0N22tOY/CU=;
-        b=Si6F4OANJ4zmb8Pc8Wgn10EToES0wYYUHGEWzAE/vZzFRkJaL2TuJeBwmmBkAbPTjZ
-         bqvxA55JIhGO1bQzO088548r6fNvgnbnuhczH1FY1NNGus2RxuE/NwLHEFf5AD+jxhML
-         o9MrFgrYS77UosmmcJduTEbQE/5jTHEEqBUFnJ5TXO/UMmDdVmjzOIdri3QHY9wa8hMv
-         o9VnyBMdx70w8QrkDIEb8fcnY+OB/UhpHcD5kwfITQdHoqaxrnhmi0FoS+rufiwbGtGe
-         yMZwr33hpDZeKb+2SsWn+uU+yAh63i1CNwOt97bTBViKrukATUfXsh4lyns+lHgSAzP3
-         JMMQ==
-X-Gm-Message-State: AOAM531Il7AdWCyV0rJwKdzVuqpzRX33zhdYvegWF60JYzxWBFdwoWE5
-        aTER8j52JseSeFpEA4dVwlEAZoYAVqoxowgAZn4=
-X-Google-Smtp-Source: ABdhPJxwBbbU1UpXBELIWwegXfSCZxQOgGDN3fGNZ4ZeTBDazTeqn5IvL2gzzsvqFbFMDfSYKrQfRnHb2/4i6NGlqWA=
-X-Received: by 2002:aa7:d697:: with SMTP id d23mr1949423edr.13.1601047696366;
- Fri, 25 Sep 2020 08:28:16 -0700 (PDT)
+        id S1729398AbgIYP3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:29:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728612AbgIYP3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:29:06 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2B10235F9;
+        Fri, 25 Sep 2020 15:29:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601047745;
+        bh=rOVcj/V35cyfMa0Vlg8hucdK+66n/l/bpxjyII5KeJ0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=twt0N8Abp9/Po1t9micl7QeynkbSKIgF9pG47HY5rYmOCvHWpfcRB8LlA0LlSnx9V
+         g+4xPB19lcoxmjeyuhvrwqjDXjp5yJ++pbQ6b/b92WxI4prVpFXhmQze82tVUECRxY
+         cC5FYO6TCIx4vwuYHKIuzmxdED0g6N13t8dQuh9M=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 98E1035207C1; Fri, 25 Sep 2020 08:29:05 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 08:29:05 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>, rjw@rjwysocki.net,
+        bp@alien8.de, x86@kernel.org, tony.luck@intel.com, lenb@kernel.org,
+        daniel.lezcano@linaro.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+        ulf.hansson@linaro.org, tglx@linutronix.de,
+        naresh.kamboju@linaro.org
+Subject: Re: [RFC][PATCH 4/4] acpi: Take over RCU-idle for C3-BM idle
+Message-ID: <20200925152905.GE29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200915103157.345404192@infradead.org>
+ <20200915103806.479637218@infradead.org>
+ <20200925152000.GA171076@roeck-us.net>
 MIME-Version: 1.0
-References: <20200815181957.408649-1-martin.blumenstingl@googlemail.com> <159830380185.24712.3464811968459073992.b4-ty@baylibre.com>
-In-Reply-To: <159830380185.24712.3464811968459073992.b4-ty@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 25 Sep 2020 17:28:05 +0200
-Message-ID: <CAFBinCCrbVzK8A0s-=Q++n4yUFO6+Wm_Ayh_vdxkATJh7oSx1A@mail.gmail.com>
-Subject: Re: [PATCH RESEND v1] ARM: dts: meson8: remove two invalid interrupt
- lines from the GPU node
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Graichen <thomas.graichen@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925152000.GA171076@roeck-us.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
+On Fri, Sep 25, 2020 at 08:20:00AM -0700, Guenter Roeck wrote:
+> On Tue, Sep 15, 2020 at 12:32:01PM +0200, Peter Zijlstra wrote:
+> > The C3 BusMaster idle code takes lock in a number of places, some deep
+> > inside the ACPI code. Instead of wrapping it all in RCU_NONIDLE, have
+> > the driver take over RCU-idle duty and avoid flipping RCU state back
+> > and forth a lot.
+> > 
+> > ( by marking 'C3 && bm_check' as RCU_IDLE, we _must_ call enter_bm() for
+> >   that combination, otherwise we'll loose RCU-idle, this requires
+> >   shuffling some code around )
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> 
+> ia64:defconfig:
+> 
+> ERROR: modpost: "rcu_idle_enter" [drivers/acpi/processor.ko] undefined!
+> ERROR: modpost: "rcu_idle_exit" [drivers/acpi/processor.ko] undefined!
+> 
+> I realize that this has already been reported more than a week ago, with
+> no visible reaction. Another problem introduced in the same file, resulting
+> in
+> 
+> drivers/acpi/processor_idle.c: In function 'lapic_timer_needs_broadcast':
+> drivers/acpi/processor_idle.c:179:1: warning:
+> 	no return statement in function returning non-void
+> 
+> may cause ia64 boot problems since a non-zero return value will trigger
+> a function call. AFAICS that is not supposed to happen on ia64.
+> 
+> This makes me wonder - if no one cares about buiding (much less running)
+> ia64 images with the upstream kernel, is it possibly time to remove it ?
 
-On Mon, Aug 24, 2020 at 11:16 PM Kevin Hilman <khilman@baylibre.com> wrote:
-[...]
-> Applied, thanks!
->
-> [1/1] ARM: dts: meson8: remove two invalid interrupt lines from the GPU node
->       commit: b468412409c0e5752ad3396b147cac563ff8dd3b
-this one still seems to be sitting in the v5.9/fixes branch
-I don't see a reason to rush this, so can you please queue it up for
-v5.10/fixes?
+Rafael is taking a fix up his cpuidle tree:
 
+https://lkml.kernel.org/lkml/CAJZ5v0jVerU92WxL4qCoU6NC0KCyszmRNhpL3tu5LYtMqALd9A@mail.gmail.com/
 
-Thank you!
-Martin
+							Thanx, Paul
