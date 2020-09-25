@@ -2,135 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E5C278576
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D6E278574
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgIYK64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:58:56 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49188 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727201AbgIYK64 (ORCPT
+        id S1727990AbgIYK6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727495AbgIYK6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:58:56 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PAnLpU148584;
-        Fri, 25 Sep 2020 10:58:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=YWYBLQJom0rbcKpapTweEAGh/5w1aYSujhgyoKpy7JY=;
- b=hSFwguCm4/ZHGdmos+q9zlfdpKdMq03tzIHWIS5qMOJtsDuh/HflJzLJizIalvFN8KNE
- eMpjds5UsCUVMUiN5mVHwAHh6wsGcBhdL3E3TA/sL05DQddTPMgA9PxFBXPMAd/Zf8Kg
- yYWJ7wOHtR60hVDqiv1MBW015fmXfXggrLdkWe/a2MT1YxGeR2pVB5ih9aYHr7j37Bqt
- IIBw4Sbx6eI6O/7G92XF4VK5jVsee96QA/EwSb9cWOJTgbpnHzj2DQ18uj6iETCY5zyZ
- o53gVOQsOptLsfeP8IhHia4JyQIcaLMv4J3Ieqxs3nIR2u2Hqdtjq60x4uQAAy/pC8EM +Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33ndnuw036-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 25 Sep 2020 10:58:08 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PAoDtv142757;
-        Fri, 25 Sep 2020 10:58:08 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 33r28y8s2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Sep 2020 10:58:08 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08PAw6CV018744;
-        Fri, 25 Sep 2020 10:58:06 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 25 Sep 2020 03:58:05 -0700
-Date:   Fri, 25 Sep 2020 13:57:58 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     syzbot <syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com>,
-        chao@kernel.org, glider@google.com, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [f2fs-dev] KMSAN: uninit-value in f2fs_lookup
-Message-ID: <20200925105758.GN4282@kadam>
-References: <000000000000f9f80905b01c7185@google.com>
- <eb03a5c9-eb77-eb91-e17f-8a3273aab7da@huawei.com>
+        Fri, 25 Sep 2020 06:58:38 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A45C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:58:38 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id v14so1569237pjd.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:58:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=oAJrRFkjqiZjslJYlYFWCtkiFMgZCCH4FGFRNUlNi2M=;
+        b=vRrDqE9P0tnL8nDtFvM0Q367Z5ymCaxjktdq5fuZXjTDLvHEZSytN4AIovAUQ86Ngf
+         MFSf1MZNGY8+MRU3tuxCFlaKS/qQwMoqCe6gWMZGJGFZ0mTg7IiCW4c+qydrR6yszK01
+         syhjxFQO6NbzbcCNUzEsW9fCvD44j+0iqI40DW5HUf/C7LjVMGrPGiMWE38ds8ZCwb+h
+         Nms/SLE2q8Hjdmcgy8Sw2eeACFuzinCv2Xcc0l6HXO3DX2OTg0Kjxv81J+2fBjMIks+N
+         yzoaXKqzRt4Zy3uIVkkeTgb1Y+JbW0onSo8SpqtUyIsjIWpHR2z4iNnIU4UeReWlBgFu
+         4L5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=oAJrRFkjqiZjslJYlYFWCtkiFMgZCCH4FGFRNUlNi2M=;
+        b=qBvI1ObfdKYa/RCDXSkzL+YbpkPJJ+2WDk07FFsWy7ZL7c1ziA5ZArtfay/GO1mJz8
+         JHQByPnC8fTqdJ4cu+RlDUXdCQA6O0JF4CL6h9+zY0wSs+UptghYf1RZvDzcqpyHe1m/
+         lyo+VVBEzwLHfGfDInMWKihjpHk2ar8Gu3RTEw8gt6gFRytIgy7Ytm4/sCjOqp2xUn/4
+         d1tb+BF4qUSmXuhkXbUmUhgo+/4rOwYACoic5WufpPRNXEa9d2CbbrbPB18A9taDRfGI
+         AINK0wcCPYNvVXu3H+OcQCie6cGGGNe47/9DIFVg1GwYiLeo81nuxG3sDNRmerZqK8vl
+         7j8A==
+X-Gm-Message-State: AOAM531i3qHoxg6YdXFxMfJfEDlyvqQ7iEfMKDvZgOr5xW9Wtv9iiheU
+        iCgIpliqjPhAhX+XOaBwkiOB6g==
+X-Google-Smtp-Source: ABdhPJwZFpFShelf2IuBLECWnc8DtK9yg/mtTTI8N/aWHMtli1doBnI/KO23D/dvCAYIQu2DZz26Sw==
+X-Received: by 2002:a17:90b:1649:: with SMTP id il9mr2115322pjb.50.1601031518092;
+        Fri, 25 Sep 2020 03:58:38 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id w19sm2384717pfq.60.2020.09.25.03.58.36
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 03:58:37 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 16:28:30 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lukasz Luba <lukasz.luba@arm.com>, cristian.marussi@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2 1/4] cpufreq: stats: Defer stats update to
+ cpufreq_stats_record_transition()
+Message-ID: <20200925105830.xsmiwkjohlqb5joj@vireshk-i7>
+References: <cover.1600238586.git.viresh.kumar@linaro.org>
+ <31999d801bfb4d8063dc1ceec1234b6b80b4ae68.1600238586.git.viresh.kumar@linaro.org>
+ <CAJZ5v0i0aW6jT=DD6ogyfr+bs5LZu7Gn+5A9O_bZxNsnHPojOQ@mail.gmail.com>
+ <20200924131543.eury5vhqy3xt35v6@vireshk-i7>
+ <CAJZ5v0g8Bmxt=GEKcNrKjY1cHnsURV5oe3+n1R2+U_2VJnwfRQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <eb03a5c9-eb77-eb91-e17f-8a3273aab7da@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009250075
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
- clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009250075
+In-Reply-To: <CAJZ5v0g8Bmxt=GEKcNrKjY1cHnsURV5oe3+n1R2+U_2VJnwfRQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 05:06:33PM +0800, Chao Yu wrote:
-> Hi,
+On 25-09-20, 12:04, Rafael J. Wysocki wrote:
+> I'm actually wondering if reset_time is necessary at all.
 > 
-> I don't see any problem here, thanks for your report. :)
->
+> If cpufreq_stats_record_transition() is the only updater of the stats,
+> which will be the case after applying this series IIUC, it may as well
+> simply set the new starting point and discard all of the data
+> collected so far if reset_pending is set.
+> 
+> IOW, the time when the reset has been requested isn't particularly
+> relevant IMV (and it is not exact anyway), because the user is
+> basically asking for discarding "history" and that may very well be
+> interpreted to include the current sample.
 
-I bet the uninitialize value is because "max_depth" is zero.
+There are times when this would be visible to userspace and won't look nice.
 
+Like, set governor to performance, reset the stats and after 10 seconds, read
+the stats again, everything will be 0. Because cpufreq_stats_record_transition()
+doesn't get called at all here, we would never clear them until the time
+governor is changed and so we need to keep a track of reset-time.
 
-   352  struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
-   353                                           const struct f2fs_filename *fname,
-   354                                           struct page **res_page)
-                                                               ^^^^^^^^
-The stack trace says this isn't initialized.
-
-   355  {
-   356          unsigned long npages = dir_blocks(dir);
-   357          struct f2fs_dir_entry *de = NULL;
-   358          unsigned int max_depth;
-   359          unsigned int level;
-   360  
-   361          if (f2fs_has_inline_dentry(dir)) {
-   362                  *res_page = NULL;
-   363                  de = f2fs_find_in_inline_dir(dir, fname, res_page);
-   364                  goto out;
-   365          }
-   366  
-   367          if (npages == 0) {
-   368                  *res_page = NULL;
-   369                  goto out;
-   370          }
-   371  
-   372          max_depth = F2FS_I(dir)->i_current_depth;
-   373          if (unlikely(max_depth > MAX_DIR_HASH_DEPTH)) {
-   374                  f2fs_warn(F2FS_I_SB(dir), "Corrupted max_depth of %lu: %u",
-   375                            dir->i_ino, max_depth);
-   376                  max_depth = MAX_DIR_HASH_DEPTH;
-   377                  f2fs_i_depth_write(dir, max_depth);
-   378          }
-   379  
-   380          for (level = 0; level < max_depth; level++) {
-                                ^^^^^^^^^^^^^^^^^
-If "max_depth" is zero, then we never enter this loop.
-
-   381                  *res_page = NULL;
-   382                  de = find_in_level(dir, level, fname, res_page);
-   383                  if (de || IS_ERR(*res_page))
-   384                          break;
-   385          }
-   386  out:
-   387          /* This is to increase the speed of f2fs_create */
-   388          if (!de)
-   389                  F2FS_I(dir)->task = current;
-   390          return de;
-
-Which means that we return a NULL "de" and "*res_page" is uninitialized
-and that matches what syzbot found throug runtime testing.
-
-   391  }
-
-regards,
-dan carpenter
+-- 
+viresh
