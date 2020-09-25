@@ -2,62 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D59278A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD927278A4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728851AbgIYOBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:01:25 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:39918 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728365AbgIYOBZ (ORCPT
+        id S1728613AbgIYOEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727982AbgIYOEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:01:25 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0UA2lM0k_1601042472;
-Received: from 30.25.232.10(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UA2lM0k_1601042472)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 25 Sep 2020 22:01:14 +0800
-Subject: Re: [PATCH] lib/mpi: Fix unused variable warnings
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-References: <20200920162103.83197-1-tianjia.zhang@linux.alibaba.com>
- <20200920162103.83197-3-tianjia.zhang@linux.alibaba.com>
- <20200925081955.GV6381@gondor.apana.org.au>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <5dc5b1cf-389c-0f96-0b8c-50fa41d186a9@linux.alibaba.com>
-Date:   Fri, 25 Sep 2020 22:01:12 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        Fri, 25 Sep 2020 10:04:33 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DCA4C0613CE;
+        Fri, 25 Sep 2020 07:04:33 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id a9so3453074wmm.2;
+        Fri, 25 Sep 2020 07:04:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JzMHEh8Ube79dljEkqdya1eUh9+uHB8BNvZsHGcfoPo=;
+        b=RZX5Z/hUWLlZ4970yusa9NzXdDDTM0bEXWhQUIxScaseARZPFZX2wi3+rATvzx6SZ+
+         Q8mKdnsOhcF5zlFYDHy6nn6yjV4OAhfOwPTKh25agDNQ/vbbm4eIe+fM2yuWHk65Qa6Z
+         5GdlaXp0EalwnqUZQVt3XHvy30Bl/0j8B8xzLACd89z6/Sr9+QiND+W1UVI+YjeqOCOI
+         RekXCvsLFN5ZB+XTMplpJ20irr1tF3dw7QHjHKOrKX+ZzJnpDjB0llPh588G0CJt/HB9
+         pA1XAbedTSKHhWyb5cbJnatucotHiZcR5gNgbcJrkWT1RykKsQbL+6FS3sJQ4u7fRkG7
+         pm3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JzMHEh8Ube79dljEkqdya1eUh9+uHB8BNvZsHGcfoPo=;
+        b=mbLzFWRvkhVXoKcFWuTlHL3ExiuN8nAk3AQWTqJAG72uW4Dj7K9SC/fGdoogxOy5KO
+         LlTe42LvllLvukyNhw5qC0Zz7FEQEhMJwPHCnyOz0Pbf9rcMdQEzbssoGwFvij+4zM60
+         UIkRCbfUkaLPBIf3LBPgUPEhor8hLend0u5fU0e7kPg0HwUYK5NDzefiMQ/Ec7+oWTD6
+         Daz1qeg5JJwdBE0f2+2lw0/E0X2w38RMg9LDH6hZfTCOfTkpc3K9YxOnjqIkt1dGRhkb
+         5E47ic6OqxBXaB9Mtz5NLgUK7BAHsnuA/XBJ1HKuXotE5HFXRKTqYyQN8kGASIu5KqrH
+         BPXA==
+X-Gm-Message-State: AOAM531YRkk22fMwdCgdu1vHGi/6Goaip5c3LIDYbOtY7ttkjL567nki
+        Bka2OlE86CumJLw9CitSR1w=
+X-Google-Smtp-Source: ABdhPJxeAyUCloE/hd0Mz6RZVZupL00UDeDG3zrN7h7y87RIOj0aH5w91JpDNJbdnuSnYvqtg2+njw==
+X-Received: by 2002:a05:600c:221a:: with SMTP id z26mr3532728wml.131.1601042671950;
+        Fri, 25 Sep 2020 07:04:31 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.113.201])
+        by smtp.gmail.com with ESMTPSA id k22sm3233428wrd.29.2020.09.25.07.04.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 07:04:31 -0700 (PDT)
+Subject: Re: [PATCH 00/12] soc: mediatek: pm-domains: Add new driver for
+ SCPSYS power domains controller
+To:     Weiyi Lu <weiyi.lu@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        fparent@baylibre.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+ <1601028361.1346.38.camel@mtksdaap41>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <19678952-e354-2067-e619-ffac28b347be@gmail.com>
+Date:   Fri, 25 Sep 2020 16:04:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200925081955.GV6381@gondor.apana.org.au>
+In-Reply-To: <1601028361.1346.38.camel@mtksdaap41>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -65,131 +75,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
 
-Thanks for your patch, The changes look good.
-I have tested this patch, so,
 
-Tested-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-
-Best regards,
-Tianjia
-
-On 9/25/20 4:19 PM, Herbert Xu wrote:
-> On Mon, Sep 21, 2020 at 12:20:55AM +0800, Tianjia Zhang wrote:
->> Expand the mpi library based on libgcrypt, and the ECC algorithm of
->> mpi based on libgcrypt requires these functions.
->> Some other algorithms will be developed based on mpi ecc, such as SM2.
+On 25/09/2020 12:06, Weiyi Lu wrote:
+> On Thu, 2020-09-10 at 19:28 +0200, Enric Balletbo i Serra wrote:
+>> Dear all,
 >>
->> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
->> Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
+>> This is a new driver with the aim to deprecate the mtk-scpsys driver.
+>> The problem with that driver is that, in order to support more Mediatek
+>> SoCs you need to add some logic to handle properly the power-up
+>> sequence of newer Mediatek SoCs, doesn't handle parent-child power
+>> domains and need to hardcode all the clocks in the driver itself. The
+>> result is that the driver is getting bigger and bigger every time a
+>> new SoC needs to be supported.
+>>
 > 
-> This creates some compiler warnings.
+> Hi Enric and Matthias,
 > 
-> ---8<---
-> This patch removes a number of unused variables and marks others
-> as unused in order to silence compiler warnings about them.
+> First of all, thank you for the patch. But I'm worried the problem you
+> mentioned won't be solved even if we work on this new driver in the
+> future. My work on the MT8183 scpsys(now v17) is to implement the new
+> hardware logic. Here, I also see related patches, which means that these
+> new logics are necessary. Why can't we work on the original driver?
+
+Well the decision was to change the driver in a not compatible way to make 
+device tree entries better. If we work on the old driver, we would need to find 
+some creative ways to handle old bindings vs new bindings.
+
+So I thought it would be better doing a fresh start implementing mt1873 support 
+for reference and add mt8183 as new SoC. From what I have seen mt8192 and others 
+fit the driver structure too.
+
+> Meanwhile, I thought maybe we should separate the driver into general
+> control and platform data for each SoC, otherwise it'll keep getting
+> bigger and bigger if it need to be support new SoC.
 > 
-> Fixes: a8ea8bdd9df9 ("lib/mpi: Extend the MPI library")
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+
+We could in a later series split the SoC depended data structures and put them 
+in drivers/soc/mediatek/pm-domains-mt8183.h or something like this. Is that what 
+you mean?
+
+> And consider DVFSRC
+> (dynamic voltage and frequency scaling resource collector), should we
+> keep the original driver name "scpsys" instead of "pm-domains" because
+> it may provide more functions than power domains?
 > 
-> diff --git a/lib/mpi/mpi-div.c b/lib/mpi/mpi-div.c
-> index 21332dab97d4..45beab8b9e9e 100644
-> --- a/lib/mpi/mpi-div.c
-> +++ b/lib/mpi/mpi-div.c
-> @@ -92,7 +92,6 @@ void mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
->   	unsigned int normalization_steps;
->   	mpi_limb_t q_limb;
->   	mpi_ptr_t marker[5];
-> -	unsigned int marker_nlimbs[5];
->   	int markidx = 0;
->   
->   	/* Ensure space is enough for quotient and remainder.
-> @@ -152,7 +151,6 @@ void mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
->   		 * numerator would be gradually overwritten by the quotient limbs.
->   		 */
->   		if (qp == np) { /* Copy NP object to temporary space.  */
-> -			marker_nlimbs[markidx] = nsize;
->   			np = marker[markidx++] = mpi_alloc_limb_space(nsize);
->   			MPN_COPY(np, qp, nsize);
->   		}
-> @@ -173,7 +171,6 @@ void mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
->   		 * the most significant word.  Use temporary storage not to clobber
->   		 * the original contents of the denominator.
->   		 */
-> -		marker_nlimbs[markidx] = dsize;
->   		tp = marker[markidx++] = mpi_alloc_limb_space(dsize);
->   		mpihelp_lshift(tp, dp, dsize, normalization_steps);
->   		dp = tp;
-> @@ -195,7 +192,6 @@ void mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
->   		if (dp == rp || (quot && (dp == qp))) {
->   			mpi_ptr_t tp;
->   
-> -			marker_nlimbs[markidx] = dsize;
->   			tp = marker[markidx++] = mpi_alloc_limb_space(dsize);
->   			MPN_COPY(tp, dp, dsize);
->   			dp = tp;
-> diff --git a/lib/mpi/mpi-internal.h b/lib/mpi/mpi-internal.h
-> index d29c4537c3a3..554002182db1 100644
-> --- a/lib/mpi/mpi-internal.h
-> +++ b/lib/mpi/mpi-internal.h
-> @@ -114,7 +114,7 @@ typedef int mpi_size_t;		/* (must be a signed type) */
->    */
->   #define UDIV_QRNND_PREINV(q, r, nh, nl, d, di)				\
->   	do {								\
-> -		mpi_limb_t _ql;						\
-> +		mpi_limb_t _ql __maybe_unused;				\
->   		mpi_limb_t _q, _r;					\
->   		mpi_limb_t _xh, _xl;					\
->   		umul_ppmm(_q, _ql, (nh), (di));				\
-> diff --git a/lib/mpi/mpi-mul.c b/lib/mpi/mpi-mul.c
-> index 587e6335cc12..8f5fa200f297 100644
-> --- a/lib/mpi/mpi-mul.c
-> +++ b/lib/mpi/mpi-mul.c
-> @@ -21,7 +21,6 @@ void mpi_mul(MPI w, MPI u, MPI v)
->   	int usign, vsign, sign_product;
->   	int assign_wp = 0;
->   	mpi_ptr_t tmp_limb = NULL;
-> -	unsigned int tmp_limb_nlimbs = 0;
->   
->   	if (u->nlimbs < v->nlimbs) {
->   		/* Swap U and V. */
-> @@ -55,7 +54,6 @@ void mpi_mul(MPI w, MPI u, MPI v)
->   	} else { /* Make U and V not overlap with W.	*/
->   		if (wp == up) {
->   			/* W and U are identical.  Allocate temporary space for U. */
-> -			tmp_limb_nlimbs = usize;
->   			up = tmp_limb = mpi_alloc_limb_space(usize);
->   			/* Is V identical too?  Keep it identical with U.  */
->   			if (wp == vp)
-> @@ -64,7 +62,6 @@ void mpi_mul(MPI w, MPI u, MPI v)
->   			MPN_COPY(up, wp, usize);
->   		} else if (wp == vp) {
->   			/* W and V are identical.  Allocate temporary space for V. */
-> -			tmp_limb_nlimbs = vsize;
->   			vp = tmp_limb = mpi_alloc_limb_space(vsize);
->   			/* Copy to the temporary space.  */
->   			MPN_COPY(vp, wp, vsize);
-> diff --git a/lib/mpi/mpih-div.c b/lib/mpi/mpih-div.c
-> index 182a656a1ba0..be70ee2e42d3 100644
-> --- a/lib/mpi/mpih-div.c
-> +++ b/lib/mpi/mpih-div.c
-> @@ -31,7 +31,7 @@ mpihelp_mod_1(mpi_ptr_t dividend_ptr, mpi_size_t dividend_size,
->   {
->   	mpi_size_t i;
->   	mpi_limb_t n1, n0, r;
-> -	mpi_limb_t dummy;
-> +	mpi_limb_t dummy __maybe_unused;
->   
->   	/* Botch: Should this be handled at all?  Rely on callers?	*/
->   	if (!dividend_size)
-> @@ -382,7 +382,7 @@ mpihelp_divmod_1(mpi_ptr_t quot_ptr,
->   {
->   	mpi_size_t i;
->   	mpi_limb_t n1, n0, r;
-> -	mpi_limb_t dummy;
-> +	mpi_limb_t dummy __maybe_unused;
->   
->   	if (!dividend_size)
->   		return 0;
+
+It's on my list to look deeper into this series. The thing with the new driver 
+is, that the binding takes into account, that scpsys has several hardware block, 
+which are represented as child nodes in DTS. The pm-domains is just one of these 
+functionalities and I think DVFSRC should be a new driver with a child node of 
+scpsys in DTS. Does this make sense?
+
+Regards,
+Matthias
+
+>> All this information can be getted from a properly defined binding, so
+>> can be cleaner and smaller, hence, we implemented a new driver. For
+>> now, only MT8173 and MT8183 is supported but should be fairly easy to
+>> add support for new SoCs.
+>>
+>> Best regards,
+>>    Enric
+>>
+>> Enric Balletbo i Serra (4):
+>>    dt-bindings: power: Add bindings for the Mediatek SCPSYS power domains
+>>      controller
+>>    soc: mediatek: Add MediaTek SCPSYS power domains
+>>    arm64: dts: mediatek: Add mt8173 power domain controller
+>>    dt-bindings: power: Add MT8183 power domains
+>>
+>> Matthias Brugger (8):
+>>    soc: mediatek: pm-domains: Add bus protection protocol
+>>    soc: mediatek: pm_domains: Make bus protection generic
+>>    soc: mediatek: pm-domains: Add SMI block as bus protection block
+>>    soc: mediatek: pm-domains: Add extra sram control
+>>    soc: mediatek: pm-domains: Add subsystem clocks
+>>    soc: mediatek: pm-domains: Allow bus protection to ignore clear ack
+>>    soc: mediatek: pm-domains: Add support for mt8183
+>>    arm64: dts: mediatek: Add mt8183 power domains controller
+>>
+>>   .../power/mediatek,power-controller.yaml      | 173 ++++
+>>   arch/arm64/boot/dts/mediatek/mt8173.dtsi      |  78 +-
+>>   arch/arm64/boot/dts/mediatek/mt8183.dtsi      | 160 +++
+>>   drivers/soc/mediatek/Kconfig                  |  13 +
+>>   drivers/soc/mediatek/Makefile                 |   1 +
+>>   drivers/soc/mediatek/mtk-infracfg.c           |   5 -
+>>   drivers/soc/mediatek/mtk-pm-domains.c         | 952 ++++++++++++++++++
+>>   include/dt-bindings/power/mt8183-power.h      |  26 +
+>>   include/linux/soc/mediatek/infracfg.h         |  39 +
+>>   9 files changed, 1433 insertions(+), 14 deletions(-)
+>>   create mode 100644 Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+>>   create mode 100644 drivers/soc/mediatek/mtk-pm-domains.c
+>>   create mode 100644 include/dt-bindings/power/mt8183-power.h
+>>
 > 
