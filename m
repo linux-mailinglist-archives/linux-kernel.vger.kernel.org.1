@@ -2,75 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC7C2793AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F0F2793AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728950AbgIYViy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:38:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726576AbgIYViy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:38:54 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CDB18204FD;
-        Fri, 25 Sep 2020 21:38:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601069933;
-        bh=FyKBAoQFGudp/myg2vZj+c/OVN2nCyAVsiWapu9YpX8=;
-        h=Date:From:To:cc:Subject:From;
-        b=IoXuvK1QW5bZFmtkZL7B4CLSO0j8Hk/5++70qogHWOyqWiBolIhJGmnFucVmF3ClB
-         wqCm2IPuQMVyGiKYWEt9R38E5f1V7lYe674P8BzjmOFB+Rw99ovGLHd8Yena1bC2Vp
-         p/ie4DLiMTn3ngnzlMSL+F3n+XaC6e+4FKsAiaPw=
-Date:   Fri, 25 Sep 2020 23:38:50 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?ISO-8859-15?Q?Andr=E9s_Barrantes_Silman?= 
-        <andresbs2000@protonmail.com>
-Subject: [PATCH] Input: Add nopnp quirk for Acer Aspire 5 A515
-Message-ID: <nycvar.YFH.7.76.2009252337340.3336@cbobk.fhfr.pm>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728964AbgIYVkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726807AbgIYVkA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 17:40:00 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1900AC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:40:00 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id z19so4495536pfn.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:40:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=QmafiPpDZbVY4DMisW5kzbNf40EP7isLeadTAsoh5x8=;
+        b=0hmcMVXQnMNYDdihlk8d+BigaxwjlFUKEWFJygyC7crtrjFYF5HVpZBV4BMMXrl6wh
+         g4zM7i8Qx0Cg+y/SILRSBeGnudsKB8sQJyuD9ZVItsW5kJ2J+kk6JlR3tAep1e5faA+A
+         bpZLtRF3bgjctigvr+/YCirJkP5KP+WcFXFr6vYWkQ6wiqbfxB+Jrp7m1t1tB711/pVo
+         oUbFOGNeObzQDAvpvh5YKKvWqNPzo2MD/9riMMcOOFjOWOoNmJ8ureamrqBiB8mf+BWJ
+         AJNmkmgnGDv9dFj5ktZKA3XZvG2O7IAShpcekjNNgZ8zhZbZvWXKvNFOOM+VpxjaamPs
+         ay9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QmafiPpDZbVY4DMisW5kzbNf40EP7isLeadTAsoh5x8=;
+        b=MpCMtHLO7F+vTCXj99AjFrkjHIA6WVGauNqoVtv/q4OHmmOnNMGKFtYbi8LKjuqdTI
+         w9KULaonjCncnz9HRqiudfRq4pYjmDL2htxw63uTLepPyE/VFrJeWQMLSJ0nmBrRN1BI
+         NNXZmawO4e0BnfO+p4L+oPB0Y/PEDUnoHEQcQliLOo8PgGIgrKvvYPJku7R1CIOVQpxn
+         4Z3zhYUEaPOWtW0qxuSrmb8UyPSakDCaXDg1Kwcsyjzc5H0kOYskzSyZQkpq8btjOZ11
+         QBocD4jEJpHlZsvaSmM3jWkdKYdFZOUMyoQR6ekwwPoa4sh1jq9b17Lxk6z2B+xGU9Vw
+         hfXQ==
+X-Gm-Message-State: AOAM530o/oPzlMMscwgrin01SpadbcxKpR/tahBOutuNTPDkywiJnbSe
+        eI6En0hw5EUS3wxBUJTjXgnLQQ==
+X-Google-Smtp-Source: ABdhPJyDGTEY5Iecp1lQPV3mBvl+zW3o+Szp0F3pV38ayi3WvjRD1hCPSnL+DrX8aKq+u7PdZnvgSw==
+X-Received: by 2002:aa7:9157:0:b029:142:2501:3984 with SMTP id 23-20020aa791570000b029014225013984mr1093626pfi.73.1601069999565;
+        Fri, 25 Sep 2020 14:39:59 -0700 (PDT)
+Received: from [10.212.51.97] ([192.55.54.42])
+        by smtp.gmail.com with ESMTPSA id y10sm3694581pfp.77.2020.09.25.14.39.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 14:39:58 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 02/10] PCI/RCEC: Bind RCEC devices to the Root Port
+ driver
+Date:   Fri, 25 Sep 2020 14:39:56 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <CD5CCACF-114C-4F61-AC06-CED19149ADB7@intel.com>
+In-Reply-To: <20200925195913.GA2455203@bjorn-Precision-5520>
+References: <20200925195913.GA2455203@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Kosina <jkosina@suse.cz>
+On 25 Sep 2020, at 12:59, Bjorn Helgaas wrote:
 
-Touchpad on this laptop is not detected properly during boot, as PNP 
-enumerates (wrongly) AUX port as disabled on this machine.
+> On Tue, Sep 22, 2020 at 02:38:51PM -0700, Sean V Kelley wrote:
+>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>
+>> If a Root Complex Integrated Endpoint (RCiEP) is implemented, errors 
+>> may
+>> optionally be sent to a corresponding Root Complex Event Collector 
+>> (RCEC).
+>> Each RCiEP must be associated with no more than one RCEC. Interface 
+>> errors
+>> are reported to the OS by RCECs.
+>>
+>> For an RCEC (technically not a Bridge), error messages "received" 
+>> from
+>> associated RCiEPs must be enabled for "transmission" in order to 
+>> cause a
+>> System Error via the Root Control register or (when the Advanced 
+>> Error
+>> Reporting Capability is present) reporting via the Root Error Command
+>> register and logging in the Root Error Status register and Error 
+>> Source
+>> Identification register.
+>>
+>> Given the commonality with Root Ports and the need to also support 
+>> AER
+>> and PME services for RCECs, extend the Root Port driver to support 
+>> RCEC
+>> devices through the addition of the RCEC Class ID to the driver
+>> structure.
+>>
+>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>> ---
+>>  drivers/pci/pcie/portdrv_core.c | 8 ++++----
+>>  drivers/pci/pcie/portdrv_pci.c  | 5 ++++-
+>>  2 files changed, 8 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/portdrv_core.c 
+>> b/drivers/pci/pcie/portdrv_core.c
+>> index 50a9522ab07d..99769c636775 100644
+>> --- a/drivers/pci/pcie/portdrv_core.c
+>> +++ b/drivers/pci/pcie/portdrv_core.c
+>> @@ -234,11 +234,11 @@ static int get_port_device_capability(struct 
+>> pci_dev *dev)
+>>  #endif
+>>
+>>  	/*
+>> -	 * Root ports are capable of generating PME too.  Root Complex
+>> -	 * Event Collectors can also generate PMEs, but we don't handle
+>> -	 * those yet.
+>> +	 * Root ports and Root Complex Event Collectors are capable
+>> +	 * of generating PME.
+>>  	 */
+>> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT &&
+>> +	if ((pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+>> +	     pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC) &&
+>
+> It seems like this change belongs in patch 09/10, where we change
+> pme.c so it claims both Root Ports and RCECs.  Does this hunk
+> accomplish anything before 09/10?
 
-Fix that by adding this board (with admittedly quite funny DMI 
-identifiers) to nopnp quirk list.
+You are right.  Itâ€™s not needed until 09/10.  Will move.
 
-Reported-by: Andrés Barrantes Silman <andresbs2000@protonmail.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
----
- drivers/input/serio/i8042-x86ia64io.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+Thanks,
 
-diff --git a/drivers/input/serio/i8042-x86ia64io.h b/drivers/input/serio/i8042-x86ia64io.h
-index 7d7f73702726..2527e19c95b4 100644
---- a/drivers/input/serio/i8042-x86ia64io.h
-+++ b/drivers/input/serio/i8042-x86ia64io.h
-@@ -705,6 +705,13 @@ static const struct dmi_system_id __initconst i8042_dmi_nopnp_table[] = {
- 			DMI_MATCH(DMI_BOARD_VENDOR, "MICRO-STAR INTERNATIONAL CO., LTD"),
- 		},
- 	},
-+	{
-+		/* Acer Aspire 5 A515 */
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_NAME, "Grumpy_PK"),
-+			DMI_MATCH(DMI_BOARD_VENDOR, "PK"),
-+		},
-+	},
- 	{ }
- };
- 
--- 
-Jiri Kosina
-SUSE Labs
+Sean
+
+>
+>>  	    (pcie_ports_native || host->native_pme)) {
+>>  		services |= PCIE_PORT_SERVICE_PME;
+>>
+>> diff --git a/drivers/pci/pcie/portdrv_pci.c 
+>> b/drivers/pci/pcie/portdrv_pci.c
+>> index 3a3ce40ae1ab..4d880679b9b1 100644
+>> --- a/drivers/pci/pcie/portdrv_pci.c
+>> +++ b/drivers/pci/pcie/portdrv_pci.c
+>> @@ -106,7 +106,8 @@ static int pcie_portdrv_probe(struct pci_dev 
+>> *dev,
+>>  	if (!pci_is_pcie(dev) ||
+>>  	    ((pci_pcie_type(dev) != PCI_EXP_TYPE_ROOT_PORT) &&
+>>  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_UPSTREAM) &&
+>> -	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM)))
+>> +	     (pci_pcie_type(dev) != PCI_EXP_TYPE_DOWNSTREAM) &&
+>> +	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
+>>  		return -ENODEV;
+>>
+>>  	status = pcie_port_device_register(dev);
+>> @@ -195,6 +196,8 @@ static const struct pci_device_id port_pci_ids[] 
+>> = {
+>>  	{ PCI_DEVICE_CLASS(((PCI_CLASS_BRIDGE_PCI << 8) | 0x00), ~0) },
+>>  	/* subtractive decode PCI-to-PCI bridge, class type is 060401h */
+>>  	{ PCI_DEVICE_CLASS(((PCI_CLASS_BRIDGE_PCI << 8) | 0x01), ~0) },
+>> +	/* handle any Root Complex Event Collector */
+>> +	{ PCI_DEVICE_CLASS(((PCI_CLASS_SYSTEM_RCEC << 8) | 0x00), ~0) },
+>>  	{ },
+>>  };
+>>
+>> -- 
+>> 2.28.0
+>>
