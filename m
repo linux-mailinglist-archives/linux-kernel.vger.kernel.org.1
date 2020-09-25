@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FE1278386
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F03D27838B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727744AbgIYJEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:04:36 -0400
-Received: from mga17.intel.com ([192.55.52.151]:25042 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYJEg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:04:36 -0400
-IronPort-SDR: Ko77/7VWl8Ge3ylZi6XnwDKcAWB0di8P7OJJ6H5/zFu2Pu/wxf9nSEap53Pf+dwyJR82UwL9ZG
- J3S29NE18U4Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141505289"
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="141505289"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 02:04:35 -0700
-IronPort-SDR: Vwpendosfa5CB6S4bTUR6thPwO7n+FsFKeZMzYqAfVM5NajaY68GBcjeXF/mSK1y6WBh0R74uS
- ZdXltp1PDwcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="339425098"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008.jf.intel.com with ESMTP; 25 Sep 2020 02:04:32 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kLjeV-001sYF-KH; Fri, 25 Sep 2020 12:04:27 +0300
-Date:   Fri, 25 Sep 2020 12:04:27 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 0/9] gpio: mockup: refactoring + documentation
-Message-ID: <20200925090427.GA3956970@smile.fi.intel.com>
-References: <20200924113842.11670-1-brgl@bgdev.pl>
+        id S1727608AbgIYJFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:05:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727132AbgIYJFp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:05:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF580C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:05:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2VfsxKk+lvb78Dy2zYBJ7EZ0K1Ur8Rj4+jrmVbK9eiM=; b=kuTiZaIufgjZLlPze2YeEahUXc
+        rHmhyoulRiAVzPH4MbHnQm9riafnmEQ0dpz2BFRYcnq8qfX1hTla++0IJ4gWwEYQKnrc0mObao+2y
+        +yJzZhHJTFwWOBOJgKECkORmKI73N4QWC0YTsWu25sxZ5F6VG0XPxR7mTDZJTHx7gTOX8+I8ZOB5N
+        bBsyuIoPUOJZ0m2ZoGiVix6VHthau1BIWvN8p6K5PLst5huceENfVR+Upzeq/Cvm+vUwkq7mRNtid
+        pd7ur4wAHUMvct83VS9qtjoVgiDJHdQZzDxaWdEeVSRaO6TUr7adcXBIEUm3LQGmR6VbkJFjYLH7J
+        9mxzsLZA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLjfV-0001g7-Tc; Fri, 25 Sep 2020 09:05:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 71137300DB4;
+        Fri, 25 Sep 2020 11:05:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 30CEB202075FD; Fri, 25 Sep 2020 11:05:28 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 11:05:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
+Subject: Re: [PATCH 8/9] sched: Fix migrate_disable() vs
+ set_cpus_allowed_ptr()
+Message-ID: <20200925090528.GV2628@hirez.programming.kicks-ass.net>
+References: <20200921163557.234036895@infradead.org>
+ <20200921163845.830487105@infradead.org>
+ <jhj3637lzdm.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200924113842.11670-1-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <jhj3637lzdm.mognet@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 01:38:33PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Thu, Sep 24, 2020 at 08:59:33PM +0100, Valentin Schneider wrote:
+> > @@ -2025,19 +2138,8 @@ static int __set_cpus_allowed_ptr(struct
+> >       if (cpumask_test_cpu(task_cpu(p), new_mask))
+> >               goto out;
 > 
-> These patches were part of the bigger overhaul of gpio-mockup but since
-> the initial idea was dropped in favor of using configfs + sysfs in the
-> future I thought I'd resent just the refactoring of the existing code
-> + documentation patches. I think it's good to apply them since we don't
-> really know when the new interface will be ready (configfs needs a new
-> functionality - commitable items - to support mockup chip instantiation).
-
-For non-commented by me or others:
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Thanks!
-
-> Bartosz Golaszewski (9):
->   lib: string_helpers: provide kfree_strarray()
->   Documentation: gpio: add documentation for gpio-mockup
->   gpio: mockup: drop unneeded includes
->   gpio: mockup: use KBUILD_MODNAME
->   gpio: mockup: use pr_fmt()
->   gpio: mockup: remove unneeded return statement
->   gpio: mockup: pass the chip label as device property
->   gpio: mockup: use the generic 'gpio-line-names' property
->   gpio: mockup: refactor the module init function
+> I think this needs a cancellation of any potential pending migration
+> requests. Consider a task P0 running on CPU0:
 > 
->  .../admin-guide/gpio/gpio-mockup.rst          |  50 ++++++
->  drivers/gpio/gpio-mockup.c                    | 154 +++++++++---------
->  include/linux/string_helpers.h                |   2 +
->  lib/string_helpers.c                          |  22 +++
->  4 files changed, 152 insertions(+), 76 deletions(-)
->  create mode 100644 Documentation/admin-guide/gpio/gpio-mockup.rst
+>    P0                     P1                               P2
 > 
-> -- 
-> 2.26.1
+>    migrate_disable();
+>    <preempt>
+>                           set_cpus_allowed_ptr(P0, CPU1);
+>                           // waits for completion
+>                                                            set_cpus_allowed_ptr(P0, CPU0);
+>                                                            // Already good, no waiting for completion
+>    <resumes>
+>    migrate_enable();
+>    // task_cpu(p) allowed, no move_task()
 > 
+> AIUI in this scenario P1 would stay forever waiting.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Hurmph, looking at it, I think you're right. But I'm fairly sure I did
+test that, maybe I just didn't run it long enough to hit the window ...
+
+> I *think* this can be
+> cured by making this function slightly more hideous:
+
+It's a real beauty isn't it :-/
+
+> ---
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 01113e6f941f..829334f00f7b 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -2102,6 +2102,8 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+>                                   u32 flags)
+>  {
+>         const struct cpumask *cpu_valid_mask = cpu_active_mask;
+> +	struct set_affinity_pending *pending;
+> +	bool cancel_pending = false;
+>         unsigned int dest_cpu;
+>         struct rq_flags rf;
+>         struct rq *rq;
+> @@ -2158,14 +2160,20 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+>         }
+> 
+>         /* Can the task run on the task's current CPU? If so, we're done */
+> -	if (cpumask_test_cpu(task_cpu(p), new_mask))
+> +	if (cpumask_test_cpu(task_cpu(p), new_mask)) {
+> +		cancel_pending = true;
+>                 goto out;
+> +	}
+> 
+>         return move_task(rq, &rf, p, dest_cpu, flags);
+> 
+>  out:
+> +	pending = p->migration_pending;
+>         task_rq_unlock(rq, p, &rf);
+> 
+> +	if (cancel_pending && pending)
+> +		complete_all(&pending->done);
+> +
+>         return ret;
+>  }
+
+He who completes pending should also clear ->migration_pending,
+otherwise the next caller will be able to observe a dangling pointer.
+
+The other approach is trying to handle that last condition in
+move_task(), but I'm quite sure that's going to be aweful too :/
 
 
