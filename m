@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A374627857C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E21E278578
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728137AbgIYK7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:59:54 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:42722 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727201AbgIYK7x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:59:53 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08PAtnxL012375;
-        Fri, 25 Sep 2020 05:59:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=e20N2CNvzJLhJBJb0j2rc+3a1k/T7ji10LCuZrTYkq4=;
- b=Z1Vp4tbak8smXSB+gUqIbLV1cWiAhpIsx4J8RALPH4bfdsGIZewU3zHgHzyVYbMT8zvH
- ybGSt2TMnrFOw3JmkfY1eEIp8heOi9sOKuTlUn3Hc18QKY2gdfF7FhYc2ijUyQRp46Ai
- BnVFcZ+bBp+C2JjZ3JLHTQbES1VlBH6SioD1YMU2zvelDfU0DnaJXq0uAROxK0LFfN9D
- oovjspb8tkfnSkFOEwqqoF8rYNyd26xFO1caeLUr4kcM9E9HduJybCSko5hX+OsCVpAV
- pOccchYTddyH17YtVvVPbcm/0AqmxUJqLOdc6y7g2oH7UX1BH35renxQByVVVbPnJqTi sw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 33nedn7xpd-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 25 Sep 2020 05:59:43 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 25 Sep
- 2020 11:59:41 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 25 Sep 2020 11:59:41 +0100
-Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com [198.61.64.158])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id A8DD52C6;
-        Fri, 25 Sep 2020 10:59:41 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>, <robh+dt@kernel.org>
-CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 3/3] MAINTAINERS: Update Cirrus Logic Codecs maintainers
-Date:   Fri, 25 Sep 2020 11:59:08 +0100
-Message-ID: <20200925105908.20640-3-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200925105908.20640-1-rf@opensource.cirrus.com>
-References: <20200925105908.20640-1-rf@opensource.cirrus.com>
+        id S1728102AbgIYK72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:59:28 -0400
+Received: from mga12.intel.com ([192.55.52.136]:23212 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727201AbgIYK72 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 06:59:28 -0400
+IronPort-SDR: NxroqJBFnnOG0SFW3jmr9GKFyorfexNZB+JKju4FRognpdMttbMXfIhW1gJIebzjfJDEiskCOk
+ LAr0eFTqlESw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="140910441"
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="140910441"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 03:59:27 -0700
+IronPort-SDR: I5PGiilFQF4L2sIUVMB4EfcoM1xknhrv4qaJz1wLIa/x3ZofETSD99S2oTQ8tldgMaTF0/cdIi
+ u3Af3IHcWobg==
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="487421891"
+Received: from tjhenson-mobl.amr.corp.intel.com (HELO localhost) ([10.252.48.117])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 03:59:21 -0700
+Date:   Fri, 25 Sep 2020 13:59:18 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200925105918.GB180915@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <20200924180407.GO5030@zn.tnic>
+ <20200925003808.GB20333@linux.intel.com>
+ <20200925081441.GF16872@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- impostorscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 spamscore=0
- adultscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009250076
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925081441.GF16872@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add patches@opensource.cirrus.com to the main group of Cirrus
-Logic ASoC codec drivers.
+On Fri, Sep 25, 2020 at 10:14:41AM +0200, Borislav Petkov wrote:
+> > > > +#define SGX_ENCLAVE_RUN_EXCEPTION	4*8
+> > > > +
+> > > > +#define SGX_SYNCHRONOUS_EXIT		0
+> > > > +#define SGX_EXCEPTION_EXIT		1
+> > > 
+> > > Those are in ...uapi/asm/sgx.h too. Unify?
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> What about this here?
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Repeating myself, but since there is only 0 and 1, I would just use 0
+and 1.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d746519253c3..1d9a57d3992f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4170,6 +4170,7 @@ CIRRUS LOGIC AUDIO CODEC DRIVERS
- M:	James Schulman <james.schulman@cirrus.com>
- M:	David Rhodes <david.rhodes@cirrus.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+L:	patches@opensource.cirrus.com
- S:	Maintained
- F:	sound/soc/codecs/cs*
- 
--- 
-2.20.1
+Otherwise, I think I pretty much got these comments sorted out.
 
+/Jarkko
