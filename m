@@ -2,128 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8673F278013
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E0B278014
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727171AbgIYF5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:57:04 -0400
-Received: from mga14.intel.com ([192.55.52.115]:54425 "EHLO mga14.intel.com"
+        id S1727127AbgIYF6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:58:48 -0400
+Received: from mga02.intel.com ([134.134.136.20]:10421 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726983AbgIYF5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:57:04 -0400
-IronPort-SDR: KAdRiqeRLm0d26lNjICtr9FdxAWOl7myx9mPj8lEDdj54Qh1isral3AEY0hYfNhS7t4eiYvn6Q
- uIQBgjIqprwQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="160699989"
+        id S1726983AbgIYF6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:58:48 -0400
+IronPort-SDR: BpoAkpIfo0c90LaBXHNtE8Cnx+gjnXx11FovszcZtdvMbNvVWMW3+0CLG2d6xLvVFNQcz6zCP7
+ ShK3RlHRIyeQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="149104890"
 X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
-   d="scan'208";a="160699989"
+   d="scan'208";a="149104890"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:57:03 -0700
-IronPort-SDR: aGJj6w4aQ5jeeDLLB8uZU7IEVSuXuHD+nwkStiR2wSAgljZqwiU/x0+2SB5fTNGzJcgh3TLS4F
- HEe5Idmtwo0w==
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:58:45 -0700
+IronPort-SDR: nInbO/cZ4vtlFlpnkgpMqYSOvWiPIba1Ku9uGng9YF5ArBQF7QMKrqRBAfEbOpRC2OPV99Gxom
+ fuYJiiDJFBVQ==
+X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
-   d="scan'208";a="487322442"
-Received: from erybin-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.47.248])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:57:02 -0700
-Date:   Fri, 25 Sep 2020 08:57:00 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
-Message-ID: <20200925055700.GD165011@linux.intel.com>
-References: <20200922094128.26245-1-ardb@kernel.org>
- <20200925055626.GC165011@linux.intel.com>
+   d="scan'208";a="323250547"
+Received: from lkp-server01.sh.intel.com (HELO bb5857c652c6) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 24 Sep 2020 22:58:44 -0700
+Received: from kbuild by bb5857c652c6 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kLgkl-00003D-T3; Fri, 25 Sep 2020 05:58:43 +0000
+Date:   Fri, 25 Sep 2020 13:58:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2020.09.22a] BUILD SUCCESS
+ 1d39c91bee0e9fcd601235404d60e704fd020ff6
+Message-ID: <5f6d870c.epvatOgHukB65kTu%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925055626.GC165011@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 08:56:30AM +0300, Jarkko Sakkinen wrote:
-> On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
-> > The TPM event log is provided to the OS by the firmware, by loading
-> > it into an area in memory and passing the physical address via a node
-> > in the device tree.
-> > 
-> > Currently, we use __va() to access the memory via the kernel's linear
-> > map: however, it is not guaranteed that the linear map covers this
-> > particular address, as we may be running under HIGHMEM on a 32-bit
-> > architecture, or running firmware that uses a memory type for the
-> > event log that is omitted from the linear map (such as EfiReserved).
-> 
-> Makes perfect sense to the level that I wonder if this should have a
-> fixes tag and/or needs to be backported to the stable kernels?
-> 
-> > So instead, use memremap(), which will reuse the linear mapping if
-> > it is valid, or create another mapping otherwise.
-> > 
-> > Cc: Peter Huewe <peterhuewe@gmx.de>
-> > Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  drivers/char/tpm/eventlog/of.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/char/tpm/eventlog/of.c b/drivers/char/tpm/eventlog/of.c
-> > index a9ce66d09a75..9178547589a3 100644
-> > --- a/drivers/char/tpm/eventlog/of.c
-> > +++ b/drivers/char/tpm/eventlog/of.c
-> > @@ -11,6 +11,7 @@
-> >   */
-> >  
-> >  #include <linux/slab.h>
-> > +#include <linux/io.h>
-> >  #include <linux/of.h>
-> >  #include <linux/tpm_eventlog.h>
-> >  
-> > @@ -25,6 +26,7 @@ int tpm_read_log_of(struct tpm_chip *chip)
-> >  	struct tpm_bios_log *log;
-> >  	u32 size;
-> >  	u64 base;
-> > +	void *p;
-> 
-> I'd just use 'ptr' for readability sake.
-> 
-> >  	log = &chip->log;
-> >  	if (chip->dev.parent && chip->dev.parent->of_node)
-> > @@ -65,7 +67,11 @@ int tpm_read_log_of(struct tpm_chip *chip)
-> >  		return -EIO;
-> >  	}
-> >  
-> > -	log->bios_event_log = kmemdup(__va(base), size, GFP_KERNEL);
-> > +	p = memremap(base, size, MEMREMAP_WB);
-> > +	if (!p)
-> > +		return -ENOMEM;
-> > +	log->bios_event_log = kmemdup(p, size, GFP_KERNEL);
-> > +	memunmap(p);
-> >  	if (!log->bios_event_log)
-> >  		return -ENOMEM;
-> >  
-> > -- 
-> > 2.17.1
-> > 
-> 
-> This is a really great catch!
-> 
-> I'm a bit late of my PR a bit because of SGX upstreaming madness
-> (sending v39 soon). If you can answer to my question above, I can do
-> that nitpick change to patch and get it to my v5.10 PR.
-> 
-> PS. Just so that you know, once I've applied it, it will be available
-> here:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
-> 
-> I'll include MAINTAINERS update to that PR.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2020.09.22a
+branch HEAD: 1d39c91bee0e9fcd601235404d60e704fd020ff6  torture: Allow alternative forms of kvm.sh command-line arguments
 
-Forgot this:
+elapsed time: 768m
 
-Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+configs tested: 135
+configs skipped: 3
 
-/Jarkko
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+sh                          rsk7203_defconfig
+nios2                         10m50_defconfig
+powerpc               mpc834x_itxgp_defconfig
+m68k                        mvme16x_defconfig
+powerpc                       holly_defconfig
+mips                  maltasmvp_eva_defconfig
+m68k                         apollo_defconfig
+mips                      bmips_stb_defconfig
+arc                     nsimosci_hs_defconfig
+powerpc                      tqm8xx_defconfig
+arm                         bcm2835_defconfig
+arm                           stm32_defconfig
+arm                          collie_defconfig
+mips                         cobalt_defconfig
+arm                        clps711x_defconfig
+powerpc                      ppc64e_defconfig
+xtensa                  audio_kc705_defconfig
+h8300                            alldefconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc85xx_cds_defconfig
+mips                         rt305x_defconfig
+arm                       mainstone_defconfig
+powerpc64                           defconfig
+xtensa                              defconfig
+m68k                        stmark2_defconfig
+powerpc                   motionpro_defconfig
+sh                          kfr2r09_defconfig
+powerpc                 linkstation_defconfig
+powerpc                     sbc8548_defconfig
+sh                             shx3_defconfig
+arm                           efm32_defconfig
+powerpc                     akebono_defconfig
+sh                         apsh4a3a_defconfig
+sh                           se7712_defconfig
+sh                        sh7757lcr_defconfig
+powerpc                    adder875_defconfig
+arc                      axs103_smp_defconfig
+m68k                          amiga_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     tqm8540_defconfig
+sh                      rts7751r2d1_defconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+mips                        bcm47xx_defconfig
+mips                         tb0226_defconfig
+mips                        workpad_defconfig
+powerpc                     ep8248e_defconfig
+mips                       capcella_defconfig
+riscv                          rv32_defconfig
+powerpc                     ppa8548_defconfig
+x86_64                              defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200924
+i386                 randconfig-a006-20200924
+i386                 randconfig-a003-20200924
+i386                 randconfig-a004-20200924
+i386                 randconfig-a005-20200924
+i386                 randconfig-a001-20200924
+i386                 randconfig-a002-20200923
+i386                 randconfig-a006-20200923
+i386                 randconfig-a003-20200923
+i386                 randconfig-a004-20200923
+i386                 randconfig-a005-20200923
+i386                 randconfig-a001-20200923
+i386                 randconfig-a002-20200925
+i386                 randconfig-a006-20200925
+i386                 randconfig-a003-20200925
+i386                 randconfig-a004-20200925
+i386                 randconfig-a005-20200925
+i386                 randconfig-a001-20200925
+x86_64               randconfig-a011-20200925
+x86_64               randconfig-a013-20200925
+x86_64               randconfig-a014-20200925
+x86_64               randconfig-a015-20200925
+x86_64               randconfig-a012-20200925
+x86_64               randconfig-a016-20200925
+i386                 randconfig-a012-20200925
+i386                 randconfig-a014-20200925
+i386                 randconfig-a016-20200925
+i386                 randconfig-a013-20200925
+i386                 randconfig-a011-20200925
+i386                 randconfig-a015-20200925
+i386                 randconfig-a012-20200923
+i386                 randconfig-a014-20200923
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a005-20200925
+x86_64               randconfig-a002-20200925
+x86_64               randconfig-a006-20200925
+x86_64               randconfig-a001-20200925
+x86_64               randconfig-a003-20200925
+x86_64               randconfig-a004-20200925
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
