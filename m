@@ -2,84 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB542278D47
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62C1278D0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729423AbgIYPzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:55:06 -0400
-Received: from [46.166.185.98] ([46.166.185.98]:55550 "EHLO
-        host.imperialcapgroup.com" rhost-flags-FAIL-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727733AbgIYPzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:55:06 -0400
-X-Greylist: delayed 15158 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 11:55:05 EDT
-Received: from imperialcapgroup.com (unknown [185.236.203.204])
-        by host.imperialcapgroup.com (Postfix) with ESMTPA id DFF75BDDDA
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:13:31 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.imperialcapgroup.com DFF75BDDDA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=imperialcapgroup.com; s=default; t=1601003612;
-        bh=6CXuz3tZVwV0sLbV3HksYvK1Xzbh6nLYCrrWqAmLkHM=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=AOlbSzbkEYzCekzS0cHYuLg0EQK3ffPBpr938APGKGFgeL9Pixw1SCHEimlW7Vym8
-         QYriTtUHXc/b7B4Og8B4IiyQyUADNV3BWDprd7MvJYhqAZptGEyp2FRTvXDgtV/0fG
-         dhbp6rDRPBj+b9UqNegIQIP8gB+VEEVC4OL47xzo=
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.imperialcapgroup.com DFF75BDDDA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=imperialcapgroup.com; s=default; t=1601003612;
-        bh=6CXuz3tZVwV0sLbV3HksYvK1Xzbh6nLYCrrWqAmLkHM=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=AOlbSzbkEYzCekzS0cHYuLg0EQK3ffPBpr938APGKGFgeL9Pixw1SCHEimlW7Vym8
-         QYriTtUHXc/b7B4Og8B4IiyQyUADNV3BWDprd7MvJYhqAZptGEyp2FRTvXDgtV/0fG
-         dhbp6rDRPBj+b9UqNegIQIP8gB+VEEVC4OL47xzo=
-Reply-To: laghoulli22@secsuremail.com
-From:   L A <laghoulli299@imperialcapgroup.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Co-Operation Required
-Date:   24 Sep 2020 20:13:33 -0700
-Message-ID: <20200924201333.E27F4426406BE916@imperialcapgroup.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1729235AbgIYPqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:46:34 -0400
+Received: from mga04.intel.com ([192.55.52.120]:21660 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726990AbgIYPqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:46:34 -0400
+IronPort-SDR: rTNabEBnyzms64aZn+aZDVstr2WNnbu+QoKqPkCUSYIEPIjfrgsPuC4yLuZZ2+P5ZZG6r5h7Yw
+ XrhdS7Us0c7A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="158942249"
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="158942249"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:57:15 -0700
+IronPort-SDR: AHkmUdFYoTL2TwSbkYScum328qgCyU2qmzdxvrHiGXotpfNZibXm4/eEfSeagHO84o3Cd+Fqzf
+ Lq1hNNkbd08Q==
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="487499136"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:57:14 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>, Borislav Petkov <bp@suse.de>
+Subject: [PATCH v13 02/26] x86/cpufeatures: Add CET CPU feature flags for Control-flow Enforcement Technology (CET)
+Date:   Fri, 25 Sep 2020 07:56:25 -0700
+Message-Id: <20200925145649.5438-3-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200925145649.5438-1-yu-cheng.yu@intel.com>
+References: <20200925145649.5438-1-yu-cheng.yu@intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello there,
+Add CPU feature flags for Control-flow Enforcement Technology (CET).
 
-I am Laghouili Abdellatif. I am contacting you because I have a=20
-proposal that I think may be interested in. I represent the=20
-interest of my brother in-law who was a minister in the Syrian=20
-Government. As you probably know, there is a lot of crisis going=20
-on currently in Syria and my brother in-law has fallen out with=20
-the ruling Junta and the president because of his foreign=20
-policies and the senseless war and killings that has been going=20
-on for a while. Everybody in Syria is fed up and want a change=20
-but the president is too powerfull and he simply kills anyone=20
-that tries to oppose him. My brother in-law belives that he is at=20
-risk and he is now very scared for the safety of his family=20
-especially his kids. In order to ensure that his family is taken=20
-care of and protected incase anything happens to him, he has=20
-asked me to help him find a foreign investor who can help him=20
-accommodate and invest 100 MUSD privately that he has secured in=20
-Europe. He wants these funds safely invested so that the future=20
-and safety of his family can be secured.
+CPUID.(EAX=7,ECX=0):ECX[bit 7] Shadow stack
+CPUID.(EAX=7,ECX=0):EDX[bit 20] Indirect Branch Tracking
 
-I am contacting you with the hope that you will be interested in=20
-helping us. We need your help to accommodate the funds in the=20
-banking system in your country and also invest it in lucrative=20
-projects that will yeild good profits. We will handle all the=20
-logistics involved in the movement of the funds to you. The funds=20
-is already in Europe so you have nothing to worry about because=20
-this transaction will be executed in a legal way. My brother in-=20
-law has also promised to compensate you for your help. He wants=20
-this to be done discretely so I will be acting as his eyes and=20
-ears during the course of this transaction.
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Reviewed-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+ arch/x86/include/asm/cpufeatures.h       | 2 ++
+ arch/x86/kernel/cpu/cpuid-deps.c         | 2 ++
+ tools/arch/x86/include/asm/cpufeatures.h | 2 ++
+ 3 files changed, 6 insertions(+)
 
-If this proposal interests you, please kindly respond so that I=20
-can give you more details.
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 2901d5df4366..c794e18e8a14 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -341,6 +341,7 @@
+ #define X86_FEATURE_OSPKE		(16*32+ 4) /* OS Protection Keys Enable */
+ #define X86_FEATURE_WAITPKG		(16*32+ 5) /* UMONITOR/UMWAIT/TPAUSE Instructions */
+ #define X86_FEATURE_AVX512_VBMI2	(16*32+ 6) /* Additional AVX512 Vector Bit Manipulation Instructions */
++#define X86_FEATURE_SHSTK		(16*32+ 7) /* Shadow Stack */
+ #define X86_FEATURE_GFNI		(16*32+ 8) /* Galois Field New Instructions */
+ #define X86_FEATURE_VAES		(16*32+ 9) /* Vector AES */
+ #define X86_FEATURE_VPCLMULQDQ		(16*32+10) /* Carry-Less Multiplication Double Quadword */
+@@ -370,6 +371,7 @@
+ #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
+ #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
+ #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
++#define X86_FEATURE_IBT			(18*32+20) /* Indirect Branch Tracking */
+ #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
+ #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
+ #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
+diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+index 3cbe24ca80ab..fec83cc74b9e 100644
+--- a/arch/x86/kernel/cpu/cpuid-deps.c
++++ b/arch/x86/kernel/cpu/cpuid-deps.c
+@@ -69,6 +69,8 @@ static const struct cpuid_dep cpuid_deps[] = {
+ 	{ X86_FEATURE_CQM_MBM_TOTAL,		X86_FEATURE_CQM_LLC   },
+ 	{ X86_FEATURE_CQM_MBM_LOCAL,		X86_FEATURE_CQM_LLC   },
+ 	{ X86_FEATURE_AVX512_BF16,		X86_FEATURE_AVX512VL  },
++	{ X86_FEATURE_SHSTK,			X86_FEATURE_XSAVES    },
++	{ X86_FEATURE_IBT,			X86_FEATURE_XSAVES    },
+ 	{}
+ };
+ 
+diff --git a/tools/arch/x86/include/asm/cpufeatures.h b/tools/arch/x86/include/asm/cpufeatures.h
+index 2901d5df4366..c794e18e8a14 100644
+--- a/tools/arch/x86/include/asm/cpufeatures.h
++++ b/tools/arch/x86/include/asm/cpufeatures.h
+@@ -341,6 +341,7 @@
+ #define X86_FEATURE_OSPKE		(16*32+ 4) /* OS Protection Keys Enable */
+ #define X86_FEATURE_WAITPKG		(16*32+ 5) /* UMONITOR/UMWAIT/TPAUSE Instructions */
+ #define X86_FEATURE_AVX512_VBMI2	(16*32+ 6) /* Additional AVX512 Vector Bit Manipulation Instructions */
++#define X86_FEATURE_SHSTK		(16*32+ 7) /* Shadow Stack */
+ #define X86_FEATURE_GFNI		(16*32+ 8) /* Galois Field New Instructions */
+ #define X86_FEATURE_VAES		(16*32+ 9) /* Vector AES */
+ #define X86_FEATURE_VPCLMULQDQ		(16*32+10) /* Carry-Less Multiplication Double Quadword */
+@@ -370,6 +371,7 @@
+ #define X86_FEATURE_SERIALIZE		(18*32+14) /* SERIALIZE instruction */
+ #define X86_FEATURE_PCONFIG		(18*32+18) /* Intel PCONFIG */
+ #define X86_FEATURE_ARCH_LBR		(18*32+19) /* Intel ARCH LBR */
++#define X86_FEATURE_IBT			(18*32+20) /* Indirect Branch Tracking */
+ #define X86_FEATURE_SPEC_CTRL		(18*32+26) /* "" Speculation Control (IBRS + IBPB) */
+ #define X86_FEATURE_INTEL_STIBP		(18*32+27) /* "" Single Thread Indirect Branch Predictors */
+ #define X86_FEATURE_FLUSH_L1D		(18*32+28) /* Flush L1D cache */
+-- 
+2.21.0
 
-Regards,
-
-Laghouili.
