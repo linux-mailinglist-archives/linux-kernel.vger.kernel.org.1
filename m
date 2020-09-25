@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F8CC278229
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3055427822A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727323AbgIYIEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgIYIEd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:04:33 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E485C0613CE;
-        Fri, 25 Sep 2020 01:04:33 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id n22so1573667edt.4;
-        Fri, 25 Sep 2020 01:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9nCoifbkeuSkm32g7FfRMjrrGtoOLRMD6Zxww8rwgSY=;
-        b=k4bh6DUjkzSke+B7L/UMoe1ivoznzvxi0ad4wPwtsZGoWWxk3Udc+bdz7nyo6ZmxfS
-         qkPJshm7a2kWgy6KAEhURguLEO4FJflS+R/I1mdeCCmfiU0BhzyucFSgjoSIiknjqS/3
-         5LDc1Qz9DCmxM2zeZzyCXs/M58SfCe0gx94TBzDZfRMHZIqRM3vulgl2BldpdenUS4DZ
-         kpg0EXJManOmZwY0vT1SeOP6Eelac7dtp/TS1xaLt96PfJmjz0QCDPIep9SaoEuM/8kK
-         01FVFLu6nuBWpYrWDrn1QrmQ4azWiIXsyAjZ5Qn35TwO0+DxfgkqlpufcovPi7zAnE2S
-         xJgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9nCoifbkeuSkm32g7FfRMjrrGtoOLRMD6Zxww8rwgSY=;
-        b=I8jH8rObMLf/jHiPZz2Palh2ChFKmL7HWibRRy2aVFoJ8jEd6TEUpjrtYVPn2m5+Dz
-         /a2Dyvmr/QvsaCX1DC60mCE4vW/nA0E3nnAagg2Ffwy2VV+yV/DVFyBzTbNmybWrYwwS
-         5T79fWLl4nKSSjvvQls1PBvSwb9uRZaVxbXd91lXN3PhT1eKZkIpR+b81tpZ7giPV7Au
-         A9IT63eIwdlwI+Aqa+Y4F7rbkRkoe6zeEBJQjxpY1xnAwZsbYt1v56Z0IMK1uzteIYRY
-         enre3o7FHVXVWmwKfMKm+waXdZGoOAe1m9T9BUlucJqFJlbe03wHSw+ZF3p4gtA5RvKK
-         jf9A==
-X-Gm-Message-State: AOAM531R6XI4dEZm59YjXvJn+D5RDjLt7FDAunv5LZktVfnEieNNPO0g
-        0Wg5PtOoU2Wg3mv3vFifNYr6qsgImP2PBePRPJI=
-X-Google-Smtp-Source: ABdhPJxeDIGT9fA+GFpnV/N6d8qqejXu7XMaJ3dwMmOkk5HsY/gbxhunvPYF46+CM+RrsH5NNhmumepRvh+9msyzJwg=
-X-Received: by 2002:aa7:d6c6:: with SMTP id x6mr14862edr.338.1601021072020;
- Fri, 25 Sep 2020 01:04:32 -0700 (PDT)
+        id S1727403AbgIYIFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:05:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39270 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727067AbgIYIFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:05:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601021104;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Wu5O5609MUWMDOLd2U3iMrF7lBjb3BlJQDZg1BdL0UY=;
+        b=LYeDZE5cGIta2/hiLdCStibnZd+FZQUXseJB+hRUGd31fVkwRpEeXrjKFANxHRzfncrzHQ
+        HdDX5nmRnjpmviKLu81o+AZ4fKwAohh9XMJ67Ixi4x6h3l+Mr7+DEGKTl5SbuaREFz/6nE
+        yZGBNHTAY6g6HpTGPparVQkev4YpO3Y=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5D917AA55;
+        Fri, 25 Sep 2020 08:05:04 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 10:05:03 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200925080503.GC3389@dhcp22.suse.cz>
+References: <20200921074716.GC12990@dhcp22.suse.cz>
+ <20200921154558.GD29330@paulmck-ThinkPad-P72>
+ <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
 MIME-Version: 1.0
-References: <20200925033017.1790973-1-art@khadas.com> <20200925033017.1790973-6-art@khadas.com>
- <CAFBinCAJ6svwiv9OM6EHz7468D9h+jW_ULiGrorgLetcODsAKQ@mail.gmail.com> <CAKaHn9+CWLJYN1Tt46VxBGNBEbVVJZWeL6ZJSf9w-5DmoxrvgQ@mail.gmail.com>
-In-Reply-To: <CAKaHn9+CWLJYN1Tt46VxBGNBEbVVJZWeL6ZJSf9w-5DmoxrvgQ@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 25 Sep 2020 10:04:21 +0200
-Message-ID: <CAFBinCD0_QgKKcH+Kb2QbMWnx_csoXMEhSFYzmDscdTVB2TUJw@mail.gmail.com>
-Subject: Re: [PATCH 5/8] arm64: dts: meson: remove reset-gpios from ethernet
- node for VIM2 meson-gxm-khadas-vim2
-To:     Art Nikpal <email2tema@gmail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
-        robh+dt@kernel.org, jbrunet@baylibre.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924081614.GA14819@pc636>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Artem,
+On Thu 24-09-20 10:16:14, Uladzislau Rezki wrote:
+> > On Wed, Sep 23, 2020 at 08:41:05AM -0700, Paul E. McKenney wrote:
+> > > > Fundamentally, this is simply shifting the problem from RCU to the page
+> > > > allocator because of the locking arrangements and hazard of acquiring zone
+> > > > lock is a raw spinlock is held on RT. It does not even make the timing
+> > > > predictable as an empty PCU list (for example, a full drain in low memory
+> > > > situations) may mean the emergency path is hit anyway. About all it changes
+> > > > is the timing of when the emergency path is hit in some circumstances --
+> > > > it's not fixing the problem, it's simply changing the shape.
+> > > 
+> > > All good points!
+> > > 
+> > > On the other hand, duplicating a portion of the allocator functionality
+> > > within RCU increases the amount of reserved memory, and needlessly most
+> > > of the time.
+> > > 
+> > 
+> > But it's very similar to what mempools are for.
+> > 
+> As for dynamic caching or mempools. It requires extra logic on top of RCU
+> to move things forward and it might be not efficient way. As a side
+> effect, maintaining of the bulk arrays in the separate worker thread
+> will introduce other drawbacks:
 
-(adding back the mailing-list recipients)
+This is true but it is also true that it is RCU to require this special
+logic and we can expect that we might need to fine tune this logic
+depending on the RCU usage. We definitely do not want to tune the
+generic page allocator for a very specific usecase, do we?
 
-On Fri, Sep 25, 2020 at 9:50 AM Art Nikpal <email2tema@gmail.com> wrote:
->
-> hello
->
-> > what is the problem that you observe here?
-> > did you investigate further why resetting the PHY changes this?
->
-> just try next commands
-> ifconfig eth0 down && ifconfig eth0 up
-> and ethernet never up again - need full reboot only
-this means that "something" is either set up incorrectly in the Linux
-kernel or that u-boot does some magic (and the same magic is then
-missing in the Linux kernel)
-I'll dig out my Khadas VIM2 to test this. what should I look out for
-(are there any error messages, dhcp not getting an IP address anymore,
-etc.)?
+>  a) There is an extra latency window, a time during which a fallback
+>     mechanism is used until pages are obtained via the special
+>     worker for further pointers collecting over arrays.
 
-> but if reset-gpios will be remove it works fine already - i have checked it many times
->
-> for example VIM3 same didnt use reset-gpios
-that's interesting - I'm surprised to see this
-I did a quick check and for 15 out of 18 .dts(i) files with RGMII
-phy-mode we use the reset-gpios:
-$ grep -R 'phy-mode = "rgmii' arch/arm64/boot/dts/amlogic/ | wc -l
-18
-$ grep -R 'ethernet-phy@0' -A10 arch/arm64/boot/dts/amlogic/ | grep
-reset-gpios | wc -l
-15
+This will be always the case for async refilling. More importantly this
+will be a bigger problem at the page allocator level which has other
+users other than RCU so more users are suffering...
 
-so really I would like to add the reset-gpios to the VIM3 .dtsi as
-well once we figured out what's wrong on the VIM2
+>  b) It is impossible to predict how many pages will be required to
+>     cover a demand that is controlled by different workloads on
+>     various systems. It would require a rough value.
 
+I have asked for some actual numbers for real life scenarios this work
+is meant to cover. There was nothing presented so far. We can hand wave
+for ever but this will not move us forward much. As I've said in other
+email, few dozens pages per CPU by default will hardly get noticeable.
+You have a trivial initial implementation and can build on top in
+incremental steps. You can kick a background allocator to start new
+allocations when the pool hits a watermark and aggressivelly remove
+cached pages when they are not used. You will have quite a freedom to
+fine tune the scheme which is much harder for the page allocator because
+there are many other consumers.
 
-Best regards,
-Martin
+Anyway, I am afraid that we are going in circles here. We do not have
+any meaningful numbers to claim memory footprint problems. There is a
+clear opposition to hook into page allocator for reasons already
+mentioned. You are looking for a dedicated memory pool and it should be
+quite trivial to develop one and fine tune it for your specific usecase.
+All that on top of page allocator. Unless this is seen as completely
+unfeasible based on some solid arguments then we can start talking about
+the page allocator itself.
+-- 
+Michal Hocko
+SUSE Labs
