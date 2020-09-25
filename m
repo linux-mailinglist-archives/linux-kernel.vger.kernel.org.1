@@ -2,97 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49877279441
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ED3279442
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728925AbgIYWhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S1729001AbgIYWhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:37:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbgIYWhm (ORCPT
+        with ESMTP id S1726559AbgIYWhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:37:42 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F356C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:37:42 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601073458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DhcPDYsymGRYtFB2dmQY+Zy+IpI+TEEnDEihuujzLt0=;
-        b=KWJ+Oxhw3yNSPw6BGgcUmmNNFya46I0LL4TK4TA01jxstORj0LHB6/RVX3d75ud3ne25b0
-        lwHtPtJTtTHgkNmY1PU+vfFstpNkDkqTPrGi3mFGfR82KOShmzq9a4/2WFk2vG/zcjdXS2
-        6ZD5FRuNRG6fY95xOPC+kmIxZHQA+T2F6li0eLBdgstUyfrkJx2V+gXXCa976kB6gLlP4q
-        VW7qF3HUBZkoHpzr/grGalvEBLJ8JKK+nxk82av98XwCOeGe8N3/BvbIiPcjFrtfgA7Ygx
-        o8tDoARFrrPb1QltI16KZaxMlOVJqbxE4woozT+jo+4PUh9W6tp4LUS4Z/RGvQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601073458;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DhcPDYsymGRYtFB2dmQY+Zy+IpI+TEEnDEihuujzLt0=;
-        b=lbZW0QdE1qPFRKJ84X3/iPFmINUkK6RRC25re6/DvhIcEKw5iULkeKr1nKb0WDf4JPgXA6
-        V21FT6ohHKU8zaAA==
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     qianjun.kernel@gmail.com, peterz@infradead.org, will@kernel.org,
-        luto@kernel.org, linux-kernel@vger.kernel.org,
-        laoar.shao@gmail.com, qais.yousef@arm.com, urezki@gmail.com
-Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing loop
-In-Reply-To: <20200924230811.GC19346@lenoir>
-References: <20200915115609.85106-1-qianjun.kernel@gmail.com> <20200915115609.85106-5-qianjun.kernel@gmail.com> <878scz89tl.fsf@nanos.tec.linutronix.de> <20200924230811.GC19346@lenoir>
-Date:   Sat, 26 Sep 2020 00:37:37 +0200
-Message-ID: <87imc1v5xq.fsf@nanos.tec.linutronix.de>
+        Fri, 25 Sep 2020 18:37:48 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA41DC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:37:47 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id a3so4430133oib.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=1GUnPWZQb3wmsz17jd8cPsFjDlwSIdeaeunn4YKd8bc=;
+        b=cUGmiVVab0u8mYTiDe3U8u1ya2bN2aQHwiRyr0oN+SEQeoBac0yel+rVAJpG23d6Cw
+         SkWYyhXR+Q0RhmtVczpwc52Ra7P92GEyVfLujifP74L85bN+J8e9V+D07zbcd4hggTWn
+         sTf5Y3Nm3Lj+rn13yl8gTMvITuy5xWYxaBBBg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1GUnPWZQb3wmsz17jd8cPsFjDlwSIdeaeunn4YKd8bc=;
+        b=O77pLodq1lg+vulpudxLP/QOEvKbwr5wIgyOl7o1o/p004daV96biZyaeE99/j3Z5y
+         dxzE18mSzd7IReeGFH5Et6bppdaclvWP4m9dwMJcBmbWkxQOyIeVVnuDs4pkXTzjPln1
+         Gi4+C200bdrN4vj9bVdpSI/7IsZYiGN1GU55lqsPZ1LxFldI/FogRt49aqLZ36wkPOh3
+         OxWK+HB0cB1pGZIy9ln8XC3OLiuIP4QPp0nhXdfduapJUkKVhmPETnMc3T2lwVEr7cZ+
+         MP9S1Q7yv5y511WrG09dmgR5USkYwAbAREafQTquuv3IGOcRJHlSt0COFryqBlz6y5k4
+         yN9Q==
+X-Gm-Message-State: AOAM531UYIYi3rqpW77hVw9FL/6Of0zCqtC2RxI9OAOS2c3xJuxQ0SU5
+        SlsNNUMZnXhpYGys+fNly1Ldkw==
+X-Google-Smtp-Source: ABdhPJzlc9XcIwkgj1jA3voZXHCy+z/zzMdn6CUvY2QhJa2e+80Yy/KlTGUEECczFqtoREwqoRqFAA==
+X-Received: by 2002:aca:d693:: with SMTP id n141mr496407oig.26.1601073467264;
+        Fri, 25 Sep 2020 15:37:47 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i7sm983027oto.62.2020.09.25.15.37.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 15:37:46 -0700 (PDT)
+Subject: Re: [PATCHv5 kselftest next] selftests/run_kselftest.sh: make each
+ test individually selectable
+To:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>
+Cc:     Hangbin Liu <liuhangbin@gmail.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-doc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>, Tim.Bird@sony.com,
+        lkft-triage@lists.linaro.org,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Justin Cook <justin.cook@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200914021758.420874-1-liuhangbin@gmail.com/>
+ <20200914022227.437143-1-liuhangbin@gmail.com>
+ <CA+G9fYvT6Mw2BamoiVyw=wLUqD-3LB2oaDqcuabOyWfFxEN1qg@mail.gmail.com>
+ <202009251414.15274C0@keescook>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <659b23c9-abf5-0387-c4c6-5d0a48e3afdc@linuxfoundation.org>
+Date:   Fri, 25 Sep 2020 16:37:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <202009251414.15274C0@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25 2020 at 01:08, Frederic Weisbecker wrote:
+On 9/25/20 3:16 PM, Kees Cook wrote:
+> On Fri, Sep 25, 2020 at 01:51:53PM +0530, Naresh Kamboju wrote:
+>> On Mon, 14 Sep 2020 at 07:53, Hangbin Liu <liuhangbin@gmail.com> wrote:
+>>>
+>>> Currently, after generating run_kselftest.sh, there is no way to choose
+>>> which test we could run. All the tests are listed together and we have
+>>> to run all every time. This patch enhanced the run_kselftest.sh to make
+>>> the tests individually selectable. e.g.
+>>>
+>>>    $ ./run_kselftest.sh -t "bpf size timers"
+>>
+>> My test run break on linux next
+>>
+>> ./run_kselftest.sh: line 1331: syntax error near unexpected token `)'
+>> ./run_kselftest.sh: line 1331: `-e -s | --summary )
+>> logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;'
+> 
+> Yes, please revert this patch. The resulting script is completely
+> trashed:
+> 
+> BASE_DIR=$(realpath $(dirname $0))
+> . ./kselftest/runner.sh
+> TESTS="seccomp"
+> 
+> run_seccomp()
+> {
+> -e      [ -w /dev/kmsg ] && echo "kselftest: Running tests in seccomp" >> /dev/kmsg
+> -e      cd seccomp
+> -en     run_many
+>          \
+> -ne             "seccomp_bpf"
+>          \
+> -ne             "seccomp_benchmark"
+> 
+> -e      cd $ROOT
+> }
+> 
+> 
+> 
 
-> On Thu, Sep 24, 2020 at 05:37:42PM +0200, Thomas Gleixner wrote:
->> Subject: softirq; Prevent starvation of higher softirq vectors
->> From: Thomas Gleixner <tglx@linutronix.de>
->> Date: Thu, 24 Sep 2020 10:40:24 +0200
->> 
->> From: Thomas Gleixner <tglx@linutronix.de>
->> 
->> The early termination of the softirq processing loop can lead to starvation
->> of the higher numbered soft interrupt vectors because each run starts at
->> the lowest bit. If the loop terminates then the already processed bits can
->> be raised again before the next loop starts. If these lower bits run into
->> the termination again, then a re-raise might starve the higher bits forever.
->> 
->> To prevent this, store the leftovers of the previous run in the upper 16
->> bit of the local softirq_pending storage and ensure that these are
->> processed before any newly raised bits are handled.
->> 
->> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
->> ---
->>  kernel/softirq.c |   58 +++++++++++++++++++++++++++++++++++++++++++++++--------
->>  1 file changed, 50 insertions(+), 8 deletions(-)
->> 
->> --- a/kernel/softirq.c
->> +++ b/kernel/softirq.c
->> @@ -259,11 +259,23 @@ static inline bool __softirq_needs_break
->>  	return need_resched() || __softirq_timeout(tbreak);
->>  }
->>  
->> +/*
->> + * local_softirq_pending() is split into two 16 bit words. The low word
->> + * contains the bits set by raise_softirq(), the high word contains pending
->> + * bits which have not been processed in an early terminated run. This is
->> + * required to prevent starvation of the higher numbered softirqs.
->> + */
->> +#define SIRQ_PREV_SHIFT		16
->
-> Note that in the case of x86, irq_start.__softirq_pending is a u16.
->
-> The origin is there: 9aee5f8a7e30330d0a8f4c626dc924ca5590aba5
-> "x86/irq: Demote irq_cpustat_t::__softirq_pending to u16"
+Will do.
 
-Bah, crap. I knew I that and wanted to fix it up but then forgot.
-
-Thanks for reminding me of my slowly upcoming alzheimer!
+thanks,
+-- Shuah
