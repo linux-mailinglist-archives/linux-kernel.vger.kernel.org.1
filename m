@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1635277E92
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A38B277E94
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727095AbgIYDbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 23:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36982 "EHLO
+        id S1727106AbgIYDbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 23:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgIYDbG (ORCPT
+        with ESMTP id S1726704AbgIYDbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 23:31:06 -0400
+        Thu, 24 Sep 2020 23:31:13 -0400
 Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D5EC0613CE;
-        Thu, 24 Sep 2020 20:31:06 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id mn7so1059612pjb.5;
-        Thu, 24 Sep 2020 20:31:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F9A0C0613CE;
+        Thu, 24 Sep 2020 20:31:12 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b17so1080091pji.1;
+        Thu, 24 Sep 2020 20:31:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XPwFVdpf+MdTNEthESQ/J9yBHAB6tEJrYpBaLIPPi+Q=;
-        b=H/22bnESxomM76v2BwCXz7N+da/sTud1kn+GW1pPFf2/J5258QaSJf+7vsLyU0xiUc
-         re4fQomy0KZfz/+oWy3ZJurJ1IoHFxbDffGBoxf+MsR3D+POC64LCPfSMVm0pcvN6dNU
-         2yZ5Lu3LmvYCSXvyC665PhHHfzwtjNNMQ/45cmKTRr8HhsiV2ofe1IUlYJRN09cG5V/V
-         9k1syL1VxuBHtDEifSN+0NTHWXmEFXd1W/JdP+5r6ESLmZ0UP1/z3OUA72waXP/I8dzB
-         b0qKzf8KxOfKZ/wuCdQVw5YN8MCyg2Vo7DsubJFipqhe6H3hX/Kparv9Olz1Y4l6Sw10
-         vzSA==
+        bh=KtNtO+Cr0GQID7L6TUSjs7iQgumN/SXyPWODrwazKkg=;
+        b=qJiAkF45ucqS9gS/ZNpoXHj4LbXoq3VVmy4eUL4P74gEZ8YMPloEmebxaqrv3lKuve
+         7WbRuC1Sz01L3wLqtJKAaHHR3UIfWVwtJiJICWug40VtMrNCZA0cRmgmYFDTXNlf7I9M
+         lykHcCPZhauPFh+HpL8FgDt8rMAM2XtXJCJ843KLxf77juYnZ83AGPxs0tvxymbU/YGR
+         R94r2jwcjxBT+DIZCAnC9jsTrEdfkQ1hq/h2TR+YCgUjj0hDKGxr/C5J+bu6r1NkcIox
+         kNNQCJZ2P9FKtoT2htIVQS/JlFIxL+9QBDhZUs2j8jzxWcOxbLkL92KPoWVabqMmP0jZ
+         ioPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XPwFVdpf+MdTNEthESQ/J9yBHAB6tEJrYpBaLIPPi+Q=;
-        b=frHsPw6g2y6NjzpxZhlvP/o1wHoYqGLrtpZX/zEPyBwx5ATgNEJwbdgI3r1B3dj0hG
-         aeTLEs6WE+kK9/WZrZ+LTIZ074FWV53/BQLnwXc5Qc1RQg7D+6q5jpEebnYpK76SnZkc
-         +xglxHVwr6gM5fDr1KzTkXdqzsh1+VqSWdQNYVXe8dNygiepxbcX3BokRMH6ugtK29p6
-         l4jT5RcU6MyIlSj9CPRosiA5RElUCzKYn1/8P4GCnrI7EMmi2gfe+MjQ19glylaQlAP4
-         36G3khDzTByCfrUsOyiWkxMh1bz57PWi+hIr2bJjiJJGQ/H1hBden5V9yK4Yo2xofQ+0
-         /4kA==
-X-Gm-Message-State: AOAM5333IXHL/FuBxIp/C8rADOWYNTLnv4PMtnFc1G92xRZPHGScOl9A
-        EFRiboZnpjw9X0WEF5lSdjg=
-X-Google-Smtp-Source: ABdhPJxtPRDPvaV3cgsV2pw22ZeYgKOcVkejOQJf9j0SAVHWLndno+CFpuzU/bu7wTZKoeh3u228Yw==
-X-Received: by 2002:a17:90a:d515:: with SMTP id t21mr686001pju.149.1601004666336;
-        Thu, 24 Sep 2020 20:31:06 -0700 (PDT)
+        bh=KtNtO+Cr0GQID7L6TUSjs7iQgumN/SXyPWODrwazKkg=;
+        b=WCkpALQdnWQZn32xIvyQ0J5fAo7fYZljxSs+yqAhhqmltOIb2YE0IFYX6Q/aIsTz6f
+         v6O/FG8rsxEk+OGwFN2rirWa3xHl4IfXNCvadjGkRKbAAfwU5jHpuXBCGN2mTixeG/Uh
+         rQTJdq8WgOYs6VEWLNdZnwYubmVILrzCVHvmEnYsuvKn26DOMkFsnx0TnJ1JunnO7xyO
+         hNY4mPqT7DU18CcAK8Uz6mpGCYDQNcSpz7NneMlJkBm+UoZYBxQ2Lm6M0WkIFZVimXe4
+         KxN+EXwy9a7xM2AXlD/30lpvKvO7w0mOjVRDMuk/AwCq1bGPQX6/tVAgpZXujB3gKQKJ
+         fCVA==
+X-Gm-Message-State: AOAM533RMfM5AfOMvzCUSalQnBgp+7a45dcO627EwOYEsP92Rvo3GLc9
+        hw2bYMIF+joXzdyFGbLSnu0=
+X-Google-Smtp-Source: ABdhPJwbio+Z43nB0tgbrugOdb36C7ZjEzxv9FJJekfEhiSoOduLBjFm09cVQhVvJcONcnSFJufVsw==
+X-Received: by 2002:a17:90a:ec0b:: with SMTP id l11mr729435pjy.144.1601004672080;
+        Thu, 24 Sep 2020 20:31:12 -0700 (PDT)
 Received: from universe.lan (80.251.221.29.16clouds.com. [80.251.221.29])
-        by smtp.gmail.com with ESMTPSA id o5sm571670pjs.13.2020.09.24.20.31.01
+        by smtp.gmail.com with ESMTPSA id o5sm571670pjs.13.2020.09.24.20.31.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 20:31:05 -0700 (PDT)
+        Thu, 24 Sep 2020 20:31:11 -0700 (PDT)
 From:   Artem Lapkin <email2tema@gmail.com>
 X-Google-Original-From: Artem Lapkin <art@khadas.com>
 To:     narmstrong@baylibre.com
@@ -56,9 +56,9 @@ Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
         linux-arm-kernel@lists.infradead.org,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: [PATCH 4/8] arm64: dts: meson: remove fixed memory size for Khadas VIM3/VIM3L meson-khadas-vim3
-Date:   Fri, 25 Sep 2020 11:30:13 +0800
-Message-Id: <20200925033017.1790973-5-art@khadas.com>
+Subject: [PATCH 5/8] arm64: dts: meson: remove reset-gpios from ethernet node for VIM2 meson-gxm-khadas-vim2
+Date:   Fri, 25 Sep 2020 11:30:14 +0800
+Message-Id: <20200925033017.1790973-6-art@khadas.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200925033017.1790973-1-art@khadas.com>
 References: <20200925033017.1790973-1-art@khadas.com>
@@ -68,38 +68,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-no need force setup memory size!
-VIM3 boards have 2Gb and 4Gb variants
-memory size will be automatically defined
+1) fix down/up ethernet interface - need remove reset-gpios for ethernet node
 
-mainline uboot works properly in any case
-but old vendor uboot works not properly for 4Gb variants
+`ifconfig eth0 down && ifconfig eth0 up` # didnt works with reset-gpios
+
+2) add max-speed 1Gbit
 
 Signed-off-by: Artem Lapkin <art@khadas.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-index 7e137399257..3111bf35c0f 100644
---- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
-@@ -20,10 +20,15 @@ chosen {
- 		stdout-path = "serial0:115200n8";
- 	};
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+index a6baf865aa2..70343da2811 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
+@@ -195,7 +195,7 @@ external_phy: ethernet-phy@0 {
  
-+/*      no need force setup memory size!
-+        VIM3 boards have 2Gb and 4Gb variants
-+        memory size will be automatically defined
-+
- 	memory@0 {
- 		device_type = "memory";
- 		reg = <0x0 0x0 0x0 0x80000000>;
- 	};
-+*/
+ 		reset-assert-us = <10000>;
+ 		reset-deassert-us = <30000>;
+-		reset-gpios = <&gpio GPIOZ_14 GPIO_ACTIVE_LOW>;
++		max-speed = <1000>;
  
- 	adc-keys {
- 		compatible = "adc-keys";
+ 		interrupt-parent = <&gpio_intc>;
+ 		/* MAC_INTR on GPIOZ_15 */
 -- 
 2.25.1
 
