@@ -2,134 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F326279247
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F1F27924A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727325AbgIYUhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729082AbgIYUhK (ORCPT
+        id S1728474AbgIYUiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:38:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56074 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727276AbgIYUiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:37:10 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20972C0613E4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:37:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id z18so4369228pfg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GfC/K5/eyr5f/R6KNnYNTFVKM8gTDhQ8O0T6Bc65g7I=;
-        b=iuXRcgXHEiB9o39H9hbvhItGSIju7sdYkPIXMM1iEESsQCqXomWCjd5+I/Y72J3MmH
-         pE8Ycf2qbqERCla+//BzWiE8E/xZAo9m473D7cg0uxM/yJXGtfUTlhDO2rRmdAOvY+dE
-         v9Kt55YnQOItQGdI3tA4n/0wtmB/7neNsMa94=
+        Fri, 25 Sep 2020 16:38:08 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601066287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uWeiJx3sxuFTq2/3Kl2souS6jLFXPZ/6WseamNe8sdQ=;
+        b=CupCVPOZxiUhLnJ87xIU7N4KgOffybyI5gOTQ5EFrnZoBoFIQcuIQY/GgeA/uk/Bk0KIP9
+        haM4eo+eXBXVOw8dI+tPEjitymU9RkAeIepWebjBfaWCHcZyMblolioWE6xX+9i9B+1OOg
+        NUqZ4X5FnwrbUu8/KAd8y6OxQsdRATU=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-218-X9Nz5B16NDaofrt8lzDYZg-1; Fri, 25 Sep 2020 16:38:05 -0400
+X-MC-Unique: X9Nz5B16NDaofrt8lzDYZg-1
+Received: by mail-wm1-f69.google.com with SMTP id c200so73916wmd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:38:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GfC/K5/eyr5f/R6KNnYNTFVKM8gTDhQ8O0T6Bc65g7I=;
-        b=hKaNR/T4wNli4FAsNJGqjltlsb1VCf70KT3fOYuteW0P3DkvvPqDp1DI/sGVBwonTc
-         HvsL7TzVOc/LKIHV6uDYsOEDLl1yyUANGDEXbhF2do7eaPMjqxhEkEPhY72fqKemyeF2
-         I9BTUkCH1B81Msp/dWn+EFbsSwbCw9yAf5FDXJq8eMq0T2cKuAEngX/LR8L9pL4axFmC
-         r/6Sr8zYoEhv7WDHw+jUI+T6QSKysPG1leqDR3m9oSjPnG4DhgFtSiOMZES9qEKF7dhp
-         LS2dI3Io8M+PM9NPqHfsu4xAeP06MKP9flnr5bwL7jHb9SSn6out+fOnO+sRVIrx2s93
-         /bcA==
-X-Gm-Message-State: AOAM530Ec37tAaoUi5fqHzRGmo/tDiOpsvqDp+3BDOh/Gi5FmoeIjok2
-        gNhecXFvVHVz9uPLcBV0lHw3dg==
-X-Google-Smtp-Source: ABdhPJx5DRTSBJLZM4R1CgkCB9Vmp/ILkSaDUH73jMRCTvs/2F79SPo4ijjl1Tk1Fd/fHgDAR7Ze3g==
-X-Received: by 2002:aa7:8249:0:b029:142:2501:34db with SMTP id e9-20020aa782490000b0290142250134dbmr982040pfn.52.1601066229568;
-        Fri, 25 Sep 2020 13:37:09 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z8sm3049258pgr.70.2020.09.25.13.37.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 13:37:08 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 13:37:07 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
- filter is arg-dependent
-Message-ID: <202009251332.24CE0C58@keescook>
-References: <202009251223.8E46C831E2@keescook>
- <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uWeiJx3sxuFTq2/3Kl2souS6jLFXPZ/6WseamNe8sdQ=;
+        b=eWOtTx6lTqkaXOdDXLlzZOaA5ECbSmOq688I77NYqUcQv2AETC9WXUArTPNmvOgLOQ
+         wpSkY0SNktCgYUaerqufz2lORdhhTPtTLhQOgsZR3CW2lt0/fl0IaIjMcTfZGkwhFwSf
+         FNH+xzcyTIt1yU8o7FkHMYgjJlosN1Mo+52EwdCyLJbXbtJ6xvYsxmA0IGPx5P14fT4j
+         2TpSE4Z4uXs80BCXtednfVAlQtOaTLrADSARrb8ojgfToq3f2j/IeoX+L5deP+Op6Kr/
+         2E9TpkYWur/z3qJWthcU7MS3JXPwh0790GhriWl3Z/HorXtwAEACzrnlJiX6Rt5ZoSGC
+         yd8Q==
+X-Gm-Message-State: AOAM530Auz26wJqc+0nvZ1Z3hw6r/DHH5zNUxcP3w2qckWhn9+AToteh
+        ZUsSGBPnevHU5zqZviJyrqD8g0b790j6+kb4jFgN8aOHRH/ksUvLb5BH4EKBu0HLoLpHDjC6Smr
+        rukzkCwR0hlRlWsOvbjvjW73R
+X-Received: by 2002:adf:ec47:: with SMTP id w7mr6747277wrn.175.1601066284106;
+        Fri, 25 Sep 2020 13:38:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzbpCJ+RQiq27xPB84gL69eoIjGEkAsGv4FYrVYBjyXXAGHSnL/vEF1J5oPR/Zh36nAZMfXnw==
+X-Received: by 2002:adf:ec47:: with SMTP id w7mr6747260wrn.175.1601066283908;
+        Fri, 25 Sep 2020 13:38:03 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id l8sm4083404wrx.22.2020.09.25.13.38.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 13:38:03 -0700 (PDT)
+Subject: Re: [PATCH 0/4] KVM: x86/mmu: Page fault handling cleanups
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kai Huang <kai.huang@intel.com>
+References: <20200923220425.18402-1-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ca36404c-9b2a-dbce-d5e4-a3fc3cc620bc@redhat.com>
+Date:   Fri, 25 Sep 2020 22:38:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
+In-Reply-To: <20200923220425.18402-1-sean.j.christopherson@intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:51:20PM -0700, Andy Lutomirski wrote:
+On 24/09/20 00:04, Sean Christopherson wrote:
+> Cleanups for page fault handling that were encountered during early TDX
+> enabling, but are worthwhile on their own.  Specifically, patch 4 fixes an
+> issue where KVM doesn't detect a spurious page fault (due to the fault
+> being fixed by a different pCPU+vCPU) and does the full gamut of writing
+> the SPTE, updating stats, and prefetching SPTEs.
 > 
+> Sean Christopherson (4):
+>   KVM: x86/mmu: Return -EIO if page fault returns RET_PF_INVALID
+>   KVM: x86/mmu: Invert RET_PF_* check when falling through to emulation
+>   KVM: x86/mmu: Return unique RET_PF_* values if the fault was fixed
+>   KVM: x86/mmu: Bail early from final #PF handling on spurious faults
 > 
-> > On Sep 25, 2020, at 12:42 PM, Kees Cook <keescook@chromium.org> wrote:
-> > 
-> > ﻿On Fri, Sep 25, 2020 at 11:45:05AM -0500, YiFei Zhu wrote:
-> >> On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> >>>> Why do the prepare here instead of during attach? (And note that it
-> >>>> should not be written to fail.)
-> >>> 
-> >>> Right.
-> >> 
-> >> During attach a spinlock (current->sighand->siglock) is held. Do we
-> >> really want to put the emulator in the "atomic section"?
-> > 
-> > It's a good point, but I had some other ideas around it that lead to me
-> > a different conclusion. Here's what I've got in my head:
-> > 
-> > I don't view filter attach (nor the siglock) as fastpath: the lock is
-> > rarely contested and the "long time" will only be during filter attach.
-> > 
-> > When performing filter emulation, all the syscalls that are already
-> > marked as "must run filter" on the previous filter can be skipped for
-> > the new filter, since it cannot change the outcome, which makes the
-> > emulation step faster.
-> > 
-> > The previous filter's bitmap isn't "stable" until siglock is held.
-> > 
-> > If we do the emulation step before siglock, we have to always do full
-> > evaluation of all syscalls, and then merge the bitmap during attach.
-> > That means all filters ever attached will take maximal time to perform
-> > emulation.
-> > 
-> > I prefer the idea of the emulation step taking advantage of the bitmap
-> > optimization, since the kernel spends less time doing work over the life
-> > of the process tree. It's certainly marginal, but it also lets all the
-> > bitmap manipulation stay in one place (as opposed to being split between
-> > "prepare" and "attach").
-> > 
-> > What do you think?
-> > 
-> > 
+>  arch/x86/kvm/mmu/mmu.c         | 70 +++++++++++++++++++++-------------
+>  arch/x86/kvm/mmu/mmutrace.h    | 13 +++----
+>  arch/x86/kvm/mmu/paging_tmpl.h |  3 ++
+>  3 files changed, 52 insertions(+), 34 deletions(-)
 > 
-> I’m wondering if we should be much much lazier. We could potentially wait until someone actually tries to do a given syscall before we try to evaluate whether the result is fixed.
 
-That seems like we'd need to track yet another bitmap of "did we emulate
-this yet?" And it means the filter isn't really "done" until you run
-another syscall? eeh, I'm not a fan: it scratches at my desire for
-determinism. ;) Or maybe my implementation imagination is missing
-something?
+Queued, thanks.  Looking at the KVM_BUG_ON now since patch 1 is somewhat
+related.
 
--- 
-Kees Cook
+Paolo
+
