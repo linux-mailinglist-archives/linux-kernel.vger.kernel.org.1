@@ -2,141 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299D4279217
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56E5279257
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729133AbgIYUdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52844 "EHLO
+        id S1728810AbgIYUiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:38:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727015AbgIYU0l (ORCPT
+        with ESMTP id S1728434AbgIYUif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:26:41 -0400
+        Fri, 25 Sep 2020 16:38:35 -0400
 Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46D22C0613AF
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:26:41 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id n14so4315398pff.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:26:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE63BC0613B0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:30:59 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id l126so4332084pfd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:30:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Fvm57bum9kABDubOAKIbQd4nwdbZ7F2cf8tIZTaBPm8=;
-        b=XNId8adnBwEC06gRrqP/D3oaJauLEoxwFtxl+nQG3+ll1hkht6e5jd425rRVzwvmhW
-         UbA7Hm/OAXHe+FDpDbPoiyhBxaAb6pU0fEoasNt6YJMYhm1HphELCt4XTXgO+ZeYVnJn
-         e+1Dhh9NOdzaJBRh00ic7DJ0oj8EBbG9YZ/PE=
+        bh=xalch59fDuEKl76YuuW9L6ISBYkH/TTx0Ff+RgikJxo=;
+        b=hYaTNdNHJvLXhzfO+DdQhP+Y6AQFVGOXPqty1ToYGSxhw3Gg9u0qORgOjwXhmBR7X+
+         3RBtz3lDH0PW6AmY/qY7MMzKY6CsGoSJzyEB+byHzQg5n948zglNKeCBqL+BXCy6ISuz
+         pLQE8ykuQBc1+Zol1mYktHi8NsaELoQn/dyBc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Fvm57bum9kABDubOAKIbQd4nwdbZ7F2cf8tIZTaBPm8=;
-        b=TDdFyQTjEz5XyG7d7IYmhLPx9JjyOGphv+KM08jN47V26uIbsqr92WRUUf4JoUbY+5
-         u6a71NkQ9R0gzMKet9th5vFVBvoNv8fEGj/jOXoaolgW+LV7j7D4Mj4at2vLjnPOVq8s
-         UTblg6Xy2lAD07oby7/ke6JUaQhrSjrB8b0upDVfVwA8gbw+gjWBd4U2rF5G7i14mAmu
-         ZTRn5YnqxEjf15hjv2fWddgh+tvlVyILembsj9eMVOgfM1En5xH1MhdGGFnkZMbwoKvI
-         Lbo+h9lvUnu6XlqpPMtn6cGFHle1xzyYekaP50MuNKn+KAdq6PpZnBzQ+7H1MwHeeVEv
-         YwLA==
-X-Gm-Message-State: AOAM532lEMmtO/i/VKVNSXfutxL8rAAl6bMs7A/j+v+QbbYs/yTYoEqF
-        0taxvsFegF5ehlaLc8v0smUVvQ==
-X-Google-Smtp-Source: ABdhPJzHcUOsSX4WD1whW8SuAJtKoqgb4PqzG4KokfYygfdUFgfIAzjY6l1h6pQzMv383WEMuYRsog==
-X-Received: by 2002:a65:5881:: with SMTP id d1mr542082pgu.193.1601065600492;
-        Fri, 25 Sep 2020 13:26:40 -0700 (PDT)
+        bh=xalch59fDuEKl76YuuW9L6ISBYkH/TTx0Ff+RgikJxo=;
+        b=gGnYnZjbnvWJMrKLofZQmLRb/eIGexCx7K8jbvWghfBjJfpxdLOnbuOKreD7AQO7gg
+         qvQD3gdISWitjrlTZi0FfMbZ5ByUz5376qmQZvwagfmQGTVQCa4RCDj7MfTtVXsE6jVj
+         DkO4Xodhis/l2NghvD23X6qOhigQGwW0L/ZCjgmaqNimvoveflPxziZc0ob9rl+uSIjT
+         p+4bEG94SyEwE+1fp8Vc2vW8++6RovBHrBJDTGeVa4uhAhjHMLt51fdnNnSIFsafyvP0
+         oDttBE3PbFdEsTj6TZltnkLTCUtEfSzYUlXUqHj6976Y5w18ddLLNNC+tF2J/eFKpImR
+         XwhA==
+X-Gm-Message-State: AOAM530OXZdVDsLZ8lTEhwTGgOY3bV6cWOg4M+Zmp5y5ADDwGuQ3e4SZ
+        ZWXy6pBTsp3TSpMJ+PZKfW88w4bvS9tgQWAO
+X-Google-Smtp-Source: ABdhPJzmfj4AEPYzK8yIYg6dWta0UdlI0MvUEx+twtC6hiM5Se1DgdD+x9UOcYpIEItGRJ46ESH7fA==
+X-Received: by 2002:a17:902:c252:b029:d2:4345:5c7 with SMTP id 18-20020a170902c252b02900d2434505c7mr1152244plg.4.1601065859302;
+        Fri, 25 Sep 2020 13:30:59 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q15sm68096pje.29.2020.09.25.13.26.39
+        by smtp.gmail.com with ESMTPSA id g1sm70849pjs.30.2020.09.25.13.30.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 13:26:39 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 13:26:38 -0700
+        Fri, 25 Sep 2020 13:30:58 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 13:30:57 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Pintu Agarwal <pintu.ping@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        ard.biesheuvel@linaro.org, arnd@arndb.de, nico@linaro.org,
-        thgarnie@google.com, marc.zyngier@arm.com,
-        Mark Rutland <mark.rutland@arm.com>, tony@atomide.com,
-        matt@codeblueprint.co.uk, dave.martin@arm.com
-Subject: Re: KASLR support on ARM with Kernel 4.9 and 4.14
-Message-ID: <202009251301.A1FD183582@keescook>
-References: <CAOuPNLjtG_VHL1M8-=pKNNRmWQg_8oC0YG7C8H3gQcbJ+0B3=A@mail.gmail.com>
+To:     Gabriel Krisman Bertazi <krisman@collabora.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, luto@kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, willy@infradead.org,
+        linux-kselftest@vger.kernel.org, shuah@kernel.org,
+        kernel@collabora.com
+Subject: Re: [PATCH v6 1/9] kernel: Support TIF_SYSCALL_INTERCEPT flag
+Message-ID: <202009251327.587D111@keescook>
+References: <20200904203147.2908430-1-krisman@collabora.com>
+ <20200904203147.2908430-2-krisman@collabora.com>
+ <202009221243.6BC5635E@keescook>
+ <874kno6yct.fsf@collabora.com>
+ <202009231349.4A25EAF@keescook>
+ <87o8luuvze.fsf@nanos.tec.linutronix.de>
+ <87k0whsuh1.fsf@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOuPNLjtG_VHL1M8-=pKNNRmWQg_8oC0YG7C8H3gQcbJ+0B3=A@mail.gmail.com>
+In-Reply-To: <87k0whsuh1.fsf@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 08:33:59PM +0530, Pintu Agarwal wrote:
-> This is regarding the KASLR feature support on ARM for the kernel
-> version 4.9 and 4.14.
+On Fri, Sep 25, 2020 at 12:15:54PM -0400, Gabriel Krisman Bertazi wrote:
+> Thomas Gleixner <tglx@linutronix.de> writes:
 > 
-> Is KASLR supported on ARM-32 Linux 4.9 and above ?
-
-Sorry, this feature did not yet land in upstream:
-https://github.com/KSPP/linux/issues/3
-
-Here was the earlier effort:
-https://lore.kernel.org/kernel-hardening/20170814125411.22604-1-ard.biesheuvel@linaro.org/
-
-> Is it dependent on CONFIG_RANDOMIZE_BASE or
-
-CONFIG_RANDOMIZE_BASE is what is used on other architectures to control
-the feature.
-
-> /proc/sys/kernel/randomize_va_space ?
-> Is there any relation between these two?
-
-No, the latter is about userspace addresses.
-
-> Is the changing kernel symbols (in every boot), only possible if KASLR
-> is enabled, or there is another way it can happen?
-
-I think you meant kernel symbol addresses (not the symbols themselves).
-But yes, I wouldn't expect the addresses to move if you didn't either
-rebuild the kernel or had something else moving the kernel at boot (i.e.
-the boot loader).
-
-> I have these queries because,
-> In one of the arm-32 devices with Kernel 4.14, I observed that
-> CONFIG_RANDOMIZE_BASE is not available.
-> But /proc/sys/kernel/randomize_va_space is set to 2.
-> However, I also observed that symbol addresses are changing in every boot.
+> > On Wed, Sep 23 2020 at 13:49, Kees Cook wrote:
+> >> On Wed, Sep 23, 2020 at 04:18:26PM -0400, Gabriel Krisman Bertazi wrote:
+> >>> Kees Cook <keescook@chromium.org> writes:
+> >>> Yes, we can, and I'm happy to follow up with that as part of my TIF
+> >>> clean up work, but can we not block the current patchset to be merged
+> >>> waiting for that, as this already grew a lot from the original feature
+> >>> submission?
+> >>
+> >> In that case, I'd say just add the new TIF flag. The consolidation can
+> >> come later.
+> >
+> > No. This is exactly the wrong order. Cleanup and consolidation have
+> > precedence over features. I'm tired of 'we'll do that later' songs,
+> > simply because in the very end I'm going to be the idiot who mops up the
+> > resulting mess.
+> >
 > 
-> 1st boot cycle:
-> [root ~]# cat /proc/kallsyms | grep "sys_open"
-> a5b4de92 T sys_open
-> [root@sa515m ~]#
-> 
-> 2nd boot cycle:
-> [root ~]# cat /proc/kallsyms | grep "sys_open"
-> f546ed66 T sys_open
-> 
-> So, I am wondering how this is possible without KASLR
-> (CONFIG_RANDOMIZE_BASE) support in Kernel ?
+> No problem.  I will follow up with a patchset consolidating those flags
+> into this syscall_intercept interface I proposed.  I assume there is no
+> immediate concerns with the consolidation approach itself.
 
-What device is this? Is it a stock kernel?
+I think the only issue is just finding a clean way to set/unset the
+flags safely/quickly (a lock seems too heavy to me).
 
-> Similarly, with Kernel 4.9 and CONFIG_RANDOMIZE_BASE is not available
-> but /proc/sys/kernel/randomize_va_space is set to 2.
-> But here, the addresses are remaining same.
-> 
-> 1st Run:
-> [root~]# cat /proc/kallsyms | grep "sys_open"
-> c01ed68c T sys_open
-> [root ~]#
-> 
-> *** reboot ***
-> [root ~]# cat /proc/kallsyms | grep "sys_open"
-> c01ed68c T sys_open
-> 
-> 
-> Is there any other difference between these two kernel versions with
-> respect to changing symbol addresses ?
+Should thread_info hold an entire u32 for all intercept flags (then the
+TIF_WORK tests is just a zero-test of the intercept u32 word)? Or should
+there be a TIF_INTERCEPT and a totally separate u32 (e.g. in
+task_struct) indicating which intercepts? (And if they're separate, how
+do we atomically set/unset)
 
-Is the boot loader changing the base address? (What boot loader are you
-using?)
+i.e.:
+
+atomic_start
+	toggle a per-intercept bit
+	set TIF_INTERCEPT = !!(intercept word)
+atomic_end
 
 -- 
 Kees Cook
