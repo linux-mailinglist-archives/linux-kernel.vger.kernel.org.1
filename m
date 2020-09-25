@@ -2,148 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E677B27845E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E71278467
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbgIYJuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38896 "EHLO
+        id S1728019AbgIYJu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgIYJuI (ORCPT
+        with ESMTP id S1727733AbgIYJu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:50:08 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58835C0613CE;
-        Fri, 25 Sep 2020 02:50:08 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d6so2641210pfn.9;
-        Fri, 25 Sep 2020 02:50:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LZZgw+N+0uZC3jHwut6sPtyPqViOL0NE3WEuYPgaX/8=;
-        b=pawLkd/lBuMBWO3j1Yl5tYxIkULtDrTFQkC07XwKu9z8vQPVF8b8XteMJjhkSeuFc6
-         PM4YCufiyZgrztbY4IUWt/3wpqwPNlZicqsz8cZh7VdFd75dHccBombrygrmC7PbLCyH
-         VKsh892nzf0JTfwX4yC+IT4GOn2v9QrIM9hajuNpvKRjzAfv2wUEfXlWrD/J7SYGcWf2
-         a3a/vF4WUNmJxCTsraBZHVjO+U+A71aL8FyCzbjz5Yd1diZ8dRshpgPQ1PtTG0gfmm6f
-         3+B69A99/Kh2wV+n4k6XfIVkkhpefTUgGWXAorX9LOAuM53QA4DvzWkbSI3HjNI5eKvh
-         jQJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LZZgw+N+0uZC3jHwut6sPtyPqViOL0NE3WEuYPgaX/8=;
-        b=LxkSEEwQXMyyTesIkM3nBiRXEeD02cWCMwHLYbGeXf0B1qpFzfNpzbawneEkvmSqQt
-         53+avwSbF6DfWtxud2Fby+4EsQNN6jnnhs2iCXvVwbhvZGMgTGgEqhyvRsY3Fc7PLW3o
-         OZSaB87HMJ1e9W5CEXJJGaDdWbD3ZlZlRoq8HuPO5WJHuD9xzuKqVFNYnTLNYcG6SoVk
-         rqEkLdJ760UThtVCmgnVmaSLLi9m8wLU6mTu9yoDHa1TbsjxH/N6cWdqmVpEe4Dmukvu
-         LF1mocloHT7iebGtwXaSsWfctT8dWw2IHqEXIQWPCxG4P4/i/WVZ9/+y0gPI4RDB0/i8
-         9PCA==
-X-Gm-Message-State: AOAM531G+UWfVoHa0zyhNou8WFdAjtXmyFCSPSa06mlokbDDWW9n4BRJ
-        8pBYb59zTS2TB6wG5ME7DMwJwG8YtgCP2Oi2Wdw=
-X-Google-Smtp-Source: ABdhPJya6yifLcctrFVoCT1VRlSUaWfGGb4t9hw7J/ZoL/zdhKGAgFnHt+W/eNXttgV38F0QwHTCVs/+tAwJ2tIejiI=
-X-Received: by 2002:a17:902:d708:b029:d2:635f:6692 with SMTP id
- w8-20020a170902d708b02900d2635f6692mr2900886ply.17.1601027407841; Fri, 25 Sep
- 2020 02:50:07 -0700 (PDT)
+        Fri, 25 Sep 2020 05:50:57 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47002C0613CE;
+        Fri, 25 Sep 2020 02:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=28F9ogfbtjbZVl/n21rnRnyA08/27VBA9tFd1Emv+00=; b=eDtTZJcKIKXiogPX8IEoroVaur
+        XW7EI4ZB21PTkWWr9eWrFNLyAkJMplmIZMrBeAnSzW1ixnZ6BrvaKgafONbS0Joxy2CeX/wnHxrF3
+        QqwrtXqNNoROvt9GzJImRgUczIUwWbo+Q/n6g6pLgQxTCohc5HZjzKY9ukoT8pzxVga7MCJTci00u
+        0GD1c38oFcQp82w8s0Sb1WyrTVLELnCaIlpKcH9QKL4xD5S/TA24mg6YoIDwpyhlh+50WQmGXx9t3
+        Am6sBfG2czlVMfNPRh2C6JExGJ+N5gbSe/yCFv0CGD1FP+tm8XQ/O71XwgOzhlYZ/Xlfujol8O6M7
+        B2891KUQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLkN6-0000zO-FY; Fri, 25 Sep 2020 09:50:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D5927301A27;
+        Fri, 25 Sep 2020 11:50:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BEFA320104626; Fri, 25 Sep 2020 11:50:29 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 11:50:29 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20200925095029.GX2628@hirez.programming.kicks-ass.net>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20200924132904.1391-6-rppt@kernel.org>
+ <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
+ <8435eff6-7fa9-d923-45e5-d8850e4c6d73@redhat.com>
 MIME-Version: 1.0
-References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-11-warthog618@gmail.com>
- <CAHp75VdaPR+iihenPYos1mAGLbDhJPvCfDTtURpk_MBa=3wYEg@mail.gmail.com>
- <CAHp75Vcktxp1C6NTOrW-WEnfueOu0UvtquFLpsL5+vv6Fdaajw@mail.gmail.com>
- <20200924032414.GC11575@sol> <CAHp75Vd1=CpsMecw=dua66i-P992e71uQcOzWR7tvd6ZGyKWoA@mail.gmail.com>
- <20200924092622.GB20188@sol>
-In-Reply-To: <20200924092622.GB20188@sol>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 25 Sep 2020 12:49:49 +0300
-Message-ID: <CAHp75Vd8PjODZkAjDrpqdeGT8-j7zbnBB_HALAWvQ2xoH24nzQ@mail.gmail.com>
-Subject: Re: [PATCH v9 10/20] gpiolib: cdev: support GPIO_V2_LINE_SET_CONFIG_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8435eff6-7fa9-d923-45e5-d8850e4c6d73@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 12:26 PM Kent Gibson <warthog618@gmail.com> wrote:
-> On Thu, Sep 24, 2020 at 11:26:49AM +0300, Andy Shevchenko wrote:
-> > On Thu, Sep 24, 2020 at 6:24 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > On Wed, Sep 23, 2020 at 07:15:46PM +0300, Andy Shevchenko wrote:
-> > > > On Wed, Sep 23, 2020 at 7:14 PM Andy Shevchenko
-> > > > <andy.shevchenko@gmail.com> wrote:
-> > > > > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+On Fri, Sep 25, 2020 at 11:00:30AM +0200, David Hildenbrand wrote:
+> On 25.09.20 09:41, Peter Zijlstra wrote:
+> > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
+> >> From: Mike Rapoport <rppt@linux.ibm.com>
+> >>
+> >> Removing a PAGE_SIZE page from the direct map every time such page is
+> >> allocated for a secret memory mapping will cause severe fragmentation of
+> >> the direct map. This fragmentation can be reduced by using PMD-size pages
+> >> as a pool for small pages for secret memory mappings.
+> >>
+> >> Add a gen_pool per secretmem inode and lazily populate this pool with
+> >> PMD-size pages.
+> > 
+> > What's the actual efficacy of this? Since the pmd is per inode, all I
+> > need is a lot of inodes and we're in business to destroy the directmap,
+> > no?
+> > 
+> > Afaict there's no privs needed to use this, all a process needs is to
+> > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
+> > page will utterly destroy the direct map.
+> > 
+> > I really don't like this, at all.
+> 
+> As I expressed earlier, I would prefer allowing allocation of secretmem
+> only from a previously defined CMA area. This would physically locally
+> limit the pain.
 
-...
+Given that this thing doesn't have a migrate hook, that seems like an
+eminently reasonable contraint. Because not only will it mess up the
+directmap, it will also destroy the ability of the page-allocator /
+compaction to re-form high order blocks by sprinkling holes throughout.
 
-> > > > > > +               polarity_change =
-> > > > > > +                       (test_bit(FLAG_ACTIVE_LOW, &desc->flags) !=
-> > > > > > +                        ((flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW) != 0));
-> > > > >
-> > > > > Comparison
-> > > >
-> > > > Comparison between int / long (not all archs are agreed on this) and
-> > > > boolean is not the best we can do.
-> > > >
-> > >
-> > > There is no bool to int comparision here.
-> >
-> > test_bit() returns int or long depending on arch... Then you compare
-> > it to bool (which is a product of != 0).
+Also, this is all very close to XPFO, yet I don't see that mentioned
+anywhere.
 
-> Really - I thought it returned bool.
-> It is a test - why would it return int or long?
-
-I assume due to arch relation. Some archs may convert test_bit() to a
-single assembly instruction that returns a register which definitely
-fits long or int depending on case.
-
-> Surely it is guaranteed to return 0 or 1?
-
-Not sure about this, it's all in arch/* and needs to be investigated.
-Would be nice to have it cleaned up if there is any inconsistency (and
-document if not yet). But It's out of scope of this series I believe.
-
-> > > There are two comparisons - the inner int vs int => bool and the
-> > > outer bool vs bool.  The "!= 0" is effectively an implicit cast to
-> > > bool, as is your new_polarity initialisation below.
-> > >
-> > > > What about
-> > > >
-> > > >   bool old_polarity = test_bit(FLAG_ACTIVE_LOW, &desc->flags);
-> > > >   bool new_polarity = flags & GPIO_V2_LINE_FLAG_ACTIVE_LOW;
-> > > >
-> > > >   old_polarity ^ new_polarity
-> > >
-> > > So using bitwise operators on bools is ok??
-> >
-> > XOR is special. There were never bitwise/boolean XORs.
-> >
->
-> We must live in different universes, cos there has been a bitwise XOR in
-> mine since K&R.  The logical XOR is '!='.
-
-Oops, you are right, It was never boolean XOR because it's the same as
-a simple comparison.
-
-...
-
-> > > > and move this under INPUT conditional?
-> > >
-> > > It has to be before the gpio_v2_line_config_flags_to_desc_flags() call,
-> > > as that modifies the desc flags, including the new polarity, so
-> > > polarity_change would then always be false :-).
-> >
-> > I really don't see in the code how polarity_change value is used in
-> > FLAG_OUTPUT branch below.
->
-> It isn't.  But desc->flags is modified before both - and so the
-> polarity_change initialization has to go before both SINCE IT TESTS
-> THE FLAGS.
-
-I see now. Sorry for being too blind.
-
--- 
-With Best Regards,
-Andy Shevchenko
+Further still, it has this HAVE_SECRETMEM_UNCACHED nonsense which is
+completely unused. I'm not at all sure exposing UNCACHED to random
+userspace is a sane idea.
