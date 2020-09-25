@@ -2,346 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6564F2793F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0A9279403
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728477AbgIYWIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:08:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40682 "EHLO
+        id S1728963AbgIYWQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726731AbgIYWIY (ORCPT
+        with ESMTP id S1727183AbgIYWQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:08:24 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A83C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:08:24 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id mn7so194794pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:08:24 -0700 (PDT)
+        Fri, 25 Sep 2020 18:16:32 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1181C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:16:31 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id w3so3683169ljo.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:16:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=GZxOp9tVMkxfN5SUB+XDS9nUQK1Eu5dH5U37a/M6GoE=;
-        b=BaEN8KyJCF6NBhUqisFySpUDzKj1IIziINakIejJOH5OPzj0MU6loF2dN0r+JdSbIt
-         WrK/6gfyc5lvXal98V+aXLUdyjM3MRkQL4pXVdS/KyMNDlU58hC5ayOKl6BWXWqMby9x
-         xyjNiJ9RNfSDfYusdiTQz2VZibawpH/7a3g3wbs7Yy906rTuZzIwOwZPszbojcnTnsHU
-         1AHepO7bY/0dxoOACk4Jg91d9la5uWkPpl2XaVMCUgRPoqeF/BmFXQoT7bGGqN+hif95
-         nvjfaxm/41g/tjczKZJoXWwdgddVcZ09fi1QfwMPsIeKnlTLUjviufV+p+OhyYYb6scn
-         XXBQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2qHTqnIfH0BrTrH8c6GV0zk0WcCBrtPGOUQiFR1y9ws=;
+        b=Kv1GBbShRS5ryf448gWDVZmIPK8cMF1KcxmoYwXV4eM8lJFqzkq4jrowlSJCcHHxTx
+         8h9/NPStUqXDhl4nu5Dix0msNC0mCw3A8pys74DFElega7J8M3CmL71s3vZGX3mQljaJ
+         RS+srjEY/wgkIpXGQN9iWrez+qZZyiHKX9Tiw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=GZxOp9tVMkxfN5SUB+XDS9nUQK1Eu5dH5U37a/M6GoE=;
-        b=YlXQeLWQJfaQIKCY14bCFermZmj4fhH8jlOx08nPvqjrkmkZ5WWqV0K9X/mR0n5RVM
-         5lp9adrFdRMSt5y1C17Imvtx2/nX7cCxvnI3ELGD7RkBbZxnk7aKTFnjITCebeBk2Th3
-         QLRIRtdtAitD6HDy8bS/1uwezD7nFZE1Ee4UOd6VNB427xCzB/CZ6xY3FLSBE92QGgmB
-         PY/xEFAyEojFBHpCvjlsSywX2v2cHU4l1Z78oUemxU/ekr+7hN57UI29O+vhyvuhOr7T
-         bVBZ4ymb4xRlcPiESJQhOpRP+61zucJ04gMt6FQKPzJGrk2QxTLNjnYVdGVpAV9DoCRb
-         BB5A==
-X-Gm-Message-State: AOAM531Isu+wJm05GWtaQDKYOufB/jJXW+C2W038mA6wxnpBf7wo7/k8
-        yND2wCo+Ii5IZcmyToF7s/FBnw==
-X-Google-Smtp-Source: ABdhPJw0tEKLdmdxCfm53AhkjiCExkZGb69Mhfj2dejUvBsJrdED2GVLcEupZ2SbyyV4uZ2ekJdFDg==
-X-Received: by 2002:a17:90a:f411:: with SMTP id ch17mr571481pjb.38.1601071703555;
-        Fri, 25 Sep 2020 15:08:23 -0700 (PDT)
-Received: from [10.212.51.97] ([192.55.54.42])
-        by smtp.gmail.com with ESMTPSA id b11sm3544145pfd.33.2020.09.25.15.08.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 15:08:22 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Sinan Kaya" <okaya@kernel.org>
-Subject: Re: [PATCH v6 04/10] PCI/AER: Extend AER error handling to RCECs
-Date:   Fri, 25 Sep 2020 15:08:20 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <4F494177-8691-4110-9BB0-97D35F233892@intel.com>
-In-Reply-To: <20200925211407.GA2457926@bjorn-Precision-5520>
-References: <20200925211407.GA2457926@bjorn-Precision-5520>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2qHTqnIfH0BrTrH8c6GV0zk0WcCBrtPGOUQiFR1y9ws=;
+        b=Tfbh7KjJFo4BLaVcYvVjKz3E8VvFS5ASYTHhf12uK7LbJTovrNa2OTdKiKsN6IPeRw
+         DK4XJUu8xVq7w5A3sIbgxGFbbYr1tD3tQdIjbAp3VTjPWedTlMi/FtMJzmwOl2tQK//m
+         ymfLXfYmIRbPpyuz8JXMfJbOLVRNWQIWC1ymUE6sKnyZDVp9tLM0ORN+RjLYPzj1emsG
+         Bwdno8RqqHprgnsor3wCaMcHtnACcpa09isZFpwJYKs/KU+9cLmd+/cMw3saJwMGHW7p
+         ypkS33LXwd70ypicWhwYmNuI0u14qCvuwu5maaFQsscbp8NhMGuSYGVRq91afU5Cjyha
+         sX+g==
+X-Gm-Message-State: AOAM533OVvq565wr7G7oaiKa+b01ZoVKymR0zsHmbNvYM5slI21sarTZ
+        s2d4CQ6zPmD0Y9r1v4fQHLhgoD1nJnVUrQ==
+X-Google-Smtp-Source: ABdhPJwOgptF/mINIoNqiOQsyTKqKjbW9vB6Ih6qQiJU/s0EQT3RvpdXgNcJ/Fb2A4zJ6KlHNVcAvg==
+X-Received: by 2002:a05:651c:23c:: with SMTP id z28mr1913019ljn.36.1601072189963;
+        Fri, 25 Sep 2020 15:16:29 -0700 (PDT)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id q9sm288974lfn.170.2020.09.25.15.16.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 15:16:29 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id b22so4420220lfs.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:16:29 -0700 (PDT)
+X-Received: by 2002:a19:521a:: with SMTP id m26mr309828lfb.133.1601071742457;
+ Fri, 25 Sep 2020 15:09:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20200923002735.GN19098@xz-x1> <20200923170759.GA9916@ziepe.ca>
+ <20200924143517.GD79898@xz-x1> <20200924165152.GE9916@ziepe.ca>
+ <20200924175531.GH79898@xz-x1> <20200924181501.GF9916@ziepe.ca>
+ <20200924183418.GJ79898@xz-x1> <20200924183953.GG9916@ziepe.ca>
+ <20200924213010.GL79898@xz-x1> <CAHk-=wgz5SXKA6-uZ_BimOP1C7pHJag0ndz=tnJDAZS_Z+FrGQ@mail.gmail.com>
+ <20200925211321.GC188812@xz-x1>
+In-Reply-To: <20200925211321.GC188812@xz-x1>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 25 Sep 2020 15:08:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiBAkpgoTB1n5L6OdfWhOvmbmKgbKUH+QNBnw=cfoR-oA@mail.gmail.com>
+Message-ID: <CAHk-=wiBAkpgoTB1n5L6OdfWhOvmbmKgbKUH+QNBnw=cfoR-oA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25 Sep 2020, at 14:14, Bjorn Helgaas wrote:
-
-> [+cc Sinan, who's been reviewing changes in this area (thanks, 
-> Sinan!)]
+On Fri, Sep 25, 2020 at 2:13 PM Peter Xu <peterx@redhat.com> wrote:
 >
-> On Tue, Sep 22, 2020 at 02:38:53PM -0700, Sean V Kelley wrote:
->> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->>
->> Currently the kernel does not handle AER errors for Root Complex
->> integrated End Points (RCiEPs)[0]. These devices sit on a root bus 
->> within
->> the Root Complex (RC). AER handling is performed by a Root Complex 
->> Event
->> Collector (RCEC) [1] which is a effectively a type of RCiEP on the 
->> same
->> root bus.
->>
->> For an RCEC (technically not a Bridge), error messages "received" 
->> from
->> associated RCiEPs must be enabled for "transmission" in order to 
->> cause a
->> System Error via the Root Control register or (when the Advanced 
->> Error
->> Reporting Capability is present) reporting via the Root Error Command
->> register and logging in the Root Error Status register and Error 
->> Source
->> Identification register.
->>
->> In addition to the defined OS level handling of the reset flow for 
->> the
->> associated RCiEPs of an RCEC, it is possible to also have non-native
->> handling. In that case there is no need to take any actions on the 
->> RCEC
->> because the firmware is responsible for them. This is true where APEI 
->> [2]
->> is used to report the AER errors via a GHES[v2] HEST entry [3] and
->> relevant AER CPER record [4] and non-native handling is in use.
->>
->> We effectively end up with two different types of discovery for
->> purposes of handling AER errors:
->>
->> 1) Normal bus walk - we pass the downstream port above a bus to which
->> the device is attached and it walks everything below that point.
->>
->> 2) An RCiEP with no visible association with an RCEC as there is no 
->> need
->> to walk devices. In that case, the flow is to just call the callbacks 
->> for
->> the actual device, which in turn references its associated RCEC.
->>
->> A new walk function pci_bridge_walk(), similar to pci_bus_walk(),
->> is provided that takes a pci_dev instead of a bus. If that bridge
->> corresponds to a downstream port it will walk the subordinate bus of
->> that bridge. If the device does not then it will call the function on
->> that device alone.
->>
->> [0] ACPI PCI Express Base Specification 5.0-1 1.3.2.3 Root Complex
->> Integrated Endpoint Rules.
->> [1] ACPI PCI Express Base Specification 5.0-1 6.2 Error Signalling 
->> and
->> Logging
->> [2] ACPI Specification 6.3 Chapter 18 ACPI Platform Error Interface 
->> (APEI)
->> [3] ACPI Specification 6.3 18.2.3.7 Generic Hardware Error Source
->> [4] UEFI Specification 2.8, N.2.7 PCI Express Error Section
->>
->> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+> On Fri, Sep 25, 2020 at 12:56:05PM -0700, Linus Torvalds wrote:
+> > So I think we can simply add a
+> >
+> >         if (page_mapcount(page) != 1)
+> >                 return false;
+> >
+> > to page_maybe_dma_pinned(), and that very naturally protects against
+> > the "is the page count perhaps elevated due to a lot of forking?"
 >
-> I like this patch.  I think there are a few things that could be
-> peeled off as "no functional change" preliminary patches to make the
-> important changes more obvious in the "money patch".
+> How about the MAP_SHARED case where the page is pinned by some process but also
+> shared (so mapcount can be >1)?
 
-Great, it was helpful to discuss at LPC to give it more clarity.
->
->> ---
->>  drivers/pci/pci.h      |  2 +-
->>  drivers/pci/pcie/err.c | 77 
->> +++++++++++++++++++++++++++++++-----------
->>  2 files changed, 59 insertions(+), 20 deletions(-)
->>
->> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
->> index 83670a6425d8..7b547fc3679a 100644
->> --- a/drivers/pci/pci.h
->> +++ b/drivers/pci/pci.h
->> @@ -575,7 +575,7 @@ static inline int 
->> pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
->>  /* PCI error reporting and recovery */
->>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->>  			pci_channel_state_t state,
->> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
->> +			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev 
->> *pdev));
->>
->>  bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
->>  #ifdef CONFIG_PCIEASPM
->> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
->> index c543f419d8f9..e575fa6cee63 100644
->> --- a/drivers/pci/pcie/err.c
->> +++ b/drivers/pci/pcie/err.c
->> @@ -146,38 +146,73 @@ static int report_resume(struct pci_dev *dev, 
->> void *data)
->>  	return 0;
->>  }
->>
->> +/**
->> + * pci_bridge_walk - walk bridges potentially AER affected
->> + * @bridge   bridge which may be an RCEC with associated RCiEPs,
->> + *           an RCiEP associated with an RCEC, or a Port.
->> + * @cb       callback to be called for each device found
->> + * @userdata arbitrary pointer to be passed to callback.
->> + *
->> + * If the device provided is a bridge, walk the subordinate bus,
->> + * including any bridged devices on buses under this bus.
->> + * Call the provided callback on each device found.
->> + *
->> + * If the device provided has no subordinate bus, call the provided
->> + * callback on the device itself.
->> + */
->> +static void pci_bridge_walk(struct pci_dev *bridge, int (*cb)(struct 
->> pci_dev *, void *),
->
-> Maybe call this pci_walk_bridge() so it's the same order as the
-> existing pci_walk_bus(), unless there's some reason to be different.
+MAP_SHARED doesn't matter, since it's not getting COW'ed anyway, and
+we keep the page around regardless.
 
-Yes, I was wanting to distinguish it from pci_walk_bus() in some way 
-because it incorporated it and I wanted to put emphasis on the bridge 
-first. But in retrospect, I’m saying the same thing so might as well 
-be consistent! Will change.
+So MAP_SHARED is the easy case. We'll never get to any of this code,
+because is_cow_mapping() won't be true.
 
->
->> +			    void *userdata)
->> +{
->> +	if (bridge->subordinate)
->> +		pci_walk_bus(bridge->subordinate, cb, userdata);
->> +	else
->> +		cb(bridge, userdata);
->> +}
->> +
->>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->>  			pci_channel_state_t state,
->> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
->> +			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev 
->> *pdev))
->
-> The rename to "reset_subordinate_devices" seems separable, since it
-> doesn't change the interface.
+You can still screw up MAP_SHARED if you do a truncate() on the
+underlying file or something like that, but that most *definitely*
+falls under the "you only have yourself to blame" heading.
 
-Agree, it’s rather independent. Also changed a warning string output. 
-Will make separate.
+> Would the ATOMIC version always work?  I mean, I thought it could fail anytime,
+> so any fork() can start to fail for the tests too.
 
->
->>  {
->>  	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
->> -	struct pci_bus *bus;
->> +	struct pci_dev *bridge;
->> +	int type;
->>
->>  	/*
->> -	 * Error recovery runs on all subordinates of the first downstream 
->> port.
->> -	 * If the downstream port detected the error, it is cleared at the 
->> end.
->> +	 * Error recovery runs on all subordinates of the first downstream
->> +	 * bridge. If the downstream bridge detected the error, it is
->> +	 * cleared at the end. For RCiEPs we should reset just the RCiEP 
->> itself.
->>  	 */
->> -	if (!(pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
->> -	      pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM))
->> -		dev = dev->bus->self;
->> -	bus = dev->subordinate;
->> +	type = pci_pcie_type(dev);
->> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
->> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
->> +	    type == PCI_EXP_TYPE_RC_EC ||
->> +	    type == PCI_EXP_TYPE_RC_END)
->> +		bridge = dev;
->> +	else
->> +		bridge = pci_upstream_bridge(dev);
->
-> This makes it much easier to read, thank you.  I think the addition of
-> "type", rename of "dev" to "bridge", the inversion of the condition
-> (major improvement, thanks again), and use of pci_upstream_bridge()
-> instead of dev->bus->self might also be separable?
+Sure. I'm not really happy about GFP_ATOMIC, but I suspect it works in practice.
 
-Agree, it’s separable. Will do.
+Honestly, if somebody first pins megabytes of memory, and then does a
+fork(), they are doing some seriously odd and wrong things. So I think
+this should be a "we will try to handle it gracefully, but your load
+is broken" case.
 
->
-> Of course, you'd have to add the RC_EC and RC_END cases later, in the
-> money patch, but that's a good thing because it won't get lost in all
-> the other things being changed.
+I am still inclined to add some kind of warning to this case, but I'm
+also a bit on the fence wrt the whole "convenience" issue - for some
+very occasional use it's probably convenient to not have to worry
+about this in user space.
 
-Makes sense to me.
+Actually, what I'm even less happy about than the GFP_ATOMIC is how
+much annoying boilerplate this just "map anonymous page" required with
+the whole cgroup_charge, throttle, anon_rmap, lru_cache_add thing.
+Looking at that patch, it all looks _fairly_ simple, but there's a lot
+of details that got duplicated from the pte_none() new-page-fault case
+(and that the do_cow_page() case also shares)
 
->
->>  	pci_dbg(dev, "broadcast error_detected message\n");
->>  	if (state == pci_channel_io_frozen) {
->> -		pci_walk_bus(bus, report_frozen_detected, &status);
->> -		status = reset_link(dev);
->> +		pci_bridge_walk(bridge, report_frozen_detected, &status);
->> +		if (type == PCI_EXP_TYPE_RC_END) {
->> +			pci_warn(dev, "link reset not possible for RCiEP\n");
->> +			status = PCI_ERS_RESULT_NONE;
->> +			goto failed;
->> +		}
->> +
->> +		status = reset_subordinate_devices(bridge);
->>  		if (status != PCI_ERS_RESULT_RECOVERED) {
->> -			pci_warn(dev, "link reset failed\n");
->> +			pci_warn(dev, "subordinate device reset failed\n");
->>  			goto failed;
->>  		}
->>  	} else {
->> -		pci_walk_bus(bus, report_normal_detected, &status);
->> +		pci_bridge_walk(bridge, report_normal_detected, &status);
->>  	}
->>
->>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
->>  		status = PCI_ERS_RESULT_RECOVERED;
->>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
->> -		pci_walk_bus(bus, report_mmio_enabled, &status);
->> +		pci_bridge_walk(bridge, report_mmio_enabled, &status);
->>  	}
->>
->>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
->> @@ -188,18 +223,22 @@ pci_ers_result_t pcie_do_recovery(struct 
->> pci_dev *dev,
->>  		 */
->>  		status = PCI_ERS_RESULT_RECOVERED;
->>  		pci_dbg(dev, "broadcast slot_reset message\n");
->> -		pci_walk_bus(bus, report_slot_reset, &status);
->> +		pci_bridge_walk(bridge, report_slot_reset, &status);
->>  	}
->>
->>  	if (status != PCI_ERS_RESULT_RECOVERED)
->>  		goto failed;
->>
->>  	pci_dbg(dev, "broadcast resume message\n");
->> -	pci_walk_bus(bus, report_resume, &status);
->> -
->> -	if (pcie_aer_is_native(dev))
->> -		pcie_clear_device_status(dev);
->> -	pci_aer_clear_nonfatal_status(dev);
->> +	pci_bridge_walk(bridge, report_resume, &status);
->> +
->> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
->> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
->> +	    type == PCI_EXP_TYPE_RC_EC) {
->
-> Addition of this check also seems worthy of a separate patch (for just
-> root ports and downstream ports first, then RC_EC being added later).
-> That would make a convenient place to explain why we need the change.
-> I think it's *correct*; it just gets lost in the noise and not even
-> mentioned when it's done as part of one big patch.
+I understand why it happens, and there's not *that* many cases, it
+made me go "ouch, this is a lot of small details, maybe I missed
+some", and I got the feeling that I should try to re-organize a few
+helper functions to avoid duplicating the same basic code over and
+over again.
 
-It does feel a bit out of place here and having the space to also 
-explain why this change is needed would be worthy of the separation. 
-Will do.
+But I decided that I wanted to keep the patch minimal and as focused
+as possible, so I didn't actually do that. But we clearly have decades
+of adding rules that just makes even something as "simple" as "add a
+new page to a VM" fairly complex.
 
-Thanks!
+Also, to avoid making the patch bigger, I skipped your "pass
+destination vma around" patch. I think it's the right thing
+conceptually, but everything I looked at also screamed "we don't
+actually care about the differences" to me.
 
-Sean
+I dunno. I'm conflicted. This really _feels_ to me like "we're so
+close to just fixing this once and for all", but then I also go "maybe
+we should just revert everything and do this for 5.10".
 
+Except "reverting everything" is sadly really really problematic too.
+It will fix the rdma issue, but in this case "everything" goes all the
+way back to "uhhuh, we have a security issue with COW going the wrong
+way". Otherwise I'd have gone that way two weeks ago already.
 
->
->> +		if (pcie_aer_is_native(bridge))
->> +			pcie_clear_device_status(bridge);
->> +		pci_aer_clear_nonfatal_status(bridge);
->> +	}
->>  	pci_info(dev, "device recovery successful\n");
->>  	return status;
->>
->> -- 
->> 2.28.0
->>
+               Linus
