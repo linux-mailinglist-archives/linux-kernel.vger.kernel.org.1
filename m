@@ -2,74 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CCC278554
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00AB278555
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727899AbgIYKpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:45:19 -0400
-Received: from sonic312-23.consmr.mail.ne1.yahoo.com ([66.163.191.204]:34515
-        "EHLO sonic312-23.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726255AbgIYKpS (ORCPT
+        id S1727948AbgIYKpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:45:53 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:49142 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726255AbgIYKpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:45:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601030718; bh=NajTNMrfMLb6UXcjRhYpYerQX8PtVBLz0oFgaMINSWY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=OI3DJZbh+SbdmUN+088TS5cpe9QTOhDUGE+E++bD3GEgPDLVnlrbn0obzuOoQeNoJvoCW9jNEUud5cKncwM4k4v0DQBhCfnbyWbsTdyKcPvdTP5K1BbnSfGTziiWVIu9NxcrNc6OarqbBC4RxLD+8nJ8L78eSZ+nKtGJqN2sT2YIbMorWuqduAU+THYpuveqWM0ZBQMqqYsqnaAIumFOBGB06/if0ZUaCrUK5XRmoY81brWknWXlPf1nLwfbRxXGcy+q1ORN7JYJgI/cfFNJer2ry7OcVm1CKTj6zIcv/Cc1KVAAJhiycRTgp3znDFoal80WwABSjemS+3tuQ9JuwQ==
-X-YMail-OSG: xNIKs4UVM1mW.gylMKMgGq4s4j12CP5a41xpnZibU6LwcFRNJp1Dc4Oy2GGCN55
- dNbpxjLwU_oVnm8SQaEJxiFy1x1Ap3LXIOuxEXQ54OuRXxUPaiGmFhxA22SI2OtlhtdavPtpTueS
- pgx4woA39VaO9Co7znCm6nLN3FLre2igsRn8ABJJ.DuIxkxJ2tDbSaxrLXLbygFrUKu8zkVQ992D
- 3Gb1pYZzQKZh44bhttQaliYxjh6jsz46mek0hkVuPL44gyk_b8wvNyfuFOr4sFDSCnhmacUOaYzZ
- HMqbMgB.WeEqmltxDjZoatOdmEITFH2DhpaOxQsKWgPgJFTqmBGXbtcU7F8Fq0T_.U5TeI22DKJb
- 72CcbhQrvN8yxo96_MQudn4RFgp6PLs7oHoLNeH97FI7ojdO4wNJJVrQTzYIM8hkseN5pdMCU3i8
- vIPjOW_w69rqrCkTtbjbL7q5KU1cFFoRfj6OSBp06E.IadV9XOmkM8TGaMd.vZRP7gI8VF_lKxKs
- kHVQruW9jey3dwqKOEIjJgGgmCc2R.Uh4x64z2yItTUQqVmB9VnF7XB.lDx8kmQnKGytwrC1gti.
- 59oBSA09JIVr0N2i9OxkxjdgLxYzsZThalsYCYIkpVC0QdktAxMnrQbjpuBFalYN8KmfG6hE8L.V
- 02erJYlZJoj2nz8wVg6k7l38t9ayBG_e4JX7XTXhcuPwPjy6Gh.IBe1muB8UGbojjg3Gc3TkU49l
- EdEHHihFLeb_FYM8cv_QYWJpA7J53XC88G4xT9GlJmpyeU2IUOm8uBP8vpqGQFeQLvLllLHMVLck
- .TPXa7etAHJ3PG_C0PmCMqb.1pA4SexRqmHulL5CQsdbyRt2xhFAVUy_dMdC97WbOnEBIl6Rwnpk
- awzbLsWsqLq5OEREHeRwOQgKUfXS0UUrzyerpIz0KnltIZBKC9DPpr2ssFsbYHk5ec75Up3xEbVl
- Jv9idEwV_wobN_.0Ea6Wg1Cggm7wx3Avd8Mxqarnwbbd1VYu6Y.0y60aAS9CdvqjzOhZ_ONAt5TJ
- tOU9eAa7.8HeVouFk1Bp6bcF1mHqstz8MjCSiWj_HuZfv2.JXKEYf4nJBaiOfIyeFWjF2QR7bZe3
- kFAQ3t8tmPMGjH.LpMQ7fPg_PKHXMRMHKEOUjAt3pQhx9NG0.L5PfhyRa__Tr4w6J8MTY7yKzxbF
- oPiguxUht1jbZEbpmLV7HHD2e6H4_pKun2ThUaL1K1NPRpS51TJThvUdowf0cgirI9wVcb8JbodM
- lGDNRJyYCAD6sGLCjPIeJzXdCtErUmAglh78Hg4i4CHoUPDi.8ypy2TY6z6frbg6eJrMEcrhgvcT
- 4uguQcCFcq6AmI.xiLwDGzEiByn9Awb_2elIG0zhs0mqNWmiDbCdPwqJd34tf9PVGpQppqMMyfJf
- 0Jx9A77gL5ZW0LnK5u85q0z.a4ZUg1_wUgJxLHDALtLkAcdwDEhQ-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic312.consmr.mail.ne1.yahoo.com with HTTP; Fri, 25 Sep 2020 10:45:18 +0000
-Date:   Fri, 25 Sep 2020 10:45:17 +0000 (UTC)
-From:   Ms Lisa Hugh <lisa.hugh111@gmail.com>
-Reply-To: ms.lisahugh000@gmail.com
-Message-ID: <1666527215.663964.1601030717484@mail.yahoo.com>
-Subject: YOUR HELP FOR THIS TRANSFER.(Ms Lisa hugh).
+        Fri, 25 Sep 2020 06:45:53 -0400
+X-UUID: 3fdd0ed816d94da7bebb41c36ef6a037-20200925
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=UZsNh4QD10TLz1Iiqvz7dEKn/aEbEslEBrTwdubFhe8=;
+        b=cnGHQm7O9Zz684tcwQoBDZcWxrls50g3KKH1jxeBc4s+KK9pmRsQ2TAV2rcfnNwDb9ixFDetGkXt2x8W5PfSe99YPapoFSUevIZc18ZWlUvF8HJnv6tW9c5LV3zqnXQ/OcAXTL3TZIRVsjm8eFxyIUl/vV7YNJ4DqbFZswvd2PY=;
+X-UUID: 3fdd0ed816d94da7bebb41c36ef6a037-20200925
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <weiyi.lu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 2144048692; Fri, 25 Sep 2020 18:45:49 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkexhb02.mediatek.inc (172.21.101.103) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 25 Sep 2020 18:45:47 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 25 Sep 2020 18:45:46 +0800
+Message-ID: <1601030747.1346.63.camel@mtksdaap41>
+Subject: Re: [PATCH 06/12] soc: mediatek: pm-domains: Add SMI block as bus
+ protection block
+From:   Weiyi Lu <weiyi.lu@mediatek.com>
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Collabora Kernel ML <kernel@collabora.com>,
+        <fparent@baylibre.com>, <matthias.bgg@gmail.com>,
+        <drinkcat@chromium.org>, <hsinyi@chromium.org>,
+        Matthias Brugger <mbrugger@suse.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+Date:   Fri, 25 Sep 2020 18:45:47 +0800
+In-Reply-To: <20200910172826.3074357-7-enric.balletbo@collabora.com>
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+         <20200910172826.3074357-7-enric.balletbo@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1666527215.663964.1601030717484.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16674 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0
-To:     unlisted-recipients:; (no To-header on input)
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gVGh1LCAyMDIwLTA5LTEwIGF0IDE5OjI4ICswMjAwLCBFbnJpYyBCYWxsZXRibyBpIFNlcnJh
+IHdyb3RlOg0KPiBGcm9tOiBNYXR0aGlhcyBCcnVnZ2VyIDxtYnJ1Z2dlckBzdXNlLmNvbT4NCj4g
+DQo+IEFwYXJ0IGZyb20gdGhlIGluZnJhY2ZnIGJsb2NrLCB0aGUgU01JIGJsb2NrIGlzIHVzZWQg
+dG8gZW5hYmxlIHRoZSBidXMNCj4gcHJvdGVjdGlvbiBmb3Igc29tZSBwb3dlciBkb21haW5zLiBB
+ZGQgc3VwcG9ydCBmb3IgdGhpcyBibG9jay4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IE1hdHRoaWFz
+IEJydWdnZXIgPG1icnVnZ2VyQHN1c2UuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBFbnJpYyBCYWxs
+ZXRibyBpIFNlcnJhIDxlbnJpYy5iYWxsZXRib0Bjb2xsYWJvcmEuY29tPg0KPiAtLS0NCj4gDQo+
+ICBkcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5jIHwgNjQgKysrKysrKysrKysr
+KysrKysrKystLS0tLS0tDQo+ICBpbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9pbmZyYWNmZy5o
+IHwgIDYgKysrDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDUzIGluc2VydGlvbnMoKyksIDE3IGRlbGV0
+aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1wbS1k
+b21haW5zLmMgYi9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstcG0tZG9tYWlucy5jDQo+IGluZGV4
+IGY2MDljMmQ0NTRmYS4uM2FhNDMwYTYwNjAyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3NvYy9t
+ZWRpYXRlay9tdGstcG0tZG9tYWlucy5jDQo+ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210
+ay1wbS1kb21haW5zLmMNCj4gQEAgLTU2LDggKzU2LDI1IEBADQo+ICANCj4gICNkZWZpbmUgU1BN
+X01BWF9CVVNfUFJPVF9EQVRBCQkzDQo+ICANCj4gKyNkZWZpbmUgX0JVU19QUk9UKF9tYXNrLCBf
+c2V0LCBfY2xyLCBfc3RhLCBfdXBkYXRlKSB7CVwNCj4gKwkJLmJ1c19wcm90X21hc2sgPSAoX21h
+c2spLAkJXA0KPiArCQkuYnVzX3Byb3Rfc2V0ID0gX3NldCwJCQlcDQo+ICsJCS5idXNfcHJvdF9j
+bHIgPSBfY2xyLAkJCVwNCj4gKwkJLmJ1c19wcm90X3N0YSA9IF9zdGEsCQkJXA0KPiArCQkuYnVz
+X3Byb3RfcmVnX3VwZGF0ZSA9IF91cGRhdGUsCQlcDQo+ICsJfQ0KPiArDQo+ICsjZGVmaW5lIEJV
+U19QUk9UX1dSKF9tYXNrLCBfc2V0LCBfY2xyLCBfc3RhKQkJXA0KPiArCQlfQlVTX1BST1QoX21h
+c2ssIF9zZXQsIF9jbHIsIF9zdGEsIGZhbHNlKQ0KPiArDQo+ICsjZGVmaW5lIEJVU19QUk9UX1VQ
+REFURShfbWFzaywgX3NldCwgX2NsciwgX3N0YSkJCVwNCj4gKwkJX0JVU19QUk9UKF9tYXNrLCBf
+c2V0LCBfY2xyLCBfc3RhLCB0cnVlKQ0KPiArDQo+ICBzdHJ1Y3Qgc2Nwc3lzX2J1c19wcm90X2Rh
+dGEgew0KPiAgCXUzMiBidXNfcHJvdF9tYXNrOw0KPiArCXUzMiBidXNfcHJvdF9zZXQ7DQo+ICsJ
+dTMyIGJ1c19wcm90X2NscjsNCj4gKwl1MzIgYnVzX3Byb3Rfc3RhOw0KPiAgCWJvb2wgYnVzX3By
+b3RfcmVnX3VwZGF0ZTsNCj4gIH07DQo+ICANCj4gQEAgLTY5LDYgKzg2LDcgQEAgc3RydWN0IHNj
+cHN5c19idXNfcHJvdF9kYXRhIHsNCj4gICAqIEBzcmFtX3Bkbl9hY2tfYml0czogVGhlIG1hc2sg
+Zm9yIHNyYW0gcG93ZXIgY29udHJvbCBhY2tlZCBiaXRzLg0KPiAgICogQGNhcHM6IFRoZSBmbGFn
+IGZvciBhY3RpdmUgd2FrZS11cCBhY3Rpb24uDQo+ICAgKiBAYnBfaW5mcmFjZmc6IGJ1cyBwcm90
+ZWN0aW9uIGZvciBpbmZyYWNmZyBzdWJzeXN0ZW0NCj4gKyAqIEBicF9zbWk6IGJ1cyBwcm90ZWN0
+aW9uIGZvciBzbWkgc3Vic3lzdGVtDQo+ICAgKi8NCj4gIHN0cnVjdCBzY3BzeXNfZG9tYWluX2Rh
+dGEgew0KPiAgCXUzMiBzdGFfbWFzazsNCj4gQEAgLTc3LDYgKzk1LDcgQEAgc3RydWN0IHNjcHN5
+c19kb21haW5fZGF0YSB7DQo+ICAJdTMyIHNyYW1fcGRuX2Fja19iaXRzOw0KPiAgCXU4IGNhcHM7
+DQo+ICAJY29uc3Qgc3RydWN0IHNjcHN5c19idXNfcHJvdF9kYXRhIGJwX2luZnJhY2ZnW1NQTV9N
+QVhfQlVTX1BST1RfREFUQV07DQo+ICsJY29uc3Qgc3RydWN0IHNjcHN5c19idXNfcHJvdF9kYXRh
+IGJwX3NtaVtTUE1fTUFYX0JVU19QUk9UX0RBVEFdOw0KPiAgfTsNCj4gIA0KPiAgc3RydWN0IHNj
+cHN5c19kb21haW4gew0KPiBAQCAtODYsNiArMTA1LDcgQEAgc3RydWN0IHNjcHN5c19kb21haW4g
+ew0KPiAgCWludCBudW1fY2xrczsNCj4gIAlzdHJ1Y3QgY2xrX2J1bGtfZGF0YSAqY2xrczsNCj4g
+IAlzdHJ1Y3QgcmVnbWFwICppbmZyYWNmZzsNCj4gKwlzdHJ1Y3QgcmVnbWFwICpzbWk7DQo+ICB9
+Ow0KPiAgDQo+ICBzdHJ1Y3Qgc2Nwc3lzX3NvY19kYXRhIHsNCj4gQEAgLTE3Myw5ICsxOTMsOSBA
+QCBzdGF0aWMgaW50IF9zY3BzeXNfYnVzX3Byb3RlY3RfZW5hYmxlKGNvbnN0IHN0cnVjdCBzY3Bz
+eXNfYnVzX3Byb3RfZGF0YSAqYnBkLCBzdA0KPiAgCQlpZiAoYnBkW2ldLmJ1c19wcm90X3JlZ191
+cGRhdGUpDQo+ICAJCQlyZWdtYXBfdXBkYXRlX2JpdHMocmVnbWFwLCBJTkZSQV9UT1BBWElfUFJP
+VEVDVEVOLCBtYXNrLCBtYXNrKTsNCj4gIAkJZWxzZQ0KPiAtCQkJcmVnbWFwX3dyaXRlKHJlZ21h
+cCwgSU5GUkFfVE9QQVhJX1BST1RFQ1RFTl9TRVQsIG1hc2spOw0KPiArCQkJcmVnbWFwX3dyaXRl
+KHJlZ21hcCwgYnBkW2ldLmJ1c19wcm90X3NldCwgbWFzayk7DQo+ICANCg0KQ291bGQgaXQgYmU/
+DQoNCmlmIChicGRbaV0uYnVzX3Byb3Rfc2V0KQ0KCXJlZ21hcF93cml0ZShyZWdtYXAsIGJwZFtp
+XS5idXNfcHJvdF9zZXQsIG1hc2spOw0KZWxzZQ0KCXJlZ21hcF91cGRhdGVfYml0cyhyZWdtYXAs
+IElORlJBX1RPUEFYSV9QUk9URUNURU4sIG1hc2ssIG1hc2spOw0KDQo+IC0JCXJldCA9IHJlZ21h
+cF9yZWFkX3BvbGxfdGltZW91dChyZWdtYXAsIElORlJBX1RPUEFYSV9QUk9URUNUU1RBMSwNCj4g
+KwkJcmV0ID0gcmVnbWFwX3JlYWRfcG9sbF90aW1lb3V0KHJlZ21hcCwgYnBkW2ldLmJ1c19wcm90
+X3N0YSwNCj4gIAkJCQkJICAgICAgIHZhbCwgKHZhbCAmIG1hc2spID09IG1hc2ssDQo+ICAJCQkJ
+CSAgICAgICBNVEtfUE9MTF9ERUxBWV9VUywgTVRLX1BPTExfVElNRU9VVCk7DQo+ICAJCWlmIChy
+ZXQpDQo+IEBAIC0xOTEsNyArMjExLDExIEBAIHN0YXRpYyBpbnQgc2Nwc3lzX2J1c19wcm90ZWN0
+X2VuYWJsZShzdHJ1Y3Qgc2Nwc3lzX2RvbWFpbiAqcGQpDQo+ICAJaW50IHJldDsNCj4gIA0KPiAg
+CXJldCA9IF9zY3BzeXNfYnVzX3Byb3RlY3RfZW5hYmxlKGJwZCwgcGQtPmluZnJhY2ZnKTsNCj4g
+LQlyZXR1cm4gcmV0Ow0KPiArCWlmIChyZXQpDQo+ICsJCXJldHVybiByZXQ7DQo+ICsNCj4gKwli
+cGQgPSBwZC0+ZGF0YS0+YnBfc21pOw0KPiArCXJldHVybiBfc2Nwc3lzX2J1c19wcm90ZWN0X2Vu
+YWJsZShicGQsIHBkLT5zbWkpOw0KPiAgfQ0KPiAgDQo+ICBzdGF0aWMgaW50IF9zY3BzeXNfYnVz
+X3Byb3RlY3RfZGlzYWJsZShjb25zdCBzdHJ1Y3Qgc2Nwc3lzX2J1c19wcm90X2RhdGEgKmJwZCwN
+Cj4gQEAgLTIwNiwxMSArMjMwLDExIEBAIHN0YXRpYyBpbnQgX3NjcHN5c19idXNfcHJvdGVjdF9k
+aXNhYmxlKGNvbnN0IHN0cnVjdCBzY3BzeXNfYnVzX3Byb3RfZGF0YSAqYnBkLA0KPiAgCQkJcmV0
+dXJuIDA7DQo+ICANCj4gIAkJaWYgKGJwZFtpXS5idXNfcHJvdF9yZWdfdXBkYXRlKQ0KDQpkaXR0
+by4NCg0KPiAtCQkJcmVnbWFwX3VwZGF0ZV9iaXRzKHJlZ21hcCwgSU5GUkFfVE9QQVhJX1BST1RF
+Q1RFTiwgbWFzaywgMCk7DQo+ICsJCQlyZWdtYXBfdXBkYXRlX2JpdHMocmVnbWFwLCBicGRbaV0u
+YnVzX3Byb3Rfc2V0LCBtYXNrLCAwKTsNCj4gIAkJZWxzZQ0KPiAtCQkJcmVnbWFwX3dyaXRlKHJl
+Z21hcCwgSU5GUkFfVE9QQVhJX1BST1RFQ1RFTl9DTFIsIG1hc2spOw0KPiArCQkJcmVnbWFwX3dy
+aXRlKHJlZ21hcCwgYnBkW2ldLmJ1c19wcm90X2NsciwgbWFzayk7DQo+ICANCj4gLQkJcmV0ID0g
+cmVnbWFwX3JlYWRfcG9sbF90aW1lb3V0KHJlZ21hcCwgSU5GUkFfVE9QQVhJX1BST1RFQ1RTVEEx
+LA0KPiArCQlyZXQgPSByZWdtYXBfcmVhZF9wb2xsX3RpbWVvdXQocmVnbWFwLCBicGRbaV0uYnVz
+X3Byb3Rfc3RhLA0KPiAgCQkJCQkgICAgICAgdmFsLCAhKHZhbCAmIG1hc2spLA0KPiAgCQkJCQkg
+ICAgICAgTVRLX1BPTExfREVMQVlfVVMsIE1US19QT0xMX1RJTUVPVVQpOw0KPiAgCQlpZiAocmV0
+KQ0KPiBAQCAtMjI2LDcgKzI1MCwxMSBAQCBzdGF0aWMgaW50IHNjcHN5c19idXNfcHJvdGVjdF9k
+aXNhYmxlKHN0cnVjdCBzY3BzeXNfZG9tYWluICpwZCkNCj4gIAlpbnQgcmV0Ow0KPiAgDQo+ICAJ
+cmV0ID0gX3NjcHN5c19idXNfcHJvdGVjdF9kaXNhYmxlKGJwZCwgcGQtPmluZnJhY2ZnKTsNCj4g
+LQlyZXR1cm4gcmV0Ow0KPiArCWlmIChyZXQpDQo+ICsJCXJldHVybiByZXQ7DQo+ICsNCj4gKwli
+cGQgPSBwZC0+ZGF0YS0+YnBfc21pOw0KPiArCXJldHVybiBfc2Nwc3lzX2J1c19wcm90ZWN0X2Rp
+c2FibGUoYnBkLCBwZC0+c21pKTsNCg0KSXQgc2hvdWxkIGhhdmUgYSByZXZlcnNlIG9yZGVyIGNv
+bXBhcmVkIHRvIHRoZSBlbmFibGUgY29udHJvbC4gQnV0IEknZA0KbGlrZSB0byBtYWtlIGl0IG1v
+cmUgZmxleGlibGUgdG8gYW55IHNlcXVlbmNlLCBsaWtlIElORlJBLT5TTUktPklORlJBDQoNCj4g
+IH0NCj4gIA0KPiAgc3RhdGljIGludCBzY3BzeXNfcG93ZXJfb24oc3RydWN0IGdlbmVyaWNfcG1f
+ZG9tYWluICpnZW5wZCkNCj4gQEAgLTM2MCw2ICszODgsMTAgQEAgc3RhdGljIGludCBzY3BzeXNf
+YWRkX29uZV9kb21haW4oc3RydWN0IHNjcHN5cyAqc2Nwc3lzLCBzdHJ1Y3QgZGV2aWNlX25vZGUg
+Km5vZGUNCj4gIAlpZiAoSVNfRVJSKHBkLT5pbmZyYWNmZykpDQo+ICAJCXBkLT5pbmZyYWNmZyA9
+IE5VTEw7DQo+ICANCj4gKwlwZC0+c21pID0gc3lzY29uX3JlZ21hcF9sb29rdXBfYnlfcGhhbmRs
+ZShub2RlLCAibWVkaWF0ZWssc21pIik7DQo+ICsJaWYgKElTX0VSUihwZC0+c21pKSkNCj4gKwkJ
+cGQtPnNtaSA9IE5VTEw7DQo+ICsNCj4gIAlwZC0+bnVtX2Nsa3MgPSBvZl9jbGtfZ2V0X3BhcmVu
+dF9jb3VudChub2RlKTsNCj4gIAlpZiAocGQtPm51bV9jbGtzID4gMCkgew0KPiAgCQlwZC0+Y2xr
+cyA9IGRldm1fa2NhbGxvYyhzY3BzeXMtPmRldiwgcGQtPm51bV9jbGtzLCBzaXplb2YoKnBkLT5j
+bGtzKSwgR0ZQX0tFUk5FTCk7DQo+IEBAIC01MzIsMTAgKzU2NCw5IEBAIHN0YXRpYyBjb25zdCBz
+dHJ1Y3Qgc2Nwc3lzX2RvbWFpbl9kYXRhIHNjcHN5c19kb21haW5fZGF0YV9tdDgxNzNbXSA9IHsN
+Cj4gIAkJLmN0bF9vZmZzID0gU1BNX0RJU19QV1JfQ09OLA0KPiAgCQkuc3JhbV9wZG5fYml0cyA9
+IEdFTk1BU0soMTEsIDgpLA0KPiAgCQkuc3JhbV9wZG5fYWNrX2JpdHMgPSBHRU5NQVNLKDEyLCAx
+MiksDQo+IC0JCS5icF9pbmZyYWNmZ1swXSA9IHsNCj4gLQkJCS5idXNfcHJvdF9yZWdfdXBkYXRl
+ID0gdHJ1ZSwNCj4gLQkJCS5idXNfcHJvdF9tYXNrID0gTVQ4MTczX1RPUF9BWElfUFJPVF9FTl9N
+TV9NMCB8DQo+IC0JCQkJTVQ4MTczX1RPUF9BWElfUFJPVF9FTl9NTV9NMSwNCj4gKwkJLmJwX2lu
+ZnJhY2ZnID0gew0KPiArCQkJQlVTX1BST1RfVVBEQVRFX01UODE3MyhNVDgxNzNfVE9QX0FYSV9Q
+Uk9UX0VOX01NX00wIHwNCj4gKwkJCQkJICAgICAgIE1UODE3M19UT1BfQVhJX1BST1RfRU5fTU1f
+TTEpLA0KPiAgCQl9LA0KPiAgCX0sDQo+ICAJW01UODE3M19QT1dFUl9ET01BSU5fVkVOQ19MVF0g
+PSB7DQo+IEBAIC01NzQsMTIgKzYwNSwxMSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNjcHN5c19k
+b21haW5fZGF0YSBzY3BzeXNfZG9tYWluX2RhdGFfbXQ4MTczW10gPSB7DQo+ICAJCS5jdGxfb2Zm
+cyA9IFNQTV9NRkdfUFdSX0NPTiwNCj4gIAkJLnNyYW1fcGRuX2JpdHMgPSBHRU5NQVNLKDEzLCA4
+KSwNCj4gIAkJLnNyYW1fcGRuX2Fja19iaXRzID0gR0VOTUFTSygyMSwgMTYpLA0KPiAtCQkuYnBf
+aW5mcmFjZmdbMF0gPSB7DQo+IC0JCQkuYnVzX3Byb3RfcmVnX3VwZGF0ZSA9IHRydWUsDQo+IC0J
+CQkuYnVzX3Byb3RfbWFzayA9IE1UODE3M19UT1BfQVhJX1BST1RfRU5fTUZHX1MgfA0KPiAtCQkJ
+CU1UODE3M19UT1BfQVhJX1BST1RfRU5fTUZHX00wIHwNCj4gLQkJCQlNVDgxNzNfVE9QX0FYSV9Q
+Uk9UX0VOX01GR19NMSB8DQo+IC0JCQkJTVQ4MTczX1RPUF9BWElfUFJPVF9FTl9NRkdfU05PT1Bf
+T1VULA0KPiArCQkuYnBfaW5mcmFjZmcgPSB7DQo+ICsJCQlCVVNfUFJPVF9VUERBVEVfTVQ4MTcz
+KE1UODE3M19UT1BfQVhJX1BST1RfRU5fTUZHX1MgfA0KPiArCQkJCQkgICAgICAgTVQ4MTczX1RP
+UF9BWElfUFJPVF9FTl9NRkdfTTAgfA0KPiArCQkJCQkgICAgICAgTVQ4MTczX1RPUF9BWElfUFJP
+VF9FTl9NRkdfTTEgfA0KPiArCQkJCQkgICAgICAgTVQ4MTczX1RPUF9BWElfUFJPVF9FTl9NRkdf
+U05PT1BfT1VUKSwNCj4gIAkJfSwNCj4gIAl9LA0KPiAgfTsNCj4gZGlmZiAtLWdpdCBhL2luY2x1
+ZGUvbGludXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmggYi9pbmNsdWRlL2xpbnV4L3NvYy9tZWRp
+YXRlay9pbmZyYWNmZy5oDQo+IGluZGV4IGY5NjdkMDJjYzJmZi4uM2YxOGNkZGZmYjQ0IDEwMDY0
+NA0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9pbmZyYWNmZy5oDQo+ICsrKyBi
+L2luY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL2luZnJhY2ZnLmgNCj4gQEAgLTM3LDYgKzM3LDEy
+IEBADQo+ICAjZGVmaW5lIElORlJBX1RPUEFYSV9QUk9URUNURU5fU0VUCTB4MDI2MA0KPiAgI2Rl
+ZmluZSBJTkZSQV9UT1BBWElfUFJPVEVDVEVOX0NMUgkweDAyNjQNCj4gIA0KPiArI2RlZmluZSBC
+VVNfUFJPVF9VUERBVEVfTVQ4MTczKF9tYXNrKQkJCVwNCj4gKwlCVVNfUFJPVF9VUERBVEUoX21h
+c2ssCQkJCVwNCj4gKwkJCUlORlJBX1RPUEFYSV9QUk9URUNURU4sCQlcDQo+ICsJCQlJTkZSQV9U
+T1BBWElfUFJPVEVDVEVOX0NMUiwJXA0KPiArCQkJSU5GUkFfVE9QQVhJX1BST1RFQ1RTVEExKQ0K
+PiArDQo+ICBpbnQgbXRrX2luZnJhY2ZnX3NldF9idXNfcHJvdGVjdGlvbihzdHJ1Y3QgcmVnbWFw
+ICppbmZyYWNmZywgdTMyIG1hc2ssDQo+ICAJCWJvb2wgcmVnX3VwZGF0ZSk7DQo+ICBpbnQgbXRr
+X2luZnJhY2ZnX2NsZWFyX2J1c19wcm90ZWN0aW9uKHN0cnVjdCByZWdtYXAgKmluZnJhY2ZnLCB1
+MzIgbWFzaywNCg0K
 
-
-Dear Friend,
-
-I am Ms Lisa hugh, work with the department of Audit and accounting manager here in the Bank(B.O.A).
-
-Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment, amount (US$4.5M DOLLARS).
-
-I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me for success.
-
-Note/ 50% for you why 50% for me after success of the transfer to your bank account.
-
-Below information is what i need from you so will can be reaching each other
-
-1)Full name ...
-2)Private telephone number...
-3)Age...
-4)Nationality...
-5)Occupation ...
-
-
-Thanks.
-
-Ms Lisa hugh.
