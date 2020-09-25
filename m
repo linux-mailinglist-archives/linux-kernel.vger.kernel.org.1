@@ -2,81 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC81427820A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:55:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FC927820C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727441AbgIYHzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:55:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYHzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:55:20 -0400
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1CDC21D7F;
-        Fri, 25 Sep 2020 07:55:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601020519;
-        bh=PYpKBdfnxsl+lZy0uAbjykbMZcQ/ZeD5YtM3wnkKo5M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gNPoZTypH49YY9R/KhFolT0F8pW+EHYH7dxKak/bSFnX64hq6gfi1+8kRIwVxOZRe
-         zuNM007hxQj7V0m0JveFQw/hCcJzeElZiyoRL5EGn8Zjj3beN2Phtm3hM8e7ppEvHo
-         Uyc0PJjW0wzsdHA+s4lOHvqqFWEhltFWjwx5DoRg=
-Received: by mail-ot1-f53.google.com with SMTP id 60so1500988otw.3;
-        Fri, 25 Sep 2020 00:55:19 -0700 (PDT)
-X-Gm-Message-State: AOAM532uUyBBqqi+yFqLJBGMhbhXY8iYNTtKxDBVBmS1dayx1ViYvzA1
-        EMe26K2Vw7f7TsD4lxOLTKxPoyKZiVJWvq+nF50=
-X-Google-Smtp-Source: ABdhPJyzAIgd2f9RlYkvBwF0nAfD7pU8wq5KUudhHCmDW47t7NNBE4tJZQj0wFDYwlN2mwgGkqVz555jZ19iot6ynio=
-X-Received: by 2002:a9d:335:: with SMTP id 50mr1961284otv.90.1601020518988;
- Fri, 25 Sep 2020 00:55:18 -0700 (PDT)
+        id S1727478AbgIYHzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727401AbgIYHza (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:55:30 -0400
+Received: from mail-yb1-xb44.google.com (mail-yb1-xb44.google.com [IPv6:2607:f8b0:4864:20::b44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747BFC0613CE;
+        Fri, 25 Sep 2020 00:55:30 -0700 (PDT)
+Received: by mail-yb1-xb44.google.com with SMTP id x8so1362597ybe.12;
+        Fri, 25 Sep 2020 00:55:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=iJo/1ogq0q+CXmZVEN9qkXyL/ZNzxnbVbLL8sTb+tF0=;
+        b=bms69fzJWqOnBLlGtPq3geLMZqTGFHhkCMg5DPJr5ZS9jNt/gWMnCkZPaQL3xL7Cdd
+         sxOaKx3HeHgqgqOiy9HruN4ayDfLBCzcgpB2WsZUBGl/mVLPPkLpxESgXYMuIXwPefST
+         F6zIn0WbQVdB8AJh45RAR7CYMZqyH3910XKDCFJxsT6ITF0EvoFPJ4kVQQrm8IoPCmiG
+         ZFo7t0c2ChBxEqLXGtiPJTPzlw02AA7vGYTYUqIvDR490fVbnDzdyDoulcImg5tPlfk4
+         L15bOrLlNfwr7J0rQBzUaznaLyp86khr03PFGn0VDZZEq9vhR/esd2nO6nCZ3Bc3iyE/
+         MEYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=iJo/1ogq0q+CXmZVEN9qkXyL/ZNzxnbVbLL8sTb+tF0=;
+        b=Q4NeBCB58rYlR6gQ9uQpyf4Lr7m9UrZ6aRzU8T1owFu3d9oYG+Cd6TOR9zV1+INii0
+         vJAKxAlA0tKyHxwvanHRd5Cg+IndundhQ/NfIvscLqeQDU3kdVfEJxCUYX+usXoF7FGx
+         ToHiOjtPci3oaMjJ7fAWvfPmsryeoaGQju1wiT0UsRyEEStz/d2mQ2kcKQUQieFhQc3G
+         6YCvqx/o5wZdXxe9nLXS69n//AQwJBAkgXDE9VLJ2FvAtK9fBB003MlnOpP5r0ZdyDWE
+         ojbQsBVSUdHfmHM9uoA/Td5wQtCBR/0zXpW/hhVAs5NA1ZNNsG5/cqhSFhfwUC37KbJc
+         vGig==
+X-Gm-Message-State: AOAM530ba3HQmThRR9Syk72U6yEnedm8eHkGMDU6bkPj58KV1gaHx3Aj
+        BXuz9CehqkLCXqAKENcmlt2x4SZl16TDcOmYbBw=
+X-Google-Smtp-Source: ABdhPJzY22CPc7/ghzHFzBjJBI7pGHxQ+KKC6qtnqMswlxKKyWzjRWW1+9reSvrmrnowKIqcpF4bt3FNpWWrv57hmug=
+X-Received: by 2002:a25:c786:: with SMTP id w128mr3533818ybe.135.1601020529448;
+ Fri, 25 Sep 2020 00:55:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200925074502.150448-1-misch@google.com> <CAMj1kXH9B0TevUEN=CGn9TCYCgr37zX+kSfmqxeALPmUG4GWCA@mail.gmail.com>
- <CALt099+4UNaVGoeHNOfErEtBwyUuV_ZhSRFkLKksPdWnrdednQ@mail.gmail.com>
-In-Reply-To: <CALt099+4UNaVGoeHNOfErEtBwyUuV_ZhSRFkLKksPdWnrdednQ@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 25 Sep 2020 09:55:08 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGhdtmHkcjKsSS37hXyeR3cHD3m=Qk4LZy12Nvrkz6H2A@mail.gmail.com>
-Message-ID: <CAMj1kXGhdtmHkcjKsSS37hXyeR3cHD3m=Qk4LZy12Nvrkz6H2A@mail.gmail.com>
-Subject: Re: [PATCH v2] efivarfs: Replace invalid slashes with exclamation
- marks in dentries.
-To:     Michael Schaller <misch@google.com>
-Cc:     Michael Schaller <michael@5challer.de>,
-        Matthew Garrett <matthew.garrett@nebula.com>,
-        Jeremy Kerr <jk@ozlabs.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200710111054.29562-1-benchuanggli@gmail.com>
+ <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com> <20200918063843.GA46229@laputa>
+ <CACT4zj-Uo6v_H_G0_LtYjDEN1jKsssjwN-utcZH2y-zqpV1Y3Q@mail.gmail.com> <20200924095747.GB38298@laputa>
+In-Reply-To: <20200924095747.GB38298@laputa>
+From:   Ben Chuang <benchuanggli@gmail.com>
+Date:   Fri, 25 Sep 2020 15:55:18 +0800
+Message-ID: <CACT4zj_G304iaOB1X4pumdMw=SnzSkPJHfMrWcX6trzayoTbgw@mail.gmail.com>
+Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
+ additional operations
+To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
+        Ben Chuang <benchuanggli@gmail.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        greg.tu@genesyslogic.com.tw, Renius.Chen@genesyslogic.com.tw
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 09:54, Michael Schaller <misch@google.com> wrote:
->
-> On Fri, Sep 25, 2020 at 9:49 AM Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Fri, 25 Sep 2020 at 09:45, Michael Schaller <misch@google.com> wrote:
-> > >
-> > > Without this patch efivarfs_alloc_dentry creates dentries with slashes in
-> > > their name if the respective EFI variable has slashes in its name. This in
-> > > turn causes EIO on getdents64, which prevents a complete directory listing
-> > > of /sys/firmware/efi/efivars/.
-> > >
-> > > This patch replaces the invalid shlashes with exclamation marks like
-> > > kobject_set_name_vargs does for /sys/firmware/efi/vars/ to have consistently
-> > > named dentries under /sys/firmware/efi/vars/ and /sys/firmware/efi/efivars/.
-> > >
-> > > Signed-off-by: Michael Schaller <misch@google.com>
-> >
-> > Thanks
-> >
-> > > Tested-by: Michael Schaller <misch@google.com>
-> >
-> > I will drop this - in general, it is assumed that you test your own
-> > patches before sending them to the list, so this is implicit. Also,
-> > tested-by's given on the list tend to carry more weight than ones that
-> > are givenin private and added to the patch by the authors themselves.
-> >
-> Makes sense. Is anything else needed from my side?
+Takahiro,
 
-No, all good. I'll pick this up as a fix.
+On Thu, Sep 24, 2020 at 5:57 PM AKASHI Takahiro
+<takahiro.akashi@linaro.org> wrote:
+>
+> Ben,
+>
+> On Fri, Sep 18, 2020 at 06:50:24PM +0800, Ben Chuang wrote:
+> > On Fri, Sep 18, 2020 at 2:38 PM AKASHI Takahiro
+> > <takahiro.akashi@linaro.org> wrote:
+> > >
+> > > Adrian, Ben,
+> > >
+> > > Regarding _set_ios() function,
+> > >
+> > > On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
+> > > > On 10/07/20 2:10 pm, Ben Chuang wrote:
+> > > > > From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > > > >
+> > > > > In this commit, UHS-II related operations will be called via a function
+> > > > > pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
+> > > > > a kernel module.
+> > > > > This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
+> > > > > and when the UHS-II module is loaded. Otherwise, all the functions
+> > > > > stay void.
+> > > > >
+> > > > > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > > > > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > >
+> > >   (snip)
+> > >
+> > > > > @@ -2261,6 +2324,7 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+> > > > >  {
+> > > > >     struct sdhci_host *host = mmc_priv(mmc);
+> > > > >     u8 ctrl;
+> > > > > +   u16 ctrl_2;
+> > > > >
+> > > > >     if (ios->power_mode == MMC_POWER_UNDEFINED)
+> > > > >             return;
+> > > > > @@ -2287,6 +2351,10 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+> > > > >             sdhci_enable_preset_value(host, false);
+> > > > >
+> > > > >     if (!ios->clock || ios->clock != host->clock) {
+> > > > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > > > +               ios->timing == MMC_TIMING_UHS2)
+> > > > > +                   host->timing = ios->timing;
+> > > > > +
+> > > > >             host->ops->set_clock(host, ios->clock);
+> > > > >             host->clock = ios->clock;
+> > > > >
+> > > > > @@ -2308,6 +2376,18 @@ void sdhci_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+> > > > >     else
+> > > > >             sdhci_set_power(host, ios->power_mode, ios->vdd);
+> > > > >
+> > > > > +   /* 4.0 host support */
+> > > > > +   if (host->version >= SDHCI_SPEC_400) {
+> > > > > +           /* UHS2 Support */
+> > > > > +           if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
+> > > > > +               host->mmc->flags & MMC_UHS2_SUPPORT &&
+> > > > > +               host->mmc->caps & MMC_CAP_UHS2) {
+> > > > > +                   if (sdhci_uhs2_ops.do_set_ios)
+> > > > > +                           sdhci_uhs2_ops.do_set_ios(host, ios);
+> > > > > +                   return;
+> > > > > +           }
+> > > > > +   }
+> > > > > +
+> > > >
+> > > > Please look at using existing callbacks instead, maybe creating uhs2_set_ios(), uhs2_set_clock(), uhs2_set_power()
+> > >
+> > > I think that we will create uhs2_set_ios() (and uhs2_set_power()
+> > > as we discussed on patch#15/21), but not uhs_set_clock().
+> > >
+> > > Since we have a hook only in struct mmc_host_ops, but not in struct
+> > > sdhci_ops, all the drivers who want to support UHS-II need to
+> > > set host->mmc_host_ops->set_ios to sdhci_uhs2_set_ios explicitly
+> > > in their own init (or probe) function.
+> > > (Again, sdhci_uhs2_set_ios() seems to be generic though.)
+> > >
+> > > Is this okay for you?
+> > >         -> Adrian
+> > >
+> > > During refactoring the code, I found that sdhci_set_power() is called
+> > > twice in sdhci_set_ios():
+> > >         sdhci_set_ios(host, power_mode, vdd1, -1); in sdhci_set_ios(), and
+> > >         sdhci_set_ios(host, power_mode, vdd1, vdd2) in ush2_do_set_ios()
+> > >
+> > > Can you please confirm that those are redundant?
+> >
+> > Yes, uhs2 set power is independent with uhs1.
+> > But set  uhs2 power process  should meet  uhs2 spec.
+>
+> Can you elaborate a bit more about the last sentence, please?
+>
+> What I meant above is that
+>          sdhci_set_ios(host, power_mode, vdd1, vdd2) in ush2_do_set_ios()
+>
+> this code will 'set_power' both vdd and vdd2 anyway and so
+>          sdhci_set_ios(host, power_mode, vdd1, -1); in sdhci_set_ios(), and
+> is just redundant.
+>
+
+Yes, for uhs-2 flow,  sdhci_set_ios(host, power_mode, vdd1, -1) is redundant.
+
+>
+> > >         -> Ben
+> > >
+> > > I also wonder why we need spin locks in uhs2_do_set_ios() while
+> > > not in sdhci_set_ios().
+> >
+> > You can check if  spin locks in uhs2_do_set_ios() is necessary.
+>
+> I'm asking you.
+>
+> While calling set_ios() doesn't require spin locks, are you aware of
+> any cases where we need spin locks in calling set_ios() for uhs-2?
+> (I mean that callers/contexts are the same either for uhs or uhs-2.)
+
+I agree that it can be removed. I just didn't modify intel's original codes.
+
+>
+> -Takahiro Akashi
+>
+> > If set/clear irq can be execute safely without spin locks, you can
+> > remove spin locks.
+> >
+> > >
+> > >         -> Ben
+> > >
+> > > -Takahiro Akashi
