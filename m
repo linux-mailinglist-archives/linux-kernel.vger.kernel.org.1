@@ -2,63 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47FDD278613
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5354D278618
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbgIYLjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:39:01 -0400
-Received: from muru.com ([72.249.23.125]:45528 "EHLO muru.com"
+        id S1728233AbgIYLkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:40:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727720AbgIYLjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:39:01 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 802E18106;
-        Fri, 25 Sep 2020 11:38:58 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 14:38:52 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v3 10/15] ARM: dts: am3874: iceboard: fix GPIO expander
- reset GPIOs
-Message-ID: <20200925113852.GL9471@atomide.com>
-References: <20200916155715.21009-1-krzk@kernel.org>
- <20200916155715.21009-11-krzk@kernel.org>
+        id S1727044AbgIYLkB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:40:01 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AAE82075E;
+        Fri, 25 Sep 2020 11:39:58 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 12:39:56 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 36/39] kasan, arm64: print report from tag fault
+ handler
+Message-ID: <20200925113956.GH4846@gaia>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <6296d106e480eed388f86e3c8fce10a14bead75a.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200916155715.21009-11-krzk@kernel.org>
+In-Reply-To: <6296d106e480eed388f86e3c8fce10a14bead75a.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Krzysztof Kozlowski <krzk@kernel.org> [200916 18:58]:
-> Correct the property for reset GPIOs of the GPIO expander.
+On Fri, Sep 25, 2020 at 12:50:43AM +0200, Andrey Konovalov wrote:
+> Add error reporting for hardware tag-based KASAN. When CONFIG_KASAN_HW_TAGS
+> is enabled, print KASAN report from the arm64 tag fault handler.
+> 
+> SAS bits aren't set in ESR for all faults reported in EL1, so it's
+> impossible to find out the size of the access the caused the fault.
+> Adapt KASAN reporting code to handle this case.
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-Picking up this too thanks.
-
-Tony
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
