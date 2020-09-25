@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD3D27942C
+	by mail.lfdr.de (Postfix) with ESMTP id 0E87727942B
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729218AbgIYW0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729196AbgIYW0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 25 Sep 2020 18:26:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57362 "EHLO
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42013 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729044AbgIYW0H (ORCPT
+        by vger.kernel.org with ESMTP id S1727258AbgIYW0I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:26:07 -0400
+        Fri, 25 Sep 2020 18:26:08 -0400
 Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601072765;
+        s=mimecast20190719; t=1601072766;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=f3neVB71YauFQCPpMdApRLGs3XY1TIPPKty54SXGigA=;
-        b=HdUyxTNGOU7HDUAPOTo3ccbkbJCUj7za7fcPqd01jga8fCjR+IyUIs49wh2R3qgZo3Ik9y
-        5tlLJzei8+C/cHkcjtn4EEIm02kBhUXSF34jz3LzHDNAyMEDGueRoF0O+ucjS5czZ8CWhj
-        HIDIrS3TAW6DFrJNL7yEQ1SaWv3+Ces=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-67-pK9ULYr2PC6_Fpzu5VG2MA-1; Fri, 25 Sep 2020 18:26:03 -0400
-X-MC-Unique: pK9ULYr2PC6_Fpzu5VG2MA-1
-Received: by mail-qv1-f70.google.com with SMTP id i17so2721830qvj.22
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:26:03 -0700 (PDT)
+        bh=83VPDmzYEL7zTGyeIJw5KGTP3VVq8cB09Qjoi453FqI=;
+        b=QisG2VMrUkBIMPlln19n+kv8VYYbdQyMhxBOr4iiQavzcsothU64aqg19LZDHKvQaVwwCe
+        7ul1grbhTBs1M2Y1f28rI/Lqj8IWfp4H0CyzEwGKyUi0m5ok0JCKuXjl+wB8HuifoKKelK
+        gefzv0fiYGdhjBLUd+bWN8pTnGzq8Kg=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-179-ZRY1F8k1PNKhIQqnS2XxQA-1; Fri, 25 Sep 2020 18:26:05 -0400
+X-MC-Unique: ZRY1F8k1PNKhIQqnS2XxQA-1
+Received: by mail-qv1-f71.google.com with SMTP id w32so2699401qvw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:26:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=f3neVB71YauFQCPpMdApRLGs3XY1TIPPKty54SXGigA=;
-        b=kvW+DiopiUFJtlYQDxDYa0Lm13JYR3PdJihTokzeQaXpxM3TUFURjymCoMuB8+iD9T
-         Z7upuQA6FCRQCFGmnCo71bxv9o2noAOG979XuyWB7Cos8e8EnEFpoCl0hnc+ykzc0CEN
-         GmcmBeIhg6xX2JAoqTfA/tBq6IlcOI2L3laoaLwPhjOwpxuEZtNh6ctAWu5/5+iu/edt
-         vl3mliL9VnhgDUEmBzab4E/MZEf99VCz1A/SYhcT28T5FtQ2dYH6ZzglK/zpZheKXOVF
-         3c6HkQXv8bDPiXsCtx4fot8p+HQjraFNl2O+h949aJ/UIJGnspJlMOjMbDAOWlEZum44
-         cPIA==
-X-Gm-Message-State: AOAM530RMc0mYp1LjlbBen1BWDCa0cWci2m/9LoRLlyClMxyyCYYv8Ed
-        NZWuE/uuDBmXxXNMK5vFI65bdeQ22LO9npmgWiUVzvVbinGTihjmNXdHBzPlulInP4OswE/wZ30
-        iyfkUaJd6PnYIBLIdcaU/dcpE
-X-Received: by 2002:aed:2986:: with SMTP id o6mr1957588qtd.269.1601072762219;
-        Fri, 25 Sep 2020 15:26:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyNQ9JPn6Tr7y13N2I/zWl13emViM7mij2pf9V7O1fD80kpqHM0nnvuLIe1K91wSXn1j0IKNA==
-X-Received: by 2002:aed:2986:: with SMTP id o6mr1957549qtd.269.1601072761830;
-        Fri, 25 Sep 2020 15:26:01 -0700 (PDT)
+        bh=83VPDmzYEL7zTGyeIJw5KGTP3VVq8cB09Qjoi453FqI=;
+        b=goxtrYTrLShED2BuJBgKr5MfqOg311T3lOrHeJOyb81Qke+cByAJMnW1NQFAwZoc/J
+         kctfjIdHophSziJWaIMHegZva0KOZBRekw9ke0tUFDNLeAzbwFp1e4XpyI2z6aoEIwOc
+         cKfFk//YydLHt4Gr4TVHVSqTIAk6elEhGcNxX4FKnaDYBoErP+IRbE3KfCiOF644K9oY
+         E4tC0OQW+jMfUnVtnLvO5tBGOCPXdwafQfP5bgcS5PpAcaBmneLABtpsDfqPR/nHmqHo
+         Z6VqYe7Fk/UVzt9lreL+v/BS9A/BHdp5Gky1kMHOMl906zge0NbuHoRtO1+JTQr12Tve
+         6eGg==
+X-Gm-Message-State: AOAM530AXHbBWxhsbp3r/pbFsHx4cwPgPlZFJ/09A+F5F+N6fbcslk8m
+        L2bJSFwVd/1hVJqTXOmd1q9PHSVHMlGy5tQgjJS0vHyrINHKx5E7h4d25BB1epsWJMPr/+qOjS6
+        dkq2NRs6xBvNXFq0vpCvRoYyz
+X-Received: by 2002:a05:620a:1367:: with SMTP id d7mr2294638qkl.20.1601072763956;
+        Fri, 25 Sep 2020 15:26:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRyeulRe69kAimB9nqfmhL3dvaIO6LziVgyjL+yf/PZwpi4PZATybtfpDGIbm/A0z9wGWDeA==
+X-Received: by 2002:a05:620a:1367:: with SMTP id d7mr2294608qkl.20.1601072763613;
+        Fri, 25 Sep 2020 15:26:03 -0700 (PDT)
 Received: from localhost.localdomain (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id w44sm3051471qth.9.2020.09.25.15.26.00
+        by smtp.gmail.com with ESMTPSA id w44sm3051471qth.9.2020.09.25.15.26.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 15:26:01 -0700 (PDT)
+        Fri, 25 Sep 2020 15:26:02 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     peterx@redhat.com, Jason Gunthorpe <jgg@ziepe.ca>,
@@ -65,9 +65,9 @@ Cc:     peterx@redhat.com, Jason Gunthorpe <jgg@ziepe.ca>,
         Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH v2 3/4] mm: Do early cow for pinned pages during fork() for ptes
-Date:   Fri, 25 Sep 2020 18:25:59 -0400
-Message-Id: <20200925222600.6832-4-peterx@redhat.com>
+Subject: [PATCH v2 4/4] mm/thp: Split huge pmds/puds if they're pinned when fork()
+Date:   Fri, 25 Sep 2020 18:26:00 -0400
+Message-Id: <20200925222600.6832-5-peterx@redhat.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200925222600.6832-1-peterx@redhat.com>
 References: <20200925222600.6832-1-peterx@redhat.com>
@@ -77,269 +77,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It allows copy_pte_range() to do early cow if the pages were pinned on the
-source mm.  Currently we don't have an accurate way to know whether a page is
-pinned or not.  The only thing we have is page_maybe_dma_pinned().  However
-that's good enough for now.  Especially, with the newly added mm->has_pinned
-flag to make sure we won't affect processes that never pinned any pages.
+Pinned pages shouldn't be write-protected when fork() happens, because follow
+up copy-on-write on these pages could cause the pinned pages to be replaced by
+random newly allocated pages.
 
-It would be easier if we can do GFP_KERNEL allocation within copy_one_pte().
-Unluckily, we can't because we're with the page table locks held for both the
-parent and child processes.  So the page allocation needs to be done outside
-copy_one_pte().
+For huge PMDs, we split the huge pmd if pinning is detected.  So that future
+handling will be done by the PTE level (with our latest changes, each of the
+small pages will be copied).  We can achieve this by let copy_huge_pmd() return
+-EAGAIN for pinned pages, so that we'll fallthrough in copy_pmd_range() and
+finally land the next copy_pte_range() call.
 
-Some trick is there in copy_present_pte(), majorly the wrprotect trick to block
-concurrent fast-gup.  Comments in the function should explain better in place.
+Huge PUDs will be even more special - so far it does not support anonymous
+pages.  But it can actually be done the same as the huge PMDs even if the split
+huge PUDs means to erase the PUD entries.  It'll guarantee the follow up fault
+ins will remap the same pages in either parent/child later.
 
-Oleg Nesterov reported a (probably harmless) bug during review that we didn't
-reset entry.val properly in copy_pte_range() so that potentially there's chance
-to call add_swap_count_continuation() multiple times on the same swp entry.
-However that should be harmless since even if it happens, the same function
-(add_swap_count_continuation()) will return directly noticing that there're
-enough space for the swp counter.  So instead of a standalone stable patch, it
-is touched up in this patch directly.
+This might not be the most efficient way, but it should be easy and clean
+enough.  It should be fine, since we're tackling with a very rare case just to
+make sure userspaces that pinned some thps will still work even without
+MADV_DONTFORK and after they fork()ed.
 
-Reference discussions:
-
-  https://lore.kernel.org/lkml/20200914143829.GA1424636@nvidia.com/
-
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/memory.c | 172 +++++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 156 insertions(+), 16 deletions(-)
+ mm/huge_memory.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 4c56d7b92b0e..92ad08616e60 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -773,15 +773,109 @@ copy_nonpresent_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	return 0;
- }
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index faadc449cca5..da397779a6d4 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1074,6 +1074,24 @@ int copy_huge_pmd(struct mm_struct *dst_mm, struct mm_struct *src_mm,
  
--static inline void
-+/*
-+ * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
-+ * is required to copy this pte.
-+ */
-+static inline int
- copy_present_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 		pte_t *dst_pte, pte_t *src_pte, struct vm_area_struct *vma,
--		unsigned long addr, int *rss)
-+		struct vm_area_struct *new,
-+		unsigned long addr, int *rss, struct page **prealloc)
- {
- 	unsigned long vm_flags = vma->vm_flags;
- 	pte_t pte = *src_pte;
- 	struct page *page;
- 
-+	page = vm_normal_page(vma, addr, pte);
-+	if (page) {
-+		if (is_cow_mapping(vm_flags)) {
-+			bool is_write = pte_write(pte);
+ 	src_page = pmd_page(pmd);
+ 	VM_BUG_ON_PAGE(!PageHead(src_page), src_page);
 +
-+			/*
-+			 * The trick starts.
-+			 *
-+			 * What we want to do is to check whether this page may
-+			 * have been pinned by the parent process.  If so,
-+			 * instead of wrprotect the pte on both sides, we copy
-+			 * the page immediately so that we'll always guarantee
-+			 * the pinned page won't be randomly replaced in the
-+			 * future.
-+			 *
-+			 * To achieve this, we do the following:
-+			 *
-+			 * 1. Write-protect the pte if it's writable.  This is
-+			 *    to protect concurrent write fast-gup with
-+			 *    FOLL_PIN, so that we'll fail the fast-gup with
-+			 *    the write bit removed.
-+			 *
-+			 * 2. Check page_maybe_dma_pinned() to see whether this
-+			 *    page may have been pinned.
-+			 *
-+			 * The order of these steps is important to serialize
-+			 * against the fast-gup code (gup_pte_range()) on the
-+			 * pte check and try_grab_compound_head(), so that
-+			 * we'll make sure either we'll capture that fast-gup
-+			 * so we'll copy the pinned page here, or we'll fail
-+			 * that fast-gup.
-+			 */
-+			if (is_write) {
-+				ptep_set_wrprotect(src_mm, addr, src_pte);
-+				/*
-+				 * This is not needed for serializing fast-gup,
-+				 * however always make it consistent with
-+				 * src_pte, since we'll need it when current
-+				 * page is not pinned.
-+				 */
-+				pte = pte_wrprotect(pte);
-+			}
-+
-+			if (atomic_read(&src_mm->has_pinned) &&
-+			    page_maybe_dma_pinned(page)) {
-+				struct page *new_page = *prealloc;
-+
-+				/*
-+				 * This is possibly pinned page, need to copy.
-+				 * Safe to release the write bit if necessary.
-+				 */
-+				if (is_write)
-+					set_pte_at(src_mm, addr, src_pte,
-+						   pte_mkwrite(pte));
-+
-+				/* If we don't have a pre-allocated page, ask */
-+				if (!new_page)
-+					return -EAGAIN;
-+
-+				/*
-+				 * We have a prealloc page, all good!  Take it
-+				 * over and copy the page & arm it.
-+				 */
-+				*prealloc = NULL;
-+				copy_user_highpage(new_page, page, addr, vma);
-+				__SetPageUptodate(new_page);
-+				pte = mk_pte(new_page, new->vm_page_prot);
-+				pte = pte_sw_mkyoung(pte);
-+				pte = maybe_mkwrite(pte_mkdirty(pte), new);
-+				page_add_new_anon_rmap(new_page, new, addr, false);
-+				rss[mm_counter(new_page)]++;
-+				set_pte_at(dst_mm, addr, dst_pte, pte);
-+				return 0;
-+			}
-+
-+			/*
-+			 * Logically we should recover the wrprotect() for
-+			 * fast-gup, however when reach here it also means we
-+			 * actually need to wrprotect() it again for cow.
-+			 * Simply keep everything.  Note that there's another
-+			 * chunk of cow logic below, but we should still need
-+			 * that for !page case.
-+			 */
-+		}
-+		get_page(page);
-+		page_dup_rmap(page, false);
-+		rss[mm_counter(page)]++;
++	/*
++	 * If this page is a potentially pinned page, split and retry the fault
++	 * with smaller page size.  Normally this should not happen because the
++	 * userspace should use MADV_DONTFORK upon pinned regions.  This is a
++	 * best effort that the pinned pages won't be replaced by another
++	 * random page during the coming copy-on-write.
++	 */
++	if (unlikely(is_cow_mapping(vma->vm_flags) &&
++		     atomic_read(&src_mm->has_pinned) &&
++		     page_maybe_dma_pinned(src_page))) {
++		pte_free(dst_mm, pgtable);
++		spin_unlock(src_ptl);
++		spin_unlock(dst_ptl);
++		__split_huge_pmd(vma, src_pmd, addr, false, NULL);
++		return -EAGAIN;
 +	}
 +
- 	/*
- 	 * If it's a COW mapping, write protect it both
- 	 * in the parent and the child
-@@ -807,14 +901,27 @@ copy_present_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	if (!(vm_flags & VM_UFFD_WP))
- 		pte = pte_clear_uffd_wp(pte);
- 
--	page = vm_normal_page(vma, addr, pte);
--	if (page) {
--		get_page(page);
--		page_dup_rmap(page, false);
--		rss[mm_counter(page)]++;
-+	set_pte_at(dst_mm, addr, dst_pte, pte);
-+	return 0;
-+}
-+
-+static inline struct page *
-+page_copy_prealloc(struct mm_struct *src_mm, struct vm_area_struct *vma,
-+		   unsigned long addr)
-+{
-+	struct page *new_page;
-+
-+	new_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, addr);
-+	if (!new_page)
-+		return NULL;
-+
-+	if (mem_cgroup_charge(new_page, src_mm, GFP_KERNEL)) {
-+		put_page(new_page);
-+		return NULL;
+ 	get_page(src_page);
+ 	page_dup_rmap(src_page, true);
+ 	add_mm_counter(dst_mm, MM_ANONPAGES, HPAGE_PMD_NR);
+@@ -1177,6 +1195,16 @@ int copy_huge_pud(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ 		/* No huge zero pud yet */
  	}
-+	cgroup_throttle_swaprate(new_page, GFP_KERNEL);
  
--	set_pte_at(dst_mm, addr, dst_pte, pte);
-+	return new_page;
- }
- 
- static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
-@@ -825,16 +932,20 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	pte_t *orig_src_pte, *orig_dst_pte;
- 	pte_t *src_pte, *dst_pte;
- 	spinlock_t *src_ptl, *dst_ptl;
--	int progress = 0;
-+	int progress, ret = 0;
- 	int rss[NR_MM_COUNTERS];
- 	swp_entry_t entry = (swp_entry_t){0};
-+	struct page *prealloc = NULL;
- 
- again:
-+	progress = 0;
- 	init_rss_vec(rss);
- 
- 	dst_pte = pte_alloc_map_lock(dst_mm, dst_pmd, addr, &dst_ptl);
--	if (!dst_pte)
--		return -ENOMEM;
-+	if (!dst_pte) {
-+		ret = -ENOMEM;
-+		goto out;
++	/* Please refer to comments in copy_huge_pmd() */
++	if (unlikely(is_cow_mapping(vma->vm_flags) &&
++		     atomic_read(&src_mm->has_pinned) &&
++		     page_maybe_dma_pinned(pud_page(pud)))) {
++		spin_unlock(src_ptl);
++		spin_unlock(dst_ptl);
++		__split_huge_pud(vma, src_pud, addr);
++		return -EAGAIN;
 +	}
- 	src_pte = pte_offset_map(src_pmd, addr);
- 	src_ptl = pte_lockptr(src_mm, src_pmd);
- 	spin_lock_nested(src_ptl, SINGLE_DEPTH_NESTING);
-@@ -866,8 +977,25 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 			progress += 8;
- 			continue;
- 		}
--		copy_present_pte(dst_mm, src_mm, dst_pte, src_pte,
--				 vma, addr, rss);
-+		/* copy_present_pte() will clear `*prealloc' if consumed */
-+		ret = copy_present_pte(dst_mm, src_mm, dst_pte, src_pte,
-+				       vma, new, addr, rss, &prealloc);
-+		/*
-+		 * If we need a pre-allocated page for this pte, drop the
-+		 * locks, allocate, and try again.
-+		 */
-+		if (unlikely(ret == -EAGAIN))
-+			break;
-+		if (unlikely(prealloc)) {
-+			/*
-+			 * pre-alloc page cannot be reused by next time so as
-+			 * to strictly follow mempolicy (e.g., alloc_page_vma()
-+			 * will allocate page according to address).  This
-+			 * could only happen if one pinned pte changed.
-+			 */
-+			put_page(prealloc);
-+			prealloc = NULL;
-+		}
- 		progress += 8;
- 	} while (dst_pte++, src_pte++, addr += PAGE_SIZE, addr != end);
- 
-@@ -879,13 +1007,25 @@ static int copy_pte_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
- 	cond_resched();
- 
- 	if (entry.val) {
--		if (add_swap_count_continuation(entry, GFP_KERNEL) < 0)
-+		if (add_swap_count_continuation(entry, GFP_KERNEL) < 0) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+		entry.val = 0;
-+	} else if (ret) {
-+		WARN_ON_ONCE(ret != -EAGAIN);
-+		prealloc = page_copy_prealloc(src_mm, vma, addr);
-+		if (!prealloc)
- 			return -ENOMEM;
--		progress = 0;
-+		/* We've captured and resolved the error. Reset, try again. */
-+		ret = 0;
- 	}
- 	if (addr != end)
- 		goto again;
--	return 0;
-+out:
-+	if (unlikely(prealloc))
-+		put_page(prealloc);
-+	return ret;
- }
- 
- static inline int copy_pmd_range(struct mm_struct *dst_mm, struct mm_struct *src_mm,
++
+ 	pudp_set_wrprotect(src_mm, addr, src_pud);
+ 	pud = pud_mkold(pud_wrprotect(pud));
+ 	set_pud_at(dst_mm, addr, dst_pud, pud);
 -- 
 2.26.2
 
