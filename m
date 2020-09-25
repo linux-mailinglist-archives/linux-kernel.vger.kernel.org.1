@@ -2,136 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D97278F92
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DA7278F68
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgIYRZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:25:42 -0400
-Received: from mga12.intel.com ([192.55.52.136]:56940 "EHLO mga12.intel.com"
+        id S1729559AbgIYRNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:13:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726401AbgIYRZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:25:41 -0400
-IronPort-SDR: l1s3r0WbxLYtXok1tXsAkk5l77ri6PGiu6v87JN3ELxhOm0gEePkb7rVTvwWnBIaOEREeM4NVS
- SeF+sGjrFlkA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="141004363"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="141004363"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:12:35 -0700
-IronPort-SDR: cpapzdKeorbGJAJcicHTqvjLBQC0HcUDOXmfyns5mrzobWjC3ddmjR9HRB2DUcOw18nqoDh4KK
- uLzfmR0kQukQ==
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="336814163"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:12:35 -0700
-Date:   Fri, 25 Sep 2020 10:12:33 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Huacai Chen <chenhc@lemote.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH 3/3] KVM: x86: Use KVM_BUG/KVM_BUG_ON to handle bugs
- that are fatal to the VM
-Message-ID: <20200925171233.GC31528@linux.intel.com>
-References: <20200923224530.17735-1-sean.j.christopherson@intel.com>
- <20200923224530.17735-4-sean.j.christopherson@intel.com>
- <878scze4l5.fsf@vitty.brq.redhat.com>
- <20200924181134.GB9649@linux.intel.com>
- <87k0wichht.fsf@vitty.brq.redhat.com>
+        id S1727749AbgIYRNc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 13:13:32 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE36E20936;
+        Fri, 25 Sep 2020 17:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601054011;
+        bh=ti22SxcurzOVwjbQ0OSmV+nIlJOiyn0KdaZY90nJPlU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PNyjcsNPyihicpZ9GUOulMgzb6BJEnIW3Tu3F6s1CknkkVwbVCoYrGZ7UVh8kvjZq
+         pHJaij6QK10Yq5ZkH2QsTw6Y/mvKcDzxD8JkDNDg7t+3oWNOz1r7L8bQibhqUXvR8M
+         KYtvF7f2rohEMaxOmXwoFTqh49vkk3mDu+MLpFIg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 84A0435207C1; Fri, 25 Sep 2020 10:13:31 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 10:13:31 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Hou Tao <houtao1@huawei.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Josh Triplett <josh@joshtriplett.org>,
+        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] locktorture: call percpu_free_rwsem() to do
+ percpu-rwsem cleanup
+Message-ID: <20200925171331.GF29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200923035137.GN29330@paulmck-ThinkPad-P72>
+ <20200924141854.134835-1-houtao1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87k0wichht.fsf@vitty.brq.redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200924141854.134835-1-houtao1@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:50:38AM +0200, Vitaly Kuznetsov wrote:
-> Sean Christopherson <sean.j.christopherson@intel.com> writes:
+On Thu, Sep 24, 2020 at 10:18:54PM +0800, Hou Tao wrote:
+> When do percpu-rwsem writer lock torture, the RCU callback
+> rcu_sync_func() may still be pending after locktorture module
+> is removed, and it will lead to the following Oops:
 > 
-> > On Thu, Sep 24, 2020 at 02:34:14PM +0200, Vitaly Kuznetsov wrote:
-> >> Sean Christopherson <sean.j.christopherson@intel.com> writes:
-> >> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> >> > index 6f9a0c6d5dc5..810d46ab0a47 100644
-> >> > --- a/arch/x86/kvm/vmx/vmx.c
-> >> > +++ b/arch/x86/kvm/vmx/vmx.c
-> >> > @@ -4985,14 +4986,13 @@ static int handle_cr(struct kvm_vcpu *vcpu)
-> >> >  		}
-> >> >  		break;
-> >> >  	case 2: /* clts */
-> >> > -		WARN_ONCE(1, "Guest should always own CR0.TS");
-> >> > -		vmx_set_cr0(vcpu, kvm_read_cr0_bits(vcpu, ~X86_CR0_TS));
-> >> > -		trace_kvm_cr_write(0, kvm_read_cr0(vcpu));
-> >> > -		return kvm_skip_emulated_instruction(vcpu);
-> >> > +		KVM_BUG(1, vcpu->kvm, "Guest always owns CR0.TS");
-> >> > +		return -EIO;
-> >> >  	case 1: /*mov from cr*/
-> >> >  		switch (cr) {
-> >> >  		case 3:
-> >> >  			WARN_ON_ONCE(enable_unrestricted_guest);
-> >> > +
-> >> 
-> >> Here, were you intended to replace WARN_ON_ONCE() with KVM_BUG_ON() or
-> >> this is just a stray newline added?
-> >
-> > I think it's just a stray newline.  At one point I had converted this to a
-> > KVM_BUG_ON(), but then reversed direction because it's not fatal to the guest,
-> > i.e. KVM should continue to function even though it's spuriously intercepting
-> > CR3 loads.
-> >
-> > Which, rereading this patch, completely contradicts the KVM_BUG() for CLTS.
-> >
-> > That's probably something we should sort out in this RFC: is KVM_BUG() only
-> > to be used if the bug is fatal/dangerous, or should it be used any time the
-> > error is definitely a KVM (or hardware) bug.
+>   BUG: unable to handle page fault for address: ffffffffc00eb920
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 6500a067 P4D 6500a067 PUD 6500c067 PMD 13a36c067 PTE 800000013691c163
+>   Oops: 0000 [#1] PREEMPT SMP
+>   CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc5+ #4
+>   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+>   RIP: 0010:rcu_cblist_dequeue+0x12/0x30
+>   Call Trace:
+>    <IRQ>
+>    rcu_core+0x1b1/0x860
+>    __do_softirq+0xfe/0x326
+>    asm_call_on_stack+0x12/0x20
+>    </IRQ>
+>    do_softirq_own_stack+0x5f/0x80
+>    irq_exit_rcu+0xaf/0xc0
+>    sysvec_apic_timer_interrupt+0x2e/0xb0
+>    asm_sysvec_apic_timer_interrupt+0x12/0x20
 > 
-> Personally, I'm feeling adventurous so my vote goes to the later :-)
-> Whenever a KVM bug was discovered by a VM it's much safer to stop
-> executing it as who knows what the implications might be?
-
-Not necessarily, e.g. terminating the VM may corrupt the VM's file system,
-which is less safe, for lack of a better word, from the VM's perspective.
-
-> In this particular case I can think of a nested scenario when L1 didn't
-> ask for CR3 intercept but L0 is still injecting it. It is not fatal by
-> itself but probably there is bug in calculating intercepts in L0 so
-> if we're getting something extra maybe we're also missing some? And this
-> doesn't sound good at all.
-
-Hmm, but by that argument this scenario would fall into the "dangerous" part
-of "bug is fatal/dangerous".  I guess my opinion is that we should set a
-fairly high bar for using KVM_BUG() so that KVM can be aggressive in shutting
-down.
-
-> > In theory, it should be impossible to reach this again as "r = -EIO" will
-> > bounce this out to userspace, the common checks to deny all ioctls() will
-> > prevent reinvoking KVM_RUN.
+> Fix it by adding an exit hook in lock_torture_ops and
+> use it to call percpu_free_rwsem() for percpu rwsem torture
+> before the module is removed, so we can ensure rcu_sync_func()
+> completes before module exits.
 > 
-> Do we actually want to prevent *all* ioctls? E.g. when 'vm bugged'
-> condition is triggered userspace may want to extract some information to
-> assist debugging but even things like KVM_GET_[S]REGS will just return
-> -EIO. I'm not sure it is generally safe to enable *everything* (except
-> for KVM_RUN which should definitely be forbidden) so maybe your approach
-> is preferable.
+> Also needs to call exit hook if lock_torture_init() fails half-way,
+> so add init_called field in lock_torture_cxt to indicate that
+> init hook has been called.
+> 
+> Signed-off-by: Hou Tao <houtao1@huawei.com>
 
-The answer to this probably depends on the answer to the first question of
-when it's appropriate to use KVM_BUG().  E.g. if we limit usage to fatal or
-dangrous cases, then blocking all ioctls() is probably the right thing do do.
+Nice, thank you!  I have queued this for v5.11.
+
+As always, I could not resist reworking the commit log as below, and
+as always, please check to make sure that I didn't mess anything up.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit f794b408207152995aefdf41ee9a3f5c974f622a
+Author: Hou Tao <houtao1@huawei.com>
+Date:   Thu Sep 24 22:18:54 2020 +0800
+
+    locktorture: Invoke percpu_free_rwsem() to do percpu-rwsem cleanup
+    
+    When executing the LOCK06 locktorture scenario featuring percpu-rwsem,
+    the RCU callback rcu_sync_func() may still be pending after locktorture
+    module is removed.  This can in turn lead to the following Oops:
+    
+      BUG: unable to handle page fault for address: ffffffffc00eb920
+      #PF: supervisor read access in kernel mode
+      #PF: error_code(0x0000) - not-present page
+      PGD 6500a067 P4D 6500a067 PUD 6500c067 PMD 13a36c067 PTE 800000013691c163
+      Oops: 0000 [#1] PREEMPT SMP
+      CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.9.0-rc5+ #4
+      Hardware name: QEMU Standard PC (i440FX + PIIX, 1996)
+      RIP: 0010:rcu_cblist_dequeue+0x12/0x30
+      Call Trace:
+       <IRQ>
+       rcu_core+0x1b1/0x860
+       __do_softirq+0xfe/0x326
+       asm_call_on_stack+0x12/0x20
+       </IRQ>
+       do_softirq_own_stack+0x5f/0x80
+       irq_exit_rcu+0xaf/0xc0
+       sysvec_apic_timer_interrupt+0x2e/0xb0
+       asm_sysvec_apic_timer_interrupt+0x12/0x20
+    
+    This commit avoids tis problem by adding an exit hook in lock_torture_ops
+    and using it to call percpu_free_rwsem() for percpu rwsem torture during
+    the module-cleanup function, thus ensuring that rcu_sync_func() completes
+    before module exits.
+    
+    It is also necessary to call the exit hook if lock_torture_init()
+    fails half-way, so this commit also adds an ->init_called field in
+    lock_torture_cxt to indicate that exit hook, if present, must be called.
+    
+    Signed-off-by: Hou Tao <houtao1@huawei.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/kernel/locking/locktorture.c b/kernel/locking/locktorture.c
+index 79fbd97..fd838ce 100644
+--- a/kernel/locking/locktorture.c
++++ b/kernel/locking/locktorture.c
+@@ -76,6 +76,7 @@ static void lock_torture_cleanup(void);
+  */
+ struct lock_torture_ops {
+ 	void (*init)(void);
++	void (*exit)(void);
+ 	int (*writelock)(void);
+ 	void (*write_delay)(struct torture_random_state *trsp);
+ 	void (*task_boost)(struct torture_random_state *trsp);
+@@ -92,12 +93,13 @@ struct lock_torture_cxt {
+ 	int nrealwriters_stress;
+ 	int nrealreaders_stress;
+ 	bool debug_lock;
++	bool init_called;
+ 	atomic_t n_lock_torture_errors;
+ 	struct lock_torture_ops *cur_ops;
+ 	struct lock_stress_stats *lwsa; /* writer statistics */
+ 	struct lock_stress_stats *lrsa; /* reader statistics */
+ };
+-static struct lock_torture_cxt cxt = { 0, 0, false,
++static struct lock_torture_cxt cxt = { 0, 0, false, false,
+ 				       ATOMIC_INIT(0),
+ 				       NULL, NULL};
+ /*
+@@ -573,6 +575,11 @@ static void torture_percpu_rwsem_init(void)
+ 	BUG_ON(percpu_init_rwsem(&pcpu_rwsem));
+ }
+ 
++static void torture_percpu_rwsem_exit(void)
++{
++	percpu_free_rwsem(&pcpu_rwsem);
++}
++
+ static int torture_percpu_rwsem_down_write(void) __acquires(pcpu_rwsem)
+ {
+ 	percpu_down_write(&pcpu_rwsem);
+@@ -597,6 +604,7 @@ static void torture_percpu_rwsem_up_read(void) __releases(pcpu_rwsem)
+ 
+ static struct lock_torture_ops percpu_rwsem_lock_ops = {
+ 	.init		= torture_percpu_rwsem_init,
++	.exit		= torture_percpu_rwsem_exit,
+ 	.writelock	= torture_percpu_rwsem_down_write,
+ 	.write_delay	= torture_rwsem_write_delay,
+ 	.task_boost     = torture_boost_dummy,
+@@ -789,9 +797,10 @@ static void lock_torture_cleanup(void)
+ 
+ 	/*
+ 	 * Indicates early cleanup, meaning that the test has not run,
+-	 * such as when passing bogus args when loading the module. As
+-	 * such, only perform the underlying torture-specific cleanups,
+-	 * and avoid anything related to locktorture.
++	 * such as when passing bogus args when loading the module.
++	 * However cxt->cur_ops.init() may have been invoked, so beside
++	 * perform the underlying torture-specific cleanups, cur_ops.exit()
++	 * will be invoked if needed.
+ 	 */
+ 	if (!cxt.lwsa && !cxt.lrsa)
+ 		goto end;
+@@ -831,6 +840,11 @@ static void lock_torture_cleanup(void)
+ 	cxt.lrsa = NULL;
+ 
+ end:
++	if (cxt.init_called) {
++		if (cxt.cur_ops->exit)
++			cxt.cur_ops->exit();
++		cxt.init_called = false;
++	}
+ 	torture_cleanup_end();
+ }
+ 
+@@ -878,8 +892,10 @@ static int __init lock_torture_init(void)
+ 		goto unwind;
+ 	}
+ 
+-	if (cxt.cur_ops->init)
++	if (cxt.cur_ops->init) {
+ 		cxt.cur_ops->init();
++		cxt.init_called = true;
++	}
+ 
+ 	if (nwriters_stress >= 0)
+ 		cxt.nrealwriters_stress = nwriters_stress;
