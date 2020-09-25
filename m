@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DEF92789DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:45:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09FB2789E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728920AbgIYNpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:45:07 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45170 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728878AbgIYNpG (ORCPT
+        id S1728523AbgIYNrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:47:55 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:38504 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIYNry (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:45:06 -0400
-Received: by mail-wr1-f66.google.com with SMTP id x14so3629066wrl.12
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 06:45:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NlhR3B1xTrFJPN7Yr45TLDcNvoWGlkYDRnyFJmu7snU=;
-        b=FGUMSa4TdWu9DxstvjiaD50mwiA1BQsfBA+I3zXt+gZECukzdXpFDYCUrivQh/ygOd
-         wt/jV1Ndfj1+En0+R1+WUE2WZkXGmqr52VcqOicsf+9Dyxpfm6ucTxPPSLVlmIa2o1sT
-         EnKEhrZd8lU4H131xGHS6yK4XD5MVPL9geortpGLjmAGiWVxZnvCLxS00djImjYaCp4b
-         s4V3TXeedKG3lwaFysLffjVnkH6qW2BmI3kv0khSxajhm7GpF/lcKEjQdTUXQBJuoNIl
-         D2V26cDf0G2CfHko6goPxBAnqn3BFaRWrtWZntdpmoY0MvtUEXSk6+W/4D1giBucnSe1
-         eZlA==
-X-Gm-Message-State: AOAM530uh+dUPOuP9z/w+FSRpoMwXdKb5bSgV2MnoNChv8OomFGs9Xqs
-        1/VegbAbQPK9Xmvvy6/Y6iX7M3FaramVi0yy2pc=
-X-Google-Smtp-Source: ABdhPJyBN/va2EdeB5OsIq/sfsn5RsbVsveEfASKFe3flCATXtrdZgun9ebgeD0yMuKB1E/2zjvKHBnKG7WP4lwXGlE=
-X-Received: by 2002:adf:f2d0:: with SMTP id d16mr4437142wrp.332.1601041505066;
- Fri, 25 Sep 2020 06:45:05 -0700 (PDT)
+        Fri, 25 Sep 2020 09:47:54 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PDjJcc134598;
+        Fri, 25 Sep 2020 13:47:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=xKCctV3/JkpuA0CeolFxLW6LjuoTV+gIWojGjEUuvTM=;
+ b=Evr6KiHcwdY+QWckT2kb6SI8LpNY2p3khJjGLfuH0VNrl7ongez0rx9oclFh1fZBmOSr
+ i4G2vvknJ6SGtq7LetRlN8AIIDgb4stkOWGCkc5Hsnnz2PgyXL4p8oe5+T92q/Rhg96t
+ BqEuFRJ4BmPFA7OHplLoNoDhOSEqwvIUUKxMj2n+FnomC2AddXoydiVwKTmldQ6XbkoO
+ /dpeh8avVh3Z1B+e3bsbCo6wznmtdAKjAqfUNoNzwmvSlTCqOPhkGrO6D6Y6Q6P3Uu3W
+ EOmmjWkPcAcSwVd/lnVb2hr2WHBCEIjsoVaBPb5Hdrf1uf41Tp0ttkMMnKxD+z0/pOhZ PQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33q5rgv1ru-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 25 Sep 2020 13:47:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PDeDvs062429;
+        Fri, 25 Sep 2020 13:45:37 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 33r28ydunh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Sep 2020 13:45:37 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08PDjTDW020127;
+        Fri, 25 Sep 2020 13:45:29 GMT
+Received: from [10.74.86.146] (/10.74.86.146)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 25 Sep 2020 06:45:29 -0700
+Subject: Re: [PATCH] x86/xen: disable Firmware First mode for correctable
+ memory errors
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org
+References: <20200925101148.21012-1-jgross@suse.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <171970df-5f6e-5a2b-e784-e62d300a005b@oracle.com>
+Date:   Fri, 25 Sep 2020 09:45:26 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.2.2
 MIME-Version: 1.0
-References: <20200924124455.336326-1-namhyung@kernel.org> <20200924124455.336326-4-namhyung@kernel.org>
- <20200925132636.GB3273770@krava>
-In-Reply-To: <20200925132636.GB3273770@krava>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 25 Sep 2020 22:44:53 +0900
-Message-ID: <CAM9d7cgHBe6-SfCc3RTfLmrvaKr1hSprmJPd2BFnQtMUu_6TFw@mail.gmail.com>
-Subject: Re: [PATCH 3/5] perf tools: Copy metric events properly when expand cgroups
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        kernel test robot <rong.a.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200925101148.21012-1-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
+ clxscore=1015 suspectscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:26 PM Jiri Olsa <jolsa@redhat.com> wrote:
->
-> On Thu, Sep 24, 2020 at 09:44:53PM +0900, Namhyung Kim wrote:
->
-> SNIP
->
-> >
-> > +     if (metric_events) {
-> > +             orig_metric_events = *metric_events;
-> > +             rblist__init(metric_events);
-> > +     } else {
-> > +             rblist__init(&orig_metric_events);
-> > +     }
-> > +
-> >       for (;;) {
-> >               p = strchr(str, ',');
-> >               e = p ? p : eos;
-> > @@ -255,6 +267,14 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
-> >               cgroup__put(cgrp);
-> >               nr_cgroups++;
-> >
-> > +             if (metric_events) {
-> > +                     perf_stat__collect_metric_expr(tmp_list);
-> > +                     if (metricgroup__copy_metric_events(tmp_list, cgrp,
-> > +                                                         metric_events,
-> > +                                                         &orig_metric_events) < 0)
-> > +                             break;
-> > +             }
->
-> looks good, do you plan to actualy add support for record?
 
-No actually, I still think perf record should use --all-cgroups.
+On 9/25/20 6:11 AM, Juergen Gross wrote:
+> @@ -1296,6 +1296,14 @@ asmlinkage __visible void __init xen_start_kernel(void)
+>  
+>  	xen_smp_init();
+>  
+> +#ifdef CONFIG_ACPI
+> +	/*
+> +	 * Disable selecting "Firmware First mode" for correctable memory
+> +	 * errors, as this is the duty of the hypervisor to decide.
+> +	 */
+> +	acpi_disable_cmcff = 1;
+> +#endif
 
-> my ack from last version stays
 
-Thanks!  But I didn't see your ack for this patch set.
-(I've only seen it for the perf inject patchset..)
+Not that it matters greatly but should this go under if (xen_initial_domain()) clause a bit further down?
 
-Thanks
-Namhyung
+
+Either way:
+
+
+Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+
+
