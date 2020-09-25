@@ -2,279 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBFB27920E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6D6279211
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728994AbgIYUdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:33:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25381 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728591AbgIYUVl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:21:41 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601065298;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VhnUc2BbOi73m+9TFwo34hZOzGKUsTVaCJO+A+GVqYs=;
-        b=N2VKVWU5YWAdGCDKeOTChntXLsrCQnt5q31a4BUGDhnBhnvbb9BIC5pCBn/lEYp4wlUUF1
-        wO6fvlTX9/h3qXJHHhZutTjukjvle4Fz9Vz7bFqHbrMNNr3AxjInrVNC/EQhQ4BJfS9Wg8
-        uiCPG64Syru9bSocItOTBR1zPlUwL3o=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-rVJrnQwcO2-nBxt9NU4z8w-1; Fri, 25 Sep 2020 16:21:36 -0400
-X-MC-Unique: rVJrnQwcO2-nBxt9NU4z8w-1
-Received: by mail-wr1-f71.google.com with SMTP id b7so1512878wrn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:21:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VhnUc2BbOi73m+9TFwo34hZOzGKUsTVaCJO+A+GVqYs=;
-        b=K1Z5bG7OQL3s03lqDCjaI46ewI7zEgcDKB50nc1ANtdHlTIUD2YvKUgoWiramOLyH9
-         NsDeek1BVR+3ZaBWzBm7fIofzF2cSzKkEr4Om+YhtYAca1OO24G7ouffCFxaE/g05urX
-         E7lF4TKGHCemPwZQsoNz3QtDHZLQ75VLzi2Zd9vTBvreuuFGDnhE0tbdTmBAXNDPuRml
-         xM03tohjPr6bVRJMI3dkvTI49MLmHIFx5Dtf9661L48LuPO7yLqB1N4NKDBqiCamxMcd
-         PzcwtBZUuY/b7wwrW/r7f7j6OrC9+PuuRVJp4UnimhXlg1Zjxg6yGh0CEitAIqltvzQR
-         r61Q==
-X-Gm-Message-State: AOAM531177/hsKORBf7ssu4bDTwarO7hcX8+32gQaQlYRzDMh7d69p+6
-        cmmk+PRvs6z0HU9xO31mjmqbSc4Z6hrEdGi5zkeTCfg9ey4xFrL5qX0pCE98oGqbFKYy60eeozo
-        0Cq6urWMeR4V0TmuVqIR6w6el
-X-Received: by 2002:adf:e449:: with SMTP id t9mr6369255wrm.154.1601065294777;
-        Fri, 25 Sep 2020 13:21:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjj+1kICKsk0vFm9QSXgJpCGrYthL/ij347pkP9nVBx0LscWSW1Z+WTzrstXac7yYtZ/F/EQ==
-X-Received: by 2002:adf:e449:: with SMTP id t9mr6369226wrm.154.1601065294447;
-        Fri, 25 Sep 2020 13:21:34 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id l126sm146057wmf.39.2020.09.25.13.21.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 13:21:33 -0700 (PDT)
-Subject: Re: [PATCH v2 4/4] KVM: VMX: Add a helper and macros to reduce
- boilerplate for sec exec ctls
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <7d7daea0-57be-83be-a0d4-8a481249ef85@redhat.com>
- <20200925003011.21016-1-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <9bbc8568-3d9b-2c0a-7fac-fd708cbd271d@redhat.com>
-Date:   Fri, 25 Sep 2020 22:21:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1729039AbgIYUdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:33:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726316AbgIYUXK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:23:10 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A06632086A;
+        Fri, 25 Sep 2020 20:23:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601065390;
+        bh=aAD9nZhpTjqZoeBXICyqCwtEuwV7OkIfU4T3ggIlc10=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=IP0ezM9Hn3/SEbnXK8TrCpPU7kRkkU4GntqwiLY9scgvlBhza9gfYs4fDlR+UTw5E
+         7meYkbHytKkecaciibT3kRIDoZvHZ5bhjtn7r5lSZ6JMAEMa0Fxet1Bn5KanI+X0A2
+         EvYfgyhUyriYf30OHWamCVzv44rklq3Ah2VB2B4o=
+Date:   Fri, 25 Sep 2020 15:23:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Nitesh Narayan Lal <nitesh@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
+        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        thomas.lendacky@amd.com, jiri@nvidia.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, lgoncalv@redhat.com
+Subject: Re: [PATCH v3 4/4] PCI: Limit pci_alloc_irq_vectors() to
+ housekeeping CPUs
+Message-ID: <20200925202307.GA2456332@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20200925003011.21016-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925182654.224004-5-nitesh@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/20 02:30, Sean Christopherson wrote:
-> Add a helper function and several wrapping macros to consolidate the
-> copy-paste code in vmx_compute_secondary_exec_control() for adjusting
-> controls that are dependent on guest CPUID bits.
+On Fri, Sep 25, 2020 at 02:26:54PM -0400, Nitesh Narayan Lal wrote:
+> If we have isolated CPUs dedicated for use by real-time tasks, we try to
+> move IRQs to housekeeping CPUs from the userspace to reduce latency
+> overhead on the isolated CPUs.
 > 
-> No functional change intended.
+> If we allocate too many IRQ vectors, moving them all to housekeeping CPUs
+> may exceed per-CPU vector limits.
 > 
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> When we have isolated CPUs, limit the number of vectors allocated by
+> pci_alloc_irq_vectors() to the minimum number required by the driver, or
+> to one per housekeeping CPU if that is larger.
+> 
+> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
 > ---
+>  include/linux/pci.h | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
-> v2: Comment the new helper and macros.
-> 
->  arch/x86/kvm/vmx/vmx.c | 151 +++++++++++++++++------------------------
->  1 file changed, 64 insertions(+), 87 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 5180529f6531..48673eea0c0d 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -4072,6 +4072,61 @@ u32 vmx_exec_control(struct vcpu_vmx *vmx)
->  	return exec_control;
->  }
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 835530605c0d..a7b10240b778 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -38,6 +38,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/io.h>
+>  #include <linux/resource_ext.h>
+> +#include <linux/sched/isolation.h>
+>  #include <uapi/linux/pci.h>
 >  
-> +/*
-> + * Adjust a single secondary execution control bit to intercept/allow an
-> + * instruction in the guest.  This is usually done based on whether or not a
-> + * feature has been exposed to the guest in order to correctly emulate faults.
-> + */
-> +static inline void
-> +vmx_adjust_secondary_exec_control(struct vcpu_vmx *vmx, u32 *exec_control,
-> +				  u32 control, bool enabled, bool exiting)
-> +{
-> +	/*
-> +	 * If the control is for an opt-in feature, clear the control if the
-> +	 * feature is not exposed to the guest, i.e. not enabled.  If the
-> +	 * control is opt-out, i.e. an exiting control, clear the control if
-> +	 * the feature _is_ exposed to the guest, i.e. exiting/interception is
-> +	 * disabled for the associated instruction.  Note, the caller is
-> +	 * responsible presetting exec_control to set all supported bits.
-> +	 */
-> +	if (enabled == exiting)
-> +		*exec_control &= ~control;
-> +
-> +	/*
-> +	 * Update the nested MSR settings so that a nested VMM can/can't set
-> +	 * controls for features that are/aren't exposed to the guest.
-> +	 */
-> +	if (nested) {
-> +		if (enabled)
-> +			vmx->nested.msrs.secondary_ctls_high |= control;
-> +		else
-> +			vmx->nested.msrs.secondary_ctls_high &= ~control;
-> +	}
-> +}
-> +
-> +/*
-> + * Wrapper macro for the common case of adjusting a secondary execution control
-> + * based on a single guest CPUID bit, with a dedicated feature bit.  This also
-> + * verifies that the control is actually supported by KVM and hardware.
-> + */
-> +#define vmx_adjust_sec_exec_control(vmx, exec_control, name, feat_name, ctrl_name, exiting) \
-> +({									 \
-> +	bool __enabled;							 \
-> +									 \
-> +	if (cpu_has_vmx_##name()) {					 \
-> +		__enabled = guest_cpuid_has(&(vmx)->vcpu,		 \
-> +					    X86_FEATURE_##feat_name);	 \
-> +		vmx_adjust_secondary_exec_control(vmx, exec_control,	 \
-> +			SECONDARY_EXEC_##ctrl_name, __enabled, exiting); \
-> +	}								 \
-> +})
-> +
-> +/* More macro magic for ENABLE_/opt-in versus _EXITING/opt-out controls. */
-> +#define vmx_adjust_sec_exec_feature(vmx, exec_control, lname, uname) \
-> +	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, ENABLE_##uname, false)
-> +
-> +#define vmx_adjust_sec_exec_exiting(vmx, exec_control, lname, uname) \
-> +	vmx_adjust_sec_exec_control(vmx, exec_control, lname, uname, uname##_EXITING, true)
->  
->  static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+>  #include <linux/pci_ids.h>
+> @@ -1797,6 +1798,22 @@ static inline int
+>  pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
+>  		      unsigned int max_vecs, unsigned int flags)
 >  {
-> @@ -4121,33 +4176,12 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
->  
->  		vcpu->arch.xsaves_enabled = xsaves_enabled;
->  
-> -		if (!xsaves_enabled)
-> -			exec_control &= ~SECONDARY_EXEC_XSAVES;
-> -
-> -		if (nested) {
-> -			if (xsaves_enabled)
-> -				vmx->nested.msrs.secondary_ctls_high |=
-> -					SECONDARY_EXEC_XSAVES;
-> -			else
-> -				vmx->nested.msrs.secondary_ctls_high &=
-> -					~SECONDARY_EXEC_XSAVES;
-> -		}
-> +		vmx_adjust_secondary_exec_control(vmx, &exec_control,
-> +						  SECONDARY_EXEC_XSAVES,
-> +						  xsaves_enabled, false);
->  	}
->  
-> -	if (cpu_has_vmx_rdtscp()) {
-> -		bool rdtscp_enabled = guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP);
-> -		if (!rdtscp_enabled)
-> -			exec_control &= ~SECONDARY_EXEC_ENABLE_RDTSCP;
-> -
-> -		if (nested) {
-> -			if (rdtscp_enabled)
-> -				vmx->nested.msrs.secondary_ctls_high |=
-> -					SECONDARY_EXEC_ENABLE_RDTSCP;
-> -			else
-> -				vmx->nested.msrs.secondary_ctls_high &=
-> -					~SECONDARY_EXEC_ENABLE_RDTSCP;
-> -		}
-> -	}
-> +	vmx_adjust_sec_exec_feature(vmx, &exec_control, rdtscp, RDTSCP);
->  
->  	/*
->  	 * Expose INVPCID if and only if PCID is also exposed to the guest.
-> @@ -4157,71 +4191,14 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
->  	 */
->  	if (!guest_cpuid_has(vcpu, X86_FEATURE_PCID))
->  		guest_cpuid_clear(vcpu, X86_FEATURE_INVPCID);
-> +	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
->  
-> -	if (cpu_has_vmx_invpcid()) {
-> -		/* Exposing INVPCID only when PCID is exposed */
-> -		bool invpcid_enabled =
-> -			guest_cpuid_has(vcpu, X86_FEATURE_INVPCID);
->  
-> -		if (!invpcid_enabled)
-> -			exec_control &= ~SECONDARY_EXEC_ENABLE_INVPCID;
-> +	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
-> +	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdseed, RDSEED);
->  
-> -		if (nested) {
-> -			if (invpcid_enabled)
-> -				vmx->nested.msrs.secondary_ctls_high |=
-> -					SECONDARY_EXEC_ENABLE_INVPCID;
-> -			else
-> -				vmx->nested.msrs.secondary_ctls_high &=
-> -					~SECONDARY_EXEC_ENABLE_INVPCID;
-> -		}
-> -	}
-> -
-> -	if (cpu_has_vmx_rdrand()) {
-> -		bool rdrand_enabled = guest_cpuid_has(vcpu, X86_FEATURE_RDRAND);
-> -		if (rdrand_enabled)
-> -			exec_control &= ~SECONDARY_EXEC_RDRAND_EXITING;
-> -
-> -		if (nested) {
-> -			if (rdrand_enabled)
-> -				vmx->nested.msrs.secondary_ctls_high |=
-> -					SECONDARY_EXEC_RDRAND_EXITING;
-> -			else
-> -				vmx->nested.msrs.secondary_ctls_high &=
-> -					~SECONDARY_EXEC_RDRAND_EXITING;
-> -		}
-> -	}
-> -
-> -	if (cpu_has_vmx_rdseed()) {
-> -		bool rdseed_enabled = guest_cpuid_has(vcpu, X86_FEATURE_RDSEED);
-> -		if (rdseed_enabled)
-> -			exec_control &= ~SECONDARY_EXEC_RDSEED_EXITING;
-> -
-> -		if (nested) {
-> -			if (rdseed_enabled)
-> -				vmx->nested.msrs.secondary_ctls_high |=
-> -					SECONDARY_EXEC_RDSEED_EXITING;
-> -			else
-> -				vmx->nested.msrs.secondary_ctls_high &=
-> -					~SECONDARY_EXEC_RDSEED_EXITING;
-> -		}
-> -	}
-> -
-> -	if (cpu_has_vmx_waitpkg()) {
-> -		bool waitpkg_enabled =
-> -			guest_cpuid_has(vcpu, X86_FEATURE_WAITPKG);
-> -
-> -		if (!waitpkg_enabled)
-> -			exec_control &= ~SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
-> -
-> -		if (nested) {
-> -			if (waitpkg_enabled)
-> -				vmx->nested.msrs.secondary_ctls_high |=
-> -					SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
-> -			else
-> -				vmx->nested.msrs.secondary_ctls_high &=
-> -					~SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
-> -		}
-> -	}
-> +	vmx_adjust_sec_exec_control(vmx, &exec_control, waitpkg, WAITPKG,
-> +				    ENABLE_USR_WAIT_PAUSE, false);
->  
->  	vmx->secondary_exec_control = exec_control;
+> +	unsigned int hk_cpus;
+> +
+> +	hk_cpus = housekeeping_num_online_cpus(HK_FLAG_MANAGED_IRQ);
+
+Add blank line here before the block comment.
+
+> +	/*
+> +	 * If we have isolated CPUs for use by real-time tasks, to keep the
+> +	 * latency overhead to a minimum, device-specific IRQ vectors are moved
+> +	 * to the housekeeping CPUs from the userspace by changing their
+> +	 * affinity mask. Limit the vector usage to keep housekeeping CPUs from
+> +	 * running out of IRQ vectors.
+> +	 */
+> +	if (hk_cpus < num_online_cpus()) {
+> +		if (hk_cpus < min_vecs)
+> +			max_vecs = min_vecs;
+> +		else if (hk_cpus < max_vecs)
+> +			max_vecs = hk_cpus;
+> +	}
+
+It seems like you'd want to do this inside
+pci_alloc_irq_vectors_affinity() since that's an exported interface,
+and drivers that use it will bypass the limiting you're doing here.
+
+>  	return pci_alloc_irq_vectors_affinity(dev, min_vecs, max_vecs, flags,
+>  					      NULL);
 >  }
+> -- 
+> 2.18.2
 > 
-
-Queued with the rest, thanks.
-
-Paolo
-
