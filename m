@@ -2,172 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE2BF2786CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F6D32786D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbgIYMQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S1728462AbgIYMQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:16:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgIYMQY (ORCPT
+        with ESMTP id S1727132AbgIYMQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:16:24 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A700C0613CE;
-        Fri, 25 Sep 2020 05:16:24 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id b17so1681729pji.1;
-        Fri, 25 Sep 2020 05:16:24 -0700 (PDT)
+        Fri, 25 Sep 2020 08:16:32 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F206AC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:16:31 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id f11so1190658qvw.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:16:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o6lkhb2U4emmUU7qiA5TpI4n8CQy0i2Q0cjjZnlPIBA=;
-        b=IeRyoUPUFpIXSkQPOSKe2Lm/BO8n8NtDgQnBBz/0qUc2z8GzJjqB3LB9HNWhdC1XGH
-         Q1M00EUDsZ5+VlIyxUKCB2j07wy6r9WNSBgLgii939zeGZ5YPhMT/WDF0VFF2f8wJJo8
-         6lW6iK7kYBx1cfN7xzlqtm7w3vLCCjQpcREOczd6p1a5+ZI/rbyAX54fRPQ/DNEKOvFZ
-         GrNtwUPzeX41nun83ouL4hhh32x41z3siFL1b41iNS3QUoQBRxecORbGgUuq0xEmFOR1
-         4Z8yIDNYDoW1maj/46HnPGWeir0ciNutpo0i2/IPInGzLT5lJm4/Idahy/SJkcTp28hu
-         9OOQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yln7AR3ZR4p27n/j7+7xhsbcOtNwJrCtmwDsHN2fdUQ=;
+        b=DzWU05b6w2zZiVHCrTpprsoQhBqCNrX3HmdPZzyihbcxzdqULiEJxSULmYcebb7VnB
+         362O7PeU+3mlVppNYw1xEsrBaBo9tPocZsBewaSl6xhyp1cyVmpkFI13O2n11dfsQa6l
+         vaGFGZUhQntMlUEE0uZY98lECN90iL4yOISZ3NwP50fC9GDjkfQmsx+vL9viYYiZo3Kd
+         gtUUegf2EBm5w7CDKGP1iFq5Z1zlcJ3ylHQVbCb5jVvdZrWYGDKq+aCV6zSEZCuCUGSY
+         LVXxUf8Inas33vLGk4Hn1bWTHt81cOqwStUeqbUcGTzQr4rvFnub1QQdiwTk75mq4jly
+         l86Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o6lkhb2U4emmUU7qiA5TpI4n8CQy0i2Q0cjjZnlPIBA=;
-        b=QBWq8m0A5NyTjaSE2MlUKSfEe2pd+diXDcvBN840MfEuH/WiwjNhITvFHo8nVXuL0w
-         Nhqsp14ZZ6ooPAamUcFEacqTNMqTbOLHqCqpT1UN7PTTtL85xyZBMhRSy003jDrLA6FS
-         K5un9GO/doB+hc8E38RwrKT5ZqKtvDzcECovx0aLyh9UjVcUdfDJ+Ox7a1CT3j0+iiWX
-         5BHj+BUKmjdsBy3NDawWkjGgU11WzScthuN4i1RziDWQhtSqHH625nlrKQyeQc35UzCo
-         GtbK6Yk5DNxQFht887vpkU26inZk6AoprsiiEx4fu92b4QB1lQnWjiqBU/oPy+q5BPZ6
-         +TVw==
-X-Gm-Message-State: AOAM531ISyfiGKHf0JkzeOHQ7s5AXX6Bid3317FFodidP0qTqfKf+Xca
-        gud/O2Lh9NlBuWBp32/m06U7iQYar1FFCg==
-X-Google-Smtp-Source: ABdhPJxg9XP0zdFwzMMUHoVovmB0IuHNHrUdrMpzTSDlLyXPB5qkXCzhT8OYcxwb7OhARd0yygGmYg==
-X-Received: by 2002:a17:90a:5292:: with SMTP id w18mr87458pjh.72.1601036183988;
-        Fri, 25 Sep 2020 05:16:23 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id br22sm1969573pjb.35.2020.09.25.05.16.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 05:16:23 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 20:16:18 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 11/20] gpiolib: cdev: support
- GPIO_V2_LINE_SET_VALUES_IOCTL
-Message-ID: <20200925121618.GA218526@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <20200922023151.387447-12-warthog618@gmail.com>
- <CAHp75Vd6tb09n+okJmoPse992DeoPkJQHReNBo20FQNz1V2c5w@mail.gmail.com>
- <20200924073248.GA17562@sol>
- <20200924124604.GA227073@sol>
- <CAHp75VegFMMmVx42gWk3cWa4jc3zuBzD_01Kqes1gq-68y3XgQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yln7AR3ZR4p27n/j7+7xhsbcOtNwJrCtmwDsHN2fdUQ=;
+        b=Dgn3zXF12z87dTFskNdjLQOYe0/gCovQ+98NzhBbTWxgD3dLFq7KFp9+a2up8bdZ+W
+         mnjlC7OhX6YVVlql2lwISWe2MDOQjsjp3Gbk1fT0IxGR6pJcEsurJ5M0oYkdqxHr+N6P
+         QCuKhycymrqTD2SXeUc093G4RS34y4rB1n5qlxZ1xT/fhyWg2e39OH69k9EB7rEXMmBS
+         CqxYKjw+PazrPABteCkPmALCla3vjBsg0qTMQVEKpRRDs7BYVFBcJqiWvtGOZzI6N0K6
+         dwM4Op/fW6X0dkP1fJpY7W0mmLXbJeuUuqiiMDXUvvqEwRMTYeA0FyCwn9s6xzHmtFc4
+         tmOw==
+X-Gm-Message-State: AOAM531k9QulJuU1hVUlMC/5zKUuqcrLffbPYm+bvhCOXmRJj2SN70+/
+        +WluNYKOFJVKopKGDXuvRnFejHZx32F7VUoX2LxRYg==
+X-Google-Smtp-Source: ABdhPJx9B2hS6GJWN+2kXk2lxO9y8nuAjLORtds3pD9dp9ZxvQFWebC9/7WeLieRBLfx2ZqQzgHT1ZycMDbLplaYZ+8=
+X-Received: by 2002:ad4:47cc:: with SMTP id p12mr4045516qvw.26.1601036190515;
+ Fri, 25 Sep 2020 05:16:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VegFMMmVx42gWk3cWa4jc3zuBzD_01Kqes1gq-68y3XgQ@mail.gmail.com>
+References: <0000000000002c37a605afce4504@google.com> <CACT4Y+ZMMu1o7HTjFYC++JYWQoEN3STMo38utqpmFRCkQy2u-Q@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZMMu1o7HTjFYC++JYWQoEN3STMo38utqpmFRCkQy2u-Q@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 25 Sep 2020 14:16:19 +0200
+Message-ID: <CACT4Y+ak9rtau8E8doyP1Dwqq0fVm5J0fdZ8EGy3=mnUr0-Yiw@mail.gmail.com>
+Subject: Re: general protection fault in pvclock_gtod_notify (2)
+To:     syzbot <syzbot+1dccfcb049726389379c@syzkaller.appspotmail.com>
+Cc:     Borislav Petkov <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, wanpengli@tencent.com,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:57:59PM +0300, Andy Shevchenko wrote:
-> On Thu, Sep 24, 2020 at 3:46 PM Kent Gibson <warthog618@gmail.com> wrote:
-> > On Thu, Sep 24, 2020 at 03:32:48PM +0800, Kent Gibson wrote:
-> > > On Wed, Sep 23, 2020 at 07:18:08PM +0300, Andy Shevchenko wrote:
-> > > > On Tue, Sep 22, 2020 at 5:36 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > > >
-> > > > > Add support for the GPIO_V2_LINE_SET_VALUES_IOCTL.
-> > > >
-> > > > > +static long linereq_set_values_unlocked(struct linereq *lr,
-> > > > > +                                       struct gpio_v2_line_values *lv)
-> > > > > +{
-> > > > > +       DECLARE_BITMAP(vals, GPIO_V2_LINES_MAX);
-> > > > > +       struct gpio_desc **descs;
-> > > > > +       unsigned int i, didx, num_set;
-> > > > > +       int ret;
-> > > > > +
-> > > > > +       bitmap_zero(vals, GPIO_V2_LINES_MAX);
-> > > > > +       for (num_set = 0, i = 0; i < lr->num_lines; i++) {
-> > > > > +               if (lv->mask & BIT_ULL(i)) {
-> > > >
-> > > > Similar idea
-> > > >
-> > > > DECLARE_BITMAP(mask, 64) = BITMAP_FROM_U64(lv->mask);
-> > > >
-> > > > num_set = bitmap_weight();
-> > > >
-> > >
-> > > I had played with this option, but bitmap_weight() counts all
-> > > the bits set in the mask - which considers bits >= lr->num_lines.
-> > > So you would need to mask lv->mask before converting it to a bitmap.
-> > > (I'm ok with ignoring those bits in case userspace wants to be lazy and
-> > > use an all 1s mask.)
-> > >
-> > > But since we're looping over the bitmap anyway we may as well just
-> > > count as we go.
-> > >
-> > > > for_each_set_bit(i, mask, lr->num_lines)
-> > > >
-> > >
-> > > Yeah, that should work.  I vaguely recall trying this and finding it
-> > > generated larger object code, but I'll give it another try and if it
-> > > works out then include it in v10.
-> > >
+On Mon, Sep 21, 2020 at 10:10 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Mon, Sep 21, 2020 at 10:02 AM syzbot
+> <syzbot+1dccfcb049726389379c@syzkaller.appspotmail.com> wrote:
 > >
-> > Tried it again and, while it works, it does increase the size of
-> > gpiolib-cdev.o as follows:
+> > Hello,
 > >
-> >           u64   ->   bitmap
-> > x86_64   28360       28616
-> > i386     22056       22100
-> > aarch64  37392       37600
-> > mips32   28008       28016
-> 
-> Yes, that's pity... See below.
-> 
-> > So for 64-bit platforms changing to bitmap generates larger code,
-> > probably as we are forcing them to use 32-bit array semantics where
-> > before they could use the native u64.  For 32-bit there is a much
-> > smaller difference as they were already using 32-bit array semantics
-> > to realise the u64.
+> > syzbot found the following issue on:
 > >
-> > Those are for some of my test builds, so obviously YMMV.
+> > HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=14720ac3900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=1dccfcb049726389379c
+> > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 > >
-> > It is also only for changing linereq_get_values(), which has three
-> > instances of the loop.  linereq_set_values_unlocked() has another two,
-> > so you could expect another increase of ~2/3 of that seen here if we
-> > change that as well.
+> > Unfortunately, I don't have any reproducer for this issue yet.
 > >
-> > The sizeable increase in x86_64 was what made me revert this last time,
-> > and I'm still satisfied with that choice.  Are you still eager to switch
-> > to for_each_set_bit()?
-> 
-> I already asked once about short cut for for_each_set_bit in case of
-> constant nbits parameter when it's <= BITS_PER_LONG, but here it seems
-> we have variadic amount of lines, dunno if compiler can prove that
-> it's smaller than long. In any case my point is that code readability
-> has a preference vs. memory footprint (except hot paths) and if we are
-> going to fix this it should be done in general. That said, if
-> maintainers are okay with that I would prefer bitmap API over
-> open-coded pieces.
-> 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+1dccfcb049726389379c@syzkaller.appspotmail.com
+> >
+> > general protection fault, probably for non-canonical address 0x1ffffffef40f602c: 0000 [#1] PREEMPT SMP KASAN
+> > CPU: 1 PID: 3915 Comm: systemd-udevd Not tainted 5.9.0-rc5-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > RIP: 0010:update_pvclock_gtod arch/x86/kvm/x86.c:1743 [inline]
+> > RIP: 0010:pvclock_gtod_notify+0x11d/0x490 arch/x86/kvm/x86.c:7452
+> > Code: 10 48 89 f8 48 c1 e8 03 42 80 3c 20 00 74 05 e8 69 76 a7 00 49 8b 47 10 48 89 05 f6 08 cb 09 49 8d 7f 08 48 89 f8 48 c1 e8 03 <42> 80 3c 70 07 77 00 e8 47 76 a7 00 49 8b 47 08 48 89 05 dc 08 cb
+> > RSP: 0018:ffffc90000da8c50 EFLAGS: 00010806
+> > RAX: 1ffffffff1707d7e RBX: ffffffff894cc67c RCX: ffffffff815adc44
+> > RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffffffff8b83ebf0
+> > RBP: ffffffff894bd1a8 R08: dffffc0000000000 R09: fffffbfff167daa0
+> > R10: fffffbfff167daa0 R11: 0000000000000000 R12: dffffc0000000000
+> > R13: 00000000ffffffff R14: ffffffff814f7157 R15: ffffffff8b83ebe8
+> > FS:  00007f7a9e2c88c0(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000000744138 CR3: 00000000a256d000 CR4: 00000000001526e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <IRQ>
+> >  notifier_call_chain kernel/notifier.c:83 [inline]
+> >  __raw_notifier_call_chain kernel/notifier.c:361 [inline]
+> >  raw_notifier_call_chain+0xe7/0x170 kernel/notifier.c:368
+> >  update_pvclock_gtod kernel/time/timekeeping.c:581 [inline]
+> >  timekeeping_update+0x281/0x3f0 kernel/time/timekeeping.c:675
+> >  timekeeping_advance+0x830/0xa00 kernel/time/timekeeping.c:2122
+> >  tick_sched_do_timer kernel/time/tick-sched.c:147 [inline]
+> >  tick_sched_timer+0xba/0x410 kernel/time/tick-sched.c:1321
+> >  __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
+> >  __hrtimer_run_queues+0x42d/0x930 kernel/time/hrtimer.c:1588
+> >  hrtimer_interrupt+0x373/0xd60 kernel/time/hrtimer.c:1650
+> >  local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1080 [inline]
+> >  __sysvec_apic_timer_interrupt+0xf0/0x260 arch/x86/kernel/apic/apic.c:1097
+> >  asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+> >  </IRQ>
+> >  __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+> >  run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+> >  sysvec_apic_timer_interrupt+0x94/0xf0 arch/x86/kernel/apic/apic.c:1091
+> >  asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
+> > RIP: 0010:___might_sleep+0x60/0x570 kernel/sched/core.c:7265
+> > Code: ff ff e8 e3 d2 d9 06 85 c0 74 1f c6 05 49 10 39 08 01 48 c7 c7 2a 87 09 89 be 61 1c 00 00 48 c7 c2 11 89 09 89 e8 90 a4 08 00 <e8> 4b d5 d9 06 85 c0 74 3d 80 3d 22 10 39 08 00 75 34 48 c7 c7 20
+> > RSP: 0018:ffffc900011f7b08 EFLAGS: 00000246
+> > RAX: 0000000000000000 RBX: 0000000000000c40 RCX: dffffc0000000000
+> > RDX: 0000000000000000 RSI: ffffffff894fe578 RDI: 0000000000000282
+> > RBP: ffff8880aa440900 R08: dffffc0000000000 R09: fffffbfff167da9f
+> > R10: fffffbfff167da9f R11: 0000000000000000 R12: 0000000000001000
+> > R13: 0000000000000c40 R14: 0000000000000000 R15: 0000000000000000
+> >  cache_alloc_debugcheck_before mm/slab.c:2984 [inline]
+> >  slab_alloc mm/slab.c:3302 [inline]
+> >  __do_kmalloc mm/slab.c:3653 [inline]
+> >  __kmalloc+0x94/0x300 mm/slab.c:3664
+> >  kmalloc include/linux/slab.h:559 [inline]
+> >  tomoyo_realpath_from_path+0xd8/0x630 security/tomoyo/realpath.c:254
+> >  tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+> >  tomoyo_path_perm+0x17d/0x740 security/tomoyo/file.c:822
+> >  security_inode_getattr+0xc0/0x140 security/security.c:1278
+> >  vfs_getattr fs/stat.c:121 [inline]
+> >  vfs_statx+0x118/0x380 fs/stat.c:206
+> >  vfs_lstat include/linux/fs.h:3178 [inline]
+> >  __do_sys_newlstat fs/stat.c:374 [inline]
+> >  __se_sys_newlstat fs/stat.c:368 [inline]
+> >  __x64_sys_newlstat+0x81/0xd0 fs/stat.c:368
+> >  do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > RIP: 0033:0x7f7a9d13b335
+> > Code: 69 db 2b 00 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 83 ff 01 48 89 f0 77 30 48 89 c7 48 89 d6 b8 06 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 03 f3 c3 90 48 8b 15 31 db 2b 00 f7 d8 64 89
+> > RSP: 002b:00007fff5eaa2608 EFLAGS: 00000246 ORIG_RAX: 0000000000000006
+> > RAX: ffffffffffffffda RBX: 0000564636a00770 RCX: 00007f7a9d13b335
+> > RDX: 00007fff5eaa2640 RSI: 00007fff5eaa2640 RDI: 00005646369ff770
+> > RBP: 00007fff5eaa2700 R08: 00007f7a9d3fa178 R09: 0000000000001010
+> > R10: 0000000000000020 R11: 0000000000000246 R12: 00005646369ff770
+> > R13: 00005646369ff790 R14: 00005646369a42bb R15: 00005646369a42c0
+> > Modules linked in:
+> > ---[ end trace 4ff96b4858c23e64 ]---
+> > RIP: 0010:update_pvclock_gtod arch/x86/kvm/x86.c:1743 [inline]
+> > RIP: 0010:pvclock_gtod_notify+0x11d/0x490 arch/x86/kvm/x86.c:7452
+> > Code: 10 48 89 f8 48 c1 e8 03 42 80 3c 20 00 74 05 e8 69 76 a7 00 49 8b 47 10 48 89 05 f6 08 cb 09 49 8d 7f 08 48 89 f8 48 c1 e8 03 <42> 80 3c 70 07 77 00 e8 47 76 a7 00 49 8b 47 08 48 89 05 dc 08 cb
+> > RSP: 0018:ffffc90000da8c50 EFLAGS: 00010806
+> > RAX: 1ffffffff1707d7e RBX: ffffffff894cc67c RCX: ffffffff815adc44
+> > RDX: dffffc0000000000 RSI: 0000000000000008 RDI: ffffffff8b83ebf0
+> > RBP: ffffffff894bd1a8 R08: dffffc0000000000 R09: fffffbfff167daa0
+> > R10: fffffbfff167daa0 R11: 0000000000000000 R12: dffffc0000000000
+> > R13: 00000000ffffffff R14: ffffffff814f7157 R15: ffffffff8b83ebe8
+> > FS:  00007f7a9e2c88c0(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000000744138 CR3: 00000000a256d000 CR4: 00000000001526e0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> >
+> >
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> >
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> The failure mode looks somewhat similar to:
+> general protection fault in perf_misc_flags
+> https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
+> https://groups.google.com/g/syzkaller-bugs/c/d5GC1V8S34k/m/6LTarP8mBAAJ
+>
+> only clang, gpf in systems code, happened few times
 
-Agreed - if the bitmap ops made better use of the architecure then I'd
-change to bitmap without question - it is more readable.
+There is strong indication that this is a manifestation of the same
+problem we see in other crashes.
+Let's make one canonical bug for this:
 
-Bart and Linus - do you have any preference?
-
-> Also note, that it will be easier to extend in the future if needed
-> (if we want to have more than BITS_PER_LONG [64] lines to handle).
-> 
-
-Yeah, I think we can rule that one out - while I had initially written
-the uAPI with the option of > 64 lines we decided on the hard limit to
-keep things simple.  And any user that needs to request more than 64
-lines in one request shouldn't be using the GPIO uAPI.
-
-Cheers,
-Kent.
+#syz dup: general protection fault in perf_misc_flags
