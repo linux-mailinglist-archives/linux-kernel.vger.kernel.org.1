@@ -2,101 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C1E27945B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50ED1279462
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbgIYWvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:51:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
+        id S1729164AbgIYWyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:54:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726773AbgIYWvI (ORCPT
+        with ESMTP id S1727067AbgIYWyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:51:08 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FADC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:51:08 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id y190so2343679vsy.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:51:08 -0700 (PDT)
+        Fri, 25 Sep 2020 18:54:23 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BC3C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:54:23 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id bw23so240069pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:54:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=xnWM62JYvqicPiQzA7Sj/RrocMZqiUgEBu2ZXBloQSU=;
-        b=mBY99Lr7jdzwueBXLBYANDXf1aDIOTuJecRm8dExmwO4KuWTDF5exJhMM8Wc2XSPU2
-         Zk0U64SM2LnUFr0xO03VFMIrvDmnSySSVOLyv3380L1uZHIXLrDDbVAxU7A5ihshU2dZ
-         SEEEqQQdP6WB59ijiXN3baL6a6qiqT8acKg6bl6+fk+FPvEU/KPyiptocwFYzkQSs4uf
-         7GW/bBNyMVh+QQvFLWYwsKMwAzx8kxyjjfSQhF0+MFWMQVBkaqwEhk8GD/+A09ZGeZSo
-         HKlfJiMfG2lliKIsKhYyczdOcOVZUT64QMSyq/7VLbYwM2dIP+8kWu1Vy5zyhpjE5YRh
-         TiKw==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=RoKnACgaWS5LzdU+6sscBou6/I159ovfqzEP7aVaDzw=;
+        b=ZSR2acP+CjWXpmgSTWJ0R4K9ppi11L/dMv8tich8Ohu20GiJQ4yFSl/qE6v97cTogY
+         9/JdhN3ybLiVotWGiDvBIDzMQJJWONX/JgBXJKRuGTJ+y5XUjqKJ0fcDhTC70uFUbksj
+         zQLs0q5qZDoVkuOwwO6xFHC7iyX1+iLU6H/qOy8y9QlpMBuZIayrU9H7KvT0YWfFWvy9
+         eyp6tLlV3dsVlLkwR/2gpx3Y4R6cGjk+52UkXqOLPhF8XsWiY+HdtMhwGFvO26oLH7Qn
+         mtlmLcYp2LDv5twvxEEAtgH9EaxWIlqhu9epX6FgVti34KE5cPC1Ik4rwbao3JMfJD8c
+         CbdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=xnWM62JYvqicPiQzA7Sj/RrocMZqiUgEBu2ZXBloQSU=;
-        b=uKJJe6f2WIDhmlkG7B+0FI07hTsXAoi0YJJlKmUeBbrhwcRz6IMbPymQ5Rkii6HJPg
-         2MR389dDOzQsbDimN0URjZYWOS98me8BzupAV7rlRLcaHZNMHB4tlf4FoLGyGK0jMJC9
-         6LxXebfFzGdInUa21ulr8eybKIPQH/BfSC72Q08kXfIlAELfjYChI7ou4JIqSb5F5v1a
-         Hpbc8e+NeUsJQGHbS6ug2jT1zeWrJoBD7/gE7VFtAULJsxKIvBdKsLI8IEbRy5CSj0Sz
-         Kg6Bkwi2UBM/9RC4/IFZi4gw6qtC1hiSpavaNt35iqK7BR3PZSF/5S9Ry0Umn4wMLKl1
-         S+8g==
-X-Gm-Message-State: AOAM533hx40c0Id63TfXG1JhjGNDy0WWAhkD5qcSntlJRePsxPJQVgtd
-        nMEtssAAshYjYUEK/fC3YSQ8dUO2CpvfGyNXHGo=
-X-Google-Smtp-Source: ABdhPJwmjdKMX2oRACS9WutOEhPpCzBeEx2Ke7CgyWeKPDwANmGjF3mQo39uDYpFbAcMxh7qi6p43prFILK/5Fi+Ygw=
-X-Received: by 2002:a67:d00a:: with SMTP id r10mr579529vsi.12.1601074267789;
- Fri, 25 Sep 2020 15:51:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=RoKnACgaWS5LzdU+6sscBou6/I159ovfqzEP7aVaDzw=;
+        b=gDlmH+gy8m2GeyyKDfHEhDvv4lIwNajtWEoNdCELeyylLGkw6qu3hGBZDI/4oRFQqo
+         aiBZQYF680qdopVwX4sVkCZ8dtze+5l9ft3MLTz5S+7ZhkL7nxQimFRpWre18Sjicuss
+         6Z0UzUXC7ibeG78sScJkBT3BiTKLTkRKt0ZyEVJCKNnCpNPZ42uLnYDXqQiQF2zxjlNz
+         ET6JWrXBx0v7lgF9hJXCO1gVy1+7n1TtIU0Gd+sMGEu1H4oRifErUjiUau60/jyPJc3x
+         wd+alWRzCz/HTi0HRP783G4xuL5hYGeb4B5B9mgJR/57vjTEPpwkTMqVTyGuuTKVK5q/
+         fGZA==
+X-Gm-Message-State: AOAM533TPwIsWCWKlahvb3+RwlpA1eqVtW/rdn9V3zvz1Yt+T+Q1xp4b
+        qL8kyV1sxLPaU9UNd4OzFj8ncA==
+X-Google-Smtp-Source: ABdhPJxmkfAHo35d3Rc3VorQdYYJb5d61Taw5jSIa2vfo+izYhZie5MHIXq8d6TH7Qt7XXJovJkprw==
+X-Received: by 2002:a17:90b:80a:: with SMTP id bk10mr688415pjb.53.1601074462667;
+        Fri, 25 Sep 2020 15:54:22 -0700 (PDT)
+Received: from [10.212.51.97] ([192.55.54.42])
+        by smtp.gmail.com with ESMTPSA id c1sm3653798pfj.219.2020.09.25.15.54.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 15:54:21 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 05/10] PCI/AER: Apply function level reset to RCiEP on
+ fatal error
+Date:   Fri, 25 Sep 2020 15:54:19 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <E621EAEF-54F8-4820-BC58-ED6163C82086@intel.com>
+In-Reply-To: <20200925215854.GA2460270@bjorn-Precision-5520>
+References: <20200925215854.GA2460270@bjorn-Precision-5520>
 MIME-Version: 1.0
-Received: by 2002:ab0:5a41:0:0:0:0:0 with HTTP; Fri, 25 Sep 2020 15:51:07
- -0700 (PDT)
-Reply-To: iincc200@gmail.com
-From:   "Mrs.Heba Ibrahim" <emailinffo@gmail.com>
-Date:   Fri, 25 Sep 2020 15:51:07 -0700
-Message-ID: <CACh-=JwmKseeMbOVe7wCkM5xZeTRFrKGBdCkdbP3ZR4ixpDrrQ@mail.gmail.com>
-Subject: YOUR VISA CARD SUM OF US$1.200,000.00
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Attention:Beneficiary
+On 25 Sep 2020, at 14:58, Bjorn Helgaas wrote:
 
-This is to official inform you that we have been having a meeting for
-the past Seven month which ended Two days ago with Dr. Robert B.
-Rollick the World Bank President and Hon. Mrs. Christine Laggard (IMF)
-Director General, in the meeting we treated on Scam victim problems.
+> On Tue, Sep 22, 2020 at 02:38:54PM -0700, Sean V Kelley wrote:
+>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>
+>> Attempt to do function level reset for an RCiEP associated with an
+>> RCEC device on fatal error.
+>>
+>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>> ---
+>>  drivers/pci/pcie/err.c | 31 ++++++++++++++++++++++---------
+>>  1 file changed, 22 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>> index e575fa6cee63..5380ecc41506 100644
+>> --- a/drivers/pci/pcie/err.c
+>> +++ b/drivers/pci/pcie/err.c
+>> @@ -169,6 +169,17 @@ static void pci_bridge_walk(struct pci_dev 
+>> *bridge, int (*cb)(struct pci_dev *,
+>>  		cb(bridge, userdata);
+>>  }
+>>
+>> +static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
+>> +{
+>> +	if (!pcie_has_flr(dev))
+>> +		return PCI_ERS_RESULT_NONE;
+>> +
+>> +	if (pcie_flr(dev))
+>> +		return PCI_ERS_RESULT_DISCONNECT;
+>> +
+>> +	return PCI_ERS_RESULT_RECOVERED;
+>> +}
+>
+> Either we reset the device or we didn't; there is no third option.
+>
+> If I read it correctly, nothing in pcie_do_recovery() cares about the
+> difference between PCI_ERS_RESULT_NONE and PCI_ERS_RESULT_DISCONNECT.
+> The status does get returned, but only edr_handle_event() looks at it,
+> and it doesn't care about the difference either.
+>
+> So I think this should just return PCI_ERS_RESULT_RECOVERED or
+> PCI_ERS_RESULT_DISCONNECT.
 
-United Nation have agreed to compensate you with the sum of One
-million two Hundred  Thousand Dollars (USD$1.200,000.00) this also
-includes international businesses that failed due to Government
-problems etc?. We have arranged your payment through Master Card ATM
-which is the latest instruction from World Bank Group.
+You raise a good point. As currently implemented, the usage requires 
+either a reset or not result. Will change.
 
-For the collection of your Master Card ATM contact our representative
-Dr.Usman Mohammed and forward the following details to him.
+Thanks,
 
-1. Full Name:.........
-2. Country:........
-3. Delivery Address:..........
-4. Telephone:..............& Occupation.......
-5. Your Age...... /Sex..........
+Sean
 
-Contact Dr.USMAN MOHAMMED with below email and phone number and
-forward all your details to him.
-
-Email:(  inforemitunitinfo@qq.com  )
-
-Telephone +226  61 10 85 06
-
-Note: for the immediate collection of your Master Card ATM contact our
-representative Agent. Usman Mohammed to enable you confirm your
-payment without further delay and note any other contact you made out
-side his office is at of your own risk.
-
-Thanks
-Mrs Mariam Mohammed.
-
-CC: Hon. Mrs. Christine Lagarde
-CC: World Bank Group
-CC: Mr. Ant=C3=B3nio Guterres Secretary-General
+>
+>>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>  			pci_channel_state_t state,
+>>  			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev 
+>> *pdev))
+>> @@ -195,15 +206,17 @@ pci_ers_result_t pcie_do_recovery(struct 
+>> pci_dev *dev,
+>>  	if (state == pci_channel_io_frozen) {
+>>  		pci_bridge_walk(bridge, report_frozen_detected, &status);
+>>  		if (type == PCI_EXP_TYPE_RC_END) {
+>> -			pci_warn(dev, "link reset not possible for RCiEP\n");
+>> -			status = PCI_ERS_RESULT_NONE;
+>> -			goto failed;
+>> -		}
+>> -
+>> -		status = reset_subordinate_devices(bridge);
+>> -		if (status != PCI_ERS_RESULT_RECOVERED) {
+>> -			pci_warn(dev, "subordinate device reset failed\n");
+>> -			goto failed;
+>> +			status = flr_on_rciep(dev);
+>> +			if (status != PCI_ERS_RESULT_RECOVERED) {
+>> +				pci_warn(dev, "function level reset failed\n");
+>> +				goto failed;
+>> +			}
+>> +		} else {
+>> +			status = reset_subordinate_devices(bridge);
+>> +			if (status != PCI_ERS_RESULT_RECOVERED) {
+>> +				pci_warn(dev, "subordinate device reset failed\n");
+>> +				goto failed;
+>> +			}
+>>  		}
+>>  	} else {
+>>  		pci_bridge_walk(bridge, report_normal_detected, &status);
+>> -- 
+>> 2.28.0
+>>
