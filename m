@@ -2,138 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86B3B279009
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A4927900F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbgIYSFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:05:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726368AbgIYSFb (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:05:31 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CF76720878;
-        Fri, 25 Sep 2020 18:05:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601057130;
-        bh=AJ8iMHWxIBWBhlee4eDxoEUbf+emEiFCjxQRudZZgrM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DQwISomXjlSsneUnFKv4idX1YISuBNVwtYVSAhN7jFPnNNZvHfSoYeHIIrrWUFXv7
-         HGA8qI6lpJWqJk/dT6UhG1hFFyMbUQ79TaiNaFVe/24wTs/70wM7w2VxP+izWTrhb+
-         uiM4RggSdENpiwx5TeyU+xiDKGQ7V5KY73ZOAJN8=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 97419400E9; Fri, 25 Sep 2020 15:05:27 -0300 (-03)
-Date:   Fri, 25 Sep 2020 15:05:27 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>,
-        Kan Liang <kan.liang@intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH v2 1/2] perf vendor events: Update CascadelakeX events to
- v1.08
-Message-ID: <20200925180527.GA2883319@kernel.org>
-References: <20200922031918.3723-1-yao.jin@linux.intel.com>
- <20200922031918.3723-2-yao.jin@linux.intel.com>
- <20200922194232.GA2505291@kernel.org>
- <4db737f2-0705-5183-6971-9031acfd123b@linux.intel.com>
+        id S1729693AbgIYSHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIYSHz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:07:55 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA1AC0613CE;
+        Fri, 25 Sep 2020 11:07:55 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id x16so2465669pgj.3;
+        Fri, 25 Sep 2020 11:07:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JsCppV/bmsXZUBRfSaY9SL27S9Ub2HG1i6C0hRa6EVE=;
+        b=tZdsuSUsj0ng7HTsKzxvOHVBb5mFFSSEzLq0L+JGhTu918YqYGnycwGT26nyT7SiTj
+         wM275tJEa40Upp3J35MGnNt1tpE6uev0CFw2oSdL3vJAHiTkgqKfNoPur1JQ+Pf+8B0z
+         Y9igeHsm83sQuWywKLlC/VCKMi4ov7baF9YjQfmUclyLlZ9i6dWYTNrv4gWdCY7/pdhb
+         dJ3WYvo8tbjydhobEbtVgFNVA5lWKW8YWRzXbKMgsJsJ8xWEXZiv3CH1+58/wHIa2ocz
+         Sa8SjIv2Y4gmRrJPVbRqWQhi23rMDf9zHqBg7FhN46rFg8EHXqpwHLFnLxsGnOu9hlMv
+         XMBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JsCppV/bmsXZUBRfSaY9SL27S9Ub2HG1i6C0hRa6EVE=;
+        b=gO73vZnWpyCweDNlUJeI1oxlC4q0mr0ppCjYI0qXmIBo8rINSvKwm2LYSrbQdcRqdN
+         2gvWoauYXxH5oLS4SG0XWy1xQOEnc8o02KcKXYbTypXsU6kCMQCP1AQTtf5/m7QrRuIY
+         pSYiMmSgfgajsD+0vBbu0M+Vs5jUPyG9SKVNVw/j4s5CxkxXSQ4R1K+WolEO71qs+21m
+         QqLWW6LlIXNuR1gSZLahpSmjoIJ9vHyJB0rkg4golbCXsJ/241/37Ois4WFtnwraf+VD
+         TCafPMllHm870XBHp6QR6/1qaBY6FBZFYvA7c3JcOjxrC5rlYfA4kpe0K7GEkzgbb9Uv
+         jouA==
+X-Gm-Message-State: AOAM531vxWyVl1+43CqpeqeZ3kCb0lQl4bbm+Ab7VQtLUGwjh0tFx0zs
+        GMOX6LCHtdvAQA2dzTxTA3eYHiv0x5/V
+X-Google-Smtp-Source: ABdhPJy1/0rKu+54wFhxJYw5dahCMg3cJvq7kuvb+TbDH6a/hXEP5JwMHA2BI2v7o2jCmtEpz5KiHg==
+X-Received: by 2002:a63:5102:: with SMTP id f2mr151366pgb.15.1601057265909;
+        Fri, 25 Sep 2020 11:07:45 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id ie13sm2700535pjb.5.2020.09.25.11.07.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 11:07:45 -0700 (PDT)
+From:   lihaiwei.kernel@gmail.com
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org
+Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, Haiwei Li <lihaiwei@tencent.com>
+Subject: [PATCH v3] KVM: Check the allocation of pv cpu mask
+Date:   Sat, 26 Sep 2020 02:07:38 +0800
+Message-Id: <20200925180738.4426-1-lihaiwei.kernel@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4db737f2-0705-5183-6971-9031acfd123b@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 23, 2020 at 09:25:06AM +0800, Jin, Yao escreveu:
-> On 9/23/2020 3:42 AM, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Sep 22, 2020 at 11:19:17AM +0800, Jin Yao escreveu:
-> > > - Update CascadelakeX events to v1.08.
-> > > - Update CascadelakeX JSON metrics from TMAM 4.0.
+From: Haiwei Li <lihaiwei@tencent.com>
 
-> > > Other fixes:
-> > > - Add NO_NMI_WATCHDOG metric constraint to Backend_Bound
-> > > - Change 'MB/sec' to 'MB' in UNC_M_PMM_BANDWIDTH.
+check the allocation of per-cpu __pv_cpu_mask.
 
-> > [acme@five perf]$ am /wb/1.patch
-> > Applying: perf vendor events: Update CascadelakeX events to v1.08
-> > error: patch fragment without header at line 283: @@ -213,14 +220,14 @@
-> > Patch failed at 0001 perf vendor events: Update CascadelakeX events to v1.08
-> > hint: Use 'git am --show-current-patch=diff' to see the failed patch
-> > When you have resolved this problem, run "git am --continue".
-> > If you prefer to skip this patch, run "git am --skip" instead.
-> > To restore the original branch and stop patching, run "git am --abort".
-> > [acme@five perf]$ git am --abort
-> > [acme@five perf]$ set -o vi
-> > [acme@five perf]$ patch -p1 < /wb/1.patch
-> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/cache.json
-> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> > Hunk #7 FAILED at 87.
-> > 1 out of 7 hunks FAILED -- saving rejects to file tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json.rej
-> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/frontend.json
-> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/memory.json
-> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/other.json
-> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/pipeline.json
-> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/uncore-memory.json
-> > patching file tools/perf/pmu-events/arch/x86/cascadelakex/uncore-other.json
-> > [acme@five perf]$
+Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+---
+v1 -> v2:
+ * add CONFIG_SMP for kvm_send_ipi_mask_allbutself to prevent build error
+v2 -> v3:
+ * always check the allocation of __pv_cpu_mask in kvm_flush_tlb_others
 
-> > [acme@five perf]$ head tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json.rej
-> > --- tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> > +++ tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> > @@ -87,86 +70,110 @@
-> >           "MetricName": "CLKS"
-> >       },
-> >       {
-> > -        "BriefDescription": "Total issue-pipeline slots (per-Physical Core)",
-> > +        "BriefDescription": "Total issue-pipeline slots (per-Physical Core till ICL; per-Logical Processor ICL onward)",
-> >           "MetricExpr": "4 * cycles",
-> >           "MetricGroup": "TopDownL1",
-> > [acme@five perf]$ wc -l tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json.rej
-> > 133 tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json.rej
-> > [acme@five perf]$
+ arch/x86/kernel/kvm.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-> > Can you please check?
-
-> I applied the patch on latest perf/core, it seemed OK.
-
-> # git log --oneline
-> 4cbdb1c21926 (HEAD -> perf/core) perf vendor events: Update CascadelakeX events to v1.08
-> b1f815c479c1 (tag: perf-tools-tests-v5.10-2020-09-10, origin/perf/core) perf vendor events power9:
-> Add hv_24x7 core level metric events
-> f5a489dc8189 perf metricgroup: Pass pmu_event structure as a parameter for
-> arch_get_runtimeparam() 560ccbc4a52c perf jevents: Add support for parsing
-> perchip/percore events ...
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 9663ba31347c..1e5da6db519c 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -553,7 +553,6 @@ static void kvm_send_ipi_mask_allbutself(const struct cpumask *mask, int vector)
+ static void kvm_setup_pv_ipi(void)
+ {
+ 	apic->send_IPI_mask = kvm_send_ipi_mask;
+-	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
+ 	pr_info("setup PV IPIs\n");
+ }
  
-> I strongly suspect that part of patch content is truncated by mail system.
+@@ -619,6 +618,11 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+ 	struct kvm_steal_time *src;
+ 	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
  
-> Let me resend the patch as attachment. Sorry about that!
++	if (unlikely(!flushmask)) {
++		native_flush_tlb_others(cpumask, info);
++		return;
++	}
++
+ 	cpumask_copy(flushmask, cpumask);
+ 	/*
+ 	 * We have to call flush only on online vCPUs. And
+@@ -765,6 +769,14 @@ static __init int activate_jump_labels(void)
+ }
+ arch_initcall(activate_jump_labels);
+ 
++static void kvm_free_cpumask(void)
++{
++	unsigned int cpu;
++
++	for_each_possible_cpu(cpu)
++		free_cpumask_var(per_cpu(__pv_cpu_mask, cpu));
++}
++
+ static __init int kvm_alloc_cpumask(void)
+ {
+ 	int cpu;
+@@ -783,11 +795,20 @@ static __init int kvm_alloc_cpumask(void)
+ 
+ 	if (alloc)
+ 		for_each_possible_cpu(cpu) {
+-			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
+-				GFP_KERNEL, cpu_to_node(cpu));
++			if (!zalloc_cpumask_var_node(
++				per_cpu_ptr(&__pv_cpu_mask, cpu),
++				GFP_KERNEL, cpu_to_node(cpu)))
++				goto zalloc_cpumask_fail;
+ 		}
+ 
++#if defined(CONFIG_SMP)
++	apic->send_IPI_mask_allbutself = kvm_send_ipi_mask_allbutself;
++#endif
+ 	return 0;
++
++zalloc_cpumask_fail:
++	kvm_free_cpumask();
++	return -ENOMEM;
+ }
+ arch_initcall(kvm_alloc_cpumask);
+ 
+-- 
+2.18.4
 
-Thanks, it now works, but then... You forgot to add the Cc: entries for
-all the people in your actual e-mail Cc: list, and also the
-Reviewed-by: from Andy, I had to do it all manually, so when I applied
-your attachments with 'git am' I needed to go on and manually collect
-all the Cc, Reviewed-by and Acked-by tags.
-
-This complicates things, slows me down, doesn't scale. While I do all
-this manual stuff normally, I don't think this can continue, and its not
-something specific to you, submitters have to pay attention to these
-details. Or tools.
-
-Things like b4 help with this and probably have to take into account
-attachments as well, that is why I'm adding Konstantin to the Cc: list
-of this message.
-
-Konstantin, is this case covered? I.e. patches that get botched and then
-require attachments to be sent to then gets processed?
-
-Thanks, applied.
-
-- Arnaldo
