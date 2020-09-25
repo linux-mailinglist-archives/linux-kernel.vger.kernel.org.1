@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBF3278800
+	by mail.lfdr.de (Postfix) with ESMTP id EEC87278801
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728849AbgIYMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56336 "EHLO mail.kernel.org"
+        id S1729270AbgIYMv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:51:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729249AbgIYMvv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:51:51 -0400
+        id S1729245AbgIYMvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:51:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 51874206DB;
-        Fri, 25 Sep 2020 12:51:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11FBB2072E;
+        Fri, 25 Sep 2020 12:51:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038310;
-        bh=3SAjjLslOa7DhtpP/JutVXf5V3x4nqiaE7qFDJ8QnY8=;
+        s=default; t=1601038313;
+        bh=FxJ6C7eb474ZPbTRHkZvfuv3o+nhcFshD6Gfbrc1PkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B+XAC8Cka04gGP0b1CHpS14MfrCP7NIIw0WZqbnJWm4BO1GHBLmJg+NDJ0FKDu3Sp
-         w7wI8XSLy49k552tCxBBpsELRSHpT8H1tzt/S/RbsBYpdhRLGZ+nvQesPZ9UFRUX1e
-         MbOn+PQ5f4ynsVKA/R809tj7bItoDt2iVkFua8jU=
+        b=I7mO9PwifhtDMl7vNI45N3Aw0iibW2Q5QnmE3sX0cThAQhhjgzcIscpB/VvcsYmSO
+         OJNSQkMSLQcVPLLOtSbUCzEVXgFY9/CDPhw0lIbGVufvW0F04ir3xuVxCwjDRt2zVH
+         lQDbb5ihFy7XVF6RjjMFf8EJKpFHvMhbLd9Qwwys=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
+        stable@vger.kernel.org, Henry Ptasinski <hptasinski@google.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 23/43] net: sch_generic: aviod concurrent reset and enqueue op for lockless qdisc
-Date:   Fri, 25 Sep 2020 14:48:35 +0200
-Message-Id: <20200925124727.085293168@linuxfoundation.org>
+Subject: [PATCH 5.4 24/43] net: sctp: Fix IPv6 ancestor_size calc in sctp_copy_descendant
+Date:   Fri, 25 Sep 2020 14:48:36 +0200
+Message-Id: <20200925124727.244835819@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
 References: <20200925124723.575329814@linuxfoundation.org>
@@ -42,107 +43,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunsheng Lin <linyunsheng@huawei.com>
+From: Henry Ptasinski <hptasinski@google.com>
 
-[ Upstream commit 2fb541c862c987d02dfdf28f1545016deecfa0d5 ]
+[ Upstream commit fe81d9f6182d1160e625894eecb3d7ff0222cac5 ]
 
-Currently there is concurrent reset and enqueue operation for the
-same lockless qdisc when there is no lock to synchronize the
-q->enqueue() in __dev_xmit_skb() with the qdisc reset operation in
-qdisc_deactivate() called by dev_deactivate_queue(), which may cause
-out-of-bounds access for priv->ring[] in hns3 driver if user has
-requested a smaller queue num when __dev_xmit_skb() still enqueue a
-skb with a larger queue_mapping after the corresponding qdisc is
-reset, and call hns3_nic_net_xmit() with that skb later.
+When calculating ancestor_size with IPv6 enabled, simply using
+sizeof(struct ipv6_pinfo) doesn't account for extra bytes needed for
+alignment in the struct sctp6_sock. On x86, there aren't any extra
+bytes, but on ARM the ipv6_pinfo structure is aligned on an 8-byte
+boundary so there were 4 pad bytes that were omitted from the
+ancestor_size calculation.  This would lead to corruption of the
+pd_lobby pointers, causing an oops when trying to free the sctp
+structure on socket close.
 
-Reused the existing synchronize_net() in dev_deactivate_many() to
-make sure skb with larger queue_mapping enqueued to old qdisc(which
-is saved in dev_queue->qdisc_sleeping) will always be reset when
-dev_reset_queue() is called.
-
-Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Fixes: 636d25d557d1 ("sctp: not copy sctp_sock pd_lobby in sctp_copy_descendant")
+Signed-off-by: Henry Ptasinski <hptasinski@google.com>
+Acked-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/sch_generic.c |   49 ++++++++++++++++++++++++++++++++----------------
- 1 file changed, 33 insertions(+), 16 deletions(-)
+ include/net/sctp/structs.h |    8 +++++---
+ net/sctp/socket.c          |    9 +++------
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
---- a/net/sched/sch_generic.c
-+++ b/net/sched/sch_generic.c
-@@ -1126,27 +1126,36 @@ static void dev_deactivate_queue(struct
- 				 struct netdev_queue *dev_queue,
- 				 void *_qdisc_default)
+--- a/include/net/sctp/structs.h
++++ b/include/net/sctp/structs.h
+@@ -224,12 +224,14 @@ struct sctp_sock {
+ 		data_ready_signalled:1;
+ 
+ 	atomic_t pd_mode;
++
++	/* Fields after this point will be skipped on copies, like on accept
++	 * and peeloff operations
++	 */
++
+ 	/* Receive to here while partial delivery is in effect. */
+ 	struct sk_buff_head pd_lobby;
+ 
+-	/* These must be the last fields, as they will skipped on copies,
+-	 * like on accept and peeloff operations
+-	 */
+ 	struct list_head auto_asconf_list;
+ 	int do_auto_asconf;
+ };
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -9337,13 +9337,10 @@ void sctp_copy_sock(struct sock *newsk,
+ static inline void sctp_copy_descendant(struct sock *sk_to,
+ 					const struct sock *sk_from)
  {
--	struct Qdisc *qdisc_default = _qdisc_default;
--	struct Qdisc *qdisc;
-+	struct Qdisc *qdisc = rtnl_dereference(dev_queue->qdisc);
- 
--	qdisc = rtnl_dereference(dev_queue->qdisc);
- 	if (qdisc) {
--		bool nolock = qdisc->flags & TCQ_F_NOLOCK;
+-	int ancestor_size = sizeof(struct inet_sock) +
+-			    sizeof(struct sctp_sock) -
+-			    offsetof(struct sctp_sock, pd_lobby);
 -
--		if (nolock)
--			spin_lock_bh(&qdisc->seqlock);
--		spin_lock_bh(qdisc_lock(qdisc));
--
- 		if (!(qdisc->flags & TCQ_F_BUILTIN))
- 			set_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state);
-+	}
-+}
+-	if (sk_from->sk_family == PF_INET6)
+-		ancestor_size += sizeof(struct ipv6_pinfo);
++	size_t ancestor_size = sizeof(struct inet_sock);
  
--		rcu_assign_pointer(dev_queue->qdisc, qdisc_default);
--		qdisc_reset(qdisc);
-+static void dev_reset_queue(struct net_device *dev,
-+			    struct netdev_queue *dev_queue,
-+			    void *_unused)
-+{
-+	struct Qdisc *qdisc;
-+	bool nolock;
- 
--		spin_unlock_bh(qdisc_lock(qdisc));
--		if (nolock)
--			spin_unlock_bh(&qdisc->seqlock);
--	}
-+	qdisc = dev_queue->qdisc_sleeping;
-+	if (!qdisc)
-+		return;
-+
-+	nolock = qdisc->flags & TCQ_F_NOLOCK;
-+
-+	if (nolock)
-+		spin_lock_bh(&qdisc->seqlock);
-+	spin_lock_bh(qdisc_lock(qdisc));
-+
-+	qdisc_reset(qdisc);
-+
-+	spin_unlock_bh(qdisc_lock(qdisc));
-+	if (nolock)
-+		spin_unlock_bh(&qdisc->seqlock);
++	ancestor_size += sk_from->sk_prot->obj_size;
++	ancestor_size -= offsetof(struct sctp_sock, pd_lobby);
+ 	__inet_sk_copy_descendant(sk_to, sk_from, ancestor_size);
  }
  
- static bool some_qdisc_is_busy(struct net_device *dev)
-@@ -1207,12 +1216,20 @@ void dev_deactivate_many(struct list_hea
- 		dev_watchdog_down(dev);
- 	}
- 
--	/* Wait for outstanding qdisc-less dev_queue_xmit calls.
-+	/* Wait for outstanding qdisc-less dev_queue_xmit calls or
-+	 * outstanding qdisc enqueuing calls.
- 	 * This is avoided if all devices are in dismantle phase :
- 	 * Caller will call synchronize_net() for us
- 	 */
- 	synchronize_net();
- 
-+	list_for_each_entry(dev, head, close_list) {
-+		netdev_for_each_tx_queue(dev, dev_reset_queue, NULL);
-+
-+		if (dev_ingress_queue(dev))
-+			dev_reset_queue(dev, dev_ingress_queue(dev), NULL);
-+	}
-+
- 	/* Wait for outstanding qdisc_run calls. */
- 	list_for_each_entry(dev, head, close_list) {
- 		while (some_qdisc_is_busy(dev))
 
 
