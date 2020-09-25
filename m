@@ -2,102 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37FDC278361
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1B42278362
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727621AbgIYI6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
+        id S1727555AbgIYI6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:58:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727110AbgIYI6E (ORCPT
+        with ESMTP id S1727110AbgIYI6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:58:04 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40C2DC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:58:04 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id r7so2554197ejs.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:58:04 -0700 (PDT)
+        Fri, 25 Sep 2020 04:58:37 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A461C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:58:37 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id j3so942022qvi.7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:58:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=eJsaR2S9c0RCFooPTqi2lQWjWsZMnHQ41gMbagMVzj0=;
-        b=v8Y6GM9jKWXqAqyb8w0DpE3RFacTvtkMdVeac5CRaQtMbsw+wR0etpMczPxG5gBtu9
-         RHXxUsXmlRG4uxuJCXthVTPqu1f1YqrWBogZOHjkPTDeWKKSObQAx7RT/D5zRz4+nOIj
-         fRN9ixM4MpZml9LA9kZ0ERsJuRULY++2lfEI9Z7Ung1lZgZ6dUh6cKfScxWMNeKeF083
-         4kl3t2JbvH0mWzmCL6unvpJ1ptbA4NPXc3OnU6dGDD9ATUoQ8KmEyQ0yWcIHvIoWpKhv
-         r+f1IXAgcgGGFH7dM4b9/4l5Y6cS3VDIoZ3jumAF+qjjbmRDz2LntqkChCKW7+vrvnRU
-         y9Yw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OBfQBhGGCt8PtYce4ad54bvtM0tuNhXLyEjVZdn2vo0=;
+        b=cg1GOiq7LOLUUr2ZPF9UOQZEhGyHkiSH4usJtyGlc93pFYyp3MeuFIAVNCNgi9hdzv
+         0fs/VTuatMxzKDQoGO3SfWiIa9zZ5CQlkqu7wcl/s5Lyr9A4ughJC/Yd0amLbg1aBQ7P
+         ALa+P759USwyHBfmdRPqNhUxVjzjDd73Lvla4loc/jOKPZB6CeDv9VfSo6uEAURq3m3I
+         Cu7eqRj3/VRCcMDiaqTKrFR1ippd4ooml63d+7fkKuZIb7arWiFJ1hZ3RHtYjYjssm/r
+         ILjoaJeU0Ds4MRcZW4luRMPTzX/NqFGQgbKYVOjuhhSMI3gltC5fphntE7eEjXvrwZ5D
+         VBBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=eJsaR2S9c0RCFooPTqi2lQWjWsZMnHQ41gMbagMVzj0=;
-        b=V6fpOVtCSj0ScDy4Q+cXnAqgcPvjT1xzKaqgBRiD6sevHkF1Sxh3avch/zplbtusb0
-         82RyajK+5iPHSEImpGb21Y2NpfZn32oaizLeaSXbTSiWxI0MEVA2mTVkBHgGbUv2cGT2
-         fySZDC7ALgnj3anPZukNA1qvuCiyTalIggY0G9GMwssbH5i0YmpKKkn3hRZOVKoB28kc
-         HNA7G+ixqmkqIpHhAg/ZJVO52OyOdZsaNusQe+7RBfMpuW4k7qpC9HehC5Swb21ZbyHS
-         GfwKh9Zwf4jSzhuYNmNQ7WzlhGE7xoc10JSazxytwpEqogTFd3DlYcoYhOrNQjSF8c+H
-         vnxA==
-X-Gm-Message-State: AOAM533wW6vIodOnaI4ayi39dV76lFpW6sTrZwObQR7rbH5jczG49zHJ
-        Ad5pUNEbX2x3XV4FhuUjRLzYCA==
-X-Google-Smtp-Source: ABdhPJz0C9RFuiseiwDk9qPjhkaxw7fXHw7IIbLa0ThW1vPCU2JlQrYGn/aJNpj2EFBaYnhOocYgvg==
-X-Received: by 2002:a17:906:3ca2:: with SMTP id b2mr1736707ejh.460.1601024282799;
-        Fri, 25 Sep 2020 01:58:02 -0700 (PDT)
-Received: from localhost (cag06-3-82-243-161-21.fbx.proxad.net. [82.243.161.21])
-        by smtp.gmail.com with ESMTPSA id cf7sm1330341edb.78.2020.09.25.01.58.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 01:58:01 -0700 (PDT)
-References: <20200925033017.1790973-1-art@khadas.com> <20200925033017.1790973-9-art@khadas.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Artem Lapkin <email2tema@gmail.com>, narmstrong@baylibre.com
-Cc:     khilman@baylibre.com, robh+dt@kernel.org,
-        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: Re: [PATCH 8/8] arm64: dts: meson: enable RTC for VIM2 meson-gxm-khadas-vim2
-In-reply-to: <20200925033017.1790973-9-art@khadas.com>
-Date:   Fri, 25 Sep 2020 10:58:00 +0200
-Message-ID: <1j1riq9qsn.fsf@starbuckisacylon.baylibre.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OBfQBhGGCt8PtYce4ad54bvtM0tuNhXLyEjVZdn2vo0=;
+        b=HSMdJGzvDZsi8G6HlvVvFLk3tt0/UTCldQ/uB3MNUEL6pcNQdUaH/uM9J6tmefmBkP
+         uP2FoSFGJfHdcaLx8nTyOEix64s+HPqst7N3TY+NLFUu2nZuUrPAuVz8a41ddVXMTyDP
+         bvIdZXLefyoanilKv4EHluMPyzrkqw6wvhE2kNb6KAQ4rZFJT2XPgdvuO9R8uGJes/sp
+         vg2F1aopA8I0NE3Oz2r+C4CsFyx+yiyb6GbIXyD7vJHgUKtkFTAXqyDEaH5HsUfd6Pl8
+         vAVJiafTPs4DgqOta+E2kUuY47w1ptf+1O4zxvs3p2XZ1FY0yur3chCMsWP+MRRelsjU
+         dfKw==
+X-Gm-Message-State: AOAM533BfEpq7ZXzXEzUZnXqtM10ZqI2mx043/JwpyWIbnUNMo8v8uh/
+        MXSvF9+C931jMzjdfEgCwU2RfN5I1+X46IsRZQo=
+X-Google-Smtp-Source: ABdhPJyBvT5P50o5JK02BpCl7OikwzHKhA1tuwZnSZz9R0J0c7m5++Jp0WKkdcMIhof83aKVOfo8XDzSq1c6s7BDDdI=
+X-Received: by 2002:a05:6214:292:: with SMTP id l18mr3371262qvv.3.1601024316752;
+ Fri, 25 Sep 2020 01:58:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <1598331582-19923-1-git-send-email-iamjoonsoo.kim@lge.com>
+ <e83100ae-d687-3b4e-8256-aee242191ada@suse.cz> <CAAmzW4MRizKRbdt_ZBqs_+OQGsP4f2F6iYDk88u78kYqOZA9NQ@mail.gmail.com>
+ <20200827133523.GC3090@techsingularity.net> <CAAmzW4PTgbVzf1dkvnzpHpYYTbLyeNM=OzywUBvkFw9rUhtR4w@mail.gmail.com>
+ <CAAmzW4NabiAc+Nh=jtg9fUZTodQHHjf=mFTn=w32AJ43L9o2Aw@mail.gmail.com> <d587d057-75f1-288e-49d2-0c6ea387d414@suse.cz>
+In-Reply-To: <d587d057-75f1-288e-49d2-0c6ea387d414@suse.cz>
+From:   Joonsoo Kim <js1304@gmail.com>
+Date:   Fri, 25 Sep 2020 17:58:25 +0900
+Message-ID: <CAAmzW4PSwCZuZh=Nm_QJdOchCg5GBixU4sn7YYOzcbnLuG+J+w@mail.gmail.com>
+Subject: Re: [PATCH for v5.9] mm/page_alloc: handle a missing case for
+ memalloc_nocma_{save/restore} APIs
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
+        kernel-team@lge.com, Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Fri 25 Sep 2020 at 05:30, Artem Lapkin <email2tema@gmail.com> wrote:
-
-> enable RTC for VIM2 meson-gxm-khadas-vim2
+2020=EB=85=84 9=EC=9B=94 25=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 5:55, V=
+lastimil Babka <vbabka@suse.cz>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
 >
-> Signed-off-by: Artem Lapkin <art@khadas.com>
-> ---
->  arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 9/25/20 6:59 AM, Joonsoo Kim wrote:
+> > 2020=EB=85=84 8=EC=9B=94 28=EC=9D=BC (=EA=B8=88) =EC=98=A4=EC=A0=84 8:5=
+4, Joonsoo Kim <js1304@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+> >
+> > Hello, Andrew and Vlastimil.
+> >
+> > It's better to fix this possible bug introduced in v5.9-rc1 before
+> > v5.9 is released.
+> > Which approach do you prefer?
+> > If it is determined, I will immediately send a patch as you suggested.
 >
-> diff --git a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> index 70343da2811..76b7e34a9a3 100644
-> --- a/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> +++ b/arch/arm64/boot/dts/amlogic/meson-gxm-khadas-vim2.dts
-> @@ -229,7 +229,7 @@ &i2c_B {
->  
->  	rtc: rtc@51 {
->  		/* has to be enabled manually when a battery is connected: */
+> Hmm both Mel and I preferred the bypass approach and nobody else weighted=
+ in, so
+> if you don't mind, you can use my suggestion. Hmm maybe alloc_flags & ALL=
+OC_CMA
+> check should precede migratetype check in the if () to optimize for users=
+pace
+> allocations?
 
-If going for this change, this comment should have been removed
+Okay!
+I will implement a bypass approach and send it early next week.
 
-> -		status = "disabled";
-> +		status = "okay";
-
-Unless the VIMs are provided with a battery by default, I believe this
-should be kept disabled and only enabled by the bootloader if necessary.
-
-If you think differently, feel free to resubmit with a complete commit
-description and some details as to how this would be an improvement.
-
->  		compatible = "haoyu,hym8563";
->  		reg = <0x51>;
->  		#clock-cells = <0>;
-
+Thanks.
