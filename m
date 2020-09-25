@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AA12278823
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF48B2788AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729382AbgIYMxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:53:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58102 "EHLO mail.kernel.org"
+        id S1729108AbgIYMus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:50:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729376AbgIYMxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:53:02 -0400
+        id S1728553AbgIYMuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:50:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 117272075E;
-        Fri, 25 Sep 2020 12:53:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4BECC206DB;
+        Fri, 25 Sep 2020 12:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038381;
-        bh=dokj4kC5+ub0lHtrLU8HkC5I0+L27AyzCasWDTasAgI=;
+        s=default; t=1601038237;
+        bh=s4ATMnBSYkXOXQrhlpLJ0RE193m51HwvO1xKH0/sLzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xVIAv/qczMTjWYwE7/0tgKUGLYdaDNZJiKsKkI98FOlzePxyhyDGeFbnLyaEqrKtF
-         jtSa+CC1Ez0QhAdRB5GjL/Moblm7UcQV28xyXe6ymeEmqiQ24zuAWBmdLHbyXckVXv
-         4V7cJWajfqs9sZUuRPyWAHLpXDErcOXXn8TmPhF0=
+        b=18sL+Sboh9vE+EaN/gtT/uJli3JyFs5DurGjYJ91fvJGRvfDRe8x2lHYsflcEha8w
+         I3sX33VBs/hMTu7z0AZ1Xc5j7nd57D033wG1kMgW6NklOuTR7ji29m4SvfBy/uJxO9
+         8u7XG1y74YLKLPtklzUCXgqhqJtiA71RUnbu3DSQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        ChenNan Of Chaitin Security Research Lab 
-        <whutchennan@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>,
-        Eric Dumazet <edumazet@google.com>,
+        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 12/43] hdlc_ppp: add range checks in ppp_cp_parse_cr()
-Date:   Fri, 25 Sep 2020 14:48:24 +0200
-Message-Id: <20200925124725.405219215@linuxfoundation.org>
+Subject: [PATCH 5.8 35/56] net: lantiq: Wake TX queue again
+Date:   Fri, 25 Sep 2020 14:48:25 +0200
+Message-Id: <20200925124733.132024997@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
-References: <20200925124723.575329814@linuxfoundation.org>
+In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
+References: <20200925124727.878494124@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,80 +42,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Hauke Mehrtens <hauke@hauke-m.de>
 
-[ Upstream commit 66d42ed8b25b64eb63111a2b8582c5afc8bf1105 ]
+[ Upstream commit dea36631e6f186d4b853af67a4aef2e35cfa8bb7 ]
 
-There are a couple bugs here:
-1) If opt[1] is zero then this results in a forever loop.  If the value
-   is less than 2 then it is invalid.
-2) It assumes that "len" is more than sizeof(valid_accm) or 6 which can
-   result in memory corruption.
+The call to netif_wake_queue() when the TX descriptors were freed was
+missing. When there are no TX buffers available the TX queue will be
+stopped, but it was not started again when they are available again,
+this is fixed in this patch.
 
-In the case of LCP_OPTION_ACCM, then  we should check "opt[1]" instead
-of "len" because, if "opt[1]" is less than sizeof(valid_accm) then
-"nak_len" gets out of sync and it can lead to memory corruption in the
-next iterations through the loop.  In case of LCP_OPTION_MAGIC, the
-only valid value for opt[1] is 6, but the code is trying to log invalid
-data so we should only discard the data when "len" is less than 6
-because that leads to a read overflow.
-
-Reported-by: ChenNan Of Chaitin Security Research Lab  <whutchennan@gmail.com>
-Fixes: e022c2f07ae5 ("WAN: new synchronous PPP implementation for generic HDLC.")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: fe1a56420cf2 ("net: lantiq: Add Lantiq / Intel VRX200 Ethernet driver")
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wan/hdlc_ppp.c |   16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/lantiq_xrx200.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/net/wan/hdlc_ppp.c
-+++ b/drivers/net/wan/hdlc_ppp.c
-@@ -383,11 +383,8 @@ static void ppp_cp_parse_cr(struct net_d
- 	}
+--- a/drivers/net/ethernet/lantiq_xrx200.c
++++ b/drivers/net/ethernet/lantiq_xrx200.c
+@@ -268,6 +268,9 @@ static int xrx200_tx_housekeeping(struct
+ 	net_dev->stats.tx_bytes += bytes;
+ 	netdev_completed_queue(ch->priv->net_dev, pkts, bytes);
  
- 	for (opt = data; len; len -= opt[1], opt += opt[1]) {
--		if (len < 2 || len < opt[1]) {
--			dev->stats.rx_errors++;
--			kfree(out);
--			return; /* bad packet, drop silently */
--		}
-+		if (len < 2 || opt[1] < 2 || len < opt[1])
-+			goto err_out;
- 
- 		if (pid == PID_LCP)
- 			switch (opt[0]) {
-@@ -395,6 +392,8 @@ static void ppp_cp_parse_cr(struct net_d
- 				continue; /* MRU always OK and > 1500 bytes? */
- 
- 			case LCP_OPTION_ACCM: /* async control character map */
-+				if (opt[1] < sizeof(valid_accm))
-+					goto err_out;
- 				if (!memcmp(opt, valid_accm,
- 					    sizeof(valid_accm)))
- 					continue;
-@@ -406,6 +405,8 @@ static void ppp_cp_parse_cr(struct net_d
- 				}
- 				break;
- 			case LCP_OPTION_MAGIC:
-+				if (len < 6)
-+					goto err_out;
- 				if (opt[1] != 6 || (!opt[2] && !opt[3] &&
- 						    !opt[4] && !opt[5]))
- 					break; /* reject invalid magic number */
-@@ -424,6 +425,11 @@ static void ppp_cp_parse_cr(struct net_d
- 		ppp_cp_event(dev, pid, RCR_GOOD, CP_CONF_ACK, id, req_len, data);
- 
- 	kfree(out);
-+	return;
++	if (netif_queue_stopped(net_dev))
++		netif_wake_queue(net_dev);
 +
-+err_out:
-+	dev->stats.rx_errors++;
-+	kfree(out);
- }
- 
- static int ppp_rx(struct sk_buff *skb)
+ 	if (pkts < budget) {
+ 		napi_complete(&ch->napi);
+ 		ltq_dma_enable_irq(&ch->dma);
 
 
