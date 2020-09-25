@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB002279320
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6552F279321
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728540AbgIYVSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:18:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60766 "EHLO mail.kernel.org"
+        id S1728917AbgIYVS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:18:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgIYVSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726636AbgIYVSW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Sep 2020 17:18:22 -0400
 Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A86D208B6;
+        by mail.kernel.org (Postfix) with ESMTPSA id 87328221EC;
         Fri, 25 Sep 2020 21:18:21 +0000 (UTC)
 Received: from rostedt by gandalf.local.home with local (Exim 4.94)
         (envelope-from <rostedt@goodmis.org>)
-        id 1kLv6h-002CsX-Ny; Fri, 25 Sep 2020 17:18:19 -0400
-Message-ID: <20200925211206.423598568@goodmis.org>
+        id 1kLv6h-002CtJ-SY; Fri, 25 Sep 2020 17:18:19 -0400
+Message-ID: <20200925211819.767526657@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Fri, 25 Sep 2020 17:12:06 -0400
+Date:   Fri, 25 Sep 2020 17:12:07 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Yafang Shao <laoar.shao@gmail.com>,
@@ -33,66 +33,114 @@ Cc:     Yafang Shao <laoar.shao@gmail.com>,
         Davidlohr Bueso <dbueso@suse.de>,
         Linux MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: [PATCH 0/3 v2] tracing/mm: Add tracepoint_enabled() helper function for headers
+Subject: [PATCH 1/3 v2] tracepoints: Add helper to test if tracepoint is enabled in a header
+References: <20200925211206.423598568@goodmis.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tracepoints are not safe to be called directly from header files as they may
-be included by C code that has CREATE_TRACE_POINTS defined, and this would
-cause side effects and possibly break the build in hard to debug ways. Not
-to mention it also will bloat the code being in commonly used inline
-functions.
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Instead, it is recommended to call a tracepoint helper function that is
-defined in a C file that calls the tracepoint. But we would only want this
-function to be called if the tracepoint is enabled, as function calls add
-overhead.
+As tracepoints are discouraged from being added in a header because it can
+cause side effects if other tracepoints are in headers, as well as bloat the
+kernel as the trace_<tracepoint>() function is not a small inline, the common
+workaround is to add a function call that calls a wrapper function in a
+C file that then calls the tracepoint. But as function calls add overhead,
+this function should only be called when the tracepoint in question is
+enabled. To get around this overhead, a static_branch can be used to only
+have the tracepoint wrapper get called when the tracepoint is enabled.
 
-The trace_<tracepoint>_enabled() function is also not safe to be called in a
-header file as it is created by the tracepoint header, which suffers the
-same fate if CREATE_TRACE_POINTS is defined. Instead, the tracepoint needs
-to be declared as an extern, and the helper function can test the static key
-to call the helper function that calls the tracepoint.
+Add a tracepoint_enabled(tp) macro that gets passed the name of the
+tracepoint, and this becomes a static_branch that is enabled when the
+tracepoint is enabled and is a nop when the tracepoint is disabled.
 
-This has been done by open coding the tracepoint extern and calling the
-static key directly:
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+ Documentation/trace/tracepoints.rst | 27 +++++++++++++++++++++++
+ include/linux/tracepoint-defs.h     | 34 +++++++++++++++++++++++++++++
+ 2 files changed, 61 insertions(+)
 
- commit 95813b8faa0cd ("mm/page_ref: add tracepoint to track down page reference manipulation")
- commit 7f47d8cc039f ("x86, tracing, perf: Add trace point for MSR accesses")
+diff --git a/Documentation/trace/tracepoints.rst b/Documentation/trace/tracepoints.rst
+index 6e3ce3bf3593..68579ebd1e4c 100644
+--- a/Documentation/trace/tracepoints.rst
++++ b/Documentation/trace/tracepoints.rst
+@@ -146,3 +146,30 @@ with jump labels and avoid conditional branches.
+       define tracepoints. Check http://lwn.net/Articles/379903,
+       http://lwn.net/Articles/381064 and http://lwn.net/Articles/383362
+       for a series of articles with more details.
++
++If you require calling a tracepoint from a header file, it is not
++recommended to call one directly or to use the trace_<tracepoint>_enabled()
++function call, as tracepoints in header files can have side effects if a
++header is included from a file that has CREATE_TRACE_POINTS set, as
++well as the trace_<tracepoint>() is not that small of an inline
++and can bloat the kernel if used by other inlined functions. Instead,
++include tracepoint-defs.h and use tracepoint_enabled().
++
++In a C file::
++
++	void do_trace_foo_bar_wrapper(args)
++	{
++		trace_foo_bar(args);
++	}
++
++In the header file::
++
++	DECLEARE_TRACEPOINT(foo_bar);
++
++	static inline void some_inline_function()
++	{
++		[..]
++		if (tracepoint_enabled(foo_bar))
++			do_trace_foo_bar_wrapper(args);
++		[..]
++	}
+diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+index b29950a19205..60625973faaf 100644
+--- a/include/linux/tracepoint-defs.h
++++ b/include/linux/tracepoint-defs.h
+@@ -48,4 +48,38 @@ struct bpf_raw_event_map {
+ 	u32			writable_size;
+ } __aligned(32);
+ 
++/*
++ * If a tracepoint needs to be called from a header file, it is not
++ * recommended to call it directly, as tracepoints in header files
++ * may cause side-effects and bloat the kernel. Instead, use
++ * tracepoint_enabled() to test if the tracepoint is enabled, then if
++ * it is, call a wrapper function defined in a C file that will then
++ * call the tracepoint.
++ *
++ * For "trace_foo_bar()", you would need to create a wrapper function
++ * in a C file to call trace_foo_bar():
++ *   void do_trace_foo_bar(args) { trace_foo_bar(args); }
++ * Then in the header file, declare the tracepoint:
++ *   DECLARE_TRACEPOINT(foo_bar);
++ * And call your wrapper:
++ *   static inline void some_inlined_function() {
++ *            [..]
++ *            if (tracepoint_enabled(foo_bar))
++ *                    do_trace_foo_bar(args);
++ *            [..]
++ *   }
++ *
++ * Note: tracepoint_enabled(foo_bar) is equivalent to trace_foo_bar_enabled()
++ *   but is safe to have in headers, where trace_foo_bar_enabled() is not.
++ */
++#define DECLARE_TRACEPOINT(tp) \
++	extern struct tracepoint __tracepoint_##tp
++
++#ifdef CONFIG_TRACEPOINTS
++# define tracepoint_enabled(tp) \
++	static_key_false(&(__tracepoint_##tp).key)
++#else
++# define tracepoint_enabled(tracepoint) false
++#endif
++
+ #endif
+-- 
+2.28.0
 
-does this (back in 2015). Now we have another use case, so a helper function
-should be created to keep the internals of the tracepoints from being spread
-out in other subsystems.
 
- Link: https://lore.kernel.org/r/20200922125113.12ef1e03@gandalf.local.home
-
-This adds tracepoint_enabled() helper macro and DECLARE_TRACEPOINT() macro
-to allow this to be done without exposing the internals of the tracepoints.
-
-The first patch adds the infrastructure, the second converts page_ref over
-to it, and third converts over msr.h.
-
-Steven Rostedt (VMware) (3):
-      tracepoints: Add helper to test if tracepoint is enabled in a header
-      mm/page_ref: Convert the open coded tracepoint enabled to the new helper
-      x86: Use tracepoint_enabled() for msr tracepoints instead of open coding it
-
-----
-
-Changes since v1 (https://lore.kernel.org/r/20200924170928.466191266@goodmis.org):
-
- - Fixed using "trace_enabled()" instead of "tracepoint_enabled()"
-   (Mathieu Desnoyers reported)
-
- - Reworded to include comments about bloating the kernel when tracepoints
-   are used in commonly used inlined functions.
-
- - Added the msr update as well.
-
-
- Documentation/trace/tracepoints.rst | 27 ++++++++++++++++++++++++
- arch/x86/include/asm/msr.h          | 18 +++++++---------
- include/linux/page_ref.h            | 42 ++++++++++++++++++-------------------
- include/linux/tracepoint-defs.h     | 34 ++++++++++++++++++++++++++++++
- 4 files changed, 90 insertions(+), 31 deletions(-)
