@@ -2,243 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC693277EAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93346277EBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgIYDqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 23:46:53 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:34042 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726738AbgIYDqw (ORCPT
+        id S1727055AbgIYDzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 23:55:35 -0400
+Received: from relay5.mymailcheap.com ([159.100.241.64]:58287 "EHLO
+        relay5.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727036AbgIYDze (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 23:46:52 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07447582|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0059429-0.00236251-0.991695;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03303;MF=liush@allwinnertech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.IbxjZj1_1601005602;
-Received: from localhost.localdomain(mailfrom:liush@allwinnertech.com fp:SMTPD_---.IbxjZj1_1601005602)
-          by smtp.aliyun-inc.com(10.147.41.143);
-          Fri, 25 Sep 2020 11:46:46 +0800
-From:   liush <liush@allwinnertech.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, rjw@rjwysocki.net,
-        daniel.lezcano@linaro.org, anup.patel@wdc.com,
-        keescook@chromium.org, christian.brauner@ubuntu.com,
-        geert@linux-m68k.org, amanieu@gmail.com, guoren@linux.alibaba.com
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, liush <liush@allwinnertech.com>
-Subject: [v3] cpuidle: add riscv cpuidle driver
-Date:   Fri, 25 Sep 2020 11:46:40 +0800
-Message-Id: <1601005600-32653-1-git-send-email-liush@allwinnertech.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 24 Sep 2020 23:55:34 -0400
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.102])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id 5FBB72008F
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:55:31 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 0F7033F1C5;
+        Fri, 25 Sep 2020 03:55:28 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id E80C72A3B8;
+        Thu, 24 Sep 2020 23:55:27 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1601006127;
+        bh=1bnZ6qZaVzFKQNiNPYAyMj2T8q5mWYVVBOffi9Mp0FI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=slr7UiNCy5nj4KtI5+h5dGJSAj2vSvbnnrOU9GcJfJTbc5RxVjOP4AIs7Dx/1cRl3
+         kvquiorxwxxYFvMVifISsBJ+oWR0lu9Z1NyO3DRpxzA7PB2J1Cwu6IVltWTM7iGyJf
+         ka0TGs02R4t9U4VX/Y4oVS5kRHUHl8SnHYcPA4yg=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id IKenFOBDlmen; Thu, 24 Sep 2020 23:55:26 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Thu, 24 Sep 2020 23:55:26 -0400 (EDT)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 8599B40EAE;
+        Fri, 25 Sep 2020 03:55:24 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=flygoat.com header.i=@flygoat.com header.b="KcYjIss+";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [0.0.0.0] (li1197-90.members.linode.com [45.79.98.90])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 546B040FE5;
+        Fri, 25 Sep 2020 03:54:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=flygoat.com;
+        s=default; t=1601006072;
+        bh=1bnZ6qZaVzFKQNiNPYAyMj2T8q5mWYVVBOffi9Mp0FI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=KcYjIss+5mLJpwlenuukW6Fj9qRPxAqKJFadbjdDuKl5Ydm9p1ZHCP2HbwmaZhC2t
+         LmrzJBeSmt+o+Inp6Vpf3VR3p/8DVgPtjLC/X9/96fM7+dUzTz1KYNx5ocM77e39oz
+         LQ1y/mjg4oNQdTzQvxWq5whw6yTo09qAg6oYthvY=
+Subject: Re: [PATCH 1/2] mips: Add strong UC ordering config
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Vadim Vlasov <V.Vlasov@baikalelectronics.ru>,
+        "Maciej W . Rozycki" <macro@linux-mips.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200920110010.16796-1-Sergey.Semin@baikalelectronics.ru>
+ <20200920110010.16796-2-Sergey.Semin@baikalelectronics.ru>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <57fb837a-d884-b368-7a72-d010b5e52f2a@flygoat.com>
+Date:   Fri, 25 Sep 2020 11:54:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.0
+MIME-Version: 1.0
+In-Reply-To: <20200920110010.16796-2-Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 8599B40EAE
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[flygoat.com:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[flygoat.com:+];
+         DMARC_POLICY_ALLOW(0.00)[flygoat.com,none];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         DMARC_POLICY_ALLOW_WITH_FAILURES(0.00)[];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         FREEMAIL_CC(0.00)[gmail.com,baikalelectronics.ru,linux-mips.org,vger.kernel.org];
+         SUSPICIOUS_RECIPS(1.50)[];
+         RCVD_COUNT_TWO(0.00)[2]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a simple cpuidle driver for RISC-V systems using
-the WFI state. Other states will be supported in the future.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: liush <liush@allwinnertech.com>
----
-Changes in v3:
-- fix the issue reported by kernel test robot
-  "drivers/cpuidle/cpuidle-riscv.c:22:12: warning: no previous prototype 
-   for 'riscv_low_level_suspend_enter' [-Wmissing-prototypes]"
-Changes in v2:
-- call "mb()" before run "WFI" in cpu_do_idle 
-- modify commit description 
-- place "select CPU_IDLE" in alphabetical order  
-- replace "__asm__ __volatile__ ("wfi")" with "wait_for_interrupt()" 
-- delete "cpuidle.c",move "cpu_do_idle()" to cpuidle.h 
-- modify "arch_cpu_idle", "cpu_do_idle" can be called by 
-  "arch_cpu_idle"
-- fix space/tab issues
-- modify riscv_low_level_suspend_enter to __weak mode
 
- arch/riscv/Kconfig               |  7 +++++
- arch/riscv/include/asm/cpuidle.h | 16 ++++++++++++
- arch/riscv/kernel/process.c      |  3 ++-
- drivers/cpuidle/Kconfig          |  5 ++++
- drivers/cpuidle/Kconfig.riscv    | 11 ++++++++
- drivers/cpuidle/Makefile         |  4 +++
- drivers/cpuidle/cpuidle-riscv.c  | 55 ++++++++++++++++++++++++++++++++++++++++
- 7 files changed, 100 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/include/asm/cpuidle.h
- create mode 100644 drivers/cpuidle/Kconfig.riscv
- create mode 100644 drivers/cpuidle/cpuidle-riscv.c
+ÔÚ 2020/9/20 19:00, Serge Semin Ð´µÀ:
+> In accordance with [1, 2] memory transactions using CCA=2 (Uncached
+> Cacheability and Coherency Attribute) are always strongly ordered. This
+> means the younger memory accesses using CCA=2 are never allowed to be
+> executed before older memory accesses using CCA=2 (no bypassing is
+> allowed), and Loads and Stores using CCA=2 are never speculative. It is
+> expected by the specification that the rest of the system maintains these
+> properties for processor initiated uncached accesses. So the system IO
+> interconnect doesn't reorder uncached transactions once they have left the
+> processor subsystem. Taking into account these properties and what [3]
+> says about the relaxed IO-accessors we can infer that normal Loads and
+> Stores from/to CCA=2 memory and without any additional execution barriers
+> will fully comply with the {read,write}X_relaxed() methods requirements.
+>
+> Let's convert then currently generated relaxed IO-accessors to being pure
+> Loads and Stores. Seeing the commit 3d474dacae72 ("MIPS: Enforce strong
+> ordering for MMIO accessors") and commit 8b656253a7a4 ("MIPS: Provide
+> actually relaxed MMIO accessors") have already made a preparation in the
+> corresponding macro, we can do that just by replacing the "barrier"
+> parameter utilization with the "relax" one. Note the "barrier" macro
+> argument can be removed, since it isn't fully used anyway other than being
+> always assigned to 1.
+>
+> Of course it would be fullish to believe that all the available MIPS-based
+> CPUs completely follow the denoted specification, especially considering
+> how old the architecture is. Instead we introduced a dedicated kernel
+> config, which when enabled will convert the relaxed IO-accessors to being
+> pure Loads and Stores without any additional barriers around. So if some
+> CPU supports the strongly ordered UC memory access, it can enable that
+> config and use a fully optimized relaxed IO-methods. For instance,
+> Baikal-T1 architecture support code will do that.
+>
+> [1] MIPS Coherence Protocol Specification, Document Number: MD00605,
+>      Revision 01.01. September 14, 2015, 4.2 Execution Order Behavior,
+>      p. 33
+>
+> [2] MIPS Coherence Protocol Specification, Document Number: MD00605,
+>      Revision 01.01. September 14, 2015, 4.8.1 IO Device Access, p. 58
+>
+> [3] "LINUX KERNEL MEMORY BARRIERS", Documentation/memory-barriers.txt,
+>      Section "KERNEL I/O BARRIER EFFECTS"
+>
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Cc: Maciej W. Rozycki <macro@linux-mips.org>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index df18372..799bf86 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -33,6 +33,7 @@ config RISCV
- 	select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
- 	select CLONE_BACKWARDS
- 	select COMMON_CLK
-+	select CPU_IDLE
- 	select EDAC_SUPPORT
- 	select GENERIC_ARCH_TOPOLOGY if SMP
- 	select GENERIC_ATOMIC64 if !64BIT
-@@ -407,6 +408,12 @@ config BUILTIN_DTB
- 	depends on RISCV_M_MODE
- 	depends on OF
- 
-+menu "CPU Power Management"
-+
-+source "drivers/cpuidle/Kconfig"
-+
-+endmenu
-+
- menu "Power management options"
- 
- source "kernel/power/Kconfig"
-diff --git a/arch/riscv/include/asm/cpuidle.h b/arch/riscv/include/asm/cpuidle.h
-new file mode 100644
-index 00000000..599b810
---- /dev/null
-+++ b/arch/riscv/include/asm/cpuidle.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __RISCV_CPUIDLE_H
-+#define __RISCV_CPUIDLE_H
-+
-+static inline void cpu_do_idle(void)
-+{
-+	/*
-+	 * Add mb() here to ensure that all
-+	 * IO/MEM access are completed prior
-+	 * to enter WFI.
-+	 */
-+	mb();
-+	wait_for_interrupt();
-+}
-+
-+#endif
-diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
-index 2b97c49..5431aaa 100644
---- a/arch/riscv/kernel/process.c
-+++ b/arch/riscv/kernel/process.c
-@@ -21,6 +21,7 @@
- #include <asm/string.h>
- #include <asm/switch_to.h>
- #include <asm/thread_info.h>
-+#include <asm/cpuidle.h>
- 
- register unsigned long gp_in_global __asm__("gp");
- 
-@@ -35,7 +36,7 @@ extern asmlinkage void ret_from_kernel_thread(void);
- 
- void arch_cpu_idle(void)
- {
--	wait_for_interrupt();
-+	cpu_do_idle();
- 	local_irq_enable();
- }
- 
-diff --git a/drivers/cpuidle/Kconfig b/drivers/cpuidle/Kconfig
-index c0aeedd..f6be0fd 100644
---- a/drivers/cpuidle/Kconfig
-+++ b/drivers/cpuidle/Kconfig
-@@ -62,6 +62,11 @@ depends on PPC
- source "drivers/cpuidle/Kconfig.powerpc"
- endmenu
- 
-+menu "RISCV CPU Idle Drivers"
-+depends on RISCV
-+source "drivers/cpuidle/Kconfig.riscv"
-+endmenu
-+
- config HALTPOLL_CPUIDLE
- 	tristate "Halt poll cpuidle driver"
- 	depends on X86 && KVM_GUEST
-diff --git a/drivers/cpuidle/Kconfig.riscv b/drivers/cpuidle/Kconfig.riscv
-new file mode 100644
-index 00000000..7bec059
---- /dev/null
-+++ b/drivers/cpuidle/Kconfig.riscv
-@@ -0,0 +1,11 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# RISCV CPU Idle drivers
-+#
-+config RISCV_CPUIDLE
-+	bool "Generic RISCV CPU idle Driver"
-+	select DT_IDLE_STATES
-+	select CPU_IDLE_MULTIPLE_DRIVERS
-+	help
-+	  Select this option to enable generic cpuidle driver for RISCV.
-+	  Now only support C0 State.
-diff --git a/drivers/cpuidle/Makefile b/drivers/cpuidle/Makefile
-index 26bbc5e..4c83c4e 100644
---- a/drivers/cpuidle/Makefile
-+++ b/drivers/cpuidle/Makefile
-@@ -34,3 +34,7 @@ obj-$(CONFIG_MIPS_CPS_CPUIDLE)		+= cpuidle-cps.o
- # POWERPC drivers
- obj-$(CONFIG_PSERIES_CPUIDLE)		+= cpuidle-pseries.o
- obj-$(CONFIG_POWERNV_CPUIDLE)		+= cpuidle-powernv.o
-+
-+###############################################################################
-+# RISCV drivers
-+obj-$(CONFIG_RISCV_CPUIDLE)		+= cpuidle-riscv.o
-diff --git a/drivers/cpuidle/cpuidle-riscv.c b/drivers/cpuidle/cpuidle-riscv.c
-new file mode 100644
-index 00000000..5dddcfa
---- /dev/null
-+++ b/drivers/cpuidle/cpuidle-riscv.c
-@@ -0,0 +1,55 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * RISC-V CPU idle driver.
-+ *
-+ * Copyright (C) 2020-2022 Allwinner Ltd
-+ *
-+ * Based on code - driver/cpuidle/cpuidle-at91.c
-+ *
-+ */
-+#include <linux/cpuidle.h>
-+#include <linux/cpumask.h>
-+#include <linux/cpu_pm.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/slab.h>
-+#include <linux/platform_device.h>
-+#include <asm/cpuidle.h>
-+
-+#define MAX_IDLE_STATES	1
-+
-+/* TODO: Implement deeper idle states */
-+static int riscv_low_level_suspend_enter(int state)
-+{
-+	return 0;
-+}
-+
-+/* Actual code that puts the SoC in different idle states */
-+static int riscv_enter_idle(struct cpuidle_device *dev,
-+			struct cpuidle_driver *drv,
-+			       int index)
-+{
-+	return CPU_PM_CPU_IDLE_ENTER_PARAM(riscv_low_level_suspend_enter,
-+					   index, 0);
-+}
-+
-+static struct cpuidle_driver riscv_idle_driver = {
-+	.name			= "riscv_idle",
-+	.owner			= THIS_MODULE,
-+	.states[0]		= {
-+		.enter			= riscv_enter_idle,
-+		.exit_latency		= 1,
-+		.target_residency	= 1,
-+		.name			= "WFI",
-+		.desc			= "RISCV WFI",
-+	},
-+	.state_count = MAX_IDLE_STATES,
-+};
-+
-+static int __init riscv_cpuidle_init(void)
-+{
-+	return cpuidle_register(&riscv_idle_driver, NULL);
-+}
-+
-+device_initcall(riscv_cpuidle_init);
--- 
-2.7.4
 
+Based on #mipslinus discussions, I suspect this option can be selected by
+most modern MIPS processors including all IMG/MTI cores,
+Ingenic and Loongson.
+
+Thanks.
+
+- Jiaxun
+
+> ---
+>   arch/mips/Kconfig          |  8 ++++++++
+>   arch/mips/include/asm/io.h | 20 ++++++++++----------
+>   2 files changed, 18 insertions(+), 10 deletions(-)
+>
