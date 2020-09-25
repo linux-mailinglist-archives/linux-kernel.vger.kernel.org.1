@@ -2,149 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF53278732
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDEC278738
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbgIYM07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgIYM07 (ORCPT
+        id S1728409AbgIYM2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:28:52 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:41409 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727044AbgIYM2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:26:59 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA93C0613CE;
-        Fri, 25 Sep 2020 05:26:59 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id k13so3038878pfg.1;
-        Fri, 25 Sep 2020 05:26:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RoiAde1p6ZmKXc4tv5yOThyibmUIJZp91/MLEmdbNTg=;
-        b=kHRduUcogysuAj/XjTDEPr7Z6lI82xo2KmMCMHhaliwBu8fDmzN5/ebY1h2jFxY5K/
-         kK9w0fbHmRsBezY0Vy6twWptBFCaBoyl7c1SozQdBMI/NMSIT0lbtt2ckOk75dERMPKt
-         yktAhIsW5+CnVulca+5OvM0lOEwTfn7OU55xiTnygs8QB0M3I2bqV9UprHA4Ci+3mlDD
-         J11xCXkgYRrXuegoEcERztlzDXc0iwk4czO2PU4NpgQ4J6wZxaa2AU2tJOKS5UVekmUF
-         LIizollp4YXmWdC1OKtx7BHB9tEV69A5jHwTH0+50NUFA0wlKB8vDkmRHf4wQjh5jSaQ
-         6s/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RoiAde1p6ZmKXc4tv5yOThyibmUIJZp91/MLEmdbNTg=;
-        b=kLo3C+VrWkNKqLrnxkl6xJ7jlir34rmnfr3JGzozwmnuf4+0igu9niP1/zirYs/9y8
-         N7jXu0nhS0cyDIgcbGdwZYoj+AtchZ/Vj9SilN7FVDQQzybqiNc/TDJJJAiVUuGaaOh5
-         n9tRUisrTdvWxRnkuOtveoWlh6VUcbkERR8c/pW6C5Ym7QOMrCK6YU+b/8D7VoQHCMGZ
-         UIexkvEEBDakjSo5ZDkIVE8npLyOj17klMPV/zIMo4SDbE9K7qMbtiRGBK3k67MDMhw2
-         NGNEQUUnovkmtHwqJ5v0sJqKfBaODyt4XLYnqD1nALUs0jTVh4BnczwT/gelUTfCes7q
-         XqEQ==
-X-Gm-Message-State: AOAM532AYcGxsfrpOZuLoLhy1SPPPGHIQlq/zwW1yv8dhrZp4D1whxa7
-        bhbbgp8dSn/6NKdsVyiieRg=
-X-Google-Smtp-Source: ABdhPJwFS1lqN5QGpm8Bu6peD3GQYMRq7m+WfEhyMPGn9i99k8FroWA+ZhCw2Aqply8jG+8kI5HwQw==
-X-Received: by 2002:a62:1850:0:b029:142:2501:35e8 with SMTP id 77-20020a6218500000b0290142250135e8mr3635546pfy.72.1601036817467;
-        Fri, 25 Sep 2020 05:26:57 -0700 (PDT)
-Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
-        by smtp.gmail.com with ESMTPSA id 75sm2305666pgg.22.2020.09.25.05.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 05:26:56 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 20:26:51 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v9 09/20] gpiolib: cdev: support edge detection for uAPI
- v2
-Message-ID: <20200925122651.GA218809@sol>
-References: <20200922023151.387447-1-warthog618@gmail.com>
- <20200922023151.387447-10-warthog618@gmail.com>
- <CAHp75VdyOodxqkJCgmrdmcppyjVkDTyHDB-fqjoKS1g-88-umQ@mail.gmail.com>
- <20200924030732.GB11575@sol>
- <CAHp75Vd7Bmy5FWSputDCAAwSheH6ugszMyCcu1HOgC7BPVEX-w@mail.gmail.com>
+        Fri, 25 Sep 2020 08:28:48 -0400
+Received: from mail-qt1-f170.google.com ([209.85.160.170]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1MCsDe-1kCx8Y3XqS-008ope; Fri, 25 Sep 2020 14:28:47 +0200
+Received: by mail-qt1-f170.google.com with SMTP id e7so1625489qtj.11;
+        Fri, 25 Sep 2020 05:28:46 -0700 (PDT)
+X-Gm-Message-State: AOAM530gM8HYzmYEuMZUsYq0GmTMi7NC1nxSASiji2smc9H1QGRmTmzI
+        MW6ch4eJdIDhXA9lb2vTl1PuXMvzLWLjLuYWokY=
+X-Google-Smtp-Source: ABdhPJyhD0NHMLV8yKYh2vlTiTUV4rU7dm8LqKfHAudHseIZeMw2xvbVjO9RW6csEV4K16hpQD+e2hL4qg9TFnJkit8=
+X-Received: by 2002:aed:2ce5:: with SMTP id g92mr3983121qtd.204.1601036925572;
+ Fri, 25 Sep 2020 05:28:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vd7Bmy5FWSputDCAAwSheH6ugszMyCcu1HOgC7BPVEX-w@mail.gmail.com>
+References: <20200918120536.1464804-1-arnd@arndb.de> <20200918120536.1464804-2-arnd@arndb.de>
+ <20200919054831.GN30063@infradead.org>
+In-Reply-To: <20200919054831.GN30063@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 25 Sep 2020 14:28:29 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0ht1c34K+4k3XxGvWA9cxWJSMNzQR2iYMcm98guMsj1A@mail.gmail.com>
+Message-ID: <CAK8P3a0ht1c34K+4k3XxGvWA9cxWJSMNzQR2iYMcm98guMsj1A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dev_ioctl: split out SIOC?IFMAP ioctls
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jiri Pirko <jiri@mellanox.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>, Jens Axboe <axboe@kernel.dk>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:R08dgFt9wuG6QS0kztSfaBaUeu/upNlYZpY1Lqx7eibcDlGE+5b
+ HAScrJ5Mf0uW8SX6WKwQOT/8t5Br737JXkJlec5S1UEubsnT0X2cnyjO8b/ZzI/MHf5fMET
+ T3EBPF90vkoobHLyore4nxIMPjMLSGCyx9nrpWc1+LWtYqPO1GVWm0YI/o5r4c089jsdTZG
+ Q4JieP9vZuRfMQeBedBzg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:9Qp5MwxHtRw=:ZZ4jsdiDZzveCEgmS4ZCpH
+ en/a1qDQRAprc55JCXaruGejcWP2G5fPnXRweN+rribk7KoZeT3ubGWJGuqJjPnRDBzc9QHSz
+ 4OmJMOc4Q8nqcL7KDj1A2aYquqG1qrVUlEBG+/LOAo/2Me4ZcD4ER5iSAU1KV+z0bA+SJ84Tu
+ egtljzdJ1vVdb+eXt/L/PH/KG3BtrO6/qrOkUWQryaO7ocVbcoMYQ07y/4MPrXwyaU5jSm3Yr
+ 5rAfyGviuRX+DBU7ZoUIZJKkry+S3firZK+Q1X/rO27FPyC5GCOikkelqHPXDVyng0y5jBqyl
+ EKeYoG5fXevp8EsLhluJWHzQi6jffkkzUp6LYLUWIO0NekyVc0xXGbkPIc0nsfTXiZQMdGSqo
+ 4OtDA6VVeSyqzejqjI9z2KOn97Ci51sqEnOtf09adhpoA1Wi+8aNUB+tjg9aQN7t8x2HpjLTl
+ 0rtLbKlF4XGM0HwKuiHE0A4qkr0KtJQnqWFj3cWr+3xnModpGXmqhLuDL7iR84UZiHvXEaL41
+ GbW74Tw7KOyx+P9TnX9gqAnTSN4AbKpWI9z+EsVolYXtxhV8pEY4pUInywxo+qpsNThgqaCSy
+ P6FcZ02H0106QC9pgZ1RDjCLZE5KOycqM4nJAyf5cRNiQRFNTJA5CaNnFKRwZKvffpd9iPpW6
+ U6sjZbEHzBQK+MfWz8ndm7QJLAOJluJqicHmRZ0CIGdepip5o5M3rVRyxgwObX5k61KF2peRS
+ FPE8tI0OTmFDMMn80AYXqtusPo5Y1uTIhZztt6CjBKf7y4b3ysyQef4SYOZYxG0TAZB18LuP2
+ mnIaXFOeoIquuMEJV6I+du6dN/eurqfPuPh1mcLVFYSK0L2xBkuVIkrhCjE0IH38uGq54RRGB
+ 43w279ipVWYcAlEM4cKZKJNGLPMdCO3lKdJUo3OMc9u3SlIZbwW+RroQV5us6TXrQDn4F4U2X
+ YS2GKsWGAYjHzilWfAH4iiQmjG+bLBWecUirkH1mlyOynVtgiBqMW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:35:49PM +0300, Andy Shevchenko wrote:
-> On Thu, Sep 24, 2020 at 6:07 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > On Wed, Sep 23, 2020 at 06:47:28PM +0300, Andy Shevchenko wrote:
-> > > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
-> 
-> ...
-> 
-> > Also, this code is drawn from lineevent_irq_thread(), which is ordered
-> > this way.
-> 
-> Negative conditionals are slightly harder to read.
-> 
-> ...
-> 
-> > > > +       if (!line->timestamp_ns) {
-> > > > +               le.timestamp_ns = ktime_get_ns();
-> > > > +               if (lr->num_lines != 1)
-> > > > +                       line->req_seqno = atomic_inc_return(&lr->seqno);
-> > > > +       } else {
-> > > > +               le.timestamp_ns = line->timestamp_ns;
-> > > > > +       }
-> > >
-> > > Ditto.
-> >
-> > Firstly, drawn from lineevent_irq_thread() which is structured this way.
-> >
-> > In this case the comment relates to the condition being true, so
-> > re-ordering the if/else would be confusing - unless the comment were
-> > moved into the corresponding body??
-> 
-> Yes.
-> 
+On Sat, Sep 19, 2020 at 7:48 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> > diff --git a/include/uapi/linux/if.h b/include/uapi/linux/if.h
+> > index 797ba2c1562a..a332d6ae4dc6 100644
+> > --- a/include/uapi/linux/if.h
+> > +++ b/include/uapi/linux/if.h
+> > @@ -247,7 +247,13 @@ struct ifreq {
+> >               short   ifru_flags;
+> >               int     ifru_ivalue;
+> >               int     ifru_mtu;
+> > +#ifndef __KERNEL__
+> > +             /*
+> > +              * ifru_map is rarely used but causes the incompatibility
+> > +              * between native and compat mode.
+> > +              */
+> >               struct  ifmap ifru_map;
+> > +#endif
+>
+> Do we need a way to verify that this never changes the struct size?
 
-Does that mean I should re-order and move the comment into the body?
-That would work for me - the normal case is line->timestamp_ns being
-set.
+Not sure which way you would want to check. The point of the patch
+is that it does change the struct size inside of the kernel but not
+in user space.
 
-> ...
-> 
-> > > > +       irq = gpiod_to_irq(line->desc);
-> > > > +       if (irq <= 0)
-> > > > +               return -ENODEV;
-> > >
-> > > So, you mean this is part of ABI. Can we return more appropriate code,
-> > > because getting no IRQ doesn't mean we don't have a device.
-> > > Also does 0 case have the same meaning?
-> >
-> > Firstly, this code is drawn from lineevent_create(), so any changes
-> > here should be considered for there as well - though this may
-> > constitute an ABI change??
-> 
-> For v1 probably, for v2 we are free to fix this.
-> 
-> > I agree ENODEV doesn't seem right here. Are you ok with ENXIO?
-> 
-> Yes.
-> 
+Do you mean we should check that the (larger) user space size
+remains what it is for future changes, or that the (smaller)
+kernel size remains the same on all kernels, or maybe both?
 
-Will do.  And in the debounce patch as well.
+> > +int dev_ifmap(struct net *net, struct ifreq __user *ifr, unsigned int cmd)
+> > +{
+> > +     struct net_device *dev;
+> > +     char ifname[IFNAMSIZ];
+> > +     char *colon;
+> > +     struct compat_ifmap cifmap;
+> > +     struct ifmap ifmap;
+> > +     int ret;
+> > +
+> > +     if (copy_from_user(ifname, ifr->ifr_name, sizeof(ifname)))
+> > +             return -EFAULT;
+> > +     ifname[IFNAMSIZ-1] = 0;
+> > +     colon = strchr(ifname, ':');
+> > +     if (colon)
+> > +             *colon = 0;
+> > +     dev_load(net, ifname);
+> > +
+> > +     switch (cmd) {
+> > +     case SIOCGIFMAP:
+> > +             rcu_read_lock();
+...
+> > +             break;
+> > +
+> > +     case SIOCSIFMAP:
+> > +             if (!capable(CAP_NET_ADMIN) ||
+...
+> > +             break;
+> > +     }
+> > +     return ret;
+>
+> I'd rather split this into a separate hepers for each ioctl command
+> instead of having anothr multiplexer here, maybe with another helper
+> for the common code.
 
-> > From gpiod_to_irq():
-> >
-> >                 /* Zero means NO_IRQ */
-> >                 if (!retirq)
-> >                         return -ENXIO;
-> >
-> > so it can't even return a 0 :-| - we're just being cautious.
-> 
-> I would drop = part then.
-> 
+Yes, good idea.
 
-ok, but you'd better not come after me in a subsequent review for not
-checking the 0 case!
+> I also find the rcu unlock inside the branches rather strange, but
+> I can't think of a good alternative.
 
-Cheers,
-Kent.
+I could assign to the local 'struct ifmap' first under the lock, and
+then only copy from there to 'struct compat_ifmap' without the lock
+in the compat path. It's probably not better, but I'll give it a try.
+
+The kernel test robot found a build regression with CONFIG_COMPAT
+is disabled, I'm fixing that by moving the struct definition of the
+global #ifdef in linux/compat.h, which seems nicer than adding
+another #ifdef in dev_ifmap.
+
+     Arnd
