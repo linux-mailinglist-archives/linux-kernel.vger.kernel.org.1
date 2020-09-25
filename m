@@ -2,120 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA557278ED1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:40:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18065278ED2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729517AbgIYQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:39:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45828 "EHLO
+        id S1729533AbgIYQkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728148AbgIYQjb (ORCPT
+        with ESMTP id S1728610AbgIYQkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:39:31 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0123AC0613CE;
-        Fri, 25 Sep 2020 09:39:31 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id k13so3732006pfg.1;
-        Fri, 25 Sep 2020 09:39:30 -0700 (PDT)
+        Fri, 25 Sep 2020 12:40:21 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3012C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:40:20 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id g96so2856653otb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:40:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=We4c1ICLefb45lgkpgey0ZztAECSO/V5IQ3/lYTx0I4=;
-        b=NUk6qpse0T5FTgje3rJBQ8NoqKcjBaGi1nGfHxq1QhIPF5SjYlPh3mnQLDGvqCx2q6
-         NYgDBzzQqFIPF9c1TJsVpHRF5f4xMNo8b/R00Gy4WNe1xslqvIP+6pLdnLRGAuDU/dF5
-         oSVnv/qbSGjBwz2WcdALRvAectNhf/UmU9IwAHkZGSkqmxt34tNT2wRURDE0Dz0SMIL+
-         JSHwAradhStfE+oo2ycMnVy+YfyQsqK1B/QqSVA177v7AmiI5cAMeveKTSr3FWxLaXsG
-         LSz5zsiSLQX52ziSoCbm1T/Gcv6BFthqkbh6Z3OWA+tTrIMDh5P/eXZErwLuuWSxUvfI
-         bH2w==
+        bh=adS2w4MfZVtQ+JdOzVjFl88CdbAyPhM8+osYUFtdj/U=;
+        b=m5NtFveSMLhfuRJGGdkLfEMup8cEopZ/jbnqb7UUZO0HMgcTV545eLiYK19f2Rtic9
+         XnixmPOvGbambOL+DhjMVQ9mGnjHwL1P63lW23ZeaEO5CtuX7BJVAuDISt87ZaFzaqji
+         +TQjVytRPzlc/f3cs+CnYLbe28QaWc/I3Y0KTEmvF+sQfXu+M9+G5B4+IG9tJkm66rVa
+         LssiqNZHVitPn5b4xTv8RcqNDD6hXDLkYK1+zwQcydYyoFgi6iBfLBm8BNH2WMTlsoAi
+         tCmQl5+2u9BjRUgBdaRT/uOKAwywJ/Qoc9DxSCWSzydl0lJh1NbwKzGeQbxoDOP7vrQP
+         gOSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=We4c1ICLefb45lgkpgey0ZztAECSO/V5IQ3/lYTx0I4=;
-        b=PCDPJR+fS5OO4tVATfFAOiwHwOwEqeg/idCStJM+GJJoM5eW1CjK6mmXVbwfrzWBUB
-         4qu2M4l9oMoHu6PK9zUtXK69NxqolpRV30VCqWUi663KmKsVqpJhEZ9wGi2mX4mC4M/b
-         vjmZ3jDAb+W2+fQ317P1TxzAXaEFIrn81CHHZQCEkMwN8hv3TJKCBCo0XWudZmZyHyt1
-         Bh7sdaLKP30i4II66YlQXxxitKOlkdoNMqDXNy+dn04UBoUzf4OTtICoy3ZMB+/GCAXN
-         A3aFixgXyuTqasV5dh3oabaQHhR0yMUcJCd+AhJ02pgNbRqzH8fqxXerwYCb9KQM7EaA
-         Kd0Q==
-X-Gm-Message-State: AOAM530+fNvWPZHIrFoX7sRtZjEVxDbxufGdrd8s3TOlWWaGGmLgIOEb
-        YpjROym2GLSeTVtjFcYscUxuHPUbCn9POBPP+R1wPyO20PTdjw==
-X-Google-Smtp-Source: ABdhPJw59LuaxUUp30+zgQCKzKm6ocn/Skfo2I74OYhGOoc6OavtsdxUPBqj79tXlm1rgIZZur3Rwdl8twbiU7usz6Q=
-X-Received: by 2002:aa7:8d4c:0:b029:150:f692:4129 with SMTP id
- s12-20020aa78d4c0000b0290150f6924129mr114530pfe.11.1601051970465; Fri, 25 Sep
- 2020 09:39:30 -0700 (PDT)
+        bh=adS2w4MfZVtQ+JdOzVjFl88CdbAyPhM8+osYUFtdj/U=;
+        b=LguhcrptugL2yfjY1sHuRkVxbhYMcESV7sUDTLNJkNNAqXUp6iehaTFuhO6wq9sqzb
+         yNb2tK0VXF3wOXPpbSxljBx8I+1rH8wy4Oc2wRvQERM2RRDsW72QlkNzUB589LekzZOJ
+         EC24qHBy84VtsmQF4Wy2M116LLPJN42aNsCj/JPm7d4gKMTUTNbmF06JLPYnJzyLQBq7
+         FRj4Y5SEP+JHmVc2q5Wno+mrsa6Z4U43HPz6BkcISy5aVBifYjbzwkeOWli3UvhOj8kJ
+         GE/sb52F6KpYrcjJ82dFPz2uLUc/D/kVVPb0pTmSyh5cs0Uj+F+8yWctqMU6b+8pYu1n
+         OrnQ==
+X-Gm-Message-State: AOAM532gBVixJs26dmqG2+UDu1NbEkTzIJsPBRr8w1y6/R/LDM3Um2VZ
+        4SUF6JAXVQkzARpLS+m0fULOfWvfZ6cHYSq2dse+6Q==
+X-Google-Smtp-Source: ABdhPJy/QdDf8ZZphXLshFnr46sMAVEmrQ6ga42OUf0dnO02EpnX+XXwrzbC1TlH5wbcBksxHK3/H9KCAGjVDCAkWbM=
+X-Received: by 2002:a05:6830:164e:: with SMTP id h14mr894858otr.56.1601052020022;
+ Fri, 25 Sep 2020 09:40:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
- <202009241658.A062D6AE@keescook> <CABqSeAQ=joheH+0LUZ201U-XwFFsHN3Ouo5FGoscUwn+itkL2w@mail.gmail.com>
- <202009242000.DE12689BD8@keescook> <CABqSeATWoFXM6uBHywVrJCo1JvCwHZ6gyegiJp_y4nr97BY-3Q@mail.gmail.com>
-In-Reply-To: <CABqSeATWoFXM6uBHywVrJCo1JvCwHZ6gyegiJp_y4nr97BY-3Q@mail.gmail.com>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Fri, 25 Sep 2020 11:39:18 -0500
-Message-ID: <CABqSeARSufFuFf85VFyTXNkfcWOPE5d9H2C-OuYza4WDdk70fw@mail.gmail.com>
-Subject: Re: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
-To:     Kees Cook <keescook@chromium.org>
-Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
+References: <20200925143422.21718-1-graf@amazon.com> <20200925143422.21718-2-graf@amazon.com>
+In-Reply-To: <20200925143422.21718-2-graf@amazon.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 25 Sep 2020 09:40:08 -0700
+Message-ID: <CALMp9eSDH1F70i=-3wrC55ipz91qygrsPtw7RL4iCi09A-Da6A@mail.gmail.com>
+Subject: Re: [PATCH v8 1/8] KVM: x86: Return -ENOENT on unimplemented MSRs
+To:     Alexander Graf <graf@amazon.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        KarimAllah Raslan <karahmed@amazon.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:28 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> Ah. Makes sense.
+On Fri, Sep 25, 2020 at 7:34 AM Alexander Graf <graf@amazon.com> wrote:
 >
-> > Ironicailly, that's the only place I actually know for sure where people
-> > using x32 because it shows measurable (10%) speed-up for builders:
-> > https://lore.kernel.org/lkml/CAOesGMgu1i3p7XMZuCEtj63T-ST_jh+BfaHy-K6LhgqNriKHAA@mail.gmail.com
+> When we find an MSR that we can not handle, bubble up that error code as
+> MSR error return code. Follow up patches will use that to expose the fact
+> that an MSR is not handled by KVM to user space.
 >
-> Wow. 10% is significant. Makes you wonder why x32 hasn't conquered the world.
->
-> > So, yes, as you and Jann both point out, it wouldn't be terrible to just
-> > ignore x32, it seems a shame to penalize it. That said, if the masking
-> > step from my v1 is actually noticable on a native workload, then yeah,
-> > probably x32 should be ignored. My instinct (not measured) is that it's
-> > faster than walking a small array.[citation needed]
->
-> You convince me that penalizing supporting x32 would be a pity :( The
-> 10% is so nice I want it.
-
-I'm rethinking this -- the majority of our users will not use x32. I
-don't think it's that useful for the majority to run all the
-simulations and have the memory footprint if only a small minority
-will use it.
-
-I also just checked Debian, and it has boot-time disabling of the x32
-arch downstream [1]:
-CONFIG_X86_X32=y
-CONFIG_X86_X32_DISABLED=y
-
-Which means we will still generate all the code for x32 in seccomp
-even though people probably won't be using it...
-
-I also talked to some of my peers and they had a point regarding how
-x32 limiting address space to 4GiB is very harsh on many modern
-language runtimes, so even though it provides a 10% speed boost, its
-adoption is hard -- one has to compile all the C libraries in x32 in
-addition to x86_64, since one would have programs needing > 4GiB
-address space needing x86_64 version of the libraries.
-
-[1] https://wiki.debian.org/X32Port
-
-YiFei Zhu
+> Suggested-by: Aaron Lewis <aaronlewis@google.com>
+> Signed-off-by: Alexander Graf <graf@amazon.com>
+Reviewed-by: Jim Mattson <jmattson@google.com>
