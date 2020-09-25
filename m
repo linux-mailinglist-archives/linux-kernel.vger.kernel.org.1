@@ -2,123 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 936472782D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63CDC2782E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbgIYIh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:37:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38728 "EHLO mail.kernel.org"
+        id S1727724AbgIYIio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:38:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727063AbgIYIh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:37:57 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        id S1727699AbgIYIii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:38:38 -0400
+Received: from mail.kernel.org (ip5f5ad5bf.dynamic.kabel-deutschland.de [95.90.213.191])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BA8A208B6;
-        Fri, 25 Sep 2020 08:37:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 78E39208B6;
+        Fri, 25 Sep 2020 08:38:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601023076;
-        bh=gpwZEFQ/+uBupX6jV0nVrhi45AEr20eCgci0AaJokA4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YO2YPFXMrbvnXCG0H5ENFVaRuBCFOmiGZJwU8ih4LYqk3FqBVfh8Lwe0YLlkgGtNW
-         onUu4U5ej4ZlQjKPlkYETAGUPVz17jxZYw4Hg8pyu9F94y6BFQmtpZhRvC4AMos+fW
-         kal4LTVSMAAwG/t95Vk7ylwplBt878cj6Wtcv67k=
-Date:   Fri, 25 Sep 2020 16:37:49 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Wasim Khan <wasim.khan@nxp.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Xiaowei Bao <xiaowei.bao@nxp.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the pci tree with the imx-mxs tree
-Message-ID: <20200925083748.GJ25109@dragon>
-References: <20200924115731.194ecd6f@canb.auug.org.au>
+        s=default; t=1601023117;
+        bh=bZXcJEGn6enyHGS8lxkZ6bKy81r0Oo99A6VeDeDrw/g=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oag0JksG34Jew5PeHxbvLO79R8G41CMS8MYc03iPqc7iVHWH3FWh4HBSQXOdo+lf+
+         8yRX7BFt2Jar4IVDvfJj5VrPjJioYH2UdlVTJKXMKuC2WyJss41LtgEVJRYYh5YrIA
+         y72tPp9dlSphW5+rhq4AE42aY53rsGY3LgZDyQ/o=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kLjFS-000TqD-Qo; Fri, 25 Sep 2020 10:38:34 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH RFC] scripts: kernel-doc: use a less pedantic markup for funcs on Sphinx 3.x
+Date:   Fri, 25 Sep 2020 10:38:33 +0200
+Message-Id: <14bed823b6c6f290705debfe42dfd6bed21c3231.1601022949.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924115731.194ecd6f@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 11:57:31AM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Today's linux-next merge of the pci tree got a conflict in:
-> 
->   arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> 
-> between commit:
-> 
->   f7d48ffcfc6e ("arm64: dts: layerscape: Add label to pcie nodes")
-> 
-> from the imx-mxs tree and commit:
-> 
->   c9443b6500ff ("arm64: dts: layerscape: Add PCIe EP node for ls1088a")
-> 
-> from the pci tree.
+Unfortunately, Sphinx 3.x parser for c functions is too pedantic:
 
-It should go through imx-mxs -> arm-soc, not pci tree.
+	https://github.com/sphinx-doc/sphinx/issues/8241
 
-Shawn
+Making impossible to use it at the Kernel, as otherwise we would
+need to add thousands of macros to conf.py, with would require
+lots of maintainance.
 
-> 
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-> 
-> diff --cc arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> index ff5805206a28,f21dd143ab6d..000000000000
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-> @@@ -517,7 -499,18 +517,18 @@@
->   			status = "disabled";
->   		};
->   
-> + 		pcie-ep@3400000 {
-> + 			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
-> + 			reg = <0x00 0x03400000 0x0 0x00100000
-> + 			       0x20 0x00000000 0x8 0x00000000>;
-> + 			reg-names = "regs", "addr_space";
-> + 			num-ib-windows = <24>;
-> + 			num-ob-windows = <128>;
-> + 			max-functions = /bits/ 8 <2>;
-> + 			status = "disabled";
-> + 		};
-> + 
->  -		pcie@3500000 {
->  +		pcie2: pcie@3500000 {
->   			compatible = "fsl,ls1088a-pcie";
->   			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
->   			       0x28 0x00000000 0x0 0x00002000>; /* configuration space */
-> @@@ -543,7 -536,17 +554,17 @@@
->   			status = "disabled";
->   		};
->   
-> + 		pcie-ep@3500000 {
-> + 			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
-> + 			reg = <0x00 0x03500000 0x0 0x00100000
-> + 			       0x28 0x00000000 0x8 0x00000000>;
-> + 			reg-names = "regs", "addr_space";
-> + 			num-ib-windows = <6>;
-> + 			num-ob-windows = <8>;
-> + 			status = "disabled";
-> + 		};
-> + 
->  -		pcie@3600000 {
->  +		pcie3: pcie@3600000 {
->   			compatible = "fsl,ls1088a-pcie";
->   			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
->   			       0x30 0x00000000 0x0 0x00002000>; /* configuration space */
+So, let's instead use the :c:macro notation. This will
+produce a worse result, but should provide cross-references and
+will remove thousands of warnings when building with newer
+versions of Sphinx.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+
+Jon,
+
+With this patch, the html doc builds with Sphinx 3.2.1 reduced from
+1705 warnings to 624 ones.
+
+The markup is not as nice as with Sphinx 1.x/2.x, but, IMHO, it is still
+decent.
+
+What do you think?
+
+Please notice that this patch will affect the automarkup type used for
+functions (with is currently broken anyway, with Sphinx 3.x)
+
+ scripts/kernel-doc | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
+
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index 48301ff41ec5..5b891e5c6338 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -886,15 +886,29 @@ sub output_function_rst(%) {
+     my $oldprefix = $lineprefix;
+     my $start = "";
+ 
+-    if ($args{'typedef'}) {
+-	print ".. c:function:: ". $args{'function'} . "\n\n";
+-	print_lineno($declaration_start_line);
+-	print "   **Typedef**: ";
+-	$lineprefix = "";
+-	output_highlight_rst($args{'purpose'});
+-	$start = "\n\n**Syntax**\n\n  ``";
++    if ($sphinx_major < 3) {
++	if ($args{'typedef'}) {
++	    print ".. c:function:: ". $args{'function'} . "\n\n";
++	    print_lineno($declaration_start_line);
++	    print "   **Typedef**: ";
++	    $lineprefix = "";
++	    output_highlight_rst($args{'purpose'});
++	    $start = "\n\n**Syntax**\n\n  ``";
++	} else {
++	    print ".. c:function:: ";
++	}
+     } else {
+-	print ".. c:function:: ";
++	print ".. c:macro:: ". $args{'function'} . "\n\n";
++
++	if ($args{'typedef'}) {
++	    print_lineno($declaration_start_line);
++	    print "   **Typedef**: ";
++	    $lineprefix = "";
++	    output_highlight_rst($args{'purpose'});
++	    $start = "\n\n**Syntax**\n\n  ``";
++	} else {
++	    print "``";
++	}
+     }
+     if ($args{'functiontype'} ne "") {
+ 	$start .= $args{'functiontype'} . " " . $args{'function'} . " (";
+@@ -921,7 +935,11 @@ sub output_function_rst(%) {
+     if ($args{'typedef'}) {
+ 	print ");``\n\n";
+     } else {
+-	print ")\n\n";
++	if ($sphinx_major < 3) {
++	    print ")\n";
++	} else {
++	    print ")``\n\n";
++	}
+ 	print_lineno($declaration_start_line);
+ 	$lineprefix = "   ";
+ 	output_highlight_rst($args{'purpose'});
+-- 
+2.26.2
 
 
