@@ -2,60 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659A82794DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE252794DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726689AbgIYXpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:45:06 -0400
-Received: from agrajag.zerfleddert.de ([88.198.237.222]:39272 "EHLO
-        agrajag.zerfleddert.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbgIYXpG (ORCPT
+        id S1729407AbgIYXpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgIYXpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:45:06 -0400
-Received: by agrajag.zerfleddert.de (Postfix, from userid 1000)
-        id 293B55B2095A; Sat, 26 Sep 2020 01:45:04 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 01:45:04 +0200
-From:   Tobias Jordan <kernel@cdqe.de>
-To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH] bus: qcom: ebi2: fix device node iterator leak
-Message-ID: <20200925234504.GA18813@agrajag.zerfleddert.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Fri, 25 Sep 2020 19:45:12 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27D50C0613CE;
+        Fri, 25 Sep 2020 16:45:12 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4F22613BA0728;
+        Fri, 25 Sep 2020 16:28:24 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 16:45:10 -0700 (PDT)
+Message-Id: <20200925.164510.467198062051144115.davem@davemloft.net>
+To:     doshir@vmware.com
+Cc:     netdev@vger.kernel.org, pv-drivers@vmware.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] vmxnet3: fix cksum offload issues for non-udp
+ tunnels
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200925061130.9017-1-doshir@vmware.com>
+References: <20200925061130.9017-1-doshir@vmware.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 25 Sep 2020 16:28:24 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the for_each_available_child_of_node loop of qcom_ebi2_probe, add a
-call to of_node_put to avoid leaking the iterator if we bail out.
+From: Ronak Doshi <doshir@vmware.com>
+Date: Thu, 24 Sep 2020 23:11:29 -0700
 
-Fixes: 335a12754808 ("bus: qcom: add EBI2 driver")
+> Commit dacce2be3312 ("vmxnet3: add geneve and vxlan tunnel offload
+> support") added support for encapsulation offload. However, the inner
+> offload capability is to be restrictued to UDP tunnels.
+> 
+> This patch fixes the issue for non-udp tunnels by adding features
+> check capability and filtering appropriate features for non-udp tunnels.
+> 
+> Fixes: dacce2be3312 ("vmxnet3: add geneve and vxlan tunnel offload support")
+> Signed-off-by: Ronak Doshi <doshir@vmware.com>
 
-Signed-off-by: Tobias Jordan <kernel@cdqe.de>
----
- drivers/bus/qcom-ebi2.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/bus/qcom-ebi2.c b/drivers/bus/qcom-ebi2.c
-index 03ddcf426887..0b8f53a688b8 100644
---- a/drivers/bus/qcom-ebi2.c
-+++ b/drivers/bus/qcom-ebi2.c
-@@ -353,8 +353,10 @@ static int qcom_ebi2_probe(struct platform_device *pdev)
- 
- 		/* Figure out the chipselect */
- 		ret = of_property_read_u32(child, "reg", &csindex);
--		if (ret)
-+		if (ret) {
-+			of_node_put(child);
- 			return ret;
-+		}
- 
- 		if (csindex > 5) {
- 			dev_err(dev,
--- 
-2.20.1
-
+Applied and queued up for -stable, thanks.
