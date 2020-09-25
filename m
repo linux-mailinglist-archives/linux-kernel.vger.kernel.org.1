@@ -2,115 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900EE2786F5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:20:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660322786F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728687AbgIYMU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:20:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47954 "EHLO mx2.suse.de"
+        id S1728468AbgIYMVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:21:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727248AbgIYMU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:20:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601036427;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UTjLXvwP0cQUzqYMdns20Sc75oW9I9O0WLbhYPi/g6Y=;
-        b=D2Ap3uJ0bRyha3Q5Dk9iyHybJ8SxmC2Vt2I7yKsb0rlwZ4sYLYJzPGgNJQKdwpOFzBVwjU
-        PTXQicBP3X+v/ig4f+3+gFutR8Th4NAZnB2IF6Vs1nTkdaUSDpcivPS3wbEzg50VXkjTeM
-        RT/euPAFWT/ZCUQewn0epAcsk5lW/zA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 576C8AC5F;
-        Fri, 25 Sep 2020 12:20:27 +0000 (UTC)
-Subject: Re: [PATCH 08/12] soc: mediatek: pm-domains: Add subsystem clocks
-To:     Weiyi Lu <weiyi.lu@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Collabora Kernel ML <kernel@collabora.com>,
-        fparent@baylibre.com, matthias.bgg@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
- <20200910172826.3074357-9-enric.balletbo@collabora.com>
- <1601031353.1346.71.camel@mtksdaap41>
-From:   Matthias Brugger <mbrugger@suse.com>
-Message-ID: <923ec8f9-32fe-5a1c-e7fe-8dc1c55d664c@suse.com>
-Date:   Fri, 25 Sep 2020 14:20:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727749AbgIYMVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:21:02 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5E4B21D7A;
+        Fri, 25 Sep 2020 12:21:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601036461;
+        bh=Yzqiewa+QRMYKlCEeSmwhKHrtfdSyQChiuf2bhrHi4o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PZVAxip72/uTvul8Cxjto55o2jFfta5IzLKgjCoMwICr1IgQsuJ0J2SgY3qtqcnuF
+         8hO7GNsoIUHEwqIqLgSqagE4LZQVoyaOVrcgFy/4+m1rpl+fd+6q5qbYtAZIlPrTDi
+         OKJ/drVq2tYxBRVc33p2DcSxrh21b7f0POmIT8FI=
+Date:   Fri, 25 Sep 2020 14:21:15 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Li Heng <liheng40@huawei.com>, heikki.krogerus@linux.intel.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] usb: typec: Remove set but not used variable
+Message-ID: <20200925122115.GD2680110@kroah.com>
+References: <1600956767-10427-1-git-send-email-liheng40@huawei.com>
+ <fe671faa-9975-be20-22f5-31a97e3c8859@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <1601031353.1346.71.camel@mtksdaap41>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fe671faa-9975-be20-22f5-31a97e3c8859@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 25/09/2020 12:55, Weiyi Lu wrote:
-> On Thu, 2020-09-10 at 19:28 +0200, Enric Balletbo i Serra wrote:
->> From: Matthias Brugger <mbrugger@suse.com>
->>
->> For the bus protection operations, some subsystem clocks need to be enabled
->> before releasing the protection. This patch identifies the subsystem clocks
->> by it's name.
->>
->> Suggested-by: Weiyi Lu <weiyi.lu@mediatek.com>
->> [Adapted the patch to the mtk-pm-domains driver]
->> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
->> ---
->>
->>   drivers/soc/mediatek/mtk-pm-domains.c | 82 +++++++++++++++++++++++----
->>   1 file changed, 70 insertions(+), 12 deletions(-)
->>
->> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
->> index 0802eccc3a0b..52a93a87e313 100644
->> --- a/drivers/soc/mediatek/mtk-pm-domains.c
->> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-[...]
->>   
->> -	pd->num_clks = of_clk_get_parent_count(node);
->> -	if (pd->num_clks > 0) {
->> +	num_clks = of_clk_get_parent_count(node);
->> +	if (num_clks > 0) {
->> +		/* Calculate number of subsys_clks */
->> +		of_property_for_each_string(node, "clock-names", prop, clk_name) {
->> +			char *subsys;
->> +
->> +			subsys = strchr(clk_name, '-');
->> +			if (subsys)
->> +				pd->num_subsys_clks++;
->> +			else
->> +				pd->num_clks++;
->> +		}
->> +
+On Thu, Sep 24, 2020 at 07:33:59AM -0700, Guenter Roeck wrote:
+> On 9/24/20 7:12 AM, Li Heng wrote:
+> > Fixes gcc '-Wunused-but-set-variable' warning:
+> > 
+> > drivers/usb/typec/tcpm/tcpm.c:1620:39: warning:
+> > ‘tcpm_altmode_ops’ defined but not used [-Wunused-const-variable=]
+> > 
+> > Reported-by: Hulk Robot <hulkci@huawei.com>
+> > Signed-off-by: Li Heng <liheng40@huawei.com>
 > 
-> In fact, I don't like the clock naming rules, as Matthias mentioned
-> before. So in my work v17[1]
-> I put subsystem clocks under each power domain sub-node without giving
-> the clock name but put the basic clocks under the power controller node.
-> 
-> [1] https://patchwork.kernel.org/patch/11703191/
+> I thought there was a patch series underway which started using it,
+> but maybe my memory defeats me. Either case, it doesn't make much sense
+> to remove the ops variable without removing the associated functions
+> as well.
 
-The quick answer, there is no perfect solution to our problem. If we put all 
-basic clocks under the parent node, then we will have to have a list of basic 
-clocks in the driver data for each SoC. Apart from that the DTS would not 
-reflect the exact hardware, as the basic clocks needed for every power domain 
-would be hidden in the driver data.
+I agree, if this isn't needed, then the functions here should also be
+removed in the same patch.
 
-Given this, I think the best way is to distinguish the clocks by it's name, as 
-done by you in earlier series of the scpsys. It will give us a cleaner device 
-tree and we won't need to add long clock lists in the driver data. If I remember 
-correctly Rob acknowledged your binding change for that:
-https://patchwork.kernel.org/patch/11562521/
+thanks,
 
-Regards,
-Matthias
-
+greg k-h
