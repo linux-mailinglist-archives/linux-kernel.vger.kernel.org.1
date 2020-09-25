@@ -2,123 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A03D2278349
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67192278353
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbgIYIyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:54:04 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:16576 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgIYIyE (ORCPT
+        id S1727673AbgIYIzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:55:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26928 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726990AbgIYIzA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:54:04 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f6dafcb0001>; Fri, 25 Sep 2020 01:52:27 -0700
-Received: from [10.26.74.254] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 25 Sep
- 2020 08:53:48 +0000
-Subject: Re: [PATCH v2 0/5] PCI: dwc: improve msi handling
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Richard Zhu <hongxing.zhu@nxp.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "Yue Wang" <yue.wang@Amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        "Neil Armstrong" <narmstrong@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jesper Nilsson <jesper.nilsson@axis.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        Binghui Wang <wangbinghui@hisilicon.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Pratyush Anand <pratyush.anand@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>
-CC:     <linux-omap@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>, <linux-arm-kernel@axis.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        Vidya Sagar <vidyas@nvidia.com>
-References: <20200924190421.549cb8fc@xhacker.debian>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <de4d9294-4f6d-c7d1-efc7-c8ef6570bd64@nvidia.com>
-Date:   Fri, 25 Sep 2020 09:53:45 +0100
+        Fri, 25 Sep 2020 04:55:00 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601024097;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=3sgv1pOZlB06dEQ0nLJCJG7WcKIpgapVe9e7yCMNbog=;
+        b=E1t63bbe8dDogIM3TSMgFEDaGBkBTc7fzvtVnoXiPy5111l7PCkT2KZObdiXS0OGPLR0uF
+        nJncz7m58JXYzFK2BDDr0Qfgbn4BSTIplKXk2ec+9qJuncTNxCBPYwLv1M+9/wosRwlJ2G
+        Yot3He0cedo52dvNO/WYiBHmb9n/If0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-L5b0IUGPMD2PwNgdTNW4dA-1; Fri, 25 Sep 2020 04:54:53 -0400
+X-MC-Unique: L5b0IUGPMD2PwNgdTNW4dA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA291800E23;
+        Fri, 25 Sep 2020 08:54:51 +0000 (UTC)
+Received: from [10.36.112.211] (ovpn-112-211.ams2.redhat.com [10.36.112.211])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7468578822;
+        Fri, 25 Sep 2020 08:54:43 +0000 (UTC)
+Subject: Re: [PATCH v4 11/23] device-dax: Kill dax_kmem_res
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Joao Martins <joao.m.martins@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>
+References: <CAPcyv4iQ4VnXMU0+_7rfXwPowgcdoABSFUH4WO_3P9vHtWAzPg@mail.gmail.com>
+ <79BEC711-C769-432B-9A50-63C6A3AEB0E3@redhat.com>
+ <CAPcyv4jsUiXTqDtnh_fnm_p4NaX2=c3rrjFe6Efa-oWPkTe-fA@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat GmbH
+Message-ID: <d729e2e3-1f8e-31e6-7095-841b9e3ca47b@redhat.com>
+Date:   Fri, 25 Sep 2020 10:54:43 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200924190421.549cb8fc@xhacker.debian>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAPcyv4jsUiXTqDtnh_fnm_p4NaX2=c3rrjFe6Efa-oWPkTe-fA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601023947; bh=fWA/VvBZqbohPm2n/wszG6Dx2YqT5L4FZiRaNfHoaCY=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=fEA++s28b/AQ7mzCLkLzYFRlJF2BG2COMVrHmZ9Cjc9p5TbBFqA5BOrVtJltGemIH
-         oSNwCyvZoGvaq8JWbamivR4JiDHJ/fbHitkOBJUyOKk7fhFokWkA1SANddNTwBcXbB
-         rJtZyjOJgzSgh4jh1o7XcmqvLXAzSBHYcicmtJ9h9TR22K1MmS7jVQdifrj4pS6LSh
-         CZ5NHyDgIi28TtEhytLl0KvjvjNJQH8L1ZdjBKU9CMVcbwGoJxuinK8SOz6YpIuAxo
-         hXWH5k1Il3WIy1HCnjUYcvviC2GDIwIFEgHTYvXo7Sko+a01zKS96FQk+ozLWpbU2o
-         blYdOUWHAkYjw==
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 24.09.20 23:50, Dan Williams wrote:
+> On Thu, Sep 24, 2020 at 2:42 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>>
+>>
+>>> Am 24.09.2020 um 23:26 schrieb Dan Williams <dan.j.williams@intel.com>:
+>>>
+>>> ﻿[..]
+>>>>> I'm not suggesting to busy the whole "virtio" range, just the portion
+>>>>> that's about to be passed to add_memory_driver_managed().
+>>>>
+>>>> I'm afraid I don't get your point. For virtio-mem:
+>>>>
+>>>> Before:
+>>>>
+>>>> 1. Create virtio0 container resource
+>>>>
+>>>> 2. (somewhen in the future) add_memory_driver_managed()
+>>>> - Create resource (System RAM (virtio_mem)), marking it busy/driver
+>>>>   managed
+>>>>
+>>>> After:
+>>>>
+>>>> 1. Create virtio0 container resource
+>>>>
+>>>> 2. (somewhen in the future) Create resource (System RAM (virtio_mem)),
+>>>>   marking it busy/driver managed
+>>>> 3. add_memory_driver_managed()
+>>>>
+>>>> Not helpful or simpler IMHO.
+>>>
+>>> The concern I'm trying to address is the theoretical race window and
+>>> layering violation in this sequence in the kmem driver:
+>>>
+>>> 1/ res = request_mem_region(...);
+>>> 2/ res->flags = IORESOURCE_MEM;
+>>> 3/ add_memory_driver_managed();
+>>>
+>>> Between 2/ and 3/ something can race and think that it owns the
+>>> region. Do I think it will happen in practice, no, but it's still a
+>>> pattern that deserves come cleanup.
+>>
+>> I think in that unlikely event (rather impossible), add_memory_driver_managed() should fail, detecting a conflicting (busy) resource. Not sure what will happen next ( and did not double-check).
+> 
+> add_memory_driver_managed() will fail, but the release_mem_region() in
+> kmem to unwind on the error path will do the wrong thing because that
+> other driver thinks it got ownership of the region.
+> 
 
-On 24/09/2020 12:05, Jisheng Zhang wrote:
-> Improve the msi code:
-> 1. Add proper error handling.
-> 2. Move dw_pcie_msi_init() from each users to designware host to solve
-> msi page leakage in resume path.
+I think if somebody would race and claim the region for itself (after we
+unchecked the BUSY flag), there would be another memory resource below
+our resource container (e.g., via __request_region()).
 
-Apologies if this is slightly off topic, but I have been meaning to ask
-about MSIs and PCI. On Tegra194 which uses the DWC PCI driver, whenever we
-hotplug CPUs we see the following warnings ...
+So, interestingly, the current code will do a
 
- [      79.068351] WARNING KERN IRQ70: set affinity failed(-22).
- [      79.068362] WARNING KERN IRQ71: set affinity failed(-22).
+release_resource->__release_resource(old, true);
 
-These interrupts are the MSIs ...
+which will remove whatever somebody added below the resource.
 
-70:          0          0          0          0          0          0          0          0   PCI-MSI 134217728 Edge      PCIe PME, aerdrv
-71:          0          0          0          0          0          0          0          0   PCI-MSI 134742016 Edge      ahci[0001:01:00.0]
+If we were to do a
 
-This caused because ...
+remove_resource->__release_resource(old, false);
 
- static int dw_pci_msi_set_affinity(struct irq_data *d,
-                                    const struct cpumask *mask, bool force)
- {
-         return -EINVAL;
- }
+we would only remove what we temporarily added, relocating anychildren
+(someone nasty added).
 
-Now the above is not unique to the DWC PCI host driver, it appears that
-most PCIe drivers also do the same. However, I am curious if there is
-any way to avoid the above warnings given that setting the affinity does
-not appear to be supported in anyway AFAICT.
+But yeah, I don't think we have to worry about this case.
 
-Cheers
-Jon 
+>> But yeah, the way the BUSY bit is cleared here is wrong - simply overwriting other bits. And it would be even better if we could avoid manually messing with flags here.
+> 
+> I'm ok to leave it alone for now (hasn't been and likely never will be
+> a problem in practice), but I think it was still worth grumbling
+
+Definitely, it gives us a better understanding.
+
+> about. I'll leave that part of kmem alone in the upcoming split of
+> dax_kmem_res removal.
+
+Yeah, stuff is more complicated than I would wished, so I guess it's
+better to leave it alone for now until we actually see issues with
+somebody else regarding *our* device-owned region (or we're able to come
+up with a cleanup that keeps all corner cases working for kmem and
+virtio-mem).
 
 -- 
-nvpublic
+Thanks,
+
+David / dhildenb
+
