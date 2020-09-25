@@ -2,79 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C7C278643
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BC4278640
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728307AbgIYLs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:48:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52002 "EHLO mail.kernel.org"
+        id S1728243AbgIYLry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:47:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:43228 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727290AbgIYLs5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:48:57 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C9C82083B;
-        Fri, 25 Sep 2020 11:48:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601034537;
-        bh=T5j5zqOk5bArZowmj9egtHWODeYXr/9ElczEDUPS190=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=H6wlIDlVRp9P08pSw5ys5zM3PhNUn7yMO/X41Ek6C9saBg4s9IUAbeOZ6twMKy8mo
-         4W/ls0u/LjPhXqZCO3ZJCp+qJ7BNEx6ffI+o4Wt5oBon7ZY4PRnEqnhKSSlM7Ac8BL
-         PrkrksAkHsnjVC/dMDc3JW0zw9elIUleOT1VSS5A=
-Date:   Fri, 25 Sep 2020 13:48:54 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-2?Q?Kamil_Doma=F1ski?= <kamil@domanski.co>
-cc:     linux-kernel@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Nestor Lopez Casado <nlopezcasad@logitech.com>,
-        =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@archlinux.org>
-Subject: Re: [PATCH v3] HID: logitech-hidpp: add support for Logitech G533
- headset
-In-Reply-To: <CA+oAjKzdmzg2KFuuSOJL35ifHRSCosHW+y4Cm4bmQQQc49GjAA@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2009251347470.3336@cbobk.fhfr.pm>
-References: <20200704004745.383271-1-kamil@domanski.co> <nycvar.YFH.7.76.2008310859340.27422@cbobk.fhfr.pm> <CA+oAjKzdmzg2KFuuSOJL35ifHRSCosHW+y4Cm4bmQQQc49GjAA@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1728173AbgIYLry (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:47:54 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95A77101E;
+        Fri, 25 Sep 2020 04:47:53 -0700 (PDT)
+Received: from [10.37.12.53] (unknown [10.37.12.53])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 872613F70D;
+        Fri, 25 Sep 2020 04:47:50 -0700 (PDT)
+Subject: Re: [PATCH v3 29/39] arm64: mte: Switch GCR_EL1 in kernel entry and
+ exit
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <4e503a54297cf46ea1261f43aa325c598d9bd73e.1600987622.git.andreyknvl@google.com>
+ <20200925113433.GF4846@gaia>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <e4624059-1598-17eb-2c64-3e7f26c2a1ba@arm.com>
+Date:   Fri, 25 Sep 2020 12:50:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200925113433.GF4846@gaia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 10 Sep 2020, Kamil Domański wrote:
+On 9/25/20 12:34 PM, Catalin Marinas wrote:
+> On Fri, Sep 25, 2020 at 12:50:36AM +0200, Andrey Konovalov wrote:
+>> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+>> index ff34461524d4..c7cc1fdfbd1a 100644
+>> --- a/arch/arm64/kernel/entry.S
+>> +++ b/arch/arm64/kernel/entry.S
+>> @@ -175,6 +175,49 @@ alternative_else_nop_endif
+>>  #endif
+>>  	.endm
+>>  
+>> +	.macro mte_set_gcr, tmp, tmp2
+>> +#ifdef CONFIG_ARM64_MTE
+>> +alternative_if_not ARM64_MTE
+>> +	b	1f
+>> +alternative_else_nop_endif
+> 
+> You don't need the alternative here. The macro is only invoked in an
+> alternative path already (I'd be surprised if it even works, we don't
+> handle nested alternatives well).
+>
 
-> Hi Jiri,
-> I'm not sure what you mean by "proper changelog that should go to the
-> commitlog".
-> Is the commit message "HID: logitech-hidpp: add support for Logitech G533
-> headset" inadequate?
+Yes, you are right. I forgot to remove it.
 
-That's a shortlog. But please provide also brief explanation of what the 
-patch does and how. If I apply your patch as-is, this would have gone to 
-the git commit as a changelog:
+>> +	/*
+>> +	 * Calculate and set the exclude mask preserving
+>> +	 * the RRND (bit[16]) setting.
+>> +	 */
+>> +	mrs_s	\tmp2, SYS_GCR_EL1
+>> +	bfi	\tmp2, \tmp, #0, #16
+>> +	msr_s	SYS_GCR_EL1, \tmp2
+>> +	isb
+>> +1:
+>> +#endif
+>> +	.endm
+>> +
+>> +	.macro mte_set_kernel_gcr, tsk, tmp, tmp2
+> 
+> What's the point of a 'tsk' argument here?
+> 
 
-> > > Changelog:
-> > >   v2:
-> > >   - changed charging status parsing to account for invalid states
-> > >   v3:
-> > >   - rebased against Linux v5.7
-> > >   - changed variable naming in hidpp20_adc_map_status_voltage
-> > >     to camel case
-> > >   - corrected comment styling in hidpp_battery_get_property
-> > >   - dropped usage of test_bit macro in hidpp20_adc_map_status_voltage
-> > >     to avoid using `long` type
-> > >   - added bit flag definitions in hidpp20_adc_map_status_voltage
-> > >
-> > > Signed-off-by: Kamil Domański <kamil@domanski.co>
+It is unused. I kept the interface same in between kernel and user.
+I can either add a comment or remove it. Which one do you prefer?
 
-Which is definitely not how kernel commit logs look like -- just take a 
-look at the changelogs in the kernel git repository for inspiration.
+>> +#ifdef CONFIG_KASAN_HW_TAGS
+>> +#ifdef CONFIG_ARM64_MTE
+> 
+> Does KASAN_HW_TAGS depend on ARM64_MTE already? Just to avoid too may
+> ifdefs. Otherwise, you can always write it as:
+> 
+> #if defined(CONFIG_KASAN_HW_TAGS) && defined(CONFIG_ARM64_MTE)
+> 
+> to save two lines (and its easier to read).
+> 
 
-Thanks,
+It is indeed. I forgot to remove CONFIG_ARM64_MTE.
+
+>> +alternative_if_not ARM64_MTE
+>> +	b	1f
+>> +alternative_else_nop_endif
+>> +	ldr_l	\tmp, gcr_kernel_excl
+>> +
+>> +	mte_set_gcr \tmp, \tmp2
+>> +1:
+>> +#endif
+>> +#endif
+>> +	.endm
+>> +
+>> +	.macro mte_set_user_gcr, tsk, tmp, tmp2
+>> +#ifdef CONFIG_ARM64_MTE
+>> +alternative_if_not ARM64_MTE
+>> +	b	1f
+>> +alternative_else_nop_endif
+>> +	ldr	\tmp, [\tsk, #THREAD_GCR_EL1_USER]
+>> +
+>> +	mte_set_gcr \tmp, \tmp2
+>> +1:
+>> +#endif
+>> +	.endm
+>> +
+>>  	.macro	kernel_entry, el, regsize = 64
+>>  	.if	\regsize == 32
+>>  	mov	w0, w0				// zero upper 32 bits of x0
+>> @@ -214,6 +257,8 @@ alternative_else_nop_endif
+>>  
+>>  	ptrauth_keys_install_kernel tsk, x20, x22, x23
+>>  
+>> +	mte_set_kernel_gcr tsk, x22, x23
+>> +
+>>  	scs_load tsk, x20
+>>  	.else
+>>  	add	x21, sp, #S_FRAME_SIZE
+>> @@ -332,6 +377,8 @@ alternative_else_nop_endif
+>>  	/* No kernel C function calls after this as user keys are set. */
+>>  	ptrauth_keys_install_user tsk, x0, x1, x2
+>>  
+>> +	mte_set_user_gcr tsk, x0, x1
+>> +
+>>  	apply_ssbd 0, x0, x1
+>>  	.endif
+>>  
+>> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+>> index 393d0c794be4..c3b4f056fc54 100644
+>> --- a/arch/arm64/kernel/mte.c
+>> +++ b/arch/arm64/kernel/mte.c
+>> @@ -22,6 +22,8 @@
+>>  #include <asm/ptrace.h>
+>>  #include <asm/sysreg.h>
+>>  
+>> +u64 gcr_kernel_excl __ro_after_init;
+>> +
+>>  static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool check_swap)
+>>  {
+>>  	pte_t old_pte = READ_ONCE(*ptep);
+>> @@ -116,6 +118,13 @@ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+>>  	return ptr;
+>>  }
+>>  
+>> +void mte_init_tags(u64 max_tag)
+>> +{
+>> +	u64 incl = GENMASK(max_tag & MTE_TAG_MAX, 0);
+>> +
+>> +	gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
+>> +}
+>> +
+>>  static void update_sctlr_el1_tcf0(u64 tcf0)
+>>  {
+>>  	/* ISB required for the kernel uaccess routines */
+>> @@ -151,7 +160,11 @@ static void update_gcr_el1_excl(u64 excl)
+>>  static void set_gcr_el1_excl(u64 excl)
+>>  {
+>>  	current->thread.gcr_user_excl = excl;
+>> -	update_gcr_el1_excl(excl);
+>> +
+>> +	/*
+>> +	 * SYS_GCR_EL1 will be set to current->thread.gcr_user_incl value
+>                                                       ^^^^^^^^^^^^^
+> That's gcr_user_excl now.
+> 
+>> +	 * by mte_restore_gcr() in kernel_exit,
+> 
+> I don't think mte_restore_gcr is still around in this patch.
+> 
+
+This comment requires updating. I missed it.
 
 -- 
-Jiri Kosina
-SUSE Labs
-
+Regards,
+Vincenzo
