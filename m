@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F05278F54
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B089A278F57
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729633AbgIYRFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:05:46 -0400
-Received: from mail.efficios.com ([167.114.26.124]:49634 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728466AbgIYRFp (ORCPT
+        id S1729492AbgIYRGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:06:30 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:53315
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727812AbgIYRGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:05:45 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0311C2D0649;
-        Fri, 25 Sep 2020 13:05:45 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id UWotcFCy9elo; Fri, 25 Sep 2020 13:05:44 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 8B6232D083C;
-        Fri, 25 Sep 2020 13:05:44 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 8B6232D083C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1601053544;
-        bh=9u5etktlFhErqPQLUUxkrQhVKY8cRDGh0UhHCb7uXno=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=rkuhom2RCZyD3mtKD/vF1qrzRbKitcRKV3xVAkorSFr0FETXYRypacQNKrGy2P2HV
-         Ykoj7CwObLsLPezZOPww7NkkZhOnzhCXNJ9tlOdTnENORuBNZxy0vdWfOiQ2SnPBgh
-         gwqUnhOgMxvJ+XJnFf8LH7wCU73JrrIPGXxYAQoBxsaCaupiDocNFIEHSXGeVa45Ym
-         n7CWdRTMI/zwkqXxrDyhmLR5Fgu4563jveizvzQERF326my8GS2kR6PMXxGYzQ7YuW
-         aiqgWeLZuK8X0eUDIEkfZloCv41oN8w5ihwS2iKBlSl2Ib5JxE8vBodsxSVcXb5UqS
-         29ja6JU9cXg+A==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id KYOSqdHR5bZP; Fri, 25 Sep 2020 13:05:44 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 7A49D2D0533;
-        Fri, 25 Sep 2020 13:05:44 -0400 (EDT)
-Date:   Fri, 25 Sep 2020 13:05:44 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     paulmck <paulmck@kernel.org>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
+        Fri, 25 Sep 2020 13:06:30 -0400
+X-IronPort-AV: E=Sophos;i="5.77,302,1596492000"; 
+   d="scan'208";a="360082879"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 19:06:21 +0200
+Date:   Fri, 25 Sep 2020 19:06:20 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Joe Perches <joe@perches.com>
+cc:     Thomas Gleixner <tglx@linutronix.de>,
+        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Message-ID: <897050665.69743.1601053544373.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200925122647.230decde@oasis.local.home>
-References: <20200924170928.466191266@goodmis.org> <20200924161328.760f5e79@oasis.local.home> <1430794518.69084.1600979254425.JavaMail.zimbra@efficios.com> <20200924163331.0080b943@oasis.local.home> <176393901.69671.1601044916547.JavaMail.zimbra@efficios.com> <20200925111415.60f5334c@oasis.local.home> <965650354.69699.1601047806662.JavaMail.zimbra@efficios.com> <20200925122647.230decde@oasis.local.home>
-Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
- enabled in a header
+        cocci <cocci@systeme.lip6.fr>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Whitcroft <apw@shadowen.org>
+Subject: Re: [Cocci] coccinelle: Convert comma to semicolons (was Re: [PATCH]
+ checkpatch: Add test for comma use that should be semicolon)
+In-Reply-To: <a53048f738dacc1c58654eb94e229de79d4f94c2.camel@perches.com>
+Message-ID: <alpine.DEB.2.22.394.2009251904540.2772@hadrien>
+References: <87r1qqvo2d.fsf@nanos.tec.linutronix.de> <a53048f738dacc1c58654eb94e229de79d4f94c2.camel@perches.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
-Thread-Topic: tracepoints: Add helper to test if tracepoint is enabled in a header
-Thread-Index: OfP6K53urTP5+emvUDcmbH1lEHoGnA==
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 25, 2020, at 12:26 PM, rostedt rostedt@goodmis.org wrote:
 
-> On Fri, 25 Sep 2020 11:30:06 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->> > Anyway, I don't see any issues with the current patch set as is
->> > (besides the documentation fix, which I already updated locally). And
->> > will add this to my queue for linux-next.
->> 
->> The only thing I would change in the documentation is to word this as
->> "here is a trampoline trick which can be used to work-around rare cases
->> of tracepoint header circular dependency issues" rather than "always use
->> this when instrumenting a header".
->> 
-> 
-> I rather not have tracepoints in headers. Period!
-> 
-> It's not just about circular dependencies, it also bloats the code.
 
-Fair enough. We could indeed argue that having a tracepoint in a header's
-static inline function will end up replicating that tracepoint at every
-site where the function is used. So in terms of code size, it's better
-to use the trampoline approach.
+On Thu, 24 Sep 2020, Joe Perches wrote:
 
-Thanks,
+> On Thu, 2020-09-24 at 23:53 +0200, Thomas Gleixner wrote:
+> > On Thu, Sep 24 2020 at 13:33, Joe Perches wrote:
+> > > On Thu, 2020-09-24 at 22:19 +0200, Thomas Gleixner wrote:
+> > > > On Sat, Aug 22 2020 at 09:07, Julia Lawall wrote:
+> > > > > On Fri, 21 Aug 2020, Joe Perches wrote:
+> > > > > > True enough for a general statement, though the coccinelle
+> > > > > > script Julia provided does not change a single instance of
+> > > > > > for loop expressions with commas.
+> > > > > >
+> > > > > > As far as I can tell, no logic defect is introduced by the
+> > > > > > script at all.
+> > > > >
+> > > > > The script has a rule to ensure that what is changed is part of a top
+> > > > > level statement that has the form e1, e2;.  I put that in to avoid
+> > > > > transforming cases where the comma is the body of a macro, but it protects
+> > > > > against for loop headers as well.
+> > > >
+> > > > Right. I went through the lot and did not find something dodgy. Except
+> > > > for two hunks this still applies. Can someone please send a proper patch
+> > > > with changelog/SOB etc. for this?
+> > >
+> > > Treewide?
+> > >
+> > > Somebody no doubt would complain, but there
+> > > _really should_ be some mechanism for these
+> > > trivial and correct treewide changes...
+> >
+> > There are lots of mechanisms:
+>
+> I've tried them all.
+>
+> None of them work particularly well,
+> especially the individual patch route.
+>
+> >  - Andrew picks such changes up
+>
+> Generally not treewide.
+>
+> >  - With a few competent eyeballs on it (reviewers) this can go thorugh
+> >    the trivial tree as well. It's more than obvious after all.
+>
+> Jiri is almost non-existent when it comes to
+> trivial treewide patches.
+>
+> >  - Send the script to Linus with a proper change log attached and ask
+> >    him to run it.
+>
+> Linus has concerns about backports and what he
+> deems trivialities.  Generally overblown IMO.
+>
+> >  - In the worst case if nobody feels responsible, I'll take care.
+>
+> If Julia doesn't send a new patch in the next few
+> days, I will do the apply, fixup and resend of hers.
+>
+> So, you're on-deck, nearly up...
+>
+> > All of the above is better than trying to get the attention of a
+> > gazillion of maintainters.
+>
+> True.
+>
+> And all of the treewide changes depend on some
+> generic acceptance of value in the type of change.
+>
+> Some believe that comma->semicolon conversions
+> aren't useful as there isn't a logical change and
+> the compiler output wouldn't be different.
 
-Mathieu
+I have a script that will cut up the patches and send them to the
+appropriate maintainers, so I have no problem with that route.
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+julia
