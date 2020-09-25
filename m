@@ -2,225 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE99F27940E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:22:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1E3279414
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729003AbgIYWW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728902AbgIYWW0 (ORCPT
+        id S1728954AbgIYWXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:23:36 -0400
+Received: from mail.efficios.com ([167.114.26.124]:48572 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726807AbgIYWXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:22:26 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFBCC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:22:26 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id mn7so206790pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:22:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cmfhoET6i60TK8Rk0MElGhJyFQqHEcMLMlgOK4MAlE4=;
-        b=NGclKlxcg0K/w1F2bk1+6OZtx7oAUmpgRUU9kjxAcPLJrrKMsTW9nll+U8e7WWnNFR
-         eEygtfDCyj/bHjZ31x6uGkXUhM+2bCxcUTQNRU+8COFeSGIJTEUFIr9EKd5m5shlLlMW
-         4lM6CGRLbwtNuQew1bp8NuXz5frpeZzIK0y31IaEM1SS8aUaSEBUw5GpkYfcnHB5ztQl
-         b8C3BYsGapLhA/sTWNvZTfM9kV07AOkbixhOLotEU3Vc0e4Up5j+YnYGXvoskion5ew7
-         HmTfHKwUx1NI+C9wv1JvYJxXYW70LuIesnV4wV21KffEju9CS/gwR/hnTVrudnsYIgg3
-         tzkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cmfhoET6i60TK8Rk0MElGhJyFQqHEcMLMlgOK4MAlE4=;
-        b=XbwYQzwSASClFoQV/EZ+Nf/AfPXZKXkv8tXW3rWhgbm1JyAE3oWIbfMppAzixFCw4s
-         wUCpYnX/LNV6a3H1B4cvIGAZHUkD5C9xcY4Mhkfeg3fMIQOR74JbWWOl+W4sVQEgdd72
-         P4FOml7yyOL5xYjNAIxF7S1mcPyQKr5L2GkndU7TNZqxxiJnovLdkl4I4G/qow6yvrn6
-         b5mjVGlMGq2vtJYr8QPziDrHagmcHnj7VAqVX9Q4fTgYdue2x7twwUGlCP40MfRsPhYn
-         gep2Zysj6W3DoCIEZC81eqCem8ZgQ+dLHvz9N3kiyZ2KMHcLB81OF0Mgz+tzsfDYtGki
-         nSeA==
-X-Gm-Message-State: AOAM533mMA5GohQvFLo0NNDqZuTk7Fv96SVk57sg/WXbN90TYjYhTxJa
-        t/w+uVzFDcNdq/0m3lSkJ9uHcg==
-X-Google-Smtp-Source: ABdhPJxGXIhrP2Lq4BBPoAJr747PE/jcc6o+gdDkhb//l0phGKJDKbi+9WmYZyN8g0TbXWNLAv9brw==
-X-Received: by 2002:a17:90a:bc8d:: with SMTP id x13mr597678pjr.229.1601072545570;
-        Fri, 25 Sep 2020 15:22:25 -0700 (PDT)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id s3sm3613609pfe.116.2020.09.25.15.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 15:22:24 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 15:22:20 -0700
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        pbonzini@redhat.com
-Cc:     tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-Message-ID: <20200925222220.GA977797@google.com>
-References: <20200922004024.3699923-1-vipinsh@google.com>
- <20200922014836.GA26507@linux.intel.com>
- <20200922211404.GA4141897@google.com>
- <20200924192116.GC9649@linux.intel.com>
- <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com>
+        Fri, 25 Sep 2020 18:23:36 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 53B1C2D24DA;
+        Fri, 25 Sep 2020 18:23:35 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id MzbI1bNxLp4d; Fri, 25 Sep 2020 18:23:35 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id EA1D92D25D2;
+        Fri, 25 Sep 2020 18:23:34 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com EA1D92D25D2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1601072615;
+        bh=gQoN2wPqNS+dpQu2jHy+0fCG7sG+iR/HyLFfUk3yxvU=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=EPHZKca6RVotJ2EjUXeuTdjADZBOkBr1St5hfLEM5uSfKS25GQd5+PPgNP/pHtoxM
+         JgixCb8zRDx2dp/wYgioiBiv6mbcbplT2B+Zs0rwgj1vD/FcvG+HV0lMKZC+/Jjicf
+         pooiDUJSwDExTNgJMKJWUQnmftCRLsEwygvX69JJ9DPzZZLgInpwjDWCO5kS4V3Ngx
+         rNv+lMgTOeX4gIAlUuI9qwo1tttQVg1Kaoqklnobpr06gHeXXZsrvEESdgcNJkvCSB
+         UJDx0r5Y8oUV4eb/35pZLOqrr5pDmSeI3GLGFDmlY6YbZqwIFbfHPfOactoN2vtQ0I
+         DaRjLBQ8igNYA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ueqY3Mk9kQap; Fri, 25 Sep 2020 18:23:34 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id DB53A2D25D1;
+        Fri, 25 Sep 2020 18:23:34 -0400 (EDT)
+Date:   Fri, 25 Sep 2020 18:23:34 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        Linux MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Message-ID: <606086581.69952.1601072614802.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200925172640.701ca0a7@oasis.local.home>
+References: <20200925211206.423598568@goodmis.org> <20200925172640.701ca0a7@oasis.local.home>
+Subject: Re: [PATCH 0/3 v2] tracing/mm: Add tracepoint_enabled() helper
+ function for headers
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3965 (zclient/8.8.15_GA_3965)
+Thread-Topic: tracing/mm: Add tracepoint_enabled() helper function for headers
+Thread-Index: X5CnxcGKVxo6UTP7Vy2I8qU5DLTdog==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 02:55:18PM -0500, Tom Lendacky wrote:
-> On 9/24/20 2:21 PM, Sean Christopherson wrote:
-> > On Tue, Sep 22, 2020 at 02:14:04PM -0700, Vipin Sharma wrote:
-> > > On Mon, Sep 21, 2020 at 06:48:38PM -0700, Sean Christopherson wrote:
-> > > > On Mon, Sep 21, 2020 at 05:40:22PM -0700, Vipin Sharma wrote:
-> > > > > Hello,
-> > > > > 
-> > > > > This patch series adds a new SEV controller for tracking and limiting
-> > > > > the usage of SEV ASIDs on the AMD SVM platform.
-> > > > > 
-> > > > > SEV ASIDs are used in creating encrypted VM and lightweight sandboxes
-> > > > > but this resource is in very limited quantity on a host.
-> > > > > 
-> > > > > This limited quantity creates issues like SEV ASID starvation and
-> > > > > unoptimized scheduling in the cloud infrastructure.
-> > > > > 
-> > > > > SEV controller provides SEV ASID tracking and resource control
-> > > > > mechanisms.
-> > > > 
-> > > > This should be genericized to not be SEV specific.  TDX has a similar
-> > > > scarcity issue in the form of key IDs, which IIUC are analogous to SEV ASIDs
-> > > > (gave myself a quick crash course on SEV ASIDs).  Functionally, I doubt it
-> > > > would change anything, I think it'd just be a bunch of renaming.  The hardest
-> > > > part would probably be figuring out a name :-).
-> > > > 
-> > > > Another idea would be to go even more generic and implement a KVM cgroup
-> > > > that accounts the number of VMs of a particular type, e.g. legacy, SEV,
-> > > > SEV-ES?, and TDX.  That has potential future problems though as it falls
-> > > > apart if hardware every supports 1:MANY VMs:KEYS, or if there is a need to
-> > > > account keys outside of KVM, e.g. if MKTME for non-KVM cases ever sees the
-> > > > light of day.
-> > > 
-> > > I read about the TDX and its use of the KeyID for encrypting VMs. TDX
-> > > has two kinds of KeyIDs private and shared.
-> > 
-> > To clarify, "shared" KeyIDs are simply legacy MKTME KeyIDs.  This is relevant
-> > because those KeyIDs can be used without TDX or KVM in the picture.
-> > 
-> > > On AMD platform there are two types of ASIDs for encryption.
-> > > 1. SEV ASID - Normal runtime guest memory encryption.
-> > > 2. SEV-ES ASID - Extends SEV ASID by adding register state encryption with
-> > > 		 integrity.
-> > > 
-> > > Both types of ASIDs have their own maximum value which is provisioned in
-> > > the firmware
-> > 
-> > Ugh, I missed that detail in the SEV-ES RFC.  Does SNP add another ASID type,
-> > or does it reuse SEV-ES ASIDs?  If it does add another type, is that trend
-> > expected to continue, i.e. will SEV end up with SEV, SEV-ES, SEV-ES-SNP,
-> > SEV-ES-SNP-X, SEV-ES-SNP-X-Y, etc...?
+No worries, I'll get it from lore.
+
+Thanks,
+
+Mathieu
+
+----- Steven Rostedt <rostedt@goodmis.org> wrote:
 > 
-> SEV-SNP and SEV-ES share the same ASID range.
+> Bah, My cut-and-paste of my "quilt mail --send" chopped off Mathieu's email.
 > 
-> Thanks,
-> Tom
+> Mathieu, I didn't meant to not Cc you on this. Do you need me to bounce
+> the rest to you or you can get it from lore?
 > 
+> -- Steve
+> 
+> 
+> On Fri, 25 Sep 2020 17:12:06 -0400
+> Steven Rostedt <rostedt@goodmis.org> wrote:
+> 
+> > Tracepoints are not safe to be called directly from header files as they may
+> > be included by C code that has CREATE_TRACE_POINTS defined, and this would
+> > cause side effects and possibly break the build in hard to debug ways. Not
+> > to mention it also will bloat the code being in commonly used inline
+> > functions.
 > > 
-> > > So, we are talking about 4 different types of resources:
-> > > 1. AMD SEV ASID (implemented in this patch as sev.* files in SEV cgroup)
-> > > 2. AMD SEV-ES ASID (in future, adding files like sev_es.*)
-> > > 3. Intel TDX private KeyID
-> > > 4. Intel TDX shared KeyID
-> > > 
-> > > TDX private KeyID is similar to SEV and SEV-ES ASID. I think coming up
-> > > with the same name which can be used by both platforms will not be easy,
-> > > and extensible with the future enhancements. This will get even more
-> > > difficult if Arm also comes up with something similar but with different
-> > > nuances.
+> > Instead, it is recommended to call a tracepoint helper function that is
+> > defined in a C file that calls the tracepoint. But we would only want this
+> > function to be called if the tracepoint is enabled, as function calls add
+> > overhead.
 > > 
-> > Honest question, what's easier for userspace/orchestration layers?  Having an
-> > abstract but common name, or conrete but different names?  My gut reaction is
-> > to provide a common interface, but I can see how that could do more harm than
-> > good, e.g. some amount of hardware capabilitiy discovery is possible with
-> > concrete names.  And I'm guessing there's already a fair amount of vendor
-> > specific knowledge bleeding into userspace for these features...
-
-I agree with you that the abstract name is better than the concrete
-name, I also feel that we must provide HW extensions. Here is one
-approach:
-
-Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to
-suggestions)
-
-Control files: slots.{max, current, events}
-
-Contents of the slot.max:
-default max
-	default: Corresponds to all kinds of encryption capabilities on
-		 a platform. For AMD, it will be SEV and SEV-ES.  For
-		 Intel, it will be TDX and MKTME. This can also be used
-		 by other devices not just CPU.
-
-	max: max or any number to denote limit on the cgroup.
-
-A user who wants the finer control, then they need to know about the
-capabilities a platform provides and use them, e.g. on AMD:
-
-$ echo "sev-es 1000" > slot.max
-$ cat slots.max
-default max sev-es 1000
-
-This means that in the cgroup maximum SEV-ES ASIDs which can be used is
-1000 and SEV ASIDs is max (default, no limit).  Each platform can
-provide their own extensions which can be overwritten by a user,
-otherwise extensions will have the default limit.
-
-This is kind of similar to the IO and the rdma controller.
-
-I think it is keeping abstraction for userspace and also providing finer
-control for HW specific features.
-
-What do you think about the above approach?  
-
+> > The trace_<tracepoint>_enabled() function is also not safe to be called in a
+> > header file as it is created by the tracepoint header, which suffers the
+> > same fate if CREATE_TRACE_POINTS is defined. Instead, the tracepoint needs
+> > to be declared as an extern, and the helper function can test the static key
+> > to call the helper function that calls the tracepoint.
 > > 
-> > And if SNP is adding another ASID namespace, trying to abstract the types is
-> > probably a lost cause.
+> > This has been done by open coding the tracepoint extern and calling the
+> > static key directly:
 > > 
-> >  From a code perspective, I doubt it will matter all that much, e.g. it should
-> > be easy enough to provide helpers for exposing a new asid/key type.
+> >  commit 95813b8faa0cd ("mm/page_ref: add tracepoint to track down page reference manipulation")
+> >  commit 7f47d8cc039f ("x86, tracing, perf: Add trace point for MSR accesses")
 > > 
-> > > I like the idea of the KVM cgroup and when it is mounted it will have
-> > > different files based on the hardware platform.
+> > does this (back in 2015). Now we have another use case, so a helper function
+> > should be created to keep the internals of the tracepoints from being spread
+> > out in other subsystems.
 > > 
-> > I don't think a KVM cgroup is the correct approach, e.g. there are potential
-> > use cases for "legacy" MKTME without KVM.  Maybe something like Encryption
-> > Keys cgroup?
+> >  Link: https://lore.kernel.org/r/20200922125113.12ef1e03@gandalf.local.home
+> > 
+> > This adds tracepoint_enabled() helper macro and DECLARE_TRACEPOINT() macro
+> > to allow this to be done without exposing the internals of the tracepoints.
+> > 
+> > The first patch adds the infrastructure, the second converts page_ref over
+> > to it, and third converts over msr.h.
+> > 
+> > Steven Rostedt (VMware) (3):
+> >       tracepoints: Add helper to test if tracepoint is enabled in a header
+> >       mm/page_ref: Convert the open coded tracepoint enabled to the new helper
+> >       x86: Use tracepoint_enabled() for msr tracepoints instead of open coding it
+> > 
+> > ----
+> > 
+> > Changes since v1 (https://lore.kernel.org/r/20200924170928.466191266@goodmis.org):
+> > 
+> >  - Fixed using "trace_enabled()" instead of "tracepoint_enabled()"
+> >    (Mathieu Desnoyers reported)
+> > 
+> >  - Reworded to include comments about bloating the kernel when tracepoints
+> >    are used in commonly used inlined functions.
+> > 
+> >  - Added the msr update as well.
+> > 
+> > 
+> >  Documentation/trace/tracepoints.rst | 27 ++++++++++++++++++++++++
+> >  arch/x86/include/asm/msr.h          | 18 +++++++---------
+> >  include/linux/page_ref.h            | 42 ++++++++++++++++++-------------------
+> >  include/linux/tracepoint-defs.h     | 34 ++++++++++++++++++++++++++++++
+> >  4 files changed, 90 insertions(+), 31 deletions(-)
+> 
 
-Added some suggestion in the above approach. I think we should not add
-key in the name because here limitation is on the number of keys that
-can be used simultaneously. 
-
-> > 
-> > > 1. KVM cgroup on AMD will have:
-> > > sev.max & sev.current.
-> > > sev_es.max & sev_es.current.
-> > > 
-> > > 2. KVM cgroup mounted on Intel:
-> > > tdx_private_keys.max
-> > > tdx_shared_keys.max
-> > > 
-> > > The KVM cgroup can be used to have control files which are generic (no
-> > > use case in my mind right now) and hardware platform specific files
-> > > also.
-> > 
-> > My "generic KVM cgroup" suggestion was probably a pretty bad suggestion.
-> > Except for ASIDs/KeyIDs, KVM itself doesn't manage any constrained resources,
-> > e.g. memory, logical CPUs, time slices, etc... are all generic resources that
-> > are consumed by KVM but managed elsewhere.  We definitely don't want to change
-> > that, nor do I think we want to do anything, such as creating a KVM cgroup,
-> > that would imply that having KVM manage resources is a good idea.
-> > 
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
