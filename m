@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6333278011
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:56:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8673F278013
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgIYF4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:56:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727124AbgIYF4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:56:50 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D52CDC0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 22:56:49 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id gr14so2024375ejb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 22:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PHvJCnf/e3w+kWddJhhNAUVQMYCOoytl80Q0gn/kXVM=;
-        b=ShdjI09HEYlSizD4uVM0B2rxoJnN8U2bQb09Wy+Bt5b05y7VaybgV6048Ct9oMNFC0
-         5ZuNRFl1xvZT54kcWZm6nV7++CSa/aNWkwsaYltPyAOfaCPz1p9rS80d1afmgWjIiLfk
-         QByKHsiiFOXOgqaUReS6BxYLxrysJg3zJgNro=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=PHvJCnf/e3w+kWddJhhNAUVQMYCOoytl80Q0gn/kXVM=;
-        b=XfnebcoPCl6GJlQ7gIaSIXMhhBBoWqjdrFNTn5xU4rEb7pwVl1gqpTB4p0+kW5c8yV
-         MQ8LNS/UWKNBBGou/iw9lbyC7fAcU9Du7Txy4rtRUkSYTXXAAVSoGCa4/8tHbC3etd1c
-         u9UQiffGG1MGc/WklX/MVyJdthPAjHg4ZSJ89kwH0MlaH80P4YqEPMCyB1TbInOren4R
-         l4I4PC5OG0i1OOVNm8E/4cofcHi9NGRflV4A9OK5g6vBug6apxqAAthwOgOdPC2Xh2jD
-         vT5TX8mNak1hFskZubkgmBeSHL1U83kuGHOXAjLgs5b7WTuwCXHs5G+wkovBdCwqvPkK
-         xFig==
-X-Gm-Message-State: AOAM531W4yrXjX3Gv1cKJ5S3e2N3HWzH2rYCgkjWwGQhVv/huMEXbUPJ
-        cxT0MYUqQDK2ZGpYZW6p87e6ht43z0ugZ547IiY=
-X-Google-Smtp-Source: ABdhPJzIM58jxMOmE2zPrllWl3bqZQksl9iktnNDkyFfkSPoqVYRt7Y7NFlYBnC9G6KhTmZPTNAT/w==
-X-Received: by 2002:a17:906:841a:: with SMTP id n26mr1099782ejx.213.1601013408160;
-        Thu, 24 Sep 2020 22:56:48 -0700 (PDT)
-Received: from [192.168.1.149] (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id s30sm1055003edc.8.2020.09.24.22.56.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 24 Sep 2020 22:56:47 -0700 (PDT)
-Subject: Re: [PATCH v1 0/6] seccomp: Implement constant action bitmaps
-To:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc:     Kees Cook <keescook@chromium.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Jann Horn <jannh@google.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        kernel list <linux-kernel@vger.kernel.org>
-References: <20200923232923.3142503-1-keescook@chromium.org>
- <43039bb6-9d9f-b347-fa92-ea34ccc21d3d@rasmusvillemoes.dk>
- <CABqSeAQKksqM1SdsQMoR52AJ5CY0VE2tk8-TJaMuOrkCprQ0MQ@mail.gmail.com>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <27b4ef86-fee5-fc35-993b-3352ce504c73@rasmusvillemoes.dk>
-Date:   Fri, 25 Sep 2020 07:56:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727171AbgIYF5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:57:04 -0400
+Received: from mga14.intel.com ([192.55.52.115]:54425 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726983AbgIYF5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:57:04 -0400
+IronPort-SDR: KAdRiqeRLm0d26lNjICtr9FdxAWOl7myx9mPj8lEDdj54Qh1isral3AEY0hYfNhS7t4eiYvn6Q
+ uIQBgjIqprwQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="160699989"
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="160699989"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:57:03 -0700
+IronPort-SDR: aGJj6w4aQ5jeeDLLB8uZU7IEVSuXuHD+nwkStiR2wSAgljZqwiU/x0+2SB5fTNGzJcgh3TLS4F
+ HEe5Idmtwo0w==
+X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
+   d="scan'208";a="487322442"
+Received: from erybin-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.47.248])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:57:02 -0700
+Date:   Fri, 25 Sep 2020 08:57:00 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
+Message-ID: <20200925055700.GD165011@linux.intel.com>
+References: <20200922094128.26245-1-ardb@kernel.org>
+ <20200925055626.GC165011@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CABqSeAQKksqM1SdsQMoR52AJ5CY0VE2tk8-TJaMuOrkCprQ0MQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925055626.GC165011@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2020 15.58, YiFei Zhu wrote:
-> On Thu, Sep 24, 2020 at 8:46 AM Rasmus Villemoes
-> <linux@rasmusvillemoes.dk> wrote:
->> But one thing I'm wondering about and I haven't seen addressed anywhere:
->> Why build the bitmap on the kernel side (with all the complexity of
->> having to emulate the filter for all syscalls)? Why can't userspace just
->> hand the kernel "here's a new filter: the syscalls in this bitmap are
->> always allowed noquestionsasked, for the rest, run this bpf". Sure, that
->> might require a new syscall or extending seccomp(2) somewhat, but isn't
->> that a _lot_ simpler? It would probably also mean that the bpf we do get
->> handed is a lot smaller. Userspace might need to pass a couple of
->> bitmaps, one for each relevant arch, but you get the overall idea.
+On Fri, Sep 25, 2020 at 08:56:30AM +0300, Jarkko Sakkinen wrote:
+> On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
+> > The TPM event log is provided to the OS by the firmware, by loading
+> > it into an area in memory and passing the physical address via a node
+> > in the device tree.
+> > 
+> > Currently, we use __va() to access the memory via the kernel's linear
+> > map: however, it is not guaranteed that the linear map covers this
+> > particular address, as we may be running under HIGHMEM on a 32-bit
+> > architecture, or running firmware that uses a memory type for the
+> > event log that is omitted from the linear map (such as EfiReserved).
 > 
-> Perhaps. The thing is, the current API expects any filter attaches to
-> be "additive". If a new filter gets attached that says "disallow read"
-> then no matter whatever has been attached already, "read" shall not be
-> allowed at the next syscall, bypassing all previous allowlist bitmaps
-> (so you need to emulate the bpf anyways here?). We should also not
-> have a API that could let anyone escape the secomp jail. Say "prctl"
-> is permitted but "read" is not permitted, one must not be allowed to
-> attach a bitmap so that "read" now appears in the allowlist. The only
-> way this could potentially work is to attach a BPF filter and a bitmap
-> at the same time in the same syscall, which might mean API redesign?
-
-Yes, the man page would read something like
-
-       SECCOMP_SET_MODE_FILTER_BITMAP
-              The system calls allowed are defined by a pointer to a
-Berkeley Packet Filter (BPF) passed  via  args.
-              This argument is a pointer to a struct sock_fprog_bitmap;
-
-with that struct containing whatever information/extra pointers needed
-for passing the bitmap(s) in addition to the bpf prog.
-
-And SECCOMP_SET_MODE_FILTER would internally just be updated to work
-as-if all-zero allow-bitmaps were passed along. The internal kernel
-bitmap would just be the and of the bitmaps in the filter stack.
-
-Sure, it's UAPI, so would certainly need more careful thought on details
-of just how the arg struct looks like etc. etc., but I was wondering why
-it hadn't been discussed at all.
-
->> I'm also a bit worried about the performance of doing that emulation;
->> that's constant extra overhead for, say, launching a docker container.
+> Makes perfect sense to the level that I wonder if this should have a
+> fixes tag and/or needs to be backported to the stable kernels?
 > 
-> IMO, launching a docker container is so expensive this should be negligible.
+> > So instead, use memremap(), which will reuse the linear mapping if
+> > it is valid, or create another mapping otherwise.
+> > 
+> > Cc: Peter Huewe <peterhuewe@gmx.de>
+> > Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >  drivers/char/tpm/eventlog/of.c | 8 +++++++-
+> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/char/tpm/eventlog/of.c b/drivers/char/tpm/eventlog/of.c
+> > index a9ce66d09a75..9178547589a3 100644
+> > --- a/drivers/char/tpm/eventlog/of.c
+> > +++ b/drivers/char/tpm/eventlog/of.c
+> > @@ -11,6 +11,7 @@
+> >   */
+> >  
+> >  #include <linux/slab.h>
+> > +#include <linux/io.h>
+> >  #include <linux/of.h>
+> >  #include <linux/tpm_eventlog.h>
+> >  
+> > @@ -25,6 +26,7 @@ int tpm_read_log_of(struct tpm_chip *chip)
+> >  	struct tpm_bios_log *log;
+> >  	u32 size;
+> >  	u64 base;
+> > +	void *p;
+> 
+> I'd just use 'ptr' for readability sake.
+> 
+> >  	log = &chip->log;
+> >  	if (chip->dev.parent && chip->dev.parent->of_node)
+> > @@ -65,7 +67,11 @@ int tpm_read_log_of(struct tpm_chip *chip)
+> >  		return -EIO;
+> >  	}
+> >  
+> > -	log->bios_event_log = kmemdup(__va(base), size, GFP_KERNEL);
+> > +	p = memremap(base, size, MEMREMAP_WB);
+> > +	if (!p)
+> > +		return -ENOMEM;
+> > +	log->bios_event_log = kmemdup(p, size, GFP_KERNEL);
+> > +	memunmap(p);
+> >  	if (!log->bios_event_log)
+> >  		return -ENOMEM;
+> >  
+> > -- 
+> > 2.17.1
+> > 
+> 
+> This is a really great catch!
+> 
+> I'm a bit late of my PR a bit because of SGX upstreaming madness
+> (sending v39 soon). If you can answer to my question above, I can do
+> that nitpick change to patch and get it to my v5.10 PR.
+> 
+> PS. Just so that you know, once I've applied it, it will be available
+> here:
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
+> 
+> I'll include MAINTAINERS update to that PR.
 
-Regardless, I'd like to see some numbers, certainly for the "how much
-faster does a getpid() or read() or any of the other syscalls that
-nobody disallows" get, but also "what's the cost of doing that emulation
-at seccomp(2) time".
+Forgot this:
 
-Rasmus
+Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+
+/Jarkko
