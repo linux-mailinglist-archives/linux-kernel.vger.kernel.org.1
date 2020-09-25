@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324612780C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903522780CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727195AbgIYGeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 02:34:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726925AbgIYGeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 02:34:08 -0400
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDE17235F8;
-        Fri, 25 Sep 2020 06:34:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601015647;
-        bh=amAPdhrqPuLJn+5i6b8ttL9Z/Dbp2FpG/s3Qbb//sCo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GCuLxUSZHg/qzQby6H0WlGzbrFIr/jkty0DUSk2SYaejqaGd4z46Sjro3dAb+x1YD
-         eiT4fZ7/j3xLqZZPyEqnxYiRvv/rpE5/vzPmJIPXk3fz2nCDijfUmDcVXa7EcKNn2n
-         ggEHpUQEM4/KlhbUA+f7WXkv/tQEvVJ6tOZpdYsA=
-Received: by mail-lf1-f49.google.com with SMTP id y17so1526735lfa.8;
-        Thu, 24 Sep 2020 23:34:06 -0700 (PDT)
-X-Gm-Message-State: AOAM530RZeEZtdvTrZABHpbfJU+PdIbKGnY5z47wpCeOkaWurx8dm3s2
-        34Ea5hF4diit5awRqDR7bhcL39jBYnbxm65H1pk=
-X-Google-Smtp-Source: ABdhPJyj7MW82Lm69rSYI94+WN3tjHrUZIx1nispUPoncSCx8ouWV0ji/iKhmBQw8Og6fksOFpaqVmZZ+U1CYG99UtA=
-X-Received: by 2002:a19:3c8:: with SMTP id 191mr754965lfd.549.1601015645132;
- Thu, 24 Sep 2020 23:34:05 -0700 (PDT)
+        id S1727137AbgIYGkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 02:40:22 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:43308 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727044AbgIYGkW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 02:40:22 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UA06yVo_1601016017;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA06yVo_1601016017)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 25 Sep 2020 14:40:18 +0800
+Subject: Re: [PATCH v3] doc: zh_CN: index files in arm64 subdirectory
+To:     Bailu Lin <bailu.lin@vivo.com>, catalin.marinas@arm.com,
+        will@kernel.org, corbet@lwn.net, harryxiyou@gmail.com,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com
+References: <20200916130714.42438-1-bailu.lin@vivo.com>
+ <20200918081126.20765-1-bailu.lin@vivo.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <bdce1e87-e0de-bd4a-fcfc-73f406af8148@linux.alibaba.com>
+Date:   Fri, 25 Sep 2020 14:38:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200922091505.471-1-zhenzhong.duan@gmail.com>
- <20200922162901.GA3421308@ZenIV.linux.org.uk> <CAJF2gTSMWc_=j1NKCTXqhLj7cmSB_A3dYB7nL4F7H3jqT+u38A@mail.gmail.com>
- <20200923002315.GC3421308@ZenIV.linux.org.uk> <CAJF2gTSU4e4yU63z1q502SeuTf2m2BKaD0yZ0deFj0TkiVupFg@mail.gmail.com>
- <20200923045231.GH3421308@ZenIV.linux.org.uk>
-In-Reply-To: <20200923045231.GH3421308@ZenIV.linux.org.uk>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 25 Sep 2020 14:33:53 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTb1QN=BmbtcqkNPpUzGa1fQsQtMM2pjrRtNOVxdkkWkQ@mail.gmail.com>
-Message-ID: <CAJF2gTTb1QN=BmbtcqkNPpUzGa1fQsQtMM2pjrRtNOVxdkkWkQ@mail.gmail.com>
-Subject: Re: [PATCH] csky: Fix a size determination in gpr_get()
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Zhenzhong Duan <zhenzhong.duan@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-csky@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200918081126.20765-1-bailu.lin@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 12:52 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Wed, Sep 23, 2020 at 10:37:31AM +0800, Guo Ren wrote:
->
-> > > What's going on there?  The mapping is really weird - assuming
-> > > you had v0..v31 in the first 32 elements of regs->vr[], you
-> > > end up with
-> > >
-> > > v0 v1 v2 v3 v2 v3 v6 v7 v4 v5 v10 v11 v6 v7 v14 v15
-> > > v8 v9 v18 v19 v10 v11 v22 v23 v12 v13 v26 v27 v14 v15 v30 v31
-> > >
-> > > in the beginning of the output.  Assuming it is the intended
-> > > behaviour, it's probably worth some comments...
-> > FPU & VDSP use the same regs. 32 FPU regs' width is 64b and 16 VDSP
-> > regs' width is 128b.
-> >
-> > vr[0], vr[1] = fp[0] & vr[0] vr[1], vr[2], vr[3] = vdsp reg[0]
-> > ...
-> > vr[60], vr[61] = fp[15] & vr[60] vr[61], vr[62], vr[63] = vdsp reg[15]
-> > vr[64], vr[65] = fp[16]
-> > vr[66], vr[67] = fp[17]
-> > ...
-> > vr[94], vr[95] = fp[31]
-> >
-> > Yeah, this is confusing and I'll add a comment later.
->
-> Umm...  It would help if you described these 3 layouts:
->         1) kernel-side with VDSP
-With VDSP: we use vdsp ld/st instructions to access first 16
-128bit-regs and use fpu ld/st instructions to access last 16
-64bit-regs.
 
->         2) userland (identical to (1)?)
-Identical to 1.
 
->         3) kernel-side without VDSP
-Without VDSP: we use fpu ld/st instructions to access last 32 64bit-regs.
+在 2020/9/18 下午4:11, Bailu Lin 写道:
+> Add arm64 subdirectory into the table of Contents for zh_CN,
+> then add other translations in arm64 conveniently.
+> 
+> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+> ---
+> Changes in v3:
+>  - Correct email encoding format.
+> Changes in v2:
+>  - Fix patch description.
+> ---
+>  Documentation/arm64/index.rst                    |  4 ++++
+>  Documentation/translations/zh_CN/arm64/index.rst | 16 ++++++++++++++++
+>  Documentation/translations/zh_CN/index.rst       |  1 +
+>  3 files changed, 21 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/arm64/index.rst
+> 
+> diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
+> index d9665d83c53a..907cda9c0f71 100644
+> --- a/Documentation/arm64/index.rst
+> +++ b/Documentation/arm64/index.rst
+> @@ -1,3 +1,7 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
 
-So, there are 96 32bit-vr[] for the struct. And with VDSP or not will
-got different storage format.
-With VDSP:
-vr128[16] // contain first fp64[16]
-fp64[16]; // second fp64[16]
-
-Without VDSP:
-fp64[32]
-no-use for the reset vr[]
-
-> Still confused...
->
-> PS: my apologies re commit message - I left a note to myself when doing
-> that series and then forgot about it ;-/
->
-> Anyway, which tree should it go through?  In any case, that fix is
-Thx for your job, and pushing to linus with Zhenzhong Duan's advice.
-
-> Acked-by: Al Viro <viro@zeniv.linux.org.uk>
-> and I can take it through vfs.git or you guys can pick in csky tree;
-> up to you.
-
---
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+As Jon and Will mentioned, a License claim should be removed...
+ 
+> +.. _arm64_index:
+> +
+>  ==================
+>  ARM64 Architecture
+>  ==================
+> diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
+> new file mode 100644
+> index 000000000000..c236b648740d
+> --- /dev/null
+> +++ b/Documentation/translations/zh_CN/arm64/index.rst
+> @@ -0,0 +1,16 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.. include:: ../disclaimer-zh_CN.rst
+> +
+> +:Original: :ref:`Documentation/arm64/index.rst <arm64_index>`
+> +:Translator: Bailu Lin <bailu.lin@vivo.com>
+> +
+> +.. _cn_arm64_index:
+> +
+> +
+> +==========
+> +ARM64 架构
+> +==========
+> +
+> +.. toctree::
+> +    :maxdepth: 2
+> diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
+> index 85643e46e308..be6f11176200 100644
+> --- a/Documentation/translations/zh_CN/index.rst
+> +++ b/Documentation/translations/zh_CN/index.rst
+> @@ -19,6 +19,7 @@
+>     admin-guide/index
+>     process/index
+>     filesystems/index
+> +   arm64/index
+>  
+>  目录和表格
+>  ----------
+> 
