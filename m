@@ -2,152 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACAE278F15
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF85278F1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729566AbgIYQvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729393AbgIYQvS (ORCPT
+        id S1729393AbgIYQvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:51:40 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:34594 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIYQvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:51:18 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05923C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:51:18 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id m34so3073989pgl.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:51:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=4XOAAiIQRCCNU86tnCHCg8fQuqW/LCTSjYNlXVnzp2A=;
-        b=X0DpLV6lbBuvB1scwWVNnCPJ80OMbFrr6SBJC0ex7XH+Ht2IzQxNvwOFji/qqPWGjF
-         S5LnN+V0Xzbst7EJrAmht8e/NuEC2LQ3hryzKnae6jiw3KuTdH89kIZOv9crXVRpEV0d
-         kztSv1hhTmHEUXwWQUnZ5aBZd3ET54DExUFdo08fB9vDiB1dqarhPK006pwMdCRR2Eet
-         U0vFIe+YManXCc5WhujOi61ob2w/wPWE6BRy2GzmlbDNvzXBQ4ByT/RO4D0YSx/F75It
-         5gN41S6u7ob0ZU2i4eqvy5ibWW8yTZ4WTFNAj1A588SY/4pzv09gKFujgnwCULdpsKNT
-         Ee0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=4XOAAiIQRCCNU86tnCHCg8fQuqW/LCTSjYNlXVnzp2A=;
-        b=ZdxC4uxaFMST1FwHqIJXFZznkI9yXSr1zoKqxDrh2frQQ1y/AWlXulPwZF9w3Mz69g
-         qe3HtneURp4bRZesWMtiaJUhON/wv+jrEaE/0rmkTEaZRwVnfRTezNc8VXNS3kFJmc9t
-         f+Ax1u4EMJEZB9HkU1J0HepFGGp9Vgb9Xc/Z/nAdYnuygpv++y6YnEHogzDN1/yiw5EF
-         gnCi4CZGtUS74OLqjPqYm2S+mzZNOmI+2h0BMsDyKKZFKMAr0GfF7CNjIun6Th2+Qog9
-         +7zy/VkHk1Rzzd8Z9XHv07zkx79ftYN2pgm6B0OKYT4bPNs13gjhhS21tZnZiEZouddh
-         JUtg==
-X-Gm-Message-State: AOAM531anycoR4aM5dsxhdQbzO1djFPA9ZMY4yf7YQvp0a1WTJkeCyRX
-        F1C0oDC+kqRNm3y+TPEVagFViQ==
-X-Google-Smtp-Source: ABdhPJzmrvzRE0ItT8WGaJW6i9EQyNgQz1eC7YkG4/zQ1uzyIKPyWaVCi2nURst6I0Tm6/QcDV8Ebg==
-X-Received: by 2002:a17:902:fe0e:b029:d1:e5ec:28d6 with SMTP id g14-20020a170902fe0eb02900d1e5ec28d6mr298326plj.66.1601052677488;
-        Fri, 25 Sep 2020 09:51:17 -0700 (PDT)
-Received: from localhost.localdomain (c-67-180-165-146.hsd1.ca.comcast.net. [67.180.165.146])
-        by smtp.gmail.com with ESMTPSA id w185sm3382485pfc.36.2020.09.25.09.51.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 09:51:16 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect Branch Tracking for vsyscall emulation
-Date:   Fri, 25 Sep 2020 09:51:14 -0700
-Message-Id: <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net>
-References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-In-Reply-To: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-X-Mailer: iPhone Mail (18A373)
+        Fri, 25 Sep 2020 12:51:40 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 419F51C0C4A; Fri, 25 Sep 2020 18:51:35 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 18:51:34 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Kfir Itzhak <mastertheknife@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 4.19 23/37] ipv4: Update exception handling for multipath
+ routes via same device
+Message-ID: <20200925165134.GA7253@duo.ucw.cz>
+References: <20200925124720.972208530@linuxfoundation.org>
+ <20200925124724.448531559@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
+Content-Disposition: inline
+In-Reply-To: <20200925124724.448531559@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Sep 25, 2020, at 9:48 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->=20
-> =EF=BB=BFOn 9/25/2020 9:31 AM, Andy Lutomirski wrote:
->>> On Fri, Sep 25, 2020 at 7:58 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrot=
-e:
->>>=20
->=20
-> [...]
->=20
->>> @@ -286,6 +289,37 @@ bool emulate_vsyscall(unsigned long error_code,
->>>         /* Emulate a ret instruction. */
->>>         regs->ip =3D caller;
->>>         regs->sp +=3D 8;
->>> +
->>> +#ifdef CONFIG_X86_CET
->>> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {=
+Hi!
 
->>> +               struct cet_user_state *cet;
->>> +               struct fpu *fpu;
->>> +
->>> +               fpu =3D &tsk->thread.fpu;
->>> +               fpregs_lock();
->>> +
->>> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
->>> +                       copy_fpregs_to_fpstate(fpu);
->>> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
->>> +               }
->>> +
->>> +               cet =3D get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_U=
-SER);
->>> +               if (!cet) {
->>> +                       fpregs_unlock();
->>> +                       goto sigsegv;
->> I *think* your patchset tries to keep cet.shstk_size and
->> cet.ibt_enabled in sync with the MSR, in which case it should be
->> impossible to get here, but a comment and a warning would be much
->> better than a random sigsegv.
+> [ Upstream commit 2fbc6e89b2f1403189e624cabaf73e189c5e50c6 ]
 >=20
-> Yes, it should be impossible to get here.  I will add a comment and a warn=
-ing, but still do sigsegv.  Should this happen, and the function return, the=
- app gets a control-protection fault.  Why not let it fail early?
+> Kfir reported that pmtu exceptions are not created properly for
+> deployments where multipath routes use the same device.
 
-I=E2=80=99m okay with either approach as long as we get a comment and warnin=
-g.
+This is mismerged (in a way that does not affect functionality):
 
->=20
->>=20
->> Shouldn't we have a get_xsave_addr_or_allocate() that will never
->> return NULL but instead will mark the state as in use and set up the
->> init state if the feature was previously not in use?
->=20
-> We already have a static __raw_xsave_addr(), which returns a pointer to th=
-e requested xstate.  Maybe we can export __raw_xsave_addr(), if that is need=
-ed.
 
-I don=E2=80=99t think that=E2=80=99s what we want in general =E2=80=94 we wa=
-nt the whole construct of initializing the state if needed.=
+> @@ -779,6 +779,8 @@ static void __ip_do_redirect(struct rtab
+>  			if (fib_lookup(net, fl4, &res, 0) =3D=3D 0) {
+>  				struct fib_nh *nh =3D &FIB_RES_NH(res);
+> =20
+> +				fib_select_path(net, &res, fl4, skb);
+> +				nh =3D &FIB_RES_NH(res);
+>  				update_or_create_fnhe(nh, fl4->daddr, new_gw,
+>  						0, false,
+
+nh is assigned value that is never used. Mainline patch removes the
+assignment (but variable has different type).
+
+4.19 should delete the assignment, too.
+
+Best regards,
+								Pavel
+
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+
+diff --git a/net/ipv4/route.c b/net/ipv4/route.c
+index f60e28418ece..84de87b7eedc 100644
+--- a/net/ipv4/route.c
++++ b/net/ipv4/route.c
+@@ -777,7 +777,7 @@ static void __ip_do_redirect(struct rtable *rt, struct =
+sk_buff *skb, struct flow
+ 			neigh_event_send(n, NULL);
+ 		} else {
+ 			if (fib_lookup(net, fl4, &res, 0) =3D=3D 0) {
+-				struct fib_nh *nh =3D &FIB_RES_NH(res);
++				struct fib_nh *nh;
+=20
+ 				fib_select_path(net, &res, fl4, skb);
+ 				nh =3D &FIB_RES_NH(res);
+
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--Qxx1br4bt0+wmkIi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX24gFgAKCRAw5/Bqldv6
+8oJ8AJ9aaZ5VFjdoC1MlzVWNOHLPXUSxxwCgvL0JSbW+WA9qbi47KAD6yNkrwig=
+=zt7i
+-----END PGP SIGNATURE-----
+
+--Qxx1br4bt0+wmkIi--
