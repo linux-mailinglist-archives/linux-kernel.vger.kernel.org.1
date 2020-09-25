@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D90D2785AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8937278595
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbgIYLXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:23:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38622 "EHLO mx2.suse.de"
+        id S1727957AbgIYLOm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:14:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgIYLXx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:23:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 06CBAADAB;
-        Fri, 25 Sep 2020 11:23:49 +0000 (UTC)
-Subject: Re: [PATCH 9/9] mm, page_alloc: optionally disable pcplists during
- page isolation
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Michal Hocko <mhocko@suse.com>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-10-vbabka@suse.cz>
- <10cdae53-c64b-e371-1b83-01d1af7a131e@redhat.com>
- <e0ab17e9-6c05-cf32-9e2d-efbf011860a2@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <2ce92f9a-eaa2-45b2-207c-46a79d6a2bde@suse.cz>
-Date:   Fri, 25 Sep 2020 13:10:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727201AbgIYLOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:14:42 -0400
+Received: from gaia (unknown [31.124.44.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8777E208B6;
+        Fri, 25 Sep 2020 11:14:39 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 12:14:37 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 27/39] arm64: kasan: Enable in-kernel MTE
+Message-ID: <20200925111435.GE4846@gaia>
+References: <cover.1600987622.git.andreyknvl@google.com>
+ <20326c060cd1535b15a0df43d1b9627a329f2277.1600987622.git.andreyknvl@google.com>
 MIME-Version: 1.0
-In-Reply-To: <e0ab17e9-6c05-cf32-9e2d-efbf011860a2@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20326c060cd1535b15a0df43d1b9627a329f2277.1600987622.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/20 12:54 PM, David Hildenbrand wrote:
->>> --- a/mm/page_isolation.c
->>> +++ b/mm/page_isolation.c
->>> @@ -15,6 +15,22 @@
->>>  #define CREATE_TRACE_POINTS
->>>  #include <trace/events/page_isolation.h>
->>>  
->>> +void zone_pcplist_disable(struct zone *zone)
->>> +{
->>> +	down_read(&pcp_batch_high_lock);
->>> +	if (atomic_inc_return(&zone->pcplist_disabled) == 1) {
->>> +		zone_update_pageset_high_and_batch(zone, 0, 1);
->>> +		__drain_all_pages(zone, true);
->>> +	}
->> Hm, if one CPU is still inside the if-clause, the other one would
->> continue, however pcp wpould not be disabled and zones not drained when
->> returning.
+On Fri, Sep 25, 2020 at 12:50:34AM +0200, Andrey Konovalov wrote:
+> diff --git a/arch/arm64/mm/proc.S b/arch/arm64/mm/proc.S
+> index 23c326a06b2d..12ba98bc3b3f 100644
+> --- a/arch/arm64/mm/proc.S
+> +++ b/arch/arm64/mm/proc.S
+> @@ -427,6 +427,10 @@ SYM_FUNC_START(__cpu_setup)
+>  	 */
+>  	mov_q	x5, MAIR_EL1_SET
+>  #ifdef CONFIG_ARM64_MTE
+> +	mte_tcr	.req	x20
+> +
+> +	mov	mte_tcr, #0
+> +
+>  	/*
+>  	 * Update MAIR_EL1, GCR_EL1 and TFSR*_EL1 if MTE is supported
+>  	 * (ID_AA64PFR1_EL1[11:8] > 1).
+> @@ -447,6 +451,9 @@ SYM_FUNC_START(__cpu_setup)
+>  	/* clear any pending tag check faults in TFSR*_EL1 */
+>  	msr_s	SYS_TFSR_EL1, xzr
+>  	msr_s	SYS_TFSRE0_EL1, xzr
+> +
+> +	/* set the TCR_EL1 bits */
+> +	orr	mte_tcr, mte_tcr, #SYS_TCR_EL1_TCMA1
+>  1:
+>  #endif
+>  	msr	mair_el1, x5
+> @@ -457,6 +464,10 @@ SYM_FUNC_START(__cpu_setup)
+>  	mov_q	x10, TCR_TxSZ(VA_BITS) | TCR_CACHE_FLAGS | TCR_SMP_FLAGS | \
+>  			TCR_TG_FLAGS | TCR_KASLR_FLAGS | TCR_ASID16 | \
+>  			TCR_TBI0 | TCR_A1 | TCR_KASAN_FLAGS
+> +#ifdef CONFIG_ARM64_MTE
+> +	orr	x10, x10, mte_tcr
+> +	.unreq	mte_tcr
+> +#endif
+>  	tcr_clear_errata_bits x10, x9, x5
 
-Ah, well spotted, thanks!
+I had a slightly different preference (see the previous version) to
+avoid the #ifdef altogether but this works as well.
 
->> (while we only allow a single Offline_pages() call, it will be different
->> when we use the function in other context - especially,
->> alloc_contig_range() for some users)
->>
->> Can't we use down_write() here? So it's serialized and everybody has to
->> properly wait. (and we would not have to rely on an atomic_t)
-> Sorry, I meant down_write only temporarily in this code path. Not
-> keeping it locked in write when returning (I remember there is a way to
-> downgrade).
-
-Hmm that temporary write lock would still block new callers until previous
-finish with the downgraded-to-read lock.
-
-But I guess something like this would work:
-
-retry:
-  if (atomic_read(...) == 0) {
-    // zone_update... + drain
-    atomic_inc(...);
-  else if (atomic_inc_return == 1)
-    // atomic_cmpxchg from 0 to 1; if that fails, goto retry
-
-Tricky, but races could only read to unnecessary duplicated updates + flushing
-but nothing worse?
-
-Or add another spinlock to cover this part instead of the temp write lock...
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
