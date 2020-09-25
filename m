@@ -2,124 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20E82792A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF4E2792AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:52:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbgIYUuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:50:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46441 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726210AbgIYUuO (ORCPT
+        id S1728044AbgIYUwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:52:33 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43096 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727569AbgIYUwd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:50:14 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601067012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3l0T9yYe9NbzcErpgFMneHQWiK+1fY8aylKjSft3rKY=;
-        b=TnKCmjyPdzxlOt0L0JA86TbMx+uswrVWrgDKIppJ0YT1bmiwwneoY6DU3/1/MMTPHyZ79d
-        zOnzv7fFpJsRUBkDXpdIbQk97K7O8W0TwfEPBDsLhUzNBIfFhziAbwRczuJuJEB9JpKql0
-        m5ZB4BppaHgk+er8LQNIfOGW/CRbMhs=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-471-JAvaKB9zPqOgTl5gdbUAsQ-1; Fri, 25 Sep 2020 16:50:11 -0400
-X-MC-Unique: JAvaKB9zPqOgTl5gdbUAsQ-1
-Received: by mail-wr1-f70.google.com with SMTP id a2so1540001wrp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:50:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3l0T9yYe9NbzcErpgFMneHQWiK+1fY8aylKjSft3rKY=;
-        b=Jbz+VopJpi3OHHl0+0XhAT37CF341dCAiRGSl/mRjlSwSOm+sGXtVOKBd8gjdgHGr6
-         gJQwoNCH4YviGVjPF0flt4z0P5Mzo4NQdyUw9fYC7y9HrmoCbonKf5x0brHOvZLg1qRA
-         XpfenoSKXsgTrUZZ5ygDOJE+AKF98JSZRn8tLreWhq7heQidiLm7RSe2jbawQISXePYj
-         uJkh2CHp6gNetAFp8Kl9TW+pCJAkwgwEyBEQzyRD9/z4sK7NUQ2RH6+3PQU9Jg/gXnPO
-         wlfntKbLk01gg98GuoNrTd8a64jZ8jj+TxTGCgPgPKidmoZOdVo2KI5BUex5lRmhSHHW
-         81jw==
-X-Gm-Message-State: AOAM533XjJwimLI/pIA3bKVSYW7vQKVP9h4hdKIDV8kKDlhT9w/ySsdi
-        kFp8i9lnjQIQtqWvhyk0O4xsrLRzDyzt75zt7/x/l+fq+/PhEvlg91HeV0B65H2DCnmAlqToB94
-        Y1FarLbo2Zm/HR40+IS7edmup
-X-Received: by 2002:a05:600c:2317:: with SMTP id 23mr374308wmo.183.1601067009867;
-        Fri, 25 Sep 2020 13:50:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfBcvAqg33MQmqXRG0Dwa2ylGBcgivLaNHVhiSo9+k0jrr1zvmMT9x6crZ2aT1sUIBeAOSRg==
-X-Received: by 2002:a05:600c:2317:: with SMTP id 23mr374277wmo.183.1601067009627;
-        Fri, 25 Sep 2020 13:50:09 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id d19sm237257wmd.0.2020.09.25.13.50.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 13:50:08 -0700 (PDT)
-Subject: Re: [RFC V2 0/9] x86/mmu:Introduce parallel memory virtualization to
- boost performance
-To:     Ben Gardon <bgardon@google.com>,
-        yulei zhang <yulei.kernel@gmail.com>
-Cc:     Wanpeng Li <kernellwp@gmail.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>
-References: <cover.1598868203.git.yulei.kernel@gmail.com>
- <CANRm+CwhTVHXOV6HzawHS5E_ELA3nEw0AxY1-w8vX=EsADWGSw@mail.gmail.com>
- <CANRm+CydqYmVbYz2pkT28wjKFS4AvmZ_iS4Sn1rnHT6G1S_=Mw@mail.gmail.com>
- <CANgfPd8uvkYyHLJh60vSKp1ZDi9T0ZWM9SeXEUm-1da+DqxTEQ@mail.gmail.com>
- <CACZOiM1JTX3w567dzThM-nPUrUksPnxks4goafoALDq1z_iNsw@mail.gmail.com>
- <CANgfPd-ZRW676grgOmm2E2+_RtFaiJfspnKseHMKgsHGfepmig@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2592097d-3190-1862-b438-9e1b16616b82@redhat.com>
-Date:   Fri, 25 Sep 2020 22:50:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Fri, 25 Sep 2020 16:52:33 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PKmv4v039167;
+        Fri, 25 Sep 2020 20:51:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=wN+2rYSC9ofNeKmi/78S9j/Oal936OwOLOU4JH5JdTk=;
+ b=l2Zc8AaanbXbd0x81/d4RSfo7B1DvOom3kbSA/3lBQ+Yb0OmfaMI3VUk3OAckrxpW4VF
+ QIkD6DDN9JapxrNrz0rIYkQDE2QNxlCaILEESwpCTOkoZE4xliMlu483RNLulgLhBeO2
+ vw2tiAW+gsB5j10doRqXVYuuR27GomAeIb4yFkJf6Rk9ylL7kLB8ejL84muKtIRGe8X4
+ ZbuSfqYn9O1s5go+NeJaEpR0HKSiDBJNDPVNHaQWUrrZyxUP2rDccnQMW9J5hq7Bd8Ky
+ lqAPyKYHMyWpuOmXnUVlIe0YdiAHarIf1SRRiBGyY2mfLKy13G1JCm47XbNic8PrsO4B 7w== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 33ndnuysd5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 25 Sep 2020 20:51:51 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PKoYSj138802;
+        Fri, 25 Sep 2020 20:51:50 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33s75kab32-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Sep 2020 20:51:50 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08PKpWJN031863;
+        Fri, 25 Sep 2020 20:51:32 GMT
+Received: from [192.168.1.188] (/83.132.28.144)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 25 Sep 2020 13:51:32 -0700
+Subject: Re: [PATCH v5 00/17] device-dax: support sub-dividing soft-reserved
+ ranges
+To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Jia He <justin.he@arm.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Juergen Gross <jgross@suse.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-mm@kvack.org,
+        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
+References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <8370d493-e38d-cbac-1233-14cbbef63936@oracle.com>
+Date:   Fri, 25 Sep 2020 21:51:22 +0100
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd-ZRW676grgOmm2E2+_RtFaiJfspnKseHMKgsHGfepmig@mail.gmail.com>
+In-Reply-To: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ malwarescore=0 adultscore=0 phishscore=0 spamscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250150
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ clxscore=1011 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009250150
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/20 19:30, Ben Gardon wrote:
-> Oh, thank you for explaining that. I didn't realize the goal here was
-> to improve LM performance. I was under the impression that this was to
-> give VMs a better experience on startup for fast scaling or something.
-> In your testing with live migration how has this affected the
-> distribution of time between the phases of live migration? Just for
-> terminology (since I'm not sure how standard it is across the
-> industry) I think of a live migration as consisting of 3 stages:
-> precopy, blackout, and postcopy. In precopy we're tracking the VM's
-> working set via dirty logging and sending the contents of its memory
-> to the target host. In blackout we pause the vCPUs on the source, copy
-> minimal data to the target, and resume the vCPUs on the target. In
-> postcopy we may still have some pages that have not been copied to the
-> target and so request those in response to vCPU page faults via user
-> fault fd or some other mechanism.
+Hey Dan,
+
+On 9/25/20 8:11 PM, Dan Williams wrote:
+> Changes since v4 [1]:
+> - Rebased on
+>   device-dax-move-instance-creation-parameters-to-struct-dev_dax_data.patch
+>   in -mm [2]. I.e. patches that did not need fixups from v4 are not
+>   included.
 > 
-> Does EPT pre-population preclude the use of a postcopy phase?
-
-I think so.
-
-As a quick recap, turn postcopy migration handles two kinds of
-pages---they can be copied to the destination either in background
-(stuff that was dirty when userspace decided to transition to the
-blackout phase) or on-demand (relayed from KVM to userspace via
-get_user_pages and userfaultfd).  Normally only on-demand pages would be
-served through userfaultfd, while with prepopulation every missing page
-would be faulted in from the kernel through userfaultfd.  In practice
-this would just extend the blackout phase.
-
-Paolo
-
-> I would
-> expect that to make the blackout phase really long. Has that not been
-> a problem for you?
+> - Folded all fixes
 > 
-> I love the idea of partial EPT pre-population during precopy if you
-> could still handle postcopy and just pre-populate as memory came in.
+
+Hmm, perhaps you missed the fixups before the above mentioned patch?
+
+From:
+
+	https://www.ozlabs.org/~akpm/mmots/series
+
+under "mm/dax", I am listing those fixups here:
+
+x86-numa-add-nohmat-option-fix.patch
+acpi-hmat-refactor-hmat_register_target_device-to-hmem_register_device-fix.patch
+mm-memory_hotplug-introduce-default-phys_to_target_node-implementation-fix.patch
+acpi-hmat-attach-a-device-for-each-soft-reserved-range-fix.patch
+
+(in https://www.ozlabs.org/~akpm/mmots/broken-out/)
+
+[...]
+
+> ---
+> 
+> Andrew, this series replaces
+> 
+> device-dax-make-pgmap-optional-for-instance-creation.patch
+> 
+> ...through...
+> 
+> dax-hmem-introduce-dax_hmemregion_idle-parameter.patch
+> 
+> ...in your stack.
+> 
+> Let me know if there is a different / preferred way to refresh a bulk of
+> patches in your queue when only a subset need updates.
 > 
 
