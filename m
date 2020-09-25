@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2D4927922D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FB02792D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728952AbgIYUdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726412AbgIYUUw (ORCPT
+        id S1728169AbgIYVAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:00:09 -0400
+Received: from mail.efficios.com ([167.114.26.124]:36156 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgIYVAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:20:52 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5A2C0610D4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:02:04 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id c13so4025282oiy.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:02:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yPWUmplzl0JEFZ6wTsaLsRULKnL6cmReWmOzfl9wStg=;
-        b=H0XLLB7ai21FKXztzG6oRk3OWu8Wgz+E8zpkIQotVbmVSjOm7e3J2dlh8zIIpj8AaG
-         6eX3ds89FL/W+7p696HVWSB3Q6ltHYZTkh2Vhd5hBOq85YIuuz407nnufKAX3z/TWYsH
-         Whgr/lS8Lz4K3vrT1q6wjEjI6C8w0OhM2VRxg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yPWUmplzl0JEFZ6wTsaLsRULKnL6cmReWmOzfl9wStg=;
-        b=A/PWlukmRlWzbNEQfkSm19KQh7M5zCBJXyNuJYEbXdAYEDtomCRk1KAkq7pvR3GZJq
-         IElJIt6RmQ++2/7nZpf8sxI78eFR5d7CFZgeWcb3zIWGRHXcC6j9cmIUcYtpAVYm7hsI
-         zaekqgPkzJlb13HfkpO41RzBUBVsIGL/L+kfKy4S+A7w2/2r8Nuh14NqaGPyNLoWxJxv
-         wfrMYM3BnyrdAFzhAjA2oxjFvuRmO4LmaqZ/w1hYcwjSxEtjxQ+9Jjtb2b8bbRJ5hkZm
-         W9rvwGD6aSwSAG7hcQ2G636//NPuwfuTkUFkv8Urq3STUpZl8HR6hYW2lZPj9+LW3CLh
-         u2Tw==
-X-Gm-Message-State: AOAM532sfZUspBQBdc8s1Z5DffiJsruo+StOdawpouOivMUS7Fcje6Vx
-        JXuH27u+ahqYxfwbxXIlxjnh2w==
-X-Google-Smtp-Source: ABdhPJzkxSjBb4L2PanG2Uay3xcIoAygUQMF46kpamWYG6B7PV519d8BAIiV/OnHTszDcbbUP3B81g==
-X-Received: by 2002:aca:f05:: with SMTP id 5mr112012oip.173.1601064123563;
-        Fri, 25 Sep 2020 13:02:03 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id p8sm43429oot.29.2020.09.25.13.02.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 13:02:02 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/43] 5.4.68-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200925124723.575329814@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d7e1c0fd-4247-5ecb-9cd7-d1ab383e1f78@linuxfoundation.org>
-Date:   Fri, 25 Sep 2020 14:02:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 25 Sep 2020 17:00:08 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 8152F2D1D09;
+        Fri, 25 Sep 2020 16:04:59 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id TpEM4a2ixKLX; Fri, 25 Sep 2020 16:04:59 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 3F6D32D1B9B;
+        Fri, 25 Sep 2020 16:04:59 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 3F6D32D1B9B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1601064299;
+        bh=ApSaXuZ31WLTM3Nl5CnN+zoa8b7EFqkF2a+Vibv2MG0=;
+        h=From:To:Date:Message-Id;
+        b=R8F73Up216h4fK7+NUL/avNxkzShQSSET+3g+H7MiC2avodkdt+ds9XWyXIVOaLWN
+         mr6O1KRnSYL6oARSv5fVORoD6yN0AAV7zmt6R9yT9Gizx+pZ8bfAK6V+OESf+/ITcD
+         Hla39ZafaSYe0cnbZ0VT+kGt22UAR+rdnbypg7Rx1kFt1x63qhVdWhVTONvraCJWiR
+         QByg0AyWXp1v9ysMrKH5A+EpAUN/54GXPQbBaNIkLqqtBanGHIv5VxHtViUPBHMruU
+         fQjuZLSSRm6Pe05zfXXEUwKwlDYQJF0GNcUK1+Awmrxqgp84oTZJ8D8iJTwW8oufhQ
+         RbcbtX1USPDfw==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id hCEWx-wjMsc2; Fri, 25 Sep 2020 16:04:59 -0400 (EDT)
+Received: from localhost.localdomain (192-222-181-218.qc.cable.ebox.net [192.222.181.218])
+        by mail.efficios.com (Postfix) with ESMTPSA id 106DD2D195F;
+        Fri, 25 Sep 2020 16:04:59 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     David Ahern <dsahern@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH 0/3] l3mdev icmp error route lookup fixes
+Date:   Fri, 25 Sep 2020 16:04:49 -0400
+Message-Id: <20200925200452.2080-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/20 6:48 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.68 release.
-> There are 43 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.68-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi,
 
-Compiled and booted on my test system. No dmesg regressions.
+Here is an updated series of fixes for ipv4 and ipv6 which which ensure
+the route lookup is performed on the right routing table in VRF
+configurations when sending TTL expired icmp errors (useful for
+traceroute).
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+It includes tests for both ipv4 and ipv6.
 
-thanks,
--- Shuah
+These fixes address specifically address the code paths involved in
+sending TTL expired icmp errors. As detailed in the individual commit
+messages, those fixes do not address similar icmp errors related to
+network namespaces and unreachable / fragmentation needed messages,
+which appear to use different code paths.
+
+The main changes since the last round are updates to the selftests.
+
+Thanks,
+
+Mathieu
+
+
+Mathieu Desnoyers (2):
+  ipv4/icmp: l3mdev: Perform icmp error route lookup on source device
+    routing table (v2)
+  ipv6/icmp: l3mdev: Perform icmp error route lookup on source device
+    routing table (v2)
+
+Michael Jeanson (1):
+  selftests: Add VRF route leaking tests
+
+ net/ipv4/icmp.c                               |  23 +-
+ net/ipv6/icmp.c                               |   7 +-
+ net/ipv6/ip6_output.c                         |   2 -
+ tools/testing/selftests/net/Makefile          |   1 +
+ .../selftests/net/vrf_route_leaking.sh        | 626 ++++++++++++++++++
+ 5 files changed, 653 insertions(+), 6 deletions(-)
+ create mode 100755 tools/testing/selftests/net/vrf_route_leaking.sh
+
+-- 
+2.17.1
+
