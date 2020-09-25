@@ -2,137 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 160CE279449
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49BF27944B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729120AbgIYWj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:39:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45474 "EHLO
+        id S1728896AbgIYWm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbgIYWj1 (ORCPT
+        with ESMTP id S1726636AbgIYWm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:39:27 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E48EEC0613CE;
-        Fri, 25 Sep 2020 15:39:26 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id i26so681687ejb.12;
-        Fri, 25 Sep 2020 15:39:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zqcW3rl891dr3qudKSLhS4tM1nPfMjp/6k/SFPe8aho=;
-        b=rX5DrMgl45l4foK7sUE7lDf1V4ef0f/JWh2cBca7Eg9SfMIt9B6IzyokAhBP4qxsWq
-         W8nojKscvzMqKBkOb/KfvVzK1y3wg3w4qzAXy3mkXeagrLF/X+ih8t+adz3pWMEfA5K3
-         go118JTDfgio6nvFtY/0Cw/RQiaYrlzn8xcUlduyu2WcImRls2t5v91UmcCxlCbY+aOZ
-         eKokjTkFno08KvKc4DjaiwejdCHgC2/+LfszJHvEStNijjxaDXXNK9bssJkuDdAsFfK7
-         /otOJFfZ9vWQf+FdYyqtF2hpy3jI9syz917xlAXIOA0+/86psRguFOBN8lDBEJGeiPOQ
-         Zl7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zqcW3rl891dr3qudKSLhS4tM1nPfMjp/6k/SFPe8aho=;
-        b=cfmE144kAWUEOu6ds1w3oJT3VQzfbp42eSlW8HTGv1SNw+WN3tuigBRPpqyKHupVJA
-         E3fmQSVwEFjZGsirkk5GwBY2DpmdRObKQ4q5ODvDr+Yh+pnT9y9bsd61tbqrAlSILfqD
-         SiBYFwfWB/C7Xynyb0yG0Jo4fiFhNPmwNX7HYIXqPsRSbKgMn++V4OVpO0KZEl2gzR8s
-         k4Gyu5MBW+4KYoleoKV+Bq7PXyMu2AmFF3JofP/Hl23wgBmvATvJSGXrVdEIrg47/jIo
-         GUCoU62w8VxPH+k9QXjQ2jF6fieeWUbuhKUbwRMbMtNUzJQ9H/NnTkybtEKO6w++wwuy
-         tL+g==
-X-Gm-Message-State: AOAM530FtFkWMEfcN2NGYLdgX4fnENvK7NTvSzxZQw5WeTpcYnNbIRdz
-        41J952LktmhY+MHzhg2qb/2ONfuTUmo8FrBQWk0=
-X-Google-Smtp-Source: ABdhPJwBDw1ys7C5G/etJuJ74bio79gE0vxTaamvelT5Kj77dUcSW09e2b0vXr1hy05/QOK1InVs9GRY7IMSc+Grlts=
-X-Received: by 2002:a17:906:7b87:: with SMTP id s7mr1062698ejo.328.1601073565571;
- Fri, 25 Sep 2020 15:39:25 -0700 (PDT)
+        Fri, 25 Sep 2020 18:42:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE09C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:42:27 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601073746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=96DtGBOKlktmzwXCdWvNdJ/FfKuTcoDytGwfHRLJ2JQ=;
+        b=kAl5/ji287iqEKcRhfXaGLJK5jamwYS2UuZXDnkuXaH+caUP2jjwS0fPG+8SQUkWVnNohP
+        vCsy9ysVVZOIkq7LOhsHk8TrGWMPrAxPkVntJbwekiV/s6M6HUbACemPmQ5IgrQyQi0WX9
+        G4gLmoifeudRRLgOLBOG8dFV6T3LmtPx9LtSon1uOJ5M/UCuh2/RTAVp4PCTmy3Javw2BE
+        VGRaiSACLD/q54Pm4NGg18wfPqFR97FEVizIYXSonQVBBYT8Wq+HXw/BHotw5hPjR7dUkF
+        KVq/pzXLK6nWpai/DdGIkbXdAUVNgQM916yQqAhE91eMYAjyW5WtVhzv+pXDOg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601073746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=96DtGBOKlktmzwXCdWvNdJ/FfKuTcoDytGwfHRLJ2JQ=;
+        b=2PkO+cku2+w7r3yuyP07bNRX4ZxPPQd1zrzEF2aOsjdmXUw+6JEjg7fVfnhe6BELclzdAq
+        tgHC0zM/KixRI2CA==
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     qianjun.kernel@gmail.com, peterz@infradead.org, will@kernel.org,
+        luto@kernel.org, linux-kernel@vger.kernel.org,
+        laoar.shao@gmail.com, qais.yousef@arm.com, urezki@gmail.com
+Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing loop
+In-Reply-To: <20200925004207.GE19346@lenoir>
+References: <20200915115609.85106-1-qianjun.kernel@gmail.com> <20200915115609.85106-5-qianjun.kernel@gmail.com> <878scz89tl.fsf@nanos.tec.linutronix.de> <20200925004207.GE19346@lenoir>
+Date:   Sat, 26 Sep 2020 00:42:25 +0200
+Message-ID: <874knlv5pq.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com>
- <20200925221403.GE3856392@lunn.ch>
-In-Reply-To: <20200925221403.GE3856392@lunn.ch>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sat, 26 Sep 2020 00:39:14 +0200
-Message-ID: <CAFBinCC4VuLJDLqQb+m+h+qnh6fAK2aBLVtQaE15Tc-zQq=KSg@mail.gmail.com>
-Subject: Re: RGMII timing calibration (on 12nm Amlogic SoCs) - integration
- into dwmac-meson8b
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     netdev@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        alexandre.torgue@st.com, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, joabreu@synopsys.com, kuba@kernel.org,
-        peppe.cavallaro@st.com, davem@davemloft.net,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Fri, Sep 25 2020 at 02:42, Frederic Weisbecker wrote:
 
-On Sat, Sep 26, 2020 at 12:14 AM Andrew Lunn <andrew@lunn.ch> wrote:
+> On Thu, Sep 24, 2020 at 05:37:42PM +0200, Thomas Gleixner wrote:
+>> Subject: softirq; Prevent starvation of higher softirq vectors
+> [...]
+>> +	/*
+>> +	 * Word swap pending to move the not yet handled bits of the previous
+>> +	 * run first and then clear the duplicates in the newly raised ones.
+>> +	 */
+>> +	swahw32s(&cur_pending);
+>> +	pending = cur_pending & ~(cur_pending << SIRQ_PREV_SHIFT);
+>> +
+>>  	for_each_set_bit(vec_nr, &pending, NR_SOFTIRQS) {
+>>  		int prev_count;
+>>  
+>> +		vec_nr &= SIRQ_VECTOR_MASK;
 >
-> On Fri, Sep 25, 2020 at 11:47:18PM +0200, Martin Blumenstingl wrote:
-> > Hello,
-> >
-> > Amlogic's 12nm SoC generation requires some RGMII timing calibration
-> > within the Ethernet controller glue registers.
-> > This calibration is only needed for the RGMII modes, not for the
-> > (internal) RMII PHY.
-> > With "incorrect" calibration settings Ethernet speeds up to 100Mbit/s
-> > will still work fine, but no data is flowing on 1Gbit/s connections
-> > (similar to when RX or TX delay settings are incorrect).
+> Shouldn't NR_SOFTIRQS above protect from that?
+
+It does, but that's wrong. The bitmap size in that for_each() loop must
+obviously be SIRQ_PREV_SHIFT + NR_SOFTIRQS for this to work.
+
+>> +	} else {
+>> +		/*
+>> +		 * Retain the unprocessed bits and swap @cur_pending back
+>> +		 * into normal ordering
+>> +		 */
+>> +		cur_pending = (u32)pending;
+>> +		swahw32s(&cur_pending);
+>> +		/*
+>> +		 * If the previous bits are done move the low word of
+>> +		 * @pending into the high word so it's processed first.
+>> +		 */
+>> +		if (!(cur_pending & SIRQ_PREV_MASK))
+>> +			cur_pending <<= SIRQ_PREV_SHIFT;
 >
-> Hi Martin
->
-> Is this trying to detect the correct RGMII interface mode:
->         PHY_INTERFACE_MODE_RGMII,
->         PHY_INTERFACE_MODE_RGMII_ID,
->         PHY_INTERFACE_MODE_RGMII_RXID,
->         PHY_INTERFACE_MODE_RGMII_TXID,
->
-> In general, we recommend the MAC does not insert any delay, we leave
-> it up to the PHY. In DT, you then set the correct phy-mode value,
-> which gets passed to the PHY when the MAC calls the connect function.
-yes and no.
-The reference code I linked tries to detect the RGMII interface mode.
-However, for each board we know the phy-mode as well as the RX and TX
-delay - so I'm not trying to port the RGMII interface detection part
-to the mainline driver.
+> If the previous bits are done and there is no timeout, should
+> we consider to restart a loop?
 
-on X96 Air (which I'm using for testing) Amlogic configures phy-mode
-"rgmii" with a 2ns TX delay provided by the MAC and 0ns RX delay
-anywhere (so I'm assuming that the board adds the 2ns RX delay)
-I am aware that the recommendation is to let the PHY generate the delay.
-For now I'm trying to get the same configuration working which is used
-by Amlogic's vendor kernel and u-boot.
+We only enter this code path if there was a timeout. Otherwise pending
+would be 0.
 
-> Is there any documentation as to what the calibration values mean?  I
-> would just hard code it to whatever means 0uS delay, and be done. The
-> only time the MAC needs to add delays is when the PHY is not capable
-> of doing it, and generally, they all are.
-This calibration is not the RGMII RX or TX delay - we have other
-registers for that and already know how to program these.
+Thanks,
 
-This new calibration only exists on 12nm SoCs so I assume (but have no
-proof) that they need to solve some challenge that comes with the
-advanced node (previous SoCs were manufactured using a 28nm process).
-In the old days the vendors put calibration data into the eFuse.
-However I think for mass-production of cheap boards this is not nice
-for the manufacturers (because they need this eFuse programming step).
-So I think Amlogic added a calibration circuit to handle tolerances
-within the SoC manufacturing as well as the "environment" of the SoC
-(there are some TI SoCs where the MMC controller's clock calibration
-depends on the SoC temperature for example. For these Amlogic SoCs I
-don't know the factors that influence this calibration though - one
-guess however is cost-cutting).
-
-All of that said: I don't have any scope that's fast enough to see the
-clock-skew on such high-speed signals so I cannot tell for sure what
-problem they are solving.
-What I can say is that u-boot programs calibration value 0xf (the
-maximum value) on my X96 Air board. With this I cannot get Ethernet
-working - regardless of how I change the RX or TX delays.
-If I leave everything as-is (2ns TX delay generated by the MAC, 0ns RX
-delay, ...) and change the calibration value to 0x0 or 0x3 (the latter
-is set by the vendor kernel) then Ethernet starts working.
-
-
-Best regards,
-Martin
+        tglx
