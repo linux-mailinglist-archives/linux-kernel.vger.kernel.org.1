@@ -2,89 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0A227922E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1855D27922B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728971AbgIYUdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:33:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
+        id S1728643AbgIYUdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726687AbgIYUVS (ORCPT
+        with ESMTP id S1727895AbgIYUUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:21:18 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B86E8C0610D2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:01:23 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0b3a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 457211EC02C1;
-        Fri, 25 Sep 2020 22:01:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601064082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=BFl67QbQjwUSBvUT1djhqyti1ywRvwTEKEq8ij345QA=;
-        b=KqxBnZztXKQVxL3zoHiyGxYHqcqnzmWRpC8Oql+IYvcXh3s01KCxiV4lCNLBueejERSA2u
-        q9gr3sgxY/6vYZUKUsW3AYk+AU38Vhl71jKdWbrcnIGIfFOpRBD7S9Oi9SHuZlvnTHusbQ
-        fWjR0HCn8X7D5l4crFd1l67yetRL/J0=
-Date:   Fri, 25 Sep 2020 22:01:15 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Mark Mossberg <mark.mossberg@gmail.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, hpa@zytor.com, jannh@google.com
-Subject: Re: [PATCH] x86/dumpstack: Fix misleading instruction pointer error
- message
-Message-ID: <20200925200115.GP16872@zn.tnic>
-References: <20200925193150.832387-1-mark.mossberg@gmail.com>
+        Fri, 25 Sep 2020 16:20:52 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AE6C0610D1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:01:21 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id h17so3480163otr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:01:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=13KCg8BltWDl2P2uAh3ad/NLBiwXIfX09whbVzH0rhQ=;
+        b=KyhNDaO56Q2soQI8eddWWSj2arCDdVlIbNxWH3hoWS5+yvzk/0luIa9qvWuHK0rnv9
+         SKnK3gNJqqr2o4VHrgQJYBtAEv13wGoBOvFkmsbpPyovJ3p2X30wy/TeL2+/JMWq06DL
+         3Dd+gXXERpr3x5CNIffmI+gaWt0w/kJWodshw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=13KCg8BltWDl2P2uAh3ad/NLBiwXIfX09whbVzH0rhQ=;
+        b=GbYJeZ9t1Kli9MO8ER/yeoQqpw+PRW/uUvXyGKC4un2kFW2dVbneQPLjervaV4Wsky
+         W2lmNwVUac4ar1Nh7B5owTcA5HKYxXiCaTekG4dNGm5ECnauZTYM+659/ZZvVULHDlE2
+         TDML00on7Vx0atR4vdp+Oor7vWhLcXYDKflzxcXhYS955QqWutOyR9zhv9D+3zxn1iVe
+         7hSiZFtepQNGnkuzCpnHKg4AilHAIdrWjUj3Xmbm0dxbD4fGMpb4Wr0B7NWT8pEd5RcV
+         moWRhkUVRQAaMBg5BsOPSZj8E5DMu01dvszMd3fcGo2q9x6x67xmFhPamXmt0+Txu1fM
+         K9Qg==
+X-Gm-Message-State: AOAM5317EzN2YPX20rlviHyEOTdEb4y+o+InCTbt7FmVf6Z5tNrQxNkj
+        ZffmbFnOQW/X09ZZs/5Bh3MeH3yNtY5e1Q==
+X-Google-Smtp-Source: ABdhPJznruHXqFPpZcdEAOlYUYpi2fpDXGv8s1MyHRMedukCmAsm335Q9oinmiVyZZoD5KG2Ymnw4g==
+X-Received: by 2002:a9d:7d16:: with SMTP id v22mr1359470otn.372.1601064080164;
+        Fri, 25 Sep 2020 13:01:20 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id i23sm46566oos.17.2020.09.25.13.01.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 13:01:19 -0700 (PDT)
+Subject: Re: [PATCH 5.8 00/56] 5.8.12-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20200925124727.878494124@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <da7b88bb-5e4d-a992-be18-e60e0a75558b@linuxfoundation.org>
+Date:   Fri, 25 Sep 2020 14:01:18 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200925193150.832387-1-mark.mossberg@gmail.com>
+In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 07:31:51PM +0000, Mark Mossberg wrote:
-> Unconditionally printing "Bad RIP value" if copy_code() fails can be
-> misleading for userspace pointers, since copy_code() can fail if the
-> instruction pointer is valid, but the code is paged out.  This is
-> because copy_code() calls copy_from_user_nmi() for userspace pointers,
-> which disables page fault handling.
+On 9/25/20 6:47 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.8.12 release.
+> There are 56 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This is reproducible in OOM situations, where it's plausible that the
-> code may be reclaimed in the time between entry into the kernel and when
-> this message is printed. This leaves a misleading log in dmesg that
-> suggests instruction pointer corruption has occurred, which may alarm
-> users.
+> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
+> Anything received after that time might be too late.
 > 
-> This patch changes the message printed for userspace pointers to more
-> accurately reflect the possible reasons why the code cannot be dumped.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> and the diffstat can be found below.
 > 
-> Signed-off-by: Mark Mossberg <mark.mossberg@gmail.com>
-> ---
->  arch/x86/kernel/dumpstack.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> thanks,
 > 
-> diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
-> index 48ce44576947..37dbf16c7456 100644
-> --- a/arch/x86/kernel/dumpstack.c
-> +++ b/arch/x86/kernel/dumpstack.c
-> @@ -115,7 +115,10 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
->  	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
->  
->  	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
-> -		printk("%sCode: Bad RIP value.\n", loglvl);
+> greg k-h
+> 
 
-I'd prefer if this thing said exactly what the problem is:
+Compiled and booted on my test system. No dmesg regressions.
 
-		printk("%sCode: Unable to access opcode bytes at rIP 0x%lx... "
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-or so.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+thanks,
+-- Shuah
