@@ -2,159 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1824E277E11
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314C4277E24
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727024AbgIYCl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 22:41:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727005AbgIYCl5 (ORCPT
+        id S1726847AbgIYCp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 22:45:58 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:38402 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726669AbgIYCp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 22:41:57 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A77C0613CE;
-        Thu, 24 Sep 2020 19:41:57 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id kk9so1029424pjb.2;
-        Thu, 24 Sep 2020 19:41:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=+Fa7TES0qQFtjKKrUbNH2/3ScLEheNlCL4wh5wzrHuc=;
-        b=uLQ5VcYXupu3R+G/FLJVShMIvw1ceL91yXmzP0Hlu3QGXZ6BOvgDYuip46weZHlUMq
-         f+lzVsRX53OHQm79GlTMUfAGhKktu/ll8CEOEbdtqurFg6Sjh0k6WZ/PB5fOXa+8inFT
-         s1plxAoUDGoU7Gqu7deTrVLjDredYeVmbri5LfGUv4ZsFckWPvAqdVcq7RJ46Fr13VDI
-         9LZ5yR7i+8z42diWCidmJUPyIY7f3tsmtweNdsQXq7LwpA4VxNzJAm22e2XpSeAFI+4M
-         noTbvtIy/xDxzz9659wiPSpZsujzn2KhagPee1GJOxikJpDZ5o4kB5XQS6ys2mJWg2a8
-         ujJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=+Fa7TES0qQFtjKKrUbNH2/3ScLEheNlCL4wh5wzrHuc=;
-        b=sE5bT7TuI2q83O/1sDli+eVtSPMI4fCE6GS+JseJpmBIBT8FSAVT7jClx3P0FIYwUq
-         5GjQC1xVMOewLPSWM84YaCAKc6I9yW7TXtlMhhc/6qg9HGzJQK+BR9Gk+/eyDTsnRpu6
-         81hHYuP6o2Hwn/weF4QR66HnXutoehRzgZ36TixzAk21gMwO18PNTjrvcJEI4cpXlYV/
-         jv904IiGPBz+HVDTz1712CLnWtX3p2uiHrSp/IfQDedBuiLebn2Ss3HGjvl0xvW6kpP9
-         /C7/8bsnEX8fMSqFEyaGrAV/zaXvD/M6coGmlWFPLRBYs9vkObBYAK5h9PXNWdWYM96v
-         EhJw==
-X-Gm-Message-State: AOAM5335ngX8lmK6Igez0S0Zs+njStJwvEE/X6gViJyQS9bIaAQzrh6Q
-        CoK1MfKdlVdCRuV6C6Mu6RradSmav7A=
-X-Google-Smtp-Source: ABdhPJxHaTAcEBxSN7FOFIsLiLjvo6azoNjLoHVZvQ5NfH+juIHmLLGioUyQ8Hsyb/ZadHJ9Teoj5A==
-X-Received: by 2002:a17:90a:b702:: with SMTP id l2mr638796pjr.82.1601001716334;
-        Thu, 24 Sep 2020 19:41:56 -0700 (PDT)
-Received: from [192.168.1.101] (122-58-178-137-adsl.sparkbb.co.nz. [122.58.178.137])
-        by smtp.gmail.com with ESMTPSA id gg13sm510875pjb.3.2020.09.24.19.41.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Sep 2020 19:41:55 -0700 (PDT)
-Subject: Re: [PATCH] ide/falconide: Fix module unload
-To:     Finn Thain <fthain@telegraphics.com.au>
-References: <df121aff561c73f3ff7d83f906942ed0d954d737.1600997998.git.fthain@telegraphics.com.au>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-m68k@lists.linux-m68k.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <9a263780-e123-77ba-32cd-3b667195a463@gmail.com>
-Date:   Fri, 25 Sep 2020 14:41:41 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Thu, 24 Sep 2020 22:45:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UA.F98P_1601001952;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UA.F98P_1601001952)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 25 Sep 2020 10:45:52 +0800
+Date:   Fri, 25 Sep 2020 10:45:52 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-hyperv@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: Re: [PATCH RFC 3/4] mm/page_alloc: always move pages to the tail of
+ the freelist in unset_migratetype_isolate()
+Message-ID: <20200925024552.GA13540@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200916183411.64756-1-david@redhat.com>
+ <20200916183411.64756-4-david@redhat.com>
+ <9c6cc094-b02a-ac6c-e1ca-370ce7257881@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <df121aff561c73f3ff7d83f906942ed0d954d737.1600997998.git.fthain@telegraphics.com.au>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c6cc094-b02a-ac6c-e1ca-370ce7257881@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finn,
+On Thu, Sep 24, 2020 at 01:13:29PM +0200, Vlastimil Babka wrote:
+>On 9/16/20 8:34 PM, David Hildenbrand wrote:
+>> Page isolation doesn't actually touch the pages, it simply isolates
+>> pageblocks and moves all free pages to the MIGRATE_ISOLATE freelist.
+>> 
+>> We already place pages to the tail of the freelists when undoing
+>> isolation via __putback_isolated_page(), let's do it in any case
+>> (e.g., if order == pageblock_order) and document the behavior.
+>> 
+>> This change results in all pages getting onlined via online_pages() to
+>> be placed to the tail of the freelist.
+>> 
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+>> Cc: Mel Gorman <mgorman@techsingularity.net>
+>> Cc: Michal Hocko <mhocko@kernel.org>
+>> Cc: Dave Hansen <dave.hansen@intel.com>
+>> Cc: Vlastimil Babka <vbabka@suse.cz>
+>> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> Cc: Oscar Salvador <osalvador@suse.de>
+>> Cc: Mike Rapoport <rppt@kernel.org>
+>> Cc: Scott Cheloha <cheloha@linux.ibm.com>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+>> ---
+>>  include/linux/page-isolation.h |  2 ++
+>>  mm/page_alloc.c                | 36 +++++++++++++++++++++++++++++-----
+>>  mm/page_isolation.c            |  8 ++++++--
+>>  3 files changed, 39 insertions(+), 7 deletions(-)
+>> 
+>> diff --git a/include/linux/page-isolation.h b/include/linux/page-isolation.h
+>> index 572458016331..a36be2cf4dbb 100644
+>> --- a/include/linux/page-isolation.h
+>> +++ b/include/linux/page-isolation.h
+>> @@ -38,6 +38,8 @@ struct page *has_unmovable_pages(struct zone *zone, struct page *page,
+>>  void set_pageblock_migratetype(struct page *page, int migratetype);
+>>  int move_freepages_block(struct zone *zone, struct page *page,
+>>  				int migratetype, int *num_movable);
+>> +int move_freepages_block_tail(struct zone *zone, struct page *page,
+>> +			      int migratetype);
+>>  
+>>  /*
+>>   * Changes migrate type in [start_pfn, end_pfn) to be MIGRATE_ISOLATE.
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index bba9a0f60c70..75b0f49b4022 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -899,6 +899,15 @@ static inline void move_to_free_list(struct page *page, struct zone *zone,
+>>  	list_move(&page->lru, &area->free_list[migratetype]);
+>>  }
+>>  
+>> +/* Used for pages which are on another list */
+>> +static inline void move_to_free_list_tail(struct page *page, struct zone *zone,
+>> +					  unsigned int order, int migratetype)
+>> +{
+>> +	struct free_area *area = &zone->free_area[order];
+>> +
+>> +	list_move_tail(&page->lru, &area->free_list[migratetype]);
+>> +}
+>
+>There are just 3 callers of move_to_free_list() before this patch, I would just
+>add the to_tail parameter there instead of new wrapper. For callers with
+>constant parameter, the inline will eliminate it anyway.
 
-thanks for catching this!
+Got the same feeling :-)
 
-Reviewed-By: Michael Schmitz <schmitzmic@gmail.com>
+>
+>>  static inline void del_page_from_free_list(struct page *page, struct zone *zone,
+>>  					   unsigned int order)
+>>  {
+>> @@ -2323,7 +2332,7 @@ static inline struct page *__rmqueue_cma_fallback(struct zone *zone,
+>>   */
+>>  static int move_freepages(struct zone *zone,
+>>  			  struct page *start_page, struct page *end_page,
+>> -			  int migratetype, int *num_movable)
+>> +			  int migratetype, int *num_movable, bool to_tail)
+>>  {
+>>  	struct page *page;
+>>  	unsigned int order;
+>> @@ -2354,7 +2363,10 @@ static int move_freepages(struct zone *zone,
+>>  		VM_BUG_ON_PAGE(page_zone(page) != zone, page);
+>>  
+>>  		order = page_order(page);
+>> -		move_to_free_list(page, zone, order, migratetype);
+>> +		if (to_tail)
+>> +			move_to_free_list_tail(page, zone, order, migratetype);
+>> +		else
+>> +			move_to_free_list(page, zone, order, migratetype);
+>>  		page += 1 << order;
+>>  		pages_moved += 1 << order;
+>>  	}
+>> @@ -2362,8 +2374,9 @@ static int move_freepages(struct zone *zone,
+>>  	return pages_moved;
+>>  }
+>>  
+>> -int move_freepages_block(struct zone *zone, struct page *page,
+>> -				int migratetype, int *num_movable)
+>> +static int __move_freepages_block(struct zone *zone, struct page *page,
+>> +				  int migratetype, int *num_movable,
+>> +				  bool to_tail)
+>>  {
+>>  	unsigned long start_pfn, end_pfn;
+>>  	struct page *start_page, *end_page;
+>> @@ -2384,7 +2397,20 @@ int move_freepages_block(struct zone *zone, struct page *page,
+>>  		return 0;
+>>  
+>>  	return move_freepages(zone, start_page, end_page, migratetype,
+>> -								num_movable);
+>> +			      num_movable, to_tail);
+>> +}
+>> +
+>> +int move_freepages_block(struct zone *zone, struct page *page,
+>> +			 int migratetype, int *num_movable)
+>> +{
+>> +	return __move_freepages_block(zone, page, migratetype, num_movable,
+>> +				      false);
+>> +}
+>> +
+>> +int move_freepages_block_tail(struct zone *zone, struct page *page,
+>> +			      int migratetype)
+>> +{
+>> +	return __move_freepages_block(zone, page, migratetype, NULL, true);
+>>  }
+>
+>Likewise, just 5 callers of move_freepages_block(), all in the files you're
+>already changing, so no need for this wrappers IMHO.
+>
+>Thanks,
+>Vlastimil
+>
+>>  static void change_pageblock_range(struct page *pageblock_page,
+>> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
+>> index abfe26ad59fd..84aa1d14751d 100644
+>> --- a/mm/page_isolation.c
+>> +++ b/mm/page_isolation.c
+>> @@ -83,7 +83,7 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>  	 * Because freepage with more than pageblock_order on isolated
+>>  	 * pageblock is restricted to merge due to freepage counting problem,
+>>  	 * it is possible that there is free buddy page.
+>> -	 * move_freepages_block() doesn't care of merge so we need other
+>> +	 * move_freepages_block*() don't care about merging, so we need another
+>>  	 * approach in order to merge them. Isolation and free will make
+>>  	 * these pages to be merged.
+>>  	 */
+>> @@ -106,9 +106,13 @@ static void unset_migratetype_isolate(struct page *page, unsigned migratetype)
+>>  	 * If we isolate freepage with more than pageblock_order, there
+>>  	 * should be no freepage in the range, so we could avoid costly
+>>  	 * pageblock scanning for freepage moving.
+>> +	 *
+>> +	 * We didn't actually touch any of the isolated pages, so place them
+>> +	 * to the tail of the freelists. This is especially relevant during
+>> +	 * memory onlining.
+>>  	 */
+>>  	if (!isolated_page) {
+>> -		nr_pages = move_freepages_block(zone, page, migratetype, NULL);
+>> +		nr_pages = move_freepages_block_tail(zone, page, migratetype);
+>>  		__mod_zone_freepage_state(zone, nr_pages, migratetype);
+>>  	}
+>>  	set_pageblock_migratetype(page, migratetype);
+>> 
 
-Am 25.09.2020 um 13:39 schrieb Finn Thain:
-> Unloading the falconide module results in a crash:
->
-> Unable to handle kernel NULL pointer dereference at virtual address 00000000
-> Oops: 00000000
-> Modules linked in: falconide(-)
-> PC: [<002930b2>] ide_host_remove+0x2e/0x1d2
-> SR: 2000  SP: 00b49e28  a2: 009b0f90
-> d0: 00000000    d1: 009b0f90    d2: 00000000    d3: 00b48000
-> d4: 003cef32    d5: 00299188    a0: 0086d000    a1: 0086d000
-> Process rmmod (pid: 322, task=009b0f90)
-> Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
-> wb 1 stat/addr/data: 0000 00000000 00000000
-> wb 2 stat/addr/data: 0000 00000000 00000000
-> wb 3 stat/addr/data: 0000 00000000 00018da9
-> push data: 00000000 00000000 00000000 00000000
-> Stack from 00b49e90:
->         004c456a 0027f176 0027cb0a 0027cb9e 00000000 0086d00a 2187d3f0 0027f0e0
->         00b49ebc 2187d1f6 00000000 00b49ec8 002811e8 0086d000 00b49ef0 0028024c
->         0086d00a 002800d6 00279a1a 00000001 00000001 0086d00a 2187d3f0 00279a58
->         00b49f1c 002802e0 0086d00a 2187d3f0 004c456a 0086d00a ef96af74 00000000
->         2187d3f0 002805d2 800de064 00b49f44 0027f088 2187d3f0 00ac1cf4 2187d3f0
->         004c43be 2187d3f0 00000000 2187d3f0 800b66a8 00b49f5c 00280776 2187d3f0
-> Call Trace: [<0027f176>] __device_driver_unlock+0x0/0x48
->  [<0027cb0a>] device_links_busy+0x0/0x94
->  [<0027cb9e>] device_links_unbind_consumers+0x0/0x130
->  [<0027f0e0>] __device_driver_lock+0x0/0x5a
->  [<2187d1f6>] falconide_remove+0x12/0x18 [falconide]
->  [<002811e8>] platform_drv_remove+0x1c/0x28
->  [<0028024c>] device_release_driver_internal+0x176/0x17c
->  [<002800d6>] device_release_driver_internal+0x0/0x17c
->  [<00279a1a>] get_device+0x0/0x22
->  [<00279a58>] put_device+0x0/0x18
->  [<002802e0>] driver_detach+0x56/0x82
->  [<002805d2>] driver_remove_file+0x0/0x24
->  [<0027f088>] bus_remove_driver+0x4c/0xa4
->  [<00280776>] driver_unregister+0x28/0x5a
->  [<00281a00>] platform_driver_unregister+0x12/0x18
->  [<2187d2a0>] ide_falcon_driver_exit+0x10/0x16 [falconide]
->  [<000764f0>] sys_delete_module+0x110/0x1f2
->  [<000e83ea>] sys_rename+0x1a/0x1e
->  [<00002e0c>] syscall+0x8/0xc
->  [<00188004>] ext4_multi_mount_protect+0x35a/0x3ce
-> Code: 0029 9188 4bf9 0027 aa1c 283c 003c ef32 <265c> 4a8b 6700 00b8 2043 2028 000c 0280 00ff ff00 6600 0176 40c0 7202 b2b9 004c
-> Disabling lock debugging due to kernel taint
->
-> This happens because the driver_data pointer is uninitialized.
-> Add the missing platform_set_drvdata() call. For clarity, use the
-> matching platform_get_drvdata() as well.
->
-> Cc: Michael Schmitz <schmitzmic@gmail.com>
-> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> Cc: linux-m68k@lists.linux-m68k.org
-> Fixes: 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-> ---
-> This patch was tested using Aranym.
-> ---
->  drivers/ide/falconide.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
-> index dbeb2605e5f6e..607c44bc50f1b 100644
-> --- a/drivers/ide/falconide.c
-> +++ b/drivers/ide/falconide.c
-> @@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
->  	if (rc)
->  		goto err_free;
->
-> +	platform_set_drvdata(pdev, host);
->  	return 0;
->  err_free:
->  	ide_host_free(host);
-> @@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
->
->  static int falconide_remove(struct platform_device *pdev)
->  {
-> -	struct ide_host *host = dev_get_drvdata(&pdev->dev);
-> +	struct ide_host *host = platform_get_drvdata(pdev);
->
->  	ide_host_remove(host);
->
->
+-- 
+Wei Yang
+Help you, Help me
