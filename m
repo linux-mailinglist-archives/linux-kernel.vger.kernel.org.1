@@ -2,115 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6C5278685
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16D42786C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbgIYMAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728121AbgIYMAU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:00:20 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72491C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:00:20 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id t138so2491134qka.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:00:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rIuYtEL8Ho/A+a5HBfrQNagOxrR0aWDpVzG6iTo4eE8=;
-        b=erbaTgqjcRvgzvAj3JDGURJKefgiqFgAtYhbtoxeo5AsoLv7f6EB9N3ZzNsEOPSp8v
-         6sq/HX7Uxi9akTTh+XFsHzFtUXMqbirMtYYzCCgWVy5GYLkDdYl2JH6K2QIQDYcm4fQH
-         WMWugilt5Hjg1+dQEw5amV4Dy3t8QgUTR4ai9V29Z9GA6Dg7YtEvZvM24An3iOOhmJs8
-         zzB2oFkbCby/mvR7NPzSowW9Rw8OJg+7xsDCgPYDhC5XSlDCp7GDpjUhmE6nxPeVmdp5
-         KWwCU7JsmsVmNzfXNstQisrXorK1WeS15j9w+R6P6UAWzAfGJNYKbLAd6MPAQAPQwc1s
-         O6oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rIuYtEL8Ho/A+a5HBfrQNagOxrR0aWDpVzG6iTo4eE8=;
-        b=raVEQMsKyAgCvfoqWL28PChpcotWVAo+IohUGVBwGgEBtqL/3bqplme8hn8ro9lnAF
-         yxFL1yt+WcQYgw+PWn79w+PcOVAsw28BFFghFsgyIO2YUMj3HrPlEwqJHJfle+mvNw5S
-         P/6RpSuc3SqQU2Z7sxT/V10gnZQ+5eNpg9bTPqjo09ZLc6o7G00/BzDDORCcQ5j242+q
-         0Uqjew1IU9lEvYZMTGU2zMzvaiM/SNkB5Q1E6rxkj5X8LoAqB+P7xfgOQh+KJ/W+/8aH
-         NH4GN5mKWHTq6ei47I3c4wLUKhaJZsJE7P1lgUSn/lm1lG6+7E+otVeLAoYJp045lyh6
-         aLtQ==
-X-Gm-Message-State: AOAM532zRyO/NVYWT1Y+ia3ZotV2glNshMghOQqstGR+PC/7wnf8AJmG
-        LRNRRZx3F5ixt4+9y0HR8JMROQ==
-X-Google-Smtp-Source: ABdhPJwMSZO4wBP1qq0t6fhMdo1TSXgA0/hT/4ls6tA8iNgqFTTpehyXXULUgKbSvrFWL38LELQ5qw==
-X-Received: by 2002:a37:a50b:: with SMTP id o11mr3520279qke.439.1601035219677;
-        Fri, 25 Sep 2020 05:00:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id g19sm1521418qka.84.2020.09.25.05.00.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 05:00:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kLmOg-000nSE-8H; Fri, 25 Sep 2020 09:00:18 -0300
-Date:   Fri, 25 Sep 2020 09:00:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>
-Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
-Message-ID: <20200925120018.GH9916@ziepe.ca>
-References: <20200922094128.26245-1-ardb@kernel.org>
- <20200925055626.GC165011@linux.intel.com>
- <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
- <20200925102920.GA180915@linux.intel.com>
+        id S1728173AbgIYMPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:15:04 -0400
+Received: from fackshoes.online ([206.126.81.118]:54632 "EHLO fackshoes.online"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727248AbgIYMPE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:15:04 -0400
+X-Greylist: delayed 3936 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 08:15:03 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=fackshoes.online; s=mail; h=Message-ID:Reply-To:From:Date:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:To:Sender:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=YwiHYadc6l1CSYB3vr6Kg+6iQXFxk2/wGHC/xYlRxzk=; b=K8MjoX/KceqCR6Wb9SJymhNVo
+        EnNOfqP2kLMSqQN86mVBfQXdB5J0ZNlmuHmFJnesdH8sKaYLBgUn0E/AdZNa4w8rRBW6FZwmE1v6r
+        eou8uMSPzJwt71jiTSHjmLIr9CGykYihVXOa42f/Do/4eVCplBTfWYNbgreEujxKhECEs=;
+Received: from admin by fackshoes.online with local (Exim 4.89)
+        (envelope-from <info@fackshoes.online>)
+        id 1kLlQ1-0008Fy-J6; Fri, 25 Sep 2020 06:57:37 -0400
+To:     undisclosed-recipients:;
+Subject: Covid19
+X-PHP-Originating-Script: 0:rcube.php
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925102920.GA180915@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 25 Sep 2020 11:57:37 +0100
+From:   Honolulu COVID 19 Emergency Hospital <info@fackshoes.online>
+Reply-To: info@specshoes.club
+Mail-Reply-To: info@specshoes.club
+Message-ID: <69e4cb543fc89badfc9962727f2e6067@fackshoes.online>
+X-Sender: info@fackshoes.online
+User-Agent: Roundcube Webmail/1.2.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 01:29:20PM +0300, Jarkko Sakkinen wrote:
-> On Fri, Sep 25, 2020 at 09:00:56AM +0200, Ard Biesheuvel wrote:
-> > On Fri, 25 Sep 2020 at 07:56, Jarkko Sakkinen
-> > <jarkko.sakkinen@linux.intel.com> wrote:
-> > >
-> > > On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
-> > > > The TPM event log is provided to the OS by the firmware, by loading
-> > > > it into an area in memory and passing the physical address via a node
-> > > > in the device tree.
-> > > >
-> > > > Currently, we use __va() to access the memory via the kernel's linear
-> > > > map: however, it is not guaranteed that the linear map covers this
-> > > > particular address, as we may be running under HIGHMEM on a 32-bit
-> > > > architecture, or running firmware that uses a memory type for the
-> > > > event log that is omitted from the linear map (such as EfiReserved).
-> > >
-> > > Makes perfect sense to the level that I wonder if this should have a
-> > > fixes tag and/or needs to be backported to the stable kernels?
-> > >
-> > 
-> > AIUI, the code was written specifically for ppc64, which is a
-> > non-highmem, non-EFI architecture. However, when we start reusing this
-> > driver for ARM, this issue could pop up.
-> > 
-> > The code itself has been refactored a couple of times, so I think it
-> > will require different versions of the patch for different generations
-> > of stable kernels.
-> > 
-> > So perhaps just add Cc: <stable@vger.kernel.org>, and wait and see how
-> > far back it applies cleanly?
-> 
-> Yeah, I think I'll cc it with some note before the diffstat.
-> 
-> I'm thinking to cap it to only 5.x kernels (at least first) unless it is
-> dead easy to backport below that.
 
-I have this vauge recollection of pointing at this before and being
-told that it had to be __va for some PPC reason?
 
-Do check with the PPC people first, I see none on the CC list.
+-- 
+Dear Beloved
 
-Jason
+As you read this, I don't want you to feel sorry for me, because, I 
+believe everyone will die someday. My Name is Mrs Aimi Jack, I'm an 
+epidemiology Working at the Honolulu COVID 19 Emergency Hospital in 
+Honolulu, Hawaii USA. I have been diagnosed Positive Of The Coronavirus 
+Pandemic Around The World. due to my Kindness in caring for Infected 
+Patient, I accidently Got Infected. It has defiled all forms of 
+medicine, and right now I have only about a few weeks to live, according 
+to medical experts.
+
+I have not particularly lived my life so well, as I never really cared 
+for anyone not even myself but my Work. Though I am very rich, I was 
+never generous, I was always hostile to people and only focus on my 
+business as that was the only thing I cared for. But now I regret all 
+this as I now know that there is more to life than just wanting to have 
+or make all the money in the world.
+
+I believe when God gives me a second chance to come to this world I 
+would live my life a different way from how I have lived it. Now that 
+God ! has called me, I have willed and given most of my properties and 
+assets to my immediate and extended family members and as well as a few 
+close friends.
+
+I want God to be merciful to me and accept my soul and so, I have 
+decided to give alms (MONEY) to charity organizations, as I want this to 
+be one of the last good deeds I do on earth. So far, I have distributed 
+money to some charity organizations in the UK, Algeria and Malaysia. Now 
+that my health has deteriorated so badly, I cannot do this my self any 
+more. I once asked members of my family to close one of my accounts and 
+distribute the money which I have there to charity organization in USA 
+and EUROPEAN COUNTRY, they refused and kept the money to themselves. 
+Hence, I do not trust them anymore, as they seem not to be contended 
+with what I have left for them.
+
+The last of my money which no one knows of is the huge cash deposit of 
+twenty Eight million and Nine Hundred Thousand dollars($8,9000,000) that 
+I have in Union Bank. I will want you to help me collect this deposit as 
+my next of kin and dispatched it to charity organizations.
+
+
+I have set aside 40% for you for your time and patience. If you are 
+willing to help me, Please Reply..
+
+
+I am currently admitted in the HOSPITAL .
+
+
+Awaiting Your Response
+Mrs Aimi Jack
