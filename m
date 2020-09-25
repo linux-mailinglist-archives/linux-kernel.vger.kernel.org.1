@@ -2,80 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B0D2789EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5922789F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728824AbgIYNud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:50:33 -0400
-Received: from mga17.intel.com ([192.55.52.151]:49095 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728365AbgIYNuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:50:32 -0400
-IronPort-SDR: x18NXrxhsb05o7ZAMWUIk4tpb6w7CaVoASgOiBuPdLR1beDpSZ7fyftEcsyiEBWKPOPOe/YX8M
- pyTVzPEBQ/Nw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141546642"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="141546642"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:50:31 -0700
-IronPort-SDR: 5YckPMQxtbZ4n66syUtNBVll/Hr5P31dA4eEQsZoSdl9qEjCHcm9iVj8N44A/derQ/OFuPEpr3
- zZBSIbwyZbBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="310824574"
-Received: from unknown (HELO labuser-Ice-Lake-Client-Platform.jf.intel.com) ([10.54.55.65])
-  by orsmga006.jf.intel.com with ESMTP; 25 Sep 2020 06:50:31 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, asit.k.mallick@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 3/3] perf/x86/intel/uncore: Reduce the number of CBOX counters
-Date:   Fri, 25 Sep 2020 06:49:05 -0700
-Message-Id: <20200925134905.8839-3-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200925134905.8839-1-kan.liang@linux.intel.com>
-References: <20200925134905.8839-1-kan.liang@linux.intel.com>
+        id S1728548AbgIYNvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:51:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57413 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727290AbgIYNvs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 09:51:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601041907;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I3KFTIPLkmuPnc1IqMk/hPgvPxBrU+f5Vu4dTKm6s38=;
+        b=QzavQG/kseCihB4ydCY3yZ7WCprHrYp//1C4tPCOwke6liEZrjOmr29y+0AX13ICgUFjN5
+        435m1nfv5EtHLSEHpQXrj7ZQVgrp26ypR5hM8nQokJUD9Ex5d21X1vAvAlUSlAGk+vyCoN
+        aG9//fX4f1vFxKAg83nLTRbuy6TpQ8c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-208-07OgLh0dNQODWml9FFsw1A-1; Fri, 25 Sep 2020 09:51:45 -0400
+X-MC-Unique: 07OgLh0dNQODWml9FFsw1A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3C41F1022E1D;
+        Fri, 25 Sep 2020 13:51:43 +0000 (UTC)
+Received: from krava (unknown [10.40.192.203])
+        by smtp.corp.redhat.com (Postfix) with SMTP id ACE2473695;
+        Fri, 25 Sep 2020 13:51:39 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 15:51:33 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        kernel test robot <rong.a.chen@intel.com>
+Subject: Re: [PATCH 3/5] perf tools: Copy metric events properly when expand
+ cgroups
+Message-ID: <20200925135133.GC3273770@krava>
+References: <20200924124455.336326-1-namhyung@kernel.org>
+ <20200924124455.336326-4-namhyung@kernel.org>
+ <20200925132636.GB3273770@krava>
+ <CAM9d7cgHBe6-SfCc3RTfLmrvaKr1hSprmJPd2BFnQtMUu_6TFw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cgHBe6-SfCc3RTfLmrvaKr1hSprmJPd2BFnQtMUu_6TFw@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Fri, Sep 25, 2020 at 10:44:53PM +0900, Namhyung Kim wrote:
+> On Fri, Sep 25, 2020 at 10:26 PM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Thu, Sep 24, 2020 at 09:44:53PM +0900, Namhyung Kim wrote:
+> >
+> > SNIP
+> >
+> > >
+> > > +     if (metric_events) {
+> > > +             orig_metric_events = *metric_events;
+> > > +             rblist__init(metric_events);
+> > > +     } else {
+> > > +             rblist__init(&orig_metric_events);
+> > > +     }
+> > > +
+> > >       for (;;) {
+> > >               p = strchr(str, ',');
+> > >               e = p ? p : eos;
+> > > @@ -255,6 +267,14 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+> > >               cgroup__put(cgrp);
+> > >               nr_cgroups++;
+> > >
+> > > +             if (metric_events) {
+> > > +                     perf_stat__collect_metric_expr(tmp_list);
+> > > +                     if (metricgroup__copy_metric_events(tmp_list, cgrp,
+> > > +                                                         metric_events,
+> > > +                                                         &orig_metric_events) < 0)
+> > > +                             break;
+> > > +             }
+> >
+> > looks good, do you plan to actualy add support for record?
+> 
+> No actually, I still think perf record should use --all-cgroups.
+> 
+> > my ack from last version stays
+> 
+> Thanks!  But I didn't see your ack for this patch set.
+> (I've only seen it for the perf inject patchset..)
 
-An oops is triggered by the fuzzy test.
+ah that was for the build id inject speed up.. too many
+patchsets flying around ;-)
 
-[  327.853081] unchecked MSR access error: RDMSR from 0x70c at rIP:
-0xffffffffc082c820 (uncore_msr_read_counter+0x10/0x50 [intel_uncore])
-[  327.853083] Call Trace:
-[  327.853085]  <IRQ>
-[  327.853089]  uncore_pmu_event_start+0x85/0x170 [intel_uncore]
-[  327.853093]  uncore_pmu_event_add+0x1a4/0x410 [intel_uncore]
-[  327.853097]  ? event_sched_in.isra.118+0xca/0x240
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-There are 2 GP counters for each CBOX, but the current code claims 4
-counters. Accessing the invalid registers triggers the oops.
-
-Fixes: 6e394376ee89 ("perf/x86/intel/uncore: Add Intel Icelake uncore support")
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/uncore_snb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index 2bdfcf80b434..de3d9621b694 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -325,7 +325,7 @@ static struct intel_uncore_ops icl_uncore_msr_ops = {
- 
- static struct intel_uncore_type icl_uncore_cbox = {
- 	.name		= "cbox",
--	.num_counters   = 4,
-+	.num_counters   = 2,
- 	.perf_ctr_bits	= 44,
- 	.perf_ctr	= ICL_UNC_CBO_0_PER_CTR0,
- 	.event_ctl	= SNB_UNC_CBO_0_PERFEVTSEL0,
--- 
-2.17.1
+thanks,
+jirka
 
