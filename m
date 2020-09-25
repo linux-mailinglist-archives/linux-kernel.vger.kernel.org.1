@@ -2,47 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC906278B2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 891F7278B32
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728436AbgIYOrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:47:19 -0400
-Received: from mail-io1-f80.google.com ([209.85.166.80]:47849 "EHLO
-        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728888AbgIYOrT (ORCPT
+        id S1729095AbgIYOsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:48:17 -0400
+Received: from mail-il1-f206.google.com ([209.85.166.206]:49285 "EHLO
+        mail-il1-f206.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728888AbgIYOsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:47:19 -0400
-Received: by mail-io1-f80.google.com with SMTP id a15so2019378ioc.14
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:47:18 -0700 (PDT)
+        Fri, 25 Sep 2020 10:48:17 -0400
+Received: by mail-il1-f206.google.com with SMTP id o18so2116492ilm.16
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:48:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=M6+/ZKVR/90rLrLFBtjo/Mm7W41v17JMkdnZdvY3o98=;
-        b=LB06F85AhpQNulNQcfmaxGLrWvN8FkL0cBo80fHjpWeG3auzWfp3enGZVeNLDgP3hL
-         /SefEkOnSrUtOUzu3Uadtu9rwcIhp2/SWPc1rAYCul6OK2aXilaF9shGjt50/GrHJGRo
-         laT1xoKQSemJVjQco0Khazf1yrV0v3J56l8ELgkbw3TXOOpoYH3XmMVjtKNFxevKigP9
-         eXEccbnhKOy/yY6/tVXBG3P7+ArdT3y5kLXK1mEVCC3AoobVqdbN3DJ8a4kEvp5eqfmT
-         +0g9ZN2oz0nf7gE8o5dIO0DhQ+DYD8CywuDJDm2npS0bzJX0RIkKlNuoXZYQUP+0PIIs
-         WgsA==
-X-Gm-Message-State: AOAM530DyEKQ/M3AJ8YLxpVJ/BmmACTo3/fpnVXaUSZ4OFggPIYOW6lr
-        FEOYc0OJK4NzsepxSsuLoa78ny0DPDhAndbV4jOTOFvxBQXa
-X-Google-Smtp-Source: ABdhPJzbIQCjGeAdlz7BLhEUwnTKQfQvsClQ0ijGBrZ0OlsNyAai2+6C2kZvqVq3N+G3Wm9C3B3Kcw/GfWNkIFnQxvghVolzcCSz
+        bh=NLbhA0MNzQWyjiwK8rit/u8dEHMQgc8u5ck6yfbA7AA=;
+        b=BUPKlM3gDDHGmGNWADHiqtaI6QTnqQh08jEvj0AzUJhp39LcEHHWwnm5Y8/W+idl+4
+         WZqMW1EPCsBz+lKXJe5SL54is4iLZVXPkceb7BWCVf6BdtEP8VyG6Snfw5xI0nIZTJzc
+         CLxud+o0wPLYbdizP1OMtiu5uoAEsGUzJOnn693N/WgrjMc1bxb0q3xakU/+DyeWkNcX
+         vMsg5LS+YuVncqZwNcAdc2rrbeFv9fMmSB538jm6nznDyYtlCh37YffaxCFVE1nU5gpt
+         EwLw4zKrveJVaeZzBPeaL+0L4lYpF+oQt9VZlOt82uaWQr7MTAi2WekrEXvUXxbXm3lM
+         DR9Q==
+X-Gm-Message-State: AOAM531Bm9cWNs0tsRrSoIFY5564uQY36RVS6f9XrAqhpkYalL3c7byI
+        KaiqK+jJd5J3KhlIDcaBA9AfCcpDtMKt5N7WOxtVQcGhYxnJ
+X-Google-Smtp-Source: ABdhPJxCAVtUEORAWMFHBbnDJxmxpWqpMy38Av1h6iGbuKb/PvR3vffkuHlS3TT1S/Oqn/zrASYUnxuZ+QShogEqxoqRMcg0+9+J
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:8f:: with SMTP id l15mr453713ilm.119.1601045237602;
- Fri, 25 Sep 2020 07:47:17 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 07:47:17 -0700
+X-Received: by 2002:a92:4982:: with SMTP id k2mr499127ilg.240.1601045296401;
+ Fri, 25 Sep 2020 07:48:16 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 07:48:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a821aa05b0246452@google.com>
-Subject: general protection fault in xsk_release
-From:   syzbot <syzbot+ddc7b4944bc61da19b81@syzkaller.appspotmail.com>
-To:     andriin@fb.com, ast@kernel.org, bjorn.topel@intel.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
+Message-ID: <0000000000002954fa05b02468d7@google.com>
+Subject: KASAN: slab-out-of-bounds Read in squashfs_get_id
+From:   syzbot <syzbot+8e28bba73ed1772a6802@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -52,93 +47,92 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    3fc826f1 Merge branch 'net-dsa-bcm_sf2-Additional-DT-chang..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=158f8009900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=51fb40e67d1e3dec
-dashboard link: https://syzkaller.appspot.com/bug?extid=ddc7b4944bc61da19b81
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16372c81900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100bd2c3900000
-
-The issue was bisected to:
-
-commit 1c1efc2af158869795d3334a12fed2afd9c51539
-Author: Magnus Karlsson <magnus.karlsson@intel.com>
-Date:   Fri Aug 28 08:26:17 2020 +0000
-
-    xsk: Create and free buffer pool independently from umem
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=157a3103900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=177a3103900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=137a3103900000
+HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1597ead3900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=8e28bba73ed1772a6802
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172ff481900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17c3e6c5900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ddc7b4944bc61da19b81@syzkaller.appspotmail.com
-Fixes: 1c1efc2af158 ("xsk: Create and free buffer pool independently from umem")
+Reported-by: syzbot+8e28bba73ed1772a6802@syzkaller.appspotmail.com
 
-RAX: ffffffffffffffda RBX: 00007fff675613c0 RCX: 0000000000443959
-RDX: 0000000000000030 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000001bbbbbb
-R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
-R13: 0000000000000007 R14: 0000000000000000 R15: 0000000000000000
-general protection fault, probably for non-canonical address 0xdffffc00000000ad: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000568-0x000000000000056f]
-CPU: 0 PID: 6888 Comm: syz-executor811 Not tainted 5.9.0-rc6-syzkaller #0
+==================================================================
+BUG: KASAN: slab-out-of-bounds in squashfs_get_id+0xb9/0x1c0 fs/squashfs/id.c:38
+Read of size 8 at addr ffff8880a9684b98 by task syz-executor329/6836
+
+CPU: 1 PID: 6836 Comm: syz-executor329 Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:dev_put include/linux/netdevice.h:3899 [inline]
-RIP: 0010:xsk_unbind_dev net/xdp/xsk.c:521 [inline]
-RIP: 0010:xsk_release+0x63f/0x7d0 net/xdp/xsk.c:591
-Code: 00 00 48 c7 85 c8 04 00 00 00 00 00 00 e8 29 a0 47 fe 48 8d bb 68 05 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 66 01 00 00 48 8b 83 68 05 00 00 65 ff 08 e9 54
-RSP: 0018:ffffc90005707c90 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff815b9de2
-RDX: 00000000000000ad RSI: ffffffff882d2317 RDI: 0000000000000568
-RBP: ffff888091aae000 R08: 0000000000000001 R09: ffffffff8d0ffaaf
-R10: fffffbfff1a1ff55 R11: 0000000000000000 R12: ffff888091aae5f8
-R13: ffff888091aae4c8 R14: dffffc0000000000 R15: 1ffff11012355cb5
-FS:  0000000000000000(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004c8b88 CR3: 0000000093ea3000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- __sock_release+0xcd/0x280 net/socket.c:596
- sock_close+0x18/0x20 net/socket.c:1277
- __fput+0x285/0x920 fs/file_table.c:281
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- exit_task_work include/linux/task_work.h:25 [inline]
- do_exit+0xb7d/0x29f0 kernel/exit.c:806
- do_group_exit+0x125/0x310 kernel/exit.c:903
- __do_sys_exit_group kernel/exit.c:914 [inline]
- __se_sys_exit_group kernel/exit.c:912 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ print_address_description+0x66/0x620 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ squashfs_get_id+0xb9/0x1c0 fs/squashfs/id.c:38
+ squashfs_new_inode fs/squashfs/inode.c:51 [inline]
+ squashfs_read_inode+0x155/0x2170 fs/squashfs/inode.c:120
+ squashfs_fill_super+0x1478/0x1790 fs/squashfs/super.c:310
+ get_tree_bdev+0x3e9/0x5f0 fs/super.c:1342
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ do_new_mount fs/namespace.c:2875 [inline]
+ path_mount+0x179d/0x29e0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x442588
-Code: Bad RIP value.
-RSP: 002b:00007fff67561328 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000442588
-RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
-RBP: 00000000004c8b50 R08: 00000000000000e7 R09: ffffffffffffffd0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00000000006dd280 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
----[ end trace 9742ad575ae08359 ]---
-RIP: 0010:dev_put include/linux/netdevice.h:3899 [inline]
-RIP: 0010:xsk_unbind_dev net/xdp/xsk.c:521 [inline]
-RIP: 0010:xsk_release+0x63f/0x7d0 net/xdp/xsk.c:591
-Code: 00 00 48 c7 85 c8 04 00 00 00 00 00 00 e8 29 a0 47 fe 48 8d bb 68 05 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 66 01 00 00 48 8b 83 68 05 00 00 65 ff 08 e9 54
-RSP: 0018:ffffc90005707c90 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff815b9de2
-RDX: 00000000000000ad RSI: ffffffff882d2317 RDI: 0000000000000568
-RBP: ffff888091aae000 R08: 0000000000000001 R09: ffffffff8d0ffaaf
-R10: fffffbfff1a1ff55 R11: 0000000000000000 R12: ffff888091aae5f8
-R13: ffff888091aae4c8 R14: dffffc0000000000 R15: 1ffff11012355cb5
-FS:  0000000000000000(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000004c8b88 CR3: 0000000093ea3000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+RIP: 0033:0x446d1a
+Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd ad fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da ad fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007ffd7dd4f8b8 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffd7dd4f910 RCX: 0000000000446d1a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffd7dd4f8d0
+RBP: 00007ffd7dd4f8d0 R08: 00007ffd7dd4f910 R09: 00007ffd00000015
+R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000001
+R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
+
+Allocated by task 3913:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
+ kmalloc_node include/linux/slab.h:577 [inline]
+ __vmalloc_area_node mm/vmalloc.c:2429 [inline]
+ __vmalloc_node_range+0x2c7/0x870 mm/vmalloc.c:2511
+ module_alloc+0x7e/0x90 arch/x86/kernel/module.c:75
+ bpf_jit_binary_alloc+0x123/0x230 kernel/bpf/core.c:871
+ bpf_int_jit_compile+0x7995/0x8920 arch/x86/net/bpf_jit_comp.c:1911
+ bpf_prog_select_runtime+0x76d/0xa60 kernel/bpf/core.c:1807
+ bpf_migrate_filter net/core/filter.c:1290 [inline]
+ bpf_prepare_filter+0xec2/0x1140 net/core/filter.c:1338
+ bpf_prog_create_from_user+0x2ad/0x3e0 net/core/filter.c:1432
+ seccomp_prepare_filter kernel/seccomp.c:567 [inline]
+ seccomp_prepare_user_filter kernel/seccomp.c:604 [inline]
+ seccomp_set_mode_filter kernel/seccomp.c:1546 [inline]
+ do_seccomp+0x852/0x20b0 kernel/seccomp.c:1661
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff8880a9684b80
+ which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 24 bytes inside of
+ 32-byte region [ffff8880a9684b80, ffff8880a9684ba0)
+The buggy address belongs to the page:
+page:00000000f697ca3d refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880a9684fc1 pfn:0xa9684
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea0002a5d5c8 ffffea0002a98588 ffff8880aa440100
+raw: ffff8880a9684fc1 ffff8880a9684000 000000010000003f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880a9684a80: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff8880a9684b00: 00 fc fc fc fc fc fc fc fa fb fb fb fc fc fc fc
+>ffff8880a9684b80: 00 fc fc fc fc fc fc fc fa fb fb fb fc fc fc fc
+                            ^
+ ffff8880a9684c00: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff8880a9684c80: 00 00 01 fc fc fc fc fc fa fb fb fb fc fc fc fc
+==================================================================
 
 
 ---
@@ -148,6 +142,5 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
