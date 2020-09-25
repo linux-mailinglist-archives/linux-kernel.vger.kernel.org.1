@@ -2,207 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64399278002
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D0F278007
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727115AbgIYFot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726925AbgIYFot (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:44:49 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA80BC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 22:44:48 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kLgXC-0006gp-Hj; Fri, 25 Sep 2020 07:44:42 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kLgWu-00035h-Ql; Fri, 25 Sep 2020 07:44:24 +0200
-Date:   Fri, 25 Sep 2020 07:44:24 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        allen <allen.chen@ite.com.tw>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mark Brown <broonie@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v3 5/7] rtc: New driver for RTC in Netronix embedded
- controller
-Message-ID: <20200925054424.snlr3lggnsv575wu@pengutronix.de>
-References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
- <20200924192455.2484005-6-j.neuschaefer@gmx.net>
+        id S1727112AbgIYFtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:49:08 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:49604 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727044AbgIYFtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:49:07 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601012947; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=yaFni00gAx1AGPeqT5ylrZn2luK1UE/VMDtAh34DsZU=; b=Vkv2CAbk8pqy3BwFuSHYjPWFVhqTNHCzVE1HXT5MRNX12CnGAbVmCJpWLDIukfZRbNOe5g38
+ 2phnTBICuUXzQwIxp8ydxu2ePGGCCg1Wh6mIfgTyR3sgCX3Puo3L6AueiUwJBJerj6kkMkEY
+ 9kGkWyOiZfIrw9CBJyy8/DYqCNg=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f6d84601dcd99b9f2630c25 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Sep 2020 05:47:12
+ GMT
+Sender: neeraju=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B2F0DC433FF; Fri, 25 Sep 2020 05:47:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.103] (unknown [124.123.174.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: neeraju)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0836AC433C8;
+        Fri, 25 Sep 2020 05:47:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0836AC433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
+Subject: Re: [PATCH] rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
+To:     paulmck@kernel.org
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1600929250-20344-1-git-send-email-neeraju@codeaurora.org>
+ <20200924225959.GY29330@paulmck-ThinkPad-P72>
+From:   Neeraj Upadhyay <neeraju@codeaurora.org>
+Message-ID: <e5406694-0382-fafe-d22a-ad8913ccc4c2@codeaurora.org>
+Date:   Fri, 25 Sep 2020 11:17:06 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="b55wkovfqn6iyquo"
-Content-Disposition: inline
-In-Reply-To: <20200924192455.2484005-6-j.neuschaefer@gmx.net>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20200924225959.GY29330@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Paul,
 
---b55wkovfqn6iyquo
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 9/25/2020 4:29 AM, Paul E. McKenney wrote:
+> On Thu, Sep 24, 2020 at 12:04:10PM +0530, Neeraj Upadhyay wrote:
+>> Clarify the "x" in rcuox/N naming in RCU_NOCB_CPU config
+>> description.
+>>
+>> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> 
+> Applied with a few additional updates as shown below.  As always, please
+> let me know if I messed anything up.
+> 
 
-Hello Jonathan,
+Looks good! thanks!
 
-On Thu, Sep 24, 2020 at 09:24:53PM +0200, Jonathan Neusch=E4fer wrote:
-> +#define NTXEC_REG_WRITE_YEAR	0x10
-> +#define NTXEC_REG_WRITE_MONTH	0x11
-> +#define NTXEC_REG_WRITE_DAY	0x12
-> +#define NTXEC_REG_WRITE_HOUR	0x13
-> +#define NTXEC_REG_WRITE_MINUTE	0x14
-> +#define NTXEC_REG_WRITE_SECOND	0x15
-> +
-> +#define NTXEC_REG_READ_YM	0x20
-> +#define NTXEC_REG_READ_DH	0x21
-> +#define NTXEC_REG_READ_MS	0x23
 
-Is this an official naming? I think at least ..._MS is a poor name.
-Maybe consider ..._MINSEC instead and make the other two names a bit longer
-for consistency?
+Thanks
+Neeraj
 
-> +static int ntxec_read_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct ntxec_rtc *rtc =3D dev_get_drvdata(dev);
-> +	unsigned int value;
-> +	int res;
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit 8d1d776b4998896a6f8f4608edb0b258bd37ec9f
+> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
+> Date:   Thu Sep 24 12:04:10 2020 +0530
+> 
+>      rcu: Clarify nocb kthreads naming in RCU_NOCB_CPU config
+>      
+>      This commit clarifies that the "p" and the "s" in the in the RCU_NOCB_CPU
+>      config-option description refer to the "x" in the "rcuox/N" kthread name.
+>      
+>      Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+>      [ paulmck: While in the area, update description and advice. ]
+>      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index b71e21f..cdc57b4 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -221,19 +221,23 @@ config RCU_NOCB_CPU
+>   	  Use this option to reduce OS jitter for aggressive HPC or
+>   	  real-time workloads.	It can also be used to offload RCU
+>   	  callback invocation to energy-efficient CPUs in battery-powered
+> -	  asymmetric multiprocessors.
+> +	  asymmetric multiprocessors.  The price of this reduced jitter
+> +	  is that the overhead of call_rcu() increases and that some
+> +	  workloads will incur significant increases in context-switch
+> +	  rates.
+>   
+>   	  This option offloads callback invocation from the set of CPUs
+>   	  specified at boot time by the rcu_nocbs parameter.  For each
+>   	  such CPU, a kthread ("rcuox/N") will be created to invoke
+>   	  callbacks, where the "N" is the CPU being offloaded, and where
+> -	  the "p" for RCU-preempt (PREEMPTION kernels) and "s" for RCU-sched
+> -	  (!PREEMPTION kernels).  Nothing prevents this kthread from running
+> -	  on the specified CPUs, but (1) the kthreads may be preempted
+> -	  between each callback, and (2) affinity or cgroups can be used
+> -	  to force the kthreads to run on whatever set of CPUs is desired.
+> -
+> -	  Say Y here if you want to help to debug reduced OS jitter.
+> +	  the "x" is "p" for RCU-preempt (PREEMPTION kernels) and "s" for
+> +	  RCU-sched (!PREEMPTION kernels).  Nothing prevents this kthread
+> +	  from running on the specified CPUs, but (1) the kthreads may be
+> +	  preempted between each callback, and (2) affinity or cgroups can
+> +	  be used to force the kthreads to run on whatever set of CPUs is
+> +	  desired.
 > +
-> +	res =3D regmap_read(rtc->ec->regmap, NTXEC_REG_READ_YM, &value);
-> +	if (res < 0)
-> +		return res;
-> +
-> +	tm->tm_year =3D (value >> 8) + 100;
-> +	tm->tm_mon =3D (value & 0xff) - 1;
-> +
-> +	res =3D regmap_read(rtc->ec->regmap, NTXEC_REG_READ_DH, &value);
-> +	if (res < 0)
-> +		return res;
-> +
-> +	tm->tm_mday =3D value >> 8;
-> +	tm->tm_hour =3D value & 0xff;
-> +
-> +	res =3D regmap_read(rtc->ec->regmap, NTXEC_REG_READ_MS, &value);
-> +	if (res < 0)
-> +		return res;
-> +
-> +	tm->tm_min =3D value >> 8;
-> +	tm->tm_sec =3D value & 0xff;
-> +
-> +	return 0;
-> +}
-> +
-> +static int ntxec_set_time(struct device *dev, struct rtc_time *tm)
-> +{
-> +	struct ntxec_rtc *rtc =3D dev_get_drvdata(dev);
-> +	int res =3D 0;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_YEAR, ntxec_reg8(=
-tm->tm_year - 100));
-> +	if (res)
-> +		return res;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_MONTH, ntxec_reg8=
-(tm->tm_mon + 1));
-> +	if (res)
-> +		return res;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_DAY, ntxec_reg8(t=
-m->tm_mday));
-> +	if (res)
-> +		return res;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_HOUR, ntxec_reg8(=
-tm->tm_hour));
-> +	if (res)
-> +		return res;
-> +
-> +	res =3D regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_MINUTE, ntxec_reg=
-8(tm->tm_min));
-> +	if (res)
-> +		return res;
-> +
-> +	return regmap_write(rtc->ec->regmap, NTXEC_REG_WRITE_SECOND, ntxec_reg8=
-(tm->tm_sec));
+> +	  Say Y here if you need reduced OS jitter, despite added overhead.
+>   	  Say N here if you are unsure.
+>   
+>   config TASKS_TRACE_RCU_READ_MB
+> 
 
-I wonder: Is this racy? If you write minute, does the seconds reset to
-zero or something like that? Or can it happen, that after writing the
-minute register and before writing the second register the seconds
-overflow and you end up with the time set to a minute later than
-intended? If so it might be worth to set the seconds to 0 at the start
-of the function (with an explaining comment).
-
-=2Eread_time has a similar race. What happens if minutes overflow between
-reading NTXEC_REG_READ_DH and NTXEC_REG_READ_MS?
-
-> +static struct platform_driver ntxec_rtc_driver =3D {
-> +	.driver =3D {
-> +		.name =3D "ntxec-rtc",
-> +	},
-> +	.probe =3D ntxec_rtc_probe,
-
-No .remove function?
-
-> +};
-> +module_platform_driver(ntxec_rtc_driver);
-> +
-> +MODULE_AUTHOR("Jonathan Neusch=E4fer <j.neuschaefer@gmx.net>");
-> +MODULE_DESCRIPTION("RTC driver for Netronix EC");
-> +MODULE_LICENSE("GPL");
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---b55wkovfqn6iyquo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9tg7UACgkQwfwUeK3K
-7AlEBAf/RcD3gHide1qc5EijimG6s9s/zjWGhHAO0leLwogNaMyb6GdjoIjrvRHf
-ETLl9BUqziVi69LGA+Ub9K0+LgKyN024FRYZ/U/RqSo8PfRSw40ehnJibb+fdWjL
-W0zTK31qxkj+YBnqWd32Z27hpPCZe0uk6yqaguK9aIPy7XAiwu0gah2e13tD2Bk1
-6Cxr82gYMQw8iHO7EjWkQ9D3Yzwcy9ihTCxL8GJtTRif93ZchKTwoLq4wbmf8tc1
-5fU0cYWXZ97+4+48/dGfqUQ6fQ2yHZXZR69MNmwFnAIaVleVXMc1B6pYIbmHhnoq
-rbAZQzSE6gvnqI203rqDXBH6YXRZCw==
-=tcyy
------END PGP SIGNATURE-----
-
---b55wkovfqn6iyquo--
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member of the Code Aurora Forum, hosted by The Linux Foundation
