@@ -2,209 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCC242785A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7837278581
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727679AbgIYLWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:22:08 -0400
-Received: from mga14.intel.com ([192.55.52.115]:15413 "EHLO mga14.intel.com"
+        id S1728167AbgIYLBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:01:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51576 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726255AbgIYLWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:22:07 -0400
-IronPort-SDR: xYqygLYKOmmo49GVo4RKStiHgiSXQXj3R681SVXhNFgfIp9SPNK22/MVuH5AsLWZLzXfBPcA5q
- FKuxQfKgfbEA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="160749605"
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="160749605"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 03:25:59 -0700
-IronPort-SDR: Kg2h1akrmQldHdt5jlgjIfRkop0BZHRnJRpQfGpHPH2UYToxYTkxTFUxroo2p+irSUlS5DzGnq
- abuz+4iqtWFQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="413767804"
-Received: from lkp-server01.sh.intel.com (HELO 2dda29302fe3) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 25 Sep 2020 03:25:58 -0700
-Received: from kbuild by 2dda29302fe3 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kLkvN-00003Y-I9; Fri, 25 Sep 2020 10:25:57 +0000
-Date:   Fri, 25 Sep 2020 18:25:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 28cd539ed2bfd47989c00ba0b92d47792a92c9cd
-Message-ID: <5f6dc5a8.Dajygw9PXz3iQ9aF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727521AbgIYLBK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:01:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601031668;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5oE6+yR6zGJba+lKIyto8XkckM+FKf5fOJNPN9/S2ss=;
+        b=m8+QssIOi54sJ+FxaT/aLrWScH46iZDYh1IgzCa7SbS+dHKNeMOe4Unbd+0ZVQLuqJda1D
+        dMg2ps1pFUBOSXHj4d7lYJmx4a7sLRGSRGUDd3IRhaXZQS5/BEGCEpxxjdr0kslVMGds8C
+        CWckeSyLLYQppIZw0xoPLufDwBmFASc=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 53271AD1B;
+        Fri, 25 Sep 2020 11:01:08 +0000 (UTC)
+Subject: Re: [PATCH 06/12] soc: mediatek: pm-domains: Add SMI block as bus
+ protection block
+To:     Weiyi Lu <weiyi.lu@mediatek.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Collabora Kernel ML <kernel@collabora.com>,
+        fparent@baylibre.com, matthias.bgg@gmail.com,
+        drinkcat@chromium.org, hsinyi@chromium.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+ <20200910172826.3074357-7-enric.balletbo@collabora.com>
+ <1601030747.1346.63.camel@mtksdaap41>
+From:   Matthias Brugger <mbrugger@suse.com>
+Message-ID: <64b78b9f-1e9d-6178-ec13-7f354716928e@suse.com>
+Date:   Fri, 25 Sep 2020 13:01:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1601030747.1346.63.camel@mtksdaap41>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
-branch HEAD: 28cd539ed2bfd47989c00ba0b92d47792a92c9cd  torture: Allow alternative forms of kvm.sh command-line arguments
 
-elapsed time: 724m
 
-configs tested: 145
-configs skipped: 2
+On 25/09/2020 12:45, Weiyi Lu wrote:
+> On Thu, 2020-09-10 at 19:28 +0200, Enric Balletbo i Serra wrote:
+>> From: Matthias Brugger <mbrugger@suse.com>
+>>
+>> Apart from the infracfg block, the SMI block is used to enable the bus
+>> protection for some power domains. Add support for this block.
+>>
+>> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>> ---
+>>
+>>   drivers/soc/mediatek/mtk-pm-domains.c | 64 ++++++++++++++++++++-------
+>>   include/linux/soc/mediatek/infracfg.h |  6 +++
+>>   2 files changed, 53 insertions(+), 17 deletions(-)
+>>
+>> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+>> index f609c2d454fa..3aa430a60602 100644
+>> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+>> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+>> @@ -56,8 +56,25 @@
+>>   
+>>   #define SPM_MAX_BUS_PROT_DATA		3
+>>   
+>> +#define _BUS_PROT(_mask, _set, _clr, _sta, _update) {	\
+>> +		.bus_prot_mask = (_mask),		\
+>> +		.bus_prot_set = _set,			\
+>> +		.bus_prot_clr = _clr,			\
+>> +		.bus_prot_sta = _sta,			\
+>> +		.bus_prot_reg_update = _update,		\
+>> +	}
+>> +
+>> +#define BUS_PROT_WR(_mask, _set, _clr, _sta)		\
+>> +		_BUS_PROT(_mask, _set, _clr, _sta, false)
+>> +
+>> +#define BUS_PROT_UPDATE(_mask, _set, _clr, _sta)		\
+>> +		_BUS_PROT(_mask, _set, _clr, _sta, true)
+>> +
+>>   struct scpsys_bus_prot_data {
+>>   	u32 bus_prot_mask;
+>> +	u32 bus_prot_set;
+>> +	u32 bus_prot_clr;
+>> +	u32 bus_prot_sta;
+>>   	bool bus_prot_reg_update;
+>>   };
+>>   
+>> @@ -69,6 +86,7 @@ struct scpsys_bus_prot_data {
+>>    * @sram_pdn_ack_bits: The mask for sram power control acked bits.
+>>    * @caps: The flag for active wake-up action.
+>>    * @bp_infracfg: bus protection for infracfg subsystem
+>> + * @bp_smi: bus protection for smi subsystem
+>>    */
+>>   struct scpsys_domain_data {
+>>   	u32 sta_mask;
+>> @@ -77,6 +95,7 @@ struct scpsys_domain_data {
+>>   	u32 sram_pdn_ack_bits;
+>>   	u8 caps;
+>>   	const struct scpsys_bus_prot_data bp_infracfg[SPM_MAX_BUS_PROT_DATA];
+>> +	const struct scpsys_bus_prot_data bp_smi[SPM_MAX_BUS_PROT_DATA];
+>>   };
+>>   
+>>   struct scpsys_domain {
+>> @@ -86,6 +105,7 @@ struct scpsys_domain {
+>>   	int num_clks;
+>>   	struct clk_bulk_data *clks;
+>>   	struct regmap *infracfg;
+>> +	struct regmap *smi;
+>>   };
+>>   
+>>   struct scpsys_soc_data {
+>> @@ -173,9 +193,9 @@ static int _scpsys_bus_protect_enable(const struct scpsys_bus_prot_data *bpd, st
+>>   		if (bpd[i].bus_prot_reg_update)
+>>   			regmap_update_bits(regmap, INFRA_TOPAXI_PROTECTEN, mask, mask);
+>>   		else
+>> -			regmap_write(regmap, INFRA_TOPAXI_PROTECTEN_SET, mask);
+>> +			regmap_write(regmap, bpd[i].bus_prot_set, mask);
+>>   
+> 
+> Could it be?
+> 
+> if (bpd[i].bus_prot_set)
+> 	regmap_write(regmap, bpd[i].bus_prot_set, mask);
+> else
+> 	regmap_update_bits(regmap, INFRA_TOPAXI_PROTECTEN, mask, mask);
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Nice catch. That's a bug here:
+regmap_update_bits(regmap, INFRA_TOPAXI_PROTECTEN, mask, mask)
+should be
+regmap_update_bits(regmap, bpd[i].bus_prot_set, mask, mask)
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7203_defconfig
-nios2                         10m50_defconfig
-powerpc               mpc834x_itxgp_defconfig
-m68k                        mvme16x_defconfig
-powerpc                       holly_defconfig
-sh                          landisk_defconfig
-arm                            lart_defconfig
-sh                   secureedge5410_defconfig
-m68k                        mvme147_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                ecovec24-romimage_defconfig
-arm                      footbridge_defconfig
-arm                           h5000_defconfig
-powerpc                     tqm8540_defconfig
-arc                          axs103_defconfig
-powerpc                  mpc885_ads_defconfig
-i386                                defconfig
-mips                           ci20_defconfig
-powerpc                      tqm8xx_defconfig
-arm                         bcm2835_defconfig
-arm                           stm32_defconfig
-arm                          collie_defconfig
-mips                         cobalt_defconfig
-arm                        clps711x_defconfig
-powerpc                      ppc64e_defconfig
-xtensa                  audio_kc705_defconfig
-h8300                            alldefconfig
-arm                        trizeps4_defconfig
-powerpc                 mpc85xx_cds_defconfig
-powerpc                   motionpro_defconfig
-sh                          kfr2r09_defconfig
-powerpc                 linkstation_defconfig
-powerpc                     sbc8548_defconfig
-sh                             shx3_defconfig
-sh                      rts7751r2d1_defconfig
-riscv                    nommu_k210_defconfig
-mips                        bcm47xx_defconfig
-mips                         tb0226_defconfig
-m68k                         apollo_defconfig
-powerpc                          g5_defconfig
-mips                           rs90_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                   bluestone_defconfig
-sh                           se7751_defconfig
-mips                       capcella_defconfig
-parisc                generic-32bit_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc                 mpc837x_rdb_defconfig
-c6x                                 defconfig
-ia64                        generic_defconfig
-ia64                      gensparse_defconfig
-sh                           se7721_defconfig
-mips                        workpad_defconfig
-powerpc                     ep8248e_defconfig
-powerpc                     ppa8548_defconfig
-powerpc                       maple_defconfig
-arm                       omap2plus_defconfig
-mips                         db1xxx_defconfig
-s390                             allyesconfig
-sh                          sdk7786_defconfig
-arm                          tango4_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200923
-i386                 randconfig-a006-20200923
-i386                 randconfig-a003-20200923
-i386                 randconfig-a004-20200923
-i386                 randconfig-a005-20200923
-i386                 randconfig-a001-20200923
-i386                 randconfig-a002-20200924
-i386                 randconfig-a006-20200924
-i386                 randconfig-a003-20200924
-i386                 randconfig-a004-20200924
-i386                 randconfig-a005-20200924
-i386                 randconfig-a001-20200924
-i386                 randconfig-a002-20200925
-i386                 randconfig-a006-20200925
-i386                 randconfig-a003-20200925
-i386                 randconfig-a004-20200925
-i386                 randconfig-a005-20200925
-i386                 randconfig-a001-20200925
-x86_64               randconfig-a011-20200925
-x86_64               randconfig-a013-20200925
-x86_64               randconfig-a014-20200925
-x86_64               randconfig-a015-20200925
-x86_64               randconfig-a012-20200925
-x86_64               randconfig-a016-20200925
-i386                 randconfig-a012-20200925
-i386                 randconfig-a014-20200925
-i386                 randconfig-a016-20200925
-i386                 randconfig-a013-20200925
-i386                 randconfig-a011-20200925
-i386                 randconfig-a015-20200925
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Regarding your question. No we can't do that as we use bus_prot_set variable for 
+write and update and decide on bus_prot_reg_update which method to use.
 
-clang tested configs:
-x86_64               randconfig-a005-20200925
-x86_64               randconfig-a002-20200925
-x86_64               randconfig-a006-20200925
-x86_64               randconfig-a001-20200925
-x86_64               randconfig-a003-20200925
-x86_64               randconfig-a004-20200925
+>> -		ret = regmap_read_poll_timeout(regmap, INFRA_TOPAXI_PROTECTSTA1,
+>> +		ret = regmap_read_poll_timeout(regmap, bpd[i].bus_prot_sta,
+>>   					       val, (val & mask) == mask,
+>>   					       MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
+>>   		if (ret)
+>> @@ -191,7 +211,11 @@ static int scpsys_bus_protect_enable(struct scpsys_domain *pd)
+>>   	int ret;
+>>   
+>>   	ret = _scpsys_bus_protect_enable(bpd, pd->infracfg);
+>> -	return ret;
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	bpd = pd->data->bp_smi;
+>> +	return _scpsys_bus_protect_enable(bpd, pd->smi);
+>>   }
+>>   
+>>   static int _scpsys_bus_protect_disable(const struct scpsys_bus_prot_data *bpd,
+>> @@ -206,11 +230,11 @@ static int _scpsys_bus_protect_disable(const struct scpsys_bus_prot_data *bpd,
+>>   			return 0;
+>>   
+>>   		if (bpd[i].bus_prot_reg_update)
+> 
+> ditto.
+> 
+>> -			regmap_update_bits(regmap, INFRA_TOPAXI_PROTECTEN, mask, 0);
+>> +			regmap_update_bits(regmap, bpd[i].bus_prot_set, mask, 0);
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+As you can see here we use bpd[i].bus_prot_set
+You could argue that we could check the bus_prot_clr to decide if we need an 
+update or not, but I prefer an explicit variable to flag this. Implicite 
+reasoning depending on values for bus_prot_clr will make the code harder to read 
+and won't save a lot of memory.
+
+>>   		else
+>> -			regmap_write(regmap, INFRA_TOPAXI_PROTECTEN_CLR, mask);
+>> +			regmap_write(regmap, bpd[i].bus_prot_clr, mask);
+>>   
+>> -		ret = regmap_read_poll_timeout(regmap, INFRA_TOPAXI_PROTECTSTA1,
+>> +		ret = regmap_read_poll_timeout(regmap, bpd[i].bus_prot_sta,
+>>   					       val, !(val & mask),
+>>   					       MTK_POLL_DELAY_US, MTK_POLL_TIMEOUT);
+>>   		if (ret)
+>> @@ -226,7 +250,11 @@ static int scpsys_bus_protect_disable(struct scpsys_domain *pd)
+>>   	int ret;
+>>   
+>>   	ret = _scpsys_bus_protect_disable(bpd, pd->infracfg);
+>> -	return ret;
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	bpd = pd->data->bp_smi;
+>> +	return _scpsys_bus_protect_disable(bpd, pd->smi);
+> 
+> It should have a reverse order compared to the enable control. But I'd
+> like to make it more flexible to any sequence, like INFRA->SMI->INFRA
+
+Correct, we whould disable first SMI and then infracfg. Good catch!
+
+Right now we don't have any hardware supported that does 
+infracfg->SMI->infracfg. When that comes up we will need a good solution for the 
+driver :)
+
+Thanks for your review!
+Matthias
+
+> 
+>>   }
+>>   
+>>   static int scpsys_power_on(struct generic_pm_domain *genpd)
+>> @@ -360,6 +388,10 @@ static int scpsys_add_one_domain(struct scpsys *scpsys, struct device_node *node
+>>   	if (IS_ERR(pd->infracfg))
+>>   		pd->infracfg = NULL;
+>>   
+>> +	pd->smi = syscon_regmap_lookup_by_phandle(node, "mediatek,smi");
+>> +	if (IS_ERR(pd->smi))
+>> +		pd->smi = NULL;
+>> +
+>>   	pd->num_clks = of_clk_get_parent_count(node);
+>>   	if (pd->num_clks > 0) {
+>>   		pd->clks = devm_kcalloc(scpsys->dev, pd->num_clks, sizeof(*pd->clks), GFP_KERNEL);
+>> @@ -532,10 +564,9 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>>   		.ctl_offs = SPM_DIS_PWR_CON,
+>>   		.sram_pdn_bits = GENMASK(11, 8),
+>>   		.sram_pdn_ack_bits = GENMASK(12, 12),
+>> -		.bp_infracfg[0] = {
+>> -			.bus_prot_reg_update = true,
+>> -			.bus_prot_mask = MT8173_TOP_AXI_PROT_EN_MM_M0 |
+>> -				MT8173_TOP_AXI_PROT_EN_MM_M1,
+>> +		.bp_infracfg = {
+>> +			BUS_PROT_UPDATE_MT8173(MT8173_TOP_AXI_PROT_EN_MM_M0 |
+>> +					       MT8173_TOP_AXI_PROT_EN_MM_M1),
+>>   		},
+>>   	},
+>>   	[MT8173_POWER_DOMAIN_VENC_LT] = {
+>> @@ -574,12 +605,11 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
+>>   		.ctl_offs = SPM_MFG_PWR_CON,
+>>   		.sram_pdn_bits = GENMASK(13, 8),
+>>   		.sram_pdn_ack_bits = GENMASK(21, 16),
+>> -		.bp_infracfg[0] = {
+>> -			.bus_prot_reg_update = true,
+>> -			.bus_prot_mask = MT8173_TOP_AXI_PROT_EN_MFG_S |
+>> -				MT8173_TOP_AXI_PROT_EN_MFG_M0 |
+>> -				MT8173_TOP_AXI_PROT_EN_MFG_M1 |
+>> -				MT8173_TOP_AXI_PROT_EN_MFG_SNOOP_OUT,
+>> +		.bp_infracfg = {
+>> +			BUS_PROT_UPDATE_MT8173(MT8173_TOP_AXI_PROT_EN_MFG_S |
+>> +					       MT8173_TOP_AXI_PROT_EN_MFG_M0 |
+>> +					       MT8173_TOP_AXI_PROT_EN_MFG_M1 |
+>> +					       MT8173_TOP_AXI_PROT_EN_MFG_SNOOP_OUT),
+>>   		},
+>>   	},
+>>   };
+>> diff --git a/include/linux/soc/mediatek/infracfg.h b/include/linux/soc/mediatek/infracfg.h
+>> index f967d02cc2ff..3f18cddffb44 100644
+>> --- a/include/linux/soc/mediatek/infracfg.h
+>> +++ b/include/linux/soc/mediatek/infracfg.h
+>> @@ -37,6 +37,12 @@
+>>   #define INFRA_TOPAXI_PROTECTEN_SET	0x0260
+>>   #define INFRA_TOPAXI_PROTECTEN_CLR	0x0264
+>>   
+>> +#define BUS_PROT_UPDATE_MT8173(_mask)			\
+>> +	BUS_PROT_UPDATE(_mask,				\
+>> +			INFRA_TOPAXI_PROTECTEN,		\
+>> +			INFRA_TOPAXI_PROTECTEN_CLR,	\
+>> +			INFRA_TOPAXI_PROTECTSTA1)
+>> +
+>>   int mtk_infracfg_set_bus_protection(struct regmap *infracfg, u32 mask,
+>>   		bool reg_update);
+>>   int mtk_infracfg_clear_bus_protection(struct regmap *infracfg, u32 mask,
+> 
