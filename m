@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D306279486
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB3B279475
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729325AbgIYXHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:07:03 -0400
-Received: from mga01.intel.com ([192.55.52.88]:9202 "EHLO mga01.intel.com"
+        id S1729113AbgIYXBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:01:43 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27868 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726348AbgIYXHC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:07:02 -0400
-IronPort-SDR: i/LM5XJYCKqJef2RmNMEEdeszTUiMgF2oIilBMaLuzxgt0GPRNgFRVfPgWxkpk932elIQcsVwb
- pfUj3Wu42hBw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="179799726"
+        id S1726744AbgIYXBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:01:43 -0400
+IronPort-SDR: np12i0Lg+umKzZpMcV024nvHB6j8OZtmLpH/BHUwoWmnYKik73TN5QnwGU9tSe2u8kOMhNesbF
+ 115c+qPXeybA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="149431115"
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="179799726"
+   d="scan'208";a="149431115"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 15:54:54 -0700
-IronPort-SDR: vGqYM0y2LvvNcoXpZ6AJQYIWOV2sKR4XBvUMxnwA2zvkYFkq5bxmSM146jgNUoPmAP9WOGNxf0
- Ot6aRPaQwVkQ==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 16:01:42 -0700
+IronPort-SDR: DnFvtUlyNcbLtVAb2CZbgIuGv9s/tiP/0VOsbBo8z7gLpjo+KxWIKMgq3VSM9/GWRn7+++/8/K
+ EjsJK/VfMpPQ==
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="414103890"
+   d="scan'208";a="292008000"
 Received: from araj-mobl1.jf.intel.com (HELO localhost) ([10.254.96.12])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 15:54:54 -0700
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 16:01:41 -0700
 From:   Ashok Raj <ashok.raj@intel.com>
-To:     iommu@lists.linux-foundation.org,
-        Bjorn Helgaas <bhelgaas@google.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>
 Cc:     Ashok Raj <ashok.raj@intel.com>,
         Sathyanarayanan Kuppuswamy <sathyanarayanan.kuppuswamy@intel.com>,
         linux-kernel@vger.kernel.org
 Subject: [PATCH 1/1] pci: pciehp: Handle MRL interrupts to enable slot for hotplug.
-Date:   Fri, 25 Sep 2020 15:54:47 -0700
-Message-Id: <20200925225447.28582-1-ashok.raj@intel.com>
+Date:   Fri, 25 Sep 2020 16:01:38 -0700
+Message-Id: <20200925230138.29011-1-ashok.raj@intel.com>
 X-Mailer: git-send-email 2.13.6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
