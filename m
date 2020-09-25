@@ -2,163 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEAA278653
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 872F7278657
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728361AbgIYLxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:53:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:43426 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728118AbgIYLxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:53:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B57F101E;
-        Fri, 25 Sep 2020 04:53:09 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A52A53F70D;
-        Fri, 25 Sep 2020 04:53:07 -0700 (PDT)
-Subject: Re: [PATCH 1/2] iommu/iova: Flush CPU rcache for when a depot fills
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        chenxiang66@hisilicon.com, linuxarm@huawei.com,
-        xiyou.wangcong@gmail.com, thunder.leizhen@huawei.com
-References: <1601027469-221812-1-git-send-email-john.garry@huawei.com>
- <1601027469-221812-2-git-send-email-john.garry@huawei.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <bede311f-9a07-98e1-e728-9acd4ad13b51@arm.com>
-Date:   Fri, 25 Sep 2020 12:53:06 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1728244AbgIYLyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728056AbgIYLyv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:54:51 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69181C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:54:51 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id y15so2994154wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:54:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=fJiQtctcNXBXh9qT9CsxSpdBmaOAAcN7q8VKxTKjhaU=;
+        b=S/0MsNcBf6z9nBBvhntFcfWhRa8Njb3YJt+R7C91VoWSkZIdBuCIRQEjM/nBmsrQVi
+         G53IB3NSvKjEBH/XC5d854Q+FH1fw4FwDZkBq7xco39cbCmxfAZEnZTcFr7ajynYZcvz
+         1VLnxXrUZoikLnOXqq0yRpmb4f0UZvmtscFX2CGlgl4YEKWkq359mKzLRiqSW+d0MBJo
+         yitugr4cZxKEgXQJEsccq3LMYRx8mznOvlat24ZUUzZB9Xwp3R+uitpcz/fjxkUysy2d
+         E3S9m2XHjQHcO07TcX32i3KToMN+yfvqjO7wR0G9BNzQtLOCO5oCoU4VtNuD2WXM+h0G
+         fWQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=fJiQtctcNXBXh9qT9CsxSpdBmaOAAcN7q8VKxTKjhaU=;
+        b=YLNUnyvQAr49f6fCyZWHG8mqZI26oKNhgSLIX8HzKNZzGgSqi34Cm1vd7N2UhDCcR+
+         YID9M/gjjRx3su9HURCLfCdg5F7Kq6Y9tpQZdD/p9fSYzek4lgYUF77Ly2xt7hMCpvHx
+         NSeuXwZNVWovsBI4Uy44cPqOEd5scfKIR1m3UHHYWuUcSHc2c/sRZ70+BbXxtrJ1AC3M
+         1hYOn5gSMVTbtsBKNuGwZXKa3wBVHPcKRhNRy+yapjdzPyobdm3dyh6K0nlsErCXwO/U
+         JuIO65lQBAtZ7/p6nrqgJ86pwtieGmMVX/lBXKK3mtjRlfFmW0WhfvIoFCdyYd3wBrDO
+         oAcw==
+X-Gm-Message-State: AOAM533DVuc40gHFUmu4OrlyVMXaD2dfom/OCvezwuWxwoIkHQZ53h7q
+        i6A8yJr+Pu5RLekdddStz7UaoktV5zg=
+X-Google-Smtp-Source: ABdhPJwocQd2+b0Q+AdxAsEP44KNbkvGJtE8N8U930DR4GlTWGZmcwM5oTHPJ5S/t/1mWs+3cpuEUQ==
+X-Received: by 2002:a1c:6607:: with SMTP id a7mr2736836wmc.142.1601034889924;
+        Fri, 25 Sep 2020 04:54:49 -0700 (PDT)
+Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id q18sm2586075wre.78.2020.09.25.04.54.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 25 Sep 2020 04:54:48 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 14:54:47 +0300
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs second pull request for kernel 5.10-rc1
+Message-ID: <20200925115447.GA2256@ogabbay-VM.habana-labs.com>
 MIME-Version: 1.0
-In-Reply-To: <1601027469-221812-2-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-25 10:51, John Garry wrote:
-> Leizhen reported some time ago that IOVA performance may degrade over time
-> [0], but unfortunately his solution to fix this problem was not given
-> attention.
-> 
-> To summarize, the issue is that as time goes by, the CPU rcache and depot
-> rcache continue to grow. As such, IOVA RB tree access time also continues
-> to grow.
-> 
-> At a certain point, a depot may become full, and also some CPU rcaches may
-> also be full when we try to insert another IOVA. For this scenario,
-> currently we free the "loaded" CPU rcache and create a new one. This
-> free'ing means that we need to free many IOVAs in the RB tree, which
-> makes IO throughput performance fall off a cliff in our storage scenario:
-> 
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6314MB/0KB/0KB /s] [1616K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [5669MB/0KB/0KB /s] [1451K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6673MB/0KB/0KB /s] [1708K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6031MB/0KB/0KB /s] [1544K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6761MB/0KB/0KB /s] [1731K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6705MB/0KB/0KB /s] [1717K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6685MB/0KB/0KB /s] [1711K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6178MB/0KB/0KB /s] [1582K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [6731MB/0KB/0KB /s] [1723K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2387MB/0KB/0KB /s] [611K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2689MB/0KB/0KB /s] [688K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [2278MB/0KB/0KB /s] [583K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1288MB/0KB/0KB /s] [330K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1632MB/0KB/0KB /s] [418K/0/0 iops]
-> Jobs: 12 (f=12): [RRRRRRRRRRRR] [0.0% done] [1765MB/0KB/0KB /s] [452K/0/0 iops]
-> 
-> And continue in this fashion, without recovering. Note that in this
-> example we had to wait 16 hours for this to occur. Also note that IO
-> throughput also becomes gradually becomes more unstable leading up to this
-> point.
-> 
-> As a solution this issue, we judge that the IOVA rcaches have grown too
-> big, and just flush all the CPUs rcaches instead.
-> 
-> The depot rcaches, however, are not flushed, as they can be used to
-> immediately replenish active CPUs.
-> 
-> In future, some IOVA rcache compaction could be implemented to solve the
-> instabilty issue, which I figure could be quite complex to implement.
-> 
-> [0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
-> 
-> Reported-by: Xiang Chen <chenxiang66@hisilicon.com>
-> Tested-by: Xiang Chen <chenxiang66@hisilicon.com>
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> ---
->   drivers/iommu/iova.c | 25 ++++++++++++++++---------
->   1 file changed, 16 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
-> index 45a251da5453..05e0b462e0d9 100644
-> --- a/drivers/iommu/iova.c
-> +++ b/drivers/iommu/iova.c
-> @@ -892,9 +892,8 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->   				 struct iova_rcache *rcache,
->   				 unsigned long iova_pfn)
->   {
-> -	struct iova_magazine *mag_to_free = NULL;
->   	struct iova_cpu_rcache *cpu_rcache;
-> -	bool can_insert = false;
-> +	bool can_insert = false, flush = false;
->   	unsigned long flags;
->   
->   	cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
-> @@ -913,13 +912,19 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->   			if (rcache->depot_size < MAX_GLOBAL_MAGS) {
->   				rcache->depot[rcache->depot_size++] =
->   						cpu_rcache->loaded;
-> +				can_insert = true;
-> +				cpu_rcache->loaded = new_mag;
->   			} else {
-> -				mag_to_free = cpu_rcache->loaded;
-> +				/*
-> +				 * The depot is full, meaning that a very large
-> +				 * cache of IOVAs has built up, which slows
-> +				 * down RB tree accesses significantly
-> +				 * -> let's flush at this point.
-> +				 */
-> +				flush = true;
-> +				iova_magazine_free(new_mag);
->   			}
->   			spin_unlock(&rcache->lock);
-> -
-> -			cpu_rcache->loaded = new_mag;
-> -			can_insert = true;
->   		}
->   	}
->   
-> @@ -928,9 +933,11 @@ static bool __iova_rcache_insert(struct iova_domain *iovad,
->   
->   	spin_unlock_irqrestore(&cpu_rcache->lock, flags);
->   
-> -	if (mag_to_free) {
-> -		iova_magazine_free_pfns(mag_to_free, iovad);
-> -		iova_magazine_free(mag_to_free);
-> +	if (flush) {
+Hello Greg,
 
-Do you really need this flag, or is it effectively just mirroring 
-"!can_insert" - in theory if there wasn't enough memory to allocate a 
-new magazine, then freeing some more IOVAs wouldn't necessarily be a bad 
-thing to do anyway.
-
-Other than that, I think this looks reasonable. Every time I look at 
-__iova_rcache_insert() I'm convinced there must be a way to restructure 
-it to be more streamlined overall, but I can never quite see exactly how...
+This is habanalabs second pull request for the merge window of kernel 5.10.
+It contains an important fix to our ASIC reset flow and a few other minor
+changes. Details are in the tag.
 
 Thanks,
-Robin.
+Oded
 
-> +		int cpu;
-> +
-> +		for_each_online_cpu(cpu)
-> +			free_cpu_cached_iovas(cpu, iovad);
->   	}
->   
->   	return can_insert;
-> 
+The following changes since commit 9eb29f2ed95edda511ce28651b1d7cdef3614c12:
+
+  Merge tag 'icc-5.10-rc1' of https://git.linaro.org/people/georgi.djakov/linux into char-misc-next (2020-09-24 15:15:11 +0200)
+
+are available in the Git repository at:
+
+  git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-next-2020-09-25
+
+for you to fetch changes up to 25121d9804b8421851e3ccb88d1d35a5d93692b8:
+
+  habanalabs/gaudi: configure QMAN LDMA registers properly (2020-09-25 14:44:21 +0300)
+
+----------------------------------------------------------------
+This tag contains the following changes for kernel 5.10-rc1:
+
+- release the kernel context object after we reset the device. This is
+  needed to prevent a race where the firmware still has some in-flight
+  transcations that require the kernel context (and its memory mappings) to
+  be alive.
+
+- replace constant numbers with defines in QMAN initialization of GAUDI
+
+- correct an error message text and add a few debug messages to help debug
+  issues that happen during context open and close.
+
+----------------------------------------------------------------
+Oded Gabbay (4):
+      habanalabs: correct an error message
+      habanalabs: release kernel context after hw_fini
+      habanalabs: add debug messages for opening/closing context
+      habanalabs: add notice of device not idle
+
+Ofir Bitton (1):
+      habanalabs/gaudi: configure QMAN LDMA registers properly
+
+ drivers/misc/habanalabs/common/context.c | 13 +++++++
+ drivers/misc/habanalabs/common/device.c  | 13 ++++---
+ drivers/misc/habanalabs/common/memory.c  |  4 +--
+ drivers/misc/habanalabs/gaudi/gaudi.c    | 62 +++++++++++++++++++++-----------
+ drivers/misc/habanalabs/gaudi/gaudiP.h   |  8 +++++
+ 5 files changed, 70 insertions(+), 30 deletions(-)
