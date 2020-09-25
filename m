@@ -2,130 +2,369 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A65B7278EB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB82A278EBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729394AbgIYQhe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 12:37:34 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:59995 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgIYQhd (ORCPT
+        id S1729427AbgIYQhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728306AbgIYQho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:37:33 -0400
-Received: from [172.20.10.2] (dynamic-046-114-136-219.46.114.pool.telefonica.de [46.114.136.219])
-        by mail.holtmann.org (Postfix) with ESMTPSA id ABFAECECDE;
-        Fri, 25 Sep 2020 18:44:29 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH v3] Bluetooth: Check for encryption key size on connect
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20200922155548.v3.1.I67a8b8cd4def8166970ca37109db46d731b62bb6@changeid>
-Date:   Fri, 25 Sep 2020 18:37:29 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <BC59363A-B32A-4DAA-BAF5-F7FBA01752E6@holtmann.org>
-References: <20200922155548.v3.1.I67a8b8cd4def8166970ca37109db46d731b62bb6@changeid>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        Fri, 25 Sep 2020 12:37:44 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8BCC0613CE;
+        Fri, 25 Sep 2020 09:37:44 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id q4so2958164ils.4;
+        Fri, 25 Sep 2020 09:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WDHQgshnR2jNOPc1TU8tr1qYbvYsVn8CGoRl49F0USs=;
+        b=vVcIoVYtHz1ya+N/I17YoiFtpTQeOlqXz7ouYN2sFxOSw61tXzR/tzwFG7QzQlYR3V
+         s2hU2kYjFznlpUnAFDTFaaB52CK5TpJw0BM4usotnrnDmH6uNkq3MYwxrbWi8+oTXbhu
+         PpBItgtBso4qMrNtbP5OfddgKFO1uFtCedAQjmO1ixA5qZGNMHlyrDL4/aaI8PQfheBV
+         xJDgp5jNiuqWq0TwDrRr3eq66xEGCWG4QNrKdFZeoy/cNQ60yykkJQb4Un0NaWASO+sS
+         6eJ+3s0LHY+rpqPKejixAF5ir7sYUUNrzVfJuBdvmcdqpHxHku042OlpA/WseTsw5QD3
+         XeeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WDHQgshnR2jNOPc1TU8tr1qYbvYsVn8CGoRl49F0USs=;
+        b=bjk8AbPYZiI1C1PePg+oM+MDQ3Spccv5hIbacHiC0fD8p418wMkijuNeCRBeX83Bo6
+         SbqjihI07gLjFWRpNLZJYsMk5rx6A9Sx5L/rUKWL8m7Nn+wweZ/7xpnk+ypT4jVF2E0Q
+         MPxVyKtZBmqAk9BuMc40/OzMD2YLugt0G2veBpXU5Q1FCyMR7rhAdbTt02sKq9Sboe0b
+         p4raKO2YbmPV8jrIrLG1RxNGNjtdnY/CwtAe+Z5lDtVUvDeEVVh6Dfi4DWa2Q0jCRTmI
+         A2RpKx33r4/w76RRx5JsMDyyHneWD7kndwcI2q/ui/YRIv1GOAAGGFt9Pr7APa5xHO8+
+         C7UA==
+X-Gm-Message-State: AOAM533AqkT3F0Kk/UZ0iDOZrNmhG6xJGHYu1XQAml+tgC2EVdjXqpjV
+        g0XDtkOd8Ddb6Pp/EEysQ6+BLdYBFNmYW/zb+aE=
+X-Google-Smtp-Source: ABdhPJwgEl6F/ltU8KAwi8c4E6KklQ4GgYpSTJsH71vRDIznnAEg2ZPyVnmG+EMLoqsMWLQuHn8eermVS+iLEb6YIF0=
+X-Received: by 2002:a92:8b41:: with SMTP id i62mr937844ild.9.1601051863853;
+ Fri, 25 Sep 2020 09:37:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200925083507.13603-1-ptikhomirov@virtuozzo.com> <20200925083507.13603-2-ptikhomirov@virtuozzo.com>
+In-Reply-To: <20200925083507.13603-2-ptikhomirov@virtuozzo.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 25 Sep 2020 19:37:32 +0300
+Message-ID: <CAOQ4uxjYhSWCFerfuJc8BGLHciHDo8vnkpB9kMwh3wmvovUq1w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] ovl: propagate ovl_fs to ovl_decode_real_fh and ovl_encode_real_fh
+To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+On Fri, Sep 25, 2020 at 11:35 AM Pavel Tikhomirov
+<ptikhomirov@virtuozzo.com> wrote:
+>
+> This will be used in next patch to be able to change uuid checks and
+> add uuid nullification based on ofs->config.index for a new "uuid=off"
+> mode.
+>
+> CC: Amir Goldstein <amir73il@gmail.com>
+> CC: Vivek Goyal <vgoyal@redhat.com>
+> CC: Miklos Szeredi <miklos@szeredi.hu>
+> CC: linux-unionfs@vger.kernel.org
+> CC: linux-kernel@vger.kernel.org
+> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-> When receiving connection, we only check whether the link has been
-> encrypted, but not the encryption key size of the link.
-> 
-> This patch adds check for encryption key size, and reject L2CAP
-> connection which size is below the specified threshold (default 7)
-> with security block.
-> 
-> Here is some btmon trace.
-> @ MGMT Event: New Link Key (0x0009) plen 26    {0x0001} [hci0] 5.847722
->        Store hint: No (0x00)
->        BR/EDR Address: 38:00:25:F7:F1:B0 (OUI 38-00-25)
->        Key type: Unauthenticated Combination key from P-192 (0x04)
->        Link key: 7bf2f68c81305d63a6b0ee2c5a7a34bc
->        PIN length: 0
->> HCI Event: Encryption Change (0x08) plen 4        #29 [hci0] 5.871537
->        Status: Success (0x00)
->        Handle: 256
->        Encryption: Enabled with E0 (0x01)
-> < HCI Command: Read Encryp... (0x05|0x0008) plen 2  #30 [hci0] 5.871609
->        Handle: 256
->> HCI Event: Command Complete (0x0e) plen 7         #31 [hci0] 5.872524
->      Read Encryption Key Size (0x05|0x0008) ncmd 1
->        Status: Success (0x00)
->        Handle: 256
->        Key size: 3
-> 
-> ////// WITHOUT PATCH //////
->> ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 5.895023
->      L2CAP: Connection Request (0x02) ident 3 len 4
->        PSM: 4097 (0x1001)
->        Source CID: 64
-> < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 5.895213
->      L2CAP: Connection Response (0x03) ident 3 len 8
->        Destination CID: 64
->        Source CID: 64
->        Result: Connection successful (0x0000)
->        Status: No further information available (0x0000)
-> 
-> ////// WITH PATCH //////
->> ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 4.887024
->      L2CAP: Connection Request (0x02) ident 3 len 4
->        PSM: 4097 (0x1001)
->        Source CID: 64
-> < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 4.887127
->      L2CAP: Connection Response (0x03) ident 3 len 8
->        Destination CID: 0
->        Source CID: 64
->        Result: Connection refused - security block (0x0003)
->        Status: No further information available (0x0000)
-> 
-> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> 
 > ---
-> 
-> Changes in v3:
-> * Move the check to hci_conn_check_link_mode()
-> 
-> Changes in v2:
-> * Add btmon trace to the commit message
-> 
-> net/bluetooth/hci_conn.c | 4 ++++
-> 1 file changed, 4 insertions(+)
-> 
-> diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-> index 9832f8445d43..89085fac797c 100644
-> --- a/net/bluetooth/hci_conn.c
-> +++ b/net/bluetooth/hci_conn.c
-> @@ -1348,6 +1348,10 @@ int hci_conn_check_link_mode(struct hci_conn *conn)
-> 	    !test_bit(HCI_CONN_ENCRYPT, &conn->flags))
-> 		return 0;
-> 
-> +	if (test_bit(HCI_CONN_ENCRYPT, &conn->flags) &&
-> +	    conn->enc_key_size < conn->hdev->min_enc_key_size)
-> +		return 0;
-> +
-> 	return 1;
-> }
-
-I am a bit concerned since we had that check and I on purpose moved it. See commit 693cd8ce3f88 for the change where I removed and commit d5bb334a8e17 where I initially added it.
-
-Naively adding the check in that location caused a major regression with Bluetooth 2.0 devices. This makes me a bit reluctant to re-add it here since I restructured the whole change to check the key size a different location.
-
-Now I have to ask, are you running an upstream kernel with both commits above that address KNOB vulnerability?
-
-Regards
-
-Marcel
-
+>  fs/overlayfs/copy_up.c   | 22 ++++++++++++----------
+>  fs/overlayfs/export.c    | 10 ++++++----
+>  fs/overlayfs/namei.c     | 19 ++++++++++---------
+>  fs/overlayfs/overlayfs.h | 14 ++++++++------
+>  fs/overlayfs/util.c      |  3 ++-
+>  5 files changed, 38 insertions(+), 30 deletions(-)
+>
+> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+> index 955ecd4030f0..3380039036d6 100644
+> --- a/fs/overlayfs/copy_up.c
+> +++ b/fs/overlayfs/copy_up.c
+> @@ -275,7 +275,8 @@ int ovl_set_attr(struct dentry *upperdentry, struct kstat *stat)
+>         return err;
+>  }
+>
+> -struct ovl_fh *ovl_encode_real_fh(struct dentry *real, bool is_upper)
+> +struct ovl_fh *ovl_encode_real_fh(struct ovl_fs *ofs, struct dentry *real,
+> +                                 bool is_upper)
+>  {
+>         struct ovl_fh *fh;
+>         int fh_type, dwords;
+> @@ -328,8 +329,8 @@ struct ovl_fh *ovl_encode_real_fh(struct dentry *real, bool is_upper)
+>         return ERR_PTR(err);
+>  }
+>
+> -int ovl_set_origin(struct dentry *dentry, struct dentry *lower,
+> -                  struct dentry *upper)
+> +int ovl_set_origin(struct ovl_fs *ofs, struct dentry *dentry,
+> +                  struct dentry *lower, struct dentry *upper)
+>  {
+>         const struct ovl_fh *fh = NULL;
+>         int err;
+> @@ -340,7 +341,7 @@ int ovl_set_origin(struct dentry *dentry, struct dentry *lower,
+>          * up and a pure upper inode.
+>          */
+>         if (ovl_can_decode_fh(lower->d_sb)) {
+> -               fh = ovl_encode_real_fh(lower, false);
+> +               fh = ovl_encode_real_fh(ofs, lower, false);
+>                 if (IS_ERR(fh))
+>                         return PTR_ERR(fh);
+>         }
+> @@ -362,7 +363,7 @@ static int ovl_set_upper_fh(struct ovl_fs *ofs, struct dentry *upper,
+>         const struct ovl_fh *fh;
+>         int err;
+>
+> -       fh = ovl_encode_real_fh(upper, true);
+> +       fh = ovl_encode_real_fh(ofs, upper, true);
+>         if (IS_ERR(fh))
+>                 return PTR_ERR(fh);
+>
+> @@ -380,6 +381,7 @@ static int ovl_set_upper_fh(struct ovl_fs *ofs, struct dentry *upper,
+>  static int ovl_create_index(struct dentry *dentry, struct dentry *origin,
+>                             struct dentry *upper)
+>  {
+> +       struct ovl_fs *ofs = OVL_FS(dentry->d_sb);
+>         struct dentry *indexdir = ovl_indexdir(dentry->d_sb);
+>         struct inode *dir = d_inode(indexdir);
+>         struct dentry *index = NULL;
+> @@ -402,7 +404,7 @@ static int ovl_create_index(struct dentry *dentry, struct dentry *origin,
+>         if (WARN_ON(ovl_test_flag(OVL_INDEX, d_inode(dentry))))
+>                 return -EIO;
+>
+> -       err = ovl_get_index_name(origin, &name);
+> +       err = ovl_get_index_name(ofs, origin, &name);
+>         if (err)
+>                 return err;
+>
+> @@ -411,7 +413,7 @@ static int ovl_create_index(struct dentry *dentry, struct dentry *origin,
+>         if (IS_ERR(temp))
+>                 goto free_name;
+>
+> -       err = ovl_set_upper_fh(OVL_FS(dentry->d_sb), upper, temp);
+> +       err = ovl_set_upper_fh(ofs, upper, temp);
+>         if (err)
+>                 goto out;
+>
+> @@ -521,7 +523,7 @@ static int ovl_copy_up_inode(struct ovl_copy_up_ctx *c, struct dentry *temp)
+>          * hard link.
+>          */
+>         if (c->origin) {
+> -               err = ovl_set_origin(c->dentry, c->lowerpath.dentry, temp);
+> +               err = ovl_set_origin(ofs, c->dentry, c->lowerpath.dentry, temp);
+>                 if (err)
+>                         return err;
+>         }
+> @@ -700,7 +702,7 @@ static int ovl_copy_up_tmpfile(struct ovl_copy_up_ctx *c)
+>  static int ovl_do_copy_up(struct ovl_copy_up_ctx *c)
+>  {
+>         int err;
+> -       struct ovl_fs *ofs = c->dentry->d_sb->s_fs_info;
+> +       struct ovl_fs *ofs = OVL_FS(c->dentry->d_sb);
+>         bool to_index = false;
+>
+>         /*
+> @@ -722,7 +724,7 @@ static int ovl_do_copy_up(struct ovl_copy_up_ctx *c)
+>
+>         if (to_index) {
+>                 c->destdir = ovl_indexdir(c->dentry->d_sb);
+> -               err = ovl_get_index_name(c->lowerpath.dentry, &c->destname);
+> +               err = ovl_get_index_name(ofs, c->lowerpath.dentry, &c->destname);
+>                 if (err)
+>                         return err;
+>         } else if (WARN_ON(!c->parent)) {
+> diff --git a/fs/overlayfs/export.c b/fs/overlayfs/export.c
+> index ed35be3fafc6..41ebf52f1bbc 100644
+> --- a/fs/overlayfs/export.c
+> +++ b/fs/overlayfs/export.c
+> @@ -211,7 +211,8 @@ static int ovl_check_encode_origin(struct dentry *dentry)
+>         return 1;
+>  }
+>
+> -static int ovl_dentry_to_fid(struct dentry *dentry, u32 *fid, int buflen)
+> +static int ovl_dentry_to_fid(struct ovl_fs *ofs, struct dentry *dentry,
+> +                            u32 *fid, int buflen)
+>  {
+>         struct ovl_fh *fh = NULL;
+>         int err, enc_lower;
+> @@ -226,7 +227,7 @@ static int ovl_dentry_to_fid(struct dentry *dentry, u32 *fid, int buflen)
+>                 goto fail;
+>
+>         /* Encode an upper or lower file handle */
+> -       fh = ovl_encode_real_fh(enc_lower ? ovl_dentry_lower(dentry) :
+> +       fh = ovl_encode_real_fh(ofs, enc_lower ? ovl_dentry_lower(dentry) :
+>                                 ovl_dentry_upper(dentry), !enc_lower);
+>         if (IS_ERR(fh))
+>                 return PTR_ERR(fh);
+> @@ -249,6 +250,7 @@ static int ovl_dentry_to_fid(struct dentry *dentry, u32 *fid, int buflen)
+>  static int ovl_encode_fh(struct inode *inode, u32 *fid, int *max_len,
+>                          struct inode *parent)
+>  {
+> +       struct ovl_fs *ofs = OVL_FS(inode->i_sb);
+>         struct dentry *dentry;
+>         int bytes, buflen = *max_len << 2;
+>
+> @@ -260,7 +262,7 @@ static int ovl_encode_fh(struct inode *inode, u32 *fid, int *max_len,
+>         if (WARN_ON(!dentry))
+>                 return FILEID_INVALID;
+>
+> -       bytes = ovl_dentry_to_fid(dentry, fid, buflen);
+> +       bytes = ovl_dentry_to_fid(ofs, dentry, fid, buflen);
+>         dput(dentry);
+>         if (bytes <= 0)
+>                 return FILEID_INVALID;
+> @@ -680,7 +682,7 @@ static struct dentry *ovl_upper_fh_to_d(struct super_block *sb,
+>         if (!ovl_upper_mnt(ofs))
+>                 return ERR_PTR(-EACCES);
+>
+> -       upper = ovl_decode_real_fh(fh, ovl_upper_mnt(ofs), true);
+> +       upper = ovl_decode_real_fh(ofs, fh, ovl_upper_mnt(ofs), true);
+>         if (IS_ERR_OR_NULL(upper))
+>                 return upper;
+>
+> diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
+> index a6162c4076db..f058bf8e8b87 100644
+> --- a/fs/overlayfs/namei.c
+> +++ b/fs/overlayfs/namei.c
+> @@ -150,8 +150,8 @@ static struct ovl_fh *ovl_get_fh(struct ovl_fs *ofs, struct dentry *dentry,
+>         goto out;
+>  }
+>
+> -struct dentry *ovl_decode_real_fh(struct ovl_fh *fh, struct vfsmount *mnt,
+> -                                 bool connected)
+> +struct dentry *ovl_decode_real_fh(struct ovl_fs *ofs, struct ovl_fh *fh,
+> +                                 struct vfsmount *mnt, bool connected)
+>  {
+>         struct dentry *real;
+>         int bytes;
+> @@ -354,7 +354,7 @@ int ovl_check_origin_fh(struct ovl_fs *ofs, struct ovl_fh *fh, bool connected,
+>                     ofs->layers[i].fs->bad_uuid)
+>                         continue;
+>
+> -               origin = ovl_decode_real_fh(fh, ofs->layers[i].mnt,
+> +               origin = ovl_decode_real_fh(ofs, fh, ofs->layers[i].mnt,
+>                                             connected);
+>                 if (origin)
+>                         break;
+> @@ -450,7 +450,7 @@ int ovl_verify_set_fh(struct ovl_fs *ofs, struct dentry *dentry,
+>         struct ovl_fh *fh;
+>         int err;
+>
+> -       fh = ovl_encode_real_fh(real, is_upper);
+> +       fh = ovl_encode_real_fh(ofs, real, is_upper);
+>         err = PTR_ERR(fh);
+>         if (IS_ERR(fh)) {
+>                 fh = NULL;
+> @@ -488,7 +488,7 @@ struct dentry *ovl_index_upper(struct ovl_fs *ofs, struct dentry *index)
+>         if (IS_ERR_OR_NULL(fh))
+>                 return ERR_CAST(fh);
+>
+> -       upper = ovl_decode_real_fh(fh, ovl_upper_mnt(ofs), true);
+> +       upper = ovl_decode_real_fh(ofs, fh, ovl_upper_mnt(ofs), true);
+>         kfree(fh);
+>
+>         if (IS_ERR_OR_NULL(upper))
+> @@ -640,12 +640,13 @@ static int ovl_get_index_name_fh(struct ovl_fh *fh, struct qstr *name)
+>   * index dir was cleared. Either way, that index cannot be used to indentify
+>   * the overlay inode.
+>   */
+> -int ovl_get_index_name(struct dentry *origin, struct qstr *name)
+> +int ovl_get_index_name(struct ovl_fs *ofs, struct dentry *origin,
+> +                      struct qstr *name)
+>  {
+>         struct ovl_fh *fh;
+>         int err;
+>
+> -       fh = ovl_encode_real_fh(origin, false);
+> +       fh = ovl_encode_real_fh(ofs, origin, false);
+>         if (IS_ERR(fh))
+>                 return PTR_ERR(fh);
+>
+> @@ -694,7 +695,7 @@ struct dentry *ovl_lookup_index(struct ovl_fs *ofs, struct dentry *upper,
+>         bool is_dir = d_is_dir(origin);
+>         int err;
+>
+> -       err = ovl_get_index_name(origin, &name);
+> +       err = ovl_get_index_name(ofs, origin, &name);
+>         if (err)
+>                 return ERR_PTR(err);
+>
+> @@ -805,7 +806,7 @@ static int ovl_fix_origin(struct ovl_fs *ofs, struct dentry *dentry,
+>         if (err)
+>                 return err;
+>
+> -       err = ovl_set_origin(dentry, lower, upper);
+> +       err = ovl_set_origin(ofs, dentry, lower, upper);
+>         if (!err)
+>                 err = ovl_set_impure(dentry->d_parent, upper->d_parent);
+>
+> diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+> index 7bce2469fe55..b56b5f46f224 100644
+> --- a/fs/overlayfs/overlayfs.h
+> +++ b/fs/overlayfs/overlayfs.h
+> @@ -383,8 +383,8 @@ static inline int ovl_check_fh_len(struct ovl_fh *fh, int fh_len)
+>         return ovl_check_fb_len(&fh->fb, fh_len - OVL_FH_WIRE_OFFSET);
+>  }
+>
+> -struct dentry *ovl_decode_real_fh(struct ovl_fh *fh, struct vfsmount *mnt,
+> -                                 bool connected);
+> +struct dentry *ovl_decode_real_fh(struct ovl_fs *ofs, struct ovl_fh *fh,
+> +                                 struct vfsmount *mnt, bool connected);
+>  int ovl_check_origin_fh(struct ovl_fs *ofs, struct ovl_fh *fh, bool connected,
+>                         struct dentry *upperdentry, struct ovl_path **stackp);
+>  int ovl_verify_set_fh(struct ovl_fs *ofs, struct dentry *dentry,
+> @@ -392,7 +392,8 @@ int ovl_verify_set_fh(struct ovl_fs *ofs, struct dentry *dentry,
+>                       bool set);
+>  struct dentry *ovl_index_upper(struct ovl_fs *ofs, struct dentry *index);
+>  int ovl_verify_index(struct ovl_fs *ofs, struct dentry *index);
+> -int ovl_get_index_name(struct dentry *origin, struct qstr *name);
+> +int ovl_get_index_name(struct ovl_fs *ofs, struct dentry *origin,
+> +                      struct qstr *name);
+>  struct dentry *ovl_get_index_fh(struct ovl_fs *ofs, struct ovl_fh *fh);
+>  struct dentry *ovl_lookup_index(struct ovl_fs *ofs, struct dentry *upper,
+>                                 struct dentry *origin, bool verify);
+> @@ -511,9 +512,10 @@ int ovl_maybe_copy_up(struct dentry *dentry, int flags);
+>  int ovl_copy_xattr(struct super_block *sb, struct dentry *old,
+>                    struct dentry *new);
+>  int ovl_set_attr(struct dentry *upper, struct kstat *stat);
+> -struct ovl_fh *ovl_encode_real_fh(struct dentry *real, bool is_upper);
+> -int ovl_set_origin(struct dentry *dentry, struct dentry *lower,
+> -                  struct dentry *upper);
+> +struct ovl_fh *ovl_encode_real_fh(struct ovl_fs *ofs, struct dentry *real,
+> +                                 bool is_upper);
+> +int ovl_set_origin(struct ovl_fs *ofs, struct dentry *dentry,
+> +                  struct dentry *lower, struct dentry *upper);
+>
+>  /* export.c */
+>  extern const struct export_operations ovl_export_operations;
+> diff --git a/fs/overlayfs/util.c b/fs/overlayfs/util.c
+> index 23f475627d07..44b4b62a8ac8 100644
+> --- a/fs/overlayfs/util.c
+> +++ b/fs/overlayfs/util.c
+> @@ -716,6 +716,7 @@ bool ovl_need_index(struct dentry *dentry)
+>  /* Caller must hold OVL_I(inode)->lock */
+>  static void ovl_cleanup_index(struct dentry *dentry)
+>  {
+> +       struct ovl_fs *ofs = OVL_FS(dentry->d_sb);
+>         struct dentry *indexdir = ovl_indexdir(dentry->d_sb);
+>         struct inode *dir = indexdir->d_inode;
+>         struct dentry *lowerdentry = ovl_dentry_lower(dentry);
+> @@ -725,7 +726,7 @@ static void ovl_cleanup_index(struct dentry *dentry)
+>         struct qstr name = { };
+>         int err;
+>
+> -       err = ovl_get_index_name(lowerdentry, &name);
+> +       err = ovl_get_index_name(ofs, lowerdentry, &name);
+>         if (err)
+>                 goto fail;
+>
+> --
+> 2.26.2
+>
