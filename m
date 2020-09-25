@@ -2,119 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E4E27903F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CBEB279044
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729702AbgIYS0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:26:36 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57824 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgIYS0f (ORCPT
+        id S1729761AbgIYS1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:27:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26362 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727733AbgIYS1M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:26:35 -0400
-Date:   Fri, 25 Sep 2020 18:26:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601058392;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gd9MKJMjiZ4BRJCGXiQBp/qZgmy5aeDgwR8dOx414sM=;
-        b=w9YkclN34Bo53KyvjGPooM626AOAHRpa3Vf1r1xUvWVFLhL9ayuU1vaRccotXSLAUL620a
-        cNiIcCPPMn5FH9VGAE5hmeDXn7936TxgOkHxA/7V4VV34WyHBAcNCGa2pTh7SWzb7bZypk
-        F41Dbqcr0cpUW3TgS5fleT5VJytC40FGrzGftN+44rSuULwKQbPExHBp57zC0gvJDmzARf
-        kP6gnpDpVmcUccxM2lccNlDTtuEtAErTfwyNTLd0Euyl7B0oRfWca1Hewa9iAuP8IIYRNh
-        ucdEklvkq09Ehbv43APY8P4Yza2RwDnnjlsXm/OACqssKytzcAZnlDVJJIp9Ow==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601058392;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gd9MKJMjiZ4BRJCGXiQBp/qZgmy5aeDgwR8dOx414sM=;
-        b=S8ZZAKUsfttDEyNRL4jb8ae8isc3WiedPFUvG1yw+7sqAZDcV2QjGt8t6SYKCDSMA5B+vj
-        nP8bqaqvnLpP2fDA==
-From:   "tip-bot2 for Qinglang Miao" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: ras/core] RAS/CEC: Convert to DEFINE_SHOW_ATTRIBUTE()
-Cc:     Qinglang Miao <miaoqinglang@huawei.com>,
-        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200919012252.171437-1-miaoqinglang@huawei.com>
-References: <20200919012252.171437-1-miaoqinglang@huawei.com>
+        Fri, 25 Sep 2020 14:27:12 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601058430;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=H6+BMGpX9nRwK6ylAAUa5PZB+Njz4oOv2pFi9n8OI38=;
+        b=G7gUdssJ/9rnDEhepe6lE6he/Gxgw8XlacRRUPH/88PgQWHWJcQ9gUzj7WEeNcCvOm7YcW
+        K9TXmr7IVcGLhpETONEX4pDFCefnBZAFNIePmGzojtyspT+w0qDyiFiJuRF7jrg/ZYK+d4
+        C0xZ2nCMuzaL1gyglaaIyKglJJPeW8U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-tApSkebgOlmeS07q1mJcMQ-1; Fri, 25 Sep 2020 14:27:06 -0400
+X-MC-Unique: tApSkebgOlmeS07q1mJcMQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A13962FD09;
+        Fri, 25 Sep 2020 18:27:03 +0000 (UTC)
+Received: from virtlab719.virt.lab.eng.bos.redhat.com (virtlab719.virt.lab.eng.bos.redhat.com [10.19.153.15])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AD88478810;
+        Fri, 25 Sep 2020 18:26:55 +0000 (UTC)
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, nitesh@redhat.com, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        lgoncalv@redhat.com
+Subject: [PATCH v3 0/4] isolation: limit msix vectors to housekeeping CPUs
+Date:   Fri, 25 Sep 2020 14:26:50 -0400
+Message-Id: <20200925182654.224004-1-nitesh@redhat.com>
 MIME-Version: 1.0
-Message-ID: <160105839157.7002.12548841557640248021.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the ras/core branch of tip:
+This is a follow-up posting for "[PATCH v2 0/4] isolation: limit msix vectors
+based on housekeeping CPUs".
 
-Commit-ID:     4bd442e9a8388e8ec4ba7cf23a4774989d93b78e
-Gitweb:        https://git.kernel.org/tip/4bd442e9a8388e8ec4ba7cf23a4774989d93b78e
-Author:        Qinglang Miao <miaoqinglang@huawei.com>
-AuthorDate:    Sat, 19 Sep 2020 09:22:52 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 25 Sep 2020 19:05:31 +02:00
+Issue
+=====
+With the current implementation device drivers while creating their MSIX        
+vectors only take num_online_cpus() into consideration which works quite well  
+for a non-RT environment, but in an RT environment that has a large number of   
+isolated CPUs and very few housekeeping CPUs this could lead to a problem.    
+The problem will be triggered when something like tuned will try to move all    
+the IRQs from isolated CPUs to the limited number of housekeeping CPUs to       
+prevent interruptions for a latency-sensitive workload that will be running
+on the isolated CPUs. This failure is caused because of the per CPU vector         
+limitation.                                                                     
 
-RAS/CEC: Convert to DEFINE_SHOW_ATTRIBUTE()
 
-Use the DEFINE_SHOW_ATTRIBUTE() macro and simplify the code.
+Proposed Fix
+============
+In this patch-set, the following changes are proposed:
+- A generic API housekeeping_num_online_cpus() which is meant to return the
+  online housekeeping CPUs based on the hk_flag passed by the caller.
+- i40e: Specifically for the i40e driver the num_online_cpus() used in 
+  i40e_init_msix() to calculate numbers msix vectors is replaced with the
+  above defined API that returns the online housekeeping CPUs that are meant
+  to handle managed IRQ jobs.
+- pci_alloc_irq_vector(): With the help of housekeeping_num_online_cpus() the
+  max_vecs passed in pci_alloc_irq_vector() is restricted only to the online
+  housekeeping CPUs (designated for managed IRQ jobs) strictly in an RT
+  environment. However, if the min_vecs exceeds the online housekeeping CPUs,
+  max_vecs is limited based on the min_vecs instead.
 
-Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200919012252.171437-1-miaoqinglang@huawei.com
----
- drivers/ras/cec.c | 17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/ras/cec.c b/drivers/ras/cec.c
-index 6939aa5..ddecf25 100644
---- a/drivers/ras/cec.c
-+++ b/drivers/ras/cec.c
-@@ -435,7 +435,7 @@ DEFINE_DEBUGFS_ATTRIBUTE(action_threshold_ops, u64_get, action_threshold_set, "%
- 
- static const char * const bins[] = { "00", "01", "10", "11" };
- 
--static int array_dump(struct seq_file *m, void *v)
-+static int array_show(struct seq_file *m, void *v)
- {
- 	struct ce_array *ca = &ce_arr;
- 	int i;
-@@ -467,18 +467,7 @@ static int array_dump(struct seq_file *m, void *v)
- 	return 0;
- }
- 
--static int array_open(struct inode *inode, struct file *filp)
--{
--	return single_open(filp, array_dump, NULL);
--}
--
--static const struct file_operations array_ops = {
--	.owner	 = THIS_MODULE,
--	.open	 = array_open,
--	.read	 = seq_read,
--	.llseek	 = seq_lseek,
--	.release = single_release,
--};
-+DEFINE_SHOW_ATTRIBUTE(array);
- 
- static int __init create_debugfs_nodes(void)
- {
-@@ -513,7 +502,7 @@ static int __init create_debugfs_nodes(void)
- 		goto err;
- 	}
- 
--	array = debugfs_create_file("array", S_IRUSR, d, NULL, &array_ops);
-+	array = debugfs_create_file("array", S_IRUSR, d, NULL, &array_fops);
- 	if (!array) {
- 		pr_warn("Error creating array debugfs node!\n");
- 		goto err;
+Future Work
+===========
+
+- In the previous upstream discussion [1], it was decided that it would be
+  better if we can have a generic framework that can be consumed by all the
+  drivers to fix this kind of issue. However, it will be a long term work,
+  and since there are RT workloads that are getting impacted by the reported
+  issue. We agreed upon the proposed per-device approach for now.
+
+
+Testing
+=======
+Functionality:
+- To test that the issue is resolved with i40e change I added a tracepoint
+  in i40e_init_msix() to find the number of CPUs derived for vector creation
+  with and without tuned's realtime-virtual-host profile. As per expectation
+  with the profile applied I was only getting the number of housekeeping CPUs
+  and all available CPUs without it. Another way to verify is by checking
+  the number of IRQs that get created corresponding to a impacted device.
+  Similarly did a few more tests with different modes eg with only nohz_full,
+  isolcpus etc.
+
+Performance:
+- To analyze the performance impact I have targetted the change introduced in 
+  pci_alloc_irq_vectors() and compared the results against a vanilla kernel
+  (5.9.0-rc3) results.
+
+  Setup Information:
+  + I had a couple of 24-core machines connected back to back via a couple of
+    mlx5 NICs and I analyzed the average bitrate for server-client TCP and
+    UDP transmission via iperf. 
+  + To minimize the Bitrate variation of iperf TCP and UDP stream test I have
+    applied the tuned's network-throughput profile and disabled HT.
+ Test Information:
+  + For the environment that had no isolated CPUs:
+    I have tested with single stream and 24 streams (same as that of online
+    CPUs).
+  + For the environment that had 20 isolated CPUs:
+    I have tested with single stream, 4 streams (same as that the number of
+    housekeeping) and 24 streams (same as that of online CPUs).
+
+ Results:
+  # UDP Stream Test:
+    + There was no degradation observed in UDP stream tests in both
+      environments. (With isolated CPUs and without isolated CPUs after the
+      introduction of the patches).
+  # TCP Stream Test - No isolated CPUs:
+    + No noticeable degradation was observed.
+  # TCP Stream Test - With isolated CPUs:
+    + Multiple Stream (4)  - Average degradation of around 5-6%
+    + Multiple Stream (24) - Average degradation of around 2-3%
+    + Single Stream        - Even on a vanilla kernel the Bitrate observed 
+                             for a TCP single stream test seem to vary
+                             significantly across different runs (eg. the %
+                             variation between the best and the worst case on
+                             a vanilla kernel was around 8-10%). A similar
+                             variation was observed with the kernel that
+                             included my patches. No additional degradation
+                             was observed.
+
+If there are any suggestions for more performance evaluation, I would
+be happy to discuss/perform them.
+
+
+Changes from v2[2]:
+==================
+- Renamed hk_num_online_cpus() with housekeeping_num_online_cpus() to keep
+  the naming convention consistent (based on a suggestion from Peter
+  Zijlstra and Frederic Weisbecker).
+- Added an argument "enum hk_flags" to the housekeeping_num_online_cpus() API
+  to make it more usable in different use-cases (based on a suggestion from 
+  Frederic Weisbecker).
+- Replaced cpumask_weight(cpu_online_mask) with num_online_cpus() (suggestion
+  from Bjorn Helgaas).
+- Modified patch commit messages and comment based on Bjorn Helgaas's
+  suggestion.
+
+Changes from v1[3]:
+==================
+Patch1:                                                                       
+- Replaced num_houskeeeping_cpus() with hk_num_online_cpus() and started
+  using the cpumask corresponding to HK_FLAG_MANAGED_IRQ to derive the number
+  of online housekeeping CPUs. This is based on Frederic Weisbecker's
+  suggestion.           
+- Since the hk_num_online_cpus() is self-explanatory, got rid of             
+  the comment that was added previously.                                     
+Patch2:                                                                       
+- Added a new patch that is meant to enable managed IRQ isolation for
+  nohz_full CPUs. This is based on Frederic Weisbecker's suggestion.              
+Patch4 (PCI):                                                                 
+- For cases where the min_vecs exceeds the online housekeeping CPUs, instead
+  of skipping modification to max_vecs, started restricting it based on the
+  min_vecs. This is based on a suggestion from Marcelo Tosatti.                                                                    
+
+
+[1] https://lore.kernel.org/lkml/20200922095440.GA5217@lenoir/
+[2] https://lore.kernel.org/lkml/20200923181126.223766-1-nitesh@redhat.com/
+[3] https://lore.kernel.org/lkml/20200909150818.313699-1-nitesh@redhat.com/
+
+
+Nitesh Narayan Lal (4):
+  sched/isolation: API to get number of housekeeping CPUs
+  sched/isolation: Extend nohz_full to isolate managed IRQs
+  i40e: Limit msix vectors to housekeeping CPUs
+  PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
+
+ drivers/net/ethernet/intel/i40e/i40e_main.c |  3 ++-
+ include/linux/pci.h                         | 17 +++++++++++++++++
+ include/linux/sched/isolation.h             |  9 +++++++++
+ kernel/sched/isolation.c                    |  2 +-
+ 4 files changed, 29 insertions(+), 2 deletions(-)
+
+-- 
+
+
