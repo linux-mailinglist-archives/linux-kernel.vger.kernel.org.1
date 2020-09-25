@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD008278812
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A659A278809
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729340AbgIYMwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:52:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56866 "EHLO mail.kernel.org"
+        id S1729305AbgIYMwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:52:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729290AbgIYMwK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:52:10 -0400
+        id S1728794AbgIYMwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:52:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55BFF2075E;
-        Fri, 25 Sep 2020 12:52:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF289206DB;
+        Fri, 25 Sep 2020 12:52:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038329;
-        bh=FoBam2veeWQfEGkz6ViIW5Dqs9nvjPiWZ1sa5WoABDE=;
+        s=default; t=1601038332;
+        bh=YkrLpgIsS0PJEJS6gi4xYVc12Bz8Jekaklsu5yNAMQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LJZcNVOWDPEBcx7bNAFjffDwRTlCwPjF2F+pfHfp8I84Lx4wWrQKOf6tyfLL4afJg
-         qDpRAEZa8niQqb9As1lD/oCpPZpezQilBZUu2leseBASdi886GF3Xq44MsblRsZ9M1
-         IDk1bKTiYaRt4m484Z3aHgEOx+PXaTUUEi0AC5fk=
+        b=qC5+JBVAffiH/T4JFdFrZYubCEytAq2RIuDUMVz2QskDxzmVHYnbRgnFLGY3VH4Li
+         ckbw1n4O7Ic8Cv7TNlxyhClmeAWw0tJ5e17z/exjFW5dkIHu9hiUx2mrU7ZXnf98uJ
+         8mbxB8oKRfMpk6q4eA7rpqMb/ZYnYqCIf30qjqg0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuang Li <shuali@redhat.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 29/43] tipc: use skb_unshare() instead in tipc_buf_append()
-Date:   Fri, 25 Sep 2020 14:48:41 +0200
-Message-Id: <20200925124727.995311734@linuxfoundation.org>
+        stable@vger.kernel.org, Maor Dickman <maord@mellanox.com>,
+        Roi Dayan <roid@mellanox.com>, Raed Salem <raeds@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: [PATCH 5.4 30/43] net/mlx5e: Enable adding peer miss rules only if merged eswitch is supported
+Date:   Fri, 25 Sep 2020 14:48:42 +0200
+Message-Id: <20200925124728.131881428@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
 References: <20200925124723.575329814@linuxfoundation.org>
@@ -43,67 +43,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xin Long <lucien.xin@gmail.com>
+From: Maor Dickman <maord@mellanox.com>
 
-[ Upstream commit ff48b6222e65ebdba5a403ef1deba6214e749193 ]
+[ Upstream commit 6cec0229ab1959259e71e9a5bbe47c04577950b1 ]
 
-In tipc_buf_append() it may change skb's frag_list, and it causes
-problems when this skb is cloned. skb_unclone() doesn't really
-make this skb's flag_list available to change.
+The cited commit creates peer miss group during switchdev mode
+initialization in order to handle miss packets correctly while in VF
+LAG mode. This is done regardless of FW support of such groups which
+could cause rules setups failure later on.
 
-Shuang Li has reported an use-after-free issue because of this
-when creating quite a few macvlan dev over the same dev, where
-the broadcast packets will be cloned and go up to the stack:
+Fix by adding FW capability check before creating peer groups/rule.
 
- [ ] BUG: KASAN: use-after-free in pskb_expand_head+0x86d/0xea0
- [ ] Call Trace:
- [ ]  dump_stack+0x7c/0xb0
- [ ]  print_address_description.constprop.7+0x1a/0x220
- [ ]  kasan_report.cold.10+0x37/0x7c
- [ ]  check_memory_region+0x183/0x1e0
- [ ]  pskb_expand_head+0x86d/0xea0
- [ ]  process_backlog+0x1df/0x660
- [ ]  net_rx_action+0x3b4/0xc90
- [ ]
- [ ] Allocated by task 1786:
- [ ]  kmem_cache_alloc+0xbf/0x220
- [ ]  skb_clone+0x10a/0x300
- [ ]  macvlan_broadcast+0x2f6/0x590 [macvlan]
- [ ]  macvlan_process_broadcast+0x37c/0x516 [macvlan]
- [ ]  process_one_work+0x66a/0x1060
- [ ]  worker_thread+0x87/0xb10
- [ ]
- [ ] Freed by task 3253:
- [ ]  kmem_cache_free+0x82/0x2a0
- [ ]  skb_release_data+0x2c3/0x6e0
- [ ]  kfree_skb+0x78/0x1d0
- [ ]  tipc_recvmsg+0x3be/0xa40 [tipc]
-
-So fix it by using skb_unshare() instead, which would create a new
-skb for the cloned frag and it'll be safe to change its frag_list.
-The similar things were also done in sctp_make_reassembled_event(),
-which is using skb_copy().
-
-Reported-by: Shuang Li <shuali@redhat.com>
-Fixes: 37e22164a8a3 ("tipc: rename and move message reassembly function")
-Signed-off-by: Xin Long <lucien.xin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: ac004b832128 ("net/mlx5e: E-Switch, Add peer miss rules")
+Signed-off-by: Maor Dickman <maord@mellanox.com>
+Reviewed-by: Roi Dayan <roid@mellanox.com>
+Reviewed-by: Raed Salem <raeds@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/msg.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c |   64 ++++++-------
+ 1 file changed, 34 insertions(+), 30 deletions(-)
 
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -140,7 +140,8 @@ int tipc_buf_append(struct sk_buff **hea
- 	if (fragid == FIRST_FRAGMENT) {
- 		if (unlikely(head))
- 			goto err;
--		if (unlikely(skb_unclone(frag, GFP_ATOMIC)))
-+		frag = skb_unshare(frag, GFP_ATOMIC);
-+		if (unlikely(!frag))
- 			goto err;
- 		head = *headbuf = frag;
- 		*buf = NULL;
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+@@ -1143,35 +1143,37 @@ static int esw_create_offloads_fdb_table
+ 	}
+ 	esw->fdb_table.offloads.send_to_vport_grp = g;
+ 
+-	/* create peer esw miss group */
+-	memset(flow_group_in, 0, inlen);
+-
+-	esw_set_flow_group_source_port(esw, flow_group_in);
+-
+-	if (!mlx5_eswitch_vport_match_metadata_enabled(esw)) {
+-		match_criteria = MLX5_ADDR_OF(create_flow_group_in,
+-					      flow_group_in,
+-					      match_criteria);
+-
+-		MLX5_SET_TO_ONES(fte_match_param, match_criteria,
+-				 misc_parameters.source_eswitch_owner_vhca_id);
+-
+-		MLX5_SET(create_flow_group_in, flow_group_in,
+-			 source_eswitch_owner_vhca_id_valid, 1);
+-	}
+-
+-	MLX5_SET(create_flow_group_in, flow_group_in, start_flow_index, ix);
+-	MLX5_SET(create_flow_group_in, flow_group_in, end_flow_index,
+-		 ix + esw->total_vports - 1);
+-	ix += esw->total_vports;
+-
+-	g = mlx5_create_flow_group(fdb, flow_group_in);
+-	if (IS_ERR(g)) {
+-		err = PTR_ERR(g);
+-		esw_warn(dev, "Failed to create peer miss flow group err(%d)\n", err);
+-		goto peer_miss_err;
++	if (MLX5_CAP_ESW(esw->dev, merged_eswitch)) {
++		/* create peer esw miss group */
++		memset(flow_group_in, 0, inlen);
++
++		esw_set_flow_group_source_port(esw, flow_group_in);
++
++		if (!mlx5_eswitch_vport_match_metadata_enabled(esw)) {
++			match_criteria = MLX5_ADDR_OF(create_flow_group_in,
++						      flow_group_in,
++						      match_criteria);
++
++			MLX5_SET_TO_ONES(fte_match_param, match_criteria,
++					 misc_parameters.source_eswitch_owner_vhca_id);
++
++			MLX5_SET(create_flow_group_in, flow_group_in,
++				 source_eswitch_owner_vhca_id_valid, 1);
++		}
++
++		MLX5_SET(create_flow_group_in, flow_group_in, start_flow_index, ix);
++		MLX5_SET(create_flow_group_in, flow_group_in, end_flow_index,
++			 ix + esw->total_vports - 1);
++		ix += esw->total_vports;
++
++		g = mlx5_create_flow_group(fdb, flow_group_in);
++		if (IS_ERR(g)) {
++			err = PTR_ERR(g);
++			esw_warn(dev, "Failed to create peer miss flow group err(%d)\n", err);
++			goto peer_miss_err;
++		}
++		esw->fdb_table.offloads.peer_miss_grp = g;
+ 	}
+-	esw->fdb_table.offloads.peer_miss_grp = g;
+ 
+ 	/* create miss group */
+ 	memset(flow_group_in, 0, inlen);
+@@ -1206,7 +1208,8 @@ static int esw_create_offloads_fdb_table
+ miss_rule_err:
+ 	mlx5_destroy_flow_group(esw->fdb_table.offloads.miss_grp);
+ miss_err:
+-	mlx5_destroy_flow_group(esw->fdb_table.offloads.peer_miss_grp);
++	if (MLX5_CAP_ESW(esw->dev, merged_eswitch))
++		mlx5_destroy_flow_group(esw->fdb_table.offloads.peer_miss_grp);
+ peer_miss_err:
+ 	mlx5_destroy_flow_group(esw->fdb_table.offloads.send_to_vport_grp);
+ send_vport_err:
+@@ -1229,7 +1232,8 @@ static void esw_destroy_offloads_fdb_tab
+ 	mlx5_del_flow_rules(esw->fdb_table.offloads.miss_rule_multi);
+ 	mlx5_del_flow_rules(esw->fdb_table.offloads.miss_rule_uni);
+ 	mlx5_destroy_flow_group(esw->fdb_table.offloads.send_to_vport_grp);
+-	mlx5_destroy_flow_group(esw->fdb_table.offloads.peer_miss_grp);
++	if (MLX5_CAP_ESW(esw->dev, merged_eswitch))
++		mlx5_destroy_flow_group(esw->fdb_table.offloads.peer_miss_grp);
+ 	mlx5_destroy_flow_group(esw->fdb_table.offloads.miss_grp);
+ 
+ 	mlx5_destroy_flow_table(esw->fdb_table.offloads.slow_fdb);
 
 
