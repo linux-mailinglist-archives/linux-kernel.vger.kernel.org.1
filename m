@@ -2,399 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F91278B04
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:36:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17F0278B0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729179AbgIYOgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:36:23 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:5333 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729103AbgIYOgV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:36:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1601044580; x=1632580580;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=/dBzm5ntc9unRoevmQyvWCQmrTSaSiW3Ep9xsdrHu90=;
-  b=Jexc8GsFqxoN25B/gxp5kkNx0UV4TRkB5BaGCBBJJuiT/bnSuAVr+Lks
-   TRtNLLMRpLWoT/ZiPcuiZjR9ughQPo3GEwrhuatg606zWt5yaxaf5AugY
-   7yTAeL9gZrLmKPIrN33wQxY+jpRakrhIeGO3PnR7cnDFhA4sIegzOJ4xf
-   s=;
-X-IronPort-AV: E=Sophos;i="5.77,302,1596499200"; 
-   d="scan'208";a="71123839"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 25 Sep 2020 14:35:12 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-7d76a15f.us-east-1.amazon.com (Postfix) with ESMTPS id 53961A280A;
-        Fri, 25 Sep 2020 14:35:11 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 25 Sep 2020 14:35:10 +0000
-Received: from u79c5a0a55de558.ant.amazon.com (10.43.161.71) by
- EX13D20UWC001.ant.amazon.com (10.43.162.244) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Fri, 25 Sep 2020 14:35:07 +0000
-From:   Alexander Graf <graf@amazon.com>
-To:     kvm list <kvm@vger.kernel.org>
-CC:     Aaron Lewis <aaronlewis@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        "Joerg Roedel" <joro@8bytes.org>,
-        KarimAllah Raslan <karahmed@amazon.de>,
-        "Dan Carpenter" <dan.carpenter@oracle.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 8/8] KVM: selftests: Add test for user space MSR handling
-Date:   Fri, 25 Sep 2020 16:34:22 +0200
-Message-ID: <20200925143422.21718-9-graf@amazon.com>
-X-Mailer: git-send-email 2.28.0.394.ge197136389
-In-Reply-To: <20200925143422.21718-1-graf@amazon.com>
-References: <20200925143422.21718-1-graf@amazon.com>
+        id S1728979AbgIYOhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:37:34 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2920 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728038AbgIYOhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:37:33 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.106])
+        by Forcepoint Email with ESMTP id 124BC412629B66515EF8;
+        Fri, 25 Sep 2020 15:37:32 +0100 (IST)
+Received: from [127.0.0.1] (10.47.7.140) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 25 Sep
+ 2020 15:37:31 +0100
+Subject: Re: [PATCH 1/2] iommu/iova: Flush CPU rcache for when a depot fills
+To:     Robin Murphy <robin.murphy@arm.com>, <joro@8bytes.org>
+CC:     <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <chenxiang66@hisilicon.com>, <linuxarm@huawei.com>,
+        <xiyou.wangcong@gmail.com>, <thunder.leizhen@huawei.com>
+References: <1601027469-221812-1-git-send-email-john.garry@huawei.com>
+ <1601027469-221812-2-git-send-email-john.garry@huawei.com>
+ <bede311f-9a07-98e1-e728-9acd4ad13b51@arm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <11d30dc2-0b2d-fc30-a07a-9c5f18064d2b@huawei.com>
+Date:   Fri, 25 Sep 2020 15:34:37 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-Originating-IP: [10.43.161.71]
-X-ClientProxiedBy: EX13D02UWC004.ant.amazon.com (10.43.162.236) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <bede311f-9a07-98e1-e728-9acd4ad13b51@arm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.7.140]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have the ability to handle MSRs from user space and also to
-select which ones we do want to prevent in-kernel KVM code from handling,
-let's add a selftest to show case and verify the API.
+On 25/09/2020 12:53, Robin Murphy wrote:
+>> ---
+>>   drivers/iommu/iova.c | 25 ++++++++++++++++---------
+>>   1 file changed, 16 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/iommu/iova.c b/drivers/iommu/iova.c
+>> index 45a251da5453..05e0b462e0d9 100644
+>> --- a/drivers/iommu/iova.c
+>> +++ b/drivers/iommu/iova.c
+>> @@ -892,9 +892,8 @@ static bool __iova_rcache_insert(struct 
+>> iova_domain *iovad,
+>>                    struct iova_rcache *rcache,
+>>                    unsigned long iova_pfn)
+>>   {
+>> -    struct iova_magazine *mag_to_free = NULL;
+>>       struct iova_cpu_rcache *cpu_rcache;
+>> -    bool can_insert = false;
+>> +    bool can_insert = false, flush = false;
+>>       unsigned long flags;
+>>       cpu_rcache = raw_cpu_ptr(rcache->cpu_rcaches);
+>> @@ -913,13 +912,19 @@ static bool __iova_rcache_insert(struct 
+>> iova_domain *iovad,
+>>               if (rcache->depot_size < MAX_GLOBAL_MAGS) {
+>>                   rcache->depot[rcache->depot_size++] =
+>>                           cpu_rcache->loaded;
+>> +                can_insert = true;
+>> +                cpu_rcache->loaded = new_mag;
+>>               } else {
+>> -                mag_to_free = cpu_rcache->loaded;
+>> +                /*
+>> +                 * The depot is full, meaning that a very large
+>> +                 * cache of IOVAs has built up, which slows
+>> +                 * down RB tree accesses significantly
+>> +                 * -> let's flush at this point.
+>> +                 */
+>> +                flush = true;
+>> +                iova_magazine_free(new_mag);
+>>               }
+>>               spin_unlock(&rcache->lock);
+>> -
+>> -            cpu_rcache->loaded = new_mag;
+>> -            can_insert = true;
+>>           }
+>>       }
+>> @@ -928,9 +933,11 @@ static bool __iova_rcache_insert(struct 
+>> iova_domain *iovad,
+>>       spin_unlock_irqrestore(&cpu_rcache->lock, flags);
+>> -    if (mag_to_free) {
+>> -        iova_magazine_free_pfns(mag_to_free, iovad);
+>> -        iova_magazine_free(mag_to_free);
+>> +    if (flush) {
+> 
+> Do you really need this flag, or is it effectively just mirroring 
+> "!can_insert" - in theory if there wasn't enough memory to allocate a 
+> new magazine, then freeing some more IOVAs wouldn't necessarily be a bad 
+> thing to do anyway.
 
-Signed-off-by: Alexander Graf <graf@amazon.com>
+Right, I can reuse can_insert.
 
----
+> 
+> Other than that, I think this looks reasonable. Every time I look at 
+> __iova_rcache_insert() I'm convinced there must be a way to restructure 
+> it to be more streamlined overall, but I can never quite see exactly how...
+> 
 
-v2 -> v3:
+We could remove the new_mag check, but the code cannot safely handle 
+loaded/prev = NULL. Indeed, I think that the mainline code has a bug:
 
-  - s/KVM_CAP_ADD_MSR_ALLOWLIST/KVM_CAP_X86_MSR_ALLOWLIST/g
-  - Add test to clear whitelist
-  - Adjust to reply-less API
-  - Fix asserts
-  - Actually trap on MSR_IA32_POWER_CTL writes
+If the initial allocation for the loaded/prev magazines fail (give NULL) 
+in init_iova_rcaches(), then in __iova_rcache_insert():
 
-v5 -> v6:
+if (!iova_magazine_full(cpu_rcache->loaded)) {
+	can_insert = true;
 
-  - Adapt to new ioctl API
-  - Check for passthrough MSRs
-  - Check for filter exit reason
-  - Add .gitignore
+If cpu_rcache->loaded == NULL, then can_insert is assigned true -> bang, 
+as I experimented, below. This needs to be fixed...
 
-v6 -> v7:
-
-  - trap on KVM_MSR_EXIT_REASON_FILTER as well
-  - fix asserts
-  - add test for invalid msr handling
-
-v7 -> v8:
-
-  - add KVM_MSR_EXIT_REASON_UNKNOWN handling
----
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/x86_64/user_msr_test.c      | 248 ++++++++++++++++++
- 3 files changed, 250 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86_64/user_msr_test.c
-
-diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-index 452787152748..307ceaadbbb9 100644
---- a/tools/testing/selftests/kvm/.gitignore
-+++ b/tools/testing/selftests/kvm/.gitignore
-@@ -11,6 +11,7 @@
- /x86_64/set_sregs_test
- /x86_64/smm_test
- /x86_64/state_test
-+/x86_64/user_msr_test
- /x86_64/vmx_preemption_timer_test
- /x86_64/svm_vmcall_test
- /x86_64/sync_regs_test
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index 4a166588d99f..80d5c348354c 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -55,6 +55,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_set_nested_state_test
- TEST_GEN_PROGS_x86_64 += x86_64/vmx_tsc_adjust_test
- TEST_GEN_PROGS_x86_64 += x86_64/xss_msr_test
- TEST_GEN_PROGS_x86_64 += x86_64/debug_regs
-+TEST_GEN_PROGS_x86_64 += x86_64/user_msr_test
- TEST_GEN_PROGS_x86_64 += clear_dirty_log_test
- TEST_GEN_PROGS_x86_64 += demand_paging_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
-diff --git a/tools/testing/selftests/kvm/x86_64/user_msr_test.c b/tools/testing/selftests/kvm/x86_64/user_msr_test.c
-new file mode 100644
-index 000000000000..cbe1b08890ff
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/user_msr_test.c
-@@ -0,0 +1,248 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * tests for KVM_CAP_X86_USER_SPACE_MSR and KVM_X86_SET_MSR_FILTER
-+ *
-+ * Copyright (C) 2020, Amazon Inc.
-+ *
-+ * This is a functional test to verify that we can deflect MSR events
-+ * into user space.
-+ */
-+#define _GNU_SOURCE /* for program_invocation_short_name */
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/ioctl.h>
-+
-+#include "test_util.h"
-+
-+#include "kvm_util.h"
-+#include "processor.h"
-+
-+#define VCPU_ID                  5
-+
-+static u32 msr_reads, msr_writes;
-+
-+static u8 bitmap_00000000[KVM_MSR_FILTER_MAX_BITMAP_SIZE];
-+static u8 bitmap_00000000_write[KVM_MSR_FILTER_MAX_BITMAP_SIZE];
-+static u8 bitmap_40000000[KVM_MSR_FILTER_MAX_BITMAP_SIZE];
-+static u8 bitmap_c0000000[KVM_MSR_FILTER_MAX_BITMAP_SIZE];
-+static u8 bitmap_c0000000_read[KVM_MSR_FILTER_MAX_BITMAP_SIZE];
-+static u8 bitmap_deadbeef[1] = { 0x1 };
-+
-+static void deny_msr(uint8_t *bitmap, u32 msr)
-+{
-+	u32 idx = msr & (KVM_MSR_FILTER_MAX_BITMAP_SIZE - 1);
-+
-+	bitmap[idx / 8] &= ~(1 << (idx % 8));
-+}
-+
-+static void prepare_bitmaps(void)
-+{
-+	memset(bitmap_00000000, 0xff, sizeof(bitmap_00000000));
-+	memset(bitmap_00000000_write, 0xff, sizeof(bitmap_00000000_write));
-+	memset(bitmap_40000000, 0xff, sizeof(bitmap_40000000));
-+	memset(bitmap_c0000000, 0xff, sizeof(bitmap_c0000000));
-+	memset(bitmap_c0000000_read, 0xff, sizeof(bitmap_c0000000_read));
-+
-+	deny_msr(bitmap_00000000_write, MSR_IA32_POWER_CTL);
-+	deny_msr(bitmap_c0000000_read, MSR_SYSCALL_MASK);
-+	deny_msr(bitmap_c0000000_read, MSR_GS_BASE);
-+}
-+
-+struct kvm_msr_filter filter = {
-+	.flags = KVM_MSR_FILTER_DEFAULT_DENY,
-+	.ranges = {
-+		{
-+			.flags = KVM_MSR_FILTER_READ,
-+			.base = 0x00000000,
-+			.nmsrs = KVM_MSR_FILTER_MAX_BITMAP_SIZE * BITS_PER_BYTE,
-+			.bitmap = bitmap_00000000,
-+		}, {
-+			.flags = KVM_MSR_FILTER_WRITE,
-+			.base = 0x00000000,
-+			.nmsrs = KVM_MSR_FILTER_MAX_BITMAP_SIZE * BITS_PER_BYTE,
-+			.bitmap = bitmap_00000000_write,
-+		}, {
-+			.flags = KVM_MSR_FILTER_READ | KVM_MSR_FILTER_WRITE,
-+			.base = 0x40000000,
-+			.nmsrs = KVM_MSR_FILTER_MAX_BITMAP_SIZE * BITS_PER_BYTE,
-+			.bitmap = bitmap_40000000,
-+		}, {
-+			.flags = KVM_MSR_FILTER_READ,
-+			.base = 0xc0000000,
-+			.nmsrs = KVM_MSR_FILTER_MAX_BITMAP_SIZE * BITS_PER_BYTE,
-+			.bitmap = bitmap_c0000000_read,
-+		}, {
-+			.flags = KVM_MSR_FILTER_WRITE,
-+			.base = 0xc0000000,
-+			.nmsrs = KVM_MSR_FILTER_MAX_BITMAP_SIZE * BITS_PER_BYTE,
-+			.bitmap = bitmap_c0000000,
-+		}, {
-+			.flags = KVM_MSR_FILTER_WRITE | KVM_MSR_FILTER_READ,
-+			.base = 0xdeadbeef,
-+			.nmsrs = 1,
-+			.bitmap = bitmap_deadbeef,
-+		},
-+	},
-+};
-+
-+struct kvm_msr_filter no_filter = {
-+	.flags = KVM_MSR_FILTER_DEFAULT_ALLOW,
-+};
-+
-+static void guest_msr_calls(bool trapped)
-+{
-+	/* This goes into the in-kernel emulation */
-+	wrmsr(MSR_SYSCALL_MASK, 0);
-+
-+	if (trapped) {
-+		/* This goes into user space emulation */
-+		GUEST_ASSERT(rdmsr(MSR_SYSCALL_MASK) == MSR_SYSCALL_MASK);
-+		GUEST_ASSERT(rdmsr(MSR_GS_BASE) == MSR_GS_BASE);
-+	} else {
-+		GUEST_ASSERT(rdmsr(MSR_SYSCALL_MASK) != MSR_SYSCALL_MASK);
-+		GUEST_ASSERT(rdmsr(MSR_GS_BASE) != MSR_GS_BASE);
-+	}
-+
-+	/* If trapped == true, this goes into user space emulation */
-+	wrmsr(MSR_IA32_POWER_CTL, 0x1234);
-+
-+	/* This goes into the in-kernel emulation */
-+	rdmsr(MSR_IA32_POWER_CTL);
-+
-+	/* Invalid MSR, should always be handled by user space exit */
-+	GUEST_ASSERT(rdmsr(0xdeadbeef) == 0xdeadbeef);
-+	wrmsr(0xdeadbeef, 0x1234);
-+}
-+
-+static void guest_code(void)
-+{
-+	guest_msr_calls(true);
-+
-+	/*
-+	 * Disable msr filtering, so that the kernel
-+	 * handles everything in the next round
-+	 */
-+	GUEST_SYNC(0);
-+
-+	guest_msr_calls(false);
-+
-+	GUEST_DONE();
-+}
-+
-+static int handle_ucall(struct kvm_vm *vm)
-+{
-+	struct ucall uc;
-+
-+	switch (get_ucall(vm, VCPU_ID, &uc)) {
-+	case UCALL_ABORT:
-+		TEST_FAIL("Guest assertion not met");
-+		break;
-+	case UCALL_SYNC:
-+		vm_ioctl(vm, KVM_X86_SET_MSR_FILTER, &no_filter);
-+		break;
-+	case UCALL_DONE:
-+		return 1;
-+	default:
-+		TEST_FAIL("Unknown ucall %lu", uc.cmd);
-+	}
-+
-+	return 0;
-+}
-+
-+static void handle_rdmsr(struct kvm_run *run)
-+{
-+	run->msr.data = run->msr.index;
-+	msr_reads++;
-+
-+	if (run->msr.index == MSR_SYSCALL_MASK ||
-+	    run->msr.index == MSR_GS_BASE) {
-+		TEST_ASSERT(run->msr.reason == KVM_MSR_EXIT_REASON_FILTER,
-+			    "MSR read trap w/o access fault");
-+	}
-+
-+	if (run->msr.index == 0xdeadbeef) {
-+		TEST_ASSERT(run->msr.reason == KVM_MSR_EXIT_REASON_UNKNOWN,
-+			    "MSR deadbeef read trap w/o inval fault");
-+	}
-+}
-+
-+static void handle_wrmsr(struct kvm_run *run)
-+{
-+	/* ignore */
-+	msr_writes++;
-+
-+	if (run->msr.index == MSR_IA32_POWER_CTL) {
-+		TEST_ASSERT(run->msr.data == 0x1234,
-+			    "MSR data for MSR_IA32_POWER_CTL incorrect");
-+		TEST_ASSERT(run->msr.reason == KVM_MSR_EXIT_REASON_FILTER,
-+			    "MSR_IA32_POWER_CTL trap w/o access fault");
-+	}
-+
-+	if (run->msr.index == 0xdeadbeef) {
-+		TEST_ASSERT(run->msr.data == 0x1234,
-+			    "MSR data for deadbeef incorrect");
-+		TEST_ASSERT(run->msr.reason == KVM_MSR_EXIT_REASON_UNKNOWN,
-+			    "deadbeef trap w/o inval fault");
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct kvm_enable_cap cap = {
-+		.cap = KVM_CAP_X86_USER_SPACE_MSR,
-+		.args[0] = KVM_MSR_EXIT_REASON_INVAL |
-+			   KVM_MSR_EXIT_REASON_UNKNOWN |
-+			   KVM_MSR_EXIT_REASON_FILTER,
-+	};
-+	struct kvm_vm *vm;
-+	struct kvm_run *run;
-+	int rc;
-+
-+	/* Tell stdout not to buffer its content */
-+	setbuf(stdout, NULL);
-+
-+	/* Create VM */
-+	vm = vm_create_default(VCPU_ID, 0, guest_code);
-+	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
-+	run = vcpu_state(vm, VCPU_ID);
-+
-+	rc = kvm_check_cap(KVM_CAP_X86_USER_SPACE_MSR);
-+	TEST_ASSERT(rc, "KVM_CAP_X86_USER_SPACE_MSR is available");
-+	vm_enable_cap(vm, &cap);
-+
-+	rc = kvm_check_cap(KVM_CAP_X86_MSR_FILTER);
-+	TEST_ASSERT(rc, "KVM_CAP_X86_MSR_FILTER is available");
-+
-+	prepare_bitmaps();
-+	vm_ioctl(vm, KVM_X86_SET_MSR_FILTER, &filter);
-+
-+	while (1) {
-+		rc = _vcpu_run(vm, VCPU_ID);
-+
-+		TEST_ASSERT(rc == 0, "vcpu_run failed: %d\n", rc);
-+
-+		switch (run->exit_reason) {
-+		case KVM_EXIT_X86_RDMSR:
-+			handle_rdmsr(run);
-+			break;
-+		case KVM_EXIT_X86_WRMSR:
-+			handle_wrmsr(run);
-+			break;
-+		case KVM_EXIT_IO:
-+			if (handle_ucall(vm))
-+				goto done;
-+			break;
-+		}
-+
-+	}
-+
-+done:
-+	TEST_ASSERT(msr_reads == 4, "Handled 4 rdmsr in user space");
-+	TEST_ASSERT(msr_writes == 3, "Handled 3 wrmsr in user space");
-+
-+	kvm_vm_free(vm);
-+
-+	return 0;
-+}
--- 
-2.28.0.394.ge197136389
+Thanks,
+john
 
 
 
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+ereference at virtual address 0000000000000000
+[ 10.195299] Mem abort info:
+[ 10.198080] ESR = 0x96000004
+[ 10.201121] EC = 0x25: DABT (current EL), IL = 32 bits
+[ 10.206418] SET = 0, FnV = 0
+[ 10.209459] EA = 0, S1PTW = 0
+[ 10.212585] Data abort info:
+[ 10.215452] ISV = 0, ISS = 0x00000004
+[ 10.219274] CM = 0, WnR = 0
+[ 10.222228] [0000000000000000] user address but active_mm is swapper
+[ 10.228569] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+[ 10.234127] Modules linked in:
+[ 10.237170] CPU: 11 PID: 696 Comm: irq/40-hisi_sas Not tainted 
+5.9.0-rc5-47738-gb1ead657a3fa-dirty #658
+[ 10.246548] Hardware name: Huawei D06 /D06, BIOS Hisilicon D06 UEFI RC0 
+- V1.16.01 03/15/2019
+[ 10.255058] pstate: 60c00089 (nZCv daIf +PAN +UAO BTYPE=--)
+[ 10.260620] pc : free_iova_fast+0xfc/0x280
+[ 10.264703] lr : free_iova_fast+0x94/0x280
+[ 10.268785] sp : ffff80002477bbb0
+[ 10.272086] x29: ffff80002477bbb0 x28: 0000000000000000
+[ 10.277385] x27: ffff002bc8fbb940 x26: ffff002bc727e26c
+[ 10.282684] x25: 0000000000000000 x24: ffff002bc9439008
+[ 10.287982] x23: 00000000000fdffe x22: 0000000000000080
+[ 10.293280] x21: ffff002bc9439008 x20: 0000000000000000
+[ 10.298579] x19: fffff403e9ebb700 x18: ffffffffffffffff
+[ 10.303877] x17: 0000000000000001 x16: 0000000000000000
+[ 10.309176] x15: 000000000000ffff x14: 0000000000000040
+[ 10.314474] x13: 0000000000007fff x12: 000000000001ffff
+[ 10.319772] x11: 000000000000000f x10: 0000000000006000
+[ 10.325070] x9 : 0000000000000000 x8 : ffff80002477b768
+[ 10.330368] x7 : 0000000000000000 x6 : 000000000000003f
+[ 10.335666] x5 : 0000000000000040 x4 : 0000000000000000
+[ 10.340964] x3 : fffff403e9ebb700 x2 : 0000000000000000
+[ 10.346262] x1 : 0000000000000000 x0 : 0000000000000000
+[ 10.351561] Call trace:
+[ 10.353995]free_iova_fast+0xfc/0x280
+[ 10.357731]iommu_dma_free_iova+0x64/0x70
+[ 10.361814]__iommu_dma_unmap+0x9c/0xf8
+[ 10.365723]iommu_dma_unmap_sg+0xa8/0xc8
+[ 10.369720]dma_unmap_sg_attrs+0x28/0x50
+[ 10.373717]cq_thread_v3_hw+0x2dc/0x528
+[ 10.377626]irq_thread_fn+0x2c/0xa0
+[ 10.381188]irq_thread+0x130/0x1e0
+[ 10.384664]kthread+0x154/0x158
+[ 10.387879]ret_from_fork+0x10/0x34
