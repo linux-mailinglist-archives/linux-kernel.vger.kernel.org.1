@@ -2,115 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87C92782F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936472782D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727830AbgIYIjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:39:45 -0400
-Received: from mail-bn7nam10on2042.outbound.protection.outlook.com ([40.107.92.42]:61984
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727063AbgIYIjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:39:41 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AyEszmAcRDBGTMziqo/djcp/gC7S5RTBeOEeqVPhW64NSOHTZWGDykOKfuga/bh5F6HUw1ZfZfsJIjAR6gU54TrnV93qbS4nZ8aqrnUcoqdVsDz1TY68kl7s/DQpdNjpM1Tjb1YOugZ407eUjAI1CwUiH4CxHDVlARnFBh3b0155dsxMwesSqwIlrnUQHd/wZiM6H7pWorn5Yol6L4p0R3smeezn94mpwb42dJVZALtqZs9OR/ezjR1R5txx2rDHJDIcf/ll2lWfY2SzENVdE3LhaGFRFm9/879dIaQ8n0pYwmm2mpyFSf2xF/69ivtXVEFRf7p3u7Z5KLQ4m1V/4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9LyujvwjubjZQCkGKok0Rhl5YMoy8V6vBC189Wwv8ys=;
- b=GV7IXuDZbWHsv1jCtO/icqg5SSMDkXT+ckchIceCFbuprZ1XZIeeGUleAK6jarTMTM58Gp6Us/p3meckVFLGmQ+w94BjC4hRIRmYVQbTwr5d+Ve1LuSfS1t7rvmgKaSBURScmQJkhnR6FLsa7l7aqOWl9MfOOIqVjfTpWhLB6nhixrhCUXbEM4xd/lG6fmZy6yiVNNx2ZSTzjjwMs5flJIP2AQnVPWJYF/mdmpNRHZHYtPls49/kb9gzb/RNHWt5RHXxgkcbqkbTVSofQrdb0pGhgvmv+91O+Hd/2p86Zyz5legrOmj1bvXfCY/F4crrCqL2BChuSYfgio2KHAEszw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9LyujvwjubjZQCkGKok0Rhl5YMoy8V6vBC189Wwv8ys=;
- b=eqB/WJdI4EYiM7UZ2wLI8i9V9x+iPql25xRQ1ShXe+88TE7De2BXvaxSMGC3XjI1paJ1lqMGtiZOPWK8PfKlhxTfTMI58Y2KG0tXkr6jddKSL+liaLXqh+oflLuXxilQfglWmAWWR09XKtNIwyrJbvYdVQeFLKbvqC4NdfLyiJk=
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
- by DM6PR03MB4697.namprd03.prod.outlook.com (2603:10b6:5:187::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Fri, 25 Sep
- 2020 08:39:39 +0000
-Received: from DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
- ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3391.028; Fri, 25 Sep 2020
- 08:39:39 +0000
+        id S1727476AbgIYIh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:37:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727063AbgIYIh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:37:57 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1BA8A208B6;
+        Fri, 25 Sep 2020 08:37:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601023076;
+        bh=gpwZEFQ/+uBupX6jV0nVrhi45AEr20eCgci0AaJokA4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YO2YPFXMrbvnXCG0H5ENFVaRuBCFOmiGZJwU8ih4LYqk3FqBVfh8Lwe0YLlkgGtNW
+         onUu4U5ej4ZlQjKPlkYETAGUPVz17jxZYw4Hg8pyu9F94y6BFQmtpZhRvC4AMos+fW
+         kal4LTVSMAAwG/t95Vk7ylwplBt878cj6Wtcv67k=
 Date:   Fri, 25 Sep 2020 16:37:49 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Wasim Khan <wasim.khan@nxp.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] PCI: dwc: Skip PCIE_MSI_INTR0* programming if MSI is
- disabled
-Message-ID: <20200925163749.4a45b8fa@xhacker.debian>
-In-Reply-To: <20200925163435.680b8e08@xhacker.debian>
-References: <20200925163435.680b8e08@xhacker.debian>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TY2PR0101CA0019.apcprd01.prod.exchangelabs.com
- (2603:1096:404:92::31) To DM6PR03MB4555.namprd03.prod.outlook.com
- (2603:10b6:5:102::17)
+        Xiaowei Bao <xiaowei.bao@nxp.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the pci tree with the imx-mxs tree
+Message-ID: <20200925083748.GJ25109@dragon>
+References: <20200924115731.194ecd6f@canb.auug.org.au>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TY2PR0101CA0019.apcprd01.prod.exchangelabs.com (2603:1096:404:92::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Fri, 25 Sep 2020 08:39:36 +0000
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 081aa458-0b19-47d6-1de4-08d8612e8a39
-X-MS-TrafficTypeDiagnostic: DM6PR03MB4697:
-X-Microsoft-Antispam-PRVS: <DM6PR03MB46973B3F72A4A2BC7B9EA8B1ED360@DM6PR03MB4697.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:510;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fdBV/ULiVtbN3p9BWDIcRCjpJu+QWskIV69kMoC5CA1H49ZlaqJ0dk3Yp26pO36d5QoQdgZKRUKO4sFOMddHKWX8236xU0HIjtf0BQ5l46bgcX4/SmXzR6yQ4+08X5/90jQ7CCn95FxAlFjQIFxuCin7zePJ1d63Tm+G6q2ASkLXtRfpnri2LLjlwlHcvMk8OSujIJFD4+6OTeTgsmSijfk2YaVTFZco2SFQC9vmoCqK1Z8sgMbzCvG2hpGVsYEK4IvB4XZG2uCvYbYou2Ltvgmbp0o+8cTuOmcr5WnwkZrYpBhbE0XJj41JyqVXIZQZDVdF3laFpz830sQ3VX7V/kTvQT1jlVRc9n3R6Oc7Fnvxop+1d7QsV6cLgpJCRV/R
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(396003)(366004)(376002)(6506007)(52116002)(6666004)(110136005)(4326008)(4744005)(478600001)(7696005)(83380400001)(26005)(66476007)(66946007)(8676002)(1076003)(956004)(316002)(9686003)(86362001)(8936002)(66556008)(5660300002)(16526019)(2906002)(186003)(55016002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: es5IZmBsZoOQGK6SKahlzpB01itTBRopctb0hbqOti/GmIdYkjYy21fKYuW7wAcWLixMh24cosj0US6cSJhXU7F2Wofdvv90tRBsKiovp/JUTCXPWZRn0rmKyiuaNtKcZMe/UklONLir8jo1yAQa0Yrkeh5ZOwF3vOq4IXPSIELbFhtN2vWuLYkgEyrYM0EHP2a1Xfq8dtEqNT98twbDtk3bIjKmkS5d4hhusVHcijjRIKkrHQNjUIIiACzJslrmgWMfWzrCuF04GYAX7rsLnlDIz3uoGbn09p06uUPNbJULxsl5uvpYNPqVm0EN8mB3RJftygFzQMkKql2Yyfq0yW7LcH1szOk/UUj7uOB3JW43bhjEz0ZUORsfYXGQGVYCx+oAi0vTU99PiQqudDWZ57QaLeUh5CYoUGfEvzHRBl5+Bz1ip+RjZHUXlOkNjIuLoCj8KgJ6bOlWBhnqqNLtk+NTJEQjGkew7pBQWkpX/oEDKV5av/+HRGafe6eYNaP+yzEvmHoTAbCF43QH+BTLe2fhvgDKlKTVhb8K6udCnm506eTCddmYWzLIhAg2FxayEukevJJDLqntX7dC8voR+HUtt9EZZDmGsi7dDy+/mQNb0QImBTPTIYRKMYPHusjD7+AN2nYhLkqYGYK2ah/EoQ==
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 081aa458-0b19-47d6-1de4-08d8612e8a39
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 08:39:39.1072
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Y6FiBwE0KxLMcZ5UPZRROoGnRalAWUKwmaXYQ58Gf4Hb773lT3KACdO8W0IiAzGeTVdv/xEOgXkp2mZgu9GgNg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4697
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924115731.194ecd6f@canb.auug.org.au>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If MSI is disabled, there's no need to program PCIE_MSI_INTR0_MASK
-and PCIE_MSI_INTR0_ENABLE registers.
+On Thu, Sep 24, 2020 at 11:57:31AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Today's linux-next merge of the pci tree got a conflict in:
+> 
+>   arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> 
+> between commit:
+> 
+>   f7d48ffcfc6e ("arm64: dts: layerscape: Add label to pcie nodes")
+> 
+> from the imx-mxs tree and commit:
+> 
+>   c9443b6500ff ("arm64: dts: layerscape: Add PCIe EP node for ls1088a")
+> 
+> from the pci tree.
 
-Fixes: 7c5925afbc58 ("PCI: dwc: Move MSI IRQs allocation to IRQ domainshierarchical API")
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Acked-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
----
- drivers/pci/controller/dwc/pcie-designware-host.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It should go through imx-mxs -> arm-soc, not pci tree.
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 9dafecba347f..f08f4d97f321 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -632,7 +632,7 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
- 
- 	dw_pcie_setup(pci);
- 
--	if (!pp->ops->msi_host_init) {
-+	if (pci_msi_enabled() && !pp->ops->msi_host_init) {
- 		num_ctrls = pp->num_vectors / MAX_MSI_IRQS_PER_CTRL;
- 
- 		/* Initialize IRQ Status array */
--- 
-2.28.0
+Shawn
+
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> index ff5805206a28,f21dd143ab6d..000000000000
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> @@@ -517,7 -499,18 +517,18 @@@
+>   			status = "disabled";
+>   		};
+>   
+> + 		pcie-ep@3400000 {
+> + 			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
+> + 			reg = <0x00 0x03400000 0x0 0x00100000
+> + 			       0x20 0x00000000 0x8 0x00000000>;
+> + 			reg-names = "regs", "addr_space";
+> + 			num-ib-windows = <24>;
+> + 			num-ob-windows = <128>;
+> + 			max-functions = /bits/ 8 <2>;
+> + 			status = "disabled";
+> + 		};
+> + 
+>  -		pcie@3500000 {
+>  +		pcie2: pcie@3500000 {
+>   			compatible = "fsl,ls1088a-pcie";
+>   			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
+>   			       0x28 0x00000000 0x0 0x00002000>; /* configuration space */
+> @@@ -543,7 -536,17 +554,17 @@@
+>   			status = "disabled";
+>   		};
+>   
+> + 		pcie-ep@3500000 {
+> + 			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
+> + 			reg = <0x00 0x03500000 0x0 0x00100000
+> + 			       0x28 0x00000000 0x8 0x00000000>;
+> + 			reg-names = "regs", "addr_space";
+> + 			num-ib-windows = <6>;
+> + 			num-ob-windows = <8>;
+> + 			status = "disabled";
+> + 		};
+> + 
+>  -		pcie@3600000 {
+>  +		pcie3: pcie@3600000 {
+>   			compatible = "fsl,ls1088a-pcie";
+>   			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
+>   			       0x30 0x00000000 0x0 0x00002000>; /* configuration space */
+
 
