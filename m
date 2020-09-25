@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D5E2794D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 546F32794D3
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbgIYXf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgIYXfz (ORCPT
+        id S1729373AbgIYXg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:36:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57888 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726210AbgIYXg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:35:55 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C55B3C0613CE;
-        Fri, 25 Sep 2020 16:35:55 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id e18so227748pgd.4;
-        Fri, 25 Sep 2020 16:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=i15b0JKcCEn7qZufA0fqER1Rf3NvdTXdprxERiGECxM=;
-        b=aJ8TqUp7lTEH3C/zQeCn6egXjz2Hg/sqtoFVyzR8uFxAdj7LUs5azJGf28nuv91mFv
-         kDo0esl5hQ+BlX1KVb/m6IrWaE4mnHjnP0wz0L6soz8x125HvdVJSLrUUo3SHmYtT7Rj
-         02YmRxYR6RMJ4+asqnZ08VqTZo+w6rQvSAG2VlhfUmffyvJQmZzjTPK+/tEDz2YPZjGM
-         9Yi2JAEOFB5iJtmY5U1UImqegvj1KXaby5DbqICZmsqyVQLpXwPM5g0oLOhDtVRAepmQ
-         Atk3YO/LgkN5BpSXulZUI2HflWNBmZz2zU/oEZwg8x5W7k7Mb3LLdVUV8yXHDb+xE43H
-         Legw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=i15b0JKcCEn7qZufA0fqER1Rf3NvdTXdprxERiGECxM=;
-        b=Dn2OuJmQvGu1kSzFDydIqqHlr2kZ45+Ad/dts4XcHi20WEkwzjznpyZ7rTEHYgtryf
-         d9vN7KFq4VzHe4CS+8+ZQcYV/GJLHi0pRRcDVAKx7vpLfjckBfyykNKXHZqLDlpRNf4a
-         ozG6BGEX/g5F0P2IxWTxPeHmsX/e4vUpHn3wCgGSIof76GqlWipDSNbkT/JxNANIHlPI
-         djIbdx3FNgGCDgkZaaVA4tsxlQN880mCYkk9w7NUtaB6Bpouqsts5/n754D4nQAu62y4
-         iBcBW4KJAtpXxLNIn5isrfd/rJc2X72qD84TK0kkOYi2zjmRUSc+QBK7PDkMbNbYm1nv
-         3s+A==
-X-Gm-Message-State: AOAM530aepLeJVq+L0fiYQ2GVFu3BdgSorV7D1Pi0Ag7ucxU/xF0mk3S
-        JyQT0ZcbNHL062KJ7IEkmco=
-X-Google-Smtp-Source: ABdhPJw67ZTqShxre5CpgvX+xqkOxGhl9OVquoh0aWJtLT4CCOK4PiW6jUmSC/eFr/oX+ouKwRK0Fw==
-X-Received: by 2002:a62:fc51:0:b029:142:4506:9a7b with SMTP id e78-20020a62fc510000b029014245069a7bmr863680pfh.28.1601076955127;
-        Fri, 25 Sep 2020 16:35:55 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id t24sm3721066pfq.37.2020.09.25.16.35.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 16:35:54 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 16:35:52 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Kenneth Albanowski <kenalba@google.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: hid-input: fix stylus battery reporting
-Message-ID: <20200925233552.GA4022480@dtor-ws>
+        Fri, 25 Sep 2020 19:36:57 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601077016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WD+Mt/pFl73GwFi148Y3nb0ypbYCbFWTzG/uad5+3Yc=;
+        b=gkN98x6xvUvHcysf8EHNU93RCgdgFf0BhScT/XtVO6u+teu7A+r/pHmvhOIypKuaDVfeIJ
+        rsJzHO41MX5/8MM/ENwoi3M7FUyDu9oB5OEQiU2ZoW8yecYElsPg4eMmA8ZcrlmsK27hVn
+        Z9uPZt27E4HKRaFRP9BPQnaoYWl65Mw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-118-uZ1HHfikPIeHM8yKzTDdOg-1; Fri, 25 Sep 2020 19:36:53 -0400
+X-MC-Unique: uZ1HHfikPIeHM8yKzTDdOg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4E8680732A;
+        Fri, 25 Sep 2020 23:36:52 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8505F19C66;
+        Fri, 25 Sep 2020 23:36:52 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] Second batch of KVM fixes for Linux 5.9-rc7
+Date:   Fri, 25 Sep 2020 19:36:52 -0400
+Message-Id: <20200925233652.2187766-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With commit 4f3882177240 hid-input started clearing of "ignored" usages
-to avoid using garbage that might have been left in them. However
-"battery strength" usages should not be ignored, as we do want to
-use them.
+Linus,
 
-Fixes: 4f3882177240 ("HID: hid-input: clear unmapped usages")
-Reported-by: Kenneth Albanowski <kenalba@google.com>
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
+The following changes since commit 32251b07d532174d66941488c112ec046f646157:
 
-Kenneth, can you please try this one and see if it fixes your issue?
+  Merge tag 'kvm-s390-master-5.9-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux into kvm-master (2020-09-20 17:31:15 -0400)
 
- drivers/hid/hid-input.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+are available in the Git repository at:
 
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index dea9cc65bf80..5da631d2ec9b 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -797,7 +797,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
- 		case 0x3b: /* Battery Strength */
- 			hidinput_setup_battery(device, HID_INPUT_REPORT, field);
- 			usage->type = EV_PWR;
--			goto ignore;
-+			return;
- 
- 		case 0x3c: /* Invert */
- 			map_key_clear(BTN_TOOL_RUBBER);
-@@ -1059,7 +1059,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
- 		case HID_DC_BATTERYSTRENGTH:
- 			hidinput_setup_battery(device, HID_INPUT_REPORT, field);
- 			usage->type = EV_PWR;
--			goto ignore;
-+			return;
- 		}
- 		goto unknown;
- 
--- 
-2.28.0.681.g6f77f65b4e-goog
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
+for you to fetch changes up to 4bb05f30483fd21ea5413eaf1182768f251cf625:
 
--- 
-Dmitry
+  KVM: SVM: Add a dedicated INVD intercept routine (2020-09-25 13:27:35 -0400)
+
+----------------------------------------------------------------
+Five small fixes.  The nested migration bug will be fixed
+with a better API in 5.10 or 5.11, for now this is a fix
+that works with existing userspace but keeps the current
+ugly API.
+
+----------------------------------------------------------------
+Maxim Levitsky (1):
+      KVM: x86: fix MSR_IA32_TSC read for nested migration
+
+Mohammed Gamal (1):
+      KVM: x86: VMX: Make smaller physical guest address space support user-configurable
+
+Sean Christopherson (1):
+      KVM: x86: Reset MMU context if guest toggles CR4.SMAP or CR4.PKE
+
+Tom Lendacky (1):
+      KVM: SVM: Add a dedicated INVD intercept routine
+
+Yang Weijiang (1):
+      selftests: kvm: Fix assert failure in single-step test
+
+ arch/x86/kvm/svm/svm.c                          |  8 +++++++-
+ arch/x86/kvm/vmx/vmx.c                          | 15 ++++++++++-----
+ arch/x86/kvm/vmx/vmx.h                          |  5 ++++-
+ arch/x86/kvm/x86.c                              | 22 ++++++++++++++++++----
+ tools/testing/selftests/kvm/x86_64/debug_regs.c |  2 +-
+ 5 files changed, 40 insertions(+), 12 deletions(-)
+
