@@ -2,107 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CB627892C
+	by mail.lfdr.de (Postfix) with ESMTP id 35B6127892B
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728844AbgIYNQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:16:25 -0400
-Received: from mailrelay112.isp.belgacom.be ([195.238.20.139]:52973 "EHLO
-        mailrelay112.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728814AbgIYNQZ (ORCPT
+        id S1728809AbgIYNQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:16:17 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:40859 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728406AbgIYNQQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:16:25 -0400
-IronPort-SDR: lAsdkI1iOSoCmuM1HFCdnPuFg7TJRwX3a9KTEHcvv3zdaRl2DgzapcT6xq2oVoAWc948leSeRQ
- ina3g2yhvB7TE7TQgwcvkTQJPgYlzjS3LYhzHX8uvKz4cHZvy1dJfzOJHO1t7RjFvrRq4Qeo2q
- BOWL3c8iwlPpXm0++t9yeFP5LbzM38RfyO04rKxAOaXSI+ZrEfyMXaOLdO0rzco/cSeJJVkofz
- Zfk3iLDLPWdETU5arxysClA0+JRSHFjSiYg1e2Sb5/rvh+8wX8CuTO9spqAxUQQAYk3ABXEaoS
- Gow=
-X-Belgacom-Dynamic: yes
-IronPort-PHdr: =?us-ascii?q?9a23=3AnZ/nNBOWH1jaD7Gxbv0l6mtUPXoX/o7sNwtQ0K?=
- =?us-ascii?q?IMzox0K/z8pMbcNUDSrc9gkEXOFd2Cra4d1KyM6+u9CCQp2tWoiDg6aptCVh?=
- =?us-ascii?q?sI2409vjcLJ4q7M3D9N+PgdCcgHc5PBxdP9nC/NlVJSo6lPwWB6nK94iQPFR?=
- =?us-ascii?q?rhKAF7Ovr6GpLIj8Swyuu+54Dfbx9HiTagY75+Ngu6oRneusQWhYZpN7o8xA?=
- =?us-ascii?q?bOrnZUYepd2HlmJUiUnxby58ew+IBs/iFNsP8/9MBOTLv3cb0gQbNXEDopPW?=
- =?us-ascii?q?Y15Nb2tRbYVguA+mEcUmQNnRVWBQXO8Qz3UY3wsiv+sep9xTWaMMjrRr06RT?=
- =?us-ascii?q?iu86FmQwLuhSwaNTA27XvXh9RwgqxFvRyvqR9xzYnbb4+aL/dyYqDQcMkGSW?=
- =?us-ascii?q?dbQspdSypMCZ68YYsVCOoBOP5VoYnnqFQVrBuxHw+sD/7vxD9SmHD5wLM10/?=
- =?us-ascii?q?4gEQ7a3wwrAtUDsHrOo9ruOqcfSvu1zKrIzDXFcfxWxS3x55PWfR04p/yHQL?=
- =?us-ascii?q?1/f9bLx0Y1CwPFkkufqZbjPz6N2OoAsGyW4ephWO+vlWIqpQF/ryWzyssxlo?=
- =?us-ascii?q?XEh40bxF/Z+Ch33os4ON21RUxlbNCrDJdeuS6UOo92TM0iXW1lvCA3waAFt5?=
- =?us-ascii?q?6jZCUHzIkrywTCZ/GEbYSE+A/vWeeRLDtimX5oebSyjAuo/0e60O3zTMy03U?=
- =?us-ascii?q?5PripCj9bDqGgA1wfW6sibUvt9+Vqh2SqX2wDT9O5EJUc0mLLfK54m3rE/jJ?=
- =?us-ascii?q?4TsUTEHi/thEX6lquWdkI49eey7+Tof7LmppqGOI91jAHyKqUumsqhDuQkKg?=
- =?us-ascii?q?UDW3WX9f6h2LDg40H1WqhGg/w2n6XDrZzXJNwXpqujDA9U1oYj5Qy/DzCj0N?=
- =?us-ascii?q?kAk3kINklKeBycgojyOFHPIPb4Aumjg1i2izhk2ejKPqf9DZXVMnjDjLDhcK?=
- =?us-ascii?q?5g5EFG1go809Vf6olJBb4bPvL8RErxtNjfDh83Lwy42eDnB8th1okGQ2KAHr?=
- =?us-ascii?q?eZML/OsV+P/u8vIPSMa5QPtzvmKPgq+eTujXknll8ZZ6Wp2oEXaH+gFPR8P0?=
- =?us-ascii?q?qZeWbsgssGEWoSuwo+T/Hqh0acXjFPeXmyXLkx5iomCIK9E4jPXJyigb2Z1i?=
- =?us-ascii?q?ehApJWfnxGCkyLEXrwcYWLResMZz+MLc9/iTEES7ehRJE71R20tw/11aBnLu?=
- =?us-ascii?q?zK9S0cr57j08J15+LLnxEo6TN0F9id032KT2xsmmMIRjk23L1woEBkyVeMz7?=
- =?us-ascii?q?J4g/pGGtxX/P5JTAg6OoDGz+BgCND9RBjBftGXR1aiWNmmBisxTt0pyd8Uf0?=
- =?us-ascii?q?l9A8mijgzE3yeyDb8ajaeEBJIv/6LH3HjwJ8B9xGja1KU7lFYpXJgHCWrziq?=
- =?us-ascii?q?dh+g37C4fXnkCdkKi2M6IRwGqF93qJxEKNsVteXQo2Vr/KDl4FYU6Dg93z50?=
- =?us-ascii?q?rEB5G0BLgqKApKyobWJKJAZPXyjkRASeulMtmIMDH5oHu5GRvdnuDEV4HtYW?=
- =?us-ascii?q?hIhCg=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2ASEgDD7G1f/xCltltfHAEBATwBAQQ?=
- =?us-ascii?q?EAQECAQEHAQEcgUqBHCACAQGCLV+NPpJikgQLAQEBAQEBAQEBNQECBAEBhEu?=
- =?us-ascii?q?CMSU4EwIDAQEBAwIFAQEGAQEBAQEBBQQBhg9Fgjcig0cLASMjgT8SgyaCWCm?=
- =?us-ascii?q?4PzOEEIURgUKBNgIBAQEBiCuFGoFBP4RfijQEtz2CcYMThGmSTA8ioRCTCKI?=
- =?us-ascii?q?YgXpNIBiDJFAZDY5WjhJCMDcCBgoBAQMJVwE9AY4fAQE?=
-X-IPAS-Result: =?us-ascii?q?A2ASEgDD7G1f/xCltltfHAEBATwBAQQEAQECAQEHAQEcg?=
- =?us-ascii?q?UqBHCACAQGCLV+NPpJikgQLAQEBAQEBAQEBNQECBAEBhEuCMSU4EwIDAQEBA?=
- =?us-ascii?q?wIFAQEGAQEBAQEBBQQBhg9Fgjcig0cLASMjgT8SgyaCWCm4PzOEEIURgUKBN?=
- =?us-ascii?q?gIBAQEBiCuFGoFBP4RfijQEtz2CcYMThGmSTA8ioRCTCKIYgXpNIBiDJFAZD?=
- =?us-ascii?q?Y5WjhJCMDcCBgoBAQMJVwE9AY4fAQE?=
-Received: from 16.165-182-91.adsl-dyn.isp.belgacom.be (HELO localhost.localdomain) ([91.182.165.16])
-  by relay.skynet.be with ESMTP; 25 Sep 2020 15:16:23 +0200
-From:   Fabian Frederick <fabf@skynet.be>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     mkubecek@suse.cz, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH V2 1/5 net-next] vxlan: don't collect metadata if remote checksum is wrong
-Date:   Fri, 25 Sep 2020 15:16:02 +0200
-Message-Id: <20200925131602.56461-1-fabf@skynet.be>
-X-Mailer: git-send-email 2.27.0
+        Fri, 25 Sep 2020 09:16:16 -0400
+Received: by mail-oo1-f66.google.com with SMTP id r4so729444ooq.7;
+        Fri, 25 Sep 2020 06:16:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=r5WD2VFfz3+ojXFirlkxa9EAqwL7AW9KJ4XMtvtNJ/k=;
+        b=dokPBztJW12+BQWv5frvNC5tk17d71rQwhj+GD6blwp2EYXo2maxi2loZZDs5mgsKk
+         KYJti5rdqVSrhmleRHFu12yPC+KQLpETxilgNCj25Aroima3GlSIGjQsDyV1FPUOBFOO
+         sAU/Yb2lAH/kt0tvGulaWqfwn1MjCQkHe4TBzJAAJKOEC/CqqtQu+lroV/W9G6+HYU8o
+         HJSb5Qug8iCaNBGJSQDo1nh/8LEoxFwtw4pQ9QTaZqN69t4C8ECMT3MGxxM0qSYxqCpf
+         Apw0DnkCPz4fO9tEezlwZkFI8oOwEijT2YtEUChM598tKtslZhy1EykdKlHvNki5mhR6
+         a7uw==
+X-Gm-Message-State: AOAM533bmjsaR8Xft+JCFvdbznGUVvjRF/sbolwqauTxVvyZ6F9hK3sg
+        ILFSxH6uPb/HizI28QZNhFHcv3bhdvlmFlFareA=
+X-Google-Smtp-Source: ABdhPJxzLzuNCZU4nHZloZTHT0IDS0yngrtPE/PAJtr/9mjlZXeXIjc796ihHW4sHDf4SCwbqa1KENWiV+xxTpu/afU=
+X-Received: by 2002:a4a:5d84:: with SMTP id w126mr801210ooa.1.1601039774515;
+ Fri, 25 Sep 2020 06:16:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200923120817.1667149-0-mholenko@antmicro.com> <20200923120817.1667149-3-mholenko@antmicro.com>
+In-Reply-To: <20200923120817.1667149-3-mholenko@antmicro.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 25 Sep 2020 15:16:02 +0200
+Message-ID: <CAMuHMdUBCf8DsRBvXxxrfrQsab3kOwy95u-KwkdvaSY0vXQnXQ@mail.gmail.com>
+Subject: Re: [PATCH v11 3/5] drivers/soc/litex: add LiteX SoC Controller driver
+To:     Mateusz Holenko <mholenko@antmicro.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gabriel L. Somlo" <gsomlo@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-call vxlan_remcsum() before md filling in vxlan_rcv()
+Hi Mateusz,
 
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
----
- drivers/net/vxlan.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+On Wed, Sep 23, 2020 at 12:10 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
+> From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
+>
+> This commit adds driver for the FPGA-based LiteX SoC
+> Controller from LiteX SoC builder.
+>
+> Co-developed-by: Mateusz Holenko <mholenko@antmicro.com>
+> Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
+> Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
 
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index b9fefe27e3e89..47c762f7f5b11 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -1875,6 +1875,10 @@ static int vxlan_rcv(struct sock *sk, struct sk_buff *skb)
- 				   !net_eq(vxlan->net, dev_net(vxlan->dev))))
- 		goto drop;
- 
-+	if (vs->flags & VXLAN_F_REMCSUM_RX)
-+		if (!vxlan_remcsum(&unparsed, skb, vs->flags))
-+			goto drop;
-+
- 	if (vxlan_collect_metadata(vs)) {
- 		struct metadata_dst *tun_dst;
- 
-@@ -1891,9 +1895,6 @@ static int vxlan_rcv(struct sock *sk, struct sk_buff *skb)
- 		memset(md, 0, sizeof(*md));
- 	}
- 
--	if (vs->flags & VXLAN_F_REMCSUM_RX)
--		if (!vxlan_remcsum(&unparsed, skb, vs->flags))
--			goto drop;
- 	if (vs->flags & VXLAN_F_GBP)
- 		vxlan_parse_gbp_hdr(&unparsed, skb, vs->flags, md);
- 	/* Note that GBP and GPE can never be active together. This is
+Thanks for your patch!
+
+> --- /dev/null
+> +++ b/drivers/soc/litex/Kconfig
+> @@ -0,0 +1,15 @@
+> +# SPDX-License_Identifier: GPL-2.0
+> +
+> +menu "Enable LiteX SoC Builder specific drivers"
+> +
+> +config LITEX_SOC_CONTROLLER
+> +       tristate "Enable LiteX SoC Controller driver"
+> +       depends on OF || COMPILE_TEST
+> +       help
+> +         This option enables the SoC Controller Driver which verifies
+> +         LiteX CSR access and provides common litex_get_reg/litex_set_reg
+> +         accessors.
+> +         All drivers that use functions from litex.h must depend on
+> +         LITEX_SOC_CONTROLLER.
+
+I'm wondering if it makes sense to have them depend on a "simpler"
+symbol instead, e.g. LITEX?
+
+Currently the SoC controller is limited to I/O accessors and a simple
+register compatibility check, but you may want to extend it with more
+features later, so you probably want to keep the LITEX_SOC_CONTROLLER.
+Hence you could add
+
+    config LITEX
+        bool
+
+and let LITEX_SOC_CONTROLLER select LITEX.
+
+> --- /dev/null
+> +++ b/drivers/soc/litex/litex_soc_ctrl.c
+> @@ -0,0 +1,194 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * LiteX SoC Controller Driver
+> + *
+> + * Copyright (C) 2020 Antmicro <www.antmicro.com>
+> + *
+> + */
+> +
+> +#include <linux/litex.h>
+> +#include <linux/device.h>
+> +#include <linux/errno.h>
+> +#include <linux/of.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/printk.h>
+> +#include <linux/module.h>
+> +#include <linux/errno.h>
+> +#include <linux/io.h>
+> +
+> +/*
+> + * The parameters below are true for LiteX SoC
+
+SoCs
+
+> + * configured for 8-bit CSR Bus, 32-bit aligned.
+> + *
+> + * Supporting other configurations will require
+> + * extending the logic in this header.
+
+This is no longer a header file.
+
+> + */
+> +#define LITEX_REG_SIZE             0x4
+> +#define LITEX_SUBREG_SIZE          0x1
+> +#define LITEX_SUBREG_SIZE_BIT      (LITEX_SUBREG_SIZE * 8)
+> +
+> +static DEFINE_SPINLOCK(csr_lock);
+> +
+> +/*
+> + * LiteX SoC Generator, depending on the configuration,
+> + * can split a single logical CSR (Control & Status Register)
+> + * into a series of consecutive physical registers.
+> + *
+> + * For example, in the configuration with 8-bit CSR Bus,
+> + * 32-bit aligned (the default one for 32-bit CPUs) a 32-bit
+> + * logical CSR will be generated as four 32-bit physical registers,
+> + * each one containing one byte of meaningful data.
+> + *
+> + * For details see: https://github.com/enjoy-digital/litex/wiki/CSR-Bus
+> + *
+> + * The purpose of `litex_set_reg`/`litex_get_reg` is to implement
+> + * the logic of writing to/reading from the LiteX CSR in a single
+> + * place that can be then reused by all LiteX drivers.
+> + */
+> +void litex_set_reg(void __iomem *reg, unsigned long reg_size,
+> +                   unsigned long val)
+> +{
+> +       unsigned long shifted_data, shift, i;
+> +       unsigned long flags;
+> +
+> +       spin_lock_irqsave(&csr_lock, flags);
+> +
+> +       for (i = 0; i < reg_size; ++i) {
+> +               shift = ((reg_size - i - 1) * LITEX_SUBREG_SIZE_BIT);
+> +               shifted_data = val >> shift;
+> +
+> +               writel((u32 __force)cpu_to_le32(shifted_data), reg + (LITEX_REG_SIZE * i));
+> +       }
+> +
+> +       spin_unlock_irqrestore(&csr_lock, flags);
+> +}
+> +EXPORT_SYMBOL_GPL(litex_set_reg);
+
+I'm still wondering about the overhead of loops and multiple accesses,
+and the need for them (see also BenH's earlier comment).
+If e.g. the register widths change for LiteUART (currently they're
+hardcoded to one), would you still consider it using the same
+programming interface, and thus compatible with "litex,liteuart"?
+
+The spinlock access will probably become the source of lock contention
+later, especially when considering SMP variants.
+
+> +/*
+> + * Check LiteX CSR read/write access
+> + *
+> + * This function reads and writes a scratch register in order
+> + * to verify if CSR access works.
+> + *
+> + * In case any problems are detected, the driver should panic.
+> + *
+> + * Access to the LiteX CSR is, by design, done in CPU native
+> + * endianness. The driver should not dynamically configure
+> + * access functions when the endianness mismatch is detected.
+> + * Such situation indicates problems in the soft SoC design
+> + * and should be solved at the LiteX generator level,
+> + * not in the software.
+> + */
+> +static int litex_check_csr_access(void __iomem *reg_addr)
+> +{
+> +       unsigned long reg;
+> +
+> +       reg = litex_get_reg(reg_addr + SCRATCH_REG_OFF, SCRATCH_REG_SIZE);
+> +
+> +       if (reg != SCRATCH_REG_VALUE) {
+> +               panic("Scratch register read error! Expected: 0x%x but got: 0x%lx",
+> +                       SCRATCH_REG_VALUE, reg);
+
+Do you think the user will ever see this panic message? (see below)
+
+> +               return -EINVAL;
+
+Good ;-)  All of BUG()/WARN()/panic() may be compiled out, depending on
+config options, so the system may continue running beyond the panic()
+call.
+
+> +static int litex_soc_ctrl_probe(struct platform_device *pdev)
+> +{
+> +       int result;
+> +       struct device *dev;
+> +       struct device_node *node;
+> +       struct litex_soc_ctrl_device *soc_ctrl_dev;
+> +
+> +       dev = &pdev->dev;
+> +       node = dev->of_node;
+> +       if (!node)
+> +               return -ENODEV;
+
+FYI, this cannot happen.
+
+> +
+> +       soc_ctrl_dev = devm_kzalloc(dev, sizeof(*soc_ctrl_dev), GFP_KERNEL);
+> +       if (!soc_ctrl_dev)
+> +               return -ENOMEM;
+> +
+> +       soc_ctrl_dev->base = devm_platform_ioremap_resource(pdev, 0);
+> +       if (IS_ERR(soc_ctrl_dev->base))
+> +               return PTR_ERR(soc_ctrl_dev->base);
+> +
+> +       result = litex_check_csr_access(soc_ctrl_dev->base);
+> +       if (result) {
+> +               /* LiteX CSRs access is broken which means that
+> +                * none of LiteX drivers will most probably
+> +                * operate correctly
+> +                */
+> +               WARN(1, "Failed to validate CSR registers, the system is probably broken.\n");
+
+WARN(result, ...)
+
+But is this WARN() needed? You have already called panic() before.
+
+> +       }
+> +
+> +       return result;
+> +}
+> +
+> +static struct platform_driver litex_soc_ctrl_driver = {
+> +       .driver = {
+> +               .name = "litex-soc-controller",
+> +               .of_match_table = of_match_ptr(litex_soc_ctrl_of_match)
+> +       },
+> +       .probe = litex_soc_ctrl_probe,
+> +};
+> +
+> +module_platform_driver(litex_soc_ctrl_driver);
+
+module_platform_driver() means this driver is probed quite late in the
+boot sequence.  Currently the only other LiteX driver is liteuart, which
+is probed at more or less the same time, but I can envision more early
+drivers to be added later (typically interrupt/clock controllers and
+timers not integrated into the main CPU core).
+Note that even liteuart will run earlier, and thus access CSR registers
+before the check has run, when using e.g. earlycon...
+
+> --- /dev/null
+> +++ b/include/linux/litex.h
+> @@ -0,0 +1,24 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Common LiteX header providing
+> + * helper functions for accessing CSRs.
+> + *
+> + * Implementation of the functions is provided by
+> + * the LiteX SoC Controller driver.
+> + *
+> + * Copyright (C) 2019-2020 Antmicro <www.antmicro.com>
+> + */
+> +
+> +#ifndef _LINUX_LITEX_H
+> +#define _LINUX_LITEX_H
+> +
+> +#include <linux/io.h>
+> +#include <linux/types.h>
+> +#include <linux/compiler_types.h>
+> +
+> +void litex_set_reg(void __iomem *reg, unsigned long reg_sz, unsigned long val);
+> +
+> +unsigned long litex_get_reg(void __iomem *reg, unsigned long reg_sz);
+
+Perhaps you can add static inline litex_{read,write}{8,16,32}() wrappers,
+so drivers don't have to pass the reg_sz parameter explicitly,
+and to make it look more like accessors of other bus types?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.27.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
