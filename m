@@ -2,39 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFBD2787FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD38278882
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729241AbgIYMvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:51:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56112 "EHLO mail.kernel.org"
+        id S1729466AbgIYMxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729224AbgIYMvk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:51:40 -0400
+        id S1729074AbgIYMxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:53:40 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0A5122072E;
-        Fri, 25 Sep 2020 12:51:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D28B22B2D;
+        Fri, 25 Sep 2020 12:53:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038299;
-        bh=3CxEedJgFMUT9aAxvc8DjPu3Fk3FQFyN00bflofktYs=;
+        s=default; t=1601038418;
+        bh=sEaWP1cKVH/UlgESP73BVWdO2ZFk/h/u8XOr4UONHuw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H5HV94XqPM9ksW+E6XtQ4zcChgq/kSWEpeQur873idYyiBkFAZlT+MMFvstQ+RTRm
-         KgtWnEeTlCDuZSzo15P8DFtU1cJWwUFKKq/UJIHxswzeY3dyYSbLc3S4ZwEQJ2J1TH
-         5+kqP80a0hsyVVt/3wcKMexWe/WmY5X34V1djytc=
+        b=tGX3j21SUlb+PxCjmd7FHiqQVNMgh+J065PguqM5bWqM6ZVUVVf2cnnE8dAWmKYLG
+         n1ebo4B4+I0Bl72O0tudtVxBKcNaCSv5kYjdFkQ8DOr3DG6gyHm86Al3p5ofD6CPSN
+         SAnI+9izz9SpKSOxTua1wk37oK4hOMQexMVIiItA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 19/43] net: dsa: rtl8366: Properly clear member config
+        stable@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Song Liu <songliubraving@fb.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 03/37] kprobes: fix kill kprobe which has been marked as gone
 Date:   Fri, 25 Sep 2020 14:48:31 +0200
-Message-Id: <20200925124726.478471052@linuxfoundation.org>
+Message-Id: <20200925124721.468882538@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
-References: <20200925124723.575329814@linuxfoundation.org>
+In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
+References: <20200925124720.972208530@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,55 +51,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Muchun Song <songmuchun@bytedance.com>
 
-[ Upstream commit 4ddcaf1ebb5e4e99240f29d531ee69d4244fe416 ]
+[ Upstream commit b0399092ccebd9feef68d4ceb8d6219a8c0caa05 ]
 
-When removing a port from a VLAN we are just erasing the
-member config for the VLAN, which is wrong: other ports
-can be using it.
+If a kprobe is marked as gone, we should not kill it again.  Otherwise, we
+can disarm the kprobe more than once.  In that case, the statistics of
+kprobe_ftrace_enabled can unbalance which can lead to that kprobe do not
+work.
 
-Just mask off the port and only zero out the rest of the
-member config once ports using of the VLAN are removed
-from it.
-
-Reported-by: Florian Fainelli <f.fainelli@gmail.com>
-Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: e8386a0cb22f ("kprobes: support probing module __exit function")
+Co-developed-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Song Liu <songliubraving@fb.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20200822030055.32383-1-songmuchun@bytedance.com
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/rtl8366.c |   20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ kernel/kprobes.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/net/dsa/rtl8366.c
-+++ b/drivers/net/dsa/rtl8366.c
-@@ -452,13 +452,19 @@ int rtl8366_vlan_del(struct dsa_switch *
- 				return ret;
+diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+index eb4bffe6d764d..230d9d599b5aa 100644
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -2061,6 +2061,9 @@ static void kill_kprobe(struct kprobe *p)
+ {
+ 	struct kprobe *kp;
  
- 			if (vid == vlanmc.vid) {
--				/* clear VLAN member configurations */
--				vlanmc.vid = 0;
--				vlanmc.priority = 0;
--				vlanmc.member = 0;
--				vlanmc.untag = 0;
--				vlanmc.fid = 0;
--
-+				/* Remove this port from the VLAN */
-+				vlanmc.member &= ~BIT(port);
-+				vlanmc.untag &= ~BIT(port);
-+				/*
-+				 * If no ports are members of this VLAN
-+				 * anymore then clear the whole member
-+				 * config so it can be reused.
-+				 */
-+				if (!vlanmc.member && vlanmc.untag) {
-+					vlanmc.vid = 0;
-+					vlanmc.priority = 0;
-+					vlanmc.fid = 0;
-+				}
- 				ret = smi->ops->set_vlan_mc(smi, i, &vlanmc);
- 				if (ret) {
- 					dev_err(smi->dev,
++	if (WARN_ON_ONCE(kprobe_gone(p)))
++		return;
++
+ 	p->flags |= KPROBE_FLAG_GONE;
+ 	if (kprobe_aggrprobe(p)) {
+ 		/*
+@@ -2243,7 +2246,10 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 	mutex_lock(&kprobe_mutex);
+ 	for (i = 0; i < KPROBE_TABLE_SIZE; i++) {
+ 		head = &kprobe_table[i];
+-		hlist_for_each_entry_rcu(p, head, hlist)
++		hlist_for_each_entry_rcu(p, head, hlist) {
++			if (kprobe_gone(p))
++				continue;
++
+ 			if (within_module_init((unsigned long)p->addr, mod) ||
+ 			    (checkcore &&
+ 			     within_module_core((unsigned long)p->addr, mod))) {
+@@ -2260,6 +2266,7 @@ static int kprobes_module_callback(struct notifier_block *nb,
+ 				 */
+ 				kill_kprobe(p);
+ 			}
++		}
+ 	}
+ 	mutex_unlock(&kprobe_mutex);
+ 	return NOTIFY_DONE;
+-- 
+2.25.1
+
 
 
