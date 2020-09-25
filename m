@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C495C279331
+	by mail.lfdr.de (Postfix) with ESMTP id 55552279330
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728988AbgIYVXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33532 "EHLO
+        id S1728942AbgIYVXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727961AbgIYVXK (ORCPT
+        with ESMTP id S1726687AbgIYVXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:23:10 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD737C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:10 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id h15so3447588pfr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:10 -0700 (PDT)
+        Fri, 25 Sep 2020 17:23:13 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F82C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:12 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id s141so3041634qka.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=Ua7W65/d+eys6TkCdCKyUD20UsOP9zKnnrEciCir1oA=;
-        b=Ba8vZCGd6BVlQ3ApTWbLnydXdozDtsK//xKSkkcRq0/GVpiouAAKjNjX7g4wF3RHFh
-         cm5pVnHUV72MHz50fFJTsAvMnamSUg8AVwiSAeq5C9/d8lvMDSrVhmJ7zjsVAPZhwAXx
-         ok7JapD/Nia/Sd55oRtc2pYiYuZxpbjV6n029qzPHEdB+TcXZ5lhD5rhMQCoVfJ9eDFM
-         vyk3DEF8RNUUn4UAgLXIiI54oE+o55wAly4tB+unfNR85PQwZO7r18osoAV7JRb7iY/7
-         5HoFJ0A6IIgZGQWwvH97D+IQ9OTkR9YgWOU1suPLe6xQypWfPomWfLrz+3Um8Ful6DUT
-         B8MQ==
+        bh=ghcbda5Gcwx3UnIAaqAaGm8LTVhquolw1KyMWFRxb/k=;
+        b=pYiyHMEJi022dQb6mD1VjA3IbQ9/CGZ5EktjBaX+sqJovC+hXW50n6az8iXbQ4xGWp
+         AOznuY9+Dz/NVxY3mPOsTHCgxELYa2uigXZXZRASH0u979wdpWzdX9gvPYepZFsQvfu7
+         lT52i1fzeS7O/bfrwEhr9XamVg4SrVJxK9M+L4chLwtqUBprSUnSZDdf3f1UFsiMiteH
+         G1WsuQr3ijF7EV3dbu0Mbr4RRpWIJBJFn9FMOJtceZlzfX+PicjWDruT4btApxCY+dNM
+         4iTyN1eCEPvC1PTbLRyOBr9M5KaSO24T1ZMjyD6Rq9AkRk9irIumW3RLskFTWrqtZl1s
+         0rsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Ua7W65/d+eys6TkCdCKyUD20UsOP9zKnnrEciCir1oA=;
-        b=PNoQ5gGmUzEMep3zA8ppfu8YzQfhyVCj6m6pquPMkIrnkZ22L/be3I83UdIkCTgpCp
-         qbpnAHZUl0uvx7QsJDudKW7pW6OSKmgXlNXv86tSG/A3mMvYldSj0wRcGE5FWvLHWxyQ
-         gipmwGrB4g6QymHWtAVO6Km/045y4k0rLKMv/6Bx6U0UE3nxIIXH4eGk6jQHQdD8dPbY
-         9apPpNYfXb4RgVtnPj6vtyqq7bcJevjOkXYROHW5JzgQrUS22FCaaVsUhAzRgG8bL/Nh
-         EHuBA0crbYiifpqZACcOpBJLVp/7fl+twcuVjsmxCkSHeGFmgkk2ztVHnUOB3yfLLxQo
-         FJ9w==
-X-Gm-Message-State: AOAM532AaMEwQ43us43b1g1/F/eUEB9n0rLM9NPJln6vwfbrZ9CkZlE5
-        UvoXDH3zFf67LzbDw3cER/oseKX8aWZzJhD1PPPkqH+psmJzNzI3lblruwv2UvHT838HutbWb8U
-        ffoMumNdnTxzoAMql8j3HMgLUOMAQL5qIIp7U3/BtAq4zQKMGMboMaHkmTjFXRj/buwjmBN4t
-X-Google-Smtp-Source: ABdhPJwH0e7NUIaLBoXcIY3Ow2PsHnPi1TLNqHlvGwApDUSsvb4M85/q+KEi4+WBsGf9fCmKb47sSKwNYysg
+        bh=ghcbda5Gcwx3UnIAaqAaGm8LTVhquolw1KyMWFRxb/k=;
+        b=WAJI0f+Rqgju+9l+I3o7g9FHEDSFm4LYRnwPL7IaGDoYtG065ulMg+22lwh+qKYGfe
+         tK8Z3JeeqqTM77v0jqCHyD+kpZrSdJm6ND6dzKfj03uoCiNxCxfbRnM/gowtrXnjEg0Q
+         uIn2jJPmLsWuzdE3zPZUKKnu+R/Mxho+oeZ6bqh945Q+Dve4kHJDRuuFoAtYFx7h+dmH
+         +tzBDicki9CcEKwMblvqi1mQ0e1yst9LZhyJC1KGOylXsiaFcKW9TXa2H/Jwr1mpOx10
+         SYPt+0L+LzvysIPt6QXgtLKufA5Tmls9y7vCk+1GH+meJhWVKS1N0wnO/avNXmFh9RyD
+         Q7Dw==
+X-Gm-Message-State: AOAM530GRXrWgcZcF0B2i/JrH4fDLt5ibDdXzLWqGzOsRVxhGMTYBpku
+        So2iKVtuv+Id7HO/L/quUfQZMIQbrru0kkaRBe5M0fgJzL65R8CrkvVb0xWbcoWJSIu8B7t8WMV
+        hUKVceTKtzGuiE+CjPzcg24St9XuxjaViOrjNUfyZ+2BMfwb5xqMaDALXzBtdLmqzp3N1sh/y
+X-Google-Smtp-Source: ABdhPJyJCL3aA3scPQXV3XIYl1a3sjvFmRNoITGvHEFC33SHo2AWp3SAL5U/D220afkAixxVLjAOgCBV87IV
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a17:90a:f298:: with SMTP id
- fs24mr475139pjb.4.1601068990014; Fri, 25 Sep 2020 14:23:10 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 14:22:41 -0700
+ (user=bgardon job=sendgmr) by 2002:ad4:4d87:: with SMTP id
+ cv7mr642891qvb.49.1601068991820; Fri, 25 Sep 2020 14:23:11 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 14:22:42 -0700
 In-Reply-To: <20200925212302.3979661-1-bgardon@google.com>
-Message-Id: <20200925212302.3979661-2-bgardon@google.com>
+Message-Id: <20200925212302.3979661-3-bgardon@google.com>
 Mime-Version: 1.0
 References: <20200925212302.3979661-1-bgardon@google.com>
 X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH 01/22] kvm: mmu: Separate making SPTEs from set_spte
+Subject: [PATCH 02/22] kvm: mmu: Introduce tdp_iter
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Cannon Matthews <cannonmatthews@google.com>,
@@ -74,113 +74,358 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Separate the functions for generating leaf page table entries from the
-function that inserts them into the paging structure. This refactoring
-will facilitate changes to the MMU sychronization model to use atomic
-compare / exchanges (which are not guaranteed to succeed) instead of a
-monolithic MMU lock.
-
-No functional change expected.
+The TDP iterator implements a pre-order traversal of a TDP paging
+structure. This iterator will be used in future patches to create
+an efficient implementation of the KVM MMU for the TDP case.
 
 Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-machine. This commit introduced no new failures.
+machine. This series introduced no new failures.
 
 This series can be viewed in Gerrit at:
 	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
-Reviewed-by: Peter Shier <pshier@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 52 +++++++++++++++++++++++++++---------------
- 1 file changed, 34 insertions(+), 18 deletions(-)
+ arch/x86/kvm/Makefile           |   3 +-
+ arch/x86/kvm/mmu/mmu.c          |  19 +---
+ arch/x86/kvm/mmu/mmu_internal.h |  15 +++
+ arch/x86/kvm/mmu/tdp_iter.c     | 163 ++++++++++++++++++++++++++++++++
+ arch/x86/kvm/mmu/tdp_iter.h     |  53 +++++++++++
+ 5 files changed, 237 insertions(+), 16 deletions(-)
+ create mode 100644 arch/x86/kvm/mmu/tdp_iter.c
+ create mode 100644 arch/x86/kvm/mmu/tdp_iter.h
 
+diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+index 4a3081e9f4b5d..cf6a9947955f7 100644
+--- a/arch/x86/kvm/Makefile
++++ b/arch/x86/kvm/Makefile
+@@ -15,7 +15,8 @@ kvm-$(CONFIG_KVM_ASYNC_PF)	+= $(KVM)/async_pf.o
+ 
+ kvm-y			+= x86.o emulate.o i8259.o irq.o lapic.o \
+ 			   i8254.o ioapic.o irq_comm.o cpuid.o pmu.o mtrr.o \
+-			   hyperv.o debugfs.o mmu/mmu.o mmu/page_track.o
++			   hyperv.o debugfs.o mmu/mmu.o mmu/page_track.o \
++			   mmu/tdp_iter.o
+ 
+ kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o vmx/evmcs.o vmx/nested.o
+ kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o svm/sev.o
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 71aa3da2a0b7b..81240b558d67f 100644
+index 81240b558d67f..b48b00c8cde65 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2971,20 +2971,14 @@ static bool kvm_is_mmio_pfn(kvm_pfn_t pfn)
- #define SET_SPTE_WRITE_PROTECTED_PT	BIT(0)
- #define SET_SPTE_NEED_REMOTE_TLB_FLUSH	BIT(1)
+@@ -134,15 +134,6 @@ module_param(dbg, bool, 0644);
+ #define SPTE_AD_WRPROT_ONLY_MASK (2ULL << 52)
+ #define SPTE_MMIO_MASK (3ULL << 52)
  
--static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
--		    unsigned int pte_access, int level,
--		    gfn_t gfn, kvm_pfn_t pfn, bool speculative,
--		    bool can_unsync, bool host_writable)
-+static u64 make_spte(struct kvm_vcpu *vcpu, unsigned int pte_access, int level,
-+		     gfn_t gfn, kvm_pfn_t pfn, u64 old_spte, bool speculative,
-+		     bool can_unsync, bool host_writable, bool ad_disabled,
-+		     int *ret)
- {
- 	u64 spte = 0;
--	int ret = 0;
--	struct kvm_mmu_page *sp;
+-#define PT64_LEVEL_BITS 9
 -
--	if (set_mmio_spte(vcpu, sptep, gfn, pfn, pte_access))
--		return 0;
+-#define PT64_LEVEL_SHIFT(level) \
+-		(PAGE_SHIFT + (level - 1) * PT64_LEVEL_BITS)
+-
+-#define PT64_INDEX(address, level)\
+-	(((address) >> PT64_LEVEL_SHIFT(level)) & ((1 << PT64_LEVEL_BITS) - 1))
+-
+-
+ #define PT32_LEVEL_BITS 10
  
--	sp = sptep_to_sp(sptep);
--	if (sp_ad_disabled(sp))
-+	if (ad_disabled)
- 		spte |= SPTE_AD_DISABLED_MASK;
- 	else if (kvm_vcpu_ad_need_write_protect(vcpu))
- 		spte |= SPTE_AD_WRPROT_ONLY_MASK;
-@@ -3037,27 +3031,49 @@ static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 		 * is responsibility of mmu_get_page / kvm_sync_page.
- 		 * Same reasoning can be applied to dirty page accounting.
- 		 */
--		if (!can_unsync && is_writable_pte(*sptep))
--			goto set_pte;
-+		if (!can_unsync && is_writable_pte(old_spte))
-+			return spte;
+ #define PT32_LEVEL_SHIFT(level) \
+@@ -192,8 +183,6 @@ module_param(dbg, bool, 0644);
+ #define SPTE_HOST_WRITEABLE	(1ULL << PT_FIRST_AVAIL_BITS_SHIFT)
+ #define SPTE_MMU_WRITEABLE	(1ULL << (PT_FIRST_AVAIL_BITS_SHIFT + 1))
  
- 		if (mmu_need_write_protect(vcpu, gfn, can_unsync)) {
- 			pgprintk("%s: found shadow page for %llx, marking ro\n",
- 				 __func__, gfn);
--			ret |= SET_SPTE_WRITE_PROTECTED_PT;
-+			*ret |= SET_SPTE_WRITE_PROTECTED_PT;
- 			pte_access &= ~ACC_WRITE_MASK;
- 			spte &= ~(PT_WRITABLE_MASK | SPTE_MMU_WRITEABLE);
- 		}
- 	}
+-#define SHADOW_PT_INDEX(addr, level) PT64_INDEX(addr, level)
+-
+ /* make pte_list_desc fit well in cache line */
+ #define PTE_LIST_EXT 3
  
--	if (pte_access & ACC_WRITE_MASK) {
--		kvm_vcpu_mark_page_dirty(vcpu, gfn);
-+	if (pte_access & ACC_WRITE_MASK)
- 		spte |= spte_shadow_dirty_mask(spte);
--	}
+@@ -346,7 +335,7 @@ void kvm_mmu_set_mmio_spte_mask(u64 mmio_value, u64 access_mask)
+ }
+ EXPORT_SYMBOL_GPL(kvm_mmu_set_mmio_spte_mask);
  
- 	if (speculative)
- 		spte = mark_spte_for_access_track(spte);
+-static bool is_mmio_spte(u64 spte)
++bool is_mmio_spte(u64 spte)
+ {
+ 	return (spte & SPTE_SPECIAL_MASK) == SPTE_MMIO_MASK;
+ }
+@@ -623,7 +612,7 @@ static int is_nx(struct kvm_vcpu *vcpu)
+ 	return vcpu->arch.efer & EFER_NX;
+ }
  
--set_pte:
-+	return spte;
+-static int is_shadow_present_pte(u64 pte)
++int is_shadow_present_pte(u64 pte)
+ {
+ 	return (pte != 0) && !is_mmio_spte(pte);
+ }
+@@ -633,7 +622,7 @@ static int is_large_pte(u64 pte)
+ 	return pte & PT_PAGE_SIZE_MASK;
+ }
+ 
+-static int is_last_spte(u64 pte, int level)
++int is_last_spte(u64 pte, int level)
+ {
+ 	if (level == PG_LEVEL_4K)
+ 		return 1;
+@@ -647,7 +636,7 @@ static bool is_executable_pte(u64 spte)
+ 	return (spte & (shadow_x_mask | shadow_nx_mask)) == shadow_x_mask;
+ }
+ 
+-static kvm_pfn_t spte_to_pfn(u64 pte)
++kvm_pfn_t spte_to_pfn(u64 pte)
+ {
+ 	return (pte & PT64_BASE_ADDR_MASK) >> PAGE_SHIFT;
+ }
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index 3acf3b8eb469d..65bb110847858 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -60,4 +60,19 @@ void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
+ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
+ 				    struct kvm_memory_slot *slot, u64 gfn);
+ 
++#define PT64_LEVEL_BITS 9
++
++#define PT64_LEVEL_SHIFT(level) \
++		(PAGE_SHIFT + (level - 1) * PT64_LEVEL_BITS)
++
++#define PT64_INDEX(address, level)\
++	(((address) >> PT64_LEVEL_SHIFT(level)) & ((1 << PT64_LEVEL_BITS) - 1))
++#define SHADOW_PT_INDEX(addr, level) PT64_INDEX(addr, level)
++
++/* Functions for interpreting SPTEs */
++kvm_pfn_t spte_to_pfn(u64 pte);
++bool is_mmio_spte(u64 spte);
++int is_shadow_present_pte(u64 pte);
++int is_last_spte(u64 pte, int level);
++
+ #endif /* __KVM_X86_MMU_INTERNAL_H */
+diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
+new file mode 100644
+index 0000000000000..ee90d62d2a9b1
+--- /dev/null
++++ b/arch/x86/kvm/mmu/tdp_iter.c
+@@ -0,0 +1,163 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#include "mmu_internal.h"
++#include "tdp_iter.h"
++
++/*
++ * Recalculates the pointer to the SPTE for the current GFN and level and
++ * reread the SPTE.
++ */
++static void tdp_iter_refresh_sptep(struct tdp_iter *iter)
++{
++	iter->sptep = iter->pt_path[iter->level - 1] +
++		SHADOW_PT_INDEX(iter->gfn << PAGE_SHIFT, iter->level);
++	iter->old_spte = READ_ONCE(*iter->sptep);
 +}
 +
-+static int set_spte(struct kvm_vcpu *vcpu, u64 *sptep,
-+		    unsigned int pte_access, int level,
-+		    gfn_t gfn, kvm_pfn_t pfn, bool speculative,
-+		    bool can_unsync, bool host_writable)
++/*
++ * Sets a TDP iterator to walk a pre-order traversal of the paging structure
++ * rooted at root_pt, starting with the walk to translate goal_gfn.
++ */
++void tdp_iter_start(struct tdp_iter *iter, u64 *root_pt, int root_level,
++		    gfn_t goal_gfn)
 +{
-+	u64 spte = 0;
-+	struct kvm_mmu_page *sp;
-+	int ret = 0;
++	WARN_ON(root_level < 1);
++	WARN_ON(root_level > PT64_ROOT_MAX_LEVEL);
 +
-+	if (set_mmio_spte(vcpu, sptep, gfn, pfn, pte_access))
-+		return 0;
++	iter->goal_gfn = goal_gfn;
++	iter->root_level = root_level;
++	iter->level = root_level;
++	iter->pt_path[iter->level - 1] = root_pt;
 +
-+	sp = sptep_to_sp(sptep);
++	iter->gfn = iter->goal_gfn -
++		(iter->goal_gfn % KVM_PAGES_PER_HPAGE(iter->level));
++	tdp_iter_refresh_sptep(iter);
 +
-+	spte = make_spte(vcpu, pte_access, level, gfn, pfn, *sptep, speculative,
-+			 can_unsync, host_writable, sp_ad_disabled(sp), &ret);
-+	if (!spte)
-+		return 0;
++	iter->valid = true;
++}
 +
-+	if (spte & PT_WRITABLE_MASK)
-+		kvm_vcpu_mark_page_dirty(vcpu, gfn);
++/*
++ * Given an SPTE and its level, returns a pointer containing the host virtual
++ * address of the child page table referenced by the SPTE. Returns null if
++ * there is no such entry.
++ */
++u64 *spte_to_child_pt(u64 spte, int level)
++{
++	u64 *pt;
++	/* There's no child entry if this entry isn't present */
++	if (!is_shadow_present_pte(spte))
++		return NULL;
 +
- 	if (mmu_spte_update(sptep, spte))
- 		ret |= SET_SPTE_NEED_REMOTE_TLB_FLUSH;
- 	return ret;
++	/* There is no child page table if this is a leaf entry. */
++	if (is_last_spte(spte, level))
++		return NULL;
++
++	pt = (u64 *)__va(spte_to_pfn(spte) << PAGE_SHIFT);
++	return pt;
++}
++
++/*
++ * Steps down one level in the paging structure towards the goal GFN. Returns
++ * true if the iterator was able to step down a level, false otherwise.
++ */
++static bool try_step_down(struct tdp_iter *iter)
++{
++	u64 *child_pt;
++
++	if (iter->level == PG_LEVEL_4K)
++		return false;
++
++	/*
++	 * Reread the SPTE before stepping down to avoid traversing into page
++	 * tables that are no longer linked from this entry.
++	 */
++	iter->old_spte = READ_ONCE(*iter->sptep);
++
++	child_pt = spte_to_child_pt(iter->old_spte, iter->level);
++	if (!child_pt)
++		return false;
++
++	iter->level--;
++	iter->pt_path[iter->level - 1] = child_pt;
++	iter->gfn = iter->goal_gfn -
++		(iter->goal_gfn % KVM_PAGES_PER_HPAGE(iter->level));
++	tdp_iter_refresh_sptep(iter);
++
++	return true;
++}
++
++/*
++ * Steps to the next entry in the current page table, at the current page table
++ * level. The next entry could point to a page backing guest memory or another
++ * page table, or it could be non-present. Returns true if the iterator was
++ * able to step to the next entry in the page table, false if the iterator was
++ * already at the end of the current page table.
++ */
++static bool try_step_side(struct tdp_iter *iter)
++{
++	/*
++	 * Check if the iterator is already at the end of the current page
++	 * table.
++	 */
++	if (!((iter->gfn + KVM_PAGES_PER_HPAGE(iter->level)) %
++	      KVM_PAGES_PER_HPAGE(iter->level + 1)))
++		return false;
++
++	iter->gfn += KVM_PAGES_PER_HPAGE(iter->level);
++	iter->goal_gfn = iter->gfn;
++	iter->sptep++;
++	iter->old_spte = READ_ONCE(*iter->sptep);
++
++	return true;
++}
++
++/*
++ * Tries to traverse back up a level in the paging structure so that the walk
++ * can continue from the next entry in the parent page table. Returns true on a
++ * successful step up, false if already in the root page.
++ */
++static bool try_step_up(struct tdp_iter *iter)
++{
++	if (iter->level == iter->root_level)
++		return false;
++
++	iter->level++;
++	iter->gfn =  iter->gfn - (iter->gfn % KVM_PAGES_PER_HPAGE(iter->level));
++	tdp_iter_refresh_sptep(iter);
++
++	return true;
++}
++
++/*
++ * Step to the next SPTE in a pre-order traversal of the paging structure.
++ * To get to the next SPTE, the iterator either steps down towards the goal
++ * GFN, if at a present, non-last-level SPTE, or over to a SPTE mapping a
++ * highter GFN.
++ *
++ * The basic algorithm is as follows:
++ * 1. If the current SPTE is a non-last-level SPTE, step down into the page
++ *    table it points to.
++ * 2. If the iterator cannot step down, it will try to step to the next SPTE
++ *    in the current page of the paging structure.
++ * 3. If the iterator cannot step to the next entry in the current page, it will
++ *    try to step up to the parent paging structure page. In this case, that
++ *    SPTE will have already been visited, and so the iterator must also step
++ *    to the side again.
++ */
++void tdp_iter_next(struct tdp_iter *iter)
++{
++	bool done;
++
++	done = try_step_down(iter);
++	if (done)
++		return;
++
++	done = try_step_side(iter);
++	while (!done) {
++		if (!try_step_up(iter)) {
++			iter->valid = false;
++			break;
++		}
++		done = try_step_side(iter);
++	}
++}
+diff --git a/arch/x86/kvm/mmu/tdp_iter.h b/arch/x86/kvm/mmu/tdp_iter.h
+new file mode 100644
+index 0000000000000..b102109778eac
+--- /dev/null
++++ b/arch/x86/kvm/mmu/tdp_iter.h
+@@ -0,0 +1,53 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __KVM_X86_MMU_TDP_ITER_H
++#define __KVM_X86_MMU_TDP_ITER_H
++
++#include <linux/kvm_host.h>
++
++#include "mmu.h"
++
++/*
++ * A TDP iterator performs a pre-order walk over a TDP paging structure.
++ */
++struct tdp_iter {
++	/*
++	 * The iterator will traverse the paging structure towards the mapping
++	 * for this GFN.
++	 */
++	gfn_t goal_gfn;
++	/* Pointers to the page tables traversed to reach the current SPTE */
++	u64 *pt_path[PT64_ROOT_MAX_LEVEL];
++	/* A pointer to the current SPTE */
++	u64 *sptep;
++	/* The lowest GFN mapped by the current SPTE */
++	gfn_t gfn;
++	/* The level of the root page given to the iterator */
++	int root_level;
++	/* The iterator's current level within the paging structure */
++	int level;
++	/* A snapshot of the value at sptep */
++	u64 old_spte;
++	/*
++	 * Whether the iterator has a valid state. This will be false if the
++	 * iterator walks off the end of the paging structure.
++	 */
++	bool valid;
++};
++
++/*
++ * Iterates over every SPTE mapping the GFN range [start, end) in a
++ * preorder traversal.
++ */
++#define for_each_tdp_pte(iter, root, root_level, start, end) \
++	for (tdp_iter_start(&iter, root, root_level, start); \
++	     iter.valid && iter.gfn < end;		     \
++	     tdp_iter_next(&iter))
++
++u64 *spte_to_child_pt(u64 pte, int level);
++
++void tdp_iter_start(struct tdp_iter *iter, u64 *root_pt, int root_level,
++		    gfn_t goal_gfn);
++void tdp_iter_next(struct tdp_iter *iter);
++
++#endif /* __KVM_X86_MMU_TDP_ITER_H */
 -- 
 2.28.0.709.gb0816b6eb0-goog
 
