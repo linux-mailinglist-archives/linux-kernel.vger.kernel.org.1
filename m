@@ -2,143 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A3F278104
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B97F6278117
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbgIYG7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 02:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgIYG7Y (ORCPT
+        id S1727393AbgIYHGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:06:08 -0400
+Received: from alln-iport-3.cisco.com ([173.37.142.90]:41161 "EHLO
+        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727068AbgIYHGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 02:59:24 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18027C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:59:24 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id o8so1378078otl.4
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=weXxFykQEoWkylmqQdC8XlhgTA7e+X/thM7MZfJW0BM=;
-        b=bVzxSUdfVsSTQj5XZhRUlNrTGy8YGrNZBvB16Sxshx2oDQEFa8awXbnngrK+bxnKEB
-         iuAIjmZBuvblnJHRXomaNyo7IjAwkFVfWI5mscB25APwf+G6Tqt8rT6vA8LuUl0H6ld2
-         Nh8ZENsi0WyC/C9EzvGNLX2q6a/v3br96dVRe67sCqiqe8P8ZNeU35p8ScHqQtJ9FGP3
-         mUWa6OTN8Z7nmqYruTyCQWZ8e9Sz9wBrE8nGSXLxvyoRTj90Trk/wR171Tld34ELtpED
-         OgmMEb3THRcNPrQ1q+txwnPRieOWpvKrJGThSqz27b4bKZnEtFhCDhzsXAKXiU53Dc28
-         Xs3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=weXxFykQEoWkylmqQdC8XlhgTA7e+X/thM7MZfJW0BM=;
-        b=U4ag4O1Srnd4LFyHGx/yTMGqrjhdJHMbh/gEKtWVkore5905bM5XnyZpqGN7me+LZ4
-         IlI9Zm0T5GAOXf8VydGycYcuirfl62J8hduLV2wfkDbiZWSgOb+54wnomKQh8o/Y+2Rs
-         IzfT3eisehZRdBMwFNgirb/xWn/c2Sk7CEOBtI57G6kgPcBQNqoR3IzFrxFrvf1TleIV
-         HVyWwv7GF/OpSiz6p0hx6RAuTyhRU3evcLPfwnkl8qim5hYYcTvdvAJtbRgBjzHccgOV
-         ZEzEVKDcvKFmTEl2DPNRDaER+eQ42IDwPTcwYjZVJGphRvhFpzFgLpnjb8D/eO5oObFd
-         TP6g==
-X-Gm-Message-State: AOAM532g0OX8KofOLjAKgIMchAVZHbV83JYkruv+R2SAoPr7uVSvpGlL
-        9AAZDWP395L/gWJYHd+4p4Ot8YyOyY2b2CDeDVqGJQ==
-X-Google-Smtp-Source: ABdhPJywJK/A0kYevthGXra2XnR6b9pNCW6AzR5QPq+K79s9oG2Ggprdhgi0kkhhx9i0sjvzEZVXUbfyIT5OisUO9CM=
-X-Received: by 2002:a9d:2666:: with SMTP id a93mr1943186otb.324.1601017163384;
- Thu, 24 Sep 2020 23:59:23 -0700 (PDT)
+        Fri, 25 Sep 2020 03:06:08 -0400
+X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 03:06:06 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1317; q=dns/txt; s=iport;
+  t=1601017566; x=1602227166;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=BEM4EVmFnXsGR097QSMgvtxz1Ke7LGGJ29vEKdhNuNo=;
+  b=O3bwlX341v7VBCsUC1IX8vdaGvy080OgCTszoMgEj6qaXO0b0M5I38td
+   aD7vyLlqVf55RwZsY6GAg4S4liOODnL5pv7yKbiXblnhBw6NEZqOT82/J
+   bqJMbV0VINOPODk29quQ/G9jYPfLQ5RS0sgZWiNGzz/dGJR8oApNkwqzZ
+   0=;
+X-IPAS-Result: =?us-ascii?q?A0AlCgDWlG1f/51dJa1fHgEBCxIMQIMhUQeBSS8siAIDj?=
+ =?us-ascii?q?XqYdoJTA1ULAQEBDQEBLQIEAQGESwKCLgIkOBMCAwEBAQMCAwEBAQEFAQEBA?=
+ =?us-ascii?q?gEGBG2FXAyFcgEBAQQSKAYBATcBCwQCAQgRBAEBHxAyHQgCBAENBQgahVADL?=
+ =?us-ascii?q?gGsagKBOYhhdIE0gwEBAQWFNhiCEAmBOIJyijwbggCBVIIfLj6EP4NIgi2mL?=
+ =?us-ascii?q?5ENCoJnmnihD44uhFegBQIEAgQFAg4BAQWBayOBV3AVgyRQFwINjh+DcYpWd?=
+ =?us-ascii?q?DcCBgoBAQMJfI8JAQE?=
+IronPort-PHdr: =?us-ascii?q?9a23=3AbueWvxU59AG3gsku1c5q4yAlMpvV8LGuZFwc94?=
+ =?us-ascii?q?YnhrRSc6+q45XlOgnF6O5wiEPSBNyFufJZgvXbsubrXmlTqZqCsXVXdptKWl?=
+ =?us-ascii?q?dFjMgNhAUvDYaDDlGzN//laSE2XaEgHF9o9n22Kw5ZTcD5YVCBomC78jMTXB?=
+ =?us-ascii?q?74MFk9KuH8AIWHicOx2qi78IHSZAMdgj27bPtyIRy6oB+XuNMRhN5pK706zV?=
+ =?us-ascii?q?3CpX4bdg=3D=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.77,301,1596499200"; 
+   d="scan'208";a="540312339"
+Received: from rcdn-core-6.cisco.com ([173.37.93.157])
+  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 25 Sep 2020 06:59:01 +0000
+Received: from XCH-RCD-001.cisco.com (xch-rcd-001.cisco.com [173.37.102.11])
+        by rcdn-core-6.cisco.com (8.15.2/8.15.2) with ESMTPS id 08P6x1dS026314
+        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL);
+        Fri, 25 Sep 2020 06:59:01 GMT
+Received: from xhs-aln-003.cisco.com (173.37.135.120) by XCH-RCD-001.cisco.com
+ (173.37.102.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 25 Sep
+ 2020 01:59:00 -0500
+Received: from xhs-aln-001.cisco.com (173.37.135.118) by xhs-aln-003.cisco.com
+ (173.37.135.120) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 25 Sep
+ 2020 01:59:00 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (173.37.151.57)
+ by xhs-aln-001.cisco.com (173.37.135.118) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 25 Sep 2020 01:59:00 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PR+pGPMrjJXrx8iJe/vi6YPA9bu4uPqha+MjjjB/M0dm/fw42BzRGb4c1cyXnYC/OPkP+x+JEwJlhGZnsCOJNucMgNJ+kumaw2acyjwI21Dj7CQBg5chVO2gyfez/9vL/4wMhchyy1qA8eGzS4OJCCCfb0n0TPgMorPBgcPRBW8t+weqVDSsYAzO28j8HLNC1mcqFvwpIEDOfJVZS45gsusph5Tn9K4d0rOaXuHDICAGIJnyJfVptTvDCNntSnlfNjjlrVwEK4kL8vSdqdgjvEfooLcK3EvOlY+q0JBIKrNf3i7BgH0ob5QthHJwOLzRGxHOMZbPLicQ185IUXhzLA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G2GSE2w+iBtas70vugsbANlIF/G+Kp0wOR78CMlrMyk=;
+ b=UgavWNplrWiC3XEjft01QWem52aT/Floi36mfAn/WqyidhkiXqCtS4UguDRQbZVwFBjzPxZ9x3fk9gQuf8xY8Yc66DpXO5LX3z1T/0yMzD/62jYlhLSxrKseJYRzznynwzW8jWL+iZoguaqakqzBbIRQ8TDolU4KKbOOXldaGVxGJHSt+a1I2JU4YJEnLf7ulZYz4M4kPiD/zVMW6Dq2FB3csbma+7f5EVd+gqCn3+k67foYzfCIRHRajD5nW/BObpTHIgke+jItc+DOkyCeGcB1PvG+vO6S6pBp9SGgEV1md7gKeW2ahYSPA5gb963v44Flhsen4q42qUPqD4oVdw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
+ dkim=pass header.d=cisco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
+ s=selector2-cisco-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G2GSE2w+iBtas70vugsbANlIF/G+Kp0wOR78CMlrMyk=;
+ b=fvPmUg5TLKgKgXBGpkZp2yPKpYbtOVdsZylMjLUmeJhTXYJhb1jH1/D5rAQYxJuGNbjVY/A+pxMh5R1cBLPPOix+/9fdvczfJudgf79PkQbBchnn7D1n+Sy6X9kX6sTusBhmFs6RkHeDaRD8FiMTac202s2j6JPTo5Qo7V5dQro=
+Received: from BY5PR11MB3863.namprd11.prod.outlook.com (2603:10b6:a03:18a::28)
+ by BY5PR11MB3942.namprd11.prod.outlook.com (2603:10b6:a03:188::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Fri, 25 Sep
+ 2020 06:58:59 +0000
+Received: from BY5PR11MB3863.namprd11.prod.outlook.com
+ ([fe80::9d18:47d5:1a4f:3e08]) by BY5PR11MB3863.namprd11.prod.outlook.com
+ ([fe80::9d18:47d5:1a4f:3e08%4]) with mapi id 15.20.3370.032; Fri, 25 Sep 2020
+ 06:58:59 +0000
+From:   "Karan Tilak Kumar (kartilak)" <kartilak@cisco.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        "Sesidhar Baddela (sebaddel)" <sebaddel@cisco.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] scsi: snic: Remove unnecessary condition to simplify the
+ code
+Thread-Topic: [PATCH] scsi: snic: Remove unnecessary condition to simplify the
+ code
+Thread-Index: AQHWkwJCBsIPwvv2WkCY7N+hS1iMFKl47HJQ
+Date:   Fri, 25 Sep 2020 06:58:59 +0000
+Message-ID: <BY5PR11MB38631F80136B45251549AC02C3360@BY5PR11MB3863.namprd11.prod.outlook.com>
+References: <20200925060754.156599-1-jingxiangfeng@huawei.com>
+In-Reply-To: <20200925060754.156599-1-jingxiangfeng@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=cisco.com;
+x-originating-ip: [2600:1700:ce00:1710:9c27:1581:1258:cc43]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 364a37c9-cea9-44b1-df0c-08d861207a83
+x-ms-traffictypediagnostic: BY5PR11MB3942:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR11MB39429E2A727F8723EF1B10DCC3360@BY5PR11MB3942.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aROirSl7tJ3Rd4+/yf5HibVqkSixwHpkRzhsIyj4CMUnmBvnYHG8Mp0F+jX6lUmOJ9r2MPwfzYvOyCMcmPYUXSNRIQYZs2ZwhsxpTwktfucWM0i5og31YhtWwi6nPWkSdjwrCtkJp2hXjw0sQp8GnPOvibiU7tltJJLkf0zYJreG99f/mu2/ImORC3To4GRLoAHbhGQJR5hrlwen93YMk1GMXmn6etw7AaGL6kTniQumy2f1Y0hUChLYZGyNmewJ40iIFcSF5TVoc1EVj2SGVTTcYsWl1y3apnbjSzgW/L57kbpoIxNP6332lsJt5yqQB6c3DkTSsXrxCOhVuQWTNQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB3863.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(376002)(346002)(39860400002)(4326008)(110136005)(316002)(76116006)(54906003)(33656002)(86362001)(7696005)(66476007)(9686003)(83380400001)(64756008)(66446008)(55016002)(71200400001)(66556008)(66946007)(8676002)(478600001)(8936002)(5660300002)(2906002)(6506007)(53546011)(186003)(52536014);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: ifNizuParxFHwazcv7+PxskAX9pxOcH42Vmv0x6o9qMnxt3d42f9MuJMHu7hgXh0v9zjkRDoa6lqPs1Kl0gG1gm7G2sAPIfcdtdMDUbcbNJPOklejCpZ9awYTiUMs6/72aLufWQ9lCcxBu0f4EJAHEjk2DuSN8XEKfgJZ8jB/oLrc4bhlhDMu8Xu5arpH07WaD9M0omRYE+YKn0CFKBVdLiY5Yyzt10Fg6N9sQwr60IABRxFXU+7oy9eTfCA9Ti8pBHYRil2dvW8vRA2BaStEKWFVx3NNM3rmZTEywNPE35BPWDUdfo7V5x53icFHKUuOFpIaHrXt5u+aJoN4Efit0Oo2w8PNoa11DU9yZ0rGInrfwLZZa33Xsv533f/fuDQDMZ92h9/3k7KWFYlzybR+1mH6L4Qk1973dWY2ReV7z1Hb0WMcCPa9nPzI0XMLtFrlqMeBuuKtDIDXl81yyrp4vjMb5pFl7Ox/L6egiJWniemzEetMcRFCA67bka5AGFYAGDOACB1KDVInuEbZK5wdjfd3ek6Ld5y2zPnTBkokWLyD3MsVcDIEb0Lprc2E68yPlGyvGyBC7MTTwgNpkarDFUZ3R0j6RkbW7nPz7bEUqZV+oPrCEs7Wi41DBUT1fbtwRX6BLVHcjv0FwhHP3q3cSueprWBlWifk1X+3V8UC+1DZ1DsXeW1KnGBYoB4iVUh2pd1SESLig9oWcK2sM5llw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200918174543.13108-1-r.czerwinski@pengutronix.de>
-In-Reply-To: <20200918174543.13108-1-r.czerwinski@pengutronix.de>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 25 Sep 2020 08:59:12 +0200
-Message-ID: <CAHUa44EB4ee-+_arR6epGVGjo6woRfSj0LJ2P7fW5wq0HdiS+g@mail.gmail.com>
-Subject: Re: [PATCH] tee: optee: replace might_sleep with cond_resched
-To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>
-Cc:     kernel@pengutronix.de, op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB3863.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 364a37c9-cea9-44b1-df0c-08d861207a83
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2020 06:58:59.2976
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wezYTsz3xzZvvke/Xnr8O4u9zAFbiud2+UyZ9LBMjZqI39zRiK3fpiGkg2d2+mUSwMDZQu+wJm8/7xi4syLX8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB3942
+X-OriginatorOrg: cisco.com
+X-Outbound-SMTP-Client: 173.37.102.11, xch-rcd-001.cisco.com
+X-Outbound-Node: rcdn-core-6.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 18, 2020 at 7:45 PM Rouven Czerwinski
-<r.czerwinski@pengutronix.de> wrote:
->
-> On Kernels with CONFIG_PREEMPT_NONE might_sleep() is not enough to force
-> rescheduling, replace it with a resched check and cond_resched. Fixes
-> the following stall:
->
->   [  572.945146] rcu: INFO: rcu_sched self-detected stall on CPU
->   [  572.949275] rcu:     0-....: (2099 ticks this GP) idle=572/1/0x40000002 softirq=7412/7412 fqs=974
->   [  572.957964]  (t=2100 jiffies g=10393 q=21)
->   [  572.962054] NMI backtrace for cpu 0
->   [  572.965540] CPU: 0 PID: 165 Comm: xtest Not tainted 5.8.7 #1
->   [  572.971188] Hardware name: STM32 (Device Tree Support)
->   [  572.976354] [<c011163c>] (unwind_backtrace) from [<c010b7f8>] (show_stack+0x10/0x14)
->   [  572.984080] [<c010b7f8>] (show_stack) from [<c0511e4c>] (dump_stack+0xc4/0xd8)
->   [  572.991300] [<c0511e4c>] (dump_stack) from [<c0519abc>] (nmi_cpu_backtrace+0x90/0xc4)
->   [  572.999130] [<c0519abc>] (nmi_cpu_backtrace) from [<c0519bdc>] (nmi_trigger_cpumask_backtrace+0xec/0x130)
->   [  573.008706] [<c0519bdc>] (nmi_trigger_cpumask_backtrace) from [<c01a5184>] (rcu_dump_cpu_stacks+0xe8/0x110)
->   [  573.018453] [<c01a5184>] (rcu_dump_cpu_stacks) from [<c01a4234>] (rcu_sched_clock_irq+0x7fc/0xa88)
->   [  573.027416] [<c01a4234>] (rcu_sched_clock_irq) from [<c01acdd0>] (update_process_times+0x30/0x8c)
->   [  573.036291] [<c01acdd0>] (update_process_times) from [<c01bfb90>] (tick_sched_timer+0x4c/0xa8)
->   [  573.044905] [<c01bfb90>] (tick_sched_timer) from [<c01adcc8>] (__hrtimer_run_queues+0x174/0x358)
->   [  573.053696] [<c01adcc8>] (__hrtimer_run_queues) from [<c01aea2c>] (hrtimer_interrupt+0x118/0x2bc)
->   [  573.062573] [<c01aea2c>] (hrtimer_interrupt) from [<c09ad664>] (arch_timer_handler_virt+0x28/0x30)
->   [  573.071536] [<c09ad664>] (arch_timer_handler_virt) from [<c0190f50>] (handle_percpu_devid_irq+0x8c/0x240)
->   [  573.081109] [<c0190f50>] (handle_percpu_devid_irq) from [<c018ab8c>] (generic_handle_irq+0x34/0x44)
->   [  573.090156] [<c018ab8c>] (generic_handle_irq) from [<c018b194>] (__handle_domain_irq+0x5c/0xb0)
->   [  573.098857] [<c018b194>] (__handle_domain_irq) from [<c052ac50>] (gic_handle_irq+0x4c/0x90)
->   [  573.107209] [<c052ac50>] (gic_handle_irq) from [<c0100b0c>] (__irq_svc+0x6c/0x90)
->   [  573.114682] Exception stack(0xd90dfcf8 to 0xd90dfd40)
->   [  573.119732] fce0:                                                       ffff0004 00000000
->   [  573.127917] fd00: 00000000 00000000 00000000 00000000 00000000 00000000 d93493cc ffff0000
->   [  573.136098] fd20: d2bc39c0 be926998 d90dfd58 d90dfd48 c09f3384 c01151f0 400d0013 ffffffff
->   [  573.144281] [<c0100b0c>] (__irq_svc) from [<c01151f0>] (__arm_smccc_smc+0x10/0x20)
->   [  573.151854] [<c01151f0>] (__arm_smccc_smc) from [<c09f3384>] (optee_smccc_smc+0x3c/0x44)
->   [  573.159948] [<c09f3384>] (optee_smccc_smc) from [<c09f4170>] (optee_do_call_with_arg+0xb8/0x154)
->   [  573.168735] [<c09f4170>] (optee_do_call_with_arg) from [<c09f4638>] (optee_invoke_func+0x110/0x190)
->   [  573.177786] [<c09f4638>] (optee_invoke_func) from [<c09f1ebc>] (tee_ioctl+0x10b8/0x11c0)
->   [  573.185879] [<c09f1ebc>] (tee_ioctl) from [<c029f62c>] (ksys_ioctl+0xe0/0xa4c)
->   [  573.193101] [<c029f62c>] (ksys_ioctl) from [<c0100060>] (ret_fast_syscall+0x0/0x54)
->   [  573.200750] Exception stack(0xd90dffa8 to 0xd90dfff0)
->   [  573.205803] ffa0:                   be926bf4 be926a78 00000003 8010a403 be926908 004e3cf8
->   [  573.213987] ffc0: be926bf4 be926a78 00000000 00000036 be926908 be926918 be9269b0 bffdf0f8
->   [  573.222162] ffe0: b6d76fb0 be9268fc b6d66621 b6c7e0d8
->
-> seen on STM32 DK2.
->
-> Signed-off-by: Rouven Czerwinski <r.czerwinski@pengutronix.de>
-> ---
->  drivers/tee/optee/call.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> index 20b6fd7383c5..83b73b1d52f0 100644
-> --- a/drivers/tee/optee/call.c
-> +++ b/drivers/tee/optee/call.c
-> @@ -8,6 +8,7 @@
->  #include <linux/errno.h>
->  #include <linux/mm.h>
->  #include <linux/slab.h>
-> +#include <linux/sched.h>
->  #include <linux/tee_drv.h>
->  #include <linux/types.h>
->  #include <linux/uaccess.h>
-> @@ -148,7 +149,8 @@ u32 optee_do_call_with_arg(struct tee_context *ctx, phys_addr_t parg)
->                          */
->                         optee_cq_wait_for_completion(&optee->call_queue, &w);
->                 } else if (OPTEE_SMC_RETURN_IS_RPC(res.a0)) {
-> -                       might_sleep();
-> +                       if(need_resched())
-> +                               cond_resched();
+Looks good to me.
 
-This looks OK to me. But I'd prefer if someone else could confirm this too.
+Signed off by: Karan Tilak Kumar <kartilak@cisco.com>
 
-Thanks,
-Jens
+Regards,
+Karan
 
->                         param.a0 = res.a0;
->                         param.a1 = res.a1;
->                         param.a2 = res.a2;
-> --
-> 2.28.0
->
+-----Original Message-----
+From: Jing Xiangfeng <jingxiangfeng@huawei.com>=20
+Sent: Thursday, September 24, 2020 11:08 PM
+To: Karan Tilak Kumar (kartilak) <kartilak@cisco.com>; Sesidhar Baddela (se=
+baddel) <sebaddel@cisco.com>; jejb@linux.ibm.com; martin.petersen@oracle.co=
+m
+Cc: linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org; jingxiangfeng=
+@huawei.com
+Subject: [PATCH] scsi: snic: Remove unnecessary condition to simplify the c=
+ode
+
+ret is always zero or an error in this code path. So the assignment to ret =
+is redundant, and the code jumping to a label is unneed.
+Let's remove them to simplify the code. No functional changes.
+
+Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+---
+ drivers/scsi/snic/snic_scsi.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/scsi/snic/snic_scsi.c b/drivers/scsi/snic/snic_scsi.c =
+index b3650c989ed4..0c2f31b8ea05 100644
+--- a/drivers/scsi/snic/snic_scsi.c
++++ b/drivers/scsi/snic/snic_scsi.c
+@@ -1387,10 +1387,6 @@ snic_issue_tm_req(struct snic *snic,
+ 	}
+=20
+ 	ret =3D snic_queue_itmf_req(snic, tmreq, sc, tmf, req_id);
+-	if (ret)
+-		goto tmreq_err;
+-
+-	ret =3D 0;
+=20
+ tmreq_err:
+ 	if (ret) {
+--
+2.17.1
+
