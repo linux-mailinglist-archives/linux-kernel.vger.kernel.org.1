@@ -2,122 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F91277D85
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8191277D72
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727006AbgIYBQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 21:16:03 -0400
-Received: from mga04.intel.com ([192.55.52.120]:19131 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726703AbgIYBQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 21:16:02 -0400
-IronPort-SDR: LR3nOIc2RDzAkGVlKfox2ym8TFf1dt1y4dhy7rnzRz4vuzCjd1SWS5Unxj5ZGGCT8ty5VHg/ze
- LmLKAuMgCLLA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158783710"
-X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
-   d="scan'208";a="158783710"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 18:16:02 -0700
-IronPort-SDR: NZiMjqbn0XOVlDBtUX7zjoy1iC028gY+0yUIsaChkilRAW690kEwU+Ebuf7GqU8PCaib8RhSY3
- jII3vzjkPEyA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
-   d="scan'208";a="413553113"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.139]) ([10.239.159.139])
-  by fmsmga001.fm.intel.com with ESMTP; 24 Sep 2020 18:15:59 -0700
-Cc:     baolu.lu@linux.intel.com,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>, Zeng Xin <xin.zeng@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v5 0/5] iommu aux-domain APIs extensions
-To:     Joerg Roedel <joro@8bytes.org>
-References: <20200922061042.31633-1-baolu.lu@linux.intel.com>
- <20200924095532.GK27174@8bytes.org>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <71f1fa5e-f468-0498-1ab4-1c2af9424d2d@linux.intel.com>
-Date:   Fri, 25 Sep 2020 09:09:54 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726826AbgIYBNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 21:13:19 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:35721 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726700AbgIYBNS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 21:13:18 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 08P1DBpp010998
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 24 Sep 2020 21:13:12 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 80C2E42003C; Thu, 24 Sep 2020 21:13:11 -0400 (EDT)
+Date:   Thu, 24 Sep 2020 21:13:11 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-ext4@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
+ into blk_mq_get_driver_tag
+Message-ID: <20200925011311.GJ482521@mit.edu>
+References: <20200904035528.GE558530@mit.edu>
+ <20200915044519.GA38283@mit.edu>
+ <20200915073303.GA754106@T590>
+ <20200915224541.GB38283@mit.edu>
+ <20200915230941.GA791425@T590>
+ <20200916202026.GC38283@mit.edu>
+ <20200917022051.GA1004828@T590>
+ <20200917143012.GF38283@mit.edu>
+ <20200924005901.GB1806978@T590>
+ <20200924143345.GD482521@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <20200924095532.GK27174@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924143345.GD482521@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joerg,
+On Thu, Sep 24, 2020 at 10:33:45AM -0400, Theodore Y. Ts'o wrote:
+> HOWEVER, thanks to a hint from a colleague at $WORK, and realizing
+> that one of the stack traces had virtio balloon in the trace, I
+> realized that when I switched the GCE VM type from e1-standard-2 to
+> n1-standard-2 (where e1 VM's are cheaper because they use
+> virtio-balloon to better manage host OS memory utilization), problem
+> has become, much, *much* rarer (and possibly has gone away, although
+> I'm going to want to run a lot more tests before I say that
+> conclusively) on my test setup.  At the very least, using an n1 VM
+> (which doesn't have virtio-balloon enabled in the hypervisor) is
+> enough to unblock ext4 development.
 
-On 9/24/20 5:55 PM, Joerg Roedel wrote:
-> On Tue, Sep 22, 2020 at 02:10:37PM +0800, Lu Baolu wrote:
->> Hi Jorge and Alex,
->>
->> A description of this patch series could be found here.
->>
->> https://lore.kernel.org/linux-iommu/20200901033422.22249-1-baolu.lu@linux.intel.com/
-> 
-> Hmm, I am wondering if we can avoid all this hassle and special APIs by
-> making the mdev framework more visible outside of the vfio code. There
-> is an underlying bus implementation for mdevs, so is there a reason
-> those can't use the standard iommu-core code to setup IOMMU mappings?
+.... and I spoke too soon.  A number of runs using -rc6 are now
+failing even with the n1-standard-2 VM, so virtio-ballon may not be an
+indicator.
 
-The original purpose of this series is to enable the device driver to
-retrieve the aux-domain through iommu core after iommu
-ops.aux_attach_dev().
+This is why debugging this is frustrating; it is very much a heisenbug
+--- although 5.8 seems to work completely reliably, as does commits
+before 37f4a24c2469.  Anything after that point will show random
+failures.  :-(
 
-The domain was allocated in vfio/mdev, but it's also needed by the
-device driver in mediated callbacks. The idea of this patch series is to
-extend the aux-API so that the domain could be saved in group->domain
-and get by the mediated driver through the existing
-iommu_get_domain_for_dev().
+						- Ted
 
-Back when we were developing the aux-domain, I proposed to keep the
-domain in vfio/mdev.
 
-https://lore.kernel.org/linux-iommu/20181105073408.21815-7-baolu.lu@linux.intel.com/
 
-It wasn't discussed at that time due to the lack of real consumer. Intel
-is now adding aux-domain support in idxd (DMA streaming accelerator)
-driver which becomes the first real consumer. So this problem is brought
-back to the table.
-
-> 
-> What speaks against doing:
-> 
-> 	- IOMMU drivers capable of handling mdevs register iommu-ops
-> 	  for the mdev_bus.
-> 
-> 	- iommu_domain_alloc() takes bus_type as parameter, so there can
-> 	  be special domains be allocated for mdevs.
-> 
-> 	- Group creation and domain allocation will happen
-> 	  automatically in the iommu-core when a new mdev is registered
-> 	  through device-driver core code.
-> 
-> 	- There should be no need for special iommu_aux_* APIs, as one
-> 	  can attach a domain directly to &mdev->dev with
-> 	  iommu_attach_device(domain, &mdev->dev).
-> 
-> Doing it this way will probably also keep the mdev-special code in VFIO
-> small.
-
-Fully understand now. Thanks for guide.
-
-> 
-> Regards,
-> 
-> 	Joerg
-> 
-
-Best regards,
-baolu
