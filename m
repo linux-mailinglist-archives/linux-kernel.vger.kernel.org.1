@@ -2,142 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7BB277E63
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9548D277E67
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727043AbgIYDIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 23:08:24 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:52174 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726706AbgIYDIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 23:08:23 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kLe5W-0002dj-Q6; Fri, 25 Sep 2020 13:07:59 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Sep 2020 13:07:59 +1000
-Date:   Fri, 25 Sep 2020 13:07:59 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     syzbot <syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, steffen.klassert@secunet.com,
-        syzkaller-bugs@googlegroups.com, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org
-Subject: Re: KASAN: stack-out-of-bounds Read in xfrm_selector_match (2)
-Message-ID: <20200925030759.GA17939@gondor.apana.org.au>
-References: <0000000000009fc91605afd40d89@google.com>
+        id S1727048AbgIYDJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 23:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726764AbgIYDJL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 23:09:11 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEE8C0613D3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 20:09:10 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id 7so1308287pgm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 20:09:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hJ1W1/RS5W0hSkVAbx2PZJL6p6qwRikie5JVs3zNzvM=;
+        b=EeXCN+viasa0U6+b2eUA5OPmUiG4kY9mInu5zsqE0vKBwiPrI2/yiRGJavfHhEJAJP
+         J7yh3KiOAm0o+rViCqageC3W19loqvQ2a99KvKlv24zmIbBZEha/N+LHrlVWOgOEgk9J
+         jxulU8Gikr3EQZgr6dMYlPslVFZjSjsGK+Cxc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hJ1W1/RS5W0hSkVAbx2PZJL6p6qwRikie5JVs3zNzvM=;
+        b=gAC0EZ7Vr9wxj2eltLNtLqPCFCBqTXmys3B+zwPy6uERNKauXf0pAqxHRDCCgHhP19
+         s2a1YBqd5LTjGynbZR5Csb2STtv8yvMhVFwzlyoHLA3v+qJGxzQVnuTSVKABZKLS/rWp
+         /YqRTBr6bn0jJPIIyhaAbWEA4N4mH35WC9r5RQpAj+PLWLXwXheCvPzRU7HkCdHZp2Ud
+         7EA5D++TH678IH1VPOAknBZOe4YMjdWp2tzY5u3wtWvcLD/XRDaxgba06vV/GY+T65UX
+         CftWQXGS2ppTQzQy67fVvHISZdOoppN/tooMouxNpqiv14wV1/C7qamN1gtFzmHhfB0e
+         n+Wg==
+X-Gm-Message-State: AOAM5327yCohfl9i4VHC+GmSGOdFy9C0yQ5wu8Tzkivm8V2WYIzFN3N6
+        kGI7nYXqWy7r/zrUDPWXv/HlRw==
+X-Google-Smtp-Source: ABdhPJy3M327HKr9IezlNDMptTHO3YONc893KnALpMIxtXbLrvx0ZnSoE0AAxZuUKojDDbhv4QCZ7w==
+X-Received: by 2002:a17:902:b7c4:b029:d0:b7a2:d16 with SMTP id v4-20020a170902b7c4b02900d0b7a20d16mr2244425plz.11.1601003350409;
+        Thu, 24 Sep 2020 20:09:10 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q140sm95635pfc.39.2020.09.24.20.09.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Sep 2020 20:09:09 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 20:09:07 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+Message-ID: <202009242000.DE12689BD8@keescook>
+References: <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
+ <202009241658.A062D6AE@keescook>
+ <CABqSeAQ=joheH+0LUZ201U-XwFFsHN3Ouo5FGoscUwn+itkL2w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0000000000009fc91605afd40d89@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CABqSeAQ=joheH+0LUZ201U-XwFFsHN3Ouo5FGoscUwn+itkL2w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 07:56:20AM -0700, syzbot wrote:
-> Hello,
+On Thu, Sep 24, 2020 at 08:27:40PM -0500, YiFei Zhu wrote:
+> [resending this too]
 > 
-> syzbot found the following issue on:
+> On Thu, Sep 24, 2020 at 6:01 PM Kees Cook <keescook@chromium.org> wrote:
+> > Disregarding the "how" of this, yeah, we'll certainly need something to
+> > tell seccomp about the arrangement of syscall tables and how to find
+> > them.
+> >
+> > However, I'd still prefer to do this on a per-arch basis, and include
+> > more detail, as I've got in my v1.
+> >
+> > Something missing from both styles, though, is a consolidation of
+> > values, where the AUDIT_ARCH* isn't reused in both the seccomp info and
+> > the syscall_get_arch() return. The problems here were two-fold:
+> >
+> > 1) putting this in syscall.h meant you do not have full NR_syscall*
+> >    visibility on some architectures (e.g. arm64 plays weird games with
+> >    header include order).
 > 
-> HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13996ad5900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=ffe85b197a57c180
-> dashboard link: https://syzkaller.appspot.com/bug?extid=577fbac3145a6eb2e7a5
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> I don't get this one -- I'm not playing with NR_syscall here.
+
+Right, sorry, I may not have been clear. When building my RFC I noticed
+that I couldn't use NR_syscall very "early" in the header file include
+stack on arm64, which complicated things. So I guess what I mean is
+something like "it's probably better to do all these seccomp-specific
+macros/etc in asm/include/seccomp.h rather than in syscall.h because I
+know at least one architecture that might cause trouble."
+
+> > 2) seccomp needs to handle "multiplexed" tables like x86_x32 (distros
+> >    haven't removed CONFIG_X86_X32 widely yet, so it is a reality that
+> >    it must be dealt with), which means seccomp's idea of the arch
+> >    "number" can't be the same as the AUDIT_ARCH.
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+> Why so? Does anyone actually use x32 in a container? The memory cost
+> and analysis cost is on everyone. The worst case scenario if we don't
+> support it is that the syscall is not accelerated.
+
+Ironicailly, that's the only place I actually know for sure where people
+using x32 because it shows measurable (10%) speed-up for builders:
+https://lore.kernel.org/lkml/CAOesGMgu1i3p7XMZuCEtj63T-ST_jh+BfaHy-K6LhgqNriKHAA@mail.gmail.com
+
+So, yes, as you and Jann both point out, it wouldn't be terrible to just
+ignore x32, it seems a shame to penalize it. That said, if the masking
+step from my v1 is actually noticable on a native workload, then yeah,
+probably x32 should be ignored. My instinct (not measured) is that it's
+faster than walking a small array.[citation needed]
+
+> > So, likely a combo of approaches is needed: an array (or more likely,
+> > enum), declared in the per-arch seccomp.h file. And I don't see a way
+> > to solve #1 cleanly.
+> >
+> > Regardless, it needs to be split per architecture so that regressions
+> > can be bisected/reverted/isolated cleanly. And if we can't actually test
+> > it at runtime (or find someone who can) it's not a good idea to make the
+> > change. :)
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: stack-out-of-bounds in xfrm_flowi_dport include/net/xfrm.h:877 [inline]
-> BUG: KASAN: stack-out-of-bounds in __xfrm6_selector_match net/xfrm/xfrm_policy.c:216 [inline]
-> BUG: KASAN: stack-out-of-bounds in xfrm_selector_match+0xf36/0xf60 net/xfrm/xfrm_policy.c:229
-> Read of size 2 at addr ffffc9001914f55c by task syz-executor.4/15633
-> 
-> CPU: 0 PID: 15633 Comm: syz-executor.4 Not tainted 5.9.0-rc5-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x198/0x1fd lib/dump_stack.c:118
->  print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
->  __kasan_report mm/kasan/report.c:513 [inline]
->  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
->  xfrm_flowi_dport include/net/xfrm.h:877 [inline]
+> You have a good point regarding tests. Don't see how it affects
+> regressions though. Only one file here is ever included per-build.
 
-This one goes back more than ten years.  This patch should fix
-it.
+It's easier to do a per-arch revert (i.e. all the -stable tree
+machinery, etc) with a single SHA instead of having to write a partial
+revert, etc.
 
----8<---
-The struct flowi must never be interpreted by itself as its size
-depends on the address family.  Therefore it must always be grouped
-with its original family value.
-
-In this particular instance, the original family value is lost in
-the function xfrm_state_find.  Therefore we get a bogus read when
-it's coupled with the wrong family which would occur with inter-
-family xfrm states.
-
-This patch fixes it by keeping the original family value.
-
-Note that the same bug could potentially occur in LSM through
-the xfrm_state_pol_flow_match hook.  I checked the current code
-there and it seems to be safe for now as only secid is used which
-is part of struct flowi_common.  But that API should be changed
-so that so that we don't get new bugs in the future.  We could
-do that by replacing fl with just secid or adding a family field.
-
-Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
-Fixes: 48b8d78315bf ("[XFRM]: State selection update to use inner...")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 69520ad3d83b..9b5f2c2b9770 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -1019,7 +1019,8 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
- 	 */
- 	if (x->km.state == XFRM_STATE_VALID) {
- 		if ((x->sel.family &&
--		     !xfrm_selector_match(&x->sel, fl, x->sel.family)) ||
-+		     (x->sel.family != family ||
-+		      !xfrm_selector_match(&x->sel, fl, family))) ||
- 		    !security_xfrm_state_pol_flow_match(x, pol, fl))
- 			return;
- 
-@@ -1032,7 +1033,9 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
- 		*acq_in_progress = 1;
- 	} else if (x->km.state == XFRM_STATE_ERROR ||
- 		   x->km.state == XFRM_STATE_EXPIRED) {
--		if (xfrm_selector_match(&x->sel, fl, x->sel.family) &&
-+		if ((!x->sel.family ||
-+		     (x->sel.family == family &&
-+		      xfrm_selector_match(&x->sel, fl, family))) &&
- 		    security_xfrm_state_pol_flow_match(x, pol, fl))
- 			*error = -ESRCH;
- 	}
-@@ -1072,7 +1075,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
- 		    tmpl->mode == x->props.mode &&
- 		    tmpl->id.proto == x->id.proto &&
- 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
--			xfrm_state_look_at(pol, x, fl, encap_family,
-+			xfrm_state_look_at(pol, x, fl, family,
- 					   &best, &acquire_in_progress, &error);
- 	}
- 	if (best || acquire_in_progress)
-@@ -1089,7 +1092,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
- 		    tmpl->mode == x->props.mode &&
- 		    tmpl->id.proto == x->id.proto &&
- 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
--			xfrm_state_look_at(pol, x, fl, encap_family,
-+			xfrm_state_look_at(pol, x, fl, family,
- 					   &best, &acquire_in_progress, &error);
- 	}
- 
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+Kees Cook
