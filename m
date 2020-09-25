@@ -2,228 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358F5277E58
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDE7277E5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbgIYDEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 23:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726756AbgIYDEc (ORCPT
+        id S1726997AbgIYDGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 23:06:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28807 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726704AbgIYDGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 23:04:32 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B870C0613CE;
-        Thu, 24 Sep 2020 20:04:32 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id o20so1780214pfp.11;
-        Thu, 24 Sep 2020 20:04:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TaLV707zQzZoN9QVLmaV1M3bCDM0wWxg5z+B0UkLQGg=;
-        b=EkPvPefRxz0sWEd3UPVC8kxM159CSTntHac6+Inlv5wOG9OZKkrjEyYag0K/as/E90
-         7/A8BO8/EMphA9rdWDdLvSqLMScFNaqeHSCoOjoxxk96OPWS/dsZJvpUpfhzF0hm9Wbu
-         bxeJAeIytZ+L0UjGyHr5XwO9aWCNz6Uc7werwqPxqZb2h174LSOVhEN3r2JO9qsDWEjT
-         51QW0j/7qWIcXrGktJhy0zW4hDUMQIh9S72MKexreLM7bqYYQyOA7OD7O6bnM8H4worb
-         IxkMkB3DJeDa5gzfcRV5a6Q95pSRYUx1p0jD0qdyrfUtqdUf2LmfclyKPeFfWSU0QWss
-         WYvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TaLV707zQzZoN9QVLmaV1M3bCDM0wWxg5z+B0UkLQGg=;
-        b=W7EoILJm4zKPgRs/+E0yd5A3c2K8YVPmL9xIOLPHX4YJKS9Tvrq129tFsQtu/66sRC
-         cUcrQyq9TtfJzdR6o/uk/eBJH4HR7lYZV1hTZ+yld1x8CzCedH1laPlLKUOIefc5CWJC
-         Cjuo87a8J3h2KI50fXKBYCQy3/W2wEOladJd6Wo0jhHhcztGO5tqf+kQkS7gfmI6uI/B
-         KaFv2Em1IQCTNRrXbhAEVmmmStLHPZe9PwXnJ88L5FLF4k3q/nREsrem9IYrRzdnE67M
-         JHNVJQUq/et8MqcCDA3P6pSm0zNM+pK2ZJ/CejWUZNZUE9+A6dYFXZPV8PSURatUWbAb
-         viVw==
-X-Gm-Message-State: AOAM530DRJjEA/S4q2cEh0iwRwmO3+pPvbsSXoyUU8sFTrcsFL54xX+x
-        BQcEL8q1Wq+J1Hnrd/vFSMCxdPQA9O0pKCS9pSM=
-X-Google-Smtp-Source: ABdhPJzjiyeuGOlQoK/hG6jcimUOzcy7CQEv7zxwO869et/v35NnPEJvv3NMxcXCfGmNr9BcSNz8lzE/nTu7SbOgZ3k=
-X-Received: by 2002:aa7:9491:0:b029:142:2501:396b with SMTP id
- z17-20020aa794910000b02901422501396bmr2144153pfk.48.1601003071283; Thu, 24
- Sep 2020 20:04:31 -0700 (PDT)
+        Thu, 24 Sep 2020 23:06:15 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601003174;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pPyth/CR2dpYigKRz2XXFwV37AHeH6IZ34wEhpd6C0I=;
+        b=UcD7ReOrhUshmqSIGC716n6ndzBHB+t9fYNqbYZD+E8Vf+HDKr7XgiVPnT8rV3hfXYvexE
+        AB8M3xiFgEJfq0sr0a36aD6TjuOojsAw18s15/QIdBChR4gNRf7qJrsfECAXm9DlVVp61a
+        AkVdMg/fTEkzc3w7Tu2Vs/FUEplCyaA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-15-lzcnFl1kPHmEFve_DDKvEA-1; Thu, 24 Sep 2020 23:06:09 -0400
+X-MC-Unique: lzcnFl1kPHmEFve_DDKvEA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1D131091062;
+        Fri, 25 Sep 2020 03:06:07 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-229.pek2.redhat.com [10.72.12.229])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8F1B319C78;
+        Fri, 25 Sep 2020 03:06:01 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 11:05:58 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     boris.ostrovsky@oracle.com
+Cc:     Michael Kelley <mikelley@microsoft.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>,
+        HATAYAMA Daisuke <d.hatayama@jp.fujitsu.com>
+Subject: Re: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
+Message-ID: <20200925030558.GA3446@dhcp-128-65.nay.redhat.com>
+References: <20200918032546.GA4180@dhcp-128-65.nay.redhat.com>
+ <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
+ <20200921201811.GB3437@char.us.oracle.com>
+ <87v9g6fuub.fsf@x220.int.ebiederm.org>
+ <20200923024329.GB3642@dhcp-128-65.nay.redhat.com>
+ <20200923154825.GC7635@char.us.oracle.com>
+ <MW2PR2101MB10521373DD95F5AF014254DDD7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
+ <874knndtvo.fsf@x220.int.ebiederm.org>
+ <MW2PR2101MB1052ED1C8953135A58276F04D7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
+ <4f964490-7464-0071-db38-4b16d665503e@oracle.com>
 MIME-Version: 1.0
-References: <cover.1600951211.git.yifeifz2@illinois.edu> <c14518ba563d4c6bb75b9fac63b69cd4c82f9dcc.1600951211.git.yifeifz2@illinois.edu>
- <202009241601.FFC0CF68@keescook>
-In-Reply-To: <202009241601.FFC0CF68@keescook>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Thu, 24 Sep 2020 22:04:20 -0500
-Message-ID: <CABqSeARb7GNU9+sVgGzgqqOmpQNpxq1JsMrZJvS2EC05AyfAVw@mail.gmail.com>
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
- filter is arg-dependent
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f964490-7464-0071-db38-4b16d665503e@oracle.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[resending this, forgot to hit reply all...]
+Hi,
 
-On Thu, Sep 24, 2020 at 6:25 PM Kees Cook <keescook@chromium.org> wrote:
-> I'm not interested in seccomp having a config option for this. It should
-> entire exist or not, and that depends on the per-architecture support.
-> You mentioned in another thread that you wanted it to let people play
-> with this support in some way. Can you elaborate on this? My perspective
-> is that of distro and vendor kernels: there is _one_ config and end
-> users can't really do anything about it without rolling their own
-> kernels.
+On 09/24/20 at 01:16pm, boris.ostrovsky@oracle.com wrote:
+> 
+> On 9/24/20 12:43 PM, Michael Kelley wrote:
+> > From: Eric W. Biederman <ebiederm@xmission.com> Sent: Thursday, September 24, 2020 9:26 AM
+> >> Michael Kelley <mikelley@microsoft.com> writes:
+> >>
+> >>>>> Added Hyper-V people and people who created the param, it is below
+> >>>>> commit, I also want to remove it if possible, let's see how people
+> >>>>> think, but the least way should be to disable the auto setting in both systemd
+> >>>>> and kernel:
+> >>> Hyper-V uses a notifier to inform the host system that a Linux VM has
+> >>> panic'ed.  Informing the host is particularly important in a public cloud
+> >>> such as Azure so that the cloud software can alert the customer, and can
+> >>> track cloud-wide reliability statistics.   Whether a kdump is taken is controlled
+> >>> entirely by the customer and how he configures the VM, and we want
+> >>> the host to be informed either way.
+> >> Why?
+> >>
+> >> Why does the host care?
+> >> Especially if the VM continues executing into a kdump kernel?
+> > The host itself doesn't care.  But the host is a convenient out-of-band
+> > channel for recording that a panic has occurred and to collect basic data
+> > about the panic.  This out-of-band channel is then used to notify the end
+> > customer that his VM has panic'ed.  Sure, the customer should be running
+> > his own monitoring software, but customers don't always do what they
+> > should.  Equally important, the out-of-band channel allows the cloud
+> > infrastructure software to notice trends, such as that the rate of Linux
+> > panics has increased, and that perhaps there is a cloud problem that
+> > should be investigated.
+> 
+> 
+> In many cases (especially in cloud environment) your dump device is remote (e.g. iscsi) and kdump sometimes (often?) gets stuck because of connectivity issues (which could be cause of the panic in the first place). So it is quite desirable to inform the infrastructure that the VM is on its way out without waiting for kdump to complete.
 
-That's one. The other is to allow future optional extensions, like
-syscall-argument-capable accelerators.
+That can probably be done in kdump kernel if it is really needed.  Say
+informing host that panic happened and a kdump kernel is runnning.
 
-Distro / vendor kernels will keep defaults anyways, no?
+But I think to set crash_kexec_post_notifiers by default is still bad. 
 
-> So, as Jann pointed out, using NR_syscalls only accidentally works --
-> they're actually different sizes and there isn't strictly any reason to
-> expect one to be smaller than another. So, we need to either choose the
-> max() in asm/linux/seccomp.h or be more efficient with space usage and
-> use explicitly named bitmaps (how my v1 does things).
+> 
+> 
+> >
+> >> Further like I have mentioned everytime something like this has come up
+> >> a call on the kexec on panic code path should be a direct call (That can
+> >> be audited) not something hidden in a notifier call chain (which can not).
+> >>
+> 
+> We btw already have a direct call from panic() to kmsg_dump() which is indirectly controlled by crash_kexec_post_notifiers, and it would also be preferable to be able to call it before kdump as well.
 
-Right.
+Right, that is the same thing we are talking about.
 
-> This isn't used in this patch; likely leftover/in need of moving?
+Thanks
+Dave
 
-Correct. Will remove.
-
-> I moved this up in the structure to see if I could benefit from cache
-> line sharing. In either case, we must verify (with "pahole") that we do
-> not induce massive padding in the struct.
->
-> But yes, attaching this to the filter is the right way to go.
-
-Right. I don't think it would cause massive padding with all I know
-about padding learnt from [1].
-
-I'm used to use gdb to look at structure layout, and this is what I see:
-(gdb) ptype /o struct seccomp_filter
-/* offset    |  size */  type = struct seccomp_filter {
-/*    0      |     4 */    refcount_t refs;
-/*    4      |     4 */    refcount_t users;
-/*    8      |     1 */    bool log;
-/* XXX  7-byte hole  */
-/*   16      |     8 */    struct seccomp_filter *prev;
-[...]
-/*  264      |   112 */    struct seccomp_cache_filter_data {
-/*  264      |   112 */        unsigned long syscall_ok[2][7];
-
-                               /* total size (bytes):  112 */
-                           } cache;
-
-                           /* total size (bytes):  376 */
-                         }
-
-The bitmaps are long-aligned; so is the prev-pointer. If we want we
-can put the cache struct right before prev and that should not
-introduce any new holes. It's the refcounts and the bool that's not
-cooperative.
-
-> nit: "ok" is too vague. We mean either "constant action" or "allow" (or
-> "filter" in the negative case).
-
-Right.
-
-> Why is this split out? (i.e. why is it not just a self-contained loop
-> the way Jann wrote it?)
-
-Because my brain thinks like a finite state machine and this function
-is a state transition. ;) Though yeah I agree a loop is probably more
-readable.
-
-> I appreciate the -errno intent, but it actually risks making these
-> changes break existing userspace filters: if something is unhandled in
-> the emulator in a way we don't find during design and testing, the
-> filter load will actually _fail_ instead of just falling back to "run
-> filter". Failures should be reported (WARN_ON_ONCE()), but my v1
-> intentionally lets this continue.
-
-Right.
-
-> This version appears to have removed all the comments; I liked Jann's
-> comments and I had rearranged things a bit to make it more readable
-> (IMO) for people that do not immediate understand BPF. :)
-
-Right.
-
-> > +/**
-> > + * seccomp_cache_prepare - emulate the filter to find cachable syscalls
-> > + * @sfilter: The seccomp filter
-> > + *
-> > + * Returns 0 if successful or -errno if error occurred.
-> > + */
-> > +int seccomp_cache_prepare(struct seccomp_filter *sfilter)
-> > +{
-> > +     struct sock_fprog_kern *fprog = sfilter->prog->orig_prog;
-> > +     struct sock_filter *filter = fprog->filter;
-> > +     int arch, nr, res = 0;
-> > +
-> > +     for (arch = 0; arch < ARRAY_SIZE(syscall_arches); arch++) {
-> > +             for (nr = 0; nr < NR_syscalls; nr++) {
-> > +                     struct seccomp_emu_env env = {0};
-
-Btw, do you know what is the initial state of the A register at the
-start of BPF execution? In my RFC I assumed it's unknown but then in
-v1 after the "reg_known" removal the register is assumed to be 0. Idk
-if it is correct to assume so.
-
-> I don't really like the complexity here, passing around syscall_ok, etc.
-> I feel like seccomp_emu_step() should be self-contained to say "allow or
-> filter" directly.
-
-Ok.
-
-> I also prefer an inversion to the logic: if we start bitmaps as "default
-> allow", we only ever increase the filtering cases: we can never
-> accidentally ADD an allow to the bitmap. (This was an intentional design
-> in the RFC and v1 to do as much as possible to fail safe.)
-
-Wait why? If it's default allow, what if you hit an error? You can
-accidentally not remove an allow from the bitmap, and that is much
-more of an issue than accidentally not add an allow. I don't
-understand your reasoning of "accidentally ADD an allow", an action
-will only occur when everything is right, but an action might not
-occur if some random shenanigans happen. Hence, the non-action /
-default side should be the fail-safe side, rather than the action
-side.
-
-> Why do the prepare here instead of during attach? (And note that it
-> should not be written to fail.)
-
-Right.
-
-> And, as per being as defensive as I can imagine, this should be a
-> one-way mask: we can only remove bits from syscall_ok, never add them.
-> sfilter must be constructed so that it can only ever have fewer or the
-> same bits set as prev.
-
-Right.
-
-> In the RFC I did this inherit earlier (in the emulation stage) to
-> benefit from the RET_KILL results, but that's not very useful any more.
-> However, I think it's still code-locality better to keep the bit
-> manipulation logic as close together as possible for readability.
-
-Right.
-
-[1] http://www.catb.org/esr/structure-packing/#_structure_alignment_and_padding
-
-YiFei Zhu
