@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5622279512
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9257F279503
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729631AbgIYXrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:47:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        id S1729648AbgIYXrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:47:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729186AbgIYXrj (ORCPT
+        with ESMTP id S1729591AbgIYXrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:47:39 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140F5C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:47:39 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id c2so3918695otp.7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:47:39 -0700 (PDT)
+        Fri, 25 Sep 2020 19:47:40 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE142C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:47:40 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id s66so3951211otb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:47:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gfv5DwnuqxUK2/JI31FCljoAr6aY+o7ASwHVzd1SBv8=;
-        b=PJwBEwXoDlmaOihq4USR91LUuIlycye+cnBxlxnV1BLnSK3jVHTq1ObnjeK00HjbYj
-         fmQ2zYF0nxqhpSD4c7K2zriVY2/thFbvtpJATf9R80neccigNL8uIfa2XWuqWN102MO/
-         K9jTVJ9Hnm5kfYfWddAdxkp5M+bwFLUTSt/a4=
+        bh=TH11kEvm9iFU4edsTXh7gIDGSk88lSWe2otA52wUs9w=;
+        b=UNNLjr39gbouxZCpSiFmcY9V1u0ktwIu7LfYV86klf1keKuS9PkQjb6Vl4/wm2tfsB
+         G+xB4lPkRm3p+eIzjRXwpJ1X3XOUWMEm6GNbDW+NGx47YtNIeYp0awbq6fwQjMjThrtL
+         y9b5rXVmtqJJiyUIpLg6dFL3iNVsbuKheOEPk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gfv5DwnuqxUK2/JI31FCljoAr6aY+o7ASwHVzd1SBv8=;
-        b=F5e2z/L93uiuCspOI1Kh0hqaWbTPPWotUJgVA2sL63WXjtGDawu6/DzMdbNcoDWk8q
-         Qw1wEis0aBn8wF/inUDMqudioIVz8QLNgmgrqcnvJugtIV3yHehw+k0gX77dA5PinR5y
-         OLI05e77EzjDZTy2tW1OG0FkRrrXGqZFb1FMY+JOfceRbLONMQipCQf5TxAD+7jpwduo
-         4/00YUuS0MC68WFX9Mz8g1c+U+BwMp7L/mqaSbK9Ye8DrcktmwjJy9ZXs/MvwtsSJj/H
-         qZbg7C5NeQcFJMcRDwnv6+bqweZelZ6B2VbeCBAJv+wJeAQKPcTNsfatjs1zM14Iel37
-         waYQ==
-X-Gm-Message-State: AOAM532iv2ynK6wCk+kuTtrzcHunuxjP0wllGTiYhyqOjQvqFxAzM1xd
-        YrX+AoLtkBlEiRS+ifrJT4krgA==
-X-Google-Smtp-Source: ABdhPJx6aGdjiInXsFRrlUQ2fnBxI8gTzveq1ANiRP2KZz1+XLj0ZD4Upsgn70drDJZRXMvfhXeOWw==
-X-Received: by 2002:a9d:6b0d:: with SMTP id g13mr1975643otp.129.1601077658485;
-        Fri, 25 Sep 2020 16:47:38 -0700 (PDT)
+        bh=TH11kEvm9iFU4edsTXh7gIDGSk88lSWe2otA52wUs9w=;
+        b=eNZZeCiZExCt2aOOMXRxqv/zsMKcqVo0XpFPsk0bOGUg2+dSBWGnISyPm0t954mW1D
+         cXDM4d1dqgq/ajF0wm55SAIf21XZ/NoWqLVuxRnPjVG0/ogrQuYgQwVJUwhAjjnhXaxc
+         cUevxfZhe1zXAhBjIxFUKIO0KJMt13lOJgimMefD9liwzwpq2vDRhCYvxN3nuJTgfpk0
+         d2KIytyHpF4EX+mSbfpqSiXs1cf9u85F023m5R8AF72wG4q5AH/oDcj5dDXG0zyJuqvM
+         PElNiYCtRIMvLmSk21d4ozkpFbLS4vPLnUaP1eHTF5sx7ee9/9cUtNFES0Pqz7RWce4U
+         99tw==
+X-Gm-Message-State: AOAM530t0mFQGiy3d821hedlD6Jzw0ICbJvsLjUPbSCgaYIehQQIqJk6
+        7WhfU+sl1BJffOzdFB+caBc4/A==
+X-Google-Smtp-Source: ABdhPJz/N5qHYeVtWPNLZSMPG+q+JbGjAeoRPiaG78bk13SSNfuduPKklEESh2O7y0hCpBwnUyersA==
+X-Received: by 2002:a05:6830:10ca:: with SMTP id z10mr1960036oto.208.1601077660111;
+        Fri, 25 Sep 2020 16:47:40 -0700 (PDT)
 Received: from shuah-t480s.internal (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id k3sm196219oof.6.2020.09.25.16.47.37
+        by smtp.gmail.com with ESMTPSA id k3sm196219oof.6.2020.09.25.16.47.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 16:47:37 -0700 (PDT)
+        Fri, 25 Sep 2020 16:47:39 -0700 (PDT)
 From:   Shuah Khan <skhan@linuxfoundation.org>
-To:     rafael@kernel.org, lenb@kernel.org, gregkh@linuxfoundation.org,
-        keescook@chromium.org
+To:     rafael@kernel.org, james.morse@arm.com, tony.luck@intel.com,
+        bp@alien8.de, gregkh@linuxfoundation.org, keescook@chromium.org
 Cc:     Shuah Khan <skhan@linuxfoundation.org>, linux-acpi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 05/11] drivers/acpi: convert seqno counter_atomic32
-Date:   Fri, 25 Sep 2020 17:47:19 -0600
-Message-Id: <c70c2be728d8b8552ef4de6f0536c3e8395ec456.1601073127.git.skhan@linuxfoundation.org>
+Subject: [PATCH 06/11] drivers/acpi/apei: convert seqno counter_atomic32
+Date:   Fri, 25 Sep 2020 17:47:20 -0600
+Message-Id: <c05e3d040fcaa51e275065f6d6f0b0588fdfebcd.1601073127.git.skhan@linuxfoundation.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1601073127.git.skhan@linuxfoundation.org>
 References: <cover.1601073127.git.skhan@linuxfoundation.org>
@@ -82,39 +82,39 @@ This conversion doesn't change the overflow wrap around behavior.
 Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 ---
- drivers/acpi/acpi_extlog.c | 5 +++--
+ drivers/acpi/apei/ghes.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
-index f138e12b7b82..d1e733f15cf5 100644
---- a/drivers/acpi/acpi_extlog.c
-+++ b/drivers/acpi/acpi_extlog.c
-@@ -12,6 +12,7 @@
- #include <linux/ratelimit.h>
- #include <linux/edac.h>
+diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+index 81bf71b10d44..92169436be18 100644
+--- a/drivers/acpi/apei/ghes.c
++++ b/drivers/acpi/apei/ghes.c
+@@ -41,6 +41,7 @@
+ #include <linux/uuid.h>
  #include <linux/ras.h>
+ #include <linux/task_work.h>
 +#include <linux/counters.h>
- #include <asm/cpu.h>
- #include <asm/mce.h>
  
-@@ -93,7 +94,7 @@ static struct acpi_hest_generic_status *extlog_elog_entry_check(int cpu, int ban
- static void __print_extlog_rcd(const char *pfx,
- 			       struct acpi_hest_generic_status *estatus, int cpu)
+ #include <acpi/actbl1.h>
+ #include <acpi/ghes.h>
+@@ -562,7 +563,7 @@ static void __ghes_print_estatus(const char *pfx,
+ 				 const struct acpi_hest_generic *generic,
+ 				 const struct acpi_hest_generic_status *estatus)
  {
 -	static atomic_t seqno;
-+	static struct counter_atomic32 seqno;
++	static struct counter_atomic32 seqno = COUNTER_ATOMIC_INIT(0);
  	unsigned int curr_seqno;
  	char pfx_seq[64];
  
-@@ -103,7 +104,7 @@ static void __print_extlog_rcd(const char *pfx,
+@@ -573,7 +574,7 @@ static void __ghes_print_estatus(const char *pfx,
  		else
  			pfx = KERN_ERR;
  	}
 -	curr_seqno = atomic_inc_return(&seqno);
 +	curr_seqno = counter_atomic32_inc_return(&seqno);
- 	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}", pfx, curr_seqno);
- 	printk("%s""Hardware error detected on CPU%d\n", pfx_seq, cpu);
- 	cper_estatus_print(pfx_seq, estatus);
+ 	snprintf(pfx_seq, sizeof(pfx_seq), "%s{%u}" HW_ERR, pfx, curr_seqno);
+ 	printk("%s""Hardware error from APEI Generic Hardware Error Source: %d\n",
+ 	       pfx_seq, generic->header.source_id);
 -- 
 2.25.1
 
