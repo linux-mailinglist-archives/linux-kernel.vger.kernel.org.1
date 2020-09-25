@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B12A278885
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:56:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65984278827
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729519AbgIYMyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:54:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60338 "EHLO mail.kernel.org"
+        id S1729031AbgIYMxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:53:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729512AbgIYMyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:54:03 -0400
+        id S1729395AbgIYMxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:53:12 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C96D206DB;
-        Fri, 25 Sep 2020 12:54:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 043F02075E;
+        Fri, 25 Sep 2020 12:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038442;
-        bh=paXYhhC1O7YhPhqPs0j/nzEymqV8eZcn2jnZv4umeK8=;
+        s=default; t=1601038392;
+        bh=10+rjzhobR+RtnyIJynio14kN4zwS2zsAfOlSiIypwU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wNNE4SyZPDqzacIV2XBU4MHX/K9WS+tJMB/X2UlVlZ1DT5/yeh03vF6RzcB6aok+K
-         OKsuGLuYl+LQ/5aeowUR9vo+Z73+8K7EEC9Uj3oQ1cgM0LfKVHjnJwmG4s2SVC+MRu
-         lnQn+d6y3dVN2gNzPurM3o+lkW+LCGvhQ/yvYGX4=
+        b=rSqmFMqeuDjZ7CJsINnkYfmOieLWCl6P1n8+4BhlLGQCzhqURvDegFndgw+7P4XfN
+         U35pktrDem3RZTFkRZy8oJhECWv2iOmfdHF0HMnEM+zhaZabt4lJraFtUhi20WdTy2
+         ELg/tY6BK85yhA0EO/KfeHyYf8o7MJ/9AiqqXEjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
+        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 20/37] net: phy: Avoid NPD upon phy_detach() when driver is unbound
-Date:   Fri, 25 Sep 2020 14:48:48 +0200
-Message-Id: <20200925124723.974924315@linuxfoundation.org>
+Subject: [PATCH 5.4 37/43] net: lantiq: Disable IRQs only if NAPI gets scheduled
+Date:   Fri, 25 Sep 2020 14:48:49 +0200
+Message-Id: <20200925124729.158570970@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
-References: <20200925124720.972208530@linuxfoundation.org>
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
+References: <20200925124723.575329814@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +42,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Hauke Mehrtens <hauke@hauke-m.de>
 
-[ Upstream commit c2b727df7caa33876e7066bde090f40001b6d643 ]
+[ Upstream commit 9423361da52356cb68642db5b2729b6b85aad330 ]
 
-If we have unbound the PHY driver prior to calling phy_detach() (often
-via phy_disconnect()) then we can cause a NULL pointer de-reference
-accessing the driver owner member. The steps to reproduce are:
+The napi_schedule() call will only schedule the NAPI if it is not
+already running. To make sure that we do not deactivate interrupts
+without scheduling NAPI only deactivate the interrupts in case NAPI also
+gets scheduled.
 
-echo unimac-mdio-0:01 > /sys/class/net/eth0/phydev/driver/unbind
-ip link set eth0 down
-
-Fixes: cafe8df8b9bc ("net: phy: Fix lack of reference count on PHY driver")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Hauke Mehrtens <hauke@hauke-m.de>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/phy_device.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/lantiq_xrx200.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -1154,7 +1154,8 @@ void phy_detach(struct phy_device *phyde
+--- a/drivers/net/ethernet/lantiq_xrx200.c
++++ b/drivers/net/ethernet/lantiq_xrx200.c
+@@ -344,10 +344,12 @@ static irqreturn_t xrx200_dma_irq(int ir
+ {
+ 	struct xrx200_chan *ch = ptr;
  
- 	phy_led_triggers_unregister(phydev);
+-	ltq_dma_disable_irq(&ch->dma);
+-	ltq_dma_ack_irq(&ch->dma);
++	if (napi_schedule_prep(&ch->napi)) {
++		__napi_schedule(&ch->napi);
++		ltq_dma_disable_irq(&ch->dma);
++	}
  
--	module_put(phydev->mdio.dev.driver->owner);
-+	if (phydev->mdio.dev.driver)
-+		module_put(phydev->mdio.dev.driver->owner);
+-	napi_schedule(&ch->napi);
++	ltq_dma_ack_irq(&ch->dma);
  
- 	/* If the device had no specific driver before (i.e. - it
- 	 * was using the generic driver), we unbind the device
+ 	return IRQ_HANDLED;
+ }
 
 
