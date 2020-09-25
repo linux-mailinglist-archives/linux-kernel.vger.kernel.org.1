@@ -2,452 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B67F27939E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 395222793C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbgIYVdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:33:19 -0400
-Received: from mout.gmx.net ([212.227.15.15]:56413 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726636AbgIYVdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:33:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601069535;
-        bh=fOmj3zQts7kybefgEaY4WROeVIrinhK+N1GjZXrXArI=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=cA2PZ86zIHF0faVYeRCFmQODzEuzOrQ14kPmbJoIr+mbA6zoZy/a9GXLjs+Q7loz6
-         8Mx9/eb8TJwPpRDJR1gMjSe3GhBiBjgbzMUo8+GYBZZCL8NXV+ZPC6cX3FeMEpARP9
-         NxZtjRd2zp8oOY69snz1IEFVsnOxMvC/XszvbNpU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MAfYw-1kAtmB1wcK-00B3BS; Fri, 25
- Sep 2020 23:32:15 +0200
-Date:   Fri, 25 Sep 2020 23:32:07 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-pwm@vger.kernel.org,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>
-Subject: Re: [PATCH v3 3/7] mfd: Add base driver for Netronix embedded
- controller
-Message-ID: <20200925213207.GA2510@latitude>
-References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
- <20200924192455.2484005-4-j.neuschaefer@gmx.net>
- <CAHp75VdUHPsuvDPLnfP9sM2p1FDiCsjkCf1SSM-y02ZsQxSDWQ@mail.gmail.com>
+        id S1728472AbgIYVsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:48:47 -0400
+Received: from sender4-of-o51.zoho.com ([136.143.188.51]:21150 "EHLO
+        sender4-of-o51.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726844AbgIYVsr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 17:48:47 -0400
+X-Greylist: delayed 909 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 17:48:44 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1601069575; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=eaCridq/Q/bPqSpnsGv/DJP6Af6/ncIr2v/Qf8j8EGiSN5pUxISglSxhg0elB/41ayTlI2YKZ8pZnWTFbUbJklfdDvQCOj8B0fCxdc8rh0XadT/UJzFBbCBU1yMRnp75hcbcVvAFC6+rbIJMARqR4sCb6zqH6qfj1yXd+406l5U=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1601069575; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=0a7g0NVpSKP3n73d4Kbie2Bt3f9aurS3uIGDEm9zTs8=; 
+        b=dxw/TJwnUBKaP0P0ILY/i2BLJ4r+gYKey93bBzChSs3ax3+wOsVoWVYEAJ4MPJ4mtFCK4q+H/F2y2Vosr8QSSjCLtxSASL5crgyxTGAxjtArgWXQ6miEvlSiBDketKM5Y4nieFp7HmnDQaFTsqQPZqeL1nQ+J4+oZwlKXhfgDb4=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=apertussolutions.com;
+        spf=pass  smtp.mailfrom=dpsmith@apertussolutions.com;
+        dmarc=pass header.from=<dpsmith@apertussolutions.com> header.from=<dpsmith@apertussolutions.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1601069575;
+        s=zoho; d=apertussolutions.com; i=dpsmith@apertussolutions.com;
+        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=0a7g0NVpSKP3n73d4Kbie2Bt3f9aurS3uIGDEm9zTs8=;
+        b=kQ0ksBHC73Nhf3QsqlgJGUOmpoeQQeVZL0cpPok5s92kAwdC/qZsEhhOqweVurav
+        S7E5Gat7JVVnw6mD9i8b8EcmsiVW6ezfvE8uFH4GaK19nb7Na8qtR1cm3rvBTNPrlVp
+        qc90V9VtyQo34Al/a6roBwy8NP/5tWpmOfVYMowA=
+Received: from [10.10.1.24] (c-73-129-147-140.hsd1.md.comcast.net [73.129.147.140]) by mx.zohomail.com
+        with SMTPS id 1601069573615900.4080400133685; Fri, 25 Sep 2020 14:32:53 -0700 (PDT)
+Subject: Re: [PATCH 00/13] x86: Trenchboot secure dynamic launch Linux kernel
+ support
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     Ross Philipson <ross.philipson@oracle.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
+        linux-doc@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, luto@amacapital.net,
+        trenchboot-devel@googlegroups.com
+References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
+ <20200925053051.GA165011@linux.intel.com>
+From:   "Daniel P. Smith" <dpsmith@apertussolutions.com>
+Message-ID: <8329607a-704d-1da0-dc7b-4b97c2440afb@apertussolutions.com>
+Autocrypt: addr=dpsmith@apertussolutions.com; prefer-encrypt=mutual; keydata=
+ mQMuBFYrueARCACPWL3r2bCSI6TrkIE/aRzj4ksFYPzLkJbWLZGBRlv7HQLvs6i/K4y/b4fs
+ JDq5eL4e9BdfdnZm/b+K+Gweyc0Px2poDWwKVTFFRgxKWq9R7McwNnvuZ4nyXJBVn7PTEn/Z
+ G7D08iZg94ZsnUdeXfgYdJrqmdiWA6iX9u84ARHUtb0K4r5WpLUMcQ8PVmnv1vVrs/3Wy/Rb
+ foxebZNWxgUiSx+d02e3Ad0aEIur1SYXXv71mqKwyi/40CBSHq2jk9eF6zmEhaoFi5+MMMgX
+ X0i+fcBkvmT0N88W4yCtHhHQds+RDbTPLGm8NBVJb7R5zbJmuQX7ADBVuNYIU8hx3dF3AQCm
+ 601w0oZJ0jGOV1vXQgHqZYJGHg5wuImhzhZJCRESIwf+PJxik7TJOgBicko1hUVOxJBZxoe0
+ x+/SO6tn+s8wKlR1Yxy8gYN9ZRqV2I83JsWZbBXMG1kLzV0SAfk/wq0PAppA1VzrQ3JqXg7T
+ MZ3tFgxvxkYqUP11tO2vrgys+InkZAfjBVMjqXWHokyQPpihUaW0a8mr40w9Qui6DoJj7+Gg
+ DtDWDZ7Zcn2hoyrypuht88rUuh1JuGYD434Q6qwQjUDlY+4lgrUxKdMD8R7JJWt38MNlTWvy
+ rMVscvZUNc7gxcmnFUn41NPSKqzp4DDRbmf37Iz/fL7i01y7IGFTXaYaF3nEACyIUTr/xxi+
+ MD1FVtEtJncZNkRn7WBcVFGKMAf+NEeaeQdGYQ6mGgk++i/vJZxkrC/a9ZXme7BhWRP485U5
+ sXpFoGjdpMn4VlC7TFk2qsnJi3yF0pXCKVRy1ukEls8o+4PF2JiKrtkCrWCimB6jxGPIG3lk
+ 3SuKVS/din3RHz+7Sr1lXWFcGYDENmPd/jTwr1A1FiHrSj+u21hnJEHi8eTa9029F1KRfocp
+ ig+k0zUEKmFPDabpanI323O5Tahsy7hwf2WOQwTDLvQ+eqQu40wbb6NocmCNFjtRhNZWGKJS
+ b5GrGDGu/No5U6w73adighEuNcCSNBsLyUe48CE0uTO7eAL6Vd+2k28ezi6XY4Y0mgASJslb
+ NwW54LzSSLQuRGFuaWVsIFAuIFNtaXRoIDxkcHNtaXRoQGFwZXJ0dXNzb2x1dGlvbnMuY29t
+ Poh6BBMRCAAiBQJWK7ngAhsjBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRBTc6WbYpR8
+ KrQ9AP94+xjtFfJ8gj5c7PVx06Zv9rcmFUqQspZ5wSEkvxOuQQEAg6qEsPYegI7iByLVzNEg
+ 7B7fUG7pqWIfMqFwFghYhQy5Ag0EViu54BAIAL6MXXNlrJ5tRUf+KMBtVz1LJQZRt/uxWrCb
+ T06nZjnbp2UcceuYNbISOVHGXTzu38r55YzpkEA8eURQf+5hjtvlrOiHxvpD+Z6WcpV6rrMB
+ kcAKWiZTQihW2HoGgVB3gwG9dCh+n0X5OzliAMiGK2a5iqnIZi3o0SeW6aME94bSkTkuj6/7
+ OmH9KAzK8UnlhfkoMg3tXW8L6/5CGn2VyrjbB/rcrbIR4mCQ+yCUlocuOjFCJhBd10AG1IcX
+ OXUa/ux+/OAV9S5mkr5Fh3kQxYCTcTRt8RY7+of9RGBk10txi94dXiU2SjPbassvagvu/hEi
+ twNHms8rpkSJIeeq0/cAAwUH/jV3tXpaYubwcL2tkk5ggL9Do+/Yo2WPzXmbp8vDiJPCvSJW
+ rz2NrYkd/RoX+42DGqjfu8Y04F9XehN1zZAFmCDUqBMa4tEJ7kOT1FKJTqzNVcgeKNBGcT7q
+ 27+wsqbAerM4A0X/F/ctjYcKwNtXck1Bmd/T8kiw2IgyeOC+cjyTOSwKJr2gCwZXGi5g+2V8
+ NhJ8n72ISPnOh5KCMoAJXmCF+SYaJ6hIIFARmnuessCIGw4ylCRIU/TiXK94soilx5aCqb1z
+ ke943EIUts9CmFAHt8cNPYOPRd20pPu4VFNBuT4fv9Ys0iv0XGCEP+sos7/pgJ3gV3pCOric
+ p15jV4OIYQQYEQgACQUCViu54AIbDAAKCRBTc6WbYpR8Khu7AP9NJrBUn94C/3PeNbtQlEGZ
+ NV46Mx5HF0P27lH3sFpNrwD/dVdZ5PCnHQYBZ287ZxVfVr4Zuxjo5yJbRjT93Hl0vMY=
+Date:   Fri, 25 Sep 2020 17:32:50 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdUHPsuvDPLnfP9sM2p1FDiCsjkCf1SSM-y02ZsQxSDWQ@mail.gmail.com>
-X-Provags-ID: V03:K1:d7YI7q9xhqyMeuCoSJ1xFCTdK3X2pL7XIlrg4rAzNabthB/psZt
- nXMDjOk/jQqamXBNOiQn+Q9P/JBxwgKqMPnGhCESNzmn/7qeT/HCVTXZbyiJPLI9hO/5rn4
- oAtweDKzKff+8CCCRxQaxU80sSIQLQ3jaZ5dA/H5+LfE3EBYhMWvXNot8fkeZDzIaPikYuM
- R03MmlsYcbs8UG8yEJ+fw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:C90YUi8I8sk=:5PjtnPdDQNWUL5SwSPcnNC
- 9wQi65fczQ2OQV55FrLbp7WHPGyFxABDORcsvNPRwva1fA/TS4nXYuHD/2X+tH/dkkrNMAVoU
- gqMlfQdtAhy+Ay2bluLKiTuz25YnoMniiLtSkHFKoQKtFzMzev36ZiRdJI1f1gtz1yLaIB/49
- DMwHHf8kvubeNfECMfYw/04O/Nqla5B5KSTxJelJqIvlFk4NffJ9Z2qj111F6753sUbuJdj74
- 16HPy0A1bBonwv7Vn2KNrmAi7ffMO66WCeWSmJizQkVejJyMXCrJ74M/1UbxSv9sqreAMB1hq
- pEKUrQMrUAuvBw7iaty7fCbi07ROFfKzstre8hDZ7FtfkzuiJUOhKAA9RQhYVUz+7VBJ5YmDl
- /WsqlmKLvzPu1y7D91DrX6mGujtDU+/zeK0g+cm1Cv6hlnUajsmO9SlKeWxqiwzHYJ/cpKhrk
- cI5SW8R9hyS382IheldeKchhz+4Qr6mrolNDz/aGVjh/VePVfrkMxIQTCHfObE27S++C81o9m
- pENmeiEXEJe3cZrErV0SxCtn+5xX9a3OfrOE+rx3cllTQYCdiwaItBiVim3xVQVG3zmU8zi5j
- 1flRATWukx7GU1Xj456qc+73aAVRjD1QUEDNTVtUsfH1DjSy6Mkehq6jFyP+lfZFv7CTDApvY
- zDfnO3l9kV6iLEGuMYgpyUP+5WxByIHMnS9i1iK1qL9UXVPFEpSv/qc9Dcua1EcFXaIS2CxYE
- ecLaoUF4XNSlY2MIGwpW/aQwdnBVsgbcZp/NsexE58gtR/qlJspVfPsa/oW59Pk/W/eEeWXDb
- bGrGRYIAt6Lk6j4kznp39FxhK9aMXP3VQ0TEDKIKKLNKIf0PwmHJbqtgxZIu3VleDFyNYG1dz
- XpXLjh5/2cMcraosM279k2rooVEFZ1f0l+ce/M5cUAk+fu36jsvMItRQbEzCW1jh2W4ljUI5w
- 2hzV5Ew3svvGa54vPd8Nar9wnycky29HETQst9UoPmEx1r0C2e0V8Uik8zqvSZq0B9Q+DIQAz
- yCXIoDPfhM9oadoRLjV7RQLxFf96EuQ/AT+vvAvvKrA6GqfU3xnV6iriD6quwR9nMswcM2AxE
- mXYWagwrULzPjMARY7QKDmEVb0kq4k38uN6U4d2GSiQ4J7PnsB2Y0LuFvfMZIdBuJEZM7EzzG
- Z5GvXO/iwdm9jOOOEPWXkMcc655rBu5XKD4+p0C7MWaagiU2PoOB5aiRHAvLmU/I1z/KBPPzn
- e0wQ9a1R4J8C4odC6NyDEkGS5C6aYg0ORKLdqZA==
+In-Reply-To: <20200925053051.GA165011@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---Kj7319i9nmIyA2yE
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Sep 25, 2020 at 12:29:45PM +0300, Andy Shevchenko wrote:
-> On Thu, Sep 24, 2020 at 10:26 PM Jonathan Neusch=C3=A4fer
-> <j.neuschaefer@gmx.net> wrote:
-> >
-> > The Netronix embedded controller is a microcontroller found in some
-> > e-book readers designed by the ODM Netronix, Inc. It contains RTC,
-> > battery monitoring, system power management, and PWM functionality.
-> >
-> > This driver implements register access and version detection.
-> >
-> > Third-party hardware documentation is available at:
-> >
-> >   https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-co=
-ntroller
-> >
-> > The EC supports interrupts, but the driver doesn't make use of them so
-> > far.
+On 9/25/20 1:30 AM, Jarkko Sakkinen wrote:
+> On Thu, Sep 24, 2020 at 10:58:28AM -0400, Ross Philipson wrote:
+>> The Trenchboot project focus on boot security has led to the enabling of
+>> the Linux kernel to be directly invocable by the x86 Dynamic Launch
+>> instruction(s) for establishing a Dynamic Root of Trust for Measurement
+>> (DRTM). The dynamic launch will be initiated by a boot loader with
 >=20
-> ...
->=20
-> > +#include <asm/unaligned.h>
->=20
-> This usually goes after linux/*.h
-> (and actually not visible how it's being used, but see below first)
+> What is "the dynamic launch"?
 
-I think it was a leftover from v1 before I used regmap for general
-access to the registers. Will fix the ordering.
+Dynamic launch is the term used to reference the event/process of
+restarting a system without reboot to establish the DRTM. It is defined
+in the TCG Glossary[1], is discussed in detail in the TCG D-RTM
+Architecture specification[2], and covered in minimal detail in sections
+9.5.5 and 34.2 of the TCG TPM2.0 Architecture specification[3].
 
-> > +#include <linux/delay.h>
-> > +#include <linux/errno.h>
-> > +#include <linux/i2c.h>
-> > +#include <linux/mfd/core.h>
-> > +#include <linux/mfd/ntxec.h>
-> > +#include <linux/module.h>
-> > +#include <linux/pm.h>
-> > +#include <linux/reboot.h>
-> > +#include <linux/regmap.h>
-> > +#include <linux/types.h>
->=20
-> ...
->=20
-> > +static void ntxec_poweroff(void)
-> > +{
-> > +       int res;
-> > +       u8 buf[] =3D {
-> > +               NTXEC_REG_POWEROFF,
->=20
-> > +               (NTXEC_POWEROFF_VALUE >> 8) & 0xff,
-> > +               NTXEC_POWEROFF_VALUE & 0xff,
->=20
-> '& 0xff' parts are redundant. *u8 implies that. Fix in all cases.
-> Also I would rather see something like
->=20
->   buf[0] =3D _POWEROFF;
->   put_unaligned_be16(_VALUE, &buf[1]);
->=20
-> to explicitly show the endianess of the register values.
+[1]
+https://trustedcomputinggroup.org/wp-content/uploads/TCG-Glossary-V1.1-Rev-=
+1.0.pdf
+[2]
+https://trustedcomputinggroup.org/wp-content/uploads/TCG_D-RTM_Architecture=
+_v1-0_Published_06172013.pdf
+[3]
+https://trustedcomputinggroup.org/wp-content/uploads/TCG_TPM2_r1p59_Part1_A=
+rchitecture_pub.pdf
 
-Good idea.
-
-> > +       };
-> > +       struct i2c_msg msgs[] =3D {
-> > +               {
-> > +                       .addr =3D poweroff_restart_client->addr,
-> > +                       .flags =3D 0,
-> > +                       .len =3D sizeof(buf),
+>> associated support added to it, for example the first targeted boot
+>> loader will be GRUB2. An integral part of establishing the DRTM involves
+>> measuring everything that is intended to be run (kernel image, initrd,
+>> etc) and everything that will configure that kernel to run (command
+>> line, boot params, etc) into specific PCRs, the DRTM PCRs (17-22), in
+>> the TPM. Another key aspect is the dynamic launch is rooted in hardware,
+>> that is to say the hardware (CPU) is what takes the first measurement
+>> for the chain of integrity measurements. On Intel this is done using
+>> the GETSEC instruction provided by Intel's TXT and the SKINIT
+>> instruction provided by AMD's AMD-V. Information on these technologies
+>> can be readily found online. This patchset introduces Intel TXT support.
 >=20
-> > +                       .buf =3D buf
+> Why not both Intel and AMD? You should explain this in the cover letter.
+
+The work for this is split across different teams with different
+resourcing levels resulting in one organization working Intel and
+another working AMD. This then raised the concern over submitting a
+single patch set developed by two groups pseudo-independently. In this
+situation the result would be patches being submitted from one
+organization that had no direct development or testing and therefore
+could not sign off on a subset of the patches being submitted.
+
+> I'd be more motivated to review and test a full all encompassing x86
+> solution. It would increase the patch set size but would also give it
+> a better test coverage, which I think would be a huge plus in such a
+> complex patch set.
+
+We would not disagree with those sentiments but see the previous
+response about the conflict that exists.
+
+>> To enable the kernel to be launched by GETSEC, a stub must be built
+>> into the setup section of the compressed kernel to handle the specific
+>> state that the dynamic launch process leaves the BSP in. This is
+>> analogous to the EFI stub that is found in the same area. Also this stub
 >=20
-> It's slightly better to keep trailing commas in cases like this.
+> How is it analogous?
 
-Ok.
+It is analogous as we used it as the pattern to follow for adding a
+configurable entry point to the kernel. There was a discussion on this
+when we published the RFC patches[4].
 
+[4] https://lkml.org/lkml/2020/3/25/982
+
+>> must measure everything that is going to be used as early as possible.
+>> This stub code and subsequent code must also deal with the specific
+>> state that the dynamic launch leaves the APs in.
 >=20
-> > +               }
-> > +       };
-> > +
-> > +       res =3D i2c_transfer(poweroff_restart_client->adapter, msgs, AR=
-RAY_SIZE(msgs));
-> > +       if (res < 0)
+> What is "the specific state"?
+
+The details are a bit more than I would prefer to explain here, I would
+recommend reading section 2.3 and 2.4 of Intel's TXT Software
+Development Guide[5] for all the details of the state and the prescribed
+initialization sequence.
+
+[5]
+https://www.intel.com/content/dam/www/public/us/en/documents/guides/intel-t=
+xt-software-development-guide.pdf
+
+>> A quick note on terminology. The larger open source project itself is
+>> called Trenchboot, which is hosted on Github (links below). The kernel
+>> feature enabling the use of the x86 technology is referred to as "Secure
+>> Launch" within the kernel code. As such the prefixes sl_/SL_ or
+>> slaunch/SLAUNCH will be seen in the code. The stub code discussed above
+>> is referred to as the SL stub.
 >=20
-> > +               dev_alert(&poweroff_restart_client->dev,
-> > +                         "Failed to power off (err =3D %d)\n", res);
->=20
-> alert? This needs to be explained.
+> Is this only for Trenchboot? I'm a bit lost. What is it anyway?
 
-I copied the dev_alert from drivers/mfd/rn5t618.c.
-
-Upon reconsideration, I'm not sure what the correct log level would be,
-but _warn seems enough, or maybe _err is better
-
-> > +       /*
-> > +        * The time from the register write until the host CPU is power=
-ed off
-> > +        * has been observed to be about 2.5 to 3 seconds. Sleep long e=
-nough to
-> > +        * safely avoid returning from the poweroff handler.
-> > +        */
-> > +       msleep(5000);
-> > +}
-> > +
-> > +static int ntxec_restart(struct notifier_block *nb,
-> > +                        unsigned long action, void *data)
-> > +{
-> > +       int res;
-> > +       /*
-> > +        * NOTE: The lower half of the reset value is not sent, because=
- sending
-> > +        * it causes an error
->=20
-> Why? Any root cause? Perhaps you need to send 0xffff ?
-
-Unknown, because I don't have the EC firmware for analysis. The vendor
-kernel sends 0xff00 and gets an error.
-
-Sending 0xffff doesn't help.
-
-> > +        */
-> > +       u8 buf[] =3D {
-> > +               NTXEC_REG_RESET,
->=20
-> > +               (NTXEC_RESET_VALUE >> 8) & 0xff,
->=20
-> Here you may still use put_unaligned_be16() but move the comment to be
-> before len hardcoded to sizeof(buf) - 1.
-
-Okay, will do.
-
->=20
-> > +       };
-> > +       struct i2c_msg msgs[] =3D {
-> > +               {
-> > +                       .addr =3D poweroff_restart_client->addr,
-> > +                       .flags =3D 0,
-> > +                       .len =3D sizeof(buf),
-> > +                       .buf =3D buf
-> > +               }
-> > +       };
-> > +
-> > +       res =3D i2c_transfer(poweroff_restart_client->adapter, msgs, AR=
-RAY_SIZE(msgs));
-> > +       if (res < 0)
-> > +               dev_alert(&poweroff_restart_client->dev,
-> > +                         "Failed to restart (err =3D %d)\n", res);
-> > +
-> > +       return NOTIFY_DONE;
-> > +}
->=20
-> ...
-
-An error in the i2c transfer here is an abnormal situation that should
-in my opinion be logged, but I don't see what else the code can do here
-to handle the error.
-
->=20
-> > +static int ntxec_probe(struct i2c_client *client)
-> > +{
-> > +       struct ntxec *ec;
-> > +       unsigned int version;
-> > +       int res;
-> > +
-> > +       ec =3D devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
-> > +       if (!ec)
-> > +               return -ENOMEM;
-> > +
-> > +       ec->dev =3D &client->dev;
-> > +
-> > +       ec->regmap =3D devm_regmap_init_i2c(client, &regmap_config);
-> > +       if (IS_ERR(ec->regmap)) {
-> > +               dev_err(ec->dev, "Failed to set up regmap for device\n"=
-);
-> > +               return res;
-> > +       }
-> > +
-> > +       /* Determine the firmware version */
-> > +       res =3D regmap_read(ec->regmap, NTXEC_REG_VERSION, &version);
-> > +       if (res < 0) {
-> > +               dev_err(ec->dev, "Failed to read firmware version numbe=
-r\n");
-> > +               return res;
-> > +       }
->=20
-> > +       dev_info(ec->dev,
-> > +                "Netronix embedded controller version %04x detected.\n=
-",
-> > +                version);
->=20
-> This info level may confuse users if followed by an error path.
-
-Right. I suppose printing incompatible versions is still useful, so how
-about something like the following?
+TrenchBoot is a meta-project that is working to bring a unified approach
+to using DRTM across CPU implementations and open source projects.
+Currently we are working to integrate a dynamic launch preamble (the
+code that sets up for calling the dynamic launch CPU instruction) in
+GRUB, building an open AMD Secure Loader that aligns with how Intel's
+SINIT ACM hands off to an MLE, bring the first directly launchable
+implementation to Linux (Secure Launch) with Xen being the next directly
+launchable implementation, providing the u-root project a secure launch
+initramfs init routine to demonstrate a policy driven measurement and
+attestation framework that can be used in conjunction with a Secure
+Launch kernel.
 
 
-       /* Bail out if we encounter an unknown firmware version */
-       switch (version) {
-       case 0xd726: /* found in Kobo Aura */
-	       dev_info(ec->dev,
-			"Netronix embedded controller version %04x detected.\n",
-			version);
-               break;
-       default:
-	       dev_err(ec->dev,
-			"Netronix embedded controller version %04x is not supported.\n",
-			version);
-               return -ENODEV;
-       }
-
-> > +
-> > +       if (of_device_is_system_power_controller(ec->dev->of_node)) {
-> > +               /*
-> > +                * Set the 'powerkeep' bit. This is necessary on some b=
-oards
-> > +                * in order to keep the system running.
-> > +                */
-> > +               res =3D regmap_write(ec->regmap, NTXEC_REG_POWERKEEP,
-> > +                                  NTXEC_POWERKEEP_VALUE);
-> > +               if (res < 0)
-> > +                       return res;
+>> The basic flow is:
+>>
+>>  - Entry from the dynamic launch jumps to the SL stub
+>>  - SL stub fixes up the world on the BSP
 >=20
-> > +               WARN_ON(poweroff_restart_client);
+> What is "SL"?
+
+As mentioned above, it is just shorthand for Secure Launch.
+
+>>  - For TXT, SL stub wakes the APs, fixes up their worlds
+>>  - For TXT, APs are left halted waiting for an NMI to wake them
+>>  - SL stub jumps to startup_32
+>>  - SL main runs to measure configuration and module information into the
+>>    DRTM PCRs. It also locates the TPM event log.
+>>  - Kernel boot proceeds normally from this point.
+>>  - During early setup, slaunch_setup() runs to finish some validation
+>>    and setup tasks.
 >=20
-> WARN_ON? All these alerts, WARNs, BUGs must be explained. Screaming to
-> the user is not good if it wasn't justified.
+> What are "some" validation and setup tasks?
 
-poweroff_restart_client being already set is not a situation that should
-happen (and would indicate a bug in this driver, AFAICT), but I guess
-the log message could be better in that case...
+The validation and setup steps are to ensure the environment was setup
+in a manner that we expected as outlined in the Intel TXT Software
+Development guide[4]. At this point these are,
+- Ensure that SENTER completed successfully and was not initiated by TBOOT.
+- Check that the private MMIO register bank is available.
+- Fetch values needed from the TXT heap for later operations.
+- Verify the PMR values cover the MLE and other memory regions that need
+to be secure.
+- Reserve certain TXT specific areas of physical memory.
+- Fetch the copy of the DMAR table from the TXT heap to provide to the
+IOMMU driver later.
 
-> > +               poweroff_restart_client =3D client;
-> > +               if (pm_power_off)
-> > +                       dev_err(ec->dev, "pm_power_off already assigned=
-\n");
-> > +               else
-> > +                       pm_power_off =3D ntxec_poweroff;
-> > +
-> > +               res =3D register_restart_handler(&ntxec_restart_handler=
-);
-> > +               if (res)
-> > +                       dev_err(ec->dev,
-> > +                               "Failed to register restart handler: %d=
-\n", res);
-> > +       }
-> > +
-> > +       i2c_set_clientdata(client, ec);
-> > +
-> > +       res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxe=
-c_subdevices,
-> > +                                  ARRAY_SIZE(ntxec_subdevices), NULL, =
-0, NULL);
-> > +       if (res)
+>>  - The SMP bringup code is modified to wake the waiting APs. APs vector
+>>    to rmpiggy and start up normally from that point.
+>>  - Kernel boot finishes booting normally
+>>  - SL securityfs module is present to allow reading and writing of the
+>>    TPM event log.
 >=20
-> > +               dev_warn(ec->dev, "Failed to add subdevices: %d\n", res=
-);
+> What is SL securityfs module? Why is it needed? We already have
+> securityfs file for the event log. Why it needs to be writable?
+
+The securityfs nodes provides access to the TXT registers to inspect the
+details from the dynamic launch and access to the DRTM event log. The
+DRTM event log is setup by the DRTM process and is a different/separate
+event log from the SRTM/UEFI event log. We need write access for use
+cases where the Secure Launch kernel is being used as an intermediate
+launch kernel where additional measurements about the final target
+environment are being collected.
+
+>>  - SEXIT support to leave SMX mode is present on the kexec path and
+>>    the various reboot paths (poweroff, reset, halt).
 >=20
-> 'warn' is inconsistent with 'return err'. Either do not return an
-> error, or mark a message as an error one.
+> What SEXIT do and why it is required on the kexec path?
 
-Okay, I'll change it to dev_err.
+The SEXIT instruction "exits" SMX mode. The why is because when in SMX
+mode the CPU has a set of behaviors different than what is typically
+expected, especially for SMP management. As good custodians, this
+ensures that the system is in a usable state for a follow-on kernel that
+is not SMX/Secure Launch aware. From a security use case perspective,
+leaving SMX mode disables access to localities 1-3 of the TPM. This
+essentially "locks" the values in the DRTM PCRs from further
+modification/extends until another dynamic launch event is fired which
+will in turn result in the DRTM PCRs being reset.
 
+> /Jarkko
 >=20
-> And above with the restart handler has the same issue.
->=20
-> > +       return res;
-> > +}
-> > +
-> > +static int ntxec_remove(struct i2c_client *client)
-> > +{
->=20
-> > +       if (client =3D=3D poweroff_restart_client) {
->=20
-> When it's not the case?
-
-The EC doesn't always need to provide poweroff/restart functionality,
-and AFAIK, in some systems it doesn't. In those systems, ntxec_remove
-would run with poweroff_restart_client =3D=3D NULL.
-
-In theory, there might also be two of it in the same system, of which
-only one controls system poweroff/restart, but I'm not sure if that is
-actually the case on any existing board design.
-
-> > +               poweroff_restart_client =3D NULL;
-> > +               pm_power_off =3D NULL;
-> > +               unregister_restart_handler(&ntxec_restart_handler);
-> > +       }
-> > +
-> > +       return 0;
-> > +}
->=20
-> ...
->=20
-> > +#include <linux/types.h>
-> > +
->=20
-> Missed
->=20
-> struct device;
-> struct regmap;
->=20
-> here.
-
-I'll add them.
-
-> > +struct ntxec {
-> > +       struct device *dev;
-> > +       struct regmap *regmap;
-> > +};
->=20
-> > +/*
-> > + * Some registers, such as the battery status register (0x41), are in
-> > + * big-endian, but others only have eight significant bits, which are =
-in the
-> > + * first byte transmitted over I2C (the MSB of the big-endian value).
-> > + * This convenience function converts an 8-bit value to 16-bit for use=
- in the
-> > + * second kind of register.
-> > + */
-> > +static inline u16 ntxec_reg8(u8 value)
-> > +{
-> > +       return value << 8;
-> > +}
->=20
-> I'm wondering why __be16 is not used as returned type.
-
-I didn't think of it, but it's a good idea. Will do.
 
 
-Thanks,
-Jonathan Neusch=C3=A4fer
-
---Kj7319i9nmIyA2yE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl9uYckACgkQCDBEmo7z
-X9tfeA/+PcBI/xMedlMauddT3snjDWczk7NDO6pSKs9Z+FgLKmNM7VjP8KZ8BlSy
-hZhYOCMqvnzPOTv+CR474Yn6sO4mzScSm2BRTo7k6CTOVO5BCKN1QvXRjkD6eCJ6
-U2aUw4hssBJs/lJrbsejJDZA++/3o4AKPpZa2ZKgERbNCUaSL4osxgzh4n23qS4J
-8NXyUKFzKOGtmVAek7FDfUMeqKVeVnfvtQ8baNJ6KKjHNBItK7LIAZ6Qfj5RKirT
-dPmtkPKJnniw/pIsandzQcPk+6KOK+DTpu+xqR1X9jOF58pM33u8lviKsMzeIpYn
-b9sMZrut9d/bJ+S8lhtw40KfjpFczabkd74T3IrCwSw242sTYoJDq+nMHkFr8YFG
-EMItgLfmVvgodLNar6Xr/2I3820oyejrt4S6QAuRIe9e6KKLN3J/ltVKv7PChEU5
-9tVfD2+5j72MZu25Gqvh0EKY6Jj7VirKqnqK/I3WgcK52EY4/hx6UHkaHKhGrdmX
-kpQ4xx/dHijgC/7/D/1aJjSvGOwLHf87PYgfiH7E23F9WXZ5XtWzN3wiq87OgWY8
-MOeXnX5Io2b3Zuts7lo+XNAZfKlzgX5B5xEPKtpdF5PGc6aqZ4Qxs/jwednvs7R4
-4C3e/bll5qi8es1ap7ofnsswjMOMYKXv0WxrEc0/JEekBv7RKQA=
-=+7Ew
------END PGP SIGNATURE-----
-
---Kj7319i9nmIyA2yE--
