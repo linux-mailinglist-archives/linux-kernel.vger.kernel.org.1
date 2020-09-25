@@ -2,108 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6CD27825E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C54FB278260
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:14:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbgIYIOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727063AbgIYIOu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:14:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0348DC0613CE;
-        Fri, 25 Sep 2020 01:14:50 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0b3a00d3756fc4b2470eaa.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:d375:6fc4:b247:eaa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7C8B91EC0430;
-        Fri, 25 Sep 2020 10:14:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601021688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=l/7weiyqiOxGuxBi5YYNdPQ1UkPqzVdGX8jds3f4aHU=;
-        b=hIz+becVe0bb8xhSBZkt0t5O7MB7U27xkGBj7Hq9JnjdzPfTfJPvLLa/0KrNu6Dhgt8zTL
-        7akzFZ7IevVYudSVDYJiJqq+aN9iF1XgYpb1Th4sOM9KRX4JVCpxFnLaYEpkxYw4L/Ctmu
-        YHR1T5mUhIoOiL7nHgIOGH/zzUzE/bY=
-Date:   Fri, 25 Sep 2020 10:14:41 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
-Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20200925081441.GF16872@zn.tnic>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
- <20200924180407.GO5030@zn.tnic>
- <20200925003808.GB20333@linux.intel.com>
+        id S1727524AbgIYIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:14:54 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:53250 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727063AbgIYIOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:14:53 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kLisQ-0007Aj-04; Fri, 25 Sep 2020 18:14:47 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Sep 2020 18:14:45 +1000
+Date:   Fri, 25 Sep 2020 18:14:45 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     Liu Shixin <liushixin2@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        qat-linux <qat-linux@intel.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] crypto: qat - convert to use DEFINE_SEQ_ATTRIBUTE
+ macro
+Message-ID: <20200925081445.GA6496@gondor.apana.org.au>
+References: <7a1e8142cb4944ee95cea13e7efad23d@irsmsx602.ger.corp.intel.com>
+ <20200924050042.GA32206@silpixa00400314>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200925003808.GB20333@linux.intel.com>
+In-Reply-To: <20200924050042.GA32206@silpixa00400314>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 05:38:10PM -0700, Sean Christopherson wrote:
-> > Why not simply
+On Thu, Sep 24, 2020 at 06:00:42AM +0100, Giovanni Cabiddu wrote:
+> On Wed, Sep 16, 2020 at 03:50:17AM +0100, Liu Shixin wrote:
+> > Use DEFINE_SEQ_ATTRIBUTE macro to simplify the code.
 > > 
-> > arch/x86/entry/vdso/sgx.S
-> > 
-> > ?
+> > Signed-off-by: Liu Shixin <liushixin2@huawei.com>
 > 
-> I really like typing?
+> Acked-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 
-I'll say.
+Hi Giovanni:
 
-> Yes, to call out that there's a field there, but a field that the vDSO should
-> never touch.
+Your acks are not making it to patchwork, seemingly because your
+emails have a bogus References header with an Intel message ID
+instead of the original message ID of the email you're replying
+to.
 
-You wanna enforce that in the vdso code?
+I've added your acks manually for this patch but please fix your
+emails as I can't guarantee that I'll spot the problem every time.
 
-Because if it is there, luserspace will touch it.
-
-> > > +#define SGX_ENCLAVE_RUN_EXCEPTION	4*8
-> > > +
-> > > +#define SGX_SYNCHRONOUS_EXIT		0
-> > > +#define SGX_EXCEPTION_EXIT		1
-> > 
-> > Those are in ...uapi/asm/sgx.h too. Unify?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-What about this here?
-
-> > Are the CFI annotations for userspace?
-> 
-> Yes, though that's a 90% confident "yes".
-
-Looks like we wanna support it:
-
-f24f91088427 ("x86/vdso: Define BUILD_VDSO while building and emit .eh_frame in asm")
-
-> Argh, it's actually supposed to be TCS, SGX_ENCLAVE_RUN_TSC is the one that's
-> wrong.
-
-Whoopsie :-)
-
-Thx.
-
+Thanks,
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
