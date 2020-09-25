@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51872278F46
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB23278F51
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729496AbgIYRAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:00:47 -0400
-Received: from mga02.intel.com ([134.134.136.20]:2149 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727151AbgIYRAr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:00:47 -0400
-IronPort-SDR: HdzKTVl1mHh9/M7UVqUkbo+8YCG0n/AprBsd6UTurIRUNQUVSvTng8ezp0WQAv+oWBEcMsep+x
- AfKroZxOmdDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="149236260"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="149236260"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:00:44 -0700
-IronPort-SDR: 6N8ivLkqnnd2bn5U+j4zqY15q1XntncTtYZH1JiR4NLnvBVXx96w0CnbSmk4HwsES3EEo7c23V
- rfEb4OHh8buw==
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="310885499"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:00:44 -0700
-Date:   Fri, 25 Sep 2020 10:00:42 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        id S1729628AbgIYREz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:04:55 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:44359 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729477AbgIYREy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 13:04:54 -0400
+Received: by mail-ed1-f67.google.com with SMTP id b12so3177995edz.11;
+        Fri, 25 Sep 2020 10:04:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7H2Bk9gpg/w+wUoObaKvu/mtCEHvMrdXma3hhs6oCPA=;
+        b=g5ROF5GAZPfAatV61rQHJl341YAEAuOoWj3mA6fNWcvgEmeRA6AnzPWUCO0meGlFZB
+         5KWvHRCasYK+eri7tronQb7RMA6EjerGe3dPGvDQrP8XOGpCDpwx5c5vNo5L0b+b2WLn
+         /tgT0HzC1h0k4+gX9EsyTsi9GKFSc/jYD5GJq327/1puQLvc4GcngZCOafQdbe5wJmXA
+         Xbx0kSWFux7hZOAJpIeQYYlGLr808OU9Q5Jujdmfz/JOqvYjqjR6mRI2XRPK3EZIGkFN
+         tQjBYnO5s6o1bhDMOO2bpRKSBtAU7EfqP0ziDkDbFkVAqP7HsSvLciIAM8JU13BDTS1B
+         dDyQ==
+X-Gm-Message-State: AOAM531KgPhYkHpSXfqzYrPTdY5ofujCN9WgzTIFINEzwsPM0UffJp+A
+        lOh5HK1TZrxoAAqzYWBTDLg=
+X-Google-Smtp-Source: ABdhPJzshXZU4mumXpaaqCcRqza8EX1pZ67x1HLojNLckvWgfrfQH6BmnBoLuzW1ylscuLUKq7fF/A==
+X-Received: by 2002:a50:c8cd:: with SMTP id k13mr2333610edh.387.1601053492597;
+        Fri, 25 Sep 2020 10:04:52 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.132])
+        by smtp.googlemail.com with ESMTPSA id 40sm2174254edr.67.2020.09.25.10.04.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 25 Sep 2020 10:04:51 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 19:04:49 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>,
+        linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org,
-        Huacai Chen <chenhc@lemote.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
-        kvm-ppc@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>
-Subject: Re: [RFC PATCH 0/3] KVM: Introduce "VM bugged" concept
-Message-ID: <20200925170042.GB31528@linux.intel.com>
-References: <20200923224530.17735-1-sean.j.christopherson@intel.com>
- <874knlrf4a.wl-maz@kernel.org>
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Subject: Re: [PATCH] mmc: host: fix depends for MMC_MESON_GX w/ COMPILE_TEST
+Message-ID: <20200925170449.GA18717@kozik-lap>
+References: <20200925164323.29843-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <874knlrf4a.wl-maz@kernel.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200925164323.29843-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 05:32:53PM +0100, Marc Zyngier wrote:
-> Hi Sean,
+On Fri, Sep 25, 2020 at 09:43:23AM -0700, Randy Dunlap wrote:
+> Fix build errors for meson-gx-mmc.c when CONFIG_COMMON_CLK is not
+> set/enabled. This can happen when COMPILE_TEST is set/enabled.
 > 
-> On Wed, 23 Sep 2020 23:45:27 +0100,
-> Sean Christopherson <sean.j.christopherson@intel.com> wrote:
-> > 
-> > This series introduces a concept we've discussed a few times in x86 land.
-> > The crux of the problem is that x86 has a few cases where KVM could
-> > theoretically encounter a software or hardware bug deep in a call stack
-> > without any sane way to propagate the error out to userspace.
-> > 
-> > Another use case would be for scenarios where letting the VM live will
-> > do more harm than good, e.g. we've been using KVM_BUG_ON for early TDX
-> > enabling as botching anything related to secure paging all but guarantees
-> > there will be a flood of WARNs and error messages because lower level PTE
-> > operations will fail if an upper level operation failed.
-> > 
-> > The basic idea is to WARN_ONCE if a bug is encountered, kick all vCPUs out
-> > to userspace, and mark the VM as bugged so that no ioctls() can be issued
-> > on the VM or its devices/vCPUs.
-> > 
-> > RFC as I've done nowhere near enough testing to verify that rejecting the
-> > ioctls(), evicting running vCPUs, etc... works as intended.
+> ERROR: modpost: "clk_divider_ops" [drivers/mmc/host/meson-gx-mmc.ko] undefined!
+> ERROR: modpost: "devm_clk_register" [drivers/mmc/host/meson-gx-mmc.ko] undefined!
+> ERROR: modpost: "clk_mux_ops" [drivers/mmc/host/meson-gx-mmc.ko] undefined!
+> ERROR: modpost: "__clk_get_name" [drivers/mmc/host/meson-gx-mmc.ko] undefined!
 > 
-> I'm quite like the idea. However, I wonder whether preventing the
-> vcpus from re-entering the guest is enough. When something goes really
-> wrong, is it safe to allow the userspace process to terminate normally
-> and free the associated memory?
+> Fixes: 54d8454436a2 ("mmc: host: Enable compile testing of multiple drivers")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Kevin Hilman <khilman@baylibre.com>
+> Cc: linux-amlogic@lists.infradead.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: Ulf Hansson <ulf.hansson@linaro.org>
+> Cc: linux-mmc@vger.kernel.org
+> Cc: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/mmc/host/Kconfig |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- linux-next-20200925.orig/drivers/mmc/host/Kconfig
+> +++ linux-next-20200925/drivers/mmc/host/Kconfig
+> @@ -425,6 +425,7 @@ config MMC_SDHCI_IPROC
+>  config MMC_MESON_GX
+>  	tristate "Amlogic S905/GX*/AXG SD/MMC Host Controller support"
+>  	depends on ARCH_MESON|| COMPILE_TEST
+> +	depends on COMMON_CLK
 
-Yes and no.  Yes, there are potential scenarios where freeing memory is unsafe,
-e.g. with TDX, improper sanitization of memory can lead to machine checks due
-to integrity errors, i.e. freeing memory that wasn't sanitized is not safe.
+I received a report from kbuild about this when I posted the patchset
+but somehow I was not able to reproduce it... or I skipped this for
+reason I do not remember now, my bad.
 
-But, our in-development code intentionally leaks pages that couldn't be
-sanitized (with plenty of yelling).  So, "no" in the sense that, IMO, KVM
-should be written such that it's sufficiently paranoid when handling "special"
-memory (or other state).
+Anyway, thanks for fixing, looks ok:
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-> And is it still safe to allow new VMs to be started?
+Also please for the credits (as Kbuild did report it to me):
+Reported-by: kernel test robot <lkp@intel.com>
 
-Hmm, anything that is truly fatal to the host/KVM should probably use BUG()
-or even panic() directly.  E.g. to avoid a userspace bypass by unloading and
-reloading KVM when it's built as a module, we'd have to set a flag in the
-kernel proper.
+Best regards,
+Krzysztof
+
+>  	help
+>  	  This selects support for the Amlogic SD/MMC Host Controller
+>  	  found on the S905/GX*/AXG family of SoCs.  This controller is
