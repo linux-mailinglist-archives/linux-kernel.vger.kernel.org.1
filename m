@@ -2,322 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C08CA2783E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70132783F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:27:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbgIYJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727795AbgIYJZA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:25:00 -0400
-Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F33C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:25:00 -0700 (PDT)
-Received: by mail-ua1-x944.google.com with SMTP id o64so721601uao.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:25:00 -0700 (PDT)
+        id S1727861AbgIYJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:27:57 -0400
+Received: from mail-dm6nam10on2084.outbound.protection.outlook.com ([40.107.93.84]:28896
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727428AbgIYJ14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:27:56 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MCCMn01NgRqC607Qf60XtpUA5S7vZTBeS7ymYdf0G6jC1f+Lo47jBNZm+iXed44RtpTwi21J5ASy4CdHMwu2laNOq3POWrStXJR7c3jcOU1C2Ds675ON7RCk08yVA2iVpM3lAxWeSEz6zHOSjr2/o3IfPKaf6APFAYT3WllIgAIyOO+6IsV+PDbY1x8XAoEjyzMYJOu73ewIi813bK/QkVNaGFI5PmG9qC4Hb4E+Jdtcp2QuT0kn5Wz8+qo77/UE8ZGp3RtfhWZPVLRsGjRTNJQffK0S6Y99VjkCyFH9nIC9wSEpCk6KvGo9NxiR60X2FFDuML8H3oXXkQ6FgorF6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DQtmM6YxLmySA1Vuq7uzCm/RSj0khAM/y0uXrFWDct0=;
+ b=Tg25HEkPTj7dMvxcAgyiaHD1qchNveDi+IhyLmJ8IPKM1BylB/tcQ5VFgCP/v4QcCYg/wgvyeJm0ii+WanKAERQpRmyavnLNfo4vqFMkKmcv84xAzj0cOj6Xtd6JCP+wRA6zdyk76jXDeI+aGS/Y3PFtdaU3FB4EwVWcSXsBa7IRVKJ443CEURdI4JFd1Ertftlb6+Q3utwVJJAligQZ5alLuvxH1qlkmLNxk9ziJzuexXI1A1sTfuAwPcTuazKiJpRwZMIC5gQZSFe/xF+vKQW5ZaxtJpMNiF7zF5gt3FFiocobm4kcsANCRDEeRzPpcaf85WupF/MK5imdcio/ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xwgHnfwJO4p3e2k/8UmICPhqPe1pJTwIO3qj/AAMTOs=;
-        b=NCvFcGrJ4lAMHxPsuRNAM6CQqIi8DN2DhKWzJy934kPHwe8Q25N/LRBK3oE3ruxgdO
-         jMCZ3ABixw8fJ8qWStplc3e7oLYbrPCm7yWKBM1VkbU5poVN6p97MMqg/MyPSLbb72Sj
-         cZ6nhCwkAnlntTsedZEux/9pumM7CSlH2r0Sc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xwgHnfwJO4p3e2k/8UmICPhqPe1pJTwIO3qj/AAMTOs=;
-        b=qlw+tjSVQjUIX9Iq88UM+Nw3u7zmTG2i9KeDn0mHrproZEO3rVaETLD2qZc4eGWYwT
-         H/gMs6lLicP6SOnMrKKV5yDyWbVcXB+eS3obQJZW1OC/6NBDRLFBzrIb9b9pYVKyFtY7
-         xfX/rzz35OLLYacStALhbreysKPlYg9qrbjTgiimqMs7CLuXXmm4w4ImccuxvF+se1cV
-         wZerqhhKV+GOC3qm2q2Mk/olIcWBSzH1Ld8iGxSOof1Iuz6a4WXHdo4gjga1NmcwOTHb
-         mVzQqcDIKrYgcMBQPo2xaSerQRFlO16RUU2NKQShXoYCIs5tA9QigVhHZ2V5eeVhswrX
-         mjkw==
-X-Gm-Message-State: AOAM5324JDqY6cvu4mTTrf0g0L0Qqsx/QdBgAIpdIzzoJsKXLatfQLVm
-        0vffa1vN43kNsfG9qw2LpMMEfvTaivw1QzO8Yof0YA==
-X-Google-Smtp-Source: ABdhPJwEhNuZMKTBbzc2tvQBDUTaHYy/tzrpFK9uL/uoFKikWZI7pmKGmiwxngGtWyRur+oP/X/aWlhGFiVPkyjZpws=
-X-Received: by 2002:ab0:2404:: with SMTP id f4mr1874548uan.108.1601025899341;
- Fri, 25 Sep 2020 02:24:59 -0700 (PDT)
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DQtmM6YxLmySA1Vuq7uzCm/RSj0khAM/y0uXrFWDct0=;
+ b=BfGXtqJRS5Yx/Hy/5408fDdyXwUlt6kIpERB3tz68hSnmu+3zHQhaYbr5M6FHRcjLrYBWMYaKX2x6tqU1uXJUhLYKCSqtGSrxhwnsq0HT9Km2s9QmqdJul7WSPp1ZSbdAUFM3QuJl318afeUxr/Ac0COuQVLj98j5DAMO9J8HFI=
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=synaptics.com;
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
+ by DM6PR03MB4442.namprd03.prod.outlook.com (2603:10b6:5:10a::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.15; Fri, 25 Sep
+ 2020 09:27:53 +0000
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3391.028; Fri, 25 Sep 2020
+ 09:27:53 +0000
+Date:   Fri, 25 Sep 2020 17:27:24 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-pci@vger.kernel.org,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-arm-kernel@axis.com, Vidya Sagar <vidyas@nvidia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Rob Herring <robh@kernel.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Pratyush Anand <pratyush.anand@gmail.com>,
+        linux-tegra@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-arm-msm@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Yue Wang <yue.wang@Amlogic.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-amlogic@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH v2 0/5] PCI: dwc: improve msi handling
+Message-ID: <20200925172724.5bdf6aab@xhacker.debian>
+In-Reply-To: <20200925171712.254a018d@xhacker.debian>
+References: <20200924190421.549cb8fc@xhacker.debian>
+        <de4d9294-4f6d-c7d1-efc7-c8ef6570bd64@nvidia.com>
+        <20200925171712.254a018d@xhacker.debian>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TY2PR06CA0023.apcprd06.prod.outlook.com
+ (2603:1096:404:42::35) To DM6PR03MB4555.namprd03.prod.outlook.com
+ (2603:10b6:5:102::17)
 MIME-Version: 1.0
-References: <20200925065418.1077472-1-ikjn@chromium.org> <20200925145255.v3.3.I7a3fc5678a81654574e8852d920db94bcc4d3eb8@changeid>
- <CAJsYDV+CEQ2PEOcdP1vadOBOHgW39XNNjPET04uWQktnPHZcFA@mail.gmail.com>
-In-Reply-To: <CAJsYDV+CEQ2PEOcdP1vadOBOHgW39XNNjPET04uWQktnPHZcFA@mail.gmail.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Fri, 25 Sep 2020 17:24:48 +0800
-Message-ID: <CAATdQgAZyi+T5YLsDooTjCJTGD6jvzXuKqUwpdNY=-Eqi1=_YQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/6] spi: spi-mtk-nor: support 7 bytes transfer of
- generic spi
-To:     Chuanhong Guo <gch981213@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TY2PR06CA0023.apcprd06.prod.outlook.com (2603:1096:404:42::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Fri, 25 Sep 2020 09:27:42 +0000
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 08b5c9c0-366c-4ceb-680c-08d8613546fb
+X-MS-TrafficTypeDiagnostic: DM6PR03MB4442:
+X-Microsoft-Antispam-PRVS: <DM6PR03MB4442C9D838716EA6EA073FABED360@DM6PR03MB4442.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iJSGkfRAHDXDHjqUDFfaQ4pnN7SpUhEkOYEiP8cPOHJO1V3WxXkRm7gxobdsF/Pc5WS7b0vdGyl0J9niToq7p9cKLXI4XHs2SqEcTWSZ5PJKLA0HB/665ZGRc0oYW7Ydzaj4/MpOPfCCFXFrJjQyBy8Q++3JCh/q1k2ABbNONyaum0u79GCHtIMKyn3JarFkWuX6RT4T2XOJb6LDSJtunIx5z2C8pbg3+Qtlbicg1bz04WAeM4Y0dIQhHA6zR0Xc2TdEy/DMEZKjNi5rfAcdg08pKqdWUNPhfWdyoop6OFYemhJddDSJZudXGpMIoow5cmvoGqFJflv4PstV6YhqXbj+ERg+9Ihd06OyrwWRFEwtYSGSHbzw69zdRuPZ7pDU
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(346002)(366004)(396003)(316002)(9686003)(8936002)(55016002)(4326008)(83380400001)(6916009)(54906003)(66556008)(66476007)(66946007)(5660300002)(7406005)(6506007)(8676002)(1076003)(2906002)(956004)(16526019)(26005)(52116002)(6666004)(186003)(7696005)(53546011)(7416002)(478600001)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: GiG8+SfVuXOIaBCnAUuUBwmzRd4zisLOF7dcvTvyp5tJk1CmsQdVVw2nXL7WfO3o/jE4lWyLcfNSyINmEcNjRWgo3jvfwLNapKTVCoakd/xJ4XMKD/DBNmViHjtIxljHnEPFMO6M4hUb+7hxHuwzWE/DVWJXlnmdYuJew5m1eShcxqYMV7rCJ1RNKpYpZTX09i+hLJcc4O+wLUOU0ryN5psXVAidVXyYJ7lDcCyMA2H5AxnIzS2L3WOmqh81XmD2dFb1lH4MyzweSqEU6UBsJSkS6yp20jJIwgvw3bbt/s9UrDD1PKgjWyoQRufaOVmn8p9oI4CEGwBZFhCxZ0tH4rsoNPOJwf+VbcXEWDn02/2sU1y6JxtUbbnXibj1Mw285Ah0eJhzFqQ6YZKSgG6TMw4gmvzgbfMI+NRbmZPdIE/sAn5CSWRSKr9tiNKBVXsnO5s01m2rRU0qBnnxkTN+ABntem7CheF6rKWLLBFIfi6RuY3kMsPhR0raRkj0N93cG82pbb3fJXqJMQl0mYkp2uoSRgqBoMqd6hi6O1czdj0Caa6GYgkTA7/eODveC4gEuN/2V54NXS4QYxLdbNc5YaukSJrDLqeM1sYl/KMtN+tJ6kndsSrEZ6LyBLHzzowKKy8pxeQAwknGW4V6NpkbwQ==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08b5c9c0-366c-4ceb-680c-08d8613546fb
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 09:27:53.2243
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rofo6AOMlWuSpQFgUURNt+ONytHUCHAdLDZZq3JgCZcsUePwfWT1xvPp1a6pzS8+8xDKQYSS4KOh3B06ksq4EA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4442
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 3:47 PM Chuanhong Guo <gch981213@gmail.com> wrote:
->
-> Hi!
->
-> On Fri, Sep 25, 2020 at 2:55 PM Ikjoon Jang <ikjn@chromium.org> wrote:
-> >
-> > When mtk-nor fallbacks to generic spi transfers, it can actually
-> > transfer up to 7 bytes.
->
-> generic transfer_one_message should support full-duplex transfers,
-> not transfers with special format requirements. (e.g. here the last
-> byte is rx only.) These transfers with format requirements should
-> be implemented with spi-mem interface instead.
+On Fri, 25 Sep 2020 17:17:12 +0800
+Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
 
-yep, that's correct.
-
->
+> CAUTION: Email originated externally, do not click links or open attachments unless you recognize the sender and know the content is safe.
+> 
+> 
+> Hi Jon,
+> 
+> On Fri, 25 Sep 2020 09:53:45 +0100 Jon Hunter wrote:
+> 
+> 
 > >
-> > This patch fixes adjust_op_size() and supports_op() to explicitly
-> > check 7 bytes range and also fixes possible under/overflow conditions
-> > in register offsets calculation.
+> > On 24/09/2020 12:05, Jisheng Zhang wrote:  
+> > > Improve the msi code:
+> > > 1. Add proper error handling.
+> > > 2. Move dw_pcie_msi_init() from each users to designware host to solve
+> > > msi page leakage in resume path.  
 > >
-> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
->
-> I was notified by Bayi about your discussion and sent some
-> patches yesterday for the same purpose. Whoops...
-> As transfer_one_message isn't the proper place to implement
-> this, maybe we could work on my version instead?
->
-
-I didn't noticed that before,
-Sure, please go ahead, I'll follow up with your patch in v4.
-
-> > ---
+> > Apologies if this is slightly off topic, but I have been meaning to ask
+> > about MSIs and PCI. On Tegra194 which uses the DWC PCI driver, whenever we
+> > hotplug CPUs we see the following warnings ...
 > >
-> > (no changes since v1)
->
-> This should be "new patch" not "no changes" :P
-
-oops, it seems my script did something wrong.
-
->
->
+> >  [      79.068351] WARNING KERN IRQ70: set affinity failed(-22).
+> >  [      79.068362] WARNING KERN IRQ71: set affinity failed(-22).
 > >
-> >  drivers/spi/spi-mtk-nor.c | 102 ++++++++++++++++++++++++++++----------
-> >  1 file changed, 76 insertions(+), 26 deletions(-)
+> > These interrupts are the MSIs ...
 > >
-> > diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-> > index 0f7d4ec68730..e7719d249095 100644
-> > --- a/drivers/spi/spi-mtk-nor.c
-> > +++ b/drivers/spi/spi-mtk-nor.c
-> > @@ -79,7 +79,11 @@
-> >  #define MTK_NOR_REG_DMA_DADR           0x720
-> >  #define MTK_NOR_REG_DMA_END_DADR       0x724
+> > 70:          0          0          0          0          0          0          0          0   PCI-MSI 134217728 Edge      PCIe PME, aerdrv
+> > 71:          0          0          0          0          0          0          0          0   PCI-MSI 134742016 Edge      ahci[0001:01:00.0]
 > >
-> > +/* maximum bytes of TX in PRG mode */
-> >  #define MTK_NOR_PRG_MAX_SIZE           6
-> > +/* maximum bytes of TX + RX is 7, last 1 byte is always being sent as zero */
-> > +#define MTK_NOR_PRG_MAX_CYCLES         7
-> > +
-> >  // Reading DMA src/dst addresses have to be 16-byte aligned
-> >  #define MTK_NOR_DMA_ALIGN              16
-> >  #define MTK_NOR_DMA_ALIGN_MASK         (MTK_NOR_DMA_ALIGN - 1)
-> > @@ -167,6 +171,24 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
-> >         return false;
-> >  }
+> > This caused because ...
 > >
-> > +static bool mtk_nor_check_prg(const struct spi_mem_op *op)
-> > +{
-> > +       size_t len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> > +
-> > +       if (len > MTK_NOR_PRG_MAX_SIZE)
-> > +               return false;
-> > +
-> > +       if (!op->data.nbytes)
-> > +               return true;
-> > +
-> > +       if (op->data.dir == SPI_MEM_DATA_OUT)
-> > +               return ((len + op->data.nbytes) <= MTK_NOR_PRG_MAX_SIZE);
-> > +       else if (op->data.dir == SPI_MEM_DATA_IN)
-> > +               return ((len + op->data.nbytes) <= MTK_NOR_PRG_MAX_CYCLES);
-> > +       else
-> > +               return true;
-> > +}
-> > +
-> >  static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> >  static int dw_pci_msi_set_affinity(struct irq_data *d,
+> >                                     const struct cpumask *mask, bool force)
 > >  {
-> >         size_t len;
-> > @@ -195,10 +217,22 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-> >                 }
-> >         }
-> >
-> > -       len = MTK_NOR_PRG_MAX_SIZE - op->cmd.nbytes - op->addr.nbytes -
-> > -             op->dummy.nbytes;
-> > -       if (op->data.nbytes > len)
-> > -               op->data.nbytes = len;
-> > +       if (mtk_nor_check_prg(op))
-> > +               return 0;
-> > +
-> > +       len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> > +
-> > +       if (op->data.dir == SPI_MEM_DATA_OUT) {
-> > +               if (len == MTK_NOR_PRG_MAX_SIZE)
-> > +                       return -EINVAL;
-> > +               op->data.nbytes = min_t(unsigned int, op->data.nbytes,
-> > +                                       MTK_NOR_PRG_MAX_SIZE - len);
-> > +       } else  {
-> > +               if (len == MTK_NOR_PRG_MAX_CYCLES)
-> > +                       return -EINVAL;
-> > +               op->data.nbytes = min_t(unsigned int, op->data.nbytes,
-> > +                                       MTK_NOR_PRG_MAX_CYCLES - len);
-> > +       }
-> >
-> >         return 0;
-> >  }
-> > @@ -206,8 +240,6 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
-> >  static bool mtk_nor_supports_op(struct spi_mem *mem,
-> >                                 const struct spi_mem_op *op)
-> >  {
-> > -       size_t len;
-> > -
-> >         if (op->cmd.buswidth != 1)
-> >                 return false;
-> >
-> > @@ -223,12 +255,11 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
-> >                                (op->data.buswidth == 1);
-> >         }
-> >
-> > -       len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> > -       if ((len > MTK_NOR_PRG_MAX_SIZE) ||
-> > -           ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
-> > +       /* fallback to generic spi xfer */
-> > +       if (op->cmd.buswidth > 1 || op->addr.buswidth > 1 || op->data.buswidth > 1)
-> >                 return false;
->
-> Rejecting an op in supports_op doesn't tell it to fall back to generic
-> spi transfer.
-> It instead tells caller to abort this transfer completely.
-> A fallback only happens when exec_op returns -ENOTSUPP.
-
-yep but I think that case always going PRG mode in exec_op() with the
-same condition?
-
-> This comment is incorrect. I'd put this buswidth checking in mtk_nor_check_prg
-> instead because mtk_nor_check_prg is checking whether an op is supported
-> by prg mode, thus it should reject ops with buswidth > 1.
->
-> >
-> > -       return true;
-> > +       return mtk_nor_check_prg(op);
+> >          return -EINVAL;
 > >  }
 > >
-> >  static void mtk_nor_setup_bus(struct mtk_nor *sp, const struct spi_mem_op *op)
-> > @@ -459,22 +490,36 @@ static int mtk_nor_transfer_one_message(struct spi_controller *master,
-> >         int stat = 0;
-> >         int reg_offset = MTK_NOR_REG_PRGDATA_MAX;
-> >         void __iomem *reg;
-> > -       const u8 *txbuf;
-> > -       u8 *rxbuf;
-> > -       int i;
-> > +       int i, tx_len = 0, rx_len = 0;
-> >
-> >         list_for_each_entry(t, &m->transfers, transfer_list) {
-> > -               txbuf = t->tx_buf;
-> > -               for (i = 0; i < t->len; i++, reg_offset--) {
-> > +               const u8 *txbuf = t->tx_buf;
-> > +
-> > +               if (!txbuf) {
-> > +                       rx_len += t->len;
-> > +                       continue;
-> > +               }
-> > +
-> > +               if (rx_len) {
-> > +                       stat = -EPROTO;
-> > +                       goto msg_done;
-> > +               }
->
-> NACK. you are unnecessarily rejecting possible transfers.
+> > Now the above is not unique to the DWC PCI host driver, it appears that
+> > most PCIe drivers also do the same. However, I am curious if there is
+> > any way to avoid the above warnings given that setting the affinity does
+> > not appear to be supported in anyway AFAICT.
+> >  
+> 
+> 
+> Could you please try below patch?
+> 
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index bf25d783b5c5..7e5dc54d060e 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -197,7 +197,6 @@ static struct irq_chip dw_pci_msi_bottom_irq_chip = {
+>         .name = "DWPCI-MSI",
+>         .irq_ack = dw_pci_bottom_ack,
+>         .irq_compose_msi_msg = dw_pci_setup_msi_msg,
+> -       .irq_set_affinity = dw_pci_msi_set_affinity,
+>         .irq_mask = dw_pci_bottom_mask,
+>         .irq_unmask = dw_pci_bottom_unmask,
+>  };
 
-yep, ditto
+A complete patch w/o compiler warning:
 
->
-> > +
-> > +               for (i = 0; i < t->len && reg_offset >= 0; i++, reg_offset--) {
-> >                         reg = sp->base + MTK_NOR_REG_PRGDATA(reg_offset);
-> > -                       if (txbuf)
-> > -                               writeb(txbuf[i], reg);
-> > -                       else
-> > -                               writeb(0, reg);
-> > +                       writeb(txbuf[i], reg);
-> > +                       tx_len++;
->
-> According to SPI standard, during a rx transfer, tx should be kept low.
-> These PROGDATA registers doesn't clear itself so it'll keep sending
-> data from last transfer, which violates this rule. That's
-> why the original code writes 0 to PRGDATA for rx bytes.
-
-following lines with while() will set 0s to the rest of registers.
-
->
-> >                 }
-> > -               trx_len += t->len;
-> >         }
-> >
-> > +       while (reg_offset >= 0) {
-> > +               writeb(0, sp->base + MTK_NOR_REG_PRGDATA(reg_offset));
-> > +               reg_offset--;
-> > +       }
-> > +
-> > +       rx_len = min_t(unsigned long, MTK_NOR_PRG_MAX_CYCLES - tx_len, rx_len);
-> > +       trx_len = tx_len + rx_len;
-> > +
-> >         writel(trx_len * BITS_PER_BYTE, sp->base + MTK_NOR_REG_PRG_CNT);
-> >
-> >         stat = mtk_nor_cmd_exec(sp, MTK_NOR_CMD_PROGRAM,
-> > @@ -482,13 +527,18 @@ static int mtk_nor_transfer_one_message(struct spi_controller *master,
-> >         if (stat < 0)
-> >                 goto msg_done;
-> >
-> > -       reg_offset = trx_len - 1;
-> > -       list_for_each_entry(t, &m->transfers, transfer_list) {
-> > -               rxbuf = t->rx_buf;
-> > -               for (i = 0; i < t->len; i++, reg_offset--) {
-> > -                       reg = sp->base + MTK_NOR_REG_SHIFT(reg_offset);
-> > -                       if (rxbuf)
-> > +       if (rx_len > 0) {
-> > +               reg_offset = rx_len - 1;
-> > +               list_for_each_entry(t, &m->transfers, transfer_list) {
-> > +                       u8 *rxbuf = t->rx_buf;
-> > +
-> > +                       if (!rxbuf)
-> > +                               continue;
-> > +
-> > +                       for (i = 0; i < t->len && reg_offset >= 0; i++, reg_offset--) {
-> > +                               reg = sp->base + MTK_NOR_REG_SHIFT(reg_offset);
-> >                                 rxbuf[i] = readb(reg);
-> > +                       }
->
-> I think this is replacing original code with some equivalent ones, which
-> seems unnecessary.
-
-This patch addressed the issue with 1+6 bytes transfer (e.g JEDEC ID)
-can have negative reg_offset.
-And there's skipping the loop if (rx_len < 0)
-anyway I'd like to follow with your new patch. :-)
-
-Thanks!
-
->
-> >                 }
-> >         }
-> >
-> --
-> Regards,
-> Chuanhong Guo
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index bf25d783b5c5..18f719cfed0b 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -137,12 +137,6 @@ static void dw_pci_setup_msi_msg(struct irq_data *d, struct msi_msg *msg)
+ 		(int)d->hwirq, msg->address_hi, msg->address_lo);
+ }
+ 
+-static int dw_pci_msi_set_affinity(struct irq_data *d,
+-				   const struct cpumask *mask, bool force)
+-{
+-	return -EINVAL;
+-}
+-
+ static void dw_pci_bottom_mask(struct irq_data *d)
+ {
+ 	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+@@ -197,7 +191,6 @@ static struct irq_chip dw_pci_msi_bottom_irq_chip = {
+ 	.name = "DWPCI-MSI",
+ 	.irq_ack = dw_pci_bottom_ack,
+ 	.irq_compose_msi_msg = dw_pci_setup_msi_msg,
+-	.irq_set_affinity = dw_pci_msi_set_affinity,
+ 	.irq_mask = dw_pci_bottom_mask,
+ 	.irq_unmask = dw_pci_bottom_unmask,
+ };
