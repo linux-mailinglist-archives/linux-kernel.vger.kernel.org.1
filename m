@@ -2,158 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7BA27837E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4247278383
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727689AbgIYJDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:03:05 -0400
-Received: from mga11.intel.com ([192.55.52.93]:46349 "EHLO mga11.intel.com"
+        id S1727823AbgIYJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:03:36 -0400
+Received: from mga04.intel.com ([192.55.52.120]:53248 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727346AbgIYJDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:03:05 -0400
-IronPort-SDR: xKH1SJMtEssAGfWPe1tbjXdO+XdZItYxcz4Mucd0pAg+qWV6ZE5zpS2y4YeCo8gytcA1TyY12s
- 4yzzRvjkgFlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158827905"
+        id S1727044AbgIYJDf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:03:35 -0400
+IronPort-SDR: Y8UuPqOfRbxyYUs3u7hEXIMi/43KXTf55d80ZVlDzUKHTOG6n86tL08IMTQT5OrWnChj8opCAE
+ 5GAZjXTqfQsA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158862517"
 X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="158827905"
+   d="scan'208";a="158862517"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 02:03:05 -0700
-IronPort-SDR: n41CJjIRD3xQYZiPWc8XiZFmQm7Zs/hQW3FWh1MQC5nPjTKpjzEhzRdF9d/j6aaIfpOQrTz7le
- DKCWnmEvImZw==
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 02:03:35 -0700
+IronPort-SDR: F5gP2ztYRMaGx4eu4DU1djISTbNeaq9kk7IueOgojrYz4drfGoYSoVVYtwWaNEvvX0JMuqh28V
+ qlLjhK2dbMQg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="310745537"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga006.jf.intel.com with ESMTP; 25 Sep 2020 02:03:01 -0700
-Subject: Re: [RFC PATCH V3 12/21] mmc: sdhci: UHS-II support, add hooks for
- additional operations
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Ben Chuang <benchuanggli@gmail.com>, ulf.hansson@linaro.org,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ben.chuang@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
-References: <20200710111054.29562-1-benchuanggli@gmail.com>
- <9fa17d60-a540-d0d8-7b2c-0016c3b5c532@intel.com>
- <20200924093538.GA35720@laputa>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <14c80da3-5ef5-fba3-8b98-3c50f6241475@intel.com>
-Date:   Fri, 25 Sep 2020 12:02:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+   d="scan'208";a="339423961"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008.jf.intel.com with ESMTP; 25 Sep 2020 02:03:33 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kLjdZ-001sXb-PK; Fri, 25 Sep 2020 12:03:29 +0300
+Date:   Fri, 25 Sep 2020 12:03:29 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 8/9] gpio: mockup: use the generic 'gpio-line-names'
+ property
+Message-ID: <20200925090329.GZ3956970@smile.fi.intel.com>
+References: <20200924113842.11670-1-brgl@bgdev.pl>
+ <20200924113842.11670-9-brgl@bgdev.pl>
 MIME-Version: 1.0
-In-Reply-To: <20200924093538.GA35720@laputa>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924113842.11670-9-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/20 12:35 pm, AKASHI Takahiro wrote:
-> Adrian,
+On Thu, Sep 24, 2020 at 01:38:41PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> This is, hopefully, my last reply to your comments on this patch#12.
-> 
-> Regarding _request() and _send_command() (and more),
-> 
-> On Fri, Aug 21, 2020 at 05:08:32PM +0300, Adrian Hunter wrote:
->> On 10/07/20 2:10 pm, Ben Chuang wrote:
->>> From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
->>>
->>> In this commit, UHS-II related operations will be called via a function
->>> pointer array, sdhci_uhs2_ops, in order to make UHS-II support as
->>> a kernel module.
->>> This array will be initialized only if CONFIG_MMC_SDHCI_UHS2 is enabled
->>> and when the UHS-II module is loaded. Otherwise, all the functions
->>> stay void.
->>>
->   (snip)
-> 
->> Again, this is what I want to avoid.  I would like to have 3 kinds of functions:
->> 	- SD mode only
->> 	- UHS-II only
->> 	- SD functions with no UHS-II code, that can also be used by UHS-II
->> i.e. I don't want to mix UHS-II code and SD mode code in the same function.
->>
->> I think sdhci-uhs2.c should provide a request function and a send_command function.
->> I would start by removing everything you may not need, and then see if you have any problems.
->> e.g.
->>
->> void uhs2_request(struct mmc_host *mmc, struct mmc_request *mrq)
->> {
->> 	struct sdhci_host *host = mmc_priv(mmc);
->> 	struct mmc_command *cmd;
->> 	unsigned long flags;
->>
->> 	if (!host->uhs2_mode) {
->> 		sdhci_request(mmc, mrq);
->> 		return;
->> 	}
->>
->> 	spin_lock_irqsave(&host->lock, flags);
->> 	uhs2_send_command(host, cmd);
->> 	spin_unlock_irqrestore(&host->lock, flags);
->> }
->> EXPORT_SYMBOL_GPL(uhs2_request);
->>
->> For sdhci_prepare_data(), I would factor out the dma part, so
->>
->> static void sdhci_prepare_data(struct sdhci_host *host, struct mmc_command *cmd)
->> {
->> 	struct mmc_data *data = cmd->data;
->>
->> 	sdhci_initialize_data(host, data);
->>
->> 	sdhci_prepare_dma(host, data);
->>
->> 	sdhci_set_block_info(host, data);
->> }
->>
->> The you could export sdhci_initialize_data() and sdhci_prepare_dma() for uhs2.
->>
->>>  }
->>>  
->>>  #if IS_ENABLED(CONFIG_MMC_SDHCI_EXTERNAL_DMA)
->>> @@ -1439,6 +1463,13 @@ static void sdhci_set_transfer_mode(struct sdhci_host *host,
->>>  	u16 mode = 0;
->>>  	struct mmc_data *data = cmd->data;
->>>  
->>> +	if (IS_ENABLED(CONFIG_MMC_SDHCI_UHS2) &&
->>> +	    host->mmc->flags & MMC_UHS2_SUPPORT) {
->>> +		if (sdhci_uhs2_ops.set_transfer_mode)
->>> +			sdhci_uhs2_ops.set_transfer_mode(host, cmd);
->>> +		return;
->>> +	}
->>> +
->>
->> Once you provide uhs2_request() and uhs2_send_command(), the transfer mode setting can be done in sdhci-uhs2.c
-> 
-> If I try to make changes as you suggested above, a lot of other uhs2-flavored
-> functions will also be created due to calling dependency/sequences
-> and for "completeness" compared to uhs counterparts.
-> They probably include
->     sdhci_uhs2_prepare_data()
->     sdhci_uhs2_external_dma_prepare_data()
->     sdhci_uhs2_send_command()
->     sdhci_uhs2_send_command_try()
->     sdhci_uhs2_send_tuning()
->     sdhci_uhs2_request()
->     sdhci_uhs2_request_atomic()
->     sdhci_uhs2_thread_irq()
->     sdhci_uhs2_irq()
->     sdhci_uhs2_cmd_irq()
->     sdhci_uhs2_finish_command()
->     sdhci_uhs2_resume_host()
->     __sdhci_uhs2_add_host()
->     sdhci_uhs2_add_host()
-> (Some may not be used under the current drivers.)
-> 
-> In addition, a bunch of functions in sdhci.c will also have to be exported
-> to uhs2 as "global" functions instead of "static."
-> 
-> Is this all that you expect to see?
+> GPIO line names are currently created by the driver from the chip label.
+> We'll want to support custom formats for line names (for instance: to
+> name all lines the same) for user-space tests so create them in the
+> module init function and pass them to the driver using the standard
+> 'gpio-line-names' property.
 
-Yes.  Add what you need.
+...
+
+> +		if (gpio_mockup_named_lines) {
+> +			line_names = gpio_mockup_make_line_names(chip_label,
+> +								 ngpio);
+> +			if (!line_names) {
+> +				platform_driver_unregister(&gpio_mockup_driver);
+> +				gpio_mockup_unregister_pdevs();
+> +				return -ENOMEM;
+> +			}
+
+> +			properties[prop++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
+> +						"gpio-line-names",
+> +						line_names, ngpio);
+
+Forgot to update GPIO_MOCKUP_MAX_PROP?
+
+> +		}
+
+...
+
+> +		kfree_strarray(line_names, line_names ? ngpio : 0);
+
+Perhaps you may check for NULL pointer in the kfree_strarray() and drop ternary
+here?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
