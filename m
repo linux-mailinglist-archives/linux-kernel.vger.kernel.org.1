@@ -2,104 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89462278FAC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9510F278FB1
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729477AbgIYRdk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 13:33:40 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:34137 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgIYRdj (ORCPT
+        id S1728843AbgIYRfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727324AbgIYRfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:33:39 -0400
-Received: from [172.20.10.2] (dynamic-046-114-136-219.46.114.pool.telefonica.de [46.114.136.219])
-        by mail.holtmann.org (Postfix) with ESMTPSA id BF348CECDF;
-        Fri, 25 Sep 2020 19:40:35 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <21f9469eda2747eca351a1cb811a4834@realsil.com.cn>
-Date:   Fri, 25 Sep 2020 19:33:34 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Max Chou <max.chou@realtek.com>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <B1309F72-4077-45BD-BD12-DEF324CAE2C6@holtmann.org>
-References: <21f9469eda2747eca351a1cb811a4834@realsil.com.cn>
-To:     =?utf-8?B?6ZmG5pyx5Lyf?= <alex_lu@realsil.com.cn>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        Fri, 25 Sep 2020 13:35:16 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228C2C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:35:16 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id a15so3148649ljk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:35:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qur/7fLUQQ7M8HcyXzGgRmzT/BT3EA18MOp9o+vXhw4=;
+        b=m4O7tYfi+LCjjaX259cRmfSEkU9ANtBCnhcXbGdDSAkoly60jiLCi3EeKpG07gAcoW
+         +Wto5sbywnY6Hd66eKnVr3ouoFUsth7BsWjZYIJTqVpk4I8cS2V1j/q86ygavcMJNQX3
+         idQuds9V3xtHdlbaZYzJGZOujmPv3rLVOM7yFglYVXB+MepKm8MjBNp7GqumbzT0sPrJ
+         OHe7/vkjySw4w2L+dMdYgr9lmY49rg1gOXR3EWsnNwU9hXQfzTuiJGcli65em57braNw
+         qCFaNtwvdf0aS2TLIVDD4uaKRkr0qoBHQPspRmjgtvhgPKLiVBAHC4uV/xoDn64Yaa6e
+         y7IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qur/7fLUQQ7M8HcyXzGgRmzT/BT3EA18MOp9o+vXhw4=;
+        b=J/W2Ry6rDPzf6PnH2T1yr91jiw85kfzW6PEsgwJ3HjG41z/kramYZJtCaDgMm6NQLC
+         Q0SgJsXh+N1oxRTPeXE31eLYM/OuHOvvHiNPmBsVMKGUaKlT5CHT8lL3koHdaFU0Y2lu
+         XMO5AQxTLl3wEEe2MGBgejuAAVWPbVGJSRuCEczzdNzYI8hRCc61ktD6ipl1CL9WLoVE
+         t7L+Mgv5jz9Eakgr74xzM49oPIJmWTXQFkklALns8+MEy5ChZrScl5C8vYLMl0Sznog7
+         rdivgiiYTyDmjo+yFKs6ka70WVyRNu8IN9Y6QGzZT3DZ4qN4LENW2EzKDTUyvVQPUZ/S
+         UQfg==
+X-Gm-Message-State: AOAM533r1OSbjWBTJJd2KxRnYWAhRSs1vX2O0ZIusuD6xEZzg7RjHs/o
+        amu9TTmB43rf883GARCf/Pm4wujgEVHEMNsCUwRr+w==
+X-Google-Smtp-Source: ABdhPJww9rGC7xLbm/a5AUCqZn+u7vM4jrVP8ohJ3SXGjFK55/Cin/pgBfqfgrAVY0ajf7iXLZcHF33PReQm1QIMLPc=
+X-Received: by 2002:a2e:7c09:: with SMTP id x9mr1585757ljc.192.1601055314188;
+ Fri, 25 Sep 2020 10:35:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200915073303.GA754106@T590> <20200915224541.GB38283@mit.edu>
+ <20200915230941.GA791425@T590> <20200916202026.GC38283@mit.edu>
+ <20200917022051.GA1004828@T590> <20200917143012.GF38283@mit.edu>
+ <20200924005901.GB1806978@T590> <20200924143345.GD482521@mit.edu>
+ <20200925011311.GJ482521@mit.edu> <20200925073145.GC2388140@T590>
+ <20200925161918.GD2388140@T590> <CAHk-=whAe_n6JDyu40A15vnWs5PTU0QYX6t6-TbNeefanau6MA@mail.gmail.com>
+ <CALvZod4+ucJfr4gR60mM1gRoc7NKWydPY-JQ757q+n8hOdmrvA@mail.gmail.com>
+In-Reply-To: <CALvZod4+ucJfr4gR60mM1gRoc7NKWydPY-JQ757q+n8hOdmrvA@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 25 Sep 2020 10:35:03 -0700
+Message-ID: <CALvZod4Wc23o09KXb+s=VJGs6X+8juuDXWfyfJuMH5DCksLtAQ@mail.gmail.com>
+Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
+ into blk_mq_get_driver_tag
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ming Lei <ming.lei@redhat.com>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jens Axboe <axboe@kernel.dk>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+On Fri, Sep 25, 2020 at 10:22 AM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> On Fri, Sep 25, 2020 at 10:17 AM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Fri, Sep 25, 2020 at 9:19 AM Ming Lei <ming.lei@redhat.com> wrote:
+> > >
+> > > git bisect shows the first bad commit:
+> > >
+> > >         [10befea91b61c4e2c2d1df06a2e978d182fcf792] mm: memcg/slab: use a single set of
+> > >                 kmem_caches for all allocations
+> > >
+> > > And I have double checked that the above commit is really the first bad
+> > > commit for the list corruption issue of 'list_del corruption, ffffe1c241b00408->next
+> > > is LIST_POISON1 (dead000000000100)',
+> >
+> > Thet commit doesn't revert cleanly, but I think that's purely because
+> > we'd also need to revert
+> >
+> >   849504809f86 ("mm: memcg/slab: remove unused argument by charge_slab_page()")
+> >   74d555bed5d0 ("mm: slab: rename (un)charge_slab_page() to
+> > (un)account_slab_page()")
+> >
+> > too.
+> >
+> > Can you verify that a
+> >
+> >     git revert 74d555bed5d0 849504809f86 10befea91b61
+> >
+> > on top of current -git makes things work for you again?
+> >
+> > I'm going to do an rc8 this release simply because we have another VM
+> > issue that I hope to get fixed - but there we know what the problem
+> > and the fix _is_, it just needs some care.
+> >
+> > So if Roman (or somebody else) can see what's wrong and we can fix
+> > this quickly, we don't need to go down the revert path, but ..
+> >
+>
+> I think I have a theory. The issue is happening due to the potential
+> infinite recursion:
+>
+> [ 5060.124412]  ___cache_free+0x488/0x6b0
+> *****Second recursion
+> [ 5060.128666]  kfree+0xc9/0x1d0
+> [ 5060.131947]  kmem_freepages+0xa0/0xf0
+> [ 5060.135746]  slab_destroy+0x19/0x50
+> [ 5060.139577]  slabs_destroy+0x6d/0x90
+> [ 5060.143379]  ___cache_free+0x4a3/0x6b0
+> *****First recursion
+> [ 5060.147896]  kfree+0xc9/0x1d0
+> [ 5060.151082]  kmem_freepages+0xa0/0xf0
+> [ 5060.155121]  slab_destroy+0x19/0x50
+> [ 5060.159028]  slabs_destroy+0x6d/0x90
+> [ 5060.162920]  ___cache_free+0x4a3/0x6b0
+> [ 5060.167097]  kfree+0xc9/0x1d0
+>
+> ___cache_free() is calling cache_flusharray() to flush the local cpu
+> array_cache if the cache has more elements than the limit (ac->avail
+> >= ac->limit).
+>
+> cache_flusharray() is removing batchcount number of element from local
+> cpu array_cache and pass it slabs_destroy (if the node shared cache is
+> also full).
+>
+> Note that we have not updated local cpu array_cache size yet and
+> called slabs_destroy() which can call kfree() through
+> unaccount_slab_page().
+>
+> We are on the same CPU and this recursive kfree again check the
+> (ac->avail >= ac->limit) and call cache_flusharray() again and recurse
+> indefinitely.
 
->>> When someone attacks the service provider, it creates connection,
->>> authenticates. Then it requests key size of one byte and it identifies
->>> the key with brute force methods.
->>> 
->>> After l2cap info req/resp exchange is complete. the attacker sends l2cap
->>> connect with specific PSM.
->>> 
->>> In above procedure, there is no chance for the service provider to check
->>> the encryption key size before l2cap_connect(). Because the state of
->>> l2cap chan in conn->chan_l is BT_LISTEN, there is no l2cap chan with the
->>> state of BT_CONNECT or BT_CONNECT2.
->>> 
->>> So service provider should check the encryption key size in
->>> l2cap_connect()
->>> 
->>> Signed-off-by: Alex Lu <alex_lu@realsil.com.cn>
->>> ---
->>> net/bluetooth/l2cap_core.c | 7 +++++++
->>> 1 file changed, 7 insertions(+)
->>> 
->>> diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
->>> index ade83e224567..63df961d402d 100644
->>> --- a/net/bluetooth/l2cap_core.c
->>> +++ b/net/bluetooth/l2cap_core.c
->>> @@ -4150,6 +4150,13 @@ static struct l2cap_chan *l2cap_connect(struct
->> l2cap_conn *conn,
->>> 
->>> 	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_DONE) {
->>> 		if (l2cap_chan_check_security(chan, false)) {
->>> +			if (!l2cap_check_enc_key_size(conn->hcon)) {
->>> +				l2cap_state_change(chan, BT_DISCONN);
->>> +				__set_chan_timer(chan,
->> L2CAP_DISC_TIMEOUT);
->>> +				result = L2CAP_CR_SEC_BLOCK;
->>> +				status = L2CAP_CS_NO_INFO;
->>> +				goto response;
->>> +			}
->>> 			if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
->>> 				l2cap_state_change(chan, BT_CONNECT2);
->>> 				result = L2CAP_CR_PEND;
->> 
->> I am not following what you are trying to fix here. Can you show this with a
->> btmon trace from an attacking device?
->> 
->> Regards
->> 
->> Marcel
->> 
->> 
-> 
-> I'm sorry, I didn't have btmon trace from an attacking device.
-> I didn't have the real attacking device. I just simulate the attacking.
-> I have a device that can create one byte size encryption key.
-> It uses the link key that was produced by pairing with the service provider. Actually the KNOB (Key Negotiation of Bluetooth Attack) says, the link key is unnecessary for the reconnection.
-> I use this device to reconnect to service provider, and then initiate the Key Negotiation for one byte size encryption key. Actually the attacker identified the encryption key with some brute force methods.
-> 
-> I want to provide the trace on service provider side.
+I can see two possible fixes. We can either do async kfree of
+page_obj_cgroups(page) or we can update the local cpu array_cache's
+size before slabs_destroy().
 
-what kernel version are you running? I wonder if we should always return L2CAP_CR_PEND here. Do you have a reproducer code?
-
-The problem really is that the MASK_REQ_DONE indication is not enough to make a decision for the key size. We have to ensure that also the key size is actually available. If that is not yet done, then we should not check it. This means that any response to L2CAP_Connect_Request PDU needs to be delayed until the key size has been read.
-
-Regards
-
-Marcel
-
+Shakeel
