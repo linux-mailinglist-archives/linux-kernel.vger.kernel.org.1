@@ -2,150 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1157E2790DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0007D2790F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:42:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729802AbgIYSjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727201AbgIYSjg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:39:36 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF600C0613CE;
-        Fri, 25 Sep 2020 11:39:35 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id p15so1896235qvk.5;
-        Fri, 25 Sep 2020 11:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=dUf435LeWetQI7T/0I6jtCo+Jj+pjMiRIhsGBhL9+Ks=;
-        b=Syf7hE4/NbuBopE4fj6R7YVeAw1e4pC/XFomn9rGC5Ic4Bh3BmIc7Zc/UekYCw1o93
-         Dm+HkmALXxcv5YP8ZaMqGfeKvNBhSiCn+iUtJj0Ep3jYIKs76Hcmxo3+3fgpxhs4nBrn
-         bv0dMWeZmnnCRhJqZAql9w2z4SXxuLEx+hh7WxFxoiIUOVj7TImZIVO3viYDiBSlq479
-         2hlCSo59GqQs/gdzdRyHR+EztEPckFxKLOC4rbC9ddTLL0HdLGewAi4SB3B04SNcfBAQ
-         s3/e2ZATvE1MSNVzS+kmjMoyXqpVY8+IE7Je5CeREbCohS232UOb2uNaGbIyKQzLeYzq
-         k/nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
-         :message-id:mime-version:content-transfer-encoding:content-language
-         :thread-index;
-        bh=dUf435LeWetQI7T/0I6jtCo+Jj+pjMiRIhsGBhL9+Ks=;
-        b=lqYvbUEAshwrZOqw9cf1dsKIzCk0smgu7KJo1wBF3umDN4rAuNJxnWfrkRUIpq3kwN
-         WQASy6rWfm6tOgBEdgpt2bpBkhE6eA7TBuOPrJE0jSNcZTAxVK9JnFIQN8mU8wzaloew
-         5rsXU2Vw/BPdW18hnAVL+gGaJiSz46CKf/yYbB8ZjDhKs7bMeGuOjPeck6yEPKn0NMaj
-         uByI0+hUnXLWuW7YGufh1g2apBs37XkWcPaNtbsnpPv2tDwPnho/rZ5nB4JBQGI6VXNQ
-         mc59Gv/ev7kY7zgMryj3YBXzzGYbPBufCaYO2j0JhnsPGdmhKnzRfMJR9EQt95u3kZR+
-         pemg==
-X-Gm-Message-State: AOAM531j8glFrCjUZ89mqB4XXfAi7Ywci1Ez+83RVVJXHOFeuTpxcbt0
-        fWUSBkf6YS9fLZlsIa325Eo=
-X-Google-Smtp-Source: ABdhPJxDhaiOVjVfIGD8RWeyXsIunrWwPzE9wLn+BAfnkudkko5iSAi6Y/tH4RMK/XBVIPZAxiNCkA==
-X-Received: by 2002:a0c:b251:: with SMTP id k17mr799820qve.53.1601059174715;
-        Fri, 25 Sep 2020 11:39:34 -0700 (PDT)
-Received: from AnsuelXPS (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
-        by smtp.gmail.com with ESMTPSA id g19sm2208622qka.84.2020.09.25.11.39.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 11:39:33 -0700 (PDT)
-From:   <ansuelsmth@gmail.com>
-To:     "'Rob Herring'" <robh+dt@kernel.org>
-Cc:     "'Miquel Raynal'" <miquel.raynal@bootlin.com>,
-        "'Richard Weinberger'" <richard@nod.at>,
-        "'Vignesh Raghavendra'" <vigneshr@ti.com>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        "'Jakub Kicinski'" <kuba@kernel.org>,
-        "'Andrew Lunn'" <andrew@lunn.ch>,
-        "'Heiner Kallweit'" <hkallweit1@gmail.com>,
-        "'Russell King'" <linux@armlinux.org.uk>,
-        "'Frank Rowand'" <frowand.list@gmail.com>,
-        "'Boris Brezillon'" <bbrezillon@kernel.org>,
-        "'MTD Maling List'" <linux-mtd@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "'netdev'" <netdev@vger.kernel.org>
-References: <20200920095724.8251-1-ansuelsmth@gmail.com> <20200920095724.8251-4-ansuelsmth@gmail.com> <CAL_JsqKhyeh2=pJcpBKkh+s3FM__DY+VoYSYJLRUErrujTLn9A@mail.gmail.com>
-In-Reply-To: <CAL_JsqKhyeh2=pJcpBKkh+s3FM__DY+VoYSYJLRUErrujTLn9A@mail.gmail.com>
-Subject: RE: [PATCH v3 3/4] of_net: add mac-address-increment support
-Date:   Fri, 25 Sep 2020 20:39:30 +0200
-Message-ID: <00f801d6936b$36551e20$a2ff5a60$@gmail.com>
+        id S1729759AbgIYSmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:42:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59724 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727151AbgIYSm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:42:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601059348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2Kq1FxqxZLYWoE4X3kI+VDC0KjL+XQlYmdMO7aSdeHQ=;
+        b=dkHgCknQrtNzIYbkAY8Us9mQ2+Tq1RzmidcCoO1f3HYCZt1i4S6y1N0EJ70GLPz5IMBIY6
+        4cdsdmYXSZeICVm7DV3EKThU9lnjCV+jmB72s6SeDQKJq2DgdwYFvejEOjDv7Vk26Jo17T
+        s4PAgBX4TjKRKJk6pcKTZMB6JUN0Z00=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2F349AC68;
+        Fri, 25 Sep 2020 18:42:28 +0000 (UTC)
+Received: by localhost (Postfix, from userid 1000)
+        id 8D666514D99; Fri, 25 Sep 2020 11:42:26 -0700 (PDT)
+From:   <lduncan@suse.com>
+To:     linux-scsi@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, open-iscsi@googlegroups.com,
+        martin.petersen@oracle.com, mchristi@redhat.com, hare@suse.com,
+        Lee Duncan <lduncan@suse.com>
+Subject: [PATCH v2 0/1] scsi: libiscsi: fix NOP race condition
+Date:   Fri, 25 Sep 2020 11:41:47 -0700
+Message-Id: <cover.1601058301.git.lduncan@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: it
-Thread-Index: AQKM5RC4rgXeqQ5LopEy1q5Nkk2f7gIPbdkoAY21rs6n8B/RMA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Lee Duncan <lduncan@suse.com>
 
+A customer that uses iSCSI NOPs extensively found a race
+condition caused in part by the two-lock system used in
+iscsi (a forward and a back lock), since sending an iSCSI
+NOP uses the forward lock, and receiving one uses the
+back lock. Because of this, processing of the "send"
+can still be in progress when the "receive" occurs, on
+a sufficiently fast multicore system.
 
-> -----Original Message-----
-> From: Rob Herring <robh+dt@kernel.org>
-> Sent: Friday, September 25, 2020 8:24 PM
-> To: Ansuel Smith <ansuelsmth@gmail.com>
-> Cc: Miquel Raynal <miquel.raynal@bootlin.com>; Richard Weinberger
-> <richard@nod.at>; Vignesh Raghavendra <vigneshr@ti.com>; David S.
-> Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>;
-> Andrew Lunn <andrew@lunn.ch>; Heiner Kallweit
-> <hkallweit1@gmail.com>; Russell King <linux@armlinux.org.uk>; Frank
-> Rowand <frowand.list@gmail.com>; Boris Brezillon
-> <bbrezillon@kernel.org>; MTD Maling List =
-<linux-mtd@lists.infradead.org>;
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; netdev
-> <netdev@vger.kernel.org>
-> Subject: Re: [PATCH v3 3/4] of_net: add mac-address-increment support
->=20
-> On Sun, Sep 20, 2020 at 3:57 AM Ansuel Smith <ansuelsmth@gmail.com>
-> wrote:
-> >
-> > Lots of embedded devices use the mac-address of other interface
-> > extracted from nvmem cells and increments it by one or two. Add two
-> > bindings to integrate this and directly use the right mac-address =
-for
-> > the interface. Some example are some routers that use the gmac
-> > mac-address stored in the art partition and increments it by one for =
-the
-> > wifi. mac-address-increment-byte bindings is used to tell what byte =
-of
-> > the mac-address has to be increased (if not defined the last byte is
-> > increased) and mac-address-increment tells how much the byte decided
-> > early has to be increased.
->=20
-> I'm inclined to say if there's a platform specific way to transform
-> MAC addresses, then there should be platform specific code to do that
-> which then stuffs the DT using standard properties. Otherwise, we have
-> a never ending stream of 'generic' properties to try to handle
-> different platforms' cases.
->=20
-> Rob
+To handle this case, we add a new state to the "ping_task"
+pointer besides unassigned and assigned, called "invalid",
+which means the "not yet completed sending". Tests show
+this closes this race condition hole.
 
-I agree about the 'never ending stream'... But I think the increment =
-feature
-is not that platform specific. I will quote some number by another patch
-that tried to implement the same feature in a different way, [1]
+Changes since V1:
+- Removed two redundant lines in iscsi_send_nopout()
+- Updated commit text to be more clear
+- Added this cover letter with even more info
 
-* mtd-mac-address                used 497 times in 357 device tree files
-* mtd-mac-address-increment      used  74 times in  58 device tree files
-* mtd-mac-address-increment-byte used   1 time  in   1 device tree file
+Lee Duncan (1):
+  scsi: libiscsi: fix NOP race condition
 
-The mtd-mac-address is what this patchset is trying to fix with the =
-nvmem
-support. The increment is much more than 74 times since it doesn't count
-SoC that have wifi integrated (it's common practice for SoC with =
-integrated
-wifi to take the switch mac and use it to set the wifi mac)
-Actually what is really specific is the increment-byte that can be =
-dropped
-if we really want to.
-I still think the increment feature would be very useful to add full =
-support
-for mac-address extracted from nvmem cell.
+ drivers/scsi/libiscsi.c | 13 ++++++++++---
+ include/scsi/libiscsi.h |  3 +++
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
-[1] =
-https://patchwork.ozlabs.org/project/netdev/patch/1555445100-30936-1-git-=
-send-email-ynezz@true.cz/
+-- 
+2.26.2
 
