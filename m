@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3AA52787C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A67D52787FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729033AbgIYMuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54058 "EHLO mail.kernel.org"
+        id S1728821AbgIYMvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:51:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729022AbgIYMuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:50:10 -0400
+        id S1729237AbgIYMvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:51:45 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8585B21D7A;
-        Fri, 25 Sep 2020 12:50:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 636E52072E;
+        Fri, 25 Sep 2020 12:51:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038210;
-        bh=YuY2dyqTlfSpGoZ3bomvVJkXzVBNlPvz1BGia67lRrg=;
+        s=default; t=1601038305;
+        bh=ichOvx8E7brKLZKsSsf0t4baZf6sXRfKDsKHd4tJCEo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HwEaDE7iyXwJCa44V0MCvV6wK+2Vt0s7FbCUEbNMJx1sOU726J7wPVm4Stfy2jiTn
-         aJRU8JWzyBisr2lP/grluC5u3Gn3NgrK5uIBxRXeM2oGoeYCvsMGcWGxWLeUD37VNT
-         sflihzCMOz6XkhlQC89PzXtvxC/3sH5dsIFDjZY8=
+        b=L+BB6e1IhFn/P/d+WeMmFjr/OrUiQGeHMD/PAqE97teGQ+nGGkg4B9NQQtzxBGyAg
+         c+Wydu0TIkAy6fJVwxNJURp6lsBnAdX3FNiclrjfgb+9jIZLuiule7BDob1jnCoP66
+         Q8tOQrBlVXQRJukzICchovRxuariNkXE+skDC5f8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 43/56] net: ethernet: ti: cpsw_new: fix suspend/resume
+Subject: [PATCH 5.4 21/43] net: ipv6: fix kconfig dependency warning for IPV6_SEG6_HMAC
 Date:   Fri, 25 Sep 2020 14:48:33 +0200
-Message-Id: <20200925124734.312102071@linuxfoundation.org>
+Message-Id: <20200925124726.795544655@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
-References: <20200925124727.878494124@linuxfoundation.org>
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
+References: <20200925124723.575329814@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,92 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Grygorii Strashko <grygorii.strashko@ti.com>
+From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 
-[ Upstream commit 5760d9acbe9514eec68eb70821d6fa5764f57042 ]
+[ Upstream commit db7cd91a4be15e1485d6b58c6afc8761c59c4efb ]
 
-Add missed suspend/resume callbacks to properly restore networking after
-suspend/resume cycle.
+When IPV6_SEG6_HMAC is enabled and CRYPTO is disabled, it results in the
+following Kbuild warning:
 
-Fixes: ed3525eda4c4 ("net: ethernet: ti: introduce cpsw switchdev based driver part 1 - dual-emac")
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+WARNING: unmet direct dependencies detected for CRYPTO_HMAC
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+
+WARNING: unmet direct dependencies detected for CRYPTO_SHA1
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+
+WARNING: unmet direct dependencies detected for CRYPTO_SHA256
+  Depends on [n]: CRYPTO [=n]
+  Selected by [y]:
+  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+
+The reason is that IPV6_SEG6_HMAC selects CRYPTO_HMAC, CRYPTO_SHA1, and
+CRYPTO_SHA256 without depending on or selecting CRYPTO while those configs
+are subordinate to CRYPTO.
+
+Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+
+Fixes: bf355b8d2c30 ("ipv6: sr: add core files for SR HMAC support")
+Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/ti/cpsw_new.c |   53 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ net/ipv6/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/ethernet/ti/cpsw_new.c
-+++ b/drivers/net/ethernet/ti/cpsw_new.c
-@@ -17,6 +17,7 @@
- #include <linux/phy.h>
- #include <linux/phy/phy.h>
- #include <linux/delay.h>
-+#include <linux/pinctrl/consumer.h>
- #include <linux/pm_runtime.h>
- #include <linux/gpio/consumer.h>
- #include <linux/of.h>
-@@ -2070,9 +2071,61 @@ static int cpsw_remove(struct platform_d
- 	return 0;
- }
- 
-+static int __maybe_unused cpsw_suspend(struct device *dev)
-+{
-+	struct cpsw_common *cpsw = dev_get_drvdata(dev);
-+	int i;
-+
-+	rtnl_lock();
-+
-+	for (i = 0; i < cpsw->data.slaves; i++) {
-+		struct net_device *ndev = cpsw->slaves[i].ndev;
-+
-+		if (!(ndev && netif_running(ndev)))
-+			continue;
-+
-+		cpsw_ndo_stop(ndev);
-+	}
-+
-+	rtnl_unlock();
-+
-+	/* Select sleep pin state */
-+	pinctrl_pm_select_sleep_state(dev);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused cpsw_resume(struct device *dev)
-+{
-+	struct cpsw_common *cpsw = dev_get_drvdata(dev);
-+	int i;
-+
-+	/* Select default pin state */
-+	pinctrl_pm_select_default_state(dev);
-+
-+	/* shut up ASSERT_RTNL() warning in netif_set_real_num_tx/rx_queues */
-+	rtnl_lock();
-+
-+	for (i = 0; i < cpsw->data.slaves; i++) {
-+		struct net_device *ndev = cpsw->slaves[i].ndev;
-+
-+		if (!(ndev && netif_running(ndev)))
-+			continue;
-+
-+		cpsw_ndo_open(ndev);
-+	}
-+
-+	rtnl_unlock();
-+
-+	return 0;
-+}
-+
-+static SIMPLE_DEV_PM_OPS(cpsw_pm_ops, cpsw_suspend, cpsw_resume);
-+
- static struct platform_driver cpsw_driver = {
- 	.driver = {
- 		.name	 = "cpsw-switch",
-+		.pm	 = &cpsw_pm_ops,
- 		.of_match_table = cpsw_of_mtable,
- 	},
- 	.probe = cpsw_probe,
+--- a/net/ipv6/Kconfig
++++ b/net/ipv6/Kconfig
+@@ -289,6 +289,7 @@ config IPV6_SEG6_LWTUNNEL
+ config IPV6_SEG6_HMAC
+ 	bool "IPv6: Segment Routing HMAC support"
+ 	depends on IPV6
++	select CRYPTO
+ 	select CRYPTO_HMAC
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_SHA256
 
 
