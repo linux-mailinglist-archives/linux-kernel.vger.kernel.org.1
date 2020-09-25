@@ -2,145 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A1D278792
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA4027887D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728607AbgIYMsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:48:40 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:34911 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728333AbgIYMsh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:48:37 -0400
-Received: by mail-ot1-f66.google.com with SMTP id s66so2168186otb.2;
-        Fri, 25 Sep 2020 05:48:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cZdQoGJq4BMnKc0+GHhmzKbwi3eQut4rt4DQHIPPa00=;
-        b=jgSDdKNOXBbGuMQpk/z4ET9PqM2NrpilZyt7jGFqWyhXtB8izZQuuhN3xZNoNBMqnp
-         uXUgx4C6jwd4mtAK9GCg0gQNMTnpCY6ezczuW7dSUOIh7Yz6UfRBsy/K9Lp7ZsTD7YdG
-         i6mn1e2vIgjkHUiDd/7/byquT15BOxaUsNc4mtQPtGJOkKBA1vjprNtaEqCC+3qEboZN
-         jrfPgJzJ1Z2b+DTqHMvI17Styj2vvumaE1vsoW8CtlKfhNTpf8YbPaBXDQl4nXCjUFdS
-         LFceTHR7PkVE4p7phtntSPq0ZcBTxtV71w48PruvFkqKYyusjTqGyIBuyoj91wL1Gsq1
-         XW5Q==
-X-Gm-Message-State: AOAM532L8xyBBUURSeDoJA6j5XxV59KXTE+LyYRij4XTzuG31A/K7h5Q
-        gZ20hVwXbi86BT9mvLOtBJeKgtNYBgbli2x+hfU=
-X-Google-Smtp-Source: ABdhPJyEECiGqQ4YhtmGHK4PB9VlUvTAmsww4fPctvrIYquFM8s2Gj+bjXohqp8HxxUs4QGzfupoX7xnA8O+y65QA7Y=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr161216otb.250.1601038116851;
- Fri, 25 Sep 2020 05:48:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200923120817.1667149-0-mholenko@antmicro.com> <20200923120817.1667149-2-mholenko@antmicro.com>
-In-Reply-To: <20200923120817.1667149-2-mholenko@antmicro.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
+        id S1729388AbgIYMxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728801AbgIYMxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:53:04 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3DD42072E;
+        Fri, 25 Sep 2020 12:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601038384;
+        bh=Idsqmbq3GtrPqkrlt8ZauucC73oBNswDpqEKtNm/KbU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dU2FeYJhq0EnjVYEssdDLBR2Qe7WP/PKeeVd/2yx7MwI4HRU33L5fyDZoPwDlmEm7
+         1C6sW8UOXIE5jnlC8T5nGnEzSdHvi3/ZR29eZM81gPmu2cTsf7gzqvtP2r0VDHr8CN
+         wShEgUNzInq5fJ2vQWiVICi3b/oP1wQErk7DUw4M=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Wei Wang <weiwan@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 13/43] ip: fix tos reflection in ack and reset packets
 Date:   Fri, 25 Sep 2020 14:48:25 +0200
-Message-ID: <CAMuHMdWCTg7g=Zu7Wp1Aee9A6Zr+yFguR-szywvm0ObPfH1cwg@mail.gmail.com>
-Subject: Re: [PATCH v11 2/5] dt-bindings: soc: document LiteX SoC Controller bindings
-To:     Mateusz Holenko <mholenko@antmicro.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Paul E. McKenney" <paulmck@linux.ibm.com>,
-        Filip Kokosinski <fkokosinski@antmicro.com>,
-        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Icenowy Zheng <icenowy@aosc.io>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Gabriel L. Somlo" <gsomlo@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <20200925124725.549029038@linuxfoundation.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
+References: <20200925124723.575329814@linuxfoundation.org>
+User-Agent: quilt/0.66
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mateusz,
+From: Wei Wang <weiwan@google.com>
 
-On Wed, Sep 23, 2020 at 12:09 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
-> From: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
->
-> Add documentation for LiteX SoC Controller bindings.
->
-> Signed-off-by: Pawel Czarnecki <pczarnecki@internships.antmicro.com>
-> Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+[ Upstream commit ba9e04a7ddf4f22a10e05bf9403db6b97743c7bf ]
 
-Thanks for your patch!
+Currently, in tcp_v4_reqsk_send_ack() and tcp_v4_send_reset(), we
+echo the TOS value of the received packets in the response.
+However, we do not want to echo the lower 2 ECN bits in accordance
+with RFC 3168 6.1.5 robustness principles.
 
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/litex/litex,soc-controller.yaml
-> @@ -0,0 +1,39 @@
-> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> +# Copyright 2020 Antmicro <www.antmicro.com>
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/soc/litex/litex,soc-controller.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: LiteX SoC Controller driver
-> +
-> +description: |
-> +  This is the SoC Controller driver for the LiteX SoC Builder.
-> +  It's purpose is to verify LiteX CSR (Control&Status Register) access
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 
-Its
+Signed-off-by: Wei Wang <weiwan@google.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ net/ipv4/ip_output.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> +  operations and provide function for other drivers to read/write CSRs
-
-functions
-
-> +  and to check if those accessors are ready to use.
-
-be used
-
-> +
-> +maintainers:
-> +  - Karol Gugala <kgugala@antmicro.com>
-> +  - Mateusz Holenko <mholenko@antmicro.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: litex,soc-controller
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +examples:
-> +  - |
-> +    soc_ctrl0: soc-controller@f0000000 {
-> +        compatible = "litex,soc-controller";
-> +        reg = <0xf0000000 0xC>;
-
-Please be consistent w.r.t. lower/upper case: "0xc".
-
-> +        status = "okay";
-> +    };
-
-Gr{oetje,eeting}s,
-
-                        Geert
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -74,6 +74,7 @@
+ #include <net/icmp.h>
+ #include <net/checksum.h>
+ #include <net/inetpeer.h>
++#include <net/inet_ecn.h>
+ #include <net/lwtunnel.h>
+ #include <linux/bpf-cgroup.h>
+ #include <linux/igmp.h>
+@@ -1699,7 +1700,7 @@ void ip_send_unicast_reply(struct sock *
+ 	if (IS_ERR(rt))
+ 		return;
+ 
+-	inet_sk(sk)->tos = arg->tos;
++	inet_sk(sk)->tos = arg->tos & ~INET_ECN_MASK;
+ 
+ 	sk->sk_protocol = ip_hdr(skb)->protocol;
+ 	sk->sk_bound_dev_if = arg->bound_dev_if;
 
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
