@@ -2,145 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5CB278F94
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D660278F96
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729624AbgIYR0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:26:33 -0400
-Received: from smtprelay0115.hostedemail.com ([216.40.44.115]:53060 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726401AbgIYR0d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:26:33 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id BCB401800822B;
-        Fri, 25 Sep 2020 17:26:31 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1605:1711:1730:1747:1777:1792:1981:2194:2199:2393:2525:2553:2560:2563:2682:2685:2691:2693:2828:2859:2893:2903:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4043:4321:4641:5007:6691:7875:7903:7974:9025:9108:10004:10394:10400:10471:10848:11232:11658:11914:12043:12050:12296:12297:12555:12679:12740:12760:12895:12986:13161:13229:13255:13439:13845:14096:14097:14181:14659:14721:21080:21324:21325:21433:21627:21740:21789:21811:21990:30054:30070:30083:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: songs62_3214a5527169
-X-Filterd-Recvd-Size: 4775
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 25 Sep 2020 17:26:29 +0000 (UTC)
-Message-ID: <58673398c6b836ebd7509f787e6f0d10bfd751bc.camel@perches.com>
-Subject: Re: [Cocci] coccinelle: Convert comma to semicolons (was Re:
- [PATCH] checkpatch: Add test for comma use that should be semicolon)
-From:   Joe Perches <joe@perches.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
+        id S1729637AbgIYR0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:26:44 -0400
+Received: from mga14.intel.com ([192.55.52.115]:47930 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726401AbgIYR0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 13:26:44 -0400
+IronPort-SDR: 7oHpa6IQz2tuuQ4DmD00cS+ePc3g0kL/+/pj2vvqE+Jqluk+pUhelInmFLSI5cZsMFUPvVOjJi
+ l98iSVvHz5Yw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="160852971"
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="160852971"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:26:43 -0700
+IronPort-SDR: Ei+wvU5tnx1hqpBgQqLLqJgccP9TN4NgKtvzGLE1+f2vkzJkLI/vCv1XZx6s8NrsAWfii0Qhyo
+ V5kQ0YyGQgCw==
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="310894825"
+Received: from khansen1-mobl.amr.corp.intel.com (HELO [10.209.154.38]) ([10.209.154.38])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:26:42 -0700
+Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
+ features
+To:     Borislav Petkov <bp@alien8.de>, Feng Tang <feng.tang@intel.com>
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cocci <cocci@systeme.lip6.fr>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Whitcroft <apw@shadowen.org>
-Date:   Fri, 25 Sep 2020 10:26:27 -0700
-In-Reply-To: <alpine.DEB.2.22.394.2009251904540.2772@hadrien>
-References: <87r1qqvo2d.fsf@nanos.tec.linutronix.de>
-         <a53048f738dacc1c58654eb94e229de79d4f94c2.camel@perches.com>
-         <alpine.DEB.2.22.394.2009251904540.2772@hadrien>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+ <20200925172437.GM16872@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <29c751e3-d389-297f-074d-53e5f8412783@intel.com>
+Date:   Fri, 25 Sep 2020 10:26:41 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20200925172437.GM16872@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-25 at 19:06 +0200, Julia Lawall wrote:
-> On Thu, 24 Sep 2020, Joe Perches wrote:
-> > On Thu, 2020-09-24 at 23:53 +0200, Thomas Gleixner wrote:
-> > > On Thu, Sep 24 2020 at 13:33, Joe Perches wrote:
-> > > > On Thu, 2020-09-24 at 22:19 +0200, Thomas Gleixner wrote:
-> > > > > On Sat, Aug 22 2020 at 09:07, Julia Lawall wrote:
-> > > > > > On Fri, 21 Aug 2020, Joe Perches wrote:
-> > > > > > > True enough for a general statement, though the coccinelle
-> > > > > > > script Julia provided does not change a single instance of
-> > > > > > > for loop expressions with commas.
-> > > > > > > 
-> > > > > > > As far as I can tell, no logic defect is introduced by the
-> > > > > > > script at all.
-> > > > > > 
-> > > > > > The script has a rule to ensure that what is changed is part of a top
-> > > > > > level statement that has the form e1, e2;.  I put that in to avoid
-> > > > > > transforming cases where the comma is the body of a macro, but it protects
-> > > > > > against for loop headers as well.
-> > > > > 
-> > > > > Right. I went through the lot and did not find something dodgy. Except
-> > > > > for two hunks this still applies. Can someone please send a proper patch
-> > > > > with changelog/SOB etc. for this?
-> > > > 
-> > > > Treewide?
-> > > > 
-> > > > Somebody no doubt would complain, but there
-> > > > _really should_ be some mechanism for these
-> > > > trivial and correct treewide changes...
-> > > 
-> > > There are lots of mechanisms:
-> > 
-> > I've tried them all.
-> > 
-> > None of them work particularly well,
-> > especially the individual patch route.
-> > 
-> > >  - Andrew picks such changes up
-> > 
-> > Generally not treewide.
-> > 
-> > >  - With a few competent eyeballs on it (reviewers) this can go thorugh
-> > >    the trivial tree as well. It's more than obvious after all.
-> > 
-> > Jiri is almost non-existent when it comes to
-> > trivial treewide patches.
-> > 
-> > >  - Send the script to Linus with a proper change log attached and ask
-> > >    him to run it.
-> > 
-> > Linus has concerns about backports and what he
-> > deems trivialities.  Generally overblown IMO.
-> > 
-> > >  - In the worst case if nobody feels responsible, I'll take care.
-> > 
-> > If Julia doesn't send a new patch in the next few
-> > days, I will do the apply, fixup and resend of hers.
-> > 
-> > So, you're on-deck, nearly up...
-> > 
-> > > All of the above is better than trying to get the attention of a
-> > > gazillion of maintainters.
-> > 
-> > True.
-> > 
-> > And all of the treewide changes depend on some
-> > generic acceptance of value in the type of change.
-> > 
-> > Some believe that comma->semicolon conversions
-> > aren't useful as there isn't a logical change and
-> > the compiler output wouldn't be different.
+On 9/25/20 10:24 AM, Borislav Petkov wrote:
+> #     LEAF,SUBLEAF,register,  bits,short name, long name
+>          1,	 0,	EBX,   7:0,brand,Brand Index
+>          1,	 0,	EBX,  15:8,clflush_size,CLFLUSH line size (value * 8) in bytes
+>      	 1,	 0,	EBX, 23:16,max_cpu_id,Maxim number of addressable logic cpu ID in this package
+> 0x80000000,	12,	EAX,     3,eee, EEE
 > 
-> I have a script that will cut up the patches and send them to the
-> appropriate maintainers, so I have no problem with that route.
+> and can keep it in tabellary form this way. The parsing code should
+> asimply split on ',' and ignore whitespace.
+> 
+> Thoughts?
 
-I have a script that does that too.
-
-The complaint I get about its use is
-"OMG: My specific commit header style isn't followed"
-
-And the generic individual maintainer apply rate for
-each specific patch is always less than 50%.
-
-For instance the patches that converted the comma uses
-in if/do/while statements to use braces and semicolons
-from a month ago:
-
-https://lore.kernel.org/lkml/cover.1598331148.git.joe@perches.com/
-
-29 patches, 13 applied.
-
-Best of luck.
-
-
+Looks fine to me.  It's plenty readable that way too.
