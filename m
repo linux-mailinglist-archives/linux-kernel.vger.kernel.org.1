@@ -2,148 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6263B278107
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8469227810A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727176AbgIYHBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37172 "EHLO mail.kernel.org"
+        id S1727251AbgIYHBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:01:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37528 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYHBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:01:08 -0400
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+        id S1727044AbgIYHBt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:01:49 -0400
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8992221EB;
-        Fri, 25 Sep 2020 07:01:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A64A22211;
+        Fri, 25 Sep 2020 07:01:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601017268;
-        bh=aOUjjDgtVWkcQodJAgxOumrSwAyHIJQ5o0no1CvLCso=;
+        s=default; t=1601017308;
+        bh=bYQA1KksxrM7SaxkyjkI60HSt3WPTblP3/0Gtd4vSYA=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=sXkdNhgR8BtkcwNFqSrytDMDRQf7rIwVzL9UuurNMUsy4vExrC6rA9+X2JMEcEHWk
-         vRz7Up4PJD2acJ8rdo2mrNnTUpFgWPR2gEopMxEOlsU3FjEfNOIZGZIwgNEIMOTG7k
-         CqGe2WeeaascagdB2X6giJFmqsioo0Sv1adSe1Us=
-Received: by mail-oi1-f173.google.com with SMTP id v20so1789737oiv.3;
-        Fri, 25 Sep 2020 00:01:07 -0700 (PDT)
-X-Gm-Message-State: AOAM530jDjqfP+e26scvhxZz3dKPNRzSWeBj5CoDIGgCSjted4fa6lWf
-        YPC1Xphz3d/YPzfnN81PdaK9PrDi4DOhU2E8r5Q=
-X-Google-Smtp-Source: ABdhPJzTIcPgRg3N/EEZgSGid4+8+hR0XtJxMO/6Gi0/0/erclCg7R46ka+Ii25iZa5FMsvpMy/oOuQlBzSbt2qEO4s=
-X-Received: by 2002:a54:4517:: with SMTP id l23mr780843oil.174.1601017267272;
- Fri, 25 Sep 2020 00:01:07 -0700 (PDT)
+        b=U+N4QjyAMehcRUJ7lWfXzXqfrXTwmbK+cSFKnqYsq/OHprFpZM2RmkZR631IXVGR0
+         R02MK4zByBAfhpfglcN7gbXj5Ai9DQ2FpaYMc7asAOB0TUGLqdqaUNScaR84rk6zbx
+         SUCD/IdFUrvzNced8pIn3MS6r4hj8HJ1AAQ7PKEo=
+Received: by mail-ot1-f48.google.com with SMTP id 95so1334206ota.13;
+        Fri, 25 Sep 2020 00:01:48 -0700 (PDT)
+X-Gm-Message-State: AOAM53018XrzWX4QRU6TEFypyK0RBb1N6rMyRVeOhvA9w+4QE0mKdJHk
+        A1DDoRXq1XDtybj8r5tPPIv6c20PvO209ATFHIw=
+X-Google-Smtp-Source: ABdhPJzkqyhbmwrKdXg/AqpTpftDgl2KsVGMboGt67hHWUuXK8UktR/+mXSBxIVLdAqfUUEUlPEbYWdoSQO85lrh4lY=
+X-Received: by 2002:a9d:6193:: with SMTP id g19mr1920750otk.108.1601017307399;
+ Fri, 25 Sep 2020 00:01:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200922094128.26245-1-ardb@kernel.org> <20200925055626.GC165011@linux.intel.com>
-In-Reply-To: <20200925055626.GC165011@linux.intel.com>
+References: <20200924082833.12722-1-jlee@suse.com> <CAMj1kXE64kMU7wnMQK+k=0tjaH9OMOrzN86yJPPRkx5Nq8XBqw@mail.gmail.com>
+ <20200925005049.GD31226@linux-l9pv.suse>
+In-Reply-To: <20200925005049.GD31226@linux-l9pv.suse>
 From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Fri, 25 Sep 2020 09:00:56 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
-Message-ID: <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
-Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+Date:   Fri, 25 Sep 2020 09:01:36 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXFtg854N4PjrV_8ZKdibYKGoEHH5NV_kjTOTt7EKPANaQ@mail.gmail.com>
+Message-ID: <CAMj1kXFtg854N4PjrV_8ZKdibYKGoEHH5NV_kjTOTt7EKPANaQ@mail.gmail.com>
+Subject: Re: [PATCH] efi/efivars: Create efivars mount point in the
+ registration of efivars abstraction
+To:     joeyli <jlee@suse.com>
+Cc:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>
+        Matthias Brugger <mbrugger@suse.com>,
+        Fabian Vogt <fvogt@suse.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arthur Heymans <arthur@aheymans.xyz>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 07:56, Jarkko Sakkinen
-<jarkko.sakkinen@linux.intel.com> wrote:
+On Fri, 25 Sep 2020 at 02:51, joeyli <jlee@suse.com> wrote:
 >
-> On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
-> > The TPM event log is provided to the OS by the firmware, by loading
-> > it into an area in memory and passing the physical address via a node
-> > in the device tree.
-> >
-> > Currently, we use __va() to access the memory via the kernel's linear
-> > map: however, it is not guaranteed that the linear map covers this
-> > particular address, as we may be running under HIGHMEM on a 32-bit
-> > architecture, or running firmware that uses a memory type for the
-> > event log that is omitted from the linear map (such as EfiReserved).
+> Hi Ard,
 >
-> Makes perfect sense to the level that I wonder if this should have a
-> fixes tag and/or needs to be backported to the stable kernels?
->
-
-AIUI, the code was written specifically for ppc64, which is a
-non-highmem, non-EFI architecture. However, when we start reusing this
-driver for ARM, this issue could pop up.
-
-The code itself has been refactored a couple of times, so I think it
-will require different versions of the patch for different generations
-of stable kernels.
-
-So perhaps just add Cc: <stable@vger.kernel.org>, and wait and see how
-far back it applies cleanly?
-
-
-> > So instead, use memremap(), which will reuse the linear mapping if
-> > it is valid, or create another mapping otherwise.
+> On Thu, Sep 24, 2020 at 12:47:46PM +0200, Ard Biesheuvel wrote:
+> > On Thu, 24 Sep 2020 at 10:28, Lee, Chun-Yi <joeyli.kernel@gmail.com> wrote:
+> > >
+> > > This patch moved the logic of creating efivars mount point to the
+> > > registration of efivars abstraction. It's useful for userland to
+> > > determine the availability of efivars filesystem by checking the
+> > > existence of mount point.
+> > >
+> > > The 'efivars' platform device be created on generic EFI runtime services
+> > > platform, so it can be used to determine the availability of efivarfs.
+> > > But this approach is not available for google gsmi efivars abstraction.
+> > >
+> > > This patch be tested on Here on qemu-OVMF and qemu-uboot.
+> > >
+> > > Cc: Ard Biesheuvel <ardb@kernel.org>
+> > > Cc: Matthias Brugger <mbrugger@suse.com>
+> > > Cc: Fabian Vogt <fvogt@suse.com>
+> > > Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Cc: Arthur Heymans <arthur@aheymans.xyz>
+> > > Cc: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+> > > ---
 > >
-> > Cc: Peter Huewe <peterhuewe@gmx.de>
-> > Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >  drivers/char/tpm/eventlog/of.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > I take it this is v3 of [0]? If so, please explain how it deviates
+> > from v2. If it doesn't deviate from v2, it is better to continue the
+> > discussion in the other thread.
 > >
-> > diff --git a/drivers/char/tpm/eventlog/of.c b/drivers/char/tpm/eventlog/of.c
-> > index a9ce66d09a75..9178547589a3 100644
-> > --- a/drivers/char/tpm/eventlog/of.c
-> > +++ b/drivers/char/tpm/eventlog/of.c
-> > @@ -11,6 +11,7 @@
-> >   */
+> > For the sake of discussion, it helps to clarify the confusing nomenclature:
 > >
-> >  #include <linux/slab.h>
-> > +#include <linux/io.h>
-> >  #include <linux/of.h>
-> >  #include <linux/tpm_eventlog.h>
+> > a) 'efivars abstraction' - an internal kernel API that exposes EFI
+> > variables, and can potentially be backed by an implementation that is
+> > not EFI based (i.e., Google gsmi)
 > >
-> > @@ -25,6 +26,7 @@ int tpm_read_log_of(struct tpm_chip *chip)
-> >       struct tpm_bios_log *log;
-> >       u32 size;
-> >       u64 base;
-> > +     void *p;
->
-> I'd just use 'ptr' for readability sake.
->
-
-If you prefer
-
-> >       log = &chip->log;
-> >       if (chip->dev.parent && chip->dev.parent->of_node)
-> > @@ -65,7 +67,11 @@ int tpm_read_log_of(struct tpm_chip *chip)
-> >               return -EIO;
-> >       }
+> > b) efivars.ko module, built on top of the efivars abstraction, which
+> > exposes EFI variables (real ones or gsmi ones) via the deprecated
+> > sysfs interface
 > >
-> > -     log->bios_event_log = kmemdup(__va(base), size, GFP_KERNEL);
-> > +     p = memremap(base, size, MEMREMAP_WB);
-> > +     if (!p)
-> > +             return -ENOMEM;
-> > +     log->bios_event_log = kmemdup(p, size, GFP_KERNEL);
-> > +     memunmap(p);
-> >       if (!log->bios_event_log)
-> >               return -ENOMEM;
+> > c) efivarfs filesystem, also built on top of the efivars abstraction,
+> > which exposes EFI variables (real ones or gsmi ones) via a special
+> > filesystem independently of sysfs.
 > >
-> > --
-> > 2.17.1
+> > Of course, the sysfs mount point we create for efivarfs is not called
+> > 'efivarfs' but 'efivars'. The sysfs subdirectory we create for
+> > efivars.ko is called 'vars'. Sigh.
 > >
 >
-> This is a really great catch!
+> Thanks for your clarification. It's useful to me!
 >
-> I'm a bit late of my PR a bit because of SGX upstreaming madness
-> (sending v39 soon). If you can answer to my question above, I can do
-> that nitpick change to patch and get it to my v5.10 PR.
+> >
+> > In this patch, you create the mount point for c) based on whether a)
+> > gets registered (which occurs on systems with EFI Get/SetVariable
+> > support or GSMI), right? So, to Greg's point, wouldn't it be easier to
+> > simply check whether efivarfs is listed in /proc/filesystems?
+> >
+>
+> Yes, I think that Greg's suggestion is good enough for a userland tool
+> to detect the availability of efivarfs. You can ignore my patch.
 >
 
-Yes, please.
-
-> PS. Just so that you know, once I've applied it, it will be available
-> here:
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
->
-> I'll include MAINTAINERS update to that PR.
->
-> /Jarkko
+Excellent! Thanks for confirming.
