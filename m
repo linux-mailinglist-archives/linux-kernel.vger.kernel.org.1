@@ -2,172 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5AE27924F
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEDF27924E
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728931AbgIYUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728996AbgIYUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 25 Sep 2020 16:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54734 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727626AbgIYUif (ORCPT
+        with ESMTP id S1728710AbgIYUif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Sep 2020 16:38:35 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02529C0613DC;
-        Fri, 25 Sep 2020 12:18:45 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 16so3946716qkf.4;
-        Fri, 25 Sep 2020 12:18:45 -0700 (PDT)
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1772C0613E0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:19:22 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id r128so3142537pfr.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6TNafuoIllawQn6PtbN92TdSRIqwBFFijyaKCHiMRO8=;
-        b=evGNDMO9ibKnC9IIMxSY5gCKLneXJCbZAtYKRb+b0eqbtNY+YPD55HKTcNzDrgLW7B
-         RDI6+vqyV/HAqRXBFq/YlLucPTE0KaXPDrzz9e2ieTaRQl6qSQ5ZtA7SzkBwSGwbXCnt
-         kudr+3GWAme8v2znAjGDdFg/jW+i7u3VQLoGfFrfICTqU9KUqBRTmPoTIGw5+GGyIts+
-         35hF4aK3bac5Aph6CKLm3caeYXfhSkUxTb3PJuZQyAUzzubotV8eGFy7JGwn603R6O1U
-         rz/ExJnyViO8FarBZtevTaGxv4x3fJq6ApLwi/xBUaNxc1ClP7weeQ2yFiTp/YLSTdUv
-         8N1A==
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=c9CDfynf/KUxdFh8n3XOljSdCkgSvr8lNgdQYSCmCYk=;
+        b=fl2TaMkw1JkltuSEzdvWcmFU9+d3U4yl5mjSBoCcGilxxYeoBy74RE52xS+Ln6YSrb
+         xEy+4y7Pvmsv+LwnX76eQOdXe30Zv3CtkS1gl6iEVW5MN4l1N785IqZoKriNLCcNC9FH
+         S6ibrfOLkK/rrw2nucf69VVUnqeUM5DO82RikP4ZH6i98QBEDjsRVRwnsKvdBMAVvYHv
+         DhwgdImhtYWhDpVVoh5yX/JxpO7VW+ob3jvyRoDZ0/Lk1tvwArMtjiZtmef7yqZsuXkh
+         nuhyhbn0O68fp167oKpymHn64S0FLQIdUGSCx8xSoq+lBpM5IcgZULlrvNq0/945p8Zx
+         OOGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=6TNafuoIllawQn6PtbN92TdSRIqwBFFijyaKCHiMRO8=;
-        b=ll8plYjvT01w0kETz9vNh1Z2UtL3AoXYJkbrGNxrZd9w3GMGLnzBpO6Q00uvLXy55N
-         mtXj2kpG6kOaGqiL3z3dDT+NlTS9f18Gqq8FWDTnu8gflRuTZTqkNE/UuzUbhSguxpEr
-         DYTmlIeRP1IfKR22qzhxBPrG1DxUataQqO1UmRWsUKa97AHknalFcb8VwBEM1XO40n1R
-         /QLfpzBfxrGaB0CiSgMIicBhTbAnwW0sbx30klqChGnD322dLBPnJk88XDcTFAARksMl
-         9Gar3RPjWCekdVX65HLveNUp3El396C0gen74REwCla0og46gtti8o0t2J+d6arUb0te
-         ttPQ==
-X-Gm-Message-State: AOAM530k+QL2ZeWnFTFHay/LhFF1WK2TPYJ06sGFiBN12nGjcTYhjK2p
-        3wCKAIsOSkg3indsXQHYOZDdo+rxziU/Mg==
-X-Google-Smtp-Source: ABdhPJwbT6a2ae209myBNEn/nx0a/Kuv0M3OuuZlwlLfKUbyg927V++WNXIMfomx0jAiRi2e2zd2xw==
-X-Received: by 2002:a37:5cc2:: with SMTP id q185mr1437063qkb.35.1601061524669;
-        Fri, 25 Sep 2020 12:18:44 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id m67sm2217409qkf.98.2020.09.25.12.18.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 12:18:44 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Fri, 25 Sep 2020 15:18:42 -0400
-To:     Ross Philipson <ross.philipson@oracle.com>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
-        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        luto@amacapital.net, trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH 07/13] x86: Secure Launch kernel early boot stub
-Message-ID: <20200925191842.GA643740@rani.riverdale.lan>
-References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
- <1600959521-24158-8-git-send-email-ross.philipson@oracle.com>
- <20200924173801.GA103726@rani.riverdale.lan>
- <c9ab2edf-1aaf-a1c9-92d5-2d37382a3163@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c9ab2edf-1aaf-a1c9-92d5-2d37382a3163@oracle.com>
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=c9CDfynf/KUxdFh8n3XOljSdCkgSvr8lNgdQYSCmCYk=;
+        b=Q3VXf9lP7P0fyeSPZsHJB4kB8fdGYI+NcMbNkXGg5HOvUnSzy25Jb8XorWdPYPp40A
+         5m21yLaMH8KwL0tmbNq1BNlUnpWHu6wQ9/jWyt6kWqEVE2PIPVaRdOjsWY7qLdrTxhZr
+         QBfUeVstt72wx/Z/mzXLN3lpFajCyydQ0HbHb+IUrYt+vC7BS2o/mc55/j0p4SW1SujR
+         1AYsKzm2d4YQDfaRYw1idZKUB6O6zzcRSuwDHD+GQjvf/RRJlgGjauKQuYVovTAAiHcp
+         6HdvX+Ztai4zuk+XB6Kr9iC7wP083JHhuNTjkN73UQCgQhgIPCk1zsr16NV2evgExnpD
+         /mZw==
+X-Gm-Message-State: AOAM530uoafqpH1nafcIj98EmQN9EbVSWwti895CWg0yob+N0m2bNs5X
+        CrNe5S0iI5pbP7golfKkQtG/7FxzkPtnEA==
+X-Google-Smtp-Source: ABdhPJyLFbH0nTn+I3Lwc3lBcbpV1gXP2gky2AKFlBb1OO3GB1kXpbwWnmfIuyJwos/1CTeA/XwLjOz7K97s6w==
+Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
+X-Received: from shakeelb.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee8:36f0])
+ (user=shakeelb job=sendgmr) by 2002:a17:90a:4cc6:: with SMTP id
+ k64mr62957pjh.103.1601061562249; Fri, 25 Sep 2020 12:19:22 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 12:19:02 -0700
+In-Reply-To: <CALvZod5pERERkxWAJcBrZHpcWQH75kXkys2gUg__qM9OL+MmtQ@mail.gmail.com>
+Message-Id: <20200925191902.543953-1-shakeelb@google.com>
+Mime-Version: 1.0
+References: <CALvZod5pERERkxWAJcBrZHpcWQH75kXkys2gUg__qM9OL+MmtQ@mail.gmail.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
+ into blk_mq_get_driver_tag
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Roman Gushchin <guro@fb.com>, Ming Lei <ming.lei@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>, Jens Axboe <axboe@kernel.dk>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:56:43AM -0400, Ross Philipson wrote:
-> On 9/24/20 1:38 PM, Arvind Sankar wrote:
-> > On Thu, Sep 24, 2020 at 10:58:35AM -0400, Ross Philipson wrote:
-> > 
-> >> diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-> >> index 97d37f0..42043bf 100644
-> >> --- a/arch/x86/boot/compressed/head_64.S
-> >> +++ b/arch/x86/boot/compressed/head_64.S
-> >> @@ -279,6 +279,21 @@ SYM_INNER_LABEL(efi32_pe_stub_entry, SYM_L_LOCAL)
-> >>  SYM_FUNC_END(efi32_stub_entry)
-> >>  #endif
-> >>  
-> >> +#ifdef CONFIG_SECURE_LAUNCH
-> >> +SYM_FUNC_START(sl_stub_entry)
-> >> +	/*
-> >> +	 * On entry, %ebx has the entry abs offset to sl_stub_entry. To
-> >> +	 * find the beginning of where we are loaded, sub off from the
-> >> +	 * beginning.
-> >> +	 */
-> > 
-> > This requirement should be added to the documentation. Is it necessary
-> > or can this stub just figure out the address the same way as the other
-> > 32-bit entry points, using the scratch space in bootparams as a little
-> > stack?
-> 
-> It is based on the state of the BSP when TXT vectors to the measured
-> launch environment. It is documented in the TXT spec and the SDMs.
-> 
+On Fri, Sep 25, 2020 at 10:58 AM Shakeel Butt <shakeelb@google.com>
+wrote:
+>
+[snip]
+>
+> I don't think you can ignore the flushing. The __free_once() in
+> ___cache_free() assumes there is a space available.
+>
+> BTW do_drain() also have the same issue.
+>
+> Why not move slabs_destroy() after we update ac->avail and memmove()?
 
-I think it would be useful to add to the x86 boot documentation how
-exactly this new entry point is called, even if it's just adding a link
-to some section of those specs. The doc should also say that an
-mle_header_offset of 0 means the kernel isn't secure launch enabled.
+Ming, can you please try the following patch?
 
-> > 
-> > For the 32-bit assembler code that's being added, tip/master now has
-> > changes that prevent the compressed kernel from having any runtime
-> > relocations.  You'll need to revise some of the code and the data
-> > structures initial values to avoid creating relocations.
-> 
-> Could you elaborate on this some more? I am not sure I see places in the
-> secure launch asm that would be creating relocations like this.
-> 
-> Thank you,
-> Ross
-> 
 
-You should see them if you do
-	readelf -r arch/x86/boot/compressed/vmlinux
+From: Shakeel Butt <shakeelb@google.com>
 
-In terms of the code, things like:
+[PATCH] mm: slab: fix potential infinite recursion in ___cache_free
 
-	addl    %ebx, (sl_gdt_desc + 2)(%ebx)
+With the commit 10befea91b61 ("mm: memcg/slab: use a single set of
+kmem_caches for all allocations"), it becomes possible to call kfree()
+from the slabs_destroy(). However if slabs_destroy() is being called for
+the array_cache of the local CPU then this opens the potential scenario
+of infinite recursion because kfree() called from slabs_destroy() can
+call slabs_destroy() with the same array_cache of the local CPU. Since
+the array_cache of the local CPU is not updated before calling
+slabs_destroy(), it will try to free the same pages.
 
-will create a relocation, because the linker interprets this as wanting
-the runtime address of sl_gdt_desc, rather than just the offset from
-startup_32.
+To fix the issue, simply update the cache before calling
+slabs_destroy().
 
-https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git/tree/arch/x86/boot/compressed/head_64.S#n48
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/slab.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-has a comment with some explanation and a macro that the 32-bit code in
-startup_32 uses to avoid creating relocations.
+diff --git a/mm/slab.c b/mm/slab.c
+index 3160dff6fd76..f658e86ec8ce 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -1632,6 +1632,10 @@ static void slab_destroy(struct kmem_cache *cachep, struct page *page)
+ 		kmem_cache_free(cachep->freelist_cache, freelist);
+ }
+ 
++/*
++ * Update the size of the caches before calling slabs_destroy as it may
++ * recursively call kfree.
++ */
+ static void slabs_destroy(struct kmem_cache *cachep, struct list_head *list)
+ {
+ 	struct page *page, *n;
+@@ -2153,8 +2157,8 @@ static void do_drain(void *arg)
+ 	spin_lock(&n->list_lock);
+ 	free_block(cachep, ac->entry, ac->avail, node, &list);
+ 	spin_unlock(&n->list_lock);
+-	slabs_destroy(cachep, &list);
+ 	ac->avail = 0;
++	slabs_destroy(cachep, &list);
+ }
+ 
+ static void drain_cpu_caches(struct kmem_cache *cachep)
+@@ -3402,9 +3406,9 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
+ 	}
+ #endif
+ 	spin_unlock(&n->list_lock);
+-	slabs_destroy(cachep, &list);
+ 	ac->avail -= batchcount;
+ 	memmove(ac->entry, &(ac->entry[batchcount]), sizeof(void *)*ac->avail);
++	slabs_destroy(cachep, &list);
+ }
+ 
+ /*
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
-Since the SL code is in a different assembler file (and a different
-section), you can't directly use the same macro. I would suggest getting
-rid of sl_stub_entry and entering directly at sl_stub, and then the code
-in sl_stub.S can use sl_stub for the base address, defining the rva()
-macro there as
-
-	#define rva(X) ((X) - sl_stub)
-
-You will also need to avoid initializing data with symbol addresses.
-
-	.long mle_header
-	.long sl_stub_entry
-	.long sl_gdt
-
-will create relocations. The third one is easy, just replace it with
-sl_gdt - sl_gdt_desc and initialize it at runtime with
-
-	leal	rva(sl_gdt_desc)(%ebx), %eax
-	addl	%eax, 2(%eax)
-	lgdt	(%eax)
-
-The other two are more messy, unfortunately there is no easy way to tell
-the linker what we want here. The other entry point addresses (for the
-EFI stub) are populated in a post-processing step after the compressed
-kernel has been linked, we could teach it to also update kernel_info.
-
-Without that, for kernel_info, you could change it to store the offset
-of the MLE header from kernel_info, instead of from the start of the
-image.
-
-For the MLE header, it could be moved to .head.text in head_64.S, and
-initialized with
-	.long rva(sl_stub)
-This will also let it be placed at a fixed offset from startup_32, so
-that kernel_info can just be populated with a constant.
