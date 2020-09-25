@@ -2,270 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6264D278B69
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB1DB278B55
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729065AbgIYO5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:57:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:17319 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728974AbgIYO5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:57:32 -0400
-IronPort-SDR: e4qfbc6nnLP6n3SeQO3If/MfjA5Co/X74DS9erhyR4+ilZ3KRW+W3rD8yQ3NG9j338T1UTqHB4
- 2eu54+7V13xw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="158942246"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="158942246"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:57:14 -0700
-IronPort-SDR: Er0JJcz2MKSigqT+baqkcjHmkETdh31Gm4Br8Y4f7TQT0ghLjTZJWwynNHKfguqa0AgEJBXoOA
- Y8IPA7NEUiqw==
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="487499128"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:57:13 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Subject: [PATCH v13 01/26] Documentation/x86: Add CET description
-Date:   Fri, 25 Sep 2020 07:56:24 -0700
-Message-Id: <20200925145649.5438-2-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200925145649.5438-1-yu-cheng.yu@intel.com>
-References: <20200925145649.5438-1-yu-cheng.yu@intel.com>
+        id S1729101AbgIYOzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:55:19 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60178 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728330AbgIYOzS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:55:18 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PEnKGr087730;
+        Fri, 25 Sep 2020 14:54:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=bM/KGhN7X/B0rWlIXrAEsLv5vK48LHNh9qXkAYDH3qY=;
+ b=UzI0P7JRpw99/O6tZtRdIrQjY/M/TJPXT6rEk4tEJKeW9KV1DkPkBTbe9sa7wzdFtRx/
+ NxgAuPWbA1xrr0G9EpcE/Q7RrTh2qk6jAudZz5Rv1Re0OKhf4DhHAjX5Qvq8pXhd0TiR
+ JJwMHoJjFSXnxJJvmadzvMkH/uJ2kbOne6uHxkTLbNuuRJeig2hBqe/Wt5XFlFEpgL7R
+ dykvgQrYCxbVdpExaTfrZoo7euwyh4xumS3Hc2Ow20998pA+9i40bsxABrpka4fJJ3M8
+ 85AAMACl6e14WEBkoC34f6CuuzTYLqY4HS+ICsekhsCvjURMACtURKVItOA48PXucjwL ZQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 33q5rgvfux-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 25 Sep 2020 14:54:58 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PEkYZq085193;
+        Fri, 25 Sep 2020 14:54:57 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 33nurxwes7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Sep 2020 14:54:57 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08PEst1S028973;
+        Fri, 25 Sep 2020 14:54:55 GMT
+Received: from char.us.oracle.com (/10.152.32.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 25 Sep 2020 07:54:55 -0700
+Received: by char.us.oracle.com (Postfix, from userid 1000)
+        id 5C5C16A00F9; Fri, 25 Sep 2020 10:56:25 -0400 (EDT)
+Date:   Fri, 25 Sep 2020 10:56:25 -0400
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Dave Young <dyoung@redhat.com>
+Cc:     boris.ostrovsky@oracle.com,
+        Michael Kelley <mikelley@microsoft.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
+        Eric DeVolder <eric.devolder@oracle.com>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Masami Hiramatsu <masami.hiramatsu.pt@hitachi.com>,
+        HATAYAMA Daisuke <d.hatayama@jp.fujitsu.com>
+Subject: Re: [PATCH] Only allow to set crash_kexec_post_notifiers on boot time
+Message-ID: <20200925145625.GH30019@char.us.oracle.com>
+References: <20200918174743.0994c59f058451948837dcb6@linux-foundation.org>
+ <20200921201811.GB3437@char.us.oracle.com>
+ <87v9g6fuub.fsf@x220.int.ebiederm.org>
+ <20200923024329.GB3642@dhcp-128-65.nay.redhat.com>
+ <20200923154825.GC7635@char.us.oracle.com>
+ <MW2PR2101MB10521373DD95F5AF014254DDD7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
+ <874knndtvo.fsf@x220.int.ebiederm.org>
+ <MW2PR2101MB1052ED1C8953135A58276F04D7390@MW2PR2101MB1052.namprd21.prod.outlook.com>
+ <4f964490-7464-0071-db38-4b16d665503e@oracle.com>
+ <20200925030558.GA3446@dhcp-128-65.nay.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925030558.GA3446@dhcp-128-65.nay.redhat.com>
+User-Agent: Mutt/1.9.1 (2017-09-22)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250106
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
+ clxscore=1015 suspectscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explain no_user_shstk/no_user_ibt kernel parameters, and introduce a new
-document on Control-flow Enforcement Technology (CET).
+On Fri, Sep 25, 2020 at 11:05:58AM +0800, Dave Young wrote:
+> Hi,
+> 
+> On 09/24/20 at 01:16pm, boris.ostrovsky@oracle.com wrote:
+> > 
+> > On 9/24/20 12:43 PM, Michael Kelley wrote:
+> > > From: Eric W. Biederman <ebiederm@xmission.com> Sent: Thursday, September 24, 2020 9:26 AM
+> > >> Michael Kelley <mikelley@microsoft.com> writes:
+> > >>
+> > >>>>> Added Hyper-V people and people who created the param, it is below
+> > >>>>> commit, I also want to remove it if possible, let's see how people
+> > >>>>> think, but the least way should be to disable the auto setting in both systemd
+> > >>>>> and kernel:
+> > >>> Hyper-V uses a notifier to inform the host system that a Linux VM has
+> > >>> panic'ed.  Informing the host is particularly important in a public cloud
+> > >>> such as Azure so that the cloud software can alert the customer, and can
+> > >>> track cloud-wide reliability statistics.   Whether a kdump is taken is controlled
+> > >>> entirely by the customer and how he configures the VM, and we want
+> > >>> the host to be informed either way.
+> > >> Why?
+> > >>
+> > >> Why does the host care?
+> > >> Especially if the VM continues executing into a kdump kernel?
+> > > The host itself doesn't care.  But the host is a convenient out-of-band
+> > > channel for recording that a panic has occurred and to collect basic data
+> > > about the panic.  This out-of-band channel is then used to notify the end
+> > > customer that his VM has panic'ed.  Sure, the customer should be running
+> > > his own monitoring software, but customers don't always do what they
+> > > should.  Equally important, the out-of-band channel allows the cloud
+> > > infrastructure software to notice trends, such as that the rate of Linux
+> > > panics has increased, and that perhaps there is a cloud problem that
+> > > should be investigated.
+> > 
+> > 
+> > In many cases (especially in cloud environment) your dump device is remote (e.g. iscsi) and kdump sometimes (often?) gets stuck because of connectivity issues (which could be cause of the panic in the first place). So it is quite desirable to inform the infrastructure that the VM is on its way out without waiting for kdump to complete.
+> 
+> That can probably be done in kdump kernel if it is really needed.  Say
+> informing host that panic happened and a kdump kernel is runnning.
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
-v13:
-- Change X86_INTEL_* to X86_*.
+If kdump kernel gets to that point. Sometimes (sadly) it ends up being
+misconfigured and it chokes up - and hence having multiple ways to emit
+the crash information before running kdump kernel is a life-saver.
 
-v12:
-- Remove ARCH_X86_CET_MMAP_SHSTK information.
+> 
+> But I think to set crash_kexec_post_notifiers by default is still bad. 
 
-v11:
-- Add back GLIBC tunables information.
-- Add ARCH_X86_CET_MMAP_SHSTK information.
+Because of the way it is run today I presume? If there was some
+safe/unsafe policy that should work right? I would think that the
+safe ones that work properly all the time are:
 
-v10:
-- Change no_cet_shstk and no_cet_ibt to no_user_shstk and no_user_ibt.
-- Remove the opcode section, as it is already in the Intel SDM.
-- Remove sections related to GLIBC implementation.
-- Remove shadow stack memory management section, as it is already in the
-  code comments.
-- Remove legacy bitmap related information, as it is not supported now.
-- Fix arch_ioctl() related text.
-- Change SHSTK, IBT to plain English.
+ - HyperV CRASH_MSRs,
+ - KVM PVPANIC_[PANIC,CRASHLOAD] push button knob,
+ - pstore EFI variables
+ - Dumping in memory,
 
- .../admin-guide/kernel-parameters.txt         |   6 +
- Documentation/x86/index.rst                   |   1 +
- Documentation/x86/intel_cet.rst               | 133 ++++++++++++++++++
- 3 files changed, 140 insertions(+)
- create mode 100644 Documentation/x86/intel_cet.rst
+And then some that depend on firmware version (aka BIOS, and vendor) are:
+ - ACPI ERST,
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a1068742a6df..7c7124a6a7ac 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3164,6 +3164,12 @@
- 			noexec=on: enable non-executable mappings (default)
- 			noexec=off: disable non-executable mappings
- 
-+	no_user_shstk	[X86-64] Disable Shadow Stack for user-mode
-+			applications
-+
-+	no_user_ibt	[X86-64] Disable Indirect Branch Tracking for user-mode
-+			applications
-+
- 	nosmap		[X86,PPC]
- 			Disable SMAP (Supervisor Mode Access Prevention)
- 			even if it is supported by processor.
-diff --git a/Documentation/x86/index.rst b/Documentation/x86/index.rst
-index 265d9e9a093b..2aef972a868d 100644
---- a/Documentation/x86/index.rst
-+++ b/Documentation/x86/index.rst
-@@ -19,6 +19,7 @@ x86-specific Documentation
-    tlb
-    mtrr
-    pat
-+   intel_cet
-    intel-iommu
-    intel_txt
-    amd-memory-encryption
-diff --git a/Documentation/x86/intel_cet.rst b/Documentation/x86/intel_cet.rst
-new file mode 100644
-index 000000000000..c9ebb3d9dd00
---- /dev/null
-+++ b/Documentation/x86/intel_cet.rst
-@@ -0,0 +1,133 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=========================================
-+Control-flow Enforcement Technology (CET)
-+=========================================
-+
-+[1] Overview
-+============
-+
-+Control-flow Enforcement Technology (CET) is an Intel processor feature
-+that provides protection against return/jump-oriented programming (ROP)
-+attacks.  It can be set up to protect both applications and the kernel.
-+Only user-mode protection is implemented in the 64-bit kernel, including
-+support for running legacy 32-bit applications.
-+
-+CET introduces Shadow Stack and Indirect Branch Tracking.  Shadow stack is
-+a secondary stack allocated from memory and cannot be directly modified by
-+applications.  When executing a CALL, the processor pushes the return
-+address to both the normal stack and the shadow stack.  Upon function
-+return, the processor pops the shadow stack copy and compares it to the
-+normal stack copy.  If the two differ, the processor raises a control-
-+protection fault.  Indirect branch tracking verifies indirect CALL/JMP
-+targets are intended as marked by the compiler with 'ENDBR' opcodes.
-+
-+There are two kernel configuration options:
-+
-+    X86_SHADOW_STACK_USER, and
-+    X86_BRANCH_TRACKING_USER.
-+
-+These need to be enabled to build a CET-enabled kernel, and Binutils v2.31
-+and GCC v8.1 or later are required to build a CET kernel.  To build a CET-
-+enabled application, GLIBC v2.28 or later is also required.
-+
-+There are two command-line options for disabling CET features::
-+
-+    no_user_shstk - disables user shadow stack, and
-+    no_user_ibt   - disables user indirect branch tracking.
-+
-+At run time, /proc/cpuinfo shows CET features if the processor supports
-+CET.
-+
-+[2] Application Enabling
-+========================
-+
-+An application's CET capability is marked in its ELF header and can be
-+verified from the following command output, in the NT_GNU_PROPERTY_TYPE_0
-+field:
-+
-+    readelf -n <application>
-+
-+If an application supports CET and is statically linked, it will run with
-+CET protection.  If the application needs any shared libraries, the loader
-+checks all dependencies and enables CET when all requirements are met.
-+
-+[3] Backward Compatibility
-+==========================
-+
-+GLIBC provides a few tunables for backward compatibility.
-+
-+GLIBC_TUNABLES=glibc.tune.hwcaps=-SHSTK,-IBT
-+    Turn off SHSTK/IBT for the current shell.
-+
-+GLIBC_TUNABLES=glibc.tune.x86_shstk=<on, permissive>
-+    This controls how dlopen() handles SHSTK legacy libraries::
-+
-+        on         - continue with SHSTK enabled;
-+        permissive - continue with SHSTK off.
-+
-+[4] CET arch_prctl()'s
-+======================
-+
-+Several arch_prctl()'s have been added for CET:
-+
-+arch_prctl(ARCH_X86_CET_STATUS, u64 *addr)
-+    Return CET feature status.
-+
-+    The parameter 'addr' is a pointer to a user buffer.
-+    On returning to the caller, the kernel fills the following
-+    information::
-+
-+        *addr       = shadow stack/indirect branch tracking status
-+        *(addr + 1) = shadow stack base address
-+        *(addr + 2) = shadow stack size
-+
-+arch_prctl(ARCH_X86_CET_DISABLE, unsigned int features)
-+    Disable shadow stack and/or indirect branch tracking as specified in
-+    'features'.  Return -EPERM if CET is locked.
-+
-+arch_prctl(ARCH_X86_CET_LOCK)
-+    Lock in all CET features.  They cannot be turned off afterwards.
-+
-+Note:
-+  There is no CET-enabling arch_prctl function.  By design, CET is enabled
-+  automatically if the binary and the system can support it.
-+
-+[5] The implementation of the Shadow Stack
-+==========================================
-+
-+Shadow Stack size
-+-----------------
-+
-+A task's shadow stack is allocated from memory to a fixed size of
-+MIN(RLIMIT_STACK, 4 GB).  In other words, the shadow stack is allocated to
-+the maximum size of the normal stack, but capped to 4 GB.  However,
-+a compat-mode application's address space is smaller, each of its thread's
-+shadow stack size is MIN(1/4 RLIMIT_STACK, 4 GB).
-+
-+Signal
-+------
-+
-+The main program and its signal handlers use the same shadow stack.
-+Because the shadow stack stores only return addresses, a large shadow
-+stack covers the condition that both the program stack and the signal
-+alternate stack run out.
-+
-+The kernel creates a restore token for the shadow stack restoring address
-+and verifies that token when restoring from the signal handler.
-+
-+Fork
-+----
-+
-+The shadow stack's vma has VM_SHSTK flag set; its PTEs are required to be
-+read-only and dirty.  When a shadow stack PTE is not RO and dirty, a
-+shadow access triggers a page fault with the shadow stack access bit set
-+in the page fault error code.
-+
-+When a task forks a child, its shadow stack PTEs are copied and both the
-+parent's and the child's shadow stack PTEs are cleared of the dirty bit.
-+Upon the next shadow stack access, the resulting shadow stack page fault
-+is handled by page copy/re-use.
-+
-+When a pthread child is created, the kernel allocates a new shadow stack
-+for the new thread.
--- 
-2.21.0
+And then the unsafe:
+ - s390, PowerPC (I don't actually know what they are but that
+    was Dave's primary motivator).
 
+> 
+> > 
+> > 
+> > >
+> > >> Further like I have mentioned everytime something like this has come up
+> > >> a call on the kexec on panic code path should be a direct call (That can
+> > >> be audited) not something hidden in a notifier call chain (which can not).
+> > >>
+> > 
+> > We btw already have a direct call from panic() to kmsg_dump() which is indirectly controlled by crash_kexec_post_notifiers, and it would also be preferable to be able to call it before kdump as well.
+> 
+> Right, that is the same thing we are talking about.
+> 
+> Thanks
+> Dave
+> 
