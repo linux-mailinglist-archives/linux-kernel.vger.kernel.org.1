@@ -2,190 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4004278286
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855C927829E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727622AbgIYISp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:18:45 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:53466 "EHLO fornost.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgIYISo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:18:44 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kLivC-0007RD-Jf; Fri, 25 Sep 2020 18:17:39 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Sep 2020 18:17:38 +1000
-Date:   Fri, 25 Sep 2020 18:17:38 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH v7 00/10] crpyto: introduce OSCCA certificate and SM2
- asymmetric algorithm
-Message-ID: <20200925081738.GU6381@gondor.apana.org.au>
-References: <20200920162103.83197-1-tianjia.zhang@linux.alibaba.com>
+        id S1727687AbgIYIV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:21:59 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:60571 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727248AbgIYIV5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:21:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UA0wHS-_1601022113;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA0wHS-_1601022113)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 25 Sep 2020 16:21:53 +0800
+Subject: Re: [PATCH V4] doc: zh_CN: add translatation for btrfs
+To:     Wang Qing <wangqing@vivo.com>, Harry Wei <harryxiyou@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wang Wenhu <wenhu.wang@vivo.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Chucheng Luo <luochucheng@vivo.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1601018642-31711-1-git-send-email-wangqing@vivo.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <f0febb25-29a1-02d4-223a-65e2c6a9db5e@linux.alibaba.com>
+Date:   Fri, 25 Sep 2020 16:19:38 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200920162103.83197-1-tianjia.zhang@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1601018642-31711-1-git-send-email-wangqing@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 12:20:53AM +0800, Tianjia Zhang wrote:
-> Hello all,
-> 
-> This new module implement the OSCCA certificate and SM2 public key
-> algorithm. It was published by State Encryption Management Bureau, China.
-> List of specifications for OSCCA certificate and SM2 elliptic curve
-> public key cryptography:
-> 
-> * GM/T 0003.1-2012
-> * GM/T 0003.2-2012
-> * GM/T 0003.3-2012
-> * GM/T 0003.4-2012
-> * GM/T 0003.5-2012
-> * GM/T 0015-2012
-> * GM/T 0009-2012 
-> 
-> IETF: https://tools.ietf.org/html/draft-shen-sm2-ecdsa-02
-> oscca: http://www.oscca.gov.cn/sca/xxgk/2010-12/17/content_1002386.shtml
-> scctc: http://www.gmbz.org.cn/main/bzlb.html
-> 
-> These patchs add the OID object identifier defined by OSCCA. The
-> x509 certificate supports sm2-with-sm3 type certificate parsing
-> and verification.
-> 
-> The sm2 algorithm is based on libgcrypt's mpi implementation, and has
-> made some additions to the kernel's original mpi library, and added the
-> implementation of ec to better support elliptic curve-like algorithms.
-> 
-> sm2 has good support in both openssl and gnupg projects, and sm3 and sm4
-> of the OSCCA algorithm family have also been implemented in the kernel.
-> 
-> Among them, sm3 and sm4 have been well implemented in the kernel.
-> This group of patches has newly introduced sm2. In order to implement
-> sm2 more perfectly, I expanded the mpi library and introduced the
-> ec implementation of the mpi library as the basic algorithm. Compared
-> to the kernel's crypto/ecc.c, the implementation of mpi/ec.c is more
-> complete and elegant, sm2 is implemented based on these algorithms.
-> 
-> ---
-> v7 changes:
->   1. add sm2 test vectors to testmgr.
->   2. fix potential memory leak in testmgr (PATCH 6/10).
->   3. rebase on mainline.
-> 
-> v6 changes:
->   1. remove mpi_sub_ui function from mpi library.
->   2. rebase on mainline.
-> 
-> v5 changes:
->   1. fix compilation failure when SM2 is configured as a module.
->   2. simplify the mpi and ec code, remove unused functions reported by test robot.
-> 
-> v4 changes:
->   1. Pass data directly when calculating sm2 certificate digest.
->   2. rebase on mainline.
-> 
-> v3 changes:
->   1. integrity asymmetric digsig support sm2-with-sm3 algorithm.
->   2. remove unused sm2_set_priv_key().
->   3. rebase on mainline.
-> 
-> v2 changes:
->   1. simplify the sm2 algorithm and only retain the verify function.
->   2. extract the sm2 certificate code into a separate file.
-> 
-> 
-> Tianjia Zhang (10):
->   crypto: sm3 - export crypto_sm3_final function
->   lib/mpi: Extend the MPI library
->   lib/mpi: Introduce ec implementation to MPI library
->   crypto: sm2 - introduce OSCCA SM2 asymmetric cipher algorithm
->   crypto: testmgr - support test with different ciphertext per
->     encryption
->   crypto: testmgr - Fix potential memory leak in test_akcipher_one()
->   crypto: sm2 - add SM2 test vectors to testmgr
->   X.509: support OSCCA certificate parse
->   X.509: support OSCCA SM2-with-SM3 certificate verification
->   integrity: Asymmetric digsig supports SM2-with-SM3 algorithm
-> 
->  crypto/Kconfig                            |   17 +
->  crypto/Makefile                           |    8 +
->  crypto/asymmetric_keys/Makefile           |    1 +
->  crypto/asymmetric_keys/public_key.c       |    6 +
->  crypto/asymmetric_keys/public_key_sm2.c   |   61 +
->  crypto/asymmetric_keys/x509_cert_parser.c |   27 +-
->  crypto/asymmetric_keys/x509_public_key.c  |    3 +
->  crypto/sm2.c                              |  481 +++++++
->  crypto/sm2signature.asn1                  |    4 +
->  crypto/sm3_generic.c                      |    7 +-
->  crypto/testmgr.c                          |   24 +-
->  crypto/testmgr.h                          |   59 +
->  include/crypto/public_key.h               |   15 +
->  include/crypto/sm2.h                      |   25 +
->  include/crypto/sm3.h                      |    2 +
->  include/linux/mpi.h                       |  192 +++
->  include/linux/oid_registry.h              |    6 +
->  lib/mpi/Makefile                          |    6 +
->  lib/mpi/ec.c                              | 1509 +++++++++++++++++++++
->  lib/mpi/mpi-add.c                         |  155 +++
->  lib/mpi/mpi-bit.c                         |  251 ++++
->  lib/mpi/mpi-cmp.c                         |   46 +-
->  lib/mpi/mpi-div.c                         |  238 ++++
->  lib/mpi/mpi-internal.h                    |   53 +
->  lib/mpi/mpi-inv.c                         |  143 ++
->  lib/mpi/mpi-mod.c                         |  155 +++
->  lib/mpi/mpi-mul.c                         |   94 ++
->  lib/mpi/mpicoder.c                        |  336 +++++
->  lib/mpi/mpih-div.c                        |  294 ++++
->  lib/mpi/mpih-mul.c                        |   25 +
->  lib/mpi/mpiutil.c                         |  204 +++
->  security/integrity/digsig_asymmetric.c    |   14 +-
->  32 files changed, 4435 insertions(+), 26 deletions(-)
->  create mode 100644 crypto/asymmetric_keys/public_key_sm2.c
->  create mode 100644 crypto/sm2.c
->  create mode 100644 crypto/sm2signature.asn1
->  create mode 100644 include/crypto/sm2.h
->  create mode 100644 lib/mpi/ec.c
->  create mode 100644 lib/mpi/mpi-add.c
->  create mode 100644 lib/mpi/mpi-div.c
->  create mode 100644 lib/mpi/mpi-inv.c
->  create mode 100644 lib/mpi/mpi-mod.c
->  create mode 100644 lib/mpi/mpi-mul.c
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-All applied.  Thanks.
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+在 2020/9/25 下午3:22, Wang Qing 写道:
+> Translate Documentation/filesystems/btrfs.rst into Chinese.
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  .../translations/zh_CN/filesystems/btrfs.rst       | 37 ++++++++++++++++++++++
+>  .../translations/zh_CN/filesystems/index.rst       |  1 +
+>  2 files changed, 38 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/filesystems/btrfs.rst
+> 
+> diff --git a/Documentation/translations/zh_CN/filesystems/btrfs.rst b/Documentation/translations/zh_CN/filesystems/btrfs.rst
+> new file mode 100644
+> index 0000000..8b8cca2
+> --- /dev/null
+> +++ b/Documentation/translations/zh_CN/filesystems/btrfs.rst
+> @@ -0,0 +1,37 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +.. include:: ../disclaimer-zh_CN.rst
+> +
+> +:Original: :ref:`Documentation/filesystems/ext3.rst <ext3_index>`
+> +
+> +translated by 王擎 Wang Qing<wangqing@vivo.com>
+> +
+> +=====
+> +BTRFS
+> +=====
+> +
+> +Btrfs是一个写时复制更新的文件系统，它注重容错、修复和易于管理。
+> +Btrfs由多家公司联合开发，并获得GPL许可，免费开放给所有人。
+> +
+> +Btrfs的主要功能包括：
+> +
+> +    *扩展大小的文件存储（文件最大支持2^64）
+> +    *填充方式使小文件更节省空间
+> +    *索引目录的方式更节省空间
+> +    *动态的索引节点分配方式
+> +    *可写快照的特性
+> +    *支持子卷（独立的内部根文件系统）
+> +    *对象级别的镜像克隆
+> +    *基于数据和元数据的校验和（支持多种算法）
+> +    *支持压缩
+> +    *內建多种磁盘阵列算法，支持多种设备
+> +    *支持离线的文件系统检查
+> +    *高效的增量备份和文件系统镜像
+> +    *在线文件系统碎片整理
+> +
+> +更多有关信息，请参阅Wiki
+> +
+> +  https://btrfs.wiki.kernel.org
+> +
+> +维护信息包含管理任务、常见问题、用例、挂载选项、变更日志、
+> +特性、手册、源码仓、联系人等。
+> diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
+> index 186501d..47e86397
+> --- a/Documentation/translations/zh_CN/filesystems/index.rst
+> +++ b/Documentation/translations/zh_CN/filesystems/index.rst
+> @@ -25,4 +25,5 @@ Linux Kernel中的文件系统
+>  
+>     virtiofs
+>     debugfs
+> +   btrfs
+>  
+> 
