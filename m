@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A8C278412
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FCA927840E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727980AbgIYJcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:32:13 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:58410 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727679AbgIYJcM (ORCPT
+        id S1727967AbgIYJbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:31:53 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:34285 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbgIYJbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:32:12 -0400
-X-Greylist: delayed 801 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 05:32:12 EDT
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08P9GBBe003459;
-        Fri, 25 Sep 2020 04:18:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=wph01T7UmRsyFJuRCiq74vVYOpu+avjXRH7hJzmc/J4=;
- b=ICAL8fn0AjdGbk+XShwhPQcf6TkLh2oLoqBRS8vy1gPPPkwdCmydrVnoO1oocgpkFb6Y
- OVuuKstsoo0j+JSX2Ff3vmE4xiQUqS5ewspzBXpfic0bgexn/jNlxiwpA+1zACF/xi32
- zghCx/5qY9evourpXsDKmLipamIR0UIkvXkvP+MlbZ64F2TFnMbTiYEfttiEX+YyCvP6
- JoCorMEeTqfUDTKPxbfpFkVzB1cvbANzMDS2MBAZ2yQyP2lVlwB7XaU13XSia4uokoRh
- q13LaAHod+FVlj73kDDPbZdRlBnt6BIMXSyTOAPV0jyknFcynJ5GLKfOyZj5ceXam5Me zA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 33nedn7te4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 25 Sep 2020 04:18:37 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 25 Sep
- 2020 10:18:36 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Fri, 25 Sep 2020 10:18:36 +0100
-Received: from AUSNPC0LSNW1-debian.ad.cirrus.com (ausnpc0lsnw1.ad.cirrus.com [198.61.64.158])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id AACF345;
-        Fri, 25 Sep 2020 09:18:35 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH 1/2] ASoC: cs47l15: Fix EPOUT->HPOUT1 Mono Mux routing
-Date:   Fri, 25 Sep 2020 10:18:29 +0100
-Message-ID: <20200925091830.7675-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 25 Sep 2020 05:31:52 -0400
+X-Greylist: delayed 171256 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 05:31:51 EDT
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 12DA622ED5;
+        Fri, 25 Sep 2020 11:31:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1601026310;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uLL/4PRlCphLUVIwMp3bEigo2LIKHqcXNDfV6nTtgZo=;
+        b=LSXChYe0kWNHjGg7/AndycHtLLqVD7I0by/kWa6LC0RzaKZKCMBA76kPbpHy8Oppl2RVBc
+        gUc+A+UtkJcSNamnHztPd6VrmQ2077GYyI1G5rKyKkBUr5alVlcS3L4Ij1EvVrtibBhwKY
+        9DcVdsGlqU5zhG2wvva0aFof3MNY+98=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- impostorscore=0 lowpriorityscore=0 mlxscore=0 phishscore=0 spamscore=0
- adultscore=0 mlxlogscore=952 suspectscore=1 bulkscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009250065
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 25 Sep 2020 11:31:50 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Leo Li <leoyang.li@nxp.com>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
+        Shawn Guo <shawnguo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>
+Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
+In-Reply-To: <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+References: <20200923095711.11355-1-michael@walle.cc>
+ <20200923095711.11355-2-michael@walle.cc>
+ <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+ <e9347e4c2e070ee9e8aa7a8007d89f02@walle.cc>
+ <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-EPOUT is always mono so should have a permanent routing through the
-HPOUT1 Mono Mux.
+Am 2020-09-24 17:53, schrieb Leo Li:
+>> -----Original Message-----
+>> From: Michael Walle <michael@walle.cc>
+>> Sent: Thursday, September 24, 2020 6:31 AM
+>> To: Leo Li <leoyang.li@nxp.com>
+>> Cc: linux-arm-kernel@lists.infradead.org; devicetree@vger.kernel.org; 
+>> linux-
+>> kernel@vger.kernel.org; linux-can@vger.kernel.org; Shawn Guo
+>> <shawnguo@kernel.org>; Rob Herring <robh+dt@kernel.org>; Marc Kleine-
+>> Budde <mkl@pengutronix.de>; Joakim Zhang <qiangqing.zhang@nxp.com>
+>> Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
+>> 
+>> Am 2020-09-24 02:35, schrieb Leo Li:
+>> >> -----Original Message-----
+>> >> From: Michael Walle <michael@walle.cc>
+>> >> Sent: Wednesday, September 23, 2020 4:57 AM
+>> >> To: linux-arm-kernel@lists.infradead.org; devicetree@vger.kernel.org;
+>> >> linux-
+>> >> kernel@vger.kernel.org; linux-can@vger.kernel.org
+>> >> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>;
+>> Rob
+>> >> Herring <robh+dt@kernel.org>; Marc Kleine-Budde
+>> <mkl@pengutronix.de>;
+>> >> Joakim Zhang <qiangqing.zhang@nxp.com>; Michael Walle
+>> >> <michael@walle.cc>
+>> >> Subject: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
+>> >>
+>> >> The LS1028A has two FlexCAN controller. These are compatible with the
+>> >> ones
+>> >> from the LX2160A. Add the nodes.
+>> >>
+>> >> The first controller was tested on the Kontron sl28 board.
+>> >>
+>> >> Signed-off-by: Michael Walle <michael@walle.cc>
+>> >> ---
+>> >>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 18
+>> >> ++++++++++++++++++
+>> >>  1 file changed, 18 insertions(+)
+>> >>
+>> >> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+>> >> b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+>> >> index 0efeb8fa773e..807ee921ec12 100644
+>> >> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+>> >> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+>> >> @@ -386,6 +386,24 @@
+>> >>  			status = "disabled";
+>> >>  		};
+>> >>
+>> >> +		can0: can@2180000 {
+>> >> +			compatible = "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-
+>> >> flexcan";
+>> >
+>> > The explicit compatible strings cannot be found in the binding, but
+>> > matched by the "fsl,<processor>-flexcan" pattern in the binding.  Is
+>> > this considered to be acceptable now?
+>> 
+>> What is the consequence if it is not acceptable? replacing the pattern
+>> with individual compatible strings?
+> 
+> There is a recommendation in the kernel documentation quoted below:
+> 
+>   7) The wildcard "<chip>" may be used in compatible strings, as in
+>      the following example:
+> 
+>          - compatible: Must contain '"nvidia,<chip>-pcie",
+>            "nvidia,tegra20-pcie"' where <chip> is tegra30, tegra132, 
+> ...
+> 
+>      As in the above example, the known values of "<chip>" should be
+>      documented if it is used.
+> 
+> But I am not sure if this is still a hard requirement.  If so, we
+> should list the processors in the binding.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/codecs/cs47l15.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Marc, I'd convert this to yaml format, may I put your name as the
+maintainer in the binding?
 
-diff --git a/sound/soc/codecs/cs47l15.c b/sound/soc/codecs/cs47l15.c
-index a591e7457d11..254f9d96e766 100644
---- a/sound/soc/codecs/cs47l15.c
-+++ b/sound/soc/codecs/cs47l15.c
-@@ -1089,6 +1089,7 @@ static const struct snd_soc_dapm_route cs47l15_dapm_routes[] = {
- 	{ "HPOUT1 Demux", NULL, "OUT1R" },
- 
- 	{ "OUT1R", NULL, "HPOUT1 Mono Mux" },
-+	{ "HPOUT1 Mono Mux", "EPOUT", "OUT1L" },
- 
- 	{ "HPOUTL", "HPOUT", "HPOUT1 Demux" },
- 	{ "HPOUTR", "HPOUT", "HPOUT1 Demux" },
-@@ -1268,7 +1269,6 @@ static irqreturn_t cs47l15_adsp2_irq(int irq, void *data)
- 
- static const struct snd_soc_dapm_route cs47l15_mono_routes[] = {
- 	{ "HPOUT1 Mono Mux", "HPOUT", "OUT1L" },
--	{ "HPOUT1 Mono Mux", "EPOUT", "OUT1L" },
- };
- 
- static int cs47l15_component_probe(struct snd_soc_component *component)
--- 
-2.20.1
-
+-michael
