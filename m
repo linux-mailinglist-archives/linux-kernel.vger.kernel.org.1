@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A80F62790F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A4E12790FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729736AbgIYSma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:42:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59736 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728069AbgIYSm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:42:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601059348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/pGAYici4c+A6XTgBrVu69JVBfczsTODgIOBNBt1/98=;
-        b=fA37onwKyy569AWuSD2ApBGIQmchrsZV1q7tus35NC61MaRi4tKAjXXSqKn0er7GkQoZb1
-        yyUdmjff8dATB54ajRy/thb11h6+3hyCdiqrPD1jp5F4n3xVb8IbmC2b2/Ky1bpkFxHtxZ
-        uP8J1q+/Ltpw7Wizil3wC9JyXn4qxDI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 30F0DAD46;
-        Fri, 25 Sep 2020 18:42:28 +0000 (UTC)
-Received: by localhost (Postfix, from userid 1000)
-        id 91F6D514D9B; Fri, 25 Sep 2020 11:42:26 -0700 (PDT)
-From:   <lduncan@suse.com>
-To:     linux-scsi@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, open-iscsi@googlegroups.com,
-        martin.petersen@oracle.com, mchristi@redhat.com, hare@suse.com,
-        Lee Duncan <lduncan@suse.com>
-Subject: [PATCH v2 1/1] scsi: libiscsi: fix NOP race condition
-Date:   Fri, 25 Sep 2020 11:41:48 -0700
-Message-Id: <02b452b2e33d0728091d27d44794934c134a803e.1601058301.git.lduncan@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1601058301.git.lduncan@suse.com>
-References: <cover.1601058301.git.lduncan@suse.com>
+        id S1729778AbgIYSnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:43:12 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:45403 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbgIYSnM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:43:12 -0400
+Received: from mail-qt1-f173.google.com ([209.85.160.173]) by
+ mrelayeu.kundenserver.de (mreue107 [212.227.15.145]) with ESMTPSA (Nemesis)
+ id 1Mg6uW-1kvk802eT8-00hd38; Fri, 25 Sep 2020 20:43:10 +0200
+Received: by mail-qt1-f173.google.com with SMTP id b2so2779322qtp.8;
+        Fri, 25 Sep 2020 11:43:10 -0700 (PDT)
+X-Gm-Message-State: AOAM532o+L7Mb4uL/JSLLaQ8Wb8e2gOvXUSPa8qDfBBYOCIETQNtJtbu
+        OGZLL2/UJ2nH+i8r3KinS+WPt47GwPsC5KPFMBE=
+X-Google-Smtp-Source: ABdhPJznPyzhYwuux+BthxpNuMrUe2I5Rfkhf/t2FbB44iCpFkSn8WqpsjOfIjdo1kNhkQFYN+TvhoVRJnZgTystfms=
+X-Received: by 2002:aed:2ce5:: with SMTP id g92mr1049652qtd.204.1601059389412;
+ Fri, 25 Sep 2020 11:43:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200925132237.2748992-1-arnd@arndb.de>
+In-Reply-To: <20200925132237.2748992-1-arnd@arndb.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 25 Sep 2020 20:42:53 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1zBgFbx8ZeqFUXok2WsOha+72zXpFZ60Sv+9=wwaqe4w@mail.gmail.com>
+Message-ID: <CAK8P3a1zBgFbx8ZeqFUXok2WsOha+72zXpFZ60Sv+9=wwaqe4w@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 1/2] ethtool: improve compat ioctl handling
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Christoph Hellwig <hch@lst.de>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Michal Kubecek <mkubecek@suse.cz>,
+        Jens Axboe <axboe@kernel.dk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Networking <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:UGeDIC9Ve8/SQxcTVPMfaaKeQQHqZHycgVFm6Byx+nIV7cQu/OK
+ yJiY2UG6YWbgdhiqnhLWZzKo5pvFAly47/wnoEpr8PfZoHYYQ4oitxNlZfGngF3jloiOMtY
+ d2IR96b6Xv2pVlTYWSJncUeMvHxlpaMqJTcslug5vfdjQiZkxNIMI9GYJIaKzy77Zm354KO
+ W+s2pSWjo/65Nj9nxtGTQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LEPOD2Jfl/k=:2P4vTXkVtzM77b/6pEj8iE
+ fAd7VttGxihOFWiPBNdPFS9B/yDDxFhH393zDU4qp1r4GmvASyajREKMFVjaVwDFMtqb+ugwy
+ YZMaLjQj2S0E7/xkTpblp8AAlzRFrr9S+iRqwNWnsWwrIjiweV0F3ZIZjaIjGT83xvJ6LG8Vx
+ AFlXh417vtouL6OuyAHgb1EyRnQ/Um6BqiuIm1QF8vz6vkFjmByx/I87Zf/QbG4+QWN+PtWdb
+ QMYHs1o0XciFjgxFwxZrhalJ+Ll9GoJp+tyLcjODhuyRKIPlYMCh3JkRsdpc/pfqgyNfabrOz
+ BEz1k4zAlFFlBSKoxEIVMYJHIFQwlrAv6kefBIN8crBuJURnsLDGW/Wrl+yO8VEvsruNy+O7j
+ onQO6jWSHrKrEgs7n7LM9h6gAp/zqEzz9z2GdLvVQR76xqtaHLI1kaXSPXX1xYFZADKYqoRNQ
+ iSw1MZ4cINyagyTH3j068cDD3ExCQPNjWIoi1mGpUZJCIbn53/fNdygM3ys28i1QsR/pUvPzh
+ hnpKWuhEROzRkl7lzro1LldFDBkQY4Dswq6rPlZCnGAwLOtgbMKPVhXWCBUaJomAtMBbXrvgH
+ nF6B9IwmPf4VmENZSwR+8kX3AfktKzrs+Nmh6fwGENDvA5MEEYKm6ZkPJIfFut/EkmrtaNLnf
+ JyPV7O1j0O7v32H8AxY345ALNxZKvd/CjD8XcwedB4eFSLeEftmy/ecHcQMXhl3VDY7IDNN09
+ 1KsDLzSMJR91DR6tyo1QOibIx3A56M0c2gFmHkTza5E7MmYR82DPLXDip8ThS6qNGZKXt9+JS
+ G9f67Jcn3lu3+aKA3iA0Z4M7++H4U5LmNFMbt4EYwMd9e5s4gyLHin6MpUl7Y47f3ZAbpi3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lee Duncan <lduncan@suse.com>
+On Fri, Sep 25, 2020 at 3:22 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> The ethtool compat ioctl handling is hidden away in net/socket.c,
+> which introduces a couple of minor oddities:
+>
+> - The implementation may end up diverging, as seen in the RXNFC
+>   extension in commit 84a1d9c48200 ("net: ethtool: extend RXNFC
+>   API to support RSS spreading of filter matches") that does not work
+>   in compat mode.
+>
+> - Most architectures do not need the compat handling at all
+>   because u64 and compat_u64 have the same alignment.
+>
+> - On x86, the conversion is done for both x32 and i386 user space,
+>   but it's actually wrong to do it for x32 and cannot work there.
+>
+> - On 32-bit Arm, it never worked for compat oabi user space, since
+>   that needs to do the same conversion but does not.
+>
+> - It would be nice to get rid of both compat_alloc_user_space()
+>   and copy_in_user() throughout the kernel.
+>
+> None of these actually seems to be a serious problem that real
+> users are likely to encounter, but fixing all of them actually
+> leads to code that is both shorter and more readable.
+>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-iSCSI NOPs are sometimes "lost", mistakenly sent to the
-user-land iscsid daemon instead of handled in the kernel,
-as they should be, resulting in a message from the daemon like:
+The kbuild bot found another dependency on a patch that I had in my
+testing tree (moving compat_u64). Let's drop both patches for now, I'll
+resend once that has been merged.
 
-> iscsid: Got nop in, but kernel supports nop handling.
-
-This can occur because of the forward- and back-locks
-in the kernel iSCSI code, and the fact that an iSCSI NOP
-response can be processed before processing of the NOP send
-is complete. This can result in "conn->ping_task" being NULL
-in iscsi_nop_out_rsp(), when the pointer is actually in
-the process of being set.
-
-To work around this, we add a new state to the "ping_task"
-pointer. In addition to NULL (not assigned) and a pointer
-(assigned), we add the state "being set", which is signaled
-with an INVALID pointer (using "-1").
-
-Signed-off-by: Lee Duncan <lduncan@suse.com>
----
- drivers/scsi/libiscsi.c | 13 ++++++++++---
- include/scsi/libiscsi.h |  3 +++
- 2 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/scsi/libiscsi.c b/drivers/scsi/libiscsi.c
-index 1e9c3171fa9f..cade108c33b6 100644
---- a/drivers/scsi/libiscsi.c
-+++ b/drivers/scsi/libiscsi.c
-@@ -738,6 +738,9 @@ __iscsi_conn_send_pdu(struct iscsi_conn *conn, struct iscsi_hdr *hdr,
- 						   task->conn->session->age);
- 	}
- 
-+	if (unlikely(READ_ONCE(conn->ping_task) == INVALID_SCSI_TASK))
-+		WRITE_ONCE(conn->ping_task, task);
-+
- 	if (!ihost->workq) {
- 		if (iscsi_prep_mgmt_task(conn, task))
- 			goto free_task;
-@@ -941,8 +944,11 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
-         struct iscsi_nopout hdr;
- 	struct iscsi_task *task;
- 
--	if (!rhdr && conn->ping_task)
--		return -EINVAL;
-+	if (!rhdr) {
-+		if (READ_ONCE(conn->ping_task))
-+			return -EINVAL;
-+		WRITE_ONCE(conn->ping_task, INVALID_SCSI_TASK);
-+	}
- 
- 	memset(&hdr, 0, sizeof(struct iscsi_nopout));
- 	hdr.opcode = ISCSI_OP_NOOP_OUT | ISCSI_OP_IMMEDIATE;
-@@ -957,11 +963,12 @@ static int iscsi_send_nopout(struct iscsi_conn *conn, struct iscsi_nopin *rhdr)
- 
- 	task = __iscsi_conn_send_pdu(conn, (struct iscsi_hdr *)&hdr, NULL, 0);
- 	if (!task) {
-+		if (!rhdr)
-+			WRITE_ONCE(conn->ping_task, NULL);
- 		iscsi_conn_printk(KERN_ERR, conn, "Could not send nopout\n");
- 		return -EIO;
- 	} else if (!rhdr) {
- 		/* only track our nops */
--		conn->ping_task = task;
- 		conn->last_ping = jiffies;
- 	}
- 
-diff --git a/include/scsi/libiscsi.h b/include/scsi/libiscsi.h
-index c25fb86ffae9..b3bbd10eb3f0 100644
---- a/include/scsi/libiscsi.h
-+++ b/include/scsi/libiscsi.h
-@@ -132,6 +132,9 @@ struct iscsi_task {
- 	void			*dd_data;	/* driver/transport data */
- };
- 
-+/* invalid scsi_task pointer */
-+#define	INVALID_SCSI_TASK	(struct iscsi_task *)-1l
-+
- static inline int iscsi_task_has_unsol_data(struct iscsi_task *task)
- {
- 	return task->unsol_r2t.data_length > task->unsol_r2t.sent;
--- 
-2.26.2
-
+      Arnd
