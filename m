@@ -2,155 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EC362788F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:01:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69ABF2788F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728803AbgIYNBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:01:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57200 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728406AbgIYNBO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:01:14 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601038873;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pmK3dOa/4I5VffapQp2jgBD5KTgzscwxckDLa4qNJis=;
-        b=PeAh9Y6T0f0W6g12KZygSKCSi29V0nA3ReZswZJJkTT3p6P6M4Qn+jqMqFFkfTTGSK/h9W
-        tnYPKpFNjMz7oUk+ZsTObhNVZLT8SHcNIkSEryf9nlEKxz8o279h6YWVoJwakt9x+y7kLK
-        LN0YFDIAfuHOkJ+Zww3/BXVT7piNyS4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-4GDv-sN-OWuZOSQNDJwnOg-1; Fri, 25 Sep 2020 09:01:09 -0400
-X-MC-Unique: 4GDv-sN-OWuZOSQNDJwnOg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1DC7018BE162;
-        Fri, 25 Sep 2020 13:01:08 +0000 (UTC)
-Received: from krava (unknown [10.40.192.203])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9EF515C1DC;
-        Fri, 25 Sep 2020 13:01:04 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 15:01:03 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Ian Rogers <irogers@google.com>
+        id S1728793AbgIYNCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:02:13 -0400
+Received: from mga06.intel.com ([134.134.136.31]:40472 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727733AbgIYNCM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 09:02:12 -0400
+IronPort-SDR: KyH5qmpxGyonUpXu3pBCxmr1sFOd0fXZqlm78L3EYsEe0mnUat5kmhAkT3sGh/f9Vo/RQQGXuV
+ IqMLAd3Wdydg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="223111328"
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="223111328"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:02:11 -0700
+IronPort-SDR: OZamlwX2zWqLUrbLSEoIsVvtwGhUUsxA4uAx8BG9zebWwmpfo9ZeyTDwYsvjJeAEWzi0tdodhs
+ m+aC4Xx9uiAA==
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="455821735"
+Received: from mlevy2-mobl.ger.corp.intel.com (HELO [10.251.176.131]) ([10.251.176.131])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:02:02 -0700
+Subject: Re: [PATCH 07/11] drm/i915: stop using kmap in i915_gem_object_map
+To:     Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>
-Subject: Re: [PATCH] perf parse-events: Reduce casts around bp_addr
-Message-ID: <20200925130103.GA3273770@krava>
-References: <20200925003903.561568-1-irogers@google.com>
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+References: <20200924135853.875294-1-hch@lst.de>
+ <20200924135853.875294-8-hch@lst.de>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+Message-ID: <8d318fcb-f472-85ed-6639-18f9c45f30e4@linux.intel.com>
+Date:   Fri, 25 Sep 2020 14:01:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925003903.561568-1-irogers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20200924135853.875294-8-hch@lst.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 05:39:03PM -0700, Ian Rogers wrote:
-> perf_event_attr bp_addr is a u64. parse-events.y parses it as a u64, but
-> casts it to a void* and then parse-events.c casts it back to a u64.
-> Rather than all the casts, change the type of the address to be a u64.
-> This removes an issue noted in:
-> https://lore.kernel.org/lkml/20200903184359.GC3495158@kernel.org/
+
+On 24/09/2020 14:58, Christoph Hellwig wrote:
+> kmap for !PageHighmem is just a convoluted way to say page_address,
+> and kunmap is a no-op in that case.
 > 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-
-Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-thanks,
-jirka
-
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->  tools/perf/util/parse-events.c | 4 ++--
->  tools/perf/util/parse-events.h | 2 +-
->  tools/perf/util/parse-events.y | 8 ++++----
->  3 files changed, 7 insertions(+), 7 deletions(-)
+>   drivers/gpu/drm/i915/gem/i915_gem_pages.c | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
 > 
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 667cbca1547a..f82ef1e840b2 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -940,12 +940,12 @@ do {					\
->  }
->  
->  int parse_events_add_breakpoint(struct list_head *list, int *idx,
-> -				void *ptr, char *type, u64 len)
-> +				u64 addr, char *type, u64 len)
->  {
->  	struct perf_event_attr attr;
->  
->  	memset(&attr, 0, sizeof(attr));
-> -	attr.bp_addr = (unsigned long) ptr;
-> +	attr.bp_addr = addr;
->  
->  	if (parse_breakpoint_type(type, &attr))
->  		return -EINVAL;
-> diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-> index 00cde7d2e30c..e80c9b74f2f2 100644
-> --- a/tools/perf/util/parse-events.h
-> +++ b/tools/perf/util/parse-events.h
-> @@ -190,7 +190,7 @@ int parse_events_add_cache(struct list_head *list, int *idx,
->  			   struct parse_events_error *error,
->  			   struct list_head *head_config);
->  int parse_events_add_breakpoint(struct list_head *list, int *idx,
-> -				void *ptr, char *type, u64 len);
-> +				u64 addr, char *type, u64 len);
->  int parse_events_add_pmu(struct parse_events_state *parse_state,
->  			 struct list_head *list, char *name,
->  			 struct list_head *head_config,
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> index 645bf4f1859f..d5b6aff82f21 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -511,7 +511,7 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE ':' PE_MODIFIER_BP sep_dc
->  	list = alloc_list();
->  	ABORT_ON(!list);
->  	err = parse_events_add_breakpoint(list, &parse_state->idx,
-> -					(void *)(uintptr_t) $2, $6, $4);
-> +					  $2, $6, $4);
->  	free($6);
->  	if (err) {
->  		free(list);
-> @@ -528,7 +528,7 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE sep_dc
->  	list = alloc_list();
->  	ABORT_ON(!list);
->  	if (parse_events_add_breakpoint(list, &parse_state->idx,
-> -						(void *)(uintptr_t) $2, NULL, $4)) {
-> +					$2, NULL, $4)) {
->  		free(list);
->  		YYABORT;
->  	}
-> @@ -544,7 +544,7 @@ PE_PREFIX_MEM PE_VALUE ':' PE_MODIFIER_BP sep_dc
->  	list = alloc_list();
->  	ABORT_ON(!list);
->  	err = parse_events_add_breakpoint(list, &parse_state->idx,
-> -					(void *)(uintptr_t) $2, $4, 0);
-> +					  $2, $4, 0);
->  	free($4);
->  	if (err) {
->  		free(list);
-> @@ -561,7 +561,7 @@ PE_PREFIX_MEM PE_VALUE sep_dc
->  	list = alloc_list();
->  	ABORT_ON(!list);
->  	if (parse_events_add_breakpoint(list, &parse_state->idx,
-> -						(void *)(uintptr_t) $2, NULL, 0)) {
-> +					$2, NULL, 0)) {
->  		free(list);
->  		YYABORT;
->  	}
-> -- 
-> 2.28.0.681.g6f77f65b4e-goog
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_pages.c b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
+> index d6eeefab3d018b..6550c0bc824ea2 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_pages.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
+> @@ -162,8 +162,6 @@ static void unmap_object(struct drm_i915_gem_object *obj, void *ptr)
+>   {
+>   	if (is_vmalloc_addr(ptr))
+>   		vunmap(ptr);
+> -	else
+> -		kunmap(kmap_to_page(ptr));
+>   }
+>   
+>   struct sg_table *
+> @@ -277,11 +275,10 @@ static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
+>   		 * forever.
+>   		 *
+>   		 * So if the page is beyond the 32b boundary, make an explicit
+> -		 * vmap. On 64b, this check will be optimised away as we can
+> -		 * directly kmap any page on the system.
+> +		 * vmap.
+>   		 */
+>   		if (!PageHighMem(page))
+> -			return kmap(page);
+> +			return page_address(page);
+>   	}
+>   
+>   	mem = stack;
 > 
 
+Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+
+Regards,
+
+Tvrtko
