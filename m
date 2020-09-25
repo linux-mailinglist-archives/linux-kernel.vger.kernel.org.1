@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B525C278FC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D17278FC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbgIYRju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:39:50 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:44308 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbgIYRjt (ORCPT
+        id S1729630AbgIYRkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:40:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44499 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727290AbgIYRkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:39:49 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 07BB91C0B77; Fri, 25 Sep 2020 19:39:47 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 19:39:46 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/37] 4.19.148-rc1 review
-Message-ID: <20200925173946.GB7253@duo.ucw.cz>
-References: <20200925124720.972208530@linuxfoundation.org>
+        Fri, 25 Sep 2020 13:40:00 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601055598;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i0NUkfA/IECNtbw53+ZcCVAPJL6aLyJb1AKj19Cje3A=;
+        b=QuZfka1fZ4VMFfcXSr+WiyJUnVh0iZ2UVJiJb2lylujzLrKHAjzHWimj6uxyePEGpv0ubN
+        s1fiWpp4AdKjU88RS+VGucJZKq48/5Bi1kASKcvoPg0dnaGCn/CtdB3v937zCNrgBMuP72
+        Go8IA9I6DWnNDVjm0yllWM7Tjypzsyk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-dCpyZtn4ODenprkVglBi8A-1; Fri, 25 Sep 2020 13:39:56 -0400
+X-MC-Unique: dCpyZtn4ODenprkVglBi8A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 852511891E89;
+        Fri, 25 Sep 2020 17:39:54 +0000 (UTC)
+Received: from localhost (unknown [10.33.36.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B420D5C1C7;
+        Fri, 25 Sep 2020 17:39:53 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 18:39:52 +0100
+From:   Jonathan Wakely <jwakely@redhat.com>
+To:     Alejandro Colomar <colomar.6.4.3@gmail.com>
+Cc:     fweimer@redhat.com, linux-man@vger.kernel.org,
+        libc-alpha@sourceware.org, gcc@gcc.gnu.org, rusty@rustcorp.com.au,
+        linux-kernel@vger.kernel.org, libstdc++@gcc.gnu.org,
+        libc-coord@lists.openwall.com, enh@google.com
+Subject: Re: [PATCH v2] <sys/param.h>: Add nitems() and snitems() macros
+Message-ID: <20200925173952.GN6061@redhat.com>
+References: <20200922145844.31867-1-colomar.6.4.3@gmail.com>
+ <20200925132000.235033-1-colomar.6.4.3@gmail.com>
+ <f6257d7d-1cea-b45c-a858-b80bbc1f18b1@gmail.com>
+ <20200925144822.GM6061@redhat.com>
+ <22c110fe-4c92-e5e6-dc35-dbf00a97cfa2@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="GRPZ8SYKNexpdSJ7"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <22c110fe-4c92-e5e6-dc35-dbf00a97cfa2@gmail.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25/09/20 18:30 +0200, Alejandro Colomar via Libstdc++ wrote:
+>Hello Jonathan,
+>
+>On 2020-09-25 16:48, Jonathan Wakely wrote:
+>> Do you really need to provide snitems?
+>>
+>> Users can use (ptrdiff_t)nitems if needed, can't they?
+>
+>They can, but that adds casts in the code,
+>which makes longer lines that are somewhat harder to read.
+>To avoid that, users may sometimes omit the cast with possible UB.
+>BTW, I use
+>
+>IMO, array indices should be declared as 'ptrdiff_t' always,
+>and not 'size_t'.  More generically, I use unsigned integer types for two
+>reasons:  bitwise operations, and library functions that require me to 
+>do so.
+>
+>I don't intend to force anyone with my opinion, of course,
+>but if I were to choose a type for 'nitems()', it would be 'ptrdiff_t'.
+>
+>However, for legacy reasons people will expect that macro to be unsigned,
+>so I'd have 'nitems()' unsigned, and then a signed version prefixed 
+>with an 's'.
+>
+>Some very interesting links about this topic:
+>
+>Bjarne Stroustrup (and others) about signed and unsigned integers:
+>https://www.youtube.com/watch?v=Puio5dly9N8&t=12m56s
+>https://www.youtube.com/watch?v=Puio5dly9N8&t=42m41s
+>
+>The two links above are two interesting moments of the same video.
+>
+>I guess that might be the reason they added std::ssize, BTW.
 
---GRPZ8SYKNexpdSJ7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I'm aware of all the rationale. I already said that it makes
+sense in C++ where you have generic code. I am not convinced that it's
+necessary to add to <sys/param.h> when all it does is a cast from
+size_t to ptrdiff_t.
 
-Hi!
-
-> This is the start of the stable review cycle for the 4.19.148 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-
-CIP testing did not detect any problems.
-
-https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
-4.19.y
-
-I see significant part of this is LLVM support... I'm quite surprised
-to see it in -stable. Few words if LLVM is now officially supported in
-4.19 or what is going on here would be welcome.
-
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---GRPZ8SYKNexpdSJ7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX24rYgAKCRAw5/Bqldv6
-8vMBAJ9lsJYIH/SEjNar/W2gRKSnWe5V9wCdGsOaIpK3JX0C+jnwNLDOqRsidxA=
-=c88Z
------END PGP SIGNATURE-----
-
---GRPZ8SYKNexpdSJ7--
