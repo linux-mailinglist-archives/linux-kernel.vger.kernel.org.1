@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00597279430
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1E1279433
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728951AbgIYW1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:27:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54902 "EHLO mail.kernel.org"
+        id S1729256AbgIYW1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:27:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726694AbgIYW1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:27:44 -0400
-Subject: Re: [GIT PULL] SPI fixes for v5.9-rc6
+        id S1729012AbgIYW1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:27:45 -0400
+Subject: Re: [GIT PULL] MIPS fixes for v5.9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601072863;
-        bh=FvBdzsHOz+BJlcDxeL8xO+G8Dj7UZ+IIcBaewrwGajQ=;
+        s=default; t=1601072865;
+        bh=0iCjMbCMNSYY/zT4GH5XOGFfOqNB0JPq2bzvCYiyA3A=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=xWwbiIk6EuFg2CbpDZn29zJiVEdve2CACEPL0l2jtO7DS776NgCXP1qNN8N6+1bIa
-         n5yfUIVCKREBqYUudMoVAXKShFoQ3nukU5aMxHBIHH8lQaecbY0fsvU8wMYjSdCT17
-         DhBGZgYwjkxX1sosRfNfnX9cyAPL4gmTTk+mHoOg=
+        b=nc6XAb/he/uhaoqGjdjwZsxg6DCxqGqwz12SoVzf4kdm3sSZPQZgFElz93cGQavfS
+         XY+dPukQ6q62eD7F1ClYqPyLyLiV7yeaqIPAjSu9IMF2/aBdPsDYFQO+pkK7KsIm/1
+         B2lv5zGTlVupJhLPbR9G6u/hNxvuiSX6GtJ+ocpU=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200925201749.4470521D42@mail.kernel.org>
-References: <20200925201749.4470521D42@mail.kernel.org>
-X-PR-Tracked-List-Id: <linux-spi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200925201749.4470521D42@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.9-rc6
-X-PR-Tracked-Commit-Id: 00fb259c618ea1198fc51b53a6167aa0d78672a9
+In-Reply-To: <20200925180708.GA5280@alpha.franken.de>
+References: <20200925180708.GA5280@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200925180708.GA5280@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_3
+X-PR-Tracked-Commit-Id: be090fa62080d8501a5651a73cb954721966b125
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 782d1222555c42187af94b5cb65c68034f473fb2
-Message-Id: <160107286360.23838.14365470026578628389.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Sep 2020 22:27:43 +0000
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+X-PR-Merge-Commit-Id: b463b6f69974867b3b5885de2f488d72e979a751
+Message-Id: <160107286517.23838.6394559322045652148.pr-tracker-bot@kernel.org>
+Date:   Fri, 25 Sep 2020 22:27:45 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 25 Sep 2020 21:16:43 +0100:
+The pull request you sent on Fri, 25 Sep 2020 20:07:08 +0200:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.9-rc6
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/782d1222555c42187af94b5cb65c68034f473fb2
+https://git.kernel.org/torvalds/c/b463b6f69974867b3b5885de2f488d72e979a751
 
 Thank you!
 
