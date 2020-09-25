@@ -2,182 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93BD27828D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED87A2782B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727464AbgIYIUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:20:47 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:53510 "EHLO fornost.hmeau.com"
+        id S1727249AbgIYI0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:26:18 -0400
+Received: from mga12.intel.com ([192.55.52.136]:11866 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727183AbgIYIUr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:20:47 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1kLixP-0007SY-SN; Fri, 25 Sep 2020 18:19:57 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Sep 2020 18:19:55 +1000
-Date:   Fri, 25 Sep 2020 18:19:55 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Howells <dhowells@redhat.com>,
-        Eric Biggers <ebiggers@google.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephan Mueller <smueller@chronox.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Gilad Ben-Yossef <gilad@benyossef.com>,
-        Pascal van Leeuwen <pvanleeuwen@rambus.com>,
-        linux-crypto@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: [PATCH] lib/mpi: Fix unused variable warnings
-Message-ID: <20200925081955.GV6381@gondor.apana.org.au>
-References: <20200920162103.83197-1-tianjia.zhang@linux.alibaba.com>
- <20200920162103.83197-3-tianjia.zhang@linux.alibaba.com>
+        id S1727044AbgIYI0R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:26:17 -0400
+IronPort-SDR: 3vOxdOFM9YnWUqxbAiOOY56gBeFEY0pjF5xUlNkqFRhPkmxQosKqqm02sizrA5VdYf1SyIKFOu
+ lGZBczddovfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="140881680"
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="140881680"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 01:20:14 -0700
+IronPort-SDR: mjOhKlPRW2rkbTVntlv0oPyGS+p4sD5BoySNObViY8VkDa6GQcXH1ov/pnEJj1VmomMBXmwzkv
+ gkOf3nX6aLOg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="339405908"
+Received: from lkp-server01.sh.intel.com (HELO 2dda29302fe3) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 25 Sep 2020 01:20:13 -0700
+Received: from kbuild by 2dda29302fe3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kLixg-00001W-Ol; Fri, 25 Sep 2020 08:20:12 +0000
+Date:   Fri, 25 Sep 2020 16:20:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:timers/core] BUILD SUCCESS
+ b952caf2d5ca898cc10d63be7722ae7a5daca696
+Message-ID: <5f6da838.7NRUKG906u/18Kz9%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200920162103.83197-3-tianjia.zhang@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 12:20:55AM +0800, Tianjia Zhang wrote:
-> Expand the mpi library based on libgcrypt, and the ECC algorithm of
-> mpi based on libgcrypt requires these functions.
-> Some other algorithms will be developed based on mpi ecc, such as SM2.
-> 
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> Tested-by: Xufeng Zhang <yunbo.xufeng@linux.alibaba.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  timers/core
+branch HEAD: b952caf2d5ca898cc10d63be7722ae7a5daca696  timers: Mask invalid flags in do_init_timer()
 
-This creates some compiler warnings.
+elapsed time: 724m
 
----8<---
-This patch removes a number of unused variables and marks others
-as unused in order to silence compiler warnings about them.
+configs tested: 207
+configs skipped: 2
 
-Fixes: a8ea8bdd9df9 ("lib/mpi: Extend the MPI library")
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-diff --git a/lib/mpi/mpi-div.c b/lib/mpi/mpi-div.c
-index 21332dab97d4..45beab8b9e9e 100644
---- a/lib/mpi/mpi-div.c
-+++ b/lib/mpi/mpi-div.c
-@@ -92,7 +92,6 @@ void mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
- 	unsigned int normalization_steps;
- 	mpi_limb_t q_limb;
- 	mpi_ptr_t marker[5];
--	unsigned int marker_nlimbs[5];
- 	int markidx = 0;
- 
- 	/* Ensure space is enough for quotient and remainder.
-@@ -152,7 +151,6 @@ void mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
- 		 * numerator would be gradually overwritten by the quotient limbs.
- 		 */
- 		if (qp == np) { /* Copy NP object to temporary space.  */
--			marker_nlimbs[markidx] = nsize;
- 			np = marker[markidx++] = mpi_alloc_limb_space(nsize);
- 			MPN_COPY(np, qp, nsize);
- 		}
-@@ -173,7 +171,6 @@ void mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
- 		 * the most significant word.  Use temporary storage not to clobber
- 		 * the original contents of the denominator.
- 		 */
--		marker_nlimbs[markidx] = dsize;
- 		tp = marker[markidx++] = mpi_alloc_limb_space(dsize);
- 		mpihelp_lshift(tp, dp, dsize, normalization_steps);
- 		dp = tp;
-@@ -195,7 +192,6 @@ void mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
- 		if (dp == rp || (quot && (dp == qp))) {
- 			mpi_ptr_t tp;
- 
--			marker_nlimbs[markidx] = dsize;
- 			tp = marker[markidx++] = mpi_alloc_limb_space(dsize);
- 			MPN_COPY(tp, dp, dsize);
- 			dp = tp;
-diff --git a/lib/mpi/mpi-internal.h b/lib/mpi/mpi-internal.h
-index d29c4537c3a3..554002182db1 100644
---- a/lib/mpi/mpi-internal.h
-+++ b/lib/mpi/mpi-internal.h
-@@ -114,7 +114,7 @@ typedef int mpi_size_t;		/* (must be a signed type) */
-  */
- #define UDIV_QRNND_PREINV(q, r, nh, nl, d, di)				\
- 	do {								\
--		mpi_limb_t _ql;						\
-+		mpi_limb_t _ql __maybe_unused;				\
- 		mpi_limb_t _q, _r;					\
- 		mpi_limb_t _xh, _xl;					\
- 		umul_ppmm(_q, _ql, (nh), (di));				\
-diff --git a/lib/mpi/mpi-mul.c b/lib/mpi/mpi-mul.c
-index 587e6335cc12..8f5fa200f297 100644
---- a/lib/mpi/mpi-mul.c
-+++ b/lib/mpi/mpi-mul.c
-@@ -21,7 +21,6 @@ void mpi_mul(MPI w, MPI u, MPI v)
- 	int usign, vsign, sign_product;
- 	int assign_wp = 0;
- 	mpi_ptr_t tmp_limb = NULL;
--	unsigned int tmp_limb_nlimbs = 0;
- 
- 	if (u->nlimbs < v->nlimbs) {
- 		/* Swap U and V. */
-@@ -55,7 +54,6 @@ void mpi_mul(MPI w, MPI u, MPI v)
- 	} else { /* Make U and V not overlap with W.	*/
- 		if (wp == up) {
- 			/* W and U are identical.  Allocate temporary space for U. */
--			tmp_limb_nlimbs = usize;
- 			up = tmp_limb = mpi_alloc_limb_space(usize);
- 			/* Is V identical too?  Keep it identical with U.  */
- 			if (wp == vp)
-@@ -64,7 +62,6 @@ void mpi_mul(MPI w, MPI u, MPI v)
- 			MPN_COPY(up, wp, usize);
- 		} else if (wp == vp) {
- 			/* W and V are identical.  Allocate temporary space for V. */
--			tmp_limb_nlimbs = vsize;
- 			vp = tmp_limb = mpi_alloc_limb_space(vsize);
- 			/* Copy to the temporary space.  */
- 			MPN_COPY(vp, wp, vsize);
-diff --git a/lib/mpi/mpih-div.c b/lib/mpi/mpih-div.c
-index 182a656a1ba0..be70ee2e42d3 100644
---- a/lib/mpi/mpih-div.c
-+++ b/lib/mpi/mpih-div.c
-@@ -31,7 +31,7 @@ mpihelp_mod_1(mpi_ptr_t dividend_ptr, mpi_size_t dividend_size,
- {
- 	mpi_size_t i;
- 	mpi_limb_t n1, n0, r;
--	mpi_limb_t dummy;
-+	mpi_limb_t dummy __maybe_unused;
- 
- 	/* Botch: Should this be handled at all?  Rely on callers?	*/
- 	if (!dividend_size)
-@@ -382,7 +382,7 @@ mpihelp_divmod_1(mpi_ptr_t quot_ptr,
- {
- 	mpi_size_t i;
- 	mpi_limb_t n1, n0, r;
--	mpi_limb_t dummy;
-+	mpi_limb_t dummy __maybe_unused;
- 
- 	if (!dividend_size)
- 		return 0;
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7203_defconfig
+nios2                         10m50_defconfig
+powerpc               mpc834x_itxgp_defconfig
+m68k                        mvme16x_defconfig
+powerpc                       holly_defconfig
+mips                  maltasmvp_eva_defconfig
+mips                    maltaup_xpa_defconfig
+xtensa                  audio_kc705_defconfig
+arm                        vexpress_defconfig
+powerpc                    gamecube_defconfig
+arm                        multi_v7_defconfig
+i386                             allyesconfig
+sh                          rsk7269_defconfig
+ia64                                defconfig
+microblaze                    nommu_defconfig
+arm                       omap2plus_defconfig
+powerpc                 mpc832x_rdb_defconfig
+sh                               j2_defconfig
+arm                       multi_v4t_defconfig
+powerpc                      tqm8xx_defconfig
+arm                         bcm2835_defconfig
+arm                           stm32_defconfig
+arm                          collie_defconfig
+mips                         cobalt_defconfig
+arm                        clps711x_defconfig
+powerpc                      ppc64e_defconfig
+h8300                            alldefconfig
+arm                        trizeps4_defconfig
+powerpc                 mpc85xx_cds_defconfig
+mips                         rt305x_defconfig
+arm                       mainstone_defconfig
+powerpc64                           defconfig
+xtensa                              defconfig
+m68k                        stmark2_defconfig
+arm                            qcom_defconfig
+sh                          r7780mp_defconfig
+powerpc                       ebony_defconfig
+xtensa                    smp_lx200_defconfig
+m68k                        m5272c3_defconfig
+powerpc                   motionpro_defconfig
+sh                          kfr2r09_defconfig
+powerpc                 linkstation_defconfig
+powerpc                     sbc8548_defconfig
+sh                             shx3_defconfig
+powerpc                     akebono_defconfig
+powerpc                    adder875_defconfig
+arc                      axs103_smp_defconfig
+m68k                          amiga_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     tqm8540_defconfig
+sh                      rts7751r2d1_defconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+mips                        bcm47xx_defconfig
+mips                         tb0226_defconfig
+m68k                         apollo_defconfig
+powerpc                          g5_defconfig
+mips                           rs90_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                     stx_gp3_defconfig
+mips                             allmodconfig
+powerpc                   bluestone_defconfig
+sh                           se7751_defconfig
+mips                       capcella_defconfig
+parisc                generic-32bit_defconfig
+powerpc                 mpc837x_mds_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arm                         hackkit_defconfig
+um                           x86_64_defconfig
+arm                       netwinder_defconfig
+arm                        keystone_defconfig
+arc                              alldefconfig
+mips                           ci20_defconfig
+xtensa                         virt_defconfig
+arc                        nsim_700_defconfig
+m68k                       bvme6000_defconfig
+arm                        cerfcube_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                     tqm8541_defconfig
+powerpc                    socrates_defconfig
+arm                         s3c6400_defconfig
+mips                        omega2p_defconfig
+h8300                               defconfig
+sh                           se7722_defconfig
+nios2                         3c120_defconfig
+arm                           corgi_defconfig
+sh                         ecovec24_defconfig
+powerpc                 mpc8315_rdb_defconfig
+mips                      maltaaprp_defconfig
+powerpc                      pcm030_defconfig
+h8300                    h8300h-sim_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                        bcm63xx_defconfig
+arm                            xcep_defconfig
+powerpc                  storcenter_defconfig
+microblaze                      mmu_defconfig
+xtensa                  cadence_csp_defconfig
+arm                         axm55xx_defconfig
+sh                          polaris_defconfig
+nds32                             allnoconfig
+sh                ecovec24-romimage_defconfig
+csky                                defconfig
+sh                          lboxre2_defconfig
+xtensa                           allyesconfig
+mips                         bigsur_defconfig
+mips                     loongson1c_defconfig
+m68k                       m5275evb_defconfig
+mips                        workpad_defconfig
+powerpc                     ep8248e_defconfig
+x86_64                              defconfig
+riscv                          rv32_defconfig
+powerpc                     ppa8548_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+c6x                              allyesconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200923
+i386                 randconfig-a006-20200923
+i386                 randconfig-a003-20200923
+i386                 randconfig-a004-20200923
+i386                 randconfig-a005-20200923
+i386                 randconfig-a001-20200923
+i386                 randconfig-a002-20200924
+i386                 randconfig-a006-20200924
+i386                 randconfig-a003-20200924
+i386                 randconfig-a004-20200924
+i386                 randconfig-a005-20200924
+i386                 randconfig-a001-20200924
+x86_64               randconfig-a011-20200925
+x86_64               randconfig-a013-20200925
+x86_64               randconfig-a014-20200925
+x86_64               randconfig-a015-20200925
+x86_64               randconfig-a012-20200925
+x86_64               randconfig-a016-20200925
+x86_64               randconfig-a011-20200923
+x86_64               randconfig-a013-20200923
+x86_64               randconfig-a014-20200923
+x86_64               randconfig-a015-20200923
+x86_64               randconfig-a012-20200923
+x86_64               randconfig-a016-20200923
+i386                 randconfig-a012-20200925
+i386                 randconfig-a014-20200925
+i386                 randconfig-a016-20200925
+i386                 randconfig-a013-20200925
+i386                 randconfig-a011-20200925
+i386                 randconfig-a015-20200925
+i386                 randconfig-a012-20200923
+i386                 randconfig-a014-20200923
+i386                 randconfig-a016-20200923
+i386                 randconfig-a013-20200923
+i386                 randconfig-a011-20200923
+i386                 randconfig-a015-20200923
+i386                 randconfig-a012-20200924
+i386                 randconfig-a014-20200924
+i386                 randconfig-a016-20200924
+i386                 randconfig-a013-20200924
+i386                 randconfig-a011-20200924
+i386                 randconfig-a015-20200924
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a005-20200923
+x86_64               randconfig-a003-20200923
+x86_64               randconfig-a004-20200923
+x86_64               randconfig-a002-20200923
+x86_64               randconfig-a006-20200923
+x86_64               randconfig-a001-20200923
+x86_64               randconfig-a005-20200925
+x86_64               randconfig-a003-20200925
+x86_64               randconfig-a004-20200925
+x86_64               randconfig-a002-20200925
+x86_64               randconfig-a006-20200925
+x86_64               randconfig-a001-20200925
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
