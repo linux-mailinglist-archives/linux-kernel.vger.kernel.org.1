@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29F7E2780F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC7D2780F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 08:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727301AbgIYGyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 02:54:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
+        id S1727332AbgIYGyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 02:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727285AbgIYGyd (ORCPT
+        with ESMTP id S1727308AbgIYGyf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 02:54:33 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC52C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:54:33 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so1743039pgl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:54:33 -0700 (PDT)
+        Fri, 25 Sep 2020 02:54:35 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB14BC0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:54:35 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id k13so2270580pfg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 23:54:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=X6A7I2+xa+JzqfUUJmmCkQYIIjfofSHKtXj6ieBn98k=;
-        b=X6OR+Kzr1L29x1BQVGldMkJqu8KRWqcyEcYQJD+ya42lnml69EzPYF9ouzFHvDwXIU
-         znn3F7jcsx24lM/hZxLfd6CZS9wcsK+YefmG7jjFFrsZna9EEaJzH1c2mMj55g4AQ1N9
-         JNTp73XgNucjtRN7dYa3pW6DP0JDe8gFoxuFc=
+        bh=nzcKjvh4JoY0QitgZl8v+rPty87BwMtZ3v0cSqAKG3I=;
+        b=Rxf2S/HREm6VaApX0ixCEMuRvDtmyK902EC/jBtCqsg0+QIAQUFpuCw+3FcOZ64fG+
+         miJR6LzvQ1KEBuFCLbETuKfsvQgXUEMaKjxffgtLyAZXFRY/68Xkcyg12WeatubDH9gS
+         FD0E7XqaU1fZNwm4BaVOKXuTUPgQs3wAJmpUg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=X6A7I2+xa+JzqfUUJmmCkQYIIjfofSHKtXj6ieBn98k=;
-        b=FSnwArr8z8Ho8xPJZAyEgnyDq5F0HDBSaqppKwS3pFaF6xoFl2a1hX3b4qGlcDbYr8
-         Tm/zZ2Qzkp4x196X0mXBeWLlIL00pChbCFEV3vW0sXfW8VsCs3h3orOkElhJMWpkjgQh
-         ZNYt/c4kk1Z85y2TQOEw9zGmIqrc4M8snJa3lyVm051Ywxa6ZjjTXdqcT+Np7BsJsOkw
-         OPTHZEw/z/NCxuNHQSZAG1nRakROwMkdpU+KdKj561nr720HLmXOw4z272MA/P+F+X37
-         cSYUMsPVkBdTfrbN1iH7M6ahsjgdRPl1b1mEQTuuXIfI+UdKnZrcofQTTMc10Hpl3qlz
-         +I6A==
-X-Gm-Message-State: AOAM532dNd97khQIJIO4LjeDAYkEPZu3zV1cM+O7LWgkKSER8k76J/46
-        YMyFWNB4lu+0IzQgIKw3/m2DRg==
-X-Google-Smtp-Source: ABdhPJz6kdElWH7oBxMzrNtroD9NdXSuNaRDKOUS8ZeMpdwM7u/op/NfT2A0F8AbN8AIg0ARptiwAg==
-X-Received: by 2002:a17:902:d913:b029:d1:f388:9fa6 with SMTP id c19-20020a170902d913b02900d1f3889fa6mr2963337plz.67.1601016872951;
-        Thu, 24 Sep 2020 23:54:32 -0700 (PDT)
+        bh=nzcKjvh4JoY0QitgZl8v+rPty87BwMtZ3v0cSqAKG3I=;
+        b=YQg8uNAJeNoSU+ja1OZ6yyqbAVH48p9sP17aXXUGJR5IxJUHSMQVnfXMSsbAxJGYfP
+         4bwTnwdMA1wAF17ELhOpwl8WAB3ZG5SXEWumckgsdOhQggHGicZykIK3ClkMeg2Smb+l
+         qVGtS4n5Ko49NJ1I/+uF/wtajbXt4FWp8c6HVsebWx/F4vO0kdC8b+6qubSozq6WrTLF
+         gfskWvds0qFJeVLrfo1ClPfMEcc+vUZdiO82bOpiZFvaee+9FOFBP/e01EKrcEgDSdIK
+         ELuMGpOQ8oVoydPhScRiFun9NX3FRxZwCa6huDoWCmxk+ls0M4RLfmyFbY0PYc71S83j
+         nHDQ==
+X-Gm-Message-State: AOAM533rTBuHb7fjOijnkiysixt3GeHxkL5eAygy7aG2jXZqv2cqzBm1
+        ceZS/qjr5QHeVw4i2H2jEP+3dA==
+X-Google-Smtp-Source: ABdhPJwfu5FpqZVVPhzaJh/cZWIo7V61gqtv5b9Tzw6224GwK/gb1kSsaD1AfFX7zvhQi7lgZOEYOA==
+X-Received: by 2002:a63:3192:: with SMTP id x140mr2432715pgx.416.1601016875338;
+        Thu, 24 Sep 2020 23:54:35 -0700 (PDT)
 Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
-        by smtp.gmail.com with ESMTPSA id x27sm1549612pfp.128.2020.09.24.23.54.30
+        by smtp.gmail.com with ESMTPSA id x27sm1549612pfp.128.2020.09.24.23.54.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 23:54:32 -0700 (PDT)
+        Thu, 24 Sep 2020 23:54:34 -0700 (PDT)
 From:   Ikjoon Jang <ikjn@chromium.org>
 To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
         devicetree@vger.kernel.org, linux-spi@vger.kernel.org,
@@ -53,9 +53,9 @@ Cc:     Ikjoon Jang <ikjn@chromium.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mediatek@lists.infradead.org
-Subject: [PATCH v3 2/6] spi: spi-mtk-nor: fix mishandled logics in checking SPI memory operation
-Date:   Fri, 25 Sep 2020 14:54:13 +0800
-Message-Id: <20200925145255.v3.2.I48d59ef5398f3633c6ebbab093da6b4b06495780@changeid>
+Subject: [PATCH v3 3/6] spi: spi-mtk-nor: support 7 bytes transfer of generic spi
+Date:   Fri, 25 Sep 2020 14:54:14 +0800
+Message-Id: <20200925145255.v3.3.I7a3fc5678a81654574e8852d920db94bcc4d3eb8@changeid>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 In-Reply-To: <20200925065418.1077472-1-ikjn@chromium.org>
 References: <20200925065418.1077472-1-ikjn@chromium.org>
@@ -65,61 +65,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix a bug which limits its protocol availability in supports_op().
+When mtk-nor fallbacks to generic spi transfers, it can actually
+transfer up to 7 bytes.
 
-Fixes: a59b2c7c56bf ("spi: spi-mtk-nor: support standard spi properties")
+This patch fixes adjust_op_size() and supports_op() to explicitly
+check 7 bytes range and also fixes possible under/overflow conditions
+in register offsets calculation.
+
 Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
 ---
 
 (no changes since v1)
 
- drivers/spi/spi-mtk-nor.c | 26 +++++++++++---------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+ drivers/spi/spi-mtk-nor.c | 102 ++++++++++++++++++++++++++++----------
+ 1 file changed, 76 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-index 6e6ca2b8e6c8..0f7d4ec68730 100644
+index 0f7d4ec68730..e7719d249095 100644
 --- a/drivers/spi/spi-mtk-nor.c
 +++ b/drivers/spi/spi-mtk-nor.c
-@@ -211,28 +211,24 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
+@@ -79,7 +79,11 @@
+ #define MTK_NOR_REG_DMA_DADR		0x720
+ #define MTK_NOR_REG_DMA_END_DADR	0x724
+ 
++/* maximum bytes of TX in PRG mode */
+ #define MTK_NOR_PRG_MAX_SIZE		6
++/* maximum bytes of TX + RX is 7, last 1 byte is always being sent as zero */
++#define MTK_NOR_PRG_MAX_CYCLES		7
++
+ // Reading DMA src/dst addresses have to be 16-byte aligned
+ #define MTK_NOR_DMA_ALIGN		16
+ #define MTK_NOR_DMA_ALIGN_MASK		(MTK_NOR_DMA_ALIGN - 1)
+@@ -167,6 +171,24 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
+ 	return false;
+ }
+ 
++static bool mtk_nor_check_prg(const struct spi_mem_op *op)
++{
++	size_t len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
++
++	if (len > MTK_NOR_PRG_MAX_SIZE)
++		return false;
++
++	if (!op->data.nbytes)
++		return true;
++
++	if (op->data.dir == SPI_MEM_DATA_OUT)
++		return ((len + op->data.nbytes) <= MTK_NOR_PRG_MAX_SIZE);
++	else if (op->data.dir == SPI_MEM_DATA_IN)
++		return ((len + op->data.nbytes) <= MTK_NOR_PRG_MAX_CYCLES);
++	else
++		return true;
++}
++
+ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+ {
+ 	size_t len;
+@@ -195,10 +217,22 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+ 		}
+ 	}
+ 
+-	len = MTK_NOR_PRG_MAX_SIZE - op->cmd.nbytes - op->addr.nbytes -
+-	      op->dummy.nbytes;
+-	if (op->data.nbytes > len)
+-		op->data.nbytes = len;
++	if (mtk_nor_check_prg(op))
++		return 0;
++
++	len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
++
++	if (op->data.dir == SPI_MEM_DATA_OUT) {
++		if (len == MTK_NOR_PRG_MAX_SIZE)
++			return -EINVAL;
++		op->data.nbytes = min_t(unsigned int, op->data.nbytes,
++					MTK_NOR_PRG_MAX_SIZE - len);
++	} else  {
++		if (len == MTK_NOR_PRG_MAX_CYCLES)
++			return -EINVAL;
++		op->data.nbytes = min_t(unsigned int, op->data.nbytes,
++					MTK_NOR_PRG_MAX_CYCLES - len);
++	}
+ 
+ 	return 0;
+ }
+@@ -206,8 +240,6 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+ static bool mtk_nor_supports_op(struct spi_mem *mem,
+ 				const struct spi_mem_op *op)
+ {
+-	size_t len;
+-
  	if (op->cmd.buswidth != 1)
  		return false;
  
-+	if (!spi_mem_default_supports_op(mem, op))
-+		return false;
-+
- 	if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
--		switch(op->data.dir) {
--		case SPI_MEM_DATA_IN:
--			if (!mtk_nor_match_read(op))
--				return false;
--			break;
--		case SPI_MEM_DATA_OUT:
--			if ((op->addr.buswidth != 1) ||
--			    (op->dummy.nbytes != 0) ||
--			    (op->data.buswidth != 1))
--				return false;
--			break;
--		default:
--			break;
--		}
-+		if ((op->data.dir == SPI_MEM_DATA_IN) && mtk_nor_match_read(op))
-+			return true;
-+		else if (op->data.dir == SPI_MEM_DATA_OUT)
-+			return (op->addr.buswidth == 1) &&
-+			       (op->dummy.nbytes == 0) &&
-+			       (op->data.buswidth == 1);
+@@ -223,12 +255,11 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
+ 			       (op->data.buswidth == 1);
  	}
-+
- 	len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
- 	if ((len > MTK_NOR_PRG_MAX_SIZE) ||
- 	    ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
+ 
+-	len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+-	if ((len > MTK_NOR_PRG_MAX_SIZE) ||
+-	    ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
++	/* fallback to generic spi xfer */
++	if (op->cmd.buswidth > 1 || op->addr.buswidth > 1 || op->data.buswidth > 1)
  		return false;
  
--	return spi_mem_default_supports_op(mem, op);
-+	return true;
+-	return true;
++	return mtk_nor_check_prg(op);
  }
  
  static void mtk_nor_setup_bus(struct mtk_nor *sp, const struct spi_mem_op *op)
+@@ -459,22 +490,36 @@ static int mtk_nor_transfer_one_message(struct spi_controller *master,
+ 	int stat = 0;
+ 	int reg_offset = MTK_NOR_REG_PRGDATA_MAX;
+ 	void __iomem *reg;
+-	const u8 *txbuf;
+-	u8 *rxbuf;
+-	int i;
++	int i, tx_len = 0, rx_len = 0;
+ 
+ 	list_for_each_entry(t, &m->transfers, transfer_list) {
+-		txbuf = t->tx_buf;
+-		for (i = 0; i < t->len; i++, reg_offset--) {
++		const u8 *txbuf = t->tx_buf;
++
++		if (!txbuf) {
++			rx_len += t->len;
++			continue;
++		}
++
++		if (rx_len) {
++			stat = -EPROTO;
++			goto msg_done;
++		}
++
++		for (i = 0; i < t->len && reg_offset >= 0; i++, reg_offset--) {
+ 			reg = sp->base + MTK_NOR_REG_PRGDATA(reg_offset);
+-			if (txbuf)
+-				writeb(txbuf[i], reg);
+-			else
+-				writeb(0, reg);
++			writeb(txbuf[i], reg);
++			tx_len++;
+ 		}
+-		trx_len += t->len;
+ 	}
+ 
++	while (reg_offset >= 0) {
++		writeb(0, sp->base + MTK_NOR_REG_PRGDATA(reg_offset));
++		reg_offset--;
++	}
++
++	rx_len = min_t(unsigned long, MTK_NOR_PRG_MAX_CYCLES - tx_len, rx_len);
++	trx_len = tx_len + rx_len;
++
+ 	writel(trx_len * BITS_PER_BYTE, sp->base + MTK_NOR_REG_PRG_CNT);
+ 
+ 	stat = mtk_nor_cmd_exec(sp, MTK_NOR_CMD_PROGRAM,
+@@ -482,13 +527,18 @@ static int mtk_nor_transfer_one_message(struct spi_controller *master,
+ 	if (stat < 0)
+ 		goto msg_done;
+ 
+-	reg_offset = trx_len - 1;
+-	list_for_each_entry(t, &m->transfers, transfer_list) {
+-		rxbuf = t->rx_buf;
+-		for (i = 0; i < t->len; i++, reg_offset--) {
+-			reg = sp->base + MTK_NOR_REG_SHIFT(reg_offset);
+-			if (rxbuf)
++	if (rx_len > 0) {
++		reg_offset = rx_len - 1;
++		list_for_each_entry(t, &m->transfers, transfer_list) {
++			u8 *rxbuf = t->rx_buf;
++
++			if (!rxbuf)
++				continue;
++
++			for (i = 0; i < t->len && reg_offset >= 0; i++, reg_offset--) {
++				reg = sp->base + MTK_NOR_REG_SHIFT(reg_offset);
+ 				rxbuf[i] = readb(reg);
++			}
+ 		}
+ 	}
+ 
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
