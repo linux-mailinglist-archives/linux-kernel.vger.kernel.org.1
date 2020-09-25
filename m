@@ -2,139 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4195278F72
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:16:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EE6278F73
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729604AbgIYRQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:16:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51612 "EHLO
+        id S1729606AbgIYRQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728038AbgIYRQU (ORCPT
+        with ESMTP id S1726990AbgIYRQj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:16:20 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36524C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:16:20 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id l71so3143601pge.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0isoKQexThfGyA/SiFQeIDNV9ZfZnsCVryK8Eef/oeU=;
-        b=TE+e2X4QcS/SKq6v578mn9aG4g494ViU0i4tel+fuwb/WZQMxx/1SvHlVz/Sh9vDIE
-         +LFmm24DmAJUjQAkO0yFtY1pr+/ddeAFkjxl7Vjz3zqwepZIy3xrMXjn8V8FUTZkvTZd
-         N6xuO3oDw9GfbY2HmoHk2eAAQSqTCAG2A1Lrqr1n50wRjJtmOV7vd7w698X15jDpndlj
-         kf2RXKc1Z0dzLYaZDB4OtfzspVMDhAf7KQD+CTYj5CoNH4wOBuV3JOMihcQVhLNGkOnT
-         xiO1UjgxqXJzC8fuzVFrR8lpqht5zi0ceXTjohyI4RDR6atiJusq8FmtHbC2uAAl3GdM
-         au6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0isoKQexThfGyA/SiFQeIDNV9ZfZnsCVryK8Eef/oeU=;
-        b=rRVN0xsyjXz5QPNIlO+3PIBXEXaJFv3q386T/amb78LAOMfI/13C6aznjhagSbQyum
-         Ry+BH8x2DNx0Ofb/yIPWrnLUQZNqfN5tyHfCpEQUQvmfbF8v4xW+RH7SD31E+jMgst6u
-         fwloHABb2hf5B43zWVRen6082Z1Yrp3+vx+lRqdKsOBKX6fUJsXUtnjT/qOEASNtjZYY
-         hUUrpto5CpMgFDAN23Gx9dRg59qQczowi2cOW8BwCr/cflB0dops14vEQRHc9Ciy9X/V
-         J2EDPAwVdb+3nYXuLo3ArjgMz8shTNQ4ifxauJd8wlUr6TVymHE0jut8XEQa5DvakXdS
-         Mm8g==
-X-Gm-Message-State: AOAM530Lwjdo2Pn8+qcgoz/zmh6t5NLZXnTV/ZOHti/h17ArskacQeJU
-        W6Qg3OeZKgRQCzqymLjMOyjQ5JWV2G9OSAY=
-X-Google-Smtp-Source: ABdhPJz+2VDYqCnvYwybRjQv2+3TBafhRa4neGVFw6EbqMn2U+ZqSJ0ki6HWcr8L1/t9t5D8B+CNbA==
-X-Received: by 2002:aa7:9f4e:0:b029:142:2501:39f1 with SMTP id h14-20020aa79f4e0000b0290142250139f1mr356651pfr.64.1601054179498;
-        Fri, 25 Sep 2020 10:16:19 -0700 (PDT)
-Received: from localhost.localdomain ([103.59.133.81])
-        by smtp.googlemail.com with ESMTPSA id 25sm3171394pfj.35.2020.09.25.10.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 10:16:18 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     hemantk@codeaurora.org, jhugo@codeaurora.org,
-        bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] bus: mhi: core: debugfs: Use correct format specifiers for addresses
-Date:   Fri, 25 Sep 2020 22:46:08 +0530
-Message-Id: <20200925171608.30881-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Fri, 25 Sep 2020 13:16:39 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8D9C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:16:39 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0b3a00329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:3a00:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1C40B1EC0284;
+        Fri, 25 Sep 2020 19:16:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601054198;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=tIdBivz8rcuMFe6e/96xlA8vrhil0LScKdn73yjlhIQ=;
+        b=EW5dXmAQGeqy1/wQOkkHMggJ2LbhaCz8jjhMGbIwrCwNLeYZ/a6egoV4AA5fNLm9cVv1oO
+        7T8smdJn6iRZyFHMZ4W5Fet8vu5i0iXwCTYlD36KiYvGaSJqyTpNCkb7DI4XGS1Oq7g/c3
+        bmr0qa/jPJGpXqeiX5ksaog7FTBmFUc=
+Date:   Fri, 25 Sep 2020 19:16:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yazen Ghannam <yazen.ghannam@amd.com>,
+        Wei Huang <wei.huang2@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2] tools/x86: add kcpuid tool to show raw CPU
+ features
+Message-ID: <20200925171631.GL16872@zn.tnic>
+References: <1600752470-43179-1-git-send-email-feng.tang@intel.com>
+ <20200922201024.GS22660@zn.tnic>
+ <20200922221523.GA1185357@rani.riverdale.lan>
+ <20200923024529.GA15894@shbuild999.sh.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200923024529.GA15894@shbuild999.sh.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For exposing the addresses of read/write pointers and doorbell register,
-let's use the correct format specifiers. This fixes the following issues
-generated using W=1 build in ARM32 and reported by Kbuild bot:
+On Wed, Sep 23, 2020 at 10:45:29AM +0800, Feng Tang wrote:
+> > Rather than a tool, would additional file(s) in, say,
+> > /sys/devices/system/cpu/cpu<n> be nicer? They could show the raw CPUID
+> > features, one file per leaf or sub-leaf, maybe even along with whether
+> > they were disabled at boot-time.
+> 
+> My thought is we already have in-kernel powerful /proc/cpuinfo, while 
+> a user space tool could be more flexible for text parsing/layout, and
+> show different info on user's demand/options.
 
-All warnings (new ones prefixed by >>):
+The important thing here is that a separate tool would be decoupled from
+the kernel and thus will be independent from it, i.e., you can get the
+tool and run it without having to install a new kernel.
 
->> drivers/bus/mhi/core/debugfs.c:75:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
-                              mhi_event->db_cfg.db_val);
-                              ^~~~~~~~~~~~~~~~~~~~~~~~
-   drivers/bus/mhi/core/debugfs.c:123:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
-                              mhi_chan->db_cfg.db_val);
-                              ^~~~~~~~~~~~~~~~~~~~~~~
-   2 warnings generated.
+And with the CPUID leafs specified in a text file, you won't even need
+to update the tool even - just cpuid.txt. It can't get any better than
+that.
 
-drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_events_show’:
-drivers/bus/mhi/core/debugfs.c:74:51: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-   seq_printf(m, " local rp: 0x%llx db: 0x%pad\n", (u64)ring->rp,
-                                                   ^
-drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_channels_show’:
-drivers/bus/mhi/core/debugfs.c:122:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-       (u64)ring->rp, (u64)ring->wp,
-       ^
-drivers/bus/mhi/core/debugfs.c:122:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-       (u64)ring->rp, (u64)ring->wp,
-                      ^
-drivers/bus/mhi/core/debugfs.c:121:62: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘dma_addr_t {aka unsigned int}’ [-Wformat=]
-   seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
-                                                           ~~~^
-                                                           %x
-drivers/bus/mhi/core/debugfs.c:123:7:
-       mhi_chan->db_cfg.db_val);
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
-
-Greg: This fixes the issue seen while testing the char-misc/char-misc-testing
-branch.
-
- drivers/bus/mhi/core/debugfs.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/bus/mhi/core/debugfs.c b/drivers/bus/mhi/core/debugfs.c
-index 53d05a8e168d..2536ff92b76f 100644
---- a/drivers/bus/mhi/core/debugfs.c
-+++ b/drivers/bus/mhi/core/debugfs.c
-@@ -71,8 +71,8 @@ static int mhi_debugfs_events_show(struct seq_file *m, void *d)
- 		seq_printf(m, " rp: 0x%llx wp: 0x%llx", er_ctxt->rp,
- 			   er_ctxt->wp);
- 
--		seq_printf(m, " local rp: 0x%llx db: 0x%llx\n", (u64)ring->rp,
--			   mhi_event->db_cfg.db_val);
-+		seq_printf(m, " local rp: 0x%px db: 0x%pad\n", ring->rp,
-+			   &mhi_event->db_cfg.db_val);
- 	}
- 
- 	return 0;
-@@ -118,9 +118,9 @@ static int mhi_debugfs_channels_show(struct seq_file *m, void *d)
- 		seq_printf(m, " base: 0x%llx len: 0x%llx wp: 0x%llx",
- 			   chan_ctxt->rbase, chan_ctxt->rlen, chan_ctxt->wp);
- 
--		seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
--			   (u64)ring->rp, (u64)ring->wp,
--			   mhi_chan->db_cfg.db_val);
-+		seq_printf(m, " local rp: 0x%px local wp: 0x%px db: 0x%pad\n",
-+			   ring->rp, ring->wp,
-+			   &mhi_chan->db_cfg.db_val);
- 	}
- 
- 	return 0;
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
