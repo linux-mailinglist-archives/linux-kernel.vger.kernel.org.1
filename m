@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E33F2790BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0942790BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730157AbgIYSfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:35:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35762 "EHLO
+        id S1730161AbgIYSf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:35:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729760AbgIYSfT (ORCPT
+        with ESMTP id S1729760AbgIYSfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:35:19 -0400
+        Fri, 25 Sep 2020 14:35:25 -0400
 Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40D8C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:35:19 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id d6so3998852pfn.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:35:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EBF1C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:35:25 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id l126so4011780pfd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 11:35:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=1AqNA6Ddv0jhYAlzZ0w4re+NLjmh8IGHc11oAfYNMWM=;
-        b=Nd2nlHnpPaoMda3Y5gXvpvu8UpRoRw/Xs9yncAf3Bjz1NAzElBiMD5WdSO0LZi4wvd
-         nBQ/o/Hic1I9B5WOf6t2aN7KM3WLeoxJtTyQbJ6ZtO2+4MBexWDD/NGsnSW+Tv5rYxDJ
-         1k0Z7uzvK8HPaAhELeI7WQnh5u1ueL/DFYQIdqK6s+HM936wh676M0UYa/YpIv4W57xU
-         iXENAraKyy4zp3xZpu6fswwUynAMQ3fIn1CUf9SDkvVX14LYuP5+MbWH+6o5XjexwMGB
-         YTgh4Kuc+9tT0JRti/Vb7tYLx/k1VeknNCSyrF4R54Vm2GdJKkN6dHTx5qw5nYS4OSAT
-         sxqA==
+        bh=POQlelg/xj+ajAaOj4PD03MRs7Bfm1aqs/fM0Ig6DDo=;
+        b=HZ7WmaWFu6gyAPyj5NWmh41xDV3/CpkYOtgcB7jszCJa0hm9iic6aPW9CPjTbBxvFd
+         WFnAYLrjNrrEpeYp0xOnjPJTjFoAXvtTzy3gwJ7e5rkt5o7JLErPah8H7YyXs5gpkBFj
+         +1V554dq4Tfm85SmleMHLQMugHakrEk0tIv7tOsTtfWy91ouqfyE9pbJqHD/AJkZ0xOL
+         Ul9H64FMFc2zD+Sg1jgBDK6xPrNO7g9eg/v9RYpmQ8zUuhAKCBd72cUXGjmlP/kuGouD
+         5XGO/3H/YczRRGkfziDJr4q1Nr3c2asC7bbgPwiDwe0Urq9HNzx/4D+88Aj/OCENw9Wx
+         BNOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=1AqNA6Ddv0jhYAlzZ0w4re+NLjmh8IGHc11oAfYNMWM=;
-        b=OIMhDA6SNTQB7WHUCjvVgHNqG+sSGKeITekNHpv5MSNxZZzipKxmDnRnqDG9J35nJ3
-         Q4TNmFzrUJYV2bN+dDJJtGti/BK0ZyAmVmJrb+vRjoERpyxBpOstc+JKbBnTJ92WGvFw
-         +sPEJyR99pARAi7VVttrch1jj4AO9vkN01CBhkllUqRW4KMn+fqYTw+dZOY+snfk1217
-         FAnR65tKx/rRXozEztzI+p88RQgLQfKKmcre+y61wJHCVbs4yYkVO85bhst+/Qooovfe
-         yw6ln6xCPHJUMqvkd1nQoow0VBIaruVJrD4ee2OTpsukkp3DUop1jCaxQ4tENd55dsXE
-         tkFQ==
-X-Gm-Message-State: AOAM530c2cBcheW37Yboa0an7g0UK+ombVwoXqNsc+aupkwyFlc/cZCa
-        BHZMToYE3XBQ4oO1Y9ckRR71IA==
-X-Google-Smtp-Source: ABdhPJxebZnpULsBj+4SHyWr9pLV/nPjkPS83LZyTFDlJodhTbdBjsGLwz+lff17+TOhBl109/wi3Q==
-X-Received: by 2002:a17:902:9041:b029:d0:cc02:8540 with SMTP id w1-20020a1709029041b02900d0cc028540mr644587plz.41.1601058919382;
-        Fri, 25 Sep 2020 11:35:19 -0700 (PDT)
+        bh=POQlelg/xj+ajAaOj4PD03MRs7Bfm1aqs/fM0Ig6DDo=;
+        b=U3loxQP5LoHfCNF3Ovqca+Hn1Khtajyvk9Rdy2maI/jQ+8gVb0284eFOJs7HROVS3/
+         9QjxB7FUBNJOGCrTK9ugcgmrKSm/ckqGCPpcoohrUnXF3V/pO5qlWzesmnNIG4a3IJm8
+         jCzFyQ1OsYnjZ+fdU/va/6Utplewu6g+WpjbX2HAhL4YqzMbzeKkASKJoQp8o11GkufW
+         SURQbnmQ8QJTGlG2xbLpgkgFCA9gvi56P0cjSRTqeGa5XSWvCDKt7IXUrGrypbuB3Eki
+         HiF4DHJPjCZrP1ViABt8i9SjARvQ5MLcnIUQiUn9TdDtRhRI6Pd1G/d/+DFONFyAMXgF
+         ddPA==
+X-Gm-Message-State: AOAM533yk+pA20RFthiKvCH3kWoUP6FsDLwjequRvi/2L6pDQPZtoJ2a
+        TNPpOQq7ydRdYOHP4C3R32G7wg==
+X-Google-Smtp-Source: ABdhPJyIbzjFwuqqiH1rwqNSLTpS1uO836zFCs8h9iHlL8QqIvNDD/sKGQOQAttTN5kf1fKKRUkIdw==
+X-Received: by 2002:aa7:8e9a:0:b029:13e:d13d:a050 with SMTP id a26-20020aa78e9a0000b029013ed13da050mr587780pfr.22.1601058925212;
+        Fri, 25 Sep 2020 11:35:25 -0700 (PDT)
 Received: from localhost.localdomain ([51.15.160.169])
-        by smtp.googlemail.com with ESMTPSA id r16sm2554546pjo.19.2020.09.25.11.35.14
+        by smtp.googlemail.com with ESMTPSA id r16sm2554546pjo.19.2020.09.25.11.35.19
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 11:35:18 -0700 (PDT)
+        Fri, 25 Sep 2020 11:35:24 -0700 (PDT)
 From:   Corentin Labbe <clabbe@baylibre.com>
 To:     gregkh@linuxfoundation.org, mchehab@kernel.org, hverkuil@xs4all.nl,
         laurent.pinchart@ideasonboard.com
 Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
         linux-media@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH RFT/RFC v2 41/47] staging: media: zoran: add vidioc_g_parm
-Date:   Fri, 25 Sep 2020 18:30:51 +0000
-Message-Id: <1601058657-14042-42-git-send-email-clabbe@baylibre.com>
+Subject: [PATCH RFT/RFC v2 42/47] staging: media: zoran: remove test_interrupts
+Date:   Fri, 25 Sep 2020 18:30:52 +0000
+Message-Id: <1601058657-14042-43-git-send-email-clabbe@baylibre.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
 References: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
@@ -62,40 +62,115 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding vidioc_g_parm made v4l compliance happy.
+The test_interrupts function is useless, remove it.
 
 Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 ---
- drivers/staging/media/zoran/zoran_driver.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/staging/media/zoran/zoran.h        |  3 ---
+ drivers/staging/media/zoran/zoran_card.c   | 27 ----------------------
+ drivers/staging/media/zoran/zoran_device.c | 16 -------------
+ 3 files changed, 46 deletions(-)
 
-diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
-index bcbe2c78ea16..5dacbeac790b 100644
---- a/drivers/staging/media/zoran/zoran_driver.c
-+++ b/drivers/staging/media/zoran/zoran_driver.c
-@@ -2137,6 +2137,14 @@ static int zoran_mmap(struct file *file, struct vm_area_struct *vma)
- 	return res;
+diff --git a/drivers/staging/media/zoran/zoran.h b/drivers/staging/media/zoran/zoran.h
+index 0246635e0eac..fd27d1968e60 100644
+--- a/drivers/staging/media/zoran/zoran.h
++++ b/drivers/staging/media/zoran/zoran.h
+@@ -345,7 +345,6 @@ struct zoran {
+ 	struct zoran_buffer_col jpg_buffers;	/* MJPEG buffers' info */
+ 
+ 	/* Additional stuff for testing */
+-	int testing;
+ 	int jpeg_error;
+ 	int intr_counter_GIRQ1;
+ 	int intr_counter_GIRQ0;
+@@ -372,8 +371,6 @@ struct zoran {
+ 	int running;
+ 	int buf_in_reserve;
+ 
+-	wait_queue_head_t test_q;
+-
+ 	dma_addr_t p_sc;
+ 	__le32 *stat_comb;
+ 	dma_addr_t p_scb;
+diff --git a/drivers/staging/media/zoran/zoran_card.c b/drivers/staging/media/zoran/zoran_card.c
+index 28a403257bb9..89fbc114c368 100644
+--- a/drivers/staging/media/zoran/zoran_card.c
++++ b/drivers/staging/media/zoran/zoran_card.c
+@@ -858,31 +858,6 @@ void zoran_open_init_params(struct zoran *zr)
+ 		pci_err(zr->pci_dev, "%s internal error\n", __func__);
+ 
+ 	clear_interrupt_counters(zr);
+-	zr->testing = 0;
+-}
+-
+-static void test_interrupts(struct zoran *zr)
+-{
+-	DEFINE_WAIT(wait);
+-	int timeout, icr;
+-
+-	clear_interrupt_counters(zr);
+-
+-	zr->testing = 1;
+-	icr = btread(ZR36057_ICR);
+-	btwrite(0x78000000 | ZR36057_ICR_IntPinEn, ZR36057_ICR);
+-	prepare_to_wait(&zr->test_q, &wait, TASK_INTERRUPTIBLE);
+-	timeout = schedule_timeout(HZ);
+-	finish_wait(&zr->test_q, &wait);
+-	btwrite(0, ZR36057_ICR);
+-	btwrite(0x78000000, ZR36057_ISR);
+-	zr->testing = 0;
+-	pci_info(zr->pci_dev, "Testing interrupts...\n");
+-	if (timeout)
+-		pci_info(zr->pci_dev, ": time spent: %d\n", 1 * HZ - timeout);
+-	if (zr36067_debug > 1)
+-		print_interrupts(zr);
+-	btwrite(icr, ZR36057_ICR);
  }
  
-+static int zoran_g_parm(struct file *file, void *priv, struct v4l2_streamparm *parm)
-+{
-+	if (parm->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
- /*
-  * Output is disabled temporarily
-  * Zoran is picky about jpeg data it accepts. At least it seems to unsupport COM and APPn.
-@@ -2144,6 +2152,7 @@ static int zoran_mmap(struct file *file, struct vm_area_struct *vma)
-  */
- static const struct v4l2_ioctl_ops zoran_ioctl_ops = {
- 	.vidioc_querycap		    = zoran_querycap,
-+	.vidioc_g_parm			    = zoran_g_parm,
- 	.vidioc_s_selection		    = zoran_s_selection,
- 	.vidioc_g_selection		    = zoran_g_selection,
- 	.vidioc_enum_input		    = zoran_enum_input,
+ static int zr36057_init(struct zoran *zr)
+@@ -896,7 +871,6 @@ static int zr36057_init(struct zoran *zr)
+ 
+ 	init_waitqueue_head(&zr->v4l_capq);
+ 	init_waitqueue_head(&zr->jpg_capq);
+-	init_waitqueue_head(&zr->test_q);
+ 	zr->jpg_buffers.allocated = 0;
+ 	zr->v4l_buffers.allocated = 0;
+ 
+@@ -977,7 +951,6 @@ static int zr36057_init(struct zoran *zr)
+ 	zoran_init_hardware(zr);
+ 	if (zr36067_debug > 2)
+ 		detect_guest_activity(zr);
+-	test_interrupts(zr);
+ 	if (!pass_through) {
+ 		decoder_call(zr, video, s_stream, 0);
+ 		encoder_call(zr, video, s_routing, 2, 0, 0);
+diff --git a/drivers/staging/media/zoran/zoran_device.c b/drivers/staging/media/zoran/zoran_device.c
+index fb318449d784..c090d7166caa 100644
+--- a/drivers/staging/media/zoran/zoran_device.c
++++ b/drivers/staging/media/zoran/zoran_device.c
+@@ -1109,22 +1109,6 @@ irqreturn_t zoran_irq(int irq, void *dev_id)
+ 	struct zoran *zr = dev_id;
+ 	unsigned long flags;
+ 
+-	if (zr->testing) {
+-		/* Testing interrupts */
+-		spin_lock_irqsave(&zr->spinlock, flags);
+-		while ((stat = count_reset_interrupt(zr))) {
+-			if (count++ > 100) {
+-				btand(~ZR36057_ICR_IntPinEn, ZR36057_ICR);
+-				pci_err(zr->pci_dev, "IRQ lockup while testing, isr=0x%08x, cleared int mask\n",
+-					stat);
+-				wake_up_interruptible(&zr->test_q);
+-			}
+-		}
+-		zr->last_isr = stat;
+-		spin_unlock_irqrestore(&zr->spinlock, flags);
+-		return IRQ_HANDLED;
+-	}
+-
+ 	spin_lock_irqsave(&zr->spinlock, flags);
+ 	while (1) {
+ 		/* get/clear interrupt status bits */
 -- 
 2.26.2
 
