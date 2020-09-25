@@ -2,90 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 546F32794D3
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D092794D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729373AbgIYXg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:36:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:57888 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726210AbgIYXg5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:36:57 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601077016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WD+Mt/pFl73GwFi148Y3nb0ypbYCbFWTzG/uad5+3Yc=;
-        b=gkN98x6xvUvHcysf8EHNU93RCgdgFf0BhScT/XtVO6u+teu7A+r/pHmvhOIypKuaDVfeIJ
-        rsJzHO41MX5/8MM/ENwoi3M7FUyDu9oB5OEQiU2ZoW8yecYElsPg4eMmA8ZcrlmsK27hVn
-        Z9uPZt27E4HKRaFRP9BPQnaoYWl65Mw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-118-uZ1HHfikPIeHM8yKzTDdOg-1; Fri, 25 Sep 2020 19:36:53 -0400
-X-MC-Unique: uZ1HHfikPIeHM8yKzTDdOg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1729395AbgIYXin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:38:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726587AbgIYXin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:38:43 -0400
+Received: from localhost.localdomain (unknown [49.65.245.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D4E8680732A;
-        Fri, 25 Sep 2020 23:36:52 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8505F19C66;
-        Fri, 25 Sep 2020 23:36:52 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] Second batch of KVM fixes for Linux 5.9-rc7
-Date:   Fri, 25 Sep 2020 19:36:52 -0400
-Message-Id: <20200925233652.2187766-1-pbonzini@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id DFB822086A;
+        Fri, 25 Sep 2020 23:38:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601077122;
+        bh=0bc/ZZ9RzXPMpYSuuwZdLtHaz3Vw2fYVYpKBV4xmp8k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AszYa/eHC3wdUYY+4tiuZ2roUOyzjo8GmGWbhM7zIwoHYxVn2/RAPUy7k4ZhCbkpC
+         86uNF6CSN0taNKsy7YkuDrIUEK2b+jvs1Dslqp1Ms2unY5Fjo0FR2IOzIx6i4EEakx
+         meB/SDpvDBEF1NesIvrpBmVYjRM42nBAQn/2PBUU=
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH v2] f2fs: fix uninit-value in f2fs_lookup
+Date:   Sat, 26 Sep 2020 07:38:19 +0800
+Message-Id: <20200925233819.5359-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+From: Chao Yu <yuchao0@huawei.com>
 
-The following changes since commit 32251b07d532174d66941488c112ec046f646157:
+As syzbot reported:
 
-  Merge tag 'kvm-s390-master-5.9-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux into kvm-master (2020-09-20 17:31:15 -0400)
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+ f2fs_lookup+0xe05/0x1a80 fs/f2fs/namei.c:503
+ lookup_open fs/namei.c:3082 [inline]
+ open_last_lookups fs/namei.c:3177 [inline]
+ path_openat+0x2729/0x6a90 fs/namei.c:3365
+ do_filp_open+0x2b8/0x710 fs/namei.c:3395
+ do_sys_openat2+0xa88/0x1140 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_compat_sys_openat fs/open.c:1242 [inline]
+ __se_compat_sys_openat+0x2a4/0x310 fs/open.c:1240
+ __ia32_compat_sys_openat+0x56/0x70 fs/open.c:1240
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 
-are available in the Git repository at:
+In f2fs_lookup(), @res_page could be used before being initialized,
+because in __f2fs_find_entry(), once F2FS_I(dir)->i_current_depth was
+been fuzzed to zero, then @res_page will never be initialized, causing
+this kmsan warning, relocating @res_page initialization place to fix
+this bug.
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+v2:
+- remove *res_page assignment in a loop.
+ fs/f2fs/dir.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-for you to fetch changes up to 4bb05f30483fd21ea5413eaf1182768f251cf625:
-
-  KVM: SVM: Add a dedicated INVD intercept routine (2020-09-25 13:27:35 -0400)
-
-----------------------------------------------------------------
-Five small fixes.  The nested migration bug will be fixed
-with a better API in 5.10 or 5.11, for now this is a fix
-that works with existing userspace but keeps the current
-ugly API.
-
-----------------------------------------------------------------
-Maxim Levitsky (1):
-      KVM: x86: fix MSR_IA32_TSC read for nested migration
-
-Mohammed Gamal (1):
-      KVM: x86: VMX: Make smaller physical guest address space support user-configurable
-
-Sean Christopherson (1):
-      KVM: x86: Reset MMU context if guest toggles CR4.SMAP or CR4.PKE
-
-Tom Lendacky (1):
-      KVM: SVM: Add a dedicated INVD intercept routine
-
-Yang Weijiang (1):
-      selftests: kvm: Fix assert failure in single-step test
-
- arch/x86/kvm/svm/svm.c                          |  8 +++++++-
- arch/x86/kvm/vmx/vmx.c                          | 15 ++++++++++-----
- arch/x86/kvm/vmx/vmx.h                          |  5 ++++-
- arch/x86/kvm/x86.c                              | 22 ++++++++++++++++++----
- tools/testing/selftests/kvm/x86_64/debug_regs.c |  2 +-
- 5 files changed, 40 insertions(+), 12 deletions(-)
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index 069f498af1e3..ceb4431b5669 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -357,16 +357,15 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
+ 	unsigned int max_depth;
+ 	unsigned int level;
+ 
++	*res_page = NULL;
++
+ 	if (f2fs_has_inline_dentry(dir)) {
+-		*res_page = NULL;
+ 		de = f2fs_find_in_inline_dir(dir, fname, res_page);
+ 		goto out;
+ 	}
+ 
+-	if (npages == 0) {
+-		*res_page = NULL;
++	if (npages == 0)
+ 		goto out;
+-	}
+ 
+ 	max_depth = F2FS_I(dir)->i_current_depth;
+ 	if (unlikely(max_depth > MAX_DIR_HASH_DEPTH)) {
+@@ -377,7 +376,6 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
+ 	}
+ 
+ 	for (level = 0; level < max_depth; level++) {
+-		*res_page = NULL;
+ 		de = find_in_level(dir, level, fname, res_page);
+ 		if (de || IS_ERR(*res_page))
+ 			break;
+-- 
+2.22.0
 
