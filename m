@@ -2,104 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712C22783D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FAC278399
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727753AbgIYJUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:20:13 -0400
-Received: from mx.socionext.com ([202.248.49.38]:2721 "EHLO mx.socionext.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYJUM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:20:12 -0400
-X-Greylist: delayed 588 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 05:20:11 EDT
-Received: from unknown (HELO iyokan-ex.css.socionext.com) ([172.31.9.54])
-  by mx.socionext.com with ESMTP; 25 Sep 2020 18:10:23 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by iyokan-ex.css.socionext.com (Postfix) with ESMTP id 3E3E860060;
-        Fri, 25 Sep 2020 18:10:23 +0900 (JST)
-Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Fri, 25 Sep 2020 18:10:23 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by kinkan.css.socionext.com (Postfix) with ESMTP id B546F1A0508;
-        Fri, 25 Sep 2020 18:10:22 +0900 (JST)
-Received: from [10.212.5.245] (unknown [10.212.5.245])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 25612120447;
-        Fri, 25 Sep 2020 18:10:22 +0900 (JST)
-Subject: Re: [PATCH 2/3] PCI: dwc: Add common iATU register support
-To:     Rob Herring <robh@kernel.org>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
-References: <1599814203-14441-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1599814203-14441-3-git-send-email-hayashi.kunihiko@socionext.com>
- <20200923155700.GA820801@bogus>
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-Message-ID: <aef56eed-3966-cb1b-75f3-4b5dffc710c8@socionext.com>
-Date:   Fri, 25 Sep 2020 18:10:21 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727736AbgIYJK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727428AbgIYJK1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:10:27 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BA1C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:10:27 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id s13so2256779wmh.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:10:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4bxN2fagu2rIKQxxyvxxjzncZ5aqxZkwbZ2FY0Psst0=;
+        b=LxdC9Zu/73+wFvQcMk2+2joqpYrO9qtRHkxX8hNdZGlt7eQGoB9dygmySiEslOrlEF
+         wYF0qYgQZbhczxJ8t5Tbl0VtdDZ+vruEJxtx0jq6acTdd+c4jq3aJAVLO1nc6afAK3qQ
+         RgBq81pCn5niW1axKn/dLdeUnGx5zfai6EX7g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=4bxN2fagu2rIKQxxyvxxjzncZ5aqxZkwbZ2FY0Psst0=;
+        b=D+jlqDejAADB5hqEUsdnpTIdAgN5Cgn6t4ewmS00PHUAVpuODUmGuHekiBsNNqMxxy
+         17qbdCYarBruTbJjALHqBa8aUBdzbq433TujwX1dZSxxAhuW3cKPs5k+zEpv/NLSVp0l
+         B61oRXPtktUnDMgfFkbpZ1V/mI7e0E8j3v68rlubiCULnkcWgtLmyh9C9buH+Ece0w/3
+         Y2eDO9PzuqDQ5aY2OEQ9C/1kxPAPsKfncIXsgs+vi6gKxcYiypGuteaiQcgvNaX62WiL
+         cdIn2zMVkvW93qHm6LbypRpil5RgM4V4NSKtCXGrdsNQxs2MXUcO8oxsZp4obv8v70C4
+         AXGg==
+X-Gm-Message-State: AOAM5335dwasU19J6OO6bKqoIXz5Xa6+IIReObeALOKfcbmoc/jzG33y
+        MTKoKchBnLWECswKq+0fKwTsGQ==
+X-Google-Smtp-Source: ABdhPJz39Njw83y/iQ1by8WVklDBrwBAysH2nbHjX1h9i0Z3FFq/537COlQ1R7PRkQNkxthD8z2i+g==
+X-Received: by 2002:a1c:5f46:: with SMTP id t67mr2003936wmb.71.1601025025796;
+        Fri, 25 Sep 2020 02:10:25 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id b11sm2106005wrt.38.2020.09.25.02.10.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 02:10:24 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 11:10:23 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     eric@anholt.net, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [PATCH] drm/vc4: Deleted the drm_device declaration
+Message-ID: <20200925091023.GE438822@phenom.ffwll.local>
+Mail-Followup-To: Tian Tao <tiantao6@hisilicon.com>, eric@anholt.net,
+        airlied@linux.ie, sumit.semwal@linaro.org, christian.koenig@amd.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+References: <1601023898-29886-1-git-send-email-tiantao6@hisilicon.com>
 MIME-Version: 1.0
-In-Reply-To: <20200923155700.GA820801@bogus>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601023898-29886-1-git-send-email-tiantao6@hisilicon.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 2020/09/24 0:57, Rob Herring wrote:
-> On Fri, Sep 11, 2020 at 05:50:02PM +0900, Kunihiko Hayashi wrote:
->> This gets iATU register area from reg property that has reg-names "atu".
->> In Synopsys DWC version 4.80 or later, since iATU register area is
->> separated from core register area, this area is necessary to get from
->> DT independently.
->>
->> Cc: Murali Karicheri <m-karicheri2@ti.com>
->> Cc: Jingoo Han <jingoohan1@gmail.com>
->> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
->> Suggested-by: Rob Herring <robh@kernel.org>
->> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-designware.c | 8 +++++++-
->>   1 file changed, 7 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
->> index 4d105ef..4a360bc 100644
->> --- a/drivers/pci/controller/dwc/pcie-designware.c
->> +++ b/drivers/pci/controller/dwc/pcie-designware.c
->> @@ -10,6 +10,7 @@
->>   
->>   #include <linux/delay.h>
->>   #include <linux/of.h>
->> +#include <linux/of_platform.h>
->>   #include <linux/types.h>
->>   
->>   #include "../../pci.h"
->> @@ -526,11 +527,16 @@ void dw_pcie_setup(struct dw_pcie *pci)
->>   	u32 val;
->>   	struct device *dev = pci->dev;
->>   	struct device_node *np = dev->of_node;
->> +	struct platform_device *pdev;
->>   
->>   	if (pci->version >= 0x480A || (!pci->version &&
->>   				       dw_pcie_iatu_unroll_enabled(pci))) {
->>   		pci->iatu_unroll_enabled = true;
->> -		if (!pci->atu_base)
->> +		pdev = of_find_device_by_node(np);
+On Fri, Sep 25, 2020 at 04:51:38PM +0800, Tian Tao wrote:
+> drm_modeset_lock.h already declares struct drm_device, so there's no
+> need to declare it in vc4_drv.h
 > 
-> Use to_platform_device(dev) instead. Put that at the beginning as I'm
-> going to move 'dbi' in here too.
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-Okay, I'll rewrite it with to_platform_device(dev).
-Should I refer somewhere to rebase to your change?
+Just an aside, when submitting patches please use
+scripts/get_maintainers.pl to generate the recipient list. Looking through
+past few patches from you it seems fairly arbitrary and often misses the
+actual maintainers for a given piece of code, which increases the odds the
+patch will get lost a lot.
 
-Thank you,
+E.g. for this one I'm only like the 5th or so fallback person, and the
+main maintainer isn't on the recipient list.
 
----
-Best Regards
-Kunihiko Hayashi
+Cheeers, Daniel
+
+> ---
+>  drivers/gpu/drm/vc4/vc4_drv.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+> index 8c8d96b..8717a1c 100644
+> --- a/drivers/gpu/drm/vc4/vc4_drv.h
+> +++ b/drivers/gpu/drm/vc4/vc4_drv.h
+> @@ -19,7 +19,6 @@
+>  
+>  #include "uapi/drm/vc4_drm.h"
+>  
+> -struct drm_device;
+>  struct drm_gem_object;
+>  
+>  /* Don't forget to update vc4_bo.c: bo_type_names[] when adding to
+> -- 
+> 2.7.4
+> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
