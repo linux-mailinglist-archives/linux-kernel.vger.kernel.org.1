@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFCA8278BFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA97E278C02
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729079AbgIYPEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728353AbgIYPEM (ORCPT
+        id S1729069AbgIYPFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:05:23 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56864 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727749AbgIYPFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:04:12 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E543C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:04:12 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id p15so3484742ejm.7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:04:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=L+qXNeLspy2/rNPk6Dvq02qKoxSfU6CIlz14LiobQSA=;
-        b=jmJzUP1m/sfPTVzEBQhKNqC4Kzv6AhfyAPOOK2jiBYVm8QTT1amtVBT5L9fFCwUxtn
-         4k367dkBis1/EeO7SCT9faxH/vGLeY44u581GeieLaw12d/aQLrCW7mmTA9wlDi9K3k5
-         AsZYGGiFy+69VaXdshNy+oVJo+WOAtwGTkYu1NwDtHoD4j0K2PdtNa7LlXmc4okoH88N
-         ptjwexvOtZeMHqH3FbzTf89VLzRcOpI2esh28uwq7N2bqf8sS0oX67YjGF50+pXh6cn2
-         Y1cZ95C8wuGR/iYR2n/XbV68GRtrCPGy7cxTNhifPOxQQVv0mIaPWDW+HY0gtFEnqxao
-         2Mrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=L+qXNeLspy2/rNPk6Dvq02qKoxSfU6CIlz14LiobQSA=;
-        b=OuSgYNCsBtUFXyVc5UplVEoJ8pQedEEQSeCQeHtFGkT7jTHZ7NGBILc8PGq1ksd2bl
-         ZW1HP2ozGl2mTKCbZLbDW6myRtaPyjolq2kaHq9YtzICl5wg8Sk/tiT6cn99gk7FTyqr
-         cEonqp7D/H3EyjlZuVIYdJrrXZ4gZ6gGDSBF/cxko9rci4/vwk4PSqJoxkVMVL5xjvKt
-         Z5STjv1LBXNiZJcYX/lxBRWmrot2H4WMbBR5fyElOoZsggWancz+t4IZ3LmzWVr7Y1fL
-         H4AJStU58aQfEt1uoAki1JkioImpiix/7iaArMvw7n6WqRDywb2MyIBam4ABDlHaqJzk
-         t9+A==
-X-Gm-Message-State: AOAM531feR5kf+VGuGujZwPmKWzGwxwYNOXGui4bOw+0NhJYhU2bONDp
-        MlulwR2rxySU8M6BsTW1oWcKO5A/1d9Fpac9fCQnECkoJlA=
-X-Google-Smtp-Source: ABdhPJwsfWbPhD5S5Zc9/CgTG1OKah8eMqkWuNiA3sLhY4UDsKXoT9imzLHFaPv9qxtcFA4wvNSy4+bQYTpbwFh0SkQ=
-X-Received: by 2002:a17:906:e24d:: with SMTP id gq13mr3039230ejb.152.1601046250468;
- Fri, 25 Sep 2020 08:04:10 -0700 (PDT)
+        Fri, 25 Sep 2020 11:05:23 -0400
+Date:   Fri, 25 Sep 2020 17:05:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601046320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W7es1yDj9/zjzMxs06+Vww2hrDHmTr8lqczgB9WnfFc=;
+        b=MJOGbF86s4ulg2dwLhyiFpUwrUbKsXPpOgobXLou3xqdRJeQXF7Q5OF6REbbYec3Vqu7nG
+        L4riyBPLz5XB1Ozl7X5ifiwO+7PCNFDaRPoXdXhrWEZIPM1QR2O7oB2AV93Dyv4rY8X8WC
+        UoPw1uv74YznaDnkKwaMc2NdHO58KjnpX+VlC6Frp34l8Z1DYxMj36zhLz0624go36UEcc
+        KXlNrxkFJhNhBAVAd9BaYatyUJakQdhnr8gObRGNN75Amz+I1EQ9tNZM+Uye1drKCANkgj
+        LJ8/BpTX4Tod1gIMvXsCaPQku0HUM0YfkPYr8Ez5y/7n9Oo2xtQkuRvtGNcQeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601046320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=W7es1yDj9/zjzMxs06+Vww2hrDHmTr8lqczgB9WnfFc=;
+        b=Yeohw/JXSR/26e4gGcNvnZlx7fiU8zt28HJO4pvel3a9b/BmscppNEfuRvko8R4VPwr27D
+        GqUr3aC7ybFLnQBw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Jerome Brunet <jbrunet@baylibre.com>
+Cc:     Kevin Hilman <khilman@baylibre.com>,
+        Brad Harper <bjharper@gmail.com>,
+        linux-amlogic@lists.infradead.org, linux-mmc@vger.kernel.org,
+        linux-rt-users@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mmc: host: meson-gx-mmc: fix possible deadlock condition
+ for preempt_rt
+Message-ID: <20200925150519.sbzq57qphvzrdro3@linutronix.de>
+References: <24a844c3-c2e0-c735-ccb7-83736218b548@gmail.com>
+ <7hk0wj9ki2.fsf@baylibre.com>
+ <1jzh5e8bld.fsf@starbuckisacylon.baylibre.com>
+ <20200925134445.rk366jip5ne4x7em@linutronix.de>
+ <1jh7rmj64u.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-From:   Pintu Agarwal <pintu.ping@gmail.com>
-Date:   Fri, 25 Sep 2020 20:33:59 +0530
-Message-ID: <CAOuPNLjtG_VHL1M8-=pKNNRmWQg_8oC0YG7C8H3gQcbJ+0B3=A@mail.gmail.com>
-Subject: KASLR support on ARM with Kernel 4.9 and 4.14
-To:     open list <linux-kernel@vger.kernel.org>,
-        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        ard.biesheuvel@linaro.org, arnd@arndb.de, nico@linaro.org,
-        keescook@chromium.org, thgarnie@google.com, marc.zyngier@arm.com,
-        Mark Rutland <mark.rutland@arm.com>, tony@atomide.com,
-        matt@codeblueprint.co.uk, dave.martin@arm.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1jh7rmj64u.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On 2020-09-25 16:14:09 [+0200], Jerome Brunet wrote:
+> Looks like we need to do manually what IRQF_ONESHOT was doing for us :(
 
-This is regarding the KASLR feature support on ARM for the kernel
-version 4.9 and 4.14.
+IRQF_ONESHOT disables the IRQ at the irqchip level. You must ensure that
+the device keeps quite. Usually you mast the interrupt source at the
+device lee.
 
-Is KASLR supported on ARM-32 Linux 4.9 and above ?
-Is it dependent on CONFIG_RANDOMIZE_BASE or
-/proc/sys/kernel/randomize_va_space ?
-Is there any relation between these two?
-Is the changing kernel symbols (in every boot), only possible if KASLR
-is enabled, or there is another way it can happen?
+> This brings a few questions:
+> 
+> * The consideration you described is not mentioned near the description
+>   of IRQF_ONESHOT. Maybe it should so other drivers with same intent
+>   don't end up in the same pitfall ?
 
-I have these queries because,
-In one of the arm-32 devices with Kernel 4.14, I observed that
-CONFIG_RANDOMIZE_BASE is not available.
-But /proc/sys/kernel/randomize_va_space is set to 2.
-However, I also observed that symbol addresses are changing in every boot.
+From request_threaded_irq() ->
+|  *      If you want to set up a threaded irq handler for your device
+|  *      then you need to supply @handler and @thread_fn. @handler is
+|  *      still called in hard interrupt context and has to check
+|  *      whether the interrupt originates from the device. If yes it
+|  *      needs to disable the interrupt on the device and return
+|  *      IRQ_WAKE_THREAD which will wake up the handler thread and run
+|  *      @thread_fn. This split handler design is necessary to support
+|  *      shared interrupts.
 
-1st boot cycle:
-[root ~]# cat /proc/kallsyms | grep "sys_open"
-a5b4de92 T sys_open
-[root@sa515m ~]#
+Just the line that saying what needs to be done before returning
+IRQ_WAKE_THREAD.
 
-2nd boot cycle:
-[root ~]# cat /proc/kallsyms | grep "sys_open"
-f546ed66 T sys_open
+> * Why doesn't RT move the IRQ with this flag ? Seems completly unrelated
+>   to RT (maybe it is the same documentation problem) 
 
-So, I am wondering how this is possible without KASLR
-(CONFIG_RANDOMIZE_BASE) support in Kernel ?
+It is unrelated to RT. Mostly. You end up with the same problem booting
+with `threadirqs'. RT has the additional restrictions that you may not
+acquire any sleeping locks in hardirq context. This you can see with
+addinional lockdep magic.
 
-Similarly, with Kernel 4.9 and CONFIG_RANDOMIZE_BASE is not available
-but /proc/sys/kernel/randomize_va_space is set to 2.
-But here, the addresses are remaining same.
+> * Can't we have flag doing the irq disable in the same way while still
+>   allowing to RT to do its magic ? seems better than open coding it in
+>   the driver ?
 
-1st Run:
-[root~]# cat /proc/kallsyms | grep "sys_open"
-c01ed68c T sys_open
-[root ~]#
+Puh. That should be forwarded the IRQ department.
+So we have IRQF_NO_THREAD to avoid force threading. This is documented
+as such. Then we have IRQF_TIMER and IRQF_PERCPU which are also not
+force threaded and it is not documented as such. However it is used for
+the timer-IRQ, IPI, perf and such - things you obviously don't want to
+thread and need to run in hard-IRQ context.
 
-*** reboot ***
-[root ~]# cat /proc/kallsyms | grep "sys_open"
-c01ed68c T sys_open
+What you have ist a primary and secondary and IRQF_ONESHOT and don't
+want the primary handler to be force-threaded. I can't answer why we
+don't.
+However, drivers usually disable the source themself if they providing
+both handler.
 
-
-Is there any other difference between these two kernel versions with
-respect to changing symbol addresses ?
-
-Thanks,
-Pintu
+Sebastian
