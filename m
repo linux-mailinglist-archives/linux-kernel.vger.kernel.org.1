@@ -2,78 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87400277E44
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1B8277E46
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726867AbgIYC6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 22:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726676AbgIYC6v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 22:58:51 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54B4C0613CE;
-        Thu, 24 Sep 2020 19:58:50 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 88C79135F8F0C;
-        Thu, 24 Sep 2020 19:42:02 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 19:58:48 -0700 (PDT)
-Message-Id: <20200924.195848.729334260699047552.davem@davemloft.net>
-To:     geliangtang@gmail.com
-Cc:     mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
-        kuba@kernel.org, netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [MPTCP][PATCH net-next 00/16] mptcp: RM_ADDR/ADD_ADDR
- enhancements
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <cover.1600853093.git.geliangtang@gmail.com>
-References: <cover.1600853093.git.geliangtang@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
+        id S1726928AbgIYC7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 22:59:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726676AbgIYC7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 22:59:16 -0400
+Received: from X1 (unknown [104.245.68.101])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4DC620838;
+        Fri, 25 Sep 2020 02:59:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601002755;
+        bh=HlyAAdYR9wyHbMonermc2egT8gBMGqZa8uXyB8IhXjU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F5JoiH8AKJ04sDI6xltJ+S5/vIuoZ5y0YVdFce44I1ipKaIvaAksqmplesJ3DHsNm
+         orqNUbtTJo2z9rY2GduEN63JeYOl4xlHV09v4dEtYTK1TyEKk02AI8jKbNd9c7/E+V
+         m6QdEhN2hXLtO9lQ9kYvbD2v1IVCtSvvSTKvU8go=
+Date:   Thu, 24 Sep 2020 19:59:14 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Rafael Aquini <aquini@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        ying.huang@intel.com
+Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer
+ dereference
+Message-Id: <20200924195914.d240877a10e22b457bd9b45d@linux-foundation.org>
+In-Reply-To: <20200923134251.GN795820@optiplex-lnx>
+References: <20200922184838.978540-1-aquini@redhat.com>
+        <20200922124750.67a20d9764ec098b17705407@linux-foundation.org>
+        <20200923134251.GN795820@optiplex-lnx>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Thu, 24 Sep 2020 19:42:02 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geliang Tang <geliangtang@gmail.com>
-Date: Thu, 24 Sep 2020 08:29:46 +0800
+On Wed, 23 Sep 2020 09:42:51 -0400 Rafael Aquini <aquini@redhat.com> wrote:
 
-> This series include two enhancements for the MPTCP path management,
-> namely RM_ADDR support and ADD_ADDR echo support, as specified by RFC
-> sections 3.4.1 and 3.4.2.
+> On Tue, Sep 22, 2020 at 12:47:50PM -0700, Andrew Morton wrote:
+> > On Tue, 22 Sep 2020 14:48:38 -0400 Rafael Aquini <aquini@redhat.com> wrote:
+> > 
+> > > The swap area descriptor only gets struct swap_cluster_info *cluster_info
+> > > allocated if the swapfile is backed by non-rotational storage.
+> > > When the swap area is laid on top of ordinary disk spindles, lock_cluster()
+> > > will naturally return NULL.
+> > > 
+> > > CONFIG_THP_SWAP exposes cluster_info infrastructure to a broader number of
+> > > use cases, and split_swap_cluster(), which is the counterpart of split_huge_page()
+> > > for the THPs in the swapcache, misses checking the return of lock_cluster before
+> > > operating on the cluster_info pointer.
+> > > 
+> > > This patch addresses that issue by adding a proper check for the pointer
+> > > not being NULL in the wrappers cluster_{is,clear}_huge(), in order to avoid
+> > > crashes similar to the one below:
+> > > 
+> > > ...
+> > >
+> > > Fixes: 59807685a7e77 ("mm, THP, swap: support splitting THP for THP swap out")
+> > > Signed-off-by: Rafael Aquini <aquini@redhat.com>
+> > 
+> > Did you consider cc:stable?
+> >
 > 
-> 1 RM_ADDR support include 9 patches (1-3 and 8-13):
-> 
-> Patch 1 is the helper for patch 2, these two patches add the RM_ADDR
-> outgoing functions, which are derived from ADD_ADDR's corresponding
-> functions.
-> 
-> Patch 3 adds the RM_ADDR incoming logic, when RM_ADDR suboption is
-> received, close the subflow matching the rm_id, and update PM counter.
-> 
-> Patch 8 is the main remove routine. When the PM netlink removes an address,
-> we traverse all the existing msk sockets to find the relevant sockets. Then
-> trigger the RM_ADDR signal and remove the subflow which using this local
-> address, this subflow removing functions has been implemented in patch 9.
-> 
-> Finally, patches 10-13 are the self-tests for RM_ADDR.
-> 
-> 2 ADD_ADDR echo support include 7 patches (4-7 and 14-16).
-> 
-> Patch 4 adds the ADD_ADDR echo logic, when the ADD_ADDR suboption has been
-> received, send out the same ADD_ADDR suboption with echo-flag, and no HMAC
-> included.
-> 
-> Patches 5 and 6 are the self-tests for ADD_ADDR echo. Patch 7 is a little
-> cleaning up.
-> 
-> Patch 14 and 15 are the helpers for patch 16. These three patches add
-> the ADD_ADDR retransmition when no ADD_ADDR echo is received.
+> UGH! I missed adding it to my cc list. Shall I just forward it, now, or
+> do you prefer a fresh repost?
 
-Series applied, thank you.
+I added the cc:stable to my copy.
