@@ -2,128 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1347278A5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF02278A71
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728661AbgIYOIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:08:52 -0400
-Received: from mout.kundenserver.de ([217.72.192.73]:42823 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgIYOIw (ORCPT
+        id S1729043AbgIYOJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728466AbgIYOJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:08:52 -0400
-Received: from mail-qk1-f171.google.com ([209.85.222.171]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MF39S-1kF9UQ1WmW-00FT5c; Fri, 25 Sep 2020 16:08:50 +0200
-Received: by mail-qk1-f171.google.com with SMTP id o5so2815289qke.12;
-        Fri, 25 Sep 2020 07:08:50 -0700 (PDT)
-X-Gm-Message-State: AOAM5334Fo4YdJ6Nt9saVK04WZDwEdrYKtgC5zUHBPcNzjECZf5LYT/4
-        76jTHpoJ4OnOre74IousOAui3inMTUizBzE1uKY=
-X-Google-Smtp-Source: ABdhPJyQJNrHwxmkVsXimz0oF76gP4lvp54BaArHPydGBupMZdO/Llk2RLPlSSrUMgxUBOdKl5ChKrJidt7yrr6I+Kw=
-X-Received: by 2002:a05:620a:15a7:: with SMTP id f7mr135330qkk.3.1601042929071;
- Fri, 25 Sep 2020 07:08:49 -0700 (PDT)
+        Fri, 25 Sep 2020 10:09:27 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36250C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:09:27 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id z1so973765uaa.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W4ybNDBj3JkG7xwtC+pQm/GVM9Ki73UbHYGcb1DNgoE=;
+        b=VAE/JCw4Kc2YKn1yJ8L/Q9+LADI9BPVrPzMbIS0mOQDh1e+IitPGEnQLZfakaeotSX
+         fJpnesPgh6fudFH4hBFOTUzOvja6IHah1EG+sAlo5mDeRe30T7WE5Z+EmmrqyLBVjPT2
+         Y6MypsxJU5ecTFL5KTTnudzV3iHFKzBhkicIF7nAwXtRPFhwdOi9g9/Y/qXRPNUiOlZ/
+         S833Agy78MEYaybNf9Tk+M+dZyKRMHoBkxs25nGIJGGXWhSky07MsU9xI+7dnENL4I7l
+         bH2CDxH5hj1vhP5g8v/h/6Mm80YH+iZTF4wuYNk0h7j6DAwbRzp57D1NpHpN8KHRNu/G
+         TlSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W4ybNDBj3JkG7xwtC+pQm/GVM9Ki73UbHYGcb1DNgoE=;
+        b=RpzCW7SLiTW4PGoB60gmjMv4BXz+kKYt+gmDkZ5nBB4LqBn2ikg9oc0Hu7vTNxmT1F
+         kwVnrH4Hu7JwTv5bRNQ+H8S7JD45EURS5XuYvqBe5yYZiXEmtGeaqt9K635zOkYXv/Hu
+         ww2ibWqmvZTbatB2l0Q6WNeiK7Qpy6pbCLKG6SYXZ1m2kQtz99yN6174MQodna8BLCEh
+         R3iJxrM4TBVLn1oBtg14FJYjK0mICMNJ/OY396RT8kGKm1SbLihuTMCzzICXS87GkMts
+         605qXGuTp73OhiTSPJdwkewUwTM9pmau8qfMOyZu3nAGezScJ2S1vnEAABXUM7PYTb9N
+         rm/g==
+X-Gm-Message-State: AOAM532nnVBMHS7rhhPqEBx0QW9+RddUedCiK3pd6mgrv0d0mEeLEYJk
+        /LqSOi8TAyDaQ23ottcKqzfUpLWIrtdnN/PCUJY=
+X-Google-Smtp-Source: ABdhPJy0IxUr4anWia0Qm7ztGxjztU5H4LAKNIvZHwQZc9rZ+mSfXU53xRXTbzCYoiyClMt8qe//fl65KD/2aNPSkzU=
+X-Received: by 2002:ab0:6f91:: with SMTP id f17mr2536965uav.129.1601042966264;
+ Fri, 25 Sep 2020 07:09:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200918124624.1469673-1-arnd@arndb.de> <20200919081906.GV1551@shell.armlinux.org.uk>
-In-Reply-To: <20200919081906.GV1551@shell.armlinux.org.uk>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 25 Sep 2020 16:08:31 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1k9Ms8EBD-KxsGWY8LxzWqLh-E6ZaemcTMeYoRKBaQUg@mail.gmail.com>
-Message-ID: <CAK8P3a1k9Ms8EBD-KxsGWY8LxzWqLh-E6ZaemcTMeYoRKBaQUg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] ARM: remove set_fs callers and implementation
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
+References: <20200924135853.875294-1-hch@lst.de> <20200924135853.875294-9-hch@lst.de>
+In-Reply-To: <20200924135853.875294-9-hch@lst.de>
+From:   Matthew Auld <matthew.william.auld@gmail.com>
+Date:   Fri, 25 Sep 2020 15:08:59 +0100
+Message-ID: <CAM0jSHPaqpX2A5T4iybfLF+F=cBX05GW8u54cUe7AG0QKDJt2g@mail.gmail.com>
+Subject: Re: [Intel-gfx] [PATCH 08/11] drm/i915: use vmap in i915_gem_object_map
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-mm@kvack.org, Peter Zijlstra <peterz@infradead.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        x86@kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
+        Minchan Kim <minchan@kernel.org>,
+        Matthew Auld <matthew.auld@intel.com>,
+        xen-devel@lists.xenproject.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Nitin Gupta <ngupta@vflare.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:VREt9jpSAxN+6ZCKg1q3IbF75qPcjf7Y5WulEmvvT0hIK5uYjdW
- Q399hLi/C8k1Qbou/nCIFLcwM9U1H8lUWC+bM+CGKdQjFPmx1pU/QB6+dT3MK3fNJ7pbF/c
- ZJhCTMr6S2BWN5WP0zCMRbmq2iD/6HGgJPuLlVR8gOR5GlqSr68hU/1RqFOD1zypBS2EICN
- qOCOFd9SH4rbyy8vv23ag==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:m8mNu48NKGs=:yCgL2qXu2cKejMmSweAnI6
- WogDfsQGw1hh/YdPHBtk61gwsuAE+CtU6xLVb2uCYR8DSdj0/21RI0AcjfN3mHNSFDs6pgpdP
- 8mrv5p4CrexoTDrXk6JAWFt11NV4BeUp41fCQiTWsoiomm8RhfSSgqQk2oDsWBep3b/DHFZPe
- yzFJp+GBx8DTPhOxkheIRBSgJOr1771MnyecVSoyYdVX1u0xTXZFLdXaHSjrTYnZApfO/e+Q3
- 8JebLg/VvyBevBdKDbGdzSPzZHLvq7rUu9otDXwMZtniKt8DAG0WYlP+HLpLjGidPERPLaRl6
- Y+jJZICrMPqWuoJVqZxfuXg6uyBd3wdbNRAYtbncbF3GGqXWGe+JoBrN4yWhAWKLbVEpMMMkU
- ZhwJAXMqNS5Hl3it+2u39hzA+1gBsVL5rFmykzQFT22OmT6ziJjL055Cf0JOYIV9RZMyqbUoZ
- 6DgmZMPdXcj6Z09JhwTS6urPITC/fbQxdrn/4hXutRTPBOiEXXfcWJh50paqet74xVB15eznK
- iQBL3XoH6m1hKD5VQzuG8SK+TEnB/jERMGHXhBQdq36Vbtr4pEHGBLC0L+3JhZrJuVhrRLxrg
- 7IJIacvGNmu25yLvec5gy5J07plBgimsko/Hrm6ciLSU8E3whO5r/wH2SFoN6GnzNYFkGCF1F
- wAvMnHxcaSnN7WdpYvmc7XIeSGj6/JPzn61fuXStHjRtuEIOdu97d2J2r4gldEihkSIsUIaJ0
- fmJCBXg63f+NxE+rmLk0ju1rREncsXy64ga58zdZDyIjQAXeUUZA706aqqNJRA3v7xEhbgRzV
- 6OfVtOTQJ89OqFcuYHbAZlebSwpKhJ2r2v65Qo9yBQOIZ0tRmyJweSrJ7MFm0v7JQTNEPd7lx
- C+L5NxfE8korTDCLFAPl8cVFsxw7avH86w9yQh41SICfV5gaARgDWo3bN9pkkj/esVw34X9qS
- TodH/AKDza6DVFSywUyjMynwNdRs0mKUeMXaxDdMzaN/+ueQdipI5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 10:19 AM Russell King - ARM Linux admin
-<linux@armlinux.org.uk> wrote:
+On Thu, 24 Sep 2020 at 14:59, Christoph Hellwig <hch@lst.de> wrote:
 >
-> On Fri, Sep 18, 2020 at 02:46:15PM +0200, Arnd Bergmann wrote:
-> > Hi Christoph, Russell,
-> >
-> > Here is an updated series for removing set_fs() from arch/arm,
-> > based on the previous feedback.
-> >
-> > I have tested the oabi-compat changes using the LTP tests for the three
-> > modified syscalls using an Armv7 kernel and a Debian 5 OABI user space,
-> > and I have lightly tested the get_kernel_nofault infrastructure by
-> > loading the test_lockup.ko module after setting CONFIG_DEBUG_SPINLOCK.
+> i915_gem_object_map implements fairly low-level vmap functionality in
+> a driver.  Split it into two helpers, one for remapping kernel memory
+> which can use vmap, and one for I/O memory that uses vmap_pfn.
 >
-> I'm not too keen on always saving the syscall number, but for the gain
-> of getting rid of set_fs() I think it's worth it. However...
+> The only practical difference is that alloc_vm_area prefeaults the
+> vmalloc area PTEs, which doesn't seem to be required here for the
+> kernel memory case (and could be added to vmap using a flag if actually
+> required).
 >
-> I think there are some things to check - what value do you end up
-> with as the first number in /proc/self/syscall when you do:
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  drivers/gpu/drm/i915/Kconfig              |   1 +
+>  drivers/gpu/drm/i915/gem/i915_gem_pages.c | 126 ++++++++++------------
+>  2 files changed, 59 insertions(+), 68 deletions(-)
 >
-> strace cat /proc/self/syscall
+> diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
+> index 9afa5c4a6bf006..1e1cb245fca778 100644
+> --- a/drivers/gpu/drm/i915/Kconfig
+> +++ b/drivers/gpu/drm/i915/Kconfig
+> @@ -25,6 +25,7 @@ config DRM_I915
+>         select CRC32
+>         select SND_HDA_I915 if SND_HDA_CORE
+>         select CEC_CORE if CEC_NOTIFIER
+> +       select VMAP_PFN
+>         help
+>           Choose this option if you have a system that has "Intel Graphics
+>           Media Accelerator" or "HD Graphics" integrated graphics,
+> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_pages.c b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
+> index 6550c0bc824ea2..b519417667eb4b 100644
+> --- a/drivers/gpu/drm/i915/gem/i915_gem_pages.c
+> +++ b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
+> @@ -232,34 +232,21 @@ int __i915_gem_object_put_pages(struct drm_i915_gem_object *obj)
+>         return err;
+>  }
 >
-> ?
+> -static inline pte_t iomap_pte(resource_size_t base,
+> -                             dma_addr_t offset,
+> -                             pgprot_t prot)
+> -{
+> -       return pte_mkspecial(pfn_pte((base + offset) >> PAGE_SHIFT, prot));
+> -}
+> -
+>  /* The 'mapping' part of i915_gem_object_pin_map() below */
+> -static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
+> -                                enum i915_map_type type)
+> +static void *i915_gem_object_map_page(struct drm_i915_gem_object *obj,
+> +               enum i915_map_type type)
+>  {
+> -       unsigned long n_pte = obj->base.size >> PAGE_SHIFT;
+> -       struct sg_table *sgt = obj->mm.pages;
+> -       pte_t *stack[32], **mem;
+> -       struct vm_struct *area;
+> +       unsigned long n_pages = obj->base.size >> PAGE_SHIFT, i;
+> +       struct page *stack[32], **pages = stack, *page;
+> +       struct sgt_iter iter;
+>         pgprot_t pgprot;
+> +       void *vaddr;
+>
+> -       if (!i915_gem_object_has_struct_page(obj) && type != I915_MAP_WC)
+> -               return NULL;
+> -
+> -       if (GEM_WARN_ON(type == I915_MAP_WC &&
+> -                       !static_cpu_has(X86_FEATURE_PAT)))
+> -               return NULL;
+> -
+> -       /* A single page can always be kmapped */
+> -       if (n_pte == 1 && type == I915_MAP_WB) {
+> -               struct page *page = sg_page(sgt->sgl);
+> -
+> +       switch (type) {
+> +       default:
+> +               MISSING_CASE(type);
+> +               fallthrough;    /* to use PAGE_KERNEL anyway */
+> +       case I915_MAP_WB:
+>                 /*
+>                  * On 32b, highmem using a finite set of indirect PTE (i.e.
+>                  * vmap) to provide virtual mappings of the high pages.
+> @@ -277,30 +264,8 @@ static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
+>                  * So if the page is beyond the 32b boundary, make an explicit
+>                  * vmap.
+>                  */
+> -               if (!PageHighMem(page))
+> -                       return page_address(page);
+> -       }
+> -
+> -       mem = stack;
+> -       if (n_pte > ARRAY_SIZE(stack)) {
+> -               /* Too big for stack -- allocate temporary array instead */
+> -               mem = kvmalloc_array(n_pte, sizeof(*mem), GFP_KERNEL);
+> -               if (!mem)
+> -                       return NULL;
+> -       }
+> -
+> -       area = alloc_vm_area(obj->base.size, mem);
+> -       if (!area) {
+> -               if (mem != stack)
+> -                       kvfree(mem);
+> -               return NULL;
+> -       }
+> -
+> -       switch (type) {
+> -       default:
+> -               MISSING_CASE(type);
+> -               fallthrough;    /* to use PAGE_KERNEL anyway */
+> -       case I915_MAP_WB:
+> +               if (n_pages == 1 && !PageHighMem(sg_page(obj->mm.pages->sgl)))
+> +                       return page_address(sg_page(obj->mm.pages->sgl));
+>                 pgprot = PAGE_KERNEL;
+>                 break;
+>         case I915_MAP_WC:
+> @@ -308,30 +273,49 @@ static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
+>                 break;
+>         }
+>
+> -       if (i915_gem_object_has_struct_page(obj)) {
+> -               struct sgt_iter iter;
+> -               struct page *page;
+> -               pte_t **ptes = mem;
+> +       if (n_pages > ARRAY_SIZE(stack)) {
+> +               /* Too big for stack -- allocate temporary array instead */
+> +               pages = kvmalloc_array(n_pages, sizeof(*pages), GFP_KERNEL);
+> +               if (!pages)
+> +                       return NULL;
+> +       }
+>
+> -               for_each_sgt_page(page, iter, sgt)
+> -                       **ptes++ = mk_pte(page, pgprot);
+> -       } else {
+> -               resource_size_t iomap;
+> -               struct sgt_iter iter;
+> -               pte_t **ptes = mem;
+> -               dma_addr_t addr;
+> +       i = 0;
+> +       for_each_sgt_page(page, iter, obj->mm.pages)
+> +               pages[i++] = page;
+> +       vaddr = vmap(pages, n_pages, 0, pgprot);
+> +       if (pages != stack)
+> +               kvfree(pages);
+> +       return vaddr;
+> +}
+>
+> -               iomap = obj->mm.region->iomap.base;
+> -               iomap -= obj->mm.region->region.start;
+> +static void *i915_gem_object_map_pfn(struct drm_i915_gem_object *obj,
+> +               enum i915_map_type type)
+> +{
+> +       resource_size_t iomap = obj->mm.region->iomap.base -
+> +               obj->mm.region->region.start;
+> +       unsigned long n_pfn = obj->base.size >> PAGE_SHIFT;
+> +       unsigned long stack[32], *pfns = stack, i;
+> +       struct sgt_iter iter;
+> +       dma_addr_t addr;
+> +       void *vaddr;
+> +
+> +       if (type != I915_MAP_WC)
+> +               return NULL;
+>
+> -               for_each_sgt_daddr(addr, iter, sgt)
+> -                       **ptes++ = iomap_pte(iomap, addr, pgprot);
+> +       if (n_pfn > ARRAY_SIZE(stack)) {
+> +               /* Too big for stack -- allocate temporary array instead */
+> +               pfns = kvmalloc_array(n_pfn, sizeof(*pfns), GFP_KERNEL);
+> +               if (!pfns)
+> +                       return NULL;
+>         }
+>
+> -       if (mem != stack)
+> -               kvfree(mem);
+> -
+> -       return area->addr;
+> +       for_each_sgt_daddr(addr, iter, obj->mm.pages)
+> +               pfns[i++] = (iomap + addr) >> PAGE_SHIFT;
 
-> It should be 3, not 0x900003. I suspect you're getting the latter
-> with these changes.  IIRC, task_thread_info(task)->syscall needs to
-> be the value _without_ the offset, otherwise tracing will break.
+Missing the i = 0 fix from Dan?
 
-It seems broken in different ways, depending on the combination
-of kernel and userland:
-
-1. EABI armv5-versatile kernel, EABI Debian 5:
-$ cat /proc/self/syscall
-0 0x1500000000003 0x1500000000400 0x1500000000400 0x60000013c7800480
-0xc0008668c0112f8c 0xc0112d14c68e1f68 0xbeab06f8 0xb6e80d4c
-$ strace -f cat /proc/self/syscall
-execve("/bin/cat", ["cat", "/proc/self/syscall"], [/* 16 vars */]) =
--1 EINTR (Interrupted system call)
-dup(2)                                  = -1 EINTR (Interrupted system call)
-write(2, "strace: exec: Interrupted system "..., 38) = -1 EINTR
-(Interrupted system call)
-exit_group(1)                           = ?
-
-2. EABI kernel, OABI Debian 5:
-$ cat /proc/self/syscall
-3 0x1500000000003 0x13ccc00000400 0x1500000000400 0x60000013c7800480
-0xc0008de0c0112f8c 0xc0112d14c7313f68 0xbeed27d0 0xb6eab324
-$ strace cat /proc/self/syscall
-execve("/bin/cat", ["cat", "/proc/self/syscall"], [/* 16 vars */]) = -1090648236
---- SIGILL (Illegal instruction) @ 0 (0) ---
-+++ killed by SIGILL +++
-
-3. OABI kernel, OABI Debian 5:
- cat /proc/self/syscall
-9437187 0x1500000000003 0x13ccc00000400 0x1500000000400 0x100060000013
-0x15000c72cff6c 0xc72cfe9000000000 0xbece27d0 0xb6f2f324
-$ strace cat /proc/self/syscall
-execve("/bin/cat", ["cat", "/proc/self/syscall"], [/* 16 vars */]) = -1095141548
---- SIGILL (Illegal instruction) @ 0 (0) ---
-+++ killed by SIGILL +++
-
-I suspect the OABI strace in Debian is broken since it crashes on
-both kernels. I'll look into fixing the output without strace first then.
-
-       Arnd
+> +       vaddr = vmap_pfn(pfns, n_pfn, pgprot_writecombine(PAGE_KERNEL_IO));
+> +       if (pfns != stack)
+> +               kvfree(pfns);
+> +       return vaddr;
+>  }
+>
+>  /* get, pin, and map the pages of the object into kernel space */
+> @@ -383,7 +367,13 @@ void *i915_gem_object_pin_map(struct drm_i915_gem_object *obj,
+>         }
+>
+>         if (!ptr) {
+> -               ptr = i915_gem_object_map(obj, type);
+> +               if (GEM_WARN_ON(type == I915_MAP_WC &&
+> +                               !static_cpu_has(X86_FEATURE_PAT)))
+> +                       ptr = NULL;
+> +               else if (i915_gem_object_has_struct_page(obj))
+> +                       ptr = i915_gem_object_map_page(obj, type);
+> +               else
+> +                       ptr = i915_gem_object_map_pfn(obj, type);
+>                 if (!ptr) {
+>                         err = -ENOMEM;
+>                         goto err_unpin;
+> --
+> 2.28.0
+>
+> _______________________________________________
+> Intel-gfx mailing list
+> Intel-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
