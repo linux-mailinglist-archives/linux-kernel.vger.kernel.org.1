@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50ED1279462
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44618279466
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgIYWyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:54:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgIYWyX (ORCPT
+        id S1729209AbgIYWzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:55:15 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58988 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727067AbgIYWzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:54:23 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BC3C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:54:23 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id bw23so240069pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:54:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=RoKnACgaWS5LzdU+6sscBou6/I159ovfqzEP7aVaDzw=;
-        b=ZSR2acP+CjWXpmgSTWJ0R4K9ppi11L/dMv8tich8Ohu20GiJQ4yFSl/qE6v97cTogY
-         9/JdhN3ybLiVotWGiDvBIDzMQJJWONX/JgBXJKRuGTJ+y5XUjqKJ0fcDhTC70uFUbksj
-         zQLs0q5qZDoVkuOwwO6xFHC7iyX1+iLU6H/qOy8y9QlpMBuZIayrU9H7KvT0YWfFWvy9
-         eyp6tLlV3dsVlLkwR/2gpx3Y4R6cGjk+52UkXqOLPhF8XsWiY+HdtMhwGFvO26oLH7Qn
-         mtlmLcYp2LDv5twvxEEAtgH9EaxWIlqhu9epX6FgVti34KE5cPC1Ik4rwbao3JMfJD8c
-         CbdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=RoKnACgaWS5LzdU+6sscBou6/I159ovfqzEP7aVaDzw=;
-        b=gDlmH+gy8m2GeyyKDfHEhDvv4lIwNajtWEoNdCELeyylLGkw6qu3hGBZDI/4oRFQqo
-         aiBZQYF680qdopVwX4sVkCZ8dtze+5l9ft3MLTz5S+7ZhkL7nxQimFRpWre18Sjicuss
-         6Z0UzUXC7ibeG78sScJkBT3BiTKLTkRKt0ZyEVJCKNnCpNPZ42uLnYDXqQiQF2zxjlNz
-         ET6JWrXBx0v7lgF9hJXCO1gVy1+7n1TtIU0Gd+sMGEu1H4oRifErUjiUau60/jyPJc3x
-         wd+alWRzCz/HTi0HRP783G4xuL5hYGeb4B5B9mgJR/57vjTEPpwkTMqVTyGuuTKVK5q/
-         fGZA==
-X-Gm-Message-State: AOAM533TPwIsWCWKlahvb3+RwlpA1eqVtW/rdn9V3zvz1Yt+T+Q1xp4b
-        qL8kyV1sxLPaU9UNd4OzFj8ncA==
-X-Google-Smtp-Source: ABdhPJxmkfAHo35d3Rc3VorQdYYJb5d61Taw5jSIa2vfo+izYhZie5MHIXq8d6TH7Qt7XXJovJkprw==
-X-Received: by 2002:a17:90b:80a:: with SMTP id bk10mr688415pjb.53.1601074462667;
-        Fri, 25 Sep 2020 15:54:22 -0700 (PDT)
-Received: from [10.212.51.97] ([192.55.54.42])
-        by smtp.gmail.com with ESMTPSA id c1sm3653798pfj.219.2020.09.25.15.54.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 15:54:21 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 05/10] PCI/AER: Apply function level reset to RCiEP on
- fatal error
-Date:   Fri, 25 Sep 2020 15:54:19 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <E621EAEF-54F8-4820-BC58-ED6163C82086@intel.com>
-In-Reply-To: <20200925215854.GA2460270@bjorn-Precision-5520>
-References: <20200925215854.GA2460270@bjorn-Precision-5520>
+        Fri, 25 Sep 2020 18:55:15 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601074512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Obvuz1/Dj7IREACiXdEW9/bPBhlEoJrZlnsY+GA+QsE=;
+        b=NHJmHf2F/2L+Lr06oq/aLPShHvQK+jsH5M+NtrE12xin+1ngh9rlfeupCo+0jj8oCTyWCP
+        5NMK4H5Mf+WmZ3h5Qa/dBmI94v1M2w6r42T2M8x6A8wUIxT2flHjLBQRs3++5zVhvsuobD
+        /1ZZgVuVuPEC5pIDGit+u34uO2FjPerJItpKi4jGUXHa2Xb+4LogMX6HXgap0kI/tAaFf/
+        RX5b3Kb8Zb2/rE/75waUuraQ043sIOiTdYjXCy9yL5s+1l7Dm2HLLXozLcTSblCb39lbwY
+        aKgbgr6VDEPR3K15HA2SVpAQEbtVx49RWQ5743MDh5OESq6d8V+YreRECvHbAw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601074512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Obvuz1/Dj7IREACiXdEW9/bPBhlEoJrZlnsY+GA+QsE=;
+        b=GqqH+xCtqvI1RVBMFcKVd4BciFBBInhDnD4zDgQ9tTa5NKS4jdtef+X2Hn+2KsL2XWdRFm
+        VP8vIAmfY9qgW5CA==
+To:     Adam Borowski <kilobyte@angband.pl>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     Prasad Sodagudi <psodagud@codeaurora.org>, rostedt@goodmis.org,
+        pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        linux-kernel@vger.kernel.org, tkjos@google.com,
+        Mohammed Khajapasha <mkhaja@codeaurora.org>
+Subject: Re: [PATCH 2/2] printk: Make the console flush configurable in hotplug path
+In-Reply-To: <20200925141657.GA6325@angband.pl>
+References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org> <1600906112-126722-2-git-send-email-psodagud@codeaurora.org> <20200924063352.GB592892@kroah.com> <87wo0j6nos.fsf@nanos.tec.linutronix.de> <20200925092754.GA2508526@kroah.com> <20200925141657.GA6325@angband.pl>
+Date:   Sat, 26 Sep 2020 00:55:12 +0200
+Message-ID: <871ripv54f.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25 Sep 2020, at 14:58, Bjorn Helgaas wrote:
+On Fri, Sep 25 2020 at 16:16, Adam Borowski wrote:
+> On Fri, Sep 25, 2020 at 11:27:54AM +0200, Greg KH wrote:
+>> On Thu, Sep 24, 2020 at 08:21:07PM +0200, Thomas Gleixner wrote:
+>> > On Thu, Sep 24 2020 at 08:33, Greg KH wrote:
+>> > > On Wed, Sep 23, 2020 at 05:08:32PM -0700, Prasad Sodagudi wrote:
+>> > >> +config CONSOLE_FLUSH_ON_HOTPLUG
+>> > >> +	bool "Enable console flush configurable in hot plug code path"
+>
+>> > CPU hotplug is not meant to be a high speed operation and if people
+>> > think they need it to be fast then its pretty much guaranteed that they
+>> > want it for the completely wrong reasons.
+>>=20
+>> Odds are, it's the big/little systems that are trying to use cpu hotplug
+>> for this type of thing :(
+>
+> Just a bit of info:
+> My MT6797X (10 core: 4=C3=97A53 + 4=C3=97A53 + 2=C3=97A72), flickers its =
+cores this way:
+> the right-hand piece is CPUs, one character per core: bars show utilizati=
+on,
+> "o" stands for offline; every line is 0.1 second interval.
+>
+> topline -i 0.1
+> mmcblk(=E2=A0=80) (oooo=E2=96=84=E2=96=86oo=E2=96=85o)
+> mmcblk(=E2=A0=80) (oooo=E2=96=85=E2=96=84oooo)
 
-> On Tue, Sep 22, 2020 at 02:38:54PM -0700, Sean V Kelley wrote:
->> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->>
->> Attempt to do function level reset for an RCiEP associated with an
->> RCEC device on fatal error.
->>
->> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->> ---
->>  drivers/pci/pcie/err.c | 31 ++++++++++++++++++++++---------
->>  1 file changed, 22 insertions(+), 9 deletions(-)
->>
->> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
->> index e575fa6cee63..5380ecc41506 100644
->> --- a/drivers/pci/pcie/err.c
->> +++ b/drivers/pci/pcie/err.c
->> @@ -169,6 +169,17 @@ static void pci_bridge_walk(struct pci_dev 
->> *bridge, int (*cb)(struct pci_dev *,
->>  		cb(bridge, userdata);
->>  }
->>
->> +static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
->> +{
->> +	if (!pcie_has_flr(dev))
->> +		return PCI_ERS_RESULT_NONE;
->> +
->> +	if (pcie_flr(dev))
->> +		return PCI_ERS_RESULT_DISCONNECT;
->> +
->> +	return PCI_ERS_RESULT_RECOVERED;
->> +}
->
-> Either we reset the device or we didn't; there is no third option.
->
-> If I read it correctly, nothing in pcie_do_recovery() cares about the
-> difference between PCI_ERS_RESULT_NONE and PCI_ERS_RESULT_DISCONNECT.
-> The status does get returned, but only edr_handle_event() looks at it,
-> and it doesn't care about the difference either.
->
-> So I think this should just return PCI_ERS_RESULT_RECOVERED or
-> PCI_ERS_RESULT_DISCONNECT.
+...
 
-You raise a good point. As currently implemented, the usage requires 
-either a reset or not result. Will change.
+> So it's on the order of a few ons/offs per second.
+>
+> The offline CPUs are "present" and "offline"; not sure if this means hotp=
+lug
+> or not (I'd expect dropping from "present" to "possible", but I don't know
+> these parts).
+
+Yes, they are (ab)using CPU hotplug instead of utilizing the fine
+grained hotplug state control and fix up the few odds and ends which
+keeps the CPU from staying in deep idle forever.
+
+Tinkering is way simpler than proper engineering.
 
 Thanks,
 
-Sean
-
->
->>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
->>  			pci_channel_state_t state,
->>  			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev 
->> *pdev))
->> @@ -195,15 +206,17 @@ pci_ers_result_t pcie_do_recovery(struct 
->> pci_dev *dev,
->>  	if (state == pci_channel_io_frozen) {
->>  		pci_bridge_walk(bridge, report_frozen_detected, &status);
->>  		if (type == PCI_EXP_TYPE_RC_END) {
->> -			pci_warn(dev, "link reset not possible for RCiEP\n");
->> -			status = PCI_ERS_RESULT_NONE;
->> -			goto failed;
->> -		}
->> -
->> -		status = reset_subordinate_devices(bridge);
->> -		if (status != PCI_ERS_RESULT_RECOVERED) {
->> -			pci_warn(dev, "subordinate device reset failed\n");
->> -			goto failed;
->> +			status = flr_on_rciep(dev);
->> +			if (status != PCI_ERS_RESULT_RECOVERED) {
->> +				pci_warn(dev, "function level reset failed\n");
->> +				goto failed;
->> +			}
->> +		} else {
->> +			status = reset_subordinate_devices(bridge);
->> +			if (status != PCI_ERS_RESULT_RECOVERED) {
->> +				pci_warn(dev, "subordinate device reset failed\n");
->> +				goto failed;
->> +			}
->>  		}
->>  	} else {
->>  		pci_bridge_walk(bridge, report_normal_detected, &status);
->> -- 
->> 2.28.0
->>
+        tglx
