@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9DB27881C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC0427881E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729355AbgIYMwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:52:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57728 "EHLO mail.kernel.org"
+        id S1729364AbgIYMw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728836AbgIYMwu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:52:50 -0400
+        id S1729356AbgIYMwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:52:54 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59D1A2072E;
-        Fri, 25 Sep 2020 12:52:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3D2B82075E;
+        Fri, 25 Sep 2020 12:52:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038368;
-        bh=RnSiq0cNVDO4LQGLwpxpSIalJIe6dLxD9UaNZfL6S5M=;
+        s=default; t=1601038373;
+        bh=IVhxxjkyCwp0Kcn8Rl7vIe6uy1bQQKhwMpGCiEwFruw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hy/t1MX3wQeIEdm1hEos7COHX5JmGE/BJneXX7DH91CZw95qk0Bqqu0pxKNphH5xp
-         rEfjCRJUo+GOjt2V5MTTZKF5MGoL+TwDkKo6BaA09+t0gBJZ5/o8Fy5W7i9PMuEaAD
-         td0LykNYso71sylIQy9ha3EYteZXe6DLiGPn3eOE=
+        b=2vmNwiaxkWjdWMopP0/rovhiGvksf0U1Rm/C0QC/JzMDRZEGzBX1i6FVoU2Fnzd7p
+         +FCQzdY8gk6mBUZ7cBbj+8CoTezAWF6MWv4jyWgyPCpSoVMDX2WVOx+ny/ST4Czhs3
+         WAiZurpMeT5PEFauLsVJKI0NjJTp/a/i+TWEHIbM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
-        Vasundhara Volam <vasundhara-v.volam@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 08/43] bnxt_en: Fix NULL ptr dereference crash in bnxt_fw_reset_task()
-Date:   Fri, 25 Sep 2020 14:48:20 +0200
-Message-Id: <20200925124724.804801430@linuxfoundation.org>
+        stable@vger.kernel.org, Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 09/43] cxgb4: fix memory leak during module unload
+Date:   Fri, 25 Sep 2020 14:48:21 +0200
+Message-Id: <20200925124724.958612715@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
 References: <20200925124723.575329814@linuxfoundation.org>
@@ -44,50 +42,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
+From: Raju Rangoju <rajur@chelsio.com>
 
-[ Upstream commit b16939b59cc00231a75d224fd058d22c9d064976 ]
+[ Upstream commit f4a26a9b311d7ff9db461278faf2869d06496ef8 ]
 
-bnxt_fw_reset_task() which runs from a workqueue can race with
-bnxt_remove_one().  For example, if firmware reset and VF FLR are
-happening at about the same time.
+Fix the memory leak in mps during module unload
+path by freeing mps reference entries if the list
+adpter->mps_ref is not already empty
 
-bnxt_remove_one() already cancels the workqueue and waits for it
-to finish, but we need to do this earlier before the devlink
-reporters are destroyed.  This will guarantee that
-the devlink reporters will always be valid when bnxt_fw_reset_task()
-is still running.
-
-Fixes: b148bb238c02 ("bnxt_en: Fix possible crash in bnxt_fw_reset_task().")
-Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
-Signed-off-by: Vasundhara Volam <vasundhara-v.volam@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Fixes: 28b3870578ef ("cxgb4: Re-work the logic for mps refcounting")
+Signed-off-by: Raju Rangoju <rajur@chelsio.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/broadcom/bnxt/bnxt.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_mps.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-+++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
-@@ -11385,14 +11385,15 @@ static void bnxt_remove_one(struct pci_d
- 	if (BNXT_PF(bp))
- 		bnxt_sriov_disable(bp);
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_mps.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_mps.c
+@@ -229,7 +229,7 @@ void cxgb4_free_mps_ref_entries(struct a
+ {
+ 	struct mps_entries_ref *mps_entry, *tmp;
  
-+	clear_bit(BNXT_STATE_IN_FW_RESET, &bp->state);
-+	bnxt_cancel_sp_work(bp);
-+	bp->sp_event = 0;
-+
- 	bnxt_dl_fw_reporters_destroy(bp, true);
- 	pci_disable_pcie_error_reporting(pdev);
- 	unregister_netdev(dev);
- 	bnxt_dl_unregister(bp);
- 	bnxt_shutdown_tc(bp);
--	clear_bit(BNXT_STATE_IN_FW_RESET, &bp->state);
--	bnxt_cancel_sp_work(bp);
--	bp->sp_event = 0;
+-	if (!list_empty(&adap->mps_ref))
++	if (list_empty(&adap->mps_ref))
+ 		return;
  
- 	bnxt_clear_int_mode(bp);
- 	bnxt_hwrm_func_drv_unrgtr(bp);
+ 	spin_lock(&adap->mps_ref_lock);
 
 
