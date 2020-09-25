@@ -2,294 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F21277D49
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061BD277D4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726861AbgIYA6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 20:58:18 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:15572 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbgIYA6R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:58:17 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200925005812epoutp032f857fa11080a597937122f2c3cd9983~34OsSNhJ21554015540epoutp03S
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:58:12 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200925005812epoutp032f857fa11080a597937122f2c3cd9983~34OsSNhJ21554015540epoutp03S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1600995492;
-        bh=yY4vQbux56tXZtWN33wn68QvpZOrzz1lQugW5oKJ6GY=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=dcc/42kd1Mfmv+4yqR13XCG5AZkCIWTebhVNsjWR5ZVFk3sYdiMjcaEmavR+5rCX6
-         Fvzer7CYHEUmRPVLiCufI4aoyxIqDdoQazuE785yxWnQgvT7NTU77zaB57QJ0/Zxps
-         u9bnvKfPK6YZQdQcltiW+2epzg9d+YRX4BoILvAI=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200925005812epcas1p192a419439dd97d937fd8b648f8b7d460~34Or8nqdD0889708897epcas1p1U;
-        Fri, 25 Sep 2020 00:58:12 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.163]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4ByD6p0znWzMqYkV; Fri, 25 Sep
-        2020 00:58:10 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        03.90.10463.1A04D6F5; Fri, 25 Sep 2020 09:58:10 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200925005809epcas1p39cc2c1dbe964690828383fe762df9607~34OpZO_0O0148401484epcas1p3h;
-        Fri, 25 Sep 2020 00:58:09 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200925005809epsmtrp270b21f36ed5d8a849dd2100565886dfb~34OpYhTc40994809948epsmtrp2C;
-        Fri, 25 Sep 2020 00:58:09 +0000 (GMT)
-X-AuditID: b6c32a38-f11ff700000028df-91-5f6d40a1ac1e
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        77.2C.08745.1A04D6F5; Fri, 25 Sep 2020 09:58:09 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20200925005809epsmtip1b3c768d9ac11d85a9644c25fee4453d6~34OpJUoS11718317183epsmtip1Y;
-        Fri, 25 Sep 2020 00:58:09 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Tetsuhiro Kohada'" <kohada.t2@gmail.com>
-Cc:     <kohada.tetsuhiro@dc.mitsubishielectric.co.jp>,
-        <mori.takahiro@ab.mitsubishielectric.co.jp>,
-        "'Namjae Jeon'" <namjae.jeon@samsung.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200917013916.4523-1-kohada.t2@gmail.com>
-Subject: RE: [PATCH v2] exfat: remove 'rwoffset' in exfat_inode_info
-Date:   Fri, 25 Sep 2020 09:58:08 +0900
-Message-ID: <716101d692d6$ef1dc2d0$cd594870$@samsung.com>
+        id S1726885AbgIYA7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 20:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52046 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726704AbgIYA7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 20:59:35 -0400
+Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BAD1E2075E;
+        Fri, 25 Sep 2020 00:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600995574;
+        bh=5bsIlaxFRZsHgcYSAuasXZuLk77X21lqM9EHygf+z8k=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=OZISCvi6/teN8HFZB62SyQrxZYsl7Rh8pG5KkX4c+RVRkdpUz0oKNXl/0O/MCAmqd
+         XG3Cfyky4enttPvyt/xW9h1IxXQtJDcSkVinRAaB07BiSvsJzzn1voD6YqKFuXylve
+         vX8n8EQrGobWW7EUj16AlGltucSSDjgxIY39+L/U=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 860C835230AC; Thu, 24 Sep 2020 17:59:34 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:59:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>, tytso@mit.edu,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        stable@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH] random: use correct memory barriers for crng_node_pool
+Message-ID: <20200925005934.GA29330@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200917165802.GC855@sol.localdomain>
+ <20200921081939.GA4193@gondor.apana.org.au>
+ <20200921152714.GC29330@paulmck-ThinkPad-P72>
+ <20200921221104.GA6556@gondor.apana.org.au>
+ <20200921232639.GK29330@paulmck-ThinkPad-P72>
+ <20200921235243.GA32959@sol.localdomain>
+ <20200922183100.GZ29330@paulmck-ThinkPad-P72>
+ <20200922190936.GB1616407@gmail.com>
+ <20200922205628.GD29330@paulmck-ThinkPad-P72>
+ <20200922215558.GA1833749@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQI3QAIiS02qQVZr3s2cWPTf2qgwLQKUIcn3qKKMmPA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIJsWRmVeSWpSXmKPExsWy7bCmge4ih9x4g7ZZzBY/5t5msXhzciqL
-        xZ69J1ksLu+aw2Zx+f8nFosf0+sd2Dy+zDnO7tF8bCWbx85Zd9k9+rasYvT4vEkugDUqxyYj
-        NTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6AAlhbLEnFKg
-        UEBicbGSvp1NUX5pSapCRn5xia1SakFKToGhQYFecWJucWleul5yfq6VoYGBkSlQZUJOxvK/
-        G5kLJhlUtJ75wtrAuFiti5GTQ0LARGLnrS7GLkYuDiGBHYwSj1o3QDmfGCUm3HjPClIlJPCZ
-        UaJ3jipMx8avO5kginYxSpzZ28AC4bxklDj8bysLSBWbgK7Ekxs/mUFsEQE9iZMnr7OBFDEL
-        XGSU+Ph5B1A7BwengIXEjkmRIDXCAi4SCzZtYgexWQRUJf7v2sQEYvMKWEo8717GBmELSpyc
-        +QRsPrOAvMT2t3OYIS5SkNj96SgryEgRASuJsy2aECUiErM725hB1koITOWQ+NJxmQmi3kVi
-        zu9ZjBC2sMSr41vYIWwpic/v9rJB2PUS/+evZYdobmGUePhpG9jNEgL2Eu8vWYCYzAKaEut3
-        6UOUK0rs/D2XEWIvn8S7rz2sENW8Eh1tQhAlKhLfP+xkgdl05cdVpgmMSrOQPDYLyWOzkHww
-        C2HZAkaWVYxiqQXFuempxYYFJshxvYkRnDa1LHYwzn37Qe8QIxMH4yFGCQ5mJRHe4xty4oV4
-        UxIrq1KL8uOLSnNSiw8xmgKDeiKzlGhyPjBx55XEG5oaGRsbW5iYmZuZGiuJ8z68pRAvJJCe
-        WJKanZpakFoE08fEwSnVwNQds79ppsYea8eXQu7t7oIr5OXDosR7F85fYbqs6c8sl4J3EY6e
-        OmHbDzlsmp20Szn3xhL5OSvYw49IRy9fnZxr5v7n4uz8BQm9fdd/r/gyvfzVotJ9BT9q55Y8
-        Wx10Ws641GENt0/j2xffQ+YKnxTtm6fidlOFV1Vb4owd/5eExwqz4gW/vFUpDc76vWyb7QK3
-        TZ6WAm+9zbcmTPst5WmSULniT/GU/tmfV7fJbHXK1nWcsr7W22X5wglftl9bW5bubB4rH/8n
-        8Hqfi3hC3/YHfKs+de5Nv/XiumTPm47dV++Hbin81pJ2I0w42Wiq0lMlAc+kHeX3amYc7LXL
-        SHv/88imR5dcrjp46FW+3KzEUpyRaKjFXFScCACSFXLIJAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrJLMWRmVeSWpSXmKPExsWy7bCSnO5Ch9x4g9Nf5S1+zL3NYvHm5FQW
-        iz17T7JYXN41h83i8v9PLBY/ptc7sHl8mXOc3aP52Eo2j52z7rJ79G1ZxejxeZNcAGsUl01K
-        ak5mWWqRvl0CV8byvxuZCyYZVLSe+cLawLhYrYuRk0NCwERi49edTF2MXBxCAjsYJc69+MHY
-        xcgBlJCSOLhPE8IUljh8uBii5DmjxOw//5hBetkEdCWe3PgJZosI6EmcPHmdDaSIWeAyo8S+
-        SQ/YITo6GSUu73nHDDKJU8BCYsekSJAGYQEXiQWbNrGD2CwCqhL/d21iArF5BSwlnncvY4Ow
-        BSVOznzCAtLKDLSgbSMjSJhZQF5i+9s5zBD3K0js/nSUFaRERMBK4myLJkSJiMTszjbmCYzC
-        s5AMmoUwaBaSQbOQdCxgZFnFKJlaUJybnltsWGCUl1quV5yYW1yal66XnJ+7iREcO1paOxj3
-        rPqgd4iRiYPxEKMEB7OSCO/xDTnxQrwpiZVVqUX58UWlOanFhxilOViUxHm/zloYJySQnliS
-        mp2aWpBaBJNl4uCUamCqijs9e4PBgog0u7mW2nsEPvjekf7PfOZozqNDKoc/6ZpuXaH+88QZ
-        24lOHz9q/+hMk5RdYBkx+8YbAb+zfwQW9qyevn/SgsA9tfyO4q1nFH9JPH3veXvx61gD79ln
-        hbqi9MomSUv0bVyQybkxvbNsUali9ZH1ShzfrP37dm4tOTXvxfpf/55ye1/46yTcnjB5wrsf
-        /3pM9H5MnVXIrPuo8aqNa9QRV91fTOK37s44n3z9voMHN3dyYr3Kiikbts/crlT99c/sXq0/
-        WtsT9jtqe0dauabURzeq/39QtPLqghDF0E/1KXHJCZuZW/1eSlypSma6kf1g8Z4vm9Zmbcqw
-        /BdnJMFjuu/8KgWeiQ6pSizFGYmGWsxFxYkAWc+sPgwDAAA=
-X-CMS-MailID: 20200925005809epcas1p39cc2c1dbe964690828383fe762df9607
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200917014010epcas1p335c9ba540cd41ff9bf6b0ce2e39d7519
-References: <CGME20200917014010epcas1p335c9ba540cd41ff9bf6b0ce2e39d7519@epcas1p3.samsung.com>
-        <20200917013916.4523-1-kohada.t2@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922215558.GA1833749@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Remove 'rwoffset' in exfat_inode_info and replace it with the parameter of
-> exfat_readdir().
-> Since rwoffset is referenced only by exfat_readdir(), it is not necessary
-> a exfat_inode_info's member.
-> Also, change cpos to point to the next of entry-set, and return the index
-> of dir-entry via dir_entry->entry.
+On Tue, Sep 22, 2020 at 02:55:58PM -0700, Eric Biggers wrote:
+> On Tue, Sep 22, 2020 at 01:56:28PM -0700, Paul E. McKenney wrote:
+> > > You're missing the point here.  b and c could easily be allocated by a function
+> > > alloc_b() that's in another file.
+> > 
+> > I am still missing something.
+> > 
+> > If by "allocated" you mean something like kmalloc(), the compiler doesn't
+> > know the address.  If you instead mean that there is a function that
+> > returns the address of another translation unit's static variable, then
+> > any needed ordering should preferably be built into that function's API.
+> > Either way, one would hope for some documentation of anything the caller
+> > needed to be careful of.
+> > 
+> > > > Besides which, control dependencies should be used only by LKMM experts
+> > > > at this point.  
+> > > 
+> > > What does that even mean?  Control dependencies are everywhere.
+> > 
+> > Does the following work better for you?
+> > 
+> > "... the non-local ordering properties of control dependencies should be
+> > relied on only by LKMM experts ...".
 > 
-> Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
+> No.  I don't know what that means.  And I think very few people would know.
+> 
+> I just want to know if I use the one-time init pattern with a pointer to a data
+> structure foo, are the readers using foo_use() supposed to use READ_ONCE() or
+> are they supposed to use smp_load_acquire().
+> 
+> It seems the answer is that smp_load_acquire() is the only safe choice, since
+> foo_use() *might* involve a control dependency, or might in the future since
+> it's part of another kernel subsystem and its implementation could change.
 
-Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
-> ---
-> Changes in v2
->  - 'cpos' point to the next of entry-set
->  - return the index of dir-entry via dir_entry->entry
->  - fix commit-message
-> 
->  fs/exfat/dir.c      | 21 +++++++++------------
->  fs/exfat/exfat_fs.h |  2 --
->  fs/exfat/file.c     |  2 --
->  fs/exfat/inode.c    |  3 ---
->  fs/exfat/super.c    |  1 -
->  5 files changed, 9 insertions(+), 20 deletions(-)
-> 
-> diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c index
-> a9b13ae3f325..82bee625549d 100644
-> --- a/fs/exfat/dir.c
-> +++ b/fs/exfat/dir.c
-> @@ -59,9 +59,9 @@ static void exfat_get_uniname_from_ext_entry(struct
-> super_block *sb,  }
-> 
->  /* read a directory entry from the opened directory */ -static int
-> exfat_readdir(struct inode *inode, struct exfat_dir_entry *dir_entry)
-> +static int exfat_readdir(struct inode *inode, loff_t *cpos, struct
-> +exfat_dir_entry *dir_entry)
->  {
-> -	int i, dentries_per_clu, dentries_per_clu_bits = 0;
-> +	int i, dentries_per_clu, dentries_per_clu_bits = 0, num_ext;
->  	unsigned int type, clu_offset;
->  	sector_t sector;
->  	struct exfat_chain dir, clu;
-> @@ -70,7 +70,7 @@ static int exfat_readdir(struct inode *inode, struct
-> exfat_dir_entry *dir_entry)
->  	struct super_block *sb = inode->i_sb;
->  	struct exfat_sb_info *sbi = EXFAT_SB(sb);
->  	struct exfat_inode_info *ei = EXFAT_I(inode);
-> -	unsigned int dentry = ei->rwoffset & 0xFFFFFFFF;
-> +	unsigned int dentry = EXFAT_B_TO_DEN(*cpos) & 0xFFFFFFFF;
->  	struct buffer_head *bh;
-> 
->  	/* check if the given file ID is opened */ @@ -127,6 +127,7 @@
-> static int exfat_readdir(struct inode *inode, struct exfat_dir_entry
-> *dir_entry)
->  				continue;
->  			}
-> 
-> +			num_ext = ep->dentry.file.num_ext;
->  			dir_entry->attr = le16_to_cpu(ep->dentry.file.attr);
->  			exfat_get_entry_time(sbi, &dir_entry->crtime,
->  					ep->dentry.file.create_tz,
-> @@ -157,12 +158,13 @@ static int exfat_readdir(struct inode *inode, struct
-> exfat_dir_entry *dir_entry)
->  				return -EIO;
->  			dir_entry->size =
->  				le64_to_cpu(ep->dentry.stream.valid_size);
-> +			dir_entry->entry = dentry;
->  			brelse(bh);
-> 
->  			ei->hint_bmap.off = dentry >> dentries_per_clu_bits;
->  			ei->hint_bmap.clu = clu.dir;
-> 
-> -			ei->rwoffset = ++dentry;
-> +			*cpos = EXFAT_DEN_TO_B(dentry + 1 + num_ext);
->  			return 0;
->  		}
-> 
-> @@ -178,7 +180,7 @@ static int exfat_readdir(struct inode *inode, struct
-> exfat_dir_entry *dir_entry)
->  	}
-> 
->  	dir_entry->namebuf.lfn[0] = '\0';
-> -	ei->rwoffset = dentry;
-> +	*cpos = EXFAT_DEN_TO_B(dentry);
->  	return 0;
->  }
-> 
-> @@ -242,12 +244,10 @@ static int exfat_iterate(struct file *filp, struct
-> dir_context *ctx)
->  	if (err)
->  		goto unlock;
->  get_new:
-> -	ei->rwoffset = EXFAT_B_TO_DEN(cpos);
-> -
->  	if (cpos >= i_size_read(inode))
->  		goto end_of_dir;
-> 
-> -	err = exfat_readdir(inode, &de);
-> +	err = exfat_readdir(inode, &cpos, &de);
->  	if (err) {
->  		/*
->  		 * At least we tried to read a sector.  Move cpos to next
-> sector @@ -262,13 +262,10 @@ static int exfat_iterate(struct file *filp,
-> struct dir_context *ctx)
->  		goto end_of_dir;
->  	}
-> 
-> -	cpos = EXFAT_DEN_TO_B(ei->rwoffset);
-> -
->  	if (!nb->lfn[0])
->  		goto end_of_dir;
-> 
-> -	i_pos = ((loff_t)ei->start_clu << 32) |
-> -		((ei->rwoffset - 1) & 0xffffffff);
-> +	i_pos = ((loff_t)ei->start_clu << 32) |	(de.entry & 0xffffffff);
->  	tmp = exfat_iget(sb, i_pos);
->  	if (tmp) {
->  		inum = tmp->i_ino;
-> diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h index
-> 44dc04520175..e586daf5a2e7 100644
-> --- a/fs/exfat/exfat_fs.h
-> +++ b/fs/exfat/exfat_fs.h
-> @@ -263,8 +263,6 @@ struct exfat_inode_info {
->  	 * the validation of hint_stat.
->  	 */
->  	unsigned int version;
-> -	/* file offset or dentry index for readdir */
-> -	loff_t rwoffset;
-> 
->  	/* hint for cluster last accessed */
->  	struct exfat_hint hint_bmap;
-> diff --git a/fs/exfat/file.c b/fs/exfat/file.c index
-> 4831a39632a1..a92478eabfa4 100644
-> --- a/fs/exfat/file.c
-> +++ b/fs/exfat/file.c
-> @@ -208,8 +208,6 @@ int __exfat_truncate(struct inode *inode, loff_t
-> new_size)
->  	/* hint information */
->  	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
->  	ei->hint_bmap.clu = EXFAT_EOF_CLUSTER;
-> -	if (ei->rwoffset > new_size)
-> -		ei->rwoffset = new_size;
-> 
->  	/* hint_stat will be used if this is directory. */
->  	ei->hint_stat.eidx = 0;
-> diff --git a/fs/exfat/inode.c b/fs/exfat/inode.c index
-> 7f90204adef5..70a33d4807c3 100644
-> --- a/fs/exfat/inode.c
-> +++ b/fs/exfat/inode.c
-> @@ -114,8 +114,6 @@ static int exfat_map_cluster(struct inode *inode,
-> unsigned int clu_offset,
->  	unsigned int local_clu_offset = clu_offset;
->  	unsigned int num_to_be_allocated = 0, num_clusters = 0;
-> 
-> -	ei->rwoffset = EXFAT_CLU_TO_B(clu_offset, sbi);
-> -
->  	if (EXFAT_I(inode)->i_size_ondisk > 0)
->  		num_clusters =
->
-EXFAT_B_TO_CLU_ROUND_UP(EXFAT_I(inode)->i_size_ondisk,
-> @@ -567,7 +565,6 @@ static int exfat_fill_inode(struct inode *inode,
-> struct exfat_dir_entry *info)
->  	ei->hint_stat.eidx = 0;
->  	ei->hint_stat.clu = info->start_clu;
->  	ei->hint_femp.eidx = EXFAT_HINT_NONE;
-> -	ei->rwoffset = 0;
->  	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
->  	ei->i_pos = 0;
-> 
-> diff --git a/fs/exfat/super.c b/fs/exfat/super.c index
-> 3b6a1659892f..b29935a91b9b 100644
-> --- a/fs/exfat/super.c
-> +++ b/fs/exfat/super.c
-> @@ -342,7 +342,6 @@ static int exfat_read_root(struct inode *inode)
->  	ei->flags = ALLOC_FAT_CHAIN;
->  	ei->type = TYPE_DIR;
->  	ei->version = 0;
-> -	ei->rwoffset = 0;
->  	ei->hint_bmap.off = EXFAT_EOF_CLUSTER;
->  	ei->hint_stat.eidx = 0;
->  	ei->hint_stat.clu = sbi->root_dir;
-> --
-> 2.25.1
+First, the specific issue of one-time init.
 
+If you are the one writing the code implementing one-time init, it is your
+choice.  It seems like you prefer smp_load_acquire().  If someone sees
+performance problems due to the resulting memory-barrier instructions,
+they have the option of submitting a patch and either forking the
+implementation or taking your implementation over from you, depending
+on how that conversation goes.
 
+Me, I have thus far managed to avoid relying on non-local ordering
+from control dependencies.  Then again, I have not been working on ring
+buffers or on certain scheduler fastpaths.
+
+Either way, the API should document the requirements on the user.
+
+I leave analysis of DO_ONCE() on the various architectures to people
+who know static branches better than I do.
+
+First, the fully-locked version is fine with normal C-language loads,
+as written in your July patch to recipes.txt.  
+
+Second, the flag-and-global variant of init_foo_if_needed() needs to use
+smp_load_acquire(&foo_inited) if its callers are going to read from the
+initialized data.  The reason for this is that control dependencies order
+later stores, not later loads.  In this case READ_ONCE() absolutely does
+not suffice.  Oddly enough, except on DEC Alpha.  ;-)
+
+So this variant is also fine as written.
+
+Third, your first pointer-based variant works with smp_load_acquire(),
+but could instead use READ_ONCE() as long as it is reworked to something
+like this:
+
+	static struct foo *foo;
+	static DEFINE_MUTEX(foo_init_mutex);
+
+	// The returned pointer must be handled carefully in the same
+	// way as would a pointer returned from rcu_derefeference().
+	// See Documentation/RCU/rcu_dereference.rst.
+	struct foo *init_foo_if_needed(void)
+	{
+		int err = 0;
+		struct foo *retp;
+
+		/* pairs with smp_store_release() below */
+		retp = READ_ONCE(foo);
+		if (retp)
+			return retp;
+
+		mutex_lock(&foo_init_mutex);
+		if (!foo) {
+			// The compiler doesn't know the address:
+			struct foo *p = alloc_foo();
+
+			if (p) /* pairs with smp_load_acquire() above */
+				smp_store_release(&foo, p);
+			else
+				err = -ENOMEM;
+		}
+		mutex_unlock(&foo_init_mutex);
+		return err;
+	}
+
+There are more than 2,000 instances of the rcu_dereference() family of
+primitives in the v5.8 kernel, so it should not be hard to find people
+who are familiar with it.  TL;DR:  Just dereference the pointer and you
+will be fine.
+
+So again, your first pointer-based variant is fine as is, but can be
+safely optimized if its users are comfortable using RCU.  No special LKMM
+expertise is required.  And there is no reliance on non-local ordering
+from any control dependency.
+
+The second pointer-based variant that uses cmpxchg_release() can have
+its read path sped up similarly:
+
+	// The returned pointer must be handled carefully in the same
+	// way as would a pointer returned from rcu_derefeference().
+	// See Documentation/RCU/rcu_dereference.rst.
+	struct foo *init_foo_if_needed(void)
+	{
+		struct foo *p;
+		struct foo *retp;
+
+		/* pairs with successful cmpxchg_release() below */
+		retp = READ_ONCE(foo);
+		if (retp)
+			return retp;
+
+		// The compiler doesn't know the address:
+		p = alloc_foo();
+		if (!p)
+			return -ENOMEM;
+
+		/* on success, pairs with smp_load_acquire() above and below */
+		if (cmpxchg_release(&foo, NULL, p) != NULL) {
+			free_foo(p);
+			/* pairs with successful cmpxchg_release() above */
+			smp_load_acquire(&foo);
+		}
+		return 0;
+	}
+
+Again, this works fine if its users are comfortable using RCU, no special
+LKMM knowledge is required.  And again, there is no reliance on non-local
+ordering from any control dependency.
+
+In both cases, the only reason to avoid smp_load_acquire() is performance.
+And init_foo_if_needed() would need to be on a pretty hot code path for
+anyone to be able to see the performance difference.
+
+In short, this is all about engineering tradeoffs, which include not only
+performance and scalability, but also ease of use, maintainability, and
+so on and so forth.  I cannot possibly give you a "one size fits all"
+answer, because one size does not fit all.
+
+> > If this control dependency's non-local ordering places any requirements on
+> > the users of that code, those requirements need to be clearly documented.
+> > It is of course better if the control dependency's non-local ordering
+> > properties are local to the code containing those control dependencies
+> > so that the callers don't need to worry about the resulting non-local
+> > ordering.
+> > 
+> > > > But in the LKMM documentation, you are likely to find LKMM experts who
+> > > > want to optimize all the way, particularly in cases like the one-time
+> > > > init pattern where all the data is often local.  And the best basis for
+> > > > READ_ONCE() in one-time init is not a control dependency, but rather
+> > > > ordering of accesses to a single variable from a single task combined
+> > > > with locking, both of which are quite robust and much easier to use,
+> > > > especially in comparison to control dependencies.
+> > > > 
+> > > > My goal for LKMM is not that each and every developer have a full
+> > > > understanding of every nook and cranny of that model, but instead that
+> > > > people can find the primitives supporting the desired point in the
+> > > > performance/simplicity tradoff space.  And yes, I have more writing
+> > > > to do to make more progress towards that goal.
+> > > 
+> > > So are you saying people should use smp_load_acquire(), or are you saying people
+> > > should use READ_ONCE()?
+> > 
+> > C'mon, you know the answer to that!  ;-)
+> > 
+> > The answer is that it depends on both the people and the situation.
+> > 
+> > In the specific case of crng, where you need address dependency
+> > ordering but the pointed-to data is dynamically allocated and never
+> > deallocated, READ_ONCE() now suffices [1].  Of course, smp_load_acquire()
+> > also suffices, at the cost of extra/expensive instructions on some
+> > architectures.  The cmpxchg() needs at least release semantics, but
+> > presumably no one cares if this operation is a bit more expensive than
+> > it needs to be.
+> > 
+> > So, is select_crng() used on a fastpath?  If so, READ_ONCE()
+> > might be necessary.  If not, why bother with anything stronger than
+> > smp_load_acquire()?  The usual approach is to run this both ways on ARM
+> > or PowerPC and see if it makes a significant difference.  If there is
+> > no significant difference, keep it simple and just use smp_load_acquire().
+> > 
+> > If the code was sufficiently performance-insensitive, even better would
+> > be to just use locking.  My hope is that no one bothered with the atomics
+> > without a good reason, but you never know.
+> > 
+> > I confess some uncertainty as to how the transition from the global
+> > primary_crng and the per-NUMA-node locks is handled.  I hope that the
+> > global primary_crng guards global state that is disjoint from the state
+> > being allocated by do_numa_crng_init()!
+> 
+> crng_node_pool just uses the one-time init pattern.  It's nothing unusual; lots
+> of other places in the kernel want to do one-time initialization too.  It seems
+> to be one of the more common cases where people run into the LKMM at all.
+> I tried to document it in
+> https://lkml.kernel.org/lkml/20200717044427.68747-1-ebiggers@kernel.org/T/#u,
+> but people complained it was still too complicated.
+
+Well, submitting that patch certainly did get a discussion going!
+
+I am not sold on using one-time init as an example in recipes.txt.
+But I don't see any of your implementations as being too complex for
+the kernel, at least assuming that your more complex examples really
+are justified by real performance data.  Lacking such data, you should
+of course keep it simple.
+
+> I hope that people can at least reach some general recommendation about
+> READ_ONCE() vs. smp_load_acquire(), so that every kernel developer doesn't have
+> to understand the detailed difference, and so that we don't need to have a long
+> discussion (potentially requiring LWN coverage) about every patch.
+
+I am sorry, but I don't expect that kind of general recommendation
+any more than I expect the kernel to standardize on one particular
+type of binary tree.
+
+The best that I can do is to say that the more users a given artifact has,
+the more worthwhile it is to invest in small increments of performance.
+And scalability.  And usability.  And ...
+
+> > Use the simplest thing that gets the job done.  Which in the Linux kernel
+> > often won't be all that simple, but life is like that sometimes.
+> > 
+> > 							Thanx, Paul
+> > 
+> > [1]	It used to be that READ_ONCE() did -not- suffice on DEC Alpha,
+> > 	but this has thankfully changed, so that lockless_dereference()
+> > 	is no more.
+> 
+> Let me give an example using spinlock_t, since that's used in crng_node_pool.
+> However, it could be any other data structure too; this is *just an example*.
+> And it doesn't matter if the implementation is currently different; the point is
+> that it's an *implementation*.
+> 
+> The allocation side uses spin_lock_init(), while the read side uses spin_lock().
+> Let's say that some debugging feature is enabled where spin locks use some
+> global debugging information (say, a list of all locks) that gets allocated the
+> first time a spin lock is initialized:
+> 
+> 	static struct spin_lock_debug_info *debug_info;
+> 	static DEFINE_MUTEX(debug_info_alloc_mutex);
+> 
+> 	void spin_lock_init(spinlock_t *lock)
+> 	{
+> 	#ifdef CONFIG_DEBUG_SPIN_LOCKS
+> 		mutex_lock(&debug_info_alloc_mutex);
+> 		if (!debug_info)
+> 			debug_info = alloc_debug_info();
+> 		add_lock(debug_info, lock);
+> 		mutex_unlock(&debug_info_alloc_mutex);
+> 	#endif
+> 		real_spin_lock_init(lock);
+> 	}
+> 
+> 	void spin_lock(spinlock_t *lock)
+> 	{
+> 	#ifdef CONFIG_DEBUG_SPIN_LOCKS
+> 		debug_info->...; # use the debug info
+> 	#endif
+> 		real_spin_lock(lock);
+> 	}
+> 
+> In that case, readers would have a control dependency between the condition of
+> the data struct containing the spinlock_t being non-NULL, and the dereference of
+> debug_info by spin_lock().  So anyone "receiving" a data structure containing a
+> spinlock_t would need to use smp_load_acquire(), not READ_ONCE().
+
+Sorry, no.
+
+The user had jolly well better make -very- sure that the call to
+spin_lock_init() is ordered before any call to spin_lock().  Running
+spin_lock() concurrently with spin_lock_init() will bring you nothing
+but sorrow, even without that debug_info control-dependency issue.
+
+In the various one-time init examples, the required ordering would be
+correctly supplied if spin_lock_init() was invoked by init_foo() or
+alloc_foo(), depending on the example, and used only after a successful
+return from init_foo_if_needed().  None of these examples rely on control
+dependencies.
+
+> Point is, whether it's safe to use READ_ONCE() with a data structure or not is
+> an implementation detail, not an API guarantee.
+
+Again, no.  It is perfectly possible to design APIs that hide
+the ordering.  In that case, the use of READ_ONCE() is an internal
+design decision for the guy writing the code that implements the API.
+For example, RCU calls schedule() and doesn't need to know or care that
+some portions of the scheduler rely on control dependencies (or at least
+they did last I looked).
+
+Of course, it is also possible to hack together an API that exposes strange
+ordering details, and sometimes it is even necessary.  But even then the
+ordering needs to be documented.
+
+							Thanx, Paul
