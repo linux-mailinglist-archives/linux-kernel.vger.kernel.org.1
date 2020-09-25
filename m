@@ -2,142 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB3D27928D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 959DC279213
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729192AbgIYUpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:45:45 -0400
-Received: from mga06.intel.com ([134.134.136.31]:13954 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727700AbgIYUpl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:45:41 -0400
-IronPort-SDR: Z19aS+rSkNm31qC41tGWCergBYAAeEDI+OunkHYGCIcTtTYmZJwiW8m+gtdoLipY9vgP9NPN+9
- H6GU5Z25EigA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="223221353"
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="223221353"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:53:39 -0700
-IronPort-SDR: gTkE6hQY0YJIndng2DIGEcKGlhUYFgph1srR1Bvr7DQmWkfsR46L5Vz5jN97Kr6QqPM9/oNZBg
- ajy7lCdj55bg==
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="339623947"
-Received: from khansen1-mobl.amr.corp.intel.com (HELO [10.209.154.38]) ([10.209.154.38])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:53:36 -0700
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-References: <20200924192853.GA18826@linux.intel.com>
- <c680f7bd-2d82-6477-707f-cd03aae4b4aa@intel.com>
- <20200924200156.GA19127@linux.intel.com>
- <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
- <20200924202549.GB19127@linux.intel.com>
- <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
- <20200924230501.GA20095@linux.intel.com>
- <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
- <20200925000052.GA20333@linux.intel.com>
- <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
- <20200925194304.GE31528@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <230ce6da-7820-976f-f036-a261841d626f@intel.com>
-Date:   Fri, 25 Sep 2020 12:53:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729075AbgIYUdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727078AbgIYUXf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:23:35 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E20C0613BC
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:56:31 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id u4so3405863ljd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:56:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qUiy2ig2a15MrzQwKLflyxH1xyfxaBmeAG61rIjvflk=;
+        b=K2e+w8y0EFDqfA6rNqzjoQsIAS1IBF+m+AAbrXyUmRaFi0guqcGQf95oAMkA5qmqSG
+         mX05KX/tiJGJFcjwBr2/LwKRNzqV/6s1eUoxd4qJUIgVvGCKzIklVLTVB2RdIqxx8zO8
+         h4nz26JplzDj2c4dht03UI5Iwc+kEchIVoPy8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qUiy2ig2a15MrzQwKLflyxH1xyfxaBmeAG61rIjvflk=;
+        b=pO0yKPjxbpijvHsERgGiqTkVSLd5JMJdK8wefHS+yG1aer8jgD3xOZveCFUxlOUS5q
+         WKrCs0NauxC8yjlxMiQlUEmOWTEo6ixn0deM8j5r2S8dpOhHKesqApO2SMKy51Afl5zx
+         A28TFjD4Lf64tDHykqh0MDW7t6fO8MH1ssgocY3fJ3A4hhBT4DTzz5+8CzgELan1VRBj
+         ZhYO5vOhu6Jvc6/Dn+b3u01lWpaqKxXEZ4M2+sAl7GQho+nW5sQGR6/HSKDoSEdMhw8L
+         FBEO2H5ZszMCO6w2rOFmu8bdm8r8SQY4CAgtOnaEvlZIICAbXAuOqyQr1s8+VvZQP8Yi
+         0EUg==
+X-Gm-Message-State: AOAM530hZVEEMa2BYMFbe98xXN6y1GaU+tAS2dMi2MLPleyCjJJ4brGC
+        kFR2ij5S72ZcaZHOpZQX//8UZqUNIVCejw==
+X-Google-Smtp-Source: ABdhPJxhzGrboqRM9eMkTrmJu0o8pPWqjpN+EQKU3ZVlVymggYVqgPm4WxubA7Lwtls8N5EdJPLWkQ==
+X-Received: by 2002:a2e:8593:: with SMTP id b19mr1760549lji.290.1601063788698;
+        Fri, 25 Sep 2020 12:56:28 -0700 (PDT)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id k3sm79941lfg.300.2020.09.25.12.56.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 12:56:22 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id u8so4141876lff.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:56:22 -0700 (PDT)
+X-Received: by 2002:a19:e00a:: with SMTP id x10mr150939lfg.603.1601063781887;
+ Fri, 25 Sep 2020 12:56:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200925194304.GE31528@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200922175415.GI19098@xz-x1> <20200922191116.GK8409@ziepe.ca>
+ <20200923002735.GN19098@xz-x1> <20200923170759.GA9916@ziepe.ca>
+ <20200924143517.GD79898@xz-x1> <20200924165152.GE9916@ziepe.ca>
+ <20200924175531.GH79898@xz-x1> <20200924181501.GF9916@ziepe.ca>
+ <20200924183418.GJ79898@xz-x1> <20200924183953.GG9916@ziepe.ca> <20200924213010.GL79898@xz-x1>
+In-Reply-To: <20200924213010.GL79898@xz-x1>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 25 Sep 2020 12:56:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgz5SXKA6-uZ_BimOP1C7pHJag0ndz=tnJDAZS_Z+FrGQ@mail.gmail.com>
+Message-ID: <CAHk-=wgz5SXKA6-uZ_BimOP1C7pHJag0ndz=tnJDAZS_Z+FrGQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, John Hubbard <jhubbard@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/20 12:43 PM, Sean Christopherson wrote:
->> That means that the intent argument (SGX_PROT_*) is currently unused.
-> No, the intent argument is used (eventually) by SGX's ->mprotect()
-> implementation, i.e. sgx_mprotect() enforces that the actual protections are a
-> subset of the declared/intended protections.
-> 
-> If ->mprotect() is not merged, then it yes, it will be unused.
+On Thu, Sep 24, 2020 at 2:30 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> > >
+> > > With the extra mprotect(!WRITE), I think we'll see a !pte_write() entry.  Then
+> > > it'll not go into maybe_dma_pinned() at all since cow==false.
+> >
+> > Hum that seems like a problem in this patch, we still need to do the
+> > DMA pinned logic even if the pte is already write protected.
+>
+> Yes I agree.  I'll take care of that in the next version too.
 
-OK, I think I've got it.
+You people seem to be worrying too much about crazy use cases.
 
-I think I'm OK with adding ->mprotect().  As long as folks buy into the
-argument that intent needs to be checked at mmap() time, they obviously
-need to be checked at mprotect() too.
+The fact is, if people do pinning, they had better be careful
+afterwards. I agree that marking things MADV_DONTFORK may not be
+great, and there may be apps that do it. But honestly, if people then
+do mprotect() to make a VM non-writable after pinning a page for
+writing (and before the IO has completed), such an app only has itself
+to blame.
 
-Jarkko, if you want to try and rewrite the changelog, capturing the
-discussion here and reply, I think I can ack the resulting patch.  I
-don't know if that will satisfy the request from Boris from an ack from
-a "mm person", but we can at least start there. :)
+So I don't think this issue is even worth worrying about.  At some
+point, when apps do broken things, the kernel says "you broke it, you
+get to keep both pieces". Not "Oh, you're doing unreasonable things,
+let me help you".
 
-Please be judicious in what you include in the changelog.  There's been
-a lot of detritus in them.  Let's keep it as short, sweet, simple and on
-topic as we can.
+This has dragged out a lot longer than I hoped it would, and I think
+it's been over-complicated.
+
+In fact, looking at this all, I'm starting to think that we don't
+actually even need the mm_struct.has_pinned logic, because we can work
+with something much simpler: the page mapping count.
+
+A pinned page will have the page count increased by
+GUP_PIN_COUNTING_BIAS, and my worry was that this would be ambiguous
+with the traditional "fork a lot" UNIX style behavior. And that
+traditional case is obviously one of the cases we very much don't want
+to slow down.
+
+But a pinned page has _another_ thing that is special about it: the
+pinning action broke COW.
+
+So I think we can simply add a
+
+        if (page_mapcount(page) != 1)
+                return false;
+
+to page_maybe_dma_pinned(), and that very naturally protects against
+the "is the page count perhaps elevated due to a lot of forking?"
+
+Because pinning forces the mapcount to 1, and while it is pinned,
+nothing else should possibly increase it - since the only thing that
+would increase it is fork, and the whole point is that we won't be
+doing that "page_dup_rmap()" for this page (which is what increases
+the mapcount).
+
+So we actually already have a very nice flag for "this page isn't
+duplicated by forking".
+
+And if we keep the existing early "ptep_set_wrprotect()", we also know
+that we cannot be racing with another thread that is pinning at the
+same time, because the fast-gup code won't be touching a read-only
+pte.
+
+So we'll just have to mark it writable again before we release the
+page table lock, and we avoid that race too.
+
+And honestly, since this is all getting fairly late in the rc, and it
+took longer than I thought, I think we should do the GFP_ATOMIC
+approach for now - not great, but since it only triggers for this case
+that really should never happen anyway, I think it's probably the best
+thing for 5.9, and we can improve on things later.
+
+                 Linus
