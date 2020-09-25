@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30ED3279442
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549F7279446
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729001AbgIYWhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:37:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbgIYWhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:37:48 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA41DC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:37:47 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id a3so4430133oib.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:37:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1GUnPWZQb3wmsz17jd8cPsFjDlwSIdeaeunn4YKd8bc=;
-        b=cUGmiVVab0u8mYTiDe3U8u1ya2bN2aQHwiRyr0oN+SEQeoBac0yel+rVAJpG23d6Cw
-         SkWYyhXR+Q0RhmtVczpwc52Ra7P92GEyVfLujifP74L85bN+J8e9V+D07zbcd4hggTWn
-         sTf5Y3Nm3Lj+rn13yl8gTMvITuy5xWYxaBBBg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=1GUnPWZQb3wmsz17jd8cPsFjDlwSIdeaeunn4YKd8bc=;
-        b=O77pLodq1lg+vulpudxLP/QOEvKbwr5wIgyOl7o1o/p004daV96biZyaeE99/j3Z5y
-         dxzE18mSzd7IReeGFH5Et6bppdaclvWP4m9dwMJcBmbWkxQOyIeVVnuDs4pkXTzjPln1
-         Gi4+C200bdrN4vj9bVdpSI/7IsZYiGN1GU55lqsPZ1LxFldI/FogRt49aqLZ36wkPOh3
-         OxWK+HB0cB1pGZIy9ln8XC3OLiuIP4QPp0nhXdfduapJUkKVhmPETnMc3T2lwVEr7cZ+
-         MP9S1Q7yv5y511WrG09dmgR5USkYwAbAREafQTquuv3IGOcRJHlSt0COFryqBlz6y5k4
-         yN9Q==
-X-Gm-Message-State: AOAM531UYIYi3rqpW77hVw9FL/6Of0zCqtC2RxI9OAOS2c3xJuxQ0SU5
-        SlsNNUMZnXhpYGys+fNly1Ldkw==
-X-Google-Smtp-Source: ABdhPJzlc9XcIwkgj1jA3voZXHCy+z/zzMdn6CUvY2QhJa2e+80Yy/KlTGUEECczFqtoREwqoRqFAA==
-X-Received: by 2002:aca:d693:: with SMTP id n141mr496407oig.26.1601073467264;
-        Fri, 25 Sep 2020 15:37:47 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i7sm983027oto.62.2020.09.25.15.37.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 15:37:46 -0700 (PDT)
-Subject: Re: [PATCHv5 kselftest next] selftests/run_kselftest.sh: make each
- test individually selectable
-To:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>
-Cc:     Hangbin Liu <liuhangbin@gmail.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-doc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>, Tim.Bird@sony.com,
-        lkft-triage@lists.linaro.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20200914021758.420874-1-liuhangbin@gmail.com/>
- <20200914022227.437143-1-liuhangbin@gmail.com>
- <CA+G9fYvT6Mw2BamoiVyw=wLUqD-3LB2oaDqcuabOyWfFxEN1qg@mail.gmail.com>
- <202009251414.15274C0@keescook>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <659b23c9-abf5-0387-c4c6-5d0a48e3afdc@linuxfoundation.org>
-Date:   Fri, 25 Sep 2020 16:37:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729098AbgIYWh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:37:57 -0400
+Received: from mga05.intel.com ([192.55.52.43]:49071 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726559AbgIYWh4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:37:56 -0400
+IronPort-SDR: jwty8pPP8LavWVNaDBq3vhrAI0H7kV0+Dzae5XMipYQ54ieuiXrDGAkGyqkkLyP8z/zGiiQtts
+ J9ZQMF1h51Kg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="246439561"
+X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
+   d="scan'208";a="246439561"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 15:37:56 -0700
+IronPort-SDR: g1P/W0WSXpvqYtJ+RK6vmgiPnlKkCFM5ZGrgrPwdC1lcsWkmurjz/yyKmX6ekgqUYQMBbdT9US
+ VHa7bmLanv4Q==
+X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
+   d="scan'208";a="512409967"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 15:37:55 -0700
+Date:   Fri, 25 Sep 2020 15:37:54 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, yaozhangx@google.com
+Subject: Re: [PATCH v38 24/24] x86/sgx: Update MAINTAINERS
+Message-ID: <20200925223753.GA9998@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-25-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <202009251414.15274C0@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200915112842.897265-25-jarkko.sakkinen@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/20 3:16 PM, Kees Cook wrote:
-> On Fri, Sep 25, 2020 at 01:51:53PM +0530, Naresh Kamboju wrote:
->> On Mon, 14 Sep 2020 at 07:53, Hangbin Liu <liuhangbin@gmail.com> wrote:
->>>
->>> Currently, after generating run_kselftest.sh, there is no way to choose
->>> which test we could run. All the tests are listed together and we have
->>> to run all every time. This patch enhanced the run_kselftest.sh to make
->>> the tests individually selectable. e.g.
->>>
->>>    $ ./run_kselftest.sh -t "bpf size timers"
->>
->> My test run break on linux next
->>
->> ./run_kselftest.sh: line 1331: syntax error near unexpected token `)'
->> ./run_kselftest.sh: line 1331: `-e -s | --summary )
->> logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;'
+On Tue, Sep 15, 2020 at 02:28:42PM +0300, Jarkko Sakkinen wrote:
+> Add the maintainer information for the SGX subsystem.
 > 
-> Yes, please revert this patch. The resulting script is completely
-> trashed:
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> ---
+>  MAINTAINERS | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> BASE_DIR=$(realpath $(dirname $0))
-> . ./kselftest/runner.sh
-> TESTS="seccomp"
-> 
-> run_seccomp()
-> {
-> -e      [ -w /dev/kmsg ] && echo "kselftest: Running tests in seccomp" >> /dev/kmsg
-> -e      cd seccomp
-> -en     run_many
->          \
-> -ne             "seccomp_bpf"
->          \
-> -ne             "seccomp_benchmark"
-> 
-> -e      cd $ROOT
-> }
-> 
-> 
-> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3b186ade3597..1d4daeb12d0a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9051,6 +9051,17 @@ F:	Documentation/x86/intel_txt.rst
+>  F:	arch/x86/kernel/tboot.c
+>  F:	include/linux/tboot.h
+>  
+> +INTEL SGX
+> +M:	Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> +M:	Sean Christopherson <sean.j.christopherson@intel.com>
+> +L:	linux-sgx@vger.kernel.org
+> +S:	Maintained
+> +Q:	https://patchwork.kernel.org/project/intel-sgx/list/
+> +T:	git https://github.com/jsakkine-intel/linux-sgx.git
 
-Will do.
+This is stale, you moved your tree to kernel.org.
 
-thanks,
--- Shuah
+> +F:	arch/x86/include/uapi/asm/sgx.h
+> +F:	arch/x86/kernel/cpu/sgx/*
+> +K:	\bSGX_
+> +
+>  INTERCONNECT API
+>  M:	Georgi Djakov <georgi.djakov@linaro.org>
+>  L:	linux-pm@vger.kernel.org
+> -- 
+> 2.25.1
+> 
