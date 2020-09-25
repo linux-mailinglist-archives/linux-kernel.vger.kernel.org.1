@@ -2,143 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A302793F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6564F2793F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727654AbgIYWIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:08:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37652 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726731AbgIYWIN (ORCPT
+        id S1728477AbgIYWIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:08:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726731AbgIYWIY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:08:13 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601071691;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oyEiYOKdzKVlvL5D6nWRiuLWCYpicqvgUJmqZ1lXRwE=;
-        b=LLshTXEv9LEIjfKtkttp80PFnVjeDMOt2VleST9nPiowT/EnOh6WJTWwNPzCGh/FqD23n9
-        8PSb7nyvP/JqdS81foFqN5oduUDIFrsPmYoI1lIF18AB0WlGl+4X/gnCZnqjx9+rsDcL6+
-        UvaLUAqtvNcdcYLUz9gKsmwzimgcOW0=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-264-H5J6LlwWNpWn-e1Dd1PsNw-1; Fri, 25 Sep 2020 18:08:09 -0400
-X-MC-Unique: H5J6LlwWNpWn-e1Dd1PsNw-1
-Received: by mail-qv1-f70.google.com with SMTP id 99so2748604qva.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:08:09 -0700 (PDT)
+        Fri, 25 Sep 2020 18:08:24 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A83C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:08:24 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mn7so194794pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:08:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GZxOp9tVMkxfN5SUB+XDS9nUQK1Eu5dH5U37a/M6GoE=;
+        b=BaEN8KyJCF6NBhUqisFySpUDzKj1IIziINakIejJOH5OPzj0MU6loF2dN0r+JdSbIt
+         WrK/6gfyc5lvXal98V+aXLUdyjM3MRkQL4pXVdS/KyMNDlU58hC5ayOKl6BWXWqMby9x
+         xyjNiJ9RNfSDfYusdiTQz2VZibawpH/7a3g3wbs7Yy906rTuZzIwOwZPszbojcnTnsHU
+         1AHepO7bY/0dxoOACk4Jg91d9la5uWkPpl2XaVMCUgRPoqeF/BmFXQoT7bGGqN+hif95
+         nvjfaxm/41g/tjczKZJoXWwdgddVcZ09fi1QfwMPsIeKnlTLUjviufV+p+OhyYYb6scn
+         XXBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
-         :in-reply-to:references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=oyEiYOKdzKVlvL5D6nWRiuLWCYpicqvgUJmqZ1lXRwE=;
-        b=C3kQ75IfK4pCP42AEcI37F11VsFhrxUY4JIMsItgsUm6i5c+WXzjD7AlVrpkNcmeoX
-         U3x/U39vMma69knH9tbswBrDVz0tYhXN9fLmaRGbtkWzYreoP138KRWsnVLm1f3VhvrH
-         xFVDpH/KWNM+UpsJL6L8Qb+FqOw5LGUygHMuQ8thg/IMiBz8ERCpYLfO3QOAUQ+3fKQ3
-         O4l7My5Bt+gK9NR8QWcAPhTCm0twODjmrWdRS9XgzezK/FsBNIkR4L039ojIlPNbKuU/
-         aum1VtiWT5rvBc70XTEdVraPUNrsf/UjValml9r9hFrX34k2/7qbxvvRvlh2yAErWH6w
-         AOvg==
-X-Gm-Message-State: AOAM531tEmWN2u+k7MeFaTv+zuw/zPugzZ+RKtqGfRNntdJr1QHZluNv
-        bvZ6gt6cKuILc5dhNX3bvjRCrlpW1HnJqpgX4AL3Buw2yjEQkXc+W8w79uxL7Y2HTvvkV0O+6cZ
-        eEk4p6PjU/TDKNhFyJJTWAICX
-X-Received: by 2002:a37:6805:: with SMTP id d5mr2172649qkc.116.1601071688736;
-        Fri, 25 Sep 2020 15:08:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyaqMI5NTbDpcpde/1VdVcXIUjX7In3tEFt7Qxf4XnALVe2p6YGM2Pd1kZuXyUxB7ftE3XQxQ==
-X-Received: by 2002:a37:6805:: with SMTP id d5mr2172612qkc.116.1601071688377;
-        Fri, 25 Sep 2020 15:08:08 -0700 (PDT)
-Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id h68sm2659867qkf.30.2020.09.25.15.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 15:08:07 -0700 (PDT)
-Message-ID: <8bd8ee03f88e7e674e0ea8c6d63d783777cfe414.camel@redhat.com>
-Subject: Re: [PATCH] drm/nouveau/kms/nv50-: Fix clock checking algorithm in
- nv50_dp_mode_valid()
-From:   Lyude Paul <lyude@redhat.com>
-Reply-To: lyude@redhat.com
-To:     Ilia Mirkin <imirkin@alum.mit.edu>
-Cc:     nouveau <nouveau@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>, Ben Skeggs <bskeggs@redhat.com>
-Date:   Fri, 25 Sep 2020 18:08:06 -0400
-In-Reply-To: <CAKb7Uvj++15aEXiLGgSZb37wwzDSRCetVT+trP6JNwhk8n-whA@mail.gmail.com>
-References: <20200922210510.156220-1-lyude@redhat.com>
-         <CAKb7UvhAb0wFd9Qi1FGJ=TAYZJ9DYXL6XXMfnG49xEO=a9TuYg@mail.gmail.com>
-         <7b10668ee337e531b14705ebecb1f6c1004728d6.camel@redhat.com>
-         <CAKb7Uvj++15aEXiLGgSZb37wwzDSRCetVT+trP6JNwhk8n-whA@mail.gmail.com>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GZxOp9tVMkxfN5SUB+XDS9nUQK1Eu5dH5U37a/M6GoE=;
+        b=YlXQeLWQJfaQIKCY14bCFermZmj4fhH8jlOx08nPvqjrkmkZ5WWqV0K9X/mR0n5RVM
+         5lp9adrFdRMSt5y1C17Imvtx2/nX7cCxvnI3ELGD7RkBbZxnk7aKTFnjITCebeBk2Th3
+         QLRIRtdtAitD6HDy8bS/1uwezD7nFZE1Ee4UOd6VNB427xCzB/CZ6xY3FLSBE92QGgmB
+         PY/xEFAyEojFBHpCvjlsSywX2v2cHU4l1Z78oUemxU/ekr+7hN57UI29O+vhyvuhOr7T
+         bVBZ4ymb4xRlcPiESJQhOpRP+61zucJ04gMt6FQKPzJGrk2QxTLNjnYVdGVpAV9DoCRb
+         BB5A==
+X-Gm-Message-State: AOAM531Isu+wJm05GWtaQDKYOufB/jJXW+C2W038mA6wxnpBf7wo7/k8
+        yND2wCo+Ii5IZcmyToF7s/FBnw==
+X-Google-Smtp-Source: ABdhPJw0tEKLdmdxCfm53AhkjiCExkZGb69Mhfj2dejUvBsJrdED2GVLcEupZ2SbyyV4uZ2ekJdFDg==
+X-Received: by 2002:a17:90a:f411:: with SMTP id ch17mr571481pjb.38.1601071703555;
+        Fri, 25 Sep 2020 15:08:23 -0700 (PDT)
+Received: from [10.212.51.97] ([192.55.54.42])
+        by smtp.gmail.com with ESMTPSA id b11sm3544145pfd.33.2020.09.25.15.08.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 15:08:22 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Sinan Kaya" <okaya@kernel.org>
+Subject: Re: [PATCH v6 04/10] PCI/AER: Extend AER error handling to RCECs
+Date:   Fri, 25 Sep 2020 15:08:20 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <4F494177-8691-4110-9BB0-97D35F233892@intel.com>
+In-Reply-To: <20200925211407.GA2457926@bjorn-Precision-5520>
+References: <20200925211407.GA2457926@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2020-09-22 at 17:22 -0400, Ilia Mirkin wrote:
-> On Tue, Sep 22, 2020 at 5:14 PM Lyude Paul <lyude@redhat.com> wrote:
-> > On Tue, 2020-09-22 at 17:10 -0400, Ilia Mirkin wrote:
-> > > Can we use 6bpc on arbitrary DP monitors, or is there a capability for
-> > > it? Maybe only use 6bpc if display_info.bpc == 6 and otherwise use 8?
-> > 
-> > I don't think that display_info.bpc actually implies a minimum bpc, only a
-> > maximum bpc iirc (Ville would know the answer to this one). The other thing
-> > to
-> > note here is that we want to assume the lowest possible bpc here since we're
-> > only concerned if the mode passed to ->mode_valid can be set under -any-
-> > conditions (including those that require lowering the bpc beyond it's
-> > maximum
-> > value), so we definitely do want to always use 6bpc here even once we get
-> > support for optimizing the bpc based on the available display bandwidth.
-> 
-> Yeah, display_info is the max bpc. But would an average monitor
-> support 6bpc? And if it does, does the current link training code even
-> try that when display_info.bpc != 6?
+On 25 Sep 2020, at 14:14, Bjorn Helgaas wrote:
 
-So I did confirm that 6bpc support is mandatory for DP, so yes-6 bpc will always
-work.
+> [+cc Sinan, who's been reviewing changes in this area (thanks, 
+> Sinan!)]
+>
+> On Tue, Sep 22, 2020 at 02:38:53PM -0700, Sean V Kelley wrote:
+>> From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>>
+>> Currently the kernel does not handle AER errors for Root Complex
+>> integrated End Points (RCiEPs)[0]. These devices sit on a root bus 
+>> within
+>> the Root Complex (RC). AER handling is performed by a Root Complex 
+>> Event
+>> Collector (RCEC) [1] which is a effectively a type of RCiEP on the 
+>> same
+>> root bus.
+>>
+>> For an RCEC (technically not a Bridge), error messages "received" 
+>> from
+>> associated RCiEPs must be enabled for "transmission" in order to 
+>> cause a
+>> System Error via the Root Control register or (when the Advanced 
+>> Error
+>> Reporting Capability is present) reporting via the Root Error Command
+>> register and logging in the Root Error Status register and Error 
+>> Source
+>> Identification register.
+>>
+>> In addition to the defined OS level handling of the reset flow for 
+>> the
+>> associated RCiEPs of an RCEC, it is possible to also have non-native
+>> handling. In that case there is no need to take any actions on the 
+>> RCEC
+>> because the firmware is responsible for them. This is true where APEI 
+>> [2]
+>> is used to report the AER errors via a GHES[v2] HEST entry [3] and
+>> relevant AER CPER record [4] and non-native handling is in use.
+>>
+>> We effectively end up with two different types of discovery for
+>> purposes of handling AER errors:
+>>
+>> 1) Normal bus walk - we pass the downstream port above a bus to which
+>> the device is attached and it walks everything below that point.
+>>
+>> 2) An RCiEP with no visible association with an RCEC as there is no 
+>> need
+>> to walk devices. In that case, the flow is to just call the callbacks 
+>> for
+>> the actual device, which in turn references its associated RCEC.
+>>
+>> A new walk function pci_bridge_walk(), similar to pci_bus_walk(),
+>> is provided that takes a pci_dev instead of a bus. If that bridge
+>> corresponds to a downstream port it will walk the subordinate bus of
+>> that bridge. If the device does not then it will call the function on
+>> that device alone.
+>>
+>> [0] ACPI PCI Express Base Specification 5.0-1 1.3.2.3 Root Complex
+>> Integrated Endpoint Rules.
+>> [1] ACPI PCI Express Base Specification 5.0-1 6.2 Error Signalling 
+>> and
+>> Logging
+>> [2] ACPI Specification 6.3 Chapter 18 ACPI Platform Error Interface 
+>> (APEI)
+>> [3] ACPI Specification 6.3 18.2.3.7 Generic Hardware Error Source
+>> [4] UEFI Specification 2.8, N.2.7 PCI Express Error Section
+>>
+>> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>
+> I like this patch.  I think there are a few things that could be
+> peeled off as "no functional change" preliminary patches to make the
+> important changes more obvious in the "money patch".
 
-But also, your second comment doesn't really apply here. So: to be clear, we're
-not really concerned here about whether nouveau will actually use 6bpc or not. 
-In truth I'm not actually sure either if we have any code that uses 6bpc (iirc
-we don't), since we don't current optimize bpc. I think it's very possible for
-us to use 6bpc for eDP displays if I recall though, but I'm not sure on that.
+Great, it was helpful to discuss at LPC to give it more clarity.
+>
+>> ---
+>>  drivers/pci/pci.h      |  2 +-
+>>  drivers/pci/pcie/err.c | 77 
+>> +++++++++++++++++++++++++++++++-----------
+>>  2 files changed, 59 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+>> index 83670a6425d8..7b547fc3679a 100644
+>> --- a/drivers/pci/pci.h
+>> +++ b/drivers/pci/pci.h
+>> @@ -575,7 +575,7 @@ static inline int 
+>> pci_dev_specific_disable_acs_redir(struct pci_dev *dev)
+>>  /* PCI error reporting and recovery */
+>>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>  			pci_channel_state_t state,
+>> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev));
+>> +			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev 
+>> *pdev));
+>>
+>>  bool pcie_wait_for_link(struct pci_dev *pdev, bool active);
+>>  #ifdef CONFIG_PCIEASPM
+>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>> index c543f419d8f9..e575fa6cee63 100644
+>> --- a/drivers/pci/pcie/err.c
+>> +++ b/drivers/pci/pcie/err.c
+>> @@ -146,38 +146,73 @@ static int report_resume(struct pci_dev *dev, 
+>> void *data)
+>>  	return 0;
+>>  }
+>>
+>> +/**
+>> + * pci_bridge_walk - walk bridges potentially AER affected
+>> + * @bridge   bridge which may be an RCEC with associated RCiEPs,
+>> + *           an RCiEP associated with an RCEC, or a Port.
+>> + * @cb       callback to be called for each device found
+>> + * @userdata arbitrary pointer to be passed to callback.
+>> + *
+>> + * If the device provided is a bridge, walk the subordinate bus,
+>> + * including any bridged devices on buses under this bus.
+>> + * Call the provided callback on each device found.
+>> + *
+>> + * If the device provided has no subordinate bus, call the provided
+>> + * callback on the device itself.
+>> + */
+>> +static void pci_bridge_walk(struct pci_dev *bridge, int (*cb)(struct 
+>> pci_dev *, void *),
+>
+> Maybe call this pci_walk_bridge() so it's the same order as the
+> existing pci_walk_bus(), unless there's some reason to be different.
 
-But that's also not the point of this code. ->mode_valid() is only used in two
-situations in DRM modesetting: when probing connector modes, and when checking
-if a mode is valid or not during the atomic check for atomic modesetting. Its
-purpose is only to reject display modes that are physically impossible to set in
-hardware due to static hardware constraints. Put another way, we only check the
-given mode against constraints which will always remain constant regardless of
-the rest of the display state. An example of a static constraint would be the
-max pixel clock supported by the hardware, since on sensible hardware this never
-changes. A dynamic constraint would be something like how much bandwidth is
-currently unused on an MST topology, since that value is entirely dependent on
-the rest of the display state.
+Yes, I was wanting to distinguish it from pci_walk_bus() in some way 
+because it incorporated it and I wanted to put emphasis on the bridge 
+first. But in retrospect, I’m saying the same thing so might as well 
+be consistent! Will change.
 
-So - with that said, bpc is technically a dynamic constraint because while a
-sink and source both likely have their own bpc limits, any bpc which is equal or
-below that limit can be used depending on what the driver decides - which will
-be based on the max_bpc property, and additionally for MST displays it will also
-depend on the available bandwidth on the topology. The only non-dynamic thing
-about bpc is that at a minimum, it will be 6 - so any mode that doesn't fit on
-the link with a bpc of 6 is guaranteed to be a mode that we'll never be able to
-set and therefore want to prune.
+>
+>> +			    void *userdata)
+>> +{
+>> +	if (bridge->subordinate)
+>> +		pci_walk_bus(bridge->subordinate, cb, userdata);
+>> +	else
+>> +		cb(bridge, userdata);
+>> +}
+>> +
+>>  pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+>>  			pci_channel_state_t state,
+>> -			pci_ers_result_t (*reset_link)(struct pci_dev *pdev))
+>> +			pci_ers_result_t (*reset_subordinate_devices)(struct pci_dev 
+>> *pdev))
+>
+> The rename to "reset_subordinate_devices" seems separable, since it
+> doesn't change the interface.
 
-So, even if we're not using 6 in the majority of situations, I'm fairly
-confident it's the right value here. It's also what i915 does as well (and they
-previously had to fix a bug that was the result of assuming a minimum of 8bpc
-instead of 6).
+Agree, it’s rather independent. Also changed a warning string output. 
+Will make separate.
 
-> 
->   -ilia
-> 
--- 
-Sincerely,
-      Lyude Paul (she/her)
-      Software Engineer at Red Hat
+>
+>>  {
+>>  	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+>> -	struct pci_bus *bus;
+>> +	struct pci_dev *bridge;
+>> +	int type;
+>>
+>>  	/*
+>> -	 * Error recovery runs on all subordinates of the first downstream 
+>> port.
+>> -	 * If the downstream port detected the error, it is cleared at the 
+>> end.
+>> +	 * Error recovery runs on all subordinates of the first downstream
+>> +	 * bridge. If the downstream bridge detected the error, it is
+>> +	 * cleared at the end. For RCiEPs we should reset just the RCiEP 
+>> itself.
+>>  	 */
+>> -	if (!(pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+>> -	      pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM))
+>> -		dev = dev->bus->self;
+>> -	bus = dev->subordinate;
+>> +	type = pci_pcie_type(dev);
+>> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+>> +	    type == PCI_EXP_TYPE_RC_EC ||
+>> +	    type == PCI_EXP_TYPE_RC_END)
+>> +		bridge = dev;
+>> +	else
+>> +		bridge = pci_upstream_bridge(dev);
+>
+> This makes it much easier to read, thank you.  I think the addition of
+> "type", rename of "dev" to "bridge", the inversion of the condition
+> (major improvement, thanks again), and use of pci_upstream_bridge()
+> instead of dev->bus->self might also be separable?
 
+Agree, it’s separable. Will do.
+
+>
+> Of course, you'd have to add the RC_EC and RC_END cases later, in the
+> money patch, but that's a good thing because it won't get lost in all
+> the other things being changed.
+
+Makes sense to me.
+
+>
+>>  	pci_dbg(dev, "broadcast error_detected message\n");
+>>  	if (state == pci_channel_io_frozen) {
+>> -		pci_walk_bus(bus, report_frozen_detected, &status);
+>> -		status = reset_link(dev);
+>> +		pci_bridge_walk(bridge, report_frozen_detected, &status);
+>> +		if (type == PCI_EXP_TYPE_RC_END) {
+>> +			pci_warn(dev, "link reset not possible for RCiEP\n");
+>> +			status = PCI_ERS_RESULT_NONE;
+>> +			goto failed;
+>> +		}
+>> +
+>> +		status = reset_subordinate_devices(bridge);
+>>  		if (status != PCI_ERS_RESULT_RECOVERED) {
+>> -			pci_warn(dev, "link reset failed\n");
+>> +			pci_warn(dev, "subordinate device reset failed\n");
+>>  			goto failed;
+>>  		}
+>>  	} else {
+>> -		pci_walk_bus(bus, report_normal_detected, &status);
+>> +		pci_bridge_walk(bridge, report_normal_detected, &status);
+>>  	}
+>>
+>>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
+>> -		pci_walk_bus(bus, report_mmio_enabled, &status);
+>> +		pci_bridge_walk(bridge, report_mmio_enabled, &status);
+>>  	}
+>>
+>>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+>> @@ -188,18 +223,22 @@ pci_ers_result_t pcie_do_recovery(struct 
+>> pci_dev *dev,
+>>  		 */
+>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>  		pci_dbg(dev, "broadcast slot_reset message\n");
+>> -		pci_walk_bus(bus, report_slot_reset, &status);
+>> +		pci_bridge_walk(bridge, report_slot_reset, &status);
+>>  	}
+>>
+>>  	if (status != PCI_ERS_RESULT_RECOVERED)
+>>  		goto failed;
+>>
+>>  	pci_dbg(dev, "broadcast resume message\n");
+>> -	pci_walk_bus(bus, report_resume, &status);
+>> -
+>> -	if (pcie_aer_is_native(dev))
+>> -		pcie_clear_device_status(dev);
+>> -	pci_aer_clear_nonfatal_status(dev);
+>> +	pci_bridge_walk(bridge, report_resume, &status);
+>> +
+>> +	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>> +	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+>> +	    type == PCI_EXP_TYPE_RC_EC) {
+>
+> Addition of this check also seems worthy of a separate patch (for just
+> root ports and downstream ports first, then RC_EC being added later).
+> That would make a convenient place to explain why we need the change.
+> I think it's *correct*; it just gets lost in the noise and not even
+> mentioned when it's done as part of one big patch.
+
+It does feel a bit out of place here and having the space to also 
+explain why this change is needed would be worthy of the separation. 
+Will do.
+
+Thanks!
+
+Sean
+
+
+>
+>> +		if (pcie_aer_is_native(bridge))
+>> +			pcie_clear_device_status(bridge);
+>> +		pci_aer_clear_nonfatal_status(bridge);
+>> +	}
+>>  	pci_info(dev, "device recovery successful\n");
+>>  	return status;
+>>
+>> -- 
+>> 2.28.0
+>>
