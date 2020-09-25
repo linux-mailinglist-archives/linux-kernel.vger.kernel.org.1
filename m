@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A9B2277CC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2C5277CCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgIYAVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 20:21:25 -0400
-Received: from mga03.intel.com ([134.134.136.65]:14527 "EHLO mga03.intel.com"
+        id S1726827AbgIYAXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 20:23:40 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49406 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726806AbgIYAVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:21:24 -0400
-IronPort-SDR: 2RPReHbpQOw9YN2XGxyTBmttmnC78x5ZYaHw1FTSCny0It56J8U/qTLOVgg3xQwNN1N3nbs6gw
- tyApI/ZVK/qA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="161464239"
+        id S1726448AbgIYAXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 20:23:40 -0400
+IronPort-SDR: d+PmO6Uuq+K+VeMWRQurcygW6qDpv+Slr8AdCO3ft9/hClkHv9KOgwwpdX/fzIEj87Vkk98LNx
+ JBRyOY03e69Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141401950"
 X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="161464239"
+   d="scan'208";a="141401950"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 17:21:24 -0700
-IronPort-SDR: RVZ5xxV+ZZC8sE2z4qXZOxY5PBm6zJlBm/fRvqgydW1EdIan5mw1lNeq1sEGIlogxqJdjBUnQB
- hpS+GmxFDmeg==
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 17:23:39 -0700
+IronPort-SDR: h46CQXl2RogSJktFJEXmGOwLKaiXKHE0USEO/kvIuthWF3KJvLMYshsR9+h2WSi6opxlPwI0fe
+ MZLYPzthl3Sw==
 X-IronPort-AV: E=Sophos;i="5.77,299,1596524400"; 
-   d="scan'208";a="455586461"
+   d="scan'208";a="455588375"
 Received: from mmahler-mobl1.amr.corp.intel.com ([10.254.96.152])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 17:21:24 -0700
-Date:   Thu, 24 Sep 2020 17:21:24 -0700 (PDT)
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 17:23:39 -0700
+Date:   Thu, 24 Sep 2020 17:23:39 -0700 (PDT)
 From:   Mat Martineau <mathew.j.martineau@linux.intel.com>
 X-X-Sender: mjmartin@mmahler-mobl1.amr.corp.intel.com
 To:     Geliang Tang <geliangtang@gmail.com>
@@ -34,10 +34,11 @@ cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
         mptcp@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [MPTCP][PATCH net-next 10/16] mptcp: add RM_ADDR related mibs
-In-Reply-To: <644420f22ba6f0b9f9f3509c081d8d639ff4bbf3.1600853093.git.geliangtang@gmail.com>
-Message-ID: <alpine.OSX.2.23.453.2009241721080.62831@mmahler-mobl1.amr.corp.intel.com>
-References: <cover.1600853093.git.geliangtang@gmail.com> <644420f22ba6f0b9f9f3509c081d8d639ff4bbf3.1600853093.git.geliangtang@gmail.com>
+Subject: Re: [MPTCP][PATCH net-next 11/16] mptcp: add mptcp_destroy_common
+ helper
+In-Reply-To: <fcebccadfa3127e0f55103cc7ee4cd00841e2ea0.1600853093.git.geliangtang@gmail.com>
+Message-ID: <alpine.OSX.2.23.453.2009241723250.62831@mmahler-mobl1.amr.corp.intel.com>
+References: <cover.1600853093.git.geliangtang@gmail.com> <fcebccadfa3127e0f55103cc7ee4cd00841e2ea0.1600853093.git.geliangtang@gmail.com>
 User-Agent: Alpine 2.23 (OSX 453 2020-06-18)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII; format=flowed
@@ -47,21 +48,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Thu, 24 Sep 2020, Geliang Tang wrote:
 
-> This patch added two new mibs for RM_ADDR, named MPTCP_MIB_RMADDR and
-> MPTCP_MIB_RMSUBFLOW, when the RM_ADDR suboption is received, increase
-> the first mib counter, when the local subflow is removed, increase the
-> second mib counter.
+> This patch added a new helper named mptcp_destroy_common containing the
+> shared code between mptcp_destroy() and mptcp_sock_destruct().
 >
-> Suggested-by: Matthieu Baerts <matthieu.baerts@tessares.net>
 > Suggested-by: Paolo Abeni <pabeni@redhat.com>
-> Suggested-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
-> Acked-by: Paolo Abeni <pabeni@redhat.com>
 > Signed-off-by: Geliang Tang <geliangtang@gmail.com>
 > ---
-> net/mptcp/mib.c        | 2 ++
-> net/mptcp/mib.h        | 2 ++
-> net/mptcp/pm_netlink.c | 5 +++++
-> 3 files changed, 9 insertions(+)
+> net/mptcp/protocol.c | 11 ++++++++---
+> net/mptcp/protocol.h |  1 +
+> net/mptcp/subflow.c  |  4 +---
+> 3 files changed, 10 insertions(+), 6 deletions(-)
 
 Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
 
