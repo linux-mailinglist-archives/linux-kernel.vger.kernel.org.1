@@ -2,113 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A56E5279257
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF8D27921D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728810AbgIYUiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728434AbgIYUif (ORCPT
+        id S1727970AbgIYUeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:34:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38844 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729156AbgIYUdv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:38:35 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE63BC0613B0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:30:59 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id l126so4332084pfd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:30:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xalch59fDuEKl76YuuW9L6ISBYkH/TTx0Ff+RgikJxo=;
-        b=hYaTNdNHJvLXhzfO+DdQhP+Y6AQFVGOXPqty1ToYGSxhw3Gg9u0qORgOjwXhmBR7X+
-         3RBtz3lDH0PW6AmY/qY7MMzKY6CsGoSJzyEB+byHzQg5n948zglNKeCBqL+BXCy6ISuz
-         pLQE8ykuQBc1+Zol1mYktHi8NsaELoQn/dyBc=
+        Fri, 25 Sep 2020 16:33:51 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601066029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8CNcnb3n+KdyBOQho9S5pKb/zqoSoF9W9ked0uYAcmc=;
+        b=dChX87IZWe+8pvgcLwUpKa37/HgOWs4U61MjnU5WJnoMDmLZw9ILtGhk/N+gPu2thEy5qg
+        F+JZCYZ7oEOwEvc2ccP2cO+DGXIkpKN9ZW0kYuBP//kFCQzs3AZBwV2sbWbKbnVwxi2F9I
+        t6dXOBiOesaIU3mEBbRT6OA6DBcVzwQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-30-dLBZ3GBxOeC-7y3u-aIEqQ-1; Fri, 25 Sep 2020 16:32:43 -0400
+X-MC-Unique: dLBZ3GBxOeC-7y3u-aIEqQ-1
+Received: by mail-wm1-f70.google.com with SMTP id p20so103511wmg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:32:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xalch59fDuEKl76YuuW9L6ISBYkH/TTx0Ff+RgikJxo=;
-        b=gGnYnZjbnvWJMrKLofZQmLRb/eIGexCx7K8jbvWghfBjJfpxdLOnbuOKreD7AQO7gg
-         qvQD3gdISWitjrlTZi0FfMbZ5ByUz5376qmQZvwagfmQGTVQCa4RCDj7MfTtVXsE6jVj
-         DkO4Xodhis/l2NghvD23X6qOhigQGwW0L/ZCjgmaqNimvoveflPxziZc0ob9rl+uSIjT
-         p+4bEG94SyEwE+1fp8Vc2vW8++6RovBHrBJDTGeVa4uhAhjHMLt51fdnNnSIFsafyvP0
-         oDttBE3PbFdEsTj6TZltnkLTCUtEfSzYUlXUqHj6976Y5w18ddLLNNC+tF2J/eFKpImR
-         XwhA==
-X-Gm-Message-State: AOAM530OXZdVDsLZ8lTEhwTGgOY3bV6cWOg4M+Zmp5y5ADDwGuQ3e4SZ
-        ZWXy6pBTsp3TSpMJ+PZKfW88w4bvS9tgQWAO
-X-Google-Smtp-Source: ABdhPJzmfj4AEPYzK8yIYg6dWta0UdlI0MvUEx+twtC6hiM5Se1DgdD+x9UOcYpIEItGRJ46ESH7fA==
-X-Received: by 2002:a17:902:c252:b029:d2:4345:5c7 with SMTP id 18-20020a170902c252b02900d2434505c7mr1152244plg.4.1601065859302;
-        Fri, 25 Sep 2020 13:30:59 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g1sm70849pjs.30.2020.09.25.13.30.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 13:30:58 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 13:30:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, luto@kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, willy@infradead.org,
-        linux-kselftest@vger.kernel.org, shuah@kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH v6 1/9] kernel: Support TIF_SYSCALL_INTERCEPT flag
-Message-ID: <202009251327.587D111@keescook>
-References: <20200904203147.2908430-1-krisman@collabora.com>
- <20200904203147.2908430-2-krisman@collabora.com>
- <202009221243.6BC5635E@keescook>
- <874kno6yct.fsf@collabora.com>
- <202009231349.4A25EAF@keescook>
- <87o8luuvze.fsf@nanos.tec.linutronix.de>
- <87k0whsuh1.fsf@collabora.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=8CNcnb3n+KdyBOQho9S5pKb/zqoSoF9W9ked0uYAcmc=;
+        b=Rrqdj06KqIhcwymOJchNotUCAlfsba3HiuKfJJlmiXk7icCtM+uEeeqRsyiVfQQ9vd
+         sbNnbxarN6JAYKejngEAXHXbjVyF8ARxl1p/GYk0sQMAT0otQyrtjvFoJ4QhY63Whbpu
+         RLHLtKTMnh5Xz45MLjQP+6U5PyeKGZM4CCGflGUR/he5UFADgqZwR4GKBAlR4elBjhfa
+         lvagkv+jS5ZLxkY8Xb1hthg1O1JSB7nU1vE8ugaIG+0pISwuumcUyIKB+FH4smlmoWkZ
+         QdW8vHDlOm8n3xqKn/7MW2ex7qXOCha8IMnOsVHEBLDifbnP6WyaoD0tvICRNWNvIxoo
+         AcbA==
+X-Gm-Message-State: AOAM5332namHpYfiAvVuliJPJTPQ36lVugaoaX6/E7/kRiOQ9AIroEqM
+        +3JP9kz/32lQ/UfMCEvyPHGis6pCrAeWaGcVAMHuy5AsXy+P4y+4606JGO4Y3HTNYgUENNVn1nl
+        6F7MtDpCATPzyKA0vlRAtO00l
+X-Received: by 2002:adf:b306:: with SMTP id j6mr6018626wrd.279.1601065962221;
+        Fri, 25 Sep 2020 13:32:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnkK9zsMt/7q2uPxgua54UuDtFWZMx1WmAZOktl7Tyb51oYojKEWN52KhVGGR41w6kV4Hn/Q==
+X-Received: by 2002:adf:b306:: with SMTP id j6mr6018616wrd.279.1601065962004;
+        Fri, 25 Sep 2020 13:32:42 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id b187sm190321wmb.8.2020.09.25.13.32.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 13:32:40 -0700 (PDT)
+Subject: Re: [PATCH v2 4/7] KVM: x86: hyper-v: always advertise
+ HV_STIMER_DIRECT_MODE_AVAILABLE
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
+References: <20200924145757.1035782-1-vkuznets@redhat.com>
+ <20200924145757.1035782-5-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ded79131-bef1-cb56-68ca-d2bc596a4425@redhat.com>
+Date:   Fri, 25 Sep 2020 22:32:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0whsuh1.fsf@collabora.com>
+In-Reply-To: <20200924145757.1035782-5-vkuznets@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:15:54PM -0400, Gabriel Krisman Bertazi wrote:
-> Thomas Gleixner <tglx@linutronix.de> writes:
+On 24/09/20 16:57, Vitaly Kuznetsov wrote:
+> HV_STIMER_DIRECT_MODE_AVAILABLE is the last conditionally set feature bit
+> in KVM_GET_SUPPORTED_HV_CPUID but it doesn't have to be conditional: first,
+> this bit is only an indication to userspace VMM that direct mode stimers
+> are supported, it still requires manual enablement (enabling SynIC) to
+> work so no VMM should just blindly copy it to guest CPUIDs. Second,
+> lapic_in_kernel() is a must for SynIC. Expose the bit unconditionally.
 > 
-> > On Wed, Sep 23 2020 at 13:49, Kees Cook wrote:
-> >> On Wed, Sep 23, 2020 at 04:18:26PM -0400, Gabriel Krisman Bertazi wrote:
-> >>> Kees Cook <keescook@chromium.org> writes:
-> >>> Yes, we can, and I'm happy to follow up with that as part of my TIF
-> >>> clean up work, but can we not block the current patchset to be merged
-> >>> waiting for that, as this already grew a lot from the original feature
-> >>> submission?
-> >>
-> >> In that case, I'd say just add the new TIF flag. The consolidation can
-> >> come later.
-> >
-> > No. This is exactly the wrong order. Cleanup and consolidation have
-> > precedence over features. I'm tired of 'we'll do that later' songs,
-> > simply because in the very end I'm going to be the idiot who mops up the
-> > resulting mess.
-> >
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/kvm/hyperv.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 > 
-> No problem.  I will follow up with a patchset consolidating those flags
-> into this syscall_intercept interface I proposed.  I assume there is no
-> immediate concerns with the consolidation approach itself.
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 6da20f91cd59..503829f71270 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -2028,13 +2028,7 @@ int kvm_vcpu_ioctl_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+>  			ent->ebx |= HV_DEBUGGING;
+>  			ent->edx |= HV_X64_GUEST_DEBUGGING_AVAILABLE;
+>  			ent->edx |= HV_FEATURE_DEBUG_MSRS_AVAILABLE;
+> -
+> -			/*
+> -			 * Direct Synthetic timers only make sense with in-kernel
+> -			 * LAPIC
+> -			 */
+> -			if (lapic_in_kernel(vcpu))
+> -				ent->edx |= HV_STIMER_DIRECT_MODE_AVAILABLE;
+> +			ent->edx |= HV_STIMER_DIRECT_MODE_AVAILABLE;
+>  
+>  			break;
+>  
+> 
 
-I think the only issue is just finding a clean way to set/unset the
-flags safely/quickly (a lock seems too heavy to me).
+Sorry for the late reply.  I think this is making things worse.  It's
+obviously okay to add a system KVM_GET_SUPPORTED_HV_CPUID, and I guess
+it makes sense to have bits in there that require to enable a
+capability.  For example, KVM_GET_SUPPORTED_CPUID has a couple bits such
+as X2APIC, that we return even if they require in-kernel irqchip.
 
-Should thread_info hold an entire u32 for all intercept flags (then the
-TIF_WORK tests is just a zero-test of the intercept u32 word)? Or should
-there be a TIF_INTERCEPT and a totally separate u32 (e.g. in
-task_struct) indicating which intercepts? (And if they're separate, how
-do we atomically set/unset)
+For the vCPU version however we should be able to copy the returned
+leaves to KVM_SET_CPUID2, meaning that unsupported features should be
+masked.
 
-i.e.:
+Paolo
 
-atomic_start
-	toggle a per-intercept bit
-	set TIF_INTERCEPT = !!(intercept word)
-atomic_end
-
--- 
-Kees Cook
