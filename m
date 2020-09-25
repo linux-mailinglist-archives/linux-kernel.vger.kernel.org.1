@@ -2,113 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2CE3277DB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:43:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96839277DB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:45:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbgIYBnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 21:43:50 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:40396 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgIYBnt (ORCPT
+        id S1726969AbgIYBpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 21:45:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726704AbgIYBpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 21:43:49 -0400
-Received: by kvm5.telegraphics.com.au (Postfix, from userid 502)
-        id 6C1962A7EA; Thu, 24 Sep 2020 21:43:48 -0400 (EDT)
-To:     "David S. Miller" <davem@davemloft.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Michael Schmitz" <schmitzmic@gmail.com>,
-        "Bartlomiej Zolnierkiewicz" <b.zolnierkie@samsung.com>,
-        linux-m68k@lists.linux-m68k.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <df121aff561c73f3ff7d83f906942ed0d954d737.1600997998.git.fthain@telegraphics.com.au>
-From:   Finn Thain <fthain@telegraphics.com.au>
-Subject: [PATCH] ide/falconide: Fix module unload
-Date:   Fri, 25 Sep 2020 11:39:58 +1000
+        Thu, 24 Sep 2020 21:45:17 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E71C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 18:45:17 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p15so841691ejm.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 18:45:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=OIz6/ORhAIJp1gRpHaBfwrrhOvDcKKYo5RAAhFMxaBk=;
+        b=Ad/T2Yn8/tI1sTm2Qz1yl1jr9vlwjQNGk7/C6g96RsgMLhkpgCx/dArtcNoOozakPL
+         0lcaHSQvWfGfKYojFn/kcN9fvSJQtjui4kOXD7BU/U2pPFuIRTUjJdtGGBdLSSzdm2SF
+         X1HfdTrMls/5z4Vts5pk9FVJGssYypz0sD/bWVc6WZ5h7SgOopcOgvAreSIYPmBTpjfk
+         ZedGzYI/IFVMTuS8QAFkeGJptmGyUcGcXxedclNjj+tx/TqQ+TNzx9rkLVzd9sQsg2Af
+         /X4kQK7EoexOVG4r11A3P1mL51I7vD+O0o3+w397Nb1BVguP0oYn1ERzpJ5PCty7tjSO
+         ldyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=OIz6/ORhAIJp1gRpHaBfwrrhOvDcKKYo5RAAhFMxaBk=;
+        b=RsgQhBPOrZJv9L9yhA7SwQoy+5xKHkzlz6fJuXwxaZNHjmKQeVkqaszGr+qKsQRV5d
+         0D0nn+d+VviraZn90BvzLTI19S75Pcz0xSUDJnRu6JYYNqR5JU3iGdA6Sm4d/5QQUsem
+         VDguF96xMJeowpQIA99gnWzauTujVVH8vyUcVAQR1cd49Z5sM7Rf11qwO3j67LQk6khh
+         JzfvYQ7hwOnhv4+LNpR1Z+5JfSFLfGaOmkLqbf+NOY66ORX2TRHf58P1Bx+09XYkfhT8
+         8FRqBqG6FKHVyKjTsy4EhI153UhfqkIrYFS/zYTKolgEH7mq5jhWoHD7eLWf0Cx+MHBT
+         /nbw==
+X-Gm-Message-State: AOAM533F5QgrtgodWU0i3rMuwD0c8d338v9c9o0xYZcP6AegzMk2Byrl
+        fDe2UO5l4oMdAM5hvmmiP3RKRd1Ls3HlLvOHzSriWVRVHmc=
+X-Google-Smtp-Source: ABdhPJwZn6N4c3vYDY6ZTdR14hIl2y4PrO3Hu3OXw0ANzVwYMtjumff0Wooqgzfq8iigJC3v2WTeI1k8n3xyEYDR5Tc=
+X-Received: by 2002:a17:906:3aca:: with SMTP id z10mr440277ejd.419.1600998315856;
+ Thu, 24 Sep 2020 18:45:15 -0700 (PDT)
+MIME-Version: 1.0
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 25 Sep 2020 11:45:04 +1000
+Message-ID: <CAPM=9tzV6xvuqq9wnzhUY+qQPj9Q5K0BMpJX+7YUKX_a-EJTLA@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.9-rc7
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unloading the falconide module results in a crash:
+Hi Linus,
 
-Unable to handle kernel NULL pointer dereference at virtual address 00000000
-Oops: 00000000
-Modules linked in: falconide(-)
-PC: [<002930b2>] ide_host_remove+0x2e/0x1d2
-SR: 2000  SP: 00b49e28  a2: 009b0f90
-d0: 00000000    d1: 009b0f90    d2: 00000000    d3: 00b48000
-d4: 003cef32    d5: 00299188    a0: 0086d000    a1: 0086d000
-Process rmmod (pid: 322, task=009b0f90)
-Frame format=7 eff addr=00000000 ssw=0505 faddr=00000000
-wb 1 stat/addr/data: 0000 00000000 00000000
-wb 2 stat/addr/data: 0000 00000000 00000000
-wb 3 stat/addr/data: 0000 00000000 00018da9
-push data: 00000000 00000000 00000000 00000000
-Stack from 00b49e90:
-        004c456a 0027f176 0027cb0a 0027cb9e 00000000 0086d00a 2187d3f0 0027f0e0
-        00b49ebc 2187d1f6 00000000 00b49ec8 002811e8 0086d000 00b49ef0 0028024c
-        0086d00a 002800d6 00279a1a 00000001 00000001 0086d00a 2187d3f0 00279a58
-        00b49f1c 002802e0 0086d00a 2187d3f0 004c456a 0086d00a ef96af74 00000000
-        2187d3f0 002805d2 800de064 00b49f44 0027f088 2187d3f0 00ac1cf4 2187d3f0
-        004c43be 2187d3f0 00000000 2187d3f0 800b66a8 00b49f5c 00280776 2187d3f0
-Call Trace: [<0027f176>] __device_driver_unlock+0x0/0x48
- [<0027cb0a>] device_links_busy+0x0/0x94
- [<0027cb9e>] device_links_unbind_consumers+0x0/0x130
- [<0027f0e0>] __device_driver_lock+0x0/0x5a
- [<2187d1f6>] falconide_remove+0x12/0x18 [falconide]
- [<002811e8>] platform_drv_remove+0x1c/0x28
- [<0028024c>] device_release_driver_internal+0x176/0x17c
- [<002800d6>] device_release_driver_internal+0x0/0x17c
- [<00279a1a>] get_device+0x0/0x22
- [<00279a58>] put_device+0x0/0x18
- [<002802e0>] driver_detach+0x56/0x82
- [<002805d2>] driver_remove_file+0x0/0x24
- [<0027f088>] bus_remove_driver+0x4c/0xa4
- [<00280776>] driver_unregister+0x28/0x5a
- [<00281a00>] platform_driver_unregister+0x12/0x18
- [<2187d2a0>] ide_falcon_driver_exit+0x10/0x16 [falconide]
- [<000764f0>] sys_delete_module+0x110/0x1f2
- [<000e83ea>] sys_rename+0x1a/0x1e
- [<00002e0c>] syscall+0x8/0xc
- [<00188004>] ext4_multi_mount_protect+0x35a/0x3ce
-Code: 0029 9188 4bf9 0027 aa1c 283c 003c ef32 <265c> 4a8b 6700 00b8 2043 2028 000c 0280 00ff ff00 6600 0176 40c0 7202 b2b9 004c
-Disabling lock debugging due to kernel taint
+Due to the dax merge fail in rc6, this has two backmerges, Intel
+pulled in a later point in time to fix their CI systems, I also pulled
+in an earlier point to fix my local builds.
 
-This happens because the driver_data pointer is uninitialized.
-Add the missing platform_set_drvdata() call. For clarity, use the
-matching platform_get_drvdata() as well.
+Otherwise fairly quiet, a couple of i915 fixes, one dma-buf fix, one
+vc4 and two sun4i changes.
 
-Cc: Michael Schmitz <schmitzmic@gmail.com>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: linux-m68k@lists.linux-m68k.org
-Fixes: 5ed0794cde593 ("m68k/atari: Convert Falcon IDE drivers to platform drivers")
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
----
-This patch was tested using Aranym.
----
- drivers/ide/falconide.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I realised I missed the sun4i + vc4 fixes in the tag itself. They are below.
 
-diff --git a/drivers/ide/falconide.c b/drivers/ide/falconide.c
-index dbeb2605e5f6e..607c44bc50f1b 100644
---- a/drivers/ide/falconide.c
-+++ b/drivers/ide/falconide.c
-@@ -166,6 +166,7 @@ static int __init falconide_init(struct platform_device *pdev)
- 	if (rc)
- 		goto err_free;
- 
-+	platform_set_drvdata(pdev, host);
- 	return 0;
- err_free:
- 	ide_host_free(host);
-@@ -176,7 +177,7 @@ static int __init falconide_init(struct platform_device *pdev)
- 
- static int falconide_remove(struct platform_device *pdev)
- {
--	struct ide_host *host = dev_get_drvdata(&pdev->dev);
-+	struct ide_host *host = platform_get_drvdata(pdev);
- 
- 	ide_host_remove(host);
- 
--- 
-2.26.2
+Dave.
 
+vc4:
+- fill asoc card owner
+
+sun4i:
+- program secondary CSC correctly.
+
+drm-fixes-2020-09-25:
+drm fixes for 5.9-rc7
+
+dma-buf:
+- Single null pointer deref fix for dma-buf
+
+i915:
+- Fix selftest reference to stack data out of scope
+- Fix GVT null pointer dereference
+The following changes since commit 98477740630f270aecf648f1d6a9dbc6027d4ff1:
+
+  Merge branch 'rcu/urgent' of
+git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu
+(2020-09-21 12:42:31 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2020-09-25
+
+for you to fetch changes up to ba78755e0c25dec4151880a14f523e929b2052c6:
+
+  Merge tag 'drm-misc-fixes-2020-09-24' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes (2020-09-25
+11:30:00 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.9-rc7
+
+dma-buf:
+- Single null pointer deref fix for dma-buf
+
+i915:
+- Fix selftest reference to stack data out of scope
+- Fix GVT null pointer dereference
+
+----------------------------------------------------------------
+Charan Teja Reddy (1):
+      dmabuf: fix NULL pointer dereference in dma_buf_release()
+
+Chris Wilson (1):
+      drm/i915/selftests: Push the fake iommu device from the stack to data
+
+Dave Airlie (4):
+      Merge tag 'drm-misc-fixes-2020-09-18' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+      BackMerge commit '98477740630f270aecf648f1d6a9dbc6027d4ff1' into drm-fixes
+      Merge tag 'drm-intel-fixes-2020-09-24' of
+git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
+      Merge tag 'drm-misc-fixes-2020-09-24' of
+git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
+
+Jani Nikula (2):
+      Merge remote-tracking branch 'origin/master' into drm-intel-fixes
+      Merge tag 'gvt-fixes-2020-09-17' of
+https://github.com/intel/gvt-linux into drm-intel-fixes
+
+Marek Szyprowski (1):
+      drm/vc4/vc4_hdmi: fill ASoC card owner
+
+Martin Cerveny (2):
+      drm/sun4i: sun8i-csc: Secondary CSC register correction
+      drm/sun4i: mixer: Extend regmap max_register
+
+Zhenyu Wang (1):
+      drm/i915/gvt: Fix port number for BDW on EDID region setup
+
+ drivers/dma-buf/dma-buf.c                        |  2 ++
+ drivers/gpu/drm/i915/gvt/vgpu.c                  |  6 +++++-
+ drivers/gpu/drm/i915/selftests/mock_gem_device.c | 12 +++++-------
+ drivers/gpu/drm/sun4i/sun8i_csc.h                |  2 +-
+ drivers/gpu/drm/sun4i/sun8i_mixer.c              |  2 +-
+ drivers/gpu/drm/vc4/vc4_hdmi.c                   |  1 +
+ 6 files changed, 15 insertions(+), 10 deletions(-)
