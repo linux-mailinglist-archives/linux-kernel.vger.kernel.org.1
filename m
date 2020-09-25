@@ -2,178 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31BDF278D13
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72A61278D18
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729321AbgIYPra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:47:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55242 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728423AbgIYPr3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:47:29 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601048847;
+        id S1729367AbgIYPro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:47:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38100 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728333AbgIYPro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:47:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1601048862;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=dJVTQEVrvrQ1TucEcBQVDr5HUZYn/DQCEiIJd65tA0c=;
-        b=MUj9HJdPzoyX7e6UQ2+7YVeXA3FvIx21A1phkyHxrLJWx84Qa1ghNyU/7gmXVEkmWa2m9e
-        HLhZoCq1VKtxavsPkuENmVqh24xAfmsbdoVQGJnpNLx/nFd43c6U8nmQUH7duoidiEpsR0
-        dVzzhg+NvSdGMBb4vJWpH2R1V78DfvI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-77-2vkGZAieMuyt_LiMzk726g-1; Fri, 25 Sep 2020 11:47:24 -0400
-X-MC-Unique: 2vkGZAieMuyt_LiMzk726g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5DA3490BB0C;
-        Fri, 25 Sep 2020 15:47:21 +0000 (UTC)
-Received: from [10.36.112.211] (ovpn-112-211.ams2.redhat.com [10.36.112.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3E5A819C66;
-        Fri, 25 Sep 2020 15:47:19 +0000 (UTC)
-Subject: Re: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device
- ?
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Jan_H=c3=b6ppner?= <hoeppner@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-api@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <21852ccb-bd06-9281-7c8e-485ec02f2883@redhat.com>
- <20200922155611.379373f7@thinkpad>
- <a7d02345-2195-3092-a368-ca3209e2c93e@redhat.com>
- <20200925153908.GH3389@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <f973e594-fbb5-3c2f-414b-c4dbc9757793@redhat.com>
-Date:   Fri, 25 Sep 2020 17:47:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+         in-reply-to:in-reply-to:references:references;
+        bh=v859nZdRdAvozMlID3w2V9JVl0a2kKP1Gfe6Ju4Q9a8=;
+        b=PJtdYSR5RZRSslz9jEpJc38LfXP/nFtPltVJseci6dvmqYxTfPJkFM6dUs6sSr0GBlmPl4
+        Y0dQ4GEdqYI8qHCcZZ5IOl+TT+vtoLyZVUIrdQB/Ksk621juKWed2hOcCzKDTWr3nwOaij
+        4N405sQxwGwW+/Zq3rcRV2NKxl81r9w=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 059D4ACA3;
+        Fri, 25 Sep 2020 15:47:42 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 17:47:41 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200925154741.GI3389@dhcp22.suse.cz>
+References: <20200921160318.GO12990@dhcp22.suse.cz>
+ <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200925080503.GC3389@dhcp22.suse.cz>
+ <20200925153129.GB25350@pc636>
 MIME-Version: 1.0
-In-Reply-To: <20200925153908.GH3389@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925153129.GB25350@pc636>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> 2. Restrict it to s390x only. It always returned 0 on other
->>>> architectures, I was not able to find any user.
->>>>
->>>> I think 2 should be safe to do (never used on other archs). I do wonder
->>>> what the feelings are about 1.
->>>
->>> Please don't add any s390-specific workarounds here, that does not
->>> really sound like a clean-up, rather the opposite.
->>
->> People seem to have different opinions here. I'm happy as long as we can
->> get rid of it (either now, or in the future with a new model).
->>
->>>
->>> That being said, I do not really see the benefit of this change at
->>> all. As Michal mentioned, there really should be some more fundamental
->>> change. And from the rest of this thread, it also seems that phys_device
->>> usage might not be the biggest issue here.
->>>
->>
->> As I already expressed, I am more of a friend of small, incremental
->> changes than having a single big world switch where everything will be
->> shiny and perfect.
->>
->> (Deprecating it now - in any way - stops any new users from appearing -
->> both, in the kernel and from user space - eventually making the big
->> world switch later a little easier because there is one thing less that
->> vanished)
->
-> Realistically people do not care about deprecation all that much. They
-> simply use whatever they can find or somebody will show them. Really,
-> deprecation has never really worked. The only thing that worked was to
-> remove the functionality and then wait for somebody to complain and
-> revert or somehow allow the functionality without necessity to alter the
-> userspace.
-
-Mainframe people are usually ... more conservative (well, they focus on
-stability and pay a lot of money for that - including HW). :)
-
-What they would lose here is s390x lsmem/chmem functionality, used to
-manage standby memory (under LPAR and z/VM, if enabled) - with the old
-tools. I have the feeling that this would be acceptable (I never had
-access to an LPAR that allowed for it ...), but yeah, you never now.
-
+On Fri 25-09-20 17:31:29, Uladzislau Rezki wrote:
+> > > > > 
+> > > > > All good points!
+> > > > > 
+> > > > > On the other hand, duplicating a portion of the allocator functionality
+> > > > > within RCU increases the amount of reserved memory, and needlessly most
+> > > > > of the time.
+> > > > > 
+> > > > 
+> > > > But it's very similar to what mempools are for.
+> > > > 
+> > > As for dynamic caching or mempools. It requires extra logic on top of RCU
+> > > to move things forward and it might be not efficient way. As a side
+> > > effect, maintaining of the bulk arrays in the separate worker thread
+> > > will introduce other drawbacks:
+> > 
+> > This is true but it is also true that it is RCU to require this special
+> > logic and we can expect that we might need to fine tune this logic
+> > depending on the RCU usage. We definitely do not want to tune the
+> > generic page allocator for a very specific usecase, do we?
+> > 
+> I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
+> to provide a memory service for contexts which are not allowed to
+> sleep, RCU is part of them. Both flags used to provide such ability
+> before but not anymore.
 > 
-> As much as I would like to remove as much crud as possible I strongly
-> suspect that the existing hotplug interface is just a lost case and it
-> doesn't make for the best used time to put a lip stick on a pig. Even if
-> we remove this particular interface we are not going to get rid of a lot
-> of code or we won't gain any more sensible semantic, right?
-> 
+> Do you agree with it?
 
-Excluding some documentation
+Yes this sucks. But this is something that we likely really want to live
+with. We have to explicitly _document_ that really atomic contexts in RT
+cannot use the allocator. From the past discussions we've had this is
+likely the most reasonable way forward because we do not really want to
+encourage anybody to do something like that and there should be ways
+around that. The same is btw. true also for !RT. The allocator is not
+NMI safe and while we should be able to make it compatible I am not
+convinced we really want to.
 
- drivers/base/memory.c        | 29 -----------------------------
- drivers/s390/char/sclp_cmd.c |  7 -------
- include/linux/memory.h       |  2 --
- 3 files changed, 38 deletions(-)
+Would something like this be helpful wrt documentation?
 
-Seems like this is the only way to deprecate. (I mean I can add comments
-in the code, but as you say, doesn't stop new user space users from
-showing up)
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index 67a0774e080b..9fcd47606493 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -238,7 +238,9 @@ struct vm_area_struct;
+  * %__GFP_FOO flags as necessary.
+  *
+  * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
+- * watermark is applied to allow access to "atomic reserves"
++ * watermark is applied to allow access to "atomic reserves".
++ * The current implementation doesn't support NMI and other non-preemptive context
++ * (e.g. raw_spin_lock).
+  *
+  * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
+  * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
 
+[...]
 -- 
-Thanks,
-
-David / dhildenb
-
+Michal Hocko
+SUSE Labs
