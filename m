@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF85278F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17AF1278F1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729393AbgIYQvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:51:40 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:34594 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgIYQvk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:51:40 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 419F51C0C4A; Fri, 25 Sep 2020 18:51:35 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 18:51:34 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Kfir Itzhak <mastertheknife@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 4.19 23/37] ipv4: Update exception handling for multipath
- routes via same device
-Message-ID: <20200925165134.GA7253@duo.ucw.cz>
-References: <20200925124720.972208530@linuxfoundation.org>
- <20200925124724.448531559@linuxfoundation.org>
+        id S1729114AbgIYQwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:52:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726368AbgIYQwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:52:35 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 414C2208B6;
+        Fri, 25 Sep 2020 16:52:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601052754;
+        bh=pAs4PaULX4H5SxYmIVtY8k566DgwXqnpA8RvoFzZpYM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YTdBKkL5tYw/mImn8swZhrGk9vzf6nzl7Hw0XikzigszJWCPBiP+hWaf/13VbN389
+         5FIClElHwfvwmJnLWq40CsK3iFZD6ElWocTEo+6s1fIGB2yQyY4hiuAK019ZjvVNCA
+         cRFeddNyhDjvsggDQf+fZfo+WddkNz8XZaVKIJ6A=
+Date:   Fri, 25 Sep 2020 17:51:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Tuo Li <t-li20@mails.tsinghua.edu.cn>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        heiko@sntech.de, baijiaju1990@gmail.com,
+        alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: rockchip: fix a possible divide-by-zero bug in
+ rockchip_i2s_hw_params()
+Message-ID: <20200925165139.GH4841@sirena.org.uk>
+References: <20200830095106.4412-1-t-li20@mails.tsinghua.edu.cn>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="Qxx1br4bt0+wmkIi"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VaKJWhUROU/xPxjb"
 Content-Disposition: inline
-In-Reply-To: <20200925124724.448531559@linuxfoundation.org>
+In-Reply-To: <20200830095106.4412-1-t-li20@mails.tsinghua.edu.cn>
+X-Cookie: Onward through the fog.
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---Qxx1br4bt0+wmkIi
+--VaKJWhUROU/xPxjb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On Sun, Aug 30, 2020 at 05:51:06PM +0800, Tuo Li wrote:
+> The variable bclk_rate is checked in:
+>   if (bclk_rate && mclk_rate % bclk_rate)
 
-> [ Upstream commit 2fbc6e89b2f1403189e624cabaf73e189c5e50c6 ]
->=20
-> Kfir reported that pmtu exceptions are not created properly for
-> deployments where multipath routes use the same device.
+Please submit patches using subject lines reflecting the style for the
+subsystem, this makes it easier for people to identify relevant patches.
+Look at what existing commits in the area you're changing are doing and
+make sure your subject lines visually resemble what they're doing.
+There's no need to resubmit to fix this alone.
 
-This is mismerged (in a way that does not affect functionality):
-
-
-> @@ -779,6 +779,8 @@ static void __ip_do_redirect(struct rtab
->  			if (fib_lookup(net, fl4, &res, 0) =3D=3D 0) {
->  				struct fib_nh *nh =3D &FIB_RES_NH(res);
-> =20
-> +				fib_select_path(net, &res, fl4, skb);
-> +				nh =3D &FIB_RES_NH(res);
->  				update_or_create_fnhe(nh, fl4->daddr, new_gw,
->  						0, false,
-
-nh is assigned value that is never used. Mainline patch removes the
-assignment (but variable has different type).
-
-4.19 should delete the assignment, too.
-
-Best regards,
-								Pavel
-
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index f60e28418ece..84de87b7eedc 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -777,7 +777,7 @@ static void __ip_do_redirect(struct rtable *rt, struct =
-sk_buff *skb, struct flow
- 			neigh_event_send(n, NULL);
- 		} else {
- 			if (fib_lookup(net, fl4, &res, 0) =3D=3D 0) {
--				struct fib_nh *nh =3D &FIB_RES_NH(res);
-+				struct fib_nh *nh;
-=20
- 				fib_select_path(net, &res, fl4, skb);
- 				nh =3D &FIB_RES_NH(res);
-
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---Qxx1br4bt0+wmkIi
+--VaKJWhUROU/xPxjb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX24gFgAKCRAw5/Bqldv6
-8oJ8AJ9aaZ5VFjdoC1MlzVWNOHLPXUSxxwCgvL0JSbW+WA9qbi47KAD6yNkrwig=
-=zt7i
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9uIBoACgkQJNaLcl1U
+h9BPeAf9H4D1Q4H2endgDKFyhv77X9QSGBc0ttIMBIVm0+Sak3GDEkoTnPh6d9Ug
+JUOIrJ0MsnS1f4sLC2Vj/NASTEa+cBQLQ2Vup5OBfkCQXBaWSm3J+UwQzujiX3o6
+K/1Z4eyCfi83a5nWTlGqrzA7VLcG8Og4YcttIXGxXcOOctfzXrH+NUtZDzXvxxfm
+Bn7o/Ja/4wlLRPpbXPowMn7sNlZrxwNAtNhmOobCOgZtCGPhJLvdrEk035oQK/82
+y+s3JQChKzfTsDyyo10KR/nC7unePe9EWdsuEobaX47B2OywzsjRX4nD9Jw8NjRD
+WRUxBaZJYk3Pblx0uegXkIv09S+Z+A==
+=kTPr
 -----END PGP SIGNATURE-----
 
---Qxx1br4bt0+wmkIi--
+--VaKJWhUROU/xPxjb--
