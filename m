@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E5A278879
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E24492787D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729234AbgIYMvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:51:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
+        id S1729144AbgIYMvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55094 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729203AbgIYMvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:51:37 -0400
+        id S1728589AbgIYMvB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:51:01 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D9112075E;
-        Fri, 25 Sep 2020 12:51:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B60F02075E;
+        Fri, 25 Sep 2020 12:51:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038296;
-        bh=PPN/qdWXlnXkKZBiVulHZK1tcJ6jUktf+89bZU+dDeU=;
+        s=default; t=1601038261;
+        bh=0DlG/3RHYmeZOr2woLPqvPkBfh6V3La1uN1zjYf9+mM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cvRd5lSOrs7KjpRRpx+uR7w2H7mkfQHYbGPiyevwhuQMbnz4meHJqRRzcMj6koj1H
-         IaYSBKhRvlIxmPrKa4NTEMEDJsu1t7W1F9hU0ohTMnlYXeL2mXIae/pul7p9d5mBV5
-         u1/mx/wx8oNQbW9/jgvqoat7d5T/ZWB6a1DaIabU=
+        b=NsXPbWE7aVQCzx4G1F+BgrUZyu6jSScbpFsZi4zzaRs0vs4js4l212yEUvZyGG2mR
+         Lzmk8B5YtZ9CbRWz1vYwDcjJZdvpMD/Wkc+qeoH4SZd+p0wknzkwHzPn920t0hjPbP
+         DASkzKnPFgqfhVPBuzR0JjtxVADcqFIkoI1cilxQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Petr Machata <petrm@nvidia.com>,
-        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 18/43] net: DCB: Validate DCB_ATTR_DCB_BUFFER argument
+Subject: [PATCH 5.8 40/56] net: phy: Do not warn in phy_stop() on PHY_DOWN
 Date:   Fri, 25 Sep 2020 14:48:30 +0200
-Message-Id: <20200925124726.322329999@linuxfoundation.org>
+Message-Id: <20200925124733.881946682@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
-References: <20200925124723.575329814@linuxfoundation.org>
+In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
+References: <20200925124727.878494124@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Machata <petrm@nvidia.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-[ Upstream commit 297e77e53eadb332d5062913447b104a772dc33b ]
+[ Upstream commit 5116a8ade333b6c2e180782139c9c516a437b21c ]
 
-The parameter passed via DCB_ATTR_DCB_BUFFER is a struct dcbnl_buffer. The
-field prio2buffer is an array of IEEE_8021Q_MAX_PRIORITIES bytes, where
-each value is a number of a buffer to direct that priority's traffic to.
-That value is however never validated to lie within the bounds set by
-DCBX_MAX_BUFFERS. The only driver that currently implements the callback is
-mlx5 (maintainers CCd), and that does not do any validation either, in
-particual allowing incorrect configuration if the prio2buffer value does
-not fit into 4 bits.
+When phy_is_started() was added to catch incorrect PHY states,
+phy_stop() would not be qualified against PHY_DOWN. It is possible to
+reach that state when the PHY driver has been unbound and the network
+device is then brought down.
 
-Instead of offloading the need to validate the buffer index to drivers, do
-it right there in core, and bounce the request if the value is too large.
-
-CC: Parav Pandit <parav@nvidia.com>
-CC: Saeed Mahameed <saeedm@nvidia.com>
-Fixes: e549f6f9c098 ("net/dcb: Add dcbnl buffer attribute")
-Signed-off-by: Petr Machata <petrm@nvidia.com>
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Fixes: 2b3e88ea6528 ("net: phy: improve phy state checking")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dcb/dcbnl.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/phy/phy.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/dcb/dcbnl.c
-+++ b/net/dcb/dcbnl.c
-@@ -1426,6 +1426,7 @@ static int dcbnl_ieee_set(struct net_dev
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -948,7 +948,7 @@ void phy_stop(struct phy_device *phydev)
  {
- 	const struct dcbnl_rtnl_ops *ops = netdev->dcbnl_ops;
- 	struct nlattr *ieee[DCB_ATTR_IEEE_MAX + 1];
-+	int prio;
- 	int err;
+ 	struct net_device *dev = phydev->attached_dev;
  
- 	if (!ops)
-@@ -1475,6 +1476,13 @@ static int dcbnl_ieee_set(struct net_dev
- 		struct dcbnl_buffer *buffer =
- 			nla_data(ieee[DCB_ATTR_DCB_BUFFER]);
- 
-+		for (prio = 0; prio < ARRAY_SIZE(buffer->prio2buffer); prio++) {
-+			if (buffer->prio2buffer[prio] >= DCBX_MAX_BUFFERS) {
-+				err = -EINVAL;
-+				goto err;
-+			}
-+		}
-+
- 		err = ops->dcbnl_setbuffer(netdev, buffer);
- 		if (err)
- 			goto err;
+-	if (!phy_is_started(phydev)) {
++	if (!phy_is_started(phydev) && phydev->state != PHY_DOWN) {
+ 		WARN(1, "called from state %s\n",
+ 		     phy_state_to_str(phydev->state));
+ 		return;
 
 
