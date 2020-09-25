@@ -2,78 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F05B278308
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D902A27830F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbgIYIoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgIYIoH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:44:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6221C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lN4amxJoHFI8xR2Zb1qzV2zkUpXMr501fx9eI+w1y4Y=; b=hXgH7DjRwjwGdvXhpvjPUme2Lr
-        +ta38BXfJrKvMnCVVHzMj6886PAxqc1HqsQafKpD/LbcXc4o50htMD1HkDTS9M8+HaZLNqVfY92NQ
-        4x6UC2S2j5BPK9ewns26DN/W7hypexuzXRX3uIHYBXxvoE1wmH0K1FyG2yT7Fac+ZJDvp7a8/tZtj
-        HBuRbZgO+uL02n+WleXHxoPLWerfn0mCVaFBNSZ4/L31zDUbF2BAdWIIf/97cotHKU7KB2fGt3OV6
-        4E7GnkXi3DWPrA+WhpBiA90FfkHpsYJE2lwAoWi0qbCj/p8qLUN91R6UT8HkMEWc1N4nOlF9085j1
-        x/8RtVOQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLjKQ-0000IC-F8; Fri, 25 Sep 2020 08:43:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EB75301A27;
-        Fri, 25 Sep 2020 10:43:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1507720240A54; Fri, 25 Sep 2020 10:43:39 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 10:43:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
-Subject: Re: [PATCH 8/9] sched: Fix migrate_disable() vs
- set_cpus_allowed_ptr()
-Message-ID: <20200925084339.GU2628@hirez.programming.kicks-ass.net>
-References: <20200921163557.234036895@infradead.org>
- <20200921163845.830487105@infradead.org>
- <jhj3637lzdm.mognet@arm.com>
+        id S1727486AbgIYIqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:46:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41538 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727067AbgIYIqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:46:32 -0400
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F04F420BED;
+        Fri, 25 Sep 2020 08:46:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601023592;
+        bh=cqGnC2dE/tP5DzXU4CSTePKkVGTpOhNGfsOxajMP9e4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BGVLVMCnSEckFEIQgBBTNXycgNLbb+1iJ7pWSTZ5apWzOce7iZJ4w5GEcQwKD/7G4
+         +iJFy2WuuqiPs1V08SWj/nqUQ8BjfxbBzTV+pFj2p5MKJOp+rfCQ9DkuVzJ41yC7zq
+         mk99HWKI652msHz6ovXy7vxSu4vL6sY2DsFtLblA=
+Received: by mail-oi1-f170.google.com with SMTP id 26so2020278ois.5;
+        Fri, 25 Sep 2020 01:46:31 -0700 (PDT)
+X-Gm-Message-State: AOAM530NjjSyzSzsqK5CiexBMy6kxPOltFIxh+O4PMZe9O9HF4FeAToh
+        3UjOMpCkRSituecMy+/hZwVsh8DEBTAT3gHHCQ0=
+X-Google-Smtp-Source: ABdhPJyjtcsEZU8s8/86D7su1A8pZU3A8nfsY+QYXUU/rcdlQJI12343GH/RJ0qVA6dVvMeLXsv6v41O00O8A2pBQiU=
+X-Received: by 2002:aca:b355:: with SMTP id c82mr952980oif.80.1601023591159;
+ Fri, 25 Sep 2020 01:46:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <jhj3637lzdm.mognet@arm.com>
+References: <20200924115731.194ecd6f@canb.auug.org.au> <20200925083748.GJ25109@dragon>
+In-Reply-To: <20200925083748.GJ25109@dragon>
+From:   Shawn Guo <shawnguo@kernel.org>
+Date:   Fri, 25 Sep 2020 16:46:20 +0800
+X-Gmail-Original-Message-ID: <CAJBJ56JR3UyPkG2k9+1rKu9DwEN4PZObtk1nKiiBoe0j5-17AQ@mail.gmail.com>
+Message-ID: <CAJBJ56JR3UyPkG2k9+1rKu9DwEN4PZObtk1nKiiBoe0j5-17AQ@mail.gmail.com>
+Subject: Re: linux-next: manual merge of the pci tree with the imx-mxs tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Wasim Khan <wasim.khan@nxp.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Xiaowei Bao <xiaowei.bao@nxp.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 08:59:33PM +0100, Valentin Schneider wrote:
+On Fri, Sep 25, 2020 at 4:37 PM Shawn Guo <shawnguo@kernel.org> wrote:
+>
+> On Thu, Sep 24, 2020 at 11:57:31AM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > Today's linux-next merge of the pci tree got a conflict in:
+> >
+> >   arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+> >
+> > between commit:
+> >
+> >   f7d48ffcfc6e ("arm64: dts: layerscape: Add label to pcie nodes")
+> >
+> > from the imx-mxs tree and commit:
+> >
+> >   c9443b6500ff ("arm64: dts: layerscape: Add PCIe EP node for ls1088a")
+> >
+> > from the pci tree.
+>
+> It should go through imx-mxs -> arm-soc, not pci tree.
 
-> > +	if (task_running(rq, p) || p->state == TASK_WAKING) {
-> > +
-> > +		task_rq_unlock(rq, p, rf);
-> > +		stop_one_cpu(cpu_of(rq), migration_cpu_stop, &arg);
-> > +
-> 
-> Shouldn't we check for is_migrate_disabled(p) before doing any of that?
-> migration_cpu_stop() does check for it, is there something that prevents us
-> from acting on it earlier than that?
+Okay, just saw the message from Lorenzo telling that the patch had
+been dropped from his tree.
 
-Since migrate_disable() / ->migration_disabled is only touched from the
-current task, you can only reliably read it from the same CPU.
-
-Hence I only look at it when the stop task has pinned the task, because
-at that point I know it's stable.
-
-Doing it earlier gives races, races give me head-aches. This is a slow
-path, I don't care about performance.
+Shawn
