@@ -2,97 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44618279466
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6941A27946A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729209AbgIYWzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:55:15 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58988 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgIYWzP (ORCPT
+        id S1728904AbgIYW5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgIYW5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:55:15 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601074512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Obvuz1/Dj7IREACiXdEW9/bPBhlEoJrZlnsY+GA+QsE=;
-        b=NHJmHf2F/2L+Lr06oq/aLPShHvQK+jsH5M+NtrE12xin+1ngh9rlfeupCo+0jj8oCTyWCP
-        5NMK4H5Mf+WmZ3h5Qa/dBmI94v1M2w6r42T2M8x6A8wUIxT2flHjLBQRs3++5zVhvsuobD
-        /1ZZgVuVuPEC5pIDGit+u34uO2FjPerJItpKi4jGUXHa2Xb+4LogMX6HXgap0kI/tAaFf/
-        RX5b3Kb8Zb2/rE/75waUuraQ043sIOiTdYjXCy9yL5s+1l7Dm2HLLXozLcTSblCb39lbwY
-        aKgbgr6VDEPR3K15HA2SVpAQEbtVx49RWQ5743MDh5OESq6d8V+YreRECvHbAw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601074512;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Obvuz1/Dj7IREACiXdEW9/bPBhlEoJrZlnsY+GA+QsE=;
-        b=GqqH+xCtqvI1RVBMFcKVd4BciFBBInhDnD4zDgQ9tTa5NKS4jdtef+X2Hn+2KsL2XWdRFm
-        VP8vIAmfY9qgW5CA==
-To:     Adam Borowski <kilobyte@angband.pl>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Prasad Sodagudi <psodagud@codeaurora.org>, rostedt@goodmis.org,
-        pmladek@suse.com, sergey.senozhatsky@gmail.com,
-        linux-kernel@vger.kernel.org, tkjos@google.com,
-        Mohammed Khajapasha <mkhaja@codeaurora.org>
-Subject: Re: [PATCH 2/2] printk: Make the console flush configurable in hotplug path
-In-Reply-To: <20200925141657.GA6325@angband.pl>
-References: <1600906112-126722-1-git-send-email-psodagud@codeaurora.org> <1600906112-126722-2-git-send-email-psodagud@codeaurora.org> <20200924063352.GB592892@kroah.com> <87wo0j6nos.fsf@nanos.tec.linutronix.de> <20200925092754.GA2508526@kroah.com> <20200925141657.GA6325@angband.pl>
-Date:   Sat, 26 Sep 2020 00:55:12 +0200
-Message-ID: <871ripv54f.fsf@nanos.tec.linutronix.de>
+        Fri, 25 Sep 2020 18:57:51 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC22C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:57:50 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id e23so800398eja.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 15:57:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=from:mime-version:date:message-id:subject:to:cc;
+        bh=YTJqkpgJ8oGbu26zT6SqE6IfywbetOrrOLJaZFmqFLI=;
+        b=HxUfyd/eapx5d9+natJZmF1OG6ii97A3mF0U2oxOdhVMVqS8P8a7nBqozCJ6gvy4aH
+         6WX8ebltB7J3oiM8Lp4cRRoErs1EzN8fe/0oGNyRPGWHSYHK/MQ3bbXE8eu6FsxFek/u
+         hXzwQzjyF3KTWQx2QkP3FgJf3ujEcfJryviQXuq4bz2kht1UVDIsoX6A+DuD5ZIl4ROc
+         eT57/7CXn7tfDWT2R5zugAdpnopNXbDwPBk7RE049IaE/UAI4KNCNr0RK6NQQt8qj8MH
+         PbrzOtvvBR7ABllsGQooitoQxONXuD24h4BCE/fM3g8U+vfViMayp39EMgBkFiw7DAz7
+         ma7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:mime-version:date:message-id:subject:to:cc;
+        bh=YTJqkpgJ8oGbu26zT6SqE6IfywbetOrrOLJaZFmqFLI=;
+        b=a7blGBwx7MdvUEprhHV1dW3H/PDhV7KEzh8nGWI9BZrIpTS/+kVLUu9LeQZFIxruRP
+         62YC2tnGCH4HiTG/1HyxjRxthq/ImdjQLvhYxQdPUG/SkCKEyvVVbeNxqMY3gLJ5hogB
+         LsSKlQgKknE95C92XE/3fmEpr+4APDO2K7JBfkmYHumD6BjGFA+YVzRwd6eno/tXGpWH
+         ZPsTpCPrMgvYdep5MqgHkkRkkjEkwRHyVQNxoQoUj4lGfDnJj2G2kqpBGb4wQ4CgEZuM
+         5xr0y3S2B1OxhwuWcy7hOtkg8unHc1ObAaQR4jxz/4tgZj3b80BcchGvGzGhDAShIomV
+         EY0g==
+X-Gm-Message-State: AOAM533lnh80Lse0mMT2l5fYLA4sjkF/q1hWIE0FYtmhBhaLIBmGNg4U
+        f8gl3piQeddcNYSlqqjMry9b1iciESHOUNcYTryMqQ==
+X-Google-Smtp-Source: ABdhPJwzZMwvLlbmrBUiDCYiZCqbWehbbMddoxwGMHXx99+i0Ne8EE4+NVOKVeBtzLPiYiiV8yCtpiA/p1c82yQCQJM=
+X-Received: by 2002:a17:907:94cf:: with SMTP id dn15mr5168167ejc.114.1601074669251;
+ Fri, 25 Sep 2020 15:57:49 -0700 (PDT)
+Received: from 913411032810 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 25 Sep 2020 15:57:48 -0700
+From:   Jann Horn <jannh@google.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 25 Sep 2020 15:57:48 -0700
+Message-ID: <CAG48ez1UnQEMok9rqFQC4XHBaMmBe=eaedu8Z_RXdjFHTna_LA@mail.gmail.com>
+Subject: [PATCH] nds32: Take mmap lock in cacheflush syscall
+To:     Nick Hu <nickhu@andestech.com>, Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25 2020 at 16:16, Adam Borowski wrote:
-> On Fri, Sep 25, 2020 at 11:27:54AM +0200, Greg KH wrote:
->> On Thu, Sep 24, 2020 at 08:21:07PM +0200, Thomas Gleixner wrote:
->> > On Thu, Sep 24 2020 at 08:33, Greg KH wrote:
->> > > On Wed, Sep 23, 2020 at 05:08:32PM -0700, Prasad Sodagudi wrote:
->> > >> +config CONSOLE_FLUSH_ON_HOTPLUG
->> > >> +	bool "Enable console flush configurable in hot plug code path"
->
->> > CPU hotplug is not meant to be a high speed operation and if people
->> > think they need it to be fast then its pretty much guaranteed that they
->> > want it for the completely wrong reasons.
->>=20
->> Odds are, it's the big/little systems that are trying to use cpu hotplug
->> for this type of thing :(
->
-> Just a bit of info:
-> My MT6797X (10 core: 4=C3=97A53 + 4=C3=97A53 + 2=C3=97A72), flickers its =
-cores this way:
-> the right-hand piece is CPUs, one character per core: bars show utilizati=
-on,
-> "o" stands for offline; every line is 0.1 second interval.
->
-> topline -i 0.1
-> mmcblk(=E2=A0=80) (oooo=E2=96=84=E2=96=86oo=E2=96=85o)
-> mmcblk(=E2=A0=80) (oooo=E2=96=85=E2=96=84oooo)
+We need to take the mmap lock around find_vma() and subsequent use of the
+VMA. Otherwise, we can race with concurrent operations like munmap(), which
+can lead to use-after-free accesses to freed VMAs.
 
-...
+Fixes: 1932fbe36e02 ("nds32: System calls handling")
+Signed-off-by: Jann Horn <jannh@google.com>
+---
+To the maintainers:
+I can't easily test this patch - I don't even have an nds32 compiler.
+If you have tested this patch, you may want to add a CC stable tag to this.
 
-> So it's on the order of a few ons/offs per second.
->
-> The offline CPUs are "present" and "offline"; not sure if this means hotp=
-lug
-> or not (I'd expect dropping from "present" to "possible", but I don't know
-> these parts).
+ arch/nds32/kernel/sys_nds32.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-Yes, they are (ab)using CPU hotplug instead of utilizing the fine
-grained hotplug state control and fix up the few odds and ends which
-keeps the CPU from staying in deep idle forever.
+diff --git a/arch/nds32/kernel/sys_nds32.c b/arch/nds32/kernel/sys_nds32.c
+index cb2d1e219bb3..836deecea83d 100644
+--- a/arch/nds32/kernel/sys_nds32.c
++++ b/arch/nds32/kernel/sys_nds32.c
+@@ -28,12 +28,18 @@ SYSCALL_DEFINE4(fadvise64_64_wrapper,int, fd, int,
+advice, loff_t, offset,
 
-Tinkering is way simpler than proper engineering.
+ SYSCALL_DEFINE3(cacheflush, unsigned int, start, unsigned int, end, int, cache)
+ {
++	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma;
+ 	bool flushi = true, wbd = true;
++	int ret;
 
-Thanks,
+-	vma = find_vma(current->mm, start);
+-	if (!vma)
+-		return -EFAULT;
++	if (mmap_read_lock_killable(mm))
++		return -EINTR;
++	vma = find_vma(mm, start);
++	if (!vma) {
++		ret = -EFAULT;
++		goto out;
++	}
+ 	switch (cache) {
+ 	case ICACHE:
+ 		wbd = false;
+@@ -44,11 +50,15 @@ SYSCALL_DEFINE3(cacheflush, unsigned int, start,
+unsigned int, end, int, cache)
+ 	case BCACHE:
+ 		break;
+ 	default:
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto out;
+ 	}
+ 	cpu_cache_wbinval_range_check(vma, start, end, flushi, wbd);
++	ret = 0;
 
-        tglx
+-	return 0;
++out:
++	mmap_read_unlock(mm);
++	return ret;
+ }
+
+ SYSCALL_DEFINE2(fp_udfiex_crtl, unsigned int, cmd, unsigned int, act)
+
+base-commit: 6d28cf7dfede6cfca5119a0d415a6a447c68f3a0
+-- 
+2.28.0.681.g6f77f65b4e-goog
