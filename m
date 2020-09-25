@@ -2,87 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9352781D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD572781DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727409AbgIYHl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
+        id S1727477AbgIYHmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgIYHl0 (ORCPT
+        with ESMTP id S1727068AbgIYHl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:41:26 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CEBC0613CE;
-        Fri, 25 Sep 2020 00:41:26 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id w1so1518063edr.3;
-        Fri, 25 Sep 2020 00:41:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7//MFWVMJUmvP+PVK07HNwtudt56GCSnNlal5EEKvv4=;
-        b=LC+DqmYh+9LocgEa9+Hnlu9aLgcyNxm0CBK/7ktL/gsbYmMSQEIVcF6ZuT0kVDedr4
-         x0S8gBHyMTfyfOiFKT40V3a1k/NBXfwQD3ktPl5K8tiNzv2CosJlDWVHzbO5XJm6U/Ky
-         +S3QR3RPJZb8oWvkZpHOWbEv7sU6D7HynabDzE/66eGmWfN4y1oG2MNzKom4vJE3Mqv7
-         ebcR+b/JE2QprEcjuYoSzLehhtNOL21e/Qs7NoCMORz81JhFBOkxMl8TD6wieTa37KIt
-         rDnN4B9OTux7ODoej6gvJTJ6J9qGweF0JYgfdW0ThZ/qKmJGKxdC9Xidg3VNyeZXKPDU
-         eKqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7//MFWVMJUmvP+PVK07HNwtudt56GCSnNlal5EEKvv4=;
-        b=pLxoD8a3697Mhi1mOARVuRMvjD0VVL2hf7ppO4oeOB+aFI5YYFjbuXCOP9H1bEDDG9
-         jENoUkdzETVwkmCXHJNOElpqNdlEbQ3UwjNSPANbq4w6n3wRlLw68e/eoAQA26HdC1hW
-         hdYNt94cXQNPnD5sFfKI+S+XJCDtkjdiUcCUPojqJZvggXYQQHcvqE1yBLrXbhKaoFpI
-         hLo4d2TMbyLkAA/1uEq9vRLpF62qejDeeBzAjxvnEo43WY7B/Wgcb1Wi8nfFIpn2gBPh
-         gTjgzqazt20erMX5U23SSXi57Gtd0RoVl66LECc6ZZ88GWPH+K9idYHuZJZ5Iqt5a4AP
-         EovQ==
-X-Gm-Message-State: AOAM533sjxT7jRwGxEWBwRYh+g/ggeKeM1kRSWpPcQQb9wkJuna/S7eI
-        bd5t1C1wC/T2Sj2dQcP9asR4uYMqNiBB9mUBBEQ=
-X-Google-Smtp-Source: ABdhPJwpE+VRluRfBzyvundvooNl3OzUjHscm1P2oCXo5Ps5VEJMO95gpsqAHjdBKNw24HTb7R8Ws/sLt2XgGtrMHxU=
-X-Received: by 2002:a05:6402:1356:: with SMTP id y22mr2582094edw.110.1601019684702;
- Fri, 25 Sep 2020 00:41:24 -0700 (PDT)
+        Fri, 25 Sep 2020 03:41:59 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC8F9C0613CE;
+        Fri, 25 Sep 2020 00:41:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bEXaXvm5X4dVutGWrM3SYTUTdFiVFeL65RE2m3et63M=; b=AqV8/Bz0cSC83Rc4UodMLetV/b
+        H4Q0vcq/B2nX6a/1NGaWGgPy9xNSn1LvND0PyUTXFyVQQDT5oLPB4R8c7F6DSJkAKF4WKQIGFUdkp
+        udYIlykogxqOjzXHo0dTH45OCQejslQx2zAkvYqsHkMfv2CW07yzU8ffQkFQ4Dd7EdxOV3+i8mUKa
+        njAOTD+HbtsvbRxCq0XxlyIIOyW7fVHnik1sUzOd/1V41Nkhyz5aKi+ibCKKW9+5ewaVOy4aE5Mzo
+        VDZRWpKNxXaa+GC031A6g07PAtFVpr0wW25aGZhIH14Nqkbd8hTliMwkhW/hIGQa2kxzNPWzmWLq7
+        ov9vR0rA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLiMF-0003cu-I3; Fri, 25 Sep 2020 07:41:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 59EEE302753;
+        Fri, 25 Sep 2020 09:41:25 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B942B20104626; Fri, 25 Sep 2020 09:41:25 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 09:41:25 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
+        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
+References: <20200924132904.1391-1-rppt@kernel.org>
+ <20200924132904.1391-6-rppt@kernel.org>
 MIME-Version: 1.0
-References: <20200925033017.1790973-1-art@khadas.com> <20200925033017.1790973-6-art@khadas.com>
-In-Reply-To: <20200925033017.1790973-6-art@khadas.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 25 Sep 2020 09:41:13 +0200
-Message-ID: <CAFBinCAJ6svwiv9OM6EHz7468D9h+jW_ULiGrorgLetcODsAKQ@mail.gmail.com>
-Subject: Re: [PATCH 5/8] arm64: dts: meson: remove reset-gpios from ethernet
- node for VIM2 meson-gxm-khadas-vim2
-To:     Artem Lapkin <email2tema@gmail.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
-        robh+dt@kernel.org, jbrunet@baylibre.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924132904.1391-6-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Artem,
+On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> Removing a PAGE_SIZE page from the direct map every time such page is
+> allocated for a secret memory mapping will cause severe fragmentation of
+> the direct map. This fragmentation can be reduced by using PMD-size pages
+> as a pool for small pages for secret memory mappings.
+> 
+> Add a gen_pool per secretmem inode and lazily populate this pool with
+> PMD-size pages.
 
-On Fri, Sep 25, 2020 at 5:31 AM Artem Lapkin <email2tema@gmail.com> wrote:
->
-> 1) fix down/up ethernet interface - need remove reset-gpios for ethernet node
->
-> `ifconfig eth0 down && ifconfig eth0 up` # didnt works with reset-gpios
-what is the problem that you observe here?
-did you investigate further why resetting the PHY changes this?
+What's the actual efficacy of this? Since the pmd is per inode, all I
+need is a lot of inodes and we're in business to destroy the directmap,
+no?
 
-the problem I see with removing the reset-gpios is that we cannot
-fully reset the PHY into a defined state
-some of the registers are kept with a soft-reset
+Afaict there's no privs needed to use this, all a process needs is to
+stay below the mlock limit, so a 'fork-bomb' that maps a single secret
+page will utterly destroy the direct map.
 
-> 2) add max-speed 1Gbit
-my understanding is that max-speed is needed when (in this case) the
-PHY advertises a higher speed than the hardware is actually capable of
-(for whatever reason)
-what is the problem that you have seen when max-speed was not set?
+I really don't like this, at all.
 
-
-Best regards,
-Martin
+IIRC Kirill looked at merging the directmap. I think he ran into
+performance issues there, but we really need something like that before
+something like this lands.
