@@ -2,279 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DDE2793C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0835B2793C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728944AbgIYVtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726844AbgIYVta (ORCPT
+        id S1727511AbgIYVyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:54:24 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23948 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726348AbgIYVyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:49:30 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A405C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:49:30 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id a9so185561pjg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:49:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=fnjUF/voPvuzv/dLnDwKTFVpoCBAlVLzlUtOZ7ywSnE=;
-        b=C3vpLmGCW68ANbhnOaz2h6lzbnyxJxhTilf7RmDW7o5+xYdQShz3cfUnUmaMf36WUB
-         Goh+j3wX4IomhnOFgSk9Qqzndy26jMQUtVDDVNUETPGOuJILmetyLO214ZUbsg2OfRp4
-         mF4Enl6IpFLmTjP/8gf9gDfbhaq91+N4R6gOa2uRvERoXHaCach8ohD9rzyfEtQyd6Ot
-         /gs1NS1whrz3/PzrAmIoXYWJLPq1E83qJnhtADt6ZM0HlEXIuYhZgsHhTT5h+YslGvQP
-         +OtHTZaA5tuv4Mn0jTiu379rlMSeT6Wd2AM56p5cKudwH/XJVKHe0s4KDTFlL1h2zB8j
-         d69g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=fnjUF/voPvuzv/dLnDwKTFVpoCBAlVLzlUtOZ7ywSnE=;
-        b=qRDkcSAr3OxD4/dT50yLhArS42Pk3a3d8GhBUY96zMs2fjXAJbexEPb9jEMMGsghu3
-         45Pd6ayqHbrxe503cW4GFFtB+oDte+ma/wvq1L794imD4Exp2XK+zG8TlWvTlaiTzIF9
-         FN8YwcYV/S1SLRcOXeAC2XULfH9NRS+tTxYSXs2TaAaPORknxttAA7zX91xim7Ec2gkj
-         +QBNVWZ859TIdUQo3ixk7V+pLmfGpm0auo40+nDhGgYNj8ip/YO1vydbQkViK7S0J9TN
-         PCe6TO5nGdiuCngRoQkacOVqiJJshfQHAt3zPsl5UoqBjscj15BvdYz2gUIPg4YeenPE
-         A/VA==
-X-Gm-Message-State: AOAM530AcxHt5Mdmy5lVL/3hxTeCTXMX+Mbg7QkF133+cw6c+IG2IjB/
-        BOy+dg/VVMJucrAwdbN2rai+xw==
-X-Google-Smtp-Source: ABdhPJyaYrhQywp2qaaPfy4YgApx9UaJR3jSScPYQ8aimLoSCq4iazoA7b1KyyBsEEuWJ+ZQf75HQg==
-X-Received: by 2002:a17:90b:1b50:: with SMTP id nv16mr491097pjb.153.1601070569873;
-        Fri, 25 Sep 2020 14:49:29 -0700 (PDT)
-Received: from [10.212.51.97] ([192.55.54.42])
-        by smtp.gmail.com with ESMTPSA id o11sm3341494pgq.36.2020.09.25.14.49.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Sep 2020 14:49:29 -0700 (PDT)
-From:   "Sean V Kelley" <sean.v.kelley@intel.com>
-To:     "Bjorn Helgaas" <helgaas@kernel.org>
-Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
-        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
-        ashok.raj@intel.com, tony.luck@intel.com,
-        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 03/10] PCI/RCEC: Cache RCEC capabilities in
- pci_init_capabilities()
-Date:   Fri, 25 Sep 2020 14:49:27 -0700
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <02EA37E5-87CB-401E-B5CA-BDE3A0D92517@intel.com>
-In-Reply-To: <20200925201312.GA2455652@bjorn-Precision-5520>
-References: <20200925201312.GA2455652@bjorn-Precision-5520>
+        Fri, 25 Sep 2020 17:54:23 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08PLZLbo001618;
+        Fri, 25 Sep 2020 14:54:08 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=8dri0/oVpx9WUY+zq0NUlvgY4GmtGOsXCTD9jbFRUU0=;
+ b=N+i6cIUdkkQza/1sTYZGIOOnCk9cC4XreX7+s5QXelRv/faVjLYm5rnyLRQ85PdCFR2y
+ zFzxZEqBMrsdwx/3DDHMnmIKXVil2jGYpGS1Wd0cjdOLhkRN1Etns9Asgt6ATyQsbIdr
+ xorJPKVNomagneRbZ3LfaE0PwLAfvTTmydc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 33s8su4jmd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 25 Sep 2020 14:54:08 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 25 Sep 2020 14:54:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kZLY6MS/6NVCBAJlUWuoSq5cTK0e2GQzhu+pCFT/W0bqWw1O4hZpADemUimIwPkHbfp/F3radlgkSViF6zwgVd3gg7cHh4l1PLzfgnftC7D6FBqccPxDxf7SJrmYT1YnPQuvewuj+ZPXkcKE4sOsXtbOvSJkUpqUL40E5wTG1PI/YrWP8OIqJrRNi/He/Dtwc4V6rsWR7xIoa9HNO6mOf4nAUjPGQc0K7rXJXZWCKu+d5+mjOnemuhrm2PWOi5N8DrvgoSR1tydguDdZZY1cYzItsawjBiJcwbJn+QDkpyCmVoV+JuhACPogcuHSZX34ZM1WIiR7AC+wJKD/G5HJyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8dri0/oVpx9WUY+zq0NUlvgY4GmtGOsXCTD9jbFRUU0=;
+ b=KgnmaLpwHqUhkso6jkjCdWdguH3Emahq0O1fz7M+Zhodz4tJuiP+NYbcCAWNgZAmahDfvUq4JxJeI+873xfyMoL7H3Z7drx2Y3Tq2oi+x/HBst/gpB15740gi5Q+/dcE1/YT0Z5UVocc9KxhHqFQHJujq6Q0Ei3TjwFV6MmEvOx9GIswav4m4ouT50NaS5+IeN+8TLM+8i/xmvQybJ8fd3XY80+eBP7K361dl/rlQoJF9Srrt6IQGF094g9Y184TthIauaDccHEVKPEfYuJVnYk63yWUEI6YxSiV1EujLBN4VUU2lGV7eNrfk9n/bxNf+xF/g6tG0N71kyKlQo9ZXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8dri0/oVpx9WUY+zq0NUlvgY4GmtGOsXCTD9jbFRUU0=;
+ b=W8vPz0RDkN5vWbK0FZbD4mrMptUwSvnFb8x35K9vDumV1jobMBT9wr9viEeNTagbZdj00CD/zGUP59UOVhK4D32yBRLhsu47Md5vTl8ESPYJ0ja41WTkuyy7B6F0owzZWn+KpKUYIK1RNogdNQ2jw7PHl7WlgpbXmR8A9de7mZ8=
+Authentication-Results: cloudflare.com; dkim=none (message not signed)
+ header.d=none;cloudflare.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.11; Fri, 25 Sep
+ 2020 21:54:06 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::c13c:fca9:5e04:9bfb%3]) with mapi id 15.20.3391.027; Fri, 25 Sep 2020
+ 21:54:06 +0000
+Date:   Fri, 25 Sep 2020 14:53:59 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Lorenz Bauer <lmb@cloudflare.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, <kernel-team@cloudflare.com>,
+        <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/4] bpf: sockmap: enable map_update_elem from
+ bpf_iter
+Message-ID: <20200925215359.l5lbicqdyx44spoc@kafai-mbp>
+References: <20200925095630.49207-1-lmb@cloudflare.com>
+ <20200925095630.49207-2-lmb@cloudflare.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925095630.49207-2-lmb@cloudflare.com>
+X-ClientProxiedBy: CO2PR18CA0060.namprd18.prod.outlook.com
+ (2603:10b6:104:2::28) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp (2620:10d:c090:400::5:4e29) by CO2PR18CA0060.namprd18.prod.outlook.com (2603:10b6:104:2::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Fri, 25 Sep 2020 21:54:04 +0000
+X-Originating-IP: [2620:10d:c090:400::5:4e29]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ae6acc7b-fa66-4ed4-cf3f-08d8619d85d2
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3571:
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3571E77D2D2731DFD2CF77CAD5360@BY5PR15MB3571.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ZL4Lv2m9ERGOgr/WQm1AedflRUjf37f9TEi8Ecnv0db4ORxiFhK71ZSUBn6YSIbpEKNKXPKX1ZhmTtW2Lv1lq05+tz5nQaKN5G7boeEY0ChWo6qPSDYNcRihiGKZls0o70atMyJVgUTzEsG5UuxTXFiVAPi1/sV6xmfPIvqkVZfpPl4XNcNZOzDb8uqHeHNELalI490ov1tJv60NCrfWoKXppn75ddTEhRFD4boJ39slPUZx8HUEnW16UcejX633Kjlx2o+CfFgWhTsFo7x3YbVBgsW11WRPJkqHOI5usmZQAgbeEIyUSevfrmQc7LBDS0UT5hTAfRjhTndq/EvciRgQwbpss8oE9vnzkyU6CaOo58rN9jcLbj5xXYu4MclX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(376002)(39860400002)(136003)(396003)(5660300002)(6666004)(4744005)(54906003)(8936002)(316002)(4326008)(55016002)(8676002)(33716001)(478600001)(9686003)(66946007)(66476007)(6916009)(52116002)(1076003)(7416002)(66556008)(16526019)(86362001)(2906002)(6496006)(186003)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: AohtMgheXRIjGVjanRsCzrq4Hf7+4sx/oKsFIU8ACjDWVGhDa6FUMpcJfRUyvSfjubWzUDW7I1IEs0InApSdJ3iGg0n2G7rt6yzMmlTbmkPu2th4hd+Hc3A6Afg0D4feiL4VnEV28EyATHB2PueC5KvBGXrN4UDC3//P6ANqzMnSaNIzHW2VZTgyoEmCk/Zm6ZfoXAdFDAVczINZacgK+cl0J63N/2nVGlFYCtsSu3yuseHGXHvltjE9fEaCMKDdFfHbEKycsou7AItkmS696lowczwj/U5lCM0hrQK4cd7agZuhb6DUbud27Hg4ORpfAv/Onc3GM55WRiPVltuscd1xvEH9L5PN19TxHEm47UTACBqtBj98v6WM65QsANP/cNWxU2yAToRcPmz5zffgMZXeB/pGWYHs2shXBpAyZt4/lLK9J4qPbxsvTJm0JAyeBTiNQSf7H2uzdDWAOnepTR74YyjZT1xM7VZBQcK5Xdxh6S30Th59qQ+kpv/06spJzZ8477lHtuz2SLaRtHAgVrRBI5d6tuFhDayHplZkAlYsVzbpRNv5C7SAkL5MrZAvAs1o31Gy7vaL40F/yv93R/PMiL9WCFQf+GRevByKMPl97NzvY9R0jcWR6OlGIyI1wZu1HsfruguheCwrejkGSaQjctenlfWKWE0aoM+Z1VQ=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae6acc7b-fa66-4ed4-cf3f-08d8619d85d2
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 21:54:06.0167
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sN/yRaNA1OWN8NrgPbamuv23a3peXeUxVUlliPDctN/AHciEl3YdZ7IlzZLtEetj
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3571
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-25_19:2020-09-24,2020-09-25 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 spamscore=0
+ mlxscore=0 clxscore=1015 mlxlogscore=999 bulkscore=0 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 phishscore=0 suspectscore=1
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250158
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25 Sep 2020, at 13:13, Bjorn Helgaas wrote:
+On Fri, Sep 25, 2020 at 10:56:27AM +0100, Lorenz Bauer wrote:
+[ ... ]
 
-> On Tue, Sep 22, 2020 at 02:38:52PM -0700, Sean V Kelley wrote:
->> From: Sean V Kelley <sean.v.kelley@intel.com>
->>
->> Extend support for Root Complex Event Collectors by decoding and
->> caching the RCEC Endpoint Association Extended Capabilities when
->> enumerating. Use that cached information for later error source
->> reporting. See PCI Express Base Specification, version 5.0-1,
->> section 7.9.10.
->>
->> Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
->> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
->> ---
->>  drivers/pci/pci.h         | 18 ++++++++++++++
->>  drivers/pci/pcie/Makefile |  2 +-
->>  drivers/pci/pcie/rcec.c   | 52 
->> +++++++++++++++++++++++++++++++++++++++
->>  drivers/pci/probe.c       |  3 ++-
->>  include/linux/pci.h       |  4 +++
->>  5 files changed, 77 insertions(+), 2 deletions(-)
->>  create mode 100644 drivers/pci/pcie/rcec.c
->>
->> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
->> index fa12f7cbc1a0..83670a6425d8 100644
->> --- a/drivers/pci/pci.h
->> +++ b/drivers/pci/pci.h
->> @@ -449,6 +449,16 @@ int aer_get_device_error_info(struct pci_dev 
->> *dev, struct aer_err_info *info);
->>  void aer_print_error(struct pci_dev *dev, struct aer_err_info 
->> *info);
->>  #endif	/* CONFIG_PCIEAER */
->>
->> +#ifdef CONFIG_PCIEPORTBUS
->> +/* Cached RCEC Associated Endpoint Extended Capabilities */
->> +struct rcec_ext {
->> +	u8		ver;
->> +	u8		nextbusn;
->> +	u8		lastbusn;
->> +	u32		bitmap;
->> +};
->> +#endif
->> +
->>  #ifdef CONFIG_PCIE_DPC
->>  void pci_save_dpc_state(struct pci_dev *dev);
->>  void pci_restore_dpc_state(struct pci_dev *dev);
->> @@ -461,6 +471,14 @@ static inline void pci_restore_dpc_state(struct 
->> pci_dev *dev) {}
->>  static inline void pci_dpc_init(struct pci_dev *pdev) {}
->>  #endif
->>
->> +#ifdef CONFIG_PCIEPORTBUS
->> +void pci_rcec_init(struct pci_dev *dev);
->> +void pci_rcec_exit(struct pci_dev *dev);
->> +#else
->> +static inline void pci_rcec_init(struct pci_dev *dev) {}
->> +static inline void pci_rcec_exit(struct pci_dev *dev) {}
->> +#endif
->> +
->>  #ifdef CONFIG_PCI_ATS
->>  /* Address Translation Service */
->>  void pci_ats_init(struct pci_dev *dev);
->> diff --git a/drivers/pci/pcie/Makefile b/drivers/pci/pcie/Makefile
->> index 68da9280ff11..d9697892fa3e 100644
->> --- a/drivers/pci/pcie/Makefile
->> +++ b/drivers/pci/pcie/Makefile
->> @@ -2,7 +2,7 @@
->>  #
->>  # Makefile for PCI Express features and port driver
->>
->> -pcieportdrv-y			:= portdrv_core.o portdrv_pci.o err.o
->> +pcieportdrv-y			:= portdrv_core.o portdrv_pci.o err.o rcec.o
->>
->>  obj-$(CONFIG_PCIEPORTBUS)	+= pcieportdrv.o
->>
->> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
->> new file mode 100644
->> index 000000000000..519ae086ff41
->> --- /dev/null
->> +++ b/drivers/pci/pcie/rcec.c
->> @@ -0,0 +1,52 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Root Complex Event Collector Support
->> + *
->> + * Authors:
->> + *  Sean V Kelley <sean.v.kelley@intel.com>
->> + *  Qiuxu Zhuo <qiuxu.zhuo@intel.com>
->> + *
->> + * Copyright (C) 2020 Intel Corp.
->> + */
->> +
->> +#include <linux/kernel.h>
->> +#include <linux/errno.h>
->> +#include <linux/bitops.h>
->> +#include <linux/pci.h>
->> +#include <linux/pci_regs.h>
->
-> Do we really need all the above?  I don't see any errno or bitops
-> here.
+> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+> index e1f05e3fa1d0..497e7df466d4 100644
+> --- a/net/core/sock_map.c
+> +++ b/net/core/sock_map.c
+> @@ -610,6 +610,9 @@ static int sock_map_update_elem(struct bpf_map *map, void *key,
+>  	struct sock *sk = (struct sock *)value;
+>  	int ret;
+>  
+> +	if (unlikely(!sk))
+sk_fullsock(sk) test is also needed.
 
-Will remove unused.
+> +		return -EINVAL;
 
->
->> +#include "../pci.h"
->> +
->> +void pci_rcec_init(struct pci_dev *dev)
->> +{
->> +	u32 rcec, hdr, busn;
->> +
->> +	/* Only for Root Complex Event Collectors */
->> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)
->> +		return;
->> +
->> +	dev->rcec_cap = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_RCEC);
->> +	if (!dev->rcec_cap)
->> +		return;
->> +
->> +	dev->rcec_ext = kzalloc(sizeof(*dev->rcec_ext), GFP_KERNEL);
->> +
->> +	rcec = dev->rcec_cap;
->> +	pci_read_config_dword(dev, rcec + PCI_RCEC_RCIEP_BITMAP, 
->> &dev->rcec_ext->bitmap);
->> +
->> +	/* Check whether RCEC BUSN register is present */
->> +	pci_read_config_dword(dev, rcec, &hdr);
->> +	dev->rcec_ext->ver = PCI_EXT_CAP_VER(hdr);
->> +	if (dev->rcec_ext->ver < PCI_RCEC_BUSN_REG_VER)
->> +		return;
->> +
->> +	pci_read_config_dword(dev, rcec + PCI_RCEC_BUSN, &busn);
->> +	dev->rcec_ext->nextbusn = PCI_RCEC_BUSN_NEXT(busn);
->> +	dev->rcec_ext->lastbusn = PCI_RCEC_BUSN_LAST(busn);
->> +}
->> +
->> +void pci_rcec_exit(struct pci_dev *dev)
->> +{
->> +	kfree(dev->rcec_ext);
->> +	dev->rcec_ext = NULL;
->> +}
->> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
->> index 03d37128a24f..16bc651fecb7 100644
->> --- a/drivers/pci/probe.c
->> +++ b/drivers/pci/probe.c
->> @@ -2201,6 +2201,7 @@ static void pci_configure_device(struct pci_dev 
->> *dev)
->>  static void pci_release_capabilities(struct pci_dev *dev)
->>  {
->>  	pci_aer_exit(dev);
->> +	pci_rcec_exit(dev);
->>  	pci_vpd_release(dev);
->>  	pci_iov_release(dev);
->>  	pci_free_cap_save_buffers(dev);
->> @@ -2400,7 +2401,7 @@ static void pci_init_capabilities(struct 
->> pci_dev *dev)
->>  	pci_ptm_init(dev);		/* Precision Time Measurement */
->>  	pci_aer_init(dev);		/* Advanced Error Reporting */
->>  	pci_dpc_init(dev);		/* Downstream Port Containment */
->> -
->> +	pci_rcec_init(dev);		/* Root Complex Event Collector */
->>  	pcie_report_downtraining(dev);
->>
->>  	if (pci_probe_reset_function(dev) == 0)
->> diff --git a/include/linux/pci.h b/include/linux/pci.h
->> index 835530605c0d..5c5c4eb642b6 100644
->> --- a/include/linux/pci.h
->> +++ b/include/linux/pci.h
->> @@ -326,6 +326,10 @@ struct pci_dev {
->>  #ifdef CONFIG_PCIEAER
->>  	u16		aer_cap;	/* AER capability offset */
->>  	struct aer_stats *aer_stats;	/* AER stats for this device */
->> +#endif
->> +#ifdef CONFIG_PCIEPORTBUS
->> +	u16		rcec_cap;	/* RCEC capability offset */
->
-> Looking through the whole series, I think rcec_cap is used (a) in
-> pci_rcec_init(), where we actually read the RCEC EA capability, and
-> (b) in walk_rcec() and pcie_link_rcec(), where we only use it to test
-> whether the device has an RCEC EA capability.
->
-> Couldn't we accomplish (b) just by testing "dev->rcec_ext"?  Then we
-> wouldn't need to save rcec_cap at all.
-
-Yes, rcec_ext really implies that the cap is there so the explicit cap 
-would not be necessary.  Will remove and make use of the renamed rcec_ea 
-(per below).
-
->
->> +	struct rcec_ext *rcec_ext;	/* RCEC cached assoc. endpoint extended 
->> capabilities */
->
-> Maybe "rcec_ea"?  The important part is that this is the Endpoint
-> Association information.  The fact that it happens to be an "extended"
-> capability isn't very interesting.
-
-Right, better to be more specific here.  Will change.
-
-Thanks,
-
-Sean
-
->
->>  #endif
->>  	u8		pcie_cap;	/* PCIe capability offset */
->>  	u8		msi_cap;	/* MSI capability offset */
->> -- 
->> 2.28.0
->>
+> +
+>  	if (!sock_map_sk_is_suitable(sk))
+sk->sk_type is used in sock_map_sk_is_suitable().
+sk_type is not in sock_common.
