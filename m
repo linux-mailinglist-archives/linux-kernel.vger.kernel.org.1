@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72511277D06
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 947D0277D07
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726828AbgIYAkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 20:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39072 "EHLO
+        id S1726851AbgIYAk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 20:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726706AbgIYAkV (ORCPT
+        with ESMTP id S1726762AbgIYAkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:40:21 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E93C0613D3
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:40:21 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 140so1074971ybf.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:40:21 -0700 (PDT)
+        Thu, 24 Sep 2020 20:40:24 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F22C0613D4
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:40:23 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id o14so628979qve.7
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:40:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=QVeShVtMdp4a174VS3P0sBlwkGRZjcje3Ux+yepnn44=;
-        b=n6lxj6hUkBy9w631PC222S+Fu+Ljqm4V7FZomxqgLupTEWK70SrY/OXKF0Kgoymasw
-         1FkVAAD+pv3EwdUuMT7CrFc2iQFGl0ZbWE6p49Xdl1Cc2GEkk2ySpZ7wPpiO/qxgXVtG
-         wrtBlPXHx4J3766447sH7o2yT5piQY6LudOBPuvSH2W8odYggVETezcRTWnssc8S3Fy4
-         8rMM3LtTo+NgDDCBFsu37RPOjizrr2X2RTYZPRoreYuIdviDtQ91m8quxJYDPVIhYcwM
-         9SU3eySfw99FOH8PTxNkb256jAuyMBJ8a01V+XbfKo7ToU9oj4GOVWYLlQQrYEKKB/gR
-         +Hrg==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Z8efH0VT0gu9mhE3Qe4fVs6J3IFKx4DbBtzU2cWSOyc=;
+        b=RRNSN2v/SyaYP2fZsZh2mG7mDOWv4UWpwlF4ah5Ah7pxNRp4gjq5SRIjmzOqEvtuNg
+         o2sZIvQXtBPsbhmZxlSWBHeRJtBCSS/DQpLgpUmZKrrP9dyXTU0506LL192MiSvzY4l2
+         P55P5nHR+wxjI1Gs0ydUIf0fyYUrBmK8XHfyFu/oVSqqsdXZLjYLyGdtBus6B1Plui3C
+         CSJdObmJswm4v5Y8kYvKlCq08vWHXbwA4lohzsyPJ5WcMX8mnTYWlvKJlxpb0vkoSfEY
+         6ovwP5H3ioE2gnIgIBVtS4T5+9afRYesMgJ5C5MXE8gLn+NyaeMfENu8SJHiHwrYMxdj
+         4idQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=QVeShVtMdp4a174VS3P0sBlwkGRZjcje3Ux+yepnn44=;
-        b=eKIOLSgXOvf9+L6khbmqSwvpz1EFpumXB4n23vy/G8Jp0WGwU8vZR/Y3f/UomttbQf
-         dTmn78E36QVY+aQ4sgXfEDucOXXtRJ3+WqlsIx5xR3zArJOuGKWIIElFXiiBA7y/6bEC
-         weiDFNSrPw+dnA9dSxx9XLr6UgnQO+h+IUtXucPJ4D7XQiVVRHkREeh75rDs1Jdk64YR
-         khT53vAlhei0ZHzlkTFbJWJHDGTjPQBExBCF+kaM1FA6n0wClWMJJeWsEBO8zPcCP4O9
-         IyZeT2DLqQ91h4Q/nBROEww5fSOMqZkVwfXVcacI8N9sugXBzVUn9UlwJvLP6xkPhdcf
-         f+gg==
-X-Gm-Message-State: AOAM532bc1kSRDuzUo+SYTKHxG8VY1x58jB88MvNrQwvCyKA/87i4x2Y
-        dyOp0fKiWCg8DQEjCKSK3fexpWtm/H7jXxJfxTzY
-X-Google-Smtp-Source: ABdhPJx0Z4DBHrWe5yn8IYsBxsFzD2aBfvOO0GX90aL4TlWzvg85lLR9WzUQFp7mDHwUIuoyqpoP3sE/39gm0a7xVBjS
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Z8efH0VT0gu9mhE3Qe4fVs6J3IFKx4DbBtzU2cWSOyc=;
+        b=kOUIe49mo1owJyKtqzEP3NR3LOEYvJVaMXFVQXjj+CMBGiGIkslP6mL/imjEd11J3k
+         nlm6ZWI0cHB4lAlKwExtBnUde/uJuhQYo1JK0mXC4PYebjE27CwhoEP6TSOS8zddfLIk
+         QxuxTT6rhVhQCOESsBnE1smMBOSlNCI+EpT4Sd819Ke4jsMi9KrbBql8lez7sDPjLFok
+         USXzH1SOtRGIDH8AK5i09tV04a5sCqEabwdieLgIJmlE6Z0tlDIEYZDL0zoaS5kQuLIc
+         /GPipivAFZz3Xxi232QfFPWNFfC5SlM/3U080QHMIUzv6ViGNSPjwYphZ356dkspi4xs
+         uNbA==
+X-Gm-Message-State: AOAM532euZBrZFTVFgG/KXLve9dnwHsyoc+YwdzRlzJEAWfd1QTNz3OB
+        HS/IRTK5vIpAcoE61z0eG9aVrlQ7wzSsF+UwOtI3
+X-Google-Smtp-Source: ABdhPJyV/rAxfDsY0L/wJmbvjNXMni1QAb7QYZR3zx5lVh17Q9z49dofhpNr8cuz5voKcmUTwrMX5BPRRI2y94zqSYmw
 Sender: "danielwinkler via sendgmr" 
         <danielwinkler@danielwinkler-linux.mtv.corp.google.com>
 X-Received: from danielwinkler-linux.mtv.corp.google.com ([2620:15c:202:201:f693:9fff:fef4:4e59])
- (user=danielwinkler job=sendgmr) by 2002:a5b:5ce:: with SMTP id
- w14mr2279927ybp.83.1600994420900; Thu, 24 Sep 2020 17:40:20 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 17:40:02 -0700
-Message-Id: <20200925004007.2378410-1-danielwinkler@google.com>
+ (user=danielwinkler job=sendgmr) by 2002:ad4:4f30:: with SMTP id
+ fc16mr1922865qvb.6.1600994422858; Thu, 24 Sep 2020 17:40:22 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:40:03 -0700
+In-Reply-To: <20200925004007.2378410-1-danielwinkler@google.com>
+Message-Id: <20200924173752.v3.1.I5f4fa6a76fe81f977f78f06b7e68ff1c76c6bddf@changeid>
 Mime-Version: 1.0
+References: <20200925004007.2378410-1-danielwinkler@google.com>
 X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v3 0/5] Bluetooth: Add new MGMT interface for advertising add
+Subject: [PATCH v3 1/5] Bluetooth: Add helper to set adv data
 From:   Daniel Winkler <danielwinkler@google.com>
 To:     marcel@holtmann.org
 Cc:     chromeos-bluetooth-upstreaming@chromium.org,
         linux-bluetooth@vger.kernel.org,
         Daniel Winkler <danielwinkler@google.com>,
+        Sonny Sasaka <sonnysasaka@chromium.org>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Johan Hedberg <johan.hedberg@gmail.com>,
@@ -65,62 +69,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maintainers,
+We wish to handle advertising data separately from advertising
+parameters in our new MGMT requests. This change adds a helper that
+allows the advertising data and scan response to be updated for an
+existing advertising instance.
 
-This patch series defines the new two-call MGMT interface for adding
-new advertising instances. Similarly to the hci advertising commands, a
-mgmt call to set parameters is expected to be first, followed by a mgmt
-call to set advertising data/scan response. The members of the
-parameters request are optional; the caller defines a "params" bitfield
-in the structure that indicates which parameters were intentionally set,
-and others are set to defaults.
+Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
+Signed-off-by: Daniel Winkler <danielwinkler@google.com>
+---
 
-The main feature here is the introduction of min/max parameters and tx
-power that can be requested by the client. Min/max parameters will be
-used both with and without extended advertising support, and tx power
-will be used with extended advertising support. After a call for hci
-advertising parameters, a new TX_POWER_SELECTED event will be emitted to
-alert userspace to the actual chosen tx power.
+Changes in v3: None
+Changes in v2: None
 
-Additionally, to inform userspace of the controller LE Tx power
-capabilities for the client's benefit, this series also changes the
-security info MGMT command to more flexibly contain other capabilities,
-such as LE min and max tx power.
+ include/net/bluetooth/hci_core.h |  3 +++
+ net/bluetooth/hci_core.c         | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 34 insertions(+)
 
-All changes have been tested on hatch (extended advertising) and kukui
-(no extended advertising) chromebooks with manual testing verifying
-correctness of parameters/data in btmon traces, and our automated test
-suite of 25 single- and multi-advertising usage scenarios.
-
-A separate patch series will add support in bluetoothd. Thanks in
-advance for your feedback!
-
-Daniel Winkler
-
-
-Changes in v3:
-- Adding selected tx power to adv params mgmt response, removing event
-- Re-using security info MGMT command to carry controller capabilities
-
-Changes in v2:
-- Fixed sparse error in Capabilities MGMT command
-
-Daniel Winkler (5):
-  Bluetooth: Add helper to set adv data
-  Bluetooth: Break add adv into two mgmt commands
-  Bluetooth: Use intervals and tx power from mgmt cmds
-  Bluetooth: Query LE tx power on startup
-  Bluetooth: Change MGMT security info CMD to be more generic
-
- include/net/bluetooth/hci.h      |   7 +
- include/net/bluetooth/hci_core.h |  12 +-
- include/net/bluetooth/mgmt.h     |  50 +++-
- net/bluetooth/hci_core.c         |  47 +++-
- net/bluetooth/hci_event.c        |  19 ++
- net/bluetooth/hci_request.c      |  29 ++-
- net/bluetooth/mgmt.c             | 412 +++++++++++++++++++++++++++++--
- 7 files changed, 531 insertions(+), 45 deletions(-)
-
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index 9873e1c8cd163b..300b3572d479e1 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1291,6 +1291,9 @@ int hci_add_adv_instance(struct hci_dev *hdev, u8 instance, u32 flags,
+ 			 u16 adv_data_len, u8 *adv_data,
+ 			 u16 scan_rsp_len, u8 *scan_rsp_data,
+ 			 u16 timeout, u16 duration);
++int hci_set_adv_instance_data(struct hci_dev *hdev, u8 instance,
++			 u16 adv_data_len, u8 *adv_data,
++			 u16 scan_rsp_len, u8 *scan_rsp_data);
+ int hci_remove_adv_instance(struct hci_dev *hdev, u8 instance);
+ void hci_adv_instances_set_rpa_expired(struct hci_dev *hdev, bool rpa_expired);
+ 
+diff --git a/net/bluetooth/hci_core.c b/net/bluetooth/hci_core.c
+index 8a2645a8330137..3f73f147826409 100644
+--- a/net/bluetooth/hci_core.c
++++ b/net/bluetooth/hci_core.c
+@@ -3005,6 +3005,37 @@ int hci_add_adv_instance(struct hci_dev *hdev, u8 instance, u32 flags,
+ 	return 0;
+ }
+ 
++/* This function requires the caller holds hdev->lock */
++int hci_set_adv_instance_data(struct hci_dev *hdev, u8 instance,
++			      u16 adv_data_len, u8 *adv_data,
++			      u16 scan_rsp_len, u8 *scan_rsp_data)
++{
++	struct adv_info *adv_instance;
++
++	adv_instance = hci_find_adv_instance(hdev, instance);
++
++	/* If advertisement doesn't exist, we can't modify its data */
++	if (!adv_instance)
++		return -ENOENT;
++
++	if (adv_data_len) {
++		memset(adv_instance->adv_data, 0,
++		       sizeof(adv_instance->adv_data));
++		memcpy(adv_instance->adv_data, adv_data, adv_data_len);
++		adv_instance->adv_data_len = adv_data_len;
++	}
++
++	if (scan_rsp_len) {
++		memset(adv_instance->scan_rsp_data, 0,
++		       sizeof(adv_instance->scan_rsp_data));
++		memcpy(adv_instance->scan_rsp_data,
++		       scan_rsp_data, scan_rsp_len);
++		adv_instance->scan_rsp_len = scan_rsp_len;
++	}
++
++	return 0;
++}
++
+ /* This function requires the caller holds hdev->lock */
+ void hci_adv_monitors_clear(struct hci_dev *hdev)
+ {
 -- 
 2.28.0.709.gb0816b6eb0-goog
 
