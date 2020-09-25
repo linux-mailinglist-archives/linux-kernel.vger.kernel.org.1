@@ -2,85 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69895278ABA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C11F278ACC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728753AbgIYOTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:19:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728466AbgIYOTL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:19:11 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AC2C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:19:11 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id x16so1919330pgj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:19:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Izvn14aXCOd8rlHi8gt8/prckjwG/92/E8+p6vMMqzM=;
-        b=QZx7q7gI1poaxI+iNpfTHOEPysawBMN6ILpWj8VDRHvig1MWbXDH9Q/Ejh/VGdMY6V
-         XhsSRSgLJ3vyBUW4G6v5lGczlnBrfrfGUTY6Io4kTHSOwwPeeq67+GUlO0pvSbpcSc8G
-         UQSaYijRBt6BeZMDv8AdtAKiNqO1VevLatKGi1HCrNW5g8jU/dNWe2se7vKcQ5smC1Kh
-         pE6mdkVNLv/zO4pT+cJM9rz/VL4qgjegnLWF0CSvnNA3YX8nzt9KdJQrxarNDFpNgyxb
-         mdM7GAKDG1dsnTN8AV+yDCM9QF/vXMl36U6209JvGiLAPdEQelB4a/A4/bJ7gb2XykBg
-         PFCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Izvn14aXCOd8rlHi8gt8/prckjwG/92/E8+p6vMMqzM=;
-        b=DwH8Ck1pTOGjK1OzYhu9V43jXVUlKQG34ujF0w+z7iCrmYq/dbBZvEMaUsUukoJcf7
-         fNeaNuldBaKbPwK5TlQBe77NSRjzdI3ywEu4/9hdSl+dHupDbb3/FFtas5iJuV1fOgVD
-         dj5QMVyG8nE5TJuI3cRIYMuvzgeyC/1A+f1JSbijcLQbhSkl0udg1ekUzC9fiSLSwfmU
-         KWSqMpxtUvPdvwujCerdbBjSGlVZUMOOYvaWeL0oPoIYCfSu+7fRZs+KQ4Tja7W1xGzR
-         yNmOlcodUwDH/8Iz/kGlBrjN90h+SI7lvNN4yBIpwV5ni/TuRPIroE8NHFvyofqXWj0B
-         OG8w==
-X-Gm-Message-State: AOAM5331h8UieCX2NkVh4Q8NFa9mF/UUiaMZOGx+BUeTnDnvY6PX+cCr
-        pWX+fH0GAnlQpVwBB+B144KHRQ==
-X-Google-Smtp-Source: ABdhPJwRr/FwQpe7dKk8pmg8H/cUjDmWIFuRPHGSosKhPuxMlj+z/HBIhpQTLB9cSGSc+hfMahv5og==
-X-Received: by 2002:a63:e057:: with SMTP id n23mr213338pgj.87.1601043550492;
-        Fri, 25 Sep 2020 07:19:10 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id j19sm2930829pfe.108.2020.09.25.07.19.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 07:19:09 -0700 (PDT)
-Subject: Re: clean up is partition checks
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     dm-devel@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-ide@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org
-References: <20200903054104.228829-1-hch@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <7a0600d8-d886-c546-378c-5298a16e979c@kernel.dk>
-Date:   Fri, 25 Sep 2020 08:19:08 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728956AbgIYOV4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:21:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51090 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728330AbgIYOV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:21:56 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0B1F4208A9;
+        Fri, 25 Sep 2020 14:21:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601043716;
+        bh=S03ouvc4Wtwn2XnHrltiJObGWm6huyZQX8jzvKd1Aok=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Eu/Xch7YM2T/Mun7Cgb6UW6fjul9MEfEY9sEctwa4lA4huUje85m5yjtpXGWufPxR
+         /LzlwIMm5RQ55U8/iutlWpEAy409dqrBldGDGn8s9D/IVjinC+kgHTPJM9Ur3hLqGc
+         cfIYS6UTURCmXv84g0jlnJWr71Z8NUHn7plSg2NE=
+Received: by pali.im (Postfix)
+        id A295468A; Fri, 25 Sep 2020 16:21:53 +0200 (CEST)
+Date:   Fri, 25 Sep 2020 16:21:53 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc:     Jason Cooper <jason@lakedaemon.net>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andre Heider <a.heider@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: marvell: espressobin: Update link to V7
+ schematic
+Message-ID: <20200925142153.el56h5ttxbcdmxcm@pali>
+References: <20200925084306.16309-1-pali@kernel.org>
+ <87wo0iezsr.fsf@BL-laptop>
 MIME-Version: 1.0
-In-Reply-To: <20200903054104.228829-1-hch@lst.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87wo0iezsr.fsf@BL-laptop>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/20 11:40 PM, Christoph Hellwig wrote:
-> Hi Jens,
+Hello!
+
+On Friday 25 September 2020 15:44:36 Gregory CLEMENT wrote:
+> Hello Pali,
 > 
-> this series add a new helepr to check if a struct block_device represents
-> a parition, and removes most direct access to ->bd_contained from
-> drivers.
+> could you add a commit log besides the topic ?
 
-Applied, thanks.
+I can add, but I do not know what to write for such simple update.
 
--- 
-Jens Axboe
+> Also note that I've just sent the pull requests for 5.10 and I was
+> already a little late for that, so I fear this patch will be for 5.11.
 
+I think it is fine.
+
+> Unless the former url was broken it this case it could be considered as
+> a fixe and could be applied for 5.9. If you think it, you should also
+> add a "Fixes:" tag.
+
+Both URLs are still working. Previous URL just contains older version.
+New URL is available in the main / official web page [1] for technical
+documentation and also is more descriptive.
+
+[1] - http://espressobin.net/tech-spec/
+
+> Thank,
+> 
+> Gregory
+> 
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > ---
+> >  arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts | 2 +-
+> >  arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts      | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> > index 61d49d6a2a2a..6062a7df7342 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts
+> > @@ -8,7 +8,7 @@
+> >   *
+> >   */
+> >  /*
+> > - * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
+> > + * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
+> >   */
+> >  
+> >  /dts-v1/;
+> > diff --git a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> > index 44dbe9a21cc7..c47a93978386 100644
+> > --- a/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> > +++ b/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts
+> > @@ -8,7 +8,7 @@
+> >   *
+> >   */
+> >  /*
+> > - * Schematic available at http://wiki.espressobin.net/tiki-download_file.php?fileId=200
+> > + * Schematic available at http://espressobin.net/wp-content/uploads/2020/05/ESPRESSObin_V7-0_Schematic.pdf
+> >   */
+> >  
+> >  /dts-v1/;
+> > -- 
+> > 2.20.1
+> >
+> 
+> -- 
+> Gregory Clement, Bootlin
+> Embedded Linux and Kernel engineering
+> http://bootlin.com
