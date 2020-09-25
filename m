@@ -2,210 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDDF278698
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEAE27869D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728391AbgIYMD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59444 "EHLO
+        id S1728411AbgIYMEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727248AbgIYMD1 (ORCPT
+        with ESMTP id S1727749AbgIYMEP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:03:27 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF1C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:03:27 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id q9so2800429wmj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:03:27 -0700 (PDT)
+        Fri, 25 Sep 2020 08:04:15 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC262C0613CE;
+        Fri, 25 Sep 2020 05:04:14 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id s66so2048206otb.2;
+        Fri, 25 Sep 2020 05:04:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=j5bxVuVEiqgVlanRePu6dA6f3zbOwxopbpYSWu4POWk=;
-        b=MDPyV9JyNqYevanfnR1rtU6bGSJi5p22RFCAgfzYRhndYJbn0RxvNFymUBVUq4yloI
-         S4qD6N6aOmqKaKJ3GB85EN9rAv8IUaxoqgdb2mNeMJVMshswtqP8T9ylfJpuZA9UkUn3
-         l7EQm23e1bLg8EJyQYf2M+9sF2W4Lbs7Dfb9HQFMp9OH9hrCRW4UQL1+TesXYm1WCV9n
-         1R7zAWPZCAoRcuosg+vaNhWV4JbAa5ufV/0bCW488jixR38gD9VA8YMaIwYyW4NOEKuE
-         BifDoz1UDzLiL4YUjGcDGeBtDvXAvEHLGETy/hu8aZmzt5HxukVVB+giAbqqqNk+DLw9
-         ov2A==
+        bh=df9Z5CtgBUrnK04XFpV4Jf8VxBtCIPJAq7EYMVh2EmA=;
+        b=OlbGtfWIIR8Fl58hMpF1ZyVNIKubUDjHOh6jO73tptaAvxk291KE1SrQlLUko8pscf
+         jqBmZz1i2HYioPIR79O937JCXVvo8Xs+Hod5EHSrqWghTO7vqFvtVDKYKN2VcUDFvnYb
+         RJ463QwiBOt/ZdoH0W5cgEBFW7tizmQH+m3Wc1wCH4bCNteTV/U0elOQd9rfXudg9A78
+         gq0jGTYSiijP01wC4TcnI/3XT5NfgpM2lsufT1x1lmVRqJbUbSMV/I+u1Vs1iLhOjfpo
+         NPNRsc/9EQ7D1u7Q3f+/P5IJr9hfzFiughxR9MG8xBu7yVsp3rHT8ZYQXxeYR0Uwg8wE
+         dLLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=j5bxVuVEiqgVlanRePu6dA6f3zbOwxopbpYSWu4POWk=;
-        b=ajhsqXvNfVSCOukJ7sNqAyfwVxlNHQvgXSJwCkaQFQCpY3c4nI08Umtz1WuXx0OeAf
-         Jq6UvwsKZvVXObszXsDx5m5qH7PvhBhe01ZAB8Bz1SFqFf+cuG7TGq12CmLS2BjsTPx7
-         +6Uu7yzWCFTjkmannNM7TfMho/s91GH7XTwYBupR1qLZanZyTrb2jdv/KZySs4/movXf
-         8L97MP/hOoV1+Qxabh4GZ03lEC/Wo7lzkg/oqTMADDi/SA5rFOBzrCe9eRHHhHDkg/yP
-         7cV3JwA3TqkNqE8v8tpBwJahq1ccpBCqOi/xuNUKiWFeReSBKlz52kCdmZgk0hcGwlOT
-         v1bA==
-X-Gm-Message-State: AOAM531/xS8vx000/1p0GzS0dckaWjVtkDUjoHRN7SXq6PTy5v9ZiuCu
-        EBmStluA0W8UoBMGobPmThyLIfDvr6IyugOmmlGMog==
-X-Google-Smtp-Source: ABdhPJwVtZag41aA0S3BJWbfmQKAI4dJew+ojCY35ogBbonXZ4WZsj9CG4j40D5B/FOP70hS4l9dJdXHX+9Fd2IJojg=
-X-Received: by 2002:a7b:cd05:: with SMTP id f5mr2753455wmj.116.1601035405961;
- Fri, 25 Sep 2020 05:03:25 -0700 (PDT)
+        bh=df9Z5CtgBUrnK04XFpV4Jf8VxBtCIPJAq7EYMVh2EmA=;
+        b=s1UhoL65BQB6Qui1jpoHisYb4GmXpQL7EH2MJmidtAkL2s6wSmuevUOlFOtGhgtn9Z
+         j17XhVyb2+mYS2kHtxvBn0UtMJgZTGiET6BpMrM7Ee6yjSYpWlsaAOLKrwoARCIDGqxf
+         hnKWjv7pewxOUgzOIy9lBZC20em/hV2FH3DYAcKqWFJwWrFWUVOBuSDPUzv1LEUBID72
+         h75Jwws5jnC/o4BMMXJdvSnY3We/Gd+jJCOKaNo32olQ8lXTR+yPOUr8fc71ZrSxw270
+         PxCT4bCDntxEiLHXCAoMml1I/JDw/wuUM43/Twa9b1Latprqv3QU8AENXGoeuKZPe/0F
+         oXDw==
+X-Gm-Message-State: AOAM533nROa8tArwHlCSXcMX1B3Fg+sKk0UyqCkoFIxSR7Biz0Xy5kp+
+        CGoe4A/b9QJpcQa4hNmLPUplsGacXOqKtcrIavU=
+X-Google-Smtp-Source: ABdhPJz0UhP8VCSafF75MpbYkWp1RE/rQ7OxzIAap+PmbH5gQykgOgk2xfneT/EdGUpmvgtPtJgEQ42yYxYrW5J5iKU=
+X-Received: by 2002:a9d:12ab:: with SMTP id g40mr2692575otg.369.1601035454054;
+ Fri, 25 Sep 2020 05:04:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200921155004.v2.1.I67a8b8cd4def8166970ca37109db46d731b62bb6@changeid>
- <CABBYNZLTZbwyL0ykmFezWrkNVnHoZt2KPtz+aQwo7TvhdC7TiQ@mail.gmail.com>
- <CAJQfnxFjL6RicwHyFgYzNp7WPrMePEOa2fgOX9TMju-z5AWsPg@mail.gmail.com> <CABBYNZJdY+QBiCk9nBhJ-gUm-K0ZF6U=03f+tqKvs7c+oG=axA@mail.gmail.com>
-In-Reply-To: <CABBYNZJdY+QBiCk9nBhJ-gUm-K0ZF6U=03f+tqKvs7c+oG=axA@mail.gmail.com>
-From:   Archie Pusaka <apusaka@google.com>
-Date:   Fri, 25 Sep 2020 20:03:14 +0800
-Message-ID: <CAJQfnxEk5aA_N8+-O4bojcirtXPYAtMf0LmFAJ3cF5M_f=uA0A@mail.gmail.com>
-Subject: Re: [PATCH v2] Bluetooth: Check for encryption key size on connect
-To:     Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Alain Michaud <alainm@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
+References: <cover.1598868203.git.yulei.kernel@gmail.com> <CANRm+CwhTVHXOV6HzawHS5E_ELA3nEw0AxY1-w8vX=EsADWGSw@mail.gmail.com>
+ <CANRm+CydqYmVbYz2pkT28wjKFS4AvmZ_iS4Sn1rnHT6G1S_=Mw@mail.gmail.com> <CANgfPd8uvkYyHLJh60vSKp1ZDi9T0ZWM9SeXEUm-1da+DqxTEQ@mail.gmail.com>
+In-Reply-To: <CANgfPd8uvkYyHLJh60vSKp1ZDi9T0ZWM9SeXEUm-1da+DqxTEQ@mail.gmail.com>
+From:   yulei zhang <yulei.kernel@gmail.com>
+Date:   Fri, 25 Sep 2020 20:04:03 +0800
+Message-ID: <CACZOiM1JTX3w567dzThM-nPUrUksPnxks4goafoALDq1z_iNsw@mail.gmail.com>
+Subject: Re: [RFC V2 0/9] x86/mmu:Introduce parallel memory virtualization to
+ boost performance
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Wanpeng Li <kernellwp@gmail.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Haiwei Li <lihaiwei.kernel@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Luiz,
-
-On Wed, 23 Sep 2020 at 01:03, Luiz Augusto von Dentz
-<luiz.dentz@gmail.com> wrote:
+On Fri, Sep 25, 2020 at 1:14 AM Ben Gardon <bgardon@google.com> wrote:
 >
-> Hi Archie,
->
-> On Tue, Sep 22, 2020 at 12:48 AM Archie Pusaka <apusaka@google.com> wrote:
+> On Wed, Sep 23, 2020 at 11:28 PM Wanpeng Li <kernellwp@gmail.com> wrote:
 > >
-> > Hi Luiz,
-> >
-> > On Tue, 22 Sep 2020 at 01:15, Luiz Augusto von Dentz
-> > <luiz.dentz@gmail.com> wrote:
-> > >
-> > > Hi Archie,
-> > >
-> > >
-> > > On Mon, Sep 21, 2020 at 12:56 AM Archie Pusaka <apusaka@google.com> wrote:
-> > > >
-> > > > From: Archie Pusaka <apusaka@chromium.org>
-> > > >
-> > > > When receiving connection, we only check whether the link has been
-> > > > encrypted, but not the encryption key size of the link.
-> > > >
-> > > > This patch adds check for encryption key size, and reject L2CAP
-> > > > connection which size is below the specified threshold (default 7)
-> > > > with security block.
-> > > >
-> > > > Here is some btmon trace.
-> > > > @ MGMT Event: New Link Key (0x0009) plen 26    {0x0001} [hci0] 5.847722
-> > > >         Store hint: No (0x00)
-> > > >         BR/EDR Address: 38:00:25:F7:F1:B0 (OUI 38-00-25)
-> > > >         Key type: Unauthenticated Combination key from P-192 (0x04)
-> > > >         Link key: 7bf2f68c81305d63a6b0ee2c5a7a34bc
-> > > >         PIN length: 0
-> > > > > HCI Event: Encryption Change (0x08) plen 4        #29 [hci0] 5.871537
-> > > >         Status: Success (0x00)
-> > > >         Handle: 256
-> > > >         Encryption: Enabled with E0 (0x01)
-> > > > < HCI Command: Read Encryp... (0x05|0x0008) plen 2  #30 [hci0] 5.871609
-> > > >         Handle: 256
-> > > > > HCI Event: Command Complete (0x0e) plen 7         #31 [hci0] 5.872524
-> > > >       Read Encryption Key Size (0x05|0x0008) ncmd 1
-> > > >         Status: Success (0x00)
-> > > >         Handle: 256
-> > > >         Key size: 3
-> > > >
-> > > > ////// WITHOUT PATCH //////
-> > > > > ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 5.895023
-> > > >       L2CAP: Connection Request (0x02) ident 3 len 4
-> > > >         PSM: 4097 (0x1001)
-> > > >         Source CID: 64
-> > > > < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 5.895213
-> > > >       L2CAP: Connection Response (0x03) ident 3 len 8
-> > > >         Destination CID: 64
-> > > >         Source CID: 64
-> > > >         Result: Connection successful (0x0000)
-> > > >         Status: No further information available (0x0000)
-> > > >
-> > > > ////// WITH PATCH //////
-> > > > > ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 4.887024
-> > > >       L2CAP: Connection Request (0x02) ident 3 len 4
-> > > >         PSM: 4097 (0x1001)
-> > > >         Source CID: 64
-> > > > < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 4.887127
-> > > >       L2CAP: Connection Response (0x03) ident 3 len 8
-> > > >         Destination CID: 0
-> > > >         Source CID: 64
-> > > >         Result: Connection refused - security block (0x0003)
-> > > >         Status: No further information available (0x0000)
-> > > >
-> > > > Signed-off-by: Archie Pusaka <apusaka@chromium.org>
-> > > > Reviewed-by: Alain Michaud <alainm@chromium.org>
-> > > >
-> > > > ---
-> > > > Btw, it looks like the patch sent by Alex Lu with the title
-> > > > [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-> > > > also solves the exact same issue.
-> > > >
-> > > > Changes in v2:
-> > > > * Add btmon trace to the commit message
-> > > >
-> > > >  net/bluetooth/l2cap_core.c | 3 ++-
-> > > >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-> > > > index ade83e224567..b4fc0ad38aaa 100644
-> > > > --- a/net/bluetooth/l2cap_core.c
-> > > > +++ b/net/bluetooth/l2cap_core.c
-> > > > @@ -4101,7 +4101,8 @@ static struct l2cap_chan *l2cap_connect(struct l2cap_conn *conn,
-> > > >
-> > > >         /* Check if the ACL is secure enough (if not SDP) */
-> > > >         if (psm != cpu_to_le16(L2CAP_PSM_SDP) &&
-> > > > -           !hci_conn_check_link_mode(conn->hcon)) {
-> > > > +           (!hci_conn_check_link_mode(conn->hcon) ||
-> > > > +           !l2cap_check_enc_key_size(conn->hcon))) {
-> > >
-> > > I wonder if we couldn't incorporate the check of key size into
-> > > hci_conn_check_link_mode, like I said in the first patch checking the
-> > > enc key size should not be specific to L2CAP.
-> >
-> > Yes, I could move the check into hci_conn_check_link_mode.
-> > At first look, this function is also called by AMP which I am not
-> > familiar with. In addition, I found this patch which moves this check
-> > outside hci_conn, so I have my doubts there.
-> > https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git/commit/?id=693cd8ce3f882524a5d06f7800dd8492411877b3
+> > Any comments? Paolo! :)
 >
-> Right, I think we can have it as part of the hci_conn_check_link_mode,
-> that said it is perhaps better to have it as
-> hci_conn_check_enc_key_size instead as it is not L2CAP expecific.
-> Other than that it looks good to me.
-
-Do you mean we should move l2cap_conn_check_enc_key_size to
-hci_conn_check_enc_key_size? I think that is a good idea.
-We also have hci_conn_check_secure which I am unsure what the purpose
-is. I'll try to merge them together.
-
+> Hi, sorry to be so late in replying! I wanted to post the first part
+> of the TDP MMU series I've been working on before responding so we
+> could discuss the two together, but I haven't been able to get it out
+> as fast as I would have liked. (I'll send it ASAP!) I'm hopeful that
+> it will ultimately help address some of the page fault handling and
+> lock contention issues you're addressing with these patches. I'd also
+> be happy to work together to add a prepopulation feature to it. I'll
+> put in some more comments inline below.
 >
+
+Thanks for the feedback and looking forward to your patchset.
+
+> > On Wed, 9 Sep 2020 at 11:04, Wanpeng Li <kernellwp@gmail.com> wrote:
 > > >
-> > > >                 conn->disc_reason = HCI_ERROR_AUTH_FAILURE;
-> > > >                 result = L2CAP_CR_SEC_BLOCK;
-> > > >                 goto response;
+> > > Any comments? guys!
+> > > On Tue, 1 Sep 2020 at 19:52, <yulei.kernel@gmail.com> wrote:
+> > > >
+> > > > From: Yulei Zhang <yulei.kernel@gmail.com>
+> > > >
+> > > > Currently in KVM memory virtulization we relay on mmu_lock to
+> > > > synchronize the memory mapping update, which make vCPUs work
+> > > > in serialize mode and slow down the execution, especially after
+> > > > migration to do substantial memory mapping will cause visible
+> > > > performance drop, and it can get worse if guest has more vCPU
+> > > > numbers and memories.
+> > > >
+> > > > The idea we present in this patch set is to mitigate the issue
+> > > > with pre-constructed memory mapping table. We will fast pin the
+> > > > guest memory to build up a global memory mapping table according
+> > > > to the guest memslots changes and apply it to cr3, so that after
+> > > > guest starts up all the vCPUs would be able to update the memory
+> > > > simultaneously without page fault exception, thus the performance
+> > > > improvement is expected.
+>
+> My understanding from this RFC is that your primary goal is to
+> eliminate page fault latencies and lock contention arising from the
+> first page faults incurred by vCPUs when initially populating the EPT.
+> Is that right?
+>
+
+That's right.
+
+> I have the impression that the pinning and generally static memory
+> mappings are more a convenient simplification than part of a larger
+> goal to avoid incurring page faults down the line. Is that correct?
+>
+> I ask because I didn't fully understand, from our conversation on v1
+> of this RFC, why reimplementing the page fault handler and associated
+> functions was necessary for the above goals, as I understood them.
+> My impression of the prepopulation approach is that, KVM will
+> sequentially populate all the EPT entries to map guest memory. I
+> understand how this could be optimized to be quite efficient, but I
+> don't understand how it would scale better than the existing
+> implementation with one vCPU accessing memory.
+>
+
+I don't think our goal is to simply eliminate the page fault. Our
+target scenario
+is in live migration, when the workload resume on the destination VM after
+migrate, it will kick off the vcpus to build the gfn to pfn mapping,
+but due to the
+mmu_lock it holds the vcpus to execute in sequential which significantly slows
+down the workload execution in VM and affect the end user experience, especially
+when it is memory sensitive workload. Pre-populate the EPT entries
+will solve the
+problem smoothly as it allows the vcpus to execute in parallel after migration.
+
+> > > >
+> > > > We use memory dirty pattern workload to test the initial patch
+> > > > set and get positive result even with huge page enabled. For example,
+> > > > we create guest with 32 vCPUs and 64G memories, and let the vcpus
+> > > > dirty the entire memory region concurrently, as the initial patch
+> > > > eliminate the overhead of mmu_lock, in 2M/1G huge page mode we would
+> > > > get the job done in about 50% faster.
+>
+> In this benchmark did you include the time required to pre-populate
+> the EPT or just the time required for the vCPUs to dirty memory?
+> I ask because I'm curious if your priority is to decrease the total
+> end-to-end time, or you just care about the guest experience, and not
+> so much the VM startup time.
+
+We compare the time for each vcpu thread to finish the dirty job. Yes, it can
+take some time for the page table pre-populate, but as each vcpu thread
+can gain a huge advantage with concurrent dirty write, if we count that in
+the total time it is still a better result.
+
+> How does this compare to the case where 1 vCPU reads every page of
+> memory and then 32 vCPUs concurrently dirty every page?
+>
+
+Haven't tried this yet, I think the major difference would be the page fault
+latency introduced by the one vCPU read.
+
+> > > >
+> > > > We only validate this feature on Intel x86 platform. And as Ben
+> > > > pointed out in RFC V1, so far we disable the SMM for resource
+> > > > consideration, drop the mmu notification as in this case the
+> > > > memory is pinned.
+>
+> I'm excited to see big MMU changes like this, and I look forward to
+> combining our needs towards a better MMU for the x86 TDP case. Have
+> you thought about how you would build SMM and MMU notifier support
+> onto this patch series? I know that the invalidate range notifiers, at
+> least, added a lot of non-trivial complexity to the direct MMU
+> implementation I presented last year.
+>
+
+Thanks for the suggestion, I will think about it.
+
+> > > >
+> > > > V1->V2:
+> > > > * Rebase the code to kernel version 5.9.0-rc1.
+> > > >
+> > > > Yulei Zhang (9):
+> > > >   Introduce new fields in kvm_arch/vcpu_arch struct for direct build EPT
+> > > >     support
+> > > >   Introduce page table population function for direct build EPT feature
+> > > >   Introduce page table remove function for direct build EPT feature
+> > > >   Add release function for direct build ept when guest VM exit
+> > > >   Modify the page fault path to meet the direct build EPT requirement
+> > > >   Apply the direct build EPT according to the memory slots change
+> > > >   Add migration support when using direct build EPT
+> > > >   Introduce kvm module parameter global_tdp to turn on the direct build
+> > > >     EPT mode
+> > > >   Handle certain mmu exposed functions properly while turn on direct
+> > > >     build EPT mode
+> > > >
+> > > >  arch/mips/kvm/mips.c            |  13 +
+> > > >  arch/powerpc/kvm/powerpc.c      |  13 +
+> > > >  arch/s390/kvm/kvm-s390.c        |  13 +
+> > > >  arch/x86/include/asm/kvm_host.h |  13 +-
+> > > >  arch/x86/kvm/mmu/mmu.c          | 533 ++++++++++++++++++++++++++++++--
+> > > >  arch/x86/kvm/svm/svm.c          |   2 +-
+> > > >  arch/x86/kvm/vmx/vmx.c          |   7 +-
+> > > >  arch/x86/kvm/x86.c              |  55 ++--
+> > > >  include/linux/kvm_host.h        |   7 +-
+> > > >  virt/kvm/kvm_main.c             |  43 ++-
+> > > >  10 files changed, 639 insertions(+), 60 deletions(-)
+> > > >
 > > > > --
-> > > > 2.28.0.681.g6f77f65b4e-goog
+> > > > 2.17.1
 > > > >
-> > >
-> > >
-> > > --
-> > > Luiz Augusto von Dentz
-> >
-> > Thanks,
-> > Archie
->
->
->
-> --
-> Luiz Augusto von Dentz
-
-Thanks,
-Archie
