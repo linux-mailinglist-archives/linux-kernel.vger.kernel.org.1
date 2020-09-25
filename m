@@ -2,100 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE51827899A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:33:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06E702789A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgIYNdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:33:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55556 "EHLO mx2.suse.de"
+        id S1728910AbgIYNeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:34:01 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:34652 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728148AbgIYNdo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:33:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EF96BB13B;
-        Fri, 25 Sep 2020 13:20:01 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 15:19:48 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: Re: [PATCH RFC 2/4] mm/page_alloc: place pages to tail in
- __putback_isolated_page()
-Message-ID: <20200925131948.GB3910@linux>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-3-david@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200916183411.64756-3-david@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1728794AbgIYNd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 09:33:59 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A4EA720039A;
+        Fri, 25 Sep 2020 15:25:07 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 98745200152;
+        Fri, 25 Sep 2020 15:25:07 +0200 (CEST)
+Received: from fsr-ub1864-126.ea.freescale.net (fsr-ub1864-126.ea.freescale.net [10.171.82.212])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 640642030E;
+        Fri, 25 Sep 2020 15:25:07 +0200 (CEST)
+From:   Ioana Ciornei <ioana.ciornei@nxp.com>
+To:     shawnguo@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>
+Subject: [PATCH 2/9] arm64: dts: ls1088ardb: add QSGMII PHY nodes
+Date:   Fri, 25 Sep 2020 16:24:56 +0300
+Message-Id: <20200925132503.30206-3-ioana.ciornei@nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200925132503.30206-1-ioana.ciornei@nxp.com>
+References: <20200925132503.30206-1-ioana.ciornei@nxp.com>
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 08:34:09PM +0200, David Hildenbrand wrote:
-> __putback_isolated_page() already documents that pages will be placed to
-> the tail of the freelist - this is, however, not the case for
-> "order >= MAX_ORDER - 2" (see buddy_merge_likely()) - which should be
-> the case for all existing users.
-> 
-> This change affects two users:
-> - free page reporting
-> - page isolation, when undoing the isolation.
-> 
-> This behavior is desireable for pages that haven't really been touched
-> lately, so exactly the two users that don't actually read/write page
-> content, but rather move untouched pages.
-> 
-> The new behavior is especially desirable for memory onlining, where we
-> allow allocation of newly onlined pages via undo_isolate_page_range()
-> in online_pages(). Right now, we always place them to the head of the
-> free list, resulting in undesireable behavior: Assume we add
-> individual memory chunks via add_memory() and online them right away to
-> the NORMAL zone. We create a dependency chain of unmovable allocations
-> e.g., via the memmap. The memmap of the next chunk will be placed onto
-> previous chunks - if the last block cannot get offlined+removed, all
-> dependent ones cannot get offlined+removed. While this can already be
-> observed with individual DIMMs, it's more of an issue for virtio-mem
-> (and I suspect also ppc DLPAR).
-> 
-> Note: If we observe a degradation due to the changed page isolation
-> behavior (which I doubt), we can always make this configurable by the
-> instance triggering undo of isolation (e.g., alloc_contig_range(),
-> memory onlining, memory offlining).
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Dave Hansen <dave.hansen@intel.com>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-> Cc: Oscar Salvador <osalvador@suse.de>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Scott Cheloha <cheloha@linux.ibm.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+Annotate the external MDIO1 node and describe the 8 QSGMII PHYs found on
+the LS1088ARDB board and add phy-handles for DPMACs 3-10 to its
+associated PHY.  Also, add the internal PCS MDIO nodes for the internal
+MDIO buses found on the LS1088A SoC along with their internal PCS PHY
+and link the corresponding DPMAC to the PCS through the pcs-handle.
 
-LGTM, the only thing is the shuffe_zone topic that Wei and Vlastimil rose.
-Feels a bit odd that takes precedence over something we explicitily demanded.
+Signed-off-by: Ioana Ciornei <ioana.ciornei@nxp.com>
+---
+ .../boot/dts/freescale/fsl-ls1088a-rdb.dts    | 100 ++++++++++++++++++
+ .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi |  50 +++++++++
+ 2 files changed, 150 insertions(+)
 
-With the comment Vlastimil suggested:
-
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
-
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+index 5633e59febc3..d7886b084f7f 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a-rdb.dts
+@@ -17,6 +17,98 @@ / {
+ 	compatible = "fsl,ls1088a-rdb", "fsl,ls1088a";
+ };
+ 
++&dpmac3 {
++	phy-handle = <&mdio1_phy5>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs3_0>;
++};
++
++&dpmac4 {
++	phy-handle = <&mdio1_phy6>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs3_1>;
++};
++
++&dpmac5 {
++	phy-handle = <&mdio1_phy7>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs3_2>;
++};
++
++&dpmac6 {
++	phy-handle = <&mdio1_phy8>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs3_3>;
++};
++
++&dpmac7 {
++	phy-handle = <&mdio1_phy1>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs7_0>;
++};
++
++&dpmac8 {
++	phy-handle = <&mdio1_phy2>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs7_1>;
++};
++
++&dpmac9 {
++	phy-handle = <&mdio1_phy3>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs7_2>;
++};
++
++&dpmac10 {
++	phy-handle = <&mdio1_phy4>;
++	phy-connection-type = "qsgmii";
++	managed = "in-band-status";
++	pcs-handle = <&pcs7_3>;
++};
++
++&emdio1 {
++	status = "okay";
++
++	mdio1_phy1: emdio1_phy@1 {
++		reg = <0x1c>;
++	};
++
++	mdio1_phy2: emdio1_phy@2 {
++		reg = <0x1d>;
++	};
++
++	mdio1_phy3: emdio1_phy@3 {
++		reg = <0x1e>;
++	};
++
++	mdio1_phy4: emdio1_phy@4 {
++		reg = <0x1f>;
++	};
++
++	mdio1_phy5: emdio1_phy@5 {
++		reg = <0x0c>;
++	};
++
++	mdio1_phy6: emdio1_phy@6 {
++		reg = <0x0d>;
++	};
++
++	mdio1_phy7: emdio1_phy@7 {
++		reg = <0x0e>;
++	};
++
++	mdio1_phy8: emdio1_phy@8 {
++		reg = <0x0f>;
++	};
++};
++
+ &i2c0 {
+ 	status = "okay";
+ 
+@@ -87,6 +179,14 @@ &esdhc {
+ 	status = "okay";
+ };
+ 
++&pcs_mdio3 {
++	status = "okay";
++};
++
++&pcs_mdio7 {
++	status = "okay";
++};
++
+ &qspi {
+ 	status = "okay";
+ 
+diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+index 22544e3b7737..ad8679e58f9a 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
+@@ -672,6 +672,56 @@ emdio2: mdio@0x8B97000 {
+ 			status = "disabled";
+ 		};
+ 
++		pcs_mdio3: mdio@8c0f000 {
++			compatible = "fsl,fman-memac-mdio";
++			reg = <0x0 0x8c0f000 0x0 0x1000>;
++			little-endian;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			pcs3_0: pcs-phy@0 {
++				reg = <0>;
++			};
++
++			pcs3_1: pcs-phy@1 {
++				reg = <1>;
++			};
++
++			pcs3_2: pcs-phy@2 {
++				reg = <2>;
++			};
++
++			pcs3_3: pcs-phy@3 {
++				reg = <3>;
++			};
++		};
++
++		pcs_mdio7: mdio@8c1f000 {
++			compatible = "fsl,fman-memac-mdio";
++			reg = <0x0 0x8c1f000 0x0 0x1000>;
++			little-endian;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			pcs7_0: pcs-phy@0 {
++				reg = <0>;
++			};
++
++			pcs7_1: pcs-phy@1 {
++				reg = <1>;
++			};
++
++			pcs7_2: pcs-phy@2 {
++				reg = <2>;
++			};
++
++			pcs7_3: pcs-phy@3 {
++				reg = <3>;
++			};
++		};
++
+ 		cluster1_core0_watchdog: wdt@c000000 {
+ 			compatible = "arm,sp805-wdt", "arm,primecell";
+ 			reg = <0x0 0xc000000 0x0 0x1000>;
 -- 
-Oscar Salvador
-SUSE L3
+2.25.1
+
