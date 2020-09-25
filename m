@@ -2,130 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17FC277FEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92193277FEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727093AbgIYFa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:30:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:3284 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726980AbgIYFa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:30:57 -0400
-IronPort-SDR: jInhIzinHivbxtnyecv3DFF6R8/cm6MeMSQeP/hJYAy/0z8IWLjZP/Ws8SX4x5A9D5HTKpUfH/
- 0rEYq/0t6GPA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="225588386"
-X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
-   d="scan'208";a="225588386"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:30:56 -0700
-IronPort-SDR: WHC8TVpRPckTyme5K4pR2/mKS9uladFAgCqeF3TUhnY+DIiX0PVqaAxDdiRV3gA/ZlPqnbyqEt
- T2o5VBueKJWA==
-X-IronPort-AV: E=Sophos;i="5.77,300,1596524400"; 
-   d="scan'208";a="487315674"
-Received: from erybin-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.47.248])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Sep 2020 22:30:53 -0700
-Date:   Fri, 25 Sep 2020 08:30:51 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Ross Philipson <ross.philipson@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        iommu@lists.linux-foundation.org, linux-integrity@vger.kernel.org,
-        linux-doc@vger.kernel.org, dpsmith@apertussolutions.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        luto@amacapital.net, trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH 00/13] x86: Trenchboot secure dynamic launch Linux kernel
- support
-Message-ID: <20200925053051.GA165011@linux.intel.com>
-References: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
+        id S1727126AbgIYFbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:31:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726980AbgIYFbD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:31:03 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98233C0613CE;
+        Thu, 24 Sep 2020 22:31:03 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ByL9b2Mjzz9sRf;
+        Fri, 25 Sep 2020 15:30:59 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601011860;
+        bh=GPNQyX2INxPEuPLNF1oh65V0sinyfT55ybKwtb6O8DM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jhwMorfW+FJsb0+PMJCrDcg20zalq3y9LfeDnowr6cj/iUWmnCGEd1PsOcfPi+mJa
+         QICY4cKE0xxzP1KeL6VLA7S7MpNf5ly/KRnVof99us21V+T1sXKd/BavZKFlqUuGkL
+         F2ZLwOA8rLBm5fAUXGzWyIVfqZW5rxgd8dq86wYSp8RzEtuQQYAip7AMJjb1VLngRu
+         /tOAFgaPBMGy3A1RKJr8pzjfRGe2G09/Oxezv5cMjxmDWPRW/eSOJufqSvli2Xcvd3
+         O5iCIpH4GqKJIMERUfVZ9VuBJqry9Dk79R2Z5Ko9UOmY0xs05ZQiXiPadyB9lEW2qZ
+         dxi0xYmoBtvJw==
+Date:   Fri, 25 Sep 2020 15:30:58 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: manual merge of the tip tree with the vfs tree
+Message-ID: <20200925153058.1475e014@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600959521-24158-1-git-send-email-ross.philipson@oracle.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: multipart/signed; boundary="Sig_/gluaN2WiBVQVyHbsdMULK4e";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:58:28AM -0400, Ross Philipson wrote:
-> The Trenchboot project focus on boot security has led to the enabling of
-> the Linux kernel to be directly invocable by the x86 Dynamic Launch
-> instruction(s) for establishing a Dynamic Root of Trust for Measurement
-> (DRTM). The dynamic launch will be initiated by a boot loader with
+--Sig_/gluaN2WiBVQVyHbsdMULK4e
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-What is "the dynamic launch"?
+Hi all,
 
-> associated support added to it, for example the first targeted boot
-> loader will be GRUB2. An integral part of establishing the DRTM involves
-> measuring everything that is intended to be run (kernel image, initrd,
-> etc) and everything that will configure that kernel to run (command
-> line, boot params, etc) into specific PCRs, the DRTM PCRs (17-22), in
-> the TPM. Another key aspect is the dynamic launch is rooted in hardware,
-> that is to say the hardware (CPU) is what takes the first measurement
-> for the chain of integrity measurements. On Intel this is done using
-> the GETSEC instruction provided by Intel's TXT and the SKINIT
-> instruction provided by AMD's AMD-V. Information on these technologies
-> can be readily found online. This patchset introduces Intel TXT support.
+Today's linux-next merge of the tip tree got conflicts in:
 
-Why not both Intel and AMD? You should explain this in the cover letter.
+  arch/ia64/Kconfig
+  arch/s390/Kconfig
 
-I'd be more motivated to review and test a full all encompassing x86
-solution. It would increase the patch set size but would also give it
-a better test coverage, which I think would be a huge plus in such a
-complex patch set.
+between commit:
 
-> To enable the kernel to be launched by GETSEC, a stub must be built
-> into the setup section of the compressed kernel to handle the specific
-> state that the dynamic launch process leaves the BSP in. This is
-> analogous to the EFI stub that is found in the same area. Also this stub
+  5e6e9852d6f7 ("uaccess: add infrastructure for kernel builds with set_fs(=
+)")
 
-How is it analogous?
+from the vfs tree and commit:
 
-> must measure everything that is going to be used as early as possible.
-> This stub code and subsequent code must also deal with the specific
-> state that the dynamic launch leaves the APs in.
+  077ee78e3928 ("PCI/MSI: Make arch_.*_msi_irq[s] fallbacks selectable")
 
-What is "the specific state"?
+from the tip tree.
 
-> A quick note on terminology. The larger open source project itself is
-> called Trenchboot, which is hosted on Github (links below). The kernel
-> feature enabling the use of the x86 technology is referred to as "Secure
-> Launch" within the kernel code. As such the prefixes sl_/SL_ or
-> slaunch/SLAUNCH will be seen in the code. The stub code discussed above
-> is referred to as the SL stub.
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-Is this only for Trenchboot? I'm a bit lost. What is it anyway?
+--=20
+Cheers,
+Stephen Rothwell
 
-> The basic flow is:
-> 
->  - Entry from the dynamic launch jumps to the SL stub
->  - SL stub fixes up the world on the BSP
+diff --cc arch/ia64/Kconfig
+index 3414e67229b3,7ff5b3bbf160..000000000000
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@@ -55,7 -56,7 +55,8 @@@ config IA6
+  	select NEED_DMA_MAP_STATE
+  	select NEED_SG_DMA_LENGTH
+  	select NUMA if !FLATMEM
++ 	select PCI_MSI_ARCH_FALLBACKS
+ +	select SET_FS
+  	default y
+  	help
+  	  The Itanium Processor Family is Intel's 64-bit successor to
+diff --cc arch/s390/Kconfig
+index dde501bc6304,63dd5a0aa252..000000000000
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@@ -190,7 -185,7 +190,8 @@@ config S39
+  	select OLD_SIGSUSPEND3
+  	select PCI_DOMAINS		if PCI
+  	select PCI_MSI			if PCI
++ 	select PCI_MSI_ARCH_FALLBACKS
+ +	select SET_FS
+  	select SPARSE_IRQ
+  	select SYSCTL_EXCEPTION_TRACE
+  	select THREAD_INFO_IN_TASK
 
-What is "SL"?
+--Sig_/gluaN2WiBVQVyHbsdMULK4e
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
->  - For TXT, SL stub wakes the APs, fixes up their worlds
->  - For TXT, APs are left halted waiting for an NMI to wake them
->  - SL stub jumps to startup_32
->  - SL main runs to measure configuration and module information into the
->    DRTM PCRs. It also locates the TPM event log.
->  - Kernel boot proceeds normally from this point.
->  - During early setup, slaunch_setup() runs to finish some validation
->    and setup tasks.
+-----BEGIN PGP SIGNATURE-----
 
-What are "some" validation and setup tasks?
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9tgJIACgkQAVBC80lX
+0GxLAAf/a/UEtIGo7ApmDBWgyehIOixqRnCCMElNJEeUKTiucRbX4hgkUR4HG5HM
+l+V1XjJPr24xphSIvQJi5sJrHpAvnPwtOvAKwk1Xwx0mMUUC7/sqHjpZAspjoIDh
+RCtFXWyRfKAqUf9sCCoyTHiRzXwRvQD7pWnNqaZUJVFfrnzS+ASSG8V9nGta5gdJ
++oRYwSe6vGosmtusE5r9AHr8f6c+Hif2r4FwPBQcou6ToYJSFV4uvpzoinMBIqk9
+CYM0sNzBg2Y7/vs8iQFZCFweDt5SyKdPX6FBQMpoNCvVULpxKOeLFNLz5FZi9R1e
+upYLC66QKrbOemq28zo0FQ5D6IM6CA==
+=f352
+-----END PGP SIGNATURE-----
 
->  - The SMP bringup code is modified to wake the waiting APs. APs vector
->    to rmpiggy and start up normally from that point.
->  - Kernel boot finishes booting normally
->  - SL securityfs module is present to allow reading and writing of the
->    TPM event log.
-
-What is SL securityfs module? Why is it needed? We already have
-securityfs file for the event log. Why it needs to be writable?
-
->  - SEXIT support to leave SMX mode is present on the kexec path and
->    the various reboot paths (poweroff, reset, halt).
-
-What SEXIT do and why it is required on the kexec path?
-
-/Jarkko
+--Sig_/gluaN2WiBVQVyHbsdMULK4e--
