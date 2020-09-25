@@ -2,87 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF75278414
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F81B278416
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727986AbgIYJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:32:26 -0400
-Received: from mga04.intel.com ([192.55.52.120]:55446 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727440AbgIYJcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:32:25 -0400
-IronPort-SDR: 5TCn5bchaZvhMeGF4Ajl5ai2RDYyqk5C1NVcNjbUzDpYEgNYJRFCN5nFSVYo4pduAHlaktrjeR
- It5fMFAj2sSg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158868442"
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="158868442"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 02:32:25 -0700
-IronPort-SDR: Ctg8seOvVT0giCxwqDVdUONMnNbwYOZSZlr2XSUfes904IuJYr24Jo82tfjeHEudbJEDsy7AzP
- PPByKyr2yGYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
-   d="scan'208";a="310751878"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
-  by orsmga006.jf.intel.com with ESMTP; 25 Sep 2020 02:32:20 -0700
-Subject: Re: [PATCH v2] mmc: sdhci: Don't enable presets while tuning
-To:     Raul Rangel <rrangel@chromium.org>
-Cc:     "Shah, Nehal-bakulchandra" <Nehal-bakulchandra.Shah@amd.com>,
-        "Wang, Chris" <chris.wang@amd.com>,
-        Akshu Agrawal <Akshu.Agrawal@amd.com>,
-        Jisheng Zhang <jszhang@marvell.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        clang-built-linux@googlegroups.com,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mmc@vger.kernel.org
-References: <20200824122131.v2.1.Id6f3c92fecf4acc60c3b7f57d5f4e4c854ace765@changeid>
- <873b0786-a088-54af-80ad-96d2b041945d@intel.com>
- <CAHQZ30DXUuWKo1n50aX3a86QfLCD4Z3W4CVescRDFcvQrEk3Ww@mail.gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <c4a886d8-8389-2c50-a40b-e2965ef6c393@intel.com>
-Date:   Fri, 25 Sep 2020 12:31:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727992AbgIYJcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727428AbgIYJcq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:32:46 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48758C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:32:46 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id m6so2863696wrn.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=4AYpniAMfRyIZxoSbDsD0cbBOi0L5LjnstW16/XYys8=;
+        b=EqrRwzScHGQ9bNOBSrkfHUojoFDVtMtIJjal/XLNQHibNbnPapmCQPNa0CyTkJtJOq
+         FT4mGiKvtFN4/WSMx0KLxBk0HfKOi4QCazpGg+RVc10a/l9yF2+Q1XY1qkrFv1kjE7c1
+         imD377Y5IEN9kdFoMkLsbCouPuLjf8TW2biLdU+/kGfPIXZFmsjULqL68r95mXxA3TbQ
+         jHsEhHSX84Ud/4Cvy4E9d+Os7KNwIba6m8QXdVZqxMMyHv3+0msyNCtVtgYC2PeESc2j
+         q03Ir7j+T11lq8X6sjt/8NzPStaqAcw4QPIlNdecU63HZWsvGcPzvd4e2Uo4WyD3noBH
+         Afvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4AYpniAMfRyIZxoSbDsD0cbBOi0L5LjnstW16/XYys8=;
+        b=W0QuEDwEs9ck4vAejnNgW6vG9l1zjMvNckik/4jwGmN9QjCI8rn2hITZaewaUAAZ+Z
+         qDBcXe7p2mmqngNBn281lftTMsoBQ/RhVlOQtE0q2nI+XLMO1bPeRMdCMsuBHIgEDO2C
+         0CqrjmdBSDx8dNuOjK7eoO3DrR9RJr1kqeNhGV5g2pKSY7YAtfiYRCKMBhOWNgZK+7Tf
+         eQV682DBjFhsNB8o5q3+cvbfxDkBIQOTphKg6ewoeOLAUpwZclL/MrdwOYHEC1u7MtD5
+         xyXYwz7QjOQKX0EFRMsssgAh3NdhiyZBZZKkc8Do+lHIkPS2lfex8/HDzpxZAeAo+udg
+         BFOw==
+X-Gm-Message-State: AOAM5314Z6tKjhdZUQaMjR4eEjz0dBtQ8Lb8iPM/tTTV9ooF48FhK1VM
+        hHw/TQl1yKh668aVFadZmuchFoJNLQ0D1Q==
+X-Google-Smtp-Source: ABdhPJyHf1RHjhrB9mxzXcDRQWxr1EKzsHmyFu2MCCn1HMQUocjW34d4O+b4SpLPa+V9Yx36qoIh9g==
+X-Received: by 2002:adf:ff90:: with SMTP id j16mr3741279wrr.105.1601026364364;
+        Fri, 25 Sep 2020 02:32:44 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id h204sm2172308wmf.35.2020.09.25.02.32.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 02:32:43 -0700 (PDT)
+Subject: Re: [PATCH v3] nvmem: core: fix possibly memleak when use
+ nvmem_cell_info_to_nvmem_cell()
+To:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+References: <20200923204456.14032-1-vadym.kochan@plvision.eu>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <12edae35-a927-11bf-f80a-037011c4f07a@linaro.org>
+Date:   Fri, 25 Sep 2020 10:32:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAHQZ30DXUuWKo1n50aX3a86QfLCD4Z3W4CVescRDFcvQrEk3Ww@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200923204456.14032-1-vadym.kochan@plvision.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/09/20 8:57 pm, Raul Rangel wrote:
-> On Tue, Sep 1, 2020 at 4:54 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> On 24/08/20 9:21 pm, Raul E Rangel wrote:
->>> SDHCI presets are not currently used for eMMC HS/HS200/HS400, but are
->>> used for DDR52. The HS400 retuning sequence is:
->>>
->>>     HS400->DDR52->HS->HS200->Perform Tuning->HS->HS400
->>>
->>> This means that when HS400 tuning happens, we transition through DDR52
->>> for a very brief period. This causes presets to be enabled
->>> unintentionally and stay enabled when transitioning back to HS200 or
->>> HS400.
->>>
->>> This patch prevents enabling presets while tuning is in progress.
->>
->> Preset value should not generally have to depend on tuning, so this
->> seems less than ideal.  Also I am not sure you can say some controllers
->> are not accidentally benefiting from the current situation.
->>
->> What about just letting drivers choose the timing modes that support
->> preset values?  e.g. using the change below, a driver could alter
->> host->preset_value_support as needed
-> 
-> Sorry for the late reply, I'm just getting back to this. I like the
-> patch. I have a few other patches I'm
-> going to push up soon. Do you want me to include this in the chain, or
-> do you want to push it up?
 
-I'm snowed.  You will have to do it I am afraid.
+
+On 23/09/2020 21:44, Vadym Kochan wrote:
+> Fix missing 'kfree_const(cell->name)' when call to
+> nvmem_cell_info_to_nvmem_cell() in several places:
+> 
+>       * after nvmem_cell_info_to_nvmem_cell() failed during
+>         nvmem_add_cells()
+> 
+>       * during nvmem_device_cell_{read,write} when cell->name is
+>         kstrdup'ed() without calling kfree_const() at the end, but
+>         really there is no reason to do that 'dup, because the cell
+>         instance is allocated on the stack for some short period to be
+>         read/write without exposing it to the caller.
+> 
+> So the new nvmem_cell_info_to_nvmem_cell_nodup() helper is introduced
+> which is used to convert cell_info -> cell without name duplication as
+> a lighweight version of nvmem_cell_info_to_nvmem_cell().
+> 
+> Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
+> Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+
+Looks good to me! Thanks for the patch.
+
+Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+Greg,
+
+Can you please pick this one? As don't have any nvmem pending patches to 
+send it together.
+
+thanks,
+srini
+
+
+> ---
+> v3:
+>      * rename __nvmem_cell_info_to_nvmem_cell() -> nvmem_cell_info_to_nvmem_cell_nodup()
+> 
+>      * rephrase commit description a bit
+> 
+>      * get rid of wrong func line wrapping
+> 
+> v2:
+>      * remove not needed 'kfree_const(cell->name)' after nvmem_cell_info_to_nvmem_cell()
+>        failed.
+> 
+>   drivers/nvmem/core.c | 33 ++++++++++++++++++++++++---------
+>   1 file changed, 24 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+> index 6cd3edb2eaf6..10cd935cf30e 100644
+> --- a/drivers/nvmem/core.c
+> +++ b/drivers/nvmem/core.c
+> @@ -361,16 +361,14 @@ static void nvmem_cell_add(struct nvmem_cell *cell)
+>   	blocking_notifier_call_chain(&nvmem_notifier, NVMEM_CELL_ADD, cell);
+>   }
+>   
+> -static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
+> -				   const struct nvmem_cell_info *info,
+> -				   struct nvmem_cell *cell)
+> +static int nvmem_cell_info_to_nvmem_cell_nodup(struct nvmem_device *nvmem,
+> +					const struct nvmem_cell_info *info,
+> +					struct nvmem_cell *cell)
+>   {
+>   	cell->nvmem = nvmem;
+>   	cell->offset = info->offset;
+>   	cell->bytes = info->bytes;
+> -	cell->name = kstrdup_const(info->name, GFP_KERNEL);
+> -	if (!cell->name)
+> -		return -ENOMEM;
+> +	cell->name = info->name;
+>   
+>   	cell->bit_offset = info->bit_offset;
+>   	cell->nbits = info->nbits;
+> @@ -382,13 +380,30 @@ static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
+>   	if (!IS_ALIGNED(cell->offset, nvmem->stride)) {
+>   		dev_err(&nvmem->dev,
+>   			"cell %s unaligned to nvmem stride %d\n",
+> -			cell->name, nvmem->stride);
+> +			cell->name ?: "<unknown>", nvmem->stride);
+>   		return -EINVAL;
+>   	}
+>   
+>   	return 0;
+>   }
+>   
+> +static int nvmem_cell_info_to_nvmem_cell(struct nvmem_device *nvmem,
+> +				const struct nvmem_cell_info *info,
+> +				struct nvmem_cell *cell)
+> +{
+> +	int err;
+> +
+> +	err = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, cell);
+> +	if (err)
+> +		return err;
+> +
+> +	cell->name = kstrdup_const(info->name, GFP_KERNEL);
+> +	if (!cell->name)
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+> +
+>   /**
+>    * nvmem_add_cells() - Add cell information to an nvmem device
+>    *
+> @@ -1460,7 +1475,7 @@ ssize_t nvmem_device_cell_read(struct nvmem_device *nvmem,
+>   	if (!nvmem)
+>   		return -EINVAL;
+>   
+> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
+> +	rc = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, &cell);
+>   	if (rc)
+>   		return rc;
+>   
+> @@ -1490,7 +1505,7 @@ int nvmem_device_cell_write(struct nvmem_device *nvmem,
+>   	if (!nvmem)
+>   		return -EINVAL;
+>   
+> -	rc = nvmem_cell_info_to_nvmem_cell(nvmem, info, &cell);
+> +	rc = nvmem_cell_info_to_nvmem_cell_nodup(nvmem, info, &cell);
+>   	if (rc)
+>   		return rc;
+>   
+> 
