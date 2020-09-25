@@ -2,114 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F82278A2C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35DF278A2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728891AbgIYN7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
+        id S1728816AbgIYN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728451AbgIYN7J (ORCPT
+        with ESMTP id S1728451AbgIYN7G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:59:09 -0400
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [IPv6:2001:67c:2050::465:103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4ABC0613CE;
-        Fri, 25 Sep 2020 06:59:08 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:105:465:1:2:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4ByYRq2gLNzKm5Y;
-        Fri, 25 Sep 2020 15:59:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-disposition:content-type:content-type:mime-version
-        :message-id:subject:subject:from:from:date:date:received; s=
-        mail20150812; t=1601042339; bh=yRSamacUl5zOBDZnMxEDI6efGi+UbqCon
-        TJ3n+9gU4U=; b=BMoXsh/GZryw4BcyZPoAR7wdYAFMPpALMfrOY2fr2U9E/pSI6
-        DODQfMuoZ+00imc1H2ljMdsrbp5nWEkZXifajj+n7VxdoxSDPmMZZyDqyc8HKloV
-        g/Wiqco4ZTV2gMNg5NrbrGYuXf0I66n0X+R2plF8fIE0R087Q3npr1aKBNlFFnEj
-        augRBIiNwsU8MeBSvxM3GsqReL3rHR8vqqlJwB1D/Yh2t5QQraM0JzPW6x8QS+5/
-        PRz87YK57bas/7aNHL1dGo07LVnZ6mNyt4JqiFCX9E46vz3T72JkZdsSaqQhctzo
-        fehpYCQsbCh1Eddj9DHi++dRiZS0ySZkCU3jg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1601042341;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=qAInf77RnkgHLLay4aTkAXh67lv5i0lXxPM9EKg/cl4=;
-        b=nM30oCQ7Vdkr8933DTd6hQdiHewjGyQht+04ByE1FbMUUOvsgDTpnVKVRcULMZ0gbp8RE1
-        O3eyMfXKnFcKzfD2HR0I7EH+TvSz19tUEUTAAOoVbjD0+2wfZejTvOje8bJE6ctEZs/Ev7
-        KY6oWjMdDQG/bcr8vfx5DuV2ldgu0mmAcAzyugI7kngnVo7ZPmCwLeObKR68zObcl3xVJX
-        SF7dyWq1SXywqzdKM3PAtl/6Kj/b4js5U8b4oJoujDd3wxW9mvCtQWlHQRSYwzAXUMdPQQ
-        2YH261QkNf0nnl9sf4JzcH1Z3cb2ft8dmaPThsNSkh8NA13+hDaLwW5IMoY/hw==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id NULZPqP4Rsji; Fri, 25 Sep 2020 15:58:59 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 15:58:57 +0200
-From:   Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH v2] net: usb: ax88179_178a: add Toshiba usb 3.0 adapter
-Message-ID: <20200925135857.GA102845@monster.powergraphx.local>
+        Fri, 25 Sep 2020 09:59:06 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4EDC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 06:59:05 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id t10so3763393wrv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 06:59:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mlSpbnI9f91cxfpqsFRezlZGD6ngDghBIQQyjrFOHMY=;
+        b=u8161EQlqviptebdc4sX9yDB4kT7ymxUhWkQcFpEHwyZT6vrFqFy8yaU3NouV/ZI6u
+         kwGEMGNAtiOeIrIUjRzcZgYv0SV9wqorMIDtTbmQ+Ur7A0Uv5KbrTVSZa07Of4UQagqF
+         bT337pyYRI1ftEOCTLXLh/Lf1l0cIZFj09KTdTZ+5/3/fSptrdnIjNYweW1q8eOrnXM7
+         sSHa4seYHBxhWKmV1i/U35X9dvHuC5k+Wpu50EI/ii3W/yjC0dbAsMINsgSlcGGfPRXx
+         IUMktXSjeQqM5ly8OPPSW4RonTJO1/1+JoBsyLhhUmEjo8Y+USZqMojlVxrhqksWuE/m
+         OCwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mlSpbnI9f91cxfpqsFRezlZGD6ngDghBIQQyjrFOHMY=;
+        b=jWS1nLDffg8aTB2/LCdPFILA9Q8VSDZSS7XuTnVVTXTiBGn6vozaYiDtf/+I2jILu6
+         TYXsSBsXZAcjru/kBWuy2+YRslDR4fbWYvAmqO4raxXlRChGv3CFHnrUSPSWv80zI5BL
+         0HeHw0ozptai8KwbStYXN8uUrqZLYOnx0XjHiiCNzVLObtGORMxKn93pYW59l6Oy4mzS
+         Iv1NYP5ElFU3UfMzsYOJJTpN7RkaW79Bs2YLSire7qbn132t07RA5AFXhpS4QUYr2eTb
+         ym3GoboRn1UvJNuLCEZExaSlZIvnHykp835lmhAwOPT+Da60PowTD28Jtynys+VjGIjw
+         8HaA==
+X-Gm-Message-State: AOAM531z3uZnFpRdg0sUmL4e43G316BfgPCgZ/MK82GPBZhyAoltHqDF
+        bxMOuY4QWnc1JbYthBn7wt7ipw==
+X-Google-Smtp-Source: ABdhPJxvBeHm57r2mwHF+roTeEhAmVxM0FLvzB7cxk76/KSuX+nlkd4qDCNU59NYYoehXW+VVIiCvg==
+X-Received: by 2002:adf:e74d:: with SMTP id c13mr4514766wrn.45.1601042344244;
+        Fri, 25 Sep 2020 06:59:04 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
+        by smtp.gmail.com with ESMTPSA id k4sm2918748wrx.51.2020.09.25.06.59.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 06:59:03 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 14:59:00 +0100
+From:   Quentin Perret <qperret@google.com>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
+        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
+        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] arm64: rebuild sched domains on invariance status
+ changes
+Message-ID: <20200925135900.GA11648@google.com>
+References: <20200924123937.20938-1-ionela.voinescu@arm.com>
+ <20200924123937.20938-4-ionela.voinescu@arm.com>
+ <20200924133925.GC3920949@google.com>
+ <20200924161002.GC17927@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -4.58 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 5FB3F108B
-X-Rspamd-UID: 92a39d
+In-Reply-To: <20200924161002.GC17927@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds the driver_info and usb ids of the AX88179 based Toshiba USB 3.0
-ethernet adapter.
+Hey Ionela,
 
-Signed-off-by: Wilken Gottwalt <wilken.gottwalt@mailbox.org>
----
-Changes in v2:
-    - reposted to proper mailing list with correct commit message as
-      suggested by Jakub Kicinski
----
- drivers/net/usb/ax88179_178a.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+On Thursday 24 Sep 2020 at 17:10:02 (+0100), Ionela Voinescu wrote:
+> I'm not sure what is a good way of fixing this.. I could add more info
+> to the warning to suggest it might be temporary ("Disabling EAS:
+> frequency-invariant load tracking currently not supported"). For further
+> debugging there are the additional prints guarded by sched_debug().
+> 
+> I'll look over the code some more to see if other ideas pop out. Any
+> suggestions are appreciated.
 
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index ac7bc436da33..ed078e5a3629 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -1829,6 +1829,19 @@ static const struct driver_info belkin_info = {
- 	.tx_fixup = ax88179_tx_fixup,
- };
- 
-+static const struct driver_info toshiba_info = {
-+	.description = "Toshiba USB Ethernet Adapter",
-+	.bind	= ax88179_bind,
-+	.unbind = ax88179_unbind,
-+	.status = ax88179_status,
-+	.link_reset = ax88179_link_reset,
-+	.reset	= ax88179_reset,
-+	.stop = ax88179_stop,
-+	.flags	= FLAG_ETHER | FLAG_FRAMING_AX,
-+	.rx_fixup = ax88179_rx_fixup,
-+	.tx_fixup = ax88179_tx_fixup,
-+};
-+
- static const struct usb_device_id products[] = {
- {
- 	/* ASIX AX88179 10/100/1000 */
-@@ -1862,6 +1875,10 @@ static const struct usb_device_id products[] = {
- 	/* Belkin B2B128 USB 3.0 Hub + Gigabit Ethernet Adapter */
- 	USB_DEVICE(0x050d, 0x0128),
- 	.driver_info = (unsigned long)&belkin_info,
-+}, {
-+	/* Toshiba USB 3.0 GBit Ethernet Adapter */
-+	USB_DEVICE(0x0930, 0x0a13),
-+	.driver_info = (unsigned long)&toshiba_info,
- },
- 	{ },
- };
--- 
-2.28.0
+Right, I'm not seeing anything perfect here, but I think I'd be
+personally happy with this message being entirely guarded by
+sched_debug(), like we do for asym CPU capacities for instance.
 
+It's not easy to see if EAS has started at all w/o sched debug anyway,
+so I expect folks who need it to enable the debug stuff during
+bring-up. With a descriptive enough warn message, that should be just
+fine. But that's my 2p, so I'm happy to hear if others disagree.
+
+Thanks,
+Quentin
