@@ -2,114 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E462782B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AD12782BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727502AbgIYI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:26:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54186 "EHLO
+        id S1727571AbgIYI1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgIYI0c (ORCPT
+        with ESMTP id S1727044AbgIYI1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:26:32 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473FCC0613CE;
-        Fri, 25 Sep 2020 01:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=B26/iC+1mNbAVpwoje/bCXQml3NwgBVwZs92eAZmgtk=; b=PRR15rGJbRe4N3EQkHV+s2uXWX
-        kPkr/QZht+Vz4q4dSYjAvMygE1DTeJcdgscWkQD7taAnDNUgfwG8k+x8zUS0rJ3/yZ9K8nrHSwEQq
-        /SnQ6f8x++W54UMgfgyYI+wyOyi8WZNZv6qvs7mSASGKfmGfB6JgAFOknB+q7hBVrlE5opl2OnlCh
-        a2LEfy2rUT17HgyAv9U+1V0Y4zTmhcFUOuB7SW/c479ytBV7Pun7QJffBUR1Kqlde2tWDgC5W2fOB
-        tNo/TY4MZNZEt/jYydweut7xZVHnQeUdAQwdpzxgFjK6algKnRBPIPvylW3U/nEbYxviVl8fJgz0Y
-        FVgsi/+Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLj3c-0003P0-Bs; Fri, 25 Sep 2020 08:26:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4FCDA301A27;
-        Fri, 25 Sep 2020 10:26:18 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 38B1A200D4BD1; Fri, 25 Sep 2020 10:26:18 +0200 (CEST)
-Date:   Fri, 25 Sep 2020 10:26:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200925082618.GT2628@hirez.programming.kicks-ass.net>
-References: <20200921160318.GO12990@dhcp22.suse.cz>
- <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
- <20200923103706.GJ3179@techsingularity.net>
- <20200923154105.GO29330@paulmck-ThinkPad-P72>
- <20200923232251.GK3179@techsingularity.net>
- <20200924081614.GA14819@pc636>
- <20200924111907.GE2628@hirez.programming.kicks-ass.net>
- <20200924153834.GW29330@paulmck-ThinkPad-P72>
+        Fri, 25 Sep 2020 04:27:11 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36F8EC0613CE;
+        Fri, 25 Sep 2020 01:27:11 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id l16so1528747ilt.13;
+        Fri, 25 Sep 2020 01:27:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SrY0n+Lxp4Ps0vKWrqg8qzPispapVC5K8BCl7226S1Y=;
+        b=T0fhmfBTGttasq8Kei96OjnUWqoXnD1EhQm31QUfLpIDhsjWLMFk9PV2pa+s0Hdg4A
+         fjPpdwt7ABi70fGaUKKmKv2bZFl1TX1+6zeJIsfMkkdroMBVgloDbus7BReFk/VnR6SK
+         U3/FeQaNf+VwOjhpb7jEHXM9O0kdlPRDgdL57bNQPOItMru8HlJjVYwQ+N+2344BnMPn
+         VLAi5RiU3HyfXVpuXxk7zerjlavpgg2bAlP3+3cJTt25Ft9WDn+uxWyPYbRLNm7Ai0Pc
+         vXXXfPvNhZtFZkSVRsZBYd2w5ycRNts4T71gXQtVVij69COOyaOfL2kzw9iAAtRqdG7F
+         mAAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SrY0n+Lxp4Ps0vKWrqg8qzPispapVC5K8BCl7226S1Y=;
+        b=qMeJyPa4fO89sO7aVdN+57AjvY9VAlC995fcW8sLf9bCympoZrPP6pPZxLxIhjy7g+
+         +cuSCLdBkZGvqnFZzrr9bThrnCk6vkigordvUX+X6HDEnw4jONyMaYlRPAo8iSxRCZ1E
+         8FUdgCCm85KL7/gpCUsds2wwyio4RrnC1NiAxEZE1uTjIT77BruegSICKfAqJJhLNuzx
+         56OtoAUrGtmZKCtPC2+KWRx0lN3OhUkuLU7V1SCQMV3hYNe4CSjFDn6C4e3Hp1fUkV4b
+         xhY++rqNdUiVVSdkIa04esl6SulsPPvDKojoHPl7VfbNEraJoV+ukFIUVHV9fjzgiq7h
+         akAg==
+X-Gm-Message-State: AOAM533LNusq2Fm1nAdJ7eFltG5rrPtGMhRYUCmizaGxRl4UC3lWrEDf
+        l5xtGow+wjqgm4vzVbC4hsZb87Q3Nkag1i576F4=
+X-Google-Smtp-Source: ABdhPJzfUq4g2hUm0yylW2BZjBYzZffhnMg9JFRt8eQ2YfVzP7n3YGn8DdvLynY3V96ZCJFM7lK9ybFe7wDfCGFFvXY=
+X-Received: by 2002:a92:910:: with SMTP id y16mr2375456ilg.22.1601022430617;
+ Fri, 25 Sep 2020 01:27:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924153834.GW29330@paulmck-ThinkPad-P72>
+References: <20200925065418.1077472-1-ikjn@chromium.org> <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
+In-Reply-To: <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
+From:   Chuanhong Guo <gch981213@gmail.com>
+Date:   Fri, 25 Sep 2020 16:26:59 +0800
+Message-ID: <CAJsYDV+EifAeMKEGwi0oH6A5EvPN8tMZQ+oqY5JGe=+kqzjMLw@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] spi: spi-mtk-nor: support 36bit dma addressing
+To:     Ikjoon Jang <ikjn@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 08:38:34AM -0700, Paul E. McKenney wrote:
-> On Thu, Sep 24, 2020 at 01:19:07PM +0200, Peter Zijlstra wrote:
-> > On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
-> > > The key point is "enough". We need pages to make a) fast progress b) support
-> > > single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
-> > > on scheduler latency and vague pre-allocated number of pages, it might
-> > > be not enough what would require to refill it more and more or we can overshoot
-> > > that would lead to memory overhead. So we have here timing issues and
-> > > not accurate model. IMHO.
-> > 
-> > I'm firmly opposed to the single argument kvfree_rcu() idea, that's
-> > requiring memory to free memory.
-> 
-> Not quite.
-> 
-> First, there is a fallback when memory allocation fails.  Second,
-> in heavy-use situations, there is only one allocation per about
-> 500 kvfree_rcu() calls on 64-bit systems.  Third, there are other
-> long-standing situations that require allocating memory in order to
-> free memory.
+Hi!
 
-Some of which are quite broken. And yes, I'm aware of all that, I'm the
-one that started swap-over-NFS, which requires network traffic to free
-memory, which is one insane step further.
+On Fri, Sep 25, 2020 at 2:56 PM Ikjoon Jang <ikjn@chromium.org> wrote:
+>
+> This patch enables 36bit dma address support to spi-mtk-nor.
+> Currently this is enabled only for mt8192-nor.
+>
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> ---
+>
+> (no changes since v1)
+>
+>  drivers/spi/spi-mtk-nor.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
+> index 8dbafee7f431..35205635ed42 100644
+> --- a/drivers/spi/spi-mtk-nor.c
+> +++ b/drivers/spi/spi-mtk-nor.c
+> @@ -78,6 +78,8 @@
+>  #define MTK_NOR_REG_DMA_FADR           0x71c
+>  #define MTK_NOR_REG_DMA_DADR           0x720
+>  #define MTK_NOR_REG_DMA_END_DADR       0x724
+> +#define MTK_NOR_REG_DMA_DADR_HB                0x738
+> +#define MTK_NOR_REG_DMA_END_DADR_HB    0x73c
+>
+>  /* maximum bytes of TX in PRG mode */
+>  #define MTK_NOR_PRG_MAX_SIZE           6
+> @@ -106,6 +108,7 @@ struct mtk_nor {
+>         unsigned int spi_freq;
+>         bool wbuf_en;
+>         bool has_irq;
+> +       bool high_dma;
+>         struct completion op_done;
+>  };
+>
+> @@ -305,6 +308,11 @@ static int mtk_nor_dma_exec(struct mtk_nor *sp, u32 from, unsigned int length,
+>         writel(dma_addr, sp->base + MTK_NOR_REG_DMA_DADR);
+>         writel(dma_addr + length, sp->base + MTK_NOR_REG_DMA_END_DADR);
+>
+> +       if (sp->high_dma) {
+> +               writel(dma_addr >> 32, sp->base + MTK_NOR_REG_DMA_DADR_HB);
+> +               writel((dma_addr + length) >> 32, sp->base + MTK_NOR_REG_DMA_END_DADR_HB);
+> +       }
 
-But the way to make that 'work' is carefully account and pre-allocate
-(or size the reserve) the required memory to make progress and to
-strictly limit concurrency to ensure you stay in your bounds.
+I remembered kbuild test robot reported a warning on this on 32-bit platforms
+in your v1. [0]
+I don't know what's the fix for this though :(
 
-> So I agree that it is a good general rule of thumb to avoid allocating
-> on free paths, but there are exceptions.  This is one of them.
-
-The very first thing you need to do is proof your memory usage is
-bounded, and then calculate your bound.
-
-The problem is that with RCU you can't limit concurrency. call_rcu()
-can't block, you can't wait for a grace period to end when you've ran
-out of your reserve.
-
-That is, you don't have a bound, so no reserve what so ever is going to
-help.
-
-You must have that callback_head fallback.
+[0] https://marc.info/?l=linux-spi&m=159982425706940&w=2
+-- 
+Regards,
+Chuanhong Guo
