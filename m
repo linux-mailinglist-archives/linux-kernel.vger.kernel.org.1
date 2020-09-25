@@ -2,94 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35DF278A2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83857278A43
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbgIYN7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728451AbgIYN7G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:59:06 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC4EDC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 06:59:05 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t10so3763393wrv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 06:59:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mlSpbnI9f91cxfpqsFRezlZGD6ngDghBIQQyjrFOHMY=;
-        b=u8161EQlqviptebdc4sX9yDB4kT7ymxUhWkQcFpEHwyZT6vrFqFy8yaU3NouV/ZI6u
-         kwGEMGNAtiOeIrIUjRzcZgYv0SV9wqorMIDtTbmQ+Ur7A0Uv5KbrTVSZa07Of4UQagqF
-         bT337pyYRI1ftEOCTLXLh/Lf1l0cIZFj09KTdTZ+5/3/fSptrdnIjNYweW1q8eOrnXM7
-         sSHa4seYHBxhWKmV1i/U35X9dvHuC5k+Wpu50EI/ii3W/yjC0dbAsMINsgSlcGGfPRXx
-         IUMktXSjeQqM5ly8OPPSW4RonTJO1/1+JoBsyLhhUmEjo8Y+USZqMojlVxrhqksWuE/m
-         OCwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mlSpbnI9f91cxfpqsFRezlZGD6ngDghBIQQyjrFOHMY=;
-        b=jWS1nLDffg8aTB2/LCdPFILA9Q8VSDZSS7XuTnVVTXTiBGn6vozaYiDtf/+I2jILu6
-         TYXsSBsXZAcjru/kBWuy2+YRslDR4fbWYvAmqO4raxXlRChGv3CFHnrUSPSWv80zI5BL
-         0HeHw0ozptai8KwbStYXN8uUrqZLYOnx0XjHiiCNzVLObtGORMxKn93pYW59l6Oy4mzS
-         Iv1NYP5ElFU3UfMzsYOJJTpN7RkaW79Bs2YLSire7qbn132t07RA5AFXhpS4QUYr2eTb
-         ym3GoboRn1UvJNuLCEZExaSlZIvnHykp835lmhAwOPT+Da60PowTD28Jtynys+VjGIjw
-         8HaA==
-X-Gm-Message-State: AOAM531z3uZnFpRdg0sUmL4e43G316BfgPCgZ/MK82GPBZhyAoltHqDF
-        bxMOuY4QWnc1JbYthBn7wt7ipw==
-X-Google-Smtp-Source: ABdhPJxvBeHm57r2mwHF+roTeEhAmVxM0FLvzB7cxk76/KSuX+nlkd4qDCNU59NYYoehXW+VVIiCvg==
-X-Received: by 2002:adf:e74d:: with SMTP id c13mr4514766wrn.45.1601042344244;
-        Fri, 25 Sep 2020 06:59:04 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:f693:9fff:fef4:a7ef])
-        by smtp.gmail.com with ESMTPSA id k4sm2918748wrx.51.2020.09.25.06.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 06:59:03 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 14:59:00 +0100
-From:   Quentin Perret <qperret@google.com>
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org,
-        catalin.marinas@arm.com, will@kernel.org, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, dietmar.eggemann@arm.com,
-        valentin.schneider@arm.com, linux-pm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] arm64: rebuild sched domains on invariance status
- changes
-Message-ID: <20200925135900.GA11648@google.com>
-References: <20200924123937.20938-1-ionela.voinescu@arm.com>
- <20200924123937.20938-4-ionela.voinescu@arm.com>
- <20200924133925.GC3920949@google.com>
- <20200924161002.GC17927@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924161002.GC17927@arm.com>
+        id S1728903AbgIYOBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:01:32 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49919 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728365AbgIYOBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:01:31 -0400
+IronPort-SDR: Euy6m9D6s1CMLOolgf+wjIM4OcZlk/DOoM/Ci35CJ0AwprVMw5slf9JywsAMaVcbe7FVIVYAzT
+ G0p5wZesdAqQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141546634"
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="141546634"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:50:30 -0700
+IronPort-SDR: LCYM3+v6nxWAWmcETmpdelkbZXuPnpoRPYjX8Zxiy1bqdzvljf/9ziBRblaLCGVMkqwrfdUSBy
+ 5qCefoEFktdQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="310824566"
+Received: from unknown (HELO labuser-Ice-Lake-Client-Platform.jf.intel.com) ([10.54.55.65])
+  by orsmga006.jf.intel.com with ESMTP; 25 Sep 2020 06:50:30 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, asit.k.mallick@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 2/3] perf/x86/intel/uncore: Update Ice Lake uncore units
+Date:   Fri, 25 Sep 2020 06:49:04 -0700
+Message-Id: <20200925134905.8839-2-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200925134905.8839-1-kan.liang@linux.intel.com>
+References: <20200925134905.8839-1-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Ionela,
+From: Kan Liang <kan.liang@linux.intel.com>
 
-On Thursday 24 Sep 2020 at 17:10:02 (+0100), Ionela Voinescu wrote:
-> I'm not sure what is a good way of fixing this.. I could add more info
-> to the warning to suggest it might be temporary ("Disabling EAS:
-> frequency-invariant load tracking currently not supported"). For further
-> debugging there are the additional prints guarded by sched_debug().
-> 
-> I'll look over the code some more to see if other ideas pop out. Any
-> suggestions are appreciated.
+There are some updates for the Icelake model specific uncore performance
+monitors. (The update can be found at 10th generation intel core
+processors families specification update Revision 004, ICL068)
 
-Right, I'm not seeing anything perfect here, but I think I'd be
-personally happy with this message being entirely guarded by
-sched_debug(), like we do for asym CPU capacities for instance.
+1) Counter 0 of ARB uncore unit is not available for software use
+2) The global 'enable bit' (bit 29) and 'freeze bit' (bit 31) of
+   MSR_UNC_PERF_GLOBAL_CTRL cannot be used to control counter behavior.
+   Needs to use local enable in event select MSR.
 
-It's not easy to see if EAS has started at all w/o sched debug anyway,
-so I expect folks who need it to enable the debug stuff during
-bring-up. With a descriptive enough warn message, that should be just
-fine. But that's my 2p, so I'm happy to hear if others disagree.
+Accessing the modified bit/registers will be ignored by HW. Users may
+observe inaccurate results with the current code.
 
-Thanks,
-Quentin
+The changes of the MSR_UNC_PERF_GLOBAL_CTRL imply that groups cannot be
+read atomically anymore. Although the error of the result for a group
+becomes a bit bigger, it still far lower than not using a group. The
+group support is still kept. Only Remove the *_box() related
+implementation.
+
+Since the counter 0 of ARB uncore unit is not available, update the MSR
+address for the ARB uncore unit.
+
+There is no change for IMC uncore unit, which only include free-running
+counters.
+
+Fixes: 6e394376ee89 ("perf/x86/intel/uncore: Add Intel Icelake uncore support")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/uncore_snb.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
+index d2d43b6d6946..2bdfcf80b434 100644
+--- a/arch/x86/events/intel/uncore_snb.c
++++ b/arch/x86/events/intel/uncore_snb.c
+@@ -126,6 +126,10 @@
+ #define ICL_UNC_CBO_0_PER_CTR0			0x702
+ #define ICL_UNC_CBO_MSR_OFFSET			0x8
+ 
++/* ICL ARB register */
++#define ICL_UNC_ARB_PER_CTR			0x3b1
++#define ICL_UNC_ARB_PERFEVTSEL			0x3b3
++
+ DEFINE_UNCORE_FORMAT_ATTR(event, event, "config:0-7");
+ DEFINE_UNCORE_FORMAT_ATTR(umask, umask, "config:8-15");
+ DEFINE_UNCORE_FORMAT_ATTR(edge, edge, "config:18");
+@@ -313,6 +317,12 @@ void skl_uncore_cpu_init(void)
+ 	snb_uncore_arb.ops = &skl_uncore_msr_ops;
+ }
+ 
++static struct intel_uncore_ops icl_uncore_msr_ops = {
++	.disable_event	= snb_uncore_msr_disable_event,
++	.enable_event	= snb_uncore_msr_enable_event,
++	.read_counter	= uncore_msr_read_counter,
++};
++
+ static struct intel_uncore_type icl_uncore_cbox = {
+ 	.name		= "cbox",
+ 	.num_counters   = 4,
+@@ -321,7 +331,7 @@ static struct intel_uncore_type icl_uncore_cbox = {
+ 	.event_ctl	= SNB_UNC_CBO_0_PERFEVTSEL0,
+ 	.event_mask	= SNB_UNC_RAW_EVENT_MASK,
+ 	.msr_offset	= ICL_UNC_CBO_MSR_OFFSET,
+-	.ops		= &skl_uncore_msr_ops,
++	.ops		= &icl_uncore_msr_ops,
+ 	.format_group	= &snb_uncore_format_group,
+ };
+ 
+@@ -350,13 +360,25 @@ static struct intel_uncore_type icl_uncore_clockbox = {
+ 	.single_fixed	= 1,
+ 	.event_mask	= SNB_UNC_CTL_EV_SEL_MASK,
+ 	.format_group	= &icl_uncore_clock_format_group,
+-	.ops		= &skl_uncore_msr_ops,
++	.ops		= &icl_uncore_msr_ops,
+ 	.event_descs	= icl_uncore_events,
+ };
+ 
++static struct intel_uncore_type icl_uncore_arb = {
++	.name		= "arb",
++	.num_counters   = 1,
++	.num_boxes	= 1,
++	.perf_ctr_bits	= 44,
++	.perf_ctr	= ICL_UNC_ARB_PER_CTR,
++	.event_ctl	= ICL_UNC_ARB_PERFEVTSEL,
++	.event_mask	= SNB_UNC_RAW_EVENT_MASK,
++	.ops		= &icl_uncore_msr_ops,
++	.format_group	= &snb_uncore_format_group,
++};
++
+ static struct intel_uncore_type *icl_msr_uncores[] = {
+ 	&icl_uncore_cbox,
+-	&snb_uncore_arb,
++	&icl_uncore_arb,
+ 	&icl_uncore_clockbox,
+ 	NULL,
+ };
+@@ -374,7 +396,6 @@ void icl_uncore_cpu_init(void)
+ {
+ 	uncore_msr_uncores = icl_msr_uncores;
+ 	icl_uncore_cbox.num_boxes = icl_get_cbox_num();
+-	snb_uncore_arb.ops = &skl_uncore_msr_ops;
+ }
+ 
+ static struct intel_uncore_type *tgl_msr_uncores[] = {
+-- 
+2.17.1
+
