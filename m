@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2540E2787CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D410E27886B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727248AbgIYMu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:50:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54332 "EHLO mail.kernel.org"
+        id S1729166AbgIYMzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:55:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729058AbgIYMuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:50:24 -0400
+        id S1729616AbgIYMy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:54:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CBEE221D7A;
-        Fri, 25 Sep 2020 12:50:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91ACF206DB;
+        Fri, 25 Sep 2020 12:54:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038223;
-        bh=ENMKtD9NocbZHCQdQE+6BWWZOk5yUzHe9r73Acai9kg=;
+        s=default; t=1601038498;
+        bh=3CxEedJgFMUT9aAxvc8DjPu3Fk3FQFyN00bflofktYs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WuzDsfK8uBmWzKI2QKqpNdl2YiifmELQWo5Xok3EBouCgGjyBP8i/hGbBrrQ9swLG
-         nQt0aCPCWv61mpp1Ggt+AB3/Cu9d7IyFU+dVtFGrK4gzIcHdXAqf9nDyU5j5gqkFEC
-         fwU+2oWdQ5pEnPvCFwqOclnXqxyOxt6AjJoscXYM=
+        b=WsFM/1J5A2HVt7UxNrN8aYofgVULSKjisF7c+oCNKaXloCsR1WXuXGC0TETREi+br
+         lF9Iwu/87WM91p7uzEJw5ISXBEC+W4XILrYDoUBU3QFx4702/hiLjuUI+ZeJyrIjMp
+         JvHR5NyR1N5+IdYTZNOWV1gcf5yKNJ6ZWZJjtxjw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo bin <luobin9@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 48/56] hinic: fix rewaking txq after netif_tx_disable
-Date:   Fri, 25 Sep 2020 14:48:38 +0200
-Message-Id: <20200925124735.028887932@linuxfoundation.org>
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.19 11/37] net: dsa: rtl8366: Properly clear member config
+Date:   Fri, 25 Sep 2020 14:48:39 +0200
+Message-Id: <20200925124722.639625577@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
-References: <20200925124727.878494124@linuxfoundation.org>
+In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
+References: <20200925124720.972208530@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,129 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo bin <luobin9@huawei.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit a1b80e0143a1b878f8e21d82fd55f3f46f0014be ]
+[ Upstream commit 4ddcaf1ebb5e4e99240f29d531ee69d4244fe416 ]
 
-When calling hinic_close in hinic_set_channels, all queues are
-stopped after netif_tx_disable, but some queue may be rewaken in
-free_tx_poll by mistake while drv is handling tx irq. If one queue
-is rewaken core may call hinic_xmit_frame to send pkt after
-netif_tx_disable within a short time which may results in accessing
-memory that has been already freed in hinic_close. So we call
-napi_disable before netif_tx_disable in hinic_close to fix this bug.
+When removing a port from a VLAN we are just erasing the
+member config for the VLAN, which is wrong: other ports
+can be using it.
 
-Fixes: 2eed5a8b614b ("hinic: add set_channels ethtool_ops support")
-Signed-off-by: Luo bin <luobin9@huawei.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Just mask off the port and only zero out the rest of the
+member config once ports using of the VLAN are removed
+from it.
+
+Reported-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: d8652956cf37 ("net: dsa: realtek-smi: Add Realtek SMI driver")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/huawei/hinic/hinic_main.c |   24 ++++++++++++++++++++++++
- drivers/net/ethernet/huawei/hinic/hinic_tx.c   |   18 +++---------------
- 2 files changed, 27 insertions(+), 15 deletions(-)
+ drivers/net/dsa/rtl8366.c |   20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
---- a/drivers/net/ethernet/huawei/hinic/hinic_main.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_main.c
-@@ -168,6 +168,24 @@ err_init_txq:
- 	return err;
- }
+--- a/drivers/net/dsa/rtl8366.c
++++ b/drivers/net/dsa/rtl8366.c
+@@ -452,13 +452,19 @@ int rtl8366_vlan_del(struct dsa_switch *
+ 				return ret;
  
-+static void enable_txqs_napi(struct hinic_dev *nic_dev)
-+{
-+	int num_txqs = hinic_hwdev_num_qps(nic_dev->hwdev);
-+	int i;
-+
-+	for (i = 0; i < num_txqs; i++)
-+		napi_enable(&nic_dev->txqs[i].napi);
-+}
-+
-+static void disable_txqs_napi(struct hinic_dev *nic_dev)
-+{
-+	int num_txqs = hinic_hwdev_num_qps(nic_dev->hwdev);
-+	int i;
-+
-+	for (i = 0; i < num_txqs; i++)
-+		napi_disable(&nic_dev->txqs[i].napi);
-+}
-+
- /**
-  * free_txqs - Free the Logical Tx Queues of specific NIC device
-  * @nic_dev: the specific NIC device
-@@ -394,6 +412,8 @@ int hinic_open(struct net_device *netdev
- 		goto err_create_txqs;
- 	}
- 
-+	enable_txqs_napi(nic_dev);
-+
- 	err = create_rxqs(nic_dev);
- 	if (err) {
- 		netif_err(nic_dev, drv, netdev,
-@@ -475,6 +495,7 @@ err_port_state:
- 	}
- 
- err_create_rxqs:
-+	disable_txqs_napi(nic_dev);
- 	free_txqs(nic_dev);
- 
- err_create_txqs:
-@@ -488,6 +509,9 @@ int hinic_close(struct net_device *netde
- 	struct hinic_dev *nic_dev = netdev_priv(netdev);
- 	unsigned int flags;
- 
-+	/* Disable txq napi firstly to aviod rewaking txq in free_tx_poll */
-+	disable_txqs_napi(nic_dev);
-+
- 	down(&nic_dev->mgmt_lock);
- 
- 	flags = nic_dev->flags;
---- a/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_tx.c
-@@ -684,18 +684,6 @@ static int free_tx_poll(struct napi_stru
- 	return budget;
- }
- 
--static void tx_napi_add(struct hinic_txq *txq, int weight)
--{
--	netif_napi_add(txq->netdev, &txq->napi, free_tx_poll, weight);
--	napi_enable(&txq->napi);
--}
+ 			if (vid == vlanmc.vid) {
+-				/* clear VLAN member configurations */
+-				vlanmc.vid = 0;
+-				vlanmc.priority = 0;
+-				vlanmc.member = 0;
+-				vlanmc.untag = 0;
+-				vlanmc.fid = 0;
 -
--static void tx_napi_del(struct hinic_txq *txq)
--{
--	napi_disable(&txq->napi);
--	netif_napi_del(&txq->napi);
--}
--
- static irqreturn_t tx_irq(int irq, void *data)
- {
- 	struct hinic_txq *txq = data;
-@@ -724,7 +712,7 @@ static int tx_request_irq(struct hinic_t
- 	struct hinic_sq *sq = txq->sq;
- 	int err;
- 
--	tx_napi_add(txq, nic_dev->tx_weight);
-+	netif_napi_add(txq->netdev, &txq->napi, free_tx_poll, nic_dev->tx_weight);
- 
- 	hinic_hwdev_msix_set(nic_dev->hwdev, sq->msix_entry,
- 			     TX_IRQ_NO_PENDING, TX_IRQ_NO_COALESC,
-@@ -734,7 +722,7 @@ static int tx_request_irq(struct hinic_t
- 	err = request_irq(sq->irq, tx_irq, 0, txq->irq_name, txq);
- 	if (err) {
- 		dev_err(&pdev->dev, "Failed to request Tx irq\n");
--		tx_napi_del(txq);
-+		netif_napi_del(&txq->napi);
- 		return err;
- 	}
- 
-@@ -746,7 +734,7 @@ static void tx_free_irq(struct hinic_txq
- 	struct hinic_sq *sq = txq->sq;
- 
- 	free_irq(sq->irq, txq);
--	tx_napi_del(txq);
-+	netif_napi_del(&txq->napi);
- }
- 
- /**
++				/* Remove this port from the VLAN */
++				vlanmc.member &= ~BIT(port);
++				vlanmc.untag &= ~BIT(port);
++				/*
++				 * If no ports are members of this VLAN
++				 * anymore then clear the whole member
++				 * config so it can be reused.
++				 */
++				if (!vlanmc.member && vlanmc.untag) {
++					vlanmc.vid = 0;
++					vlanmc.priority = 0;
++					vlanmc.fid = 0;
++				}
+ 				ret = smi->ops->set_vlan_mc(smi, i, &vlanmc);
+ 				if (ret) {
+ 					dev_err(smi->dev,
 
 
