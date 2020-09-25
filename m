@@ -2,125 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529AF279324
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5171279326
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728691AbgIYVTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726636AbgIYVTB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:19:01 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42953C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:19:01 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 77so4359254lfj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BAZC5WdsihBei8ZEYFA5ibD70o4Yn/tMBPfbhpwMzrw=;
-        b=eNZv88uTD+H0687sCNUjErQN0ou7Br7/82NHVBB4WbSsMLa6Xv+b6Py7dIwago8+oV
-         LVTgsWVWUV0AfVW3zTJ2+BPeF/2CRbdZ5mh6o59MNoQ8Os2KF2lKb1rUuBeXIczq23h9
-         gAwf6yQbAUadJ4ve7LCZdZFcw2mMfQTUgRC19MgdwFfnqyYGhRVeG5L6ZpEdPBplhIsF
-         kZZvxrpjdnCLAqObXL+OsCdWoPpV1aD42X9YJXAQN3Y/byVqUSwl7dhz+C1N/NGxqKve
-         UFJ+q2IfH/66yw4Iib1An5JHeYd5cCNdqIuigSrwMSdO6gjXfmKxrulbrZdU03sEjUkF
-         Q3Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BAZC5WdsihBei8ZEYFA5ibD70o4Yn/tMBPfbhpwMzrw=;
-        b=guKRzIqlC8sDizenQdIhQgeSwQWBH3a16/larfWBwR9qGT/h2BLawvo2LUHU4hIKrO
-         eY0RGCLeJXWu4ty1HE0taenB69/1Lx6AAcsM4z1osKHTH/Yyu/o9gUN/YghkmmsolpFC
-         EJmfvTX9QEPEP9gtq+LayW+Ky4iDlNVoU7D6O6qM5ce2qtc9StXdAKDIyCJo6fHDPrWW
-         pg8n3/1I9pMkRvf8RAUUYryymfTW6mAsIb7sKT5LowC9/0N9o0Us7DW7nZIuVsLQtp7L
-         9st4sLdhZ2x5VUJ5Bj/d1zKIbHF5jBzua3SC03gcV0MYFHEM0148zY8KIJE80c79IJ77
-         OJnA==
-X-Gm-Message-State: AOAM530KlcXfIe7bVPT/98mYSixc35Drt8g04h+GgU8a/XSm8bdwGlvG
-        oNF1kHMjKkJpMGhsqvcG9wYNUt+izjZo3Q9ou3Cp4w==
-X-Google-Smtp-Source: ABdhPJxUEE37WPkdJrc9HedFYru6tI6b/9DtnLDZsC2ZOqMgNlXO3m98KYOozN9brJWAwI+Hjol/pci4CGZ7tcktK4w=
-X-Received: by 2002:ac2:4315:: with SMTP id l21mr254323lfh.494.1601068739382;
- Fri, 25 Sep 2020 14:18:59 -0700 (PDT)
+        id S1727628AbgIYVU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:20:29 -0400
+Received: from mail-db8eur05on2079.outbound.protection.outlook.com ([40.107.20.79]:2273
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726694AbgIYVU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 17:20:29 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C5FWt4zOfZhwCsfRGSr5PCpTwbn7NBQNVRdF6kHCbQ67BVojp2kvfNDIuCm62OfpgK846LtugffMv3G9NWaIlQlaY46q2jdqdJqrJ4E7hIEg/amA2+BdScvXedfMj9H1lYPp6IpztosASMOFzmXjLhXietxmJg/lfbkqBQ1WkBwo8HhnBf2E1OLnIFZRddOra54wrx8bID09lou9erm4lopgkp8cTbwUOD45utrqFlfS4lzoaLAd8u3ZgymujpddiAB4BeXC6pOwpHcGKUI5XHbhgw8faQ+JarKrIexssrznV9N1otS50TgnE3lHaKu1EDTPIsO46bL0HegvSE8p4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Av9x2p2nIbXQUe97xReR/kTJKVQ62VRjM6QsWQ3doJE=;
+ b=IPVKN5mcWNvgqnnLApBxABpA9EcLb+odTRGcUXvL6q73wuoApWv8bxwOR+FdtrY7GgGw5ybH/tee03zIEbiZMvtehR5DZ7E728bW0XJNVojs6c7nPnorAd8M6uylJKB2fHwUwUVnWRX1JySUTqUFhphTuFzspm0Ysada55+kf6JYvgEiL+EPM+khV6frLG5K8FuVJ4nyNyQPUeG7UqsKpSApndmsJNn2EB6PMkyfvFRtxdO7E7GEBBL53VBSX2CnlwOG0CyfaNN6aVx01HsDBanor8SRnifkH+th05imfFcbetbw2oyALU/vp7RN0ov/fQKj4QmSHIV7WsViwsHfzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Av9x2p2nIbXQUe97xReR/kTJKVQ62VRjM6QsWQ3doJE=;
+ b=RxjxSt7ERX/E8R0r/LqjNshgE22q3mxFTHTfuFpGqHlDunLJGxBLvz53EJ8HIMtDVupkA8+y8+RnNtfeIWMIUraHpUsIlodYedFpGeldjSo2r4RJ/RYSFZ5NqjoEURbza9Qq6ZZY/bX33ex2EhA8UdX/ISpfaKggiU+FJSfzTws=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR04MB3070.eurprd04.prod.outlook.com (2603:10a6:802:4::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3391.14; Fri, 25 Sep
+ 2020 21:20:21 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3412.024; Fri, 25 Sep 2020
+ 21:20:21 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     David Miller <davem@davemloft.net>
+CC:     "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "olteanv@gmail.com" <olteanv@gmail.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "ap420073@gmail.com" <ap420073@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2] net: vlan: Avoid using BUG() in
+ vlan_proto_idx()
+Thread-Topic: [PATCH net-next v2] net: vlan: Avoid using BUG() in
+ vlan_proto_idx()
+Thread-Index: AQHWktK1dn50WyUzM0CepvJlXrMX+6l524cAgAACKwA=
+Date:   Fri, 25 Sep 2020 21:20:21 +0000
+Message-ID: <20200925212020.5cniszgzxfw3lq7r@skbuf>
+References: <20200925002746.79571-1-f.fainelli@gmail.com>
+ <20200925.141234.274433220362171981.davem@davemloft.net>
+In-Reply-To: <20200925.141234.274433220362171981.davem@davemloft.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.217.212]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 969be894-eca4-45a9-40c6-08d86198cf55
+x-ms-traffictypediagnostic: VI1PR04MB3070:
+x-microsoft-antispam-prvs: <VI1PR04MB307007DFD9F6E506535BF511E0360@VI1PR04MB3070.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3631;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: zGnrs5lJSX1KIaUHHZz9NqbRzAxrrtimkcKmvucspfEVDvDgm9uOdkBRMszQEixPYCI36JH+mMlhW1tUKCu3Cz8DtG33UEdibwrUSPBTjUQ6E4a73TzR+25jQ0psqEvipcxiCPE91scfHiaebMNOM/cT6PTiVUsthI2VPpmUHxSZLo8DLAtLqc1meOsrcrOG8IWa9MkYxNqWN9MXIHyLih04FH/BGY4q07WbtzvYyb9cSGyZrmv2qXvuq9qzXgCt55hM55d2HOGfV8/VT9e/4578kpLvY91EXdAjDWjcoa/tdSQVLQyQV5coBl5ouOqFx0x1IQ0xr+BGoJOjxGuVqaE+bSfPYT0eCwR6TKHcl+e606ldXWjp3O/urmT+eqDt
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(136003)(396003)(39850400004)(346002)(376002)(4326008)(6506007)(33716001)(54906003)(71200400001)(6486002)(5660300002)(44832011)(66476007)(76116006)(66946007)(558084003)(6916009)(1076003)(186003)(86362001)(316002)(8676002)(66556008)(478600001)(6512007)(9686003)(66446008)(26005)(8936002)(64756008)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: 9GbUPK2BTYX8rNwzGTaxk7BJ5YfCSG+CpM1iWac7xQF/T7PfaLpbwoQ2DzK8Q+39HMniHPUAxKCISEUc6wUOln78NepNy/MFiM3h1wo21xQYWFaTxaNfLNvOyJx5us7Dm5S1J0Tq2XXIChLOYmAWIxaoYx3HGWsEjg81HLN3taS9DA28z1Ar13fTlYi+uraqC/Z+3hlOsRpIfcjvb+5u8ylgvIDuSmzKdgDmHxycOet9e4h47uOZA+ABk7kyLQHIUXE1v2rnoK3ryBozN9OdzTuu5wVKYKMXd76AggslHfmSZwy8m+1fuMG1c0t/YPEQgAE7wyRpjkgkdXtQa3d40WO5KjbU6Eu6Tw4pI9z9X24mB35XbK2x2rsziWOznaIY7D4B3Z4eXb9GkZex/fQJR42UDPN3twuucnvc7pQVLD7wQjrNx4+JKSVlcpzh0xj+ztu+nSHwO7VGIr/qrHUtThi+YKU8c/iamPa5Jq/uUpmG8CTYpy5aL0Y6zpLujAMaHi9S6TBtbTXsiQZWmiVPIlrZYqM9eRLoQCfM61iT+PSralA4wif9b8LRoymSn020A+W8mO6om0BiVRzKpx+ET2SzjQ1KZ1KIXieGpR6/RUZtG0ebXHGt0P2JaO9RM2IOtMcy/v8/O8W9wi2k3YFF8Q==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <39BA77D0A56CFD419C493CBAC6E039EA@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <CALvZod5pERERkxWAJcBrZHpcWQH75kXkys2gUg__qM9OL+MmtQ@mail.gmail.com>
- <20200925191902.543953-1-shakeelb@google.com> <20200925205604.GA2228989@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200925205604.GA2228989@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 25 Sep 2020 14:18:48 -0700
-Message-ID: <CALvZod5ETbjn7Y0A619Sd+sFO_9QCnUDC-_pBXPgq9AkAK0LRQ@mail.gmail.com>
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>, Jens Axboe <axboe@kernel.dk>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 969be894-eca4-45a9-40c6-08d86198cf55
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2020 21:20:21.2860
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: p6RuqLeaN1rr7YRMPD58ISbTwZIyv7eHooBKOLYUzx+yZfm/XZlfxDZyrx4j3g0bikVpWywki2rrYyCQB13tNw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 1:56 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Fri, Sep 25, 2020 at 12:19:02PM -0700, Shakeel Butt wrote:
-> > On Fri, Sep 25, 2020 at 10:58 AM Shakeel Butt <shakeelb@google.com>
-> > wrote:
-> > >
-> > [snip]
-> > >
-> > > I don't think you can ignore the flushing. The __free_once() in
-> > > ___cache_free() assumes there is a space available.
-> > >
-> > > BTW do_drain() also have the same issue.
-> > >
-> > > Why not move slabs_destroy() after we update ac->avail and memmove()?
-> >
-> > Ming, can you please try the following patch?
-> >
-> >
-> > From: Shakeel Butt <shakeelb@google.com>
-> >
-> > [PATCH] mm: slab: fix potential infinite recursion in ___cache_free
-> >
-> > With the commit 10befea91b61 ("mm: memcg/slab: use a single set of
-> > kmem_caches for all allocations"), it becomes possible to call kfree()
-> > from the slabs_destroy(). However if slabs_destroy() is being called for
-> > the array_cache of the local CPU then this opens the potential scenario
-> > of infinite recursion because kfree() called from slabs_destroy() can
-> > call slabs_destroy() with the same array_cache of the local CPU. Since
-> > the array_cache of the local CPU is not updated before calling
-> > slabs_destroy(), it will try to free the same pages.
-> >
-> > To fix the issue, simply update the cache before calling
-> > slabs_destroy().
-> >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
->
-> I like the patch and I think it should fix the problem.
->
-> However the description above should be likely asjusted a bit.
-> It seems that the problem is not necessary caused by an infinite recursion,
-> it can be even simpler.
->
-> In cache_flusharray() we rely on the state of ac, which is described
-> by ac->avail. In particular we rely on batchcount < ac->avail,
-> as we shift the batchcount number of pointers by memmove.
-> But if slabs_destroy() is called before and leaded to a change of the
-> ac state, it can lead to a memory corruption.
->
-> Also, unconditionally resetting ac->avail to 0 in do_drain() after calling
-> to slab_destroy() seems to be wrong.
-> It explains double free BUGs we've seen in stacktraces.
->
+On Fri, Sep 25, 2020 at 02:12:34PM -0700, David Miller wrote:
+> From: Florian Fainelli <f.fainelli@gmail.com>
+> Date: Thu, 24 Sep 2020 17:27:44 -0700
+>=20
+> Applied, thanks Florian.
 
-Yes, you are right. Let's first get this patch tested and after
-confirmation we can update the commit message.
+Uh-oh, that 'negative value stored in unsigned variable' issue that the
+build bot reported was on v2, wasn't it?=
