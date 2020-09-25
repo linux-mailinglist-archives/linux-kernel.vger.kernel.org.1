@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100EA2787CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C760278865
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbgIYMug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:50:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54440 "EHLO mail.kernel.org"
+        id S1729647AbgIYMzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729069AbgIYMu3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:50:29 -0400
+        id S1728993AbgIYMzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:55:04 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E06421741;
-        Fri, 25 Sep 2020 12:50:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBD58206DB;
+        Fri, 25 Sep 2020 12:55:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038229;
-        bh=Wa6lp2KfEOHpGQk2Kgnuy5TbQ9xJQay4N3ygIa6prt8=;
+        s=default; t=1601038503;
+        bh=HD+6LhVe8zCaOT1+C2bNz/haLq9f9WZzd4gLeJD34Dg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FTw3OY7pyXqPB5HEpwMZ7vzrerzEzWjKkFncjplcancq5iJKX48chxKa4GRrVerH1
-         11uwJgIFjA89uVhgwN7o5HsNSj8RSpJ/kOua4OaEW/fWk/xcNhNstf/qizb9+HExWY
-         6keiMTRx6VdaZYYfiFFTS84NxEeSYaPQfylifmAU=
+        b=sHcS+JgD6U7CmzOlDOANFkud1rRGC4Az8LSTx+8r/y8CdJeIEvCvTrs0FapHJpVdZ
+         nPetvVA2OcrGL427SFndEMm9h6I+iG1tL0bX9CqSCX9wCyYWrXinToD7rrOcD9jVwX
+         wpTvgFsADXylyKylzk95ddBvPYMHvidVQHDRJg8I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Yunsheng Lin <linyunsheng@huawei.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 50/56] net: dsa: link interfaces with the DSA master to get rid of lockdep warnings
-Date:   Fri, 25 Sep 2020 14:48:40 +0200
-Message-Id: <20200925124735.338900089@linuxfoundation.org>
+Subject: [PATCH 4.19 13/37] net: sch_generic: aviod concurrent reset and enqueue op for lockless qdisc
+Date:   Fri, 25 Sep 2020 14:48:41 +0200
+Message-Id: <20200925124722.922202675@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
-References: <20200925124727.878494124@linuxfoundation.org>
+In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
+References: <20200925124720.972208530@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,153 +42,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <olteanv@gmail.com>
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-[ Upstream commit 2f1e8ea726e9020e01e9e2ae29c2d5eb11133032 ]
+[ Upstream commit 2fb541c862c987d02dfdf28f1545016deecfa0d5 ]
 
-Since commit 845e0ebb4408 ("net: change addr_list_lock back to static
-key"), cascaded DSA setups (DSA switch port as DSA master for another
-DSA switch port) are emitting this lockdep warning:
+Currently there is concurrent reset and enqueue operation for the
+same lockless qdisc when there is no lock to synchronize the
+q->enqueue() in __dev_xmit_skb() with the qdisc reset operation in
+qdisc_deactivate() called by dev_deactivate_queue(), which may cause
+out-of-bounds access for priv->ring[] in hns3 driver if user has
+requested a smaller queue num when __dev_xmit_skb() still enqueue a
+skb with a larger queue_mapping after the corresponding qdisc is
+reset, and call hns3_nic_net_xmit() with that skb later.
 
-============================================
-WARNING: possible recursive locking detected
-5.8.0-rc1-00133-g923e4b5032dd-dirty #208 Not tainted
---------------------------------------------
-dhcpcd/323 is trying to acquire lock:
-ffff000066dd4268 (&dsa_master_addr_list_lock_key/1){+...}-{2:2}, at: dev_mc_sync+0x44/0x90
+Reused the existing synchronize_net() in dev_deactivate_many() to
+make sure skb with larger queue_mapping enqueued to old qdisc(which
+is saved in dev_queue->qdisc_sleeping) will always be reset when
+dev_reset_queue() is called.
 
-but task is already holding lock:
-ffff00006608c268 (&dsa_master_addr_list_lock_key/1){+...}-{2:2}, at: dev_mc_sync+0x44/0x90
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&dsa_master_addr_list_lock_key/1);
-  lock(&dsa_master_addr_list_lock_key/1);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-3 locks held by dhcpcd/323:
- #0: ffffdbd1381dda18 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock+0x24/0x30
- #1: ffff00006614b268 (_xmit_ETHER){+...}-{2:2}, at: dev_set_rx_mode+0x28/0x48
- #2: ffff00006608c268 (&dsa_master_addr_list_lock_key/1){+...}-{2:2}, at: dev_mc_sync+0x44/0x90
-
-stack backtrace:
-Call trace:
- dump_backtrace+0x0/0x1e0
- show_stack+0x20/0x30
- dump_stack+0xec/0x158
- __lock_acquire+0xca0/0x2398
- lock_acquire+0xe8/0x440
- _raw_spin_lock_nested+0x64/0x90
- dev_mc_sync+0x44/0x90
- dsa_slave_set_rx_mode+0x34/0x50
- __dev_set_rx_mode+0x60/0xa0
- dev_mc_sync+0x84/0x90
- dsa_slave_set_rx_mode+0x34/0x50
- __dev_set_rx_mode+0x60/0xa0
- dev_set_rx_mode+0x30/0x48
- __dev_open+0x10c/0x180
- __dev_change_flags+0x170/0x1c8
- dev_change_flags+0x2c/0x70
- devinet_ioctl+0x774/0x878
- inet_ioctl+0x348/0x3b0
- sock_do_ioctl+0x50/0x310
- sock_ioctl+0x1f8/0x580
- ksys_ioctl+0xb0/0xf0
- __arm64_sys_ioctl+0x28/0x38
- el0_svc_common.constprop.0+0x7c/0x180
- do_el0_svc+0x2c/0x98
- el0_sync_handler+0x9c/0x1b8
- el0_sync+0x158/0x180
-
-Since DSA never made use of the netdev API for describing links between
-upper devices and lower devices, the dev->lower_level value of a DSA
-switch interface would be 1, which would warn when it is a DSA master.
-
-We can use netdev_upper_dev_link() to describe the relationship between
-a DSA slave and a DSA master. To be precise, a DSA "slave" (switch port)
-is an "upper" to a DSA "master" (host port). The relationship is "many
-uppers to one lower", like in the case of VLAN. So, for that reason, we
-use the same function as VLAN uses.
-
-There might be a chance that somebody will try to take hold of this
-interface and use it immediately after register_netdev() and before
-netdev_upper_dev_link(). To avoid that, we do the registration and
-linkage while holding the RTNL, and we use the RTNL-locked cousin of
-register_netdev(), which is register_netdevice().
-
-Since this warning was not there when lockdep was using dynamic keys for
-addr_list_lock, we are blaming the lockdep patch itself. The network
-stack _has_ been using static lockdep keys before, and it _is_ likely
-that stacked DSA setups have been triggering these lockdep warnings
-since forever, however I can't test very old kernels on this particular
-stacked DSA setup, to ensure I'm not in fact introducing regressions.
-
-Fixes: 845e0ebb4408 ("net: change addr_list_lock back to static key")
-Suggested-by: Cong Wang <xiyou.wangcong@gmail.com>
-Signed-off-by: Vladimir Oltean <olteanv@gmail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/dsa/slave.c |   18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ net/sched/sch_generic.c |   49 ++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 33 insertions(+), 16 deletions(-)
 
---- a/net/dsa/slave.c
-+++ b/net/dsa/slave.c
-@@ -1801,15 +1801,27 @@ int dsa_slave_create(struct dsa_port *po
+--- a/net/sched/sch_generic.c
++++ b/net/sched/sch_generic.c
+@@ -1115,27 +1115,36 @@ static void dev_deactivate_queue(struct
+ 				 struct netdev_queue *dev_queue,
+ 				 void *_qdisc_default)
+ {
+-	struct Qdisc *qdisc_default = _qdisc_default;
+-	struct Qdisc *qdisc;
++	struct Qdisc *qdisc = rtnl_dereference(dev_queue->qdisc);
  
- 	dsa_slave_notify(slave_dev, DSA_PORT_REGISTER);
+-	qdisc = rtnl_dereference(dev_queue->qdisc);
+ 	if (qdisc) {
+-		bool nolock = qdisc->flags & TCQ_F_NOLOCK;
+-
+-		if (nolock)
+-			spin_lock_bh(&qdisc->seqlock);
+-		spin_lock_bh(qdisc_lock(qdisc));
+-
+ 		if (!(qdisc->flags & TCQ_F_BUILTIN))
+ 			set_bit(__QDISC_STATE_DEACTIVATED, &qdisc->state);
++	}
++}
  
--	ret = register_netdev(slave_dev);
-+	rtnl_lock();
+-		rcu_assign_pointer(dev_queue->qdisc, qdisc_default);
+-		qdisc_reset(qdisc);
++static void dev_reset_queue(struct net_device *dev,
++			    struct netdev_queue *dev_queue,
++			    void *_unused)
++{
++	struct Qdisc *qdisc;
++	bool nolock;
+ 
+-		spin_unlock_bh(qdisc_lock(qdisc));
+-		if (nolock)
+-			spin_unlock_bh(&qdisc->seqlock);
+-	}
++	qdisc = dev_queue->qdisc_sleeping;
++	if (!qdisc)
++		return;
 +
-+	ret = register_netdevice(slave_dev);
- 	if (ret) {
- 		netdev_err(master, "error %d registering interface %s\n",
- 			   ret, slave_dev->name);
-+		rtnl_unlock();
- 		goto out_phy;
++	nolock = qdisc->flags & TCQ_F_NOLOCK;
++
++	if (nolock)
++		spin_lock_bh(&qdisc->seqlock);
++	spin_lock_bh(qdisc_lock(qdisc));
++
++	qdisc_reset(qdisc);
++
++	spin_unlock_bh(qdisc_lock(qdisc));
++	if (nolock)
++		spin_unlock_bh(&qdisc->seqlock);
+ }
+ 
+ static bool some_qdisc_is_busy(struct net_device *dev)
+@@ -1196,12 +1205,20 @@ void dev_deactivate_many(struct list_hea
+ 		dev_watchdog_down(dev);
  	}
  
-+	ret = netdev_upper_dev_link(master, slave_dev, NULL);
+-	/* Wait for outstanding qdisc-less dev_queue_xmit calls.
++	/* Wait for outstanding qdisc-less dev_queue_xmit calls or
++	 * outstanding qdisc enqueuing calls.
+ 	 * This is avoided if all devices are in dismantle phase :
+ 	 * Caller will call synchronize_net() for us
+ 	 */
+ 	synchronize_net();
+ 
++	list_for_each_entry(dev, head, close_list) {
++		netdev_for_each_tx_queue(dev, dev_reset_queue, NULL);
 +
-+	rtnl_unlock();
++		if (dev_ingress_queue(dev))
++			dev_reset_queue(dev, dev_ingress_queue(dev), NULL);
++	}
 +
-+	if (ret)
-+		goto out_unregister;
-+
- 	return 0;
- 
-+out_unregister:
-+	unregister_netdev(slave_dev);
- out_phy:
- 	rtnl_lock();
- 	phylink_disconnect_phy(p->dp->pl);
-@@ -1826,16 +1838,18 @@ out_free:
- 
- void dsa_slave_destroy(struct net_device *slave_dev)
- {
-+	struct net_device *master = dsa_slave_to_master(slave_dev);
- 	struct dsa_port *dp = dsa_slave_to_port(slave_dev);
- 	struct dsa_slave_priv *p = netdev_priv(slave_dev);
- 
- 	netif_carrier_off(slave_dev);
- 	rtnl_lock();
-+	netdev_upper_dev_unlink(master, slave_dev);
-+	unregister_netdevice(slave_dev);
- 	phylink_disconnect_phy(dp->pl);
- 	rtnl_unlock();
- 
- 	dsa_slave_notify(slave_dev, DSA_PORT_UNREGISTER);
--	unregister_netdev(slave_dev);
- 	phylink_destroy(dp->pl);
- 	gro_cells_destroy(&p->gcells);
- 	free_percpu(p->stats64);
+ 	/* Wait for outstanding qdisc_run calls. */
+ 	list_for_each_entry(dev, head, close_list) {
+ 		while (some_qdisc_is_busy(dev))
 
 
