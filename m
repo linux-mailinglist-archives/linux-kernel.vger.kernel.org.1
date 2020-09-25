@@ -2,88 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C8D278EF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FA0278EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbgIYQpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:45:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46728 "EHLO
+        id S1729288AbgIYQpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:45:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbgIYQpR (ORCPT
+        with ESMTP id S1727495AbgIYQpS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:45:17 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B9FC0613CE;
-        Fri, 25 Sep 2020 09:45:17 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id y14so3052259pgf.12;
-        Fri, 25 Sep 2020 09:45:17 -0700 (PDT)
+        Fri, 25 Sep 2020 12:45:18 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1F7C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:45:18 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id c18so4294568wrm.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:45:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ruCEryVFyAOn3Txfm384BRQUI0WS36tIHI9atsfBz/4=;
-        b=NOC83klTMa/B6Y6Kt6iQ/A5oCUqhE3U6VAb96tggPynZTwJM2eMUu5p4Z7lpPKAoEa
-         HzX4Z0ruwL7YNnauYGynp7rwc1cCrHiDOqjn42iminWT0UhtajgdEfmkP8J+SI0AeSph
-         qaT0GLEuXQCEbNgXXjDTFP9od6z43+v9ZGE4sAnqYH3s4f6oCM2r3MN9Fa7EtKQlt8B1
-         M998jx/BOxkqJWyOC3L/YpvcDbjvefT8RBs9BOX3k4Q05JGq8q5UuVuJYHOSLrU8KPzk
-         sM24X41y9k7PyGoK7GYsmRN6VW/nq2wmRIK0jH6rAukl+nU1Sb17uLYTWq41pwywp4DE
-         wncw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=YUu3faED3mWy40+D3cSdzZ9KMiB1kACXr9/cQo5iPy4=;
+        b=PU4O4HtYxklsjXLVPL2geJkof5iuVWW/Z9RSsAk4jVIORB3mfYYFRiOhdR/XSITpsK
+         i3IotiUj5CCLD1ToefahtaKN9JTYUlA9OkLQWIkpNgboUiho+77KVKaKg2lM0jYotGnG
+         acI7+fAGlVt41abJw2GyXpmg2BaJIwKAX0YtKz+RDEfXKyyqjt/LLs7kCVTZuaGPKkcc
+         jH22gnTzbFJbQKgPeD5YeacP4+CbYLHXYZo/qzoaV7NpZef3AMJoEM+2o5L+qwee4FVg
+         R/vMcrLFvEFZdChp3enKnet8COQfyhrnztTRJCkMPsiuEWXNwlqtm/Cq3MmqsCAdfUrJ
+         cYqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ruCEryVFyAOn3Txfm384BRQUI0WS36tIHI9atsfBz/4=;
-        b=PYdis7zCOfQ6FmHAkX5od4wz7+FSoMEyIPmr2oxjGu7QB13qJbP+oMYVT7VmCpGx2c
-         vAmc5Bj9m1T+8R/OwX1OaYeoM6DP5RBUZEcztBFQkwROpVi6YahQ62mBIYWbOG+rRhoM
-         99uvmZNDVOY1dQs/mx0XDAJNq7seF0yhqO0rcSapzdl5Sxii1caduYvGv3agNRcP2ht1
-         kUmqPtS27T4F6H1aLcoprrh1e1q397+2VJ0V/x9H2PXDiWLrgwpHanutXN+3Uu07L6+C
-         xVEkuz6J/npWq1rEKT+kmgKTSzqkXjaizMFfGkfNtTYMnMqYlz3ZdYVacVeHexkXFW7K
-         Nshg==
-X-Gm-Message-State: AOAM532aGAXN/VZIs+PM9UjDOsQumYCCGUyjwie5LUdHvqIa8rCrtfN+
-        iF94jeosqea3SdelSVHtSGTLBhhuS2EHIV3AT/M=
-X-Google-Smtp-Source: ABdhPJyLs9CmSuxL1C3wljdQpenEpIvO5wqWImFZHDW9uWc8lmXcNuFA4qC9zIGeu17/Yl8ddcf0atBt5fqjZbZZZpM=
-X-Received: by 2002:aa7:9491:0:b029:142:2501:396b with SMTP id
- z17-20020aa794910000b02901422501396bmr151396pfk.48.1601052316926; Fri, 25 Sep
- 2020 09:45:16 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=YUu3faED3mWy40+D3cSdzZ9KMiB1kACXr9/cQo5iPy4=;
+        b=JxzuwemVEsiKRINWVOzSoE59Z16aXH2GCSjbkyPgGGkcry9O3ftCPjWInbg0jTuBx4
+         yxAEMdm9X0dJQjcW/8ZsqqcQJqJx9rLUeLDyFrcW+pcGAvzgZMOa74QyGYdqotfNhReC
+         90HVcoqrUjQ7+7CcWlrEp2qj7Yd117BV3HXeLCV+IQy5RODB4yAK+xa39nEX705tL2Jr
+         aeNU45tghezBNuEvg+8iT4/Ivm+xaY6W1jLDcCQxoMquChclfZpNPbaUy8VWaqThc9Wr
+         hpMnvqkDwLv7eXcTtbPmh3wcN8qv84djurq4SBxEHWYiCedKTp0Hqpfo54xyWvY4FUVP
+         Atng==
+X-Gm-Message-State: AOAM530AvJhX3QE/ek5txG7KOQYgK9ZFFEVQQ7cnjnXmgpZZe30I8xP1
+        VkMoc15fGK7gmVawibS7Sn4xww==
+X-Google-Smtp-Source: ABdhPJxIEtJsqh6szBXb9XyBBG05VZzATGK3+RgFbN+d7CmcWqqHvIZ3qdg6uGrh2gtMhWXGV8Yk3g==
+X-Received: by 2002:adf:f984:: with SMTP id f4mr5485083wrr.102.1601052316722;
+        Fri, 25 Sep 2020 09:45:16 -0700 (PDT)
+Received: from vingu-book ([2a01:e0a:f:6020:bd73:9ee4:5e68:9b9c])
+        by smtp.gmail.com with ESMTPSA id z8sm3410432wrl.11.2020.09.25.09.45.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 25 Sep 2020 09:45:15 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 18:45:14 +0200
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
+Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
+ sched domain
+Message-ID: <20200925164514.GA6432@vingu-book>
+References: <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
+ <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
+ <CAKfTPtA2yE_sFfP5MFN=K+ph7rqpYUhapUdDBJ5hFLxnQPktJw@mail.gmail.com>
+ <af0237e0-1451-9d11-2ee2-1468a8bb6180@linux.intel.com>
+ <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
+ <8a86b085-b445-b1c2-9b46-6346d923abf0@linux.intel.com>
+ <CAKfTPtB-L3uM34N1w5ELzceuJxiMdkwXV5nQcqWitBAhsLoMhQ@mail.gmail.com>
+ <eb1c4c84-e361-d5a7-d071-b0dd7310eab4@linux.intel.com>
+ <CAKfTPtBYmAauUi1-bKpN1UmMTWEQL-TZqQJxtkVFnYjo-E1mRg@mail.gmail.com>
+ <aff0c293-cf4d-9770-cd54-fc0d06662f09@linux.intel.com>
 MIME-Version: 1.0
-References: <cover.1600951211.git.yifeifz2@illinois.edu> <c14518ba563d4c6bb75b9fac63b69cd4c82f9dcc.1600951211.git.yifeifz2@illinois.edu>
- <202009241601.FFC0CF68@keescook> <CABqSeARb7GNU9+sVgGzgqqOmpQNpxq1JsMrZJvS2EC05AyfAVw@mail.gmail.com>
-In-Reply-To: <CABqSeARb7GNU9+sVgGzgqqOmpQNpxq1JsMrZJvS2EC05AyfAVw@mail.gmail.com>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Fri, 25 Sep 2020 11:45:05 -0500
-Message-ID: <CABqSeASM9B77QrWRbqRF19N9-m-bm779-7a3qEDa8NumjBsorw@mail.gmail.com>
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
- filter is arg-dependent
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aff0c293-cf4d-9770-cd54-fc0d06662f09@linux.intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
-> > Why do the prepare here instead of during attach? (And note that it
-> > should not be written to fail.)
+Le vendredi 25 sept. 2020 à 17:21:46 (+0800), Li, Aubrey a écrit :
+> Hi Vicent,
+> 
+> On 2020/9/24 21:09, Vincent Guittot wrote:
+> >>>>
+> >>>> Would you mind share uperf(netperf load) result on your side? That's the
+> >>>> workload I have seen the most benefit this patch contributed under heavy
+> >>>> load level.
+> >>>
+> >>> with uperf, i've got the same kind of result as sched pipe
+> >>> tip/sched/core: Throughput 24.83Mb/s (+/- 0.09%)
+> >>> with this patch:  Throughput 19.02Mb/s (+/- 0.71%) which is a 23%
+> >>> regression as for sched pipe
+> >>>
+> >> In case this is caused by the logic error in this patch(sorry again), did
+> >> you see any improvement in patch V2? Though it does not helps for nohz=off
+> >> case, just want to know if it helps or does not help at all on arm platform.
+> > 
+> > With the v2 which rate limit the update of the cpumask (but doesn't
+> > support sched_idle stask),  I don't see any performance impact:
+> 
+> I agree we should go the way with cpumask update rate limited.
+> 
+> And I think no performance impact for sched-pipe is expected, as this workload
+> has only 2 threads and the platform has 8 cores, so mostly previous cpu is
+> returned, and even if select_idle_sibling is called, select_idle_core is hit
+> and rarely call select_idle_cpu.
+
+my platform is not smt so select_idle_core is nop. Nevertheless select_idle_cpu
+is almost never called because prev is idle and selected before calling it in
+our case
+
+> 
+> But I'm more curious why there is 23% performance penalty? So for this patch, if
+> you revert this change but keep cpumask updated, is 23% penalty still there?
+> 
+> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
+
+I was about to say that reverting this line should not change anything because
+we never reach this point but it does in fact. And after looking at a trace,
+I can see that the 2 threads of perf bench sched pipe are on the same CPU and
+that the sds_idle_cpus(sd->shared) is always empty. In fact, the rq->curr is
+not yet idle and still point to the cfs task when you call update_idle_cpumask().
+This means that once cleared, the bit will never be set
+You can remove the test in update_idle_cpumask() which is called either when
+entering idle or when there is only sched_idle tasks that are runnable.
+
+@@ -6044,8 +6044,7 @@ void update_idle_cpumask(struct rq *rq)
+        sd = rcu_dereference(per_cpu(sd_llc, cpu));
+        if (!sd || !sd->shared)
+                goto unlock;
+-       if (!available_idle_cpu(cpu) || !sched_idle_cpu(cpu))
+-               goto unlock;
++
+        cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
+ unlock:
+        rcu_read_unlock();
+
+With this fix, the performance decrease is only 2%
+
+> 
+> I just wonder if it's caused by the atomic ops as you have two cache domains with
+> sd_llc(?). Do you have a x86 machine to make a comparison? It's hard for me to find
+> an ARM machine but I'll try.
+> 
+> Also, for uperf(task thread num = cpu num) workload, how is it on patch v2? no any
+> performance impact?
+
+with v2 :  Throughput 24.97Mb/s (+/- 0.07%) so there is no perf regression
+
 >
-> Right.
-
-During attach a spinlock (current->sighand->siglock) is held. Do we
-really want to put the emulator in the "atomic section"?
-
-YiFei Zhu
+> 
+> Thanks,
+> -Aubrey
