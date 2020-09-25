@@ -2,105 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 903E3278F62
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D97278F92
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729135AbgIYRMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:12:44 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29630 "EHLO mga04.intel.com"
+        id S1729471AbgIYRZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:25:42 -0400
+Received: from mga12.intel.com ([192.55.52.136]:56940 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727521AbgIYRMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:12:43 -0400
-IronPort-SDR: M23hTGy65RZdhh55Q0K0UNn+UqaHW7SVZn9AyBmEMi/vJdoULHjhyod61dH1VX54lCxpGY7G5f
- KF0QpkjrKgaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="158988191"
+        id S1726401AbgIYRZl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 13:25:41 -0400
+IronPort-SDR: l1s3r0WbxLYtXok1tXsAkk5l77ri6PGiu6v87JN3ELxhOm0gEePkb7rVTvwWnBIaOEREeM4NVS
+ SeF+sGjrFlkA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="141004363"
 X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="158988191"
+   d="scan'208";a="141004363"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:11:36 -0700
-IronPort-SDR: N9qUM2kQQYcBmlx5yh5/8dXOuUXX/0lOMEfPuYTgIhfYvd/oMAPoRnfdMgFJYGswNSBacdsZDR
- R/FsilD2KtWQ==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:12:35 -0700
+IronPort-SDR: cpapzdKeorbGJAJcicHTqvjLBQC0HcUDOXmfyns5mrzobWjC3ddmjR9HRB2DUcOw18nqoDh4KK
+ uLzfmR0kQukQ==
 X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="455925879"
-Received: from snouri-mobl1.amr.corp.intel.com (HELO [10.255.231.80]) ([10.255.231.80])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:11:35 -0700
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     Sinan Kaya <okaya@kernel.org>, Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
- <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
- <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
-Date:   Fri, 25 Sep 2020 10:11:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="336814163"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:12:35 -0700
+Date:   Fri, 25 Sep 2020 10:12:33 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Huacai Chen <chenhc@lemote.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+Subject: Re: [RFC PATCH 3/3] KVM: x86: Use KVM_BUG/KVM_BUG_ON to handle bugs
+ that are fatal to the VM
+Message-ID: <20200925171233.GC31528@linux.intel.com>
+References: <20200923224530.17735-1-sean.j.christopherson@intel.com>
+ <20200923224530.17735-4-sean.j.christopherson@intel.com>
+ <878scze4l5.fsf@vitty.brq.redhat.com>
+ <20200924181134.GB9649@linux.intel.com>
+ <87k0wichht.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87k0wichht.fsf@vitty.brq.redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 25, 2020 at 11:50:38AM +0200, Vitaly Kuznetsov wrote:
+> Sean Christopherson <sean.j.christopherson@intel.com> writes:
+> 
+> > On Thu, Sep 24, 2020 at 02:34:14PM +0200, Vitaly Kuznetsov wrote:
+> >> Sean Christopherson <sean.j.christopherson@intel.com> writes:
+> >> > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> >> > index 6f9a0c6d5dc5..810d46ab0a47 100644
+> >> > --- a/arch/x86/kvm/vmx/vmx.c
+> >> > +++ b/arch/x86/kvm/vmx/vmx.c
+> >> > @@ -4985,14 +4986,13 @@ static int handle_cr(struct kvm_vcpu *vcpu)
+> >> >  		}
+> >> >  		break;
+> >> >  	case 2: /* clts */
+> >> > -		WARN_ONCE(1, "Guest should always own CR0.TS");
+> >> > -		vmx_set_cr0(vcpu, kvm_read_cr0_bits(vcpu, ~X86_CR0_TS));
+> >> > -		trace_kvm_cr_write(0, kvm_read_cr0(vcpu));
+> >> > -		return kvm_skip_emulated_instruction(vcpu);
+> >> > +		KVM_BUG(1, vcpu->kvm, "Guest always owns CR0.TS");
+> >> > +		return -EIO;
+> >> >  	case 1: /*mov from cr*/
+> >> >  		switch (cr) {
+> >> >  		case 3:
+> >> >  			WARN_ON_ONCE(enable_unrestricted_guest);
+> >> > +
+> >> 
+> >> Here, were you intended to replace WARN_ON_ONCE() with KVM_BUG_ON() or
+> >> this is just a stray newline added?
+> >
+> > I think it's just a stray newline.  At one point I had converted this to a
+> > KVM_BUG_ON(), but then reversed direction because it's not fatal to the guest,
+> > i.e. KVM should continue to function even though it's spuriously intercepting
+> > CR3 loads.
+> >
+> > Which, rereading this patch, completely contradicts the KVM_BUG() for CLTS.
+> >
+> > That's probably something we should sort out in this RFC: is KVM_BUG() only
+> > to be used if the bug is fatal/dangerous, or should it be used any time the
+> > error is definitely a KVM (or hardware) bug.
+> 
+> Personally, I'm feeling adventurous so my vote goes to the later :-)
+> Whenever a KVM bug was discovered by a VM it's much safer to stop
+> executing it as who knows what the implications might be?
 
+Not necessarily, e.g. terminating the VM may corrupt the VM's file system,
+which is less safe, for lack of a better word, from the VM's perspective.
 
-On 9/25/20 9:55 AM, Sinan Kaya wrote:
-> On 9/25/2020 1:11 AM, Kuppuswamy, Sathyanarayanan wrote:
->>
->>
->> On 9/24/20 1:52 PM, Sinan Kaya wrote:
->>> On 9/24/2020 12:06 AM, Kuppuswamy, Sathyanarayanan wrote:
-> 
->>>
->>> So, this is a matter of moving the save/restore logic from the hotplug
->>> driver into common code so that DPC slot reset takes advantage of it?
->> We are not moving it out of hotplug path. But fixing it in this code path.
->> With this fix, we will not depend on hotplug driver to restore the state.
-> 
-> Any possibility of unification?
-If we do that, it might need rework of hotplug driver. It will be a big
-change. IMO, its better not to touch that bee hive.
-> 
-> 
-> [snip]
->>>
->>>> To fix above issues, use PCI_ERS_RESULT_NEED_RESET as error state after
->>>> successful reset_link() operation. This will ensure ->slot_reset() be
->>>> called after reset_link() operation for fatal errors.
->>>
->>> You lost me here. Why do we want to do secondary bus reset on top of
->>> DPC reset?
->> For non-hotplug capable slots, when reset (PCI_ERS_RESULT_NEED_RESET) is
->> requested, we want to reset it before calling ->slot_reset() callback.
-> 
-> Why? Isn't DPC slot reset enough?
-It will do the reset at hardware level. But driver state is not
-cleaned up. So doing bus reset will restore both driver and
-hardware states.
-Also for non-fatal errors, if reset is requested then we still need
-some kind of bus reset call here.
-> What will bus reset do that DPC slot reset won't do?
-> 
-> I can understand calling bus reset if DPC is not supported.
-> I don't understand the requirement to do double reset.
-> 
+> In this particular case I can think of a nested scenario when L1 didn't
+> ask for CR3 intercept but L0 is still injecting it. It is not fatal by
+> itself but probably there is bug in calculating intercepts in L0 so
+> if we're getting something extra maybe we're also missing some? And this
+> doesn't sound good at all.
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Hmm, but by that argument this scenario would fall into the "dangerous" part
+of "bug is fatal/dangerous".  I guess my opinion is that we should set a
+fairly high bar for using KVM_BUG() so that KVM can be aggressive in shutting
+down.
+
+> > In theory, it should be impossible to reach this again as "r = -EIO" will
+> > bounce this out to userspace, the common checks to deny all ioctls() will
+> > prevent reinvoking KVM_RUN.
+> 
+> Do we actually want to prevent *all* ioctls? E.g. when 'vm bugged'
+> condition is triggered userspace may want to extract some information to
+> assist debugging but even things like KVM_GET_[S]REGS will just return
+> -EIO. I'm not sure it is generally safe to enable *everything* (except
+> for KVM_RUN which should definitely be forbidden) so maybe your approach
+> is preferable.
+
+The answer to this probably depends on the answer to the first question of
+when it's appropriate to use KVM_BUG().  E.g. if we limit usage to fatal or
+dangrous cases, then blocking all ioctls() is probably the right thing do do.
