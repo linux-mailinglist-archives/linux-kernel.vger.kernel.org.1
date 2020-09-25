@@ -2,139 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1685C27817F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E58C0278194
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727471AbgIYH0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:26:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37384 "EHLO mx2.suse.de"
+        id S1727335AbgIYHbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:31:33 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:53000 "EHLO fornost.hmeau.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgIYH0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:26:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4488CABC4;
-        Fri, 25 Sep 2020 07:26:46 +0000 (UTC)
-Subject: Re: [PATCH] drm/hisilicon: Deleted the drm_device declaration
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie,
-        daniel@ffwll.ch, kraxel@redhat.com, alexander.deucher@amd.com,
-        tglx@linutronix.de, dri-devel@lists.freedesktop.org,
-        xinliang.liu@linaro.org, linux-kernel@vger.kernel.org
-Cc:     linuxarm@huawei.com
-References: <1601016580-5937-1-git-send-email-tiantao6@hisilicon.com>
- <5db712e8-d6cb-3de9-f48e-c2060442e4e0@suse.de>
-Message-ID: <50c87a77-ffdd-42d2-0747-69c95305a48f@suse.de>
-Date:   Fri, 25 Sep 2020 09:26:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1727238AbgIYHbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:31:33 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kLiBz-0006Ja-MU; Fri, 25 Sep 2020 17:30:56 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Sep 2020 17:30:55 +1000
+Date:   Fri, 25 Sep 2020 17:30:55 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     arnd@arndb.de, davem@davemloft.net, mripard@kernel.org,
+        wens@csie.org, linux-arm-kernel@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v2 1/7] crypto: sun4i-ss: linearize buffers content must
+ be kept
+Message-ID: <20200925073055.GA18879@gondor.apana.org.au>
+References: <1600627038-40000-1-git-send-email-clabbe@baylibre.com>
+ <1600627038-40000-2-git-send-email-clabbe@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <5db712e8-d6cb-3de9-f48e-c2060442e4e0@suse.de>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="lBT0zcnKBm5cMYwZocXW7MsVmNo8ugeqh"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1600627038-40000-2-git-send-email-clabbe@baylibre.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---lBT0zcnKBm5cMYwZocXW7MsVmNo8ugeqh
-Content-Type: multipart/mixed; boundary="X0CXQW3wudERYlWGlr0QpqzVs5BZ1TsBC";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Tian Tao <tiantao6@hisilicon.com>, airlied@linux.ie, daniel@ffwll.ch,
- kraxel@redhat.com, alexander.deucher@amd.com, tglx@linutronix.de,
- dri-devel@lists.freedesktop.org, xinliang.liu@linaro.org,
- linux-kernel@vger.kernel.org
-Cc: linuxarm@huawei.com
-Message-ID: <50c87a77-ffdd-42d2-0747-69c95305a48f@suse.de>
-Subject: Re: [PATCH] drm/hisilicon: Deleted the drm_device declaration
-References: <1601016580-5937-1-git-send-email-tiantao6@hisilicon.com>
- <5db712e8-d6cb-3de9-f48e-c2060442e4e0@suse.de>
-In-Reply-To: <5db712e8-d6cb-3de9-f48e-c2060442e4e0@suse.de>
+On Sun, Sep 20, 2020 at 06:37:12PM +0000, Corentin Labbe wrote:
+> When running the non-optimized cipher function, SS produce partial random
+> output.
+> This is due to linearize buffers being reseted after each loop.
+> 
+> Fixes: 8d3bcb9900ca ("crypto: sun4i-ss - reduce stack usage")
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> index b72de8939497..b92d175b5d2a 100644
+> --- a/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> +++ b/drivers/crypto/allwinner/sun4i-ss/sun4i-ss-cipher.c
+> @@ -163,6 +163,8 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+>  	unsigned int todo;
+>  	struct sg_mapping_iter mi, mo;
+>  	unsigned int oi, oo;	/* offset for in and out */
+> +	char buf[4 * SS_RX_MAX];/* buffer for linearize SG src */
+> +	char bufo[4 * SS_TX_MAX]; /* buffer for linearize SG dst */
+>  	unsigned int ob = 0;	/* offset in buf */
+>  	unsigned int obo = 0;	/* offset in bufo*/
+>  	unsigned int obl = 0;	/* length of data in bufo */
+> @@ -233,8 +235,6 @@ static int sun4i_ss_cipher_poll(struct skcipher_request *areq)
+>  
+>  	while (oleft) {
+>  		if (ileft) {
+> -			char buf[4 * SS_RX_MAX];/* buffer for linearize SG src */
+> -
+>  			/*
+>  			 * todo is the number of consecutive 4byte word that we
+>  			 * can read from current SG
 
---X0CXQW3wudERYlWGlr0QpqzVs5BZ1TsBC
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Ouch.  So this is obviously correct but I wonder if the stack
+usage would be an issue again?
 
-Hi
+How about moving this code into another function so that it sits
+at the same level as the fallback function, which would mean that
+the buffers do not double up with the one for the fallback?
 
-Am 25.09.20 um 09:02 schrieb Thomas Zimmermann:
-> Hi,
->=20
-> just a few nits.
->=20
-> Am 25.09.20 um 08:49 schrieb Tian Tao:
->> drm_framebuffer.h contains drm/drm_device.h and struct drm_device is
->=20
-> contains -> includes
->=20
->> already declared in this file, so there is no need to declare struct
->=20
-> declared -> defined
-
-Wait a second. drm_framebuffer.h actually declares struct drm_device,
-but does not include <drm/device.h>. So the commit messag should say
-something like
-
-  drm_framebuffer.h already declares struct drm_device, so there's no
-need to declare it in hibm_drm_drv.h
-
->=20
->> drm_device in hibm_drm_drv.h.
->>
->> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
->=20
-> Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
->=20
->> ---
->>  drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h | 2 --
->>  1 file changed, 2 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h b/drivers=
-/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->> index 87d2aad..6a63502 100644
->> --- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->> +++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.h
->> @@ -22,8 +22,6 @@
->>  #include <drm/drm_fb_helper.h>
->>  #include <drm/drm_framebuffer.h>
->> =20
->> -struct drm_device;
->> -
->>  struct hibmc_connector {
->>  	struct drm_connector base;
->> =20
->>
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---X0CXQW3wudERYlWGlr0QpqzVs5BZ1TsBC--
-
---lBT0zcnKBm5cMYwZocXW7MsVmNo8ugeqh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFIBAEBCAAyFiEEchf7rIzpz2NEoWjlaA3BHVMLeiMFAl9tm7IUHHR6aW1tZXJt
-YW5uQHN1c2UuZGUACgkQaA3BHVMLeiPS6QgAtrpfFkftAONP8hjUjzlnukbRhky7
-nefoa2MI6FoTK/rK24Ixv/jVh5U98t0TD7xAtVSh6G5DekAT/yajeyCCc6nSs3GO
-jlAyfFq3w2Xlp8T63LYeAPPRLpartcsyP35bKSvX9PCUe636mLxQin8wnW710rGY
-PnljCc4NnV7VhBkKB587QBwuuAr1D/jmUlgL/CzKoIBRzK3VEhkBneWwK7xsLOnb
-YOdK7wuo9dczfQNmSq7C9hXCoqlJaWzApKCExb224uIFI+n3IPEIV86je6jd5yFk
-uZuKa682BdvvBSV623Eosp97eBaYviCKbk7H0Bl8+5gX639k1VdG4LaYYg==
-=qeDT
------END PGP SIGNATURE-----
-
---lBT0zcnKBm5cMYwZocXW7MsVmNo8ugeqh--
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
