@@ -2,158 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652F2277DC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 03:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD5EB277DC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727042AbgIYB5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 21:57:54 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:56564 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgIYB5y (ORCPT
+        id S1727013AbgIYCAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 22:00:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726718AbgIYCAi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 21:57:54 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08P1vhAfB002096, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08P1vhAfB002096
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 25 Sep 2020 09:57:43 +0800
-Received: from localhost (172.29.40.150) by RSEXMBS01.realsil.com.cn
- (172.29.17.195) with Microsoft SMTP Server id 15.1.2044.4; Fri, 25 Sep 2020
- 09:57:42 +0800
-From:   <rui_feng@realsil.com.cn>
-To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
-        <ulf.hansson@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        Rui Feng <rui_feng@realsil.com.cn>
-Subject: [PATCH 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
-Date:   Fri, 25 Sep 2020 09:57:41 +0800
-Message-ID: <1600999061-13669-1-git-send-email-rui_feng@realsil.com.cn>
-X-Mailer: git-send-email 1.9.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.29.40.150]
+        Thu, 24 Sep 2020 22:00:38 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7EA3C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 19:00:37 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id r9so1201720ybd.20
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 19:00:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Y06C3d8gRlVIiH+a/DZUSriRyLlq/Qy1nRNdUsM+sAw=;
+        b=GXfea3Qo5SPVCB6zPnPqFml4mMW4ETxCYvtg6DkSi8qUGa1Zwf9u6NLZJsEukeZZLO
+         9ozz3hSeWFxj2yzhjImj8k1WGGPrJq+u+ncjP0sWrEb1gSFusuBGk1k/JQFIwfVlxYbb
+         nopXxvAEt2X3V6ShgrPyWnxP23jSmaAbt4En49JyFwCYca6Smxa1V37vrwXa8eKDhuE+
+         jZeIdWLYYapx1aH+qtubvC3Gzc76YFMhbNMl47t3s43mmYU5K7XD4QERdLROZUwhI/Pv
+         3R1nJ/KXxngXUsjI4UpazW297HMCdW3XBTGhx2NjcC+7NRbfPExV1pzqYCDjcjWO1Ws5
+         JThA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Y06C3d8gRlVIiH+a/DZUSriRyLlq/Qy1nRNdUsM+sAw=;
+        b=ZjyMRRufrc4UtIMG77vDCAcC/VKAoVYIkrjBVfaMNtd3OjKBXZ0bGoK/65TTeJUJOq
+         BxHLe9c1nEO7ny8NQxQH0FErunykJSFBUx+1tiFfzhcpq+hVpid8Nmf7abvy6yrfrzIp
+         QW7CyLSNtB2HEHsOs8kj9pXrdRq9umGm0DXtyygOdp6uvv+EosiVLQjx8l4ZtFbg13zt
+         JJQNY7Z4rwOheVNXpikzJwjZMJ0Cc8H13m/2cJ+tvlnTmXJ0zgVC3jGnhrNRF5x+BEET
+         bVk4OAZfQJh/sSeTU4l9QaqmkYtQv+bXD0ctVNRDuqoiHXorbZtQaDXFodyCC36GccaB
+         qYMQ==
+X-Gm-Message-State: AOAM531Ibm2+Hu80YCSxy0MO3iAPPJz+E7qBOIU397nNHhJbOELe/0Bl
+        CuyGbN6L3LyaYd3+OwhCpJZyTLb2
+X-Google-Smtp-Source: ABdhPJz5rQ1t0pb1JJRyVoLVT/N/+7t6zAsJOr3F9AwPqot8pRccyoYZLojtSZ41PDH3NySyRqTRfjIN
+Sender: "cfir via sendgmr" <cfir@cfir.sea.corp.google.com>
+X-Received: from cfir.sea.corp.google.com ([2620:15c:158:202:a6ae:11ff:fe11:da08])
+ (user=cfir job=sendgmr) by 2002:a25:e80d:: with SMTP id k13mr2135631ybd.179.1600999237042;
+ Thu, 24 Sep 2020 19:00:37 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 19:00:11 -0700
+In-Reply-To: <20200807012303.3769170-1-cfir@google.com>
+Message-Id: <20200925020011.1159247-1-cfir@google.com>
+Mime-Version: 1.0
+References: <20200807012303.3769170-1-cfir@google.com>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH] KVM: SVM: Mark SEV launch secret pages as dirty.
+From:   Cfir Cohen <cfir@google.com>
+To:     "kvm @ vger . kernel . org" <kvm@vger.kernel.org>,
+        Lendacky Thomas <thomas.lendacky@amd.com>,
+        Singh Brijesh <brijesh.singh@amd.com>
+Cc:     Grimm Jon <Jon.Grimm@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Cfir Cohen <cfir@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rui Feng <rui_feng@realsil.com.cn>
+The LAUNCH_SECRET command performs encryption of the
+launch secret memory contents. Mark pinned pages as
+dirty, before unpinning them.
+This matches the logic in sev_launch_update_data().
 
-RTS5261 support legacy SD mode and SD Express mode.
-In SD7.x, SD association introduce SD Express as a new mode.
-This patch makes RTS5261 support SD Express mode.
-
-Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
+Fixes: 9c5e0afaf157 ("KVM: SVM: Add support for SEV LAUNCH_SECRET command")
+Signed-off-by: Cfir Cohen <cfir@google.com>
 ---
- drivers/mmc/host/rtsx_pci_sdmmc.c | 59 +++++++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+Changelog since v2:
+ - Added 'Fixes' tag, updated comments.
+Changelog since v1:
+ - Updated commit message.
 
-diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
-index 2763a376b054..efde374a4a5e 100644
---- a/drivers/mmc/host/rtsx_pci_sdmmc.c
-+++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
-@@ -895,7 +895,9 @@ static int sd_set_bus_width(struct realtek_pci_sdmmc *host,
- static int sd_power_on(struct realtek_pci_sdmmc *host)
- {
- 	struct rtsx_pcr *pcr = host->pcr;
-+	struct mmc_host *mmc = host->mmc;
- 	int err;
-+	u32 val;
+ arch/x86/kvm/svm/sev.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 5573a97f1520..55edaf3577a0 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -440,10 +440,8 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	}
  
- 	if (host->power_state == SDMMC_POWER_ON)
- 		return 0;
-@@ -922,6 +924,14 @@ static int sd_power_on(struct realtek_pci_sdmmc *host)
- 	if (err < 0)
- 		return err;
+ 	/*
+-	 * The LAUNCH_UPDATE command will perform in-place encryption of the
+-	 * memory content (i.e it will write the same memory region with C=1).
+-	 * It's possible that the cache may contain the data with C=0, i.e.,
+-	 * unencrypted so invalidate it first.
++	 * Flush (on non-coherent CPUs) before LAUNCH_UPDATE encrypts pages in
++	 * place, the cache may contain data that was written unencrypted.
+ 	 */
+ 	sev_clflush_pages(inpages, npages);
  
-+	if (PCI_PID(pcr) == PID_5261) {
-+		val = rtsx_pci_readl(pcr, RTSX_BIPR);
-+		if (val & SD_WRITE_PROTECT) {
-+			pcr->extra_caps &= ~EXTRA_CAPS_SD_EXPRESS;
-+			mmc->caps2 &= ~(MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V);
-+		}
-+	}
-+
- 	host->power_state = SDMMC_POWER_ON;
- 	return 0;
- }
-@@ -1127,6 +1137,8 @@ static int sdmmc_get_cd(struct mmc_host *mmc)
- 	if (val & SD_EXIST)
- 		cd = 1;
+@@ -799,10 +797,9 @@ static int sev_dbg_crypt(struct kvm *kvm, struct kvm_sev_cmd *argp, bool dec)
+ 		}
  
-+	if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
-+		mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
- 	mutex_unlock(&pcr->pcr_mutex);
+ 		/*
+-		 * The DBG_{DE,EN}CRYPT commands will perform {dec,en}cryption of the
+-		 * memory content (i.e it will write the same memory region with C=1).
+-		 * It's possible that the cache may contain the data with C=0, i.e.,
+-		 * unencrypted so invalidate it first.
++		 * Flush (on non-coherent CPUs) before DBG_{DE,EN}CRYPT reads or modifies
++		 * the pages, flush the destination too in case the cache contains its
++		 * current data.
+ 		 */
+ 		sev_clflush_pages(src_p, 1);
+ 		sev_clflush_pages(dst_p, 1);
+@@ -850,7 +847,7 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	struct kvm_sev_launch_secret params;
+ 	struct page **pages;
+ 	void *blob, *hdr;
+-	unsigned long n;
++	unsigned long n, i;
+ 	int ret, offset;
  
- 	return cd;
-@@ -1308,6 +1320,50 @@ static int sdmmc_execute_tuning(struct mmc_host *mmc, u32 opcode)
- 	return err;
- }
+ 	if (!sev_guest(kvm))
+@@ -863,6 +860,12 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!pages)
+ 		return -ENOMEM;
  
-+static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
-+{
-+	u32 relink_time, val;
-+	struct realtek_pci_sdmmc *host = mmc_priv(mmc);
-+	struct rtsx_pcr *pcr = host->pcr;
-+
 +	/*
-+	 * If card has PCIe availability and WP if off,
-+	 * reader switch to PCIe mode.
++	 * Flush (on non-coherent CPUs) before LAUNCH_SECRET encrypts pages in
++	 * place, the cache may contain data that was written unencrypted.
 +	 */
-+	val = rtsx_pci_readl(pcr, RTSX_BIPR);
-+	if (!(val & SD_WRITE_PROTECT)) {
-+		/* Set relink_time for changing to PCIe card */
-+		relink_time = 0x8FFF;
++	sev_clflush_pages(pages, n);
 +
-+		rtsx_pci_write_register(pcr, 0xFF01, 0xFF, relink_time);
-+		rtsx_pci_write_register(pcr, 0xFF02, 0xFF, relink_time >> 8);
-+		rtsx_pci_write_register(pcr, 0xFF03, 0x01, relink_time >> 16);
-+
-+		rtsx_pci_write_register(pcr, PETXCFG, 0x80, 0x80);
-+		rtsx_pci_write_register(pcr, LDO_VCC_CFG0,
-+			RTS5261_LDO1_OCP_THD_MASK,
-+			pcr->option.sd_800mA_ocp_thd);
-+
-+		if (pcr->ops->disable_auto_blink)
-+			pcr->ops->disable_auto_blink(pcr);
-+
-+		/* For PCIe/NVMe mode can't enter delink issue */
-+		pcr->hw_param.interrupt_en &= ~(SD_INT_EN);
-+		rtsx_pci_writel(pcr, RTSX_BIER, pcr->hw_param.interrupt_en);
-+
-+		rtsx_pci_write_register(pcr, RTS5260_AUTOLOAD_CFG4,
-+			RTS5261_AUX_CLK_16M_EN, RTS5261_AUX_CLK_16M_EN);
-+		rtsx_pci_write_register(pcr, RTS5261_FW_CFG0,
-+			RTS5261_FW_ENTER_EXPRESS, RTS5261_FW_ENTER_EXPRESS);
-+		rtsx_pci_write_register(pcr, RTS5261_FW_CFG1,
-+			RTS5261_MCU_BUS_SEL_MASK | RTS5261_MCU_CLOCK_SEL_MASK
-+			| RTS5261_MCU_CLOCK_GATING | RTS5261_DRIVER_ENABLE_FW,
-+			RTS5261_MCU_CLOCK_SEL_16M | RTS5261_MCU_CLOCK_GATING
-+			| RTS5261_DRIVER_ENABLE_FW);
+ 	/*
+ 	 * The secret must be copied into contiguous memory region, lets verify
+ 	 * that userspace memory pages are contiguous before we issue command.
+@@ -908,6 +911,11 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ e_free:
+ 	kfree(data);
+ e_unpin_memory:
++	/* content of memory is updated, mark pages dirty */
++	for (i = 0; i < n; i++) {
++		set_page_dirty_lock(pages[i]);
++		mark_page_accessed(pages[i]);
 +	}
-+	return 0;
-+}
-+
- static const struct mmc_host_ops realtek_pci_sdmmc_ops = {
- 	.pre_req = sdmmc_pre_req,
- 	.post_req = sdmmc_post_req,
-@@ -1317,6 +1373,7 @@ static const struct mmc_host_ops realtek_pci_sdmmc_ops = {
- 	.get_cd = sdmmc_get_cd,
- 	.start_signal_voltage_switch = sdmmc_switch_voltage,
- 	.execute_tuning = sdmmc_execute_tuning,
-+	.init_sd_express = sdmmc_init_sd_express,
- };
- 
- static void init_extra_caps(struct realtek_pci_sdmmc *host)
-@@ -1338,6 +1395,8 @@ static void init_extra_caps(struct realtek_pci_sdmmc *host)
- 		mmc->caps |= MMC_CAP_8_BIT_DATA;
- 	if (pcr->extra_caps & EXTRA_CAPS_NO_MMC)
- 		mmc->caps2 |= MMC_CAP2_NO_MMC;
-+	if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
-+		mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
+ 	sev_unpin_memory(kvm, pages, n);
+ 	return ret;
  }
- 
- static void realtek_init_host(struct realtek_pci_sdmmc *host)
 -- 
-2.17.1
+2.28.0.681.g6f77f65b4e-goog
 
