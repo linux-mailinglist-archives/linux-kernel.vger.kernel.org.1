@@ -2,89 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59CC82789CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB68C2789D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728921AbgIYNk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:40:26 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:38487 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbgIYNkZ (ORCPT
+        id S1728927AbgIYNlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:41:12 -0400
+Received: from mail-oo1-f66.google.com ([209.85.161.66]:37735 "EHLO
+        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727982AbgIYNlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:40:25 -0400
-Received: from mail-qk1-f169.google.com ([209.85.222.169]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1MC3L9-1k9PMr07Gn-00CRU1; Fri, 25 Sep 2020 15:40:24 +0200
-Received: by mail-qk1-f169.google.com with SMTP id w12so2764989qki.6;
-        Fri, 25 Sep 2020 06:40:23 -0700 (PDT)
-X-Gm-Message-State: AOAM530500acsNwYCXug3/z+Zgh9+yPg2H/ioFdnWAyRBY4V5WQErZzU
-        HEqRXjSJK8zb36/LNeaKAIwQPmQnzCkjDKH9yto=
-X-Google-Smtp-Source: ABdhPJxIzKAUN9mD09+7O4OymSuZ1I/pDmcOEjpPUHVj02syVVQTEeh8QmLOAxe8V/n/N1LP9j4emlnxenewjYHzGJQ=
-X-Received: by 2002:a05:620a:15a7:: with SMTP id f7mr12935qkk.3.1601041222779;
- Fri, 25 Sep 2020 06:40:22 -0700 (PDT)
+        Fri, 25 Sep 2020 09:41:11 -0400
+Received: by mail-oo1-f66.google.com with SMTP id y25so755231oog.4;
+        Fri, 25 Sep 2020 06:41:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ttB+wOXeGsBfIwTDAKr7IKOf7HwOyFNG/wkL5Jiz3tU=;
+        b=lVggYfvMaIhvODSzA3e7xcNfrnm9bU5/BcXrgReOXh60QEDHadWdefujCUCPmuw+79
+         HVXxOKUU6lurRjhYxAFb2SjdRufdwr3DNoNPOyWs0wgBV/fq+8y9z9lNGpqYL3PFLhXh
+         pjUcne/kFBu/aZXvmav/dyGsMalw4fBuZFdcJx7Cbw8Q7lutJMGpfvFLMDGG+u7EsVeX
+         b2T3c1vFY0yVYP6cSuXA7U0fWA4hxQGfYZ+hTZUk0GaAOKmOozCkB4myVMiCqtgOXJ2E
+         54LAKvDH9Q+OBOGGgoVwrz5rCIW9AKUUm3HzWC5BJtTFqFa6T0rimk7Xpzi5Y960yL0K
+         tDNA==
+X-Gm-Message-State: AOAM530JeecDHsaEljnJ8B/mCY1EvNI5KRmzr74jjVNkz1zl3lM32w1L
+        z20zJC/E0CilG55uI2+mD363DCKVOVXncspPY0E=
+X-Google-Smtp-Source: ABdhPJzQWsUM0amnsXlqz2X2JE8l+uDmhpaoRUAg7MTmoE3c+aBZzfn8lTyJKbncTychynZCqYy/tobmv0SuUZKn8a4=
+X-Received: by 2002:a4a:5d84:: with SMTP id w126mr884054ooa.1.1601041270660;
+ Fri, 25 Sep 2020 06:41:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200918124624.1469673-1-arnd@arndb.de> <20200919052715.GF30063@infradead.org>
-In-Reply-To: <20200919052715.GF30063@infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Fri, 25 Sep 2020 15:40:06 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1LM8SXbzcVv1B05fdmxBZ-PA+P4m4oP1Dgc4JmR2CGMw@mail.gmail.com>
-Message-ID: <CAK8P3a1LM8SXbzcVv1B05fdmxBZ-PA+P4m4oP1Dgc4JmR2CGMw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] ARM: remove set_fs callers and implementation
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
+References: <20200923120817.1667149-0-mholenko@antmicro.com> <20200923120817.1667149-5-mholenko@antmicro.com>
+In-Reply-To: <20200923120817.1667149-5-mholenko@antmicro.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 25 Sep 2020 15:40:59 +0200
+Message-ID: <CAMuHMdVzUJwV=E-AssEHHH1GQuXcHHBUGAJZ-+GwNyPFN_KL+A@mail.gmail.com>
+Subject: Re: [PATCH v11 5/5] drivers/tty/serial: add LiteUART driver
+To:     Mateusz Holenko <mholenko@antmicro.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Paul E. McKenney" <paulmck@linux.ibm.com>,
+        Filip Kokosinski <fkokosinski@antmicro.com>,
+        Pawel Czarnecki <pczarnecki@internships.antmicro.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Icenowy Zheng <icenowy@aosc.io>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Gabriel L. Somlo" <gsomlo@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:3NzBN9prIQYrQLxyTiAZ2qekukyha8zMOOKFTefaoN8A4cWDskU
- LvRVk2YSWJUK5ahJIHR2B7rnCU78KMisNA1U+rTagdpd9peGNaqHqHCkRwRwpCiJ9Tci10m
- 2CRQfikVzGKPTSxf+u+NGDRgVrFHdEt7bDNkLHdNPM0W26v4+rNQADfIdn5u2RJ7azhmXrV
- wKtVOCtdXtquaSPB7JA1A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:b5RuZM+XTM4=:RUDc48Wx0DH6fMnrXUFe53
- Ifc4CzYsoWg2OCRivZd71czdBfbSdMsmpym9w7syzpV8JDeSv7YPHoJPuRSoooeRcqzRZmDDq
- 6VqdAdXExajOI7565jIWc+DsLUHMzF8IYzAHzfnZqB/p7ksIlMtya6ne2/Z9m0cMFbEmgZudZ
- LfWJ6CQmpu4B7oycrYF7UVue1z5Ztknl+96h1kD5UiTPNF0cq4qVagSyHzGwvLQuO9P5nzwtO
- 9K1wpu1qpvhu2xyQTVcHb9Q2oLSwJR1SNfs6zOTh0TfiLOAspmIXiqEzTq+TEcXnQzUNFRPyc
- CexaTEiyWUx7SFKYQcCV28/jEvTYm150H1P85aaB5K8Xgqos6tyyie887c6Usn9JtWG+/egLS
- lBdmSx1PF/wD30yUiDFWo8nXH1EBKMPL9rGRxusPKCRvL7mkFdbmnbfBmBhER3ZIv9/cntzai
- w33xWqzK9PM9ZPitW3TbgHhu6WlV5ow4CYvuFoSmU1YcwSrFvDZPuvrH5ovCyxmRf5nuAqiud
- PovdlNefEjsWbmJRUL626Jkkv3H73zELEzk1hJP6ETDYHNdZyppYgFTAVN0BK/9ACLMZAE2uU
- 5lXm1FrqkAczFZSLlUjm6byvUQmAb8aEe4lIp5OAb05+HkW9G+QX2RETs4XGmwiAHzNkPhYdc
- t7TKenHf63/bmC+w2OsVu6/toOLXrQs5o/tQ6/h6frZ1ikZdEW4OmtB6SF1k25P60Q0aqUN2w
- QSP6S9SYYyJkJlQELTJBGw2AYdSETNJOZDzLFreXzyNPCCg8RLInGZ68qmF1vCNV1BOTO5RMN
- dufYlE9dZiNsN6lmtdAFOIgJfdUMNL6UqwqNdZea5WIkly7Dj1+uQFn9ux++y2EPFU4nMMu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 7:27 AM Christoph Hellwig <hch@infradead.org> wrote:
+Hi Mateusz,
+
+On Wed, Sep 23, 2020 at 12:12 PM Mateusz Holenko <mholenko@antmicro.com> wrote:
+> From: Filip Kokosinski <fkokosinski@antmicro.com>
 >
-> On Fri, Sep 18, 2020 at 02:46:15PM +0200, Arnd Bergmann wrote:
-> > Hi Christoph, Russell,
-> >
-> > Here is an updated series for removing set_fs() from arch/arm,
-> > based on the previous feedback.
-> >
-> > I have tested the oabi-compat changes using the LTP tests for the three
-> > modified syscalls using an Armv7 kernel and a Debian 5 OABI user space,
-> > and I have lightly tested the get_kernel_nofault infrastructure by
-> > loading the test_lockup.ko module after setting CONFIG_DEBUG_SPINLOCK.
+> This commit adds driver for the FPGA-based LiteUART serial controller
+> from LiteX SoC builder.
 >
-> What is the base line?  Just the base.set_fs branch in Als tree, or do
-> you need anything from my RISC-V series?
+> The current implementation supports LiteUART configured
+> for 32 bit data width and 8 bit CSR bus width.
+>
+> It does not support IRQ.
+>
+> Signed-off-by: Filip Kokosinski <fkokosinski@antmicro.com>
+> Signed-off-by: Mateusz Holenko <mholenko@antmicro.com>
 
-I imported these additional patches from you:
+Thanks for your patch!
 
-e0d17576790e quota: simplify the quotactl compat handling
-b0f8a0c4046f compat: add a compat_need_64bit_alignment_fixup() helper
-ed8af9335e19 compat: lift compat_s64 and compat_u64 to <asm-generic/compat.h>
-ce526c75bbe2 uaccess: provide a generic TASK_SIZE_MAX definition
+> --- /dev/null
+> +++ b/drivers/tty/serial/liteuart.c
 
-I think I only actually needed the last one of those for the Arm
-patches, the other ones are dependencies for my other patches
-I have on the same branch.
+> +static int liteuart_probe(struct platform_device *pdev)
+> +{
+> +       struct device_node *np = pdev->dev.of_node;
+> +       struct liteuart_port *uart;
+> +       struct uart_port *port;
+> +       struct xa_limit limit;
+> +       int dev_id, ret;
+> +
+> +       /* no device tree */
+> +       if (!np)
+> +               return -ENODEV;
+> +
+> +       /* look for aliases; auto-enumerate for free index if not found */
+> +       dev_id = of_alias_get_id(np, "serial");
+> +       if (dev_id < 0)
+> +               limit = XA_LIMIT(0, CONFIG_SERIAL_LITEUART_MAX_PORTS);
+> +       else
+> +               limit = XA_LIMIT(dev_id, dev_id);
+> +
+> +       uart = kzalloc(sizeof(struct liteuart_port), GFP_KERNEL);
 
-      Arnd
+Who frees this memory? Use devm_kzalloc()?
+
+> +       if (!uart)
+> +               return -ENOMEM;
+> +
+> +       ret = xa_alloc(&liteuart_array, &dev_id, uart, limit, GFP_KERNEL);
+
+Who frees this entry?
+
+> +       if (ret)
+> +               return ret;
+> +
+> +       port = &uart->port;
+> +
+> +       /* get membase */
+> +       port->membase = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+> +       if (!port->membase)
+> +               return -ENXIO;
+> +
+> +       /* values not from device tree */
+> +       port->dev = &pdev->dev;
+> +       port->iotype = UPIO_MEM;
+> +       port->flags = UPF_BOOT_AUTOCONF;
+> +       port->ops = &liteuart_ops;
+> +       port->regshift = 2;
+> +       port->fifosize = 16;
+> +       port->iobase = 1;
+> +       port->type = PORT_UNKNOWN;
+> +       port->line = dev_id;
+> +       spin_lock_init(&port->lock);
+> +
+> +       return uart_add_one_port(&liteuart_driver, &uart->port);
+> +}
+
+> +static int __init liteuart_init(void)
+> +{
+> +       int res;
+> +
+> +       res = uart_register_driver(&liteuart_driver);
+> +       if (res)
+> +               return res;
+> +
+> +       res = platform_driver_register(&liteuart_platform_driver);
+> +       if (res) {
+> +               uart_unregister_driver(&liteuart_driver);
+> +               return res;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +static void __exit liteuart_exit(void)
+> +{
+> +       platform_driver_unregister(&liteuart_platform_driver);
+> +       uart_unregister_driver(&liteuart_driver);
+> +}
+> +
+> +module_init(liteuart_init);
+> +module_exit(liteuart_exit);
+
+Several drivers call uart_{,un}register_driver() from their .probe()
+resp. .remove() callbacks, so they can use module_platform_driver()
+instead of the above boilerplate.  Greg, what's your stance on that?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
