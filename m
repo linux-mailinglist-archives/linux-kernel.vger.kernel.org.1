@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D072783BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:16:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1ABB2783B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727792AbgIYJQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:16:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14281 "EHLO huawei.com"
+        id S1727489AbgIYJOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:14:40 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:51600 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726990AbgIYJQc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:16:32 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id C67FD8637E0A273CBC53;
-        Fri, 25 Sep 2020 17:16:28 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.24) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 25 Sep 2020 17:16:21 +0800
-From:   Yicong Yang <yangyicong@hisilicon.com>
-To:     <viro@zeniv.linux.org.uk>, <akinobu.mita@gmail.com>,
-        <akpm@linux-foundation.org>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <yangyicong@hisilicon.com>
-Subject: [PATCH] libfs: fix error cast of negative value in simple_attr_write()
-Date:   Fri, 25 Sep 2020 17:15:08 +0800
-Message-ID: <1601025308-28704-1-git-send-email-yangyicong@hisilicon.com>
-X-Mailer: git-send-email 2.8.1
+        id S1726990AbgIYJOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:14:40 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id C131F2BA8DBFB5202A9F;
+        Fri, 25 Sep 2020 17:14:37 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS411-HUB.china.huawei.com
+ (10.3.19.211) with Microsoft SMTP Server id 14.3.487.0; Fri, 25 Sep 2020
+ 17:14:27 +0800
+From:   Zheng Bin <zhengbin13@huawei.com>
+To:     <amitk@kernel.org>, <agross@kernel.org>,
+        <bjorn.andersson@linaro.org>, <rui.zhang@intel.com>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yi.zhang@huawei.com>, <zhengbin13@huawei.com>
+Subject: [PATCH -next] drivers: thermal: tsens: fix missing put_device error
+Date:   Fri, 25 Sep 2020 17:15:32 +0800
+Message-ID: <20200925091532.1855861-1-zhengbin13@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The attr->set() receive a value of u64, but we use simple_strtoll()
-for doing the conversion. It will lead to the error cast if user inputs
-a negative value.
+Fixes coccicheck error:
 
-Use kstrtoull() instead to resolve this issue, -EINVAL will be returned
-if a negative value is input.
+drivers/thermal/qcom/tsens.c:759:4-10: ERROR: missing put_device; call of_find_device_by_node on line 715, but without a corresponding object release within this function.
 
-Fixes: f7b88631a897 ("fs/libfs.c: fix simple_attr_write() on 32bit machines")
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+Fixes: a7ff82976122 ("drivers: thermal: tsens: Merge tsens-common.c into tsens.c")
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
 ---
- fs/libfs.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/thermal/qcom/tsens.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index e0d42e9..803c439 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -975,7 +975,9 @@ ssize_t simple_attr_write(struct file *file, const char __user *buf,
- 		goto out;
-
- 	attr->set_buf[size] = '\0';
--	val = simple_strtoll(attr->set_buf, NULL, 0);
-+	ret = kstrtoull(attr->set_buf, 0, &val);
-+	if (ret)
-+		goto out;
- 	ret = attr->set(attr->data, val);
- 	if (ret == 0)
- 		ret = len; /* on success, claim we got the whole input */
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index d8ce3a687b80..0267771e7f52 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -755,8 +755,10 @@ int __init init_common(struct tsens_priv *priv)
+ 		for (i = VER_MAJOR; i <= VER_STEP; i++) {
+ 			priv->rf[i] = devm_regmap_field_alloc(dev, priv->srot_map,
+ 							      priv->fields[i]);
+-			if (IS_ERR(priv->rf[i]))
+-				return PTR_ERR(priv->rf[i]);
++			if (IS_ERR(priv->rf[i])) {
++				err = PTR_ERR(priv->rf[i]);
++				goto err_put_device;
++			}
+ 		}
+ 		ret = regmap_field_read(priv->rf[VER_MINOR], &ver_minor);
+ 		if (ret)
 --
-2.8.1
+2.25.4
 
