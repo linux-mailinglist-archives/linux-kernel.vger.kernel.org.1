@@ -2,151 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30CB8279229
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63226279225
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728919AbgIYUdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:33:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43660 "EHLO mail.kernel.org"
+        id S1728886AbgIYUdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:33:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43640 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727415AbgIYUUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:20:31 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726559AbgIYUUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:20:19 -0400
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A0C923A1E;
-        Fri, 25 Sep 2020 20:07:05 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 16:07:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [WARNING] kernel/rcu/tree.c:1058 rcu_irq_enter+0x15/0x20
-Message-ID: <20200925160702.5ea5b075@oasis.local.home>
-In-Reply-To: <20200917131647.2b55ebb1@gandalf.local.home>
-References: <20200917131647.2b55ebb1@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDC4F23730
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:20:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601065218;
+        bh=R2B4CZI1Vo2yizkiYehqOWUsCi8h2JC6TtVkB3rBz2k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ksq+8LOi4CcXWdy2uABVrhDqJB47i8p7w6gIVC2hJY8+Tvq07pjb8hL1QfszIr2Bt
+         QaMxXLHwk/vVM7siBmt30hJ+uDMJ1fvvHxYq3PGYLaB5zuU/0f2WgBRIclMYJoIKE7
+         4uAow+bikLfWNTWiNXDDe6TMeawAUrkUejfGHvFo=
+Received: by mail-wr1-f53.google.com with SMTP id k15so5074531wrn.10
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:20:17 -0700 (PDT)
+X-Gm-Message-State: AOAM5323jbSbcFEZSgw4YoJ7l8gj6d1mD8HRbbH8dDSQQwokhdrTsRu8
+        AIG7Ttw41L15WXjxYeptlygLmnCi0JIzvY+zZDBKDw==
+X-Google-Smtp-Source: ABdhPJyWF7AUaI8SR+nes9l7fegEZC3y76AaL+Z2ZdDfUG2lv86csMTl0exC3ZZwMbkcjdgeZ9k5snm2bz91Cb4iwp8=
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr6186242wrb.70.1601065216298;
+ Fri, 25 Sep 2020 13:20:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CALCETrUhQjQQa-BqNHPgdDfD9GDJZXJWSQ_M0tDF_ri5RfyTsw@mail.gmail.com>
+ <20200925190915.GD31528@linux.intel.com>
+In-Reply-To: <20200925190915.GD31528@linux.intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 25 Sep 2020 13:20:03 -0700
+X-Gmail-Original-Message-ID: <CALCETrWDgb_mVPDmKy_7oFg03cOxO-GAUS8kOFrfGiPp9RjboA@mail.gmail.com>
+Message-ID: <CALCETrWDgb_mVPDmKy_7oFg03cOxO-GAUS8kOFrfGiPp9RjboA@mail.gmail.com>
+Subject: Re: Can we credibly make vdso_sgx_enter_enclave() pleasant to use?
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Cedric Xing <cedric.xing@intel.com>, linux-sgx@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 25, 2020 at 12:09 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> +Nathaniel, Cedric and linux-sgx
+>
+> On Fri, Sep 25, 2020 at 09:55:00AM -0700, Andy Lutomirski wrote:
+> > vdso_sgx_enter_enclave() sucks. I don't think anyone seriously likes
+> > it, but maybe it's the best we can do.
+>
+> The code itself sucks, or the API sucks?
 
-Ping.
+I'm referring to the API.
 
--- Steve
+>
+> For the code, given the constraints of SGX and the number of runtimes we're
+> enabling, I don't think it's bad at all.  It's not hard to maintain, there are
+> no horrendous hacks, and it doesn't play games with the caller's state, i.e.
+> there's no additional magic required.  In other words, I really like that we
+> have in hand _works_, and works for a variety of runtimes and their ABIs.
 
+Well, it _works_, but I see at least two implementation issues.
+There's the CET problem that Andrew Cooper spotted (solvable without
+too much work).  Also, the code really ought to have .cfi annotations
+because it's user code and userspace expects libunwind, gdb, etc to
+work.
 
-On Thu, 17 Sep 2020 13:18:16 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> The API isn't glorious, but it's not awful either.
+>
+> > I'm wondering if it's worth trying to do better.  Here's what I'd like
+> > if I could wave a magic wand:
+> >
+> > struct sgx_enclave_run {
+> >        __u64 tcs;
+> >        __u32 flags;
+> >        __u32 exit_reason;
+> >
+> >     /*
+> >      * These values are exposed to the enclave on entry, and the values
+> >      * left behind by the enclave are returned here.
+> >      * Some enclaves might write to memory pointed to by rsp.
+> >      */
+> >        __u64 rsp, rbp, r8, r9, r10, r11, r12, r13, r14, r15;
+> >        /* Maybe other regs too? */
+> >
+> >        union {
+> >                struct sgx_enclave_exception exception;
+> >
+> >                /* Pad the entire struct to 256 bytes. */
+> >                __u8 pad[256 - 32];
+> >        };
+> > };
+> >
+> > long vdso_sgx_enter_enclave(unsigned int leaf, struct sgx_enclave_run *r);
+> >
+> > No callback, no asm wrapper needed, no nastiness from the perspective
+> > of the caller.
+> >
+> > So here are my questions.  First, do people agree with me that this
+> > would be better?
+>
+> No?
+>
+> From a user perspective, I don't find the callback particularly onerous.
+> Avoiding the callback would yield prettier code for the caller, but IMO it
+> doesn't fundamentally make the code easier to maintain.  Implementing the
+> callback is a one-time cost for a relatively small number of people, and it's
+> not even all that difficult to write, especially compared to all the other crud
+> that needs to be done to enable SGX.
 
-> Hi Peter,
-> 
-> I ran my tests on a series of patches on top of 5.9-rc4, and hit the
-> following splat:
-> 
->  ------------[ cut here ]------------
->  WARNING: CPU: 0 PID: 2557 at kernel/rcu/tree.c:1058 rcu_irq_enter+0x15/0x20
->  Modules linked in: [..]
->  CPU: 0 PID: 2557 Comm: ftracetest Tainted: G        W         5.9.0-rc4-test+ #499
->  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
->  RIP: 0010:rcu_irq_enter+0x15/0x20
->  Code: 00 00 00 eb b6 0f 0b eb 81 66 66 2e 0f 1f 84 00 00 00 00 00 90 8b 05 86 6e c4 00 85 c0 74 0d 65 8b 05 db 71 4a 76 85 c0 74 02 <0f> 0b e9 34 ff ff ff 0f 1f 40 00 53 48 c7 c3 80 cc 02 00 e8 63 09
->  RSP: 0018:ffff9372786538a0 EFLAGS: 00010002
->  RAX: 0000000000000001 RBX: 0000000000000086 RCX: ffff937278654000
->  RDX: 000000000001ec80 RSI: ffffffff890721f1 RDI: ffffffff8a677f20
->  RBP: ffffffff890721f1 R08: 0000000000000000 R09: ffffffff8b58b430
->  R10: ffff937278653a60 R11: 0000000000000001 R12: ffffffff890721f1
->  R13: 0000000000000000 R14: ffff937278653920 R15: ffff9372cee128c0
->  FS:  00007fde773f2740(0000) GS:ffff9372daa00000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 0000564b58579d68 CR3: 000000007eebe001 CR4: 00000000001706f0
->  Call Trace:
->   rcu_irq_enter_irqson+0x21/0x40
->   trace_preempt_off+0x6e/0xd0
->   ? __unwind_start+0x18c/0x1e0
->   unwind_next_frame+0x41/0x560
->   ? noop_count+0x10/0x10
->   __unwind_start+0x153/0x1e0
->   ? profile_setup.cold+0xa1/0xa1
->   arch_stack_walk+0x76/0x100
->   ? __unwind_start+0x18c/0x1e0
->   stack_trace_save+0x4b/0x70
->   save_trace+0x42/0x350
->   __lock_acquire+0x1858/0x2460
->   lock_acquire+0xdc/0x3b0
->   ? __sched_setscheduler+0x4d4/0x970
->   cpuset_read_lock+0x26/0xc0
->   ? __sched_setscheduler+0x4d4/0x970
->   __sched_setscheduler+0x4d4/0x970
->   ? trace_benchmark_reg+0x50/0x50
->   _sched_setscheduler+0x68/0xa0
->   __kthread_create_on_node+0x145/0x1c0
->   ? perf_trace_benchmark_event+0x170/0x170
->   kthread_create_on_node+0x51/0x70
->   trace_benchmark_reg+0x28/0x50
->   tracepoint_probe_register_prio+0x12f/0x310
->   ? __mutex_unlock_slowpath+0x45/0x2a0
->   __ftrace_event_enable_disable+0x75/0x240
->   __ftrace_set_clr_event_nolock+0xef/0x130
->   __ftrace_set_clr_event+0x39/0x60
->   ftrace_set_clr_event+0x4a/0xa0
->   ftrace_event_write+0xda/0x110
->   vfs_write+0xca/0x210
->   ksys_write+0x70/0xf0
->   do_syscall_64+0x33/0x40
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->  RIP: 0033:0x7fde774e7487
->  Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
->  RSP: 002b:00007ffeb8ec9d38 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
->  RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 00007fde774e7487
->  RDX: 0000000000000004 RSI: 0000564b584eb690 RDI: 0000000000000001
->  RBP: 0000564b584eb690 R08: 000000000000000a R09: 0000000000000003
->  R10: 0000564b58544510 R11: 0000000000000246 R12: 0000000000000004
->  R13: 00007fde775b8500 R14: 0000000000000004 R15: 00007fde775b8700
->  irq event stamp: 108343
->  hardirqs last  enabled at (108343): [<ffffffff89b6efbc>] exc_nmi+0xbc/0x160
->  hardirqs last disabled at (108342): [<ffffffff89b6ef9d>] exc_nmi+0x9d/0x160
->  softirqs last  enabled at (107622): [<ffffffff89e003b4>] __do_softirq+0x3b4/0x501
->  softirqs last disabled at (107615): [<ffffffff89c01072>] asm_call_on_stack+0x12/0x20
-> 
-> 
-> What looks to have happened was:
-> 
->   cpuset_read_lock()
->      lockdep called
->        save stack trace
->           preempt_disable()
->              trace_preempt_disable();
->                 rcu_irq_enter_irqson();
->                    local_irq_save() (ignored by lockdep due to recursion set)
->                       rcu_irq_enter();
->                          lockdep_assert_irqs_disabled() (no, because it was ignored by recursion being set)
-> 
->                           BOOM!
-> 
-> 
-> Thoughts?
-> 
-> Note, the warning goes away with the below patch.
-> 
-> -- Steve
-> 
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 6a584b3e5c74..3e5bc1dd71c6 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -550,7 +550,8 @@ do {									\
->  
->  #define lockdep_assert_irqs_disabled()					\
->  do {									\
-> -	WARN_ON_ONCE(debug_locks && raw_cpu_read(hardirqs_enabled));	\
-> +	WARN_ON_ONCE(debug_locks && raw_cpu_read(hardirqs_enabled) &&	\
-> +           likely(!(current->lockdep_recursion & LOCKDEP_RECURSION_MASK)));\
->  } while (0)
->  
->  #define lockdep_assert_in_irq()						\
+[lots of discussion about r8 .. r15]
 
+r8 through r15 are kind of red herrings.  I think that supporting them
+as C-callable input/output args in the vDSO would be polite but isn't
+really important. The actual important part I'm thinking of is RSP,
+RBP, and the callback.
+
+>
+> So it really comes down to context switching versus using a callback.  Not that
+> this is exactly a hot path, but for me having to implement a callback versus
+> bloating the vDSO with state save and restore is a mostly a wash.
+>
+> > Second, could this be implemented in a way that doesn't utterly suck?  The
+> > best I've come up with so far is abusing WRFSBASE to shove a little data
+> > structure containing the real user RSP or RBP along with the old FSBASE into
+> > FSBASE, do EENTER, and then undo the FSBASE dance.  We'd also need some
+> > additional exception fixup magic to prevent a signal or ptrace() from
+> > observing the intermediate states and getting extremely confused.
+>
+> But where would the vDSO get memory for that little data structure?  It can't
+> be percpu because the current task can get preempted.  It can't be per instance
+> of the vDSO because a single mm/process can have multiple tasks entering an
+> enclave.  Per task might work, but how would the vDSO get that info?  E.g.
+> via a syscall, which seems like complete overkill?
+
+The stack.  The vDSO could, logically, do:
+
+struct sgx_entry_state {
+  unsigned long real_rbp;
+  unsigned long real_rsp;
+  unsigned long orig_fsbase;
+};
+
+...
+
+  struct sgx_entry_state state;
+  state.rbp = rbp;  [ hey, this is pseudocode.  the real code would be in asm.]
+  state.rsp = rsp;
+  state.fsbase = __rdfsbase();
+  rbp = arg->rbp;
+
+  /* set up all other regs */
+  wrfsbase %rsp
+  movq enclave_rsp(%rsp), %rsp
+  enclu
+  rdfsbase %rsp
+
+Expressing this abomination using DWARF is surely entirely impossible,
+so instead we would want to make sure that user code simply cannot
+observe the state between the wrfsbase and the rdfsbase.  This would
+require three exception hooks, which is more than we have now but is
+not actually unmanageable.  And it would be possible to write a test
+case to make sure we got it right.  A downside is that single-stepping
+this mess would probably not work in any sensible way.
+
+This could also be handled more slowly by introducing an actual
+syscall so the kernel could help out.  This would also be pretty ugly.
+
+On the other hand, if we had some confidence that the existing corpus
+of enclaves plays games with RSP but not RBP, we could handle this
+much more straightforwardly and even likely perserve DWARF support,
+although we'd still have strange artifacts if we got a signal in the
+wrong place.
+
+(If we have CET, we could do truly unspeakable things involving saving
+our state on the shadow stack.  Don't think too hard about this.)
+
+>
+> So, no?
+>
+> If we truly want to provide a "better" vDSO, my vote would be to disallow using
+> the runtime's stack from within the enclave.  But I'm guessing that would cause
+> more than a few aneurysms for the folks that are cc'd :-)
+
+Indeed.
+
+My real problem with the callback is that it forces the untrusted
+runtime to use a C-like stack model and to keep the vDSO entry on the
+stack while handling the OCALL or whatever you want to call it.  This
+is fine for those of us who exclusively program in C, aren't doing
+anything fancy, and want to think of enclaves as just more C code.
+But enclaves aren't just more C code -- they're more-or-less-immutable
+blobs, and they can't easily evolve with the untrusted code that
+invokes them.  And the world is slowly but surely moving toward
+languages that aren't quite as C-like as C.  In a language with
+stackless coroutines or async/await or continuations or goroutines,
+this could all get quite awkward.  Sure, a really nice Rust or Go SGX
+untrusted runtime could just declare that it won't support enclaves
+that touch the stack, but that's a bit of an unfortunate restriction
+given that removing stack access from an existing enclave will
+inevitably change MRENCLAVE.
+
+If I thought there was a straightforward way to support all existing
+enclaves without callbacks in the vDSO, I would be all for it.  I'm
+wondering if doing so even unstraightforwardly would still be
+worthwhile.
+
+If everyone wants to tell me that what we have now (plus .cfi
+annotations and perhaps a CET fix) is good enough, then so be it.  But
+I figured I'd ask.
+
+--Andy
