@@ -2,54 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 596F4277E81
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CD2277E83
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 05:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgIYD1B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 23:27:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36352 "EHLO
+        id S1726943AbgIYD2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 23:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726704AbgIYD1A (ORCPT
+        with ESMTP id S1726704AbgIYD2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 23:27:00 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0A8C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 20:27:00 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id bw23so1147924pjb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 20:27:00 -0700 (PDT)
+        Thu, 24 Sep 2020 23:28:42 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 876FCC0613CE;
+        Thu, 24 Sep 2020 20:28:42 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 5so1368460pgf.5;
+        Thu, 24 Sep 2020 20:28:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DeK1msedXGauky3LlZFdr+n8u+1Ihl4Ki0G/c0dEbRY=;
-        b=cQNWEhuaNcfuMfCkkICKyKMwE1l6FY6pAgtxRmC7RXPnlCJ0saei23PhAdo67xody0
-         RVpo2EJG4WpdQ5R8+mD+eB/MgkgQZPZufWt9hd4uz6jxYGpgabSCzyVqUGlBLvU+VxBt
-         ZSrIa4uahkkdPSl2dtlVqAtgg+jd1CNPrWcwQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JKwaSEBh/aNFcHLbsrqXTKnHnGZtGuyc7kM8iGIPRLM=;
+        b=OiYYJ/us006aCQf8GreRu+v+umHyKuyJ53tWXgVLYKCgpjHSbVOGfP9NeOMrPERPkN
+         fmlosi7oYA0P9EtBqPMUJqOWUsBwE+ibW/ooPeQ70jKnWG4370Zrtv40OVzlDx0ZEf4r
+         AnlTwk3rBGD2VttqfanX6R93rzUfDik7jwy84XIJcJg1TZrTaYfhfWBqM7TfyXykz2DB
+         QI8Erwr5nqcOMAAj0di4ks6hTFBMfpD2NyTht2eaWuRHfTBdjkof5/3aHKUztSzFS0N5
+         ZRYp0xekaQ7wZSDR9P6FISnEXN0RNXNFo24NqCRlyvr1bYMWDZX9QvG9s+xEjqGobfLo
+         RAEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DeK1msedXGauky3LlZFdr+n8u+1Ihl4Ki0G/c0dEbRY=;
-        b=tMMyi3auteqgoCny7UGUAB8WGOgjB779OnAsLDEuj9nhsmr7Kduu3hLg2Vdk31uykW
-         xr5taIe4BGHTFDSzdDjskRQLKUmrwswXip315SKtClRT2MY8S4ZY5t5YhWKlL63Ohdj7
-         2LKQNyQxz/SvpYJR/xPza0MreT1hceSX132vmwDFwLNd5qFUuWn9fp4ApsWkg5JNoCM5
-         cbbEIXVSC9OYcuU4FO8lcXRPBmZpoRuXiyLrjnusF9+GQmW4OK1Bpu66VV4QNc7xpxZG
-         egS9tTYEa818gD859EO7o6Vjkc6OG7gwGlN/3KwkyTaRSA7yz0TJ9z5G3BH9q5DsI8yr
-         4+og==
-X-Gm-Message-State: AOAM5312tKFGGtlCVAIWv/HUp92pbPAiiBQGCArgZwugFO2oHVq4Cx5N
-        jevCJtqKxkgzu4ZaEs3x0dtlDg==
-X-Google-Smtp-Source: ABdhPJymYYYGWizHsr6HmLpbJR37C6I0dl0R7R4eB+yVnjR5cxc6gFLsOvtjiudHcJH8+ojao39tog==
-X-Received: by 2002:a17:90b:4a0c:: with SMTP id kk12mr655501pjb.223.1601004420158;
-        Thu, 24 Sep 2020 20:27:00 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b10sm637973pgm.64.2020.09.24.20.26.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 20:26:59 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 20:26:58 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JKwaSEBh/aNFcHLbsrqXTKnHnGZtGuyc7kM8iGIPRLM=;
+        b=N9HDAg6oAoebEk+WWagA2EFIob34n287YSLDFc17Q+78Jrpq2k0PrvG1yiPR/GGYD3
+         Dk9UbOynxfbT+/wtcc+4o++1ZE4GbHZArNgS1t0iHMiDtXRh2JklRDxMxg9WDCT7RCED
+         QrFHp4oeoh6nPrN6PUN3HzMcatBgg4a9G+o82pOSMzyOsvtxgKQNZEnPMMkFy2gPqKmt
+         EmqEMgerd4OEr7GXQJAWR7zjOG4RFRO7s5DYRUjQI+dv6tSEtZ523dTGlc3ZBEfl1PaG
+         ydWdrKhvBFp3BM9d7C3BL7ErFuzxPhr2I0JSPk0dwix3drxDOA/xt2cGZR8IX/Q7Yavw
+         +2ug==
+X-Gm-Message-State: AOAM53155HfCJIq+yzaMnzaX3ojvfo2sd9DJXgwMDzqmEbILhvbtYV5T
+        h/EBBfj6DIiswHiKHdf4HZIzSLg1ilchMu1X47s=
+X-Google-Smtp-Source: ABdhPJzyyAhHtoK2wZHqoUFbZHJWRTfpD857YUtUND4/x9KBeMbRkdMSgFIGeLqMu6/zEKEJVS4vbV6+V7CgGFtQdUk=
+X-Received: by 2002:a63:511d:: with SMTP id f29mr1846448pgb.11.1601004522041;
+ Thu, 24 Sep 2020 20:28:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <b792335294ee5598d0fb42702a49becbce2f925f.1600661419.git.yifeifz2@illinois.edu>
+ <202009241658.A062D6AE@keescook> <CABqSeAQ=joheH+0LUZ201U-XwFFsHN3Ouo5FGoscUwn+itkL2w@mail.gmail.com>
+ <202009242000.DE12689BD8@keescook>
+In-Reply-To: <202009242000.DE12689BD8@keescook>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Thu, 24 Sep 2020 22:28:31 -0500
+Message-ID: <CABqSeATWoFXM6uBHywVrJCo1JvCwHZ6gyegiJp_y4nr97BY-3Q@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 2/6] asm/syscall.h: Add syscall_arches[] array
+To:     Kees Cook <keescook@chromium.org>
+Cc:     YiFei Zhu <yifeifz2@illinois.edu>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        bpf <bpf@vger.kernel.org>,
         kernel list <linux-kernel@vger.kernel.org>,
         Aleksa Sarai <cyphar@cyphar.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
@@ -65,69 +72,51 @@ Cc:     Linux Containers <containers@lists.linux-foundation.org>,
         Tycho Andersen <tycho@tycho.pizza>,
         Valentin Rothberg <vrothber@redhat.com>,
         Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v2 seccomp 6/6] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202009242021.B0FB41084@keescook>
-References: <cover.1600951211.git.yifeifz2@illinois.edu>
- <b11ebe533838af7829a5e7381a7914bca27cb621.1600951211.git.yifeifz2@illinois.edu>
- <202009241647.2239747F0@keescook>
- <CABqSeASrwXwSHHAsVwjG6vCLbfXpkp+42HWW27MUK2zgMnAu8w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABqSeASrwXwSHHAsVwjG6vCLbfXpkp+42HWW27MUK2zgMnAu8w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:11:17PM -0500, YiFei Zhu wrote:
-> On Thu, Sep 24, 2020 at 6:56 PM Kees Cook <keescook@chromium.org> wrote:
-> > > This file is guarded by CONFIG_PROC_SECCOMP_CACHE with a default
-> > The question of permissions is my central concern here: who should see
-> > this? Some contained processes have been intentionally blocked from
-> > self-introspection so even the "standard" high bar of "ptrace attach
-> > allowed?" can't always be sufficient.
-> >
-> > My compromise about filter visibility in the past was saying that
-> > CAP_SYS_ADMIN was required (see seccomp_get_filter()). I'm nervous to
-> > weaken this. (There is some work that hasn't been sent upstream yet that
-> > is looking to expose the filter _contents_ via /proc that has been
-> > nervous too.)
-> >
-> > Now full contents vs "allow"/"filter" are certainly different things,
-> > but I don't feel like I've got enough evidence to show that this
-> > introspection would help debugging enough to justify the partially
-> > imagined safety of not exposing it to potential attackers.
-> 
-> Agreed. I'm inclined to make it CONFIG_DEBUG_SECCOMP_CACHE and guarded
-> by a CAP just to make it "debug only".
+On Thu, Sep 24, 2020 at 10:09 PM Kees Cook <keescook@chromium.org> wrote:
+> Right, sorry, I may not have been clear. When building my RFC I noticed
+> that I couldn't use NR_syscall very "early" in the header file include
+> stack on arm64, which complicated things. So I guess what I mean is
+> something like "it's probably better to do all these seccomp-specific
+> macros/etc in asm/include/seccomp.h rather than in syscall.h because I
+> know at least one architecture that might cause trouble."
 
-Yeah; I just can't quite see what the best direction is here. I will
-ponder this more. As I mentioned, it does seem handy. :)
+Ah. Makes sense.
 
-> Is there something to stop a config from being enabled in an
-> allyesconfig? I remember seeing something like that. Else if someone
-> is manually selecting we can add a help text with a big banner...
+> Ironicailly, that's the only place I actually know for sure where people
+> using x32 because it shows measurable (10%) speed-up for builders:
+> https://lore.kernel.org/lkml/CAOesGMgu1i3p7XMZuCEtj63T-ST_jh+BfaHy-K6LhgqNriKHAA@mail.gmail.com
 
-Yeah, allyesconfig and allmodconfig both effectively set
-CONFIG_COMPILE_TEST. Anyway, likely a caps test will end up being the
-way to do it.
+Wow. 10% is significant. Makes you wonder why x32 hasn't conquered the world.
 
-> 
-> > But behavior-wise, yeah, I like it; I'm fine with human-readable and
-> > full AUDIT_ARCH values. (Though, as devil's advocate again, to repeat
-> > Jann's own words back: do we want to add this only to have a new UAPI to
-> > support going forward?)
-> 
-> Is this something we want to keep stable?
+> So, yes, as you and Jann both point out, it wouldn't be terrible to just
+> ignore x32, it seems a shame to penalize it. That said, if the masking
+> step from my v1 is actually noticable on a native workload, then yeah,
+> probably x32 should be ignored. My instinct (not measured) is that it's
+> faster than walking a small array.[citation needed]
 
-The Prime Directive of "never break userspace" is really "never break
-userspace in a way that someone notices". So if nothing ever parses that
-file, then we don't have to keep it stable, but if something does, and
-we change it, we have to fix it.
+My instinct: should be pretty similar, with the loop unrolled.
 
-So, a capability test means very few things will touch it, and if we
-decide it's not a big deal, we can relax permissions in the future.
+You convince me that penalizing supporting x32 would be a pity :( The
+10% is so nice I want it.
 
--- 
-Kees Cook
+> It's easier to do a per-arch revert (i.e. all the -stable tree
+> machinery, etc) with a single SHA instead of having to write a partial
+> revert, etc.
+
+I see. Thanks for clarifying.
+
+How about this? Rather than specifically designing names for bitmasks
+(native, compat, multiplex), just have SECCOMP_ARCH_{1,2,3}? Each arch
+number would provide the size of the bitmap and a static inline
+function to check the given seccomp_data belongs to the arch and if
+so, the order of the bit in the bitmap. There is no need for the
+shifts and madness in seccomp.c; it's arch-dependent code in their own
+seccomp.h. We let the preprocessor and compiler to make things
+optimized.
+
+YiFei Zhu
