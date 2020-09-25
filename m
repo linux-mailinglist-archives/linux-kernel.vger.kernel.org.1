@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C6E27925C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF3B27925D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727276AbgIYUmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:42:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49980 "EHLO mail.kernel.org"
+        id S1727444AbgIYUmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIYUmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:42:11 -0400
+        id S1726119AbgIYUmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:42:16 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4BD920838;
-        Fri, 25 Sep 2020 20:42:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBAE92086A;
+        Fri, 25 Sep 2020 20:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601066531;
-        bh=mM9gr7QmADGTaHoBJX4KS+CFOPur7mCrz2hx6I90bGQ=;
+        s=default; t=1601066536;
+        bh=eYynM7RcUl9T2R03Gzczex/EjCscDdA1EQyumjaJdJo=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=wTxbbRMKHhd+IoB87nAYO/s7aUKxKtfhy0AUZAI3UqcBSrc6tPgmDi//Lzbp19twN
-         IFl3lHKAokLm10rqrXHQYU5qMNfdDllKCZt9ZiW+wMiSV11laOv+IsVGUV2k+oH5Ek
-         Fw82xKAYop0eOg1bxQxAwPUCQRWH3N6H9AKceWBg=
-Date:   Fri, 25 Sep 2020 21:41:16 +0100
+        b=fcdk23UcLZoGUC1rmqRbEtIxyUX0aqP4NHgeBHEeZ0iA4Jpf9zjgmQvq9UpD3WEQU
+         wFdTxl899cN1bMKvxrGZMHv5KkbS02bl0TpCjjO3YVmUfn9mmC6Sy/fl4oOPzKpTyY
+         Zg/aRtYF79RmHZKYFbtkO5lKJwPsfUwWXj7B5Rc8=
+Date:   Fri, 25 Sep 2020 21:41:21 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, tiwai@suse.com, shawnguo@kernel.org,
-        nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, linux-imx@nxp.com,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, perex@perex.cz,
-        festevam@gmail.com, alsa-devel@alsa-project.org,
-        Xu Wang <vulab@iscas.ac.cn>, shengjiu.wang@gmail.com,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, timur@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20200916061420.10403-1-vulab@iscas.ac.cn>
-References: <20200916061420.10403-1-vulab@iscas.ac.cn>
-Subject: Re: [PATCH] fsl: imx-audmix : Replace seq_printf with seq_puts
-Message-Id: <160106647646.2866.15040520105336965712.b4-ty@kernel.org>
+To:     Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20200924151518.15841-1-daniel.baluta@oss.nxp.com>
+References: <20200924151518.15841-1-daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH 0/2] Enable runtime PM for SOF device
+Message-Id: <160106647646.2866.8438524820840222353.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 06:14:20 +0000, Xu Wang wrote:
-> A multiplication for the size determination of a memory allocation
-> indicated that an array data structure should be processed.
-> Thus use the corresponding function "devm_kcalloc".
+On Thu, 24 Sep 2020 18:15:16 +0300, Daniel Baluta wrote:
+> This enables runtime PM for SOF device. Next patchseries will
+> provide PM suspend/resume handlers for i.MX8 specific devices.
+> 
+> Daniel Baluta (2):
+>   ASoC: SOF: Activate runtime PM with SOF OF device
+>   ASoC: SOF: Add .prepare/.complete callbacks
+> 
+> [...]
 
 Applied to
 
@@ -52,8 +51,10 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: fsl: imx-audmix: Use devm_kcalloc() instead of devm_kzalloc()
-      commit: f95cc5c18c15a425c3dceec48df6b4e27a202dda
+[1/2] ASoC: SOF: Activate runtime PM with SOF OF device
+      commit: 4fefc39894d8975d58b02b4b5f635d20891778ca
+[2/2] ASoC: SOF: Add .prepare/.complete callbacks
+      commit: dd759805d6f78262cb9aa63ef37e3bc263ef1978
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
