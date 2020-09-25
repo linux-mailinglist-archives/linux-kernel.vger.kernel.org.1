@@ -2,209 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9573278FF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C196327900D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729700AbgIYR7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726401AbgIYR7E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:59:04 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC3D3C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:59:03 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id b12so3747433lfp.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:59:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kefvEdlj7ax425quXuy8w7lDixQ/9oR1/8w2lyEDoxg=;
-        b=a2q4z7Yr0bdROmjf/MrINA675Wl3B/OB6CVouLzBltplLpi8U3qWAwE4xbe3hCTaAM
-         Eiktzce3ER+xeMDht2b1mb0VNU4dWNHbCXZlkqcFExAGLrAErQNLwpxPiJ5dAqYUnqdd
-         3253Gs1ZKg73FBKHom7QQgvIgwLMj5kF4nO9NiUj8JoaErtWxam5dnRITfqvGUCqYdGk
-         ZZPBtuOIa+QjyR7sQz1Gslczb765PWTkFAZFT0fDlUWRK2jyWu+covhjxAKWc0M4IkhT
-         CNB0LeSKDP2SRsX7ZhMSfN6FmxwpbWk5AvebEu8EfM3c08Eut2pIZN5yjVA5JdO/3xJN
-         0hHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kefvEdlj7ax425quXuy8w7lDixQ/9oR1/8w2lyEDoxg=;
-        b=MLH+SWKd3OlGeGkpGYzrnmU/3f+VUJGtPqGxDHaX5plaNQqOcg2kgwRCb3N+n5Jx4B
-         aUWRObhStwfTbc4Ul6VUM7S2/VNhBIfq2wFa7/9qz2qsoMRzi06pwgMWjVaNZhPp1AcX
-         D3b2lEotZBL0XFtNAz+zrxe28Ymtrf9adF7ImGqnzEPNGYYhwkWLOYqIOxwuM9FZBXyT
-         Ttgng8X9O1jeEx9Ac+i8iqJ67UZABDDW9Z+2zTVEhIaHfBuCiYlvRm4RZlhBHGjeKtff
-         qPzurkChRA743zN5/KIqA+fIrN1qFV3wmsk1DFKlZVeWjvgP8DXXmtgxvd8Wmqvjjlav
-         i0Pw==
-X-Gm-Message-State: AOAM533Su5CyMrrAdFUfdsEuhje7bxwy5Yfs8N4MjzrsYu/KBMrbCx13
-        NRlFcspBK7JaA2pF6XcgN1fzrU3i0CUPj2SEPzdv5Q==
-X-Google-Smtp-Source: ABdhPJxpHHte2JGUkx5xwJf3o11AU5UbVFEJVHEACHGiZE6J6+2/TExBzQ20x9ep2Ob/62Yb/p8IQ/rrhSlhbVtIpDs=
-X-Received: by 2002:ac2:4315:: with SMTP id l21mr13992lfh.494.1601056741842;
- Fri, 25 Sep 2020 10:59:01 -0700 (PDT)
+        id S1729678AbgIYSHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:07:44 -0400
+Received: from mga04.intel.com ([192.55.52.120]:33781 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726368AbgIYSHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:07:43 -0400
+IronPort-SDR: cl6DyLOlB4EWFbseR54fRJJH7t9q2f9Woc53bFIH88jz9PvYudDbPSEIzgV2dbDqVQ4NpAHJT+
+ ySsmJRHpQxKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="158942270"
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="158942270"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:57:18 -0700
+IronPort-SDR: CWkFadNihY3rGqxDFlMGTvgJirE1P7wjdUOUal1zPIoQbZvAKqZfL4BOWBZtBUu78Mos2gdDSE
+ QXAFQlLOW7gw==
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="487499153"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 07:57:17 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>
+Subject: [PATCH v13 06/26] x86/mm: Change _PAGE_DIRTY to _PAGE_DIRTY_HW
+Date:   Fri, 25 Sep 2020 07:56:29 -0700
+Message-Id: <20200925145649.5438-7-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200925145649.5438-1-yu-cheng.yu@intel.com>
+References: <20200925145649.5438-1-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-References: <20200917022051.GA1004828@T590> <20200917143012.GF38283@mit.edu>
- <20200924005901.GB1806978@T590> <20200924143345.GD482521@mit.edu>
- <20200925011311.GJ482521@mit.edu> <20200925073145.GC2388140@T590>
- <20200925161918.GD2388140@T590> <CAHk-=whAe_n6JDyu40A15vnWs5PTU0QYX6t6-TbNeefanau6MA@mail.gmail.com>
- <CALvZod4+ucJfr4gR60mM1gRoc7NKWydPY-JQ757q+n8hOdmrvA@mail.gmail.com>
- <CALvZod4Wc23o09KXb+s=VJGs6X+8juuDXWfyfJuMH5DCksLtAQ@mail.gmail.com> <20200925174740.GA2211131@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200925174740.GA2211131@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 25 Sep 2020 10:58:50 -0700
-Message-ID: <CALvZod5pERERkxWAJcBrZHpcWQH75kXkys2gUg__qM9OL+MmtQ@mail.gmail.com>
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>, Jens Axboe <axboe@kernel.dk>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:48 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Fri, Sep 25, 2020 at 10:35:03AM -0700, Shakeel Butt wrote:
-> > On Fri, Sep 25, 2020 at 10:22 AM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > On Fri, Sep 25, 2020 at 10:17 AM Linus Torvalds
-> > > <torvalds@linux-foundation.org> wrote:
-> > > >
-> > > > On Fri, Sep 25, 2020 at 9:19 AM Ming Lei <ming.lei@redhat.com> wrote:
-> > > > >
-> > > > > git bisect shows the first bad commit:
-> > > > >
-> > > > >         [10befea91b61c4e2c2d1df06a2e978d182fcf792] mm: memcg/slab: use a single set of
-> > > > >                 kmem_caches for all allocations
-> > > > >
-> > > > > And I have double checked that the above commit is really the first bad
-> > > > > commit for the list corruption issue of 'list_del corruption, ffffe1c241b00408->next
-> > > > > is LIST_POISON1 (dead000000000100)',
-> > > >
-> > > > Thet commit doesn't revert cleanly, but I think that's purely because
-> > > > we'd also need to revert
-> > > >
-> > > >   849504809f86 ("mm: memcg/slab: remove unused argument by charge_slab_page()")
-> > > >   74d555bed5d0 ("mm: slab: rename (un)charge_slab_page() to
-> > > > (un)account_slab_page()")
-> > > >
-> > > > too.
-> > > >
-> > > > Can you verify that a
-> > > >
-> > > >     git revert 74d555bed5d0 849504809f86 10befea91b61
-> > > >
-> > > > on top of current -git makes things work for you again?
-> > > >
-> > > > I'm going to do an rc8 this release simply because we have another VM
-> > > > issue that I hope to get fixed - but there we know what the problem
-> > > > and the fix _is_, it just needs some care.
-> > > >
-> > > > So if Roman (or somebody else) can see what's wrong and we can fix
-> > > > this quickly, we don't need to go down the revert path, but ..
-> > > >
-> > >
-> > > I think I have a theory. The issue is happening due to the potential
-> > > infinite recursion:
-> > >
-> > > [ 5060.124412]  ___cache_free+0x488/0x6b0
-> > > *****Second recursion
-> > > [ 5060.128666]  kfree+0xc9/0x1d0
-> > > [ 5060.131947]  kmem_freepages+0xa0/0xf0
-> > > [ 5060.135746]  slab_destroy+0x19/0x50
-> > > [ 5060.139577]  slabs_destroy+0x6d/0x90
-> > > [ 5060.143379]  ___cache_free+0x4a3/0x6b0
-> > > *****First recursion
-> > > [ 5060.147896]  kfree+0xc9/0x1d0
-> > > [ 5060.151082]  kmem_freepages+0xa0/0xf0
-> > > [ 5060.155121]  slab_destroy+0x19/0x50
-> > > [ 5060.159028]  slabs_destroy+0x6d/0x90
-> > > [ 5060.162920]  ___cache_free+0x4a3/0x6b0
-> > > [ 5060.167097]  kfree+0xc9/0x1d0
-> > >
-> > > ___cache_free() is calling cache_flusharray() to flush the local cpu
-> > > array_cache if the cache has more elements than the limit (ac->avail
-> > > >= ac->limit).
-> > >
-> > > cache_flusharray() is removing batchcount number of element from local
-> > > cpu array_cache and pass it slabs_destroy (if the node shared cache is
-> > > also full).
-> > >
-> > > Note that we have not updated local cpu array_cache size yet and
-> > > called slabs_destroy() which can call kfree() through
-> > > unaccount_slab_page().
-> > >
-> > > We are on the same CPU and this recursive kfree again check the
-> > > (ac->avail >= ac->limit) and call cache_flusharray() again and recurse
-> > > indefinitely.
->
-> It's a coll theory! And it explains why we haven't seen it with SLUB.
->
-> >
-> > I can see two possible fixes. We can either do async kfree of
-> > page_obj_cgroups(page) or we can update the local cpu array_cache's
-> > size before slabs_destroy().
->
-> I wonder if something like this can fix the problem?
-> (completely untested).
->
-> --
->
-> diff --git a/mm/slab.c b/mm/slab.c
-> index 684ebe5b0c7a..c94b9ccfb803 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -186,6 +186,7 @@ struct array_cache {
->         unsigned int limit;
->         unsigned int batchcount;
->         unsigned int touched;
-> +       bool flushing;
->         void *entry[];  /*
->                          * Must have this definition in here for the proper
->                          * alignment of array_cache. Also simplifies accessing
-> @@ -526,6 +527,7 @@ static void init_arraycache(struct array_cache *ac, int limit, int batch)
->                 ac->limit = limit;
->                 ac->batchcount = batch;
->                 ac->touched = 0;
-> +               ac->flushing = false;
->         }
->  }
->
-> @@ -3368,6 +3370,11 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
->         int node = numa_mem_id();
->         LIST_HEAD(list);
->
-> +       if (ac->flushing)
-> +               return;
-> +
-> +       ac->flushing = true;
-> +
->         batchcount = ac->batchcount;
->
->         check_irq_off();
-> @@ -3404,6 +3411,7 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
->         spin_unlock(&n->list_lock);
->         slabs_destroy(cachep, &list);
->         ac->avail -= batchcount;
-> +       ac->flushing = false;
->         memmove(ac->entry, &(ac->entry[batchcount]), sizeof(void *)*ac->avail);
->  }
->
+Before introducing _PAGE_COW for non-hardware memory management purposes in
+the next patch, rename _PAGE_DIRTY to _PAGE_DIRTY_HW and _PAGE_BIT_DIRTY to
+_PAGE_BIT_DIRTY_HW to make meanings more clear.  There are no functional
+changes from this patch.
 
-I don't think you can ignore the flushing. The __free_once() in
-___cache_free() assumes there is a space available.
+Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Dave Hansen <dave.hansen@intel.com>
+---
+v9:
+- At some places _PAGE_DIRTY were not changed to _PAGE_DIRTY_HW, because
+  they will be changed again in the next patch to _PAGE_DIRTY_BITS.
+  However, this causes compile issues if the next patch is not yet applied.
+  Fix it by changing all _PAGE_DIRTY to _PAGE_DRITY_HW.
 
-BTW do_drain() also have the same issue.
+ arch/x86/include/asm/pgtable.h       | 18 +++++++++---------
+ arch/x86/include/asm/pgtable_types.h | 11 +++++------
+ arch/x86/kernel/relocate_kernel_64.S |  2 +-
+ arch/x86/kvm/vmx/vmx.c               |  2 +-
+ 4 files changed, 16 insertions(+), 17 deletions(-)
 
-Why not move slabs_destroy() after we update ac->avail and memmove()?
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index b836138ce852..86b7acd221c1 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -124,7 +124,7 @@ extern pmdval_t early_pmd_flags;
+  */
+ static inline int pte_dirty(pte_t pte)
+ {
+-	return pte_flags(pte) & _PAGE_DIRTY;
++	return pte_flags(pte) & _PAGE_DIRTY_HW;
+ }
+ 
+ 
+@@ -163,7 +163,7 @@ static inline int pte_young(pte_t pte)
+ 
+ static inline int pmd_dirty(pmd_t pmd)
+ {
+-	return pmd_flags(pmd) & _PAGE_DIRTY;
++	return pmd_flags(pmd) & _PAGE_DIRTY_HW;
+ }
+ 
+ static inline int pmd_young(pmd_t pmd)
+@@ -173,7 +173,7 @@ static inline int pmd_young(pmd_t pmd)
+ 
+ static inline int pud_dirty(pud_t pud)
+ {
+-	return pud_flags(pud) & _PAGE_DIRTY;
++	return pud_flags(pud) & _PAGE_DIRTY_HW;
+ }
+ 
+ static inline int pud_young(pud_t pud)
+@@ -334,7 +334,7 @@ static inline pte_t pte_clear_uffd_wp(pte_t pte)
+ 
+ static inline pte_t pte_mkclean(pte_t pte)
+ {
+-	return pte_clear_flags(pte, _PAGE_DIRTY);
++	return pte_clear_flags(pte, _PAGE_DIRTY_HW);
+ }
+ 
+ static inline pte_t pte_mkold(pte_t pte)
+@@ -354,7 +354,7 @@ static inline pte_t pte_mkexec(pte_t pte)
+ 
+ static inline pte_t pte_mkdirty(pte_t pte)
+ {
+-	return pte_set_flags(pte, _PAGE_DIRTY | _PAGE_SOFT_DIRTY);
++	return pte_set_flags(pte, _PAGE_DIRTY_HW | _PAGE_SOFT_DIRTY);
+ }
+ 
+ static inline pte_t pte_mkyoung(pte_t pte)
+@@ -435,7 +435,7 @@ static inline pmd_t pmd_mkold(pmd_t pmd)
+ 
+ static inline pmd_t pmd_mkclean(pmd_t pmd)
+ {
+-	return pmd_clear_flags(pmd, _PAGE_DIRTY);
++	return pmd_clear_flags(pmd, _PAGE_DIRTY_HW);
+ }
+ 
+ static inline pmd_t pmd_wrprotect(pmd_t pmd)
+@@ -445,7 +445,7 @@ static inline pmd_t pmd_wrprotect(pmd_t pmd)
+ 
+ static inline pmd_t pmd_mkdirty(pmd_t pmd)
+ {
+-	return pmd_set_flags(pmd, _PAGE_DIRTY | _PAGE_SOFT_DIRTY);
++	return pmd_set_flags(pmd, _PAGE_DIRTY_HW | _PAGE_SOFT_DIRTY);
+ }
+ 
+ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+@@ -489,7 +489,7 @@ static inline pud_t pud_mkold(pud_t pud)
+ 
+ static inline pud_t pud_mkclean(pud_t pud)
+ {
+-	return pud_clear_flags(pud, _PAGE_DIRTY);
++	return pud_clear_flags(pud, _PAGE_DIRTY_HW);
+ }
+ 
+ static inline pud_t pud_wrprotect(pud_t pud)
+@@ -499,7 +499,7 @@ static inline pud_t pud_wrprotect(pud_t pud)
+ 
+ static inline pud_t pud_mkdirty(pud_t pud)
+ {
+-	return pud_set_flags(pud, _PAGE_DIRTY | _PAGE_SOFT_DIRTY);
++	return pud_set_flags(pud, _PAGE_DIRTY_HW | _PAGE_SOFT_DIRTY);
+ }
+ 
+ static inline pud_t pud_mkdevmap(pud_t pud)
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index 816b31c68550..192e1326b3db 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -15,7 +15,7 @@
+ #define _PAGE_BIT_PWT		3	/* page write through */
+ #define _PAGE_BIT_PCD		4	/* page cache disabled */
+ #define _PAGE_BIT_ACCESSED	5	/* was accessed (raised by CPU) */
+-#define _PAGE_BIT_DIRTY		6	/* was written to (raised by CPU) */
++#define _PAGE_BIT_DIRTY_HW	6	/* was written to (raised by CPU) */
+ #define _PAGE_BIT_PSE		7	/* 4 MB (or 2MB) page */
+ #define _PAGE_BIT_PAT		7	/* on 4KB pages */
+ #define _PAGE_BIT_GLOBAL	8	/* Global TLB entry PPro+ */
+@@ -46,7 +46,7 @@
+ #define _PAGE_PWT	(_AT(pteval_t, 1) << _PAGE_BIT_PWT)
+ #define _PAGE_PCD	(_AT(pteval_t, 1) << _PAGE_BIT_PCD)
+ #define _PAGE_ACCESSED	(_AT(pteval_t, 1) << _PAGE_BIT_ACCESSED)
+-#define _PAGE_DIRTY	(_AT(pteval_t, 1) << _PAGE_BIT_DIRTY)
++#define _PAGE_DIRTY_HW	(_AT(pteval_t, 1) << _PAGE_BIT_DIRTY_HW)
+ #define _PAGE_PSE	(_AT(pteval_t, 1) << _PAGE_BIT_PSE)
+ #define _PAGE_GLOBAL	(_AT(pteval_t, 1) << _PAGE_BIT_GLOBAL)
+ #define _PAGE_SOFTW1	(_AT(pteval_t, 1) << _PAGE_BIT_SOFTW1)
+@@ -74,7 +74,7 @@
+ 			 _PAGE_PKEY_BIT3)
+ 
+ #if defined(CONFIG_X86_64) || defined(CONFIG_X86_PAE)
+-#define _PAGE_KNL_ERRATUM_MASK (_PAGE_DIRTY | _PAGE_ACCESSED)
++#define _PAGE_KNL_ERRATUM_MASK (_PAGE_DIRTY_HW | _PAGE_ACCESSED)
+ #else
+ #define _PAGE_KNL_ERRATUM_MASK 0
+ #endif
+@@ -126,7 +126,7 @@
+  * pte_modify() does modify it.
+  */
+ #define _PAGE_CHG_MASK	(PTE_PFN_MASK | _PAGE_PCD | _PAGE_PWT |		\
+-			 _PAGE_SPECIAL | _PAGE_ACCESSED | _PAGE_DIRTY |	\
++			 _PAGE_SPECIAL | _PAGE_ACCESSED | _PAGE_DIRTY_HW |	\
+ 			 _PAGE_SOFT_DIRTY | _PAGE_DEVMAP | _PAGE_ENC |  \
+ 			 _PAGE_UFFD_WP)
+ #define _HPAGE_CHG_MASK (_PAGE_CHG_MASK | _PAGE_PSE)
+@@ -163,7 +163,7 @@ enum page_cache_mode {
+ #define __RW _PAGE_RW
+ #define _USR _PAGE_USER
+ #define ___A _PAGE_ACCESSED
+-#define ___D _PAGE_DIRTY
++#define ___D _PAGE_DIRTY_HW
+ #define ___G _PAGE_GLOBAL
+ #define __NX _PAGE_NX
+ 
+@@ -205,7 +205,6 @@ enum page_cache_mode {
+ #define __PAGE_KERNEL_IO		__PAGE_KERNEL
+ #define __PAGE_KERNEL_IO_NOCACHE	__PAGE_KERNEL_NOCACHE
+ 
+-
+ #ifndef __ASSEMBLY__
+ 
+ #define __PAGE_KERNEL_ENC	(__PAGE_KERNEL    | _ENC)
+diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+index a4d9a261425b..e3bb4ff95523 100644
+--- a/arch/x86/kernel/relocate_kernel_64.S
++++ b/arch/x86/kernel/relocate_kernel_64.S
+@@ -17,7 +17,7 @@
+  */
+ 
+ #define PTR(x) (x << 3)
+-#define PAGE_ATTR (_PAGE_PRESENT | _PAGE_RW | _PAGE_ACCESSED | _PAGE_DIRTY)
++#define PAGE_ATTR (_PAGE_PRESENT | _PAGE_RW | _PAGE_ACCESSED | _PAGE_DIRTY_HW)
+ 
+ /*
+  * control_page + KEXEC_CONTROL_CODE_MAX_SIZE
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 8646a797b7a8..8890cfa074c7 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -3605,7 +3605,7 @@ static int init_rmode_identity_map(struct kvm *kvm)
+ 	/* Set up identity-mapping pagetable for EPT in real mode */
+ 	for (i = 0; i < PT32_ENT_PER_PAGE; i++) {
+ 		tmp = (i << 22) + (_PAGE_PRESENT | _PAGE_RW | _PAGE_USER |
+-			_PAGE_ACCESSED | _PAGE_DIRTY | _PAGE_PSE);
++			_PAGE_ACCESSED | _PAGE_DIRTY_HW | _PAGE_PSE);
+ 		r = kvm_write_guest_page(kvm, identity_map_pfn,
+ 				&tmp, i * sizeof(tmp), sizeof(tmp));
+ 		if (r < 0)
+-- 
+2.21.0
+
