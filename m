@@ -2,134 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73DD278CF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B15C278CF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:40:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgIYPjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:39:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57154 "EHLO mx2.suse.de"
+        id S1729137AbgIYPkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:40:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728678AbgIYPjM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:39:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601048349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=jDnBhjhUv7YmI2bb5gm13xCZ5HPNcb3nq4eD9eHGM6I=;
-        b=G3g2WkorQDLCkKfxkqvc66L0olkKD9cuZWPclS07u6X4tJRnpoRrAWzK9W9pArxeL9tyxh
-        RNSC1iTHPwqiaYZOUBBty1wDxcG9kPltD5gU2SP6owKvAssYCWxufwyz3e+0fcf9Gd9Z0i
-        SapfbUbiajqlZFrXyqSHVOHhxwCwLnU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 90176ACA3;
-        Fri, 25 Sep 2020 15:39:09 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 17:39:08 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jan =?iso-8859-1?Q?H=F6ppner?= <hoeppner@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        linux-api@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Ways to deprecate /sys/devices/system/memory/memoryX/phys_device
- ?
-Message-ID: <20200925153908.GH3389@dhcp22.suse.cz>
-References: <21852ccb-bd06-9281-7c8e-485ec02f2883@redhat.com>
- <20200922155611.379373f7@thinkpad>
- <a7d02345-2195-3092-a368-ca3209e2c93e@redhat.com>
+        id S1728148AbgIYPkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:40:49 -0400
+Received: from localhost (52.sub-72-107-123.myvzw.com [72.107.123.52])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 609F120936;
+        Fri, 25 Sep 2020 15:40:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601048448;
+        bh=CdO4KIKzECKCA3cYfAa8ePx6KM1a22n1zbfFUZrhrzY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=v+ldqPP1xpCV4Ec3YPhnkyA9jF6HuayQt80FIylXOq4S7Gi50X6z7/oEafJHttoWI
+         O7GH9Mh7k+RUEe/OkLxAqsVs3ZJARS1ziJ7eIg8DSW/pxhjigwr2Sm6GmNNXfohQam
+         0Xz2QaOPY7ZoKKs7heR/gA7v1BkLrbPyvmjSlMTo=
+Date:   Fri, 25 Sep 2020 10:40:47 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add me as a reviewer for PCI aardvark
+Message-ID: <20200925154047.GA2438563@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <a7d02345-2195-3092-a368-ca3209e2c93e@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200925092115.16546-1-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 25-09-20 16:49:28, David Hildenbrand wrote:
-> >> There were once RFC patches to make use of it in ACPI, but it could be
-> >> solved using different interfaces [1].
-> >>
-> >>
-> >> While I'd love to rip it out completely, I think it would break old
-> >> lsmem/chmem completely - and I assume that's not acceptable. I was
-> >> wondering what would be considered safe to do now/in the future:
-> >>
-> >> 1. Make it always return 0 (just as if "sclp.rzm" would be set to 0 on
-> >> s390x). This will make old lsmem/chmem behave differently after
-> >> switching to a new kernel, like if sclp.rzm would not be set by HW -
-> >> AFAIU, it will assume all memory is in a single memory increment. Do we
-> >> care?
-> > 
-> > No, at least not until that kernel change would be backported to some
-> > old distribution level where we still use lsmem/chmem from s390-tools.
-> > Given that this is just some clean-up w/o any functional benefit, and
-> > hopefully w/o any negative impact, I think we can safely assume that no
-> > distributor will do that "just for fun".
-> > 
-> > Even if there would be good reasons for backports, then I guess we also
-> > have good reasons for backporting / switching to the util-linux version
-> > of lsmem / chmem for such distribution levels. Alternatively, adjust the
-> > s390-tools lsmem / chmem there.
-> > 
-> > But I would rather "rip it out completely" than just return 0. You'd
-> > need some lsmem / chmem changes anyway, at least in case this would
-> > ever be backported.
+On Fri, Sep 25, 2020 at 11:21:15AM +0200, Pali Rohár wrote:
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> ---
+> I have provided more fixes to this driver, I have needed functional
+> specification for this PCI controller and also hardware for testing
+> and developing (Espressobin V5 and Turris MOX B and G modules).
 > 
-> Thanks for your input Gerald.
+> Thomas already wrote [1] that is less involved in this driver, so I
+> can help with reviewing/maintaining it.
 > 
-> So unless people would be running shiny new kernels on older
-> distributions it shouldn't be a problem (and I don't think we care too
-> much about something like that). I don't expect something like that to
-> get backported - there is absolutely no reason to do so IMHO.
+> [1] - https://lore.kernel.org/linux-pci/20200513135643.478ffbda@windsurf.home/
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index d746519253c3..e245dbe280ac 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -13185,6 +13185,7 @@ F:	drivers/firmware/pcdp.*
+>  
+>  PCI DRIVER FOR AARDVARK (Marvell Armada 3700)
+>  M:	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+> +R:	Pali Rohár <pali@kernel.org>
+>  L:	linux-pci@vger.kernel.org
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  S:	Maintained
 
-Ohh, there are many people running current Linus tree on an older
-distribution. Including me.
+Applied to pci/misc for v5.10 with Thomas' ack and signing you up as
+maintainer, thanks!
 
-> >> 2. Restrict it to s390x only. It always returned 0 on other
-> >> architectures, I was not able to find any user.
-> >>
-> >> I think 2 should be safe to do (never used on other archs). I do wonder
-> >> what the feelings are about 1.
-> > 
-> > Please don't add any s390-specific workarounds here, that does not
-> > really sound like a clean-up, rather the opposite.
-> 
-> People seem to have different opinions here. I'm happy as long as we can
-> get rid of it (either now, or in the future with a new model).
-> 
-> > 
-> > That being said, I do not really see the benefit of this change at
-> > all. As Michal mentioned, there really should be some more fundamental
-> > change. And from the rest of this thread, it also seems that phys_device
-> > usage might not be the biggest issue here.
-> > 
-> 
-> As I already expressed, I am more of a friend of small, incremental
-> changes than having a single big world switch where everything will be
-> shiny and perfect.
-> 
-> (Deprecating it now - in any way - stops any new users from appearing -
-> both, in the kernel and from user space - eventually making the big
-> world switch later a little easier because there is one thing less that
-> vanished)
+commit ccaa71689032 ("MAINTAINERS: Add Pali Rohár as aardvark PCI maintainer")
+Author: Pali Rohár <pali@kernel.org>
+Date:   Fri Sep 25 11:21:15 2020 +0200
 
-Realistically people do not care about deprecation all that much. They
-simply use whatever they can find or somebody will show them. Really,
-deprecation has never really worked. The only thing that worked was to
-remove the functionality and then wait for somebody to complain and
-revert or somehow allow the functionality without necessity to alter the
-userspace.
+    MAINTAINERS: Add Pali Rohár as aardvark PCI maintainer
+    
+    Link: https://lore.kernel.org/r/20200925092115.16546-1-pali@kernel.org
+    Signed-off-by: Pali Rohár <pali@kernel.org>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Acked-by: Thomas Petazzzoni <thomas.petazzoni@bootlin.com>
 
-As much as I would like to remove as much crud as possible I strongly
-suspect that the existing hotplug interface is just a lost case and it
-doesn't make for the best used time to put a lip stick on a pig. Even if
-we remove this particular interface we are not going to get rid of a lot
-of code or we won't gain any more sensible semantic, right?
--- 
-Michal Hocko
-SUSE Labs
+diff --git a/MAINTAINERS b/MAINTAINERS
+index deaafb617361..5959a24a4acb 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13160,6 +13160,7 @@ F:	drivers/firmware/pcdp.*
+ 
+ PCI DRIVER FOR AARDVARK (Marvell Armada 3700)
+ M:	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
++M:	Pali Rohár <pali@kernel.org>
+ L:	linux-pci@vger.kernel.org
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+ S:	Maintained
