@@ -2,144 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548462781C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A232781C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727438AbgIYHiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:38:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
+        id S1727451AbgIYHjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:39:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgIYHiC (ORCPT
+        with ESMTP id S1727183AbgIYHjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:38:02 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBE5AC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:38:01 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id g128so1695905iof.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:38:01 -0700 (PDT)
+        Fri, 25 Sep 2020 03:39:25 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C92C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:39:24 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g4so2445902wrs.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:39:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WSlR7yshzs0vfD4qPWNZEu/SYrxh7Zbl3JNQb6YVoEo=;
-        b=atpqJKWoZXGRivEFWDBvGz9MrPw2nALn9XkmQ1aWt6UPrX3SDtd+E97cX8Ctn1fkCX
-         Ql/+h8Zc7F7Rh65N4MWlxyD9RAFselx5Ek5XVOG0Vrr9KXAygVLpDX2FO+6orc/CONfx
-         Brl/TvfshMxqQBtKSiENR81iGijnMtQrgJEK8=
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:autocrypt:organization:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YQr95Np1uzy0DGbQpIK9dPDSJg4vtBHqeTzHdKdJizM=;
+        b=qASRip7d/lMzgt6xJbw5o1Cwke2eYquvHpgeA8VP9iyLFZj8TvAzKCES5YJlGEMbBK
+         GCF28FCaNv1oy1pfzwY/CSokrvXeWw/RQgmm/yfhRG8OF8yUhWMc1aSLYoScpVwNT08J
+         j/cMrITlpsf6UwmV+UtRneEjt+7FxY2kqQUkCDAmG5y8rHVzZXUFE3H93mpvXG8briQd
+         SfFg1cODxsBhxAp+is0g5LAv0tpvSymNOfcMyMfqeBmj2MeyXtEK7l9CLtvygjgMnxHf
+         pp66bpGkfk6zFGQ2jfu53VcXK51KxWShQdkekAjk5RvL7JqS1s5tfmxVJPqptyeBOMpy
+         llXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WSlR7yshzs0vfD4qPWNZEu/SYrxh7Zbl3JNQb6YVoEo=;
-        b=N1GDjNQFmYHW/337fTWM19YRQUw6Ru+RagJEdNyv570WXtUra/UWKM/c3oK8v9zPDB
-         fk95zmY7doUsLWBN2cQhcK1NB+kXiynWHLtX8pc2U0zmipOM5cDJ5SpxP+SIaj/paxON
-         kEGV7lh0zraX4dY/qFrLXedX4RoDcQqTdtdoaUZm1srF5vaf2Wc5x8QkILsI69iLlYdo
-         O6z6iZ7M+WGy9qfVoWuM2GeXccKvxtVBxBb2ks79hB85KNTcTNaWgsBAmYvVZ4XWnNSy
-         7PnbIQFZLTFzl9WdzFlp4Ov3dqHqk4gHqzyC+p2d7drNKq7Yp8sxnBRxxqeMTXosD7HA
-         RxDQ==
-X-Gm-Message-State: AOAM533XMJrOPMNPkrYl7p6070F9JV2zHXBueyvVLrUUrljM8w/jSexb
-        35jG0T4m4n0G59i0Ov+KlgC8L8hLYpxTG6TKkno2Jg==
-X-Google-Smtp-Source: ABdhPJzUHA+P0LdctUDvSxo8BvBlN6E75g98pitS7hCUaG5V1uFkbP3sHz6ED9DkJYz6tkq+TZIbHgnrWSAdYUfHeDo=
-X-Received: by 2002:a6b:6c0c:: with SMTP id a12mr2307062ioh.40.1601019480794;
- Fri, 25 Sep 2020 00:38:00 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :organization:message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=YQr95Np1uzy0DGbQpIK9dPDSJg4vtBHqeTzHdKdJizM=;
+        b=FlLBFk1QuQVLN2nQVtu6r9PD6jvbuXJw8b3xq0/Aj5OpPprnrC83OyR9GqIih7cWna
+         2QRTeAVg1iZFW/WDTzXZNj/ESeHGRU9TNKe4cihAwPkrJRNRPKV3vHvnWJyly2nFuElO
+         7LjtSHeD6Gn8R9XFFUFgQeTTMrR/mHMA4FL3myvOU2K01QRAH+vBRxktR40Q/r6Obd+8
+         wMT3F8tEb1LCvO4doXjEOZ8jAK4vi1L/dAhio6BtRzJq992f5xOW2UyEEJyR1eMmsZx3
+         chuVx0VtI9NoejZCEZh7imbh/RtzLnIC2xaiGCBcNf4lWpvPwzjbCA/A9Er+d2pqPZqP
+         vReQ==
+X-Gm-Message-State: AOAM532bOpL4x3oiuH2rJN+QmgluVSUqaRYggnNc0slFmRXInZhPmpqN
+        apzrXoABw+rNEiWR1MRTRYkl6w==
+X-Google-Smtp-Source: ABdhPJzqvvbNeKT6MV2UmoitDPjX6y8AjBZXjnmDQGzD1rEGTZEGck5ICP2lHhAjlqqhaDU6Z0LJyw==
+X-Received: by 2002:adf:f190:: with SMTP id h16mr3011195wro.202.1601019563268;
+        Fri, 25 Sep 2020 00:39:23 -0700 (PDT)
+Received: from ?IPv6:2a01:e35:2ec0:82b0:28ac:1772:9398:891a? ([2a01:e35:2ec0:82b0:28ac:1772:9398:891a])
+        by smtp.gmail.com with ESMTPSA id u2sm2064209wre.7.2020.09.25.00.39.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 00:39:22 -0700 (PDT)
+Subject: Re: [PATCH 3/8] arm64: dts: meson: update leds node on Khadas
+ VIM3/VIM3L board meson-khadas-vim3
+To:     Artem Lapkin <email2tema@gmail.com>
+Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+References: <20200925033017.1790973-1-art@khadas.com>
+ <20200925033017.1790973-4-art@khadas.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Autocrypt: addr=narmstrong@baylibre.com; prefer-encrypt=mutual; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKE5laWwgQXJtc3Ryb25nIDxuYXJtc3Ryb25nQGJheWxpYnJlLmNvbT7CwHsEEwEKACUC
+ GyMGCwkIBwMCBhUIAgkKCwQWAgMBAh4BAheABQJXDO2CAhkBAAoJEBaat7Gkz/iubGIH/iyk
+ RqvgB62oKOFlgOTYCMkYpm2aAOZZLf6VKHKc7DoVwuUkjHfIRXdslbrxi4pk5VKU6ZP9AKsN
+ NtMZntB8WrBTtkAZfZbTF7850uwd3eU5cN/7N1Q6g0JQihE7w4GlIkEpQ8vwSg5W7hkx3yQ6
+ 2YzrUZh/b7QThXbNZ7xOeSEms014QXazx8+txR7jrGF3dYxBsCkotO/8DNtZ1R+aUvRfpKg5
+ ZgABTC0LmAQnuUUf2PHcKFAHZo5KrdO+tyfL+LgTUXIXkK+tenkLsAJ0cagz1EZ5gntuheLD
+ YJuzS4zN+1Asmb9kVKxhjSQOcIh6g2tw7vaYJgL/OzJtZi6JlIXOwU0EVid/pAEQAND7AFhr
+ 5faf/EhDP9FSgYd/zgmb7JOpFPje3uw7jz9wFb28Cf0Y3CcncdElYoBNbRlesKvjQRL8mozV
+ 9RN+IUMHdUx1akR/A4BPXNdL7StfzKWOCxZHVS+rIQ/fE3Qz/jRmT6t2ZkpplLxVBpdu95qJ
+ YwSZjuwFXdC+A7MHtQXYi3UfCgKiflj4+/ITcKC6EF32KrmIRqamQwiRsDcUUKlAUjkCLcHL
+ CQvNsDdm2cxdHxC32AVm3Je8VCsH7/qEPMQ+cEZk47HOR3+Ihfn1LEG5LfwsyWE8/JxsU2a1
+ q44LQM2lcK/0AKAL20XDd7ERH/FCBKkNVzi+svYJpyvCZCnWT0TRb72mT+XxLWNwfHTeGALE
+ +1As4jIS72IglvbtONxc2OIid3tR5rX3k2V0iud0P7Hnz/JTdfvSpVj55ZurOl2XAXUpGbq5
+ XRk5CESFuLQV8oqCxgWAEgFyEapI4GwJsvfl/2Er8kLoucYO1Id4mz6N33+omPhaoXfHyLSy
+ dxD+CzNJqN2GdavGtobdvv/2V0wukqj86iKF8toLG2/Fia3DxMaGUxqI7GMOuiGZjXPt/et/
+ qeOySghdQ7Sdpu6fWc8CJXV2mOV6DrSzc6ZVB4SmvdoruBHWWOR6YnMz01ShFE49pPucyU1h
+ Av4jC62El3pdCrDOnWNFMYbbon3vABEBAAHCwn4EGAECAAkFAlYnf6QCGwICKQkQFpq3saTP
+ +K7BXSAEGQECAAYFAlYnf6QACgkQd9zb2sjISdGToxAAkOjSfGxp0ulgHboUAtmxaU3viucV
+ e2Hl1BVDtKSKmbIVZmEUvx9D06IijFaEzqtKD34LXD6fjl4HIyDZvwfeaZCbJbO10j3k7FJE
+ QrBtpdVqkJxme/nYlGOVzcOiKIepNkwvnHVnuVDVPcXyj2wqtsU7VZDDX41z3X4xTQwY3SO1
+ 9nRO+f+i4RmtJcITgregMa2PcB0LvrjJlWroI+KAKCzoTHzSTpCXMJ1U/dEqyc87bFBdc+DI
+ k8mWkPxsccdbs4t+hH0NoE3Kal9xtAl56RCtO/KgBLAQ5M8oToJVatxAjO1SnRYVN1EaAwrR
+ xkHdd97qw6nbg9BMcAoa2NMc0/9MeiaQfbgW6b0reIz/haHhXZ6oYSCl15Knkr4t1o3I2Bqr
+ Mw623gdiTzotgtId8VfLB2Vsatj35OqIn5lVbi2ua6I0gkI6S7xJhqeyrfhDNgzTHdQVHB9/
+ 7jnM0ERXNy1Ket6aDWZWCvM59dTyu37g3VvYzGis8XzrX1oLBU/tTXqo1IFqqIAmvh7lI0Se
+ gCrXz7UanxCwUbQBFjzGn6pooEHJYRLuVGLdBuoApl/I4dLqCZij2AGa4CFzrn9W0cwm3HCO
+ lR43gFyz0dSkMwNUd195FrvfAz7Bjmmi19DnORKnQmlvGe/9xEEfr5zjey1N9+mt3//geDP6
+ clwKBkq0JggA+RTEAELzkgPYKJ3NutoStUAKZGiLOFMpHY6KpItbbHjF2ZKIU1whaRYkHpB2
+ uLQXOzZ0d7x60PUdhqG3VmFnzXSztA4vsnDKk7x2xw0pMSTKhMafpxaPQJf494/jGnwBHyi3
+ h3QGG1RjfhQ/OMTX/HKtAUB2ct3Q8/jBfF0hS5GzT6dYtj0Ci7+8LUsB2VoayhNXMnaBfh+Q
+ pAhaFfRZWTjUFIV4MpDdFDame7PB50s73gF/pfQbjw5Wxtes/0FnqydfId95s+eej+17ldGp
+ lMv1ok7K0H/WJSdr7UwDAHEYU++p4RRTJP6DHWXcByVlpNQ4SSAiivmWiwOt490+Ac7ATQRN
+ WQbPAQgAvIoM384ZRFocFXPCOBir5m2J+96R2tI2XxMgMfyDXGJwFilBNs+fpttJlt2995A8
+ 0JwPj8SFdm6FBcxygmxBBCc7i/BVQuY8aC0Z/w9Vzt3Eo561r6pSHr5JGHe8hwBQUcNPd/9l
+ 2ynP57YTSE9XaGJK8gIuTXWo7pzIkTXfN40Wh5jeCCspj4jNsWiYhljjIbrEj300g8RUT2U0
+ FcEoiV7AjJWWQ5pi8lZJX6nmB0lc69Jw03V6mblgeZ/1oTZmOepkagwy2zLDXxihf0GowUif
+ GphBDeP8elWBNK+ajl5rmpAMNRoKxpN/xR4NzBg62AjyIvigdywa1RehSTfccQARAQABwsBf
+ BBgBAgAJBQJNWQbPAhsMAAoJEBaat7Gkz/iuteIH+wZuRDqK0ysAh+czshtG6JJlLW6eXJJR
+ Vi7dIPpgFic2LcbkSlvB8E25Pcfz/+tW+04Urg4PxxFiTFdFCZO+prfd4Mge7/OvUcwoSub7
+ ZIPo8726ZF5/xXzajahoIu9/hZ4iywWPAHRvprXaim5E/vKjcTeBMJIqZtS4u/UK3EpAX59R
+ XVxVpM8zJPbk535ELUr6I5HQXnihQm8l6rt9TNuf8p2WEDxc8bPAZHLjNyw9a/CdeB97m2Tr
+ zR8QplXA5kogS4kLe/7/JmlDMO8Zgm9vKLHSUeesLOrjdZ59EcjldNNBszRZQgEhwaarfz46
+ BSwxi7g3Mu7u5kUByanqHyA=
+Organization: Baylibre
+Message-ID: <0467e912-b19e-5389-388b-99b6316d24d8@baylibre.com>
+Date:   Fri, 25 Sep 2020 09:39:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
- <20200910172826.3074357-12-enric.balletbo@collabora.com> <730273b4-914a-8a7a-1583-351e6f20df5b@gmail.com>
- <5e1510f4-b0c4-2cff-b3f8-b6715d228149@gmail.com>
-In-Reply-To: <5e1510f4-b0c4-2cff-b3f8-b6715d228149@gmail.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Fri, 25 Sep 2020 15:37:34 +0800
-Message-ID: <CAJMQK-jFwToRxBdVgtHT3wJ970M0NYGu3kLtkGRBDKMMNOHkJw@mail.gmail.com>
-Subject: Re: [PATCH 11/12] soc: mediatek: pm-domains: Add support for mt8183
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Nicolas Boichat <drinkcat@chromium.org>, weiyi.lu@mediatek.com,
-        Matthias Brugger <mbrugger@suse.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200925033017.1790973-4-art@khadas.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 8:19 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
->
->
->
-> On 16/09/2020 11:46, Matthias Brugger wrote:
-> >
-> >
-> > On 10/09/2020 19:28, Enric Balletbo i Serra wrote:
-> >> From: Matthias Brugger <mbrugger@suse.com>
-> >>
-> >> Add the needed board data to support mt8183 SoC.
-> >>
-> >> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
-> >> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> >> ---
-> >>
-> >>   drivers/soc/mediatek/mtk-pm-domains.c | 162 ++++++++++++++++++++++++++
-> >>   include/linux/soc/mediatek/infracfg.h |  28 +++++
-> >>   2 files changed, 190 insertions(+)
-> >>
-> >> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c
-> >> b/drivers/soc/mediatek/mtk-pm-domains.c
-> >> index 29e88adc8ea6..aa434f616fee 100644
-> >> --- a/drivers/soc/mediatek/mtk-pm-domains.c
-> >> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
-> > [...]
-> >> +/*
-> >> + * MT8183 power domain support
-> >> + */
-> >> +static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
-> >> +    [MT8183_POWER_DOMAIN_AUDIO] = {
-> >> +        .sta_mask = PWR_STATUS_AUDIO,
-> >> +        .ctl_offs = 0x0314,
-> >> +        .sram_pdn_bits = GENMASK(11, 8),
-> >> +        .sram_pdn_ack_bits = GENMASK(15, 12),
-> >> +    },
-> >> +    [MT8183_POWER_DOMAIN_CONN] = {
-> >> +        .sta_mask = PWR_STATUS_CONN,
-> >> +        .ctl_offs = 0x032c,
-> >> +        .sram_pdn_bits = 0,
-> >> +        .sram_pdn_ack_bits = 0,
-> >> +        .bp_infracfg = {
-> >> +            BUS_PROT_WR(MT8183_TOP_AXI_PROT_EN_CONN, 0x2a0, 0x2a4, 0x228),
-> >
-> > We have repeating values triplets for set, clear and status register in infracfg
-> > and SMI.
-> >
-> > Weiyi can you help to get names to this registers? I wasn't able to find
-> > anything in the datasheet.
->
-> I think for the infracfg part I figured it out:
->
-> #define INFRA_TOPAXI_PROTECTEN_SET      0x2a0
-> #define INFRA_TOPAXI_PROTECTEN_CLR      0x2a4
-> #define INFRA_TOPAXI_PROTECTEN_STA1     0x228
->
-> #define INFRA_TOPAXI_PROTECTEN_1_SET    0x2a8
-> #define INFRA_TOPAXI_PROTECTEN_1_CLR    0x2ac
-> #define INFRA_TOPAXI_PROTECTEN_STA1_1   0x258
->
-> #define INFRA_TOPAXI_PROTECTEN_MCU_SET  0x2d4
-> #define INFRA_TOPAXI_PROTECTEN_MCU_CLR  0x2d8
-> #define INFRA_TOPAXI_PROTECTEN_MM_STA1  0x2ec
->
-> Weiyi, can you still provide the register names for the SMI?
->
-> Thanks in advance!
-> Matthias
->
-Hi Matthias,
+Hi,
 
-SMI names are
-#define SMI_COMMON_CLAMP_EN 0x3c0
-#define SMI_COMMON_CLAMP_EN_SET 0x3c4
-#define SMI_COMMON_CLAMP_EN_CLR 0x3c8
+On 25/09/2020 05:30, Artem Lapkin wrote:
+> add aliases names led_white and led_red for white and red leds
 
-Thanks
+Sorry, can you explain why you need these ? They should not be used by the led framework.
+
+> 
+> Signed-off-by: Artem Lapkin <art@khadas.com>
+> ---
+>  arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> index 73783692e30..7e137399257 100644
+> --- a/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> +++ b/arch/arm64/boot/dts/amlogic/meson-khadas-vim3.dtsi
+> @@ -12,6 +12,8 @@ / {
+>  	aliases {
+>  		serial0 = &uart_AO;
+>  		ethernet0 = &ethmac;
+> +		led_red = &led_red;
+> +		led_white = &led_white;
+
+These aliases are not standard aliases.
+
+>  	};
+>  
+>  	chosen {
+> @@ -39,13 +41,13 @@ button-function {
+>  	leds {
+>  		compatible = "gpio-leds";
+>  
+> -		led-white {
+> +		led_white: led-white {
+>  			label = "vim3:white:sys";
+>  			gpios = <&gpio_ao GPIOAO_4 GPIO_ACTIVE_HIGH>;
+>  			linux,default-trigger = "heartbeat";
+>  		};
+>  
+> -		led-red {
+> +		led_red: led-red {
+>  			label = "vim3:red";
+>  			gpios = <&gpio_expander 5 GPIO_ACTIVE_HIGH>;
+>  		};
+> 
+
+Instead you should convert these to the new function/color attributes are described in:
+Documentation/devicetree/bindings/leds/common.yaml
+
+{
+	function = LED_FUNCTION_STATUS;
+	color = <LED_COLOR_ID_WHITE>;
+}
+
+Neil
+
