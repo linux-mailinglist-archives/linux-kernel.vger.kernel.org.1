@@ -2,71 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8F1277FD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E3D3277FD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbgIYFPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:15:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726925AbgIYFPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:15:22 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727120AbgIYFQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:16:43 -0400
+Received: from mx3.molgen.mpg.de ([141.14.17.11]:57575 "EHLO mx1.molgen.mpg.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726925AbgIYFQn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 01:16:43 -0400
+Received: from [192.168.0.3] (ip5f5af1e7.dynamic.kabel-deutschland.de [95.90.241.231])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EB4E208B6;
-        Fri, 25 Sep 2020 05:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601010922;
-        bh=gITMPtp3ExGoR3BhfhY50MjD89uQRzuT6Ejx0okOPWc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PZZ2q2Nxa5IGI0xpxs/ZehF7omKALs2rdztMvg9fngAJlEuuoh8bRZvKl9DjjuvD6
-         UJSAUI4tUaud99FbRAH+wVJycVWbtPxo9PiJlOWnLmzZx56EjM9X7qHcg+Dvn4Wk9q
-         fQqGD0coIZQ9p/iYrMU1Fo2MnHPp9iAInEM3sItQ=
-Date:   Fri, 25 Sep 2020 07:15:18 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org
-Subject: Re: [stable 4.19] [PANIC]: tracing: Centralize preemptirq
- tracepoints and unify their usage
-Message-ID: <20200925051518.GA605188@kroah.com>
-References: <20180823023839.GA13343@shao2-debian>
- <20180828195347.GA228832@joelaf.mtv.corp.google.com>
- <CA+G9fYtV_sjTKLMXWMP0w0A-H+p+CN-uVJ6dvHovDy9epJZ2GQ@mail.gmail.com>
+        (Authenticated sender: pmenzel)
+        by mx.molgen.mpg.de (Postfix) with ESMTPSA id D68B22064620A;
+        Fri, 25 Sep 2020 07:16:38 +0200 (CEST)
+Subject: Re: [Intel-wired-lan] [PATCH v3] e1000e: Increase iteration on
+ polling MDIC ready bit
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+References: <20200924150958.18016-1-kai.heng.feng@canonical.com>
+ <20200924164542.19906-1-kai.heng.feng@canonical.com>
+From:   Paul Menzel <pmenzel@molgen.mpg.de>
+Message-ID: <1497f846-40d2-ddc8-60be-ffd117ffc0b7@molgen.mpg.de>
+Date:   Fri, 25 Sep 2020 07:16:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYtV_sjTKLMXWMP0w0A-H+p+CN-uVJ6dvHovDy9epJZ2GQ@mail.gmail.com>
+In-Reply-To: <20200924164542.19906-1-kai.heng.feng@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:13:05AM +0530, Naresh Kamboju wrote:
-> >From stable rc 4.18.1 onwards to today's stable rc 4.19.147
+Dear Kai-Heng,
+
+
+Thank you for patch version 3.
+
+Am 24.09.20 um 18:45 schrieb Kai-Heng Feng:
+> We are seeing the following error after S3 resume:
+> [  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
+> [  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
+> [  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+> [  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
+> [  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
+> ...
+> [  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
 > 
-> There are two problems  while running LTP tracing tests
-> 1) kernel panic  on i386, qemu_i386, x86_64 and qemu_x86_64 [1]
-> 2) " segfault at 0 ip " and "Code: Bad RIP value" on x86_64 and qemu_x86_64 [2]
-> Please refer to the full test logs from below links.
+> As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
+> increase polling iteration can resolve the issue.
 > 
-> The first bad commit found by git bisect.
->    commit: c3bc8fd637a9623f5c507bd18f9677effbddf584
->    tracing: Centralize preemptirq tracepoints and unify their usage
+> The root cause is quite likely Intel ME, since it's a blackbox to the
+> kernel so the only approach we can take is to be patient and wait
+> longer.
 > 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v3:
+>   - Moving delay to end of loop doesn't save anytime, move it back.
+>   - Point out this is quitely likely caused by Intel ME.
 
-So this also is reproducable in 5.4 and Linus's tree right now?
+quietly
 
-Or are newer kernels working fine?
+You seem to have missed my comments regarding patch version 3. It’d be 
+great if you improved the commit message with my suggestions.
 
-thanks,
+Without knowing what hardware this happened on, nobody, even later 
+getting the hardware, can reproduce the your results. If you say the ME 
+is involved, please also document the ME firmware version, which is used 
+here.
 
-greg k-h
+> v2:
+>   - Increase polling iteration instead of powering down the phy.
+> 
+>   drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
+> index e11c877595fb..e6d4acd90937 100644
+> --- a/drivers/net/ethernet/intel/e1000e/phy.c
+> +++ b/drivers/net/ethernet/intel/e1000e/phy.c
+> @@ -203,7 +203,7 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
+>   	 * Increasing the time out as testing showed failures with
+>   	 * the lower time out
+>   	 */
+> -	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
+> +	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
+>   		udelay(50);
+>   		mdic = er32(MDIC);
+>   		if (mdic & E1000_MDIC_READY)
+
+In the PCI subsystem, a warning is shown, when something takes more then 
+100 ms. As you increase it to over 320 ms, a warning should be printed 
+to talk to the firmware folks, when it passes 100 ms.
+
+
+Kind regards,
+
+Paul
