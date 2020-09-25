@@ -2,84 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 534D0277E2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE71277E33
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 04:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726945AbgIYCsB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 24 Sep 2020 22:48:01 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3560 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726448AbgIYCsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 22:48:01 -0400
-Received: from dggeme752-chm.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id 0E2D0C137D03431F3A16;
-        Fri, 25 Sep 2020 10:47:59 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme752-chm.china.huawei.com (10.3.19.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Fri, 25 Sep 2020 10:47:58 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Fri, 25 Sep 2020 10:47:58 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] mm/mempool: Add 'else' to split mutually exclusive
- case
-Thread-Topic: [PATCH v2] mm/mempool: Add 'else' to split mutually exclusive
- case
-Thread-Index: AdaS5faxg3FHsPPEQpeRvHY4DCGK8w==
-Date:   Fri, 25 Sep 2020 02:47:58 +0000
-Message-ID: <3cc5c0cd2eef450ca8d8843ab72edc98@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.109]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+        id S1726841AbgIYCvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 22:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50274 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726448AbgIYCvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 22:51:04 -0400
+Received: from X1 (unknown [104.245.68.101])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACD0C20888;
+        Fri, 25 Sep 2020 02:51:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601002264;
+        bh=9iiDwn+SaGZ5mDb8sDbkHSkqvTf2xFnRKAi2IgQ2rT0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xT3a/BgpifRvKsK4eavNKFzc7lYONbRZq3JgQuGFKmUEG0/Qu8hqBXpJDF+GLcrID
+         ZkfRgyv8L+pAeEOHa0h4CoEPyhzXz7j4SzLn7RlrD3s6HqpgtpsNQz6qqa+GaKjYA+
+         93ynesWZxI9iFDG04H/HSOOG48T6wUX16wQulRFE=
+Date:   Thu, 24 Sep 2020 19:51:03 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Vijay Balakrishna <vijayb@linux.microsoft.com>
+Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Allen Pais <apais@microsoft.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [v3 1/2] mm: khugepaged: recalculate min_free_kbytes after
+ memory hotplug as expected by khugepaged
+Message-Id: <20200924195103.8d6cc9fcd60802baef3107c6@linux-foundation.org>
+In-Reply-To: <4adef7e1-039f-0ef6-1231-5522a43e4095@linux.microsoft.com>
+References: <1600305709-2319-1-git-send-email-vijayb@linux.microsoft.com>
+        <1600305709-2319-2-git-send-email-vijayb@linux.microsoft.com>
+        <4adef7e1-039f-0ef6-1231-5522a43e4095@linux.microsoft.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrew Morton <akpm@linux-foundation.org> wrote:
-> On Thu, 24 Sep 2020 07:16:41 -0400 Miaohe Lin <linmiaohe@huawei.com> wrote:
->
->> Add else to split mutually exclusive case and avoid some unnecessary check.
->> It doesn't seem to change code generation (compiler is smart), but I 
->> think it helps readability.
->
-> OK, I guess.  But the comments are now in the wrong place.
->
+On Wed, 23 Sep 2020 14:27:30 -0700 Vijay Balakrishna <vijayb@linux.microsoft.com> wrote:
 
-Many thanks for kindly reply and fix the wrong comments place.
-Have a good day!
+> Can this patch be included?  As Kirill is ok with patch now.
 
-> --- a/mm/mempool.c~mm-mempool-add-else-to-split-mutually-exclusive-case-fix
-> +++ a/mm/mempool.c
-> @@ -60,8 +60,8 @@ static void check_element(mempool_t *poo
->  	/* Mempools backed by slab allocator */
->  	if (pool->free == mempool_free_slab || pool->free == mempool_kfree) {
->  		__check_element(pool, element, ksize(element));
-> -	/* Mempools backed by page allocator */
->  	} else if (pool->free == mempool_free_pages) {
-> +		/* Mempools backed by page allocator */
->  		int order = (int)(long)pool->pool_data;
->  		void *addr = kmap_atomic((struct page *)element);
->  
-> @@ -83,8 +83,8 @@ static void poison_element(mempool_t *po
->  	/* Mempools backed by slab allocator */
->  	if (pool->alloc == mempool_alloc_slab || pool->alloc == mempool_kmalloc) {
->  		__poison_element(element, ksize(element));
-> -	/* Mempools backed by page allocator */
->  	} else if (pool->alloc == mempool_alloc_pages) {
-> +		/* Mempools backed by page allocator */
->  		int order = (int)(long)pool->pool_data;
->  		void *addr = kmap_atomic((struct page *)element);
->  
-> _
->
->
+He is?  I can't immediately find that email.
+
+Do we have an acked-by?
