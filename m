@@ -2,84 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0994A278765
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A71927876A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728513AbgIYMjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:39:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47126 "EHLO mail.kernel.org"
+        id S1728395AbgIYMkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:40:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgIYMjl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:39:41 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        id S1726368AbgIYMkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:40:10 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D804920BED;
-        Fri, 25 Sep 2020 12:39:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07DBA20BED;
+        Fri, 25 Sep 2020 12:40:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601037580;
-        bh=Ec2OR35i0PEha7HydsenbD0l00v+EgADLMUcwhnoiKU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bJdvlBtFsrw/4edYVucgcGP4T1ybqo87e3hwOWxxZSVXa37m8p0IkSpZKdK4rmS6Q
-         EalYQ2/wn3+/HS2CdPSNn3/WRJRJoEP099YIWMEfduQGaVK92XBCbRMoohp2JvhcxW
-         FyxbGFd+gm2ng1f+VPoJ1xw+QFz0ButQNIWgjC4o=
-Date:   Fri, 25 Sep 2020 14:39:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        sashal@kernel.org, joro@8bytes.org, Jon.Grimm@amd.com,
-        brijesh.singh@amd.com, stable@vger.kernel.org,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: [PATCH] iommu/amd: Use cmpxchg_double() when updating 128-bit
- IRTE
-Message-ID: <20200925123955.GA2732292@kroah.com>
-References: <20200925114505.232280-1-suravee.suthikulpanit@amd.com>
+        s=default; t=1601037610;
+        bh=DTK6nSsH3y7Fe2xkbY4deWEsnqY2Ru+AcN7lWq/R388=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GykenvZtLLZjgYflxIezKKhQvSAZS0QUDdcxrH0zdmmykNCSL5G3SpDtnpwz1h1KU
+         kXHfVTeQH9ODCfJToCDVqRYvvV0BOt52nZ7qwtbbqkvRvrvakW5Zw1WwviE38stoFy
+         1EoTvYBt+rRIl4zrLMxbALFR7NhIourou2yYEQ6g=
+Date:   Fri, 25 Sep 2020 13:40:05 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Michael Auchter <michael.auchter@ni.com>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] dt-bindings: iio: dac: ad5686: add binding
+Message-ID: <20200925134005.288b1b1d@archlinux>
+In-Reply-To: <20200924195215.49443-3-michael.auchter@ni.com>
+References: <20200924195215.49443-1-michael.auchter@ni.com>
+        <20200924195215.49443-3-michael.auchter@ni.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925114505.232280-1-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:45:05AM +0000, Suravee Suthikulpanit wrote:
-> When using 128-bit interrupt-remapping table entry (IRTE) (a.k.a GA mode),
-> current driver disables interrupt remapping when it updates the IRTE
-> so that the upper and lower 64-bit values can be updated safely.
+On Thu, 24 Sep 2020 14:52:14 -0500
+Michael Auchter <michael.auchter@ni.com> wrote:
+
+> Add a binding for AD5686
 > 
-> However, this creates a small window, where the interrupt could
-> arrive and result in IO_PAGE_FAULT (for interrupt) as shown below.
-> 
->   IOMMU Driver            Device IRQ
->   ============            ===========
->   irte.RemapEn=0
->        ...
->    change IRTE            IRQ from device ==> IO_PAGE_FAULT !!
->        ...
->   irte.RemapEn=1
-> 
-> This scenario has been observed when changing irq affinity on a system
-> running I/O-intensive workload, in which the destination APIC ID
-> in the IRTE is updated.
-> 
-> Instead, use cmpxchg_double() to update the 128-bit IRTE at once without
-> disabling the interrupt remapping. However, this means several features,
-> which require GA (128-bit IRTE) support will also be affected if cmpxchg16b
-> is not supported (which is unprecedented for AMD processors w/ IOMMU).
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 880ac60e2538 ("iommu/amd: Introduce interrupt remapping ops structure")
-> Reported-by: Sean Osborne <sean.m.osborne@oracle.com>
-> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> Tested-by: Erik Rockstrom <erik.rockstrom@oracle.com>
-> Reviewed-by: Joao Martins <joao.m.martins@oracle.com>
-> Link: https://lore.kernel.org/r/20200903093822.52012-3-suravee.suthikulpanit@amd.com
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+> Signed-off-by: Michael Auchter <michael.auchter@ni.com>
+Hi Michael,
+
+Looks good to me, but I've made many a mistake on reviewing these in the past
+so good to get Rob's input if he has time.
+
+Thanks,
+
+Jonathan
+ 
 > ---
-> Note: This patch is the back-port on top of the stable branch linux-5.4.y
-> for the upstream commit e52d58d54a32 ("iommu/amd: Use cmpxchg_double() when
-> updating 128-bit IRTE") since the original patch does not apply cleanly.
+> Changes since v1:
+> - Keep supported device sorted
+> - fix adc -> dac typo in schema path
+> since v2:
+> - drop address-cells and size-cells from binding doc
+> - add "additionalProperties: false"
+> - end with ...
+> 
+>  .../bindings/iio/dac/adi,ad5686.yaml          | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> new file mode 100644
+> index 000000000000..8065228e5df8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/dac/adi,ad5686.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Analog Devices AD5686 and similar multi-channel DACs
+> +
+> +maintainers:
+> +  - Michael Auchter <michael.auchter@ni.com>
+> +
+> +description: |
+> +  Binding for Analog Devices AD5686 and similar multi-channel DACs
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - adi,ad5311r
+> +      - adi,ad5338r
+> +      - adi,ad5671r
+> +      - adi,ad5675r
+> +      - adi,ad5691r
+> +      - adi,ad5692r
+> +      - adi,ad5693
+> +      - adi,ad5693r
+> +      - adi,ad5694
+> +      - adi,ad5694r
+> +      - adi,ad5695r
+> +      - adi,ad5696
+> +      - adi,ad5696r
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vcc-supply:
+> +    description: |
+> +      The regulator supply for DAC reference voltage.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      ad5686: dac@0 {
+> +        compatible = "adi,ad5686";
+> +        reg = <0>;
+> +        vcc-supply = <&dac_vref>;
+> +      };
+> +    };
+> +...
 
-Now queued up, thanks.
-
-greg k-h
