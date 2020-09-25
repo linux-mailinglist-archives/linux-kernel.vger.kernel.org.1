@@ -2,82 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DA832789DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DEF92789DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728872AbgIYNot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728121AbgIYNot (ORCPT
+        id S1728920AbgIYNpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:45:07 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:45170 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728878AbgIYNpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:44:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1B1C0613CE;
-        Fri, 25 Sep 2020 06:44:48 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 15:44:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601041487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J5yjXWUCliemUXkVS/rJm2/vf4VSrQMEbNG38722oq0=;
-        b=cedLl12FGt/UdUx9yMki5S9aT3zj+WqF3v8VCUxOYH+HI+xQ2pD1CLhr8UrS/wpLa0LqXV
-        GM3ZKOLg3TTYDjm/BQwVyGNMqDq33tlaNMfLHnYl6nTImvm9SkhFnbPzxERuGx6AUnV+A2
-        bYU9ZbfC3txRmxpYKYrB6cWdz1M4/I02sw+y5nQIeJdGbN9DsR/eaGevAmch9u5wDXY3QN
-        RSItRGAij22JsD38qXk3sAC1UpWirf8PSC5BZVS4SkKzaYVKh0gw9vc55elizR58vao9t+
-        gwHO2AR2dS7nmmCaXifvhknpuUnp1cabsAKOjqeqKH7E/Fcre5eBh4H2MyR6eQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601041487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J5yjXWUCliemUXkVS/rJm2/vf4VSrQMEbNG38722oq0=;
-        b=28Dm8OwXHBIvLvccBaiOwqv/3V9yPbmae8puYhHpd0y1kvgrkGpw5Ojgb/rpzqDSRX/KV8
-        gkMv2Uv3eVK0gQCg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Jerome Brunet <jbrunet@baylibre.com>
-Cc:     Kevin Hilman <khilman@baylibre.com>,
-        Brad Harper <bjharper@gmail.com>,
-        linux-amlogic@lists.infradead.org, linux-mmc@vger.kernel.org,
-        linux-rt-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mmc: host: meson-gx-mmc: fix possible deadlock condition
- for preempt_rt
-Message-ID: <20200925134445.rk366jip5ne4x7em@linutronix.de>
-References: <24a844c3-c2e0-c735-ccb7-83736218b548@gmail.com>
- <7hk0wj9ki2.fsf@baylibre.com>
- <1jzh5e8bld.fsf@starbuckisacylon.baylibre.com>
+        Fri, 25 Sep 2020 09:45:06 -0400
+Received: by mail-wr1-f66.google.com with SMTP id x14so3629066wrl.12
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 06:45:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NlhR3B1xTrFJPN7Yr45TLDcNvoWGlkYDRnyFJmu7snU=;
+        b=FGUMSa4TdWu9DxstvjiaD50mwiA1BQsfBA+I3zXt+gZECukzdXpFDYCUrivQh/ygOd
+         wt/jV1Ndfj1+En0+R1+WUE2WZkXGmqr52VcqOicsf+9Dyxpfm6ucTxPPSLVlmIa2o1sT
+         EnKEhrZd8lU4H131xGHS6yK4XD5MVPL9geortpGLjmAGiWVxZnvCLxS00djImjYaCp4b
+         s4V3TXeedKG3lwaFysLffjVnkH6qW2BmI3kv0khSxajhm7GpF/lcKEjQdTUXQBJuoNIl
+         D2V26cDf0G2CfHko6goPxBAnqn3BFaRWrtWZntdpmoY0MvtUEXSk6+W/4D1giBucnSe1
+         eZlA==
+X-Gm-Message-State: AOAM530uh+dUPOuP9z/w+FSRpoMwXdKb5bSgV2MnoNChv8OomFGs9Xqs
+        1/VegbAbQPK9Xmvvy6/Y6iX7M3FaramVi0yy2pc=
+X-Google-Smtp-Source: ABdhPJyBN/va2EdeB5OsIq/sfsn5RsbVsveEfASKFe3flCATXtrdZgun9ebgeD0yMuKB1E/2zjvKHBnKG7WP4lwXGlE=
+X-Received: by 2002:adf:f2d0:: with SMTP id d16mr4437142wrp.332.1601041505066;
+ Fri, 25 Sep 2020 06:45:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1jzh5e8bld.fsf@starbuckisacylon.baylibre.com>
+References: <20200924124455.336326-1-namhyung@kernel.org> <20200924124455.336326-4-namhyung@kernel.org>
+ <20200925132636.GB3273770@krava>
+In-Reply-To: <20200925132636.GB3273770@krava>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 25 Sep 2020 22:44:53 +0900
+Message-ID: <CAM9d7cgHBe6-SfCc3RTfLmrvaKr1hSprmJPd2BFnQtMUu_6TFw@mail.gmail.com>
+Subject: Re: [PATCH 3/5] perf tools: Copy metric events properly when expand cgroups
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        kernel test robot <rong.a.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-25 11:11:42 [+0200], Jerome Brunet wrote:
-> I'm not sure about this.
-> As you have explained on IRC, I understand that IRQF_ONESHOT is causing
-> trouble with RT as the hard IRQ part of the thread will not be migrated
-> to a thread. That was certainly not the intent when putting this flag.
+On Fri, Sep 25, 2020 at 10:26 PM Jiri Olsa <jolsa@redhat.com> wrote:
+>
+> On Thu, Sep 24, 2020 at 09:44:53PM +0900, Namhyung Kim wrote:
+>
+> SNIP
+>
+> >
+> > +     if (metric_events) {
+> > +             orig_metric_events = *metric_events;
+> > +             rblist__init(metric_events);
+> > +     } else {
+> > +             rblist__init(&orig_metric_events);
+> > +     }
+> > +
+> >       for (;;) {
+> >               p = strchr(str, ',');
+> >               e = p ? p : eos;
+> > @@ -255,6 +267,14 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str)
+> >               cgroup__put(cgrp);
+> >               nr_cgroups++;
+> >
+> > +             if (metric_events) {
+> > +                     perf_stat__collect_metric_expr(tmp_list);
+> > +                     if (metricgroup__copy_metric_events(tmp_list, cgrp,
+> > +                                                         metric_events,
+> > +                                                         &orig_metric_events) < 0)
+> > +                             break;
+> > +             }
+>
+> looks good, do you plan to actualy add support for record?
 
-That is my understanding as well.
+No actually, I still think perf record should use --all-cgroups.
 
-> This seems pretty unsafe to me. Maybe we could improve the driver so it
-> copes with this case gracefully. ATM, I don't think it would.
+> my ack from last version stays
 
-Running the primary handler in hardirq context is bad, because it
-invokes meson_mmc_request_done() at the very end. And here:
-- mmc_complete_cmd() -> complete_all()
-  There is a lockdep_assert_RT_in_threaded_ctx() which should trigger.
+Thanks!  But I didn't see your ack for this patch set.
+(I've only seen it for the perf inject patchset..)
 
-- led_trigger_event() -> led_trigger_event()
-  This should trigger a might_sleep() warning somewhere.
-
-So removing IRQF_ONESHOT is okay but it should additionally disable the
-IRQ source in meson_mmc_irq() and re-enable back in
-meson_mmc_irq_thread(). Otherwise the IRQ remains asserted and may fire
-multiple times before the thread has a chance to run.
-
-Sebastian
+Thanks
+Namhyung
