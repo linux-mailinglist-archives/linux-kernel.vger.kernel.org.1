@@ -2,103 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087A8278FA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89462278FAC
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:33:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729649AbgIYRbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:31:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33345 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727751AbgIYRbS (ORCPT
+        id S1729477AbgIYRdk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 13:33:40 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:34137 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIYRdj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:31:18 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601055077;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kgoDrp/Imua9rkBntWaYSIW0+QvG7ttl6BenhB/EUzM=;
-        b=DllsNc6LB5mJF5GUh5DZwu8TVa4oVZg7QkgkKhHtEfj4BZHUurVgEKSs+oI8zEp1aLtdc3
-        Ffy4ukbUNKgp9H0vdJSg4ZdJ/P5EoJih7RkoT4O6Y6VIrkX64jVOolXCjtgn7Wykelr3WL
-        kpT4OLjyC8bE57Liogt+Hciy1pIHSpk=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-249-DoNGsHt_NxyWwUb37TYi9A-1; Fri, 25 Sep 2020 13:31:15 -0400
-X-MC-Unique: DoNGsHt_NxyWwUb37TYi9A-1
-Received: by mail-wr1-f69.google.com with SMTP id d13so1318209wrr.23
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:31:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kgoDrp/Imua9rkBntWaYSIW0+QvG7ttl6BenhB/EUzM=;
-        b=BALe3Ob0f7ExkYWDSXbcCwxUlLhGqrEgVNMAe3CvWt9MuuvYhZ+DwxdFT2WeOSRjNY
-         5WF5l0LCk/VFrbTi92s1z/yoBtlA3YPQNtoq+PtLwyyDl0/j3TIOMqCYGfh4cobBWcUU
-         lqybHICDgTmfKwB8RkVAFAViYToBlIHKzHs7ze/ZMwsO6zvEuCWrN0wQ0FjNecnNMvzF
-         zo3KKkso6m8ZKiiHbAc6liXRHakIkT2gLL/2oS994ZzP0lN6fe/ttCu91zKUMVUHSSil
-         BJ5P64K7aSPWmVeaLu916nJCXSNvyrIWYty/LkVvqyq2tnpm9SvA0kq65PqGnDd/yLb1
-         CbXQ==
-X-Gm-Message-State: AOAM530l5etwvyX3U4sn6KURw6ZvIgMMSX3Q7OmZJexfTedaGKUdj66B
-        wr4w4Fh1z6SaqARd8AVtUZiTyi+/FqslVXK+7B7b2mD1MK/ralXo4AdVLzUNjZrfwS8RARRFCGC
-        xkn4+zYURBHRuzw4w0TnaYKyA
-X-Received: by 2002:a1c:4c0d:: with SMTP id z13mr4020260wmf.113.1601055073294;
-        Fri, 25 Sep 2020 10:31:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPTDkbJwYC2USu6HcpR/XlLvGZo9MtasrQB1dk8DmaTxAl37UdJ+X+8ppmKhjjYed/hBPwxQ==
-X-Received: by 2002:a1c:4c0d:: with SMTP id z13mr4020240wmf.113.1601055073075;
-        Fri, 25 Sep 2020 10:31:13 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id p11sm3389322wma.11.2020.09.25.10.31.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 10:31:12 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] INVD intercept change to skip instruction
-To:     Jim Mattson <jmattson@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-References: <cover.1600972918.git.thomas.lendacky@amd.com>
- <CALMp9eS2C398GUKm9FP6xdVLN=NYTO3y+EMKv0ptGJ_dzxkP+g@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <e8aa489b-493c-87d2-3d26-a34d6eef810f@redhat.com>
-Date:   Fri, 25 Sep 2020 19:31:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <CALMp9eS2C398GUKm9FP6xdVLN=NYTO3y+EMKv0ptGJ_dzxkP+g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 25 Sep 2020 13:33:39 -0400
+Received: from [172.20.10.2] (dynamic-046-114-136-219.46.114.pool.telefonica.de [46.114.136.219])
+        by mail.holtmann.org (Postfix) with ESMTPSA id BF348CECDF;
+        Fri, 25 Sep 2020 19:40:35 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <21f9469eda2747eca351a1cb811a4834@realsil.com.cn>
+Date:   Fri, 25 Sep 2020 19:33:34 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Max Chou <max.chou@realtek.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <B1309F72-4077-45BD-BD12-DEF324CAE2C6@holtmann.org>
+References: <21f9469eda2747eca351a1cb811a4834@realsil.com.cn>
+To:     =?utf-8?B?6ZmG5pyx5Lyf?= <alex_lu@realsil.com.cn>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/20 23:20, Jim Mattson wrote:
-> On Thu, Sep 24, 2020 at 11:42 AM Tom Lendacky <thomas.lendacky@amd.com> wrote:
->>
->> From: Tom Lendacky <thomas.lendacky@amd.com>
->>
->> This series updates the INVD intercept support for both SVM and VMX to
->> skip the instruction rather than emulating it, since emulation of this
->> instruction is just a NOP.
+Hi Alex,
+
+>>> When someone attacks the service provider, it creates connection,
+>>> authenticates. Then it requests key size of one byte and it identifies
+>>> the key with brute force methods.
+>>> 
+>>> After l2cap info req/resp exchange is complete. the attacker sends l2cap
+>>> connect with specific PSM.
+>>> 
+>>> In above procedure, there is no chance for the service provider to check
+>>> the encryption key size before l2cap_connect(). Because the state of
+>>> l2cap chan in conn->chan_l is BT_LISTEN, there is no l2cap chan with the
+>>> state of BT_CONNECT or BT_CONNECT2.
+>>> 
+>>> So service provider should check the encryption key size in
+>>> l2cap_connect()
+>>> 
+>>> Signed-off-by: Alex Lu <alex_lu@realsil.com.cn>
+>>> ---
+>>> net/bluetooth/l2cap_core.c | 7 +++++++
+>>> 1 file changed, 7 insertions(+)
+>>> 
+>>> diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+>>> index ade83e224567..63df961d402d 100644
+>>> --- a/net/bluetooth/l2cap_core.c
+>>> +++ b/net/bluetooth/l2cap_core.c
+>>> @@ -4150,6 +4150,13 @@ static struct l2cap_chan *l2cap_connect(struct
+>> l2cap_conn *conn,
+>>> 
+>>> 	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_DONE) {
+>>> 		if (l2cap_chan_check_security(chan, false)) {
+>>> +			if (!l2cap_check_enc_key_size(conn->hcon)) {
+>>> +				l2cap_state_change(chan, BT_DISCONN);
+>>> +				__set_chan_timer(chan,
+>> L2CAP_DISC_TIMEOUT);
+>>> +				result = L2CAP_CR_SEC_BLOCK;
+>>> +				status = L2CAP_CS_NO_INFO;
+>>> +				goto response;
+>>> +			}
+>>> 			if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
+>>> 				l2cap_state_change(chan, BT_CONNECT2);
+>>> 				result = L2CAP_CR_PEND;
+>> 
+>> I am not following what you are trying to fix here. Can you show this with a
+>> btmon trace from an attacking device?
+>> 
+>> Regards
+>> 
+>> Marcel
+>> 
+>> 
 > 
-> Isn't INVD a serializing instruction, whereas NOP isn't? IIRC, Intel
-> doesn't architect VM-entry or VM-exit as serializing, though they
-> probably are in practice. I'm not sure what AMD's stance on this is.
+> I'm sorry, I didn't have btmon trace from an attacking device.
+> I didn't have the real attacking device. I just simulate the attacking.
+> I have a device that can create one byte size encryption key.
+> It uses the link key that was produced by pairing with the service provider. Actually the KNOB (Key Negotiation of Bluetooth Attack) says, the link key is unnecessary for the reconnection.
+> I use this device to reconnect to service provider, and then initiate the Key Negotiation for one byte size encryption key. Actually the attacker identified the encryption key with some brute force methods.
+> 
+> I want to provide the trace on service provider side.
 
-Of course that isn't changed by this patch, though.
+what kernel version are you running? I wonder if we should always return L2CAP_CR_PEND here. Do you have a reproducer code?
 
-Queuing both, but a clarification would be useful.  The same applies
-even to CPUID.
+The problem really is that the MASK_REQ_DONE indication is not enough to make a decision for the key size. We have to ensure that also the key size is actually available. If that is not yet done, then we should not check it. This means that any response to L2CAP_Connect_Request PDU needs to be delayed until the key size has been read.
 
-Paolo
+Regards
+
+Marcel
 
