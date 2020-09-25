@@ -2,143 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065E92781FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66BD62781FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727570AbgIYHvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:51:03 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:61530 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727489AbgIYHuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:50:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1601020249; x=1603612249;
-        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=W2ZrFbcxd4kDGmQO+BiozH8E+vz+f2nc13eOaGw19XE=;
-        b=iBv1bbb92r0yTpZ1wcrPTdMU0eDJuIRsNLu1ysrjHn9DIrFDPeSZokfc7RDW19Eu
-        nDpGWm12wQTokuRjBp8UN6hyWcwzhHREOPQ0Hv4m9XgdTtgALJd3hAeuUelAQXXz
-        RUv3Xh2aiodZZkIBv6xbTQfQXqd6p/uiQU/28e4tF3o=;
-X-AuditID: c39127d2-253ff70000001c25-f6-5f6da159bed7
-Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 3E.A5.07205.951AD6F5; Fri, 25 Sep 2020 09:50:49 +0200 (CEST)
-Received: from lws-riedmueller.phytec.de ([172.16.23.108])
-          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
-          with ESMTP id 2020092509504915-495334 ;
-          Fri, 25 Sep 2020 09:50:49 +0200 
-From:   Stefan Riedmueller <s.riedmueller@phytec.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dirk Bender <d.bender@phytec.de>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>
-Subject: [PATCH 5/5] media: mt9p031: Fix corrupted frame after restarting stream
-Date:   Fri, 25 Sep 2020 09:50:29 +0200
-Message-Id: <20200925075029.32181-5-s.riedmueller@phytec.de>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200925075029.32181-1-s.riedmueller@phytec.de>
-References: <20200925075029.32181-1-s.riedmueller@phytec.de>
+        id S1727553AbgIYHvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:51:00 -0400
+Received: from mail-db8eur05on2089.outbound.protection.outlook.com ([40.107.20.89]:40769
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727486AbgIYHux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:50:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=enXq6Pwm9cZquieMf7nCZ0HR0S/LTKbKJkxeM4i5UMc4Z4aqOVCHthKnGTz80b7m9FEUE1YXRVryWkyt9y7pCX9c3ctJEovQ6VQTQVEd2afuGfb7t7XqAsK6ClgWpR/ge5TigyhLCUgZLo//XHRgln8u2/Du6DdD5T0J6x7zlWsseyC6Q83KocYi2WYLeE09xqtzovNgVVGPsLU8D+H34DZ4QvgrNiOfXpbtb7SmqdAj9WRy1vgDJ8fBBE42Kd4I80Pxsl22a3r+q1Iub23o8r4ur73m4ABaJueLRq8KhE+Z3YnBGNhbKXVMCF8liYmnqSvlcMoy8pjLb0dCkfItfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hi5xPWrjtxm5PjZGJStuwAs+ZuRhYNkN9aYDUW22WOA=;
+ b=Z2UaJ+Kp6rl0rONmdNGqZ8ZE2jJDa55O6oRqWUAbXtSrX30yRSWH+pnitqXeO9TSYYc5iEacfL7Bhdopm5cRKWmYbW/4B2+iTrfucvDvlDBS/UpSUYbBbB8RRL0EWaut1vAqp0jcOFMeeXB6Y1guPnWWcC++VofLi0sCIQ4saD3/rNh/1fIQ9+IAawiY3/x7h3BQ30af4lACxAgM6GUq/64j6lXViU5rJH6f2QiRp6E0DpaQTNWHwl3s4yVNm1UBr4WFZyMH4Gt80OhTXFGo808/y/LSzYyG0L3xLDvHY17VPHr7UXGUs5eAguI6o6kdkRe7fVW9xAkreK7RrtkLFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hi5xPWrjtxm5PjZGJStuwAs+ZuRhYNkN9aYDUW22WOA=;
+ b=lSdSbhmi4cgMsr3qqmfwqm4gq7iSFK+fktcNFL3/FSc3JiOATSc/CQ43CQtylDm48jiJvCiWDkEGrkx3H/MTrGki0pI9CPSLNSJy5/DRKWsLmix416CdXibzJdyraGWqaLc45PS6DwufwKYFsddCgTk42X9ReRHHxIDglUoFKzg=
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR0401MB2382.eurprd04.prod.outlook.com (2603:10a6:800:23::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Fri, 25 Sep
+ 2020 07:50:49 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3412.024; Fri, 25 Sep 2020
+ 07:50:49 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+CC:     Sudeep Dutt <sudeep.dutt@intel.com>,
+        Ashutosh Dixit <ashutosh.dixit@intel.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH 4/4] mic: vop: copy data to kernel space then write to io
+ memory
+Thread-Topic: [PATCH 4/4] mic: vop: copy data to kernel space then write to io
+ memory
+Thread-Index: AQHWkwyY0woIw7FyBUOLtOs53jP4j6l49eAAgAAB0sA=
+Date:   Fri, 25 Sep 2020 07:50:49 +0000
+Message-ID: <VI1PR04MB4960F5105C6C54F17700352092360@VI1PR04MB4960.eurprd04.prod.outlook.com>
+References: <20200925071831.8025-1-sherry.sun@nxp.com>
+ <20200925071831.8025-5-sherry.sun@nxp.com>
+ <CAK8P3a2jJBxEDD+FXpHsFXRd9BF3aND2jTtswzP1L6_T4BiS9A@mail.gmail.com>
+In-Reply-To: <CAK8P3a2jJBxEDD+FXpHsFXRd9BF3aND2jTtswzP1L6_T4BiS9A@mail.gmail.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: arndb.de; dkim=none (message not signed)
+ header.d=none;arndb.de; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 6ab4f9c9-4583-4e08-988d-08d86127b84f
+x-ms-traffictypediagnostic: VI1PR0401MB2382:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR0401MB23829735330C913EAEFA7A2292360@VI1PR0401MB2382.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cZLd6VX/8A+oaOtGbf+pB7l3XDJV/TPz7CWKQKkoJOwkwxi/H2D9NqKvJlcXRxR+WayqDFP2phUDLQkFxvWDMZbYtTu0yNmEFMXHKqla6iY77WU73xCYxh7vxw8TpzvrikBDSe1mgFwWcMEAuspcdcFvZIKdk03wSTsyI6btUqO1YH5ZVsCwWar0/1a3tDWWqzJJeLwMdcGahOeQv99tXwqeA23axnlTnIevW3eRwy5O5SOcR3lkzg3dzt9OrUMf+Z+U96wd6IY+yok6LUoIL+QgcnFnj4a7WVoPu27KFFCDuDWlo8taZLCt0tJi3q482N9TdUpXYeahfriyJC3Vy0tJIm1Bzsnik4SOLW+nxKiFA0oUrB//YMZvBiFn3I1u
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(136003)(396003)(76116006)(6916009)(53546011)(5660300002)(186003)(66476007)(26005)(44832011)(316002)(54906003)(4744005)(6506007)(71200400001)(7696005)(33656002)(478600001)(83380400001)(4326008)(66446008)(8676002)(66946007)(9686003)(52536014)(86362001)(64756008)(55016002)(66556008)(2906002)(8936002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: xnj5vTDrNCHu3bJhRiU0XZL1bopkDngqyCkJbTqHshk2/YMBNyfxc/xQJ7nkfeRJ/zSvO9XLsLnEAHSSoiWNFewgBuyeOErnzTGNh1ymSDxHiynzx4NKV2GoS43mhcfXu6t//Mp4RWfn0aglYbm+ja39u3qr7svDEcaWW1d55ih80mj3ANm29jen5B11q9y/fIt/htOpRG4++L1jsnWN0BB7ZgzAtkVScqIROH+k/su60AeZ+L8MhInGutRiOh1Yaq/3ZmIDw1xOiNGjRZ6be0Hmi3Mj2mbeU3WMNbKvR/wlJMWzh2cMVuzDXMpYvz155W6/g/p1vaREoAl+RH4Imlvl8m9SmFgh4zdIhb+R0th3MhW9bOaHKjEuap3/OQKVNSmja/OBVHzcIMZd5MKEkkYDlsxcrnb5zmH7rkg3QwxmRm2VJqmaHYcYmSiR2BsKt2aeOC9+HOtm5Oe4eNHyQ2tqqdAqwjwuM/WE12ko/wdTQqhjnmboNj1I9z/Tt/F2iKfvcZdSUz9vWJdw0/6K0FH2X7sLQdpjFWuJi5PmzhM7i+qp+k4h+VS45l7I51Z5VZCwB8vUwOG4c+/f6Tcl4DbhYw/Lj14DxWFUAZGoUoW+pu/v+5MLOvfUiRA9WAcQHjBO2F5uQlS/2+X1bKwCdQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 25.09.2020 09:50:49,
-        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
- 25.09.2020 09:50:49
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: quoted-printable
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPLMWRmVeSWpSXmKPExsWyRoCBSzdyYW68we1vchadE5ewW1zeNYfN
-        omfDVlaLZZv+MFl82vKNyYHVY3bHTFaPTas62TzmnQz0+LxJLoAlissmJTUnsyy1SN8ugSvj
-        zptbTAUnRSquH3rN0sDYJtjFyMkhIWAisX/pB0YQW0hgG6PE1W25EPY1Rom7D8tBbDYBI4kF
-        0xqZQGwRAQuJ3kXTgeq5OJgFnjFKtLe1soEkhAUCJP5Pm8gOYrMIqEqs+3yCBcTmFbCRODDl
-        MBvEMnmJmZe+g9VwCthKHH17nglimY3Eix1/GSHqBSVOznzCArJAQuAKo8TpT7NYIJqFJE4v
-        PssMYjMLaEssW/iaeQKjwCwkPbOQpBYwMq1iFMrNTM5OLcrM1ivIqCxJTdZLSd3ECAzUwxPV
-        L+1g7JvjcYiRiYPxEKMEB7OSCO/xDTnxQrwpiZVVqUX58UWlOanFhxilOViUxHk38JaECQmk
-        J5akZqemFqQWwWSZODilGhgNvl7u+cFwsGfvDN7Z/0z2X1u9n2tH9SqPjyzzcm3OOWb2nkus
-        bSl4mlM0b5Vz9mRBP4/nuxfL/Jv8cIbwvrSgU47TZjp1OLr82mAWGniU+cb9f88UGmy6Y2TM
-        Zj9uNud101635cbUFd7vubLtDM6Xbyn6djVPW6ugV/bTmsOL+M/L+eh3lfxWYinOSDTUYi4q
-        TgQA/2/8F0ICAAA=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ab4f9c9-4583-4e08-988d-08d86127b84f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Sep 2020 07:50:49.5928
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JPBHKnwa+7X2zRtSVrc6GRTSFzkkBEmZfTa4a1fTdVTwqL2XSRQhMMfBWkTpSqbhUktWmNFRULJmenq1JEO9CA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2382
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dirk Bender <d.bender@phytec.de>
-
-To prevent corrupted frames after starting and stopping the sensor it's
-datasheet specifies a specific pause sequence to follow:
-
-Stopping:
-	Set Pause=5FRestart Bit -> Set Restart Bit -> Set Chip=5FEnable Off
-
-Restarting:
-	Set Chip=5FEnable On -> Clear Pause=5FRestart Bit
-
-The Restart Bit is cleared automatically and must not be cleared
-manually as this would cause undefined behavior.
-
-Signed-off-by: Dirk Bender <d.bender@phytec.de>
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
----
- drivers/media/i2c/mt9p031.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
-
-diff --git a/drivers/media/i2c/mt9p031.c b/drivers/media/i2c/mt9p031.c
-index 8f8ee37a2dd2..2f2daf95dcd3 100644
---- a/drivers/media/i2c/mt9p031.c
-+++ b/drivers/media/i2c/mt9p031.c
-@@ -80,6 +80,8 @@
- #define		MT9P031=5FPIXEL=5FCLOCK=5FSHIFT(n)		((n) << 8)
- #define		MT9P031=5FPIXEL=5FCLOCK=5FDIVIDE(n)		((n) << 0)
- #define MT9P031=5FFRAME=5FRESTART				0x0b
-+#define		MT9P031=5FFRAME=5FRESTART=5FSET		(1 << 0)
-+#define		MT9P031=5FFRAME=5FPAUSE=5FRESTART=5FSET		(1 << 1)
- #define MT9P031=5FSHUTTER=5FDELAY				0x0c
- #define MT9P031=5FRST					0x0d
- #define		MT9P031=5FRST=5FENABLE			1
-@@ -483,9 +485,25 @@ static int mt9p031=5Fset=5Fparams(struct mt9p031 *mt9p=
-031)
- static int mt9p031=5Fs=5Fstream(struct v4l2=5Fsubdev *subdev, int enable)
- {
- 	struct mt9p031 *mt9p031 =3D to=5Fmt9p031(subdev);
-+	struct i2c=5Fclient *client =3D v4l2=5Fget=5Fsubdevdata(subdev);
-+	int val;
- 	int ret;
-=20
- 	if (!enable) {
-+		val =3D mt9p031=5Fread(client, MT9P031=5FFRAME=5FRESTART);
-+
-+		/* enable pause restart */
-+		val |=3D MT9P031=5FFRAME=5FPAUSE=5FRESTART=5FSET;
-+		ret =3D mt9p031=5Fwrite(client, MT9P031=5FFRAME=5FRESTART, val);
-+		if (ret < 0)
-+			return ret;
-+
-+		/* enable restart + keep pause restart set */
-+		val |=3D MT9P031=5FFRAME=5FRESTART=5FSET;
-+		ret =3D mt9p031=5Fwrite(client, MT9P031=5FFRAME=5FRESTART, val);
-+		if (ret < 0)
-+			return ret;
-+
- 		/* Stop sensor readout */
- 		ret =3D mt9p031=5Fset=5Foutput=5Fcontrol(mt9p031,
- 						 MT9P031=5FOUTPUT=5FCONTROL=5FCEN, 0);
-@@ -505,6 +523,13 @@ static int mt9p031=5Fs=5Fstream(struct v4l2=5Fsubdev *=
-subdev, int enable)
- 	if (ret < 0)
- 		return ret;
-=20
-+	val =3D mt9p031=5Fread(client, MT9P031=5FFRAME=5FRESTART);
-+	/* disable reset + pause restart */
-+	val &=3D ~MT9P031=5FFRAME=5FPAUSE=5FRESTART=5FSET;
-+	ret =3D mt9p031=5Fwrite(client, MT9P031=5FFRAME=5FRESTART, val);
-+	if (ret < 0)
-+		return ret;
-+
- 	return mt9p031=5Fpll=5Fenable(mt9p031);
- }
-=20
---=20
-2.25.1
-
+SGkgQXJuZCwNCg0KPiBTdWJqZWN0OiBSZTogW1BBVENIIDQvNF0gbWljOiB2b3A6IGNvcHkgZGF0
+YSB0byBrZXJuZWwgc3BhY2UgdGhlbiB3cml0ZSB0byBpbw0KPiBtZW1vcnkNCj4gDQo+IE9uIEZy
+aSwgU2VwIDI1LCAyMDIwIGF0IDk6MjIgQU0gU2hlcnJ5IFN1biA8c2hlcnJ5LnN1bkBueHAuY29t
+PiB3cm90ZToNCj4gPg0KPiANCj4gPiBAQCAtNjU1LDEyICs2NTYsMTUgQEAgc3RhdGljIGludCB2
+b3BfdmlydGlvX2NvcHlfZnJvbV91c2VyKHN0cnVjdA0KPiB2b3BfdmRldiAqdmRldiwgdm9pZCBf
+X3VzZXIgKnVidWYsDQo+ID4gICAgICAgICAgKiBXZSBhcmUgY29weWluZyB0byBJTyBiZWxvdyBh
+bmQgc2hvdWxkIGlkZWFsbHkgdXNlIHNvbWV0aGluZw0KPiA+ICAgICAgICAgICogbGlrZSBjb3B5
+X2Zyb21fdXNlcl90b2lvKC4uKSBpZiBpdCBleGlzdGVkLg0KPiA+ICAgICAgICAgICovDQo+ID4g
+LSAgICAgICBpZiAoY29weV9mcm9tX3VzZXIoKHZvaWQgX19mb3JjZSAqKWRidWYsIHVidWYsIGxl
+bikpIHsNCj4gPiArICAgICAgIHRlbXAgPSBrbWFsbG9jKGxlbiwgR0ZQX0tFUk5FTCk7DQo+ID4g
+KyAgICAgICBpZiAoY29weV9mcm9tX3VzZXIodGVtcCwgdWJ1ZiwgbGVuKSkNCj4gDQo+IFRoaXMg
+bmVlZHMgdG8gaGF2ZSBlcnJvciBoYW5kbGluZyBmb3IgYSBrbWFsbG9jKCkgZmFpbHVyZS4gQXMg
+dGhlIGxlbmd0aA0KPiBhcHBlYXJzIHRvIGJlIHVzZXItcHJvdmlkZWQsIHlvdSBtaWdodCBhbHNv
+IHdhbnQgdG8gbGltaXQgdGhlIHNpemUgb2YgdGhlDQo+IGFsbG9jYXRpb24gYW5kIGluc3RlYWQg
+ZG8gYSBsb29wIHdpdGggbXVsdGlwbGUgY29waWVzIGlmIHRoZXJlIGlzIG1vcmUgZGF0YQ0KPiB0
+aGFuIGZpdHMgaW50byB0aGUgYWxsb2NhdGlvbi4NCg0KVGhhbmtzIGZvciB5b3VyIHF1aWNrIHJl
+cGx5LCB5b3UgYXJlIHJpZ2h0LCB3aWxsIGFkZCBlcnJvciBoYW5kbGluZyBmb3Iga21hbGxvYygp
+IGZhaWx1cmUgYW5kIHNpemUgbGltaXQgaGFuZGxpbmcgaW4gdjIuDQoNClJlZ2FyZHMNClNoZXJy
+eSANCj4gDQo+ICAgICAgICBBcm5kDQo=
