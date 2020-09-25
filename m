@@ -2,135 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 319AA2785D6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:29:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841362785D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727838AbgIYL3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:29:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30069 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728118AbgIYL3f (ORCPT
+        id S1728093AbgIYLba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:31:30 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:14322 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727290AbgIYLb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:29:35 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601033373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3NXvmRl1RoHr3cxBopNVva2P77kIGOs8tMv65YwxLi0=;
-        b=h109z7aCGiczl+ZBiY0KVNFucxsfk0lcC+YWIP9YU+19Id+ETphJmGqeBNhQuPG2D9jAo5
-        5P8Pc/B3/nBlYIfLr94+AX5V03f9LJp9CB5Jtj8lSAoOJI2u2Tar134jCL7qn7XEwfvHN8
-        H5iBrj1LzdlpYAHmxrmbOU/5x9d6Vz0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-192-1ex2OmjHNEeCj0OvC-clLQ-1; Fri, 25 Sep 2020 07:29:29 -0400
-X-MC-Unique: 1ex2OmjHNEeCj0OvC-clLQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 866C564149;
-        Fri, 25 Sep 2020 11:29:28 +0000 (UTC)
-Received: from [10.72.12.44] (ovpn-12-44.pek2.redhat.com [10.72.12.44])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BE17A5D9F3;
-        Fri, 25 Sep 2020 11:29:25 +0000 (UTC)
-Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
- errors
-To:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Eli Cohen <elic@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
- <20200918082245.GP869610@unreal>
- <20200924052932-mutt-send-email-mst@kernel.org>
- <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
- <079c831e-214d-22c1-028e-05d84e3b7f04@infradead.org>
- <20200924120217-mutt-send-email-mst@kernel.org>
- <20200925072005.GB2280698@unreal>
- <20200925061847-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <821c501c-53ce-3e80-8a73-f0680193df20@redhat.com>
-Date:   Fri, 25 Sep 2020 19:29:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200925061847-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Fri, 25 Sep 2020 07:31:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1601033487; x=1632569487;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=AagZOpzn1NhSFHSKXVuHifaG+tTjpnreFa9A/fwMqRc=;
+  b=HZjoJ0biVTafZMmbhLKXB5CT2F+ytkpDPWaBuMdrXTrHKurus70Wyjw0
+   VickKYoeQv5ucTYSHqlrXu/cVJ87M07PxFWYHwQbU1giL9g8RVKnK/xQo
+   Fk4DsxDU5j9/VuCEhNipJeX73hHp1tb9ZIT3PdbxZiGHCiW9JLxGxKGXl
+   WhAmU1tTXfxxze0Vz26kEXWuLkx2FnH5MPou/YUFOXedslLh/nYEtU/jt
+   sbPnyl3wnJznOeRy1owyfcBxE1oIbvSQWLldIVFSVvxX4WmmF9yyAj07t
+   +HXWnTgqB95AqdJYYU7weYOBTMsx8wIU62i53WzLHjGXix4gDdKemZk9H
+   w==;
+IronPort-SDR: Ac6AwkeMnUG00kyrpesMXaw5R9AdRcP9wR4G710fZLTiQbsy1X9C/BzcUI95SzDLmJkixWl8Dv
+ v1gey29XjWGwA9B5OWiNL/VbnbJgGwMpEXypLX/9gQmpNgMnsljzGvCVvvzMDKEJFX17ulJxam
+ sXc6nj5xtA+UlkQg6740bJ2ik40vCa3CpUjMR4uO8E9PHXYBtKyGa+q50Jp9ghhLgDnAPdjmXY
+ 3Ya4MV9UbQNDKKEIGzAqDmoxlgOkmpoqA5LTkzJE+702kO3E2MmcJOBSz8c+VG0l0JiJ0CYUX/
+ jFU=
+X-IronPort-AV: E=Sophos;i="5.77,301,1596470400"; 
+   d="scan'208";a="148192336"
+Received: from mail-co1nam04lp2059.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.59])
+  by ob1.hgst.iphmx.com with ESMTP; 25 Sep 2020 19:31:25 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bHt/vn6JyrgvJw9XfVrCvnbM7F9DB5KHfoTuDeRgonwUbXwLZXD31yGPjYsiDT7rSYnizblU3n+yQJ1ZGgibxdWwiRgwgTFdq9h4F0WQ3M/yUqMgUhDIykMq10IIiYwPn2Fzu0bMvwLOSWXsRYyW/LWLNQRqdAVas+7nnYVH+ppx85c6qvqQrG1x1IA94GCtNRhFY/vOvMzM6yBZonmRWzeit+87ws+0y8m/BIPMOS24NWBH2qkxdScwpcdtPC5orFFRaE/z7qxW1ZcZIiowOSm2kflJzhuwf1R28uSeTUsxf7ZEzHa09LKP5SPwBsAFyptu0uJ+h+MX07pkxDi8tQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8eLTscy+oRZCsZU1VrMbFHJaai2nVNimxRk+clxEkpw=;
+ b=CbLtdc4Ulz0mHuUTAUv1p3tYpRJgler8eUo23nZfgrwKMgsmAfHbpb4kN/MotY1aFwycU9PNoTBxS+w9+j0ZG3fhZ8Nnn3vbCHlijkx1ZbSPupE1kulFel33DNoSw2z7N7AbTdoOyczTroFNiUD1HKj1zuA7T4wQ+79jwIFThxyed7HbMGOrd99AQw3rWvQDz1ePVU8yLwCLzicfgTwwaPFudT2x9tJnVoncH+MiFbDdSFreGQV3+6S8J/1OZZjnzG3EMBZBjXuDHX6h0abxu+Iv7m5tc+0Bn7tufWmrogu87C/PmLAxlHlpxnQ41uOSh5ZZaqjZ/QmdxdUc80Z+Yg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8eLTscy+oRZCsZU1VrMbFHJaai2nVNimxRk+clxEkpw=;
+ b=kcT1wREN7zT5M820kGxOOGDYknE0MhEFsuB0Rs3DwJtBWF52nxaDEUNUL/GX4xB2TuT0hzB8sv1CW7DyHZfiIEqbuyuy3qnlw8pHQY92ZM56VLuG+macv9ax5cknhSNnKiBZAAsQAdibQoRGiIOCvH5uOu5dRh0Z5GM2WedIBKM=
+Authentication-Results: dabbelt.com; dkim=none (message not signed)
+ header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
+Received: from DM6PR04MB6201.namprd04.prod.outlook.com (2603:10b6:5:127::32)
+ by DM6PR04MB6778.namprd04.prod.outlook.com (2603:10b6:5:24c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20; Fri, 25 Sep
+ 2020 11:31:24 +0000
+Received: from DM6PR04MB6201.namprd04.prod.outlook.com
+ ([fe80::607a:44ed:1477:83e]) by DM6PR04MB6201.namprd04.prod.outlook.com
+ ([fe80::607a:44ed:1477:83e%7]) with mapi id 15.20.3391.020; Fri, 25 Sep 2020
+ 11:31:24 +0000
+From:   Anup Patel <anup.patel@wdc.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anup Patel <anup.patel@wdc.com>
+Subject: [RFC PATCH] RISC-V: Use SBI SRST extension when available
+Date:   Fri, 25 Sep 2020 17:00:57 +0530
+Message-Id: <20200925113057.725911-1-anup.patel@wdc.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-ClientProxiedBy: MA1PR0101CA0063.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:20::25) To DM6PR04MB6201.namprd04.prod.outlook.com
+ (2603:10b6:5:127::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from wdc.com (122.179.69.106) by MA1PR0101CA0063.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:20::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Fri, 25 Sep 2020 11:31:20 +0000
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [122.179.69.106]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: de43d0f2-8251-4b81-9026-08d861468894
+X-MS-TrafficTypeDiagnostic: DM6PR04MB6778:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR04MB67787364E87ADAD71C2C3C4B8D360@DM6PR04MB6778.namprd04.prod.outlook.com>
+WDCIPOUTBOUND: EOP-TRUE
+X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6Sl6Cz1aeARx0iExNmYpdplXnkJAh9PjXQVvxdkto74UOip0pxoGOCGyFosKD7/1VY8CjOMnXIbkv3qJ7TJzbGJI1/+H4GAOesuBsu8CNMV7mn1oR32eKZqKHl6VWMcKMNZAVEMvxYbdysS+BKhKAc4H5qBDu2H7X+HoaXtYukP3V7N79WI75xV5NlaIAEhZDEdPDpyonPi41OqIY0Q217ukUnXRKeh1IBZUPBBKKEBxtokA9UgmvzPSimYxC6qLvZcbHCKD1x3gms29zWlXDEgoYPU7/jYSmzqH8yO8Qu9pm+xznHZAlLbObMirmgn1tpCp+25+iGLJ7KVUpq7BQSUPZl2dUV9cCHvzTDC072IoMZ2CYI7li1NOCLlJ9D21Z4OwysH9UJ19FQAJ59vGuNXg54GqlJl/7CS5jS+8VfjW7QIuzVfvJR4YJuogR/iT8mkEgtP++r9RjEF/Vey0xQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6201.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(396003)(136003)(346002)(66556008)(66476007)(16526019)(8886007)(8676002)(2906002)(5660300002)(966005)(52116002)(7696005)(54906003)(36756003)(8936002)(86362001)(26005)(1076003)(316002)(6666004)(55016002)(66946007)(478600001)(956004)(110136005)(44832011)(2616005)(83380400001)(4326008)(186003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: R60o+qehvarRj6EcZq6MOpmepUKaqWFSvvIbAp8h4Cwi/+FXUopIfIMPjFhOpKb3YqFurC/YhO795/2Vdj+e45hmlx2GHlZzTR7rdNF+w4MZq6ELqNPecEGq59RMwLfZZksfq9M0q8lrDMbNhsAggWBWy4v339Up3le0/WyMEELJkLN7kE7XJMGBExwxJ0OzR3IPBwOmPNvSENja8CyK8BvUX9iWxWKSvTjbFKRyQ+qHkwQAPhk59aIvq2QE8qDluhbw6DhnRmwffBJKn52m4YvgXei3WFXgyBzh4T2uR5QYRDBGfTj+HBFCTxQHJt/ASCu42chvbVIPJrht2C8PJTyIjiqgSR2XjP5ctyxosHGUzDt/G4cbjeUzhuUnGhRyGpWW+Kds/UQrohs26lJ5dXG4OmPdRxkEvf0woKvoVoHEz6+UdXObv6VwCzKgjBB1UVftNdIZI4nSyj9j0RNznKCV/Z8uiTKjuZetppE+DRHmixx/l+mGCVeCxp/j90AlzamOjUicsAEEzH43umXGGcoeJLk2GNh+m7jGlhvCcQqpB7SGExqD0SbJs0JIsDJuOI+NPAyLh/+QrtafVnZ8j9bO93R9REQOp8QtMPGOPXHLKet5UlnqDxznFC1lJqEdxV62CpkFtVi6UNBxLFotWA==
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: de43d0f2-8251-4b81-9026-08d861468894
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6201.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 11:31:24.4854
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hfko+HV7101Necfi+Rf3nYfpVVDuFyZjJn1MW4wWhb//w/jhbJ8OmKvLrid6gXaZxdNoSjJ1haXNcNIlZPMzcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6778
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The SBI SRST extension provides a standard way to poweroff and
+reboot the system irrespective to whether Linux RISC-V S-mode
+is running natively (HS-mode) or inside Guest/VM (VS-mode).
 
-On 2020/9/25 下午6:19, Michael S. Tsirkin wrote:
-> On Fri, Sep 25, 2020 at 10:20:05AM +0300, Leon Romanovsky wrote:
->> On Thu, Sep 24, 2020 at 12:02:43PM -0400, Michael S. Tsirkin wrote:
->>> On Thu, Sep 24, 2020 at 08:47:05AM -0700, Randy Dunlap wrote:
->>>> On 9/24/20 3:24 AM, Eli Cohen wrote:
->>>>> On Thu, Sep 24, 2020 at 05:30:55AM -0400, Michael S. Tsirkin wrote:
->>>>>>>> --- linux-next-20200917.orig/drivers/vdpa/Kconfig
->>>>>>>> +++ linux-next-20200917/drivers/vdpa/Kconfig
->>>>>>>> @@ -31,7 +31,7 @@ config IFCVF
->>>>>>>>
->>>>>>>>   config MLX5_VDPA
->>>>>>>>   	bool "MLX5 VDPA support library for ConnectX devices"
->>>>>>>> -	depends on MLX5_CORE
->>>>>>>> +	depends on VHOST_IOTLB && MLX5_CORE
->>>>>>>>   	default n
->>>>>>> While we are here, can anyone who apply this patch delete the "default n" line?
->>>>>>> It is by default "n".
->>>>> I can do that
->>>>>
->>>>>>> Thanks
->>>>>> Hmm other drivers select VHOST_IOTLB, why not do the same?
->>>> v1 used select, but Saeed requested use of depends instead because
->>>> select can cause problems.
->>>>
->>>>> I can't see another driver doing that. Perhaps I can set dependency on
->>>>> VHOST which by itself depends on VHOST_IOTLB?
->>>>>>
->>>>>>>>   	help
->>>>>>>>   	  Support library for Mellanox VDPA drivers. Provides code that is
->>>>>>>>
->>> Saeed what kind of problems? It's used with select in other places,
->>> isn't it?
->> IMHO, "depends" is much more explicit than "select".
->>
->> Thanks
-> This is now how VHOST_IOTLB has been designed though.
-> If you want to change VHOST_IOTLB to depends I think
-> we should do it consistently all over.
->
->
-> config VHOST_IOTLB
->          tristate
->          help
->            Generic IOTLB implementation for vhost and vringh.
->            This option is selected by any driver which needs to support
->            an IOMMU in software.
+The draft specification of SBI SRST extension is available in
+srbt_v1 branch of: https://github.com/avpatel/riscv-sbi-doc.
 
+This patch extends Linux RISC-V SBI implementation to detect
+and use SBI SRST extension.
 
-Yes, since there's no prompt for VHOST_IOTLB which means, if there's no 
-other symbol that select VHOST_IOTLB, you can't enable MLX5 at all.
+Signed-off-by: Anup Patel <anup.patel@wdc.com>
+---
+ arch/riscv/include/asm/sbi.h |  7 +++++++
+ arch/riscv/kernel/sbi.c      | 25 +++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-See kconfig-language.rst:
-
-
-     In general use select only for non-visible symbols
-     (no prompts anywhere) and for symbols with no dependencies.
-     That will limit the usefulness but on the other hand avoid
-     the illegal configurations all over.
-
-Thanks
-
-
->
->
->>>> --
->>>> ~Randy
+diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+index 653edb25d495..2fcecec7dd0c 100644
+--- a/arch/riscv/include/asm/sbi.h
++++ b/arch/riscv/include/asm/sbi.h
+@@ -27,6 +27,7 @@ enum sbi_ext_id {
+ 	SBI_EXT_IPI = 0x735049,
+ 	SBI_EXT_RFENCE = 0x52464E43,
+ 	SBI_EXT_HSM = 0x48534D,
++	SBI_EXT_SRST = 0x53525354,
+ };
+ 
+ enum sbi_ext_base_fid {
+@@ -70,6 +71,12 @@ enum sbi_hsm_hart_status {
+ 	SBI_HSM_HART_STATUS_STOP_PENDING,
+ };
+ 
++enum sbi_ext_srst_fid {
++	SBI_EXT_SRST_SHUTDOWN = 0,
++	SBI_EXT_SRST_COLD_REBOOT,
++	SBI_EXT_SRST_WARM_REBOOT
++};
++
+ #define SBI_SPEC_VERSION_DEFAULT	0x1
+ #define SBI_SPEC_VERSION_MAJOR_SHIFT	24
+ #define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
+diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
+index 226ccce0f9e0..865e028a9a4b 100644
+--- a/arch/riscv/kernel/sbi.c
++++ b/arch/riscv/kernel/sbi.c
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/init.h>
+ #include <linux/pm.h>
++#include <linux/reboot.h>
+ #include <asm/sbi.h>
+ #include <asm/smp.h>
+ 
+@@ -501,6 +502,23 @@ int sbi_remote_hfence_vvma_asid(const unsigned long *hart_mask,
+ }
+ EXPORT_SYMBOL(sbi_remote_hfence_vvma_asid);
+ 
++static int sbi_srst_reboot(struct notifier_block *this,
++			   unsigned long mode, void *cmd)
++{
++	sbi_ecall(SBI_EXT_SRST, (mode == REBOOT_WARM || mode == REBOOT_SOFT) ?
++		  SBI_EXT_SRST_WARM_REBOOT : SBI_EXT_SRST_COLD_REBOOT,
++		  0, 0, 0, 0, 0, 0);
++
++	return NOTIFY_DONE;
++}
++
++static struct notifier_block sbi_srst_reboot_nb;
++
++static void sbi_srst_power_off(void)
++{
++	sbi_ecall(SBI_EXT_SRST, SBI_EXT_SRST_SHUTDOWN, 0, 0, 0, 0, 0, 0);
++}
++
+ /**
+  * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
+  * @extid: The extension ID to be probed.
+@@ -593,6 +611,13 @@ int __init sbi_init(void)
+ 		} else {
+ 			__sbi_rfence	= __sbi_rfence_v01;
+ 		}
++		if (sbi_probe_extension(SBI_EXT_SRST) > 0) {
++			pr_info("SBI v0.2 SRST extension detected\n");
++			pm_power_off = sbi_srst_power_off;
++			sbi_srst_reboot_nb.notifier_call = sbi_srst_reboot;
++			sbi_srst_reboot_nb.priority = 192;
++			register_restart_handler(&sbi_srst_reboot_nb);
++		}
+ 	} else {
+ 		__sbi_set_timer = __sbi_set_timer_v01;
+ 		__sbi_send_ipi	= __sbi_send_ipi_v01;
+-- 
+2.25.1
 
