@@ -2,190 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3C6278C61
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:18:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3D5278C58
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729182AbgIYPSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:18:42 -0400
-Received: from mail-m1272.qiye.163.com ([115.236.127.2]:21924 "EHLO
-        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728818AbgIYPSm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:18:42 -0400
-Received: from ubuntu.localdomain (unknown [58.250.176.229])
-        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id 745FEB024A7;
-        Fri, 25 Sep 2020 23:18:30 +0800 (CST)
-From:   Bailu Lin <bailu.lin@vivo.com>
-To:     corbet@lwn.net
-Cc:     alex.shi@linux.alibaba.com, bailu.lin@vivo.com,
-        catalin.marinas@arm.com, harryxiyou@gmail.com, kernel@vivo.com,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, will@kernel.org
-Subject: [PATCH v3] Documentation: Chinese translation of  Documentation/arm64/amu.rst
-Date:   Fri, 25 Sep 2020 08:17:58 -0700
-Message-Id: <20200925151758.41818-1-bailu.lin@vivo.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200924104141.7abc7271@lwn.net>
-References: <20200924104141.7abc7271@lwn.net>
+        id S1729167AbgIYPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:17:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52162 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728818AbgIYPR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:17:59 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B44E920878;
+        Fri, 25 Sep 2020 15:17:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601047078;
+        bh=Memmat2QMSKm4nwC6E/N+LYsT2VSLAWg4jqrX9rOxRc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0I0jvTv72ihg9+bzMure3BX1lc+87CO5bL9392leVtXnedqMSe5ygE5G4jcX2w1qW
+         xoHSyqw+O8y4wGORU/iFtjKf17BUhMzTBzKdn1CSNW/QQG4RWwA0fbFWc2yeKlC8z5
+         AE3L4akyOt44u/YxCsUo0F4LAURd4D62LpCDsAXE=
+Date:   Fri, 25 Sep 2020 17:18:12 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Coly Li <colyli@suse.de>
+Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        netdev@vger.kernel.org, open-iscsi@googlegroups.com,
+        linux-scsi@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Vlastimil Babka <vbabka@suse.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v8 1/7] net: introduce helper sendpage_ok() in
+ include/linux/net.h
+Message-ID: <20200925151812.GA3182427@kroah.com>
+References: <20200925150119.112016-1-colyli@suse.de>
+ <20200925150119.112016-2-colyli@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTkpPSh9JTR5PS0gaVkpNS0pLT0xKSktCSExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6N0k6TAw5FD8tHgE5HDESDiop
-        GSpPCRlVSlVKTUtKS09MSkpKSENKVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
-        VUlOS1VKTE1VSUlCWVdZCAFZQU1MSEM3Bg++
-X-HM-Tid: 0a74c5d8249598b7kuuu745feb024a7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925150119.112016-2-colyli@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a Chinese translated version of Documentation/arm64/amu.rst
+On Fri, Sep 25, 2020 at 11:01:13PM +0800, Coly Li wrote:
+> The original problem was from nvme-over-tcp code, who mistakenly uses
+> kernel_sendpage() to send pages allocated by __get_free_pages() without
+> __GFP_COMP flag. Such pages don't have refcount (page_count is 0) on
+> tail pages, sending them by kernel_sendpage() may trigger a kernel panic
+> from a corrupted kernel heap, because these pages are incorrectly freed
+> in network stack as page_count 0 pages.
+> 
+> This patch introduces a helper sendpage_ok(), it returns true if the
+> checking page,
+> - is not slab page: PageSlab(page) is false.
+> - has page refcount: page_count(page) is not zero
+> 
+> All drivers who want to send page to remote end by kernel_sendpage()
+> may use this helper to check whether the page is OK. If the helper does
+> not return true, the driver should try other non sendpage method (e.g.
+> sock_no_sendpage()) to handle the page.
+> 
+> Signed-off-by: Coly Li <colyli@suse.de>
+> Cc: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Hannes Reinecke <hare@suse.de>
+> Cc: Jan Kara <jack@suse.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>
+> Cc: Philipp Reisner <philipp.reisner@linbit.com>
+> Cc: Sagi Grimberg <sagi@grimberg.me>
+> Cc: Vlastimil Babka <vbabka@suse.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  include/linux/net.h | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
+> diff --git a/include/linux/net.h b/include/linux/net.h
+> index d48ff1180879..05db8690f67e 100644
+> --- a/include/linux/net.h
+> +++ b/include/linux/net.h
+> @@ -21,6 +21,7 @@
+>  #include <linux/rcupdate.h>
+>  #include <linux/once.h>
+>  #include <linux/fs.h>
+> +#include <linux/mm.h>
+>  #include <linux/sockptr.h>
+>  
+>  #include <uapi/linux/net.h>
+> @@ -286,6 +287,21 @@ do {									\
+>  #define net_get_random_once_wait(buf, nbytes)			\
+>  	get_random_once_wait((buf), (nbytes))
+>  
+> +/*
+> + * E.g. XFS meta- & log-data is in slab pages, or bcache meta
+> + * data pages, or other high order pages allocated by
+> + * __get_free_pages() without __GFP_COMP, which have a page_count
+> + * of 0 and/or have PageSlab() set. We cannot use send_page for
+> + * those, as that does get_page(); put_page(); and would cause
+> + * either a VM_BUG directly, or __page_cache_release a page that
+> + * would actually still be referenced by someone, leading to some
+> + * obscure delayed Oops somewhere else.
+> + */
+> +static inline bool sendpage_ok(struct page *page)
+> +{
+> +	return  !PageSlab(page) && page_count(page) >= 1;
 
-Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
----
-Changes in v3:
- - Remove Documentation/arm64/amu.rst's inappropriate License claim.
-Changes in v2:
- - Add index to arm64 directoy.
- - Fix a document format error.
- - Correct email encoding format.
----
- Documentation/arm64/amu.rst                   |   2 +
- .../translations/zh_CN/arm64/amu.rst          | 102 ++++++++++++++++++
- .../translations/zh_CN/arm64/index.rst        |   2 +
- 3 files changed, 106 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/arm64/amu.rst
+Do you have one extra ' ' after "return" there?
 
-diff --git a/Documentation/arm64/amu.rst b/Documentation/arm64/amu.rst
-index 452ec8b115c2..01f2de2b0450 100644
---- a/Documentation/arm64/amu.rst
-+++ b/Documentation/arm64/amu.rst
-@@ -1,3 +1,5 @@
-+.. _amu_index:
-+
- =======================================================
- Activity Monitors Unit (AMU) extension in AArch64 Linux
- =======================================================
-diff --git a/Documentation/translations/zh_CN/arm64/amu.rst b/Documentation/translations/zh_CN/arm64/amu.rst
-new file mode 100644
-index 000000000000..7aa538c40304
---- /dev/null
-+++ b/Documentation/translations/zh_CN/arm64/amu.rst
-@@ -0,0 +1,102 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :ref:`Documentation/arm64/amu.rst <amu_index>`
-+
-+Translator: Bailu Lin <bailu.lin@vivo.com>
-+
-+===============================
-+AArch64 Linux 中扩展的活动监控单元
-+===============================
-+
-+作者: Ionela Voinescu <ionela.voinescu@arm.com>
-+
-+日期: 2019-09-10
-+
-+本文档简要描述了 AArch64 Linux 支持的活动监控单元的规范。
-+
-+
-+架构总述
-+--------
-+
-+活动监控是 ARMv8.4 CPU 架构引入的一个可选扩展特性。
-+
-+活动监控单元(在每个 CPU 中实现)为系统管理提供了性能计数器。既可以通
-+过系统寄存器的方式访问计数器，同时也支持外部内存映射的方式访问计数器。
-+
-+AMUv1 架构实现了一个由4个固定的64位事件计数器组成的计数器组。
-+
-+  - CPU 周期计数器：同 CPU 的频率增长
-+  - 常量计数器：同固定的系统时钟频率增长
-+  - 淘汰指令计数器: 同每次架构指令执行增长
-+  - 内存停顿周期计数器：计算由在时钟域内的最后一级缓存中未命中而引起
-+    的指令调度停顿周期数
-+
-+当处于 WFI 或者 WFE 状态时，计数器不会增长。
-+
-+AMU 架构提供了一个高达16位的事件计数器空间，未来新的 AMU 版本中可能
-+用它来实现新增的事件计数器。
-+
-+另外，AMUv1 实现了一个多达16个64位辅助事件计数器的计数器组。
-+
-+冷复位时所有的计数器会清零。
-+
-+
-+基本支持
-+--------
-+
-+内核可以安全地运行在支持 AMU 和不支持 AMU 的 CPU 组合中。
-+因此，当配置 CONFIG_ARM64_AMU_EXTN 后我们无条件使能后续
-+(secondary or hotplugged) CPU 检测和使用这个特性。
-+
-+当在 CPU 上检测到该特性时，我们会标记为特性可用但是不能保证计数器的功能，
-+仅表明有扩展属性。
-+
-+固件(代码运行在高异常级别，例如 arm-tf )需支持以下功能：
-+
-+ - 提供低异常级别(EL2 和 EL1)访问 AMU 寄存器的能力。
-+ - 使能计数器。如果未使能，它的值应为 0。
-+ - 在从电源关闭状态启动 CPU 前或后保存或者恢复计数器。
-+
-+当使用使能了该特性的内核启动但固件损坏时，访问计数器寄存器可能会遭遇
-+panic 或者死锁。即使未发现这些症状，计数器寄存器返回的数据结果并不一
-+定能反映真实情况。通常，计数器会返回 0，表明他们未被使能。
-+
-+如果固件没有提供适当的支持最好关闭 CONFIG_ARM64_AMU_EXTN。
-+值得注意的是，出于安全原因，不要绕过 AMUSERRENR_EL0 设置而捕获从
-+EL0(用户空间) 访问 EL1(内核空间)。 因此，固件应该确保访问 AMU寄存器
-+不会困在 EL2或EL3。
-+
-+AMUv1 的固定计数器可以通过如下系统寄存器访问：
-+
-+ - SYS_AMEVCNTR0_CORE_EL0
-+ - SYS_AMEVCNTR0_CONST_EL0
-+ - SYS_AMEVCNTR0_INST_RET_EL0
-+ - SYS_AMEVCNTR0_MEM_STALL_EL0
-+
-+特定辅助计数器可以通过 SYS_AMEVCNTR1_EL0(n) 访问，其中n介于0到15。
-+
-+详细信息定义在目录：arch/arm64/include/asm/sysreg.h。
-+
-+
-+用户空间访问
-+------------
-+
-+由于以下原因，当前禁止从用户空间访问 AMU 的寄存器：
-+
-+  - 安全因数：可能会暴露处于安全模式执行的代码信息。
-+  - 意愿：AMU 是用于系统管理的。
-+
-+同样，该功能对用户空间不可见。
-+
-+
-+虚拟化
-+------
-+
-+由于以下原因，当前禁止从 KVM 客户端的用户空间(EL0)和内核空间(EL1)
-+访问 AMU 的寄存器：
-+
-+  - 安全因数：可能会暴露给其他客户端或主机端执行的代码信息。
-+
-+任何试图访问 AMU 寄存器的行为都会触发一个注册在客户端的未定义异常。
-diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
-index c236b648740d..9bcf2c51a696 100644
---- a/Documentation/translations/zh_CN/arm64/index.rst
-+++ b/Documentation/translations/zh_CN/arm64/index.rst
-@@ -14,3 +14,5 @@ ARM64 架构
- 
- .. toctree::
-     :maxdepth: 2
-+
-+   amu
--- 
-2.20.1
+And this feels like a mm thing, why put it in net.h and not mm.h?
 
+thanks,
+
+greg k-h
