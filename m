@@ -2,134 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCA927840E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF75278414
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727967AbgIYJbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:31:53 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:34285 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbgIYJbw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:31:52 -0400
-X-Greylist: delayed 171256 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 05:31:51 EDT
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 12DA622ED5;
-        Fri, 25 Sep 2020 11:31:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1601026310;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uLL/4PRlCphLUVIwMp3bEigo2LIKHqcXNDfV6nTtgZo=;
-        b=LSXChYe0kWNHjGg7/AndycHtLLqVD7I0by/kWa6LC0RzaKZKCMBA76kPbpHy8Oppl2RVBc
-        gUc+A+UtkJcSNamnHztPd6VrmQ2077GYyI1G5rKyKkBUr5alVlcS3L4Ij1EvVrtibBhwKY
-        9DcVdsGlqU5zhG2wvva0aFof3MNY+98=
+        id S1727986AbgIYJc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:32:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:55446 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727440AbgIYJcZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:32:25 -0400
+IronPort-SDR: 5TCn5bchaZvhMeGF4Ajl5ai2RDYyqk5C1NVcNjbUzDpYEgNYJRFCN5nFSVYo4pduAHlaktrjeR
+ It5fMFAj2sSg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="158868442"
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="158868442"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 02:32:25 -0700
+IronPort-SDR: Ctg8seOvVT0giCxwqDVdUONMnNbwYOZSZlr2XSUfes904IuJYr24Jo82tfjeHEudbJEDsy7AzP
+ PPByKyr2yGYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="310751878"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.190]) ([10.237.72.190])
+  by orsmga006.jf.intel.com with ESMTP; 25 Sep 2020 02:32:20 -0700
+Subject: Re: [PATCH v2] mmc: sdhci: Don't enable presets while tuning
+To:     Raul Rangel <rrangel@chromium.org>
+Cc:     "Shah, Nehal-bakulchandra" <Nehal-bakulchandra.Shah@amd.com>,
+        "Wang, Chris" <chris.wang@amd.com>,
+        Akshu Agrawal <Akshu.Agrawal@amd.com>,
+        Jisheng Zhang <jszhang@marvell.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        clang-built-linux@googlegroups.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mmc@vger.kernel.org
+References: <20200824122131.v2.1.Id6f3c92fecf4acc60c3b7f57d5f4e4c854ace765@changeid>
+ <873b0786-a088-54af-80ad-96d2b041945d@intel.com>
+ <CAHQZ30DXUuWKo1n50aX3a86QfLCD4Z3W4CVescRDFcvQrEk3Ww@mail.gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <c4a886d8-8389-2c50-a40b-e2965ef6c393@intel.com>
+Date:   Fri, 25 Sep 2020 12:31:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <CAHQZ30DXUuWKo1n50aX3a86QfLCD4Z3W4CVescRDFcvQrEk3Ww@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 25 Sep 2020 11:31:50 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Leo Li <leoyang.li@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
-In-Reply-To: <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
-References: <20200923095711.11355-1-michael@walle.cc>
- <20200923095711.11355-2-michael@walle.cc>
- <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
- <e9347e4c2e070ee9e8aa7a8007d89f02@walle.cc>
- <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.8
-Message-ID: <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2020-09-24 17:53, schrieb Leo Li:
->> -----Original Message-----
->> From: Michael Walle <michael@walle.cc>
->> Sent: Thursday, September 24, 2020 6:31 AM
->> To: Leo Li <leoyang.li@nxp.com>
->> Cc: linux-arm-kernel@lists.infradead.org; devicetree@vger.kernel.org; 
->> linux-
->> kernel@vger.kernel.org; linux-can@vger.kernel.org; Shawn Guo
->> <shawnguo@kernel.org>; Rob Herring <robh+dt@kernel.org>; Marc Kleine-
->> Budde <mkl@pengutronix.de>; Joakim Zhang <qiangqing.zhang@nxp.com>
->> Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
->> 
->> Am 2020-09-24 02:35, schrieb Leo Li:
->> >> -----Original Message-----
->> >> From: Michael Walle <michael@walle.cc>
->> >> Sent: Wednesday, September 23, 2020 4:57 AM
->> >> To: linux-arm-kernel@lists.infradead.org; devicetree@vger.kernel.org;
->> >> linux-
->> >> kernel@vger.kernel.org; linux-can@vger.kernel.org
->> >> Cc: Shawn Guo <shawnguo@kernel.org>; Leo Li <leoyang.li@nxp.com>;
->> Rob
->> >> Herring <robh+dt@kernel.org>; Marc Kleine-Budde
->> <mkl@pengutronix.de>;
->> >> Joakim Zhang <qiangqing.zhang@nxp.com>; Michael Walle
->> >> <michael@walle.cc>
->> >> Subject: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
->> >>
->> >> The LS1028A has two FlexCAN controller. These are compatible with the
->> >> ones
->> >> from the LX2160A. Add the nodes.
->> >>
->> >> The first controller was tested on the Kontron sl28 board.
->> >>
->> >> Signed-off-by: Michael Walle <michael@walle.cc>
->> >> ---
->> >>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 18
->> >> ++++++++++++++++++
->> >>  1 file changed, 18 insertions(+)
->> >>
->> >> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
->> >> b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
->> >> index 0efeb8fa773e..807ee921ec12 100644
->> >> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
->> >> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
->> >> @@ -386,6 +386,24 @@
->> >>  			status = "disabled";
->> >>  		};
->> >>
->> >> +		can0: can@2180000 {
->> >> +			compatible = "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-
->> >> flexcan";
->> >
->> > The explicit compatible strings cannot be found in the binding, but
->> > matched by the "fsl,<processor>-flexcan" pattern in the binding.  Is
->> > this considered to be acceptable now?
->> 
->> What is the consequence if it is not acceptable? replacing the pattern
->> with individual compatible strings?
+On 18/09/20 8:57 pm, Raul Rangel wrote:
+> On Tue, Sep 1, 2020 at 4:54 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> On 24/08/20 9:21 pm, Raul E Rangel wrote:
+>>> SDHCI presets are not currently used for eMMC HS/HS200/HS400, but are
+>>> used for DDR52. The HS400 retuning sequence is:
+>>>
+>>>     HS400->DDR52->HS->HS200->Perform Tuning->HS->HS400
+>>>
+>>> This means that when HS400 tuning happens, we transition through DDR52
+>>> for a very brief period. This causes presets to be enabled
+>>> unintentionally and stay enabled when transitioning back to HS200 or
+>>> HS400.
+>>>
+>>> This patch prevents enabling presets while tuning is in progress.
+>>
+>> Preset value should not generally have to depend on tuning, so this
+>> seems less than ideal.  Also I am not sure you can say some controllers
+>> are not accidentally benefiting from the current situation.
+>>
+>> What about just letting drivers choose the timing modes that support
+>> preset values?  e.g. using the change below, a driver could alter
+>> host->preset_value_support as needed
 > 
-> There is a recommendation in the kernel documentation quoted below:
-> 
->   7) The wildcard "<chip>" may be used in compatible strings, as in
->      the following example:
-> 
->          - compatible: Must contain '"nvidia,<chip>-pcie",
->            "nvidia,tegra20-pcie"' where <chip> is tegra30, tegra132, 
-> ...
-> 
->      As in the above example, the known values of "<chip>" should be
->      documented if it is used.
-> 
-> But I am not sure if this is still a hard requirement.  If so, we
-> should list the processors in the binding.
+> Sorry for the late reply, I'm just getting back to this. I like the
+> patch. I have a few other patches I'm
+> going to push up soon. Do you want me to include this in the chain, or
+> do you want to push it up?
 
-Marc, I'd convert this to yaml format, may I put your name as the
-maintainer in the binding?
-
--michael
+I'm snowed.  You will have to do it I am afraid.
