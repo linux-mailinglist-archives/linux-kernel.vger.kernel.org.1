@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 229BE278171
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5F4278173
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727304AbgIYHYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:24:21 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:1070 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727068AbgIYHYV (ORCPT
+        id S1727333AbgIYHZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727183AbgIYHZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:24:21 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 305184E1942;
-        Fri, 25 Sep 2020 15:24:17 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Wang Qing <wangqing@vivo.com>,
-        Wang Wenhu <wenhu.wang@vivo.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Chucheng Luo <luochucheng@vivo.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V4] doc: zh_CN: add translatation for btrfs
-Date:   Fri, 25 Sep 2020 15:22:42 +0800
-Message-Id: <1601018642-31711-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
+        Fri, 25 Sep 2020 03:25:25 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8A9C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:25:25 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id q13so805994vsj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 00:25:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9+u6pjC7pRB1K9gjeMWKj3lZ/9RhhBMJjz0Kr1AOtzs=;
+        b=znz84rc2KTxMeuZHBWoFa4B0qNPH/4nMwsP+S61V9IatDeRCRbBjXCWmOV7byKF1Ky
+         bGXKIXbQQctoF47LltBYdfHbE2uiREyLYy9UhpNNnvid+BRkL1sIaQG8L1wpb4Beips4
+         bLArDC1gja85x2EyHWr9tAj/QhRNmk13a/gDQ7c1or9dEfw7Ms2f5/4JE4m2MXFR4cOl
+         xHJI2gMFnqOnTaF3B/e5JtCFSAscq63Be9G3eEXpIhND/l4UGyYCyuxDfyK2k0O+1uiK
+         tWRVcCmbOJ7AqOmtNYTudR+d3/AF9bXMQgfRUZDbctTyziK/+wBrDxrsEBAFbgXgKu8M
+         G7nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9+u6pjC7pRB1K9gjeMWKj3lZ/9RhhBMJjz0Kr1AOtzs=;
+        b=B0bJulaxQrsqotilItpGbeHI/CVUtWO/rpOGKvEVxIkpUD/PQueaR9Gizla0zwpddF
+         woT6R6FvV0sH6N2hoQJUJVzuF6jUxKs6NPiL+yfj3OlgKP6+6bbtRluAmdFu11Xr9g73
+         DP9nOdS+bK/xWi4Pf0BT4e9y8GTny8E0MpQEIHGxGO8PCtnPcL6f0LWLKeZmTWJA/4s7
+         bqGTiya8bsMWB5jMc3J+37YE+d0wMBUQmj2FS5KjZJQtSXhG2jk/dLjabEt8MWVEA44S
+         Lw92tnq3xX+eLgWjRQwRDJefJ9I3u4P7duXKKE3Dqg27nm/sE+HrXzKCjffPTIp0Bgzi
+         cGZA==
+X-Gm-Message-State: AOAM531waL4CwDtYCflsaImQh7Soe41geBeLWf3T9MXNg4SSoDmT3s3s
+        C1wm5Xu2uL4+uefz33XKLGxzvC8l2jvCp5v7/CQHbuYUXFkh8XVz
+X-Google-Smtp-Source: ABdhPJxm91UI/6425cQgEhSBX27qS9BjdpzuZURqe/ddUA6VRpeq7VAcm07HpZ9q7gSb+uP7goG3e5shfB26CcIpzfE=
+X-Received: by 2002:a05:6102:310f:: with SMTP id e15mr1937206vsh.39.1601018724645;
+ Fri, 25 Sep 2020 00:25:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGEJJT00dGE4eHRlIVkpNS0pLSkNNTkxOTUJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nww6Tyo6TT8fMAIqFCEaEEIj
-        EQkwCTlVSlVKTUtKS0pDTU5DS0NIVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFIT0NKNwY+
-X-HM-Tid: 0a74c425fad79376kuws305184e1942
+References: <20180823023839.GA13343@shao2-debian> <20180828195347.GA228832@joelaf.mtv.corp.google.com>
+ <CA+G9fYtV_sjTKLMXWMP0w0A-H+p+CN-uVJ6dvHovDy9epJZ2GQ@mail.gmail.com> <20200925051518.GA605188@kroah.com>
+In-Reply-To: <20200925051518.GA605188@kroah.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 25 Sep 2020 12:55:13 +0530
+Message-ID: <CA+G9fYuokHUBwNkTs=gWqCHxj80gg+RetU4pRd+uLP7gNas4KQ@mail.gmail.com>
+Subject: Re: [stable 4.19] [PANIC]: tracing: Centralize preemptirq tracepoints
+ and unify their usage
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Translate Documentation/filesystems/btrfs.rst into Chinese.
+On Fri, 25 Sep 2020 at 10:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, Sep 25, 2020 at 10:13:05AM +0530, Naresh Kamboju wrote:
+> > >From stable rc 4.18.1 onwards to today's stable rc 4.19.147
+> >
+> > There are two problems  while running LTP tracing tests
+> > 1) kernel panic  on i386, qemu_i386, x86_64 and qemu_x86_64 [1]
+> > 2) " segfault at 0 ip " and "Code: Bad RIP value" on x86_64 and qemu_x86_64 [2]
+> > Please refer to the full test logs from below links.
+> >
+> > The first bad commit found by git bisect.
+> >    commit: c3bc8fd637a9623f5c507bd18f9677effbddf584
+> >    tracing: Centralize preemptirq tracepoints and unify their usage
+> >
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>
+> So this also is reproducable in 5.4 and Linus's tree right now?
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- .../translations/zh_CN/filesystems/btrfs.rst       | 37 ++++++++++++++++++++++
- .../translations/zh_CN/filesystems/index.rst       |  1 +
- 2 files changed, 38 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/filesystems/btrfs.rst
+No.
+The reported issues are not reproducible on 5.4, 5.8 and Linus's tree.
 
-diff --git a/Documentation/translations/zh_CN/filesystems/btrfs.rst b/Documentation/translations/zh_CN/filesystems/btrfs.rst
-new file mode 100644
-index 0000000..8b8cca2
---- /dev/null
-+++ b/Documentation/translations/zh_CN/filesystems/btrfs.rst
-@@ -0,0 +1,37 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :ref:`Documentation/filesystems/ext3.rst <ext3_index>`
-+
-+translated by 王擎 Wang Qing<wangqing@vivo.com>
-+
-+=====
-+BTRFS
-+=====
-+
-+Btrfs是一个写时复制更新的文件系统，它注重容错、修复和易于管理。
-+Btrfs由多家公司联合开发，并获得GPL许可，免费开放给所有人。
-+
-+Btrfs的主要功能包括：
-+
-+    *扩展大小的文件存储（文件最大支持2^64）
-+    *填充方式使小文件更节省空间
-+    *索引目录的方式更节省空间
-+    *动态的索引节点分配方式
-+    *可写快照的特性
-+    *支持子卷（独立的内部根文件系统）
-+    *对象级别的镜像克隆
-+    *基于数据和元数据的校验和（支持多种算法）
-+    *支持压缩
-+    *內建多种磁盘阵列算法，支持多种设备
-+    *支持离线的文件系统检查
-+    *高效的增量备份和文件系统镜像
-+    *在线文件系统碎片整理
-+
-+更多有关信息，请参阅Wiki
-+
-+  https://btrfs.wiki.kernel.org
-+
-+维护信息包含管理任务、常见问题、用例、挂载选项、变更日志、
-+特性、手册、源码仓、联系人等。
-diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
-index 186501d..47e86397
---- a/Documentation/translations/zh_CN/filesystems/index.rst
-+++ b/Documentation/translations/zh_CN/filesystems/index.rst
-@@ -25,4 +25,5 @@ Linux Kernel中的文件系统
- 
-    virtiofs
-    debugfs
-+   btrfs
- 
--- 
-2.7.4
+>
+> Or are newer kernels working fine?
 
+No.
+There are different issues while testing LTP tracing on 5.4, 5.8 and
+Linus 's 5.9.
+
+NETDEV WATCHDOG: eth0 (igb): transmit queue 2 timed out
+WARNING: CPU: 1 PID: 331 at net/sched/sch_generic.c:442 dev_watchdog+0x4c7/0x4d0
+https://lore.kernel.org/stable/CA+G9fYtS_nAX=sPV8zTTs-nOdpJ4uxk9sqeHOZNuS4WLvBcPGg@mail.gmail.com/
+
+I see this on 5.4, 5.8 and Linus 's 5.9.
+rcu: INFO: rcu_sched self-detected stall on CPU
+? ftrace_graph_caller+0xc0/0xc0
+https://lore.kernel.org/stable/CA+G9fYsdTLRj55_bvod8Sf+0zvK0RRMp5+FeJcOx5oAcAKOGXA@mail.gmail.com/T/#u
+
+>
+> thanks,
+>
+> greg k-h
+
+- Naresh
