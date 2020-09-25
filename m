@@ -2,267 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B257D278FEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A77278FEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729110AbgIYR5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
+        id S1729635AbgIYR5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727151AbgIYR5F (ORCPT
+        with ESMTP id S1727151AbgIYR5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:57:05 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5EDC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:57:04 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id x14so4549042wrl.12
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:57:04 -0700 (PDT)
+        Fri, 25 Sep 2020 13:57:23 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D08C0613CE;
+        Fri, 25 Sep 2020 10:57:23 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id k25so3211478ljk.0;
+        Fri, 25 Sep 2020 10:57:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wXX5XN82rdvL6bEh20v+gTPlXlkQDSNYlOsYCjW32/w=;
-        b=SEE5NXvMVZ3oIioawsUQ3FL8hhb0V1ekMCb+hguGxej4nbA1nbpjWVOAr7fc5zUYc7
-         wqpXoLys+zqljC8E4wN7TNikaQjsE4bhmDgjjdLJ1jBrzpiyylbOdixHS7zurwQvYEo2
-         wKpQAS42NxmxUljeEltzMG6fP67Az275jJI8Q=
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qc8C5BuWST1uydg8EoNF2ju4UjTDacK5SEZlqTCllKE=;
+        b=meyG6+ZvcPFziY4WpY5oR3YvfU+BI9qIHUqz72Azt6oK3F1tFukxN/t9HTosveQxqP
+         tCAUZh1kdUnDq6b2fkVgjFC73syBrBZRUIRdNxR8PYxQZdNLCgwgpQgLqmEaKAtvrSuf
+         6EqNbF+ZaG+Y8+1QqLG38PjssqCK+XKPeS12TNJQemF8+XtmByEl5vu+ezQBb7te342v
+         2v6fT/lWbfqu1oicPe6LqrzQwDvMArsoxHiUX/2qq610jZhfEKCyiWQJxQeBk//++lv3
+         oyw3L5R6lNk5zKz4oI5YWI2yV0/ALM8KLdkQHqfLGflSt17PoPBq9/LanywgI2WQEUIf
+         80Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wXX5XN82rdvL6bEh20v+gTPlXlkQDSNYlOsYCjW32/w=;
-        b=NCCPeoojl/UXNI51eZQOq7dmTLqx+p+l999diW0PDOei7xRn6Cf9FbZOPtNoCHj8EV
-         WrKkAqYQ/d0AJRQq4DWsuvZ3/JOl8uIS1PiEMATEFuqHv3cH28RITjUFaQV4WGg+tsRJ
-         EMyG2qh68+PGWY/u3FOJZVQPxbDt2FUqNcl38q8+kJO4eNeAE7VTcvCPrNCe9Zo9OZOR
-         uQqJWZft3AkJyY/xij1l2BolbggYaiOOpZGz2pPkjuMILTh6RMxhDMAT4KL5t336w4Uk
-         9nLSL9Ho3+XILsMSDYFKuvUqKEFwu43Sya2KYy60Pj71RFfppU565sWsDN3oSFflbJ2F
-         ZqZw==
-X-Gm-Message-State: AOAM532V8Mq17BZzaaMs54VJaFdbiPZ3Aqfp3Qer5mzykjX/TOcPH/V6
-        sNjOrGU/CqdAvsBwemLbI+JXug==
-X-Google-Smtp-Source: ABdhPJwj39nbvqcxjQ3qJYf02shutUuLHTShNHQumM0YpHZBmNC9d6fipKt2VcXijVvLuUyKfIK3jQ==
-X-Received: by 2002:a5d:60c6:: with SMTP id x6mr6297523wrt.157.1601056622945;
-        Fri, 25 Sep 2020 10:57:02 -0700 (PDT)
-Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id d19sm3508093wmd.0.2020.09.25.10.57.02
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qc8C5BuWST1uydg8EoNF2ju4UjTDacK5SEZlqTCllKE=;
+        b=Ub94G2eQla3P3KBVSUCurrtm5xQ4k691y6oPwebkHBCYZ1DyYT5kd1Fj5nN1YxSQun
+         JG/MCCiz/AnGN20S3QLwm6LrRyZhmHDH6ZVRnSG+tNI31vqIYEgQXMIE/o7j+sh4uMmV
+         uPKqDnl+pAF/1CsW8v03300lrxPChU5pRNuXLQjRUFe4GAACbv8mDrRGke7opki222jI
+         623ulIXMp+QjO0VZJNqcrHpiRbASFf5xaGApd1ttEbpRg65b4eFHk60+rO73YxVNfcNY
+         cwM6O+aNIfAYJwSm8EQgJbKdm8Hk4jbFCoLJhD4tTOVfOtD5DjEzk8sYAFagvP2edz6q
+         n9gw==
+X-Gm-Message-State: AOAM530mHLXnpnC41SkfH2vcBv3hooTqEbo/8NPnja2p7eyAjjkWhWZT
+        8gNQlS4wd7nOdETEvmfPCoE=
+X-Google-Smtp-Source: ABdhPJz94sA179fF63C9xllvCKTh96mjW5a/yruMDb+NU3BTm8M22Cp6aUinos8LrFlRRve6+pgMLg==
+X-Received: by 2002:a2e:86c2:: with SMTP id n2mr1660454ljj.346.1601056641348;
+        Fri, 25 Sep 2020 10:57:21 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id c4sm2787794lfr.108.2020.09.25.10.57.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 10:57:02 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 17:57:00 +0000
-From:   Tomasz Figa <tfiga@chromium.org>
-To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Xia Jiang <xia.jiang@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        kernel@collabora.com, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Jerry-ch Chen <jerry-ch.chen@mediatek.corp-partner.google.com>
-Subject: Re: [PATCH v12 07/29] media: v4l2-mem2mem: add v4l2_m2m_suspend,
- v4l2_m2m_resume
-Message-ID: <20200925175700.GA3607091@chromium.org>
-References: <20200814071202.25067-1-xia.jiang@mediatek.com>
- <20200814071202.25067-9-xia.jiang@mediatek.com>
- <87lfgx4ube.fsf@collabora.com>
+        Fri, 25 Sep 2020 10:57:20 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Fri, 25 Sep 2020 19:57:18 +0200
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
+Message-ID: <20200925175718.GA28909@pc636>
+References: <20200921194819.GA24236@pc636>
+ <20200922075002.GU12990@dhcp22.suse.cz>
+ <20200922131257.GA29241@pc636>
+ <20200923103706.GJ3179@techsingularity.net>
+ <20200923154105.GO29330@paulmck-ThinkPad-P72>
+ <20200923232251.GK3179@techsingularity.net>
+ <20200924081614.GA14819@pc636>
+ <20200925080503.GC3389@dhcp22.suse.cz>
+ <20200925153129.GB25350@pc636>
+ <20200925161712.GM3179@techsingularity.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87lfgx4ube.fsf@collabora.com>
+In-Reply-To: <20200925161712.GM3179@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 08:53:09PM +0300, Adrian Ratiu wrote:
-> Hi,
-> 
-> I'm having a problem with this patch which landed in linux-next.
-> 
-> On Fri, 14 Aug 2020, Xia Jiang <xia.jiang@mediatek.com> wrote:
-> > From: Pi-Hsun Shih <pihsun@chromium.org>
+On Fri, Sep 25, 2020 at 05:17:12PM +0100, Mel Gorman wrote:
+> On Fri, Sep 25, 2020 at 05:31:29PM +0200, Uladzislau Rezki wrote:
+> > > > > > 
+> > > > > > All good points!
+> > > > > > 
+> > > > > > On the other hand, duplicating a portion of the allocator functionality
+> > > > > > within RCU increases the amount of reserved memory, and needlessly most
+> > > > > > of the time.
+> > > > > > 
+> > > > > 
+> > > > > But it's very similar to what mempools are for.
+> > > > > 
+> > > > As for dynamic caching or mempools. It requires extra logic on top of RCU
+> > > > to move things forward and it might be not efficient way. As a side
+> > > > effect, maintaining of the bulk arrays in the separate worker thread
+> > > > will introduce other drawbacks:
+> > > 
+> > > This is true but it is also true that it is RCU to require this special
+> > > logic and we can expect that we might need to fine tune this logic
+> > > depending on the RCU usage. We definitely do not want to tune the
+> > > generic page allocator for a very specific usecase, do we?
+> > > 
+> > I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
+> > to provide a memory service for contexts which are not allowed to
+> > sleep, RCU is part of them. Both flags used to provide such ability
+> > before but not anymore.
 > > 
-> > Add two functions that can be used to stop new jobs from being queued /
-> > continue running queued job. This can be used while a driver using m2m
-> > helper is going to suspend / wake up from resume, and can ensure that
-> > there's no job running in suspend process.
+> > Do you agree with it?
 > > 
-> > BUG=b:143046833 TEST=build
-> > 
-> > Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org> Signed-off-by:
-> > Jerry-ch Chen <jerry-ch.chen@mediatek.corp-partner.google.com>
-> > Reviewed-by: Tomasz Figa <tfiga@chromium.org> --- v12: add this relied
-> > patch to the series ---  drivers/media/v4l2-core/v4l2-mem2mem.c | 41
-> > ++++++++++++++++++++++++++ include/media/v4l2-mem2mem.h  | 22
-> > ++++++++++++++ 2 files changed, 63 insertions(+)
-> > 
-> > diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c
-> > b/drivers/media/v4l2-core/v4l2-mem2mem.c index
-> > 62ac9424c92a..ddfdb6375064 100644 ---
-> > a/drivers/media/v4l2-core/v4l2-mem2mem.c +++
-> > b/drivers/media/v4l2-core/v4l2-mem2mem.c @@ -43,6 +43,10 @@
-> > module_param(debug, bool, 0644);  #define TRANS_ABORT		(1 << 2)   +/*
-> > The job queue is not running new jobs */ +#define QUEUE_PAUSED		(1 << 0)
-> > + +  /* Offset base for buffers on the destination queue - used to
-> > distinguish   * between source and destination buffers when mmapping -
-> > they   receive the same * offsets but for different queues */ @@ -84,6
-> > +88,7 @@ static const char * const m2m_entity_name[] = {   *
-> > @job_queue:		instances queued to run *   @job_spinlock:	protects
-> > job_queue * @job_work:   worker to run queued jobs. + *
-> > @job_queue_flags:	flags of the queue status, %QUEUE_PAUSED.   *
-> > @m2m_ops:		driver callbacks */  struct v4l2_m2m_dev { @@ -101,6 +106,7
-> > @@ struct v4l2_m2m_dev {  	struct list_head	job_queue; spinlock_t
-> > job_spinlock; struct work_struct	job_work; +	unsigned
-> > long		job_queue_flags;   const struct v4l2_m2m_ops *m2m_ops; }; @@
-> > -263,6 +269,12 @@ static void v4l2_m2m_try_run(struct v4l2_m2m_dev
-> > *m2m_dev)  		return; }  +	if (m2m_dev->job_queue_flags & QUEUE_PAUSED) {
-> > + spin_unlock_irqrestore(&m2m_dev->job_spinlock, flags); +
-> > dprintk("Running new jobs is paused\n"); +		return; + } +
-> > 	m2m_dev->curr_ctx = list_first_entry(&m2m_dev->job_queue,  struct
-> > v4l2_m2m_ctx, queue); m2m_dev->curr_ctx->job_flags |=  TRANS_RUNNING; @@
-> > -504,6 +516,7 @@ void v4l2_m2m_buf_done_and_job_finish(struct
-> > v4l2_m2m_dev *m2m_dev,   if (WARN_ON(!src_buf || !dst_buf)) goto unlock;
-> > +	v4l2_m2m_buf_done(src_buf, state);
 > 
-> This line looks out of place in this commit and is causing a lot of warnings
-> (1 per frame). Any reason in particular why we need this?
+> I was led to believe that hte problem was taking the zone lock while
+> holding a raw spinlock that was specific to RCU.
+In RCU code we hold a raw spinlock, because the kfree_rcu() should
+follow the call_rcu() rule and work in atomic contexts. So we can
+not enter a page allocator because it uses spinlock_t z->lock(is sleepable for RT).
 
-Right, it shouldn't be there. Looks like a rebase error.
+Because of CONFIG_PROVE_RAW_LOCK_NESTING option and CONFIG_PREEMPT_RT.
 
-P.S. Please check your remail client settings as all the lines of your
-message seem to be just mixed together, as if someone removed the line
-breaks.
+>
+> Are you saying that GFP_ATOMIC/GFP_NOWAIT users are also holding raw
+> spinlocks at the same time on RT?
+>
+I do not say it. And it is not possible because zone->lock has
+a spinlock_t type. So, in case of CONFIG_PREEMPT_RT you will
+hit a "BUG: scheduling while atomic". If allocator is called
+when: raw lock is held or irqs are disabled or preempt_disable()
+on a higher level.
 
-Hans, is this something you could fix up or we need to revert and
-resend?
-
-Best regards,
-Tomasz
-
-> 
-> [   87.825061] ------------[ cut here ]------------ [   87.829695] WARNING:
-> CPU: 0 PID: 0 at drivers/media/common/videobuf2/videobuf2-core.c:986
-> vb2_buffer_done+0x208/0x2a0 [   87.840302] Modules linked in: [ 87.843364]
-> CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W 5.9.0-rc6-next-20200924+
-> #472 [   87.852407] Hardware name: NXP i.MX8MQ EVK (DT) [   87.856942]
-> pstate: 20000085 (nzCv daIf -PAN -UAO -TCO BTYPE=--) [   87.862953] pc :
-> vb2_buffer_done+0x208/0x2a0 [   87.867224] lr :
-> v4l2_m2m_buf_done_and_job_finish+0x94/0x140 [   87.872882] sp :
-> ffff80001183bd50 [   87.876195] x29: ffff80001183bd50 x28: ffff8000115d1500
-> [   87.881512] x27: ffff80001128e018 x26: ffff00009fb4a828  [   87.886828]
-> x25: ffff0000a4e13a08 x24: 0000000000000080  [   87.892143] x23:
-> 0000000000000005 x22: ffff0000a253bc00  [   87.897457] x21: ffff00009fb4aa98
-> x20: ffff00009fb4a800  [   87.902772] x19: ffff0000a24f0000 x18:
-> 0000000000000000  [   87.908086] x17: 0000000000000000 x16: 0000000000000000
-> [   87.913400] x15: 0000000000000000 x14: 0000000000000500  [   87.918714]
-> x13: 0000000000000003 x12: 0000000000000000  [   87.924028] x11:
-> 0000000000000040 x10: ffff800011658520  [   87.929340] x9 : ffff800010998464
-> x8 : ffff0000a5800270  [   87.934655] x7 : 0000000000000000 x6 :
-> ffff00009fb4aa20  [   87.939969] x5 : ffff80001183bd10 x4 : 0000000000000000
-> [   87.945285] x3 : 0000000000000000 x2 : 0000000000000000  [   87.950599]
-> x1 : 0000000000000005 x0 : 0000000000000005  [   87.955914] Call trace: [
-> 87.958364] vb2_buffer_done+0x208/0x2a0 [   87.962288]
-> v4l2_m2m_buf_done_and_job_finish+0x94/0x140 [   87.967601]
-> hantro_job_finish+0xa8/0xe0 [   87.971524] hantro_irq_done+0x58/0x90 [
-> 87.975275] imx8m_vpu_g1_irq+0x8c/0x160 [   87.979201]
-> __handle_irq_event_percpu+0x68/0x2a0 [   87.983905]
-> handle_irq_event_percpu+0x3c/0xa0 [   87.988347] handle_irq_event+0x50/0xf0
-> [   87.992185] handle_fasteoi_irq+0xc0/0x180 [   87.996283]
-> generic_handle_irq+0x38/0x50 [   88.000296] __handle_domain_irq+0x6c/0xd0 [
-> 88.004393] gic_handle_irq+0x60/0x12c [   88.008143]  el1_irq+0xbc/0x180 [
-> 88.011287]  arch_cpu_idle+0x1c/0x30 [   88.014864] do_idle+0x220/0x270 [
-> 88.018093]  cpu_startup_entry+0x30/0x70 [ 88.022019]  rest_init+0xe0/0xf0 [
-> 88.025250] arch_call_rest_init+0x18/0x24 [   88.029347]
-> start_kernel+0x7a4/0x7e0 [   88.033013] CPU: 0 PID: 0 Comm: swapper/0
-> Tainted: G        W         5.9.0-rc6-next-20200924+ #472 [   88.042056]
-> Hardware name: NXP i.MX8MQ EVK (DT) [ 88.046585] Call trace: [   88.049034]
-> dump_backtrace+0x0/0x1b0 [ 88.052697]  show_stack+0x20/0x70 [   88.056014]
-> dump_stack+0xd0/0x12c [   88.059418]  __warn+0xfc/0x180 [ 88.062474]
-> report_bug+0xfc/0x170 [   88.065875] bug_handler+0x28/0x70 [   88.069276]
-> brk_handler+0x70/0xe0 [ 88.072681]  do_debug_exception+0xcc/0x1e0 [
-> 88.076776] el1_sync_handler+0xd8/0x140 [   88.080697]  el1_sync+0x80/0x100 [
-> 88.083926]  vb2_buffer_done+0x208/0x2a0 [   88.087852]
-> v4l2_m2m_buf_done_and_job_finish+0x94/0x140 [   88.093162]
-> hantro_job_finish+0xa8/0xe0 [   88.097083] hantro_irq_done+0x58/0x90 [
-> 88.100831] imx8m_vpu_g1_irq+0x8c/0x160 [   88.104753]
-> __handle_irq_event_percpu+0x68/0x2a0 [   88.109456]
-> handle_irq_event_percpu+0x3c/0xa0 [   88.113899] handle_irq_event+0x50/0xf0
-> [   88.117734] handle_fasteoi_irq+0xc0/0x180 [   88.121832]
-> generic_handle_irq+0x38/0x50 [   88.125841] __handle_domain_irq+0x6c/0xd0 [
-> 88.129937] gic_handle_irq+0x60/0x12c [   88.133686]  el1_irq+0xbc/0x180 [
-> 88.136827]  arch_cpu_idle+0x1c/0x30 [   88.140403] do_idle+0x220/0x270 [
-> 88.143630]  cpu_startup_entry+0x30/0x70 [ 88.147553]  rest_init+0xe0/0xf0 [
-> 88.150782] arch_call_rest_init+0x18/0x24 [   88.154879]
-> start_kernel+0x7a4/0x7e0 [   88.158542] ---[ end trace 847145312866dff5 ]---
-> 
-> Regards,
-> Adrian
-> 
-> >  	dst_buf->is_held = src_buf->flags & V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF;
-> >  	if (!dst_buf->is_held) {
-> >  		v4l2_m2m_dst_buf_remove(m2m_ctx);
-> > @@ -528,6 +541,34 @@ void v4l2_m2m_buf_done_and_job_finish(struct v4l2_m2m_dev *m2m_dev,
-> >  }
-> >  EXPORT_SYMBOL(v4l2_m2m_buf_done_and_job_finish);
-> > +void v4l2_m2m_suspend(struct v4l2_m2m_dev *m2m_dev)
-> > +{
-> > +	unsigned long flags;
-> > +	struct v4l2_m2m_ctx *curr_ctx;
-> > +
-> > +	spin_lock_irqsave(&m2m_dev->job_spinlock, flags);
-> > +	m2m_dev->job_queue_flags |= QUEUE_PAUSED;
-> > +	curr_ctx = m2m_dev->curr_ctx;
-> > +	spin_unlock_irqrestore(&m2m_dev->job_spinlock, flags);
-> > +
-> > +	if (curr_ctx)
-> > +		wait_event(curr_ctx->finished,
-> > +			   !(curr_ctx->job_flags & TRANS_RUNNING));
-> > +}
-> > +EXPORT_SYMBOL(v4l2_m2m_suspend);
-> > +
-> > +void v4l2_m2m_resume(struct v4l2_m2m_dev *m2m_dev)
-> > +{
-> > +	unsigned long flags;
-> > +
-> > +	spin_lock_irqsave(&m2m_dev->job_spinlock, flags);
-> > +	m2m_dev->job_queue_flags &= ~QUEUE_PAUSED;
-> > +	spin_unlock_irqrestore(&m2m_dev->job_spinlock, flags);
-> > +
-> > +	v4l2_m2m_try_run(m2m_dev);
-> > +}
-> > +EXPORT_SYMBOL(v4l2_m2m_resume);
-> > +
-> >  int v4l2_m2m_reqbufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
-> >  		     struct v4l2_requestbuffers *reqbufs)
-> >  {
-> > diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
-> > index 98753f00df7e..5a91b548ecc0 100644
-> > --- a/include/media/v4l2-mem2mem.h
-> > +++ b/include/media/v4l2-mem2mem.h
-> > @@ -304,6 +304,28 @@ v4l2_m2m_is_last_draining_src_buf(struct v4l2_m2m_ctx *m2m_ctx,
-> >  void v4l2_m2m_last_buffer_done(struct v4l2_m2m_ctx *m2m_ctx,
-> >  			       struct vb2_v4l2_buffer *vbuf);
-> > +/**
-> > + * v4l2_m2m_suspend() - stop new jobs from being run and wait for current job
-> > + * to finish
-> > + *
-> > + * @m2m_dev: opaque pointer to the internal data to handle M2M context
-> > + *
-> > + * Called by a driver in the suspend hook. Stop new jobs from being run, and
-> > + * wait for current running job to finish.
-> > + */
-> > +void v4l2_m2m_suspend(struct v4l2_m2m_dev *m2m_dev);
-> > +
-> > +/**
-> > + * v4l2_m2m_resume() - resume job running and try to run a queued job
-> > + *
-> > + * @m2m_dev: opaque pointer to the internal data to handle M2M context
-> > + *
-> > + * Called by a driver in the resume hook. This reverts the operation of
-> > + * v4l2_m2m_suspend() and allows job to be run. Also try to run a queued job if
-> > + * there is any.
-> > + */
-> > +void v4l2_m2m_resume(struct v4l2_m2m_dev *m2m_dev);
-> > +
-> >  /**
-> >   * v4l2_m2m_reqbufs() - multi-queue-aware REQBUFS multiplexer
-> >   *
-> > -- 
-> > 2.18.0
+--
+Vlad Rezki
