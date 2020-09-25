@@ -2,68 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5302785FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D2CE2785FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgIYLfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:35:04 -0400
-Received: from muru.com ([72.249.23.125]:45416 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgIYLfD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:35:03 -0400
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 716C380B0;
-        Fri, 25 Sep 2020 11:35:05 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 14:34:59 +0300
-From:   Tony Lindgren <tony@atomide.com>
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     khilman@kernel.org, linux@armlinux.org.uk,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org
-Subject: Re: [PATCH v2] omap3: enable off mode automatically
-Message-ID: <20200925113459.GI9471@atomide.com>
-References: <20200911161209.25149-1-andreas@kemnade.info>
- <20200924090047.2b61f883@aktux>
- <20200924070550.GG9471@atomide.com>
+        id S1728251AbgIYLfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:35:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726990AbgIYLfS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:35:18 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89128C0613CE;
+        Fri, 25 Sep 2020 04:35:18 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 6211622F2E;
+        Fri, 25 Sep 2020 13:35:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1601033716;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1TDOPkAjQyv3W89Ok1hTNiiexbVaPDGOpKU5ZXVXX4A=;
+        b=HDoBrEoB+Oozg7X8kGt13kNrZ666ElU296shSR8VnXy5qI7KdNcqBQEN9oGLt8DDFk8FaB
+        m7UuTzAMVUcT5ElMa7Xm3kjfj3NDuY6tOa767hvW2qanLR4T5+UnAEQ933f5to24dDRNZk
+        PB13PkUswqAY5ZMUoCpYn2WJxT+6crg=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924070550.GG9471@atomide.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 25 Sep 2020 13:35:14 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Leo Li <leoyang.li@nxp.com>, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-can@vger.kernel.org, Shawn Guo <shawnguo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
+In-Reply-To: <790ce102-7542-b65e-0945-a04faf6e4b89@pengutronix.de>
+References: <20200923095711.11355-1-michael@walle.cc>
+ <20200923095711.11355-2-michael@walle.cc>
+ <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+ <e9347e4c2e070ee9e8aa7a8007d89f02@walle.cc>
+ <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
+ <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
+ <790ce102-7542-b65e-0945-a04faf6e4b89@pengutronix.de>
+User-Agent: Roundcube Webmail/1.4.8
+Message-ID: <96727fac8db86b73f8c1bcba0cdc2d4a@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Tony Lindgren <tony@atomide.com> [200924 07:06]:
-> * Andreas Kemnade <andreas@kemnade.info> [200924 07:00]:
-> > On Fri, 11 Sep 2020 18:12:09 +0200
-> > Andreas Kemnade <andreas@kemnade.info> wrote:
-> > 
-> > > Enabling off mode was only reachable deeply hidden
-> > > in the debugfs. As powersaving is an important feature,
-> > > move the option out of its shady place.
-> > > The debugfs file can still be used to override the default.
-> > > 
-> > > Use the presence of a device compatible to ti,twl4030-idle or
-> > > ti,twl4030-idle-osc-off as an indicator that the board is wired correctly
-> > > for off mode.
-> > > 
-> > > Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
-> > > ---
-> > > An earlier version of this patch was here:
-> > > https://patchwork.kernel.org/patch/10794121/
-> > > 
-> > > A config option was used instead of the suggested devicetree check.
-> > > 
-> > > Changes in v2:
-> > > - fix compile without CONFIG_ARCH_OMAP3
-> > >   The variable enable_off_mode is now always a real one and not
-> > >   a preprocessor constant to avoid trouble with unusual configurations.
-> > > 
-> > Anything I still missed here? 
+Am 2020-09-25 11:34, schrieb Marc Kleine-Budde:
+> On 9/25/20 11:31 AM, Michael Walle wrote:
+>> Marc, I'd convert this to yaml format,
 > 
-> No the missing part is just me picking up the remaining patches
-> for v5.10 that I'll hopefully manage to do today :)
+> Oleksij (CC'ed) is working already on this.
 
-Applied now in omap-for-v5.10/soc thanks.
+Cool.
 
-Tony
+Oleksij, if there will be individual compatible strings, could you
+already add the one for the LS1028A? i.e.
+  "fsl,ls1028ar1-flexcan" followed by "fsl,lx2160ar1-flexcan"
+
+-michael
