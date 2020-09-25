@@ -2,329 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 087CB2782D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DFC2782DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727461AbgIYIfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:35:55 -0400
-Received: from mail-eopbgr70123.outbound.protection.outlook.com ([40.107.7.123]:60481
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727248AbgIYIfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:35:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eyiDUgB6u8LXTLfLSZC6kiScmZ6Aimnh3qGiNLR9OdWu7JMaQjDFI2vK8kEwLaSbO9MA94KKs14gwuOSQhhBU+9fmUy+YOvMatBEihA0cNdo4LM91UMGfXBm4+o2DbAiQxTEdZeb+PcYEtqgy6+E5cYaRdHWZQ7J1qwn8Yp10rLuMmzAMHZBw/xYfP6gmvL69zLvYbxnjnnLJAxN4saTEz20iOdS5mFPk5HOGGeE/WnYpg6X0WyR8kA/T/qlRjph5BNbnMcm4aoG88XGRmHH0tzlTKxR8tQkeFguWIzFgoyTdpCT9F3214JKXVJRdNCMtaDzOJ7KTEIft48FxMGd3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y/MzQoLinhHo57x//fYNWCNoRYawp+Xtc9zqkQbeXj4=;
- b=aAt9/YrwOpVmaeiUixhLtpPMjbxkDsZuM72w9V1eHsQ9NEfYTeRmCZKpvaqnJc+3JQxMwdVG5Ir8oYHDP7nYo4wwO2/fKD/yG1RlIEyqafjVeGNoCJaW3Lg7Oew4rpyW2TOyOVerF5t6SrlwMATanr/m/krPvOr8J24mXYmXRJYf3NvHUX4Gzw61ztWps44Z5DsN0Ch3s0LH2J/QBdlu0J2xweN6jSE3xHMino8AXjINP5/I9FJZpWDU6iGHvM1ZDGhvbFgL9E9PVCRQWuhZg3XMjpMO49/Xxr9AnwhElMRGGBhiRbx7IjNIyCrlxLnDM+CWBo8PeEUmsXoie2Yxcw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
- header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Y/MzQoLinhHo57x//fYNWCNoRYawp+Xtc9zqkQbeXj4=;
- b=U7QoxrNOJDiika0xAPgx91qg6P2RdeW7P7Z/rdHW376z55HxdqTY0jPGLvoaYUxEi9x+gSkS3ehGfWDPSXkfjOkY1RuapDuPLuH9cHaa1i1prz71gWLoR3GpsP5rwkuAfyzx0+yIC+32HhnIRijXIlMS/TbC/u8dYBT/crombZo=
-Authentication-Results: szeredi.hu; dkim=none (message not signed)
- header.d=none;szeredi.hu; dmarc=none action=none header.from=virtuozzo.com;
-Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
- by AM6PR08MB3333.eurprd08.prod.outlook.com (2603:10a6:209:45::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Fri, 25 Sep
- 2020 08:35:42 +0000
-Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
- ([fe80::71e0:46d9:2c06:2322]) by AM6PR08MB4756.eurprd08.prod.outlook.com
- ([fe80::71e0:46d9:2c06:2322%7]) with mapi id 15.20.3391.027; Fri, 25 Sep 2020
- 08:35:42 +0000
-From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Vivek Goyal <vgoyal@redhat.com>, linux-unionfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 2/2] ovl: introduce new "uuid=off" option for inodes index feature
-Date:   Fri, 25 Sep 2020 11:35:07 +0300
-Message-Id: <20200925083507.13603-3-ptikhomirov@virtuozzo.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200925083507.13603-1-ptikhomirov@virtuozzo.com>
-References: <20200925083507.13603-1-ptikhomirov@virtuozzo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR05CA0087.eurprd05.prod.outlook.com
- (2603:10a6:208:136::27) To AM6PR08MB4756.eurprd08.prod.outlook.com
- (2603:10a6:20b:cd::17)
+        id S1727505AbgIYIi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:38:26 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:59978 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727044AbgIYIiY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:38:24 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08P8atCI006850;
+        Fri, 25 Sep 2020 04:38:10 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 33r5p6f7u1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 25 Sep 2020 04:38:09 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 08P8c8UP054311
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Fri, 25 Sep 2020 04:38:08 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Fri, 25 Sep
+ 2020 04:38:05 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Fri, 25 Sep 2020 04:38:05 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 08P8c5uD006205;
+        Fri, 25 Sep 2020 04:38:05 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [RFC PATCH 0/5] iio: remove iio_buffer_set_attrs() and assign buffer attrs during alloc
+Date:   Fri, 25 Sep 2020 11:37:38 +0300
+Message-ID: <20200925083743.46469-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from snorch.sw.ru (95.179.127.150) by AM0PR05CA0087.eurprd05.prod.outlook.com (2603:10a6:208:136::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Fri, 25 Sep 2020 08:35:36 +0000
-X-Mailer: git-send-email 2.26.2
-X-Originating-IP: [95.179.127.150]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c0fb1330-b53e-42a6-1cb0-08d8612dfa49
-X-MS-TrafficTypeDiagnostic: AM6PR08MB3333:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM6PR08MB3333535CBDFBBB00768DE3E2B7360@AM6PR08MB3333.eurprd08.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8vrX5zAFvJRMFjA+783gVxhW/DCTI5HYtKMNd3SplOJq+RItVpErf0ENKEkz65F/+fcKELJOzDgZFSDo7z7KakBYGkb67Fbzyvuqu8mc5cCGy22v2RS+naAwUylZOWNx6B9A9nF3dje/5ky7ihdbOW/Kd05Zt+YDSh5hoZtOdakOvDLvQGswG6WIurcBTG2I1Q2olL+9lBDU5cD3KuKgrftD7PfLerwuiwO1yB4y4y54VjCDFz5TRPwuaK7GpLqp/FIWoW6LFIBjypo2NfI/cWl9RY9PaoHdNhxAkqPy0iMBXMaoIZrsHqEJedhWh2YPCdaEdUp0Rp0MBf6EWh4j2CygGDwaz2xJB+DKwo/9yab3TJie5+1NGQweqp4r+QDu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(396003)(136003)(346002)(39840400004)(186003)(36756003)(66946007)(8676002)(86362001)(16526019)(956004)(66556008)(6916009)(8936002)(2906002)(66476007)(316002)(5660300002)(6486002)(2616005)(1076003)(6512007)(4326008)(83380400001)(54906003)(478600001)(6506007)(52116002)(6666004)(26005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: vbhofpPNm26CCmp54CrOh8mO+W5UglsNYEXZMlFvp5HYUR6g9fvDAPG6cuyaIwZ/0eBbQmyPW3px4xpltRneek4zzBQBvnLTCAFADWiWQDF+7rOcpKAWyjKkuy8Cbfg6taRBzmovR2hmL9jd3vUo3GGG35/wmpwTa6MweUp9eZRWqRHPtMOhuQ4hDRoGd9UTiL5I3xdAWN4iEHRK1FtuExZ9URVsjXSaMxNfw1vA0A/Rc6oTSMe4FE+UKLdjfnRg/cigG4TT/dE2Si0IwF8EzVX4YISFAmpkZMWq3YiLrHjPSzSC6fUwHDJbrle22U8lHuEXaBvjIsqGYSItMuSr9qg3UO2aNTo0epg4PpsH2JQ3eqvtnWartabdlXfavFsdX3PPB1n7duPfvtYPUenl42OtJ2dQLVTBqCxp1e1H7R6DPs2/jM4OX3Ga5BnpO/90HW3YbLS/Va0unfcI5bu0oypJ3ZyNPWpPCm0qZ8jd9Ei6FQpuimqcVsVV+0NcojRr9Cc+GwyiII0v4v+ZPLOttNb1wO7LBPRSLX5AaT8gzJIJ/jKOMKSujVWdrG2W3nS6O4gMV97bmSiaXJ1wrbejudJpuLaGsSZPg6W4ChBmE3534qvOsiuROoGSZfx5KkPpPgeaf2C5T916hDnnvQQBPw==
-X-OriginatorOrg: virtuozzo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c0fb1330-b53e-42a6-1cb0-08d8612dfa49
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 08:35:37.5451
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vp7zhdu3JSPzoPL3nlG8USxAIW4JGfodxuNoGqkJzrbToaorT03WnlFYNG/hMo1ZCVFU4peuYhQhh2mLE4olHb22BIT4UeLTDBU0slcmHQA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3333
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-25_02:2020-09-24,2020-09-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ phishscore=0 spamscore=0 mlxlogscore=999 impostorscore=0 clxscore=1015
+ suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This replaces uuid with null in overelayfs file handles and thus relaxes
-uuid checks for overlay index feature. It is only possible in case there
-is only one filesystem for all the work/upper/lower directories and bare
-file handles from this backing filesystem are uniq. In other case when
-we have multiple filesystems lets just fallback to "uuid=on" which is
-and equivalent of how it worked before with all uuid checks.
+I've been mulling this over for a while, and I am still not 100% convinced
+that this is the best approach, but this feels closer to something
+correct.
 
-This is needed when overlayfs is/was mounted in a container with index
-enabled (e.g.: to be able to resolve inotify watch file handles on it to
-paths in CRIU), and this container is copied and started alongside with
-the original one. This way the "copy" container can't have the same uuid
-on the superblock and mounting the overlayfs from it later would fail.
+A few things about this patchset:
+1. it hasn't been tested; it just compiles
+2. there are some patches that have went out [from my side] in the last
+   few days that deal with trying to organize iio_buffer_set_attrs()
+   in order to get to this point [as-in: this patch-set]
+2a. the only reason patch [1] is in this set, is so that [5] applies
+2b. the main reason patch [2] is in this set, is so that [5] compiles
+3. This patch is only meant as RFC, as I'd like that some cleanup
+   patches go in before this set; this RFC is meant to provide an idea
+   of where I want to get at.
 
-Note: In our (Virtuozzo) use case users inside a container can create
-"regular" overlayfs mounts without any "index=" option, but we still
-want to migrate this containers with CRIU so we set "index=on" as kernel
-default so that all the container overlayfs mounts get support of file
-handles automatically. With "uuid=off" we want the same thing (to be
-able to "copy" container with uuid change) - we would set kernel default
-so that all the container overlayfs mounts get "uuid=off" automatically.
+This tries to address the issue with iio_buffer_set_attrs(), where a
+driver needs to provide a reference to a buffer to assign extra sysfs
+attributes.
+Something like 'iio_buffer_set_attrs(indio_dev->buffer, <buffer_attrs>)'
 
-That is an example of the problem on top of loop+ext4:
+This works well for the 1 IIO buffer == 1 IIO device case.
+The driver access the 'buffer' reference attached to the IIO device.
 
-dd if=/dev/zero of=loopbackfile.img bs=100M count=10
-losetup -fP loopbackfile.img
-losetup -a
-  #/dev/loop0: [64768]:35 (/loop-test/loopbackfile.img)
-mkfs.ext4 loopbackfile.img
-mkdir loop-mp
-mount -o loop /dev/loop0 loop-mp
-mkdir loop-mp/{lower,upper,work,merged}
-mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
-upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
-umount loop-mp/merged
-umount loop-mp
-e2fsck -f /dev/loop0
-tune2fs -U random /dev/loop0
+But for a multiple IIO buffers per 1 IIO device, this is cumbersome, as
+a driver would need to:
+1. allocate a set of buffers
+2. dig out of IIO the buffers to which it wants to assign extra sysfs
+   attributes
 
-mount -o loop /dev/loop0 loop-mp
-mount -t overlay overlay -oindex=on,lowerdir=loop-mp/lower,\
-upperdir=loop-mp/upper,workdir=loop-mp/work loop-mp/merged
-  #mount: /loop-test/loop-mp/merged:
-  #mount(2) system call failed: Stale file handle.
+The main change here is to move the attributes [usually HW FIFO
+attributes] to become arguments of the devm_}iio_triggered_buffer_setup()
+functions.
+Other buffer allocation functions would need to do the same, but right
+now, it's only these functions that assign extra buffer attributes.
 
-If you just change the uuid of the backing filesystem, overlay is not
-mounting any more. In Virtuozzo we copy container disks (ploops) when
-crate the copy of container and we require fs uuid to be uniq for a new
-container.
+Some alternative ideas to doing this change [as-is]:
+* move the attributes to 'struct iio_buffer_setup_ops' ; this has a
+  minimal patch/change-impact, but it doesn't feel correct
+* introduce a new type called 'struct iio_trigerred_buffer_args' that
+  wrap all the triggered-buffer arguments into a single object; this is
+  still a big patch [like this], but future-wise, we would just be
+  extending that object [if more args are needed]; the main point
+  here is that right now 'devm_iio_triggered_buffer_setup()' has 6
+  arguments, which feels a bit much
 
-CC: Amir Goldstein <amir73il@gmail.com>
-CC: Vivek Goyal <vgoyal@redhat.com>
-CC: Miklos Szeredi <miklos@szeredi.hu>
-CC: linux-unionfs@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
 
----
-v2: in v1 I missed actual uuid check skip
-v3: rebase to overlayfs-next, replace uuid with null in file handles,
-split ovl_fs propagation to function arguments to separate patch, add
-separate bool "uuid=on/off" option, move numfs check up, add doc note.
-v4: get rid of double negatives, remove nouuid leftower comment, fix
-missprint in kernel config name
+Alexandru Ardelean (5):
+  [1] iio: cros_ec: unify hw fifo attributes into the core file
+  [2] iio: buffer: dmaengine: unwrap the use of iio_buffer_set_attrs()
+  [3] iio: triggered-buffer: add sysfs buffer attributes as args for setup
+  [4] iio: buffer: extend arg list for {devm_}iio_triggered_buffer_setup()
+  [5] iio: remove iio_buffer_set_attrs() and assign buffer attrs during
+    alloc
 
- Documentation/filesystems/overlayfs.rst |  6 ++++++
- fs/overlayfs/Kconfig                    | 19 +++++++++++++++++++
- fs/overlayfs/copy_up.c                  |  3 ++-
- fs/overlayfs/namei.c                    |  4 +++-
- fs/overlayfs/ovl_entry.h                |  1 +
- fs/overlayfs/super.c                    | 25 +++++++++++++++++++++++++
- 6 files changed, 56 insertions(+), 2 deletions(-)
+ drivers/iio/accel/adxl372.c                   |  5 ++--
+ drivers/iio/accel/bma180.c                    |  2 +-
+ drivers/iio/accel/bma220_spi.c                |  2 +-
+ drivers/iio/accel/bmc150-accel-core.c         | 19 ++++++++------
+ drivers/iio/accel/cros_ec_accel_legacy.c      |  2 +-
+ drivers/iio/accel/kxcjk-1013.c                |  2 +-
+ drivers/iio/accel/kxsd9.c                     |  2 +-
+ drivers/iio/accel/mma7455_core.c              |  2 +-
+ drivers/iio/accel/mma8452.c                   |  2 +-
+ drivers/iio/accel/mxc4005.c                   |  2 +-
+ drivers/iio/accel/st_accel_buffer.c           |  2 +-
+ drivers/iio/accel/stk8312.c                   |  2 +-
+ drivers/iio/accel/stk8ba50.c                  |  2 +-
+ drivers/iio/adc/ad7266.c                      |  3 ++-
+ drivers/iio/adc/ad7298.c                      |  2 +-
+ drivers/iio/adc/ad7476.c                      |  2 +-
+ drivers/iio/adc/ad7606.c                      |  2 +-
+ drivers/iio/adc/ad7766.c                      |  2 +-
+ drivers/iio/adc/ad7768-1.c                    |  2 +-
+ drivers/iio/adc/ad7887.c                      |  2 +-
+ drivers/iio/adc/ad7923.c                      |  2 +-
+ drivers/iio/adc/ad799x.c                      |  2 +-
+ drivers/iio/adc/ad_sigma_delta.c              |  2 +-
+ drivers/iio/adc/at91-sama5d2_adc.c            | 25 +++++++++++--------
+ drivers/iio/adc/at91_adc.c                    |  2 +-
+ drivers/iio/adc/cc10001_adc.c                 |  2 +-
+ drivers/iio/adc/dln2-adc.c                    |  3 ++-
+ drivers/iio/adc/hx711.c                       |  3 ++-
+ drivers/iio/adc/max1027.c                     |  2 +-
+ drivers/iio/adc/max1118.c                     |  2 +-
+ drivers/iio/adc/max1363.c                     |  2 +-
+ drivers/iio/adc/mxs-lradc-adc.c               |  2 +-
+ drivers/iio/adc/rockchip_saradc.c             |  2 +-
+ drivers/iio/adc/stm32-adc.c                   |  2 +-
+ drivers/iio/adc/stm32-dfsdm-adc.c             |  2 +-
+ drivers/iio/adc/ti-adc081c.c                  |  3 ++-
+ drivers/iio/adc/ti-adc0832.c                  |  2 +-
+ drivers/iio/adc/ti-adc084s021.c               |  3 ++-
+ drivers/iio/adc/ti-adc108s102.c               |  3 ++-
+ drivers/iio/adc/ti-adc12138.c                 |  2 +-
+ drivers/iio/adc/ti-adc161s626.c               |  2 +-
+ drivers/iio/adc/ti-ads1015.c                  |  2 +-
+ drivers/iio/adc/ti-ads124s08.c                |  3 ++-
+ drivers/iio/adc/ti-ads7950.c                  |  3 ++-
+ drivers/iio/adc/ti-ads8688.c                  |  3 ++-
+ drivers/iio/adc/ti-tlc4541.c                  |  2 +-
+ drivers/iio/adc/vf610_adc.c                   |  3 ++-
+ drivers/iio/adc/xilinx-xadc-core.c            |  2 +-
+ .../buffer/industrialio-buffer-dmaengine.c    |  3 +--
+ .../buffer/industrialio-triggered-buffer.c    | 13 +++++++---
+ drivers/iio/chemical/atlas-sensor.c           |  2 +-
+ drivers/iio/chemical/ccs811.c                 |  2 +-
+ drivers/iio/chemical/pms7003.c                |  3 ++-
+ drivers/iio/chemical/scd30_core.c             |  3 ++-
+ drivers/iio/chemical/sps30.c                  |  3 ++-
+ .../cros_ec_sensors/cros_ec_lid_angle.c       |  5 ++--
+ .../common/cros_ec_sensors/cros_ec_sensors.c  |  5 ++--
+ .../cros_ec_sensors/cros_ec_sensors_core.c    | 16 +++++++++---
+ .../common/hid-sensors/hid-sensor-trigger.c   | 19 ++++++--------
+ drivers/iio/gyro/adxrs290.c                   |  3 ++-
+ drivers/iio/gyro/bmg160_core.c                |  2 +-
+ drivers/iio/gyro/fxas21002c_core.c            |  3 ++-
+ drivers/iio/gyro/itg3200_buffer.c             |  2 +-
+ drivers/iio/gyro/mpu3050-core.c               |  2 +-
+ drivers/iio/gyro/st_gyro_buffer.c             |  2 +-
+ drivers/iio/health/afe4403.c                  |  2 +-
+ drivers/iio/health/afe4404.c                  |  2 +-
+ drivers/iio/humidity/am2315.c                 |  2 +-
+ drivers/iio/humidity/hdc100x.c                |  2 +-
+ drivers/iio/humidity/hts221_buffer.c          |  2 +-
+ drivers/iio/imu/adis_buffer.c                 |  2 +-
+ drivers/iio/imu/bmi160/bmi160_core.c          |  3 ++-
+ drivers/iio/imu/inv_mpu6050/inv_mpu_core.c    |  2 +-
+ drivers/iio/imu/kmx61.c                       |  4 +--
+ drivers/iio/industrialio-buffer.c             | 12 ---------
+ drivers/iio/light/adjd_s311.c                 |  2 +-
+ drivers/iio/light/as73211.c                   |  3 ++-
+ drivers/iio/light/cros_ec_light_prox.c        |  5 ++--
+ drivers/iio/light/gp2ap020a00f.c              |  3 ++-
+ drivers/iio/light/isl29125.c                  |  2 +-
+ drivers/iio/light/ltr501.c                    |  2 +-
+ drivers/iio/light/max44000.c                  |  3 ++-
+ drivers/iio/light/rpr0521.c                   |  2 +-
+ drivers/iio/light/si1145.c                    |  2 +-
+ drivers/iio/light/st_uvis25_core.c            |  2 +-
+ drivers/iio/light/tcs3414.c                   |  2 +-
+ drivers/iio/light/tcs3472.c                   |  2 +-
+ drivers/iio/light/vcnl4000.c                  |  3 ++-
+ drivers/iio/light/vcnl4035.c                  |  2 +-
+ drivers/iio/magnetometer/ak8974.c             |  2 +-
+ drivers/iio/magnetometer/ak8975.c             |  2 +-
+ drivers/iio/magnetometer/bmc150_magn.c        |  2 +-
+ drivers/iio/magnetometer/hmc5843_core.c       |  2 +-
+ drivers/iio/magnetometer/mag3110.c            |  2 +-
+ drivers/iio/magnetometer/rm3100-core.c        |  2 +-
+ drivers/iio/magnetometer/st_magn_buffer.c     |  2 +-
+ drivers/iio/potentiostat/lmp91000.c           |  2 +-
+ drivers/iio/pressure/cros_ec_baro.c           |  5 ++--
+ drivers/iio/pressure/dlhl60d.c                |  2 +-
+ drivers/iio/pressure/mpl3115.c                |  2 +-
+ drivers/iio/pressure/ms5611_core.c            |  2 +-
+ drivers/iio/pressure/st_pressure_buffer.c     |  2 +-
+ drivers/iio/pressure/zpa2326.c                |  2 +-
+ drivers/iio/proximity/as3935.c                |  3 ++-
+ drivers/iio/proximity/isl29501.c              |  2 +-
+ drivers/iio/proximity/mb1232.c                |  3 ++-
+ .../iio/proximity/pulsedlight-lidar-lite-v2.c |  2 +-
+ drivers/iio/proximity/srf08.c                 |  3 ++-
+ drivers/iio/proximity/sx9310.c                |  2 +-
+ drivers/iio/proximity/sx9500.c                |  2 +-
+ drivers/iio/temperature/maxim_thermocouple.c  |  3 ++-
+ include/linux/iio/buffer.h                    |  3 ---
+ .../linux/iio/common/cros_ec_sensors_core.h   |  4 +--
+ include/linux/iio/triggered_buffer.h          |  7 ++++--
+ 114 files changed, 198 insertions(+), 172 deletions(-)
 
-diff --git a/Documentation/filesystems/overlayfs.rst b/Documentation/filesystems/overlayfs.rst
-index 580ab9a0fe31..4f9cc20f255c 100644
---- a/Documentation/filesystems/overlayfs.rst
-+++ b/Documentation/filesystems/overlayfs.rst
-@@ -563,6 +563,12 @@ This verification may cause significant overhead in some cases.
- Note: the mount options index=off,nfs_export=on are conflicting for a
- read-write mount and will result in an error.
- 
-+Note: the mount option uuid=off (or corresponding module param, or kernel
-+config) can be used to replace UUID of the underlying filesystem in file
-+handles with null, and effectively disable UUID checks. This can be useful in
-+case the underlying disk is copied and the UUID of this copy is changed. This
-+is only applicable if all lower/upper/work directories are on the same
-+filesystem, otherwise it will fallback to normal behaviour.
- 
- Volatile mount
- --------------
-diff --git a/fs/overlayfs/Kconfig b/fs/overlayfs/Kconfig
-index dd188c7996b3..c21abdb43206 100644
---- a/fs/overlayfs/Kconfig
-+++ b/fs/overlayfs/Kconfig
-@@ -61,6 +61,25 @@ config OVERLAY_FS_INDEX
- 
- 	  If unsure, say N.
- 
-+config OVERLAY_FS_INDEX_UUID
-+	bool "Overlayfs: export uuid in file handles"
-+	default y
-+	depends on OVERLAY_FS
-+	help
-+	  If this config option is disabled then overlay will replace uuid with
-+	  null in overlayfs file handles, effectively disabling uuid checks for
-+	  them. This affects overlayfs mounted with "index=on". This only can be
-+	  done if all upper and lower directories are on the same filesystem
-+	  where basic fhandles are uniq. In case the latter is not true
-+	  overlayfs would fallback to normal uuid checking mode.
-+
-+	  Disabling it is needed to overcome possible change of uuid on
-+	  superblock of the backing filesystem, e.g. when you copied the
-+	  virtual disk and mount both the copy of the disk and the original one
-+	  at the same time.
-+
-+	  If unsure, say Y.
-+
- config OVERLAY_FS_NFS_EXPORT
- 	bool "Overlayfs: turn on NFS export feature by default"
- 	depends on OVERLAY_FS
-diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
-index 3380039036d6..0b7e7a90a435 100644
---- a/fs/overlayfs/copy_up.c
-+++ b/fs/overlayfs/copy_up.c
-@@ -320,7 +320,8 @@ struct ovl_fh *ovl_encode_real_fh(struct ovl_fs *ofs, struct dentry *real,
- 	if (is_upper)
- 		fh->fb.flags |= OVL_FH_FLAG_PATH_UPPER;
- 	fh->fb.len = sizeof(fh->fb) + buflen;
--	fh->fb.uuid = *uuid;
-+	if (ofs->config.uuid)
-+		fh->fb.uuid = *uuid;
- 
- 	return fh;
- 
-diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
-index f058bf8e8b87..f731eb4d35f9 100644
---- a/fs/overlayfs/namei.c
-+++ b/fs/overlayfs/namei.c
-@@ -159,8 +159,10 @@ struct dentry *ovl_decode_real_fh(struct ovl_fs *ofs, struct ovl_fh *fh,
- 	/*
- 	 * Make sure that the stored uuid matches the uuid of the lower
- 	 * layer where file handle will be decoded.
-+	 * In case of uuid=off option just make sure that stored uuid is null.
- 	 */
--	if (!uuid_equal(&fh->fb.uuid, &mnt->mnt_sb->s_uuid))
-+	if (ofs->config.uuid ? !uuid_equal(&fh->fb.uuid, &mnt->mnt_sb->s_uuid) :
-+			      !uuid_is_null(&fh->fb.uuid))
- 		return NULL;
- 
- 	bytes = (fh->fb.len - offsetof(struct ovl_fb, fid));
-diff --git a/fs/overlayfs/ovl_entry.h b/fs/overlayfs/ovl_entry.h
-index 1b5a2094df8e..b7a73ea147b8 100644
---- a/fs/overlayfs/ovl_entry.h
-+++ b/fs/overlayfs/ovl_entry.h
-@@ -14,6 +14,7 @@ struct ovl_config {
- 	bool redirect_follow;
- 	const char *redirect_mode;
- 	bool index;
-+	bool uuid;
- 	bool nfs_export;
- 	int xino;
- 	bool metacopy;
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index 290983bcfbb3..a37995138b0d 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -43,6 +43,11 @@ module_param_named(index, ovl_index_def, bool, 0644);
- MODULE_PARM_DESC(index,
- 		 "Default to on or off for the inodes index feature");
- 
-+static bool ovl_uuid_def = IS_ENABLED(CONFIG_OVERLAY_FS_INDEX_UUID);
-+module_param_named(uuid, ovl_uuid_def, bool, 0644);
-+MODULE_PARM_DESC(uuid,
-+		 "Export null uuid in file handles of inodes index feature");
-+
- static bool ovl_nfs_export_def = IS_ENABLED(CONFIG_OVERLAY_FS_NFS_EXPORT);
- module_param_named(nfs_export, ovl_nfs_export_def, bool, 0644);
- MODULE_PARM_DESC(nfs_export,
-@@ -356,6 +361,8 @@ static int ovl_show_options(struct seq_file *m, struct dentry *dentry)
- 		seq_printf(m, ",redirect_dir=%s", ofs->config.redirect_mode);
- 	if (ofs->config.index != ovl_index_def)
- 		seq_printf(m, ",index=%s", ofs->config.index ? "on" : "off");
-+	if (ofs->config.uuid != ovl_uuid_def)
-+		seq_printf(m, ",uuid=%s", ofs->config.uuid ? "on" : "off");
- 	if (ofs->config.nfs_export != ovl_nfs_export_def)
- 		seq_printf(m, ",nfs_export=%s", ofs->config.nfs_export ?
- 						"on" : "off");
-@@ -410,6 +417,8 @@ enum {
- 	OPT_REDIRECT_DIR,
- 	OPT_INDEX_ON,
- 	OPT_INDEX_OFF,
-+	OPT_UUID_ON,
-+	OPT_UUID_OFF,
- 	OPT_NFS_EXPORT_ON,
- 	OPT_NFS_EXPORT_OFF,
- 	OPT_XINO_ON,
-@@ -429,6 +438,8 @@ static const match_table_t ovl_tokens = {
- 	{OPT_REDIRECT_DIR,		"redirect_dir=%s"},
- 	{OPT_INDEX_ON,			"index=on"},
- 	{OPT_INDEX_OFF,			"index=off"},
-+	{OPT_UUID_ON,			"uuid=on"},
-+	{OPT_UUID_OFF,			"uuid=off"},
- 	{OPT_NFS_EXPORT_ON,		"nfs_export=on"},
- 	{OPT_NFS_EXPORT_OFF,		"nfs_export=off"},
- 	{OPT_XINO_ON,			"xino=on"},
-@@ -549,6 +560,14 @@ static int ovl_parse_opt(char *opt, struct ovl_config *config)
- 			index_opt = true;
- 			break;
- 
-+		case OPT_UUID_ON:
-+			config->uuid = true;
-+			break;
-+
-+		case OPT_UUID_OFF:
-+			config->uuid = false;
-+			break;
-+
- 		case OPT_NFS_EXPORT_ON:
- 			config->nfs_export = true;
- 			nfs_export_opt = true;
-@@ -1877,6 +1896,7 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
- 	ofs->share_whiteout = true;
- 
- 	ofs->config.index = ovl_index_def;
-+	ofs->config.uuid = ovl_uuid_def;
- 	ofs->config.nfs_export = ovl_nfs_export_def;
- 	ofs->config.xino = ovl_xino_def();
- 	ofs->config.metacopy = ovl_metacopy_def;
-@@ -1956,6 +1976,11 @@ static int ovl_fill_super(struct super_block *sb, void *data, int silent)
- 	if (!ovl_upper_mnt(ofs))
- 		sb->s_flags |= SB_RDONLY;
- 
-+	if (!ofs->config.uuid && ofs->numfs > 1) {
-+		pr_warn("The uuid=off requires a single fs for lower and upper, falling back to uuid=on.\n");
-+		ofs->config.uuid = true;
-+	}
-+
- 	if (!ovl_force_readonly(ofs) && ofs->config.index) {
- 		err = ovl_get_indexdir(sb, ofs, oe, &upperpath);
- 		if (err)
 -- 
-2.26.2
+2.17.1
 
