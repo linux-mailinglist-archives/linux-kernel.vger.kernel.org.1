@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6369279233
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1008B279271
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729219AbgIYUfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:35:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729037AbgIYUfa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:35:30 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97E2A2344C;
-        Fri, 25 Sep 2020 19:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601062179;
-        bh=Qnb4GmVJK+KSCmaIF8ewnftUKFwuL9MIqaQIMNr/Qzw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TPLPzGJrSwQ0wxzHBcU6TR3tcD6MY9WSGBpePQIRe5XEDzKYOeVVrfPb4kAL62Wap
-         xXlF4cGDV5hJPlr4h72d1KC5PnVzMWTnK9RE9dT3Sny6+xFHB6WvNzz2B506eBw26s
-         o8N6VSV5tPwW5UVDzEiRnc1iHxdHX3k0LtJFBOqw=
-Date:   Fri, 25 Sep 2020 20:28:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Tuo Li <t-li20@mails.tsinghua.edu.cn>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        heiko@sntech.de, baijiaju1990@gmail.com,
-        linux-rockchip@lists.infradead.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ASoC: rockchip: fix a possible divide-by-zero bug in
- rockchip_i2s_hw_params()
-Message-ID: <20200925192844.GA10127@sirena.org.uk>
-References: <20200830095106.4412-1-t-li20@mails.tsinghua.edu.cn>
+        id S1728918AbgIYUng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728855AbgIYUnf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:43:35 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEAC6C0613AD
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:35:00 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id q10so1996494qvs.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 12:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L8ixCYO36+U1mLg2tiZDBw3lsO8JiDw+yiux6OWcwmo=;
+        b=O0RI1qr+uU4z7NkR/TDSKFKkxbsRPplVlsrQdFYsljMV2EUmHJRiMvWIWbygzF178h
+         G58iQjGosY2nyiZf13VyjvD2kgtwZ3QCLBFrw1ruBl+3lcQZF5sd0bbp9zs0EbND2Ytt
+         hgFcLDSomL93pE/axja083Tx5BClWNc4C9QQ3rp5wr++O1MswIIRmHs6o6KDSznU2ba7
+         UkW5uSranZDVJuyoO2ktHTrMYDy1dJWYrHZEaD3tPVoLyh0cHq2N9VM3NRB9o0jS2srl
+         Uckp7VxyjO4PcURiyCLDV4AijpW6n+29rEH9QCwzpqxaxwCNHZjoZUDjp4t94/Luuz75
+         rxWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=L8ixCYO36+U1mLg2tiZDBw3lsO8JiDw+yiux6OWcwmo=;
+        b=CRTt8cvf9r54nHeo+Qd8aGWK5IMr0/h8JSkZ0uCA75l9N31Xrn3c2aoU/FkW0NTDcl
+         FV/Mo9uzyQ+guRebMBsQa1/oFtJp6exx1knhQZXb932a8RQzaJGAXLLfmSHJoAOPDPn0
+         EDWPDbTrz/8d2UnV6rWQUCM0XaU5IyihDM43tf1zm85zmYC/sWbpXzxSwsdInDpmcniq
+         ymgxdhpggQLcr7VYqdSUbUq6GdNxbjLWID24NTM1jcBjxZ3Cm2V0RcWX1sK5UNPYjkEE
+         Ng7dQPQEem1MDUjqkMMAAMeqh1boo7DDJ1m0Qw8B5FDkhvyMlfD8NEQ5wVIfGrEKmLyA
+         iUVg==
+X-Gm-Message-State: AOAM533ycYaRlBpVh4IZX/gMLxKY+MS/8la5nWBGlnaBO6Jw46ob5Cg8
+        ec6zqfabZF5icaMFLRf6P0A=
+X-Google-Smtp-Source: ABdhPJzTraa5lDCISND1ESiagF1duHDOyixjOzQpAoX+Hu2yul2W67wnP+S+ngdmRy7eo340nkPxGQ==
+X-Received: by 2002:a05:6214:d6b:: with SMTP id 11mr189902qvs.30.1601062499579;
+        Fri, 25 Sep 2020 12:34:59 -0700 (PDT)
+Received: from localhost.localdomain ([68.183.97.120])
+        by smtp.gmail.com with ESMTPSA id b13sm2276391qkl.46.2020.09.25.12.34.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 12:34:58 -0700 (PDT)
+From:   Mark Mossberg <mark.mossberg@gmail.com>
+To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     hpa@zytor.com, jannh@google.com,
+        Mark Mossberg <mark.mossberg@gmail.com>
+Subject: [PATCH] x86/dumpstack: Fix misleading instruction pointer error message
+Date:   Fri, 25 Sep 2020 19:31:51 +0000
+Message-Id: <20200925193150.832387-1-mark.mossberg@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jRHKVT23PllUwdXP"
-Content-Disposition: inline
-In-Reply-To: <20200830095106.4412-1-t-li20@mails.tsinghua.edu.cn>
-X-Cookie: Dime is money.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Unconditionally printing "Bad RIP value" if copy_code() fails can be
+misleading for userspace pointers, since copy_code() can fail if the
+instruction pointer is valid, but the code is paged out.  This is
+because copy_code() calls copy_from_user_nmi() for userspace pointers,
+which disables page fault handling.
 
---jRHKVT23PllUwdXP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is reproducible in OOM situations, where it's plausible that the
+code may be reclaimed in the time between entry into the kernel and when
+this message is printed. This leaves a misleading log in dmesg that
+suggests instruction pointer corruption has occurred, which may alarm
+users.
 
-On Sun, Aug 30, 2020 at 05:51:06PM +0800, Tuo Li wrote:
-> The variable bclk_rate is checked in:
->   if (bclk_rate && mclk_rate % bclk_rate)
+This patch changes the message printed for userspace pointers to more
+accurately reflect the possible reasons why the code cannot be dumped.
 
-This doesn't apply against current code, please check and resend:
+Signed-off-by: Mark Mossberg <mark.mossberg@gmail.com>
+---
+ arch/x86/kernel/dumpstack.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-HEAD is now at bbd59df075ab Merge series "ASoC: Intel: sdw machine driver updates for 5.10" from Kai Vehmanen <kai.vehmanen@linux.intel.com>:
-Applying: ASoC: rockchip: fix a possible divide-by-zero bug in rockchip_i2s_hw_params()
-Using index info to reconstruct a base tree...
-M	sound/soc/rockchip/rockchip_i2s.c
-Falling back to patching base and 3-way merge...
-Auto-merging sound/soc/rockchip/rockchip_i2s.c
-CONFLICT (content): Merge conflict in sou
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 48ce44576947..37dbf16c7456 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -115,7 +115,10 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
+ 	unsigned long prologue = regs->ip - PROLOGUE_SIZE;
+ 
+ 	if (copy_code(regs, opcodes, prologue, sizeof(opcodes))) {
+-		printk("%sCode: Bad RIP value.\n", loglvl);
++		if (user_mode(regs))
++			printk("%sCode: Bad RIP value or code paged out.\n", loglvl);
++		else
++			printk("%sCode: Bad RIP value.\n", loglvl);
+ 	} else {
+ 		printk("%sCode: %" __stringify(PROLOGUE_SIZE) "ph <%02x> %"
+ 		       __stringify(EPILOGUE_SIZE) "ph\n", loglvl, opcodes,
+-- 
+2.25.1
 
---jRHKVT23PllUwdXP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl9uROsACgkQJNaLcl1U
-h9C92gf/RsB/lEQG1UKkloEDE1VbvFPSaiYS79/aMhlVUBUW116VogCV7sq/mQ10
-WEG6ygMD4mUoU9PAYXPpn8+boQJ9fVNNYF76UmKpMHm6ZjopJ6gZZ/ARj3jBje4H
-QgtJEYhcYFodqFs5LP5sVswlq06rguAH1cYrHgM9YYYZtWimsqfD2SD63QZaog8m
-eBgk0duJ4ys5HzfPUhpfRgXjH8r6LNHCLRQy8UW1vHHYG3yfpUA9YNLITMHWbyq0
-eDUZJzcpnErjHj3FaHoxjm4ohvOnlVMz+U9+LEjuz0Z8VfBk3SE7C6Rj1dN3JpdA
-vR+WgSZG2A7qGkMp20/0IX+qKdILbA==
-=cION
------END PGP SIGNATURE-----
-
---jRHKVT23PllUwdXP--
