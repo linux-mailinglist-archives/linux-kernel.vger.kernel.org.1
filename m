@@ -2,182 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B5927842B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA60278426
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbgIYJgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:36:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:40246 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727837AbgIYJg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:36:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2FED61045;
-        Fri, 25 Sep 2020 02:36:25 -0700 (PDT)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C4B1C3F718;
-        Fri, 25 Sep 2020 02:36:22 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>
-Subject: [PATCH v3 2/2] arm64: kvm: Introduce MTE VCPU feature
-Date:   Fri, 25 Sep 2020 10:36:07 +0100
-Message-Id: <20200925093607.3051-3-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200925093607.3051-1-steven.price@arm.com>
-References: <20200925093607.3051-1-steven.price@arm.com>
+        id S1727988AbgIYJgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:36:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727905AbgIYJgU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:36:20 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0722BC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:36:20 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id e2so1010983vsr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CopwlfwvxR6TDA4NEpPReJrXwzQ2YdaVXCfZyj+KeI8=;
+        b=gQDqhM1EBxhhdAdupXGC+mi8HP42zIBAb+/5WouwU0pwYgc43PjnSIDyqhNXoJBgwE
+         nA9S7PMscej5cgQCrvf55Dp29QyMHvwUDUtmdsjDRjaEHcRFBhd7dmLwMWl9mvoH7sp/
+         4lRasNIvYZAFCtIP9ZaogcqOJXzEYU/4iYpzI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CopwlfwvxR6TDA4NEpPReJrXwzQ2YdaVXCfZyj+KeI8=;
+        b=hT3A9he7Vo5VPRsRawq+ajUhcWIuyaBV69gMv22EK9iEfzPRCgJFKkDiOYMTsihHru
+         TdLgXhIOVOOiJaS2dXWkkltN0vbjDLTirFynE9N0AOVCfv2XFfylbfwf7Daj1zyEM3lo
+         T65pTW88ihDqYfCw6xAw8vQqs33z2wfl+6cdFsmISY/9M0NoYD3WHbwFYF9/S+F0afrW
+         2zMOe1x5rAo1xMGmvFlP/td76T4dXEcmSMJqvOMO/DxVbZPgnF8In9v7IcgthGBuQGoQ
+         TkuTmVXEiu6kyzqSP+QolzIfQ8LtB4StlUzZmVFkoAaZDIz/qPl78yRvZsdN1Eas5Vy5
+         as3A==
+X-Gm-Message-State: AOAM532vQzTH5Wf3xX5d0uewgpVFU0HhvjHBZpmp1DAnWJ1A5Ona1lzl
+        4vBKs0J4iM97G1Qy8r0iDfRM6GnwIJrjzqCvZBAq4A==
+X-Google-Smtp-Source: ABdhPJxdJedhGCUBzFfJjDuMt5UWKrHFjl71MnBQbIp5LNRnu+DHrChmvGin2RNOLR4c+TakRNBVwDRVvnRZRQt2lqc=
+X-Received: by 2002:a67:b917:: with SMTP id q23mr2061999vsn.37.1601026578879;
+ Fri, 25 Sep 2020 02:36:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200925065418.1077472-1-ikjn@chromium.org> <20200925145255.v3.2.I48d59ef5398f3633c6ebbab093da6b4b06495780@changeid>
+In-Reply-To: <20200925145255.v3.2.I48d59ef5398f3633c6ebbab093da6b4b06495780@changeid>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Fri, 25 Sep 2020 17:36:08 +0800
+Message-ID: <CAATdQgB4Z2msO_RuOuVMLaXYrR7WnGsSQbjOWMTFWT7PCjH+PA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/6] spi: spi-mtk-nor: fix mishandled logics in
+ checking SPI memory operation
+To:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
-for a VM. This exposes the feature to the guest and automatically tags
-memory pages touched by the VM as PG_mte_tagged (and clears the tags
-storage) to ensure that the guest cannot see stale tags, and so that the
-tags are correctly saved/restored across swap.
+On Fri, Sep 25, 2020 at 2:54 PM Ikjoon Jang <ikjn@chromium.org> wrote:
+>
+> Fix a bug which limits its protocol availability in supports_op().
+>
+> Fixes: a59b2c7c56bf ("spi: spi-mtk-nor: support standard spi properties")
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> ---
 
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- arch/arm64/include/asm/kvm_emulate.h |  3 +++
- arch/arm64/include/asm/kvm_host.h    |  3 +++
- arch/arm64/kvm/arm.c                 |  9 +++++++++
- arch/arm64/kvm/mmu.c                 | 15 +++++++++++++++
- arch/arm64/kvm/sys_regs.c            |  6 +++++-
- include/uapi/linux/kvm.h             |  1 +
- 6 files changed, 36 insertions(+), 1 deletion(-)
+This is also duplicated work of https://patchwork.kernel.org/patch/11797723/,
+I'm going to drop this patch in v4.
 
-diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
-index 49a55be2b9a2..4923a566ae6e 100644
---- a/arch/arm64/include/asm/kvm_emulate.h
-+++ b/arch/arm64/include/asm/kvm_emulate.h
-@@ -79,6 +79,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
- 	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
- 	    vcpu_el1_is_32bit(vcpu))
- 		vcpu->arch.hcr_el2 |= HCR_TID2;
-+
-+	if (vcpu->kvm->arch.mte_enabled)
-+		vcpu->arch.hcr_el2 |= HCR_ATA;
- }
- 
- static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 4f4360dd149e..1379300c1487 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -110,6 +110,9 @@ struct kvm_arch {
- 	 * supported.
- 	 */
- 	bool return_nisv_io_abort_to_user;
-+
-+	/* Memory Tagging Extension enabled for the guest */
-+	bool mte_enabled;
- };
- 
- struct kvm_vcpu_fault_info {
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 46dc3d75cf13..624edca0a1fa 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -87,6 +87,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
- 		r = 0;
- 		kvm->arch.return_nisv_io_abort_to_user = true;
- 		break;
-+	case KVM_CAP_ARM_MTE:
-+		if (!system_supports_mte() || kvm->created_vcpus)
-+			return -EINVAL;
-+		r = 0;
-+		kvm->arch.mte_enabled = true;
-+		break;
- 	default:
- 		r = -EINVAL;
- 		break;
-@@ -206,6 +212,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 		 */
- 		r = 1;
- 		break;
-+	case KVM_CAP_ARM_MTE:
-+		r = system_supports_mte();
-+		break;
- 	default:
- 		r = kvm_arch_vm_ioctl_check_extension(kvm, ext);
- 		break;
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index ba00bcc0c884..befb9e1f0aa6 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -1949,6 +1949,21 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	if (vma_pagesize == PAGE_SIZE && !force_pte)
- 		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
- 							   &pfn, &fault_ipa);
-+	if (system_supports_mte() && kvm->arch.mte_enabled && pfn_valid(pfn)) {
-+		/*
-+		 * VM will be able to see the page's tags, so we must ensure
-+		 * they have been initialised.
-+		 */
-+		struct page *page = pfn_to_page(pfn);
-+		long i, nr_pages = compound_nr(page);
-+
-+		/* if PG_mte_tagged is set, tags have already been initialised */
-+		for (i = 0; i < nr_pages; i++, page++) {
-+			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-+				mte_clear_page_tags(page_address(page));
-+		}
-+	}
-+
- 	if (writable)
- 		kvm_set_pfn_dirty(pfn);
- 
-diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-index a655f172b5ad..5010a47152b4 100644
---- a/arch/arm64/kvm/sys_regs.c
-+++ b/arch/arm64/kvm/sys_regs.c
-@@ -1132,7 +1132,8 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
- 			val &= ~(0xfUL << ID_AA64PFR0_SVE_SHIFT);
- 		val &= ~(0xfUL << ID_AA64PFR0_AMU_SHIFT);
- 	} else if (id == SYS_ID_AA64PFR1_EL1) {
--		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
-+		if (!vcpu->kvm->arch.mte_enabled)
-+			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
- 	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
- 		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
- 			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
-@@ -1394,6 +1395,9 @@ static bool access_mte_regs(struct kvm_vcpu *vcpu, struct sys_reg_params *p,
- static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
- 				   const struct sys_reg_desc *rd)
- {
-+	if (vcpu->kvm->arch.mte_enabled)
-+		return 0;
-+
- 	return REG_HIDDEN_USER | REG_HIDDEN_GUEST;
- }
- 
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index f6d86033c4fa..87678ed82ab4 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -1035,6 +1035,7 @@ struct kvm_ppc_resize_hpt {
- #define KVM_CAP_LAST_CPU 184
- #define KVM_CAP_SMALLER_MAXPHYADDR 185
- #define KVM_CAP_S390_DIAG318 186
-+#define KVM_CAP_ARM_MTE 188
- 
- #ifdef KVM_CAP_IRQ_ROUTING
- 
--- 
-2.20.1
-
+>
+> (no changes since v1)
+>
+>  drivers/spi/spi-mtk-nor.c | 26 +++++++++++---------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
+> index 6e6ca2b8e6c8..0f7d4ec68730 100644
+> --- a/drivers/spi/spi-mtk-nor.c
+> +++ b/drivers/spi/spi-mtk-nor.c
+> @@ -211,28 +211,24 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
+>         if (op->cmd.buswidth != 1)
+>                 return false;
+>
+> +       if (!spi_mem_default_supports_op(mem, op))
+> +               return false;
+> +
+>         if ((op->addr.nbytes == 3) || (op->addr.nbytes == 4)) {
+> -               switch(op->data.dir) {
+> -               case SPI_MEM_DATA_IN:
+> -                       if (!mtk_nor_match_read(op))
+> -                               return false;
+> -                       break;
+> -               case SPI_MEM_DATA_OUT:
+> -                       if ((op->addr.buswidth != 1) ||
+> -                           (op->dummy.nbytes != 0) ||
+> -                           (op->data.buswidth != 1))
+> -                               return false;
+> -                       break;
+> -               default:
+> -                       break;
+> -               }
+> +               if ((op->data.dir == SPI_MEM_DATA_IN) && mtk_nor_match_read(op))
+> +                       return true;
+> +               else if (op->data.dir == SPI_MEM_DATA_OUT)
+> +                       return (op->addr.buswidth == 1) &&
+> +                              (op->dummy.nbytes == 0) &&
+> +                              (op->data.buswidth == 1);
+>         }
+> +
+>         len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+>         if ((len > MTK_NOR_PRG_MAX_SIZE) ||
+>             ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
+>                 return false;
+>
+> -       return spi_mem_default_supports_op(mem, op);
+> +       return true;
+>  }
+>
+>  static void mtk_nor_setup_bus(struct mtk_nor *sp, const struct spi_mem_op *op)
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+>
