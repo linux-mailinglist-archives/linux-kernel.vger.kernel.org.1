@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730DA278868
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A58C27880C
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729285AbgIYMzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:55:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34572 "EHLO mail.kernel.org"
+        id S1729319AbgIYMwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729649AbgIYMzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:55:13 -0400
+        id S1728844AbgIYMwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:52:21 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F3102072E;
-        Fri, 25 Sep 2020 12:55:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00FCE206DB;
+        Fri, 25 Sep 2020 12:52:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038511;
-        bh=Fn8q7WjaJvgAR/AOi9VIFWdaDJNSyqRfQ3udDJ/me28=;
+        s=default; t=1601038340;
+        bh=RyLJoM/52GLQOva+8BqKiZZq6J1nF7A/gZeYYyssWxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MPODrh41rMYP9nQGvPmPSco5bP22h0YG2Of5KxeuEC8p7wewZ9cZ5hfXv+eQtfDBw
-         hdMo4sYk9yFLk/1ULHV7QC6J/xUFgzYpJo4D2Hw11HcKAiqNifESKkUKk7e+Q3plcW
-         Wls18xK84cGo9lMNX/HNQ5o6t01LHsdfOivSqiaQ=
+        b=ZgyYYKNo4sO0tJmbvju/CtsGSacATQag6EQbKtksCkYP/NsNaGlor2RUUTEYWp7F8
+         O1hR5rfLCWWThMnr3i2NrzpYck23+aWm1z2/dLfL5JoT5M2CtdPddjcEIf0FAkGbYu
+         XSb7quPXNteeg04FhsEaVidL2x+6sS1n731xkKqg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Ying Xue <ying.xue@windriver.com>,
+        stable@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
+        Michael Chan <michael.chan@broadcom.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 16/37] tipc: fix shutdown() of connection oriented socket
-Date:   Fri, 25 Sep 2020 14:48:44 +0200
-Message-Id: <20200925124723.385163668@linuxfoundation.org>
+Subject: [PATCH 5.4 33/43] bnxt_en: Protect bnxt_set_eee() and bnxt_set_pauseparam() with mutex.
+Date:   Fri, 25 Sep 2020 14:48:45 +0200
+Message-Id: <20200925124728.575159776@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
-References: <20200925124720.972208530@linuxfoundation.org>
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
+References: <20200925124723.575329814@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,55 +43,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Michael Chan <michael.chan@broadcom.com>
 
-[ Upstream commit a4b5cc9e10803ecba64a7d54c0f47e4564b4a980 ]
+[ Upstream commit a53906908148d64423398a62c4435efb0d09652c ]
 
-I confirmed that the problem fixed by commit 2a63866c8b51a3f7 ("tipc: fix
-shutdown() of connectionless socket") also applies to stream socket.
+All changes related to bp->link_info require the protection of the
+link_lock mutex.  It's not sufficient to rely just on RTNL.
 
-----------
-#include <sys/socket.h>
-#include <unistd.h>
-#include <sys/wait.h>
-
-int main(int argc, char *argv[])
-{
-        int fds[2] = { -1, -1 };
-        socketpair(PF_TIPC, SOCK_STREAM /* or SOCK_DGRAM */, 0, fds);
-        if (fork() == 0)
-                _exit(read(fds[0], NULL, 1));
-        shutdown(fds[0], SHUT_RDWR); /* This must make read() return. */
-        wait(NULL); /* To be woken up by _exit(). */
-        return 0;
-}
-----------
-
-Since shutdown(SHUT_RDWR) should affect all processes sharing that socket,
-unconditionally setting sk->sk_shutdown to SHUTDOWN_MASK will be the right
-behavior.
-
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Acked-by: Ying Xue <ying.xue@windriver.com>
+Fixes: 163e9ef63641 ("bnxt_en: Fix race when modifying pause settings.")
+Reviewed-by: Edwin Peer <edwin.peer@broadcom.com>
+Signed-off-by: Michael Chan <michael.chan@broadcom.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/tipc/socket.c |    5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c |   31 ++++++++++++++--------
+ 1 file changed, 20 insertions(+), 11 deletions(-)
 
---- a/net/tipc/socket.c
-+++ b/net/tipc/socket.c
-@@ -2565,10 +2565,7 @@ static int tipc_shutdown(struct socket *
- 	lock_sock(sk);
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c
+@@ -1665,9 +1665,12 @@ static int bnxt_set_pauseparam(struct ne
+ 	if (!BNXT_SINGLE_PF(bp))
+ 		return -EOPNOTSUPP;
  
- 	__tipc_shutdown(sock, TIPC_CONN_SHUTDOWN);
--	if (tipc_sk_type_connectionless(sk))
--		sk->sk_shutdown = SHUTDOWN_MASK;
--	else
--		sk->sk_shutdown = SEND_SHUTDOWN;
-+	sk->sk_shutdown = SHUTDOWN_MASK;
++	mutex_lock(&bp->link_lock);
+ 	if (epause->autoneg) {
+-		if (!(link_info->autoneg & BNXT_AUTONEG_SPEED))
+-			return -EINVAL;
++		if (!(link_info->autoneg & BNXT_AUTONEG_SPEED)) {
++			rc = -EINVAL;
++			goto pause_exit;
++		}
  
- 	if (sk->sk_state == TIPC_DISCONNECTING) {
- 		/* Discard any unreceived messages */
+ 		link_info->autoneg |= BNXT_AUTONEG_FLOW_CTRL;
+ 		if (bp->hwrm_spec_code >= 0x10201)
+@@ -1688,11 +1691,11 @@ static int bnxt_set_pauseparam(struct ne
+ 	if (epause->tx_pause)
+ 		link_info->req_flow_ctrl |= BNXT_LINK_PAUSE_TX;
+ 
+-	if (netif_running(dev)) {
+-		mutex_lock(&bp->link_lock);
++	if (netif_running(dev))
+ 		rc = bnxt_hwrm_set_pause(bp);
+-		mutex_unlock(&bp->link_lock);
+-	}
++
++pause_exit:
++	mutex_unlock(&bp->link_lock);
+ 	return rc;
+ }
+ 
+@@ -2397,8 +2400,7 @@ static int bnxt_set_eee(struct net_devic
+ 	struct bnxt *bp = netdev_priv(dev);
+ 	struct ethtool_eee *eee = &bp->eee;
+ 	struct bnxt_link_info *link_info = &bp->link_info;
+-	u32 advertising =
+-		 _bnxt_fw_to_ethtool_adv_spds(link_info->advertising, 0);
++	u32 advertising;
+ 	int rc = 0;
+ 
+ 	if (!BNXT_SINGLE_PF(bp))
+@@ -2407,19 +2409,23 @@ static int bnxt_set_eee(struct net_devic
+ 	if (!(bp->flags & BNXT_FLAG_EEE_CAP))
+ 		return -EOPNOTSUPP;
+ 
++	mutex_lock(&bp->link_lock);
++	advertising = _bnxt_fw_to_ethtool_adv_spds(link_info->advertising, 0);
+ 	if (!edata->eee_enabled)
+ 		goto eee_ok;
+ 
+ 	if (!(link_info->autoneg & BNXT_AUTONEG_SPEED)) {
+ 		netdev_warn(dev, "EEE requires autoneg\n");
+-		return -EINVAL;
++		rc = -EINVAL;
++		goto eee_exit;
+ 	}
+ 	if (edata->tx_lpi_enabled) {
+ 		if (bp->lpi_tmr_hi && (edata->tx_lpi_timer > bp->lpi_tmr_hi ||
+ 				       edata->tx_lpi_timer < bp->lpi_tmr_lo)) {
+ 			netdev_warn(dev, "Valid LPI timer range is %d and %d microsecs\n",
+ 				    bp->lpi_tmr_lo, bp->lpi_tmr_hi);
+-			return -EINVAL;
++			rc = -EINVAL;
++			goto eee_exit;
+ 		} else if (!bp->lpi_tmr_hi) {
+ 			edata->tx_lpi_timer = eee->tx_lpi_timer;
+ 		}
+@@ -2429,7 +2435,8 @@ static int bnxt_set_eee(struct net_devic
+ 	} else if (edata->advertised & ~advertising) {
+ 		netdev_warn(dev, "EEE advertised %x must be a subset of autoneg advertised speeds %x\n",
+ 			    edata->advertised, advertising);
+-		return -EINVAL;
++		rc = -EINVAL;
++		goto eee_exit;
+ 	}
+ 
+ 	eee->advertised = edata->advertised;
+@@ -2441,6 +2448,8 @@ eee_ok:
+ 	if (netif_running(dev))
+ 		rc = bnxt_hwrm_set_link_setting(bp, false, true);
+ 
++eee_exit:
++	mutex_unlock(&bp->link_lock);
+ 	return rc;
+ }
+ 
 
 
