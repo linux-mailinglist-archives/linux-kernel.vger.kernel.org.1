@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664222786BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE6A2786C0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728189AbgIYMMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:12:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33924 "EHLO mail.kernel.org"
+        id S1728341AbgIYMNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:13:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726368AbgIYMMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:12:37 -0400
-Received: from coco.lan (ip5f5ad5bf.dynamic.kabel-deutschland.de [95.90.213.191])
+        id S1726368AbgIYMNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:13:23 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF23C2083B;
-        Fri, 25 Sep 2020 12:12:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 419DA2083B;
+        Fri, 25 Sep 2020 12:13:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601035956;
-        bh=Udqh9zJbGjoXTKRFQ3WtIOCD3+zSF38WyEqeUdncD1A=;
+        s=default; t=1601036002;
+        bh=Fmb6jRRPhkAIzexZPvNOSf5Dq7LTK2PkF2Id+8yDxNo=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=19BvTZfHOA73y4WfSL/F8Vglq4Aue21Of8hXdT9cVVYa/1i4KH7WRzmWy/WVjTL/R
-         fEoJhlvjIQs0T8vv5B6FgIK80B2jo66AEu7aXhAK736OfiAWyTd1DDXeepFlUfl9eP
-         WwaVvCA0z/NdP8STeLvEeCQlMrbJdydGkVc+96s0=
-Date:   Fri, 25 Sep 2020 14:12:31 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3.1 2/8] docs: conf.py: disable automarkup for Sphinx 3.x
-Message-ID: <20200925141231.65a9ec1e@coco.lan>
-In-Reply-To: <753c15018d29e415106b2b02d7a6f6add2b88ddf.1601014299.git.mchehab+huawei@kernel.org>
-References: <cover.1601014299.git.mchehab+huawei@kernel.org>
-        <753c15018d29e415106b2b02d7a6f6add2b88ddf.1601014299.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        b=JVSX/JTxC2E8CzOyUzD4uXbgWa3KmN8vtVCqwdctr71fTMO2HCoUgWi0fxOBXDSeB
+         VQM0q/xHVFfx7U3PjqCzTWnAMsuuNDI7e932l2p4Ipni2pmgOuBdrJDSM/LXccIT2d
+         WvgH3OGI4JWWeaKLB8FwtzzkrXwKU9q3x75hkS38=
+Date:   Fri, 25 Sep 2020 13:13:18 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cristian Pop <cristian.pop@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 1/4] iio: core: Add optional symbolic label to a
+ device channel
+Message-ID: <20200925131318.7eabcae7@archlinux>
+In-Reply-To: <20200921133020.62978-1-cristian.pop@analog.com>
+References: <20200921133020.62978-1-cristian.pop@analog.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -40,36 +40,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The class types changed after the C domain rewrite on
-Sphinx 3.x. Due to that, the automarkup extension is just
-generating additional noise when trying to convert structs
-and other markups into cross references.
+On Mon, 21 Sep 2020 16:30:17 +0300
+Cristian Pop <cristian.pop@analog.com> wrote:
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> If a label is defined in the device tree for this channel add that
+> to the channel specific attributes. This is useful for userspace to
+> be able to identify an individual channel.
+> 
+> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+Hi Cristian,
 
----
+Looks good to me as does patch 3.  Just the docs and DT to tidy up now.
 
-v3.1: Sphinx actually complains when append has more than one
-item. So, let's call extensions.append() twice.
+Thanks,
 
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 0a102d57437d..3875401486de 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -37,7 +37,7 @@ needs_sphinx = '1.3'
- # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
- # ones.
- extensions = ['kerneldoc', 'rstFlatTable', 'kernel_include',
--              'kfigure', 'sphinx.ext.ifconfig', 'automarkup',
-+              'kfigure', 'sphinx.ext.ifconfig',
-               'maintainers_include', 'sphinx.ext.autosectionlabel' ]
- 
- #
-@@ -52,6 +52,7 @@ if major >= 3:
- 	''')
- else:
-     extensions.append('cdomain')
-+    extensions.append('automarkup')
- 
- # Ensure that autosectionlabel will produce unique names
- autosectionlabel_prefix_document = True
+Jonathan
+
+> ---
+> Changes in V6:
+>  - Fix indentation
+>  - Check for "read_label callback" inside "iio_device_add_channel_label"
+>  
+>  drivers/iio/industrialio-core.c | 40 +++++++++++++++++++++++++++++++++
+>  include/linux/iio/iio.h         |  6 +++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index 6e388293c828..b577fff35641 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -669,6 +669,19 @@ ssize_t iio_format_value(char *buf, unsigned int type, int size, int *vals)
+>  }
+>  EXPORT_SYMBOL_GPL(iio_format_value);
+>  
+> +static ssize_t iio_read_channel_label(struct device *dev,
+> +				      struct device_attribute *attr,
+> +				      char *buf)
+> +{
+> +	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
+> +	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
+> +
+> +	if (!indio_dev->info->read_label)
+> +		return -EINVAL;
+> +
+> +	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
+> +}
+> +
+>  static ssize_t iio_read_channel_info(struct device *dev,
+>  				     struct device_attribute *attr,
+>  				     char *buf)
+> @@ -1137,6 +1150,28 @@ int __iio_add_chan_devattr(const char *postfix,
+>  	return ret;
+>  }
+>  
+> +static int iio_device_add_channel_label(struct iio_dev *indio_dev,
+> +					 struct iio_chan_spec const *chan)
+> +{
+> +	int ret;
+> +
+> +	if (!indio_dev->info->read_label)
+> +		return 0;
+> +
+> +	ret = __iio_add_chan_devattr("label",
+> +				     chan,
+> +				     &iio_read_channel_label,
+> +				     NULL,
+> +				     0,
+> +				     IIO_SEPARATE,
+> +				     &indio_dev->dev,
+> +				     &indio_dev->channel_attr_list);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	return 1;
+> +}
+> +
+>  static int iio_device_add_info_mask_type(struct iio_dev *indio_dev,
+>  					 struct iio_chan_spec const *chan,
+>  					 enum iio_shared_by shared_by,
+> @@ -1270,6 +1305,11 @@ static int iio_device_add_channel_sysfs(struct iio_dev *indio_dev,
+>  		return ret;
+>  	attrcount += ret;
+>  
+> +	ret = iio_device_add_channel_label(indio_dev, chan);
+> +	if (ret < 0)
+> +		return ret;
+> +	attrcount += ret;
+> +
+>  	if (chan->ext_info) {
+>  		unsigned int i = 0;
+>  		for (ext_info = chan->ext_info; ext_info->name; ext_info++) {
+> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> index 2e45b3ceafa7..9a3cf4815148 100644
+> --- a/include/linux/iio/iio.h
+> +++ b/include/linux/iio/iio.h
+> @@ -362,6 +362,8 @@ struct iio_trigger; /* forward declaration */
+>   *			and max. For lists, all possible values are enumerated.
+>   * @write_raw:		function to write a value to the device.
+>   *			Parameters are the same as for read_raw.
+> + * @read_label:		function to request label name for a specified label,
+> + *			for better channel identification.
+>   * @write_raw_get_fmt:	callback function to query the expected
+>   *			format/precision. If not set by the driver, write_raw
+>   *			returns IIO_VAL_INT_PLUS_MICRO.
+> @@ -420,6 +422,10 @@ struct iio_info {
+>  			 int val2,
+>  			 long mask);
+>  
+> +	int (*read_label)(struct iio_dev *indio_dev,
+> +			 struct iio_chan_spec const *chan,
+> +			 char *label);
+> +
+>  	int (*write_raw_get_fmt)(struct iio_dev *indio_dev,
+>  			 struct iio_chan_spec const *chan,
+>  			 long mask);
+
