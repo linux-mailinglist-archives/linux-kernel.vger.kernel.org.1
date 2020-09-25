@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86EFF2784E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:18:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7372B2784E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:19:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727987AbgIYKSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:18:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25839 "EHLO
+        id S1728045AbgIYKTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:19:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53732 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727324AbgIYKSd (ORCPT
+        by vger.kernel.org with ESMTP id S1727290AbgIYKTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:18:33 -0400
+        Fri, 25 Sep 2020 06:19:33 -0400
 Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601029110;
+        s=mimecast20190719; t=1601029171;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=0XwP/uQuoeiMTNNBCFZ8KGy+E9qm/5GNoc7ZeWsjVJE=;
-        b=glvZYklIEhDLnQ5zLJ1326AoD892e3raiQw2nRRmqq9ps4baHudDTinGdPW2KE7tw9x7/E
-        509gKO357m8QRI+L/J/cZJUpe2Smg0Ml+QAyL39RJw7fst0HOpEs6lRLqe7mJF6eAVrU2d
-        +uoXsf5RmL7BRtcGKTIqZSy9jirU+sQ=
+        bh=aPzObvFVH1Ls9ap9RnvDiZSE0g7odHJPbPIr7e+V9YI=;
+        b=gRBbMV/6WnnUvLNyWBH4wnbcf1/itvDyDcISQAhIvSSEl3wUjfUTRpJFMSvSczeD+HQajc
+        mcaqooXFKEbQ+lZ3m8+68hjIR6wvN6FCudG79L11Q4WlW5eGsNV0nhkAsfl7ei9OmhDfFS
+        kaQTCODPlveX5NffzkdMmXbFG2vo3Rk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-440-nFyL3JLPM3G1os6AcAagfg-1; Fri, 25 Sep 2020 06:18:29 -0400
-X-MC-Unique: nFyL3JLPM3G1os6AcAagfg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-397-_KV4NE4HOieSz61MdkCd2w-1; Fri, 25 Sep 2020 06:19:29 -0400
+X-MC-Unique: _KV4NE4HOieSz61MdkCd2w-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 638DF802EA3;
-        Fri, 25 Sep 2020 10:18:27 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7EA71891E81;
+        Fri, 25 Sep 2020 10:19:27 +0000 (UTC)
 Received: from [10.36.112.211] (ovpn-112-211.ams2.redhat.com [10.36.112.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A97301002C15;
-        Fri, 25 Sep 2020 10:18:24 +0000 (UTC)
-Subject: Re: [PATCH 1/9] mm, page_alloc: clean up pageset high and batch
- update
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 57B1960C04;
+        Fri, 25 Sep 2020 10:19:25 +0000 (UTC)
+Subject: Re: [PATCH 3/9] mm, page_alloc: remove setup_pageset()
 To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
         Pavel Tatashin <pasha.tatashin@soleen.com>,
         Oscar Salvador <osalvador@suse.de>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>
 References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-2-vbabka@suse.cz>
+ <20200922143712.12048-4-vbabka@suse.cz>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
  mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -89,51 +88,45 @@ Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat GmbH
-Message-ID: <42a55288-b593-a5f8-ce7b-ca86d28fcc7a@redhat.com>
-Date:   Fri, 25 Sep 2020 12:18:24 +0200
+Message-ID: <60e0d734-f51d-ac25-b5c4-d503171fcd7b@redhat.com>
+Date:   Fri, 25 Sep 2020 12:19:25 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200922143712.12048-2-vbabka@suse.cz>
+In-Reply-To: <20200922143712.12048-4-vbabka@suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 22.09.20 16:37, Vlastimil Babka wrote:
-> The updates to pcplists' high and batch valued are handled by multiple
-> functions that make the calculations hard to follow. Consolidate everything
-> to pageset_set_high_and_batch() and remove pageset_set_batch() and
-> pageset_set_high() wrappers.
+> We initialize boot-time pagesets with setup_pageset(), which sets high and
+> batch values that effectively disable pcplists.
 > 
-> The only special case using one of the removed wrappers was:
-> build_all_zonelists_init()
->   setup_pageset()
->     pageset_set_batch()
-> which was hardcoding batch as 0, so we can just open-code a call to
-> pageset_update() with constant parameters instead.
+> We can remove this wrapper if we just set these values for all pagesets in
+> pageset_init(). Non-boot pagesets then subsequently update them to the proper
+> values.
 > 
 > No functional change.
 > 
 > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
 > ---
->  mm/page_alloc.c | 49 ++++++++++++++++++++-----------------------------
->  1 file changed, 20 insertions(+), 29 deletions(-)
+>  mm/page_alloc.c | 17 ++++++++++-------
+>  1 file changed, 10 insertions(+), 7 deletions(-)
 > 
 > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 60a0e94645a6..a163c5e561f2 100644
+> index 26069c8d1b19..76c2b4578723 100644
 > --- a/mm/page_alloc.c
 > +++ b/mm/page_alloc.c
 > @@ -5823,7 +5823,7 @@ static void build_zonelists(pg_data_t *pgdat)
 >   * not check if the processor is online before following the pageset pointer.
 >   * Other parts of the kernel may not check if the zone is available.
 >   */
-> -static void setup_pageset(struct per_cpu_pageset *p, unsigned long batch);
-> +static void setup_pageset(struct per_cpu_pageset *p);
+> -static void setup_pageset(struct per_cpu_pageset *p);
+> +static void pageset_init(struct per_cpu_pageset *p);
 >  static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
 >  static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
 >  
@@ -141,78 +134,32 @@ On 22.09.20 16:37, Vlastimil Babka wrote:
 >  	 * (a chicken-egg dilemma).
 >  	 */
 >  	for_each_possible_cpu(cpu)
-> -		setup_pageset(&per_cpu(boot_pageset, cpu), 0);
-> +		setup_pageset(&per_cpu(boot_pageset, cpu));
+> -		setup_pageset(&per_cpu(boot_pageset, cpu));
+> +		pageset_init(&per_cpu(boot_pageset, cpu));
 >  
 >  	mminit_verify_zonelist();
 >  	cpuset_init_current_mems_allowed();
-> @@ -6200,12 +6200,6 @@ static void pageset_update(struct per_cpu_pages *pcp, unsigned long high,
->  	pcp->batch = batch;
->  }
->  
-> -/* a companion to pageset_set_high() */
-> -static void pageset_set_batch(struct per_cpu_pageset *p, unsigned long batch)
-> -{
-> -	pageset_update(&p->pcp, 6 * batch, max(1UL, 1 * batch));
-> -}
-> -
->  static void pageset_init(struct per_cpu_pageset *p)
->  {
->  	struct per_cpu_pages *pcp;
-> @@ -6218,35 +6212,32 @@ static void pageset_init(struct per_cpu_pageset *p)
+> @@ -6210,12 +6210,15 @@ static void pageset_init(struct per_cpu_pageset *p)
+>  	pcp = &p->pcp;
+>  	for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++)
 >  		INIT_LIST_HEAD(&pcp->lists[migratetype]);
->  }
+> -}
 >  
-> -static void setup_pageset(struct per_cpu_pageset *p, unsigned long batch)
-> +static void setup_pageset(struct per_cpu_pageset *p)
->  {
->  	pageset_init(p);
-> -	pageset_set_batch(p, batch);
-> +	pageset_update(&p->pcp, 0, 1);
+> -static void setup_pageset(struct per_cpu_pageset *p)
+> -{
+> -	pageset_init(p);
+> -	pageset_update(&p->pcp, 0, 1);
+> +	/*
+> +	 * Set batch and high values safe for a boot pageset. A true percpu
+> +	 * pageset's initialization will update them subsequently. Here we don't
+> +	 * need to be as careful as pageset_update() as nobody can access the
+> +	 * pageset yet.
+> +	 */
+> +	pcp->high = 0;
+> +	pcp->batch = 1;
 >  }
 >  
 >  /*
-> - * pageset_set_high() sets the high water mark for hot per_cpu_pagelist
-> - * to the value high for the pageset p.
-> + * Calculate and set new high and batch values for given per-cpu pageset of a
-> + * zone, based on the zone's size and the percpu_pagelist_fraction sysctl.
->   */
-> -static void pageset_set_high(struct per_cpu_pageset *p,
-> -				unsigned long high)
-> -{
-> -	unsigned long batch = max(1UL, high / 4);
-> -	if ((high / 4) > (PAGE_SHIFT * 8))
-> -		batch = PAGE_SHIFT * 8;
-> -
-> -	pageset_update(&p->pcp, high, batch);
-> -}
-> -
->  static void pageset_set_high_and_batch(struct zone *zone,
-> -				       struct per_cpu_pageset *pcp)
-> +				       struct per_cpu_pageset *p)
->  {
-> -	if (percpu_pagelist_fraction)
-> -		pageset_set_high(pcp,
-> -			(zone_managed_pages(zone) /
-> -				percpu_pagelist_fraction));
-> -	else
-> -		pageset_set_batch(pcp, zone_batchsize(zone));
-> +	unsigned long new_high, new_batch;
-> +
-> +	if (percpu_pagelist_fraction) {
-> +		new_high = zone_managed_pages(zone) / percpu_pagelist_fraction;
-> +		new_batch = max(1UL, new_high / 4);
-> +		if ((new_high / 4) > (PAGE_SHIFT * 8))
-> +			new_batch = PAGE_SHIFT * 8;
-> +	} else {
-> +		new_batch = zone_batchsize(zone);
-> +		new_high = 6 * new_batch;
-> +		new_batch = max(1UL, 1 * new_batch);
-> +	}
-> +	pageset_update(&p->pcp, new_high, new_batch);
->  }
->  
->  static void __meminit zone_pageset_init(struct zone *zone, int cpu)
 > 
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
