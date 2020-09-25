@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A66277F18
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 06:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163FD277F1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 06:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbgIYEhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 00:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48812 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726758AbgIYEhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 00:37:19 -0400
-Received: from coco.lan (ip5f5ad5bf.dynamic.kabel-deutschland.de [95.90.213.191])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727057AbgIYEkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 00:40:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbgIYEkR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 00:40:17 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC124C0613CE;
+        Thu, 24 Sep 2020 21:40:16 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A1C020888;
-        Fri, 25 Sep 2020 04:37:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601008639;
-        bh=3EVUiepKXd96fe5LeoL320sa23usfSSfETrG33UhF5g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SBsyzwD1bpopnkh8paY9VNFWFEHnbsHTqbdSp09/mf6m042OECNqEfOA6Rit1HZXC
-         RfkTa5XNd2PpfufDn3Z1nXhXGskc+1aus5foX5Qa3EmtZOzeLr16o1h/CkiU+q3Sic
-         Ingo51YbKni3C9HPH+Rm2syGd0Xzx3fxC37Z7di8=
-Date:   Fri, 25 Sep 2020 06:37:15 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] docs: cdomain.py: add support for two new Sphinx
- 3.1+ tags
-Message-ID: <20200925063715.047cc585@coco.lan>
-In-Reply-To: <20200924102439.18f95779@lwn.net>
-References: <cover.1600963096.git.mchehab+huawei@kernel.org>
-        <64f6f8bc4c416bcf1a6439529346ec6cbcf34ac1.1600963096.git.mchehab+huawei@kernel.org>
-        <20200924102439.18f95779@lwn.net>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ByK325pZCz9sSn;
+        Fri, 25 Sep 2020 14:40:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601008814;
+        bh=0LJn+ZOotUkF8eO1MNB+VO6AmEuzjV8InnLcwwEFRbM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ehdw5pX8DACOU6+GabU7JcKL2AaYu9OA50otmlHsTjmmm9HMnCk+CpoBNVFDCFsBN
+         N6Ehzr+xO6ntA/6KBJvD1Pb2XaQrM546gJheiCrB9Q8616io8w6rrCLBmER+QW306/
+         RCk2mkMFJ9H5lVNLAITam9Lb0r20b43NZiGkarYfP+UU1oWT72nkrmSwwsgxjkqFaF
+         WXkrbENImaykMRwPhUmnE2Y2Ej0VA/tsg0JGvnTikExhwNc29SrkARPO08RLqQyOT5
+         LxuzBUiL0i19g7KnmdFJ+joJvUR/akOxLagxwseGx1unQo9Gd3os8E1rC1wwhguBAW
+         2T4c+JtBMu0pw==
+Date:   Fri, 25 Sep 2020 14:40:12 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mmc tree
+Message-ID: <20200925144012.7487daf8@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/P0dDIYkmzS9/I97xb.l.3Ar";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 24 Sep 2020 10:24:39 -0600
-Jonathan Corbet <corbet@lwn.net> escreveu:
+--Sig_/P0dDIYkmzS9/I97xb.l.3Ar
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Thu, 24 Sep 2020 18:21:45 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > As part of changing the documentation subsystem to properly
-> > build with Sphinx 3.1+, add support for two tags:
-> > 
-> > 	- :c:expr:`foo`
-> > 	- .. c:namespace::"  
-> 
-> So is there a reason we need :c:expr: ?  What does it add for us?
+Hi all,
 
-Good point. This came from a suggestion from the Sphinx issue.
+After merging the mmc tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
 
-The :c:expr: actually helped to identify two wrong declarations at the
-DVB uAPI docs[1] but in practice it doesn't do much, except
-by using a different font like placing "struct" in italics.
+drivers/mmc/host/davinci_mmc.c: In function 'mmc_davinci_set_ios':
+drivers/mmc/host/davinci_mmc.c:696:19: error: 'mmc' redeclared as different=
+ kind of symbol
+  696 |  struct mmc_host *mmc =3D mmc_from_priv(host);
+      |                   ^~~
+drivers/mmc/host/davinci_mmc.c:691:50: note: previous definition of 'mmc' w=
+as here
+  691 | static void mmc_davinci_set_ios(struct mmc_host *mmc, struct mmc_io=
+s *ios)
+      |                                 ~~~~~~~~~~~~~~~~~^~~
 
-I was expecting it to also create cross-references to the structs
-mentioned there, but, at least on my tests, it didn't work like that.
+Caused by commit
 
-Anyway, I guess we can just get rid of it.
+  359c6349a771 ("mmc: davinci: Drop pointer to mmc_host from mmc_davinci_ho=
+st")
 
-I'll send a v3 series without that.
+I have used the mmc tree from next-20200924 for today.
 
-Thanks,
-Mauro
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/P0dDIYkmzS9/I97xb.l.3Ar
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9tdKwACgkQAVBC80lX
+0GxqkQf/Rr+MaaUh3csApsKEGaU158p8vDtbB4XnAw1+at38kA7sJSKH2fYcHuFw
+jkRWQm2+wZIlMw2s52CZO7RoyniBcDlQmofDenu1cvQDRpzE5WjjUotST7lBcy9z
+0duwp6Ne9vrqDQWq581JpB1vTtUZjLD03u2aWa1rTkAfE8umXjAh8zuq8w4o9oVP
+l7y7g4fhnE+O5XrmgbMZxQhV3olk737eLJ1POjY1Jjv3WsLuAGfsxIDQiujuGRL1
+hDzdYPQ7iRTJFvABnRR3HbTeDDqCTK6KXjoiYcylCDFb7CUBUZ4HlSHIjDV3C7yN
+eSeiYyrxOcX4ChgY9xPaABADl/Uq+g==
+=q9sT
+-----END PGP SIGNATURE-----
+
+--Sig_/P0dDIYkmzS9/I97xb.l.3Ar--
