@@ -2,116 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E79278A7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:11:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104FE278A7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728553AbgIYOLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50926 "EHLO
+        id S1728878AbgIYOMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:12:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgIYOLh (ORCPT
+        with ESMTP id S1726368AbgIYOMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:11:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B34FC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:11:37 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id fa1so1927457pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:11:37 -0700 (PDT)
+        Fri, 25 Sep 2020 10:12:07 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B53AC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:12:07 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id z19so2970099lfr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:12:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Q08aEOVeEFIcbOVub2p7BVSdpIEBfXqJPk66Kzol7Ek=;
-        b=B9iVuIIH3TYz9BMPhpD3a1bfdq5boPpLLU+4e9jJwFetvvfwUrsy1TwiBC2V8caeD1
-         KQjWepGRZERKAFzv/tm88uLD+8BO9ZNGf6yjSluDtpbiBSzYvwMmXDfCGYkSVcC81Rmm
-         hJc1/ajoke2Hggavt93yp87KRIiX8gXeqj6b2LqqBuZMwVEkQr/dn09D8kzBYDSbrZ2t
-         6JaFvocHhZB54NbXjuFRE50HqVdB+2PwALiMuPgPC90X+VT5R4PmL3EG20GdHZ3agLCg
-         v6+5uLZzKtiyi9sT7uR7LOkpSvXYtQUJD+LzZYE0UCJG+Gc4Ozbd0eHhwPfBYcPPgCjc
-         s2gw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZQZZYWQRQU3R4/AyBBkgo3cp3R4MrVpJDEagQnv/2cQ=;
+        b=C/1AWdG5g9HyESCijA/XPpkqoR/KX+cCOqqWQPPLf7NLZgdVdDUdU7zQXYTnktnoeG
+         pLsHWcsHts8RpxIx7ZVroJDGECp4uDN+NOulzoyXqPiCQwLfcDoY1kdfukVBC15qiiL1
+         pueZMuY3j1kTU6IJFbvYgDtOUe8lodYXlrZXR03nTbfNutWQRzGwJLWOAZex+XKfpDO/
+         T6n8b1twyb3jqCc91XVnx0orS7qBEmYGNUjNhVf5MsiM6Saq9t6vd7nHtoNjFff+YBYl
+         dqxpZn0tLxFcCdrWHNLzaNbgkVnX1EjiT87HO8+UgT43EUhTpp4Q3qjOAdQDeHPheqQR
+         FKSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q08aEOVeEFIcbOVub2p7BVSdpIEBfXqJPk66Kzol7Ek=;
-        b=G/Ulcuc7yfg5c7rMAClIXsgWstaK/rD1jJuGuh73bEBLDjEkUwDJUKh8KSrAzG4h3r
-         AllOB11GUMUszPtwAL3ZiWSuaHNXiqmu8mNeYnO9QPZN15Ju95O1dJCpRQQiIu7I8KEp
-         CM1o7Ely+B18wTWvSyZT3jzkd2H7bntmFJD1jwXj6reQywTvOjfnyjP6w/7VHEGyuxue
-         n9TZoFc2/pGX+oo8Je0taul/ZKHlR7PS9zgRPeKL+cLunHT1rCknZho6w8P/ZKz6y1V/
-         WrrZjH1OAdf9bfznSo7N8A7Qe4plPA8Zu+CxiUUQvbe/NpngFErKAa67PH1zQKcCCfrB
-         8NSQ==
-X-Gm-Message-State: AOAM530MscS5Fqf9a9xKyjV6u99LrJTpfzQdKbao8/pmTYNJWc0AH63U
-        pHVxJynCjvEkETeFmUaHkJ/mMoQAFSL4F2vs
-X-Google-Smtp-Source: ABdhPJzT6sXqjKAB73bAq8KZRHwwr+CQap8YXV/cCKxktgj12xrTfbNkL1PGBRW3RyMRygsVwxd83g==
-X-Received: by 2002:a17:90a:8d05:: with SMTP id c5mr490557pjo.222.1601043096640;
-        Fri, 25 Sep 2020 07:11:36 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id 1sm2508194pgm.4.2020.09.25.07.11.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 07:11:36 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Fri, 25 Sep 2020 22:11:25 +0800
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH 3/3] [PATCH] staging: greybus: __u8 is sufficient for
- snd_ctl_elem_type_t and snd_ctl_elem_iface_t
-Message-ID: <20200925141125.vfm5sjnsfvxo2ras@Rk>
-References: <20200924102039.43895-1-coiby.xu@gmail.com>
- <20200924102039.43895-3-coiby.xu@gmail.com>
- <0175c477851243baa8a92177667d6312@AcuMS.aculab.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZQZZYWQRQU3R4/AyBBkgo3cp3R4MrVpJDEagQnv/2cQ=;
+        b=TeFMsdiKg6nEuQIHJcLFyyH92fqEjmyi2xi2E5WK+BNRvi36Vor/Sz+K4e1RES1o1h
+         hP1s1i4CJHh7C/qveosVEIiOpgEo3YOmVF5ErbctLnTuvtPFs90zT3wnBGxnW/6DRSLC
+         QOdgf/M2a5AcxUyCufecTaC9Ed+4WcvGLfd3KzEcKRhvZ9CD7uTHy+Z1rcoR/d5aA+PZ
+         nownvEiOWUbmO8tOwXoNCm51+EjPkskW2JPMlrgqJYVh6JoAy5WfMDjUZkd+JNjqTnUK
+         eoI/uWfmkiEECTNxxsjS3Z5W1wfTJk4G+PpmndltN/RyF6nm7aTBw6+qnTaFYT9qr00+
+         Z5UQ==
+X-Gm-Message-State: AOAM5318jSKvnFS8Z8oremwLO/oM28f6i1D98PCrxZVgLbzeSZC0xzFV
+        jkHlLWJIVXqkedbLUaGWpObBzIUIcWxYVLLzUfcVCFxfYU0jAQ==
+X-Google-Smtp-Source: ABdhPJxH4qojgMvKjWSSTj1eAHOotps9jQ2tzrL8M34iYX/4IGuZjnFVuy0jc3NosWkmv6umdJuEvCNZc/98IyZ1ZW4=
+X-Received: by 2002:a19:2214:: with SMTP id i20mr1554289lfi.252.1601043125937;
+ Fri, 25 Sep 2020 07:12:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <0175c477851243baa8a92177667d6312@AcuMS.aculab.com>
+References: <20200924014755.36253-1-tian.xianting@h3c.com>
+In-Reply-To: <20200924014755.36253-1-tian.xianting@h3c.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 25 Sep 2020 16:11:53 +0200
+Message-ID: <CAKfTPtBx7F_TMSMy2OKDPZNyHwJfVvsDbNo45sM_kAHQTK8zEw@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Remove the force parameter of update_tg_load_avg()
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:54:50AM +0000, David Laight wrote:
->From: Coiby Xu
->> Sent: 24 September 2020 11:21
->> Use __8 to replace int and remove the unnecessary __bitwise type attribute.
->>
->> Found by sparse,
->...
->> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
->> index 535a7229e1d9..8e71a95644ab 100644
->> --- a/include/uapi/sound/asound.h
->> +++ b/include/uapi/sound/asound.h
->> @@ -950,7 +950,7 @@ struct snd_ctl_card_info {
->>  	unsigned char components[128];	/* card components / fine identification, delimited with one
->> space (AC97 etc..) */
->>  };
->>
->> -typedef int __bitwise snd_ctl_elem_type_t;
->> +typedef __u8 snd_ctl_elem_type_t;
->>  #define	SNDRV_CTL_ELEM_TYPE_NONE	((__force snd_ctl_elem_type_t) 0) /* invalid */
->>  #define	SNDRV_CTL_ELEM_TYPE_BOOLEAN	((__force snd_ctl_elem_type_t) 1) /* boolean type */
->>  #define	SNDRV_CTL_ELEM_TYPE_INTEGER	((__force snd_ctl_elem_type_t) 2) /* integer type */
+On Thu, 24 Sep 2020 at 03:55, Xianting Tian <tian.xianting@h3c.com> wrote:
 >
->WTF is all that about anyway??
->What is wrong with:
->#define	SNDRV_CTL_ELEM_TYPE_NONE	0u /* invalid */
+> In the file fair.c, sometims update_tg_load_avg(cfs_rq, 0) is used,
+> sometimes update_tg_load_avg(cfs_rq, false) is used.
+> update_tg_load_avg() has the parameter force, but in current code,
+> it never set 1 or true to it, so remove the force parameter.
+>
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
 
-I'm sorry I don't quite understand you. Are you suggesting SNDRV_CTL_ELEM_TYPE_NONE
-isn't needed in the first place?
->
->	David
->
->-
->Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
->Registration No: 1397386 (Wales)
->
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
---
-Best regards,
-Coiby
+> ---
+>  kernel/sched/fair.c | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1a68a0536..7056fa97f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -831,7 +831,7 @@ void init_entity_runnable_average(struct sched_entity *se)
+>  void post_init_entity_util_avg(struct task_struct *p)
+>  {
+>  }
+> -static void update_tg_load_avg(struct cfs_rq *cfs_rq, int force)
+> +static void update_tg_load_avg(struct cfs_rq *cfs_rq)
+>  {
+>  }
+>  #endif /* CONFIG_SMP */
+> @@ -3288,7 +3288,6 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+>  /**
+>   * update_tg_load_avg - update the tg's load avg
+>   * @cfs_rq: the cfs_rq whose avg changed
+> - * @force: update regardless of how small the difference
+>   *
+>   * This function 'ensures': tg->load_avg := \Sum tg->cfs_rq[]->avg.load.
+>   * However, because tg->load_avg is a global value there are performance
+> @@ -3300,7 +3299,7 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+>   *
+>   * Updating tg's load_avg is necessary before update_cfs_share().
+>   */
+> -static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, int force)
+> +static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+>  {
+>         long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+>
+> @@ -3310,7 +3309,7 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, int force)
+>         if (cfs_rq->tg == &root_task_group)
+>                 return;
+>
+> -       if (force || abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+> +       if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+>                 atomic_long_add(delta, &cfs_rq->tg->load_avg);
+>                 cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
+>         }
+> @@ -3612,7 +3611,7 @@ static inline bool skip_blocked_update(struct sched_entity *se)
+>
+>  #else /* CONFIG_FAIR_GROUP_SCHED */
+>
+> -static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, int force) {}
+> +static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
+>
+>  static inline int propagate_entity_load_avg(struct sched_entity *se)
+>  {
+> @@ -3800,13 +3799,13 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+>                  * IOW we're enqueueing a task on a new CPU.
+>                  */
+>                 attach_entity_load_avg(cfs_rq, se);
+> -               update_tg_load_avg(cfs_rq, 0);
+> +               update_tg_load_avg(cfs_rq);
+>
+>         } else if (decayed) {
+>                 cfs_rq_util_change(cfs_rq, 0);
+>
+>                 if (flags & UPDATE_TG)
+> -                       update_tg_load_avg(cfs_rq, 0);
+> +                       update_tg_load_avg(cfs_rq);
+>         }
+>  }
+>
+> @@ -7887,7 +7886,7 @@ static bool __update_blocked_fair(struct rq *rq, bool *done)
+>                 struct sched_entity *se;
+>
+>                 if (update_cfs_rq_load_avg(cfs_rq_clock_pelt(cfs_rq), cfs_rq)) {
+> -                       update_tg_load_avg(cfs_rq, 0);
+> +                       update_tg_load_avg(cfs_rq);
+>
+>                         if (cfs_rq == &rq->cfs)
+>                                 decayed = true;
+> @@ -10786,7 +10785,7 @@ static void detach_entity_cfs_rq(struct sched_entity *se)
+>         /* Catch up with the cfs_rq and remove our load when we leave */
+>         update_load_avg(cfs_rq, se, 0);
+>         detach_entity_load_avg(cfs_rq, se);
+> -       update_tg_load_avg(cfs_rq, false);
+> +       update_tg_load_avg(cfs_rq);
+>         propagate_entity_cfs_rq(se);
+>  }
+>
+> @@ -10805,7 +10804,7 @@ static void attach_entity_cfs_rq(struct sched_entity *se)
+>         /* Synchronize entity with its cfs_rq */
+>         update_load_avg(cfs_rq, se, sched_feat(ATTACH_AGE_LOAD) ? 0 : SKIP_AGE_LOAD);
+>         attach_entity_load_avg(cfs_rq, se);
+> -       update_tg_load_avg(cfs_rq, false);
+> +       update_tg_load_avg(cfs_rq);
+>         propagate_entity_cfs_rq(se);
+>  }
+>
+> --
+> 2.17.1
+>
