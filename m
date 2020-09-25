@@ -2,131 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B06279356
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0331279366
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729550AbgIYVYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:24:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729117AbgIYVX0 (ORCPT
+        id S1729738AbgIYVZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:25:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20583 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729587AbgIYVZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:23:26 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B18C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:26 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j2so5367220wrx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xu3WUdYX5svcbV4xrw1b6YX5aAbNB7AgpH2Adx4jZFo=;
-        b=Oh/rOaeXFzcu9qSAmCq/rolkH8P14hud6p8K5BfNI2WFG5a9+CDyEGSSQhX2ckSOFm
-         zhaUJj91cpSE7fjOgEU1lXwLJ+IWz8fvIt0d9ZLig66lfafGswbdX3HjuUIetLcvXIRK
-         iTH/uLltlOJ4fw+ePue65S94O7opuSVXxQHSpsONmulokYemM7SGq9yQ+hWEmXvhV86F
-         z03M9NhNkvuyYCe3g7sBFrF7SAacgZVx0Vpqiomtz+6y2XL78RtnxnguoI2dZ69jA0P6
-         sb1aT7CbUe0tNayEoXajWXtZalCNyj5M83zbwKR5M/a2WvCpOpF2gPQoaJNqY08mROL1
-         4Blg==
+        Fri, 25 Sep 2020 17:25:09 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601069108;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=riPiictfFiIPQJlTMTSKGVFjrTw+MUxj8C340DbapCg=;
+        b=B3aBd+Jue2bvAbXjiEM1w6FNqfTOtmarFP/uinTcrEcl+kxzOKfW/unSbDOtcAzJ4Vp7ck
+        /jYEHvh9MyybB5wHQ2yRAEsgQ9Rex7YSLqG4Szx2xt+kk0MEnOilkmht1LW+4+tRyfxtGS
+        ybLhW4rKoJ+Hm0rfpmYnEYS9inxDN0g=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-ms9hYRb3MtaUY-X-Ux-kXw-1; Fri, 25 Sep 2020 17:25:07 -0400
+X-MC-Unique: ms9hYRb3MtaUY-X-Ux-kXw-1
+Received: by mail-wr1-f72.google.com with SMTP id d9so1574440wrv.16
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:25:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xu3WUdYX5svcbV4xrw1b6YX5aAbNB7AgpH2Adx4jZFo=;
-        b=tiVp0QFSts2PbuA/lpTQhx0Ig5eEYyJ8KMYtHYQA0QKghFXqvvpzfpDTHH3nY84aP/
-         mnfrxF7YsfxvZIjcsP3Pvka8Htj+YbfseI+w7qKMaCd0v22DMnk6IIUVEMXF8roGRDLN
-         JhbKS2KcyGj0K2qdQp5cfEEfP37+8zGWhvDbIqE/OnVsvDgEjlkHlJ4Id3LatZ372ywH
-         otCrgofpdmBws/+Y3ZbJnmstxYstHWNE5XvcQ6b+5uPykF7N1XguWROcZMNYU7G7pljT
-         mpHED9XlK5ZaE2iVSmFo7JRsMhp5v2zE/V6HZVGeryRsaQikP1I+TZvVu9yepoI9I+Z6
-         qalQ==
-X-Gm-Message-State: AOAM531MmHfLJ7+olRRE25jqnxCJTKcwr7pQjZ2jmCLhX4D5wfHzkrCP
-        A+ldh0F1GjplxfSER47Nw8B/L1eszJ9BOL/qfo0=
-X-Google-Smtp-Source: ABdhPJwCPyTdQSA04vqPSfWKSY3pipKmyGpRObz8EdYnATmeFvpcGyznCvz/MGH6xrabFJhMlum7YCBfq8aVNQdHzTI=
-X-Received: by 2002:adf:fc0a:: with SMTP id i10mr6384708wrr.111.1601069005049;
- Fri, 25 Sep 2020 14:23:25 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=riPiictfFiIPQJlTMTSKGVFjrTw+MUxj8C340DbapCg=;
+        b=BsdwxizxaC568I6xvjlrReRogj1dWiC7pn3h5EvTNhcpemIQYoblM/s41njIS70q+p
+         y4VO9BOfse2Jv8N4lYzOEOldblzlo9gVGDoFze1VObflkjnJVrggJHmOlG8tX45W6Jy8
+         lEaR3zYXYxZIZmU//+hshItZBE/Dzlmv3ZV1iF4/QINoZVrgAfJ88S0MykpSmwDRkj6y
+         VfZtS93+DS5XeuppgE4wydgs2tv9fK7K6tgz1YkWELQw9clgavRItZ2+ew7CBR5aqIET
+         eeOaYxLvPh+KgLdUMlxu+ira/VjApdR1J79Q/ulS+Zkmtpt2QNyPM+k0lt1fTbJ1G8UD
+         Pifg==
+X-Gm-Message-State: AOAM5304Qyuj8ruIoV37EwQXdAVenC2p3DTg7Icd8FV1D6npJNRX1o+U
+        MDI+kOtBg7vjnVSaximzuH+s7I3tiKgsd3h8xyFax2/Fy/NZ/LBB3OT+t4e47nbSKSAC6zhLrxb
+        pCAXm+VeptuUYQajGE/esV9h0
+X-Received: by 2002:a7b:c345:: with SMTP id l5mr467585wmj.123.1601069105672;
+        Fri, 25 Sep 2020 14:25:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwF2fQVEB7mP0ZwLnuAqdfMg6p/VNXOUmn9kn/+6c9aR8oV+ZoJZ2QK6RmI7vvWOd/+MBuBrQ==
+X-Received: by 2002:a7b:c345:: with SMTP id l5mr467575wmj.123.1601069105475;
+        Fri, 25 Sep 2020 14:25:05 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id h2sm4282661wrp.69.2020.09.25.14.25.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 14:25:04 -0700 (PDT)
+Subject: Re: [PATCH v2 6/8] KVM: x86/mmu: Rename 'hlevel' to 'level' in
+ FNAME(fetch)
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Junaid Shahid <junaids@google.com>
+References: <20200923183735.584-1-sean.j.christopherson@intel.com>
+ <20200923183735.584-7-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c7f7d08f-7f1e-455c-e265-c77d78eb537f@redhat.com>
+Date:   Fri, 25 Sep 2020 23:25:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200513132114.6046-1-m.szyprowski@samsung.com>
- <20200513133245.6408-1-m.szyprowski@samsung.com> <CGME20200513133259eucas1p273f0e05005b7b1158d884295d35745fd@eucas1p2.samsung.com>
- <20200513133245.6408-5-m.szyprowski@samsung.com> <alpine.DEB.2.20.2009211803580.19454@agoins-DiGiTS>
- <afb59d1b-1fcf-fd6d-2b48-e078e129f1eb@samsung.com>
-In-Reply-To: <afb59d1b-1fcf-fd6d-2b48-e078e129f1eb@samsung.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 25 Sep 2020 17:23:14 -0400
-Message-ID: <CADnq5_OP4pEg7Cg9E=TUB0viSX8rTALQoFck=ueTh=phTtUfEA@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v5 05/38] drm: prime: use sgtable
- iterators in drm_prime_sg_to_page_addr_arrays()
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Alex Goins <agoins@nvidia.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200923183735.584-7-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 2:28 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> Hi Alex,
->
-> On 22.09.2020 01:15, Alex Goins wrote:
-> > Tested-by: Alex Goins <agoins@nvidia.com>
-> >
-> > This change fixes a regression with drm_prime_sg_to_page_addr_arrays() and
-> > AMDGPU in v5.9.
->
-> Thanks for testing!
->
-> > Commit 39913934 similarly revamped AMDGPU to use sgtable helper functions. When
-> > it changed from dma_map_sg_attrs() to dma_map_sgtable(), as a side effect it
-> > started correctly updating sgt->nents to the return value of dma_map_sg_attrs().
-> > However, drm_prime_sg_to_page_addr_arrays() incorrectly uses sgt->nents to
-> > iterate over pages, rather than sgt->orig_nents, resulting in it now returning
-> > the incorrect number of pages on AMDGPU.
-> >
-> > I had written a patch that changes drm_prime_sg_to_page_addr_arrays() to use
-> > for_each_sgtable_sg() instead of for_each_sg(), iterating using sgt->orig_nents:
-> >
-> > -       for_each_sg(sgt->sgl, sg, sgt->nents, count) {
-> > +       for_each_sgtable_sg(sgt, sg, count) {
-> >
-> > This patch takes it further, but still has the effect of fixing the number of
-> > pages that drm_prime_sg_to_page_addr_arrays() returns. Something like this
-> > should be included in v5.9 to prevent a regression with AMDGPU.
->
-> Probably the easiest way to handle a fix for v5.9 would be to simply
-> merge the latest version of this patch also to v5.9-rcX:
-> https://lore.kernel.org/dri-devel/20200904131711.12950-3-m.szyprowski@samsung.com/
->
->
-> This way we would get it fixed and avoid possible conflict in the -next.
-> Do you have any AMDGPU fixes for v5.9 in the queue? Maybe you can add
-> that patch to the queue? Dave: would it be okay that way?
+On 23/09/20 20:37, Sean Christopherson wrote:
+> Rename 'hlevel', which presumably stands for 'host level', to simply
+> 'level' in FNAME(fetch).  The variable hasn't tracked the host level for
+> quite some time.
 
-I think this should go into drm-misc for 5.9 since it's an update to
-drm_prime.c.  Is that patch ready to merge?
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
+One could say that it stands for "huge" level...  I am not too attached
+to it, the only qualm is that "level" is usually used as the starting or
+current level and rarely as the end level in a loop.  But then it's used
+like that in __direct_map, so...
 
-Alex
+Paolo
 
->
-> Best regards
-> --
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
->
-> _______________________________________________
-> Linaro-mm-sig mailing list
-> Linaro-mm-sig@lists.linaro.org
-> https://lists.linaro.org/mailman/listinfo/linaro-mm-sig
