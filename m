@@ -2,134 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1469A278CA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FB2278CA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729027AbgIYP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        id S1729357AbgIYP2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:28:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728801AbgIYP1m (ORCPT
+        with ESMTP id S1728612AbgIYP2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:27:42 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95EE6C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:27:42 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id n2so3198648oij.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:27:42 -0700 (PDT)
+        Fri, 25 Sep 2020 11:28:18 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C6DC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:28:17 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id b12so2870632edz.11
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:28:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+6Gvod8Bmcfdc8dmCT/NbNCi24OBdt2HEY33KRNsSb0=;
-        b=LtsiSvd40J24vUdcrdY9gBNxAHpcZ6Zb9yoKXmnIQUoMF4WFdLxs8QsBRS6u6KtiFc
-         fzpoKREQyPnB8h7hwbATU0WdVwl3mwJAaDfn7iWB6VRU1ab1n0KNRgFxIvsQqRnAc1ES
-         fi7gxOZ5X4HZAJd0wVSZGewSySpGnwMukduIdm3f3m6LODh1uSkPWiPknp+mCbnHXsxs
-         S27PzgFBAn0WAkNdIF//5YWEsUDkMqY4Tu+aTB3YieZrI1dUuuRdIqfRm6uj3n4TPhf8
-         wbLk8SYKo4dio2aIcPcE6sAYRFnVYTqzAOGvnrjnikJ4FhiGP0MnyDRZp2uToWLABKF2
-         dlTw==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zXmuOZs0DtJBI5d4YWGL14ALmZnj964Bo0N22tOY/CU=;
+        b=sT0nysylsyeePQrg0Wyo/iQOddOxzcLVRdDOu2h3ce5aCydGJhpmWHad3J2VPu1BmL
+         pnPP1w2Hm9TFX4LAU9QzKE/5nd5BXJkvSx/LkWy2HWunkz3cpMPhRS7zpGhgxCh5+bUz
+         SyNOgp43hnDX3Kf8SfOoWpOM+ueD7KKTKDpg20709uuuV9u54JD8+C5qyIGK+88x0dvo
+         SaG7jtSlJvbIoY5XHlawwDHhefiuxlFxR2RGP4UtJFBk/OFL6OIBbd8BRJtk8EnzDaRI
+         Cb3HK2+QWfi41X/SUJ2pxVAPjD2KsF6AtiQ+xbFBKFB98mhRywxcFas/j1WPFMxVHKJt
+         dY3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+6Gvod8Bmcfdc8dmCT/NbNCi24OBdt2HEY33KRNsSb0=;
-        b=imEohxJCM7mPgFX2NZfHaG4qJh/G6IIhV9kV2hC0NXtLh0KfLUhFr8FQXAlvS/ZeWt
-         GQ3GtzbDUlEutZfRg3tjm6xpCv2G7YufnwKw+JnE4mU4IoMzcMXG8D5nzfdoDpY6nlUa
-         6LGiLhI3U1ndLrc00a9LntLpG+n5ttjHF5ASoYBufgD2eELo5MsCzVepcPzHJhrlTpQP
-         EljQX6DXDWnEyT3ILYrBBys6fHvqjKWF2Xd/nRFJCE+htGyr3Gbnj1nPKmztVlh+45G5
-         wUnQF7ZDcNTZjbwRmFOJWRZUXMjJPY829q7Qnyph7ngA8MII95JAKVz1rYq+7lKA8zs5
-         VkbA==
-X-Gm-Message-State: AOAM533CXSybYUTlN4wjD2B+u+lR0dea1sn02Xq+tQvJTvDYOLAq9yZE
-        jebQ9GN+z1fAnMihcG754Eg9AQ==
-X-Google-Smtp-Source: ABdhPJxPC5MyC8S4bjpg1guvEbH+1/PR/di2bgdC6u6i0LcfpuOGCns4aOm9QrUXbpQfAG0lPAd0mw==
-X-Received: by 2002:aca:dd42:: with SMTP id u63mr531139oig.135.1601047661927;
-        Fri, 25 Sep 2020 08:27:41 -0700 (PDT)
-Received: from yoga (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
-        by smtp.gmail.com with ESMTPSA id y24sm764388ooq.38.2020.09.25.08.27.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 08:27:41 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 10:27:39 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Amit Pundir <amit.pundir@linaro.org>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        ath10k@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Subject: Re: [PATCH] ath10k: qmi: Skip host capability request for Xiaomi
- Poco F1
-Message-ID: <20200925152739.GE2510@yoga>
-References: <1600328501-8832-1-git-send-email-amit.pundir@linaro.org>
- <87d02bnnll.fsf@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zXmuOZs0DtJBI5d4YWGL14ALmZnj964Bo0N22tOY/CU=;
+        b=Si6F4OANJ4zmb8Pc8Wgn10EToES0wYYUHGEWzAE/vZzFRkJaL2TuJeBwmmBkAbPTjZ
+         bqvxA55JIhGO1bQzO088548r6fNvgnbnuhczH1FY1NNGus2RxuE/NwLHEFf5AD+jxhML
+         o9MrFgrYS77UosmmcJduTEbQE/5jTHEEqBUFnJ5TXO/UMmDdVmjzOIdri3QHY9wa8hMv
+         o9VnyBMdx70w8QrkDIEb8fcnY+OB/UhpHcD5kwfITQdHoqaxrnhmi0FoS+rufiwbGtGe
+         yMZwr33hpDZeKb+2SsWn+uU+yAh63i1CNwOt97bTBViKrukATUfXsh4lyns+lHgSAzP3
+         JMMQ==
+X-Gm-Message-State: AOAM531Il7AdWCyV0rJwKdzVuqpzRX33zhdYvegWF60JYzxWBFdwoWE5
+        aTER8j52JseSeFpEA4dVwlEAZoYAVqoxowgAZn4=
+X-Google-Smtp-Source: ABdhPJxwBbbU1UpXBELIWwegXfSCZxQOgGDN3fGNZ4ZeTBDazTeqn5IvL2gzzsvqFbFMDfSYKrQfRnHb2/4i6NGlqWA=
+X-Received: by 2002:aa7:d697:: with SMTP id d23mr1949423edr.13.1601047696366;
+ Fri, 25 Sep 2020 08:28:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87d02bnnll.fsf@codeaurora.org>
+References: <20200815181957.408649-1-martin.blumenstingl@googlemail.com> <159830380185.24712.3464811968459073992.b4-ty@baylibre.com>
+In-Reply-To: <159830380185.24712.3464811968459073992.b4-ty@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 25 Sep 2020 17:28:05 +0200
+Message-ID: <CAFBinCCrbVzK8A0s-=Q++n4yUFO6+Wm_Ayh_vdxkATJh7oSx1A@mail.gmail.com>
+Subject: Re: [PATCH RESEND v1] ARM: dts: meson8: remove two invalid interrupt
+ lines from the GPU node
+To:     Kevin Hilman <khilman@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Thomas Graichen <thomas.graichen@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 24 Sep 11:31 CDT 2020, Kalle Valo wrote:
+Hi Kevin,
 
-> Amit Pundir <amit.pundir@linaro.org> writes:
-> 
-> > Workaround to get WiFi working on Xiaomi Poco F1 (sdm845)
-> > phone. We get a non-fatal QMI_ERR_MALFORMED_MSG_V01 error
-> > message in ath10k_qmi_host_cap_send_sync(), but we can still
-> > bring up WiFi services successfully on AOSP if we ignore it.
-> >
-> > We suspect either the host cap is not implemented or there
-> > may be firmware specific issues. Firmware version is
-> > QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1
-> >
-> > qcom,snoc-host-cap-8bit-quirk didn't help. If I use this
-> > quirk, then the host capability request does get accepted,
-> > but we run into fatal "msa info req rejected" error and
-> > WiFi interface doesn't come up.
-> >
-> > Attempts are being made to debug the failure reasons but no
-> > luck so far. Hence this device specific workaround instead
-> > of checking for QMI_ERR_MALFORMED_MSG_V01 error message.
-> > Tried ath10k/WCN3990/hw1.0/wlanmdsp.mbn from the upstream
-> > linux-firmware project but it didn't help and neither did
-> > building board-2.bin file from stock bdwlan* files.
-> >
-> > This workaround will be removed once we have a viable fix.
-> > Thanks to postmarketOS guys for catching this.
-> >
-> > Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
-> 
-> Bjorn, is this ok to take?
-> 
+On Mon, Aug 24, 2020 at 11:16 PM Kevin Hilman <khilman@baylibre.com> wrote:
+[...]
+> Applied, thanks!
+>
+> [1/1] ARM: dts: meson8: remove two invalid interrupt lines from the GPU node
+>       commit: b468412409c0e5752ad3396b147cac563ff8dd3b
+this one still seems to be sitting in the v5.9/fixes branch
+I don't see a reason to rush this, so can you please queue it up for
+v5.10/fixes?
 
-As I wrote in the answer to Amit I think we should introduce a generic
-quirk to skip host_cap instead.
 
-So if you pick this up (which is an ok short term workaround) I think we
-should revert it once we have a generic mechanism.
-
-Regards,
-Bjorn
-
-> > --- a/drivers/net/wireless/ath/ath10k/qmi.c
-> > +++ b/drivers/net/wireless/ath/ath10k/qmi.c
-> > @@ -651,7 +651,8 @@ static int ath10k_qmi_host_cap_send_sync(struct ath10k_qmi *qmi)
-> >  
-> >  	/* older FW didn't support this request, which is not fatal */
-> >  	if (resp.resp.result != QMI_RESULT_SUCCESS_V01 &&
-> > -	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01) {
-> > +	    resp.resp.error != QMI_ERR_NOT_SUPPORTED_V01 &&
-> > +	    !of_machine_is_compatible("xiaomi,beryllium")) { /* Xiaomi Poco F1 workaround */
-> >  		ath10k_err(ar, "host capability request rejected: %d\n", resp.resp.error);
-> 
-> ath10k-check complained about a too long line, so in the pending branch
-> I moved the comment before the if statement.
-> 
-> -- 
-> https://patchwork.kernel.org/project/linux-wireless/list/
-> 
-> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Thank you!
+Martin
