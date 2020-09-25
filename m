@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A67D52787FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA3D2787C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbgIYMvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:51:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56196 "EHLO mail.kernel.org"
+        id S1729042AbgIYMuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:50:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729237AbgIYMvp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:51:45 -0400
+        id S1729027AbgIYMuN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:50:13 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 636E52072E;
-        Fri, 25 Sep 2020 12:51:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B6ED21D91;
+        Fri, 25 Sep 2020 12:50:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038305;
-        bh=ichOvx8E7brKLZKsSsf0t4baZf6sXRfKDsKHd4tJCEo=;
+        s=default; t=1601038212;
+        bh=gq2ZhxyyQLi6LR7rxH3Z84UD1nXx3jrCOMTqxr7wFxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L+BB6e1IhFn/P/d+WeMmFjr/OrUiQGeHMD/PAqE97teGQ+nGGkg4B9NQQtzxBGyAg
-         c+Wydu0TIkAy6fJVwxNJURp6lsBnAdX3FNiclrjfgb+9jIZLuiule7BDob1jnCoP66
-         Q8tOQrBlVXQRJukzICchovRxuariNkXE+skDC5f8=
+        b=hpKiRMymYXc5D8fwUwioywTcV4KX84osvuDYlGVBT0I6D6myTKuSDefJh1aHsAGz5
+         tKbChUjgJBX7LaRXJgiYHb8b83wfOgony77TZKWPxQoioMGaPi+ORD5FR4h8vVFgVI
+         9EWhKiv2KGhQWSNi7j4IbD90ZXxyg9SxQbfXT+U8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 21/43] net: ipv6: fix kconfig dependency warning for IPV6_SEG6_HMAC
-Date:   Fri, 25 Sep 2020 14:48:33 +0200
-Message-Id: <20200925124726.795544655@linuxfoundation.org>
+Subject: [PATCH 5.8 44/56] wireguard: noise: take lock when removing handshake entry from table
+Date:   Fri, 25 Sep 2020 14:48:34 +0200
+Message-Id: <20200925124734.458637468@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
-References: <20200925124723.575329814@linuxfoundation.org>
+In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
+References: <20200925124727.878494124@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,51 +44,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
 
-[ Upstream commit db7cd91a4be15e1485d6b58c6afc8761c59c4efb ]
+[ Upstream commit 9179ba31367bcf481c3c79b5f028c94faad9f30a ]
 
-When IPV6_SEG6_HMAC is enabled and CRYPTO is disabled, it results in the
-following Kbuild warning:
+Eric reported that syzkaller found a race of this variety:
 
-WARNING: unmet direct dependencies detected for CRYPTO_HMAC
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+CPU 1                                       CPU 2
+-------------------------------------------|---------------------------------------
+wg_index_hashtable_replace(old, ...)       |
+  if (hlist_unhashed(&old->index_hash))    |
+                                           | wg_index_hashtable_remove(old)
+                                           |   hlist_del_init_rcu(&old->index_hash)
+				           |     old->index_hash.pprev = NULL
+  hlist_replace_rcu(&old->index_hash, ...) |
+    *old->index_hash.pprev                 |
 
-WARNING: unmet direct dependencies detected for CRYPTO_SHA1
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+Syzbot wasn't actually able to reproduce this more than once or create a
+reproducer, because the race window between checking "hlist_unhashed" and
+calling "hlist_replace_rcu" is just so small. Adding an mdelay(5) or
+similar there helps make this demonstrable using this simple script:
 
-WARNING: unmet direct dependencies detected for CRYPTO_SHA256
-  Depends on [n]: CRYPTO [=n]
-  Selected by [y]:
-  - IPV6_SEG6_HMAC [=y] && NET [=y] && INET [=y] && IPV6 [=y]
+    #!/bin/bash
+    set -ex
+    trap 'kill $pid1; kill $pid2; ip link del wg0; ip link del wg1' EXIT
+    ip link add wg0 type wireguard
+    ip link add wg1 type wireguard
+    wg set wg0 private-key <(wg genkey) listen-port 9999
+    wg set wg1 private-key <(wg genkey) peer $(wg show wg0 public-key) endpoint 127.0.0.1:9999 persistent-keepalive 1
+    wg set wg0 peer $(wg show wg1 public-key)
+    ip link set wg0 up
+    yes link set wg1 up | ip -force -batch - &
+    pid1=$!
+    yes link set wg1 down | ip -force -batch - &
+    pid2=$!
+    wait
 
-The reason is that IPV6_SEG6_HMAC selects CRYPTO_HMAC, CRYPTO_SHA1, and
-CRYPTO_SHA256 without depending on or selecting CRYPTO while those configs
-are subordinate to CRYPTO.
+The fundumental underlying problem is that we permit calls to wg_index_
+hashtable_remove(handshake.entry) without requiring the caller to take
+the handshake mutex that is intended to protect members of handshake
+during mutations. This is consistently the case with calls to wg_index_
+hashtable_insert(handshake.entry) and wg_index_hashtable_replace(
+handshake.entry), but it's missing from a pertinent callsite of wg_
+index_hashtable_remove(handshake.entry). So, this patch makes sure that
+mutex is taken.
 
-Honor the kconfig menu hierarchy to remove kconfig dependency warnings.
+The original code was a little bit funky though, in the form of:
 
-Fixes: bf355b8d2c30 ("ipv6: sr: add core files for SR HMAC support")
-Signed-off-by: Necip Fazil Yildiran <fazilyildiran@gmail.com>
+    remove(handshake.entry)
+    lock(), memzero(handshake.some_members), unlock()
+    remove(handshake.entry)
+
+The original intention of that double removal pattern outside the lock
+appears to be some attempt to prevent insertions that might happen while
+locks are dropped during expensive crypto operations, but actually, all
+callers of wg_index_hashtable_insert(handshake.entry) take the write
+lock and then explicitly check handshake.state, as they should, which
+the aforementioned memzero clears, which means an insertion should
+already be impossible. And regardless, the original intention was
+necessarily racy, since it wasn't guaranteed that something else would
+run after the unlock() instead of after the remove(). So, from a
+soundness perspective, it seems positive to remove what looks like a
+hack at best.
+
+The crash from both syzbot and from the script above is as follows:
+
+  general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+  KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+  CPU: 0 PID: 7395 Comm: kworker/0:3 Not tainted 5.9.0-rc4-syzkaller #0
+  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+  Workqueue: wg-kex-wg1 wg_packet_handshake_receive_worker
+  RIP: 0010:hlist_replace_rcu include/linux/rculist.h:505 [inline]
+  RIP: 0010:wg_index_hashtable_replace+0x176/0x330 drivers/net/wireguard/peerlookup.c:174
+  Code: 00 fc ff df 48 89 f9 48 c1 e9 03 80 3c 01 00 0f 85 44 01 00 00 48 b9 00 00 00 00 00 fc ff df 48 8b 45 10 48 89 c6 48 c1 ee 03 <80> 3c 0e 00 0f 85 06 01 00 00 48 85 d2 4c 89 28 74 47 e8 a3 4f b5
+  RSP: 0018:ffffc90006a97bf8 EFLAGS: 00010246
+  RAX: 0000000000000000 RBX: ffff888050ffc4f8 RCX: dffffc0000000000
+  RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88808e04e010
+  RBP: ffff88808e04e000 R08: 0000000000000001 R09: ffff8880543d0000
+  R10: ffffed100a87a000 R11: 000000000000016e R12: ffff8880543d0000
+  R13: ffff88808e04e008 R14: ffff888050ffc508 R15: ffff888050ffc500
+  FS:  0000000000000000(0000) GS:ffff8880ae600000(0000) knlGS:0000000000000000
+  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  CR2: 00000000f5505db0 CR3: 0000000097cf7000 CR4: 00000000001526f0
+  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  Call Trace:
+  wg_noise_handshake_begin_session+0x752/0xc9a drivers/net/wireguard/noise.c:820
+  wg_receive_handshake_packet drivers/net/wireguard/receive.c:183 [inline]
+  wg_packet_handshake_receive_worker+0x33b/0x730 drivers/net/wireguard/receive.c:220
+  process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+  worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+  kthread+0x3b5/0x4a0 kernel/kthread.c:292
+  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Reported-by: Eric Dumazet <edumazet@google.com>
+Link: https://lore.kernel.org/wireguard/20200908145911.4090480-1-edumazet@google.com/
+Fixes: e7096c131e51 ("net: WireGuard secure network tunnel")
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireguard/noise.c |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
---- a/net/ipv6/Kconfig
-+++ b/net/ipv6/Kconfig
-@@ -289,6 +289,7 @@ config IPV6_SEG6_LWTUNNEL
- config IPV6_SEG6_HMAC
- 	bool "IPv6: Segment Routing HMAC support"
- 	depends on IPV6
-+	select CRYPTO
- 	select CRYPTO_HMAC
- 	select CRYPTO_SHA1
- 	select CRYPTO_SHA256
+--- a/drivers/net/wireguard/noise.c
++++ b/drivers/net/wireguard/noise.c
+@@ -87,15 +87,12 @@ static void handshake_zero(struct noise_
+ 
+ void wg_noise_handshake_clear(struct noise_handshake *handshake)
+ {
++	down_write(&handshake->lock);
+ 	wg_index_hashtable_remove(
+ 			handshake->entry.peer->device->index_hashtable,
+ 			&handshake->entry);
+-	down_write(&handshake->lock);
+ 	handshake_zero(handshake);
+ 	up_write(&handshake->lock);
+-	wg_index_hashtable_remove(
+-			handshake->entry.peer->device->index_hashtable,
+-			&handshake->entry);
+ }
+ 
+ static struct noise_keypair *keypair_create(struct wg_peer *peer)
 
 
