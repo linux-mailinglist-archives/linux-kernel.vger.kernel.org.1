@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF80E2787DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E5A278879
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729155AbgIYMvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:51:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55026 "EHLO mail.kernel.org"
+        id S1729234AbgIYMvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:51:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729129AbgIYMu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:50:58 -0400
+        id S1729203AbgIYMvh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:51:37 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D65202075E;
-        Fri, 25 Sep 2020 12:50:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D9112075E;
+        Fri, 25 Sep 2020 12:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038258;
-        bh=y+GQbXTaidAAY0N1sPQ/gYgts01Bp6ydqL0LMW4IpvY=;
+        s=default; t=1601038296;
+        bh=PPN/qdWXlnXkKZBiVulHZK1tcJ6jUktf+89bZU+dDeU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HRpGML6o5h7PwsOriBWoLjdwILPMxsKO9sZRnRqlATzDIIYB5fhXPQCco/p0nPusF
-         ohhS6Oisg+xWuKRx4Vrh0B8alwDBNnofl8cd9HFDq2fcaawDLZ5oFL/ibRLHVKPswO
-         TlTlbnYxme9Z7sKdka3TFf840i4ARz8q4by8GN2U=
+        b=cvRd5lSOrs7KjpRRpx+uR7w2H7mkfQHYbGPiyevwhuQMbnz4meHJqRRzcMj6koj1H
+         IaYSBKhRvlIxmPrKa4NTEMEDJsu1t7W1F9hU0ohTMnlYXeL2mXIae/pul7p9d5mBV5
+         u1/mx/wx8oNQbW9/jgvqoat7d5T/ZWB6a1DaIabU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
+        stable@vger.kernel.org, Parav Pandit <parav@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Petr Machata <petrm@nvidia.com>,
+        Ido Schimmel <idosch@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.8 39/56] net: phy: Avoid NPD upon phy_detach() when driver is unbound
-Date:   Fri, 25 Sep 2020 14:48:29 +0200
-Message-Id: <20200925124733.718921386@linuxfoundation.org>
+Subject: [PATCH 5.4 18/43] net: DCB: Validate DCB_ATTR_DCB_BUFFER argument
+Date:   Fri, 25 Sep 2020 14:48:30 +0200
+Message-Id: <20200925124726.322329999@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
-References: <20200925124727.878494124@linuxfoundation.org>
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
+References: <20200925124723.575329814@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Petr Machata <petrm@nvidia.com>
 
-[ Upstream commit c2b727df7caa33876e7066bde090f40001b6d643 ]
+[ Upstream commit 297e77e53eadb332d5062913447b104a772dc33b ]
 
-If we have unbound the PHY driver prior to calling phy_detach() (often
-via phy_disconnect()) then we can cause a NULL pointer de-reference
-accessing the driver owner member. The steps to reproduce are:
+The parameter passed via DCB_ATTR_DCB_BUFFER is a struct dcbnl_buffer. The
+field prio2buffer is an array of IEEE_8021Q_MAX_PRIORITIES bytes, where
+each value is a number of a buffer to direct that priority's traffic to.
+That value is however never validated to lie within the bounds set by
+DCBX_MAX_BUFFERS. The only driver that currently implements the callback is
+mlx5 (maintainers CCd), and that does not do any validation either, in
+particual allowing incorrect configuration if the prio2buffer value does
+not fit into 4 bits.
 
-echo unimac-mdio-0:01 > /sys/class/net/eth0/phydev/driver/unbind
-ip link set eth0 down
+Instead of offloading the need to validate the buffer index to drivers, do
+it right there in core, and bounce the request if the value is too large.
 
-Fixes: cafe8df8b9bc ("net: phy: Fix lack of reference count on PHY driver")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+CC: Parav Pandit <parav@nvidia.com>
+CC: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: e549f6f9c098 ("net/dcb: Add dcbnl buffer attribute")
+Signed-off-by: Petr Machata <petrm@nvidia.com>
+Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+Reviewed-by: Jiri Pirko <jiri@nvidia.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/phy/phy_device.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/dcb/dcbnl.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -1631,7 +1631,8 @@ void phy_detach(struct phy_device *phyde
+--- a/net/dcb/dcbnl.c
++++ b/net/dcb/dcbnl.c
+@@ -1426,6 +1426,7 @@ static int dcbnl_ieee_set(struct net_dev
+ {
+ 	const struct dcbnl_rtnl_ops *ops = netdev->dcbnl_ops;
+ 	struct nlattr *ieee[DCB_ATTR_IEEE_MAX + 1];
++	int prio;
+ 	int err;
  
- 	phy_led_triggers_unregister(phydev);
+ 	if (!ops)
+@@ -1475,6 +1476,13 @@ static int dcbnl_ieee_set(struct net_dev
+ 		struct dcbnl_buffer *buffer =
+ 			nla_data(ieee[DCB_ATTR_DCB_BUFFER]);
  
--	module_put(phydev->mdio.dev.driver->owner);
-+	if (phydev->mdio.dev.driver)
-+		module_put(phydev->mdio.dev.driver->owner);
- 
- 	/* If the device had no specific driver before (i.e. - it
- 	 * was using the generic driver), we unbind the device
++		for (prio = 0; prio < ARRAY_SIZE(buffer->prio2buffer); prio++) {
++			if (buffer->prio2buffer[prio] >= DCBX_MAX_BUFFERS) {
++				err = -EINVAL;
++				goto err;
++			}
++		}
++
+ 		err = ops->dcbnl_setbuffer(netdev, buffer);
+ 		if (err)
+ 			goto err;
 
 
