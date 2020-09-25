@@ -2,238 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB382782E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A492782F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 10:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727742AbgIYIis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 04:38:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgIYIir (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 04:38:47 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80920C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:38:46 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a17so2634841wrn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 01:38:46 -0700 (PDT)
+        id S1727847AbgIYIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 04:39:50 -0400
+Received: from mail-bn7nam10on2073.outbound.protection.outlook.com ([40.107.92.73]:34080
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727828AbgIYIjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 04:39:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F68iZ5y5QNGcYYmRbOkx5/YN8qxdnVmTXfTrcOAdvoYr38EPqXzVCsWZlVNOarisDImMeiFSsBEx8BQQnTYQsR7MpZ76Go46Gtg5m8+7xO8dtWClnA3iPp+fJ3p56jVs5xMtry+R2NqnSNB6EN5PEiwxkEiKqSS9sSfBqei+9+u+PCG4WgEA93s317eJIPPV7g5eWGUU6KfMO25yHTvv+sy7deA+D6MlZHpxFE/AdzW4SbWScgTZCw4nIVJZ9cdHRNM6N1vMhNU25CBiMXVlZqoGkF9pFE9YNZjA9RxYqN0sLGzdUKVdb+sgvvAhG9i7Am5+Ac7jmZmQYt0gVBaI2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rb+wZhW0itwAMhFOtnFDVhb3o/dqljZAHvqIk2sHcRY=;
+ b=DlGo8IipPSZpVfqKHS8HIGkHxsGiGd70Hl/dkSYcA3a5wWl4iepR2TxOiR9RtOziQe4bu7riC/gwCZC1GlvDpQTyJNDh0YiTZd9tCIY9E+CC96lcDDWEbUpUu7GJ6OFBQxv7wcEV87Wk9DVukamq9MBwQ+dOgLDRWxFhVsPhsBPq1Jf6ODBHKHFXXdyd83O2oHlYkzFwY94c9hcJnrKLmjtSsPchYi1hjHNbpVuWYyplHS2yhn6tBi5A9+mG3yCsE9DOfp9UH6Jho86qX2m2r2oCbMYTsDnDnnjco94CRUXXenW6sg7qIqOai0PqnfmzNxYTwDBmglE4P2tGHV8Nxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8bcdSgoAZ73IZy198rnRan6x5PSCC5tXv1r4zPoC4uo=;
-        b=CNu5IziHGSAsmKK8nCUKNhXkCUfo9CYqtOAGtgz/t+upSDVlprZtizhSJr4Hd4NWDs
-         FLUpnGUHgSV2vQpc9QhRZNe7EKp78O5sOjDU4BDE8eop1xscW0lYdEQB0RmABK5/HF+U
-         Vp16JyuGjPPILnnwx1SaEsxE0sNIFsgJYqQN0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=8bcdSgoAZ73IZy198rnRan6x5PSCC5tXv1r4zPoC4uo=;
-        b=WHn+9qtyTJUlseXNNAo2+eIaA75L4tOafYZaLpg6L5Ku5f5gqYipP8OAkLG/Wq54rL
-         qy5hDQ3xHOPjpeoTNeGRQYQ6P+Mpc7ZWMxnc6NY7p8myLdqZH3E+cdZbaznT2VeWipQU
-         dAEKMJwD9KA2b55lBEV9qRme+QeTvQ3658GwKBT3vF6xqXG4V6WPlhR/rAUGAMiqSURd
-         EbK+Bw8i3rqAHEkyy2UztG1KWwiLlfZYZHaznwnHFRV4QdWiIHJxepdlEgcR0R/oVq8Z
-         5w0/F1F7p+HhgIEmAtiy0m1iOxI/5o5BXro50+OhPqFwJTi54j7vnijHWjONke1WRitO
-         OPjw==
-X-Gm-Message-State: AOAM5329yQu9Z28qvkYaECYJR3E70jaiLV+rYxwY38va+FX9WraFEEok
-        3PgHTstjCQXMvtCHu+wQhMHMGg==
-X-Google-Smtp-Source: ABdhPJxjpBiJrrjmGbHLVq9si4d21DejsBC9IYOgST2F24H80iKx7KkiZhOIGDzbXrS0gMn/7HcSdA==
-X-Received: by 2002:adf:a3ca:: with SMTP id m10mr3338923wrb.104.1601023125154;
-        Fri, 25 Sep 2020 01:38:45 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id h8sm1967181wrw.68.2020.09.25.01.38.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 01:38:44 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 10:38:42 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] Prevent out-of-bounds access for built-in font data
- buffers
-Message-ID: <20200925083842.GC438822@phenom.ffwll.local>
-Mail-Followup-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jiri Slaby <jirislaby@kernel.org>, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzkaller-bugs@googlegroups.com, linux-kernel@vger.kernel.org
-References: <0000000000006b9e8d059952095e@google.com>
- <cover.1600953813.git.yepeilin.cs@gmail.com>
- <20200924140937.GA749208@kroah.com>
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Rb+wZhW0itwAMhFOtnFDVhb3o/dqljZAHvqIk2sHcRY=;
+ b=QllNWp19W7FQJfDMU+8/ZgsxqROHXuWwGnCA3iznAWe+UxV8GNcYAaNuobydt7ZoesdCVbb1+Hyc+gnFzLqKzPbRMWGfNMAk1OwxWZBNdDo0/SSmZPdKQL+NW7xZhe6IC/KhVFtDgy+7910GaJ1pyoFvXWkxknJhdNjk1ewIQNY=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=synaptics.com;
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
+ by DM6PR03MB4697.namprd03.prod.outlook.com (2603:10b6:5:187::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Fri, 25 Sep
+ 2020 08:39:44 +0000
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3391.028; Fri, 25 Sep 2020
+ 08:39:44 +0000
+Date:   Fri, 25 Sep 2020 16:38:52 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] PCI: dwc: Use an address in the driver data for MSI
+ address
+Message-ID: <20200925163852.051e3da2@xhacker.debian>
+In-Reply-To: <20200925163435.680b8e08@xhacker.debian>
+References: <20200925163435.680b8e08@xhacker.debian>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TY2PR0101CA0019.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:92::31) To DM6PR03MB4555.namprd03.prod.outlook.com
+ (2603:10b6:5:102::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924140937.GA749208@kroah.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TY2PR0101CA0019.apcprd01.prod.exchangelabs.com (2603:1096:404:92::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Fri, 25 Sep 2020 08:39:41 +0000
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d899aaac-10ea-471f-760f-08d8612e8d57
+X-MS-TrafficTypeDiagnostic: DM6PR03MB4697:
+X-Microsoft-Antispam-PRVS: <DM6PR03MB4697C7FCAB65DFC0711A3224ED360@DM6PR03MB4697.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vbn9a5GYiltSKoOb/EMGorObrzwMT7CxQTWziBLZMpVeTra7JEAYzUwkor1gZecqItD8qHVOD5Cve7DTlohGUhBeJDoM2/lBr6brVqcl5Ka0KcO/pk8BvvUtYhxxd42702voB9jYKYgUrklCp0UTgdKLQwPZnVN5yE/ifv0Tpd78QjbQQ9YnMe0skxiO6PK2wXQGVcTu9JnVnCpCC/klOjTM8TtAhemJb/jNn2x8vht9INYpq2o9YZbFbPCPdrESLyDWJB4IuHx66gdAMAsKsb92TIR7m+8jwehdcRJG14E4kDu+7mkcGoLgGMXyf9Sm8yW76gDs8Qil28TzHSXQyUIhrwx/Z5b+IurdvtgpKRH4GAMP11RcTs+fis1CVvWM
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(136003)(396003)(366004)(376002)(6506007)(52116002)(6666004)(110136005)(4326008)(478600001)(7696005)(83380400001)(26005)(66476007)(66946007)(8676002)(1076003)(956004)(316002)(9686003)(86362001)(8936002)(66556008)(5660300002)(16526019)(2906002)(186003)(55016002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 8yGvGSXP82zl+b9EMjESAOnREhzKkiGekF+8g18A1WwRrTjIJnR2mU8c2FZzgcJVuTGx943l2pVLU4oqD1J90vl6aCn0OF1OmDgXoLXXCs5G0ipA7hRQWA4HaEuCh/pxu4VWTvLL2KLdDCh9EqtkSWtQz+6aH4yCx7m8Jub8Ykq364BwKfOSXiibwZRHs1ytPdrZMVnsCbuJloiH+49PPWA732RiIZ68dZ+FULz6B0dDfrQ5/QkXK5tt3Usqk8a/7SqRzXxcRBPMKxA7RaQ7yzofKe+VEMsbQCcVJCb9FDWvX79LrD5LHTwRZdEyMOR54b4sMkZTGaMZITcZhL5VZUFJOZKGHLQW46jKS96OJKVZ7CFYbrfXv7eWWhB7u7p+zIj+pmDV2w0UYyCRUo+aYo4KHVFM9eS9C9jGjtSwdVQnvuEIR1RrKID+i5Kb97Q9UtjZvAvOI9hwpPV+OUfb9+TRuoq1iYXTbf0IDrGodpWqgemHCpHy4AumIzcNg00IiSK0o8sqnE4drt/hlG/CzmRZu1fWQ0hnnwlNvjgSrZji4y3k8X6QqsGnDa5qbWCNVzfReRT63oDR8H8g5BEcvODatFEpgrwLgY7P2LVeWICjd2w8c7XqOECnoePYsLlm37cERvDba17MlxHyKoaQTA==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d899aaac-10ea-471f-760f-08d8612e8d57
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2020 08:39:44.2173
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LQUVVk7EhNSbkhnejhnAmEU4O8ZimAvv0UjGszjl2JeidZlWglviMBnnElK54rZ38cIltvIIWd8CZAVBfBJSCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB4697
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 04:09:37PM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Sep 24, 2020 at 09:38:22AM -0400, Peilin Ye wrote:
-> > Hi all,
-> > 
-> > syzbot has reported [1] a global out-of-bounds read issue in
-> > fbcon_get_font(). A malicious user may resize `vc_font.height` to a large
-> > value in vt_ioctl(), causing fbcon_get_font() to overflow our built-in
-> > font data buffers, declared in lib/fonts/font_*.c:
-> > 
-> > (e.g. lib/fonts/font_8x8.c)
-> > #define FONTDATAMAX 2048
-> > 
-> > static const unsigned char fontdata_8x8[FONTDATAMAX] = {
-> > 
-> >         /* 0 0x00 '^@' */
-> >         0x00, /* 00000000 */
-> >         0x00, /* 00000000 */
-> >         0x00, /* 00000000 */
-> >         0x00, /* 00000000 */
-> >         0x00, /* 00000000 */
-> >         0x00, /* 00000000 */
-> >         0x00, /* 00000000 */
-> >         0x00, /* 00000000 */
-> >         [...]
-> > 
-> > In order to perform a reliable range check, fbcon_get_font() needs to know
-> > `FONTDATAMAX` for each built-in font under lib/fonts/. Unfortunately, we
-> > do not keep that information in our font descriptor,
-> > `struct console_font`:
-> > 
-> > (include/uapi/linux/kd.h)
-> > struct console_font {
-> > 	unsigned int width, height;	/* font size */
-> > 	unsigned int charcount;
-> > 	unsigned char *data;	/* font data with height fixed to 32 */
-> > };
-> > 
-> > To make things worse, `struct console_font` is part of the UAPI, so we
-> > cannot add a new field to keep track of `FONTDATAMAX`.
-> > 
-> > Fortunately, the framebuffer layer itself gives us a hint of how to
-> > resolve this issue without changing UAPI. When allocating a buffer for a
-> > user-provided font, fbcon_set_font() reserves four "extra words" at the
-> > beginning of the buffer:
-> > 
-> > (drivers/video/fbdev/core/fbcon.c)
-> > 	new_data = kmalloc(FONT_EXTRA_WORDS * sizeof(int) + size, GFP_USER);
-> >         [...]
-> > 	new_data += FONT_EXTRA_WORDS * sizeof(int);
-> > 	FNTSIZE(new_data) = size;
-> > 	FNTCHARCNT(new_data) = charcount;
-> > 	REFCOUNT(new_data) = 0;	/* usage counter */
-> >         [...]
-> > 	FNTSUM(new_data) = csum;
-> > 
-> > Later, to get the size of a data buffer, the framebuffer layer simply
-> > calls FNTSIZE() on it:
-> > 
-> > (drivers/video/fbdev/core/fbcon.h)
-> > 	/* Font */
-> > 	#define REFCOUNT(fd)	(((int *)(fd))[-1])
-> > 	#define FNTSIZE(fd)	(((int *)(fd))[-2])
-> > 	#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
-> > 	#define FNTSUM(fd)	(((int *)(fd))[-4])
-> > 	#define FONT_EXTRA_WORDS 4
-> > 
-> > Currently, this is only done for user-provided fonts. Let us do the same
-> > thing for built-in fonts, prepend these "extra words" (including
-> > `FONTDATAMAX`) to their data buffers, so that other subsystems, like the
-> > framebuffer layer, can use these macros on all fonts, no matter built-in
-> > or user-provided. As an example, this series fixes the syzbot issue in
-> > fbcon_get_font():
-> > 
-> > (drivers/video/fbdev/core/fbcon.c)
-> >  	if (font->width <= 8) {
-> >  		j = vc->vc_font.height;
-> > +		if (font->charcount * j > FNTSIZE(fontdata))
-> > +			return -EINVAL;
-> > 	[...]
-> > 
-> > Similarly, newport_con also use these macros. It only uses three of them:
-> > 
-> > (drivers/video/console/newport_con.c)
-> > 	/* borrowed from fbcon.c */
-> > 	#define REFCOUNT(fd)	(((int *)(fd))[-1])
-> > 	#define FNTSIZE(fd)	(((int *)(fd))[-2])
-> > 	#define FNTCHARCNT(fd)	(((int *)(fd))[-3])
-> > 	#define FONT_EXTRA_WORDS 3
-> > 
-> > To keep things simple, move all these macro definitions to <linux/font.h>,
-> > use four words instead of three, and initialize the fourth word in
-> > newport_set_font() properly.
-> > 
-> > Many thanks to Greg Kroah-Hartman <gregkh@linuxfoundation.org>, who
-> > reviewed and improved this series!
-> > 
-> > [1]: KASAN: global-out-of-bounds Read in fbcon_get_font
-> >      https://syzkaller.appspot.com/bug?id=08b8be45afea11888776f897895aef9ad1c3ecfd
-> > 
-> > Peilin Ye (3):
-> >   fbdev, newport_con: Move FONT_EXTRA_WORDS macros into linux/font.h
-> >   Fonts: Support FONT_EXTRA_WORDS macros for built-in fonts
-> >   fbcon: Fix global-out-of-bounds read in fbcon_get_font()
-> > 
-> >  drivers/video/console/newport_con.c     |  7 +------
-> >  drivers/video/fbdev/core/fbcon.c        | 12 ++++++++++++
-> >  drivers/video/fbdev/core/fbcon.h        |  7 -------
-> >  drivers/video/fbdev/core/fbcon_rotate.c |  1 +
-> >  drivers/video/fbdev/core/tileblit.c     |  1 +
-> >  include/linux/font.h                    | 13 +++++++++++++
-> >  lib/fonts/font_10x18.c                  |  9 ++++-----
-> >  lib/fonts/font_6x10.c                   |  9 +++++----
-> >  lib/fonts/font_6x11.c                   |  9 ++++-----
-> >  lib/fonts/font_7x14.c                   |  9 ++++-----
-> >  lib/fonts/font_8x16.c                   |  9 ++++-----
-> >  lib/fonts/font_8x8.c                    |  9 ++++-----
-> >  lib/fonts/font_acorn_8x8.c              |  9 ++++++---
-> >  lib/fonts/font_mini_4x6.c               |  8 ++++----
-> >  lib/fonts/font_pearl_8x8.c              |  9 ++++-----
-> >  lib/fonts/font_sun12x22.c               |  9 ++++-----
-> >  lib/fonts/font_sun8x16.c                |  7 ++++---
-> >  lib/fonts/font_ter16x32.c               |  9 ++++-----
-> >  18 files changed, 79 insertions(+), 67 deletions(-)
-> 
-> Gotta love going backwards in arrays :)
-> 
-> Nice work, whole series is:
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> 
-> Daniel, can you take this through your tree?
+There's no need to allocate a page for the MSI address, we could use
+an address in the driver data.
 
-Applied to drm-misc-fixes, but just missed the pull request train for
--rc7. Should land in Linus' tree next week.
+One side effect of this patch is fixing the MSI page leakage during
+suspend/resume. Take the pcie-tegra194.c for example, it calls
+dw_pcie_msi_init() in resume path, thus the previous MSI page is
+leaked.
 
-But I did look at the code, and I have regrets. Macros into untyped arrays
-and negative indices is very old skool C. It's definitely neater than
-before, but also can't deny that we're doing dental surgery on a living
-and fire breathing dragon here :-/
+Fixes: 56e15a238d92 ("PCI: tegra: Add Tegra194 PCIe support")
+Suggested-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+---
+ .../pci/controller/dwc/pcie-designware-host.c | 22 ++-----------------
+ drivers/pci/controller/dwc/pcie-designware.h  |  1 -
+ 2 files changed, 2 insertions(+), 21 deletions(-)
 
-I guess I'll just add this to the list of requirements anyone has to
-resolve before we're going to resurrect scrollback.
-
-Cheers, Daniel
-
-
-
-
-
-> 
-> thanks,
-> 
-> greg k-h
-
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index f08f4d97f321..bf25d783b5c5 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -126,9 +126,7 @@ static void dw_pci_setup_msi_msg(struct irq_data *d, struct msi_msg *msg)
+ {
+ 	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+ 	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+-	u64 msi_target;
+-
+-	msi_target = (u64)pp->msi_data;
++	u64 msi_target = virt_to_phys(&pp->msi_data);
+ 
+ 	msg->address_lo = lower_32_bits(msi_target);
+ 	msg->address_hi = upper_32_bits(msi_target);
+@@ -287,27 +285,11 @@ void dw_pcie_free_msi(struct pcie_port *pp)
+ 
+ 	irq_domain_remove(pp->msi_domain);
+ 	irq_domain_remove(pp->irq_domain);
+-
+-	if (pp->msi_page)
+-		__free_page(pp->msi_page);
+ }
+ 
+ void dw_pcie_msi_init(struct pcie_port *pp)
+ {
+-	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+-	struct device *dev = pci->dev;
+-	u64 msi_target;
+-
+-	pp->msi_page = alloc_page(GFP_KERNEL);
+-	pp->msi_data = dma_map_page(dev, pp->msi_page, 0, PAGE_SIZE,
+-				    DMA_FROM_DEVICE);
+-	if (dma_mapping_error(dev, pp->msi_data)) {
+-		dev_err(dev, "Failed to map MSI data\n");
+-		__free_page(pp->msi_page);
+-		pp->msi_page = NULL;
+-		return;
+-	}
+-	msi_target = (u64)pp->msi_data;
++	u64 msi_target = virt_to_phys(&pp->msi_data);
+ 
+ 	/* Program the msi_data */
+ 	dw_pcie_wr_own_conf(pp, PCIE_MSI_ADDR_LO, 4,
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+index f911760dcc69..a88e15a09745 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -195,7 +195,6 @@ struct pcie_port {
+ 	struct irq_domain	*irq_domain;
+ 	struct irq_domain	*msi_domain;
+ 	dma_addr_t		msi_data;
+-	struct page		*msi_page;
+ 	struct irq_chip		*msi_irq_chip;
+ 	u32			num_vectors;
+ 	u32			irq_mask[MAX_MSI_CTRLS];
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+2.28.0
+
