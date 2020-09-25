@@ -2,77 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0DB1278C4F
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D3C6278C61
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729328AbgIYPOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:14:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728858AbgIYPOV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:14:21 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1E4A20878;
-        Fri, 25 Sep 2020 15:14:17 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 11:14:15 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     paulmck <paulmck@kernel.org>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
- enabled in a header
-Message-ID: <20200925111415.60f5334c@oasis.local.home>
-In-Reply-To: <176393901.69671.1601044916547.JavaMail.zimbra@efficios.com>
-References: <20200924170928.466191266@goodmis.org>
-        <20200924143025.58dc3c1f@gandalf.local.home>
-        <166273261.68446.1600974510284.JavaMail.zimbra@efficios.com>
-        <20200924153517.73f5f257@oasis.local.home>
-        <221547373.69067.1600977935633.JavaMail.zimbra@efficios.com>
-        <20200924161328.760f5e79@oasis.local.home>
-        <1430794518.69084.1600979254425.JavaMail.zimbra@efficios.com>
-        <20200924163331.0080b943@oasis.local.home>
-        <176393901.69671.1601044916547.JavaMail.zimbra@efficios.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729182AbgIYPSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:18:42 -0400
+Received: from mail-m1272.qiye.163.com ([115.236.127.2]:21924 "EHLO
+        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728818AbgIYPSm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:18:42 -0400
+Received: from ubuntu.localdomain (unknown [58.250.176.229])
+        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id 745FEB024A7;
+        Fri, 25 Sep 2020 23:18:30 +0800 (CST)
+From:   Bailu Lin <bailu.lin@vivo.com>
+To:     corbet@lwn.net
+Cc:     alex.shi@linux.alibaba.com, bailu.lin@vivo.com,
+        catalin.marinas@arm.com, harryxiyou@gmail.com, kernel@vivo.com,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, will@kernel.org
+Subject: [PATCH v3] Documentation: Chinese translation of  Documentation/arm64/amu.rst
+Date:   Fri, 25 Sep 2020 08:17:58 -0700
+Message-Id: <20200925151758.41818-1-bailu.lin@vivo.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200924104141.7abc7271@lwn.net>
+References: <20200924104141.7abc7271@lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTkpPSh9JTR5PS0gaVkpNS0pLT0xKSktCSExVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6N0k6TAw5FD8tHgE5HDESDiop
+        GSpPCRlVSlVKTUtKS09MSkpKSENKVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
+        VUlOS1VKTE1VSUlCWVdZCAFZQU1MSEM3Bg++
+X-HM-Tid: 0a74c5d8249598b7kuuu745feb024a7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 10:41:56 -0400 (EDT)
-Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+This is a Chinese translated version of Documentation/arm64/amu.rst
 
-> With the current dependencies of tracepoint.h, I would argue that we should
-> only do the trampoline work-around for cases where there is an unavoidable
-> circular dependency, like the case of msr.h. For other headers which don't
-> have circular dependency issues with tracepoint.h, we should use the usual
-> tracepoint instrumentation because not having the trampoline provides better
-> tracing (on) speed and reduces (slightly) code size.
+Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+---
+Changes in v3:
+ - Remove Documentation/arm64/amu.rst's inappropriate License claim.
+Changes in v2:
+ - Add index to arm64 directoy.
+ - Fix a document format error.
+ - Correct email encoding format.
+---
+ Documentation/arm64/amu.rst                   |   2 +
+ .../translations/zh_CN/arm64/amu.rst          | 102 ++++++++++++++++++
+ .../translations/zh_CN/arm64/index.rst        |   2 +
+ 3 files changed, 106 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/arm64/amu.rst
 
-Well, for now, I'm going to add the helper function and have the header
-use cases use that.
+diff --git a/Documentation/arm64/amu.rst b/Documentation/arm64/amu.rst
+index 452ec8b115c2..01f2de2b0450 100644
+--- a/Documentation/arm64/amu.rst
++++ b/Documentation/arm64/amu.rst
+@@ -1,3 +1,5 @@
++.. _amu_index:
++
+ =======================================================
+ Activity Monitors Unit (AMU) extension in AArch64 Linux
+ =======================================================
+diff --git a/Documentation/translations/zh_CN/arm64/amu.rst b/Documentation/translations/zh_CN/arm64/amu.rst
+new file mode 100644
+index 000000000000..7aa538c40304
+--- /dev/null
++++ b/Documentation/translations/zh_CN/arm64/amu.rst
+@@ -0,0 +1,102 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/arm64/amu.rst <amu_index>`
++
++Translator: Bailu Lin <bailu.lin@vivo.com>
++
++===============================
++AArch64 Linux 中扩展的活动监控单元
++===============================
++
++作者: Ionela Voinescu <ionela.voinescu@arm.com>
++
++日期: 2019-09-10
++
++本文档简要描述了 AArch64 Linux 支持的活动监控单元的规范。
++
++
++架构总述
++--------
++
++活动监控是 ARMv8.4 CPU 架构引入的一个可选扩展特性。
++
++活动监控单元(在每个 CPU 中实现)为系统管理提供了性能计数器。既可以通
++过系统寄存器的方式访问计数器，同时也支持外部内存映射的方式访问计数器。
++
++AMUv1 架构实现了一个由4个固定的64位事件计数器组成的计数器组。
++
++  - CPU 周期计数器：同 CPU 的频率增长
++  - 常量计数器：同固定的系统时钟频率增长
++  - 淘汰指令计数器: 同每次架构指令执行增长
++  - 内存停顿周期计数器：计算由在时钟域内的最后一级缓存中未命中而引起
++    的指令调度停顿周期数
++
++当处于 WFI 或者 WFE 状态时，计数器不会增长。
++
++AMU 架构提供了一个高达16位的事件计数器空间，未来新的 AMU 版本中可能
++用它来实现新增的事件计数器。
++
++另外，AMUv1 实现了一个多达16个64位辅助事件计数器的计数器组。
++
++冷复位时所有的计数器会清零。
++
++
++基本支持
++--------
++
++内核可以安全地运行在支持 AMU 和不支持 AMU 的 CPU 组合中。
++因此，当配置 CONFIG_ARM64_AMU_EXTN 后我们无条件使能后续
++(secondary or hotplugged) CPU 检测和使用这个特性。
++
++当在 CPU 上检测到该特性时，我们会标记为特性可用但是不能保证计数器的功能，
++仅表明有扩展属性。
++
++固件(代码运行在高异常级别，例如 arm-tf )需支持以下功能：
++
++ - 提供低异常级别(EL2 和 EL1)访问 AMU 寄存器的能力。
++ - 使能计数器。如果未使能，它的值应为 0。
++ - 在从电源关闭状态启动 CPU 前或后保存或者恢复计数器。
++
++当使用使能了该特性的内核启动但固件损坏时，访问计数器寄存器可能会遭遇
++panic 或者死锁。即使未发现这些症状，计数器寄存器返回的数据结果并不一
++定能反映真实情况。通常，计数器会返回 0，表明他们未被使能。
++
++如果固件没有提供适当的支持最好关闭 CONFIG_ARM64_AMU_EXTN。
++值得注意的是，出于安全原因，不要绕过 AMUSERRENR_EL0 设置而捕获从
++EL0(用户空间) 访问 EL1(内核空间)。 因此，固件应该确保访问 AMU寄存器
++不会困在 EL2或EL3。
++
++AMUv1 的固定计数器可以通过如下系统寄存器访问：
++
++ - SYS_AMEVCNTR0_CORE_EL0
++ - SYS_AMEVCNTR0_CONST_EL0
++ - SYS_AMEVCNTR0_INST_RET_EL0
++ - SYS_AMEVCNTR0_MEM_STALL_EL0
++
++特定辅助计数器可以通过 SYS_AMEVCNTR1_EL0(n) 访问，其中n介于0到15。
++
++详细信息定义在目录：arch/arm64/include/asm/sysreg.h。
++
++
++用户空间访问
++------------
++
++由于以下原因，当前禁止从用户空间访问 AMU 的寄存器：
++
++  - 安全因数：可能会暴露处于安全模式执行的代码信息。
++  - 意愿：AMU 是用于系统管理的。
++
++同样，该功能对用户空间不可见。
++
++
++虚拟化
++------
++
++由于以下原因，当前禁止从 KVM 客户端的用户空间(EL0)和内核空间(EL1)
++访问 AMU 的寄存器：
++
++  - 安全因数：可能会暴露给其他客户端或主机端执行的代码信息。
++
++任何试图访问 AMU 寄存器的行为都会触发一个注册在客户端的未定义异常。
+diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
+index c236b648740d..9bcf2c51a696 100644
+--- a/Documentation/translations/zh_CN/arm64/index.rst
++++ b/Documentation/translations/zh_CN/arm64/index.rst
+@@ -14,3 +14,5 @@ ARM64 架构
+ 
+ .. toctree::
+     :maxdepth: 2
++
++   amu
+-- 
+2.20.1
 
-A while back ago I had patches that moves the DO_TRACE() work into a
-separate function and with that we probably could have let all
-tracepoints be in headers (as they would all just do a function call to
-the trace algorithm that does the rest of the work). But you balked at
-that because of the added overhead with tracing on.
-
-Anyway, I don't see any issues with the current patch set as is
-(besides the documentation fix, which I already updated locally). And
-will add this to my queue for linux-next.
-
--- Steve
