@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C08027926A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4685227926D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728797AbgIYUm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:42:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50834 "EHLO mail.kernel.org"
+        id S1728836AbgIYUnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:43:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIYUm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:42:56 -0400
+        id S1726119AbgIYUnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:43:09 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D5C7421D42;
-        Fri, 25 Sep 2020 20:42:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 424C422211;
+        Fri, 25 Sep 2020 20:43:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601066576;
-        bh=QSevX1flL8R5A+fqYXDssSpKP80IyBfwUR79zCY1bHU=;
+        s=default; t=1601066588;
+        bh=oPM6bYG0ziHYbXZRmN2AA5X5TBawJwfVerhBHqMHWC8=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=urarfz8PuyF+GFxvTcJYGPU6CbYQ8EubrmxlSDW9MN3ATbi+2rDYcNTjBeE48/ruw
-         crrsbsCFqMnUqSLnZQTb0cnZqgn/dcxsCC/GFG10dW40H5dXz45Mdu4W9z6BfPF+ok
-         YKR556UJKd7h3q8k7lWpnMA3X9s5YP8+egymxK/I=
-Date:   Fri, 25 Sep 2020 21:42:01 +0100
+        b=GgoN8RG8c5RxNABR8KzFMBCLLjLOKIBuYN85cL4PmfrHH1O5F8Km417yw0Mu6CU1A
+         s3A4QSgBi6Y40+2k/fdF7mJN+5eam0q5d5pOBSfQDBnPIQ1rDzEe2yfvBJlkvlcRbs
+         Ithol4KnaXVp9JJukk8aOKpYK/7CtakiNqW7UFbk=
+Date:   Fri, 25 Sep 2020 21:42:13 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     lgirdwood@gmail.com, tiwai@suse.com,
-        linux-arm-kernel@lists.infradead.org, festevam@gmail.com,
-        Xiubo.Lee@gmail.com, linuxppc-dev@lists.ozlabs.org,
-        nicoleotsuka@gmail.com, shawnguo@kernel.org, perex@perex.cz,
-        linux-imx@nxp.com, s.hauer@pengutronix.de,
-        Xu Wang <vulab@iscas.ac.cn>, shengjiu.wang@gmail.com,
-        alsa-devel@alsa-project.org, kernel@pengutronix.de,
-        timur@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-In-Reply-To: <20200921015918.24157-1-vulab@iscas.ac.cn>
-References: <20200921015918.24157-1-vulab@iscas.ac.cn>
-Subject: Re: [PATCH] fsl: imx-audmix : Use devm_kcalloc() instead of devm_kzalloc()
-Message-Id: <160106647647.2866.12055149870190769449.b4-ty@kernel.org>
+To:     Chuanhong Guo <gch981213@gmail.com>, linux-spi@vger.kernel.org
+Cc:     linux-mediatek@lists.infradead.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, bayi.cheng@mediatek.com
+In-Reply-To: <20200922114905.2942859-1-gch981213@gmail.com>
+References: <20200922114905.2942859-1-gch981213@gmail.com>
+Subject: Re: [PATCH v2] spi: spi-mtk-nor: fix timeout calculation overflow
+Message-Id: <160106652820.3325.17678735137859743508.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 01:59:18 +0000, Xu Wang wrote:
-> A multiplication for the size determination of a memory allocation
-> indicated that an array data structure should be processed.
-> Thus use the corresponding function "devm_kcalloc".
+On Tue, 22 Sep 2020 19:49:02 +0800, Chuanhong Guo wrote:
+> CLK_TO_US macro is used to calculate potential transfer time for various
+> timeout handling. However it overflows on transfer bigger than 512 bytes
+> because it first did (len * 8 * 1000000).
+> This controller typically operates at 45MHz. This patch did 2 things:
+> 1. calculate clock / 1000000 first
+> 2. add a 4M transfer size cap so that the final timeout in DMA reading
+>    doesn't overflow
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: fsl: imx-audmix: Use devm_kcalloc() instead of devm_kzalloc()
-      commit: f95cc5c18c15a425c3dceec48df6b4e27a202dda
+[1/1] spi: spi-mtk-nor: fix timeout calculation overflow
+      commit: 4cafaddedb5fbef9531202ee547784409fd0de33
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
