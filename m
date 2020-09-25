@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FCB82785A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181402785A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728123AbgIYLPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:15:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:42402 "EHLO foss.arm.com"
+        id S1727922AbgIYLRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:17:22 -0400
+Received: from mga17.intel.com ([192.55.52.151]:34866 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgIYLPn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:15:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 34B1D101E;
-        Fri, 25 Sep 2020 04:15:42 -0700 (PDT)
-Received: from [10.57.48.76] (unknown [10.57.48.76])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 986323F70D;
-        Fri, 25 Sep 2020 04:15:38 -0700 (PDT)
-Subject: Re: [PATCH 08/18] dma-mapping: add a new dma_alloc_noncoherent API
-To:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org
-Cc:     alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-doc@vger.kernel.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        netdev@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-References: <20200915155122.1768241-1-hch@lst.de>
- <20200915155122.1768241-9-hch@lst.de>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c8ea4023-3e19-d63b-d936-46a04f502a61@arm.com>
-Date:   Fri, 25 Sep 2020 12:15:37 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        id S1727044AbgIYLRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:17:22 -0400
+IronPort-SDR: Xg3Pth2/UcI6oUbDX9YRlyfi/5QxX5wmDRc06nnLx3Qe3HTsjWRh8mT8UXuXukNs3NhE4QlNnv
+ e+YhVTWYzUng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141524145"
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="141524145"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 04:17:21 -0700
+IronPort-SDR: 8Z+81PwrOv/+Jds0OOJUHL6ddEa765YW1gB8rB7i5U5GoJD/fmphAblM2K5nKvUPDZ1gESLShI
+ 1vJF35NRfFFQ==
+X-IronPort-AV: E=Sophos;i="5.77,301,1596524400"; 
+   d="scan'208";a="487430760"
+Received: from tjhenson-mobl.amr.corp.intel.com (HELO localhost) ([10.252.48.117])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 04:17:15 -0700
+Date:   Fri, 25 Sep 2020 14:17:13 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Jethro Beekman <jethro@fortanix.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200925111713.GD180915@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <20200924180407.GO5030@zn.tnic>
+ <20200925010031.GH119995@linux.intel.com>
+ <bf65f1f7-f91b-721c-90c5-064df152f710@fortanix.com>
 MIME-Version: 1.0
-In-Reply-To: <20200915155122.1768241-9-hch@lst.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf65f1f7-f91b-721c-90c5-064df152f710@fortanix.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-15 16:51, Christoph Hellwig wrote:
-[...]
-> +These APIs allow to allocate pages in the kernel direct mapping that are
-> +guaranteed to be DMA addressable.  This means that unlike dma_alloc_coherent,
-> +virt_to_page can be called on the resulting address, and the resulting
+On Fri, Sep 25, 2020 at 10:39:58AM +0200, Jethro Beekman wrote:
+> On 2020-09-25 03:00, Jarkko Sakkinen wrote:
+> > End result:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/arch/x86/include/uapi/asm/sgx.h
+> > 
+> > I'm wondering this sentence:
+> > 
+> > "The calling convention is custom and does not follow System V x86-64 ABI."
+> > 
+> > AFAIK, now the vDSO is fully C-callable but waiting for feedback before
+> > removing it.
+> 
+> It's C-callable *iff your enclave follows the System V x86-64 ABI*. In
+> addition, all registers not clobbered by the SGX ISA are passed to the
+> enclave, not just those specified as parameter passing registers in
+> the ABI. This is intentional to make the vDSO function usable in
+> applications that use the current flexibility of ENCLU.
 
-Nit: if we explicitly describe this as if it's a guarantee that can be 
-relied upon...
+Hold on, I really want to fix this bit of documentation before sending
+any new version, so I'll explain how I understand it.
 
-> +struct page can be used for everything a struct page is suitable for.
+I think it is just SystemV ABI call with six parameters in the usual
+GPRs (rdi, rsi, rdx, rcx, r8, r9).
 
-[...]
-> +This routine allocates a region of <size> bytes of consistent memory.  It
-> +returns a pointer to the allocated region (in the processor's virtual address
-> +space) or NULL if the allocation failed.  The returned memory may or may not
-> +be in the kernels direct mapping.  Drivers must not call virt_to_page on
-> +the returned memory region.
+I'm looking at vdso_sgx_enter_enclave.
 
-...then forbid this document's target audience from relying on it, 
-something seems off. At the very least it's unhelpfully unclear :/
+What I'm not getting?
 
-Given patch #17, I suspect that the first paragraph is the one that's no 
-longer true.
+> --
+> Jethro Beekman | Fortanix
 
-Robin.
+/Jarkko
