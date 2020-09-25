@@ -2,175 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7B4278D9E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D47278E50
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:22:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728977AbgIYQGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728858AbgIYQGm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:06:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CD1C0613CE;
-        Fri, 25 Sep 2020 09:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=uQJgydSUoDayMaZ249oqW7zlbGRJdSVTgqWhb7/rJ3k=; b=cj/4AY1inDNhDrclJrrVdCdYE+
-        PJvR/111DO97fIjVnQ14y2n3dlupQHcIJ/DkkbbQS3rpDbWSt50bn+xQWsabkwUb7YyV8SKlH1cO7
-        Hoe90eDO+/f1nOSbc1ugnU90h8Cz052p4U1tI1KWFWw+M+1zqleVC0aheX0+YbvjySe753X/V4N/+
-        Ewd6DbHsExdbRARUIHO1ZJmryZu6V3TdVKllEEEXXI+EGNk40D8tMlScIUB7ZgyLSOhYTpPnf2JYF
-        AAof47/pFcDFKKKLi2aP44Xf+u7N2grImrufgZ/1wr528ymlA2LbAY/oZg+2FtW4YsVvKPvtGtDvI
-        M0d/+vSA==;
-Received: from [213.208.157.35] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kLqF5-0003Ow-HI; Fri, 25 Sep 2020 16:06:39 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com
-Subject: [PATCH 2/2] block: add a bdget_part helper
-Date:   Fri, 25 Sep 2020 18:06:18 +0200
-Message-Id: <20200925160618.1481450-3-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925160618.1481450-1-hch@lst.de>
-References: <20200925160618.1481450-1-hch@lst.de>
+        id S1729350AbgIYQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:22:49 -0400
+Received: from m12-15.163.com ([220.181.12.15]:49220 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727751AbgIYQWs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:22:48 -0400
+X-Greylist: delayed 917 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 12:22:47 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=TPYFb
+        PSp4V8vYQ4z0mS+XWUEYAjUGpB+g/xY+pc+6GE=; b=PVQYhqPDCUwiAEdCTv3nZ
+        UM+WBwcstQfT/KMzCBTVXr5/Obw6/vTsN3e/TxWPG8kZ6Rs2ZRplwls5wzjfy5Lw
+        +668EgpaU6EqLwJvcPjwdcOjjC5Cy1YB7H7L4iPdmgcPN7OO3OLqteOKxjsZ9xbN
+        6FwYolGypdX4NBacz+rx58=
+Received: from localhost (unknown [101.86.214.224])
+        by smtp11 (Coremail) with SMTP id D8CowAAH3peaFW5fMOwfDw--.9007S2;
+        Sat, 26 Sep 2020 00:06:51 +0800 (CST)
+Date:   Sat, 26 Sep 2020 00:06:50 +0800
+From:   Hui Su <sh_def@163.com>
+To:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH] mm: fix some comments in page_alloc.c and mempolicy.c
+Message-ID: <20200925160650.GA42847@rlk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: D8CowAAH3peaFW5fMOwfDw--.9007S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZFWUurWrtF4fCw1rAF45GFg_yoW8tFWkpF
+        WkGa45A3WFvF1jk392ka1Dury0gw48Ja17KFn5Gwn5Z3W3tF4qkF9rWwnxZryYyF1Y9a4U
+        trZIvr4Yg3WDJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jSnmiUUUUU=
+X-Originating-IP: [101.86.214.224]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbitwSqX1aEFvbE+wABsK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All remaining callers of bdget() outside of fs/block_dev.c want to get a
-reference to the struct block_device for a given struct hd_struct.  Add
-a helper just for that and then mark bdget static.
+1. the cpuset.c has been moved from kernel/cpuset.c to
+kernel/cgroup/cpuset.c long time ago, but the comment is stale,
+so we update it.
+2. get_page_from_freelist() may alloc many pages according to
+order, we may use pages for better.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Hui Su <sh_def@163.com>
 ---
- block/genhd.c           | 2 +-
- block/partitions/core.c | 2 +-
- fs/block_dev.c          | 9 ++++++---
- include/linux/blkdev.h  | 2 +-
- kernel/trace/blktrace.c | 9 ++-------
- 5 files changed, 11 insertions(+), 13 deletions(-)
+ kernel/cgroup/cpuset.c | 2 +-
+ mm/mempolicy.c         | 2 +-
+ mm/page_alloc.c        | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index e5f17f022ec700..0a273211fec283 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -1048,7 +1048,7 @@ struct block_device *bdget_disk(struct gendisk *disk, int partno)
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 642415b8c3c9..1d3011c1aab6 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1,5 +1,5 @@
+ /*
+- *  kernel/cpuset.c
++ *  kernel/cgroup/cpuset.c
+  *
+  *  Processor and Memory placement constraints for sets of tasks.
+  *
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index eddbe4e56c73..ac59b049b16c 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -2295,7 +2295,7 @@ int vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst)
+  * rebinds the mempolicy its copying by calling mpol_rebind_policy()
+  * with the mems_allowed returned by cpuset_mems_allowed().  This
+  * keeps mempolicies cpuset relative after its cpuset moves.  See
+- * further kernel/cpuset.c update_nodemask().
++ * further kernel/cgroup/cpuset.c update_nodemask().
+  *
+  * current's mempolicy may be rebinded by the other task(the task that changes
+  * cpuset's mems), so we needn't do rebind work for current task.
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index fab5e97dc9ca..1e3c7493e1cb 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3709,7 +3709,7 @@ static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
  
- 	part = disk_get_part(disk, partno);
- 	if (part)
--		bdev = bdget(part_devt(part));
-+		bdev = bdget_part(part);
- 	disk_put_part(part);
- 
- 	return bdev;
-diff --git a/block/partitions/core.c b/block/partitions/core.c
-index dd6811422a87af..5309e0f44ba352 100644
---- a/block/partitions/core.c
-+++ b/block/partitions/core.c
-@@ -580,7 +580,7 @@ int bdev_resize_partition(struct block_device *bdev, int partno,
- 		return -ENXIO;
- 
- 	ret = -ENOMEM;
--	bdevp = bdget(part_devt(part));
-+	bdevp = bdget_part(part);
- 	if (!bdevp)
- 		goto out_put_part;
- 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 6b9d19ffa5af7b..9e84b1928b9401 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -891,7 +891,7 @@ static int bdev_set(struct inode *inode, void *data)
- 	return 0;
- }
- 
--struct block_device *bdget(dev_t dev)
-+static struct block_device *bdget(dev_t dev)
- {
- 	struct block_device *bdev;
- 	struct inode *inode;
-@@ -920,8 +920,6 @@ struct block_device *bdget(dev_t dev)
- 	return bdev;
- }
- 
--EXPORT_SYMBOL(bdget);
--
- /**
-  * bdgrab -- Grab a reference to an already referenced block device
-  * @bdev:	Block device to grab a reference to.
-@@ -933,6 +931,11 @@ struct block_device *bdgrab(struct block_device *bdev)
- }
- EXPORT_SYMBOL(bdgrab);
- 
-+struct block_device *bdget_part(struct hd_struct *part)
-+{
-+	return bdget(part_devt(part));
-+}
-+
- long nr_blockdev_pages(void)
- {
- 	struct inode *inode;
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index d5a3e1a4c2f79b..cf80e61b4c5e1a 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -2003,7 +2003,7 @@ void bd_abort_claiming(struct block_device *bdev, struct block_device *whole,
- void blkdev_put(struct block_device *bdev, fmode_t mode);
- 
- struct block_device *I_BDEV(struct inode *inode);
--struct block_device *bdget(dev_t);
-+struct block_device *bdget_part(struct hd_struct *part);
- struct block_device *bdgrab(struct block_device *bdev);
- void bdput(struct block_device *);
- 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index ec874ea040922a..f1022945e3460b 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1827,13 +1827,11 @@ static ssize_t sysfs_blk_trace_attr_show(struct device *dev,
- 					 struct device_attribute *attr,
- 					 char *buf)
- {
--	struct hd_struct *p = dev_to_part(dev);
-+	struct block_device *bdev = bdget_part(dev_to_part(dev));
- 	struct request_queue *q;
--	struct block_device *bdev;
- 	struct blk_trace *bt;
- 	ssize_t ret = -ENXIO;
- 
--	bdev = bdget(part_devt(p));
- 	if (bdev == NULL)
- 		goto out;
- 
-@@ -1875,7 +1873,6 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
- {
- 	struct block_device *bdev;
- 	struct request_queue *q;
--	struct hd_struct *p;
- 	struct blk_trace *bt;
- 	u64 value;
- 	ssize_t ret = -EINVAL;
-@@ -1895,9 +1892,7 @@ static ssize_t sysfs_blk_trace_attr_store(struct device *dev,
- 		goto out;
- 
- 	ret = -ENXIO;
--
--	p = dev_to_part(dev);
--	bdev = bdget(part_devt(p));
-+	bdev = bdget_part(dev_to_part(dev));
- 	if (bdev == NULL)
- 		goto out;
- 
+ /*
+  * get_page_from_freelist goes through the zonelist trying to allocate
+- * a page.
++ * pages.
+  */
+ static struct page *
+ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+@@ -3723,7 +3723,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ retry:
+ 	/*
+ 	 * Scan zonelist, looking for a zone with enough free.
+-	 * See also __cpuset_node_allowed() comment in kernel/cpuset.c.
++	 * See also __cpuset_node_allowed() comment in kernel/cgroup/cpuset.c.
+ 	 */
+ 	no_fallback = alloc_flags & ALLOC_NOFRAGMENT;
+ 	z = ac->preferred_zoneref;
 -- 
-2.28.0
+2.25.1
+
 
