@@ -2,186 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE78E278B1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:44:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC906278B2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729050AbgIYOoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:44:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728148AbgIYOoA (ORCPT
+        id S1728436AbgIYOrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:47:19 -0400
+Received: from mail-io1-f80.google.com ([209.85.166.80]:47849 "EHLO
+        mail-io1-f80.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728888AbgIYOrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:44:00 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EFCC0613CE;
-        Fri, 25 Sep 2020 07:43:59 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id n14so3397351pff.6;
-        Fri, 25 Sep 2020 07:43:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZllkwvXZoFRp2RcT75jfTy3zRZQ8UkSxSKDB72ARDzY=;
-        b=bnSgaGdaNBPIJqo8u16PTy1fci9aJ+OfN26NPlXSQsQ0tTyu2TPdNO3co2T7gDdnMX
-         /EmgMT2oLbhTrMSMxUPeuXOufQCNHWPzSoboL/5egkX7mN9m3m/Lv2/5IuyGtSFk+Iwn
-         DFP+7Z8pnf1lWkMG98AiARBFPGW7AwbXwtQn/F0BboDbARR/afcsCqzVC4qKMeWqNQNn
-         ExalgK+N8GitoAHVzXO6V5qsNlBHBVXv2PhjsMMt8SmitEA2/73kNW09AkEA2ExJm0ws
-         LDf+asYQWjVzXg6gSPR07cFHKOzBeBA1N82rgwmEOb2rk/5w1CFLX1mS5/fatesq6axo
-         4ZVA==
+        Fri, 25 Sep 2020 10:47:19 -0400
+Received: by mail-io1-f80.google.com with SMTP id a15so2019378ioc.14
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 07:47:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZllkwvXZoFRp2RcT75jfTy3zRZQ8UkSxSKDB72ARDzY=;
-        b=aF8nBj2ZzI81wcgWJawxVn5sf2Iq0WFiQUt0bqcn1pr39iY+ySYxy4gChZmy17Tdf6
-         KJzQHHtaS3yemnr2sgOQbdpXlBgI5suAooKcO65vPQ82vSZwLVa8/lxS4TjtfKNXxftx
-         LzlohnMqYdfQGJDMzWqAV3V+RUOOugHqMBLsACyOvXWNI+rLFcaNZwC8HvuJHFCBsqgC
-         Z+DlXjgfbUHt6TQVY8qJMKXPsSzu1KvCoIbRCtzil6/iBUGE6D+n0oQKXqC+gJyZBhrB
-         +MYBgc+NYV9Ys9XBXLo7KL96VO/R/QKE/h0gV2pbDZ2nqC3XnVspGQfusxukUh4rXRsZ
-         +ZOw==
-X-Gm-Message-State: AOAM532fosp7YulzptQFNNrIcbVdNLHw1aMSyTM/YAjJ9M06hNaGp+cN
-        J12+nETm3/dvy8bGquej1zelDGgwn4CNDcffZWP0yaf94z0Tzw==
-X-Google-Smtp-Source: ABdhPJy1gTPAmYQNBlk930ss692jYoCYdpCVAimcfkGZaiqyInDGQ5WNXp3IgFifVOgT87l3n0Ml8CsagPQ3AlTOvsM=
-X-Received: by 2002:a17:902:d708:b029:d2:635f:6692 with SMTP id
- w8-20020a170902d708b02900d2635f6692mr4086156ply.17.1601045039428; Fri, 25 Sep
- 2020 07:43:59 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=M6+/ZKVR/90rLrLFBtjo/Mm7W41v17JMkdnZdvY3o98=;
+        b=LB06F85AhpQNulNQcfmaxGLrWvN8FkL0cBo80fHjpWeG3auzWfp3enGZVeNLDgP3hL
+         /SefEkOnSrUtOUzu3Uadtu9rwcIhp2/SWPc1rAYCul6OK2aXilaF9shGjt50/GrHJGRo
+         laT1xoKQSemJVjQco0Khazf1yrV0v3J56l8ELgkbw3TXOOpoYH3XmMVjtKNFxevKigP9
+         eXEccbnhKOy/yY6/tVXBG3P7+ArdT3y5kLXK1mEVCC3AoobVqdbN3DJ8a4kEvp5eqfmT
+         +0g9ZN2oz0nf7gE8o5dIO0DhQ+DYD8CywuDJDm2npS0bzJX0RIkKlNuoXZYQUP+0PIIs
+         WgsA==
+X-Gm-Message-State: AOAM530DyEKQ/M3AJ8YLxpVJ/BmmACTo3/fpnVXaUSZ4OFggPIYOW6lr
+        FEOYc0OJK4NzsepxSsuLoa78ny0DPDhAndbV4jOTOFvxBQXa
+X-Google-Smtp-Source: ABdhPJzbIQCjGeAdlz7BLhEUwnTKQfQvsClQ0ijGBrZ0OlsNyAai2+6C2kZvqVq3N+G3Wm9C3B3Kcw/GfWNkIFnQxvghVolzcCSz
 MIME-Version: 1.0
-References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-9-warthog618@gmail.com>
- <CAHp75Vc05P4-X_ZC6k-EWdDCAXOgPgAJhm4RxF3izvk=vW+X+g@mail.gmail.com>
- <20200924023914.GA11575@sol> <CAHp75VfoOCJDmpDJ6wTEKTDUO1zFRZ6MRSN7dy3cAdepv0s2rQ@mail.gmail.com>
- <20200924094813.GC20188@sol> <CAHp75VcmJyNdK8hOKneT3T=t8QyRcU+X+UwfmKCL5SJsniev9g@mail.gmail.com>
- <20200925115601.GA216973@sol>
-In-Reply-To: <20200925115601.GA216973@sol>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 25 Sep 2020 17:43:41 +0300
-Message-ID: <CAHp75VdM-H4Q5sBkx5dV5kFmUNYAs9mUmvRN=yn0KyKcHkt1yQ@mail.gmail.com>
-Subject: Re: [PATCH v9 08/20] gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL
- and GPIO_V2_GET_LINEINFO_WATCH_IOCTL
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
+X-Received: by 2002:a05:6e02:8f:: with SMTP id l15mr453713ilm.119.1601045237602;
+ Fri, 25 Sep 2020 07:47:17 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 07:47:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a821aa05b0246452@google.com>
+Subject: general protection fault in xsk_release
+From:   syzbot <syzbot+ddc7b4944bc61da19b81@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bjorn.topel@intel.com,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com,
+        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@chromium.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        magnus.karlsson@intel.com, netdev@vger.kernel.org,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 2:56 PM Kent Gibson <warthog618@gmail.com> wrote:
->
-> On Fri, Sep 25, 2020 at 01:12:14PM +0300, Andy Shevchenko wrote:
-> > On Thu, Sep 24, 2020 at 12:48 PM Kent Gibson <warthog618@gmail.com> wrote:
-> > > On Thu, Sep 24, 2020 at 11:39:03AM +0300, Andy Shevchenko wrote:
-> > > > On Thu, Sep 24, 2020 at 5:39 AM Kent Gibson <warthog618@gmail.com> wrote:
-> > > > > On Wed, Sep 23, 2020 at 06:41:45PM +0300, Andy Shevchenko wrote:
-> > > > > > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
->
-> [snip]
-> > >
-> > > Lets say CPU0 is setting 1 and CPU1 setting 2, and assuming the xchg()
-> > > completes...
-> > > Your case is not possible - CPU1 would see the value 1 set by CPU0 in the
-> > > read() and so NOK.  Its xchg() would fail as it compares against 0
-> > > and that also sees the 1 and so fails.
-> > >
-> > > What am I missing?
-> >
-> > Barriers? That's what documentation says about xchg().
-> > https://stackoverflow.com/q/20950603/2511795
-> >
->
-> Firstly, the answer in Stackoverflow is from someone who explicitly
-> acknowledges not being a kernel developer, so they aren't sure.
->
-> Secondly, the latest version of the kernel doc [1] says differently than what
-> is quoted on Stackoverlow - it indicates implementations of atomic_cmpxchg()
-> must provide its own memory barriers.
->
-> The relevant section says "This performs an atomic compare exchange operation
-> on the atomic value v, with the given old and new values. Like all atomic_xxx
-> operations, atomic_cmpxchg will only satisfy its atomicity semantics as long
-> as all other accesses of *v are performed through atomic_xxx operations.
->
-> atomic_cmpxchg must provide explicit memory barriers around the operation,
-> although if the comparison fails then no memory ordering guarantees are required."
->
-> Note that this doc is aimed at atomic_cmpxchg() implementors, so I took
-> that to mean the operation itself must provide the barriers - not
-> the caller.  Also, the sentence only makes sense wrt the
-> atomic_cmpxchg() implementation - the caller can't decide on memory barriers
-> if the comparison fails or not.
->
-> The memory-barriers.txt they quote is also dated - the atomic section they quote
-> is moved to atomic_t.txt[2]?
-> That says that cmpxchg is a RMW op, and that it will perform an
-> ACQUIRE and RELEASE - for the non-failure case anyway.
->
-> Again, I took that to mean it will provide the barriers itself.
->
-> And even the old text they quote says those operations IMPLY a memory barrier,
-> "Any atomic operation that modifies some state in memory and returns
-> information about the state (old or new) implies an SMP-conditional
-> general memory barrier (smp_mb()) on each side of the actual operation"
-> and that "the implicit memory barrier effects are necessary".
->
-> Again that indicates the barrier is a part of the op, as it is implicit,
-> and not necessary to be added separately.
+Hello,
 
-Okay!
-Thanks for digging into it.
+syzbot found the following issue on:
 
-> > > > > The atomic_cmpxchg() ensures cdata->watch_abi_version is only set
-> > > > > once - first in wins.  The atomic_read() is so we can check that
-> > > > > the set version matches what the caller wants.
-> > > > > Note that multiple callers may request the same version - and all
-> > > > > should succeed.
-> > > >
-> > > > So, that's basically what you need when using _old_ value.
-> > > >
-> > > > 0 means you were first, right?
-> > > > Anything else you simply compare and bail out if it's not the same as
-> > > > what has been asked.
-> > > >
-> > >
-> > > Could you provide a complete implementation that behaves as I expect,
-> > > rather than snippets and verbage?
-> >
-> > if (atomic_cmpxchg(&cdata..., version) == 0)
-> >  return 0; // we were first!
-> > return -EPERM; // somebody has changed the version before us!
-> >
->
-> Which can fail if two callers are requesting the same version - in a
-> race the second one will get a fail - independent of the version they
-> are requesting.
->
-> I keep flip-flopping and twiddling with the implementation of this -
-> my current one is:
->
-> /*
->  * returns 0 if the versions match, else the previously selected ABI version
->  */
-> static int lineinfo_ensure_abi_version(struct gpio_chardev_data *cdata,
->                                        unsigned int version)
-> {
->         int abiv = atomic_cmpxchg(&cdata->watch_abi_version, 0, version);
->
->         if (abiv == version)
->                 return 0;
->
->         return abiv;
-> }
->
->
-> Does that work for you? (assuming no explicit barriers are necessary)
+HEAD commit:    3fc826f1 Merge branch 'net-dsa-bcm_sf2-Additional-DT-chang..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=158f8009900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=51fb40e67d1e3dec
+dashboard link: https://syzkaller.appspot.com/bug?extid=ddc7b4944bc61da19b81
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16372c81900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100bd2c3900000
 
-Perfectly!
+The issue was bisected to:
 
-> [1] https://www.kernel.org/doc/html/v5.8/core-api/atomic_ops.html
-> [2] https://www.kernel.org/doc/Documentation/atomic_t.txt
+commit 1c1efc2af158869795d3334a12fed2afd9c51539
+Author: Magnus Karlsson <magnus.karlsson@intel.com>
+Date:   Fri Aug 28 08:26:17 2020 +0000
 
--- 
-With Best Regards,
-Andy Shevchenko
+    xsk: Create and free buffer pool independently from umem
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=157a3103900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=177a3103900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=137a3103900000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ddc7b4944bc61da19b81@syzkaller.appspotmail.com
+Fixes: 1c1efc2af158 ("xsk: Create and free buffer pool independently from umem")
+
+RAX: ffffffffffffffda RBX: 00007fff675613c0 RCX: 0000000000443959
+RDX: 0000000000000030 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000001bbbbbb
+R10: 0000000000000000 R11: 0000000000000246 R12: ffffffffffffffff
+R13: 0000000000000007 R14: 0000000000000000 R15: 0000000000000000
+general protection fault, probably for non-canonical address 0xdffffc00000000ad: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000568-0x000000000000056f]
+CPU: 0 PID: 6888 Comm: syz-executor811 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:dev_put include/linux/netdevice.h:3899 [inline]
+RIP: 0010:xsk_unbind_dev net/xdp/xsk.c:521 [inline]
+RIP: 0010:xsk_release+0x63f/0x7d0 net/xdp/xsk.c:591
+Code: 00 00 48 c7 85 c8 04 00 00 00 00 00 00 e8 29 a0 47 fe 48 8d bb 68 05 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 66 01 00 00 48 8b 83 68 05 00 00 65 ff 08 e9 54
+RSP: 0018:ffffc90005707c90 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff815b9de2
+RDX: 00000000000000ad RSI: ffffffff882d2317 RDI: 0000000000000568
+RBP: ffff888091aae000 R08: 0000000000000001 R09: ffffffff8d0ffaaf
+R10: fffffbfff1a1ff55 R11: 0000000000000000 R12: ffff888091aae5f8
+R13: ffff888091aae4c8 R14: dffffc0000000000 R15: 1ffff11012355cb5
+FS:  0000000000000000(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004c8b88 CR3: 0000000093ea3000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __sock_release+0xcd/0x280 net/socket.c:596
+ sock_close+0x18/0x20 net/socket.c:1277
+ __fput+0x285/0x920 fs/file_table.c:281
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ exit_task_work include/linux/task_work.h:25 [inline]
+ do_exit+0xb7d/0x29f0 kernel/exit.c:806
+ do_group_exit+0x125/0x310 kernel/exit.c:903
+ __do_sys_exit_group kernel/exit.c:914 [inline]
+ __se_sys_exit_group kernel/exit.c:912 [inline]
+ __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:912
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x442588
+Code: Bad RIP value.
+RSP: 002b:00007fff67561328 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 0000000000442588
+RDX: 0000000000000001 RSI: 000000000000003c RDI: 0000000000000001
+RBP: 00000000004c8b50 R08: 00000000000000e7 R09: ffffffffffffffd0
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+R13: 00000000006dd280 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+---[ end trace 9742ad575ae08359 ]---
+RIP: 0010:dev_put include/linux/netdevice.h:3899 [inline]
+RIP: 0010:xsk_unbind_dev net/xdp/xsk.c:521 [inline]
+RIP: 0010:xsk_release+0x63f/0x7d0 net/xdp/xsk.c:591
+Code: 00 00 48 c7 85 c8 04 00 00 00 00 00 00 e8 29 a0 47 fe 48 8d bb 68 05 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 66 01 00 00 48 8b 83 68 05 00 00 65 ff 08 e9 54
+RSP: 0018:ffffc90005707c90 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff815b9de2
+RDX: 00000000000000ad RSI: ffffffff882d2317 RDI: 0000000000000568
+RBP: ffff888091aae000 R08: 0000000000000001 R09: ffffffff8d0ffaaf
+R10: fffffbfff1a1ff55 R11: 0000000000000000 R12: ffff888091aae5f8
+R13: ffff888091aae4c8 R14: dffffc0000000000 R15: 1ffff11012355cb5
+FS:  0000000000000000(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000004c8b88 CR3: 0000000093ea3000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
