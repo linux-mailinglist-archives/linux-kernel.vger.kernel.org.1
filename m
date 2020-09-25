@@ -2,133 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F11F2792F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5682792EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:06:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728591AbgIYVGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:06:21 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:54326 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728144AbgIYVGT (ORCPT
+        id S1727448AbgIYVF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:05:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54498 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726309AbgIYVF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:06:19 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PL4ujO070257;
-        Fri, 25 Sep 2020 21:05:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=t86XVzhzWTuiCcbgAP7XoJJMG7F0LY2LOCCc5kfef6w=;
- b=JS6NWECrTdeOhLOyVwhbOA1C+ryYoNX6WJUOefKakFRjRxKZWRTj3M5B1+f3dAGo/o9C
- udfICZ/Z2FvQ6coL4IfMrJE9WplLsVkcY2zA3mZr7SZdNoMbnn2oLmFKs7Zrnf/Chr2V
- 1R4vXjk4d3COs3wbfL5ZIxPzrVOoivJ/n3+hKWewyFqYJor9qbAJbiMsfUCSFttqSZt+
- VgRW56X9lYfsORfUVaFcg42Qr48c9zwLh+2WBE2IsKWALbpmV12F6jFU1kxYuv345bzC
- hb6qsmrO2Auf6gbZgISvwEBgrAepzs6i5qIxnuzWNYxnRX+9zz5apwPWnZmuaHSZtfzM LQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 33ndnuytrx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 25 Sep 2020 21:05:35 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PL4WLq035167;
-        Fri, 25 Sep 2020 21:05:34 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33nurya5y7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Sep 2020 21:05:34 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08PL5VAO022797;
-        Fri, 25 Sep 2020 21:05:31 GMT
-Received: from [10.175.187.87] (/10.175.187.87)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 25 Sep 2020 14:05:31 -0700
-Subject: Re: [PATCH v5 00/17] device-dax: support sub-dividing soft-reserved
- ranges
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Fri, 25 Sep 2020 17:05:57 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601067956;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KYytt9bssGAEWyPGrn3z2bXHN59vb0kbWX+R/SRNIRg=;
+        b=acDjwy5tLDRZ2zX70/IWMAbCMHQpHjWnnJXDhtgLZCO/9HAJPcHFkrBOJUUtfqMC6T83hf
+        /87SSB+OxiZLqSAEeD5aCPEwQYd+9SsoGAOGQasVKW1ZqlkKVvgmJvnErudjRDcysANrVJ
+        Vnjrw6NS+xEBtZ6S2iduUpMWOVTNQqs=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-QmeEMI95PeyXkK-_qgZFBA-1; Fri, 25 Sep 2020 17:05:52 -0400
+X-MC-Unique: QmeEMI95PeyXkK-_qgZFBA-1
+Received: by mail-wr1-f71.google.com with SMTP id h4so1567977wrb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:05:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KYytt9bssGAEWyPGrn3z2bXHN59vb0kbWX+R/SRNIRg=;
+        b=fiSf/Kq0GFKlVr0d0Xn7YuKT3TxWjDJW9gcT1Q6hsOXO7faLBgxajH1VifAi1M5nI9
+         PyCsvDlz2xjpSoBAjZF8Avqpdp081YmbXK6b4p0FX6wgPQXkq4PqQL+inGBc0s8imDT1
+         /K4e7o4UYPsAORoGfgVl38csH2+aoT7ZZq0Nig2o/vc+iDpY6L8Dh2Du/pnPOUHhLB8h
+         buTwSoaUtaBxphgZt/8lztzRqFTDF6TP4zq3LZZNIucdRRZRSKSvR3Sf7UR34uq3cR87
+         JIpQvp2ZAJdD7XubPHMYrdtKOJb5jsukplMkf0WVLPsEoTySWkI4kuh0oOAvtfH1ZBl6
+         a6yg==
+X-Gm-Message-State: AOAM531uJR1rId2gb5Lt+vfjiz2sdwEZjgXZ88H5Xj1zbInzyhl7ITuA
+        ZIsA9a69hquDK/g8w4slr/q50fa7IyQoPxHhEjPzkVuOhpUlnwak9bKHkM31xHts0poHz0k3CdL
+        f33cFl5NP+ENEzm377BO8IlFi
+X-Received: by 2002:a05:600c:228e:: with SMTP id 14mr457094wmf.17.1601067950964;
+        Fri, 25 Sep 2020 14:05:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyXVvhHeab8ly63BYQtucuJlTvz3AS/Mr+Hmurwb2UpVZ7QkUFAEARwgGqla0VJ1OcRKIUZ6A==
+X-Received: by 2002:a05:600c:228e:: with SMTP id 14mr457065wmf.17.1601067950750;
+        Fri, 25 Sep 2020 14:05:50 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id a15sm4540071wrn.3.2020.09.25.14.05.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 14:05:50 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/3] KVM: Introduce "VM bugged" concept
+To:     Marc Zyngier <maz@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Huacai Chen <chenhc@lemote.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@ozlabs.org>,
+        kvm-ppc@vger.kernel.org,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
         David Hildenbrand <david@redhat.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Hulk Robot <hulkci@huawei.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Jia He <justin.he@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jason Yan <yanaijie@huawei.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Brice Goglin <Brice.Goglin@inria.fr>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Juergen Gross <jgross@suse.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Linux MM <linux-mm@kvack.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
- <8370d493-e38d-cbac-1233-14cbbef63936@oracle.com>
- <CAPcyv4je4PzCRo=Na7WfCpnvS0VpBN8qArr5HZv7jhwTNui4eg@mail.gmail.com>
-From:   Joao Martins <joao.m.martins@oracle.com>
-Message-ID: <11dbaa4a-5fe1-402e-e7d2-99e908b1bec0@oracle.com>
-Date:   Fri, 25 Sep 2020 22:05:20 +0100
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>
+References: <20200923224530.17735-1-sean.j.christopherson@intel.com>
+ <874knlrf4a.wl-maz@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <100a603f-193c-5a46-d428-cfc0ce0a8fe4@redhat.com>
+Date:   Fri, 25 Sep 2020 23:05:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4je4PzCRo=Na7WfCpnvS0VpBN8qArr5HZv7jhwTNui4eg@mail.gmail.com>
+In-Reply-To: <874knlrf4a.wl-maz@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009250152
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
- clxscore=1015 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009250152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/20 10:01 PM, Dan Williams wrote:
-> On Fri, Sep 25, 2020 at 1:52 PM Joao Martins <joao.m.martins@oracle.com> wrote:
->>
->> Hey Dan,
->>
->> On 9/25/20 8:11 PM, Dan Williams wrote:
->>> Changes since v4 [1]:
->>> - Rebased on
->>>   device-dax-move-instance-creation-parameters-to-struct-dev_dax_data.patch
->>>   in -mm [2]. I.e. patches that did not need fixups from v4 are not
->>>   included.
->>>
->>> - Folded all fixes
->>>
->>
->> Hmm, perhaps you missed the fixups before the above mentioned patch?
->>
->> From:
->>
->>         https://www.ozlabs.org/~akpm/mmots/series
->>
->> under "mm/dax", I am listing those fixups here:
->>
->> x86-numa-add-nohmat-option-fix.patch
->> acpi-hmat-refactor-hmat_register_target_device-to-hmem_register_device-fix.patch
->> mm-memory_hotplug-introduce-default-phys_to_target_node-implementation-fix.patch
->> acpi-hmat-attach-a-device-for-each-soft-reserved-range-fix.patch
->>
->> (in https://www.ozlabs.org/~akpm/mmots/broken-out/)
-> 
-> I left those for Andrew to handle. I actually should have started this
-> set one more down in his stack because that's where my new changes
-> start.
-> 
-Ah, got it!
+On 25/09/20 18:32, Marc Zyngier wrote:
+> I'm quite like the idea. However, I wonder whether preventing the
+> vcpus from re-entering the guest is enough. When something goes really
+> wrong, is it safe to allow the userspace process to terminate normally
+> and free the associated memory? And is it still safe to allow new VMs
+> to be started?
+
+For something that bad, where e.g. you can't rule out future memory
+corruptions via use-after-free bugs or similar, you're probably entering
+BUG_ON territory.
+
+Paolo
+
