@@ -2,113 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872F7278657
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD9A278658
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728244AbgIYLyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728056AbgIYLyv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:54:51 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69181C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:54:51 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id y15so2994154wmi.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:54:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=fJiQtctcNXBXh9qT9CsxSpdBmaOAAcN7q8VKxTKjhaU=;
-        b=S/0MsNcBf6z9nBBvhntFcfWhRa8Njb3YJt+R7C91VoWSkZIdBuCIRQEjM/nBmsrQVi
-         G53IB3NSvKjEBH/XC5d854Q+FH1fw4FwDZkBq7xco39cbCmxfAZEnZTcFr7ajynYZcvz
-         1VLnxXrUZoikLnOXqq0yRpmb4f0UZvmtscFX2CGlgl4YEKWkq359mKzLRiqSW+d0MBJo
-         yitugr4cZxKEgXQJEsccq3LMYRx8mznOvlat24ZUUzZB9Xwp3R+uitpcz/fjxkUysy2d
-         E3S9m2XHjQHcO07TcX32i3KToMN+yfvqjO7wR0G9BNzQtLOCO5oCoU4VtNuD2WXM+h0G
-         fWQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=fJiQtctcNXBXh9qT9CsxSpdBmaOAAcN7q8VKxTKjhaU=;
-        b=YLNUnyvQAr49f6fCyZWHG8mqZI26oKNhgSLIX8HzKNZzGgSqi34Cm1vd7N2UhDCcR+
-         YID9M/gjjRx3su9HURCLfCdg5F7Kq6Y9tpQZdD/p9fSYzek4lgYUF77Ly2xt7hMCpvHx
-         NSeuXwZNVWovsBI4Uy44cPqOEd5scfKIR1m3UHHYWuUcSHc2c/sRZ70+BbXxtrJ1AC3M
-         1hYOn5gSMVTbtsBKNuGwZXKa3wBVHPcKRhNRy+yapjdzPyobdm3dyh6K0nlsErCXwO/U
-         JuIO65lQBAtZ7/p6nrqgJ86pwtieGmMVX/lBXKK3mtjRlfFmW0WhfvIoFCdyYd3wBrDO
-         oAcw==
-X-Gm-Message-State: AOAM533DVuc40gHFUmu4OrlyVMXaD2dfom/OCvezwuWxwoIkHQZ53h7q
-        i6A8yJr+Pu5RLekdddStz7UaoktV5zg=
-X-Google-Smtp-Source: ABdhPJwocQd2+b0Q+AdxAsEP44KNbkvGJtE8N8U930DR4GlTWGZmcwM5oTHPJ5S/t/1mWs+3cpuEUQ==
-X-Received: by 2002:a1c:6607:: with SMTP id a7mr2736836wmc.142.1601034889924;
-        Fri, 25 Sep 2020 04:54:49 -0700 (PDT)
-Received: from ogabbay-VM.habana-labs.com ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id q18sm2586075wre.78.2020.09.25.04.54.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 25 Sep 2020 04:54:48 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 14:54:47 +0300
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull] habanalabs second pull request for kernel 5.10-rc1
-Message-ID: <20200925115447.GA2256@ogabbay-VM.habana-labs.com>
+        id S1728277AbgIYLzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:55:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54854 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727749AbgIYLzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 07:55:15 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 30D7E2083B;
+        Fri, 25 Sep 2020 11:55:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601034914;
+        bh=50ZOmvOc2ZlEI23PAbvy1zGSWLYiRVFaYNi2E1GtLCQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nHtUJVBKBiSGnwlpY0BocpwbY6jLKBZu33t8o4BFdoFl29xSVt3EZ5LtImcSbDQOs
+         m6apuPsNPtsg9o1MOBlllURmLsLI833hCChP2C7grCo96q9Qfk2slMIc9/al1d2UkJ
+         MIBX6cdGsydXFb1xku0Jg3gvC0R3cjCHT42JjgWw=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 089F7400E9; Fri, 25 Sep 2020 08:55:12 -0300 (-03)
+Date:   Fri, 25 Sep 2020 08:55:11 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     kernel test robot <rong.a.chen@intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Stephane Eranian <eranian@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andi Kleen <andi@firstfloor.org>,
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Kajol Jain <kjain@linux.ibm.com>, 0day robot <lkp@intel.com>,
+        lkp@lists.01.org
+Subject: Re: [perf tools] 77b66fd551:
+ perf-sanity-tests.'import_perf'_in_python.fail
+Message-ID: <20200925115511.GA2868146@kernel.org>
+References: <20200908044228.61197-4-namhyung@kernel.org>
+ <20200923091431.GF28663@shao2-debian>
+ <CAM9d7cjp-R1WzEn-OOB=p=ir6=3enSKy=kxUu-MfOUwAeXVRcg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAM9d7cjp-R1WzEn-OOB=p=ir6=3enSKy=kxUu-MfOUwAeXVRcg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+Em Thu, Sep 24, 2020 at 12:04:51PM +0900, Namhyung Kim escreveu:
+> On Wed, Sep 23, 2020 at 6:15 PM kernel test robot <rong.a.chen@intel.com> wrote:
+> > FYI, we noticed the following commit (built with gcc-9):
 
-This is habanalabs second pull request for the merge window of kernel 5.10.
-It contains an important fix to our ASIC reset flow and a few other minor
-changes. Details are in the tag.
+> > commit: 77b66fd55195289f5361af4f8a0978a3a90b9363 ("[PATCH 3/4] perf tools: Copy metric events properly when multiply cgroups")
+> > url: https://github.com/0day-ci/linux/commits/Namhyung-Kim/perf-stat-Add-multiply-cgroup-option/20200908-124454
+> > base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2cb5383b30d47c446ec7d884cd80f93ffcc31817
 
-Thanks,
-Oded
+> > in testcase: perf-sanity-tests
+> > version: perf-x86_64-34d4ddd359db-1_20200909
+> > with following parameters:
 
-The following changes since commit 9eb29f2ed95edda511ce28651b1d7cdef3614c12:
+> >         perf_compiler: gcc
+> >         ucode: 0xdc
 
-  Merge tag 'icc-5.10-rc1' of https://git.linaro.org/people/georgi.djakov/linux into char-misc-next (2020-09-24 15:15:11 +0200)
+> > on test machine: 8 threads Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz with 16G memory
 
-are available in the Git repository at:
+> > caused below changes (please refer to attached dmesg/kmsg for entire log/backtrace):
 
-  git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-next-2020-09-25
+> > If you fix the issue, kindly add following tag
+> > Reported-by: kernel test robot <rong.a.chen@intel.com>
+> 
+> Thanks for the report.  I'll fix it and send it in the next version.
 
-for you to fetch changes up to 25121d9804b8421851e3ccb88d1d35a5d93692b8:
+I'm so glad this is in place, thanks to all involved!
 
-  habanalabs/gaudi: configure QMAN LDMA registers properly (2020-09-25 14:44:21 +0300)
+- Arnaldo
+ 
+> Thanks
+> Namhyung
+> >
+> >
+> > 2020-09-23 04:43:45 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 1
+> >  1: vmlinux symtab matches kallsyms                       : Ok
+> > 2020-09-23 04:43:45 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 2
+> >  2: Detect openat syscall event                           : Ok
+> > 2020-09-23 04:43:45 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 3
+> >  3: Detect openat syscall event on all cpus               : Ok
+> > 2020-09-23 04:43:45 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 4
+> >  4: Read samples using the mmap interface                 : Ok
+> > 2020-09-23 04:43:45 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 5
+> >  5: Test data source output                               : Ok
+> > 2020-09-23 04:43:45 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 6
+> >  6: Parse event definition strings                        : Ok
+> > 2020-09-23 04:43:46 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 7
+> >  7: Simple expression parser                              : Ok
+> > 2020-09-23 04:43:46 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 8
+> >  8: PERF_RECORD_* events & perf_sample fields             : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 9
+> >  9: Parse perf pmu format                                 : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 10
+> > 10: PMU events                                            :
+> > 10.1: PMU event table sanity                              : Ok
+> > 10.2: PMU event map aliases                               : Ok
+> > 10.3: Parsing of PMU event table metrics                  : Skip (some metrics failed)
+> > 10.4: Parsing of PMU event table metrics with fake PMUs   : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 11
+> > 11: DSO data read                                         : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 12
+> > 12: DSO data cache                                        : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 13
+> > 13: DSO data reopen                                       : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 14
+> > 14: Roundtrip evsel->name                                 : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 15
+> > 15: Parse sched tracepoints fields                        : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 16
+> > 16: syscalls:sys_enter_openat event fields                : Ok
+> > 2020-09-23 04:43:48 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 17
+> > 17: Setup struct perf_event_attr                          : Ok
+> > 2020-09-23 04:43:54 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 18
+> > 18: Match and link multiple hists                         : Ok
+> > 2020-09-23 04:43:54 sudo /usr/src/perf_selftests-x86_64-rhel-8.3-77b66fd55195289f5361af4f8a0978a3a90b9363/tools/perf/perf test 19
+> > 19: 'import perf' in python                               : FAILED!
+> >
+> >
+> >
+> > To reproduce:
+> >
+> >         git clone https://github.com/intel/lkp-tests.git
+> >         cd lkp-tests
+> >         bin/lkp install job.yaml  # job file is attached in this email
+> >         bin/lkp run     job.yaml
+> >
+> >
+> >
+> > Thanks,
+> > Rong Chen
+> >
 
-----------------------------------------------------------------
-This tag contains the following changes for kernel 5.10-rc1:
+-- 
 
-- release the kernel context object after we reset the device. This is
-  needed to prevent a race where the firmware still has some in-flight
-  transcations that require the kernel context (and its memory mappings) to
-  be alive.
-
-- replace constant numbers with defines in QMAN initialization of GAUDI
-
-- correct an error message text and add a few debug messages to help debug
-  issues that happen during context open and close.
-
-----------------------------------------------------------------
-Oded Gabbay (4):
-      habanalabs: correct an error message
-      habanalabs: release kernel context after hw_fini
-      habanalabs: add debug messages for opening/closing context
-      habanalabs: add notice of device not idle
-
-Ofir Bitton (1):
-      habanalabs/gaudi: configure QMAN LDMA registers properly
-
- drivers/misc/habanalabs/common/context.c | 13 +++++++
- drivers/misc/habanalabs/common/device.c  | 13 ++++---
- drivers/misc/habanalabs/common/memory.c  |  4 +--
- drivers/misc/habanalabs/gaudi/gaudi.c    | 62 +++++++++++++++++++++-----------
- drivers/misc/habanalabs/gaudi/gaudiP.h   |  8 +++++
- 5 files changed, 70 insertions(+), 30 deletions(-)
+- Arnaldo
