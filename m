@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C39F278834
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF80E2787DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729458AbgIYMxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:53:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59234 "EHLO mail.kernel.org"
+        id S1729155AbgIYMvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:51:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729074AbgIYMxg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:53:36 -0400
+        id S1729129AbgIYMu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:50:58 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 80BFA2072E;
-        Fri, 25 Sep 2020 12:53:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D65202075E;
+        Fri, 25 Sep 2020 12:50:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038414;
-        bh=M+RP/klM8mJ/hXyQDk2kbS5oj9shWR1CNkMe/84/Klk=;
+        s=default; t=1601038258;
+        bh=y+GQbXTaidAAY0N1sPQ/gYgts01Bp6ydqL0LMW4IpvY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s7U3B6GETcg56nzY1mgy1BZwKsJtKVTdPFkmaNRwlZJCi/23YxyDifHdawJGdsjDK
-         mgGZ4us3KVci9me03QvSavdboJrzLxmEhxFCRkb5FVys+pvWzmfRLUz7t0eHmKo0Ax
-         W70X5eRQFoo5p7eaCtuIcDky+Fc23IKjVp1X0RnA=
+        b=HRpGML6o5h7PwsOriBWoLjdwILPMxsKO9sZRnRqlATzDIIYB5fhXPQCco/p0nPusF
+         ohhS6Oisg+xWuKRx4Vrh0B8alwDBNnofl8cd9HFDq2fcaawDLZ5oFL/ibRLHVKPswO
+         TlTlbnYxme9Z7sKdka3TFf840i4ARz8q4by8GN2U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Salyzyn <salyzyn@android.com>,
-        netdev@vger.kernel.org, kernel-team@android.com,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 01/37] af_key: pfkey_dump needs parameter validation
+        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.8 39/56] net: phy: Avoid NPD upon phy_detach() when driver is unbound
 Date:   Fri, 25 Sep 2020 14:48:29 +0200
-Message-Id: <20200925124721.158581982@linuxfoundation.org>
+Message-Id: <20200925124733.718921386@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
-References: <20200925124720.972208530@linuxfoundation.org>
+In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
+References: <20200925124727.878494124@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -48,46 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Salyzyn <salyzyn@android.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-commit 37bd22420f856fcd976989f1d4f1f7ad28e1fcac upstream.
+[ Upstream commit c2b727df7caa33876e7066bde090f40001b6d643 ]
 
-In pfkey_dump() dplen and splen can both be specified to access the
-xfrm_address_t structure out of bounds in__xfrm_state_filter_match()
-when it calls addr_match() with the indexes.  Return EINVAL if either
-are out of range.
+If we have unbound the PHY driver prior to calling phy_detach() (often
+via phy_disconnect()) then we can cause a NULL pointer de-reference
+accessing the driver owner member. The steps to reproduce are:
 
-Signed-off-by: Mark Salyzyn <salyzyn@android.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: kernel-team@android.com
-Cc: Steffen Klassert <steffen.klassert@secunet.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+echo unimac-mdio-0:01 > /sys/class/net/eth0/phydev/driver/unbind
+ip link set eth0 down
+
+Fixes: cafe8df8b9bc ("net: phy: Fix lack of reference count on PHY driver")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
 ---
- net/key/af_key.c |    7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/phy/phy_device.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/key/af_key.c
-+++ b/net/key/af_key.c
-@@ -1855,6 +1855,13 @@ static int pfkey_dump(struct sock *sk, s
- 	if (ext_hdrs[SADB_X_EXT_FILTER - 1]) {
- 		struct sadb_x_filter *xfilter = ext_hdrs[SADB_X_EXT_FILTER - 1];
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -1631,7 +1631,8 @@ void phy_detach(struct phy_device *phyde
  
-+		if ((xfilter->sadb_x_filter_splen >=
-+			(sizeof(xfrm_address_t) << 3)) ||
-+		    (xfilter->sadb_x_filter_dplen >=
-+			(sizeof(xfrm_address_t) << 3))) {
-+			mutex_unlock(&pfk->dump_lock);
-+			return -EINVAL;
-+		}
- 		filter = kmalloc(sizeof(*filter), GFP_KERNEL);
- 		if (filter == NULL) {
- 			mutex_unlock(&pfk->dump_lock);
+ 	phy_led_triggers_unregister(phydev);
+ 
+-	module_put(phydev->mdio.dev.driver->owner);
++	if (phydev->mdio.dev.driver)
++		module_put(phydev->mdio.dev.driver->owner);
+ 
+ 	/* If the device had no specific driver before (i.e. - it
+ 	 * was using the generic driver), we unbind the device
 
 
