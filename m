@@ -2,114 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12202279315
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 316F627931B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727208AbgIYVQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727078AbgIYVQR (ORCPT
+        id S1727895AbgIYVRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:17:38 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14115 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726559AbgIYVRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:16:17 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F52FC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:16:16 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id n14so4445039pff.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:16:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=55PyWr34biEDbu3JvsEj0XeSgK/s1KifuEokrJ9uw8o=;
-        b=lS6mzYDjeglwZ8LWkDF3qED4EEy6wjt639vGroQNcpNQrXxqFxslT+7xWwYz3b9zmb
-         CzA8uYWsfAH4cTnNEY7rWVaWrVZNbmzdvVuNTYqHjpZBe7iUpsG6l48Mjq8JHCibxhX3
-         4rYEPjFkMATB3t6F17GXOaCrf3vG+S1VMrQ9g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=55PyWr34biEDbu3JvsEj0XeSgK/s1KifuEokrJ9uw8o=;
-        b=B57iRBmluyRk8Dx/Tz/6469MOh7Y+/4F5g+FPdlfxDekY3mk9JZSmETSz2KNgfg+bf
-         hJ4iVhWDKKQX9xV9f865O0hQTiOQU/41dyo7ETBT/HfeEUxrfoF+/Z38q9V9NWgap7Uc
-         gqEH0+Z1wbwUb8Day819XWBHelkCifdvPFFfoF1gdO6k7tM3wSBMUiqI+JLk6OOyl/Sx
-         y3NqF8UjHXSV3nvGgOgg1f7tYFOiU0Ue/cEOIz9YTvXTrt+n7E7FhctKfbFKNaeT9Wcs
-         2N5qZOmg1VhBFcgQJ1bJXzWjiR5TlEDmdYOx4+IheXG+nyCC8xsvS1+ItUEVr64p0sou
-         SaLw==
-X-Gm-Message-State: AOAM533xZt79RDA1dbfOYeIfkKOpZnqwbXOmIqe/HyB8yc9jZvzkRCQD
-        4NE/l+8d0kOCRd8Ssaw4dA4zcg==
-X-Google-Smtp-Source: ABdhPJyjkD1skWphhKbK4Dcb7IHRhoIlmCbnIkoXbgrDslWFDxFt21/1MBLctYp4VAG7P337QhGxxw==
-X-Received: by 2002:aa7:96bb:0:b029:142:440c:6ebc with SMTP id g27-20020aa796bb0000b0290142440c6ebcmr458230pfk.22.1601068575877;
-        Fri, 25 Sep 2020 14:16:15 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id e19sm3761025pfl.135.2020.09.25.14.16.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 14:16:15 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 14:16:14 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Hangbin Liu <liuhangbin@gmail.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        linux-doc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>, Tim.Bird@sony.com,
-        lkft-triage@lists.linaro.org,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCHv5 kselftest next] selftests/run_kselftest.sh: make each
- test individually selectable
-Message-ID: <202009251414.15274C0@keescook>
-References: <20200914021758.420874-1-liuhangbin@gmail.com/>
- <20200914022227.437143-1-liuhangbin@gmail.com>
- <CA+G9fYvT6Mw2BamoiVyw=wLUqD-3LB2oaDqcuabOyWfFxEN1qg@mail.gmail.com>
+        Fri, 25 Sep 2020 17:17:38 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f6e5e410000>; Fri, 25 Sep 2020 14:16:49 -0700
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 25 Sep
+ 2020 21:17:36 +0000
+Subject: Re: [PATCH 1/2] ext4/xfs: add page refcount helper
+To:     Dan Williams <dan.j.williams@intel.com>
+CC:     Linux MM <linux-mm@kvack.org>, <kvm-ppc@vger.kernel.org>,
+        <nouveau@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Matthew Wilcox" <willy@infradead.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "Bharata B Rao" <bharata@linux.ibm.com>, Zi Yan <ziy@nvidia.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>
+References: <20200925204442.31348-1-rcampbell@nvidia.com>
+ <20200925204442.31348-2-rcampbell@nvidia.com>
+ <CAPcyv4iOgN6nmF0N4hQGZo-DJNh3UAf1wDy1ata1Rc+RQWVH=Q@mail.gmail.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <dc16b898-f392-eade-9677-88c3ce725484@nvidia.com>
+Date:   Fri, 25 Sep 2020 14:17:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+G9fYvT6Mw2BamoiVyw=wLUqD-3LB2oaDqcuabOyWfFxEN1qg@mail.gmail.com>
+In-Reply-To: <CAPcyv4iOgN6nmF0N4hQGZo-DJNh3UAf1wDy1ata1Rc+RQWVH=Q@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1601068610; bh=EgKHbA7P4sEfdcZAs8fcPF/wZN6SUEEW4m+FX39r4FY=;
+        h=Subject:To:CC:References:From:X-Nvconfidentiality:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=mRFvt3JSueoEWvwICZCtnFGa+CBOawclGIrvlOOYYnVV+c9H8APX2UD5/WRg/rIpQ
+         iRHtyRxzOIBQcaM1YW3U6CvXzczYwaaVzh4ZdnnHi9ZH5TBwj8G7a84q/pAhQmItgd
+         jY6txErAZcfqDt2aGYSNWuU+680aNN2zQ+C9yMFoaix/5AnnoKzMacVpPtUM9SGOEm
+         c26UgiTgZhherdWlA59r6hFrDcbu0Yqf4o4Rz0YdD7VECNxlbZY/sMD3KHkMTt+2OF
+         RbbEbzZP2k28tHb5I9BOGFuLo3524Z0DylKGJdS3kjrUkFJsCEOHtHGEzUCBoX8Dn+
+         Bsn6H7P1KF+ng==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 01:51:53PM +0530, Naresh Kamboju wrote:
-> On Mon, 14 Sep 2020 at 07:53, Hangbin Liu <liuhangbin@gmail.com> wrote:
-> >
-> > Currently, after generating run_kselftest.sh, there is no way to choose
-> > which test we could run. All the tests are listed together and we have
-> > to run all every time. This patch enhanced the run_kselftest.sh to make
-> > the tests individually selectable. e.g.
-> >
-> >   $ ./run_kselftest.sh -t "bpf size timers"
+
+On 9/25/20 1:51 PM, Dan Williams wrote:
+> On Fri, Sep 25, 2020 at 1:45 PM Ralph Campbell <rcampbell@nvidia.com> wrote:
+>>
+>> There are several places where ZONE_DEVICE struct pages assume a reference
+>> count == 1 means the page is idle and free. Instead of open coding this,
+>> add a helper function to hide this detail.
+>>
+>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>> ---
+>>   fs/dax.c            | 8 ++++----
+>>   fs/ext4/inode.c     | 2 +-
+>>   fs/xfs/xfs_file.c   | 2 +-
+>>   include/linux/dax.h | 5 +++++
+>>   4 files changed, 11 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/dax.c b/fs/dax.c
+>> index 994ab66a9907..8eddbcc0e149 100644
+>> --- a/fs/dax.c
+>> +++ b/fs/dax.c
+>> @@ -358,7 +358,7 @@ static void dax_disassociate_entry(void *entry, struct address_space *mapping,
+>>          for_each_mapped_pfn(entry, pfn) {
+>>                  struct page *page = pfn_to_page(pfn);
+>>
+>> -               WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
+>> +               WARN_ON_ONCE(trunc && !dax_layout_is_idle_page(page));
+>>                  WARN_ON_ONCE(page->mapping && page->mapping != mapping);
+>>                  page->mapping = NULL;
+>>                  page->index = 0;
+>> @@ -372,7 +372,7 @@ static struct page *dax_busy_page(void *entry)
+>>          for_each_mapped_pfn(entry, pfn) {
+>>                  struct page *page = pfn_to_page(pfn);
+>>
+>> -               if (page_ref_count(page) > 1)
+>> +               if (!dax_layout_is_idle_page(page))
+>>                          return page;
+>>          }
+>>          return NULL;
+>> @@ -560,11 +560,11 @@ static void *grab_mapping_entry(struct xa_state *xas,
+>>
+>>   /**
+>>    * dax_layout_busy_page - find first pinned page in @mapping
+>> - * @mapping: address space to scan for a page with ref count > 1
+>> + * @mapping: address space to scan for a page with ref count > 0
+>>    *
+>>    * DAX requires ZONE_DEVICE mapped pages. These pages are never
+>>    * 'onlined' to the page allocator so they are considered idle when
+>> - * page->count == 1. A filesystem uses this interface to determine if
+>> + * page->count == 0. A filesystem uses this interface to determine if
+>>    * any page in the mapping is busy, i.e. for DMA, or other
+>>    * get_user_pages() usages.
+>>    *
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index bf596467c234..d9f8ad55523a 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -3927,7 +3927,7 @@ int ext4_break_layouts(struct inode *inode)
+>>                          return 0;
+>>
+>>                  error = ___wait_var_event(&page->_refcount,
+>> -                               atomic_read(&page->_refcount) == 1,
+>> +                               dax_layout_is_idle_page(page),
+>>                                  TASK_INTERRUPTIBLE, 0, 0,
+>>                                  ext4_wait_dax_page(ei));
+>>          } while (error == 0);
+>> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+>> index a29f78a663ca..29ab96541bc1 100644
+>> --- a/fs/xfs/xfs_file.c
+>> +++ b/fs/xfs/xfs_file.c
+>> @@ -750,7 +750,7 @@ xfs_break_dax_layouts(
+>>
+>>          *retry = true;
+>>          return ___wait_var_event(&page->_refcount,
+>> -                       atomic_read(&page->_refcount) == 1, TASK_INTERRUPTIBLE,
+>> +                       dax_layout_is_idle_page(page), TASK_INTERRUPTIBLE,
+>>                          0, 0, xfs_wait_dax_page(inode));
+>>   }
+>>
+>> diff --git a/include/linux/dax.h b/include/linux/dax.h
+>> index 43b39ab9de1a..3f78ed78d1d6 100644
+>> --- a/include/linux/dax.h
+>> +++ b/include/linux/dax.h
+>> @@ -238,4 +238,9 @@ static inline bool dax_mapping(struct address_space *mapping)
+>>          return mapping->host && IS_DAX(mapping->host);
+>>   }
+>>
+>> +static inline bool dax_layout_is_idle_page(struct page *page)
+>> +{
+>> +       return page_ref_count(page) <= 1;
 > 
-> My test run break on linux next
+> Why convert the check from "== 1" to "<= 1" and then back to the ==
+> operator in the next patch? A refcount < 1 in this path before your
+> other change is a bug.
 > 
-> ./run_kselftest.sh: line 1331: syntax error near unexpected token `)'
-> ./run_kselftest.sh: line 1331: `-e -s | --summary )
-> logfile=$BASE_DIR/output.log; cat /dev/null > $logfile; shift ;;'
-
-Yes, please revert this patch. The resulting script is completely
-trashed:
-
-BASE_DIR=$(realpath $(dirname $0))
-. ./kselftest/runner.sh
-TESTS="seccomp"
-
-run_seccomp()
-{
--e      [ -w /dev/kmsg ] && echo "kselftest: Running tests in seccomp" >> /dev/kmsg
--e      cd seccomp
--en     run_many
-        \
--ne             "seccomp_bpf"
-        \
--ne             "seccomp_benchmark"
-
--e      cd $ROOT
-}
-
-
-
--- 
-Kees Cook
+Mostly I was thinking > 1 was busy so <= 1 is idle. And yes, <=0 is never
+supposed to happen. Checking for == 1 is probably better though.
