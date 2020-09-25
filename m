@@ -2,183 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D78B27841C
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6656E278420
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgIYJel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:34:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        id S1727940AbgIYJgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:36:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727426AbgIYJek (ORCPT
+        with ESMTP id S1727905AbgIYJgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:34:40 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71072C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:34:40 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kLk7b-0000gX-Lg; Fri, 25 Sep 2020 11:34:31 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:bb52:8761:ee49:c953] (unknown [IPv6:2a03:f580:87bc:d400:bb52:8761:ee49:c953])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 348C256A369;
-        Fri, 25 Sep 2020 09:34:30 +0000 (UTC)
-Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
-To:     Michael Walle <michael@walle.cc>, Leo Li <leoyang.li@nxp.com>
-Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        Shawn Guo <shawnguo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-References: <20200923095711.11355-1-michael@walle.cc>
- <20200923095711.11355-2-michael@walle.cc>
- <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
- <e9347e4c2e070ee9e8aa7a8007d89f02@walle.cc>
- <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
- <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <790ce102-7542-b65e-0945-a04faf6e4b89@pengutronix.de>
-Date:   Fri, 25 Sep 2020 11:34:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 25 Sep 2020 05:36:08 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306B0C0613CE;
+        Fri, 25 Sep 2020 02:36:08 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id x16so1276440pgj.3;
+        Fri, 25 Sep 2020 02:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ns13PUxn7mq09/qDn659qTFCR6+PeZDMeurMAYQbBks=;
+        b=AQp4gKR0lEP5d9VGbN5TWT1dOl5kzKdcGTQ0+qsEmjqCvEXmDYbROORDHS6Ijszp9y
+         DEBNpZfz6qx1OQlXHRAamec+NET7IqE0+NgVWEW/NLnoEtDzIlEm6Xj0vTokbG/7jX7s
+         idVMPH/hHJyLeTXV3VCOtuQFU9PgQaxxlT7Z3JPjwyx7BVKJsKyqke9UIWZYZHvTr3pg
+         xk3/fL2B4TGmj8Itm3/eQSety3VxtPeY7fMK2AK1jWSb4p/93v/bh3h+vRX2MNiV0ca5
+         asVZK7G80gz7hJ81L0CgGQpcreqH3HEDiWHVa4eBuZo2Px9jDyWG04vffIlFwFLACP+6
+         JsnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ns13PUxn7mq09/qDn659qTFCR6+PeZDMeurMAYQbBks=;
+        b=uOXpmnvwyR4rsNRerWmyj+dokjYDme1vTuLB//XrSWV7jiKGikN1T3Mon5KE5085I7
+         HvXDALXn0N9oTXby2iLjQiGn50I/ptenJN0s5aij6Q47j8IaXBAlFWarKwFzPpjuZZnQ
+         06qpBrJcH/GgUxTRtUHMk/TXW5F9qRhrbNmwRS7TJ07sA3sHkbzVTjliTmn9plXKOqGq
+         0HU3NV+hEoN1BKN3K31t9vtV/otFjhVSiXT+98OaVa/x7HTnnB9CboShipmDXjn7FdJu
+         mzicPMicMDHWdLpAaQNcQ+AFmHbj2c6XuDN7tKjGbyEObwi1jx2eS+iuaL4obh39A216
+         AYvA==
+X-Gm-Message-State: AOAM532NFeeep+P9E3tZdGHmV21WE73i0VJAGyBAwcvwO8FNd5yScjJn
+        2d2BMdKzSokBtmzqZkyX4rDGEe5uEbWAhHhzhd40m44L1iiS9A==
+X-Google-Smtp-Source: ABdhPJwItmiur2/HgOhjKzc87a29mAs9mR/VAjeOqYaLMwI7J/jg8aRxFGq8kE0pizINYfKaDvKTzt4alLvw56/FdpY=
+X-Received: by 2002:a17:902:b7c7:b029:d1:cc21:9c38 with SMTP id
+ v7-20020a170902b7c7b02900d1cc219c38mr3590898plz.21.1601026567512; Fri, 25 Sep
+ 2020 02:36:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="Vso2bsiwF03I2VMccksJJl8mHVNqsckVZ"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20200922023151.387447-1-warthog618@gmail.com> <20200922023151.387447-10-warthog618@gmail.com>
+ <CAHp75VdyOodxqkJCgmrdmcppyjVkDTyHDB-fqjoKS1g-88-umQ@mail.gmail.com> <20200924030732.GB11575@sol>
+In-Reply-To: <20200924030732.GB11575@sol>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 25 Sep 2020 12:35:49 +0300
+Message-ID: <CAHp75Vd7Bmy5FWSputDCAAwSheH6ugszMyCcu1HOgC7BPVEX-w@mail.gmail.com>
+Subject: Re: [PATCH v9 09/20] gpiolib: cdev: support edge detection for uAPI v2
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Vso2bsiwF03I2VMccksJJl8mHVNqsckVZ
-Content-Type: multipart/mixed; boundary="h9EVbyu9eVCGkuNapgPNHY0q89dB8ZzoH";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Michael Walle <michael@walle.cc>, Leo Li <leoyang.li@nxp.com>
-Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
- Shawn Guo <shawnguo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Joakim Zhang <qiangqing.zhang@nxp.com>,
- Oleksij Rempel <o.rempel@pengutronix.de>
-Message-ID: <790ce102-7542-b65e-0945-a04faf6e4b89@pengutronix.de>
-Subject: Re: [PATCH 1/2] arm64: dts: ls1028a: add missing CAN nodes
-References: <20200923095711.11355-1-michael@walle.cc>
- <20200923095711.11355-2-michael@walle.cc>
- <VE1PR04MB6687AC23E100D138FEDB012A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
- <e9347e4c2e070ee9e8aa7a8007d89f02@walle.cc>
- <VE1PR04MB6687CF32DBCC76B4DFBA070A8F390@VE1PR04MB6687.eurprd04.prod.outlook.com>
- <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
-In-Reply-To: <cd04c75c5d92371eca86d269cb17bcb3@walle.cc>
+On Thu, Sep 24, 2020 at 6:07 AM Kent Gibson <warthog618@gmail.com> wrote:
+> On Wed, Sep 23, 2020 at 06:47:28PM +0300, Andy Shevchenko wrote:
+> > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
 
---h9EVbyu9eVCGkuNapgPNHY0q89dB8ZzoH
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+...
 
-On 9/25/20 11:31 AM, Michael Walle wrote:
-> Marc, I'd convert this to yaml format,
+> Also, this code is drawn from lineevent_irq_thread(), which is ordered
+> this way.
 
-Oleksij (CC'ed) is working already on this.
+Negative conditionals are slightly harder to read.
 
-> may I put your name as the maintainer in the binding?
+...
 
-Marc
+> > > +       if (!line->timestamp_ns) {
+> > > +               le.timestamp_ns = ktime_get_ns();
+> > > +               if (lr->num_lines != 1)
+> > > +                       line->req_seqno = atomic_inc_return(&lr->seqno);
+> > > +       } else {
+> > > +               le.timestamp_ns = line->timestamp_ns;
+> > > > +       }
+> >
+> > Ditto.
+>
+> Firstly, drawn from lineevent_irq_thread() which is structured this way.
+>
+> In this case the comment relates to the condition being true, so
+> re-ordering the if/else would be confusing - unless the comment were
+> moved into the corresponding body??
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+Yes.
 
+...
 
---h9EVbyu9eVCGkuNapgPNHY0q89dB8ZzoH--
+> > > +       irq = gpiod_to_irq(line->desc);
+> > > +       if (irq <= 0)
+> > > +               return -ENODEV;
+> >
+> > So, you mean this is part of ABI. Can we return more appropriate code,
+> > because getting no IRQ doesn't mean we don't have a device.
+> > Also does 0 case have the same meaning?
+>
+> Firstly, this code is drawn from lineevent_create(), so any changes
+> here should be considered for there as well - though this may
+> constitute an ABI change??
 
---Vso2bsiwF03I2VMccksJJl8mHVNqsckVZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+For v1 probably, for v2 we are free to fix this.
 
------BEGIN PGP SIGNATURE-----
+> I agree ENODEV doesn't seem right here. Are you ok with ENXIO?
 
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl9tuaIACgkQqclaivrt
-76lexQf/YD2d/wkEXxvLSkrJtEnHGKg81c6SreDG7nQBhPSbhZlMJ+3hpvvGGxK3
-1fY7VmT9KGPmSHAR5gPbIvIXL86TB3DBu2OGKqIlHyLR0fss/IJRhviCEWy8Jwcu
-6Mhb/bCU8RcR1R13/TO3hCbKPXarQAkW9FwX/nEyMehuWYynXDLCM8UckwZa0Zik
-zbMzX0psOmrbjgXHBygMRFiTEKgFxgLmKdeloFPr3arf8Az3KO4Q9DBR+w+AnQ8E
-G/hkvpErfGHAa2h+m8FioeoEPoOKZLNNvwp0ZWJZ27rks53BEVlXGDosL+/fyN93
-Bk0e3jnyso1CTwpDbeju5UhmCVhCug==
-=lrs1
------END PGP SIGNATURE-----
+Yes.
 
---Vso2bsiwF03I2VMccksJJl8mHVNqsckVZ--
+> From gpiod_to_irq():
+>
+>                 /* Zero means NO_IRQ */
+>                 if (!retirq)
+>                         return -ENXIO;
+>
+> so it can't even return a 0 :-| - we're just being cautious.
+
+I would drop = part then.
+
+-- 
+With Best Regards,
+Andy Shevchenko
