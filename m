@@ -2,87 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6876D278EC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 574DD278EC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729460AbgIYQiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:38:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35548 "EHLO mail.kernel.org"
+        id S1729472AbgIYQi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:38:56 -0400
+Received: from foss.arm.com ([217.140.110.172]:49522 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728069AbgIYQiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:38:21 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4E52206BE;
-        Fri, 25 Sep 2020 16:38:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601051901;
-        bh=QGgqzYHKwLhU8qGchhG95ocnro20Uloj/gEjGanOpKI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WXZNV2sUi/3rDC09k4sGxhoTano9Jr5dbiDuP626WoskNDGjMd0MRTKAnMKx4XQxz
-         nIHpWb7E/D/qUUuw2r65VKRu9FEMgK2yAyy47ShyMUlLxmwtDf7Si917sgWXqYImby
-         QLuYCTdxfodQirmxcyN15uEStZSRHx5K10lZ3IMk=
-Date:   Fri, 25 Sep 2020 09:38:19 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     syzbot <syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com>,
-        chao@kernel.org, glider@google.com, jaegeuk@kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [f2fs-dev] KMSAN: uninit-value in f2fs_lookup
-Message-ID: <20200925163819.GA3315208@gmail.com>
-References: <000000000000f9f80905b01c7185@google.com>
- <eb03a5c9-eb77-eb91-e17f-8a3273aab7da@huawei.com>
+        id S1728148AbgIYQi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:38:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7F95B101E;
+        Fri, 25 Sep 2020 09:38:55 -0700 (PDT)
+Received: from [192.168.178.2] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4799B3F718;
+        Fri, 25 Sep 2020 09:38:52 -0700 (PDT)
+Subject: Re: [PATCH 3/9] sched/hotplug: Ensure only per-cpu kthreads run
+ during hotplug
+To:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org
+Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
+        qais.yousef@arm.com, swood@redhat.com, valentin.schneider@arm.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com
+References: <20200921163557.234036895@infradead.org>
+ <20200921163845.520504267@infradead.org>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <b357302d-4a8c-aa2e-f31d-4501fce890b6@arm.com>
+Date:   Fri, 25 Sep 2020 18:38:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <eb03a5c9-eb77-eb91-e17f-8a3273aab7da@huawei.com>
+In-Reply-To: <20200921163845.520504267@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 05:06:33PM +0800, Chao Yu wrote:
-> Hi,
-> 
-> I don't see any problem here, thanks for your report. :)
-> 
-> Thanks,
+On 21/09/2020 18:36, Peter Zijlstra wrote:
 
-What about if max_depth == 0 in __f2fs_find_entry()?  Then __f2fs_find_entry()
-would return NULL without initializing *res_page.
+[...]
 
-A fix could be:
+> This replaces the unlikely(rq->balance_callbacks) test at the tail of
+> context_switch with an unlikely(rq->balance_work), the fast path is
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 069f498af1e3..ceb4431b5669 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -357,16 +357,15 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
- 	unsigned int max_depth;
- 	unsigned int level;
- 
-+	*res_page = NULL;
-+
- 	if (f2fs_has_inline_dentry(dir)) {
--		*res_page = NULL;
- 		de = f2fs_find_in_inline_dir(dir, fname, res_page);
- 		goto out;
- 	}
- 
--	if (npages == 0) {
--		*res_page = NULL;
-+	if (npages == 0)
- 		goto out;
--	}
- 
- 	max_depth = F2FS_I(dir)->i_current_depth;
- 	if (unlikely(max_depth > MAX_DIR_HASH_DEPTH)) {
-@@ -377,7 +376,6 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
- 	}
- 
- 	for (level = 0; level < max_depth; level++) {
--		*res_page = NULL;
- 		de = find_in_level(dir, level, fname, res_page);
- 		if (de || IS_ERR(*res_page))
- 			break;
+While looking for why BALANCE_WORK is needed:
+
+Shouldn't this be unlikely(rq->balance_callback) and
+unlikely(rq->balance_flags)?
