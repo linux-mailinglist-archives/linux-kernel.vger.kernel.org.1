@@ -2,68 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2432786D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D06D2786D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728435AbgIYMQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:16:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728336AbgIYMQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:16:27 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B250422B2D;
-        Fri, 25 Sep 2020 12:16:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601036187;
-        bh=7+BsSmZJ1hOqFBKjy5Lwvr6BbeMcTQUirgr8OyJLBy0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QBML2NUrdUZOadvfEAwBUG6ycUUy03+IFhNrjJOp8Ig8fdrFmlBCk6nOeRZyhUoj7
-         NiEP8J3ZayeCPuzlw3wvUtTq+9hdBR/kQHkUtPX2gPoUDj5TYWT4iWvlryLDRWB/Iv
-         WMgPuV15YHiSEv4kiDBWM34Q3hd/FXzL1sLD4So8=
-Date:   Fri, 25 Sep 2020 14:16:41 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
-        wang.yi59@zte.com.cn, huang.zijiang@zte.com.cn,
-        rikard.falkeborn@gmail.com, lee.jones@linaro.org, mst@redhat.com,
-        linux-kernel@vger.kernel.org, linux-imx@nxp.com
-Subject: Re: [PATCH 4/5] misc: vop: set VIRTIO_F_ACCESS_PLATFORM for
- nocoherent platform
-Message-ID: <20200925121641.GB2680110@kroah.com>
-References: <20200925072630.8157-1-sherry.sun@nxp.com>
- <20200925072630.8157-5-sherry.sun@nxp.com>
+        id S1728501AbgIYMRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:17:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727248AbgIYMRJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:17:09 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97A24C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:17:09 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id d1so1618370qtr.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:17:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BPvOJqW7rDrrdcx7Mo36ua8KWFrzhCpiIyO3GQAecDU=;
+        b=HwQI/7vrF/B2/pPY0XBjxvLZG51EvWnmus/R+k+UCjZ+LRKZeBeRnIAj/8x/XcF6S8
+         EWl6TQkB9T3Uc//5vEH8sAlowjm/5kOum4cSQHGalIARURx8jH5lUiSEuvOGBlL6X++4
+         B6uPVMhzCcqeWmH0IAvLBj74gz6LT4gFL5/fvvXt+lwffNtJkVy2AHOGLH7MBjqS+CeG
+         l0PAPe/w6QYsZE+ceVWA4ioMM6fV2sQn5avyAv6ngtN1v4KeCEr0toTY5XjE+/5RINjs
+         c9lrP48dJofzVCKXPj/x0ao9GKwOiX9fh4Tdm+j0rm+Msj1o1hqsPZofXSyMR2+HFYx8
+         ZNSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BPvOJqW7rDrrdcx7Mo36ua8KWFrzhCpiIyO3GQAecDU=;
+        b=j6Eh/467THBrlAYEsrenFimxJdWRqDsExoFflDbPXQ2LFnXrQbCT0S9RXwfO8FHYmy
+         u8QwLquoAkIT3nF6kHc8B0to44glKTMLE3yHzmzPdQggRy+ehmOzgCkyb4LpjVLMpj4C
+         t5B1GD+Ohqz6fcLvgesCutggd5fvUb4rD93grGNPS6+hVB7fok96PT8KKqWQZ6Q9hXQw
+         hrU5bdANFzJRGxJ2nRUMjCIUYVAAyXLQOwY80+hN4Ygdk/gVUJp8+nD0BFRbe8LdlT51
+         1jeik54rx3aLwTbm1QcETv6XB/2McvsryRXz30nQgnIA3sgEIjg/b1WpEXknaq/vNH3F
+         mALg==
+X-Gm-Message-State: AOAM530YoGJBOuFG7vGPb5npC+q48/57C10C8oVH6BsAmP/S8y/pHSpk
+        WVlUxDjPPQWvKfuCtJT/itEZRv3sXF3Tr8l1eIXdud3INcGLKg==
+X-Google-Smtp-Source: ABdhPJwPLKN5HM5jM8CKd8R2eU3ge8VLTknuf+/1TtVgFyv6rtRu1Ea8CDVMYOUIJU4I2niocWd8mVOIKHY3C8r4kEA=
+X-Received: by 2002:ac8:4806:: with SMTP id g6mr4068508qtq.380.1601036228529;
+ Fri, 25 Sep 2020 05:17:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925072630.8157-5-sherry.sun@nxp.com>
+References: <00000000000096760d05aff79022@google.com> <CACT4Y+YGFtPCi3a-ByZGs1kCFfJOYv_AbkxOG=K_D4xh0r4okA@mail.gmail.com>
+ <20200923103008.GE28545@zn.tnic>
+In-Reply-To: <20200923103008.GE28545@zn.tnic>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 25 Sep 2020 14:16:57 +0200
+Message-ID: <CACT4Y+bRNgchFs_Wc4zLk+J=MjsTNEx2EvnbSpKtSi1R_YiPDQ@mail.gmail.com>
+Subject: Re: invalid opcode in map_vdso
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     syzbot <syzbot+9cf5373b0e15476f39a2@syzkaller.appspotmail.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 03:26:29PM +0800, Sherry Sun wrote:
-> Set VIRTIO_F_ACCESS_PLATFORM feature for nocoherent platform, since
-> it needs the DMA API for virtio.
-> 
-> Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  drivers/misc/mic/vop/vop_main.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/misc/mic/vop/vop_main.c b/drivers/misc/mic/vop/vop_main.c
-> index d3645122c983..d609f0dc6124 100644
-> --- a/drivers/misc/mic/vop/vop_main.c
-> +++ b/drivers/misc/mic/vop/vop_main.c
-> @@ -125,6 +125,9 @@ static void vop_transport_features(struct virtio_device *vdev)
->  	 * creates virtio rings on preallocated memory.
->  	 */
->  	__virtio_clear_bit(vdev, VIRTIO_F_RING_PACKED);
-> +
-> +	if (!dev_is_dma_coherent(vdev->dev.parent))
-> +		__virtio_set_bit(vdev, VIRTIO_F_ACCESS_PLATFORM);
+On Wed, Sep 23, 2020 at 12:30 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Wed, Sep 23, 2020 at 11:19:40AM +0200, Dmitry Vyukov wrote:
+> > +clang-built-linux
+> > Looks like another one with kernel code overwrite in clang build.
+>
+> Uuh, that's a nice and refreshing one - the pattern is not zeroes this
+> time
+>
+> Code: 16 48 89 ef 48 8b 34 24 31 c9 e8 88 7c a7 00 eb 7a 4c 8b 74 24 28 43 80 3c 3e 00 48 8b 5c 24 08 74 08 4c 89 ef e8 4d 77 70 70 <07> 20 05 00 00 49 03 6d 00 48 89 e8 48 c1 e8 03 42 80 3c 38 00 74
+> All code
+> ========
+>    0:   16                      (bad)
+>    1:   48 89 ef                mov    %rbp,%rdi
+>    4:   48 8b 34 24             mov    (%rsp),%rsi
+>    8:   31 c9                   xor    %ecx,%ecx
+>    a:   e8 88 7c a7 00          callq  0xa77c97
+>    f:   eb 7a                   jmp    0x8b
+>   11:   4c 8b 74 24 28          mov    0x28(%rsp),%r14
+>   16:   43 80 3c 3e 00          cmpb   $0x0,(%r14,%r15,1)
+>   1b:   48 8b 5c 24 08          mov    0x8(%rsp),%rbx
+>   20:   74 08                   je     0x2a
+>   22:   4c 89 ef                mov    %r13,%rdi
+>   25:   e8 4d 77 70 70          callq  0x70707777
+>   2a:*  07                      (bad)           <-- trapping instruction
+>   2b:   20 05 00 00 49 03       and    %al,0x3490000(%rip)        # 0x3490031
+>   31:   6d                      insl   (%dx),%es:(%rdi)
+>   32:   00 48 89                add    %cl,-0x77(%rax)
+>   35:   e8 48 c1 e8 03          callq  0x3e8c182
+>   3a:   42 80 3c 38 00          cmpb   $0x0,(%rax,%r15,1)
+>   3f:   74                      .byte 0x74
+>
+> Code starting with the faulting instruction
+> ===========================================
+>    0:   07                      (bad)
+>    1:   20 05 00 00 49 03       and    %al,0x3490000(%rip)        # 0x3490007
+>    7:   6d                      insl   (%dx),%es:(%rdi)
+>    8:   00 48 89                add    %cl,-0x77(%rax)
+>    b:   e8 48 c1 e8 03          callq  0x3e8c158
+>   10:   42 80 3c 38 00          cmpb   $0x0,(%rax,%r15,1)
+>   15:   74                      .byte 0x74
 
-Why look at the parent and not the device itself?
+There is strong indication that this is a manifestation of the same
+problem we see in other crashes.
+Let's make one canonical bug for this:
 
+#syz dup: general protection fault in perf_misc_flags
