@@ -2,127 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55292784EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE10D2784F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727934AbgIYKUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:20:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44556 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727151AbgIYKUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:20:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601029249;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2iHiA02kRF2jByQlmf9+sx+BoO5AFDD2KF6kzRLN874=;
-        b=iFeurb0w4RCQsf1DQAezYpjuyguBfQqyTsFdhu1bF0Wz+/egLbx+G47ZGlVsU7tX2Kn5o9
-        Vyl5HEQWuN2fh+7oRCw+cKHchpMFTu1AAW5csZ3q76yLlb39eU7lRqp/E0moPcbEJpbkel
-        mXC+WW2T1Q14zNqjcMa1CQ5GmkGrBmI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E4BB4ACBA;
-        Fri, 25 Sep 2020 10:20:48 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 12:20:47 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Mark Salyzyn <salyzyn@android.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Changki Kim <changki.kim@samsung.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/2] printk: Add more information about the printk caller
-Message-ID: <20200925102047.GO29288@alley>
-References: <20200923135617.27149-1-pmladek@suse.com>
- <20200923135617.27149-3-pmladek@suse.com>
- <20200924042414.GA6039@lx-t490>
- <20200924125259.GC29288@alley>
- <20200924133850.GF29288@alley>
- <20200925005400.GD541@jagdpanzerIV.localdomain>
+        id S1728143AbgIYKWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727520AbgIYKWL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 06:22:11 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD36C0613CE;
+        Fri, 25 Sep 2020 03:22:11 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id z19so2719765pfn.8;
+        Fri, 25 Sep 2020 03:22:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2lbFg3EfTPubbbEXQCNv75JEtnNzJ5GMo5FQjXXg9gA=;
+        b=LSfij8cmE3SRXNOnYNmnoAglcEmSbiz26Yt8p3PrMrnltuSQMEETYBvnz2dbFpghvt
+         AqCs5GPJklKK/M1+st7P0ufNsiWQA0W1DLTTli3fHd8cF2PxThflC3I5x7fhxs53HZx/
+         zeyiwKAPpDDrCdOshiLl7/CNwimYcxJCi/gf1AMqIQv4RMVsCGXyR1x8f0ko78aYEorx
+         5h+wz6H6JdDA/GL2/A2b9lrMahTR5nD2vice+RxkSR7vyveSymLn3YrkLHGHWaOygIwO
+         6GmXGHCJT7L6+ZLPyhfeOp1zsiogdSDdEvEPWbpRrgYX1BxJEG8RQqLhzl0SBbhWM1Kr
+         P7EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2lbFg3EfTPubbbEXQCNv75JEtnNzJ5GMo5FQjXXg9gA=;
+        b=j3Rv4pOwt2Hdlm7Gf7Mp0fvw4SvectYZ/91nfa5vebfjfjZ9vOr/4Cvl0c8xSh3rOR
+         LsWdOj69gz/XQI/B7EKfr32FIERW7NJPXTYegWBHILMVSNAbb3/9Aewi3obAzHORUvxM
+         E8Xn9RwF3LQx1F0jS1jzE7xe7T1vcoBSpF5TOB4vboarz1/dKRH1+72/Hq7xiGXv0YiP
+         qh5rO4vDCbDuum8JvPBZQVbQqU4LaCNgoXQTXBPNsDemOyz5RjMPD+o72X3UGazJgssH
+         A8YvbljZLam1vDWec0GVcJUwC6o1MRhvKqt0lsa04ytnN03zPkBeVHKmPcvzPX1AtF6L
+         cWLg==
+X-Gm-Message-State: AOAM531vTM3FnwSBwaabSKE6meRednFnnDYZXMvAHkZLhdP5hJjBJpyh
+        EBM+X64woW44nhowMV7wBtGlPzTvji6RS6CdONs=
+X-Google-Smtp-Source: ABdhPJzYlM8hV0nt13kMb7p2rnKTLsPzywseTL+BVDG3rpzy9n7kySSls2sU3iDbAEm+9utxauJoCMzVwRpkG/6HZLg=
+X-Received: by 2002:aa7:9201:0:b029:13e:d13d:a10c with SMTP id
+ 1-20020aa792010000b029013ed13da10cmr3305770pfo.40.1601029330528; Fri, 25 Sep
+ 2020 03:22:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925005400.GD541@jagdpanzerIV.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200925095406.27834-1-vee.khee.wong@intel.com>
+In-Reply-To: <20200925095406.27834-1-vee.khee.wong@intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 25 Sep 2020 13:21:52 +0300
+Message-ID: <CAHp75VeMJXRhx2FrsRur4e9OLXodmXh5Krj_n6PosuJx6MD=Zg@mail.gmail.com>
+Subject: Re: [PATCH net 1/1] net: stmmac: Fix clock handling on remove path
+To:     Wong Vee Khee <vee.khee.wong@intel.com>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ong Boon Leong <boon.leong.ong@intel.com>,
+        Voon Wei Feng <weifeng.voon@intel.com>,
+        Vijaya Balan Sadhishkhanna 
+        <sadhishkhanna.vijaya.balan@intel.com>,
+        Seow Chen Yong <chen.yong.seow@intel.com>,
+        Mark Gross <mgross@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-09-25 09:54:00, Sergey Senozhatsky wrote:
-> On (20/09/24 15:38), Petr Mladek wrote:
-> [..]
-> >
-> > Grrrr, I wonder why I thought that in_irq() covered also the situation
-> > when IRQ was disabled. It was likely my wish because disabled
-> > interrupts are problem for printk() because the console might
-> > cause a softlockup.
-> 
-> preempt_disable() can also trigger softlockup.
-> 
-> > in_irq() actually behaves like in_serving_softirq().
-> >
-> > I am confused and puzzled now. I wonder what contexts are actually
-> > interesting for developers.  It goes back to the ideas from Sergey
-> > about preemption disabled, ...
-> 
-> Are we talking about context tracking for LOG_CONT or context on
-> the serial console and /dev/kmsg?
+On Fri, Sep 25, 2020 at 12:54 PM Wong Vee Khee <vee.khee.wong@intel.com> wrote:
+>
+> While unloading the dwmac-intel driver, clk_disable_unprepare() is
+> being called twice in stmmac_dvr_remove() and
+> intel_eth_pci_remove(). This causes kernel panic on the second call.
+>
+> Removing the second call of clk_disable_unprepare() in
+> intel_eth_pci_remove().
 
-OK, it is clear that LOG_CONT need to know when a different code
-is called suddenly. I mean task code vs. an interrupt handler.
+Thanks! I'm not sure how I missed this...
 
-But it was actually also the original purpose of the caller_id.
-AFAIK, people wanted to sort related messages when they were mixed
-with ones from other CPUs.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-
-> If the latter, then my 5 cents, is that something like preemptible(),
-> which checks
-> 
-> 	(preempt_count() == 0 && !irqs_disabled())
-> 
-> does not look completely unreasonable.
-> 
-> We had a rather OK context tracking in printk() before, but for a
-> completely different purpose:
-> 
->        console_may_schedule = !oops_in_progress &&
->                        preemptible() &&
->                        !rcu_preempt_depth();
-> 
-> We know that printk() can cause RCU stalls [0]. Tracking this part
-> of the context state is sort of meaningful.
-> 
-> Let's look at this from this POV - why do we add in_irq()/etc tracking
-> info? Perhaps because we want to connect the dots between printk() caller
-> state and watchdog reports. Do we cover all watchdogs? No, I don't think
-> so. RCU stalls, local_irq_disable(), preempt_disable() are not covered.
-
-I agree that it would be handy to see this context as well. It might
-make it easier when hunting down various lockups and stall. But
-I have some concerns.
-
-First, the information is not always reliable (PREEMPT_NONE). I wonder
-if it might cause more harm than good. People might get confused
-or they might want to fix it by some crazy printk code.
-
-Second, the information might not be detailed enough. Many lockups
-depends on the fact that a particular lock is held. Backtraces
-are likely more important. Or people would need to distinguish
-many contexts. It would require another complex code.
+> Fixes: 09f012e64e4b ("stmmac: intel: Fix clock handling on error and remove paths")
+> Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Voon Weifeng <weifeng.voon@intel.com>
+> Signed-off-by: Wong Vee Khee <vee.khee.wong@intel.com>
+> ---
+>  drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> index 2ac9dfb3462c..9e6d60e75f85 100644
+> --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
+> @@ -653,7 +653,6 @@ static void intel_eth_pci_remove(struct pci_dev *pdev)
+>
+>         pci_free_irq_vectors(pdev);
+>
+> -       clk_disable_unprepare(priv->plat->stmmac_clk);
+>         clk_unregister_fixed_rate(priv->plat->stmmac_clk);
+>
+>         pcim_iounmap_regions(pdev, BIT(0));
+> --
+> 2.17.0
+>
 
 
-I am not sure that this is woth it. After all, it might be enough
-to distinguish the 4 basic contexts just to allow sorting mixed
-messages.
-
-Best Regards,
-Petr
+-- 
+With Best Regards,
+Andy Shevchenko
