@@ -2,103 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82C9278C63
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241DA278C6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729129AbgIYPUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:20:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33412 "EHLO
+        id S1729170AbgIYPVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728654AbgIYPUE (ORCPT
+        with ESMTP id S1728750AbgIYPVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:20:04 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065A5C0613CE;
-        Fri, 25 Sep 2020 08:20:04 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id u126so3099630oif.13;
-        Fri, 25 Sep 2020 08:20:03 -0700 (PDT)
+        Fri, 25 Sep 2020 11:21:30 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E43CC0613CE;
+        Fri, 25 Sep 2020 08:21:30 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id 7so2841997pgm.11;
+        Fri, 25 Sep 2020 08:21:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=OAz96dzZAfm+2IsbvC6/JC7wz7Vim1MaFIU86o+xxBc=;
-        b=bkype4lDtQu8pRj6WfmiXQPUW+sj2sSQKx24pH0BxTPiqKHNS4T2ysAtgj+b95adKv
-         f0L49bmor4OFG/JEmdpiZoQRV2z/NK6jrngYQaHjcUXP2UcNxfbeinh6US+vEw2towrz
-         KId04bKS0LtZQ7nIEeSlSuzKskFQhQKpav35kZmiRQ17cdS7Ih5vE8XjQc/YuYFmpQSs
-         rfJbRuNGZ1ZSLYwRC+HyMQQYRNejMaTFg47BzoM5MuWtIcQXHh9mB1C5XQaz57lVnzxG
-         M2XJdtUBa3/4op50EiwxaBJf5tHBlPFl1dbXT3hISOPJ7HG77WS0gt3Cb4tDEvjSdptY
-         8fOw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfdKNxFN//fHQRteZ3ano4yEULisk9Ub6ql9G5B3xNA=;
+        b=oxe8hyB3SWoORMJx2Fg35b7spl30TjSgnbPZjGJVk6sS6rhFD96ISWOevGjmuBDi4N
+         DhzBdjFTeeK67b7waaPtxuVSbKdGK8HdpJOFCGyynvcNzRYBPNca4DN4/QsM7ooGZrcd
+         WsP/Ajt4zhN+5EwGmgbbP9cP5gG7CD7lmEy26yf4q6X7px4QGiODop3OJfN3oH3nMg0L
+         G/jwVvERTuCU8LKLqUatu0st4i/C6Vurd/9+ofCYqTd8TEs4wF0SE/YXQFYjrcdhPbmA
+         wWIhrFBSL2rrJeGLzJeZtp/DPD5aWDotB4wQEOlGucBFRp/ogUnRhAFcsBIfZW7BM7tH
+         DVaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=OAz96dzZAfm+2IsbvC6/JC7wz7Vim1MaFIU86o+xxBc=;
-        b=YLNDy5kEisgKXDbXGI5VSUmZ2QWEV2Rb+ltHxjuRI5WIgUH8iwXhxebIuWE2uI4/Hd
-         MRkPrlHWXAQrDBi3xab+3aTfZVkhjlsEv2hQ2VprvmEQXDZo7ypchTR51wDYGoM5fTGU
-         NDTUJhQh8wcdNC6YiQ4sZwfezwLtR2M+vM/R5p307Gt2UDPB8N3y+P8duyLPehfaVHxo
-         1+iCH1+/L051hppUCalBbFLMWpaxNV6Ac0CvqQ/9Fcqn3gbhbYtsZvNP0iVviSoQTUqk
-         GBEQDp9QKrjfUZpru+UsJtFaLjne5oMzj424pXfhIbTE0l7WcnSune1c18q1kJL2lt+y
-         D5Dg==
-X-Gm-Message-State: AOAM531y2yGLiDEFQrx7VUn/CoO830ReLgRtYRaW6dT3kd/qlf4JWL5d
-        v3nZv5sCwwnQIQgAuqhkrPY=
-X-Google-Smtp-Source: ABdhPJxr625Iuk10y+rqyxSf4pr0wUa75eDXBc27X9CAnPokzupWPQnmgPcYyJ2e+9oCEnyjzADR1A==
-X-Received: by 2002:a05:6808:a05:: with SMTP id n5mr566305oij.154.1601047203447;
-        Fri, 25 Sep 2020 08:20:03 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g22sm709668ots.35.2020.09.25.08.20.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 25 Sep 2020 08:20:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 25 Sep 2020 08:20:00 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     rjw@rjwysocki.net, bp@alien8.de, x86@kernel.org,
-        tony.luck@intel.com, lenb@kernel.org, daniel.lezcano@linaro.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, ulf.hansson@linaro.org,
-        paulmck@kernel.org, tglx@linutronix.de, naresh.kamboju@linaro.org
-Subject: Re: [RFC][PATCH 4/4] acpi: Take over RCU-idle for C3-BM idle
-Message-ID: <20200925152000.GA171076@roeck-us.net>
-References: <20200915103157.345404192@infradead.org>
- <20200915103806.479637218@infradead.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HfdKNxFN//fHQRteZ3ano4yEULisk9Ub6ql9G5B3xNA=;
+        b=IaatSI7Tr13aXBMMkox3D5r+C/U9tgt/vhJcH223OsoeUIZe4UIaGaRokTwtbc+ZEe
+         B2n1K5ngXfOrB/7WXqdGxDbmU8Pgw0qu/QsHGjnWcIrzKL9hq1PWsZDbMM/9fLbc773S
+         kZ7z3qHZprbccIp1MvbUGBAEOxdSUIZGm24lePNvfjR0JuMHUEykeF3V0rNyMaYQW+3E
+         L+zteHdufkjbEVeS5ZFRBQXILxZka+++7G5QelFQC3lW8WlWiocp1qXjA/hyopXVV3Da
+         0f1BdxF5yPF2COsdFT7NDUdlulbcfQgJAgplkhJV/dsMRzEGPTnyyUgDcsY+f+bsLpZI
+         JkWQ==
+X-Gm-Message-State: AOAM5313HbWbVE6X3LNXalQM0utqxf1/qshGOwK1kdg179j4dO0B7UXC
+        tVvXiq9G4qo86j44mTh2DD2PqXOO1JFi8g==
+X-Google-Smtp-Source: ABdhPJx3SX4VU6qPahtPnpvBQkwftTxqRgX/Y/NQGT9VlhrynmpafqUBKJ6pXMXIuzy3KtKBOY9G1Q==
+X-Received: by 2002:a17:902:9698:b029:d1:9492:745b with SMTP id n24-20020a1709029698b02900d19492745bmr5152587plp.26.1601047289728;
+        Fri, 25 Sep 2020 08:21:29 -0700 (PDT)
+Received: from localhost.localdomain (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id gf12sm2323324pjb.16.2020.09.25.08.21.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 08:21:28 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Sedat Dilek <sedat.dilek@gmail.com>,
+        clang-built-linux@googlegroups.com (open list:CLANG/LLVM BUILD SUPPORT),
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION)
+Subject: [PATCH] Documentation/llvm: Fix clang target examples
+Date:   Fri, 25 Sep 2020 08:21:14 -0700
+Message-Id: <20200925152121.20527-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915103806.479637218@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 15, 2020 at 12:32:01PM +0200, Peter Zijlstra wrote:
-> The C3 BusMaster idle code takes lock in a number of places, some deep
-> inside the ACPI code. Instead of wrapping it all in RCU_NONIDLE, have
-> the driver take over RCU-idle duty and avoid flipping RCU state back
-> and forth a lot.
-> 
-> ( by marking 'C3 && bm_check' as RCU_IDLE, we _must_ call enter_bm() for
->   that combination, otherwise we'll loose RCU-idle, this requires
->   shuffling some code around )
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+clang --target=<triple> is how we can specify a particular toolchain
+triple to be use, fix the two occurences in the documentation.
 
-ia64:defconfig:
+Fixes: fcf1b6a35c16 ("Documentation/llvm: add documentation on building w/ Clang/LLVM")
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ Documentation/kbuild/llvm.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-ERROR: modpost: "rcu_idle_enter" [drivers/acpi/processor.ko] undefined!
-ERROR: modpost: "rcu_idle_exit" [drivers/acpi/processor.ko] undefined!
+diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+index 334df758dce3..dae90c21aed3 100644
+--- a/Documentation/kbuild/llvm.rst
++++ b/Documentation/kbuild/llvm.rst
+@@ -39,10 +39,10 @@ which can help simplify cross compiling. ::
+ 	ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make CC=clang
+ 
+ ``CROSS_COMPILE`` is not used to prefix the Clang compiler binary, instead
+-``CROSS_COMPILE`` is used to set a command line flag: ``--target <triple>``. For
++``CROSS_COMPILE`` is used to set a command line flag: ``--target=<triple>``. For
+ example: ::
+ 
+-	clang --target aarch64-linux-gnu foo.c
++	clang --target=aarch64-linux-gnu foo.c
+ 
+ LLVM Utilities
+ --------------
+-- 
+2.25.1
 
-I realize that this has already been reported more than a week ago, with
-no visible reaction. Another problem introduced in the same file, resulting
-in
-
-drivers/acpi/processor_idle.c: In function 'lapic_timer_needs_broadcast':
-drivers/acpi/processor_idle.c:179:1: warning:
-	no return statement in function returning non-void
-
-may cause ia64 boot problems since a non-zero return value will trigger
-a function call. AFAICS that is not supposed to happen on ia64.
-
-This makes me wonder - if no one cares about buiding (much less running)
-ia64 images with the upstream kernel, is it possibly time to remove it ?
-
-Guenter
