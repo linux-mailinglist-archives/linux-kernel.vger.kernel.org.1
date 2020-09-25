@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B3EE2790CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFF7279104
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 20:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729958AbgIYSgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 14:36:08 -0400
-Received: from smtprelay0221.hostedemail.com ([216.40.44.221]:33710 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729920AbgIYSgI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 14:36:08 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 0386C5010;
-        Fri, 25 Sep 2020 18:36:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3867:3872:3873:4321:5007:6120:10004:10400:10848:11026:11232:11657:11658:11914:12043:12048:12297:12438:12679:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21451:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: story36_0500f6027169
-X-Filterd-Recvd-Size: 1695
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf14.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 25 Sep 2020 18:36:05 +0000 (UTC)
-Message-ID: <4d9210df1c70dfa9a2de4372252d90f039cfe480.camel@perches.com>
-Subject: Re: [PATCH RFT/RFC v2 11/47] staging: media: zoran: zoran_device.c:
- convert pr_x to pci_x
-From:   Joe Perches <joe@perches.com>
-To:     Corentin Labbe <clabbe@baylibre.com>, gregkh@linuxfoundation.org,
-        mchehab@kernel.org, hverkuil@xs4all.nl,
-        laurent.pinchart@ideasonboard.com
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org
-Date:   Fri, 25 Sep 2020 11:36:03 -0700
-In-Reply-To: <1601058657-14042-12-git-send-email-clabbe@baylibre.com>
-References: <1601058657-14042-1-git-send-email-clabbe@baylibre.com>
-         <1601058657-14042-12-git-send-email-clabbe@baylibre.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S1729614AbgIYSpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 14:45:40 -0400
+Received: from one.firstfloor.org ([193.170.194.197]:41384 "EHLO
+        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726401AbgIYSpk (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 14:45:40 -0400
+X-Greylist: delayed 563 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 14:45:39 EDT
+Received: by one.firstfloor.org (Postfix, from userid 503)
+        id 5723A867DA; Fri, 25 Sep 2020 20:36:15 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
+        s=mail; t=1601058975;
+        bh=uy3Spl8pHcJe91IvAvg/89FyMbUxeI3OW+LkxFGW5TQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EiNiWhnoVSyE96tuthQ4FHdc3+ba22T1PlRB5dKkczDA/snzhzwMTRpkiOpgIOhoU
+         W/bS+EnZRO/36unJwgHcXutp5wCwC9F9VX3HZp48+nwaazh6uy+l1A/78ecMGJLl6/
+         3myblR0G9+vigzzllKXkdsgn08XtT+JhSZgJrbKs=
+Date:   Fri, 25 Sep 2020 11:36:15 -0700
+From:   Andi Kleen <andi@firstfloor.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     "Jin, Yao" <yao.jin@linux.intel.com>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>,
+        Kan Liang <kan.liang@intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH v2 1/2] perf vendor events: Update CascadelakeX events to
+ v1.08
+Message-ID: <20200925183614.czoqgq2kcttzfm2g@two.firstfloor.org>
+References: <20200922031918.3723-1-yao.jin@linux.intel.com>
+ <20200922031918.3723-2-yao.jin@linux.intel.com>
+ <20200922194232.GA2505291@kernel.org>
+ <4db737f2-0705-5183-6971-9031acfd123b@linux.intel.com>
+ <20200925180527.GA2883319@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925180527.GA2883319@kernel.org>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-09-25 at 18:30 +0000, Corentin Labbe wrote:
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-[]
-> diff --git a/drivers/staging/media/zoran/zoran_device.c b/drivers/staging/media/zoran/zoran_device.c
-[]
-> @@ -198,15 +198,14 @@ void detect_guest_activity(struct zoran *zr)
-[]
->  	for (i = 0; i < j; i++)
-> -		pr_info("%s: %6d: %d => 0x%02x\n", ZR_DEVNAME(zr),
-> -			change[i][0], change[i][1], change[i][2]);
+> Thanks, it now works, but then... You forgot to add the Cc: entries for
+> all the people in your actual e-mail Cc: list, and also the
+> Reviewed-by: from Andy, I had to do it all manually, so when I applied
+> your attachments with 'git am' I needed to go on and manually collect
+> all the Cc, Reviewed-by and Acked-by tags.
 
+For the event updates we should just use git pulls in my opinion.
 
-> +		pci_info(zr->pci_dev, "%6d: %d => 0x%02x\n", change[i][0], change[i][1], change[i][2]);
+They are just too large for the normal review procedures, and usually
+don't really benefit much from community review anyways because they
+are essentially hardware documentation.
 
-IMO: this change does little for readability or makes it worse.
-Can you please keep to 80 columns where it's already 80 columns?
+Should just name intel / amd / etc. event list maintainers and you
+could accept pulls from them.
 
-
+-Andi
