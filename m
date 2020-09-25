@@ -2,106 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6AA2783FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:29:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49636278402
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727936AbgIYJ3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:29:51 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14994 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726255AbgIYJ3u (ORCPT
+        id S1727950AbgIYJaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727535AbgIYJaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:29:50 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08P9COZj018692;
-        Fri, 25 Sep 2020 05:29:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=NguD6eXwu//VK1apBm8csu5L/BvCEbdbw9lIW1PzOjM=;
- b=ooU7cx63NTZ9Vl/t7hU0pJBjhMzwydhCmhKXKUujpnk61tnA8gpdXHjSqeKpojS/84Zz
- bOlVAaGuf+DKNHvd//9SB3BD/cIDk9UcEOzFJtlY47OweX+LqvBz0OWWJqSbZxrl4a7H
- oMw1BxYWQ6ZOR7Wy+7S5pXrVnPtE52R4gGqtDtcEHzf9dR1rz2ECCkmRZU5/zz8zp4IX
- CTjGPKMXXkur6clekF83rKzjzvE5AYHDxu743TCJbZcR9Pn4P7SduIMwfEYT1jKzDqtt
- oVS+cG1hTK35ui86KpjCT8b395Z0ci43um+pyp+q3o2pJD0mkvstaEoqGqSedzZJkDrh jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33sdq9rf5w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Sep 2020 05:29:49 -0400
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08P9OEZp059160;
-        Fri, 25 Sep 2020 05:29:48 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33sdq9rf53-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Sep 2020 05:29:48 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08P9H2ue001502;
-        Fri, 25 Sep 2020 09:29:46 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 33n9m8e47x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Sep 2020 09:29:46 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08P9Thq627460070
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Sep 2020 09:29:43 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BA1E311C052;
-        Fri, 25 Sep 2020 09:29:43 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 009B211C05B;
-        Fri, 25 Sep 2020 09:29:43 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.53.230])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 25 Sep 2020 09:29:42 +0000 (GMT)
-Date:   Fri, 25 Sep 2020 11:29:41 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v10 05/16] s390/vfio-ap: implement in-use callback for
- vfio_ap driver
-Message-ID: <20200925112941.71589591.pasic@linux.ibm.com>
-In-Reply-To: <20200821195616.13554-6-akrowiak@linux.ibm.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
-        <20200821195616.13554-6-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Fri, 25 Sep 2020 05:30:04 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07611C0613CE;
+        Fri, 25 Sep 2020 02:30:04 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id k8so2619173pfk.2;
+        Fri, 25 Sep 2020 02:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=njuKnzjM1XbkGHdVLOoKdb5c4Qn0ofNq9S9KwUbkq6w=;
+        b=MXqLK/NjBAfx6dPwfwUBsQkW3e5I1SI1Rg34aYxvpU2In+TP/Tk5T+p4w/NCUXbD9Q
+         fwvBexwllzRw/qjVmJzstwLqpgXatja7mEIU6rx5lnDytAcn0mU3AhlXVBZpYf69lN9F
+         4LbtezU94x33cxITq4VfuWXhihgdGtSPnCRiK/dmQcoVv5ltSN/g1wBd7stCt8q7NLSr
+         4oKjMm3y58m6hjC9yExBq1himVKM4tRIaYiXyOESiY/NGtZOaWJo2lqKV2w8h3rSHhnI
+         fnyzyq7QlBcOfsw3O/0pmYQWQ2MRBpfw/u6Mxxrc6+oDoNVqQq29QWf/J4/nl436Uj2v
+         igaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=njuKnzjM1XbkGHdVLOoKdb5c4Qn0ofNq9S9KwUbkq6w=;
+        b=nrLpwmS3nRxol0n8vCyGZA0K/k4LCQ48VzSrqqNAQiGBdHKZPkuGoKoMU1kCUaQRMo
+         3ERRxLpoinDinje8iwvCS5ZHzLPsDebQoaXI/H/2fdvM/ou1H9ahErBfQ8y7JbwXYkBj
+         CI81Qq465io+vLsfMcOETEzuzTIGo7A2Bbxt3a/cRRyHnh+pCD1xLm+ol80PuS6fn3q0
+         U5BdbiNDgYVUKHZUJ8Gt/er4JbaoLqXtGc0l+iBhMBlRqZzQD0cZXZbHklj5nuKba21Q
+         831cNXF2yWfZFuTHkXz3tpsJabN0LPvvQnvb+hToWGgwoAnkm0xGyYmwunhoMrnRAtUt
+         fQVQ==
+X-Gm-Message-State: AOAM532vWtDv7862D5JDkrEpJmwHKpftq6kiETMrfbbTf2QlJUpVml1B
+        kxte5qis7DBLhoJmiew79rxXgjcjEEIkZml3IHg=
+X-Google-Smtp-Source: ABdhPJyFoDjI+Lj09DYic41xsSzC3rmiR3KE3jBfV92lPrpC2h1Ga6l1MDN/00ywFSoBy8sV7nlzIF0rOVQK3VxgTX8=
+X-Received: by 2002:a17:902:c14c:b029:d2:4345:5a9 with SMTP id
+ 12-20020a170902c14cb02900d2434505a9mr3519072plj.0.1601026203296; Fri, 25 Sep
+ 2020 02:30:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-25_02:2020-09-24,2020-09-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
- mlxscore=0 impostorscore=0 adultscore=0 bulkscore=0 clxscore=1015
- lowpriorityscore=0 spamscore=0 mlxlogscore=787 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009250059
+References: <20200924192455.2484005-1-j.neuschaefer@gmx.net> <20200924192455.2484005-4-j.neuschaefer@gmx.net>
+In-Reply-To: <20200924192455.2484005-4-j.neuschaefer@gmx.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 25 Sep 2020 12:29:45 +0300
+Message-ID: <CAHp75VdUHPsuvDPLnfP9sM2p1FDiCsjkCf1SSM-y02ZsQxSDWQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/7] mfd: Add base driver for Netronix embedded controller
+To:     =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-pwm@vger.kernel.org,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 15:56:05 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On Thu, Sep 24, 2020 at 10:26 PM Jonathan Neusch=C3=A4fer
+<j.neuschaefer@gmx.net> wrote:
+>
+> The Netronix embedded controller is a microcontroller found in some
+> e-book readers designed by the ODM Netronix, Inc. It contains RTC,
+> battery monitoring, system power management, and PWM functionality.
+>
+> This driver implements register access and version detection.
+>
+> Third-party hardware documentation is available at:
+>
+>   https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-cont=
+roller
+>
+> The EC supports interrupts, but the driver doesn't make use of them so
+> far.
 
-> +
-> +bool vfio_ap_mdev_resource_in_use(unsigned long *apm, unsigned long *aqm)
+...
+
+> +#include <asm/unaligned.h>
+
+This usually goes after linux/*.h
+(and actually not visible how it's being used, but see below first)
+
+> +#include <linux/delay.h>
+> +#include <linux/errno.h>
+> +#include <linux/i2c.h>
+> +#include <linux/mfd/core.h>
+> +#include <linux/mfd/ntxec.h>
+> +#include <linux/module.h>
+> +#include <linux/pm.h>
+> +#include <linux/reboot.h>
+> +#include <linux/regmap.h>
+> +#include <linux/types.h>
+
+...
+
+> +static void ntxec_poweroff(void)
 > +{
-> +	bool in_use;
-> +
-> +	mutex_lock(&matrix_dev->lock);
-> +	in_use = !!vfio_ap_mdev_verify_no_sharing(NULL, apm, aqm);
-> +	mutex_unlock(&matrix_dev->lock);
+> +       int res;
+> +       u8 buf[] =3D {
+> +               NTXEC_REG_POWEROFF,
 
-See also my comment for patch 4. AFAIU as soon as you release the lock
-the in_use may become outdated in any moment.
+> +               (NTXEC_POWEROFF_VALUE >> 8) & 0xff,
+> +               NTXEC_POWEROFF_VALUE & 0xff,
 
+'& 0xff' parts are redundant. *u8 implies that. Fix in all cases.
+Also I would rather see something like
+
+  buf[0] =3D _POWEROFF;
+  put_unaligned_be16(_VALUE, &buf[1]);
+
+to explicitly show the endianess of the register values.
+
+> +       };
+> +       struct i2c_msg msgs[] =3D {
+> +               {
+> +                       .addr =3D poweroff_restart_client->addr,
+> +                       .flags =3D 0,
+> +                       .len =3D sizeof(buf),
+
+> +                       .buf =3D buf
+
+It's slightly better to keep trailing commas in cases like this.
+
+> +               }
+> +       };
 > +
-> +	return in_use;
+> +       res =3D i2c_transfer(poweroff_restart_client->adapter, msgs, ARRA=
+Y_SIZE(msgs));
+> +       if (res < 0)
+
+> +               dev_alert(&poweroff_restart_client->dev,
+> +                         "Failed to power off (err =3D %d)\n", res);
+
+alert? This needs to be explained.
+
+> +       /*
+> +        * The time from the register write until the host CPU is powered=
+ off
+> +        * has been observed to be about 2.5 to 3 seconds. Sleep long eno=
+ugh to
+> +        * safely avoid returning from the poweroff handler.
+> +        */
+> +       msleep(5000);
 > +}
+> +
+> +static int ntxec_restart(struct notifier_block *nb,
+> +                        unsigned long action, void *data)
+> +{
+> +       int res;
+> +       /*
+> +        * NOTE: The lower half of the reset value is not sent, because s=
+ending
+> +        * it causes an error
+
+Why? Any root cause? Perhaps you need to send 0xffff ?
+
+> +        */
+> +       u8 buf[] =3D {
+> +               NTXEC_REG_RESET,
+
+> +               (NTXEC_RESET_VALUE >> 8) & 0xff,
+
+Here you may still use put_unaligned_be16() but move the comment to be
+before len hardcoded to sizeof(buf) - 1.
+
+> +       };
+> +       struct i2c_msg msgs[] =3D {
+> +               {
+> +                       .addr =3D poweroff_restart_client->addr,
+> +                       .flags =3D 0,
+> +                       .len =3D sizeof(buf),
+> +                       .buf =3D buf
+> +               }
+> +       };
+> +
+> +       res =3D i2c_transfer(poweroff_restart_client->adapter, msgs, ARRA=
+Y_SIZE(msgs));
+> +       if (res < 0)
+> +               dev_alert(&poweroff_restart_client->dev,
+> +                         "Failed to restart (err =3D %d)\n", res);
+> +
+> +       return NOTIFY_DONE;
+> +}
+
+...
+
+> +static int ntxec_probe(struct i2c_client *client)
+> +{
+> +       struct ntxec *ec;
+> +       unsigned int version;
+> +       int res;
+> +
+> +       ec =3D devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
+> +       if (!ec)
+> +               return -ENOMEM;
+> +
+> +       ec->dev =3D &client->dev;
+> +
+> +       ec->regmap =3D devm_regmap_init_i2c(client, &regmap_config);
+> +       if (IS_ERR(ec->regmap)) {
+> +               dev_err(ec->dev, "Failed to set up regmap for device\n");
+> +               return res;
+> +       }
+> +
+> +       /* Determine the firmware version */
+> +       res =3D regmap_read(ec->regmap, NTXEC_REG_VERSION, &version);
+> +       if (res < 0) {
+> +               dev_err(ec->dev, "Failed to read firmware version number\=
+n");
+> +               return res;
+> +       }
+
+> +       dev_info(ec->dev,
+> +                "Netronix embedded controller version %04x detected.\n",
+> +                version);
+
+This info level may confuse users if followed by an error path.
+
+> +       /* Bail out if we encounter an unknown firmware version */
+> +       switch (version) {
+> +       case 0xd726: /* found in Kobo Aura */
+> +               break;
+> +       default:
+> +               return -ENODEV;
+> +       }
+> +
+> +       if (of_device_is_system_power_controller(ec->dev->of_node)) {
+> +               /*
+> +                * Set the 'powerkeep' bit. This is necessary on some boa=
+rds
+> +                * in order to keep the system running.
+> +                */
+> +               res =3D regmap_write(ec->regmap, NTXEC_REG_POWERKEEP,
+> +                                  NTXEC_POWERKEEP_VALUE);
+> +               if (res < 0)
+> +                       return res;
+
+> +               WARN_ON(poweroff_restart_client);
+
+WARN_ON? All these alerts, WARNs, BUGs must be explained. Screaming to
+the user is not good if it wasn't justified.
+
+> +               poweroff_restart_client =3D client;
+> +               if (pm_power_off)
+> +                       dev_err(ec->dev, "pm_power_off already assigned\n=
+");
+> +               else
+> +                       pm_power_off =3D ntxec_poweroff;
+> +
+> +               res =3D register_restart_handler(&ntxec_restart_handler);
+> +               if (res)
+> +                       dev_err(ec->dev,
+> +                               "Failed to register restart handler: %d\n=
+", res);
+> +       }
+> +
+> +       i2c_set_clientdata(client, ec);
+> +
+> +       res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_=
+subdevices,
+> +                                  ARRAY_SIZE(ntxec_subdevices), NULL, 0,=
+ NULL);
+> +       if (res)
+
+> +               dev_warn(ec->dev, "Failed to add subdevices: %d\n", res);
+
+'warn' is inconsistent with 'return err'. Either do not return an
+error, or mark a message as an error one.
+
+And above with the restart handler has the same issue.
+
+> +       return res;
+> +}
+> +
+> +static int ntxec_remove(struct i2c_client *client)
+> +{
+
+> +       if (client =3D=3D poweroff_restart_client) {
+
+When it's not the case?
+
+> +               poweroff_restart_client =3D NULL;
+> +               pm_power_off =3D NULL;
+> +               unregister_restart_handler(&ntxec_restart_handler);
+> +       }
+> +
+> +       return 0;
+> +}
+
+...
+
+> +#include <linux/types.h>
+> +
+
+Missed
+
+struct device;
+struct regmap;
+
+here.
+
+> +struct ntxec {
+> +       struct device *dev;
+> +       struct regmap *regmap;
+> +};
+
+> +/*
+> + * Some registers, such as the battery status register (0x41), are in
+> + * big-endian, but others only have eight significant bits, which are in=
+ the
+> + * first byte transmitted over I2C (the MSB of the big-endian value).
+> + * This convenience function converts an 8-bit value to 16-bit for use i=
+n the
+> + * second kind of register.
+> + */
+> +static inline u16 ntxec_reg8(u8 value)
+> +{
+> +       return value << 8;
+> +}
+
+I'm wondering why __be16 is not used as returned type.
+
+--=20
+With Best Regards,
+Andy Shevchenko
