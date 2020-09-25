@@ -2,122 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992C7278F03
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9185C278F06
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729498AbgIYQsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:48:05 -0400
-Received: from mga01.intel.com ([192.55.52.88]:45354 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727812AbgIYQsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:48:03 -0400
-IronPort-SDR: IGBJdcdLHK/rkTvqrCAOZsnNpD0AbG+qAZydLzSFxtMZ3JRqv4O1cTSfoG4DkkgOPDOYtWQwZG
- PS+qlJ59cpAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="179657363"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="179657363"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 09:48:02 -0700
-IronPort-SDR: XbYr2jPVpT1Wf6fIuRpAKebBnup6ZoThBmfiO9H5MEW0vAntBNX4+b0Tc3QLEpvPIPzUkLk/qB
- wcEFkVXs16qQ==
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="336806828"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.213.161.229]) ([10.213.161.229])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 09:47:59 -0700
-Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect
- Branch Tracking for vsyscall emulation
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>
-References: <20200925145804.5821-1-yu-cheng.yu@intel.com>
- <20200925145804.5821-9-yu-cheng.yu@intel.com>
- <CALCETrXs11c8ZcB2QdWUm5CeCXRm1wo706g5J9ajR8+6yYTgtQ@mail.gmail.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
-Date:   Fri, 25 Sep 2020 09:47:55 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1728524AbgIYQtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:49:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIYQtH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 12:49:07 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985CFC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:49:06 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id y15so4058911wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:49:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KAVHadJMWaOUAME/cTANgTaibLVBRhnV+ozPkRyx2uI=;
+        b=wlDKkuOTF9Ng5bzaN8zpq9oI6NbkUhCn4VjnowPslZgL3DnzYy/Ow7dhZJ2x6Uez//
+         iaTGws471/l4w1oQCG8/M2pOpTJ3BRHIMYAvCD3pqrPsFSag2oWvetn4u9Lsi4tKfYY7
+         6bjOcrA48Pw8KvhCS3yWrEKz9759QAT1ARw+r86265A5jr+phUXwGtPcU277iVc0W3+6
+         xW09moaoce4DkiJrxNJOgu5MSIdgr6xGR3cJ40beJpHwZGb41swD30z+wobyMYgwCaK2
+         OEJQ6bo4XSuOcuyFc1kqvN5u8qbw4HNJ5NE+7M6HqZIhln6CkrGpPfgN8HrjhG3u6ngh
+         Ss4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KAVHadJMWaOUAME/cTANgTaibLVBRhnV+ozPkRyx2uI=;
+        b=poKe9wn9VdokUuszrsJSROtHN3G1Uw5f4Ydeffh1vLhrjMTDV7cO7pwV5EYhLV4etv
+         Af5vKI412/SS6n5dOTOmGVv3RmsRXBFvl0/jPLET+A+qpxWcIJBt7VY4ytLeWPNbfKIy
+         cbt65K5HnMCXadKt91HC7JHD7lO2WDMIF/KxbdUNrFec+76n36uvNLz28lb4wWsJQ8Es
+         ZNROJ3wSssFmDaD/jF7GXj3NdmqCucgWsHgX7YnY3e1CmnxoJ19CUNbSGIAggeJ5oTeq
+         yPy9MOIwP2NB3seZZYvukVSFTzmlHoE9vyNDZtlyP09eQ/X1Q68DVAQg8IlBLEPoAhzh
+         GYWQ==
+X-Gm-Message-State: AOAM533c6jeAmYF3FlW3NBbBef6mO3puC65SdYP0U+bFiMJ0NAbiT6bj
+        z8gRp2gUajYG9Ir57sCeZRggAw==
+X-Google-Smtp-Source: ABdhPJyF9JnvhthbbiF7ViftBxVVevHX8DkysJ5M8eqxXYmL++NqE7FmpiVX7Z6WGHYZD71ptZ7GIQ==
+X-Received: by 2002:a1c:7418:: with SMTP id p24mr4079590wmc.123.1601052545293;
+        Fri, 25 Sep 2020 09:49:05 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id a5sm3604247wrp.37.2020.09.25.09.49.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 09:49:04 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, lgirdwood@gmail.com,
+        perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, srivasam@codeaurora.org,
+        rohitkr@codeaurora.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 0/2] regmap: add support to regmap_field_bulk_alloc/free
+Date:   Fri, 25 Sep 2020 17:48:54 +0100
+Message-Id: <20200925164856.10315-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <CALCETrXs11c8ZcB2QdWUm5CeCXRm1wo706g5J9ajR8+6yYTgtQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/2020 9:31 AM, Andy Lutomirski wrote:
-> On Fri, Sep 25, 2020 at 7:58 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
->>
+Usage of regmap_field_alloc becomes much overhead when number of fields
+exceed more than 3. Most of driver seems to totally covered up with these
+allocs/free making to very hard to read the code! On such driver is QCOM LPASS
+driver has extensively converted to use regmap_fields.
 
-[...]
+This patchset add this new api and a user of it.
 
->> @@ -286,6 +289,37 @@ bool emulate_vsyscall(unsigned long error_code,
->>          /* Emulate a ret instruction. */
->>          regs->ip = caller;
->>          regs->sp += 8;
->> +
->> +#ifdef CONFIG_X86_CET
->> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {
->> +               struct cet_user_state *cet;
->> +               struct fpu *fpu;
->> +
->> +               fpu = &tsk->thread.fpu;
->> +               fpregs_lock();
->> +
->> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
->> +                       copy_fpregs_to_fpstate(fpu);
->> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
->> +               }
->> +
->> +               cet = get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_USER);
->> +               if (!cet) {
->> +                       fpregs_unlock();
->> +                       goto sigsegv;
-> 
-> I *think* your patchset tries to keep cet.shstk_size and
-> cet.ibt_enabled in sync with the MSR, in which case it should be
-> impossible to get here, but a comment and a warning would be much
-> better than a random sigsegv.
+Using new bulk api to allocate fields makes it much more cleaner code to read!
 
-Yes, it should be impossible to get here.  I will add a comment and a 
-warning, but still do sigsegv.  Should this happen, and the function 
-return, the app gets a control-protection fault.  Why not let it fail early?
+Changes since v1:
+	- Fix lot of spelling! No code changes!
 
->
-> Shouldn't we have a get_xsave_addr_or_allocate() that will never
-> return NULL but instead will mark the state as in use and set up the
-> init state if the feature was previously not in use?
-> 
+Srinivas Kandagatla (2):
+  regmap: add support to regmap_field_bulk_alloc/free apis
+  ASoC: lpass-platform: use devm_regmap_field_bulk_alloc
 
-We already have a static __raw_xsave_addr(), which returns a pointer to 
-the requested xstate.  Maybe we can export __raw_xsave_addr(), if that 
-is needed.
+ drivers/base/regmap/regmap.c    | 100 ++++++++++++++++++++++++++++++++
+ include/linux/regmap.h          |  11 ++++
+ sound/soc/qcom/lpass-platform.c |  31 +++-------
+ 3 files changed, 118 insertions(+), 24 deletions(-)
+
+-- 
+2.21.0
+
