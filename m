@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1855D27922B
+	by mail.lfdr.de (Postfix) with ESMTP id F2D4927922D
 	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728643AbgIYUdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:33:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
+        id S1728952AbgIYUdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:33:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727895AbgIYUUw (ORCPT
+        with ESMTP id S1726412AbgIYUUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 25 Sep 2020 16:20:52 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69AE6C0610D1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:01:21 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id h17so3480163otr.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:01:21 -0700 (PDT)
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5A2C0610D4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:02:04 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id c13so4025282oiy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linuxfoundation.org; s=google;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=13KCg8BltWDl2P2uAh3ad/NLBiwXIfX09whbVzH0rhQ=;
-        b=KyhNDaO56Q2soQI8eddWWSj2arCDdVlIbNxWH3hoWS5+yvzk/0luIa9qvWuHK0rnv9
-         SKnK3gNJqqr2o4VHrgQJYBtAEv13wGoBOvFkmsbpPyovJ3p2X30wy/TeL2+/JMWq06DL
-         3Dd+gXXERpr3x5CNIffmI+gaWt0w/kJWodshw=
+        bh=yPWUmplzl0JEFZ6wTsaLsRULKnL6cmReWmOzfl9wStg=;
+        b=H0XLLB7ai21FKXztzG6oRk3OWu8Wgz+E8zpkIQotVbmVSjOm7e3J2dlh8zIIpj8AaG
+         6eX3ds89FL/W+7p696HVWSB3Q6ltHYZTkh2Vhd5hBOq85YIuuz407nnufKAX3z/TWYsH
+         Whgr/lS8Lz4K3vrT1q6wjEjI6C8w0OhM2VRxg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=13KCg8BltWDl2P2uAh3ad/NLBiwXIfX09whbVzH0rhQ=;
-        b=GbYJeZ9t1Kli9MO8ER/yeoQqpw+PRW/uUvXyGKC4un2kFW2dVbneQPLjervaV4Wsky
-         W2lmNwVUac4ar1Nh7B5owTcA5HKYxXiCaTekG4dNGm5ECnauZTYM+659/ZZvVULHDlE2
-         TDML00on7Vx0atR4vdp+Oor7vWhLcXYDKflzxcXhYS955QqWutOyR9zhv9D+3zxn1iVe
-         7hSiZFtepQNGnkuzCpnHKg4AilHAIdrWjUj3Xmbm0dxbD4fGMpb4Wr0B7NWT8pEd5RcV
-         moWRhkUVRQAaMBg5BsOPSZj8E5DMu01dvszMd3fcGo2q9x6x67xmFhPamXmt0+Txu1fM
-         K9Qg==
-X-Gm-Message-State: AOAM5317EzN2YPX20rlviHyEOTdEb4y+o+InCTbt7FmVf6Z5tNrQxNkj
-        ZffmbFnOQW/X09ZZs/5Bh3MeH3yNtY5e1Q==
-X-Google-Smtp-Source: ABdhPJznruHXqFPpZcdEAOlYUYpi2fpDXGv8s1MyHRMedukCmAsm335Q9oinmiVyZZoD5KG2Ymnw4g==
-X-Received: by 2002:a9d:7d16:: with SMTP id v22mr1359470otn.372.1601064080164;
-        Fri, 25 Sep 2020 13:01:20 -0700 (PDT)
+        bh=yPWUmplzl0JEFZ6wTsaLsRULKnL6cmReWmOzfl9wStg=;
+        b=A/PWlukmRlWzbNEQfkSm19KQh7M5zCBJXyNuJYEbXdAYEDtomCRk1KAkq7pvR3GZJq
+         IElJIt6RmQ++2/7nZpf8sxI78eFR5d7CFZgeWcb3zIWGRHXcC6j9cmIUcYtpAVYm7hsI
+         zaekqgPkzJlb13HfkpO41RzBUBVsIGL/L+kfKy4S+A7w2/2r8Nuh14NqaGPyNLoWxJxv
+         wfrMYM3BnyrdAFzhAjA2oxjFvuRmO4LmaqZ/w1hYcwjSxEtjxQ+9Jjtb2b8bbRJ5hkZm
+         W9rvwGD6aSwSAG7hcQ2G636//NPuwfuTkUFkv8Urq3STUpZl8HR6hYW2lZPj9+LW3CLh
+         u2Tw==
+X-Gm-Message-State: AOAM532sfZUspBQBdc8s1Z5DffiJsruo+StOdawpouOivMUS7Fcje6Vx
+        JXuH27u+ahqYxfwbxXIlxjnh2w==
+X-Google-Smtp-Source: ABdhPJzkxSjBb4L2PanG2Uay3xcIoAygUQMF46kpamWYG6B7PV519d8BAIiV/OnHTszDcbbUP3B81g==
+X-Received: by 2002:aca:f05:: with SMTP id 5mr112012oip.173.1601064123563;
+        Fri, 25 Sep 2020 13:02:03 -0700 (PDT)
 Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id i23sm46566oos.17.2020.09.25.13.01.18
+        by smtp.gmail.com with ESMTPSA id p8sm43429oot.29.2020.09.25.13.02.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 13:01:19 -0700 (PDT)
-Subject: Re: [PATCH 5.8 00/56] 5.8.12-rc1 review
+        Fri, 25 Sep 2020 13:02:02 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/43] 5.4.68-rc1 review
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
 Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
@@ -54,14 +54,14 @@ Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
         ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
         pavel@denx.de, stable@vger.kernel.org,
         Shuah Khan <skhan@linuxfoundation.org>
-References: <20200925124727.878494124@linuxfoundation.org>
+References: <20200925124723.575329814@linuxfoundation.org>
 From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <da7b88bb-5e4d-a992-be18-e60e0a75558b@linuxfoundation.org>
-Date:   Fri, 25 Sep 2020 14:01:18 -0600
+Message-ID: <d7e1c0fd-4247-5ecb-9cd7-d1ab383e1f78@linuxfoundation.org>
+Date:   Fri, 25 Sep 2020 14:02:02 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,9 +69,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/25/20 6:47 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.12 release.
-> There are 56 patches in this series, all will be posted as a response
+On 9/25/20 6:48 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.68 release.
+> There are 43 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -79,9 +79,9 @@ On 9/25/20 6:47 AM, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.8.12-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.68-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.8.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
 > and the diffstat can be found below.
 > 
 > thanks,
