@@ -2,162 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C7227943F
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1EC279454
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727355AbgIYWhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:37:00 -0400
-Received: from mga01.intel.com ([192.55.52.88]:7317 "EHLO mga01.intel.com"
+        id S1729140AbgIYWpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:45:07 -0400
+Received: from mga04.intel.com ([192.55.52.120]:53529 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgIYWhA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:37:00 -0400
-IronPort-SDR: I7Qx0bLPtEP4adOzMcNc5nnU5AgKbhWmVYaoNpaHZlDfydqWKAAQWEU3Sh5/5h510aVlz2kOTX
- XlLZq3wai3UA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="179709977"
+        id S1726210AbgIYWpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:45:07 -0400
+IronPort-SDR: 8oNG5lL73a2zMqeLrCsFY6iKaE/OT1r/tyY4b6g4qcPuTl5MTds+L3QWJpuA4JAJQErvTJ8mSB
+ P+5ukRk6gE0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="159019383"
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="179709977"
+   d="scan'208";a="159019383"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:09:18 -0700
-IronPort-SDR: IXVtPX0NNpvi12RT6yA0+ZjIkN14Y5TI1JI77IKFClWOHXNBb11cn+XVOGv70+YcstuUC4HB1s
- wUin9vuHkwfA==
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:43:06 -0700
+IronPort-SDR: 0cmbbxIOq+DRBwDZXU8oN+OtguZDJAfmZzzlqB5HURVs+a31qryQUHYiY8WcGsB/JaPgA3UctT
+ bNXULHS8KJnA==
 X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="455961811"
+   d="scan'208";a="291893055"
 Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:09:18 -0700
-Date:   Fri, 25 Sep 2020 12:09:17 -0700
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 12:43:05 -0700
+Date:   Fri, 25 Sep 2020 12:43:04 -0700
 From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
         Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
+        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
         Nathaniel McCallum <npmccallum@redhat.com>,
-        Cedric Xing <cedric.xing@intel.com>, linux-sgx@vger.kernel.org
-Subject: Re: Can we credibly make vdso_sgx_enter_enclave() pleasant to use?
-Message-ID: <20200925190915.GD31528@linux.intel.com>
-References: <CALCETrUhQjQQa-BqNHPgdDfD9GDJZXJWSQ_M0tDF_ri5RfyTsw@mail.gmail.com>
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
+Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
+Message-ID: <20200925194304.GE31528@linux.intel.com>
+References: <20200924192853.GA18826@linux.intel.com>
+ <c680f7bd-2d82-6477-707f-cd03aae4b4aa@intel.com>
+ <20200924200156.GA19127@linux.intel.com>
+ <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
+ <20200924202549.GB19127@linux.intel.com>
+ <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
+ <20200924230501.GA20095@linux.intel.com>
+ <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
+ <20200925000052.GA20333@linux.intel.com>
+ <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrUhQjQQa-BqNHPgdDfD9GDJZXJWSQ_M0tDF_ri5RfyTsw@mail.gmail.com>
+In-Reply-To: <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
 User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Nathaniel, Cedric and linux-sgx
-
-On Fri, Sep 25, 2020 at 09:55:00AM -0700, Andy Lutomirski wrote:
-> vdso_sgx_enter_enclave() sucks. I don't think anyone seriously likes
-> it, but maybe it's the best we can do.
-
-The code itself sucks, or the API sucks?
-
-For the code, given the constraints of SGX and the number of runtimes we're
-enabling, I don't think it's bad at all.  It's not hard to maintain, there are
-no horrendous hacks, and it doesn't play games with the caller's state, i.e.
-there's no additional magic required.  In other words, I really like that we
-have in hand _works_, and works for a variety of runtimes and their ABIs.
-
-The API isn't glorious, but it's not awful either.
-
-> I'm wondering if it's worth trying to do better.  Here's what I'd like
-> if I could wave a magic wand:
+On Fri, Sep 25, 2020 at 10:18:28AM -0700, Dave Hansen wrote:
+> Thanks for the walkthrough.  The thing that clicked for me seeing those
+> examples was how the earlier ioctl(ADD_PAGE) is "bound" to later
+> enforcement actions at enclave PTE creation time.
 > 
-> struct sgx_enclave_run {
->        __u64 tcs;
->        __u32 flags;
->        __u32 exit_reason;
+> On 9/24/20 5:00 PM, Sean Christopherson wrote:
+> > My concern is that if we merge this
+> > 
+> >         ioctl(sgx_fd, ENCLAVE_ADD_PAGE, SGX_PROT_READ | SGX_PROT_EXEC, ptr, size);
+> > 
+> > without ->mprotect(), we can't actually enforce the declared protections.  And
+> > if we drop the field altogether:
+> > 
+> >         ioctl(sgx_fd, ENCLAVE_ADD_PAGE, ptr, size);
+> > 
+> > then we can't implement security_enclave_load().
 > 
->     /*
->      * These values are exposed to the enclave on entry, and the values
->      * left behind by the enclave are returned here.
->      * Some enclaves might write to memory pointed to by rsp.
->      */
->        __u64 rsp, rbp, r8, r9, r10, r11, r12, r13, r14, r15;
->        /* Maybe other regs too? */
+> To me, it's perfectly OK to have parts of the ABI which are unused.  It
+> sure makes them harder to test if there are no actual users in the code,
+> but if it solves a real problem with the ABI, I'm fine with it.
 > 
->        union {
->                struct sgx_enclave_exception exception;
+> Let's see if I can put all the pieces together.
 > 
->                /* Pad the entire struct to 256 bytes. */
->                __u8 pad[256 - 32];
->        };
-> };
+> Background:
 > 
-> long vdso_sgx_enter_enclave(unsigned int leaf, struct sgx_enclave_run *r);
+> 1. SGX enclave pages are populated with data by copying data to them
+>    from normal memory via: ioctl(sgx_fd, ENCLAVE_ADD_PAGE, src_ptr...);
+> 2. We want to be able to restrict those normal memory data sources.  For
+>    instance, before copying data to an executable enclave page, we might
+>    ensure that the source is executable.
+> 3. Enclave page permissions are dynamic just like normal permissions and
+>    can be adjusted at runtime with mprotect() (along with a
+>    corresponding special instruction inside the enclave)
+> 4. The original data source may have have long since vanished at the
+>    time when enclave page permission are established (mmap() or
+>    mprotect())
 > 
-> No callback, no asm wrapper needed, no nastiness from the perspective
-> of the caller.
+> Solution:
 > 
-> So here are my questions.  First, do people agree with me that this
-> would be better?
+> The solution is to force enclaves creators to declare their intent up
+> front to ioctl(ENCLAVE_ADD_PAGE).  This intent can me immediately
+> compared to the source data mapping (and rejected if necessary).  It is
+> also stashed off and then later compared with enclave PTEs to ensure
+> that any future mmap()/mprotect() operations performed by the enclave
+> creator or the enclave itself are consistent with the earlier declared
+> permissions.
+> 
+> Essentially, this means that whenever the kernel is asked to change an
+> enclave PTE, it needs to ensure the change is consistent with that
+> stashed intent.  There is an existing vm_ops->mmap() hook which allows
+> SGX to do that for mmap().  However, there is no ->mprotect() hook.  Add
+> a vm_ops->mprotect() hook so that mprotect() operations which are
+> inconsistent with any page's stashed intent can be rejected by the driver.
 
-No?
+Yes to all of the above.
 
-From a user perspective, I don't find the callback particularly onerous.
-Avoiding the callback would yield prettier code for the caller, but IMO it
-doesn't fundamentally make the code easier to maintain.  Implementing the
-callback is a one-time cost for a relatively small number of people, and it's
-not even all that difficult to write, especially compared to all the other crud
-that needs to be done to enable SGX.
+> Implications:
+> 
+> However, there is currently no implementation of the intent checks at
+> the time of ioctl(ENCLAVE_ADD_PAGE).
 
-As for requiring assembly to pass state in r10-r15, IMO that's a non-issue as
-it's trivially easy for the runtime/enclave ABI to pass its own params struct,
-e.g. my runtime for testing basically does:
+Correct.
 
-int enter_enclave(const long fn, void *params, tcs_t *tcs)
-{
-	...
+> That means that the intent argument (SGX_PROT_*) is currently unused.
 
-	ret = __enter_enclave(fn, (unsigned long)params, 0, EENTER, 0, 0, &run);
+No, the intent argument is used (eventually) by SGX's ->mprotect()
+implementation, i.e. sgx_mprotect() enforces that the actual protections are a
+subset of the declared/intended protections.
 
-	...
-}
+If ->mprotect() is not merged, then it yes, it will be unused.  And therein
+lies the problem as the kernel can't start using/enforcing the intent without
+breaking userspace.  E.g. an enclave loaded with SGX_PROT_READ but mprotect()'d
+with PROT_READ | PROT_EXEC would break if sgx_mprotect() came along.
 
-where __enter_enclave is a function pointer to the vDSO.  The enclave side
-looks very similar, e.g. there's a small amount of asm trampoline to invoke
-a C function that looks like:
+One way to avoid introducing ->mprotect() would be to require all enclaves to
+declare all pages with READ|WRITE|EXEC.  Then we could drop sgx_mprotect()
+since the mprotect() permissions are guaranteed to be a subset of the declared
+permissions.  That would have the added bonus of eliminating the per-page
+checks in sgx_mmap()/sgx_mprotect(), though I've no idea if that is a
+meaningful optmization or it's lost in the noise.
 
-int eenter_handler(const long fn, void *params, void *tcs, int ssa)
-{
-	...
-}
+The big downside of requiring READ|WRITE|EXEC is that it will make life hell
+for a LSM policy owner if they ever want to apply EXECMEM or EXECMOD style
+restritions on enclaves, i.e. if SELinux folks want to add
+security_enclave_load().
 
-where @params is eventually passed down to the function referenced by @fn.
+I find that I'm more or less ok with that approach, in no small part because
+introducing security_enclave_load() might be a pretty big "if", e.g. security
+folks may decide that they'd rather allow/deny enclaves based on the
+measurement or signer of the enclave and eschew per-page checks entirely.
 
-Actually consuming r10-r15 without assembly of some form is impossible (unless
-there's compiler magic of which I'm unaware).  Not to mention that r10-r15 are
-especially painful to use because they don't have dedicated input/output
-constraints for inline asm.
-
-In other words, I don't see any value in making it easier for the caller to
-pass state in r10-r15 (I'm intentionally omitting r8 and r9, because those can
-be passed as parameters to the vDSO function, I have no idea why we'd want to
-move them into sgx_enclave_run).
-
-So it really comes down to context switching versus using a callback.  Not that
-this is exactly a hot path, but for me having to implement a callback versus
-bloating the vDSO with state save and restore is a mostly a wash.
-
-> Second, could this be implemented in a way that doesn't utterly suck?  The
-> best I've come up with so far is abusing WRFSBASE to shove a little data
-> structure containing the real user RSP or RBP along with the old FSBASE into
-> FSBASE, do EENTER, and then undo the FSBASE dance.  We'd also need some
-> additional exception fixup magic to prevent a signal or ptrace() from
-> observing the intermediate states and getting extremely confused.
-
-But where would the vDSO get memory for that little data structure?  It can't
-be percpu because the current task can get preempted.  It can't be per instance
-of the vDSO because a single mm/process can have multiple tasks entering an
-enclave.  Per task might work, but how would the vDSO get that info?  E.g.
-via a syscall, which seems like complete overkill?
-
-So, no?
-
-If we truly want to provide a "better" vDSO, my vote would be to disallow using
-the runtime's stack from within the enclave.  But I'm guessing that would cause
-more than a few aneurysms for the folks that are cc'd :-)
+> --
+> 
+> Is that all correct?  Did I miss anything?
