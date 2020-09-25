@@ -2,137 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A71927876A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547D527876D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728395AbgIYMkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:40:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47564 "EHLO mail.kernel.org"
+        id S1728450AbgIYMkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:40:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726368AbgIYMkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:40:10 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        id S1728056AbgIYMkr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:40:47 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 07DBA20BED;
-        Fri, 25 Sep 2020 12:40:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C28D620BED;
+        Fri, 25 Sep 2020 12:40:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601037610;
-        bh=DTK6nSsH3y7Fe2xkbY4deWEsnqY2Ru+AcN7lWq/R388=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GykenvZtLLZjgYflxIezKKhQvSAZS0QUDdcxrH0zdmmykNCSL5G3SpDtnpwz1h1KU
-         kXHfVTeQH9ODCfJToCDVqRYvvV0BOt52nZ7qwtbbqkvRvrvakW5Zw1WwviE38stoFy
-         1EoTvYBt+rRIl4zrLMxbALFR7NhIourou2yYEQ6g=
-Date:   Fri, 25 Sep 2020 13:40:05 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Michael Auchter <michael.auchter@ni.com>
-Cc:     Hartmut Knaack <knaack.h@gmx.de>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] dt-bindings: iio: dac: ad5686: add binding
-Message-ID: <20200925134005.288b1b1d@archlinux>
-In-Reply-To: <20200924195215.49443-3-michael.auchter@ni.com>
-References: <20200924195215.49443-1-michael.auchter@ni.com>
-        <20200924195215.49443-3-michael.auchter@ni.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        s=default; t=1601037647;
+        bh=lbRAM6gt8YOIzS1RHPbhz+W/oFIDI97Ar2EVRsYK22c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TFJceVwcnlc0lMAnpnDt0hTA6mDCmckWNAHDfst/rY4ZB5OgbSgKx7qsLIN0ZXrfZ
+         rCz1GLUyDk/sIaUjsvFxfiV1Y7jpaxkc3TwAdm3HW4qC3oPlwk382bD5xCWtRRsfk7
+         EJc/ZiP7OZg8g+qOWeCjiAeldmBwd/3Gtqc97UXo=
+Date:   Fri, 25 Sep 2020 14:41:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] slimbus: core: check get_addr before removing laddr
+ ida
+Message-ID: <20200925124101.GB2732292@kroah.com>
+References: <20200925095520.27316-1-srinivas.kandagatla@linaro.org>
+ <20200925095520.27316-2-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925095520.27316-2-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 14:52:14 -0500
-Michael Auchter <michael.auchter@ni.com> wrote:
-
-> Add a binding for AD5686
+On Fri, Sep 25, 2020 at 10:55:18AM +0100, Srinivas Kandagatla wrote:
+> logical address can be either assigned by the SLIMBus controller or the core.
+> Core uses IDA in cases where get_addr callback is not provided by the
+> controller.
+> Core already has this check while allocating IDR, however during absence
+> reporting this is not checked. This patch fixes this issue.
 > 
-> Signed-off-by: Michael Auchter <michael.auchter@ni.com>
-Hi Michael,
+> Fixes: 46a2bb5a7f7ea("slimbus: core: Add slim controllers support")
 
-Looks good to me, but I've made many a mistake on reviewing these in the past
-so good to get Rob's input if he has time.
+Nit, you need a ' ' before the '(' character...
 
-Thanks,
+Also, you don't need all of those characters, you have 1 more than
+necessary :)
 
-Jonathan
- 
-> ---
-> Changes since v1:
-> - Keep supported device sorted
-> - fix adc -> dac typo in schema path
-> since v2:
-> - drop address-cells and size-cells from binding doc
-> - add "additionalProperties: false"
-> - end with ...
-> 
->  .../bindings/iio/dac/adi,ad5686.yaml          | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> new file mode 100644
-> index 000000000000..8065228e5df8
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> @@ -0,0 +1,57 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iio/dac/adi,ad5686.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices AD5686 and similar multi-channel DACs
-> +
-> +maintainers:
-> +  - Michael Auchter <michael.auchter@ni.com>
-> +
-> +description: |
-> +  Binding for Analog Devices AD5686 and similar multi-channel DACs
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - adi,ad5311r
-> +      - adi,ad5338r
-> +      - adi,ad5671r
-> +      - adi,ad5675r
-> +      - adi,ad5691r
-> +      - adi,ad5692r
-> +      - adi,ad5693
-> +      - adi,ad5693r
-> +      - adi,ad5694
-> +      - adi,ad5694r
-> +      - adi,ad5695r
-> +      - adi,ad5696
-> +      - adi,ad5696r
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  vcc-supply:
-> +    description: |
-> +      The regulator supply for DAC reference voltage.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      ad5686: dac@0 {
-> +        compatible = "adi,ad5686";
-> +        reg = <0>;
-> +        vcc-supply = <&dac_vref>;
-> +      };
-> +    };
-> +...
+I'll go fix it up.
 
+greg k-h
