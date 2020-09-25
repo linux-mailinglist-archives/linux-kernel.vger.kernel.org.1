@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BBC278B13
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820B5278B16
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729054AbgIYOky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:40:54 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:55298 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728612AbgIYOky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:40:54 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kLotu-00GAV3-CH; Fri, 25 Sep 2020 16:40:42 +0200
-Date:   Fri, 25 Sep 2020 16:40:42 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Willy Liu <willy.liu@realtek.com>
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, fancer.lancer@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ryankao@realtek.com,
-        kevans@FreeBSD.org
-Subject: Re: [PATCH net] net: phy: realtek: fix rtl8211e rx/tx delay config
-Message-ID: <20200925144042.GI3821492@lunn.ch>
-References: <1601018715-952-1-git-send-email-willy.liu@realtek.com>
+        id S1729074AbgIYOmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:42:08 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:40084 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728148AbgIYOmH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:42:07 -0400
+Received: by mail-oi1-f195.google.com with SMTP id t76so3002924oif.7;
+        Fri, 25 Sep 2020 07:42:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YG0gNwPh92HOAhHCe1SetMmUyiG3vhJKCYpc+sgtuns=;
+        b=AaCMKmypEAR0oxhZ87tbPAdEbGxbds21QwSmF9S9d/2nuDLX/xh+eKdUFiypbEZ2Y6
+         Fq1wfpXeL3aPOx75BOg5aOK5Wrb0J5xQabnB7AJD8CXxeMj7SKnPA5wCkgyaeuHi011Q
+         Ii6VQ6BOj4U5HCYhKzTas0h9JZYaoVw1dkbG0P8UzHbLy1uvKoIR4/2KElZAYHpLiUS2
+         9s/txLVz43H6722a3FctMuPslPmeD5pJFegi+QEjLFSHG/13CHXoBOEeeRAR3MNjTJKH
+         CQ0ZZYhfjSNn9Ruc/t8ca3JlgBzwtphZdROBO/KAUvdBaCJ5GKn/1slQ4xxETA9P5dUZ
+         srhQ==
+X-Gm-Message-State: AOAM532olw1F1GPCWyif6EwclGPDfXrZ1bchT4F16BL/kjp+FEbWjUNK
+        EG9ECsKdezmgX5+56IDIo8IY9NFovUIF3uHTSvQ=
+X-Google-Smtp-Source: ABdhPJxU3jxuaLiKzG8zDH/2eFePJxoIPj8oFAp0fMhiapBAoCnj7xHlIj1YPh+i5qJ+MBniXk6wyRx8+xYVyP9+4pI=
+X-Received: by 2002:a05:6808:491:: with SMTP id z17mr463820oid.110.1601044926846;
+ Fri, 25 Sep 2020 07:42:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1601018715-952-1-git-send-email-willy.liu@realtek.com>
+References: <20200924080041.2740-1-zhuguangqing83@gmail.com>
+In-Reply-To: <20200924080041.2740-1-zhuguangqing83@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 25 Sep 2020 16:41:56 +0200
+Message-ID: <CAJZ5v0ipTw3nwcWp2yYQ7SEpp0jeC8gQRK4nr8T95_UuXmP+HQ@mail.gmail.com>
+Subject: Re: [PATCH] cpuidle: change #ifdef for the declaration of cpuidle_enter_s2idle()
+To:     zhuguangqing83@gmail.com
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        zhuguangqing <zhuguangqing@xiaomi.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 03:25:15PM +0800, Willy Liu wrote:
-> There are two chip pins named TXDLY and RXDLY which actually adds the 2ns
-> delays to TXC and RXC for TXD/RXD latching. These two pins can config via
-> 4.7k-ohm resistor to 3.3V hw setting, but also config via software setting
-> (extension page 0xa4 register 0x1c bit13 12 and 11).
-> 
-> The configuration register definitions from table 13 official PHY datasheet:
-> PHYAD[2:0] = PHY Address
-> AN[1:0] = Auto-Negotiation
-> Mode = Interface Mode Select
-> RX Delay = RX Delay
-> TX Delay = TX Delay
-> SELRGV = RGMII/GMII Selection
-> 
-> This table describes how to config these hw pins via external pull-high or pull-
-> low resistor.
-> 
-> It is a misunderstanding that mapping it as register bits below:
-> 8:6 = PHY Address
-> 5:4 = Auto-Negotiation
-> 3 = Interface Mode Select
-> 2 = RX Delay
-> 1 = TX Delay
-> 0 = SELRGV
-> So I removed these descriptions above and add related settings as below:
-> 14 = reserved
-> 13 = force Tx RX Delay controlled by bit12 bit11
-> 12 = Tx Delay
-> 11 = Rx Delay
-> 10:0 = Test && debug settings reserved by realtek
+On Thu, Sep 24, 2020 at 10:01 AM <zhuguangqing83@gmail.com> wrote:
+>
+> From: zhuguangqing <zhuguangqing@xiaomi.com>
+>
+> Currently, if CONFIG_SUSPEND=n and CONFIG_CPU_IDLE=y, the function
+> cpuidle_enter_s2idle() is declared but not defined, it may cause error
+> when cpuidle_enter_s2idle() is called.
+>
+> If CONFIG_SUSPEND=y and CONFIG_CPU_IDLE=n, the function
+> cpuidle_enter_s2idle() is defined as "return -ENODEV;" which is not
+> supposed to be.
+>
+> Change #ifdef CONFIG_CPU_IDLE to #ifdef CONFIG_SUSPEND for
+> cpuidle_enter_s2idle() in cpuidle.h, which is consistent with its
+> defination in cpuidle.c.
 
-Hi Willy
+Well, what about the case when CONFIG_SUSPEND is set, but CONFIG_CPU_IDLE isn't?
 
-Thanks for adding a full description of what the bits do.
-
-Please in future add a version number to the subject line.
-
-[PATCH net v3] .....
-
-So we know which is the latest version.
-
-I think the fix is actually wrong.
-
-        /* enable TX/RX delay for rgmii-* modes, and disable them for rgmii. */
-        switch (phydev->interface) {
-        case PHY_INTERFACE_MODE_RGMII:
-                val = 0;
-                break;
-        case PHY_INTERFACE_MODE_RGMII_ID:
-                val = RTL8211E_TX_DELAY | RTL8211E_RX_DELAY;
-                break;
-        case PHY_INTERFACE_MODE_RGMII_RXID:
-                val = RTL8211E_RX_DELAY;
-                break;
-        case PHY_INTERFACE_MODE_RGMII_TXID:
-                val = RTL8211E_TX_DELAY;
-                break;
-        default: /* the rest of the modes imply leaving delays as is. */
-                return 0;
-        }
-
-If the user requests RGMII, we really should set it to RGMII, not
-leave the strapping configuration enabled. That means we need to turn
-on the force bit, and the two delays off. Please also change the
-case PHY_INTERFACE_MODE_RGMII.
-
-Thanks
-	Andrew
+>
+> Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+> ---
+>  include/linux/cpuidle.h | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+>
+> diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> index 6175c77bf25e..2aa8cead1727 100644
+> --- a/include/linux/cpuidle.h
+> +++ b/include/linux/cpuidle.h
+> @@ -216,22 +216,26 @@ static inline struct cpuidle_device *cpuidle_get_device(void) {return NULL; }
+>  extern int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+>                                       struct cpuidle_device *dev,
+>                                       u64 latency_limit_ns);
+> -extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> -                               struct cpuidle_device *dev);
+>  extern void cpuidle_use_deepest_state(u64 latency_limit_ns);
+>  #else
+>  static inline int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+>                                              struct cpuidle_device *dev,
+>                                              u64 latency_limit_ns)
+>  {return -ENODEV; }
+> -static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> -                                      struct cpuidle_device *dev)
+> -{return -ENODEV; }
+>  static inline void cpuidle_use_deepest_state(u64 latency_limit_ns)
+>  {
+>  }
+>  #endif
+>
+> +#ifdef CONFIG_SUSPEND
+> +extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> +                               struct cpuidle_device *dev);
+> +#else
+> +static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> +                                      struct cpuidle_device *dev)
+> +{return -ENODEV; }
+> +#endif
+> +
+>  /* kernel/sched/idle.c */
+>  extern void sched_idle_set_state(struct cpuidle_state *idle_state);
+>  extern void default_idle_call(void);
+> --
+> 2.17.1
+>
