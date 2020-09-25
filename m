@@ -2,359 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1499E2783E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08CA2783E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727772AbgIYJYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:24:20 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56684 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727132AbgIYJYU (ORCPT
+        id S1727826AbgIYJZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727795AbgIYJZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:24:20 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08P94q3X031249;
-        Fri, 25 Sep 2020 05:24:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=uvTWGz7Rwkk1/pmj+FJup9/s6JnUUQ7K6DxlYonyRZQ=;
- b=FCCqtt82JCKqcdhb1z6kd/HamqjqDurGcL0Dpk6UgjQcE/2WZvcvZ6nrwqS7cP7UUZZq
- lneIsi7fkm2gyfGiewMepIuA6I1/65S8g+hpl3yJlODlTH6y2tmLIGpFw4z9enxoTFUz
- qXGPuS7PoIQ8nii8LMheFunem3X9zmDLYlC00CrjJMt2ewaF+DmarmQ+GK2rNVFnOGdT
- XzgCyxsU6fYTNmDajjamLaFAZSy5MrTAM0VYE/l973CbW6qwgGixTMRW8S9QGq44bCX5
- URsjOHdxY489O1hFKQcHyEJYzI37ZxOx9cp3NoY9ayRfR0l6eBCkupNEin+HySU5FJKt gA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33sdbwryrr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Sep 2020 05:24:18 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08P95nW3035877;
-        Fri, 25 Sep 2020 05:24:18 -0400
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33sdbwryr3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Sep 2020 05:24:17 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08P9IRRL004939;
-        Fri, 25 Sep 2020 09:24:15 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma04fra.de.ibm.com with ESMTP id 33n9m7u63s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Sep 2020 09:24:15 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08P9OC4J18022798
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Sep 2020 09:24:12 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8F0C52050;
-        Fri, 25 Sep 2020 09:24:12 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.53.230])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 079BF5205F;
-        Fri, 25 Sep 2020 09:24:11 +0000 (GMT)
-Date:   Fri, 25 Sep 2020 11:24:10 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v10 04/16] s390/zcrypt: driver callback to indicate
- resource in use
-Message-ID: <20200925112410.4134faae.pasic@linux.ibm.com>
-In-Reply-To: <20200821195616.13554-5-akrowiak@linux.ibm.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
-        <20200821195616.13554-5-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Fri, 25 Sep 2020 05:25:00 -0400
+Received: from mail-ua1-x944.google.com (mail-ua1-x944.google.com [IPv6:2607:f8b0:4864:20::944])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F33C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:25:00 -0700 (PDT)
+Received: by mail-ua1-x944.google.com with SMTP id o64so721601uao.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 02:25:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xwgHnfwJO4p3e2k/8UmICPhqPe1pJTwIO3qj/AAMTOs=;
+        b=NCvFcGrJ4lAMHxPsuRNAM6CQqIi8DN2DhKWzJy934kPHwe8Q25N/LRBK3oE3ruxgdO
+         jMCZ3ABixw8fJ8qWStplc3e7oLYbrPCm7yWKBM1VkbU5poVN6p97MMqg/MyPSLbb72Sj
+         cZ6nhCwkAnlntTsedZEux/9pumM7CSlH2r0Sc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xwgHnfwJO4p3e2k/8UmICPhqPe1pJTwIO3qj/AAMTOs=;
+        b=qlw+tjSVQjUIX9Iq88UM+Nw3u7zmTG2i9KeDn0mHrproZEO3rVaETLD2qZc4eGWYwT
+         H/gMs6lLicP6SOnMrKKV5yDyWbVcXB+eS3obQJZW1OC/6NBDRLFBzrIb9b9pYVKyFtY7
+         xfX/rzz35OLLYacStALhbreysKPlYg9qrbjTgiimqMs7CLuXXmm4w4ImccuxvF+se1cV
+         wZerqhhKV+GOC3qm2q2Mk/olIcWBSzH1Ld8iGxSOof1Iuz6a4WXHdo4gjga1NmcwOTHb
+         mVzQqcDIKrYgcMBQPo2xaSerQRFlO16RUU2NKQShXoYCIs5tA9QigVhHZ2V5eeVhswrX
+         mjkw==
+X-Gm-Message-State: AOAM5324JDqY6cvu4mTTrf0g0L0Qqsx/QdBgAIpdIzzoJsKXLatfQLVm
+        0vffa1vN43kNsfG9qw2LpMMEfvTaivw1QzO8Yof0YA==
+X-Google-Smtp-Source: ABdhPJwEhNuZMKTBbzc2tvQBDUTaHYy/tzrpFK9uL/uoFKikWZI7pmKGmiwxngGtWyRur+oP/X/aWlhGFiVPkyjZpws=
+X-Received: by 2002:ab0:2404:: with SMTP id f4mr1874548uan.108.1601025899341;
+ Fri, 25 Sep 2020 02:24:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-25_02:2020-09-24,2020-09-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 adultscore=0 impostorscore=0 suspectscore=0 spamscore=0
- malwarescore=0 bulkscore=0 clxscore=1015 mlxscore=0 mlxlogscore=999
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009250063
+References: <20200925065418.1077472-1-ikjn@chromium.org> <20200925145255.v3.3.I7a3fc5678a81654574e8852d920db94bcc4d3eb8@changeid>
+ <CAJsYDV+CEQ2PEOcdP1vadOBOHgW39XNNjPET04uWQktnPHZcFA@mail.gmail.com>
+In-Reply-To: <CAJsYDV+CEQ2PEOcdP1vadOBOHgW39XNNjPET04uWQktnPHZcFA@mail.gmail.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Fri, 25 Sep 2020 17:24:48 +0800
+Message-ID: <CAATdQgAZyi+T5YLsDooTjCJTGD6jvzXuKqUwpdNY=-Eqi1=_YQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/6] spi: spi-mtk-nor: support 7 bytes transfer of
+ generic spi
+To:     Chuanhong Guo <gch981213@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
+        linux-mtd@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 15:56:04 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On Fri, Sep 25, 2020 at 3:47 PM Chuanhong Guo <gch981213@gmail.com> wrote:
+>
+> Hi!
+>
+> On Fri, Sep 25, 2020 at 2:55 PM Ikjoon Jang <ikjn@chromium.org> wrote:
+> >
+> > When mtk-nor fallbacks to generic spi transfers, it can actually
+> > transfer up to 7 bytes.
+>
+> generic transfer_one_message should support full-duplex transfers,
+> not transfers with special format requirements. (e.g. here the last
+> byte is rx only.) These transfers with format requirements should
+> be implemented with spi-mem interface instead.
 
-> Introduces a new driver callback to prevent a root user from unbinding
-> an AP queue from its device driver if the queue is in use. The intent of
-> this callback is to provide a driver with the means to prevent a root user
-> from inadvertently taking a queue away from a matrix mdev and giving it to
-> the host while it is assigned to the matrix mdev. The callback will
-> be invoked whenever a change to the AP bus's sysfs apmask or aqmask
-> attributes would result in one or more AP queues being removed from its
-> driver. If the callback responds in the affirmative for any driver
-> queried, the change to the apmask or aqmask will be rejected with a device
-> in use error.
-> 
-> For this patch, only non-default drivers will be queried. Currently,
-> there is only one non-default driver, the vfio_ap device driver. The
-> vfio_ap device driver facilitates pass-through of an AP queue to a
-> guest. The idea here is that a guest may be administered by a different
-> sysadmin than the host and we don't want AP resources to unexpectedly
-> disappear from a guest's AP configuration (i.e., adapters, domains and
-> control domains assigned to the matrix mdev). This will enforce the proper
-> procedure for removing AP resources intended for guest usage which is to
-> first unassign them from the matrix mdev, then unbind them from the
-> vfio_ap device driver.
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->  drivers/s390/crypto/ap_bus.c | 148 ++++++++++++++++++++++++++++++++---
->  drivers/s390/crypto/ap_bus.h |   4 +
->  2 files changed, 142 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/ap_bus.c b/drivers/s390/crypto/ap_bus.c
-> index 24a1940b829e..db27bd931308 100644
-> --- a/drivers/s390/crypto/ap_bus.c
-> +++ b/drivers/s390/crypto/ap_bus.c
-> @@ -35,6 +35,7 @@
->  #include <linux/mod_devicetable.h>
->  #include <linux/debugfs.h>
->  #include <linux/ctype.h>
-> +#include <linux/module.h>
->  
->  #include "ap_bus.h"
->  #include "ap_debug.h"
-> @@ -889,6 +890,23 @@ static int modify_bitmap(const char *str, unsigned long *bitmap, int bits)
->  	return 0;
->  }
->  
-> +static int ap_parse_bitmap_str(const char *str, unsigned long *bitmap, int bits,
-> +			       unsigned long *newmap)
-> +{
-> +	unsigned long size;
-> +	int rc;
-> +
-> +	size = BITS_TO_LONGS(bits)*sizeof(unsigned long);
-> +	if (*str == '+' || *str == '-') {
-> +		memcpy(newmap, bitmap, size);
-> +		rc = modify_bitmap(str, newmap, bits);
-> +	} else {
-> +		memset(newmap, 0, size);
-> +		rc = hex2bitmap(str, newmap, bits);
-> +	}
-> +	return rc;
-> +}
-> +
->  int ap_parse_mask_str(const char *str,
->  		      unsigned long *bitmap, int bits,
->  		      struct mutex *lock)
-> @@ -908,14 +926,7 @@ int ap_parse_mask_str(const char *str,
->  		kfree(newmap);
->  		return -ERESTARTSYS;
->  	}
-> -
-> -	if (*str == '+' || *str == '-') {
-> -		memcpy(newmap, bitmap, size);
-> -		rc = modify_bitmap(str, newmap, bits);
-> -	} else {
-> -		memset(newmap, 0, size);
-> -		rc = hex2bitmap(str, newmap, bits);
-> -	}
-> +	rc = ap_parse_bitmap_str(str, bitmap, bits, newmap);
->  	if (rc == 0)
->  		memcpy(bitmap, newmap, size);
->  	mutex_unlock(lock);
-> @@ -1107,12 +1118,70 @@ static ssize_t apmask_show(struct bus_type *bus, char *buf)
->  	return rc;
->  }
->  
-> +static int __verify_card_reservations(struct device_driver *drv, void *data)
-> +{
-> +	int rc = 0;
-> +	struct ap_driver *ap_drv = to_ap_drv(drv);
-> +	unsigned long *newapm = (unsigned long *)data;
-> +
-> +	/*
-> +	 * No need to verify whether the driver is using the queues if it is the
-> +	 * default driver.
-> +	 */
-> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
-> +		return 0;
-> +
-> +	/* The non-default driver's module must be loaded */
-> +	if (!try_module_get(drv->owner))
-> +		return 0;
-> +
-> +	if (ap_drv->in_use)
-> +		if (ap_drv->in_use(newapm, ap_perms.aqm))
-> +			rc = -EADDRINUSE;
-> +
-> +	module_put(drv->owner);
-> +
-> +	return rc;
-> +}
-> +
-> +static int apmask_commit(unsigned long *newapm)
-> +{
-> +	int rc;
-> +	unsigned long reserved[BITS_TO_LONGS(AP_DEVICES)];
-> +
-> +	/*
-> +	 * Check if any bits in the apmask have been set which will
-> +	 * result in queues being removed from non-default drivers
-> +	 */
-> +	if (bitmap_andnot(reserved, newapm, ap_perms.apm, AP_DEVICES)) {
-> +		rc = bus_for_each_drv(&ap_bus_type, NULL, reserved,
-> +				      __verify_card_reservations);
-> +		if (rc)
-> +			return rc;
-> +	}
+yep, that's correct.
 
-I understand the above asks all the non-default drivers if some of the
-queues are 'used'. But AFAIU this reflects the truth ap_drv->in_use()
-is only telling us something about a given moment...
+>
+> >
+> > This patch fixes adjust_op_size() and supports_op() to explicitly
+> > check 7 bytes range and also fixes possible under/overflow conditions
+> > in register offsets calculation.
+> >
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+>
+> I was notified by Bayi about your discussion and sent some
+> patches yesterday for the same purpose. Whoops...
+> As transfer_one_message isn't the proper place to implement
+> this, maybe we could work on my version instead?
+>
 
-> +
-> +	memcpy(ap_perms.apm, newapm, APMASKSIZE);
+I didn't noticed that before,
+Sure, please go ahead, I'll follow up with your patch in v4.
 
-... So I fail to understand what will prevent us from performing a
-successful commit if some of the resources become 'used' between
-the call to the in_use() callback and the memcpy.
+> > ---
+> >
+> > (no changes since v1)
+>
+> This should be "new patch" not "no changes" :P
 
-Of course I might be wrong.
+oops, it seems my script did something wrong.
 
-BTW I was never a fan of this mechanism, so I don't mind if it
-does not work perfectly, and this should catch most of the cases. Just
-want to make sure we don't introduce more confusion than necessary.
+>
+>
+> >
+> >  drivers/spi/spi-mtk-nor.c | 102 ++++++++++++++++++++++++++++----------
+> >  1 file changed, 76 insertions(+), 26 deletions(-)
+> >
+> > diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
+> > index 0f7d4ec68730..e7719d249095 100644
+> > --- a/drivers/spi/spi-mtk-nor.c
+> > +++ b/drivers/spi/spi-mtk-nor.c
+> > @@ -79,7 +79,11 @@
+> >  #define MTK_NOR_REG_DMA_DADR           0x720
+> >  #define MTK_NOR_REG_DMA_END_DADR       0x724
+> >
+> > +/* maximum bytes of TX in PRG mode */
+> >  #define MTK_NOR_PRG_MAX_SIZE           6
+> > +/* maximum bytes of TX + RX is 7, last 1 byte is always being sent as zero */
+> > +#define MTK_NOR_PRG_MAX_CYCLES         7
+> > +
+> >  // Reading DMA src/dst addresses have to be 16-byte aligned
+> >  #define MTK_NOR_DMA_ALIGN              16
+> >  #define MTK_NOR_DMA_ALIGN_MASK         (MTK_NOR_DMA_ALIGN - 1)
+> > @@ -167,6 +171,24 @@ static bool mtk_nor_match_read(const struct spi_mem_op *op)
+> >         return false;
+> >  }
+> >
+> > +static bool mtk_nor_check_prg(const struct spi_mem_op *op)
+> > +{
+> > +       size_t len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+> > +
+> > +       if (len > MTK_NOR_PRG_MAX_SIZE)
+> > +               return false;
+> > +
+> > +       if (!op->data.nbytes)
+> > +               return true;
+> > +
+> > +       if (op->data.dir == SPI_MEM_DATA_OUT)
+> > +               return ((len + op->data.nbytes) <= MTK_NOR_PRG_MAX_SIZE);
+> > +       else if (op->data.dir == SPI_MEM_DATA_IN)
+> > +               return ((len + op->data.nbytes) <= MTK_NOR_PRG_MAX_CYCLES);
+> > +       else
+> > +               return true;
+> > +}
+> > +
+> >  static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> >  {
+> >         size_t len;
+> > @@ -195,10 +217,22 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> >                 }
+> >         }
+> >
+> > -       len = MTK_NOR_PRG_MAX_SIZE - op->cmd.nbytes - op->addr.nbytes -
+> > -             op->dummy.nbytes;
+> > -       if (op->data.nbytes > len)
+> > -               op->data.nbytes = len;
+> > +       if (mtk_nor_check_prg(op))
+> > +               return 0;
+> > +
+> > +       len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+> > +
+> > +       if (op->data.dir == SPI_MEM_DATA_OUT) {
+> > +               if (len == MTK_NOR_PRG_MAX_SIZE)
+> > +                       return -EINVAL;
+> > +               op->data.nbytes = min_t(unsigned int, op->data.nbytes,
+> > +                                       MTK_NOR_PRG_MAX_SIZE - len);
+> > +       } else  {
+> > +               if (len == MTK_NOR_PRG_MAX_CYCLES)
+> > +                       return -EINVAL;
+> > +               op->data.nbytes = min_t(unsigned int, op->data.nbytes,
+> > +                                       MTK_NOR_PRG_MAX_CYCLES - len);
+> > +       }
+> >
+> >         return 0;
+> >  }
+> > @@ -206,8 +240,6 @@ static int mtk_nor_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+> >  static bool mtk_nor_supports_op(struct spi_mem *mem,
+> >                                 const struct spi_mem_op *op)
+> >  {
+> > -       size_t len;
+> > -
+> >         if (op->cmd.buswidth != 1)
+> >                 return false;
+> >
+> > @@ -223,12 +255,11 @@ static bool mtk_nor_supports_op(struct spi_mem *mem,
+> >                                (op->data.buswidth == 1);
+> >         }
+> >
+> > -       len = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
+> > -       if ((len > MTK_NOR_PRG_MAX_SIZE) ||
+> > -           ((op->data.nbytes) && (len == MTK_NOR_PRG_MAX_SIZE)))
+> > +       /* fallback to generic spi xfer */
+> > +       if (op->cmd.buswidth > 1 || op->addr.buswidth > 1 || op->data.buswidth > 1)
+> >                 return false;
+>
+> Rejecting an op in supports_op doesn't tell it to fall back to generic
+> spi transfer.
+> It instead tells caller to abort this transfer completely.
+> A fallback only happens when exec_op returns -ENOTSUPP.
 
-> +
-> +	return 0;
-> +}
-> +
->  static ssize_t apmask_store(struct bus_type *bus, const char *buf,
->  			    size_t count)
->  {
->  	int rc;
-> +	DECLARE_BITMAP(newapm, AP_DEVICES);
-> +
-> +	if (mutex_lock_interruptible(&ap_perms_mutex))
-> +		return -ERESTARTSYS;
-> +
-> +	rc = ap_parse_bitmap_str(buf, ap_perms.apm, AP_DEVICES, newapm);
-> +	if (rc)
-> +		goto done;
->  
-> -	rc = ap_parse_mask_str(buf, ap_perms.apm, AP_DEVICES, &ap_perms_mutex);
-> +	rc = apmask_commit(newapm);
-> +
-> +done:
-> +	mutex_unlock(&ap_perms_mutex);
->  	if (rc)
->  		return rc;
->  
-> @@ -1138,12 +1207,71 @@ static ssize_t aqmask_show(struct bus_type *bus, char *buf)
->  	return rc;
->  }
->  
-> +static int __verify_queue_reservations(struct device_driver *drv, void *data)
-> +{
-> +	int rc = 0;
-> +	struct ap_driver *ap_drv = to_ap_drv(drv);
-> +	unsigned long *newaqm = (unsigned long *)data;
-> +
-> +	/*
-> +	 * If the reserved bits do not identify queues reserved for use by the
-> +	 * non-default driver, there is no need to verify the driver is using
-> +	 * the queues.
-> +	 */
-> +	if (ap_drv->flags & AP_DRIVER_FLAG_DEFAULT)
-> +		return 0;
-> +
-> +	/* The non-default driver's module must be loaded */
-> +	if (!try_module_get(drv->owner))
-> +		return 0;
-> +
-> +	if (ap_drv->in_use)
-> +		if (ap_drv->in_use(ap_perms.apm, newaqm))
-> +			rc = -EADDRINUSE;
-> +
-> +	module_put(drv->owner);
-> +
-> +	return rc;
-> +}
-> +
-> +static int aqmask_commit(unsigned long *newaqm)
-> +{
-> +	int rc;
-> +	unsigned long reserved[BITS_TO_LONGS(AP_DOMAINS)];
-> +
-> +	/*
-> +	 * Check if any bits in the aqmask have been set which will
-> +	 * result in queues being removed from non-default drivers
-> +	 */
-> +	if (bitmap_andnot(reserved, newaqm, ap_perms.aqm, AP_DOMAINS)) {
-> +		rc = bus_for_each_drv(&ap_bus_type, NULL, reserved,
-> +				      __verify_queue_reservations);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
-> +	memcpy(ap_perms.aqm, newaqm, AQMASKSIZE);
-> +
+yep but I think that case always going PRG mode in exec_op() with the
+same condition?
 
-Same here.
+> This comment is incorrect. I'd put this buswidth checking in mtk_nor_check_prg
+> instead because mtk_nor_check_prg is checking whether an op is supported
+> by prg mode, thus it should reject ops with buswidth > 1.
+>
+> >
+> > -       return true;
+> > +       return mtk_nor_check_prg(op);
+> >  }
+> >
+> >  static void mtk_nor_setup_bus(struct mtk_nor *sp, const struct spi_mem_op *op)
+> > @@ -459,22 +490,36 @@ static int mtk_nor_transfer_one_message(struct spi_controller *master,
+> >         int stat = 0;
+> >         int reg_offset = MTK_NOR_REG_PRGDATA_MAX;
+> >         void __iomem *reg;
+> > -       const u8 *txbuf;
+> > -       u8 *rxbuf;
+> > -       int i;
+> > +       int i, tx_len = 0, rx_len = 0;
+> >
+> >         list_for_each_entry(t, &m->transfers, transfer_list) {
+> > -               txbuf = t->tx_buf;
+> > -               for (i = 0; i < t->len; i++, reg_offset--) {
+> > +               const u8 *txbuf = t->tx_buf;
+> > +
+> > +               if (!txbuf) {
+> > +                       rx_len += t->len;
+> > +                       continue;
+> > +               }
+> > +
+> > +               if (rx_len) {
+> > +                       stat = -EPROTO;
+> > +                       goto msg_done;
+> > +               }
+>
+> NACK. you are unnecessarily rejecting possible transfers.
 
-Regards,
-Halil
+yep, ditto
 
-> +	return 0;
-> +}
-> +
->  static ssize_t aqmask_store(struct bus_type *bus, const char *buf,
->  			    size_t count)
->  {
->  	int rc;
-> +	DECLARE_BITMAP(newaqm, AP_DOMAINS);
->  
-> -	rc = ap_parse_mask_str(buf, ap_perms.aqm, AP_DOMAINS, &ap_perms_mutex);
-> +	if (mutex_lock_interruptible(&ap_perms_mutex))
-> +		return -ERESTARTSYS;
-> +
-> +	rc = ap_parse_bitmap_str(buf, ap_perms.aqm, AP_DOMAINS, newaqm);
-> +	if (rc)
-> +		goto done;
-> +
-> +	rc = aqmask_commit(newaqm);
-> +
-> +done:
-> +	mutex_unlock(&ap_perms_mutex);
->  	if (rc)
->  		return rc;
->  
-> diff --git a/drivers/s390/crypto/ap_bus.h b/drivers/s390/crypto/ap_bus.h
-> index 1ea046324e8f..48c57b3d53a0 100644
-> --- a/drivers/s390/crypto/ap_bus.h
-> +++ b/drivers/s390/crypto/ap_bus.h
-> @@ -136,6 +136,7 @@ struct ap_driver {
->  
->  	int (*probe)(struct ap_device *);
->  	void (*remove)(struct ap_device *);
-> +	bool (*in_use)(unsigned long *apm, unsigned long *aqm);
->  };
->  
->  #define to_ap_drv(x) container_of((x), struct ap_driver, driver)
-> @@ -255,6 +256,9 @@ void ap_queue_init_state(struct ap_queue *aq);
->  struct ap_card *ap_card_create(int id, int queue_depth, int raw_device_type,
->  			       int comp_device_type, unsigned int functions);
->  
-> +#define APMASKSIZE (BITS_TO_LONGS(AP_DEVICES) * sizeof(unsigned long))
-> +#define AQMASKSIZE (BITS_TO_LONGS(AP_DOMAINS) * sizeof(unsigned long))
-> +
->  struct ap_perms {
->  	unsigned long ioctlm[BITS_TO_LONGS(AP_IOCTLS)];
->  	unsigned long apm[BITS_TO_LONGS(AP_DEVICES)];
+>
+> > +
+> > +               for (i = 0; i < t->len && reg_offset >= 0; i++, reg_offset--) {
+> >                         reg = sp->base + MTK_NOR_REG_PRGDATA(reg_offset);
+> > -                       if (txbuf)
+> > -                               writeb(txbuf[i], reg);
+> > -                       else
+> > -                               writeb(0, reg);
+> > +                       writeb(txbuf[i], reg);
+> > +                       tx_len++;
+>
+> According to SPI standard, during a rx transfer, tx should be kept low.
+> These PROGDATA registers doesn't clear itself so it'll keep sending
+> data from last transfer, which violates this rule. That's
+> why the original code writes 0 to PRGDATA for rx bytes.
 
+following lines with while() will set 0s to the rest of registers.
+
+>
+> >                 }
+> > -               trx_len += t->len;
+> >         }
+> >
+> > +       while (reg_offset >= 0) {
+> > +               writeb(0, sp->base + MTK_NOR_REG_PRGDATA(reg_offset));
+> > +               reg_offset--;
+> > +       }
+> > +
+> > +       rx_len = min_t(unsigned long, MTK_NOR_PRG_MAX_CYCLES - tx_len, rx_len);
+> > +       trx_len = tx_len + rx_len;
+> > +
+> >         writel(trx_len * BITS_PER_BYTE, sp->base + MTK_NOR_REG_PRG_CNT);
+> >
+> >         stat = mtk_nor_cmd_exec(sp, MTK_NOR_CMD_PROGRAM,
+> > @@ -482,13 +527,18 @@ static int mtk_nor_transfer_one_message(struct spi_controller *master,
+> >         if (stat < 0)
+> >                 goto msg_done;
+> >
+> > -       reg_offset = trx_len - 1;
+> > -       list_for_each_entry(t, &m->transfers, transfer_list) {
+> > -               rxbuf = t->rx_buf;
+> > -               for (i = 0; i < t->len; i++, reg_offset--) {
+> > -                       reg = sp->base + MTK_NOR_REG_SHIFT(reg_offset);
+> > -                       if (rxbuf)
+> > +       if (rx_len > 0) {
+> > +               reg_offset = rx_len - 1;
+> > +               list_for_each_entry(t, &m->transfers, transfer_list) {
+> > +                       u8 *rxbuf = t->rx_buf;
+> > +
+> > +                       if (!rxbuf)
+> > +                               continue;
+> > +
+> > +                       for (i = 0; i < t->len && reg_offset >= 0; i++, reg_offset--) {
+> > +                               reg = sp->base + MTK_NOR_REG_SHIFT(reg_offset);
+> >                                 rxbuf[i] = readb(reg);
+> > +                       }
+>
+> I think this is replacing original code with some equivalent ones, which
+> seems unnecessary.
+
+This patch addressed the issue with 1+6 bytes transfer (e.g JEDEC ID)
+can have negative reg_offset.
+And there's skipping the loop if (rx_len < 0)
+anyway I'd like to follow with your new patch. :-)
+
+Thanks!
+
+>
+> >                 }
+> >         }
+> >
+> --
+> Regards,
+> Chuanhong Guo
