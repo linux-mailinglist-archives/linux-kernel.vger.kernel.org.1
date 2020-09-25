@@ -2,170 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7372B2784E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32A52784E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgIYKTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:19:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53732 "EHLO
+        id S1728098AbgIYKTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:19:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53771 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727290AbgIYKTd (ORCPT
+        by vger.kernel.org with ESMTP id S1727151AbgIYKTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:19:33 -0400
+        Fri, 25 Sep 2020 06:19:39 -0400
 Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601029171;
+        s=mimecast20190719; t=1601029178;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=aPzObvFVH1Ls9ap9RnvDiZSE0g7odHJPbPIr7e+V9YI=;
-        b=gRBbMV/6WnnUvLNyWBH4wnbcf1/itvDyDcISQAhIvSSEl3wUjfUTRpJFMSvSczeD+HQajc
-        mcaqooXFKEbQ+lZ3m8+68hjIR6wvN6FCudG79L11Q4WlW5eGsNV0nhkAsfl7ei9OmhDfFS
-        kaQTCODPlveX5NffzkdMmXbFG2vo3Rk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-_KV4NE4HOieSz61MdkCd2w-1; Fri, 25 Sep 2020 06:19:29 -0400
-X-MC-Unique: _KV4NE4HOieSz61MdkCd2w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7EA71891E81;
-        Fri, 25 Sep 2020 10:19:27 +0000 (UTC)
-Received: from [10.36.112.211] (ovpn-112-211.ams2.redhat.com [10.36.112.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 57B1960C04;
-        Fri, 25 Sep 2020 10:19:25 +0000 (UTC)
-Subject: Re: [PATCH 3/9] mm, page_alloc: remove setup_pageset()
-To:     Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-References: <20200922143712.12048-1-vbabka@suse.cz>
- <20200922143712.12048-4-vbabka@suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63W5Ag0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAGJAjwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <60e0d734-f51d-ac25-b5c4-d503171fcd7b@redhat.com>
-Date:   Fri, 25 Sep 2020 12:19:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+         in-reply-to:in-reply-to:references:references;
+        bh=P26OWL3+8b1prUkCt7qDotBrREGjXGjJKCeLvVKhHiw=;
+        b=Zpvffw5eBL12N5/U4yskXrqzyniknqzcQKFBfxD1AVjfDvQl/mcRvw37V6FzkXbr0NF9u9
+        kbZbxkmBdDx0Qo57eYKLm/eDdvLjQ9qWy08MP/J1KBr6x16soBWgSR88DAd4AI9aOsMvAd
+        luigpYUPInLzaNGaihXE+ylhs2N8+f8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-182-Zfiw118GMh67eW6lLA9lGw-1; Fri, 25 Sep 2020 06:19:36 -0400
+X-MC-Unique: Zfiw118GMh67eW6lLA9lGw-1
+Received: by mail-wr1-f69.google.com with SMTP id a10so870355wrw.22
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:19:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=P26OWL3+8b1prUkCt7qDotBrREGjXGjJKCeLvVKhHiw=;
+        b=RjbAirM/9DAsQ05LtT8mZphxZGTSlroj+zpMmOSC/zgINUsG7edwoqiXeXRX7rQSZW
+         5vEh548irDW4GbYJdoSGifUTzzJdavckEdNcu+ITspCBocAf4z29S5NdipxDt4IPBV2n
+         4XY8T2g5Py2UVleYpxVZRnPP1pp8K6y6E2br6bDAqZ7oVMxbGtpJn6AkIPKUeFLf/uJj
+         2jH7T/Jrhj5czKiZ+tDvKkRRmx3L6YhymlpfK1RGIE2OTp/bYiuF69o+U19qDI1w8OnK
+         /tlSSlu46o9uSYBVoY9IY4tZZag3BeXDJKiNzc5p+YIE4E7WhmxF1xO0Ovx8X3JOhGuY
+         LwvQ==
+X-Gm-Message-State: AOAM532wT4fdEJx/87UGLv0QY1NcibWXfgBQmHMtFmeBgMO8jMWjjcdw
+        T984vnILC3VwjWkdqE78i6OAlVmsd8eVSM0EtPbxr8k5BRrzL4aPCU4twlkEf9e+BVRc+mgUFRT
+        tA/fi62FsmjE+JyGBRoAerbw+
+X-Received: by 2002:a5d:470f:: with SMTP id y15mr3625817wrq.420.1601029175440;
+        Fri, 25 Sep 2020 03:19:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwLSbI9jm2XMOk+32xte7rC7OY1SRWmEug56SJmm4FkGi+zaNWLZhe1WA4eNqffhuABgGE01g==
+X-Received: by 2002:a5d:470f:: with SMTP id y15mr3625796wrq.420.1601029175219;
+        Fri, 25 Sep 2020 03:19:35 -0700 (PDT)
+Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
+        by smtp.gmail.com with ESMTPSA id u126sm2972203wmu.9.2020.09.25.03.19.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 03:19:34 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 06:19:30 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, Eli Cohen <elic@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
+ errors
+Message-ID: <20200925061847-mutt-send-email-mst@kernel.org>
+References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
+ <20200918082245.GP869610@unreal>
+ <20200924052932-mutt-send-email-mst@kernel.org>
+ <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
+ <079c831e-214d-22c1-028e-05d84e3b7f04@infradead.org>
+ <20200924120217-mutt-send-email-mst@kernel.org>
+ <20200925072005.GB2280698@unreal>
 MIME-Version: 1.0
-In-Reply-To: <20200922143712.12048-4-vbabka@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925072005.GB2280698@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.09.20 16:37, Vlastimil Babka wrote:
-> We initialize boot-time pagesets with setup_pageset(), which sets high and
-> batch values that effectively disable pcplists.
+On Fri, Sep 25, 2020 at 10:20:05AM +0300, Leon Romanovsky wrote:
+> On Thu, Sep 24, 2020 at 12:02:43PM -0400, Michael S. Tsirkin wrote:
+> > On Thu, Sep 24, 2020 at 08:47:05AM -0700, Randy Dunlap wrote:
+> > > On 9/24/20 3:24 AM, Eli Cohen wrote:
+> > > > On Thu, Sep 24, 2020 at 05:30:55AM -0400, Michael S. Tsirkin wrote:
+> > > >>>> --- linux-next-20200917.orig/drivers/vdpa/Kconfig
+> > > >>>> +++ linux-next-20200917/drivers/vdpa/Kconfig
+> > > >>>> @@ -31,7 +31,7 @@ config IFCVF
+> > > >>>>
+> > > >>>>  config MLX5_VDPA
+> > > >>>>  	bool "MLX5 VDPA support library for ConnectX devices"
+> > > >>>> -	depends on MLX5_CORE
+> > > >>>> +	depends on VHOST_IOTLB && MLX5_CORE
+> > > >>>>  	default n
+> > > >>>
+> > > >>> While we are here, can anyone who apply this patch delete the "default n" line?
+> > > >>> It is by default "n".
+> > > >
+> > > > I can do that
+> > > >
+> > > >>>
+> > > >>> Thanks
+> > > >>
+> > > >> Hmm other drivers select VHOST_IOTLB, why not do the same?
+> > >
+> > > v1 used select, but Saeed requested use of depends instead because
+> > > select can cause problems.
+> > >
+> > > > I can't see another driver doing that. Perhaps I can set dependency on
+> > > > VHOST which by itself depends on VHOST_IOTLB?
+> > > >>
+> > > >>
+> > > >>>>  	help
+> > > >>>>  	  Support library for Mellanox VDPA drivers. Provides code that is
+> > > >>>>
+> > > >>
+> > >
+> >
+> > Saeed what kind of problems? It's used with select in other places,
+> > isn't it?
 > 
-> We can remove this wrapper if we just set these values for all pagesets in
-> pageset_init(). Non-boot pagesets then subsequently update them to the proper
-> values.
+> IMHO, "depends" is much more explicit than "select".
 > 
-> No functional change.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/page_alloc.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 26069c8d1b19..76c2b4578723 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -5823,7 +5823,7 @@ static void build_zonelists(pg_data_t *pgdat)
->   * not check if the processor is online before following the pageset pointer.
->   * Other parts of the kernel may not check if the zone is available.
->   */
-> -static void setup_pageset(struct per_cpu_pageset *p);
-> +static void pageset_init(struct per_cpu_pageset *p);
->  static DEFINE_PER_CPU(struct per_cpu_pageset, boot_pageset);
->  static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
->  
-> @@ -5891,7 +5891,7 @@ build_all_zonelists_init(void)
->  	 * (a chicken-egg dilemma).
->  	 */
->  	for_each_possible_cpu(cpu)
-> -		setup_pageset(&per_cpu(boot_pageset, cpu));
-> +		pageset_init(&per_cpu(boot_pageset, cpu));
->  
->  	mminit_verify_zonelist();
->  	cpuset_init_current_mems_allowed();
-> @@ -6210,12 +6210,15 @@ static void pageset_init(struct per_cpu_pageset *p)
->  	pcp = &p->pcp;
->  	for (migratetype = 0; migratetype < MIGRATE_PCPTYPES; migratetype++)
->  		INIT_LIST_HEAD(&pcp->lists[migratetype]);
-> -}
->  
-> -static void setup_pageset(struct per_cpu_pageset *p)
-> -{
-> -	pageset_init(p);
-> -	pageset_update(&p->pcp, 0, 1);
-> +	/*
-> +	 * Set batch and high values safe for a boot pageset. A true percpu
-> +	 * pageset's initialization will update them subsequently. Here we don't
-> +	 * need to be as careful as pageset_update() as nobody can access the
-> +	 * pageset yet.
-> +	 */
-> +	pcp->high = 0;
-> +	pcp->batch = 1;
->  }
->  
->  /*
-> 
+> Thanks
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+This is now how VHOST_IOTLB has been designed though.
+If you want to change VHOST_IOTLB to depends I think
+we should do it consistently all over.
 
--- 
-Thanks,
 
-David / dhildenb
+config VHOST_IOTLB
+        tristate
+        help
+          Generic IOTLB implementation for vhost and vringh.
+          This option is selected by any driver which needs to support
+          an IOMMU in software.
+
+
+> >
+> > > --
+> > > ~Randy
+> >
 
