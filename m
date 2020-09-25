@@ -2,89 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0331279366
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06AD279379
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729738AbgIYVZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:25:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20583 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729587AbgIYVZJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:25:09 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601069108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=riPiictfFiIPQJlTMTSKGVFjrTw+MUxj8C340DbapCg=;
-        b=B3aBd+Jue2bvAbXjiEM1w6FNqfTOtmarFP/uinTcrEcl+kxzOKfW/unSbDOtcAzJ4Vp7ck
-        /jYEHvh9MyybB5wHQ2yRAEsgQ9Rex7YSLqG4Szx2xt+kk0MEnOilkmht1LW+4+tRyfxtGS
-        ybLhW4rKoJ+Hm0rfpmYnEYS9inxDN0g=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-252-ms9hYRb3MtaUY-X-Ux-kXw-1; Fri, 25 Sep 2020 17:25:07 -0400
-X-MC-Unique: ms9hYRb3MtaUY-X-Ux-kXw-1
-Received: by mail-wr1-f72.google.com with SMTP id d9so1574440wrv.16
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:25:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=riPiictfFiIPQJlTMTSKGVFjrTw+MUxj8C340DbapCg=;
-        b=BsdwxizxaC568I6xvjlrReRogj1dWiC7pn3h5EvTNhcpemIQYoblM/s41njIS70q+p
-         y4VO9BOfse2Jv8N4lYzOEOldblzlo9gVGDoFze1VObflkjnJVrggJHmOlG8tX45W6Jy8
-         lEaR3zYXYxZIZmU//+hshItZBE/Dzlmv3ZV1iF4/QINoZVrgAfJ88S0MykpSmwDRkj6y
-         VfZtS93+DS5XeuppgE4wydgs2tv9fK7K6tgz1YkWELQw9clgavRItZ2+ew7CBR5aqIET
-         eeOaYxLvPh+KgLdUMlxu+ira/VjApdR1J79Q/ulS+Zkmtpt2QNyPM+k0lt1fTbJ1G8UD
-         Pifg==
-X-Gm-Message-State: AOAM5304Qyuj8ruIoV37EwQXdAVenC2p3DTg7Icd8FV1D6npJNRX1o+U
-        MDI+kOtBg7vjnVSaximzuH+s7I3tiKgsd3h8xyFax2/Fy/NZ/LBB3OT+t4e47nbSKSAC6zhLrxb
-        pCAXm+VeptuUYQajGE/esV9h0
-X-Received: by 2002:a7b:c345:: with SMTP id l5mr467585wmj.123.1601069105672;
-        Fri, 25 Sep 2020 14:25:05 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwF2fQVEB7mP0ZwLnuAqdfMg6p/VNXOUmn9kn/+6c9aR8oV+ZoJZ2QK6RmI7vvWOd/+MBuBrQ==
-X-Received: by 2002:a7b:c345:: with SMTP id l5mr467575wmj.123.1601069105475;
-        Fri, 25 Sep 2020 14:25:05 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id h2sm4282661wrp.69.2020.09.25.14.25.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 14:25:04 -0700 (PDT)
-Subject: Re: [PATCH v2 6/8] KVM: x86/mmu: Rename 'hlevel' to 'level' in
- FNAME(fetch)
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Junaid Shahid <junaids@google.com>
-References: <20200923183735.584-1-sean.j.christopherson@intel.com>
- <20200923183735.584-7-sean.j.christopherson@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c7f7d08f-7f1e-455c-e265-c77d78eb537f@redhat.com>
-Date:   Fri, 25 Sep 2020 23:25:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200923183735.584-7-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729045AbgIYV0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:26:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726587AbgIYV0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 17:26:20 -0400
+Received: from localhost.localdomain (unknown [194.230.155.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2164321741;
+        Fri, 25 Sep 2020 21:26:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601069179;
+        bh=N9JaW+8SGbvwdQLMGjpUpaTkyxkJEPp68PVp3/IQptU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cABLsbryWFwTywQxxkCDGE/Abyt7GQeZpCzuuhiTBU3ZJvUh0TViIaMbHcdZ75GzE
+         QViKgvnBL6yLExJ1j64OTwCPR0tsSJYayDRspg+d6rsClU8d2Rf+S5gfQkWDEg/dmh
+         g4TXtjM38v2e/Q+nyZXNQtvXdX0bnfvFMF2oDF5A=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH] dt-bindings: pwm: imx: document i.MX compatibles
+Date:   Fri, 25 Sep 2020 23:26:09 +0200
+Message-Id: <20200925212609.23093-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/09/20 20:37, Sean Christopherson wrote:
-> Rename 'hlevel', which presumably stands for 'host level', to simply
-> 'level' in FNAME(fetch).  The variable hasn't tracked the host level for
-> quite some time.
+Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles to fix dtbs_check
+warnings like:
 
-One could say that it stands for "huge" level...  I am not too attached
-to it, the only qualm is that "level" is usually used as the starting or
-current level and rarely as the end level in a loop.  But then it's used
-like that in __direct_map, so...
+  arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml: pwm@2080000: compatible:0:
+    'fsl,imx6q-pwm' is not one of ['fsl,imx8mm-pwm', 'fsl,imx8mn-pwm', 'fsl,imx8mp-pwm', 'fsl,imx8mq-pwm']
 
-Paolo
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+---
+ Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+index 473863eb67e5..379d693889f6 100644
+--- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
++++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+@@ -25,6 +25,17 @@ properties:
+           - fsl,imx27-pwm
+       - items:
+           - enum:
++              - fsl,imx25-pwm
++              - fsl,imx31-pwm
++              - fsl,imx50-pwm
++              - fsl,imx51-pwm
++              - fsl,imx53-pwm
++              - fsl,imx6q-pwm
++              - fsl,imx6sl-pwm
++              - fsl,imx6sll-pwm
++              - fsl,imx6sx-pwm
++              - fsl,imx6ul-pwm
++              - fsl,imx7d-pwm
+               - fsl,imx8mm-pwm
+               - fsl,imx8mn-pwm
+               - fsl,imx8mp-pwm
+-- 
+2.17.1
 
