@@ -2,102 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7984F278C8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95FCC278C99
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729346AbgIYPZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:25:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34258 "EHLO
+        id S1729368AbgIYP0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:26:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbgIYPZY (ORCPT
+        with ESMTP id S1727749AbgIYP0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:25:24 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D786C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:25:24 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id t10so4069775wrv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:25:24 -0700 (PDT)
+        Fri, 25 Sep 2020 11:26:37 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFE7C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:26:36 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id q13so4150873ejo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 08:26:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=V7t4fEIEyVBsi/fjg9YkHb+gy/WAE7FgQtIkyl4FSCQ=;
-        b=KM9OZ7Biuv/yQe+fyjAagbCVboVA9WGPjj/1U97fdkl6Hfxv+A5iWZSmt8hlFVjOPc
-         W1HaNnR+6fTIz7NL3gQHy3UV0XhUJg8vM0a8mglzpBCR3uRNsQwXwHuMdrLHAWGGacmV
-         IX84JJFO7YtnQ2OjSWbktlicNpCpTN0PlbP89Hpn2GwE5TxGjH7A9/Dk/WuX/Z0EZC72
-         sBGlM35ZjCNN9OpaNA735G37RlDJokox2C6Qp7QuRfZjcGjX0qSqF+B3aEZpq1dvzHSt
-         7reRdjaq6udHpT3S+OUHZoGiFz/6BBju4nvnXhR+va4WZuG9zAWx/DvRF/F7WFcIkz5K
-         HnOQ==
+        bh=MzAtS5pp4wKZdqYxm3un6roUYuqJtBuwsuQz9RJF5Yc=;
+        b=DzeQK3aABgVqnhtf+JB9A0bO29QBHxl/mqzmoOtm+NL9CIIGpXMGoBqC1stGMySpRB
+         EwbqglUvAoaeO0gRjZy7CodfHU5mTCWx/Xrj6qhU+0OPAQRyzGw3/Qd8uc2iF7gR4M42
+         6ek29i+J1uZdWDK2HQd3M8r5yucLm6bZXQG2uH4gEoXMMEQefyEGtPv4SDpTjI9pPA0y
+         IMHymF/TA6gnJP5BNt314PwYAxuBGm0lJUwMAuq6RcNUcmw6gWW5oXbVO0kQfJp2EAde
+         iidJA8z43PZINmj0czjZG1nlfk7d1r9NQpyhvpPrwa6kbTr5cjDS7Ra/vbkmwmq9VZIz
+         sCPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=V7t4fEIEyVBsi/fjg9YkHb+gy/WAE7FgQtIkyl4FSCQ=;
-        b=A2AU4cX2SkzrmCToVZ3wfEroV+y0HkitQbPh6lLfttlbBHE3WMbXY3M1RhoVp9EgcK
-         QulWH7ndKH24uT2Ury78ClDp7KbQrUn5yZ8PUmyc0lhkKhGM/M+NWTYxXUWhoKIQKWKh
-         FfWF7fcSEZgz3sbDhJkHcqOJ8MBkHVdrvA408gyiUAokflVWRXsvufy4mdyLkpWki4vp
-         ss0WmgtQOw2Va7KjiuzHDSKMZZvk97uwzAWPjHCPjTpLLwwENUIPjoS1UsaRtO+xc0s+
-         P31uflK/4Pyk6Eb41AR/sUpntUvLL01ascxgRCGak17SLNTHrN6bBL109d1Ya5soCznX
-         l/Ug==
-X-Gm-Message-State: AOAM5333jFJxG1qVN1udxLGZHRR0g6tw+N1VOwyFnpjVdGG2KT8LxB4Z
-        JaXUuaQEeKN7ZoP4KuiCFDtDIKa8L3SzIqzpwvWeNA==
-X-Google-Smtp-Source: ABdhPJyZC6LaW4EhV/2oZznYx/893DZokEKtYHJPWcYE5I0O+k12BELKilXwNkpXCMze/LLQrSVCvwKYmQSG2pDbA6M=
-X-Received: by 2002:a5d:4581:: with SMTP id p1mr5255102wrq.345.1601047522816;
- Fri, 25 Sep 2020 08:25:22 -0700 (PDT)
+        bh=MzAtS5pp4wKZdqYxm3un6roUYuqJtBuwsuQz9RJF5Yc=;
+        b=M5lNZBrOjn2FOdLoWGlmqx0NVqa0/mwmgRh5CB+uSn/QPp6P2M/oGLvgpIyjNKJ5ty
+         DLqI7oSW4xkTxjPxquFGiy18x9/saTv7r740RMgntr41dp7a82LwC8AjLIRZk5ihlp7w
+         5lZXYcyrefmmFWXAfBGQH7314VwmjOVxTl4LZFMVdAI5YI6HpC9pDDphZaAlEnsoFnXE
+         z4YWNGQHPbDiiZYCOSlklEFomhrFm3vShQWuxi3rmwrJ42jApDHgRuFJQ95Dv30RTJk/
+         IADPgxR27ofVJwRr5SXXMBgWGYnbRnSe+lPd31meCPbIsJEomXpqdxhBPU+zjYrXT0oq
+         eT9w==
+X-Gm-Message-State: AOAM530LYbxZ83wjLKFSahjSBoybYmOHWFbBmxRn0/xoQhNUpAFP/wpM
+        wKaDUukY3wKSb3mIjp73WapePjZiUJq4VXzJ2Fo44A==
+X-Google-Smtp-Source: ABdhPJwAxm0uho96sgjawV6ygVNsek+KPJIlPtlIS8KiCCz4rT7hlrStPnUrm7e7riFl2ig9jvhhA7Sn7QwfoxTybP8=
+X-Received: by 2002:a17:906:1a4b:: with SMTP id j11mr3148301ejf.97.1601047594921;
+ Fri, 25 Sep 2020 08:26:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-4-elver@google.com>
- <20200921143059.GO2139@willie-the-truck>
-In-Reply-To: <20200921143059.GO2139@willie-the-truck>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 25 Sep 2020 17:25:11 +0200
-Message-ID: <CAG_fn=WXknUnNmyniy_UE7daivSNmy0Da2KzNmX4wcmXC2Z_Mg@mail.gmail.com>
-Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
-To:     Will Deacon <will@kernel.org>
-Cc:     Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jonathan.Cameron@huawei.com, Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, sjpark@amazon.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
+References: <20200923130339.997902-1-alexandru.ardelean@analog.com> <20200925133301.4789c47a@archlinux>
+In-Reply-To: <20200925133301.4789c47a@archlinux>
+From:   Guenter Roeck <groeck@google.com>
+Date:   Fri, 25 Sep 2020 08:26:23 -0700
+Message-ID: <CABXOdTdr52ikhoSEMqqFakO42hZzpvtH=rxkAYWQsExrnWodFA@mail.gmail.com>
+Subject: Re: [PATCH] iio: cros_ec: unify hw fifo attributes into the core file
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-iio@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Will,
+On Fri, Sep 25, 2020 at 5:33 AM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Wed, 23 Sep 2020 16:03:39 +0300
+> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+>
+> > The intent here is to minimize the use of iio_buffer_set_attrs(). Since we
+> > are planning to add support for multiple IIO buffers per IIO device, the
+> > issue has to do with:
+> > 1. Accessing 'indio_dev->buffer' directly (as is done with
+> >    'iio_buffer_set_attrs(indio_dev->buffer, <attrs>)').
+> > 2. The way that the buffer attributes would get handled or expanded when
+> >    there are more buffers per IIO device. Current a sysfs kobj_type expands
+> >    into a 'device' object that expands into an 'iio_dev' object.
+> >    We will need to change this, so that the sysfs attributes for IIO
+> >    buffers expand into IIO buffers at some point.
+> >
+> > Right now, the current IIO framework works fine for the
+> > '1 IIO device == 1 IIO buffer' case (that is now).
+> >
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> Looks good to me, but I'll need a cros_ec ack for this one.
+>
 
-> Given that the pool is relatively small (i.e. when compared with our virtual
-> address space), dedicating an area of virtual space sounds like it makes
-> the most sense here. How early do you need it to be available?
+I like it.
 
-How do we assign struct pages to a fixed virtual space area (I'm
-currently experimenting with 0xffff7f0000000000-0xffff7f0000200000)?
-Looks like filling page table entries (similarly to what's being done
-in arch/arm64/mm/kasan_init.c) is not enough.
-I thought maybe vmemmap_populate() would do the job, but it didn't
-(virt_to_pfn() still returns invalid PFNs).
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
+
+Guenter
+
+> thanks
+>
+> Jonathan
+>
+> > ---
+> >  drivers/iio/accel/cros_ec_accel_legacy.c              |  2 +-
+> >  .../iio/common/cros_ec_sensors/cros_ec_lid_angle.c    |  3 ++-
+> >  drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c  |  5 ++---
+> >  .../iio/common/cros_ec_sensors/cros_ec_sensors_core.c | 11 ++++++++---
+> >  drivers/iio/light/cros_ec_light_prox.c                |  5 ++---
+> >  drivers/iio/pressure/cros_ec_baro.c                   |  5 ++---
+> >  include/linux/iio/common/cros_ec_sensors_core.h       |  4 ++--
+> >  7 files changed, 19 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/iio/accel/cros_ec_accel_legacy.c b/drivers/iio/accel/cros_ec_accel_legacy.c
+> > index b6f3471b62dc..8f1232c38e0d 100644
+> > --- a/drivers/iio/accel/cros_ec_accel_legacy.c
+> > +++ b/drivers/iio/accel/cros_ec_accel_legacy.c
+> > @@ -215,7 +215,7 @@ static int cros_ec_accel_legacy_probe(struct platform_device *pdev)
+> >               return -ENOMEM;
+> >
+> >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
+> > -                                     cros_ec_sensors_capture, NULL);
+> > +                                     cros_ec_sensors_capture, NULL, false);
+> >       if (ret)
+> >               return ret;
+> >
+> > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c b/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
+> > index af801e203623..752f59037715 100644
+> > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
+> > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
+> > @@ -97,7 +97,8 @@ static int cros_ec_lid_angle_probe(struct platform_device *pdev)
+> >       if (!indio_dev)
+> >               return -ENOMEM;
+> >
+> > -     ret = cros_ec_sensors_core_init(pdev, indio_dev, false, NULL, NULL);
+> > +     ret = cros_ec_sensors_core_init(pdev, indio_dev, false, NULL,
+> > +                                     NULL, false);
+> >       if (ret)
+> >               return ret;
+> >
+> > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
+> > index 130ab8ce0269..57038ca48d93 100644
+> > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
+> > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
+> > @@ -236,12 +236,11 @@ static int cros_ec_sensors_probe(struct platform_device *pdev)
+> >
+> >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
+> >                                       cros_ec_sensors_capture,
+> > -                                     cros_ec_sensors_push_data);
+> > +                                     cros_ec_sensors_push_data,
+> > +                                     true);
+> >       if (ret)
+> >               return ret;
+> >
+> > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
+> > -
+> >       indio_dev->info = &ec_sensors_info;
+> >       state = iio_priv(indio_dev);
+> >       for (channel = state->channels, i = CROS_EC_SENSOR_X;
+> > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > index ea480c1d4349..0de800d41978 100644
+> > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
+> > @@ -174,12 +174,11 @@ static ssize_t hwfifo_watermark_max_show(struct device *dev,
+> >
+> >  static IIO_DEVICE_ATTR_RO(hwfifo_watermark_max, 0);
+> >
+> > -const struct attribute *cros_ec_sensor_fifo_attributes[] = {
+> > +static const struct attribute *cros_ec_sensor_fifo_attributes[] = {
+> >       &iio_dev_attr_hwfifo_timeout.dev_attr.attr,
+> >       &iio_dev_attr_hwfifo_watermark_max.dev_attr.attr,
+> >       NULL,
+> >  };
+> > -EXPORT_SYMBOL_GPL(cros_ec_sensor_fifo_attributes);
+> >
+> >  int cros_ec_sensors_push_data(struct iio_dev *indio_dev,
+> >                             s16 *data,
+> > @@ -238,6 +237,7 @@ static void cros_ec_sensors_core_clean(void *arg)
+> >   *    for backward compatibility.
+> >   * @push_data:          function to call when cros_ec_sensorhub receives
+> >   *    a sample for that sensor.
+> > + * @has_hw_fifo:     Set true if this device has/uses a HW FIFO
+> >   *
+> >   * Return: 0 on success, -errno on failure.
+> >   */
+> > @@ -245,7 +245,8 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
+> >                             struct iio_dev *indio_dev,
+> >                             bool physical_device,
+> >                             cros_ec_sensors_capture_t trigger_capture,
+> > -                           cros_ec_sensorhub_push_data_cb_t push_data)
+> > +                           cros_ec_sensorhub_push_data_cb_t push_data,
+> > +                           bool has_hw_fifo)
+> >  {
+> >       struct device *dev = &pdev->dev;
+> >       struct cros_ec_sensors_core_state *state = iio_priv(indio_dev);
+> > @@ -358,6 +359,10 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
+> >                                       NULL);
+> >                       if (ret)
+> >                               return ret;
+> > +
+> > +                     if (has_hw_fifo)
+> > +                             iio_buffer_set_attrs(indio_dev->buffer,
+> > +                                                  cros_ec_sensor_fifo_attributes);
+> >               }
+> >       }
+> >
+> > diff --git a/drivers/iio/light/cros_ec_light_prox.c b/drivers/iio/light/cros_ec_light_prox.c
+> > index fed79ba27fda..75d6b5fcf2cc 100644
+> > --- a/drivers/iio/light/cros_ec_light_prox.c
+> > +++ b/drivers/iio/light/cros_ec_light_prox.c
+> > @@ -182,12 +182,11 @@ static int cros_ec_light_prox_probe(struct platform_device *pdev)
+> >
+> >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
+> >                                       cros_ec_sensors_capture,
+> > -                                     cros_ec_sensors_push_data);
+> > +                                     cros_ec_sensors_push_data,
+> > +                                     true);
+> >       if (ret)
+> >               return ret;
+> >
+> > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
+> > -
+> >       indio_dev->info = &cros_ec_light_prox_info;
+> >       state = iio_priv(indio_dev);
+> >       state->core.type = state->core.resp->info.type;
+> > diff --git a/drivers/iio/pressure/cros_ec_baro.c b/drivers/iio/pressure/cros_ec_baro.c
+> > index f0938b6fbba0..aa043cb9ac42 100644
+> > --- a/drivers/iio/pressure/cros_ec_baro.c
+> > +++ b/drivers/iio/pressure/cros_ec_baro.c
+> > @@ -139,12 +139,11 @@ static int cros_ec_baro_probe(struct platform_device *pdev)
+> >
+> >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
+> >                                       cros_ec_sensors_capture,
+> > -                                     cros_ec_sensors_push_data);
+> > +                                     cros_ec_sensors_push_data,
+> > +                                     true);
+> >       if (ret)
+> >               return ret;
+> >
+> > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
+> > -
+> >       indio_dev->info = &cros_ec_baro_info;
+> >       state = iio_priv(indio_dev);
+> >       state->core.type = state->core.resp->info.type;
+> > diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/linux/iio/common/cros_ec_sensors_core.h
+> > index caa8bb279a34..c9b80be82440 100644
+> > --- a/include/linux/iio/common/cros_ec_sensors_core.h
+> > +++ b/include/linux/iio/common/cros_ec_sensors_core.h
+> > @@ -96,7 +96,8 @@ struct platform_device;
+> >  int cros_ec_sensors_core_init(struct platform_device *pdev,
+> >                             struct iio_dev *indio_dev, bool physical_device,
+> >                             cros_ec_sensors_capture_t trigger_capture,
+> > -                           cros_ec_sensorhub_push_data_cb_t push_data);
+> > +                           cros_ec_sensorhub_push_data_cb_t push_data,
+> > +                           bool has_hw_fifo);
+> >
+> >  irqreturn_t cros_ec_sensors_capture(int irq, void *p);
+> >  int cros_ec_sensors_push_data(struct iio_dev *indio_dev,
+> > @@ -125,6 +126,5 @@ extern const struct dev_pm_ops cros_ec_sensors_pm_ops;
+> >
+> >  /* List of extended channel specification for all sensors. */
+> >  extern const struct iio_chan_spec_ext_info cros_ec_sensors_ext_info[];
+> > -extern const struct attribute *cros_ec_sensor_fifo_attributes[];
+> >
+> >  #endif  /* __CROS_EC_SENSORS_CORE_H */
+>
