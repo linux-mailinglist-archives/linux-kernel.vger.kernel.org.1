@@ -2,152 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9510F278FB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29A5278FB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728843AbgIYRfR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:35:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727324AbgIYRfQ (ORCPT
+        id S1729621AbgIYRgk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 25 Sep 2020 13:36:40 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:43069 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727201AbgIYRgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:35:16 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228C2C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:35:16 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id a15so3148649ljk.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:35:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qur/7fLUQQ7M8HcyXzGgRmzT/BT3EA18MOp9o+vXhw4=;
-        b=m4O7tYfi+LCjjaX259cRmfSEkU9ANtBCnhcXbGdDSAkoly60jiLCi3EeKpG07gAcoW
-         +Wto5sbywnY6Hd66eKnVr3ouoFUsth7BsWjZYIJTqVpk4I8cS2V1j/q86ygavcMJNQX3
-         idQuds9V3xtHdlbaZYzJGZOujmPv3rLVOM7yFglYVXB+MepKm8MjBNp7GqumbzT0sPrJ
-         OHe7/vkjySw4w2L+dMdYgr9lmY49rg1gOXR3EWsnNwU9hXQfzTuiJGcli65em57braNw
-         qCFaNtwvdf0aS2TLIVDD4uaKRkr0qoBHQPspRmjgtvhgPKLiVBAHC4uV/xoDn64Yaa6e
-         y7IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qur/7fLUQQ7M8HcyXzGgRmzT/BT3EA18MOp9o+vXhw4=;
-        b=J/W2Ry6rDPzf6PnH2T1yr91jiw85kfzW6PEsgwJ3HjG41z/kramYZJtCaDgMm6NQLC
-         Q0SgJsXh+N1oxRTPeXE31eLYM/OuHOvvHiNPmBsVMKGUaKlT5CHT8lL3koHdaFU0Y2lu
-         XMO5AQxTLl3wEEe2MGBgejuAAVWPbVGJSRuCEczzdNzYI8hRCc61ktD6ipl1CL9WLoVE
-         t7L+Mgv5jz9Eakgr74xzM49oPIJmWTXQFkklALns8+MEy5ChZrScl5C8vYLMl0Sznog7
-         rdivgiiYTyDmjo+yFKs6ka70WVyRNu8IN9Y6QGzZT3DZ4qN4LENW2EzKDTUyvVQPUZ/S
-         UQfg==
-X-Gm-Message-State: AOAM533r1OSbjWBTJJd2KxRnYWAhRSs1vX2O0ZIusuD6xEZzg7RjHs/o
-        amu9TTmB43rf883GARCf/Pm4wujgEVHEMNsCUwRr+w==
-X-Google-Smtp-Source: ABdhPJww9rGC7xLbm/a5AUCqZn+u7vM4jrVP8ohJ3SXGjFK55/Cin/pgBfqfgrAVY0ajf7iXLZcHF33PReQm1QIMLPc=
-X-Received: by 2002:a2e:7c09:: with SMTP id x9mr1585757ljc.192.1601055314188;
- Fri, 25 Sep 2020 10:35:14 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200915073303.GA754106@T590> <20200915224541.GB38283@mit.edu>
- <20200915230941.GA791425@T590> <20200916202026.GC38283@mit.edu>
- <20200917022051.GA1004828@T590> <20200917143012.GF38283@mit.edu>
- <20200924005901.GB1806978@T590> <20200924143345.GD482521@mit.edu>
- <20200925011311.GJ482521@mit.edu> <20200925073145.GC2388140@T590>
- <20200925161918.GD2388140@T590> <CAHk-=whAe_n6JDyu40A15vnWs5PTU0QYX6t6-TbNeefanau6MA@mail.gmail.com>
- <CALvZod4+ucJfr4gR60mM1gRoc7NKWydPY-JQ757q+n8hOdmrvA@mail.gmail.com>
-In-Reply-To: <CALvZod4+ucJfr4gR60mM1gRoc7NKWydPY-JQ757q+n8hOdmrvA@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 25 Sep 2020 10:35:03 -0700
-Message-ID: <CALvZod4Wc23o09KXb+s=VJGs6X+8juuDXWfyfJuMH5DCksLtAQ@mail.gmail.com>
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ming Lei <ming.lei@redhat.com>, "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Jens Axboe <axboe@kernel.dk>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 25 Sep 2020 13:36:40 -0400
+Received: from [172.20.10.2] (dynamic-046-114-136-219.46.114.pool.telefonica.de [46.114.136.219])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 27265CECDF;
+        Fri, 25 Sep 2020 19:43:35 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH v5 4/4] Bluetooth: Add toggle to switch off interleave
+ scan
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200923172129.v5.4.I756c1fecc03bcc0cd94400b4992cd7e743f4b3e2@changeid>
+Date:   Fri, 25 Sep 2020 19:36:33 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        mmandlik@chromium.orgi, Miao-chen Chou <mcchou@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <D9C4CE14-371B-46DD-8FF7-FBA4593788B6@holtmann.org>
+References: <20200923172129.v5.1.Ib75f58e90c477f9b82c5598f00c59f0e95a1a352@changeid>
+ <20200923172129.v5.4.I756c1fecc03bcc0cd94400b4992cd7e743f4b3e2@changeid>
+To:     Howard Chung <howardchung@google.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:22 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Fri, Sep 25, 2020 at 10:17 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Fri, Sep 25, 2020 at 9:19 AM Ming Lei <ming.lei@redhat.com> wrote:
-> > >
-> > > git bisect shows the first bad commit:
-> > >
-> > >         [10befea91b61c4e2c2d1df06a2e978d182fcf792] mm: memcg/slab: use a single set of
-> > >                 kmem_caches for all allocations
-> > >
-> > > And I have double checked that the above commit is really the first bad
-> > > commit for the list corruption issue of 'list_del corruption, ffffe1c241b00408->next
-> > > is LIST_POISON1 (dead000000000100)',
-> >
-> > Thet commit doesn't revert cleanly, but I think that's purely because
-> > we'd also need to revert
-> >
-> >   849504809f86 ("mm: memcg/slab: remove unused argument by charge_slab_page()")
-> >   74d555bed5d0 ("mm: slab: rename (un)charge_slab_page() to
-> > (un)account_slab_page()")
-> >
-> > too.
-> >
-> > Can you verify that a
-> >
-> >     git revert 74d555bed5d0 849504809f86 10befea91b61
-> >
-> > on top of current -git makes things work for you again?
-> >
-> > I'm going to do an rc8 this release simply because we have another VM
-> > issue that I hope to get fixed - but there we know what the problem
-> > and the fix _is_, it just needs some care.
-> >
-> > So if Roman (or somebody else) can see what's wrong and we can fix
-> > this quickly, we don't need to go down the revert path, but ..
-> >
->
-> I think I have a theory. The issue is happening due to the potential
-> infinite recursion:
->
-> [ 5060.124412]  ___cache_free+0x488/0x6b0
-> *****Second recursion
-> [ 5060.128666]  kfree+0xc9/0x1d0
-> [ 5060.131947]  kmem_freepages+0xa0/0xf0
-> [ 5060.135746]  slab_destroy+0x19/0x50
-> [ 5060.139577]  slabs_destroy+0x6d/0x90
-> [ 5060.143379]  ___cache_free+0x4a3/0x6b0
-> *****First recursion
-> [ 5060.147896]  kfree+0xc9/0x1d0
-> [ 5060.151082]  kmem_freepages+0xa0/0xf0
-> [ 5060.155121]  slab_destroy+0x19/0x50
-> [ 5060.159028]  slabs_destroy+0x6d/0x90
-> [ 5060.162920]  ___cache_free+0x4a3/0x6b0
-> [ 5060.167097]  kfree+0xc9/0x1d0
->
-> ___cache_free() is calling cache_flusharray() to flush the local cpu
-> array_cache if the cache has more elements than the limit (ac->avail
-> >= ac->limit).
->
-> cache_flusharray() is removing batchcount number of element from local
-> cpu array_cache and pass it slabs_destroy (if the node shared cache is
-> also full).
->
-> Note that we have not updated local cpu array_cache size yet and
-> called slabs_destroy() which can call kfree() through
-> unaccount_slab_page().
->
-> We are on the same CPU and this recursive kfree again check the
-> (ac->avail >= ac->limit) and call cache_flusharray() again and recurse
-> indefinitely.
+Hi Howard,
 
-I can see two possible fixes. We can either do async kfree of
-page_obj_cgroups(page) or we can update the local cpu array_cache's
-size before slabs_destroy().
+> This patch add a configurable parameter to switch off the interleave
+> scan feature.
+> 
+> Signed-off-by: Howard Chung <howardchung@google.com>
+> Reviewed-by: Alain Michaud <alainm@chromium.org>
+> ---
+> 
+> (no changes since v4)
+> 
+> Changes in v4:
+> - Set EnableAdvMonInterleaveScan default to Disable
+> - Fix 80 chars limit in mgmt_config.c
+> 
+> include/net/bluetooth/hci_core.h | 1 +
+> net/bluetooth/hci_core.c         | 1 +
+> net/bluetooth/hci_request.c      | 3 ++-
+> net/bluetooth/mgmt_config.c      | 5 +++++
+> 4 files changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+> index cfede18709d8f..b0225b80152cc 100644
+> --- a/include/net/bluetooth/hci_core.h
+> +++ b/include/net/bluetooth/hci_core.h
+> @@ -363,6 +363,7 @@ struct hci_dev {
+> 	__u32		clock;
+> 	__u16		advmon_allowlist_duration;
+> 	__u16		advmon_no_filter_duration;
+> +	__u16		enable_advmon_interleave_scan;
 
-Shakeel
+I really have to see the patch for doc/mgmt-api.txt first and I am certainly not really in favor of using an uint16 for a simple boolean on/off value just because the kernel code is simpler that way.
+
+Regards
+
+Marcel
+
