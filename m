@@ -2,141 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C98278B8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E33278B9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729271AbgIYO6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729135AbgIYO6t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:58:49 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9049DC0613CE;
-        Fri, 25 Sep 2020 07:58:49 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id o20so3426204pfp.11;
-        Fri, 25 Sep 2020 07:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rwc/QyapswEQS+8sjmCFvdCCUajigTq8+2m0F7Eia9o=;
-        b=OZ4qyVtAFHqmkFidhBwZQ+OyF8DGJiOyfkhenYpBOpk4ae5MR9ctmbSL/R0ZZPXSmb
-         Xy0zLlaOLG5ZKjwxw8z4QBkVNy8Q1teqs7vStsvGzzR4eb94mKtviXQHM8Tx8BeCaueA
-         7N1G1OUFArdGzTk8XEJN/lbFcejCIEhNim8c4rfMfG9oc87m7X2tVcjKPxPhbinnIPs4
-         vlv3oMCmNwjkYUu0OI6Dy1FbtQShBQsUrSB/3m34o3KkpkgQdpS3smTg7q1HyilgDebQ
-         xBdoGVDVz0DeBB3zhlnME+iXVH00nPXTcVkHfDFiRt08xXaO9VYIxnUvrz1lM8RjnBZ9
-         uSLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rwc/QyapswEQS+8sjmCFvdCCUajigTq8+2m0F7Eia9o=;
-        b=QAU59Nk61nGvjhCurzUtp0mDWO5tpaccBSypN6ukEYx6WJu/xRTQbI0HKB3uoeyNMH
-         uQClpukdDPAXKnpUrvjVTTAftVr/27njjeMwo24pOgB34EztnqEctsPgSqxb2asFsfC2
-         N9Z69/VM8uhTogxKssczsoxN//fpG/jmxOyCUJGZS7fIkSb+uzScbU2zlEqtU1mzOLda
-         wcOhtfOwZsqm9mggf06oT/mhTu/fV0/sX2dznWFsVMCJq2TkWf1IQhCzsfFUGEimjYWb
-         Pjjk+QYvAvXM2J62imnh80ah4xUxExhKi8Y6Mdqb1gQ5mFOFhWJbb0hOIp+GQeh/7mYn
-         zfPQ==
-X-Gm-Message-State: AOAM533Bi8Osx75gVIp+WAhrdz/OU1A9Yw+rejdekU82vVtUQz5h/sZQ
-        XC+AREmMcveI5l0lwRpY/eBuOSPJyhcfv2gz5cU=
-X-Google-Smtp-Source: ABdhPJyVZF5qLQehqoGMQhSAwKdMOxNKBr4UiCXcMJJn/C5Izal8snLI+rO7UpcPE+ts5pi1F1zz8h+v0GQIY9eUKO0=
-X-Received: by 2002:a63:d648:: with SMTP id d8mr412278pgj.4.1601045928817;
- Fri, 25 Sep 2020 07:58:48 -0700 (PDT)
+        id S1729279AbgIYO71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728731AbgIYO7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:59:18 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5648C20715;
+        Fri, 25 Sep 2020 14:59:16 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 10:59:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org
+Subject: Re: [stable 4.19] [PANIC]: tracing: Centralize preemptirq
+ tracepoints and unify their usage
+Message-ID: <20200925105914.7de88d27@oasis.local.home>
+In-Reply-To: <20200925105458.567d0bf4@oasis.local.home>
+References: <20180823023839.GA13343@shao2-debian>
+        <20180828195347.GA228832@joelaf.mtv.corp.google.com>
+        <CA+G9fYtV_sjTKLMXWMP0w0A-H+p+CN-uVJ6dvHovDy9epJZ2GQ@mail.gmail.com>
+        <20200925051518.GA605188@kroah.com>
+        <CA+G9fYuokHUBwNkTs=gWqCHxj80gg+RetU4pRd+uLP7gNas4KQ@mail.gmail.com>
+        <20200925105458.567d0bf4@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200923151511.3842150-1-luzmaximilian@gmail.com>
- <CAK8P3a3Qie_CP1dA-ERqyDv=EnaQQPnNbFYrGr3ySiY4mO0=Uw@mail.gmail.com>
- <CAHp75Vfp86h38Rd-VEgER7ASADdmz5ymAkuHvD0Q6WPDqZBqHw@mail.gmail.com> <95c2d02b-b8b1-59d9-1276-f2b1830fdac8@gmail.com>
-In-Reply-To: <95c2d02b-b8b1-59d9-1276-f2b1830fdac8@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 25 Sep 2020 17:58:29 +0300
-Message-ID: <CAHp75Vc6ohuT_Ga=p-n+gKaVhPWE2EEbkhx-EQO_vKEtgmswqA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/9] Add support for Microsoft Surface System
- Aggregator Module
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        =?UTF-8?Q?Bla=C5=BE_Hrastnik?= <blaz@mxxn.io>,
-        Dorian Stoll <dorian.stoll@tmsp.io>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 10:17 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
-> On 9/24/20 10:30 AM, Andy Shevchenko wrote:
-> > On Wed, Sep 23, 2020 at 6:32 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> >> On Wed, Sep 23, 2020 at 5:15 PM Maximilian Luz <luzmaximilian@gmail.com> wrote:
+On Fri, 25 Sep 2020 10:54:58 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-...
 
-> >> I think this should go to drivers/platform/x86 or drivers/platform/surface/
-> >> along with other laptop vendor specific code rather than drivers/misc/.
-> >
-> > +1 here. drivers/platform/surface is a good place to start.
-> > And you may begin with moving a few Surface drivers out of PDx86 to
-> > the new folder.
->
-> Perfect, thanks! I'll draft up a patch series over the weekend.
->
-> A couple questions regarding structure and maintenance:
->
->   - Should I CC the platform-driver-x86 list on future submissions to
->     drivers/platform/surface? I.e. is this something you would want to
->     review if it doesn't touch the drivers/platform/x86 directory?
+> The crash looks like its cr3 related, which I believe Peter Zijlstra
 
-Include PDx86 mailing list to the list of that. Current SURFACE*
-drivers have per driver record in MAINTAINERS IIRC. So, update them as
-well if needed.
+s/cr3/cr2/
 
->   - How would you want the layout to be, specifically regarding to the
->     surface-aggregator stuff? My suggestion would be simply:
->
->     drivers/platform/surface/
+-- Steve
 
->         surface_aggregator/
 
-Don't repeat parts of the path, the aggregator is enough as a folder
-name, but the driver of course should be in its own namespace
-('surface').
-
->             Kconfig
->             Makefile
->             core.c
->             controller.c
->             ... (all core stuff built into the surface_aggregator module)
->         Kconfig
->         Makefile
-
->         surface_aggregator_debugfs.c
-
-(Not sure why it's not a part of aggregator folder)
-
->         surface_acpi_notify.c
->         surface_*.c        (any other surface platform driver as well
->                             as drivers dependent on surface_aggregator)
->
->   - Regarding future things like HID transport driver, battery/AC driver:
->     Submit them to drivers/platform/surface or to their respective
->     subsystem directories?
-
-Respective subsystem _if_ it is a subsystem related driver and not
-kinda board file. Use common sense and existing examples.
-
--- 
-With Best Regards,
-Andy Shevchenko
+> did a restructuring of that code to not let it be an issue anymore.
+> I'll have to look deeper. The rework may be too intrusive to backport,
+> but we do have other work arounds for this issue if that would be
+> acceptable for backporting.
+> 
