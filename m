@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7F9278B29
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E6CA278AE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 16:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729056AbgIYOqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 10:46:38 -0400
-Received: from mga17.intel.com ([192.55.52.151]:53612 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728436AbgIYOqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 10:46:38 -0400
-IronPort-SDR: WK5Koke1kmSHVWGcNvCbmhQEw33HvHgDIx2aW3vq1x6P34V0J8CtJx/g4y6eC0io0DXi3oFbQA
- B3v/r2Pq4iAw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141546632"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="141546632"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:50:28 -0700
-IronPort-SDR: aIC3Frnz4ck9SmTtRmRaSj3bz2RFRGSWVMCEfgblm0CTqtgff2XmMTsJ3ewUVFWTkQGgz+B6zq
- oXpDcY3mZgvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="310824559"
-Received: from unknown (HELO labuser-Ice-Lake-Client-Platform.jf.intel.com) ([10.54.55.65])
-  by orsmga006.jf.intel.com with ESMTP; 25 Sep 2020 06:50:28 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org
-Cc:     ak@linux.intel.com, asit.k.mallick@intel.com,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 1/3] perf/x86/intel/uncore: Split the Ice Lake and Tiger Lake MSR uncore support
-Date:   Fri, 25 Sep 2020 06:49:03 -0700
-Message-Id: <20200925134905.8839-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728893AbgIYOcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 10:32:11 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:37382 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728330AbgIYOcL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 10:32:11 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PETgFb010302;
+        Fri, 25 Sep 2020 14:32:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : content-type :
+ content-transfer-encoding : mime-version : subject : message-id : date :
+ cc : to; s=corp-2020-01-29;
+ bh=25WCgjfBqcBaP0EHmumZV1eiL8VenBYNlGRWPzuVhaM=;
+ b=h4mkp2qP83X3PGkcBoG/8QJ5YmJhFFasHbqZQ917wYQmW7Wea8KN7K43YyZvTe9dAWCF
+ Av41Nt/keDYiqiuTEf8pfjoi6HJOFQwGewfIQRBK5JJX/kFzRtOiiKGFZCIkMdmZHfd8
+ qmNMiVORv9KmfnCn4JdskMQ21YbXGpgvAfdjGHKlTHeqZC67LJvIBS7xMCUR3j0JMftB
+ /pfWDVaNGhfJ119Z40a7Xwi0Doly7kOwnGZKgYByqpFlvB+clgjWeWUH4hCjIAyPcWAE
+ hnFeylZQNJhqJWD+lPjUb9PKxBUHLvjlo7R+JG2AQjG9+qiZYKdpSUy/YfG1iE1v0/X5 Bw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33qcpuaxrf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 25 Sep 2020 14:32:09 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PEQWm0158955;
+        Fri, 25 Sep 2020 14:32:08 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33s75jx9ef-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Sep 2020 14:32:08 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08PEW7Xu028145;
+        Fri, 25 Sep 2020 14:32:07 GMT
+Received: from anon-dhcp-152.1015granger.net (/68.61.232.219)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 25 Sep 2020 07:32:07 -0700
+From:   Chuck Lever <chuck.lever@oracle.com>
+Content-Type: text/plain;
+        charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Please pull NFS server fixes for v5.9
+Message-Id: <5A85C800-9FF4-4780-9DD4-23BA42044773@oracle.com>
+Date:   Fri, 25 Sep 2020 10:32:06 -0400
+Cc:     Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=924 bulkscore=0
+ malwarescore=0 adultscore=0 phishscore=0 spamscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250103
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=938
+ adultscore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 priorityscore=1501
+ phishscore=0 spamscore=0 malwarescore=0 clxscore=1011 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009250103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
 
-Previously, the MSR uncore for the Ice Lake and Tiger Lake are
-identical. The code path is shared. However, with recent update, the
-global MSR_UNC_PERF_GLOBAL_CTRL register and ARB uncore unit are changed
-for the Ice Lake. Split the Ice Lake and Tiger Lake MSR uncore support.
+  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
 
-The changes only impact the MSR ops() and the ARB uncore unit. Other
-codes can still be shared between the Ice Lake and the Tiger Lake.
+are available in the Git repository at:
 
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/intel/uncore.c     |  4 ++--
- arch/x86/events/intel/uncore.h     |  1 +
- arch/x86/events/intel/uncore_snb.c | 16 ++++++++++++++++
- 3 files changed, 19 insertions(+), 2 deletions(-)
+  git://git.linux-nfs.org/projects/cel/cel-2.6.git tags/nfsd-5.9-2
 
-diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
-index d5c6d3b340c5..c999945bfda1 100644
---- a/arch/x86/events/intel/uncore.c
-+++ b/arch/x86/events/intel/uncore.c
-@@ -1478,12 +1478,12 @@ static const struct intel_uncore_init_fun icl_uncore_init __initconst = {
- };
- 
- static const struct intel_uncore_init_fun tgl_uncore_init __initconst = {
--	.cpu_init = icl_uncore_cpu_init,
-+	.cpu_init = tgl_uncore_cpu_init,
- 	.mmio_init = tgl_uncore_mmio_init,
- };
- 
- static const struct intel_uncore_init_fun tgl_l_uncore_init __initconst = {
--	.cpu_init = icl_uncore_cpu_init,
-+	.cpu_init = tgl_uncore_cpu_init,
- 	.mmio_init = tgl_l_uncore_mmio_init,
- };
- 
-diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
-index 105fdc69825e..267f46cb487b 100644
---- a/arch/x86/events/intel/uncore.h
-+++ b/arch/x86/events/intel/uncore.h
-@@ -567,6 +567,7 @@ void snb_uncore_cpu_init(void);
- void nhm_uncore_cpu_init(void);
- void skl_uncore_cpu_init(void);
- void icl_uncore_cpu_init(void);
-+void tgl_uncore_cpu_init(void);
- void tgl_uncore_mmio_init(void);
- void tgl_l_uncore_mmio_init(void);
- int snb_pci2phy_map_init(int devid);
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index cb94ba86efd2..d2d43b6d6946 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -377,6 +377,22 @@ void icl_uncore_cpu_init(void)
- 	snb_uncore_arb.ops = &skl_uncore_msr_ops;
- }
- 
-+static struct intel_uncore_type *tgl_msr_uncores[] = {
-+	&icl_uncore_cbox,
-+	&snb_uncore_arb,
-+	&icl_uncore_clockbox,
-+	NULL,
-+};
-+
-+void tgl_uncore_cpu_init(void)
-+{
-+	uncore_msr_uncores = tgl_msr_uncores;
-+	icl_uncore_cbox.num_boxes = icl_get_cbox_num();
-+	icl_uncore_cbox.ops = &skl_uncore_msr_ops;
-+	icl_uncore_clockbox.ops = &skl_uncore_msr_ops;
-+	snb_uncore_arb.ops = &skl_uncore_msr_ops;
-+}
-+
- enum {
- 	SNB_PCI_UNCORE_IMC,
- };
--- 
-2.17.1
+for you to fetch changes up to 13a9a9d74d4d9689ad65938966dbc66386063648:
+
+  SUNRPC: Fix svc_flush_dcache() (2020-09-21 10:13:25 -0400)
+
+----------------------------------------------------------------
+Fixes:
+
+- Incorrect calculation on platforms that implement flush_dcache_page()
+
+----------------------------------------------------------------
+Chuck Lever (1):
+      SUNRPC: Fix svc_flush_dcache()
+
+ net/sunrpc/svcsock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--
+Chuck Lever
+
+
 
