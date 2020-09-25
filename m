@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A6F727883E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A87278814
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:52:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729497AbgIYMx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:53:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59952 "EHLO mail.kernel.org"
+        id S1728868AbgIYMwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:52:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729484AbgIYMxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:53:51 -0400
+        id S1729271AbgIYMv7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:51:59 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 35403206DB;
-        Fri, 25 Sep 2020 12:53:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84B3B21741;
+        Fri, 25 Sep 2020 12:51:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601038430;
-        bh=Hjba65to0WbZ8H4xOBA7DEOuoppyWz/lZKp7NGB6ctY=;
+        s=default; t=1601038319;
+        bh=/BGLC5wKa1UuaYv394/oS8DzjMVji2z+8SKIu8l2KFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZABgXrbEDv3k1Yot+WW0Gme2iiShNqEPPHwyG7vEE7g9KTiyNb/MWcAKLcHqkuXdv
-         OMpOYYjzxN4Iu6QKzeq02P+2si2vGOQSr17UKtUexBo1qwQpwV+Tjz5zl4E1cxzA+j
-         N0ORd81hrviaBjxbWE7lcuVtzC6lczQC7wcq2Yy4=
+        b=ci5m1EqWqOOeAX+bXq0fPa0Ex0EyHUosZpEOf+zx2icjntcIVjVtBktyu9eWRFRVf
+         /+z+zbAyoKuDXh4AavNBZilt0aSF8NpEqVXe1x7iRLhM04+Y2KxQlR7VsklV3Zrdxu
+         DsKWsHEAtA40rRrg1wnghpCZ812XJDLTa02mE9nA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Wang <weiwan@google.com>,
-        Eric Dumazet <edumazet@google.com>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Simon Horman <simon.horman@netronome.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 08/37] ip: fix tos reflection in ack and reset packets
-Date:   Fri, 25 Sep 2020 14:48:36 +0200
-Message-Id: <20200925124722.198455654@linuxfoundation.org>
+Subject: [PATCH 5.4 25/43] nfp: use correct define to return NONE fec
+Date:   Fri, 25 Sep 2020 14:48:37 +0200
+Message-Id: <20200925124727.398993012@linuxfoundation.org>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
-References: <20200925124720.972208530@linuxfoundation.org>
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
+References: <20200925124723.575329814@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,43 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Wang <weiwan@google.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit ba9e04a7ddf4f22a10e05bf9403db6b97743c7bf ]
+[ Upstream commit 5f6857e808a8bd078296575b417c4b9d160b9779 ]
 
-Currently, in tcp_v4_reqsk_send_ack() and tcp_v4_send_reset(), we
-echo the TOS value of the received packets in the response.
-However, we do not want to echo the lower 2 ECN bits in accordance
-with RFC 3168 6.1.5 robustness principles.
+struct ethtool_fecparam carries bitmasks not bit numbers.
+We want to return 1 (NONE), not 0.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-
-Signed-off-by: Wei Wang <weiwan@google.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
+Fixes: 0d0870938337 ("nfp: implement ethtool FEC mode settings")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Reviewed-by: Simon Horman <simon.horman@netronome.com>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv4/ip_output.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -73,6 +73,7 @@
- #include <net/icmp.h>
- #include <net/checksum.h>
- #include <net/inetpeer.h>
-+#include <net/inet_ecn.h>
- #include <net/lwtunnel.h>
- #include <linux/bpf-cgroup.h>
- #include <linux/igmp.h>
-@@ -1582,7 +1583,7 @@ void ip_send_unicast_reply(struct sock *
- 	if (IS_ERR(rt))
- 		return;
+--- a/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
++++ b/drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c
+@@ -731,8 +731,8 @@ nfp_port_get_fecparam(struct net_device
+ 	struct nfp_eth_table_port *eth_port;
+ 	struct nfp_port *port;
  
--	inet_sk(sk)->tos = arg->tos;
-+	inet_sk(sk)->tos = arg->tos & ~INET_ECN_MASK;
+-	param->active_fec = ETHTOOL_FEC_NONE_BIT;
+-	param->fec = ETHTOOL_FEC_NONE_BIT;
++	param->active_fec = ETHTOOL_FEC_NONE;
++	param->fec = ETHTOOL_FEC_NONE;
  
- 	sk->sk_priority = skb->priority;
- 	sk->sk_protocol = ip_hdr(skb)->protocol;
+ 	port = nfp_port_from_netdev(netdev);
+ 	eth_port = nfp_port_get_eth_port(port);
 
 
