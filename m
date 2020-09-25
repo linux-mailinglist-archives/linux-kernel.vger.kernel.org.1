@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A354C27817A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD01278177
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 09:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727410AbgIYH0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 03:26:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgIYH0A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 03:26:00 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.132])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5BE42086A;
-        Fri, 25 Sep 2020 07:25:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601018759;
-        bh=wGB5w4gO/unnniGON8j7h/PiBcLOT5xCHGPMg1d6iH0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=WmJ/GoaN55ZSvsvckkVBJJNmo/L6RFQiBmJRqEmESCvP59fLC00NKfvwIzmn7nNuk
-         nMaqGPuPKHtm0t7LuI4WgSHj6IAl9fKMOSO9u+a/uew6Dbts08SB1hd8WM/8Ubf05U
-         /IPnSzlf8+POs1Pd+tugoEQs1hb0FZ4cPkZjuM8E=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Ben Dooks <ben-linux@fluff.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Cc:     Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH] mmc: sdhci-s3c: hide forward declaration of of_device_id behind CONFIG_OF
-Date:   Fri, 25 Sep 2020 09:25:32 +0200
-Message-Id: <20200925072532.10272-1-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
+        id S1727379AbgIYHZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 03:25:59 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:40580 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727183AbgIYHZ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 03:25:58 -0400
+X-UUID: 44f2c2cc6fd442408e74c46367601df7-20200925
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qR+6jO15KAuDt/EGf8Txytwkys5qSReDtq36TcjNmZg=;
+        b=pbldmRyfG3USG3/0C/3coFn01dHuKTjB8Ja8GfkwKf9yhxw4ZXQDZA5izOtR1YAWRdOd9cAElWYwFYqY5nwbyPMi8j9lkzeptIaZLAOEKPXa+uTiVrLwg7AyJJgbqMecMiEE3sQnxyc8xscBZVAXb7hffPE3O++Fh5adHXv6+No=;
+X-UUID: 44f2c2cc6fd442408e74c46367601df7-20200925
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1516025203; Fri, 25 Sep 2020 15:25:51 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 25 Sep 2020 15:25:47 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 25 Sep 2020 15:25:48 +0800
+Message-ID: <1601018748.21446.43.camel@mtkswgap22>
+Subject: Re: [PATCH v7 2/2] dt-bindings: cpufreq: add bindings for MediaTek
+ cpufreq HW
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh@kernel.org>
+CC:     Rob Herring <robh@kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Fri, 25 Sep 2020 15:25:48 +0800
+In-Reply-To: <20200925061543.5hxs3ija2y53gzea@vireshk-i7>
+References: <1599712262-8819-1-git-send-email-hector.yuan@mediatek.com>
+         <1599712262-8819-3-git-send-email-hector.yuan@mediatek.com>
+         <20200922202852.GA3134161@bogus> <1600866614.21446.18.camel@mtkswgap22>
+         <1601000847.21446.34.camel@mtkswgap22>
+         <20200925061543.5hxs3ija2y53gzea@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: 1A08A85A014F2A3DFCD670D1D164310B29665174DC1C1C9978AFB07F1C124E7D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The struct of_device_id is not defined with !CONFIG_OF so its forward
-declaration should be hidden to as well.  This should address clang
-compile warning:
-
-  drivers/mmc/host/sdhci-s3c.c:464:34: warning: tentative array definition assumed to have one element
-
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
----
- drivers/mmc/host/sdhci-s3c.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/mmc/host/sdhci-s3c.c b/drivers/mmc/host/sdhci-s3c.c
-index cb5f87be7535..f48a788a9d3d 100644
---- a/drivers/mmc/host/sdhci-s3c.c
-+++ b/drivers/mmc/host/sdhci-s3c.c
-@@ -461,7 +461,9 @@ static int sdhci_s3c_parse_dt(struct device *dev,
- }
- #endif
- 
-+#ifdef CONFIG_OF
- static const struct of_device_id sdhci_s3c_dt_match[];
-+#endif
- 
- static inline struct sdhci_s3c_drv_data *sdhci_s3c_get_driver_data(
- 			struct platform_device *pdev)
--- 
-2.17.1
+SGksIFJvYiBzaXI6DQoNClllcywgbXkgcGF0Y2ggZm9sbG93cw0KRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL2NwdWZyZXEvY3B1ZnJlcS1xY29tLWh3LnR4dCB3YXkgdG8NCmRlZmlu
+ZSBmcmVxdWVuY3kgZG9tYWluLg0KSXMgaXQgT0sgdG8geW91IGlmIEkgdXNlIHRoZSBzYW1lIHdh
+eSB0byBkbz8NCkFuZCBpZiB0aGVyZSBleGlzdCBhbnkgc2NoZW1hIHByb2JsZW0sIHBsZWFzZSBr
+aW5kbHkgbGV0IG1lIGtub3cgaG93IHRvDQpmaXggaXQuDQoNCk15IHBhdGNoIHJlZmVyZW5jZQ0K
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3RoZXJtYWwvdGhlcm1hbC1jb29saW5n
+LWRldmljZXMueWFtbA0KdG8gdXNlIHRoZSBjcHUgbm9kZS4NCmh0dHBzOi8vZWxpeGlyLmJvb3Rs
+aW4uY29tL2xpbnV4L3Y1LjktcmM2L3NvdXJjZS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvdGhlcm1hbC90aGVybWFsLWNvb2xpbmctZGV2aWNlcy55YW1sDQoNClRoYW5rcyBhIGxv
+dC4NCg0KT24gRnJpLCAyMDIwLTA5LTI1IGF0IDExOjQ1ICswNTMwLCBWaXJlc2ggS3VtYXIgd3Jv
+dGU6DQo+IE9uIDI1LTA5LTIwLCAxMDoyNywgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gSGksIFZp
+cmVzaCAmIFJvYiBTaXI6DQo+ID4gDQo+ID4gSSB3aWxsIGNoYW5nZSBmcmVxdWVuY3kgZG9tYWlu
+IHRvIGJlbG93IGFuZCBkZWZpbmUgaXQgaW4gY3B1ZnJlcV9odw0KPiA+IHNjaGVtYSByYXRoZXIg
+dGhhbiBjcHUgbm9kZS4NCj4gPiANCj4gPiBtZWRpYXRlayxmcmVxLWRvbWFpbi0wID0gPCZjcHUw
+PiwgPCZjcHUxPjsNCj4gDQo+IEkgdGhpbmsgaXQgd291bGQgYmUgYmV0dGVyIHRvIGRvIGl0IHRo
+ZSBzdGFuZGFyZCB3YXkgd2UgaGF2ZSBkb25lIGl0IGVsc2V3aGVyZS4NCj4gaS5lLiBmb2xsb3cg
+RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2NwdWZyZXEvY3B1ZnJlcS1xY29tLWh3
+LnR4dCwgdGhhdA0KPiBpcyBzaW1pbGFyIHRvIHdoYXQgeW91IGRpZCBlYXJsaWVyLg0KPiANCg0K
 
