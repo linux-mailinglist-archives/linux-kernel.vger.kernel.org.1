@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F20B27861B
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8D2278620
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 13:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728331AbgIYLkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 07:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728158AbgIYLkW (ORCPT
+        id S1728276AbgIYLl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 07:41:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58547 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728038AbgIYLl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 07:40:22 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28E5EC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:40:22 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id nw23so3206774ejb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 04:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bibwz6xtXc59LlPlbNqZb06QG0WOc82EPNG/m8AOWgM=;
-        b=dSc/KCtznv2Nneu9E0L4E6GZC4phzWtLtucZD26WfnjbrQqAVDDyDuLH3ReTVHBRrb
-         j9UOuSPctci4XvnfIEs3V4w0RfmwW+h9FfXeORqfzJEEPLqMSC9/BQXVOvrl2SmZknhE
-         yrvruWYm18xxeI13FqyzFRWrPmHrWCDerMMLvrehr3rBZgtnhtPEmuc1iwvnUHpXMwK1
-         7zbGq7zUD7+0aMDo1TJVn1OsQf7wOz2xb1ftrwHos58uzo6ZMvFZiTYVaB9BXnP355FS
-         ySdfqnrSSQXsBoSUnyr1hKbRqD9HG805rkMwEVMcPRiU33N7c2sD+9pphRyaHk/wxClx
-         JAEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bibwz6xtXc59LlPlbNqZb06QG0WOc82EPNG/m8AOWgM=;
-        b=kMFrah3gYQNnCxkDXeE04ZXSN95qwu93AO56A9MpwvHiJ1JDh64GUJWmAopzpX+ci9
-         7KBs22SpHivcegLFG1X2E79FaE+sa0WMUkI135tLkNKQ44I6KXI/5qPgmZ+Z1Z6Y9Kom
-         neu6XJ/TsVxrvVL2g1WkOxwl6P+D26V0Gmgp6eOR5YjXUF+6knhx4hSpfhiCkwYEEHNo
-         UHEj6T7GgkbWlto7rnDGAcWntfOmzk0THVFr3E9huJUkSNUDfVxBi0P5emA3cjyRCabR
-         0QpCshkBCOdM1GbzRpWhcNjzXDrhpHfrVUb5OupfHDgW/8EedwQ7k9ckPjx/HgCgAVzN
-         ossA==
-X-Gm-Message-State: AOAM533q21hzfbqAzTW8xW0TCRNMk/YDO7FJbfj8SOLpAqYE/ScwrmsR
-        Ax3xUanPrSnVnPnICpgwfB5fXgaDunbmbrDrvDq71A==
-X-Google-Smtp-Source: ABdhPJwn2e7xjK7G36KT8ZSmKFE3rfPC7d3IYHiCVDf7fxLGWKu8DM1qXuYm/+oEWtbYS/rR/2Q+AfvcPV71RZviaPM=
-X-Received: by 2002:a17:906:49c6:: with SMTP id w6mr2170357ejv.445.1601034020713;
- Fri, 25 Sep 2020 04:40:20 -0700 (PDT)
+        Fri, 25 Sep 2020 07:41:59 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601034117;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4y1m9JMkkDOJsL4k1JE6OPASJ9H32SGI/WQkPFQ5hvU=;
+        b=BehAv66nOqG6+fVz9X/JJ18JBB8nqRlvBbI1jkIqwwuAo6o5JUespK6ltjCjkPoDHY1Ofh
+        R4ujNICOJ5TgB3rt0ECTv6P2UJa7uzixSTYIyfRA+pDWfUqjwewI1PxxExwsH3p+DmpZ0t
+        NVXeMwkqHDSzPB28yrn1nx0PeYyFvdI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-291-oSmASuxLNzWLqtK_WBmrYA-1; Fri, 25 Sep 2020 07:41:55 -0400
+X-MC-Unique: oSmASuxLNzWLqtK_WBmrYA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6C8B1007382;
+        Fri, 25 Sep 2020 11:41:53 +0000 (UTC)
+Received: from [10.72.12.44] (ovpn-12-44.pek2.redhat.com [10.72.12.44])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E5FB527BB7;
+        Fri, 25 Sep 2020 11:41:38 +0000 (UTC)
+Subject: Re: [RFC PATCH 02/24] vhost-vdpa: fix vqs leak in vhost_vdpa_open()
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, lulu@redhat.com, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, hanand@xilinx.com,
+        mhabets@solarflare.com, eli@mellanox.com, amorenoz@redhat.com,
+        maxime.coquelin@redhat.com, stefanha@redhat.com,
+        sgarzare@redhat.com
+References: <20200924032125.18619-1-jasowang@redhat.com>
+ <20200924032125.18619-3-jasowang@redhat.com>
+ <20200924074816.GC170403@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <7237334f-10df-6d5b-dce9-c16b38166ae0@redhat.com>
+Date:   Fri, 25 Sep 2020 19:41:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200924113842.11670-1-brgl@bgdev.pl> <20200924113842.11670-9-brgl@bgdev.pl>
- <20200925090329.GZ3956970@smile.fi.intel.com>
-In-Reply-To: <20200925090329.GZ3956970@smile.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 25 Sep 2020 13:40:10 +0200
-Message-ID: <CAMpxmJWBSwofFy94mHZWB2mdvHGStYp5oLDZp2M+wO57t40HSQ@mail.gmail.com>
-Subject: Re: [PATCH 8/9] gpio: mockup: use the generic 'gpio-line-names' property
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200924074816.GC170403@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:03 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Sep 24, 2020 at 01:38:41PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> >
-> > GPIO line names are currently created by the driver from the chip label.
-> > We'll want to support custom formats for line names (for instance: to
-> > name all lines the same) for user-space tests so create them in the
-> > module init function and pass them to the driver using the standard
-> > 'gpio-line-names' property.
->
-> ...
->
-> > +             if (gpio_mockup_named_lines) {
-> > +                     line_names = gpio_mockup_make_line_names(chip_label,
-> > +                                                              ngpio);
-> > +                     if (!line_names) {
-> > +                             platform_driver_unregister(&gpio_mockup_driver);
-> > +                             gpio_mockup_unregister_pdevs();
-> > +                             return -ENOMEM;
-> > +                     }
->
-> > +                     properties[prop++] = PROPERTY_ENTRY_STRING_ARRAY_LEN(
-> > +                                             "gpio-line-names",
-> > +                                             line_names, ngpio);
->
-> Forgot to update GPIO_MOCKUP_MAX_PROP?
->
 
-No, there are still three properties: chip-label, nr-gpios and
-gpio-line-names. Same answer to patch 8/9.
+On 2020/9/24 下午3:48, Eli Cohen wrote:
+> On Thu, Sep 24, 2020 at 11:21:03AM +0800, Jason Wang wrote:
+>> We need to free vqs during the err path after it has been allocated
+>> since vhost won't do that for us.
+>>
+>> Signed-off-by: Jason Wang <jasowang@redhat.com>
+>> ---
+>>   drivers/vhost/vdpa.c | 11 ++++++++---
+>>   1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+>> index 796fe979f997..9c641274b9f3 100644
+>> --- a/drivers/vhost/vdpa.c
+>> +++ b/drivers/vhost/vdpa.c
+>> @@ -764,6 +764,12 @@ static void vhost_vdpa_free_domain(struct vhost_vdpa *v)
+>>   	v->domain = NULL;
+>>   }
+>>   
+>> +static void vhost_vdpa_cleanup(struct vhost_vdpa *v)
+>> +{
+>> +	vhost_dev_cleanup(&v->vdev);
+>> +	kfree(v->vdev.vqs);
+>> +}
+>> +
+> Wouldn't it be cleaner to call kfree(vqs) explicilty inside
+> vhost_vdpa_open() in case of failure and keep the symetry of
+> vhost_dev_init()/vhost_dev_cleanup()?
 
-> > +             }
->
-> ...
->
-> > +             kfree_strarray(line_names, line_names ? ngpio : 0);
->
-> Perhaps you may check for NULL pointer in the kfree_strarray() and drop ternary
-> here?
->
 
-I did in the previous series and you told me to not to. :)
+That's also fine.
 
-Bartosz
+See 
+https://www.mail-archive.com/virtualization@lists.linux-foundation.org/msg42558.html
+
+I will use that for the next version.
+
+Thanks.
+
+
+>
+>>   static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>>   {
+>>   	struct vhost_vdpa *v;
+>> @@ -809,7 +815,7 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>>   	return 0;
+>>   
+>>   err_init_iotlb:
+>> -	vhost_dev_cleanup(&v->vdev);
+>> +	vhost_vdpa_cleanup(v);
+>>   err:
+>>   	atomic_dec(&v->opened);
+>>   	return r;
+>> @@ -840,8 +846,7 @@ static int vhost_vdpa_release(struct inode *inode, struct file *filep)
+>>   	vhost_vdpa_free_domain(v);
+>>   	vhost_vdpa_config_put(v);
+>>   	vhost_vdpa_clean_irq(v);
+>> -	vhost_dev_cleanup(&v->vdev);
+>> -	kfree(v->vdev.vqs);
+>> +	vhost_vdpa_cleanup(v);
+>>   	mutex_unlock(&d->mutex);
+>>   
+>>   	atomic_dec(&v->opened);
+>> -- 
+>> 2.20.1
+>>
+
