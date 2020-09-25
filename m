@@ -2,95 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 163FD277F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 06:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AF8277F1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 06:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727057AbgIYEkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 00:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47618 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726738AbgIYEkR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 00:40:17 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC124C0613CE;
-        Thu, 24 Sep 2020 21:40:16 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ByK325pZCz9sSn;
-        Fri, 25 Sep 2020 14:40:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601008814;
-        bh=0LJn+ZOotUkF8eO1MNB+VO6AmEuzjV8InnLcwwEFRbM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Ehdw5pX8DACOU6+GabU7JcKL2AaYu9OA50otmlHsTjmmm9HMnCk+CpoBNVFDCFsBN
-         N6Ehzr+xO6ntA/6KBJvD1Pb2XaQrM546gJheiCrB9Q8616io8w6rrCLBmER+QW306/
-         RCk2mkMFJ9H5lVNLAITam9Lb0r20b43NZiGkarYfP+UU1oWT72nkrmSwwsgxjkqFaF
-         WXkrbENImaykMRwPhUmnE2Y2Ej0VA/tsg0JGvnTikExhwNc29SrkARPO08RLqQyOT5
-         LxuzBUiL0i19g7KnmdFJ+joJvUR/akOxLagxwseGx1unQo9Gd3os8E1rC1wwhguBAW
-         2T4c+JtBMu0pw==
-Date:   Fri, 25 Sep 2020 14:40:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Amey Narkhede <ameynarkhede03@gmail.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: build failure after merge of the mmc tree
-Message-ID: <20200925144012.7487daf8@canb.auug.org.au>
+        id S1727074AbgIYEnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 00:43:17 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:52492 "EHLO fornost.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726738AbgIYEnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 00:43:17 -0400
+Received: from gwarestrin.arnor.me.apana.org.au ([192.168.0.7])
+        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
+        id 1kLfZQ-0003Uw-Ce; Fri, 25 Sep 2020 14:42:57 +1000
+Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 25 Sep 2020 14:42:56 +1000
+Date:   Fri, 25 Sep 2020 14:42:56 +1000
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     syzbot <syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, steffen.klassert@secunet.com,
+        syzkaller-bugs@googlegroups.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH] xfrm: Use correct address family in xfrm_state_find
+Message-ID: <20200925044256.GA18246@gondor.apana.org.au>
+References: <0000000000009fc91605afd40d89@google.com>
+ <20200925030759.GA17939@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/P0dDIYkmzS9/I97xb.l.3Ar";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925030759.GA17939@gondor.apana.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/P0dDIYkmzS9/I97xb.l.3Ar
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Resend with proper subject.
+ 
+---8<---
+The struct flowi must never be interpreted by itself as its size
+depends on the address family.  Therefore it must always be grouped
+with its original family value.
 
-Hi all,
+In this particular instance, the original family value is lost in
+the function xfrm_state_find.  Therefore we get a bogus read when
+it's coupled with the wrong family which would occur with inter-
+family xfrm states.
 
-After merging the mmc tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+This patch fixes it by keeping the original family value.
 
-drivers/mmc/host/davinci_mmc.c: In function 'mmc_davinci_set_ios':
-drivers/mmc/host/davinci_mmc.c:696:19: error: 'mmc' redeclared as different=
- kind of symbol
-  696 |  struct mmc_host *mmc =3D mmc_from_priv(host);
-      |                   ^~~
-drivers/mmc/host/davinci_mmc.c:691:50: note: previous definition of 'mmc' w=
-as here
-  691 | static void mmc_davinci_set_ios(struct mmc_host *mmc, struct mmc_io=
-s *ios)
-      |                                 ~~~~~~~~~~~~~~~~~^~~
+Note that the same bug could potentially occur in LSM through
+the xfrm_state_pol_flow_match hook.  I checked the current code
+there and it seems to be safe for now as only secid is used which
+is part of struct flowi_common.  But that API should be changed
+so that so that we don't get new bugs in the future.  We could
+do that by replacing fl with just secid or adding a family field.
 
-Caused by commit
+Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
+Fixes: 48b8d78315bf ("[XFRM]: State selection update to use inner...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 
-  359c6349a771 ("mmc: davinci: Drop pointer to mmc_host from mmc_davinci_ho=
-st")
-
-I have used the mmc tree from next-20200924 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/P0dDIYkmzS9/I97xb.l.3Ar
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9tdKwACgkQAVBC80lX
-0GxqkQf/Rr+MaaUh3csApsKEGaU158p8vDtbB4XnAw1+at38kA7sJSKH2fYcHuFw
-jkRWQm2+wZIlMw2s52CZO7RoyniBcDlQmofDenu1cvQDRpzE5WjjUotST7lBcy9z
-0duwp6Ne9vrqDQWq581JpB1vTtUZjLD03u2aWa1rTkAfE8umXjAh8zuq8w4o9oVP
-l7y7g4fhnE+O5XrmgbMZxQhV3olk737eLJ1POjY1Jjv3WsLuAGfsxIDQiujuGRL1
-hDzdYPQ7iRTJFvABnRR3HbTeDDqCTK6KXjoiYcylCDFb7CUBUZ4HlSHIjDV3C7yN
-eSeiYyrxOcX4ChgY9xPaABADl/Uq+g==
-=q9sT
------END PGP SIGNATURE-----
-
---Sig_/P0dDIYkmzS9/I97xb.l.3Ar--
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index 69520ad3d83b..9b5f2c2b9770 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -1019,7 +1019,8 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
+ 	 */
+ 	if (x->km.state == XFRM_STATE_VALID) {
+ 		if ((x->sel.family &&
+-		     !xfrm_selector_match(&x->sel, fl, x->sel.family)) ||
++		     (x->sel.family != family ||
++		      !xfrm_selector_match(&x->sel, fl, family))) ||
+ 		    !security_xfrm_state_pol_flow_match(x, pol, fl))
+ 			return;
+ 
+@@ -1032,7 +1033,9 @@ static void xfrm_state_look_at(struct xfrm_policy *pol, struct xfrm_state *x,
+ 		*acq_in_progress = 1;
+ 	} else if (x->km.state == XFRM_STATE_ERROR ||
+ 		   x->km.state == XFRM_STATE_EXPIRED) {
+-		if (xfrm_selector_match(&x->sel, fl, x->sel.family) &&
++		if ((!x->sel.family ||
++		     (x->sel.family == family &&
++		      xfrm_selector_match(&x->sel, fl, family))) &&
+ 		    security_xfrm_state_pol_flow_match(x, pol, fl))
+ 			*error = -ESRCH;
+ 	}
+@@ -1072,7 +1075,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 		    tmpl->mode == x->props.mode &&
+ 		    tmpl->id.proto == x->id.proto &&
+ 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+-			xfrm_state_look_at(pol, x, fl, encap_family,
++			xfrm_state_look_at(pol, x, fl, family,
+ 					   &best, &acquire_in_progress, &error);
+ 	}
+ 	if (best || acquire_in_progress)
+@@ -1089,7 +1092,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 		    tmpl->mode == x->props.mode &&
+ 		    tmpl->id.proto == x->id.proto &&
+ 		    (tmpl->id.spi == x->id.spi || !tmpl->id.spi))
+-			xfrm_state_look_at(pol, x, fl, encap_family,
++			xfrm_state_look_at(pol, x, fl, family,
+ 					   &best, &acquire_in_progress, &error);
+ 	}
+ 
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
