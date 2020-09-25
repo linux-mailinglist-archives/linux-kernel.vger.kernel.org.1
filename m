@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D189279351
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD31527934E
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729428AbgIYVYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
+        id S1729258AbgIYVYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729246AbgIYVXg (ORCPT
+        with ESMTP id S1729260AbgIYVXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:23:36 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8951C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:36 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id a129so3305293pgc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:36 -0700 (PDT)
+        Fri, 25 Sep 2020 17:23:38 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8957EC0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:38 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id m13so3232988qtu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=2ZW97evDdGZ1vZX3rJE1h1hcVRAtHA0th2WLnrerXFE=;
-        b=rcO6+on5bvD26jOOTJ3pOOYuGTkqfwYFC2emDtlAgUI2igLZjBi49pSvzd/SNLCrhx
-         bGwrsMwhm1nJI2YUtnl6TLktq1Br9eg6iw9fHvWwXLo6kGabTddTZv1Lfwi1HEDSkqJd
-         dJtkevhjDUvyMh0C8odOucJVXLzeK7tkVVph+T/mIvo+ezLqm3pC5NTOKUnH4I06HQeJ
-         gHF9i5plGAyiYFI0X5igAAN5NbR6QeFJWLjF+G/MmNWqW9cnpSRC96NkCUsYVtfHGEAL
-         2DQmye1AZ2SKfmuHvJXxXiveWNZQQ+jJvDaqvNG/3jO5XaumXd1LNvO/13jy1KzMGtTd
-         bmZA==
+        bh=jRVbtRnVunaUbsRIJ3qqaIgFOVHoYWyu7xL6dJMWEVU=;
+        b=dfKIlNg1y7ZqiIyhdvXSMvj8pVfsBfNZKnyiXx9VE5GfVSl8WjprUfryl5rIymrH7i
+         XJ5s8PI7wf36Feoycno1aFCYIdLW1nOpheLf6Ol5H7/wydSBAcGTZrv3yOD6n1ixHN7g
+         TFN8MFXDwstrtpdbz3Bdy/ZmPNuf5BKCWp51ogfcYtoQlKNiODD/+gQTSHj0VUvhme+E
+         bkbmyzK6iDSvJO6R9T1UVGbCqIewIbrTGl5UbW5LhlUfSabrFEF5NAy1jgQY6BDYbK+6
+         DSoaRk9Y3Z5QYdeDtnAeLl3NLxVPSfu+P6M+YUz3iYag3LHoHwrwwPuebKGPw53HoJUb
+         itpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2ZW97evDdGZ1vZX3rJE1h1hcVRAtHA0th2WLnrerXFE=;
-        b=ajybeWeQEqAle20mSeZzV7g0jAA0Bh0xkyp9bUUGVUB3qC86+iOJqYIaxd9yFTzVzU
-         1TXOtsnHd8a/D4fZpEMLQo4ojBngR5rR/mbmv9fH7SYYPMU0KNmbKLygbh8aBbQ5ZOY6
-         0YpkapVa3cFiihslmLRaYEq8Khk/Rlinl9Krxo7MDTAR9Fnek4TLBAfkCWyw1zTRpC/6
-         K+te4N3xO5uAm5fQtCXkq/B/XT++OI96V9l9Y6Pvkar07DRbsni93/Oe2uU7sVlJOST2
-         QNhWqE+AJeWFe6jwPOKV2zBsIcy7V8wXsBMSnwjLw4tGuJGZqqClN0Nfvmrad9lum2NG
-         DspA==
-X-Gm-Message-State: AOAM530l3hTlRi/vVPACmO9zCcurTCLiQLsTxUs0dL3xyb9kKxrdEMOO
-        zxOhG1XBatg+BA3npQEgZO+kKpf5CNqSvvN9u+Pgc7hUaidn9x0yxtdkUK6uZRMdyHnqyHxK9Nn
-        ZnWCVydcFORWUrxBPJs6yrtxPcDJ6EG6HY+AWKc72S1bxy7rE2KPVoefeDDCB4piPGkq9G4qm
-X-Google-Smtp-Source: ABdhPJxOnXFh3ugXDvH7iih5//M0RhAFbKOi44WgqPGt00bT5oGQJZK6p+S9qNOEz7cHOrDCuqRQESiiEZQk
+        bh=jRVbtRnVunaUbsRIJ3qqaIgFOVHoYWyu7xL6dJMWEVU=;
+        b=FPqBsYwanQZrBXSqCrkCcUcxPnE1rOhRO/rrq/F+mH8KxHzDwTpHSFONrwNT+GuBDo
+         5wfNpdgra6+3BCvo5pt0EqN61Qyb9gSCWCCxLwRxZZNz94Je53Q6TF8ViKf4YNQ8Iba0
+         MUmdVe/PROSEnpvEgOJ7jhv7qrlmqQDOBInqXedWTIO4JHRe25sqOWF84wwEXNmvy+Hx
+         A/QAFX+2jKv8gPeakKSaEQEU9ytXpeHSy1FWALKQP7Ok2RjQFu1BAHYJHiHaQ5E/w/be
+         E8z7ZGj+OisWB6bDmNRPqOqYV6SOL0qu0MIEezyrcWMEMe5opIRFOh7AE9sYUT2SGJmU
+         z0zg==
+X-Gm-Message-State: AOAM531wV2oItcKNlzpJtSSD/cN9judpblZtowv8UGcLHBe/5BAAFWzl
+        NBJvHlMd0RJcGAQbZzMPqX9nYB186hOzfmOSX/moOBVy5Nx10zmyrkUG89L/FudzDVJuFqD8xLv
+        vufNWeziJOh3XpPuCjF6S8AxGvHZiXFgR/DgSXTLrUyYb5yQ7QX/QeLn3egTvVeCeU3SXKqcS
+X-Google-Smtp-Source: ABdhPJw17NhL/7qCi5kl9UW4U6EP5dY6yG9Ua1eYsaf+4istvoy/1+8ZHu8SQUzB7xuFrOmapRmOE+NxZVtZ
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a17:90b:941:: with SMTP id
- dw1mr29935pjb.1.1601069015590; Fri, 25 Sep 2020 14:23:35 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 14:22:55 -0700
+ (user=bgardon job=sendgmr) by 2002:ad4:5745:: with SMTP id
+ q5mr636253qvx.29.1601069017635; Fri, 25 Sep 2020 14:23:37 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 14:22:56 -0700
 In-Reply-To: <20200925212302.3979661-1-bgardon@google.com>
-Message-Id: <20200925212302.3979661-16-bgardon@google.com>
+Message-Id: <20200925212302.3979661-17-bgardon@google.com>
 Mime-Version: 1.0
 References: <20200925212302.3979661-1-bgardon@google.com>
 X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH 15/22] kvm: mmu: Support changed pte notifier in tdp MMU
+Subject: [PATCH 16/22] kvm: mmu: Add dirty logging handler for changed sptes
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Cannon Matthews <cannonmatthews@google.com>,
@@ -74,9 +74,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to interoperate correctly with the rest of KVM and other Linux
-subsystems, the TDP MMU must correctly handle various MMU notifiers. Add
-a hook and handle the change_pte MMU notifier.
+Add a function to handle the dirty logging bookkeeping associated with
+SPTE changes. This will be important for future commits which will allow
+the TDP MMU to log dirty pages the same way the x86 shadow paging based
+MMU does.
 
 Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
 machine. This series introduced no new failures.
@@ -86,222 +87,100 @@ This series can be viewed in Gerrit at:
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c          | 46 +++++++++++++------------
- arch/x86/kvm/mmu/mmu_internal.h | 13 +++++++
- arch/x86/kvm/mmu/tdp_mmu.c      | 61 +++++++++++++++++++++++++++++++++
- arch/x86/kvm/mmu/tdp_mmu.h      |  3 ++
- 4 files changed, 102 insertions(+), 21 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 21 +++++++++++++++++++++
+ include/linux/kvm_host.h   |  1 +
+ virt/kvm/kvm_main.c        |  6 ++----
+ 3 files changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 8c1e806b3d53f..0d80abe82ca93 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -122,9 +122,6 @@ module_param(dbg, bool, 0644);
- 
- #define PTE_PREFETCH_NUM		8
- 
--#define PT_FIRST_AVAIL_BITS_SHIFT 10
--#define PT64_SECOND_AVAIL_BITS_SHIFT 54
--
- /*
-  * The mask used to denote special SPTEs, which can be either MMIO SPTEs or
-  * Access Tracking SPTEs.
-@@ -147,13 +144,6 @@ module_param(dbg, bool, 0644);
- #define PT32_INDEX(address, level)\
- 	(((address) >> PT32_LEVEL_SHIFT(level)) & ((1 << PT32_LEVEL_BITS) - 1))
- 
--
--#ifdef CONFIG_DYNAMIC_PHYSICAL_MASK
--#define PT64_BASE_ADDR_MASK (physical_mask & ~(u64)(PAGE_SIZE-1))
--#else
--#define PT64_BASE_ADDR_MASK (((1ULL << 52) - 1) & ~(u64)(PAGE_SIZE-1))
--#endif
--
- #define PT32_BASE_ADDR_MASK PAGE_MASK
- #define PT32_DIR_BASE_ADDR_MASK \
- 	(PAGE_MASK & ~((1ULL << (PAGE_SHIFT + PT32_LEVEL_BITS)) - 1))
-@@ -170,9 +160,6 @@ module_param(dbg, bool, 0644);
- 
- #include <trace/events/kvm.h>
- 
--#define SPTE_HOST_WRITEABLE	(1ULL << PT_FIRST_AVAIL_BITS_SHIFT)
--#define SPTE_MMU_WRITEABLE	(1ULL << (PT_FIRST_AVAIL_BITS_SHIFT + 1))
--
- /* make pte_list_desc fit well in cache line */
- #define PTE_LIST_EXT 3
- 
-@@ -1708,6 +1695,21 @@ static int kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 	return kvm_zap_rmapp(kvm, rmap_head);
- }
- 
-+u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_pfn)
-+{
-+	u64 new_spte;
-+
-+	new_spte = old_spte & ~PT64_BASE_ADDR_MASK;
-+	new_spte |= (u64)new_pfn << PAGE_SHIFT;
-+
-+	new_spte &= ~PT_WRITABLE_MASK;
-+	new_spte &= ~SPTE_HOST_WRITEABLE;
-+
-+	new_spte = mark_spte_for_access_track(new_spte);
-+
-+	return new_spte;
-+}
-+
- static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 			     struct kvm_memory_slot *slot, gfn_t gfn, int level,
- 			     unsigned long data)
-@@ -1733,13 +1735,8 @@ static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 			pte_list_remove(rmap_head, sptep);
- 			goto restart;
- 		} else {
--			new_spte = *sptep & ~PT64_BASE_ADDR_MASK;
--			new_spte |= (u64)new_pfn << PAGE_SHIFT;
--
--			new_spte &= ~PT_WRITABLE_MASK;
--			new_spte &= ~SPTE_HOST_WRITEABLE;
--
--			new_spte = mark_spte_for_access_track(new_spte);
-+			new_spte = kvm_mmu_changed_pte_notifier_make_spte(
-+					*sptep, new_pfn);
- 
- 			mmu_spte_clear_track_bits(sptep);
- 			mmu_spte_set(sptep, new_spte);
-@@ -1895,7 +1892,14 @@ int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
- 
- int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
- {
--	return kvm_handle_hva(kvm, hva, (unsigned long)&pte, kvm_set_pte_rmapp);
-+	int r;
-+
-+	r = kvm_handle_hva(kvm, hva, (unsigned long)&pte, kvm_set_pte_rmapp);
-+
-+	if (kvm->arch.tdp_mmu_enabled)
-+		r |= kvm_tdp_mmu_set_spte_hva(kvm, hva, &pte);
-+
-+	return r;
- }
- 
- static int kvm_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 228bda0885552..8eaa6e4764bce 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -80,6 +80,12 @@ bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
- 	(PT64_BASE_ADDR_MASK & ((1ULL << (PAGE_SHIFT + (((level) - 1) \
- 						* PT64_LEVEL_BITS))) - 1))
- 
-+#ifdef CONFIG_DYNAMIC_PHYSICAL_MASK
-+#define PT64_BASE_ADDR_MASK (physical_mask & ~(u64)(PAGE_SIZE-1))
-+#else
-+#define PT64_BASE_ADDR_MASK (((1ULL << 52) - 1) & ~(u64)(PAGE_SIZE-1))
-+#endif
-+
- extern u64 shadow_user_mask;
- extern u64 shadow_accessed_mask;
- extern u64 shadow_present_mask;
-@@ -89,6 +95,12 @@ extern u64 shadow_present_mask;
- #define ACC_USER_MASK    PT_USER_MASK
- #define ACC_ALL          (ACC_EXEC_MASK | ACC_WRITE_MASK | ACC_USER_MASK)
- 
-+#define PT_FIRST_AVAIL_BITS_SHIFT 10
-+#define PT64_SECOND_AVAIL_BITS_SHIFT 54
-+
-+#define SPTE_HOST_WRITEABLE	(1ULL << PT_FIRST_AVAIL_BITS_SHIFT)
-+#define SPTE_MMU_WRITEABLE	(1ULL << (PT_FIRST_AVAIL_BITS_SHIFT + 1))
-+
- /* Functions for interpreting SPTEs */
- kvm_pfn_t spte_to_pfn(u64 pte);
- bool is_mmio_spte(u64 spte);
-@@ -138,5 +150,6 @@ bool is_nx_huge_page_enabled(void);
- void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
- 
- u64 mark_spte_for_access_track(u64 spte);
-+u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_pfn);
- 
- #endif /* __KVM_X86_MMU_INTERNAL_H */
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 0a4b98669b3ef..3119583409131 100644
+index 3119583409131..bbe973d3f8084 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -722,3 +722,64 @@ int kvm_tdp_mmu_test_age_hva(struct kvm *kvm, unsigned long hva)
- 	return kvm_tdp_mmu_handle_hva_range(kvm, hva, hva + 1, 0,
- 					    test_age_gfn);
+@@ -236,6 +236,24 @@ static void handle_changed_spte_acc_track(u64 old_spte, u64 new_spte, int level)
+ 		kvm_set_pfn_accessed(spte_to_pfn(old_spte));
  }
-+
-+/*
-+ * Handle the changed_pte MMU notifier for the TDP MMU.
-+ * data is a pointer to the new pte_t mapping the HVA specified by the MMU
-+ * notifier.
-+ * Returns non-zero if a flush is needed before releasing the MMU lock.
-+ */
-+static int set_tdp_spte(struct kvm *kvm, struct kvm_memory_slot *slot,
-+			struct kvm_mmu_page *root, gfn_t gfn, gfn_t unused,
-+			unsigned long data)
+ 
++static void handle_changed_spte_dlog(struct kvm *kvm, int as_id, gfn_t gfn,
++				    u64 old_spte, u64 new_spte, int level)
 +{
-+	struct tdp_iter iter;
-+	pte_t *ptep = (pte_t *)data;
-+	kvm_pfn_t new_pfn;
-+	u64 new_spte;
-+	int need_flush = 0;
-+	int as_id = kvm_mmu_page_as_id(root);
++	bool pfn_changed;
++	struct kvm_memory_slot *slot;
 +
-+	WARN_ON(pte_huge(*ptep));
++	if (level > PG_LEVEL_4K)
++		return;
 +
-+	new_pfn = pte_pfn(*ptep);
++	pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
 +
-+	for_each_tdp_pte_root(iter, root, gfn, gfn + 1) {
-+		if (iter.level != PG_LEVEL_4K)
-+			continue;
-+
-+		if (!is_shadow_present_pte(iter.old_spte))
-+			break;
-+
-+		*iter.sptep = 0;
-+		handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
-+				    new_spte, iter.level);
-+
-+		kvm_flush_remote_tlbs_with_address(kvm, iter.gfn, 1);
-+
-+		if (!pte_write(*ptep)) {
-+			new_spte = kvm_mmu_changed_pte_notifier_make_spte(
-+					iter.old_spte, new_pfn);
-+
-+			*iter.sptep = new_spte;
-+			handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
-+					    new_spte, iter.level);
-+		}
-+
-+		need_flush = 1;
++	if ((!is_writable_pte(old_spte) || pfn_changed) &&
++	    is_writable_pte(new_spte)) {
++		slot = __gfn_to_memslot(__kvm_memslots(kvm, as_id), gfn);
++		mark_page_dirty_in_slot(slot, gfn);
 +	}
-+
-+	if (need_flush)
-+		kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
-+
-+	return 0;
 +}
 +
-+int kvm_tdp_mmu_set_spte_hva(struct kvm *kvm, unsigned long address,
-+			     pte_t *host_ptep)
-+{
-+	return kvm_tdp_mmu_handle_hva_range(kvm, address, address + 1,
-+					    (unsigned long)host_ptep,
-+					    set_tdp_spte);
-+}
-+
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index f316773b7b5a8..5a399aa60b8d8 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -25,4 +25,7 @@ int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
- int kvm_tdp_mmu_age_hva_range(struct kvm *kvm, unsigned long start,
- 			      unsigned long end);
- int kvm_tdp_mmu_test_age_hva(struct kvm *kvm, unsigned long hva);
-+
-+int kvm_tdp_mmu_set_spte_hva(struct kvm *kvm, unsigned long address,
-+			     pte_t *host_ptep);
- #endif /* __KVM_X86_MMU_TDP_MMU_H */
+ /**
+  * handle_changed_spte - handle bookkeeping associated with an SPTE change
+  * @kvm: kvm instance
+@@ -348,6 +366,7 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ {
+ 	__handle_changed_spte(kvm, as_id, gfn, old_spte, new_spte, level);
+ 	handle_changed_spte_acc_track(old_spte, new_spte, level);
++	handle_changed_spte_dlog(kvm, as_id, gfn, old_spte, new_spte, level);
+ }
+ 
+ #define for_each_tdp_pte_root(_iter, _root, _start, _end) \
+@@ -685,6 +704,8 @@ static int age_gfn_range(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		*iter.sptep = new_spte;
+ 		__handle_changed_spte(kvm, as_id, iter.gfn, iter.old_spte,
+ 				      new_spte, iter.level);
++		handle_changed_spte_dlog(kvm, as_id, iter.gfn, iter.old_spte,
++					 new_spte, iter.level);
+ 		young = true;
+ 	}
+ 
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index a460bc712a81c..2f8c3f644d809 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -798,6 +798,7 @@ struct kvm_memory_slot *gfn_to_memslot(struct kvm *kvm, gfn_t gfn);
+ bool kvm_is_visible_gfn(struct kvm *kvm, gfn_t gfn);
+ bool kvm_vcpu_is_visible_gfn(struct kvm_vcpu *vcpu, gfn_t gfn);
+ unsigned long kvm_host_page_size(struct kvm_vcpu *vcpu, gfn_t gfn);
++void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot, gfn_t gfn);
+ void mark_page_dirty(struct kvm *kvm, gfn_t gfn);
+ 
+ struct kvm_memslots *kvm_vcpu_memslots(struct kvm_vcpu *vcpu);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index f9c80351c9efd..b5082ce60a33f 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -143,8 +143,6 @@ static void hardware_disable_all(void);
+ 
+ static void kvm_io_bus_destroy(struct kvm_io_bus *bus);
+ 
+-static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot, gfn_t gfn);
+-
+ __visible bool kvm_rebooting;
+ EXPORT_SYMBOL_GPL(kvm_rebooting);
+ 
+@@ -2640,8 +2638,7 @@ int kvm_clear_guest(struct kvm *kvm, gpa_t gpa, unsigned long len)
+ }
+ EXPORT_SYMBOL_GPL(kvm_clear_guest);
+ 
+-static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot,
+-				    gfn_t gfn)
++void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot, gfn_t gfn)
+ {
+ 	if (memslot && memslot->dirty_bitmap) {
+ 		unsigned long rel_gfn = gfn - memslot->base_gfn;
+@@ -2649,6 +2646,7 @@ static void mark_page_dirty_in_slot(struct kvm_memory_slot *memslot,
+ 		set_bit_le(rel_gfn, memslot->dirty_bitmap);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(mark_page_dirty_in_slot);
+ 
+ void mark_page_dirty(struct kvm *kvm, gfn_t gfn)
+ {
 -- 
 2.28.0.709.gb0816b6eb0-goog
 
