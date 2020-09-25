@@ -2,102 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31C5278946
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:17:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D3E27894B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728943AbgIYNRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:17:40 -0400
-Received: from mailrelay112.isp.belgacom.be ([195.238.20.139]:53128 "EHLO
-        mailrelay112.isp.belgacom.be" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728148AbgIYNRk (ORCPT
+        id S1728953AbgIYNRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:17:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48962 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728148AbgIYNRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:17:40 -0400
-IronPort-SDR: iSyu2GFpLieY1mj/lx1m2Sc+lTimUv4gFxSXnKLXQydqZA2k7O1NjPL26a9DF/h9gnYhuw0lEj
- BIf09xKVANJUrxD6DcOWqaI50DwTE/iwusuKSe2RhBExQlQO8zMOJ7NOrpS0U4yRrg3Vepzhv+
- BYltoYR7ToUvMnqFXjB3x93RyV2hGSkDzHU8e0qRewzxfa+kdfPRVYpCPGjHnki4UwmBCP3gJx
- NhbxdWPHubO9o23c7Lrlx3QEtgCUVZTN2uaqmI475TCd5mnV2S5zCfiSyYpJ+96W5AVxQk9pKH
- Lso=
-X-Belgacom-Dynamic: yes
-IronPort-PHdr: =?us-ascii?q?9a23=3AtYWiKh+zboh1E/9uRHKM819IXTAuvvDOBiVQ1K?=
- =?us-ascii?q?B+0+0VIJqq85mqBkHD//Il1AaPAdyEragcwLeH+4nbGkU4qa6bt34DdJEeHz?=
- =?us-ascii?q?Qksu4x2zIaPcieFEfgJ+TrZSFpVO5LVVti4m3peRMNQJW2aFLduGC94iAPER?=
- =?us-ascii?q?vjKwV1Ov71GonPhMiryuy+4ZLebxhKiTanf79+MBq6oAXVu8ILnYZsN6E9xw?=
- =?us-ascii?q?fTrHBVYepW32RoJVySnxb4+Mi9+YNo/jpTtfw86cNOSL32cKskQ7NWCjQmKH?=
- =?us-ascii?q?0169bwtRbfVwuP52ATXXsQnxFVHgXK9hD6XpP2sivnqupw3TSRMMPqQbwoXz?=
- =?us-ascii?q?mp8qFmQwLqhigaLT406GHZhNJtgqxVoxyvoBNwzYHPbY2JN/dzZL/RcMkGSW?=
- =?us-ascii?q?ZdWMtaSixPApm7b4sKF+cPPfxXoJL8p1QUqxu1GAmiBPnxxTBVmHD2x6w63P?=
- =?us-ascii?q?giEQrb2wEgEcgBv2/arNjuL6cSUuC0zK/WwjXfdf9Zwiny5ZHOfxs8rv6CQa?=
- =?us-ascii?q?h+ftDNyUkzCQzFlFOQpJTrMT6W0ukDs2mW4up+We+hi2Aqth19riWzysothY?=
- =?us-ascii?q?fHiZ8Yx17a+ChkwIs4J8O1RkFnbdCqH5VdsyGUOYtoTs4mRWxjpSU0yqUetJ?=
- =?us-ascii?q?O/YSQG0okryh3BZ/CdboSF4xLuWPyMLTp5gn9uZaixiAyo8Ue6z+3xTsy00F?=
- =?us-ascii?q?FXoSVbitTMrXUN1wDL6siAV/t94l+t2TaR2ADX7eFJOUQ0la3HJJE7xr4wlp?=
- =?us-ascii?q?0TsV/fHiPsnEX2i7OZeV8g+ue17OTnZ6/ppp6aN4NsiwH+NLohmtCnDOk8Lw?=
- =?us-ascii?q?QCRXWX9Oei2LH54EH0QbVHgucrnqTYqJzaIN4Upq+9Aw9byIYj7BO/Ai+o0N?=
- =?us-ascii?q?sChnYHIklIeAmEj4npPVHBPuz4Ae2kjFuyiDtr3ezJPqX9ApXRKXjOiKrucq?=
- =?us-ascii?q?xj60FCzQo+1s1Q6IhKCr4fJfLzXkjxtNLEDhMjNQy73frnAs1n1owCQWKPHr?=
- =?us-ascii?q?OZMKTKvF+L++IgOPODaZQWuDnjMfgl4eDhjXsjlV8aZ6mp0oMdaGqkEfR+P0?=
- =?us-ascii?q?WZfX3sj88EEWcJowoxV/Llh0GcXj5QfHuyRL885iolB468EYjCR5ingKad0y?=
- =?us-ascii?q?ejAp1WemdGB0iKEXj2a4WLRukDaDyJL89/nTwLS6KhR5Ui1R6wrg/6zaRoLu?=
- =?us-ascii?q?7O9i0fr5Lj28B/5/fPmhEq6Tx0E8Od3nmJT2F1mGMIWjA30Ll8oUNj0FeD17?=
- =?us-ascii?q?Z3g/hDGNxN6PNGTB06OYTfz+NkEdDyXBzOftOTRFahWNWmDik7TsgtzN8Wf0?=
- =?us-ascii?q?Z9B9KigwjN3yWwGLAVmaeGBIc38qPc2Xj+Odp9x2zd26Y/3BEaRZ5DPHOrg4?=
- =?us-ascii?q?Zz/hbeAorOnVnfkau2MewfwSTE3GSO12yDuAdfSgEjf7/CWCUxb0HXpNKxyF?=
- =?us-ascii?q?nPQ7K0CL8kel9PwMSMArBJe9vkkRNMSaGwa5zlf2utljLoVl6zzbSWYd+ydg?=
- =?us-ascii?q?=3D=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2ASEgDD7G1f/xCltltfHAEBATwBAQQ?=
- =?us-ascii?q?EAQECAQEHAQEcgUqBHCACAQGCLV+NPpJikgQLAQEBAQEBAQEBNQECBAEBhEu?=
- =?us-ascii?q?CMSU4EwIDAQEBAwIFAQEGAQEBAQEBBQQBhg9Fgjcig0cLASMjgT8SgyaCWCm?=
- =?us-ascii?q?4PzOEEIURgUKBNgIBAQEBiCuFGoFBP4RfihIiBLc9gnGDE4RpkkwPIqEQLZJ?=
- =?us-ascii?q?bm1SGRIF6TSAYO4JpUBkNnGhCMDcCBgoBAQMJVwE9AY4fAQE?=
-X-IPAS-Result: =?us-ascii?q?A2ASEgDD7G1f/xCltltfHAEBATwBAQQEAQECAQEHAQEcg?=
- =?us-ascii?q?UqBHCACAQGCLV+NPpJikgQLAQEBAQEBAQEBNQECBAEBhEuCMSU4EwIDAQEBA?=
- =?us-ascii?q?wIFAQEGAQEBAQEBBQQBhg9Fgjcig0cLASMjgT8SgyaCWCm4PzOEEIURgUKBN?=
- =?us-ascii?q?gIBAQEBiCuFGoFBP4RfihIiBLc9gnGDE4RpkkwPIqEQLZJbm1SGRIF6TSAYO?=
- =?us-ascii?q?4JpUBkNnGhCMDcCBgoBAQMJVwE9AY4fAQE?=
-Received: from 16.165-182-91.adsl-dyn.isp.belgacom.be (HELO localhost.localdomain) ([91.182.165.16])
-  by relay.skynet.be with ESMTP; 25 Sep 2020 15:17:37 +0200
-From:   Fabian Frederick <fabf@skynet.be>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     mkubecek@suse.cz, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Fabian Frederick <fabf@skynet.be>
-Subject: [PATCH V2 5/5 net-next] vxlan: fix vxlan_find_sock() documentation for l3mdev
-Date:   Fri, 25 Sep 2020 15:17:17 +0200
-Message-Id: <20200925131717.56666-1-fabf@skynet.be>
-X-Mailer: git-send-email 2.27.0
+        Fri, 25 Sep 2020 09:17:53 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601039872;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xKGs/06q4FAXYVO+5AxisRtPOkcoFhGrnFnx6UXBozM=;
+        b=CU053gs4MeBVhr0E09V5kFqfaqhvraLAIfexkPIBd1ep7+z7IxfjfFS1MkIlF8BmJSDZlw
+        7Yyw0O/Z5WvUTunPZ66ZDkM2wxTmhQR3HjTqZKb2eKmTuvmagxtM34EVf5fzBzM5FkanyI
+        Y4K+xj18Y8ArNLIvbzfUhNano3wCin0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-377-NhMQBJsUMr6lTCRUEfPPmA-1; Fri, 25 Sep 2020 09:17:48 -0400
+X-MC-Unique: NhMQBJsUMr6lTCRUEfPPmA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9A8B610066FC;
+        Fri, 25 Sep 2020 13:17:46 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-24.phx2.redhat.com [10.3.113.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3D43373667;
+        Fri, 25 Sep 2020 13:17:42 +0000 (UTC)
+Date:   Fri, 25 Sep 2020 09:17:40 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] sched/fair: Remove the force parameter of
+ update_tg_load_avg()
+Message-ID: <20200925131740.GB36943@lorien.usersys.redhat.com>
+References: <20200924014755.36253-1-tian.xianting@h3c.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924014755.36253-1-tian.xianting@h3c.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit aab8cc3630e32
-("vxlan: add support for underlay in non-default VRF")
+On Thu, Sep 24, 2020 at 09:47:55AM +0800 Xianting Tian wrote:
+> In the file fair.c, sometims update_tg_load_avg(cfs_rq, 0) is used,
+> sometimes update_tg_load_avg(cfs_rq, false) is used.
+> update_tg_load_avg() has the parameter force, but in current code,
+> it never set 1 or true to it, so remove the force parameter.
+> 
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  kernel/sched/fair.c | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1a68a0536..7056fa97f 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -831,7 +831,7 @@ void init_entity_runnable_average(struct sched_entity *se)
+>  void post_init_entity_util_avg(struct task_struct *p)
+>  {
+>  }
+> -static void update_tg_load_avg(struct cfs_rq *cfs_rq, int force)
+> +static void update_tg_load_avg(struct cfs_rq *cfs_rq)
+>  {
+>  }
+>  #endif /* CONFIG_SMP */
+> @@ -3288,7 +3288,6 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+>  /**
+>   * update_tg_load_avg - update the tg's load avg
+>   * @cfs_rq: the cfs_rq whose avg changed
+> - * @force: update regardless of how small the difference
+>   *
+>   * This function 'ensures': tg->load_avg := \Sum tg->cfs_rq[]->avg.load.
+>   * However, because tg->load_avg is a global value there are performance
+> @@ -3300,7 +3299,7 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+>   *
+>   * Updating tg's load_avg is necessary before update_cfs_share().
+>   */
+> -static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, int force)
+> +static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+>  {
+>  	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+>  
+> @@ -3310,7 +3309,7 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, int force)
+>  	if (cfs_rq->tg == &root_task_group)
+>  		return;
+>  
+> -	if (force || abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+> +	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+>  		atomic_long_add(delta, &cfs_rq->tg->load_avg);
+>  		cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
+>  	}
+> @@ -3612,7 +3611,7 @@ static inline bool skip_blocked_update(struct sched_entity *se)
+>  
+>  #else /* CONFIG_FAIR_GROUP_SCHED */
+>  
+> -static inline void update_tg_load_avg(struct cfs_rq *cfs_rq, int force) {}
+> +static inline void update_tg_load_avg(struct cfs_rq *cfs_rq) {}
+>  
+>  static inline int propagate_entity_load_avg(struct sched_entity *se)
+>  {
+> @@ -3800,13 +3799,13 @@ static inline void update_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+>  		 * IOW we're enqueueing a task on a new CPU.
+>  		 */
+>  		attach_entity_load_avg(cfs_rq, se);
+> -		update_tg_load_avg(cfs_rq, 0);
+> +		update_tg_load_avg(cfs_rq);
+>  
+>  	} else if (decayed) {
+>  		cfs_rq_util_change(cfs_rq, 0);
+>  
+>  		if (flags & UPDATE_TG)
+> -			update_tg_load_avg(cfs_rq, 0);
+> +			update_tg_load_avg(cfs_rq);
+>  	}
+>  }
+>  
+> @@ -7887,7 +7886,7 @@ static bool __update_blocked_fair(struct rq *rq, bool *done)
+>  		struct sched_entity *se;
+>  
+>  		if (update_cfs_rq_load_avg(cfs_rq_clock_pelt(cfs_rq), cfs_rq)) {
+> -			update_tg_load_avg(cfs_rq, 0);
+> +			update_tg_load_avg(cfs_rq);
+>  
+>  			if (cfs_rq == &rq->cfs)
+>  				decayed = true;
+> @@ -10786,7 +10785,7 @@ static void detach_entity_cfs_rq(struct sched_entity *se)
+>  	/* Catch up with the cfs_rq and remove our load when we leave */
+>  	update_load_avg(cfs_rq, se, 0);
+>  	detach_entity_load_avg(cfs_rq, se);
+> -	update_tg_load_avg(cfs_rq, false);
+> +	update_tg_load_avg(cfs_rq);
+>  	propagate_entity_cfs_rq(se);
+>  }
+>  
+> @@ -10805,7 +10804,7 @@ static void attach_entity_cfs_rq(struct sched_entity *se)
+>  	/* Synchronize entity with its cfs_rq */
+>  	update_load_avg(cfs_rq, se, sched_feat(ATTACH_AGE_LOAD) ? 0 : SKIP_AGE_LOAD);
+>  	attach_entity_load_avg(cfs_rq, se);
+> -	update_tg_load_avg(cfs_rq, false);
+> +	update_tg_load_avg(cfs_rq);
+>  	propagate_entity_cfs_rq(se);
+>  }
+>  
+> -- 
+> 2.17.1
+> 
 
-vxlan_find_sock() also checks if socket is assigned to the right
-level 3 master device when lower device is not in the default VRF.
+LGTM,
 
-Signed-off-by: Fabian Frederick <fabf@skynet.be>
----
- drivers/net/vxlan.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/vxlan.c b/drivers/net/vxlan.c
-index 1e9ab1002281c..fa21d62aa79c9 100644
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -190,8 +190,9 @@ static inline struct vxlan_rdst *first_remote_rtnl(struct vxlan_fdb *fdb)
- 	return list_first_entry(&fdb->remotes, struct vxlan_rdst, list);
- }
- 
--/* Find VXLAN socket based on network namespace, address family and UDP port
-- * and enabled unshareable flags.
-+/* Find VXLAN socket based on network namespace, address family, UDP port,
-+ * enabled unshareable flags and socket device binding (see l3mdev with
-+ * non-default VRF).
-  */
- static struct vxlan_sock *vxlan_find_sock(struct net *net, sa_family_t family,
- 					  __be16 port, u32 flags, int ifindex)
+Reviewed-by: Phil Auld <pauld@redhat.com>
 -- 
-2.27.0
 
