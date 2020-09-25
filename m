@@ -2,86 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85B17278F11
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACAE278F15
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:51:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729545AbgIYQuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:50:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57360 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728423AbgIYQuu (ORCPT
+        id S1729566AbgIYQvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729393AbgIYQvS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:50:50 -0400
-Date:   Fri, 25 Sep 2020 18:50:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601052648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IBNjgF3/8mqHiQSTsgCIa+Fre0RfhFizyGjmkQ5YAOw=;
-        b=bOjPC+emUWcrAp4F8ySfGk93fW74piiWa9Iw4XcHQEBiSTsRAC1vqj5bedu9BHxnoi8KG8
-        D7U1eeimp2KzjwK4ezd3bZ/1gnCloqIjlcVdXsYlNmR7JEGPk0ZQLwQHgK3/pju7h6xzDO
-        UGuG0S/u+5BNXhAp1OAS3RezlLAA2PWSvUI3cj5P9wT9JarEtSIbGYR8IgyHXU8BQ5Xetb
-        jfNm/KDOixOKpQS0Xyru0S8+T7c7+Jmyz31Hu3SwSTeaAwcS7OxvbrBa5YKNoPkJ5KPlYN
-        j7NPH8cKqK7K4GipD9lVBgQmD60pXGo5v17o8sMIT2XP0NSJEnIzHSS8jDoYzA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601052648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IBNjgF3/8mqHiQSTsgCIa+Fre0RfhFizyGjmkQ5YAOw=;
-        b=4PqZ4DNBiHs7NWi5KsUQ8cXS8O2FiJQvYNwB3StPlyRn6O7pc827MdOTHa6pAUQ4QUAhu9
-        P9JcAUjDgFQqa+AQ==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        qais.yousef@arm.com, swood@redhat.com, valentin.schneider@arm.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vincent.donnefort@arm.com
-Subject: Re: [PATCH 7/9] sched: Add migrate_disable()
-Message-ID: <20200925165047.iey2dlcdn4im2vv4@linutronix.de>
-References: <20200921163557.234036895@infradead.org>
- <20200921163845.769861942@infradead.org>
-MIME-Version: 1.0
+        Fri, 25 Sep 2020 12:51:18 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05923C0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:51:18 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id m34so3073989pgl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=4XOAAiIQRCCNU86tnCHCg8fQuqW/LCTSjYNlXVnzp2A=;
+        b=X0DpLV6lbBuvB1scwWVNnCPJ80OMbFrr6SBJC0ex7XH+Ht2IzQxNvwOFji/qqPWGjF
+         S5LnN+V0Xzbst7EJrAmht8e/NuEC2LQ3hryzKnae6jiw3KuTdH89kIZOv9crXVRpEV0d
+         kztSv1hhTmHEUXwWQUnZ5aBZd3ET54DExUFdo08fB9vDiB1dqarhPK006pwMdCRR2Eet
+         U0vFIe+YManXCc5WhujOi61ob2w/wPWE6BRy2GzmlbDNvzXBQ4ByT/RO4D0YSx/F75It
+         5gN41S6u7ob0ZU2i4eqvy5ibWW8yTZ4WTFNAj1A588SY/4pzv09gKFujgnwCULdpsKNT
+         Ee0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=4XOAAiIQRCCNU86tnCHCg8fQuqW/LCTSjYNlXVnzp2A=;
+        b=ZdxC4uxaFMST1FwHqIJXFZznkI9yXSr1zoKqxDrh2frQQ1y/AWlXulPwZF9w3Mz69g
+         qe3HtneURp4bRZesWMtiaJUhON/wv+jrEaE/0rmkTEaZRwVnfRTezNc8VXNS3kFJmc9t
+         f+Ax1u4EMJEZB9HkU1J0HepFGGp9Vgb9Xc/Z/nAdYnuygpv++y6YnEHogzDN1/yiw5EF
+         gnCi4CZGtUS74OLqjPqYm2S+mzZNOmI+2h0BMsDyKKZFKMAr0GfF7CNjIun6Th2+Qog9
+         +7zy/VkHk1Rzzd8Z9XHv07zkx79ftYN2pgm6B0OKYT4bPNs13gjhhS21tZnZiEZouddh
+         JUtg==
+X-Gm-Message-State: AOAM531anycoR4aM5dsxhdQbzO1djFPA9ZMY4yf7YQvp0a1WTJkeCyRX
+        F1C0oDC+kqRNm3y+TPEVagFViQ==
+X-Google-Smtp-Source: ABdhPJzmrvzRE0ItT8WGaJW6i9EQyNgQz1eC7YkG4/zQ1uzyIKPyWaVCi2nURst6I0Tm6/QcDV8Ebg==
+X-Received: by 2002:a17:902:fe0e:b029:d1:e5ec:28d6 with SMTP id g14-20020a170902fe0eb02900d1e5ec28d6mr298326plj.66.1601052677488;
+        Fri, 25 Sep 2020 09:51:17 -0700 (PDT)
+Received: from localhost.localdomain (c-67-180-165-146.hsd1.ca.comcast.net. [67.180.165.146])
+        by smtp.gmail.com with ESMTPSA id w185sm3382485pfc.36.2020.09.25.09.51.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 09:51:16 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200921163845.769861942@infradead.org>
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v13 8/8] x86/vsyscall/64: Fixup Shadow Stack and Indirect Branch Tracking for vsyscall emulation
+Date:   Fri, 25 Sep 2020 09:51:14 -0700
+Message-Id: <99B32E59-CFF2-4756-89BD-AEA0021F355F@amacapital.net>
+References: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>
+In-Reply-To: <d0e4077e-129f-6823-dcea-a101ef626e8c@intel.com>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+X-Mailer: iPhone Mail (18A373)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-21 18:36:04 [+0200], Peter Zijlstra wrote:
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1700,6 +1700,68 @@ void check_preempt_curr(struct rq *rq, s
-> =20
->  #ifdef CONFIG_SMP
-> =20
-> +#ifdef CONFIG_PREEMPT_RT
-=E2=80=A6
-> +static inline bool is_migration_disabled(struct task_struct *p)
-> +{
-> +	return p->migration_disabled;
-> +}
 
-Just a thought: having this with int as return type and defined in a
-header file then it could be used in check_preemption_disabled() and in
-the tracing output.
 
-> +#else
-> +
-> +static inline void migrate_disable_switch(struct rq *rq, struct task_str=
-uct *p) { }
-> +
-> +static inline bool is_migration_disabled(struct task_struct *p)
-> +{
-> +	return false;
-> +}
-> +
-> +#endif
+> On Sep 25, 2020, at 9:48 AM, Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+>=20
+> =EF=BB=BFOn 9/25/2020 9:31 AM, Andy Lutomirski wrote:
+>>> On Fri, Sep 25, 2020 at 7:58 AM Yu-cheng Yu <yu-cheng.yu@intel.com> wrot=
+e:
+>>>=20
+>=20
+> [...]
+>=20
+>>> @@ -286,6 +289,37 @@ bool emulate_vsyscall(unsigned long error_code,
+>>>         /* Emulate a ret instruction. */
+>>>         regs->ip =3D caller;
+>>>         regs->sp +=3D 8;
+>>> +
+>>> +#ifdef CONFIG_X86_CET
+>>> +       if (tsk->thread.cet.shstk_size || tsk->thread.cet.ibt_enabled) {=
 
-Sebastian
+>>> +               struct cet_user_state *cet;
+>>> +               struct fpu *fpu;
+>>> +
+>>> +               fpu =3D &tsk->thread.fpu;
+>>> +               fpregs_lock();
+>>> +
+>>> +               if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
+>>> +                       copy_fpregs_to_fpstate(fpu);
+>>> +                       set_thread_flag(TIF_NEED_FPU_LOAD);
+>>> +               }
+>>> +
+>>> +               cet =3D get_xsave_addr(&fpu->state.xsave, XFEATURE_CET_U=
+SER);
+>>> +               if (!cet) {
+>>> +                       fpregs_unlock();
+>>> +                       goto sigsegv;
+>> I *think* your patchset tries to keep cet.shstk_size and
+>> cet.ibt_enabled in sync with the MSR, in which case it should be
+>> impossible to get here, but a comment and a warning would be much
+>> better than a random sigsegv.
+>=20
+> Yes, it should be impossible to get here.  I will add a comment and a warn=
+ing, but still do sigsegv.  Should this happen, and the function return, the=
+ app gets a control-protection fault.  Why not let it fail early?
+
+I=E2=80=99m okay with either approach as long as we get a comment and warnin=
+g.
+
+>=20
+>>=20
+>> Shouldn't we have a get_xsave_addr_or_allocate() that will never
+>> return NULL but instead will mark the state as in use and set up the
+>> init state if the feature was previously not in use?
+>=20
+> We already have a static __raw_xsave_addr(), which returns a pointer to th=
+e requested xstate.  Maybe we can export __raw_xsave_addr(), if that is need=
+ed.
+
+I don=E2=80=99t think that=E2=80=99s what we want in general =E2=80=94 we wa=
+nt the whole construct of initializing the state if needed.=
