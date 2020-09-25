@@ -2,89 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05402278D45
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35678278D49
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729408AbgIYPyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:54:50 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:45957 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbgIYPyt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:54:49 -0400
-Received: by mail-oi1-f196.google.com with SMTP id z26so3220701oih.12;
-        Fri, 25 Sep 2020 08:54:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DVNYTU7FFF/E24r0BcwvcVIDxk8lN5sG1MykDbolNLA=;
-        b=jYrvVKFQe2qJHA6ItYQIxnOXro2fjGKnPvAwbQ/dOHlc50Elu1ow22dCrNbrQv09c2
-         uGh1nI6Fr5tBde1SR2f4ZSygOwhXVxJeXfDF17+BJBxQBzX4x+uiQZ/Z4HAVTjQV+3pp
-         7J1cBGpnBHPQhtA+ZS/m4nEEZXw0C6aWfpCAtPPfbaf4wbLk0uWkyfza/X2YHu/oO8MF
-         qkZYUoLmjN1CKlOmJvKxQy9l8GM5Zzkl2IL271FdV2mlFIpiwIw7jbqEF7d3q4m98ep4
-         Nit2GVVI25Z7vZ7AhHsnBUEDEYH2U0wjTHntGKA9AYfd/sefFaEGD+meevb6RKxdLtFk
-         QTIA==
-X-Gm-Message-State: AOAM533JO//w6/e7UZ6iBqGEXD8+x1vnQz8Ua/XL1DElQsA68Z5gT1EP
-        FubrahGPsllWNq2bma2Q2SHHCKlUBjhwMChwBxI=
-X-Google-Smtp-Source: ABdhPJwA87XyLesdGbcVmPTUB0mdllEgSKlEKtHEJMchgrhO/ZZmK2DjFvpSWzdq69C+mYCWdh91vz96JnkaxDsqCe4=
-X-Received: by 2002:a05:6808:491:: with SMTP id z17mr53765oid.110.1601049288619;
- Fri, 25 Sep 2020 08:54:48 -0700 (PDT)
+        id S1729440AbgIYPz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:55:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40030 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729426AbgIYPz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:55:27 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 276D221741;
+        Fri, 25 Sep 2020 15:55:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601049327;
+        bh=ZOaMTpjmL0zyawSe6TesNRPIJMd8LiPQDHGoQQoPA9k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=DpbfOezwca7Q+jKjYXy+IngxuRfB2l0oJhJKOipIgoZOtqTejdpCrvavFmfJwutm2
+         KZTJj6kpqa3YmO4PvwT0wae57xcvfMuiYRCU99FvmQ4sAE7KEPtpaQVL/LL6IFru5D
+         qWCpCdhGHRc9kV9UmRc1vfxy+hkfWPGWXV5Ta7co=
+Received: from [185.69.144.225] (helo=localhost.localdomain)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kLq4D-00EuVG-7e; Fri, 25 Sep 2020 16:55:25 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Vineet Gupta <vgupta@synopsys.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        linux-snps-arc <linux-snps-arc@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Libin <huawei.libin@huawei.com>
+Subject: Re: [PATCH v6 0/6] irqchip: dw-apb-ictl: support hierarchy irq domain
+Date:   Fri, 25 Sep 2020 16:54:50 +0100
+Message-Id: <160104911402.38543.3098076840902954515.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200924071754.4509-1-thunder.leizhen@huawei.com>
+References: <20200924071754.4509-1-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-References: <20200825135951.53340-1-heikki.krogerus@linux.intel.com> <20200825135951.53340-2-heikki.krogerus@linux.intel.com>
-In-Reply-To: <20200825135951.53340-2-heikki.krogerus@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 25 Sep 2020 17:54:37 +0200
-Message-ID: <CAJZ5v0jT7Xdcm1WVvAV9okkoicnEsFEvnLSLLNx6eJHMNxwX+Q@mail.gmail.com>
-Subject: Re: [PATCH 1/3] software node: Power management operations for
- software nodes
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.69.144.225
+X-SA-Exim-Rcpt-To: vgupta@synopsys.com, thunder.leizhen@huawei.com, robh+dt@kernel.org, abrodkin@synopsys.com, linux-snps-arc@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, jason@lakedaemon.net, tglx@linutronix.de, wangkefeng.wang@huawei.com, lvhaoyu@huawei.com, sebastian.hesselbarth@gmail.com, huawei.libin@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 25, 2020 at 3:59 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> Adding separate PM operations vector for the software nodes.
-> The software node specific PM operations make it possible to
-> handle most PM related quirks separately in their own
-> functions instead of conditionally in the device driver's
-> generic PM functions (and in some cases all over the
-> driver). The software node specific PM operations will also
-> reduce the need to pass platform data in some cases, for
-> example from a core MFD driver to the child device drivers,
-> as from now on the core MFD driver will be able to implement
-> the PM quirks directly for the child devices without the
-> need to touch the drivers of those child devices.
->
-> If a software node includes the PM operations, those PM
-> operations are always executed separately on top of the
-> other PM operations of the device, so the software node will
-> never replace any of the "normal" PM operations of the
-> device (including the PM domain's operations, class's or
-> bus's PM operations, the device drivers own operations, or
-> any other).
+On Thu, 24 Sep 2020 15:17:48 +0800, Zhen Lei wrote:
+> v5 --> v6:
+> 1. add Reviewed-by: Rob Herring <robh@kernel.org> for Patch 4.
+> 2. Some modifications are made to Patch 5:
+>    1) add " |" for each "description:" property if its content exceeds one line,
+>       to tell the yaml keep the "newline" character.
+>    2) add "..." to mark the end of the yaml file.
+>    3) Change the name list of maintainers to the author of "snps,dw-apb-ictl.txt"
+> 	 maintainers:
+> 	-  - Marc Zyngier <marc.zyngier@arm.com>
+> 	+  - Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+>    4) add "maxItems: 1" for property "reg".
+>    5) for property "interrupts":
+> 	 interrupts:
+> 	-    minItems: 1
+> 	-    maxItems: 65
+> 	+    maxItems: 1
+>    6) move below descriptions under the top level property "description:"
+> 	description: |
+> 	  Synopsys DesignWare provides interrupt controller IP for APB known as
+> 	  dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs
+> 	  with APB bus, e.g. Marvell Armada 1500. It can also be used as primary
+> 	  interrupt controller in some SoCs, e.g. Hisilicon SD5203.
+> 
+> [...]
 
-This isn't consistent with the code changes AFAICS.
+Applied to irq/irqchip-next, thanks!
 
-The swnode PM operations are implemented as a PM domain ops, which
-means that they will be executed instead of any other existing ops
-rather than in addition to those.
+[1/6] genirq: Add stub for set_handle_irq() when !GENERIC_IRQ_MULTI_HANDLER
+      commit: ea0c80d1764449acf2f70fdb25aec33800cd0348
+[2/6] irqchip/dw-apb-ictl: Refactor priot to introducing hierarchical irq domains
+      commit: d59f7d159891466361808522b63cf3548ea3ecb0
+[3/6] irqchip/dw-apb-ictl: Add primary interrupt controller support
+      commit: 54a38440b84f8933b555c23273deca6a396f6708
+[4/6] dt-bindings: dw-apb-ictl: Update binding to describe use as primary interrupt controller
+      commit: 8156b80fd4885d0ca9748e736441cc37f4eb476a
 
-For example, software_node_prepare() will skip bus type ops if they
-are present and there is no "primary" PM domain which seems not
-intended.
+I have dropped patch 5 as it doesn't have Rob's Ack yet (and is not that
+critical) as well as patch 6 which is better routed via the ARC tree.
 
-Also some comments might help to understand the design.
+Cheers,
 
-Cheers!
+	M.
+-- 
+Without deviation from the norm, progress is not possible.
+
+
