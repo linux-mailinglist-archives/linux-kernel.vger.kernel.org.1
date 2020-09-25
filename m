@@ -2,190 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A38277CEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A07E277CFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbgIYAd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 20:33:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
+        id S1726757AbgIYAjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 20:39:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726631AbgIYAd3 (ORCPT
+        with ESMTP id S1726703AbgIYAjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:33:29 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6042C0613CE;
-        Thu, 24 Sep 2020 17:33:28 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so1027240pgl.2;
-        Thu, 24 Sep 2020 17:33:28 -0700 (PDT)
+        Thu, 24 Sep 2020 20:39:13 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A8FC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:39:13 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id x191so845324qkb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:39:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=heSZ+vYMpgFHhWomcOAQ0pB3xOxWwgLlUEvkB5nligg=;
-        b=qolVVq1IXAH2KQsr1j+mJ189ZPsIRozzGguGVAMYYXukIe7sljhxPZT+XB3Z4bB0mh
-         1nMqK1+EN03THQFbpx6SY1wavqCTlq3Jd8q9ehUKXQfwrKIGfJNmPo/M7XpfoUAhe5mS
-         skl1yghN9442sSafo5zZml7QG5D6QMWG4kYn5xW8TTRFrvuQjp0TRXLR2I1UNoIJpVE2
-         pUCUl71FFEaJLNeCWT7X/o3URttG5Sc9kK7uclod8TPYVNywP4UpAXyKy3QaAwy9g9NY
-         LwaMVHdhWQwBdhkLSUTWoThubO+wLdUH0wZ+4YgfvsmRQeu74S2CyaKZYO/4cCt/nwoD
-         FF8A==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=Q1j1WY168LrRvlAv6fJ7IWcpUe0Uf5J8UDLD+lJyQzA=;
+        b=A78Oa5TGjfEsyni7+yP2wXZCsx6as4Cdjk1wK8rw0dEypb2AC8wdPVrTVKsPkvFiRJ
+         WS793B4+FVCD43Bj1gsQhCLhB25rX3X6581k2JSFdz8SppKUzhN4R8niBHK31bScrsMO
+         UO3JF11qYHsx6UFC3yhJtG0d2ho8naklUxkiMROcPacGPTOim2vYzOuhoiwuIx1mkrYc
+         OjTvSyD0RetsxzeC3xzlr321iznkOzam4BJRZAGrhdAlu6ZrBAMm0SxaBLMf/BIdrIbz
+         0rcM8dxZkWXbSp6XKa7/EZwYT+8h86/C0L7b2+52aRVjXa3/q+FgI224IyvA2IwB6zoY
+         favg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=heSZ+vYMpgFHhWomcOAQ0pB3xOxWwgLlUEvkB5nligg=;
-        b=UiXn4GtBcrC1SWJmj5aGGrXGfpDKs7/vDwYELr59/4vjwuYFBbudwkQqE22UAwR0vr
-         13zYeC1HbcQRVjr+FJFC0B2+lJK4uSrPlChgIOdswov2pmaGs8RoWnRtwGRoDfWVp6ul
-         09RjRJELF0N/CJbGL98KS+8M1DeVpInZ/zYwWqGwShg3TT8qyrFrOpBQjgp9qkw7X8Sy
-         J5tI+pH2cahxsJdFHM6v6eMY/hAEnQNXZYoyCyg48xloaFeElDpezeHAq1+S0fM0WZIX
-         FXTR6Z2YyWkmcFfovrzxSpz0ixHkqBAIdrcv1cmAOlci7naPoqvmEub7ts+yyjBMQG0u
-         g4eQ==
-X-Gm-Message-State: AOAM530nhcGjOm/glfGznAi4j2NG02syU9jAtnVMWD6lwu2DrYjb4uom
-        p4mIYe42dguNWTRy9aO0VQk=
-X-Google-Smtp-Source: ABdhPJzAV7rIzcHLywe8VSGKzhq95U0ycxS2I81hHRVEYrbo3sKMnkRgNi8ea0dj1c2XdBuo85vX0w==
-X-Received: by 2002:aa7:9986:0:b029:142:2501:39db with SMTP id k6-20020aa799860000b0290142250139dbmr1599765pfh.42.1600994008051;
-        Thu, 24 Sep 2020 17:33:28 -0700 (PDT)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:49ed])
-        by smtp.gmail.com with ESMTPSA id z7sm594743pfj.75.2020.09.24.17.33.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Sep 2020 17:33:27 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 17:33:23 -0700
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     ast@kernel.org, daniel@iogearbox.net, andriin@fb.com, yhs@fb.com,
-        linux@rasmusvillemoes.dk, andriy.shevchenko@linux.intel.com,
-        pmladek@suse.com, kafai@fb.com, songliubraving@fb.com,
-        john.fastabend@gmail.com, kpsingh@chromium.org, shuah@kernel.org,
-        rdna@fb.com, scott.branden@broadcom.com, quentin@isovalent.com,
-        cneirabustos@gmail.com, jakub@cloudflare.com, mingo@redhat.com,
-        rostedt@goodmis.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        acme@kernel.org
-Subject: Re: [PATCH v6 bpf-next 2/6] bpf: move to generic BTF show support,
- apply it to seq files/strings
-Message-ID: <20200925003323.u2s2vyyqq2uhtij7@ast-mbp.dhcp.thefacebook.com>
-References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com>
- <1600883188-4831-3-git-send-email-alan.maguire@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1600883188-4831-3-git-send-email-alan.maguire@oracle.com>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=Q1j1WY168LrRvlAv6fJ7IWcpUe0Uf5J8UDLD+lJyQzA=;
+        b=cX7PhfVimEPrpNFWfJ/OZWkYsnwD9bza6KHroawXskMOYS3Dd6uHh/ELglH8aQXOYW
+         TvWv3q1poQRj7xMk5/S1TKDnzy31gHnbPWIbTdg5vdoPXneTNAQ8XLCUxqpltnmhK5St
+         kqMp9ORM2pAjEy/ojK7RqtWPq2OeOWaIj4udaLRfhlI6B/FTWnFcckI03ZfZWLVhTKya
+         Dt03fxf6wgTP3bSjmICjhqD5F6cOJmBSla+YhYNvGVUKIWH/TkyCsbYDWlrrqMDm9ICx
+         j0bAvR6VeSiVP0MiT2CqCyKnE+FzCGt+aXKxtNLxDDeyLU77fiqvg7vX6ZBzyNKg6naI
+         MMww==
+X-Gm-Message-State: AOAM532VcFsWrd9YfVcY/8gSlgwSljaFHJvcWInVutyMQAGAF8/NqX97
+        JARYWJXGu6p8SVwMC2Nu0COlETIKDZEM
+X-Google-Smtp-Source: ABdhPJzX88zgzM5alZDp3MuDgEe/twM+unT/FMxzz0P723jDwZhnqb/JnZy2O9y9hbmo7GSVHSnxURQBy0Ve
+Sender: "irogers via sendgmr" <irogers@irogers.svl.corp.google.com>
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:2:f693:9fff:fef4:4583])
+ (user=irogers job=sendgmr) by 2002:ad4:47cc:: with SMTP id
+ p12mr1991435qvw.25.1600994352155; Thu, 24 Sep 2020 17:39:12 -0700 (PDT)
+Date:   Thu, 24 Sep 2020 17:39:03 -0700
+Message-Id: <20200925003903.561568-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH] perf parse-events: Reduce casts around bp_addr
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>
+Cc:     Ian Rogers <irogers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 06:46:24PM +0100, Alan Maguire wrote:
->  
-> +/* Chunk size we use in safe copy of data to be shown. */
-> +#define BTF_SHOW_OBJ_SAFE_SIZE		256
+perf_event_attr bp_addr is a u64. parse-events.y parses it as a u64, but
+casts it to a void* and then parse-events.c casts it back to a u64.
+Rather than all the casts, change the type of the address to be a u64.
+This removes an issue noted in:
+https://lore.kernel.org/lkml/20200903184359.GC3495158@kernel.org/
 
-sizeof(struct btf_show) == 472
-It's allocated on stack and called from bpf prog.
-It's a leaf function, but it still worries me a bit.
-I've trimmed it down to 32 and everything seems to be printing fine.
-There will be more calls to copy_from_kernel_nofault(), but so what?
-Is there a downside to make it that small?
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/parse-events.c | 4 ++--
+ tools/perf/util/parse-events.h | 2 +-
+ tools/perf/util/parse-events.y | 8 ++++----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-Similarly state.name is 128 bytes. May be use 80 there?
-I think that should be plenty still.
+diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
+index 667cbca1547a..f82ef1e840b2 100644
+--- a/tools/perf/util/parse-events.c
++++ b/tools/perf/util/parse-events.c
+@@ -940,12 +940,12 @@ do {					\
+ }
+ 
+ int parse_events_add_breakpoint(struct list_head *list, int *idx,
+-				void *ptr, char *type, u64 len)
++				u64 addr, char *type, u64 len)
+ {
+ 	struct perf_event_attr attr;
+ 
+ 	memset(&attr, 0, sizeof(attr));
+-	attr.bp_addr = (unsigned long) ptr;
++	attr.bp_addr = addr;
+ 
+ 	if (parse_breakpoint_type(type, &attr))
+ 		return -EINVAL;
+diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
+index 00cde7d2e30c..e80c9b74f2f2 100644
+--- a/tools/perf/util/parse-events.h
++++ b/tools/perf/util/parse-events.h
+@@ -190,7 +190,7 @@ int parse_events_add_cache(struct list_head *list, int *idx,
+ 			   struct parse_events_error *error,
+ 			   struct list_head *head_config);
+ int parse_events_add_breakpoint(struct list_head *list, int *idx,
+-				void *ptr, char *type, u64 len);
++				u64 addr, char *type, u64 len);
+ int parse_events_add_pmu(struct parse_events_state *parse_state,
+ 			 struct list_head *list, char *name,
+ 			 struct list_head *head_config,
+diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+index 645bf4f1859f..d5b6aff82f21 100644
+--- a/tools/perf/util/parse-events.y
++++ b/tools/perf/util/parse-events.y
+@@ -511,7 +511,7 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE ':' PE_MODIFIER_BP sep_dc
+ 	list = alloc_list();
+ 	ABORT_ON(!list);
+ 	err = parse_events_add_breakpoint(list, &parse_state->idx,
+-					(void *)(uintptr_t) $2, $6, $4);
++					  $2, $6, $4);
+ 	free($6);
+ 	if (err) {
+ 		free(list);
+@@ -528,7 +528,7 @@ PE_PREFIX_MEM PE_VALUE '/' PE_VALUE sep_dc
+ 	list = alloc_list();
+ 	ABORT_ON(!list);
+ 	if (parse_events_add_breakpoint(list, &parse_state->idx,
+-						(void *)(uintptr_t) $2, NULL, $4)) {
++					$2, NULL, $4)) {
+ 		free(list);
+ 		YYABORT;
+ 	}
+@@ -544,7 +544,7 @@ PE_PREFIX_MEM PE_VALUE ':' PE_MODIFIER_BP sep_dc
+ 	list = alloc_list();
+ 	ABORT_ON(!list);
+ 	err = parse_events_add_breakpoint(list, &parse_state->idx,
+-					(void *)(uintptr_t) $2, $4, 0);
++					  $2, $4, 0);
+ 	free($4);
+ 	if (err) {
+ 		free(list);
+@@ -561,7 +561,7 @@ PE_PREFIX_MEM PE_VALUE sep_dc
+ 	list = alloc_list();
+ 	ABORT_ON(!list);
+ 	if (parse_events_add_breakpoint(list, &parse_state->idx,
+-						(void *)(uintptr_t) $2, NULL, 0)) {
++					$2, NULL, 0)) {
+ 		free(list);
+ 		YYABORT;
+ 	}
+-- 
+2.28.0.681.g6f77f65b4e-goog
 
-> + * Another problem is we want to ensure the data for display is safe to
-> + * access.  To support this, the "struct obj" is used to track the data
-
-'struct obj' doesn't exist. It's an anon field 'struct {} obj;' inside btf_show
-that you're referring to, right?
-Would be good to fix this comment.
-
-> +struct btf_show {
-> +	u64 flags;
-> +	void *target;	/* target of show operation (seq file, buffer) */
-> +	void (*showfn)(struct btf_show *show, const char *fmt, ...);
-
-buildbot complained that this field needs to be annotated.
-
-> +#define btf_show(show, ...)						      \
-> +	do {								      \
-> +		if (!show->state.depth_check)				      \
-> +			show->showfn(show, __VA_ARGS__);		      \
-> +	} while (0)
-
-Does it have to be a macro? What are you gaining from macro
-instead of vararg function?
-
-> +static inline const char *__btf_show_indent(struct btf_show *show)
-
-please remove all 'inline' from .c file.
-There is no need to give such hints to the compiler.
-
-> +#define btf_show_indent(show)						       \
-> +	((show->flags & BTF_SHOW_COMPACT) ? "" : __btf_show_indent(show))
-> +
-> +#define btf_show_newline(show)						       \
-> +	((show->flags & BTF_SHOW_COMPACT) ? "" : "\n")
-> +
-> +#define btf_show_delim(show)						       \
-> +	(show->state.depth == 0 ? "" :					       \
-> +	 ((show->flags & BTF_SHOW_COMPACT) && show->state.type &&	       \
-> +	  BTF_INFO_KIND(show->state.type->info) == BTF_KIND_UNION) ? "|" : ",")
-> +
-> +#define btf_show_type_value(show, fmt, value)				       \
-> +	do {								       \
-> +		if ((value) != 0 || (show->flags & BTF_SHOW_ZERO) ||	       \
-> +		    show->state.depth == 0) {				       \
-> +			btf_show(show, "%s%s" fmt "%s%s",		       \
-> +				 btf_show_indent(show),			       \
-> +				 btf_show_name(show),			       \
-> +				 value, btf_show_delim(show),		       \
-> +				 btf_show_newline(show));		       \
-> +			if (show->state.depth > show->state.depth_to_show)     \
-> +				show->state.depth_to_show = show->state.depth; \
-> +		}							       \
-> +	} while (0)
-> +
-> +#define btf_show_type_values(show, fmt, ...)				       \
-> +	do {								       \
-> +		btf_show(show, "%s%s" fmt "%s%s", btf_show_indent(show),       \
-> +			 btf_show_name(show),				       \
-> +			 __VA_ARGS__, btf_show_delim(show),		       \
-> +			 btf_show_newline(show));			       \
-> +		if (show->state.depth > show->state.depth_to_show)	       \
-> +			show->state.depth_to_show = show->state.depth;	       \
-> +	} while (0)
-> +
-> +/* How much is left to copy to safe buffer after @data? */
-> +#define btf_show_obj_size_left(show, data)				       \
-> +	(show->obj.head + show->obj.size - data)
-> +
-> +/* Is object pointed to by @data of @size already copied to our safe buffer? */
-> +#define btf_show_obj_is_safe(show, data, size)				       \
-> +	(data >= show->obj.data &&					       \
-> +	 (data + size) < (show->obj.data + BTF_SHOW_OBJ_SAFE_SIZE))
-> +
-> +/*
-> + * If object pointed to by @data of @size falls within our safe buffer, return
-> + * the equivalent pointer to the same safe data.  Assumes
-> + * copy_from_kernel_nofault() has already happened and our safe buffer is
-> + * populated.
-> + */
-> +#define __btf_show_obj_safe(show, data, size)				       \
-> +	(btf_show_obj_is_safe(show, data, size) ?			       \
-> +	 show->obj.safe + (data - show->obj.data) : NULL)
-
-Similarly I don't understand the benefit of macros.
-They all could have been normal functions.
-
-> +static inline void *btf_show_obj_safe(struct btf_show *show,
-> +				      const struct btf_type *t,
-> +				      void *data)
-
-drop 'inline' pls.
-
-> +{
-> +	int size_left, size;
-> +	void *safe = NULL;
-> +
-> +	if (show->flags & BTF_SHOW_UNSAFE)
-> +		return data;
-> +
-> +	(void) btf_resolve_size(show->btf, t, &size);
-
-Is this ok to ignore the error?
