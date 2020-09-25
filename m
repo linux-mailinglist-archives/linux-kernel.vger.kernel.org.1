@@ -2,186 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF19F278959
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F239E27895F
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728760AbgIYNUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43016 "EHLO
+        id S1728782AbgIYNVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbgIYNUP (ORCPT
+        with ESMTP id S1728121AbgIYNVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:20:15 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E0BC0613CE;
-        Fri, 25 Sep 2020 06:20:14 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id e17so3033468wme.0;
-        Fri, 25 Sep 2020 06:20:14 -0700 (PDT)
+        Fri, 25 Sep 2020 09:21:22 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BFFC0613CE;
+        Fri, 25 Sep 2020 06:21:21 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id b12so2760836lfp.9;
+        Fri, 25 Sep 2020 06:21:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ctCRRBMXBs6kMpZcuPxnX56lRnYkUGrCUb67xAJsOfY=;
-        b=ldwrKLkhQdaRphySlnkUcnORC/28bvFdDoFF1eRdlRzrVNfzr0v881BAm5vMqA6IaJ
-         AMLT+JPdCJKkfeIpFxgF8MJj37nYcNijBVxa5gjuIGVcOvICMnUU78s5Z7P7nvKvOHsp
-         VR7DoTlpWnWUtLbzdOeIvOlcQgzo4bXZvgmF0ZyxKS+iamy0PnKCYqxr/40agxKNqTyn
-         O3Pob3ArUBG7vJnnsP5gWhgd11Dr4O31MpUg370ITJF96KYeOR1zNPI8gzVsIeg0HpCM
-         LTcFK2szZBfT9uSGwqWxH3XzvqOrEIDwyjCUBgAIpXymtZohhYbVs5wHtfL16KCZm+IP
-         hMBw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HSGaf1eGfw5tIztilXD8fvlle7SWUYGVsu5F+1o/XiE=;
+        b=EEZna10+58DvlojMGo1TeKlWT6WjoHMAhd0OJFLVx2SF/7VD6C6y4Oy8IoTTWuYxK4
+         PiT7gPA+chFaoJSFa5IH4+vwnYVVR9C6Deo4tX9FDZ/Tm/wypL0EEMa8TYHSzZ4ADRZm
+         rZOqEZHofpSf/VfzEY3zkA7acZyOzOSKjx2i4cbpfvp+90cKqEdpPFzqzAJDiYMrE+eG
+         QIwSBFSTHaN7Yb64ESK5zBDs1290HrqX2pFHMzXkszsxh9lL7iCVf4Z7rgIIkS+fnbAp
+         R+7tkOli2jgkEZ/Tp0WBoAuypuzzrH8SaSin1iGBuMtuLuoDC8bjw9Yv55kPRWw5oTkw
+         XHAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ctCRRBMXBs6kMpZcuPxnX56lRnYkUGrCUb67xAJsOfY=;
-        b=bxjwALyCxlfVfIWP4wVqVtsq5DRYMovSkQ4z+TUp6nhJAzRJ7XmYy3WZJYwM/qgBBA
-         JoOm+1TSSMTqr0peoBu8FZCdKz8lUTSF+kNv0XvvcI9JJKD4VLJKrp0lpMvvprJlGfra
-         WSpkpKn2JiwBv3rNNv+9lW/17+lg2fn1TgL5h2+F0Q3IMWAB6tN8jzeCG8vH4iv8iCX+
-         xyUPi43LEOB6Q0HE0ZgY0auL68Tm4qsnkcw+PibtHa2cE8WxZEBpeZPyXrNHpVVUDLUf
-         FGA4gy50zbU3aETeELw4DcZn80GDGA2AbdxHcUe+9+dUl0Xcri5o8S4nW00LgMHSo+fJ
-         nxHA==
-X-Gm-Message-State: AOAM533mLE8NTBdTO9KMm1fxkcqT1P5S8bU9/zSqCmcthSSmWnniPvBl
-        y8TZxDpDlcFloLSQg9WcE8Q=
-X-Google-Smtp-Source: ABdhPJx7WgtlsBquBISAJGIrFfzINAei+kh2aFn9YKbsA0GYSp5DIoWlYBfSFuxhbbFmeBKDRV1m2g==
-X-Received: by 2002:a1c:1d08:: with SMTP id d8mr3285621wmd.78.1601040013526;
-        Fri, 25 Sep 2020 06:20:13 -0700 (PDT)
-Received: from localhost.localdomain ([170.253.60.68])
-        by smtp.googlemail.com with ESMTPSA id l4sm3004917wrc.14.2020.09.25.06.20.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 06:20:12 -0700 (PDT)
-From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
-To:     libc-alpha@sourceware.org
-Cc:     libc-coord@lists.openwall.com, libstdc++@gcc.gnu.org,
-        gcc@gcc.gnu.org, linux-kernel@vger.kernel.org,
-        linux-man@vger.kernel.org, fweimer@redhat.com, jwakely@redhat.com,
-        ville.voutilainen@gmail.com, enh@google.com,
-        colomar.6.4.3@gmail.com, rusty@rustcorp.com.au
-Subject: [PATCH v2] <sys/param.h>: Add nitems() and snitems() macros
-Date:   Fri, 25 Sep 2020 15:20:01 +0200
-Message-Id: <20200925132000.235033-1-colomar.6.4.3@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200922145844.31867-1-colomar.6.4.3@gmail.com>
-References: <20200922145844.31867-1-colomar.6.4.3@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HSGaf1eGfw5tIztilXD8fvlle7SWUYGVsu5F+1o/XiE=;
+        b=QvTvOxX9+fJnGPDhFZ7/k+1fFRncpBSkdfZ9NRbcuViKp8fVEJsijPe3r1vyC8ESKk
+         Z8reBuClK3xg+z63pUYILaPMtPKVS5zQEduuMN1joAMKwBJh8i8eQI/Ybh0Nbgyj66Af
+         H/n+EpQqa0/7UCduDeKf8ppLpPY8Y5/Bi+hcEJeeWbFINsiK+ViZ5kTk4NwIi+rWgXYt
+         Ei0yNFTw5/2PHlUbSxjSGuBsrmF+8lCk/ciw7qgMmjOvvLCD6nWBUI6dOtAed9TVWLpd
+         a5sOw8sjBI1A/O+ro7Oal+ZP1HYzxCvcAbjSlErlDHmuBZ4EsYMUfd4rayTY5AbMt4RZ
+         Aajg==
+X-Gm-Message-State: AOAM530erqoCY780UBHcc08mZQBAhdDiPPeALaDGsJt/Fujs43GW6P6W
+        mxGJmA40R0JUlHIUYRWEcMf3aaq2hlQ=
+X-Google-Smtp-Source: ABdhPJy7rFSI4LluJaDLNquOaxpLE+A82l9X3D9ZLpwTjDfKunUJpoe/hTAG9P68Jq4PI26/OrtgEw==
+X-Received: by 2002:ac2:491e:: with SMTP id n30mr1274466lfi.395.1601040079799;
+        Fri, 25 Sep 2020 06:21:19 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id 82sm2247569lfo.173.2020.09.25.06.21.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 06:21:19 -0700 (PDT)
+Subject: Re: [PATCH v2 1/4] dt-bindings: reserved-memory: Document "active"
+ property
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20200904130000.691933-1-thierry.reding@gmail.com>
+ <d3d69cb4-b0f9-40b0-b526-52fdc1a4b876@gmail.com>
+ <20200924140130.GA2527337@ulmo>
+ <ba16b795-34df-8f8c-3376-3d629cc30f8b@gmail.com>
+ <484b9e90-7395-6161-577c-4d3f3716997e@arm.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <70712ca4-8971-3af4-d0d0-b73788d6cfa9@gmail.com>
+Date:   Fri, 25 Sep 2020 16:21:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <484b9e90-7395-6161-577c-4d3f3716997e@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'nitems()' calculates the length of an array in number of items.
-It is safe: if a pointer is passed to the macro (or function, in C++),
-the compilation is broken due to:
- - In >= C11: _Static_assert()
- - In C89, C99: Negative anonymous bitfield
- - In C++: The template requires an array
+25.09.2020 15:39, Robin Murphy пишет:
+...
+>> IIRC, in the past Robin Murphy was suggesting to read out hardware state
+>> early during kernel boot in order to find what regions are in use by
+>> hardware.
+> 
+> I doubt I suggested that in general, because I've always firmly believed
+> it to be a terrible idea. I've debugged too many cases where firmware or
+> kexec has inadvertently left DMA running and corrupted kernel memory, so
+> in general we definitely *don't* want to blindly trust random hardware
+> state. Anything I may have said in relation to Qualcomm's fundamentally
+> broken hypervisor/bootloader setup should not be considered outside that
+> specific context ;)
+> 
+> Robin.
+> 
+>> I think it should be easy to do for the display controller since we
+>> could check clock and PD states in order to decide whether DC's IO could
+>> be accessed and then read out the FB pointer and size. I guess it should
+>> take about hundred lines of code.
 
-'snitems()' is equivalent to nitems(),
-but it returns a 'ptrdiff_t' instead of a 'size_t'.
-It is useful for comparison with signed integer values.
+The active DMA is indeed very dangerous, but it's a bit less dangerous
+in a case of read-only DMA.
 
-Some BSDs already provide a macro nitems() in <sys/param.h>,
-although it usually doesn't provide safety against pointers.
+I got another idea of how we could benefit from the active display
+hardware. Maybe we could do the following:
 
-This patch uses the same name for compatibility reasons,
-and to be the least disruptive with existing code.
+1. Check whether display is active
 
-This patch also adds some other macros, which are required by 'nitems()':
+2. Allocate CMA that matches the FB size
 
-__is_same_type(_A, _B):
-Returns non-zero if the two input arguments are of the same type.
+3. Create identity mapping for the CMA
 
-__is_array(_Arr):
-Returns non-zero if the input argument is of an array type.
+4. Switch display framebuffer to our CMA
 
-__must_be(_Expr, _Msg):
-Allows using _Static_assert() everywhere an expression can be used.
-It evaluates '(int)0' or breaks the compilation.
+5. Create very early simple-framebuffer out of the CMA
 
-__must_be_array(_Arr):
-It evaluates to '(int)0' if the argument is of an array type.
-Else, it breaks compilation.
+6. Once Tegra DRM driver is loaded, it will kick out the simple-fb, and
+thus, release temporal CMA and identity mapping.
 
-__array_len(_Arr):
-It implements the basic sizeof division needed to calculate the array length.
-
-
-P.S.: I'd like to put this patch in the public domain.
-
-
-Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
----
- misc/sys/param.h | 60 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
-
-diff --git a/misc/sys/param.h b/misc/sys/param.h
-index d7c319b157..88e95c2dba 100644
---- a/misc/sys/param.h
-+++ b/misc/sys/param.h
-@@ -102,5 +102,65 @@
- #define MIN(a,b) (((a)<(b))?(a):(b))
- #define MAX(a,b) (((a)>(b))?(a):(b))
- 
-+/* Macros related to the types of variables */
-+# define __is_same_type(_A, _B)  __builtin_types_compatible_p(__typeof__(_A), \
-+                                                              __typeof__(_B))
-+# define __is_array(_Arr)	(!__is_same_type((_Arr), &(_Arr)[0]))
-+
-+/* Macros for embedding _Static_assert() in expressions */
-+# if __STDC_VERSION__ >= 201112L
-+#  define __must_be(_Expr, _Msg)  (                                           \
-+        0 * (int)sizeof(                                                      \
-+          struct {                                                            \
-+            _Static_assert((_Expr), _Msg);                                    \
-+            char _ISO_C_forbids_a_struct_with_no_members;                     \
-+          }                                                                   \
-+        )                                                                     \
-+)
-+# else
-+#  define __must_be(_Expr, _Msg)  (                                           \
-+        0 * (int)sizeof(                                                      \
-+          struct {                                                            \
-+            int  : (-!(_Expr));                                               \
-+            char _ISO_C_forbids_a_struct_with_no_members;                     \
-+          }                                                                   \
-+        )                                                                     \
-+)
-+# endif
-+
-+# define __must_be_array(_Arr)	__must_be(__is_array(_Arr), "Must be an array!")
-+
-+/* Macros for array sizes */
-+#if defined(__cplusplus)
-+# if __cplusplus >= 201103L
-+template<typename _Tp, std::size_t _Len>
-+  constexpr inline std::size_t
-+  nitems(const _Tp(&)[_Len]) __THROW
-+  {
-+    return _Len;
-+  }
-+
-+template<typename _Tp, std::size_t _Len>
-+  constexpr inline std::ptrdiff_t
-+  snitems(const _Tp(&)[_Len]) __THROW
-+  {
-+    return _Len;
-+  }
-+
-+# else /* __cplusplus < 201103L */
-+template<typename _Tp, std::size_t _Len>
-+  char
-+  (&__nitems_chararr(const _Tp(&)[_Len]))[_Len];
-+
-+#  define nitems(_Arr)          (sizeof(__nitems_chararr(_Arr)))
-+#  define snitems(_Arr)         (static_cast<std::ptrdiff_t>(nitems(_Arr)))
-+# endif /* __cplusplus < 201103L */
-+
-+#else /* !defined(__cplusplus) */
-+# define __array_len(_Arr)      (sizeof(_Arr) / sizeof((_Arr)[0]))
-+# define nitems(_Arr)           (__array_len(_Arr) + __must_be_array(_Arr))
-+# define snitems(_Arr)          ((ptrdiff_t)nitems(_Arr))
-+#endif /* !defined(__cplusplus) */
-+
- 
- #endif  /* sys/param.h */
--- 
-2.28.0
-
+This will provide us with a very early framebuffer output and it will
+work on all devices out-of-the-box!
