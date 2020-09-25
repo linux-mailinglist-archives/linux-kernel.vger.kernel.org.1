@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72A61278D18
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71A1278D1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729367AbgIYPro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:47:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38100 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728333AbgIYPro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:47:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1601048862;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=v859nZdRdAvozMlID3w2V9JVl0a2kKP1Gfe6Ju4Q9a8=;
-        b=PJtdYSR5RZRSslz9jEpJc38LfXP/nFtPltVJseci6dvmqYxTfPJkFM6dUs6sSr0GBlmPl4
-        Y0dQ4GEdqYI8qHCcZZ5IOl+TT+vtoLyZVUIrdQB/Ksk621juKWed2hOcCzKDTWr3nwOaij
-        4N405sQxwGwW+/Zq3rcRV2NKxl81r9w=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 059D4ACA3;
-        Fri, 25 Sep 2020 15:47:42 +0000 (UTC)
-Date:   Fri, 25 Sep 2020 17:47:41 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200925154741.GI3389@dhcp22.suse.cz>
-References: <20200921160318.GO12990@dhcp22.suse.cz>
- <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
- <20200923103706.GJ3179@techsingularity.net>
- <20200923154105.GO29330@paulmck-ThinkPad-P72>
- <20200923232251.GK3179@techsingularity.net>
- <20200924081614.GA14819@pc636>
- <20200925080503.GC3389@dhcp22.suse.cz>
- <20200925153129.GB25350@pc636>
+        id S1729387AbgIYPsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:48:12 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:42534 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728333AbgIYPsM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:48:12 -0400
+Received: by mail-wr1-f68.google.com with SMTP id c18so4087588wrm.9;
+        Fri, 25 Sep 2020 08:48:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7Qh5+ZRjYoXTfTyMdsphNx4+wbs2iln0Dg7bJktrLac=;
+        b=TVeaCTXCpTsuVU0OtUUElmJo/fpDul1xq0BoKSat8xsthvyVRg3tvKSo9BDvXekHGs
+         nVMqvWqW2vDFwcKum10rq+V2w4RGf0Cbu4GkgPDlQ70SCIrY75oW3A8tvEVZ72/uj+BR
+         4EbsAekEwNtwoAc1kWoEQOvx8Y6MK0luteQWvJdUqrb31OnLBXKf4kSf6ewiSu4+Ht9/
+         WRh3LafUlWtpbwAaotcanO4mWtDq5aA5KJbY/3zBTbP98+v8CpwfiTqnpkwdUuH9XqNZ
+         IYgvZ5oXua9CSn4kvt2ZeDcdMZ9AORrztspYXytjv/MZiKPE6Q6dhPOQRLB/HCw3fCTb
+         QYOA==
+X-Gm-Message-State: AOAM530jZ7cH+UMdZuiOzssXlOROiVnnPDzz/OVL+TIcaLz6izOfYlGs
+        F+7Qk5sFmybwRzI9dgKATms=
+X-Google-Smtp-Source: ABdhPJw0NxnpCAb54EdTsCUv1oA2JhAAx01jYuFmqouNOz5V/9GWfo7kcmF2Z8f+IMYVxGIHsAi2tA==
+X-Received: by 2002:adf:f082:: with SMTP id n2mr5158088wro.35.1601048889557;
+        Fri, 25 Sep 2020 08:48:09 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.132])
+        by smtp.googlemail.com with ESMTPSA id k8sm3477035wma.16.2020.09.25.08.48.06
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 25 Sep 2020 08:48:08 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 17:48:04 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        =?utf-8?Q?Beno=C3=AEt?= Cousson <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org
+Subject: Re: [PATCH v3 01/15] dt-bindings: gpio: convert bindings for NXP
+ PCA953x family to dtschema
+Message-ID: <20200925154804.GB16392@kozik-lap>
+References: <20200916155715.21009-1-krzk@kernel.org>
+ <20200916155715.21009-2-krzk@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200925153129.GB25350@pc636>
+In-Reply-To: <20200916155715.21009-2-krzk@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 25-09-20 17:31:29, Uladzislau Rezki wrote:
-> > > > > 
-> > > > > All good points!
-> > > > > 
-> > > > > On the other hand, duplicating a portion of the allocator functionality
-> > > > > within RCU increases the amount of reserved memory, and needlessly most
-> > > > > of the time.
-> > > > > 
-> > > > 
-> > > > But it's very similar to what mempools are for.
-> > > > 
-> > > As for dynamic caching or mempools. It requires extra logic on top of RCU
-> > > to move things forward and it might be not efficient way. As a side
-> > > effect, maintaining of the bulk arrays in the separate worker thread
-> > > will introduce other drawbacks:
-> > 
-> > This is true but it is also true that it is RCU to require this special
-> > logic and we can expect that we might need to fine tune this logic
-> > depending on the RCU usage. We definitely do not want to tune the
-> > generic page allocator for a very specific usecase, do we?
-> > 
-> I look at it in scope of GFP_ATOMIC/GFP_NOWAIT issues, i.e. inability
-> to provide a memory service for contexts which are not allowed to
-> sleep, RCU is part of them. Both flags used to provide such ability
-> before but not anymore.
+On Wed, Sep 16, 2020 at 05:57:01PM +0200, Krzysztof Kozlowski wrote:
+> Convert the NXP PCA953x family of GPIO expanders bindings to device tree
+> schema.
 > 
-> Do you agree with it?
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> 
+> ---
+> 
+> Changes since v2:
+> 1. Add Rob's review tag
+> 
+> Changes since v1:
+> 1. Use additionalProperties.
+> 2. Add wakeup-source.
+> 3. Add hogs.
+> 4. Extend example with hogs.
+> ---
+>  .../devicetree/bindings/gpio/gpio-pca953x.txt |  90 ----------
+>  .../bindings/gpio/gpio-pca95xx.yaml           | 166 ++++++++++++++++++
+>  .../devicetree/bindings/trivial-devices.yaml  |   4 -
+>  3 files changed, 166 insertions(+), 94 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca953x.txt
+>  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
 
-Yes this sucks. But this is something that we likely really want to live
-with. We have to explicitly _document_ that really atomic contexts in RT
-cannot use the allocator. From the past discussions we've had this is
-likely the most reasonable way forward because we do not really want to
-encourage anybody to do something like that and there should be ways
-around that. The same is btw. true also for !RT. The allocator is not
-NMI safe and while we should be able to make it compatible I am not
-convinced we really want to.
+Hi Linus,
 
-Would something like this be helpful wrt documentation?
+The first two patches (bindings) have Rob's ack/review. Could you pick
+them via GPIO tree?
 
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index 67a0774e080b..9fcd47606493 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -238,7 +238,9 @@ struct vm_area_struct;
-  * %__GFP_FOO flags as necessary.
-  *
-  * %GFP_ATOMIC users can not sleep and need the allocation to succeed. A lower
-- * watermark is applied to allow access to "atomic reserves"
-+ * watermark is applied to allow access to "atomic reserves".
-+ * The current implementation doesn't support NMI and other non-preemptive context
-+ * (e.g. raw_spin_lock).
-  *
-  * %GFP_KERNEL is typical for kernel-internal allocations. The caller requires
-  * %ZONE_NORMAL or a lower zone for direct access but can direct reclaim.
+Best regards,
+Krzysztof
 
-[...]
--- 
-Michal Hocko
-SUSE Labs
