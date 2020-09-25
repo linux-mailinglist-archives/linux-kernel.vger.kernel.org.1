@@ -2,101 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09FB2789E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4B0D2789EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:50:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728523AbgIYNrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:47:55 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:38504 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgIYNry (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:47:54 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PDjJcc134598;
-        Fri, 25 Sep 2020 13:47:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=xKCctV3/JkpuA0CeolFxLW6LjuoTV+gIWojGjEUuvTM=;
- b=Evr6KiHcwdY+QWckT2kb6SI8LpNY2p3khJjGLfuH0VNrl7ongez0rx9oclFh1fZBmOSr
- i4G2vvknJ6SGtq7LetRlN8AIIDgb4stkOWGCkc5Hsnnz2PgyXL4p8oe5+T92q/Rhg96t
- BqEuFRJ4BmPFA7OHplLoNoDhOSEqwvIUUKxMj2n+FnomC2AddXoydiVwKTmldQ6XbkoO
- /dpeh8avVh3Z1B+e3bsbCo6wznmtdAKjAqfUNoNzwmvSlTCqOPhkGrO6D6Y6Q6P3Uu3W
- EOmmjWkPcAcSwVd/lnVb2hr2WHBCEIjsoVaBPb5Hdrf1uf41Tp0ttkMMnKxD+z0/pOhZ PQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 33q5rgv1ru-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 25 Sep 2020 13:47:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PDeDvs062429;
-        Fri, 25 Sep 2020 13:45:37 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 33r28ydunh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Sep 2020 13:45:37 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08PDjTDW020127;
-        Fri, 25 Sep 2020 13:45:29 GMT
-Received: from [10.74.86.146] (/10.74.86.146)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 25 Sep 2020 06:45:29 -0700
-Subject: Re: [PATCH] x86/xen: disable Firmware First mode for correctable
- memory errors
-To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, stable@vger.kernel.org
-References: <20200925101148.21012-1-jgross@suse.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <171970df-5f6e-5a2b-e784-e62d300a005b@oracle.com>
-Date:   Fri, 25 Sep 2020 09:45:26 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
-MIME-Version: 1.0
-In-Reply-To: <20200925101148.21012-1-jgross@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 bulkscore=0 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009250096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9754 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 impostorscore=0
- clxscore=1015 suspectscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 adultscore=0 bulkscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009250097
+        id S1728824AbgIYNud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:50:33 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49095 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728365AbgIYNuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 09:50:32 -0400
+IronPort-SDR: x18NXrxhsb05o7ZAMWUIk4tpb6w7CaVoASgOiBuPdLR1beDpSZ7fyftEcsyiEBWKPOPOe/YX8M
+ pyTVzPEBQ/Nw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="141546642"
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="141546642"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:50:31 -0700
+IronPort-SDR: 5YckPMQxtbZ4n66syUtNBVll/Hr5P31dA4eEQsZoSdl9qEjCHcm9iVj8N44A/derQ/OFuPEpr3
+ zZBSIbwyZbBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
+   d="scan'208";a="310824574"
+Received: from unknown (HELO labuser-Ice-Lake-Client-Platform.jf.intel.com) ([10.54.55.65])
+  by orsmga006.jf.intel.com with ESMTP; 25 Sep 2020 06:50:31 -0700
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     ak@linux.intel.com, asit.k.mallick@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 3/3] perf/x86/intel/uncore: Reduce the number of CBOX counters
+Date:   Fri, 25 Sep 2020 06:49:05 -0700
+Message-Id: <20200925134905.8839-3-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200925134905.8839-1-kan.liang@linux.intel.com>
+References: <20200925134905.8839-1-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kan Liang <kan.liang@linux.intel.com>
 
-On 9/25/20 6:11 AM, Juergen Gross wrote:
-> @@ -1296,6 +1296,14 @@ asmlinkage __visible void __init xen_start_kernel(void)
->  
->  	xen_smp_init();
->  
-> +#ifdef CONFIG_ACPI
-> +	/*
-> +	 * Disable selecting "Firmware First mode" for correctable memory
-> +	 * errors, as this is the duty of the hypervisor to decide.
-> +	 */
-> +	acpi_disable_cmcff = 1;
-> +#endif
+An oops is triggered by the fuzzy test.
 
+[  327.853081] unchecked MSR access error: RDMSR from 0x70c at rIP:
+0xffffffffc082c820 (uncore_msr_read_counter+0x10/0x50 [intel_uncore])
+[  327.853083] Call Trace:
+[  327.853085]  <IRQ>
+[  327.853089]  uncore_pmu_event_start+0x85/0x170 [intel_uncore]
+[  327.853093]  uncore_pmu_event_add+0x1a4/0x410 [intel_uncore]
+[  327.853097]  ? event_sched_in.isra.118+0xca/0x240
 
-Not that it matters greatly but should this go under if (xen_initial_domain()) clause a bit further down?
+There are 2 GP counters for each CBOX, but the current code claims 4
+counters. Accessing the invalid registers triggers the oops.
 
+Fixes: 6e394376ee89 ("perf/x86/intel/uncore: Add Intel Icelake uncore support")
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/uncore_snb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Either way:
-
-
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-
+diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
+index 2bdfcf80b434..de3d9621b694 100644
+--- a/arch/x86/events/intel/uncore_snb.c
++++ b/arch/x86/events/intel/uncore_snb.c
+@@ -325,7 +325,7 @@ static struct intel_uncore_ops icl_uncore_msr_ops = {
+ 
+ static struct intel_uncore_type icl_uncore_cbox = {
+ 	.name		= "cbox",
+-	.num_counters   = 4,
++	.num_counters   = 2,
+ 	.perf_ctr_bits	= 44,
+ 	.perf_ctr	= ICL_UNC_CBO_0_PER_CTR0,
+ 	.event_ctl	= SNB_UNC_CBO_0_PERFEVTSEL0,
+-- 
+2.17.1
 
