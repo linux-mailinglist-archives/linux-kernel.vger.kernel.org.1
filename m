@@ -2,58 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D91278915
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643D0278918
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 15:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728566AbgIYNLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 09:11:44 -0400
-Received: from mga18.intel.com ([134.134.136.126]:46581 "EHLO mga18.intel.com"
+        id S1728666AbgIYNMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 09:12:17 -0400
+Received: from mga01.intel.com ([192.55.52.88]:26712 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728148AbgIYNLn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 09:11:43 -0400
-IronPort-SDR: KQO7NdzQODItQIFQwXFdpBJewHmUWInBgSLADNmsQnyfpba9EqwQqQqbWgQ8tEF+FyGhW1L4u2
- AFfpkk+DuUUw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="149288262"
+        id S1727733AbgIYNMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 09:12:17 -0400
+IronPort-SDR: 3LPFaPiWSxZqYFn5e11ZDgXQ46thrnltS/hmoUF3dmoLLTdzDP0nFUarcPeuvjnRzZhupmXLj/
+ TXWuDvGDXTUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9754"; a="179601717"
 X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="149288262"
+   d="scan'208";a="179601717"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:11:41 -0700
-IronPort-SDR: Cx9GTgN932+B5kZwf5dsa5xKxL7N/hfSSwW0z4VmSrslkwicASqHt4X6SFa68TyEONbCGp1Y40
- IRYR97di+wig==
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:12:17 -0700
+IronPort-SDR: dMMBxGcPo9STqViUY7Aq22CcrQ4X7+X+9yd9oxEb8XWtx2Gtfjv+XTz75iCMZ4j608TAnMmFy3
+ mNj2AQwzk4BQ==
 X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="455828530"
-Received: from mlevy2-mobl.ger.corp.intel.com (HELO [10.251.176.131]) ([10.251.176.131])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:11:35 -0700
-Subject: Re: [PATCH 08/11] drm/i915: use vmap in i915_gem_object_map
-To:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org
-References: <20200924135853.875294-1-hch@lst.de>
- <20200924135853.875294-9-hch@lst.de>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-Message-ID: <63e331f4-2283-b579-f9b1-795a73f80bb8@linux.intel.com>
-Date:   Fri, 25 Sep 2020 14:11:32 +0100
+   d="scan'208";a="336655318"
+Received: from sboyapat-mobl2.amr.corp.intel.com (HELO [10.209.154.99]) ([10.209.154.99])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 06:12:16 -0700
+Subject: Re: [PATCH 1/2] regmap: add support to regmap_field_bulk_alloc/free
+ apis
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, srivasam@codeaurora.org,
+        lgirdwood@gmail.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+        tiwai@suse.com, rohitkr@codeaurora.org,
+        linux-kernel@vger.kernel.org
+References: <20200925092804.23536-1-srinivas.kandagatla@linaro.org>
+ <20200925092804.23536-2-srinivas.kandagatla@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <eb7af426-ab00-b444-e578-cf3c4b329c95@linux.intel.com>
+Date:   Fri, 25 Sep 2020 08:12:15 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200924135853.875294-9-hch@lst.de>
+In-Reply-To: <20200925092804.23536-2-srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -62,205 +51,161 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 24/09/2020 14:58, Christoph Hellwig wrote:
-> i915_gem_object_map implements fairly low-level vmap functionality in
-> a driver.  Split it into two helpers, one for remapping kernel memory
-> which can use vmap, and one for I/O memory that uses vmap_pfn.
+
+On 9/25/20 4:28 AM, Srinivas Kandagatla wrote:
+> Usage of regmap_field_alloc becomes much overhead when number of fields
+> exceed more than 3.
+> QCOM LPASS driver has extensively converted to use regmap_fileds.
+
+Multiple typos scattered in this patch: fileds -> fields?
+
 > 
-> The only practical difference is that alloc_vm_area prefeaults the
-> vmalloc area PTEs, which doesn't seem to be required here for the
-> kernel memory case (and could be added to vmap using a flag if actually
-> required).
+> Using new bluk api to allocate fields makes it much more cleaner code to read!
+
+bulk api?
+
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Tested-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 > ---
->   drivers/gpu/drm/i915/Kconfig              |   1 +
->   drivers/gpu/drm/i915/gem/i915_gem_pages.c | 126 ++++++++++------------
->   2 files changed, 59 insertions(+), 68 deletions(-)
+>   drivers/base/regmap/regmap.c | 100 +++++++++++++++++++++++++++++++++++
+>   include/linux/regmap.h       |  11 ++++
+>   2 files changed, 111 insertions(+)
 > 
-> diff --git a/drivers/gpu/drm/i915/Kconfig b/drivers/gpu/drm/i915/Kconfig
-> index 9afa5c4a6bf006..1e1cb245fca778 100644
-> --- a/drivers/gpu/drm/i915/Kconfig
-> +++ b/drivers/gpu/drm/i915/Kconfig
-> @@ -25,6 +25,7 @@ config DRM_I915
->   	select CRC32
->   	select SND_HDA_I915 if SND_HDA_CORE
->   	select CEC_CORE if CEC_NOTIFIER
-> +	select VMAP_PFN
->   	help
->   	  Choose this option if you have a system that has "Intel Graphics
->   	  Media Accelerator" or "HD Graphics" integrated graphics,
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_pages.c b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-> index 6550c0bc824ea2..b519417667eb4b 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_pages.c
-> @@ -232,34 +232,21 @@ int __i915_gem_object_put_pages(struct drm_i915_gem_object *obj)
->   	return err;
+> diff --git a/drivers/base/regmap/regmap.c b/drivers/base/regmap/regmap.c
+> index aec3f26bf711..271740a163ad 100644
+> --- a/drivers/base/regmap/regmap.c
+> +++ b/drivers/base/regmap/regmap.c
+> @@ -1270,6 +1270,106 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
 >   }
+>   EXPORT_SYMBOL_GPL(devm_regmap_field_alloc);
 >   
-> -static inline pte_t iomap_pte(resource_size_t base,
-> -			      dma_addr_t offset,
-> -			      pgprot_t prot)
-> -{
-> -	return pte_mkspecial(pfn_pte((base + offset) >> PAGE_SHIFT, prot));
-> -}
-> -
->   /* The 'mapping' part of i915_gem_object_pin_map() below */
-> -static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
-> -				 enum i915_map_type type)
-> +static void *i915_gem_object_map_page(struct drm_i915_gem_object *obj,
-> +		enum i915_map_type type)
->   {
-> -	unsigned long n_pte = obj->base.size >> PAGE_SHIFT;
-> -	struct sg_table *sgt = obj->mm.pages;
-> -	pte_t *stack[32], **mem;
-> -	struct vm_struct *area;
-> +	unsigned long n_pages = obj->base.size >> PAGE_SHIFT, i;
-> +	struct page *stack[32], **pages = stack, *page;
-> +	struct sgt_iter iter;
->   	pgprot_t pgprot;
-> +	void *vaddr;
->   
-> -	if (!i915_gem_object_has_struct_page(obj) && type != I915_MAP_WC)
-> -		return NULL;
-> -
-> -	if (GEM_WARN_ON(type == I915_MAP_WC &&
-> -			!static_cpu_has(X86_FEATURE_PAT)))
-> -		return NULL;
-> -
-> -	/* A single page can always be kmapped */
-> -	if (n_pte == 1 && type == I915_MAP_WB) {
-> -		struct page *page = sg_page(sgt->sgl);
-> -
-> +	switch (type) {
-> +	default:
-> +		MISSING_CASE(type);
-> +		fallthrough;	/* to use PAGE_KERNEL anyway */
-> +	case I915_MAP_WB:
->   		/*
->   		 * On 32b, highmem using a finite set of indirect PTE (i.e.
->   		 * vmap) to provide virtual mappings of the high pages.
-> @@ -277,30 +264,8 @@ static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
->   		 * So if the page is beyond the 32b boundary, make an explicit
->   		 * vmap.
->   		 */
-> -		if (!PageHighMem(page))
-> -			return page_address(page);
-> -	}
-> -
-> -	mem = stack;
-> -	if (n_pte > ARRAY_SIZE(stack)) {
-> -		/* Too big for stack -- allocate temporary array instead */
-> -		mem = kvmalloc_array(n_pte, sizeof(*mem), GFP_KERNEL);
-> -		if (!mem)
-> -			return NULL;
-> -	}
-> -
-> -	area = alloc_vm_area(obj->base.size, mem);
-> -	if (!area) {
-> -		if (mem != stack)
-> -			kvfree(mem);
-> -		return NULL;
-> -	}
-> -
-> -	switch (type) {
-> -	default:
-> -		MISSING_CASE(type);
-> -		fallthrough;	/* to use PAGE_KERNEL anyway */
-> -	case I915_MAP_WB:
-> +		if (n_pages == 1 && !PageHighMem(sg_page(obj->mm.pages->sgl)))
-> +			return page_address(sg_page(obj->mm.pages->sgl));
->   		pgprot = PAGE_KERNEL;
->   		break;
->   	case I915_MAP_WC:
-> @@ -308,30 +273,49 @@ static void *i915_gem_object_map(struct drm_i915_gem_object *obj,
->   		break;
->   	}
->   
-> -	if (i915_gem_object_has_struct_page(obj)) {
-> -		struct sgt_iter iter;
-> -		struct page *page;
-> -		pte_t **ptes = mem;
-> +	if (n_pages > ARRAY_SIZE(stack)) {
-> +		/* Too big for stack -- allocate temporary array instead */
-> +		pages = kvmalloc_array(n_pages, sizeof(*pages), GFP_KERNEL);
-> +		if (!pages)
-> +			return NULL;
-> +	}
->   
-> -		for_each_sgt_page(page, iter, sgt)
-> -			**ptes++ = mk_pte(page, pgprot);
-> -	} else {
-> -		resource_size_t iomap;
-> -		struct sgt_iter iter;
-> -		pte_t **ptes = mem;
-> -		dma_addr_t addr;
-> +	i = 0;
-> +	for_each_sgt_page(page, iter, obj->mm.pages)
-> +		pages[i++] = page;
-> +	vaddr = vmap(pages, n_pages, 0, pgprot);
-> +	if (pages != stack)
-> +		kvfree(pages);
-> +	return vaddr;
-> +}
->   
-> -		iomap = obj->mm.region->iomap.base;
-> -		iomap -= obj->mm.region->region.start;
-> +static void *i915_gem_object_map_pfn(struct drm_i915_gem_object *obj,
-> +		enum i915_map_type type)
-> +{
-> +	resource_size_t iomap = obj->mm.region->iomap.base -
-> +		obj->mm.region->region.start;
-> +	unsigned long n_pfn = obj->base.size >> PAGE_SHIFT;
-> +	unsigned long stack[32], *pfns = stack, i;
-> +	struct sgt_iter iter;
-> +	dma_addr_t addr;
-> +	void *vaddr;
 > +
-> +	if (type != I915_MAP_WC)
-> +		return NULL;
+> +/**
+> + * regmap_field_bulk_alloc() - Allocate and initialise a bulk register field.
+> + *
+> + * @regmap: regmap bank in which this register field is located.
+> + * @rm_field: regmap register fileds with in the bank.
+> + * @reg_field: Register fields with in the bank.
+> + * @num_fields: Number of register fileds.
+> + *
+> + * The return value will be an -ENOMEM on error or zero for success.
+> + * Newly allocated regmap_fields should be freed by calling
+> + * regmap_field_bulk_free()
+> + */
+> +int regmap_field_bulk_alloc(struct regmap *regmap,
+> +			    struct regmap_field **rm_field,
+> +			    struct reg_field *reg_field,
+> +			    int num_fields)
+> +{
+> +	struct regmap_field *rf;
+> +	int i;
+> +
+> +	rf = kcalloc(num_fields, sizeof(*rf), GFP_KERNEL);
+> +	if (!rf)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < num_fields; i++) {
+> +		regmap_field_init(&rf[i], regmap, reg_field[i]);
+> +		rm_field[i] = &rf[i];
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(regmap_field_bulk_alloc);
+> +
+> +/**
+> + * devm_regmap_field_bulk_alloc() - Allocate and initialise a bulk register
+> + * fields.
+> + *
+> + * @dev: Device that will be interacted with
+> + * @regmap: regmap bank in which this register field is located.
+> + * @rm_field: regmap register fileds with in the bank.
+> + * @reg_field: Register fields with in the bank.
+
+within?
+
+> + * @num_fields: Number of register fileds.
+> + *
+> + * The return value will be an -ENOMEM on error or zero for success.
+> + * Newly allocated regmap_fields will be automatically freed by the
+> + * device management code.
+> + */
+> +int devm_regmap_field_bulk_alloc(struct device *dev,
+> +				 struct regmap *regmap,
+> +				 struct regmap_field **rm_field,
+> +				 struct reg_field *reg_field,
+> +				 int num_fields)
+> +{
+> +	struct regmap_field *rf;
+> +	int i;
+> +
+> +	rf = devm_kcalloc(dev, num_fields, sizeof(*rf), GFP_KERNEL);
+> +	if (!rf)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < num_fields; i++) {
+> +		regmap_field_init(&rf[i], regmap, reg_field[i]);
+> +		rm_field[i] = &rf[i];
+> +	}
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(devm_regmap_field_bulk_alloc);
+> +
+> +/**
+> + * regmap_field_bulk_free() - Free register field allocated using
+> + *                       regmap_field_bulk_alloc.
+> + *
+> + * @field: regmap fields which should be freed.
+> + */
+> +void regmap_field_bulk_free(struct regmap_field *field)
+> +{
+> +	kfree(field);
+> +}
+> +EXPORT_SYMBOL_GPL(regmap_field_bulk_free);
+> +
+> +/**
+> + * devm_regmap_field_bulk_free() - Free a bulk register field allocated using
+> + *                            devm_regmap_field_bulk_alloc.
+> + *
+> + * @dev: Device that will be interacted with
+> + * @field: regmap field which should be freed.
+> + *
+> + * Free register field allocated using devm_regmap_field_bulk_alloc(). Usually
+> + * drivers need not call this function, as the memory allocated via devm
+> + * will be freed as per device-driver life-cyle.
+> + */
+> +void devm_regmap_field_bulk_free(struct device *dev,
+> +				 struct regmap_field *field)
+> +{
+> +	devm_kfree(dev, field);
+> +}
+> +EXPORT_SYMBOL_GPL(devm_regmap_field_bulk_free);
+> +
+>   /**
+>    * devm_regmap_field_free() - Free a register field allocated using
+>    *                            devm_regmap_field_alloc.
+> diff --git a/include/linux/regmap.h b/include/linux/regmap.h
+> index 0c49d59168b5..a35ec0a0d6e0 100644
+> --- a/include/linux/regmap.h
+> +++ b/include/linux/regmap.h
+> @@ -1189,6 +1189,17 @@ struct regmap_field *devm_regmap_field_alloc(struct device *dev,
+>   		struct regmap *regmap, struct reg_field reg_field);
+>   void devm_regmap_field_free(struct device *dev,	struct regmap_field *field);
 >   
-> -		for_each_sgt_daddr(addr, iter, sgt)
-> -			**ptes++ = iomap_pte(iomap, addr, pgprot);
-> +	if (n_pfn > ARRAY_SIZE(stack)) {
-> +		/* Too big for stack -- allocate temporary array instead */
-> +		pfns = kvmalloc_array(n_pfn, sizeof(*pfns), GFP_KERNEL);
-> +		if (!pfns)
-> +			return NULL;
->   	}
->   
-> -	if (mem != stack)
-> -		kvfree(mem);
-> -
-> -	return area->addr;
-> +	for_each_sgt_daddr(addr, iter, obj->mm.pages)
-> +		pfns[i++] = (iomap + addr) >> PAGE_SHIFT;
-> +	vaddr = vmap_pfn(pfns, n_pfn, pgprot_writecombine(PAGE_KERNEL_IO));
-> +	if (pfns != stack)
-> +		kvfree(pfns);
-> +	return vaddr;
->   }
->   
->   /* get, pin, and map the pages of the object into kernel space */
-> @@ -383,7 +367,13 @@ void *i915_gem_object_pin_map(struct drm_i915_gem_object *obj,
->   	}
->   
->   	if (!ptr) {
-> -		ptr = i915_gem_object_map(obj, type);
-> +		if (GEM_WARN_ON(type == I915_MAP_WC &&
-> +				!static_cpu_has(X86_FEATURE_PAT)))
-> +			ptr = NULL;
-> +		else if (i915_gem_object_has_struct_page(obj))
-> +			ptr = i915_gem_object_map_page(obj, type);
-> +		else
-> +			ptr = i915_gem_object_map_pfn(obj, type);
->   		if (!ptr) {
->   			err = -ENOMEM;
->   			goto err_unpin;
+> +int regmap_field_bulk_alloc(struct regmap *regmap,
+> +			     struct regmap_field **rm_field,
+> +			     struct reg_field *reg_field,
+> +			     int num_fields);
+> +void regmap_field_bulk_free(struct regmap_field *field);
+> +int devm_regmap_field_bulk_alloc(struct device *dev, struct regmap *regmap,
+> +				 struct regmap_field **field,
+> +				 struct reg_field *reg_field, int num_fields);
+> +void devm_regmap_field_bulk_free(struct device *dev,
+> +				 struct regmap_field *field);
+> +
+>   int regmap_field_read(struct regmap_field *field, unsigned int *val);
+>   int regmap_field_update_bits_base(struct regmap_field *field,
+>   				  unsigned int mask, unsigned int val,
 > 
-
-Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
-
-Regards,
-
-Tvrtko
