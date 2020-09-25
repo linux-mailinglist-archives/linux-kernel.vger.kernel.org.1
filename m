@@ -2,110 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C04278F6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8049278F70
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbgIYROj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727402AbgIYROj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:14:39 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EA1120936;
-        Fri, 25 Sep 2020 17:14:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601054078;
-        bh=7c+/aUouCIhoN252DDnGiTWe7TCcYqeUOpv/kSATLnY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pSPeDBr/ecinZYSW7vpLj0gvkqUSIwBNrJfA6D5cocctOSaQJjZyEB/SnvMKIBK4I
-         KliHOxRuNSYe38uf9DFlJB1WISvWQsOuoed2WmFWztHS/IfWy0TNySvJ4KEeO75IuS
-         rBTp4EZEJ1PoynYjx97qnevzUuIfetiQBwR7ew8s=
-Date:   Fri, 25 Sep 2020 10:14:36 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chao Yu <chao@kernel.org>
-Cc:     jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix uninit-value in f2fs_lookup
-Message-ID: <20200925171436.GC3315208@gmail.com>
-References: <20200925151926.2658-1-chao@kernel.org>
+        id S1729600AbgIYRPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:15:54 -0400
+Received: from smtprelay0207.hostedemail.com ([216.40.44.207]:54858 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728038AbgIYRPy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 13:15:54 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id DA0DF182CED5B;
+        Fri, 25 Sep 2020 17:15:52 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1042:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1539:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2691:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3865:3867:3868:3870:3871:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:5007:6117:6120:7901:7903:9010:9025:10004:10400:10848:11232:11658:11914:12043:12297:12555:12740:12760:12895:12986:13069:13149:13230:13255:13311:13357:13439:13845:14181:14659:14721:21080:21451:21627:21772:21811:21939:30012:30054:30060:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: park51_4d137d227169
+X-Filterd-Recvd-Size: 1836
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 25 Sep 2020 17:15:50 +0000 (UTC)
+Message-ID: <670bc2f60983d9d08c697031ea5a59937f5ed489.camel@perches.com>
+Subject: Re: [PATCH v7 00/10] NTFS read-write driver GPL implementation by
+ Paragon Software
+From:   Joe Perches <joe@perches.com>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        linux-fsdevel@vger.kernel.org,
+        Anton Altaparmakov <anton@tuxera.com>
+Cc:     viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        pali@kernel.org, dsterba@suse.cz, aaptel@suse.com,
+        willy@infradead.org, rdunlap@infradead.org, mark@harmstone.com,
+        nborisov@suse.com,
+        linux-ntfs-dev <linux-ntfs-dev@lists.sourceforge.net>
+Date:   Fri, 25 Sep 2020 10:15:48 -0700
+In-Reply-To: <20200925155537.1030046-1-almaz.alexandrovich@paragon-software.com>
+References: <20200925155537.1030046-1-almaz.alexandrovich@paragon-software.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925151926.2658-1-chao@kernel.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:19:26PM +0800, Chao Yu wrote:
-> From: Chao Yu <yuchao0@huawei.com>
-> 
-> As syzbot reported:
-> 
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x21c/0x280 lib/dump_stack.c:118
->  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
->  __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
->  f2fs_lookup+0xe05/0x1a80 fs/f2fs/namei.c:503
->  lookup_open fs/namei.c:3082 [inline]
->  open_last_lookups fs/namei.c:3177 [inline]
->  path_openat+0x2729/0x6a90 fs/namei.c:3365
->  do_filp_open+0x2b8/0x710 fs/namei.c:3395
->  do_sys_openat2+0xa88/0x1140 fs/open.c:1168
->  do_sys_open fs/open.c:1184 [inline]
->  __do_compat_sys_openat fs/open.c:1242 [inline]
->  __se_compat_sys_openat+0x2a4/0x310 fs/open.c:1240
->  __ia32_compat_sys_openat+0x56/0x70 fs/open.c:1240
->  do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
->  __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
->  do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
->  do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
->  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> 
-> In f2fs_lookup(), @res_page could be used before being initialized,
-> because in __f2fs_find_entry(), once F2FS_I(dir)->i_current_depth was
-> been fuzzed to zero, then @res_page will never be initialized, causing
-> this kmsan warning, relocating @res_page initialization place to fix
-> this bug.
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> ---
->  fs/f2fs/dir.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-> index 703cf8e21fc0..83630341ffa3 100644
-> --- a/fs/f2fs/dir.c
-> +++ b/fs/f2fs/dir.c
-> @@ -357,16 +357,15 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
->  	unsigned int max_depth;
->  	unsigned int level;
->  
-> +	*res_page = NULL;
-> +
->  	if (f2fs_has_inline_dentry(dir)) {
-> -		*res_page = NULL;
->  		de = f2fs_find_in_inline_dir(dir, fname, res_page);
->  		goto out;
->  	}
->  
-> -	if (npages == 0) {
-> -		*res_page = NULL;
-> +	if (npages == 0)
->  		goto out;
-> -	}
->  
->  	max_depth = F2FS_I(dir)->i_current_depth;
->  	if (unlikely(max_depth > MAX_DIR_HASH_DEPTH)) {
+(adding cc's to Anton Altaparmakov and linux-ntfs-dev)
 
-Can't the assignment to *res_page below be removed too?
+On Fri, 2020-09-25 at 18:55 +0300, Konstantin Komarov wrote:
+> This patch adds NTFS Read-Write driver to fs/ntfs3.
 
-        for (level = 0; level < max_depth; level++) {
-                *res_page = NULL;
-                de = find_in_level(dir, level, fname, res_page);
-                if (de || IS_ERR(*res_page))
-                        break;
-        }
+This code should eventually supplant the existing NTFS
+implementation right?
+
+Unless there is some specific reason you have not done so,
+I believe you should cc the current NTFS maintainer and
+NTFS mailing list on all these patches in the future.
+
+MAINTAINERS-NTFS FILESYSTEM
+MAINTAINERS-M:  Anton Altaparmakov <anton@tuxera.com>
+MAINTAINERS-L:  linux-ntfs-dev@lists.sourceforge.net
+
+Link to the v7 patches:
+https://lore.kernel.org/lkml/20200925155537.1030046-1-almaz.alexandrovich@paragon-software.com/
+
+
