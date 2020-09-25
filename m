@@ -2,182 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAF23278F8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8B4278F85
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729596AbgIYRYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:24:35 -0400
-Received: from mga14.intel.com ([192.55.52.115]:47717 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727324AbgIYRYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:24:34 -0400
-IronPort-SDR: zrnMmL9tqOgnuOOrloDCwU35h82h/fQmoTtOWWbOFrxQUlZ88A/X7Z+regb2f1ctzf3Hi2/SvW
- iwSE4xFZxzjQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="160847705"
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="160847705"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:18:31 -0700
-IronPort-SDR: UGPHrO0DtDAYlwRxb8CZKlILywlCFv3eStTZjfjkLo5LEhM3tZeoYVMXCwwJY2s86A3HDWKKYM
- qrhxRDL8Z37A==
-X-IronPort-AV: E=Sophos;i="5.77,302,1596524400"; 
-   d="scan'208";a="310891964"
-Received: from khansen1-mobl.amr.corp.intel.com (HELO [10.209.154.38]) ([10.209.154.38])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 10:18:28 -0700
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Haitao Huang <haitao.huang@linux.intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-References: <20200923135056.GD5160@linux.intel.com>
- <op.0rgp5h0hwjvjmi@mqcpg7oapc828.gar.corp.intel.com>
- <20200924192853.GA18826@linux.intel.com>
- <c680f7bd-2d82-6477-707f-cd03aae4b4aa@intel.com>
- <20200924200156.GA19127@linux.intel.com>
- <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
- <20200924202549.GB19127@linux.intel.com>
- <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
- <20200924230501.GA20095@linux.intel.com>
- <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
- <20200925000052.GA20333@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
-Date:   Fri, 25 Sep 2020 10:18:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729392AbgIYRWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727733AbgIYRWn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 13:22:43 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12176C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:22:43 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id b12so3639289lfp.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ya/RZuQwonP8PPud7lCm2bOa/ougNTh1IMJmg7koWQI=;
+        b=PyvHoBQgWuYhvQNjE7NE5hs89M+9kEHdGV2j/seaL5Gg0MlWI0M3tX0IFbaWMqXj1s
+         ai1ySoBUH/pJJp9+Lt2njZA4fNnlVMdXvTFeaxT+0cvhcpS5izHZbaGSst5DxJjEc5+F
+         ZNPMI630ovQTocKSg89ZIXTt+gZgkoXsInN7B4nwsREzwGBafMSTTG+JS9MTkAyGvpeJ
+         mCTvE0+H1iacOG6BiB+OHTPMGuSJTKbL5nQyKWU76nXzqmqxP14mG4SPDaUIbo/sWOT3
+         kHrrT9YpdO3/IyFVoOp7L4bIBGWhB2qRiwq60yvM/lIcXa4y+Kzx96H4AT/v99RIvuPA
+         QMfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ya/RZuQwonP8PPud7lCm2bOa/ougNTh1IMJmg7koWQI=;
+        b=tfP/ZHxBNau3M464gKf5Omd7cwXhvbC1vdBDSFhNfNeYMCaePRcb9mV+/EqumFPjR4
+         TkI7qLRWxK8jMPzmITqABFQs39eUxCzQXDHr/L8GIhJ6sZNKD8cfxeDpTHysch43lSh3
+         V74ii18goO4XwbiG/17wKHeFDMG4vG9BvoEUW4Gm/DPOdPcpocRXIEkTU4kNlgu3piH+
+         zqi6NxA+nVP5zyRG8PUqOAzXP6WgOUe6RFd4P0D0y0FNL+2ADtLNitg0DTe1v5d7F7qD
+         ont7iYNaJlKOhIVEgajkzaaSYrUPdDt6avHbupSxS+Q1iysmMcDVPo35DkFiKWWMMwTk
+         U9iQ==
+X-Gm-Message-State: AOAM533mMzxXZCbLagepOp3jrKi1iDQADabMPBnIXM4Ak1iH9QgU19aB
+        Y9YXF01WHngk+n3jsPqsCZaQhNSlJBmGTWUfRxGoHQ==
+X-Google-Smtp-Source: ABdhPJzcMlw0fOZLTa8UbxvxQ9K/MTDBtFoXm/rCC3pf0zAylKLPns8FI3+ijZEzImVWcIGbkPhF3RsHOU2PbQ6BiUI=
+X-Received: by 2002:a19:4084:: with SMTP id n126mr1581229lfa.54.1601054561128;
+ Fri, 25 Sep 2020 10:22:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200925000052.GA20333@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200915073303.GA754106@T590> <20200915224541.GB38283@mit.edu>
+ <20200915230941.GA791425@T590> <20200916202026.GC38283@mit.edu>
+ <20200917022051.GA1004828@T590> <20200917143012.GF38283@mit.edu>
+ <20200924005901.GB1806978@T590> <20200924143345.GD482521@mit.edu>
+ <20200925011311.GJ482521@mit.edu> <20200925073145.GC2388140@T590>
+ <20200925161918.GD2388140@T590> <CAHk-=whAe_n6JDyu40A15vnWs5PTU0QYX6t6-TbNeefanau6MA@mail.gmail.com>
+In-Reply-To: <CAHk-=whAe_n6JDyu40A15vnWs5PTU0QYX6t6-TbNeefanau6MA@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 25 Sep 2020 10:22:29 -0700
+Message-ID: <CALvZod4+ucJfr4gR60mM1gRoc7NKWydPY-JQ757q+n8hOdmrvA@mail.gmail.com>
+Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
+ into blk_mq_get_driver_tag
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ming Lei <ming.lei@redhat.com>, "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Jens Axboe <axboe@kernel.dk>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the walkthrough.  The thing that clicked for me seeing those
-examples was how the earlier ioctl(ADD_PAGE) is "bound" to later
-enforcement actions at enclave PTE creation time.
+On Fri, Sep 25, 2020 at 10:17 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, Sep 25, 2020 at 9:19 AM Ming Lei <ming.lei@redhat.com> wrote:
+> >
+> > git bisect shows the first bad commit:
+> >
+> >         [10befea91b61c4e2c2d1df06a2e978d182fcf792] mm: memcg/slab: use a single set of
+> >                 kmem_caches for all allocations
+> >
+> > And I have double checked that the above commit is really the first bad
+> > commit for the list corruption issue of 'list_del corruption, ffffe1c241b00408->next
+> > is LIST_POISON1 (dead000000000100)',
+>
+> Thet commit doesn't revert cleanly, but I think that's purely because
+> we'd also need to revert
+>
+>   849504809f86 ("mm: memcg/slab: remove unused argument by charge_slab_page()")
+>   74d555bed5d0 ("mm: slab: rename (un)charge_slab_page() to
+> (un)account_slab_page()")
+>
+> too.
+>
+> Can you verify that a
+>
+>     git revert 74d555bed5d0 849504809f86 10befea91b61
+>
+> on top of current -git makes things work for you again?
+>
+> I'm going to do an rc8 this release simply because we have another VM
+> issue that I hope to get fixed - but there we know what the problem
+> and the fix _is_, it just needs some care.
+>
+> So if Roman (or somebody else) can see what's wrong and we can fix
+> this quickly, we don't need to go down the revert path, but ..
+>
 
-On 9/24/20 5:00 PM, Sean Christopherson wrote:
-> My concern is that if we merge this
-> 
->         ioctl(sgx_fd, ENCLAVE_ADD_PAGE, SGX_PROT_READ | SGX_PROT_EXEC, ptr, size);
-> 
-> without ->mprotect(), we can't actually enforce the declared protections.  And
-> if we drop the field altogether:
-> 
->         ioctl(sgx_fd, ENCLAVE_ADD_PAGE, ptr, size);
-> 
-> then we can't implement security_enclave_load().
+I think I have a theory. The issue is happening due to the potential
+infinite recursion:
 
-To me, it's perfectly OK to have parts of the ABI which are unused.  It
-sure makes them harder to test if there are no actual users in the code,
-but if it solves a real problem with the ABI, I'm fine with it.
+[ 5060.124412]  ___cache_free+0x488/0x6b0
+*****Second recursion
+[ 5060.128666]  kfree+0xc9/0x1d0
+[ 5060.131947]  kmem_freepages+0xa0/0xf0
+[ 5060.135746]  slab_destroy+0x19/0x50
+[ 5060.139577]  slabs_destroy+0x6d/0x90
+[ 5060.143379]  ___cache_free+0x4a3/0x6b0
+*****First recursion
+[ 5060.147896]  kfree+0xc9/0x1d0
+[ 5060.151082]  kmem_freepages+0xa0/0xf0
+[ 5060.155121]  slab_destroy+0x19/0x50
+[ 5060.159028]  slabs_destroy+0x6d/0x90
+[ 5060.162920]  ___cache_free+0x4a3/0x6b0
+[ 5060.167097]  kfree+0xc9/0x1d0
 
-Let's see if I can put all the pieces together.
+___cache_free() is calling cache_flusharray() to flush the local cpu
+array_cache if the cache has more elements than the limit (ac->avail
+>= ac->limit).
 
-Background:
+cache_flusharray() is removing batchcount number of element from local
+cpu array_cache and pass it slabs_destroy (if the node shared cache is
+also full).
 
-1. SGX enclave pages are populated with data by copying data to them
-   from normal memory via: ioctl(sgx_fd, ENCLAVE_ADD_PAGE, src_ptr...);
-2. We want to be able to restrict those normal memory data sources.  For
-   instance, before copying data to an executable enclave page, we might
-   ensure that the source is executable.
-3. Enclave page permissions are dynamic just like normal permissions and
-   can be adjusted at runtime with mprotect() (along with a
-   corresponding special instruction inside the enclave)
-4. The original data source may have have long since vanished at the
-   time when enclave page permission are established (mmap() or
-   mprotect())
+Note that we have not updated local cpu array_cache size yet and
+called slabs_destroy() which can call kfree() through
+unaccount_slab_page().
 
-Solution:
-
-The solution is to force enclaves creators to declare their intent up
-front to ioctl(ENCLAVE_ADD_PAGE).  This intent can me immediately
-compared to the source data mapping (and rejected if necessary).  It is
-also stashed off and then later compared with enclave PTEs to ensure
-that any future mmap()/mprotect() operations performed by the enclave
-creator or the enclave itself are consistent with the earlier declared
-permissions.
-
-Essentially, this means that whenever the kernel is asked to change an
-enclave PTE, it needs to ensure the change is consistent with that
-stashed intent.  There is an existing vm_ops->mmap() hook which allows
-SGX to do that for mmap().  However, there is no ->mprotect() hook.  Add
-a vm_ops->mprotect() hook so that mprotect() operations which are
-inconsistent with any page's stashed intent can be rejected by the driver.
-
-Implications:
-
-However, there is currently no implementation of the intent checks at
-the time of ioctl(ENCLAVE_ADD_PAGE).  That means that the intent
-argument (SGX_PROT_*) is currently unused.
-
---
-
-Is that all correct?  Did I miss anything?
+We are on the same CPU and this recursive kfree again check the
+(ac->avail >= ac->limit) and call cache_flusharray() again and recurse
+indefinitely.
