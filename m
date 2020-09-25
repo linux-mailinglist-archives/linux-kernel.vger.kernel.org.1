@@ -2,176 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7D62793A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF7692793A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728733AbgIYVhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbgIYVhO (ORCPT
+        id S1728892AbgIYVi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:38:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52914 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726576AbgIYViY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:37:14 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EA6CC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:37:14 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id mm21so168046pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:37:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TW6wlmmfMd4aKumjZRuqMrr4jbBaACouFEXMzF3b4zg=;
-        b=eLDZbRtoVy4VydFLnbYK5iZ6uaMxjoYEvpd//jvLPkn0cL9HuuHKw1petsfWZnRHDK
-         SdlJzJJvmDrf7CXh/AzJdh5sr0eXRBip0oCiez+KVPahBWODvk11O8ys3IbB9t1ulqjw
-         vYXN6lffRPPN9sXgBjkkxqlUAhD1GSpkQqmH+16NtsCLhLEmoJQAlbopBsRvwHVM5md/
-         EniFLu+gXxSgGOvUjOOh5V3Z6PQFOh55sdkQDuysdYf04LJljhrt/mu4jpbISUgywfXK
-         Iz1D5PAcrwn8XYmSNEANYCMt7Ps7gpcoPsNdLNr7re/yNpGlLYvH/QwAIrlXJ+C297pt
-         wPYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TW6wlmmfMd4aKumjZRuqMrr4jbBaACouFEXMzF3b4zg=;
-        b=RDrnwyGligCKs4xydc8JuO8G9mXGSg788ix9Jn6ye6SwfIh5qAqQNEiF/b1mzzKFle
-         bLxs+VjlhFL0gGocU6Ckgmq0SIWc4G827pzxLyokYCI5JOJHw/Lz+8Q2dP41AD7/ERDi
-         /uk7zQEz23YoX7VTVi4rcQDkJoSC9AQ3TgxDuj8InbqEKGURPwsnyRXAnq4Si9YPrgoV
-         vB2zFJ79wr51VWZ1tXy1RMwNS5kNhSxvybhSZL7pWWcR7kHw84cFc4bwskzKN1xGTCKG
-         LxQZtcMLJGpMJy8l5ud6s5Dc8wrcq/h38xPKLm61Zi10d/uaMytjO5rN/ExE3jF+TEZE
-         IFOA==
-X-Gm-Message-State: AOAM533nkIWgu1M1SwcRQLXSK6x+vL+zypEjMaFRLbhiOWfcN1TbV/B3
-        BeCXZYpwQtVg3p1+9QWEKhST9qe45u99VGAID3iXvQ==
-X-Google-Smtp-Source: ABdhPJweWYHxudjQMVOBW7Gj3F73F5BA3V0qipJ2JCG/uVqPAPgDRT5YAo01pi8LD2GOO7+8Qz1tE17pXvY6Y28yD+k=
-X-Received: by 2002:a17:90a:9403:: with SMTP id r3mr506486pjo.52.1601069833708;
- Fri, 25 Sep 2020 14:37:13 -0700 (PDT)
+        Fri, 25 Sep 2020 17:38:24 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601069902;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=gpW0sj/nM7AwMpbkqOmCDPVLocu/rnov7w2AYNtGosY=;
+        b=YJ5QbLiaCmH9XKT/GWqqoTLgcUdAaNZSPLurkTXuS5krl1D72vLci9qkqB4I6PPzpUYRtC
+        Yd3Imz3XpYXOFD2z61fwR/5d+9MMNP6svMEXHtMz1TYiGmiTBQPPqkjMrcAaib4d8SIUqM
+        de7nIwXnwQHPj36Fm2cyUtEc6MXJJzA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-kd5xHqXCP4iz6dgTFozQaQ-1; Fri, 25 Sep 2020 17:38:17 -0400
+X-MC-Unique: kd5xHqXCP4iz6dgTFozQaQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4D75805EE4;
+        Fri, 25 Sep 2020 21:38:14 +0000 (UTC)
+Received: from [10.10.114.192] (ovpn-114-192.rdu2.redhat.com [10.10.114.192])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C07D75577A;
+        Fri, 25 Sep 2020 21:38:06 +0000 (UTC)
+Subject: Re: [PATCH v3 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping
+ CPUs
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
+        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        thomas.lendacky@amd.com, jiri@nvidia.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, lgoncalv@redhat.com
+References: <20200925202307.GA2456332@bjorn-Precision-5520>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+ VujM7c/b4pps
+Organization: Red Hat Inc,
+Message-ID: <256490f0-0762-447c-a7be-0e5a6bb04fc4@redhat.com>
+Date:   Fri, 25 Sep 2020 17:38:05 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200925211206.423598568@goodmis.org> <20200925211819.767526657@goodmis.org>
-In-Reply-To: <20200925211819.767526657@goodmis.org>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Fri, 25 Sep 2020 14:36:37 -0700
-Message-ID: <CAJHvVcjO=c7=k2-9=iQMh8t56FL-9duFX-FU0yu-HEX+1Da8YA@mail.gmail.com>
-Subject: Re: [PATCH 1/3 v2] tracepoints: Add helper to test if tracepoint is
- enabled in a header
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Linux MM <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200925202307.GA2456332@bjorn-Precision-5520>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="YGhoGpiEK97LlikE5tgeBsj6NKFwnYVHR"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 2:18 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
->
-> As tracepoints are discouraged from being added in a header because it can
-> cause side effects if other tracepoints are in headers, as well as bloat the
-> kernel as the trace_<tracepoint>() function is not a small inline, the common
-> workaround is to add a function call that calls a wrapper function in a
-> C file that then calls the tracepoint. But as function calls add overhead,
-> this function should only be called when the tracepoint in question is
-> enabled. To get around this overhead, a static_branch can be used to only
-> have the tracepoint wrapper get called when the tracepoint is enabled.
->
-> Add a tracepoint_enabled(tp) macro that gets passed the name of the
-> tracepoint, and this becomes a static_branch that is enabled when the
-> tracepoint is enabled and is a nop when the tracepoint is disabled.
->
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> ---
->  Documentation/trace/tracepoints.rst | 27 +++++++++++++++++++++++
->  include/linux/tracepoint-defs.h     | 34 +++++++++++++++++++++++++++++
->  2 files changed, 61 insertions(+)
->
-> diff --git a/Documentation/trace/tracepoints.rst b/Documentation/trace/tracepoints.rst
-> index 6e3ce3bf3593..68579ebd1e4c 100644
-> --- a/Documentation/trace/tracepoints.rst
-> +++ b/Documentation/trace/tracepoints.rst
-> @@ -146,3 +146,30 @@ with jump labels and avoid conditional branches.
->        define tracepoints. Check http://lwn.net/Articles/379903,
->        http://lwn.net/Articles/381064 and http://lwn.net/Articles/383362
->        for a series of articles with more details.
-> +
-> +If you require calling a tracepoint from a header file, it is not
-> +recommended to call one directly or to use the trace_<tracepoint>_enabled()
-> +function call, as tracepoints in header files can have side effects if a
-> +header is included from a file that has CREATE_TRACE_POINTS set, as
-> +well as the trace_<tracepoint>() is not that small of an inline
-> +and can bloat the kernel if used by other inlined functions. Instead,
-> +include tracepoint-defs.h and use tracepoint_enabled().
-> +
-> +In a C file::
-> +
-> +       void do_trace_foo_bar_wrapper(args)
-> +       {
-> +               trace_foo_bar(args);
-> +       }
-> +
-> +In the header file::
-> +
-> +       DECLEARE_TRACEPOINT(foo_bar);
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--YGhoGpiEK97LlikE5tgeBsj6NKFwnYVHR
+Content-Type: multipart/mixed; boundary="Df7GsTEDJLdhut9BI6tcE476jLN1S7Yy0"
 
-Should be "DECLARE_..."
+--Df7GsTEDJLdhut9BI6tcE476jLN1S7Yy0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
 
-> +
-> +       static inline void some_inline_function()
-> +       {
-> +               [..]
-> +               if (tracepoint_enabled(foo_bar))
-> +                       do_trace_foo_bar_wrapper(args);
-> +               [..]
-> +       }
-> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
-> index b29950a19205..60625973faaf 100644
-> --- a/include/linux/tracepoint-defs.h
-> +++ b/include/linux/tracepoint-defs.h
-> @@ -48,4 +48,38 @@ struct bpf_raw_event_map {
->         u32                     writable_size;
->  } __aligned(32);
+
+On 9/25/20 4:23 PM, Bjorn Helgaas wrote:
+> On Fri, Sep 25, 2020 at 02:26:54PM -0400, Nitesh Narayan Lal wrote:
+>> If we have isolated CPUs dedicated for use by real-time tasks, we try to
+>> move IRQs to housekeeping CPUs from the userspace to reduce latency
+>> overhead on the isolated CPUs.
+>>
+>> If we allocate too many IRQ vectors, moving them all to housekeeping CPU=
+s
+>> may exceed per-CPU vector limits.
+>>
+>> When we have isolated CPUs, limit the number of vectors allocated by
+>> pci_alloc_irq_vectors() to the minimum number required by the driver, or
+>> to one per housekeeping CPU if that is larger.
+>>
+>> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+>> ---
+>>  include/linux/pci.h | 17 +++++++++++++++++
+>>  1 file changed, 17 insertions(+)
+>>
+>> diff --git a/include/linux/pci.h b/include/linux/pci.h
+>> index 835530605c0d..a7b10240b778 100644
+>> --- a/include/linux/pci.h
+>> +++ b/include/linux/pci.h
+>> @@ -38,6 +38,7 @@
+>>  #include <linux/interrupt.h>
+>>  #include <linux/io.h>
+>>  #include <linux/resource_ext.h>
+>> +#include <linux/sched/isolation.h>
+>>  #include <uapi/linux/pci.h>
+>> =20
+>>  #include <linux/pci_ids.h>
+>> @@ -1797,6 +1798,22 @@ static inline int
+>>  pci_alloc_irq_vectors(struct pci_dev *dev, unsigned int min_vecs,
+>>  =09=09      unsigned int max_vecs, unsigned int flags)
+>>  {
+>> +=09unsigned int hk_cpus;
+>> +
+>> +=09hk_cpus =3D housekeeping_num_online_cpus(HK_FLAG_MANAGED_IRQ);
+> Add blank line here before the block comment.
 >
-> +/*
-> + * If a tracepoint needs to be called from a header file, it is not
-> + * recommended to call it directly, as tracepoints in header files
-> + * may cause side-effects and bloat the kernel. Instead, use
-> + * tracepoint_enabled() to test if the tracepoint is enabled, then if
-> + * it is, call a wrapper function defined in a C file that will then
-> + * call the tracepoint.
-> + *
-> + * For "trace_foo_bar()", you would need to create a wrapper function
-> + * in a C file to call trace_foo_bar():
-> + *   void do_trace_foo_bar(args) { trace_foo_bar(args); }
-> + * Then in the header file, declare the tracepoint:
-> + *   DECLARE_TRACEPOINT(foo_bar);
-> + * And call your wrapper:
-> + *   static inline void some_inlined_function() {
-> + *            [..]
-> + *            if (tracepoint_enabled(foo_bar))
-> + *                    do_trace_foo_bar(args);
-> + *            [..]
-> + *   }
-> + *
-> + * Note: tracepoint_enabled(foo_bar) is equivalent to trace_foo_bar_enabled()
-> + *   but is safe to have in headers, where trace_foo_bar_enabled() is not.
-> + */
-> +#define DECLARE_TRACEPOINT(tp) \
-> +       extern struct tracepoint __tracepoint_##tp
-> +
-> +#ifdef CONFIG_TRACEPOINTS
-> +# define tracepoint_enabled(tp) \
-> +       static_key_false(&(__tracepoint_##tp).key)
-> +#else
-> +# define tracepoint_enabled(tracepoint) false
-> +#endif
-> +
->  #endif
-> --
-> 2.28.0
->
->
+>> +=09/*
+>> +=09 * If we have isolated CPUs for use by real-time tasks, to keep the
+>> +=09 * latency overhead to a minimum, device-specific IRQ vectors are mo=
+ved
+>> +=09 * to the housekeeping CPUs from the userspace by changing their
+>> +=09 * affinity mask. Limit the vector usage to keep housekeeping CPUs f=
+rom
+>> +=09 * running out of IRQ vectors.
+>> +=09 */
+>> +=09if (hk_cpus < num_online_cpus()) {
+>> +=09=09if (hk_cpus < min_vecs)
+>> +=09=09=09max_vecs =3D min_vecs;
+>> +=09=09else if (hk_cpus < max_vecs)
+>> +=09=09=09max_vecs =3D hk_cpus;
+>> +=09}
+> It seems like you'd want to do this inside
+> pci_alloc_irq_vectors_affinity() since that's an exported interface,
+> and drivers that use it will bypass the limiting you're doing here.
+
+Good point, few drivers directly use this.
+I took a quick look and it seems I may also have to take the pre and the
+post vectors into consideration.
+
+>>  =09return pci_alloc_irq_vectors_affinity(dev, min_vecs, max_vecs, flags=
+,
+>>  =09=09=09=09=09      NULL);
+>>  }
+>> --=20
+>> 2.18.2
+>>
+--=20
+Nitesh
+
+
+--Df7GsTEDJLdhut9BI6tcE476jLN1S7Yy0--
+
+--YGhoGpiEK97LlikE5tgeBsj6NKFwnYVHR
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl9uYz0ACgkQo4ZA3AYy
+ozkiEBAAvGh1LoOrI92FwWB9mO6IUhqq1kV5fqaTQoQVDCd9xBSPfsWT+gsFaduP
+L9udE6raj+9EpQkKdIiqcAL5Csx/8KmvNqbeY/ABw4MAlNxlcc9iBHl3dTvkAw9b
+pPeMsNnQiPPt18S/SYvkUsSVD7tb8S334qRmxQqU2RgjzIX9DZINMbXVhrzbCTkJ
+gTjsuFAIZyKjw6pHvqc51qWOr91TdMtk3kFyPKSEK5jUGuI36Gmuh38W5o6ZtPuZ
+1t9VKvcCODdQE5ehdGN10E7Z0bjDdCkNy+qV3ddgteMr1AHctofL9FbhrAkAIreP
+BZxJ9YuFkexkNbAJfUIiItFeQMJ8bEhtqz5kuGuod73HjyNsjXrYWy4sCNSizeBN
+QuoMzNgXPNkp++V6Qv1ta36A+pDM/k0A/W0yC91lPhrhJoV/nWClMayOrk2ywINv
+H8FtM+Ci0lA6NTVtwDgPVkBe06xgTEENtXQ4EnBxahmJ9DBWDh1N7f1P0J7KYMCB
+iwxdkktbb0GcVo7/9oOObfztqO/bEat0Nz3pDhJz0XbnhVHCxDeHwtaMgWO/64UJ
+f6X0MJRX9006GFx7Y2iExMzsyKypT0/+49RXOsFkLMXJidNzylG1OjZw7dtg3z5i
+Bp9SpF9tRQ3laz3BnyqBuyDbT9EBm4zaUFiQG1ZAv0KqAkAOXVs=
+=EFzi
+-----END PGP SIGNATURE-----
+
+--YGhoGpiEK97LlikE5tgeBsj6NKFwnYVHR--
+
