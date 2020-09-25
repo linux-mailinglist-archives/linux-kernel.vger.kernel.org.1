@@ -2,162 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F23278370
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EBA278379
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 11:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727708AbgIYJA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 05:00:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29604 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727496AbgIYJA6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 05:00:58 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601024456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=yuQXX2IYg09FsgUooFC/UtyX+2Wg0IneLHMNJQatej0=;
-        b=KWJC+lZjUgukqeSqxitmZiCSwgE/5NBsWeOTpYTyHQn1cuhvrO31pNhIwtvqzfVm6231jM
-        7lTWMOoHOu5G0VYlbCFjKxkK5TcW8hb5BaVmpN0BKdeVnI7AwoWMUMp7FkZ7BAdNLFb3lv
-        U5htKFIBvvm0a/x8U4YdQG+rt5t+V2M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-uZelkGTdPRKV1QFEdDuv7A-1; Fri, 25 Sep 2020 05:00:51 -0400
-X-MC-Unique: uZelkGTdPRKV1QFEdDuv7A-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1727769AbgIYJCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 05:02:00 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:52523 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727151AbgIYJB6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 05:01:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601024516; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ihGr2/1LQtp+XJ1GkpNMuUiHJdP+XuIzVWyhGGC9mkg=;
+ b=wYZrSGXAzNxD7WpfB32/iKdGVkY7Hi2gcE+/Vbn4RHSVbeq4o+5tIADS0Jdk3SjDHTL0Gt53
+ PpJuCmI/kMcLjTSccgSIonmkH9ivyCOBJ7e+ayTxQosuqIjYlmRCjopsFcTllObqpumRCzpf
+ DS+NQG/4hT0BKezRvA2NfHvx4pE=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f6db1bec00ccaf02885fd81 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 25 Sep 2020 09:00:46
+ GMT
+Sender: rjliao=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3905CC433FF; Fri, 25 Sep 2020 09:00:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50615100747A;
-        Fri, 25 Sep 2020 09:00:47 +0000 (UTC)
-Received: from [10.36.112.211] (ovpn-112-211.ams2.redhat.com [10.36.112.211])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1C14578822;
-        Fri, 25 Sep 2020 09:00:31 +0000 (UTC)
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63W5Ag0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAGJAjwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <8435eff6-7fa9-d923-45e5-d8850e4c6d73@redhat.com>
-Date:   Fri, 25 Sep 2020 11:00:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        (Authenticated sender: rjliao)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F88BC433C8;
+        Fri, 25 Sep 2020 09:00:45 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 25 Sep 2020 17:00:45 +0800
+From:   Rocky Liao <rjliao@codeaurora.org>
+To:     Marcel Holtmann <marcel@holtmann.org>
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        c-hbandi@codeaurora.org, Hemantg <hemantg@codeaurora.org>,
+        mka@chromium.org, linux-bluetooth-owner@vger.kernel.org
+Subject: Re: [PATCH v1] Bluetooth: btusb: Add Qualcomm Bluetooth SoC WCN6855
+ support
+In-Reply-To: <0C779191-3BD1-40BF-83E6-733F9C78EA03@holtmann.org>
+References: <0101017457c6b810-cb8b79ae-4663-436b-83d0-4c70c245bd25-000000@us-west-2.amazonses.com>
+ <2E48211B-D62D-43D8-9C97-014966FBB2CB@holtmann.org>
+ <c177f408186da437db722d855a01c846@codeaurora.org>
+ <0C779191-3BD1-40BF-83E6-733F9C78EA03@holtmann.org>
+Message-ID: <7482e21cb10a7e73dd9a9f784e2e5370@codeaurora.org>
+X-Sender: rjliao@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25.09.20 09:41, Peter Zijlstra wrote:
-> On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
->> From: Mike Rapoport <rppt@linux.ibm.com>
->>
->> Removing a PAGE_SIZE page from the direct map every time such page is
->> allocated for a secret memory mapping will cause severe fragmentation of
->> the direct map. This fragmentation can be reduced by using PMD-size pages
->> as a pool for small pages for secret memory mappings.
->>
->> Add a gen_pool per secretmem inode and lazily populate this pool with
->> PMD-size pages.
+Hi Marcel,
+
+在 2020-09-14 21:25，Marcel Holtmann 写道：
+> Hi Rocky,
 > 
-> What's the actual efficacy of this? Since the pmd is per inode, all I
-> need is a lot of inodes and we're in business to destroy the directmap,
-> no?
+>>>> This patch add support for WCN6855 i.e. patch and nvm download
+>>>> support.
+>>>> Signed-off-by: Rocky Liao <rjliao@codeaurora.org>
+>>>> ---
+>>>> drivers/bluetooth/btusb.c | 42 
+>>>> +++++++++++++++++++++++++++++++++++----
+>>>> 1 file changed, 38 insertions(+), 4 deletions(-)
+>>>> diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+>>>> index fe80588c7bd3..e51e754ca9b8 100644
+>>>> --- a/drivers/bluetooth/btusb.c
+>>>> +++ b/drivers/bluetooth/btusb.c
+>>>> @@ -59,6 +59,7 @@ static struct usb_driver btusb_driver;
+>>>> #define BTUSB_MEDIATEK		0x200000
+>>>> #define BTUSB_WIDEBAND_SPEECH	0x400000
+>>>> #define BTUSB_VALID_LE_STATES   0x800000
+>>>> +#define BTUSB_QCA_WCN6855	0x1000000
+>>>> static const struct usb_device_id btusb_table[] = {
+>>>> 	/* Generic Bluetooth USB device */
+>>>> @@ -273,6 +274,10 @@ static const struct usb_device_id 
+>>>> blacklist_table[] = {
+>>>> 	{ USB_DEVICE(0x13d3, 0x3496), .driver_info = BTUSB_QCA_ROME },
+>>>> 	{ USB_DEVICE(0x13d3, 0x3501), .driver_info = BTUSB_QCA_ROME },
+>>>> +	/* QCA WCN6855 chipset */
+>>>> +	{ USB_DEVICE(0x0cf3, 0xe600), .driver_info = BTUSB_QCA_WCN6855 |
+>>>> +						     BTUSB_WIDEBAND_SPEECH },
+>>>> +
+>>>> 	/* Broadcom BCM2035 */
+>>>> 	{ USB_DEVICE(0x0a5c, 0x2009), .driver_info = BTUSB_BCM92035 },
+>>>> 	{ USB_DEVICE(0x0a5c, 0x200a), .driver_info = BTUSB_WRONG_SCO_MTU },
+>>>> @@ -3391,6 +3396,26 @@ static int btusb_set_bdaddr_ath3012(struct 
+>>>> hci_dev *hdev,
+>>>> 	return 0;
+>>>> }
+>>>> +static int btusb_set_bdaddr_wcn6855(struct hci_dev *hdev,
+>>>> +				const bdaddr_t *bdaddr)
+>>>> +{
+>>>> +	struct sk_buff *skb;
+>>>> +	u8 buf[6];
+>>>> +	long ret;
+>>>> +
+>>>> +	memcpy(buf, bdaddr, sizeof(bdaddr_t));
+>>>> +
+>>>> +	skb = __hci_cmd_sync(hdev, 0xfc14, sizeof(buf), buf, 
+>>>> HCI_INIT_TIMEOUT);
+>>>> +	if (IS_ERR(skb)) {
+>>>> +		ret = PTR_ERR(skb);
+>>>> +		bt_dev_err(hdev, "Change address command failed (%ld)", ret);
+>>>> +		return ret;
+>>>> +	}
+>>>> +	kfree_skb(skb);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>> What is wrong with using qca_set_bdaddr() function.
+>> WCN6855 is using different VSC to set the bt addr
 > 
-> Afaict there's no privs needed to use this, all a process needs is to
-> stay below the mlock limit, so a 'fork-bomb' that maps a single secret
-> page will utterly destroy the direct map.
+> int qca_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr)
 > 
-> I really don't like this, at all.
+> {
+> 
+>         struct sk_buff *skb;
+> 
+>         int err;
+> 
+> 
+> 
+>         skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6,
+> bdaddr,
+>                                 HCI_EV_VENDOR, HCI_INIT_TIMEOUT);
+> 
+>         if (IS_ERR(skb)) {
+> 
+>                 err = PTR_ERR(skb);
+> 
+>                 bt_dev_err(hdev, "QCA Change address cmd failed (%d)",
+> err);
+>                 return err;
+> 
+>         }
+> 
+> 
+> 
+>         kfree_skb(skb);
+> 
+> 
+> 
+>         return 0;
+> 
+> }
+> 
+> EXPORT_SYMBOL_GPL(qca_set_bdaddr);
+> 
+> I see that the other command is using HCI_EV_VENDOR, but is that on
+> purpose or an accident? Might want to confirm with the btmon trace.
+> 
 
-As I expressed earlier, I would prefer allowing allocation of secretmem
-only from a previously defined CMA area. This would physically locally
-limit the pain.
+You are right this is an accident, this command for WCN6855 have command 
+complete event return. I will modify this in next patch update. Below is 
+the btmon log:
 
-But my suggestion was not well received :)
+Bluetooth monitor ver 5.48
+= Note: Linux version 5.8.0-rc6-hsp-upstream+ (x86_64)                 
+0.729933
+= Note: Bluetooth subsystem version 2.22                               
+0.729934
+= New Index: 00:00:00:00:5A:AD (Primary,USB,hci1)               [hci1] 
+0.729935
+= Open Index: 00:00:00:00:5A:AD                                 [hci1] 
+0.729935
+= Index Info: 00:00:00:00:5A:AD (Qualcomm)                      [hci1] 
+0.729935
+= New Index: 00:00:00:00:00:00 (Primary,UART,hci0)              [hci0] 
+0.729936
+@ MGMT Open: bluetoothd (privileged) version 1.18             {0x0002} 
+0.729936
+@ MGMT Open: bluetoothd (privileged) version 1.18             {0x0001} 
+0.729936
+@ MGMT Open: btmon (privileged) version 1.18                  {0x0003} 
+0.729945
+@ RAW Open: hcitool (privileged) version 2.22               {0x0004} 
+122.556176
+@ RAW Close: hcitool                                        {0x0004} 
+122.556200
+@ RAW Open: hcitool (privileged) version 2.22               {0x0004} 
+122.556219
+@ RAW Close: hcitool                                        {0x0004} 
+122.556223
+@ RAW Open: hcitool (privileged) version 2.22        {0x0004} [hci1] 
+122.556242
+< HCI Command: Vendor (0x3f|0x0014) plen 6                 #1 [hci1] 
+122.556643
+         01 02 03 04 05 06                                ......
+> HCI Event: Command Complete (0x0e) plen 4                #2 [hci1] 
+> 122.675312
+       Vendor (0x3f|0x0014) ncmd 1
+         Status: Success (0x00)
+@ RAW Close: hcitool                                 {0x0004} [hci1] 
+122.675545
+@ RAW Open: hcitool (privileged) version 2.22               {0x0004} 
+124.528658
+@ RAW Close: hcitool                                        {0x0004} 
+124.528683
+@ RAW Open: hcitool (privileged) version 2.22               {0x0004} 
+124.528703
+@ RAW Close: hcitool                                        {0x0004} 
+124.528708
+@ RAW Open: hcitool (privileged) version 2.22        {0x0004} [hci1] 
+124.528760
+< HCI Command: Read BD ADDR (0x04|0x0009) plen 0           #3 [hci1] 
+124.529024
+> HCI Event: Command Complete (0x0e) plen 10               #4 [hci1] 
+> 124.530311
+       Read BD ADDR (0x04|0x0009) ncmd 1
+         Status: Success (0x00)
+         Address: 01:02:03:04:05:06 (OUI 01-02-03)
+@ RAW Close: hcitool                                 {0x0004} [hci1] 
+124.530509
 
--- 
-Thanks,
 
-David / dhildenb
 
+> Regards
+> 
+> Marcel
