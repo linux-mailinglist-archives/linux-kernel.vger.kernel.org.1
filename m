@@ -2,152 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3163127851A
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4145E278527
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 12:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbgIYKba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 06:31:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:41500 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727044AbgIYKba (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 06:31:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E1AE91045;
-        Fri, 25 Sep 2020 03:31:28 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.16.138])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B1DFE3F718;
-        Fri, 25 Sep 2020 03:31:21 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 11:31:14 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Idan Yaniv <idan.yaniv@ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Shuah Khan <shuah@kernel.org>, Tycho Andersen <tycho@tycho.ws>,
-        Will Deacon <will@kernel.org>, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-Subject: Re: [PATCH v6 5/6] mm: secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20200925103114.GA7407@C02TD0UTHF1T.local>
-References: <20200924132904.1391-1-rppt@kernel.org>
- <20200924132904.1391-6-rppt@kernel.org>
- <20200925074125.GQ2628@hirez.programming.kicks-ass.net>
- <8435eff6-7fa9-d923-45e5-d8850e4c6d73@redhat.com>
- <20200925095029.GX2628@hirez.programming.kicks-ass.net>
+        id S1728178AbgIYKbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 06:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728161AbgIYKbk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 06:31:40 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2D5C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:31:40 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id y15so2729895wmi.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 03:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GSNf91BNoP+VEJBm3varO7K3q1jYUmCrDeGvzncP4RA=;
+        b=QacEp1OaZsy3mDOo+7h0uVB2aukX9mC0D3Zj7Bb+cE58joZM/wxHBbkjHDuLhJfeEr
+         mqNncXMX/bDcerwQkg5Mag7L6n56ei6w+C57kwYWPCl/rZG8AG6AZCgEko8VAslvG7Or
+         PC3L3uOrKeQCeXvyUg60qCheQy3eb3b2WInGIyVgypcnW73TJ1El+XOD7tZXDJ0NLMJE
+         WKVgXx7xkt/giLgTDLVPw8YNl1dfnZcIEhyUWm84J6bkHp/jq8u5fC97YACJc8USBUOl
+         jCpZQdegv6nSKMKwbnQRtzm7H6G+kRda2XdftN5lUENPQk/C1s/0M+hruwkZDBLtpP9/
+         I/jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GSNf91BNoP+VEJBm3varO7K3q1jYUmCrDeGvzncP4RA=;
+        b=jTONQL5ASxZ+NmIaznRduEbS78BdlCxYttzUo9ss2tvzPxk5E0m/79KrsWLvsR7My1
+         J0jabxh3leybyCrjlKHtiljE+oJbhiy6UDMXWIYuZrlX2hyFsN48sB9YFntV04S88XBj
+         80wXzApGTLX5Jxku0mnrId/A3spZsag8PKoZ/uH/YuCeDzqR+DMCI8awWnUztdFGdse3
+         Q2ozT+OmfYVWXWAGcMJFgYNWYGXQUNP5Pgnye1lKuXlHwHDbXK6ke87D9bIBJ6b2GDVz
+         0DNJA3S2ru9A/7VsjXaks7hZXI4e00DMlpHAGaO9PrtT+MrcXLAiFkM+cQMTS+7nlKWx
+         fRDQ==
+X-Gm-Message-State: AOAM5338y+7QCuTmiSRkIpgx8+TGM5X42WWvjB4T0dtFK9hOqgn2+SJN
+        3KmoK4S5vqG+g/x9w4rNsBs75w==
+X-Google-Smtp-Source: ABdhPJz/GbRRFBqPk2DEY7OZXpKv5qvcB8Fhp/LMNbQbXFjHr6HeA+Vgjc2KSL6Iu2ua/FyY1oPIUw==
+X-Received: by 2002:a1c:8187:: with SMTP id c129mr2521448wmd.82.1601029898317;
+        Fri, 25 Sep 2020 03:31:38 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id 11sm2354907wmi.14.2020.09.25.03.31.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 03:31:37 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     sboyd@kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     bjorn.andersson@linaro.org, mturquette@baylibre.com,
+        robh+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 4/4] clk: qcom: Add support to LPASS AON_CC Glitch Free Mux clocks
+Date:   Fri, 25 Sep 2020 11:31:15 +0100
+Message-Id: <20200925103115.15191-5-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
+References: <20200925103115.15191-1-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925095029.GX2628@hirez.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+LPASS Always ON Clock controller has one GFM mux to control VA
+and TX clocks to codec macro on LPASS.
+This patch adds support to this mux.
 
-Sorry to come to this so late; I've been meaning to provide feedback on
-this for a while but have been indisposed for a bit due to an injury.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/clk/qcom/lpass-gfm-sm8250.c | 63 +++++++++++++++++++++++++++++
+ 1 file changed, 63 insertions(+)
 
-On Fri, Sep 25, 2020 at 11:50:29AM +0200, Peter Zijlstra wrote:
-> On Fri, Sep 25, 2020 at 11:00:30AM +0200, David Hildenbrand wrote:
-> > On 25.09.20 09:41, Peter Zijlstra wrote:
-> > > On Thu, Sep 24, 2020 at 04:29:03PM +0300, Mike Rapoport wrote:
-> > >> From: Mike Rapoport <rppt@linux.ibm.com>
-> > >>
-> > >> Removing a PAGE_SIZE page from the direct map every time such page is
-> > >> allocated for a secret memory mapping will cause severe fragmentation of
-> > >> the direct map. This fragmentation can be reduced by using PMD-size pages
-> > >> as a pool for small pages for secret memory mappings.
-> > >>
-> > >> Add a gen_pool per secretmem inode and lazily populate this pool with
-> > >> PMD-size pages.
-> > > 
-> > > What's the actual efficacy of this? Since the pmd is per inode, all I
-> > > need is a lot of inodes and we're in business to destroy the directmap,
-> > > no?
-> > > 
-> > > Afaict there's no privs needed to use this, all a process needs is to
-> > > stay below the mlock limit, so a 'fork-bomb' that maps a single secret
-> > > page will utterly destroy the direct map.
-> > > 
-> > > I really don't like this, at all.
-> > 
-> > As I expressed earlier, I would prefer allowing allocation of secretmem
-> > only from a previously defined CMA area. This would physically locally
-> > limit the pain.
-> 
-> Given that this thing doesn't have a migrate hook, that seems like an
-> eminently reasonable contraint. Because not only will it mess up the
-> directmap, it will also destroy the ability of the page-allocator /
-> compaction to re-form high order blocks by sprinkling holes throughout.
-> 
-> Also, this is all very close to XPFO, yet I don't see that mentioned
-> anywhere.
+diff --git a/drivers/clk/qcom/lpass-gfm-sm8250.c b/drivers/clk/qcom/lpass-gfm-sm8250.c
+index c79854e1494d..61a89347885e 100644
+--- a/drivers/clk/qcom/lpass-gfm-sm8250.c
++++ b/drivers/clk/qcom/lpass-gfm-sm8250.c
+@@ -19,6 +19,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/of_device.h>
+ #include <dt-bindings/clock/qcom,sm8250-lpass-audiocc.h>
++#include <dt-bindings/clock/qcom,sm8250-lpass-aoncc.h>
+ 
+ struct lpass_gfm {
+ 	struct device *dev;
+@@ -66,6 +67,46 @@ static const struct clk_ops clk_gfm_ops = {
+ 	.determine_rate = __clk_mux_determine_rate,
+ };
+ 
++static struct clk_gfm lpass_gfm_va_mclk = {
++	.mux_reg = 0x20000,
++	.mux_mask = BIT(0),
++	.hw.init = &(struct clk_init_data) {
++		.name = "VA_MCLK",
++		.ops = &clk_gfm_ops,
++		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
++		.num_parents = 2,
++		.parent_data = (const struct clk_parent_data[]){
++			{
++				.index = 0,
++				.name = "LPASS_CLK_ID_TX_CORE_MCLK",
++			}, {
++				.index = 1,
++				.name = "LPASS_CLK_ID_VA_CORE_MCLK",
++			},
++		},
++	},
++};
++
++static struct clk_gfm lpass_gfm_tx_npl = {
++	.mux_reg = 0x20000,
++	.mux_mask = BIT(0),
++	.hw.init = &(struct clk_init_data) {
++		.name = "TX_NPL",
++		.ops = &clk_gfm_ops,
++		.flags = CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE,
++		.parent_data = (const struct clk_parent_data[]){
++			{
++				.index = 0,
++				.name = "LPASS_CLK_ID_TX_CORE_NPL_MCLK",
++			}, {
++				.index = 1,
++				.name = "LPASS_CLK_ID_VA_CORE_2X_MCLK",
++			},
++		},
++		.num_parents = 2,
++	},
++};
++
+ static struct clk_gfm lpass_gfm_wsa_mclk = {
+ 	.mux_reg = 0x220d8,
+ 	.mux_mask = BIT(0),
+@@ -146,6 +187,19 @@ static struct clk_gfm lpass_gfm_rx_npl = {
+ 	},
+ };
+ 
++static struct clk_gfm *aoncc_gfm_clks[] = {
++	[LPASS_CDC_VA_MCLK]		= &lpass_gfm_va_mclk,
++	[LPASS_CDC_TX_NPL]		= &lpass_gfm_tx_npl,
++};
++
++static struct clk_hw_onecell_data aoncc_hw_onecell_data = {
++	.hws = {
++		[LPASS_CDC_VA_MCLK]	= &lpass_gfm_va_mclk.hw,
++		[LPASS_CDC_TX_NPL]	= &lpass_gfm_tx_npl.hw,
++	},
++	.num = ARRAY_SIZE(aoncc_gfm_clks),
++};
++
+ static struct clk_gfm *audiocc_gfm_clks[] = {
+ 	[LPASS_CDC_WSA_NPL]		= &lpass_gfm_wsa_npl,
+ 	[LPASS_CDC_WSA_MCLK]		= &lpass_gfm_wsa_mclk,
+@@ -173,6 +227,11 @@ static struct lpass_gfm_data audiocc_data = {
+ 	.gfm_clks = audiocc_gfm_clks,
+ };
+ 
++static struct lpass_gfm_data aoncc_data = {
++	.onecell_data = &aoncc_hw_onecell_data,
++	.gfm_clks = aoncc_gfm_clks,
++};
++
+ static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
+ {
+ 	const struct lpass_gfm_data *data;
+@@ -236,6 +295,10 @@ static int lpass_gfm_clk_driver_probe(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id lpass_gfm_clk_match_table[] = {
++	{
++		.compatible = "qcom,sm8250-lpass-aoncc",
++		.data = &aoncc_data,
++	},
+ 	{
+ 		.compatible = "qcom,sm8250-lpass-audiocc",
+ 		.data = &audiocc_data,
+-- 
+2.21.0
 
-Agreed. I think if we really need something like this, something between
-XPFO and DEBUG_PAGEALLOC would be generally better, since:
-
-* Secretmem puts userspace in charge of kernel internals (AFAICT without
-  any ulimits?), so that seems like an avenue for malicious or buggy
-  userspace to exploit and trigger DoS, etc. The other approaches leave
-  the kernel in charge at all times, and it's a system-level choice
-  which is easier to reason about and test.
-
-* Secretmem interaction with existing ABIs is unclear. Should uaccess
-  primitives work for secretmem? If so, this means that it's not valid
-  to transform direct uaccesses in syscalls etc into accesses via the
-  linear/direct map. If not, how do we prevent syscalls? The other
-  approaches are clear that this should always work, but the kernel
-  should avoid mappings wherever possible.
-
-* The uncached option doesn't work in a number of situations, such as
-  systems which are purely cache coherent at all times, or where the
-  hypervisor has overridden attributes. The kernel cannot even know that
-  whther this works as intended. On its own this doens't solve a
-  particular problem, and I think this is a solution looking for a
-  problem.
-
-... and fundamentally, this seems like a "more security, please" option
-that is going to be abused, since everyone wants security, regardless of
-how we say it *should* be used. The few use-cases that may make sense
-(e.g. protection of ketys and/or crypto secrrets), aren't going to be
-able to rely on this (since e.g. other uses may depelete memory pools),
-so this is going to be best-effort. With all that in mind, I struggle to
-beleive that this is going to be worth the maintenance cost (e.g. with
-any issues arising from uaccess, IO, etc).
-
-Overall, I would prefer to not see this syscall in the kernel.
-
-> Further still, it has this HAVE_SECRETMEM_UNCACHED nonsense which is
-> completely unused. I'm not at all sure exposing UNCACHED to random
-> userspace is a sane idea.
-
-I agree the uncached stuff should be removed. It is at best misleading
-since the kernel can't guarantee it does what it says, I think it's
-liable to lead to issues in future (e.g. since it can cause memory
-operations to raise different exceptions relative to what they can
-today), and as above it seems like a solution looking for a problem.
-
-Thanks,
-Mark.
