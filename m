@@ -2,48 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1E1279433
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE02279432
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 00:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729256AbgIYW1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 18:27:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54928 "EHLO mail.kernel.org"
+        id S1729230AbgIYW1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 18:27:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729012AbgIYW1p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 18:27:45 -0400
-Subject: Re: [GIT PULL] MIPS fixes for v5.9
+        id S1726694AbgIYW1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 18:27:47 -0400
+Subject: Re: [GIT PULL] regulator fixes for v5.9-rc6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601072865;
-        bh=0iCjMbCMNSYY/zT4GH5XOGFfOqNB0JPq2bzvCYiyA3A=;
+        s=default; t=1601072866;
+        bh=UOXJCve2nA4k057B/7BrjOS4n0fOjR+l+ljK4K0bfBs=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=nc6XAb/he/uhaoqGjdjwZsxg6DCxqGqwz12SoVzf4kdm3sSZPQZgFElz93cGQavfS
-         XY+dPukQ6q62eD7F1ClYqPyLyLiV7yeaqIPAjSu9IMF2/aBdPsDYFQO+pkK7KsIm/1
-         B2lv5zGTlVupJhLPbR9G6u/hNxvuiSX6GtJ+ocpU=
+        b=Q3Z9bfP623gCxIa/KZWln4Ykeyw/R/2DZpGYozbKK0cZY+HNAjEJsvKCpbI4U/ito
+         +EvLUrXLTYQoqAOz/rz4G+HHiFWWV6PyD3fdhzSYHqD1YsQ/gc/EjlH1wwxWSUtnrM
+         tldeBchXQAPAX1NjIoCqLbjbQ6jF+WVI2ThwbPiA=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200925180708.GA5280@alpha.franken.de>
-References: <20200925180708.GA5280@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200925180708.GA5280@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_3
-X-PR-Tracked-Commit-Id: be090fa62080d8501a5651a73cb954721966b125
+In-Reply-To: <20200925201729.7E2962399C@mail.kernel.org>
+References: <20200925201729.7E2962399C@mail.kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200925201729.7E2962399C@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.9-rc6
+X-PR-Tracked-Commit-Id: fbb5a79d2fe7b01c6424fbbc04368373b1672d61
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: b463b6f69974867b3b5885de2f488d72e979a751
-Message-Id: <160107286517.23838.6394559322045652148.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Sep 2020 22:27:45 +0000
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-PR-Merge-Commit-Id: 814324b5938147b659706d859a12db4bd77f0136
+Message-Id: <160107286683.23838.14826741895094232123.pr-tracker-bot@kernel.org>
+Date:   Fri, 25 Sep 2020 22:27:46 +0000
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 25 Sep 2020 20:07:08 +0200:
+The pull request you sent on Fri, 25 Sep 2020 21:16:21 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_fixes_5.9_3
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.9-rc6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/b463b6f69974867b3b5885de2f488d72e979a751
+https://git.kernel.org/torvalds/c/814324b5938147b659706d859a12db4bd77f0136
 
 Thank you!
 
