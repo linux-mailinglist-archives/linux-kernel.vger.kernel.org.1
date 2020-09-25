@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2CFA27948E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017E4279490
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729329AbgIYXN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
+        id S1729354AbgIYXOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbgIYXN6 (ORCPT
+        with ESMTP id S1728680AbgIYXOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:13:58 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A408CC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:13:57 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id k14so4183499edo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 16:13:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=from:mime-version:date:message-id:subject:to:cc;
-        bh=L+IBKxZ0QcO0B3h5t+5jOzhzbzhKa2XA+CIt/FMH1ZU=;
-        b=QUvhulOg1NGwk/mf4srFts8KcoGxxZiH8tNot324c6UXUzdCnR2i74d8kyZm5AS0O+
-         mKLGW/kzPRw/o6KPsbBhuMnEdRVRzMVylfNrGDc//9vOvYe5hFxlyn4l+L/gulbovgMB
-         ZboS38medD690GgkrdnX3OiESGxCDtFJr2xXaUpAOGUZhVrJEgAeWUg1lNXRVdPHw1ZA
-         AUcumQEefbPNtBUFZaWmYCHFj3MrwV2XjRk9WKJipjJtPXMP9Sk0IGE4PtkuY8EuGkH0
-         xvYjVU8koXY2XaGs8c9EypzHVGSyCwU2WLJIKVbpim45Ku68vunua8ur7NBWbBB95be4
-         Cutg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:mime-version:date:message-id:subject:to:cc;
-        bh=L+IBKxZ0QcO0B3h5t+5jOzhzbzhKa2XA+CIt/FMH1ZU=;
-        b=aAm3Fw3sdyjgEpYALv3ZF8nZr3vuNVV0gF/xRv65Krsur0RIWvwKsmFLtSt8rqIM+1
-         4qxAVvHjfaJL21wjT4tWRzy3qjKKS9e65FlGcgQwo+fHf0Jc5YAIIjlAjDT3ma/lDq9I
-         HebbXyg1m6jNxqpu22yh0NIue55jAZOhSnoSYFOA7bpxyLV/0DWmFOmi2Imgfs5/nW48
-         ayD+p+D/+NjwlwBzL5NnOybT9DGRtOqYWPuw1qf4SVCmOG5PaGp39/VolZjc3+BZDUyP
-         ddp4C/h0u1FdfPjJCVrgXA9QvOkM8MmUQFq1FhvT6Nk9u6JK2YEa4NLZyODNmxZ/fysT
-         89kQ==
-X-Gm-Message-State: AOAM5313wQ0cTFt6EvoIUG46u9l+oFMA8x+AqrHkqrg95X0ies7gxG6H
-        1JiAGrcQmrZGGuXkeIRLZn5RUFjpBKeljjsSQunYqQ==
-X-Google-Smtp-Source: ABdhPJwfShpjQL3TbayUPK58WzanTDcYUE/rKStFhRifVnZvS65bVakkOVt0vLIUM/TnAYUxztYRt6rzxFoPbFuqfo8=
-X-Received: by 2002:a50:ccd2:: with SMTP id b18mr3904033edj.51.1601075636081;
- Fri, 25 Sep 2020 16:13:56 -0700 (PDT)
-Received: from 913411032810 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 25 Sep 2020 16:13:55 -0700
-From:   Jann Horn <jannh@google.com>
-X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+        Fri, 25 Sep 2020 19:14:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230BEC0613CE;
+        Fri, 25 Sep 2020 16:14:21 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601075659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5hfCJknL7vN5FQ7E5rBJUvr3Ui/JGPGdNK+KMG+iROA=;
+        b=O8WigxqARtdurkJ3wZLtFlOVp/IJYLWjDmhmQmul4Jh1+/tu2tcAC1TQqLvZ7X6XtgAJUn
+        eOxJOrPLqDp0AFlhrf9ICCES57zKrQJtWeBw+enhlvFsmhVrk/PIHUraubnLUB8YFVD3EU
+        aO+sAe/6qmqsJ4/w9ay6UGJ7n4LbTG7vauQWZ+EMoZO0h8etOCXCfxiQH5btgeOiQSreV3
+        mVGp6pGYXUixpnIECzjY39qztquc0ZKZJGi+8R9bz6K81QFII/mn3LRxC2GMX7eONSPEt0
+        XqZWoOf+IOa80v+JeOxpuuaVtH3FZsqK9XZ5peTSl+Dt7ASOi02SLO6a+QW6sw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601075659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5hfCJknL7vN5FQ7E5rBJUvr3Ui/JGPGdNK+KMG+iROA=;
+        b=qe4V7bKcqNpxkkupSUaXGl+NgWRwWilYYeYK3x3W8R47Rqr4/aCDpm5Xt3BubAKjEHc4Tr
+        Du8N8X29kfg+K2Ag==
+To:     Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, x86@kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Megha Dey <megha.dey@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [patch V2 00/46] x86, PCI, XEN, genirq ...: Prepare for device MSI
+In-Reply-To: <20200925154937.GL29142@worktop.programming.kicks-ass.net>
+References: <20200826111628.794979401@linutronix.de> <3c12bdec2c4ecdabcccd9ece3d495d792e9fc231.camel@redhat.com> <20200925154937.GL29142@worktop.programming.kicks-ass.net>
+Date:   Sat, 26 Sep 2020 01:14:18 +0200
+Message-ID: <87tuvltpo5.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Date:   Fri, 25 Sep 2020 16:13:55 -0700
-Message-ID: <CAG48ez3hxeXU29UGWRH-gRXX2jb5Lc==npbXFt8UDrWO4eHZdQ@mail.gmail.com>
-Subject: [PATCH] nios2: Take mmap lock in cacheflush syscall
-To:     Ley Foon Tan <ley.foon.tan@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We need to take the mmap lock around find_vma() and subsequent use of the
-VMA. Otherwise, we can race with concurrent operations like munmap(), which
-can lead to use-after-free accesses to freed VMAs.
+On Fri, Sep 25 2020 at 17:49, Peter Zijlstra wrote:
+> Here it looks like this:
+>
+> [    1.830276] BUG: kernel NULL pointer dereference, address: 0000000000000000
+> [    1.838043] #PF: supervisor instruction fetch in kernel mode
+> [    1.844357] #PF: error_code(0x0010) - not-present page
+> [    1.850090] PGD 0 P4D 0
+> [    1.852915] Oops: 0010 [#1] SMP
+> [    1.856419] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.9.0-rc6-00700-g0248dedd12d4 #419
+> [    1.865447] Hardware name: Intel Corporation S2600GZ/S2600GZ, BIOS SE5C600.86B.02.02.0002.122320131210 12/23/2013
+> [    1.876902] RIP: 0010:0x0
+> [    1.879824] Code: Bad RIP value.
+> [    1.883423] RSP: 0000:ffffffff82803da0 EFLAGS: 00010282
+> [    1.889251] RAX: 0000000000000000 RBX: ffffffff8282b980 RCX: ffffffff82803e40
+> [    1.897241] RDX: 0000000000000001 RSI: ffffffff82803e40 RDI: ffffffff8282b980
+> [    1.905201] RBP: ffff88842f331000 R08: 00000000ffffffff R09: 0000000000000001
+> [    1.913162] R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000048
+> [    1.921123] R13: ffffffff82803e40 R14: ffffffff8282b9c0 R15: 0000000000000000
+> [    1.929085] FS:  0000000000000000(0000) GS:ffff88842f400000(0000) knlGS:0000000000000000
+> [    1.938113] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    1.944524] CR2: ffffffffffffffd6 CR3: 0000000002811001 CR4: 00000000000606b0
+> [    1.952484] Call Trace:
+> [    1.955214]  msi_domain_alloc+0x36/0x130
 
-Fixes: 1000197d8013 ("nios2: System calls handling")
-Signed-off-by: Jann Horn <jannh@google.com>
----
-To the maintainers:
-I can't easily test this patch - I don't even have a nios2 compiler.
-If you have tested this patch, you may want to add a CC stable tag to this.
+Hrm. That looks like a not initialized mandatory callback. Confused.
 
- arch/nios2/kernel/sys_nios2.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+Is this on -next and if so, does this happen on tip:x86/irq as well?
 
-diff --git a/arch/nios2/kernel/sys_nios2.c b/arch/nios2/kernel/sys_nios2.c
-index cd390ec4f88b..2c8f8bd850c9 100644
---- a/arch/nios2/kernel/sys_nios2.c
-+++ b/arch/nios2/kernel/sys_nios2.c
-@@ -22,6 +22,7 @@ asmlinkage int sys_cacheflush(unsigned long addr,
-unsigned long len,
- 				unsigned int op)
- {
- 	struct vm_area_struct *vma;
-+	struct mm_struct *mm = current->mm;
+Can you provide yoru config please?
 
- 	if (len == 0)
- 		return 0;
-@@ -34,16 +35,21 @@ asmlinkage int sys_cacheflush(unsigned long addr,
-unsigned long len,
- 	if (addr + len < addr)
- 		return -EFAULT;
+Thanks,
 
-+	if (mmap_read_lock_killable(mm))
-+		return -EINTR;
- 	/*
- 	 * Verify that the specified address region actually belongs
- 	 * to this process.
- 	 */
--	vma = find_vma(current->mm, addr);
--	if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end)
-+	vma = find_vma(mm, addr);
-+	if (vma == NULL || addr < vma->vm_start || addr + len > vma->vm_end) {
-+		mmap_read_unlock();
- 		return -EFAULT;
-+	}
-
- 	flush_cache_range(vma, addr, addr + len);
-
-+	mmap_read_unlock();
- 	return 0;
- }
-
-
-base-commit: 6d28cf7dfede6cfca5119a0d415a6a447c68f3a0
--- 
-2.28.0.681.g6f77f65b4e-goog
+        tglx
