@@ -2,212 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F50A277D15
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A630277D17
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 02:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727028AbgIYAk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 24 Sep 2020 20:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726861AbgIYAki (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 24 Sep 2020 20:40:38 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B439C0613DA
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:40:32 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id a136so814231qkb.18
-        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 17:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=ym8U+dwqfwoXbaZ4eGDN89zEbFIj2x2Xco/pSegZvU8=;
-        b=qAda9XVdrKcfYMQhfPlM8CzSUlmPqDPoZbQDU3d6MNXtiQqYbHgJ1ztsc3xEsHmhPq
-         USutwJe5qnTB2r/MX1glKTpiTa7UnQfnklh+vmgKDrSaaiiS0nDJ1cp7bffo5Mh3q1ST
-         aTnpAmXxYuWfF0j6k9ZEmIGK6ikctUrchJt1ZtO2EJYTJhNSek5LHiEx04nZYEigFJBJ
-         DJfe7EqTnlw2nl36OjLgq/OYnINKOYf56cQlL5U6/Y42R960LuZ4FuUqT0xqx1y6QoL+
-         E8fb30kz9KISUERvV3h9zFK39A6vJRv+dXSmNr7W6wsKpzRlWtABF0wZArXIxIFZaSSg
-         76xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ym8U+dwqfwoXbaZ4eGDN89zEbFIj2x2Xco/pSegZvU8=;
-        b=RTZ1PKryX+QJ/MUFoPmWpW3rtzx0ssbHjD6fqRFCuk5xyITdut9zj1DSwy6CvZeQQU
-         6nxX2LDn+Aj/M914LrI8zztj9TreWSHUDX6k2EzO3sbQzCYlaoZ/clZIk72AVDcogrfE
-         coiuBDKceRO3ymNLKwRGNjmWmsDOMpEWNYyB8CUi+MaiNwRf1Zd56lsgI9r7xAKn3Tui
-         8GdCnjZ3OcZFnY4hbjT/UlQhKDVXasb0QVocVmt7ZTmTkgLirUR+gPmmrFnTvuQgpzNQ
-         zIRYfUOlmlq0ncDz1lXIraaWF//pNaIG9X+cWsIttF7xFQtmXAgXNizbPEP6DMWtYaHv
-         InkA==
-X-Gm-Message-State: AOAM532w78/VNxQ8mvVdu7EsP6KX33nC3Um59lxosoj5KGBDsHLisxnz
-        cqlGP7nO8IrhNNs9UNDPvuWhL1Zkd09rIGcZy3xh
-X-Google-Smtp-Source: ABdhPJxCvkd8bpMZshJUQOwHsBojF327K1ufob/lxs13aaYhWVJpooN1G020XYNMkfGHrP5m/sFXpV0lVA16me/8nzJR
-Sender: "danielwinkler via sendgmr" 
-        <danielwinkler@danielwinkler-linux.mtv.corp.google.com>
-X-Received: from danielwinkler-linux.mtv.corp.google.com ([2620:15c:202:201:f693:9fff:fef4:4e59])
- (user=danielwinkler job=sendgmr) by 2002:a0c:8091:: with SMTP id
- 17mr1944004qvb.19.1600994431147; Thu, 24 Sep 2020 17:40:31 -0700 (PDT)
-Date:   Thu, 24 Sep 2020 17:40:07 -0700
-In-Reply-To: <20200925004007.2378410-1-danielwinkler@google.com>
-Message-Id: <20200924173752.v3.5.I5068c01cae3cea674a96e103a0cf4d8c81425a4f@changeid>
-Mime-Version: 1.0
-References: <20200925004007.2378410-1-danielwinkler@google.com>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH v3 5/5] Bluetooth: Change MGMT security info CMD to be more generic
-From:   Daniel Winkler <danielwinkler@google.com>
-To:     marcel@holtmann.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        linux-bluetooth@vger.kernel.org,
-        Daniel Winkler <danielwinkler@google.com>,
-        Sonny Sasaka <sonnysasaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1727010AbgIYAmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 24 Sep 2020 20:42:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726694AbgIYAmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 24 Sep 2020 20:42:11 -0400
+Received: from localhost (lfbn-ncy-1-588-162.w81-51.abo.wanadoo.fr [81.51.203.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD97C2371F;
+        Fri, 25 Sep 2020 00:42:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600994531;
+        bh=TCfSEA+H7aOgaW8Nsc69cPihnr8c1iFQSE73UuGOoIY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HIqP8QW88Vwb6grAdYfOjDccP0gTXQXZmiUnl5zs+1cKp0hUnywzCUlCG/QgALEH+
+         32tbjiqLA3Cq4ZHbdC3ATmGwpewOHoJVkS81RU+D/tz4+nOEJ2ObzVzn/rd3FSASTA
+         j+WyAf4nyrzLjaKZcYoCsm+Ez0IpOpaRLxY3QuVI=
+Date:   Fri, 25 Sep 2020 02:42:08 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     qianjun.kernel@gmail.com, peterz@infradead.org, will@kernel.org,
+        luto@kernel.org, linux-kernel@vger.kernel.org,
+        laoar.shao@gmail.com, qais.yousef@arm.com, urezki@gmail.com
+Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing
+ loop
+Message-ID: <20200925004207.GE19346@lenoir>
+References: <20200915115609.85106-1-qianjun.kernel@gmail.com>
+ <20200915115609.85106-5-qianjun.kernel@gmail.com>
+ <878scz89tl.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878scz89tl.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For advertising, we wish to know the LE tx power capabilities of the
-controller in userspace, so this patch edits the Security Info MGMT
-command to be more generic, such that other various controller
-capabilities can be included in the EIR data. This change also includes
-the LE min and max tx power into this newly-named command.
+On Thu, Sep 24, 2020 at 05:37:42PM +0200, Thomas Gleixner wrote:
+> Subject: softirq; Prevent starvation of higher softirq vectors
+[...]
+> +	/*
+> +	 * Word swap pending to move the not yet handled bits of the previous
+> +	 * run first and then clear the duplicates in the newly raised ones.
+> +	 */
+> +	swahw32s(&cur_pending);
+> +	pending = cur_pending & ~(cur_pending << SIRQ_PREV_SHIFT);
+> +
+>  	for_each_set_bit(vec_nr, &pending, NR_SOFTIRQS) {
+>  		int prev_count;
+>  
+> +		vec_nr &= SIRQ_VECTOR_MASK;
 
-The change was tested by manually verifying that the MGMT command
-returns the tx power range as expected in userspace.
+Shouldn't NR_SOFTIRQS above protect from that?
 
-Reviewed-by: Sonny Sasaka <sonnysasaka@chromium.org>
-Signed-off-by: Daniel Winkler <danielwinkler@google.com>
----
+>  		__clear_bit(vec_nr, &pending);
+>  		kstat_incr_softirqs_this_cpu(vec_nr);
+>
+[...]
+> +	} else {
+> +		/*
+> +		 * Retain the unprocessed bits and swap @cur_pending back
+> +		 * into normal ordering
+> +		 */
+> +		cur_pending = (u32)pending;
+> +		swahw32s(&cur_pending);
+> +		/*
+> +		 * If the previous bits are done move the low word of
+> +		 * @pending into the high word so it's processed first.
+> +		 */
+> +		if (!(cur_pending & SIRQ_PREV_MASK))
+> +			cur_pending <<= SIRQ_PREV_SHIFT;
 
-Changes in v3:
-- Re-using security info MGMT command to carry controller capabilities
+If the previous bits are done and there is no timeout, should
+we consider to restart a loop?
 
-Changes in v2:
-- Fixed sparse error in Capabilities MGMT command
+A common case would be to enter do_softirq() with RCU_SOFTIRQ set
+in the SIRQ_PREV_MASK and NET_RX_SOFTIRQ set in the normal mask.
 
- include/net/bluetooth/mgmt.h | 16 ++++++++++-----
- net/bluetooth/mgmt.c         | 38 +++++++++++++++++++++++-------------
- 2 files changed, 35 insertions(+), 19 deletions(-)
+You would always end up processing the RCU_SOFTIRQ here and trigger
+ksoftirqd for the NET_RX_SOFTIRQ.
 
-diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
-index 83f684af3ae843..1f7dbecae21a76 100644
---- a/include/net/bluetooth/mgmt.h
-+++ b/include/net/bluetooth/mgmt.h
-@@ -682,11 +682,17 @@ struct mgmt_cp_set_blocked_keys {
- 
- #define MGMT_OP_SET_WIDEBAND_SPEECH	0x0047
- 
--#define MGMT_OP_READ_SECURITY_INFO	0x0048
--#define MGMT_READ_SECURITY_INFO_SIZE	0
--struct mgmt_rp_read_security_info {
--	__le16   sec_len;
--	__u8     sec[];
-+#define MGMT_CAP_SEC_FLAGS		0x01
-+#define MGMT_CAP_MAX_ENC_KEY_SIZE	0x02
-+#define MGMT_CAP_SMP_MAX_ENC_KEY_SIZE	0x03
-+#define MGMT_CAP_LE_TX_PWR_MIN		0x04
-+#define MGMT_CAP_LE_TX_PWR_MAX		0x05
-+
-+#define MGMT_OP_READ_CONTROLLER_CAP	0x0048
-+#define MGMT_READ_CONTROLLER_CAP_SIZE	0
-+struct mgmt_rp_read_controller_cap {
-+	__le16   cap_len;
-+	__u8     cap[0];
- } __packed;
- 
- #define MGMT_OP_READ_EXP_FEATURES_INFO	0x0049
-diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
-index c92b809a5e086d..eefd60fe624320 100644
---- a/net/bluetooth/mgmt.c
-+++ b/net/bluetooth/mgmt.c
-@@ -110,7 +110,7 @@ static const u16 mgmt_commands[] = {
- 	MGMT_OP_SET_APPEARANCE,
- 	MGMT_OP_SET_BLOCKED_KEYS,
- 	MGMT_OP_SET_WIDEBAND_SPEECH,
--	MGMT_OP_READ_SECURITY_INFO,
-+	MGMT_OP_READ_CONTROLLER_CAP,
- 	MGMT_OP_READ_EXP_FEATURES_INFO,
- 	MGMT_OP_SET_EXP_FEATURE,
- 	MGMT_OP_READ_DEF_SYSTEM_CONFIG,
-@@ -176,7 +176,7 @@ static const u16 mgmt_untrusted_commands[] = {
- 	MGMT_OP_READ_CONFIG_INFO,
- 	MGMT_OP_READ_EXT_INDEX_LIST,
- 	MGMT_OP_READ_EXT_INFO,
--	MGMT_OP_READ_SECURITY_INFO,
-+	MGMT_OP_READ_CONTROLLER_CAP,
- 	MGMT_OP_READ_EXP_FEATURES_INFO,
- 	MGMT_OP_READ_DEF_SYSTEM_CONFIG,
- 	MGMT_OP_READ_DEF_RUNTIME_CONFIG,
-@@ -3705,12 +3705,12 @@ static int set_wideband_speech(struct sock *sk, struct hci_dev *hdev,
- 	return err;
- }
- 
--static int read_security_info(struct sock *sk, struct hci_dev *hdev,
--			      void *data, u16 data_len)
-+static int read_controller_cap(struct sock *sk, struct hci_dev *hdev,
-+			       void *data, u16 data_len)
- {
--	char buf[16];
--	struct mgmt_rp_read_security_info *rp = (void *)buf;
--	u16 sec_len = 0;
-+	char buf[20];
-+	struct mgmt_rp_read_controller_cap *rp = (void *)buf;
-+	u16 cap_len = 0;
- 	u8 flags = 0;
- 
- 	bt_dev_dbg(hdev, "sock %p", sk);
-@@ -3735,23 +3735,33 @@ static int read_security_info(struct sock *sk, struct hci_dev *hdev,
- 
- 	flags |= 0x08;		/* Encryption key size enforcement (LE) */
- 
--	sec_len = eir_append_data(rp->sec, sec_len, 0x01, &flags, 1);
-+	cap_len = eir_append_data(rp->cap, cap_len, MGMT_CAP_SEC_FLAGS,
-+				  &flags, 1);
- 
- 	/* When the Read Simple Pairing Options command is supported, then
- 	 * also max encryption key size information is provided.
- 	 */
- 	if (hdev->commands[41] & 0x08)
--		sec_len = eir_append_le16(rp->sec, sec_len, 0x02,
-+		cap_len = eir_append_le16(rp->cap, cap_len,
-+					  MGMT_CAP_MAX_ENC_KEY_SIZE,
- 					  hdev->max_enc_key_size);
- 
--	sec_len = eir_append_le16(rp->sec, sec_len, 0x03, SMP_MAX_ENC_KEY_SIZE);
-+	cap_len = eir_append_le16(rp->cap, cap_len,
-+				  MGMT_CAP_SMP_MAX_ENC_KEY_SIZE,
-+				  SMP_MAX_ENC_KEY_SIZE);
-+
-+	/* Append the min/max LE tx power parameters */
-+	cap_len = eir_append_data(rp->cap, cap_len, MGMT_CAP_LE_TX_PWR_MIN,
-+				  &hdev->min_le_tx_power, 1);
-+	cap_len = eir_append_data(rp->cap, cap_len, MGMT_CAP_LE_TX_PWR_MAX,
-+				  &hdev->max_le_tx_power, 1);
- 
--	rp->sec_len = cpu_to_le16(sec_len);
-+	rp->cap_len = cpu_to_le16(cap_len);
- 
- 	hci_dev_unlock(hdev);
- 
--	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_READ_SECURITY_INFO, 0,
--				 rp, sizeof(*rp) + sec_len);
-+	return mgmt_cmd_complete(sk, hdev->id, MGMT_OP_READ_CONTROLLER_CAP, 0,
-+				 rp, sizeof(*rp) + cap_len);
- }
- 
- #ifdef CONFIG_BT_FEATURE_DEBUG
-@@ -8175,7 +8185,7 @@ static const struct hci_mgmt_handler mgmt_handlers[] = {
- 	{ set_blocked_keys,	   MGMT_OP_SET_BLOCKED_KEYS_SIZE,
- 						HCI_MGMT_VAR_LEN },
- 	{ set_wideband_speech,	   MGMT_SETTING_SIZE },
--	{ read_security_info,      MGMT_READ_SECURITY_INFO_SIZE,
-+	{ read_controller_cap,     MGMT_READ_CONTROLLER_CAP_SIZE,
- 						HCI_MGMT_UNTRUSTED },
- 	{ read_exp_features_info,  MGMT_READ_EXP_FEATURES_INFO_SIZE,
- 						HCI_MGMT_UNTRUSTED |
--- 
-2.28.0.709.gb0816b6eb0-goog
+Although that's probably no big deal as we should be already in ksoftirqd
+if we processed prev bits. We are just going to iterate the kthread loop
+instead of the do_softirq loop. Probably no real issue then...
+
+
+>  
+> +		/* Merge the newly pending ones into the low word */
+> +		cur_pending |= new_pending;
+> +	}
+> +	set_softirq_pending(cur_pending);
+>  	wakeup_softirqd();
+>  out:
+>  	lockdep_softirq_end(in_hardirq);
 
