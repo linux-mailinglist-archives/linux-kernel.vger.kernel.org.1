@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2855A279242
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCFB1279248
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726281AbgIYUgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:36:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54763 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726149AbgIYUgw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:36:52 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601066211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+/GOsrQrrQl6btTDui7fNUi9Aoo0FB3G5PnvswRPvVk=;
-        b=LdJ+Gu0HvTIS3Z6Ty5US1cjiZVMOQcWtrnqCUfUrPP5/jnNEldYtVH8sBA6T3pjJ6/sNo6
-        4ReA0ZIcgsK+b9Tf37+kasowcxOqwDlbyugI49atMWuNwcz0SX04RfhjIYkg4MlmTtJJv4
-        yAyfl4sLo5Y9f7iUWJMQ10N1kRGmm0Y=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-95-p6KgrcdcMweBwQxnTKoT3w-1; Fri, 25 Sep 2020 16:36:49 -0400
-X-MC-Unique: p6KgrcdcMweBwQxnTKoT3w-1
-Received: by mail-wm1-f69.google.com with SMTP id m10so96007wmf.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:36:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+/GOsrQrrQl6btTDui7fNUi9Aoo0FB3G5PnvswRPvVk=;
-        b=WiPLaj9E1l9Q+ySTXu45XMU9WsdLnmR4eXJNTdHnJjRoUOduIhGTma59pt9jAMslFw
-         E6maRLHjdMdeP+ici7LdjpZlAeRPmNq0xlUnvEhA7iyBnlLTu98sN6/Zq7iBOgLRgqRI
-         y3Ck93P+DzrPB7wMHEcLkNFV6Ruvd5qyGMimnRK+0uZYGNN79PpR3UdZMAyEeVSdBQdF
-         MaUSTIxNaI6hiUwIEERkAoHem+fRDMCSCl9EsoS05VU9skirY25KAItZqJxVkXgpNQpe
-         jUcfERsWORZ5di527bJoIfOFmXXnygSjawybB+oA/4JNFgQagLl1BvHFsGAZNiMZhKPz
-         BTdQ==
-X-Gm-Message-State: AOAM531BGriGL+iOreGRvzCMpft28B8+pQfMh+O/8f0a0yfH1aFnwHtN
-        e0txnPBBgujT62N6U1Jquztf5QQz7sK5XGOdsnoCesbQ39/taLYQwA2gGEtqkOwp5V3no4FP84b
-        WfSPmpbGRawuD0Rs9ect43DEP
-X-Received: by 2002:a1c:398a:: with SMTP id g132mr324854wma.41.1601066208381;
-        Fri, 25 Sep 2020 13:36:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzhsEe4eTVrJHnr9BtKCl7LEwWuko/Hy4c5s58G9XXC4Q1lSW1zw0amiObj48Q/lEg2qw4kg==
-X-Received: by 2002:a1c:398a:: with SMTP id g132mr324840wma.41.1601066208143;
-        Fri, 25 Sep 2020 13:36:48 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id t1sm194124wmi.16.2020.09.25.13.36.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 13:36:47 -0700 (PDT)
-Subject: Re: [PATCH v3 2/2] KVM: x86/MMU: Recursively zap nested TDP SPs when
- zapping last/only parent
-To:     Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Shier <pshier@google.com>
-References: <20200923221406.16297-1-sean.j.christopherson@intel.com>
- <20200923221406.16297-3-sean.j.christopherson@intel.com>
- <CANgfPd9LLhLMsOHtMS1begL_J676Szve5y-qruY85WAu5MpYVw@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0a2a8e8a-3fbb-3da1-0342-8d6f24ab5c70@redhat.com>
-Date:   Fri, 25 Sep 2020 22:36:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S1727512AbgIYUhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:37:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729096AbgIYUhN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:37:13 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD50822211
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601066232;
+        bh=WZbwT2IHsLPVib9LWqjiQ9VL5NAX2HL7HRcoYiVNWkw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qNb+YYrX1jzXjp9FjsAl2BzlcqEssgXd1+vfLdR4Xy44/ZcEKjpTebtcmPhIR1H14
+         qDu+TTbe/P+cWMxj4asNU+S7SegNTtpQqbd6Hlro7NTGLUHUaDM1UjbykZJgEMz5f3
+         AEWddnez0BlRcuPJXCE4x3QDSn8sKiuW2OWoAzXo=
+Received: by mail-oo1-f53.google.com with SMTP id w25so1064500oos.10
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:37:12 -0700 (PDT)
+X-Gm-Message-State: AOAM531S0NtHkGxAeAulVH37Zo8Jmxn4XgtP6MsRyz4JU905VrUqdqFK
+        tGd9tvEBpuAdLZrKktbJFRACGxe20kJcw7rrV8U=
+X-Google-Smtp-Source: ABdhPJy5yn+k2qTffdPEkwz81q4jfUywaUdKX4eyqIezGZqX1pvY0kQk58CIUkInD4MoUX3cSwW3s41Wr8o4wcTAQO8=
+X-Received: by 2002:a4a:4910:: with SMTP id z16mr2063269ooa.41.1601066231895;
+ Fri, 25 Sep 2020 13:37:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd9LLhLMsOHtMS1begL_J676Szve5y-qruY85WAu5MpYVw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAOuPNLjtG_VHL1M8-=pKNNRmWQg_8oC0YG7C8H3gQcbJ+0B3=A@mail.gmail.com>
+ <202009251301.A1FD183582@keescook>
+In-Reply-To: <202009251301.A1FD183582@keescook>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 25 Sep 2020 22:37:01 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGtv84JHQfKoqOYyq=3m2w0Yuj_n4_Teo83zvdZ9kpZhw@mail.gmail.com>
+Message-ID: <CAMj1kXGtv84JHQfKoqOYyq=3m2w0Yuj_n4_Teo83zvdZ9kpZhw@mail.gmail.com>
+Subject: Re: KASLR support on ARM with Kernel 4.9 and 4.14
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Pintu Agarwal <pintu.ping@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Dave Martin <dave.martin@arm.com>,
+        Kernelnewbies <kernelnewbies@kernelnewbies.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>, matt@codeblueprint.co.uk,
+        nico@linaro.org, Thomas Garnier <thgarnie@google.com>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/20 01:29, Ben Gardon wrote:
-> Reviewed-by: Ben Gardon <bgardon@google.com>
-> (I don't know if my review is useful here, but the rebase of this
-> patch looks correct! Thank you for preventing these from becoming
-> undead, Sean.)
+On Fri, 25 Sep 2020 at 22:28, Kees Cook <keescook@chromium.org> wrote:
+>
+> On Fri, Sep 25, 2020 at 08:33:59PM +0530, Pintu Agarwal wrote:
+> > This is regarding the KASLR feature support on ARM for the kernel
+> > version 4.9 and 4.14.
+> >
+> > Is KASLR supported on ARM-32 Linux 4.9 and above ?
+>
+> Sorry, this feature did not yet land in upstream:
+> https://github.com/KSPP/linux/issues/3
+>
+> Here was the earlier effort:
+> https://lore.kernel.org/kernel-hardening/20170814125411.22604-1-ard.biesheuvel@linaro.org/
+>
+> > Is it dependent on CONFIG_RANDOMIZE_BASE or
+>
+> CONFIG_RANDOMIZE_BASE is what is used on other architectures to control
+> the feature.
+>
+> > /proc/sys/kernel/randomize_va_space ?
+> > Is there any relation between these two?
+>
+> No, the latter is about userspace addresses.
+>
+> > Is the changing kernel symbols (in every boot), only possible if KASLR
+> > is enabled, or there is another way it can happen?
+>
+> I think you meant kernel symbol addresses (not the symbols themselves).
+> But yes, I wouldn't expect the addresses to move if you didn't either
+> rebuild the kernel or had something else moving the kernel at boot (i.e.
+> the boot loader).
+>
+> > I have these queries because,
+> > In one of the arm-32 devices with Kernel 4.14, I observed that
+> > CONFIG_RANDOMIZE_BASE is not available.
+> > But /proc/sys/kernel/randomize_va_space is set to 2.
+> > However, I also observed that symbol addresses are changing in every boot.
+> >
+> > 1st boot cycle:
+> > [root ~]# cat /proc/kallsyms | grep "sys_open"
+> > a5b4de92 T sys_open
+> > [root@sa515m ~]#
+> >
+> > 2nd boot cycle:
+> > [root ~]# cat /proc/kallsyms | grep "sys_open"
+> > f546ed66 T sys_open
+> >
+> > So, I am wondering how this is possible without KASLR
+> > (CONFIG_RANDOMIZE_BASE) support in Kernel ?
+>
 
-It is; I had your patch on my todo list in case Sean didn't get to it,
-but of course it's even better that you guys sorted it out. :)  I have
-queued both, thanks.
-
-Paolo
-
+Those addresses were obfuscated by kptr_restrict
