@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293A6279348
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776EC279343
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729370AbgIYVYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:24:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
+        id S1729446AbgIYVYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729337AbgIYVXs (ORCPT
+        with ESMTP id S1729361AbgIYVXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:23:48 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ECD5C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:48 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id o13so3239127qtl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:48 -0700 (PDT)
+        Fri, 25 Sep 2020 17:23:50 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 379B0C0613D7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:50 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id a16so3447034pfk.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 14:23:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=2W93x0wFn2B/eR702ln689L1xVXpVcuv86awhcY5u5k=;
-        b=nvM6eY4KZEPy35TPI8xHdc7ZzfhV6Kb46revIGLZhhGe9x5mRrUVR7yZ6jj6o2KjH4
-         NCjnvx5lB0E3i2qbJXNY3sepzWBiNhwDJ8belpU0xTLK7AKrUAt30z1pUAEYqaCJE5Uz
-         eTvV/43+HCt4c75LPF0+W88mAICuVNgNulf4YiAY6DVEJkRB9WhiHghQMT9LXLTxp+XB
-         rhP7T+KcaUtVFUhNvutqmSYX5MR0aPKWVrsKtpaS9tD0IZIHB7UJMLElmIFjUgne+imK
-         pViwBVMUq1JD0Zol8LW6J/Jqf6G8gmm+/1IDvAnzd5OXOZpDQhtV7QJ7X308Gg/i/tfN
-         H0Lg==
+        bh=Qb8go8HycpjH5yveF+PfyYHMqnWZLnSFt7U7sjuOnrE=;
+        b=rXGM+YU5BRbaFP3RvtKtUPBu576cAytErIUb3kUMO/E1cSI+ZFLxB0tnLxPI1LI6t0
+         z2M2xLrk9a1hsIaIkdFcuZoa2QppeVZYyTjWqrxoJdyL07HBV1G9CFxpMxIlQgEfeURM
+         mv/Vpgo2dvH5I+ii4RdBDnR35BNsJ7LpSyJHBqQG19B7wDFRlXgwtOWiFIkp5dpjCC3z
+         ImSDfNzIiZthK3CUmuUO/+X4Za4emZUkyOan3n6KgL+ckGJzS1q00jhEL3BNtfjXNpu+
+         DaA7K+S7LmrcGnFRaU16qRHRwpjfP3UOFgEP8W07uwVAD90VlyqEbrJIakBGZabbvJqa
+         70GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2W93x0wFn2B/eR702ln689L1xVXpVcuv86awhcY5u5k=;
-        b=Imkna+BnHvxo8GF13RodutgzAeOrYXGrzwfd88aoGw91kwCPrCO1XD+a+hDe7rbR8m
-         DPJ2bWyOey6rGv89dvS6Gp2KXQth0H6whoRCxhOQpguXnlxcqtqVPKILD8g0KU1Fe6y+
-         LZSwZDfoTc3gWRQ8nNHRADYFRWHkAQ8ZzfigyXXGZr6UDNd4MxRuj+y7rwwTgzJWGeVl
-         OMXHRQtuO6mWIFdrDBbMifAuGrdHrc6+0g8SF+iNzh96cw3FqCj7/jb5aAThshnvoRJD
-         WWrre7OYeYnOWqK1zlE2KIfaOPDmYT6TdT5quIxanB2wCgm7XLqmNY9x/qbpAZ3wb4pU
-         8F9A==
-X-Gm-Message-State: AOAM5309aiP1byOhNdWibbXhESmxRgjWI0medj0345LJ5LHdfKyyr0Uo
-        kkoC/mFKg90G/BVXeJZ0WkNMl7hlf5iDgtq6bHmb7uzrnHDJT9tsIlqO/VinE3Bzb3sfFUC5+Fq
-        IybLHf4rig2hnmNRhqwbwza1kpEDO41Dazx5OEKEPnWQdOhkm0yaGHeuq8CBeEGU5ZVWxMIyR
-X-Google-Smtp-Source: ABdhPJyPxktLMKlNwgUfxRN5VMY8IyHJsoD87PwWyG6SLsXUtbeLR58Fk2FQL55dVOR4gMQji3fS54cG+zfF
+        bh=Qb8go8HycpjH5yveF+PfyYHMqnWZLnSFt7U7sjuOnrE=;
+        b=llD/OojWUpwe/nmVaFvjaUoTWAyic+90n6Hg316qS6pIMP9iXDtdSrAZcCHbfTgaaC
+         oxonCQp5T7zOYpjESHymubCWEnzB9O3XZPyIAO+OEht/I7TVpzthbM4aVB9gpsL8UsRp
+         g9vfub1jJlHRvwvbaFD+J1iODZpIBMHrLKsvFl75LB1uClNpn7vO1H6JwgVF1TdMpc6F
+         /rYc8cKJiNZ/aSqE08xdXkaXSxkan3O0jLOcxnk7nDaAqUwKgsrVKw7iHfEaF1FaLcYA
+         EvNZT4Zs1YklE9FLU+iI2QYQMqK1YrBkczPAkc2TH4m7glnNyuTP1bB0psYoQOrYSGZy
+         sBwg==
+X-Gm-Message-State: AOAM531+0h3CVGbgf9ghyTINTrDarooPquu7UYOQXoOCeaGsKgDTRlJh
+        5ddoUraPXYuJmmv5pAD0KNQ/aruaSL7bYe0t3EreqTtn0mPk0kpEPgcRZpshMxzdNbsLm/AxQlL
+        c9g6QA/TmvOzIrUvghouMS+P/dIC3afQFA4CYAAUrev95m88EAtIB3rXdMyWOWlVCAGFz/mrt
+X-Google-Smtp-Source: ABdhPJysWah3jm8O7Wa66GBxjE9TeS1ZTdGpfHZiqr2pWyjnRuqDAwGoFqvCzWelnOy1dlxCz88T8C8/a2zk
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a0c:a4c5:: with SMTP id
- x63mr655836qvx.58.1601069027271; Fri, 25 Sep 2020 14:23:47 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 14:23:01 -0700
+ (user=bgardon job=sendgmr) by 2002:a17:90b:15c6:: with SMTP id
+ lh6mr30176pjb.0.1601069029061; Fri, 25 Sep 2020 14:23:49 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 14:23:02 -0700
 In-Reply-To: <20200925212302.3979661-1-bgardon@google.com>
-Message-Id: <20200925212302.3979661-22-bgardon@google.com>
+Message-Id: <20200925212302.3979661-23-bgardon@google.com>
 Mime-Version: 1.0
 References: <20200925212302.3979661-1-bgardon@google.com>
 X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-Subject: [PATCH 21/22] kvm: mmu: Support MMIO in the TDP MMU
+Subject: [PATCH 22/22] kvm: mmu: Don't clear write flooding count for direct roots
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Cannon Matthews <cannonmatthews@google.com>,
@@ -74,9 +74,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to support MMIO, KVM must be able to walk the TDP paging
-structures to find mappings for a given GFN. Support this walk for
-the TDP MMU.
+Direct roots don't have a write flooding count because the guest can't
+affect that paging structure. Thus there's no need to clear the write
+flooding count on a fast CR3 switch for direct roots.
 
 Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
 machine. This series introduced no new failures.
@@ -86,163 +86,92 @@ This series can be viewed in Gerrit at:
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c     | 70 ++++++++++++++++++++++++++------------
- arch/x86/kvm/mmu/tdp_mmu.c | 17 +++++++++
+ arch/x86/kvm/mmu/mmu.c     | 15 +++++++++++----
+ arch/x86/kvm/mmu/tdp_mmu.c | 12 ++++++++++++
  arch/x86/kvm/mmu/tdp_mmu.h |  2 ++
- 3 files changed, 68 insertions(+), 21 deletions(-)
+ 3 files changed, 25 insertions(+), 4 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6101c696e92d3..0ce7720a72d4e 100644
+index 0ce7720a72d4e..345c934fabf4c 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3939,54 +3939,82 @@ static bool mmio_info_in_cache(struct kvm_vcpu *vcpu, u64 addr, bool direct)
- 	return vcpu_match_mmio_gva(vcpu, addr);
+@@ -4267,7 +4267,8 @@ static void nonpaging_init_context(struct kvm_vcpu *vcpu,
+ 	context->nx = false;
  }
  
--/* return true if reserved bit is detected on spte. */
--static bool
--walk_shadow_page_get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
-+/*
-+ * Return the level of the lowest level SPTE added to sptes.
-+ * That SPTE may be non-present.
-+ */
-+static int get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
+-static inline bool is_root_usable(struct kvm_mmu_root_info *root, gpa_t pgd,
++static inline bool is_root_usable(struct kvm *kvm,
++				  struct kvm_mmu_root_info *root, gpa_t pgd,
+ 				  union kvm_mmu_page_role role)
  {
- 	struct kvm_shadow_walk_iterator iterator;
--	u64 sptes[PT64_ROOT_MAX_LEVEL], spte = 0ull;
--	struct rsvd_bits_validate *rsvd_check;
--	int root, leaf;
--	bool reserved = false;
-+	int leaf = vcpu->arch.mmu->root_level;
-+	u64 spte;
+ 	return (role.direct || pgd == root->pgd) &&
+@@ -4293,13 +4294,13 @@ static bool cached_root_available(struct kvm_vcpu *vcpu, gpa_t new_pgd,
+ 	root.pgd = mmu->root_pgd;
+ 	root.hpa = mmu->root_hpa;
  
--	rsvd_check = &vcpu->arch.mmu->shadow_zero_check;
+-	if (is_root_usable(&root, new_pgd, new_role))
++	if (is_root_usable(vcpu->kvm, &root, new_pgd, new_role))
+ 		return true;
  
- 	walk_shadow_page_lockless_begin(vcpu);
+ 	for (i = 0; i < KVM_MMU_NUM_PREV_ROOTS; i++) {
+ 		swap(root, mmu->prev_roots[i]);
  
--	for (shadow_walk_init(&iterator, vcpu, addr),
--		 leaf = root = iterator.level;
-+	for (shadow_walk_init(&iterator, vcpu, addr);
- 	     shadow_walk_okay(&iterator);
- 	     __shadow_walk_next(&iterator, spte)) {
-+		leaf = iterator.level;
- 		spte = mmu_spte_get_lockless(iterator.sptep);
- 
- 		sptes[leaf - 1] = spte;
--		leaf--;
- 
- 		if (!is_shadow_present_pte(spte))
+-		if (is_root_usable(&root, new_pgd, new_role))
++		if (is_root_usable(vcpu->kvm, &root, new_pgd, new_role))
  			break;
- 
-+	}
-+
-+	walk_shadow_page_lockless_end(vcpu);
-+
-+	return leaf;
-+}
-+
-+/* return true if reserved bit is detected on spte. */
-+static bool get_mmio_spte(struct kvm_vcpu *vcpu, u64 addr, u64 *sptep)
-+{
-+	u64 sptes[PT64_ROOT_MAX_LEVEL];
-+	struct rsvd_bits_validate *rsvd_check;
-+	int root;
-+	int leaf;
-+	int level;
-+	bool reserved = false;
-+
-+	if (!VALID_PAGE(vcpu->arch.mmu->root_hpa)) {
-+		*sptep = 0ull;
-+		return reserved;
-+	}
-+
-+	if (is_tdp_mmu_root(vcpu->kvm, vcpu->arch.mmu->root_hpa))
-+		leaf = kvm_tdp_mmu_get_walk(vcpu, addr, sptes);
-+	else
-+		leaf = get_walk(vcpu, addr, sptes);
-+
-+	rsvd_check = &vcpu->arch.mmu->shadow_zero_check;
-+
-+	for (level = root; level >= leaf; level--) {
-+		if (!is_shadow_present_pte(sptes[level - 1]))
-+			break;
- 		/*
- 		 * Use a bitwise-OR instead of a logical-OR to aggregate the
- 		 * reserved bit and EPT's invalid memtype/XWR checks to avoid
- 		 * adding a Jcc in the loop.
- 		 */
--		reserved |= __is_bad_mt_xwr(rsvd_check, spte) |
--			    __is_rsvd_bits_set(rsvd_check, spte, iterator.level);
-+		reserved |= __is_bad_mt_xwr(rsvd_check, sptes[level - 1]) |
-+			    __is_rsvd_bits_set(rsvd_check, sptes[level - 1],
-+					       level);
  	}
  
--	walk_shadow_page_lockless_end(vcpu);
--
- 	if (reserved) {
- 		pr_err("%s: detect reserved bits on spte, addr 0x%llx, dump hierarchy:\n",
- 		       __func__, addr);
--		while (root > leaf) {
-+		for (level = root; level >= leaf; level--)
- 			pr_err("------ spte 0x%llx level %d.\n",
--			       sptes[root - 1], root);
--			root--;
--		}
-+			       sptes[level - 1], level);
- 	}
+@@ -4356,7 +4357,13 @@ static void __kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd,
+ 	 */
+ 	vcpu_clear_mmio_info(vcpu, MMIO_GVA_ANY);
  
--	*sptep = spte;
-+	*sptep = sptes[leaf - 1];
-+
- 	return reserved;
+-	__clear_sp_write_flooding_count(to_shadow_page(vcpu->arch.mmu->root_hpa));
++	/*
++	 * If this is a direct root page, it doesn't have a write flooding
++	 * count. Otherwise, clear the write flooding count.
++	 */
++	if (!new_role.direct)
++		__clear_sp_write_flooding_count(
++				to_shadow_page(vcpu->arch.mmu->root_hpa));
  }
  
-@@ -3998,7 +4026,7 @@ static int handle_mmio_page_fault(struct kvm_vcpu *vcpu, u64 addr, bool direct)
- 	if (mmio_info_in_cache(vcpu, addr, direct))
- 		return RET_PF_EMULATE;
- 
--	reserved = walk_shadow_page_get_mmio_spte(vcpu, addr, &spte);
-+	reserved = get_mmio_spte(vcpu, addr, &spte);
- 	if (WARN_ON(reserved))
- 		return -EINVAL;
- 
+ void kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd, bool skip_tlb_flush,
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index b83c18e29f9c6..42dde27decd75 100644
+index 42dde27decd75..c07831b0c73e1 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1284,3 +1284,20 @@ void kvm_tdp_mmu_recover_nx_lpages(struct kvm *kvm)
- 	srcu_read_unlock(&kvm->srcu, rcu_idx);
+@@ -124,6 +124,18 @@ static struct kvm_mmu_page *find_tdp_mmu_root_with_role(
+ 	return NULL;
  }
  
-+/*
-+ * Return the level of the lowest level SPTE added to sptes.
-+ * That SPTE may be non-present.
-+ */
-+int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes)
++hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
++				    union kvm_mmu_page_role role)
 +{
-+	struct tdp_iter iter;
-+	int leaf = vcpu->arch.mmu->shadow_root_level;
-+	gfn_t gfn = addr >> PAGE_SHIFT;
++	struct kvm_mmu_page *root;
 +
-+	for_each_tdp_pte_vcpu(iter, vcpu, gfn, gfn + 1) {
-+		leaf = iter.level;
-+		sptes[leaf - 1] = iter.old_spte;
-+	}
++	root = find_tdp_mmu_root_with_role(kvm, role);
++	if (root)
++		return __pa(root->spt);
 +
-+	return leaf;
++	return INVALID_PAGE;
 +}
++
+ static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
+ 						   int level)
+ {
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 45ea2d44545db..cc0b7241975aa 100644
+index cc0b7241975aa..2395ffa71bb05 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.h
 +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -45,4 +45,6 @@ bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
- 				   struct kvm_memory_slot *slot, gfn_t gfn);
+@@ -9,6 +9,8 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
+ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
  
- void kvm_tdp_mmu_recover_nx_lpages(struct kvm *kvm);
-+
-+int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes);
- #endif /* __KVM_X86_MMU_TDP_MMU_H */
+ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
++hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
++				    union kvm_mmu_page_role role);
+ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+ void kvm_tdp_mmu_put_root_hpa(struct kvm *kvm, hpa_t root_hpa);
+ 
 -- 
 2.28.0.709.gb0816b6eb0-goog
 
