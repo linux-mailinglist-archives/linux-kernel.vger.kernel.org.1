@@ -2,109 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96E052794D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:42:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 659A82794DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727258AbgIYXmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:42:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49468 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgIYXmH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:42:07 -0400
-Received: from [192.168.0.108] (unknown [49.65.245.23])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C25692086A;
-        Fri, 25 Sep 2020 23:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601077326;
-        bh=3kCVceXDX01WOddg2crYrZ9DLByiFCKMEKFeVfDj/Gw=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=JTCvxzL3mV3O0VR+dwoi4ylyKP6OMtYN/vd70+pA4VIFSKOr2jZ1n8m+JBgLDdaNq
-         Qt67PehmYg9RazI9svmGjhksLE/BmRM1m8+NGi/VaH8oidSxMUsSqX/iaoR2qEwMsI
-         7fh139318M2GiKuA6nLnnFfdvmNShuBMh7ulytD0=
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix slab leak of rpages pointer
-To:     Jaegeuk Kim <jaegeuk@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-References: <20200923084512.2947439-1-jaegeuk@kernel.org>
- <20200925232550.GB4136545@google.com>
-From:   Chao Yu <chao@kernel.org>
-Message-ID: <f1f04328-f5b3-a349-fe51-e341e5e3d4cb@kernel.org>
-Date:   Sat, 26 Sep 2020 07:42:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.8.0
+        id S1726689AbgIYXpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:45:06 -0400
+Received: from agrajag.zerfleddert.de ([88.198.237.222]:39272 "EHLO
+        agrajag.zerfleddert.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726037AbgIYXpG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 19:45:06 -0400
+Received: by agrajag.zerfleddert.de (Postfix, from userid 1000)
+        id 293B55B2095A; Sat, 26 Sep 2020 01:45:04 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 01:45:04 +0200
+From:   Tobias Jordan <kernel@cdqe.de>
+To:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] bus: qcom: ebi2: fix device node iterator leak
+Message-ID: <20200925234504.GA18813@agrajag.zerfleddert.de>
 MIME-Version: 1.0
-In-Reply-To: <20200925232550.GB4136545@google.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-9-26 7:25, Jaegeuk Kim wrote:
-> I missed the f2fs mailing list by gitconfig. :)
->
-> On 09/23, Jaegeuk Kim wrote:
->> This fixes the below mem leak.
->>
->> [  130.157600] =============================================================================
->> [  130.159662] BUG f2fs_page_array_entry-252:16 (Tainted: G        W  O     ): Objects remaining in f2fs_page_array_entry-252:16 on __kmem_cache_shutdown()
->> [  130.162742] -----------------------------------------------------------------------------
->> [  130.162742]
->> [  130.164979] Disabling lock debugging due to kernel taint
->> [  130.166188] INFO: Slab 0x000000009f5a52d2 objects=22 used=4 fp=0x00000000ba72c3e9 flags=0xfffffc0010200
->> [  130.168269] CPU: 7 PID: 3560 Comm: umount Tainted: G    B   W  O      5.9.0-rc4+ #35
->> [  130.170019] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
->> [  130.171941] Call Trace:
->> [  130.172528]  dump_stack+0x74/0x9a
->> [  130.173298]  slab_err+0xb7/0xdc
->> [  130.174044]  ? kernel_poison_pages+0xc0/0xc0
->> [  130.175065]  ? on_each_cpu_cond_mask+0x48/0x90
->> [  130.176096]  __kmem_cache_shutdown.cold+0x34/0x141
->> [  130.177190]  kmem_cache_destroy+0x59/0x100
->> [  130.178223]  f2fs_destroy_page_array_cache+0x15/0x20 [f2fs]
->> [  130.179527]  f2fs_put_super+0x1bc/0x380 [f2fs]
->> [  130.180538]  generic_shutdown_super+0x72/0x110
->> [  130.181547]  kill_block_super+0x27/0x50
->> [  130.182438]  kill_f2fs_super+0x76/0xe0 [f2fs]
->> [  130.183448]  deactivate_locked_super+0x3b/0x80
->> [  130.184456]  deactivate_super+0x3e/0x50
->> [  130.185363]  cleanup_mnt+0x109/0x160
->> [  130.186179]  __cleanup_mnt+0x12/0x20
->> [  130.187003]  task_work_run+0x70/0xb0
->> [  130.187841]  exit_to_user_mode_prepare+0x18f/0x1b0
->> [  130.188917]  syscall_exit_to_user_mode+0x31/0x170
->> [  130.189989]  do_syscall_64+0x45/0x90
->> [  130.190828]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> [  130.191986] RIP: 0033:0x7faf868ea2eb
->> [  130.192815] Code: 7b 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 90 f3 0f 1e fa 31 f6 e9 05 00 00 00 0f 1f 44 00 00 f3 0f 1e fa b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 75 7b 0c 00 f7 d8 64 89 01
->> [  130.196872] RSP: 002b:00007fffb7edb478 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
->> [  130.198494] RAX: 0000000000000000 RBX: 00007faf86a18204 RCX: 00007faf868ea2eb
->> [  130.201021] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000055971df71c50
->> [  130.203415] RBP: 000055971df71a40 R08: 0000000000000000 R09: 00007fffb7eda1f0
->> [  130.205772] R10: 00007faf86a04339 R11: 0000000000000246 R12: 000055971df71c50
->> [  130.208150] R13: 0000000000000000 R14: 000055971df71b38 R15: 0000000000000000
->> [  130.210515] INFO: Object 0x00000000a980843a @offset=744
->> [  130.212476] INFO: Allocated in page_array_alloc+0x3d/0xe0 [f2fs] age=1572 cpu=0 pid=3297
->> [  130.215030] 	__slab_alloc+0x20/0x40
->> [  130.216566] 	kmem_cache_alloc+0x2a0/0x2e0
->> [  130.218217] 	page_array_alloc+0x3d/0xe0 [f2fs]
->> [  130.219940] 	f2fs_init_compress_ctx+0x1f/0x40 [f2fs]
->> [  130.221736] 	f2fs_write_cache_pages+0x3db/0x860 [f2fs]
->> [  130.223591] 	f2fs_write_data_pages+0x2c9/0x300 [f2fs]
->> [  130.225414] 	do_writepages+0x43/0xd0
->> [  130.226907] 	__filemap_fdatawrite_range+0xd5/0x110
->> [  130.228632] 	filemap_write_and_wait_range+0x48/0xb0
->> [  130.230336] 	__generic_file_write_iter+0x18a/0x1d0
->> [  130.232035] 	f2fs_file_write_iter+0x226/0x550 [f2fs]
->> [  130.233737] 	new_sync_write+0x113/0x1a0
->> [  130.235204] 	vfs_write+0x1a6/0x200
->> [  130.236579] 	ksys_write+0x67/0xe0
->> [  130.237898] 	__x64_sys_write+0x1a/0x20
->> [  130.239309] 	do_syscall_64+0x38/0x90
->>
->> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+In the for_each_available_child_of_node loop of qcom_ebi2_probe, add a
+call to of_node_put to avoid leaking the iterator if we bail out.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Fixes: 335a12754808 ("bus: qcom: add EBI2 driver")
 
-Thanks,
+Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+---
+ drivers/bus/qcom-ebi2.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/bus/qcom-ebi2.c b/drivers/bus/qcom-ebi2.c
+index 03ddcf426887..0b8f53a688b8 100644
+--- a/drivers/bus/qcom-ebi2.c
++++ b/drivers/bus/qcom-ebi2.c
+@@ -353,8 +353,10 @@ static int qcom_ebi2_probe(struct platform_device *pdev)
+ 
+ 		/* Figure out the chipselect */
+ 		ret = of_property_read_u32(child, "reg", &csindex);
+-		if (ret)
++		if (ret) {
++			of_node_put(child);
+ 			return ret;
++		}
+ 
+ 		if (csindex > 5) {
+ 			dev_err(dev,
+-- 
+2.20.1
+
