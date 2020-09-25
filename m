@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE333278CB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB542278D47
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729185AbgIYPaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:30:08 -0400
-Received: from mail.efficios.com ([167.114.26.124]:50836 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728654AbgIYPaI (ORCPT
+        id S1729423AbgIYPzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:55:06 -0400
+Received: from [46.166.185.98] ([46.166.185.98]:55550 "EHLO
+        host.imperialcapgroup.com" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727733AbgIYPzG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:30:08 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 368942DFACE;
-        Fri, 25 Sep 2020 11:30:07 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id OCjBehbYhpGi; Fri, 25 Sep 2020 11:30:06 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id CCE472DFBCA;
-        Fri, 25 Sep 2020 11:30:06 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com CCE472DFBCA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1601047806;
-        bh=ZTIgHlXIg4bMbM+tBA7kQRmF5WQUPvRnucjBVhBprdE=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=bCvx2Va6LtGy4jrCwk4u3nN5wvpNDV+A4jYbHzggsX3XZgSEPxjLUNKHl5LSBQQ/P
-         IO0YC+kYT7KIY9I4i4Ep+MzGXYrj9b4xA+edQvKYH7z5ALhn+Pr2byvLXkmyMXvTsr
-         Csd1H1t8QJvXNIdOhWagx0u8sh3wEtcU5wprbPzAr4Y8TTAMz/AwWigbVcuRN3Thki
-         MG89MXYt/cryTkSCqIpZpIixc+xgxNKlurJjUz4DeKw9pVzPOS+0bemzwDqK70o+3p
-         oUlo8oQ+A0bFLqkGchrWweki+mv1qrBwoB9W9WNC+VDNf4CnkN66zBweV7A7ppc2CK
-         Fz1eScBwWK59Q==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9UcCWVMyEZi9; Fri, 25 Sep 2020 11:30:06 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id BA4592DF9E3;
-        Fri, 25 Sep 2020 11:30:06 -0400 (EDT)
-Date:   Fri, 25 Sep 2020 11:30:06 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     rostedt <rostedt@goodmis.org>
-Cc:     paulmck <paulmck@kernel.org>,
-        Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        linux-mm <linux-mm@kvack.org>, Ingo Molnar <mingo@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Message-ID: <965650354.69699.1601047806662.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200925111415.60f5334c@oasis.local.home>
-References: <20200924170928.466191266@goodmis.org> <20200924153517.73f5f257@oasis.local.home> <221547373.69067.1600977935633.JavaMail.zimbra@efficios.com> <20200924161328.760f5e79@oasis.local.home> <1430794518.69084.1600979254425.JavaMail.zimbra@efficios.com> <20200924163331.0080b943@oasis.local.home> <176393901.69671.1601044916547.JavaMail.zimbra@efficios.com> <20200925111415.60f5334c@oasis.local.home>
-Subject: Re: [PATCH 1/2] tracepoints: Add helper to test if tracepoint is
- enabled in a header
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3965 (ZimbraWebClient - FF80 (Linux)/8.8.15_GA_3963)
-Thread-Topic: tracepoints: Add helper to test if tracepoint is enabled in a header
-Thread-Index: h4JYdWJ6WuvcLRqJKfgha1TFdJNSUQ==
+        Fri, 25 Sep 2020 11:55:06 -0400
+X-Greylist: delayed 15158 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 11:55:05 EDT
+Received: from imperialcapgroup.com (unknown [185.236.203.204])
+        by host.imperialcapgroup.com (Postfix) with ESMTPA id DFF75BDDDA
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:13:31 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.imperialcapgroup.com DFF75BDDDA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=imperialcapgroup.com; s=default; t=1601003612;
+        bh=6CXuz3tZVwV0sLbV3HksYvK1Xzbh6nLYCrrWqAmLkHM=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=AOlbSzbkEYzCekzS0cHYuLg0EQK3ffPBpr938APGKGFgeL9Pixw1SCHEimlW7Vym8
+         QYriTtUHXc/b7B4Og8B4IiyQyUADNV3BWDprd7MvJYhqAZptGEyp2FRTvXDgtV/0fG
+         dhbp6rDRPBj+b9UqNegIQIP8gB+VEEVC4OL47xzo=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.imperialcapgroup.com DFF75BDDDA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=imperialcapgroup.com; s=default; t=1601003612;
+        bh=6CXuz3tZVwV0sLbV3HksYvK1Xzbh6nLYCrrWqAmLkHM=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=AOlbSzbkEYzCekzS0cHYuLg0EQK3ffPBpr938APGKGFgeL9Pixw1SCHEimlW7Vym8
+         QYriTtUHXc/b7B4Og8B4IiyQyUADNV3BWDprd7MvJYhqAZptGEyp2FRTvXDgtV/0fG
+         dhbp6rDRPBj+b9UqNegIQIP8gB+VEEVC4OL47xzo=
+Reply-To: laghoulli22@secsuremail.com
+From:   L A <laghoulli299@imperialcapgroup.com>
+To:     linux-kernel@vger.kernel.org
+Subject: Co-Operation Required
+Date:   24 Sep 2020 20:13:33 -0700
+Message-ID: <20200924201333.E27F4426406BE916@imperialcapgroup.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Sep 25, 2020, at 11:14 AM, rostedt rostedt@goodmis.org wrote:
+Hello there,
 
-> On Fri, 25 Sep 2020 10:41:56 -0400 (EDT)
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> 
->> With the current dependencies of tracepoint.h, I would argue that we should
->> only do the trampoline work-around for cases where there is an unavoidable
->> circular dependency, like the case of msr.h. For other headers which don't
->> have circular dependency issues with tracepoint.h, we should use the usual
->> tracepoint instrumentation because not having the trampoline provides better
->> tracing (on) speed and reduces (slightly) code size.
-> 
-> Well, for now, I'm going to add the helper function and have the header
-> use cases use that.
-> 
-> A while back ago I had patches that moves the DO_TRACE() work into a
-> separate function and with that we probably could have let all
-> tracepoints be in headers (as they would all just do a function call to
-> the trace algorithm that does the rest of the work). But you balked at
-> that because of the added overhead with tracing on.
-> 
-> Anyway, I don't see any issues with the current patch set as is
-> (besides the documentation fix, which I already updated locally). And
-> will add this to my queue for linux-next.
+I am Laghouili Abdellatif. I am contacting you because I have a=20
+proposal that I think may be interested in. I represent the=20
+interest of my brother in-law who was a minister in the Syrian=20
+Government. As you probably know, there is a lot of crisis going=20
+on currently in Syria and my brother in-law has fallen out with=20
+the ruling Junta and the president because of his foreign=20
+policies and the senseless war and killings that has been going=20
+on for a while. Everybody in Syria is fed up and want a change=20
+but the president is too powerfull and he simply kills anyone=20
+that tries to oppose him. My brother in-law belives that he is at=20
+risk and he is now very scared for the safety of his family=20
+especially his kids. In order to ensure that his family is taken=20
+care of and protected incase anything happens to him, he has=20
+asked me to help him find a foreign investor who can help him=20
+accommodate and invest 100 MUSD privately that he has secured in=20
+Europe. He wants these funds safely invested so that the future=20
+and safety of his family can be secured.
 
-The only thing I would change in the documentation is to word this as
-"here is a trampoline trick which can be used to work-around rare cases
-of tracepoint header circular dependency issues" rather than "always use
-this when instrumenting a header".
+I am contacting you with the hope that you will be interested in=20
+helping us. We need your help to accommodate the funds in the=20
+banking system in your country and also invest it in lucrative=20
+projects that will yeild good profits. We will handle all the=20
+logistics involved in the movement of the funds to you. The funds=20
+is already in Europe so you have nothing to worry about because=20
+this transaction will be executed in a legal way. My brother in-=20
+law has also promised to compensate you for your help. He wants=20
+this to be done discretely so I will be acting as his eyes and=20
+ears during the course of this transaction.
 
-Thanks,
+If this proposal interests you, please kindly respond so that I=20
+can give you more details.
 
-Mathieu
+Regards,
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+Laghouili.
