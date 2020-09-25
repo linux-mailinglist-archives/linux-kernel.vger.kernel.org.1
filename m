@@ -2,177 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FA9278EA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC880278E7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 18:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729594AbgIYQcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 12:32:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44778 "EHLO
+        id S1729455AbgIYQaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 12:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728353AbgIYQcr (ORCPT
+        with ESMTP id S1728654AbgIYQaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:32:47 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE724C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:32:46 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id w3so2984137ljo.5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 09:32:46 -0700 (PDT)
+        Fri, 25 Sep 2020 12:30:52 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D00CC0613CE;
+        Fri, 25 Sep 2020 09:30:52 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id t7so2094666pjd.3;
+        Fri, 25 Sep 2020 09:30:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N7Y2NxbJS3XaGC9sgo1yXg9m9IZ/tMtygnY8Qpvgbdk=;
-        b=HtqbdvGNGYFb27msDE4YKh07h4/L/zMkaBd13m3ZEzwtKVwpaYkPJGLXict34alEJs
-         f7c7f6OuTvjvC0IbqAy+iwi26FgUqLb2+718LvTBzSp/6WCRay+QPXSAmFcVra6gaS3y
-         pp5eHyWuKD1EH7+DXyLzlU7mEoLxyiMISwcDZlq3Mb18HemJaZ8iXHrq1hA7Wiqd7INT
-         E/tjxAvvzK/GP7yR+aauDpcGZeIAeSDdp3oBZ6tR1QMU9rCAWPPxAQSJHx5NiWxQk/F7
-         Pqb+PD94JkPS0Pgf0d/rgTzx8qsCad2LozX7jkgsmASqzndA7ASfSMOfQKRplYRxBWe1
-         zssQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=TjJK6XN5jlS9wkc7N97gyRXrkYGGb2wNNiD+ZxlnoDY=;
+        b=Ytu1IT20bjPDOrxeMxT5l67LMIda5L5usR+fLSz8zC/ivopJkNvACGbl8N6Wx0/IwV
+         qGa3dIY5oUQFKYGL43bmVCEIir1FD9+TADuLMOFkrOhcbD4utnlupFIPhh9vDYQf1doP
+         AaiRwttnDGpJVCWzqUsWicV51z9GU9oX+IXnCWL4btbQCNMwwk/ULht+Zy86Spi1xmLn
+         3R8bW7wzSXMcS3niDevXzeijrzotWpfLWvctPqyk2RohEFas/IZawJVF0IDOXFsNVU+V
+         Q/Od4zBV3N8wJF7+GRVWNLLBuQ593w9doO1vIo988UooNCggYD66TxdTI1hH58ERW6lP
+         Ny4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N7Y2NxbJS3XaGC9sgo1yXg9m9IZ/tMtygnY8Qpvgbdk=;
-        b=KuwOp1us2+1XGu1Li+BrycbJp4IdN/DUxcX9FmRrSgN7Qi3p5B0IPWXEKiDD52k6Ur
-         xw8NpkDjDWPont+IuYMGc/ISjxnVGxQS6UFNrSlNWFP04QsJVNauFZNOZ7my8zG1iKA/
-         x7l8zSb4eCbkDBFSuXvW/OCHQvvNE0wCjmVRlm6c28NxSnC644lcLgW5DDwiGdUoI72d
-         Oc8TTe0mH+hFbN7JNsbMV1flMcmvWMbAJQDKzDiK52TvdTy4STSglYiVxKJz21xV+EH9
-         64HXlzpexknXhPtuiIlfYqOy8QiBEuuiXJ2IDTPSX6tP+KdDBXafS1Li/1DPST3+GIry
-         mkfA==
-X-Gm-Message-State: AOAM531rQpic8wu7zrHmqNdsaKTLHrUNH9nqKbKvzxHAlSSJo1ENTckJ
-        piY4wUF2rdlLQzU0+YmmKNnVrAvSstPqaHPji7lgUA==
-X-Google-Smtp-Source: ABdhPJxrc+nBOhBIH9eti19424JG5sP6NdATx0Rv3Xt4ovrLwrXj2OiEUhfVldoHf7vNXg4T6ogB1SuFoDnxJXbtAXE=
-X-Received: by 2002:a2e:b4f5:: with SMTP id s21mr1726840ljm.270.1601051564538;
- Fri, 25 Sep 2020 09:32:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200915073303.GA754106@T590> <20200915224541.GB38283@mit.edu>
- <20200915230941.GA791425@T590> <20200916202026.GC38283@mit.edu>
- <20200917022051.GA1004828@T590> <20200917143012.GF38283@mit.edu>
- <20200924005901.GB1806978@T590> <20200924143345.GD482521@mit.edu>
- <20200925011311.GJ482521@mit.edu> <20200925073145.GC2388140@T590> <20200925161918.GD2388140@T590>
-In-Reply-To: <20200925161918.GD2388140@T590>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 25 Sep 2020 09:32:33 -0700
-Message-ID: <CALvZod6QUvmD_3xf0FM4qt=9YT=nwuMV3ZqFayND+dUp9oQUsQ@mail.gmail.com>
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>, Jens Axboe <axboe@kernel.dk>,
-        linux-ext4@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>, Roman Gushchin <guro@fb.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=TjJK6XN5jlS9wkc7N97gyRXrkYGGb2wNNiD+ZxlnoDY=;
+        b=Y8iuOwOQjWrHMrbASVnfVnxpIV3aA7IHvrW9+htVwxzW5NCVEoeRYcQw5IJC2uwZ84
+         cHwfhp3I7pSmjIR+Kd1yaDNgHqc2EUHeCDGceJj243Lb1RVHprCyidnKQmlGTBiQzjo/
+         ldsmsgPWKd5y0RIzJJpzUxwX61DfUYUf7cSimQXEjPkqQYPGfFOGuC4gj6FsWtbCKJs+
+         88K4s75PKPzqYDt0n468QhqcKI4RqlP7JHj2ehob9x4qtH+dAK+PC8c0jofxRJ827XsU
+         JVg45FZf3CzSlMdHNjlEhsiSGLs2Vfmdn9X6dEMfjAIx7MP60E6l36GF0x0pQ8lqXVB8
+         KX2w==
+X-Gm-Message-State: AOAM532LHNiez/4vmZ82OgP+blQuZ/gXcaobSx5QFB7Rd+GqUdQuTbrE
+        dqF9ZjoEN2XrJbPgREpDAJ8=
+X-Google-Smtp-Source: ABdhPJw9WV8IFgqFgR7/YTd9vFzMCOePTuSLuRR93fCwMzasZmyOHxVnFzGm952RNmAwPYx7+Wd0gA==
+X-Received: by 2002:a17:90b:f0b:: with SMTP id br11mr380158pjb.191.1601051451563;
+        Fri, 25 Sep 2020 09:30:51 -0700 (PDT)
+Received: from jacob-builder.jf.intel.com (jfdmzpr04-ext.jf.intel.com. [134.134.137.73])
+        by smtp.gmail.com with ESMTPSA id j19sm3197039pfe.108.2020.09.25.09.30.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 09:30:50 -0700 (PDT)
+From:   Jacob Pan <jacob.pan.linux@gmail.com>
+X-Google-Original-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     linux-api@vger.kernel.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Yi Sun <yi.y.sun@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH v12 0/6] IOMMU user API enhancement
+Date:   Fri, 25 Sep 2020 09:32:41 -0700
+Message-Id: <1601051567-54787-1-git-send-email-jacob.jun.pan@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 9:19 AM Ming Lei <ming.lei@redhat.com> wrote:
->
-> On Fri, Sep 25, 2020 at 03:31:45PM +0800, Ming Lei wrote:
-> > On Thu, Sep 24, 2020 at 09:13:11PM -0400, Theodore Y. Ts'o wrote:
-> > > On Thu, Sep 24, 2020 at 10:33:45AM -0400, Theodore Y. Ts'o wrote:
-> > > > HOWEVER, thanks to a hint from a colleague at $WORK, and realizing
-> > > > that one of the stack traces had virtio balloon in the trace, I
-> > > > realized that when I switched the GCE VM type from e1-standard-2 to
-> > > > n1-standard-2 (where e1 VM's are cheaper because they use
-> > > > virtio-balloon to better manage host OS memory utilization), problem
-> > > > has become, much, *much* rarer (and possibly has gone away, although
-> > > > I'm going to want to run a lot more tests before I say that
-> > > > conclusively) on my test setup.  At the very least, using an n1 VM
-> > > > (which doesn't have virtio-balloon enabled in the hypervisor) is
-> > > > enough to unblock ext4 development.
-> > >
-> > > .... and I spoke too soon.  A number of runs using -rc6 are now
-> > > failing even with the n1-standard-2 VM, so virtio-ballon may not be an
-> > > indicator.
-> > >
-> > > This is why debugging this is frustrating; it is very much a heisenbug
-> > > --- although 5.8 seems to work completely reliably, as does commits
-> > > before 37f4a24c2469.  Anything after that point will show random
-> > > failures.  :-(
-> >
-> > It does not make sense to mention 37f4a24c2469, which is reverted in
-> > 4e2f62e566b5. Later the patch in 37f4a24c2469 is fixed and re-commited
-> > as 568f27006577.
-> >
-> > However, I can _not_ reproduce the issue by running the same test on
-> > kernel built from 568f27006577 directly.
-> >
-> > Also you have confirmed that the issue can't be fixed after reverting
-> > 568f27006577 against v5.9-rc4.
-> >
-> > Looks the real issue(slab list corruption) should be introduced between
-> > 568f27006577 and v5.9-rc4.
->
-> git bisect shows the first bad commit:
->
->         [10befea91b61c4e2c2d1df06a2e978d182fcf792] mm: memcg/slab: use a single set of
->                 kmem_caches for all allocations
->
-> And I have double checked that the above commit is really the first bad
-> commit for the list corruption issue of 'list_del corruption, ffffe1c241b00408->next
-> is LIST_POISON1 (dead000000000100)', see the detailed stack trace and
-> kernel oops log in the following link:
->
->         https://lore.kernel.org/lkml/20200916202026.GC38283@mit.edu/
+IOMMU user API header was introduced to support nested DMA translation and
+related fault handling. The current UAPI data structures consist of three
+areas that cover the interactions between host kernel and guest:
+ - fault handling
+ - cache invalidation
+ - bind guest page tables, i.e. guest PASID
 
-The failure signature is similar to
-https://lore.kernel.org/lkml/20200901075321.GL4299@shao2-debian/
+Future extensions are likely to support more architectures and vIOMMU features.
 
->
-> And the kernel config is the one(without KASAN) used by Theodore in GCE VM, see
-> the following link:
->
->         https://lore.kernel.org/lkml/20200917143012.GF38283@mit.edu/
->
-> The reproducer is xfstests generic/038. In my setting, test device is virtio-scsi, and
-> scratch device is virtio-blk.
->
->
-> [1] git bisect log:
->
-> git bisect start
-> # good: [568f2700657794b8258e72983ba508793a658942] blk-mq: centralise related handling into blk_mq_get_driver_tag
-> git bisect good 568f2700657794b8258e72983ba508793a658942
-> # bad: [f4d51dffc6c01a9e94650d95ce0104964f8ae822] Linux 5.9-rc4
-> git bisect bad f4d51dffc6c01a9e94650d95ce0104964f8ae822
-> # good: [8186749621ed6b8fc42644c399e8c755a2b6f630] Merge tag 'drm-next-2020-08-06' of git://anongit.freedesktop.org/drm/drm
-> git bisect good 8186749621ed6b8fc42644c399e8c755a2b6f630
-> # good: [60e76bb8a4e4c5398ea9053535e1fd0c9d6bb06e] Merge tag 'm68knommu-for-v5.9' of git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu
-> git bisect good 60e76bb8a4e4c5398ea9053535e1fd0c9d6bb06e
-> # bad: [57b077939287835b9396a1c3b40d35609cf2fcb8] Merge tag 'for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost
-> git bisect bad 57b077939287835b9396a1c3b40d35609cf2fcb8
-> # bad: [0f43283be7fec4a76cd4ed50dc37db30719bde05] Merge branch 'work.fdpic' of git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs
-> git bisect bad 0f43283be7fec4a76cd4ed50dc37db30719bde05
-> # good: [5631c5e0eb9035d92ceb20fcd9cdb7779a3f5cc7] Merge tag 'xfs-5.9-merge-7' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
-> git bisect good 5631c5e0eb9035d92ceb20fcd9cdb7779a3f5cc7
-> # good: [e3083c3f369700cd1eec3de93b8d8ec0918ff778] media: cafe-driver: use generic power management
-> git bisect good e3083c3f369700cd1eec3de93b8d8ec0918ff778
-> # bad: [42742d9bde2a8e11ec932cb5821f720a40a7c2a9] mm: thp: replace HTTP links with HTTPS ones
-> git bisect bad 42742d9bde2a8e11ec932cb5821f720a40a7c2a9
-> # bad: [10befea91b61c4e2c2d1df06a2e978d182fcf792] mm: memcg/slab: use a single set of kmem_caches for all allocations
-> git bisect bad 10befea91b61c4e2c2d1df06a2e978d182fcf792
-> # good: [cfbe1636c3585c1e032bfac512fb8be903fbc913] mm, kcsan: instrument SLAB/SLUB free with "ASSERT_EXCLUSIVE_ACCESS"
-> git bisect good cfbe1636c3585c1e032bfac512fb8be903fbc913
-> # good: [0f190a7ab78878f9e6c6930fc0f5f92c1250b57d] mm/page_io.c: use blk_io_schedule() for avoiding task hung in sync io
-> git bisect good 0f190a7ab78878f9e6c6930fc0f5f92c1250b57d
-> # good: [286e04b8ed7a04279ae277f0f024430246ea5eec] mm: memcg/slab: allocate obj_cgroups for non-root slab pages
-> git bisect good 286e04b8ed7a04279ae277f0f024430246ea5eec
-> # good: [9855609bde03e2472b99a95e869d29ee1e78a751] mm: memcg/slab: use a single set of kmem_caches for all accounted allocations
-> git bisect good 9855609bde03e2472b99a95e869d29ee1e78a751
-> # good: [272911a4ad18c48f8bc449a5db945a54987dd687] mm: memcg/slab: remove memcg_kmem_get_cache()
-> git bisect good 272911a4ad18c48f8bc449a5db945a54987dd687
-> # good: [15999eef7f25e2ea6a1c33f026166f472c5714e9] mm: memcg/slab: remove redundant check in memcg_accumulate_slabinfo()
-> git bisect good 15999eef7f25e2ea6a1c33f026166f472c5714e9
-> # first bad commit: [10befea91b61c4e2c2d1df06a2e978d182fcf792] mm: memcg/slab: use a single set of kmem_caches for all allocations
->
->
->
-> Thanks,
-> Ming
->
+In the previous discussion, using user-filled data size and feature flags is
+made a preferred approach over a unified version number.
+https://lkml.org/lkml/2020/1/29/45
+
+In addition to introduce argsz field to data structures, this patchset is also
+trying to document the UAPI design, usage, and extension rules. VT-d driver
+changes to utilize the new argsz field is included, VFIO usage is to follow.
+
+This set is available at:
+https://github.com/jacobpan/linux.git vsva_v5.9_uapi_v12
+
+Thanks,
+
+Jacob
+
+
+Changelog:
+v12
+	- Removed a redundant check in cache invalidate API
+v11
+	- Use #define instead of enum in PASID data format, squashed change
+	  into "iommu/uapi: Handle data and argsz filled by users"
+	- Remove alloc/free from documentation per Yi's comment. IOMMU UAPI
+	  does not perform IOASID alloc/free.
+v10
+	- Documentation grammar fixes based on Randy's review
+v9
+	- Directly pass PASID value to iommu_sva_unbind_gpasid() without
+	  the superfluous data in struct iommu_gpasid_bind_data.
+v8
+	- Rebased to v5.9-rc2
+	- Addressed review comments from Eric Auger
+	  1. added a check for the unused vendor flags
+	  2. commit message improvements
+v7
+	- Added PASID data format enum for range checking
+	- Tidy up based on reviews from Alex W.
+	- Removed doc section for vIOMMU fault handling
+v6
+	- Renamed all UAPI functions with iommu_uapi_ prefix
+	- Replaced argsz maxsz checking with flag specific size checks
+	- Documentation improvements based on suggestions by Eric Auger
+	  Replaced example code with a pointer to the actual code
+	- Added more checks for illegal flags combinations
+	- Added doc file to MAINTAINERS
+v5
+	- Addjusted paddings in UAPI data to be 8 byte aligned
+	- Do not clobber argsz in IOMMU core before passing on to vendor driver
+	- Removed pr_warn_ for invalid UAPI data check, just return -EINVAL
+	- Clarified VFIO responsibility in UAPI data handling
+	- Use iommu_uapi prefix to differentiate APIs has in-kernel caller
+	- Added comment for unchecked flags of invalidation granularity
+	- Added example in doc to show vendor data checking
+
+v4
+	- Added checks of UAPI data for reserved fields, version, and flags.
+	- Removed version check from vendor driver (vt-d)
+	- Relaxed argsz check to match the UAPI struct size instead of variable
+	  union size
+	- Updated documentation
+
+v3:
+	- Rewrote backward compatibility rule to support existing code
+	  re-compiled with newer kernel UAPI header that runs on older
+	  kernel. Based on review comment from Alex W.
+	  https://lore.kernel.org/linux-iommu/20200611094741.6d118fa8@w520.home/
+	- Take user pointer directly in UAPI functions. Perform argsz check
+	  and copy_from_user() in IOMMU driver. Eliminate the need for
+	  VFIO or other upper layer to parse IOMMU data.
+	- Create wrapper function for in-kernel users of UAPI functions
+v2:
+	- Removed unified API version and helper
+	- Introduced argsz for each UAPI data
+	- Introduced UAPI doc
+
+
+Jacob Pan (6):
+  docs: IOMMU user API
+  iommu/uapi: Add argsz for user filled data
+  iommu/uapi: Use named union for user data
+  iommu/uapi: Rename uapi functions
+  iommu/uapi: Handle data and argsz filled by users
+  iommu/vt-d: Check UAPI data processed by IOMMU core
+
+ Documentation/userspace-api/iommu.rst | 209 ++++++++++++++++++++++++++++++++++
+ MAINTAINERS                           |   1 +
+ drivers/iommu/intel/iommu.c           |  25 ++--
+ drivers/iommu/intel/svm.c             |  13 ++-
+ drivers/iommu/iommu.c                 | 196 +++++++++++++++++++++++++++++--
+ include/linux/iommu.h                 |  35 ++++--
+ include/uapi/linux/iommu.h            |  18 ++-
+ 7 files changed, 456 insertions(+), 41 deletions(-)
+ create mode 100644 Documentation/userspace-api/iommu.rst
+
+-- 
+2.7.4
+
