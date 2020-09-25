@@ -2,186 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E281277FE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90305277FE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 07:23:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727117AbgIYFVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 01:21:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726983AbgIYFVY (ORCPT
+        id S1727119AbgIYFXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 01:23:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44893 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726983AbgIYFXb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 01:21:24 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C89C0613CE;
-        Thu, 24 Sep 2020 22:21:23 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4ByKyR3z20z9sSn;
-        Fri, 25 Sep 2020 15:21:19 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1601011281;
-        bh=+H5nUWljJRBaNENXePIudCpNjngfXPop9okM/POvnc4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=gQXIYXiWEeA3zErWTueFoLQqlvh+2YS3L+xrz08UMktGbsxEBJn4yLEmdqU+bPtFx
-         AkgYnA8Zmgr/eW5oAdJ0WU7TjN6qeUe3Xi0DhigdUuaSsPDznecy6QS175Xg0fzpBZ
-         s/sOrKqslZthgjDUleZCeudbuBcQpOt67UvoMvxZaJz9ppDnmyQWd6YFvBsMMsyLL7
-         BNn2ahGAY+v3/EZMPlXRF9YlDGXsOfjc4lxe3B/WBerBPJBbcc0OkHGl2DHpyfD58F
-         ek2g7DRbJ0pMB/PEGE48R12+rmYoaIEjdoJxDpLqKk1Pe+awVct9LI5iL0PzhNF7HI
-         NWAC8lQRBzLDA==
-Date:   Fri, 25 Sep 2020 15:21:18 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Jon Derrick <jonathan.derrick@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linux-next: manual merge of the tip tree with the pci tree
-Message-ID: <20200925152118.2afb794b@canb.auug.org.au>
+        Fri, 25 Sep 2020 01:23:31 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601011409;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qeVZ/oNWYrQPapNzlO3BHP5CuXNC3u8y+M6g9AfJmiM=;
+        b=ZJERDcnHhftLlphUCzbgfO2qhJUvV8S+2Cp2ZWViDOQ6KmrWSLCIV6UR4xXI5p6oM5JKam
+        tcMNk3/Od035L4Bq7d2rchJyO7TEAbNzgrXtSEGuYDvR0k+QLWHffQO2WvIyiQwo90CBSf
+        LIxzwKL9j9GySNxh61gbX1gk2u9h770=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-131-FW3B2X4bMgCBO7fufZsn8w-1; Fri, 25 Sep 2020 01:23:27 -0400
+X-MC-Unique: FW3B2X4bMgCBO7fufZsn8w-1
+Received: by mail-ot1-f70.google.com with SMTP id d10so450911otf.17
+        for <linux-kernel@vger.kernel.org>; Thu, 24 Sep 2020 22:23:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qeVZ/oNWYrQPapNzlO3BHP5CuXNC3u8y+M6g9AfJmiM=;
+        b=pISehOsdbPYxkUrQnDbjIjZfQnwgI+vzLZ0C85nJ5Zwq3cf0i9y9NS7n/PO+02E6XJ
+         m3ooZaIu1qaCxm1hSNEdr5BOqTuHEexdS3NZEnHla4AaCsbmcWBic07O5qZrID5GFIVt
+         8HeFtw4r1DD0ttN086PKsI5oz70aQ/FM/+Z8nW+aVRlFlIVuWEtDbqe0yG/JO62fVML7
+         KLVLmyxdsBRFKNzJ4q1bbh0FSAZ9Y3cvRscoRaLFO8hEWf10gaZ4aIgXuVOcG73kfZjO
+         lMiGZ2apsXbpzbIsgoRrvVNqEsB2GbKhA2+sKcw0o4pJwM2kJUZvQ2amSMrzr+Pholu6
+         Bq0g==
+X-Gm-Message-State: AOAM532sg/QoRuD6ldLjU9mwprbu6X8+8Es7zFk6m3xpz88mlkdIHdTG
+        jRWpXEAtkB429gUjFJrBaSRwbXjxREfhpjngWT4ERwe4u0poh+ZChm1OYG9cutmQdVJHL+kJMCB
+        tNhZVYhdnmRXNoe6yHdjmeeZHwnw7/ksR4KUnaP2E
+X-Received: by 2002:aca:dc8b:: with SMTP id t133mr618402oig.158.1601011406272;
+        Thu, 24 Sep 2020 22:23:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy13wCPB9+BIoLDsXjH5tJgof8j8NkbNBYAKVJlMOIZ5hpPK5IcdaTrr3cklV3+pKnxu4dYBBpwixHjCsoVvl4=
+X-Received: by 2002:aca:dc8b:: with SMTP id t133mr618387oig.158.1601011405935;
+ Thu, 24 Sep 2020 22:23:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+4mRwibApBwnnRuTcECn04g";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20200924124647.300080-1-egorenar@linux.ibm.com>
+In-Reply-To: <20200924124647.300080-1-egorenar@linux.ibm.com>
+From:   Bhupesh Sharma <bhsharma@redhat.com>
+Date:   Fri, 25 Sep 2020 10:53:14 +0530
+Message-ID: <CACi5LpN9sRz12EWJrWQOQPLbOPEboDikb7oG1tG=XZV+sOWLgA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] kdump: append uts_namespace.name offset to VMCOREINFO
+To:     Alexander Egorenkov <egorenar@linux.ibm.com>
+Cc:     RuiRui Yang <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        kexec mailing list <kexec@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ktkhai@virtuozzo.com, Eric Biederman <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        christian.brauner@ubuntu.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+4mRwibApBwnnRuTcECn04g
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Alexander,
 
-Hi all,
+On Thu, Sep 24, 2020 at 6:18 PM Alexander Egorenkov
+<egorenar@linux.ibm.com> wrote:
+>
+> The offset of the field 'init_uts_ns.name' has changed
+> since
+>
+> commit 9a56493f6942c0e2df1579986128721da96e00d8
+> Author: Kirill Tkhai <ktkhai@virtuozzo.com>
+> Date:   Mon Aug 3 13:16:21 2020 +0300
+>
+>     uts: Use generic ns_common::count
 
-Today's linux-next merge of the tip tree got a conflict in:
+A minor nitpick:
+You can add the following line to your .gitconfig:
+one = show -s --pretty='format:%h (\"%s\")'
 
-  drivers/pci/controller/vmd.c
+running a command '$ git one <SHA-ID>' will then give you an
+abbreviated form to be used while referring to existing git commits in
+the log message. For e.g. in this case, the output would be something
+like:
 
-between commit:
+$ git one 9a56493f6942c0e2df1579986128721da96e00d8
+9a56493f6942 ("uts: Use generic ns_common::count")
 
-  42443f036042 ("PCI: vmd: Create IRQ Domain configuration helper")
+Then you can use '9a56493f6942 ("uts: Use generic ns_common::count")'
+to refer to an existing upstream patch in the log message.
 
-from the pci tree and commit:
+But I think this can be fixed while applying the patch (if there are
+no further revisions required).
 
-  585dfe8abc44 ("PCI: vmd: Dont abuse vector irqomain as parent")
+> Link: https://lore.kernel.org/r/159644978167.604812.1773586504374412107.stgit@localhost.localdomain
+>
+> Make the offset of the field 'uts_namespace.name' available
+> in VMCOREINFO because tools like 'crash-utility' and
+> 'makedumpfile' must be able to read it from crash dumps.
+>
+> Signed-off-by: Alexander Egorenkov <egorenar@linux.ibm.com>
+> ---
+>  kernel/crash_core.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index 106e4500fd53..173fdc261882 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -447,6 +447,7 @@ static int __init crash_save_vmcoreinfo_init(void)
+>         VMCOREINFO_PAGESIZE(PAGE_SIZE);
+>
+>         VMCOREINFO_SYMBOL(init_uts_ns);
+> +       VMCOREINFO_OFFSET(uts_namespace, name);
+>         VMCOREINFO_SYMBOL(node_online_map);
+>  #ifdef CONFIG_MMU
+>         VMCOREINFO_SYMBOL_ARRAY(swapper_pg_dir);
+> --
+> 2.26.2
 
-from the tip tree.
+Thanks for making the changes we discussed in the v1 review. Otherwise
+the patch looks fine to me, so:
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+Reviewed-by: Bhupesh Sharma <bhsharma@redhat.com>
 
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/pci/controller/vmd.c
-index 3c4418cbde1c,aa1b12bac9a1..000000000000
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@@ -304,50 -298,6 +304,50 @@@ static struct msi_domain_info vmd_msi_d
-  	.chip		=3D &vmd_msi_controller,
-  };
- =20
- +static void vmd_enable_msi_remapping(struct vmd_dev *vmd, bool enable)
- +{
- +	u16 reg;
- +
- +	pci_read_config_word(vmd->dev, PCI_REG_VMCONFIG, &reg);
- +	reg =3D enable ? (reg & ~0x2) : (reg | 0x2);
- +	pci_write_config_word(vmd->dev, PCI_REG_VMCONFIG, reg);
- +}
- +
- +static int vmd_create_irq_domain(struct vmd_dev *vmd)
- +{
- +	struct fwnode_handle *fn;
- +
- +	fn =3D irq_domain_alloc_named_id_fwnode("VMD-MSI", vmd->sysdata.domain);
- +	if (!fn)
- +		return -ENODEV;
- +
- +	vmd->irq_domain =3D pci_msi_create_irq_domain(fn, &vmd_msi_domain_info,
-- 						    x86_vector_domain);
-++						    NULL);
- +	if (!vmd->irq_domain) {
- +		irq_domain_free_fwnode(fn);
- +		return -ENODEV;
- +	}
- +
- +	return 0;
- +}
- +
- +static void vmd_remove_irq_domain(struct vmd_dev *vmd)
- +{
- +	/*
- +	 * Some production BIOS won't enable remapping between soft reboots.
- +	 * Ensure remapping is restored before unloading the driver
- +	 */
- +	if (!vmd->msix_count)
- +		vmd_enable_msi_remapping(vmd, true);
- +
- +	if (vmd->irq_domain) {
- +		struct fwnode_handle *fn =3D vmd->irq_domain->fwnode;
- +
- +		irq_domain_remove(vmd->irq_domain);
- +		irq_domain_free_fwnode(fn);
- +	}
- +}
- +
-  static char __iomem *vmd_cfg_addr(struct vmd_dev *vmd, struct pci_bus *bu=
-s,
-  				  unsigned int devfn, int reg, int len)
-  {
-@@@ -717,12 -568,24 +717,18 @@@ static int vmd_enable_domain(struct vmd
- =20
-  	sd->node =3D pcibus_to_node(vmd->dev->bus);
- =20
- -	fn =3D irq_domain_alloc_named_id_fwnode("VMD-MSI", vmd->sysdata.domain);
- -	if (!fn)
- -		return -ENODEV;
- -
- -	vmd->irq_domain =3D pci_msi_create_irq_domain(fn, &vmd_msi_domain_info,
- -						    NULL);
- -
- -	if (!vmd->irq_domain) {
- -		irq_domain_free_fwnode(fn);
- -		return -ENODEV;
- +	if (vmd->msix_count) {
- +		ret =3D vmd_create_irq_domain(vmd);
- +		if (ret)
- +			return ret;
-  	}
- =20
-+ 	/*
-+ 	 * Override the irq domain bus token so the domain can be distinguished
-+ 	 * from a regular PCI/MSI domain.
-+ 	 */
-+ 	irq_domain_update_bus_token(vmd->irq_domain, DOMAIN_BUS_VMD_MSI);
-+=20
-  	pci_add_resource(&resources, &vmd->resources[0]);
-  	pci_add_resource_offset(&resources, &vmd->resources[1], offset[0]);
-  	pci_add_resource_offset(&resources, &vmd->resources[2], offset[1]);
-
---Sig_/+4mRwibApBwnnRuTcECn04g
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9tfk4ACgkQAVBC80lX
-0Gw/6wgAmMONqa451+uteXnnR03Cmqz5H3I6/O/qtDk+VKT2UeOx5IzLmUc47ksl
-K3tc5fc935hZfzBsl/4JkBeXQt+t2pGTc7WzJH+fLqzgBEs200lz+8KZHHjn6al2
-dgW5o5io5enuGQ3EungELQhURdIA7SDHa74vnsCbEjFtUwd1vqr0sNrLNgSPU1xq
-pALm0mGI7aXE6eYN/2wQvzrUQAYtQ9wLSYvKJS6TkLBRLFd6IfeuX/aEwqYlVlEi
-hPt0PKSjrN+hWqmKYDl3274t4AirAB3WFyfCHtBHz4FzT3YI534lbz1oRMqyBO4l
-HVOtwotGf0troXOm2PGzH6/A5beiGQ==
-=u2aK
------END PGP SIGNATURE-----
-
---Sig_/+4mRwibApBwnnRuTcECn04g--
