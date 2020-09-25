@@ -2,121 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3D5278C58
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A6A4278C65
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 17:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729167AbgIYPR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 11:17:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52162 "EHLO mail.kernel.org"
+        id S1729188AbgIYPUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 11:20:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728818AbgIYPR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 11:17:59 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1729002AbgIYPUY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 11:20:24 -0400
+Received: from localhost.localdomain (unknown [49.65.245.23])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B44E920878;
-        Fri, 25 Sep 2020 15:17:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2E6920878;
+        Fri, 25 Sep 2020 15:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601047078;
-        bh=Memmat2QMSKm4nwC6E/N+LYsT2VSLAWg4jqrX9rOxRc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0I0jvTv72ihg9+bzMure3BX1lc+87CO5bL9392leVtXnedqMSe5ygE5G4jcX2w1qW
-         xoHSyqw+O8y4wGORU/iFtjKf17BUhMzTBzKdn1CSNW/QQG4RWwA0fbFWc2yeKlC8z5
-         AE3L4akyOt44u/YxCsUo0F4LAURd4D62LpCDsAXE=
-Date:   Fri, 25 Sep 2020 17:18:12 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Coly Li <colyli@suse.de>
-Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
-        netdev@vger.kernel.org, open-iscsi@googlegroups.com,
-        linux-scsi@vger.kernel.org, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
-        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Vlastimil Babka <vbabka@suse.com>, stable@vger.kernel.org
-Subject: Re: [PATCH v8 1/7] net: introduce helper sendpage_ok() in
- include/linux/net.h
-Message-ID: <20200925151812.GA3182427@kroah.com>
-References: <20200925150119.112016-1-colyli@suse.de>
- <20200925150119.112016-2-colyli@suse.de>
+        s=default; t=1601047223;
+        bh=Rgt+BCsL/KkkjWh67h04RmRvHL8oKTtmyN9/5r6atMk=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hOqrxJj5Obzg0ZU5+txEcT2yZGWeyxDoFafMpLkO/+iVH/m/IbE/2M3lZILid/53J
+         BWbwFDldm3t5e/aaZSbZIeu2I7P8GOLbAV0aWhNPmSvWMKgU805cQVWRsxGVnfyWtZ
+         3BhyuV0yDCkdig6njBZJlWvFQAuZ2nkGgB4yMsWo=
+From:   Chao Yu <chao@kernel.org>
+To:     jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, Chao Yu <yuchao0@huawei.com>
+Subject: [PATCH] f2fs: fix uninit-value in f2fs_lookup
+Date:   Fri, 25 Sep 2020 23:19:26 +0800
+Message-Id: <20200925151926.2658-1-chao@kernel.org>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925150119.112016-2-colyli@suse.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:01:13PM +0800, Coly Li wrote:
-> The original problem was from nvme-over-tcp code, who mistakenly uses
-> kernel_sendpage() to send pages allocated by __get_free_pages() without
-> __GFP_COMP flag. Such pages don't have refcount (page_count is 0) on
-> tail pages, sending them by kernel_sendpage() may trigger a kernel panic
-> from a corrupted kernel heap, because these pages are incorrectly freed
-> in network stack as page_count 0 pages.
-> 
-> This patch introduces a helper sendpage_ok(), it returns true if the
-> checking page,
-> - is not slab page: PageSlab(page) is false.
-> - has page refcount: page_count(page) is not zero
-> 
-> All drivers who want to send page to remote end by kernel_sendpage()
-> may use this helper to check whether the page is OK. If the helper does
-> not return true, the driver should try other non sendpage method (e.g.
-> sock_no_sendpage()) to handle the page.
-> 
-> Signed-off-by: Coly Li <colyli@suse.de>
-> Cc: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Hannes Reinecke <hare@suse.de>
-> Cc: Jan Kara <jack@suse.com>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>
-> Cc: Philipp Reisner <philipp.reisner@linbit.com>
-> Cc: Sagi Grimberg <sagi@grimberg.me>
-> Cc: Vlastimil Babka <vbabka@suse.com>
-> Cc: stable@vger.kernel.org
-> ---
->  include/linux/net.h | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/include/linux/net.h b/include/linux/net.h
-> index d48ff1180879..05db8690f67e 100644
-> --- a/include/linux/net.h
-> +++ b/include/linux/net.h
-> @@ -21,6 +21,7 @@
->  #include <linux/rcupdate.h>
->  #include <linux/once.h>
->  #include <linux/fs.h>
-> +#include <linux/mm.h>
->  #include <linux/sockptr.h>
->  
->  #include <uapi/linux/net.h>
-> @@ -286,6 +287,21 @@ do {									\
->  #define net_get_random_once_wait(buf, nbytes)			\
->  	get_random_once_wait((buf), (nbytes))
->  
-> +/*
-> + * E.g. XFS meta- & log-data is in slab pages, or bcache meta
-> + * data pages, or other high order pages allocated by
-> + * __get_free_pages() without __GFP_COMP, which have a page_count
-> + * of 0 and/or have PageSlab() set. We cannot use send_page for
-> + * those, as that does get_page(); put_page(); and would cause
-> + * either a VM_BUG directly, or __page_cache_release a page that
-> + * would actually still be referenced by someone, leading to some
-> + * obscure delayed Oops somewhere else.
-> + */
-> +static inline bool sendpage_ok(struct page *page)
-> +{
-> +	return  !PageSlab(page) && page_count(page) >= 1;
+From: Chao Yu <yuchao0@huawei.com>
 
-Do you have one extra ' ' after "return" there?
+As syzbot reported:
 
-And this feels like a mm thing, why put it in net.h and not mm.h?
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+ f2fs_lookup+0xe05/0x1a80 fs/f2fs/namei.c:503
+ lookup_open fs/namei.c:3082 [inline]
+ open_last_lookups fs/namei.c:3177 [inline]
+ path_openat+0x2729/0x6a90 fs/namei.c:3365
+ do_filp_open+0x2b8/0x710 fs/namei.c:3395
+ do_sys_openat2+0xa88/0x1140 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_compat_sys_openat fs/open.c:1242 [inline]
+ __se_compat_sys_openat+0x2a4/0x310 fs/open.c:1240
+ __ia32_compat_sys_openat+0x56/0x70 fs/open.c:1240
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 
-thanks,
+In f2fs_lookup(), @res_page could be used before being initialized,
+because in __f2fs_find_entry(), once F2FS_I(dir)->i_current_depth was
+been fuzzed to zero, then @res_page will never be initialized, causing
+this kmsan warning, relocating @res_page initialization place to fix
+this bug.
 
-greg k-h
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+---
+ fs/f2fs/dir.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index 703cf8e21fc0..83630341ffa3 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -357,16 +357,15 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
+ 	unsigned int max_depth;
+ 	unsigned int level;
+ 
++	*res_page = NULL;
++
+ 	if (f2fs_has_inline_dentry(dir)) {
+-		*res_page = NULL;
+ 		de = f2fs_find_in_inline_dir(dir, fname, res_page);
+ 		goto out;
+ 	}
+ 
+-	if (npages == 0) {
+-		*res_page = NULL;
++	if (npages == 0)
+ 		goto out;
+-	}
+ 
+ 	max_depth = F2FS_I(dir)->i_current_depth;
+ 	if (unlikely(max_depth > MAX_DIR_HASH_DEPTH)) {
+-- 
+2.22.0
+
