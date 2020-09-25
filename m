@@ -2,57 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92D827953A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0931627953D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 01:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729593AbgIYXzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 19:55:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgIYXzS (ORCPT
+        id S1729560AbgIYXzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 19:55:43 -0400
+Received: from agrajag.zerfleddert.de ([88.198.237.222]:39618 "EHLO
+        agrajag.zerfleddert.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726119AbgIYXzm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 19:55:18 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1817CC0613CE;
-        Fri, 25 Sep 2020 16:55:18 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 184D613BA0E7B;
-        Fri, 25 Sep 2020 16:38:30 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 16:55:16 -0700 (PDT)
-Message-Id: <20200925.165516.1977040744847893527.davem@davemloft.net>
-To:     ivan.khoronzhuk@gmail.com
-Cc:     netdev@vger.kernel.org, kuba@kernel.org,
-        alexander.sverdlin@nokia.com, linux-kernel@vger.kernel.org,
-        ikhoronz@cisco.com
-Subject: Re: [PATCH] net: ethernet: cavium: octeon_mgmt: use phy_start and
- phy_stop
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200925124439.19946-1-ikhoronz@cisco.com>
-References: <20200925124439.19946-1-ikhoronz@cisco.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 25 Sep 2020 16:38:30 -0700 (PDT)
+        Fri, 25 Sep 2020 19:55:42 -0400
+Received: by agrajag.zerfleddert.de (Postfix, from userid 1000)
+        id BAA945B2057C; Sat, 26 Sep 2020 01:55:41 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 01:55:41 +0200
+From:   Tobias Jordan <kernel@cdqe.de>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bus: arm: integrator: fix device node iterator leak
+Message-ID: <20200925235541.GA28030@agrajag.zerfleddert.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Khoronzhuk <ivan.khoronzhuk@gmail.com>
-Date: Fri, 25 Sep 2020 15:44:39 +0300
+In the for_each_available_child_of_node loop of integrator_lm_populate,
+add a call to of_node_put to avoid leaking the iterator if we bail out.
 
-> To start also "phy state machine", with UP state as it should be,
-> the phy_start() has to be used, in another case machine even is not
-> triggered. After this change negotiation is supposed to be triggered
-> by SM workqueue.
-> 
-> It's not correct usage, but it appears after the following patch,
-> so add it as a fix.
-> 
-> Fixes: 74a992b3598a ("net: phy: add phy_check_link_status")
-> Signed-off-by: Ivan Khoronzhuk <ikhoronz@cisco.com>
+Fixes: ccea5e8a5918 ("bus: Add driver for Integrator/AP logic modules")
+Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+---
+ drivers/bus/arm-integrator-lm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Applied and queued up for -stable, thanks.
+diff --git a/drivers/bus/arm-integrator-lm.c b/drivers/bus/arm-integrator-lm.c
+index 845b6c43fef8..cb6da80d1c7d 100644
+--- a/drivers/bus/arm-integrator-lm.c
++++ b/drivers/bus/arm-integrator-lm.c
+@@ -53,6 +53,7 @@ static int integrator_lm_populate(int num, struct device *dev)
+ 				 base);
+ 			ret = of_platform_default_populate(child, NULL, dev);
+ 			if (ret) {
++				of_node_put(child);
+ 				dev_err(dev, "failed to populate module\n");
+ 				return ret;
+ 			}
+-- 
+2.20.1
+
