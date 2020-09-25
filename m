@@ -2,225 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63226279225
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68CD279210
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 22:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728886AbgIYUdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 16:33:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43640 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726559AbgIYUUT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 16:20:19 -0400
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDC4F23730
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601065218;
-        bh=R2B4CZI1Vo2yizkiYehqOWUsCi8h2JC6TtVkB3rBz2k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ksq+8LOi4CcXWdy2uABVrhDqJB47i8p7w6gIVC2hJY8+Tvq07pjb8hL1QfszIr2Bt
-         QaMxXLHwk/vVM7siBmt30hJ+uDMJ1fvvHxYq3PGYLaB5zuU/0f2WgBRIclMYJoIKE7
-         4uAow+bikLfWNTWiNXDDe6TMeawAUrkUejfGHvFo=
-Received: by mail-wr1-f53.google.com with SMTP id k15so5074531wrn.10
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 13:20:17 -0700 (PDT)
-X-Gm-Message-State: AOAM5323jbSbcFEZSgw4YoJ7l8gj6d1mD8HRbbH8dDSQQwokhdrTsRu8
-        AIG7Ttw41L15WXjxYeptlygLmnCi0JIzvY+zZDBKDw==
-X-Google-Smtp-Source: ABdhPJyWF7AUaI8SR+nes9l7fegEZC3y76AaL+Z2ZdDfUG2lv86csMTl0exC3ZZwMbkcjdgeZ9k5snm2bz91Cb4iwp8=
-X-Received: by 2002:adf:a3c3:: with SMTP id m3mr6186242wrb.70.1601065216298;
- Fri, 25 Sep 2020 13:20:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <CALCETrUhQjQQa-BqNHPgdDfD9GDJZXJWSQ_M0tDF_ri5RfyTsw@mail.gmail.com>
- <20200925190915.GD31528@linux.intel.com>
-In-Reply-To: <20200925190915.GD31528@linux.intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 25 Sep 2020 13:20:03 -0700
-X-Gmail-Original-Message-ID: <CALCETrWDgb_mVPDmKy_7oFg03cOxO-GAUS8kOFrfGiPp9RjboA@mail.gmail.com>
-Message-ID: <CALCETrWDgb_mVPDmKy_7oFg03cOxO-GAUS8kOFrfGiPp9RjboA@mail.gmail.com>
-Subject: Re: Can we credibly make vdso_sgx_enter_enclave() pleasant to use?
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Cedric Xing <cedric.xing@intel.com>, linux-sgx@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1729013AbgIYUd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 16:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52152 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727286AbgIYUWM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 16:22:12 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9EBFC05BD0B;
+        Fri, 25 Sep 2020 13:20:29 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id cv8so2037189qvb.12;
+        Fri, 25 Sep 2020 13:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:date:from:to:cc:message-id:in-reply-to:references;
+        bh=LUHm00ZIJ4j/6Y7/pu4Dj8elDY57oj54PB0d9vo74fk=;
+        b=rVHeNYw6ax44V3kWWPVeu00y7iEOtaGrpyVj2tXAox6Y9+/sU28lxZfFyTgyeb35OB
+         0CbHo3jYypqge3AO+2xjSxf4D84kW3kNQ+PpzrPVZECtxkDM0RrLeHoz9/2+qdUvloo1
+         l2h0P2ZJELNk/IprcOiN6ETDq5KsoYWvgG6trZ+yjX6xqPeWrNQJbM2k/FfJRbSxfAgw
+         wH8NYx44qwSevLP50P1qC/oDW/bqFLCU+K+HBm5zOjkT0D/LRdePeHvEu87pEzR4yuER
+         L4oWifpJa+h+2sQyCDf5YWtAf2FupLgR64tBURwp75asDm2jiSWE5JlRFOAHejC9aB2R
+         zbpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:from:to:cc:message-id:in-reply-to
+         :references;
+        bh=LUHm00ZIJ4j/6Y7/pu4Dj8elDY57oj54PB0d9vo74fk=;
+        b=ZP8wXh4oPx8aqBHGfV8d+6oGfFcggyCEudaaQ2sJ1YxfkO+sqt8uWeHYlu/uCCTdJX
+         wMyIvUppP0K2gaaQTBiI5L5SCoY1w8Ms21yRL5MoaoN/B6bzFaq0UnQZPfNl49rzF0OE
+         iHilkW539UTylzqkXgDhSvnq8wnnxX1S7MfwReKZVHxWiiogzYrolZaPDyRssrDECKQ6
+         RAT3QwGSVoBMWG1ud5+/L8H3Kvt0aLvcmsezYWsK9XDc1azviMSQdZ67CHkb2tQPwPg2
+         bGp5kfj03lqmGAM1Q85cSao2TgTABIWEqK+/S1OsTPEOkjVawPxf9KmCbq/w0/zd7V+u
+         qFEA==
+X-Gm-Message-State: AOAM531uUwfIvpe0MAW5x7z506o7ZuCaPm+ReiP6J26N8jsq0tyzgtZw
+        OdPasNdHihSdJxwmwFyuIhtX4Xx2R6/V2Q==
+X-Google-Smtp-Source: ABdhPJyuIgJBVjQG0Q3pdpKZLjNMr4Maqp/uvudQU++Wiwm7OzMd3yWUfeEsMBMlwuuaVFxvwDu3iw==
+X-Received: by 2002:a0c:b343:: with SMTP id a3mr339082qvf.41.1601065229122;
+        Fri, 25 Sep 2020 13:20:29 -0700 (PDT)
+Received: from gmail.com (chomsky.torservers.net. [77.247.181.162])
+        by smtp.gmail.com with ESMTPSA id v16sm2347837qkg.37.2020.09.25.13.20.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 13:20:28 -0700 (PDT)
+Subject: Re: [RFC] openprom: Fix 'opiocnextprop'; ensure integer conversions; use string size
+Date:   Fri, 25 Sep 2020 20:20:20 -0000
+From:   Michael Witten <mfwitten@gmail.com>
+To:     David Miller <davem@davemloft.net>
+Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <859f327c79da4d9c945e50568805456c@gmail.com>
+In-Reply-To: <20200914.170321.1710628974878239639.davem@davemloft.net>
+References: <a5515efeaad94666a87f264dbf65bdbd@gmail.com>
+  <20200914.170321.1710628974878239639.davem@davemloft.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:09 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
+From: David Miller <davem@davemloft.net>
+Date: Mon, 14 Sep 2020 17:03:21 -0700
+
+> From: Michael Witten <mfwitten@gmail.com>
+> Date: Fri, 04 Sep 2020 19:40:00 -0000
 >
-> +Nathaniel, Cedric and linux-sgx
+>> @@ -34,10 +34,10 @@ EXPORT_SYMBOL(of_console_options);
+>>  int of_getintprop_default(struct device_node *np, const char *name, int def)
+>>  {
+>>       struct property *prop;
+>> -     int len;
+>> +     int size;
+>> 
+>> -     prop = of_find_property(np, name, &len);
+>> -     if (!prop || len != 4)
+>> +     prop = of_find_property(np, name, &size);
+>> +     if (!prop || size != 4)
+>>               return def;
 >
-> On Fri, Sep 25, 2020 at 09:55:00AM -0700, Andy Lutomirski wrote:
-> > vdso_sgx_enter_enclave() sucks. I don't think anyone seriously likes
-> > it, but maybe it's the best we can do.
+> This is just changing the variable name and makes no functional change
+> at all, and therefore is gratuitous.
 >
-> The code itself sucks, or the API sucks?
-
-I'm referring to the API.
-
+> Please only include pure functional changes that fix the bug(s) in
+> question.
 >
-> For the code, given the constraints of SGX and the number of runtimes we're
-> enabling, I don't think it's bad at all.  It's not hard to maintain, there are
-> no horrendous hacks, and it doesn't play games with the caller's state, i.e.
-> there's no additional magic required.  In other words, I really like that we
-> have in hand _works_, and works for a variety of runtimes and their ABIs.
+> [...]
 
-Well, it _works_, but I see at least two implementation issues.
-There's the CET problem that Andrew Cooper spotted (solvable without
-too much work).  Also, the code really ought to have .cfi annotations
-because it's user code and userspace expects libunwind, gdb, etc to
-work.
+There's a reason the variable is named "size" (or even "len") rather than:
 
->
-> The API isn't glorious, but it's not awful either.
->
-> > I'm wondering if it's worth trying to do better.  Here's what I'd like
-> > if I could wave a magic wand:
-> >
-> > struct sgx_enclave_run {
-> >        __u64 tcs;
-> >        __u32 flags;
-> >        __u32 exit_reason;
-> >
-> >     /*
-> >      * These values are exposed to the enclave on entry, and the values
-> >      * left behind by the enclave are returned here.
-> >      * Some enclaves might write to memory pointed to by rsp.
-> >      */
-> >        __u64 rsp, rbp, r8, r9, r10, r11, r12, r13, r14, r15;
-> >        /* Maybe other regs too? */
-> >
-> >        union {
-> >                struct sgx_enclave_exception exception;
-> >
-> >                /* Pad the entire struct to 256 bytes. */
-> >                __u8 pad[256 - 32];
-> >        };
-> > };
-> >
-> > long vdso_sgx_enter_enclave(unsigned int leaf, struct sgx_enclave_run *r);
-> >
-> > No callback, no asm wrapper needed, no nastiness from the perspective
-> > of the caller.
-> >
-> > So here are my questions.  First, do people agree with me that this
-> > would be better?
->
-> No?
->
-> From a user perspective, I don't find the callback particularly onerous.
-> Avoiding the callback would yield prettier code for the caller, but IMO it
-> doesn't fundamentally make the code easier to maintain.  Implementing the
-> callback is a one-time cost for a relatively small number of people, and it's
-> not even all that difficult to write, especially compared to all the other crud
-> that needs to be done to enable SGX.
+  v75127e6344
 
-[lots of discussion about r8 .. r15]
+A name is functional; it is the only way we have to structure a [human]
+reader's conceptual understanding of what's going on.
 
-r8 through r15 are kind of red herrings.  I think that supporting them
-as C-callable input/output args in the vDSO would be polite but isn't
-really important. The actual important part I'm thinking of is RSP,
-RBP, and the callback.
+The name "len" is a poor choice; it added to my uncertainty when I began
+trying to understand the code in question.
 
->
-> So it really comes down to context switching versus using a callback.  Not that
-> this is exactly a hot path, but for me having to implement a callback versus
-> bloating the vDSO with state save and restore is a mostly a wash.
->
-> > Second, could this be implemented in a way that doesn't utterly suck?  The
-> > best I've come up with so far is abusing WRFSBASE to shove a little data
-> > structure containing the real user RSP or RBP along with the old FSBASE into
-> > FSBASE, do EENTER, and then undo the FSBASE dance.  We'd also need some
-> > additional exception fixup magic to prevent a signal or ptrace() from
-> > observing the intermediate states and getting extremely confused.
->
-> But where would the vDSO get memory for that little data structure?  It can't
-> be percpu because the current task can get preempted.  It can't be per instance
-> of the vDSO because a single mm/process can have multiple tasks entering an
-> enclave.  Per task might work, but how would the vDSO get that info?  E.g.
-> via a syscall, which seems like complete overkill?
+As explained in the commit message:
 
-The stack.  The vDSO could, logically, do:
+  | String Size
+  | ===========
+  |
+  | There is an important distinction to be made between the following:
+  |
+  |   * A nul-terminated string's size
+  |   * A nul-terminated string's length
+  |
+  | This commit tries to make this distinction as much as possible,
+  | and assumes that all strings are intended to be nul-terminated.
+  | The result is the following:
+  |
+  |   * Sometimes a variable's name is simply changed (e.g., from
+  |     'len' to 'size').
+  |
+  |   * Sometimes 'strlen()' is called rather than relying on
+  |     some buffer size.
+  |
+  |   * Sometimes, there is the replacement of code that erroneously
+  |     uses string length rather than string size.
+  |
+  | All together, these changes make the code more robust and correct.
 
-struct sgx_entry_state {
-  unsigned long real_rbp;
-  unsigned long real_rsp;
-  unsigned long orig_fsbase;
-};
+Are we trying to improve the code or not?
 
-...
+Also, this name change is like a surgeon removing a benign anomaly
+while the abdomen is open for some other purpose; it's strategic,
+not "gratuitous".
 
-  struct sgx_entry_state state;
-  state.rbp = rbp;  [ hey, this is pseudocode.  the real code would be in asm.]
-  state.rsp = rsp;
-  state.fsbase = __rdfsbase();
-  rbp = arg->rbp;
-
-  /* set up all other regs */
-  wrfsbase %rsp
-  movq enclave_rsp(%rsp), %rsp
-  enclu
-  rdfsbase %rsp
-
-Expressing this abomination using DWARF is surely entirely impossible,
-so instead we would want to make sure that user code simply cannot
-observe the state between the wrfsbase and the rdfsbase.  This would
-require three exception hooks, which is more than we have now but is
-not actually unmanageable.  And it would be possible to write a test
-case to make sure we got it right.  A downside is that single-stepping
-this mess would probably not work in any sensible way.
-
-This could also be handled more slowly by introducing an actual
-syscall so the kernel could help out.  This would also be pretty ugly.
-
-On the other hand, if we had some confidence that the existing corpus
-of enclaves plays games with RSP but not RBP, we could handle this
-much more straightforwardly and even likely perserve DWARF support,
-although we'd still have strange artifacts if we got a signal in the
-wrong place.
-
-(If we have CET, we could do truly unspeakable things involving saving
-our state on the shadow stack.  Don't think too hard about this.)
-
->
-> So, no?
->
-> If we truly want to provide a "better" vDSO, my vote would be to disallow using
-> the runtime's stack from within the enclave.  But I'm guessing that would cause
-> more than a few aneurysms for the folks that are cc'd :-)
-
-Indeed.
-
-My real problem with the callback is that it forces the untrusted
-runtime to use a C-like stack model and to keep the vDSO entry on the
-stack while handling the OCALL or whatever you want to call it.  This
-is fine for those of us who exclusively program in C, aren't doing
-anything fancy, and want to think of enclaves as just more C code.
-But enclaves aren't just more C code -- they're more-or-less-immutable
-blobs, and they can't easily evolve with the untrusted code that
-invokes them.  And the world is slowly but surely moving toward
-languages that aren't quite as C-like as C.  In a language with
-stackless coroutines or async/await or continuations or goroutines,
-this could all get quite awkward.  Sure, a really nice Rust or Go SGX
-untrusted runtime could just declare that it won't support enclaves
-that touch the stack, but that's a bit of an unfortunate restriction
-given that removing stack access from an existing enclave will
-inevitably change MRENCLAVE.
-
-If I thought there was a straightforward way to support all existing
-enclaves without callbacks in the vDSO, I would be all for it.  I'm
-wondering if doing so even unstraightforwardly would still be
-worthwhile.
-
-If everyone wants to tell me that what we have now (plus .cfi
-annotations and perhaps a CET fix) is good enough, then so be it.  But
-I figured I'd ask.
-
---Andy
+Sincerely,
+Michael Witten
