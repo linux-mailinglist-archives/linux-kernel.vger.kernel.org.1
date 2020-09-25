@@ -2,108 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D539278710
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B12B278716
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728348AbgIYMXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727248AbgIYMXA (ORCPT
+        id S1728394AbgIYMX5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:23:57 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:55924 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIYMX4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:23:00 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 215D3C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:23:00 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id e7so1610574qtj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 05:23:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JiwHunS73dKhzMvuruWEdSZBTGiMntQmhlw2d9kKF/g=;
-        b=RaEYAZyMGMIoGSW2BGdldXQO3drMp78uAOUNdZWmtOvAmvrNMB83DkVs1sU+EdK+vX
-         jt/vAtjXKdHeGQxzML0VKsdyTahxAvwVtqnmJ9AZ/xT3FucZJtrqt/WtXImbKJnFuUK2
-         Gk6yAT0apPA+SN1McyqgpGm5FtNhaQgMXuHZh1JVR5iPuPrfgSv9zRVY2gJFZdY9N0Lc
-         n9LTpqZzss8dC5ECoDAP8f+jnuuMzR3EOUqC9VUE5zhNh/TgwO7cIjqUxLREgH+i8VMo
-         n4iTygX1f89Hywqi/5v37JQUzNjH8tcq84PP0oHrIj/etA5mwcTtjGBAgWUdmh7h6a4u
-         r41g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JiwHunS73dKhzMvuruWEdSZBTGiMntQmhlw2d9kKF/g=;
-        b=Fpoep27Tz/Ej8QaZGA7igDp5G76hS7XaLVrgKyKM02JybLZii60ZQQwP2eVDti+BSo
-         ZmDlPgtsrMm3GzUePjbRE9WA3rt6Y6k1j5rWwiAc9ukNtfwZA9qcASU6NLmDmkjNDM1+
-         eNnsbUFZhP4BWGH4gsp81QuBKl+BgUBV55eu2Sa4JVDl8tgCi9OFPmmuq+l93hdYNyew
-         eg+5v4spFzqVT4weho/z9Zb9vhLwpcbqeO1Utn0hrSAxfspFyzY7bvOJCikKxonuwI76
-         Tlz3cMFV3iNgaa1aqDZQ72Kj+o8qwsaTZ5ZI4JGvy4S82375urwtX1kD43tvdY2k2BHM
-         Pl6g==
-X-Gm-Message-State: AOAM532EKfJxvXPVsV50TM347Nn1HutyXM36IIZhNQE50IM12uNxoA0K
-        LtdDQqzC+CfHJGspPCrq6DyuIwQSNDJR4Zq0TUSwpQ==
-X-Google-Smtp-Source: ABdhPJws0L/vacfbEcOsg6IKEchMzkUlgnq6GAfHWUrhCoS9hDF5oSiav2fAMewuaMCaa714dxufzQb39vW92/dZNeA=
-X-Received: by 2002:aed:26a7:: with SMTP id q36mr4018858qtd.57.1601036578995;
- Fri, 25 Sep 2020 05:22:58 -0700 (PDT)
+        Fri, 25 Sep 2020 08:23:56 -0400
+Date:   Fri, 25 Sep 2020 12:23:52 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601036633;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8PBnRkbgVOUY/+pVCoJM4bYhzSr2pSCTrTPj1oZcxDg=;
+        b=Ry6D2U2anrnKARViUcwFfxKSlmr/V9i4DH9L0aud2Nhe/UL8TnQ9d+kep2V6M6jJJmUJIH
+        GZtP/KhTheLsWXQub9vG/8tVjSRMm9HvI8T5dVwjEhbNJ4Delscr7/2+sGviqMaQS/Mphc
+        LSitb8+2+GhxAiuc4fX55cJEuuXSOyLsFi8rvm2WBvxcSrEdeRm/12LPzVwBcUlg0cXNbk
+        OW9DfEJNtYGgHSMkNxMDB5XTzAeq8l6nvmrK5Sg20hQJhO/+8g+gV0e7mBINcZA+kTV2Zb
+        xUEp6NdljRiDa0pX8gp0a3/Rz275gNryt3Ij9RR7afp9WnCuebq4h+0pT/ht7w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601036633;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8PBnRkbgVOUY/+pVCoJM4bYhzSr2pSCTrTPj1oZcxDg=;
+        b=f7JlcKEJR1qkmhbhe/8NugqOUBRVKmw+ciBeegx4a8Q+nmejH6JntTA0raEZLwMW36uccG
+        xA8Bzx+HB/I38pAA==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86/intel/uncore: Generic support for the PCI
+ sub driver
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1600094060-82746-6-git-send-email-kan.liang@linux.intel.com>
+References: <1600094060-82746-6-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-References: <00000000000052569205afa67426@google.com> <20200919110831.GD7462@zn.tnic>
- <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
- <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
- <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
- <20200921221336.GN5901@zn.tnic> <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
- <20200923090336.GD28545@zn.tnic> <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
- <20200923103431.GF28545@zn.tnic> <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
-In-Reply-To: <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 25 Sep 2020 14:22:47 +0200
-Message-ID: <CACT4Y+bjyAfO-TRjBHT9wR194=prH2C284Oc9akVVHR1492WZA@mail.gmail.com>
-Subject: Re: general protection fault in perf_misc_flags
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <160103663299.7002.197893072818781547.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 23, 2020 at 5:20 PM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Wed, Sep 23, 2020 at 12:34 PM Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Wed, Sep 23, 2020 at 11:24:48AM +0200, Dmitry Vyukov wrote:
-> > > 3. Run syzkaller locally with custom patches.
-> >
-> > Let's say I wanna build the kernel with clang-10 using your .config and
-> > run it in a vm locally. What are the steps in order to reproduce the
-> > same workload syzkaller runs in the guest on the GCE so that I can at
-> > least try get as close as possible to reproducing locally?
->
-> It's a random fuzzing workload. You can get this workload by running
-> syzkaller locally:
-> https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md
->
-> The exact clang compiler syzbot used is available here:
-> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
+The following commit has been merged into the perf/core branch of tip:
 
-I've marked all other similar ones a dup of this one. Now you can see
-all manifestations on the dashboard:
-https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
+Commit-ID:     95a7fc77443328ac8b68378df8e137a044ece5e8
+Gitweb:        https://git.kernel.org/tip/95a7fc77443328ac8b68378df8e137a044ece5e8
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Mon, 14 Sep 2020 07:34:19 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 24 Sep 2020 15:55:51 +02:00
 
-Another possible debugging vector on this:
-The location of crashes does not seem to be completely random and
-evenly spread across kernel code. I think there are many more static
-branches (mm, net), but we have 3 crashes in vdso and 9 in paravirt
-code + these 6 crashes in perf_misc_flags which looks a bit like an
-outlier (?). What's special about paravirt/vdso?..
+perf/x86/intel/uncore: Generic support for the PCI sub driver
+
+Some uncore counters may be located in the configuration space of a PCI
+device, which already has a bonded driver. Currently, the uncore driver
+cannot register a PCI uncore PMU for these counters, because, to
+register a PCI uncore PMU, the uncore driver must be bond to the device.
+However, one device can only have one bonded driver.
+
+Add an uncore PCI sub driver to support such kind of devices.
+
+The sub driver doesn't own the device. In initialization, the sub
+driver searches the device via pci_get_device(), and register the
+corresponding PMU for the device. In the meantime, the sub driver
+registers a PCI bus notifier, which is used to notify the sub driver
+once the device is removed. The sub driver can unregister the PMU
+accordingly.
+
+The sub driver only searches the devices defined in its id table. The
+id table varies on different platforms, which will be implemented in the
+following platform-specific patch.
+
+Suggested-by: Bjorn Helgaas <helgaas@kernel.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/1600094060-82746-6-git-send-email-kan.liang@linux.intel.com
+---
+ arch/x86/events/intel/uncore.c | 81 +++++++++++++++++++++++++++++++++-
+ arch/x86/events/intel/uncore.h |  1 +-
+ 2 files changed, 82 insertions(+)
+
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index 747d237..ce0a5ba 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -12,6 +12,8 @@ struct intel_uncore_type **uncore_mmio_uncores = empty_uncore;
+ 
+ static bool pcidrv_registered;
+ struct pci_driver *uncore_pci_driver;
++/* The PCI driver for the device which the uncore doesn't own. */
++struct pci_driver *uncore_pci_sub_driver;
+ /* pci bus to socket mapping */
+ DEFINE_RAW_SPINLOCK(pci2phy_map_lock);
+ struct list_head pci2phy_map_head = LIST_HEAD_INIT(pci2phy_map_head);
+@@ -1186,6 +1188,80 @@ static void uncore_pci_remove(struct pci_dev *pdev)
+ 	uncore_pci_pmu_unregister(pmu, phys_id, die);
+ }
+ 
++static int uncore_bus_notify(struct notifier_block *nb,
++			     unsigned long action, void *data)
++{
++	struct device *dev = data;
++	struct pci_dev *pdev = to_pci_dev(dev);
++	struct intel_uncore_pmu *pmu;
++	int phys_id, die;
++
++	/* Unregister the PMU when the device is going to be deleted. */
++	if (action != BUS_NOTIFY_DEL_DEVICE)
++		return NOTIFY_DONE;
++
++	pmu = uncore_pci_find_dev_pmu(pdev, uncore_pci_sub_driver->id_table);
++	if (!pmu)
++		return NOTIFY_DONE;
++
++	if (uncore_pci_get_dev_die_info(pdev, &phys_id, &die))
++		return NOTIFY_DONE;
++
++	uncore_pci_pmu_unregister(pmu, phys_id, die);
++
++	return NOTIFY_OK;
++}
++
++static struct notifier_block uncore_notifier = {
++	.notifier_call = uncore_bus_notify,
++};
++
++static void uncore_pci_sub_driver_init(void)
++{
++	const struct pci_device_id *ids = uncore_pci_sub_driver->id_table;
++	struct intel_uncore_type *type;
++	struct intel_uncore_pmu *pmu;
++	struct pci_dev *pci_sub_dev;
++	bool notify = false;
++	unsigned int devfn;
++	int phys_id, die;
++
++	while (ids && ids->vendor) {
++		pci_sub_dev = NULL;
++		type = uncore_pci_uncores[UNCORE_PCI_DEV_TYPE(ids->driver_data)];
++		/*
++		 * Search the available device, and register the
++		 * corresponding PMU.
++		 */
++		while ((pci_sub_dev = pci_get_device(PCI_VENDOR_ID_INTEL,
++						     ids->device, pci_sub_dev))) {
++			devfn = PCI_DEVFN(UNCORE_PCI_DEV_DEV(ids->driver_data),
++					  UNCORE_PCI_DEV_FUNC(ids->driver_data));
++			if (devfn != pci_sub_dev->devfn)
++				continue;
++
++			pmu = &type->pmus[UNCORE_PCI_DEV_IDX(ids->driver_data)];
++			if (!pmu)
++				continue;
++
++			if (uncore_pci_get_dev_die_info(pci_sub_dev,
++							&phys_id, &die))
++				continue;
++
++			if (!uncore_pci_pmu_register(pci_sub_dev, type, pmu,
++						     phys_id, die))
++				notify = true;
++		}
++		ids++;
++	}
++
++	if (notify && bus_register_notifier(&pci_bus_type, &uncore_notifier))
++		notify = false;
++
++	if (!notify)
++		uncore_pci_sub_driver = NULL;
++}
++
+ static int __init uncore_pci_init(void)
+ {
+ 	size_t size;
+@@ -1209,6 +1285,9 @@ static int __init uncore_pci_init(void)
+ 	if (ret)
+ 		goto errtype;
+ 
++	if (uncore_pci_sub_driver)
++		uncore_pci_sub_driver_init();
++
+ 	pcidrv_registered = true;
+ 	return 0;
+ 
+@@ -1226,6 +1305,8 @@ static void uncore_pci_exit(void)
+ {
+ 	if (pcidrv_registered) {
+ 		pcidrv_registered = false;
++		if (uncore_pci_sub_driver)
++			bus_unregister_notifier(&pci_bus_type, &uncore_notifier);
+ 		pci_unregister_driver(uncore_pci_driver);
+ 		uncore_types_exit(uncore_pci_uncores);
+ 		kfree(uncore_extra_pci_dev);
+diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
+index 105fdc6..df544bc 100644
+--- a/arch/x86/events/intel/uncore.h
++++ b/arch/x86/events/intel/uncore.h
+@@ -552,6 +552,7 @@ extern struct intel_uncore_type **uncore_msr_uncores;
+ extern struct intel_uncore_type **uncore_pci_uncores;
+ extern struct intel_uncore_type **uncore_mmio_uncores;
+ extern struct pci_driver *uncore_pci_driver;
++extern struct pci_driver *uncore_pci_sub_driver;
+ extern raw_spinlock_t pci2phy_map_lock;
+ extern struct list_head pci2phy_map_head;
+ extern struct pci_extra_dev *uncore_extra_pci_dev;
