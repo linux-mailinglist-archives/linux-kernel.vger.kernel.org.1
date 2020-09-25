@@ -2,97 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B47E2792DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F11F2792F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 23:06:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728907AbgIYVCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 17:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgIYVCK (ORCPT
+        id S1728591AbgIYVGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 17:06:21 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:54326 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728144AbgIYVGT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 17:02:10 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58D4C0613CE;
-        Fri, 25 Sep 2020 14:02:09 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z17so4246662lfi.12;
-        Fri, 25 Sep 2020 14:02:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=k1LCKeXRxN/+JcNtQjihLS6rqftynWEhdCaK6WypRnU=;
-        b=LK9ZC7teMcyPSnG/s7L9ew252xF+hS29QvkBWer4miEN0cx+zeSiSpaTpHCgTurR7H
-         vWBBotNYWzjPwK/BoxXkeBw0gChmgequzj/InKGaYltjc46ZdoZygwtIt94bWQ5xzt2K
-         SOAE+hcZ35D0wR39q9os+vy/FPwJAFJ+TIxQM6KmdqA3+L2zZuCDSa/Lbh8treM//4Wv
-         2b9bN2PU6Hre5LY179eVwsopAUpJgmODAdq8C7fPugEUBvL+i2sdTGs+JLt/zS5yuMfa
-         NamdyOaRgnXmQIdpPvFoVH/cc1aHWJ98jitkgg3YUbO5gm1DWPEppnREKhpCN67W8Y4m
-         rX+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k1LCKeXRxN/+JcNtQjihLS6rqftynWEhdCaK6WypRnU=;
-        b=LWzr/vPYuNN2uKKflU1asnzP2uMhkwpw/vjjwVT683uBzxKStB0gvEwdHsc5ISHC+h
-         uLbJMUMSFKibPwiO9HXkT0Gg+fpK7OZbv7Oh9x3vy0Uh5SKh0XoVSUe4ym8Z1gZd/7xq
-         araC9RZ1o6c/fcuvjLhQ3CIyxx/boJ/i+ULXv4Dh2JvYNJ5vbhlKSAXI4SBkAxLtYJQe
-         Ru3uT6bQoKUFijQ4mdL0fjRQ3x3h9nkctzazc8n3srGVF22tBqBWW4+/PA0kcPbC8AH8
-         DoNVioeuGhVoYEJp5gkYG3ynzsUSKoKyWA3qu9CvRCIC5q0lqpRwwg0d1H232XI4vhEM
-         2PNw==
-X-Gm-Message-State: AOAM532u0QynPwAX+68GN3vWum3BnhGrG4PhB6ajExrUZs+isf885QRz
-        gMhiYF2w5AGXm7ohWTJ/Hb8=
-X-Google-Smtp-Source: ABdhPJxwJGsW5AMwcvHSbpE7F0UzfOw+jYGHNQdauxch0hlQ2OOfjID1uY9+z8RwdfbvJoa+FIaAgw==
-X-Received: by 2002:a19:610a:: with SMTP id v10mr236702lfb.414.1601067728217;
-        Fri, 25 Sep 2020 14:02:08 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id w4sm178305lff.231.2020.09.25.14.02.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 14:02:07 -0700 (PDT)
-Subject: Re: [PATCH v2 3/3] ARM: tegra: add mXT1386 compatible
-To:     Jiada Wang <jiada_wang@mentor.com>, dmitry.torokhov@gmail.com,
-        robh+dt@kernel.org, thierry.reding@gmail.com, jonathanh@nvidia.com
-Cc:     nick@shmanahar.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        erosca@de.adit-jv.com, andrew_gabbasov@mentor.com
-References: <20200925135257.21138-1-jiada_wang@mentor.com>
- <20200925135257.21138-4-jiada_wang@mentor.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <60afbb5b-0890-a0b0-2682-d5302e8e9130@gmail.com>
-Date:   Sat, 26 Sep 2020 00:02:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 25 Sep 2020 17:06:19 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PL4ujO070257;
+        Fri, 25 Sep 2020 21:05:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=t86XVzhzWTuiCcbgAP7XoJJMG7F0LY2LOCCc5kfef6w=;
+ b=JS6NWECrTdeOhLOyVwhbOA1C+ryYoNX6WJUOefKakFRjRxKZWRTj3M5B1+f3dAGo/o9C
+ udfICZ/Z2FvQ6coL4IfMrJE9WplLsVkcY2zA3mZr7SZdNoMbnn2oLmFKs7Zrnf/Chr2V
+ 1R4vXjk4d3COs3wbfL5ZIxPzrVOoivJ/n3+hKWewyFqYJor9qbAJbiMsfUCSFttqSZt+
+ VgRW56X9lYfsORfUVaFcg42Qr48c9zwLh+2WBE2IsKWALbpmV12F6jFU1kxYuv345bzC
+ hb6qsmrO2Auf6gbZgISvwEBgrAepzs6i5qIxnuzWNYxnRX+9zz5apwPWnZmuaHSZtfzM LQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 33ndnuytrx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 25 Sep 2020 21:05:35 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08PL4WLq035167;
+        Fri, 25 Sep 2020 21:05:34 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 33nurya5y7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 25 Sep 2020 21:05:34 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08PL5VAO022797;
+        Fri, 25 Sep 2020 21:05:31 GMT
+Received: from [10.175.187.87] (/10.175.187.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 25 Sep 2020 14:05:31 -0700
+Subject: Re: [PATCH v5 00/17] device-dax: support sub-dividing soft-reserved
+ ranges
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Jia He <justin.he@arm.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jason Yan <yanaijie@huawei.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Juergen Gross <jgross@suse.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <8370d493-e38d-cbac-1233-14cbbef63936@oracle.com>
+ <CAPcyv4je4PzCRo=Na7WfCpnvS0VpBN8qArr5HZv7jhwTNui4eg@mail.gmail.com>
+From:   Joao Martins <joao.m.martins@oracle.com>
+Message-ID: <11dbaa4a-5fe1-402e-e7d2-99e908b1bec0@oracle.com>
+Date:   Fri, 25 Sep 2020 22:05:20 +0100
 MIME-Version: 1.0
-In-Reply-To: <20200925135257.21138-4-jiada_wang@mentor.com>
+In-Reply-To: <CAPcyv4je4PzCRo=Na7WfCpnvS0VpBN8qArr5HZv7jhwTNui4eg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009250152
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 phishscore=0 adultscore=0 suspectscore=0 bulkscore=0
+ clxscore=1015 impostorscore=0 mlxlogscore=999 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009250152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-25.09.2020 16:52, Jiada Wang пишет:
-> Add mXT1386 compatible for "touchscreen@4c".
+On 9/25/20 10:01 PM, Dan Williams wrote:
+> On Fri, Sep 25, 2020 at 1:52 PM Joao Martins <joao.m.martins@oracle.com> wrote:
+>>
+>> Hey Dan,
+>>
+>> On 9/25/20 8:11 PM, Dan Williams wrote:
+>>> Changes since v4 [1]:
+>>> - Rebased on
+>>>   device-dax-move-instance-creation-parameters-to-struct-dev_dax_data.patch
+>>>   in -mm [2]. I.e. patches that did not need fixups from v4 are not
+>>>   included.
+>>>
+>>> - Folded all fixes
+>>>
+>>
+>> Hmm, perhaps you missed the fixups before the above mentioned patch?
+>>
+>> From:
+>>
+>>         https://www.ozlabs.org/~akpm/mmots/series
+>>
+>> under "mm/dax", I am listing those fixups here:
+>>
+>> x86-numa-add-nohmat-option-fix.patch
+>> acpi-hmat-refactor-hmat_register_target_device-to-hmem_register_device-fix.patch
+>> mm-memory_hotplug-introduce-default-phys_to_target_node-implementation-fix.patch
+>> acpi-hmat-attach-a-device-for-each-soft-reserved-range-fix.patch
+>>
+>> (in https://www.ozlabs.org/~akpm/mmots/broken-out/)
 > 
-> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-> ---
->  arch/arm/boot/dts/tegra20-acer-a500-picasso.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I left those for Andrew to handle. I actually should have started this
+> set one more down in his stack because that's where my new changes
+> start.
 > 
-> diff --git a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-> index 2d683c9a1a5d..7915b6e9190e 100644
-> --- a/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-> +++ b/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-> @@ -428,7 +428,7 @@
->  		};
->  
->  		touchscreen@4c {
-> -			compatible = "atmel,maxtouch";
-> +			compatible = "atmel,mXT1386", "atmel,maxtouch";
->  			reg = <0x4c>;
->  
->  			atmel,cfg_name = "maxtouch-acer-iconia-tab-a500.cfg";
-> 
-
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+Ah, got it!
