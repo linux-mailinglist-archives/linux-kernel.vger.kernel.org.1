@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917C8278FE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42C3278FE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 19:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729716AbgIYRtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 13:49:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:50282 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726990AbgIYRtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 13:49:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FB99101E;
-        Fri, 25 Sep 2020 10:49:38 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AF4DC3F718;
-        Fri, 25 Sep 2020 10:49:36 -0700 (PDT)
-References: <20200921163557.234036895@infradead.org> <6f55a303-0e5c-8e84-65d3-798b589a5d75@arm.com> <20200925101030.GA2594@hirez.programming.kicks-ass.net> <d26d81ec-01d6-f6c0-816b-fbd8bb71e132@arm.com> <jhj7dsi82w9.mognet@arm.com>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, linux-kernel@vger.kernel.org,
-        bigeasy@linutronix.de, qais.yousef@arm.com, swood@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com
-Subject: Re: [PATCH 0/9] sched: Migrate disable support
-In-reply-to: <jhj7dsi82w9.mognet@arm.com>
-Date:   Fri, 25 Sep 2020 18:49:26 +0100
-Message-ID: <jhj1ripoift.mognet@arm.com>
+        id S1729640AbgIYRun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 13:50:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726368AbgIYRun (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 13:50:43 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8403C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:50:42 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id 7so1884502vsp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XTu8OyKxLxDq7oVeW0UHiIi1xzAS6hi7NHVEBbA27eE=;
+        b=BLbLfT7hWjeXq5fNCkVJGX5rULzdOlLfE+9OFb235c1LHq7Ah6oU+MQR+GGjx2gJNL
+         KBf9yjX5DU+uhnYYUZQX9ar9XeXoy6MMsGKsate9XSc1JRAaPBrs5raF422OzDvirxCj
+         zG7VP1HOqFxqaMe4JuS4vpZmioJt0xjJRMsuY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XTu8OyKxLxDq7oVeW0UHiIi1xzAS6hi7NHVEBbA27eE=;
+        b=gVahWG17k/Ndh3LdWe5gGHy4RWk+QDdtE+x6KA7prDi1+jUk34N0EPkGNOKy54QNC4
+         GPPpFGru7U+sh38O/C9/YV9V0qnSTOz1uSqiKHLTwGcya/AuBoDgJyDvx16XMwsfaMdO
+         MhuIKdtsowLIicL0XX/+4l0JxrdX/d+w9XgfAC3MvF0EmlNSmSonjlGp913+qo0hzfTz
+         YHjwtf903NwzJ4wR3+MLPFQerC2qNGWgVE0Ps50zGPq2QBRm8krKT+m1kI3bm606cU1R
+         3xEJQW4STzWkcFlmpg+KVglJKk63rmb2+N6WVIrTFcLwT0Sn0HOSwvkcYxmEwCz874c1
+         7H+g==
+X-Gm-Message-State: AOAM531QeLLJCAdug+haVJulil+lAfhNwXwA4EDVIN1PcOCyvjrGS1ay
+        8qXuWOLlG3+gRZ+I0qvbPQJJCYpn/o0eFA==
+X-Google-Smtp-Source: ABdhPJyb6Usvoj0LEaXi20mHb3hS7HIgSONjaFILOgT6GHbq2MhKm3WhZGgbQQCxP4zQWtUlkGjnRQ==
+X-Received: by 2002:a67:fe57:: with SMTP id m23mr542130vsr.56.1601056241955;
+        Fri, 25 Sep 2020 10:50:41 -0700 (PDT)
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com. [209.85.221.179])
+        by smtp.gmail.com with ESMTPSA id d5sm448789vkf.39.2020.09.25.10.50.41
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 10:50:41 -0700 (PDT)
+Received: by mail-vk1-f179.google.com with SMTP id b4so838135vkh.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 10:50:41 -0700 (PDT)
+X-Received: by 2002:ac5:c297:: with SMTP id h23mr525690vkk.21.1601056240705;
+ Fri, 25 Sep 2020 10:50:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200925162604.2311841-1-swboyd@chromium.org>
+In-Reply-To: <20200925162604.2311841-1-swboyd@chromium.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 25 Sep 2020 10:50:29 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Xq5PmKnzLwb3b6scigBhsx5vz6sXAztZSFSVYW8Vr80A@mail.gmail.com>
+Message-ID: <CAD=FV=Xq5PmKnzLwb3b6scigBhsx5vz6sXAztZSFSVYW8Vr80A@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: cros-ec-keyboard: Add alternate keymap for KEY_LEFTMETA
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 25/09/20 13:19, Valentin Schneider wrote:
-> On 25/09/20 12:58, Dietmar Eggemann wrote:
->> With Valentin's print_rq() inspired test snippet I always see one of the
->> RT user tasks as the second guy? BTW, it has to be RT tasks, never
->> triggered with CFS tasks.
->>
->> [   57.849268] CPU2 nr_running=2
->> [   57.852241]  p=migration/2
->> [   57.854967]  p=task0-0
+On Fri, Sep 25, 2020 at 9:26 AM Stephen Boyd <swboyd@chromium.org> wrote:
 >
-> I can also trigger the BUG_ON() using the built-in locktorture module
-> (+enabling hotplug torture), and it happens very early on. I can't trigger
-> it under qemu sadly :/ Also, in my case it's always a kworker:
+> On newer keyboards this key is in a different place. Add both options to
+> the keymap so that both new and old keyboards work.
 >
-> [    0.830462] CPU3 nr_running=2
-> [    0.833443]  p=migration/3
-> [    0.836150]  p=kworker/3:0
->
-> I'm looking into what workqueue.c is doing about hotplug...
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>  arch/arm/boot/dts/cros-ec-keyboard.dtsi | 1 +
+>  1 file changed, 1 insertion(+)
 
-So with
-- The pending migration fixup (20200925095615.GA2651@hirez.programming.kicks-ass.net)
-- The workqueue set_cpus_allowed_ptr() change (from IRC)
-- The set_rq_offline() move + DL/RT pull && rq->online (also from IRC)
-
-my Juno survives rtmutex + hotplug locktorture, where it would previously
-explode < 1s after boot (mostly due to the workqueue thing).
-
-I stared a bit more at the rq_offline() + DL/RT bits and they look fine to
-me.
-
-The one thing I'm not entirely sure about is while you plugged the
-class->balance() hole, AIUI we might still get RT (DL?) pull callbacks
-enqueued - say if we just unthrottled an RT RQ and something changes the
-priority of one of the freshly-released tasks (user or rtmutex
-interaction), I don't see any stopgap preventing a pull from happening.
-
-I slapped the following on top of my kernel and it didn't die, although I'm
-not sure I'm correctly stressing this path. Perhaps we could limit that to
-the pull paths, since technically we're okay with pushing out of an !online
-RQ.
-
----
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 50aac5b6db26..00d1a7b85e97 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1403,7 +1403,7 @@ queue_balance_callback(struct rq *rq,
- {
-        lockdep_assert_held(&rq->lock);
-
--	if (unlikely(head->next))
-+	if (unlikely(head->next || !rq->online))
-                return;
-
-        head->func = (void (*)(struct callback_head *))func;
----
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
