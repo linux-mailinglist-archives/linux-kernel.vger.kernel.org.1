@@ -2,158 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E8E2786CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 540912786C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 25 Sep 2020 14:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728412AbgIYMP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 08:15:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35348 "EHLO mail.kernel.org"
+        id S1728288AbgIYMPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 08:15:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727132AbgIYMP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 08:15:57 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        id S1727248AbgIYMPs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 08:15:48 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 989BA21D7A;
-        Fri, 25 Sep 2020 12:15:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DA3FD2086A;
+        Fri, 25 Sep 2020 12:15:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601036156;
-        bh=kwR9lgq75oem2SESbbdu8Dipj1Q8zTQ+UnnWezcapFI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=no4C+nJyV2mcqN2CwSdvw/0kwskREmHydE8VA5s7AbOR06GF2CsyHrzSHOMM0Z3/t
-         emMPgDLX9SOBleJLLUfsVNObhQW1CVUljmp3BccgSxyS2FIa8fje8dvxvlCpzo4SP5
-         a6kO5w+gcFyndNxj5dH1yqRhVVV3CbXU4mcHjskI=
-Date:   Fri, 25 Sep 2020 13:15:50 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Gene Chen <gene.chen.richtek@gmail.com>
-Cc:     robh+dt@kernel.org, matthias.bgg@gmail.com, knaack.h@gmx.de,
-        lars@metafoo.de, pmeerw@pmeerw.net, devicetree@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        gene_chen@richtek.com, Wilma.Wu@mediatek.com,
-        shufan_lee@richtek.com, cy_huang@richtek.com,
-        benjamin.chao@mediatek.com
-Subject: Re: [PATCH v5 2/3] Documentation: ABI: testing: mt6360: Add ADC
- sysfs guideline
-Message-ID: <20200925131550.10717161@archlinux>
-In-Reply-To: <1600687442-23658-3-git-send-email-gene.chen.richtek@gmail.com>
-References: <1600687442-23658-1-git-send-email-gene.chen.richtek@gmail.com>
-        <1600687442-23658-3-git-send-email-gene.chen.richtek@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        s=default; t=1601036147;
+        bh=OPlVwC5/XZSGKZj/eOaKDszpdunXRYZ9UxT1yqlhGh0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=chbVXPVra51UmOyp0m9wLoFowrH0fujF5nUJPWkpbvSkiqtQmu/XZYhWyg8eXihLL
+         ghmVcMwW2RJT+akATHO+2rlvuoaOrnCSzV+4xIMvuLZYITM555AgTy9+gaGVC0He/L
+         znYNd5Y+tOxsbUFhU2oZPYNIrAT2nW1hd4uGxISg=
+Date:   Fri, 25 Sep 2020 14:16:00 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
+        wang.yi59@zte.com.cn, huang.zijiang@zte.com.cn,
+        rikard.falkeborn@gmail.com, lee.jones@linaro.org, mst@redhat.com,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH 1/5] misc: vop: change the way of allocating vring for
+ noncoherent platform
+Message-ID: <20200925121600.GA2680110@kroah.com>
+References: <20200925072630.8157-1-sherry.sun@nxp.com>
+ <20200925072630.8157-2-sherry.sun@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925072630.8157-2-sherry.sun@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Sep 2020 19:24:01 +0800
-Gene Chen <gene.chen.richtek@gmail.com> wrote:
-
-> From: Gene Chen <gene_chen@richtek.com>
+On Fri, Sep 25, 2020 at 03:26:26PM +0800, Sherry Sun wrote:
+> For noncoherent platform, we should allocate vring through
+> dma_alloc_coherent api to ensure timely synchronization of vring.
+> The orginal way which used __get_free_pages and dma_map_single only
+> apply to coherent platforms.
 > 
-> Add ABI documentation for mt6360 ADC sysfs interfaces.
-> 
-> Signed-off-by: Gene Chen <gene_chen@richtek.com>
-Hi Gene,
-
-My first thought was we don't need this now we are dealing with
-standard ABI only, but there is some useful additional documentation
-in here which is good to have.
-
-Looks good to me!
-
-Thanks,
-
-Jonathan
-
+> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+> Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
 > ---
->  Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 | 78 ++++++++++++++++++++++
->  1 file changed, 78 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
+>  drivers/misc/mic/vop/vop_vringh.c | 101 ++++++++++++++++++++----------
+>  1 file changed, 67 insertions(+), 34 deletions(-)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360 b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> new file mode 100644
-> index 0000000..e5a7b1c
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio-adc-mt6360
-> @@ -0,0 +1,78 @@
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage0_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 USBID ADC which connected to connector ID pin.
-> +		Calculating with scale and offset returns voltage in uV
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage1_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 VBUS ADC with lower accuracy(+-75mA)
-> +		higher measure range(1~22mV)
-> +		Calculating with scale and offset returns voltage in uV
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage2_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 VBUS ADC with higher accuracy(+-30mA)
-> +		lower measure range(1~9.76V)
-> +		Calculating with scale and offset returns voltage in uV
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage3_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 VSYS ADC
-> +		Calculating with scale and offset returns voltage in uV
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage4_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 VBAT ADC
-> +		Calculating with scale and offset returns voltage in uV
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_current5_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 IBUS ADC
-> +		Calculating with scale and offset returns voltage in uA
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_current6_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 IBAT ADC
-> +		Calculating with scale and offset returns voltage in uA
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_current7_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 CHG_VDDP ADC
-> +		Calculating with scale and offset returns voltage in uV
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_temp8_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 IC junction temperature
-> +		Calculating with scale and offset returns temperature in degree
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage9_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 VREF_TS ADC
-> +		Calculating with scale and offset returns voltage in uV
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltage10_raw
-> +KernelVersion:	5.8.0
-> +Contact:	gene_chen@richtek.com
-> +Description:
-> +		Indicated MT6360 TS ADC
-> +		Calculating with scale and offset returns voltage in uV
+> diff --git a/drivers/misc/mic/vop/vop_vringh.c b/drivers/misc/mic/vop/vop_vringh.c
+> index f344209ac386..fc8d8ff9ded3 100644
+> --- a/drivers/misc/mic/vop/vop_vringh.c
+> +++ b/drivers/misc/mic/vop/vop_vringh.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/poll.h>
+>  #include <linux/dma-mapping.h>
+> +#include <linux/dma-noncoherent.h>
+>  
+>  #include <linux/mic_common.h>
+>  #include "../common/mic_dev.h"
+> @@ -67,11 +68,12 @@ static void vop_virtio_init_post(struct vop_vdev *vdev)
+>  			dev_warn(vop_dev(vdev), "used_address zero??\n");
+>  			continue;
+>  		}
+> -		vdev->vvr[i].vrh.vring.used =
+> -			(void __force *)vpdev->hw_ops->remap(
+> -			vpdev,
+> -			le64_to_cpu(vqconfig[i].used_address),
+> -			used_size);
+> +		if (dev_is_dma_coherent(vop_dev(vdev)))
+> +			vdev->vvr[i].vrh.vring.used =
+> +				(void __force *)vpdev->hw_ops->remap(
+> +				vpdev,
+> +				le64_to_cpu(vqconfig[i].used_address),
+> +				used_size);
 
+That's really hard to read, don't you agree?  We can go longer than 80
+columns now, and why the __force?
+
+
+
+>  	}
+>  
+>  	vdev->dc->used_address_updated = 0;
+> @@ -298,9 +300,14 @@ static int vop_virtio_add_device(struct vop_vdev *vdev,
+>  		mutex_init(&vvr->vr_mutex);
+>  		vr_size = PAGE_ALIGN(round_up(vring_size(num, MIC_VIRTIO_RING_ALIGN), 4) +
+>  			sizeof(struct _mic_vring_info));
+> -		vr->va = (void *)
+> -			__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+> -					 get_order(vr_size));
+> +
+> +		if (!dev_is_dma_coherent(vop_dev(vdev)))
+> +			vr->va = dma_alloc_coherent(vop_dev(vdev), vr_size,
+> +						    &vr_addr, GFP_KERNEL);
+
+Are you sure this is correct?  If dev_is_dma_coherent is NOT true, then
+you call dma_alloc_coherent()?
+
+
+> +		else
+> +			vr->va = (void *)
+> +				__get_free_pages(GFP_KERNEL | __GFP_ZERO,
+> +						 get_order(vr_size));
+>  		if (!vr->va) {
+>  			ret = -ENOMEM;
+>  			dev_err(vop_dev(vdev), "%s %d err %d\n",
+> @@ -310,14 +317,17 @@ static int vop_virtio_add_device(struct vop_vdev *vdev,
+>  		vr->len = vr_size;
+>  		vr->info = vr->va + round_up(vring_size(num, MIC_VIRTIO_RING_ALIGN), 4);
+>  		vr->info->magic = cpu_to_le32(MIC_MAGIC + vdev->virtio_id + i);
+> -		vr_addr = dma_map_single(&vpdev->dev, vr->va, vr_size,
+> -					 DMA_BIDIRECTIONAL);
+> -		if (dma_mapping_error(&vpdev->dev, vr_addr)) {
+> -			free_pages((unsigned long)vr->va, get_order(vr_size));
+> -			ret = -ENOMEM;
+> -			dev_err(vop_dev(vdev), "%s %d err %d\n",
+> -				__func__, __LINE__, ret);
+> -			goto err;
+> +
+> +		if (dev_is_dma_coherent(vop_dev(vdev))) {
+> +			vr_addr = dma_map_single(&vpdev->dev, vr->va, vr_size,
+> +						 DMA_BIDIRECTIONAL);
+> +			if (dma_mapping_error(&vpdev->dev, vr_addr)) {
+> +				free_pages((unsigned long)vr->va, get_order(vr_size));
+> +				ret = -ENOMEM;
+> +				dev_err(vop_dev(vdev), "%s %d err %d\n",
+> +						__func__, __LINE__, ret);
+> +				goto err;
+> +			}
+
+What about if this is not true?
+
+Same for other places in this patch.
+
+thanks,
+
+greg k-h
