@@ -2,122 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CABD279A57
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D8F279A60
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729516AbgIZPVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 11:21:48 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:46731 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZPVs (ORCPT
+        id S1729654AbgIZPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 11:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726956AbgIZPdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 11:21:48 -0400
-Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
- mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MF3U0-1kFbO613Pc-00FPq7; Sat, 26 Sep 2020 17:21:46 +0200
-Received: by mail-qt1-f176.google.com with SMTP id g3so4789034qtq.10;
-        Sat, 26 Sep 2020 08:21:45 -0700 (PDT)
-X-Gm-Message-State: AOAM533d79cxbgXIsayT6PSAuxCKuFW83NIrpDAd16+e5uCPTIODoPZs
-        g9JefNnmnCfL0AKg1HYBUsvqyBICvlEfqPLWaZs=
-X-Google-Smtp-Source: ABdhPJzhhuU4Qjx8HuF0NAIPjTlcDnIE/zYRakYWeCOK+DeEFjsGcCAX1OrxiRvWxcnqtBK6Fiytjj76wV0F+2OJne8=
-X-Received: by 2002:aed:2414:: with SMTP id r20mr4939375qtc.304.1601133705038;
- Sat, 26 Sep 2020 08:21:45 -0700 (PDT)
+        Sat, 26 Sep 2020 11:33:03 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735AEC0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:33:03 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id p15so2588950ejm.7
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:33:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NyijGOIcOg0IQ8xJ7tRK9WXb8VbwFr7joS3ngRxTFtY=;
+        b=IgNtiCGTIRw+9Jq9+OugAEUgOtWjA8eNb9N0lGKIZhSzq8+Nq6i8p6dAPgDSw3WCu5
+         5zLCQcy1nGd484dN8MEuuVSYHqucVtHjEfU81Ws4/lYX/HOp4JbMrZzXbrOql6BtdQAy
+         +hEnD/Pr6tT/viPh9YkxxEEc7eplb0NwJB92c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NyijGOIcOg0IQ8xJ7tRK9WXb8VbwFr7joS3ngRxTFtY=;
+        b=Y3mqamkeOdB8XBOvkRrlbCce8e7J/ulHl7dtMrYBZjC/i0vLIn0pbeLGGuxfDGcgrS
+         oC0SmPScL42DFumzhgyIppRABeXjyCIFKiD3kgMMI8qZW6fTmA3TdpNCU886sIwI2GsG
+         0wE6bYKp528hDwJCFVsDvgAq/ckzFBbO5S/J4uwdAICtcTevjWbM+/FV4Sn0TsjbmuAe
+         W+c3Ck6MHGXbABJ61Z8TwmwEiuGVCgdfmTc88gBN8sSWDYPGn/VZVPgg9i+1RD/kv+Ia
+         Hs7Y+0ZmtF9eBEwP6wNaX/c4c6bwyt5lHpFYWLx6syhKqIzVuM1qOPB7v0rRZqAR8IZC
+         4Z4Q==
+X-Gm-Message-State: AOAM530hVOJEAWs/8VmjoPoY7WWlSyw0kzsiRdGCQdPXQliAqQPEfbOW
+        dXziqg+8tRvNZIJk+1LoOrTO2oIsN8VOZ8is
+X-Google-Smtp-Source: ABdhPJzYYjarbddvoj2byF+EIU0ItK+IxF+U1ZDV6HiEZuFXu3OJqB4rSOwRH9w6aPs9O0zv5zoZrg==
+X-Received: by 2002:a17:906:cb92:: with SMTP id mf18mr8192004ejb.485.1601134381864;
+        Sat, 26 Sep 2020 08:33:01 -0700 (PDT)
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
+        by smtp.gmail.com with ESMTPSA id 16sm4681791edx.72.2020.09.26.08.33.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Sep 2020 08:33:01 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id w2so2188597wmi.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:33:01 -0700 (PDT)
+X-Received: by 2002:a7b:c925:: with SMTP id h5mr2968012wml.28.1601133943201;
+ Sat, 26 Sep 2020 08:25:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200918132439.1475479-1-arnd@arndb.de> <20200918132439.1475479-4-arnd@arndb.de>
- <20200919053807.GK30063@infradead.org>
-In-Reply-To: <20200919053807.GK30063@infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 26 Sep 2020 17:21:29 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a15GEGL8AnxTYZxD_EeGb7__v=iy6rTfCTNq2jmsQe9fQ@mail.gmail.com>
-Message-ID: <CAK8P3a15GEGL8AnxTYZxD_EeGb7__v=iy6rTfCTNq2jmsQe9fQ@mail.gmail.com>
-Subject: Re: [PATCH 3/4] mm: remove compat_sys_move_pages
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
+References: <20200915155122.1768241-1-hch@lst.de> <20200915155122.1768241-18-hch@lst.de>
+ <20200925184622.GB3607091@chromium.org> <20200926141428.GB10379@lst.de>
+In-Reply-To: <20200926141428.GB10379@lst.de>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Sat, 26 Sep 2020 17:25:27 +0200
+X-Gmail-Original-Message-ID: <CAAFQd5CjSKswdc3qOEZy73cyYJ9kfaXsSFyxkOHA+buh-J12UA@mail.gmail.com>
+Message-ID: <CAAFQd5CjSKswdc3qOEZy73cyYJ9kfaXsSFyxkOHA+buh-J12UA@mail.gmail.com>
+Subject: Re: [PATCH 17/18] dma-iommu: implement ->alloc_noncoherent
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Joonyoung Shim <jy0922.shim@samsung.com>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matt Porter <mporter@kernel.crashing.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        linux1394-devel@lists.sourceforge.net,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
+        alsa-devel@alsa-project.org
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:KVXfAnkhrAtApTZq7lgk8gNfG/j8L7eQ9Pmlq/r+fW+yLH7BfZl
- CKUjxn+uimjTYgcEgLk4YYOFtvO+PomwzTXXDalcCZuXZ+0nTXhHewvG2UL5EirUJq7sAlI
- R2gzN+XdtEObx/dr+klo8i1omBylTgmyCvl8Nlnofqe2xO5C4a6Yh++Ig1a5rgd8PQ5nhHx
- su0JvKjLDq6ddczdLxk9A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qo8WD57aOQA=:spANsabPq/6dUBbWKRIwaQ
- lz2wd4dNV2/MMRpMsHOTRrsSl2FgDKdzKqzFMWVfZbVMenuRuAfPH+QD+e4uWQfvQlThJotE6
- E4mx1fflOIQYEfg54TABF9XOnw347EnzH/uwXwihNAki5zFR1tHqFP2+jXfTWtQnm/RKLPe/U
- X7YysNR4f3EUoSy5L6k32LFXeLWJvmlP0aBmkDV7/+B05J4wgOsPDHwU5jmQkx2fiUTnxPgie
- qYYO6DDNbqXDrOOIJAExn6BG3XzV5OtTf56Dma0GQfPd77vS3nQ4Gx8lqgpehoCI7f1GachS4
- DkYQsnldBYoRUnQ+/x708GYlA8tA7ZDzwZRByH3nQW3a4CiAKOrXzL40I0I80uzDT+Nj5hEIR
- 7Y8Q+Vs8NtSta0K4VCOHsm4mchG0SIkmIvA19mmrtKwnPwIABQMGJPqw41NfMh3sIN4KqV/hA
- g6u3R6w/VcZvei0BXo98WxZjSKJ7NR8D2oBLiZ2XuWyfl8RxnMAmBvSX7p+fQWKwSeMrDzeiD
- X3UnqZcKD9YeqKRXFya1+4o3TbMlYj6kS22DP6Me1FskhIYv2Yoxj9I/Dji7q2SVgzaUGDDZZ
- zymBo2hDGaCQLbLZBwlyUyQwi2tH1Vgf2tt5DATa6vG6kYOh6NDTM2V987BzzvP28+jQLPg0b
- 0WY3N/P/hZmsLKqrY8BFaVqc6xOvI17MkYT65yajM/EOAsEhNg8mTLqtTjmkQFt2u9PBrpBAa
- EwABFcEnmF8quFFtihLlrp2PI3Opp0xQW9kfuY4Ps8Y+EPY5cjAYhkPEVW4y/gyrutiS5DmFB
- 9TIJ+jcdcu4+8zb7k0/cTeyiu956ngR7RvNbKw4NhVqCl/F9O/i0tvEv8e/6BimT2kfOuB6KF
- pvGZec/Vd8jwwVO3hcdVNRdh7+ofHisg31o2vpgmACd6ybXzpM8krDJUygqmTfYKjsTsvhHdy
- qhSJ2HGV9OombXt043a3H4Dtr5Ys0zUsMhZ5DomvDtHsZoCYnadEu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 7:38 AM Christoph Hellwig <hch@infradead.org> wrote:
+On Sat, Sep 26, 2020 at 4:14 PM Christoph Hellwig <hch@lst.de> wrote:
 >
-> I'd just keep the native version inline and have the compat one in
-> a helper, but that is just a minor detail.
+> On Fri, Sep 25, 2020 at 06:46:22PM +0000, Tomasz Figa wrote:
+> > > +static void *iommu_dma_alloc_noncoherent(struct device *dev, size_t size,
+> > > +           dma_addr_t *handle, enum dma_data_direction dir, gfp_t gfp)
+> > > +{
+> > > +   if (!gfpflags_allow_blocking(gfp)) {
+> > > +           struct page *page;
+> > > +
+> > > +           page = dma_common_alloc_pages(dev, size, handle, dir, gfp);
+> > > +           if (!page)
+> > > +                   return NULL;
+> > > +           return page_address(page);
+> > > +   }
+> > > +
+> > > +   return iommu_dma_alloc_remap(dev, size, handle, gfp | __GFP_ZERO,
+> > > +                                PAGE_KERNEL, 0);
+> >
+> > iommu_dma_alloc_remap() makes use of the DMA_ATTR_ALLOC_SINGLE_PAGES attribute
+> > to optimize the allocations for devices which don't care about how contiguous
+> > the backing memory is. Do you think we could add an attrs argument to this
+> > function and pass it there?
+> >
+> > As ARM is being moved to the common iommu-dma layer as well, we'll probably
+> > make use of the argument to support the DMA_ATTR_NO_KERNEL_MAPPING attribute to
+> > conserve the vmalloc area.
+>
+> We could probably at it.  However I wonder why this is something the
+> drivers should care about.  Isn't this really something that should
+> be a kernel-wide policy for a given system?
 
-Folded in this change:
+There are IOMMUs out there which support huge pages and those can
+benefit *some* hardware depending on what kind of accesses they
+perform, possibly on a per-buffer basis. At the same time, order > 0
+allocations can be expensive, significantly affecting allocation
+latency, so for devices which don't care about huge pages anyone would
+prefer simple single-page allocations. Currently the drivers know the
+best on whether the hardware they drive would care. There are some
+decision factors listed in the documentation [1].
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index e9dfbde5f12c..d3fa3f4bf653 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1835,18 +1835,14 @@ static void do_pages_stat_array(struct
-mm_struct *mm, unsigned long nr_pages,
-        mmap_read_unlock(mm);
- }
+I can imagine cases where drivers could not be the best to decide
+about this - for example, the workload could vary depending on the
+userspace or a product decision regarding the performance vs
+allocation latency, but we haven't seen such cases in practice yet.
 
--static int put_pages_array(const void __user *chunk_pages[],
--                          const void __user * __user *pages,
--                          unsigned long chunk_nr)
-+static int put_compat_pages_array(const void __user *chunk_pages[],
-+                                 const void __user * __user *pages,
-+                                 unsigned long chunk_nr)
- {
-        compat_uptr_t __user *pages32 = (compat_uptr_t __user *)pages;
-        compat_uptr_t p;
-        int i;
+[1] https://www.kernel.org/doc/html/latest/core-api/dma-attributes.html?highlight=dma_attr_alloc_single_pages#dma-attr-alloc-single-pages
 
--       if (!in_compat_syscall())
--               return copy_from_user(chunk_pages, pages,
--                                     chunk_nr * sizeof(*chunk_pages));
--
-        for (i = 0; i < chunk_nr; i++) {
-                if (get_user(p, pages32 + i))
-                        return -EFAULT;
-@@ -1875,8 +1871,15 @@ static int do_pages_stat(struct mm_struct *mm,
-unsigned long nr_pages,
-                if (chunk_nr > DO_PAGES_STAT_CHUNK_NR)
-                        chunk_nr = DO_PAGES_STAT_CHUNK_NR;
-
--               if (put_pages_array(chunk_pages, pages, chunk_nr))
--                       break;
-+               if (in_compat_syscall()) {
-+                       if (put_compat_pages_array(chunk_pages, pages,
-+                                                  chunk_nr))
-+                               break;
-+               } else {
-+                       if (copy_from_user(chunk_pages, pages,
-+                                     chunk_nr * sizeof(*chunk_pages)))
-+                               break;
-+               }
-
-                do_pages_stat_array(mm, chunk_nr, chunk_pages, chunk_status);
-
-It does make the separation cleaner but it's also more code, which is
-why I had it in the combined function before.
-
-      Arnd
+Best regards,
+Tomasz
