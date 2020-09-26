@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1585F279AC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E72279AC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:28:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729892AbgIZQ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 12:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZQ15 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 12:27:57 -0400
-Received: from agrajag.zerfleddert.de (agrajag.zerfleddert.de [IPv6:2a01:4f8:bc:1de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851EDC0613CE;
-        Sat, 26 Sep 2020 09:27:57 -0700 (PDT)
-Received: by agrajag.zerfleddert.de (Postfix, from userid 1000)
-        id 1B0415B2053C; Sat, 26 Sep 2020 18:27:56 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 18:27:56 +0200
-From:   Tobias Jordan <kernel@cdqe.de>
-To:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH v3] leds: tlc591xx: fix leak of device node iterator
-Message-ID: <20200926162755.GA26532@agrajag.zerfleddert.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1729908AbgIZQ2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 12:28:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgIZQ2W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 12:28:22 -0400
+Received: from localhost.localdomain (unknown [194.230.155.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0219921527;
+        Sat, 26 Sep 2020 16:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601137701;
+        bh=Qrs4nn4P8MIJMMLtYI5GW0AqtZIgnTbyv8Aq9dMh+qs=;
+        h=From:To:Subject:Date:From;
+        b=GxACz545yCdST/02juvd5HJD0E2WCh2M6M/atDu6FKTLdl5T/AsHPrZyXhmeguZmD
+         Jl7Fenj/+06zhLGNhjfFNCGqSiIqcc0zMcwUvvZNXJgn6nC8dx0mHTGgI7/+imMCvb
+         LTCLqI8sKSkaQd+zKDmwR2BDIGWQTCaFCikbDmts=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Robert Jones <rjones@gateworks.com>,
+        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 01/14] dt-bindings: vendor-prefixes: add DFI
+Date:   Sat, 26 Sep 2020 18:27:58 +0200
+Message-Id: <20200926162811.5335-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In one of the error paths of the for_each_child_of_node loop in
-tlc591xx_probe, add missing call to of_node_put.
+Document binding for DFI Inc. company (https://www.dfi.com).
 
-Fixes: 1ab4531ad132 ("leds: tlc591xx: simplify driver by using the managed led API")
-Signed-off-by: Tobias Jordan <kernel@cdqe.de>
-Reviewed-by: Marek Behún <kabel@kernel.org>
-
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
-v3: removed linebreak from Fixes: tag in commit message
-v2: rebased to Pavel's for-next branch
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
- drivers/leds/leds-tlc591xx.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
-index 0929f1275814..a8cc49752cd5 100644
---- a/drivers/leds/leds-tlc591xx.c
-+++ b/drivers/leds/leds-tlc591xx.c
-@@ -214,6 +214,7 @@ tlc591xx_probe(struct i2c_client *client,
- 		err = devm_led_classdev_register_ext(dev, &led->ldev,
- 						     &init_data);
- 		if (err < 0) {
-+			of_node_put(child);
- 			if (err != -EPROBE_DEFER)
- 				dev_err(dev, "couldn't register LED %s\n",
- 					led->ldev.name);
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 66e45112a8d7..6c796956d246 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -265,6 +265,8 @@ patternProperties:
+     description: Denx Software Engineering
+   "^devantech,.*":
+     description: Devantech, Ltd.
++  "^dfi,.*":
++    description: DFI Inc.
+   "^dh,.*":
+     description: DH electronics GmbH
+   "^difrnce,.*":
 -- 
-2.20.1
+2.17.1
 
