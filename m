@@ -2,167 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B174A279A8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35F1279A8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729819AbgIZPzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 11:55:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729570AbgIZPzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 11:55:47 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A60C8C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:55:47 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id c4so1510095oou.6
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:55:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Yr/lJ6INo+GSizfX73ntp7C9B3Ucb54qJR65v8Nt24=;
-        b=EcDJTX6xM4u/n/vl62aion5FfYc2CnNy5nhm4La6wNTHhy3T3S7tR3Vhki29HdGHR2
-         2dgU0tk5pHKkZD8HcWuKhYWW7wdSuSsOKE19d6flUQ9RF2JD5BY9cGGUHAuaDCxq7/ih
-         eYYWwS3WigVPwb+Hcq4tr2oJce3SjBjme8F/Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Yr/lJ6INo+GSizfX73ntp7C9B3Ucb54qJR65v8Nt24=;
-        b=KBAuEKavPqzacValixCbl9GlM0Vu4dHJr2rDc1SVLR6QXyPHc+3EoeYynZebmRCLi8
-         irldwoPPc4BgUqAt+8G1NQFP4b3wiM4Usc+f1AxuDXC9g7lmDfaTufztQeyK1jVWxjCk
-         /UhYoYH1wXgJSoxA6CiIx4ki9CFT/0if0cZiZkRz3YXG/bYGLFydydSmZ+vSncPHnWT9
-         q6CGS80lYXzH8aiKKj08sCN58N+gsmu6k2NCbpYBmlozLvc/+XbgOAvnU0+kvdBPBOp1
-         kOR42oQBuzaMMEpv/3Lk5rlZe2QF60kLQiXpCB0r9PXccMSdfwqCqYPLEZVDGfNdjVmP
-         Rzqw==
-X-Gm-Message-State: AOAM533Ag6/1iB+7Nn3JFbwPBkbvTFOaKvh4L5LAdbvm3aLAk3GPqq45
-        mCUo2TP/LgUZIRhR4Ru5GAnkru9BzoNYj9jAoZIiKg==
-X-Google-Smtp-Source: ABdhPJy3e3VPHJqY/6IOF3yCkA7vof5E5Mmdfb6nINvQcHMvxbm0SpYIbvPX70H3yZ82xpSLd/cX7zjYwt9BXURpR9w=
-X-Received: by 2002:a4a:3b44:: with SMTP id s65mr4356478oos.85.1601135746873;
- Sat, 26 Sep 2020 08:55:46 -0700 (PDT)
+        id S1729856AbgIZPzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 11:55:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54020 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729570AbgIZPzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 11:55:55 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D5D6207D8;
+        Sat, 26 Sep 2020 15:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601135754;
+        bh=LeOuaawcgaWdaoGVCQeecPE0zOwmA8UVkFZ/3GJAbjU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gYfxmpkShgaW0niKHFRUuccauDW3BKWVWuvDeWLwU2mYWU4sV27mSCWVU7joJK+u2
+         N2PAutRzoYLcbjRSo+I2GxThxApQ6PIywFf+benV/N0GMeT4uihquDH56uFDANjslI
+         naSQkbSz4cA1GRcMapiprPlTprCefZbBvwgLtvBE=
+Date:   Sat, 26 Sep 2020 16:55:49 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
+Cc:     <linux-iio@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <eugen.hristev@microchip.com>,
+        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <ludovic.desroches@microchip.com>
+Subject: Re: [PATCH] iio: adc: at91-sama5d2_adc: merge buffer & trigger init
+ into a function
+Message-ID: <20200926165549.23dc420b@archlinux>
+In-Reply-To: <20200924102902.136169-1-alexandru.ardelean@analog.com>
+References: <20200924102902.136169-1-alexandru.ardelean@analog.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <00000000000056a39205b0324001@google.com>
-In-Reply-To: <00000000000056a39205b0324001@google.com>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Sat, 26 Sep 2020 17:55:36 +0200
-Message-ID: <CAKMK7uHBpqXpO7BQWewxbsUMUpmm20WysjLiiYxzvwfq7mDEsw@mail.gmail.com>
-Subject: Re: KASAN: global-out-of-bounds Read in bit_putcs (2)
-To:     syzbot <syzbot+a889d70ef11d6e0f6f22@syzkaller.appspotmail.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Helge Deller <deller@gmx.de>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 9:19 AM syzbot
-<syzbot+a889d70ef11d6e0f6f22@syzkaller.appspotmail.com> wrote:
->
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=126e918d900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=a889d70ef11d6e0f6f22
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
->
-> Unfortunately, I don't have any reproducer for this issue yet.
+On Thu, 24 Sep 2020 13:29:02 +0300
+Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
 
-Looking at the backtrace, this could be fixed by the font size checks
-I just pushed:
+> This change is mostly cosmetic, but it's also a pre-cursor to the
+> the change for 'iio_buffer_set_attrs()', where the helper gets updated to
+> better support multiple IIO buffers for 1 IIO device.
+> 
+> The only functional change is that the error message for the trigger alloc
+> failure is bound to the parent device vs the IIO device object.
+> 
+> Also, the new at91_adc_buffer_and_trigger_init() function was moved after
+> the definition of the 'at91_adc_fifo_attributes'.
+> 
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 
-commit 5af08640795b2b9a940c9266c0260455377ae262 (HEAD ->
-drm-misc-fixes, drm-misc/for-linux-next-fixes,
-drm-misc/drm-misc-fixes)
-Author: Peilin Ye <yepeilin.cs@gmail.com>
-Date:   Thu Sep 24 09:43:48 2020 -0400
+Looks fine to me, but will let this sit on the list for a while
+so others have time to comment.
 
-    fbcon: Fix global-out-of-bounds read in fbcon_get_font()
+Thanks,
 
-But just an educated guess, no more.
--Daniel
+Jonathan
 
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+a889d70ef11d6e0f6f22@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: global-out-of-bounds in __fb_pad_aligned_buffer include/linux/fb.h:654 [inline]
-> BUG: KASAN: global-out-of-bounds in bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
-> BUG: KASAN: global-out-of-bounds in bit_putcs+0xbb6/0xd20 drivers/video/fbdev/core/bitblit.c:185
-> Read of size 1 at addr ffffffff88db78e9 by task syz-executor.4/16465
->
-> CPU: 0 PID: 16465 Comm: syz-executor.4 Not tainted 5.9.0-rc6-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:77 [inline]
->  dump_stack+0x198/0x1fd lib/dump_stack.c:118
->  print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
->  __kasan_report mm/kasan/report.c:513 [inline]
->  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
->  __fb_pad_aligned_buffer include/linux/fb.h:654 [inline]
->  bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
->  bit_putcs+0xbb6/0xd20 drivers/video/fbdev/core/bitblit.c:185
->  fbcon_putcs+0x35a/0x450 drivers/video/fbdev/core/fbcon.c:1308
->  do_update_region+0x399/0x630 drivers/tty/vt/vt.c:675
->  redraw_screen+0x658/0x790 drivers/tty/vt/vt.c:1034
->  fbcon_do_set_font+0x718/0x880 drivers/video/fbdev/core/fbcon.c:2438
->  fbcon_copy_font+0x12f/0x1a0 drivers/video/fbdev/core/fbcon.c:2453
->  con_font_copy drivers/tty/vt/vt.c:4719 [inline]
->  con_font_op+0x65b/0x1140 drivers/tty/vt/vt.c:4734
->  vt_k_ioctl drivers/tty/vt/vt_ioctl.c:473 [inline]
->  vt_ioctl+0x21c9/0x2e90 drivers/tty/vt/vt_ioctl.c:852
->  tty_ioctl+0x1019/0x15f0 drivers/tty/tty_io.c:2656
->  vfs_ioctl fs/ioctl.c:48 [inline]
->  __do_sys_ioctl fs/ioctl.c:753 [inline]
->  __se_sys_ioctl fs/ioctl.c:739 [inline]
->  __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
->  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x45e179
-> Code: 3d b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-> RSP: 002b:00007fe2e03e5c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 0000000000010840 RCX: 000000000045e179
-> RDX: 0000000020000400 RSI: 0000000000004b72 RDI: 0000000000000003
-> RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-> R13: 00007ffff7397e9f R14: 00007fe2e03e69c0 R15: 000000000118cf4c
->
-> The buggy address belongs to the variable:
->  oid_index+0x109/0xae0
->
-> Memory state around the buggy address:
->  ffffffff88db7780: 00 00 00 00 01 f9 f9 f9 f9 f9 f9 f9 00 00 00 00
->  ffffffff88db7800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 06 f9
-> >ffffffff88db7880: f9 f9 f9 f9 00 02 f9 f9 f9 f9 f9 f9 00 01 f9 f9
->                                                           ^
->  ffffffff88db7900: f9 f9 f9 f9 00 04 f9 f9 f9 f9 f9 f9 00 00 02 f9
->  ffffffff88db7980: f9 f9 f9 f9 00 03 f9 f9 f9 f9 f9 f9 07 f9 f9 f9
-> ==================================================================
->
->
 > ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>  drivers/iio/adc/at91-sama5d2_adc.c | 78 ++++++++++++++----------------
+>  1 file changed, 36 insertions(+), 42 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/at91-sama5d2_adc.c b/drivers/iio/adc/at91-sama5d2_adc.c
+> index ad7d9819f83c..b9c3cc6d5913 100644
+> --- a/drivers/iio/adc/at91-sama5d2_adc.c
+> +++ b/drivers/iio/adc/at91-sama5d2_adc.c
+> @@ -1014,21 +1014,6 @@ static struct iio_trigger *at91_adc_allocate_trigger(struct iio_dev *indio,
+>  
+>  	return trig;
+>  }
+> -
+> -static int at91_adc_trigger_init(struct iio_dev *indio)
+> -{
+> -	struct at91_adc_state *st = iio_priv(indio);
+> -
+> -	st->trig = at91_adc_allocate_trigger(indio, st->selected_trig->name);
+> -	if (IS_ERR(st->trig)) {
+> -		dev_err(&indio->dev,
+> -			"could not allocate trigger\n");
+> -		return PTR_ERR(st->trig);
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  static void at91_adc_trigger_handler_nodma(struct iio_dev *indio_dev,
+>  					   struct iio_poll_func *pf)
+>  {
+> @@ -1156,13 +1141,6 @@ static irqreturn_t at91_adc_trigger_handler(int irq, void *p)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> -static int at91_adc_buffer_init(struct iio_dev *indio)
+> -{
+> -	return devm_iio_triggered_buffer_setup(&indio->dev, indio,
+> -		&iio_pollfunc_store_time,
+> -		&at91_adc_trigger_handler, &at91_buffer_setup_ops);
+> -}
+> -
+>  static unsigned at91_adc_startup_time(unsigned startup_time_min,
+>  				      unsigned adc_clk_khz)
+>  {
+> @@ -1683,6 +1661,40 @@ static const struct iio_info at91_adc_info = {
+>  	.hwfifo_set_watermark = &at91_adc_set_watermark,
+>  };
+>  
+> +static int at91_adc_buffer_and_trigger_init(struct device *dev,
+> +					    struct iio_dev *indio)
+> +{
+> +	struct at91_adc_state *st = iio_priv(indio);
+> +	int ret;
+> +
+> +	ret = devm_iio_triggered_buffer_setup(&indio->dev, indio,
+> +		&iio_pollfunc_store_time,
+> +		&at91_adc_trigger_handler, &at91_buffer_setup_ops);
+> +	if (ret < 0) {
+> +		dev_err(dev, "couldn't initialize the buffer.\n");
+> +		return ret;
+> +	}
+> +
+> +	if (!st->selected_trig->hw_trig)
+> +		return 0;
+> +
+> +	iio_buffer_set_attrs(indio->buffer, at91_adc_fifo_attributes);
+> +
+> +	st->trig = at91_adc_allocate_trigger(indio, st->selected_trig->name);
+> +	if (IS_ERR(st->trig)) {
+> +		dev_err(dev, "could not allocate trigger\n");
+> +		return PTR_ERR(st->trig);
+> +	}
+> +
+> +	/*
+> +	 * Initially the iio buffer has a length of 2 and
+> +	 * a watermark of 1
+> +	 */
+> +	st->dma_st.watermark = 1;
+> +
+> +	return 0;
+> +}
+> +
+>  static int at91_adc_probe(struct platform_device *pdev)
+>  {
+>  	struct iio_dev *indio_dev;
+> @@ -1818,27 +1830,9 @@ static int at91_adc_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, indio_dev);
+>  
+> -	ret = at91_adc_buffer_init(indio_dev);
+> -	if (ret < 0) {
+> -		dev_err(&pdev->dev, "couldn't initialize the buffer.\n");
+> +	ret = at91_adc_buffer_and_trigger_init(&pdev->dev, indio_dev);
+> +	if (ret < 0)
+>  		goto per_clk_disable_unprepare;
+> -	}
+> -
+> -	if (st->selected_trig->hw_trig) {
+> -		ret = at91_adc_trigger_init(indio_dev);
+> -		if (ret < 0) {
+> -			dev_err(&pdev->dev, "couldn't setup the triggers.\n");
+> -			goto per_clk_disable_unprepare;
+> -		}
+> -		/*
+> -		 * Initially the iio buffer has a length of 2 and
+> -		 * a watermark of 1
+> -		 */
+> -		st->dma_st.watermark = 1;
+> -
+> -		iio_buffer_set_attrs(indio_dev->buffer,
+> -				     at91_adc_fifo_attributes);
+> -	}
+>  
+>  	if (dma_coerce_mask_and_coherent(&indio_dev->dev, DMA_BIT_MASK(32)))
+>  		dev_info(&pdev->dev, "cannot set DMA mask to 32-bit\n");
 
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
