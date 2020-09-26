@@ -2,147 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00476279678
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 06:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40C4E27967D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 06:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729975AbgIZEBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 00:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbgIZEBT (ORCPT
+        id S1729970AbgIZEH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 00:07:26 -0400
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:39534 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728935AbgIZEH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 00:01:19 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37670C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 21:01:19 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id k13so5051397pfg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 21:01:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=TCLpBq4jyMG77GP2R933Y/gRiD3JyJMcxFQYJsXV3Gk=;
-        b=OsyEZXaTKb7OV2/NqNW/x7EvHET4jO1Hhn1E1qG3wTA3LhsYpgsvqCU56G5e3WC5Vy
-         9BYtAPuc3AATW93F4KxW/1UxkGdKXyrzMydl3hu4aZXk8rDztd6D0QIJfInzLXtU1tXM
-         K1kyD2Fv/qmyLngIPnFqwD+wuEidtDmBPUt+CnTHKQQUdcN/G4mCGd5Z2M9m6z5ztzx0
-         eshGzW1mynZGTNcJN2C4+oNyKIxlz1uHRmaGrq2RVv9glx98+/g+8FtrNcbvcC7qtg1B
-         DGQpc/eU94nQHpvBHcHn3lgL4n37Cf+dLX+aeG9pr96GU9BF/J050++myPFo1Vf46OKZ
-         1DwQ==
+        Sat, 26 Sep 2020 00:07:26 -0400
+Received: by mail-pj1-f47.google.com with SMTP id v14so472151pjd.4;
+        Fri, 25 Sep 2020 21:07:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=TCLpBq4jyMG77GP2R933Y/gRiD3JyJMcxFQYJsXV3Gk=;
-        b=brnK+SgvjsYM3jGnXnQ3x3oRo1/8N505pJwf4Iz58Yr6AKWurITElf58RVcbjeoO1j
-         nmJ45xuJefcTey4unocS4ev4AR1gmAvP42M5wNNnAyNAte9k9kupbg/0KXCbEMxJBTKR
-         9K3JwdEa7hl7KAJWXcVQ0broquGAQr715IaCAJ+nrs/a8cN8cqlS2HLnERWnofyzOs19
-         zLp4XlIX5SgxgwDIG1c9pvG3TEif8t2oJEOYIn3hBdyCnvlGZIFCiaWjUiTm3sRewGXR
-         WRQHnXdsqzriG8YQKhzW5gawYeKwVKsattfOEYLsYRWW/kAYtaBH6mk3bvCA0Wuakcr5
-         zCKw==
-X-Gm-Message-State: AOAM5326mv07jr+e+H4o0NxW5lRZ+Vys13+MrrgiMEKQT8b9uLu9RJCY
-        1vr25xyOs/00kdOKu57E3aI=
-X-Google-Smtp-Source: ABdhPJyZrrVz7fzpSvWglCTbLHQ0w97YfNqd4GdFHcJReA+jLRXGgmNHT1uIfS8ry/R1pdlYaI/cqA==
-X-Received: by 2002:a63:2246:: with SMTP id t6mr1657520pgm.120.1601092878577;
-        Fri, 25 Sep 2020 21:01:18 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id y3sm3480520pgh.40.2020.09.25.21.01.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 21:01:17 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Sat, 26 Sep 2020 12:01:08 +0800
-To:     Alex Elder <elder@linaro.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        Alex Elder <elder@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Johan Hovold <johan@kernel.org>,
-        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [greybus-dev] [PATCH 3/3] [PATCH] staging: greybus: __u8 is
- sufficient for snd_ctl_elem_type_t and snd_ctl_elem_iface_t
-Message-ID: <20200926040108.otqei3k74gipotk6@Rk>
-References: <20200924102039.43895-1-coiby.xu@gmail.com>
- <20200924102039.43895-3-coiby.xu@gmail.com>
- <0175c477851243baa8a92177667d6312@AcuMS.aculab.com>
- <20200925141125.vfm5sjnsfvxo2ras@Rk>
- <160c222d-79e4-c5f0-344f-1a69821db039@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WVVMmOaizRCAFyknMCJGXyHul5Kj6HqFHMuAWn7Lcko=;
+        b=qJPjUWjfBkpBKlnKwdC4zSOaH0pVj9HrIEG6EbOLYmPSGGxYXG2o8En+6skZjz91HV
+         klTAYCedT3wPXBdWn2WCNw36sgbnVgvfJXqMorJE6HIzV8lMIDclEv9cFjJ5rQBP4n4z
+         nIrOBsl3ehUDdMOlgEJIqZUlB0xK0WdCczvaYaMs6R4j50W55dFolmu+TwEohWGqBc0z
+         kKF5xhK5T6k9UhfoePduGyZMKiO9kNs9nr/Dv5VAjwu3qaVSO3bIS7K1EcYEQfcnCksQ
+         v76NFNPXFcEnFBh3WJtjyYdX3wlUMSmuZ1H7lbDwpKVjsjRTFA6Z2oyf6WQ0a+XzsMSu
+         lWXw==
+X-Gm-Message-State: AOAM5310O4cn1Y+6DAyNJZowtYb3VHG41dx8xNUNA1PRhYnoS9ZXGWMv
+        iBDUh2va/dGE7l7ZihlFr66juJl1vno=
+X-Google-Smtp-Source: ABdhPJxFgSLntvqdTS5snYPlST8ToRUWa1dsFtCNQ86G9Oxr3PlIO/qiMStVh5Z0/gS2x/9MRAsn3w==
+X-Received: by 2002:a17:90a:a40d:: with SMTP id y13mr616714pjp.183.1601093245239;
+        Fri, 25 Sep 2020 21:07:25 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:8ee4:7db:d6f2:5686? ([2601:647:4000:d7:8ee4:7db:d6f2:5686])
+        by smtp.gmail.com with ESMTPSA id gj6sm504846pjb.10.2020.09.25.21.07.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 21:07:24 -0700 (PDT)
+Subject: Re: [PATCH] [v3] blk-mq: add cond_resched() in
+ __blk_mq_alloc_rq_maps()
+To:     Xianting Tian <tian.xianting@h3c.com>, axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200926023947.1891-1-tian.xianting@h3c.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <b884d4af-ef49-f294-4099-e35778f2a783@acm.org>
+Date:   Fri, 25 Sep 2020 21:07:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <160c222d-79e4-c5f0-344f-1a69821db039@linaro.org>
+In-Reply-To: <20200926023947.1891-1-tian.xianting@h3c.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 11:02:23AM -0500, Alex Elder wrote:
->On 9/25/20 9:11 AM, Coiby Xu wrote:
->>On Thu, Sep 24, 2020 at 10:54:50AM +0000, David Laight wrote:
->>>From: Coiby Xu
->>>>Sent: 24 September 2020 11:21
->>>>Use __8 to replace int and remove the unnecessary __bitwise type
->>>>attribute.
->>>>
->>>>Found by sparse,
->>>...
->>>>diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
->>>>index 535a7229e1d9..8e71a95644ab 100644
->>>>--- a/include/uapi/sound/asound.h
->>>>+++ b/include/uapi/sound/asound.h
->>>>@@ -950,7 +950,7 @@ struct snd_ctl_card_info {
->>>>     unsigned char components[128];    /* card components / fine
->>>>identification, delimited with one
->>>>space (AC97 etc..) */
->>>> };
->>>>
->>>>-typedef int __bitwise snd_ctl_elem_type_t;
->>>>+typedef __u8 snd_ctl_elem_type_t;
->>>> #define    SNDRV_CTL_ELEM_TYPE_NONE    ((__force
->>>>snd_ctl_elem_type_t) 0) /* invalid */
->>>> #define    SNDRV_CTL_ELEM_TYPE_BOOLEAN    ((__force
->>>>snd_ctl_elem_type_t) 1) /* boolean type */
->>>> #define    SNDRV_CTL_ELEM_TYPE_INTEGER    ((__force
->>>>snd_ctl_elem_type_t) 2) /* integer type */
->>>
->>>WTF is all that about anyway??
->>>What is wrong with:
->>>#define    SNDRV_CTL_ELEM_TYPE_NONE    0u /* invalid */
->>
->>I'm sorry I don't quite understand you. Are you suggesting
->>SNDRV_CTL_ELEM_TYPE_NONE
->>isn't needed in the first place?
->
->I think David is asking why it's defined the way it is,
->and I'd guess it's to have the compiler issue an error
->if you attempt to assign one of these values to a variable
->or field of the wrong type.
->
->No, you should not attempt to change this.
+On 2020-09-25 19:39, Xianting Tian wrote:
+> diff --git a/block/blk-mq.c b/block/blk-mq.c
+> index b3d2785ee..62d152d03 100644
+> --- a/block/blk-mq.c
+> +++ b/block/blk-mq.c
+> @@ -3256,9 +3256,11 @@ static int __blk_mq_alloc_rq_maps(struct blk_mq_tag_set *set)
+>  {
+>  	int i;
+>  
+> -	for (i = 0; i < set->nr_hw_queues; i++)
+> +	for (i = 0; i < set->nr_hw_queues; i++) {
+>  		if (!__blk_mq_alloc_map_and_request(set, i))
+>  			goto out_unwind;
+> +		cond_resched();
+> +	}
+>  
+>  	return 0;
 
-Thank you for the explanation!
-
->
->					-Alex
->>>    David
->>>
->>>-
->>>Registered Address Lakeside, Bramley Road, Mount Farm, Milton
->>>Keynes, MK1 1PT, UK
->>>Registration No: 1397386 (Wales)
->>>
->>
->>--
->>Best regards,
->>Coiby
->>_______________________________________________
->>greybus-dev mailing list
->>greybus-dev@lists.linaro.org
->>https://lists.linaro.org/mailman/listinfo/greybus-dev
->
-
---
-Best regards,
-Coiby
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
