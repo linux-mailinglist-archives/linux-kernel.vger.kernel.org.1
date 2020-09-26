@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27AB27983D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 12:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE5F279843
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 12:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726876AbgIZKME convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Sep 2020 06:12:04 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:35208 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726210AbgIZKME (ORCPT
+        id S1726656AbgIZKTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 06:19:38 -0400
+Received: from mail-m1272.qiye.163.com ([115.236.127.2]:4694 "EHLO
+        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZKTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 06:12:04 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-64-PSRh-TBCNJOepc9cDIXbnQ-1; Sat, 26 Sep 2020 11:12:00 +0100
-X-MC-Unique: PSRh-TBCNJOepc9cDIXbnQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 26 Sep 2020 11:11:59 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 26 Sep 2020 11:11:59 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Coiby Xu' <coiby.xu@gmail.com>
-CC:     "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>
-Subject: RE: [PATCH 3/3] [PATCH] staging: greybus: __u8 is sufficient for
- snd_ctl_elem_type_t and snd_ctl_elem_iface_t
-Thread-Topic: [PATCH 3/3] [PATCH] staging: greybus: __u8 is sufficient for
- snd_ctl_elem_type_t and snd_ctl_elem_iface_t
-Thread-Index: AQHWklx17fnZOC5vd0GG3zjgQ4eUS6l3nRcQgAG47oCAAV+6oA==
-Date:   Sat, 26 Sep 2020 10:11:59 +0000
-Message-ID: <cd09e7c7abaa4700bf9a0245d5844c44@AcuMS.aculab.com>
-References: <20200924102039.43895-1-coiby.xu@gmail.com>
- <20200924102039.43895-3-coiby.xu@gmail.com>
- <0175c477851243baa8a92177667d6312@AcuMS.aculab.com>
- <20200925141125.vfm5sjnsfvxo2ras@Rk>
-In-Reply-To: <20200925141125.vfm5sjnsfvxo2ras@Rk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 26 Sep 2020 06:19:38 -0400
+Received: from ubuntu.localdomain (unknown [58.250.176.229])
+        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id 65A84B021FD;
+        Sat, 26 Sep 2020 18:19:34 +0800 (CST)
+From:   Bailu Lin <bailu.lin@vivo.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Bailu Lin <bailu.lin@vivo.com>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@vivo.com
+Subject: [PATCH] Documentation: Chinese translation of Documentation/arm64/hugetlbpage.rst
+Date:   Sat, 26 Sep 2020 03:18:55 -0700
+Message-Id: <20200926101902.3460-1-bailu.lin@vivo.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGEpOSkNDSUNPSUwZVkpNS0pKSk5OTE9DSENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PyI6FSo4TD8pEgE0SQoYNzw4
+        Li4aCzdVSlVKTUtKSkpOTkxOSU1DVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
+        VUlOS1VKTE1VSUlCWVdZCAFZQU9KSUs3Bg++
+X-HM-Tid: 0a74c9ecd1d398b7kuuu65a84b021fd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coiby Xu
-> Sent: 25 September 2020 15:11
-> 
-> On Thu, Sep 24, 2020 at 10:54:50AM +0000, David Laight wrote:
-> >From: Coiby Xu
-> >> Sent: 24 September 2020 11:21
-> >> Use __8 to replace int and remove the unnecessary __bitwise type attribute.
-> >>
-> >> Found by sparse,
-> >...
-> >> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> >> index 535a7229e1d9..8e71a95644ab 100644
-> >> --- a/include/uapi/sound/asound.h
-> >> +++ b/include/uapi/sound/asound.h
-> >> @@ -950,7 +950,7 @@ struct snd_ctl_card_info {
-> >>  	unsigned char components[128];	/* card components / fine identification, delimited with one
-> >> space (AC97 etc..) */
-> >>  };
-> >>
-> >> -typedef int __bitwise snd_ctl_elem_type_t;
-> >> +typedef __u8 snd_ctl_elem_type_t;
-> >>  #define	SNDRV_CTL_ELEM_TYPE_NONE	((__force snd_ctl_elem_type_t) 0) /* invalid */
-> >>  #define	SNDRV_CTL_ELEM_TYPE_BOOLEAN	((__force snd_ctl_elem_type_t) 1) /* boolean type */
-> >>  #define	SNDRV_CTL_ELEM_TYPE_INTEGER	((__force snd_ctl_elem_type_t) 2) /* integer type */
-> >
-> >WTF is all that about anyway??
-> >What is wrong with:
-> >#define	SNDRV_CTL_ELEM_TYPE_NONE	0u /* invalid */
-> 
-> I'm sorry I don't quite understand you. Are you suggesting SNDRV_CTL_ELEM_TYPE_NONE
-> isn't needed in the first place?
+This is a Chinese translated version of 
+ Documentation/arm64/hugetlbpage.rst
 
-No, just remove all the casts from the constants.
-Are the types even used anywhere else?
+Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+---
+ Documentation/arm64/hugetlbpage.rst           |  2 +
+ .../translations/zh_CN/arm64/hugetlbpage.rst  | 45 +++++++++++++++++++
+ .../translations/zh_CN/arm64/index.rst        |  1 +
+ 3 files changed, 48 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/arm64/hugetlbpage.rst
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/Documentation/arm64/hugetlbpage.rst b/Documentation/arm64/hugetlbpage.rst
+index b44f939e5210..a110124c11e3 100644
+--- a/Documentation/arm64/hugetlbpage.rst
++++ b/Documentation/arm64/hugetlbpage.rst
+@@ -1,3 +1,5 @@
++.. _hugetlbpage_index:
++
+ ====================
+ HugeTLBpage on ARM64
+ ====================
+diff --git a/Documentation/translations/zh_CN/arm64/hugetlbpage.rst b/Documentation/translations/zh_CN/arm64/hugetlbpage.rst
+new file mode 100644
+index 000000000000..64b3b00ea851
+--- /dev/null
++++ b/Documentation/translations/zh_CN/arm64/hugetlbpage.rst
+@@ -0,0 +1,45 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/arm64/hugetlbpage.rst <hugetlbpage_index>`
++
++Translator: Bailu Lin <bailu.lin@vivo.com>
++
++=====================
++ARM64中的 HugeTLBpage
++=====================
++
++大页依靠有效利用 TLBs 来提高地址翻译的性能。这取决于以下
++两点 -
++
++  - 大页的大小
++  - TLBs 支持的条目大小
++
++ARM64 接口支持2种大页方式。
++
++1) pud/pmd 级别的块映射
++---------------------
++
++这是常规大页，他们的 pmd 或 pud 页面表条目指向一个内存块。
++不管 TLB 中支持的条目大小如何，块映射可以减少翻译大页地址
++所需遍历的页表深度。
++
++2) 使用连续位
++-------------
++
++架构中转换页表条目(D4.5.3, ARM DDI 0487C.a)中提供一个连续
++位告诉 MMU 这个条目是一个连续条目集的一员，它可以被缓存在单
++个 TLB 条目中。
++
++在 Linux 中连续位用来增加 pmd 和 pte(最后一级)级别映射的大
++小。受支持的连续页表条目数量因页面大小和页表级别而异。
++
++
++支持以下大页大小配置 -
++
++  ====== ========   ====    ========    ===
++  -      CONT PTE    PMD    CONT PMD    PUD
++  ====== ========   ====    ========    ===
++  4K:         64K     2M         32M     1G
++  16K:         2M    32M          1G
++  64K:         2M   512M         16G
++  ====== ========   ====    ========    ===
+diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
+index 646ed1f7aea3..e31a6090384d 100644
+--- a/Documentation/translations/zh_CN/arm64/index.rst
++++ b/Documentation/translations/zh_CN/arm64/index.rst
+@@ -14,3 +14,4 @@ ARM64 架构
+     :maxdepth: 2
+ 
+     amu
++    hugetlbpage
+-- 
+2.20.1
 
