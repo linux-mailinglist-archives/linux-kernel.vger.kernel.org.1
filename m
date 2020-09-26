@@ -2,160 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82702798E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:39:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136F72798E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:40:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729178AbgIZMjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:39:48 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11546 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726183AbgIZMjr (ORCPT
+        id S1729273AbgIZMj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:39:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgIZMjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:39:47 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08QCWRe0111727;
-        Sat, 26 Sep 2020 08:39:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=3MYKY040lEuw5jDKzV3PF147mCVYwbqY92Kcs2d9pHM=;
- b=stYoAHM4Idv9dsIru0fmgGg81Du4QTVpzAy3h7TyNOJeQLokKMLrJqIE4dCviuU9KwBb
- IsZSYnrpNZ+wsMMBawyZaunEhq0onbMYGNEe3hcH/FWrMyy7MwDtDDOGWflQ+m9zqGz8
- SsbpFbkp1/Tpa5IRfDPQPQ7KG60pXTMaQXHCKb/xbK9mrXkL4uqw+1nFonDjSDncarcQ
- Is+gIoez8CG1++CbuoWEy2GgeDRN8bzXXmZFe5+IyxB5C1JmLB1TjPvIbd2hJGmhxXuy
- 1EErU5N4KtdBp5+VG58W6XUpLKMHS7LRSJzpbkuYAontzSSvj8OuNtPZc3DTB00JxD2Z iA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33t5er8cv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 08:39:04 -0400
-Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08QCWWxS111972;
-        Sat, 26 Sep 2020 08:39:03 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33t5er8cuc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 08:39:03 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08QCRuOI023314;
-        Sat, 26 Sep 2020 12:39:00 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03ams.nl.ibm.com with ESMTP id 33sw980bk9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 12:39:00 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08QCcva320513094
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 26 Sep 2020 12:38:57 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 57D25A4040;
-        Sat, 26 Sep 2020 12:38:57 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 36400A4057;
-        Sat, 26 Sep 2020 12:38:55 +0000 (GMT)
-Received: from localhost (unknown [9.145.18.16])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 26 Sep 2020 12:38:55 +0000 (GMT)
-Date:   Sat, 26 Sep 2020 14:38:53 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Thomas Gleixner <tglx@linutronix.de>, Qian Cai <cai@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-next@vger.kernel.org, x86@kernel.org,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <sivanich@hpe.com>,
-        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Megha Dey <megha.dey@intel.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jacob Pan <jacob.jun.pan@intel.com>,
-        Baolu Lu <baolu.lu@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [patch V2 34/46] PCI/MSI: Make arch_.*_msi_irq[s] fallbacks
- selectable
-Message-ID: <your-ad-here.call-01601123933-ext-6476@work.hours>
-References: <20200826111628.794979401@linutronix.de>
- <20200826112333.992429909@linutronix.de>
- <cdfd63305caa57785b0925dd24c0711ea02c8527.camel@redhat.com>
+        Sat, 26 Sep 2020 08:39:55 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C97C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:39:55 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id q13so3012284vsj.13
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:39:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1EOa5aX4i5mBZjpQ6HlNrXTDh073W0DGOBF91sDN4zk=;
+        b=fbNEH7HqCVNipoH/d+9WzfRO+xTYejLdVmTXlJ9ubG7uZRsyuTTHW0/S4QGvrywy52
+         Z74BLvPk/SasJjIfSGyscWa2HEXO24pJHnJjrCNpFalLv6NxIZ/140TRURCruikiXGOk
+         bJ/Cp6JLIPV81O7D7D68ytBO0+qHNZPJG+7B3lnL8h7nKi+eeQ+KYeLzuY8DjgHbviJc
+         6Rgzsl6eAwH9OkvQjIXD+AU+X949Gn9Ntchae2+RYgDU7RgZ3SLsKSOi2bf7BT9Wlh2l
+         Q7Wr+ioY018GXGLWje6NMa/sUDIJe05oupGi4NNhNkUiRBnT9HPKNQQuoj9gMNqc9EvB
+         sJ6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1EOa5aX4i5mBZjpQ6HlNrXTDh073W0DGOBF91sDN4zk=;
+        b=jaARiH5F1JOEcTOxk8wXV/+A3hrmxdgIGSp8yF2ksethvunhlZ8Fv2elrnSW1QhBMB
+         T17tUTF0LDFdEgKvoTSiOv2M7qs3NLjPt7gppj93VWqfO+wJMi5iTe9vknivPB1LDAP5
+         q4CAMOWi4g7ef7XIeI5YeonXqyYP0qjYzlA280YIrFlT2tuVROm4Ze6rkdf5Oex/gKw3
+         b3RILo+6MvbkStoZKgrMmOqjQKfLN1WobYGyi9ebY3mdzvpdZWBuNclMPZR7wOwHx82v
+         hoobMWX0AY7XL70/2s21FXInvLAmmqWFT1Derzh8Ihs1PTzwujmjbsedELWe2TezxtBh
+         ohhw==
+X-Gm-Message-State: AOAM533QZhxJKOMQDCQWqwl3TfFbRpnr0cmV0sDVnuLWxq6ksXeLgzsd
+        K8NS+3OcBE96lkIaE4xcsr59NO8qdJf97Xn83FNKvA==
+X-Google-Smtp-Source: ABdhPJx3X12OKLYMDP9UWFGIvTLFZvharyRAXi+kCL9U9xMPcbc4pqc8DpFjBGMDZMn349fhD5qbUkJgV8lfHdG0oVg=
+X-Received: by 2002:a05:6102:2085:: with SMTP id h5mr1512316vsr.26.1601123994866;
+ Sat, 26 Sep 2020 05:39:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cdfd63305caa57785b0925dd24c0711ea02c8527.camel@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-26_10:2020-09-24,2020-09-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- adultscore=0 priorityscore=1501 phishscore=0 mlxlogscore=948
- suspectscore=0 mlxscore=0 bulkscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009260111
+References: <20200925124723.575329814@linuxfoundation.org>
+In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 26 Sep 2020 18:09:43 +0530
+Message-ID: <CA+G9fYtSmh5sNHZ77pE9FR0BHFi3kgKi1-hDHqNtk2v=XuaKvA@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/43] 5.4.68-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 09:54:52AM -0400, Qian Cai wrote:
-> On Wed, 2020-08-26 at 13:17 +0200, Thomas Gleixner wrote:
-> > From: Thomas Gleixner <tglx@linutronix.de>
-> > 
-> > The arch_.*_msi_irq[s] fallbacks are compiled in whether an architecture
-> > requires them or not. Architectures which are fully utilizing hierarchical
-> > irq domains should never call into that code.
-> > 
-> > It's not only architectures which depend on that by implementing one or
-> > more of the weak functions, there is also a bunch of drivers which relies
-> > on the weak functions which invoke msi_controller::setup_irq[s] and
-> > msi_controller::teardown_irq.
-> > 
-> > Make the architectures and drivers which rely on them select them in Kconfig
-> > and if not selected replace them by stub functions which emit a warning and
-> > fail the PCI/MSI interrupt allocation.
-> > 
-> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> 
-> Today's linux-next will have some warnings on s390x:
-> 
-> .config: https://gitlab.com/cailca/linux-mm/-/blob/master/s390.config
-> 
-> WARNING: unmet direct dependencies detected for PCI_MSI_ARCH_FALLBACKS
->   Depends on [n]: PCI [=n]
->   Selected by [y]:
->   - S390 [=y]
-> 
-> WARNING: unmet direct dependencies detected for PCI_MSI_ARCH_FALLBACKS
->   Depends on [n]: PCI [=n]
->   Selected by [y]:
->   - S390 [=y]
+On Fri, 25 Sep 2020 at 18:21, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.68 release.
+> There are 43 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.68-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 >
 
-Yes, as well as on mips and sparc which also don't FORCE_PCI.
-This seems to work for s390:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index b0b7acf07eb8..41136fbe909b 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -192,3 +192,3 @@ config S390
-        select PCI_MSI                  if PCI
--       select PCI_MSI_ARCH_FALLBACKS
-+       select PCI_MSI_ARCH_FALLBACKS   if PCI
-        select SET_FS
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 5.4.68-rc1
+git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+git branch: linux-5.4.y
+git commit: a6d2801f4120fe0719556290e85ca7402b7c1fe2
+git describe: v5.4.67-44-ga6d2801f4120
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
+y-sanity/build/v5.4.67-44-ga6d2801f4120
+
+
+No regressions (compared to build v5.4.67)
+
+
+No fixes (compared to build v5.4.67)
+
+Ran 33349 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-syscalls-tests
+* libhugetlbfs
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* v4l2-compliance
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-open-posix-tests
+* ltp-sched-tests
+* network-basic-tests
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
