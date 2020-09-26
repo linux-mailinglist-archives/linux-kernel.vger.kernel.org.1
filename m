@@ -2,136 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C179279597
+	by mail.lfdr.de (Postfix) with ESMTP id CC612279598
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729672AbgIZAc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 20:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728966AbgIZAc0 (ORCPT
+        id S1729743AbgIZAc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 20:32:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28208 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726149AbgIZAc1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:32:26 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988AFC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:32:26 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id x16so3150657pgj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7A7wvtihbUasQazeiP5kITL56ahdnZrHt6WOUS33Asc=;
-        b=HVnZBsEHgmW3ESkk4aqYC6omb7ULZ67kwqwmYAzjWXa8TFoXckg42OCH30+esk2XR/
-         JfX9RwmhvwCqvbalZYs9m4D2OurZxqlQZPYuyoBjURcmTdvccFSmRzeRA8/fRvKCQwZ9
-         FPHThA/lIi5usVvPporvNtzyOjRf2FXy5NP4AitESPgKrLXaw7oatYo/j0uwJiniuOBB
-         7mtCUgcv/RI70ubwMXNjUXTQVSFYY1XR3Xo0cv2D5TMGHyOFH9gZfnJF6A5MMzrguywI
-         gexqVSRF7o3ufOPaipuPFSV7J+LN7zejF+9/z4WiC5CAVUgsDsFTZMgjeQli8LILSaBh
-         rEcA==
+        Fri, 25 Sep 2020 20:32:27 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601080345;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GGED/SP06qDpxxhBcwD9SA9XdIHBfiiFTtiKfufvWL0=;
+        b=BXZ+34knyRjcZXAZngZO8TOGJtgxjgXRy2/LCLaXh/Wc4up9pX3kANhZrZQoMaZweAsokZ
+        61/1BMD3z8sdYRsn9xpmbtQ94BkhZwI0uokEu2IMDAoOyvSwY9q3NgPApejI0V+Aj1Bv8H
+        KKK4FFge/sifGe1ZzlulZ222Lm7Txec=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-231-MSJ_AflNMrqJi474CI16hQ-1; Fri, 25 Sep 2020 20:32:21 -0400
+X-MC-Unique: MSJ_AflNMrqJi474CI16hQ-1
+Received: by mail-wr1-f71.google.com with SMTP id v12so1737125wrm.9
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:32:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7A7wvtihbUasQazeiP5kITL56ahdnZrHt6WOUS33Asc=;
-        b=diaJviRwrusmxjprX/5o175rOip2/ho5vRo8KIDEhXpAM4dIiB1X2mE2xcXBor2cs4
-         umMz4o/5Vzbk1PvzVeVJYwpbSlAYNlqvDShtU9tztaGh0+/0K1LFLK+raJUjx166TF3E
-         iEtrHSmYO3m1R7JGI2st0JIZhhNyqsRR5lpuU4ICUZaGiR6VuJvP9We2Q1TE6xam8z2R
-         ow7I1O3NwkaF6xGAgWpsjdsb9viPeqMTAJedCDngarfKcu+50im40OjIc7YkPOF5x1/H
-         kXIEKBpykMAmB2TaTOeqHs9nufvtZkqjX/qd0czZU1vozj9E9IIqR1dh+ED6KDjv4Zdt
-         MeQA==
-X-Gm-Message-State: AOAM533Oa4yZ26A2MtapiXperPiIQDODN/UkduxkfeyioZ0Xp2CXS0Lz
-        zqzmQCGWDboB9DGbcrvWCy8qvHvsv69z03RApbEhIw==
-X-Google-Smtp-Source: ABdhPJx6pOSmtqbXAf/q/7QSOjp9LtxM9Q98l5N8zdnNxxycPwufyGXGZK/XbULKxGHp8lEvBVU6puF3DZCWf+gxQ8s=
-X-Received: by 2002:a63:78b:: with SMTP id 133mr1058914pgh.381.1601080345839;
- Fri, 25 Sep 2020 17:32:25 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GGED/SP06qDpxxhBcwD9SA9XdIHBfiiFTtiKfufvWL0=;
+        b=jFccjVil/XF99kcX5BQ3sLZVJbX82EZfC5qlREsKAA2wVc5pBf0Zg2FwSoO+gZJJXf
+         IPp56Cn684WRi98iPoeLgJCTlOfujpGTk1v5T4xgJ+Pz1luVp3dk7lYO0P2biLMSwtXa
+         w13QN07Vxb1aOTjzYdNrypK+CwWtjxBGkDCHeaIFCRuZpOofCb3k4tHHbCh0Nk/BVUnH
+         SkqdoN7oOPfXQdDcvlrs2tVuDS0saqQwwZVvtFgpKUnKXmPECBNpmAaR6r3n8xtgyWr0
+         K5yKLSTj5pmGdsr2RRp8N7Ze890YEHDnQTFDRDyWbP20U2aEsH0WNBCTeaH/AhVJwbpl
+         aUsQ==
+X-Gm-Message-State: AOAM531XRNV1Uo9sJgHBppOHjgLqVcQdnYTX/VlqO8m1jw+knugK84Ij
+        rx61RdZIbo/MQdSFhCBus+jHWPTgoABHr9pC0+fHKH2s2WJOGJpX+HGj8jQn0uihrtpKAkFKwCD
+        lNcux7GrDFCK07Mn8Fu6nIZ/c
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr144585wmi.55.1601080340505;
+        Fri, 25 Sep 2020 17:32:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwEvSQR1X+gcWu2eaDsj1njEoatXZVeek8n0YilAr8OsyMpskkzs898k3FWW0lDKy0KoCJplw==
+X-Received: by 2002:a1c:7714:: with SMTP id t20mr144565wmi.55.1601080340270;
+        Fri, 25 Sep 2020 17:32:20 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id h2sm4678148wrp.69.2020.09.25.17.32.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 17:32:19 -0700 (PDT)
+Subject: Re: [PATCH 14/22] kvm: mmu: Add access tracking for tdp_mmu
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-15-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d7964716-8949-a4ac-93ce-a71f3aebbd12@redhat.com>
+Date:   Sat, 26 Sep 2020 02:32:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <00000000000052569205afa67426@google.com> <20200919110831.GD7462@zn.tnic>
- <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
- <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
- <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
- <20200921221336.GN5901@zn.tnic> <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
- <20200923090336.GD28545@zn.tnic> <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
- <20200923103431.GF28545@zn.tnic> <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
- <CACT4Y+bjyAfO-TRjBHT9wR194=prH2C284Oc9akVVHR1492WZA@mail.gmail.com>
-In-Reply-To: <CACT4Y+bjyAfO-TRjBHT9wR194=prH2C284Oc9akVVHR1492WZA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 25 Sep 2020 17:32:14 -0700
-Message-ID: <CAKwvOdkYEP=oRtEu_89JBq2g41PL9_FuFyfeB94XwBKuSz4XLg@mail.gmail.com>
-Subject: Re: general protection fault in perf_misc_flags
-To:     Dmitry Vyukov <dvyukov@google.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200925212302.3979661-15-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 5:22 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Wed, Sep 23, 2020 at 5:20 PM Dmitry Vyukov <dvyukov@google.com> wrote:
-> >
-> > On Wed, Sep 23, 2020 at 12:34 PM Borislav Petkov <bp@alien8.de> wrote:
-> > >
-> > > On Wed, Sep 23, 2020 at 11:24:48AM +0200, Dmitry Vyukov wrote:
-> > > > 3. Run syzkaller locally with custom patches.
-> > >
-> > > Let's say I wanna build the kernel with clang-10 using your .config and
-> > > run it in a vm locally. What are the steps in order to reproduce the
-> > > same workload syzkaller runs in the guest on the GCE so that I can at
-> > > least try get as close as possible to reproducing locally?
-> >
-> > It's a random fuzzing workload. You can get this workload by running
-> > syzkaller locally:
-> > https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md
+On 25/09/20 23:22, Ben Gardon wrote:
+> @@ -332,7 +331,7 @@ static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
+>  	return vcpu->arch.mmu == &vcpu->arch.guest_mmu;
+>  }
+>  
+> -static inline bool spte_ad_enabled(u64 spte)
+> +inline bool spte_ad_enabled(u64 spte)
+>  {
+>  	MMU_WARN_ON(is_mmio_spte(spte));
+>  	return (spte & SPTE_SPECIAL_MASK) != SPTE_AD_DISABLED_MASK;
+> @@ -607,7 +606,7 @@ int is_last_spte(u64 pte, int level)
+>  	return 0;
+>  }
+>  
+> -static bool is_executable_pte(u64 spte)
+> +bool is_executable_pte(u64 spte)
+>  {
+>  	return (spte & (shadow_x_mask | shadow_nx_mask)) == shadow_x_mask;
+>  }
+> @@ -791,7 +790,7 @@ static bool spte_has_volatile_bits(u64 spte)
+>  	return false;
+>  }
+>  
+> -static bool is_accessed_spte(u64 spte)
+> +bool is_accessed_spte(u64 spte)
+>  {
+>  	u64 accessed_mask = spte_shadow_accessed_mask(spte);
+>  
+> @@ -941,7 +940,7 @@ static u64 mmu_spte_get_lockless(u64 *sptep)
+>  	return __get_spte_lockless(sptep);
+>  }
+>  
+> -static u64 mark_spte_for_access_track(u64 spte)
+> +u64 mark_spte_for_access_track(u64 spte)
+>  {
+>  	if (spte_ad_enabled(spte))
+>  		return spte & ~shadow_accessed_mask;
 
-These are virtualized guests, right?  Has anyone played with getting
-`rr` working to record traces of guests in QEMU?
+More candidates for inlining, of course.
 
-I had seen the bug that generated this on github:
-https://julialang.org/blog/2020/09/rr-memory-magic/
+Paolo
 
-That way, even if syzkaller didn't have a reproducer binary, it would
-at least have a replayable trace.
-
-Boris, one question I have. Doesn't the kernel mark pages backing
-executable code as read only at some point?  If that were the case,
-then I don't see how the instruction stream could be modified.  I
-guess static key patching would have to undo that permission mapping
-before patching.
-
-You're right about the length shorter than what I would have expected
-from static key patching.  That could very well be a write through
-dangling int pointer...
-
-> >
-> > The exact clang compiler syzbot used is available here:
-> > https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
->
-> I've marked all other similar ones a dup of this one. Now you can see
-> all manifestations on the dashboard:
-> https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
->
-> Another possible debugging vector on this:
-> The location of crashes does not seem to be completely random and
-> evenly spread across kernel code. I think there are many more static
-> branches (mm, net), but we have 3 crashes in vdso and 9 in paravirt
-> code + these 6 crashes in perf_misc_flags which looks a bit like an
-> outlier (?). What's special about paravirt/vdso?..
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
