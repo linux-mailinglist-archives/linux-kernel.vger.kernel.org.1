@@ -2,53 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC6C279BBF
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0782A279BC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729963AbgIZSDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 14:03:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgIZSDt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 14:03:49 -0400
-Subject: Re: [GIT PULL] s390 updates for 5.9-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601143428;
-        bh=3v0yKJBkaLDyEwbWC9bNvYuE5Kd671T/cBTtvHeAiRM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=Av4U+0u+bkNhWzminbq/VaeWlqIrZyVEYgR8NZhO2ddFjhtFPfP3u37w+zImZv7Qh
-         MXVu+Oaw8EX6RZl8f/mAiVe4v6BlklFtYFWMbdnLwJ7kAge1uAcvOoTh+Y5nnwvqst
-         Yd2bGWn8YR8v+B1AuSr3ISJqQSuwJ5/9qqVDWY8A=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01601111002-ext-0188@work.hours>
-References: <your-ad-here.call-01601111002-ext-0188@work.hours>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01601111002-ext-0188@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-7
-X-PR-Tracked-Commit-Id: f7e80983f0cf470bb82036e73bff4d5a7daf8fc2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: eeddbe6841cde5524b0b1d01f6e060be564453bf
-Message-Id: <160114342871.10659.10166910111191784371.pr-tracker-bot@kernel.org>
-Date:   Sat, 26 Sep 2020 18:03:48 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        id S1730000AbgIZSHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 14:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729418AbgIZSHW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 14:07:22 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B38C0613D4
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:07:21 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 5so4982968pgf.5
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=qRpDmm/g2i3mpPL44HfU6Aop5YrghidKPobGJTRxFOg=;
+        b=mcf5Oah3ns16yKInn1mBN9s9z9lkH8Pw4Wh0Wm1R8wmgN4+hH3M4VaBSzrjZq9yRAY
+         yj6tmJDj1Gw3JWv8VKfcAslXBY5O6YMoTGzh8Q9DDp43kVRs65txHVz3iQEP2rZ4PL5J
+         z0ZdXbthr/jquOGX1CNHf3KfYotYhz6BZGMbcql4GjyTAUTDJ7VAE8GRk+GO+vtSDsT0
+         l40YQlYgPmE9tlI9Z5GpMUDN34B4PSednZWWBl9OIJMc+VdOtYMm76kYtRSdMZJLUXTc
+         Z0U9smrIxUW8B60GOunzj0sEykB5fTNTC7C6QNUZkxwuOzAWKsDFTkYvXB1vdZbqNy8R
+         BmQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qRpDmm/g2i3mpPL44HfU6Aop5YrghidKPobGJTRxFOg=;
+        b=qIHxPlPQROcTvkGmF2MQ5GKgPXCZvw8sNiJxZZlxbigqc2agHeHsqIZO9KUbkllpKN
+         N4viQlAtC6PMXzrSGwjqyENAgs61Seizw6rW9TyUNJhKzwJU+8JaNBE1edLvuVcsPvjw
+         xu9Uwz7DsIvS8mVd9kakbLgVHIiC8TgXTPZ7wkPDUS06AIeIy7jjTcK2uklVlJsHBlsc
+         oHWFEIUniKPuWjnF7Hhr3KtNkPsr667deRHyE7qo89WbeUAqZY3HEH5CidTUce8qwFOQ
+         OTP9MgMFpUJ1/5oM0EESWFP8mwUZMzW61BOSSL3T3ADXC7/fJekS9EV2haU/YEGGw2+N
+         y0MQ==
+X-Gm-Message-State: AOAM531JQqWUeSLDHx5m0FYxNhArJN4HgIN/0p7IWvIUMe0kgJRIUbyu
+        WtyDRP0iqZKaL4bpCCrJg0V0Yw==
+X-Google-Smtp-Source: ABdhPJxpXFQhrlElKUlbAYWtsq+VviE3L43aeWcF+Iu0dH4PD9nYwcDeT4Cd+H4ijKlj/onYr7M3bA==
+X-Received: by 2002:a63:4f10:: with SMTP id d16mr3399364pgb.152.1601143641188;
+        Sat, 26 Sep 2020 11:07:21 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id i126sm6239382pfc.48.2020.09.26.11.07.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Sep 2020 11:07:20 -0700 (PDT)
+Subject: Re: [PATCH next] io-wq: fix use-after-free in io_wq_worker_running
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk,
+        syzbot+45fa0a195b941764e0f0@syzkaller.appspotmail.com,
+        syzbot+9af99580130003da82b1@syzkaller.appspotmail.com,
+        Pavel Begunkov <asml.silence@gmail.com>
+References: <20200926132655.6192-1-hdanton@sina.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <1ac425e8-f302-4e91-0c1d-3ebb0a40cf96@kernel.dk>
+Date:   Sat, 26 Sep 2020 12:07:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200926132655.6192-1-hdanton@sina.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 26 Sep 2020 11:03:22 +0200:
+On 9/26/20 7:26 AM, Hillf Danton wrote:
+> --- a/fs/io-wq.c
+> +++ b/fs/io-wq.c
+> @@ -200,7 +200,6 @@ static void io_worker_exit(struct io_wor
+>  {
+>  	struct io_wqe *wqe = worker->wqe;
+>  	struct io_wqe_acct *acct = io_wqe_get_acct(wqe, worker);
+> -	unsigned nr_workers;
+>  
+>  	/*
+>  	 * If we're not at zero, someone else is holding a brief reference
+> @@ -228,15 +227,11 @@ static void io_worker_exit(struct io_wor
+>  		raw_spin_lock_irq(&wqe->lock);
+>  	}
+>  	acct->nr_workers--;
+> -	nr_workers = wqe->acct[IO_WQ_ACCT_BOUND].nr_workers +
+> -			wqe->acct[IO_WQ_ACCT_UNBOUND].nr_workers;
+>  	raw_spin_unlock_irq(&wqe->lock);
+>  
+> -	/* all workers gone, wq exit can proceed */
+> -	if (!nr_workers && refcount_dec_and_test(&wqe->wq->refs))
+> -		complete(&wqe->wq->done);
+> -
+>  	kfree_rcu(worker, rcu);
+> +	if (refcount_dec_and_test(&wqe->wq->refs))
+> +		complete(&wqe->wq->done);
+>  }
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-7
+Nice, we came up with the same fix, thanks a lot for looking into this.
+I pushed this one out for syzbot to test:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/eeddbe6841cde5524b0b1d01f6e060be564453bf
+https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.9&id=41d5f92f60a61e264dafbada79175dad0bc60c5b
 
-Thank you!
+which is basically identical. I did consider the EXIT check as well, but
+we don't really need it, so I'd prefer to leave that out of it.
+
+I'll queue yours up.
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Jens Axboe
+
