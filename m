@@ -2,314 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2212797D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 10:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4562797EB
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 10:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729287AbgIZIMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 04:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729263AbgIZIMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 04:12:34 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDB27C0613CE;
-        Sat, 26 Sep 2020 01:12:33 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 5so4370715pgf.5;
-        Sat, 26 Sep 2020 01:12:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=hn15A+vsHfLhY3Qf2WKiES6GK2r9N1/EPLi1y9sGZ+o=;
-        b=E9gN1ml5289yy634xD3SxLIOwpcQ28fm+5OJf0GUVpnRghCObspVzuiA4bxNrVSUIk
-         A4PFZp75Q8+OOTW/RcXdduTpvYmbKz1GlgpApbx1wllz4sBoBna4b02v8bCYpjamsiEz
-         rLpcovobdTgXmG4XIWKHOeNEsK56O1BoPBuuE4pmFkAFy8t/7F+5Elt6cbU7dHiZ5IRn
-         tpPVKnHoHC4KdSrb725ADTki2VliPGQvom6u4sW4SxERnhc3t6rZ1TyH0+C+IPdfxyVO
-         M0C1OQbZBBX2b4iImXCYmkiLGd49zuj5QHZMh4sKDs/q/96Uszso3HvKVD+d2WPjoCNP
-         tgHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=hn15A+vsHfLhY3Qf2WKiES6GK2r9N1/EPLi1y9sGZ+o=;
-        b=OPvY4SAEc/BWEmQhmjmQQ/JYYs0wNc4bzzj3xM5WcnHN1flsrXO9WMWsf/QbB5WACf
-         8+eYMDXMngbk/dhEGRoFUCW1m8nG2xNW+WoSL0tMBqmFXblpFES/0lT3SBXh2C8NZTEC
-         KD9IbziwDWcSu4gT7eyRlq44gqDnyNKbF7fIlqZnHJmUFpQIWwyesa5WROHq9T1nVO4M
-         37FUXzwE0vq/mvk/WglfFt7nShryBV9YBDyhKnex4kfLspMjOIQP7jjFoDhKvogTvzw5
-         1Ixkwy13ePQSQGLAvVKp5FVI1VMLjkNm2gBMTUi+FJuvIcoMtbynOGVtoY35ECpNqAe5
-         71mA==
-X-Gm-Message-State: AOAM531hA08byonEjQ1EB2D0fNn/9x7CNaFpJEyhm9PCdoa1OxQljyog
-        Df6Np8mdG2295YNg4sB8X3tm6ay4DZE=
-X-Google-Smtp-Source: ABdhPJyH63/udFsunnlEF9CWjc0nbDNTUFXv6823ctOsZ47ZbwEKBQn1Iy/guE1oUd/7sUJUDxLhLw==
-X-Received: by 2002:a63:1604:: with SMTP id w4mr2057718pgl.148.1601107953334;
-        Sat, 26 Sep 2020 01:12:33 -0700 (PDT)
-Received: from Asurada-Nvidia.nvidia.com (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id i1sm4833497pfk.21.2020.09.26.01.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 01:12:32 -0700 (PDT)
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org
-Cc:     vdumpa@nvidia.com, jonathanh@nvidia.com,
-        linux-tegra@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Date:   Sat, 26 Sep 2020 01:07:19 -0700
-Message-Id: <20200926080719.6822-6-nicoleotsuka@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200926080719.6822-1-nicoleotsuka@gmail.com>
-References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
+        id S1728775AbgIZIX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 04:23:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726037AbgIZIX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 04:23:27 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BB3B020878;
+        Sat, 26 Sep 2020 08:23:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601108607;
+        bh=wITLVVzqw/4Gk3HJIgwI4h6LRF3X+gDtOPA/5VvuV/U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iL9QB/smYYV6fhCm+I84mqen5WFjrj2NwY8JPl0HWzIyWMpJ0gVZCMgaIFCIFYZNy
+         zRad8SJ7ZqAHe0TC3gWsaFOfhd5FH9/Z3Gw6/1LlXIBdGZNw5+DFMPiAkTeZ4+wMPb
+         uUXwSLX5D6dNpnWbxh+yyl2uYcRxpbwkZAfArF8c=
+Received: by pali.im (Postfix)
+        id 57FE2FB2; Sat, 26 Sep 2020 10:23:24 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 10:23:24 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "aaptel@suse.com" <aaptel@suse.com>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        "joe@perches.com" <joe@perches.com>,
+        "mark@harmstone.com" <mark@harmstone.com>,
+        "nborisov@suse.com" <nborisov@suse.com>
+Subject: Re: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
+Message-ID: <20200926082324.npbljzb3ydkfbswy@pali>
+References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
+ <20200911141018.2457639-9-almaz.alexandrovich@paragon-software.com>
+ <20200921132631.q6jfmbhqf6j6ay5t@pali>
+ <7facb550be6449c2b35f467ab1716224@paragon-software.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7facb550be6449c2b35f467ab1716224@paragon-software.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch dumps all active mapping entries from pagetable
-to a debugfs directory named "mappings".
+On Friday 25 September 2020 16:30:19 Konstantin Komarov wrote:
+> From: Pali Rohár <pali@kernel.org>
+> Sent: Monday, September 21, 2020 4:27 PM
+> > To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
+> > Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@vger.kernel.org; dsterba@suse.cz; aaptel@suse.com;
+> > willy@infradead.org; rdunlap@infradead.org; joe@perches.com; mark@harmstone.com; nborisov@suse.com
+> > Subject: Re: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
+> > 
+> > On Friday 11 September 2020 17:10:16 Konstantin Komarov wrote:
+> > > +Mount Options
+> > > +=============
+> > > +
+> > > +The list below describes mount options supported by NTFS3 driver in addition to
+> > > +generic ones.
+> > > +
+> > > +===============================================================================
+> > > +
+> > > +nls=name		This option informs the driver how to interpret path
+> > > +			strings and translate them to Unicode and back. If
+> > > +			this option is not set, the default codepage will be
+> > > +			used (CONFIG_NLS_DEFAULT).
+> > > +			Examples:
+> > > +				'nls=utf8'
+> > > +
+> > > +nls_alt=name		This option extends "nls". It will be used to translate
+> > > +			path string to Unicode if primary nls failed.
+> > > +			Examples:
+> > > +				'nls_alt=cp1251'
+> > 
+> > Hello! I'm looking at other filesystem drivers and no other with UNICODE
+> > semantic (vfat, udf, isofs) has something like nls_alt option.
+> > 
+> > So do we really need it? And if yes, it should be added to all other
+> > UNICODE filesystem drivers for consistency.
+> > 
+> > But I'm very sceptical if such thing is really needed. nls= option just
+> > said how to convert UNICODE code points for userpace. This option is
+> > passed by userspace (when mounting disk), so userspace already know what
+> > it wanted. And it should really use this encoding for filenames (e.g.
+> > utf8 or cp1251) which already told to kernel.
+> 
+> Hi Pali! Thanks for the feedback. We do not consider the nls_alt option as the must have
+> one. But it is very nice "QOL-type" mount option, which may help some amount of
+> dual-booters/Windows users to avoid tricky fails with files originated on non-English
+> Windows systems. One of the cases where this one may be useful is the case of zipping
+> files with non-English names (e.g. Polish etc) under Windows and then unzipping the archive
+> under Linux. In this case unzip will likely to fail on those files, as archive stores filenames not
+> in utf.
 
-Ataching an example:
+Hello!
 
-SWGROUP: hc
-ASID: 0
-reg: 0x250
-PTB_ASID: 0xe00bb880
-as->pd_dma: 0xbb880000
-{
-        [1023] 0xf00bb882 (1)
-        {
-                PDE   ATTR         PHYS         IOVA
-                #1023 0x5    0x159f5d000    0xfffff000
-        }
-}
-Total PDE count: 1
-Total PTE count: 1
+Thank you for providing example. Now I can imagine the problem which
+this option is trying to "workaround".
 
-Signed-off-by: Nicolin Chen <nicoleotsuka@gmail.com>
----
- drivers/iommu/tegra-smmu.c | 130 +++++++++++++++++++++++++++++++++++--
- 1 file changed, 125 insertions(+), 5 deletions(-)
+Personally, I think that this is the issue of the program which is
+unzipping content of the archive. If files are in archive are stored in
+different encoding, then user needs to provide information in which it
+is stored. Otherwise it would be broken.
 
-diff --git a/drivers/iommu/tegra-smmu.c b/drivers/iommu/tegra-smmu.c
-index 9dbc5d7183cc..53160d1ca086 100644
---- a/drivers/iommu/tegra-smmu.c
-+++ b/drivers/iommu/tegra-smmu.c
-@@ -20,6 +20,11 @@
- #include <soc/tegra/ahb.h>
- #include <soc/tegra/mc.h>
- 
-+struct tegra_smmu_group_debug {
-+	const struct tegra_smmu_swgroup *group;
-+	void *priv;
-+};
-+
- struct tegra_smmu_group {
- 	struct list_head list;
- 	struct tegra_smmu *smmu;
-@@ -48,6 +53,8 @@ struct tegra_smmu {
- 	struct dentry *debugfs;
- 
- 	struct iommu_device iommu;	/* IOMMU Core code handle */
-+
-+	struct tegra_smmu_group_debug *group_debug;
- };
- 
- struct tegra_smmu_as {
-@@ -155,6 +162,9 @@ static inline u32 smmu_readl(struct tegra_smmu *smmu, unsigned long offset)
- 
- #define SMMU_PDE_ATTR		(SMMU_PDE_READABLE | SMMU_PDE_WRITABLE | \
- 				 SMMU_PDE_NONSECURE)
-+#define SMMU_PTE_ATTR		(SMMU_PTE_READABLE | SMMU_PTE_WRITABLE | \
-+				 SMMU_PTE_NONSECURE)
-+#define SMMU_PTE_ATTR_SHIFT	(29)
- 
- static unsigned int iova_pd_index(unsigned long iova)
- {
-@@ -337,7 +347,7 @@ static void tegra_smmu_domain_free(struct iommu_domain *domain)
- }
- 
- static const struct tegra_smmu_swgroup *
--tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
-+tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup, int *index)
- {
- 	const struct tegra_smmu_swgroup *group = NULL;
- 	unsigned int i;
-@@ -345,6 +355,8 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
- 	for (i = 0; i < smmu->soc->num_swgroups; i++) {
- 		if (smmu->soc->swgroups[i].swgroup == swgroup) {
- 			group = &smmu->soc->swgroups[i];
-+			if (index)
-+				*index = i;
- 			break;
- 		}
- 	}
-@@ -353,19 +365,22 @@ tegra_smmu_find_swgroup(struct tegra_smmu *smmu, unsigned int swgroup)
- }
- 
- static void tegra_smmu_enable(struct tegra_smmu *smmu, unsigned int swgroup,
--			      unsigned int asid)
-+			      struct tegra_smmu_as *as)
- {
- 	const struct tegra_smmu_swgroup *group;
-+	unsigned int asid = as->id;
- 	unsigned int i;
- 	u32 value;
- 
--	group = tegra_smmu_find_swgroup(smmu, swgroup);
-+	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
- 	if (group) {
- 		value = smmu_readl(smmu, group->reg);
- 		value &= ~SMMU_ASID_MASK;
- 		value |= SMMU_ASID_VALUE(asid);
- 		value |= SMMU_ASID_ENABLE;
- 		smmu_writel(smmu, value, group->reg);
-+		if (smmu->group_debug)
-+			smmu->group_debug[i].priv = as;
- 	} else {
- 		pr_warn("%s group from swgroup %u not found\n", __func__,
- 				swgroup);
-@@ -392,13 +407,15 @@ static void tegra_smmu_disable(struct tegra_smmu *smmu, unsigned int swgroup,
- 	unsigned int i;
- 	u32 value;
- 
--	group = tegra_smmu_find_swgroup(smmu, swgroup);
-+	group = tegra_smmu_find_swgroup(smmu, swgroup, &i);
- 	if (group) {
- 		value = smmu_readl(smmu, group->reg);
- 		value &= ~SMMU_ASID_MASK;
- 		value |= SMMU_ASID_VALUE(asid);
- 		value &= ~SMMU_ASID_ENABLE;
- 		smmu_writel(smmu, value, group->reg);
-+		if (smmu->group_debug)
-+			smmu->group_debug[i].priv = NULL;
- 	}
- 
- 	for (i = 0; i < smmu->soc->num_clients; i++) {
-@@ -501,7 +518,7 @@ static int tegra_smmu_attach_dev(struct iommu_domain *domain,
- 		if (err)
- 			goto err_disable;
- 
--		tegra_smmu_enable(smmu, fwspec->ids[index], as->id);
-+		tegra_smmu_enable(smmu, fwspec->ids[index], as);
- 	}
- 
- 	if (index == 0)
-@@ -1078,8 +1095,96 @@ static int tegra_smmu_clients_show(struct seq_file *s, void *data)
- 
- DEFINE_SHOW_ATTRIBUTE(tegra_smmu_clients);
- 
-+static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
-+{
-+	struct tegra_smmu_group_debug *group_debug = s->private;
-+	const struct tegra_smmu_swgroup *group;
-+	struct tegra_smmu_as *as;
-+	struct tegra_smmu *smmu;
-+	int pd_index, pt_index;
-+	u64 pte_count = 0;
-+	u32 pde_count = 0;
-+	u32 val, ptb_reg;
-+	u32 *pd;
-+
-+	if (!group_debug || !group_debug->priv || !group_debug->group)
-+		return 0;
-+
-+	group = group_debug->group;
-+	as = group_debug->priv;
-+	smmu = as->smmu;
-+
-+	val = smmu_readl(smmu, group->reg) & SMMU_ASID_ENABLE;
-+	if (!val)
-+		return 0;
-+
-+	pd = page_address(as->pd);
-+	if (!pd)
-+		return 0;
-+
-+	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n", group->name,
-+			as->id, group->reg);
-+
-+	mutex_lock(&smmu->lock);
-+	smmu_writel(smmu, as->id & 0x7f, SMMU_PTB_ASID);
-+	ptb_reg = smmu_readl(smmu, SMMU_PTB_DATA);
-+	mutex_unlock(&smmu->lock);
-+
-+	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: 0x%llx\n", ptb_reg, as->pd_dma);
-+	seq_puts(s, "{\n");
-+
-+	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-+		struct page *pt;
-+		u32 *addr;
-+
-+		if (!as->count[pd_index] || !pd[pd_index])
-+			continue;
-+
-+		pde_count++;
-+		pte_count += as->count[pd_index];
-+		seq_printf(s, "\t[%d] 0x%x (%d)\n",
-+			   pd_index, pd[pd_index], as->count[pd_index]);
-+		pt = as->pts[pd_index];
-+		addr = page_address(pt);
-+
-+		seq_puts(s, "\t{\n");
-+		seq_printf(s, "\t\t%-5s %-4s %12s %12s\n", "PDE", "ATTR", "PHYS", "IOVA");
-+		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index++) {
-+			u64 iova;
-+
-+			if (!addr[pt_index])
-+				continue;
-+
-+			iova = ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT;
-+			iova |= ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
-+
-+			seq_printf(s, "\t\t#%-4d 0x%-4x 0x%-12llx 0x%-12llx\n",
-+				   pt_index, addr[pt_index] >> SMMU_PTE_ATTR_SHIFT,
-+				   SMMU_PFN_PHYS(addr[pt_index] & ~SMMU_PTE_ATTR), iova);
-+		}
-+		seq_puts(s, "\t}\n");
-+	}
-+	seq_puts(s, "}\n");
-+	seq_printf(s, "Total PDE count: %d\n", pde_count);
-+	seq_printf(s, "Total PTE count: %lld\n", pte_count);
-+
-+	return 0;
-+}
-+
-+DEFINE_SHOW_ATTRIBUTE(tegra_smmu_mappings);
-+
- static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- {
-+	const struct tegra_smmu_soc *soc = smmu->soc;
-+	struct tegra_smmu_group_debug *group_debug;
-+	struct device *dev = smmu->dev;
-+	struct dentry *d;
-+	int i;
-+
-+	group_debug = devm_kzalloc(dev, sizeof(*group_debug) * soc->num_swgroups, GFP_KERNEL);
-+	if (!group_debug)
-+		return;
-+
- 	smmu->debugfs = debugfs_create_dir("smmu", NULL);
- 	if (!smmu->debugfs)
- 		return;
-@@ -1088,6 +1193,21 @@ static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
- 			    &tegra_smmu_swgroups_fops);
- 	debugfs_create_file("clients", S_IRUGO, smmu->debugfs, smmu,
- 			    &tegra_smmu_clients_fops);
-+	d = debugfs_create_dir("mappings", smmu->debugfs);
-+
-+	for (i = 0; i < soc->num_swgroups; i++) {
-+		const struct tegra_smmu_swgroup *group = &soc->swgroups[i];
-+
-+		if (!group->name)
-+			continue;
-+
-+		group_debug[i].group = group;
-+
-+		debugfs_create_file(group->name, 0444, d, &group_debug[i],
-+				    &tegra_smmu_mappings_fops);
-+	}
-+
-+	smmu->group_debug = group_debug;
- }
- 
- static void tegra_smmu_debugfs_exit(struct tegra_smmu *smmu)
--- 
-2.17.1
+Also this your approach with nls=utf-8 and nls_alt=cp1251 is broken. I
+can provide you string encoded in cp1251 which is also valid UTF-8
+sequence.
 
+For example: sequence of bytes "d0 93".
+
+In cp1251 it is Р“, but also it is valid UTF-8 sequence for Г (CYRILLIC
+CAPITAL LETTER GHE).
+
+Because cp1251 is set as nls_alt, you would get UTF-8 interpretation.
+And for all other invalid UTF-8 sequences you would get cp1251.
+
+For me it looks like you are trying to implement workaround based on
+some heuristic in kernel for userspace application which handles
+encoding incorrectly. And because all CP???? encodings are defined at
+full 8bit space and UTF-8 is subset of 8bit space, it would never work
+correctly.
+
+Also I do not think that kernel is correct place for workarounding
+userspace applications which handles encoding incorrectly.
+
+> Windows have that "Language for non-Unicode programs" setting, which controls the
+> encoding used for the described (and similar) cases.
+
+This windows setting is something different. It is system wide option
+which affects -A WINAPI functions and defines one fixed 8bit encoding
+(ACP) which should be used for converting UTF-16 strings (wchar_t*) into
+8bit (char*) ACP encoding.
+
+It is something similar to Unix CODESET set in LC_CTYPE from locale. But
+not the same.
+
+> Overall, it's kinda niche mount option, but we suppose it's legit for Windows-originated filesystems.
+> What do you think on this, Pali?
+
+I think this is not only for Windows-orientated FS, but rather for all
+filesystems which store filenames in UNICODE (as opposite of sequence of
+bytes).
+
+E.g. ext4 now has extension for storing (and validating) that filenames
+are also in UNICODE (on disk it is in UTF-8).
+
+Same for Beos FS or UDF fs (on DVD/BD-R). In most cases these fs are
+mounted with nls=utf-8 to interpret UNICODE as utf-8.
+
+And none of these fs have such nls_alt option as I show above, it cannot
+work reliable.
