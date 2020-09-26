@@ -2,95 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8513A279B8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08AF279B9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729965AbgIZRqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 13:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgIZRqK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 13:46:10 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF16C0613CE;
-        Sat, 26 Sep 2020 10:46:09 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id s12so7304414wrw.11;
-        Sat, 26 Sep 2020 10:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9nv/gU1YFk3IEzxVXp+ajt3nGB2j/MGxPydW57eKpfM=;
-        b=NLkmcx5c4XyG/S8wZ2CLwlcTTMyzHSrYy8MNlwbhY19F0eLA+32tVA+WhEpA+4pUIZ
-         xMPomFGEZ+L91ubW3I5riVmEtWSO2BkF6RrRMFq7TPrR2nCTonBuzczX+A7HD6AxfsuE
-         /CfzHeCtBFokXnKPISTkzFe0vyyY2iT2CGKSRX2AxAm4CgBViMpzkf73n+6bEqPVGb7l
-         uiF68D4+aw2StsIhh2JH8sTIzMy7nw55Wy+o65cc13Zt/cJ5HSUCteMpsRzz4q5arQ1C
-         +zcDtXT4csKgPd4f3FH5ZqL26RqYqR/VkcgflosraPio1EOUBpwY7CoKiwchAu1ovSEk
-         tX6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9nv/gU1YFk3IEzxVXp+ajt3nGB2j/MGxPydW57eKpfM=;
-        b=tP8gOfwRRMfo/T4ZkF29xSHgcO5yZZBqpsiWk+7Xwb88kyIwOMnQiJhrjf/sfosFVG
-         vlWI7YycgMmQn/rJGDW/oyK7x0RlkqRVpHMwtr/TKCP6zcC6geLEFCTnRTIKBMHBBhYi
-         NX6w3PZCu9pzZHvvwZ3vBflSmKXArc79GKrr1Zv7FwkCVbCY5/8sJX6AnSwgsNAXXlga
-         37NchOIEyhxhTS4TGQ9MMVM6HQtSaAIzP5LiS4ro5+2pVIHqqmsokWBeANPC7Se6/Epg
-         mO1DTlZ2ER8VmCDRiWJ8AuuzsNPepbYuYRIR/5afLueLHURJFqwDsktsMy7j9QZt3hoY
-         yMnA==
-X-Gm-Message-State: AOAM5334mQzqsr4Uh0uFOlkddXRKKGxAJ3B/8eCFQl0Hyctx8CaH2sVB
-        zZegbJzHemTO4BadvnQ3f6s=
-X-Google-Smtp-Source: ABdhPJzGjYA4k797mLZ6hLfD7hQA/MmrvjqyzeuLKlsKpl+/J4fcQz0GQmPAJbPcEfOKH1z6OTEpmw==
-X-Received: by 2002:adf:d845:: with SMTP id k5mr9652147wrl.285.1601142368485;
-        Sat, 26 Sep 2020 10:46:08 -0700 (PDT)
-Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
-        by smtp.gmail.com with ESMTPSA id a5sm7366001wrp.37.2020.09.26.10.46.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 10:46:07 -0700 (PDT)
-From:   Alex Dewar <alex.dewar90@gmail.com>
-Cc:     Alex Dewar <alex.dewar90@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] wl3501_cs: Remove unnecessary NULL check
-Date:   Sat, 26 Sep 2020 18:45:58 +0100
-Message-Id: <20200926174558.9436-1-alex.dewar90@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        id S1729685AbgIZRuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 13:50:12 -0400
+Received: from mail.nic.cz ([217.31.204.67]:42970 "EHLO mail.nic.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgIZRuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 13:50:11 -0400
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id D48B614081C;
+        Sat, 26 Sep 2020 19:50:08 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 19:50:08 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org,
+        lee.jones@linaro.org, pavel@ucw.cz, dmurphy@ti.com,
+        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        andrew@lunn.ch, jason@lakedaemon.net, gregory.clement@bootlin.com,
+        luka.perkov@sartura.hr, robert.marko@sartura.hr
+Subject: Re: [PATCH v2 7/7] arm64: dts: marvell: Add a device tree for the
+ iEi Puzzle-M801 board
+Message-ID: <20200926195008.6bd84dd3@nic.cz>
+In-Reply-To: <20200926135514.26189-8-luka.kovacic@sartura.hr>
+References: <20200926135514.26189-1-luka.kovacic@sartura.hr>
+        <20200926135514.26189-8-luka.kovacic@sartura.hr>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In wl3501_detach(), link->priv is checked for a NULL value before being
-passed to free_netdev(). However, it cannot be NULL at this point as it
-has already been passed to other functions, so just remove the check.
+On Sat, 26 Sep 2020 15:55:14 +0200
+Luka Kovacic <luka.kovacic@sartura.hr> wrote:
 
-Addresses-Coverity: CID 710499: Null pointer dereferences (REVERSE_INULL)
-Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
----
- drivers/net/wireless/wl3501_cs.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+> +	leds {
+> +		compatible = "gpio-leds";
+> +		status = "okay";
+> +		pinctrl-0 = <&cp0_sfpplus_led_pins &cp1_sfpplus_led_pins>;
+> +		pinctrl-names = "default";
+> +
+> +		led0 {
+> +			function = LED_FUNCTION_STATUS;
+> +			label = "p2_act";
+> +			gpios = <&cp1_gpio1 6 GPIO_ACTIVE_LOW>;
+> +		};
 
-diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
-index 4e7a2140649b..026e88b80bfc 100644
---- a/drivers/net/wireless/wl3501_cs.c
-+++ b/drivers/net/wireless/wl3501_cs.c
-@@ -1433,9 +1433,7 @@ static void wl3501_detach(struct pcmcia_device *link)
- 	wl3501_release(link);
- 
- 	unregister_netdev(dev);
--
--	if (link->priv)
--		free_netdev(link->priv);
-+	free_netdev(dev);
- }
- 
- static int wl3501_get_name(struct net_device *dev, struct iw_request_info *info,
--- 
-2.28.0
+There should be a dash in LED node name, please pass this dts via
+dt_binding_check
+  led-0 {
+    ...
+  };
 
+Also why not add the `color` property to the LED? This is DTS for a
+specific device, right?
+`label` is obsolete. The LED subsystem creates a name in form
+  [device:]color:function
+If this LED should blink for activity on port 2 (is this an ethernet
+port?), the function should be LED_FUNCTION_LAN and function-enumerator
+should be <2> (or function should be LED_FUNCTION_ACTIVITY, depending
+on how the LED subsystem goes forward with this, but certainly not
+LED_FUNCTION_STATUS), and trigger-sources should be set to point to the
+ethernet port.
+
+Luka, are you willing to change this once we solve this API properly
+in LED subsystem?
+
+
+
+> +		led6 {
+> +			function = LED_FUNCTION_STATUS;
+> +			linux,default-trigger = "disk-activity";
+> +			label = "front-hdd-led";
+> +			gpios = <&cp0_gpio2 22 GPIO_ACTIVE_HIGH>;
+> +		};
+
+led-6. LED_FUNCTION_DISK. `label` deprecated.
+
+> +		leds {
+> +			compatible = "iei,wt61p803-puzzle-leds";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			led@0 {
+> +				reg = <0>;
+> +				color = <LED_COLOR_ID_BLUE>;
+> +				label = "front-power-led";
+> +			};
+
+Again, `label` is deprecated. Rather use function =
+<LED_FUNCTION_POWER>;
+
+Marek
