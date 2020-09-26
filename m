@@ -2,92 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ACD5279A70
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFD90279A71
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729768AbgIZPo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 11:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33800 "EHLO
+        id S1729777AbgIZPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 11:45:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZPo6 (ORCPT
+        with ESMTP id S1725208AbgIZPpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 11:44:58 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5FAC0613CE;
-        Sat, 26 Sep 2020 08:44:58 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h17so5292088otr.1;
-        Sat, 26 Sep 2020 08:44:58 -0700 (PDT)
+        Sat, 26 Sep 2020 11:45:51 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95B93C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:45:51 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id m17so6669825ioo.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:45:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MuHdzA37Qe4obG+MPXMuKUvutx3ax+Rx5eyXvGpEJEg=;
-        b=h0Vr64nFd5A7hwenm9t9wnaqGOi0xO26wpQnq02PqrYLHl6pikfr3TjE+dSykE2MLK
-         tYfeSf9IVY1Xep6cpjSzD7KhX5TjQJIYEaIM0lU29iyFTJf88ytF76qb9CMFAv5F0rtQ
-         lj1EWX+Q+onLYWWrEgQn2UvPAGMHG5yK9J2n896RunrDCbawJwNvXgBD3rWbpXPPeOvX
-         C6lrrE+fJOGDXuo3R1XDroboPjdJnuWbxWrRF7wkJVGvybZPhievUy2FH/Ogy66yv0aQ
-         MibTobrbn8sRujzMNq/Qzou/wgkg/rGh+l6skpupC+/P8gZ/VL719xAYdCvAdxU1IMSw
-         IkMg==
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cUcc96qmmsmXhIDIWyNGNgj2tgAIXCiW8bgJ7yEQCf4=;
+        b=HstJU1V8m21HPsQjBCpbk2XNCKgRgD0cSkO7EYLE7jPBi6YawIrW+zCl1BznuGrXM3
+         1zi0VTUuNwsU8MXZ1Kp8lP/jiOTUpbewktofGEHeDni+SjJadh/eUs8vI94DA9IW0iVG
+         gCfAN7RL4Jy+pIimK0DCkz7CLZ4W64I45Sgx4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MuHdzA37Qe4obG+MPXMuKUvutx3ax+Rx5eyXvGpEJEg=;
-        b=ONQuek6IFC7A42BjStxhulWMkH2Iy2IdM67a7/7buhaYBiTKnb5kP7tDj1nuWnfq0G
-         ST1vzyaxVjTCggHcoeRzlTaIOqObl2WnkLyVCYVnCFFjRomIMDPle5ktg2BSFam7clJC
-         odLyIgWha5YkJfwVcGvmtg1yfJB+91Rh4o7+WeIoSTD2OYiiKfDjqKZqZ+5laOcr1zcF
-         vzgP+G1DSUaHL6/wCRBSBbOiXJjZN29vqQ3U0T7H1aEoz2bwx1DYVPn44WcJN1Q/n0cR
-         p5FPEBap5pFSfR4wx1NqYoVEfUlGFZovK3s61oDTkE3VKT98RgFXaxrmJBalkJ4eqQz7
-         7wgg==
-X-Gm-Message-State: AOAM533JE1xJtI25wowvrHVReDKUdhvZi3TfWm49rze5kXFgfkJ0sjp+
-        0Kk3TGgBVGwpc9Eu1dfJt0SLc+lg2ds=
-X-Google-Smtp-Source: ABdhPJyUdMJ32MeRbdxn9Rhtii1IY1N40Pq+v6RlcFiTMwjJEOhZVVaYEQluFYaVqgIufI9gFTV1Sw==
-X-Received: by 2002:a9d:65cc:: with SMTP id z12mr3649612oth.301.1601135097743;
-        Sat, 26 Sep 2020 08:44:57 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c19sm651086ooq.35.2020.09.26.08.44.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 26 Sep 2020 08:44:57 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 26 Sep 2020 08:44:56 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 00/56] 5.8.12-rc1 review
-Message-ID: <20200926154456.GC233060@roeck-us.net>
-References: <20200925124727.878494124@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cUcc96qmmsmXhIDIWyNGNgj2tgAIXCiW8bgJ7yEQCf4=;
+        b=rRFyahi1MEJ+4YPd5Aq1QaVC7E0zsKXuoCdsc/WZJJZrU2zc5gxFJxxmcH7VP5/re5
+         ShdZfQFKoSXNW5pUAFNdfLzgjApUE7zCKkOa/LmdM91JNjAvqKk8o2RdeIFKXXBm2Wuk
+         wZcApDp+yfFLZm9SDzQZz/aGFxsV2wKF+9UPT9qrMrqP9ZlklHO2WBP7I0PJ3FjGsbsZ
+         ouxbT1+z/U38go0i5bcmjbeAcscIOmJoeWR+5CD56QVhRCkY+kawX/xEE1JTfLd5EdE6
+         HRyuoQKVFfpnLSWaCFLg02PiKsLJZ57Xsl3gsubRyvUj0G4mjdG8AQGy/RluF0eK2qsx
+         jCtg==
+X-Gm-Message-State: AOAM531WjYZdownlTmpVKNujTss1y5HV5Rb93R2HTNumkRbD0nYTcVMv
+        qDxLzSky5Hk6qXcMoksK96O/RvVEWrVsnVuPxkHl7A==
+X-Google-Smtp-Source: ABdhPJxYQW4s8s2GK6a9QE2MD2YsS5Djnq+9WWvZGwfVW5LtEsDKuzf8lXSOS8gDIelmcPC+7U6+n2Mr1XyKGxeEayE=
+X-Received: by 2002:a02:cd0e:: with SMTP id g14mr3322513jaq.74.1601135150823;
+ Sat, 26 Sep 2020 08:45:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925124727.878494124@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200925235634.4089867-1-joel@joelfernandes.org> <CAM9d7ciK4w-BYLPLK7ADpB5dz83YV5Un4zG66PxPzBS=QzS9mA@mail.gmail.com>
+In-Reply-To: <CAM9d7ciK4w-BYLPLK7ADpB5dz83YV5Un4zG66PxPzBS=QzS9mA@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 26 Sep 2020 11:45:39 -0400
+Message-ID: <CAEXW_YQEozS_O6VQcBRzFS_t9sihV12HLZ6q=v+YFjJi8+Yprg@mail.gmail.com>
+Subject: Re: [PATCH] perf: sched: Show start of latency as well
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 02:47:50PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.8.12 release.
-> There are 56 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
-> Anything received after that time might be too late.
-> 
+On Sat, Sep 26, 2020 at 10:10 AM Namhyung Kim <namhyung@kernel.org> wrote:
+[...]
+> On Sat, Sep 26, 2020 at 8:56 AM Joel Fernandes (Google)
+> <joel@joelfernandes.org> wrote:
+> >
+> > perf sched latency is really useful at showing worst-case latencies that task
+> > encountered since wakeup. However it shows only the end of the latency. Often
+> > times the start of a latency is interesting as it can show what else was going
+> > on at the time to cause the latency. I certainly myself spending a lot of time
+> > backtracking to the start of the latency in "perf sched script" which wastes a
+> > lot of time.
+> >
+> > This patch therefore adds a new column "Max delay start". Considering this,
+> > also rename "Maximum delay at" to "Max delay end" as its easier to understand.
+>
+> Oh, I thought we print start time not the end time.  I think it's better
+> to print start time but others may think differently.
 
-Build results:
-	total: 154 pass: 153 fail: 1
-Failed builds:
-	powerpc:allmodconfig
-Qemu test results:
-	total: 430 pass: 430 fail: 0
+Right, glad you think so too.
 
-The powerpc failure is the usual spurious 'Inconsistent kallsyms data'.
-Hopefully a fix will find its way into mainline soon.
+> Actually we can calculate the start time from the end time and the
+> latency but it'd be convenient if the tool does that for us (as they are
+> printed in different units).
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Correct, but as you mention it is more burdensome to calculate each time.
 
-Guenter
+> Then the remaining concern is the screen
+> width (of 114 or 115?) but I think it should be fine for most of us.
+
+It is 114 without the patch and 140 with it. I tried my best to trim
+it a little. It fits fine on my screen with the patch. So I think we
+should be good!
+
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks, Namyhung!
+
+ - Joel
+
+> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >
+> >
+> > ---
+> > A sample output can be seen after applying patch:
+> > https://hastebin.com/raw/ivinimaler
+> >
+> >  tools/perf/builtin-sched.c | 24 ++++++++++++++----------
+> >  1 file changed, 14 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
+> > index 459e4229945e..2791da1fe5f7 100644
+> > --- a/tools/perf/builtin-sched.c
+> > +++ b/tools/perf/builtin-sched.c
+> > @@ -130,7 +130,8 @@ struct work_atoms {
+> >         struct thread           *thread;
+> >         struct rb_node          node;
+> >         u64                     max_lat;
+> > -       u64                     max_lat_at;
+> > +       u64                     max_lat_start;
+> > +       u64                     max_lat_end;
+> >         u64                     total_lat;
+> >         u64                     nb_atoms;
+> >         u64                     total_runtime;
+> > @@ -1096,7 +1097,8 @@ add_sched_in_event(struct work_atoms *atoms, u64 timestamp)
+> >         atoms->total_lat += delta;
+> >         if (delta > atoms->max_lat) {
+> >                 atoms->max_lat = delta;
+> > -               atoms->max_lat_at = timestamp;
+> > +               atoms->max_lat_start = atom->wake_up_time;
+> > +               atoms->max_lat_end = timestamp;
+> >         }
+> >         atoms->nb_atoms++;
+> >  }
+> > @@ -1322,7 +1324,7 @@ static void output_lat_thread(struct perf_sched *sched, struct work_atoms *work_
+> >         int i;
+> >         int ret;
+> >         u64 avg;
+> > -       char max_lat_at[32];
+> > +       char max_lat_start[32], max_lat_end[32];
+> >
+> >         if (!work_list->nb_atoms)
+> >                 return;
+> > @@ -1344,13 +1346,14 @@ static void output_lat_thread(struct perf_sched *sched, struct work_atoms *work_
+> >                 printf(" ");
+> >
+> >         avg = work_list->total_lat / work_list->nb_atoms;
+> > -       timestamp__scnprintf_usec(work_list->max_lat_at, max_lat_at, sizeof(max_lat_at));
+> > +       timestamp__scnprintf_usec(work_list->max_lat_start, max_lat_start, sizeof(max_lat_start));
+> > +       timestamp__scnprintf_usec(work_list->max_lat_end, max_lat_end, sizeof(max_lat_end));
+> >
+> > -       printf("|%11.3f ms |%9" PRIu64 " | avg:%9.3f ms | max:%9.3f ms | max at: %13s s\n",
+> > +       printf("|%11.3f ms |%9" PRIu64 " | avg:%8.3f ms | max:%8.3f ms | max start: %12s s | max end: %12s s\n",
+> >               (double)work_list->total_runtime / NSEC_PER_MSEC,
+> >                  work_list->nb_atoms, (double)avg / NSEC_PER_MSEC,
+> >                  (double)work_list->max_lat / NSEC_PER_MSEC,
+> > -                max_lat_at);
+> > +                max_lat_start, max_lat_end);
+> >  }
+> >
+> >  static int pid_cmp(struct work_atoms *l, struct work_atoms *r)
+> > @@ -3118,7 +3121,8 @@ static void __merge_work_atoms(struct rb_root_cached *root, struct work_atoms *d
+> >                         list_splice(&data->work_list, &this->work_list);
+> >                         if (this->max_lat < data->max_lat) {
+> >                                 this->max_lat = data->max_lat;
+> > -                               this->max_lat_at = data->max_lat_at;
+> > +                               this->max_lat_start = data->max_lat_start;
+> > +                               this->max_lat_end = data->max_lat_end;
+> >                         }
+> >                         zfree(&data);
+> >                         return;
+> > @@ -3157,9 +3161,9 @@ static int perf_sched__lat(struct perf_sched *sched)
+> >         perf_sched__merge_lat(sched);
+> >         perf_sched__sort_lat(sched);
+> >
+> > -       printf("\n -----------------------------------------------------------------------------------------------------------------\n");
+> > -       printf("  Task                  |   Runtime ms  | Switches | Average delay ms | Maximum delay ms | Maximum delay at       |\n");
+> > -       printf(" -----------------------------------------------------------------------------------------------------------------\n");
+> > +       printf("\n -------------------------------------------------------------------------------------------------------------------------------------------\n");
+> > +       printf("  Task                  |   Runtime ms  | Switches | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |\n");
+> > +       printf(" -------------------------------------------------------------------------------------------------------------------------------------------\n");
+> >
+> >         next = rb_first_cached(&sched->sorted_atom_root);
+> >
+> > --
+> > 2.28.0.709.gb0816b6eb0-goog
