@@ -2,76 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AF1279B96
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8513A279B8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:46:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730104AbgIZRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 13:47:12 -0400
-Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:26389 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730064AbgIZRrL (ORCPT
+        id S1729965AbgIZRqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 13:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgIZRqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 13:47:11 -0400
-Received: from tomoyo.flets-east.jp ([153.230.197.127])
-        by mwinf5d89 with ME
-        id Yhlm230082lQRaH03hn6A8; Sat, 26 Sep 2020 19:47:10 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Sep 2020 19:47:10 +0200
-X-ME-IP: 153.230.197.127
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Neukum <oneukum@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] USB: cdc-acm: blacklist ETAS ES58X device
-Date:   Sun, 27 Sep 2020 02:45:36 +0900
-Message-Id: <20200926174542.278166-7-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200926174542.278166-1-mailhol.vincent@wanadoo.fr>
-References: <20200926174542.278166-1-mailhol.vincent@wanadoo.fr>
+        Sat, 26 Sep 2020 13:46:10 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFF16C0613CE;
+        Sat, 26 Sep 2020 10:46:09 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id s12so7304414wrw.11;
+        Sat, 26 Sep 2020 10:46:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9nv/gU1YFk3IEzxVXp+ajt3nGB2j/MGxPydW57eKpfM=;
+        b=NLkmcx5c4XyG/S8wZ2CLwlcTTMyzHSrYy8MNlwbhY19F0eLA+32tVA+WhEpA+4pUIZ
+         xMPomFGEZ+L91ubW3I5riVmEtWSO2BkF6RrRMFq7TPrR2nCTonBuzczX+A7HD6AxfsuE
+         /CfzHeCtBFokXnKPISTkzFe0vyyY2iT2CGKSRX2AxAm4CgBViMpzkf73n+6bEqPVGb7l
+         uiF68D4+aw2StsIhh2JH8sTIzMy7nw55Wy+o65cc13Zt/cJ5HSUCteMpsRzz4q5arQ1C
+         +zcDtXT4csKgPd4f3FH5ZqL26RqYqR/VkcgflosraPio1EOUBpwY7CoKiwchAu1ovSEk
+         tX6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9nv/gU1YFk3IEzxVXp+ajt3nGB2j/MGxPydW57eKpfM=;
+        b=tP8gOfwRRMfo/T4ZkF29xSHgcO5yZZBqpsiWk+7Xwb88kyIwOMnQiJhrjf/sfosFVG
+         vlWI7YycgMmQn/rJGDW/oyK7x0RlkqRVpHMwtr/TKCP6zcC6geLEFCTnRTIKBMHBBhYi
+         NX6w3PZCu9pzZHvvwZ3vBflSmKXArc79GKrr1Zv7FwkCVbCY5/8sJX6AnSwgsNAXXlga
+         37NchOIEyhxhTS4TGQ9MMVM6HQtSaAIzP5LiS4ro5+2pVIHqqmsokWBeANPC7Se6/Epg
+         mO1DTlZ2ER8VmCDRiWJ8AuuzsNPepbYuYRIR/5afLueLHURJFqwDsktsMy7j9QZt3hoY
+         yMnA==
+X-Gm-Message-State: AOAM5334mQzqsr4Uh0uFOlkddXRKKGxAJ3B/8eCFQl0Hyctx8CaH2sVB
+        zZegbJzHemTO4BadvnQ3f6s=
+X-Google-Smtp-Source: ABdhPJzGjYA4k797mLZ6hLfD7hQA/MmrvjqyzeuLKlsKpl+/J4fcQz0GQmPAJbPcEfOKH1z6OTEpmw==
+X-Received: by 2002:adf:d845:: with SMTP id k5mr9652147wrl.285.1601142368485;
+        Sat, 26 Sep 2020 10:46:08 -0700 (PDT)
+Received: from localhost.localdomain (cpc83661-brig20-2-0-cust443.3-3.cable.virginm.net. [82.28.105.188])
+        by smtp.gmail.com with ESMTPSA id a5sm7366001wrp.37.2020.09.26.10.46.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 10:46:07 -0700 (PDT)
+From:   Alex Dewar <alex.dewar90@gmail.com>
+Cc:     Alex Dewar <alex.dewar90@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] wl3501_cs: Remove unnecessary NULL check
+Date:   Sat, 26 Sep 2020 18:45:58 +0100
+Message-Id: <20200926174558.9436-1-alex.dewar90@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ES58X devices are incorrectly recognized as USB Modem (CDC ACM),
-preventing the etas-es58x module to load.
+In wl3501_detach(), link->priv is checked for a NULL value before being
+passed to free_netdev(). However, it cannot be NULL at this point as it
+has already been passed to other functions, so just remove the check.
 
-Thus, these have been added
-to the ignore list in drivers/usb/class/cdc-acm.c
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Addresses-Coverity: CID 710499: Null pointer dereferences (REVERSE_INULL)
+Signed-off-by: Alex Dewar <alex.dewar90@gmail.com>
 ---
- drivers/usb/class/cdc-acm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/net/wireless/wl3501_cs.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 7f6f3ab5b8a6..ed9355094e8c 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1906,6 +1906,17 @@ static const struct usb_device_id acm_ids[] = {
- 	.driver_info = IGNORE_DEVICE,
- 	},
+diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
+index 4e7a2140649b..026e88b80bfc 100644
+--- a/drivers/net/wireless/wl3501_cs.c
++++ b/drivers/net/wireless/wl3501_cs.c
+@@ -1433,9 +1433,7 @@ static void wl3501_detach(struct pcmcia_device *link)
+ 	wl3501_release(link);
  
-+	/* Exclude ETAS ES58x */
-+	{ USB_DEVICE(0x108c, 0x0159), /* ES581.4 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+	{ USB_DEVICE(0x108c, 0x0168), /* ES582.1 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+	{ USB_DEVICE(0x108c, 0x0169), /* ES584.1 */
-+	.driver_info = IGNORE_DEVICE,
-+	},
-+
- 	{ USB_DEVICE(0x1bc7, 0x0021), /* Telit 3G ACM only composition */
- 	.driver_info = SEND_ZERO_PACKET,
- 	},
+ 	unregister_netdev(dev);
+-
+-	if (link->priv)
+-		free_netdev(link->priv);
++	free_netdev(dev);
+ }
+ 
+ static int wl3501_get_name(struct net_device *dev, struct iw_request_info *info,
 -- 
-2.26.2
+2.28.0
 
