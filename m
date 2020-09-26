@@ -2,129 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E32927961D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDA9279620
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729929AbgIZCBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 22:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729424AbgIZCBT (ORCPT
+        id S1729613AbgIZCDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 22:03:17 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:38198 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgIZCDR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 22:01:19 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B534C0613CE;
-        Fri, 25 Sep 2020 19:01:18 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id ay8so4378633edb.8;
-        Fri, 25 Sep 2020 19:01:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YdfVio6rmUqMvX7vwhcdUswt2FQkou3Nqy5kTbRbmY0=;
-        b=fis0NCRweX16x/ncWjGXr4Z4/PmZQHN6hmIhBk7WKakMtayURDkAU2G3SPQebmaB/0
-         5SpkamHkXFYrgicR16bRZ6jNj8K9jjzgS49WcHSYUPHKD94X2FOshCcaP3lnlB9OOwlg
-         IPQuj/9So7I8X1sdOd35OG+6mRFxjfmrPwJlAj+27K+5Q4cSGFOf3LM3LyK2nxgi1g5q
-         x84Pej82GWK7q/E4QJi60Km1gBCO3MKIrKDCzX/rZbinbbHx02P2suAY7HGrL+o9NEiF
-         GkUfO/kL3okiTu2R+Y+bp+rdq/4xpol8rUREgFZuceCZ3oV9gLOaKwO3wneCnUcvcFow
-         GOIQ==
+        Fri, 25 Sep 2020 22:03:17 -0400
+Received: by mail-io1-f72.google.com with SMTP id e21so3534627iod.5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 19:03:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YdfVio6rmUqMvX7vwhcdUswt2FQkou3Nqy5kTbRbmY0=;
-        b=uZ9PDCYRoGhs1s6prFh5Q3h05I69p6tjGRd9L0+LrlRlEYxQJQrxiCQhpuNv4CqcjQ
-         tqF158i6N921RWG3k4qr5PPMOJyg8vjE4nmlniJ/YQQHsC7FjlHesW6dXzhPSiMTkZ6+
-         TwxWEQOv+MX4OamOy58v2NShV3BcZZvqKZcLfGSj1y8fxHptR3Btf9i50uVimtBjLiYQ
-         rGZGfp/wsUl5Ugf+EtmXZR46Jwvbwj0XMZevt3ti2Fg13i0HvJPTcjRCGJ208hZg+Wd+
-         7fSWOzx/a7GvsOpP7tcJnHk7uQA7frruUlNbJ+lFK+A+q+hpZPS3BPuYaw3KjJmscKJU
-         v8tA==
-X-Gm-Message-State: AOAM530twzPfKJV69FAckyoGcOUshKeF8j8MUk4YBcTxvgdDAHlMJHdb
-        Cmr3TagT128tLxZnP6/G5+ktGSMPjD9G9SvyOWo=
-X-Google-Smtp-Source: ABdhPJxEXygHmq8u9eUYIwXLYXGShAkwHdgEW491xonCzHONISgO9hzlOwStRESAH6vkozCf/y/jqwAa2dIX02DFFuo=
-X-Received: by 2002:aa7:da89:: with SMTP id q9mr4380585eds.111.1601085677069;
- Fri, 25 Sep 2020 19:01:17 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=NC2wUH41jP18o/wjPjgQ83NFv0wnrPzqydTUpCudUfo=;
+        b=Ak+Ftm4aA3w5aU605ZQ53jLirbuMEFMfhZ98SgaTDPL3HMDiYbqoHAJ4mw51svkZgA
+         eUJ/olsy5Mqb7fLl/EZyoEvFCKe1mud1GHmiN1ednZC5XwoaNb6efEqCHwNJ+pvpiFsQ
+         vceqTax3NWRr9STsnke4yAAOiBPuVS98CMULsPzk4hgMvGezxD06lOxS230rC82dcw8o
+         tRjFXoHyMlQLy+bnvB7kKJ689Z7a2bioOnd/k+N800TUOVW91gSwQFxDkt9P9muBINY4
+         i2MucAi8SD9cPH2ZuX7mP2HHJne/pBmhzR7o5w8/M1ZETmBusqHafZqXHsFh2cUqRzmw
+         dd4g==
+X-Gm-Message-State: AOAM532ZBMGPVDM/atP19vpohxaTXdl7yukjIk3v8JiuPIf38UQMItlL
+        rO6Q5PxkUlCjm/dCoQvDdcL+gITfcd+Alj0g0wQSuGbk/xSA
+X-Google-Smtp-Source: ABdhPJx4Isq0YfHLtYAudG7Z8MoW/JHCXhhrlzbGPODTmqFpxpR/6szS8gR2pFh+V9ciHxmvv2mb7VLe19d8Ai2+4TzctwgbaKE7
 MIME-Version: 1.0
-References: <20200923210352.1176386-1-pgwipeout@gmail.com> <20200923210352.1176386-2-pgwipeout@gmail.com>
- <df2d6a8d-8a6c-464b-8f35-a7994ea01534@gmail.com>
-In-Reply-To: <df2d6a8d-8a6c-464b-8f35-a7994ea01534@gmail.com>
-From:   Peter Geis <pgwipeout@gmail.com>
-Date:   Fri, 25 Sep 2020 22:01:05 -0400
-Message-ID: <CAMdYzYosBUUudsRnf9RQ1HKYq8cS4uXRm-9Mg1=hZy+v_Q_X6g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] ARM: tegra: Add device-tree for Ouya
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Bob Ham <rah@settrans.net>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+X-Received: by 2002:a92:99cb:: with SMTP id t72mr2471688ilk.172.1601085796148;
+ Fri, 25 Sep 2020 19:03:16 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 19:03:16 -0700
+In-Reply-To: <00000000000064653f059f419b58@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000226d3f05b02dd607@google.com>
+Subject: Re: KASAN: use-after-free Read in bit_putcs
+From:   syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
+        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 24, 2020 at 8:12 PM Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> ...
-> > +/ {
-> > +     model = "Ouya Game Console";
-> > +     compatible = "ouya,ouya", "nvidia,tegra30";
-> > +
-> > +     aliases {
-> > +             rtc0 = &pmic;
-> > +             rtc1 = "/rtc@7000e000";
-> > +             serial0 = &uartd; /* Debug Port */
-> > +             serial1 = &uartc; /* Bluetooth */
-> > +             mmc0 = &sdmmc4; /* eMMC */
-> > +             mmc1 = &sdmmc3; /* WiFi */
->
-> Thierry may want to sort these aliases in alphabet order.
+syzbot has found a reproducer for the following issue on:
 
-Thanks, I'll fix this.
+HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13b41d03900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=b308f5fd049fbbc6e74f
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=143d11d3900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150d16e5900000
 
->
-> > +     };
->
-> ...
-> > +             pmic: pmic@2d {
-> > +                     compatible = "ti,tps65911";
-> > +                     reg = <0x2d>;
-> > +
-> > +                     interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
-> > +                     #interrupt-cells = <2>;
-> > +                     interrupt-controller;
-> > +
-> > +                     ti,system-power-controller;
->
-> Are the ti,sleep-keep-ck32k and other properties not needed for Ouya
-> like they are needed for Nexus 7?
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com
 
-Ouya is wall powered, so ultra low power isn't terribly necessary.
-Also with LP1 and LP0 not working, it doesn't make much sense to
-implement this yet.
+==================================================================
+BUG: KASAN: use-after-free in __fb_pad_aligned_buffer include/linux/fb.h:654 [inline]
+BUG: KASAN: use-after-free in bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
+BUG: KASAN: use-after-free in bit_putcs+0xbb6/0xd20 drivers/video/fbdev/core/bitblit.c:185
+Read of size 1 at addr ffff88809df498fe by task syz-executor859/6860
 
->
-> ...
-> > +     sdmmc3: mmc@78000400 {
-> > +             status = "okay";
-> > +
-> > +             #address-cells = <1>;
-> > +             #size-cells = <0>;
-> > +
-> > +             bus-width = <4>;
-> > +             non-removable;
->
-> Recently I added assigned-clocks here for Nexus7/A500 DTs in order to
-> get true 50MHz for the WiFi SDIO.
+CPU: 1 PID: 6860 Comm: syz-executor859 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ __fb_pad_aligned_buffer include/linux/fb.h:654 [inline]
+ bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
+ bit_putcs+0xbb6/0xd20 drivers/video/fbdev/core/bitblit.c:185
+ fbcon_putcs+0x35a/0x450 drivers/video/fbdev/core/fbcon.c:1308
+ con_flush drivers/tty/vt/vt.c:2575 [inline]
+ do_con_write+0xb6b/0x1dd0 drivers/tty/vt/vt.c:2905
+ con_write+0x22/0xb0 drivers/tty/vt/vt.c:3250
+ process_output_block drivers/tty/n_tty.c:595 [inline]
+ n_tty_write+0x3ce/0xf80 drivers/tty/n_tty.c:2333
+ do_tty_write drivers/tty/tty_io.c:962 [inline]
+ tty_write+0x4d9/0x870 drivers/tty/tty_io.c:1046
+ vfs_write+0x2b0/0x730 fs/read_write.c:576
+ ksys_write+0x12d/0x250 fs/read_write.c:631
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4403c9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffd97e140c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 00000000004403c9
+RDX: 0000000000001006 RSI: 0000000020000180 RDI: 0000000000000006
+RBP: 00000000006cb018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 000000000000000d R11: 0000000000000246 R12: 0000000000401c30
+R13: 0000000000401cc0 R14: 0000000000000000 R15: 0000000000000000
 
-Thanks, it seems we are running at 48MHz right now, so I'll look into this.
+Allocated by task 6860:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+ __do_kmalloc mm/slab.c:3655 [inline]
+ __kmalloc+0x1b0/0x360 mm/slab.c:3664
+ kmalloc include/linux/slab.h:559 [inline]
+ kzalloc include/linux/slab.h:666 [inline]
+ tomoyo_init_log+0x1376/0x1ee0 security/tomoyo/audit.c:275
+ tomoyo_supervisor+0x34d/0xef0 security/tomoyo/common.c:2097
+ tomoyo_audit_env_log security/tomoyo/environ.c:36 [inline]
+ tomoyo_env_perm+0x17f/0x1f0 security/tomoyo/environ.c:63
+ tomoyo_environ security/tomoyo/domain.c:674 [inline]
+ tomoyo_find_next_domain+0x1438/0x1f77 security/tomoyo/domain.c:881
+ tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
+ tomoyo_bprm_check_security+0x121/0x1a0 security/tomoyo/tomoyo.c:91
+ security_bprm_check+0x45/0xa0 security/security.c:840
+ search_binary_handler fs/exec.c:1807 [inline]
+ exec_binprm fs/exec.c:1860 [inline]
+ bprm_execve+0x879/0x1b10 fs/exec.c:1931
+ do_execveat_common+0x626/0x7c0 fs/exec.c:2026
+ do_execve fs/exec.c:2094 [inline]
+ __do_sys_execve fs/exec.c:2170 [inline]
+ __se_sys_execve fs/exec.c:2165 [inline]
+ __x64_sys_execve+0x8f/0xc0 fs/exec.c:2165
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
->
-> > +             mmc-pwrseq = <&wifi_pwrseq>;
-> > +             vmmc-supply = <&sdmmc_3v3_reg>;
-> > +             vqmmc-supply = <&vdd_1v8>;
+Freed by task 6860:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+ kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x10e/0x2b0 mm/slab.c:3756
+ tomoyo_supervisor+0x36e/0xef0 security/tomoyo/common.c:2149
+ tomoyo_audit_env_log security/tomoyo/environ.c:36 [inline]
+ tomoyo_env_perm+0x17f/0x1f0 security/tomoyo/environ.c:63
+ tomoyo_environ security/tomoyo/domain.c:674 [inline]
+ tomoyo_find_next_domain+0x1438/0x1f77 security/tomoyo/domain.c:881
+ tomoyo_bprm_check_security security/tomoyo/tomoyo.c:101 [inline]
+ tomoyo_bprm_check_security+0x121/0x1a0 security/tomoyo/tomoyo.c:91
+ security_bprm_check+0x45/0xa0 security/security.c:840
+ search_binary_handler fs/exec.c:1807 [inline]
+ exec_binprm fs/exec.c:1860 [inline]
+ bprm_execve+0x879/0x1b10 fs/exec.c:1931
+ do_execveat_common+0x626/0x7c0 fs/exec.c:2026
+ do_execve fs/exec.c:2094 [inline]
+ __do_sys_execve fs/exec.c:2170 [inline]
+ __se_sys_execve fs/exec.c:2165 [inline]
+ __x64_sys_execve+0x8f/0xc0 fs/exec.c:2165
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88809df49800
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 254 bytes inside of
+ 1024-byte region [ffff88809df49800, ffff88809df49c00)
+The buggy address belongs to the page:
+page:000000001b295380 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x9df49
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00027dc7c8 ffff8880aa041850 ffff8880aa040700
+raw: 0000000000000000 ffff88809df49000 0000000100000002 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88809df49780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88809df49800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88809df49880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                                ^
+ ffff88809df49900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88809df49980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
