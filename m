@@ -2,138 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08AC0279551
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AEBF279558
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729437AbgIZACc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 20:02:32 -0400
-Received: from mga11.intel.com ([192.55.52.93]:51330 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726316AbgIZACc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:02:32 -0400
-IronPort-SDR: ecWFLi2tbqR/p25QMIHXSNoSrNn3kza5XI0TLNsAXwFewv90a0/y6+8qew9PwzJvxHjtMn7BGl
- 6VQB4aMGP6Cw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="159010602"
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="159010602"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 16:06:22 -0700
-IronPort-SDR: Gj73vju1PevShmuOPOGSqNY1n7hilQGGdQO/3rcDX3UxbTjM1GWgBi+oN98rBEpKyzftWs7sCC
- Ia8iPlg5Natw==
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="337032376"
-Received: from agluck-desk2.sc.intel.com (HELO agluck-desk2.amr.corp.intel.com) ([10.3.52.68])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 16:06:22 -0700
-Date:   Fri, 25 Sep 2020 16:06:20 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     "Song, Youquan" <youquan.song@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] x86/mce: Add Skylake quirk for patrol scrub reported
- errors
-Message-ID: <20200925230620.GA26621@agluck-desk2.amr.corp.intel.com>
-References: <20200615184056.26531-1-tony.luck@intel.com>
- <20200616192952.GO13515@zn.tnic>
- <3908561D78D1C84285E8C5FCA982C28F7F670974@ORSMSX115.amr.corp.intel.com>
- <20200617074158.GB10118@zn.tnic>
- <20200617184901.GA387@agluck-desk2.amr.corp.intel.com>
- <20200828202150.GA11854@agluck-desk2.amr.corp.intel.com>
- <20200925191912.GO16872@zn.tnic>
+        id S1729643AbgIZAFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 20:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729557AbgIZAFO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 20:05:14 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA9BC0613D5
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:05:14 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id u25so3970900otq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:05:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7/y3L9VN/lSk2/yPUqjWQt/iBis6Y2WvD6aC+aqQ45k=;
+        b=wA/fSUbCe7cC28vTLS/YT0tT76JDS+7fxa3cGEfRScdzizM7/d4lQ3G5tDwq+j6tRr
+         f5NKLkUjfVDSdnhoUZmcx8NdhLxwkjkvQhuABf7iRnPqEGlQH9hynBsQNLi25WLXaCuY
+         /rbGD6cjXl93vWRGQA871YKIp7Bb7P56tOOV7vpfvIxU+WeLVp5CzbsaUZEjn6jUWQLl
+         tBbG/ZZLXGAW2hpmGTBKUgBZwan0THbmz06m+HhLdBHqCthxfN+EEVWknR7xrRuqrfPq
+         5HdvFmKneiLFEdQ2JEkOvXVlGupA3b/GMjrPdu4BrpI6cfDnx5XLs2mZXcCznuC2UVdw
+         Y7ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7/y3L9VN/lSk2/yPUqjWQt/iBis6Y2WvD6aC+aqQ45k=;
+        b=f2vtG+XJ/7hhvx2U1EweEZY1/lDCD2V3XlM7sZbTUZu9Nba5cgAAgtUjAwQCvv3W0S
+         9DsoIET84ddQ+Hx3SE9LeF/FI974kmF6yTZ/pwE7kaNVNsrWiz3vlvE5z+pYEst0uENX
+         N2K2euMoGWhIBRV2kPOhdOBFKpJ1baTHoRLhnu5UCX2+c6XppHLUTvV6rZ6VC2gQCJGI
+         SM3Ox03p2ZFXSt6a2AM6nCOuImBOUTj8YszrAozWbqYe1H7bnXmbvPh8HGuEBUvrG8/V
+         tnQSMa9ou8jbUYgFUf7eekdWSeEAsqCKvHhx2lLxFUx9pOr72PWRwUlvEb/JiISTnFdw
+         eX+A==
+X-Gm-Message-State: AOAM530IZeTMQV6yI+Qi49ZYy6h8pQsd82zb0FZDjaiEkIhKb4p8ijfI
+        io24BMIZp3ROa1aRTlVWf3ZWDA==
+X-Google-Smtp-Source: ABdhPJyxRPMklUI0IGQBC65+pPVzl0orUnkXc+fxoQ3qhoC120rZYlU136YEqY+6sBrtpVDVgjtRkg==
+X-Received: by 2002:a9d:7d89:: with SMTP id j9mr1926888otn.205.1601078713572;
+        Fri, 25 Sep 2020 17:05:13 -0700 (PDT)
+Received: from builder.lan (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
+        by smtp.gmail.com with ESMTPSA id m25sm1030777otl.71.2020.09.25.17.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 17:05:12 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 17:00:39 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Amit Pundir <amit.pundir@linaro.org>
+Cc:     Kalle Valo <kvalo@codeaurora.org>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        ath10k@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] ath10k: Introduce a devicetree quirk to skip host cap
+ QMI requests
+Message-ID: <20200926000039.GA2441@builder.lan>
+References: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200925191912.GO16872@zn.tnic>
+In-Reply-To: <1601058581-19461-1-git-send-email-amit.pundir@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 09:19:12PM +0200, Borislav Petkov wrote:
-> And after staring at this a bit, it looks like all it wants to do is to
-> adjust the severity. And we have a severity grading mechanism. So let's
-> see how ugly it would become if we extended it to check that too.
-> 
-> So how's that below instead?
+On Fri 25 Sep 11:29 PDT 2020, Amit Pundir wrote:
 
-In some ways that's pretty neat. But it would still be ugly if we need
-to extend it further for other issues. Especially if they don't have such
-a simple rule to adjust the severity.
-
-> It builds here, I haven't even thought about testing it and I might've
-> missed out on some aspects but tbh this looks much better to me. Because
-> it is not bolted on the handling path but integral part of it.
+> There are firmware versions which do not support host capability
+> QMI request. We suspect either the host cap is not implemented or
+> there may be firmware specific issues, but apparently there seem
+> to be a generation of firmware that has this particular behavior.
 > 
-> Thoughts?
+> For example, firmware build on Xiaomi Poco F1 (sdm845) phone:
+> "QC_IMAGE_VERSION_STRING=WLAN.HL.2.0.c3-00257-QCAHLSWMTPLZ-1"
 > 
+> If we do not skip the host cap QMI request on Poco F1, then we
+> get a QMI_ERR_MALFORMED_MSG_V01 error message in the
+> ath10k_qmi_host_cap_send_sync(). But this error message is not
+> fatal to the firmware nor to the ath10k driver and we can still
+> bring up the WiFi services successfully if we just ignore it.
+> 
+> Hence introducing this DeviceTree quirk to skip host capability
+> QMI request for the firmware versions which do not support this
+> feature.
+> 
+> Suggested-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Amit Pundir <amit.pundir@linaro.org>
 > ---
-> diff --git a/arch/x86/kernel/cpu/mce/severity.c b/arch/x86/kernel/cpu/mce/severity.c
-> index e1da619add19..8c1a41aa5e40 100644
-> --- a/arch/x86/kernel/cpu/mce/severity.c
-> +++ b/arch/x86/kernel/cpu/mce/severity.c
-> @@ -9,9 +9,11 @@
->  #include <linux/seq_file.h>
->  #include <linux/init.h>
->  #include <linux/debugfs.h>
-> -#include <asm/mce.h>
->  #include <linux/uaccess.h>
+>  .../devicetree/bindings/net/wireless/qcom,ath10k.txt        |  5 +++++
+>  drivers/net/wireless/ath/ath10k/qmi.c                       | 13 ++++++++++---
+>  drivers/net/wireless/ath/ath10k/snoc.c                      |  3 +++
+>  drivers/net/wireless/ath/ath10k/snoc.h                      |  1 +
+>  4 files changed, 19 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> index 65ee68efd574..135c7ecd4487 100644
+> --- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+> @@ -86,6 +86,11 @@ Optional properties:
+>  	Value type: <empty>
+>  	Definition: Quirk specifying that the firmware expects the 8bit version
+>  		    of the host capability QMI request
+> +- qcom,snoc-host-cap-skip-quirk:
+> +	Usage: Optional
+> +	Value type: <empty>
+> +	Definition: Quirk specifying that the firmware wants to skip the host
+> +		    capability QMI request
+>  - qcom,xo-cal-data: xo cal offset to be configured in xo trim register.
 >  
-> +#include <asm/mce.h>
-> +#include <asm/intel-family.h>
+>  - qcom,msa-fixed-perm: Boolean context flag to disable SCM call for statically
+> diff --git a/drivers/net/wireless/ath/ath10k/qmi.c b/drivers/net/wireless/ath/ath10k/qmi.c
+> index 5468a41e928e..5adff7695e18 100644
+> --- a/drivers/net/wireless/ath/ath10k/qmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/qmi.c
+> @@ -770,6 +770,7 @@ ath10k_qmi_ind_register_send_sync_msg(struct ath10k_qmi *qmi)
+>  static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+>  {
+>  	struct ath10k *ar = qmi->ar;
+> +	struct ath10k_snoc *ar_snoc = ath10k_snoc_priv(ar);
+>  	int ret;
+>  
+>  	ret = ath10k_qmi_ind_register_send_sync_msg(qmi);
+> @@ -781,9 +782,15 @@ static void ath10k_qmi_event_server_arrive(struct ath10k_qmi *qmi)
+>  		return;
+>  	}
+>  
+> -	ret = ath10k_qmi_host_cap_send_sync(qmi);
+> -	if (ret)
+> -		return;
+> +	/*
+> +	 * Skip the host capability request for the firmware versions which
+> +	 * do not support this feature.
+> +	 */
+> +	if (!test_bit(ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK, &ar_snoc->flags)) {
+
+Could have made this an early return inside
+ath10k_qmi_host_cap_send_sync(), but this works.
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> +		ret = ath10k_qmi_host_cap_send_sync(qmi);
+> +		if (ret)
+> +			return;
+> +	}
+>  
+>  	ret = ath10k_qmi_msa_mem_info_send_sync_msg(qmi);
+>  	if (ret)
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
+> index 354d49b1cd45..4efbf1339c80 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.c
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.c
+> @@ -1281,6 +1281,9 @@ static void ath10k_snoc_quirks_init(struct ath10k *ar)
+>  
+>  	if (of_property_read_bool(dev->of_node, "qcom,snoc-host-cap-8bit-quirk"))
+>  		set_bit(ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK, &ar_snoc->flags);
 > +
->  #include "internal.h"
+> +	if (of_property_read_bool(dev->of_node, "qcom,snoc-host-cap-skip-quirk"))
+> +		set_bit(ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK, &ar_snoc->flags);
+>  }
 >  
->  /*
-> @@ -40,9 +42,14 @@ static struct severity {
->  	unsigned char context;
->  	unsigned char excp;
->  	unsigned char covered;
-> +	unsigned char cpu_model;
-> +	unsigned char cpu_stepping;
-> +	unsigned char bank_lo, bank_hi;
-
-This would be better as a bit mask. I don't think we need this same
-hack on the next generation of CPUs ... but if we did, the bank numbers
-that would be affected don't form a continuous sequence.
-
->  	char *msg;
->  } severities[] = {
->  #define MCESEV(s, m, c...) { .sev = MCE_ ## s ## _SEVERITY, .msg = m, ## c }
-> +#define BANK_RANGE(l, h) .bank_lo = l, .bank_hi = h
-> +#define MODEL_STEPPING(m,s) .cpu_model = m, .cpu_stepping = s
->  #define  KERNEL		.context = IN_KERNEL
->  #define  USER		.context = IN_USER
->  #define  KERNEL_RECOV	.context = IN_KERNEL_RECOV
-> @@ -97,7 +104,10 @@ static struct severity {
->  		KEEP, "Corrected error",
->  		NOSER, BITCLR(MCI_STATUS_UC)
->  		),
-> -
-> +	MCESEV(AO, "UnCorrected Patrol Scrub Error",
-> +		NOSER, MASK(0xffffeff0, 0x001000c0),
-> +		MODEL_STEPPING(INTEL_FAM6_SKYLAKE_X, 4),BANK_RANGE(13,18)
-> +	),
-
-I'd need to stare at the placement of this in the sequence of rules at some
-non-Friday-afternoon time. It might be right, but as we've grumbled together
-many times before that code is full of surprise side effects.
-
->  	/*
->  	 * known AO MCACODs reported via MCE or CMC:
->  	 *
-> @@ -324,6 +334,12 @@ static int mce_severity_intel(struct mce *m, int tolerant, char **msg, bool is_e
->  			continue;
->  		if (s->excp && excp != s->excp)
->  			continue;
-> +		if (s->cpu_model && boot_cpu_data.x86_model != s->cpu_model)
-> +			continue;
-> +		if (s->cpu_stepping && boot_cpu_data.x86_stepping <= s->cpu_stepping)
-> +			continue;
-> +		if (s->bank_lo && (s->bank_lo <= m->bank && m->bank <= s->bank_hi))
-> +			continue;
->  		if (msg)
->  			*msg = s->msg;
->  		s->covered = 1;
-
--Tony
+>  int ath10k_snoc_fw_indication(struct ath10k *ar, u64 type)
+> diff --git a/drivers/net/wireless/ath/ath10k/snoc.h b/drivers/net/wireless/ath/ath10k/snoc.h
+> index a3dd06f6ac62..2a0045f0af7e 100644
+> --- a/drivers/net/wireless/ath/ath10k/snoc.h
+> +++ b/drivers/net/wireless/ath/ath10k/snoc.h
+> @@ -47,6 +47,7 @@ enum ath10k_snoc_flags {
+>  	ATH10K_SNOC_FLAG_UNREGISTERING,
+>  	ATH10K_SNOC_FLAG_RECOVERY,
+>  	ATH10K_SNOC_FLAG_8BIT_HOST_CAP_QUIRK,
+> +	ATH10K_SNOC_FLAG_SKIP_HOST_CAP_QUIRK,
+>  };
+>  
+>  struct clk_bulk_data;
+> -- 
+> 2.7.4
+> 
