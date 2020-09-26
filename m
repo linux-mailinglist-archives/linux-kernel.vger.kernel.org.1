@@ -2,125 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A4F279782
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 09:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549F1279783
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 09:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729057AbgIZHTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 03:19:19 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:56319 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728974AbgIZHTT (ORCPT
+        id S1728069AbgIZH2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 03:28:17 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:60153 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZH2R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 03:19:19 -0400
-Received: by mail-io1-f78.google.com with SMTP id t187so3762577iof.22
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 00:19:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dX7uzTK5eNz0IQqGIK08F6NHKFH8T8i9KJUoLvVBVxA=;
-        b=bDZFcvqBeTfIKdqF4dj4+L15OU/iUyaDZDKy1VYbbRDd1xIwzjGPB58kP8FIgiJBk+
-         7ki10Tyz0hbzQsyGEWwMfZJcdUXYKsSvYTQUQH4D+19ywkTH/SkOsBYOa0pkGrPbcKSO
-         RS7eCnatnzwibJmGM8m4yS/lIFm/LH8ssmbPWQ1C6AXxc29loD4Pdoch6ryVjBBUsZl7
-         4igUmTty7/Z3EtyPLy0WVnTd+1HwuZm9fyVspUvZi9J2K6U+tAHLh6o94weYMXWkc8RE
-         Hz/+tYoc+d+jJXeOit1UxdDHVP0eGNsOMvpDqoj1JcKe6DjjUS/pDvWcVjb3FUfWL9A1
-         GEpA==
-X-Gm-Message-State: AOAM533UT3iOE0aAfsILd4bcDrdjA94YQ7WIsAtEZsyA4HOyb6d8Yv3c
-        TzMGgNrQ3KsWiedncGtFYEvQk2n4QHxki9GA5KMKDb3PCGY9
-X-Google-Smtp-Source: ABdhPJyIeKAJahOhUJBJzK1C//wuAqg5bULj5URE6A2okCbfGeIu3nY5c3ybpVmJpE9WPpHV4+vl7aIjnDX1rfDEAH4Vqg2YMWIi
+        Sat, 26 Sep 2020 03:28:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1601105296; x=1632641296;
+  h=from:to:cc:subject:date:message-id:
+   content-transfer-encoding:mime-version;
+  bh=VZzU2JljOb2+CPcK5tqaPbpOGFlM/u0H2Pjp3INIJ4E=;
+  b=FiNqsJaJ8svJObS33Wrh/AkQl3KslY7a95e0eqoHYdWoRKceXSRjrvRj
+   bPzrN9KVaIEOR+hsf1DbhQD+mPlimuIQAN5r+GQ9a0mcVU1qPkazZY6BU
+   SlOM0K4A8BBCigUcPcE5tKI0v81ZyxLH7wuOl7228FIVfy9YK4LCpEMzN
+   pKELdpjCbVlhYxXXvwTJxonT/dg/w8KZ+vlH5zxXGa2lkWta3pWRh0APp
+   53oYD3lhheHJsUuPdIA0no/Do+Fmo6WSFZXZ7LQ38+lNiEP9KTejKatKC
+   dzyu8l5AaTjy4Yr4RR6oS7U4ZAOw9x7KeRvysiaFQZiSitBLDWUZu3Sp4
+   w==;
+IronPort-SDR: J1bUl6bjZY/G5JNZlvEhLjaZXIFqOQZ7iV4LZtGcBoQCd74lpUThpivpbNiWEjvr1ZxU0IXiDy
+ 13DlGzSknJyOqNy6uNI32DSRZzDf9qjhJ60QXqArcS6ofitv5p3TLXUluO54LbodHnIn2ZVn7X
+ tDhN30Wkd7MesigvNu9vj2XGGKno2BAnK6POAITqY5bbKwzygYBLLmZ16ZZQK9FBHOvaVrgAzZ
+ pH1TJX5XLjuz3fQzwX12ohzDPkUFgR43Lwb+iCftQ7zDi0cVgfeUujNf0oR+BgFickg+8yphJR
+ nKw=
+X-IronPort-AV: E=Sophos;i="5.77,305,1596470400"; 
+   d="scan'208";a="149552964"
+Received: from mail-bn7nam10lp2105.outbound.protection.outlook.com (HELO NAM10-BN7-obe.outbound.protection.outlook.com) ([104.47.70.105])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Sep 2020 15:28:15 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YmZPr/pDDFUX09UDfNDLUMXRPIxigqPI8Yrwyw1Ce5n3hW6aVwCYazaaSmHhFqgP6yhcAHWe5OTt4yKfCmwff1KYz2wN/E3FgED/ZK4QEIycBRJB3ZLSah5iouWWg1T0+v/Oa0kdC980nUr48Zv5D4NIfmWR99mv56HW1HNwoi2+gif0yTkiSwBx+XSeVZ0E/GgtKsfH0eniubznv01w6Gw/6fXo663aRuPugNZNqW1q67gsfeVlb3uBeLRszzQg0vdo9BSKDvIUuwjBreKsBL4I4NUEAzEVifHQwrp3iPH5MmRNfnszQBy2oeWARub5JcVYHvmwmcBDIT5v7TYVYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W3Zu2Ex45yAXc98YlTPW2vbFGpRgTS659XkEHOJbjCs=;
+ b=jGXNTnmOdi+/Zs7eUDKRRzwnAqLbfIdey4d8L4G507JCJnBsDGVBbLeH9yEmsoOFcyoQ67+Xqt9JnKK5wZiF8S3Z33RuUdC9VamkAFBHYbGr8Q60tS4kgYLiRSFeoxywFJguMmjOTaxAL4ipdPcbxVl6+35zbeLzlM/RNvYehWG7IQpGQXmi5hmXcGhNaiHWPwCVAOu2H6TwCawFRgJ0UYG7bpCMI2Ir76aMI51NYxgO8oY+A39xa3aGNE3eXfx4rS1UY0LewI7epFhWysjwrE7AiMiW4H5ppgH0wWIeQ5Bev06/wyWuXuVGEWHDbfPKIhCdlgaqNvusuUYKFBNL1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=W3Zu2Ex45yAXc98YlTPW2vbFGpRgTS659XkEHOJbjCs=;
+ b=KXpZfJtqB6wZuy8ab04DoIUDf0vfDBgwY3IuWh8wRBO+0T3CNzQEwR51oaruVxu71ePgSHCvFAVVEpSemXErMCM5g4cnWPN38zP5A2uj+YGwWypZvreujUO0iWq0EOjIXSI9HwHJshfPTyKpflKFwebYKsOjqTdXqCjwsOQSK7g=
+Authentication-Results: dabbelt.com; dkim=none (message not signed)
+ header.d=none;dabbelt.com; dmarc=none action=none header.from=wdc.com;
+Received: from DM6PR04MB6201.namprd04.prod.outlook.com (2603:10b6:5:127::32)
+ by DM6PR04MB4812.namprd04.prod.outlook.com (2603:10b6:5:26::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Sat, 26 Sep
+ 2020 07:28:12 +0000
+Received: from DM6PR04MB6201.namprd04.prod.outlook.com
+ ([fe80::607a:44ed:1477:83e]) by DM6PR04MB6201.namprd04.prod.outlook.com
+ ([fe80::607a:44ed:1477:83e%7]) with mapi id 15.20.3391.020; Sat, 26 Sep 2020
+ 07:28:12 +0000
+From:   Anup Patel <anup.patel@wdc.com>
+To:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Anup Patel <anup.patel@wdc.com>
+Subject: [PATCH] RISC-V: Check clint_time_val before use
+Date:   Sat, 26 Sep 2020 12:57:50 +0530
+Message-Id: <20200926072750.807764-1-anup.patel@wdc.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MA1PR01CA0166.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:a00:71::36) To DM6PR04MB6201.namprd04.prod.outlook.com
+ (2603:10b6:5:127::32)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c041:: with SMTP id o1mr2815551ilf.160.1601104757824;
- Sat, 26 Sep 2020 00:19:17 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 00:19:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000056a39205b0324001@google.com>
-Subject: KASAN: global-out-of-bounds Read in bit_putcs (2)
-From:   syzbot <syzbot+a889d70ef11d6e0f6f22@syzkaller.appspotmail.com>
-To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
-        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from wdc.com (122.179.126.16) by MA1PR01CA0166.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:71::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend Transport; Sat, 26 Sep 2020 07:28:09 +0000
+X-Mailer: git-send-email 2.25.1
+X-Originating-IP: [122.179.126.16]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 6a62fb04-3b1b-48ba-5384-08d861edb99c
+X-MS-TrafficTypeDiagnostic: DM6PR04MB4812:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR04MB4812DD54A39F2274DE7D86B18D370@DM6PR04MB4812.namprd04.prod.outlook.com>
+WDCIPOUTBOUND: EOP-TRUE
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AX1bBFMuuhXtYEaZkCfSJavq86CmMp9bFXgfmGcll3OIKBiIvJ4FmbCcO+HQBiYYP72we2jjXuBeHPvos6cXA198RzQrYygZPPOXelurX+HTdjTkLYK+KOaY1MulP60wMtUIZBNS0xFvZE8n8x/H5vbe5KGc+T9FBBKsct8jdO7cXxSOLIh6sQpi40Hi2LvsUEOjg8zhsooNvEOwq2uxJel9+2tZ6pXPQ5d8aPzK0L76q2Hb3fUpkxheqrQ2qSyNpgFAN1Ujg2wvmQSi7qVWpl5m7vqufX1QQY4eXWAaTaHqqzHv09EeSApF5YhNImbhg30qh8W8cjmdWhg6PwFDJqfV8iHcJezKaFnrkkmbNe4YQAH3gGMPJ1vCdaAgnJeX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6201.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(346002)(376002)(136003)(83380400001)(54906003)(110136005)(36756003)(8936002)(55016002)(66476007)(2906002)(8886007)(5660300002)(66556008)(16526019)(186003)(26005)(66946007)(316002)(2616005)(6666004)(8676002)(86362001)(1076003)(478600001)(956004)(7696005)(52116002)(44832011)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: BRA7iDlqUDnXuNOhB5OZ2nQUumvlJ4sMIrA9qKeQP55NhbB2m907N+jY4yCDUgzUyfb1PK5L0Y/Syp3wHxx5W/FEN0lTP1YWxN0+LmeGPW3gccozhRu9eNsI7tht5E+h8p4ENKvUeLBn1Zhbhv+P35VM+1seqyROg6+r1b4e06fCHP3f7qwj8rzi/qNw/GaPUXK9LriJ56OEzLJQVbFrxo9IxVUXMWbRHEyrvQE8ZKbQTI6u77B5RnQlhd6O3XQc4IYP2laTMErj5Fjy80h8wUxv1b843juEawu/y48/0FZq7fDRLvNM2eqmQKuJhZgt3PCTYIEtW8nKw2QdXGMSRzzRv+xM7abuwnS50yaRZOwNWGX4TEeuIvkYRTjWX1dWNUsqVBrHOgRpgbV0ovNvSnnsnctIwIsD6RgB8fTmmvMDTR2IMLe4xPC8fn8E0qZbJzWqO/LlGWlakpwDIPMRlIgzAMxzKQfj4mB/LFrmCJK136KqivKNpX3XAk+fw/oGe6n5q2d0X5Mqe/3TsfzbmhkmCWDSO9lsoCZmWVkhgMfSy6SWEkx9MwSH24wIVSZxAdnsNK7WA8+Y/7+nnnq92JKPP/kTN6It8PPfHgw+AOa3MnBY/SsDlEfhOVVWLfYOfIIxMi8EBJPthi8kKICGTg==
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6a62fb04-3b1b-48ba-5384-08d861edb99c
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6201.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Sep 2020 07:28:12.4377
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YaZyjEU5SFjTEpI8K7su5km5mV5p3JRuaqznOVAG2GNKeY17RqbPm+v57uwYKq4EvUV8EGBwtMzBUXC4LPaBSg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB4812
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The NoMMU kernel is broken for QEMU virt machine from Linux-5.9-rc6
+because the get_cycles() and friends are called very early from
+rand_initialize() before CLINT driver is probed. To fix this, we
+should check clint_time_val before use in get_cycles() and friends.
 
-syzbot found the following issue on:
-
-HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=126e918d900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=a889d70ef11d6e0f6f22
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a889d70ef11d6e0f6f22@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: global-out-of-bounds in __fb_pad_aligned_buffer include/linux/fb.h:654 [inline]
-BUG: KASAN: global-out-of-bounds in bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
-BUG: KASAN: global-out-of-bounds in bit_putcs+0xbb6/0xd20 drivers/video/fbdev/core/bitblit.c:185
-Read of size 1 at addr ffffffff88db78e9 by task syz-executor.4/16465
-
-CPU: 0 PID: 16465 Comm: syz-executor.4 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fd lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- __fb_pad_aligned_buffer include/linux/fb.h:654 [inline]
- bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
- bit_putcs+0xbb6/0xd20 drivers/video/fbdev/core/bitblit.c:185
- fbcon_putcs+0x35a/0x450 drivers/video/fbdev/core/fbcon.c:1308
- do_update_region+0x399/0x630 drivers/tty/vt/vt.c:675
- redraw_screen+0x658/0x790 drivers/tty/vt/vt.c:1034
- fbcon_do_set_font+0x718/0x880 drivers/video/fbdev/core/fbcon.c:2438
- fbcon_copy_font+0x12f/0x1a0 drivers/video/fbdev/core/fbcon.c:2453
- con_font_copy drivers/tty/vt/vt.c:4719 [inline]
- con_font_op+0x65b/0x1140 drivers/tty/vt/vt.c:4734
- vt_k_ioctl drivers/tty/vt/vt_ioctl.c:473 [inline]
- vt_ioctl+0x21c9/0x2e90 drivers/tty/vt/vt_ioctl.c:852
- tty_ioctl+0x1019/0x15f0 drivers/tty/tty_io.c:2656
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e179
-Code: 3d b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fe2e03e5c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000010840 RCX: 000000000045e179
-RDX: 0000000020000400 RSI: 0000000000004b72 RDI: 0000000000000003
-RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffff7397e9f R14: 00007fe2e03e69c0 R15: 000000000118cf4c
-
-The buggy address belongs to the variable:
- oid_index+0x109/0xae0
-
-Memory state around the buggy address:
- ffffffff88db7780: 00 00 00 00 01 f9 f9 f9 f9 f9 f9 f9 00 00 00 00
- ffffffff88db7800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 06 f9
->ffffffff88db7880: f9 f9 f9 f9 00 02 f9 f9 f9 f9 f9 f9 00 01 f9 f9
-                                                          ^
- ffffffff88db7900: f9 f9 f9 f9 00 04 f9 f9 f9 f9 f9 f9 00 00 02 f9
- ffffffff88db7980: f9 f9 f9 f9 00 03 f9 f9 f9 f9 f9 f9 07 f9 f9 f9
-==================================================================
-
-
+Fixes: d5be89a8d118 ("RISC-V: Resurrect the MMIO timer implementation
+for M-mode systems")
+Signed-off-by: Anup Patel <anup.patel@wdc.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/riscv/include/asm/timex.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
+index 7f659dda0032..52b42bb1602c 100644
+--- a/arch/riscv/include/asm/timex.h
++++ b/arch/riscv/include/asm/timex.h
+@@ -17,18 +17,24 @@ typedef unsigned long cycles_t;
+ #ifdef CONFIG_64BIT
+ static inline cycles_t get_cycles(void)
+ {
+-	return readq_relaxed(clint_time_val);
++	if (clint_time_val)
++		return readq_relaxed(clint_time_val);
++	return 0;
+ }
+ #else /* !CONFIG_64BIT */
+ static inline u32 get_cycles(void)
+ {
+-	return readl_relaxed(((u32 *)clint_time_val));
++	if (clint_time_val)
++		return readl_relaxed(((u32 *)clint_time_val));
++	return 0;
+ }
+ #define get_cycles get_cycles
+ 
+ static inline u32 get_cycles_hi(void)
+ {
+-	return readl_relaxed(((u32 *)clint_time_val) + 1);
++	if (clint_time_val)
++		return readl_relaxed(((u32 *)clint_time_val) + 1);
++	return 0
+ }
+ #define get_cycles_hi get_cycles_hi
+ #endif /* CONFIG_64BIT */
+-- 
+2.25.1
+
