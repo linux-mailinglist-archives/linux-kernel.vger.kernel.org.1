@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A54279B78
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:36:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86A06279B81
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729747AbgIZRgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 13:36:20 -0400
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:36666 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726244AbgIZRgT (ORCPT
+        id S1729582AbgIZRmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 13:42:01 -0400
+Received: from smtp11.smtpout.orange.fr ([80.12.242.133]:38104 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgIZRmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 13:36:19 -0400
-Received: from relay11.mail.gandi.net (unknown [217.70.178.231])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id 6B26B3A2296;
-        Sat, 26 Sep 2020 17:36:17 +0000 (UTC)
-Received: from pc.localdomain (unknown [195.189.32.242])
-        (Authenticated sender: contact@artur-rojek.eu)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id C1A97100007;
-        Sat, 26 Sep 2020 17:35:54 +0000 (UTC)
-From:   Artur Rojek <contact@artur-rojek.eu>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Paul Cercueil <paul@crapouillou.net>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Artur Rojek <contact@artur-rojek.eu>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v3 2/2] dt-bindings: power: ingenic,battery: add new compatibles
-Date:   Sat, 26 Sep 2020 19:35:29 +0200
-Message-Id: <20200926173529.25238-2-contact@artur-rojek.eu>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200926173529.25238-1-contact@artur-rojek.eu>
-References: <20200926173529.25238-1-contact@artur-rojek.eu>
+        Sat, 26 Sep 2020 13:42:00 -0400
+Received: from tomoyo.flets-east.jp ([153.230.197.127])
+        by mwinf5d89 with ME
+        id Yhhl230032lQRaH03hhvkg; Sat, 26 Sep 2020 19:41:58 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 26 Sep 2020 19:41:58 +0200
+X-ME-IP: 153.230.197.127
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/6] can: dev: can_get_echo_skb(): prevent call to kfree_skb() in hard IRQ context
+Date:   Sun, 27 Sep 2020 02:41:22 +0900
+Message-Id: <20200926174135.278009-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200926172953.277426-1-mailhol.vincent@wanadoo.fr>
+References: <20200926172953.277426-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This binding can support Ingenic JZ4725B and JZ4770 SoCs, as they are
-compatible with Ingenic JZ4740 battery.
+If a driver calls can_get_echo_skb() during a hardware IRQ (which is
+often, but not always, the case), the 'WARN_ON(in_irq)' in
+net/core/skbuff.c#skb_release_head_state() might be triggered, under
+network congestion circumstances, together with the potential risk of
+a NULL pointer dereference.
 
-Introduce the following compatible property combinations:
- compatible = "ingenic,jz4725b-battery", "ingenic,jz4740-battery",
- compatible = "ingenic,jz4770-battery", "ingenic,jz4740-battery"
+The root cause of this issue is the call to kfree_skb() instead of
+dev_kfree_skb_irq() in net/core/dev.c#enqueue_to_backlog().
 
-Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
-Reviewed-by: Rob Herring <robh@kernel.org>
+This patch prevents the skb to be freed within the call to netif_rx()
+by incrementing its reference count with skb_get(). The skb is finally
+freed by one of the in-irq-context safe functions:
+dev_consume_skb_any() or dev_kfree_skb_any().  The "any" version is
+used because some drivers might call can_get_echo_skb() in a normal
+context.
+
+The reason for this issue to occur is that initially, in the core
+network stack, loopback skb were not supposed to be received in
+hardware IRQ context. The CAN stack is an exeption.
+
+This bug is exactly what is described in
+https://patchwork.ozlabs.org/patch/835236/
+
+While above link proposes a patch that directly modifies
+net/core/dev.c, we try to propose here a smoother modification local
+to CAN network stack (the assumption behind is that only CAN devices
+are affected by this issue).
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
+ drivers/net/can/dev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Changes:
-    v2: new patch
-    
-    v3: no change
-
- .../devicetree/bindings/power/supply/ingenic,battery.yaml | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml b/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
-index 658ef92a5b82..683fa79ba2f3 100644
---- a/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
-+++ b/Documentation/devicetree/bindings/power/supply/ingenic,battery.yaml
-@@ -12,7 +12,13 @@ maintainers:
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 68834a2853c9..e291fda395a0 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -512,7 +512,11 @@ unsigned int can_get_echo_skb(struct net_device *dev, unsigned int idx)
+ 	if (!skb)
+ 		return 0;
  
- properties:
-   compatible:
--    const: ingenic,jz4740-battery
-+    oneOf:
-+      - const: ingenic,jz4740-battery
-+      - items:
-+        - enum:
-+          - ingenic,jz4725b-battery
-+          - ingenic,jz4770-battery
-+        - const: ingenic,jz4740-battery
+-	netif_rx(skb);
++	skb_get(skb);
++	if (netif_rx(skb) == NET_RX_SUCCESS)
++		dev_consume_skb_any(skb);
++	else
++		dev_kfree_skb_any(skb);
  
-   io-channels:
-     maxItems: 1
+ 	return len;
+ }
 -- 
-2.28.0
+2.26.2
 
