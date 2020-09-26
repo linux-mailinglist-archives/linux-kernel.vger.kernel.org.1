@@ -2,95 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EBB279898
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 12:48:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBCC27989B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 12:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbgIZKsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 06:48:15 -0400
-Received: from agrajag.zerfleddert.de ([88.198.237.222]:53540 "EHLO
-        agrajag.zerfleddert.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729371AbgIZKqJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 06:46:09 -0400
-Received: by agrajag.zerfleddert.de (Postfix, from userid 1000)
-        id D34EC5B209C2; Sat, 26 Sep 2020 12:45:54 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 12:45:54 +0200
-From:   Tobias Jordan <kernel@cdqe.de>
-To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Subject: [PATCH] iio: temperature: ltc2983: fix leak of device node iterator
-Message-ID: <20200926104554.GA14752@agrajag.zerfleddert.de>
+        id S1726668AbgIZKwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 06:52:41 -0400
+Received: from [78.8.192.131] ([78.8.192.131]:22195 "EHLO orcam.me.uk"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725208AbgIZKwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 06:52:38 -0400
+Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
+        by orcam.me.uk (Postfix) with ESMTPS id BF1E92BE086;
+        Sat, 26 Sep 2020 11:52:31 +0100 (BST)
+Date:   Sat, 26 Sep 2020 11:52:25 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@linux-mips.org>
+To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+cc:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RISC-V: Check clint_time_val before use
+In-Reply-To: <8a99b16ae3037487b762fb1bbcd81b576d9e11ab.camel@wdc.com>
+Message-ID: <alpine.LFD.2.21.2009261141060.3561363@eddie.linux-mips.org>
+References: <20200926072750.807764-1-anup.patel@wdc.com>         <1ee25b9bca3956d15a4a0dbf83f43d1ead454220.camel@wdc.com>         <DM6PR04MB62017875C739101DF83280ED8D370@DM6PR04MB6201.namprd04.prod.outlook.com>         <0e1990c99bf2a342cd2e78ec7ecfc2fdecaf67fb.camel@wdc.com>
+         <alpine.LFD.2.21.2009261054270.3561363@eddie.linux-mips.org> <8a99b16ae3037487b762fb1bbcd81b576d9e11ab.camel@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing of_node_put calls for the error paths of the
-for_each_available_child_of_node loop in ltc2983_parse_dt.
+On Sat, 26 Sep 2020, Damien Le Moal wrote:
 
-Thought about adding an "goto err_of_node_put" instead, but as the error
-paths are quite divergent, I'm not sure if that wouldn't complicate
-things.
+> > > With this applied in addition to your patch, it works.
+> > > 
+> > > diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-
+> > > clint.c
+> > > index d17367dee02c..8dbec85979fd 100644
+> > > --- a/drivers/clocksource/timer-clint.c
+> > > +++ b/drivers/clocksource/timer-clint.c
+> > > @@ -37,7 +37,7 @@ static unsigned long clint_timer_freq;
+> > >  static unsigned int clint_timer_irq;
+> > >  
+> > >  #ifdef CONFIG_RISCV_M_MODE
+> > > -u64 __iomem *clint_time_val;
+> > > +u64 __iomem *clint_time_val = NULL;
+> > >  #endif
+> > 
+> >  Hmm, BSS initialisation issue?
+> 
+> Not a static variable, so it is not in BSS, no ?
 
-Fixes: f110f3188e56 ("iio: temperature: Add support for LTC2983")
-Signed-off-by: Tobias Jordan <kernel@cdqe.de>
----
- drivers/iio/temperature/ltc2983.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Maybe it has a weird declaration elsewhere which messes up things (I 
+haven't checked), but it looks to me like it does have static storage 
+(rather than automatic or thread one), so if uninitialised it goes to BSS, 
+and it is supposed to be all-zeros whether explicitly assigned a NULL 
+value or not.  It does have external rather than internal linkage (as it 
+would if it had the `static' keyword), but it does not matter.  Best check 
+with `objdump'/`readelf'.
 
-diff --git a/drivers/iio/temperature/ltc2983.c b/drivers/iio/temperature/ltc2983.c
-index 55ff28a0f1c7..438e0ee29025 100644
---- a/drivers/iio/temperature/ltc2983.c
-+++ b/drivers/iio/temperature/ltc2983.c
-@@ -1285,6 +1285,7 @@ static int ltc2983_parse_dt(struct ltc2983_data *st)
- 		ret = of_property_read_u32(child, "reg", &sensor.chan);
- 		if (ret) {
- 			dev_err(dev, "reg property must given for child nodes\n");
-+			of_node_put(child);
- 			return ret;
- 		}
- 
-@@ -1293,9 +1294,11 @@ static int ltc2983_parse_dt(struct ltc2983_data *st)
- 		    sensor.chan > LTC2983_MAX_CHANNELS_NR) {
- 			dev_err(dev,
- 				"chan:%d must be from 1 to 20\n", sensor.chan);
-+			of_node_put(child);
- 			return -EINVAL;
- 		} else if (channel_avail_mask & BIT(sensor.chan)) {
- 			dev_err(dev, "chan:%d already in use\n", sensor.chan);
-+			of_node_put(child);
- 			return -EINVAL;
- 		}
- 
-@@ -1304,6 +1307,7 @@ static int ltc2983_parse_dt(struct ltc2983_data *st)
- 		if (ret) {
- 			dev_err(dev,
- 				"adi,sensor-type property must given for child nodes\n");
-+			of_node_put(child);
- 			return ret;
- 		}
- 
-@@ -1334,12 +1338,14 @@ static int ltc2983_parse_dt(struct ltc2983_data *st)
- 			st->sensors[chan] = ltc2983_adc_new(child, st, &sensor);
- 		} else {
- 			dev_err(dev, "Unknown sensor type %d\n", sensor.type);
-+			of_node_put(child);
- 			return -EINVAL;
- 		}
- 
- 		if (IS_ERR(st->sensors[chan])) {
- 			dev_err(dev, "Failed to create sensor %ld",
- 				PTR_ERR(st->sensors[chan]));
-+			of_node_put(child);
- 			return PTR_ERR(st->sensors[chan]);
- 		}
- 		/* set generic sensor parameters */
--- 
-2.20.1
-
+  Maciej
