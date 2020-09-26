@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F34279CAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 23:32:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62356279CAF
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 23:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727388AbgIZVcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 17:32:47 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:44381 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726382AbgIZVcp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 17:32:45 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BzMSn3zLwz2KQ;
-        Sat, 26 Sep 2020 23:32:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1601155961; bh=yjW/YkTtfoxUSEufTrCdNzGAG3DmVwt9dXwIVmLLdBk=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=OS9/Urme9gevsQ3P1Bbeo/BFJPV0/sVuic+L/qGf9QkaZwsv90eTAclTMTcVrQW8Q
-         oP+ZimuCwPx0b9DrQSVlZhWos2l27IkudrOW/8psDBlaae+s2J8CwYThKAt9vEsVxE
-         PYiUXSyDL1vgvEr/ZKfluo7UO9T9U+BBESCnmkYKIU/Wf66XtwVSnlUTkmkJaA+MLS
-         705D8pB87UhKRw08dynOdhBNRwUo2HBM3Uw0zncqfgok6N8vOmgBxv14g8Cf02PVMc
-         IhuvRdwomy3axPdAkVqPSo7JYDAUS7Okpkloao5iW6V+bGom9KutqQDrkLoAd5rI39
-         JrwcwyIGDB2Uw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Sat, 26 Sep 2020 23:32:41 +0200
-Message-Id: <ba09e0a8617ffeeb25cb4affffe6f3149319cef8.1601155770.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1601155770.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1601155770.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 3/3] regulator: resolve supply after creating regulator
+        id S1726794AbgIZViA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 17:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726311AbgIZVh7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 17:37:59 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C5BCC0613CE;
+        Sat, 26 Sep 2020 14:37:59 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id m5so6752704lfp.7;
+        Sat, 26 Sep 2020 14:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2O1+q9UmEqA1AfayXwYwEqLOHYTG6dlJa8oak1VIgDg=;
+        b=vNHTmFzgH8QnV/FBqlopnm5inoooP9qzVr2IXPxHTgDN2tFGmDFkEMh8hkm1NtKQOx
+         qjDI8CZtUreR7RPIXjRH1T7UP+9fsnb2Vt/8WhMl6tDdqjNyHSGOMzSa6nDrznC2v0Qe
+         gP6WEJiH3n5APBzpziMK14F1ORCoymwCQCjQZRAMXnYerm9NkGLPFm1Ay5j+nFlRWMdB
+         6jtXfs4M3a8b4A7MsnX9zKTzuLsMnPsRvuLaG4YLztx+Tuhqkezwv6Db3trx+pykpnOL
+         VdO1c4AfB+EHg5KFGd3RawjL6uYlce1C52KkS7v+8n7mFGrlKSyl+ebVSyUhjB3jSjVJ
+         /vnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2O1+q9UmEqA1AfayXwYwEqLOHYTG6dlJa8oak1VIgDg=;
+        b=WTiNKKT51Y9XVGLdp74X9pnREPtkuXMPMylp0vX5DQgoOPKs+i+yQA2oUeNMzfyDYi
+         zQ0XTCe7EWRx0z0yiQw9PhSFlJ+tKdXAd3x0n55g7fbyhMpgMNrwlJUNEfisGcWKeZ4G
+         zUKCfKMVnOBUJKydqzXJI39ZMtlziYu3gyMPEOBBOienCBqceC6CK/Z2+fu6VP9CKKEE
+         ytVcJZLaOj+dcy7CvIkxzpWyIm93Knw2vcIs2MgVVcT7RovFvJpHUNkrnG6vqExwoH0U
+         zYP157GkMgU7KuBJyfy6NIvKSt4GyAe/gHZhijUMck0GR0Yh9d+8NmDSaoZZJLF7FQZn
+         0sHg==
+X-Gm-Message-State: AOAM531Ht2zZ6xwAsrw6AzN4l2ENyf1OZfihTnhppwNcBDviaXUUmQ0W
+        j/XxBzncqPI+qLAhebF/8OE=
+X-Google-Smtp-Source: ABdhPJwRrZKVmTy09whw7BIXlDF16kk6a09TKGUIpAzZpY2JnQIP3AhMgrN+BYta2GoMOzzDhdgeQA==
+X-Received: by 2002:ac2:5e2e:: with SMTP id o14mr1630604lfg.163.1601156277884;
+        Sat, 26 Sep 2020 14:37:57 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id a27sm5424327ljp.7.2020.09.26.14.37.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Sep 2020 14:37:57 -0700 (PDT)
+Subject: Re: [PATCH 5/5] iommu/tegra-smmu: Add pagetable mappings to debugfs
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
+        joro@8bytes.org, krzk@kernel.org
+Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
+References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
+ <20200926080719.6822-6-nicoleotsuka@gmail.com>
+ <0451e362-30eb-2ba2-33f1-e9ab3972cada@gmail.com>
+Message-ID: <a321fc27-54ba-9ba5-7121-4598a7f94795@gmail.com>
+Date:   Sun, 27 Sep 2020 00:37:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <0451e362-30eb-2ba2-33f1-e9ab3972cada@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jon Hunter <jonathanh@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When creating a new regulator its supply cannot create the sysfs link
-because the device is not yet published. Remove early supply resolving
-since it will be done later anyway. This makes the following error
-disappear and the symlinks get created instead.
+27.09.2020 00:24, Dmitry Osipenko пишет:
+> 26.09.2020 11:07, Nicolin Chen пишет:
+> ...
+>> +	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
+>> +		struct page *pt;
+>> +		u32 *addr;
+>> +
+>> +		if (!as->count[pd_index] || !pd[pd_index])
+>> +			continue;
+> 
+> I guess the idea of this patch is to print out the hardware state, isn't
+> it? Hence the as->count shouldn't be checked here.
 
-  DCDC_REG1: supplied by VSYS
-  VSYS: could not add device link regulator.3 err -2
+Perhaps also will be good to check whether the state of
+!as->count[pd_index] matches state of !pd[pd_index].
 
-Note: It doesn't fix the problem for bypassed regulators, though.
-
-Fixes: 45389c47526d ("regulator: core: Add early supply resolution for regulators")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- drivers/regulator/core.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index 6b56a22fd37f..607c2a76bb60 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -5279,15 +5279,20 @@ regulator_register(const struct regulator_desc *regulator_desc,
- 	else if (regulator_desc->supply_name)
- 		rdev->supply_name = regulator_desc->supply_name;
- 
--	/*
--	 * Attempt to resolve the regulator supply, if specified,
--	 * but don't return an error if we fail because we will try
--	 * to resolve it again later as more regulators are added.
--	 */
--	if (regulator_resolve_supply(rdev))
--		rdev_dbg(rdev, "unable to resolve supply\n");
--
- 	ret = set_machine_constraints(rdev, constraints);
-+	if (ret == -EPROBE_DEFER) {
-+		/* Regulator might be in bypass mode and so needs its supply
-+		 * to set the constraints */
-+		/* FIXME: this currently triggers a chicken-and-egg problem
-+		 * when creating -SUPPLY symlink in sysfs to a regulator
-+		 * that is just being created */
-+		ret = regulator_resolve_supply(rdev);
-+		if (!ret)
-+			ret = set_machine_constraints(rdev, constraints);
-+		else
-+			rdev_dbg(rdev, "unable to resolve supply early: %pe\n",
-+				 ERR_PTR(ret));
-+	}
- 	if (ret < 0)
- 		goto wash;
- 
--- 
-2.20.1
-
+WARN_ON_ONCE(!as->count[pd_index] ^ !pd[pd_index])
