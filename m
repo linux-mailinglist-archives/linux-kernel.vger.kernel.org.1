@@ -2,120 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F7D279759
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E6D27975C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728981AbgIZGxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 02:53:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726694AbgIZGxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 02:53:13 -0400
-Received: from localhost (unknown [213.57.247.131])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C75D920878;
-        Sat, 26 Sep 2020 06:53:11 +0000 (UTC)
-Date:   Sat, 26 Sep 2020 09:53:08 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Eli Cohen <elic@nvidia.com>,
-        virtualization@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
- errors
-Message-ID: <20200926065308.GC2280698@unreal>
-References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
- <20200918082245.GP869610@unreal>
- <20200924052932-mutt-send-email-mst@kernel.org>
- <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
- <079c831e-214d-22c1-028e-05d84e3b7f04@infradead.org>
- <20200924120217-mutt-send-email-mst@kernel.org>
- <20200925072005.GB2280698@unreal>
- <20200925061847-mutt-send-email-mst@kernel.org>
- <821c501c-53ce-3e80-8a73-f0680193df20@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <821c501c-53ce-3e80-8a73-f0680193df20@redhat.com>
+        id S1729044AbgIZGya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 02:54:30 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:19855 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIZGya (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 02:54:30 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 5B87B4E12DB;
+        Sat, 26 Sep 2020 14:54:27 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] nvdimm: Use kobj_to_dev() API
+Date:   Sat, 26 Sep 2020 14:54:17 +0800
+Message-Id: <1601103260-10249-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZT0gaSktMGEofTEwfVkpNS0pKS0hJTUxNQ0pVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nk06HDo5ND8hCgEuS0kiGAIZ
+        DQgaCzlVSlVKTUtKSktISU1DS0NLVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJTkJCNwY+
+X-HM-Tid: 0a74c93107179376kuws5b87b4e12db
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 07:29:24PM +0800, Jason Wang wrote:
->
-> On 2020/9/25 下午6:19, Michael S. Tsirkin wrote:
-> > On Fri, Sep 25, 2020 at 10:20:05AM +0300, Leon Romanovsky wrote:
-> > > On Thu, Sep 24, 2020 at 12:02:43PM -0400, Michael S. Tsirkin wrote:
-> > > > On Thu, Sep 24, 2020 at 08:47:05AM -0700, Randy Dunlap wrote:
-> > > > > On 9/24/20 3:24 AM, Eli Cohen wrote:
-> > > > > > On Thu, Sep 24, 2020 at 05:30:55AM -0400, Michael S. Tsirkin wrote:
-> > > > > > > > > --- linux-next-20200917.orig/drivers/vdpa/Kconfig
-> > > > > > > > > +++ linux-next-20200917/drivers/vdpa/Kconfig
-> > > > > > > > > @@ -31,7 +31,7 @@ config IFCVF
-> > > > > > > > >
-> > > > > > > > >   config MLX5_VDPA
-> > > > > > > > >   	bool "MLX5 VDPA support library for ConnectX devices"
-> > > > > > > > > -	depends on MLX5_CORE
-> > > > > > > > > +	depends on VHOST_IOTLB && MLX5_CORE
-> > > > > > > > >   	default n
-> > > > > > > > While we are here, can anyone who apply this patch delete the "default n" line?
-> > > > > > > > It is by default "n".
-> > > > > > I can do that
-> > > > > >
-> > > > > > > > Thanks
-> > > > > > > Hmm other drivers select VHOST_IOTLB, why not do the same?
-> > > > > v1 used select, but Saeed requested use of depends instead because
-> > > > > select can cause problems.
-> > > > >
-> > > > > > I can't see another driver doing that. Perhaps I can set dependency on
-> > > > > > VHOST which by itself depends on VHOST_IOTLB?
-> > > > > > >
-> > > > > > > > >   	help
-> > > > > > > > >   	  Support library for Mellanox VDPA drivers. Provides code that is
-> > > > > > > > >
-> > > > Saeed what kind of problems? It's used with select in other places,
-> > > > isn't it?
-> > > IMHO, "depends" is much more explicit than "select".
-> > >
-> > > Thanks
-> > This is now how VHOST_IOTLB has been designed though.
-> > If you want to change VHOST_IOTLB to depends I think
-> > we should do it consistently all over.
-> >
-> >
-> > config VHOST_IOTLB
-> >          tristate
-> >          help
-> >            Generic IOTLB implementation for vhost and vringh.
-> >            This option is selected by any driver which needs to support
-> >            an IOMMU in software.
->
->
-> Yes, since there's no prompt for VHOST_IOTLB which means, if there's no
-> other symbol that select VHOST_IOTLB, you can't enable MLX5 at all.
->
-> See kconfig-language.rst:
->
->
->     In general use select only for non-visible symbols
->     (no prompts anywhere) and for symbols with no dependencies.
->     That will limit the usefulness but on the other hand avoid
->     the illegal configurations all over.
+Use kobj_to_dev() instead of container_of().
 
-Thanks, I wasn't aware of this clarification.
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ drivers/nvdimm/namespace_devs.c | 2 +-
+ drivers/nvdimm/region_devs.c    | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
->
-> Thanks
->
->
-> >
-> >
-> > > > > --
-> > > > > ~Randy
->
+diff --git a/drivers/nvdimm/namespace_devs.c b/drivers/nvdimm/namespace_devs.c
+index 6da67f4..1d11ca7
+--- a/drivers/nvdimm/namespace_devs.c
++++ b/drivers/nvdimm/namespace_devs.c
+@@ -1623,7 +1623,7 @@ static struct attribute *nd_namespace_attributes[] = {
+ static umode_t namespace_visible(struct kobject *kobj,
+ 		struct attribute *a, int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 
+ 	if (a == &dev_attr_resource.attr && is_namespace_blk(dev))
+ 		return 0;
+diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
+index ef23119..92adfaf
+--- a/drivers/nvdimm/region_devs.c
++++ b/drivers/nvdimm/region_devs.c
+@@ -644,7 +644,7 @@ static struct attribute *nd_region_attributes[] = {
+ 
+ static umode_t region_visible(struct kobject *kobj, struct attribute *a, int n)
+ {
+-	struct device *dev = container_of(kobj, typeof(*dev), kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct nd_region *nd_region = to_nd_region(dev);
+ 	struct nd_interleave_set *nd_set = nd_region->nd_set;
+ 	int type = nd_region_to_nstype(nd_region);
+@@ -759,7 +759,7 @@ REGION_MAPPING(31);
+ 
+ static umode_t mapping_visible(struct kobject *kobj, struct attribute *a, int n)
+ {
+-	struct device *dev = container_of(kobj, struct device, kobj);
++	struct device *dev = kobj_to_dev(kobj);
+ 	struct nd_region *nd_region = to_nd_region(dev);
+ 
+ 	if (n < nd_region->ndr_mappings)
+-- 
+2.7.4
+
