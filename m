@@ -2,176 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 487BF27959E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A77472795A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:40:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729764AbgIZAee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 20:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729186AbgIZAee (ORCPT
+        id S1729760AbgIZAkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 20:40:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31940 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729473AbgIZAkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:34:34 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103EEC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:34:34 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id x123so4828514pfc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:34:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=LQhUSgVwoAzLw92Ygh+sbDkDg9VzTVlbdTb6qu/28UI=;
-        b=0UCfcG1B3lmiWLRmVTEkHEUvtYL/+yhH6MaR4BWOvVAYPKMPznhtEUKI/JMwclvII0
-         9ugielLLHq/9jC2MBpemsPqqbJ04Wlymmt1JLIvfwrsKOq0QR3OAKlahWJSDERU7+31q
-         JuZ9/lnzx2HUSbV0cfM6jynGVVFsUOKZd+x0a9PyXqhvpJQHpAvqteHU50MiHkuhTuTW
-         YpimImgQ1rDbVJ8Q1YqS2+R/5tuTyvJC4lKAIbQY5qB+v2UsPjZ/S1g/VyaRpd/gWf2o
-         TwKgb9LFhMCnYONj4IYLFVgofXdBJggPp5ck/xABw8LJD/FLU11+fRzv1l0E3btCfsd4
-         Q72w==
+        Fri, 25 Sep 2020 20:40:06 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601080805;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RLfhd/5bYRV/vkTpgR+bbr7PSmMvVl3Y9TGL5mOHg5U=;
+        b=UI/ScXlYHmLmfwTgipE4cuPni7APJ3Gd1Eiuw1TYwz1+RLATm9D2iWk3QzBOcBoE893eGd
+        uV9cPxkTqM53IE3Q6HziUqhv8qtWoNls8j6ACvwe8/Xcp+9RKmBCvEYSBq5P0B4o5zESRz
+        B3rhozlvIYJ8JYs0NRMcsebGkRJ/jj0=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-466-1GsOb1L1PBWJi_Zgqtq0Pg-1; Fri, 25 Sep 2020 20:40:03 -0400
+X-MC-Unique: 1GsOb1L1PBWJi_Zgqtq0Pg-1
+Received: by mail-wr1-f70.google.com with SMTP id a2so1737098wrp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:40:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=LQhUSgVwoAzLw92Ygh+sbDkDg9VzTVlbdTb6qu/28UI=;
-        b=ntWMZ2fl9X8EJtUp+JqiUQ/t3PS8Co3enHseAl3jl/KqKBIRUxOmhw4FKqnJ7Lhp9K
-         pxvVtv2wH/Xrfv7EDpumMZmN1LOvGw+ytuD/wBAPUQMvNomeH8fyhF2oZx20cmAaKcCH
-         wv2QHGN3EKvcrBj6RuYpTSywIQ9N6hM/wTxDoT9RsvbsaJnBwHT4ST6dAorAorv7m8m5
-         WjlomWNQnsSny/c3VfjNfu47ZnQ7Tt8GgNt3P+MfvmjKm2SjlhXdsROeehuNf/+NssKN
-         mTa9/i2TabkOZ3U2+qg1No076ymQrV1lj4n3ULuU4MCM09Sohq4kq0cRqbAhxHX1lpzy
-         JZXw==
-X-Gm-Message-State: AOAM531fHaAmo0j3dBKTSIIBS3+tjuUMYJVfRAEtQ8J1lfrmQUkOAeI1
-        W2RTiFNd/B9vvN7gCiVf7fgb1hh6+LEI6A==
-X-Google-Smtp-Source: ABdhPJz4QibazbedTmXsQcRaU2pyUx8+oz1N5Q2XhtYTgoF1usymw1iGqYSgVjNPq/RGgqqdBMYJXQ==
-X-Received: by 2002:a63:4a43:: with SMTP id j3mr1190597pgl.42.1601080473158;
-        Fri, 25 Sep 2020 17:34:33 -0700 (PDT)
-Received: from localhost.localdomain ([2601:646:c200:1ef2:480b:55cd:6a45:1705])
-        by smtp.gmail.com with ESMTPSA id a71sm3563540pfa.26.2020.09.25.17.34.32
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RLfhd/5bYRV/vkTpgR+bbr7PSmMvVl3Y9TGL5mOHg5U=;
+        b=WoW0AFspTV3JbtI0Rfhs2O7kP0Yxw2Fh4jYjTj0wXch/weii/rrRdFWv7Iw52a+Zjs
+         IKeX1k0AQk/ZHpNZcYse/FPmfLUCoCUSHneGXqB4FTrRbI0crSgV7mZewzCYQtauF5tV
+         lSPnsZD73500p+Mp1RSX3Z1WDxfTiC/iuTiLdXpoCS1whgTANnPMtMV0fguvhtR0V0yU
+         G9lcz8ETZ3n+6DpRscHDEj3/Z7QEG4HC5uukPWqlw7jo5WsBG4kIo+LCFoBbQ2EQhGC2
+         W+X7C5U2jSNxBYEdHfq/15EMU6sgzEikNq+CD6dv3gea398oMqguvkSgZcAJpf9WsfW3
+         Al9A==
+X-Gm-Message-State: AOAM5305ayorqQEW7WuUj4wFH3najgk8Hxpkt5Qr7QPOc1rHMbMSU5ru
+        jGp5rPgucaJDoyjYPX2V1JmOagw9EfMFnvdFRwBp1Ku4FcwR2Niskm0vjDn962yAhqIHKY6D6aQ
+        YHCMcUAuX7GDueINM+qVcrx/e
+X-Received: by 2002:a5d:4a49:: with SMTP id v9mr7634164wrs.153.1601080801967;
+        Fri, 25 Sep 2020 17:40:01 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyHVWQSJ1v4AGxHT4u44l41ZXAB2w95dcVabmJ55wOBlgzpdmrSnQQrWcTxaNhMjPC3Msp4Uw==
+X-Received: by 2002:a5d:4a49:: with SMTP id v9mr7634149wrs.153.1601080801772;
+        Fri, 25 Sep 2020 17:40:01 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id d2sm4665022wro.34.2020.09.25.17.40.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 17:34:32 -0700 (PDT)
+        Fri, 25 Sep 2020 17:40:00 -0700 (PDT)
+Subject: Re: [PATCH 05/22] kvm: mmu: Add functions to handle changed TDP SPTEs
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-6-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <af1045cb-2e53-4967-831c-5375ef1c97a2@redhat.com>
+Date:   Sat, 26 Sep 2020 02:39:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <20200925212302.3979661-6-bgardon@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if filter is arg-dependent
-Date:   Fri, 25 Sep 2020 17:34:29 -0700
-Message-Id: <677FA6F9-D577-4594-9FDC-D70B0D6900C6@amacapital.net>
-References: <202009251648.4AA27D5B@keescook>
-Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-In-Reply-To: <202009251648.4AA27D5B@keescook>
-To:     Kees Cook <keescook@chromium.org>
-X-Mailer: iPhone Mail (18A373)
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25/09/20 23:22, Ben Gardon wrote:
+> +
+> +	/*
+> +	 * Recursively handle child PTs if the change removed a subtree from
+> +	 * the paging structure.
+> +	 */
+> +	if (was_present && !was_leaf && (pfn_changed || !is_present)) {
+> +		pt = spte_to_child_pt(old_spte, level);
+> +
+> +		for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
+> +			old_child_spte = *(pt + i);
+> +			*(pt + i) = 0;
+> +			handle_changed_spte(kvm, as_id,
+> +				gfn + (i * KVM_PAGES_PER_HPAGE(level - 1)),
+> +				old_child_spte, 0, level - 1);
+> +		}
 
+Is it worth returning a "flush" value to the caller, to avoid multiple
+kvm_flush_remote_tlbs_with_address when e.g. zapping a 3rd-level PTE?
 
-> On Sep 25, 2020, at 4:49 PM, Kees Cook <keescook@chromium.org> wrote:
->=20
-> =EF=BB=BFOn Fri, Sep 25, 2020 at 02:07:46PM -0700, Andy Lutomirski wrote:
->>> On Fri, Sep 25, 2020 at 1:37 PM Kees Cook <keescook@chromium.org> wrote:=
+Also I prefer if we already include here a "stupid" version of
+handle_changed_spte that just calls __handle_changed_spte.  (If my
+suggestion is accepted, handle_changed_spte could actually handle the
+flushing).
 
->>>=20
->>> On Fri, Sep 25, 2020 at 12:51:20PM -0700, Andy Lutomirski wrote:
->>>>=20
->>>>=20
->>>>> On Sep 25, 2020, at 12:42 PM, Kees Cook <keescook@chromium.org> wrote:=
+Paolo
 
->>>>>=20
->>>>> =EF=BB=BFOn Fri, Sep 25, 2020 at 11:45:05AM -0500, YiFei Zhu wrote:
->>>>>> On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> w=
-rote:
->>>>>>>> Why do the prepare here instead of during attach? (And note that it=
+> +
+> +		kvm_flush_remote_tlbs_with_address(kvm, gfn,
+> +						   KVM_PAGES_PER_HPAGE(level));
+> +
+> +		free_page((unsigned long)pt);
+> +	}
 
->>>>>>>> should not be written to fail.)
->>>>>>>=20
->>>>>>> Right.
->>>>>>=20
->>>>>> During attach a spinlock (current->sighand->siglock) is held. Do we
->>>>>> really want to put the emulator in the "atomic section"?
->>>>>=20
->>>>> It's a good point, but I had some other ideas around it that lead to m=
-e
->>>>> a different conclusion. Here's what I've got in my head:
->>>>>=20
->>>>> I don't view filter attach (nor the siglock) as fastpath: the lock is
->>>>> rarely contested and the "long time" will only be during filter attach=
-.
->>>>>=20
->>>>> When performing filter emulation, all the syscalls that are already
->>>>> marked as "must run filter" on the previous filter can be skipped for
->>>>> the new filter, since it cannot change the outcome, which makes the
->>>>> emulation step faster.
->>>>>=20
->>>>> The previous filter's bitmap isn't "stable" until siglock is held.
->>>>>=20
->>>>> If we do the emulation step before siglock, we have to always do full
->>>>> evaluation of all syscalls, and then merge the bitmap during attach.
->>>>> That means all filters ever attached will take maximal time to perform=
-
->>>>> emulation.
->>>>>=20
->>>>> I prefer the idea of the emulation step taking advantage of the bitmap=
-
->>>>> optimization, since the kernel spends less time doing work over the li=
-fe
->>>>> of the process tree. It's certainly marginal, but it also lets all the=
-
->>>>> bitmap manipulation stay in one place (as opposed to being split betwe=
-en
->>>>> "prepare" and "attach").
->>>>>=20
->>>>> What do you think?
->>>>>=20
->>>>>=20
->>>>=20
->>>> I=E2=80=99m wondering if we should be much much lazier. We could potent=
-ially wait until someone actually tries to do a given syscall before we try t=
-o evaluate whether the result is fixed.
->>>=20
->>> That seems like we'd need to track yet another bitmap of "did we emulate=
-
->>> this yet?" And it means the filter isn't really "done" until you run
->>> another syscall? eeh, I'm not a fan: it scratches at my desire for
->>> determinism. ;) Or maybe my implementation imagination is missing
->>> something?
->>>=20
->>=20
->> We'd need at least three states per syscall: unknown, always-allow,
->> and need-to-run-filter.
->>=20
->> The downsides are less determinism and a bit of an uglier
->> implementation.  The upside is that we don't need to loop over all
->> syscalls at load -- instead the time that each operation takes is
->> independent of the total number of syscalls on the system.  And we can
->> entirely avoid, say, evaluating the x32 case until the task tries an
->> x32 syscall.
->>=20
->> I think it's at least worth considering.
->=20
-> Yeah, worth considering. I do still think the time spent in emulation is
-> SO small that it doesn't matter running all of the syscalls at attach
-> time. The filters are tiny and fail quickly if anything "interesting"
-> start to happen. ;)
->=20
-
-There=E2=80=99s a middle ground, too: do it lazily per arch.  So we would al=
-locate and populate the compat bitmap the first time a compat syscall is att=
-empted and do the same for x32. This may help avoid the annoying extra memor=
-y usage and 3x startup overhead while retaining full functionality.=
