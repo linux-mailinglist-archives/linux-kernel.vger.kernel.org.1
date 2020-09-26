@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 950392795D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411BE2795D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729831AbgIZBJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 21:09:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51633 "EHLO
+        id S1729829AbgIZBOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 21:14:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54205 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726210AbgIZBJV (ORCPT
+        by vger.kernel.org with ESMTP id S1729426AbgIZBOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 21:09:21 -0400
+        Fri, 25 Sep 2020 21:14:11 -0400
 Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601082560;
+        s=mimecast20190719; t=1601082848;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xhIG5lIeSniauUXqSeFzOVd/HOplR5lP9oJTjmYBwr4=;
-        b=bjCkUS6uzeBjJO6K608YdfNwzZQdkYZNySCfjVieEYnJazlXsqWnL2z7W/luUeT3Qp+bMC
-        +FK+Jkx73vLFhDwBDzo1c/Ti4CQk4AXtXMZYMglrXdfbjgUVPjjugEthrmCCiDrSXhIEjJ
-        slhrYnH0+9NLkCuugk70leP4u+VpKpk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-92-LDnZj4BXMJGA5FfbetSJ0Q-1; Fri, 25 Sep 2020 21:09:19 -0400
-X-MC-Unique: LDnZj4BXMJGA5FfbetSJ0Q-1
-Received: by mail-wm1-f69.google.com with SMTP id b20so272939wmj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:09:18 -0700 (PDT)
+        bh=T/MfC+wTSjbqTRPcN7Qitt4qsrANTjIPAEkx0OnCxwU=;
+        b=UmRqI6bw2yF5fCm/7b2z+70ToBYjnkwT/HkQkR2AZHWxrtTsWz5GDVe+X2U1F2WaAAzDN6
+        nP0BIeH2atPMel3v/L1Ao/eDNYSmfHoVb1WkugS/GUa93pV6bF5jdWoNKRPJ4/ZYzPLX0+
+        nYyg7g1JIYbhL8epcyFpcyMcBo0blXo=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-115-zbB2HPA2PHCyNSiozTSaRA-1; Fri, 25 Sep 2020 21:14:04 -0400
+X-MC-Unique: zbB2HPA2PHCyNSiozTSaRA-1
+Received: by mail-wr1-f70.google.com with SMTP id l9so1751909wrq.20
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:14:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=xhIG5lIeSniauUXqSeFzOVd/HOplR5lP9oJTjmYBwr4=;
-        b=N9BaK/iPR0zbBz4v2eOlFa2/rQRlpob8gTzutSlxZzaWF6u0uh8Dh4EXQj/UCigOIc
-         +AFcNdu63xaXZylESXu4IIdFSo8LmlF8SBkoooncc80pjyQBhiLDIu2vmSzd9nLsoQd9
-         /LGnhr8rU6CsLfG4CGftvhdUOLnnXqENKgKGhLNEPXriUAFVV54KdsJDluhnHjUKA0ti
-         nM60DSqEZIp9UEemX/7yZR7yaxjoZAeLaHw35tIK9DK/Drs1HovW4eo6a9MwsFrifuFo
-         DSZi+Mj2N0/+UntE+x7E1lI7VkNyfLhBLsCjk+wBgPyVHsiQAHUZrVJsLhxcnZKmzOiM
-         77dQ==
-X-Gm-Message-State: AOAM531Wk6zeOZQrTaRX9HkyNXyKYHYA5voBIYjKdbfiiJS/Z3djxE9r
-        PRAPJbolkzhHzOCo1+qYNClA/I8YMwQFlrarsyqA8RgM+2F31oKwmynDEsbkI+8VStAcxlwh+f2
-        bczSnOL3tk5j/NAhvXA3eRtE8
-X-Received: by 2002:a1c:31c6:: with SMTP id x189mr247361wmx.83.1601082557852;
-        Fri, 25 Sep 2020 18:09:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyzLUyQP75wWdVj638jZZOHVrM+HQw/Dru+TIGIm46WWePJ54+CuKgTNe0RK+yLBktmQDLL8Q==
-X-Received: by 2002:a1c:31c6:: with SMTP id x189mr247346wmx.83.1601082557623;
-        Fri, 25 Sep 2020 18:09:17 -0700 (PDT)
+        bh=T/MfC+wTSjbqTRPcN7Qitt4qsrANTjIPAEkx0OnCxwU=;
+        b=ig+bscjH+htCAqeYWV+uy2ofYFVcmNmjJo/8K5RmUHXThDL7Em3gvOtnxCO+a3XG9T
+         GuGi7a2Qydt0dGlgLe6sboY4/Hv1B/wu4fiTMU9Rvym2Zjs+lgyykX0rirDjczUrXpat
+         oVmAhkUHZMn9rFCNYZbuorvIHJsT3cWKDHjqaLipOhAjz/ssvxxPWNLaZWah+06f+M70
+         qrzH/fE9z0SlYizHx8/YbVWhT9V7PPx7pjTzo0F9m0k01h0f1V/j+Q5LHUEggONBFHiE
+         IMiqTw0Zm/l3Oijl5i60Kpxm/cHqh3UJeoObDWKt4IQDp9PNAGSaxFCBiOc+9FkSAqfh
+         GZlA==
+X-Gm-Message-State: AOAM5317Wvco8ft6FZwOTxdvQTG04JTkFVu+eHItIUKDKK3hzalj+nQH
+        jEKlwARbJ81U3/hGb0f8xDTFB0Ay6u8PuM7cVZ0zhUo+2tKZKM6dAMb7XbDK0VpDDlsET1YlGQ1
+        ofrGvn0Xs0z1LdUg7I5Klvkdy
+X-Received: by 2002:adf:efc9:: with SMTP id i9mr7380940wrp.187.1601082843265;
+        Fri, 25 Sep 2020 18:14:03 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzOQhtTbairjCMi0UAH/ZepweDc9c30EinOjCbyKbkBsucQ0wIQCZO+Q2lO5AO1syUaFBB+Nw==
+X-Received: by 2002:adf:efc9:: with SMTP id i9mr7380913wrp.187.1601082842935;
+        Fri, 25 Sep 2020 18:14:02 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id n14sm732281wmi.33.2020.09.25.18.09.16
+        by smtp.gmail.com with ESMTPSA id h16sm5117997wre.87.2020.09.25.18.14.01
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 18:09:17 -0700 (PDT)
-Subject: Re: [PATCH 18/22] kvm: mmu: Support disabling dirty logging for the
- tdp MMU
+        Fri, 25 Sep 2020 18:14:02 -0700 (PDT)
+Subject: Re: [PATCH 00/22] Introduce the TDP MMU
 To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
         kvm@vger.kernel.org
 Cc:     Cannon Matthews <cannonmatthews@google.com>,
@@ -68,14 +67,13 @@ Cc:     Cannon Matthews <cannonmatthews@google.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-19-bgardon@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <44822999-f5dc-6116-db12-a41f5bd80dd8@redhat.com>
-Date:   Sat, 26 Sep 2020 03:09:16 +0200
+Message-ID: <34785fca-4d6d-88d7-f90a-2e17815d02e6@redhat.com>
+Date:   Sat, 26 Sep 2020 03:14:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200925212302.3979661-19-bgardon@google.com>
+In-Reply-To: <20200925212302.3979661-1-bgardon@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,21 +82,117 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 25/09/20 23:22, Ben Gardon wrote:
-> +	for_each_tdp_pte_root(iter, root, start, end) {
-> +		if (!is_shadow_present_pte(iter.old_spte) ||
-> +		    is_last_spte(iter.old_spte, iter.level))
-> +			continue;
-> +
+> Over the years, the needs for KVM's x86 MMU have grown from running small
+> guests to live migrating multi-terabyte VMs with hundreds of vCPUs. Where
+> we previously depended on shadow paging to run all guests, we now have
+> two dimensional paging (TDP). This patch set introduces a new
+> implementation of much of the KVM MMU, optimized for running guests with
+> TDP. We have re-implemented many of the MMU functions to take advantage of
+> the relative simplicity of TDP and eliminate the need for an rmap.
+> Building on this simplified implementation, a future patch set will change
+> the synchronization model for this "TDP MMU" to enable more parallelism
+> than the monolithic MMU lock. A TDP MMU is currently in use at Google
+> and has given us the performance necessary to live migrate our 416 vCPU,
+> 12TiB m2-ultramem-416 VMs.
+> 
+> This work was motivated by the need to handle page faults in parallel for
+> very large VMs. When VMs have hundreds of vCPUs and terabytes of memory,
+> KVM's MMU lock suffers extreme contention, resulting in soft-lockups and
+> long latency on guest page faults. This contention can be easily seen
+> running the KVM selftests demand_paging_test with a couple hundred vCPUs.
+> Over a 1 second profile of the demand_paging_test, with 416 vCPUs and 4G
+> per vCPU, 98% of the time was spent waiting for the MMU lock. At Google,
+> the TDP MMU reduced the test duration by 89% and the execution was
+> dominated by get_user_pages and the user fault FD ioctl instead of the
+> MMU lock.
+> 
+> This series is the first of two. In this series we add a basic
+> implementation of the TDP MMU. In the next series we will improve the
+> performance of the TDP MMU and allow it to execute MMU operations
+> in parallel.
+> 
+> The overall purpose of the KVM MMU is to program paging structures
+> (CR3/EPT/NPT) to encode the mapping of guest addresses to host physical
+> addresses (HPA), and to provide utilities for other KVM features, for
+> example dirty logging. The definition of the L1 guest physical address
+> (GPA) to HPA mapping comes in two parts: KVM's memslots map GPA to HVA,
+> and the kernel MM/x86 host page tables map HVA -> HPA. Without TDP, the
+> MMU must program the x86 page tables to encode the full translation of
+> guest virtual addresses (GVA) to HPA. This requires "shadowing" the
+> guest's page tables to create a composite x86 paging structure. This
+> solution is complicated, requires separate paging structures for each
+> guest CR3, and requires emulating guest page table changes. The TDP case
+> is much simpler. In this case, KVM lets the guest control CR3 and programs
+> the EPT/NPT paging structures with the GPA -> HPA mapping. The guest has
+> no way to change this mapping and only one version of the paging structure
+> is needed per L1 paging mode. In this case the paging mode is some
+> combination of the number of levels in the paging structure, the address
+> space (normal execution or system management mode, on x86), and other
+> attributes. Most VMs only ever use 1 paging mode and so only ever need one
+> TDP structure.
+> 
+> This series implements a "TDP MMU" through alternative implementations of
+> MMU functions for running L1 guests with TDP. The TDP MMU falls back to
+> the existing shadow paging implementation when TDP is not available, and
+> interoperates with the existing shadow paging implementation for nesting.
+> The use of the TDP MMU can be controlled by a module parameter which is
+> snapshot on VM creation and follows the life of the VM. This snapshot
+> is used in many functions to decide whether or not to use TDP MMU handlers
+> for a given operation.
+> 
+> This series can also be viewed in Gerrit here:
+> https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
+> (Thanks to Dmitry Vyukov <dvyukov@google.com> for setting up the
+> Gerrit instance)
+> 
+> Ben Gardon (22):
+>   kvm: mmu: Separate making SPTEs from set_spte
+>   kvm: mmu: Introduce tdp_iter
+>   kvm: mmu: Init / Uninit the TDP MMU
+>   kvm: mmu: Allocate and free TDP MMU roots
+>   kvm: mmu: Add functions to handle changed TDP SPTEs
+>   kvm: mmu: Make address space ID a property of memslots
+>   kvm: mmu: Support zapping SPTEs in the TDP MMU
+>   kvm: mmu: Separate making non-leaf sptes from link_shadow_page
+>   kvm: mmu: Remove disallowed_hugepage_adjust shadow_walk_iterator arg
+>   kvm: mmu: Add TDP MMU PF handler
+>   kvm: mmu: Factor out allocating a new tdp_mmu_page
+>   kvm: mmu: Allocate struct kvm_mmu_pages for all pages in TDP MMU
+>   kvm: mmu: Support invalidate range MMU notifier for TDP MMU
+>   kvm: mmu: Add access tracking for tdp_mmu
+>   kvm: mmu: Support changed pte notifier in tdp MMU
+>   kvm: mmu: Add dirty logging handler for changed sptes
+>   kvm: mmu: Support dirty logging for the TDP MMU
+>   kvm: mmu: Support disabling dirty logging for the tdp MMU
+>   kvm: mmu: Support write protection for nesting in tdp MMU
+>   kvm: mmu: NX largepage recovery for TDP MMU
+>   kvm: mmu: Support MMIO in the TDP MMU
+>   kvm: mmu: Don't clear write flooding count for direct roots
+> 
+>  arch/x86/include/asm/kvm_host.h |   17 +
+>  arch/x86/kvm/Makefile           |    3 +-
+>  arch/x86/kvm/mmu/mmu.c          |  437 ++++++----
+>  arch/x86/kvm/mmu/mmu_internal.h |   98 +++
+>  arch/x86/kvm/mmu/paging_tmpl.h  |    3 +-
+>  arch/x86/kvm/mmu/tdp_iter.c     |  198 +++++
+>  arch/x86/kvm/mmu/tdp_iter.h     |   55 ++
+>  arch/x86/kvm/mmu/tdp_mmu.c      | 1315 +++++++++++++++++++++++++++++++
+>  arch/x86/kvm/mmu/tdp_mmu.h      |   52 ++
+>  include/linux/kvm_host.h        |    2 +
+>  virt/kvm/kvm_main.c             |    7 +-
+>  11 files changed, 2022 insertions(+), 165 deletions(-)
+>  create mode 100644 arch/x86/kvm/mmu/tdp_iter.c
+>  create mode 100644 arch/x86/kvm/mmu/tdp_iter.h
+>  create mode 100644 arch/x86/kvm/mmu/tdp_mmu.c
+>  create mode 100644 arch/x86/kvm/mmu/tdp_mmu.h
+> 
 
-I'm starting to wonder if another iterator like
-for_each_tdp_leaf_pte_root would be clearer, since this idiom repeats
-itself quite often.  The tdp_iter_next_leaf function would be easily
-implemented as
-
-	while (likely(iter->valid) &&
-	       (!is_shadow_present_pte(iter.old_spte) ||
-		is_last_spte(iter.old_spte, iter.level))
-		tdp_iter_next(iter);
+Ok, I've not finished reading the code but I have already an idea of
+what it's like.  I really think we should fast track this as the basis
+for more 5.11 work.  I'll finish reviewing it and, if you don't mind, I
+might make some of the changes myself so I have the occasion to play and
+get accustomed to the code; speak up if you disagree with them though!
+Another thing I'd like to add is a few tracepoints.
 
 Paolo
 
