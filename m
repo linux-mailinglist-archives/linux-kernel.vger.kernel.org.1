@@ -2,133 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE822798AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 13:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D7F2798B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 13:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727321AbgIZLUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 07:20:05 -0400
-Received: from esa3.microchip.iphmx.com ([68.232.153.233]:6844 "EHLO
-        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZLUF (ORCPT
+        id S1728148AbgIZLVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 07:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZLVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 07:20:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1601119204; x=1632655204;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=A0U/sr4vt/ziUMkFLZ5dkBWER2rtLcGn4oExQ3N6YVI=;
-  b=WSVCQnUxgj4QWRGwFoiVx0YirPaUfz5xa9jHI793hhTMmb7Zp6imgeig
-   hGRPdvzRSAzlDgomTV2ztto9kIP0+Mkj9sRHcpDNEH4BsiY++LOWWZvMX
-   BhctnsghdLw9PeuWJcwiK0XYrBeBVh+XXryhy6xW3oOealj5aBBT9jRKS
-   pov2eYTHMBNRBT09QZtv+2GMinaGJIUR+gA1TVw5aKSavX7aYJJvnp6Bd
-   BNt+kzkZq4Bw5EmB016OEPiBefT6QUW0eRyCHgje46SEkdmDXOoplbohh
-   BFZS7/UpXEausPLk/DSTr/XAsoA9ruIf4z7cQXYzyWAMoYMYLrTRs27d/
-   A==;
-IronPort-SDR: HaepiYyM/Kg9geIS2EfbDC+uHqMveggEsHskeFAebH8+A3u5uDZrrlmPjQzZmrUOfNk0jkc6Kl
- Rdq2J+F+Vr1NYwNsABDmnHel+WEaF0wpooMx4lOhQb/DXWUNQk51zy3zm4nWFjr7Um/eUfTSxj
- abMmfrV8MVFC2l9GdYifoF01cmY6QI8VOrQGA9nspwDl0GSBgz2didIy6xiRrNFRahRQRmCm0z
- Ehx3Aix1RYpid08y3fWsHj3le18OAICkG4Zkr6Xks5jryKQzO+UhO9NzPN7AQ+qtVY0OXIirLG
- Jtc=
-X-IronPort-AV: E=Sophos;i="5.77,305,1596524400"; 
-   d="scan'208";a="93278762"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Sep 2020 04:20:04 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Sat, 26 Sep 2020 04:20:03 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
- (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Sat, 26 Sep 2020 04:20:03 -0700
-Date:   Sat, 26 Sep 2020 13:20:02 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        "Ralf Baechle" <ralf@linux-mips.org>,
-        Paul Burton <paul.burton@mips.com>,
-        "James Hogan" <jhogan@kernel.org>, <linux-mips@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "Allan W. Nielsen" <allan.nielsen@microchip.com>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        <hongbo.wang@nxp.com>
-Subject: Re: [PATCH net-next v3 1/2] net: mscc: ocelot: Add support for tcam
-Message-ID: <20200926112002.i6zpwi26ong2hu4q@soft-dev3.localdomain>
-References: <1559287017-32397-1-git-send-email-horatiu.vultur@microchip.com>
- <1559287017-32397-2-git-send-email-horatiu.vultur@microchip.com>
- <CA+h21hprXnOYWExg7NxVZEX9Vjd=Y7o52ifKuAJqLwFuvDjaiw@mail.gmail.com>
- <20200423082948.t7sgq4ikrbm4cbnt@soft-dev3.microsemi.net>
- <20200924233949.lof7iduyfgjdxajv@skbuf>
+        Sat, 26 Sep 2020 07:21:30 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E659DC0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 04:21:29 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1c2500ffe5133b4df85bce.dip0.t-ipconnect.de [IPv6:2003:ec:2f1c:2500:ffe5:133b:4df8:5bce])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 478D11EC02FE;
+        Sat, 26 Sep 2020 13:21:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601119288;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=K7HXH+8g7WOwBC/NUI8kN5arZwFz+vcbQIKxgw2L5Pg=;
+        b=jIE5dL9tE4u/mQzlOxI6E5AzSzK/Hv+U4IrW4J8aWsvcz8tOEmB0opmv6Zth2D/hIPrWa8
+        UglH9mRCLJLHjS9cjbWIhaHMd+sxOqEHYz8s+RYBdc7t9kIcqQfl94On5emHnOvJvV6n9b
+        GiPUEG8+dChtzK7qIYexpE7s3fAlFvw=
+Date:   Sat, 26 Sep 2020 13:21:19 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: general protection fault in perf_misc_flags
+Message-ID: <20200926112119.GA22089@zn.tnic>
+References: <20200919110831.GD7462@zn.tnic>
+ <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
+ <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
+ <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
+ <20200921221336.GN5901@zn.tnic>
+ <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
+ <20200923090336.GD28545@zn.tnic>
+ <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
+ <20200923103431.GF28545@zn.tnic>
+ <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200924233949.lof7iduyfgjdxajv@skbuf>
+In-Reply-To: <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 09/25/2020 02:39, Vladimir Oltean wrote:
-> 
-Hi Vladimir,
+On Wed, Sep 23, 2020 at 05:20:06PM +0200, Dmitry Vyukov wrote:
+> It's a random fuzzing workload. You can get this workload by running
+> syzkaller locally:
+> https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md
 
-> Hi Horatiu,
-> 
-> On Thu, Apr 23, 2020 at 10:29:48AM +0200, Horatiu Vultur wrote:
-> > > > +static const struct vcap_props vcap_is2 = {
-> > > > +       .name = "IS2",
-> > > > +       .tg_width = 2,
-> > > > +       .sw_count = 4,
-> > > > +       .entry_count = VCAP_IS2_CNT,
-> > > > +       .entry_words = BITS_TO_32BIT(VCAP_IS2_ENTRY_WIDTH),
-> > > > +       .entry_width = VCAP_IS2_ENTRY_WIDTH,
-> > > > +       .action_count = (VCAP_IS2_CNT + VCAP_PORT_CNT + 2),
-> > > > +       .action_words = BITS_TO_32BIT(VCAP_IS2_ACTION_WIDTH),
-> > > > +       .action_width = (VCAP_IS2_ACTION_WIDTH),
-> > > > +       .action_type_width = 1,
-> > > > +       .action_table = {
-> > > > +               {
-> > > > +                       .width = (IS2_AO_ACL_ID + IS2_AL_ACL_ID),
-> > > > +                       .count = 2
-> > > > +               },
-> > > > +               {
-> > > > +                       .width = 6,
-> > > > +                       .count = 4
-> > > > +               },
-> > > > +       },
-> > > > +       .counter_words = BITS_TO_32BIT(4 * ENTRY_WIDTH),
-> > > > +       .counter_width = ENTRY_WIDTH,
-> > > > +};
-> 
-> Coming again to this patch, I'm having a very hard time understanding
-> how VCAP_IS2_ENTRY_WIDTH is derived and what it represents, especially
-> since the VCAP_CONST_ENTRY_WIDTH register reads something different.
-> Could you please explain?
+Yeah, the my.cfg example suggests that the syz-manager starts the guest
+and supplies the kernel, etc.
 
-To be honest, I don't remember precisely. I will need to setup a board
-and see exactly. But from what I remember:
-- according to this[1] in chapter 3.8.6, table 71. It says that the full
-  entry of IS2 is 384. And this 384 represent a full entry. In this row,
-  can be also sub entries like: half entry and quater entries. And each
-  entry has 2 bits that describes the entry type. So if you have 2 bits
-  for each possible entry then you have 8 bits describing each type. One
-  observation is even if you have a full entry each pair of 2 bits
-  describing the type needs to be set that is a full entry. Maybe if you
-  have a look at Figure 30, it would be a little bit more clear. Even
-  there is a register called VCAP_TG_DAT that information is storred
-  internally in the VCAP_ENTRY_DAT.
-- so having those in mind, then VCAP_IS2_ENTRY_WIDTH is the full entry
-  length - 8 bits. 384 - 8 = 376.
-- then if I remember correctly then VCAP_CONST_ENTRY_WIDTH should be
-  384? or 12 if it is counting the words.
+Is there a possibility to run the workload in an already existing guest
+which I've booted prior?
 
-Does it make sense or am I completly off?
+I'm asking because I have all the infra for testing kernels in guests
+already setup here and it would be easier for me to simply run the
+workload directly in the guest and then poke at it.
 
-> 
-> Thanks,
-> -Vladimir
-
-[1] http://ww1.microchip.com/downloads/en/DeviceDoc/VMDS-10491.pdf
+Thx.
 
 -- 
-/Horatiu
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
