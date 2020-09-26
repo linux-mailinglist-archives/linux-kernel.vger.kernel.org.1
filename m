@@ -2,114 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0782A279BC1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDD9279BC5
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730000AbgIZSHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 14:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55622 "EHLO
+        id S1730013AbgIZSJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 14:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729418AbgIZSHW (ORCPT
+        with ESMTP id S1726244AbgIZSJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 14:07:22 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B38C0613D4
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:07:21 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 5so4982968pgf.5
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:07:21 -0700 (PDT)
+        Sat, 26 Sep 2020 14:09:03 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20D4C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:09:03 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id s4so4329870pgk.17
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:09:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qRpDmm/g2i3mpPL44HfU6Aop5YrghidKPobGJTRxFOg=;
-        b=mcf5Oah3ns16yKInn1mBN9s9z9lkH8Pw4Wh0Wm1R8wmgN4+hH3M4VaBSzrjZq9yRAY
-         yj6tmJDj1Gw3JWv8VKfcAslXBY5O6YMoTGzh8Q9DDp43kVRs65txHVz3iQEP2rZ4PL5J
-         z0ZdXbthr/jquOGX1CNHf3KfYotYhz6BZGMbcql4GjyTAUTDJ7VAE8GRk+GO+vtSDsT0
-         l40YQlYgPmE9tlI9Z5GpMUDN34B4PSednZWWBl9OIJMc+VdOtYMm76kYtRSdMZJLUXTc
-         Z0U9smrIxUW8B60GOunzj0sEykB5fTNTC7C6QNUZkxwuOzAWKsDFTkYvXB1vdZbqNy8R
-         BmQA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=3c/59FF6UbpGkMXgjwS6ktZFhTNkfaygiMQu3wJN1UY=;
+        b=vVMFitoqRXXsjBHtjdEbF+ErlbYpYAdQUrfdKS7nxxfXEim/afvY1jGS+LdAWp9ldz
+         F8zzQm6hVxUbeaxhgipYPHlc+ALHhcwc3CLDp9TN/OMdo5PZJ9v+KLqfWQnS4M/N+Bca
+         9d7LzAR8gVcpeMZyn6CKLTjJ0Yia+TmcI5UgAa013eGHu0dNDREuA8rerIaNWcR7+IN7
+         LEQlt47fXtojfvHKKmkrb4tn/eOf3RFFuGS97opaBDMmJEa+zkEBhbeAbh43j+/J4//Q
+         jByyjv2EzxZsJeMmnBaGQAqn6vWaeIJkp5rGxzW+AdJ/8+gbRhQKV7WHvvhazsltHL8V
+         Pk1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qRpDmm/g2i3mpPL44HfU6Aop5YrghidKPobGJTRxFOg=;
-        b=qIHxPlPQROcTvkGmF2MQ5GKgPXCZvw8sNiJxZZlxbigqc2agHeHsqIZO9KUbkllpKN
-         N4viQlAtC6PMXzrSGwjqyENAgs61Seizw6rW9TyUNJhKzwJU+8JaNBE1edLvuVcsPvjw
-         xu9Uwz7DsIvS8mVd9kakbLgVHIiC8TgXTPZ7wkPDUS06AIeIy7jjTcK2uklVlJsHBlsc
-         oHWFEIUniKPuWjnF7Hhr3KtNkPsr667deRHyE7qo89WbeUAqZY3HEH5CidTUce8qwFOQ
-         OTP9MgMFpUJ1/5oM0EESWFP8mwUZMzW61BOSSL3T3ADXC7/fJekS9EV2haU/YEGGw2+N
-         y0MQ==
-X-Gm-Message-State: AOAM531JQqWUeSLDHx5m0FYxNhArJN4HgIN/0p7IWvIUMe0kgJRIUbyu
-        WtyDRP0iqZKaL4bpCCrJg0V0Yw==
-X-Google-Smtp-Source: ABdhPJxpXFQhrlElKUlbAYWtsq+VviE3L43aeWcF+Iu0dH4PD9nYwcDeT4Cd+H4ijKlj/onYr7M3bA==
-X-Received: by 2002:a63:4f10:: with SMTP id d16mr3399364pgb.152.1601143641188;
-        Sat, 26 Sep 2020 11:07:21 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id i126sm6239382pfc.48.2020.09.26.11.07.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Sep 2020 11:07:20 -0700 (PDT)
-Subject: Re: [PATCH next] io-wq: fix use-after-free in io_wq_worker_running
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk,
-        syzbot+45fa0a195b941764e0f0@syzkaller.appspotmail.com,
-        syzbot+9af99580130003da82b1@syzkaller.appspotmail.com,
-        Pavel Begunkov <asml.silence@gmail.com>
-References: <20200926132655.6192-1-hdanton@sina.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1ac425e8-f302-4e91-0c1d-3ebb0a40cf96@kernel.dk>
-Date:   Sat, 26 Sep 2020 12:07:19 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200926132655.6192-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=3c/59FF6UbpGkMXgjwS6ktZFhTNkfaygiMQu3wJN1UY=;
+        b=VBjITYnu0n5Y2ByF43xnaGQbMwQlIubFhV+qCcCpcxZ/nU3u2ffReHkhiYuCmEQx2l
+         lErEFDwSy64Bv3pXfbV/lN3YsO/XCEUd3IZWgc8qIJTDx3H53xsz1988orfhho7aMp94
+         D+9UfKp8YqLsAg22Lg7jJWmZk0K0cneGJjDIWK6HHGigjjuqZvqiFIxwuElKIlc0Rpfo
+         0xdvMJoVmWF4qFv+7o2GYzyRKPOBX+2neamfPZhw5tAHPO1B/CJTBx7cvyFZK1PAdCZE
+         VTCRL9Kv0drx5gNcQT4JsZKOXnETOzlqgLfW2VkxLir6kckEXwd6quIyox4jhz20d58A
+         nQWw==
+X-Gm-Message-State: AOAM5333iXD+IGcfQX9gSzSiDWV1EJ6aGjOJU/2fOqpBAQ2w53kjafZH
+        pzpLQPB796/NYcVe+wHSiNlH4GBXqnuB
+X-Google-Smtp-Source: ABdhPJxrk/2ljLE5fOhvOgERvCFlvfkBpQCHeJj5wS4X0CbZxpFybq64Cl5AEt1uDPdA0rl6xsRGsKVmIFDe
+Sender: "apusaka via sendgmr" <apusaka@apusaka-p920.tpe.corp.google.com>
+X-Received: from apusaka-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:2347])
+ (user=apusaka job=sendgmr) by 2002:a17:902:ea82:b029:d1:7ed9:5470 with SMTP
+ id x2-20020a170902ea82b02900d17ed95470mr4790733plb.26.1601143743251; Sat, 26
+ Sep 2020 11:09:03 -0700 (PDT)
+Date:   Sun, 27 Sep 2020 02:08:57 +0800
+Message-Id: <20200927020823.v2.1.Id1d24a896cd1d20f9ce7a4eb74523fe7896af89d@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH v2] Bluetooth: send proper config param to unknown config request
+From:   Archie Pusaka <apusaka@google.com>
+To:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        Marcel Holtmann <marcel@holtmann.org>
+Cc:     CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/26/20 7:26 AM, Hillf Danton wrote:
-> --- a/fs/io-wq.c
-> +++ b/fs/io-wq.c
-> @@ -200,7 +200,6 @@ static void io_worker_exit(struct io_wor
->  {
->  	struct io_wqe *wqe = worker->wqe;
->  	struct io_wqe_acct *acct = io_wqe_get_acct(wqe, worker);
-> -	unsigned nr_workers;
->  
->  	/*
->  	 * If we're not at zero, someone else is holding a brief reference
-> @@ -228,15 +227,11 @@ static void io_worker_exit(struct io_wor
->  		raw_spin_lock_irq(&wqe->lock);
->  	}
->  	acct->nr_workers--;
-> -	nr_workers = wqe->acct[IO_WQ_ACCT_BOUND].nr_workers +
-> -			wqe->acct[IO_WQ_ACCT_UNBOUND].nr_workers;
->  	raw_spin_unlock_irq(&wqe->lock);
->  
-> -	/* all workers gone, wq exit can proceed */
-> -	if (!nr_workers && refcount_dec_and_test(&wqe->wq->refs))
-> -		complete(&wqe->wq->done);
-> -
->  	kfree_rcu(worker, rcu);
-> +	if (refcount_dec_and_test(&wqe->wq->refs))
-> +		complete(&wqe->wq->done);
->  }
+From: Archie Pusaka <apusaka@chromium.org>
 
-Nice, we came up with the same fix, thanks a lot for looking into this.
-I pushed this one out for syzbot to test:
+When receiving an L2CAP_CONFIGURATION_REQ with an unknown config
+type, currently we will reply with L2CAP_CONFIGURATION_RSP with
+a list of unknown types as the config param. However, this is not
+a correct format of config param.
 
-https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.9&id=41d5f92f60a61e264dafbada79175dad0bc60c5b
+As described in the bluetooth spec v5.2, Vol 3, Part A, Sec 5,
+the config param should consists of type, length, and optionally
+data.
 
-which is basically identical. I did consider the EXIT check as well, but
-we don't really need it, so I'd prefer to leave that out of it.
+This patch copies the length and data from the received
+L2CAP_CONFIGURATION_REQ and also appends them to the config param
+of the corresponding L2CAP_CONFIGURATION_RSP to match the format
+of the config param according to the spec.
 
-I'll queue yours up.
+Here's some btmon traces.
+//------- Without Patch -------//
+> ACL Data RX: Handle 256 flags 0x02 dlen 24       #58 [hci0] 21.570741
+      L2CAP: Configure Request (0x04) ident 5 len 16
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [mandatory]
+        10 00 11 02 11 00 12 02 12 00                    ..........
+< ACL Data TX: Handle 256 flags 0x00 dlen 17       #59 [hci0] 21.570892
+      L2CAP: Configure Response (0x05) ident 5 len 9
+        Source CID: 64
+        Flags: 0x0000
+        Result: Failure - unknown options (0x0003)
+        Option: Unknown (0x10) [mandatory]
+        12
+// Btmon parses it wrong - we sent 10 11 12 instead of just 12.
 
+//------- With Patch -------//
+> ACL Data RX: Handle 256 flags 0x02 dlen 24       #58 [hci0] 22.188308
+      L2CAP: Configure Request (0x04) ident 9 len 16
+        Destination CID: 64
+        Flags: 0x0000
+        Option: Unknown (0x10) [mandatory]
+        10 00 11 02 11 00 12 02 12 00                    ..........
+< ACL Data TX: Handle 256 flags 0x00 dlen 26       #59 [hci0] 22.188516
+      L2CAP: Configure Response (0x05) ident 9 len 18
+        Source CID: 64
+        Flags: 0x0000
+        Result: Failure - unknown options (0x0003)
+        Option: Unknown (0x10) [mandatory]
+        10 00 11 02 11 00 12 02 12 00                    ..........
+
+Signed-off-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+
+---
+
+Changes in v2:
+* Add btmon traces in the commit message
+
+ net/bluetooth/l2cap_core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 1ab27b90ddcb..4e65854b2f1c 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -3627,7 +3627,8 @@ static int l2cap_parse_conf_req(struct l2cap_chan *chan, void *data, size_t data
+ 			if (hint)
+ 				break;
+ 			result = L2CAP_CONF_UNKNOWN;
+-			*((u8 *) ptr++) = type;
++			l2cap_add_conf_opt(&ptr, type, olen, val,
++					   endptr - ptr);
+ 			break;
+ 		}
+ 	}
+@@ -3658,7 +3659,7 @@ static int l2cap_parse_conf_req(struct l2cap_chan *chan, void *data, size_t data
+ 	}
+ 
+ done:
+-	if (chan->mode != rfc.mode) {
++	if (chan->mode != rfc.mode && result != L2CAP_CONF_UNKNOWN) {
+ 		result = L2CAP_CONF_UNACCEPT;
+ 		rfc.mode = chan->mode;
+ 
 -- 
-Jens Axboe
+2.28.0.681.g6f77f65b4e-goog
 
