@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B171279CD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 01:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 411FD279CD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 01:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgIZXBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 19:01:17 -0400
-Received: from mga09.intel.com ([134.134.136.24]:31340 "EHLO mga09.intel.com"
+        id S1727860AbgIZXCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 19:02:42 -0400
+Received: from mga09.intel.com ([134.134.136.24]:31649 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726311AbgIZXBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 19:01:16 -0400
+        id S1726311AbgIZXCl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 19:02:41 -0400
 IronPort-SDR: jO1RuFLakE3DhRi4rSMcGFaCda3+907sGsyr1z7uT1ypUoOrR1RiQfPvhHyjl328y69gBwdAFG
  l9DRjn5KwSBA==
 X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="162709089"
