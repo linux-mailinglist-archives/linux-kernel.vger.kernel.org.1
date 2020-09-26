@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A5F279B3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E7A279B3E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbgIZRR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 13:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        id S1729789AbgIZRSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 13:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729391AbgIZRRz (ORCPT
+        with ESMTP id S1729448AbgIZRRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 26 Sep 2020 13:17:55 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059C7C0613D3;
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 890F2C0613CE;
         Sat, 26 Sep 2020 10:17:55 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id ay8so5701594edb.8;
-        Sat, 26 Sep 2020 10:17:54 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id n22so5724425edt.4;
+        Sat, 26 Sep 2020 10:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lcBsjnajO4fTPTvs7qAbh2JZawKgsdZDVsW0VBI+daE=;
-        b=CKdJWQlFlegkx9NVPNoh2ptMtli7494EMgY1tlR9JkkcZlEw5zUogEibMzHuTi1gqO
-         ziH+/oikcYZgPR+209skV1G+dpfPX8I+SOFo1XOlf21/g509QqT6NzOPQKblrClKBKVO
-         vLdsw9za4liVxRhKPKvr6Zusw4CyHT9Nr1V5TdRJfxvnjcmLOnRzGRKg6Pz4zkIiIVTh
-         eReF6VkazRhtq9zVG59+szhYh4aXYXXvR4sfV6WWeyNjvSCK8X/m9Ido++X/k6AqWNo3
-         K6GNUsBw49m4VzEq545icPf/gH07ujwqg2xE597TS7vsq/6wV0tHFcA3uUZmz7KOJtdX
-         1KHg==
+        bh=AfT9O0H7JUNIb+i7YC/nS1cXrez1aH9KdFCzpHTzaiM=;
+        b=WpC0eXS0GxOw/JRQ8EOYODRm/nE7IncGC7eURxmaN9MKacXi/x+7RpenNCwQysiavi
+         oR5E2B94ukWWdw9LwLr2FU8jw3n5UWojoxl4rJPmOO6Zjb8hICg+0R+K6Kv7hl6msT20
+         myPdQTJyVJA1vBoGu8Ck5lCJQbEvxZz/zi+6pvsoxDWyJLqTv6yDherebB5/qd+rXf0t
+         3VvmDpnl8v85urN5Tf0ayvrlGhc3SAm74NBMxfkfvAn/bJ803xk6LPBMdVnZXwg4Y+Ch
+         1W6BLFmpIv7qFVD5UHTzXaRkN8rji0Hh7tLBVDLpAK+he3XSOeMQDXxHZSsTSCONHD+v
+         y1lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lcBsjnajO4fTPTvs7qAbh2JZawKgsdZDVsW0VBI+daE=;
-        b=B7BoIVrKhSfmJ5qvZrjB8tb5kL6z/WSFUAlIlpQs+4U/PvlV7FO45yL9f0yaUH9SvK
-         G8x9G6edUsjxdSIKovipqEidVRoaqTKpaTeeTlE2pl0PaMdjbgsq9I+ABQuAKIT79/t2
-         IjM5K6f+QO7SxpvlhgJr46iDo2iVOTjVfLDolrXl8xIkzGFWEN5843+dYWbRIlexwaz+
-         uHN0QF9mFbNIWC0bNfflRUoCVplmDkCFkvjvm0xmuzDw9OriwfkiblaI5QFPAN/ovQX0
-         Nou6Z6pHoL/S6rZleuGt7in7dGR7sLnW15S2Gsogr8Owz0w238vaA0jHgK75btgxBooK
-         p6fQ==
-X-Gm-Message-State: AOAM530xhjo3j1s1MixcoKzoxD3yY4uvAFMTTP1yxkL/lJnA9YYN2JID
-        WpXQgAQK2nMf9pYM8x8/x2QZ7CILSCY=
-X-Google-Smtp-Source: ABdhPJzsdQnpUNpqzEnmoXkz7fxNOrpPgmyp1nElKfSX93Oz0+vcvETBLXMQI2VkKRTyqILoX8hk7g==
-X-Received: by 2002:a50:e80a:: with SMTP id e10mr7554432edn.4.1601140672181;
-        Sat, 26 Sep 2020 10:17:52 -0700 (PDT)
+        bh=AfT9O0H7JUNIb+i7YC/nS1cXrez1aH9KdFCzpHTzaiM=;
+        b=kQODgyNd+lWyrIdbOrhb1mveFLxyFCSLI+xYiQGUGZBqNeb9ReqRD3b6CkPyrDFHZ+
+         oMvmNvRdRLeBhLX0pyy/x4xzwF9gJ/h9jOx2MKfVHBWIXYTzvk9fGDzzxt9EwhIJXBu7
+         9LHnHOtdn/NXFoT3jqD3Yim4sn6QCrlZFsyexAdC4dO8Rl+dnd5H0KZ0eT97QpzWi3qM
+         TrBXQ4lPxj3qKGl2/PTjmIof0YvYhg66E0BCryQ/XNUUyzM0JlOw9AZku0Tn8/jMedg8
+         YMV8jbClhSjK7luplIpQ7cFQhZGR3tUneG1WXnlNZpogDQwTNu5RsjZBZLFzWxLtu7JA
+         SUJA==
+X-Gm-Message-State: AOAM533up9IGPlDvguMdLkdpx+Mof92gjXVZysEShbixB3VQrFOjx6Ya
+        Enb2RJKTr/wKbFQjcEcTYnsUXUu+GKg=
+X-Google-Smtp-Source: ABdhPJweAwpdsU9xTyvfSiYMkOUhdMDL2MvBPSNgAKvdXKvJhG+GOU4Jl9+lNIaDVWxv4SGEpjNJwA==
+X-Received: by 2002:aa7:ca17:: with SMTP id y23mr7763438eds.245.1601140673779;
+        Sat, 26 Sep 2020 10:17:53 -0700 (PDT)
 Received: from xws.fritz.box (pd9e5ae20.dip0.t-ipconnect.de. [217.229.174.32])
-        by smtp.gmail.com with ESMTPSA id u13sm4625589ejn.82.2020.09.26.10.17.50
+        by smtp.gmail.com with ESMTPSA id u13sm4625589ejn.82.2020.09.26.10.17.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 10:17:51 -0700 (PDT)
+        Sat, 26 Sep 2020 10:17:53 -0700 (PDT)
 From:   Maximilian Luz <luzmaximilian@gmail.com>
 To:     platform-driver-x86@vger.kernel.org
 Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
@@ -62,9 +62,9 @@ Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
         Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org,
         Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH 2/5] platform/surface: Move Surface 3 WMI driver to platform/surface
-Date:   Sat, 26 Sep 2020 19:17:11 +0200
-Message-Id: <20200926171714.721406-3-luzmaximilian@gmail.com>
+Subject: [PATCH 3/5] platform/surface: Move Surface 3 Button driver to platform/surface
+Date:   Sat, 26 Sep 2020 19:17:12 +0200
+Message-Id: <20200926171714.721406-4-luzmaximilian@gmail.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200926171714.721406-1-luzmaximilian@gmail.com>
 References: <20200926171714.721406-1-luzmaximilian@gmail.com>
@@ -74,91 +74,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the Surface 3 WMI driver from platform/x86 to the newly created
+Move the Surface 3 Button driver from platform/x86 to the newly created
 platform/surface directory.
 
 Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
 Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/platform/surface/Kconfig                 | 12 +++++++++++-
- drivers/platform/surface/Makefile                |  2 +-
- drivers/platform/{x86 => surface}/surface3-wmi.c |  0
- drivers/platform/x86/Kconfig                     | 12 ------------
- drivers/platform/x86/Makefile                    |  1 -
- 5 files changed, 12 insertions(+), 15 deletions(-)
- rename drivers/platform/{x86 => surface}/surface3-wmi.c (100%)
+ drivers/platform/surface/Kconfig                    | 6 ++++++
+ drivers/platform/surface/Makefile                   | 1 +
+ drivers/platform/{x86 => surface}/surface3_button.c | 0
+ drivers/platform/x86/Kconfig                        | 6 ------
+ drivers/platform/x86/Makefile                       | 1 -
+ 5 files changed, 7 insertions(+), 7 deletions(-)
+ rename drivers/platform/{x86 => surface}/surface3_button.c (100%)
 
 diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
-index 806b088ddae2..1566b32a1884 100644
+index 1566b32a1884..22075ca451b0 100644
 --- a/drivers/platform/surface/Kconfig
 +++ b/drivers/platform/surface/Kconfig
-@@ -15,6 +15,16 @@ menuconfig SURFACE_PLATFORM
+@@ -27,4 +27,10 @@ config SURFACE3_WMI
+ 	  To compile this driver as a module, choose M here: the module will
+ 	  be called surface3-wmi.
  
- if SURFACE_PLATFORM
- 
--# place Microsoft Surface platform drivers here
-+config SURFACE3_WMI
-+	tristate "Surface 3 WMI Driver"
-+	depends on ACPI_WMI
-+	depends on DMI
-+	depends on INPUT
-+	depends on SPI
++config SURFACE_3_BUTTON
++	tristate "Power/home/volume buttons driver for Microsoft Surface 3 tablet"
++	depends on ACPI && KEYBOARD_GPIO && I2C
 +	help
-+	  Say Y here if you have a Surface 3.
++	  This driver handles the power/home/volume buttons on the Microsoft Surface 3 tablet.
 +
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called surface3-wmi.
- 
  endif # SURFACE_PLATFORM
 diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
-index 11788a44713f..f889d521420f 100644
+index f889d521420f..8588dc178245 100644
 --- a/drivers/platform/surface/Makefile
 +++ b/drivers/platform/surface/Makefile
-@@ -4,4 +4,4 @@
- # Microsoft Surface Platform-Specific Drivers
+@@ -5,3 +5,4 @@
  #
  
--# place Microsoft Surface platform drivers here
-+obj-$(CONFIG_SURFACE3_WMI)		+= surface3-wmi.o
-diff --git a/drivers/platform/x86/surface3-wmi.c b/drivers/platform/surface/surface3-wmi.c
+ obj-$(CONFIG_SURFACE3_WMI)		+= surface3-wmi.o
++obj-$(CONFIG_SURFACE_3_BUTTON)		+= surface3_button.o
+diff --git a/drivers/platform/x86/surface3_button.c b/drivers/platform/surface/surface3_button.c
 similarity index 100%
-rename from drivers/platform/x86/surface3-wmi.c
-rename to drivers/platform/surface/surface3-wmi.c
+rename from drivers/platform/x86/surface3_button.c
+rename to drivers/platform/surface/surface3_button.c
 diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 40219bba6801..1be0a23bd9f2 100644
+index 1be0a23bd9f2..33c178100efa 100644
 --- a/drivers/platform/x86/Kconfig
 +++ b/drivers/platform/x86/Kconfig
-@@ -869,18 +869,6 @@ config INTEL_VBTN
+@@ -869,12 +869,6 @@ config INTEL_VBTN
  	  To compile this driver as a module, choose M here: the module will
  	  be called intel_vbtn.
  
--config SURFACE3_WMI
--	tristate "Surface 3 WMI Driver"
--	depends on ACPI_WMI
--	depends on DMI
--	depends on INPUT
--	depends on SPI
+-config SURFACE_3_BUTTON
+-	tristate "Power/home/volume buttons driver for Microsoft Surface 3 tablet"
+-	depends on ACPI && KEYBOARD_GPIO && I2C
 -	help
--	  Say Y here if you have a Surface 3.
+-	  This driver handles the power/home/volume buttons on the Microsoft Surface 3 tablet.
 -
--	  To compile this driver as a module, choose M here: the module will
--	  be called surface3-wmi.
--
- config SURFACE_3_BUTTON
- 	tristate "Power/home/volume buttons driver for Microsoft Surface 3 tablet"
- 	depends on ACPI && KEYBOARD_GPIO && I2C
+ config SURFACE_3_POWER_OPREGION
+ 	tristate "Surface 3 battery platform operation region support"
+ 	depends on ACPI && I2C
 diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 5f823f7eff45..29563a32b3e3 100644
+index 29563a32b3e3..0fd70d5d2cf3 100644
 --- a/drivers/platform/x86/Makefile
 +++ b/drivers/platform/x86/Makefile
 @@ -82,7 +82,6 @@ obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
  obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
  
  # Microsoft
--obj-$(CONFIG_SURFACE3_WMI)		+= surface3-wmi.o
- obj-$(CONFIG_SURFACE_3_BUTTON)		+= surface3_button.o
+-obj-$(CONFIG_SURFACE_3_BUTTON)		+= surface3_button.o
  obj-$(CONFIG_SURFACE_3_POWER_OPREGION)	+= surface3_power.o
  obj-$(CONFIG_SURFACE_PRO3_BUTTON)	+= surfacepro3_button.o
+ 
 -- 
 2.28.0
 
