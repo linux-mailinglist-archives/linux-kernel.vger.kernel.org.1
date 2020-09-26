@@ -2,138 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34FD279605
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60EB27960C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729874AbgIZBnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 21:43:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28693 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728967AbgIZBnq (ORCPT
+        id S1729830AbgIZBz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 21:55:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729008AbgIZBz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 21:43:46 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601084625;
+        Fri, 25 Sep 2020 21:55:28 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A90FC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:55:28 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601085326;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=anuXvW7DT2NGfM0wi3fUi3pbzDhxv6S3wuJYHpV9+T8=;
-        b=MK8vsURStodYRTIUEnifXPsI3pvDdpOygNS2CVJRB17OR4tp38QG3+HD0OJjXKOTHwxXN9
-        JkbtKzh4uNE6WcsbUTlwQsnZTlwt0n3TJUDIFvQrAcYlmvZbKZWM0tjMer0lSmYc480BsK
-        S/eiE69NmwM7yiSh15WYIvtablD+Lpk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-3ub8DGkqMci6FOxNU-m3_g-1; Fri, 25 Sep 2020 21:43:41 -0400
-X-MC-Unique: 3ub8DGkqMci6FOxNU-m3_g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CFBE910066FC;
-        Sat, 26 Sep 2020 01:43:38 +0000 (UTC)
-Received: from T590 (ovpn-12-20.pek2.redhat.com [10.72.12.20])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E771373662;
-        Sat, 26 Sep 2020 01:43:29 +0000 (UTC)
-Date:   Sat, 26 Sep 2020 09:43:25 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ebjds/y6Ik+WNL7AzXFOt7nkRoMOnpMzIAggoQnKroA=;
+        b=x2meIfRHNDw+/kckISTk7U/A8YOX0VzzDVpWpTl3gUO8lkg3Azm/wBPL1G1q5XJVu+Pwpa
+        3D5YsGWQOrCmSsvGrLBNveYg/oIfxAjm2WRaw1yzKnhXAo+XyiQVOt7gvFMv2y2Mi/BT4S
+        7Pq39BDBzeXQChgnR4gX3cpoMjVM9qEs5r8mfD3ZFl8QdGt1Ws3wRoU+7EJn/MlG+LcddV
+        OBCurhw2HoXxzhmHVfdiMPvyJE53CxEYjIuWseqMmGoY6h48Sw55gUNmW1T2v7/iiSSJQz
+        5YW0drg7bNwBQMJxvQOsIo6cyd45P3Iq39Qmh0OH+yV8RoIuHPRKz5SuW4E0BA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601085326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ebjds/y6Ik+WNL7AzXFOt7nkRoMOnpMzIAggoQnKroA=;
+        b=mgVGX0lsSO7osOM1MIKxUKCX3IQACLSQqLfrkPI41clKQ3taH4ifjpYm/Po+RAScw3EUfN
+        45qOUVd7QmDWJ0DQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>, Jens Axboe <axboe@kernel.dk>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: REGRESSION: 37f4a24c2469: blk-mq: centralise related handling
- into blk_mq_get_driver_tag
-Message-ID: <20200926014325.GA2516054@T590>
-References: <CALvZod5pERERkxWAJcBrZHpcWQH75kXkys2gUg__qM9OL+MmtQ@mail.gmail.com>
- <20200925191902.543953-1-shakeelb@google.com>
+Subject: [PATCH next 0/2] printk: fix reading beyond buffer
+Date:   Sat, 26 Sep 2020 04:01:24 +0206
+Message-Id: <20200926015526.8921-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925191902.543953-1-shakeelb@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 12:19:02PM -0700, Shakeel Butt wrote:
-> On Fri, Sep 25, 2020 at 10:58 AM Shakeel Butt <shakeelb@google.com>
-> wrote:
-> >
-> [snip]
-> >
-> > I don't think you can ignore the flushing. The __free_once() in
-> > ___cache_free() assumes there is a space available.
-> >
-> > BTW do_drain() also have the same issue.
-> >
-> > Why not move slabs_destroy() after we update ac->avail and memmove()?
-> 
-> Ming, can you please try the following patch?
-> 
-> 
-> From: Shakeel Butt <shakeelb@google.com>
-> 
-> [PATCH] mm: slab: fix potential infinite recursion in ___cache_free
-> 
-> With the commit 10befea91b61 ("mm: memcg/slab: use a single set of
-> kmem_caches for all allocations"), it becomes possible to call kfree()
-> from the slabs_destroy(). However if slabs_destroy() is being called for
-> the array_cache of the local CPU then this opens the potential scenario
-> of infinite recursion because kfree() called from slabs_destroy() can
-> call slabs_destroy() with the same array_cache of the local CPU. Since
-> the array_cache of the local CPU is not updated before calling
-> slabs_destroy(), it will try to free the same pages.
-> 
-> To fix the issue, simply update the cache before calling
-> slabs_destroy().
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  mm/slab.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/slab.c b/mm/slab.c
-> index 3160dff6fd76..f658e86ec8ce 100644
-> --- a/mm/slab.c
-> +++ b/mm/slab.c
-> @@ -1632,6 +1632,10 @@ static void slab_destroy(struct kmem_cache *cachep, struct page *page)
->  		kmem_cache_free(cachep->freelist_cache, freelist);
->  }
->  
-> +/*
-> + * Update the size of the caches before calling slabs_destroy as it may
-> + * recursively call kfree.
-> + */
->  static void slabs_destroy(struct kmem_cache *cachep, struct list_head *list)
->  {
->  	struct page *page, *n;
-> @@ -2153,8 +2157,8 @@ static void do_drain(void *arg)
->  	spin_lock(&n->list_lock);
->  	free_block(cachep, ac->entry, ac->avail, node, &list);
->  	spin_unlock(&n->list_lock);
-> -	slabs_destroy(cachep, &list);
->  	ac->avail = 0;
-> +	slabs_destroy(cachep, &list);
->  }
->  
->  static void drain_cpu_caches(struct kmem_cache *cachep)
-> @@ -3402,9 +3406,9 @@ static void cache_flusharray(struct kmem_cache *cachep, struct array_cache *ac)
->  	}
->  #endif
->  	spin_unlock(&n->list_lock);
-> -	slabs_destroy(cachep, &list);
->  	ac->avail -= batchcount;
->  	memmove(ac->entry, &(ac->entry[batchcount]), sizeof(void *)*ac->avail);
-> +	slabs_destroy(cachep, &list);
->  }
+Hello,
 
-The issue can't be reproduced after applying this patch:
+Marek Szyprowski reported [0] a problem with a particular printk
+usage. This particular usage performs thousands of LOG_CONT calls.
+The printk.c implementation was only limiting the growing record by
+the maximum size available in the ringbuffer, thus creating a record
+that was several kilobytes in size. This in and of itself is not
+a problem.
 
-Tested-by: Ming Lei <ming.lei@redhat.com>
+However, the various readers used buffers that were about 1KB in
+size. The ringbuffer would only fill the reader's 1KB buffer, but the
+meta data stated that the message was actually much larger. The
+reader code was not checking this and assumed its buffer contained
+the full message.
 
-Thanks,
-Ming
+I have solved this problem by adding the necessary check to the
+functions where the situation can occur and also adding an argument
+when extending records so that a maximum size is specified. This
+will prevent the records from growing beyond the size that we know
+our readers are using.
+
+I did not add the check where it is certain that the reader's
+buffer is large enough to contain the largest possible message.
+
+The 2nd patch in this series reduces the size of the initial setup
+buffer. I noticed it was too big while verifying all the sizes for
+this series.
+
+John Ogness
+
+[0] https://lkml.kernel.org/r/f1651593-3579-5820-6863-5f4973d2bfdc@samsung.com
+
+John Ogness (2):
+  printk: avoid and/or handle record truncation
+  printk: reduce setup_text_buf size to LOG_LINE_MAX
+
+ kernel/printk/printk.c            |  9 +++++++--
+ kernel/printk/printk_ringbuffer.c | 12 ++++++++++--
+ kernel/printk/printk_ringbuffer.h |  2 +-
+ 3 files changed, 18 insertions(+), 5 deletions(-)
+
+-- 
+2.20.1
 
