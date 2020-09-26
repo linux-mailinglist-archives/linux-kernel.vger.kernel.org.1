@@ -2,137 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D8F279A60
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31417279A6C
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729654AbgIZPdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 11:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        id S1729644AbgIZPmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 11:42:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726956AbgIZPdD (ORCPT
+        with ESMTP id S1725208AbgIZPmx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 11:33:03 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735AEC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:33:03 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p15so2588950ejm.7
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:33:03 -0700 (PDT)
+        Sat, 26 Sep 2020 11:42:53 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FF08C0613CE;
+        Sat, 26 Sep 2020 08:42:53 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id i17so6209249oig.10;
+        Sat, 26 Sep 2020 08:42:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NyijGOIcOg0IQ8xJ7tRK9WXb8VbwFr7joS3ngRxTFtY=;
-        b=IgNtiCGTIRw+9Jq9+OugAEUgOtWjA8eNb9N0lGKIZhSzq8+Nq6i8p6dAPgDSw3WCu5
-         5zLCQcy1nGd484dN8MEuuVSYHqucVtHjEfU81Ws4/lYX/HOp4JbMrZzXbrOql6BtdQAy
-         +hEnD/Pr6tT/viPh9YkxxEEc7eplb0NwJB92c=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=92Eqn2qMAPQE4mm68EDXihszegVaTB40RjIm0gmqBiQ=;
+        b=Ri8Dr1K/SH8oQnVHzVjtaXmQPG5l8mzXqdyysnccw89QSDA2DFO2o8z+G0LyiijaMn
+         CUOXp9EPlALrzmygAlt6fV2fweBL0K/v0U+dN/rtOma6BnnP/d1X91CDTT/L8OiWR8N6
+         xe/D+Eos0bSJKzbzP8bRXcMuXG7jM+aR0JEewMr6QfxdRCifUA+iNfPh14O270qbrtU2
+         9DkMuvDSB9ZO2jyfmfvGvp3VE+BlhIFFgBM5AeYfrGRrWqkQI3s5nR/e43ZfF1MAS1gt
+         SXt2g/O8RARjr5IBSxwesKY75tFp/7RE9vtfxkvssqST+z81knOz+OSYrN0+bzZtbeOW
+         7w6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NyijGOIcOg0IQ8xJ7tRK9WXb8VbwFr7joS3ngRxTFtY=;
-        b=Y3mqamkeOdB8XBOvkRrlbCce8e7J/ulHl7dtMrYBZjC/i0vLIn0pbeLGGuxfDGcgrS
-         oC0SmPScL42DFumzhgyIppRABeXjyCIFKiD3kgMMI8qZW6fTmA3TdpNCU886sIwI2GsG
-         0wE6bYKp528hDwJCFVsDvgAq/ckzFBbO5S/J4uwdAICtcTevjWbM+/FV4Sn0TsjbmuAe
-         W+c3Ck6MHGXbABJ61Z8TwmwEiuGVCgdfmTc88gBN8sSWDYPGn/VZVPgg9i+1RD/kv+Ia
-         Hs7Y+0ZmtF9eBEwP6wNaX/c4c6bwyt5lHpFYWLx6syhKqIzVuM1qOPB7v0rRZqAR8IZC
-         4Z4Q==
-X-Gm-Message-State: AOAM530hVOJEAWs/8VmjoPoY7WWlSyw0kzsiRdGCQdPXQliAqQPEfbOW
-        dXziqg+8tRvNZIJk+1LoOrTO2oIsN8VOZ8is
-X-Google-Smtp-Source: ABdhPJzYYjarbddvoj2byF+EIU0ItK+IxF+U1ZDV6HiEZuFXu3OJqB4rSOwRH9w6aPs9O0zv5zoZrg==
-X-Received: by 2002:a17:906:cb92:: with SMTP id mf18mr8192004ejb.485.1601134381864;
-        Sat, 26 Sep 2020 08:33:01 -0700 (PDT)
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com. [209.85.128.49])
-        by smtp.gmail.com with ESMTPSA id 16sm4681791edx.72.2020.09.26.08.33.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Sep 2020 08:33:01 -0700 (PDT)
-Received: by mail-wm1-f49.google.com with SMTP id w2so2188597wmi.1
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 08:33:01 -0700 (PDT)
-X-Received: by 2002:a7b:c925:: with SMTP id h5mr2968012wml.28.1601133943201;
- Sat, 26 Sep 2020 08:25:43 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=92Eqn2qMAPQE4mm68EDXihszegVaTB40RjIm0gmqBiQ=;
+        b=bBRI4PAoY7+gzY/EQx9k+IqxK7L6AlBqWt3o/CSAI6kmPA3ysHlj0NHKDm03+qAA7l
+         D/iDtec39hCdTS+Pct6AQW201U6LUsP2PJTtIzey07VtAVFrdnYLGv9taJqpnaxQA9m6
+         WGNrYSksBwSH1aw9RcVsgjpIK0ql3tGqf1Mge5ruxRkhuyqueFTnKRNUUgxvLt0QxsP3
+         4gx7lPQC1UOSMKsGt2/3fnkO/lfZmKfR1ncILZQFYD5qFFeC8sbtsTSLv09WX0gJD3fD
+         iYfmKlHOQOZgot0sjZPyc0EqJNw5BtTcnKw854hzaQo+iq+aVwdP83Jw42iRXiE/BQ8R
+         MDQg==
+X-Gm-Message-State: AOAM530FKrHCEkEGijVufOqfdJhf40qHNsv5NrTi7crKQsxRccMHHmRc
+        7ELGI6bS2Gb0j/eul5gkmBST/zDjY5c=
+X-Google-Smtp-Source: ABdhPJxpCpZKqk/Dcyo15qBeC4B2USXBDYpDjna4PVCSHuK3TYsVOpTbc94stmuo771NvP0E0CAfgw==
+X-Received: by 2002:aca:cc07:: with SMTP id c7mr1596532oig.82.1601134971158;
+        Sat, 26 Sep 2020 08:42:51 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z10sm652059ooz.14.2020.09.26.08.42.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 26 Sep 2020 08:42:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 26 Sep 2020 08:42:49 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
+        pavel@denx.de, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/37] 4.19.148-rc1 review
+Message-ID: <20200926154249.GA233060@roeck-us.net>
+References: <20200925124720.972208530@linuxfoundation.org>
 MIME-Version: 1.0
-References: <20200915155122.1768241-1-hch@lst.de> <20200915155122.1768241-18-hch@lst.de>
- <20200925184622.GB3607091@chromium.org> <20200926141428.GB10379@lst.de>
-In-Reply-To: <20200926141428.GB10379@lst.de>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Sat, 26 Sep 2020 17:25:27 +0200
-X-Gmail-Original-Message-ID: <CAAFQd5CjSKswdc3qOEZy73cyYJ9kfaXsSFyxkOHA+buh-J12UA@mail.gmail.com>
-Message-ID: <CAAFQd5CjSKswdc3qOEZy73cyYJ9kfaXsSFyxkOHA+buh-J12UA@mail.gmail.com>
-Subject: Re: [PATCH 17/18] dma-iommu: implement ->alloc_noncoherent
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <linux-arm-kernel@lists.infradead.org>,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 4:14 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, Sep 25, 2020 at 06:46:22PM +0000, Tomasz Figa wrote:
-> > > +static void *iommu_dma_alloc_noncoherent(struct device *dev, size_t size,
-> > > +           dma_addr_t *handle, enum dma_data_direction dir, gfp_t gfp)
-> > > +{
-> > > +   if (!gfpflags_allow_blocking(gfp)) {
-> > > +           struct page *page;
-> > > +
-> > > +           page = dma_common_alloc_pages(dev, size, handle, dir, gfp);
-> > > +           if (!page)
-> > > +                   return NULL;
-> > > +           return page_address(page);
-> > > +   }
-> > > +
-> > > +   return iommu_dma_alloc_remap(dev, size, handle, gfp | __GFP_ZERO,
-> > > +                                PAGE_KERNEL, 0);
-> >
-> > iommu_dma_alloc_remap() makes use of the DMA_ATTR_ALLOC_SINGLE_PAGES attribute
-> > to optimize the allocations for devices which don't care about how contiguous
-> > the backing memory is. Do you think we could add an attrs argument to this
-> > function and pass it there?
-> >
-> > As ARM is being moved to the common iommu-dma layer as well, we'll probably
-> > make use of the argument to support the DMA_ATTR_NO_KERNEL_MAPPING attribute to
-> > conserve the vmalloc area.
->
-> We could probably at it.  However I wonder why this is something the
-> drivers should care about.  Isn't this really something that should
-> be a kernel-wide policy for a given system?
+On Fri, Sep 25, 2020 at 02:48:28PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.148 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
+> Anything received after that time might be too late.
+> 
 
-There are IOMMUs out there which support huge pages and those can
-benefit *some* hardware depending on what kind of accesses they
-perform, possibly on a per-buffer basis. At the same time, order > 0
-allocations can be expensive, significantly affecting allocation
-latency, so for devices which don't care about huge pages anyone would
-prefer simple single-page allocations. Currently the drivers know the
-best on whether the hardware they drive would care. There are some
-decision factors listed in the documentation [1].
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 421 pass: 421 fail: 0
 
-I can imagine cases where drivers could not be the best to decide
-about this - for example, the workload could vary depending on the
-userspace or a product decision regarding the performance vs
-allocation latency, but we haven't seen such cases in practice yet.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-[1] https://www.kernel.org/doc/html/latest/core-api/dma-attributes.html?highlight=dma_attr_alloc_single_pages#dma-attr-alloc-single-pages
-
-Best regards,
-Tomasz
+Guenter
