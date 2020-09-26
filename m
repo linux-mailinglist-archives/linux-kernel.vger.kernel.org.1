@@ -2,183 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C58CA2795EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC5A2795F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729879AbgIZBR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 21:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
+        id S1729844AbgIZBXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 21:23:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729789AbgIZBR2 (ORCPT
+        with ESMTP id S1729057AbgIZBXn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 21:17:28 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E60C0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:17:28 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id x5so45727plo.6
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:17:28 -0700 (PDT)
+        Fri, 25 Sep 2020 21:23:43 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D40C0613CE;
+        Fri, 25 Sep 2020 18:23:42 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id t7so355940pjd.3;
+        Fri, 25 Sep 2020 18:23:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=I6Dtk9mZR92rDJG/J+v/I4660jgxmxD7sJpleXc0eWY=;
-        b=j1Nmujra8/KxKXaFKBbJbWHuM1VtCSxXvYsAytzlTCWtgQWHWPtUL0elO8d68ZKLvx
-         7fmWCqRq+ZyKTla5tZXPv9kCL7fcX6sKLCVS+ApxDLjb+VAgoab3GeRBS+G/b29Wz7nU
-         fEg7CA/lbiQlQBbdOjeC1m+F97upaBIxcRxgQ=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gjsiX96TOZRrX+VWB5R73a/e4ejGDQtJ92tP2rTnjOs=;
+        b=Imh+a54pvSI9sfrjTL6vFP9BP8aCNTez3j81G7yDGDS59MGe4mxIsT5JeEXn51ynmf
+         wGIDMu7h37nNhagccGZt84pZgsS7AIKEs40qYkX+MHQvkVfOZnoakZdz9M8u4vdlGb5P
+         8yQBq6S01sczjE5nT0niD5iVgLXYHTUBp939DUYIPIZ879aB1GcXRZUeBdlAUbyC7Cwv
+         Ruy2U3hxVwfr9jds0Vmo66h6zEqsxKqrQaYwuXyW6bIR73SwpKlLTyTsnpk6LVgFZAn+
+         Idqwu5WQx3/qfn2BlC4gVXLpxxMbuXM3P/UHb4FqM95OyYoD0Mhuvp9ibx5dstPe7H1G
+         +hUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=I6Dtk9mZR92rDJG/J+v/I4660jgxmxD7sJpleXc0eWY=;
-        b=hHapUT3LCz6fy1bIUMXLanC6tUmea1VGVMoj+gHZQijlNFGQ9OoG0/zPrOx41pVnRz
-         NYOZkc2i8K4mMQiw5lKvIze44XOPyCdDmFZbDThYy+d4nw1IOxPqoGxcyyCBsM947Ik7
-         nTereP9qczlxiRKwSPGrTG3gNLXvOUQBpuGh9VRw/xuDIymgiZyrt6Sa2iBg5qX+3Cc/
-         gjeUj/sncwMrGBgBvCwv7d+SuuYyigwXyAiXl9EVMyFCJ1g98JT/jRC9iFqUwirMwy1v
-         5XEYQLZllcBz72bfm+CsDUqa0S2+ahMorFnne+MRMDgtdaaRdwHObp7pwKWvRUuoKdUS
-         uGDQ==
-X-Gm-Message-State: AOAM530J+b9yKrvePG+1WVQZzzpSlFLmMGAMUR3HgvjV9rQWelzGPmn7
-        z8mzMBNkaP6VenyJ5UGNq/Tgew==
-X-Google-Smtp-Source: ABdhPJx0KGLfWSXqPs2UJAf2busJUPY3sqXAwe8q/nn2WAwxIum0KF5s9NtUCdsY3Ks8hlezaF5yAw==
-X-Received: by 2002:a17:90b:693:: with SMTP id m19mr226302pjz.111.1601083047527;
-        Fri, 25 Sep 2020 18:17:27 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id c12sm2988144pgd.57.2020.09.25.18.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 18:17:26 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gjsiX96TOZRrX+VWB5R73a/e4ejGDQtJ92tP2rTnjOs=;
+        b=K0yYy9z5ixroqP9VKrjyubskWP17lt/iDJ58S7j3oclpeBVU/rMr2iP5p2qNFcYgxB
+         e+vvURV2S55QdmLld5vsHq1ft2tuS/vw1Nkoe7VSSbZz0EP5r1ar1H99g5/xbjyPV75m
+         3WHIVrSkFrY1w2USVydmTbwGH5Rs5itpKvkw4gx7OcUzcYxnOM5gxuXBiv+kgyUsXHLK
+         QRPtthwJAnRWhhoS7LjHsxSR3rvRHxpL6/qc3Zjf5+YHnEpY7pPVxCSvHZT6KHUTO+1I
+         /J907avbe7XEQ98NgD64wxKYnkYhwG4e6+ROhBORhVqO6cnmt2EmpZQ/piSfDkYs00v/
+         ajzA==
+X-Gm-Message-State: AOAM533IvuITJ8YWwmzgZzirtVeXkIDi7QNf7DkyVEB0tEEXF2lHgtOU
+        KQKvQ++FzKu269bliHhSr/KKNUYLd+csyOiHoeM=
+X-Google-Smtp-Source: ABdhPJzOKTBS/qfK2ZK7IckkNEZ2COxbBRpCd5qZvLpE47fez0OjnTD6tKlcc+G9j0e6gphevIVvtwX2kJMYareLyfQ=
+X-Received: by 2002:a17:902:778e:b029:d2:8046:efe2 with SMTP id
+ o14-20020a170902778eb02900d28046efe2mr172074pll.44.1601083422286; Fri, 25 Sep
+ 2020 18:23:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200909121550.00005ede@Huawei.com>
-References: <20200903221828.3657250-1-swboyd@chromium.org> <20200906150247.3aaef3a3@archlinux> <159963232334.454335.9794130058200265122@swboyd.mtv.corp.google.com> <20200909121550.00005ede@Huawei.com>
-Subject: Re: [PATCH] dt-bindings: iio: sx9310: Add various settings as DT properties
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, Daniel Campello <campello@chromium.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Evan Green <evgreen@chromium.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Date:   Fri, 25 Sep 2020 18:17:25 -0700
-Message-ID: <160108304513.310579.9483266115343530431@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <202009251223.8E46C831E2@keescook> <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
+ <202009251332.24CE0C58@keescook> <CALCETrU_UpcLhXSG84SA6QkAYe8xXn4AXPKeud-=Adp57u54Mg@mail.gmail.com>
+In-Reply-To: <CALCETrU_UpcLhXSG84SA6QkAYe8xXn4AXPKeud-=Adp57u54Mg@mail.gmail.com>
+From:   YiFei Zhu <zhuyifei1999@gmail.com>
+Date:   Fri, 25 Sep 2020 20:23:30 -0500
+Message-ID: <CABqSeASR0bQ7Y302SkZ639NM=roSVRmd3ROGm0YDEFCTxxd63w@mail.gmail.com>
+Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
+ filter is arg-dependent
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry this thread is deep! Good news is I have moved the proximity
-thresholds, hysteresis, hardware gain, and debounce to userspace. Now
-just to figure out this filter strength.
+On Fri, Sep 25, 2020 at 4:07 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> We'd need at least three states per syscall: unknown, always-allow,
+> and need-to-run-filter.
+>
+> The downsides are less determinism and a bit of an uglier
+> implementation.  The upside is that we don't need to loop over all
+> syscalls at load -- instead the time that each operation takes is
+> independent of the total number of syscalls on the system.  And we can
+> entirely avoid, say, evaluating the x32 case until the task tries an
+> x32 syscall.
 
-Quoting Jonathan Cameron (2020-09-09 04:15:50)
-> On Tue, 8 Sep 2020 23:18:43 -0700
-> Stephen Boyd <swboyd@chromium.org> wrote:
->=20
-> > Quoting Jonathan Cameron (2020-09-06 07:02:47)
->=20
-> >=20
-> > >  =20
-> > > > +
-> > > > +  semtech,proxraw-strength:
-> > > > +    allOf:
-> > > > +      - $ref: /schemas/types.yaml#definitions/uint32
-> > > > +      - enum: [0, 2, 4, 8]
-> > > > +    default: 2
-> > > > +    description:
-> > > > +      PROXRAW filter strength. A value of 0 represents off, and ot=
-her values
-> > > > +      represent 1-1/N. =20
-> > >=20
-> > > Having looked at the datasheet I have little or now idea of what this=
- filter
-> > > actually is.  However, what is the argument for it being in DT rather=
- than
-> > > exposing a userspace control of some type. =20
-> >=20
-> > I only see this equation in the datasheet
-> >=20
-> > F(PROXRAW ; PROXUSEFUL[n-1] ; RAWFILT) =3D (1 - RAWFILT).PROXRAW + RAWF=
-ILT.PROXUSEFUL[n-1]=20
-> >=20
-> > and it's talking about updating PROXUSEFUL. "PROXUSEFUL update consists
-> > of filtering PROXRAW upfront to remove its high frequencies components".
-> > So presumably this filter is used to make proxraw into proxuseful so
-> > that it is a meaningful number. Is this a new knob in userspace?
->=20
-> It might fit with the various filter definitions, but there is so little =
-info
-> it is hard to map it across.   Perhaps DT is the best we can do here even
-> though it would ideally be controlled from userspace.
->=20
+I was really afraid of multiple tasks writing to the bitmaps at once,
+hence I used bitmap-per-task. Now I think about it, if this stays
+lockless, the worst thing that can happen is that a write undo a bit
+set by another task. In this case, if the "known" bit is cleared then
+the worst would be the emulation is run many times. But if the "always
+allow" is cleared but not "known" bit then we have an issue: the
+syscall will always be executed in BPF.
 
-Ok I read the datasheet a couple more times :)
+Is it worth holding a spinlock here?
 
-This sensor seems to have multiple levels of processing on the signal.
-First the raw signal is there as PROXRAW. That gets turned into
-PROXUSEFUL with this calculation:
+Though I'll try to get the benchmark numbers for the emulator later tonight.
 
- F(PROXRAW ; PROXUSEFUL[n-1] ; RAWFILT) =3D (1 - RAWFILT) * PROXRAW + RAWFI=
-LT * PROXUSEFUL[n-1]
-
-This semtech,proxraw-strength property is trying to set that RAWFILT
-variable to something like 2, 4, or 8. Or 0 for "off". Is that in terms
-of 3db? A bigger question, does the useful value need to be a different
-channel so it can be configured from userspace? We don't get an
-interrupt when this changes but at least the value can be read out of
-the hardware from what I can tell.
-
-The PROXUSEFUL value is turned into PROXAVG. There is a positive filter
-strength and a negative filter strength that is used to filter the
-PROXAVG value. I need to set the positive filter strength to be
-different than the default. That's what I'm trying to do with
-semtech,avg-pos-strength. It factors into this equation for PROXUSEFUL:
-
-if (PROXUSEFUL - PROXAVG[n-1] >=3D 0)
-  F(PROXUSEFUL ; PROXAVG[n-1] ; AVGPOSFILT) =3D (1 - AVGPOSFILT) * PROXUSEF=
-UL + AVGPOSFILT * PROXAVG[n-1]=20
-else
-  F(PROXUSEFUL ; PROXAVG[n-1] ; AVGNEGFILT) =3D (1 - AVGNEGFILT) * PROXUSEF=
-UL + AVGNEGFILT * PROXAVG[n-1]=20
-
-so depending on how the historical average value is going we filter
-differently. Again, is this in 3db? This register has a setting of
-"infinite" which I guess is used to make the above equation come out to
-be just PROXAVG[n - 1]? Otherwise 0 is "off" which seems to make the
-above equation boil down to:
-
-  PROXAVG =3D PROXUSEFUL
-
-when you do substitution.
-
-I agree it looks like some sort of filter, so maybe I need to introduce
-some proximity.*filter ABI? I don't know the units though.
-
-To complete the story, the PROXAVG value gets compared to a threshold
-AVGTHRESH (settable in a register) and that can be debounced with
-another register setting (AVGDEB). That results in PROXUSEFUL which goes
-into this PROXDIFF equation:
-
- PROXDIFF =3D (PROXUSEFUL - PROXAVG) >> 4
-
-The PROXDIFF value is compared to the proximity threshold register
-setting (PROXTHRESH, i.e. bits 3:7 in register RegProxCtrl8/9) plus or
-minus the hysteresis (RegProxCtrl10 bits 5:4) and then debounced
-(RegProxCtrl10 bits 3:2 (for close) and 1:0 (for far)).
-
-if (PROXDIFF > PROXTHRESH + HYST)
-  // close event, i.e. DIR_FALLING
-  PROXSTAT =3D debounce() ? 1 : 0;
-else if (PROXDIFF < PROXTHRESH - HYST)
-  // far event, i.e. DIR_RISING
-  PROXSTAT =3D debounce() ? 0 : 1;
-
-If that all passes then PROXSTAT is set to 1 for the close condition and
-0 for the far condition. An irq is raised and eventually this driver
-will signal a new event indicating rising or falling.
-
-I see that the driver implements sx9310_read_prox_data() as a read on
-the PROXDIFF value. That looks good for reading the processed signal for
-a channel after all that raw/avg/useful debouncing and filtering.
+YiFei Zhu
