@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC5A2795F4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443972795F5
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgIZBXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 21:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729057AbgIZBXn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 21:23:43 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D40C0613CE;
-        Fri, 25 Sep 2020 18:23:42 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id t7so355940pjd.3;
-        Fri, 25 Sep 2020 18:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gjsiX96TOZRrX+VWB5R73a/e4ejGDQtJ92tP2rTnjOs=;
-        b=Imh+a54pvSI9sfrjTL6vFP9BP8aCNTez3j81G7yDGDS59MGe4mxIsT5JeEXn51ynmf
-         wGIDMu7h37nNhagccGZt84pZgsS7AIKEs40qYkX+MHQvkVfOZnoakZdz9M8u4vdlGb5P
-         8yQBq6S01sczjE5nT0niD5iVgLXYHTUBp939DUYIPIZ879aB1GcXRZUeBdlAUbyC7Cwv
-         Ruy2U3hxVwfr9jds0Vmo66h6zEqsxKqrQaYwuXyW6bIR73SwpKlLTyTsnpk6LVgFZAn+
-         Idqwu5WQx3/qfn2BlC4gVXLpxxMbuXM3P/UHb4FqM95OyYoD0Mhuvp9ibx5dstPe7H1G
-         +hUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gjsiX96TOZRrX+VWB5R73a/e4ejGDQtJ92tP2rTnjOs=;
-        b=K0yYy9z5ixroqP9VKrjyubskWP17lt/iDJ58S7j3oclpeBVU/rMr2iP5p2qNFcYgxB
-         e+vvURV2S55QdmLld5vsHq1ft2tuS/vw1Nkoe7VSSbZz0EP5r1ar1H99g5/xbjyPV75m
-         3WHIVrSkFrY1w2USVydmTbwGH5Rs5itpKvkw4gx7OcUzcYxnOM5gxuXBiv+kgyUsXHLK
-         QRPtthwJAnRWhhoS7LjHsxSR3rvRHxpL6/qc3Zjf5+YHnEpY7pPVxCSvHZT6KHUTO+1I
-         /J907avbe7XEQ98NgD64wxKYnkYhwG4e6+ROhBORhVqO6cnmt2EmpZQ/piSfDkYs00v/
-         ajzA==
-X-Gm-Message-State: AOAM533IvuITJ8YWwmzgZzirtVeXkIDi7QNf7DkyVEB0tEEXF2lHgtOU
-        KQKvQ++FzKu269bliHhSr/KKNUYLd+csyOiHoeM=
-X-Google-Smtp-Source: ABdhPJzOKTBS/qfK2ZK7IckkNEZ2COxbBRpCd5qZvLpE47fez0OjnTD6tKlcc+G9j0e6gphevIVvtwX2kJMYareLyfQ=
-X-Received: by 2002:a17:902:778e:b029:d2:8046:efe2 with SMTP id
- o14-20020a170902778eb02900d28046efe2mr172074pll.44.1601083422286; Fri, 25 Sep
- 2020 18:23:42 -0700 (PDT)
+        id S1729885AbgIZBY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 21:24:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728935AbgIZBYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 21:24:11 -0400
+Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 786C020878;
+        Sat, 26 Sep 2020 01:24:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601083450;
+        bh=0ufQlNsRRx9NSNO7HzrPQhwnxasobcXS489JmiK12sk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tbFKkwONDpAHgYcVZan/Q48SIV5/6eI8ZrOubYyRdFPKTFTE7gL4KoSAIphDpHTww
+         Fawdl4e2FsEb+yeGTAOcDXV+1jiARuZ0gNBrdbw5Adrz8U5BCTwS4RJdGHcYypiEOY
+         EnyFgF8rrFH8lbMXsJu93/PJgUFkMV+3oQD4Gf+g=
+Date:   Sat, 26 Sep 2020 03:24:06 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Tobias Jordan <kernel@cdqe.de>
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Jean-Jacques Hiblot <jjhiblot@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>
+Subject: Re: [PATCH v2] leds: tlc591xx: fix leak of device node iterator
+Message-ID: <20200926032406.00c7cfb2@kernel.org>
+In-Reply-To: <20200926005117.GA32209@agrajag.zerfleddert.de>
+References: <20200926005117.GA32209@agrajag.zerfleddert.de>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <202009251223.8E46C831E2@keescook> <2FA23A2E-16B0-4E08-96D5-6D6FE45BBCF6@amacapital.net>
- <202009251332.24CE0C58@keescook> <CALCETrU_UpcLhXSG84SA6QkAYe8xXn4AXPKeud-=Adp57u54Mg@mail.gmail.com>
-In-Reply-To: <CALCETrU_UpcLhXSG84SA6QkAYe8xXn4AXPKeud-=Adp57u54Mg@mail.gmail.com>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Fri, 25 Sep 2020 20:23:30 -0500
-Message-ID: <CABqSeASR0bQ7Y302SkZ639NM=roSVRmd3ROGm0YDEFCTxxd63w@mail.gmail.com>
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if
- filter is arg-dependent
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 4:07 PM Andy Lutomirski <luto@amacapital.net> wrote:
-> We'd need at least three states per syscall: unknown, always-allow,
-> and need-to-run-filter.
->
-> The downsides are less determinism and a bit of an uglier
-> implementation.  The upside is that we don't need to loop over all
-> syscalls at load -- instead the time that each operation takes is
-> independent of the total number of syscalls on the system.  And we can
-> entirely avoid, say, evaluating the x32 case until the task tries an
-> x32 syscall.
+On Sat, 26 Sep 2020 02:51:17 +0200
+Tobias Jordan <kernel@cdqe.de> wrote:
 
-I was really afraid of multiple tasks writing to the bitmaps at once,
-hence I used bitmap-per-task. Now I think about it, if this stays
-lockless, the worst thing that can happen is that a write undo a bit
-set by another task. In this case, if the "known" bit is cleared then
-the worst would be the emulation is run many times. But if the "always
-allow" is cleared but not "known" bit then we have an issue: the
-syscall will always be executed in BPF.
+> In one of the error paths of the for_each_child_of_node loop in
+> tlc591xx_probe, add missing call to of_node_put.
+>=20
+> Fixes: 1ab4531ad132 ("leds: tlc591xx: simplify driver by using the
+> managed led API")
+>=20
+> Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+> ---
+> v2: rebased to Pavel's for-next branch
+>=20
+>  drivers/leds/leds-tlc591xx.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
+> index f24271337bd8..5b9dfdf743ec 100644
+> --- a/drivers/leds/leds-tlc591xx.c
+> +++ b/drivers/leds/leds-tlc591xx.c
+> @@ -205,10 +205,12 @@ tlc591xx_probe(struct i2c_client *client,
+>  		led->ldev.max_brightness =3D TLC591XX_MAX_BRIGHTNESS;
+>  		err =3D devm_led_classdev_register_ext(dev, &led->ldev,
+>  						     &init_data);
+> -		if (err < 0)
+> +		if (err < 0) {
+> +			of_node_put(child);
+>  			return dev_err_probe(dev, err,
+>  					     "couldn't register LED %s\n",
+>  					     led->ldev.name);
+> +		}
+>  	}
+>  	return 0;
+>  }
 
-Is it worth holding a spinlock here?
-
-Though I'll try to get the benchmark numbers for the emulator later tonight.
-
-YiFei Zhu
+Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
