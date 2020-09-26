@@ -2,165 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBEC279C6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 22:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7AC279C79
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 22:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbgIZUsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 16:48:17 -0400
-Received: from mail-il1-f208.google.com ([209.85.166.208]:37720 "EHLO
-        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726959AbgIZUsQ (ORCPT
+        id S1727058AbgIZUwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 16:52:35 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:36381 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbgIZUwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 16:48:16 -0400
-Received: by mail-il1-f208.google.com with SMTP id c66so5237776ilf.4
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 13:48:15 -0700 (PDT)
+        Sat, 26 Sep 2020 16:52:35 -0400
+Received: by mail-ej1-f65.google.com with SMTP id e23so3243241eja.3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 13:52:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=LM/7fcHB+LSBwRcKiIRcDVmi/2c7SXH6clQmuTap8yI=;
-        b=pB5LeGiUyMzVmJzAC3MaKzzcVFqAXohNNQwrB8dHBGkfQnZFc62BZV+Yl5YweCeRte
-         AiTVA85kRLq6Fhf8ySLjdXwQosPVhpKOBkOgTpeAxW3Mxw47QJqkboMl/Z2k/toehWw5
-         W5tYq9I965iP4lQ3h2CCNJb5pvrrvTuQuoG7ZLFPccXAXwRq9vMAEAGRGAaL+fcNsLss
-         bWeS3zdJbrgZ9SLGmmqxJq6KBWTuy+b/4F6H3u70JFpAkUF5Tj9x4aWFGYQa/k5pMiKT
-         reW8oksN0HxOAa3s9/gbtmeSpn6lgFGXDalr7LUOUsefY5IFzUYUfhSdC2M5fS+05J/K
-         zkCw==
-X-Gm-Message-State: AOAM531D9WKvcfdzZiUL/MaygFLjes/xWGbly0sjX2ffWKu4vEwz1NBU
-        pdXXSBqAPMbXe6Y7OZ7QCGt42NHfiD3VORxtvkn5IkYSuxd1
-X-Google-Smtp-Source: ABdhPJyhVCo0cwhMlBliXmWsy52Cr2sz6xqQfoDOyoHXRAcwSr9wd8hb1kMJx8u0L1o3vic4kFpY/qKEYODal/Xpc0Efz7hJEMAA
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+8Oh61VDkKJm8ATQ6jeOPbqJJMPXYpW1qx7rAsBes8k=;
+        b=FoEyBxX8MVQw/cz9tgXNqWdd4uIE2Zuuxe5PDwax/uuRqanU99A8fuPP17dDQw2t27
+         6cEC2MeNbJRwo0voSXQ3yUUuL0M83JLqKjCH0Hqwq9DjMggT8JB/3mEKULLH9Yifw6LU
+         G1oo7alMAmhfMBp44mdIH+CoVKeJs8UR6EZCO4QB0DBn604scisOHK3oiBF37iMXsrV4
+         OXdbDViA3l6KPL1gwYL3Ig+zHShGlz6HOh5QQocHR+R6Bu134anyBN5JQyYwgnGf6PvE
+         L0EhksqWipDd9PU1fU9/DP3JPE2G/m/DZNYdQJA77WBrkvcIUmobtv4x5IsOjbUU67zW
+         +AIg==
+X-Gm-Message-State: AOAM531dDNMSz31/bCMLyvRKq8BaZEYabMoWolQuw+XHufeg2U+kQkgk
+        F/A6Q+mAfevWmM/nO70caVlqUg==
+X-Google-Smtp-Source: ABdhPJy70ndEkfLf/+WblrSk/UwDwosqtjfmRLEbzIM2w+dXQYJKs0F5avEWRJwBwLIFK8CxgFh61A==
+X-Received: by 2002:a17:907:264c:: with SMTP id ar12mr9129730ejc.80.1601153552469;
+        Sat, 26 Sep 2020 13:52:32 -0700 (PDT)
+Received: from x1-carbon.localdomain (dynamic-2a01-0c22-a405-1400-4d77-6706-ca6f-bab0.c22.pool.telefonica.de. [2a01:c22:a405:1400:4d77:6706:ca6f:bab0])
+        by smtp.gmail.com with ESMTPSA id p1sm5064178edx.4.2020.09.26.13.52.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 13:52:31 -0700 (PDT)
+From:   gary@apache.org
+Cc:     Gary Yao <gary@apache.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: media: atomisp: clean up block comment style issues
+Date:   Sat, 26 Sep 2020 22:50:58 +0200
+Message-Id: <20200926205103.189041-1-gary@apache.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:c301:: with SMTP id n1mr4410021ilg.247.1601153295431;
- Sat, 26 Sep 2020 13:48:15 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 13:48:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000067becf05b03d8dd6@google.com>
-Subject: BUG: unable to handle kernel paging request in dqput
-From:   syzbot <syzbot+f816042a7ae2225f25ba@syzkaller.appspotmail.com>
-To:     adi@adirat.com, alsa-devel@alsa-project.org,
-        coreteam@netfilter.org, davem@davemloft.net, jack@suse.com,
-        kaber@trash.net, kadlec@blackhole.kfki.hu,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com,
-        tiwai@suse.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Gary Yao <gary@apache.org>
 
-syzbot found the following issue on:
+Clean up block comment style issues to follow kernel coding style
+and clear checkpatch warnings.
 
-HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17930875900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
-dashboard link: https://syzkaller.appspot.com/bug?extid=f816042a7ae2225f25ba
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133783ab900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bb5973900000
+WARNING: Block comments use * on subsequent lines
+WARNING: Block comments use a trailing */ on a separate line
 
-The issue was bisected to:
-
-commit 1d0f953086f090a022f2c0e1448300c15372db46
-Author: Ioan-Adrian Ratiu <adi@adirat.com>
-Date:   Wed Jan 4 22:37:46 2017 +0000
-
-    ALSA: usb-audio: Fix irq/process data synchronization
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=133362c3900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=10b362c3900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=173362c3900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f816042a7ae2225f25ba@syzkaller.appspotmail.com
-Fixes: 1d0f953086f0 ("ALSA: usb-audio: Fix irq/process data synchronization")
-
-EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
-Quota error (device loop0): qtree_write_dquot: Error -1622674347 occurred while creating quota
-Quota error (device loop0): dq_insert_tree: Quota tree root isn't allocated!
-Quota error (device loop0): qtree_write_dquot: Error -5 occurred while creating quota
-BUG: unable to handle page fault for address: fffffbfff3e8feac
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD 21ffe5067 P4D 21ffe5067 PUD 21ffe4067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6845 Comm: syz-executor636 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
-RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
-RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
-RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
-RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
-RIP: 0010:check_memory_region+0x80/0x2f0 mm/kasan/generic.c:192
-Code: 01 00 00 00 00 fc ff df 4d 01 ea 4d 89 d6 4d 29 ce 49 83 fe 10 7f 2d 4d 85 f6 0f 84 ab 01 00 00 4c 89 cb 4c 29 d3 0f 1f 40 00 <45> 0f b6 19 45 84 db 0f 85 f3 01 00 00 49 ff c1 48 ff c3 75 eb e9
-RSP: 0018:ffffc90001fdf9d0 EFLAGS: 00010293
-RAX: 2234ff0efb3ccc01 RBX: fffffffffffffffe RCX: ffffffff81e00c97
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff9f47f565
-RBP: ffffffff9f47f455 R08: dffffc0000000000 R09: fffffbfff3e8feac
-R10: fffffbfff3e8feae R11: 0000000000000000 R12: 1ffffffff3e8feac
-R13: dffffc0000000001 R14: 0000000000000002 R15: ffffffff9f47f565
-FS:  00000000009ac880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffbfff3e8feac CR3: 000000009f30a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- instrument_atomic_read include/linux/instrumented.h:56 [inline]
- atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
- dqput+0x77/0x770 fs/quota/dquot.c:770
- dqput_all fs/quota/dquot.c:397 [inline]
- __dquot_initialize+0x9e6/0xc30 fs/quota/dquot.c:1530
- ext4_xattr_set+0x9b/0x300 fs/ext4/xattr.c:2474
- __vfs_setxattr+0x3be/0x400 fs/xattr.c:177
- __vfs_setxattr_noperm+0x11e/0x4b0 fs/xattr.c:208
- vfs_setxattr+0xde/0x270 fs/xattr.c:283
- setxattr+0x167/0x350 fs/xattr.c:548
- path_setxattr+0x109/0x1c0 fs/xattr.c:567
- __do_sys_setxattr fs/xattr.c:582 [inline]
- __se_sys_setxattr fs/xattr.c:578 [inline]
- __x64_sys_setxattr+0xb7/0xd0 fs/xattr.c:578
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x4447e9
-Code: 8d d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffcd4905408 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00000000004447e9
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 00000000200000c0
-RBP: 00000000006cf018 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004023d0
-R13: 0000000000402460 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: fffffbfff3e8feac
----[ end trace a52409661d306995 ]---
-RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
-RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
-RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
-RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
-RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
-RIP: 0010:check_memory_region+0x80/0x2f0 mm/kasan/generic.c:192
-Code: 01 00 00 00 00 fc ff df 4d 01 ea 4d 89 d6 4d 29 ce 49 83 fe 10 7f 2d 4d 85 f6 0f 84 ab 01 00 00 4c 89 cb 4c 29 d3 0f 1f 40 00 <45> 0f b6 19 45 84 db 0f 85 f3 01 00 00 49 ff c1 48 ff c3 75 eb e9
-RSP: 0018:ffffc90001fdf9d0 EFLAGS: 00010293
-RAX: 2234ff0efb3ccc01 RBX: fffffffffffffffe RCX: ffffffff81e00c97
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff9f47f565
-RBP: ffffffff9f47f455 R08: dffffc0000000000 R09: fffffbfff3e8feac
-R10: fffffbfff3e8feae R11: 0000000000000000 R12: 1ffffffff3e8feac
-R13: dffffc0000000001 R14: 0000000000000002 R15: ffffffff9f47f565
-FS:  00000000009ac880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffbfff3e8feac CR3: 000000009f30a000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Gary Yao <gary@apache.org>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ .../pci/isp/modes/interface/isp_types.h       | 41 +++++++++++--------
+ 1 file changed, 23 insertions(+), 18 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/drivers/staging/media/atomisp/pci/isp/modes/interface/isp_types.h b/drivers/staging/media/atomisp/pci/isp/modes/interface/isp_types.h
+index ae273c826808..d1c42c77fa50 100644
+--- a/drivers/staging/media/atomisp/pci/isp/modes/interface/isp_types.h
++++ b/drivers/staging/media/atomisp/pci/isp/modes/interface/isp_types.h
+@@ -1,26 +1,29 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-/**
+-Support for Intel Camera Imaging ISP subsystem.
+-Copyright (c) 2010 - 2015, Intel Corporation.
+-
+-This program is free software; you can redistribute it and/or modify it
+-under the terms and conditions of the GNU General Public License,
+-version 2, as published by the Free Software Foundation.
+-
+-This program is distributed in the hope it will be useful, but WITHOUT
+-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+-more details.
+-*/
++/*
++ * Support for Intel Camera Imaging ISP subsystem.
++ * Copyright (c) 2010 - 2015, Intel Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
+ 
+ #ifndef _ISP_TYPES_H_
+ #define _ISP_TYPES_H_
+ 
+-/* Workaround: hivecc complains about "tag "sh_css_3a_output" already declared"
+-   without this extra decl. */
++/*
++ * Workaround: hivecc complains about "tag "sh_css_3a_output" already declared"
++ * without this extra decl.
++ */
+ struct ia_css_3a_output;
+ 
+-/* Input stream formats, these correspond to the MIPI formats and the way
++/*
++ * Input stream formats, these correspond to the MIPI formats and the way
+  * the CSS receiver sends these to the input formatter.
+  * The bit depth of each pixel element is stored in the global variable
+  * isp_bits_per_pixel.
+@@ -37,8 +40,10 @@ enum sh_stream_format {
+ };
+ 
+ struct s_isp_frames {
+-	/* global variables that are written to by either the SP or the host,
+-	   every ISP binary needs these. */
++	/*
++	 * Global variables that are written to by either the SP or the host,
++	 * every ISP binary needs these.
++	 */
+ 	/* output frame */
+ 	char *xmem_base_addr_y;
+ 	char *xmem_base_addr_uv;
+-- 
+2.26.2
+
