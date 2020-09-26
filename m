@@ -2,165 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DADB2799FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 16:11:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFA5279A01
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 16:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgIZOLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 10:11:00 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:40657 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZOLA (ORCPT
+        id S1729225AbgIZONf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 10:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgIZONe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 10:11:00 -0400
-Received: by mail-wm1-f68.google.com with SMTP id k18so2204691wmj.5
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 07:10:58 -0700 (PDT)
+        Sat, 26 Sep 2020 10:13:34 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D500C0613D3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 07:13:34 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id t14so4732909pgl.10
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 07:13:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=J+FRzVQCwSTxnG1vtySOBFjYEzexCz32qY7I4IZiB5U=;
+        b=fILCBArfnIDK3Py6giny9fuJb008udeevNgLQQRldQzevU5dMA98mrk9rfVmpPLIzb
+         bmG+ol9B/kktHZYrheDRcuA0BjNb1vLNGuZJcwZWDVZcpKyncp0CRzaUF18gF7BZsvVx
+         ThGVfIBm1XrS0KveYD+vMrH4Q9QrSCf73dBzl/aQZ4ipaUFtozJqehCMUjkn3V4hu4yw
+         UJbek0ogepRCYSMYmgVH5Xm6GJjDmruySSPTELDOLJsnAEHljwKVPov8if2eroe28cL5
+         gL/m7xM1+fAIyk47QjtNGLMQLVvt1PRyt5GDV+0g0B7wZw9lR13bHJ4kGWKycNQob7IJ
+         wN0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CQk11cD6SkY6a3lvK4dK7R5jY0HsTWkQ/k1xK/tSeEo=;
-        b=A8Ga911e4mh93+AsHgw5/SEfkl45ke/lQYSNVXCT71IWXN7S6VjoKkrMWnSLDNQmlG
-         8bASCSGhk3glon0qk0OXuiPMeV5W8m7q3vLDp9eliO6mPpv5GBLgydzRC9hghTJ6RKh6
-         1Fi8I00mitiZ7IRzTlhoodMWQvkF/9FEYdMQ41pVg3TnNtGKgeBmUWkv8po9XRxiNCMv
-         WPTUZZEJ5mo+xYwem0sIoQHkZss9Ninvv1UCusgloUNOnu1P8INW96LVI7Lwf4WZ39+5
-         hrD1LGI+vgG2Ei3ysANyzZDRhJIFDlE+Bi0Fmm50nuQGex6+CeqqPc+0mbmFiPreIio6
-         49Pg==
-X-Gm-Message-State: AOAM5323pdd3ecHXDknTQSprvYwVHxEAmO8IWVvbesr4+7BdDGSMQf4I
-        33pfggwnRAnL8qAVDZBCpZGTCNH+kdZ2u+bqLXg41vYI
-X-Google-Smtp-Source: ABdhPJzfUE92oa8zKSZ463zYloahJ1r42ORVRwoif6mV8SzIr3VramlPDRf4yvLThRjTTDLKlGp9ru4qwYIaQcUIq0U=
-X-Received: by 2002:a1c:960a:: with SMTP id y10mr2744538wmd.128.1601129457448;
- Sat, 26 Sep 2020 07:10:57 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=J+FRzVQCwSTxnG1vtySOBFjYEzexCz32qY7I4IZiB5U=;
+        b=pjxwaNwN6tMxxE0pwxwZObgG16x3kUIVagV/QuvFJgcT24G+AUyD609C/lYv07mEpG
+         fxVf0n8Qs4I1JNmqAKChtnpk78wqdrNZZpg+lekRm6B74brJWd7T2khLuj8dj0vKs/j6
+         k/nkie7Ddi3Z3VMFplgpB69KdUC2br1MIequtdC8mBtfI78fYhzVIzXyONR5d966s9+R
+         ZfKQn3pt/XN3XA8dbvGHHd/xKcFSrA8PPffR/oFqg5RfDK7G74/2A+vPWw4Z5uJ++dmy
+         PQ7bnbOWDPLHAZ7XQ+qGx/nt01ok8Z9yZTxb4+NXnEhhAB6lt3axfjS86ntlSxNT8Dr5
+         /JoA==
+X-Gm-Message-State: AOAM5311wUdNt+Y7CSjctDf8VdTFf8M2WUvfdD/SWAmgbWt/HwGFxdjO
+        BOKFOYViVp0PkDkhEYc332CJ
+X-Google-Smtp-Source: ABdhPJw9uUfPEZk6AVaRJ7lYxiieB97zFpe5rrgRV6O7V76RvPjxVLy2MgrJBMfoNqTvXOUm78Qx4g==
+X-Received: by 2002:a63:34ca:: with SMTP id b193mr2851542pga.294.1601129613896;
+        Sat, 26 Sep 2020 07:13:33 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:20d:ee7b:91b:1587:faf3:6b2b])
+        by smtp.gmail.com with ESMTPSA id h35sm5019145pgl.31.2020.09.26.07.13.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 26 Sep 2020 07:13:32 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 19:43:26 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Jeffrey Hugo <jhugo@codeaurora.org>, hemantk@codeaurora.org,
+        bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bus: mhi: core: debugfs: Use correct format specifiers
+ for addresses
+Message-ID: <20200926141326.GA8720@Mani-XPS-13-9360>
+References: <20200925171608.30881-1-manivannan.sadhasivam@linaro.org>
+ <c63ae2c3-43ae-6a94-cf27-efb6cc038f83@codeaurora.org>
+ <20200926052742.GB9302@linux>
+ <20200926053914.GA631346@kroah.com>
+ <20200926071604.GC9302@linux>
+ <20200926124626.GB3321471@kroah.com>
 MIME-Version: 1.0
-References: <20200925235634.4089867-1-joel@joelfernandes.org>
-In-Reply-To: <20200925235634.4089867-1-joel@joelfernandes.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Sat, 26 Sep 2020 23:10:46 +0900
-Message-ID: <CAM9d7ciK4w-BYLPLK7ADpB5dz83YV5Un4zG66PxPzBS=QzS9mA@mail.gmail.com>
-Subject: Re: [PATCH] perf: sched: Show start of latency as well
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200926124626.GB3321471@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel,
+On Sat, Sep 26, 2020 at 02:46:26PM +0200, Greg KH wrote:
+> On Sat, Sep 26, 2020 at 12:46:04PM +0530, Manivannan Sadhasivam wrote:
+> > On Sat, Sep 26, 2020 at 07:39:14AM +0200, Greg KH wrote:
+> > > On Sat, Sep 26, 2020 at 10:57:42AM +0530, Manivannan Sadhasivam wrote:
+> > > > On Fri, Sep 25, 2020 at 12:01:54PM -0600, Jeffrey Hugo wrote:
+> > > > > On 9/25/2020 11:16 AM, Manivannan Sadhasivam wrote:
+> > > > > > For exposing the addresses of read/write pointers and doorbell register,
+> > > > > > let's use the correct format specifiers. This fixes the following issues
+> > > > > > generated using W=1 build in ARM32 and reported by Kbuild bot:
+> > > > > > 
+> > > > > > All warnings (new ones prefixed by >>):
+> > > > > > 
+> > > > > > > > drivers/bus/mhi/core/debugfs.c:75:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
+> > > > > >                                mhi_event->db_cfg.db_val);
+> > > > > >                                ^~~~~~~~~~~~~~~~~~~~~~~~
+> > > > > >     drivers/bus/mhi/core/debugfs.c:123:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
+> > > > > >                                mhi_chan->db_cfg.db_val);
+> > > > > >                                ^~~~~~~~~~~~~~~~~~~~~~~
+> > > > > >     2 warnings generated.
+> > > > > > 
+> > > > > > drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_events_show’:
+> > > > > > drivers/bus/mhi/core/debugfs.c:74:51: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> > > > > >     seq_printf(m, " local rp: 0x%llx db: 0x%pad\n", (u64)ring->rp,
+> > > > > >                                                     ^
+> > > > > > drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_channels_show’:
+> > > > > > drivers/bus/mhi/core/debugfs.c:122:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> > > > > >         (u64)ring->rp, (u64)ring->wp,
+> > > > > >         ^
+> > > > > > drivers/bus/mhi/core/debugfs.c:122:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+> > > > > >         (u64)ring->rp, (u64)ring->wp,
+> > > > > >                        ^
+> > > > > > drivers/bus/mhi/core/debugfs.c:121:62: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘dma_addr_t {aka unsigned int}’ [-Wformat=]
+> > > > > >     seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
+> > > > > >                                                             ~~~^
+> > > > > >                                                             %x
+> > > > > > drivers/bus/mhi/core/debugfs.c:123:7:
+> > > > > >         mhi_chan->db_cfg.db_val);
+> > > > > > 
+> > > > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > > > > ---
+> > > > > > 
+> > > > > > Greg: This fixes the issue seen while testing the char-misc/char-misc-testing
+> > > > > > branch.
+> > > > > > 
+> > > > > >   drivers/bus/mhi/core/debugfs.c | 10 +++++-----
+> > > > > >   1 file changed, 5 insertions(+), 5 deletions(-)
+> > > > > > 
+> > > > > > diff --git a/drivers/bus/mhi/core/debugfs.c b/drivers/bus/mhi/core/debugfs.c
+> > > > > > index 53d05a8e168d..2536ff92b76f 100644
+> > > > > > --- a/drivers/bus/mhi/core/debugfs.c
+> > > > > > +++ b/drivers/bus/mhi/core/debugfs.c
+> > > > > > @@ -71,8 +71,8 @@ static int mhi_debugfs_events_show(struct seq_file *m, void *d)
+> > > > > >   		seq_printf(m, " rp: 0x%llx wp: 0x%llx", er_ctxt->rp,
+> > > > > >   			   er_ctxt->wp);
+> > > > > > -		seq_printf(m, " local rp: 0x%llx db: 0x%llx\n", (u64)ring->rp,
+> > > > > > -			   mhi_event->db_cfg.db_val);
+> > > > > > +		seq_printf(m, " local rp: 0x%px db: 0x%pad\n", ring->rp,
+> > > > > > +			   &mhi_event->db_cfg.db_val);
+> > > > > >   	}
+> > > > > >   	return 0;
+> > > > > > @@ -118,9 +118,9 @@ static int mhi_debugfs_channels_show(struct seq_file *m, void *d)
+> > > > > >   		seq_printf(m, " base: 0x%llx len: 0x%llx wp: 0x%llx",
+> > > > > >   			   chan_ctxt->rbase, chan_ctxt->rlen, chan_ctxt->wp);
+> > > > > > -		seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
+> > > > > > -			   (u64)ring->rp, (u64)ring->wp,
+> > > > > > -			   mhi_chan->db_cfg.db_val);
+> > > > > > +		seq_printf(m, " local rp: 0x%px local wp: 0x%px db: 0x%pad\n",
+> > > > > > +			   ring->rp, ring->wp,
+> > > > > > +			   &mhi_chan->db_cfg.db_val);
+> > > > > >   	}
+> > > > > >   	return 0;
+> > > > > > 
+> > > > > 
+> > > > > Documentation/printk-formats.txt seems to point out that %px is "insecure"
+> > > > > and thus perhaps not preferred.  Are we assuming that debugfs is only
+> > > > > accessible by root, and thus the %px usage here is effectively the same as
+> > > > > %pK?
+> > > > > 
+> > > > 
+> > > > No, this debugfs entry can be read by non-root users also.
+> > > 
+> > > How, the mount point of debugfs is restricted to root only :)
+> > > 
+> > 
+> > Sigh... I just went with the file permission of 444 :/
+> > 
+> > > > But the idea here
+> > > > is to effectively show the addresses to everyone so I don't think we need to
+> > > > hide it. The term "insecure" applies to kernel log where exposing the address
+> > > > doesn't make much sense (except for few obvious reasons).
+> > > 
+> > > Why does normal users need to see a kernel address?  What can they do
+> > > with this?  Why can't we use the "normal" hashed way of showing a kernel
+> > > address instead?
+> > > 
+> > 
+> > It was the original implementation and as you brushed my memory, only root can
+> > mount and read the content, so why we should hide?
+> 
+> Why shouldn't you?  It's good to have defense in depth, userspace should
+> not care about a real kernel pointer value, right?  THat's why we have
+> the hashed number instead, please use that.
+> 
 
-On Sat, Sep 26, 2020 at 8:56 AM Joel Fernandes (Google)
-<joel@joelfernandes.org> wrote:
->
-> perf sched latency is really useful at showing worst-case latencies that task
-> encountered since wakeup. However it shows only the end of the latency. Often
-> times the start of a latency is interesting as it can show what else was going
-> on at the time to cause the latency. I certainly myself spending a lot of time
-> backtracking to the start of the latency in "perf sched script" which wastes a
-> lot of time.
->
-> This patch therefore adds a new column "Max delay start". Considering this,
-> also rename "Maximum delay at" to "Max delay end" as its easier to understand.
+Okay. Will do it in next revision.
 
-Oh, I thought we print start time not the end time.  I think it's better
-to print start time but others may think differently.
+Thanks,
+Mani
 
-Actually we can calculate the start time from the end time and the
-latency but it'd be convenient if the tool does that for us (as they are
-printed in different units).  Then the remaining concern is the screen
-width (of 114 or 115?) but I think it should be fine for most of us.
-
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-Thanks
-Namhyung
-
->
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->
->
-> ---
-> A sample output can be seen after applying patch:
-> https://hastebin.com/raw/ivinimaler
->
->  tools/perf/builtin-sched.c | 24 ++++++++++++++----------
->  1 file changed, 14 insertions(+), 10 deletions(-)
->
-> diff --git a/tools/perf/builtin-sched.c b/tools/perf/builtin-sched.c
-> index 459e4229945e..2791da1fe5f7 100644
-> --- a/tools/perf/builtin-sched.c
-> +++ b/tools/perf/builtin-sched.c
-> @@ -130,7 +130,8 @@ struct work_atoms {
->         struct thread           *thread;
->         struct rb_node          node;
->         u64                     max_lat;
-> -       u64                     max_lat_at;
-> +       u64                     max_lat_start;
-> +       u64                     max_lat_end;
->         u64                     total_lat;
->         u64                     nb_atoms;
->         u64                     total_runtime;
-> @@ -1096,7 +1097,8 @@ add_sched_in_event(struct work_atoms *atoms, u64 timestamp)
->         atoms->total_lat += delta;
->         if (delta > atoms->max_lat) {
->                 atoms->max_lat = delta;
-> -               atoms->max_lat_at = timestamp;
-> +               atoms->max_lat_start = atom->wake_up_time;
-> +               atoms->max_lat_end = timestamp;
->         }
->         atoms->nb_atoms++;
->  }
-> @@ -1322,7 +1324,7 @@ static void output_lat_thread(struct perf_sched *sched, struct work_atoms *work_
->         int i;
->         int ret;
->         u64 avg;
-> -       char max_lat_at[32];
-> +       char max_lat_start[32], max_lat_end[32];
->
->         if (!work_list->nb_atoms)
->                 return;
-> @@ -1344,13 +1346,14 @@ static void output_lat_thread(struct perf_sched *sched, struct work_atoms *work_
->                 printf(" ");
->
->         avg = work_list->total_lat / work_list->nb_atoms;
-> -       timestamp__scnprintf_usec(work_list->max_lat_at, max_lat_at, sizeof(max_lat_at));
-> +       timestamp__scnprintf_usec(work_list->max_lat_start, max_lat_start, sizeof(max_lat_start));
-> +       timestamp__scnprintf_usec(work_list->max_lat_end, max_lat_end, sizeof(max_lat_end));
->
-> -       printf("|%11.3f ms |%9" PRIu64 " | avg:%9.3f ms | max:%9.3f ms | max at: %13s s\n",
-> +       printf("|%11.3f ms |%9" PRIu64 " | avg:%8.3f ms | max:%8.3f ms | max start: %12s s | max end: %12s s\n",
->               (double)work_list->total_runtime / NSEC_PER_MSEC,
->                  work_list->nb_atoms, (double)avg / NSEC_PER_MSEC,
->                  (double)work_list->max_lat / NSEC_PER_MSEC,
-> -                max_lat_at);
-> +                max_lat_start, max_lat_end);
->  }
->
->  static int pid_cmp(struct work_atoms *l, struct work_atoms *r)
-> @@ -3118,7 +3121,8 @@ static void __merge_work_atoms(struct rb_root_cached *root, struct work_atoms *d
->                         list_splice(&data->work_list, &this->work_list);
->                         if (this->max_lat < data->max_lat) {
->                                 this->max_lat = data->max_lat;
-> -                               this->max_lat_at = data->max_lat_at;
-> +                               this->max_lat_start = data->max_lat_start;
-> +                               this->max_lat_end = data->max_lat_end;
->                         }
->                         zfree(&data);
->                         return;
-> @@ -3157,9 +3161,9 @@ static int perf_sched__lat(struct perf_sched *sched)
->         perf_sched__merge_lat(sched);
->         perf_sched__sort_lat(sched);
->
-> -       printf("\n -----------------------------------------------------------------------------------------------------------------\n");
-> -       printf("  Task                  |   Runtime ms  | Switches | Average delay ms | Maximum delay ms | Maximum delay at       |\n");
-> -       printf(" -----------------------------------------------------------------------------------------------------------------\n");
-> +       printf("\n -------------------------------------------------------------------------------------------------------------------------------------------\n");
-> +       printf("  Task                  |   Runtime ms  | Switches | Avg delay ms    | Max delay ms    | Max delay start           | Max delay end          |\n");
-> +       printf(" -------------------------------------------------------------------------------------------------------------------------------------------\n");
->
->         next = rb_first_cached(&sched->sorted_atom_root);
->
-> --
-> 2.28.0.709.gb0816b6eb0-goog
+> thanks,
+> 
+> greg k-h
