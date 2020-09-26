@@ -2,106 +2,410 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5A0279CE6
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 01:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEA6279CE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 01:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728236AbgIZXsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 19:48:17 -0400
-Received: from sonic303-21.consmr.mail.ir2.yahoo.com ([77.238.178.202]:41065
-        "EHLO sonic303-21.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726382AbgIZXsR (ORCPT
+        id S1728414AbgIZXtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 19:49:15 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59044 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726242AbgIZXtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 19:48:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601164094; bh=YiBnr4Uk8siI0dhikjlKOiXekrwpOWZKz+TPVjgu4sY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=PWumUxoE7NMy4ciV48SjkRCIs2CCc2Vp5601hrpkdOnACbB7iYEtJIWRpu8cp3DJh0HHxPScH/J2xUPofdQAoHKHQFdMKePuUg35/lXAMCLNJYEHBlsAa0VKfbO7eqDNpd9fuNCbnrlnz2i7ACtyDAp/DpSxXRhNTJGkJyUZKCznSkKO09f7fazj2WtG4YJqdrPCX/mNioINfxPnp0r10s3XdZTXr6dM7ntYu7xmJWIGrh0mTFx81XRQpvoCzMnfkSRRJjs3sKInMuxWGDSHIO/L/W9MId40vzKNarowWaVmImf0Gv25SSuiPZc/zt55luLAiC00m+4fSA3ZAaBP2Q==
-X-YMail-OSG: ChhvHJoVM1njkEq.MihcyGXwUa7_s2Jslriv9grlnjvWfQX.WPifF7E6vQOzTs3
- Bks8FELXSjG2pq5Vo_adhQvvUk5WLcn8P4KEZYcLJoiO380NMU6vS4MUGvUkJ0ieq9kqTubUlwkk
- Xx4o8smSexHRh_S49Qbsqe.Gk90bYnMKv5gxiZt2hDnCBDjf5IEvWLONYPc6MWd7Nl_T_qKLx91S
- 5Fw5tcGsTQoXArlHx4N5TAJtduqr7Fw75mUz4rBabLOV5hUPrdLFpQIWr6QLcOkNTMJbbQbJS7ja
- MI9qepbN7o9CdTIODqJ9o771ZfJb5uTplaIEjX6p_8NHq1Vq9ugciD7nsnE22pD5xzUlzxVSHyJL
- LP4E_rlPtywBWP6J9.0nxMoB83GIMLjfM9FtQOySaJCQOdhKWtRTEZ.DEG0yLNiVOFDwuBPbHw2y
- D7JQhkOMcbH9DCsKW_hMIoyOZlhKVNrP48gTVnPUfMFVUDfvnUOjDrSvCnX_QbyVxTa1ivkCuttn
- khOc3IsfPxAi1IXPMWC2RJGdtwxFB4a.TRYLQVV1Ml52aiXeYjIZUPlBQntF.5GZi9Oe1oWYLL3K
- yxHaF0PU1v765W1VuySnW19vq9euhkJD4aFL9xIj8eqsb0xthDzJsChmKPKNjvzk8WzF0e0TLTbd
- RA5i1RkMgODRtmpjlumBKsRn3KkOicSaDWQNCp3fgF4TGTTk0RPeRIC9nqQDI2oSkp9nPCa1ViK5
- HMk.S9kstrtKqguzL0bUWbZ5vIDCvU213z6NtV3kDcUzO96iM7twG1jvJxNI4upzdJ_wtDsSkXAQ
- Gl3S41TaAU1qxqgUiRSk_dydt1GHaWVCnfu71I55fKxg_Fy_tw6cAWZ27xj6L4TSm.9SDgU.BPPR
- YRPPIK8z.cQdB2RBdOryw1.CIbaIURC6XatcCM32cJoiPgurfHFx0H7G2_DeUFJcwijlxNdhxDai
- _9fEVNyiuFEMMWiB_693OAxorW54Nlt9kuMNOlbVr76xiOyN29S9WeLhweDckI4Cf4d_B_pR1QUQ
- wT.aTZZH9S_0a_2OjMPV7Er_GlBuEvKYA2tFPc.4GvWUP8z12_UV5wCkfASsWZnX9l1lz7LvxGHL
- 3MkyIxV2uL6pcXwvzUHs2.ZyKEjVS7UGM7n6tMHIQjqvZcYffwYHpclpYnZgUB5VC3a2F8jj1IcH
- G77mZkNqRsZoZYn0Ekf6iQ8jDe_aMKshs2qY3lckpidTKB.umoTS42QnpGK5OoqoSvxSiFbMUzvX
- nMlM9tUpXC_hQKTo61oyUub0UeFwW1srmpBy5qde2Gyg6MvAUY2Fq0bgiuoDu2MGpoTQAkeU6kqg
- O6ElaL2.SslLpKHq0O7aNYOLGf4GNCioIQyZeaBW..MxDbKAmwTh1JroFa5EGLeAggk.7Zj5dN84
- 7.reSvBuBCyPWGiqq5UnmC35m_WE6mg3T9.rp_fR4iAsnyDFoLT8xFLXHLsqi9IlpB8BtRoDZs4B
- mbgIXXvDL
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.ir2.yahoo.com with HTTP; Sat, 26 Sep 2020 23:48:14 +0000
-Date:   Sat, 26 Sep 2020 23:48:09 +0000 (UTC)
-From:   " MRS. MARYAM COMPAORE" <mrscompaoremary2222@gmail.com>
-Reply-To: mrscompaoremary2222@gmail.com
-Message-ID: <2102333716.1786581.1601164089945@mail.yahoo.com>
-Subject: FORM.MRS.MARYAM C. RICHARD.
+        Sat, 26 Sep 2020 19:49:14 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08QNWhRM160433;
+        Sat, 26 Sep 2020 19:49:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=K9N7FJZfsebxYXnLoDrFZQ+1EMhNg5YHJXucIYGpBnM=;
+ b=OaHbJl1iyrSwQfsDw0jgslXAbN3757JrlGjomDzwiXRlNMi9FX4hLTi3WMTmpVl+NGxd
+ bcgmEnJoNoA0Y3gvkQZgPpNKxEhh53lXeM3oqhBs8As+YZp7hfxNnN52xf0oYrErRS2V
+ d4rXJYw/J5cv4KIvmtyy2CMegiwjQDwCzrIvLFfzHBhqccsv8v5hD2RqADu/01mOFPIQ
+ XR7aEkGbqo07Sy+RScVvK0D4B60Kp+10aqdnSe7UWOtbtjH6sXnox9uFO9lmRm3MfDbj
+ ehMKbBGIKaJQWbn/NKyr0kxIcrLr7OU4HIgULynwsptlTPMBbOwVCGQlHq9ME9dY6wHu Sw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33tdg120dm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 19:49:12 -0400
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08QNei7x174949;
+        Sat, 26 Sep 2020 19:49:12 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33tdg120da-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 19:49:12 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08QNlH37030891;
+        Sat, 26 Sep 2020 23:49:10 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 33sw97rr49-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 23:49:09 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08QNn6Gj15401456
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Sep 2020 23:49:06 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6A46411C054;
+        Sat, 26 Sep 2020 23:49:06 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9DE3411C050;
+        Sat, 26 Sep 2020 23:49:05 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.162.14])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sat, 26 Sep 2020 23:49:05 +0000 (GMT)
+Date:   Sun, 27 Sep 2020 01:49:02 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v10 09/16] s390/vfio-ap: allow assignment of unavailable
+ AP queues to mdev device
+Message-ID: <20200927014902.1a1a0d8c.pasic@linux.ibm.com>
+In-Reply-To: <20200821195616.13554-10-akrowiak@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-10-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <2102333716.1786581.1601164089945.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16674 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-26_21:2020-09-24,2020-09-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 phishscore=0 mlxlogscore=999 priorityscore=1501
+ mlxscore=0 spamscore=0 bulkscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009260214
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My Beloved Friend In The Lord.
+On Fri, 21 Aug 2020 15:56:09 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
-Greetings in the name of our Lord Jesus  Christ. I am Mrs. Maryam C. Richar=
-d, From Poland, a widow to late (MR.RICHARD BURSON from Florida , U.S.A) l =
-am 51 years old and I am a converted born again Christian, suffering from l=
-ong term  Cancer of the KIDNEY, from all indication my condition is really =
-deteriorating and it is quite obvious that I might not live more than two (=
-2) months, according to my Doctor because the cancer has gotten to a very w=
-orst / dangerous stage.
+> The current implementation does not allow assignment of an AP adapter or
+> domain to an mdev device if the APQNs resulting from the assignment
+> do not reference AP queue devices that are bound to the vfio_ap device
+> driver. This patch allows assignment of AP resources to the matrix mdev as
+> long as the APQNs resulting from the assignment:
+>    1. Are not reserved by the AP BUS for use by the zcrypt device drivers.
+>    2. Are not assigned to another matrix mdev.
+> 
+> The rationale behind this is twofold:
+>    1. The AP architecture does not preclude assignment of APQNs to an AP
+>       configuration that are not available to the system.
+>    2. APQNs that do not reference a queue device bound to the vfio_ap
+>       device driver will not be assigned to the guest's CRYCB, so the
+>       guest will not get access to queues not bound to the vfio_ap driver.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>  drivers/s390/crypto/vfio_ap_ops.c | 212 +++++-------------------------
+>  1 file changed, 35 insertions(+), 177 deletions(-)
+> 
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index eaf4e9eab6cb..24fd47e43b80 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -1,4 +1,3 @@
+> -// SPDX-License-Identifier: GPL-2.0+
 
-My late husband and my only child died last five years ago, his death was p=
-olitically motivated. My late husband was a very rich and wealthy business =
-man who was running his Gold/Diamond Business here in Burkina Faso. After h=
-is death, I inherited all his business and wealth. My doctors have advised =
-me that I may not live for more than two (2) months, so I now decided to di=
-vide the part of this wealth, to contribute to the development of the churc=
-hes in Africa, America, Asia, and Europe. I got your email id from your cou=
-ntry guestbook, and I prayed over it and the spirit our Lord Jesus directed=
- me to you as an honest person who can assist me to fulfill my wish here on=
- earth before I give up in live.
+Probably not intentional, or?
 
-My late husband, have an account deposited the sum of $5.3 Million Dollars =
-in BANK OF AFRICA Burkina Faso where he do his business projects before his=
- death, So I want the Sum $5.3 Million Dollars in BANK OF AFRICA Burkina Fa=
-so to be release/transfer to you as the less privileged because I cannot ta=
-ke this money to the grave. Please I want you to note that this fund is lod=
-ged in a Bank Of Africa in Burkina Faso.
+>  /*
+>   * Adjunct processor matrix VFIO device driver callbacks.
+>   *
+> @@ -420,122 +419,6 @@ static struct attribute_group *vfio_ap_mdev_type_groups[] = {
+>  	NULL,
+>  };
+>  
+> -struct vfio_ap_queue_reserved {
+> -	unsigned long *apid;
+> -	unsigned long *apqi;
+> -	bool reserved;
+> -};
+> -
+> -/**
+> - * vfio_ap_has_queue
+> - *
+> - * @dev: an AP queue device
+> - * @data: a struct vfio_ap_queue_reserved reference
+> - *
+> - * Flags whether the AP queue device (@dev) has a queue ID containing the APQN,
+> - * apid or apqi specified in @data:
+> - *
+> - * - If @data contains both an apid and apqi value, then @data will be flagged
+> - *   as reserved if the APID and APQI fields for the AP queue device matches
+> - *
+> - * - If @data contains only an apid value, @data will be flagged as
+> - *   reserved if the APID field in the AP queue device matches
+> - *
+> - * - If @data contains only an apqi value, @data will be flagged as
+> - *   reserved if the APQI field in the AP queue device matches
+> - *
+> - * Returns 0 to indicate the input to function succeeded. Returns -EINVAL if
+> - * @data does not contain either an apid or apqi.
+> - */
+> -static int vfio_ap_has_queue(struct device *dev, void *data)
+> -{
+> -	struct vfio_ap_queue_reserved *qres = data;
+> -	struct ap_queue *ap_queue = to_ap_queue(dev);
+> -	ap_qid_t qid;
+> -	unsigned long id;
+> -
+> -	if (qres->apid && qres->apqi) {
+> -		qid = AP_MKQID(*qres->apid, *qres->apqi);
+> -		if (qid == ap_queue->qid)
+> -			qres->reserved = true;
+> -	} else if (qres->apid && !qres->apqi) {
+> -		id = AP_QID_CARD(ap_queue->qid);
+> -		if (id == *qres->apid)
+> -			qres->reserved = true;
+> -	} else if (!qres->apid && qres->apqi) {
+> -		id = AP_QID_QUEUE(ap_queue->qid);
+> -		if (id == *qres->apqi)
+> -			qres->reserved = true;
+> -	} else {
+> -		return -EINVAL;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+> -/**
+> - * vfio_ap_verify_queue_reserved
+> - *
+> - * @matrix_dev: a mediated matrix device
+> - * @apid: an AP adapter ID
+> - * @apqi: an AP queue index
+> - *
+> - * Verifies that the AP queue with @apid/@apqi is reserved by the VFIO AP device
+> - * driver according to the following rules:
+> - *
+> - * - If both @apid and @apqi are not NULL, then there must be an AP queue
+> - *   device bound to the vfio_ap driver with the APQN identified by @apid and
+> - *   @apqi
+> - *
+> - * - If only @apid is not NULL, then there must be an AP queue device bound
+> - *   to the vfio_ap driver with an APQN containing @apid
+> - *
+> - * - If only @apqi is not NULL, then there must be an AP queue device bound
+> - *   to the vfio_ap driver with an APQN containing @apqi
+> - *
+> - * Returns 0 if the AP queue is reserved; otherwise, returns -EADDRNOTAVAIL.
+> - */
+> -static int vfio_ap_verify_queue_reserved(unsigned long *apid,
+> -					 unsigned long *apqi)
+> -{
+> -	int ret;
+> -	struct vfio_ap_queue_reserved qres;
+> -
+> -	qres.apid = apid;
+> -	qres.apqi = apqi;
+> -	qres.reserved = false;
+> -
+> -	ret = driver_for_each_device(&matrix_dev->vfio_ap_drv->driver, NULL,
+> -				     &qres, vfio_ap_has_queue);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (qres.reserved)
+> -		return 0;
+> -
+> -	return -EADDRNOTAVAIL;
+> -}
+> -
+> -static int
+> -vfio_ap_mdev_verify_queues_reserved_for_apid(struct ap_matrix_mdev *matrix_mdev,
+> -					     unsigned long apid)
+> -{
+> -	int ret;
+> -	unsigned long apqi;
+> -	unsigned long nbits = matrix_mdev->matrix.aqm_max + 1;
+> -
+> -	if (find_first_bit_inv(matrix_mdev->matrix.aqm, nbits) >= nbits)
+> -		return vfio_ap_verify_queue_reserved(&apid, NULL);
+> -
+> -	for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm, nbits) {
+> -		ret = vfio_ap_verify_queue_reserved(&apid, &apqi);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  #define MDEV_SHARING_ERR "Userspace may not re-assign queue %02lx.%04lx " \
+>  			 "already assigned to %s"
+>  
+> @@ -572,6 +455,11 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
+>  	DECLARE_BITMAP(aqm, AP_DOMAINS);
+>  
+>  	list_for_each_entry(lstdev, &matrix_dev->mdev_list, node) {
+> +		/*
+> +		 * If either of the input masks belongs to the mdev to which an
+> +		 * AP resource is being assigned, then we don't need to verify
+> +		 * that mdev's masks.
+> +		 */
+>  		if (matrix_mdev == lstdev)
+>  			continue;
+>  
 
-Once I hear from you, I will forward to you all the information's you will =
-use to get this fund released from the bank of Africa and to be transferred=
- to your bank account. I honestly pray that this money when transferred to =
-you will be used for the said purpose on Churches and Orphanage because l h=
-ave come to find out that wealth acquisition without Christ is vanity. May =
-the grace of our lord Jesus the love of God and the fellowship of God be wi=
-th you and your family as you will use part of this sum for Churches and Or=
-phanage for my soul to rest in peace when I die.
+Seems unrelated.
 
-Urgently Reply with the information=E2=80=99s bellow to this My Private E-m=
-ail bellow:=20
+> @@ -597,6 +485,20 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
+>  	return 0;
+>  }
+>  
+> +static int vfio_ap_mdev_validate_masks(struct ap_matrix_mdev *matrix_mdev,
+> +				       unsigned long *mdev_apm,
+> +				       unsigned long *mdev_aqm)
+> +{
+> +	DECLARE_BITMAP(apm, AP_DEVICES);
+> +	DECLARE_BITMAP(aqm, AP_DOMAINS);
+> +
+> +	if (bitmap_and(apm, mdev_apm, ap_perms.apm, AP_DEVICES) &&
+> +	    bitmap_and(aqm, mdev_aqm, ap_perms.aqm, AP_DOMAINS))
 
-( mrscompaoremary392@gmail.com )
+Isn't ap_perms supposed to be protected by ap_perms_mutex? In theory
+you could end up with a torn write (catch the a[pq]mask_commit() with
+its pants down, in a sense that only a part of the memcpy was done (and
+became observable on the other CPU doing this validate).
 
-1. YOUR FULL NAME..........
+> +		return -EADDRNOTAVAIL;
+> +
+> +	return vfio_ap_mdev_verify_no_sharing(matrix_mdev, mdev_apm, mdev_aqm);
+> +}
+> +
+>  /**
+>   * vfio_ap_mdev_filter_matrix
+>   *
+> @@ -882,33 +784,21 @@ static ssize_t assign_adapter_store(struct device *dev,
+>  	if (apid > matrix_mdev->matrix.apm_max)
+>  		return -ENODEV;
+>  
+> -	/*
+> -	 * Set the bit in the AP mask (APM) corresponding to the AP adapter
+> -	 * number (APID). The bits in the mask, from most significant to least
+> -	 * significant bit, correspond to APIDs 0-255.
+> -	 */
+> -	mutex_lock(&matrix_dev->lock);
+> -
+> -	ret = vfio_ap_mdev_verify_queues_reserved_for_apid(matrix_mdev, apid);
+> -	if (ret)
+> -		goto done;
+> -
+>  	memset(apm, 0, sizeof(apm));
+>  	set_bit_inv(apid, apm);
+>  
+> -	ret = vfio_ap_mdev_verify_no_sharing(matrix_mdev, apm,
+> -					     matrix_mdev->matrix.aqm);
+> -	if (ret)
+> -		goto done;
+> -
+> +	mutex_lock(&matrix_dev->lock);
+> +	ret = vfio_ap_mdev_validate_masks(matrix_mdev, apm,
+> +					  matrix_mdev->matrix.aqm);
+> +	if (ret) {
+> +		mutex_unlock(&matrix_dev->lock);
+> +		return ret;
+> +	}
 
-2. NATIONALITY.................
+At this point the ap_perms may have already changed, or?
 
-3. YOUR AGE......................
-
-4. OCCUPATION.................
-
-5. PHONE NUMBER.............
-
-BEST REGARD.
-MRS.MARYAM C. RICHARD.
+>  	set_bit_inv(apid, matrix_mdev->matrix.apm);
+>  	vfio_ap_mdev_link_queues(matrix_mdev, LINK_APID, apid);
+> -	ret = count;
+> -
+> -done:
+>  	mutex_unlock(&matrix_dev->lock);
+>  
+> -	return ret;
+> +	return count;
+>  }
+>  static DEVICE_ATTR_WO(assign_adapter);
+>  
+> @@ -958,26 +848,6 @@ static ssize_t unassign_adapter_store(struct device *dev,
+>  }
+>  static DEVICE_ATTR_WO(unassign_adapter);
+>  
+> -static int
+> -vfio_ap_mdev_verify_queues_reserved_for_apqi(struct ap_matrix_mdev *matrix_mdev,
+> -					     unsigned long apqi)
+> -{
+> -	int ret;
+> -	unsigned long apid;
+> -	unsigned long nbits = matrix_mdev->matrix.apm_max + 1;
+> -
+> -	if (find_first_bit_inv(matrix_mdev->matrix.apm, nbits) >= nbits)
+> -		return vfio_ap_verify_queue_reserved(NULL, &apqi);
+> -
+> -	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm, nbits) {
+> -		ret = vfio_ap_verify_queue_reserved(&apid, &apqi);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+> -	return 0;
+> -}
+> -
+>  /**
+>   * assign_domain_store
+>   *
+> @@ -1031,28 +901,21 @@ static ssize_t assign_domain_store(struct device *dev,
+>  	if (apqi > max_apqi)
+>  		return -ENODEV;
+>  
+> -	mutex_lock(&matrix_dev->lock);
+> -
+> -	ret = vfio_ap_mdev_verify_queues_reserved_for_apqi(matrix_mdev, apqi);
+> -	if (ret)
+> -		goto done;
+> -
+>  	memset(aqm, 0, sizeof(aqm));
+>  	set_bit_inv(apqi, aqm);
+>  
+> -	ret = vfio_ap_mdev_verify_no_sharing(matrix_mdev,
+> -					     matrix_mdev->matrix.apm, aqm);
+> -	if (ret)
+> -		goto done;
+> -
+> +	mutex_lock(&matrix_dev->lock);
+> +	ret = vfio_ap_mdev_validate_masks(matrix_mdev, matrix_mdev->matrix.apm,
+> +					  aqm);
+> +	if (ret) {
+> +		mutex_unlock(&matrix_dev->lock);
+> +		return ret;
+> +	}
+>  	set_bit_inv(apqi, matrix_mdev->matrix.aqm);
+>  	vfio_ap_mdev_link_queues(matrix_mdev, LINK_APQI, apqi);
+> -	ret = count;
+> -
+> -done:
+>  	mutex_unlock(&matrix_dev->lock);
+>  
+> -	return ret;
+> +	return count;
+>  }
+>  static DEVICE_ATTR_WO(assign_domain);
+>  
+> @@ -1139,11 +1002,6 @@ static ssize_t assign_control_domain_store(struct device *dev,
+>  	if (id > matrix_mdev->matrix.adm_max)
+>  		return -ENODEV;
+>  
+> -	/* Set the bit in the ADM (bitmask) corresponding to the AP control
+> -	 * domain number (id). The bits in the mask, from most significant to
+> -	 * least significant, correspond to IDs 0 up to the one less than the
+> -	 * number of control domains that can be assigned.
+> -	 */
+>  	mutex_lock(&matrix_dev->lock);
+>  	set_bit_inv(id, matrix_mdev->matrix.adm);
+>  	mutex_unlock(&matrix_dev->lock);
 
