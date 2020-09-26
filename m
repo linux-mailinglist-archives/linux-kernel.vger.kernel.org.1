@@ -2,57 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879C8279CDA
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 01:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 559FA279CDD
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 01:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgIZXIg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Sep 2020 19:08:36 -0400
-Received: from mastersmtp.scs-net.org ([213.178.226.248]:13560 "EHLO
-        slavesmtp.scs-net.org" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726462AbgIZXIg (ORCPT
+        id S1727717AbgIZXXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 19:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726462AbgIZXXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 19:08:36 -0400
-X-Greylist: delayed 599 seconds by postgrey-1.27 at vger.kernel.org; Sat, 26 Sep 2020 19:08:35 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by shsmtp.scs-net.org (Postfix) with ESMTP id C620C4C93AF;
-        Sun, 27 Sep 2020 01:57:49 +0300 (EEST)
-X-Virus-Scanned: by SpamTitan at scs-net.org
-Received: from shsmtp.scs-net.org (localhost [127.0.0.1])
-        by shsmtp.scs-net.org (Postfix) with ESMTP id 770D44C91FB;
-        Sun, 27 Sep 2020 01:57:43 +0300 (EEST)
-Authentication-Results: shsmtp.scs-net.org;
-        spf=pass smtp.mailfrom=abd80@scs-net.org smtp.helo=out.scs-net.org
-Received-SPF: pass
-        (scs-net.org: 213.178.226.246 is authorized to use 'abd80@scs-net.org' in 'mfrom' identity (mechanism 'ip4:213.178.226.240/28' matched))
-        receiver=shsmtp.scs-net.org;
-        identity=mailfrom;
-        envelope-from="abd80@scs-net.org";
-        helo=out.scs-net.org;
-        client-ip=213.178.226.246
-Received: from out.scs-net.org (unknown [213.178.226.246])
-        by shsmtp.scs-net.org (Postfix) with ESMTPS id 7B0BD4C08DC;
-        Sun, 27 Sep 2020 01:57:36 +0300 (EEST)
-Received: from [41.79.221.97] (helo=[192.168.1.103])
-        by out.scs-net.org with esmtpa (Exim 4.89)
-        (envelope-from <abd80@scs-net.org>)
-        id 1kMJ86-0003OO-NU; Sun, 27 Sep 2020 01:57:23 +0300
-Content-Type: text/plain; charset="iso-8859-1"
+        Sat, 26 Sep 2020 19:23:37 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACC3C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 16:23:37 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id c62so6908088qke.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 16:23:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=46pLbyDUIVzrtCUd00uL7JQr/+F1QduwQUALA4UUE/E=;
+        b=XyfERvLOvX6a8NiOwN9fv/gxV5g1EbSZCF4mUgvT3KqVgcsyA0j7sSuFM2iGv9WDAt
+         1NbuHxGdXN5SPFZeySZkPRMofxadocN0roPRKXo6QxyHk9KrdYyYVCFn9jC2vc7HcB7g
+         xEJHWiEs/rSuOsQSRLUAQqMxQ7TnAmO3jAoR+rFvTiYmCXH5B2DUSd+yaZTiHnjHC8tz
+         vBZoy0jeIojJGKtfZZKWeDXFHRYTODXIRFhi80gOoTyrfNlE8WXGxIiiQ8z1eTNfJz6j
+         czLXbw4qSZFnQUQcYAkD1vEPSeEoodG63O2P1cKhpqTYutHdJ4hXBH2A3FD2bxATW+ii
+         +fUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=46pLbyDUIVzrtCUd00uL7JQr/+F1QduwQUALA4UUE/E=;
+        b=rDYPtk0JDoXJxEOtATJWzsh3HlmILdiwYoQ/9NZk89NxUcPJK67Yxr2vtgfeMj50j5
+         zdX9rasMM45cEW9270VIrVokKh15xIbyfDZJQf3D+ZzXwahGA1JwzPIdxb5Z70VxHrby
+         D3hgafwW27eyqTs/jQRTs1i29WoyXhvcgAfYsFAgzUJuPITv/IWfW7kZVgr43zxqpQQk
+         5vGZI6FUKPJeYR+fx6fryKvP2F2cvkLFUJ0lYHdN1leTYZCJRlPbkOnfkOwvV0wgSXSY
+         3564rRRrLusvF3rw/WXd7+ZH+mfE4kkwodpMMi9sEuZP3AXvBoJi7Zy4uv2VLm/QXUNT
+         vNnw==
+X-Gm-Message-State: AOAM532N1P/Ut5FZdfE451rKHahjK2tuWBfbvz6zxfNlhOdtJRqOvp3n
+        d3hfV2d6ol/H5Z5Ey3hBxUA72w==
+X-Google-Smtp-Source: ABdhPJzF99Bsln79Ikqogy6kzhoM2ErOtsE28Fqt0/2a1Mzm2Os1/ix4Zsa4AbqviwzCexvEmgq5Yg==
+X-Received: by 2002:a05:620a:134e:: with SMTP id c14mr6447782qkl.223.1601162616849;
+        Sat, 26 Sep 2020 16:23:36 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id o2sm4977837qkk.42.2020.09.26.16.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 16:23:35 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kMJXT-001Tdk-C5; Sat, 26 Sep 2020 20:23:35 -0300
+Date:   Sat, 26 Sep 2020 20:23:35 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: Re: [PATCH v2 3/4] mm: Do early cow for pinned pages during fork()
+ for ptes
+Message-ID: <20200926232335.GA348793@ziepe.ca>
+References: <20200925222600.6832-1-peterx@redhat.com>
+ <20200925222600.6832-4-peterx@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Loan Offer
-To:     Recipients <abd80@scs-net.org>
-From:   "Robert Fast Capital" <abd80@scs-net.org>
-Date:   Sun, 27 Sep 2020 00:56:59 +0200
-Reply-To: robertfastcapital@gmail.com
-Message-Id: <E1kMJ86-0003OO-NU@out.scs-net.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925222600.6832-4-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We Offer All Kinds Of Loans, Business Loan, Personal Loan And Much More, If Interested, Contact Us For More Information Via Email: robertfastcapital@gmail.com or Call Or Text us: +1 407-236-1668.
+On Fri, Sep 25, 2020 at 06:25:59PM -0400, Peter Xu wrote:
+> -static inline void
+> +/*
+> + * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
+> + * is required to copy this pte.
+> + */
+> +static inline int
+>  copy_present_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+>  		pte_t *dst_pte, pte_t *src_pte, struct vm_area_struct *vma,
+> -		unsigned long addr, int *rss)
+> +		struct vm_area_struct *new,
+> +		unsigned long addr, int *rss, struct page **prealloc)
+>  {
+>  	unsigned long vm_flags = vma->vm_flags;
+>  	pte_t pte = *src_pte;
+>  	struct page *page;
+>  
+> +	page = vm_normal_page(vma, addr, pte);
+> +	if (page) {
+> +		if (is_cow_mapping(vm_flags)) {
+> +			bool is_write = pte_write(pte);
 
-Regards,
-Robert Reel
-CEO: Robert Fast Capital
-Website: robertfastcapital.weebly.com
+Very minor, but I liked the readability to put this chunk in a
+function 'copy_normal_page' with the src/dst naming
+
+> +
+> +				/*
+> +				 * We have a prealloc page, all good!  Take it
+> +				 * over and copy the page & arm it.
+> +				 */
+> +				*prealloc = NULL;
+> +				copy_user_highpage(new_page, page, addr, vma);
+> +				__SetPageUptodate(new_page);
+> +				pte = mk_pte(new_page, new->vm_page_prot);
+> +				pte = pte_sw_mkyoung(pte);
+
+Linus's version doesn't do pte_sw_mkyoung(), but looks OK to have it
+
+> +				pte = maybe_mkwrite(pte_mkdirty(pte), new);
+
+maybe_mkwrite() was not in Linus's version, but is in
+wp_page_copy(). It seemed like mk_pte() should set the proper write
+bit already from the vm_page_prot? Perhaps this is harmless but
+redundant?
+
+> +				page_add_new_anon_rmap(new_page, new, addr, false);
+> +				rss[mm_counter(new_page)]++;
+> +				set_pte_at(dst_mm, addr, dst_pte, pte);
+
+Linus's patch had a lru_cache_add_inactive_or_unevictable() here, like
+wp_page_copy()
+
+Didn't think of anything profound to say, looks good thanks!
+
+I'll forward this for testing as well, there are some holidays next
+week so I may have been optimistic to think by Monday.
+
+Jason
