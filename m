@@ -2,167 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4DE2798D5
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 497202798D8
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728274AbgIZMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
+        id S1729104AbgIZMhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:37:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIZMgE (ORCPT
+        with ESMTP id S1725208AbgIZMhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:36:04 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F30CC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:36:04 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id e2so3025008vsr.7
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:36:04 -0700 (PDT)
+        Sat, 26 Sep 2020 08:37:21 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA305C0613CE;
+        Sat, 26 Sep 2020 05:37:20 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id t16so5249476edw.7;
+        Sat, 26 Sep 2020 05:37:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=WkEYzL7+hCLzFt4K2qn8C7SP4BdY2Ftf9TiA8GXOw+s=;
-        b=R7UksnH+e2uSidseT7iHrEkPqku2vC0PdmFo/B5xcrVDGjrQkMtmwdd5xiG6S3JTw6
-         iYSG+Hp1t1LbUs2Zx551Zy8nQ1+aP7XsO0CzpFD36f/hFhFUAx88dbA2C82lsedcYX3+
-         02NSR5Ba1Cv29ZSbgnraeEa/1laYhV3v2zw5ua5dcEW2XT8GiYZUIYWEkxsUdNla6HX+
-         OQFu9lT8xKpIc8WLEiv7Y/9kZNxjEgcA1pShR8QElEyxslOo4l4ORoy3qFMmax+YiqMi
-         r9Vlo9sPqmOGe3karkeorGV5sQFQA6E5nvnfGB9wtymo9KXVzFodw+r91XnAGpwZYyHZ
-         pudA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UsD2oc+XQsKozUmXOuq/VQfKAHLA2ozlfJCrCJ6m2RU=;
+        b=WO0xLM9/knOKumJ+ooHoRYFr3Mwnqofl343/vGHS95H+c/VgYp1iq1+jtEn2X0bixh
+         lpQA1KzweVMRJhp697NxSCfjteZ3ALlwmoxyBBHvVkiJ76Hebpkx1jhu1pF/pEj9cOJA
+         ItXP+cmaqCjLd/K97eq77bDg1JHm8ErRRusZ2p5EC05Nr3l/JQy6d/DgmCunJqjFVW98
+         e3VUbUFc/upSiP4yrUuHjzsoxJRmeOnNDS8yxQDrj7HreuPAqF1FvUI5TP3G89R1m+jN
+         5M6FSFdQ+G5Id6JvPkaDoOZt8rlh7kpHp1ArR1uhzcAxPPGiBRkDWauoj6OkxCcAqmhi
+         lggw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=WkEYzL7+hCLzFt4K2qn8C7SP4BdY2Ftf9TiA8GXOw+s=;
-        b=TRzE/cmh99KDxH1pjuV3wcsCEGH5hT8iGpphhvslcezGTko4Gu52CoL86c8NRczlax
-         24jjt9aPoURPFWSzHoVhyf3p8F4g1TWmwVOhWxZn1QYFGaUWtIVOwueSpiSZCVLU36/W
-         3s+btTVMADi+RMnZ7ikGf2bJF/LMDbThh2wZOhXcpOEdDsorZnRFlzHf4fPPm+9zGGLI
-         vVtqaNBFskS2PimukDyAQSkzAL7s4/1Mnk3Q7xVXj0Vh1n13q9e89ZLK/FOWvag6TF0D
-         sGp/LgLgCS/bopxUv1Y4kVLOSW7bzgZN8S29o8EIICnQgsjvH3fhRH606TDZ8SHPT55g
-         om2Q==
-X-Gm-Message-State: AOAM532QO/ntD6+TUURikzJGD5qpGpgpl17GuvNldbeMbt38F8lRnTUV
-        VQxfpQAU3lNPjF1VUskmGvVIXXSHRk5ZU+6IXooy0A==
-X-Google-Smtp-Source: ABdhPJwnyuuggpvoB+ucHf8eDyTUp6nMBSSfzldILEUfAb3Bn6s7uRloFHQAAQFt9Tlbx43V4c47jaknAXBy9HfLP9w=
-X-Received: by 2002:a67:80d2:: with SMTP id b201mr1639866vsd.12.1601123763439;
- Sat, 26 Sep 2020 05:36:03 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UsD2oc+XQsKozUmXOuq/VQfKAHLA2ozlfJCrCJ6m2RU=;
+        b=K0StoXK11HarKkbIY37PkKfXQRAzSzAUETD+bmSj20uN230SJr4ZUWgfvhwToZ0yEL
+         flwvIQBqB7J3ChZWml3o/Jxm6YrYB/uxRml19wHHlka6ut1I2OK7sSfZfjOtUWp/m2/D
+         F0ZzrLBbnMVyZx1RFhcyx74XuF3ye/m0AyZF+1pcbUvcwraP0/+18OuU4gv7amTDF9J7
+         aiHnXEciedRguoGq0NoHKA49yn2wf/blSrqHyJBtcTYVtximAG2nC6ae4nEeBjaWjDY4
+         CSVeOQxim5GO9yPSjm+nlWHIZk7p0ytXK5k3hH31QCYMgtw/xgz1MyJqbKujUBAfMcCb
+         5Smg==
+X-Gm-Message-State: AOAM5321xvp1WR7ICr5No2q+IDzp+BzW1VVzVVBTi4yxxPGSCJ5nabaR
+        /LAFrjOOWF74BOULRSZ0+rs=
+X-Google-Smtp-Source: ABdhPJxVNThrYku1JriS7wvr6X88AU5LfKDMCxeSO02VOYMClWEea5i16ESkFkbKh7fQvhbjXiw9Ew==
+X-Received: by 2002:a50:ef0c:: with SMTP id m12mr6280247eds.264.1601123839478;
+        Sat, 26 Sep 2020 05:37:19 -0700 (PDT)
+Received: from skbuf ([188.25.217.212])
+        by smtp.gmail.com with ESMTPSA id a26sm3970526ejk.66.2020.09.26.05.37.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 05:37:18 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 15:37:16 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "Allan W. Nielsen" <allan.nielsen@microchip.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>, hongbo.wang@nxp.com
+Subject: Re: [PATCH net-next v3 1/2] net: mscc: ocelot: Add support for tcam
+Message-ID: <20200926123716.5n7mvvn4tmj2sdol@skbuf>
+References: <1559287017-32397-1-git-send-email-horatiu.vultur@microchip.com>
+ <1559287017-32397-2-git-send-email-horatiu.vultur@microchip.com>
+ <CA+h21hprXnOYWExg7NxVZEX9Vjd=Y7o52ifKuAJqLwFuvDjaiw@mail.gmail.com>
+ <20200423082948.t7sgq4ikrbm4cbnt@soft-dev3.microsemi.net>
+ <20200924233949.lof7iduyfgjdxajv@skbuf>
+ <20200926112002.i6zpwi26ong2hu4q@soft-dev3.localdomain>
 MIME-Version: 1.0
-References: <20200925124720.972208530@linuxfoundation.org>
-In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 26 Sep 2020 18:05:52 +0530
-Message-ID: <CA+G9fYvaonkXn2reCPWDUU2qhLkFQfV4tYF0HjPdoxe6mCFcrQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 00/37] 4.19.148-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926112002.i6zpwi26ong2hu4q@soft-dev3.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 18:23, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.148 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.148-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Hi Horatiu,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On Sat, Sep 26, 2020 at 01:20:02PM +0200, Horatiu Vultur wrote:
+> To be honest, I don't remember precisely. I will need to setup a board
+> and see exactly. But from what I remember:
+> - according to this[1] in chapter 3.8.6, table 71. It says that the full
+>   entry of IS2 is 384. And this 384 represent a full entry. In this row,
+>   can be also sub entries like: half entry and quater entries. And each
+>   entry has 2 bits that describes the entry type. So if you have 2 bits
+>   for each possible entry then you have 8 bits describing each type. One
+>   observation is even if you have a full entry each pair of 2 bits
+>   describing the type needs to be set that is a full entry.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+But if I have a single entry per row, I have a single Type-Group value,
+so I only need to subtract 2, no?
 
-Summary
-------------------------------------------------------------------------
+>   Maybe if you have a look at Figure 30, it would be a little bit more
+>   clear. Even there is a register called VCAP_TG_DAT that information
+>   is storred internally in the VCAP_ENTRY_DAT.
 
-kernel: 4.19.148-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 1e68f3302e6a25ff4310dbf4f2de747180d01146
-git describe: v4.19.147-38-g1e68f3302e6a
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y-sanity/build/v4.19.147-38-g1e68f3302e6a
+See, this is what I don't understand. You're saying that the Type-Group
+is stored as part of the entry inside the TCAM, even if you're accessing
+it through a different set of cache registers? What else is stored in a
+TCAM row sub-word? The key + mask + Type-Group are stored in the same
+sub-word, I assume?
 
-No regressions (compared to build v4.19.147)
+> - so having those in mind, then VCAP_IS2_ENTRY_WIDTH is the full entry
+>   length - 8 bits. 384 - 8 = 376.
 
-No fixes (compared to build v4.19.147)
+But there are 4 Type-Group (and therefore 4 entries per row) only if the
+entries are for quarter keys, am I not correct? And the IS2 code
+currently uses half keys. Does this variable need to be set differently
+according to the key size?
 
-Ran 28038 total tests in the following environments and test suites.
+> - then if I remember correctly then VCAP_CONST_ENTRY_WIDTH should be
+>   384? or 12 if it is counting the words.
 
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
+Yes, it is 384 and the VCAP core version is 0.
 
-Test Suites
------------
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-syscalls-tests
-* libhugetlbfs
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-open-posix-tests
-* ltp-sched-tests
-* network-basic-tests
+> Does it make sense or am I completly off?
 
---=20
-Linaro LKFT
-https://lkft.linaro.org
+So, in simple words, what is the physical significance of
+(VCAP_CONST_ENTRY_WIDTH - VCAP_CONST_ENTRY_TG_WIDTH * VCAP_CONST_ENTRY_SWCNT)?
+To my understanding, it means the size used by all key+mask entries
+within a TCAM row (therefore without the length of Type-Group fields)
+when that row contains 4 quarter keys. Divide this number by 2, you get
+the length of the key, or the length of the mask, for a single sub-word,
+BUT only assuming that quarter keys are used.
+So, why does this value have any significance to a driver that is not
+using quarter keys?
+
+Am _I_ completely off? This is so confusing.
+
+Thanks,
+-Vladimir
