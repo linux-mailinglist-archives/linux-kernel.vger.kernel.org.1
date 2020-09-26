@@ -2,60 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C140279635
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977E8279639
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729947AbgIZCWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 22:22:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47820 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729894AbgIZCWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 22:22:35 -0400
-Received: from X1 (unknown [104.245.68.101])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3A5120866;
-        Sat, 26 Sep 2020 02:22:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601086955;
-        bh=yONBZOLFobn/XfNSqbInd73Y3EF/XNd7uGysPjXX+BA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TK19VAMIz0cAxC09t8GSQfxw5Vbk8/p15wK/uEoNz2F4UaGxxlh6VJwIdrfeD7wfN
-         3RE94dfL12JijaAtruhBkmaewy50WEfL9Dpgn/Quk90C5ZbIiq563PKwsHz6PnUdip
-         9oNuqX1UJ8gC0F9Dk7JkdXMqZEcbuNlaZ6RsFGxs=
-Date:   Fri, 25 Sep 2020 19:22:34 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Joao Martins <joao.m.martins@oracle.com>, vishal.l.verma@intel.com,
-        dave.hansen@linux.intel.com, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 15/17] device-dax: add an 'align' attribute
-Message-Id: <20200925192234.33ae92b75012c1f2bdd974b8@linux-foundation.org>
-In-Reply-To: <160106118486.30709.13012322227204800596.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
-        <160106118486.30709.13012322227204800596.stgit@dwillia2-desk3.amr.corp.intel.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1729980AbgIZC0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 22:26:09 -0400
+Received: from mail-m1272.qiye.163.com ([115.236.127.2]:57039 "EHLO
+        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729960AbgIZC0I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 22:26:08 -0400
+Received: from ubuntu.localdomain (unknown [58.250.176.229])
+        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id AC329B018AF;
+        Sat, 26 Sep 2020 10:26:04 +0800 (CST)
+From:   Bailu Lin <bailu.lin@vivo.com>
+To:     bailu.lin@vivo.com
+Cc:     alex.shi@linux.alibaba.com, catalin.marinas@arm.com,
+        corbet@lwn.net, harryxiyou@gmail.com, kernel@vivo.com,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, will@kernel.org
+Subject: [PATCH v5] doc: zh_CN: index files in arm64 subdirectory
+Date:   Fri, 25 Sep 2020 19:25:58 -0700
+Message-Id: <20200926022558.46232-1-bailu.lin@vivo.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200925144223.40381-1-bailu.lin@vivo.com>
+References: <20200925144223.40381-1-bailu.lin@vivo.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGkgdGk1IT0xJGE9DVkpNS0pLQ0xKTU5KQ0JVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0xKSFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nhg6Igw6Pz8tOAE4EAEOLD4e
+        EjcwCytVSlVKTUtKS0NMSk1OTUxPVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
+        VUlOS1VKTE1VSUlCWVdZCAFZQUhKTUs3Bg++
+X-HM-Tid: 0a74c83b529798b7kuuuac329b018af
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 12:13:04 -0700 Dan Williams <dan.j.williams@intel.com> wrote:
+Add arm64 subdirectory into the table of Contents for zh_CN,
+then add other translations in arm64 conveniently.
 
-> Introduce a device align attribute.  While doing so, rename the region
-> align attribute to be more explicitly named as so, but keep it named as
-> @align to retain the API for tools like daxctl.
-> 
-> Changes on align may not always be valid, when say certain mappings were
-> created with 2M and then we switch to 1G.  So, we validate all ranges
-> against the new value being attempted, post resizing.
-> 
-> Link: https://lkml.kernel.org/r/159643105944.4062302.3131761052969132784.stgit@dwillia2-desk3.amr.corp.intel.com
-> Link: https://lore.kernel.org/r/20200716172913.19658-3-joao.m.martins@oracle.com
-> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
->
+Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
+---
+Changes in v5:
+ - Remove zh_CN/arm64/index.rst's inappropriate License claim.
+Changes in v4:
+ - Remove index.rst's inappropriate License claim.
+Changes in v3:
+ - Correct email encoding format.
+Changes in v2:
+ - Fix patch description.
+---
+ Documentation/arm64/index.rst                    |  2 ++
+ Documentation/translations/zh_CN/arm64/index.rst | 14 ++++++++++++++
+ Documentation/translations/zh_CN/index.rst       |  1 +
+ 3 files changed, 17 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/arm64/index.rst
 
-The signoff chain implies that this was From:Joao.  Please clarify?
+diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
+index d9665d83c53a..3ebe0fa31948 100644
+--- a/Documentation/arm64/index.rst
++++ b/Documentation/arm64/index.rst
+@@ -1,3 +1,5 @@
++.. _arm64_index:
++
+ ==================
+ ARM64 Architecture
+ ==================
+diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
+new file mode 100644
+index 000000000000..57545f19ab2d
+--- /dev/null
++++ b/Documentation/translations/zh_CN/arm64/index.rst
+@@ -0,0 +1,14 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/arm64/index.rst <arm64_index>`
++:Translator: Bailu Lin <bailu.lin@vivo.com>
++
++.. _cn_arm64_index:
++
++
++==========
++ARM64 架构
++==========
++
++.. toctree::
++    :maxdepth: 2
+diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
+index 85643e46e308..be6f11176200 100644
+--- a/Documentation/translations/zh_CN/index.rst
++++ b/Documentation/translations/zh_CN/index.rst
+@@ -19,6 +19,7 @@
+    admin-guide/index
+    process/index
+    filesystems/index
++   arm64/index
+ 
+ 目录和表格
+ ----------
+-- 
+2.20.1
+
