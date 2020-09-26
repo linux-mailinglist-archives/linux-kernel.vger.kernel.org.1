@@ -2,114 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9220B27964D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:48:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F8827964E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729961AbgIZCrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 22:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729225AbgIZCrv (ORCPT
+        id S1729946AbgIZCuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 22:50:39 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:25387 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726305AbgIZCuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 22:47:51 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED90AC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 19:47:50 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id 7so4041585pgm.11
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 19:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=ucCrs5q3YePq0e3RQFFqaDEnUbOvguoKcGVoYbrWhf0=;
-        b=aBg5JtNuxhs1Na7XMPn1DSPQq603igvsgaynA6UcbPZvBw/4AvTXEQr7ToAyohBtYU
-         1qywQPXmZvtzK+dspR55IISgIuOS4Qq1fGL6qQmGhIKS8cV9U8IeoWPalK4VmbcpnYhK
-         d5N36N9yFdvmOhQOEp0RTQHYdrcGuea0EShsQW3m+eOvKS4BWPaJGtgvlgCMggJM/8OE
-         xwb74dcvYPDRC2+7MODHZF5Coha8XBxos+gDPo3lhfMhV2lhrSOxZLxpkQ4Ej+9E9jwd
-         qtYLkWKpppquHWm/diJRZ6v0Cvsp8tIw6y2pl7dH7P/xMblDpKRC/Q9+ojnC3VumpPxJ
-         X/iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=ucCrs5q3YePq0e3RQFFqaDEnUbOvguoKcGVoYbrWhf0=;
-        b=A8G4j67z4KNrfwjaYEXyny5WMM6fPABuzmLL5mUvXhI/QyDSm20KX7+V5o+IBQ5jdc
-         6q922v0a5Ja0RQ6ivloD1KwbNKMl+JtLyibums7ls532yCGoQOUNA1bU6Yjg70TYUeVp
-         laSB0lc8l4rvRgVmvxn7Fbrv+0YuuFvlNHC9hvPKQdKGsneM7kqRpdfWQ0tRIucaEU9C
-         eENYE4hYRbLYfb5lL/ISRVIHjA9h8/1n93sblAbOOrCZUPAbOVzugzjN+2BzA/W2bKOr
-         8kwY8zAAV5TXqKsT/PvOKY3VbiBWn1IFf0YinuxISTn+2Yp8C69bbB0RFWAdkJRtmxem
-         igfw==
-X-Gm-Message-State: AOAM530ytzyh462Xu7DQ/SOhuEQqBJyrOyaThk1R5UaZSCB/LFsdkopE
-        krKhvyg63Goz0dNHmCkIKUv0CdPfDG0B3A==
-X-Google-Smtp-Source: ABdhPJw6Q5+j8w+qr2BwQrS/6gRAyo8VRGMWToikVfUxPfTvOfnUfQPtFglZAZPSPS1aAtHVS919dw==
-X-Received: by 2002:a63:e444:: with SMTP id i4mr1408075pgk.304.1601088470228;
-        Fri, 25 Sep 2020 19:47:50 -0700 (PDT)
-Received: from localhost.localdomain (c-67-180-165-146.hsd1.ca.comcast.net. [67.180.165.146])
-        by smtp.gmail.com with ESMTPSA id 64sm3884252pfz.204.2020.09.25.19.47.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 19:47:49 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if filter is arg-dependent
-Date:   Fri, 25 Sep 2020 19:47:47 -0700
-Message-Id: <05109FF5-65C9-491E-9D9D-2FECE4F8B2B0@amacapital.net>
-References: <CABqSeASR0bQ7Y302SkZ639NM=roSVRmd3ROGm0YDEFCTxxd63w@mail.gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-In-Reply-To: <CABqSeASR0bQ7Y302SkZ639NM=roSVRmd3ROGm0YDEFCTxxd63w@mail.gmail.com>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-X-Mailer: iPhone Mail (18A373)
+        Fri, 25 Sep 2020 22:50:39 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id AED044E142B;
+        Sat, 26 Sep 2020 10:50:35 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Prashant Malani <pmalani@chromium.org>,
+        Wang Qing <wangqing@vivo.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH] platform_data: ti: fix a typo
+Date:   Sat, 26 Sep 2020 10:49:51 +0800
+Message-Id: <1601088620-16070-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTU0aTB9OSUhKTUMZVkpNS0pLQ0NNSE1KS0hVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PiI6Dio6Lj8iLAEDPkMZDTJP
+        IQ4KFBFVSlVKTUtKS0NDTUhNTktLVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJSUtCNwY+
+X-HM-Tid: 0a74c851c4629376kuwsaed044e142b
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Modify the typo: "compliment" -> "complement".
 
-> On Sep 25, 2020, at 6:23 PM, YiFei Zhu <zhuyifei1999@gmail.com> wrote:
->=20
-> =EF=BB=BFOn Fri, Sep 25, 2020 at 4:07 PM Andy Lutomirski <luto@amacapital.=
-net> wrote:
->> We'd need at least three states per syscall: unknown, always-allow,
->> and need-to-run-filter.
->>=20
->> The downsides are less determinism and a bit of an uglier
->> implementation.  The upside is that we don't need to loop over all
->> syscalls at load -- instead the time that each operation takes is
->> independent of the total number of syscalls on the system.  And we can
->> entirely avoid, say, evaluating the x32 case until the task tries an
->> x32 syscall.
->=20
-> I was really afraid of multiple tasks writing to the bitmaps at once,
-> hence I used bitmap-per-task. Now I think about it, if this stays
-> lockless, the worst thing that can happen is that a write undo a bit
-> set by another task. In this case, if the "known" bit is cleared then
-> the worst would be the emulation is run many times. But if the "always
-> allow" is cleared but not "known" bit then we have an issue: the
-> syscall will always be executed in BPF.
->=20
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ include/linux/platform_data/cros_ec_commands.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-If you interleave the bits, then you can read and write them atomically =E2=80=
-=94 both bits for any given syscall will be in the same word.
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 1fcfe9e..42203ce
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -261,12 +261,12 @@
+ /* Memory space version; set to EC_ACPI_MEM_VERSION_CURRENT */
+ #define EC_ACPI_MEM_VERSION            0x00
+ /*
+- * Test location; writing value here updates test compliment byte to (0xff -
++ * Test location; writing value here updates test complement byte to (0xff -
+  * value).
+  */
+ #define EC_ACPI_MEM_TEST               0x01
+-/* Test compliment; writes here are ignored. */
+-#define EC_ACPI_MEM_TEST_COMPLIMENT    0x02
++/* Test complement; writes here are ignored. */
++#define EC_ACPI_MEM_TEST_COMPLEMENT    0x02
+ 
+ /* Keyboard backlight brightness percent (0 - 100) */
+ #define EC_ACPI_MEM_KEYBOARD_BACKLIGHT 0x03
+-- 
+2.7.4
 
-> Is it worth holding a spinlock here?
->=20
-> Though I'll try to get the benchmark numbers for the emulator later tonigh=
-t.
->=20
-> YiFei Zhu
