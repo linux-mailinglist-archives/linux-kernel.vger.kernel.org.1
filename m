@@ -2,131 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 497202798D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E792798DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729104AbgIZMhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32840 "EHLO
+        id S1729261AbgIZMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZMhV (ORCPT
+        with ESMTP id S1729172AbgIZMiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:37:21 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA305C0613CE;
-        Sat, 26 Sep 2020 05:37:20 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id t16so5249476edw.7;
-        Sat, 26 Sep 2020 05:37:20 -0700 (PDT)
+        Sat, 26 Sep 2020 08:38:11 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5D6C0613D3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:38:10 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e17so1925351wme.0
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UsD2oc+XQsKozUmXOuq/VQfKAHLA2ozlfJCrCJ6m2RU=;
-        b=WO0xLM9/knOKumJ+ooHoRYFr3Mwnqofl343/vGHS95H+c/VgYp1iq1+jtEn2X0bixh
-         lpQA1KzweVMRJhp697NxSCfjteZ3ALlwmoxyBBHvVkiJ76Hebpkx1jhu1pF/pEj9cOJA
-         ItXP+cmaqCjLd/K97eq77bDg1JHm8ErRRusZ2p5EC05Nr3l/JQy6d/DgmCunJqjFVW98
-         e3VUbUFc/upSiP4yrUuHjzsoxJRmeOnNDS8yxQDrj7HreuPAqF1FvUI5TP3G89R1m+jN
-         5M6FSFdQ+G5Id6JvPkaDoOZt8rlh7kpHp1ArR1uhzcAxPPGiBRkDWauoj6OkxCcAqmhi
-         lggw==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=KgtSP4Z0Xfoyw35f8b4GCJtY2P8zQp4wm4duPeWlJEE=;
+        b=KXT3nFO4jXPd36V69sEnZk30UmLvBREHwVHlB3TH+3wpmKUpFw8DeLo8BVOSG6peNg
+         3IoDcQztcjZpLwxg3/eESwtkxT6MCkL/6V49hFP3cc9wkuFVVRORRJoMYhtMr+iPIgq6
+         bZ6HYgCk9hRwj5MAPMnCuvEOf4vY5hm/qiSJc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UsD2oc+XQsKozUmXOuq/VQfKAHLA2ozlfJCrCJ6m2RU=;
-        b=K0StoXK11HarKkbIY37PkKfXQRAzSzAUETD+bmSj20uN230SJr4ZUWgfvhwToZ0yEL
-         flwvIQBqB7J3ChZWml3o/Jxm6YrYB/uxRml19wHHlka6ut1I2OK7sSfZfjOtUWp/m2/D
-         F0ZzrLBbnMVyZx1RFhcyx74XuF3ye/m0AyZF+1pcbUvcwraP0/+18OuU4gv7amTDF9J7
-         aiHnXEciedRguoGq0NoHKA49yn2wf/blSrqHyJBtcTYVtximAG2nC6ae4nEeBjaWjDY4
-         CSVeOQxim5GO9yPSjm+nlWHIZk7p0ytXK5k3hH31QCYMgtw/xgz1MyJqbKujUBAfMcCb
-         5Smg==
-X-Gm-Message-State: AOAM5321xvp1WR7ICr5No2q+IDzp+BzW1VVzVVBTi4yxxPGSCJ5nabaR
-        /LAFrjOOWF74BOULRSZ0+rs=
-X-Google-Smtp-Source: ABdhPJxVNThrYku1JriS7wvr6X88AU5LfKDMCxeSO02VOYMClWEea5i16ESkFkbKh7fQvhbjXiw9Ew==
-X-Received: by 2002:a50:ef0c:: with SMTP id m12mr6280247eds.264.1601123839478;
-        Sat, 26 Sep 2020 05:37:19 -0700 (PDT)
-Received: from skbuf ([188.25.217.212])
-        by smtp.gmail.com with ESMTPSA id a26sm3970526ejk.66.2020.09.26.05.37.18
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=KgtSP4Z0Xfoyw35f8b4GCJtY2P8zQp4wm4duPeWlJEE=;
+        b=COjPlm+mngVJMEooVbXJE3cubdjIVW4jWMNdukqZUeo9I0wVybh8iSWhgePr0FI9KA
+         Zwk6KW1a9exhLlxmd4QlzVMyY+eh51KCsxpwZNww+k5iVA6oAalBXE9fO41IcJwjtb3n
+         gC326kSWbRc6cYMvG/wNWLZ8zksYcJSRNov6SyLZyBt0XtfzMcyu9pHpvqMAXr3rYsUD
+         w6G/zgnIZYYAnQyWtUc2QkZJ4srMVQQMwCPXLiK/vP3pvOMyJFdqSlDp+OSILMZLFRPB
+         mV4wV5zNIhmrnT9qy1IiM2N13OQ0i4fptruQWN7ZYG8tHXD6oHxeRIlQi6dEaJ9PaxJp
+         ks5A==
+X-Gm-Message-State: AOAM530KMA7okroGwN1EcQIu9Yh4v0kPelXamgkLU0kcgWPBhhZOJTCd
+        Y3kEa0OuN6DusPmoh5q+YrRL6g==
+X-Google-Smtp-Source: ABdhPJxfP9extoAxtlybvJJwCF9PVl9y3ORezxLb44zE3bhNs0VshCxTn1vNch8Ls37UAGI8aRftCQ==
+X-Received: by 2002:a1c:9c4b:: with SMTP id f72mr2469221wme.188.1601123889345;
+        Sat, 26 Sep 2020 05:38:09 -0700 (PDT)
+Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id g8sm2460919wmd.12.2020.09.26.05.38.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 05:37:18 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 15:37:16 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paul.burton@mips.com>,
-        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        "Allan W. Nielsen" <allan.nielsen@microchip.com>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>, hongbo.wang@nxp.com
-Subject: Re: [PATCH net-next v3 1/2] net: mscc: ocelot: Add support for tcam
-Message-ID: <20200926123716.5n7mvvn4tmj2sdol@skbuf>
-References: <1559287017-32397-1-git-send-email-horatiu.vultur@microchip.com>
- <1559287017-32397-2-git-send-email-horatiu.vultur@microchip.com>
- <CA+h21hprXnOYWExg7NxVZEX9Vjd=Y7o52ifKuAJqLwFuvDjaiw@mail.gmail.com>
- <20200423082948.t7sgq4ikrbm4cbnt@soft-dev3.microsemi.net>
- <20200924233949.lof7iduyfgjdxajv@skbuf>
- <20200926112002.i6zpwi26ong2hu4q@soft-dev3.localdomain>
+        Sat, 26 Sep 2020 05:38:08 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 12:38:07 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>, linux-i2c@vger.kernel.org,
+        Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
+ powered off
+Message-ID: <20200926123807.GA3781977@chromium.org>
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
+ <f4b82baa-66b7-464e-fd39-66d2243a05ef@lucaceresoli.net>
+ <20200911130104.GF26842@paasikivi.fi.intel.com>
+ <6dea1206-cfaa-bfc5-d57e-4dcddadc03c7@lucaceresoli.net>
+ <20200914094727.GM26842@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200926112002.i6zpwi26ong2hu4q@soft-dev3.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200914094727.GM26842@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Horatiu,
+On Mon, Sep 14, 2020 at 12:47:27PM +0300, Sakari Ailus wrote:
+> Hi Luca,
+> 
+> On Mon, Sep 14, 2020 at 09:58:24AM +0200, Luca Ceresoli wrote:
+> > Hi Sakari,
+> > 
+> > On 11/09/20 15:01, Sakari Ailus wrote:
+> > > Hi Luca,
+> > > 
+> > > On Fri, Sep 11, 2020 at 02:49:26PM +0200, Luca Ceresoli wrote:
+> > >> Hi Sakari,
+> > >>
+> > >> On 03/09/20 10:15, Sakari Ailus wrote:
+> > >>>
+> > >>> Hi all,
+> > >>>
+> > >>> These patches enable calling (and finishing) a driver's probe function
+> > >>> without powering on the respective device on busses where the practice is
+> > >>> to power on the device for probe. While it generally is a driver's job to
+> > >>> check the that the device is there, there are cases where it might be
+> > >>> undesirable. (In this case it stems from a combination of hardware design
+> > >>> and user expectations; see below.) The downside with this change is that
+> > >>> if there is something wrong with the device, it will only be found at the
+> > >>> time the device is used. In this case (the camera sensors + EEPROM in a
+> > >>> sensor) I don't see any tangible harm from that though.
+> > >>>
+> > >>> An indication both from the driver and the firmware is required to allow
+> > >>> the device's power state to remain off during probe (see the first patch).
+> > >>>
+> > >>>
+> > >>> The use case is such that there is a privacy LED next to an integrated
+> > >>> user-facing laptop camera, and this LED is there to signal the user that
+> > >>> the camera is recording a video or capturing images. That LED also happens
+> > >>> to be wired to one of the power supplies of the camera, so whenever you
+> > >>> power on the camera, the LED will be lit, whether images are captured from
+> > >>> the camera --- or not. There's no way to implement this differently
+> > >>> without additional software control (allowing of which is itself a
+> > >>> hardware design decision) on most CSI-2-connected camera sensors as they
+> > >>> simply have no pin to signal the camera streaming state.
+> > >>>
+> > >>> This is also what happens during driver probe: the camera will be powered
+> > >>> on by the I²C subsystem calling dev_pm_domain_attach() and the device is
+> > >>> already powered on when the driver's own probe function is called. To the
+> > >>> user this visible during the boot process as a blink of the privacy LED,
+> > >>> suggesting that the camera is recording without the user having used an
+> > >>> application to do that. From the end user's point of view the behaviour is
+> > >>> not expected and for someone unfamiliar with internal workings of a
+> > >>> computer surely seems quite suspicious --- even if images are not being
+> > >>> actually captured.
+> > >>>
+> > >>> I've tested these on linux-next master. They also apply to Wolfram's
+> > >>> i2c/for-next branch, there's a patch that affects the I²C core changes
+> > >>> here (see below). The patches apart from that apply to Bartosz's
+> > >>> at24/for-next as well as Mauro's linux-media master branch.
+> > >>
+> > >> Apologies for having joined this discussion this late.
+> > > 
+> > > No worries. But thanks for the comments.
+> > > 
+> > >>
+> > >> This patchset seems a good base to cover a different use case, where I
+> > >> also cannot access the physical device at probe time.
+> > >>
+> > >> I'm going to try these patches, but in my case there are a few
+> > >> differences that need a better understanding.
+> > >>
+> > >> First, I'm using device tree, not ACPI. In addition to adding OF support
+> > >> similar to the work you've done for ACPI, I think instead of
+> > >> acpi_dev_state_low_power() we should have a function that works for both
+> > >> ACPI and DT.
+> > > 
+> > > acpi_dev_state_low_power() is really ACPI specific: it does tell the ACPI
+> > > power state of the device during probe or remove. It is not needed on DT
+> > > since the power state of the device is controlled directly by the driver.
+> > > On I²C ACPI devices, it's the framework that powers them on for probe.
+> > 
+> > I see, thanks for clarifying. I'm not used to ACPI so I didn't get that.
+> > 
+> > > You could have a helper function on DT to tell a driver what to do in
+> > > probe, but the functionality in that case is unrelated.
+> > 
+> > So in case of DT we might think of a function that just tells whether
+> > the device is marked to allow low-power probe, but it's just an info
+> > from DT:
+> > 
+> > int mydriver_probe(struct i2c_client *client)
+> > {
+> > 	...
+> > 	low_power = of_dev_state_low_power(&client->dev);
+> > 	if (!low_power) {
+> > 		mydriver_initialize(); /* power+clocks, write regs */
+> >  	}
+> > 	...
+> > }
+> > 
+> > ...and, if (low_power), call mydriver_initialize() at first usage.
+> > 
+> > I'm wondering whether this might make sense in mainline.
+> 
+> Quite possibly, if there are drivers that would need it.
+> 
+> The function should probably be called differently though as what it does
+> is quite different after all.
+> 
+> Unless... we did the following:
+> 
+> - Redefine the I²C driver flag added by this patchset into what tells the
+>   I²C framework whether the driver does its own power management
+>   independently of the I²C framework. It could be called e.g.
+>   I2C_DRV_FL_FULL_PM, to indicate the driver is responsible for all power
+>   management of the device, and the I²C framework would not power on the
+>   device for probe or remove.
+> 
+> - Add a firmware function to tell whether the device identification should
+>   take place during probe or not. For this is what we're really doing here
+>   from driver's point of view: lazy device probing.
+> 
+> There are no dependencies between the two but they can be used together to
+> implement the same functionality as this patchset currently does. This way
+> also the differences between driver implementations for ACPI and DT can be
+> reduced as the logic is the same.
+> 
+> Further on, with this approach, if other busses happen to need this
+> functionality in the future, it would be straightforward to add support ---
+> it only takes to query whether it's indicated by the DT or ACPI property.
+> 
+> Thoughts, opinions?
 
-On Sat, Sep 26, 2020 at 01:20:02PM +0200, Horatiu Vultur wrote:
-> To be honest, I don't remember precisely. I will need to setup a board
-> and see exactly. But from what I remember:
-> - according to this[1] in chapter 3.8.6, table 71. It says that the full
->   entry of IS2 is 384. And this 384 represent a full entry. In this row,
->   can be also sub entries like: half entry and quater entries. And each
->   entry has 2 bits that describes the entry type. So if you have 2 bits
->   for each possible entry then you have 8 bits describing each type. One
->   observation is even if you have a full entry each pair of 2 bits
->   describing the type needs to be set that is a full entry.
+I think we might be overly complicating things. IMHO the series as is
+with the "i2c_" prefix removed from the flags introduced would be
+reusable as is for any other subsystem that needs it. Of course, for
+now, the handling of the flag would remain implemented only in the I2C
+subsystem.
 
-But if I have a single entry per row, I have a single Type-Group value,
-so I only need to subtract 2, no?
-
->   Maybe if you have a look at Figure 30, it would be a little bit more
->   clear. Even there is a register called VCAP_TG_DAT that information
->   is storred internally in the VCAP_ENTRY_DAT.
-
-See, this is what I don't understand. You're saying that the Type-Group
-is stored as part of the entry inside the TCAM, even if you're accessing
-it through a different set of cache registers? What else is stored in a
-TCAM row sub-word? The key + mask + Type-Group are stored in the same
-sub-word, I assume?
-
-> - so having those in mind, then VCAP_IS2_ENTRY_WIDTH is the full entry
->   length - 8 bits. 384 - 8 = 376.
-
-But there are 4 Type-Group (and therefore 4 entries per row) only if the
-entries are for quarter keys, am I not correct? And the IS2 code
-currently uses half keys. Does this variable need to be set differently
-according to the key size?
-
-> - then if I remember correctly then VCAP_CONST_ENTRY_WIDTH should be
->   384? or 12 if it is counting the words.
-
-Yes, it is 384 and the VCAP core version is 0.
-
-> Does it make sense or am I completly off?
-
-So, in simple words, what is the physical significance of
-(VCAP_CONST_ENTRY_WIDTH - VCAP_CONST_ENTRY_TG_WIDTH * VCAP_CONST_ENTRY_SWCNT)?
-To my understanding, it means the size used by all key+mask entries
-within a TCAM row (therefore without the length of Type-Group fields)
-when that row contains 4 quarter keys. Divide this number by 2, you get
-the length of the key, or the length of the mask, for a single sub-word,
-BUT only assuming that quarter keys are used.
-So, why does this value have any significance to a driver that is not
-using quarter keys?
-
-Am _I_ completely off? This is so confusing.
-
-Thanks,
--Vladimir
+Best regards,
+Tomasz
