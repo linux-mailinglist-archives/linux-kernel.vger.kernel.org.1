@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55942279C03
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 21:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4808C279C06
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 21:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730192AbgIZTFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 15:05:41 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:35215 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729106AbgIZTFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 15:05:37 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BzJC30yhjz2KM;
-        Sat, 26 Sep 2020 21:05:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1601147135; bh=A6FEbk0jOsce4uOG4hqYgXIH+C1qRtC4NLa/GQ9EAY0=;
-        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
-        b=hNGAkvK0zBV+8SNw0ZZPspmlwKmbKpnJ6JINGqy23i8riZDaSFAlqXbR7kAyARuEc
-         0Y5+UF6EPKqvchuFYmGoB9b1fMX0JvYHkwNJ/KulTqFHw3n+7n0s5FLyEkdsibII1H
-         hmjB84wiuXGP6DZ6NAz4lqgaebMB4yNjCJZ8vGwyVu596cc8RiZ4Ew2p2xC59iWRqI
-         oy0hZxAc18GiOURhWa0DrjKCeoGkLpFWbz7QJkIdRwmGQuaKv2B15TfUUfwwkPmbBR
-         f4xykrzI8acqpaHzzZj3nAYL1hqlfxiGkwaFL6tULMdtiFhbq32/9Bt9OwlJCJZTCU
-         nX2cmxAz1DnTw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Sat, 26 Sep 2020 21:05:34 +0200
-Message-Id: <73bd1e2f62912bc97152078540f15fcf6438e6c1.1601146802.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <cover.1601146802.git.mirq-linux@rere.qmqm.pl>
-References: <cover.1601146802.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v4 2/2] power: bq25890: support IBAT compensation
+        id S1730212AbgIZTGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 15:06:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730085AbgIZTGU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 15:06:20 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7607C0613CE;
+        Sat, 26 Sep 2020 12:06:19 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id p9so3021858ejf.6;
+        Sat, 26 Sep 2020 12:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jdpNmVsYSzBKZ7GyovDeybfaKyQkmyb4kGF9kkOcdDM=;
+        b=D19epkDfDKlx8L/z/kV+eTgTDZZiVLmVHtmUiCCF1gXlgkM5zW7hyCqHqQGojt/JMh
+         RvWcHV7bJdyI5SL0GXE/bj2cyCW7Lgt9OS+Ys1cr0uGJ+yh4MYRYTOXStDDZSBEty5BP
+         H2+ur3WMnhfwSs+ncnUBaMIHMHl6CG8QE3PGjTzL9aCItS+f//QmvEKCQwc+iI8mHC7p
+         qo1F6BmB73C+Gfg7APwEdg0DSllb10bpk4hz3QwSwIVtXmDkFugNTg7ybECkAA/biSKX
+         SVmFw7Kls7oI0YCzBlDv0Glt2nFxRtWUtTf+DtkO6fnMavYwBKZPHImd+tzRHsZVqoSd
+         nURA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jdpNmVsYSzBKZ7GyovDeybfaKyQkmyb4kGF9kkOcdDM=;
+        b=SLNgR7xVLv7Xj8yvM6+G9Zdxoi7gDcL2QaGe67WTWpchVuv5KR2iJ0Wc7+UXOVwyVT
+         8jUv/N7SW21iNBhsI774K1MvbprSqFf072+pb/zbuFyN1xhGb6v7Ziuqk+etH9LU0PPt
+         bgrw8mdwSCnJPO2hvD4y2u/Puz6jTTNOzHuwp/0/YnP9M6tLFIThY/WjnWUYo3I4iNJw
+         froygDYE92G98usRzHbA2odz7Z6BIAqQn7pxrgtDr2eFQorX8kixaU1DLEFqiDFzBF1+
+         JmPU6yrnRlDhuhTve8GB/TromzErucK+yA1d1xjqnI+Corzr76l6m/3r+Wq2xK6VsUMY
+         NrlA==
+X-Gm-Message-State: AOAM531Z4Ss3QNJhB1lvqtCzRey25cWFj768G3VD2Ofq9P5kar1v7ury
+        gPhL/pvJHTGa4OXBbMf/u9A=
+X-Google-Smtp-Source: ABdhPJyHbX7K+XDLfQ6ZN4OZPMiwHyINJ15cteuDctCsccljAKyOSrNOr6kpMYOWGSC8LQ8op/nhGw==
+X-Received: by 2002:a17:907:118c:: with SMTP id uz12mr8391381ejb.321.1601147178579;
+        Sat, 26 Sep 2020 12:06:18 -0700 (PDT)
+Received: from skbuf ([188.25.217.212])
+        by smtp.gmail.com with ESMTPSA id z4sm4940667ede.65.2020.09.26.12.06.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 12:06:18 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 22:06:15 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "Allan W. Nielsen" <allan.nielsen@microchip.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>, hongbo.wang@nxp.com
+Subject: Re: [PATCH net-next v3 1/2] net: mscc: ocelot: Add support for tcam
+Message-ID: <20200926190615.fgzmrnxdo7doc5dt@skbuf>
+References: <1559287017-32397-1-git-send-email-horatiu.vultur@microchip.com>
+ <1559287017-32397-2-git-send-email-horatiu.vultur@microchip.com>
+ <CA+h21hprXnOYWExg7NxVZEX9Vjd=Y7o52ifKuAJqLwFuvDjaiw@mail.gmail.com>
+ <20200423082948.t7sgq4ikrbm4cbnt@soft-dev3.microsemi.net>
+ <20200924233949.lof7iduyfgjdxajv@skbuf>
+ <20200926112002.i6zpwi26ong2hu4q@soft-dev3.localdomain>
+ <20200926123716.5n7mvvn4tmj2sdol@skbuf>
+ <20200926185536.ac3nr6faxwvcaese@soft-dev3.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Angus Ainslie <angus@akkea.ca>, Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Yauhen Kharuzhy <jekhor@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926185536.ac3nr6faxwvcaese@soft-dev3.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add configuration for compensation of IBAT measuring resistor in series
-with the battery.
+Hi Horatiu,
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
-v4: renamed properties applying property-suffix
----
- drivers/power/supply/bq25890_charger.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+On Sat, Sep 26, 2020 at 08:55:36PM +0200, Horatiu Vultur wrote:
+> No, you will always have 4 Type-Group values regardless of number of
+> entries per row(1, 2 or 4).
 
-diff --git a/drivers/power/supply/bq25890_charger.c b/drivers/power/supply/bq25890_charger.c
-index 77150667e36b..ab8398f935c5 100644
---- a/drivers/power/supply/bq25890_charger.c
-+++ b/drivers/power/supply/bq25890_charger.c
-@@ -83,6 +83,8 @@ struct bq25890_init_data {
- 	u8 boostf;	/* boost frequency		*/
- 	u8 ilim_en;	/* enable ILIM pin		*/
- 	u8 treg;	/* thermal regulation threshold */
-+	u8 rbatcomp;	/* IBAT sense resistor value    */
-+	u8 vclamp;	/* IBAT compensation voltage limit */
- };
- 
- struct bq25890_state {
-@@ -258,6 +260,8 @@ enum bq25890_table_ids {
- 	TBL_VREG,
- 	TBL_BOOSTV,
- 	TBL_SYSVMIN,
-+	TBL_VBATCOMP,
-+	TBL_RBATCOMP,
- 
- 	/* lookup tables */
- 	TBL_TREG,
-@@ -299,6 +303,8 @@ static const union {
- 	[TBL_VREG] =	{ .rt = {3840000, 4608000, 16000} },	 /* uV */
- 	[TBL_BOOSTV] =	{ .rt = {4550000, 5510000, 64000} },	 /* uV */
- 	[TBL_SYSVMIN] = { .rt = {3000000, 3700000, 100000} },	 /* uV */
-+	[TBL_VBATCOMP] ={ .rt = {0,        224000, 32000} },	 /* uV */
-+	[TBL_RBATCOMP] ={ .rt = {0,        140000, 20000} },	 /* uOhm */
- 
- 	/* lookup tables */
- 	[TBL_TREG] =	{ .lt = {bq25890_treg_tbl, BQ25890_TREG_TBL_SIZE} },
-@@ -648,7 +654,9 @@ static int bq25890_hw_init(struct bq25890_device *bq)
- 		{F_BOOSTI,	 bq->init_data.boosti},
- 		{F_BOOSTF,	 bq->init_data.boostf},
- 		{F_EN_ILIM,	 bq->init_data.ilim_en},
--		{F_TREG,	 bq->init_data.treg}
-+		{F_TREG,	 bq->init_data.treg},
-+		{F_BATCMP,	 bq->init_data.rbatcomp},
-+		{F_VCLAMP,	 bq->init_data.vclamp},
- 	};
- 
- 	ret = bq25890_chip_reset(bq);
-@@ -859,11 +867,14 @@ static int bq25890_fw_read_u32_props(struct bq25890_device *bq)
- 		{"ti,boost-max-current", false, TBL_BOOSTI, &init->boosti},
- 
- 		/* optional properties */
--		{"ti,thermal-regulation-threshold", true, TBL_TREG, &init->treg}
-+		{"ti,thermal-regulation-threshold", true, TBL_TREG, &init->treg},
-+		{"ti,ibatcomp-micro-ohms", true, TBL_RBATCOMP, &init->rbatcomp},
-+		{"ti,ibatcomp-clamp-microvolt", true, TBL_VBATCOMP, &init->vclamp},
- 	};
- 
- 	/* initialize data for optional properties */
- 	init->treg = 3; /* 120 degrees Celsius */
-+	init->rbatcomp = init->vclamp = 0; /* IBAT compensation disabled */
- 
- 	for (i = 0; i < ARRAY_SIZE(props); i++) {
- 		ret = device_property_read_u32(bq->dev, props[i].name,
--- 
-2.20.1
+I think this one phrase explains it for me.
 
+> I am not sure that I understand what you want to achive with this or
+> something is still wrong.
+
+What I want to achieve is that I need to port the VCAP IS1 and ES0
+constants to new hardware I can't test, and I had no idea how to do that
+because I didn't understand the relationship between what was in the
+documentation and what was in the code. Now I do, thanks.
+
+-Vladimir
