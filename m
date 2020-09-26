@@ -2,130 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEC482795F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC60C2795FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729918AbgIZBZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 21:25:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54011 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729830AbgIZBZf (ORCPT
+        id S1729804AbgIZBaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 21:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728871AbgIZBaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 21:25:35 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601083534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pKw7q25KXo2grABOIw7jgZQmp7SGBPjTObh8YDtmdsA=;
-        b=JzOVTLpgKEz/LC2ZJ6Rf8akwq1uN3c4u5xeWlVr7DNnnlRBaqJvicTl/SE5A96iEWxqLJz
-        USvjGMEnuRM8NlW2eqlF20S2jGatOC59EMk/xPZGAug0juo33pNa2nwMjpKZMMk/rxaQMw
-        2TRGfuThgB61u8nu4YFQLNh1ZT3S4GM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-253-vJ8jbZsrMG667zyB51LTQg-1; Fri, 25 Sep 2020 21:25:32 -0400
-X-MC-Unique: vJ8jbZsrMG667zyB51LTQg-1
-Received: by mail-wm1-f71.google.com with SMTP id p20so311223wmg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:25:32 -0700 (PDT)
+        Fri, 25 Sep 2020 21:30:12 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838B0C0613CE;
+        Fri, 25 Sep 2020 18:30:12 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id bd2so212873plb.7;
+        Fri, 25 Sep 2020 18:30:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding:thread-index:content-language;
+        bh=ULKEh+Ecw4DPQy4L6QL+sGqPt4lHGJzlYj9qGMuSRy8=;
+        b=vI5hFVRgp2yFl2zQcAgMEaG3b9isCmZGnDGzFV7b8hK/jO2c2RWGG4JKJZtrtBTfsn
+         VIKCfikRvyt1gb/FBV6chGzqF3GkRCd8VpXNVFWsulUWdQQUHl3J95uzXSdWPt4WL8y0
+         MjcSJ8QdKjvY2tsArgjtuEcQ/EnUbFz0RmriHDK+Ze1qbbp/h8YnQasToJq27oQEjZjC
+         Dv9IUwZbmO0Q9nMZ4CYnxWTBLIsALgQRYReCre9NYfrY82gMTXlZt7dm5yZkr4jRvEFD
+         zO6USVvBolAd2P7lyCge8r1NJUom+x2vW2uYV9k+2G+IXOZdd7SvdJPf1DVekwPfJQ6K
+         ce6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pKw7q25KXo2grABOIw7jgZQmp7SGBPjTObh8YDtmdsA=;
-        b=eiVbttttFl+MLF4fgKpJveHjdQiAiWC/8lA4ArEvwoB/Wf7CrGgzFkeoSuolrgu3uY
-         tyQa16ufsVYK+kjcyfLr+NMXcyb3fR+H+B45ZaayYFjlyRtmT4lIYnWusYDZLe/9Syro
-         4DfwN4ly75Ymp9y/GVeRYJW1V0ok4TrnW+SXy47OO2Zair5Q9V3676PZFgFcxE7c9TeG
-         sEMNbRV3nmie45xyf9eL2ADZqQYu34BjewEyaKkoeD1OUBm37LAx1KCpmDT0zBZH2bS1
-         5lW156NBlGcQ9WhAoHN46B3AJbcGV5E9JZkuZ4Na0IWTOpqap6T4g6ylMf28ipyOytth
-         0R1g==
-X-Gm-Message-State: AOAM531lIZL+fUvrcat6LTolDwoGlsFopkXBu0NVgh21yRFVCMXMiPpu
-        TGKwl+sUPbu3a1+eFF/GGOm+HaRd+po4xGD+k6SyhIsZ8ZrQcBeFRJ4oaUo4YNPKHCNSS8+fRPu
-        QbsqQYW+auVisAlFfR3GrbSdV
-X-Received: by 2002:a1c:4b13:: with SMTP id y19mr270898wma.75.1601083531045;
-        Fri, 25 Sep 2020 18:25:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzThgdX914l+MTa9+nGQsYTkHA8HLmXG6y1HNqm+vlYR20PVKsv9dF9RWb7LbGP4KMz1BX+ww==
-X-Received: by 2002:a1c:4b13:: with SMTP id y19mr270883wma.75.1601083530844;
-        Fri, 25 Sep 2020 18:25:30 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id u186sm774281wmu.34.2020.09.25.18.25.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 18:25:30 -0700 (PDT)
-Subject: Re: [PATCH 22/22] kvm: mmu: Don't clear write flooding count for
- direct roots
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-23-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <a95cacdb-bc65-e11e-2114-b5c045b0eac5@redhat.com>
-Date:   Sat, 26 Sep 2020 03:25:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding:thread-index:content-language;
+        bh=ULKEh+Ecw4DPQy4L6QL+sGqPt4lHGJzlYj9qGMuSRy8=;
+        b=FRH+a2R5dlMIDddKXSAacLb7swgm9bXSY2ZiFLe3tuz2R0gxs8Zg97Qxi2JnRzdRR+
+         +TdYfh6oTUEU/rkgDiiUtnHOdToQSO/dC88ccOTHd7dnyGOtP3u53awTgPC/MVbPppV6
+         JaUhYR0tuNf0b9ln1hcmwT4DnfpYVcwQKq3rvAmCo3d5zPHJZ+SRlv3Y4dxOn3oDzR+W
+         anmc7F83keuXICVMv5/YwW48HBF1Ok/kkqRMagrXdp3GnEaMhzjThHnkQDc51hNrN7k3
+         IopVQP8MxZttfcgZIfl089YK7QcqjyDwVdnWeKuKY1oQcg8XqPK7J7KhwuiBtLEtGzlh
+         9yzQ==
+X-Gm-Message-State: AOAM5320nlUmLUfDUVV3BBFJe8j6rNw5sKvqbMqe2dQSWipJFIS4l63Q
+        tmMasDUpaeqtps5RvTwjm8k=
+X-Google-Smtp-Source: ABdhPJyQnXPlFgMiu78X8Gb6FAtLEp0DyUqvEm3mVrrdcLN7WwnCG7e0lJj50WdNw0/M/Y9oKboaQA==
+X-Received: by 2002:a17:902:a5ca:b029:d2:6391:a7f7 with SMTP id t10-20020a170902a5cab02900d26391a7f7mr1985100plq.9.1601083811874;
+        Fri, 25 Sep 2020 18:30:11 -0700 (PDT)
+Received: from DESKTOPIUKEMQD ([209.9.72.212])
+        by smtp.gmail.com with ESMTPSA id e16sm3432358pgv.81.2020.09.25.18.30.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 25 Sep 2020 18:30:11 -0700 (PDT)
+From:   "zhuguangqing83" <zhuguangqing83@gmail.com>
+To:     "'Rafael J. Wysocki'" <rafael@kernel.org>
+Cc:     "'Rafael J. Wysocki'" <rjw@rjwysocki.net>,
+        "'Daniel Lezcano'" <daniel.lezcano@linaro.org>,
+        "'Linux PM'" <linux-pm@vger.kernel.org>,
+        "'Linux Kernel Mailing List'" <linux-kernel@vger.kernel.org>,
+        "'zhuguangqing'" <zhuguangqing@xiaomi.com>
+Subject: Re: [PATCH] cpuidle: change #ifdef for the declaration of cpuidle_enter_s2idle()
+Date:   Sat, 26 Sep 2020 09:30:06 +0800
+Message-ID: <00d901d693a4$93195980$b94c0c80$@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200925212302.3979661-23-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain;
+        charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdaTpGstmz1XVlqyTRWaANv4KWFGkQ==
+Content-Language: zh-cn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/20 23:23, Ben Gardon wrote:
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 42dde27decd75..c07831b0c73e1 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -124,6 +124,18 @@ static struct kvm_mmu_page *find_tdp_mmu_root_with_role(
->  	return NULL;
->  }
->  
-> +hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
-> +				    union kvm_mmu_page_role role)
-> +{
-> +	struct kvm_mmu_page *root;
-> +
-> +	root = find_tdp_mmu_root_with_role(kvm, role);
-> +	if (root)
-> +		return __pa(root->spt);
-> +
-> +	return INVALID_PAGE;
-> +}
-> +
->  static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
->  						   int level)
->  {
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index cc0b7241975aa..2395ffa71bb05 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -9,6 +9,8 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
->  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
->  
->  bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
-> +hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
-> +				    union kvm_mmu_page_role role);
->  hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
->  void kvm_tdp_mmu_put_root_hpa(struct kvm *kvm, hpa_t root_hpa);
->  
 
-Probably missing a piece since this code is not used and neither is the
-new argument to is_root_usable.
+> On Thu, Sep 24, 2020 at 10:01 AM <zhuguangqing83@gmail.com> wrote:
+> >
+> > From: zhuguangqing <zhuguangqing@xiaomi.com>
+> >
+> > Currently, if CONFIG_SUSPEND=n and CONFIG_CPU_IDLE=y, the function
+> > cpuidle_enter_s2idle() is declared but not defined, it may cause error
+> > when cpuidle_enter_s2idle() is called.
+> >
+> > If CONFIG_SUSPEND=y and CONFIG_CPU_IDLE=n, the function
+> > cpuidle_enter_s2idle() is defined as "return -ENODEV;" which is not
+> > supposed to be.
+> >
+> > Change #ifdef CONFIG_CPU_IDLE to #ifdef CONFIG_SUSPEND for
+> > cpuidle_enter_s2idle() in cpuidle.h, which is consistent with its
+> > defination in cpuidle.c.
+> 
+> Well, what about the case when CONFIG_SUSPEND is set, but CONFIG_CPU_IDLE
+> isn't?
+> 
 
-I'm a bit confused by is_root_usable since there should be only one PGD
-for the TDP MMU (the one for the root_mmu).
+When CONFIG_SUSPEND is set, but CONFIG_CPU_IDLE isn't, the function
+cpuidle_enter_s2idle() is defined in cpuidle.c, but the defination in
+cpuidle.c is not used actually because CONFIG_CPU_IDLE isn't set, we
+only use its defination as "return -ENODEV;" in cpuidle.h.
 
-Paolo
+> >
+> > Signed-off-by: zhuguangqing <zhuguangqing@xiaomi.com>
+> > ---
+> >  include/linux/cpuidle.h | 14 +++++++++-----
+> >  1 file changed, 9 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/include/linux/cpuidle.h b/include/linux/cpuidle.h
+> > index 6175c77bf25e..2aa8cead1727 100644
+> > --- a/include/linux/cpuidle.h
+> > +++ b/include/linux/cpuidle.h
+> > @@ -216,22 +216,26 @@ static inline struct cpuidle_device
+> *cpuidle_get_device(void) {return NULL; }
+> >  extern int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+> >                                       struct cpuidle_device *dev,
+> >                                       u64 latency_limit_ns);
+> > -extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> > -                               struct cpuidle_device *dev);
+> >  extern void cpuidle_use_deepest_state(u64 latency_limit_ns);
+> >  #else
+> >  static inline int cpuidle_find_deepest_state(struct cpuidle_driver *drv,
+> >                                              struct cpuidle_device *dev,
+> >                                              u64 latency_limit_ns)
+> >  {return -ENODEV; }
+> > -static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> > -                                      struct cpuidle_device *dev)
+> > -{return -ENODEV; }
+> >  static inline void cpuidle_use_deepest_state(u64 latency_limit_ns)
+> >  {
+> >  }
+> >  #endif
+> >
+> > +#ifdef CONFIG_SUSPEND
+> > +extern int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> > +                               struct cpuidle_device *dev);
+> > +#else
+> > +static inline int cpuidle_enter_s2idle(struct cpuidle_driver *drv,
+> > +                                      struct cpuidle_device *dev)
+> > +{return -ENODEV; }
+> > +#endif
+> > +
+> >  /* kernel/sched/idle.c */
+> >  extern void sched_idle_set_state(struct cpuidle_state *idle_state);
+> >  extern void default_idle_call(void);
+> > --
+> > 2.17.1
+> >
 
