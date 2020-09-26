@@ -2,125 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7AC42798AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 13:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE822798AD
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 13:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726849AbgIZLPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 07:15:39 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:32024 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726210AbgIZLPi (ORCPT
+        id S1727321AbgIZLUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 07:20:05 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:6844 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZLUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 07:15:38 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-21-pPzLCZvuPZ2IoF4u7DB02A-1; Sat, 26 Sep 2020 12:15:32 +0100
-X-MC-Unique: pPzLCZvuPZ2IoF4u7DB02A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 26 Sep 2020 12:15:31 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 26 Sep 2020 12:15:31 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'syzbot' <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Subject: RE: WARNING in __kernel_read (2)
-Thread-Topic: WARNING in __kernel_read (2)
-Thread-Index: AQHWk7DmAtv55MEfq0C+fzgffzQfPql6xRLQ
-Date:   Sat, 26 Sep 2020 11:15:31 +0000
-Message-ID: <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com>
-References: <000000000000da992305b02e9a51@google.com>
-In-Reply-To: <000000000000da992305b02e9a51@google.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 26 Sep 2020 07:20:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1601119204; x=1632655204;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=A0U/sr4vt/ziUMkFLZ5dkBWER2rtLcGn4oExQ3N6YVI=;
+  b=WSVCQnUxgj4QWRGwFoiVx0YirPaUfz5xa9jHI793hhTMmb7Zp6imgeig
+   hGRPdvzRSAzlDgomTV2ztto9kIP0+Mkj9sRHcpDNEH4BsiY++LOWWZvMX
+   BhctnsghdLw9PeuWJcwiK0XYrBeBVh+XXryhy6xW3oOealj5aBBT9jRKS
+   pov2eYTHMBNRBT09QZtv+2GMinaGJIUR+gA1TVw5aKSavX7aYJJvnp6Bd
+   BNt+kzkZq4Bw5EmB016OEPiBefT6QUW0eRyCHgje46SEkdmDXOoplbohh
+   BFZS7/UpXEausPLk/DSTr/XAsoA9ruIf4z7cQXYzyWAMoYMYLrTRs27d/
+   A==;
+IronPort-SDR: HaepiYyM/Kg9geIS2EfbDC+uHqMveggEsHskeFAebH8+A3u5uDZrrlmPjQzZmrUOfNk0jkc6Kl
+ Rdq2J+F+Vr1NYwNsABDmnHel+WEaF0wpooMx4lOhQb/DXWUNQk51zy3zm4nWFjr7Um/eUfTSxj
+ abMmfrV8MVFC2l9GdYifoF01cmY6QI8VOrQGA9nspwDl0GSBgz2didIy6xiRrNFRahRQRmCm0z
+ Ehx3Aix1RYpid08y3fWsHj3le18OAICkG4Zkr6Xks5jryKQzO+UhO9NzPN7AQ+qtVY0OXIirLG
+ Jtc=
+X-IronPort-AV: E=Sophos;i="5.77,305,1596524400"; 
+   d="scan'208";a="93278762"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 26 Sep 2020 04:20:04 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sat, 26 Sep 2020 04:20:03 -0700
+Received: from localhost (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Sat, 26 Sep 2020 04:20:03 -0700
+Date:   Sat, 26 Sep 2020 13:20:02 +0200
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+CC:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        "Ralf Baechle" <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@mips.com>,
+        "James Hogan" <jhogan@kernel.org>, <linux-mips@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        "Allan W. Nielsen" <allan.nielsen@microchip.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        <hongbo.wang@nxp.com>
+Subject: Re: [PATCH net-next v3 1/2] net: mscc: ocelot: Add support for tcam
+Message-ID: <20200926112002.i6zpwi26ong2hu4q@soft-dev3.localdomain>
+References: <1559287017-32397-1-git-send-email-horatiu.vultur@microchip.com>
+ <1559287017-32397-2-git-send-email-horatiu.vultur@microchip.com>
+ <CA+h21hprXnOYWExg7NxVZEX9Vjd=Y7o52ifKuAJqLwFuvDjaiw@mail.gmail.com>
+ <20200423082948.t7sgq4ikrbm4cbnt@soft-dev3.microsemi.net>
+ <20200924233949.lof7iduyfgjdxajv@skbuf>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <20200924233949.lof7iduyfgjdxajv@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBzeXpib3QgPHN5emJvdCs1MTE3N2U0MTQ0ZDc2NDgyN2M0NUBzeXprYWxsZXIuYXBw
-c3BvdG1haWwuY29tPg0KPiBTZW50OiAyNiBTZXB0ZW1iZXIgMjAyMCAwMzo1OA0KPiBUbzogbGlu
-dXgtZnNkZXZlbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7
-IHN5emthbGxlci1idWdzQGdvb2dsZWdyb3Vwcy5jb207DQo+IHZpcm9AemVuaXYubGludXgub3Jn
-LnVrDQo+IFN1YmplY3Q6IFdBUk5JTkcgaW4gX19rZXJuZWxfcmVhZCAoMikNCg0KSSBzdXNwZWN0
-IHRoaXMgaXMgY2FsbGluZyBmaW5pdF9tb2R1bGUoKSBvbiBhbiBmZA0KdGhhdCBkb2Vzbid0IGhh
-dmUgcmVhZCBwZXJtaXNzaW9ucy4NCg0KCURhdmlkDQoNCj4gDQo+IEhlbGxvLA0KPiANCj4gc3l6
-Ym90IGZvdW5kIHRoZSBmb2xsb3dpbmcgaXNzdWUgb246DQo+IA0KPiBIRUFEIGNvbW1pdDogICAg
-YjEwYjhhZDggQWRkIGxpbnV4LW5leHQgc3BlY2lmaWMgZmlsZXMgZm9yIDIwMjAwOTIxDQo+IGdp
-dCB0cmVlOiAgICAgICBsaW51eC1uZXh0DQo+IGNvbnNvbGUgb3V0cHV0OiBodHRwczovL3N5emth
-bGxlci5hcHBzcG90LmNvbS94L2xvZy50eHQ/eD0xNDM3ZWZmMTkwMDAwMA0KPiBrZXJuZWwgY29u
-ZmlnOiAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC8uY29uZmlnP3g9M2NmMDc4Mjkz
-MzQzMmI0Mw0KPiBkYXNoYm9hcmQgbGluazogaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20v
-YnVnP2V4dGlkPTUxMTc3ZTQxNDRkNzY0ODI3YzQ1DQo+IGNvbXBpbGVyOiAgICAgICBnY2MgKEdD
-QykgMTAuMS4wLXN5eiAyMDIwMDUwNw0KPiBzeXogcmVwcm86ICAgICAgaHR0cHM6Ly9zeXprYWxs
-ZXIuYXBwc3BvdC5jb20veC9yZXByby5zeXo/eD0xMGY5ZjA4ZDkwMDAwMA0KPiBDIHJlcHJvZHVj
-ZXI6ICAgaHR0cHM6Ly9zeXprYWxsZXIuYXBwc3BvdC5jb20veC9yZXByby5jP3g9MTNkNjdjODE5
-MDAwMDANCj4gDQo+IElNUE9SVEFOVDogaWYgeW91IGZpeCB0aGUgaXNzdWUsIHBsZWFzZSBhZGQg
-dGhlIGZvbGxvd2luZyB0YWcgdG8gdGhlIGNvbW1pdDoNCj4gUmVwb3J0ZWQtYnk6IHN5emJvdCs1
-MTE3N2U0MTQ0ZDc2NDgyN2M0NUBzeXprYWxsZXIuYXBwc3BvdG1haWwuY29tDQo+IA0KPiAtLS0t
-LS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0tLS0tLS0NCj4gV0FSTklORzogQ1BVOiAwIFBJRDog
-NzAyOCBhdCBmcy9yZWFkX3dyaXRlLmM6NDQwIF9fa2VybmVsX3JlYWQrMHg4MGUvMHhhMTAgZnMv
-cmVhZF93cml0ZS5jOjQ0MA0KPiBNb2R1bGVzIGxpbmtlZCBpbjoNCj4gQ1BVOiAwIFBJRDogNzAy
-OCBDb21tOiBzeXotZXhlY3V0b3I0NTggTm90IHRhaW50ZWQgNS45LjAtcmM1LW5leHQtMjAyMDA5
-MjEtc3l6a2FsbGVyICMwDQo+IEhhcmR3YXJlIG5hbWU6IEdvb2dsZSBHb29nbGUgQ29tcHV0ZSBF
-bmdpbmUvR29vZ2xlIENvbXB1dGUgRW5naW5lLCBCSU9TIEdvb2dsZSAwMS8wMS8yMDExDQo+IFJJ
-UDogMDAxMDpfX2tlcm5lbF9yZWFkKzB4ODBlLzB4YTEwIGZzL3JlYWRfd3JpdGUuYzo0NDANCj4g
-Q29kZTogOGEgZTggYzYgOTcgMTIgMDIgMzEgZmYgODkgYzMgODkgYzYgZTggMmIgYWMgYjMgZmYg
-ODUgZGIgMGYgODUgNmUgM2IgNTUgMDYgNDkgYzcgYzUgZWEgZmYgZmYgZmYNCj4gZTkgYmQgZmQg
-ZmYgZmYgZTggYjIgYWYgYjMgZmYgPDBmPiAwYiA0OSBjNyBjNSBlYSBmZiBmZiBmZiBlOSBhYSBm
-ZCBmZiBmZiBlOCA5ZiBhZiBiMyBmZiA0OCA4OSBlYQ0KPiBSU1A6IDAwMTg6ZmZmZmM5MDAwNjAy
-N2IzOCBFRkxBR1M6IDAwMDEwMjkzDQo+IFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IDAwMDAw
-MDAwMDAwMDAwMDIgUkNYOiBmZmZmZmZmZjgxYzE3MTViDQo+IFJEWDogZmZmZjg4ODA5MWViYTQ4
-MCBSU0k6IGZmZmZmZmZmODFjMTc4N2UgUkRJOiAwMDAwMDAwMDAwMDAwMDA1DQo+IFJCUDogMDAw
-MDAwMDAwMDA4ODAxYyBSMDg6IDAwMDAwMDAwMDAwMDAwMDEgUjA5OiBmZmZmODg4MDkxZWJhZDg4
-DQo+IFIxMDogMDAwMDAwMDAwMDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOiBmZmZm
-ODg4MGExNjcxMGMwDQo+IFIxMzogMDAwMDAwMDAwMDAwMDAwMSBSMTQ6IGZmZmZjOTAwMDYwMjdk
-MDggUjE1OiBmZmZmODg4MGExNjcxMTQ0DQo+IEZTOiAgMDAwMDdlZmNkNjBmMTcwMCgwMDAwKSBH
-UzpmZmZmODg4MGFlNDAwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAwMDAwMDAwMDANCj4gQ1M6ICAw
-MDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBDUjI6IDAwMDAw
-MDAwMjAwMDAwMDAgQ1IzOiAwMDAwMDAwMGEyZGM1MDAwIENSNDogMDAwMDAwMDAwMDE1MDZmMA0K
-PiBEUjA6IDAwMDAwMDAwMDAwMDAwMDAgRFIxOiAwMDAwMDAwMDAwMDAwMDAwIERSMjogMDAwMDAw
-MDAwMDAwMDAwMA0KPiBEUjM6IDAwMDAwMDAwMDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYw
-IERSNzogMDAwMDAwMDAwMDAwMDQwMA0KPiBDYWxsIFRyYWNlOg0KPiAga2VybmVsX3JlYWQrMHg1
-Mi8weDcwIGZzL3JlYWRfd3JpdGUuYzo0NzENCj4gIGtlcm5lbF9yZWFkX2ZpbGUgZnMvZXhlYy5j
-Ojk4OSBbaW5saW5lXQ0KPiAga2VybmVsX3JlYWRfZmlsZSsweDJlNS8weDYyMCBmcy9leGVjLmM6
-OTUyDQo+ICBrZXJuZWxfcmVhZF9maWxlX2Zyb21fZmQrMHg1Ni8weGEwIGZzL2V4ZWMuYzoxMDc2
-DQo+ICBfX2RvX3N5c19maW5pdF9tb2R1bGUrMHhlNi8weDE5MCBrZXJuZWwvbW9kdWxlLmM6NDA2
-Ng0KPiAgZG9fc3lzY2FsbF82NCsweDJkLzB4NzAgYXJjaC94ODYvZW50cnkvY29tbW9uLmM6NDYN
-Cj4gIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJfaHdmcmFtZSsweDQ0LzB4YTkNCj4gUklQOiAwMDMz
-OjB4NDRhNjM5DQo+IENvZGU6IGU4IGJjIGI0IDAyIDAwIDQ4IDgzIGM0IDE4IGMzIDBmIDFmIDgw
-IDAwIDAwIDAwIDAwIDQ4IDg5IGY4IDQ4IDg5IGY3IDQ4IDg5IGQ2IDQ4IDg5IGNhIDRkIDg5IGMy
-DQo+IDRkIDg5IGM4IDRjIDhiIDRjIDI0IDA4IDBmIDA1IDw0OD4gM2QgMDEgZjAgZmYgZmYgMGYg
-ODMgNGIgY2MgZmIgZmYgYzMgNjYgMmUgMGYgMWYgODQgMDAgMDAgMDAgMDANCj4gUlNQOiAwMDJi
-OjAwMDA3ZWZjZDYwZjBkYjggRUZMQUdTOiAwMDAwMDI0NiBPUklHX1JBWDogMDAwMDAwMDAwMDAw
-MDEzOQ0KPiBSQVg6IGZmZmZmZmZmZmZmZmZmZGEgUkJYOiAwMDAwMDAwMDAwNmRiYzY4IFJDWDog
-MDAwMDAwMDAwMDQ0YTYzOQ0KPiBSRFg6IDAwMDAwMDAwMDAwMDAwMDAgUlNJOiAwMDAwMDAwMDAw
-MDAwMDAwIFJESTogMDAwMDAwMDAwMDAwMDAwNA0KPiBSQlA6IDAwMDAwMDAwMDA2ZGJjNjAgUjA4
-OiAwMDAwN2VmY2Q2MGYxNzAwIFIwOTogMDAwMDAwMDAwMDAwMDAwMA0KPiBSMTA6IDAwMDA3ZWZj
-ZDYwZjE3MDAgUjExOiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDAwMDAwMDZkYmM2Yw0KPiBS
-MTM6IDAwMDA3ZmZkM2Q4OTI4ZWYgUjE0OiAwMDAwN2VmY2Q2MGYxOWMwIFIxNTogMDAwMDAwMDAw
-MDAwMDAwMQ0KPiANCj4gDQo+IC0tLQ0KPiBUaGlzIHJlcG9ydCBpcyBnZW5lcmF0ZWQgYnkgYSBi
-b3QuIEl0IG1heSBjb250YWluIGVycm9ycy4NCj4gU2VlIGh0dHBzOi8vZ29vLmdsL3Rwc21FSiBm
-b3IgbW9yZSBpbmZvcm1hdGlvbiBhYm91dCBzeXpib3QuDQo+IHN5emJvdCBlbmdpbmVlcnMgY2Fu
-IGJlIHJlYWNoZWQgYXQgc3l6a2FsbGVyQGdvb2dsZWdyb3Vwcy5jb20uDQo+IA0KPiBzeXpib3Qg
-d2lsbCBrZWVwIHRyYWNrIG9mIHRoaXMgaXNzdWUuIFNlZToNCj4gaHR0cHM6Ly9nb28uZ2wvdHBz
-bUVKI3N0YXR1cyBmb3IgaG93IHRvIGNvbW11bmljYXRlIHdpdGggc3l6Ym90Lg0KPiBzeXpib3Qg
-Y2FuIHRlc3QgcGF0Y2hlcyBmb3IgdGhpcyBpc3N1ZSwgZm9yIGRldGFpbHMgc2VlOg0KPiBodHRw
-czovL2dvby5nbC90cHNtRUojdGVzdGluZy1wYXRjaGVzDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
-cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
-MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+The 09/25/2020 02:39, Vladimir Oltean wrote:
+> 
+Hi Vladimir,
 
+> Hi Horatiu,
+> 
+> On Thu, Apr 23, 2020 at 10:29:48AM +0200, Horatiu Vultur wrote:
+> > > > +static const struct vcap_props vcap_is2 = {
+> > > > +       .name = "IS2",
+> > > > +       .tg_width = 2,
+> > > > +       .sw_count = 4,
+> > > > +       .entry_count = VCAP_IS2_CNT,
+> > > > +       .entry_words = BITS_TO_32BIT(VCAP_IS2_ENTRY_WIDTH),
+> > > > +       .entry_width = VCAP_IS2_ENTRY_WIDTH,
+> > > > +       .action_count = (VCAP_IS2_CNT + VCAP_PORT_CNT + 2),
+> > > > +       .action_words = BITS_TO_32BIT(VCAP_IS2_ACTION_WIDTH),
+> > > > +       .action_width = (VCAP_IS2_ACTION_WIDTH),
+> > > > +       .action_type_width = 1,
+> > > > +       .action_table = {
+> > > > +               {
+> > > > +                       .width = (IS2_AO_ACL_ID + IS2_AL_ACL_ID),
+> > > > +                       .count = 2
+> > > > +               },
+> > > > +               {
+> > > > +                       .width = 6,
+> > > > +                       .count = 4
+> > > > +               },
+> > > > +       },
+> > > > +       .counter_words = BITS_TO_32BIT(4 * ENTRY_WIDTH),
+> > > > +       .counter_width = ENTRY_WIDTH,
+> > > > +};
+> 
+> Coming again to this patch, I'm having a very hard time understanding
+> how VCAP_IS2_ENTRY_WIDTH is derived and what it represents, especially
+> since the VCAP_CONST_ENTRY_WIDTH register reads something different.
+> Could you please explain?
+
+To be honest, I don't remember precisely. I will need to setup a board
+and see exactly. But from what I remember:
+- according to this[1] in chapter 3.8.6, table 71. It says that the full
+  entry of IS2 is 384. And this 384 represent a full entry. In this row,
+  can be also sub entries like: half entry and quater entries. And each
+  entry has 2 bits that describes the entry type. So if you have 2 bits
+  for each possible entry then you have 8 bits describing each type. One
+  observation is even if you have a full entry each pair of 2 bits
+  describing the type needs to be set that is a full entry. Maybe if you
+  have a look at Figure 30, it would be a little bit more clear. Even
+  there is a register called VCAP_TG_DAT that information is storred
+  internally in the VCAP_ENTRY_DAT.
+- so having those in mind, then VCAP_IS2_ENTRY_WIDTH is the full entry
+  length - 8 bits. 384 - 8 = 376.
+- then if I remember correctly then VCAP_CONST_ENTRY_WIDTH should be
+  384? or 12 if it is counting the words.
+
+Does it make sense or am I completly off?
+
+> 
+> Thanks,
+> -Vladimir
+
+[1] http://ww1.microchip.com/downloads/en/DeviceDoc/VMDS-10491.pdf
+
+-- 
+/Horatiu
