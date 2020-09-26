@@ -2,109 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 354AB27993E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3C0279940
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729676AbgIZM4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35808 "EHLO
+        id S1729021AbgIZM54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:57:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729263AbgIZM4T (ORCPT
+        with ESMTP id S1726210AbgIZM5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:56:19 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A914CC0613D7;
-        Sat, 26 Sep 2020 05:56:15 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id x23so1935065wmi.3;
-        Sat, 26 Sep 2020 05:56:15 -0700 (PDT)
+        Sat, 26 Sep 2020 08:57:55 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B271C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:57:55 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id bd2so824000plb.7
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:57:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HvvCj9L50q446ASJQ6JemqcTXtlES5Mqm7WP1YDvdM0=;
-        b=BvPmQZk6+HCEJPsbi1uyRvJuGpEFZNs9DlWQK5yk0P/mnixC7o75rmTAuNrMoW2kY9
-         4GdJN8PSGPL3FSeIvZlMVNcRwCmtNr1c766Oolf5WuhThwsiqvG5i2VArYAMn7+Zid4u
-         2Fy/RctgyEX5CP5HhD2kCEi5oq295r0uos+c2v71+k9Bn9fMgFABd/vFKYA+mribGZJ+
-         GXxFRMWN0HuRjqSSPiL+H1n4wPreUAsN9IXB9y6C+kNe3BeovmrxdOQfAPGBKm6Ql9Kv
-         vG6G/4/+fgJ/PAV8Ok4PRnO9eH4MkuuzAsj5Jo3BFzWKr6Az5y85nDZQNRwF4GWv3HXg
-         hTjg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Wz5LNauCoKvTMyb0b4SzAKwX8OEgZY3RuODYDn5SeTE=;
+        b=UMEMZPgMYN3NolgNByxcmmQZapj7gjLIaL8ZmB6QO4YTQKykywhxLeO6EqS6Hv/4/y
+         MCw49EKr5s1L8UAGB/ZMrXH735z85bEirQNLg9/Xnhhh7N5B1p5c22C28REnlIjOr5Z0
+         7s+TSZoYlxYzeDlcAGcelZOERsa3HWu+q5/2Fvi1XVn7nBkuFpG317V20aNrffxQouDQ
+         9i6a/MWbKxqL0MZmaTYeVS0V/+gEfcOxNvl7EBjDCJ9nsQhlluvDFtdCIdlGWNINInYs
+         btqQ1FkQl67B0hCL0zD94hbhVPJqknv2gs334aHsrQst8KDKXUtN8FpkXz6DbMtSQVSM
+         0QXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HvvCj9L50q446ASJQ6JemqcTXtlES5Mqm7WP1YDvdM0=;
-        b=G3qDsdbrPnNmoaiAgQa7Ba1NFPbYY0Dw3ddoXbE+W5GN8qRD1uUIV8RuwqKujeY3Js
-         RaiTq0V1vc/Twx6HiLukXfBG8s3eoeM8zlHq6jBsK7M3DxfySC4AwazkGh3ueC5XMARj
-         MuZnMrKMuK12fPuMMZZKQhVGT0apV3rhXMKNnV1dKEUY4tvNPguiRzY4rgYcJSQ8lV0p
-         Ml86Gqx2t0QYLL0sFcou2qR7IuADgeWGUvUvuJ+WG5HZCLb9ovTk2B2H6TWKv8RqRIkC
-         +ckHDksXyFn9O+bCPHrcRMAYllE2uiaY4+X3Y+qV/dBAB8MMTa0HoTscaIAs0GED/P76
-         keDg==
-X-Gm-Message-State: AOAM530zTJ6clrjQsruFuqPR32x/VhsJs8n3obfcPmJQmYSEupG7SSMB
-        mgBRs1QLEZKjzWcdl1LCH8c=
-X-Google-Smtp-Source: ABdhPJygyB/xfN29OwI0oMJ9mp9qD4itqXeYt+6CgXmhUsW9L+Sjtt9wsiRQdQ6/N0uhMImFtAXIkg==
-X-Received: by 2002:a1c:bb88:: with SMTP id l130mr2567043wmf.143.1601124974329;
-        Sat, 26 Sep 2020 05:56:14 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id h1sm6503024wrx.33.2020.09.26.05.56.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 05:56:13 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     broonie@kernel.org
-Cc:     lgirdwood@gmail.com, agross@kernel.org, bjorn.andersson@linaro.org,
-        robh+dt@kernel.org, kholk11@gmail.com, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 7/7] regulator: dt-bindings: Document the PM660/PM660L PMICs entries
-Date:   Sat, 26 Sep 2020 14:55:49 +0200
-Message-Id: <20200926125549.13191-8-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200926125549.13191-1-kholk11@gmail.com>
-References: <20200926125549.13191-1-kholk11@gmail.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Wz5LNauCoKvTMyb0b4SzAKwX8OEgZY3RuODYDn5SeTE=;
+        b=tVWdMsFG3Z9UGLEWFEgRmMKjxIcHMVm2klfSgJvlVifplMHzu8DUiSuYs7B0ehlZkb
+         c88sCdFARYVt5slfX4RfVoqMbCfG7ly6vduJ7vT4igepeqhQrKVxyqKwH+rUT0KvdTkt
+         3SuQkOaPFDHhBskgQ0jGF3GJE61AxtIDFtvMVcYf9w8S8QKT0mREAf15yL+Vmoq6MczN
+         zHy0hdUASymtLZhRNYFlYcjZDkZEVV1HXaeQc9zlJa2dF87xuxF2dqrVSW/68h6EUkPu
+         sgb9m8SJs4YN4/HQcyV8G6f8RR/GiaVprotXGUmMWWIVG+naCIhFpdGkHnTn6ZZbCseM
+         Cu6Q==
+X-Gm-Message-State: AOAM532b0bDKrbP0VG/wYbWRsRs+4aUp7gOjaJQbN+Rglmygs/RQ2fUY
+        J2WpudmSzq1iHUUIsw6te1xyNg==
+X-Google-Smtp-Source: ABdhPJybUenW1BAsCifUdjwmueb5NgzN88IwgXTyBisU/lbzN05VvFKA9lWTNE3JXUTdo/9PoHlIbA==
+X-Received: by 2002:a17:90b:317:: with SMTP id ay23mr1934175pjb.68.1601125074915;
+        Sat, 26 Sep 2020 05:57:54 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id u22sm4984842pgi.85.2020.09.26.05.57.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Sep 2020 05:57:54 -0700 (PDT)
+Subject: Re: KASAN: use-after-free Read in io_wqe_worker
+To:     syzbot <syzbot+9af99580130003da82b1@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+References: <0000000000007e88ec05b0354fdd@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <35306a33-70b5-5e7d-a582-4ba5235953a8@kernel.dk>
+Date:   Sat, 26 Sep 2020 06:57:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0000000000007e88ec05b0354fdd@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+#syz test: git://git.kernel.dk/linux-block.git 41d5f92f60a61e264dafbada79175dad0bc60c5b
 
-The PM660 and PM660L combo is found on boards featuring the
-SDM630, SDM636, SDM660 (and SDA variants) and it is used to
-give power to practically everything, from core to peripherals.
-
-Document the SMD-RPM regulator entries for both.
-
-Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
----
- .../bindings/regulator/qcom,smd-rpm-regulator.yaml         | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-index c0d7700afee7..8ef3033444b9 100644
---- a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-+++ b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-@@ -41,6 +41,11 @@ description:
-   l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19,
-   l20, l21, l22, l23, l24, l25, l26, l27, l28, lvs1, lvs2
- 
-+  For pm660, s1, s2, s3, s4, s5, s6, l1, l2, l3, l5, l6, l7, l8, l9, l10, l22,
-+  l12, l13, l14, l15, l16, l17, l18, l19
-+
-+  For pm660l s1, s2, s3, s5, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, bob
-+
-   For pma8084, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, l1, l2, l3,
-   l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19,
-   l20, l21, l22, l23, l24, l25, l26, l27, lvs1, lvs2, lvs3, lvs4, 5vs1
-@@ -65,6 +70,8 @@ properties:
-       - qcom,rpm-pm8950-regulators
-       - qcom,rpm-pm8994-regulators
-       - qcom,rpm-pm8998-regulators
-+      - qcom,rpm-pm660-regulators
-+      - qcom,rpm-pm660l-regulators
-       - qcom,rpm-pma8084-regulators
-       - qcom,rpm-pmi8994-regulators
-       - qcom,rpm-pmi8998-regulators
 -- 
-2.28.0
+Jens Axboe
 
