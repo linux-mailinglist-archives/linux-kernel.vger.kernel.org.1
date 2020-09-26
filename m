@@ -2,168 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136F72798E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69282798EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729273AbgIZMj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:39:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33246 "EHLO
+        id S1727777AbgIZMqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIZMjz (ORCPT
+        with ESMTP id S1726309AbgIZMqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:39:55 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C97C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:39:55 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id q13so3012284vsj.13
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:39:55 -0700 (PDT)
+        Sat, 26 Sep 2020 08:46:06 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAD8C0613D5
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:46:06 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id s13so1912056wmh.4
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:46:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1EOa5aX4i5mBZjpQ6HlNrXTDh073W0DGOBF91sDN4zk=;
-        b=fbNEH7HqCVNipoH/d+9WzfRO+xTYejLdVmTXlJ9ubG7uZRsyuTTHW0/S4QGvrywy52
-         Z74BLvPk/SasJjIfSGyscWa2HEXO24pJHnJjrCNpFalLv6NxIZ/140TRURCruikiXGOk
-         bJ/Cp6JLIPV81O7D7D68ytBO0+qHNZPJG+7B3lnL8h7nKi+eeQ+KYeLzuY8DjgHbviJc
-         6Rgzsl6eAwH9OkvQjIXD+AU+X949Gn9Ntchae2+RYgDU7RgZ3SLsKSOi2bf7BT9Wlh2l
-         Q7Wr+ioY018GXGLWje6NMa/sUDIJe05oupGi4NNhNkUiRBnT9HPKNQQuoj9gMNqc9EvB
-         sJ6A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dSwsSSOpdoya+VElstoPs3GBEFL+PDDRdz86nL3fwYY=;
+        b=MmffRXqx/TQA259IWYeYPd/YW3g4ukoRQJLak9R0zqBL1iuc+1gNyFQ1LeSAHW6+kN
+         UMY518sg4m20FvbYI5ysoEk3Fwa0u18ZFVRuZKGITO5ezzrO8Db9itX7hLvp9pCkeXI1
+         Pas3gQSzCrtGBB0s4wj0CnGoi+K/vKl6fPBdE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1EOa5aX4i5mBZjpQ6HlNrXTDh073W0DGOBF91sDN4zk=;
-        b=jaARiH5F1JOEcTOxk8wXV/+A3hrmxdgIGSp8yF2ksethvunhlZ8Fv2elrnSW1QhBMB
-         T17tUTF0LDFdEgKvoTSiOv2M7qs3NLjPt7gppj93VWqfO+wJMi5iTe9vknivPB1LDAP5
-         q4CAMOWi4g7ef7XIeI5YeonXqyYP0qjYzlA280YIrFlT2tuVROm4Ze6rkdf5Oex/gKw3
-         b3RILo+6MvbkStoZKgrMmOqjQKfLN1WobYGyi9ebY3mdzvpdZWBuNclMPZR7wOwHx82v
-         hoobMWX0AY7XL70/2s21FXInvLAmmqWFT1Derzh8Ihs1PTzwujmjbsedELWe2TezxtBh
-         ohhw==
-X-Gm-Message-State: AOAM533QZhxJKOMQDCQWqwl3TfFbRpnr0cmV0sDVnuLWxq6ksXeLgzsd
-        K8NS+3OcBE96lkIaE4xcsr59NO8qdJf97Xn83FNKvA==
-X-Google-Smtp-Source: ABdhPJx3X12OKLYMDP9UWFGIvTLFZvharyRAXi+kCL9U9xMPcbc4pqc8DpFjBGMDZMn349fhD5qbUkJgV8lfHdG0oVg=
-X-Received: by 2002:a05:6102:2085:: with SMTP id h5mr1512316vsr.26.1601123994866;
- Sat, 26 Sep 2020 05:39:54 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dSwsSSOpdoya+VElstoPs3GBEFL+PDDRdz86nL3fwYY=;
+        b=WcvZCEZkJyAc3yaAiZ9gMzos/P8QZb8BnQm+6bnsF9rUl0a0l9dbiaB7FLPg2406mJ
+         k1FLgkSDMXIz5w74QypqwQtMT8QQitbQ+Gz+/ys8hOWyy1lSIsKFcLTpcYNY5HR1Yggi
+         qU0mqOkHpB+EKa9ykznb472Q3qF65Jh30KkPMKRrLV0Um6bfniLq70V6g6aw4fKS666F
+         /BQdfQyv+x1nAaxV1ZYWC0tGqBm1JPXkRSjRtyvNmOIpUyOqpZ/pDxjBoHO2XpCbTjGf
+         lGL/tpWFsnH2jW7b0vq46qiXT7K/tq0iUKdmbzAg62Nep6OzsRbRomnExo8nWvfD5C69
+         JgGA==
+X-Gm-Message-State: AOAM5319AmtilLGNEKOxIBO6sYrm2mdvSAvZ5k/trAR6MSs52PKo0K93
+        nx/+BJ/Q7VD2rQ6LAA32C5Lcaw==
+X-Google-Smtp-Source: ABdhPJyGVP1vyIt+XfmXDsBALeuLmGklLI0DeQtbBvlmHF8Jd13yNc7kjEZ/4KTivRsE2AI1a/lz7w==
+X-Received: by 2002:a1c:e0d4:: with SMTP id x203mr2660597wmg.91.1601124365050;
+        Sat, 26 Sep 2020 05:46:05 -0700 (PDT)
+Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id r206sm2638763wma.47.2020.09.26.05.46.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 05:46:04 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 12:46:03 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-i2c@vger.kernel.org, Wolfram Sang <wsa@the-dreams.de>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
+ powered off
+Message-ID: <20200926124603.GB3781977@chromium.org>
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
 MIME-Version: 1.0
-References: <20200925124723.575329814@linuxfoundation.org>
-In-Reply-To: <20200925124723.575329814@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 26 Sep 2020 18:09:43 +0530
-Message-ID: <CA+G9fYtSmh5sNHZ77pE9FR0BHFi3kgKi1-hDHqNtk2v=XuaKvA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/43] 5.4.68-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        Ben Hutchings <ben.hutchings@codethink.co.uk>,
-        lkft-triage@lists.linaro.org, pavel@denx.de,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 at 18:21, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.68 release.
-> There are 43 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.68-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Hi Sakari,
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+On Thu, Sep 03, 2020 at 11:15:44AM +0300, Sakari Ailus wrote:
+> 
+> Hi all,
+> 
+> These patches enable calling (and finishing) a driver's probe function
+> without powering on the respective device on busses where the practice is
+> to power on the device for probe. While it generally is a driver's job to
+> check the that the device is there, there are cases where it might be
+> undesirable. (In this case it stems from a combination of hardware design
+> and user expectations; see below.) The downside with this change is that
+> if there is something wrong with the device, it will only be found at the
+> time the device is used. In this case (the camera sensors + EEPROM in a
+> sensor) I don't see any tangible harm from that though.
+> 
+> An indication both from the driver and the firmware is required to allow
+> the device's power state to remain off during probe (see the first patch).
+> 
+> 
+> The use case is such that there is a privacy LED next to an integrated
+> user-facing laptop camera, and this LED is there to signal the user that
+> the camera is recording a video or capturing images. That LED also happens
+> to be wired to one of the power supplies of the camera, so whenever you
+> power on the camera, the LED will be lit, whether images are captured from
+> the camera --- or not. There's no way to implement this differently
+> without additional software control (allowing of which is itself a
+> hardware design decision) on most CSI-2-connected camera sensors as they
+> simply have no pin to signal the camera streaming state.
+> 
+> This is also what happens during driver probe: the camera will be powered
+> on by the I²C subsystem calling dev_pm_domain_attach() and the device is
+> already powered on when the driver's own probe function is called. To the
+> user this visible during the boot process as a blink of the privacy LED,
+> suggesting that the camera is recording without the user having used an
+> application to do that. From the end user's point of view the behaviour is
+> not expected and for someone unfamiliar with internal workings of a
+> computer surely seems quite suspicious --- even if images are not being
+> actually captured.
+> 
+> I've tested these on linux-next master. They also apply to Wolfram's
+> i2c/for-next branch, there's a patch that affects the I²C core changes
+> here (see below). The patches apart from that apply to Bartosz's
+> at24/for-next as well as Mauro's linux-media master branch.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Besides the suggestion to make the defintions added less specific to i2c
+(but still keeping the implementation so for now), feel free to add:
 
-Summary
-------------------------------------------------------------------------
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
 
-kernel: 5.4.68-rc1
-git repo: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-git branch: linux-5.4.y
-git commit: a6d2801f4120fe0719556290e85ca7402b7c1fe2
-git describe: v5.4.67-44-ga6d2801f4120
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.=
-y-sanity/build/v5.4.67-44-ga6d2801f4120
-
-
-No regressions (compared to build v5.4.67)
-
-
-No fixes (compared to build v5.4.67)
-
-Ran 33349 total tests in the following environments and test suites.
-
-Environments
---------------
-- dragonboard-410c
-- hi6220-hikey
-- i386
-- juno-r2
-- juno-r2-compat
-- juno-r2-kasan
-- nxp-ls2088
-- qemu_arm
-- qemu_arm64
-- qemu_i386
-- qemu_x86_64
-- x15
-- x86
-- x86-kasan
-
-Test Suites
------------
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-syscalls-tests
-* libhugetlbfs
-* ltp-fs-tests
-* ltp-hugetlb-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* ltp-tracing-tests
-* v4l2-compliance
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-open-posix-tests
-* ltp-sched-tests
-* network-basic-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+Best regards,
+Tomasz
