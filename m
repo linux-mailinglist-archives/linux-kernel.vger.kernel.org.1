@@ -2,67 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA332799A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:26:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0942799A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:28:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729040AbgIZN0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 09:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZN0E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 09:26:04 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C56C0613D3;
-        Sat, 26 Sep 2020 06:26:04 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id p9so2329144ejf.6;
-        Sat, 26 Sep 2020 06:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Pw2334Ivc2sWGxKj6eRmrpO/w0k8YeD1ECz1yaBwKM=;
-        b=iNhrMGwGIWBbDoGZGWoSEJfMWmB5YQHEQuMJPe9lY56AtawV0yVvNaB3VRnfE2TupY
-         KunhOHiRNTh90u/KVKk6ul6iQvZfZ78r63r4H1AzO0DJ48PUJmbYC9nA/jXWl6pT5oyn
-         TE/EHbccwvmS0KlQx5MCU45i7sZOkmbJG/cTiSrRgb/ucw05asr1XbmPLpCbhj7UNzUp
-         LkoW2b9kpP9kONvxLptIeyI3jcxHgjHXEhvXQJne2Q1TRLMxGsCI3IbuapfvBIEEnqA9
-         p8q+zvyqdIROOtn08seCzeDZOOIHLCkeQ5rfcCev5u5S4zcDtDMH7ho67Q9L8C2ZR/pT
-         C9rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Pw2334Ivc2sWGxKj6eRmrpO/w0k8YeD1ECz1yaBwKM=;
-        b=J5iJ5GBhcjs4EM+npceBbp5mSyyu9nlAPWM2JgqX4p5Ve/7oYpwLxJ7e6tbOVcuPQm
-         RuLAdj1FOD3YFxmEevF8FAbWxCb84vapY9wDGiurjd/QRviEHEEUH72wAJTnYh4CwxGA
-         UNz/6HHt0lRxmx60kzOq2DsW8vDaxYy0CSDDm6yevU/rfUWsTbrofTvuWodl4oWG40MD
-         1unHHVJXGw4EQ8+3h1OZWqdLDljEwLHp4Zf1OjCP2XFR+zBjaPDo6/S2VoyFelSe//Nj
-         Yhs1ZApGdW5NkC+PC9GUAgXxeMlhUa2AU338A8LiDDiQoWOQJ53BMjemBPE5u+KJW+7y
-         adCQ==
-X-Gm-Message-State: AOAM530ck/ySk0eizlXygcVPrm5c69Zu+EDxDLPZ6CB7TFMlSvmBJMKb
-        4A58tpU7LlilshQCNUhLlPz05O5aAk2c0hVDpavxtpoq95I=
-X-Google-Smtp-Source: ABdhPJzyoXEjclq6NHbSpX2nockj/wBilv0Yiz3hJvuQtIBj1KJwoJ5yPZilY+Q6Eu7fiJY9nqWKnSVxcIZi0mMoxE8=
-X-Received: by 2002:a17:906:6d17:: with SMTP id m23mr2462364ejr.418.1601126763103;
- Sat, 26 Sep 2020 06:26:03 -0700 (PDT)
+        id S1729283AbgIZN2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 09:28:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45634 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgIZN2P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 09:28:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CAFBAACB7;
+        Sat, 26 Sep 2020 13:28:12 +0000 (UTC)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-block@vger.kernel.org, linux-nvme@lists.infradead.org,
+        netdev@vger.kernel.org, open-iscsi@googlegroups.com,
+        linux-scsi@vger.kernel.org, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Christoph Hellwig <hch@lst.de>, Hannes Reinecke <hare@suse.de>,
+        Jan Kara <jack@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>,
+        Philipp Reisner <philipp.reisner@linbit.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Vlastimil Babka <vbabka@suse.com>, stable@vger.kernel.org
+References: <20200925150119.112016-1-colyli@suse.de>
+ <20200925150119.112016-2-colyli@suse.de> <20200925151812.GA3182427@kroah.com>
+From:   Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Subject: Re: [PATCH v8 1/7] net: introduce helper sendpage_ok() in
+ include/linux/net.h
+Message-ID: <7b0d4f63-2fe5-9032-3b88-97619d8c5081@suse.de>
+Date:   Sat, 26 Sep 2020 21:28:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200926131157.14633-1-kholk11@gmail.com>
-In-Reply-To: <20200926131157.14633-1-kholk11@gmail.com>
-From:   Martin Botka <martin.botka1@gmail.com>
-Date:   Sat, 26 Sep 2020 15:25:52 +0200
-Message-ID: <CADQ2G_ET0DQv54i3SBWGzTSv0yz3EKwWSdq6eZvVF035K3DghQ@mail.gmail.com>
-Subject: Re: [PATCH] phy: qcom-qusb2: Add support for SDM630/660
-To:     kholk11@gmail.com
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>, kishon@ti.com,
-        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200925151812.GA3182427@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested on Xperia 10
-Tested-by: Martin Botka <martin.botka1@gmail.com>
+On 2020/9/25 23:18, Greg KH wrote:
+> On Fri, Sep 25, 2020 at 11:01:13PM +0800, Coly Li wrote:
+>> The original problem was from nvme-over-tcp code, who mistakenly uses
+>> kernel_sendpage() to send pages allocated by __get_free_pages() without
+>> __GFP_COMP flag. Such pages don't have refcount (page_count is 0) on
+>> tail pages, sending them by kernel_sendpage() may trigger a kernel panic
+>> from a corrupted kernel heap, because these pages are incorrectly freed
+>> in network stack as page_count 0 pages.
+>>
+>> This patch introduces a helper sendpage_ok(), it returns true if the
+>> checking page,
+>> - is not slab page: PageSlab(page) is false.
+>> - has page refcount: page_count(page) is not zero
+>>
+>> All drivers who want to send page to remote end by kernel_sendpage()
+>> may use this helper to check whether the page is OK. If the helper does
+>> not return true, the driver should try other non sendpage method (e.g.
+>> sock_no_sendpage()) to handle the page.
+>>
+>> Signed-off-by: Coly Li <colyli@suse.de>
+>> Cc: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+>> Cc: Christoph Hellwig <hch@lst.de>
+>> Cc: Hannes Reinecke <hare@suse.de>
+>> Cc: Jan Kara <jack@suse.com>
+>> Cc: Jens Axboe <axboe@kernel.dk>
+>> Cc: Mikhail Skorzhinskii <mskorzhinskiy@solarflare.com>
+>> Cc: Philipp Reisner <philipp.reisner@linbit.com>
+>> Cc: Sagi Grimberg <sagi@grimberg.me>
+>> Cc: Vlastimil Babka <vbabka@suse.com>
+>> Cc: stable@vger.kernel.org
+>> ---
+>>  include/linux/net.h | 16 ++++++++++++++++
+>>  1 file changed, 16 insertions(+)
+>>
+>> diff --git a/include/linux/net.h b/include/linux/net.h
+>> index d48ff1180879..05db8690f67e 100644
+>> --- a/include/linux/net.h
+>> +++ b/include/linux/net.h
+>> @@ -21,6 +21,7 @@
+>>  #include <linux/rcupdate.h>
+>>  #include <linux/once.h>
+>>  #include <linux/fs.h>
+>> +#include <linux/mm.h>
+>>  #include <linux/sockptr.h>
+>>  
+>>  #include <uapi/linux/net.h>
+>> @@ -286,6 +287,21 @@ do {									\
+>>  #define net_get_random_once_wait(buf, nbytes)			\
+>>  	get_random_once_wait((buf), (nbytes))
+>>  
+>> +/*
+>> + * E.g. XFS meta- & log-data is in slab pages, or bcache meta
+>> + * data pages, or other high order pages allocated by
+>> + * __get_free_pages() without __GFP_COMP, which have a page_count
+>> + * of 0 and/or have PageSlab() set. We cannot use send_page for
+>> + * those, as that does get_page(); put_page(); and would cause
+>> + * either a VM_BUG directly, or __page_cache_release a page that
+>> + * would actually still be referenced by someone, leading to some
+>> + * obscure delayed Oops somewhere else.
+>> + */
+>> +static inline bool sendpage_ok(struct page *page)
+>> +{
+>> +	return  !PageSlab(page) && page_count(page) >= 1;
+> 
+> Do you have one extra ' ' after "return" there?
+
+It should be fixed in next version.
+
+> 
+> And this feels like a mm thing, why put it in net.h and not mm.h?
+
+This check is specific for kernel_sendpage(), so I want to place it
+closer to where kernel_sendpage() is declared.
+
+And indeed there was similar discussion about why this helper is not in
+mm code in v5 series. Christoph supported to place sendpage_ok() in
+net.h, an uncompleted piece of his opinion was "It is not a mm bug, it
+is a networking quirk."
+
+Thanks.
+
+Coly Li
