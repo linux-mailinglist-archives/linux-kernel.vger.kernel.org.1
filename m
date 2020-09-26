@@ -2,79 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443972795F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC482795F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729885AbgIZBY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 21:24:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728935AbgIZBYL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 21:24:11 -0400
-Received: from localhost (otava-0257.koleje.cuni.cz [78.128.181.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 786C020878;
-        Sat, 26 Sep 2020 01:24:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601083450;
-        bh=0ufQlNsRRx9NSNO7HzrPQhwnxasobcXS489JmiK12sk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=tbFKkwONDpAHgYcVZan/Q48SIV5/6eI8ZrOubYyRdFPKTFTE7gL4KoSAIphDpHTww
-         Fawdl4e2FsEb+yeGTAOcDXV+1jiARuZ0gNBrdbw5Adrz8U5BCTwS4RJdGHcYypiEOY
-         EnyFgF8rrFH8lbMXsJu93/PJgUFkMV+3oQD4Gf+g=
-Date:   Sat, 26 Sep 2020 03:24:06 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Tobias Jordan <kernel@cdqe.de>
-Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Jean-Jacques Hiblot <jjhiblot@ti.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Subject: Re: [PATCH v2] leds: tlc591xx: fix leak of device node iterator
-Message-ID: <20200926032406.00c7cfb2@kernel.org>
-In-Reply-To: <20200926005117.GA32209@agrajag.zerfleddert.de>
-References: <20200926005117.GA32209@agrajag.zerfleddert.de>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729918AbgIZBZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 21:25:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54011 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729830AbgIZBZf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 21:25:35 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601083534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pKw7q25KXo2grABOIw7jgZQmp7SGBPjTObh8YDtmdsA=;
+        b=JzOVTLpgKEz/LC2ZJ6Rf8akwq1uN3c4u5xeWlVr7DNnnlRBaqJvicTl/SE5A96iEWxqLJz
+        USvjGMEnuRM8NlW2eqlF20S2jGatOC59EMk/xPZGAug0juo33pNa2nwMjpKZMMk/rxaQMw
+        2TRGfuThgB61u8nu4YFQLNh1ZT3S4GM=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-253-vJ8jbZsrMG667zyB51LTQg-1; Fri, 25 Sep 2020 21:25:32 -0400
+X-MC-Unique: vJ8jbZsrMG667zyB51LTQg-1
+Received: by mail-wm1-f71.google.com with SMTP id p20so311223wmg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:25:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=pKw7q25KXo2grABOIw7jgZQmp7SGBPjTObh8YDtmdsA=;
+        b=eiVbttttFl+MLF4fgKpJveHjdQiAiWC/8lA4ArEvwoB/Wf7CrGgzFkeoSuolrgu3uY
+         tyQa16ufsVYK+kjcyfLr+NMXcyb3fR+H+B45ZaayYFjlyRtmT4lIYnWusYDZLe/9Syro
+         4DfwN4ly75Ymp9y/GVeRYJW1V0ok4TrnW+SXy47OO2Zair5Q9V3676PZFgFcxE7c9TeG
+         sEMNbRV3nmie45xyf9eL2ADZqQYu34BjewEyaKkoeD1OUBm37LAx1KCpmDT0zBZH2bS1
+         5lW156NBlGcQ9WhAoHN46B3AJbcGV5E9JZkuZ4Na0IWTOpqap6T4g6ylMf28ipyOytth
+         0R1g==
+X-Gm-Message-State: AOAM531lIZL+fUvrcat6LTolDwoGlsFopkXBu0NVgh21yRFVCMXMiPpu
+        TGKwl+sUPbu3a1+eFF/GGOm+HaRd+po4xGD+k6SyhIsZ8ZrQcBeFRJ4oaUo4YNPKHCNSS8+fRPu
+        QbsqQYW+auVisAlFfR3GrbSdV
+X-Received: by 2002:a1c:4b13:: with SMTP id y19mr270898wma.75.1601083531045;
+        Fri, 25 Sep 2020 18:25:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzThgdX914l+MTa9+nGQsYTkHA8HLmXG6y1HNqm+vlYR20PVKsv9dF9RWb7LbGP4KMz1BX+ww==
+X-Received: by 2002:a1c:4b13:: with SMTP id y19mr270883wma.75.1601083530844;
+        Fri, 25 Sep 2020 18:25:30 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
+        by smtp.gmail.com with ESMTPSA id u186sm774281wmu.34.2020.09.25.18.25.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 18:25:30 -0700 (PDT)
+Subject: Re: [PATCH 22/22] kvm: mmu: Don't clear write flooding count for
+ direct roots
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Cannon Matthews <cannonmatthews@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Shier <pshier@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20200925212302.3979661-1-bgardon@google.com>
+ <20200925212302.3979661-23-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a95cacdb-bc65-e11e-2114-b5c045b0eac5@redhat.com>
+Date:   Sat, 26 Sep 2020 03:25:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200925212302.3979661-23-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Sep 2020 02:51:17 +0200
-Tobias Jordan <kernel@cdqe.de> wrote:
-
-> In one of the error paths of the for_each_child_of_node loop in
-> tlc591xx_probe, add missing call to of_node_put.
->=20
-> Fixes: 1ab4531ad132 ("leds: tlc591xx: simplify driver by using the
-> managed led API")
->=20
-> Signed-off-by: Tobias Jordan <kernel@cdqe.de>
-> ---
-> v2: rebased to Pavel's for-next branch
->=20
->  drivers/leds/leds-tlc591xx.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
-> index f24271337bd8..5b9dfdf743ec 100644
-> --- a/drivers/leds/leds-tlc591xx.c
-> +++ b/drivers/leds/leds-tlc591xx.c
-> @@ -205,10 +205,12 @@ tlc591xx_probe(struct i2c_client *client,
->  		led->ldev.max_brightness =3D TLC591XX_MAX_BRIGHTNESS;
->  		err =3D devm_led_classdev_register_ext(dev, &led->ldev,
->  						     &init_data);
-> -		if (err < 0)
-> +		if (err < 0) {
-> +			of_node_put(child);
->  			return dev_err_probe(dev, err,
->  					     "couldn't register LED %s\n",
->  					     led->ldev.name);
-> +		}
->  	}
->  	return 0;
+On 25/09/20 23:23, Ben Gardon wrote:
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 42dde27decd75..c07831b0c73e1 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -124,6 +124,18 @@ static struct kvm_mmu_page *find_tdp_mmu_root_with_role(
+>  	return NULL;
 >  }
+>  
+> +hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
+> +				    union kvm_mmu_page_role role)
+> +{
+> +	struct kvm_mmu_page *root;
+> +
+> +	root = find_tdp_mmu_root_with_role(kvm, role);
+> +	if (root)
+> +		return __pa(root->spt);
+> +
+> +	return INVALID_PAGE;
+> +}
+> +
+>  static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
+>  						   int level)
+>  {
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> index cc0b7241975aa..2395ffa71bb05 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> @@ -9,6 +9,8 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
+>  void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
+>  
+>  bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
+> +hpa_t kvm_tdp_mmu_root_hpa_for_role(struct kvm *kvm,
+> +				    union kvm_mmu_page_role role);
+>  hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+>  void kvm_tdp_mmu_put_root_hpa(struct kvm *kvm, hpa_t root_hpa);
+>  
 
-Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
+Probably missing a piece since this code is not used and neither is the
+new argument to is_root_usable.
+
+I'm a bit confused by is_root_usable since there should be only one PGD
+for the TDP MMU (the one for the root_mmu).
+
+Paolo
+
