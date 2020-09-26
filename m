@@ -2,108 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAC2279644
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BBBA279645
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729942AbgIZClp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 22:41:45 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:8237 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728871AbgIZClo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 22:41:44 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id BCA244E1432;
-        Sat, 26 Sep 2020 10:41:40 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Sebastian Reichel <sre@kernel.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] power: supply: fix spelling typo
-Date:   Sat, 26 Sep 2020 10:41:07 +0800
-Message-Id: <1601088070-12790-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGUNPSh5JT0IfTRgZVkpNS0pLQ0NKS0tCTENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ORA6KRw6MD8sOAE2Lk1MCTpR
-        ARAaFDBVSlVKTUtKS0NDSktKT0tJVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFIQk1MNwY+
-X-HM-Tid: 0a74c8499a319376kuwsbca244e1432
+        id S1729951AbgIZCnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 22:43:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56876 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728967AbgIZCnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 22:43:53 -0400
+Received: from X1 (unknown [104.245.68.101])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3885820878;
+        Sat, 26 Sep 2020 02:43:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601088231;
+        bh=1nkZCA5YPl8bVzihcrG7vvM8b//lqkJ5TQeIuSIoqCQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=dCRAn6cZQrrJb2Wh/R/Zwk22edLD5gfhWGDqwTYHfDhwL8p9lj1q3nd20NicS+n6l
+         q5ujK20g/b5JixrtLCZ8ysCD9kfVgSPlWmXQyL1yASDHU+i0PynwItHvs0xxsLQqqI
+         YCTc9mEz0rJ75n3w690uhG5J+1mzUwI54ugn3gJs=
+Date:   Fri, 25 Sep 2020 19:43:49 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-mm@kvack.org
+Subject: Re: remove alloc_vm_area v2
+Message-Id: <20200925194349.d0ee9dbedb2ec48f0bfcd2ec@linux-foundation.org>
+In-Reply-To: <20200924135853.875294-1-hch@lst.de>
+References: <20200924135853.875294-1-hch@lst.de>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the comment typo: "compliment" -> "complement".
+On Thu, 24 Sep 2020 15:58:42 +0200 Christoph Hellwig <hch@lst.de> wrote:
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- drivers/power/supply/ds2780_battery.c | 6 +++---
- drivers/power/supply/ds2781_battery.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+> this series removes alloc_vm_area, which was left over from the big
+> vmalloc interface rework.  It is a rather arkane interface, basicaly
+> the equivalent of get_vm_area + actually faulting in all PTEs in
+> the allocated area.  It was originally addeds for Xen (which isn't
+> modular to start with), and then grew users in zsmalloc and i915
+> which seems to mostly qualify as abuses of the interface, especially
+> for i915 as a random driver should not set up PTE bits directly.
+> 
+> Note that the i915 patches apply to the drm-tip branch of the drm-tip
+> tree, as that tree has recent conflicting commits in the same area.
 
-diff --git a/drivers/power/supply/ds2780_battery.c b/drivers/power/supply/ds2780_battery.c
-index db3a254..dd57a47
---- a/drivers/power/supply/ds2780_battery.c
-+++ b/drivers/power/supply/ds2780_battery.c
-@@ -160,7 +160,7 @@ static int ds2780_get_voltage(struct ds2780_device_info *dev_info,
- 
- 	/*
- 	 * The voltage value is located in 10 bits across the voltage MSB
--	 * and LSB registers in two's compliment form
-+	 * and LSB registers in two's complement form
- 	 * Sign bit of the voltage value is in bit 7 of the voltage MSB register
- 	 * Bits 9 - 3 of the voltage value are in bits 6 - 0 of the
- 	 * voltage MSB register
-@@ -188,7 +188,7 @@ static int ds2780_get_temperature(struct ds2780_device_info *dev_info,
- 
- 	/*
- 	 * The temperature value is located in 10 bits across the temperature
--	 * MSB and LSB registers in two's compliment form
-+	 * MSB and LSB registers in two's complement form
- 	 * Sign bit of the temperature value is in bit 7 of the temperature
- 	 * MSB register
- 	 * Bits 9 - 3 of the temperature value are in bits 6 - 0 of the
-@@ -241,7 +241,7 @@ static int ds2780_get_current(struct ds2780_device_info *dev_info,
- 
- 	/*
- 	 * The current value is located in 16 bits across the current MSB
--	 * and LSB registers in two's compliment form
-+	 * and LSB registers in two's complement form
- 	 * Sign bit of the current value is in bit 7 of the current MSB register
- 	 * Bits 14 - 8 of the current value are in bits 6 - 0 of the current
- 	 * MSB register
-diff --git a/drivers/power/supply/ds2781_battery.c b/drivers/power/supply/ds2781_battery.c
-index 130cbdf..3df3c82
---- a/drivers/power/supply/ds2781_battery.c
-+++ b/drivers/power/supply/ds2781_battery.c
-@@ -168,7 +168,7 @@ static int ds2781_get_voltage(struct ds2781_device_info *dev_info,
- 		return ret;
- 	/*
- 	 * The voltage value is located in 10 bits across the voltage MSB
--	 * and LSB registers in two's compliment form
-+	 * and LSB registers in two's complement form
- 	 * Sign bit of the voltage value is in bit 7 of the voltage MSB register
- 	 * Bits 9 - 3 of the voltage value are in bits 6 - 0 of the
- 	 * voltage MSB register
-@@ -197,7 +197,7 @@ static int ds2781_get_temperature(struct ds2781_device_info *dev_info,
- 		return ret;
- 	/*
- 	 * The temperature value is located in 10 bits across the temperature
--	 * MSB and LSB registers in two's compliment form
-+	 * MSB and LSB registers in two's complement form
- 	 * Sign bit of the temperature value is in bit 7 of the temperature
- 	 * MSB register
- 	 * Bits 9 - 3 of the temperature value are in bits 6 - 0 of the
-@@ -242,7 +242,7 @@ static int ds2781_get_current(struct ds2781_device_info *dev_info,
- 
- 	/*
- 	 * The current value is located in 16 bits across the current MSB
--	 * and LSB registers in two's compliment form
-+	 * and LSB registers in two's complement form
- 	 * Sign bit of the current value is in bit 7 of the current MSB register
- 	 * Bits 14 - 8 of the current value are in bits 6 - 0 of the current
- 	 * MSB register
--- 
-2.7.4
+Is the drm-tip material in linux-next yet?  I'm still seeing a non-trivial
+reject in there at present.
 
