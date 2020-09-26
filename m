@@ -2,182 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 687B8279C7B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 22:52:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBEC279C6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 22:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727239AbgIZUwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 16:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgIZUwk (ORCPT
+        id S1727100AbgIZUsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 16:48:17 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:37720 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726959AbgIZUsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 16:52:40 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8D7C0613CE;
-        Sat, 26 Sep 2020 13:52:40 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id s31so883573pga.7;
-        Sat, 26 Sep 2020 13:52:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=WDzjfa8QUsgUaih+kIpPeyFOqv/pDOBqTsibbBt+0tA=;
-        b=p21Cw0Gd5+8Un3GCJAR7IRm9YOwwgnJJTECiQUrzwluzON3YE0rHS2rkhNAToyq1iy
-         LAiYyWrglDQyz1NimEvVAcwlPrhwKCeNkTIrfi9u/8T+0YT5I1dPG5yZgXDp6CKMCEhX
-         0Ao9gibUIOzk65fw0c7HBQxMnJer5x/yxdlohKQxN1XJ5x09QjnGDi4KIGGMD+21JBeQ
-         ecfno/bfvh55TgkY6kcdwQ+guh3DBnwPt/Ap28BI1ou6Ot2319GPrkP8lqe3rTwLZTBP
-         S7RoKJbABPrDYnDtryxA2qmYCuNeihYSkZbcL61TBg/h9ly7Gk0pEg3AtDC4kRS2jwFb
-         rWkA==
+        Sat, 26 Sep 2020 16:48:16 -0400
+Received: by mail-il1-f208.google.com with SMTP id c66so5237776ilf.4
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 13:48:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=WDzjfa8QUsgUaih+kIpPeyFOqv/pDOBqTsibbBt+0tA=;
-        b=aLjFfyZAHccxQnVPkZdoV2NNaNEW+3OlVADOd31XPA7rzXczMmSIRNyyYr0Y1Xg8L4
-         yWT2NpTM23DVxD5PmpO3ydIrlwNBBD9BrxBU+MFP5onuq7+VO/5ieizA9sWtR6os8uff
-         FmInGzzOMGjudARU5n4USB/2r6m+Jp85RkQgm9lvlweJyKwZJC5x+PwzGwC0xVqknFEL
-         yg2Sb/qpetvdDFuytAIJAC1/UUzOwQ4KvAl3u7IFquuQPNYFSEDcsxiLephHqngeuOeK
-         4KHOfqAWWm1YX2s69ijLfveDXKrI9Ie66Ad5vhRoZNFWtw+LIf80F0v/3mPhTBRVmIDp
-         NvHQ==
-X-Gm-Message-State: AOAM530nBwEwU4yEqtsz5lus/m6C06pqAijnVV10dZFBlN1gRBX/uuBq
-        SfLm06EGS7dmfHuUHuKbiLw=
-X-Google-Smtp-Source: ABdhPJzQgKnWxoBbJQBJf/eknMgjtWp+DPqXjU/t6wROxeDyeHz3Nq1vOnxzQ3KbUmJjCyFz+Zi+xQ==
-X-Received: by 2002:a63:f54f:: with SMTP id e15mr3816188pgk.310.1601153559608;
-        Sat, 26 Sep 2020 13:52:39 -0700 (PDT)
-Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
-        by smtp.gmail.com with ESMTPSA id c6sm6314291pfd.83.2020.09.26.13.52.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 26 Sep 2020 13:52:39 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 13:47:44 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
-Subject: Re: [PATCH 5/5] iommu/tegra-smmu: Add pagetable mappings to debugfs
-Message-ID: <20200926204744.GB4947@Asurada-Nvidia>
-References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
- <20200926080719.6822-6-nicoleotsuka@gmail.com>
- <0c9ca297-d656-59a5-eefd-00e0c0542c29@gmail.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=LM/7fcHB+LSBwRcKiIRcDVmi/2c7SXH6clQmuTap8yI=;
+        b=pB5LeGiUyMzVmJzAC3MaKzzcVFqAXohNNQwrB8dHBGkfQnZFc62BZV+Yl5YweCeRte
+         AiTVA85kRLq6Fhf8ySLjdXwQosPVhpKOBkOgTpeAxW3Mxw47QJqkboMl/Z2k/toehWw5
+         W5tYq9I965iP4lQ3h2CCNJb5pvrrvTuQuoG7ZLFPccXAXwRq9vMAEAGRGAaL+fcNsLss
+         bWeS3zdJbrgZ9SLGmmqxJq6KBWTuy+b/4F6H3u70JFpAkUF5Tj9x4aWFGYQa/k5pMiKT
+         reW8oksN0HxOAa3s9/gbtmeSpn6lgFGXDalr7LUOUsefY5IFzUYUfhSdC2M5fS+05J/K
+         zkCw==
+X-Gm-Message-State: AOAM531D9WKvcfdzZiUL/MaygFLjes/xWGbly0sjX2ffWKu4vEwz1NBU
+        pdXXSBqAPMbXe6Y7OZ7QCGt42NHfiD3VORxtvkn5IkYSuxd1
+X-Google-Smtp-Source: ABdhPJyhVCo0cwhMlBliXmWsy52Cr2sz6xqQfoDOyoHXRAcwSr9wd8hb1kMJx8u0L1o3vic4kFpY/qKEYODal/Xpc0Efz7hJEMAA
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0c9ca297-d656-59a5-eefd-00e0c0542c29@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Received: by 2002:a92:c301:: with SMTP id n1mr4410021ilg.247.1601153295431;
+ Sat, 26 Sep 2020 13:48:15 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 13:48:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000067becf05b03d8dd6@google.com>
+Subject: BUG: unable to handle kernel paging request in dqput
+From:   syzbot <syzbot+f816042a7ae2225f25ba@syzkaller.appspotmail.com>
+To:     adi@adirat.com, alsa-devel@alsa-project.org,
+        coreteam@netfilter.org, davem@davemloft.net, jack@suse.com,
+        kaber@trash.net, kadlec@blackhole.kfki.hu,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com,
+        tiwai@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Hello,
 
-Thank you for the review.
+syzbot found the following issue on:
 
-On Sat, Sep 26, 2020 at 05:48:54PM +0300, Dmitry Osipenko wrote:
-> 26.09.2020 11:07, Nicolin Chen пишет:
-> ...
-> > +static int tegra_smmu_mappings_show(struct seq_file *s, void *data)
-> > +{
-> > +	struct tegra_smmu_group_debug *group_debug = s->private;
-> > +	const struct tegra_smmu_swgroup *group;
-> > +	struct tegra_smmu_as *as;
-> > +	struct tegra_smmu *smmu;
-> > +	int pd_index, pt_index;
-> > +	u64 pte_count = 0;
-> > +	u32 pde_count = 0;
-> > +	u32 val, ptb_reg;
-> > +	u32 *pd;
-> > +
-> > +	if (!group_debug || !group_debug->priv || !group_debug->group)
-> > +		return 0;
-> > +
-> > +	group = group_debug->group;
-> > +	as = group_debug->priv;
-> > +	smmu = as->smmu;
-> > +
-> > +	val = smmu_readl(smmu, group->reg) & SMMU_ASID_ENABLE;
-> > +	if (!val)
-> > +		return 0;
-> > +
-> > +	pd = page_address(as->pd);
-> > +	if (!pd)
-> > +		return 0;
-> > +
-> > +	seq_printf(s, "\nSWGROUP: %s\nASID: %d\nreg: 0x%x\n", group->name,
-> > +			as->id, group->reg);
-> > +
-> > +	mutex_lock(&smmu->lock);
-> > +	smmu_writel(smmu, as->id & 0x7f, SMMU_PTB_ASID);
-> > +	ptb_reg = smmu_readl(smmu, SMMU_PTB_DATA);
-> 
-> I think the whole traverse needs a locking protection, doesn't it?
+HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17930875900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=f816042a7ae2225f25ba
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=133783ab900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13bb5973900000
 
-Hmm..probably would be nicer. Will move the mutex to the top.
+The issue was bisected to:
 
-> > +	mutex_unlock(&smmu->lock);
-> > +
-> > +	seq_printf(s, "PTB_ASID: 0x%x\nas->pd_dma: 0x%llx\n", ptb_reg, as->pd_dma);
-> > +	seq_puts(s, "{\n");
-> > +
-> > +	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-> > +		struct page *pt;
-> > +		u32 *addr;
-> > +
-> > +		if (!as->count[pd_index] || !pd[pd_index])
-> > +			continue;
-> > +
-> > +		pde_count++;
-> > +		pte_count += as->count[pd_index];
-> > +		seq_printf(s, "\t[%d] 0x%x (%d)\n",
-> > +			   pd_index, pd[pd_index], as->count[pd_index]);
-> > +		pt = as->pts[pd_index];
-> > +		addr = page_address(pt);
-> 
-> This needs as->lock protection.
+commit 1d0f953086f090a022f2c0e1448300c15372db46
+Author: Ioan-Adrian Ratiu <adi@adirat.com>
+Date:   Wed Jan 4 22:37:46 2017 +0000
 
-Will add that.
+    ALSA: usb-audio: Fix irq/process data synchronization
 
-> > +		seq_puts(s, "\t{\n");
-> > +		seq_printf(s, "\t\t%-5s %-4s %12s %12s\n", "PDE", "ATTR", "PHYS", "IOVA");
-> > +		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index++) {
-> > +			u64 iova;
-> > +
-> > +			if (!addr[pt_index])
-> > +				continue;
-> > +
-> > +			iova = ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT;
-> > +			iova |= ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
-> > +
-> > +			seq_printf(s, "\t\t#%-4d 0x%-4x 0x%-12llx 0x%-12llx\n",
-> > +				   pt_index, addr[pt_index] >> SMMU_PTE_ATTR_SHIFT,
-> > +				   SMMU_PFN_PHYS(addr[pt_index] & ~SMMU_PTE_ATTR), iova);
-> > +		}
-> > +		seq_puts(s, "\t}\n");
-> > +	}
-> > +	seq_puts(s, "}\n");
-> > +	seq_printf(s, "Total PDE count: %d\n", pde_count);
-> > +	seq_printf(s, "Total PTE count: %lld\n", pte_count);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +DEFINE_SHOW_ATTRIBUTE(tegra_smmu_mappings);
-> > +
-> >  static void tegra_smmu_debugfs_init(struct tegra_smmu *smmu)
-> >  {
-> > +	const struct tegra_smmu_soc *soc = smmu->soc;
-> > +	struct tegra_smmu_group_debug *group_debug;
-> > +	struct device *dev = smmu->dev;
-> > +	struct dentry *d;
-> > +	int i;
-> > +
-> > +	group_debug = devm_kzalloc(dev, sizeof(*group_debug) * soc->num_swgroups, GFP_KERNEL);
-> 
-> devm_kcalloc()
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=133362c3900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=10b362c3900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=173362c3900000
 
-Will change it.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f816042a7ae2225f25ba@syzkaller.appspotmail.com
+Fixes: 1d0f953086f0 ("ALSA: usb-audio: Fix irq/process data synchronization")
 
-Thanks
-Nic
+EXT4-fs (loop0): mounted filesystem without journal. Opts: ,errors=continue
+Quota error (device loop0): qtree_write_dquot: Error -1622674347 occurred while creating quota
+Quota error (device loop0): dq_insert_tree: Quota tree root isn't allocated!
+Quota error (device loop0): qtree_write_dquot: Error -5 occurred while creating quota
+BUG: unable to handle page fault for address: fffffbfff3e8feac
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 21ffe5067 P4D 21ffe5067 PUD 21ffe4067 PMD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 6845 Comm: syz-executor636 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x80/0x2f0 mm/kasan/generic.c:192
+Code: 01 00 00 00 00 fc ff df 4d 01 ea 4d 89 d6 4d 29 ce 49 83 fe 10 7f 2d 4d 85 f6 0f 84 ab 01 00 00 4c 89 cb 4c 29 d3 0f 1f 40 00 <45> 0f b6 19 45 84 db 0f 85 f3 01 00 00 49 ff c1 48 ff c3 75 eb e9
+RSP: 0018:ffffc90001fdf9d0 EFLAGS: 00010293
+RAX: 2234ff0efb3ccc01 RBX: fffffffffffffffe RCX: ffffffff81e00c97
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff9f47f565
+RBP: ffffffff9f47f455 R08: dffffc0000000000 R09: fffffbfff3e8feac
+R10: fffffbfff3e8feae R11: 0000000000000000 R12: 1ffffffff3e8feac
+R13: dffffc0000000001 R14: 0000000000000002 R15: ffffffff9f47f565
+FS:  00000000009ac880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff3e8feac CR3: 000000009f30a000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ instrument_atomic_read include/linux/instrumented.h:56 [inline]
+ atomic_read include/asm-generic/atomic-instrumented.h:27 [inline]
+ dqput+0x77/0x770 fs/quota/dquot.c:770
+ dqput_all fs/quota/dquot.c:397 [inline]
+ __dquot_initialize+0x9e6/0xc30 fs/quota/dquot.c:1530
+ ext4_xattr_set+0x9b/0x300 fs/ext4/xattr.c:2474
+ __vfs_setxattr+0x3be/0x400 fs/xattr.c:177
+ __vfs_setxattr_noperm+0x11e/0x4b0 fs/xattr.c:208
+ vfs_setxattr+0xde/0x270 fs/xattr.c:283
+ setxattr+0x167/0x350 fs/xattr.c:548
+ path_setxattr+0x109/0x1c0 fs/xattr.c:567
+ __do_sys_setxattr fs/xattr.c:582 [inline]
+ __se_sys_setxattr fs/xattr.c:578 [inline]
+ __x64_sys_setxattr+0xb7/0xd0 fs/xattr.c:578
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x4447e9
+Code: 8d d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 5b d7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffcd4905408 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00000000004447e9
+RDX: 0000000000000000 RSI: 0000000020000140 RDI: 00000000200000c0
+RBP: 00000000006cf018 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004023d0
+R13: 0000000000402460 R14: 0000000000000000 R15: 0000000000000000
+Modules linked in:
+CR2: fffffbfff3e8feac
+---[ end trace a52409661d306995 ]---
+RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:91 [inline]
+RIP: 0010:memory_is_nonzero mm/kasan/generic.c:108 [inline]
+RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:134 [inline]
+RIP: 0010:memory_is_poisoned mm/kasan/generic.c:165 [inline]
+RIP: 0010:check_memory_region_inline mm/kasan/generic.c:183 [inline]
+RIP: 0010:check_memory_region+0x80/0x2f0 mm/kasan/generic.c:192
+Code: 01 00 00 00 00 fc ff df 4d 01 ea 4d 89 d6 4d 29 ce 49 83 fe 10 7f 2d 4d 85 f6 0f 84 ab 01 00 00 4c 89 cb 4c 29 d3 0f 1f 40 00 <45> 0f b6 19 45 84 db 0f 85 f3 01 00 00 49 ff c1 48 ff c3 75 eb e9
+RSP: 0018:ffffc90001fdf9d0 EFLAGS: 00010293
+RAX: 2234ff0efb3ccc01 RBX: fffffffffffffffe RCX: ffffffff81e00c97
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffffffff9f47f565
+RBP: ffffffff9f47f455 R08: dffffc0000000000 R09: fffffbfff3e8feac
+R10: fffffbfff3e8feae R11: 0000000000000000 R12: 1ffffffff3e8feac
+R13: dffffc0000000001 R14: 0000000000000002 R15: ffffffff9f47f565
+FS:  00000000009ac880(0000) GS:ffff8880ae900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: fffffbfff3e8feac CR3: 000000009f30a000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
