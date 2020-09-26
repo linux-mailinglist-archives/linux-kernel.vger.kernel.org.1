@@ -2,138 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5A4279723
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 07:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B03D27972E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgIZFjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 01:39:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgIZFjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 01:39:18 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2006120809;
-        Sat, 26 Sep 2020 05:39:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601098757;
-        bh=G7c1jGqdQoFKySP6p3A9TdysOPvhNgE5jIjMDZfxkbU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WgthNj1VpjZ8OFJngZ7dmGTjVGBVdDuogH0sB97qH8mWwrY5tbS9wMk0UHyNeLpsw
-         bnIErP9Ao26qapAoElsyJcswRjfkubyl1symejGFUDa+AQhs6owXGkI7eBGJ5G0O7E
-         ussFfnTbpL95fd2H6y5hUhbOcOSv9JYByZi71ljI=
-Date:   Sat, 26 Sep 2020 07:39:14 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Jeffrey Hugo <jhugo@codeaurora.org>, hemantk@codeaurora.org,
-        bbhatt@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bus: mhi: core: debugfs: Use correct format specifiers
- for addresses
-Message-ID: <20200926053914.GA631346@kroah.com>
-References: <20200925171608.30881-1-manivannan.sadhasivam@linaro.org>
- <c63ae2c3-43ae-6a94-cf27-efb6cc038f83@codeaurora.org>
- <20200926052742.GB9302@linux>
+        id S1726773AbgIZGJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 02:09:02 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:49725 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726119AbgIZGJB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 02:09:01 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UA5m6jr_1601100506;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA5m6jr_1601100506)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 26 Sep 2020 14:08:27 +0800
+Subject: Re: [PATCH v19 03/20] mm/thp: move lru_add_page_tail func to
+ huge_memory.c
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com, aaron.lwe@gmail.com
+References: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1600918115-22007-4-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <539cb371-faac-12b2-06d2-a050a541382d@linux.alibaba.com>
+Date:   Sat, 26 Sep 2020 14:06:05 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200926052742.GB9302@linux>
+In-Reply-To: <1600918115-22007-4-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 10:57:42AM +0530, Manivannan Sadhasivam wrote:
-> On Fri, Sep 25, 2020 at 12:01:54PM -0600, Jeffrey Hugo wrote:
-> > On 9/25/2020 11:16 AM, Manivannan Sadhasivam wrote:
-> > > For exposing the addresses of read/write pointers and doorbell register,
-> > > let's use the correct format specifiers. This fixes the following issues
-> > > generated using W=1 build in ARM32 and reported by Kbuild bot:
-> > > 
-> > > All warnings (new ones prefixed by >>):
-> > > 
-> > > > > drivers/bus/mhi/core/debugfs.c:75:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
-> > >                                mhi_event->db_cfg.db_val);
-> > >                                ^~~~~~~~~~~~~~~~~~~~~~~~
-> > >     drivers/bus/mhi/core/debugfs.c:123:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
-> > >                                mhi_chan->db_cfg.db_val);
-> > >                                ^~~~~~~~~~~~~~~~~~~~~~~
-> > >     2 warnings generated.
-> > > 
-> > > drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_events_show’:
-> > > drivers/bus/mhi/core/debugfs.c:74:51: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-> > >     seq_printf(m, " local rp: 0x%llx db: 0x%pad\n", (u64)ring->rp,
-> > >                                                     ^
-> > > drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_channels_show’:
-> > > drivers/bus/mhi/core/debugfs.c:122:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-> > >         (u64)ring->rp, (u64)ring->wp,
-> > >         ^
-> > > drivers/bus/mhi/core/debugfs.c:122:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-> > >         (u64)ring->rp, (u64)ring->wp,
-> > >                        ^
-> > > drivers/bus/mhi/core/debugfs.c:121:62: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘dma_addr_t {aka unsigned int}’ [-Wformat=]
-> > >     seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
-> > >                                                             ~~~^
-> > >                                                             %x
-> > > drivers/bus/mhi/core/debugfs.c:123:7:
-> > >         mhi_chan->db_cfg.db_val);
-> > > 
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > ---
-> > > 
-> > > Greg: This fixes the issue seen while testing the char-misc/char-misc-testing
-> > > branch.
-> > > 
-> > >   drivers/bus/mhi/core/debugfs.c | 10 +++++-----
-> > >   1 file changed, 5 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/drivers/bus/mhi/core/debugfs.c b/drivers/bus/mhi/core/debugfs.c
-> > > index 53d05a8e168d..2536ff92b76f 100644
-> > > --- a/drivers/bus/mhi/core/debugfs.c
-> > > +++ b/drivers/bus/mhi/core/debugfs.c
-> > > @@ -71,8 +71,8 @@ static int mhi_debugfs_events_show(struct seq_file *m, void *d)
-> > >   		seq_printf(m, " rp: 0x%llx wp: 0x%llx", er_ctxt->rp,
-> > >   			   er_ctxt->wp);
-> > > -		seq_printf(m, " local rp: 0x%llx db: 0x%llx\n", (u64)ring->rp,
-> > > -			   mhi_event->db_cfg.db_val);
-> > > +		seq_printf(m, " local rp: 0x%px db: 0x%pad\n", ring->rp,
-> > > +			   &mhi_event->db_cfg.db_val);
-> > >   	}
-> > >   	return 0;
-> > > @@ -118,9 +118,9 @@ static int mhi_debugfs_channels_show(struct seq_file *m, void *d)
-> > >   		seq_printf(m, " base: 0x%llx len: 0x%llx wp: 0x%llx",
-> > >   			   chan_ctxt->rbase, chan_ctxt->rlen, chan_ctxt->wp);
-> > > -		seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
-> > > -			   (u64)ring->rp, (u64)ring->wp,
-> > > -			   mhi_chan->db_cfg.db_val);
-> > > +		seq_printf(m, " local rp: 0x%px local wp: 0x%px db: 0x%pad\n",
-> > > +			   ring->rp, ring->wp,
-> > > +			   &mhi_chan->db_cfg.db_val);
-> > >   	}
-> > >   	return 0;
-> > > 
-> > 
-> > Documentation/printk-formats.txt seems to point out that %px is "insecure"
-> > and thus perhaps not preferred.  Are we assuming that debugfs is only
-> > accessible by root, and thus the %px usage here is effectively the same as
-> > %pK?
-> > 
-> 
-> No, this debugfs entry can be read by non-root users also.
+There is a bit conflict when I try to rebase it to today's akpm branch
+So update a rebasable one.
 
-How, the mount point of debugfs is restricted to root only :)
+Thanks
+Alex
 
-> But the idea here
-> is to effectively show the addresses to everyone so I don't think we need to
-> hide it. The term "insecure" applies to kernel log where exposing the address
-> doesn't make much sense (except for few obvious reasons).
+From 3aa78f872deac10861aba86ddf362082afef947d Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Tue, 26 May 2020 16:45:09 +0800
+Subject: [PATCH v19 03/20] mm/thp: move lru_add_page_tail func to
+ huge_memory.c
 
-Why does normal users need to see a kernel address?  What can they do
-with this?  Why can't we use the "normal" hashed way of showing a kernel
-address instead?
+The func is only used in huge_memory.c, defining it in other file with a
+CONFIG_TRANSPARENT_HUGEPAGE macro restrict just looks weird.
 
-thanks,
+Let's move it THP. And make it static as Hugh Dickin suggested.
 
-greg k-h
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Acked-by: Hugh Dickins <hughd@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
+---
+ include/linux/swap.h |  2 --
+ mm/huge_memory.c     | 30 ++++++++++++++++++++++++++++++
+ mm/swap.c            | 33 ---------------------------------
+ 3 files changed, 30 insertions(+), 35 deletions(-)
+
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 667935c0dbd4..5e1e967c225f 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -338,8 +338,6 @@ extern void lru_note_cost(struct lruvec *lruvec, bool file,
+ 			  unsigned int nr_pages);
+ extern void lru_note_cost_page(struct page *);
+ extern void lru_cache_add(struct page *);
+-extern void lru_add_page_tail(struct page *page, struct page *page_tail,
+-			 struct lruvec *lruvec, struct list_head *head);
+ extern void mark_page_accessed(struct page *);
+ extern void lru_add_drain(void);
+ extern void lru_add_drain_cpu(int cpu);
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 6bb4a7657129..a6d25ceb95ea 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2320,6 +2320,36 @@ static void remap_page(struct page *page, unsigned int nr)
+ 	}
+ }
+ 
++static void lru_add_page_tail(struct page *page, struct page *page_tail,
++		struct lruvec *lruvec, struct list_head *list)
++{
++	VM_BUG_ON_PAGE(!PageHead(page), page);
++	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
++	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
++	lockdep_assert_held(&lruvec_pgdat(lruvec)->lru_lock);
++
++	if (!list)
++		SetPageLRU(page_tail);
++
++	if (likely(PageLRU(page)))
++		list_add_tail(&page_tail->lru, &page->lru);
++	else if (list) {
++		/* page reclaim is reclaiming a huge page */
++		get_page(page_tail);
++		list_add_tail(&page_tail->lru, list);
++	} else {
++		/*
++		 * Head page has not yet been counted, as an hpage,
++		 * so we must account for each subpage individually.
++		 *
++		 * Put page_tail on the list at the correct position
++		 * so they all end up in order.
++		 */
++		add_page_to_lru_list_tail(page_tail, lruvec,
++					  page_lru(page_tail));
++	}
++}
++
+ static void __split_huge_page_tail(struct page *head, int tail,
+ 		struct lruvec *lruvec, struct list_head *list)
+ {
+diff --git a/mm/swap.c b/mm/swap.c
+index d8313a389c84..8fd850d97df0 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -976,39 +976,6 @@ void __pagevec_release(struct pagevec *pvec)
+ }
+ EXPORT_SYMBOL(__pagevec_release);
+ 
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-/* used by __split_huge_page_refcount() */
+-void lru_add_page_tail(struct page *page, struct page *page_tail,
+-		       struct lruvec *lruvec, struct list_head *list)
+-{
+-	VM_BUG_ON_PAGE(!PageHead(page), page);
+-	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
+-	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
+-	lockdep_assert_held(&lruvec_pgdat(lruvec)->lru_lock);
+-
+-	if (!list)
+-		SetPageLRU(page_tail);
+-
+-	if (likely(PageLRU(page)))
+-		list_add_tail(&page_tail->lru, &page->lru);
+-	else if (list) {
+-		/* page reclaim is reclaiming a huge page */
+-		get_page(page_tail);
+-		list_add_tail(&page_tail->lru, list);
+-	} else {
+-		/*
+-		 * Head page has not yet been counted, as an hpage,
+-		 * so we must account for each subpage individually.
+-		 *
+-		 * Put page_tail on the list at the correct position
+-		 * so they all end up in order.
+-		 */
+-		add_page_to_lru_list_tail(page_tail, lruvec,
+-					  page_lru(page_tail));
+-	}
+-}
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+-
+ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+ 				 void *arg)
+ {
+-- 
+1.8.3.1
+
+
+
