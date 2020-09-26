@@ -2,111 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1FC32799BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347322799C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbgIZNmG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 26 Sep 2020 09:42:06 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:33065 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZNmG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 09:42:06 -0400
-Received: by mail-ej1-f66.google.com with SMTP id j11so2410399ejk.0;
-        Sat, 26 Sep 2020 06:42:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=zZiC4GFLiCyxWh5u5vGAPSFiD3LqckqVR10/0vflwwg=;
-        b=pmE6FomZalVD8bPNjs20hMVtM9tKotvYkEsVO8i/aIPTM/HjNpSdzyRTs011mLq2W6
-         htrpJzJeqgILNV9M+w/M9teLtUwzka9sx4EkAsae7hXCZs9kuJDnvAjwVzXlrzWj+AKD
-         4Zd5Tj3QGQCCrxrDsztSSUSwHGWkSfdjw+qX+geDCg8pQ2Wj2GDwAutWQSjjXswoSwIc
-         DBGP3toCtf5FkUEptqsiQQ15ZVzYfQIOmc2Yx95/WWK67vQCtYwJ8DVXvJHkP721QvEy
-         ImBCNSYM0xbL4B3vv+uUDXzytm1gBRJ88GL3hDngJxRHhbK4aDcwwU9A8Y4paWiMH8Qi
-         t5OQ==
-X-Gm-Message-State: AOAM532wu1UT7jx+wjSiX1EiEmZ2VLuZHKfFW//TMDvLqIOm0VRkvTFO
-        FZkoLzajkWPIRq2slJk6u/o=
-X-Google-Smtp-Source: ABdhPJz9GR5blkBoMY58veAVwcmSMDo29BUcNV1QcEUQxNVIvkB6gy7KKlrjrtCiqAKvzgYXZdNSLQ==
-X-Received: by 2002:a17:907:2115:: with SMTP id qn21mr7366844ejb.278.1601127723572;
-        Sat, 26 Sep 2020 06:42:03 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.132])
-        by smtp.googlemail.com with ESMTPSA id jo26sm4156240ejb.120.2020.09.26.06.42.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 26 Sep 2020 06:42:02 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 15:41:57 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        id S1728739AbgIZNrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 09:47:12 -0400
+Received: from vm1.sequanux.org ([188.165.36.56]:50662 "EHLO vm1.sequanux.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726244AbgIZNrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 09:47:11 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by vm1.sequanux.org (Postfix) with ESMTP id 9F2321085FD;
+        Sat, 26 Sep 2020 15:47:09 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at vm1.sequanux.org
+Received: from vm1.sequanux.org ([127.0.0.1])
+        by localhost (vm1.sequanux.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id UOytG_biRnex; Sat, 26 Sep 2020 15:47:07 +0200 (CEST)
+Received: from localhost (softwrestling.org [188.165.144.248])
+        by vm1.sequanux.org (Postfix) with ESMTPSA id EB80410812B;
+        Sat, 26 Sep 2020 15:47:06 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 15:47:06 +0200
+From:   Simon Guinot <simon.guinot@sequanux.org>
+To:     Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>
+Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>,
+        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        =?utf-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andrey Utkin <andrey_utkin@fastmail.com>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Baolin Wang <baolin.wang@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Christian Mauderer <oss@c-mauderer.de>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Daniel Mack <daniel@caiaq.de>,
+        David Rivshin <drivshin@allworx.com>,
+        Grant Feng <von81@163.com>,
+        Haojian Zhuang <haojian.zhuang@marvell.com>,
+        "H . Nikolaus Schaller" <hns@goldelico.com>,
+        Jaedon Shin <jaedon.shin@gmail.com>,
+        John Crispin <john@phrozen.org>,
+        Kevin Cernekee <cernekee@gmail.com>,
         Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: pwm: imx: document i.MX compatibles
-Message-ID: <20200926134157.GA4730@kozik-lap>
-References: <20200925212609.23093-1-krzk@kernel.org>
- <20200926132217.xr3rhv7o2o2yc2l7@pengutronix.de>
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Milo Kim <milo.kim@ti.com>, NeilBrown <neilb@suse.de>,
+        Nikita Travkin <nikitos.tr@gmail.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Philippe Retornaz <philippe.retornaz@epfl.ch>,
+        Riku Voipio <riku.voipio@iki.fi>,
+        Rod Whitby <rod@whitby.id.au>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Simon Guinot <sguinot@lacie.com>,
+        Simon Shields <simon@lineageos.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
+        Vincent Donnefort <vdonnefort@gmail.com>,
+        Xiaotong Lu <xiaotong.lu@spreadtrum.com>
+Subject: Re: [PATCH leds v2 00/50] Start moving parsing of
+ `linux,default-trigger` to LED core (a cleanup of LED drivers)
+Message-ID: <20200926134706.GJ4828@kw.sim.vm.gnt>
+References: <20200917223338.14164-1-marek.behun@nic.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WR+jf/RUebEcofwt"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200926132217.xr3rhv7o2o2yc2l7@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200917223338.14164-1-marek.behun@nic.cz>
+User-Agent: Mutt/1.6.0 (2016-04-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 03:22:17PM +0200, Uwe Kleine-König wrote:
-> On Fri, Sep 25, 2020 at 11:26:09PM +0200, Krzysztof Kozlowski wrote:
-> > Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles to fix dtbs_check
-> > warnings like:
-> > 
-> >   arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml: pwm@2080000: compatible:0:
-> >     'fsl,imx6q-pwm' is not one of ['fsl,imx8mm-pwm', 'fsl,imx8mn-pwm', 'fsl,imx8mp-pwm', 'fsl,imx8mq-pwm']
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > ---
-> >  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-> > index 473863eb67e5..379d693889f6 100644
-> > --- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-> > +++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-> > @@ -25,6 +25,17 @@ properties:
-> >            - fsl,imx27-pwm
-> >        - items:
-> >            - enum:
-> > +              - fsl,imx25-pwm
-> 
-> The driver actually used fsl,imx27-pwm to bind ...
 
-Yes, most of i.MX drivers use only few compatibles but DTSes and
-bindings use multiple of them.  I was convinced during various talks
-that the specific compatibles (so "fsl,imx6q-pwm, fsl,imx27-pwm") are
-preferred than generic ones (so only "fsl,imx27-pwm"). NXP took it
-to the another level creating compatibles for absolutely every flavor of
-their CPU. And they mainlined it in DTSes...
+--WR+jf/RUebEcofwt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The PWM is this crazy examples where, as you say, only two compatibles
-are actually used for binding but DTSes uses more.
+On Fri, Sep 18, 2020 at 12:32:48AM +0200, Marek Beh=C3=BAn wrote:
+> Hi,
+>=20
+> this series is also available at [1].
+>=20
+> This is v2, you can read cover letter of v1 at [2] (togehter with
+> explanation of why I did this).
+>=20
+> Changes since v1:
+> - split big changes into several patches of little changes
+> - added many cosmetic fixes (helper variables, reversal christmas tree
+>   variables declaration, ...)
+> - fixed some bugs in various drivers (memory leaks, iteration over
+>   unavailable OF nodes)
+> - made some drivers compilable when COMPILE_TEST=3Dy (since allyesconfig
+>   did not compile them). Not all though, some still don't compile with
+>   allyesconfig
+> - the commit that moves parsing of `linux,default-trigger` property from
+>   drivers to LED core is now last in the series, instead of first
+>=20
+> Marek
+>=20
+> [1] https://git.kernel.org/pub/scm/linux/kernel/git/kabel/linux.git/log/?=
+h=3Dleds-cleanup-for-pavel
+> [2] https://lore.kernel.org/linux-leds/20200916231650.11484-1-marek.behun=
+@nic.cz/T/#m826493318174b0f38a3d4ba107092b5420ce440c
 
-> 
-> Also since v5.1-rc1~38^2~17 the driver is split into pwm-imx27 and
-> pwm-imx1. So maybe this file should be renamed to fsl,imx27-pwm.yaml?
-> (And we need a volunteer to write fsl,imx1-pwm.yaml.)
+=2E..
 
-I think there is no need, because the binding describes the hardware and
-could be supported by multiple drivers. I actually recently merged few
-bindings (i.MX 8 clocks, NXP PCA953x/max GPIO expanders).
+>   leds: ns2: use devres LED registering function
+>   leds: ns2: alloc simple array instead of struct ns2_led_priv
+>   leds: ns2: support OF probing only, forget platdata
+>   leds: ns2: move parsing of one LED into separate function
+>   leds: ns2: use devres API for getting GPIO descriptors
+>   leds: ns2: cosmetic structure rename
+>   leds: ns2: cosmetic variable rename
+>   leds: ns2: cosmetic change
+>   leds: ns2: cosmetic change: use helper variable
+>   leds: ns2: register LED immediately after parsing DT properties
+>   leds: ns2: remove unneeded variable
+>   leds: ns2: cosmetic: use reverse christmas tree
+>   leds: ns2: reorder headers alphabetically
+>   leds: ns2: use struct led_init_data when registering
+>   leds: parse linux,default-trigger DT property in LED core
 
-Best regards,
-Krzysztof
+Hi Marek,
 
+For all the patches applying to the leds-ns2 driver:
+
+Reviewed-by: Simon Guinot <simon.guinot@sequanux.org>
+Tested-by: Simon Guinot <simon.guinot@sequanux.org>
+
+Thanks for it. The driver is looking way better.
+
+Simon
+
+--WR+jf/RUebEcofwt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEXW8DgovlR3VS5hA0zyg/RDPmszoFAl9vRloACgkQzyg/RDPm
+szpYlxAA2tv+ztwuTqGVHf0MAJV7dd+lrcA7E7bj++L3tVr20iUB44pmcvgX0qqr
+y4UJWuBP9RDoPc3DmVhKljALA+EbzX0QSHT5LXayTmdykZaLEF5zCl9Ki79/+vvv
+kVwZFU5n/RNaig98ZqbjsyMtjYsaIgC1ImOveMoUU4hUgxJMJX6h31yQPB3hxid5
+edYEUNIOpIN1n74N9NKikBBhxPIiGfA9Q4XoQ0w2LNjIHXyrjdtk+tV1ymAb0/Uw
+WSpMGnmNdgzwy48iYlBZndP771XhYvFl3mZv+FcKsS1qs21jLFQUdk6ZsRd6aEVT
+JyXxUOizOIJRw4KGVHIILbfkIwct9Is5H+9bhlK5HzvgkhqBGAa50cvgDIQrndI2
+a7rJAwd0KfxcxfvfHw4iJMRDdQ/QXIRVyKE3m5/hTdwq4p6a91tTAemtgODHQGlN
+S6NF8GyHK2yWCkv6N2zx/tmZkcJOyAvD6rMNtBZdQCfyvv5Qx83T7UckYHzZEeo1
+oHRrHs4quQ6KNQHYv9y8Y6W6SN2tkfZTNzBv0YxF6Jl/q0hYrLw6D8VAhRsErHQy
+1OVrZQoxXUL4X5etjRJoXJdp2Guzrh2iIUJtlRlHeS4Vc2brMc1s1Xym0SN4XIgR
+/67wH+ybeKolA5cpHas++693+x7J8dp8S2rvXvY6SuyOYyMcLBY=
+=MzSs
+-----END PGP SIGNATURE-----
+
+--WR+jf/RUebEcofwt--
