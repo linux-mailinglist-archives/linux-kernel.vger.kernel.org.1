@@ -2,132 +2,428 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDECB279BE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6DC279BE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730055AbgIZSaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 14:30:22 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:54531 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIZSaW (ORCPT
+        id S1730068AbgIZSf5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 14:35:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729272AbgIZSf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 14:30:22 -0400
-Received: from mail-qk1-f170.google.com ([209.85.222.170]) by
- mrelayeu.kundenserver.de (mreue011 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1MwfrG-1kfQla49WM-00y9N4; Sat, 26 Sep 2020 20:30:21 +0200
-Received: by mail-qk1-f170.google.com with SMTP id c2so6392128qkf.10;
-        Sat, 26 Sep 2020 11:30:20 -0700 (PDT)
-X-Gm-Message-State: AOAM532Qsl4VE9mUjz0EAjEdFAbTz+qSWXpK9rjmhKmA5kFJaQ66dGiK
-        +2m6QXJB9IqPqR7XylfT3YoeAgSm7jUrw5FeD+8=
-X-Google-Smtp-Source: ABdhPJwCDr8g+GQISXGwNaC9OvKKW7eMeA3fyHA5nqFJbGySKsf2kM84dVn3Zi7lVXofFxzjg00nZbrxbqxgBaA40NE=
-X-Received: by 2002:a37:a495:: with SMTP id n143mr5509549qke.394.1601145019643;
- Sat, 26 Sep 2020 11:30:19 -0700 (PDT)
+        Sat, 26 Sep 2020 14:35:57 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE754C0613D4
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:35:56 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t18so950806plo.1
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:35:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w5kVvmGe2Xwz2eVnmNj+YCW9Kx9XZ7HdatC4wyGdito=;
+        b=BKB15pPicLXqvhcK97vsToWCGSeAdyqmWfE2bnXldaWY73JLfa+mQLEWLMJTrdJmjz
+         3yyaRXWEduQ7OHpq1FDrozrzpywI/8nKjkxfN5cZktJrWs4o2e1WjYbdSfLz6nky3/ro
+         jspk30yni2BF2PvCzt10NhFQfxxTOSBEqhFDpQqi71mY41VJHoF6Rs6eCw7f0Yv2FDk2
+         yvxk6E9xqr/qx6LraWY7gSTcWC/lYHQDXIBDd/SUAW86CRXWdTrEkiBFs+UkWJ1tckk9
+         4nyAckHWh9q/+JIy0bhKhJroKvDLR+yn1wf5YHX7zr+8QFObgCVHuJnTk7Zvj6Rc1lkO
+         cD2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w5kVvmGe2Xwz2eVnmNj+YCW9Kx9XZ7HdatC4wyGdito=;
+        b=maykATXxQw7AtHXRDHIo1jeuB4CZBplQBQXmMyXJ3S8Up43swKcn7eccZsYCKOEWEs
+         dY/voK2PoZl+DGEuLpG7Y1cNiKVCPbxZC2L1fMuAmcbsrpfKBXrOnujuXz+zQPcilbpS
+         Hgs29XVdlvnbjp84cf9VTTDgay/CYL7GgxQWa0m9/cNlKDwjxi2S0ZCnhStT68nanu2a
+         MjDUf5FL6rMt4JaYRPIge9oWfjC+jgp4e1cHO5YT+H0DwpJ+U6zpULDyGRvd9gEtEfxv
+         o/2jorxFPprvqDOCtkF85HpgoH+vp6fgcEjT8Rn8azrOYNh1Iy8ssgLCVspbls6mwMTp
+         Lc5A==
+X-Gm-Message-State: AOAM533THmdcCBW4tdCDNYIKJFt0OUaYcne3/NyWskzQEtpQORUHckdg
+        GI3wwJSJXWY5MfF5Vj5RCHTJvA==
+X-Google-Smtp-Source: ABdhPJzsq4QiZVJO8VoayArCCpkOVLhvCEMYvMT283ZN+5L6yGJfakD8dcTQNO0UQe/W5Cva2Rlvcg==
+X-Received: by 2002:a17:90a:6a0d:: with SMTP id t13mr3048547pjj.208.1601145355884;
+        Sat, 26 Sep 2020 11:35:55 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id p6sm6352900pfn.63.2020.09.26.11.35.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Sep 2020 11:35:55 -0700 (PDT)
+Subject: Re: [PATCH next] io-wq: fix use-after-free in io_wq_worker_running
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk,
+        syzbot+45fa0a195b941764e0f0@syzkaller.appspotmail.com,
+        syzbot+9af99580130003da82b1@syzkaller.appspotmail.com,
+        Pavel Begunkov <asml.silence@gmail.com>
+References: <20200926132655.6192-1-hdanton@sina.com>
+ <1ac425e8-f302-4e91-0c1d-3ebb0a40cf96@kernel.dk>
+Message-ID: <515725f2-5932-4735-17d7-6bfddaa61512@kernel.dk>
+Date:   Sat, 26 Sep 2020 12:35:53 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200918124624.1469673-1-arnd@arndb.de> <20200918124624.1469673-6-arnd@arndb.de>
- <20200919053233.GH30063@infradead.org>
-In-Reply-To: <20200919053233.GH30063@infradead.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 26 Sep 2020 20:30:03 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2nZ_Uzq0ivB7vnR620kHb-onYdqMnWnf6KQjZq8gEdpQ@mail.gmail.com>
-Message-ID: <CAK8P3a2nZ_Uzq0ivB7vnR620kHb-onYdqMnWnf6KQjZq8gEdpQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/9] ARM: oabi-compat: rework epoll_wait/epoll_pwait emulation
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:itz1Z/+zneyK/vzKeHy3vawQiKcxzQYzshytX3qgS5jgK2MyA9Z
- UbiupdvXBQXXBQOuZub17rBpAyxUdoFzSbqpLWrpfA6re3lvEovD9SA3az+fW/UY/UEhws3
- VfONz4A2tSksvkBD7X3vqdA64VbihP1AvoT0I9Z3moGdzfTCVJR++FJCelUj5VDRS85sC97
- s2wi4KbAyPygIdkzmX2Og==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ton0hDNBsuk=:NlQ19Fis5wi/rczH3Yu2eq
- ogrIfu8ShtfkQJUDkaj9yIKfQYq79qBbKFkkbg0d/JbMpOkE8lEaLFtfwAOudWMjR6NwhpgOX
- 1WzQNM6lGHBSXIrUzXTCBzKGXS/KtDoeim/h9bq2djcCY55WgPGmal4oNDpmCIuZiKWzpgeoC
- eR71WPuuLELBgDUpe40aOtOuws5tUn/KLqYXEGYVl2VXoRBXGKEsyriipDUNTZkwVGs7UrOhU
- HUgkEdrUTmhtDEKUxBIC43KsVjHkRJx9t91LoPc2yo0a8BOyKWRHVTBM32/1yYqVWUVFyYQru
- u2OZDCmF8K3O8ZyjeCQrHNFwJB/L9gxSQIyV5gyxmVQAF89sxT0DbFYgBaUyMnXD500u1k6Li
- Gxg4qE7Y1s1+j54wAcO+5JNNt3Q++MOeQ0s9kg8zFwC6gY1Lz4xJdnaIUPkibCVEdcQ1MdiN8
- eONwb4SdLa2h2r3xGj2z+zPkcvzZWtHp3tD3a+euhAZweV4Ab1583uQ8quhDMmFxE5B4YEOpV
- 7jM6rNBQK9X+yc2oUrehqPjOAUTlisIH6S/RX1rG7minj6y2Av5fQwL3laBlCTlo185nzDAu7
- wHo1Wb9nIfAwpqkPldlq3ggz6YHX4j+X7DHpGPJF5e1S3fRP+Gx0zLqBIAJGNqWInppxf+2bS
- jng4kaSbrgy3uOH0+ecAmmuK3cTBAgBNgP9KlfC2O5WL9KmfyxIpy/Ii3DCPWu/SOOUxInkOm
- D+9UAInrAn3d2SmhPz12ydKfDLhiDe0IPl0fMqlvn7a5ww2r1XQ0plE+cuiMbwEpA1y/pISQu
- Gvpj28uLMy74HklBaEVVDLUBxsYDiKaU2m9y9gl/+S+WIT/F9Jms81GAliDjD24uHVJEGMQ
+In-Reply-To: <1ac425e8-f302-4e91-0c1d-3ebb0a40cf96@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 19, 2020 at 7:32 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> > index 855aa7cc9b8e..156880943c16 100644
-> > --- a/arch/arm/include/asm/syscall.h
-> > +++ b/arch/arm/include/asm/syscall.h
-> > @@ -28,6 +28,17 @@ static inline int syscall_get_nr(struct task_struct *task,
-> >       return task_thread_info(task)->syscall & ~__NR_OABI_SYSCALL_BASE;
-> >  }
-> >
-> > +static inline bool __in_oabi_syscall(struct task_struct *task)
-> > +{
-> > +     return IS_ENABLED(CONFIG_OABI_COMPAT) &&
-> > +             (task_thread_info(task)->syscall & __NR_OABI_SYSCALL_BASE);
-> > +}
-> > +
-> > +static inline bool in_oabi_syscall(void)
-> > +{
-> > +     return __in_oabi_syscall(current);
-> > +}
-> > +
->
-> Maybe split these infrastructure additions into a separate helper?
+On 9/26/20 12:07 PM, Jens Axboe wrote:
+> On 9/26/20 7:26 AM, Hillf Danton wrote:
+>> --- a/fs/io-wq.c
+>> +++ b/fs/io-wq.c
+>> @@ -200,7 +200,6 @@ static void io_worker_exit(struct io_wor
+>>  {
+>>  	struct io_wqe *wqe = worker->wqe;
+>>  	struct io_wqe_acct *acct = io_wqe_get_acct(wqe, worker);
+>> -	unsigned nr_workers;
+>>  
+>>  	/*
+>>  	 * If we're not at zero, someone else is holding a brief reference
+>> @@ -228,15 +227,11 @@ static void io_worker_exit(struct io_wor
+>>  		raw_spin_lock_irq(&wqe->lock);
+>>  	}
+>>  	acct->nr_workers--;
+>> -	nr_workers = wqe->acct[IO_WQ_ACCT_BOUND].nr_workers +
+>> -			wqe->acct[IO_WQ_ACCT_UNBOUND].nr_workers;
+>>  	raw_spin_unlock_irq(&wqe->lock);
+>>  
+>> -	/* all workers gone, wq exit can proceed */
+>> -	if (!nr_workers && refcount_dec_and_test(&wqe->wq->refs))
+>> -		complete(&wqe->wq->done);
+>> -
+>>  	kfree_rcu(worker, rcu);
+>> +	if (refcount_dec_and_test(&wqe->wq->refs))
+>> +		complete(&wqe->wq->done);
+>>  }
+> 
+> Nice, we came up with the same fix, thanks a lot for looking into this.
+> I pushed this one out for syzbot to test:
+> 
+> https://git.kernel.dk/cgit/linux-block/commit/?h=io_uring-5.9&id=41d5f92f60a61e264dafbada79175dad0bc60c5b
+> 
+> which is basically identical. I did consider the EXIT check as well, but
+> we don't really need it, so I'd prefer to leave that out of it.
+> 
+> I'll queue yours up.
 
-Sorry, I'm not following what you mean by this. Both of the above
-are pretty minimal helpers already, in what way could they be split
-further?
+I made some edits - some cleanups, but also for the error handling case
+of failing to create a worker that isn't the first one.
 
-> So after you argued for this variant I still have minor nitpicks:
->
-> I alway find positive ifdefs better where possible, e.g.
->
-> #if defined(CONFIG_ARM) && defined(CONFIG_OABI_COMPAT)
-> external declaration here
-> #else
-> the real thing
-> #endif
+This is my current version, let me know if you are fine with this one.
 
-Ok.
 
-> but I still find the fact that the native case goes into the arch
-> helper a little weird.
+commit a6f353e50fb3cd78aae98277cfc34aa25831fff1
+Author: Hillf Danton <hdanton@sina.com>
+Date:   Sat Sep 26 21:26:55 2020 +0800
 
-Would you prefer something like this:
+    io-wq: fix use-after-free in io_wq_worker_running
+    
+    The smart syzbot has found a reproducer for the following issue:
+    
+     ==================================================================
+     BUG: KASAN: use-after-free in instrument_atomic_write include/linux/instrumented.h:71 [inline]
+     BUG: KASAN: use-after-free in atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+     BUG: KASAN: use-after-free in io_wqe_inc_running fs/io-wq.c:301 [inline]
+     BUG: KASAN: use-after-free in io_wq_worker_running+0xde/0x110 fs/io-wq.c:613
+     Write of size 4 at addr ffff8882183db08c by task io_wqe_worker-0/7771
+    
+     CPU: 0 PID: 7771 Comm: io_wqe_worker-0 Not tainted 5.9.0-rc4-syzkaller #0
+     Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+     Call Trace:
+      __dump_stack lib/dump_stack.c:77 [inline]
+      dump_stack+0x198/0x1fd lib/dump_stack.c:118
+      print_address_description.constprop.0.cold+0xae/0x497 mm/kasan/report.c:383
+      __kasan_report mm/kasan/report.c:513 [inline]
+      kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+      check_memory_region_inline mm/kasan/generic.c:186 [inline]
+      check_memory_region+0x13d/0x180 mm/kasan/generic.c:192
+      instrument_atomic_write include/linux/instrumented.h:71 [inline]
+      atomic_inc include/asm-generic/atomic-instrumented.h:240 [inline]
+      io_wqe_inc_running fs/io-wq.c:301 [inline]
+      io_wq_worker_running+0xde/0x110 fs/io-wq.c:613
+      schedule_timeout+0x148/0x250 kernel/time/timer.c:1879
+      io_wqe_worker+0x517/0x10e0 fs/io-wq.c:580
+      kthread+0x3b5/0x4a0 kernel/kthread.c:292
+      ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+    
+     Allocated by task 7768:
+      kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+      kasan_set_track mm/kasan/common.c:56 [inline]
+      __kasan_kmalloc.constprop.0+0xbf/0xd0 mm/kasan/common.c:461
+      kmem_cache_alloc_node_trace+0x17b/0x3f0 mm/slab.c:3594
+      kmalloc_node include/linux/slab.h:572 [inline]
+      kzalloc_node include/linux/slab.h:677 [inline]
+      io_wq_create+0x57b/0xa10 fs/io-wq.c:1064
+      io_init_wq_offload fs/io_uring.c:7432 [inline]
+      io_sq_offload_start fs/io_uring.c:7504 [inline]
+      io_uring_create fs/io_uring.c:8625 [inline]
+      io_uring_setup+0x1836/0x28e0 fs/io_uring.c:8694
+      do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    
+     Freed by task 21:
+      kasan_save_stack+0x1b/0x40 mm/kasan/common.c:48
+      kasan_set_track+0x1c/0x30 mm/kasan/common.c:56
+      kasan_set_free_info+0x1b/0x30 mm/kasan/generic.c:355
+      __kasan_slab_free+0xd8/0x120 mm/kasan/common.c:422
+      __cache_free mm/slab.c:3418 [inline]
+      kfree+0x10e/0x2b0 mm/slab.c:3756
+      __io_wq_destroy fs/io-wq.c:1138 [inline]
+      io_wq_destroy+0x2af/0x460 fs/io-wq.c:1146
+      io_finish_async fs/io_uring.c:6836 [inline]
+      io_ring_ctx_free fs/io_uring.c:7870 [inline]
+      io_ring_exit_work+0x1e4/0x6d0 fs/io_uring.c:7954
+      process_one_work+0x94c/0x1670 kernel/workqueue.c:2269
+      worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+      kthread+0x3b5/0x4a0 kernel/kthread.c:292
+      ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+    
+     The buggy address belongs to the object at ffff8882183db000
+      which belongs to the cache kmalloc-1k of size 1024
+     The buggy address is located 140 bytes inside of
+      1024-byte region [ffff8882183db000, ffff8882183db400)
+     The buggy address belongs to the page:
+     page:000000009bada22b refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2183db
+     flags: 0x57ffe0000000200(slab)
+     raw: 057ffe0000000200 ffffea0008604c48 ffffea00086a8648 ffff8880aa040700
+     raw: 0000000000000000 ffff8882183db000 0000000100000002 0000000000000000
+     page dumped because: kasan: bad access detected
+    
+     Memory state around the buggy address:
+      ffff8882183daf80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+      ffff8882183db000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+     >ffff8882183db080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                           ^
+      ffff8882183db100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+      ffff8882183db180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+     ==================================================================
+    
+    which is down to the comment below,
+    
+            /* all workers gone, wq exit can proceed */
+            if (!nr_workers && refcount_dec_and_test(&wqe->wq->refs))
+                    complete(&wqe->wq->done);
+    
+    because there might be multiple cases of wqe in a wq and we would wait
+    for every worker in every wqe to go home before releasing wq's resources
+    on destroying.
+    
+    To that end, rework wq's refcount by making it independent of the tracking
+    of workers because after all they are two different things, and keeping
+    it balanced when workers come and go. Note the manager kthread, like
+    other workers, now holds a grab to wq during its lifetime.
+    
+    Finally to help destroy wq, check IO_WQ_BIT_EXIT upon creating worker
+    and do nothing for exiting wq.
+    
+    Cc: stable@vger.kernel.org # v5.5+
+    Reported-by: syzbot+45fa0a195b941764e0f0@syzkaller.appspotmail.com
+    Reported-by: syzbot+9af99580130003da82b1@syzkaller.appspotmail.com
+    Cc: Pavel Begunkov <asml.silence@gmail.com>
+    Signed-off-by: Hillf Danton <hdanton@sina.com>
+    Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-static inline struct epoll_event __user *
-epoll_put_uevent(__poll_t revents, __u64 data,
-                 struct epoll_event __user *uevent)
-{
-#if defined(CONFIG_ARM) && defined(CONFIG_OABI_COMPAT)
-        /* ARM OABI has an incompatible struct layout and needs a
-special handler */
-        extern struct epoll_event __user *
-        epoll_oabi_put_uevent(__poll_t revents, __u64 data,
-                              struct epoll_event __user *uevent);
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index 1be0d70f8673..98f9c74b25d2 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -213,7 +213,6 @@ static void io_worker_exit(struct io_worker *worker)
+ {
+ 	struct io_wqe *wqe = worker->wqe;
+ 	struct io_wqe_acct *acct = io_wqe_get_acct(wqe, worker);
+-	unsigned nr_workers;
+ 
+ 	/*
+ 	 * If we're not at zero, someone else is holding a brief reference
+@@ -241,15 +240,11 @@ static void io_worker_exit(struct io_worker *worker)
+ 		raw_spin_lock_irq(&wqe->lock);
+ 	}
+ 	acct->nr_workers--;
+-	nr_workers = wqe->acct[IO_WQ_ACCT_BOUND].nr_workers +
+-			wqe->acct[IO_WQ_ACCT_UNBOUND].nr_workers;
+ 	raw_spin_unlock_irq(&wqe->lock);
+ 
+-	/* all workers gone, wq exit can proceed */
+-	if (!nr_workers && refcount_dec_and_test(&wqe->wq->refs))
+-		complete(&wqe->wq->done);
+-
+ 	kfree_rcu(worker, rcu);
++	if (refcount_dec_and_test(&wqe->wq->refs))
++		complete(&wqe->wq->done);
+ }
+ 
+ static inline bool io_wqe_run_queue(struct io_wqe *wqe)
+@@ -664,7 +659,7 @@ void io_wq_worker_sleeping(struct task_struct *tsk)
+ 
+ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
+ {
+-	struct io_wqe_acct *acct =&wqe->acct[index];
++	struct io_wqe_acct *acct = &wqe->acct[index];
+ 	struct io_worker *worker;
+ 
+ 	worker = kzalloc_node(sizeof(*worker), GFP_KERNEL, wqe->node);
+@@ -697,6 +692,7 @@ static bool create_io_worker(struct io_wq *wq, struct io_wqe *wqe, int index)
+ 	if (index == IO_WQ_ACCT_UNBOUND)
+ 		atomic_inc(&wq->user->processes);
+ 
++	refcount_inc(&wq->refs);
+ 	wake_up_process(worker->task);
+ 	return true;
+ }
+@@ -712,28 +708,63 @@ static inline bool io_wqe_need_worker(struct io_wqe *wqe, int index)
+ 	return acct->nr_workers < acct->max_workers;
+ }
+ 
++static bool io_wqe_worker_send_sig(struct io_worker *worker, void *data)
++{
++	send_sig(SIGINT, worker->task, 1);
++	return false;
++}
++
++/*
++ * Iterate the passed in list and call the specific function for each
++ * worker that isn't exiting
++ */
++static bool io_wq_for_each_worker(struct io_wqe *wqe,
++				  bool (*func)(struct io_worker *, void *),
++				  void *data)
++{
++	struct io_worker *worker;
++	bool ret = false;
++
++	list_for_each_entry_rcu(worker, &wqe->all_list, all_list) {
++		if (io_worker_get(worker)) {
++			/* no task if node is/was offline */
++			if (worker->task)
++				ret = func(worker, data);
++			io_worker_release(worker);
++			if (ret)
++				break;
++		}
++	}
++
++	return ret;
++}
++
++static bool io_wq_worker_wake(struct io_worker *worker, void *data)
++{
++	wake_up_process(worker->task);
++	return false;
++}
++
+ /*
+  * Manager thread. Tasked with creating new workers, if we need them.
+  */
+ static int io_wq_manager(void *data)
+ {
+ 	struct io_wq *wq = data;
+-	int workers_to_create = num_possible_nodes();
+ 	int node;
+ 
+ 	/* create fixed workers */
+-	refcount_set(&wq->refs, workers_to_create);
++	refcount_set(&wq->refs, 1);
+ 	for_each_node(node) {
+ 		if (!node_online(node))
+ 			continue;
+-		if (!create_io_worker(wq, wq->wqes[node], IO_WQ_ACCT_BOUND))
+-			goto err;
+-		workers_to_create--;
++		if (create_io_worker(wq, wq->wqes[node], IO_WQ_ACCT_BOUND))
++			continue;
++		set_bit(IO_WQ_BIT_ERROR, &wq->state);
++		set_bit(IO_WQ_BIT_EXIT, &wq->state);
++		goto out;
+ 	}
+ 
+-	while (workers_to_create--)
+-		refcount_dec(&wq->refs);
+-
+ 	complete(&wq->done);
+ 
+ 	while (!kthread_should_stop()) {
+@@ -765,12 +796,18 @@ static int io_wq_manager(void *data)
+ 	if (current->task_works)
+ 		task_work_run();
+ 
+-	return 0;
+-err:
+-	set_bit(IO_WQ_BIT_ERROR, &wq->state);
+-	set_bit(IO_WQ_BIT_EXIT, &wq->state);
+-	if (refcount_sub_and_test(workers_to_create, &wq->refs))
++out:
++	if (refcount_dec_and_test(&wq->refs)) {
+ 		complete(&wq->done);
++		return 0;
++	}
++	/* if ERROR is set and we get here, we have workers to wake */
++	if (test_bit(IO_WQ_BIT_ERROR, &wq->state)) {
++		rcu_read_lock();
++		for_each_node(node)
++			io_wq_for_each_worker(wq->wqes[node], io_wq_worker_wake, NULL);
++		rcu_read_unlock();
++	}
+ 	return 0;
+ }
+ 
+@@ -877,37 +914,6 @@ void io_wq_hash_work(struct io_wq_work *work, void *val)
+ 	work->flags |= (IO_WQ_WORK_HASHED | (bit << IO_WQ_HASH_SHIFT));
+ }
+ 
+-static bool io_wqe_worker_send_sig(struct io_worker *worker, void *data)
+-{
+-	send_sig(SIGINT, worker->task, 1);
+-	return false;
+-}
+-
+-/*
+- * Iterate the passed in list and call the specific function for each
+- * worker that isn't exiting
+- */
+-static bool io_wq_for_each_worker(struct io_wqe *wqe,
+-				  bool (*func)(struct io_worker *, void *),
+-				  void *data)
+-{
+-	struct io_worker *worker;
+-	bool ret = false;
+-
+-	list_for_each_entry_rcu(worker, &wqe->all_list, all_list) {
+-		if (io_worker_get(worker)) {
+-			/* no task if node is/was offline */
+-			if (worker->task)
+-				ret = func(worker, data);
+-			io_worker_release(worker);
+-			if (ret)
+-				break;
+-		}
+-	}
+-
+-	return ret;
+-}
+-
+ void io_wq_cancel_all(struct io_wq *wq)
+ {
+ 	int node;
+@@ -1140,12 +1146,6 @@ bool io_wq_get(struct io_wq *wq, struct io_wq_data *data)
+ 	return refcount_inc_not_zero(&wq->use_refs);
+ }
+ 
+-static bool io_wq_worker_wake(struct io_worker *worker, void *data)
+-{
+-	wake_up_process(worker->task);
+-	return false;
+-}
+-
+ static void __io_wq_destroy(struct io_wq *wq)
+ {
+ 	int node;
 
-        if (in_oabi_syscall())
-                return epoll_oabi_put_uevent(revents, data, uevent);
-#endif
-        if (__put_user(revents, &uevent->events) ||
-            __put_user(data, &uevent->data))
-                return NULL;
+-- 
+Jens Axboe
 
-        return uevent+1;
-}
-
-That would keep the native case in one place, but also mix in
-more architecture specific stuff into the common source location,
-which again seems worse to me.
-
-     Arnd
