@@ -2,127 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E69F279730
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B39D7279736
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728051AbgIZGJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 02:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbgIZGJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 02:09:17 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B7B42080C;
-        Sat, 26 Sep 2020 06:09:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601100557;
-        bh=ZeejMl78FpNmaWLn4IWOjxzAceUcnpcPTZfOBMWUOmM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YaKt93uAqeL7Vzi2qCOH7qSqkfuYEsw5Il7THjGFHWoF0gzpKkMIil519Qsmnp3M1
-         wLUsMn4miE4fXm8IIhsL+BXIWaU7JsEG0wpDFqbO+E69UA/v9IFRcif/n8MUhKNYXm
-         5UR9/JrX28UdMkQlpGTQDKorTC7RwqY2NReo5FQU=
-Date:   Sat, 26 Sep 2020 08:09:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com
-Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
-Message-ID: <20200926060913.GA637197@kroah.com>
-References: <1600966801-30586-1-git-send-email-yilun.xu@intel.com>
- <1600966801-30586-2-git-send-email-yilun.xu@intel.com>
- <20200924172700.GA79736@archbook>
- <20200926022346.GA5623@yilunxu-OptiPlex-7050>
+        id S1726636AbgIZGR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 02:17:27 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:42618 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725208AbgIZGR1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 02:17:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UA6-WTG_1601101037;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA6-WTG_1601101037)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 26 Sep 2020 14:17:19 +0800
+Subject: Re: [PATCH v19 07/20] mm/vmscan: remove unnecessary lruvec adding
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com, aaron.lwe@gmail.com
+References: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1600918115-22007-8-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <30c65309-df19-b83b-5879-cce860ce55ef@linux.alibaba.com>
+Date:   Sat, 26 Sep 2020 14:14:56 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200926022346.GA5623@yilunxu-OptiPlex-7050>
+In-Reply-To: <1600918115-22007-8-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 10:23:46AM +0800, Xu Yilun wrote:
-> Hi greg,
+This patch has some conflict on akpm. But since Yu Zhao ask for
+revert his patch 'mm: use add_page_to_lru_list()/page_lru()/page_off_lru()'
+we should not needs for rebase on it.
+
+Thanks
+Alex
+
+ÔÚ 2020/9/24 ÉÏÎç11:28, Alex Shi Ð´µÀ:
+> We don't have to add a freeable page into lru and then remove from it.
+> This change saves a couple of actions and makes the moving more clear.
 > 
-> About the bus naming, I summarized some questions we've discussed to check
-> with you. See inline.
+> The SetPageLRU needs to be kept before put_page_testzero for list
+> integrity, otherwise:
 > 
-> On Thu, Sep 24, 2020 at 10:27:00AM -0700, Moritz Fischer wrote:
-> > Hi Xu,
-> > 
-> > On Fri, Sep 25, 2020 at 12:59:57AM +0800, Xu Yilun wrote:
-> > > Now the DFL device drivers could be made as independent modules and put
-> > > in different subsystems according to their functionalities. So the name
-> > > should be descriptive and unique in the whole kernel.
-> > > 
-> > > The patch changes the naming of dfl bus related structures, functions,
-> > > APIs and documentations.
-> > > 
-> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > ---
-> > >  Documentation/ABI/testing/sysfs-bus-dfl      |  15 --
-> > >  Documentation/ABI/testing/sysfs-bus-fpga-dfl |  15 ++
-> > >  MAINTAINERS                                  |   2 +-
-> > >  drivers/fpga/dfl.c                           | 254 ++++++++++++++-------------
-> > >  drivers/fpga/dfl.h                           |  77 ++++----
-> > >  5 files changed, 184 insertions(+), 179 deletions(-)
-> > >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-fpga-dfl
-> > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
-> > > deleted file mode 100644
-> > > index 23543be..0000000
-> > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
-> > > +++ /dev/null
-> > > @@ -1,15 +0,0 @@
-> > > -What:		/sys/bus/dfl/devices/dfl_dev.X/type
-> > > -Date:		Aug 2020
-> > > -KernelVersion:	5.10
-> > > -Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > -Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
-> > > -		supports 2 FIU types, 0 for FME, 1 for PORT.
-> > > -		Format: 0x%x
-> > > -
-> > > -What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
-> > > -Date:		Aug 2020
-> > > -KernelVersion:	5.10
-> > > -Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > -Description:	Read-only. It returns feature identifier local to its DFL FIU
-> > > -		type.
-> > > -		Format: 0x%x
-> > 
-> > You're changing userland facing ABI. I think that's something to avoid,
-> > please check with Greg on the rules since this hasn't been in a release yet.
-> > 
+>   #0 move_pages_to_lru             #1 release_pages
+>   if !put_page_testzero
+>      			           if (put_page_testzero())
+>      			              !PageLRU //skip lru_lock
+>      SetPageLRU()
+>      list_add(&page->lru,)
+>                                          list_add(&page->lru,)
 > 
-> I'm going to change the name of bus stuff for other subsystems, to be
-> aligned, I also consider change the bus_type.name and dfl dev_name. But
-> it will cause the changing of user ABIs. No user case for these user ABI
-> now cause they are just queued, is it good I change them?
-
-Why change the user name here?  No need for that, right?  Unless you
-really want to, and think that no one will notice.  If so, fine, change
-them :)
-
-> It is mentioned that although Device Feature List is introduced in FPGA,
-> but it doesn't limit the usage in FPGA only. It's just a method to
-> discover features from a device, for sure it can be extended and used
-> in other devices too. So it can be bigger namespace than FPGA. Like in
-> our existing code, we picked dfl_fpga (DFL based FPGA) for uapi (ioctl)
-> and internal functions. This is suggested by Alan (The previous FPGA
-> maintainer). It's possible to have "DFL based XXX" in the future, even
-> currently only FPGA uses DFL. This is the reason we thought just "dfl"
-> in the whole kernel space is OK.
-> So, is there a chance we keep the "dfl" naming in the whole kernel?
-
-No one knows what "DFL" is, and odds are, if a different subsystem wants
-to use it, they will have their own variant, right?
-
-And why didn't you all use device tree?  How did this sneak in past
-everyone?
-
-thanks,
-
-greg k-h
+> [akpm@linux-foundation.org: coding style fixes]
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  mm/vmscan.c | 38 +++++++++++++++++++++++++-------------
+>  1 file changed, 25 insertions(+), 13 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 466fc3144fff..32102e5d354d 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1850,26 +1850,30 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>  	while (!list_empty(list)) {
+>  		page = lru_to_page(list);
+>  		VM_BUG_ON_PAGE(PageLRU(page), page);
+> +		list_del(&page->lru);
+>  		if (unlikely(!page_evictable(page))) {
+> -			list_del(&page->lru);
+>  			spin_unlock_irq(&pgdat->lru_lock);
+>  			putback_lru_page(page);
+>  			spin_lock_irq(&pgdat->lru_lock);
+>  			continue;
+>  		}
+> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>  
+> +		/*
+> +		 * The SetPageLRU needs to be kept here for list integrity.
+> +		 * Otherwise:
+> +		 *   #0 move_pages_to_lru             #1 release_pages
+> +		 *   if !put_page_testzero
+> +		 *				      if (put_page_testzero())
+> +		 *				        !PageLRU //skip lru_lock
+> +		 *     SetPageLRU()
+> +		 *     list_add(&page->lru,)
+> +		 *                                        list_add(&page->lru,)
+> +		 */
+>  		SetPageLRU(page);
+> -		lru = page_lru(page);
+>  
+> -		nr_pages = thp_nr_pages(page);
+> -		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
+> -		list_move(&page->lru, &lruvec->lists[lru]);
+> -
+> -		if (put_page_testzero(page)) {
+> +		if (unlikely(put_page_testzero(page))) {
+>  			__ClearPageLRU(page);
+>  			__ClearPageActive(page);
+> -			del_page_from_lru_list(page, lruvec, lru);
+>  
+>  			if (unlikely(PageCompound(page))) {
+>  				spin_unlock_irq(&pgdat->lru_lock);
+> @@ -1877,11 +1881,19 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+>  				spin_lock_irq(&pgdat->lru_lock);
+>  			} else
+>  				list_add(&page->lru, &pages_to_free);
+> -		} else {
+> -			nr_moved += nr_pages;
+> -			if (PageActive(page))
+> -				workingset_age_nonresident(lruvec, nr_pages);
+> +
+> +			continue;
+>  		}
+> +
+> +		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +		lru = page_lru(page);
+> +		nr_pages = thp_nr_pages(page);
+> +
+> +		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
+> +		list_add(&page->lru, &lruvec->lists[lru]);
+> +		nr_moved += nr_pages;
+> +		if (PageActive(page))
+> +			workingset_age_nonresident(lruvec, nr_pages);
+>  	}
+>  
+>  	/*
+> 
