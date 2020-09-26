@@ -2,165 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D107C279B3F
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E20AB279B45
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729950AbgIZRSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 13:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
+        id S1729983AbgIZRSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 13:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729047AbgIZRR7 (ORCPT
+        with ESMTP id S1726309AbgIZRSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 13:17:59 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4230C0613D3;
-        Sat, 26 Sep 2020 10:17:58 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id ay8so5701714edb.8;
-        Sat, 26 Sep 2020 10:17:58 -0700 (PDT)
+        Sat, 26 Sep 2020 13:18:43 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA13AC0613CE;
+        Sat, 26 Sep 2020 10:18:42 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id s12so7260434wrw.11;
+        Sat, 26 Sep 2020 10:18:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4eBSpXh2Tq6EEqJL5obhqKxWiOfol2HlMFEkEUAyq5w=;
-        b=cs9uqhDFDEjL3Wu1Dtv1I/ROwETzfz11PFHQPuum4B8WdOAkyJCB2TFJ0b2z94ccW7
-         1KppRSw7U5vs+vja5XYPbFj/WNqMLLiKpNs9mYF8eoPsranTGtsEA8Xv/oZ5RoQ3ec24
-         T0N0sUL531RFCgQ8Rd91su/1LjkynA2VfC1Q9/vpFMsdNtWWZ/o7jnaHvHurAyj7WcOs
-         lBRDOpXRt0ObOv4chJTEUSIm3364Fc1xCn2E3mDAF/ZAnfrdoQxTsHLWsNX+n3Gpj0xm
-         tTRj9KE+yp19n0zA4vLo21qXjlEVz0x2POiHsJcDxlhl3A/J1/Fy9F76SyXc6dl3cWZG
-         ECQA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bl53+IHBE7yXiOLq6WRfnfhUTBMnGEZtbf1LqSaqfOk=;
+        b=MaueTk1yEtJ7GzSgrXw9tmwckv/94rigKyb+hYnwA4mrGQVzJNB5sjMe6y2xd4IBeT
+         3zkQ9HbFbDy2HsnjEzWPRD0Y0WO7UoGKjIxD+WFa4PQoTYvzULDT06j5a3uoJ3DXDEuB
+         kwBeb9FSSZOMVJb9QpJOm1IZ76qUyTUG04nCCPF74hjYkr7zD2KCdCnP9ID5ZmR8Nzmg
+         C7MsQtBPYqbYzatYImp4itw+59MOMc+2ezR9fnuhOMJ3/LKjf0riQt/EiAWmQToz5Wcb
+         rhdKstdxImdK1Ec5krm8r230l7kWzYOa0U20CsBBZOhjsabFERo9xzDUDPJXk0vj+k8p
+         muuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4eBSpXh2Tq6EEqJL5obhqKxWiOfol2HlMFEkEUAyq5w=;
-        b=GRTJXrDUPTh7HBFYsZ8bchSE4NtFOw4ll7d0V0FXcrqbmeE/kLtSgjpfTLILK6+RgW
-         XRsk6+Hqnn8QKTWFruZZ1Ao8Tq7aHDpFsiuMi6DOdmtWi4tNkN8kBo7/1JIfqL/RIt+6
-         lmFGFjDh41r3xz3qziIAPjHWmgRCA6EABUXnwqMfEpVd43bqXvOBckZrHU58Hj7q+0RX
-         f+VxIb/PlBSoIFbsI6z2jfvWWJluIxaOt6QFfTe7a9jKDr7a1eWPARWZiTR/ztU9amVG
-         cCUa1Tf/X4ISri2EAHKRfm+iT1LWMJrAaTVsAgE9LRnRfvWRNKdjLlH8/o7Q/aCSThmx
-         Z1Bw==
-X-Gm-Message-State: AOAM532EVCC/bPQfdZcaofNlR65myszDXwhNCy3ld5CI6/cszlug4kgP
-        uZdeHaQsQiRMdxln4NKai3xMp8InnP8=
-X-Google-Smtp-Source: ABdhPJyDLGO72BC33dOUV7bpWoNQE0CiHuwXTwdlIAoPGAZWewQs2nMxxHq9j1XDrsKUtuiek5AXMQ==
-X-Received: by 2002:a05:6402:718:: with SMTP id w24mr7583092edx.294.1601140676961;
-        Sat, 26 Sep 2020 10:17:56 -0700 (PDT)
-Received: from xws.fritz.box (pd9e5ae20.dip0.t-ipconnect.de. [217.229.174.32])
-        by smtp.gmail.com with ESMTPSA id u13sm4625589ejn.82.2020.09.26.10.17.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bl53+IHBE7yXiOLq6WRfnfhUTBMnGEZtbf1LqSaqfOk=;
+        b=GdxjOrt3qfc2NDShUkPm+FhikafObXAx2zB0+2hrT4kBCuBTuTvLLBHAbFkAKdB/Ku
+         IZGOitadgmm6+WNFAVaT+RKwzM/lx0X4l4wegbDB4gyY/e7/KxRFXjLc1pvSR5JArkMb
+         awTf/31Kr/WwJPfdxNzSryi/IjO+oxV1hLcmgAu6Ac/HkGCs0aJbbiqIO3jVcCCX1Dk0
+         S+4MnZn7fBM+V3YfbuZ3jFboztl6A2uv9QQDh4v5JDiragvx51WLWHRU9Kno2ol7L4WK
+         KA9rTIo0IITNo4X6n+AE1+RPMnYmgfXEDreQ5gczkca3K28s/USwexOzCIZicBMpAg6U
+         66lg==
+X-Gm-Message-State: AOAM531pXjsQZY//J/ZpDbxh4kk4Bpy7g/eE/zgeUanDyNxfN+ZI6jYN
+        6O9r2WZZrPBI/C45AtSFAyA=
+X-Google-Smtp-Source: ABdhPJyzlxbTOBiEV6UjiHZ8TzGIgyhnXIRMmB49mXLck6hVgqRUzmKf7TuHcYyH3cOFuQuh7oKS5Q==
+X-Received: by 2002:adf:f903:: with SMTP id b3mr10611592wrr.142.1601140721323;
+        Sat, 26 Sep 2020 10:18:41 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id l4sm7427125wrc.14.2020.09.26.10.18.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 10:17:56 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     platform-driver-x86@vger.kernel.org
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Gayatri Kammela <gayatri.kammela@intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        =?UTF-8?q?Bla=C5=BE=20Hrastnik?= <blaz@mxxn.io>,
-        Stephen Just <stephenjust@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Chen Yu <yu.c.chen@intel.com>, linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH 5/5] platform/surface: Move Surface Pro 3 Button driver to platform/surface
-Date:   Sat, 26 Sep 2020 19:17:14 +0200
-Message-Id: <20200926171714.721406-6-luzmaximilian@gmail.com>
+        Sat, 26 Sep 2020 10:18:40 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     agross@kernel.org
+Cc:     bjorn.andersson@linaro.org, jic23@kernel.org, robh+dt@kernel.org,
+        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
+        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org
+Subject: [RESEND] [PATCH 1/2] iio: adc: qcom-spmi-vadc: Use right ratiometric range for 8998,660,845
+Date:   Sat, 26 Sep 2020 19:18:34 +0200
+Message-Id: <20200926171835.27154-1-kholk11@gmail.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200926171714.721406-1-luzmaximilian@gmail.com>
-References: <20200926171714.721406-1-luzmaximilian@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the Surface Pro 3 Button driver from platform/x86 to the newly
-created platform/surface directory.
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+The ratiometric range for MSM8998, SDM630/636/660 and SDM845 is 1875mV
+instead of the standard 1800mV: address this by adding a new compatible
+"qcom,spmi-vadc-8998" and assigning the different range to the machines
+declaring this one.
+
+Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
 ---
- MAINTAINERS                                            | 2 +-
- drivers/platform/surface/Kconfig                       | 6 ++++++
- drivers/platform/surface/Makefile                      | 1 +
- drivers/platform/{x86 => surface}/surfacepro3_button.c | 0
- drivers/platform/x86/Kconfig                           | 6 ------
- drivers/platform/x86/Makefile                          | 3 ---
- 6 files changed, 8 insertions(+), 10 deletions(-)
- rename drivers/platform/{x86 => surface}/surfacepro3_button.c (100%)
+ drivers/iio/adc/qcom-spmi-vadc.c   | 10 +++++++++-
+ drivers/iio/adc/qcom-vadc-common.h |  1 +
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a4f955f2ce25..5bf40ead9a1f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11569,7 +11569,7 @@ MICROSOFT SURFACE PRO 3 BUTTON DRIVER
- M:	Chen Yu <yu.c.chen@intel.com>
- L:	platform-driver-x86@vger.kernel.org
- S:	Supported
--F:	drivers/platform/x86/surfacepro3_button.c
-+F:	drivers/platform/surface/surfacepro3_button.c
+diff --git a/drivers/iio/adc/qcom-spmi-vadc.c b/drivers/iio/adc/qcom-spmi-vadc.c
+index b0388f8a69f4..59a94ea7bf78 100644
+--- a/drivers/iio/adc/qcom-spmi-vadc.c
++++ b/drivers/iio/adc/qcom-spmi-vadc.c
+@@ -101,6 +101,7 @@ struct vadc_channel_prop {
+  * @dev: pointer to struct device.
+  * @base: base address for the ADC peripheral.
+  * @nchannels: number of VADC channels.
++ * @ratio_range: ratiometric range for ref points.
+  * @chan_props: array of VADC channel properties.
+  * @iio_chans: array of IIO channels specification.
+  * @are_ref_measured: are reference points measured.
+@@ -114,6 +115,7 @@ struct vadc_priv {
+ 	struct device		 *dev;
+ 	u16			 base;
+ 	unsigned int		 nchannels;
++	unsigned int		 ratio_range;
+ 	struct vadc_channel_prop *chan_props;
+ 	struct iio_chan_spec	 *iio_chans;
+ 	bool			 are_ref_measured;
+@@ -355,7 +357,7 @@ static int vadc_measure_ref_points(struct vadc_priv *vadc)
+ 	u16 read_1, read_2;
+ 	int ret;
  
- MICROTEK X6 SCANNER
- M:	Oliver Neukum <oliver@neukum.org>
-diff --git a/drivers/platform/surface/Kconfig b/drivers/platform/surface/Kconfig
-index 2af26379804c..fcd80e860132 100644
---- a/drivers/platform/surface/Kconfig
-+++ b/drivers/platform/surface/Kconfig
-@@ -40,4 +40,10 @@ config SURFACE_3_POWER_OPREGION
- 	  This driver provides support for ACPI operation
- 	  region of the Surface 3 battery platform driver.
+-	vadc->graph[VADC_CALIB_RATIOMETRIC].dx = VADC_RATIOMETRIC_RANGE;
++	vadc->graph[VADC_CALIB_RATIOMETRIC].dx = vadc->ratio_range;
+ 	vadc->graph[VADC_CALIB_ABSOLUTE].dx = VADC_ABSOLUTE_RANGE_UV;
  
-+config SURFACE_PRO3_BUTTON
-+	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
-+	depends on ACPI && INPUT
-+	help
-+	  This driver handles the power/home/volume buttons on the Microsoft Surface Pro 3/4 tablet.
+ 	prop = vadc_get_channel(vadc, VADC_REF_1250MV);
+@@ -885,6 +887,11 @@ static int vadc_probe(struct platform_device *pdev)
+ 	if (ret)
+ 		return ret;
+ 
++	if (of_device_is_compatible(node, "qcom,spmi-vadc-8998"))
++		vadc->ratio_range = VADC_RATIOMETRIC_RANGE_8998;
++	else
++		vadc->ratio_range = VADC_RATIOMETRIC_RANGE;
 +
- endif # SURFACE_PLATFORM
-diff --git a/drivers/platform/surface/Makefile b/drivers/platform/surface/Makefile
-index 4940d4db58b2..dcb1df06d57a 100644
---- a/drivers/platform/surface/Makefile
-+++ b/drivers/platform/surface/Makefile
-@@ -7,3 +7,4 @@
- obj-$(CONFIG_SURFACE3_WMI)		+= surface3-wmi.o
- obj-$(CONFIG_SURFACE_3_BUTTON)		+= surface3_button.o
- obj-$(CONFIG_SURFACE_3_POWER_OPREGION)	+= surface3_power.o
-+obj-$(CONFIG_SURFACE_PRO3_BUTTON)	+= surfacepro3_button.o
-diff --git a/drivers/platform/x86/surfacepro3_button.c b/drivers/platform/surface/surfacepro3_button.c
-similarity index 100%
-rename from drivers/platform/x86/surfacepro3_button.c
-rename to drivers/platform/surface/surfacepro3_button.c
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index fbb9556fa688..09fcfb20f4ac 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -869,12 +869,6 @@ config INTEL_VBTN
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called intel_vbtn.
+ 	irq_eoc = platform_get_irq(pdev, 0);
+ 	if (irq_eoc < 0) {
+ 		if (irq_eoc == -EPROBE_DEFER || irq_eoc == -EINVAL)
+@@ -918,6 +925,7 @@ static int vadc_probe(struct platform_device *pdev)
  
--config SURFACE_PRO3_BUTTON
--	tristate "Power/home/volume buttons driver for Microsoft Surface Pro 3/4 tablet"
--	depends on ACPI && INPUT
--	help
--	  This driver handles the power/home/volume buttons on the Microsoft Surface Pro 3/4 tablet.
--
- config MSI_LAPTOP
- 	tristate "MSI Laptop Extras"
- 	depends on ACPI
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index ffa31f57d9a2..aeff497e23a5 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -81,9 +81,6 @@ obj-$(CONFIG_INTEL_MENLOW)		+= intel_menlow.o
- obj-$(CONFIG_INTEL_OAKTRAIL)		+= intel_oaktrail.o
- obj-$(CONFIG_INTEL_VBTN)		+= intel-vbtn.o
+ static const struct of_device_id vadc_match_table[] = {
+ 	{ .compatible = "qcom,spmi-vadc" },
++	{ .compatible = "qcom-spmi-vadc-8998" },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, vadc_match_table);
+diff --git a/drivers/iio/adc/qcom-vadc-common.h b/drivers/iio/adc/qcom-vadc-common.h
+index 17b2fc4d8bf2..b10d5fd59034 100644
+--- a/drivers/iio/adc/qcom-vadc-common.h
++++ b/drivers/iio/adc/qcom-vadc-common.h
+@@ -16,6 +16,7 @@
  
--# Microsoft
--obj-$(CONFIG_SURFACE_PRO3_BUTTON)	+= surfacepro3_button.o
--
- # MSI
- obj-$(CONFIG_MSI_LAPTOP)	+= msi-laptop.o
- obj-$(CONFIG_MSI_WMI)		+= msi-wmi.o
+ #define VADC_ABSOLUTE_RANGE_UV			625000
+ #define VADC_RATIOMETRIC_RANGE			1800
++#define VADC_RATIOMETRIC_RANGE_8998		1875
+ 
+ #define VADC_DEF_PRESCALING			0 /* 1:1 */
+ #define VADC_DEF_DECIMATION			0 /* 512 */
 -- 
 2.28.0
 
