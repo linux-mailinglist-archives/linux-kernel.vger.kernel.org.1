@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08AF279B9E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:50:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4754279BA0
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729685AbgIZRuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 13:50:12 -0400
-Received: from mail.nic.cz ([217.31.204.67]:42970 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgIZRuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 13:50:11 -0400
-Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id D48B614081C;
-        Sat, 26 Sep 2020 19:50:08 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 19:50:08 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Luka Kovacic <luka.kovacic@sartura.hr>
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org,
-        lee.jones@linaro.org, pavel@ucw.cz, dmurphy@ti.com,
-        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        andrew@lunn.ch, jason@lakedaemon.net, gregory.clement@bootlin.com,
-        luka.perkov@sartura.hr, robert.marko@sartura.hr
-Subject: Re: [PATCH v2 7/7] arm64: dts: marvell: Add a device tree for the
- iEi Puzzle-M801 board
-Message-ID: <20200926195008.6bd84dd3@nic.cz>
-In-Reply-To: <20200926135514.26189-8-luka.kovacic@sartura.hr>
-References: <20200926135514.26189-1-luka.kovacic@sartura.hr>
-        <20200926135514.26189-8-luka.kovacic@sartura.hr>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+        id S1729955AbgIZRu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 13:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZRuy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 13:50:54 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC26C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 10:50:54 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id t14so4945424pgl.10
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 10:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hTdWakHiHp9Vlr0UcT3ntAxXSZRAAFha6FtskJko8Jw=;
+        b=YTQoH/ZPZdj0DZHE9slEFw8q8+yyJ9RzJbYifN3Ucgx/DTLM0FjB9VMp0WUnu8Fo4+
+         PepP4szgSee/u9o/rZUz5w4EdvFNwMgZMo9tc36/8AbqiOwDHt9YGDBlUppMgJpBfzYg
+         7AYr35Btmhq6fY/v1TxRh+eJI7r5vi/cmmXxwRzbSJABMWSkAqD6IFTaIS0HEHgp/Cfp
+         tN55uKlV211JLSUPzCQU+lJ1q5hf4iMfO9eE6wAPjJetSUryuCCuOG3Th3Cb8D67Ylgp
+         a08soHTvJAjhcXT3/C8o9EBOgZnEWPcMYHNgcsfXBIcjjylqjvM7KtPG4MQeXrBGk9Iq
+         +Eeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=hTdWakHiHp9Vlr0UcT3ntAxXSZRAAFha6FtskJko8Jw=;
+        b=N1xXFgdhNvS7FmODkYCoXVsspX7LRLgkwCS01CGCOiwgZM0KHt0DxuX5nH4Qh9jD9k
+         4/xhRmpV9ZqYy1PZ+aLiBlPbx4/l312V5hCsx1EPBnBx16uRNcv+TT0tPLO3o/ym7Qa0
+         w4mEdSMg1HQ6oFPLJsovj7ybyLdHqlbFdXsBhIt96PwvzL5k3sTd+Crh9PjC3jpZn5TC
+         8xgLu1RiRqJwcvdEczwB5Z6ieYBzbyJ+1lNC9EQQ3dIhIQgahvVcB23QJGENanBGA/AM
+         AsJYMhwIkp4xZr9tkn0CNr82CyENMzFqhrv02zz3tZPKWAqKN+cxrkHJdcQIyizJpZqc
+         SQig==
+X-Gm-Message-State: AOAM530wTeogvjDxwGmPvci+iubiHhrVGDvRnJJBnNuq/ds6+4X4CTC0
+        TLrEa2Anvwgwcpc2CQcBeKEFjw==
+X-Google-Smtp-Source: ABdhPJzfmrgaHodK6b5xlg8OXYJn9Q34MTXKO9hZBFMHRHq1Kp+6jQlqwc2rhCTpfcPOuGwpd2mh7A==
+X-Received: by 2002:a63:6306:: with SMTP id x6mr3566849pgb.161.1601142653517;
+        Sat, 26 Sep 2020 10:50:53 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id v10sm2328987pjf.34.2020.09.26.10.50.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 10:50:52 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 10:50:52 -0700 (PDT)
+X-Google-Original-Date: Sat, 26 Sep 2020 10:50:51 PDT (-0700)
+Subject:     Re: remove set_fs for riscv v2
+In-Reply-To: <20200922043752.GA29151@lst.de>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Christoph Hellwig <hch@lst.de>, viro@zeniv.linux.org.uk,
+        Arnd Bergmann <arnd@arndb.de>
+Message-ID: <mhng-9b0b114e-a104-40b7-b4f5-ad64dbbbd5bd@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Sep 2020 15:55:14 +0200
-Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+On Mon, 21 Sep 2020 21:37:52 PDT (-0700), Christoph Hellwig wrote:
+> Given tht we've not made much progress with the common branch,
+> are you fine just picking this up through the riscv tree for 5.10?
+>
+> I'll defer other architectures that depend on the common changes to
+> 5.11 then.
 
-> +	leds {
-> +		compatible = "gpio-leds";
-> +		status = "okay";
-> +		pinctrl-0 = <&cp0_sfpplus_led_pins &cp1_sfpplus_led_pins>;
-> +		pinctrl-names = "default";
-> +
-> +		led0 {
-> +			function = LED_FUNCTION_STATUS;
-> +			label = "p2_act";
-> +			gpios = <&cp1_gpio1 6 GPIO_ACTIVE_LOW>;
-> +		};
+I'm OK taking it, but there's a few things I'd like to sort out.  IIRC I put it
+on a temporary branch over here
 
-There should be a dash in LED node name, please pass this dts via
-dt_binding_check
-  led-0 {
-    ...
-  };
+    https://git.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git/log/?h=riscv-remove_set_fs
 
-Also why not add the `color` property to the LED? This is DTS for a
-specific device, right?
-`label` is obsolete. The LED subsystem creates a name in form
-  [device:]color:function
-If this LED should blink for activity on port 2 (is this an ethernet
-port?), the function should be LED_FUNCTION_LAN and function-enumerator
-should be <2> (or function should be LED_FUNCTION_ACTIVITY, depending
-on how the LED subsystem goes forward with this, but certainly not
-LED_FUNCTION_STATUS), and trigger-sources should be set to point to the
-ethernet port.
+under the assumption it might get lost otherwise, but let me know if that's not
+what you were looking for.
 
-Luka, are you willing to change this once we solve this API properly
-in LED subsystem?
+Arnd: Are you OK with the asm-generic stuff?  I couldn't find anything in my
+mail history, so sorry if I just missed it.
 
+Al: IIRC the plan here was to have me merge in a feature branch with this
+stuff, but it'd have to be based on your for-next as there are some
+dependencies over there.  I see 5ae4998b5d6f ("powerpc: remove address space
+overrides using set_fs()") in vfs/for-next so I think we should be OK, but let
+me know if I'm doing something wrong.
 
-
-> +		led6 {
-> +			function = LED_FUNCTION_STATUS;
-> +			linux,default-trigger = "disk-activity";
-> +			label = "front-hdd-led";
-> +			gpios = <&cp0_gpio2 22 GPIO_ACTIVE_HIGH>;
-> +		};
-
-led-6. LED_FUNCTION_DISK. `label` deprecated.
-
-> +		leds {
-> +			compatible = "iei,wt61p803-puzzle-leds";
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			led@0 {
-> +				reg = <0>;
-> +				color = <LED_COLOR_ID_BLUE>;
-> +				label = "front-power-led";
-> +			};
-
-Again, `label` is deprecated. Rather use function =
-<LED_FUNCTION_POWER>;
-
-Marek
+> On Wed, Sep 09, 2020 at 08:55:15AM +0200, Christoph Hellwig wrote:
+>> now that we've sorted out a remaining issue base.set_fs should not
+>> be rebased any more, so you could pull it into the riscv tree or a topic
+>> branch.
+>>
+>> The first four patch should go into base.set_fs, though.  Arnd, can you
+>> re-review the updated patches?
+> ---end quoted text---
