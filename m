@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B39D7279736
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:17:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6A9527973A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgIZGR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 02:17:27 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:42618 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725208AbgIZGR1 (ORCPT
+        id S1727520AbgIZGXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 02:23:08 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37108 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726119AbgIZGXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 02:17:27 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0UA6-WTG_1601101037;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA6-WTG_1601101037)
+        Sat, 26 Sep 2020 02:23:08 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UA5a0Qh_1601101379;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA5a0Qh_1601101379)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 26 Sep 2020 14:17:19 +0800
-Subject: Re: [PATCH v19 07/20] mm/vmscan: remove unnecessary lruvec adding
+          Sat, 26 Sep 2020 14:22:59 +0800
+Subject: Re: [PATCH v5] doc: zh_CN: index files in arm64 subdirectory
+To:     Bailu Lin <bailu.lin@vivo.com>
+Cc:     catalin.marinas@arm.com, corbet@lwn.net, harryxiyou@gmail.com,
+        kernel@vivo.com, linux-arm-kernel@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        will@kernel.org
+References: <20200925144223.40381-1-bailu.lin@vivo.com>
+ <20200926022558.46232-1-bailu.lin@vivo.com>
 From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com, aaron.lwe@gmail.com
-References: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
- <1600918115-22007-8-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <30c65309-df19-b83b-5879-cce860ce55ef@linux.alibaba.com>
-Date:   Sat, 26 Sep 2020 14:14:56 +0800
+Message-ID: <50eb18ad-ee3c-951f-03a5-5971285435bf@linux.alibaba.com>
+Date:   Sat, 26 Sep 2020 14:20:36 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <1600918115-22007-8-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
+In-Reply-To: <20200926022558.46232-1-bailu.lin@vivo.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch has some conflict on akpm. But since Yu Zhao ask for
-revert his patch 'mm: use add_page_to_lru_list()/page_lru()/page_off_lru()'
-we should not needs for rebase on it.
+Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-Thanks
-Alex
-
-ÔÚ 2020/9/24 ÉÏÎç11:28, Alex Shi Ð´µÀ:
-> We don't have to add a freeable page into lru and then remove from it.
-> This change saves a couple of actions and makes the moving more clear.
+åœ¨ 2020/9/26 ä¸Šåˆ10:25, Bailu Lin å†™é“:
+> Add arm64 subdirectory into the table of Contents for zh_CN,
+> then add other translations in arm64 conveniently.
 > 
-> The SetPageLRU needs to be kept before put_page_testzero for list
-> integrity, otherwise:
-> 
->   #0 move_pages_to_lru             #1 release_pages
->   if !put_page_testzero
->      			           if (put_page_testzero())
->      			              !PageLRU //skip lru_lock
->      SetPageLRU()
->      list_add(&page->lru,)
->                                          list_add(&page->lru,)
-> 
-> [akpm@linux-foundation.org: coding style fixes]
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
 > ---
->  mm/vmscan.c | 38 +++++++++++++++++++++++++-------------
->  1 file changed, 25 insertions(+), 13 deletions(-)
+> Changes in v5:
+>  - Remove zh_CN/arm64/index.rst's inappropriate License claim.
+> Changes in v4:
+>  - Remove index.rst's inappropriate License claim.
+> Changes in v3:
+>  - Correct email encoding format.
+> Changes in v2:
+>  - Fix patch description.
+> ---
+>  Documentation/arm64/index.rst                    |  2 ++
+>  Documentation/translations/zh_CN/arm64/index.rst | 14 ++++++++++++++
+>  Documentation/translations/zh_CN/index.rst       |  1 +
+>  3 files changed, 17 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/arm64/index.rst
 > 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 466fc3144fff..32102e5d354d 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1850,26 +1850,30 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  	while (!list_empty(list)) {
->  		page = lru_to_page(list);
->  		VM_BUG_ON_PAGE(PageLRU(page), page);
-> +		list_del(&page->lru);
->  		if (unlikely(!page_evictable(page))) {
-> -			list_del(&page->lru);
->  			spin_unlock_irq(&pgdat->lru_lock);
->  			putback_lru_page(page);
->  			spin_lock_irq(&pgdat->lru_lock);
->  			continue;
->  		}
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  
-> +		/*
-> +		 * The SetPageLRU needs to be kept here for list integrity.
-> +		 * Otherwise:
-> +		 *   #0 move_pages_to_lru             #1 release_pages
-> +		 *   if !put_page_testzero
-> +		 *				      if (put_page_testzero())
-> +		 *				        !PageLRU //skip lru_lock
-> +		 *     SetPageLRU()
-> +		 *     list_add(&page->lru,)
-> +		 *                                        list_add(&page->lru,)
-> +		 */
->  		SetPageLRU(page);
-> -		lru = page_lru(page);
->  
-> -		nr_pages = thp_nr_pages(page);
-> -		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
-> -		list_move(&page->lru, &lruvec->lists[lru]);
-> -
-> -		if (put_page_testzero(page)) {
-> +		if (unlikely(put_page_testzero(page))) {
->  			__ClearPageLRU(page);
->  			__ClearPageActive(page);
-> -			del_page_from_lru_list(page, lruvec, lru);
->  
->  			if (unlikely(PageCompound(page))) {
->  				spin_unlock_irq(&pgdat->lru_lock);
-> @@ -1877,11 +1881,19 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  				spin_lock_irq(&pgdat->lru_lock);
->  			} else
->  				list_add(&page->lru, &pages_to_free);
-> -		} else {
-> -			nr_moved += nr_pages;
-> -			if (PageActive(page))
-> -				workingset_age_nonresident(lruvec, nr_pages);
+> diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
+> index d9665d83c53a..3ebe0fa31948 100644
+> --- a/Documentation/arm64/index.rst
+> +++ b/Documentation/arm64/index.rst
+> @@ -1,3 +1,5 @@
+> +.. _arm64_index:
 > +
-> +			continue;
->  		}
+>  ==================
+>  ARM64 Architecture
+>  ==================
+> diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
+> new file mode 100644
+> index 000000000000..57545f19ab2d
+> --- /dev/null
+> +++ b/Documentation/translations/zh_CN/arm64/index.rst
+> @@ -0,0 +1,14 @@
+> +.. include:: ../disclaimer-zh_CN.rst
 > +
-> +		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +		lru = page_lru(page);
-> +		nr_pages = thp_nr_pages(page);
+> +:Original: :ref:`Documentation/arm64/index.rst <arm64_index>`
+> +:Translator: Bailu Lin <bailu.lin@vivo.com>
 > +
-> +		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
-> +		list_add(&page->lru, &lruvec->lists[lru]);
-> +		nr_moved += nr_pages;
-> +		if (PageActive(page))
-> +			workingset_age_nonresident(lruvec, nr_pages);
->  	}
+> +.. _cn_arm64_index:
+> +
+> +
+> +==========
+> +ARM64 æž¶æž„
+> +==========
+> +
+> +.. toctree::
+> +    :maxdepth: 2
+> diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
+> index 85643e46e308..be6f11176200 100644
+> --- a/Documentation/translations/zh_CN/index.rst
+> +++ b/Documentation/translations/zh_CN/index.rst
+> @@ -19,6 +19,7 @@
+>     admin-guide/index
+>     process/index
+>     filesystems/index
+> +   arm64/index
 >  
->  	/*
+>  ç›®å½•å’Œè¡¨æ ¼
+>  ----------
 > 
