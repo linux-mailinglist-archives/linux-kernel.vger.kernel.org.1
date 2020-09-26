@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC612279598
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89DE127959A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729743AbgIZAc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 20:32:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28208 "EHLO
+        id S1729818AbgIZAdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 20:33:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47159 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726149AbgIZAc1 (ORCPT
+        by vger.kernel.org with ESMTP id S1729792AbgIZAdK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:32:27 -0400
+        Fri, 25 Sep 2020 20:33:10 -0400
 Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601080345;
+        s=mimecast20190719; t=1601080389;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GGED/SP06qDpxxhBcwD9SA9XdIHBfiiFTtiKfufvWL0=;
-        b=BXZ+34knyRjcZXAZngZO8TOGJtgxjgXRy2/LCLaXh/Wc4up9pX3kANhZrZQoMaZweAsokZ
-        61/1BMD3z8sdYRsn9xpmbtQ94BkhZwI0uokEu2IMDAoOyvSwY9q3NgPApejI0V+Aj1Bv8H
-        KKK4FFge/sifGe1ZzlulZ222Lm7Txec=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-MSJ_AflNMrqJi474CI16hQ-1; Fri, 25 Sep 2020 20:32:21 -0400
-X-MC-Unique: MSJ_AflNMrqJi474CI16hQ-1
-Received: by mail-wr1-f71.google.com with SMTP id v12so1737125wrm.9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:32:21 -0700 (PDT)
+        bh=L2svHRBQva/Nus5XSRtpGhL7T7fUDe0VOrf/F1WA0Tc=;
+        b=WvHRZFzXxOtcyQl5iQyAufjbZYTXFZQTnGYSYn0Baw+dUFd67MG+F85ycQf1BEFUV2CyOA
+        l6zUewQikZthrEQ64HxUMxI/1J0bQv7PzAV1cp+6wfvWs7SAYeKY286QzxDT7EA2Q9QcDH
+        R+ZN9Z4vat9yH2aAIvXBlvGiElYTpms=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-184-So20wip7PO6xFv5NA2uDfg-1; Fri, 25 Sep 2020 20:33:07 -0400
+X-MC-Unique: So20wip7PO6xFv5NA2uDfg-1
+Received: by mail-wr1-f72.google.com with SMTP id j7so1733627wro.14
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:33:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=GGED/SP06qDpxxhBcwD9SA9XdIHBfiiFTtiKfufvWL0=;
-        b=jFccjVil/XF99kcX5BQ3sLZVJbX82EZfC5qlREsKAA2wVc5pBf0Zg2FwSoO+gZJJXf
-         IPp56Cn684WRi98iPoeLgJCTlOfujpGTk1v5T4xgJ+Pz1luVp3dk7lYO0P2biLMSwtXa
-         w13QN07Vxb1aOTjzYdNrypK+CwWtjxBGkDCHeaIFCRuZpOofCb3k4tHHbCh0Nk/BVUnH
-         SkqdoN7oOPfXQdDcvlrs2tVuDS0saqQwwZVvtFgpKUnKXmPECBNpmAaR6r3n8xtgyWr0
-         K5yKLSTj5pmGdsr2RRp8N7Ze890YEHDnQTFDRDyWbP20U2aEsH0WNBCTeaH/AhVJwbpl
-         aUsQ==
-X-Gm-Message-State: AOAM531XRNV1Uo9sJgHBppOHjgLqVcQdnYTX/VlqO8m1jw+knugK84Ij
-        rx61RdZIbo/MQdSFhCBus+jHWPTgoABHr9pC0+fHKH2s2WJOGJpX+HGj8jQn0uihrtpKAkFKwCD
-        lNcux7GrDFCK07Mn8Fu6nIZ/c
-X-Received: by 2002:a1c:7714:: with SMTP id t20mr144585wmi.55.1601080340505;
-        Fri, 25 Sep 2020 17:32:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwEvSQR1X+gcWu2eaDsj1njEoatXZVeek8n0YilAr8OsyMpskkzs898k3FWW0lDKy0KoCJplw==
-X-Received: by 2002:a1c:7714:: with SMTP id t20mr144565wmi.55.1601080340270;
-        Fri, 25 Sep 2020 17:32:20 -0700 (PDT)
+        bh=L2svHRBQva/Nus5XSRtpGhL7T7fUDe0VOrf/F1WA0Tc=;
+        b=adyPujb1DMzt7xvfv64cBx3d6YFcaaO6V2UZMKnQH4Y5BGl84fLugMG6QJDbzXZx1H
+         M7p1ehr+4wEQwHnC7dqbj2ZgkqwJoExjGUiwgWtgrmCWH49OI3gnXjGdJCUVCPKheKYn
+         pITHH4KaXuIFPgDcoy0rezH+F7bk5ERb2RETrJmW1MdD1iuM5ZHxq8guZ3zYgITPesmE
+         9Yu0E+cKCAGIFJCD64p6+N9fEVS2WGi0Qz9sG5YZ56/0H9W5YZZbVOIwy9PSOshbkXYN
+         a5as0dxPWRuCFRiuOsNCmFXYHcJs6WDAWJf1PO4kcmeenMEz/oyNCPT8jKdI3F0Ta1H8
+         2hCg==
+X-Gm-Message-State: AOAM530HRiGVD+pDTkCyjlr2+EbneKBpl8uDqPl0csAv9hW1XHsTIc8j
+        tz/SHB2ilfp3cv3ZMV74n3dhmnBw3035ksyd0QHkJAj3iSTThmW3CPE9mTzIplLa5x8BmDXVNH2
+        UXt3KDVZYtbnCxrKyaYrU5LLR
+X-Received: by 2002:adf:e407:: with SMTP id g7mr6953553wrm.349.1601080386249;
+        Fri, 25 Sep 2020 17:33:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOErB8p/7YPgr4TtDRkw7ALR4XUUJKDTDtDNpkAbJTRk2g4+X6ESLcxvEwumiVX0L1vmkkDg==
+X-Received: by 2002:adf:e407:: with SMTP id g7mr6953541wrm.349.1601080386081;
+        Fri, 25 Sep 2020 17:33:06 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id h2sm4678148wrp.69.2020.09.25.17.32.19
+        by smtp.gmail.com with ESMTPSA id h17sm4946584wro.27.2020.09.25.17.33.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 17:32:19 -0700 (PDT)
-Subject: Re: [PATCH 14/22] kvm: mmu: Add access tracking for tdp_mmu
+        Fri, 25 Sep 2020 17:33:05 -0700 (PDT)
+Subject: Re: [PATCH 15/22] kvm: mmu: Support changed pte notifier in tdp MMU
 To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
         kvm@vger.kernel.org
 Cc:     Cannon Matthews <cannonmatthews@google.com>,
@@ -67,14 +67,14 @@ Cc:     Cannon Matthews <cannonmatthews@google.com>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-15-bgardon@google.com>
+ <20200925212302.3979661-16-bgardon@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <d7964716-8949-a4ac-93ce-a71f3aebbd12@redhat.com>
-Date:   Sat, 26 Sep 2020 02:32:18 +0200
+Message-ID: <dc3a8cb7-ea8d-9c4d-6341-95522b184a16@redhat.com>
+Date:   Sat, 26 Sep 2020 02:33:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <20200925212302.3979661-15-bgardon@google.com>
+In-Reply-To: <20200925212302.3979661-16-bgardon@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -83,44 +83,25 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 25/09/20 23:22, Ben Gardon wrote:
-> @@ -332,7 +331,7 @@ static inline bool kvm_vcpu_ad_need_write_protect(struct kvm_vcpu *vcpu)
->  	return vcpu->arch.mmu == &vcpu->arch.guest_mmu;
+> @@ -1708,6 +1695,21 @@ static int kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+>  	return kvm_zap_rmapp(kvm, rmap_head);
 >  }
 >  
-> -static inline bool spte_ad_enabled(u64 spte)
-> +inline bool spte_ad_enabled(u64 spte)
->  {
->  	MMU_WARN_ON(is_mmio_spte(spte));
->  	return (spte & SPTE_SPECIAL_MASK) != SPTE_AD_DISABLED_MASK;
-> @@ -607,7 +606,7 @@ int is_last_spte(u64 pte, int level)
->  	return 0;
->  }
->  
-> -static bool is_executable_pte(u64 spte)
-> +bool is_executable_pte(u64 spte)
->  {
->  	return (spte & (shadow_x_mask | shadow_nx_mask)) == shadow_x_mask;
->  }
-> @@ -791,7 +790,7 @@ static bool spte_has_volatile_bits(u64 spte)
->  	return false;
->  }
->  
-> -static bool is_accessed_spte(u64 spte)
-> +bool is_accessed_spte(u64 spte)
->  {
->  	u64 accessed_mask = spte_shadow_accessed_mask(spte);
->  
-> @@ -941,7 +940,7 @@ static u64 mmu_spte_get_lockless(u64 *sptep)
->  	return __get_spte_lockless(sptep);
->  }
->  
-> -static u64 mark_spte_for_access_track(u64 spte)
-> +u64 mark_spte_for_access_track(u64 spte)
->  {
->  	if (spte_ad_enabled(spte))
->  		return spte & ~shadow_accessed_mask;
+> +u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_pfn)
+> +{
+> +	u64 new_spte;
+> +
+> +	new_spte = old_spte & ~PT64_BASE_ADDR_MASK;
+> +	new_spte |= (u64)new_pfn << PAGE_SHIFT;
+> +
+> +	new_spte &= ~PT_WRITABLE_MASK;
+> +	new_spte &= ~SPTE_HOST_WRITEABLE;
+> +
+> +	new_spte = mark_spte_for_access_track(new_spte);
+> +
+> +	return new_spte;
+> +}
+> +
 
-More candidates for inlining, of course.
-
-Paolo
+And another. :)
 
