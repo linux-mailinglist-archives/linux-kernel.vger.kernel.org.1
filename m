@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0126E27975B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F7D279759
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729035AbgIZGxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 02:53:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726694AbgIZGxT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 02:53:19 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAA45C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 23:53:19 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 19so4250548qtp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 23:53:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aLvvuBRQdycEtX1hNlsAY1qAkWuLjqss4U5s0SXoGUY=;
-        b=dift4Z8tjU0Ce445UABIK7WDYnjIgcajhY5rOF+2tGytUkEPkkEa7A4rek8uc784U5
-         2K7tORos0wmqlyCuCNxxVtBDY81ztf4HcJwAfW/nXHDJXA128hBd6wrUQ6HBhlgcpmi6
-         TVsqJ5aKCxifQschGqzTs1sP3eYfJenRITHy8vh27oUrsiGDVdPgBVo5/T7Obyul+95e
-         SwUJvLx5qbXrkz1m1hHEUJoY6603wI4Izhy8J5s6UPxK7b84+FfGxWOi6X+fOYvl5uAY
-         FAky6Diid1JSQHfxMrAAeoitNpKfFOLFevWya6wLIOVEWzlMAErhl55vcqsEAb4j5gal
-         TJAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aLvvuBRQdycEtX1hNlsAY1qAkWuLjqss4U5s0SXoGUY=;
-        b=ok4+HuD5QhXGGwYmQ5OMM4SCmn1izA7op+TfR1r20WD3dxGihRF4bISOirT6MX+1Ri
-         lYShSaYGXy/605Q7p8VQswOOrhggkJiht2gbwFHO2khCpjHZHpyslfiyWwal93ddoa+Z
-         opblue/K4raWC0jxKs+iLmL+7m9PozRxHnb4jOVIFxG9X6gcfyn5Ye07/55PIMrmx0Kj
-         wolKYi/CJhdGPHDBYQzanaBsGt98Q9Ydd+UHz8yDWzyZK4FmDnWizQX9GzwbkXjNHCBa
-         DREhSzUt03LU6Te66gyZ9Fv5hS+oQImT6HZ9Eb/Dvob8S1M01eOicD6oY+nLqGI8Zs+v
-         95Pg==
-X-Gm-Message-State: AOAM5301KMFEWEMg0S2HNR2fpXjGUkyKx7BiNPOGsgTe6cRGl/FPPpBA
-        k/y0L1z1wGw/qMIBNViFna8RW0L8+0xLeA/XiT5oPA==
-X-Google-Smtp-Source: ABdhPJzpV39Mkz7QDs8SD8oXqAzRHZ0eYUVMZqHjk8Ot7Lqe/Sgo098zK8WMZ9hvvjDCqMhL1J3xo5gPkXXyrgiEl0o=
-X-Received: by 2002:ac8:4658:: with SMTP id f24mr3297636qto.158.1601103198676;
- Fri, 25 Sep 2020 23:53:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAKBsNO=G_t6KrAYXcnMy07HyR8yrFELFoknd=9CnHBM-CJij=A@mail.gmail.com>
- <000000000000b8d3ef05b02efa93@google.com>
-In-Reply-To: <000000000000b8d3ef05b02efa93@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 26 Sep 2020 08:53:07 +0200
-Message-ID: <CACT4Y+aBTN3HzDWADsvD053T=qszSu5wGTCijM-kj9xZXDHTyg@mail.gmail.com>
-Subject: Re: KMSAN: uninit-value in rt2500usb_probe_hw
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        id S1728981AbgIZGxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 02:53:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726694AbgIZGxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 02:53:13 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C75D920878;
+        Sat, 26 Sep 2020 06:53:11 +0000 (UTC)
+Date:   Sat, 26 Sep 2020 09:53:08 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Eli Cohen <elic@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
         LKML <linux-kernel@vger.kernel.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot <syzbot+35c80b2190255a410f66@syzkaller.appspotmail.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH v3 -next] vdpa: mlx5: change Kconfig depends to fix build
+ errors
+Message-ID: <20200926065308.GC2280698@unreal>
+References: <73f7e48b-8d16-6b20-07d3-41dee0e3d3bd@infradead.org>
+ <20200918082245.GP869610@unreal>
+ <20200924052932-mutt-send-email-mst@kernel.org>
+ <20200924102413.GD170403@mtl-vdi-166.wap.labs.mlnx>
+ <079c831e-214d-22c1-028e-05d84e3b7f04@infradead.org>
+ <20200924120217-mutt-send-email-mst@kernel.org>
+ <20200925072005.GB2280698@unreal>
+ <20200925061847-mutt-send-email-mst@kernel.org>
+ <821c501c-53ce-3e80-8a73-f0680193df20@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <821c501c-53ce-3e80-8a73-f0680193df20@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 5:25 AM syzbot
-<syzbot+35c80b2190255a410f66@syzkaller.appspotmail.com> wrote:
+On Fri, Sep 25, 2020 at 07:29:24PM +0800, Jason Wang wrote:
 >
-> Hello,
+> On 2020/9/25 下午6:19, Michael S. Tsirkin wrote:
+> > On Fri, Sep 25, 2020 at 10:20:05AM +0300, Leon Romanovsky wrote:
+> > > On Thu, Sep 24, 2020 at 12:02:43PM -0400, Michael S. Tsirkin wrote:
+> > > > On Thu, Sep 24, 2020 at 08:47:05AM -0700, Randy Dunlap wrote:
+> > > > > On 9/24/20 3:24 AM, Eli Cohen wrote:
+> > > > > > On Thu, Sep 24, 2020 at 05:30:55AM -0400, Michael S. Tsirkin wrote:
+> > > > > > > > > --- linux-next-20200917.orig/drivers/vdpa/Kconfig
+> > > > > > > > > +++ linux-next-20200917/drivers/vdpa/Kconfig
+> > > > > > > > > @@ -31,7 +31,7 @@ config IFCVF
+> > > > > > > > >
+> > > > > > > > >   config MLX5_VDPA
+> > > > > > > > >   	bool "MLX5 VDPA support library for ConnectX devices"
+> > > > > > > > > -	depends on MLX5_CORE
+> > > > > > > > > +	depends on VHOST_IOTLB && MLX5_CORE
+> > > > > > > > >   	default n
+> > > > > > > > While we are here, can anyone who apply this patch delete the "default n" line?
+> > > > > > > > It is by default "n".
+> > > > > > I can do that
+> > > > > >
+> > > > > > > > Thanks
+> > > > > > > Hmm other drivers select VHOST_IOTLB, why not do the same?
+> > > > > v1 used select, but Saeed requested use of depends instead because
+> > > > > select can cause problems.
+> > > > >
+> > > > > > I can't see another driver doing that. Perhaps I can set dependency on
+> > > > > > VHOST which by itself depends on VHOST_IOTLB?
+> > > > > > >
+> > > > > > > > >   	help
+> > > > > > > > >   	  Support library for Mellanox VDPA drivers. Provides code that is
+> > > > > > > > >
+> > > > Saeed what kind of problems? It's used with select in other places,
+> > > > isn't it?
+> > > IMHO, "depends" is much more explicit than "select".
+> > >
+> > > Thanks
+> > This is now how VHOST_IOTLB has been designed though.
+> > If you want to change VHOST_IOTLB to depends I think
+> > we should do it consistently all over.
+> >
+> >
+> > config VHOST_IOTLB
+> >          tristate
+> >          help
+> >            Generic IOTLB implementation for vhost and vringh.
+> >            This option is selected by any driver which needs to support
+> >            an IOMMU in software.
 >
-> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 >
-> Reported-and-tested-by: syzbot+35c80b2190255a410f66@syzkaller.appspotmail.com
+> Yes, since there's no prompt for VHOST_IOTLB which means, if there's no
+> other symbol that select VHOST_IOTLB, you can't enable MLX5 at all.
 >
-> Tested on:
+> See kconfig-language.rst:
 >
-> commit:         c5a13b33 kmsan: clang-format core
-> git tree:       https://github.com/google/kmsan.git master
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=41fca8ac7f9e770a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=35c80b2190255a410f66
-> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 >
-> Note: testing is done by a robot and is best-effort only.
+>     In general use select only for non-visible symbols
+>     (no prompts anywhere) and for symbols with no dependencies.
+>     That will limit the usefulness but on the other hand avoid
+>     the illegal configurations all over.
 
-Hi Anant,
+Thanks, I wasn't aware of this clarification.
 
-I see you are testing lots of USB bugs. USB subsystem is currently
-broken, testing of any USB bugs will give false "no crash" results,
-see:
-https://lore.kernel.org/linux-kernel-mentees/CACT4Y+YmbmrH9gCCnCzP-FYa-dKxx9qhKZ+RQxi1f-+Hoj1SUg@mail.gmail.com/
+>
+> Thanks
+>
+>
+> >
+> >
+> > > > > --
+> > > > > ~Randy
+>
