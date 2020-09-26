@@ -2,172 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 347322799C0
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:47:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C4252799C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728739AbgIZNrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 09:47:12 -0400
-Received: from vm1.sequanux.org ([188.165.36.56]:50662 "EHLO vm1.sequanux.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726244AbgIZNrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 09:47:11 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by vm1.sequanux.org (Postfix) with ESMTP id 9F2321085FD;
-        Sat, 26 Sep 2020 15:47:09 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at vm1.sequanux.org
-Received: from vm1.sequanux.org ([127.0.0.1])
-        by localhost (vm1.sequanux.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id UOytG_biRnex; Sat, 26 Sep 2020 15:47:07 +0200 (CEST)
-Received: from localhost (softwrestling.org [188.165.144.248])
-        by vm1.sequanux.org (Postfix) with ESMTPSA id EB80410812B;
-        Sat, 26 Sep 2020 15:47:06 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 15:47:06 +0200
-From:   Simon Guinot <simon.guinot@sequanux.org>
-To:     Marek =?utf-8?B?QmVow7pu?= <marek.behun@nic.cz>
-Cc:     linux-leds@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>,
-        =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org,
-        =?utf-8?B?w4FsdmFybyBGZXJuw6FuZGV6?= Rojas <noltari@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Andrey Utkin <andrey_utkin@fastmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Christian Mauderer <oss@c-mauderer.de>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Daniel Mack <daniel@caiaq.de>,
-        David Rivshin <drivshin@allworx.com>,
-        Grant Feng <von81@163.com>,
-        Haojian Zhuang <haojian.zhuang@marvell.com>,
-        "H . Nikolaus Schaller" <hns@goldelico.com>,
-        Jaedon Shin <jaedon.shin@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Kevin Cernekee <cernekee@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Milo Kim <milo.kim@ti.com>, NeilBrown <neilb@suse.de>,
-        Nikita Travkin <nikitos.tr@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Philippe Retornaz <philippe.retornaz@epfl.ch>,
-        Riku Voipio <riku.voipio@iki.fi>,
-        Rod Whitby <rod@whitby.id.au>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Simon Guinot <sguinot@lacie.com>,
-        Simon Shields <simon@lineageos.org>,
+        id S1729172AbgIZNrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 09:47:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZNrv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 09:47:51 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9BDC0613CE;
+        Sat, 26 Sep 2020 06:47:51 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id y2so5939260lfy.10;
+        Sat, 26 Sep 2020 06:47:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lNbXhJArblGcxeZheeo2BpWV11J4mxo5UBEIbVkUdsg=;
+        b=oBp6M429G1+h4azfP/C5b2+24+Fz6tHTQYZXp6E9HDH6MhMFGC5F3sszOUygMDlfpY
+         o7y39C4qbqRXeRzLRI4CtYvvsqZNbu0XXOyiAcztl1jFm1Bg8vu5SqNs6FCloMAlF5qc
+         8H8rbYed437z7dNLf6t5C7RQr01TEA0Pvklx4UL2QWLMu0KKsKgL7AGQzMjplst9i/ff
+         xk1hnZJBY5Hx3UfL3BOqYkQmjSAvN/QlHagqwR1HMDxeJt5dN6hjRmVjBTznWStAAH+M
+         F3DY/QCeyFtkVVBtmndIv2Yojumr8pE8mBNZyFtG2Lt46L65OjsijM9YNrFLg3oa6yhR
+         QoRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lNbXhJArblGcxeZheeo2BpWV11J4mxo5UBEIbVkUdsg=;
+        b=jSerRX00QXOTcqlCmnVjragk1DTJIXrVhdtubd1adQXx8Tntnn6/UGdTqlAXe4iP+0
+         bPmEB2Y9qfA30tI8wiicHu7PlhJZRBmWFzUfSETqEva1ztW5RWYlrAG2hy/56xayU/vq
+         BI3meNueyDKwu4UMvH/IVvpADXBvQMPm6+zeVoZqZtMFl4YulWiH8DHvp1C3Gf659ndl
+         8/GcBxKbhMeTMbD7ImbOPMSL05RCc80ZuqjtihLRDPYNJg4PxPbLwtuWvD/7ahKMMpvb
+         k3Z7EhhdPJXHRmHgH+QDNPJYL2hu4R/xDxkSXO7E//yMlkdeSq9D159tnQnGpVhrkUx6
+         tfZg==
+X-Gm-Message-State: AOAM530XhP06Kr8vj+Ls4cl8NyvTYvXT77kdqyKYzQWAEsLXJQQFUQYB
+        nsoc57B5POXYMgq1qsYpZ987M7EKx6Q=
+X-Google-Smtp-Source: ABdhPJzZAAbv71OtrERAMczlk029GPxqrzyFd4H7DB09Xp64+SklRLmRTHEzBlZkOpogwqAB9GwMtg==
+X-Received: by 2002:ac2:51a8:: with SMTP id f8mr1303670lfk.472.1601128069735;
+        Sat, 26 Sep 2020 06:47:49 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
+        by smtp.googlemail.com with ESMTPSA id v17sm1659052lfr.42.2020.09.26.06.47.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Sep 2020 06:47:48 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] ARM: tegra: Add device-tree for Ouya
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Bogendoerfer <tbogendoerfer@suse.de>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Vasant Hegde <hegdevasant@linux.vnet.ibm.com>,
-        Vincent Donnefort <vdonnefort@gmail.com>,
-        Xiaotong Lu <xiaotong.lu@spreadtrum.com>
-Subject: Re: [PATCH leds v2 00/50] Start moving parsing of
- `linux,default-trigger` to LED core (a cleanup of LED drivers)
-Message-ID: <20200926134706.GJ4828@kw.sim.vm.gnt>
-References: <20200917223338.14164-1-marek.behun@nic.cz>
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200923210352.1176386-1-pgwipeout@gmail.com>
+ <20200923210352.1176386-2-pgwipeout@gmail.com>
+ <df2d6a8d-8a6c-464b-8f35-a7994ea01534@gmail.com>
+ <CAMdYzYosBUUudsRnf9RQ1HKYq8cS4uXRm-9Mg1=hZy+v_Q_X6g@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <83a5ee67-e30d-db43-a210-345304ed6edd@gmail.com>
+Date:   Sat, 26 Sep 2020 16:47:48 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="WR+jf/RUebEcofwt"
-Content-Disposition: inline
-In-Reply-To: <20200917223338.14164-1-marek.behun@nic.cz>
-User-Agent: Mutt/1.6.0 (2016-04-01)
+In-Reply-To: <CAMdYzYosBUUudsRnf9RQ1HKYq8cS4uXRm-9Mg1=hZy+v_Q_X6g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+26.09.2020 05:01, Peter Geis пишет:
+...
+>>> +             pmic: pmic@2d {
+>>> +                     compatible = "ti,tps65911";
+>>> +                     reg = <0x2d>;
+>>> +
+>>> +                     interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+>>> +                     #interrupt-cells = <2>;
+>>> +                     interrupt-controller;
+>>> +
+>>> +                     ti,system-power-controller;
+>>
+>> Are the ti,sleep-keep-ck32k and other properties not needed for Ouya
+>> like they are needed for Nexus 7?
+> 
+> Ouya is wall powered, so ultra low power isn't terribly necessary.
+> Also with LP1 and LP0 not working, it doesn't make much sense to
+> implement this yet.
 
---WR+jf/RUebEcofwt
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Sep 18, 2020 at 12:32:48AM +0200, Marek Beh=C3=BAn wrote:
-> Hi,
->=20
-> this series is also available at [1].
->=20
-> This is v2, you can read cover letter of v1 at [2] (togehter with
-> explanation of why I did this).
->=20
-> Changes since v1:
-> - split big changes into several patches of little changes
-> - added many cosmetic fixes (helper variables, reversal christmas tree
->   variables declaration, ...)
-> - fixed some bugs in various drivers (memory leaks, iteration over
->   unavailable OF nodes)
-> - made some drivers compilable when COMPILE_TEST=3Dy (since allyesconfig
->   did not compile them). Not all though, some still don't compile with
->   allyesconfig
-> - the commit that moves parsing of `linux,default-trigger` property from
->   drivers to LED core is now last in the series, instead of first
->=20
-> Marek
->=20
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/kabel/linux.git/log/?=
-h=3Dleds-cleanup-for-pavel
-> [2] https://lore.kernel.org/linux-leds/20200916231650.11484-1-marek.behun=
-@nic.cz/T/#m826493318174b0f38a3d4ba107092b5420ce440c
-
-=2E..
-
->   leds: ns2: use devres LED registering function
->   leds: ns2: alloc simple array instead of struct ns2_led_priv
->   leds: ns2: support OF probing only, forget platdata
->   leds: ns2: move parsing of one LED into separate function
->   leds: ns2: use devres API for getting GPIO descriptors
->   leds: ns2: cosmetic structure rename
->   leds: ns2: cosmetic variable rename
->   leds: ns2: cosmetic change
->   leds: ns2: cosmetic change: use helper variable
->   leds: ns2: register LED immediately after parsing DT properties
->   leds: ns2: remove unneeded variable
->   leds: ns2: cosmetic: use reverse christmas tree
->   leds: ns2: reorder headers alphabetically
->   leds: ns2: use struct led_init_data when registering
->   leds: parse linux,default-trigger DT property in LED core
-
-Hi Marek,
-
-For all the patches applying to the leds-ns2 driver:
-
-Reviewed-by: Simon Guinot <simon.guinot@sequanux.org>
-Tested-by: Simon Guinot <simon.guinot@sequanux.org>
-
-Thanks for it. The driver is looking way better.
-
-Simon
-
---WR+jf/RUebEcofwt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEXW8DgovlR3VS5hA0zyg/RDPmszoFAl9vRloACgkQzyg/RDPm
-szpYlxAA2tv+ztwuTqGVHf0MAJV7dd+lrcA7E7bj++L3tVr20iUB44pmcvgX0qqr
-y4UJWuBP9RDoPc3DmVhKljALA+EbzX0QSHT5LXayTmdykZaLEF5zCl9Ki79/+vvv
-kVwZFU5n/RNaig98ZqbjsyMtjYsaIgC1ImOveMoUU4hUgxJMJX6h31yQPB3hxid5
-edYEUNIOpIN1n74N9NKikBBhxPIiGfA9Q4XoQ0w2LNjIHXyrjdtk+tV1ymAb0/Uw
-WSpMGnmNdgzwy48iYlBZndP771XhYvFl3mZv+FcKsS1qs21jLFQUdk6ZsRd6aEVT
-JyXxUOizOIJRw4KGVHIILbfkIwct9Is5H+9bhlK5HzvgkhqBGAa50cvgDIQrndI2
-a7rJAwd0KfxcxfvfHw4iJMRDdQ/QXIRVyKE3m5/hTdwq4p6a91tTAemtgODHQGlN
-S6NF8GyHK2yWCkv6N2zx/tmZkcJOyAvD6rMNtBZdQCfyvv5Qx83T7UckYHzZEeo1
-oHRrHs4quQ6KNQHYv9y8Y6W6SN2tkfZTNzBv0YxF6Jl/q0hYrLw6D8VAhRsErHQy
-1OVrZQoxXUL4X5etjRJoXJdp2Guzrh2iIUJtlRlHeS4Vc2brMc1s1Xym0SN4XIgR
-/67wH+ybeKolA5cpHas++693+x7J8dp8S2rvXvY6SuyOYyMcLBY=
-=MzSs
------END PGP SIGNATURE-----
-
---WR+jf/RUebEcofwt--
+The keep-ck32 is not about power saving. If PMC is running off PMIC's
+oscillator during LP1 suspend, then this should be one of the reasons
+why LP1 doesn't work for you.
