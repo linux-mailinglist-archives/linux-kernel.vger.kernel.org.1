@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9AB27960E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC58F279610
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:57:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729912AbgIZBzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 21:55:33 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59956 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728967AbgIZBz3 (ORCPT
+        id S1729933AbgIZB5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 21:57:01 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:46389 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727495AbgIZB5A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 21:55:29 -0400
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601085327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=57u1up5OwTRuChPL+apaowPVX45DIfqc12a7a1X2m3g=;
-        b=mUHNaRSIQ2lefxBD1NquljUQQlTK1vrbHXstHJdSO90BERFRWFmDWvViN/bAQsKGfqRreh
-        T5LkXI5eukPI9WDKQnuTS0CFnv98GuBfTudh3FDtxAYO+cXMu9hlpgvpRhLjjbHNU2NMAZ
-        LXUZBGNY62aovAitJzR8lIQ/N0wl3ms02FSxl7Z9I7KJgb8bw2gp6YdwYTGCuVcYNxCq9N
-        qYNaije0wElKuZIEjYYZLBbhktFZijLVIVjABeEyenKlIEBFdRENoccz0Dre3S7hQHi9v/
-        YMjxnb3PbVQiqZrewuoCxXfDjUcCABhIAL4/BhoAg2mJJqgz5UVjNeLgu8ejaQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601085327;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=57u1up5OwTRuChPL+apaowPVX45DIfqc12a7a1X2m3g=;
-        b=TRE5aTUko7Y81LL4BMvlYBjhjnDY6T87/MklWQ53gwPEYxx6UMbwdw+BoxZdmf9VnyoEeU
-        lM0tGILZGsRrXzAQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Fri, 25 Sep 2020 21:57:00 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 1273B4E1388;
+        Sat, 26 Sep 2020 09:56:57 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Wang Qing <wangqing@vivo.com>, Xiong <xndchn@gmail.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH next 2/2] printk: reduce setup_text_buf size to LOG_LINE_MAX
-Date:   Sat, 26 Sep 2020 04:01:26 +0206
-Message-Id: <20200926015526.8921-3-john.ogness@linutronix.de>
-In-Reply-To: <20200926015526.8921-1-john.ogness@linutronix.de>
-References: <20200926015526.8921-1-john.ogness@linutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH V2] increase error-prone spell checking
+Date:   Sat, 26 Sep 2020 09:56:16 +0800
+Message-Id: <1601085397-27586-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZSR1LSh0YGU5PQxhKVkpNS0pLQ05PSkxPTUlVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NUk6Igw*Hj8eKAE#Pi0ISi8R
+        FBoaCSxVSlVKTUtKS0NOT0pMQ01LVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFKQkxMNwY+
+X-HM-Tid: 0a74c820a7779376kuws1273b4e1388
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-@setup_text_buf only copies the original text messages (without any
-prefix or extended text). It only needs to be LOG_LINE_MAX in size.
+Increase direcly,ununsed,manger spelling error check
 
-Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- kernel/printk/printk.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/spelling.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 270f19b60e6f..c3eb97f93668 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -1103,7 +1103,7 @@ static unsigned int __init add_to_rb(struct printk_ringbuffer *rb,
- 	return prb_record_text_space(&e);
- }
- 
--static char setup_text_buf[CONSOLE_EXT_LOG_MAX] __initdata;
-+static char setup_text_buf[LOG_LINE_MAX] __initdata;
- 
- void __init setup_log_buf(int early)
- {
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index f253681..bd99940
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -482,6 +482,7 @@ disgest||digest
+ dispalying||displaying
+ diplay||display
+ directon||direction
++direcly||directly
+ direectly||directly
+ diregard||disregard
+ disassocation||disassociation
+@@ -871,6 +872,7 @@ malplace||misplace
+ managable||manageable
+ managment||management
+ mangement||management
++manger||manager
+ manoeuvering||maneuvering
+ manufaucturing||manufacturing
+ mappping||mapping
+@@ -1478,6 +1480,7 @@ unsolicitied||unsolicited
+ unsuccessfull||unsuccessful
+ unsuported||unsupported
+ untill||until
++ununsed||unused
+ unuseful||useless
+ unvalid||invalid
+ upate||update
 -- 
-2.20.1
+2.7.4
 
