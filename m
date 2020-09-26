@@ -2,197 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3DD279BD3
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B17B279BD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729941AbgIZSX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 14:23:29 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:44886 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726244AbgIZSX2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 14:23:28 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 96D8880685;
-        Sat, 26 Sep 2020 20:23:24 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 20:23:22 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/7] drm/ingenic: Add support for paletted 8bpp
-Message-ID: <20200926182322.GA91317@ravnborg.org>
-References: <20200926170501.1109197-1-paul@crapouillou.net>
- <20200926170501.1109197-6-paul@crapouillou.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200926170501.1109197-6-paul@crapouillou.net>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=A5ZCwZeG c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=ER_8r6IbAAAA:8 a=fUiApicmrrs-xE08C9oA:9
-        a=CjuIK1q_8ugA:10 a=9LHmKk7ezEChjTCyhBa9:22
+        id S1730060AbgIZSXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 14:23:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34078 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726244AbgIZSXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 14:23:49 -0400
+Subject: Re: [GIT PULL] io_uring fixes for 5.9-rc
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601144629;
+        bh=CCaPW70/W86IyoAzp3UaS/yVMAYKLN1wJjuCAZct1B0=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=g3VJzzQsm7PUYJ+rfWDs+Qxt3lUXyZ2MFYsuyVLgz0d8CJRwwJphFghgT5er73+d2
+         qIB2eKbcizmbpKVazn6YRUSnwOI+p/N2RLj6HtKiXtMLe2UACWdw7qtH6PVDtn94G2
+         QDigfr8B33rFU/GJOP1CxojRwiDiju7MyHHMJy5M=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <e5c4b3b9-84c2-adf8-6449-459524695431@kernel.dk>
+References: <e5c4b3b9-84c2-adf8-6449-459524695431@kernel.dk>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <e5c4b3b9-84c2-adf8-6449-459524695431@kernel.dk>
+X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-09-25
+X-PR-Tracked-Commit-Id: f38c7e3abfba9a9e180b34f642254c43782e7ffe
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 692495baa377e373cc9cd930af03e9b8b77eacdf
+Message-Id: <160114462898.21242.9643825992755912152.pr-tracker-bot@kernel.org>
+Date:   Sat, 26 Sep 2020 18:23:48 +0000
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul.
+The pull request you sent on Sat, 26 Sep 2020 04:38:07 -0600:
 
-On Sat, Sep 26, 2020 at 07:04:59PM +0200, Paul Cercueil wrote:
-> On JZ4725B and newer, the F0 plane supports paletted 8bpp with a
-> 256-entry palette. Add support for it.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 60 +++++++++++++++++++++--
->  1 file changed, 56 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 567facfb7217..48e88827f332 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -21,6 +21,7 @@
->  #include <drm/drm_atomic.h>
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_bridge.h>
-> +#include <drm/drm_color_mgmt.h>
->  #include <drm/drm_crtc.h>
->  #include <drm/drm_crtc_helper.h>
->  #include <drm/drm_damage_helper.h>
-> @@ -50,6 +51,8 @@ struct ingenic_dma_hwdesc {
->  struct ingenic_dma_hwdescs {
->  	struct ingenic_dma_hwdesc hwdesc_f0;
->  	struct ingenic_dma_hwdesc hwdesc_f1;
-> +	struct ingenic_dma_hwdesc hwdesc_pal;
-> +	u16 palette[256] __aligned(16);
->  };
->  
->  struct jz_soc_info {
-> @@ -464,6 +467,9 @@ void ingenic_drm_plane_config(struct device *dev,
->  				   JZ_LCD_OSDCTRL_BPP_MASK, ctrl);
->  	} else {
->  		switch (fourcc) {
-> +		case DRM_FORMAT_C8:
-> +			ctrl |= JZ_LCD_CTRL_BPP_8;
-> +			break;
->  		case DRM_FORMAT_XRGB1555:
->  			ctrl |= JZ_LCD_CTRL_RGB555;
->  			fallthrough;
-> @@ -529,16 +535,34 @@ void ingenic_drm_sync_data(struct device *dev,
->  	}
->  }
->  
-> +static void ingenic_drm_update_palette(struct ingenic_drm *priv,
-> +				       const struct drm_color_lut *lut)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-> +		u16 color = drm_color_lut_extract(lut[i].red, 5) << 11
-> +			| drm_color_lut_extract(lut[i].green, 6) << 5
-> +			| drm_color_lut_extract(lut[i].blue, 5);
-> +
-> +		priv->dma_hwdescs->palette[i] = color;
-> +	}
-> +}
-> +
->  static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->  					    struct drm_plane_state *oldstate)
->  {
->  	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
->  	struct drm_plane_state *state = plane->state;
-> +	struct drm_crtc_state *crtc_state;
->  	struct ingenic_dma_hwdesc *hwdesc;
-> -	unsigned int width, height, cpp;
-> +	unsigned int width, height, cpp, offset;
->  	dma_addr_t addr;
-> +	u32 fourcc;
->  
->  	if (state && state->fb) {
-> +		crtc_state = state->crtc->state;
-> +
->  		ingenic_drm_sync_data(priv->dev, oldstate, state);
->  
->  		addr = drm_fb_cma_get_gem_addr(state->fb, state, 0);
-> @@ -554,9 +578,23 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->  		hwdesc->addr = addr;
->  		hwdesc->cmd = JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
->  
-> -		if (drm_atomic_crtc_needs_modeset(state->crtc->state))
-> -			ingenic_drm_plane_config(priv->dev, plane,
-> -						 state->fb->format->format);
-> +		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
-> +			fourcc = state->fb->format->format;
-> +
-> +			ingenic_drm_plane_config(priv->dev, plane, fourcc);
-> +
-> +			if (fourcc == DRM_FORMAT_C8)
-> +				offset = offsetof(struct ingenic_dma_hwdescs, hwdesc_pal);
-> +			else
-> +				offset = offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
-> +
-> +			priv->dma_hwdescs->hwdesc_f0.next = priv->dma_hwdescs_phys + offset;
-> +
-> +			crtc_state->color_mgmt_changed = fourcc == DRM_FORMAT_C8;
-> +		}
-> +
-> +		if (crtc_state->color_mgmt_changed)
-> +			ingenic_drm_update_palette(priv, crtc_state->gamma_lut->data);
-What guarantee the size of gamma_lut->data?
-In other word - should drm_color_lut_size() be checked here?
-Maybe only accept a fully populated palette?
-This is what I can see rcar-du and armada does.
+> git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-09-25
 
-	Sam
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/692495baa377e373cc9cd930af03e9b8b77eacdf
 
->  	}
->  }
->  
-> @@ -952,6 +990,15 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->  	priv->dma_hwdescs->hwdesc_f1.next = dma_hwdesc_phys_f1;
->  	priv->dma_hwdescs->hwdesc_f1.id = 0xf1;
->  
-> +	/* Configure DMA hwdesc for palette */
-> +	priv->dma_hwdescs->hwdesc_pal.next = priv->dma_hwdescs_phys
-> +		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
-> +	priv->dma_hwdescs->hwdesc_pal.id = 0xc0;
-> +	priv->dma_hwdescs->hwdesc_pal.addr = priv->dma_hwdescs_phys
-> +		+ offsetof(struct ingenic_dma_hwdescs, palette);
-> +	priv->dma_hwdescs->hwdesc_pal.cmd = JZ_LCD_CMD_ENABLE_PAL
-> +		| (sizeof(priv->dma_hwdescs->palette) / 4);
-> +
->  	if (soc_info->has_osd)
->  		priv->ipu_plane = drm_plane_from_index(drm, 0);
->  
-> @@ -978,6 +1025,9 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->  		return ret;
->  	}
->  
-> +	drm_crtc_enable_color_mgmt(&priv->crtc, 0, false,
-> +				   ARRAY_SIZE(priv->dma_hwdescs->palette));
-> +
->  	if (soc_info->has_osd) {
->  		drm_plane_helper_add(&priv->f0,
->  				     &ingenic_drm_plane_helper_funcs);
-> @@ -1213,6 +1263,7 @@ static const u32 jz4725b_formats_f1[] = {
->  };
->  
->  static const u32 jz4725b_formats_f0[] = {
-> +	DRM_FORMAT_C8,
->  	DRM_FORMAT_XRGB1555,
->  	DRM_FORMAT_RGB565,
->  	DRM_FORMAT_XRGB8888,
-> @@ -1225,6 +1276,7 @@ static const u32 jz4770_formats_f1[] = {
->  };
->  
->  static const u32 jz4770_formats_f0[] = {
-> +	DRM_FORMAT_C8,
->  	DRM_FORMAT_XRGB1555,
->  	DRM_FORMAT_RGB565,
->  	DRM_FORMAT_XRGB8888,
-> -- 
-> 2.28.0
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
