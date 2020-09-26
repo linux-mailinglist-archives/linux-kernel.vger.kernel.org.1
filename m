@@ -2,128 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA3D27999E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F178A2799A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgIZNWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 09:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        id S1728612AbgIZNXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 09:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZNWc (ORCPT
+        with ESMTP id S1725208AbgIZNXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 09:22:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FF4C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 06:22:31 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kMA9b-00080u-MV; Sat, 26 Sep 2020 15:22:19 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kMA9a-0001Nn-5W; Sat, 26 Sep 2020 15:22:18 +0200
-Date:   Sat, 26 Sep 2020 15:22:17 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: pwm: imx: document i.MX compatibles
-Message-ID: <20200926132217.xr3rhv7o2o2yc2l7@pengutronix.de>
-References: <20200925212609.23093-1-krzk@kernel.org>
+        Sat, 26 Sep 2020 09:23:35 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FC6CC0613CE;
+        Sat, 26 Sep 2020 06:23:34 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id z23so2264370ejr.13;
+        Sat, 26 Sep 2020 06:23:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TDwJ/Ookqm6d4qTBt7qPNEM9fVbSO1bXMkKW1KWsMQE=;
+        b=lgz10t6A+P3FD3fi4z1ran7y/1bvCvswJY0zUdOvHUyyFx27w573PjPCOP0XWdWGiI
+         KnVv7xMMSyEjH3DoG6CyE45DX6U9F16YPTu24oxnP32vY90qNwFBN2GSER0/BMtJRf2U
+         t6VVd3IlP5aXMyfF+SYrJDWza0r0wOpFc75zKtJ0xzPfAtzhsZph49DCg9kl9lHTpJSv
+         IBC97tSCfE/o7bHRPAL1zYpkTpgpLlX2vZ7GVBD4kapY3VjC2roAZV7hqKR9r8/d7d0i
+         BYgDrIRtLvoTuhxUXmN523UDtIfsXZ3rwvGb7rx2L8cYo6ZbkyuK8VYnE9JH5+4uQNHp
+         pUvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TDwJ/Ookqm6d4qTBt7qPNEM9fVbSO1bXMkKW1KWsMQE=;
+        b=KrTLToXGMMRRqi648f3FZGqF+Q/0241mQI5dMqHCARfx4Tlf5TYZjmXheYUUWe5mHY
+         tSdbdORLFIkqVWM/Y2aBLgWbBD0/ZFoVDc765ecTLbgF5W9R1/cBtVo9UY65J/q16GTc
+         nt+TIxOyJrdTpH+A9u36t9IMnbqyLLyRMDXAqSHscPTMIrTQGR9Yj6jPjMSVkpkrJme2
+         rD9inFcBGZsfsbWEPbL/m6+BL6oSuR3zr1djuP31CuEcV4Yj8+92yM2KM1WuTVZ+BozR
+         4gvYOHoxlrpnED0nBMlgZThAfXsusr0leDwhI+EGT9f4/zr2XihWQtT+lXQ2xz4gcAAU
+         Lcyg==
+X-Gm-Message-State: AOAM532XEXNfK3x91gXzP5A+woySDVwqegj0eCxXi9icZDTzdJpuW+8t
+        rFr6Owi1KdBVyvJUSJZ29Y+DOQV+UdFTgWSNIe4aTfBw
+X-Google-Smtp-Source: ABdhPJw6Kpoagxbxm9cYUIdvpGy4tbKOA0BemF7CwigllilPuJoFY5vVJGj/IJ/CB4hTckKfxgZagYkmhlXZF6nw0UU=
+X-Received: by 2002:a17:906:2618:: with SMTP id h24mr7197221ejc.198.1601126613187;
+ Sat, 26 Sep 2020 06:23:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4a2n2kmrp36wo5e7"
-Content-Disposition: inline
-In-Reply-To: <20200925212609.23093-1-krzk@kernel.org>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20200926130306.13843-1-kholk11@gmail.com> <20200926130306.13843-2-kholk11@gmail.com>
+In-Reply-To: <20200926130306.13843-2-kholk11@gmail.com>
+From:   Martin Botka <martin.botka1@gmail.com>
+Date:   Sat, 26 Sep 2020 15:23:21 +0200
+Message-ID: <CADQ2G_GrOhQ8_ow5VwpCcW=m8kDZ6PxRaGT7q+dCvRx87-J=kQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] clk: qcom: Add SDM660 Multimedia Clock Controller
+ (MMCC) driver
+To:     kholk11@gmail.com
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, marijns95@gmail.com,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---4a2n2kmrp36wo5e7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Sep 25, 2020 at 11:26:09PM +0200, Krzysztof Kozlowski wrote:
-> Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles to fix dtbs_check
-> warnings like:
->=20
->   arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml: pwm@2080000: compatib=
-le:0:
->     'fsl,imx6q-pwm' is not one of ['fsl,imx8mm-pwm', 'fsl,imx8mn-pwm', 'f=
-sl,imx8mp-pwm', 'fsl,imx8mq-pwm']
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/Documen=
-tation/devicetree/bindings/pwm/imx-pwm.yaml
-> index 473863eb67e5..379d693889f6 100644
-> --- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-> +++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
-> @@ -25,6 +25,17 @@ properties:
->            - fsl,imx27-pwm
->        - items:
->            - enum:
-> +              - fsl,imx25-pwm
-
-The driver actually used fsl,imx27-pwm to bind ...
-
-Also since v5.1-rc1~38^2~17 the driver is split into pwm-imx27 and
-pwm-imx1. So maybe this file should be renamed to fsl,imx27-pwm.yaml?
-(And we need a volunteer to write fsl,imx1-pwm.yaml.)
-
-> +              - fsl,imx31-pwm
-> +              - fsl,imx50-pwm
-> +              - fsl,imx51-pwm
-> +              - fsl,imx53-pwm
-> +              - fsl,imx6q-pwm
-> +              - fsl,imx6sl-pwm
-> +              - fsl,imx6sll-pwm
-> +              - fsl,imx6sx-pwm
-> +              - fsl,imx6ul-pwm
-> +              - fsl,imx7d-pwm
->                - fsl,imx8mm-pwm
->                - fsl,imx8mn-pwm
->                - fsl,imx8mp-pwm
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---4a2n2kmrp36wo5e7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9vQIcACgkQwfwUeK3K
-7AmO/wf/SwA4EMbizbFMc/g26B6oURR0BpgMwryIR4tWauBOl5S62H4L/FGubOoq
-PZgrsS1cWnl5TeOHEamu8rPq4XQ6NIsKTN731nu9LGPp5M63A8RCzxcwIjBQZYEd
-XhGss6SgAi9pOmGJWBA4aBRdNRVUlo9BzpNPAyFbQUW52IWe7pQnn5rW3BNNb0kN
-m+qszVDXiY938BLSuCXELJ7yCoKep7Pxn/OAu0lcSOp3u8Yv9WaiNWRM06pBUsFg
-dTD1gCZI6VUDw/pplf6uF4Krb0vSNc9fWgq2IxGpCTO0S0t3YpiEhWujoj7Td7JM
-miH2yzSVov7zMiJsJYaLHjGhf4qmlw==
-=hOg4
------END PGP SIGNATURE-----
-
---4a2n2kmrp36wo5e7--
+Tested-by: Martin Botka <martin.botka1@gmail.com>
