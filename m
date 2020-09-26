@@ -2,150 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E89E92795B2
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF442795B6
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729838AbgIZA4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 20:56:14 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:43502 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729424AbgIZA4O (ORCPT
+        id S1729850AbgIZA4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 20:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729841AbgIZA4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:56:14 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08Q0mVtd064150;
-        Fri, 25 Sep 2020 20:56:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=cf6hvWkTo8OFE10cNfyaIwPYVXcBPhnJ5CUj9nT8RQc=;
- b=kOQ6XlhWk1ZuF1qotWqLiDkMwHikxjdAOQ0ypO/VckYgagA+NGXZN97Zkn+WY5O+G4ds
- RiyhAR5zrag7PsRZT/0TE9l4xna1k4f86lp6w0eJ07W8zSlBzRDFfckjvb6VlF4dO94J
- rejMCnoEdEcmCIUHQx/uWYvYCycuMXEm+s4GqUSj7M22AJ2FPd/cJc7DtmptJ7qPSuQE
- +KkibBp+acnDWTGvYh/uc6S0MmWbyCIxCWz9qjHgrEGa/D1F2wXejrkIsrI7nmhv8oRW
- pewRtHr55rGbFP4u4S3LURZC0wUlWT7iq5bI2Uht4Wws/ki9mJrlnND9TNvfkWaVB8rp sQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33sue583hr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Sep 2020 20:56:10 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08Q0oimA068472;
-        Fri, 25 Sep 2020 20:56:09 -0400
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33sue583ha-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Sep 2020 20:56:09 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08Q0mUU7030414;
-        Sat, 26 Sep 2020 00:56:07 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 33n98guhwv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 00:56:07 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08Q0u4PF23527738
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 26 Sep 2020 00:56:04 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 343F752050;
-        Sat, 26 Sep 2020 00:56:04 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.172.136])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id AEA335204E;
-        Sat, 26 Sep 2020 00:56:03 +0000 (GMT)
-Date:   Sat, 26 Sep 2020 02:56:01 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, pmorel@linux.ibm.com,
-        alex.williamson@redhat.com, cohuck@redhat.com,
-        kwankhede@nvidia.com, borntraeger@de.ibm.com
-Subject: Re: [PATCH] s390/vfio-ap: fix unregister GISC when KVM is already
- gone results in OOPS
-Message-ID: <20200926025601.2ad52b77.pasic@linux.ibm.com>
-In-Reply-To: <3795bc75-9d5e-2098-fd18-f1cbaef9c290@linux.ibm.com>
-References: <20200918170234.5807-1-akrowiak@linux.ibm.com>
-        <20200921174536.49e45e68.pasic@linux.ibm.com>
-        <3795bc75-9d5e-2098-fd18-f1cbaef9c290@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Fri, 25 Sep 2020 20:56:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3926C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:56:17 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id u24so3976764pgi.1
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:56:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CkABhTM4+gjBXbsGX0LKRrzMtJbpdlgplZ12ZAe2qrc=;
+        b=DVs4M+SVZf3NvmzPd0twXi8GkXf0+XVQGkPJ2D5CbIsOtbNbqrwJ2VVhFgG/rPZSqB
+         I+Yp6uBnQrGo21fG/nSKSViim0KzpxCSnQF25GAa8WkdW6DOraFnT+6SH6rf1QgQOg1b
+         lNbBhEa3rddjvkKJGLOR3cSiWpXS5bMM1B7Qn36rQOZuirHL1lPJmHPvS9sV2/3PDIGO
+         xxMU2vUq2REiFopho9DeLWl6VIsO+4XVfHVBLC6rQDQLqhd7F826uPNDL0Z9BPU64kON
+         PYLczhyUVg1pXKKiZmTR+nuNLFXfvFNg5GCEXZ6l2Dki04r93ZghdDNepAn5tuAriGLI
+         B0wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CkABhTM4+gjBXbsGX0LKRrzMtJbpdlgplZ12ZAe2qrc=;
+        b=USaqPXFb0smC8gl4Yq6l0H9BYJxGt3ismlEXWRHPTBMd9bMYQIvEHOfXaTikETKYhF
+         upcQooNtz43kDqsN+BmrXx8h5yLFc+Ui+hvMCYLPoiWCLY2BMy0hdvsdnDcZIszMEkVh
+         TNepOBBnWeWjB8pg3gaH1hcu4FTdpp715wVDMsonECdz7iD45LcwU+VI4gsB/ozRizlS
+         /5lJ1pOWHD9qc8vEE1tQb6zzdYEQqHXbDZERH0RsvAUx6Ti5fZgnC6UAauILca4dhbMX
+         MZV/nX3sJ4VU6EWvXmBaXJBIZ4/V4zogzSpE4r4xykCUzPM3AChaGm11PMoK7C7f2Xh5
+         osWw==
+X-Gm-Message-State: AOAM531m1eEWMJnYn0ZjDRBBmy5itsWiAFCf62G9PaHOrHCjjspmgZfD
+        R8dxkikve+5Vxon6pimAknNaLFt8ps0APDJ3XgfHMA==
+X-Google-Smtp-Source: ABdhPJx8y4D99gbo4fzAmw2sgsfjzir8Myjf2rJn647+B5G232Sfyky5gCDStSbt/YC5fFqEgZfvaAxvInPmtYPnvWc=
+X-Received: by 2002:a63:36cc:: with SMTP id d195mr1221093pga.426.1601081777097;
+ Fri, 25 Sep 2020 17:56:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-25_19:2020-09-24,2020-09-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- malwarescore=0 bulkscore=0 lowpriorityscore=0 mlxlogscore=999 adultscore=0
- suspectscore=2 spamscore=0 phishscore=0 priorityscore=1501 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009260001
+References: <20200925233552.GA4022480@dtor-ws>
+In-Reply-To: <20200925233552.GA4022480@dtor-ws>
+From:   Kenneth Albanowski <kenalba@google.com>
+Date:   Fri, 25 Sep 2020 17:56:06 -0700
+Message-ID: <CALvoSf7mjHwUhfnW_nHbsJk5=ZFVCNR5Ae1fXmhDf8PM68Oe2Q@mail.gmail.com>
+Subject: Re: [PATCH] HID: hid-input: fix stylus battery reporting
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 18:29:16 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+[Re-send to appease the mail daemons]
 
-> 
-> 
-> On 9/21/20 11:45 AM, Halil Pasic wrote:
-> > On Fri, 18 Sep 2020 13:02:34 -0400
-> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> >
-> >> Attempting to unregister Guest Interruption Subclass (GISC) when the
-> >> link between the matrix mdev and KVM has been removed results in the
-> >> following:
-> >>
-> >>     "Kernel panic -not syncing: Fatal exception: panic_on_oops"
-> >>
-> >> This patch fixes this bug by verifying the matrix mdev and KVM are still
-> >> linked prior to unregistering the GISC.
-> >
-> > I read from your commit message that this happens when the link between
-> > the KVM and the matrix mdev was established and then got severed.
-> >
-> > I assume the interrupts were previously enabled, and were not been
-> > disabled or cleaned up because q->saved_isc != VFIO_AP_ISC_INVALID.
-> >
-> > That means the guest enabled  interrupts and then for whatever
-> > reason got destroyed, and this happens on mdev cleanup.
-> >
-> > Does it happen all the time or is it some sort of a race?
-> 
-> This is a race condition that happens when a guest is terminated and the 
-> mdev is
-> removed in rapid succession. I came across it with one of my hades test 
-> cases
-> on cleanup of the resources after the test case completes. There is a 
-> bug in the problem appears
-> the vfio_ap_mdev_releasefunction because it tries to reset the APQNs 
-> after the bits are
-> cleared from the matrix_mdev.matrix, so the resets never happen.
-> 
+Confirmed, I've validated this on a 4.19 derivative, this fixes the
+problem and battery strength gets reported again.
 
-That sounds very strange. I couldn't find the place where we clear the
-bits in matrix_mdev.matrix except for unassign. Currently the unassign
-is supposed to be enabled only after we have no guest and we have
-cleaned up the queues (which should restore VFIO_AP_ISC_INVALID). Does
-your test do any unassign operations? (I'm not sure the we always do
-like we are supposed to.)
+- Kenneth Albanowski
 
-Now if we did not clear the bits from matrix_mdev.matrix then this
-could be an use after free scenario (where we interpret already
-re-purposed memory as matrix_mdev.matrix).
 
-> Fixing that, however, does not resolve the issue, so I'm in the process 
-> of doing a bunch of
-> tracing to see the flow of the resets etc. during the lifecycle of the 
-> mdev during this
-> hades test. I should have a better answer next week.
+On Fri, Sep 25, 2020 at 4:35 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
 >
-
-My take away is that we don't understand what exactly is going wrong, and
-so this patch is at best a mitigation (not a real fix). Does that sound
-about correct?
-
-Regards,
-Halil
-
-[..]
+> With commit 4f3882177240 hid-input started clearing of "ignored" usages
+> to avoid using garbage that might have been left in them. However
+> "battery strength" usages should not be ignored, as we do want to
+> use them.
+>
+> Fixes: 4f3882177240 ("HID: hid-input: clear unmapped usages")
+> Reported-by: Kenneth Albanowski <kenalba@google.com>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+>
+> Kenneth, can you please try this one and see if it fixes your issue?
+>
+>  drivers/hid/hid-input.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+> index dea9cc65bf80..5da631d2ec9b 100644
+> --- a/drivers/hid/hid-input.c
+> +++ b/drivers/hid/hid-input.c
+> @@ -797,7 +797,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+>                 case 0x3b: /* Battery Strength */
+>                         hidinput_setup_battery(device, HID_INPUT_REPORT, field);
+>                         usage->type = EV_PWR;
+> -                       goto ignore;
+> +                       return;
+>
+>                 case 0x3c: /* Invert */
+>                         map_key_clear(BTN_TOOL_RUBBER);
+> @@ -1059,7 +1059,7 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
+>                 case HID_DC_BATTERYSTRENGTH:
+>                         hidinput_setup_battery(device, HID_INPUT_REPORT, field);
+>                         usage->type = EV_PWR;
+> -                       goto ignore;
+> +                       return;
+>                 }
+>                 goto unknown;
+>
+> --
+> 2.28.0.681.g6f77f65b4e-goog
+>
+>
+> --
+> Dmitry
