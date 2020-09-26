@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66BB0279C00
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 21:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91DAF279C04
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 21:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730108AbgIZTEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 15:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIZTEE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 15:04:04 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 970B0C0613CE;
-        Sat, 26 Sep 2020 12:04:04 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id p9so3017444ejf.6;
-        Sat, 26 Sep 2020 12:04:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=el9DZyLyFdP/+cP0w9X7FpHYnAdbkFSV+0r7utpIGhE=;
-        b=ApMqTlo7oj7ATCcxJY1+KT3ll5lzWpGPHTGizNww9rzX/Jgx9nZZ6C/xRB2ED86+Bq
-         0yyAmAxSjtSw9pfFHLvuls0u0OWOpazPwditpdS+xo6pGiyUCJxuqX7SBhNxiPRKGFu6
-         FwH7L2rhVeHl8qH5Rw6/VSDjx74nHWnyjEEZ8qasdyJLRDnsWd1uR8b3kE5vzY1ZyZZg
-         FMX7HGRyQQCBMcrqZT/D7Tbiv0yEuN+OqNZLW3iJchPhcuAufc5J6XwOojqJzSrquQC5
-         M0nHXA8RFALPRxHtBUZfXbx3yMoM34lrTMmEM/GDlnWJ0ZQ/THg2myEJRU4E6uYKNWdT
-         3KXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=el9DZyLyFdP/+cP0w9X7FpHYnAdbkFSV+0r7utpIGhE=;
-        b=Pe0kJ8DAP/vkcW+NYHpzJ76pqR7HjJZv75USvjD+i2UNHP/WZ1UrZlyFxylOdJR2Q9
-         q6SJFZfFkM9FeluOcCJHAJ9qPIB1k2GVo3DaOzfla7hZosOU4dZOSEQeGcs0TiBTpQOP
-         Attde5RZZMR+KA1Xdtbw0/aFSLMSgyhhv8ieM4vEHjYRyADkycWWLHCIMgbzZJ9dD6+0
-         apMnzgpyP0woXzpOu6lsTEh//EpvfKePNJ0TxQG/3WBo7/DZMPeDCAbofxKW8aoQgd26
-         732BRFZ2gZ2tRk4xchjxDlvBV9eVGmQezrW0Qft5BY+LdQzGjMDe/xeNbrOZOpudJdkA
-         kVuw==
-X-Gm-Message-State: AOAM532CI6TRGwHfXV+XbCXcfrJhpNC3aT6QH3YZsRwu4FtHnn8LHIsH
-        83XL+RpFd1KPD7K0Iqc6r5k=
-X-Google-Smtp-Source: ABdhPJwi+J6K7E2UiXyKZLRsNtL2mkCX87NkmDhC2O7Hf1rAkDD7DifU6M6L/32UPJbIUV/seDOK+w==
-X-Received: by 2002:a17:906:3e08:: with SMTP id k8mr8321644eji.480.1601147043197;
-        Sat, 26 Sep 2020 12:04:03 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2daa:2000:30ed:2765:20d9:efd3])
-        by smtp.gmail.com with ESMTPSA id o23sm4592634eju.17.2020.09.26.12.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 12:04:02 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-spdx@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] scripts/spdxcheck.py: handle license identifiers in XML comments
-Date:   Sat, 26 Sep 2020 21:03:54 +0200
-Message-Id: <20200926190354.13194-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730200AbgIZTFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 15:05:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730180AbgIZTFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 15:05:41 -0400
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D19C21D7F
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 19:05:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601147140;
+        bh=67bbGqnrZpP+z/jSHSAMocksxZlI1NfOMQdsOtoJVaI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ChgCopoLb3Y/YZxQRtKP3P7EC5wdq6b5F4cmSlAuzG59XIIOjIjtRNOUulCYY54vd
+         3kCaQItNgjw1DYkzxcTodlUZpfN8ryjKJW55dwrp7EKfSczwSJfOwpUkmGubweE9x9
+         1BgBPNtsNLBy+FqZai+o11RNt0ooVIQJXGR9hYxw=
+Received: by mail-wr1-f46.google.com with SMTP id z1so7469160wrt.3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 12:05:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530JhkeeqLofXwQrxMkfiub8Bp3XO3TOSlPHxPtblLqzgGIJWS62
+        MVpaxQtWjnWc5voQlIAKJHxnJF2WXnCV7wgrG5UiEA==
+X-Google-Smtp-Source: ABdhPJzJpaOJbRmaM/kg50xhOP/aM2DNkAnFDPMKfx+AvI9TEYXSVv+JUSI8+aEOpzpkx2hwQI2Q0hP9d43gDV92rqE=
+X-Received: by 2002:adf:a3c3:: with SMTP id m3mr10501074wrb.70.1601147138798;
+ Sat, 26 Sep 2020 12:05:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <CALCETrUhQjQQa-BqNHPgdDfD9GDJZXJWSQ_M0tDF_ri5RfyTsw@mail.gmail.com>
+ <20200925190915.GD31528@linux.intel.com> <CALCETrWDgb_mVPDmKy_7oFg03cOxO-GAUS8kOFrfGiPp9RjboA@mail.gmail.com>
+ <20200925222938.GI31528@linux.intel.com>
+In-Reply-To: <20200925222938.GI31528@linux.intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 26 Sep 2020 12:05:26 -0700
+X-Gmail-Original-Message-ID: <CALCETrUV-cx6dii2cOcav01GSdo9qx6+GYeoPH9nHMXwg-geQQ@mail.gmail.com>
+Message-ID: <CALCETrUV-cx6dii2cOcav01GSdo9qx6+GYeoPH9nHMXwg-geQQ@mail.gmail.com>
+Subject: Re: Can we credibly make vdso_sgx_enter_enclave() pleasant to use?
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Cedric Xing <cedric.xing@intel.com>, linux-sgx@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit cc9539e7884c ("media: docs: use the new SPDX header for GFDL-1.1 on
-*.svg files") adds SPDX-License-Identifiers enclosed in XML comments,
-i.e., <!-- ... -->, for svg files.
+On Fri, Sep 25, 2020 at 3:29 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> On Fri, Sep 25, 2020 at 01:20:03PM -0700, Andy Lutomirski wrote:
+> > On Fri, Sep 25, 2020 at 12:09 PM Sean Christopherson
+> > <sean.j.christopherson@intel.com> wrote:
+> > > But where would the vDSO get memory for that little data structure?  It can't
+> > > be percpu because the current task can get preempted.  It can't be per instance
+> > > of the vDSO because a single mm/process can have multiple tasks entering an
+> > > enclave.  Per task might work, but how would the vDSO get that info?  E.g.
+> > > via a syscall, which seems like complete overkill?
+> >
+> > The stack.
+>
+> Duh.
+>
+> > The vDSO could, logically, do:
+> >
+> > struct sgx_entry_state {
+> >   unsigned long real_rbp;
+> >   unsigned long real_rsp;
+> >   unsigned long orig_fsbase;
+> > };
+> >
+> > ...
+> >
+> >   struct sgx_entry_state state;
+> >   state.rbp = rbp;  [ hey, this is pseudocode.  the real code would be in asm.]
+> >   state.rsp = rsp;
+> >   state.fsbase = __rdfsbase();
+> >   rbp = arg->rbp;
+> >
+> >   /* set up all other regs */
+> >   wrfsbase %rsp
+> >   movq enclave_rsp(%rsp), %rsp
+>
+> I think this is where there's a disconnect with what is being requested by the
+> folks writing run times.  IIUC, they want to use the untrusted runtime's stack
+> to pass params because it doesn't require additional memory allocations and
+> automagically grows as necessary (obviously to a certain limit).  I.e. forcing
+> the caller to provide an alternative "stack" defeats the purpose of using the
+> untrusted stack.
 
-Unfortunately, ./scripts/spdxcheck.py does not handle
-SPDX-License-Identifiers in XML comments, so it simply fails on checking
-these files with 'Invalid License ID: --'.
+I personally find this concept rather distasteful.  Sure, it might
+save a couple cycles, but it means that the enclave has hardcoded some
+kind of assumption about the outside-the-enclave stack.
 
-Strip the XML comment ending simply by copying how it was done for comments
-in C. With that, ./scripts/spdxcheck.py handles the svg files properly.
+Given that RBP seems reasonably likely to be stable across enclave
+executions, I suppose we could add a flag and an RSP value in the
+sgx_enclave_run structure.  If set, the vDSO would swap out RSP (but
+not RBP) with the provided value on entry and record the new RSP on
+exit.  I don't know if this would be useful to people.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on current master and next-20200925
-
-Greg, please pick this quick minor patch for your spdx tree. thanks.
-
- scripts/spdxcheck.py | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/scripts/spdxcheck.py b/scripts/spdxcheck.py
-index 6374e078a5f2..bc87200f9c7c 100755
---- a/scripts/spdxcheck.py
-+++ b/scripts/spdxcheck.py
-@@ -180,6 +180,9 @@ class id_parser(object):
-                 # Remove trailing comment closure
-                 if line.strip().endswith('*/'):
-                     expr = expr.rstrip('*/').strip()
-+                # Remove trailing xml comment closure
-+                if line.strip().endswith('-->'):
-+                    expr = expr.rstrip('-->').strip()
-                 # Special case for SH magic boot code files
-                 if line.startswith('LIST \"'):
-                     expr = expr.rstrip('\"').strip()
--- 
-2.17.1
-
+I do think we need to add at least minimal CFI annotations no matter what we do.
