@@ -2,135 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A60279B4F
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A14B2279B54
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 19:21:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729289AbgIZRVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 13:21:16 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:39408 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIZRVP (ORCPT
+        id S1729445AbgIZRVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 13:21:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgIZRVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 13:21:15 -0400
-Received: by mail-io1-f69.google.com with SMTP id y16so4221822ioy.6
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 10:21:14 -0700 (PDT)
+        Sat, 26 Sep 2020 13:21:42 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC2BC0613D3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 10:21:41 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id f18so5851742pfa.10
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 10:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vE+lYeuJds3ccRN3OwXIjY1LUbM5sVlk/OC8ULx/bQM=;
+        b=FeCp2On5/N4RD8Roua4UykHpWJwwS42tCkD+QdXUWupLJZOsCd3JYA3HAZ++crywDy
+         SOls6vyLmmlzkU4rKA9UIp+eKI/rpIHE5EzR1ZviqcWelfu1HdtCtIgY6OB6EsLknUmN
+         V+j8L8brJpfztinMAwRJzOKDesg/k1oWJn2HzK3x8pVawf6S1Incz0Ae3IZxpbR09YV4
+         JxGbmP1MQjtxfWRPvX1ylNegqsJjmsWyjrtqo2NsWcyvCIW1STTEy+Cymx1pRMADxveE
+         2B2VgA711k7I/Iz3jCDmO462h3sEqLUowsHHfrCJV/yRhQ1Qi4jjuKjqpXNdvgBuXKYK
+         PNcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=uQx7/WJNirjfW85gL89QcVygbz7js2vGaNbY3FUQdGA=;
-        b=kaJtJ+CdTbIpxMDTF34wQceM/jPHqLFpICZ1MsuQbg6QZrzG6/OwRskpaKPKVzxBUq
-         bJvhQuctUbhDgmdcgdDQpukfqEGr2mzTO9EzRBue9eXzHFtb8Dvq/4N4kZVwSZiJNBZC
-         +3Kfx+jNXUb5XzROwq8ai74T4Li9QA2LXuz7T8Seyf40/JgHhxj121lswI/UzRp49Ba/
-         myzz/h+3Uxs8N9sElO4hclgOOjB15P+vkHJNltg4BR3bUo9vLv/v8h3xaOfxVJJB0LH5
-         hzJw+EbD/MRGTjotG9kHavoT100EGJpqvbl0//W8Ka/uLvIyPXQ1M8octzrJ6nPRr9Ih
-         AesQ==
-X-Gm-Message-State: AOAM5317mfuaMnTpNUK5tzb/fJcyuX9qCpidZTgrgHRmRpVyIhOZxH/F
-        6mfk5PnViq+4bFua5jO1R1BB0xTN02zNgKrivqncx9teXwO/
-X-Google-Smtp-Source: ABdhPJz1q1LDPov92IU55Iz9IfVs1ANnuiyonRY+qc+4i1wr20iJB14DTgg+6UrsBGAoVpti8VxTRapxGlkTQf1KNGSiJaJJv3Xx
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vE+lYeuJds3ccRN3OwXIjY1LUbM5sVlk/OC8ULx/bQM=;
+        b=OKKy91wHKYs43cS0uay/7pDI5q0jqdj8tKdlwfe1qU9jmge/H7nr43id7OHSQ/0o3J
+         6ThfCNblHMTK1hiPIAlhCzaZVI+QOf91182wlZLCbYz3wGBAcio+Tu3Hd7JZBRols+g/
+         IcHrOu7yBoQDE2RcyCT/GZQgUqWtAID9Ao9C7UHnbXdUKU0YvRV4GPeljBtsPVHa2slN
+         ZU9bsvWQ4hXpawL/m8Nk3pcKS/7Mm/1xUrxKHwQ2IpAs8dOVyO/lUl0VzdZYKFFbzW3L
+         BWQM1Ezup3NUr1fUHEmt53dDUzXYCW00QfOHpN6EarwFWthUPKf64votxRpogfIEXSUv
+         KY0g==
+X-Gm-Message-State: AOAM530LxxsNjHIYWQK+lbQleWWBjmLqpMb50XkJfTcLTlK4Q91f6B95
+        jYLhBjE1WLx3ugcDlP4t2CM3
+X-Google-Smtp-Source: ABdhPJwFb59V6/SVoVMxRwkBZ1017jWA1Ra508qWGOOm+NuKOBk1aBVGfU6dvidmEZGAeXjSdE9bsA==
+X-Received: by 2002:aa7:939b:0:b029:142:2501:39de with SMTP id t27-20020aa7939b0000b0290142250139demr3643311pfe.45.1601140901310;
+        Sat, 26 Sep 2020 10:21:41 -0700 (PDT)
+Received: from Mani-XPS-13-9360.localdomain ([2409:4072:20d:ee7b:91b:1587:faf3:6b2b])
+        by smtp.gmail.com with ESMTPSA id gm17sm2232663pjb.46.2020.09.26.10.21.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 10:21:40 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2] bus: mhi: core: debugfs: Use correct format specifiers for addresses
+Date:   Sat, 26 Sep 2020 22:51:29 +0530
+Message-Id: <20200926172129.15484-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:c690:: with SMTP id o16mr4114102ilg.215.1601140874534;
- Sat, 26 Sep 2020 10:21:14 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 10:21:14 -0700
-In-Reply-To: <000000000000b6d7fd05b02037ef@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000fe7c205b03aa9e9@google.com>
-Subject: Re: general protection fault in gfs2_withdraw
-From:   syzbot <syzbot+50a8a9cf8127f2c6f5df@syzkaller.appspotmail.com>
-To:     agruenba@redhat.com, cluster-devel@redhat.com,
-        linux-kernel@vger.kernel.org, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+For exposing the addresses of read/write pointers and doorbell register,
+let's use the correct format specifiers. This fixes the following issues
+generated using W=1 build in ARM32 and reported by Kbuild bot:
 
-HEAD commit:    7c7ec322 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f2ff27900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6184b75aa6d48d66
-dashboard link: https://syzkaller.appspot.com/bug?extid=50a8a9cf8127f2c6f5df
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=160fb773900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1104f109900000
+All warnings (new ones prefixed by >>):
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+50a8a9cf8127f2c6f5df@syzkaller.appspotmail.com
+>> drivers/bus/mhi/core/debugfs.c:75:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
+                              mhi_event->db_cfg.db_val);
+                              ^~~~~~~~~~~~~~~~~~~~~~~~
+   drivers/bus/mhi/core/debugfs.c:123:7: warning: format specifies type 'unsigned long long' but the argument has type 'dma_addr_t' (aka 'unsigned int') [-Wformat]
+                              mhi_chan->db_cfg.db_val);
+                              ^~~~~~~~~~~~~~~~~~~~~~~
+   2 warnings generated.
 
-gfs2: fsid=syz:syz.0: fatal: invalid metadata block
-  bh = 2072 (magic number)
-  function = gfs2_meta_indirect_buffer, file = fs/gfs2/meta_io.c, line = 417
-gfs2: fsid=syz:syz.0: about to withdraw this file system
-general protection fault, probably for non-canonical address 0xdffffc000000000e: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000070-0x0000000000000077]
-CPU: 0 PID: 6842 Comm: syz-executor264 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:signal_our_withdraw fs/gfs2/util.c:97 [inline]
-RIP: 0010:gfs2_withdraw+0x2b0/0xe20 fs/gfs2/util.c:294
-Code: e8 03 48 89 44 24 38 42 80 3c 38 00 74 08 48 89 ef e8 34 f7 69 fe 48 89 6c 24 20 48 8b 6d 00 48 83 c5 70 48 89 e8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 ef e8 11 f7 69 fe 48 8b 45 00 48 89 44
-RSP: 0018:ffffc900057474f0 EFLAGS: 00010202
-RAX: 000000000000000e RBX: ffff8880a71e0000 RCX: 98268db4dfe86a00
-RDX: ffff888092bb6100 RSI: 0000000000000000 RDI: ffff8880a71e0430
-RBP: 0000000000000070 R08: ffffffff834ad50c R09: ffffed1015d041c3
-R10: ffffed1015d041c3 R11: 0000000000000000 R12: 1ffff11014e3c04d
-R13: ffff8880a71e0050 R14: ffff8880a71e026c R15: dffffc0000000000
-FS:  000000000233b880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f74f826d6c0 CR3: 00000000a04cc000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- gfs2_meta_check_ii+0x70/0x80 fs/gfs2/util.c:450
- gfs2_metatype_check_i fs/gfs2/util.h:126 [inline]
- gfs2_meta_indirect_buffer+0x29f/0x380 fs/gfs2/meta_io.c:417
- gfs2_meta_inode_buffer fs/gfs2/meta_io.h:70 [inline]
- gfs2_inode_refresh+0x65/0xc00 fs/gfs2/glops.c:438
- inode_go_lock+0x12c/0x480 fs/gfs2/glops.c:468
- do_promote+0x4db/0xcd0 fs/gfs2/glock.c:390
- finish_xmote+0x907/0x1350 fs/gfs2/glock.c:560
- do_xmote+0xadb/0x14c0 fs/gfs2/glock.c:686
- gfs2_glock_nq+0xac3/0x14d0 fs/gfs2/glock.c:1410
- gfs2_glock_nq_init fs/gfs2/glock.h:238 [inline]
- gfs2_lookupi+0x36f/0x4f0 fs/gfs2/inode.c:317
- gfs2_lookup_simple+0xa4/0x100 fs/gfs2/inode.c:268
- init_journal+0x132/0x1970 fs/gfs2/ops_fstype.c:620
- init_inodes fs/gfs2/ops_fstype.c:756 [inline]
- gfs2_fill_super+0x2717/0x3fe0 fs/gfs2/ops_fstype.c:1125
- get_tree_bdev+0x3e9/0x5f0 fs/super.c:1342
- gfs2_get_tree+0x4c/0x1f0 fs/gfs2/ops_fstype.c:1201
- vfs_get_tree+0x88/0x270 fs/super.c:1547
- do_new_mount fs/namespace.c:2875 [inline]
- path_mount+0x179d/0x29e0 fs/namespace.c:3192
- do_mount fs/namespace.c:3205 [inline]
- __do_sys_mount fs/namespace.c:3413 [inline]
- __se_sys_mount+0x126/0x180 fs/namespace.c:3390
- do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x458e1a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd ad fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da ad fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007ffc76f65c88 EFLAGS: 00000293 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffc76f65ce0 RCX: 0000000000458e1a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffc76f65ca0
-RBP: 00007ffc76f65ca0 R08: 00007ffc76f65ce0 R09: 00007ffc00000015
-R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000809
-R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
-Modules linked in:
----[ end trace 1e62174917573e95 ]---
-RIP: 0010:signal_our_withdraw fs/gfs2/util.c:97 [inline]
-RIP: 0010:gfs2_withdraw+0x2b0/0xe20 fs/gfs2/util.c:294
-Code: e8 03 48 89 44 24 38 42 80 3c 38 00 74 08 48 89 ef e8 34 f7 69 fe 48 89 6c 24 20 48 8b 6d 00 48 83 c5 70 48 89 e8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 ef e8 11 f7 69 fe 48 8b 45 00 48 89 44
-RSP: 0018:ffffc900057474f0 EFLAGS: 00010202
-RAX: 000000000000000e RBX: ffff8880a71e0000 RCX: 98268db4dfe86a00
-RDX: ffff888092bb6100 RSI: 0000000000000000 RDI: ffff8880a71e0430
-RBP: 0000000000000070 R08: ffffffff834ad50c R09: ffffed1015d041c3
-R10: ffffed1015d041c3 R11: 0000000000000000 R12: 1ffff11014e3c04d
-R13: ffff8880a71e0050 R14: ffff8880a71e026c R15: dffffc0000000000
-FS:  000000000233b880(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f74f826d6c0 CR3: 00000000a04cc000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_events_show’:
+drivers/bus/mhi/core/debugfs.c:74:51: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+   seq_printf(m, " local rp: 0x%llx db: 0x%pad\n", (u64)ring->rp,
+                                                   ^
+drivers/bus/mhi/core/debugfs.c: In function ‘mhi_debugfs_channels_show’:
+drivers/bus/mhi/core/debugfs.c:122:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+       (u64)ring->rp, (u64)ring->wp,
+       ^
+drivers/bus/mhi/core/debugfs.c:122:22: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+       (u64)ring->rp, (u64)ring->wp,
+                      ^
+drivers/bus/mhi/core/debugfs.c:121:62: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘dma_addr_t {aka unsigned int}’ [-Wformat=]
+   seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
+                                                           ~~~^
+                                                           %x
+drivers/bus/mhi/core/debugfs.c:123:7:
+       mhi_chan->db_cfg.db_val);
+
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+---
+
+Changes in v2:
+
+* Used %pK format specifier to hash addresses by default
+
+Greg: This fixes the issue seen while testing the char-misc/char-misc-testing
+branch.
+
+ drivers/bus/mhi/core/debugfs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/bus/mhi/core/debugfs.c b/drivers/bus/mhi/core/debugfs.c
+index 53d05a8e168d..f50d73054db4 100644
+--- a/drivers/bus/mhi/core/debugfs.c
++++ b/drivers/bus/mhi/core/debugfs.c
+@@ -71,8 +71,8 @@ static int mhi_debugfs_events_show(struct seq_file *m, void *d)
+ 		seq_printf(m, " rp: 0x%llx wp: 0x%llx", er_ctxt->rp,
+ 			   er_ctxt->wp);
+ 
+-		seq_printf(m, " local rp: 0x%llx db: 0x%llx\n", (u64)ring->rp,
+-			   mhi_event->db_cfg.db_val);
++		seq_printf(m, " local rp: 0x%pK db: 0x%pad\n", ring->rp,
++			   &mhi_event->db_cfg.db_val);
+ 	}
+ 
+ 	return 0;
+@@ -118,9 +118,9 @@ static int mhi_debugfs_channels_show(struct seq_file *m, void *d)
+ 		seq_printf(m, " base: 0x%llx len: 0x%llx wp: 0x%llx",
+ 			   chan_ctxt->rbase, chan_ctxt->rlen, chan_ctxt->wp);
+ 
+-		seq_printf(m, " local rp: 0x%llx local wp: 0x%llx db: 0x%llx\n",
+-			   (u64)ring->rp, (u64)ring->wp,
+-			   mhi_chan->db_cfg.db_val);
++		seq_printf(m, " local rp: 0x%pK local wp: 0x%pK db: 0x%pad\n",
++			   ring->rp, ring->wp,
++			   &mhi_chan->db_cfg.db_val);
+ 	}
+ 
+ 	return 0;
+-- 
+2.17.1
 
