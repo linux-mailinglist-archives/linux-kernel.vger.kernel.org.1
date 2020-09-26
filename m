@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B17B279BD5
+	by mail.lfdr.de (Postfix) with ESMTP id 984FC279BD6
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730060AbgIZSXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 14:23:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34078 "EHLO mail.kernel.org"
+        id S1730091AbgIZSXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 14:23:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726244AbgIZSXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1730001AbgIZSXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 26 Sep 2020 14:23:49 -0400
-Subject: Re: [GIT PULL] io_uring fixes for 5.9-rc
+Subject: Re: [GIT PULL] SCSI fixes for 5.9-rc6
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1601144629;
-        bh=CCaPW70/W86IyoAzp3UaS/yVMAYKLN1wJjuCAZct1B0=;
+        bh=BtFTUlpHvEKAXClVNFuA0aESnkk8fjXWXnbdyUd1E58=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=g3VJzzQsm7PUYJ+rfWDs+Qxt3lUXyZ2MFYsuyVLgz0d8CJRwwJphFghgT5er73+d2
-         qIB2eKbcizmbpKVazn6YRUSnwOI+p/N2RLj6HtKiXtMLe2UACWdw7qtH6PVDtn94G2
-         QDigfr8B33rFU/GJOP1CxojRwiDiju7MyHHMJy5M=
+        b=JfLpwg5Yeo45uhmUIsckPkKe+c3yWJzJuKNDKABg++DxuVmGbFjTrH0ZH4IjmmJab
+         izfOKfwgjQUF9EvjNmHddbV2JZh2ppq/WEBYYEJu3uYKv18mheoCjMRNA99EGy9dnC
+         JcqK0tlT0K2JZEVJApz1tHXnEXB1R2eajYYQS0aE=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <e5c4b3b9-84c2-adf8-6449-459524695431@kernel.dk>
-References: <e5c4b3b9-84c2-adf8-6449-459524695431@kernel.dk>
+In-Reply-To: <534da60ce3bf4c6e30071b721e9c08466e574f08.camel@HansenPartnership.com>
+References: <534da60ce3bf4c6e30071b721e9c08466e574f08.camel@HansenPartnership.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <e5c4b3b9-84c2-adf8-6449-459524695431@kernel.dk>
-X-PR-Tracked-Remote: git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-09-25
-X-PR-Tracked-Commit-Id: f38c7e3abfba9a9e180b34f642254c43782e7ffe
+X-PR-Tracked-Message-Id: <534da60ce3bf4c6e30071b721e9c08466e574f08.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: 6c5dee18756b4721ac8518c69b22ee8ac0c9c442
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 692495baa377e373cc9cd930af03e9b8b77eacdf
-Message-Id: <160114462898.21242.9643825992755912152.pr-tracker-bot@kernel.org>
-Date:   Sat, 26 Sep 2020 18:23:48 +0000
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: a1bffa48745afbb54cb4f873bba783b2ae8be042
+Message-Id: <160114462919.21242.10046272585715495850.pr-tracker-bot@kernel.org>
+Date:   Sat, 26 Sep 2020 18:23:49 +0000
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 26 Sep 2020 04:38:07 -0600:
+The pull request you sent on Sat, 26 Sep 2020 09:04:58 -0700:
 
-> git://git.kernel.dk/linux-block.git tags/io_uring-5.9-2020-09-25
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/692495baa377e373cc9cd930af03e9b8b77eacdf
+https://git.kernel.org/torvalds/c/a1bffa48745afbb54cb4f873bba783b2ae8be042
 
 Thank you!
 
