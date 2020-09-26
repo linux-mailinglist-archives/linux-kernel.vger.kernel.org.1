@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E293E27994F
+	by mail.lfdr.de (Postfix) with ESMTP id 07EFB27994D
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbgIZNAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 09:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36420 "EHLO
+        id S1729332AbgIZNAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 09:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgIZNAK (ORCPT
+        with ESMTP id S1729093AbgIZNAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 09:00:10 -0400
+        Sat, 26 Sep 2020 09:00:11 -0400
 Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF6E8C0613CE;
-        Sat, 26 Sep 2020 06:00:09 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z4so6893360wrr.4;
-        Sat, 26 Sep 2020 06:00:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8616C0613D3;
+        Sat, 26 Sep 2020 06:00:10 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j2so6855239wrx.7;
+        Sat, 26 Sep 2020 06:00:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PAcoT4e7//N0L9a2DDThzgnZpyqBXzsg7G0B+Oty6tc=;
-        b=YEFZLk3cJa28x/a0LzCSWhYC+2UQHeOq5V07AWVziptgbTzNHTFXbNJujyKUitFRQw
-         tMUnEn6ro0Z5D7Vl1PBzFlrs34BSqmhXVpdh1AgXNV4WYlXjXtHE3lDeovrqhMF9J9sx
-         sUn83NtWSG56E4dG41BaWRujxLWSG2vYCpnVzi/axvbCaA8SqGMiZDgL2FZCEQFaRq6t
-         guKkcbrJC0Fryy3ifKpb5TZjW/TaP4Irb3HAhiZXqVXxX8KYdM3ZSVR2qTRBygRW1UcS
-         qMxGwADOtTHsIDZCIB9vkk16glPQmPJSa1iMbQEaXr7faabgHDwHrBqu/gBN61GVFJ1P
-         O9jQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=eMld5gY+2zvkyoWP4cdMGVU0dV27KoJaLDxKtwGwGLw=;
+        b=tiXXJpYzUvhrdD8vLBz52cA1Xryg8QnRxF5Vvj4CD1UYFpJ4gZWwfHjbOH0/uyRx0D
+         O/B7N0jLT5yTYDayB0yrr4euzD6DCYo2RtRckWk92nl0NfWWgd5oBcXkUGcCf3yVJjNj
+         /MfY7ARJVFg7jA7rtFTEcLk3YgBbSlLDjd+7jBZpzQJ68Fn8a2Vi9/f5nYoh9KMkY/kb
+         Zok5LC+yYrfRDDwkkAJs5UuHprRkl5Aljt1EgY5qcV/cy/4WxLq0a8by1TCjSh6aevuz
+         76hCDNiN+0giaPfjnHlb9yHR3mafxv7ebw9bdA+Dq8CbfD1HC3QDqTCK7jzrCo2Ga7Vl
+         GnpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PAcoT4e7//N0L9a2DDThzgnZpyqBXzsg7G0B+Oty6tc=;
-        b=Te1/yuyhUMBY3q64/eCP+6ocPOW0VBuSWJDl7lFrslQflBhfOhz8M6hAPdHmisKXRt
-         B2stc32LOf2xFbAubZ5soHMrn1QQUZMvSiNuOAVYvwqD17Wg1UDzbUXerz31PZg536Z8
-         44RaFcJvtogyHVNUTIOIXzkTfHwGjje3ssymfObGCwzpUuq/8QFYlWr/GsnKA3zH2e+A
-         WPTy2qGXgGBy2tibYRISLB7A6TNGt9dlblL6b7DGAqq/ogMJkR0oxWcokBNg2ERhhzAz
-         bhIz/+gsbBFYfIZwiK/qls0vy1D7wf88s3wa/86PoVrD3mas5CPNAGugMZLnovUAWrzo
-         KmDA==
-X-Gm-Message-State: AOAM5314yHrhM1rhssBNQIo1W2n3E59k8shyR79AfoJxULRQyqZQ6FsC
-        KTECUuRbsyPxY5u1Vz5HEQI=
-X-Google-Smtp-Source: ABdhPJxOT7l7/Elc5zO2CHh/l9y3x4rzuvfL4itTCERHNUCo2rwzkXL7LybRxm2uIWBRmBxy51M64A==
-X-Received: by 2002:a5d:4388:: with SMTP id i8mr9349083wrq.365.1601125208258;
-        Sat, 26 Sep 2020 06:00:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=eMld5gY+2zvkyoWP4cdMGVU0dV27KoJaLDxKtwGwGLw=;
+        b=OHOMANjQlS22eEPOgbwZqaMJps0lU3Sep1bzAQjL/TlhQwY3cfWm9D63TKnvmpIF5a
+         G11N0hxrz+qpHYYiNzYdZGy+7G6W/DxIfFp0FWKuDvnDpqyKTtG+0vn+ec7nI9jTCe3I
+         mYtuzEstVPeODUw44ykEIgb/eQR+3HSFyWEK07SzRQghGxQAwp86jGXQkzG1sJ3vUUig
+         4KdhmKHfAPDXbvzb1/LT4JATmqtsAJibzOHVGsDF/oVwEEACRvZCvJull6grsyuKKtw5
+         mpkc2b8iUrTReDNe3raZRLTy8M/35mmUG00YwusmNkP9MUd5Y3fWIl4LTgnpYdIZM6vE
+         IooQ==
+X-Gm-Message-State: AOAM530RyzOYsoIuJois0EIetJ+AULdXX6KlNrv0GrHNSYiwu7XGnRDx
+        punm9spteCxu+dIREV0tGXQ=
+X-Google-Smtp-Source: ABdhPJyX9Pl2HPvTtJFa+EQBU2CcFjI2zDkLLJXHjvlXOdf/yDfQGadlMN2YIudnBdFmBttCOlnnCg==
+X-Received: by 2002:adf:c3cc:: with SMTP id d12mr9607388wrg.399.1601125209518;
+        Sat, 26 Sep 2020 06:00:09 -0700 (PDT)
 Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id b11sm6462896wrt.38.2020.09.26.06.00.06
+        by smtp.gmail.com with ESMTPSA id b11sm6462896wrt.38.2020.09.26.06.00.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 06:00:07 -0700 (PDT)
+        Sat, 26 Sep 2020 06:00:09 -0700 (PDT)
 From:   kholk11@gmail.com
 To:     will@kernel.org
 Cc:     robin.murphy@arm.com, joro@8bytes.org, bjorn.andersson@linaro.org,
@@ -55,10 +55,12 @@ Cc:     robin.murphy@arm.com, joro@8bytes.org, bjorn.andersson@linaro.org,
         kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
         martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
         phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/8] Implement firmware quirks for Qualcomm ARM-SMMUv2
-Date:   Sat, 26 Sep 2020 14:59:56 +0200
-Message-Id: <20200926130004.13528-1-kholk11@gmail.com>
+Subject: [PATCH 1/8] iommu/arm-smmu-qcom: Rename qcom_smmu_impl to qcom_smmu500_impl
+Date:   Sat, 26 Sep 2020 14:59:57 +0200
+Message-Id: <20200926130004.13528-2-kholk11@gmail.com>
 X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20200926130004.13528-1-kholk11@gmail.com>
+References: <20200926130004.13528-1-kholk11@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -67,48 +69,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-In this patch series, I'm implementing some quirks for firmware issues
-happening on various Qualcomm SoCs, including SDM630, SDM636, SDM660,
-their SDA variants and, most probably, other MSM/APQs.
+Rename qcom_smmu_impl to qcom_smmu500_impl, as it refers only to the
+MMU-500 in Qualcomm SoCs, in preparation for adding implementation
+details for ones having SMMUv2.
 
-In the specific case of the 630/660 family of SoCs, failing to apply
-all of these quirks means complete havoc when enabling the IOMMUs,
-as the firmware that is running on (almost?) all of the commercial
-boards (smartphones) is set to give us a "nice" hypervisor fault,
-resulting in either a system hang or a reboot.
+Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+---
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-The actual implementation of these quirks in downstream kernels is
-done through reading some DT property and varying code paths, while
-here it's done through the implementation details for ARM-SMMU instead.
-
-In short, the quirks that are proposed in this patch series are the
-ones relative to the following downstream properties:
- - qcom,use-3-lvl-tables (39-bit VA size)
- - qcom,skip-init        (avoid stream mapping reset for secure CBs)
- - qcom,no-smr-check     (manually set correct streamid/smr masks)
-
-This patch series has been tested on the following devices:
- - Sony Xperia XA2 Ultra (SDM630 Nile Discovery)
- - Sony Xperia 10        (SDM630 Ganges Kirin)
- - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
-
-AngeloGioacchino Del Regno (8):
-  iommu/arm-smmu-qcom: Rename qcom_smmu_impl to qcom_smmu500_impl
-  iommu/arm-smmu-qcom: Add QC SMMUv2 VA Size quirk for SDM660
-  dt-bindings: arm-smmu: add binding for SMMUv2 on Qualcomm SDM660
-  iommu/arm-smmu: Support test_smr_masks implementation detail deviation
-  iommu/arm-smmu-qcom: Add test_smr_masks detail to QCOM SMMUv2
-  iommu/arm-smmu: Move stream mapping reset to separate function
-  iommu/arm-smmu: Support stream_mapping_reset implementation detail
-  iommu/arm-smmu-qcom: Add stream_mapping_reset detail to QCOM SMMUv2
-
- .../devicetree/bindings/iommu/arm,smmu.yaml   |  1 +
- drivers/iommu/arm/arm-smmu/arm-smmu-impl.c    |  3 +-
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c    | 59 ++++++++++++++++++-
- drivers/iommu/arm/arm-smmu/arm-smmu.c         | 28 +++++++--
- drivers/iommu/arm/arm-smmu/arm-smmu.h         |  2 +
- 5 files changed, 85 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+index be4318044f96..7859fd0db22a 100644
+--- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
++++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+@@ -60,7 +60,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+ 	return 0;
+ }
+ 
+-static const struct arm_smmu_impl qcom_smmu_impl = {
++static const struct arm_smmu_impl qcom_smmu500_impl = {
+ 	.def_domain_type = qcom_smmu_def_domain_type,
+ 	.reset = qcom_smmu500_reset,
+ };
+@@ -75,7 +75,7 @@ struct arm_smmu_device *qcom_smmu_impl_init(struct arm_smmu_device *smmu)
+ 
+ 	qsmmu->smmu = *smmu;
+ 
+-	qsmmu->smmu.impl = &qcom_smmu_impl;
++	qsmmu->smmu.impl = &qcom_smmu500_impl;
+ 	devm_kfree(smmu->dev, smmu);
+ 
+ 	return &qsmmu->smmu;
 -- 
 2.28.0
 
