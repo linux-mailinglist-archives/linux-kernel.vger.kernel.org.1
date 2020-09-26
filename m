@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66284279CC4
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 00:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D290279CC7
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 00:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbgIZWSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 18:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
+        id S1727801AbgIZWYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 18:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgIZWSS (ORCPT
+        with ESMTP id S1726587AbgIZWYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 18:18:18 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA51C0613CE;
-        Sat, 26 Sep 2020 15:18:17 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id m5so6807494lfp.7;
-        Sat, 26 Sep 2020 15:18:17 -0700 (PDT)
+        Sat, 26 Sep 2020 18:24:35 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5B7C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 15:24:34 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id p24so3575104vsf.8
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 15:24:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lE/AC9bxBW83uM+HIDXwlkhKItngXZopMBpfvrstmyk=;
-        b=MMVMy8XAeJuOZHcFkqxvLQrgmKcUV63chHs3W25SNnFr9148jM6nHY2ovh4oF0QE6c
-         jhtvG31t4Mq9+5jaOidpFB09HeFHYzofMbmBI+E/drIZvB3BbwWbf9t+h6xD2DYEItku
-         IhWp2VWmb4Kbmx2X/EWnRolQfJW9H4MqjUyo8lo6XDA2//YxLu+cZhK//Yc0twvuebqo
-         bYIOE+4Cfbs4EX1Y0b3/l6TGfO8SpuUKrSvNsuxr7WRBmQNOUWNfKJ3cZMvM4x9DEX8m
-         wfoZX8D896K3NqdLZmRRO7kUqQS/PrqhVOk3D9TWot62/raq+FmXBB8+ef68CtMGChtu
-         kHjg==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=RFjST6WTWl2HErgo/MFlw9oz3Ck4pyxWRgkJWzlGF00=;
+        b=vCbT0VeKnZPCgIkyYKCFyUgRZAs6/y/Az6L8qD0MZ8sVFPcFm+dbPZWg5WhZ3ltsOE
+         aE5b7QrRlXjUcaxFTRlZQUNQcs6/btoZOpJeoQiWtuxuKoRqqtrnAGaJz5TDDK3GmJxO
+         mlL9QtBl+w50m5i+N7znET7lXH0GvuM57R8lZvLB5hPTQE0nNUdoYrfJpwsM8aLNGReP
+         iRyhEG7eNoV7aE1vV+kKAN4L28uqdaEIobZEpkiPYPixSlrVyj5g+yMoyIHqcpKgi67V
+         KbrflPX76/gaoehm1Tyw/NdwChFAH6x0cXpQvib7HRrdUKp3dmY6ZgdOosxqnklPuCaX
+         /AGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lE/AC9bxBW83uM+HIDXwlkhKItngXZopMBpfvrstmyk=;
-        b=mVl+YpQmPOJdZ7RyssssMt0zag4cmOs53R1taaNrj3kodAwoDkSfMmd1+OM75nNv/y
-         mdXZT8bOhoHgpTz6dmcfdQLSPsr08ikIAQxblElWYjjBfw8MV5pg08vDL+JHDLMT4Cdh
-         tfw+ozhAUT7NzTwlmafxtWIjqX1NFMJ5Zo3AqCHFnYTI5flG1mNTVdgw6Ump8aWB1DL5
-         OUVW18I/82zYpI3tGC3uL+GnXpVpa9PSmZAPqsM8OhmyZHAW+Q3J296ChR138/yI1Hg2
-         d1qmZX8g+6/r06VssBU7r5dHkW1HlGGZg0o5gHgdMKPiSGle1FUZ2DkOkZsieZ/opWU3
-         NXUw==
-X-Gm-Message-State: AOAM533YFykwcmPJvTfGXdIZWygM9PlbZO7QOalBnK/ZFF3SFvU2SSwL
-        pYcLtxFj5WNYCauMM2+i6oQBp4s87M4=
-X-Google-Smtp-Source: ABdhPJwPPewtePgrxJeTjV075852NV+KAjHbpk+ELT2P0eGddHeapSuRqXwoj/vq73zaQITGyV5qsA==
-X-Received: by 2002:a05:6512:2101:: with SMTP id q1mr1782412lfr.157.1601158696395;
-        Sat, 26 Sep 2020 15:18:16 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id n3sm2138553lfq.274.2020.09.26.15.18.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Sep 2020 15:18:15 -0700 (PDT)
-Subject: Re: [PATCH 4/5] iommu/tegra-smmu: Add PCI support
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, krzk@kernel.org
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
-References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
- <20200926080719.6822-5-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <b95b69fb-8570-f5dc-c486-b94958f2a791@gmail.com>
-Date:   Sun, 27 Sep 2020 01:18:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=RFjST6WTWl2HErgo/MFlw9oz3Ck4pyxWRgkJWzlGF00=;
+        b=gpE+w9oop+bW3XCHTNLB2NoNkNcJzRknl087mXNKAp9PtUsqUdk/mtfXvUhDPZucCa
+         8V5hfAROLifaXK/TF7lSLEODki13LNzUSTz4qcsQeNyEri235T8yphA+n7RbWpU6y++V
+         qPQ07vxYxtMZ9+CuHL7lKEmN8Xkq5GXIqTUBRcjumFjke/OaiDEifOxp42ll0wzFojVQ
+         EWUFHEPUMcOHhzkeQ//vGd1sV/JlnuADmNcXXgnNXCAZ9Reg80zPrjvS2jYWHkQrjvb0
+         aY/aE9wJQoX6ctJ3roVmIFlkqpJyYS3VRDVG08/iXVFJSbPKXO6/OmZ5J7EjXDvmGlaE
+         YBeA==
+X-Gm-Message-State: AOAM5312BeC4FODUxlJgpC9vzPm1iy+7TvrBwUwOWt0yfZY6QzuHBhgW
+        b17iXp60xDgU2b4Q2Bk4K70V2WAIHhtdKMXt0H8=
+X-Google-Smtp-Source: ABdhPJysTWyFbrbeu2r6JQ14Jwb4lZE6zeHZ0iINEDjO7lVa/ukLotsnrA030yUWFKNw6hZP7K9T+JCU3drw3n2z6ew=
+X-Received: by 2002:a67:2c85:: with SMTP id s127mr2549484vss.11.1601159073975;
+ Sat, 26 Sep 2020 15:24:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200926080719.6822-5-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a67:3c2:0:0:0:0:0 with HTTP; Sat, 26 Sep 2020 15:24:33 -0700 (PDT)
+Reply-To: dunawattara96@outlook.com
+From:   Mr Duna Wattara <drhajizongod@gmail.com>
+Date:   Sat, 26 Sep 2020 15:24:33 -0700
+Message-ID: <CA+aQzqypAeE-M=-qCqj7YZsms5O8KAAuO0-Bk3dpL_GLOLA0gg@mail.gmail.com>
+Subject: Hello
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-26.09.2020 11:07, Nicolin Chen пишет:
-...
-> +#ifdef CONFIG_PCI
-> +	if (!iommu_present(&pci_bus_type)) {
+Dear Friend,
 
-Is this iommu_present() check really needed?
+I know that this mail will come to you as a surprise as we have never
+met before, but need not to worry as I am contacting you independently
+of my investigation and no one is informed of this communication.
 
-> +		pci_request_acs();
+I need your urgent assistance in transferring the sum of $11.3million
+immediately to your private account.The money has been here in our
+Bank lying dormant for years now without anybody coming for the claim of it.
 
-Shouldn't pci_request_acs() be invoked *after* bus_set_iommu() succeeds?
+I want to release the money to you as the relative to our deceased
+customer (the account owner) who died a long with his supposed NEXT OF
+KIN since 16th October 2005. The Banking laws here does not allow such
+money to stay more than 15 years, because the money will be recalled
+to the Bank treasury account as unclaimed fund.
 
-> +		err = bus_set_iommu(&pci_bus_type, &tegra_smmu_ops);
-> +		if (err < 0) {
-> +			bus_set_iommu(&platform_bus_type, NULL);
-> +			iommu_device_unregister(&smmu->iommu);
-> +			iommu_device_sysfs_remove(&smmu->iommu);
-> +			return ERR_PTR(err);
-> +		}
-> +	}
-> +#endif
-> +
->  	if (IS_ENABLED(CONFIG_DEBUG_FS))
->  		tegra_smmu_debugfs_init(smmu);
->  
-> 
+By indicating your interest I will send you the full details on how
+the business will be executed.
 
+Please respond urgently and delete if you are not interested.
+
+Best Regards,
+Mr. Duna Wattara.
