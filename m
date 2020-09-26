@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C73D2796DA
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 06:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BAE2796E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 06:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730053AbgIZEZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 00:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42224 "EHLO
+        id S1730076AbgIZEZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 00:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730036AbgIZEZE (ORCPT
+        with ESMTP id S1730040AbgIZEZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 00:25:04 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B81C0613D5
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 21:25:04 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id g29so4169078pgl.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 21:25:04 -0700 (PDT)
+        Sat, 26 Sep 2020 00:25:12 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69994C0613D7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 21:25:05 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id x16so3362891pgj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 21:25:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2H1Yr1ZzRbTr0UE566f697qNBNIq6GZE63QK31mOArc=;
-        b=QR3D70X+iURkNzPXl26udZXdU8x9honZnaMWw4JV2DKKAIvIFtkWhDmU8HykuxoRUj
-         kQOi8jHCzczouvlfYRVDinDjm85nLQlg31by6GieWnYcJNKmVdwEjC7pR1DQH3aw0W6f
-         r0QLTxE4f+JBnu+5C2o5u7ggaWg0rg3bF64Zc79ECONonPRowJwtIm96g3MFqkLw0SpX
-         iG1F+HCHirx0wUURVjmDyERxSdZkEp9LjMNm8XM/f2fylGuUAUxdI/nnySnxYcwg4P/V
-         eysFTGffdcMyz8llW4fqtlxdEldrvDb17KOJ37R3KCOs1Vz3NyLCW4T0XWt1rJKKtsuC
-         kYxA==
+        bh=/z1sF9p3q5wnfzY3ZTbxrN10Skwo2Y6Rq8ZU166mru4=;
+        b=WSXp6wb5oEQXway9MAE25SNgkcoGB3A0OZEvTUWHbhaQcCbSV5Ny+E7VBwg8KmOOcq
+         yf+GkI6TgmXX+FInkLEgtXDSfKYP0BgE4pNpZqhGEVrBISYNSgmypbgffcboNFj9ieaA
+         FIYzHMmYEOWJ8Biy3uom7ZyaqCxD04BMyJpW+4kle1dvosbg3dumOY966Amx0qBSu95P
+         A40DSecXHKYkGNqCZ7pz9lmoijccn18mYFX85cE+7mNzeUxoRhgHySufYs1zncvsY/nA
+         wWlPAlUNiGL1Rg5aiqJ4bQPEzuSXFeIMxIrcJEacxBI2b7/pyGyToijcWcIl7O9/Jl8K
+         VrpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2H1Yr1ZzRbTr0UE566f697qNBNIq6GZE63QK31mOArc=;
-        b=IIBi/vROHC2VYnYlBI8Sq4w3WXhUkue0wimdpQ8L1RAI4/KrlCV8VfzDEG2j3vKHMT
-         6jWZmTPcB4SMvxHuBImZXavRL/X5Priz5tarou1KJ1xf36Fx2G3f7S1NcvTXJyGwQM7k
-         PoWRzcDWsikq4PvDPVZhGTvP08FRDIKAmfn8P4pfCMFTJiXrbiUiKpP9ygfL38TnsKeg
-         Wl5u6d+e0NOBFGujw7Rh17wCKlWRP9qRrpTqGTndn8BrwsGfO3S/ID1tp3sBHQYKexWC
-         +pdLQl7i4Rh0kx/3O+52d+2usL/foqeI0dMCeHd2cReeJ8hDiucWMZXzeaApq2xsPdFr
-         ukvw==
-X-Gm-Message-State: AOAM532CN4SAvJqj4IBqFPxI328+GUHicPkI10djTWaqFpIZWlmsO6BA
-        Rzo1LG8ENqW5I4EFIZyMDC9jiMuNS+mlUw==
-X-Google-Smtp-Source: ABdhPJxVSgNpa8Val9ZcacJd85QmQO2OmijAvP06AHqBP8I1x0fgkNGF6yDx7vorPACjyRFjjzINHA==
-X-Received: by 2002:a62:fb1a:0:b029:142:2501:39f9 with SMTP id x26-20020a62fb1a0000b0290142250139f9mr1542805pfm.72.1601094303392;
-        Fri, 25 Sep 2020 21:25:03 -0700 (PDT)
+        bh=/z1sF9p3q5wnfzY3ZTbxrN10Skwo2Y6Rq8ZU166mru4=;
+        b=ugsxLskcDKBwE2wk0lJT9SDg1VzMCFyb//kKB9fB3fHB/cA3bMeg3QmisVqonLDUfT
+         jENtkD7+czwLrdy8OeR4R1aM3oj/wcoXIc3d9IQnow2SsZWjR7GUq4UH/VL0qgyxiRPV
+         be1tBrCOy/O8OlX6eSV84h0OFzGN9jXKyPjXnubs8z8yg5mtbVrLLQikwCP2I9nsJ5dh
+         S74ZBx6M5LW//8c8FFmgR/Jc6vdcNvh/Y//Vr5KzSvbFajil9GrNy+mDHQiAFxVUFSAv
+         fp3ENmzj7o2clCGFpxeHL4TV+Ipivs7kjhCregZOE4htHWF824x564CggokOcmtmuOsh
+         ssPQ==
+X-Gm-Message-State: AOAM532i75wC1+Xpb8E9jL14YtTf+7mz8GZpKK8VYssOpn+9NDnVWnTH
+        iPzMaU/uwPsHmmahLymHBH9aKgksU0m5ug==
+X-Google-Smtp-Source: ABdhPJxJdPim2jtqq6MvkC+z6P836ZUm0PKEAEj8ymE6++fwkRtRu6msPB2Sd2NBFczvSf2ry5Vv2g==
+X-Received: by 2002:a63:5401:: with SMTP id i1mr1540855pgb.398.1601094304699;
+        Fri, 25 Sep 2020 21:25:04 -0700 (PDT)
 Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id a5sm3585886pgk.13.2020.09.25.21.25.02
+        by smtp.gmail.com with ESMTPSA id a5sm3585886pgk.13.2020.09.25.21.25.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 21:25:02 -0700 (PDT)
+        Fri, 25 Sep 2020 21:25:04 -0700 (PDT)
 From:   John Stultz <john.stultz@linaro.org>
 To:     lkml <linux-kernel@vger.kernel.org>
 Cc:     John Stultz <john.stultz@linaro.org>,
@@ -64,9 +64,9 @@ Cc:     John Stultz <john.stultz@linaro.org>,
         Simon Ser <contact@emersion.fr>,
         James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
         dri-devel@lists.freedesktop.org
-Subject: [RFC][PATCH 4/6] dma-buf: system_heap: Allocate higher order pages if available
-Date:   Sat, 26 Sep 2020 04:24:51 +0000
-Message-Id: <20200926042453.67517-5-john.stultz@linaro.org>
+Subject: [RFC][PATCH 5/6] dma-buf: system_heap: Add pagepool support to system heap
+Date:   Sat, 26 Sep 2020 04:24:52 +0000
+Message-Id: <20200926042453.67517-6-john.stultz@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200926042453.67517-1-john.stultz@linaro.org>
 References: <20200926042453.67517-1-john.stultz@linaro.org>
@@ -77,11 +77,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While the system heap can return non-contiguous pages,
-try to allocate larger order pages if possible.
+Reuse/abuse the pagepool code from the network code to speed
+up allocation performance.
 
-This will allow slight performance gains and make implementing
-page pooling easier.
+This is similar to the ION pagepool usage, but tries to
+utilize generic code instead of a custom implementation.
 
 Cc: Sumit Semwal <sumit.semwal@linaro.org>
 Cc: Liam Mark <lmark@codeaurora.org>
@@ -99,155 +99,98 @@ Cc: linux-media@vger.kernel.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: John Stultz <john.stultz@linaro.org>
 ---
- drivers/dma-buf/heaps/system_heap.c | 85 ++++++++++++++++++++++-------
- 1 file changed, 66 insertions(+), 19 deletions(-)
+ drivers/dma-buf/heaps/Kconfig       |  1 +
+ drivers/dma-buf/heaps/system_heap.c | 32 +++++++++++++++++++++++++----
+ 2 files changed, 29 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
+index a5eef06c4226..f13cde4321b1 100644
+--- a/drivers/dma-buf/heaps/Kconfig
++++ b/drivers/dma-buf/heaps/Kconfig
+@@ -1,6 +1,7 @@
+ config DMABUF_HEAPS_SYSTEM
+ 	bool "DMA-BUF System Heap"
+ 	depends on DMABUF_HEAPS
++	select PAGE_POOL
+ 	help
+ 	  Choose this option to enable the system dmabuf heap. The system heap
+ 	  is backed by pages from the buddy allocator. If in doubt, say Y.
 diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index ddfa17dc48a8..882a632e9bb7 100644
+index 882a632e9bb7..9f57b4c8ae69 100644
 --- a/drivers/dma-buf/heaps/system_heap.c
 +++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -39,6 +39,14 @@ struct dma_heap_attachment {
- 	struct list_head list;
- };
+@@ -20,6 +20,7 @@
+ #include <linux/scatterlist.h>
+ #include <linux/slab.h>
+ #include <linux/vmalloc.h>
++#include <net/page_pool.h>
  
-+#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
-+				| __GFP_NORETRY) & ~__GFP_RECLAIM) \
-+				| __GFP_COMP)
-+#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO | __GFP_COMP)
-+static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
-+static const unsigned int orders[] = {8, 4, 0};
-+#define NUM_ORDERS ARRAY_SIZE(orders)
-+
+ struct dma_heap *sys_heap;
+ 
+@@ -46,6 +47,7 @@ struct dma_heap_attachment {
+ static gfp_t order_flags[] = {HIGH_ORDER_GFP, LOW_ORDER_GFP, LOW_ORDER_GFP};
+ static const unsigned int orders[] = {8, 4, 0};
+ #define NUM_ORDERS ARRAY_SIZE(orders)
++struct page_pool *pools[NUM_ORDERS];
+ 
  static struct sg_table *dup_sg_table(struct sg_table *table)
  {
- 	struct sg_table *new_table;
-@@ -259,8 +267,11 @@ static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
- 	int i;
+@@ -264,13 +266,17 @@ static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
+ 	struct system_heap_buffer *buffer = dmabuf->priv;
+ 	struct sg_table *table;
+ 	struct scatterlist *sg;
+-	int i;
++	int i, j;
  
  	table = &buffer->sg_table;
--	for_each_sgtable_sg(table, sg, i)
--		__free_page(sg_page(sg));
-+	for_each_sg(table->sgl, sg, table->nents, i) {
-+		struct page *page = sg_page(sg);
-+
-+		__free_pages(page, compound_order(page));
-+	}
+ 	for_each_sg(table->sgl, sg, table->nents, i) {
+ 		struct page *page = sg_page(sg);
+ 
+-		__free_pages(page, compound_order(page));
++		for (j = 0; j < NUM_ORDERS; j++) {
++			if (compound_order(page) == orders[j])
++				break;
++		}
++		page_pool_put_full_page(pools[j], page, false);
+ 	}
  	sg_free_table(table);
  	kfree(buffer);
- }
-@@ -278,6 +289,26 @@ const struct dma_buf_ops system_heap_buf_ops = {
- 	.release = system_heap_dma_buf_release,
- };
- 
-+static struct page *alloc_largest_available(unsigned long size,
-+					    unsigned int max_order)
-+{
-+	struct page *page;
+@@ -300,8 +306,7 @@ static struct page *alloc_largest_available(unsigned long size,
+ 			continue;
+ 		if (max_order < orders[i])
+ 			continue;
+-
+-		page = alloc_pages(order_flags[i], orders[i]);
++		page = page_pool_alloc_pages(pools[i], order_flags[i]);
+ 		if (!page)
+ 			continue;
+ 		return page;
+@@ -406,6 +411,25 @@ static const struct dma_heap_ops system_heap_ops = {
+ static int system_heap_create(void)
+ {
+ 	struct dma_heap_export_info exp_info;
 +	int i;
 +
 +	for (i = 0; i < NUM_ORDERS; i++) {
-+		if (size <  (PAGE_SIZE << orders[i]))
-+			continue;
-+		if (max_order < orders[i])
-+			continue;
++		struct page_pool_params pp;
 +
-+		page = alloc_pages(order_flags[i], orders[i]);
-+		if (!page)
-+			continue;
-+		return page;
++		memset(&pp, 0, sizeof(pp));
++		pp.order = orders[i];
++		pp.dma_dir = DMA_BIDIRECTIONAL;
++		pools[i] = page_pool_create(&pp);
++
++		if (IS_ERR(pools[i])) {
++			int j;
++
++			pr_err("%s: page pool creation failed!\n", __func__);
++			for (j = 0; j < i; j++)
++				page_pool_destroy(pools[j]);
++			return PTR_ERR(pools[i]);
++		}
 +	}
-+	return NULL;
-+}
-+
- static int system_heap_allocate(struct dma_heap *heap,
- 				unsigned long len,
- 				unsigned long fd_flags,
-@@ -285,11 +316,13 @@ static int system_heap_allocate(struct dma_heap *heap,
- {
- 	struct system_heap_buffer *buffer;
- 	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-+	unsigned long size_remaining = len;
-+	unsigned int max_order = orders[0];
- 	struct dma_buf *dmabuf;
- 	struct sg_table *table;
- 	struct scatterlist *sg;
--	pgoff_t pagecount;
--	pgoff_t pg;
-+	struct list_head pages;
-+	struct page *page, *tmp_page;
- 	int i, ret = -ENOMEM;
  
- 	buffer = kzalloc(sizeof(*buffer), GFP_KERNEL);
-@@ -301,25 +334,35 @@ static int system_heap_allocate(struct dma_heap *heap,
- 	buffer->heap = heap;
- 	buffer->len = len;
- 
--	table = &buffer->sg_table;
--	pagecount = len / PAGE_SIZE;
--	if (sg_alloc_table(table, pagecount, GFP_KERNEL))
--		goto free_buffer;
--
--	sg = table->sgl;
--	for (pg = 0; pg < pagecount; pg++) {
--		struct page *page;
-+	INIT_LIST_HEAD(&pages);
-+	i = 0;
-+	while (size_remaining > 0) {
- 		/*
- 		 * Avoid trying to allocate memory if the process
- 		 * has been killed by SIGKILL
- 		 */
- 		if (fatal_signal_pending(current))
--			goto free_pages;
--		page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-+			goto free_buffer;
-+
-+		page = alloc_largest_available(size_remaining, max_order);
- 		if (!page)
--			goto free_pages;
--		sg_set_page(sg, page, page_size(page), 0);
-+			goto free_buffer;
-+
-+		list_add_tail(&page->lru, &pages);
-+		size_remaining -= PAGE_SIZE << compound_order(page);
-+		max_order = compound_order(page);
-+		i++;
-+	}
-+
-+	table = &buffer->sg_table;
-+	if (sg_alloc_table(table, i, GFP_KERNEL))
-+		goto free_buffer;
-+
-+	sg = table->sgl;
-+	list_for_each_entry_safe(page, tmp_page, &pages, lru) {
-+		sg_set_page(sg, page, PAGE_SIZE << compound_order(page), 0);
- 		sg = sg_next(sg);
-+		list_del(&page->lru);
- 	}
- 
- 	/* create the dmabuf */
-@@ -339,14 +382,18 @@ static int system_heap_allocate(struct dma_heap *heap,
- 		/* just return, as put will call release and that will free */
- 		return ret;
- 	}
--
- 	return ret;
- 
- free_pages:
--	for_each_sgtable_sg(table, sg, i)
--		__free_page(sg_page(sg));
-+	for_each_sgtable_sg(table, sg, i) {
-+		struct page *p = sg_page(sg);
-+
-+		__free_pages(p, compound_order(p));
-+	}
- 	sg_free_table(table);
- free_buffer:
-+	list_for_each_entry_safe(page, tmp_page, &pages, lru)
-+		__free_pages(page, compound_order(page));
- 	kfree(buffer);
- 
- 	return ret;
+ 	exp_info.name = "system";
+ 	exp_info.ops = &system_heap_ops;
 -- 
 2.17.1
 
