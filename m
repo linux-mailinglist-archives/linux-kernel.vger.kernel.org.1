@@ -2,116 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A046B27980E
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 11:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBA9E279823
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 11:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728991AbgIZJDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 05:03:31 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18274 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726305AbgIZJDa (ORCPT
+        id S1728780AbgIZJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 05:16:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgIZJQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 05:03:30 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08Q8Xpk8105208;
-        Sat, 26 Sep 2020 05:03:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=QceCXEG9SK2//eoVadzS4EOOkIVCS1fxx1yIJmTSDYQ=;
- b=Ov6kqqn4N5FyGk6R3PraUQAgg/eYayo1yzReW3rMRgtCmrLbDMEz/44ZgtU3Ffmb0mLQ
- Q/w67sLoIixRhXMw6c/y0E9QZPE1qyo2zyQqkigpEoUlpR01VrlrG9RuSltrbgie+y6v
- DrC60YxHaDgVz+yq5iab79IN/2NTc0EBIDdnPXP3iWhu5c9AcjYmUMK88IPU83nN60Qo
- Pe4osmWUzmOfGcl6AMNwcBdwS6SaEhN9g3ciBjBq6rbuEwLxLQ+Ck4T/6Iab1iil8jbB
- INFl+7WCbe0xVVrPnp79Fjx3tGTYvY9rlVjT57AxImHf/VNEQGzFoIuqVkWEaR/kXTJs xw== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 33t19csg1m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 05:03:29 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08Q91fYY002162;
-        Sat, 26 Sep 2020 09:03:27 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma06fra.de.ibm.com with ESMTP id 33svwgr41x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 09:03:27 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08Q93Oo925821684
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 26 Sep 2020 09:03:24 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 47994A4066;
-        Sat, 26 Sep 2020 09:03:24 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4A35A4062;
-        Sat, 26 Sep 2020 09:03:23 +0000 (GMT)
-Received: from localhost (unknown [9.145.18.16])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 26 Sep 2020 09:03:23 +0000 (GMT)
-Date:   Sat, 26 Sep 2020 11:03:22 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.9-rc7
-Message-ID: <your-ad-here.call-01601111002-ext-0188@work.hours>
+        Sat, 26 Sep 2020 05:16:37 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0660C0613CE;
+        Sat, 26 Sep 2020 02:16:37 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id k13so5368360pfg.1;
+        Sat, 26 Sep 2020 02:16:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zUpCZBDmLv3bzzw8GFkhem2DuSrT6Qw9iLrMsD3ggz4=;
+        b=XPpvmzifIrhP2levTgvxx7LDo+0rXOJx4H8L24KI6Q5W++VId4h0kTe6CsGBZVHosq
+         qwB9g3JwNJjVJFLarxoJqxtDlP4WaL5FiJ1tQpteBFsCj4E216ajuh9TDa6t/3SwLKTd
+         meiQyHhSTpBdTc/mGBHQosZtlgkvMeVnPh9jCjAEo5T44MOcPmTn4ZNM1J26DeRDmiGL
+         KNLOWA4Q2neHecgK/rK/5hW2v+sZzTkYHZIUIyVpF0TTYbSl0TOdCeGXlmXG0NoRWF5E
+         jxXA2FcHDLhDF5xvXtiZVXVBUYgDwS2DGO/+BkVzkSkns7KY6PLGQYakG696okFdJtCV
+         J/Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zUpCZBDmLv3bzzw8GFkhem2DuSrT6Qw9iLrMsD3ggz4=;
+        b=q5G07lCmNOFzZNVscl4kSswDqHJb7Yz6d9JmoVAB1ASVCB7bZbFJncvdcmmQwO+0Q+
+         EHQoXMS24jeV8k4PskC35NNVxoORXAzVhEfIKybW8esIRyew8LKY8Ivi0zavvrR78SDR
+         lBqZJ0y3eBXrHJ0Lac7iGddZjj2LvJtQl8mwwKSeOBEMCZt9buA8WmLZSNEdSLT7WVfz
+         nYunRTgaGzgA52sgNKiK6NiQuH4Ba890F5Fc48k38CcX9JeXlOqY060s0kgrqB0E+bm1
+         iBNmnMAnkSGnpZbQkj4cwpS7xi4DX13GXyOXXIS+SWce8g0G5ZIqpy1fIqciLGymbFzF
+         nZxg==
+X-Gm-Message-State: AOAM533ApvvxVzQt2t0oEymBdzZD6z5SGR+q024X0Pzvar6iuOkc6pOO
+        Tej63cNHMIOaeefrTwYemEE=
+X-Google-Smtp-Source: ABdhPJxB4BQTuyhw2yB6gi7fkH7QVA2OKr+SS3T/I6CoNZUk7EEQTg8M/K/9eSVJv19aCJEf6iQeYQ==
+X-Received: by 2002:a62:178d:0:b029:13e:d13d:a0f8 with SMTP id 135-20020a62178d0000b029013ed13da0f8mr2350555pfx.20.1601111797224;
+        Sat, 26 Sep 2020 02:16:37 -0700 (PDT)
+Received: from sol (106-69-189-59.dyn.iinet.net.au. [106.69.189.59])
+        by smtp.gmail.com with ESMTPSA id q65sm4069967pga.88.2020.09.26.02.16.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 02:16:36 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 17:16:31 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v9 07/20] gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL
+ and GPIO_V2_LINE_GET_VALUES_IOCTL
+Message-ID: <20200926091631.GA89482@sol>
+References: <20200922023151.387447-1-warthog618@gmail.com>
+ <20200922023151.387447-8-warthog618@gmail.com>
+ <CAHp75VdQUbDnjQEr5X5q6WdU6rD=uBNznNn5=Vy=pvdwVj_hEA@mail.gmail.com>
+ <20200924080921.GE17562@sol>
+ <CAHp75VehvUTt19sBxgPTZszUmxDGZwqGAV7bgW5jVM8Mf63UJA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-26_06:2020-09-24,2020-09-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- priorityscore=1501 suspectscore=2 bulkscore=0 impostorscore=0
- lowpriorityscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009260079
+In-Reply-To: <CAHp75VehvUTt19sBxgPTZszUmxDGZwqGAV7bgW5jVM8Mf63UJA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Fri, Sep 25, 2020 at 01:06:02PM +0300, Andy Shevchenko wrote:
+> On Thu, Sep 24, 2020 at 11:09 AM Kent Gibson <warthog618@gmail.com> wrote:
+> > On Wed, Sep 23, 2020 at 02:11:54PM +0300, Andy Shevchenko wrote:
+> > > On Tue, Sep 22, 2020 at 5:35 AM Kent Gibson <warthog618@gmail.com> wrote:
+> 
 
-please pull s390 changes for 5.9-rc7.
+...
 
-Thank you,
-Vasily
+> > > > +       /* Make sure this is terminated */
+> > > > +       ulr.consumer[sizeof(ulr.consumer)-1] = '\0';
+> > > > +       if (strlen(ulr.consumer)) {
+> > > > +               lr->label = kstrdup(ulr.consumer, GFP_KERNEL);
+> > > > +               if (!lr->label) {
+> > > > +                       ret = -ENOMEM;
+> > > > +                       goto out_free_linereq;
+> > > > +               }
+> > > > +       }
+> > >
+> > > Still don't get why we can\t use kstrndup() here...
+> > >
+> >
+> > I know ;-).
+> >
+> > Another one directly from v1, and the behaviour there is to leave
+> > lr->label nulled if consumer is empty.
+> > It just avoids a pointless malloc for the null terminator.
+> 
+> Again, similar as for bitmap API usage, if it makes code cleaner and
+> increases readability, I will go for it.
+> Also don't forget the army of janitors that won't understand the case
+> and simply convert everything that can be converted.
+> 
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+Hmmm, there is more to it than I thought - gpiod_request_commit(),
+which this code eventually calls, interprets a null label (not an
+empty string) as indicating that the user has not set the label, in
+which case it will set the desc label to "?". So userspace cannot
+force the desc label to be empty.
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
+We need to keep that label as null in that case to maintain that
+behaviour.
 
-are available in the Git repository at:
+I will add a comment there though.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.9-7
+Hmmm, having said that, does this form work for you:
 
-for you to fetch changes up to f7e80983f0cf470bb82036e73bff4d5a7daf8fc2:
+	if (ulr.consumer[0] != '\0') {
+		/* label is only initialized if consumer is set */
+		lr->label = kstrndup(ulr.consumer, sizeof(ulr.consumer) - 1, GFP_KERNEL);
+        ...
 
-  s390/zcrypt: Fix ZCRYPT_PERDEV_REQCNT ioctl (2020-09-24 09:57:24 +0200)
+It actually compiles slightly larger, I guess due to the extra parameter
+in the kstrndup() call, but may be slightly more readable??
 
-----------------------------------------------------------------
-s390 fixes for 5.9-rc7
+Cheers,
+Kent.
 
-- Fix truncated ZCRYPT_PERDEV_REQCNT ioctl result. Copy entire reqcnt list.
-
-----------------------------------------------------------------
-Christian Borntraeger (1):
-      s390/zcrypt: Fix ZCRYPT_PERDEV_REQCNT ioctl
-
- drivers/s390/crypto/zcrypt_api.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/s390/crypto/zcrypt_api.c b/drivers/s390/crypto/zcrypt_api.c
-index 4dbbfd88262c..f314936b5462 100644
---- a/drivers/s390/crypto/zcrypt_api.c
-+++ b/drivers/s390/crypto/zcrypt_api.c
-@@ -1449,7 +1449,8 @@ static long zcrypt_unlocked_ioctl(struct file *filp, unsigned int cmd,
- 		if (!reqcnt)
- 			return -ENOMEM;
- 		zcrypt_perdev_reqcnt(reqcnt, AP_DEVICES);
--		if (copy_to_user((int __user *) arg, reqcnt, sizeof(reqcnt)))
-+		if (copy_to_user((int __user *) arg, reqcnt,
-+				 sizeof(u32) * AP_DEVICES))
- 			rc = -EFAULT;
- 		kfree(reqcnt);
- 		return rc;
