@@ -2,111 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 303282795EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58CA2795EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 03:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729971AbgIZBQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 21:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41430 "EHLO
+        id S1729879AbgIZBR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 21:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729729AbgIZBQC (ORCPT
+        with ESMTP id S1729789AbgIZBR2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 21:16:02 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017F2C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:16:02 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id 77so4791943lfj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:16:01 -0700 (PDT)
+        Fri, 25 Sep 2020 21:17:28 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E60C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:17:28 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x5so45727plo.6
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:17:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hpchNS/oWTSmppDZkrORDu0nnNayAF0+YJG3NCCqrs4=;
-        b=UDmpX01c0bTTWobylw+tZ/OUa9A9C6aMBxlpL2FZ0IWoS6Me35OFasjN/vnNQk7wxv
-         5MgRTlYBvfRBIZC9uj749H22vgFQeBOKbm1LgiBESn3scwoJJo/0JeF9tjORZGV5hmZO
-         DVGyCz2vJF4oFYb+jzkVHjYKBzOGTX67JSf4w=
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=I6Dtk9mZR92rDJG/J+v/I4660jgxmxD7sJpleXc0eWY=;
+        b=j1Nmujra8/KxKXaFKBbJbWHuM1VtCSxXvYsAytzlTCWtgQWHWPtUL0elO8d68ZKLvx
+         7fmWCqRq+ZyKTla5tZXPv9kCL7fcX6sKLCVS+ApxDLjb+VAgoab3GeRBS+G/b29Wz7nU
+         fEg7CA/lbiQlQBbdOjeC1m+F97upaBIxcRxgQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hpchNS/oWTSmppDZkrORDu0nnNayAF0+YJG3NCCqrs4=;
-        b=sN/y1PeS+POWGXzFTlVSRx8VkEud9LtaCWcgzDnDamqvuo1j+FX4RzYpRrpzcIZQHO
-         mY7KSICOoXylwZz+w7uk62v4jogaiKwxVm49TE19fYc+9fze38V40/QLhx5oa/aXYYZ6
-         cjAT3mDAm573i765XsVMs517CKqd7mytbmezWDDPMdT6a7/eV9dE/W0NqVzSlmgIeSq3
-         UNO+7iJhnUq+J93q7DEWtcpPp+aspa3th8xjQoJR/3ouOXhv/1ix0EkatZrpL6s5vXYA
-         mRhL4EFk7eyI9Fc67lZ9H74SVA6mAzRt6LMp545DcAD3Vygtkbzyx8eG7cxXH6hWwaAL
-         QJ8Q==
-X-Gm-Message-State: AOAM530ZYA1cnsSvvZlYu1mzB8DHZyTKEM/f5wtKG8ukoxmbQ4QhONtq
-        WAZJXo3y5UgudkdqNrX8iamnxG9/EM5zng==
-X-Google-Smtp-Source: ABdhPJzlGMnV0j3w4SRGChuVBde0RCyhscjVNRmkGdokVk07UwS2lWJiulBPMCgW5wLNPXm38i2cyw==
-X-Received: by 2002:a19:fc02:: with SMTP id a2mr412538lfi.443.1601082959607;
-        Fri, 25 Sep 2020 18:15:59 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id 140sm543143lfj.146.2020.09.25.18.15.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 18:15:54 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id w11so4797930lfn.2
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 18:15:54 -0700 (PDT)
-X-Received: by 2002:ac2:4a6a:: with SMTP id q10mr409204lfp.534.1601082953646;
- Fri, 25 Sep 2020 18:15:53 -0700 (PDT)
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=I6Dtk9mZR92rDJG/J+v/I4660jgxmxD7sJpleXc0eWY=;
+        b=hHapUT3LCz6fy1bIUMXLanC6tUmea1VGVMoj+gHZQijlNFGQ9OoG0/zPrOx41pVnRz
+         NYOZkc2i8K4mMQiw5lKvIze44XOPyCdDmFZbDThYy+d4nw1IOxPqoGxcyyCBsM947Ik7
+         nTereP9qczlxiRKwSPGrTG3gNLXvOUQBpuGh9VRw/xuDIymgiZyrt6Sa2iBg5qX+3Cc/
+         gjeUj/sncwMrGBgBvCwv7d+SuuYyigwXyAiXl9EVMyFCJ1g98JT/jRC9iFqUwirMwy1v
+         5XEYQLZllcBz72bfm+CsDUqa0S2+ahMorFnne+MRMDgtdaaRdwHObp7pwKWvRUuoKdUS
+         uGDQ==
+X-Gm-Message-State: AOAM530J+b9yKrvePG+1WVQZzzpSlFLmMGAMUR3HgvjV9rQWelzGPmn7
+        z8mzMBNkaP6VenyJ5UGNq/Tgew==
+X-Google-Smtp-Source: ABdhPJx0KGLfWSXqPs2UJAf2busJUPY3sqXAwe8q/nn2WAwxIum0KF5s9NtUCdsY3Ks8hlezaF5yAw==
+X-Received: by 2002:a17:90b:693:: with SMTP id m19mr226302pjz.111.1601083047527;
+        Fri, 25 Sep 2020 18:17:27 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id c12sm2988144pgd.57.2020.09.25.18.17.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 18:17:26 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20200923170759.GA9916@ziepe.ca> <20200924143517.GD79898@xz-x1>
- <20200924165152.GE9916@ziepe.ca> <20200924175531.GH79898@xz-x1>
- <20200924181501.GF9916@ziepe.ca> <20200924183418.GJ79898@xz-x1>
- <20200924183953.GG9916@ziepe.ca> <20200924213010.GL79898@xz-x1>
- <CAHk-=wgz5SXKA6-uZ_BimOP1C7pHJag0ndz=tnJDAZS_Z+FrGQ@mail.gmail.com>
- <CAHk-=whDSH_MRMt80JaSwoquzt=1nQ-0n3w0aVngoWPAc10BCw@mail.gmail.com> <20200926004136.GJ9916@ziepe.ca>
-In-Reply-To: <20200926004136.GJ9916@ziepe.ca>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 25 Sep 2020 18:15:37 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiutA_J-OfvrD8Kp3SoYcfMHUwsU7ViOH48q7QN0AQ6eg@mail.gmail.com>
-Message-ID: <CAHk-=wiutA_J-OfvrD8Kp3SoYcfMHUwsU7ViOH48q7QN0AQ6eg@mail.gmail.com>
-Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Peter Xu <peterx@redhat.com>, John Hubbard <jhubbard@nvidia.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200909121550.00005ede@Huawei.com>
+References: <20200903221828.3657250-1-swboyd@chromium.org> <20200906150247.3aaef3a3@archlinux> <159963232334.454335.9794130058200265122@swboyd.mtv.corp.google.com> <20200909121550.00005ede@Huawei.com>
+Subject: Re: [PATCH] dt-bindings: iio: sx9310: Add various settings as DT properties
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Jonathan Cameron <jic23@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, Daniel Campello <campello@chromium.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Evan Green <evgreen@chromium.org>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Date:   Fri, 25 Sep 2020 18:17:25 -0700
+Message-ID: <160108304513.310579.9483266115343530431@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 5:41 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> I don't completely grok the consequences of the anon_vma check. We
-> can exclude file backed mappings as they are broken for pinning
-> anyhow, so what is left that could be MAP_PRIVATE of a non-anon_vma?
+Sorry this thread is deep! Good news is I have moved the proximity
+thresholds, hysteresis, hardware gain, and debounce to userspace. Now
+just to figure out this filter strength.
 
-It really shouldn't ever happen.
+Quoting Jonathan Cameron (2020-09-09 04:15:50)
+> On Tue, 8 Sep 2020 23:18:43 -0700
+> Stephen Boyd <swboyd@chromium.org> wrote:
+>=20
+> > Quoting Jonathan Cameron (2020-09-06 07:02:47)
+>=20
+> >=20
+> > >  =20
+> > > > +
+> > > > +  semtech,proxraw-strength:
+> > > > +    allOf:
+> > > > +      - $ref: /schemas/types.yaml#definitions/uint32
+> > > > +      - enum: [0, 2, 4, 8]
+> > > > +    default: 2
+> > > > +    description:
+> > > > +      PROXRAW filter strength. A value of 0 represents off, and ot=
+her values
+> > > > +      represent 1-1/N. =20
+> > >=20
+> > > Having looked at the datasheet I have little or now idea of what this=
+ filter
+> > > actually is.  However, what is the argument for it being in DT rather=
+ than
+> > > exposing a userspace control of some type. =20
+> >=20
+> > I only see this equation in the datasheet
+> >=20
+> > F(PROXRAW ; PROXUSEFUL[n-1] ; RAWFILT) =3D (1 - RAWFILT).PROXRAW + RAWF=
+ILT.PROXUSEFUL[n-1]=20
+> >=20
+> > and it's talking about updating PROXUSEFUL. "PROXUSEFUL update consists
+> > of filtering PROXRAW upfront to remove its high frequencies components".
+> > So presumably this filter is used to make proxraw into proxuseful so
+> > that it is a meaningful number. Is this a new knob in userspace?
+>=20
+> It might fit with the various filter definitions, but there is so little =
+info
+> it is hard to map it across.   Perhaps DT is the best we can do here even
+> though it would ideally be controlled from userspace.
+>=20
 
-The only way a COW vma can have a NULL anon_vma should be if it has no
-pages mapped at all.
+Ok I read the datasheet a couple more times :)
 
-Technically I think it could happen if you only ever mapped the
-special zero page in there (but that shouldn't then get to the
-"vm_normal_page()").
+This sensor seems to have multiple levels of processing on the signal.
+First the raw signal is there as PROXRAW. That gets turned into
+PROXUSEFUL with this calculation:
 
-> Otherwise, I do prefer Peter's version because of the GFP_KERNEL. To
-> touch on your other email..
+ F(PROXRAW ; PROXUSEFUL[n-1] ; RAWFILT) =3D (1 - RAWFILT) * PROXRAW + RAWFI=
+LT * PROXUSEFUL[n-1]
 
-Yeah, no, I just hadn't seen a new version, so I started getting antsy
-and that's when I decided to see what a minimal patch looks like.
+This semtech,proxraw-strength property is trying to set that RAWFILT
+variable to something like 2, 4, or 8. Or 0 for "off". Is that in terms
+of 3db? A bigger question, does the useful value need to be a different
+channel so it can be configured from userspace? We don't get an
+interrupt when this changes but at least the value can be read out of
+the hardware from what I can tell.
 
-I think that over the weekend I'll do Peter's version but with the
-"page_mapcount() == 1"  check, because I'm starting to like that
-better than the mm->has_pinned.
+The PROXUSEFUL value is turned into PROXAVG. There is a positive filter
+strength and a negative filter strength that is used to filter the
+PROXAVG value. I need to set the positive filter strength to be
+different than the default. That's what I'm trying to do with
+semtech,avg-pos-strength. It factors into this equation for PROXUSEFUL:
 
-Comments on that plan?
+if (PROXUSEFUL - PROXAVG[n-1] >=3D 0)
+  F(PROXUSEFUL ; PROXAVG[n-1] ; AVGPOSFILT) =3D (1 - AVGPOSFILT) * PROXUSEF=
+UL + AVGPOSFILT * PROXAVG[n-1]=20
+else
+  F(PROXUSEFUL ; PROXAVG[n-1] ; AVGNEGFILT) =3D (1 - AVGNEGFILT) * PROXUSEF=
+UL + AVGNEGFILT * PROXAVG[n-1]=20
 
-              Linus
+so depending on how the historical average value is going we filter
+differently. Again, is this in 3db? This register has a setting of
+"infinite" which I guess is used to make the above equation come out to
+be just PROXAVG[n - 1]? Otherwise 0 is "off" which seems to make the
+above equation boil down to:
+
+  PROXAVG =3D PROXUSEFUL
+
+when you do substitution.
+
+I agree it looks like some sort of filter, so maybe I need to introduce
+some proximity.*filter ABI? I don't know the units though.
+
+To complete the story, the PROXAVG value gets compared to a threshold
+AVGTHRESH (settable in a register) and that can be debounced with
+another register setting (AVGDEB). That results in PROXUSEFUL which goes
+into this PROXDIFF equation:
+
+ PROXDIFF =3D (PROXUSEFUL - PROXAVG) >> 4
+
+The PROXDIFF value is compared to the proximity threshold register
+setting (PROXTHRESH, i.e. bits 3:7 in register RegProxCtrl8/9) plus or
+minus the hysteresis (RegProxCtrl10 bits 5:4) and then debounced
+(RegProxCtrl10 bits 3:2 (for close) and 1:0 (for far)).
+
+if (PROXDIFF > PROXTHRESH + HYST)
+  // close event, i.e. DIR_FALLING
+  PROXSTAT =3D debounce() ? 1 : 0;
+else if (PROXDIFF < PROXTHRESH - HYST)
+  // far event, i.e. DIR_RISING
+  PROXSTAT =3D debounce() ? 0 : 1;
+
+If that all passes then PROXSTAT is set to 1 for the close condition and
+0 for the far condition. An irq is raised and eventually this driver
+will signal a new event indicating rising or falling.
+
+I see that the driver implements sx9310_read_prox_data() as a read on
+the PROXDIFF value. That looks good for reading the processed signal for
+a channel after all that raw/avg/useful debouncing and filtering.
