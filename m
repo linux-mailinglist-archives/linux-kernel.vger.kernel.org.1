@@ -2,135 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D914D279ACD
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F69A279AD6
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:29:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730002AbgIZQ2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 12:28:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32780 "EHLO mail.kernel.org"
+        id S1730049AbgIZQ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 12:28:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33170 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729960AbgIZQ2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 12:28:37 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        id S1729960AbgIZQ2w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 12:28:52 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 30F2A21D95;
-        Sat, 26 Sep 2020 16:28:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF7BD2177B;
+        Sat, 26 Sep 2020 16:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601137716;
-        bh=tAOkEq+Uq4aZCc8Thn8EfXKEczi/Z4vaECBoh1u9kv4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Qaz5ywQ6Hgxqf+uXzC3XNF6nj9FYDzAbGHyNvpeQvWd2eNC1NAlaypLjHNVJqREaE
-         L33ILOOiXx0kpHxbs/ZRYU7HvW0vzSilxihTxrLGeYMrCe3YilvvfcFv3BtFSfS1yi
-         leEBE7Co69IxK01rmx8LvfRwnEVLGumeoDhVvXKI=
-Date:   Sat, 26 Sep 2020 17:28:31 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     kholk11@gmail.com
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iio: adc: qcom-spmi-vadc: Use right ratiometric
- range for 8998,660,845
-Message-ID: <20200926172831.4774b444@archlinux>
-In-Reply-To: <20200926131009.14483-1-kholk11@gmail.com>
-References: <20200926131009.14483-1-kholk11@gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        s=default; t=1601137731;
+        bh=SVyxDfO6fy3CNrHIbhiOhDlkhe53PtCS7tZfxXuHbVc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=pL83tEbNjzon1eOx4eip9pWLHumg+mfjqkgo2wTvUWqrSNpBcPISFU2gx/839n+KO
+         d9y/pVoOy+k8Rz9tKKYrEEkpkotB382+qbW5EVtJoS/IyaRYdzb9n4VHLUTiIb/x6E
+         kw7nrntHy0PdKXEAnSKacFvTYiZKboy91UPbi4oU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.19.148
+Date:   Sat, 26 Sep 2020 18:29:02 +0200
+Message-Id: <16011377421485@kroah.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Sep 2020 15:10:08 +0200
-kholk11@gmail.com wrote:
+I'm announcing the release of the 4.19.148 kernel.
 
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
->=20
-> The ratiometric range for MSM8998, SDM630/636/660 and SDM845 is 1875mV
-> instead of the standard 1800mV: address this by adding a new compatible
-> "qcom,spmi-vadc-8998" and assigning the different range to the machines
-> declaring this one.
->=20
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+All users of the 4.19 kernel series must upgrade.
 
-Please resend series making sure to cc
-linux-iio@vger.kernel.org=20
+The updated 4.19.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.19.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-=46rom a quick glance, patch looks fine.
+thanks,
 
-Thanks,
+greg k-h
 
-Jonathan
+------------
 
-> ---
->  drivers/iio/adc/qcom-spmi-vadc.c   | 10 +++++++++-
->  drivers/iio/adc/qcom-vadc-common.h |  1 +
->  2 files changed, 10 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/iio/adc/qcom-spmi-vadc.c b/drivers/iio/adc/qcom-spmi=
--vadc.c
-> index b0388f8a69f4..59a94ea7bf78 100644
-> --- a/drivers/iio/adc/qcom-spmi-vadc.c
-> +++ b/drivers/iio/adc/qcom-spmi-vadc.c
-> @@ -101,6 +101,7 @@ struct vadc_channel_prop {
->   * @dev: pointer to struct device.
->   * @base: base address for the ADC peripheral.
->   * @nchannels: number of VADC channels.
-> + * @ratio_range: ratiometric range for ref points.
->   * @chan_props: array of VADC channel properties.
->   * @iio_chans: array of IIO channels specification.
->   * @are_ref_measured: are reference points measured.
-> @@ -114,6 +115,7 @@ struct vadc_priv {
->  	struct device		 *dev;
->  	u16			 base;
->  	unsigned int		 nchannels;
-> +	unsigned int		 ratio_range;
->  	struct vadc_channel_prop *chan_props;
->  	struct iio_chan_spec	 *iio_chans;
->  	bool			 are_ref_measured;
-> @@ -355,7 +357,7 @@ static int vadc_measure_ref_points(struct vadc_priv *=
-vadc)
->  	u16 read_1, read_2;
->  	int ret;
-> =20
-> -	vadc->graph[VADC_CALIB_RATIOMETRIC].dx =3D VADC_RATIOMETRIC_RANGE;
-> +	vadc->graph[VADC_CALIB_RATIOMETRIC].dx =3D vadc->ratio_range;
->  	vadc->graph[VADC_CALIB_ABSOLUTE].dx =3D VADC_ABSOLUTE_RANGE_UV;
-> =20
->  	prop =3D vadc_get_channel(vadc, VADC_REF_1250MV);
-> @@ -885,6 +887,11 @@ static int vadc_probe(struct platform_device *pdev)
->  	if (ret)
->  		return ret;
-> =20
-> +	if (of_device_is_compatible(node, "qcom,spmi-vadc-8998"))
-> +		vadc->ratio_range =3D VADC_RATIOMETRIC_RANGE_8998;
-> +	else
-> +		vadc->ratio_range =3D VADC_RATIOMETRIC_RANGE;
-> +
->  	irq_eoc =3D platform_get_irq(pdev, 0);
->  	if (irq_eoc < 0) {
->  		if (irq_eoc =3D=3D -EPROBE_DEFER || irq_eoc =3D=3D -EINVAL)
-> @@ -918,6 +925,7 @@ static int vadc_probe(struct platform_device *pdev)
-> =20
->  static const struct of_device_id vadc_match_table[] =3D {
->  	{ .compatible =3D "qcom,spmi-vadc" },
-> +	{ .compatible =3D "qcom-spmi-vadc-8998" },
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(of, vadc_match_table);
-> diff --git a/drivers/iio/adc/qcom-vadc-common.h b/drivers/iio/adc/qcom-va=
-dc-common.h
-> index 17b2fc4d8bf2..b10d5fd59034 100644
-> --- a/drivers/iio/adc/qcom-vadc-common.h
-> +++ b/drivers/iio/adc/qcom-vadc-common.h
-> @@ -16,6 +16,7 @@
-> =20
->  #define VADC_ABSOLUTE_RANGE_UV			625000
->  #define VADC_RATIOMETRIC_RANGE			1800
-> +#define VADC_RATIOMETRIC_RANGE_8998		1875
-> =20
->  #define VADC_DEF_PRESCALING			0 /* 1:1 */
->  #define VADC_DEF_DECIMATION			0 /* 512 */
+ Documentation/kbuild/llvm.rst                        |   87 +++++++++
+ MAINTAINERS                                          |    9 
+ Makefile                                             |   38 +++-
+ arch/x86/boot/compressed/Makefile                    |    2 
+ drivers/net/dsa/rtl8366.c                            |   20 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c            |   19 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ethtool.c    |   31 ++-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c    |    9 
+ drivers/net/ethernet/netronome/nfp/nfp_net_ethtool.c |    4 
+ drivers/net/geneve.c                                 |   37 ++-
+ drivers/net/phy/phy_device.c                         |    3 
+ drivers/net/wan/Kconfig                              |    2 
+ drivers/net/wan/Makefile                             |   12 -
+ drivers/net/wan/hdlc_ppp.c                           |   16 +
+ drivers/tty/serial/8250/8250_core.c                  |   11 -
+ include/linux/skbuff.h                               |    7 
+ include/net/inet_connection_sock.h                   |    4 
+ kernel/kprobes.c                                     |    9 
+ mm/huge_memory.c                                     |   40 ++--
+ mm/vmscan.c                                          |    8 
+ net/dcb/dcbnl.c                                      |    8 
+ net/ipv4/ip_output.c                                 |    3 
+ net/ipv4/route.c                                     |   13 -
+ net/ipv4/tcp_bbr.c                                   |  180 ++++++++++++++++---
+ net/ipv6/Kconfig                                     |    1 
+ net/ipv6/ip6_fib.c                                   |   13 -
+ net/key/af_key.c                                     |    7 
+ net/qrtr/qrtr.c                                      |   20 +-
+ net/sched/sch_generic.c                              |   49 +++--
+ net/tipc/group.c                                     |   14 +
+ net/tipc/msg.c                                       |    3 
+ net/tipc/socket.c                                    |    5 
+ tools/objtool/Makefile                               |    6 
+ virt/kvm/kvm_main.c                                  |   21 +-
+ 34 files changed, 550 insertions(+), 161 deletions(-)
+
+Dan Carpenter (1):
+      hdlc_ppp: add range checks in ppp_cp_parse_cr()
+
+David Ahern (1):
+      ipv4: Update exception handling for multipath routes via same device
+
+Dmitry Golovin (1):
+      x86/boot: kbuild: allow readelf executable to be specified
+
+Edwin Peer (1):
+      bnxt_en: return proper error codes in bnxt_show_temp
+
+Eric Dumazet (3):
+      ipv6: avoid lockdep issue in fib6_del()
+      net: qrtr: check skb_put_padto() return value
+      net: add __must_check to skb_put_padto()
+
+Fangrui Song (1):
+      Documentation/llvm: fix the name of llvm-size
+
+Florian Fainelli (1):
+      net: phy: Avoid NPD upon phy_detach() when driver is unbound
+
+Ganji Aravind (1):
+      cxgb4: Fix offset when clearing filter byte counters
+
+Greg Kroah-Hartman (1):
+      Linux 4.19.148
+
+Jakub Kicinski (1):
+      nfp: use correct define to return NONE fec
+
+Linus Walleij (1):
+      net: dsa: rtl8366: Properly clear member config
+
+Lukas Wunner (1):
+      serial: 8250: Avoid error message on reprobe
+
+Mark Gray (1):
+      geneve: add transport ports in route lookup for geneve
+
+Mark Salyzyn (1):
+      af_key: pfkey_dump needs parameter validation
+
+Masahiro Yamada (5):
+      net: wan: wanxl: use allow to pass CROSS_COMPILE_M68k for rebuilding firmware
+      net: wan: wanxl: use $(M68KCC) instead of $(M68KAS) for rebuilding firmware
+      kbuild: remove AS variable
+      kbuild: replace AS=clang with LLVM_IAS=1
+      kbuild: support LLVM=1 to switch the default tools to Clang/LLVM
+
+Michael Chan (1):
+      bnxt_en: Protect bnxt_set_eee() and bnxt_set_pauseparam() with mutex.
+
+Muchun Song (1):
+      kprobes: fix kill kprobe which has been marked as gone
+
+Necip Fazil Yildiran (1):
+      net: ipv6: fix kconfig dependency warning for IPV6_SEG6_HMAC
+
+Nick Desaulniers (2):
+      MAINTAINERS: add CLANG/LLVM BUILD SUPPORT info
+      Documentation/llvm: add documentation on building w/ Clang/LLVM
+
+Peilin Ye (1):
+      tipc: Fix memory leak in tipc_group_create_member()
+
+Petr Machata (1):
+      net: DCB: Validate DCB_ATTR_DCB_BUFFER argument
+
+Priyaranjan Jha (2):
+      tcp_bbr: refactor bbr_target_cwnd() for general inflight provisioning
+      tcp_bbr: adapt cwnd based on ack aggregation estimation
+
+Ralph Campbell (1):
+      mm/thp: fix __split_huge_pmd_locked() for migration PMD
+
+Rustam Kovhaev (1):
+      KVM: fix memory leak in kvm_io_bus_unregister_dev()
+
+Tetsuo Handa (1):
+      tipc: fix shutdown() of connection oriented socket
+
+Vasily Gorbik (1):
+      kbuild: add OBJSIZE variable for the size tool
+
+Wei Wang (1):
+      ip: fix tos reflection in ack and reset packets
+
+Xin Long (1):
+      tipc: use skb_unshare() instead in tipc_buf_append()
+
+Xunlei Pang (1):
+      mm: memcg: fix memcg reclaim soft lockup
+
+Yunsheng Lin (1):
+      net: sch_generic: aviod concurrent reset and enqueue op for lockless qdisc
 
