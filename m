@@ -2,54 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE9A279579
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A2827957E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729808AbgIZAP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 20:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729377AbgIZAP4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:15:56 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285B7C0613CE;
-        Fri, 25 Sep 2020 17:15:56 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3033D13BA5207;
-        Fri, 25 Sep 2020 16:59:08 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 17:15:54 -0700 (PDT)
-Message-Id: <20200925.171554.1696394343282908508.davem@davemloft.net>
-To:     gustavoars@kernel.org
-Cc:     ioana.ciornei@nxp.com, ruxandra.radulescu@nxp.com, kuba@kernel.org,
-        andrew@lunn.ch, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] dpaa2-mac: Fix potential null pointer dereference
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200925170323.GA20546@embeddedor>
-References: <20200925170323.GA20546@embeddedor>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Fri, 25 Sep 2020 16:59:08 -0700 (PDT)
+        id S1729724AbgIZARn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 20:17:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729096AbgIZARm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 20:17:42 -0400
+Subject: Re: [GIT PULL] Second batch of KVM fixes for Linux 5.9-rc7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601079462;
+        bh=gxJ5vQ59gSyCcJve887J8PbMh8nUekCVFKlkjtkdsiQ=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=VhL4EhhT9y/tEHs4IfQ+/uLar8aiD8e/zOAmxpFdgTXf+nuTPd+8HvEudou8lgMIt
+         A2Sj6quTn2QTX/1Ra4vGhuxjDj73jImn5AHA0KF+k0Q4gbcjT4hMauTCiAlbFxgyul
+         xsVkEND4WBEacV2Rsb0Bg5JUqgcZfCFs+oGOG8+M=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200925233652.2187766-1-pbonzini@redhat.com>
+References: <20200925233652.2187766-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200925233652.2187766-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 4bb05f30483fd21ea5413eaf1182768f251cf625
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7c7ec3226f5f33f9c050d85ec20f18419c622ad6
+Message-Id: <160107946221.14661.16795756209476827695.pr-tracker-bot@kernel.org>
+Date:   Sat, 26 Sep 2020 00:17:42 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Date: Fri, 25 Sep 2020 12:03:23 -0500
+The pull request you sent on Fri, 25 Sep 2020 19:36:52 -0400:
 
-> There is a null-check for _pcs_, but it is being dereferenced
-> prior to this null-check. So, if _pcs_ can actually be null,
-> then there is a potential null pointer dereference that should
-> be fixed by null-checking _pcs_ before being dereferenced.
-> 
-> Addresses-Coverity-ID: 1497159 ("Dereference before null check")
-> Fixes: 94ae899b2096 ("dpaa2-mac: add PCS support through the Lynx module")
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-Applied, thanks.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7c7ec3226f5f33f9c050d85ec20f18419c622ad6
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
