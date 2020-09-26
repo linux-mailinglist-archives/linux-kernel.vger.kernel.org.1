@@ -2,88 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89478279ABE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:27:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1585F279AC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729851AbgIZQ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 12:27:08 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:28053 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZQ1I (ORCPT
+        id S1729892AbgIZQ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 12:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZQ15 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 12:27:08 -0400
-Received: from tomoyo.flets-east.jp ([153.230.197.127])
-        by mwinf5d10 with ME
-        id YgSs230022lQRaH03gT107; Sat, 26 Sep 2020 18:27:05 +0200
-X-ME-Helo: tomoyo.flets-east.jp
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 26 Sep 2020 18:27:05 +0200
-X-ME-IP: 153.230.197.127
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     linux-can@vger.kernel.org
-Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH] can: raw: add missing error queue support
-Date:   Sun, 27 Sep 2020 01:24:31 +0900
-Message-Id: <20200926162527.270030-1-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
+        Sat, 26 Sep 2020 12:27:57 -0400
+Received: from agrajag.zerfleddert.de (agrajag.zerfleddert.de [IPv6:2a01:4f8:bc:1de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851EDC0613CE;
+        Sat, 26 Sep 2020 09:27:57 -0700 (PDT)
+Received: by agrajag.zerfleddert.de (Postfix, from userid 1000)
+        id 1B0415B2053C; Sat, 26 Sep 2020 18:27:56 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 18:27:56 +0200
+From:   Tobias Jordan <kernel@cdqe.de>
+To:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH v3] leds: tlc591xx: fix leak of device node iterator
+Message-ID: <20200926162755.GA26532@agrajag.zerfleddert.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Error queue are not yet implemented in CAN-raw sockets.
+In one of the error paths of the for_each_child_of_node loop in
+tlc591xx_probe, add missing call to of_node_put.
 
-The problem: a userland call to recvmsg(soc, msg, MSG_ERRQUEUE) on a
-CAN-raw socket would unqueue messages from the normal queue without
-any kind of error or warning. As such, it prevented CAN drivers from
-using the functionalities that relies on the error queue such as
-skb_tx_timestamp().
+Fixes: 1ab4531ad132 ("leds: tlc591xx: simplify driver by using the managed led API")
+Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+Reviewed-by: Marek Behún <kabel@kernel.org>
 
-SCM_CAN_RAW_ERRQUEUE is defined as the type for the CAN raw error
-queue. SCM stands for "Socket control messages". The name is inspired
-from SCM_J1939_ERRQUEUE of include/uapi/linux/can/j1939.h.
-
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
 ---
- include/uapi/linux/can/raw.h | 3 +++
- net/can/raw.c                | 4 ++++
- 2 files changed, 7 insertions(+)
+v3: removed linebreak from Fixes: tag in commit message
+v2: rebased to Pavel's for-next branch
 
-diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
-index 6a11d308eb5c..3386aa81fdf2 100644
---- a/include/uapi/linux/can/raw.h
-+++ b/include/uapi/linux/can/raw.h
-@@ -49,6 +49,9 @@
- #include <linux/can.h>
- 
- #define SOL_CAN_RAW (SOL_CAN_BASE + CAN_RAW)
-+enum {
-+	SCM_CAN_RAW_ERRQUEUE = 1,
-+};
- 
- /* for socket options affecting the socket (not the global system) */
- 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 94a9405658dc..98abab119136 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -804,6 +804,10 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
- 	noblock =  flags & MSG_DONTWAIT;
- 	flags   &= ~MSG_DONTWAIT;
- 
-+	if (flags & MSG_ERRQUEUE)
-+		return sock_recv_errqueue(sk, msg, size,
-+					  SOL_CAN_RAW, SCM_CAN_RAW_ERRQUEUE);
-+
- 	skb = skb_recv_datagram(sk, flags, noblock, &err);
- 	if (!skb)
- 		return err;
+ drivers/leds/leds-tlc591xx.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/leds/leds-tlc591xx.c b/drivers/leds/leds-tlc591xx.c
+index 0929f1275814..a8cc49752cd5 100644
+--- a/drivers/leds/leds-tlc591xx.c
++++ b/drivers/leds/leds-tlc591xx.c
+@@ -214,6 +214,7 @@ tlc591xx_probe(struct i2c_client *client,
+ 		err = devm_led_classdev_register_ext(dev, &led->ldev,
+ 						     &init_data);
+ 		if (err < 0) {
++			of_node_put(child);
+ 			if (err != -EPROBE_DEFER)
+ 				dev_err(dev, "couldn't register LED %s\n",
+ 					led->ldev.name);
 -- 
-2.26.2
+2.20.1
 
