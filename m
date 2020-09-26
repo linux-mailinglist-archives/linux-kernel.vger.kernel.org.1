@@ -2,207 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1149279BF3
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE33279BF6
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730137AbgIZStZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 14:49:25 -0400
-Received: from asavdk4.altibox.net ([109.247.116.15]:46574 "EHLO
-        asavdk4.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIZStY (ORCPT
+        id S1730158AbgIZSvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 14:51:18 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:50908 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgIZSvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 14:49:24 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk4.altibox.net (Postfix) with ESMTPS id 0AC068067F;
-        Sat, 26 Sep 2020 20:49:20 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 20:49:19 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Alexandru Gagniuc <mr.nuke.me@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        David Airlie <airlied@linux.ie>,
-        Mark Brown <broonie@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH 1/2] drm/bridge: sii902x: Enable I/O and core VCC
- supplies if present
-Message-ID: <20200926184919.GB98875@ravnborg.org>
-References: <20200924200507.1175888-1-mr.nuke.me@gmail.com>
+        Sat, 26 Sep 2020 14:51:17 -0400
+Received: by mail-il1-f199.google.com with SMTP id u20so5059366ilk.17
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 11:51:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=K9pmQC0ghP2pbRsTjOy83S0Vjuu+HIptjh1DkiMRHrU=;
+        b=WdjcP6ildk4SZY/PeDIPlUEWF673vcK/bqPLFEdjxD9U7757shHMmidgj+3erlGlpa
+         VvBV53dhkAAo98aXq1BmrmN008/JtfEHQ7CDODQ98zF/3ThWRKFQHX9lppOftj0GN2Kk
+         Vxx1omEQWvKoSretLO5kkZxAr02X4cn+YXq6i8LI0PW0hhXSD5dex5rJSqSj76Fp/6WK
+         z3c45FeL2aL4bf2hH9pPw5J2N/jMIA0W9mPTD9ZsZUsC3FdE/4TlkEyDN0HK4SQdARjX
+         04eeVOhgb6IJ0sP0anAJTqBVyINuNIDCU87tuAktqBcduycpx0F8bJIwlCKsex60aMM2
+         nhaA==
+X-Gm-Message-State: AOAM530fHT4fH6bGx+95uiU9q69J9ngLo60JhYaou2Bpq41Y+BFyc9Zj
+        o6edDsdeAXV1SgQQoKzKRVnbizDcZNjNhI8JHSLIT695Um1l
+X-Google-Smtp-Source: ABdhPJwL5L0KaGV3BYbm3Pzw3L15sDW56p6Ob+3stV5K0MNApRrnPXl7UDLEEcAzhHJJVGrWQvBHeG54EyDt8PIpr0oBPobGNGJE
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200924200507.1175888-1-mr.nuke.me@gmail.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=A5ZCwZeG c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=pGLkceISAAAA:8 a=e5mUnYsNAAAA:8
-        a=YsLWCyS0S5thGiuXXI8A:9 a=CjuIK1q_8ugA:10 a=Vxmtnl_E_bksehYqCbjh:22
+X-Received: by 2002:a05:6602:168a:: with SMTP id s10mr2691727iow.46.1601146275943;
+ Sat, 26 Sep 2020 11:51:15 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 11:51:15 -0700
+In-Reply-To: <0000000000000f73a805afeb9be8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000002e18705b03beb42@google.com>
+Subject: Re: BUG: spinlock bad magic in synchronize_srcu
+From:   syzbot <syzbot+05017ad275a64a3246f8@syzkaller.appspotmail.com>
+To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandru
+syzbot has found a reproducer for the following issue on:
 
-On Thu, Sep 24, 2020 at 03:05:05PM -0500, Alexandru Gagniuc wrote:
-> On the SII9022, the IOVCC and CVCC12 supplies must reach the correct
-> voltage before the reset sequence is initiated. On most boards, this
-> assumption is true at boot-up, so initialization succeeds.
-> 
-> However, when we try to initialize the chip with incorrect supply
-> voltages, it will not respond to I2C requests. sii902x_probe() fails
-> with -ENXIO.
-> 
-> To resolve this, look for the "iovcc" and "cvcc12" regulators, and
-> make sure they are enabled before starting the reset sequence. If
-> these supplies are not available in devicetree, then they will default
-> to dummy-regulator. In that case everything will work like before.
-> 
-> This was observed on a STM32MP157C-DK2 booting in u-boot falcon mode.
-> On this board, the supplies would be set by the second stage
-> bootloader, which does not run in falcon mode.
-> 
-> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+HEAD commit:    d1d2220c Add linux-next specific files for 20200924
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15bb8e09900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
+dashboard link: https://syzkaller.appspot.com/bug?extid=05017ad275a64a3246f8
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=146e79ad900000
 
-One nitpick here. The binding should be present in the tree before
-you start using it. So this patch should be applied after the binding.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+05017ad275a64a3246f8@syzkaller.appspotmail.com
 
-One detail below - I think others have already commented on the rest.
+BUG: spinlock bad magic on CPU#1, syz-executor.0/3687
+ lock: 0xffff8880ae500040, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
+CPU: 1 PID: 3687 Comm: syz-executor.0 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fb lib/dump_stack.c:118
+ debug_spin_lock_before kernel/locking/spinlock_debug.c:83 [inline]
+ do_raw_spin_lock+0x216/0x2b0 kernel/locking/spinlock_debug.c:112
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:117 [inline]
+ _raw_spin_lock_irqsave+0x9c/0xd0 kernel/locking/spinlock.c:159
+ srcu_might_be_idle kernel/rcu/srcutree.c:772 [inline]
+ synchronize_srcu+0x4f/0x1c0 kernel/rcu/srcutree.c:999
+ kvm_arch_destroy_vm+0x415/0x570 arch/x86/kvm/x86.c:10049
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:820 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:3914 [inline]
+ kvm_dev_ioctl+0xf4b/0x13a0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3966
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e179
+Code: 3d b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ff346cf4c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000011180 RCX: 000000000045e179
+RDX: 0000000000000000 RSI: 000000000000ae01 RDI: 0000000000000003
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffefa62fbff R14: 00007ff346cf59c0 R15: 000000000118cf4c
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 3687 Comm: syz-executor.0 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:rcu_segcblist_enqueue+0x90/0xf0 kernel/rcu/rcu_segcblist.c:250
+Code: 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 4e 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 20 48 89 ea 48 c1 ea 03 <80> 3c 02 00 75 21 48 89 75 00 48 89 73 20 48 83 c4 08 5b 5d c3 48
+RSP: 0018:ffffc9000a297c08 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffff8880ae400080 RCX: ffffffff815bf5b0
+RDX: 0000000000000000 RSI: ffffc9000a297cf0 RDI: ffff8880ae4000a0
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000003
+R10: fffff52001452f73 R11: 6637303030302052 R12: ffffc9000a297cf0
+R13: 0000000000000000 R14: ffff8880ae400080 R15: ffff8880ae400040
+FS:  00007ff346cf5700(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3320e58db8 CR3: 000000007475a000 CR4: 00000000001526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __call_srcu+0x193/0xc50 kernel/rcu/srcutree.c:859
+ __synchronize_srcu+0x128/0x220 kernel/rcu/srcutree.c:923
+ kvm_arch_destroy_vm+0x415/0x570 arch/x86/kvm/x86.c:10049
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:820 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:3914 [inline]
+ kvm_dev_ioctl+0xf4b/0x13a0 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3966
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e179
+Code: 3d b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ff346cf4c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000011180 RCX: 000000000045e179
+RDX: 0000000000000000 RSI: 000000000000ae01 RDI: 0000000000000003
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffefa62fbff R14: 00007ff346cf59c0 R15: 000000000118cf4c
+Modules linked in:
+---[ end trace 495d70ef5b659397 ]---
+RIP: 0010:rcu_segcblist_enqueue+0x90/0xf0 kernel/rcu/rcu_segcblist.c:250
+Code: 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 4e 48 b8 00 00 00 00 00 fc ff df 48 8b 6b 20 48 89 ea 48 c1 ea 03 <80> 3c 02 00 75 21 48 89 75 00 48 89 73 20 48 83 c4 08 5b 5d c3 48
+RSP: 0018:ffffc9000a297c08 EFLAGS: 00010046
+RAX: dffffc0000000000 RBX: ffff8880ae400080 RCX: ffffffff815bf5b0
+RDX: 0000000000000000 RSI: ffffc9000a297cf0 RDI: ffff8880ae4000a0
+RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000003
+R10: fffff52001452f73 R11: 6637303030302052 R12: ffffc9000a297cf0
+R13: 0000000000000000 R14: ffff8880ae400080 R15: ffff8880ae400040
+FS:  00007ff346cf5700(0000) GS:ffff8880ae400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f3320e58db8 CR3: 000000007475a000 CR4: 00000000001526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-	Sam
-> ---
->  drivers/gpu/drm/bridge/sii902x.c | 54 ++++++++++++++++++++++++++++----
->  1 file changed, 48 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/sii902x.c b/drivers/gpu/drm/bridge/sii902x.c
-> index 33fd33f953ec..a5558d83e4c5 100644
-> --- a/drivers/gpu/drm/bridge/sii902x.c
-> +++ b/drivers/gpu/drm/bridge/sii902x.c
-> @@ -17,6 +17,7 @@
->  #include <linux/i2c.h>
->  #include <linux/module.h>
->  #include <linux/regmap.h>
-> +#include <linux/regulator/consumer.h>
->  #include <linux/clk.h>
->  
->  #include <drm/drm_atomic_helper.h>
-> @@ -168,6 +169,8 @@ struct sii902x {
->  	struct drm_connector connector;
->  	struct gpio_desc *reset_gpio;
->  	struct i2c_mux_core *i2cmux;
-> +	struct regulator *iovcc;
-> +	struct regulator *cvcc12;
->  	/*
->  	 * Mutex protects audio and video functions from interfering
->  	 * each other, by keeping their i2c command sequences atomic.
-> @@ -954,13 +957,13 @@ static const struct drm_bridge_timings default_sii902x_timings = {
->  		 | DRM_BUS_FLAG_DE_HIGH,
->  };
->  
-> +static int sii902x_init(struct sii902x *sii902x);
-> +
->  static int sii902x_probe(struct i2c_client *client,
->  			 const struct i2c_device_id *id)
->  {
->  	struct device *dev = &client->dev;
-> -	unsigned int status = 0;
->  	struct sii902x *sii902x;
-> -	u8 chipid[4];
->  	int ret;
->  
->  	ret = i2c_check_functionality(client->adapter,
-> @@ -989,6 +992,43 @@ static int sii902x_probe(struct i2c_client *client,
->  
->  	mutex_init(&sii902x->mutex);
->  
-> +	sii902x->iovcc = devm_regulator_get(dev, "iovcc");
-> +	if (IS_ERR(sii902x->iovcc))
-> +		return PTR_ERR(sii902x->iovcc);
-Consider using dev_err_probe() here.
-
-> +
-> +	sii902x->cvcc12 = devm_regulator_get(dev, "cvcc12");
-> +	if (IS_ERR(sii902x->cvcc12))
-> +		return PTR_ERR(sii902x->cvcc12);
-Consider using dev_err_probe() here.
-> +
-> +	ret = regulator_enable(sii902x->iovcc);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to enable iovcc supply: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = regulator_enable(sii902x->cvcc12);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to enable cvcc12 supply: %d\n", ret);
-> +		regulator_disable(sii902x->iovcc);
-> +		return PTR_ERR(sii902x->cvcc12);
-> +	}
-> +
-> +	ret = sii902x_init(sii902x);
-> +	if (ret < 0) {
-> +		regulator_disable(sii902x->cvcc12);
-> +		regulator_disable(sii902x->iovcc);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int sii902x_init(struct sii902x *sii902x)
-> +{
-> +	struct device *dev = &sii902x->i2c->dev;
-> +	unsigned int status = 0;
-> +	u8 chipid[4];
-> +	int ret;
-> +
->  	sii902x_reset(sii902x);
->  
->  	ret = regmap_write(sii902x->regmap, SII902X_REG_TPI_RQB, 0x0);
-> @@ -1012,11 +1052,11 @@ static int sii902x_probe(struct i2c_client *client,
->  	regmap_read(sii902x->regmap, SII902X_INT_STATUS, &status);
->  	regmap_write(sii902x->regmap, SII902X_INT_STATUS, status);
->  
-> -	if (client->irq > 0) {
-> +	if (sii902x->i2c->irq > 0) {
->  		regmap_write(sii902x->regmap, SII902X_INT_ENABLE,
->  			     SII902X_HOTPLUG_EVENT);
->  
-> -		ret = devm_request_threaded_irq(dev, client->irq, NULL,
-> +		ret = devm_request_threaded_irq(dev, sii902x->i2c->irq, NULL,
->  						sii902x_interrupt,
->  						IRQF_ONESHOT, dev_name(dev),
->  						sii902x);
-> @@ -1031,9 +1071,9 @@ static int sii902x_probe(struct i2c_client *client,
->  
->  	sii902x_audio_codec_init(sii902x, dev);
->  
-> -	i2c_set_clientdata(client, sii902x);
-> +	i2c_set_clientdata(sii902x->i2c, sii902x);
->  
-> -	sii902x->i2cmux = i2c_mux_alloc(client->adapter, dev,
-> +	sii902x->i2cmux = i2c_mux_alloc(sii902x->i2c->adapter, dev,
->  					1, 0, I2C_MUX_GATE,
->  					sii902x_i2c_bypass_select,
->  					sii902x_i2c_bypass_deselect);
-> @@ -1051,6 +1091,8 @@ static int sii902x_remove(struct i2c_client *client)
->  
->  	i2c_mux_del_adapters(sii902x->i2cmux);
->  	drm_bridge_remove(&sii902x->bridge);
-> +	regulator_disable(sii902x->cvcc12);
-> +	regulator_disable(sii902x->iovcc);
->  
->  	return 0;
->  }
-> -- 
-> 2.25.4
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
