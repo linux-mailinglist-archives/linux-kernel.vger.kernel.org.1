@@ -2,137 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BBB7279669
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 05:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37428279667
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 05:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729984AbgIZDfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 23:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        id S1729991AbgIZDbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 23:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgIZDfo (ORCPT
+        with ESMTP id S1729225AbgIZDbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 23:35:44 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED6BC0613D3
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:35:44 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id g96so4223669otb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:35:44 -0700 (PDT)
+        Fri, 25 Sep 2020 23:31:37 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F502C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:31:37 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id u21so1283248eja.2
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:31:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=r41cvb1N5LxHmvk4/Z1u+DVLxLHsiY0eJOMeFd/1FUI=;
-        b=H5Ew1dx9RWLp2Zv3wrDGwnWJ9kvtovj/or5SuxWG5TW34gvkP1WCt38X0STzwaQApU
-         GKIaAcgUbc9S4lHb9nOf889CwIuOKJOqT/pKmtmDVU6d/IznJ0qhGPtt73jl4KZcWqG3
-         wg3392eGxhSA0yu4/NnqKGS9Dm8qg4tcbOaMof9vZpTWjIW/Ps6wT2W7EWq5XIHg+b1V
-         hycKIor7N599PF/QigzHhsI2clYn1/SbwHkBorQeZExOShoxPuizepodAY0E6CL6/SE7
-         XHfiBtHiD+MmTIXfeJLKzgiaLRmNmqrNQ+F5gZSV9PAk4+aRZ87p5S06Jx7vzLMJqg9H
-         IrQQ==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UI5cEN8K/GeU1uj0Hlr3P0QJH4xnq6J/e8uw5E+CELg=;
+        b=nFM9EXLswqbb5477o4UUgt06gbHZd30tqKoruqN9TU7ki2iygmPrxb7yud48jxEgZq
+         AMdDChWJGTw00YcdVmLrbNsz96hgAYy9rLT8Q0eewH1VILl3IBRfLrHEAuRIrjY4TwNO
+         a/fZ4xfdXd7wgLUEhzggKOZEVmSqrVywkt7nRGs7sNL6j0nuJQhoK00IBAhEs2IYCNU7
+         RAPowAucxxNYdJYteLM9uVq9Y5T/f7buOcPqzEhhqz7OSigsqGF95NI1/MOQ6bjw21RE
+         eIrb7wntjMtTIXAMQoss9yw159RS/dEAB3wDiNdJgcqObuKazZObmWqT2gO5VJIlKVmY
+         wEtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=r41cvb1N5LxHmvk4/Z1u+DVLxLHsiY0eJOMeFd/1FUI=;
-        b=RDI3czG1L6ytlZxwNxDw/hoWvFPve/NxwmPzIKqx59PZkCPsA9zBpKGAvZELvmNPJI
-         2cHymQJaLGrow0wcYKDIvoecguBLkE+7WiMk5NRzh+xs6wPV7AT2FZFQYxWPsKPPvnX4
-         eWl3qe8rx0TYpbKsdQPBH5kLcJDGGb0/gqMosUzP7AQSTAUJjBZEBY8WpBPeRRJU3idv
-         6T23r0eOJoUTeI8aEJsqaWYLrdtGBEDlhcI4zJM+8YizXIAY6/vFliGRSYZZq5ROO7DM
-         Znpx9Ank3Sm5kaU+hiO1YIGzjEHzl5VguViMqOHbCnYsM88pJkj2ROL9+ybwOO3S5Svb
-         +kzQ==
-X-Gm-Message-State: AOAM531mrIw7HyKN2upoCY8o81PKg4k2qf2gxJnUku87x2mqcyOyybqI
-        H3CMStFMptGxx/zXvo8hi/jA0Q==
-X-Google-Smtp-Source: ABdhPJxELpmDLw4ZXIMOtwbj8cask50ql1SmQRWsp4jnor195OOSpBobecmfpIme80ehkBSEJrmehw==
-X-Received: by 2002:a9d:6a8b:: with SMTP id l11mr2433175otq.273.1601091343437;
-        Fri, 25 Sep 2020 20:35:43 -0700 (PDT)
-Received: from builder.lan (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
-        by smtp.gmail.com with ESMTPSA id z20sm333543oor.3.2020.09.25.20.35.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 20:35:42 -0700 (PDT)
-Date:   Fri, 25 Sep 2020 20:31:09 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-Cc:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
-        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
-        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
-Subject: Re: [PATCH v2 0/3] Expose recovery/coredump configuration from sysfs
-Message-ID: <20200926033109.GA10036@builder.lan>
-References: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
- <7ad40d80-5ac4-97a5-5e05-c83dc08896a2@st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UI5cEN8K/GeU1uj0Hlr3P0QJH4xnq6J/e8uw5E+CELg=;
+        b=Tte/c01XQg+8pV2BnCacBzAjFzaY54xnZVqUB9ZilRaAkbCkh+YjuKcbKhHCJFuSEi
+         YFCMnuK0SXLsS2IfssJDIPom5KAT8YNzyuLSHqq+Lxw5hAJYIX/ZxWIuFM2CUKTx7EUs
+         HatJC7mtcNrtW2lb+NJUbkxjRW3V3BVGLciqa9B6Aimw7liHBcWHOZPgxYT/AmnUXjrO
+         zjaOxV4oqNmxFVhqdy5QANTYapHwtc5wLFWZGx6iA0azy7IqLXQwBUTk0tX+0hpJm6mw
+         ORCiyCmqlLquWbeMDiuaigPbRrH6+qeDoX6Non1uijC6zNTHCa9HmpEZnufKZq4Gbtr/
+         8ctA==
+X-Gm-Message-State: AOAM531MTgjW5GYAy0G6fAPXEciPw2nmJKkVdNztb5E9kZ9dlJPLhAPJ
+        kQAgbMERdxmEO1hOrvM2D5YBP7PtMK5sns1/qUY2a7UF5s7VNA==
+X-Google-Smtp-Source: ABdhPJzT9T905L59sMxHvdd3yvvw2e/dtiHXcaPuK+9fYnGGItRqKC2gQWw5Zi1v0zAPXBfy/TsQ6vOApAyCmQ7bvxA=
+X-Received: by 2002:a17:906:d7ab:: with SMTP id pk11mr5686686ejb.472.1601091096174;
+ Fri, 25 Sep 2020 20:31:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7ad40d80-5ac4-97a5-5e05-c83dc08896a2@st.com>
+References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <160106118486.30709.13012322227204800596.stgit@dwillia2-desk3.amr.corp.intel.com>
+ <20200925192234.33ae92b75012c1f2bdd974b8@linux-foundation.org>
+In-Reply-To: <20200925192234.33ae92b75012c1f2bdd974b8@linux-foundation.org>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 25 Sep 2020 20:31:24 -0700
+Message-ID: <CAPcyv4gO0jiNGrZkn8VBh5ZJAUOFTn4LAs4CE9tB++0ryX_J=w@mail.gmail.com>
+Subject: Re: [PATCH v5 15/17] device-dax: add an 'align' attribute
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Joao Martins <joao.m.martins@oracle.com>,
+        Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 15 Sep 02:51 PDT 2020, Arnaud POULIQUEN wrote:
+On Fri, Sep 25, 2020 at 7:22 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri, 25 Sep 2020 12:13:04 -0700 Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> > Introduce a device align attribute.  While doing so, rename the region
+> > align attribute to be more explicitly named as so, but keep it named as
+> > @align to retain the API for tools like daxctl.
+> >
+> > Changes on align may not always be valid, when say certain mappings were
+> > created with 2M and then we switch to 1G.  So, we validate all ranges
+> > against the new value being attempted, post resizing.
+> >
+> > Link: https://lkml.kernel.org/r/159643105944.4062302.3131761052969132784.stgit@dwillia2-desk3.amr.corp.intel.com
+> > Link: https://lore.kernel.org/r/20200716172913.19658-3-joao.m.martins@oracle.com
+> > Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> >
+>
+> The signoff chain implies that this was From:Joao.  Please clarify?
 
-> Hi Rishabh,
-> 
-> On 8/27/20 9:48 PM, Rishabh Bhatnagar wrote:
-> > From Android R onwards Google has restricted access to debugfs in user
-> > and user-debug builds. This restricts access to most of the features
-> > exposed through debugfs. This patch series adds a configurable option
-> > to move the recovery/coredump interfaces to sysfs. If the feature
-> > flag is selected it would move these interfaces to sysfs and remove
-> > the equivalent debugfs interface. 'Coredump' and 'Recovery' are critical
-> > interfaces that are required for remoteproc to work on Qualcomm Chipsets.
-> > Coredump configuration needs to be set to "inline" in debug/test build
-> > and "disabled" in production builds. Whereas recovery needs to be
-> > "disabled" for debugging purposes and "enabled" on production builds.
-> 
-> The remoteproc_cdev had been created to respond to some sysfs limitations.
+Yes, sorry, my script to squash the fix rewrote the author and I
+failed to catch it. This indeed should be:
 
-The limitation here is in debugfs not being available on all systems,
-sysfs is present and I really do like the idea of being able to change
-these things without having to compile a tool to invoke the ioctl...
+From: Joao Martins <joao.m.martins@oracle.com>
 
-> I wonder if this evolution should not also be implemented in the cdev.
-> In this case an additional event could be addedd to inform the application
-> that a crash occurred and that a core dump is available.
-> 
-
-Specifically for userspace to know when a coredump is present there's
-already uevents being sent when the devcoredump is ready. That said,
-having some means to getting notified about remoteproc state changes
-does sounds reasonable. If there is a use case we should discuss that.
-
-> Of course it's only a suggestion... As it would be a redesign.
-
-A very valid suggestion. I don't think it's a redesign, but more of an
-extension of what we have today.
-
-Regards,
-Bjorn
-
-> I let Björn and Mathieu comment.
-> 
-> Regards,
-> Arnaud
-> 
-> > 
-> > Changelog:
-> > 
-> > v1 -> v2:
-> > - Correct the contact name in the sysfs documentation.
-> > - Remove the redundant write documentation for coredump/recovery sysfs
-> > - Add a feature flag to make this interface switch configurable.
-> > 
-> > Rishabh Bhatnagar (3):
-> >   remoteproc: Expose remoteproc configuration through sysfs
-> >   remoteproc: Add coredump configuration to sysfs
-> >   remoteproc: Add recovery configuration to sysfs
-> > 
-> >  Documentation/ABI/testing/sysfs-class-remoteproc |  44 ++++++++
-> >  drivers/remoteproc/Kconfig                       |  12 +++
-> >  drivers/remoteproc/remoteproc_debugfs.c          |  10 +-
-> >  drivers/remoteproc/remoteproc_sysfs.c            | 126 +++++++++++++++++++++++
-> >  4 files changed, 190 insertions(+), 2 deletions(-)
-> > 
+I double-checked, and it looks like this was the only one in the
+series with that problem.
