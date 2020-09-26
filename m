@@ -2,198 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CCE27977B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 09:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0A4F279782
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 09:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728949AbgIZHQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 03:16:20 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:60412 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726149AbgIZHQU (ORCPT
+        id S1729057AbgIZHTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 03:19:19 -0400
+Received: from mail-io1-f78.google.com ([209.85.166.78]:56319 "EHLO
+        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728974AbgIZHTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 03:16:20 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08Q71prM173502;
-        Sat, 26 Sep 2020 03:16:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=EHOoB4YRKUENh+HWxkIaXw/x+fqoGpXBewLUWbWsNJA=;
- b=MaZr2RUDr7oCWks1nuB+b5p0bRWmAqVxiXcVxo2QzNmEWgzueM/5lAJ0FHOyUhJGdiCu
- KsJacRnkZu86NWJUlTa5AKsdGOK3+ebTG2H1N7Era77+4Wqxwn6vlwxpQ4lzrFghPbaV
- sl/IQu4oXKx0UuPXXUuR+L/JAyK8Wq7GLsRM9DdHkPSY3gYv8hvHVNOmtD1zTQRacSJC
- U5Nr65dPbqO+Lpt76D0TZ1PTCatv7I4/0IajpURsGZM7SrsNzueveR6us4XUlUmrmP3x
- DnZr0CiGRBeSki2eOEj+shy7QgfzbiIRwKTbejeMmm8YGshijZLvbV6N4d+3D28OhvJz tg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33t0f18p2p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 03:16:17 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08Q71sQK173589;
-        Sat, 26 Sep 2020 03:16:16 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33t0f18p2a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 03:16:16 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08Q7EoHs004771;
-        Sat, 26 Sep 2020 07:16:15 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 33sw97r590-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 07:16:14 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08Q7GCGW23462344
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 26 Sep 2020 07:16:12 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3A8274C040;
-        Sat, 26 Sep 2020 07:16:12 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73BA94C044;
-        Sat, 26 Sep 2020 07:16:11 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.162.14])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sat, 26 Sep 2020 07:16:11 +0000 (GMT)
-Date:   Sat, 26 Sep 2020 09:16:09 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        freude@linux.ibm.com, borntraeger@de.ibm.com,
-        mjrosato@linux.ibm.com, alex.williamson@redhat.com,
-        kwankhede@nvidia.com, fiuczy@linux.ibm.com, frankja@linux.ibm.com,
-        david@redhat.com, imbrenda@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com
-Subject: Re: [PATCH v10 07/16] s390/vfio-ap: sysfs attribute to display the
- guest's matrix
-Message-ID: <20200926091609.29565e87.pasic@linux.ibm.com>
-In-Reply-To: <d2e623f3-65fa-e764-61ce-b7e8c35fd399@linux.ibm.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
-        <20200821195616.13554-8-akrowiak@linux.ibm.com>
-        <20200917163448.4db80db3.cohuck@redhat.com>
-        <d2e623f3-65fa-e764-61ce-b7e8c35fd399@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Sat, 26 Sep 2020 03:19:19 -0400
+Received: by mail-io1-f78.google.com with SMTP id t187so3762577iof.22
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 00:19:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=dX7uzTK5eNz0IQqGIK08F6NHKFH8T8i9KJUoLvVBVxA=;
+        b=bDZFcvqBeTfIKdqF4dj4+L15OU/iUyaDZDKy1VYbbRDd1xIwzjGPB58kP8FIgiJBk+
+         7ki10Tyz0hbzQsyGEWwMfZJcdUXYKsSvYTQUQH4D+19ywkTH/SkOsBYOa0pkGrPbcKSO
+         RS7eCnatnzwibJmGM8m4yS/lIFm/LH8ssmbPWQ1C6AXxc29loD4Pdoch6ryVjBBUsZl7
+         4igUmTty7/Z3EtyPLy0WVnTd+1HwuZm9fyVspUvZi9J2K6U+tAHLh6o94weYMXWkc8RE
+         Hz/+tYoc+d+jJXeOit1UxdDHVP0eGNsOMvpDqoj1JcKe6DjjUS/pDvWcVjb3FUfWL9A1
+         GEpA==
+X-Gm-Message-State: AOAM533UT3iOE0aAfsILd4bcDrdjA94YQ7WIsAtEZsyA4HOyb6d8Yv3c
+        TzMGgNrQ3KsWiedncGtFYEvQk2n4QHxki9GA5KMKDb3PCGY9
+X-Google-Smtp-Source: ABdhPJyIeKAJahOhUJBJzK1C//wuAqg5bULj5URE6A2okCbfGeIu3nY5c3ybpVmJpE9WPpHV4+vl7aIjnDX1rfDEAH4Vqg2YMWIi
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-26_05:2020-09-24,2020-09-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 bulkscore=0
- suspectscore=0 impostorscore=0 priorityscore=1501 phishscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009260061
+X-Received: by 2002:a92:c041:: with SMTP id o1mr2815551ilf.160.1601104757824;
+ Sat, 26 Sep 2020 00:19:17 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 00:19:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000056a39205b0324001@google.com>
+Subject: KASAN: global-out-of-bounds Read in bit_putcs (2)
+From:   syzbot <syzbot+a889d70ef11d6e0f6f22@syzkaller.appspotmail.com>
+To:     b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
+        dri-devel@lists.freedesktop.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 13:09:25 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+Hello,
 
-> 
-> 
-> On 9/17/20 10:34 AM, Cornelia Huck wrote:
-> > On Fri, 21 Aug 2020 15:56:07 -0400
-> > Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> >
-> >> The matrix of adapters and domains configured in a guest's CRYCB may
-> >> differ from the matrix of adapters and domains assigned to the matrix mdev,
-> >> so this patch introduces a sysfs attribute to display the matrix of a guest
-> >> using the matrix mdev. For a matrix mdev denoted by $uuid, the crycb for a
-> >> guest using the matrix mdev can be displayed as follows:
-> >>
-> >>     cat /sys/devices/vfio_ap/matrix/$uuid/guest_matrix
-> >>
-> >> If a guest is not using the matrix mdev at the time the crycb is displayed,
-> >> an error (ENODEV) will be returned.
-> >>
-> >> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> >> ---
-> >>   drivers/s390/crypto/vfio_ap_ops.c | 58 +++++++++++++++++++++++++++++++
-> >>   1 file changed, 58 insertions(+)
-> >>
-> >> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> >> index efb229033f9e..30bf23734af6 100644
-> >> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> >> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> >> @@ -1119,6 +1119,63 @@ static ssize_t matrix_show(struct device *dev, struct device_attribute *attr,
-> >>   }
-> >>   static DEVICE_ATTR_RO(matrix);
-> >>   
-> >> +static ssize_t guest_matrix_show(struct device *dev,
-> >> +				 struct device_attribute *attr, char *buf)
-> >> +{
-> >> +	struct mdev_device *mdev = mdev_from_dev(dev);
-> >> +	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
-> >> +	char *bufpos = buf;
-> >> +	unsigned long apid;
-> >> +	unsigned long apqi;
-> >> +	unsigned long apid1;
-> >> +	unsigned long apqi1;
-> >> +	unsigned long napm_bits = matrix_mdev->shadow_apcb.apm_max + 1;
-> >> +	unsigned long naqm_bits = matrix_mdev->shadow_apcb.aqm_max + 1;
-> >> +	int nchars = 0;
-> >> +	int n;
-> >> +
-> >> +	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
-> >> +		return -ENODEV;
-> >> +
-> >> +	apid1 = find_first_bit_inv(matrix_mdev->shadow_apcb.apm, napm_bits);
-> >> +	apqi1 = find_first_bit_inv(matrix_mdev->shadow_apcb.aqm, naqm_bits);
-> >> +
-> >> +	mutex_lock(&matrix_dev->lock);
-> >> +
-> >> +	if ((apid1 < napm_bits) && (apqi1 < naqm_bits)) {
-> >> +		for_each_set_bit_inv(apid, matrix_mdev->shadow_apcb.apm,
-> >> +				     napm_bits) {
-> >> +			for_each_set_bit_inv(apqi,
-> >> +					     matrix_mdev->shadow_apcb.aqm,
-> >> +					     naqm_bits) {
-> >> +				n = sprintf(bufpos, "%02lx.%04lx\n", apid,
-> >> +					    apqi);
-> >> +				bufpos += n;
-> >> +				nchars += n;
-> >> +			}
-> >> +		}
-> >> +	} else if (apid1 < napm_bits) {
-> >> +		for_each_set_bit_inv(apid, matrix_mdev->shadow_apcb.apm,
-> >> +				     napm_bits) {
-> >> +			n = sprintf(bufpos, "%02lx.\n", apid);
-> >> +			bufpos += n;
-> >> +			nchars += n;
-> >> +		}
-> >> +	} else if (apqi1 < naqm_bits) {
-> >> +		for_each_set_bit_inv(apqi, matrix_mdev->shadow_apcb.aqm,
-> >> +				     naqm_bits) {
-> >> +			n = sprintf(bufpos, ".%04lx\n", apqi);
-> >> +			bufpos += n;
-> >> +			nchars += n;
-> >> +		}
-> >> +	}
-> >> +
-> >> +	mutex_unlock(&matrix_dev->lock);
-> >> +
-> >> +	return nchars;
-> >> +}
-> > This basically looks like a version of matrix_show() operating on the
-> > shadow apcb. I'm wondering if we could consolidate these two functions
-> > by passing in the structure to operate on as a parameter? Might not be
-> > worth the effort, though.
-> 
-> We still need the two functions because they back the mdev's
-> sysfs matrix and guest_matrix attributes, but we could call a function.
-> I'm not sure it buys us much though.
+syzbot found the following issue on:
 
-The logic seems identical with the exception that the guest variant
-checks if vfio_ap_mdev_has_crycb(matrix_mdev). I'm not a big fan of
-duplicated code, and especially not in such close proximity. I'm voting
-for factoring out the common logic.
+HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=126e918d900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
+dashboard link: https://syzkaller.appspot.com/bug?extid=a889d70ef11d6e0f6f22
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-Otherwise looks OK.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Regards,
-Halil
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a889d70ef11d6e0f6f22@syzkaller.appspotmail.com
 
+==================================================================
+BUG: KASAN: global-out-of-bounds in __fb_pad_aligned_buffer include/linux/fb.h:654 [inline]
+BUG: KASAN: global-out-of-bounds in bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
+BUG: KASAN: global-out-of-bounds in bit_putcs+0xbb6/0xd20 drivers/video/fbdev/core/bitblit.c:185
+Read of size 1 at addr ffffffff88db78e9 by task syz-executor.4/16465
+
+CPU: 0 PID: 16465 Comm: syz-executor.4 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ __fb_pad_aligned_buffer include/linux/fb.h:654 [inline]
+ bit_putcs_aligned drivers/video/fbdev/core/bitblit.c:96 [inline]
+ bit_putcs+0xbb6/0xd20 drivers/video/fbdev/core/bitblit.c:185
+ fbcon_putcs+0x35a/0x450 drivers/video/fbdev/core/fbcon.c:1308
+ do_update_region+0x399/0x630 drivers/tty/vt/vt.c:675
+ redraw_screen+0x658/0x790 drivers/tty/vt/vt.c:1034
+ fbcon_do_set_font+0x718/0x880 drivers/video/fbdev/core/fbcon.c:2438
+ fbcon_copy_font+0x12f/0x1a0 drivers/video/fbdev/core/fbcon.c:2453
+ con_font_copy drivers/tty/vt/vt.c:4719 [inline]
+ con_font_op+0x65b/0x1140 drivers/tty/vt/vt.c:4734
+ vt_k_ioctl drivers/tty/vt/vt_ioctl.c:473 [inline]
+ vt_ioctl+0x21c9/0x2e90 drivers/tty/vt/vt_ioctl.c:852
+ tty_ioctl+0x1019/0x15f0 drivers/tty/tty_io.c:2656
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e179
+Code: 3d b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b b2 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fe2e03e5c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000010840 RCX: 000000000045e179
+RDX: 0000000020000400 RSI: 0000000000004b72 RDI: 0000000000000003
+RBP: 000000000118cf80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
+R13: 00007ffff7397e9f R14: 00007fe2e03e69c0 R15: 000000000118cf4c
+
+The buggy address belongs to the variable:
+ oid_index+0x109/0xae0
+
+Memory state around the buggy address:
+ ffffffff88db7780: 00 00 00 00 01 f9 f9 f9 f9 f9 f9 f9 00 00 00 00
+ ffffffff88db7800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 06 f9
+>ffffffff88db7880: f9 f9 f9 f9 00 02 f9 f9 f9 f9 f9 f9 00 01 f9 f9
+                                                          ^
+ ffffffff88db7900: f9 f9 f9 f9 00 04 f9 f9 f9 f9 f9 f9 00 00 02 f9
+ ffffffff88db7980: f9 f9 f9 f9 00 03 f9 f9 f9 f9 f9 f9 07 f9 f9 f9
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
