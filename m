@@ -2,265 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E01279C65
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 22:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D5C279C6A
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 22:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgIZUgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 16:36:15 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:24551 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726242AbgIZUgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 16:36:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601152573; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=GCWwjWEfmmgYW2v0oU/ekR8qqnSHIjTtkkGegbeN01M=; b=tLLcVa/QGxT94lxG2+7NqzStA02eryMep+sL3CpolgBCUrhw+5h4P+EjpKe3ykMQYliw8S+f
- zReS2qAiMjkeRePPHRmqqAy2z4UTpX2TCv/TsNFGRUrL+8ye9vM5u1piht/GiwS7RQNMBccS
- U8aVCAutWK1Xw1kbEF9qzzPSDRo=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5f6fa5f909b31319644839ca (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 26 Sep 2020 20:35:05
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 08818C433CB; Sat, 26 Sep 2020 20:35:05 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52368C433CA;
-        Sat, 26 Sep 2020 20:35:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 52368C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
-Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/msm/dp: return correct connection status after suspend
-Date:   Sat, 26 Sep 2020 13:34:54 -0700
-Message-Id: <20200926203454.13643-1-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
+        id S1726932AbgIZUrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 16:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726242AbgIZUrU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 16:47:20 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC8BC0613CE;
+        Sat, 26 Sep 2020 13:47:20 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mm21so1342954pjb.4;
+        Sat, 26 Sep 2020 13:47:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=flpbUTh7mBOWgXDWpnvyG6c7LmGjsFBFhnUEgfVSV/k=;
+        b=EQXfJ0JB0PC/pRAXXcwKvh6YBkIs2LiEhWFvvLinRQoI0tq58oWonc/+sXato3j9K8
+         2rvISmxxixCpJYYaio9BarFNiEldQyyoaW2upoYSrFY2Ok1l2TNex+JuR1V/N5WXn/Tu
+         F5owCcCMl0NwoGavDkewiLRMYI7rF1rmTxh4OkW8IbwC8L+ij1zrgauhkZtltOUM0ekC
+         OW3nOjXHTfUaGkDKbvvgOkKJRv9Cq8P/7utzvQ8a9FO+br4HoM7Yr1SZ2YCLmeWES24Y
+         a1VKRaCdLo3zJmHWXiSnL30YfB6UOqH8xrVveCtl8jk8cC6DLAsHsp2TyASXGXdhefCe
+         jekw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=flpbUTh7mBOWgXDWpnvyG6c7LmGjsFBFhnUEgfVSV/k=;
+        b=qLpfwhi4nn3J3Ha21SEV9eQCfc3piHEX1H7iZrjNBJsx9vnx5zm4HHTM1VvsUMDPia
+         uW0ZR8aQOYHXuPV8FUsrHitG4JPj8UHo5SLhw3jwPNjG797yY/aCwtiPlb6LYG4B2KaG
+         UYzOrJvAJM026d26vL9nXq7XE6h7YMd+KBwoPboRi6tB7I+O5FSp0FPq28M3FUjyCroj
+         o6KMh3o98pa/cJpUCofisLS/sxzum8LCoRIeJOmFjxKoGY3ryhHOyacs1otkBpOp3O7X
+         IXwzseT2RYTVNr1zBisZ4Wi6C/j05+0fk6VLGJFXDP6Wg7uXJzbGQSaF2szMyL81DahR
+         h5BQ==
+X-Gm-Message-State: AOAM530HEJhDe6FDuWHyg19ke7xnCbYrVoAq7quctkmgtJhmDJYpJLaq
+        zS0PeJzsB3ZvXwbd8l6fRv0=
+X-Google-Smtp-Source: ABdhPJxg997HF2zPQOVeMqbZ9YSGytnZ/VLnkZo/q5GYFLjMaxx0J1AcRpMErsNZCXF7IhAFMZj1BA==
+X-Received: by 2002:a17:90b:1741:: with SMTP id jf1mr3080921pjb.164.1601153239514;
+        Sat, 26 Sep 2020 13:47:19 -0700 (PDT)
+Received: from Asurada-Nvidia (thunderhill.nvidia.com. [216.228.112.22])
+        by smtp.gmail.com with ESMTPSA id y197sm6396914pfc.220.2020.09.26.13.47.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 26 Sep 2020 13:47:19 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 13:42:22 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     thierry.reding@gmail.com, joro@8bytes.org, krzk@kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
+Subject: Re: [PATCH 3/5] iommu/tegra-smmu: Use iommu_fwspec in
+ .probe_/.attach_device()
+Message-ID: <20200926204221.GA4947@Asurada-Nvidia>
+References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
+ <20200926080719.6822-4-nicoleotsuka@gmail.com>
+ <ccb95c4e-64ba-bab9-1f75-0c6d287540b0@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ccb95c4e-64ba-bab9-1f75-0c6d287540b0@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At dp_pm_resume, reinitialize both dp host controller and hpd block
-so that hpd connection can be detected at realtime by reading hpd state
-status register. Also hpd plug interrupt can be generated accordingly.
+Hi Dmitry,
 
-Changes in v2:
--- use container_of to cast correct dp_display_private pointer
-   at both dp_pm_suspend and dp_pm_resume.
+Thank you for the review and comments!
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_catalog.c | 13 ++++++
- drivers/gpu/drm/msm/dp/dp_catalog.h |  1 +
- drivers/gpu/drm/msm/dp/dp_display.c | 67 ++++++++++++-----------------
- drivers/gpu/drm/msm/dp/dp_reg.h     |  2 +
- 4 files changed, 43 insertions(+), 40 deletions(-)
+On Sat, Sep 26, 2020 at 05:48:17PM +0300, Dmitry Osipenko wrote:
+> 26.09.2020 11:07, Nicolin Chen пишет:
+> ...
+> > +	/* NULL smmu pointer means that SMMU driver is not probed yet */
+> > +	if (unlikely(!smmu))
+> > +		return ERR_PTR(-EPROBE_DEFER);
+> 
+> Hello, Nicolin!
+> 
+> Please don't pollute code with likely/unlikely. This is not a
+> performance-critical code.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index b15b4ce4ba35..63c5ada34c21 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -572,6 +572,19 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
- 	dp_write_aux(catalog, REG_DP_DP_HPD_CTRL, DP_DP_HPD_CTRL_HPD_EN);
- }
- 
-+u32 dp_catalog_hpd_get_state_status(struct dp_catalog *dp_catalog)
-+{
-+	struct dp_catalog_private *catalog = container_of(dp_catalog,
-+				struct dp_catalog_private, dp_catalog);
-+	u32 status = 0;
-+
-+	status = dp_read_aux(catalog, REG_DP_DP_HPD_INT_STATUS);
-+	status >>= DP_DP_HPD_STATE_STATUS_BITS_SHIFT;
-+	status &= DP_DP_HPD_STATE_STATUS_BITS_MASK;
-+
-+	return status;
-+}
-+
- u32 dp_catalog_hpd_get_intr_status(struct dp_catalog *dp_catalog)
- {
- 	struct dp_catalog_private *catalog = container_of(dp_catalog,
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.h b/drivers/gpu/drm/msm/dp/dp_catalog.h
-index 4b7666f1fe6f..6d257dbebf29 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.h
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.h
-@@ -97,6 +97,7 @@ void dp_catalog_ctrl_enable_irq(struct dp_catalog *dp_catalog, bool enable);
- void dp_catalog_hpd_config_intr(struct dp_catalog *dp_catalog,
- 			u32 intr_mask, bool en);
- void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog);
-+u32 dp_catalog_hpd_get_state_status(struct dp_catalog *dp_catalog);
- u32 dp_catalog_hpd_get_intr_status(struct dp_catalog *dp_catalog);
- void dp_catalog_ctrl_phy_reset(struct dp_catalog *dp_catalog);
- int dp_catalog_ctrl_update_vx_px(struct dp_catalog *dp_catalog, u8 v_level,
-diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
-index e175aa3fd3a9..431dff9de797 100644
---- a/drivers/gpu/drm/msm/dp/dp_display.c
-+++ b/drivers/gpu/drm/msm/dp/dp_display.c
-@@ -114,8 +114,6 @@ struct dp_display_private {
- 	struct dp_event event_list[DP_EVENT_Q_MAX];
- 	spinlock_t event_lock;
- 
--	struct completion resume_comp;
--
- 	struct dp_audio *audio;
- };
- 
-@@ -508,9 +506,6 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
- 		return 0;
- 	}
- 
--	if (state == ST_SUSPENDED)
--		tout = DP_TIMEOUT_NONE;
--
- 	atomic_set(&dp->hpd_state, ST_CONNECT_PENDING);
- 
- 	hpd->hpd_high = 1;
-@@ -798,8 +793,6 @@ static int dp_display_enable(struct dp_display_private *dp, u32 data)
- 	if (!rc)
- 		dp_display->power_on = true;
- 
--	/* complete resume_comp regardless it is armed or not */
--	complete(&dp->resume_comp);
- 	return rc;
- }
- 
-@@ -1151,9 +1144,6 @@ static int dp_display_probe(struct platform_device *pdev)
- 	}
- 
- 	mutex_init(&dp->event_mutex);
--
--	init_completion(&dp->resume_comp);
--
- 	g_dp_display = &dp->dp_display;
- 
- 	/* Store DP audio handle inside DP display */
-@@ -1189,18 +1179,40 @@ static int dp_display_remove(struct platform_device *pdev)
- 
- static int dp_pm_resume(struct device *dev)
- {
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct msm_dp *dp_display = platform_get_drvdata(pdev);
-+	struct dp_display_private *dp;
-+	u32 status;
-+
-+	dp = container_of(dp_display, struct dp_display_private, dp_display);
-+
-+	dp_display_host_init(dp);
-+
-+	dp_catalog_ctrl_hpd_config(dp->catalog);
-+
-+	status = dp_catalog_hpd_get_state_status(dp->catalog);
-+
-+	if (status) {
-+		dp->dp_display.is_connected = true;
-+	} else {
-+		dp->dp_display.is_connected = false;
-+		/* make sure next resume host_init be called */
-+		dp->core_initialized = false;
-+	}
-+
- 	return 0;
- }
- 
- static int dp_pm_suspend(struct device *dev)
- {
- 	struct platform_device *pdev = to_platform_device(dev);
--	struct dp_display_private *dp = platform_get_drvdata(pdev);
-+	struct msm_dp *dp_display = platform_get_drvdata(pdev);
-+	struct dp_display_private *dp;
- 
--	if (!dp) {
--		DRM_ERROR("DP driver bind failed. Invalid driver data\n");
--		return -EINVAL;
--	}
-+	dp = container_of(dp_display, struct dp_display_private, dp_display);
-+
-+	if (dp_display->power_on == true)
-+		dp_display_disable(dp, 0);
- 
- 	atomic_set(&dp->hpd_state, ST_SUSPENDED);
- 
-@@ -1317,19 +1329,6 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
- 	return 0;
- }
- 
--static int dp_display_wait4resume_done(struct dp_display_private *dp)
--{
--	int ret = 0;
--
--	reinit_completion(&dp->resume_comp);
--	if (!wait_for_completion_timeout(&dp->resume_comp,
--				WAIT_FOR_RESUME_TIMEOUT_JIFFIES)) {
--		DRM_ERROR("wait4resume_done timedout\n");
--		ret = -ETIMEDOUT;
--	}
--	return ret;
--}
--
- int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
- {
- 	int rc = 0;
-@@ -1359,14 +1358,6 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
- 	}
- 
- 	state =  atomic_read(&dp_display->hpd_state);
--	if (state == ST_SUSPENDED) {
--		/* start link training */
--		dp_add_event(dp_display, EV_HPD_PLUG_INT, 0, 0);
--		mutex_unlock(&dp_display->event_mutex);
--
--		/* wait until dp interface is up */
--		goto resume_done;
--	}
- 
- 	dp_display_enable(dp_display, 0);
- 
-@@ -1388,10 +1379,6 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
- 	mutex_unlock(&dp_display->event_mutex);
- 
- 	return rc;
--
--resume_done:
--	dp_display_wait4resume_done(dp_display);
--	return rc;
- }
- 
- int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
-diff --git a/drivers/gpu/drm/msm/dp/dp_reg.h b/drivers/gpu/drm/msm/dp/dp_reg.h
-index 43042ff90a19..268602803d9a 100644
---- a/drivers/gpu/drm/msm/dp/dp_reg.h
-+++ b/drivers/gpu/drm/msm/dp/dp_reg.h
-@@ -32,6 +32,8 @@
- #define DP_DP_IRQ_HPD_INT_ACK			(0x00000002)
- #define DP_DP_HPD_REPLUG_INT_ACK		(0x00000004)
- #define DP_DP_HPD_UNPLUG_INT_ACK		(0x00000008)
-+#define DP_DP_HPD_STATE_STATUS_BITS_MASK	(0x0000000F)
-+#define DP_DP_HPD_STATE_STATUS_BITS_SHIFT	(0x1C)
- 
- #define REG_DP_DP_HPD_INT_MASK			(0x0000000C)
- #define DP_DP_HPD_PLUG_INT_MASK			(0x00000001)
+Will drop it. Thanks.
 
-base-commit: 3c0f462da069af12211901ddf26f7e16e6951d9b
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+> ...
+> > -static struct platform_driver tegra_mc_driver = {
+> > +struct platform_driver tegra_mc_driver = {
+> >  	.driver = {
+> >  		.name = "tegra-mc",
+> >  		.of_match_table = tegra_mc_of_match,
+> > diff --git a/include/soc/tegra/mc.h b/include/soc/tegra/mc.h
+> > index 1238e35653d1..49a4cf64c4b9 100644
+> > --- a/include/soc/tegra/mc.h
+> > +++ b/include/soc/tegra/mc.h
+> > @@ -184,4 +184,6 @@ struct tegra_mc {
+> >  int tegra_mc_write_emem_configuration(struct tegra_mc *mc, unsigned long rate);
+> >  unsigned int tegra_mc_get_emem_device_count(struct tegra_mc *mc);
+> >  
+> > +extern struct platform_driver tegra_mc_driver;
+> 
+> No global variables, please. See for the example:
+> 
+> https://elixir.bootlin.com/linux/v5.9-rc6/source/drivers/devfreq/tegra20-devfreq.c#L100
 
+Will fix it. Thanks for the example.
+
+> 
+> The tegra_get_memory_controller() is now needed by multiple Tegra
+> drivers, I think it should be good to have it added into the MC driver
+> and then make it globally available for all drivers by making use of
+> of_find_matching_node_and_match().
+> 
+> diff --git a/drivers/memory/tegra/mc.c b/drivers/memory/tegra/mc.c
+> index e1db209fd2ea..ed1bd6d00aaf 100644
+> --- a/drivers/memory/tegra/mc.c
+> +++ b/drivers/memory/tegra/mc.c
+> @@ -43,6 +43,29 @@ static const struct of_device_id tegra_mc_of_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, tegra_mc_of_match);
+> 
+> +struct tegra_mc *tegra_get_memory_controller(void)
+> +{
+> +	struct platform_device *pdev;
+> +	struct device_node *np;
+> +	struct tegra_mc *mc;
+> +
+> +	np = of_find_matching_node_and_match(NULL, tegra_mc_of_match, NULL);
+> +	if (!np)
+> +		return ERR_PTR(-ENOENT);
+> +
+> +	pdev = of_find_device_by_node(np);
+> +	of_node_put(np);
+> +	if (!pdev)
+> +		return ERR_PTR(-ENODEV);
+> +
+> +	mc = platform_get_drvdata(pdev);
+> +	if (!mc)
+> +		return ERR_PTR(-EPROBE_DEFER);
+> +
+> +	return mc;
+> +}
+> +EXPORT_SYMBOL_GPL(tegra_get_memory_controller);
+
+Will try this one and integrate into my next version.
+
+Thanks
+Nic
