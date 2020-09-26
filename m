@@ -2,140 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8F8279ABC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89478279ABE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729937AbgIZQYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 12:24:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729747AbgIZQYD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 12:24:03 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56C2821527;
-        Sat, 26 Sep 2020 16:24:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601137442;
-        bh=x7CD/Cc+BQV5JRqqGgs8yNrYfENI2MsaAgzRJ2ZK81Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=I3810f6bKtXPFDDKBFSw2tCLCKjFzaXwardV7+8vmRHEcqEkl9EDK3SVycAR/YI9f
-         4PPypdjZsjlg9TzwihylfqlVv5h9+9ALfV/631B8i1HIJA/qvfqLRry81MQK+HRsjh
-         SLunJUikCwdBi8kiLoosp9AtTT+xl5M8Wl2iP2a4=
-Date:   Sat, 26 Sep 2020 17:23:58 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Tobias Jordan <kernel@cdqe.de>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Subject: Re: [PATCH v2] iio: adc: gyroadc: fix leak of device node iterator
-Message-ID: <20200926172358.7467e0f3@archlinux>
-In-Reply-To: <20200926161946.GA10240@agrajag.zerfleddert.de>
-References: <20200926161946.GA10240@agrajag.zerfleddert.de>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729851AbgIZQ1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 12:27:08 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:28053 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZQ1I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 12:27:08 -0400
+Received: from tomoyo.flets-east.jp ([153.230.197.127])
+        by mwinf5d10 with ME
+        id YgSs230022lQRaH03gT107; Sat, 26 Sep 2020 18:27:05 +0200
+X-ME-Helo: tomoyo.flets-east.jp
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 26 Sep 2020 18:27:05 +0200
+X-ME-IP: 153.230.197.127
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     linux-can@vger.kernel.org
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH] can: raw: add missing error queue support
+Date:   Sun, 27 Sep 2020 01:24:31 +0900
+Message-Id: <20200926162527.270030-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Sep 2020 18:19:46 +0200
-Tobias Jordan <kernel@cdqe.de> wrote:
+Error queue are not yet implemented in CAN-raw sockets.
 
-> Add missing of_node_put calls when exiting the for_each_child_of_node
-> loop in rcar_gyroadc_parse_subdevs early.
-> 
-> Also add goto-exception handling for the error paths in that loop.
-> 
-> Fixes: 059c53b32329 ("iio: adc: Add Renesas GyroADC driver")
-> Signed-off-by: Tobias Jordan <kernel@cdqe.de>
-> ---
-> v2:
-> - added an of_node_put to the non-error "break" at the end
-> - used gotos for the error cases, doesn't look as bad as I thought
-Was marginal, so I'll go with it.
+The problem: a userland call to recvmsg(soc, msg, MSG_ERRQUEUE) on a
+CAN-raw socket would unqueue messages from the normal queue without
+any kind of error or warning. As such, it prevented CAN drivers from
+using the functionalities that relies on the error queue such as
+skb_tx_timestamp().
 
-Applied to the fixes-togreg branch of iio.git and marked for stable.
-> 
->  drivers/iio/adc/rcar-gyroadc.c | 21 +++++++++++++++------
->  1 file changed, 15 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/rcar-gyroadc.c b/drivers/iio/adc/rcar-gyroadc.c
-> index dcaefc108ff6..9f38cf3c7dc2 100644
-> --- a/drivers/iio/adc/rcar-gyroadc.c
-> +++ b/drivers/iio/adc/rcar-gyroadc.c
-> @@ -357,7 +357,7 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
->  			num_channels = ARRAY_SIZE(rcar_gyroadc_iio_channels_3);
->  			break;
->  		default:
-> -			return -EINVAL;
-> +			goto err_e_inval;
->  		}
->  
->  		/*
-> @@ -374,7 +374,7 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
->  				dev_err(dev,
->  					"Failed to get child reg property of ADC \"%pOFn\".\n",
->  					child);
-> -				return ret;
-> +				goto err_of_node_put;
->  			}
->  
->  			/* Channel number is too high. */
-> @@ -382,7 +382,7 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
->  				dev_err(dev,
->  					"Only %i channels supported with %pOFn, but reg = <%i>.\n",
->  					num_channels, child, reg);
-> -				return -EINVAL;
-> +				goto err_e_inval;
->  			}
->  		}
->  
-> @@ -391,7 +391,7 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
->  			dev_err(dev,
->  				"Channel %i uses different ADC mode than the rest.\n",
->  				reg);
-> -			return -EINVAL;
-> +			goto err_e_inval;
->  		}
->  
->  		/* Channel is valid, grab the regulator. */
-> @@ -401,7 +401,8 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
->  		if (IS_ERR(vref)) {
->  			dev_dbg(dev, "Channel %i 'vref' supply not connected.\n",
->  				reg);
-> -			return PTR_ERR(vref);
-> +			ret = PTR_ERR(vref);
-> +			goto err_of_node_put;
->  		}
->  
->  		priv->vref[reg] = vref;
-> @@ -425,8 +426,10 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
->  		 * attached to the GyroADC at a time, so if we found it,
->  		 * we can stop parsing here.
->  		 */
-> -		if (childmode == RCAR_GYROADC_MODE_SELECT_1_MB88101A)
-> +		if (childmode == RCAR_GYROADC_MODE_SELECT_1_MB88101A) {
-> +			of_node_put(child);
->  			break;
-> +		}
->  	}
->  
->  	if (first) {
-> @@ -435,6 +438,12 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
->  	}
->  
->  	return 0;
-> +
-> +err_e_inval:
-> +	ret = -EINVAL;
-> +err_of_node_put:
-> +	of_node_put(child);
-> +	return ret;
->  }
->  
->  static void rcar_gyroadc_deinit_supplies(struct iio_dev *indio_dev)
+SCM_CAN_RAW_ERRQUEUE is defined as the type for the CAN raw error
+queue. SCM stands for "Socket control messages". The name is inspired
+from SCM_J1939_ERRQUEUE of include/uapi/linux/can/j1939.h.
+
+Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+---
+ include/uapi/linux/can/raw.h | 3 +++
+ net/can/raw.c                | 4 ++++
+ 2 files changed, 7 insertions(+)
+
+diff --git a/include/uapi/linux/can/raw.h b/include/uapi/linux/can/raw.h
+index 6a11d308eb5c..3386aa81fdf2 100644
+--- a/include/uapi/linux/can/raw.h
++++ b/include/uapi/linux/can/raw.h
+@@ -49,6 +49,9 @@
+ #include <linux/can.h>
+ 
+ #define SOL_CAN_RAW (SOL_CAN_BASE + CAN_RAW)
++enum {
++	SCM_CAN_RAW_ERRQUEUE = 1,
++};
+ 
+ /* for socket options affecting the socket (not the global system) */
+ 
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 94a9405658dc..98abab119136 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -804,6 +804,10 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	noblock =  flags & MSG_DONTWAIT;
+ 	flags   &= ~MSG_DONTWAIT;
+ 
++	if (flags & MSG_ERRQUEUE)
++		return sock_recv_errqueue(sk, msg, size,
++					  SOL_CAN_RAW, SCM_CAN_RAW_ERRQUEUE);
++
+ 	skb = skb_recv_datagram(sk, flags, noblock, &err);
+ 	if (!skb)
+ 		return err;
+-- 
+2.26.2
 
