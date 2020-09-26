@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B806C279A08
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 16:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4826A279A0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 16:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729444AbgIZOOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 10:14:37 -0400
-Received: from verein.lst.de ([213.95.11.211]:59292 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgIZOOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 10:14:37 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6B5EE68B05; Sat, 26 Sep 2020 16:14:29 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 16:14:28 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Joonyoung Shim <jy0922.shim@samsung.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Matt Porter <mporter@kernel.crashing.org>,
-        iommu@lists.linux-foundation.org,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        linux1394-devel@lists.sourceforge.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        nouveau@lists.freedesktop.org, netdev@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-mm@kvack.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH 17/18] dma-iommu: implement ->alloc_noncoherent
-Message-ID: <20200926141428.GB10379@lst.de>
-References: <20200915155122.1768241-1-hch@lst.de> <20200915155122.1768241-18-hch@lst.de> <20200925184622.GB3607091@chromium.org>
+        id S1729486AbgIZOPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 10:15:10 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:50367 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgIZOPK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 10:15:10 -0400
+Received: by mail-il1-f197.google.com with SMTP id u20so4722783ilk.17
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 07:15:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=HwmCPWTIkgbEGZ/8XPswh0ymyUWqTxojzs4EteOI0oI=;
+        b=IFTOxINO2cW9oTl1u8Fm99EJkCATDR9fxFeAIWcYxC5lfSiZQpH2kVXckgf0HoSi7A
+         fl8KCn11F2kgVFEHdAXOpfpqSXEd3q0kg0e6L5AT37qXO3c8T1Sch4l4MJcZgBJQzFY9
+         6Vmha7pTN/Oo0OKEmZOQF7+t7th0vXAj69X70NRuiIEu9Wycx84PjfUt3s8qUTY3iciP
+         vS1bjOVHP5Uk3cBQvtfbQfv/AgtoM9ctxOR0Bw7RoEVTG4j9l8nNqPl2w1npgtlv5vmu
+         pm9MRB05kbkVFtJ6Tma7ei0lX7/Um10V1vurqXS20kv0/SRwCw4+kFM8Ob2uuR7IRm/o
+         xMQw==
+X-Gm-Message-State: AOAM531hWQieCmHfHBHEUwhVXjp5Z6s6zFNUoIAjYKOWez4kF7OYjpLh
+        njClnT3CjZ9GIGksYm4mq9jLQ1/EuQK/EtyVL71E5c85WH96
+X-Google-Smtp-Source: ABdhPJzP66eKvWYkv61MfW0FnGK+nWFCGDClVgDMl1tg7kxSm9jI8sqCeWZEobb84wJHGaCWQIJpQrNgfTmvYXb6PJHaAILdZudU
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925184622.GB3607091@chromium.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Received: by 2002:a5e:8e0a:: with SMTP id a10mr2298570ion.200.1601129709294;
+ Sat, 26 Sep 2020 07:15:09 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 07:15:09 -0700
+In-Reply-To: <35306a33-70b5-5e7d-a582-4ba5235953a8@kernel.dk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008fddee05b0380f03@google.com>
+Subject: Re: KASAN: use-after-free Read in io_wqe_worker
+From:   syzbot <syzbot+9af99580130003da82b1@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 06:46:22PM +0000, Tomasz Figa wrote:
-> > +static void *iommu_dma_alloc_noncoherent(struct device *dev, size_t size,
-> > +		dma_addr_t *handle, enum dma_data_direction dir, gfp_t gfp)
-> > +{
-> > +	if (!gfpflags_allow_blocking(gfp)) {
-> > +		struct page *page;
-> > +
-> > +		page = dma_common_alloc_pages(dev, size, handle, dir, gfp);
-> > +		if (!page)
-> > +			return NULL;
-> > +		return page_address(page);
-> > +	}
-> > +
-> > +	return iommu_dma_alloc_remap(dev, size, handle, gfp | __GFP_ZERO,
-> > +				     PAGE_KERNEL, 0);
-> 
-> iommu_dma_alloc_remap() makes use of the DMA_ATTR_ALLOC_SINGLE_PAGES attribute
-> to optimize the allocations for devices which don't care about how contiguous
-> the backing memory is. Do you think we could add an attrs argument to this
-> function and pass it there?
-> 
-> As ARM is being moved to the common iommu-dma layer as well, we'll probably
-> make use of the argument to support the DMA_ATTR_NO_KERNEL_MAPPING attribute to
-> conserve the vmalloc area.
+Hello,
 
-We could probably at it.  However I wonder why this is something the
-drivers should care about.  Isn't this really something that should
-be a kernel-wide policy for a given system?
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+
+Reported-and-tested-by: syzbot+9af99580130003da82b1@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         41d5f92f io-wq: fix worker refcount race
+git tree:       git://git.kernel.dk/linux-block.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d31db37354c30905
+dashboard link: https://syzkaller.appspot.com/bug?extid=9af99580130003da82b1
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+
+Note: testing is done by a robot and is best-effort only.
