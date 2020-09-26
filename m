@@ -2,59 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97B3527962B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444F7279630
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729952AbgIZCMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 22:12:15 -0400
-Received: from m17618.mail.qiye.163.com ([59.111.176.18]:16756 "EHLO
-        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729605AbgIZCMP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 22:12:15 -0400
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
-        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id B9A404E142F;
-        Sat, 26 Sep 2020 10:12:12 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wang Qing <wangqing@vivo.com>
-Subject: [PATCH] block: fix a typo for skd_main.c
-Date:   Sat, 26 Sep 2020 10:11:59 +0800
-Message-Id: <1601086321-1173-1-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZTkseSkNOGRlLHx4fVkpNS0pLQ01ISEhLT0hVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Nhw6Ixw5Sj8iFgE*PhU4PxJW
-        FTRPFExVSlVKTUtKS0NNSEhIT0lKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISllXWQgBWUFKTk9ONwY+
-X-HM-Tid: 0a74c82e9fff9376kuwsb9a404e142f
+        id S1729924AbgIZCQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 22:16:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:37518 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727495AbgIZCQh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 22:16:37 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 8D543AB9E90372DA0D49;
+        Sat, 26 Sep 2020 10:16:31 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.487.0; Sat, 26 Sep 2020
+ 10:16:21 +0800
+From:   Zheng Bin <zhengbin13@huawei.com>
+To:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
+        <amitk@kernel.org>, <rui.zhang@intel.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <yi.zhang@huawei.com>, <zhengbin13@huawei.com>
+Subject: [PATCH v2 -next] drivers: thermal: tsens: fix missing put_device error
+Date:   Sat, 26 Sep 2020 10:17:26 +0800
+Message-ID: <20200926021726.2370085-1-zhengbin13@huawei.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the comment typo: "compliment" -> "complement".
+Fixes coccicheck error:
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
+drivers/thermal/qcom/tsens.c:759:4-10: ERROR: missing put_device; call of_find_device_by_node on line 715, but without a corresponding object release within this function.
+
+Fixes: a7ff82976122 ("drivers: thermal: tsens: Merge tsens-common.c into tsens.c")
+Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
 ---
- drivers/block/skd_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/block/skd_main.c b/drivers/block/skd_main.c
-index ae6454c..e70e764
---- a/drivers/block/skd_main.c
-+++ b/drivers/block/skd_main.c
-@@ -2037,7 +2037,7 @@ static void skd_enable_interrupts(struct skd_device *skdev)
- 	val = FIT_ISH_FW_STATE_CHANGE +
- 	      FIT_ISH_COMPLETION_POSTED + FIT_ISH_MSG_FROM_DEV;
- 
--	/* Note that the compliment of mask is written. A 1-bit means
-+	/* Note that the complement of mask is written. A 1-bit means
- 	 * disable, a 0 means enable. */
- 	SKD_WRITEL(skdev, ~val, FIT_INT_MASK_HOST);
- 	dev_dbg(&skdev->pdev->dev, "interrupt mask=0x%x\n", ~val);
--- 
-2.7.4
+v1->v2: fix compile error, sorry for the mistake
+
+ drivers/thermal/qcom/tsens.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+index d8ce3a687b80..3c4c0516e58a 100644
+--- a/drivers/thermal/qcom/tsens.c
++++ b/drivers/thermal/qcom/tsens.c
+@@ -755,8 +755,10 @@ int __init init_common(struct tsens_priv *priv)
+ 		for (i = VER_MAJOR; i <= VER_STEP; i++) {
+ 			priv->rf[i] = devm_regmap_field_alloc(dev, priv->srot_map,
+ 							      priv->fields[i]);
+-			if (IS_ERR(priv->rf[i]))
+-				return PTR_ERR(priv->rf[i]);
++			if (IS_ERR(priv->rf[i])) {
++				ret = PTR_ERR(priv->rf[i]);
++				goto err_put_device;
++			}
+ 		}
+ 		ret = regmap_field_read(priv->rf[VER_MINOR], &ver_minor);
+ 		if (ret)
+--
+2.25.4
 
