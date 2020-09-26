@@ -2,33 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7139279C01
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 21:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2044E279C02
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 21:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730168AbgIZTFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 15:05:36 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:64238 "EHLO rere.qmqm.pl"
+        id S1730178AbgIZTFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 15:05:37 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:47948 "EHLO rere.qmqm.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726183AbgIZTFg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 15:05:36 -0400
+        id S1726309AbgIZTFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 15:05:37 -0400
 Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BzJC210pSz18;
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BzJC25k2Jz2KH;
         Sat, 26 Sep 2020 21:05:34 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1601147134; bh=i6GErGfH+UT41Llr031HN9MqOM80pBRiCXb/wqO7iKQ=;
-        h=Date:From:Subject:To:Cc:From;
-        b=VR3M8UdVC8FaxGAgq6IGf3dm6ilJIQwnWMSnpKo9en2np1zKJm654igWbl2Y/bYHX
-         QmBTH8H3feCEGAtG+H+z3HILrqeSfO1UgS7ya915CpoK8iri5YiMXYv+O4JaP2M5sa
-         jKKlsRehr1jxOOFz6/53Yy7OP1Mcte9m3yamq6rLPjRtPSW1ptbjkXeiQ8qENYbmlj
-         7RYVlf9VzVgvkXR0k4W4XMXGHDn82BtRBN1+DCiAdTiZ3zEQi1dlXfYt5o2uZ9EGuO
-         5E7gH4uqwc/04X3cehjnt4knoL6qMaVEZQWcN5z3vcH42nifgsClGI1iX/dgmJOqNK
-         iGZinkS/lKFbw==
+        t=1601147134; bh=3INUmx9RND0JKy4nJpRHGKH4uognPLDDkFYP6+Ush4Y=;
+        h=Date:In-Reply-To:References:From:Subject:To:Cc:From;
+        b=OW4w1KqaCEwgGsbA6BvdeHm8d+WND9E5IK9grlMv2u1N0lbbEeTJ3u5RQUXI0baYF
+         +/7EVkvkQguwj4K9Ptgg/rLDd7jixL0LnImXIEeKnGmixZ/bDk8bvdoUBQJwPGHaui
+         u8jJUPlKUAgnRo75cQ/RP5EJOWhf3X3LY28ZVF0yxBOgidS3xpWPdzJnXipYslSa5U
+         Kpbizm78taelA8KqY6nNn64K2YQcXIWMJrLILWXfpYIaHkqr9IhLzQvbIS9Sm4mHmu
+         M8cZakGMSeHoGAACuuCX84GgJA1JmjQYq6+IeoawpkjGvSskdomOPzH7PJ+5xJeVx7
+         hpd+VYis206Zg==
 X-Virus-Status: Clean
 X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Sat, 26 Sep 2020 21:05:31 +0200
-Message-Id: <cover.1601146802.git.mirq-linux@rere.qmqm.pl>
+Date:   Sat, 26 Sep 2020 21:05:34 +0200
+Message-Id: <edd68202c51088d6f5f539a7d8464fff049ff837.1601146802.git.mirq-linux@rere.qmqm.pl>
+In-Reply-To: <cover.1601146802.git.mirq-linux@rere.qmqm.pl>
+References: <cover.1601146802.git.mirq-linux@rere.qmqm.pl>
 From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v4 0/2] power: bq25890: IBAT compensation support
+Subject: [PATCH v4 1/2] power: bq25890: document IBAT compensation DT
+ properties
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,21 +44,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These two patches add support for IBAT compensation feature of bq2589x
-chargers.
+Document new properties for IBAT compensation feature.
 
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
 ---
-v4 fixed property names for the features and dropped other applied or rejected
-   patches
+v2: initial version
+v4: renamed properties applying property-suffix
+---
+ Documentation/devicetree/bindings/power/supply/bq25890.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Michał Mirosław (2):
-  power: bq25890: document IBAT compensation DT properties
-  power: bq25890: support IBAT compensation
-
- .../devicetree/bindings/power/supply/bq25890.txt  |  4 ++++
- drivers/power/supply/bq25890_charger.c            | 15 +++++++++++++--
- 2 files changed, 17 insertions(+), 2 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/power/supply/bq25890.txt b/Documentation/devicetree/bindings/power/supply/bq25890.txt
+index 3b4c69a7fa70..805040c6fff9 100644
+--- a/Documentation/devicetree/bindings/power/supply/bq25890.txt
++++ b/Documentation/devicetree/bindings/power/supply/bq25890.txt
+@@ -33,6 +33,10 @@ Optional properties:
+ - ti,thermal-regulation-threshold: integer, temperature above which the charge
+     current is lowered, to avoid overheating (in degrees Celsius). If omitted,
+     the default setting will be used (120 degrees);
++- ti,ibatcomp-micro-ohms: integer, value of a resistor in series with
++    the battery;
++- ti,ibatcomp-clamp-microvolt: integer, maximum charging voltage adjustment due
++    to expected voltage drop on in-series resistor;
+ 
+ Example:
+ 
 -- 
 2.20.1
 
