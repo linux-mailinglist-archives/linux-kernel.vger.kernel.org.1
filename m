@@ -2,53 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 984FC279BD6
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DEC279BDA
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 20:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730091AbgIZSXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 14:23:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730001AbgIZSXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 14:23:49 -0400
-Subject: Re: [GIT PULL] SCSI fixes for 5.9-rc6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601144629;
-        bh=BtFTUlpHvEKAXClVNFuA0aESnkk8fjXWXnbdyUd1E58=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=JfLpwg5Yeo45uhmUIsckPkKe+c3yWJzJuKNDKABg++DxuVmGbFjTrH0ZH4IjmmJab
-         izfOKfwgjQUF9EvjNmHddbV2JZh2ppq/WEBYYEJu3uYKv18mheoCjMRNA99EGy9dnC
-         JcqK0tlT0K2JZEVJApz1tHXnEXB1R2eajYYQS0aE=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <534da60ce3bf4c6e30071b721e9c08466e574f08.camel@HansenPartnership.com>
-References: <534da60ce3bf4c6e30071b721e9c08466e574f08.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <534da60ce3bf4c6e30071b721e9c08466e574f08.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 6c5dee18756b4721ac8518c69b22ee8ac0c9c442
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a1bffa48745afbb54cb4f873bba783b2ae8be042
-Message-Id: <160114462919.21242.10046272585715495850.pr-tracker-bot@kernel.org>
-Date:   Sat, 26 Sep 2020 18:23:49 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        id S1730124AbgIZSZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 14:25:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgIZSZY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 14:25:24 -0400
+Received: from mail.nic.cz (mail.nic.cz [IPv6:2001:1488:800:400::400])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C974C0613CE;
+        Sat, 26 Sep 2020 11:25:24 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
+        by mail.nic.cz (Postfix) with ESMTPSA id 239CB140A6F;
+        Sat, 26 Sep 2020 20:25:22 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 20:25:21 +0200
+From:   Marek Behun <marek.behun@nic.cz>
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org,
+        lee.jones@linaro.org, pavel@ucw.cz, dmurphy@ti.com,
+        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        andrew@lunn.ch, jason@lakedaemon.net, gregory.clement@bootlin.com,
+        luka.perkov@sartura.hr, robert.marko@sartura.hr
+Subject: Re: [PATCH v2 5/7] Documentation/ABI: Add iei-wt61p803-puzzle
+ driver sysfs interface documentation
+Message-ID: <20200926202521.100d17f8@nic.cz>
+In-Reply-To: <20200926135514.26189-6-luka.kovacic@sartura.hr>
+References: <20200926135514.26189-1-luka.kovacic@sartura.hr>
+        <20200926135514.26189-6-luka.kovacic@sartura.hr>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
+        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
+        autolearn=disabled version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
+X-Virus-Scanned: clamav-milter 0.102.2 at mail
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 26 Sep 2020 09:04:58 -0700:
+On Sat, 26 Sep 2020 15:55:12 +0200
+Luka Kovacic <luka.kovacic@sartura.hr> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> Add the iei-wt61p803-puzzle driver sysfs interface documentation to allow
+> monitoring and control of the microcontroller from user space.
+> 
+> Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Cc: Robert Marko <robert.marko@sartura.hr>
+> ---
+>  .../stable/sysfs-driver-iei-wt61p803-puzzle   | 65 +++++++++++++++++++
+>  1 file changed, 65 insertions(+)
+>  create mode 100644 Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
+> 
+> diff --git a/Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle b/Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
+> new file mode 100644
+> index 000000000000..36fca70d66ef
+> --- /dev/null
+> +++ b/Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a1bffa48745afbb54cb4f873bba783b2ae8be042
+I think this should go to testing, not stable. It should go to stable
+only after it is stable for some time.
 
-Thank you!
+> @@ -0,0 +1,65 @@
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/mac_address_*
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read the internal iEi WT61P803 PUZZLE MCU MAC address values.
+> +		These are factory assigned and can be changed.
+> +
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/serial_number
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read the internal iEi WT61P803 PUZZLE MCU serial number.
+> +		This value is factory assigned and can be changed.
+> +
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Please use (RO) and (RW) prefixes before the Description, instead of
+writing "This value is read only", i.e.:
+  Description: (RO) Internal ... serial number.
+
+JFI: Why can these values be changed? Shouldn't they be burned into OTP?
+
+Marek
+
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/version
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read the internal iEi WT61P803 PUZZLE MCU version.
+> +		This value is read only.
+> +
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/protocol_version
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read the internal iEi WT61P803 PUZZLE MCU protocol version.
+> +		This value is read only.
+> +
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/power_loss_recovery
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read the iEi WT61P803 PUZZLE MCU power loss recovery value.
+> +		This value is read write.
+> +		Value mapping: 0 - Always-On, 1 - Always-Off, 2 - Always-AC, 3 - Always-WA
+> +
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/bootloader_mode
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read whether the MCU is in bootloader mode.
+> +		This value is read only.
+> +
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/power_status
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read the iEi WT61P803 PUZZLE MCU power status. Power status indicates
+> +		the power on method.
+> +		This value is read only.
+> +		Value mapping (bitwise list):
+> +		0x80 - Null
+> +		0x40 - Firmware flag
+> +		0x20 - Power loss detection flag (powered off)
+> +		0x10 - Power loss detection flag (AC mode)
+> +		0x08 - Button power on
+> +		0x04 - WOL power on
+> +		0x02 - RTC alarm power on
+> +		0x01 - AC recover power on
+> +
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/build_info
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read the iEi WT61P803 PUZZLE MCU firmware build date.
+> +		This value is read only.
+> +		Format: yyyy/mm/dd hh:mm
+> +
+> +What:		/sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/ac_recovery_status
+> +Date:		September 2020
+> +Contact:	Luka Kovacic <luka.kovacic@sartura.hr>
+> +Description:	Read the iEi WT61P803 PUZZLE MCU AC recovery status.
+> +		This value is read only.
+
