@@ -2,104 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A9527973A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A520A279738
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 08:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbgIZGXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 02:23:08 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:37108 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726119AbgIZGXI (ORCPT
+        id S1727351AbgIZGV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 02:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgIZGV1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 02:23:08 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UA5a0Qh_1601101379;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA5a0Qh_1601101379)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 26 Sep 2020 14:22:59 +0800
-Subject: Re: [PATCH v5] doc: zh_CN: index files in arm64 subdirectory
-To:     Bailu Lin <bailu.lin@vivo.com>
-Cc:     catalin.marinas@arm.com, corbet@lwn.net, harryxiyou@gmail.com,
-        kernel@vivo.com, linux-arm-kernel@lists.infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        will@kernel.org
-References: <20200925144223.40381-1-bailu.lin@vivo.com>
- <20200926022558.46232-1-bailu.lin@vivo.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <50eb18ad-ee3c-951f-03a5-5971285435bf@linux.alibaba.com>
-Date:   Sat, 26 Sep 2020 14:20:36 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        Sat, 26 Sep 2020 02:21:27 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C36C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 23:21:27 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id p15so1505882ejm.7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 23:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
+        b=FTJeW7TVHxPPqZf4pkkjtTAyUGhNTLKShw36Roh2ryKBn3DHQI7NZVgcLIKxVjkNIP
+         gXsJDguhhpKgsmXcAUcV+4nJC+6HJlxrRJW23r1dFSiXply0z8PsDa2c3IuCGmwAMf1Y
+         EvKYhIemfS2721sHjxBFFMVm0UmQsLGs6POk8rfwqtD9CZV74wvBmumUGOhMVBvqUfD9
+         kG4OS5daZO9WP5TIXM8FpktHqvlOjjS7OzJ4A+t3oC3W5nmIG8H8vzsEk9TYJmHXVi+Y
+         MAvJRMSZV8xsIUWFjkj93woai/VFpwkgyxo5HqVXqDqqOAqJVRLsQuded4unSk5rrcIO
+         a2jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=iBGnzN/+6loJkhrhbH/dzTk9PX3jtnMo9lpzqcBWYus=;
+        b=IbSTcb1Gn0mD00/LC6TbdWEySxZzqVz/GREFN5fbPWfKor/n+Y88PUJkvNwLu0jKlE
+         8l0FSCQ62iHioQQg71M9g7FZKToqdtOihxYYCYhvl3qb3jOaEkCQtNsN+W91VXa8ryrf
+         UqdeM1dkZMAAj5AL11xDlwLJbnXxvooJ/cr/lpMR8Fh8dAz/GZFvCPEFx7IgWNC1MmZS
+         bt7h6TVCl7NciM4ky2Hi5DOmG/zSCCFeWSByDE0UyL4vmJDdhy/7ToqDDsRyD9HGldju
+         jCpd9LQDRse2F+rje6AEy0pmAeI9efbue6t+DnXpQlnwBfNIE0LEvDSLiqv8SnhhDFS6
+         w4kg==
+X-Gm-Message-State: AOAM5303JnefczBrfvkko7PFnp2wfYM1w6gMwHD/THMY5PBPXEM0V6ee
+        Y4OB3EwgsfTlcAwzML+OdbVg1eY+cVSz5eHUkG0=
+X-Google-Smtp-Source: ABdhPJz3WxrX9ChI8ojlTgXflYXdjXIUlGytKkU2XsyMrMtnbuj7Y7o6XV6byuVD+TkNv9ZAW65f4OpKQWcuaAXINhQ=
+X-Received: by 2002:a17:906:4b18:: with SMTP id y24mr6115081eju.471.1601101285619;
+ Fri, 25 Sep 2020 23:21:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200926022558.46232-1-bailu.lin@vivo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:aa7:cd17:0:0:0:0:0 with HTTP; Fri, 25 Sep 2020 23:21:25
+ -0700 (PDT)
+Reply-To: tofilbaman1@gmail.com
+From:   Tofil Bama <aliftomarn1@gmail.com>
+Date:   Fri, 25 Sep 2020 23:21:25 -0700
+Message-ID: <CAFnjMYs5GkbBF7fnic1yW7q4GhbBeECQ4dZ+rCKdoRWE4cDNqw@mail.gmail.com>
+Subject: KINDEST MESSAGE.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+Dear,
 
-在 2020/9/26 上午10:25, Bailu Lin 写道:
-> Add arm64 subdirectory into the table of Contents for zh_CN,
-> then add other translations in arm64 conveniently.
-> 
-> Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
-> ---
-> Changes in v5:
->  - Remove zh_CN/arm64/index.rst's inappropriate License claim.
-> Changes in v4:
->  - Remove index.rst's inappropriate License claim.
-> Changes in v3:
->  - Correct email encoding format.
-> Changes in v2:
->  - Fix patch description.
-> ---
->  Documentation/arm64/index.rst                    |  2 ++
->  Documentation/translations/zh_CN/arm64/index.rst | 14 ++++++++++++++
->  Documentation/translations/zh_CN/index.rst       |  1 +
->  3 files changed, 17 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/arm64/index.rst
-> 
-> diff --git a/Documentation/arm64/index.rst b/Documentation/arm64/index.rst
-> index d9665d83c53a..3ebe0fa31948 100644
-> --- a/Documentation/arm64/index.rst
-> +++ b/Documentation/arm64/index.rst
-> @@ -1,3 +1,5 @@
-> +.. _arm64_index:
-> +
->  ==================
->  ARM64 Architecture
->  ==================
-> diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
-> new file mode 100644
-> index 000000000000..57545f19ab2d
-> --- /dev/null
-> +++ b/Documentation/translations/zh_CN/arm64/index.rst
-> @@ -0,0 +1,14 @@
-> +.. include:: ../disclaimer-zh_CN.rst
-> +
-> +:Original: :ref:`Documentation/arm64/index.rst <arm64_index>`
-> +:Translator: Bailu Lin <bailu.lin@vivo.com>
-> +
-> +.. _cn_arm64_index:
-> +
-> +
-> +==========
-> +ARM64 架构
-> +==========
-> +
-> +.. toctree::
-> +    :maxdepth: 2
-> diff --git a/Documentation/translations/zh_CN/index.rst b/Documentation/translations/zh_CN/index.rst
-> index 85643e46e308..be6f11176200 100644
-> --- a/Documentation/translations/zh_CN/index.rst
-> +++ b/Documentation/translations/zh_CN/index.rst
-> @@ -19,6 +19,7 @@
->     admin-guide/index
->     process/index
->     filesystems/index
-> +   arm64/index
->  
->  目录和表格
->  ----------
-> 
+My name is Mr Tofil Bama, I am the Bill and Exchange assistant
+Manager in Bank of Africa Ouagadougou Burkina Faso. In my department
+I discovered an abandoned sum of eighteen million three hundred
+thousand United State of American dollars (18.3MILLION USA DOLLARS)
+in an account that belongs to one of our foreign customer
+(late Mr Shitu Nuri) who died in Ethiopian Airlines Flight 409 that
+crashed into the Mediterranean Sea on 25th January 2010.
+
+Since I got information about his death I have been expecting
+his next of kin to come over and claim his money because we
+cannot release it unless somebody applies for it as the next
+of kin or relation to the deceased as indicated in our banking guidelines,
+unfortunately we learnt that all his supposed next of kin or
+relation died alongside with him in the plane crash leaving
+nobody behind for the claim.
+
+It is therefore upon this discovery that I decided to make this
+business proposal to you and release the money to you as next of kin
+to the deceased for safety and subsequent disbursement since nobody is
+coming for the fund, it is 10 years now the money is lying pending in
+the account of our deceased and I don't want the money to go into the
+bank treasury as unclaimed bill.
+
+You will be entitled with 40% of the total sum while 60% will be for
+me after which I will visit your Country to invest my own share when
+the fund is successfully transferred into your account, Please I would
+like you to keep this transaction confidential and as a top secret
+between me and you until we successfully achieve this golden
+opportunity.
+
+Yours sincerely,
+Mr Tofil Bama.
