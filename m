@@ -2,253 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CCBA2796DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 06:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50A12796EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 06:32:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730067AbgIZEZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 00:25:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730039AbgIZEZM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 00:25:12 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAC2C0613D9
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 21:25:07 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id o25so4171316pgm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 21:25:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vw5JB3RRsbohaer3Y56R1IPsXZfXmp2s3xn/82rJ0CY=;
-        b=D1xoiKNDyt3hh17/hK6uqP4SAJ0L1P3/8IXEZSgrQKf9rBZXqkaliK02LneXiMkHGc
-         hxYhfBZgNzpCVtoUOBPYp/QXx5X4/02K3L9IlZyEnsTLPVYvwP/uqLK4KsdUC+CbktyT
-         8DNFlax8CYkd9Trrqr9xoxsbV9QIMOilaXcPWav2ATUes6LDMvL85b+AkLVf6tvVHYom
-         +Id89kS5caa8WGXDDtF5fDnl4RarlgFQyvitdpowCBq68FauqBrCZSuZArik8Bp9lmvK
-         Fh0WjZM6QEhINjtqmgHLGVqCcIl0sx1uE4RQxjHaCKgOy70fCPRfjDyzqBwVCDnyFq3g
-         I5WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vw5JB3RRsbohaer3Y56R1IPsXZfXmp2s3xn/82rJ0CY=;
-        b=tMIDSydStDRkKXEYOBLk1aqOeDtdvsS/0GDXhIaTPp2znB4sqT6ZEkVEGrJ99Q9POA
-         dmLhlQm8xSlQh71uWrOtONXtU6NJvmHfQbczoE+a0z4SweNaXU7l9MRGrTzg0G3ATuGB
-         T9aJ19e3RuS5occCGSqJnmT2CqVL/pamS9u9n5n+hqI1hnPd0z44/wNb7uWzFIRY4E6/
-         pKQlhR5GuOjReiNGMq5ColpVFr+8JxqWo/S5vSVhZHTge/HmjerF8nd5jRYpg4ENx202
-         C29IhdZ3It+yu+N5HnyJIV5el0/RyxNpQzr+fsS48lVEdTA/qYt4NVovXryeAtlwUst5
-         eDNA==
-X-Gm-Message-State: AOAM531v/0tB8tc8V/S6G7+OoT2pABNMmK5zZbDh1uUvcISMEgBBSnU7
-        TKcBfQpUjZiLKUgKsuzRB59v9aJ7M7LjHA==
-X-Google-Smtp-Source: ABdhPJyvQ50xfxJX8TpnL1MvlzaJmF3SWzncH/tqsov+stEHycC5jsIv3tQvdZov8P+AXKPfVqQiWA==
-X-Received: by 2002:a62:cd49:0:b029:150:7742:c6c8 with SMTP id o70-20020a62cd490000b02901507742c6c8mr2126731pfg.61.1601094306220;
-        Fri, 25 Sep 2020 21:25:06 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id a5sm3585886pgk.13.2020.09.25.21.25.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Sep 2020 21:25:05 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [RFC][PATCH 6/6] dma-buf: heaps: Skip sync if not mapped
-Date:   Sat, 26 Sep 2020 04:24:53 +0000
-Message-Id: <20200926042453.67517-7-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200926042453.67517-1-john.stultz@linaro.org>
-References: <20200926042453.67517-1-john.stultz@linaro.org>
+        id S1730025AbgIZEcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 00:32:19 -0400
+Received: from smtp.h3c.com ([60.191.123.56]:16492 "EHLO h3cspam01-ex.h3c.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729926AbgIZEcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 00:32:18 -0400
+Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
+        by h3cspam01-ex.h3c.com with ESMTP id 08Q2qvAW066971;
+        Sat, 26 Sep 2020 10:52:57 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
+        by h3cspam01-ex.h3c.com with ESMTPS id 08Q2qn2G066930
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 26 Sep 2020 10:52:49 +0800 (GMT-8)
+        (envelope-from tian.xianting@h3c.com)
+Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
+ DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sat, 26 Sep 2020 10:52:50 +0800
+Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
+ by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
+ mapi id 15.01.1713.004; Sat, 26 Sep 2020 10:52:50 +0800
+From:   Tianxianting <tian.xianting@h3c.com>
+To:     Jens Axboe <axboe@kernel.dk>
+CC:     "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] [v2] blk-mq: add cond_resched() in
+ __blk_mq_alloc_rq_maps()
+Thread-Topic: [PATCH] [v2] blk-mq: add cond_resched() in
+ __blk_mq_alloc_rq_maps()
+Thread-Index: AQHWjMtkn2n+ezztLkuMBSittKHg9Kl5Q7AAgAEBwjA=
+Date:   Sat, 26 Sep 2020 02:52:50 +0000
+Message-ID: <ffd885d363074710b1ada87701619c0d@h3c.com>
+References: <20200917081311.11428-1-tian.xianting@h3c.com>
+ <c55b365d-c6b0-6207-f326-6d58dd113d18@kernel.dk>
+In-Reply-To: <c55b365d-c6b0-6207-f326-6d58dd113d18@kernel.dk>
+Accept-Language: en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.99.141.128]
+x-sender-location: DAG2
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-DNSRBL: 
+X-MAIL: h3cspam01-ex.h3c.com 08Q2qn2G066930
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is basically a port of Ørjan Eide's similar patch for ION
- https://lore.kernel.org/lkml/20200414134629.54567-1-orjan.eide@arm.com/
-
-Only sync the sg-list of dma-buf heap attachment when the attachment
-is actually mapped on the device.
-
-dma-bufs may be synced at any time. It can be reached from user space
-via DMA_BUF_IOCTL_SYNC, so there are no guarantees from callers on when
-syncs may be attempted, and dma_buf_end_cpu_access() and
-dma_buf_begin_cpu_access() may not be paired.
-
-Since the sg_list's dma_address isn't set up until the buffer is used
-on the device, and dma_map_sg() is called on it, the dma_address will be
-NULL if sync is attempted on the dma-buf before it's mapped on a device.
-
-Before v5.0 (commit 55897af63091 ("dma-direct: merge swiotlb_dma_ops
-into the dma_direct code")) this was a problem as the dma-api (at least
-the swiotlb_dma_ops on arm64) would use the potentially invalid
-dma_address. How that failed depended on how the device handled physical
-address 0. If 0 was a valid address to physical ram, that page would get
-flushed a lot, while the actual pages in the buffer would not get synced
-correctly. While if 0 is an invalid physical address it may cause a
-fault and trigger a crash.
-
-In v5.0 this was incidentally fixed by commit 55897af63091 ("dma-direct:
-merge swiotlb_dma_ops into the dma_direct code"), as this moved the
-dma-api to use the page pointer in the sg_list, and (for Ion buffers at
-least) this will always be valid if the sg_list exists at all.
-
-But, this issue is re-introduced in v5.3 with
-commit 449fa54d6815 ("dma-direct: correct the physical addr in
-dma_direct_sync_sg_for_cpu/device") moves the dma-api back to the old
-behaviour and picks the dma_address that may be invalid.
-
-dma-buf core doesn't ensure that the buffer is mapped on the device, and
-thus have a valid sg_list, before calling the exporter's
-begin_cpu_access.
-
-Logic and commit message originally by: Ørjan Eide <orjan.eide@arm.com>
-
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/dma-buf/heaps/cma_heap.c    | 10 ++++++++++
- drivers/dma-buf/heaps/system_heap.c | 10 ++++++++++
- 2 files changed, 20 insertions(+)
-
-diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
-index 3adfdbed0829..b6ab0392ad9a 100644
---- a/drivers/dma-buf/heaps/cma_heap.c
-+++ b/drivers/dma-buf/heaps/cma_heap.c
-@@ -44,6 +44,7 @@ struct dma_heap_attachment {
- 	struct device *dev;
- 	struct sg_table table;
- 	struct list_head list;
-+	bool mapped;
- };
- 
- static int cma_heap_attach(struct dma_buf *dmabuf,
-@@ -68,6 +69,7 @@ static int cma_heap_attach(struct dma_buf *dmabuf,
- 
- 	a->dev = attachment->dev;
- 	INIT_LIST_HEAD(&a->list);
-+	a->mapped = false;
- 
- 	attachment->priv = a;
- 
-@@ -101,6 +103,7 @@ static struct sg_table *cma_heap_map_dma_buf(struct dma_buf_attachment *attachme
- 	if (!dma_map_sg(attachment->dev, table->sgl, table->nents,
- 			direction))
- 		table = ERR_PTR(-ENOMEM);
-+	a->mapped = true;
- 	return table;
- }
- 
-@@ -108,6 +111,9 @@ static void cma_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				   struct sg_table *table,
- 				   enum dma_data_direction direction)
- {
-+	struct dma_heap_attachment *a = attachment->priv;
-+
-+	a->mapped = false;
- 	dma_unmap_sg(attachment->dev, table->sgl, table->nents, direction);
- }
- 
-@@ -123,6 +129,8 @@ static int cma_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
- 
- 	mutex_lock(&buffer->lock);
- 	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
- 		dma_sync_sg_for_cpu(a->dev, a->table.sgl, a->table.nents,
- 				    direction);
- 	}
-@@ -142,6 +150,8 @@ static int cma_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
- 
- 	mutex_lock(&buffer->lock);
- 	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
- 		dma_sync_sg_for_device(a->dev, a->table.sgl, a->table.nents,
- 				       direction);
- 	}
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 9f57b4c8ae69..8a523b6fd51a 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -38,6 +38,7 @@ struct dma_heap_attachment {
- 	struct device *dev;
- 	struct sg_table *table;
- 	struct list_head list;
-+	bool mapped;
- };
- 
- #define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
-@@ -94,6 +95,7 @@ static int system_heap_attach(struct dma_buf *dmabuf,
- 	a->table = table;
- 	a->dev = attachment->dev;
- 	INIT_LIST_HEAD(&a->list);
-+	a->mapped = false;
- 
- 	attachment->priv = a;
- 
-@@ -128,6 +130,7 @@ static struct sg_table *system_heap_map_dma_buf(struct dma_buf_attachment *attac
- 	if (!dma_map_sg(attachment->dev, table->sgl, table->nents, direction))
- 		return ERR_PTR(-ENOMEM);
- 
-+	a->mapped = true;
- 	return table;
- }
- 
-@@ -135,6 +138,9 @@ static void system_heap_unmap_dma_buf(struct dma_buf_attachment *attachment,
- 				      struct sg_table *table,
- 				      enum dma_data_direction direction)
- {
-+	struct dma_heap_attachment *a = attachment->priv;
-+
-+	a->mapped = false;
- 	dma_unmap_sg(attachment->dev, table->sgl, table->nents, direction);
- }
- 
-@@ -151,6 +157,8 @@ static int system_heap_dma_buf_begin_cpu_access(struct dma_buf *dmabuf,
- 		invalidate_kernel_vmap_range(buffer->vaddr, buffer->len);
- 
- 	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
- 		dma_sync_sg_for_cpu(a->dev, a->table->sgl, a->table->nents,
- 				    direction);
- 	}
-@@ -171,6 +179,8 @@ static int system_heap_dma_buf_end_cpu_access(struct dma_buf *dmabuf,
- 		flush_kernel_vmap_range(buffer->vaddr, buffer->len);
- 
- 	list_for_each_entry(a, &buffer->attachments, list) {
-+		if (!a->mapped)
-+			continue;
- 		dma_sync_sg_for_device(a->dev, a->table->sgl, a->table->nents,
- 				       direction);
- 	}
--- 
-2.17.1
-
+SGkgSmVucw0KVGhhbmtzIGEgbG90IGZvciB0aGUgY29tbWVudHMsDQpJIHRoaW5rIGl0IGlzIG5v
+dCBob3QgcGF0aCwgaXQgaXMgb25seSBjYWxsZWQgd2hlbiBzeXN0ZW0gc3RhcnR1cCBvciBkZXZp
+Y2UgaG90LXBsdWdnaW5nLg0KU28gSSBzdWJtaXR0ZWQgVjMgcGF0Y2ggZm9yIHlvdSByZXZpZXdp
+bmcgOikNCmh0dHBzOi8vbGttbC5vcmcvbGttbC8yMDIwLzkvMjUvMTU0MyANCg0KLS0tLS1Pcmln
+aW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEplbnMgQXhib2UgW21haWx0bzpheGJvZUBrZXJuZWwu
+ZGtdIA0KU2VudDogU2F0dXJkYXksIFNlcHRlbWJlciAyNiwgMjAyMCAzOjI2IEFNDQpUbzogdGlh
+bnhpYW50aW5nIChSRCkgPHRpYW4ueGlhbnRpbmdAaDNjLmNvbT4NCkNjOiBsaW51eC1ibG9ja0B2
+Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJl
+OiBbUEFUQ0hdIFt2Ml0gYmxrLW1xOiBhZGQgY29uZF9yZXNjaGVkKCkgaW4gX19ibGtfbXFfYWxs
+b2NfcnFfbWFwcygpDQoNCk9uIDkvMTcvMjAgMjoxMyBBTSwgWGlhbnRpbmcgVGlhbiB3cm90ZToN
+Cj4gV2UgZm91bmQgaXQgdGFrZXMgbW9yZSB0aW1lIG9mIGJsa19tcV9hbGxvY19ycV9tYXBzKCkg
+aW4ga2VybmVsIHNwYWNlIA0KPiB3aGVuIHRlc3RpbmcgbnZtZSBob3QtcGx1Z2dpbmcuIFRoZSB0
+ZXN0IGFuZCBhbmx5c2lzIGFzIGJlbG93Lg0KPiANCj4gRGVidWcgY29kZSwNCj4gMSwgYmxrX21x
+X2FsbG9jX3JxX21hcHMoKToNCj4gICAgICAgICB1NjQgc3RhcnQsIGVuZDsNCj4gICAgICAgICBk
+ZXB0aCA9IHNldC0+cXVldWVfZGVwdGg7DQo+ICAgICAgICAgc3RhcnQgPSBrdGltZV9nZXRfbnMo
+KTsNCj4gICAgICAgICBwcl9lcnIoIlslZDolcyBzd2l0Y2g6JWxkLCVsZF0gcXVldWUgZGVwdGgg
+JWQsIG5yX2h3X3F1ZXVlcyAlZFxuIiwNCj4gICAgICAgICAgICAgICAgICAgICAgICAgY3VycmVu
+dC0+cGlkLCBjdXJyZW50LT5jb21tLCBjdXJyZW50LT5udmNzdywgY3VycmVudC0+bml2Y3N3LA0K
+PiAgICAgICAgICAgICAgICAgICAgICAgICBzZXQtPnF1ZXVlX2RlcHRoLCBzZXQtPm5yX2h3X3F1
+ZXVlcyk7DQo+ICAgICAgICAgZG8gew0KPiAgICAgICAgICAgICAgICAgZXJyID0gX19ibGtfbXFf
+YWxsb2NfcnFfbWFwcyhzZXQpOw0KPiAgICAgICAgICAgICAgICAgaWYgKCFlcnIpDQo+ICAgICAg
+ICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KPiANCj4gICAgICAgICAgICAgICAgIHNldC0+cXVl
+dWVfZGVwdGggPj49IDE7DQo+ICAgICAgICAgICAgICAgICBpZiAoc2V0LT5xdWV1ZV9kZXB0aCA8
+IHNldC0+cmVzZXJ2ZWRfdGFncyArIEJMS19NUV9UQUdfTUlOKSB7DQo+ICAgICAgICAgICAgICAg
+ICAgICAgICAgIGVyciA9IC1FTk9NRU07DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGJyZWFr
+Ow0KPiAgICAgICAgICAgICAgICAgfQ0KPiAgICAgICAgIH0gd2hpbGUgKHNldC0+cXVldWVfZGVw
+dGgpOw0KPiAgICAgICAgIGVuZCA9IGt0aW1lX2dldF9ucygpOw0KPiAgICAgICAgIHByX2Vycigi
+WyVkOiVzIHN3aXRjaDolbGQsJWxkXSBhbGwgaHcgcXVldWVzIGluaXQgY29zdCB0aW1lICVsbGQg
+bnNcbiIsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGN1cnJlbnQtPnBpZCwgY3VycmVudC0+
+Y29tbSwNCj4gICAgICAgICAgICAgICAgICAgICAgICAgY3VycmVudC0+bnZjc3csIGN1cnJlbnQt
+Pm5pdmNzdywgZW5kIC0gc3RhcnQpOw0KPiANCj4gMiwgX19ibGtfbXFfYWxsb2NfcnFfbWFwcygp
+Og0KPiAgICAgICAgIHU2NCBzdGFydCwgZW5kOw0KPiAgICAgICAgIGZvciAoaSA9IDA7IGkgPCBz
+ZXQtPm5yX2h3X3F1ZXVlczsgaSsrKSB7DQo+ICAgICAgICAgICAgICAgICBzdGFydCA9IGt0aW1l
+X2dldF9ucygpOw0KPiAgICAgICAgICAgICAgICAgaWYgKCFfX2Jsa19tcV9hbGxvY19ycV9tYXAo
+c2V0LCBpKSkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgZ290byBvdXRfdW53aW5kOw0KPiAg
+ICAgICAgICAgICAgICAgZW5kID0ga3RpbWVfZ2V0X25zKCk7DQo+ICAgICAgICAgICAgICAgICBw
+cl9lcnIoImh3IHF1ZXVlICVkIGluaXQgY29zdCB0aW1lICVsbGRcbiIsIGksIGVuZCAtIHN0YXJ0
+KTsNCj4gICAgICAgICB9DQo+IA0KPiBUZXN0IG52bWUgaG90LXBsdWdnaW5nIHdpdGggYWJvdmUg
+ZGVidWcgY29kZSwgd2UgZm91bmQgaXQgdG90YWxseSBjb3N0IA0KPiBtb3JlIHRoYW4gM21zIGlu
+IGtlcm5lbCBzcGFjZSB3aXRob3V0IGJlaW5nIHNjaGVkdWxlZCBvdXQgd2hlbiBhbGxvYyANCj4g
+cnFzIGZvciBhbGwNCj4gMTYgaHcgcXVldWVzIHdpdGggZGVwdGggMTAyNCwgZWFjaCBodyBxdWV1
+ZSBjb3N0IGFib3V0IDE0MC0yNTB1cy4gVGhlIA0KPiB0aW1lIGNvc3Qgd2lsbCBiZSBpbmNyZWFz
+ZWQgd2l0aCBodyBxdWV1ZSBudW1iZXIgYW5kIHF1ZXVlIGRlcHRoIA0KPiBpbmNyZWFzaW5nLiBB
+bmQgaWYgX19ibGtfbXFfYWxsb2NfcnFfbWFwcygpIHJldHVybnMgLUVOT01FTSwgaXQgd2lsbCAN
+Cj4gdHJ5ICJxdWV1ZV9kZXB0aCA+Pj0gMSIsIG1vcmUgdGltZSB3aWxsIGJlIGNvbnN1bWVkLg0K
+PiAJWyAgNDI4LjQyODc3MV0gbnZtZSBudm1lMDogcGNpIGZ1bmN0aW9uIDEwMDAwOjAxOjAwLjAN
+Cj4gCVsgIDQyOC40Mjg3OThdIG52bWUgMTAwMDA6MDE6MDAuMDogZW5hYmxpbmcgZGV2aWNlICgw
+MDAwIC0+IDAwMDIpDQo+IAlbICA0MjguNDI4ODA2XSBwY2llcG9ydCAxMDAwMDowMDowMC4wOiBj
+YW4ndCBkZXJpdmUgcm91dGluZyBmb3IgUENJIElOVCBBDQo+IAlbICA0MjguNDI4ODA5XSBudm1l
+IDEwMDAwOjAxOjAwLjA6IFBDSSBJTlQgQTogbm8gR1NJDQo+IAlbICA0MzIuNTkzMzc0XSBbNDY4
+ODprd29ya2VyL3UzMzo4IHN3aXRjaDo2NjMsMl0gcXVldWUgZGVwdGggMzAsIG5yX2h3X3F1ZXVl
+cyAxDQo+IAlbICA0MzIuNTkzNDA0XSBodyBxdWV1ZSAwIGluaXQgY29zdCB0aW1lIDIyODgzIG5z
+DQo+IAlbICA0MzIuNTkzNDA4XSBbNDY4ODprd29ya2VyL3UzMzo4IHN3aXRjaDo2NjMsMl0gYWxs
+IGh3IHF1ZXVlcyBpbml0IGNvc3QgdGltZSAzNTk2MCBucw0KPiAJWyAgNDMyLjU5NTk1M10gbnZt
+ZSBudm1lMDogMTYvMC8wIGRlZmF1bHQvcmVhZC9wb2xsIHF1ZXVlcw0KPiAJWyAgNDMyLjU5NTk1
+OF0gWzQ2ODg6a3dvcmtlci91MzM6OCBzd2l0Y2g6NzAwLDJdIHF1ZXVlIGRlcHRoIDEwMjMsIG5y
+X2h3X3F1ZXVlcyAxNg0KPiAJWyAgNDMyLjU5NjIwM10gaHcgcXVldWUgMCBpbml0IGNvc3QgdGlt
+ZSAyNDI2MzAgbnMNCj4gCVsgIDQzMi41OTY0NDFdIGh3IHF1ZXVlIDEgaW5pdCBjb3N0IHRpbWUg
+MjM1OTEzIG5zDQo+IAlbICA0MzIuNTk2NjU5XSBodyBxdWV1ZSAyIGluaXQgY29zdCB0aW1lIDIx
+NjQ2MSBucw0KPiAJWyAgNDMyLjU5Njg3N10gaHcgcXVldWUgMyBpbml0IGNvc3QgdGltZSAyMTU4
+NTEgbnMNCj4gCVsgIDQzMi41OTcxMDddIGh3IHF1ZXVlIDQgaW5pdCBjb3N0IHRpbWUgMjI4NDA2
+IG5zDQo+IAlbICA0MzIuNTk3MzM2XSBodyBxdWV1ZSA1IGluaXQgY29zdCB0aW1lIDIyNzI5OCBu
+cw0KPiAJWyAgNDMyLjU5NzU2NF0gaHcgcXVldWUgNiBpbml0IGNvc3QgdGltZSAyMjQ2MzMgbnMN
+Cj4gCVsgIDQzMi41OTc3ODVdIGh3IHF1ZXVlIDcgaW5pdCBjb3N0IHRpbWUgMjE5OTU0IG5zDQo+
+IAlbICA0MzIuNTk3OTM3XSBodyBxdWV1ZSA4IGluaXQgY29zdCB0aW1lIDE1MDkzMCBucw0KPiAJ
+WyAgNDMyLjU5ODA4Ml0gaHcgcXVldWUgOSBpbml0IGNvc3QgdGltZSAxNDM0OTYgbnMNCj4gCVsg
+IDQzMi41OTgyMzFdIGh3IHF1ZXVlIDEwIGluaXQgY29zdCB0aW1lIDE0NzI2MSBucw0KPiAJWyAg
+NDMyLjU5ODM5N10gaHcgcXVldWUgMTEgaW5pdCBjb3N0IHRpbWUgMTY0NTIyIG5zDQo+IAlbICA0
+MzIuNTk4NTQyXSBodyBxdWV1ZSAxMiBpbml0IGNvc3QgdGltZSAxNDM0MDEgbnMNCj4gCVsgIDQz
+Mi41OTg2OTJdIGh3IHF1ZXVlIDEzIGluaXQgY29zdCB0aW1lIDE0ODkzNCBucw0KPiAJWyAgNDMy
+LjU5ODg0MV0gaHcgcXVldWUgMTQgaW5pdCBjb3N0IHRpbWUgMTQ3MTk0IG5zDQo+IAlbICA0MzIu
+NTk4OTkxXSBodyBxdWV1ZSAxNSBpbml0IGNvc3QgdGltZSAxNDg5NDIgbnMNCj4gCVsgIDQzMi41
+OTg5OTNdIFs0Njg4Omt3b3JrZXIvdTMzOjggc3dpdGNoOjcwMCwyXSBhbGwgaHcgcXVldWVzIGlu
+aXQgY29zdCB0aW1lIDMwMzUwOTkgbnMNCj4gCVsgIDQzMi42MDI2MTFdICBudm1lMG4xOiBwMQ0K
+PiANCj4gU28gdXNlIHRoaXMgcGF0Y2ggdG8gdHJpZ2dlciBzY2hlZHVsZSBiZXR3ZWVuIGVhY2gg
+aHcgcXVldWUgaW5pdCwgdG8gDQo+IGF2b2lkIG90aGVyIHRocmVhZHMgZ2V0dGluZyBzdHVjay4g
+V2UgY2FsbCBjb25kX3Jlc2NoZWQoKSBvbmx5IHdoZW4gDQo+ICJxdWV1ZSBkZXB0aCA+PSA1MTIi
+LiBXZSBhcmUgbm90IGluIGF0b21pYyBjb250ZXh0IHdoZW4gZXhlY3V0aW5nIA0KPiBfX2Jsa19t
+cV9hbGxvY19ycV9tYXBzKCksIHNvIGl0IGlzIHNhZmUgdG8gY2FsbCBjb25kX3Jlc2NoZWQoKS4N
+Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IFhpYW50aW5nIFRpYW4gPHRpYW4ueGlhbnRpbmdAaDNjLmNv
+bT4NCj4gLS0tDQo+ICBibG9jay9ibGstbXEuYyB8IDcgKysrKysrLQ0KPiAgMSBmaWxlIGNoYW5n
+ZWQsIDYgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2Js
+b2NrL2Jsay1tcS5jIGIvYmxvY2svYmxrLW1xLmMgaW5kZXggDQo+IGIzZDI3ODVlZS4uNWE3MWZl
+NTNhIDEwMDY0NA0KPiAtLS0gYS9ibG9jay9ibGstbXEuYw0KPiArKysgYi9ibG9jay9ibGstbXEu
+Yw0KPiBAQCAtMzI1NSwxMSArMzI1NSwxNiBAQCB2b2lkIGJsa19tcV9leGl0X3F1ZXVlKHN0cnVj
+dCByZXF1ZXN0X3F1ZXVlIA0KPiAqcSkgIHN0YXRpYyBpbnQgX19ibGtfbXFfYWxsb2NfcnFfbWFw
+cyhzdHJ1Y3QgYmxrX21xX3RhZ19zZXQgKnNldCkgIHsNCj4gIAlpbnQgaTsNCj4gKwl1bnNpZ25l
+ZCBpbnQgZGVwdGggPSBzZXQtPnF1ZXVlX2RlcHRoOw0KPiAgDQo+IC0JZm9yIChpID0gMDsgaSA8
+IHNldC0+bnJfaHdfcXVldWVzOyBpKyspDQo+ICsJZm9yIChpID0gMDsgaSA8IHNldC0+bnJfaHdf
+cXVldWVzOyBpKyspIHsNCj4gIAkJaWYgKCFfX2Jsa19tcV9hbGxvY19tYXBfYW5kX3JlcXVlc3Qo
+c2V0LCBpKSkNCj4gIAkJCWdvdG8gb3V0X3Vud2luZDsNCj4gIA0KPiArCQlpZiAoZGVwdGggPj0g
+NTEyKQ0KPiArCQkJY29uZF9yZXNjaGVkKCk7DQo+ICsJfQ0KPiArDQo+ICAJcmV0dXJuIDA7DQoN
+CkkgZ2VuZXJhbGx5IGRpc2xpa2UNCg0KaWYgKHNvbWVfbnVtKQ0KCWNvbmRfcmVzY2hlZCgpOw0K
+DQpwYXJ0aWN1bGFybHkgd2hlbiBpdCdzIG5vdCBhIHRydWUgaG90IHBhdGguIEhvdyBhYm91dCBq
+dXN0IG1ha2luZyB0aGUNCmNvbmRfcmVzY2hlZCgpIHVuY29uZGl0aW9uYWw/IEkgc3VzcGVjdCB0
+aGF0IHdpbGwgYmUganVzdCBmaW5lLg0KDQotLQ0KSmVucyBBeGJvZQ0KDQo=
