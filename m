@@ -2,99 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38EF2279591
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C179279597
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729653AbgIZA2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 20:28:40 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:49262 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729493AbgIZA2j (ORCPT
+        id S1729672AbgIZAc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 20:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728966AbgIZAc0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:28:39 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08Q0SUdO068263;
-        Fri, 25 Sep 2020 19:28:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1601080111;
-        bh=9n7pUTyuv/cuPHlTws9RJoHfjArgioF7CkoVZuD5NAM=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=US6zcE7BdGGh0SWtoDchcR85l3876Eyx2UuFvinr4kQLfFr5mf4U4QUnqXZqO1SR7
-         cpgJbBQma4ZPw5eVzLyjQEIkv5fnHf7qj/j4k/bB81LPeOTiZVRZTfnrWP4QWl2++B
-         XncXGpR0HNrDI3twqC8XkxFKXbO0PSTipmbkpDAU=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08Q0SUvv069296
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 25 Sep 2020 19:28:30 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 25
- Sep 2020 19:28:30 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 25 Sep 2020 19:28:30 -0500
-Received: from [10.250.69.208] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08Q0SU0D086435;
-        Fri, 25 Sep 2020 19:28:30 -0500
-Subject: Re: [PATCH] mfd: syscon: Don't free allocated name for regmap_config
-To:     Lee Jones <lee.jones@linaro.org>, Marc Zyngier <maz@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, <kernel-team@android.com>
-References: <20200903160237.932818-1-maz@kernel.org>
- <20200924123936.GJ4678@dell>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <04fac15b-8866-efe4-1047-b20713f5200f@ti.com>
-Date:   Fri, 25 Sep 2020 19:28:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 25 Sep 2020 20:32:26 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988AFC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:32:26 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id x16so3150657pgj.3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:32:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7A7wvtihbUasQazeiP5kITL56ahdnZrHt6WOUS33Asc=;
+        b=HVnZBsEHgmW3ESkk4aqYC6omb7ULZ67kwqwmYAzjWXa8TFoXckg42OCH30+esk2XR/
+         JfX9RwmhvwCqvbalZYs9m4D2OurZxqlQZPYuyoBjURcmTdvccFSmRzeRA8/fRvKCQwZ9
+         FPHThA/lIi5usVvPporvNtzyOjRf2FXy5NP4AitESPgKrLXaw7oatYo/j0uwJiniuOBB
+         7mtCUgcv/RI70ubwMXNjUXTQVSFYY1XR3Xo0cv2D5TMGHyOFH9gZfnJF6A5MMzrguywI
+         gexqVSRF7o3ufOPaipuPFSV7J+LN7zejF+9/z4WiC5CAVUgsDsFTZMgjeQli8LILSaBh
+         rEcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7A7wvtihbUasQazeiP5kITL56ahdnZrHt6WOUS33Asc=;
+        b=diaJviRwrusmxjprX/5o175rOip2/ho5vRo8KIDEhXpAM4dIiB1X2mE2xcXBor2cs4
+         umMz4o/5Vzbk1PvzVeVJYwpbSlAYNlqvDShtU9tztaGh0+/0K1LFLK+raJUjx166TF3E
+         iEtrHSmYO3m1R7JGI2st0JIZhhNyqsRR5lpuU4ICUZaGiR6VuJvP9We2Q1TE6xam8z2R
+         ow7I1O3NwkaF6xGAgWpsjdsb9viPeqMTAJedCDngarfKcu+50im40OjIc7YkPOF5x1/H
+         kXIEKBpykMAmB2TaTOeqHs9nufvtZkqjX/qd0czZU1vozj9E9IIqR1dh+ED6KDjv4Zdt
+         MeQA==
+X-Gm-Message-State: AOAM533Oa4yZ26A2MtapiXperPiIQDODN/UkduxkfeyioZ0Xp2CXS0Lz
+        zqzmQCGWDboB9DGbcrvWCy8qvHvsv69z03RApbEhIw==
+X-Google-Smtp-Source: ABdhPJx6pOSmtqbXAf/q/7QSOjp9LtxM9Q98l5N8zdnNxxycPwufyGXGZK/XbULKxGHp8lEvBVU6puF3DZCWf+gxQ8s=
+X-Received: by 2002:a63:78b:: with SMTP id 133mr1058914pgh.381.1601080345839;
+ Fri, 25 Sep 2020 17:32:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200924123936.GJ4678@dell>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <00000000000052569205afa67426@google.com> <20200919110831.GD7462@zn.tnic>
+ <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
+ <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
+ <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
+ <20200921221336.GN5901@zn.tnic> <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
+ <20200923090336.GD28545@zn.tnic> <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
+ <20200923103431.GF28545@zn.tnic> <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
+ <CACT4Y+bjyAfO-TRjBHT9wR194=prH2C284Oc9akVVHR1492WZA@mail.gmail.com>
+In-Reply-To: <CACT4Y+bjyAfO-TRjBHT9wR194=prH2C284Oc9akVVHR1492WZA@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 25 Sep 2020 17:32:14 -0700
+Message-ID: <CAKwvOdkYEP=oRtEu_89JBq2g41PL9_FuFyfeB94XwBKuSz4XLg@mail.gmail.com>
+Subject: Re: general protection fault in perf_misc_flags
+To:     Dmitry Vyukov <dvyukov@google.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 7:39 AM, Lee Jones wrote:
-> On Thu, 03 Sep 2020, Marc Zyngier wrote:
-> 
->> The name allocated for the regmap_config structure is freed
->> pretty early, right after the registration of the MMIO region.
->>
->> Unfortunately, that doesn't follow the life cycle that debugfs
->> expects, as it can access the name field long after the free
->> has occured.
->>
->> Move the free on the error path, and keep it forever otherwise.
->>
->> Fixes: e15d7f2b81d2 ("mfd: syscon: Use a unique name with regmap_config")
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> ---
->>  drivers/mfd/syscon.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> Fixed the spelling mistake and applied, thanks.
-> 
+On Fri, Sep 25, 2020 at 5:22 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Wed, Sep 23, 2020 at 5:20 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Wed, Sep 23, 2020 at 12:34 PM Borislav Petkov <bp@alien8.de> wrote:
+> > >
+> > > On Wed, Sep 23, 2020 at 11:24:48AM +0200, Dmitry Vyukov wrote:
+> > > > 3. Run syzkaller locally with custom patches.
+> > >
+> > > Let's say I wanna build the kernel with clang-10 using your .config and
+> > > run it in a vm locally. What are the steps in order to reproduce the
+> > > same workload syzkaller runs in the guest on the GCE so that I can at
+> > > least try get as close as possible to reproducing locally?
+> >
+> > It's a random fuzzing workload. You can get this workload by running
+> > syzkaller locally:
+> > https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md
 
-Marc,
-Can you recheck the behavior once on the latest master to see if this patch is
-still needed? I see a new patch within the regmap core that is dealing with the
-delayed debugfs registration name. This follows the similar design logic I
-suggested on your initial submission [1].
+These are virtualized guests, right?  Has anyone played with getting
+`rr` working to record traces of guests in QEMU?
 
-Please see commit 94cc89eb8fa5 ("regmap: debugfs: Fix handling of name string
-for debugfs init delays") in mainline.
+I had seen the bug that generated this on github:
+https://julialang.org/blog/2020/09/rr-memory-magic/
 
-Lee,
-I haven't seen this patch in -next yet, so maybe worthwhile to hold it a little
-longer.
+That way, even if syzkaller didn't have a reproducer binary, it would
+at least have a replayable trace.
 
-regards
-Suman
+Boris, one question I have. Doesn't the kernel mark pages backing
+executable code as read only at some point?  If that were the case,
+then I don't see how the instruction stream could be modified.  I
+guess static key patching would have to undo that permission mapping
+before patching.
 
-[1] https://patchwork.kernel.org/comment/23575471/
+You're right about the length shorter than what I would have expected
+from static key patching.  That could very well be a write through
+dangling int pointer...
 
+> >
+> > The exact clang compiler syzbot used is available here:
+> > https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
+>
+> I've marked all other similar ones a dup of this one. Now you can see
+> all manifestations on the dashboard:
+> https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
+>
+> Another possible debugging vector on this:
+> The location of crashes does not seem to be completely random and
+> evenly spread across kernel code. I think there are many more static
+> branches (mm, net), but we have 3 crashes in vdso and 9 in paravirt
+> code + these 6 crashes in perf_misc_flags which looks a bit like an
+> outlier (?). What's special about paravirt/vdso?..
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
