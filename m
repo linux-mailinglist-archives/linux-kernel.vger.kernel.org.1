@@ -2,106 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DE127959A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487BF27959E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 02:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729818AbgIZAdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 20:33:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729792AbgIZAdK (ORCPT
+        id S1729764AbgIZAee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 20:34:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729186AbgIZAee (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 20:33:10 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601080389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L2svHRBQva/Nus5XSRtpGhL7T7fUDe0VOrf/F1WA0Tc=;
-        b=WvHRZFzXxOtcyQl5iQyAufjbZYTXFZQTnGYSYn0Baw+dUFd67MG+F85ycQf1BEFUV2CyOA
-        l6zUewQikZthrEQ64HxUMxI/1J0bQv7PzAV1cp+6wfvWs7SAYeKY286QzxDT7EA2Q9QcDH
-        R+ZN9Z4vat9yH2aAIvXBlvGiElYTpms=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-184-So20wip7PO6xFv5NA2uDfg-1; Fri, 25 Sep 2020 20:33:07 -0400
-X-MC-Unique: So20wip7PO6xFv5NA2uDfg-1
-Received: by mail-wr1-f72.google.com with SMTP id j7so1733627wro.14
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:33:07 -0700 (PDT)
+        Fri, 25 Sep 2020 20:34:34 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103EEC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:34:34 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id x123so4828514pfc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 17:34:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=LQhUSgVwoAzLw92Ygh+sbDkDg9VzTVlbdTb6qu/28UI=;
+        b=0UCfcG1B3lmiWLRmVTEkHEUvtYL/+yhH6MaR4BWOvVAYPKMPznhtEUKI/JMwclvII0
+         9ugielLLHq/9jC2MBpemsPqqbJ04Wlymmt1JLIvfwrsKOq0QR3OAKlahWJSDERU7+31q
+         JuZ9/lnzx2HUSbV0cfM6jynGVVFsUOKZd+x0a9PyXqhvpJQHpAvqteHU50MiHkuhTuTW
+         YpimImgQ1rDbVJ8Q1YqS2+R/5tuTyvJC4lKAIbQY5qB+v2UsPjZ/S1g/VyaRpd/gWf2o
+         TwKgb9LFhMCnYONj4IYLFVgofXdBJggPp5ck/xABw8LJD/FLU11+fRzv1l0E3btCfsd4
+         Q72w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L2svHRBQva/Nus5XSRtpGhL7T7fUDe0VOrf/F1WA0Tc=;
-        b=adyPujb1DMzt7xvfv64cBx3d6YFcaaO6V2UZMKnQH4Y5BGl84fLugMG6QJDbzXZx1H
-         M7p1ehr+4wEQwHnC7dqbj2ZgkqwJoExjGUiwgWtgrmCWH49OI3gnXjGdJCUVCPKheKYn
-         pITHH4KaXuIFPgDcoy0rezH+F7bk5ERb2RETrJmW1MdD1iuM5ZHxq8guZ3zYgITPesmE
-         9Yu0E+cKCAGIFJCD64p6+N9fEVS2WGi0Qz9sG5YZ56/0H9W5YZZbVOIwy9PSOshbkXYN
-         a5as0dxPWRuCFRiuOsNCmFXYHcJs6WDAWJf1PO4kcmeenMEz/oyNCPT8jKdI3F0Ta1H8
-         2hCg==
-X-Gm-Message-State: AOAM530HRiGVD+pDTkCyjlr2+EbneKBpl8uDqPl0csAv9hW1XHsTIc8j
-        tz/SHB2ilfp3cv3ZMV74n3dhmnBw3035ksyd0QHkJAj3iSTThmW3CPE9mTzIplLa5x8BmDXVNH2
-        UXt3KDVZYtbnCxrKyaYrU5LLR
-X-Received: by 2002:adf:e407:: with SMTP id g7mr6953553wrm.349.1601080386249;
-        Fri, 25 Sep 2020 17:33:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxOErB8p/7YPgr4TtDRkw7ALR4XUUJKDTDtDNpkAbJTRk2g4+X6ESLcxvEwumiVX0L1vmkkDg==
-X-Received: by 2002:adf:e407:: with SMTP id g7mr6953541wrm.349.1601080386081;
-        Fri, 25 Sep 2020 17:33:06 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:ec9b:111a:97e3:4baf? ([2001:b07:6468:f312:ec9b:111a:97e3:4baf])
-        by smtp.gmail.com with ESMTPSA id h17sm4946584wro.27.2020.09.25.17.33.05
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=LQhUSgVwoAzLw92Ygh+sbDkDg9VzTVlbdTb6qu/28UI=;
+        b=ntWMZ2fl9X8EJtUp+JqiUQ/t3PS8Co3enHseAl3jl/KqKBIRUxOmhw4FKqnJ7Lhp9K
+         pxvVtv2wH/Xrfv7EDpumMZmN1LOvGw+ytuD/wBAPUQMvNomeH8fyhF2oZx20cmAaKcCH
+         wv2QHGN3EKvcrBj6RuYpTSywIQ9N6hM/wTxDoT9RsvbsaJnBwHT4ST6dAorAorv7m8m5
+         WjlomWNQnsSny/c3VfjNfu47ZnQ7Tt8GgNt3P+MfvmjKm2SjlhXdsROeehuNf/+NssKN
+         mTa9/i2TabkOZ3U2+qg1No076ymQrV1lj4n3ULuU4MCM09Sohq4kq0cRqbAhxHX1lpzy
+         JZXw==
+X-Gm-Message-State: AOAM531fHaAmo0j3dBKTSIIBS3+tjuUMYJVfRAEtQ8J1lfrmQUkOAeI1
+        W2RTiFNd/B9vvN7gCiVf7fgb1hh6+LEI6A==
+X-Google-Smtp-Source: ABdhPJz4QibazbedTmXsQcRaU2pyUx8+oz1N5Q2XhtYTgoF1usymw1iGqYSgVjNPq/RGgqqdBMYJXQ==
+X-Received: by 2002:a63:4a43:: with SMTP id j3mr1190597pgl.42.1601080473158;
+        Fri, 25 Sep 2020 17:34:33 -0700 (PDT)
+Received: from localhost.localdomain ([2601:646:c200:1ef2:480b:55cd:6a45:1705])
+        by smtp.gmail.com with ESMTPSA id a71sm3563540pfa.26.2020.09.25.17.34.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 25 Sep 2020 17:33:05 -0700 (PDT)
-Subject: Re: [PATCH 15/22] kvm: mmu: Support changed pte notifier in tdp MMU
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-References: <20200925212302.3979661-1-bgardon@google.com>
- <20200925212302.3979661-16-bgardon@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <dc3a8cb7-ea8d-9c4d-6341-95522b184a16@redhat.com>
-Date:   Sat, 26 Sep 2020 02:33:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200925212302.3979661-16-bgardon@google.com>
+        Fri, 25 Sep 2020 17:34:32 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 seccomp 3/6] seccomp/cache: Add "emulator" to check if filter is arg-dependent
+Date:   Fri, 25 Sep 2020 17:34:29 -0700
+Message-Id: <677FA6F9-D577-4594-9FDC-D70B0D6900C6@amacapital.net>
+References: <202009251648.4AA27D5B@keescook>
+Cc:     YiFei Zhu <zhuyifei1999@gmail.com>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+In-Reply-To: <202009251648.4AA27D5B@keescook>
+To:     Kees Cook <keescook@chromium.org>
+X-Mailer: iPhone Mail (18A373)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/09/20 23:22, Ben Gardon wrote:
-> @@ -1708,6 +1695,21 @@ static int kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
->  	return kvm_zap_rmapp(kvm, rmap_head);
->  }
->  
-> +u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_pfn)
-> +{
-> +	u64 new_spte;
-> +
-> +	new_spte = old_spte & ~PT64_BASE_ADDR_MASK;
-> +	new_spte |= (u64)new_pfn << PAGE_SHIFT;
-> +
-> +	new_spte &= ~PT_WRITABLE_MASK;
-> +	new_spte &= ~SPTE_HOST_WRITEABLE;
-> +
-> +	new_spte = mark_spte_for_access_track(new_spte);
-> +
-> +	return new_spte;
-> +}
-> +
 
-And another. :)
 
+> On Sep 25, 2020, at 4:49 PM, Kees Cook <keescook@chromium.org> wrote:
+>=20
+> =EF=BB=BFOn Fri, Sep 25, 2020 at 02:07:46PM -0700, Andy Lutomirski wrote:
+>>> On Fri, Sep 25, 2020 at 1:37 PM Kees Cook <keescook@chromium.org> wrote:=
+
+>>>=20
+>>> On Fri, Sep 25, 2020 at 12:51:20PM -0700, Andy Lutomirski wrote:
+>>>>=20
+>>>>=20
+>>>>> On Sep 25, 2020, at 12:42 PM, Kees Cook <keescook@chromium.org> wrote:=
+
+>>>>>=20
+>>>>> =EF=BB=BFOn Fri, Sep 25, 2020 at 11:45:05AM -0500, YiFei Zhu wrote:
+>>>>>> On Thu, Sep 24, 2020 at 10:04 PM YiFei Zhu <zhuyifei1999@gmail.com> w=
+rote:
+>>>>>>>> Why do the prepare here instead of during attach? (And note that it=
+
+>>>>>>>> should not be written to fail.)
+>>>>>>>=20
+>>>>>>> Right.
+>>>>>>=20
+>>>>>> During attach a spinlock (current->sighand->siglock) is held. Do we
+>>>>>> really want to put the emulator in the "atomic section"?
+>>>>>=20
+>>>>> It's a good point, but I had some other ideas around it that lead to m=
+e
+>>>>> a different conclusion. Here's what I've got in my head:
+>>>>>=20
+>>>>> I don't view filter attach (nor the siglock) as fastpath: the lock is
+>>>>> rarely contested and the "long time" will only be during filter attach=
+.
+>>>>>=20
+>>>>> When performing filter emulation, all the syscalls that are already
+>>>>> marked as "must run filter" on the previous filter can be skipped for
+>>>>> the new filter, since it cannot change the outcome, which makes the
+>>>>> emulation step faster.
+>>>>>=20
+>>>>> The previous filter's bitmap isn't "stable" until siglock is held.
+>>>>>=20
+>>>>> If we do the emulation step before siglock, we have to always do full
+>>>>> evaluation of all syscalls, and then merge the bitmap during attach.
+>>>>> That means all filters ever attached will take maximal time to perform=
+
+>>>>> emulation.
+>>>>>=20
+>>>>> I prefer the idea of the emulation step taking advantage of the bitmap=
+
+>>>>> optimization, since the kernel spends less time doing work over the li=
+fe
+>>>>> of the process tree. It's certainly marginal, but it also lets all the=
+
+>>>>> bitmap manipulation stay in one place (as opposed to being split betwe=
+en
+>>>>> "prepare" and "attach").
+>>>>>=20
+>>>>> What do you think?
+>>>>>=20
+>>>>>=20
+>>>>=20
+>>>> I=E2=80=99m wondering if we should be much much lazier. We could potent=
+ially wait until someone actually tries to do a given syscall before we try t=
+o evaluate whether the result is fixed.
+>>>=20
+>>> That seems like we'd need to track yet another bitmap of "did we emulate=
+
+>>> this yet?" And it means the filter isn't really "done" until you run
+>>> another syscall? eeh, I'm not a fan: it scratches at my desire for
+>>> determinism. ;) Or maybe my implementation imagination is missing
+>>> something?
+>>>=20
+>>=20
+>> We'd need at least three states per syscall: unknown, always-allow,
+>> and need-to-run-filter.
+>>=20
+>> The downsides are less determinism and a bit of an uglier
+>> implementation.  The upside is that we don't need to loop over all
+>> syscalls at load -- instead the time that each operation takes is
+>> independent of the total number of syscalls on the system.  And we can
+>> entirely avoid, say, evaluating the x32 case until the task tries an
+>> x32 syscall.
+>>=20
+>> I think it's at least worth considering.
+>=20
+> Yeah, worth considering. I do still think the time spent in emulation is
+> SO small that it doesn't matter running all of the syscalls at attach
+> time. The filters are tiny and fail quickly if anything "interesting"
+> start to happen. ;)
+>=20
+
+There=E2=80=99s a middle ground, too: do it lazily per arch.  So we would al=
+locate and populate the compat bitmap the first time a compat syscall is att=
+empted and do the same for x32. This may help avoid the annoying extra memor=
+y usage and 3x startup overhead while retaining full functionality.=
