@@ -2,93 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D54C72798C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEB12798C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729009AbgIZMJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:09:24 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:55650 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgIZMJY (ORCPT
+        id S1727688AbgIZMQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:16:30 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36150 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgIZMQ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:09:24 -0400
-Received: by mail-io1-f72.google.com with SMTP id t187so3958924iof.22
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:09:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=G3CO8apcR3uPwIt5d5uUeceIwwic8mBs/bCybEWaLjQ=;
-        b=M9ejIj75KSMnR2GUKHpQ1lv564NldC7du+xNfbaPlqV5dv5EcRsIAZIVz/Nm9qus0S
-         fIATqT6PA1IoZgrURQkZVu2hyHFLeGlk8sLEoHqjzJ7vlolEMUl9X0XyYmyjVpAS+Fu/
-         pW4iUcSrKrXH691wemjedV6k/swsQIpL6uolDG7/IOSs53bFr6kXwDrmxpjZjXh+t/R2
-         2+Y+4BGv0L4A+UaAw6EkQ4FD/S3XcAp8anc5S8/ALptKDrbBA7Xb47VBcDlUS4VF6nbw
-         C/yOL8uX4CyD5TSpi9YEx0gQAW85dbV7gU0nJEMSUabrh7DYo8k7lq+e+qLBleYU0n1U
-         /U+A==
-X-Gm-Message-State: AOAM533TMkdwVizpaX57N2YVNPuiJyJ7lQ77T/54+f8E2tJqrh34ZcwQ
-        iBP6sC43SKGS8VL2wJGyeTtIz81ol5tA91vmMyrsgJ2B0TTd
-X-Google-Smtp-Source: ABdhPJyaN0zdQONqlEleLweGjbzzZCTrnYKNOLsHlWl9PmaS7iWCpDyfSApiqGSD9t1I8LMoNU1tXmAzYISojgu1u8g4NQb20RFl
+        Sat, 26 Sep 2020 08:16:29 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08QCBBQN046392;
+        Sat, 26 Sep 2020 12:16:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type : in-reply-to;
+ s=corp-2020-01-29; bh=atEIomq8hYf7tlxHSLLvPfiNgFz6Bihcw8H+gjRKPKo=;
+ b=YF3FsYqaNtFhap2zJKSSFNUq+hRUx002Q0I7nNH/vcksgMnscdVeBnT4/5gwcYy3QS31
+ Cmdd1IdsHvZwdCvFUZOB3DSU+PWtik/x9Uh+XZiYu0mmXNdWWQwT9O+vTMwvk0nz6jdp
+ oflGxvTjeYOMgIEYgr9Xf4TAtUT7R4RQWIYR3HgfZk4ugWj4zwMGSg+zWFzIwkT5lxY3
+ ++JNr7Q3QzhSqG6G1div/DTJ1mNttqQrx+Zdhuq4R+wHkJCb+Zr/KJy7C2GWM/7V8phA
+ /YPXcncGcb2AknOMwwxDTczzBsb0KHJmanLaPVlttt5eW51zuemiJZP2MN18vspCW/Rt kw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 33swkkgjfs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 26 Sep 2020 12:16:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08QCAFCt164221;
+        Sat, 26 Sep 2020 12:14:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 33sweydxbd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Sep 2020 12:14:15 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08QCE9LC032097;
+        Sat, 26 Sep 2020 12:14:10 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 26 Sep 2020 05:14:09 -0700
+Date:   Sat, 26 Sep 2020 15:14:02 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Dan Williams <dan.j.williams@intel.com>
+Cc:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Ralph Campbell <rcampbell@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH v3] mm/hmm/test: use after free in dmirror_allocate_chunk()
+Message-ID: <20200926121402.GA7467@kadam>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:de8:: with SMTP id m8mr3745524ilj.299.1601122163373;
- Sat, 26 Sep 2020 05:09:23 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 05:09:23 -0700
-In-Reply-To: <00000000000088b1f405b00bcbb8@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ca3fdb05b0364d1a@google.com>
-Subject: Re: WARNING in __cfg80211_ibss_joined (2)
-From:   syzbot <syzbot+7f064ba1704c2466e36d@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d1b31586-426a-e0b1-803e-3eff30196c05@web.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 phishscore=0 bulkscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009260112
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9755 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 phishscore=0
+ suspectscore=2 mlxlogscore=999 clxscore=1015 priorityscore=1501
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009260112
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+The error handling code does this:
 
-HEAD commit:    7c7ec322 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10f42f9b900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6184b75aa6d48d66
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1757b773900000
+err_free:
+	kfree(devmem);
+        ^^^^^^^^^^^^^
+err_release:
+	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
+                           ^^^^^^^^
+The problem is that when we use "devmem->pagemap.range.start" the
+"devmem" pointer is either NULL or freed.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7f064ba1704c2466e36d@syzkaller.appspotmail.com
+Neither the allocation nor the call to request_free_mem_region() has to
+be done under the lock so I moved those to the start of the function.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8356 at net/wireless/ibss.c:36 __cfg80211_ibss_joined+0x3fe/0x480 net/wireless/ibss.c:36
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 8356 Comm: kworker/u4:7 Not tainted 5.9.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: cfg80211 cfg80211_event_work
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1d6/0x29e lib/dump_stack.c:118
- panic+0x2c0/0x800 kernel/panic.c:231
- __warn+0x227/0x250 kernel/panic.c:600
- report_bug+0x1b1/0x2e0 lib/bug.c:198
- handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
- exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
- asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
-RIP: 0010:__cfg80211_ibss_joined+0x3fe/0x480 net/wireless/ibss.c:36
-Code: 00 00 48 3b 44 24 30 0f 85 8d 00 00 00 48 83 c4 38 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 bb 54 9a f9 0f 0b eb d4 e8 b2 54 9a f9 <0f> 0b eb cb e8 a9 54 9a f9 0f 0b e9 82 fd ff ff e8 9d 54 9a f9 0f
-RSP: 0018:ffffc9000a197bd8 EFLAGS: 00010293
-RAX: ffffffff87daa87e RBX: 1ffff11012e3a182 RCX: ffff8880953ae080
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000006 R08: dffffc0000000000 R09: fffffbfff16c80a4
-R10: fffffbfff16c80a4 R11: 0000000000000000 R12: ffff8880971d0c10
-R13: ffff88808ddde418 R14: ffff888077e23350 R15: ffff8880971d0000
- cfg80211_process_wdev_events+0x3b5/0x4d0 net/wireless/util.c:910
- cfg80211_process_rdev_events+0x79/0xe0 net/wireless/util.c:936
- cfg80211_event_work+0x1d/0x30 net/wireless/core.c:320
- process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
- worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
- kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+Fixes: 1f9c4bb986d9 ("mm/memremap_pages: convert to 'struct range'")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Ralph Campbell <rcampbell@nvidia.com>
+---
+v2: The first version introduced a locking bug
+v3: Markus Elfring pointed out that the Fixes tag was wrong.  This bug
+was in the original commit and then fixed and then re-introduced.  I was
+quite bothered by how this bug lasted so long in the source code, but
+now we know.  As soon as it is introduced we fixed it.
 
+One problem with the kernel QC process is that I think everyone marks
+the bug as "old/dealt with" so it was only because I was added a new
+check for resource leaks that it was found when it was re-introduced.
+
+ lib/test_hmm.c | 44 ++++++++++++++++++++++----------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/lib/test_hmm.c b/lib/test_hmm.c
+index c8133f50160b..e151a7f10519 100644
+--- a/lib/test_hmm.c
++++ b/lib/test_hmm.c
+@@ -459,6 +459,22 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
+ 	unsigned long pfn_last;
+ 	void *ptr;
+ 
++	devmem = kzalloc(sizeof(*devmem), GFP_KERNEL);
++	if (!devmem)
++		return -ENOMEM;
++
++	res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
++				      "hmm_dmirror");
++	if (IS_ERR(res))
++		goto err_devmem;
++
++	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
++	devmem->pagemap.range.start = res->start;
++	devmem->pagemap.range.end = res->end;
++	devmem->pagemap.nr_range = 1;
++	devmem->pagemap.ops = &dmirror_devmem_ops;
++	devmem->pagemap.owner = mdevice;
++
+ 	mutex_lock(&mdevice->devmem_lock);
+ 
+ 	if (mdevice->devmem_count == mdevice->devmem_capacity) {
+@@ -471,30 +487,14 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
+ 				sizeof(new_chunks[0]) * new_capacity,
+ 				GFP_KERNEL);
+ 		if (!new_chunks)
+-			goto err;
++			goto err_release;
+ 		mdevice->devmem_capacity = new_capacity;
+ 		mdevice->devmem_chunks = new_chunks;
+ 	}
+ 
+-	res = request_free_mem_region(&iomem_resource, DEVMEM_CHUNK_SIZE,
+-					"hmm_dmirror");
+-	if (IS_ERR(res))
+-		goto err;
+-
+-	devmem = kzalloc(sizeof(*devmem), GFP_KERNEL);
+-	if (!devmem)
+-		goto err_release;
+-
+-	devmem->pagemap.type = MEMORY_DEVICE_PRIVATE;
+-	devmem->pagemap.range.start = res->start;
+-	devmem->pagemap.range.end = res->end;
+-	devmem->pagemap.nr_range = 1;
+-	devmem->pagemap.ops = &dmirror_devmem_ops;
+-	devmem->pagemap.owner = mdevice;
+-
+ 	ptr = memremap_pages(&devmem->pagemap, numa_node_id());
+ 	if (IS_ERR(ptr))
+-		goto err_free;
++		goto err_release;
+ 
+ 	devmem->mdevice = mdevice;
+ 	pfn_first = devmem->pagemap.range.start >> PAGE_SHIFT;
+@@ -525,12 +525,12 @@ static bool dmirror_allocate_chunk(struct dmirror_device *mdevice,
+ 
+ 	return true;
+ 
+-err_free:
+-	kfree(devmem);
+ err_release:
+-	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
+-err:
+ 	mutex_unlock(&mdevice->devmem_lock);
++	release_mem_region(devmem->pagemap.range.start, range_len(&devmem->pagemap.range));
++err_devmem:
++	kfree(devmem);
++
+ 	return false;
+ }
+ 
+-- 
+2.28.0
