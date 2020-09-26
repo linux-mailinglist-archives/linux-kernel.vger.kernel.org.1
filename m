@@ -2,318 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BBC279C5F
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 22:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4E01279C65
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 22:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726779AbgIZUbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 16:31:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgIZUbv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 16:31:51 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F97C0613CE;
-        Sat, 26 Sep 2020 13:31:50 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id a12so5954253eds.13;
-        Sat, 26 Sep 2020 13:31:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jay0daKnkvYBfUjKB5JRTDx+c48xSBvuHJVdzyjqABg=;
-        b=PRfQLMOmbCJsg9ynvuFl0Uew1KIZVaftUjAwv/Tak89F3BsFPYRBwD+wf/fHTr5VP3
-         0+v3W9CYRzqm1fe3h08XvPHG1yDa6f7fhfDljoOK7cY7HMFZBlHLErE+vMoLmzph6eNj
-         gIjiwtktgIb24I4gzhhL1c/8UZIVoEZlQXpUQQO5KYphIn/H6N/iqSscuZI7UsvRv/lZ
-         ffYHuDXnpsunfL3ldXYDgYCROv8zwjhoXrVrwEGAKNpEfu0q79WI0FWWP0+REwAxT+lY
-         ZLPS3gZQSXwiGGMJnttjCrXb3Qyk7OSwQndCJ/kesL9HGJFVuLYeLNAIeBqcQz7pNBwh
-         QOHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jay0daKnkvYBfUjKB5JRTDx+c48xSBvuHJVdzyjqABg=;
-        b=d4RmkPpCDWfCd1wMb+as4047OJIkrcT9VjExFeG3ttPyF4ad1/h0mvVzEMM9wOkLnX
-         9KAhaoowjLkg22QkKFFTgOoTefprDlxF55zXBRx6KTGNxxW7ndmZ2mXBDQcR1GAunzu1
-         gUeXlFb9/eyxw6We/aYkjmjv3tCRFyWaTWcwK0ad2vScDVgiak/FhXrR/b7Fm/WDRyJr
-         OEIEs3dPX8UHNichkrrmR/FZnzxCUKT3aMJd/sUP7U6W7Oxt8IYY40iaIs3+5ujgV9Jk
-         KvLxn7IeKvsSvCGW6GZ6UCAIA42Z7sjz4iQIYfkiu+Pc32GopBxr4zcf8TR4VlvB4f8X
-         aglQ==
-X-Gm-Message-State: AOAM530vC93qNBkea103MJFdRRdCq5suGpL2lo9ZlPdoo/IfW3I6DEt6
-        CyFcYi7H27NAZnSpfgo50z2NIZRmAvqiH/HGtn5sQPoIQjc=
-X-Google-Smtp-Source: ABdhPJwzt9Q9f53+ZFpfeYhT4U5EbU0ELS8TJ6jG0DKSIBlS4N0pUDrakjbFBJ0rJpseYpzW12GLxOQNCEcuczI2e/c=
-X-Received: by 2002:a05:6402:144c:: with SMTP id d12mr8321623edx.168.1601152308042;
- Sat, 26 Sep 2020 13:31:48 -0700 (PDT)
+        id S1726743AbgIZUgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 16:36:15 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:24551 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726242AbgIZUgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 16:36:15 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601152573; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=GCWwjWEfmmgYW2v0oU/ekR8qqnSHIjTtkkGegbeN01M=; b=tLLcVa/QGxT94lxG2+7NqzStA02eryMep+sL3CpolgBCUrhw+5h4P+EjpKe3ykMQYliw8S+f
+ zReS2qAiMjkeRePPHRmqqAy2z4UTpX2TCv/TsNFGRUrL+8ye9vM5u1piht/GiwS7RQNMBccS
+ U8aVCAutWK1Xw1kbEF9qzzPSDRo=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5f6fa5f909b31319644839ca (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 26 Sep 2020 20:35:05
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 08818C433CB; Sat, 26 Sep 2020 20:35:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 52368C433CA;
+        Sat, 26 Sep 2020 20:35:03 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 52368C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org
+Cc:     tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, khsieh@codeaurora.org, airlied@linux.ie,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] drm/msm/dp: return correct connection status after suspend
+Date:   Sat, 26 Sep 2020 13:34:54 -0700
+Message-Id: <20200926203454.13643-1-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200916185823.5347-1-shy828301@gmail.com> <20200917023742.GT12096@dread.disaster.area>
- <CAHbLzkrGB_=KBgD1sMpW33QjWSGTXNnLy3JtVUyHc2Omsa3gWA@mail.gmail.com>
- <20200921003231.GZ12096@dread.disaster.area> <CAHbLzkqAWiO4uhGBmbUjgs6EmQazYQXHPxR2-MWo4X8zxZ7gfQ@mail.gmail.com>
-In-Reply-To: <CAHbLzkqAWiO4uhGBmbUjgs6EmQazYQXHPxR2-MWo4X8zxZ7gfQ@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Sat, 26 Sep 2020 13:31:36 -0700
-Message-ID: <CAHbLzkoidoBWtLtd_3DjuSvm7dAJV1gSJAMmWY95=e8N7Hy=TQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/2] Remove shrinker's nr_deferred
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+At dp_pm_resume, reinitialize both dp host controller and hpd block
+so that hpd connection can be detected at realtime by reading hpd state
+status register. Also hpd plug interrupt can be generated accordingly.
 
-I was exploring to make the "nr_deferred" per memcg. I looked into and
-had some prototypes for two approaches so far:
-1. Have per memcg data structure for each memcg aware shrinker, just
-like what shrinker_map does.
-2. Have "nr_deferred" on list_lru_one for memcg aware lists.
+Changes in v2:
+-- use container_of to cast correct dp_display_private pointer
+   at both dp_pm_suspend and dp_pm_resume.
 
-Both seem feasible, however the latter one looks much cleaner, I just
-need to add two new APIs for shrinker which gets and sets
-"nr_deferred" respectively. And, just memcg aware shrinkers need
-define those two callouts. We just need to care about memcg aware
-shrinkers, and the most memcg aware shrinkers (inode/dentry, nfs and
-workingset) use list_lru, so I'd prefer the latter one.
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+---
+ drivers/gpu/drm/msm/dp/dp_catalog.c | 13 ++++++
+ drivers/gpu/drm/msm/dp/dp_catalog.h |  1 +
+ drivers/gpu/drm/msm/dp/dp_display.c | 67 ++++++++++++-----------------
+ drivers/gpu/drm/msm/dp/dp_reg.h     |  2 +
+ 4 files changed, 43 insertions(+), 40 deletions(-)
 
-But there are two memcg aware shrinkers are not that straightforward
-to deal with:
-1. The deferred split THP. It doesn't use list_lru, but actually I
-don't worry about this one, since it is not cache just some partial
-unmapped THPs. I could try to convert it to use list_lru later on or
-just kill deferred split by making vmscan split partial unmapped THPs.
-So TBH I don't think it is a blocker.
-2. The fs_objects. This one looks weird. It shares the same shrinker
-with inode/dentry. The only user is XFS currently. But it looks it is
-not really memcg aware at all, right? They are managed by radix tree
-which is not per memcg by looking into xfs code, so the "per list_lru
-nr_deferred" can't work for it. I thought of a couple of ways to
-tackle it off the top of my head:
-    A. Just ignore it. If the amount of fs_objects are negligible
-comparing to inode/dentry, then I think it can be just ignored and
-kept it as is.
-    B. Move it out of inode/dentry shrinker. Add a dedicated shrinker
-for it, for example, sb->s_fs_obj_shrink.
-    C. Make it really memcg aware and use list_lru.
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+index b15b4ce4ba35..63c5ada34c21 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.c
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+@@ -572,6 +572,19 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
+ 	dp_write_aux(catalog, REG_DP_DP_HPD_CTRL, DP_DP_HPD_CTRL_HPD_EN);
+ }
+ 
++u32 dp_catalog_hpd_get_state_status(struct dp_catalog *dp_catalog)
++{
++	struct dp_catalog_private *catalog = container_of(dp_catalog,
++				struct dp_catalog_private, dp_catalog);
++	u32 status = 0;
++
++	status = dp_read_aux(catalog, REG_DP_DP_HPD_INT_STATUS);
++	status >>= DP_DP_HPD_STATE_STATUS_BITS_SHIFT;
++	status &= DP_DP_HPD_STATE_STATUS_BITS_MASK;
++
++	return status;
++}
++
+ u32 dp_catalog_hpd_get_intr_status(struct dp_catalog *dp_catalog)
+ {
+ 	struct dp_catalog_private *catalog = container_of(dp_catalog,
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.h b/drivers/gpu/drm/msm/dp/dp_catalog.h
+index 4b7666f1fe6f..6d257dbebf29 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.h
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.h
+@@ -97,6 +97,7 @@ void dp_catalog_ctrl_enable_irq(struct dp_catalog *dp_catalog, bool enable);
+ void dp_catalog_hpd_config_intr(struct dp_catalog *dp_catalog,
+ 			u32 intr_mask, bool en);
+ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog);
++u32 dp_catalog_hpd_get_state_status(struct dp_catalog *dp_catalog);
+ u32 dp_catalog_hpd_get_intr_status(struct dp_catalog *dp_catalog);
+ void dp_catalog_ctrl_phy_reset(struct dp_catalog *dp_catalog);
+ int dp_catalog_ctrl_update_vx_px(struct dp_catalog *dp_catalog, u8 v_level,
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index e175aa3fd3a9..431dff9de797 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -114,8 +114,6 @@ struct dp_display_private {
+ 	struct dp_event event_list[DP_EVENT_Q_MAX];
+ 	spinlock_t event_lock;
+ 
+-	struct completion resume_comp;
+-
+ 	struct dp_audio *audio;
+ };
+ 
+@@ -508,9 +506,6 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 		return 0;
+ 	}
+ 
+-	if (state == ST_SUSPENDED)
+-		tout = DP_TIMEOUT_NONE;
+-
+ 	atomic_set(&dp->hpd_state, ST_CONNECT_PENDING);
+ 
+ 	hpd->hpd_high = 1;
+@@ -798,8 +793,6 @@ static int dp_display_enable(struct dp_display_private *dp, u32 data)
+ 	if (!rc)
+ 		dp_display->power_on = true;
+ 
+-	/* complete resume_comp regardless it is armed or not */
+-	complete(&dp->resume_comp);
+ 	return rc;
+ }
+ 
+@@ -1151,9 +1144,6 @@ static int dp_display_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	mutex_init(&dp->event_mutex);
+-
+-	init_completion(&dp->resume_comp);
+-
+ 	g_dp_display = &dp->dp_display;
+ 
+ 	/* Store DP audio handle inside DP display */
+@@ -1189,18 +1179,40 @@ static int dp_display_remove(struct platform_device *pdev)
+ 
+ static int dp_pm_resume(struct device *dev)
+ {
++	struct platform_device *pdev = to_platform_device(dev);
++	struct msm_dp *dp_display = platform_get_drvdata(pdev);
++	struct dp_display_private *dp;
++	u32 status;
++
++	dp = container_of(dp_display, struct dp_display_private, dp_display);
++
++	dp_display_host_init(dp);
++
++	dp_catalog_ctrl_hpd_config(dp->catalog);
++
++	status = dp_catalog_hpd_get_state_status(dp->catalog);
++
++	if (status) {
++		dp->dp_display.is_connected = true;
++	} else {
++		dp->dp_display.is_connected = false;
++		/* make sure next resume host_init be called */
++		dp->core_initialized = false;
++	}
++
+ 	return 0;
+ }
+ 
+ static int dp_pm_suspend(struct device *dev)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
+-	struct dp_display_private *dp = platform_get_drvdata(pdev);
++	struct msm_dp *dp_display = platform_get_drvdata(pdev);
++	struct dp_display_private *dp;
+ 
+-	if (!dp) {
+-		DRM_ERROR("DP driver bind failed. Invalid driver data\n");
+-		return -EINVAL;
+-	}
++	dp = container_of(dp_display, struct dp_display_private, dp_display);
++
++	if (dp_display->power_on == true)
++		dp_display_disable(dp, 0);
+ 
+ 	atomic_set(&dp->hpd_state, ST_SUSPENDED);
+ 
+@@ -1317,19 +1329,6 @@ int msm_dp_modeset_init(struct msm_dp *dp_display, struct drm_device *dev,
+ 	return 0;
+ }
+ 
+-static int dp_display_wait4resume_done(struct dp_display_private *dp)
+-{
+-	int ret = 0;
+-
+-	reinit_completion(&dp->resume_comp);
+-	if (!wait_for_completion_timeout(&dp->resume_comp,
+-				WAIT_FOR_RESUME_TIMEOUT_JIFFIES)) {
+-		DRM_ERROR("wait4resume_done timedout\n");
+-		ret = -ETIMEDOUT;
+-	}
+-	return ret;
+-}
+-
+ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ {
+ 	int rc = 0;
+@@ -1359,14 +1358,6 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	}
+ 
+ 	state =  atomic_read(&dp_display->hpd_state);
+-	if (state == ST_SUSPENDED) {
+-		/* start link training */
+-		dp_add_event(dp_display, EV_HPD_PLUG_INT, 0, 0);
+-		mutex_unlock(&dp_display->event_mutex);
+-
+-		/* wait until dp interface is up */
+-		goto resume_done;
+-	}
+ 
+ 	dp_display_enable(dp_display, 0);
+ 
+@@ -1388,10 +1379,6 @@ int msm_dp_display_enable(struct msm_dp *dp, struct drm_encoder *encoder)
+ 	mutex_unlock(&dp_display->event_mutex);
+ 
+ 	return rc;
+-
+-resume_done:
+-	dp_display_wait4resume_done(dp_display);
+-	return rc;
+ }
+ 
+ int msm_dp_display_pre_disable(struct msm_dp *dp, struct drm_encoder *encoder)
+diff --git a/drivers/gpu/drm/msm/dp/dp_reg.h b/drivers/gpu/drm/msm/dp/dp_reg.h
+index 43042ff90a19..268602803d9a 100644
+--- a/drivers/gpu/drm/msm/dp/dp_reg.h
++++ b/drivers/gpu/drm/msm/dp/dp_reg.h
+@@ -32,6 +32,8 @@
+ #define DP_DP_IRQ_HPD_INT_ACK			(0x00000002)
+ #define DP_DP_HPD_REPLUG_INT_ACK		(0x00000004)
+ #define DP_DP_HPD_UNPLUG_INT_ACK		(0x00000008)
++#define DP_DP_HPD_STATE_STATUS_BITS_MASK	(0x0000000F)
++#define DP_DP_HPD_STATE_STATUS_BITS_SHIFT	(0x1C)
+ 
+ #define REG_DP_DP_HPD_INT_MASK			(0x0000000C)
+ #define DP_DP_HPD_PLUG_INT_MASK			(0x00000001)
 
-I don't have any experience on XFS code, #C seems the most optimal,
-but should be the most time consuming, I'm not sure if it is worth it
-or not. So, #B sounds more preferred IMHO.
+base-commit: 3c0f462da069af12211901ddf26f7e16e6951d9b
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-Advice is much appreciated. Thanks.
-
-
-On Tue, Sep 22, 2020 at 4:45 PM Yang Shi <shy828301@gmail.com> wrote:
->
-> On Sun, Sep 20, 2020 at 5:32 PM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Thu, Sep 17, 2020 at 05:12:08PM -0700, Yang Shi wrote:
-> > > On Wed, Sep 16, 2020 at 7:37 PM Dave Chinner <david@fromorbit.com> wrote:
-> > > > On Wed, Sep 16, 2020 at 11:58:21AM -0700, Yang Shi wrote:
-> > > > It clamps the worst case freeing to half the cache, and that is
-> > > > exactly what you are seeing. This, unfortunately, won't be enough to
-> > > > fix the windup problem once it's spiralled out of control. It's
-> > > > fairly rare for this to happen - it takes effort to find an adverse
-> > > > workload that will cause windup like this.
-> > >
-> > > I'm not sure if it is very rare, but my reproducer definitely could
-> > > generate huge amount of deferred objects easily. In addition it might
-> > > be easier to run into this case with hundreds of memcgs. Just imaging
-> > > hundreds memcgs run limit reclaims with __GFP_NOFS, the amount of
-> > > deferred objects can be built up easily.
-> >
-> > This is the first time I've seen a report that indicates excessive
-> > wind-up is occurring in years. That definitely makes it a rare
-> > problem in the real world.
-> >
-> > > On our production machine, I saw much more absurd deferred objects,
-> > > check the below tracing result out:
-> > >
-> > > <...>-48776 [032] .... 27970562.458916: mm_shrink_slab_start:
-> > > super_cache_scan+0x0/0x1a0 ffff9a83046f3458: nid: 0 objects to shrink
-> > > 2531805877005 gfp_flags GFP_HIGHUSER_MOVABLE pgs_scanned 32 lru_pgs
-> > > 9300 cache items 1667 delta 11 total_scan 833
-> > >
-> > > There are 2.5 trillion deferred objects on one node! So total > 5 trillion!
-> >
-> > Sure, I'm not saying it's impossible to trigger, just that there are
-> > not many common workloads that actually cause it to occur. And,
-> > really, if it's wound up that far before you've noticed a problem,
-> > then wind-up itself isn't typically a serious problem for
-> > systems....
->
-> Actually the problem was observed some time ago, I just got some time
-> to look into the root cause.
->
-> This kind of problem may be more common with memcg environment. For
-> example, a misconfigured memcg may incur excessive __GFP_NOFS limit
-> reclaims.
->
-> >
-> > > > So, with all that said, a year ago I actually fixed this problem
-> > > > as part of some work I did to provide non-blocking inode reclaim
-> > > > infrastructure in the shrinker for XFS inode reclaim.
-> > > > See this patch:
-> > > >
-> > > > https://lore.kernel.org/linux-xfs/20191031234618.15403-13-david@fromorbit.com/
-> > >
-> > > Thanks for this. I remembered the patches, but I admitted I was not
-> > > aware deferred objects could go wild like that.
-> >
-> > Not many people are....
-> >
-> > > > It did two things. First it ensured all the deferred work was done
-> > > > by kswapd so that some poor direct reclaim victim didn't hit a
-> > > > massive reclaim latency spike because of windup. Secondly, it
-> > > > clamped the maximum windup to the maximum single pass reclaim scan
-> > > > limit, which is (freeable * 2) objects.
-> > > >
-> > > > Finally it also changed the amount of deferred work a single kswapd
-> > > > pass did to be directly proportional to the reclaim priority. Hence
-> > > > as we get closer to OOM, kswapd tries much harder to get the
-> > > > deferred work backlog down to zero. This means that a single, low
-> > > > priority reclaim pass will never reclaim half the cache - only
-> > > > sustained memory pressure and _reclaim priority windup_ will do
-> > > > that.
-> > >
-> > > Other than these, there are more problems:
-> > >
-> > > - The amount of deferred objects seem get significantly overestimated
-> > > and unbounded. For example, if one lru has 1000 objects, the amount of
-> > > reclaimables is bounded to 1000, but the amount of deferred is not. It
-> > > may go much bigger than 1000, right? As the above tracing result
-> > > shows, 2.5 trillion deferred objects on one node, assuming all of them
-> > > are dentry (192 bytes per object), so the total size of deferred on
-> > > one node is ~480TB! Or this is a bug?
-> >
-> > As the above patchset points out: it can get out of control because
-> > it is unbounded. The above patchset bounds the deferred work to (2 *
-> > current cache item count) and so it cannot ever spiral out of
-> > control like this.
->
-> I was thinking about cap it to (2 * freeable) too before I looked into
-> your patches :-)
->
-> >
-> > > - The deferred will be reset by the reclaimer who gets there first,
-> > > then other concurrent reclaimers just see 0 or very few deferred
-> > > objects.
-> >
-> > No, not exactly.
-> >
-> > The current behaviour is that the deferred count is drained by the
-> > current shrinker context, then it does whatever work it can, then it
-> > puts the remainder of the work that was not done back on the
-> > deferred count. This was done so that only a single reclaim context
-> > tried to execute the deferred work (i.e. to prevent the deferred
-> > work being run multiple times by concurrent reclaim contexts), but
-> > if the work didn't get done it was still accounted and would get
-> > done later.
->
-> Yes, definitely. I should articulated it at the first place.
->
-> >
-> > A side effect of this was that nothing ever zeros the deferred
-> > count, however, because there is no serialisation between concurrent
-> > shrinker contexts. That's why it can wind up if the number of
-> > GFP_NOFS reclaim contexts greatly exceeds the number of GFP_KERNEL
-> > reclaim contexts.
-> >
-> > This is what the above patchset fixes - deferred work is only ever
-> > done by kswapd(), which means it doesn't have to care about multiple
-> > reclaim contexts doing deferred work. This simplifies it right down,
-> > and it allows us to bound the quantity of deferred work as a single
-> > reclaimer will be doing it all...
-> >
-> > > So the clamp may not happen on the lrus which have most
-> > > objects. For example, memcg A's dentry lru has 1000 objects, memcg B's
-> > > dentry lru has 1 million objects, but memcg A's limit reclaim is run
-> > > first, then just 500 was clamped.
-> >
-> > Yup, that's a memcg bug. memcg's were grafted onto the side of the
-> > shrinker infrastructure, and one of the parts of the shrinker
-> > behaviour that was not made per-memcg was the amount of work
-> > deferred from the per-memcg shrinker invocation. If you want memcgs
-> > to behave correctly w.r.t. work deferred inside a specific memcg
-> > shrinker context, then the deferred work accounting needs to be made
-> > per-memcg, not just a global per-node count.
-> >
-> > The first step to doing this, however, is fixing up the problems we
-> > currently have with deferred work, and that is the patchset I
-> > pointed you to above. We have to push the defered work to the kswapd
-> > context so that it can process all the deferred work for all of the
-> > memcgs in the system in a single reclaim context; if the memcg is
-> > just doing GFP_NOFS allocations, then just deferring the work to the
-> > next GFP_KERNEL direct reclaim that specific memcg enters is not
-> > going to be sufficient.
->
-> But kswapd may be not called in some cases at all. For example, the
-> system may have some memcgs configured, every memcg reaches its limit
-> and does limit reclaim, but the global memory usage is not high enough
-> to wake up kswapd. The deferred objects can get windup, and limit
-> reclaim can't bring it down under control.
->
-> By making nr_deferred per memcg, memcg limit reclaim could bring the
-> deferred objects under control.
->
-> >
-> > > - Currently the deferred objects are account per shrinker, it sounds
-> > > not very fair, particularly given the environment with hundreds of
-> > > memcgs. Some memcgs may not do a lot __GFP_NOFS allocations, but the
-> > > clamp may hit them. So, off the top of my head, I'm wondering whether
-> > > it sounds better to have deferred per-memcg, so who generates deferred
-> > > who gets punished.
-> >
-> > Yup, see above.
-> >
-> > > - Some workloads, i.e. git server, don't want that clamp behavior or
-> > > wish it goes more mild. For example, the ratio between vfs caches and
-> > > page caches is 10:1 on some our production servers.
-> >
-> > The overall system cache balancing has nothing to do with deferred
-> > work clamping. The deferred work mechanism is there to make sure
-> > unrealised reclaim pressure is fed back into the reclaim subsystem
-> > to tell it it needs to do more work...
-> >
-> > > - Waiting for kswapd to clamp those deferred may be too late, and it
-> > > may not be able to drive deferred down to a reasonable number at all.
-> > > IMHO avoiding the amount of deferred objects goes out of control at
-> > > the first place may be much more important.
-> >
-> > kswapd is the only guaranteed reclaim context that can make
-> > progress on deferred work. Windup is an indications that it hasn't
-> > been kicked soon enough. One of the advantages of deferring work to
-> > kswapd is that now we have a -algorithmic trigger- for shrinker
-> > reclaim contexts kicking kswapd sooner than we currently do. e.g. if
-> > the deferred work reaches 1/4 the size of the current cache, kick
-> > kswapd to start doing the work we are deferring. This might require
-> > marking memcgs and shrinkers as "needing deferred work" similar to
-> > how we currently mark memcg shrinkers as "containing shrinkable
-> > items" so that we can run kswapd quickly on just the memcgs/shrinker
-> > contexts that need deferred work to be done....
->
-> This seems feasible, but it sounds like we need introduce another "watermark".
->
-> IMHO we could make shrinker behave more fair among memcgs and keep
-> deferred objects under control just by making nr_deferred per memcg
-> and capping nr_deferred to (2 * freeable) or whatever reasonable
-> number.
->
-> Both kswapd and global direct reclaim would traverse all memcgs and
-> they get nr_deferred from each memcg, they can guarantee all memcgs
-> get shrunk at a fair rate. We could shrink harder in kswapd, but both
-> kswapd and direct reclaim should do shrink according to priority. This
-> should be able to mitigate direct reclaim latency.
->
-> Limit reclaim would traverse all memcgs under reclaim root, it could
-> help keep deferred objects under control for "limit reclaim only"
-> case.
->
-> >
-> > Cheers,
-> >
-> > Dave.
-> > --
-> > Dave Chinner
-> > david@fromorbit.com
