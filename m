@@ -2,205 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ECE27961A
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E32927961D
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729729AbgIZCAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 22:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48288 "EHLO
+        id S1729929AbgIZCBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 22:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726119AbgIZCAs (ORCPT
+        with ESMTP id S1729424AbgIZCBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 22:00:48 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F4FC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 19:00:48 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id p24so2496715vsf.8
-        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 19:00:48 -0700 (PDT)
+        Fri, 25 Sep 2020 22:01:19 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B534C0613CE;
+        Fri, 25 Sep 2020 19:01:18 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id ay8so4378633edb.8;
+        Fri, 25 Sep 2020 19:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Hl1Q4DpTnlorjszdeqwj09MJbyW3AR0vFcBWHqZ2odk=;
-        b=P4qc0yXhmSaVr6w2P0a6Jg1SVu+tCRyLJtKljp3j9VXd4yHhrjQiXaE9tof7aCTDXC
-         bLErGyaCYcO/d3lNZ9nPGurbF2hMDGkziPTczSgKdhkhBZdbOX/p4MpAROQ0QcRJoDEi
-         Vlg7C6edh+ctRbg7mFAJ1NFboRhUbaYb+p721M+tfmxZaFyIT8pR0/vB1nnTqUmziW1M
-         z7c3SDHc8ceIHqn3A88QdNpY1yj26I9K4a+VtyszdnRy6kToh1RnDMMW71tFj6PqBXQo
-         nO5zkBnlUV6etg5MHxS4BM60ycRqJTp7zuaplFfUmfsHvp2qto7fL7J+utpVmfImJS6H
-         R4LA==
+         :cc;
+        bh=YdfVio6rmUqMvX7vwhcdUswt2FQkou3Nqy5kTbRbmY0=;
+        b=fis0NCRweX16x/ncWjGXr4Z4/PmZQHN6hmIhBk7WKakMtayURDkAU2G3SPQebmaB/0
+         5SpkamHkXFYrgicR16bRZ6jNj8K9jjzgS49WcHSYUPHKD94X2FOshCcaP3lnlB9OOwlg
+         IPQuj/9So7I8X1sdOd35OG+6mRFxjfmrPwJlAj+27K+5Q4cSGFOf3LM3LyK2nxgi1g5q
+         x84Pej82GWK7q/E4QJi60Km1gBCO3MKIrKDCzX/rZbinbbHx02P2suAY7HGrL+o9NEiF
+         GkUfO/kL3okiTu2R+Y+bp+rdq/4xpol8rUREgFZuceCZ3oV9gLOaKwO3wneCnUcvcFow
+         GOIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Hl1Q4DpTnlorjszdeqwj09MJbyW3AR0vFcBWHqZ2odk=;
-        b=VLynGqN/jSOBBUp54SJqj/Cg5E3uK2AtxODWlF240OKXAYw2PUaq7ODzomsOESarMB
-         MK/FJakFZngLCKvHbeFte+VavjnZnNhK2xcDQvYmd68pCRfEZ29u9/Py81thM5jUUyR4
-         M3E/ZHQsVmCTdXwqj0+nrq4OH/oOi7ZnIseqRa57oZ/Sl/0+2jc2WOljbxvcSpnuBo0s
-         xQRef2E5VLPbo3rHvvY1Uj/HeUT7e5uwjhuk1kOrgHxkAa+CEz1pxvQvunJzLUINb98u
-         O1b2QbtQ0ZKU/MnLKHre1zAuf0o9tF/vrO8Pzxj2ThWeu3PoK4d9b0sOGDqTyof8xMYq
-         ZLwA==
-X-Gm-Message-State: AOAM533L2528hu/xngyr+qqrvN6Lg1XE4Iy84x4cpuB1+O7WC6iYjeUA
-        Yk/etIvTjtvvmrGoJo6/WPzgNyHT+saZu8UTe7w=
-X-Google-Smtp-Source: ABdhPJwnzW7hBYGZ9yAJheuQp7oEACrPOON6ggTNy9iEQ9iGnseTjB50aYngGSY1fvBsbnsJhLOUM+THDzxhI7RmA4o=
-X-Received: by 2002:a67:eb89:: with SMTP id e9mr776565vso.49.1601085647701;
- Fri, 25 Sep 2020 19:00:47 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=YdfVio6rmUqMvX7vwhcdUswt2FQkou3Nqy5kTbRbmY0=;
+        b=uZ9PDCYRoGhs1s6prFh5Q3h05I69p6tjGRd9L0+LrlRlEYxQJQrxiCQhpuNv4CqcjQ
+         tqF158i6N921RWG3k4qr5PPMOJyg8vjE4nmlniJ/YQQHsC7FjlHesW6dXzhPSiMTkZ6+
+         TwxWEQOv+MX4OamOy58v2NShV3BcZZvqKZcLfGSj1y8fxHptR3Btf9i50uVimtBjLiYQ
+         rGZGfp/wsUl5Ugf+EtmXZR46Jwvbwj0XMZevt3ti2Fg13i0HvJPTcjRCGJ208hZg+Wd+
+         7fSWOzx/a7GvsOpP7tcJnHk7uQA7frruUlNbJ+lFK+A+q+hpZPS3BPuYaw3KjJmscKJU
+         v8tA==
+X-Gm-Message-State: AOAM530twzPfKJV69FAckyoGcOUshKeF8j8MUk4YBcTxvgdDAHlMJHdb
+        Cmr3TagT128tLxZnP6/G5+ktGSMPjD9G9SvyOWo=
+X-Google-Smtp-Source: ABdhPJxEXygHmq8u9eUYIwXLYXGShAkwHdgEW491xonCzHONISgO9hzlOwStRESAH6vkozCf/y/jqwAa2dIX02DFFuo=
+X-Received: by 2002:aa7:da89:: with SMTP id q9mr4380585eds.111.1601085677069;
+ Fri, 25 Sep 2020 19:01:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200915115609.85106-1-qianjun.kernel@gmail.com>
- <20200915115609.85106-5-qianjun.kernel@gmail.com> <878scz89tl.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <878scz89tl.fsf@nanos.tec.linutronix.de>
-From:   jun qian <qianjun.kernel@gmail.com>
-Date:   Sat, 26 Sep 2020 10:00:36 +0800
-Message-ID: <CAKc596+it+Cf2HuaeqM3kaFR4KTM7LdKcP3cMXC6AeWrixhLow@mail.gmail.com>
-Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing loop
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     peterz@infradead.org, will@kernel.org, luto@kernel.org,
-        linux-kernel@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>,
-        qais.yousef@arm.com, Uladzislau Rezki <urezki@gmail.com>
+References: <20200923210352.1176386-1-pgwipeout@gmail.com> <20200923210352.1176386-2-pgwipeout@gmail.com>
+ <df2d6a8d-8a6c-464b-8f35-a7994ea01534@gmail.com>
+In-Reply-To: <df2d6a8d-8a6c-464b-8f35-a7994ea01534@gmail.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Fri, 25 Sep 2020 22:01:05 -0400
+Message-ID: <CAMdYzYosBUUudsRnf9RQ1HKYq8cS4uXRm-9Mg1=hZy+v_Q_X6g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] ARM: tegra: Add device-tree for Ouya
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Stephen Warren <swarren@wwwdotorg.org>,
+        Bob Ham <rah@settrans.net>,
+        Leonardo Bras <leobras.c@gmail.com>,
+        Michael Brougham <jusplainmike@gmail.com>,
+        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> =E4=BA=8E2020=E5=B9=B49=E6=9C=8824=E6=
-=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8B=E5=8D=8811:37=E5=86=99=E9=81=93=EF=BC=9A
+On Thu, Sep 24, 2020 at 8:12 PM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> On Tue, Sep 15 2020 at 19:56, qianjun kernel wrote:
-> >
-> > +#define SOFTIRQ_PENDING_MASK ((1UL << NR_SOFTIRQS) - 1)
-> >
-> > +/*
-> > + * The pending_next_bit is recorded for the next processing order when
-> > + * the loop is broken. This per cpu variable is to solve the following
-> > + * scenarios:
-> > + * Assume bit 0 and 1 are pending when the processing starts. Now it
-> > + * breaks out after bit 0 has been handled and stores back bit 1 as
-> > + * pending. Before ksoftirqd runs bit 0 gets raised again. ksoftirqd
-> > + * runs and handles bit 0, which takes more than the timeout. As a
-> > + * result the bit 0 processing can starve all other softirqs.
-> > + *
-> > + * so we need the pending_next_bit to record the next process order.
-> > + */
-> > +DEFINE_PER_CPU(u32, pending_next_bit);
->
-> static if at all.
->
+> ...
+> > +/ {
+> > +     model = "Ouya Game Console";
+> > +     compatible = "ouya,ouya", "nvidia,tegra30";
 > > +
-> >  asmlinkage __visible void __softirq_entry __do_softirq(void)
-> >  {
-> >       u64 start =3D sched_clock();
-> > @@ -261,8 +277,11 @@ asmlinkage __visible void __softirq_entry __do_sof=
-tirq(void)
-> >       unsigned int max_restart =3D MAX_SOFTIRQ_RESTART;
-> >       struct softirq_action *h;
-> >       unsigned long pending;
-> > +     unsigned long pending_left, pending_again;
-> >       unsigned int vec_nr;
-> >       bool in_hardirq;
-> > +     int next_bit;
-> > +     unsigned long flags;
-> >
-> >       /*
-> >        * Mask out PF_MEMALLOC as the current task context is borrowed f=
-or the
-> > @@ -283,25 +302,66 @@ asmlinkage __visible void __softirq_entry __do_so=
-ftirq(void)
-> >
-> >       local_irq_enable();
-> >
-> > -     for_each_set_bit(vec_nr, &pending, NR_SOFTIRQS) {
-> > -             int prev_count;
-> > -
-> > -             __clear_bit(vec_nr, &pending);
-> > -
-> > -             h =3D softirq_vec + vec_nr;
-> > -
-> > -             prev_count =3D preempt_count();
-> > -
-> > -             kstat_incr_softirqs_this_cpu(vec_nr);
-> > +     /*
-> > +      * pending_left means that the left bits unhandled when the loop =
-is
-> > +      * broken without finishing the vectors. These bits will be handl=
-ed
-> > +      * first in the next time. pending_again means that the new bits =
-is
-> > +      * generated in the other time. These bits should be handled afte=
-r
-> > +      * the pending_left bits have been handled.
-> > +      *
-> > +      * For example
-> > +      * If the pending bits is 1101010110, and the loop is broken afte=
-r
-> > +      * the bit4 is handled. Then, the pending_next_bit will be 5, and
-> > +      * the pending_left is 1101000000, the pending_again is 000000110=
-.
-> > +      */
+> > +     aliases {
+> > +             rtc0 = &pmic;
+> > +             rtc1 = "/rtc@7000e000";
+> > +             serial0 = &uartd; /* Debug Port */
+> > +             serial1 = &uartc; /* Bluetooth */
+> > +             mmc0 = &sdmmc4; /* eMMC */
+> > +             mmc1 = &sdmmc3; /* WiFi */
 >
-> If you need such a comment to explain the meaning of your variables then
-> you did something fundamentaly wrong.
+> Thierry may want to sort these aliases in alphabet order.
+
+Thanks, I'll fix this.
+
 >
-> > +     next_bit =3D __this_cpu_read(pending_next_bit);
-> > +     pending_left =3D pending &
-> > +             (SOFTIRQ_PENDING_MASK << next_bit);
-> > +     pending_again =3D pending &
-> > +             (SOFTIRQ_PENDING_MASK >> (NR_SOFTIRQS - next_bit));
+> > +     };
+>
+> ...
+> > +             pmic: pmic@2d {
+> > +                     compatible = "ti,tps65911";
+> > +                     reg = <0x2d>;
 > > +
-> > +     while (pending_left || pending_again) {
-> > +             if  (pending_left) {
-> > +                     pending =3D pending_left;
-> > +                     pending_left =3D 0;
-> > +             } else if (pending_again) {
-> > +                     pending =3D pending_again;
-> > +                     pending_again =3D 0;
-> > +             } else
-> > +                     break;
+> > +                     interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+> > +                     #interrupt-cells = <2>;
+> > +                     interrupt-controller;
+> > +
+> > +                     ti,system-power-controller;
 >
-> Aside of lacking brackets how is that 'else' patch ever going to be
-> reached?
->
-> But TBH that whole patch is a completely unreviewable maze.
->
-> This can be done without all this pending, pending_left, pending_again,
-> pending_next_bit, next_bit convolution. It's inconsistent anyway:
->
-> __do_softirq()
->
->         pending =3D 0x25;
->         next =3D 0;
->
->         for (...)
->             break after bit 0
->
->         =3D=3D> pending =3D=3D 0x24
->
->         =3D=3D> next =3D 2
->
-> now on the next invocation
->
->        pending =3D 0x35;
->        next =3D 2;
->
->        So the processing order is 2, 4, 5, 0
->
-> and there is nothing you can do about that with that approach.
->
-> But the whole point is to ensure that the not yet processed bits are
-> processed first.
->
-> Find attached an updated series based on the original one from Peter
-> with the authorship preserved, intact SOB chains and proper changelogs.
->
-> The last one is new and addressing the starvation issue in a readable
-> way.
->
-> All of this is again completely untested.
->
-> Thanks,
->
->         tglx
->
+> Are the ti,sleep-keep-ck32k and other properties not needed for Ouya
+> like they are needed for Nexus 7?
 
-I will fix it and test. After test, i will send the patch again.
+Ouya is wall powered, so ultra low power isn't terribly necessary.
+Also with LP1 and LP0 not working, it doesn't make much sense to
+implement this yet.
 
-thanks
+>
+> ...
+> > +     sdmmc3: mmc@78000400 {
+> > +             status = "okay";
+> > +
+> > +             #address-cells = <1>;
+> > +             #size-cells = <0>;
+> > +
+> > +             bus-width = <4>;
+> > +             non-removable;
+>
+> Recently I added assigned-clocks here for Nexus7/A500 DTs in order to
+> get true 50MHz for the WiFi SDIO.
+
+Thanks, it seems we are running at 48MHz right now, so I'll look into this.
+
+>
+> > +             mmc-pwrseq = <&wifi_pwrseq>;
+> > +             vmmc-supply = <&sdmmc_3v3_reg>;
+> > +             vqmmc-supply = <&vdd_1v8>;
