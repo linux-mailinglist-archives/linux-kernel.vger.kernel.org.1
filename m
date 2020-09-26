@@ -2,109 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E027279C9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 23:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68943279CA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 23:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727052AbgIZVY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 17:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726311AbgIZVY6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 17:24:58 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09C3C0613CE;
-        Sat, 26 Sep 2020 14:24:57 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id y2so6708923lfy.10;
-        Sat, 26 Sep 2020 14:24:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6wrB9fto+I1fUbDhgF+w5avJWzjFlsE3ApMnh8XsGZM=;
-        b=nynDsskn2v5Qu272LIVZKOws9vaysTXN5vZ6JQgTLmnYG1jrb3q4FxGnFq+y5VkL7g
-         F+N1QjZGNJnUDcmqPg0DxMXiwjXcf8VG84KBs513JJt4z2Zd394TptCU8mBo9swAiPeo
-         TjgKgJiUZZ6pMVRnm9NpPtt2m8UeTBDdWBpjLyxFWr/hVZvhKLm0FyCEGpIvroNUIZ2l
-         hA4x8IOpmhQyxaaoYB1uew6JOlinbvr3kQ2L/0wPhi+attppdLmUtK/fZN/jbrm9/WhO
-         XKIlXDf1CL1zOkSWm0v32SrO3w1L6YzBke7RR/+u0xI3/7337PnPXG5g76qoNtBu3aGQ
-         F01w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6wrB9fto+I1fUbDhgF+w5avJWzjFlsE3ApMnh8XsGZM=;
-        b=WJzWOF+h133w7UeU2I4j1tSxujUh8gvGkwxtVunBFXxmq7UKEcK+NZj33Gtu6QhHJy
-         DrsJ3gX8WbEEKrUm6D0Y+qMLif+8trBj4Iuo4We3uVGbhhrqXXpS45jJpJVtgXGg4DdY
-         s+WYSqyVoLEyDyQMno43/jxMsr5kotChjjrBi9vSgV8Z1lBjwWg2pdpJKVPI8LJlRM1y
-         CAYgQObbHsCFzBilZsjDnIuC/OAxaahPveqi0lSld4sw1oINrGLRn8cDEnjfk7nBB2eQ
-         2AyxLYTQSBVO/IDGiQd618RSo1E0l7+MjwG2G7nIPR8tMF6AC7RmtY4AZ6QF6Admy4l/
-         4xhw==
-X-Gm-Message-State: AOAM530sy2j1z2o++rPYmnK3CQzndbap1er/54NvMefLvQkxoZptnJ9K
-        TMsPkzT9G0LkErbU73bxVw8=
-X-Google-Smtp-Source: ABdhPJxT9fBzeCt7l5s5mHsDyMF6JTcv7kgGvdkxvGDECbJLHk4gNOOOtmGLdqsWW1tTLW51rYsfGA==
-X-Received: by 2002:ac2:4559:: with SMTP id j25mr1442963lfm.484.1601155496084;
-        Sat, 26 Sep 2020 14:24:56 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id b8sm2124820lfq.144.2020.09.26.14.24.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Sep 2020 14:24:55 -0700 (PDT)
-Subject: Re: [PATCH 5/5] iommu/tegra-smmu: Add pagetable mappings to debugfs
-To:     Nicolin Chen <nicoleotsuka@gmail.com>, thierry.reding@gmail.com,
-        joro@8bytes.org, krzk@kernel.org
-Cc:     linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, jonathanh@nvidia.com
-References: <20200926080719.6822-1-nicoleotsuka@gmail.com>
- <20200926080719.6822-6-nicoleotsuka@gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <0451e362-30eb-2ba2-33f1-e9ab3972cada@gmail.com>
-Date:   Sun, 27 Sep 2020 00:24:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727274AbgIZVcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 17:32:46 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:11972 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726242AbgIZVcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 17:32:42 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4BzMSm1nTkz18;
+        Sat, 26 Sep 2020 23:32:40 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1601155960; bh=4nuv8XtB2YUIErRfKrjMiu/Ium1RTTq3SbR5a+DzgTE=;
+        h=Date:From:Subject:To:Cc:From;
+        b=LVdmkTfwEwCfUb1cXr2vpnhkekLIJleOnOIntcWmKMjG08Sevx0tDSwL4/dzZEnJK
+         nNTGemIg8VXaI6GvSTCcFbuy2uDQG06Bcv52NElm5lS3CfqH1pUyggZqrFLw7TXgdk
+         MUWg+riM14UCtIflaAciLg4jZUtEuJjHNaW/8gFzf+CqhbVXdHpwAWFWuE/KEEf79/
+         xOaU0Z+pzOSWsuUeo0grV2Xik3nQRSVyuG+wvD3tcfWvgm/C9lWAL59hpgTAiDNvJV
+         cdsPuBaDiQTBinbuvdd/b929itORaH4ESY6KxP7sGksZngvyjCEIugu+uBXDYYr7o/
+         w2XZYkn7DtH9w==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.102.4 at mail
+Date:   Sat, 26 Sep 2020 23:32:36 +0200
+Message-Id: <cover.1601155770.git.mirq-linux@rere.qmqm.pl>
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+Subject: [PATCH 0/3] regulator: debugging aids
 MIME-Version: 1.0
-In-Reply-To: <20200926080719.6822-6-nicoleotsuka@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+To:     Jon Hunter <jonathanh@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-26.09.2020 11:07, Nicolin Chen пишет:
-...
-> +	for (pd_index = 0; pd_index < SMMU_NUM_PDE; pd_index++) {
-> +		struct page *pt;
-> +		u32 *addr;
-> +
-> +		if (!as->count[pd_index] || !pd[pd_index])
-> +			continue;
+Three simple patches to aid in debugging regulators.
 
-I guess the idea of this patch is to print out the hardware state, isn't
-it? Hence the as->count shouldn't be checked here.
+Michał Mirosław (3):
+  regulator: print state at boot
+  regulator: print symbolic errors in kernel messages
+  regulator: resolve supply after creating regulator
 
-> +		pde_count++;
-> +		pte_count += as->count[pd_index];
-> +		seq_printf(s, "\t[%d] 0x%x (%d)\n",
-> +			   pd_index, pd[pd_index], as->count[pd_index]);
-> +		pt = as->pts[pd_index];
-> +		addr = page_address(pt);
-> +
-> +		seq_puts(s, "\t{\n");
-> +		seq_printf(s, "\t\t%-5s %-4s %12s %12s\n", "PDE", "ATTR", "PHYS", "IOVA");
-> +		for (pt_index = 0; pt_index < SMMU_NUM_PTE; pt_index++) {
-> +			u64 iova;
-> +
-> +			if (!addr[pt_index])
-> +				continue;
-> +
-> +			iova = ((dma_addr_t)pd_index & (SMMU_NUM_PDE - 1)) << SMMU_PDE_SHIFT;
-> +			iova |= ((dma_addr_t)pt_index & (SMMU_NUM_PTE - 1)) << SMMU_PTE_SHIFT;
-> +
-> +			seq_printf(s, "\t\t#%-4d 0x%-4x 0x%-12llx 0x%-12llx\n",
-> +				   pt_index, addr[pt_index] >> SMMU_PTE_ATTR_SHIFT,
-> +				   SMMU_PFN_PHYS(addr[pt_index] & ~SMMU_PTE_ATTR), iova);
->
+ drivers/regulator/core.c | 124 ++++++++++++++++++++++-----------------
+ 1 file changed, 69 insertions(+), 55 deletions(-)
 
-Would be nice if you could improve the output formatting by printing out
-contiguous ranges that have the same ATTRs, otherwise it could be a bit
-too large and unpractical output in a case if lots of pages are mapped.
+-- 
+2.20.1
+
