@@ -2,161 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C4562797EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 10:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE4A2797EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 10:24:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbgIZIX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 04:23:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726037AbgIZIX1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 04:23:27 -0400
-Received: from pali.im (pali.im [31.31.79.79])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB3B020878;
-        Sat, 26 Sep 2020 08:23:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601108607;
-        bh=wITLVVzqw/4Gk3HJIgwI4h6LRF3X+gDtOPA/5VvuV/U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iL9QB/smYYV6fhCm+I84mqen5WFjrj2NwY8JPl0HWzIyWMpJ0gVZCMgaIFCIFYZNy
-         zRad8SJ7ZqAHe0TC3gWsaFOfhd5FH9/Z3Gw6/1LlXIBdGZNw5+DFMPiAkTeZ4+wMPb
-         uUXwSLX5D6dNpnWbxh+yyl2uYcRxpbwkZAfArF8c=
-Received: by pali.im (Postfix)
-        id 57FE2FB2; Sat, 26 Sep 2020 10:23:24 +0200 (CEST)
-Date:   Sat, 26 Sep 2020 10:23:24 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>,
-        "aaptel@suse.com" <aaptel@suse.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "joe@perches.com" <joe@perches.com>,
-        "mark@harmstone.com" <mark@harmstone.com>,
-        "nborisov@suse.com" <nborisov@suse.com>
-Subject: Re: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-Message-ID: <20200926082324.npbljzb3ydkfbswy@pali>
-References: <20200911141018.2457639-1-almaz.alexandrovich@paragon-software.com>
- <20200911141018.2457639-9-almaz.alexandrovich@paragon-software.com>
- <20200921132631.q6jfmbhqf6j6ay5t@pali>
- <7facb550be6449c2b35f467ab1716224@paragon-software.com>
+        id S1729086AbgIZIYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 04:24:21 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:59014 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726037AbgIZIYV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 04:24:21 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08Q8I4pY161946;
+        Sat, 26 Sep 2020 04:24:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=G+Gbr71OC+7ot3fzNU1lSATWaR52HohgPx4lAsH9S6w=;
+ b=GklKrl5o0JbFWuPaJWQ3PToqaZA6faMYbKP4wi/jv+QcjvPSVEHds4LplgoUiymF736X
+ RPUU21engH09b1/Ul+MEhKIanN+g6z9zMznJhhI6fSkG+ipp5fDKeLbeuHdNQYeS7gwC
+ jUs92j6Ds/rsK0PGZycg36UPdX16Arg9Mi3dsg+AEv1h3FKLNT7YHp6I8FqrLelYbs7K
+ xVJS5wXTphV2dUDX5O4I6c68XCXgSXqR2z+hxR9bV/SUO1jPeo4WMa7XugHp5YqDpf7y
+ HaG/ZlStlMRgfyCLfYvjC+7nTjCqrpBjTYlj3CzvCX7a+ywFuEKV5tUIXN/ugh9M8eRb GA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33t20x82wk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 04:24:17 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08Q8KC1T166802;
+        Sat, 26 Sep 2020 04:24:17 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 33t20x82wa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 04:24:17 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08Q8GZ02027857;
+        Sat, 26 Sep 2020 08:24:15 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 33svwgr77x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 08:24:15 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08Q8OCk320578812
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Sep 2020 08:24:12 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA1CEA4051;
+        Sat, 26 Sep 2020 08:24:12 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DF6C9A404D;
+        Sat, 26 Sep 2020 08:24:11 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.162.14])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sat, 26 Sep 2020 08:24:11 +0000 (GMT)
+Date:   Sat, 26 Sep 2020 10:24:09 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v10 08/16] s390/vfio-ap: filter matrix for unavailable
+ queue devices
+Message-ID: <20200926102409.7884bdd1.pasic@linux.ibm.com>
+In-Reply-To: <20200821195616.13554-9-akrowiak@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-9-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <7facb550be6449c2b35f467ab1716224@paragon-software.com>
-User-Agent: NeoMutt/20180716
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-26_06:2020-09-24,2020-09-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ priorityscore=1501 clxscore=1015 spamscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 malwarescore=0 impostorscore=0 bulkscore=0
+ suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009260069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 25 September 2020 16:30:19 Konstantin Komarov wrote:
-> From: Pali Rohár <pali@kernel.org>
-> Sent: Monday, September 21, 2020 4:27 PM
-> > To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-> > Cc: linux-fsdevel@vger.kernel.org; viro@zeniv.linux.org.uk; linux-kernel@vger.kernel.org; dsterba@suse.cz; aaptel@suse.com;
-> > willy@infradead.org; rdunlap@infradead.org; joe@perches.com; mark@harmstone.com; nborisov@suse.com
-> > Subject: Re: [PATCH v5 08/10] fs/ntfs3: Add Kconfig, Makefile and doc
-> > 
-> > On Friday 11 September 2020 17:10:16 Konstantin Komarov wrote:
-> > > +Mount Options
-> > > +=============
-> > > +
-> > > +The list below describes mount options supported by NTFS3 driver in addition to
-> > > +generic ones.
-> > > +
-> > > +===============================================================================
-> > > +
-> > > +nls=name		This option informs the driver how to interpret path
-> > > +			strings and translate them to Unicode and back. If
-> > > +			this option is not set, the default codepage will be
-> > > +			used (CONFIG_NLS_DEFAULT).
-> > > +			Examples:
-> > > +				'nls=utf8'
-> > > +
-> > > +nls_alt=name		This option extends "nls". It will be used to translate
-> > > +			path string to Unicode if primary nls failed.
-> > > +			Examples:
-> > > +				'nls_alt=cp1251'
-> > 
-> > Hello! I'm looking at other filesystem drivers and no other with UNICODE
-> > semantic (vfat, udf, isofs) has something like nls_alt option.
-> > 
-> > So do we really need it? And if yes, it should be added to all other
-> > UNICODE filesystem drivers for consistency.
-> > 
-> > But I'm very sceptical if such thing is really needed. nls= option just
-> > said how to convert UNICODE code points for userpace. This option is
-> > passed by userspace (when mounting disk), so userspace already know what
-> > it wanted. And it should really use this encoding for filenames (e.g.
-> > utf8 or cp1251) which already told to kernel.
+On Fri, 21 Aug 2020 15:56:08 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> Even though APQNs for queues that are not in the host's AP configuration
+> may be assigned to a matrix mdev, we do not want to set bits in the guest's
+> APCB for APQNs that do not reference AP queue devices bound to the vfio_ap
+> device driver. Ideally, it would be great if such APQNs could be filtered
+> out before setting the bits in the guest's APCB; however, the architecture
+> precludes filtering individual APQNs. Consequently, either the APID or APQI
+> must be filtered.
 > 
-> Hi Pali! Thanks for the feedback. We do not consider the nls_alt option as the must have
-> one. But it is very nice "QOL-type" mount option, which may help some amount of
-> dual-booters/Windows users to avoid tricky fails with files originated on non-English
-> Windows systems. One of the cases where this one may be useful is the case of zipping
-> files with non-English names (e.g. Polish etc) under Windows and then unzipping the archive
-> under Linux. In this case unzip will likely to fail on those files, as archive stores filenames not
-> in utf.
+> This patch introduces code to filter the APIDs or APQIs assigned to the
+> matrix mdev's AP configuration before assigning them to the guest's AP
+> configuration (i.e., APCB). We'll start by filtering the APIDs:
+> 
+>    If an APQN assigned to the matrix mdev's AP configuration does not
+>    reference a queue device bound to the vfio_ap device driver, the APID
+>    will be filtered out (i.e., not assigned to the guest's APCB).
+> 
+> If every APID assigned to the matrix mdev is filtered out, then we'll try
+> filtering the APQI's:
+> 
+>    If an APQN assigned to the matrix mdev's AP configuration does not
+>    reference a queue device bound to the vfio_ap device driver, the APQI
+>    will be filtered out (i.e., not assigned to the guest's APCB).
+> 
+> In any case, if after filtering either the APIDs or APQIs there are any
+> APQNs that can be assigned to the guest's APCB, they will be assigned and
+> the CRYCB will be hot plugged into the guest.
+> 
+> Example
+> =======
+> 
+> APQNs bound to vfio_ap device driver:
+>    04.0004
+>    04.0047
+>    04.0054
+> 
+>    05.0005
+>    05.0047
+>    05.0054
+> 
+> Assignments to matrix mdev:
+>    APIDs  APQIs  -> APQNs
+>    04     0004      04.0004
+>    05     0005      04.0005
+>           0047      04.0047
+>           0054      04.0054
+>                     05.0004
+>                     05.0005
+>                     05.0047
+>                     04.0054
+> 
+> Filter APIDs:
+>    APID 04 will be filtered because APQN 04.0005 is not bound.
+>    APID 05 will be filtered because APQN 05.0004 is not bound.
+>    APQNs remaining: None
+> 
+> Filter APQIs:
+>    APQI 04 will be filtered because APQN 05.0004 is not bound.
+>    APQI 05 will be filtered because APQN 04.0005 is not bound.
+>    APQNs remaining: 04.0047, 04.0054, 05.0047, 05.0054
+> 
+> APQNs 04.0047, 04.0054, 05.0047, 05.0054 will be assigned to the CRYCB and
+> hot plugged into the KVM guest.
+> 
 
-Hello!
+I find this logic where we first do one strategy, and if nothing remains
+do the other strategy a little confusing. I will ramble on about it some
+more in the code.
 
-Thank you for providing example. Now I can imagine the problem which
-this option is trying to "workaround".
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>  drivers/s390/crypto/vfio_ap_ops.c | 159 +++++++++++++++++++++++++++++-
+>  1 file changed, 155 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index 30bf23734af6..eaf4e9eab6cb 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -326,7 +326,7 @@ static bool vfio_ap_mdev_has_crycb(struct ap_matrix_mdev *matrix_mdev)
+>  	return (matrix_mdev->kvm && matrix_mdev->kvm->arch.crypto.crycbd);
+>  }
+>  
+> -static void vfio_ap_mdev_commit_crycb(struct ap_matrix_mdev *matrix_mdev)
+> +static void vfio_ap_mdev_commit_shadow_apcb(struct ap_matrix_mdev *matrix_mdev)
+>  {
+>  	kvm_arch_crypto_set_masks(matrix_mdev->kvm,
+>  				  matrix_mdev->shadow_apcb.apm,
+> @@ -597,6 +597,157 @@ static int vfio_ap_mdev_verify_no_sharing(struct ap_matrix_mdev *matrix_mdev,
+>  	return 0;
+>  }
+>  
+> +/**
+> + * vfio_ap_mdev_filter_matrix
+> + *
+> + * Filter APQNs assigned to the matrix mdev that do not reference an AP queue
+> + * device bound to the vfio_ap device driver.
+> + *
+> + * @matrix_mdev:  the matrix mdev whose AP configuration is to be filtered
+> + * @shadow_apcb:  the shadow of the KVM guest's APCB (contains AP configuration
+> + *		  for guest)
+> + * @filter_apids: boolean value indicating whether the APQNs shall be filtered
+> + *		  by APID (true) or by APQI (false).
+> + *
+> + * Returns the number of APQNs remaining after filtering is complete.
+> + */
+> +static int vfio_ap_mdev_filter_matrix(struct ap_matrix_mdev *matrix_mdev,
+> +				      struct ap_matrix *shadow_apcb,
+> +				      bool filter_apids)
+> +{
+> +	unsigned long apid, apqi, apqn;
+> +
+> +	memcpy(shadow_apcb, &matrix_mdev->matrix, sizeof(*shadow_apcb));
+> +
+> +	for_each_set_bit_inv(apid, matrix_mdev->matrix.apm, AP_DEVICES) {
+> +		/*
+> +		 * If the APID is not assigned to the host AP configuration,
+> +		 * we can not assign it to the guest's AP configuration
+> +		 */
+> +		if (!test_bit_inv(apid,
+> +				  (unsigned long *)matrix_dev->info.apm)) {
 
-Personally, I think that this is the issue of the program which is
-unzipping content of the archive. If files are in archive are stored in
-different encoding, then user needs to provide information in which it
-is stored. Otherwise it would be broken.
+The patch description and the code seem to be out of sync. Here you do
+some filtering based on the host's  AP config info read at module read at
+module initialization time.
 
-Also this your approach with nls=utf-8 and nls_alt=cp1251 is broken. I
-can provide you string encoded in cp1251 which is also valid UTF-8
-sequence.
+> +			clear_bit_inv(apid, shadow_apcb->apm);
+> +			continue;
+> +		}
+> +
+> +		for_each_set_bit_inv(apqi, matrix_mdev->matrix.aqm,
+> +				     AP_DOMAINS) {
+> +			/*
+> +			 * If the APQI is not assigned to the host AP
+> +			 * configuration, then it can not be assigned to the
+> +			 * guest's AP configuration
+> +			 */
+> +			if (!test_bit_inv(apqi, (unsigned long *)
+> +					  matrix_dev->info.aqm)) {
+> +				clear_bit_inv(apqi, shadow_apcb->aqm);
+> +				continue;
+> +			}
+> +
+> +			/*
+> +			 * If the APQN is not bound to the vfio_ap device
+> +			 * driver, then we can't assign it to the guest's
+> +			 * AP configuration. The AP architecture won't
+> +			 * allow filtering of a single APQN, so if we're
+> +			 * filtering APIDs, then filter the APID; otherwise,
+> +			 * filter the APQI.
+> +			 */
+> +			apqn = AP_MKQID(apid, apqi);
+> +			if (!vfio_ap_get_queue(apqn)) {
 
-For example: sequence of bytes "d0 93".
+Is this really gonna give NULL if the queue is not bound to vfio-ap? I
+don't think so. This will get NULL if the queue is not known to the AP
+bus, or has no driver-data assigned. In the current state it should give
+you non-NULL if another driver has the queue, and maintains it's own
+driver specific data in drvdata.
 
-In cp1251 it is Р“, but also it is valid UTF-8 sequence for Г (CYRILLIC
-CAPITAL LETTER GHE).
+> +				if (filter_apids)
+> +					clear_bit_inv(apid, shadow_apcb->apm);
+> +				else
+> +					clear_bit_inv(apqi, shadow_apcb->aqm);
+> +				break;
+> +			}
+> +		}
+> +
+> +		/*
+> +		 * If we're filtering APQIs and all of them have been filtered,
+> +		 * there's no need to continue filtering.
+> +		 */
+> +		if (!filter_apids)
+> +			if (bitmap_empty(shadow_apcb->aqm, AP_DOMAINS))
+> +				break;
+> +	}
+> +
+> +	return bitmap_weight(shadow_apcb->apm, AP_DEVICES) *
+> +	       bitmap_weight(shadow_apcb->aqm, AP_DOMAINS);
+> +}
+> +
+> +/**
+> + * vfio_ap_mdev_config_shadow_apcb
+> + *
+> + * Configure the shadow of a KVM guest's APCB specifying the adapters, domains
+> + * and control domains to be assigned to the guest. The shadow APCB will be
+> + * configured after filtering the APQNs assigned to the matrix mdev that do not
+> + * reference a queue device bound to the vfio_ap device driver.
+> + *
+> + * @matrix_mdev: the matrix mdev whose shadow APCB is to be configured.
+> + *
+> + * Returns true if the shadow APCB contents have been changed; otherwise,
+> + * returns false.
+> + */
+> +static bool vfio_ap_mdev_config_shadow_apcb(struct ap_matrix_mdev *matrix_mdev)
+> +{
+> +	int napm, naqm;
+> +	struct ap_matrix shadow_apcb;
+> +
+> +	vfio_ap_matrix_init(&matrix_dev->info, &shadow_apcb);
+> +	napm = bitmap_weight(matrix_mdev->matrix.apm, AP_DEVICES);
+> +	naqm = bitmap_weight(matrix_mdev->matrix.aqm, AP_DOMAINS);
+> +
+> +	/*
+> +	 * If there are no APIDs or no APQIs assigned to the matrix mdev,
+> +	 * then no APQNs shall be assigned to the guest CRYCB.
+> +	 */
+> +	if ((napm != 0) || (naqm != 0)) {
+> +		/*
+> +		 * Filter the APIDs assigned to the matrix mdev for APQNs that
+> +		 * do not reference an AP queue device bound to the driver.
+> +		 */
+> +		napm = vfio_ap_mdev_filter_matrix(matrix_mdev, &shadow_apcb,
+> +						  true);
+> +		/*
+> +		 * If there are no APQNs that can be assigned to the guest's
+> +		 * CRYCB after filtering, then try filtering the APQIs.
+> +		 */
+> +		if (napm == 0) {
 
-Because cp1251 is set as nls_alt, you would get UTF-8 interpretation.
-And for all other invalid UTF-8 sequences you would get cp1251.
+When do we expect this to happen? Currently we don't assign queues that
+are not bound to us, and we have ->in_use() that inhibits disappearance
+of queues due to re-partitioning.
 
-For me it looks like you are trying to implement workaround based on
-some heuristic in kernel for userspace application which handles
-encoding incorrectly. And because all CP???? encodings are defined at
-full 8bit space and UTF-8 is subset of 8bit space, it would never work
-correctly.
+So what we are left with is queue becomes unavailable to the host
+because of a config change, and maybe manual unbind -- not sure about
+that.
 
-Also I do not think that kernel is correct place for workarounding
-userspace applications which handles encoding incorrectly.
+Now if matrix_dev->info was to reflect the config the bus acts by, which
+seems to the idea behind patch 12 we could react accordingly (if the
+domain is gone filter aqm).
 
-> Windows have that "Language for non-Unicode programs" setting, which controls the
-> encoding used for the described (and similar) cases.
+I mean, the purpose of this callback seems to be getting us out of
+trouble when domains are missing across all cards (i.e. some domains
+were assigned away from us on the lower level).
 
-This windows setting is something different. It is system wide option
-which affects -A WINAPI functions and defines one fixed 8bit encoding
-(ACP) which should be used for converting UTF-16 strings (wchar_t*) into
-8bit (char*) ACP encoding.
+Or am I missing something?
 
-It is something similar to Unix CODESET set in LC_CTYPE from locale. But
-not the same.
+> +			naqm = vfio_ap_mdev_filter_matrix(matrix_mdev,
+> +							  &shadow_apcb, false);
+> +
+> +			/*
+> +			 * If there are no APQNs that can be assigned to the
+> +			 * matrix mdev after filtering the APQIs, then no APQNs
+> +			 * shall be assigned to the guest's CRYCB.
+> +			 */
+> +			if (naqm == 0) {
+> +				bitmap_clear(shadow_apcb.apm, 0, AP_DEVICES);
+> +				bitmap_clear(shadow_apcb.aqm, 0, AP_DOMAINS);
+> +			}
+> +		}
+> +	}
+> +
+> +	/*
+> +	 * If the guest's AP configuration has not changed, then return
+> +	 * indicating such.
+> +	 */
+> +	if (bitmap_equal(matrix_mdev->shadow_apcb.apm, shadow_apcb.apm,
+> +			 AP_DEVICES) &&
+> +	    bitmap_equal(matrix_mdev->shadow_apcb.aqm, shadow_apcb.aqm,
+> +			 AP_DOMAINS) &&
+> +	    bitmap_equal(matrix_mdev->shadow_apcb.adm, shadow_apcb.adm,
+> +			 AP_DOMAINS))
+> +		return false;
+> +
+> +	/*
+> +	 * Copy the changes to the guest's CRYCB, then return indicating that
+> +	 * the guest's AP configuration has changed.
+> +	 */
+> +	memcpy(&matrix_mdev->shadow_apcb, &shadow_apcb, sizeof(shadow_apcb));
+> +
+> +	return true;
+> +}
+> +
+>  enum qlink_type {
+>  	LINK_APID,
+>  	LINK_APQI,
+> @@ -1284,9 +1435,8 @@ static int vfio_ap_mdev_group_notifier(struct notifier_block *nb,
+>  	if (!vfio_ap_mdev_has_crycb(matrix_mdev))
+>  		return NOTIFY_DONE;
+>  
+> -	memcpy(&matrix_mdev->shadow_apcb, &matrix_mdev->matrix,
+> -	       sizeof(matrix_mdev->shadow_apcb));
+> -	vfio_ap_mdev_commit_crycb(matrix_mdev);
+> +	if (vfio_ap_mdev_config_shadow_apcb(matrix_mdev))
+> +		vfio_ap_mdev_commit_shadow_apcb(matrix_mdev);
+>  
+>  	return NOTIFY_OK;
+>  }
+> @@ -1396,6 +1546,7 @@ static void vfio_ap_mdev_release(struct mdev_device *mdev)
+>  	mutex_lock(&matrix_dev->lock);
+>  	if (matrix_mdev->kvm) {
+>  		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> +		vfio_ap_matrix_clear_masks(&matrix_mdev->shadow_apcb);
+>  		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
+>  		vfio_ap_mdev_reset_queues(mdev);
+>  		kvm_put_kvm(matrix_mdev->kvm);
 
-> Overall, it's kinda niche mount option, but we suppose it's legit for Windows-originated filesystems.
-> What do you think on this, Pali?
-
-I think this is not only for Windows-orientated FS, but rather for all
-filesystems which store filenames in UNICODE (as opposite of sequence of
-bytes).
-
-E.g. ext4 now has extension for storing (and validating) that filenames
-are also in UNICODE (on disk it is in UTF-8).
-
-Same for Beos FS or UDF fs (on DVD/BD-R). In most cases these fs are
-mounted with nls=utf-8 to interpret UNICODE as utf-8.
-
-And none of these fs have such nls_alt option as I show above, it cannot
-work reliable.
