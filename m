@@ -2,69 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBCC27989B
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 12:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF5E2798A2
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 12:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726668AbgIZKwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 06:52:41 -0400
-Received: from [78.8.192.131] ([78.8.192.131]:22195 "EHLO orcam.me.uk"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725208AbgIZKwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 06:52:38 -0400
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
-        by orcam.me.uk (Postfix) with ESMTPS id BF1E92BE086;
-        Sat, 26 Sep 2020 11:52:31 +0100 (BST)
-Date:   Sat, 26 Sep 2020 11:52:25 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@linux-mips.org>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-cc:     "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        "palmerdabbelt@google.com" <palmerdabbelt@google.com>,
-        Anup Patel <Anup.Patel@wdc.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RISC-V: Check clint_time_val before use
-In-Reply-To: <8a99b16ae3037487b762fb1bbcd81b576d9e11ab.camel@wdc.com>
-Message-ID: <alpine.LFD.2.21.2009261141060.3561363@eddie.linux-mips.org>
-References: <20200926072750.807764-1-anup.patel@wdc.com>         <1ee25b9bca3956d15a4a0dbf83f43d1ead454220.camel@wdc.com>         <DM6PR04MB62017875C739101DF83280ED8D370@DM6PR04MB6201.namprd04.prod.outlook.com>         <0e1990c99bf2a342cd2e78ec7ecfc2fdecaf67fb.camel@wdc.com>
-         <alpine.LFD.2.21.2009261054270.3561363@eddie.linux-mips.org> <8a99b16ae3037487b762fb1bbcd81b576d9e11ab.camel@wdc.com>
+        id S1726935AbgIZK6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 06:58:24 -0400
+Received: from mail-il1-f207.google.com ([209.85.166.207]:54016 "EHLO
+        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZK6S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 06:58:18 -0400
+Received: by mail-il1-f207.google.com with SMTP id v5so4456904ilj.20
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 03:58:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=TtTv3mjkQp5CKRWiMYylgUft3vHyjPQyIuTYGFhYbxk=;
+        b=JLaLmcNZfxsEPraWMe3izeev2N1uZHnoKy0TUxEN3bxjJLf2mBw4Nz0i2n4+n7hVb3
+         9tXy/4lJ6YBsiQu8OFnAlhqnHLfipZYsEqcdu2u7Wa1O2ZR7eVvd/SM8pkgC3BHslI6N
+         qKoYG2DFa7c27KrFSAaD7NeYvE+OsciH+JzIrdytoHbuQTR4VNLEW+oNIzJ3WQiMZzGS
+         RK1shK359rTjd3nagsiDHXDO7wYjk61k+qMFYaA2Ks4eaJiL1OOvwlteR2/trwNcPspY
+         4JSxobg5urdYlQxo1CLnowLDzZFYIAK90FjAe1WD+MlpqoC29wk9t+lHqehF19l46mcy
+         G0jw==
+X-Gm-Message-State: AOAM5307g6crM/mB3RFhFyy/V1xB3y4ZlwtK36Au/bCX1owojZ7IuW4x
+        orSbD2q5eJseMFS7qz2xKwRss037XP7FbSfRqkDRy4kWML6w
+X-Google-Smtp-Source: ABdhPJyaDtGw4JMShzXBdwFY588MGEE6JZE1cHLw1152lrqsPXUYZA1du2CBVfmk5FS80UL/1ryGJ8J0gVzKTrkBU3kljUDSk84+
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Received: by 2002:a05:6638:144f:: with SMTP id l15mr2546075jad.5.1601117896999;
+ Sat, 26 Sep 2020 03:58:16 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 03:58:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007e88ec05b0354fdd@google.com>
+Subject: KASAN: use-after-free Read in io_wqe_worker
+From:   syzbot <syzbot+9af99580130003da82b1@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Sep 2020, Damien Le Moal wrote:
+Hello,
 
-> > > With this applied in addition to your patch, it works.
-> > > 
-> > > diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-
-> > > clint.c
-> > > index d17367dee02c..8dbec85979fd 100644
-> > > --- a/drivers/clocksource/timer-clint.c
-> > > +++ b/drivers/clocksource/timer-clint.c
-> > > @@ -37,7 +37,7 @@ static unsigned long clint_timer_freq;
-> > >  static unsigned int clint_timer_irq;
-> > >  
-> > >  #ifdef CONFIG_RISCV_M_MODE
-> > > -u64 __iomem *clint_time_val;
-> > > +u64 __iomem *clint_time_val = NULL;
-> > >  #endif
-> > 
-> >  Hmm, BSS initialisation issue?
-> 
-> Not a static variable, so it is not in BSS, no ?
+syzbot found the following issue on:
 
- Maybe it has a weird declaration elsewhere which messes up things (I 
-haven't checked), but it looks to me like it does have static storage 
-(rather than automatic or thread one), so if uninitialised it goes to BSS, 
-and it is supposed to be all-zeros whether explicitly assigned a NULL 
-value or not.  It does have external rather than internal linkage (as it 
-would if it had the `static' keyword), but it does not matter.  Best check 
-with `objdump'/`readelf'.
+HEAD commit:    98477740 Merge branch 'rcu/urgent' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=153e929b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=9af99580130003da82b1
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14138009900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d0f809900000
 
-  Maciej
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9af99580130003da82b1@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in __lock_acquire+0x92/0x2ae0 kernel/locking/lockdep.c:4311
+Read of size 8 at addr ffff88821ae5f818 by task io_wqe_worker-0/11054
+
+CPU: 1 PID: 11054 Comm: io_wqe_worker-0 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ print_address_description+0x66/0x620 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ __lock_acquire+0x92/0x2ae0 kernel/locking/lockdep.c:4311
+ lock_acquire+0x148/0x720 kernel/locking/lockdep.c:5029
+ __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
+ _raw_spin_lock_irq+0xa6/0xc0 kernel/locking/spinlock.c:167
+ spin_lock_irq include/linux/spinlock.h:379 [inline]
+ io_wqe_worker+0x756/0x810 fs/io-wq.c:589
+ kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Allocated by task 11048:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
+ kmem_cache_alloc_node_trace+0x1f7/0x2a0 mm/slab.c:3594
+ kmalloc_node include/linux/slab.h:572 [inline]
+ kzalloc_node include/linux/slab.h:677 [inline]
+ io_wq_create+0x295/0x880 fs/io-wq.c:1064
+ io_init_wq_offload fs/io_uring.c:7432 [inline]
+ io_sq_offload_start fs/io_uring.c:7504 [inline]
+ io_uring_create fs/io_uring.c:8625 [inline]
+ io_uring_setup fs/io_uring.c:8694 [inline]
+ __do_sys_io_uring_setup fs/io_uring.c:8700 [inline]
+ __se_sys_io_uring_setup+0x18ed/0x2a00 fs/io_uring.c:8697
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 128:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
+ kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xdd/0x110 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x113/0x200 mm/slab.c:3756
+ __io_wq_destroy fs/io-wq.c:1138 [inline]
+ io_wq_destroy+0x470/0x510 fs/io-wq.c:1146
+ io_finish_async fs/io_uring.c:6836 [inline]
+ io_ring_ctx_free fs/io_uring.c:7870 [inline]
+ io_ring_exit_work+0x195/0x520 fs/io_uring.c:7954
+ process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
+ worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
+ kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+The buggy address belongs to the object at ffff88821ae5f800
+ which belongs to the cache kmalloc-1k of size 1024
+The buggy address is located 24 bytes inside of
+ 1024-byte region [ffff88821ae5f800, ffff88821ae5fc00)
+The buggy address belongs to the page:
+page:000000008e41b1c2 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x21ae5f
+flags: 0x57ffe0000000200(slab)
+raw: 057ffe0000000200 ffffea00086a10c8 ffffea00085d1848 ffff8880aa440700
+raw: 0000000000000000 ffff88821ae5f000 0000000100000002 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88821ae5f700: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff88821ae5f780: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff88821ae5f800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff88821ae5f880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88821ae5f900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
