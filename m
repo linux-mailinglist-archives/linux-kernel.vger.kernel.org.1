@@ -2,81 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 173F2279C0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 21:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A59F279C17
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 21:17:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730099AbgIZTOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 15:14:01 -0400
-Received: from mout.kundenserver.de ([212.227.17.24]:38719 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726183AbgIZTOA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 15:14:00 -0400
-Received: from mail-qv1-f50.google.com ([209.85.219.50]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.145]) with ESMTPSA (Nemesis)
- id 1N1xdf-1kSYBC1Dqb-012Cya; Sat, 26 Sep 2020 21:13:59 +0200
-Received: by mail-qv1-f50.google.com with SMTP id h1so3284205qvo.9;
-        Sat, 26 Sep 2020 12:13:59 -0700 (PDT)
-X-Gm-Message-State: AOAM530X/lzfhlYVcWnmHyzRydXSdu9ITssq83uUy4GcMxz3aGPdAtSB
-        bmnp6rP5K+s/d2a5A0qP64/zL95uNlYmdPsE7YM=
-X-Google-Smtp-Source: ABdhPJw/iwukTKg1GclSKE6lTSTpb5ucr5JoCxFL+sd07zV4NOrukIDXbARQdfOrxI+K+AB97dYshpN6f6+rdDPzfHs=
-X-Received: by 2002:a05:6214:1873:: with SMTP id eh19mr4898917qvb.16.1601147638094;
- Sat, 26 Sep 2020 12:13:58 -0700 (PDT)
+        id S1730074AbgIZTRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 15:17:18 -0400
+Received: from mga01.intel.com ([192.55.52.88]:8561 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726183AbgIZTRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 15:17:17 -0400
+IronPort-SDR: fEsqAAZ8o8KYhvGNeXDfoU53sTzhn8SJL7ofJYUoCiCDnv6+LogUZyS92LYaTOXxp9HDaO34NC
+ yw0PTa3iO6nA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="179945301"
+X-IronPort-AV: E=Sophos;i="5.77,307,1596524400"; 
+   d="scan'208";a="179945301"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 12:17:17 -0700
+IronPort-SDR: HTD+MvfiSLLdySKVrqE+Vunpc6mhvWs1KOUtHm4m7rP0E6SKUaWeqV+StBi+6ZFIpQ1PE25/tX
+ /jRDHWofLzUw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,307,1596524400"; 
+   d="scan'208";a="383964675"
+Received: from lkp-server01.sh.intel.com (HELO 2dda29302fe3) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 26 Sep 2020 12:17:14 -0700
+Received: from kbuild by 2dda29302fe3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kMFh3-0000Ye-S0; Sat, 26 Sep 2020 19:17:13 +0000
+Date:   Sun, 27 Sep 2020 03:16:18 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Luka Kovacic <luka.kovacic@sartura.hr>,
+        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org
+Cc:     kbuild-all@lists.01.org, lee.jones@linaro.org, pavel@ucw.cz,
+        dmurphy@ti.com, robh+dt@kernel.org, jdelvare@suse.com,
+        linux@roeck-us.net
+Subject: [RFC PATCH] drivers: mfd: iei_wt61p803_puzzle_checksum() can be
+ static
+Message-ID: <20200926191618.GA12056@2adff5953e79>
+References: <20200926135514.26189-3-luka.kovacic@sartura.hr>
 MIME-Version: 1.0
-References: <20200922043752.GA29151@lst.de> <mhng-9b0b114e-a104-40b7-b4f5-ad64dbbbd5bd@palmerdabbelt-glaptop1>
-In-Reply-To: <mhng-9b0b114e-a104-40b7-b4f5-ad64dbbbd5bd@palmerdabbelt-glaptop1>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Sat, 26 Sep 2020 21:13:41 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3ONxXm_MWKn9BSswtLH3etVwOUh52NYoXpj032=WP0gw@mail.gmail.com>
-Message-ID: <CAK8P3a3ONxXm_MWKn9BSswtLH3etVwOUh52NYoXpj032=WP0gw@mail.gmail.com>
-Subject: Re: remove set_fs for riscv v2
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:7T/lcr5em1kZ8igH32FcKnwNwzeBB/ovgz7Ywqz/KeBUqtRMkwU
- XkQtgCAqFTwN0V7Xtta5u+YJsih8TGD9QmE0A4uzu6rxSCOv35PgT/TRp+syTLEF59lICr8
- 491wdRXvS2zcd9RhuQA58aQiGAdQs2bZwe7FpFTnQONanS8svvo/QJXIwkQuSoF58akot2E
- p2nezZXyGkQcFtZ8VGzmA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:amXl3hVfAds=:1uGQyARomwmRq5d4XA0F78
- nZSRETyJh014qZvfI+3+z0TtEtnbCUoP2ZGHSBR11k8qsBInDnDwJvSn2Ud/ZbU7H1dyzUMMb
- +ppXcFuUNuGkSc1Zf5fZ9uMNLu/ET84Fau4XZNudUvyPAAnnTjCACkTuYYP27PsCQM6vDjMZA
- 81xbcPo98G5bGx+r5i3knJxHM/6veiNuMNSM7/d+uEJVq87Lb7GGHNUdqkjya52cHOqhSFsuQ
- lv92kVsqdt4KG463XaCXWRI+3HJiHC0MtxFzcDeTXIGs1nLPRIfoWPZvLEKCQMJtauMM73hBM
- p1TYNwfOc/osLlPCCWLo5ouoVoKhZH5J9lbU+KtM4w8i5SAmIKDWWvvjL5OzWndX5+0LxRRMT
- IENo0WnvJGZvir2BTGPVqnshiSLyF3k/0IUBBlQvBEoKQ1sa07Zr33V6mB+3d9K+KDqVDbkSS
- CVoEMdmChSpfmEV9CEjxW2RafG2vcc8+Jhm8q3HtwxzKxlFsUwwahaXwlv2IvQJUQIq/HpJ94
- FmcO5I9sfoIg97Eof4x6iXncS1Lrnj9s2ux9y92V6E1zeaKwkIft/d46c3HfIlqME1Kp4cETf
- 2b2vuyY33ZeZQcbD+edjwk2gKOD+QnOmkxstp7O9Rtr+XRArFtjhMB6AUvVhlGD4ktZ6i+f1m
- UUwdLtMzJql7N4kHEaB3tUcb09ulmYObou9LN69ZTPxbTVunzMy4wVjHfqtuJ8nFhaizQ2wuf
- 5Xh+QMNBjZLIav55vd0PWwZTzUh41Po9zWcNXospLW9+qaEmnEB3A8zlJanIBxJleZHnQpZ/i
- 241Qg+z8nsjVb6DZJxC4GZxCh55cvAAjsZSq6dAWi4d3AkoHtQJloCWa+X/xu1PxUy+PdOhpF
- Ot3oPlIeDNezNxi8UGT0FURqUt9G8TqIqvYDhGjItw2yLZsBz6NH7hiyxo3GSY1WBTOZ+fHDB
- UUiXCicpo11GxYoWLNw/qelJ0QiZxkSKke7HXpCF/vNFutR4cW36c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926135514.26189-3-luka.kovacic@sartura.hr>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 7:50 PM Palmer Dabbelt <palmer@dabbelt.com> wrote:
-> I'm OK taking it, but there's a few things I'd like to sort out.  IIRC I put it
-> on a temporary branch over here
->
->     https://git.kernel.org/pub/scm/linux/kernel/git/palmer/linux.git/log/?h=riscv-remove_set_fs
->
-> under the assumption it might get lost otherwise, but let me know if that's not
-> what you were looking for.
->
-> Arnd: Are you OK with the asm-generic stuff?  I couldn't find anything in my
-> mail history, so sorry if I just missed it.
 
-For some reason I had missed that __copy_from_user() change earlier,
-but I had a closer look now and this is all very good, feel free to
-add an
+Signed-off-by: kernel test robot <lkp@intel.com>
+---
+ iei-wt61p803-puzzle.c |   18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-
-       Arnd
+diff --git a/drivers/mfd/iei-wt61p803-puzzle.c b/drivers/mfd/iei-wt61p803-puzzle.c
+index 5cba010ac9b963..f803222fc8e56f 100644
+--- a/drivers/mfd/iei-wt61p803-puzzle.c
++++ b/drivers/mfd/iei-wt61p803-puzzle.c
+@@ -118,7 +118,7 @@ struct iei_wt61p803_puzzle {
+ 	struct mutex lock;
+ };
+ 
+-unsigned char iei_wt61p803_puzzle_checksum(unsigned char *buf, size_t len)
++static unsigned char iei_wt61p803_puzzle_checksum(unsigned char *buf, size_t len)
+ {
+ 	unsigned char checksum = 0;
+ 	unsigned int i;
+@@ -302,7 +302,7 @@ int iei_wt61p803_puzzle_write_command(struct iei_wt61p803_puzzle *mcu,
+ }
+ EXPORT_SYMBOL_GPL(iei_wt61p803_puzzle_write_command);
+ 
+-int iei_wt61p803_puzzle_buzzer(struct iei_wt61p803_puzzle *mcu, bool long_beep)
++static int iei_wt61p803_puzzle_buzzer(struct iei_wt61p803_puzzle *mcu, bool long_beep)
+ {
+ 	unsigned char buzzer_short_cmd[4] = {
+ 		IEI_WT61P803_PUZZLE_CMD_HEADER_START,
+@@ -341,7 +341,7 @@ int iei_wt61p803_puzzle_buzzer(struct iei_wt61p803_puzzle *mcu, bool long_beep)
+ 	return ret;
+ }
+ 
+-int iei_wt61p803_puzzle_get_version(struct iei_wt61p803_puzzle *mcu)
++static int iei_wt61p803_puzzle_get_version(struct iei_wt61p803_puzzle *mcu)
+ {
+ 	struct device *dev = &mcu->serdev->dev;
+ 	unsigned char version_cmd[3] = {
+@@ -420,7 +420,7 @@ int iei_wt61p803_puzzle_get_version(struct iei_wt61p803_puzzle *mcu)
+ 	return ret;
+ }
+ 
+-int iei_wt61p803_puzzle_get_mcu_status(struct iei_wt61p803_puzzle *mcu)
++static int iei_wt61p803_puzzle_get_mcu_status(struct iei_wt61p803_puzzle *mcu)
+ {
+ 	unsigned char mcu_status_cmd[5] = {
+ 		IEI_WT61P803_PUZZLE_CMD_HEADER_START,
+@@ -469,7 +469,7 @@ int iei_wt61p803_puzzle_get_mcu_status(struct iei_wt61p803_puzzle *mcu)
+ 	return ret;
+ }
+ 
+-int iei_wt61p803_puzzle_get_serial_number(struct iei_wt61p803_puzzle *mcu)
++static int iei_wt61p803_puzzle_get_serial_number(struct iei_wt61p803_puzzle *mcu)
+ {
+ 	struct device *dev = &mcu->serdev->dev;
+ 	unsigned char serial_number_cmd[5] = {
+@@ -496,7 +496,7 @@ int iei_wt61p803_puzzle_get_serial_number(struct iei_wt61p803_puzzle *mcu)
+ 
+ }
+ 
+-int iei_wt61p803_puzzle_write_serial_number(struct iei_wt61p803_puzzle *mcu,
++static int iei_wt61p803_puzzle_write_serial_number(struct iei_wt61p803_puzzle *mcu,
+ 		unsigned char serial_number[36])
+ {
+ 	struct device *dev = &mcu->serdev->dev;
+@@ -544,7 +544,7 @@ int iei_wt61p803_puzzle_write_serial_number(struct iei_wt61p803_puzzle *mcu,
+ 	return ret;
+ }
+ 
+-int iei_wt61p803_puzzle_get_mac_addresses(struct iei_wt61p803_puzzle *mcu)
++static int iei_wt61p803_puzzle_get_mac_addresses(struct iei_wt61p803_puzzle *mcu)
+ {
+ 	struct device *dev = &mcu->serdev->dev;
+ 	unsigned char mac_address_cmd[5] = {
+@@ -581,7 +581,7 @@ int iei_wt61p803_puzzle_get_mac_addresses(struct iei_wt61p803_puzzle *mcu)
+ 	return ret;
+ }
+ 
+-int iei_wt61p803_puzzle_write_mac_address(struct iei_wt61p803_puzzle *mcu,
++static int iei_wt61p803_puzzle_write_mac_address(struct iei_wt61p803_puzzle *mcu,
+ 		unsigned char mac_address[17], int mac_address_idx)
+ {
+ 	struct device *dev = &mcu->serdev->dev;
+@@ -630,7 +630,7 @@ int iei_wt61p803_puzzle_write_mac_address(struct iei_wt61p803_puzzle *mcu,
+ 	return ret;
+ }
+ 
+-int iei_wt61p803_puzzle_write_power_loss_recovery(struct iei_wt61p803_puzzle *mcu,
++static int iei_wt61p803_puzzle_write_power_loss_recovery(struct iei_wt61p803_puzzle *mcu,
+ 		int power_loss_recovery_action)
+ {
+ 	unsigned char power_loss_recovery_cmd[5] = {
