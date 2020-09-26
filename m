@@ -2,75 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5E42798CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4DE2798D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728871AbgIZMWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58816 "EHLO
+        id S1728274AbgIZMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:36:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727499AbgIZMWo (ORCPT
+        with ESMTP id S1726183AbgIZMgE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:22:44 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ECEC0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:22:44 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 7so4614732pgm.11
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:22:44 -0700 (PDT)
+        Sat, 26 Sep 2020 08:36:04 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F30CC0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:36:04 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id e2so3025008vsr.7
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:36:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=F34DFOadLWUrYUexx9pZf+zYffic8Ay3o02O0h/KIN0=;
-        b=yWd0yq3YHHskIvoMRtbQ+LLAOZIcKE988hjYIBBtj5ujteIZQBkaNMz/0OsbdtRcmO
-         pN2KizU1b2bryab8cf67QfV69YIxkuEMPMh1TUzgn775BqS3W6LZpB1x+9CZMhjYk4W6
-         sPSAKx0/iOQ7ofh7377FEjBJL68tXAjnbiNFHE5DgoIklvA5Swpw7LkkVMhEWhM0K+bg
-         ylTt8IJ58qrBp/cC2SpkhTmQ3IGS9l1Si2eUUhIZBThh+EP2DAyRCw0p83NiPO8mwh1Q
-         zd6Xp1j7KSjHLY5hJ4OVqE02X063t0JvqAZ/GayAyMT70nvUeP3miTr/s+OUyw/sjEmR
-         AVAg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WkEYzL7+hCLzFt4K2qn8C7SP4BdY2Ftf9TiA8GXOw+s=;
+        b=R7UksnH+e2uSidseT7iHrEkPqku2vC0PdmFo/B5xcrVDGjrQkMtmwdd5xiG6S3JTw6
+         iYSG+Hp1t1LbUs2Zx551Zy8nQ1+aP7XsO0CzpFD36f/hFhFUAx88dbA2C82lsedcYX3+
+         02NSR5Ba1Cv29ZSbgnraeEa/1laYhV3v2zw5ua5dcEW2XT8GiYZUIYWEkxsUdNla6HX+
+         OQFu9lT8xKpIc8WLEiv7Y/9kZNxjEgcA1pShR8QElEyxslOo4l4ORoy3qFMmax+YiqMi
+         r9Vlo9sPqmOGe3karkeorGV5sQFQA6E5nvnfGB9wtymo9KXVzFodw+r91XnAGpwZYyHZ
+         pudA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F34DFOadLWUrYUexx9pZf+zYffic8Ay3o02O0h/KIN0=;
-        b=gbAC8+VQJyaJK5jN7Y4o/iM+i1sTlL4j+jf2QXXaYyg9OrCTBRg6F8m2sVRfBibaPj
-         MclG3AVyWjhS/kR2M2cxMBigYuwp4MVH7t++k3ZQyajGW6eXkn6xbB87B6dw8VSnFXNC
-         FBQZ88v5sGzHTZuK1YeJ9c3EXPvvIRFaMt7fwEn0uJ7fS4xxRP2k/61zLQODnGEzRVpX
-         MzArmkKzio+tL+Y2K1BYioN5wYO2X2TWUbqA+pS9sfYhuY+iX453hstY8d46ui+4xtgR
-         rPDeqM7+18WqD8oYe4xU+6+UdbEb3b+h+Qot0LZ88OrylkvDUaJ7armQFxsgYAaUmQhv
-         8llg==
-X-Gm-Message-State: AOAM531nKe6qIAXnfA5mirFgQr3hJXAT6yNZNFZxOmfWoHkFETjzrVZI
-        wDe7bUhjMKCRSSKWaZurAWSvrQ==
-X-Google-Smtp-Source: ABdhPJyqyDXGRY3HHGNq4L/5hAyvnwhoGU6nwNkDk05eIVRflSVQyikoXVsN792SpquRU5XtVXDy/w==
-X-Received: by 2002:aa7:8051:0:b029:13e:d13d:a04e with SMTP id y17-20020aa780510000b029013ed13da04emr3413139pfm.20.1601122963787;
-        Sat, 26 Sep 2020 05:22:43 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id a18sm4682471pgw.50.2020.09.26.05.22.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Sep 2020 05:22:43 -0700 (PDT)
-Subject: Re: KASAN: use-after-free Read in io_wqe_worker
-To:     syzbot <syzbot+9af99580130003da82b1@syzkaller.appspotmail.com>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-References: <0000000000007e88ec05b0354fdd@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <aa342b42-8bbc-059d-46bf-0ee694c3f67d@kernel.dk>
-Date:   Sat, 26 Sep 2020 06:22:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WkEYzL7+hCLzFt4K2qn8C7SP4BdY2Ftf9TiA8GXOw+s=;
+        b=TRzE/cmh99KDxH1pjuV3wcsCEGH5hT8iGpphhvslcezGTko4Gu52CoL86c8NRczlax
+         24jjt9aPoURPFWSzHoVhyf3p8F4g1TWmwVOhWxZn1QYFGaUWtIVOwueSpiSZCVLU36/W
+         3s+btTVMADi+RMnZ7ikGf2bJF/LMDbThh2wZOhXcpOEdDsorZnRFlzHf4fPPm+9zGGLI
+         vVtqaNBFskS2PimukDyAQSkzAL7s4/1Mnk3Q7xVXj0Vh1n13q9e89ZLK/FOWvag6TF0D
+         sGp/LgLgCS/bopxUv1Y4kVLOSW7bzgZN8S29o8EIICnQgsjvH3fhRH606TDZ8SHPT55g
+         om2Q==
+X-Gm-Message-State: AOAM532QO/ntD6+TUURikzJGD5qpGpgpl17GuvNldbeMbt38F8lRnTUV
+        VQxfpQAU3lNPjF1VUskmGvVIXXSHRk5ZU+6IXooy0A==
+X-Google-Smtp-Source: ABdhPJwnyuuggpvoB+ucHf8eDyTUp6nMBSSfzldILEUfAb3Bn6s7uRloFHQAAQFt9Tlbx43V4c47jaknAXBy9HfLP9w=
+X-Received: by 2002:a67:80d2:: with SMTP id b201mr1639866vsd.12.1601123763439;
+ Sat, 26 Sep 2020 05:36:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0000000000007e88ec05b0354fdd@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200925124720.972208530@linuxfoundation.org>
+In-Reply-To: <20200925124720.972208530@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 26 Sep 2020 18:05:52 +0530
+Message-ID: <CA+G9fYvaonkXn2reCPWDUU2qhLkFQfV4tYF0HjPdoxe6mCFcrQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/37] 4.19.148-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org, pavel@denx.de,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.dk/linux-block io_uring-5.9
+On Fri, 25 Sep 2020 at 18:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.148 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.148-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
--- 
-Jens Axboe
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.19.148-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 1e68f3302e6a25ff4310dbf4f2de747180d01146
+git describe: v4.19.147-38-g1e68f3302e6a
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y-sanity/build/v4.19.147-38-g1e68f3302e6a
+
+No regressions (compared to build v4.19.147)
+
+No fixes (compared to build v4.19.147)
+
+Ran 28038 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c
+- hi6220-hikey
+- i386
+- juno-r2
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15
+- x86
+- x86-kasan
+
+Test Suites
+-----------
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-syscalls-tests
+* libhugetlbfs
+* ltp-fs-tests
+* ltp-hugetlb-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* ltp-tracing-tests
+* v4l2-compliance
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-open-posix-tests
+* ltp-sched-tests
+* network-basic-tests
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
