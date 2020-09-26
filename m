@@ -2,75 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C3C5279996
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA3D27999E
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729142AbgIZNRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 09:17:10 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60392 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726956AbgIZNRJ (ORCPT
+        id S1726409AbgIZNWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 09:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZNWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 09:17:09 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-180-5VJINhz9NTSAtIoj2E6Mig-1; Sat, 26 Sep 2020 14:17:05 +0100
-X-MC-Unique: 5VJINhz9NTSAtIoj2E6Mig-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 26 Sep 2020 14:17:04 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 26 Sep 2020 14:17:04 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     David Laight <David.Laight@ACULAB.COM>,
-        'syzbot' <syzbot+51177e4144d764827c45@syzkaller.appspotmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>
-Subject: RE: WARNING in __kernel_read (2)
-Thread-Topic: WARNING in __kernel_read (2)
-Thread-Index: AQHWk7DmAtv55MEfq0C+fzgffzQfPql6xRLQgAAhQ/A=
-Date:   Sat, 26 Sep 2020 13:17:04 +0000
-Message-ID: <642ed0b4810d44ab97a7832ccb8b3e44@AcuMS.aculab.com>
-References: <000000000000da992305b02e9a51@google.com>
- <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com>
-In-Reply-To: <3b3de066852d4e30bd9d85bd28023100@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 26 Sep 2020 09:22:32 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0FF4C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 06:22:31 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kMA9b-00080u-MV; Sat, 26 Sep 2020 15:22:19 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kMA9a-0001Nn-5W; Sat, 26 Sep 2020 15:22:18 +0200
+Date:   Sat, 26 Sep 2020 15:22:17 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: pwm: imx: document i.MX compatibles
+Message-ID: <20200926132217.xr3rhv7o2o2yc2l7@pengutronix.de>
+References: <20200925212609.23093-1-krzk@kernel.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4a2n2kmrp36wo5e7"
+Content-Disposition: inline
+In-Reply-To: <20200925212609.23093-1-krzk@kernel.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDI2IFNlcHRlbWJlciAyMDIwIDEyOjE2DQo+IFRv
-OiAnc3l6Ym90JyA8c3l6Ym90KzUxMTc3ZTQxNDRkNzY0ODI3YzQ1QHN5emthbGxlci5hcHBzcG90
-bWFpbC5jb20+OyBsaW51eC1mc2RldmVsQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZzsgc3l6a2FsbGVyLWJ1Z3NAZ29vZ2xlZ3JvdXBzLmNvbTsgdmlyb0B6
-ZW5pdi5saW51eC5vcmcudWsNCj4gU3ViamVjdDogUkU6IFdBUk5JTkcgaW4gX19rZXJuZWxfcmVh
-ZCAoMikNCj4gDQo+ID4gRnJvbTogc3l6Ym90IDxzeXpib3QrNTExNzdlNDE0NGQ3NjQ4MjdjNDVA
-c3l6a2FsbGVyLmFwcHNwb3RtYWlsLmNvbT4NCj4gPiBTZW50OiAyNiBTZXB0ZW1iZXIgMjAyMCAw
-Mzo1OA0KPiA+IFRvOiBsaW51eC1mc2RldmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVs
-QHZnZXIua2VybmVsLm9yZzsgc3l6a2FsbGVyLWJ1Z3NAZ29vZ2xlZ3JvdXBzLmNvbTsNCj4gPiB2
-aXJvQHplbml2LmxpbnV4Lm9yZy51aw0KPiA+IFN1YmplY3Q6IFdBUk5JTkcgaW4gX19rZXJuZWxf
-cmVhZCAoMikNCj4gDQo+IEkgc3VzcGVjdCB0aGlzIGlzIGNhbGxpbmcgZmluaXRfbW9kdWxlKCkg
-b24gYW4gZmQNCj4gdGhhdCBkb2Vzbid0IGhhdmUgcmVhZCBwZXJtaXNzaW9ucy4NCg0KQ29kZSBp
-bnNwZWN0aW9uIGFsc28gc2VlbXMgdG8gaW1wbHkgdGhhdCB0aGUgY2hlY2sgbWVhbnMNCnRoZSBl
-eGVjKCkgYWxzbyByZXF1aXJlcyByZWFkIHBlcm1pc3Npb25zIG9uIHRoZSBmaWxlLg0KDQpUaGlz
-IGlzbid0IHRyYWRpdGlvbmFsbHkgdHJ1ZS4NCnN1aWQgIyEgc2NyaXB0cyBhcmUgcGFydGljdWxh
-cmx5IG9kZCB3aXRob3V0ICdvd25lciByZWFkJw0KKGV2ZXJ5b25lIGV4Y2VwdCB0aGUgb3duZXIg
-Y2FuIHJ1biB0aGVtISkuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNp
-ZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsN
-ClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
+--4a2n2kmrp36wo5e7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 25, 2020 at 11:26:09PM +0200, Krzysztof Kozlowski wrote:
+> Document all ARMv5, ARMv6 and ARMv7 i.MX compatibles to fix dtbs_check
+> warnings like:
+>=20
+>   arch/arm/boot/dts/imx6dl-colibri-eval-v3.dt.yaml: pwm@2080000: compatib=
+le:0:
+>     'fsl,imx6q-pwm' is not one of ['fsl,imx8mm-pwm', 'fsl,imx8mn-pwm', 'f=
+sl,imx8mp-pwm', 'fsl,imx8mq-pwm']
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/pwm/imx-pwm.yaml | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml b/Documen=
+tation/devicetree/bindings/pwm/imx-pwm.yaml
+> index 473863eb67e5..379d693889f6 100644
+> --- a/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+> +++ b/Documentation/devicetree/bindings/pwm/imx-pwm.yaml
+> @@ -25,6 +25,17 @@ properties:
+>            - fsl,imx27-pwm
+>        - items:
+>            - enum:
+> +              - fsl,imx25-pwm
+
+The driver actually used fsl,imx27-pwm to bind ...
+
+Also since v5.1-rc1~38^2~17 the driver is split into pwm-imx27 and
+pwm-imx1. So maybe this file should be renamed to fsl,imx27-pwm.yaml?
+(And we need a volunteer to write fsl,imx1-pwm.yaml.)
+
+> +              - fsl,imx31-pwm
+> +              - fsl,imx50-pwm
+> +              - fsl,imx51-pwm
+> +              - fsl,imx53-pwm
+> +              - fsl,imx6q-pwm
+> +              - fsl,imx6sl-pwm
+> +              - fsl,imx6sll-pwm
+> +              - fsl,imx6sx-pwm
+> +              - fsl,imx6ul-pwm
+> +              - fsl,imx7d-pwm
+>                - fsl,imx8mm-pwm
+>                - fsl,imx8mn-pwm
+>                - fsl,imx8mp-pwm
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--4a2n2kmrp36wo5e7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl9vQIcACgkQwfwUeK3K
+7AmO/wf/SwA4EMbizbFMc/g26B6oURR0BpgMwryIR4tWauBOl5S62H4L/FGubOoq
+PZgrsS1cWnl5TeOHEamu8rPq4XQ6NIsKTN731nu9LGPp5M63A8RCzxcwIjBQZYEd
+XhGss6SgAi9pOmGJWBA4aBRdNRVUlo9BzpNPAyFbQUW52IWe7pQnn5rW3BNNb0kN
+m+qszVDXiY938BLSuCXELJ7yCoKep7Pxn/OAu0lcSOp3u8Yv9WaiNWRM06pBUsFg
+dTD1gCZI6VUDw/pplf6uF4Krb0vSNc9fWgq2IxGpCTO0S0t3YpiEhWujoj7Td7JM
+miH2yzSVov7zMiJsJYaLHjGhf4qmlw==
+=hOg4
+-----END PGP SIGNATURE-----
+
+--4a2n2kmrp36wo5e7--
