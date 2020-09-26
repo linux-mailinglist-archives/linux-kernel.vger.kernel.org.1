@@ -2,102 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4252799C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE36F2799CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729172AbgIZNrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 09:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43842 "EHLO
+        id S1728179AbgIZNzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 09:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZNrv (ORCPT
+        with ESMTP id S1726183AbgIZNzh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 09:47:51 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9BDC0613CE;
-        Sat, 26 Sep 2020 06:47:51 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y2so5939260lfy.10;
-        Sat, 26 Sep 2020 06:47:51 -0700 (PDT)
+        Sat, 26 Sep 2020 09:55:37 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89570C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 06:55:37 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id l17so5358948edq.12
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 06:55:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lNbXhJArblGcxeZheeo2BpWV11J4mxo5UBEIbVkUdsg=;
-        b=oBp6M429G1+h4azfP/C5b2+24+Fz6tHTQYZXp6E9HDH6MhMFGC5F3sszOUygMDlfpY
-         o7y39C4qbqRXeRzLRI4CtYvvsqZNbu0XXOyiAcztl1jFm1Bg8vu5SqNs6FCloMAlF5qc
-         8H8rbYed437z7dNLf6t5C7RQr01TEA0Pvklx4UL2QWLMu0KKsKgL7AGQzMjplst9i/ff
-         xk1hnZJBY5Hx3UfL3BOqYkQmjSAvN/QlHagqwR1HMDxeJt5dN6hjRmVjBTznWStAAH+M
-         F3DY/QCeyFtkVVBtmndIv2Yojumr8pE8mBNZyFtG2Lt46L65OjsijM9YNrFLg3oa6yhR
-         QoRQ==
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RA7LUkzddUd10nvHC0mfviDAxL46W59IEg0s0KDNnzs=;
+        b=hTMQSlxvuCL0c49x8QB5ZMUNX37toENDh2UPYetCeFdxc/RzFEHzeKZgQRME5O6BpR
+         +uH2UlGRxOKi5JwNmMfVokQyyuYkzNk7C+qOKYysEvLNqWN/27yNGB16l+LXyVOzOkId
+         RD4hF35RI00hLNSBzeOu4cnLfsiJJm0ffkE5bH0/ykPvGvbbSCA72Eq0kV5JguHOyQTI
+         5AetR0I/1/B+NQ0Lw5qntq0C8CilpfiNNz2Pmpv1UR0ZlV7wXg2Onr3d97MxJjCjJhHk
+         6QPv6MAW1xbJ+utWtyoB1PT4yiNWlLj52ngC6mVU3SxFK/uT9PmfUhkgOO4GF7EcP+iQ
+         ntUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=lNbXhJArblGcxeZheeo2BpWV11J4mxo5UBEIbVkUdsg=;
-        b=jSerRX00QXOTcqlCmnVjragk1DTJIXrVhdtubd1adQXx8Tntnn6/UGdTqlAXe4iP+0
-         bPmEB2Y9qfA30tI8wiicHu7PlhJZRBmWFzUfSETqEva1ztW5RWYlrAG2hy/56xayU/vq
-         BI3meNueyDKwu4UMvH/IVvpADXBvQMPm6+zeVoZqZtMFl4YulWiH8DHvp1C3Gf659ndl
-         8/GcBxKbhMeTMbD7ImbOPMSL05RCc80ZuqjtihLRDPYNJg4PxPbLwtuWvD/7ahKMMpvb
-         k3Z7EhhdPJXHRmHgH+QDNPJYL2hu4R/xDxkSXO7E//yMlkdeSq9D159tnQnGpVhrkUx6
-         tfZg==
-X-Gm-Message-State: AOAM530XhP06Kr8vj+Ls4cl8NyvTYvXT77kdqyKYzQWAEsLXJQQFUQYB
-        nsoc57B5POXYMgq1qsYpZ987M7EKx6Q=
-X-Google-Smtp-Source: ABdhPJzZAAbv71OtrERAMczlk029GPxqrzyFd4H7DB09Xp64+SklRLmRTHEzBlZkOpogwqAB9GwMtg==
-X-Received: by 2002:ac2:51a8:: with SMTP id f8mr1303670lfk.472.1601128069735;
-        Sat, 26 Sep 2020 06:47:49 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-170-211.dynamic.spd-mgts.ru. [109.252.170.211])
-        by smtp.googlemail.com with ESMTPSA id v17sm1659052lfr.42.2020.09.26.06.47.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Sep 2020 06:47:48 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] ARM: tegra: Add device-tree for Ouya
-To:     Peter Geis <pgwipeout@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Stephen Warren <swarren@wwwdotorg.org>,
-        Bob Ham <rah@settrans.net>,
-        Leonardo Bras <leobras.c@gmail.com>,
-        Michael Brougham <jusplainmike@gmail.com>,
-        linux-tegra@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200923210352.1176386-1-pgwipeout@gmail.com>
- <20200923210352.1176386-2-pgwipeout@gmail.com>
- <df2d6a8d-8a6c-464b-8f35-a7994ea01534@gmail.com>
- <CAMdYzYosBUUudsRnf9RQ1HKYq8cS4uXRm-9Mg1=hZy+v_Q_X6g@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <83a5ee67-e30d-db43-a210-345304ed6edd@gmail.com>
-Date:   Sat, 26 Sep 2020 16:47:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=RA7LUkzddUd10nvHC0mfviDAxL46W59IEg0s0KDNnzs=;
+        b=rz74r+rPfyOFQzE6qDaYSuGC9rZG3ydfSHuJz5u/iSpuC2knmkVY1ooZXWObcV0Z7P
+         ifiJbQoEmArAVUpvwMIXEQuzOViR2MSJK7+FksWFoQ1DNLq3qFjFfyvN1k7T7kTccEPX
+         4s0qQMwErp29h03VtQ3XW3BGfrB6yzwHd8yFcG3p59LyVscgr3WglwPr/0WoAOL7TffQ
+         Mo6dw6iuDuH4PZmVqTBVg4n1vf7dwWgoaxMaBrqdI6YzttRFONhGETqr82t8D6tZVb7X
+         dNtSM2EPlCpU28zVs6cAotQJaOBCfMKkwvGzzOMC7/iXyhE/9OmNW/xCCoRlmBKAxtSx
+         qfGg==
+X-Gm-Message-State: AOAM531ujESZvlFaYn/FnmDG6tFiXWNQDaB2WpDYanlEsYOjjEUfGl16
+        ClHVsoZAmm1Ou+sLAOHeKeOAa1YeH8cd6uG0yWfMLToharxEJDjxHaN5NY64GQ0aDawBKNw5liT
+        37mgBb3deZMHvv+BaGnZJEzLSOaKvBHE5mKqZdGSZ6UD5xsd6TC4Nw4fiPDKlV8thuEMFPEEzlf
+        Nplt6bh9aynQ==
+X-Google-Smtp-Source: ABdhPJzKYLKSJnB3/61ROxyjU6eOetHd+J/JlS3If2tE69OqdnCx9TbEf9TRq06FrqrMo+oLxr8ivw==
+X-Received: by 2002:a05:6402:5:: with SMTP id d5mr6483588edu.376.1601128535538;
+        Sat, 26 Sep 2020 06:55:35 -0700 (PDT)
+Received: from localhost.localdomain ([2a00:ee2:4b0d:3001:fbc5:498b:ed6d:cfac])
+        by smtp.gmail.com with ESMTPSA id oq8sm4165700ejb.32.2020.09.26.06.55.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 06:55:34 -0700 (PDT)
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+To:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org
+Cc:     lee.jones@linaro.org, pavel@ucw.cz, dmurphy@ti.com,
+        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        andrew@lunn.ch, jason@lakedaemon.net, gregory.clement@bootlin.com,
+        luka.perkov@sartura.hr, robert.marko@sartura.hr,
+        Luka Kovacic <luka.kovacic@sartura.hr>
+Subject: [PATCH v2 0/7] Add support for the iEi Puzzle-M801 board
+Date:   Sat, 26 Sep 2020 15:55:07 +0200
+Message-Id: <20200926135514.26189-1-luka.kovacic@sartura.hr>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <CAMdYzYosBUUudsRnf9RQ1HKYq8cS4uXRm-9Mg1=hZy+v_Q_X6g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-26.09.2020 05:01, Peter Geis пишет:
-...
->>> +             pmic: pmic@2d {
->>> +                     compatible = "ti,tps65911";
->>> +                     reg = <0x2d>;
->>> +
->>> +                     interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
->>> +                     #interrupt-cells = <2>;
->>> +                     interrupt-controller;
->>> +
->>> +                     ti,system-power-controller;
->>
->> Are the ti,sleep-keep-ck32k and other properties not needed for Ouya
->> like they are needed for Nexus 7?
-> 
-> Ouya is wall powered, so ultra low power isn't terribly necessary.
-> Also with LP1 and LP0 not working, it doesn't make much sense to
-> implement this yet.
+This patchset adds support for the iEi Puzzle-M801 1U Rackmount Network
+Appliance and for the iEi WT61P803 PUZZLE microcontroller, which enables
+some board specific features like fan and LED control, system power
+management and temperature sensor reading.
 
-The keep-ck32 is not about power saving. If PMC is running off PMIC's
-oscillator during LP1 suspend, then this should be one of the reasons
-why LP1 doesn't work for you.
+The platform is based on the popular Marvell Armada 8040 SoC and supports
+up to 16 GB of DDR4 2400 MHz ECC RAM.
+It has a PCIe x16 slot (x2 lanes only) and an M.2 type B slot.
+
+External chassis ports:
+2x 10 GbE SFP+
+4x 1 GbE (Marvell 88E1512P)
+2x USB 3.0
+1x RJ45 serial port
+
+All notable board components are supported in this patchset.
+
+Changes for v2:
+   - Use LAAs for local-mac-address and match reg values
+   - Code styling changes
+   - Error handling moved to the end of the function
+   - Define all magic numbers in the main header file
+   - Convert the driver to make it OF independent
+   - Refactor hwmon to use devm_hwmon_device_register_with_info()
+   - Reduce the number of mutex locks
+   - Allocate memory once for the response buffer
+   - Reduce managed memory allocations
+
+Luka Kovacic (7):
+  dt-bindings: Add iEi vendor prefix and iEi WT61P803 PUZZLE driver
+    bindings
+  drivers: mfd: Add a driver for iEi WT61P803 PUZZLE MCU
+  drivers: hwmon: Add the iEi WT61P803 PUZZLE HWMON driver
+  drivers: leds: Add the iEi WT61P803 PUZZLE LED driver
+  Documentation/ABI: Add iei-wt61p803-puzzle driver sysfs interface
+    documentation
+  MAINTAINERS: Add an entry for the iEi WT61P803 PUZZLE driver
+  arm64: dts: marvell: Add a device tree for the iEi Puzzle-M801 board
+
+ .../stable/sysfs-driver-iei-wt61p803-puzzle   |   65 +
+ .../hwmon/iei,wt61p803-puzzle-hwmon.yaml      |   41 +
+ .../leds/iei,wt61p803-puzzle-leds.yaml        |   48 +
+ .../bindings/mfd/iei,wt61p803-puzzle.yaml     |   82 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |   13 +
+ arch/arm64/boot/dts/marvell/Makefile          |    1 +
+ .../dts/marvell/armada-8040-puzzle-m801.dts   |  519 ++++++++
+ drivers/hwmon/Kconfig                         |    8 +
+ drivers/hwmon/Makefile                        |    1 +
+ drivers/hwmon/iei-wt61p803-puzzle-hwmon.c     |  511 ++++++++
+ drivers/leds/Kconfig                          |    8 +
+ drivers/leds/Makefile                         |    1 +
+ drivers/leds/leds-iei-wt61p803-puzzle.c       |  174 +++
+ drivers/mfd/Kconfig                           |    8 +
+ drivers/mfd/Makefile                          |    1 +
+ drivers/mfd/iei-wt61p803-puzzle.c             | 1069 +++++++++++++++++
+ include/linux/mfd/iei-wt61p803-puzzle.h       |   69 ++
+ 18 files changed, 2621 insertions(+)
+ create mode 100644 Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
+ create mode 100644 Documentation/devicetree/bindings/hwmon/iei,wt61p803-puzzle-hwmon.yaml
+ create mode 100644 Documentation/devicetree/bindings/leds/iei,wt61p803-puzzle-leds.yaml
+ create mode 100644 Documentation/devicetree/bindings/mfd/iei,wt61p803-puzzle.yaml
+ create mode 100644 arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
+ create mode 100644 drivers/hwmon/iei-wt61p803-puzzle-hwmon.c
+ create mode 100644 drivers/leds/leds-iei-wt61p803-puzzle.c
+ create mode 100644 drivers/mfd/iei-wt61p803-puzzle.c
+ create mode 100644 include/linux/mfd/iei-wt61p803-puzzle.h
+
+-- 
+2.26.2
+
