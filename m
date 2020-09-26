@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685942798C0
+	by mail.lfdr.de (Postfix) with ESMTP id D54C72798C1
 	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbgIZMIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726210AbgIZMIk (ORCPT
+        id S1729009AbgIZMJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:09:24 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:55650 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgIZMJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:08:40 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86673C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:08:40 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id j3so2884480qvi.7
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tQkrRdJ6c6oJ77YZati+E5lioU8KClKXmW+hw7Drfk4=;
-        b=K4ESyNpOCCwXUJhYmHekDwVj8zh0O55W+lCLu2pMyXRr2VecPYniCTYPtLye2pY+Za
-         eRfi3XyXkH3N/pCAQopXir+OKOI8ysHk3awEru0e0cV+cFuKiij/C5c3Cw35UrvhTygm
-         8biB5atUVv7rPqdaf2z0QDKPP1MCBFPo5htOBgOivu9vpc9e84C89ofwffYF+Os/done
-         071cJjqYmbAwM6i9iFHmIywvWaG4bQDRx6HMtdkPT1HtLGqWt9muIL6iocpRWoqi+/kL
-         SiISRd2mZ2/J07Zpawk2nFkkLryvLmXr8uHNtWrxaMPNAGsKK8dM4by9HtDx/hT9NCot
-         AX2A==
+        Sat, 26 Sep 2020 08:09:24 -0400
+Received: by mail-io1-f72.google.com with SMTP id t187so3958924iof.22
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:09:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tQkrRdJ6c6oJ77YZati+E5lioU8KClKXmW+hw7Drfk4=;
-        b=dqvpComh8d3HXRgFmg7kl5ut0/Mg9Os8CQ/i2tazUAM6u4UzotfMuUWr8uwOj13Kkg
-         0gazA1sZl04SecBzcnft3NmVfvcSnqn7LWWRjg27S4TbKpVelJjOCl7s1RUnXYuCM2ae
-         wfQ90Jeo1oMyZFDnv7XPQuXesmJ/Qcm5yLn7nv0cb+diA3c9F5bP827sPLk4R6BYWczY
-         jC9duPsvDHR/FFcmdOx/M9zFaXNo0PibYytm39uufnNah9eUXJG1FB33Zny58jNLb2EA
-         xDvLJ1lQDkK0SCZLwErN3wmT66RHasyoqwQaFCoPXvyJsu0GLuKwKkcezpKNu09qn3Kq
-         5EGw==
-X-Gm-Message-State: AOAM531sV79C85mgpyWjmCDjCzbriZtVWpgbl+oI7Klvyidcx9OAbkAs
-        gUxk63L8bLdVq/P4fuVHy1CP9PBE9SiQGqvYctmQFA==
-X-Google-Smtp-Source: ABdhPJwDVzQJQq1brXwhLfW4NXjB74Y0KAikBD17AQ1rNIFW5GFnuzoCutYzdnotI6ndNCdn6QsBGpCI3kVlda6Kms0=
-X-Received: by 2002:a05:6214:292:: with SMTP id l18mr3314961qvv.11.1601122119258;
- Sat, 26 Sep 2020 05:08:39 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=G3CO8apcR3uPwIt5d5uUeceIwwic8mBs/bCybEWaLjQ=;
+        b=M9ejIj75KSMnR2GUKHpQ1lv564NldC7du+xNfbaPlqV5dv5EcRsIAZIVz/Nm9qus0S
+         fIATqT6PA1IoZgrURQkZVu2hyHFLeGlk8sLEoHqjzJ7vlolEMUl9X0XyYmyjVpAS+Fu/
+         pW4iUcSrKrXH691wemjedV6k/swsQIpL6uolDG7/IOSs53bFr6kXwDrmxpjZjXh+t/R2
+         2+Y+4BGv0L4A+UaAw6EkQ4FD/S3XcAp8anc5S8/ALptKDrbBA7Xb47VBcDlUS4VF6nbw
+         C/yOL8uX4CyD5TSpi9YEx0gQAW85dbV7gU0nJEMSUabrh7DYo8k7lq+e+qLBleYU0n1U
+         /U+A==
+X-Gm-Message-State: AOAM533TMkdwVizpaX57N2YVNPuiJyJ7lQ77T/54+f8E2tJqrh34ZcwQ
+        iBP6sC43SKGS8VL2wJGyeTtIz81ol5tA91vmMyrsgJ2B0TTd
+X-Google-Smtp-Source: ABdhPJyaN0zdQONqlEleLweGjbzzZCTrnYKNOLsHlWl9PmaS7iWCpDyfSApiqGSD9t1I8LMoNU1tXmAzYISojgu1u8g4NQb20RFl
 MIME-Version: 1.0
-References: <20200919110831.GD7462@zn.tnic> <CACT4Y+ZhofJhNjfav22YNVpxtH4_+3Qaut6rOiqv4MLNU5mcEg@mail.gmail.com>
- <CACT4Y+b9ZCKJkOmwbEC6sZxEQ-9g2g=-v4+X0aWv7AsrZo7utA@mail.gmail.com>
- <CAKwvOdmKcn=FNzwtBZ8z0evLz4BXgWtsoz9+QTC6GLqtNp1bXg@mail.gmail.com>
- <20200921221336.GN5901@zn.tnic> <CAKwvOd=E11KriNqeVv2-Tvq5sQy=4vyBzDEH22D5h5LgBeFsVw@mail.gmail.com>
- <20200923090336.GD28545@zn.tnic> <CACT4Y+Y4-vqdv01ebyzhUoggUCUyvbhjut7Wvj=r4dBfyxLeng@mail.gmail.com>
- <20200923103431.GF28545@zn.tnic> <CACT4Y+ayTBwBwsnV9Kp-vMQ=hgu9-r9g4qzAfd+HdQXX95PX9g@mail.gmail.com>
- <20200926112119.GA22089@zn.tnic>
-In-Reply-To: <20200926112119.GA22089@zn.tnic>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sat, 26 Sep 2020 14:08:27 +0200
-Message-ID: <CACT4Y+YbEhu2XHoPT9g7Bi7fhjqCkXMBhgjH5yqm7vHy3UEHjw@mail.gmail.com>
-Subject: Re: general protection fault in perf_misc_flags
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
+X-Received: by 2002:a05:6e02:de8:: with SMTP id m8mr3745524ilj.299.1601122163373;
+ Sat, 26 Sep 2020 05:09:23 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 05:09:23 -0700
+In-Reply-To: <00000000000088b1f405b00bcbb8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ca3fdb05b0364d1a@google.com>
+Subject: Re: WARNING in __cfg80211_ibss_joined (2)
+From:   syzbot <syzbot+7f064ba1704c2466e36d@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 1:21 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Sep 23, 2020 at 05:20:06PM +0200, Dmitry Vyukov wrote:
-> > It's a random fuzzing workload. You can get this workload by running
-> > syzkaller locally:
-> > https://github.com/google/syzkaller/blob/master/docs/linux/setup_ubuntu-host_qemu-vm_x86-64-kernel.md
->
-> Yeah, the my.cfg example suggests that the syz-manager starts the guest
-> and supplies the kernel, etc.
->
-> Is there a possibility to run the workload in an already existing guest
-> which I've booted prior?
->
-> I'm asking because I have all the infra for testing kernels in guests
-> already setup here and it would be easier for me to simply run the
-> workload directly in the guest and then poke at it.
+syzbot has found a reproducer for the following issue on:
 
-+syzkaller mailing list
+HEAD commit:    7c7ec322 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10f42f9b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6184b75aa6d48d66
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1757b773900000
 
-There is also "isolated" VM type, which allows to connect to a set of
-external machines via ssh:
-https://github.com/google/syzkaller/blob/master/vm/isolated/isolated.go#L29-L37
-However, it's better to have lots of them and with a console cables,
-and still sometimes they may brick for various reasons.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7f064ba1704c2466e36d@syzkaller.appspotmail.com
 
-There is also syz-stress utility that may run some workload directly
-on the underlying kernel:
-https://github.com/google/syzkaller/blob/master/tools/syz-stress/stress.go#L29
-However, it does not use corpus/coverage, so I don't know if it will
-be able to reproduce these crashes or not. It will also be up to you
-then to restart the VM/fuzzing every minute.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8356 at net/wireless/ibss.c:36 __cfg80211_ibss_joined+0x3fe/0x480 net/wireless/ibss.c:36
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 8356 Comm: kworker/u4:7 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: cfg80211 cfg80211_event_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ panic+0x2c0/0x800 kernel/panic.c:231
+ __warn+0x227/0x250 kernel/panic.c:600
+ report_bug+0x1b1/0x2e0 lib/bug.c:198
+ handle_bug+0x42/0x80 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x16/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:__cfg80211_ibss_joined+0x3fe/0x480 net/wireless/ibss.c:36
+Code: 00 00 48 3b 44 24 30 0f 85 8d 00 00 00 48 83 c4 38 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 bb 54 9a f9 0f 0b eb d4 e8 b2 54 9a f9 <0f> 0b eb cb e8 a9 54 9a f9 0f 0b e9 82 fd ff ff e8 9d 54 9a f9 0f
+RSP: 0018:ffffc9000a197bd8 EFLAGS: 00010293
+RAX: ffffffff87daa87e RBX: 1ffff11012e3a182 RCX: ffff8880953ae080
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000006 R08: dffffc0000000000 R09: fffffbfff16c80a4
+R10: fffffbfff16c80a4 R11: 0000000000000000 R12: ffff8880971d0c10
+R13: ffff88808ddde418 R14: ffff888077e23350 R15: ffff8880971d0000
+ cfg80211_process_wdev_events+0x3b5/0x4d0 net/wireless/util.c:910
+ cfg80211_process_rdev_events+0x79/0xe0 net/wireless/util.c:936
+ cfg80211_event_work+0x1d/0x30 net/wireless/core.c:320
+ process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
+ worker_thread+0xaa4/0x1460 kernel/workqueue.c:2415
+ kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
