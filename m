@@ -2,65 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5EA5279A9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A25C6279AA7
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 18:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbgIZQKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 12:10:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729363AbgIZQKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 12:10:34 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 57ADB2083B;
-        Sat, 26 Sep 2020 16:10:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601136633;
-        bh=SvvlnA+2hqdXxuFiLTuOyuSVGEsj1AU6uaCHf1FzS/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PDjSksLEelv76bZ2Gad6xkkizUi/rb36bJ3btvLQuMtn9EyeTttxkowpV/WTiZPjr
-         d4ynu5VehddI7Mp5drDCoWVMOzG9ReRyHa8L0rtK/+AGmQRco7O97Mtgc5sHLbSVbC
-         mrm3FoH5/Q3yYY05d+qZSvR7D086V5UHyzG+ZrDQ=
-Date:   Sat, 26 Sep 2020 18:10:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, ben.hutchings@codethink.co.uk,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.8 00/56] 5.8.12-rc1 review
-Message-ID: <20200926161046.GE3361615@kroah.com>
-References: <20200925124727.878494124@linuxfoundation.org>
- <6b36894105c87c32f83958d5e161184e42ff7ad5.camel@rajagiritech.edu.in>
+        id S1729828AbgIZQTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 12:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728017AbgIZQTs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 12:19:48 -0400
+Received: from agrajag.zerfleddert.de (agrajag.zerfleddert.de [IPv6:2a01:4f8:bc:1de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D16C0613CE;
+        Sat, 26 Sep 2020 09:19:48 -0700 (PDT)
+Received: by agrajag.zerfleddert.de (Postfix, from userid 1000)
+        id AFB4C5B2057C; Sat, 26 Sep 2020 18:19:46 +0200 (CEST)
+Date:   Sat, 26 Sep 2020 18:19:46 +0200
+From:   Tobias Jordan <kernel@cdqe.de>
+To:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>
+Cc:     Marek Vasut <marek.vasut@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Subject: [PATCH v2] iio: adc: gyroadc: fix leak of device node iterator
+Message-ID: <20200926161946.GA10240@agrajag.zerfleddert.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6b36894105c87c32f83958d5e161184e42ff7ad5.camel@rajagiritech.edu.in>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 02:52:03AM +0530, Jeffrin Jose T wrote:
-> On Fri, 2020-09-25 at 14:47 +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.8.12 release.
-> > There are 56 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied,
-> > please
-> > let me know.
-> > 
-> > Responses should be made by Sun, 27 Sep 2020 12:47:02 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in on
-> > greg k-
-> 
-> Compiled and booted 5.8.12-rc1+ . "dmesg -l err" did not report any
-> error or errors.
-> 
-> Tested-by:  Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+Add missing of_node_put calls when exiting the for_each_child_of_node
+loop in rcar_gyroadc_parse_subdevs early.
 
-Thanks for testing this one!
+Also add goto-exception handling for the error paths in that loop.
 
-greg k-h
+Fixes: 059c53b32329 ("iio: adc: Add Renesas GyroADC driver")
+Signed-off-by: Tobias Jordan <kernel@cdqe.de>
+---
+v2:
+- added an of_node_put to the non-error "break" at the end
+- used gotos for the error cases, doesn't look as bad as I thought
+
+ drivers/iio/adc/rcar-gyroadc.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/iio/adc/rcar-gyroadc.c b/drivers/iio/adc/rcar-gyroadc.c
+index dcaefc108ff6..9f38cf3c7dc2 100644
+--- a/drivers/iio/adc/rcar-gyroadc.c
++++ b/drivers/iio/adc/rcar-gyroadc.c
+@@ -357,7 +357,7 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
+ 			num_channels = ARRAY_SIZE(rcar_gyroadc_iio_channels_3);
+ 			break;
+ 		default:
+-			return -EINVAL;
++			goto err_e_inval;
+ 		}
+ 
+ 		/*
+@@ -374,7 +374,7 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
+ 				dev_err(dev,
+ 					"Failed to get child reg property of ADC \"%pOFn\".\n",
+ 					child);
+-				return ret;
++				goto err_of_node_put;
+ 			}
+ 
+ 			/* Channel number is too high. */
+@@ -382,7 +382,7 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
+ 				dev_err(dev,
+ 					"Only %i channels supported with %pOFn, but reg = <%i>.\n",
+ 					num_channels, child, reg);
+-				return -EINVAL;
++				goto err_e_inval;
+ 			}
+ 		}
+ 
+@@ -391,7 +391,7 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
+ 			dev_err(dev,
+ 				"Channel %i uses different ADC mode than the rest.\n",
+ 				reg);
+-			return -EINVAL;
++			goto err_e_inval;
+ 		}
+ 
+ 		/* Channel is valid, grab the regulator. */
+@@ -401,7 +401,8 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
+ 		if (IS_ERR(vref)) {
+ 			dev_dbg(dev, "Channel %i 'vref' supply not connected.\n",
+ 				reg);
+-			return PTR_ERR(vref);
++			ret = PTR_ERR(vref);
++			goto err_of_node_put;
+ 		}
+ 
+ 		priv->vref[reg] = vref;
+@@ -425,8 +426,10 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
+ 		 * attached to the GyroADC at a time, so if we found it,
+ 		 * we can stop parsing here.
+ 		 */
+-		if (childmode == RCAR_GYROADC_MODE_SELECT_1_MB88101A)
++		if (childmode == RCAR_GYROADC_MODE_SELECT_1_MB88101A) {
++			of_node_put(child);
+ 			break;
++		}
+ 	}
+ 
+ 	if (first) {
+@@ -435,6 +438,12 @@ static int rcar_gyroadc_parse_subdevs(struct iio_dev *indio_dev)
+ 	}
+ 
+ 	return 0;
++
++err_e_inval:
++	ret = -EINVAL;
++err_of_node_put:
++	of_node_put(child);
++	return ret;
+ }
+ 
+ static void rcar_gyroadc_deinit_supplies(struct iio_dev *indio_dev)
+-- 
+2.20.1
+
