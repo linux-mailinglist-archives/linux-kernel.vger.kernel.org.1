@@ -2,189 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE9E279666
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 05:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBB7279669
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 05:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729989AbgIZD3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 23:29:04 -0400
-Received: from mga07.intel.com ([134.134.136.100]:7017 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729134AbgIZD3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 23:29:04 -0400
-IronPort-SDR: 6h/VOVYlqKMc9lezfNHwsgtY1eNhxm8Q9OB9Bp3gQBr/3W/M9lzWJXBN41IeoHQuSNqZ0Djkgo
- 5k6aqmtIRDSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9755"; a="225854654"
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="225854654"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Sep 2020 20:29:03 -0700
-IronPort-SDR: ai9Tunz3cCbNRIqqYA8CeI1jjkAiDZ2wbVAsBNvPRPe0DwP4xpQam5DKenB8w/ZkAQAG2Rtb+l
- LDl0pNXDTQRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,303,1596524400"; 
-   d="scan'208";a="456109860"
-Received: from lkp-server01.sh.intel.com (HELO 2dda29302fe3) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 25 Sep 2020 20:29:02 -0700
-Received: from kbuild by 2dda29302fe3 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kM0tR-0000MT-PF; Sat, 26 Sep 2020 03:29:01 +0000
-Date:   Sat, 26 Sep 2020 11:28:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/seves] BUILD SUCCESS
- 0ddfb1cf3b6b07c97cff16ea69931d986f9622ee
-Message-ID: <5f6eb543.R6TmUlApof76t4m0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1729984AbgIZDfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 23:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgIZDfo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 23:35:44 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED6BC0613D3
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:35:44 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id g96so4223669otb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 25 Sep 2020 20:35:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=r41cvb1N5LxHmvk4/Z1u+DVLxLHsiY0eJOMeFd/1FUI=;
+        b=H5Ew1dx9RWLp2Zv3wrDGwnWJ9kvtovj/or5SuxWG5TW34gvkP1WCt38X0STzwaQApU
+         GKIaAcgUbc9S4lHb9nOf889CwIuOKJOqT/pKmtmDVU6d/IznJ0qhGPtt73jl4KZcWqG3
+         wg3392eGxhSA0yu4/NnqKGS9Dm8qg4tcbOaMof9vZpTWjIW/Ps6wT2W7EWq5XIHg+b1V
+         hycKIor7N599PF/QigzHhsI2clYn1/SbwHkBorQeZExOShoxPuizepodAY0E6CL6/SE7
+         XHfiBtHiD+MmTIXfeJLKzgiaLRmNmqrNQ+F5gZSV9PAk4+aRZ87p5S06Jx7vzLMJqg9H
+         IrQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=r41cvb1N5LxHmvk4/Z1u+DVLxLHsiY0eJOMeFd/1FUI=;
+        b=RDI3czG1L6ytlZxwNxDw/hoWvFPve/NxwmPzIKqx59PZkCPsA9zBpKGAvZELvmNPJI
+         2cHymQJaLGrow0wcYKDIvoecguBLkE+7WiMk5NRzh+xs6wPV7AT2FZFQYxWPsKPPvnX4
+         eWl3qe8rx0TYpbKsdQPBH5kLcJDGGb0/gqMosUzP7AQSTAUJjBZEBY8WpBPeRRJU3idv
+         6T23r0eOJoUTeI8aEJsqaWYLrdtGBEDlhcI4zJM+8YizXIAY6/vFliGRSYZZq5ROO7DM
+         Znpx9Ank3Sm5kaU+hiO1YIGzjEHzl5VguViMqOHbCnYsM88pJkj2ROL9+ybwOO3S5Svb
+         +kzQ==
+X-Gm-Message-State: AOAM531mrIw7HyKN2upoCY8o81PKg4k2qf2gxJnUku87x2mqcyOyybqI
+        H3CMStFMptGxx/zXvo8hi/jA0Q==
+X-Google-Smtp-Source: ABdhPJxELpmDLw4ZXIMOtwbj8cask50ql1SmQRWsp4jnor195OOSpBobecmfpIme80ehkBSEJrmehw==
+X-Received: by 2002:a9d:6a8b:: with SMTP id l11mr2433175otq.273.1601091343437;
+        Fri, 25 Sep 2020 20:35:43 -0700 (PDT)
+Received: from builder.lan (99-135-181-32.lightspeed.austtx.sbcglobal.net. [99.135.181.32])
+        by smtp.gmail.com with ESMTPSA id z20sm333543oor.3.2020.09.25.20.35.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Sep 2020 20:35:42 -0700 (PDT)
+Date:   Fri, 25 Sep 2020 20:31:09 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Cc:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "tsoni@codeaurora.org" <tsoni@codeaurora.org>,
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>,
+        "sidgup@codeaurora.org" <sidgup@codeaurora.org>
+Subject: Re: [PATCH v2 0/3] Expose recovery/coredump configuration from sysfs
+Message-ID: <20200926033109.GA10036@builder.lan>
+References: <1598557731-1566-1-git-send-email-rishabhb@codeaurora.org>
+ <7ad40d80-5ac4-97a5-5e05-c83dc08896a2@st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7ad40d80-5ac4-97a5-5e05-c83dc08896a2@st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/seves
-branch HEAD: 0ddfb1cf3b6b07c97cff16ea69931d986f9622ee  x86/sev-es: Use GHCB accessor for setting the MMIO scratch buffer
+On Tue 15 Sep 02:51 PDT 2020, Arnaud POULIQUEN wrote:
 
-elapsed time: 725m
+> Hi Rishabh,
+> 
+> On 8/27/20 9:48 PM, Rishabh Bhatnagar wrote:
+> > From Android R onwards Google has restricted access to debugfs in user
+> > and user-debug builds. This restricts access to most of the features
+> > exposed through debugfs. This patch series adds a configurable option
+> > to move the recovery/coredump interfaces to sysfs. If the feature
+> > flag is selected it would move these interfaces to sysfs and remove
+> > the equivalent debugfs interface. 'Coredump' and 'Recovery' are critical
+> > interfaces that are required for remoteproc to work on Qualcomm Chipsets.
+> > Coredump configuration needs to be set to "inline" in debug/test build
+> > and "disabled" in production builds. Whereas recovery needs to be
+> > "disabled" for debugging purposes and "enabled" on production builds.
+> 
+> The remoteproc_cdev had been created to respond to some sysfs limitations.
 
-configs tested: 125
-configs skipped: 2
+The limitation here is in debugfs not being available on all systems,
+sysfs is present and I really do like the idea of being able to change
+these things without having to compile a tool to invoke the ioctl...
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> I wonder if this evolution should not also be implemented in the cdev.
+> In this case an additional event could be addedd to inform the application
+> that a crash occurred and that a core dump is available.
+> 
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                           gcw0_defconfig
-powerpc                    ge_imp3a_defconfig
-m68k                       m5208evb_defconfig
-sh                          sdk7786_defconfig
-powerpc                        fsp2_defconfig
-powerpc                       holly_defconfig
-arm                        multi_v5_defconfig
-sh                         ecovec24_defconfig
-sh                          rsk7264_defconfig
-mips                    maltaup_xpa_defconfig
-arm                         lpc32xx_defconfig
-powerpc                     tqm8548_defconfig
-sh                          landisk_defconfig
-sh                            titan_defconfig
-xtensa                    smp_lx200_defconfig
-arm                       versatile_defconfig
-powerpc                     stx_gp3_defconfig
-sh                           se7780_defconfig
-xtensa                         virt_defconfig
-mips                         tb0219_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                          iop32x_defconfig
-arm                         orion5x_defconfig
-arm                         at91_dt_defconfig
-m68k                        m5307c3_defconfig
-mips                      bmips_stb_defconfig
-m68k                       m5275evb_defconfig
-mips                            gpr_defconfig
-powerpc                        icon_defconfig
-mips                         rt305x_defconfig
-arm                            pleb_defconfig
-powerpc                 mpc832x_mds_defconfig
-arm                            mmp2_defconfig
-powerpc                 mpc837x_mds_defconfig
-sh                                  defconfig
-sh                           se7724_defconfig
-arm                            hisi_defconfig
-parisc                           allyesconfig
-i386                                defconfig
-arm                     davinci_all_defconfig
-arm                         hackkit_defconfig
-ia64                          tiger_defconfig
-ia64                            zx1_defconfig
-powerpc                        cell_defconfig
-arc                          axs103_defconfig
-powerpc                      ep88xc_defconfig
-m68k                          amiga_defconfig
-arm                             rpc_defconfig
-arm                             ezx_defconfig
-c6x                         dsk6455_defconfig
-mips                         mpc30x_defconfig
-sh                            migor_defconfig
-microblaze                          defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20200925
-i386                 randconfig-a006-20200925
-i386                 randconfig-a003-20200925
-i386                 randconfig-a004-20200925
-i386                 randconfig-a005-20200925
-i386                 randconfig-a001-20200925
-x86_64               randconfig-a011-20200925
-x86_64               randconfig-a013-20200925
-x86_64               randconfig-a014-20200925
-x86_64               randconfig-a015-20200925
-x86_64               randconfig-a012-20200925
-x86_64               randconfig-a016-20200925
-i386                 randconfig-a012-20200925
-i386                 randconfig-a014-20200925
-i386                 randconfig-a016-20200925
-i386                 randconfig-a013-20200925
-i386                 randconfig-a011-20200925
-i386                 randconfig-a015-20200925
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+Specifically for userspace to know when a coredump is present there's
+already uevents being sent when the devcoredump is ready. That said,
+having some means to getting notified about remoteproc state changes
+does sounds reasonable. If there is a use case we should discuss that.
 
-clang tested configs:
-x86_64               randconfig-a005-20200925
-x86_64               randconfig-a003-20200925
-x86_64               randconfig-a004-20200925
-x86_64               randconfig-a002-20200925
-x86_64               randconfig-a006-20200925
-x86_64               randconfig-a001-20200925
+> Of course it's only a suggestion... As it would be a redesign.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+A very valid suggestion. I don't think it's a redesign, but more of an
+extension of what we have today.
+
+Regards,
+Bjorn
+
+> I let Björn and Mathieu comment.
+> 
+> Regards,
+> Arnaud
+> 
+> > 
+> > Changelog:
+> > 
+> > v1 -> v2:
+> > - Correct the contact name in the sysfs documentation.
+> > - Remove the redundant write documentation for coredump/recovery sysfs
+> > - Add a feature flag to make this interface switch configurable.
+> > 
+> > Rishabh Bhatnagar (3):
+> >   remoteproc: Expose remoteproc configuration through sysfs
+> >   remoteproc: Add coredump configuration to sysfs
+> >   remoteproc: Add recovery configuration to sysfs
+> > 
+> >  Documentation/ABI/testing/sysfs-class-remoteproc |  44 ++++++++
+> >  drivers/remoteproc/Kconfig                       |  12 +++
+> >  drivers/remoteproc/remoteproc_debugfs.c          |  10 +-
+> >  drivers/remoteproc/remoteproc_sysfs.c            | 126 +++++++++++++++++++++++
+> >  4 files changed, 190 insertions(+), 2 deletions(-)
+> > 
