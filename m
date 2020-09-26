@@ -2,71 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BBBA279645
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91B4F279656
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 04:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729951AbgIZCnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 25 Sep 2020 22:43:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728967AbgIZCnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 25 Sep 2020 22:43:53 -0400
-Received: from X1 (unknown [104.245.68.101])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3885820878;
-        Sat, 26 Sep 2020 02:43:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601088231;
-        bh=1nkZCA5YPl8bVzihcrG7vvM8b//lqkJ5TQeIuSIoqCQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=dCRAn6cZQrrJb2Wh/R/Zwk22edLD5gfhWGDqwTYHfDhwL8p9lj1q3nd20NicS+n6l
-         q5ujK20g/b5JixrtLCZ8ysCD9kfVgSPlWmXQyL1yASDHU+i0PynwItHvs0xxsLQqqI
-         YCTc9mEz0rJ75n3w690uhG5J+1mzUwI54ugn3gJs=
-Date:   Fri, 25 Sep 2020 19:43:49 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nitin Gupta <ngupta@vflare.org>, x86@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-mm@kvack.org
-Subject: Re: remove alloc_vm_area v2
-Message-Id: <20200925194349.d0ee9dbedb2ec48f0bfcd2ec@linux-foundation.org>
-In-Reply-To: <20200924135853.875294-1-hch@lst.de>
-References: <20200924135853.875294-1-hch@lst.de>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
+        id S1729495AbgIZCzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 25 Sep 2020 22:55:21 -0400
+Received: from sp4.canonet.ne.jp ([210.134.165.91]:59770 "EHLO
+        sp4.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726210AbgIZCzV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 25 Sep 2020 22:55:21 -0400
+X-Greylist: delayed 628 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 22:55:20 EDT
+Received: from cmcheck4.canonet.ne.jp (unknown [172.21.160.144])
+        by sp4.canonet.ne.jp (Postfix) with ESMTP id 52F3E1E02D1;
+        Sat, 26 Sep 2020 11:44:50 +0900 (JST)
+Received: from echeck4.canonet.ne.jp ([172.21.160.34])
+        by cmcheck4 with ESMTP
+        id M0Cgk8DvukV77M0CgkIvH5; Sat, 26 Sep 2020 11:44:50 +0900
+X-CNT-CMCheck-Reason: "undefined", "v=2.2 cv=QI4YfkDL c=1 sm=1 tr=0
+ cx=t_eml:g_jp p=qI3Tz8VRCXwA:10 p=GPZhZkAIlJQcwfiLP0FG:22
+ a=lZJ1x3jAK8i3JwxrpB1Yuw==:117 a=xbyLVnzfAZw6kvha8NeemA==:17
+ a=PlGk70OYzacA:10 a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10
+ a=64ih02tLm2DRpjhKevcA:9 a=da1VUgjd4PpvMsH9:21 a=cAR4Wufobs5_ESAL:21
+ a=CjuIK1q_8ugA:10"
+X-CNT-CMCheck-Score: 100.00
+Received: from echeck4.canonet.ne.jp (localhost [127.0.0.1])
+        by esets.canonet.ne.jp (Postfix) with ESMTP id D3D321C01E7;
+        Sat, 26 Sep 2020 11:44:49 +0900 (JST)
+X-Virus-Scanner: This message was checked by ESET Mail Security
+        for Linux/BSD. For more information on ESET Mail Security,
+        please, visit our website: http://www.eset.com/.
+Received: from smtp4.canonet.ne.jp (smtp4.canonet.ne.jp [172.21.160.24])
+        by echeck4.canonet.ne.jp (Postfix) with ESMTP id 798C51C0246;
+        Sat, 26 Sep 2020 11:44:49 +0900 (JST)
+Received: from chikousha.co.jp (webmail.canonet.ne.jp [210.134.164.250])
+        by smtp4.canonet.ne.jp (Postfix) with ESMTPA id B65D715F967;
+        Sat, 26 Sep 2020 11:44:47 +0900 (JST)
+MIME-Version: 1.0
+Message-ID: <20200926024447.000010E1.0418@chikousha.co.jp>
+Date:   Sat, 26 Sep 2020 11:44:47 +0900
+From:   "razak ahmed" <info@chikousha.co.jp>
+To:     <razakgeorge1@gmail.com>
+Reply-To: <razakgeorge1@gmail.com>
+Subject: Greetings.....
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+ORGANIZATION: razak ahmed
+X-MAILER: Active! mail
+X-EsetResult: clean, %VIRUSNAME%
+X-ESET-AS: R=OK;S=0;OP=CALC;TIME=1601088290;VERSION=7861;MC=1174835362;TRN=0;CRV=0;IPC=210.134.164.250;SP=0;SIPS=1;PI=5;F=0
+X-I-ESET-AS: RN=0;RNP=
+X-ESET-Antispam: OK
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 24 Sep 2020 15:58:42 +0200 Christoph Hellwig <hch@lst.de> wrote:
+Dear Friend,
 
-> this series removes alloc_vm_area, which was left over from the big
-> vmalloc interface rework.  It is a rather arkane interface, basicaly
-> the equivalent of get_vm_area + actually faulting in all PTEs in
-> the allocated area.  It was originally addeds for Xen (which isn't
-> modular to start with), and then grew users in zsmalloc and i915
-> which seems to mostly qualify as abuses of the interface, especially
-> for i915 as a random driver should not set up PTE bits directly.
-> 
-> Note that the i915 patches apply to the drm-tip branch of the drm-tip
-> tree, as that tree has recent conflicting commits in the same area.
+I am Barrister Razak George Ahmed, a lawyer and personal attorney to the 
+late business man from your country who has a similar name with you, I 
+request your consent to present you as the next of kin with the 
+following relatives in order to continue to release his unknown deposits 
+to you which are estimated at $ 5.5 million USD. Kindly get back to me 
+if you can handle this transaction with me.
 
-Is the drm-tip material in linux-next yet?  I'm still seeing a non-trivial
-reject in there at present.
+Thanks
+Barrister Razak George Ahmed
+
+
 
