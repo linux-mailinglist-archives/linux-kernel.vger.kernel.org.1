@@ -2,144 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33BC279A53
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CABD279A57
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:21:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729681AbgIZPRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 11:17:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgIZPRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 11:17:42 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FCCA20BED;
-        Sat, 26 Sep 2020 15:17:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601133462;
-        bh=D4U25c4Vq+RI+pFAEaZB5jMZ72TqFjqgB+2lURo9ENI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=h+W6BnHqqaNoA+fHIr4COoKmQyK1ytOEwSBBQ59l+aZSQs1vZQj5ZoyBj2UGvhLV3
-         waUw7yYToz20RmoMXtzILR5ovSwIl0Ba/Bp9HE/h90aYrNXRztB3WOsPBS0wSJf2Mx
-         +JLcRvIU5InDoa9bWLS4jsUpoTNKbc6UoOcnER3E=
-Date:   Sat, 26 Sep 2020 16:17:32 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc:     <rafael.j.wysocki@intel.com>, <rjw@rjwysocki.net>,
-        <ulf.hansson@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mcoquelin.stm32@gmail.com>,
-        <alexandre.torgue@st.com>, <olivier.moysan@st.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: Re: [RESEND PATCH v2] iio: adc: stm32-adc: fix runtime autosuspend
- delay when slow polling
-Message-ID: <20200926161732.72af96e3@archlinux>
-In-Reply-To: <045e9e34-f1e0-087b-bc5b-44440db6be27@st.com>
-References: <1593615328-5180-1-git-send-email-fabrice.gasnier@st.com>
-        <045e9e34-f1e0-087b-bc5b-44440db6be27@st.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1729516AbgIZPVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 11:21:48 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:46731 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbgIZPVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 11:21:48 -0400
+Received: from mail-qt1-f176.google.com ([209.85.160.176]) by
+ mrelayeu.kundenserver.de (mreue010 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MF3U0-1kFbO613Pc-00FPq7; Sat, 26 Sep 2020 17:21:46 +0200
+Received: by mail-qt1-f176.google.com with SMTP id g3so4789034qtq.10;
+        Sat, 26 Sep 2020 08:21:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533d79cxbgXIsayT6PSAuxCKuFW83NIrpDAd16+e5uCPTIODoPZs
+        g9JefNnmnCfL0AKg1HYBUsvqyBICvlEfqPLWaZs=
+X-Google-Smtp-Source: ABdhPJzhhuU4Qjx8HuF0NAIPjTlcDnIE/zYRakYWeCOK+DeEFjsGcCAX1OrxiRvWxcnqtBK6Fiytjj76wV0F+2OJne8=
+X-Received: by 2002:aed:2414:: with SMTP id r20mr4939375qtc.304.1601133705038;
+ Sat, 26 Sep 2020 08:21:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20200918132439.1475479-1-arnd@arndb.de> <20200918132439.1475479-4-arnd@arndb.de>
+ <20200919053807.GK30063@infradead.org>
+In-Reply-To: <20200919053807.GK30063@infradead.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Sat, 26 Sep 2020 17:21:29 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a15GEGL8AnxTYZxD_EeGb7__v=iy6rTfCTNq2jmsQe9fQ@mail.gmail.com>
+Message-ID: <CAK8P3a15GEGL8AnxTYZxD_EeGb7__v=iy6rTfCTNq2jmsQe9fQ@mail.gmail.com>
+Subject: Re: [PATCH 3/4] mm: remove compat_sys_move_pages
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:KVXfAnkhrAtApTZq7lgk8gNfG/j8L7eQ9Pmlq/r+fW+yLH7BfZl
+ CKUjxn+uimjTYgcEgLk4YYOFtvO+PomwzTXXDalcCZuXZ+0nTXhHewvG2UL5EirUJq7sAlI
+ R2gzN+XdtEObx/dr+klo8i1omBylTgmyCvl8Nlnofqe2xO5C4a6Yh++Ig1a5rgd8PQ5nhHx
+ su0JvKjLDq6ddczdLxk9A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qo8WD57aOQA=:spANsabPq/6dUBbWKRIwaQ
+ lz2wd4dNV2/MMRpMsHOTRrsSl2FgDKdzKqzFMWVfZbVMenuRuAfPH+QD+e4uWQfvQlThJotE6
+ E4mx1fflOIQYEfg54TABF9XOnw347EnzH/uwXwihNAki5zFR1tHqFP2+jXfTWtQnm/RKLPe/U
+ X7YysNR4f3EUoSy5L6k32LFXeLWJvmlP0aBmkDV7/+B05J4wgOsPDHwU5jmQkx2fiUTnxPgie
+ qYYO6DDNbqXDrOOIJAExn6BG3XzV5OtTf56Dma0GQfPd77vS3nQ4Gx8lqgpehoCI7f1GachS4
+ DkYQsnldBYoRUnQ+/x708GYlA8tA7ZDzwZRByH3nQW3a4CiAKOrXzL40I0I80uzDT+Nj5hEIR
+ 7Y8Q+Vs8NtSta0K4VCOHsm4mchG0SIkmIvA19mmrtKwnPwIABQMGJPqw41NfMh3sIN4KqV/hA
+ g6u3R6w/VcZvei0BXo98WxZjSKJ7NR8D2oBLiZ2XuWyfl8RxnMAmBvSX7p+fQWKwSeMrDzeiD
+ X3UnqZcKD9YeqKRXFya1+4o3TbMlYj6kS22DP6Me1FskhIYv2Yoxj9I/Dji7q2SVgzaUGDDZZ
+ zymBo2hDGaCQLbLZBwlyUyQwi2tH1Vgf2tt5DATa6vG6kYOh6NDTM2V987BzzvP28+jQLPg0b
+ 0WY3N/P/hZmsLKqrY8BFaVqc6xOvI17MkYT65yajM/EOAsEhNg8mTLqtTjmkQFt2u9PBrpBAa
+ EwABFcEnmF8quFFtihLlrp2PI3Opp0xQW9kfuY4Ps8Y+EPY5cjAYhkPEVW4y/gyrutiS5DmFB
+ 9TIJ+jcdcu4+8zb7k0/cTeyiu956ngR7RvNbKw4NhVqCl/F9O/i0tvEv8e/6BimT2kfOuB6KF
+ pvGZec/Vd8jwwVO3hcdVNRdh7+ofHisg31o2vpgmACd6ybXzpM8krDJUygqmTfYKjsTsvhHdy
+ qhSJ2HGV9OombXt043a3H4Dtr5Ys0zUsMhZ5DomvDtHsZoCYnadEu
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Sep 2020 12:28:00 +0200
-Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
+On Sat, Sep 19, 2020 at 7:38 AM Christoph Hellwig <hch@infradead.org> wrote:
+>
+> I'd just keep the native version inline and have the compat one in
+> a helper, but that is just a minor detail.
 
-> On 7/1/20 4:55 PM, Fabrice Gasnier wrote:
-> > When the ADC is runtime suspended and starting a conversion, the stm32-adc
-> > driver calls pm_runtime_get_sync() that gets cascaded to the parent
-> > (e.g. runtime resume of stm32-adc-core driver). This also kicks the
-> > autosuspend delay (e.g. 2s) of the parent.
-> > Once the ADC is active, calling pm_runtime_get_sync() again (upon a new
-> > capture) won't kick the autosuspend delay for the parent (stm32-adc-core
-> > driver) as already active.
-> > 
-> > Currently, this makes the stm32-adc-core driver go in suspend state
-> > every 2s when doing slow polling. As an example, doing a capture, e.g.
-> > cat in_voltageY_raw at a 0.2s rate, the auto suspend delay for the parent
-> > isn't refreshed. Once it expires, the parent immediately falls into
-> > runtime suspended state, in between two captures, as soon as the child
-> > driver falls into runtime suspend state:
-> > - e.g. after 2s, + child calls pm_runtime_put_autosuspend() + 100ms
-> >   autosuspend delay of the child.
-> > - stm32-adc-core switches off regulators, clocks and so on.
-> > - They get switched on back again 100ms later in this example (at 2.2s).
-> > 
-> > So, use runtime_idle() callback in stm32-adc-core driver to call
-> > pm_runtime_mark_last_busy() for the parent driver (stm32-adc-core),
-> > to avoid this.
-> > 
-> > Fixes: 9bdbb1139ca1 ("iio: adc: stm32-adc: add power management support")
-> > 
-> > Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-> > ---
-> > Changes in v2:
-> > - Use runtime_idle callback in stm32-adc-core driver, instead of refreshing
-> >   last_busy from the child (for the parent) at many place. Initial patch v1
-> >   looked like "somewhat adhoc solution" as commented by Jonathan.  
-> 
-> Hi all,
-> 
-> Gentle reminder for this patch. Earlier discussions on it were as per
-> [1] and [2].
-> 
-> Ideally, Jonathan was looking for an ack from Rafael on this patch.
-> This is a long pending issue. I'd like to progress on this.
-> 
-> [1] https://patchwork.kernel.org/patch/11349841/
-> [2] https://lkml.org/lkml/2020/6/11/279
+Folded in this change:
 
-Fabrice, I think this one has sat waiting for inputs for
-too long. Hence I'm going to take a slight gamble that you are correct
-on doing the fix this way (I'm reasonably convinced)
+diff --git a/mm/migrate.c b/mm/migrate.c
+index e9dfbde5f12c..d3fa3f4bf653 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1835,18 +1835,14 @@ static void do_pages_stat_array(struct
+mm_struct *mm, unsigned long nr_pages,
+        mmap_read_unlock(mm);
+ }
 
-Applied to the fixes-togreg branch of iio.git.
-It won't go in for 5.9 now, so we have a bit of time for any last
-minute comments.
+-static int put_pages_array(const void __user *chunk_pages[],
+-                          const void __user * __user *pages,
+-                          unsigned long chunk_nr)
++static int put_compat_pages_array(const void __user *chunk_pages[],
++                                 const void __user * __user *pages,
++                                 unsigned long chunk_nr)
+ {
+        compat_uptr_t __user *pages32 = (compat_uptr_t __user *)pages;
+        compat_uptr_t p;
+        int i;
 
-Thanks,
+-       if (!in_compat_syscall())
+-               return copy_from_user(chunk_pages, pages,
+-                                     chunk_nr * sizeof(*chunk_pages));
+-
+        for (i = 0; i < chunk_nr; i++) {
+                if (get_user(p, pages32 + i))
+                        return -EFAULT;
+@@ -1875,8 +1871,15 @@ static int do_pages_stat(struct mm_struct *mm,
+unsigned long nr_pages,
+                if (chunk_nr > DO_PAGES_STAT_CHUNK_NR)
+                        chunk_nr = DO_PAGES_STAT_CHUNK_NR;
 
-Jonathan
+-               if (put_pages_array(chunk_pages, pages, chunk_nr))
+-                       break;
++               if (in_compat_syscall()) {
++                       if (put_compat_pages_array(chunk_pages, pages,
++                                                  chunk_nr))
++                               break;
++               } else {
++                       if (copy_from_user(chunk_pages, pages,
++                                     chunk_nr * sizeof(*chunk_pages)))
++                               break;
++               }
 
-> 
-> Please advise,
-> Thanks in advance,
-> Fabrice
-> 
-> > ---
-> >  drivers/iio/adc/stm32-adc-core.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-> > index 0e2068e..3586369 100644
-> > --- a/drivers/iio/adc/stm32-adc-core.c
-> > +++ b/drivers/iio/adc/stm32-adc-core.c
-> > @@ -794,6 +794,13 @@ static int stm32_adc_core_runtime_resume(struct device *dev)
-> >  {
-> >  	return stm32_adc_core_hw_start(dev);
-> >  }
-> > +
-> > +static int stm32_adc_core_runtime_idle(struct device *dev)
-> > +{
-> > +	pm_runtime_mark_last_busy(dev);
-> > +
-> > +	return 0;
-> > +}
-> >  #endif
-> >  
-> >  static const struct dev_pm_ops stm32_adc_core_pm_ops = {
-> > @@ -801,7 +808,7 @@ static const struct dev_pm_ops stm32_adc_core_pm_ops = {
-> >  				pm_runtime_force_resume)
-> >  	SET_RUNTIME_PM_OPS(stm32_adc_core_runtime_suspend,
-> >  			   stm32_adc_core_runtime_resume,
-> > -			   NULL)
-> > +			   stm32_adc_core_runtime_idle)
-> >  };
-> >  
-> >  static const struct stm32_adc_priv_cfg stm32f4_adc_priv_cfg = {
-> >   
+                do_pages_stat_array(mm, chunk_nr, chunk_pages, chunk_status);
 
+It does make the separation cleaner but it's also more code, which is
+why I had it in the combined function before.
+
+      Arnd
