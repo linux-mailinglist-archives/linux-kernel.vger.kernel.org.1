@@ -2,214 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E792798DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E82702798E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 14:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729261AbgIZMiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 08:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729172AbgIZMiL (ORCPT
+        id S1729178AbgIZMjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 08:39:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:11546 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726183AbgIZMjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 08:38:11 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE5D6C0613D3
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:38:10 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e17so1925351wme.0
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 05:38:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KgtSP4Z0Xfoyw35f8b4GCJtY2P8zQp4wm4duPeWlJEE=;
-        b=KXT3nFO4jXPd36V69sEnZk30UmLvBREHwVHlB3TH+3wpmKUpFw8DeLo8BVOSG6peNg
-         3IoDcQztcjZpLwxg3/eESwtkxT6MCkL/6V49hFP3cc9wkuFVVRORRJoMYhtMr+iPIgq6
-         bZ6HYgCk9hRwj5MAPMnCuvEOf4vY5hm/qiSJc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KgtSP4Z0Xfoyw35f8b4GCJtY2P8zQp4wm4duPeWlJEE=;
-        b=COjPlm+mngVJMEooVbXJE3cubdjIVW4jWMNdukqZUeo9I0wVybh8iSWhgePr0FI9KA
-         Zwk6KW1a9exhLlxmd4QlzVMyY+eh51KCsxpwZNww+k5iVA6oAalBXE9fO41IcJwjtb3n
-         gC326kSWbRc6cYMvG/wNWLZ8zksYcJSRNov6SyLZyBt0XtfzMcyu9pHpvqMAXr3rYsUD
-         w6G/zgnIZYYAnQyWtUc2QkZJ4srMVQQMwCPXLiK/vP3pvOMyJFdqSlDp+OSILMZLFRPB
-         mV4wV5zNIhmrnT9qy1IiM2N13OQ0i4fptruQWN7ZYG8tHXD6oHxeRIlQi6dEaJ9PaxJp
-         ks5A==
-X-Gm-Message-State: AOAM530KMA7okroGwN1EcQIu9Yh4v0kPelXamgkLU0kcgWPBhhZOJTCd
-        Y3kEa0OuN6DusPmoh5q+YrRL6g==
-X-Google-Smtp-Source: ABdhPJxfP9extoAxtlybvJJwCF9PVl9y3ORezxLb44zE3bhNs0VshCxTn1vNch8Ls37UAGI8aRftCQ==
-X-Received: by 2002:a1c:9c4b:: with SMTP id f72mr2469221wme.188.1601123889345;
-        Sat, 26 Sep 2020 05:38:09 -0700 (PDT)
-Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id g8sm2460919wmd.12.2020.09.26.05.38.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 05:38:08 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 12:38:07 +0000
-From:   Tomasz Figa <tfiga@chromium.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>, linux-i2c@vger.kernel.org,
-        Wolfram Sang <wsa@the-dreams.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sat, 26 Sep 2020 08:39:47 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08QCWRe0111727;
+        Sat, 26 Sep 2020 08:39:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=3MYKY040lEuw5jDKzV3PF147mCVYwbqY92Kcs2d9pHM=;
+ b=stYoAHM4Idv9dsIru0fmgGg81Du4QTVpzAy3h7TyNOJeQLokKMLrJqIE4dCviuU9KwBb
+ IsZSYnrpNZ+wsMMBawyZaunEhq0onbMYGNEe3hcH/FWrMyy7MwDtDDOGWflQ+m9zqGz8
+ SsbpFbkp1/Tpa5IRfDPQPQ7KG60pXTMaQXHCKb/xbK9mrXkL4uqw+1nFonDjSDncarcQ
+ Is+gIoez8CG1++CbuoWEy2GgeDRN8bzXXmZFe5+IyxB5C1JmLB1TjPvIbd2hJGmhxXuy
+ 1EErU5N4KtdBp5+VG58W6XUpLKMHS7LRSJzpbkuYAontzSSvj8OuNtPZc3DTB00JxD2Z iA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33t5er8cv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 08:39:04 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08QCWWxS111972;
+        Sat, 26 Sep 2020 08:39:03 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33t5er8cuc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 08:39:03 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08QCRuOI023314;
+        Sat, 26 Sep 2020 12:39:00 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 33sw980bk9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 12:39:00 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08QCcva320513094
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Sep 2020 12:38:57 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 57D25A4040;
+        Sat, 26 Sep 2020 12:38:57 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 36400A4057;
+        Sat, 26 Sep 2020 12:38:55 +0000 (GMT)
+Received: from localhost (unknown [9.145.18.16])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sat, 26 Sep 2020 12:38:55 +0000 (GMT)
+Date:   Sat, 26 Sep 2020 14:38:53 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, Qian Cai <cai@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, x86@kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rajmohan.mani@intel.com,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
- powered off
-Message-ID: <20200926123807.GA3781977@chromium.org>
-References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
- <f4b82baa-66b7-464e-fd39-66d2243a05ef@lucaceresoli.net>
- <20200911130104.GF26842@paasikivi.fi.intel.com>
- <6dea1206-cfaa-bfc5-d57e-4dcddadc03c7@lucaceresoli.net>
- <20200914094727.GM26842@paasikivi.fi.intel.com>
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Megha Dey <megha.dey@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [patch V2 34/46] PCI/MSI: Make arch_.*_msi_irq[s] fallbacks
+ selectable
+Message-ID: <your-ad-here.call-01601123933-ext-6476@work.hours>
+References: <20200826111628.794979401@linutronix.de>
+ <20200826112333.992429909@linutronix.de>
+ <cdfd63305caa57785b0925dd24c0711ea02c8527.camel@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200914094727.GM26842@paasikivi.fi.intel.com>
+In-Reply-To: <cdfd63305caa57785b0925dd24c0711ea02c8527.camel@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-26_10:2020-09-24,2020-09-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ adultscore=0 priorityscore=1501 phishscore=0 mlxlogscore=948
+ suspectscore=0 mlxscore=0 bulkscore=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009260111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 12:47:27PM +0300, Sakari Ailus wrote:
-> Hi Luca,
-> 
-> On Mon, Sep 14, 2020 at 09:58:24AM +0200, Luca Ceresoli wrote:
-> > Hi Sakari,
+On Fri, Sep 25, 2020 at 09:54:52AM -0400, Qian Cai wrote:
+> On Wed, 2020-08-26 at 13:17 +0200, Thomas Gleixner wrote:
+> > From: Thomas Gleixner <tglx@linutronix.de>
 > > 
-> > On 11/09/20 15:01, Sakari Ailus wrote:
-> > > Hi Luca,
-> > > 
-> > > On Fri, Sep 11, 2020 at 02:49:26PM +0200, Luca Ceresoli wrote:
-> > >> Hi Sakari,
-> > >>
-> > >> On 03/09/20 10:15, Sakari Ailus wrote:
-> > >>>
-> > >>> Hi all,
-> > >>>
-> > >>> These patches enable calling (and finishing) a driver's probe function
-> > >>> without powering on the respective device on busses where the practice is
-> > >>> to power on the device for probe. While it generally is a driver's job to
-> > >>> check the that the device is there, there are cases where it might be
-> > >>> undesirable. (In this case it stems from a combination of hardware design
-> > >>> and user expectations; see below.) The downside with this change is that
-> > >>> if there is something wrong with the device, it will only be found at the
-> > >>> time the device is used. In this case (the camera sensors + EEPROM in a
-> > >>> sensor) I don't see any tangible harm from that though.
-> > >>>
-> > >>> An indication both from the driver and the firmware is required to allow
-> > >>> the device's power state to remain off during probe (see the first patch).
-> > >>>
-> > >>>
-> > >>> The use case is such that there is a privacy LED next to an integrated
-> > >>> user-facing laptop camera, and this LED is there to signal the user that
-> > >>> the camera is recording a video or capturing images. That LED also happens
-> > >>> to be wired to one of the power supplies of the camera, so whenever you
-> > >>> power on the camera, the LED will be lit, whether images are captured from
-> > >>> the camera --- or not. There's no way to implement this differently
-> > >>> without additional software control (allowing of which is itself a
-> > >>> hardware design decision) on most CSI-2-connected camera sensors as they
-> > >>> simply have no pin to signal the camera streaming state.
-> > >>>
-> > >>> This is also what happens during driver probe: the camera will be powered
-> > >>> on by the I²C subsystem calling dev_pm_domain_attach() and the device is
-> > >>> already powered on when the driver's own probe function is called. To the
-> > >>> user this visible during the boot process as a blink of the privacy LED,
-> > >>> suggesting that the camera is recording without the user having used an
-> > >>> application to do that. From the end user's point of view the behaviour is
-> > >>> not expected and for someone unfamiliar with internal workings of a
-> > >>> computer surely seems quite suspicious --- even if images are not being
-> > >>> actually captured.
-> > >>>
-> > >>> I've tested these on linux-next master. They also apply to Wolfram's
-> > >>> i2c/for-next branch, there's a patch that affects the I²C core changes
-> > >>> here (see below). The patches apart from that apply to Bartosz's
-> > >>> at24/for-next as well as Mauro's linux-media master branch.
-> > >>
-> > >> Apologies for having joined this discussion this late.
-> > > 
-> > > No worries. But thanks for the comments.
-> > > 
-> > >>
-> > >> This patchset seems a good base to cover a different use case, where I
-> > >> also cannot access the physical device at probe time.
-> > >>
-> > >> I'm going to try these patches, but in my case there are a few
-> > >> differences that need a better understanding.
-> > >>
-> > >> First, I'm using device tree, not ACPI. In addition to adding OF support
-> > >> similar to the work you've done for ACPI, I think instead of
-> > >> acpi_dev_state_low_power() we should have a function that works for both
-> > >> ACPI and DT.
-> > > 
-> > > acpi_dev_state_low_power() is really ACPI specific: it does tell the ACPI
-> > > power state of the device during probe or remove. It is not needed on DT
-> > > since the power state of the device is controlled directly by the driver.
-> > > On I²C ACPI devices, it's the framework that powers them on for probe.
+> > The arch_.*_msi_irq[s] fallbacks are compiled in whether an architecture
+> > requires them or not. Architectures which are fully utilizing hierarchical
+> > irq domains should never call into that code.
 > > 
-> > I see, thanks for clarifying. I'm not used to ACPI so I didn't get that.
+> > It's not only architectures which depend on that by implementing one or
+> > more of the weak functions, there is also a bunch of drivers which relies
+> > on the weak functions which invoke msi_controller::setup_irq[s] and
+> > msi_controller::teardown_irq.
 > > 
-> > > You could have a helper function on DT to tell a driver what to do in
-> > > probe, but the functionality in that case is unrelated.
+> > Make the architectures and drivers which rely on them select them in Kconfig
+> > and if not selected replace them by stub functions which emit a warning and
+> > fail the PCI/MSI interrupt allocation.
 > > 
-> > So in case of DT we might think of a function that just tells whether
-> > the device is marked to allow low-power probe, but it's just an info
-> > from DT:
-> > 
-> > int mydriver_probe(struct i2c_client *client)
-> > {
-> > 	...
-> > 	low_power = of_dev_state_low_power(&client->dev);
-> > 	if (!low_power) {
-> > 		mydriver_initialize(); /* power+clocks, write regs */
-> >  	}
-> > 	...
-> > }
-> > 
-> > ...and, if (low_power), call mydriver_initialize() at first usage.
-> > 
-> > I'm wondering whether this might make sense in mainline.
+> > Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > 
-> Quite possibly, if there are drivers that would need it.
+> Today's linux-next will have some warnings on s390x:
 > 
-> The function should probably be called differently though as what it does
-> is quite different after all.
+> .config: https://gitlab.com/cailca/linux-mm/-/blob/master/s390.config
 > 
-> Unless... we did the following:
+> WARNING: unmet direct dependencies detected for PCI_MSI_ARCH_FALLBACKS
+>   Depends on [n]: PCI [=n]
+>   Selected by [y]:
+>   - S390 [=y]
 > 
-> - Redefine the I²C driver flag added by this patchset into what tells the
->   I²C framework whether the driver does its own power management
->   independently of the I²C framework. It could be called e.g.
->   I2C_DRV_FL_FULL_PM, to indicate the driver is responsible for all power
->   management of the device, and the I²C framework would not power on the
->   device for probe or remove.
-> 
-> - Add a firmware function to tell whether the device identification should
->   take place during probe or not. For this is what we're really doing here
->   from driver's point of view: lazy device probing.
-> 
-> There are no dependencies between the two but they can be used together to
-> implement the same functionality as this patchset currently does. This way
-> also the differences between driver implementations for ACPI and DT can be
-> reduced as the logic is the same.
-> 
-> Further on, with this approach, if other busses happen to need this
-> functionality in the future, it would be straightforward to add support ---
-> it only takes to query whether it's indicated by the DT or ACPI property.
-> 
-> Thoughts, opinions?
+> WARNING: unmet direct dependencies detected for PCI_MSI_ARCH_FALLBACKS
+>   Depends on [n]: PCI [=n]
+>   Selected by [y]:
+>   - S390 [=y]
+>
 
-I think we might be overly complicating things. IMHO the series as is
-with the "i2c_" prefix removed from the flags introduced would be
-reusable as is for any other subsystem that needs it. Of course, for
-now, the handling of the flag would remain implemented only in the I2C
-subsystem.
+Yes, as well as on mips and sparc which also don't FORCE_PCI.
+This seems to work for s390:
 
-Best regards,
-Tomasz
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index b0b7acf07eb8..41136fbe909b 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -192,3 +192,3 @@ config S390
+        select PCI_MSI                  if PCI
+-       select PCI_MSI_ARCH_FALLBACKS
++       select PCI_MSI_ARCH_FALLBACKS   if PCI
+        select SET_FS
