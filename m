@@ -2,136 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9427279A21
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 16:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37984279A2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 16:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729263AbgIZOhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 10:37:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726244AbgIZOhD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 10:37:03 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78CFF20BED;
-        Sat, 26 Sep 2020 14:37:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601131022;
-        bh=FBJD7mqUsKW0o036aQOviNknZPjyLPwVOUbW+LvvSpc=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qygEVKQUrYuR+hpccG0TISUK3VG52gPHvJ4n3FShOSY99AvAUgY5dDPvKYSumsEUy
-         AjqjcCal2J4ffG2w3kkSdV7zLRMKZOnOGjDCXN7JG3RjGPXkx9adV8leYrTR8YLSrO
-         sgzTTEUDuXJu3V60ezo51uhxlJ4z/y+u8WWTf+2M=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 49B7F35225FB; Sat, 26 Sep 2020 07:37:02 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 07:37:02 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Mel Gorman <mgorman@suse.de>
-Subject: Re: [RFC-PATCH 2/4] mm: Add __rcu_alloc_page_lockless() func.
-Message-ID: <20200926143702.GI29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200921194819.GA24236@pc636>
- <20200922075002.GU12990@dhcp22.suse.cz>
- <20200922131257.GA29241@pc636>
- <20200923103706.GJ3179@techsingularity.net>
- <20200923154105.GO29330@paulmck-ThinkPad-P72>
- <20200923232251.GK3179@techsingularity.net>
- <20200924081614.GA14819@pc636>
- <20200924111907.GE2628@hirez.programming.kicks-ass.net>
- <20200924153834.GW29330@paulmck-ThinkPad-P72>
- <20200925082618.GT2628@hirez.programming.kicks-ass.net>
+        id S1729424AbgIZOo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 10:44:57 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:56315 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729356AbgIZOo4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 10:44:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UA7ntYq_1601131484;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UA7ntYq_1601131484)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 26 Sep 2020 22:44:45 +0800
+Subject: Re: [PATCH V4] doc: zh_CN: add translatation for btrfs
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     Wang Qing <wangqing@vivo.com>, Harry Wei <harryxiyou@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wang Wenhu <wenhu.wang@vivo.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Chucheng Luo <luochucheng@vivo.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <1601018642-31711-1-git-send-email-wangqing@vivo.com>
+ <f0febb25-29a1-02d4-223a-65e2c6a9db5e@linux.alibaba.com>
+Message-ID: <f12d8844-ce72-bf96-e615-0cfe7852d7a9@linux.alibaba.com>
+Date:   Sat, 26 Sep 2020 22:42:22 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925082618.GT2628@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <f0febb25-29a1-02d4-223a-65e2c6a9db5e@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 10:26:18AM +0200, Peter Zijlstra wrote:
-> On Thu, Sep 24, 2020 at 08:38:34AM -0700, Paul E. McKenney wrote:
-> > On Thu, Sep 24, 2020 at 01:19:07PM +0200, Peter Zijlstra wrote:
-> > > On Thu, Sep 24, 2020 at 10:16:14AM +0200, Uladzislau Rezki wrote:
-> > > > The key point is "enough". We need pages to make a) fast progress b) support
-> > > > single argument of kvfree_rcu(one_arg). Not vice versa. That "enough" depends
-> > > > on scheduler latency and vague pre-allocated number of pages, it might
-> > > > be not enough what would require to refill it more and more or we can overshoot
-> > > > that would lead to memory overhead. So we have here timing issues and
-> > > > not accurate model. IMHO.
-> > > 
-> > > I'm firmly opposed to the single argument kvfree_rcu() idea, that's
-> > > requiring memory to free memory.
-> > 
-> > Not quite.
-> > 
-> > First, there is a fallback when memory allocation fails.  Second,
-> > in heavy-use situations, there is only one allocation per about
-> > 500 kvfree_rcu() calls on 64-bit systems.  Third, there are other
-> > long-standing situations that require allocating memory in order to
-> > free memory.
+
+
+在 2020/9/25 下午4:19, Alex Shi 写道:
+> Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+
+Sorry, this patch still has format issue and can not be applied.
+I would take back the reviewed-by.
+
+Thanks
+Alex
 > 
-> Some of which are quite broken. And yes, I'm aware of all that, I'm the
-> one that started swap-over-NFS, which requires network traffic to free
-> memory, which is one insane step further.
-
-I could easily imagine that experience might have left some scars.
-
-> But the way to make that 'work' is carefully account and pre-allocate
-> (or size the reserve) the required memory to make progress and to
-> strictly limit concurrency to ensure you stay in your bounds.
-
-But your situation is different.  When swapping over NFS, if you
-cannot allocate the memory to do the I/O, you cannot free the memory
-you are attempting to swap out, at least not unless you can kill the
-corresponding process.  So if you don't want to kill processes, as you
-say, worst case is what matters.
-
-The kvfree_rcu() situation is rather different.  In all cases, there
-is a fallback, namely using the existing rcu_head for double-argument
-kvfree_rcu() or falling back to synchronize_rcu() for single-argument
-kvfree_rcu().  As long as these fallbacks are sufficiently rare, the
-system will probably survive.
-
-> > So I agree that it is a good general rule of thumb to avoid allocating
-> > on free paths, but there are exceptions.  This is one of them.
-> 
-> The very first thing you need to do is proof your memory usage is
-> bounded, and then calculate your bound.
-
-Again, you are confusing your old swap-over-NFS scars with the current
-situation.  They really are not the same.
-
-> The problem is that with RCU you can't limit concurrency. call_rcu()
-> can't block, you can't wait for a grace period to end when you've ran
-> out of your reserve.
-> 
-> That is, you don't have a bound, so no reserve what so ever is going to
-> help.
-
-Almost.  A dedicated reserve large enough to result in sufficiently low
-use of the fallback paths is too large.  Again, we can tolerate a small
-fraction of requests taking the fallback, with emphasis on "small".
-
-> You must have that callback_head fallback.
-
-And we do have that callback_head fallback.  And in the case of
-single-argument kvfree_rcu(), that synchronize_rcu() fallback. And as
-long as we can avoid using those fallbacks almost all the time, things
-will be OK.  But we do need to able to allocate memory in the common
-case when there is memory to be had.
-
-							Thanx, Paul
+> 在 2020/9/25 下午3:22, Wang Qing 写道:
+>> Translate Documentation/filesystems/btrfs.rst into Chinese.
+>>
+>> Signed-off-by: Wang Qing <wangqing@vivo.com>
+>> ---
+>>  .../translations/zh_CN/filesystems/btrfs.rst       | 37 ++++++++++++++++++++++
+>>  .../translations/zh_CN/filesystems/index.rst       |  1 +
+>>  2 files changed, 38 insertions(+)
+>>  create mode 100644 Documentation/translations/zh_CN/filesystems/btrfs.rst
+>>
+>> diff --git a/Documentation/translations/zh_CN/filesystems/btrfs.rst b/Documentation/translations/zh_CN/filesystems/btrfs.rst
+>> new file mode 100644
+>> index 0000000..8b8cca2
+>> --- /dev/null
+>> +++ b/Documentation/translations/zh_CN/filesystems/btrfs.rst
+>> @@ -0,0 +1,37 @@
+>> +.. SPDX-License-Identifier: GPL-2.0
+>> +
+>> +.. include:: ../disclaimer-zh_CN.rst
+>> +
+>> +:Original: :ref:`Documentation/filesystems/ext3.rst <ext3_index>`
+>> +
+>> +translated by 王擎 Wang Qing<wangqing@vivo.com>
+>> +
+>> +=====
+>> +BTRFS
+>> +=====
+>> +
+>> +Btrfs是一个写时复制更新的文件系统，它注重容错、修复和易于管理。
+>> +Btrfs由多家公司联合开发，并获得GPL许可，免费开放给所有人。
+>> +
+>> +Btrfs的主要功能包括：
+>> +
+>> +    *扩展大小的文件存储（文件最大支持2^64）
+>> +    *填充方式使小文件更节省空间
+>> +    *索引目录的方式更节省空间
+>> +    *动态的索引节点分配方式
+>> +    *可写快照的特性
+>> +    *支持子卷（独立的内部根文件系统）
+>> +    *对象级别的镜像克隆
+>> +    *基于数据和元数据的校验和（支持多种算法）
+>> +    *支持压缩
+>> +    *內建多种磁盘阵列算法，支持多种设备
+>> +    *支持离线的文件系统检查
+>> +    *高效的增量备份和文件系统镜像
+>> +    *在线文件系统碎片整理
+>> +
+>> +更多有关信息，请参阅Wiki
+>> +
+>> +  https://btrfs.wiki.kernel.org
+>> +
+>> +维护信息包含管理任务、常见问题、用例、挂载选项、变更日志、
+>> +特性、手册、源码仓、联系人等。
+>> diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
+>> index 186501d..47e86397
+>> --- a/Documentation/translations/zh_CN/filesystems/index.rst
+>> +++ b/Documentation/translations/zh_CN/filesystems/index.rst
+>> @@ -25,4 +25,5 @@ Linux Kernel中的文件系统
+>>  
+>>     virtiofs
+>>     debugfs
+>> +   btrfs
+>>  
+>>
