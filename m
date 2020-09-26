@@ -2,128 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE5F279843
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 12:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E791279845
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 12:19:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726656AbgIZKTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 06:19:38 -0400
-Received: from mail-m1272.qiye.163.com ([115.236.127.2]:4694 "EHLO
-        mail-m1272.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbgIZKTi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 06:19:38 -0400
-Received: from ubuntu.localdomain (unknown [58.250.176.229])
-        by mail-m1272.qiye.163.com (Hmail) with ESMTPA id 65A84B021FD;
-        Sat, 26 Sep 2020 18:19:34 +0800 (CST)
-From:   Bailu Lin <bailu.lin@vivo.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Bailu Lin <bailu.lin@vivo.com>,
-        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@vivo.com
-Subject: [PATCH] Documentation: Chinese translation of Documentation/arm64/hugetlbpage.rst
-Date:   Sat, 26 Sep 2020 03:18:55 -0700
-Message-Id: <20200926101902.3460-1-bailu.lin@vivo.com>
-X-Mailer: git-send-email 2.20.1
+        id S1726951AbgIZKTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 06:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725208AbgIZKTo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 06:19:44 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A4FA238E2;
+        Sat, 26 Sep 2020 10:19:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601115584;
+        bh=gFlyd1DVt3Rvdc0DUq+u9rBUBu1g9efr1klF3OCDtgM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Nflp3iaxjMwVtFjOoWWgMGH5ce9o71CuF3qq0LRlCElb0CL+sc63byKZ7MfniXGa8
+         iuZtkSoBZfssWfVekNj57EMCiacUQIKUbBVRDQl79fzl8ZeRWk9z9QeG0iqhPwShwW
+         +lH38RYjwBkJrNkrkSxch620VNW0CvnYOR34YcUk=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Ariel Levkovich <lariel@mellanox.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mark Zhang <markz@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-next v3 0/9] Track memory allocation with restrack DB help
+Date:   Sat, 26 Sep 2020 13:19:29 +0300
+Message-Id: <20200926101938.2964394-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGEpOSkNDSUNPSUwZVkpNS0pKSk5OTE9DSENVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PyI6FSo4TD8pEgE0SQoYNzw4
-        Li4aCzdVSlVKTUtKSkpOTkxOSU1DVTMWGhIXVRkaEhcOVRcSFTsNEg0UVRgUFkVZV1kSC1lBWU5D
-        VUlOS1VKTE1VSUlCWVdZCAFZQU9KSUs3Bg++
-X-HM-Tid: 0a74c9ecd1d398b7kuuu65a84b021fd
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a Chinese translated version of 
- Documentation/arm64/hugetlbpage.rst
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: Bailu Lin <bailu.lin@vivo.com>
----
- Documentation/arm64/hugetlbpage.rst           |  2 +
- .../translations/zh_CN/arm64/hugetlbpage.rst  | 45 +++++++++++++++++++
- .../translations/zh_CN/arm64/index.rst        |  1 +
- 3 files changed, 48 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/arm64/hugetlbpage.rst
+Changelog:
+v3:
+ * Rebased on already accepted patches.
+ * Added mlx4 special QPs to the list of not-tracked QPs (dropped previous mlx4 special QP patch).
+ * Separated to two patches change in return value of cma_listen_* routines.
+ * Changed commit messages and added Fixes as Jason requested.
+v2: https://lore.kernel.org/linux-rdma/20200907122156.478360-1-leon@kernel.org/
+ * Added new patch to fix mlx4 failure on SR-IOV, it didn't have port set.
+ * Changed "RDMA/cma: Delete from restrack DB after successful destroy" patch.
+v1: https://lore.kernel.org/lkml/20200830101436.108487-1-leon@kernel.org
+ * Fixed rebase error, deleted second assignment of qp_type.
+ * Rebased code on latests rdma-next, the changes in cma.c caused to change
+   in patch "RDMA/cma: Delete from restrack DB after successful destroy".
+ * Dropped patch of port assignment, it is already done as part of this
+   series.
+ * I didn't add @calller description, regular users should not use _named() funciton.
+v0: https://lore.kernel.org/lkml/20200824104415.1090901-1-leon@kernel.org
 
-diff --git a/Documentation/arm64/hugetlbpage.rst b/Documentation/arm64/hugetlbpage.rst
-index b44f939e5210..a110124c11e3 100644
---- a/Documentation/arm64/hugetlbpage.rst
-+++ b/Documentation/arm64/hugetlbpage.rst
-@@ -1,3 +1,5 @@
-+.. _hugetlbpage_index:
-+
- ====================
- HugeTLBpage on ARM64
- ====================
-diff --git a/Documentation/translations/zh_CN/arm64/hugetlbpage.rst b/Documentation/translations/zh_CN/arm64/hugetlbpage.rst
-new file mode 100644
-index 000000000000..64b3b00ea851
---- /dev/null
-+++ b/Documentation/translations/zh_CN/arm64/hugetlbpage.rst
-@@ -0,0 +1,45 @@
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :ref:`Documentation/arm64/hugetlbpage.rst <hugetlbpage_index>`
-+
-+Translator: Bailu Lin <bailu.lin@vivo.com>
-+
-+=====================
-+ARM64中的 HugeTLBpage
-+=====================
-+
-+大页依靠有效利用 TLBs 来提高地址翻译的性能。这取决于以下
-+两点 -
-+
-+  - 大页的大小
-+  - TLBs 支持的条目大小
-+
-+ARM64 接口支持2种大页方式。
-+
-+1) pud/pmd 级别的块映射
-+---------------------
-+
-+这是常规大页，他们的 pmd 或 pud 页面表条目指向一个内存块。
-+不管 TLB 中支持的条目大小如何，块映射可以减少翻译大页地址
-+所需遍历的页表深度。
-+
-+2) 使用连续位
-+-------------
-+
-+架构中转换页表条目(D4.5.3, ARM DDI 0487C.a)中提供一个连续
-+位告诉 MMU 这个条目是一个连续条目集的一员，它可以被缓存在单
-+个 TLB 条目中。
-+
-+在 Linux 中连续位用来增加 pmd 和 pte(最后一级)级别映射的大
-+小。受支持的连续页表条目数量因页面大小和页表级别而异。
-+
-+
-+支持以下大页大小配置 -
-+
-+  ====== ========   ====    ========    ===
-+  -      CONT PTE    PMD    CONT PMD    PUD
-+  ====== ========   ====    ========    ===
-+  4K:         64K     2M         32M     1G
-+  16K:         2M    32M          1G
-+  64K:         2M   512M         16G
-+  ====== ========   ====    ========    ===
-diff --git a/Documentation/translations/zh_CN/arm64/index.rst b/Documentation/translations/zh_CN/arm64/index.rst
-index 646ed1f7aea3..e31a6090384d 100644
---- a/Documentation/translations/zh_CN/arm64/index.rst
-+++ b/Documentation/translations/zh_CN/arm64/index.rst
-@@ -14,3 +14,4 @@ ARM64 架构
-     :maxdepth: 2
- 
-     amu
-+    hugetlbpage
--- 
-2.20.1
+----------------------------------------------------------------------------------
+Hi,
+
+The resource tracker has built-in kref counter to synchronize object
+release. It makes restrack perfect choice to be responsible for the
+memory lifetime of any object in which restrack entry is embedded.
+
+In order to make it, the restrack was changed to be mandatory and all
+callers of rdma_restrack_add() started to rely on result returned from
+that call. Being mandatory means that all objects specific to restrack
+type must be tracked.
+
+Before this series, the restrack and rdmatool were aid tools in debug
+session of user space applications, this caused to some of the
+functionality to be left behind, like support XRC QPs, device memory MRs
+and QP0/QP1 in multi-port devices.
+
+This series fixes all mentioned above without extending rdmatool at all.
+
+Thanks
+
+Leon Romanovsky (9):
+  RDMA/core: Allow drivers to disable restrack DB
+  RDMA/counter: Combine allocation and bind logic
+  RDMA/restrack: Store all special QPs in restrack DB
+  RDMA/cma: Add missing error handling of listen_id
+  RDMA/cma: Be strict with attaching to CMA device
+  RDMA/restrack: Add error handling while adding restrack object
+  RDMA/restrack: Support all QP types
+  RDMA/core: Track device memory MRs
+  RDMA/restrack: Drop valid restrack field as source of ambiguity
+
+ drivers/infiniband/core/cma.c                 | 226 +++++++++++-------
+ drivers/infiniband/core/core_priv.h           |  32 ++-
+ drivers/infiniband/core/counters.c            | 167 ++++++-------
+ drivers/infiniband/core/cq.c                  |  17 +-
+ drivers/infiniband/core/rdma_core.c           |   3 +-
+ drivers/infiniband/core/restrack.c            |  64 ++---
+ drivers/infiniband/core/restrack.h            |   2 +-
+ drivers/infiniband/core/uverbs_cmd.c          |  31 ++-
+ drivers/infiniband/core/uverbs_std_types_cq.c |   6 +-
+ drivers/infiniband/core/uverbs_std_types_mr.c |  10 +
+ drivers/infiniband/core/uverbs_std_types_qp.c |   4 +-
+ drivers/infiniband/core/verbs.c               |  74 ++++--
+ drivers/infiniband/hw/mlx4/qp.c               |   5 +
+ drivers/infiniband/hw/mlx5/qp.c               |   2 +-
+ include/rdma/ib_verbs.h                       |  10 +-
+ include/rdma/restrack.h                       |  27 ++-
+ 16 files changed, 416 insertions(+), 264 deletions(-)
+
+--
+2.26.2
 
