@@ -2,259 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBAE279A43
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717EB279A45
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 17:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729557AbgIZPE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 11:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
+        id S1729636AbgIZPFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 11:05:07 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:56740 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725208AbgIZPE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 11:04:26 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10620208FE;
-        Sat, 26 Sep 2020 15:04:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601132665;
-        bh=kce5K4ZWcgdmek/Y8oFvxLnbNhqE322bhKzxhmZEkMg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N+6BC34lZPxeWfOPZyDbx6GOrfy3zRZwNe75zJNaLoMCJ9474Dq7jhcZm7qNfBf+x
-         aPfdLvMmOBcZ/5KgVCi3JzZ9XbtokXfZuZ9htslHDWvHlT1bAiQoQ6N+65rva6mILJ
-         pVa+NF1n6kL5IJVqiZ3xclkthUWRQOfg3rnv7e94=
-Date:   Sat, 26 Sep 2020 16:04:20 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Guenter Roeck <groeck@google.com>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH] iio: cros_ec: unify hw fifo attributes into the core
- file
-Message-ID: <20200926160420.5c836c7e@archlinux>
-In-Reply-To: <CABXOdTdr52ikhoSEMqqFakO42hZzpvtH=rxkAYWQsExrnWodFA@mail.gmail.com>
-References: <20200923130339.997902-1-alexandru.ardelean@analog.com>
-        <20200925133301.4789c47a@archlinux>
-        <CABXOdTdr52ikhoSEMqqFakO42hZzpvtH=rxkAYWQsExrnWodFA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1725208AbgIZPFH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 11:05:07 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kMBl0-00GHim-1i; Sat, 26 Sep 2020 17:05:02 +0200
+Date:   Sat, 26 Sep 2020 17:05:02 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-leds@vger.kernel.org,
+        lee.jones@linaro.org, pavel@ucw.cz, dmurphy@ti.com,
+        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
+        jason@lakedaemon.net, gregory.clement@bootlin.com,
+        luka.perkov@sartura.hr, robert.marko@sartura.hr
+Subject: Re: [PATCH v2 7/7] arm64: dts: marvell: Add a device tree for the
+ iEi Puzzle-M801 board
+Message-ID: <20200926150502.GE3850848@lunn.ch>
+References: <20200926135514.26189-1-luka.kovacic@sartura.hr>
+ <20200926135514.26189-8-luka.kovacic@sartura.hr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926135514.26189-8-luka.kovacic@sartura.hr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 08:26:23 -0700
-Guenter Roeck <groeck@google.com> wrote:
-
-> On Fri, Sep 25, 2020 at 5:33 AM Jonathan Cameron <jic23@kernel.org> wrote:
-> >
-> > On Wed, 23 Sep 2020 16:03:39 +0300
-> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> >  
-> > > The intent here is to minimize the use of iio_buffer_set_attrs(). Since we
-> > > are planning to add support for multiple IIO buffers per IIO device, the
-> > > issue has to do with:
-> > > 1. Accessing 'indio_dev->buffer' directly (as is done with
-> > >    'iio_buffer_set_attrs(indio_dev->buffer, <attrs>)').
-> > > 2. The way that the buffer attributes would get handled or expanded when
-> > >    there are more buffers per IIO device. Current a sysfs kobj_type expands
-> > >    into a 'device' object that expands into an 'iio_dev' object.
-> > >    We will need to change this, so that the sysfs attributes for IIO
-> > >    buffers expand into IIO buffers at some point.
-> > >
-> > > Right now, the current IIO framework works fine for the
-> > > '1 IIO device == 1 IIO buffer' case (that is now).
-> > >
-> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>  
-> > Looks good to me, but I'll need a cros_ec ack for this one.
-> >  
+On Sat, Sep 26, 2020 at 03:55:14PM +0200, Luka Kovacic wrote:
+> Add initial support for the iEi Puzzle-M801 1U Rackmount Network
+> Appliance board.
 > 
-> I like it.
+> The board is based on the quad-core Marvell Armada 8040 SoC and supports
+> up to 16 GB of DDR4 2400 MHz ECC RAM. It has a PCIe x16 slot (x2 lanes
+> only) and an M.2 type B slot.
 > 
-> Reviewed-by: Guenter Roeck <groeck@chromium.org>
-
-Thanks,
-
-Applied to the togreg branch of iio.git and pushed out as testing
-for the autobuilders to play with it.
-
-Thanks,
-
-Jonathan
-
+> Main system hardware:
+> 2x USB 3.0
+> 4x Gigabit Ethernet
+> 2x SFP+
+> 1x SATA 3.0
+> 1x M.2 type B
+> 1x RJ45 UART
+> 1x SPI flash
+> 1x iEi WT61P803 PUZZLE Microcontroller
+> 1x EPSON RX8010 RTC (used instead of the integrated Marvell RTC controller)
+> 6x SFP+ LED
+> 1x HDD LED
 > 
-> Guenter
+> All of the hardware listed above is supported and tested in this port.
 > 
-> > thanks
-> >
-> > Jonathan
-> >  
-> > > ---
-> > >  drivers/iio/accel/cros_ec_accel_legacy.c              |  2 +-
-> > >  .../iio/common/cros_ec_sensors/cros_ec_lid_angle.c    |  3 ++-
-> > >  drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c  |  5 ++---
-> > >  .../iio/common/cros_ec_sensors/cros_ec_sensors_core.c | 11 ++++++++---
-> > >  drivers/iio/light/cros_ec_light_prox.c                |  5 ++---
-> > >  drivers/iio/pressure/cros_ec_baro.c                   |  5 ++---
-> > >  include/linux/iio/common/cros_ec_sensors_core.h       |  4 ++--
-> > >  7 files changed, 19 insertions(+), 16 deletions(-)
-> > >
-> > > diff --git a/drivers/iio/accel/cros_ec_accel_legacy.c b/drivers/iio/accel/cros_ec_accel_legacy.c
-> > > index b6f3471b62dc..8f1232c38e0d 100644
-> > > --- a/drivers/iio/accel/cros_ec_accel_legacy.c
-> > > +++ b/drivers/iio/accel/cros_ec_accel_legacy.c
-> > > @@ -215,7 +215,7 @@ static int cros_ec_accel_legacy_probe(struct platform_device *pdev)
-> > >               return -ENOMEM;
-> > >
-> > >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> > > -                                     cros_ec_sensors_capture, NULL);
-> > > +                                     cros_ec_sensors_capture, NULL, false);
-> > >       if (ret)
-> > >               return ret;
-> > >
-> > > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c b/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-> > > index af801e203623..752f59037715 100644
-> > > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-> > > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_lid_angle.c
-> > > @@ -97,7 +97,8 @@ static int cros_ec_lid_angle_probe(struct platform_device *pdev)
-> > >       if (!indio_dev)
-> > >               return -ENOMEM;
-> > >
-> > > -     ret = cros_ec_sensors_core_init(pdev, indio_dev, false, NULL, NULL);
-> > > +     ret = cros_ec_sensors_core_init(pdev, indio_dev, false, NULL,
-> > > +                                     NULL, false);
-> > >       if (ret)
-> > >               return ret;
-> > >
-> > > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-> > > index 130ab8ce0269..57038ca48d93 100644
-> > > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-> > > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors.c
-> > > @@ -236,12 +236,11 @@ static int cros_ec_sensors_probe(struct platform_device *pdev)
-> > >
-> > >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> > >                                       cros_ec_sensors_capture,
-> > > -                                     cros_ec_sensors_push_data);
-> > > +                                     cros_ec_sensors_push_data,
-> > > +                                     true);
-> > >       if (ret)
-> > >               return ret;
-> > >
-> > > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
-> > > -
-> > >       indio_dev->info = &ec_sensors_info;
-> > >       state = iio_priv(indio_dev);
-> > >       for (channel = state->channels, i = CROS_EC_SENSOR_X;
-> > > diff --git a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > index ea480c1d4349..0de800d41978 100644
-> > > --- a/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > +++ b/drivers/iio/common/cros_ec_sensors/cros_ec_sensors_core.c
-> > > @@ -174,12 +174,11 @@ static ssize_t hwfifo_watermark_max_show(struct device *dev,
-> > >
-> > >  static IIO_DEVICE_ATTR_RO(hwfifo_watermark_max, 0);
-> > >
-> > > -const struct attribute *cros_ec_sensor_fifo_attributes[] = {
-> > > +static const struct attribute *cros_ec_sensor_fifo_attributes[] = {
-> > >       &iio_dev_attr_hwfifo_timeout.dev_attr.attr,
-> > >       &iio_dev_attr_hwfifo_watermark_max.dev_attr.attr,
-> > >       NULL,
-> > >  };
-> > > -EXPORT_SYMBOL_GPL(cros_ec_sensor_fifo_attributes);
-> > >
-> > >  int cros_ec_sensors_push_data(struct iio_dev *indio_dev,
-> > >                             s16 *data,
-> > > @@ -238,6 +237,7 @@ static void cros_ec_sensors_core_clean(void *arg)
-> > >   *    for backward compatibility.
-> > >   * @push_data:          function to call when cros_ec_sensorhub receives
-> > >   *    a sample for that sensor.
-> > > + * @has_hw_fifo:     Set true if this device has/uses a HW FIFO
-> > >   *
-> > >   * Return: 0 on success, -errno on failure.
-> > >   */
-> > > @@ -245,7 +245,8 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
-> > >                             struct iio_dev *indio_dev,
-> > >                             bool physical_device,
-> > >                             cros_ec_sensors_capture_t trigger_capture,
-> > > -                           cros_ec_sensorhub_push_data_cb_t push_data)
-> > > +                           cros_ec_sensorhub_push_data_cb_t push_data,
-> > > +                           bool has_hw_fifo)
-> > >  {
-> > >       struct device *dev = &pdev->dev;
-> > >       struct cros_ec_sensors_core_state *state = iio_priv(indio_dev);
-> > > @@ -358,6 +359,10 @@ int cros_ec_sensors_core_init(struct platform_device *pdev,
-> > >                                       NULL);
-> > >                       if (ret)
-> > >                               return ret;
-> > > +
-> > > +                     if (has_hw_fifo)
-> > > +                             iio_buffer_set_attrs(indio_dev->buffer,
-> > > +                                                  cros_ec_sensor_fifo_attributes);
-> > >               }
-> > >       }
-> > >
-> > > diff --git a/drivers/iio/light/cros_ec_light_prox.c b/drivers/iio/light/cros_ec_light_prox.c
-> > > index fed79ba27fda..75d6b5fcf2cc 100644
-> > > --- a/drivers/iio/light/cros_ec_light_prox.c
-> > > +++ b/drivers/iio/light/cros_ec_light_prox.c
-> > > @@ -182,12 +182,11 @@ static int cros_ec_light_prox_probe(struct platform_device *pdev)
-> > >
-> > >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> > >                                       cros_ec_sensors_capture,
-> > > -                                     cros_ec_sensors_push_data);
-> > > +                                     cros_ec_sensors_push_data,
-> > > +                                     true);
-> > >       if (ret)
-> > >               return ret;
-> > >
-> > > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
-> > > -
-> > >       indio_dev->info = &cros_ec_light_prox_info;
-> > >       state = iio_priv(indio_dev);
-> > >       state->core.type = state->core.resp->info.type;
-> > > diff --git a/drivers/iio/pressure/cros_ec_baro.c b/drivers/iio/pressure/cros_ec_baro.c
-> > > index f0938b6fbba0..aa043cb9ac42 100644
-> > > --- a/drivers/iio/pressure/cros_ec_baro.c
-> > > +++ b/drivers/iio/pressure/cros_ec_baro.c
-> > > @@ -139,12 +139,11 @@ static int cros_ec_baro_probe(struct platform_device *pdev)
-> > >
-> > >       ret = cros_ec_sensors_core_init(pdev, indio_dev, true,
-> > >                                       cros_ec_sensors_capture,
-> > > -                                     cros_ec_sensors_push_data);
-> > > +                                     cros_ec_sensors_push_data,
-> > > +                                     true);
-> > >       if (ret)
-> > >               return ret;
-> > >
-> > > -     iio_buffer_set_attrs(indio_dev->buffer, cros_ec_sensor_fifo_attributes);
-> > > -
-> > >       indio_dev->info = &cros_ec_baro_info;
-> > >       state = iio_priv(indio_dev);
-> > >       state->core.type = state->core.resp->info.type;
-> > > diff --git a/include/linux/iio/common/cros_ec_sensors_core.h b/include/linux/iio/common/cros_ec_sensors_core.h
-> > > index caa8bb279a34..c9b80be82440 100644
-> > > --- a/include/linux/iio/common/cros_ec_sensors_core.h
-> > > +++ b/include/linux/iio/common/cros_ec_sensors_core.h
-> > > @@ -96,7 +96,8 @@ struct platform_device;
-> > >  int cros_ec_sensors_core_init(struct platform_device *pdev,
-> > >                             struct iio_dev *indio_dev, bool physical_device,
-> > >                             cros_ec_sensors_capture_t trigger_capture,
-> > > -                           cros_ec_sensorhub_push_data_cb_t push_data);
-> > > +                           cros_ec_sensorhub_push_data_cb_t push_data,
-> > > +                           bool has_hw_fifo);
-> > >
-> > >  irqreturn_t cros_ec_sensors_capture(int irq, void *p);
-> > >  int cros_ec_sensors_push_data(struct iio_dev *indio_dev,
-> > > @@ -125,6 +126,5 @@ extern const struct dev_pm_ops cros_ec_sensors_pm_ops;
-> > >
-> > >  /* List of extended channel specification for all sensors. */
-> > >  extern const struct iio_chan_spec_ext_info cros_ec_sensors_ext_info[];
-> > > -extern const struct attribute *cros_ec_sensor_fifo_attributes[];
-> > >
-> > >  #endif  /* __CROS_EC_SENSORS_CORE_H */  
-> >  
+> Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> Cc: Luka Perkov <luka.perkov@sartura.hr>
+> Cc: Robert Marko <robert.marko@sartura.hr>
 
+I don't know this Marvell SoC too well, but what i see looks O.K.
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+To get this merged, you probably need to break this patchset up and
+send the DT part to Gregory. It could be Lee will take the rest if
+there are ACKed by from the LED and HWMON maintainer.
+
+    Andrew
