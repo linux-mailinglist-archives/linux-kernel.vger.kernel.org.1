@@ -2,160 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0532D27997D
-	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3C9279982
+	for <lists+linux-kernel@lfdr.de>; Sat, 26 Sep 2020 15:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729823AbgIZNDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 09:03:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36942 "EHLO
+        id S1729855AbgIZNDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 09:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729391AbgIZNDQ (ORCPT
+        with ESMTP id S1729847AbgIZNDc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 09:03:16 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092A7C0613CE;
-        Sat, 26 Sep 2020 06:03:16 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id e16so6905409wrm.2;
-        Sat, 26 Sep 2020 06:03:15 -0700 (PDT)
+        Sat, 26 Sep 2020 09:03:32 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88040C0613D4
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 06:03:31 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e17so1964464wme.0
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 06:03:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Els4Jl1sayyL7AQrvZnyLZvuTkn4Bmrn2Q5P8EVgSnQ=;
-        b=GBkGINvG0UDj+BqmBA1iqwDQIaKkdg8mk/poLZA87KoylwKvA5gc6PN/+i6LQ0VFJp
-         1kRvJ1mXK/nhQHBGbRWjjIeR42czIajFZXrgIiwzNDe/I+n4v/qeQDgcZIr2XmzcaaRY
-         qDdZzG7pUfVxuSKeu5QCzkPsQVEPgWzDZeSBaBWF6WBzscOIXHs6ccxKyhbDrpMi4450
-         ApSuqAUuHMsOSp+yGEtDkjMHa6MBT351UsULEJbh/cO/LVShZ8La6EiO5/TgXTmdWOzb
-         bwL5tfhgKJlg2oEis3jQKc2DS24XbI0Tc6KZachqp+hw/4uAVU0uOZ9p2AfEZ1h29Hxn
-         Tr6A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6UBlp4CWE/HNUMg46vGuXH/W4+PrU2QCjrc8dmoCqx0=;
+        b=PNuFpmwNBdW/TGJSBIP0GAADCkUiJiN3BePu59PEzCMlCXYVv+OLoczXNNVfGW7GAf
+         ZsIIVdoOhY0IsSg1qTLlM46HvznPpDEZgXCebWEEK1ft9+j5c+8EjUwlhkLqmSDP7mpx
+         4n3h5/vGkVdPc1nUSmhrDus0L0N0Yz96r3vpw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Els4Jl1sayyL7AQrvZnyLZvuTkn4Bmrn2Q5P8EVgSnQ=;
-        b=QRd1tEnLQ1hKoRmHJfVKdseqt9Yn0uv8cUTWhC0T9apUiIxoTPb0q86Ytf/ObicJG+
-         bV2LF/oQvnSypzHq/FwKuUlK5o7IyEJ1J6gNqCQQcsSoMNEoxOtffHn/WTYgUBQPwSP5
-         BRa/mvVO60lM43fLKUUW3Amy8WWyLlsyB0KKpi03RQ8KB9E02zdxkdHApwOQvk/uV3SV
-         kC26YtMKblsdk4LCbNd7uTWvXfMkcYZ1mmFTgKdyp9SDGXD8ZUgENT1jrOtIG9xZgwHE
-         wLs9+7UELKWYcCf8/26u+kDBSUDz3IM2x5KRqliLqDm8O4ivembzM5/+MYCtTx7wP6BT
-         a9VQ==
-X-Gm-Message-State: AOAM530wZ1dGD47+iiQUwbxf4+VVAjSifF9qG5DkludxrpPdMy5yF3RQ
-        b23ZS3AHDU9nA0xa+5B8QYw=
-X-Google-Smtp-Source: ABdhPJwGP6uEnzqYUfh9FpelXdiFz1gFACLaPgsKTg+Ifbh5MMONyG1/sU9QAlU7WukCxcpyXayMow==
-X-Received: by 2002:adf:f245:: with SMTP id b5mr9956497wrp.288.1601125394546;
-        Sat, 26 Sep 2020 06:03:14 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id d83sm2853213wmf.23.2020.09.26.06.03.13
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6UBlp4CWE/HNUMg46vGuXH/W4+PrU2QCjrc8dmoCqx0=;
+        b=IVFpGj3ZmdQy9BPWt8RCjiED5Iecdte3vYYutaRe1aYFWDyWUNEiAADkDLrUYvYLha
+         LoOOKbLe57k2hgtU/v2pBdPeQAaU9dMLO9oE24O87W/jlUYMYEMeyXhCVaVLzKxKfjor
+         2K6MBEyfrhDPPVNfW4jXdQphRvJqAeEUWR7iUS26zsIgydOhDPLUwOAJLj/6+QXMCdPW
+         Thoww1/tHq5dBAzNPt+tL4vdjV9k8FCI3mIG7Lb83PAKoFmP7e6R1xBxPhmWQCIDqKHX
+         BTwYlAoSrMgf4K8HGb5EFq6E30xx4rUVBCkn7VdB2AzR9Wtez8ZBNq8DAdKonm9wdQ5L
+         Wxsw==
+X-Gm-Message-State: AOAM530Vl2YdVdfk98mH5lCy/RjfYT7St4MCK0G7ONSOqc/DcpQ2Ak3D
+        ohHi0DrDJTamg4wWg14yqcOcvA==
+X-Google-Smtp-Source: ABdhPJynIuaCTOn8KUC4rrc+W/+aEYuVm8XN6ViT/zFkUVty6k8hF7b/mtHx243jPWCjHGHQoYci3Q==
+X-Received: by 2002:a1c:9c8c:: with SMTP id f134mr2541646wme.27.1601125410239;
+        Sat, 26 Sep 2020 06:03:30 -0700 (PDT)
+Received: from chromium.org (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
+        by smtp.gmail.com with ESMTPSA id e18sm6533467wrx.50.2020.09.26.06.03.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 06:03:14 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     agross@kernel.org
-Cc:     bjorn.andersson@linaro.org, sboyd@kernel.org, kholk11@gmail.com,
-        marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, linux-arm-msm@vger.kernel.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] dt-bindings: clock: Add QCOM SDM630 and SDM660 graphics clock bindings
-Date:   Sat, 26 Sep 2020 15:03:06 +0200
-Message-Id: <20200926130306.13843-6-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200926130306.13843-1-kholk11@gmail.com>
-References: <20200926130306.13843-1-kholk11@gmail.com>
+        Sat, 26 Sep 2020 06:03:29 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 13:03:27 +0000
+From:   Tomasz Figa <tfiga@chromium.org>
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, robh+dt@kernel.org, heiko@sntech.de,
+        hverkuil-cisco@xs4all.nl, kernel@collabora.com,
+        dafna.hirschfeld@collabora.com, ezequiel@collabora.com,
+        mark.rutland@arm.com, karthik.poduval@gmail.com, jbx6244@gmail.com,
+        eddie.cai.linux@gmail.com, zhengsq@rock-chips.com,
+        robin.murphy@arm.com
+Subject: Re: [PATCH v5 0/9] move Rockchip ISP bindings out of staging / add
+ ISP DT nodes for RK3399
+Message-ID: <20200926130327.GD3781977@chromium.org>
+References: <20200722155533.252844-1-helen.koike@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200722155533.252844-1-helen.koike@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+Hi Helen,
 
-Add device tree bindings for graphics clock controller for
-Qualcomm Technology Inc's SDM630 and SDM660 SoCs.
----
- .../bindings/clock/qcom,sdm660-gpucc.yaml     | 75 +++++++++++++++++++
- 1 file changed, 75 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/qcom,sdm660-gpucc.yaml
+On Wed, Jul 22, 2020 at 12:55:24PM -0300, Helen Koike wrote:
+> Move the bindings out of drivers/staging and place them in
+> Documentation/devicetree/bindings instead.
+> 
+> Also, add DT nodes for RK3399 and verify with make ARCH=arm64 dtbs_check
+> and make ARCH=arm64 dt_binding_check.
+> 
+> Tested by verifying images streamed from Scarlet Chromebook
+> 
+> Changes in v5:
+> - Drop unit addresses in dt-bindings example for simplification and fix
+> errors as suggested by Rob Herring in previous version
+> - Fix typos
+> - Re-write clock organization with if/then schema
+>
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,sdm660-gpucc.yaml b/Documentation/devicetree/bindings/clock/qcom,sdm660-gpucc.yaml
-new file mode 100644
-index 000000000000..dbb14b274d5b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/qcom,sdm660-gpucc.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/qcom,sdm660-gpucc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm Graphics Clock & Reset Controller Binding for SDM630 and SDM660
-+
-+maintainers:
-+  - Taniya Das <tdas@codeaurora.org>
-+
-+description: |
-+  Qualcomm graphics clock control module which supports the clocks, resets and
-+  power domains on SDM630 and SDM660.
-+
-+  See also dt-bindings/clock/qcom,gpucc-sdm660.h.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,sdm630-gpucc
-+      - qcom,sdm660-gpucc
-+
-+  clocks:
-+    items:
-+      - description: Board XO source
-+      - description: GPLL0 main gpu branch
-+      - description: GPLL0 divider gpu branch
-+
-+  clock-names:
-+    items:
-+      - const: xo
-+      - const: gcc_gpu_gpll0_clk
-+      - const: gcc_gpu_gpll0_div_clk
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  '#reset-cells':
-+    const: 1
-+
-+  '#power-domain-cells':
-+    const: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - '#clock-cells'
-+  - '#reset-cells'
-+  - '#power-domain-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-sdm660.h>
-+    #include <dt-bindings/clock/qcom,rpmcc.h>
-+
-+    clock-controller@5065000 {
-+      compatible = "qcom,sdm660-gpucc";
-+      #clock-cells = <1>;
-+      #reset-cells = <1>;
-+      #power-domain-cells = <1>;
-+      reg = <0x05065000 0x9038>;
-+      clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
-+               <&gcc GCC_GPU_GPLL0_CLK>,
-+               <&gcc GCC_GPU_GPLL0_DIV_CLK>;
-+      clock-names = "xo", "gpll0";
-+    };
-+...
--- 
-2.28.0
+Besides one comment to patch 8/9,
 
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+
+Best regards,
+Tomasz
