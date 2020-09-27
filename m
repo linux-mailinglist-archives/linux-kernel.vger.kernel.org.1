@@ -2,254 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF1027A04C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4FF27A05E
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726309AbgI0JiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 05:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgI0JiE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:38:04 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51E63C0613CE;
-        Sun, 27 Sep 2020 02:38:03 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 09:38:01 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601199482;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=htHzXy77MnnTbhQjtxNRUbK5U+bbsu86mp/9qyVbfZQ=;
-        b=PX5mKtDstLhPlXn7ED+ZFkhtIi4mELSUviru7AkVdLnSUuwRlvxJbBUo/807zppYNYhTuA
-        Jvm53E4b5J0KxJ0HBn9hoA8YLpuu3QAR6h5q4JtWNu2a3rNqbebAC8aqXic4QwfcIweY2z
-        /gcdtLRNVZz4sfKs4/1lRLhtBxiGryqZ0Y4x1yAoNsYCb+sXyDyuexblqAtgrV2aM2Y1j3
-        TT85L0dG6uih0xg/Y/09U8Yfq+yEHK1fhttv0fHYJk7pcpLr6dOzxrfYUfLUGiQVIjxzS3
-        8l8EMkbfNwmGle9nSmam+kYzdUsZa1DFsjT3coWoM7OACIb4iR9qJ5qOvyEtrw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601199482;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=htHzXy77MnnTbhQjtxNRUbK5U+bbsu86mp/9qyVbfZQ=;
-        b=far8J8s00f/PH15VdzAhi9lYcU7VhgSt77taIR7n9/c7c8BV+pm6iBvWtuB2U3JNZvs2PJ
-        xB+PUBbK0vWmkBBQ==
-From:   "tip-bot2 for Joseph Salisbury" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/hyperv] x86/hyperv: Remove aliases with X64 in their name
-Cc:     Joseph Salisbury <joseph.salisbury@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <1601130386-11111-1-git-send-email-jsalisbury@linux.microsoft.com>
-References: <1601130386-11111-1-git-send-email-jsalisbury@linux.microsoft.com>
+        id S1726267AbgI0Jxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 05:53:34 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14250 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726149AbgI0Jxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 05:53:34 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 6CCB1C15570F54E919F4;
+        Sun, 27 Sep 2020 17:53:32 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.253) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Sun, 27 Sep 2020
+ 17:53:25 +0800
+Subject: Re: [PATCH v6 5/6] dt-bindings: dw-apb-ictl: convert to json-schema
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Alexey Brodkin" <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-snps-arc <linux-snps-arc@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+References: <20200924071754.4509-1-thunder.leizhen@huawei.com>
+ <20200924071754.4509-6-thunder.leizhen@huawei.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <89149f30-3cc0-c0a8-4b73-49914659bfe9@huawei.com>
+Date:   Sun, 27 Sep 2020 17:53:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Message-ID: <160119948116.7002.8330625958203673427.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+In-Reply-To: <20200924071754.4509-6-thunder.leizhen@huawei.com>
 Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.177.253]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/hyperv branch of tip:
+Hi Rob:
+  Do you have time to review this patch again?
 
-Commit-ID:     dfc53baae3c6a165a35735b789e3e083786271d6
-Gitweb:        https://git.kernel.org/tip/dfc53baae3c6a165a35735b789e3e083786271d6
-Author:        Joseph Salisbury <joseph.salisbury@microsoft.com>
-AuthorDate:    Sat, 26 Sep 2020 07:26:26 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 27 Sep 2020 11:34:54 +02:00
+On 2020/9/24 15:17, Zhen Lei wrote:
+> Convert the Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+> binding to DT schema format using json-schema.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  .../interrupt-controller/snps,dw-apb-ictl.txt      | 43 -------------
+>  .../interrupt-controller/snps,dw-apb-ictl.yaml     | 74 ++++++++++++++++++++++
+>  2 files changed, 74 insertions(+), 43 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+> deleted file mode 100644
+> index 2db59df9408f4c6..000000000000000
+> --- a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
+> +++ /dev/null
+> @@ -1,43 +0,0 @@
+> -Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+> -
+> -Synopsys DesignWare provides interrupt controller IP for APB known as
+> -dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs with
+> -APB bus, e.g. Marvell Armada 1500. It can also be used as primary interrupt
+> -controller in some SoCs, e.g. Hisilicon SD5203.
+> -
+> -Required properties:
+> -- compatible: shall be "snps,dw-apb-ictl"
+> -- reg: physical base address of the controller and length of memory mapped
+> -  region starting with ENABLE_LOW register
+> -- interrupt-controller: identifies the node as an interrupt controller
+> -- #interrupt-cells: number of cells to encode an interrupt-specifier, shall be 1
+> -
+> -Additional required property when it's used as secondary interrupt controller:
+> -- interrupts: interrupt reference to primary interrupt controller
+> -
+> -The interrupt sources map to the corresponding bits in the interrupt
+> -registers, i.e.
+> -- 0 maps to bit 0 of low interrupts,
+> -- 1 maps to bit 1 of low interrupts,
+> -- 32 maps to bit 0 of high interrupts,
+> -- 33 maps to bit 1 of high interrupts,
+> -- (optional) fast interrupts start at 64.
+> -
+> -Example:
+> -	/* dw_apb_ictl is used as secondary interrupt controller */
+> -	aic: interrupt-controller@3000 {
+> -		compatible = "snps,dw-apb-ictl";
+> -		reg = <0x3000 0xc00>;
+> -		interrupt-controller;
+> -		#interrupt-cells = <1>;
+> -		interrupt-parent = <&gic>;
+> -		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
+> -	};
+> -
+> -	/* dw_apb_ictl is used as primary interrupt controller */
+> -	vic: interrupt-controller@10130000 {
+> -		compatible = "snps,dw-apb-ictl";
+> -		reg = <0x10130000 0x1000>;
+> -		interrupt-controller;
+> -		#interrupt-cells = <1>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+> new file mode 100644
+> index 000000000000000..1b05d36b5f7b943
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
+> @@ -0,0 +1,74 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/interrupt-controller/snps,dw-apb-ictl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
+> +
+> +maintainers:
+> +  - Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
+> +
+> +description: |
+> +  Synopsys DesignWare provides interrupt controller IP for APB known as
+> +  dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs
+> +  with APB bus, e.g. Marvell Armada 1500. It can also be used as primary
+> +  interrupt controller in some SoCs, e.g. Hisilicon SD5203.
+> +
+> +  The interrupt sources map to the corresponding bits in the interrupt
+> +  registers, i.e.
+> +  - 0 maps to bit 0 of low interrupts,
+> +  - 1 maps to bit 1 of low interrupts,
+> +  - 32 maps to bit 0 of high interrupts,
+> +  - 33 maps to bit 1 of high interrupts,
+> +  - (optional) fast interrupts start at 64.
+> +
+> +allOf:
+> +  - $ref: /schemas/interrupt-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: snps,dw-apb-ictl
+> +
+> +  interrupt-controller: true
+> +
+> +  reg:
+> +    description: |
+> +      Physical base address of the controller and length of memory mapped
+> +      region starting with ENABLE_LOW register.
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: Interrupt reference to primary interrupt controller.
+> +    maxItems: 1
+> +
+> +  "#interrupt-cells":
+> +    description: Number of cells to encode an interrupt-specifier.
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +
+> +examples:
+> +  - |
+> +    /* dw_apb_ictl is used as secondary interrupt controller */
+> +    aic: interrupt-controller@3000 {
+> +        compatible = "snps,dw-apb-ictl";
+> +        reg = <0x3000 0xc00>;
+> +        interrupt-controller;
+> +        #interrupt-cells = <1>;
+> +        interrupt-parent = <&gic>;
+> +        interrupts = <0 3 4>;
+> +    };
+> +
+> +    /* dw_apb_ictl is used as primary interrupt controller */
+> +    vic: interrupt-controller@10130000 {
+> +        compatible = "snps,dw-apb-ictl";
+> +        reg = <0x10130000 0x1000>;
+> +        interrupt-controller;
+> +        #interrupt-cells = <1>;
+> +    };
+> +...
+> 
 
-x86/hyperv: Remove aliases with X64 in their name
-
-In the architecture independent version of hyperv-tlfs.h, commit c55a844f46f958b
-removed the "X64" in the symbol names so they would make sense for both x86 and
-ARM64.  That commit added aliases with the "X64" in the x86 version of hyperv-tlfs.h 
-so that existing x86 code would continue to compile.
-
-As a cleanup, update the x86 code to use the symbols without the "X64", then remove 
-the aliases.  There's no functional change.
-
-Signed-off-by: Joseph Salisbury <joseph.salisbury@microsoft.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-Link: https://lore.kernel.org/r/1601130386-11111-1-git-send-email-jsalisbury@linux.microsoft.com
-
----
- arch/x86/hyperv/hv_init.c          |  8 +++----
- arch/x86/hyperv/hv_spinlock.c      |  2 +-
- arch/x86/include/asm/hyperv-tlfs.h | 33 +-----------------------------
- arch/x86/kernel/cpu/mshyperv.c     |  8 +++----
- arch/x86/kvm/hyperv.c              | 20 +++++++++---------
- 5 files changed, 19 insertions(+), 52 deletions(-)
-
-diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
-index 6035df1..e04d90a 100644
---- a/arch/x86/hyperv/hv_init.c
-+++ b/arch/x86/hyperv/hv_init.c
-@@ -148,9 +148,9 @@ static inline bool hv_reenlightenment_available(void)
- 	 * Check for required features and priviliges to make TSC frequency
- 	 * change notifications work.
- 	 */
--	return ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
-+	return ms_hyperv.features & HV_ACCESS_FREQUENCY_MSRS &&
- 		ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE &&
--		ms_hyperv.features & HV_X64_ACCESS_REENLIGHTENMENT;
-+		ms_hyperv.features & HV_ACCESS_REENLIGHTENMENT;
- }
- 
- DEFINE_IDTENTRY_SYSVEC(sysvec_hyperv_reenlightenment)
-@@ -330,8 +330,8 @@ void __init hyperv_init(void)
- 		return;
- 
- 	/* Absolutely required MSRs */
--	required_msrs = HV_X64_MSR_HYPERCALL_AVAILABLE |
--		HV_X64_MSR_VP_INDEX_AVAILABLE;
-+	required_msrs = HV_MSR_HYPERCALL_AVAILABLE |
-+		HV_MSR_VP_INDEX_AVAILABLE;
- 
- 	if ((ms_hyperv.features & required_msrs) != required_msrs)
- 		return;
-diff --git a/arch/x86/hyperv/hv_spinlock.c b/arch/x86/hyperv/hv_spinlock.c
-index 07f21a0..f3270c1 100644
---- a/arch/x86/hyperv/hv_spinlock.c
-+++ b/arch/x86/hyperv/hv_spinlock.c
-@@ -66,7 +66,7 @@ void __init hv_init_spinlocks(void)
- {
- 	if (!hv_pvspin || !apic ||
- 	    !(ms_hyperv.hints & HV_X64_CLUSTER_IPI_RECOMMENDED) ||
--	    !(ms_hyperv.features & HV_X64_MSR_GUEST_IDLE_AVAILABLE)) {
-+	    !(ms_hyperv.features & HV_MSR_GUEST_IDLE_AVAILABLE)) {
- 		pr_info("PV spinlocks disabled\n");
- 		return;
- 	}
-diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-index 7a4d206..0ed20e8 100644
---- a/arch/x86/include/asm/hyperv-tlfs.h
-+++ b/arch/x86/include/asm/hyperv-tlfs.h
-@@ -28,39 +28,6 @@
- #define HYPERV_CPUID_MAX			0x4000ffff
- 
- /*
-- * Aliases for Group A features that have X64 in the name.
-- * On x86/x64 these are HYPERV_CPUID_FEATURES.EAX bits.
-- */
--
--#define HV_X64_MSR_VP_RUNTIME_AVAILABLE		\
--		HV_MSR_VP_RUNTIME_AVAILABLE
--#define HV_X64_MSR_SYNIC_AVAILABLE		\
--		HV_MSR_SYNIC_AVAILABLE
--#define HV_X64_MSR_APIC_ACCESS_AVAILABLE	\
--		HV_MSR_APIC_ACCESS_AVAILABLE
--#define HV_X64_MSR_HYPERCALL_AVAILABLE		\
--		HV_MSR_HYPERCALL_AVAILABLE
--#define HV_X64_MSR_VP_INDEX_AVAILABLE		\
--		HV_MSR_VP_INDEX_AVAILABLE
--#define HV_X64_MSR_RESET_AVAILABLE		\
--		HV_MSR_RESET_AVAILABLE
--#define HV_X64_MSR_GUEST_IDLE_AVAILABLE		\
--		HV_MSR_GUEST_IDLE_AVAILABLE
--#define HV_X64_ACCESS_FREQUENCY_MSRS		\
--		HV_ACCESS_FREQUENCY_MSRS
--#define HV_X64_ACCESS_REENLIGHTENMENT		\
--		HV_ACCESS_REENLIGHTENMENT
--#define HV_X64_ACCESS_TSC_INVARIANT		\
--		HV_ACCESS_TSC_INVARIANT
--
--/*
-- * Aliases for Group B features that have X64 in the name.
-- * On x86/x64 these are HYPERV_CPUID_FEATURES.EBX bits.
-- */
--#define HV_X64_POST_MESSAGES		HV_POST_MESSAGES
--#define HV_X64_SIGNAL_EVENTS		HV_SIGNAL_EVENTS
--
--/*
-  * Group D Features.  The bit assignments are custom to each architecture.
-  * On x86/x64 these are HYPERV_CPUID_FEATURES.EDX bits.
-  */
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 3112544..9834a43 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -248,7 +248,7 @@ static void __init ms_hyperv_init_platform(void)
- 			hv_host_info_edx >> 24, hv_host_info_edx & 0xFFFFFF);
- 	}
- 
--	if (ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
-+	if (ms_hyperv.features & HV_ACCESS_FREQUENCY_MSRS &&
- 	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
- 		x86_platform.calibrate_tsc = hv_get_tsc_khz;
- 		x86_platform.calibrate_cpu = hv_get_tsc_khz;
-@@ -270,7 +270,7 @@ static void __init ms_hyperv_init_platform(void)
- 		crash_kexec_post_notifiers = true;
- 
- #ifdef CONFIG_X86_LOCAL_APIC
--	if (ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
-+	if (ms_hyperv.features & HV_ACCESS_FREQUENCY_MSRS &&
- 	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
- 		/*
- 		 * Get the APIC frequency.
-@@ -296,7 +296,7 @@ static void __init ms_hyperv_init_platform(void)
- 	machine_ops.shutdown = hv_machine_shutdown;
- 	machine_ops.crash_shutdown = hv_machine_crash_shutdown;
- #endif
--	if (ms_hyperv.features & HV_X64_ACCESS_TSC_INVARIANT) {
-+	if (ms_hyperv.features & HV_ACCESS_TSC_INVARIANT) {
- 		wrmsrl(HV_X64_MSR_TSC_INVARIANT_CONTROL, 0x1);
- 		setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
- 	} else {
-@@ -330,7 +330,7 @@ static void __init ms_hyperv_init_platform(void)
- 	alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, asm_sysvec_hyperv_callback);
- 
- 	/* Setup the IDT for reenlightenment notifications */
--	if (ms_hyperv.features & HV_X64_ACCESS_REENLIGHTENMENT) {
-+	if (ms_hyperv.features & HV_ACCESS_REENLIGHTENMENT) {
- 		alloc_intr_gate(HYPERV_REENLIGHTENMENT_VECTOR,
- 				asm_sysvec_hyperv_reenlightenment);
- 	}
-diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
-index 1d33056..8c1e833 100644
---- a/arch/x86/kvm/hyperv.c
-+++ b/arch/x86/kvm/hyperv.c
-@@ -2000,20 +2000,20 @@ int kvm_vcpu_ioctl_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
- 			break;
- 
- 		case HYPERV_CPUID_FEATURES:
--			ent->eax |= HV_X64_MSR_VP_RUNTIME_AVAILABLE;
-+			ent->eax |= HV_MSR_VP_RUNTIME_AVAILABLE;
- 			ent->eax |= HV_MSR_TIME_REF_COUNT_AVAILABLE;
--			ent->eax |= HV_X64_MSR_SYNIC_AVAILABLE;
-+			ent->eax |= HV_MSR_SYNIC_AVAILABLE;
- 			ent->eax |= HV_MSR_SYNTIMER_AVAILABLE;
--			ent->eax |= HV_X64_MSR_APIC_ACCESS_AVAILABLE;
--			ent->eax |= HV_X64_MSR_HYPERCALL_AVAILABLE;
--			ent->eax |= HV_X64_MSR_VP_INDEX_AVAILABLE;
--			ent->eax |= HV_X64_MSR_RESET_AVAILABLE;
-+			ent->eax |= HV_MSR_APIC_ACCESS_AVAILABLE;
-+			ent->eax |= HV_MSR_HYPERCALL_AVAILABLE;
-+			ent->eax |= HV_MSR_VP_INDEX_AVAILABLE;
-+			ent->eax |= HV_MSR_RESET_AVAILABLE;
- 			ent->eax |= HV_MSR_REFERENCE_TSC_AVAILABLE;
--			ent->eax |= HV_X64_ACCESS_FREQUENCY_MSRS;
--			ent->eax |= HV_X64_ACCESS_REENLIGHTENMENT;
-+			ent->eax |= HV_ACCESS_FREQUENCY_MSRS;
-+			ent->eax |= HV_ACCESS_REENLIGHTENMENT;
- 
--			ent->ebx |= HV_X64_POST_MESSAGES;
--			ent->ebx |= HV_X64_SIGNAL_EVENTS;
-+			ent->ebx |= HV_POST_MESSAGES;
-+			ent->ebx |= HV_SIGNAL_EVENTS;
- 
- 			ent->edx |= HV_FEATURE_FREQUENCY_MSRS_AVAILABLE;
- 			ent->edx |= HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE;
