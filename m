@@ -2,78 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DED1279EA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 08:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468A1279EB2
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 08:27:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730343AbgI0GYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 02:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729125AbgI0GYO (ORCPT
+        id S1730436AbgI0G1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 02:27:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45663 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730421AbgI0G1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 02:24:14 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E4A3C0613CE;
-        Sat, 26 Sep 2020 23:24:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ct8nhSMxcDNfLPCRPAykjdvwOd+e0dnNMugoJtaxTRQ=; b=dD3lmmajcl7luJKeIk3saAVpKQ
-        5vL+ffDHqu3Hjf6bFl5ADl0nZIycXxgkmAgP1tEa4FEtanNvVGkpLo+LhhfFRGXT692N8IzhtEKv3
-        VpaqWgcqK2LJ9mya3VJ9ES00hnU4rZOucO4zKYzRXg5WpomBPxoXPZeSzM0BPWjgix15uHRsG9tDi
-        gZi0tx0szYDu0+wROe9bXNzUcH1DaT5ZpRPjjJ+afcwZJnOb7f1MEkkWRw/9z31IxfzcSds075fdt
-        ke1gROxMh8ni8al0hZDaatsvX3Ptc+z3g7ZvkTZJQLLFD/QGEgGy1rh3aXRcIh0Gb+y96xPxU7kJq
-        +9F03zzg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kMQ6J-0006BS-7V; Sun, 27 Sep 2020 06:23:59 +0000
-Date:   Sun, 27 Sep 2020 07:23:59 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ethan Zhao <haifeng.zhao@intel.com>
-Cc:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
-        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
-        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
-        mika.westerberg@linux.intel.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pei.p.jia@intel.com,
-        ashok.raj@linux.intel.com, sathyanarayanan.kuppuswamy@intel.com
-Subject: Re: [PATCH 1/5 V2] PCI: define a function to check and wait till
- port finish DPC handling
-Message-ID: <20200927062359.GA23452@infradead.org>
-References: <20200927032829.11321-1-haifeng.zhao@intel.com>
- <20200927032829.11321-2-haifeng.zhao@intel.com>
+        Sun, 27 Sep 2020 02:27:11 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601188028;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=s0QJrlkrbBeq+eVwaFFCQP+CMSNcINM05HMlBIsX0V8=;
+        b=Ovv2SJVKUGcodYM9jTXEr+7BPzmg2ZFbGOmF9NBTXXK5JGlaeMLrxlsLex3L6TvmHP23Cj
+        lwrc7dO9Xc5Ufv965Nh819LsY3cD7F4XFEbjWORDOPsg+wywh6QOZgb01s02mOnqq6CzLK
+        3BGmhkY+OIiknzgwbGtFcIipf1OZE6A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-244-TJuJ8QZDO5WC0GTCfTVHMw-1; Sun, 27 Sep 2020 02:27:06 -0400
+X-MC-Unique: TJuJ8QZDO5WC0GTCfTVHMw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C148910059A9;
+        Sun, 27 Sep 2020 06:27:04 +0000 (UTC)
+Received: from localhost (ovpn-12-180.pek2.redhat.com [10.72.12.180])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EC4D7368F;
+        Sun, 27 Sep 2020 06:26:59 +0000 (UTC)
+From:   Ming Lei <ming.lei@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+Cc:     Ming Lei <ming.lei@redhat.com>,
+        Veronika Kabatova <vkabatov@redhat.com>,
+        Sagi Grimberg <sagi@grimberg.me>, Tejun Heo <tj@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH V5 0/3] percpu_ref & block: reduce memory footprint of percpu_ref in fast path
+Date:   Sun, 27 Sep 2020 14:26:51 +0800
+Message-Id: <20200927062654.2750277-1-ming.lei@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927032829.11321-2-haifeng.zhao@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +#ifdef CONFIG_PCIE_DPC
-> +static inline bool pci_wait_port_outdpc(struct pci_dev *pdev)
-> +{
-> +	u16 cap = pdev->dpc_cap, status;
-> +	u16 loop = 0;
-> +
-> +	if (!cap) {
-> +		pci_WARN_ONCE(pdev, !cap, "No DPC capability initiated\n");
-> +		return false;
-> +	}
-> +	pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
-> +	pci_dbg(pdev, "DPC status %x, cap %x\n", status, cap);
-> +	while (status & PCI_EXP_DPC_STATUS_TRIGGER && loop < 100) {
-> +		msleep(10);
-> +		loop++;
-> +		pci_read_config_word(pdev, cap + PCI_EXP_DPC_STATUS, &status);
-> +	}
-> +	if (!(status & PCI_EXP_DPC_STATUS_TRIGGER)) {
-> +		pci_dbg(pdev, "Out of DPC %x, cost %d ms\n", status, loop*10);
-> +		return true;
-> +	}
-> +	pci_dbg(pdev, "Timeout to wait port out of DPC status\n");
-> +	return false;
-> +}
+Hi,
 
-I don't think that there is any good reason to have this as an
-inline function.
+The 1st patch removes memory footprint of percpu_ref in fast path
+from 7 words to 2 words, since it is often used in fast path and
+embedded in user struct.
+
+The 2nd patch moves .q_usage_counter to 1st cacheline of
+'request_queue'.
+
+Simple test on null_blk shows ~2% IOPS boost on one 16cores(two threads
+per core) machine, dual socket/numa.
+
+V5:
+	- fix memory leak on ref->data, only percpu_ref_exit() of patch 2
+	is modified.
+
+V4:
+	- rename percpu_ref_inited as percpu_ref_is_initialized
+
+V3:
+	- fix kernel oops on MD
+	- add patch for avoiding to use percpu-refcount internal from md
+	  code
+	- pass Red Hat CKI test which is done by Veronika Kabatova
+
+V2:
+	- pass 'gfp' to kzalloc() for fixing block/027 failure reported by
+	kernel test robot
+	- protect percpu_ref_is_zero() with destroying percpu-refcount by
+	spin lock  
+
+
+Ming Lei (3):
+  percpu_ref: add percpu_ref_is_initialized for MD
+  percpu_ref: reduce memory footprint of percpu_ref in fast path
+  block: move 'q_usage_counter' into front of 'request_queue'
+
+ drivers/infiniband/sw/rdmavt/mr.c |   2 +-
+ drivers/md/md.c                   |   2 +-
+ include/linux/blkdev.h            |   3 +-
+ include/linux/percpu-refcount.h   |  46 ++++------
+ lib/percpu-refcount.c             | 137 +++++++++++++++++++++++-------
+ 5 files changed, 126 insertions(+), 64 deletions(-)
+
+Cc: Veronika Kabatova <vkabatov@redhat.com>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Bart Van Assche <bvanassche@acm.org>
+-- 
+2.25.2
+
