@@ -2,101 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C22E727A470
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0256327A479
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbgI0XEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 19:04:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48214 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbgI0XEk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 19:04:40 -0400
-Received: from DESKTOP-GFFITBK.localdomain (218-161-90-76.HINET-IP.hinet.net [218.161.90.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA77223998;
-        Sun, 27 Sep 2020 23:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601247880;
-        bh=nQke9MOov7c5mbpzrlTleJeouUlfSQN45atI9kVqkwg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0JG8El3REpYx4bww5AJjWCe/7Mw5hIn48fZbiIl9YscTE57ap9cSmUyrC7y4O2IOW
-         +y0V5cWQuxZKc1I+dl0tpIRmLe2q7xE9IPTV3hxC2+FLDF32vN4oey3ma4oFJep3D+
-         oN0OluLv5mJQ1nmszLj3C1GZcDcyoz1ybof02hDU=
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-To:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Subject: [PATCH 4/4] drm/mediatek: Detect CMDQ execution timeout
-Date:   Mon, 28 Sep 2020 07:04:22 +0800
-Message-Id: <20200927230422.11610-5-chunkuang.hu@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200927230422.11610-1-chunkuang.hu@kernel.org>
-References: <20200927230422.11610-1-chunkuang.hu@kernel.org>
+        id S1726409AbgI0X1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 19:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgI0X1w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 19:27:52 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE65DC0613CE;
+        Sun, 27 Sep 2020 16:27:51 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id g4so8167031edk.0;
+        Sun, 27 Sep 2020 16:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=cN3ZgKw4L6VVDpPP7WE7qkFiU9duBJ2iGZQMpu3PBaM=;
+        b=OYqkswUYk+lh0vQbjzvQQLGOEEBOLtqMXKhcTxgyloGFPXXJSeq04AgVtYJfnsn4sF
+         pY/uzr6CXc9A7zl+qs8KAiahFaI8aBHBwyT+Z4p+YfZv6BVHXT8Xrfet2vixL3kN0jMk
+         4s9EiYRdQ1mFu/A1pgUaJgfqHWQ29K2p9zLEkg+Ask5AVN9Nuodu4dlMjznB5d+3lqeM
+         d47g7RUc3Wqo962LE5wx0q2IfofFuAcn2CGy+o6/rYPXG+tnOIpI9CML095zQulfHTQT
+         iJKdt7WwIg7aDrMxmi7cQVyaBhcxqWNq2yVGk2siHzXjjlzuzguI0q4loy5zlPCtteei
+         ZoOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cN3ZgKw4L6VVDpPP7WE7qkFiU9duBJ2iGZQMpu3PBaM=;
+        b=lgcBNsn3Gnh9aRI3/lVA8cT1sAtRgxauenzmFC5BJT0rNTqFv2iD2fzE6f/c9n1oii
+         sqArj4iEhcIJfS1nF0UnZJakYPFBgW8VdZheFWsGuQIzhLXFauKIlLFcMYORsyFH7R8c
+         fCiDso4otJclgycz0sce7fmWcmamuZ2BG/hh/zmyn76BZ0PgtwWmG2/U77WNHkgxLdsq
+         xBINbYU0g1j3jU6GCjCJ+QF0PdWIvN8U9qGcmQguBhND3LiPrbvbo0Vo6PixDqh/BBVW
+         ocXbwHkSXpN4djjedd9M9ReT7PX/Ubt7aFbtnelUcXapeQD73F6oqjoQ8A6ORN7IdWKT
+         SPJg==
+X-Gm-Message-State: AOAM532FzjXvfoK9PRjBt0dd166FlQsFlgPg3PG6eu8aXPF5weOEAfG7
+        YvUpUVW0DnxjwcbWGxZZWdY=
+X-Google-Smtp-Source: ABdhPJyk1RP8pMcljHdB+kAVPJv23Xl9JwGhb8o9KMUPsTBTi8pcw2YBBLnwa9blaUKcnHgRf+xohw==
+X-Received: by 2002:aa7:d959:: with SMTP id l25mr12624416eds.383.1601249270550;
+        Sun, 27 Sep 2020 16:27:50 -0700 (PDT)
+Received: from skbuf ([188.25.217.212])
+        by smtp.gmail.com with ESMTPSA id qu9sm7985687ejb.24.2020.09.27.16.27.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 16:27:49 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 02:27:47 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
+Message-ID: <20200927232747.3jwr6mqql727etyz@skbuf>
+References: <20200927224336.705-1-michael@walle.cc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927224336.705-1-michael@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CMDQ is used to update display register in vblank period, so
-it should be execute in next vblank. If it fail to execute
-in next 2 vblank, tiemout happen.
+On Mon, Sep 28, 2020 at 12:43:36AM +0200, Michael Walle wrote:
+> Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove
+> path") this driver causes a kernel oops:
+> 
+> [    1.891065] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
+> [    1.899889] Mem abort info:
+> [    1.902692]   ESR = 0x96000004
+> [    1.905754]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [    1.911089]   SET = 0, FnV = 0
+> [    1.914156]   EA = 0, S1PTW = 0
+> [    1.917303] Data abort info:
+> [    1.920193]   ISV = 0, ISS = 0x00000004
+> [    1.924044]   CM = 0, WnR = 0
+> [    1.927022] [0000000000000080] user address but active_mm is swapper
+> [    1.933403] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [    1.938995] Modules linked in:
+> [    1.942060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc6-next-20200925-00026-gae556cc74e28-dirty #94
+> [    1.951838] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
+> [    1.960135] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> [    1.966168] pc : dspi_setup+0xc8/0x2e0
+> [    1.969926] lr : dspi_setup+0xbc/0x2e0
+> [    1.973684] sp : ffff80001139b930
+> [    1.977005] x29: ffff80001139b930 x28: ffff00207a5d2000
+> [    1.982338] x27: 0000000000000006 x26: ffff00207a44d410
+> [    1.987669] x25: ffff002079c08100 x24: ffff00207a5d2400
+> [    1.993000] x23: ffff00207a5d2600 x22: ffff800011169948
+> [    1.998332] x21: ffff800010cbcd20 x20: ffff00207a58a800
+> [    2.003663] x19: ffff00207a76b700 x18: 0000000000000010
+> [    2.008994] x17: 0000000000000001 x16: 0000000000000019
+> [    2.014326] x15: ffffffffffffffff x14: 0720072007200720
+> [    2.019657] x13: 0720072007200720 x12: ffff8000111fc5e0
+> [    2.024989] x11: 0000000000000003 x10: ffff8000111e45a0
+> [    2.030320] x9 : 0000000000000000 x8 : ffff00207a76b780
+> [    2.035651] x7 : 0000000000000000 x6 : 000000000000003f
+> [    2.040982] x5 : 0000000000000040 x4 : ffff80001139b918
+> [    2.046313] x3 : 0000000000000001 x2 : 64b62cc917af5100
+> [    2.051643] x1 : 0000000000000000 x0 : 0000000000000000
+> [    2.056973] Call trace:
+> [    2.059425]  dspi_setup+0xc8/0x2e0
+> [    2.062837]  spi_setup+0xcc/0x248
+> [    2.066160]  spi_add_device+0xb4/0x198
+> [    2.069918]  of_register_spi_device+0x250/0x370
+> [    2.074462]  spi_register_controller+0x4f4/0x770
+> [    2.079094]  dspi_probe+0x5bc/0x7b0
+> [    2.082594]  platform_drv_probe+0x5c/0xb0
+> [    2.086615]  really_probe+0xec/0x3c0
+> [    2.090200]  driver_probe_device+0x60/0xc0
+> [    2.094308]  device_driver_attach+0x7c/0x88
+> [    2.098503]  __driver_attach+0x60/0xe8
+> [    2.102263]  bus_for_each_dev+0x7c/0xd0
+> [    2.106109]  driver_attach+0x2c/0x38
+> [    2.109692]  bus_add_driver+0x194/0x1f8
+> [    2.113538]  driver_register+0x6c/0x128
+> [    2.117385]  __platform_driver_register+0x50/0x60
+> [    2.122105]  fsl_dspi_driver_init+0x24/0x30
+> [    2.126302]  do_one_initcall+0x54/0x2d0
+> [    2.130149]  kernel_init_freeable+0x1ec/0x258
+> [    2.134520]  kernel_init+0x1c/0x120
+> [    2.138018]  ret_from_fork+0x10/0x34
+> [    2.141606] Code: 97e0b11d aa0003f3 b4000680 f94006e0 (f9404000)
+> [    2.147723] ---[ end trace 26cf63e6cbba33a8 ]---
+> [    2.152374] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+> [    2.160061] SMP: stopping secondary CPUs
+> [    2.163999] Kernel Offset: disabled
+> [    2.167496] CPU features: 0x0040022,20006008
+> [    2.171777] Memory Limit: none
+> [    2.174840] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+> 
+> This is because since this commit, the allocation of the drivers private
+> data is done explicitly and in this case spi_alloc_master() won't set the
+> correct pointer.
+> 
+> Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
 
-Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
----
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Sascha, how did you test commit 530b5affc675?
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index f99c9d2032b8..71f770e25ad2 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -52,6 +52,7 @@ struct mtk_drm_crtc {
- 	struct mbox_client		cmdq_cl;
- 	struct mbox_chan		*cmdq_chan;
- 	u32				cmdq_event;
-+	u32				cmdq_vblank_cnt;
- #endif
- 
- 	struct device			*mmsys_dev;
-@@ -244,6 +245,7 @@ static void ddp_cmdq_cb(struct mbox_client *cl, void *mssg)
- 	struct mtk_drm_crtc *mtk_crtc = container_of(cl, struct mtk_drm_crtc, cmdq_cl);
- 	struct cmdq_cb_data *data = mssg;
- 
-+	mtk_crtc->cmdq_vblank_cnt = 0;
- 	cmdq_pkt_destroy(mtk_crtc->cmdq_chan, data->pkt);
- }
- #endif
-@@ -494,6 +496,11 @@ static void mtk_drm_crtc_hw_config(struct mtk_drm_crtc *mtk_crtc)
- 					   cmdq_handle->pa_base,
- 					   cmdq_handle->cmd_buf_size,
- 					   DMA_TO_DEVICE);
-+		/*
-+		 * CMDQ command should execute in next vblank,
-+		 * If it fail to execute in next 2 vblank, timeout happen.
-+		 */
-+		mtk_crtc->cmdq_vblank_cnt = 2;
- 		cmdq_pkt_flush_async(mtk_crtc->cmdq_chan, cmdq_handle);
- 	}
- #endif
-@@ -674,10 +681,14 @@ void mtk_crtc_ddp_irq(struct drm_crtc *crtc, struct mtk_ddp_comp *comp)
- 
- #if IS_REACHABLE(CONFIG_MTK_CMDQ)
- 	if (!priv->data->shadow_register && !mtk_crtc->cmdq_chan)
-+		mtk_crtc_ddp_config(crtc, NULL);
-+	else if (mtk_crtc->cmdq_vblank_cnt && --mtk_crtc->cmdq_vblank_cnt == 0)
-+		DRM_ERROR("mtk_crtc %d CMDQ execute command timeout!\n",
-+			  drm_crtc_index(&mtk_crtc->base));
- #else
- 	if (!priv->data->shadow_register)
--#endif
- 		mtk_crtc_ddp_config(crtc, NULL);
-+#endif
- 
- 	mtk_drm_finish_page_flip(mtk_crtc);
- }
--- 
-2.17.1
+>  drivers/spi/spi-fsl-dspi.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
+> index a939618f5e47..dd80be987bf9 100644
+> --- a/drivers/spi/spi-fsl-dspi.c
+> +++ b/drivers/spi/spi-fsl-dspi.c
+> @@ -1236,6 +1236,8 @@ static int dspi_probe(struct platform_device *pdev)
+>  	if (!ctlr)
+>  		return -ENOMEM;
+>  
+> +	spi_controller_set_devdata(ctlr, dspi);
+> +
+>  	dspi->pdev = pdev;
+>  	dspi->ctlr = ctlr;
+>  
+> -- 
+> 2.20.1
+> 
 
+Thanks,
+-Vladimir
