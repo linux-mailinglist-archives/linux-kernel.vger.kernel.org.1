@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6CD279ED8
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 08:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8A1279ECA
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 08:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730573AbgI0G2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 02:28:12 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:14295 "EHLO huawei.com"
+        id S1730514AbgI0G1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 02:27:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:47988 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730392AbgI0G1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 02:27:00 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id ADA47A8D8515184FE5C6;
+        id S1730400AbgI0G1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 02:27:01 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id DC26770E4A45D186E326;
         Sun, 27 Sep 2020 14:26:57 +0800 (CST)
 Received: from thunder-town.china.huawei.com (10.174.177.253) by
  DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.487.0; Sun, 27 Sep 2020 14:26:50 +0800
+ 14.3.487.0; Sun, 27 Sep 2020 14:26:51 +0800
 From:   Zhen Lei <thunder.leizhen@huawei.com>
 To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
         devicetree <devicetree@vger.kernel.org>,
@@ -25,9 +25,9 @@ To:     Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>,
 CC:     Zhen Lei <thunder.leizhen@huawei.com>,
         Libin <huawei.libin@huawei.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v3 17/21] dt-bindings: arm: hisilicon: convert hisilicon,hi6220-aoctrl bindings to json-schema
-Date:   Sun, 27 Sep 2020 14:21:25 +0800
-Message-ID: <20200927062129.4573-18-thunder.leizhen@huawei.com>
+Subject: [PATCH v3 18/21] dt-bindings: arm: hisilicon: convert hisilicon,hi6220-mediactrl bindings to json-schema
+Date:   Sun, 27 Sep 2020 14:21:26 +0800
+Message-ID: <20200927062129.4573-19-thunder.leizhen@huawei.com>
 X-Mailer: git-send-email 2.26.0.windows.1
 In-Reply-To: <20200927062129.4573-1-thunder.leizhen@huawei.com>
 References: <20200927062129.4573-1-thunder.leizhen@huawei.com>
@@ -40,67 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Hisilicon Hi6220 Power Always ON domain controller binding to
-DT schema format using json-schema.
+Convert the Hisilicon Hi6220 Media domain controller binding to DT schema
+format using json-schema.
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 ---
- .../controller/hi3620/hisilicon,hi6220-aoctrl.txt  | 18 ----------
- .../controller/hi3620/hisilicon,hi6220-aoctrl.yaml | 42 ++++++++++++++++++++++
+ .../hi3620/hisilicon,hi6220-mediactrl.txt          | 18 ----------
+ .../hi3620/hisilicon,hi6220-mediactrl.yaml         | 42 ++++++++++++++++++++++
  2 files changed, 42 insertions(+), 18 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.txt
- create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.yaml
+ delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.yaml
 
-diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.txt
+diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.txt
 deleted file mode 100644
-index 8f70ac0ebbdf252..000000000000000
---- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.txt
+index 95bf5f5c7abed7c..000000000000000
+--- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.txt
 +++ /dev/null
 @@ -1,18 +0,0 @@
--Hisilicon Hi6220 Power Always ON domain controller
+-Hisilicon Hi6220 Media domain controller
 -
 -Required properties:
--- compatible : "hisilicon,hi6220-aoctrl"
+-- compatible : "hisilicon,hi6220-mediactrl"
 -- reg : Register address and size
 -- #clock-cells: should be set to 1, many clock registers are defined
 -  under this controller and this property must be present.
 -
--Hisilicon designs this system controller to control the power always
--on domain for mobile platform.
+-Hisilicon designs this system controller to control the multimedia
+-domain(e.g. codec, G3D ...) for mobile platform.
 -
 -Example:
 -	/*for Hi6220*/
--	ao_ctrl: ao_ctrl@f7800000 {
--		compatible = "hisilicon,hi6220-aoctrl", "syscon";
--		reg = <0x0 0xf7800000 0x0 0x2000>;
+-	media_ctrl: media_ctrl@f4410000 {
+-		compatible = "hisilicon,hi6220-mediactrl", "syscon";
+-		reg = <0x0 0xf4410000 0x0 0x1000>;
 -		#clock-cells = <1>;
 -	};
 \ No newline at end of file
-diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.yaml
+diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.yaml
 new file mode 100644
-index 000000000000000..9e7c7add1caa469
+index 000000000000000..1cb6c21a137b87b
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.yaml
++++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.yaml
 @@ -0,0 +1,42 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/arm/hisilicon/controller/hi3620/hisilicon,hi6220-aoctrl.yaml#
++$id: http://devicetree.org/schemas/arm/hisilicon/controller/hi3620/hisilicon,hi6220-mediactrl.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Hisilicon Hi6220 Power Always ON domain controller
++title: Hisilicon Hi6220 Media domain controller
 +
 +maintainers:
 +  - Wei Xu <xuwei5@hisilicon.com>
 +
 +description: |
-+  Hisilicon designs this system controller to control the power always
-+  on domain for mobile platform.
++  Hisilicon designs this system controller to control the multimedia
++  domain(e.g. codec, G3D ...) for mobile platform.
 +
 +properties:
 +  compatible:
 +    items:
-+      - const: hisilicon,hi6220-aoctrl
++      - const: hisilicon,hi6220-mediactrl
 +      - const: syscon
 +
 +  reg:
@@ -117,10 +117,10 @@ index 000000000000000..9e7c7add1caa469
 +
 +examples:
 +  - |
-+    /*for Hi6220*/
-+    ao_ctrl: ao_ctrl@f7800000 {
-+        compatible = "hisilicon,hi6220-aoctrl", "syscon";
-+        reg = <0xf7800000 0x2000>;
++    /* for Hi6220 */
++    media_ctrl: media_ctrl@f4410000 {
++        compatible = "hisilicon,hi6220-mediactrl", "syscon";
++        reg = <0xf4410000 0x1000>;
 +        #clock-cells = <1>;
 +    };
 +...
