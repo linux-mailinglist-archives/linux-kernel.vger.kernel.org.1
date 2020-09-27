@@ -2,269 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F4227A18C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF81527A188
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgI0PIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 11:08:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        id S1726440AbgI0PI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 11:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgI0PIy (ORCPT
+        with ESMTP id S1726255AbgI0PI3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 11:08:54 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1499DC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:08:54 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 15:06:53 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601219332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Ve/eliBOOrDy+dHmJqpwEZEajfXiPS6UllUys+7R5bA=;
-        b=1m+l8+qpVAgX1Iu02zkc+BcD8ACfzfcTCViWpGQM5Qjw02oqTwBJgQ3kEL1xMj/IYRc33p
-        b37mvrHJnec8gVyouUOdF5tn02789nE/qpQRwkbG68IXTHj5NebBeSMnYh6DtOXQmGi5uu
-        cESX0Q3WmeyxqhbsDBkWhOQv3cdC8d/Ws+0bcIGQ13t7TjemyvARIkcaItAVOkl6jiI1Gk
-        JCoNO3FG2u8Inl+18LHZ8NYdXvo4GFVhfXWe8vnpQpRZDhrv2hBM2rOgvzzo4+6nlk3Lms
-        3J3DGyqFsTYhdyPHlWgTGOxXip1J7/KRvHKaTBGqcNbXBlMvGp/gRV5z4lySPw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601219332;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=Ve/eliBOOrDy+dHmJqpwEZEajfXiPS6UllUys+7R5bA=;
-        b=qm452fC8C3UzUBsrgqJBQj266a8iwo/nDOmnmFqHW7AuXjTCURn4VIxF57hhkh3l8dH6nY
-        lHT0k46XNQNbf1AQ==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/urgent for 5.9-rc7
-References: <160121922194.23623.5568205948074131939.tglx@nanos>
-Message-ID: <160121922315.23623.17643308720426244416.tglx@nanos>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Sun, 27 Sep 2020 11:08:29 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0635C0613CE;
+        Sun, 27 Sep 2020 08:08:28 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b124so7013134pfg.13;
+        Sun, 27 Sep 2020 08:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=5SVq0w/G+BJ0BoVyLc2hLMW/0QGne7FVXE/0ouMIQTk=;
+        b=UAJHbXD4pUnwppm9iqHuRKXE1T9OvaMBWCBVDP3NGuqJaNxJty/AMalHQ4a0dsVH++
+         Plru0DNUbaHjINH3PkT1yubbx+UnOCNSIkhP4g7w57FjlZOsmbLu5QESZTKkUaCy+ISo
+         3d4LXOyOkZn/zIfVkpgKSQ3VJQt45oZoWABEvCCHYhiTRXI2oEblHDqgdTQm+l11/pNU
+         sNZ1XUp6OQ1pfpSP3RyoecxMipmqLcftJEXB62kmmwv/QHyXmR/9rJyT20tgAHIhTWT3
+         6nYBC1CskgWEPkNC/pmsIulyjTD+EWcJRMFdxdqAC0OFxZwjXHZcudLFskQaoP5fg4kR
+         2rRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=5SVq0w/G+BJ0BoVyLc2hLMW/0QGne7FVXE/0ouMIQTk=;
+        b=T/W2lONbMFNrIGiq/zgUdkNb6gwd4Ubhv1XyQWssiptua47+CDrTc0yjELZQ9CC9sL
+         8yGZecQw3TvSmwt4ZhW0krEgSV3ymhLzKAMBufokNc6RIsrOlSQWMpE/GS9urCAbMTDD
+         HWPH1bX7JR27t6Y8UARtcvgUOpY3p8bS4nsax6PlbdAK+uphEA5jiEcx8GpyReRpEIfY
+         2CbyWc3H68utGmlZD/eWJlpVqqAGu0h6bbjGplkQLjU2i/VvMmp50IL4dqeISbk360vZ
+         1Sl0cwvxJCzasIQzlmN/FDZ2bELIu5qhopjMHAdDGoO0SGu9V9jtsabcaoSGmZpn1Z98
+         Bn8g==
+X-Gm-Message-State: AOAM532IGevs+v95JE3oxwL3gCVW5PjbXBRcaUmIFbwJJA5Qdclo0CZS
+        p1AdooHhHxnpl2MXUpkRPUs=
+X-Google-Smtp-Source: ABdhPJzxBslQerYnkiihEyJMATnZ9dRB/0v/TFlZdW7LYCAdJkD2VYfoNnC1t/1jYTH/LH8AZpPCxw==
+X-Received: by 2002:a62:6147:0:b029:142:2501:34e8 with SMTP id v68-20020a6261470000b0290142250134e8mr7398794pfb.65.1601219308467;
+        Sun, 27 Sep 2020 08:08:28 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.167.144.166])
+        by smtp.gmail.com with ESMTPSA id t9sm1384795pgp.90.2020.09.27.08.08.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 27 Sep 2020 08:08:27 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, daniel.m.jordan@oracle.com,
+        akpm@linux-foundation.org, walken@google.com, gustavoars@kernel.org
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] media: atomisp: Fixed error handling path
+Date:   Sun, 27 Sep 2020 20:38:04 +0530
+Message-Id: <1601219284-13275-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Inside alloc_user_pages() based on flag value either pin_user_pages()
+or get_user_pages_fast() will be called. However, these API might fail.
 
-please pull the latest x86/urgent branch from:
+But free_user_pages() called in error handling path doesn't bother
+about return value and will try to unpin bo->pgnr pages, which is
+incorrect.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-09-27
+Fix this by passing the page_nr to free_user_pages(). If page_nr > 0
+pages will be unpinned based on bo->mem_type. This will also take care
+of non error handling path.
 
-up to:  86a82ae0b509: x86/ioapic: Unbreak check_timer()
+Fixes: 14a638ab96c5 ("media: atomisp: use pin_user_pages() for memory
+allocation")
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Ira Weiny <ira.weiny@intel.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/staging/media/atomisp/pci/hmm/hmm_bo.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-
-Two fixes for the x86 interrupt code:
-
-  - Unbreak the magic 'search the timer interrupt' logic in IO/APIC code
-    which got wreckaged when the core interrupt code made the state
-    tracking logic stricter. That caused the interrupt line to stay masked
-    after switching from IO/APIC to PIC delivery mode, which obviously
-    prevents interrupts from being delivered.
-
-  - Make run_on_irqstack_code() typesafe. The function argument is a void
-    pointer which is then casted to 'void (*fun)(void *). This breaks
-    Control Flow Integrity checking in clang. Use proper helper functions
-    for the three variants reuqired.
-
-Thanks,
-
-	tglx
-
------------------->
-Thomas Gleixner (2):
-      x86/irq: Make run_on_irqstack_cond() typesafe
-      x86/ioapic: Unbreak check_timer()
-
-
- arch/x86/entry/common.c          |  2 +-
- arch/x86/entry/entry_64.S        |  2 ++
- arch/x86/include/asm/idtentry.h  |  2 +-
- arch/x86/include/asm/irq_stack.h | 69 +++++++++++++++++++++++++++++++++++-----
- arch/x86/kernel/apic/io_apic.c   |  1 +
- arch/x86/kernel/irq.c            |  2 +-
- arch/x86/kernel/irq_64.c         |  2 +-
- 7 files changed, 68 insertions(+), 12 deletions(-)
-
-diff --git a/arch/x86/entry/common.c b/arch/x86/entry/common.c
-index 2f84c7ca74ea..870efeec8bda 100644
---- a/arch/x86/entry/common.c
-+++ b/arch/x86/entry/common.c
-@@ -299,7 +299,7 @@ __visible noinstr void xen_pv_evtchn_do_upcall(struct pt_regs *regs)
- 	old_regs = set_irq_regs(regs);
- 
- 	instrumentation_begin();
--	run_on_irqstack_cond(__xen_pv_evtchn_do_upcall, NULL, regs);
-+	run_on_irqstack_cond(__xen_pv_evtchn_do_upcall, regs);
- 	instrumentation_begin();
- 
- 	set_irq_regs(old_regs);
-diff --git a/arch/x86/entry/entry_64.S b/arch/x86/entry/entry_64.S
-index 70dea9337816..d977079a7d02 100644
---- a/arch/x86/entry/entry_64.S
-+++ b/arch/x86/entry/entry_64.S
-@@ -682,6 +682,8 @@ SYM_CODE_END(.Lbad_gs)
-  * rdx: Function argument (can be NULL if none)
-  */
- SYM_FUNC_START(asm_call_on_stack)
-+SYM_INNER_LABEL(asm_call_sysvec_on_stack, SYM_L_GLOBAL)
-+SYM_INNER_LABEL(asm_call_irq_on_stack, SYM_L_GLOBAL)
- 	/*
- 	 * Save the frame pointer unconditionally. This allows the ORC
- 	 * unwinder to handle the stack switch.
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index a43366191212..a0638640f1ed 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -242,7 +242,7 @@ __visible noinstr void func(struct pt_regs *regs)			\
- 	instrumentation_begin();					\
- 	irq_enter_rcu();						\
- 	kvm_set_cpu_l1tf_flush_l1d();					\
--	run_on_irqstack_cond(__##func, regs, regs);			\
-+	run_sysvec_on_irqstack_cond(__##func, regs);			\
- 	irq_exit_rcu();							\
- 	instrumentation_end();						\
- 	irqentry_exit(regs, state);					\
-diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
-index 4ae66f097101..775816965c6a 100644
---- a/arch/x86/include/asm/irq_stack.h
-+++ b/arch/x86/include/asm/irq_stack.h
-@@ -12,20 +12,50 @@ static __always_inline bool irqstack_active(void)
- 	return __this_cpu_read(irq_count) != -1;
+diff --git a/drivers/staging/media/atomisp/pci/hmm/hmm_bo.c b/drivers/staging/media/atomisp/pci/hmm/hmm_bo.c
+index f13af23..0168f98 100644
+--- a/drivers/staging/media/atomisp/pci/hmm/hmm_bo.c
++++ b/drivers/staging/media/atomisp/pci/hmm/hmm_bo.c
+@@ -857,16 +857,17 @@ static void free_private_pages(struct hmm_buffer_object *bo,
+ 	kfree(bo->page_obj);
  }
  
--void asm_call_on_stack(void *sp, void *func, void *arg);
-+void asm_call_on_stack(void *sp, void (*func)(void), void *arg);
-+void asm_call_sysvec_on_stack(void *sp, void (*func)(struct pt_regs *regs),
-+			      struct pt_regs *regs);
-+void asm_call_irq_on_stack(void *sp, void (*func)(struct irq_desc *desc),
-+			   struct irq_desc *desc);
- 
--static __always_inline void __run_on_irqstack(void *func, void *arg)
-+static __always_inline void __run_on_irqstack(void (*func)(void))
+-static void free_user_pages(struct hmm_buffer_object *bo)
++static void free_user_pages(struct hmm_buffer_object *bo,
++			    unsigned int page_nr)
  {
- 	void *tos = __this_cpu_read(hardirq_stack_ptr);
+ 	int i;
  
- 	__this_cpu_add(irq_count, 1);
--	asm_call_on_stack(tos - 8, func, arg);
-+	asm_call_on_stack(tos - 8, func, NULL);
-+	__this_cpu_sub(irq_count, 1);
-+}
-+
-+static __always_inline void
-+__run_sysvec_on_irqstack(void (*func)(struct pt_regs *regs),
-+			 struct pt_regs *regs)
-+{
-+	void *tos = __this_cpu_read(hardirq_stack_ptr);
-+
-+	__this_cpu_add(irq_count, 1);
-+	asm_call_sysvec_on_stack(tos - 8, func, regs);
-+	__this_cpu_sub(irq_count, 1);
-+}
-+
-+static __always_inline void
-+__run_irq_on_irqstack(void (*func)(struct irq_desc *desc),
-+		      struct irq_desc *desc)
-+{
-+	void *tos = __this_cpu_read(hardirq_stack_ptr);
-+
-+	__this_cpu_add(irq_count, 1);
-+	asm_call_irq_on_stack(tos - 8, func, desc);
- 	__this_cpu_sub(irq_count, 1);
+ 	hmm_mem_stat.usr_size -= bo->pgnr;
+ 
+ 	if (bo->mem_type == HMM_BO_MEM_TYPE_PFN) {
+-		unpin_user_pages(bo->pages, bo->pgnr);
++		unpin_user_pages(bo->pages, page_nr);
+ 	} else {
+-		for (i = 0; i < bo->pgnr; i++)
++		for (i = 0; i < page_nr; i++)
+ 			put_page(bo->pages[i]);
+ 	}
+ 	kfree(bo->pages);
+@@ -942,6 +943,8 @@ static int alloc_user_pages(struct hmm_buffer_object *bo,
+ 		dev_err(atomisp_dev,
+ 			"get_user_pages err: bo->pgnr = %d, pgnr actually pinned = %d.\n",
+ 			bo->pgnr, page_nr);
++		if (page_nr < 0)
++			page_nr = 0;
+ 		goto out_of_mem;
+ 	}
+ 
+@@ -954,7 +957,7 @@ static int alloc_user_pages(struct hmm_buffer_object *bo,
+ 
+ out_of_mem:
+ 
+-	free_user_pages(bo);
++	free_user_pages(bo, page_nr);
+ 
+ 	return -ENOMEM;
  }
- 
- #else /* CONFIG_X86_64 */
- static inline bool irqstack_active(void) { return false; }
--static inline void __run_on_irqstack(void *func, void *arg) { }
-+static inline void __run_on_irqstack(void (*func)(void)) { }
-+static inline void __run_sysvec_on_irqstack(void (*func)(struct pt_regs *regs),
-+					    struct pt_regs *regs) { }
-+static inline void __run_irq_on_irqstack(void (*func)(struct irq_desc *desc),
-+					 struct irq_desc *desc) { }
- #endif /* !CONFIG_X86_64 */
- 
- static __always_inline bool irq_needs_irq_stack(struct pt_regs *regs)
-@@ -37,17 +67,40 @@ static __always_inline bool irq_needs_irq_stack(struct pt_regs *regs)
- 	return !user_mode(regs) && !irqstack_active();
- }
- 
--static __always_inline void run_on_irqstack_cond(void *func, void *arg,
-+
-+static __always_inline void run_on_irqstack_cond(void (*func)(void),
- 						 struct pt_regs *regs)
- {
--	void (*__func)(void *arg) = func;
-+	lockdep_assert_irqs_disabled();
-+
-+	if (irq_needs_irq_stack(regs))
-+		__run_on_irqstack(func);
-+	else
-+		func();
-+}
-+
-+static __always_inline void
-+run_sysvec_on_irqstack_cond(void (*func)(struct pt_regs *regs),
-+			    struct pt_regs *regs)
-+{
-+	lockdep_assert_irqs_disabled();
- 
-+	if (irq_needs_irq_stack(regs))
-+		__run_sysvec_on_irqstack(func, regs);
-+	else
-+		func(regs);
-+}
-+
-+static __always_inline void
-+run_irq_on_irqstack_cond(void (*func)(struct irq_desc *desc), struct irq_desc *desc,
-+			 struct pt_regs *regs)
-+{
- 	lockdep_assert_irqs_disabled();
- 
- 	if (irq_needs_irq_stack(regs))
--		__run_on_irqstack(__func, arg);
-+		__run_irq_on_irqstack(func, desc);
+@@ -1037,7 +1040,7 @@ void hmm_bo_free_pages(struct hmm_buffer_object *bo)
+ 	if (bo->type == HMM_BO_PRIVATE)
+ 		free_private_pages(bo, &dynamic_pool, &reserved_pool);
+ 	else if (bo->type == HMM_BO_USER)
+-		free_user_pages(bo);
++		free_user_pages(bo, bo->pgnr);
  	else
--		__func(arg);
-+		func(desc);
- }
- 
- #endif
-diff --git a/arch/x86/kernel/apic/io_apic.c b/arch/x86/kernel/apic/io_apic.c
-index 779a89e31c4c..21f9c7f11779 100644
---- a/arch/x86/kernel/apic/io_apic.c
-+++ b/arch/x86/kernel/apic/io_apic.c
-@@ -2243,6 +2243,7 @@ static inline void __init check_timer(void)
- 	legacy_pic->init(0);
- 	legacy_pic->make_irq(0);
- 	apic_write(APIC_LVT0, APIC_DM_EXTINT);
-+	legacy_pic->unmask(0);
- 
- 	unlock_ExtINT_logic();
- 
-diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-index 181060247e3c..c5dd50369e2f 100644
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -227,7 +227,7 @@ static __always_inline void handle_irq(struct irq_desc *desc,
- 				       struct pt_regs *regs)
- {
- 	if (IS_ENABLED(CONFIG_X86_64))
--		run_on_irqstack_cond(desc->handle_irq, desc, regs);
-+		run_irq_on_irqstack_cond(desc->handle_irq, desc, regs);
- 	else
- 		__handle_irq(desc, regs);
- }
-diff --git a/arch/x86/kernel/irq_64.c b/arch/x86/kernel/irq_64.c
-index 1b4fe93a86c5..440eed558558 100644
---- a/arch/x86/kernel/irq_64.c
-+++ b/arch/x86/kernel/irq_64.c
-@@ -74,5 +74,5 @@ int irq_init_percpu_irqstack(unsigned int cpu)
- 
- void do_softirq_own_stack(void)
- {
--	run_on_irqstack_cond(__do_softirq, NULL, NULL);
-+	run_on_irqstack_cond(__do_softirq, NULL);
- }
+ 		dev_err(atomisp_dev, "invalid buffer type.\n");
+ 	mutex_unlock(&bo->mutex);
+-- 
+1.9.1
 
