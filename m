@@ -2,122 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C46427A27D
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C967A27A288
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbgI0TM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:12:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
+        id S1726328AbgI0TRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:17:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI0TM5 (ORCPT
+        with ESMTP id S1726255AbgI0TRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:12:57 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7091BC0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:12:57 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id g3so6556559qtq.10
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:12:57 -0700 (PDT)
+        Sun, 27 Sep 2020 15:17:21 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247BCC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:17:21 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n25so6574949ljj.4
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek-ca.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=70p4oGSydfbO/jwYJPvUdzR0c86BSWNwh7G1IyX4l+0=;
-        b=fd6t7qc21fiN4CqN+wfe9PUBP5/cIzON+yfPafkuAZwPN0iz/IDFmYShAHF1YTPLxB
-         u2J0Na5cWMpMGq3vdnYbpVf9j/7UyzcX9cGzwcA/+AIFuwtMExLBR4SgFGHTOmStkpj5
-         ZQPeZEmZr5QvL3vfoZeN51Opc3H4tP3G1IiEjFAMx7RMpDOCefM4HM3CI70gU52G8Sa+
-         Viy+W85L+4tzroVoHTo5NR2/Du/TYfevLrpLR+uOPTzjXLiyQ+t58KSpmm8cknO9hmkd
-         nIM8OIC4lTpjCBA8xc0qefvSaqkEkONHFLFJlNBjSqBDEwi856nUhRbLseS6mZ8CqEpQ
-         FStA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mjHuHBOMuKs2k/aQNO/HK+2YW0KO567Qs4BlARgJ/HE=;
+        b=dJ5qf1i5rgjXxhg7VYooXql7hvSeRUvl3B7+i2Etx/1J64fSf4wb8/Xz0cknpuu7Mp
+         gNi9Faz3R7QGscrf4zzQCJ6sFc9uy4E3clZYin7FhVhTu9n3bwJwexk/GirwPOVYYWLV
+         QwVkPmrrZv/N6++PyaKCnUKaV2GlNKYuwGprk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=70p4oGSydfbO/jwYJPvUdzR0c86BSWNwh7G1IyX4l+0=;
-        b=cKvQBuUkb2z3x8JOuosQLVCnmSSnfsHesytiC9zZEEtsxbjZU+v5+gVvMAmZePHIPO
-         OIw3U//5gJUMVc20YspEd83WeUn9Ym95q3qYyujplvd2g2gUAdN0Vlhn6bdN3YXhB04a
-         vpkc0h85kw3Yna22c5pWC1kvWGJek7Irhrv8sbH+qIjiFVkRMvT3NaacH3ArsAg9ZY1W
-         9L2XU2Y4W3fuHcZtx/qK+ef/LfadEK2MekEmswkuumS+W8qd/ZklbPM667Azut61Yo7e
-         ma9w2rUQQPfYitXXWHPmFCwekyDWL87K10AtWe2lZIBKKTCbolilPPISsDIwIvcq8rnJ
-         bZsA==
-X-Gm-Message-State: AOAM533oTy/fPgxFU5gqn/IPpmUWmefOOJJqTtlvXEXfiL5iu3mMA35C
-        5R8o/vZzPVY9Oizaz31ItI1fZQ==
-X-Google-Smtp-Source: ABdhPJyli80n+mJdJimRQoYiU+5M+ZKbue/LP9WuIVtTXQYq9mztOC1Xo52T5/Ynh5zUXWPMhXLtug==
-X-Received: by 2002:aed:3aa1:: with SMTP id o30mr9420809qte.152.1601233976659;
-        Sun, 27 Sep 2020 12:12:56 -0700 (PDT)
-Received: from [192.168.0.189] ([147.253.86.153])
-        by smtp.gmail.com with ESMTPSA id j88sm7692498qte.96.2020.09.27.12.12.55
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mjHuHBOMuKs2k/aQNO/HK+2YW0KO567Qs4BlARgJ/HE=;
+        b=ffZg2vuXFg3ulnBwM13xPrPPssfA4ncn5a/31ao8gkCh0ThfV6JGV4nL2RVSdP8XAa
+         6qhlfIXjnk0B5W5zy1NmXKyTsdhA2pJp7FQ8dBVOfExJaeNC3DLx5/Qoj1sgGfI2+JOS
+         zbmlo8XtnaIhqE+BwsOs0WZayWa6fScjSaK95BtiWRdRv7RGApAptHbk5COYYA+oDJW5
+         L5vSwESN0UxBIEJeoWMRAbS/A3sAEtoJgPps6dkQdR/KR0X6CqK0vlr7f9oHq68jr0Fi
+         /kTdq8H+pdy4n2/lqMcoH5lS+RvQH6dJVsMICQSln72Ukk52RW11wx5Y6/sUUPTYqs9w
+         wEYA==
+X-Gm-Message-State: AOAM530YvW6S0WQffkTudb5gOL5xjr0b40JGYcpL7dNFm9cn822wJ0JG
+        /nOdJKZgsJPe0TOX+MrNw2YG4uGPivpgSw==
+X-Google-Smtp-Source: ABdhPJykuALo5fEf19VFC6OrLXXTwj1fL+4t02J8kNKIYnGXEJvDQDyJZ7EYrw/qVdE5umywKB1w/Q==
+X-Received: by 2002:a05:651c:1248:: with SMTP id h8mr4302246ljh.225.1601234239083;
+        Sun, 27 Sep 2020 12:17:19 -0700 (PDT)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id m203sm2575184lfd.195.2020.09.27.12.17.17
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Sep 2020 12:12:56 -0700 (PDT)
-Subject: Re: [PATCH v3 7/7] clk: qcom: Add display clock controller driver for
- SM8250
-To:     Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-References: <20200911153412.21672-1-jonathan@marek.ca>
- <20200911153412.21672-8-jonathan@marek.ca>
- <160080125949.310579.17354323673790889544@swboyd.mtv.corp.google.com>
- <2f429321-49c1-98b9-63e6-fd9c885af59c@marek.ca>
- <160092820545.310579.6383587246524246608@swboyd.mtv.corp.google.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <6fbd25e8-a941-5055-7141-40f7a0608d5c@marek.ca>
-Date:   Sun, 27 Sep 2020 15:11:25 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Sun, 27 Sep 2020 12:17:17 -0700 (PDT)
+Received: by mail-lf1-f50.google.com with SMTP id u8so8617806lff.1
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:17:17 -0700 (PDT)
+X-Received: by 2002:a19:e00a:: with SMTP id x10mr3093560lfg.603.1601234237338;
+ Sun, 27 Sep 2020 12:17:17 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <160092820545.310579.6383587246524246608@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <160121922194.23623.5568205948074131939.tglx@nanos>
+In-Reply-To: <160121922194.23623.5568205948074131939.tglx@nanos>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 27 Sep 2020 12:17:01 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgdcYgqGvS76ohR4SsgooahOWVc0Z9LRPP61wcGoHx4Pw@mail.gmail.com>
+Message-ID: <CAHk-=wgdcYgqGvS76ohR4SsgooahOWVc0Z9LRPP61wcGoHx4Pw@mail.gmail.com>
+Subject: Re: [GIT pull] timers/urgent for 5.9-rc7
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/20 2:16 AM, Stephen Boyd wrote:
-> Quoting Jonathan Marek (2020-09-23 09:10:04)
->> On 9/22/20 3:00 PM, Stephen Boyd wrote:
->>> Quoting Jonathan Marek (2020-09-11 08:34:07)
->>>> diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
->>>> new file mode 100644
->>>> index 000000000000..7c0f384a3a42
->>>> --- /dev/null
->>>> +++ b/drivers/clk/qcom/dispcc-sm8250.c
->>>> @@ -0,0 +1,1100 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +/*
->>>> + * Copyright (c) 2018-2020, The Linux Foundation. All rights reserved.
->>>> + */
->>>> +
->>> [...]
->>>> +
->>>> +static const struct clk_parent_data disp_cc_parent_data_6[] = {
->>>> +       { .fw_name = "bi_tcxo" },
->>>> +       { .fw_name = "dsi0_phy_pll_out_dsiclk" },
->>>> +       { .fw_name = "dsi1_phy_pll_out_dsiclk" },
->>>
->>> Can we remove clk postfix on these clk names?
->>>
->>
->> This is consistent with the names used in both sdm845 and sc7180
->> drivers. If this should change then those should be changed too?
-> 
-> If DT isn't using it already then it sounds OK to change the other
-> SoCs. Otherwise fix it just for this one.
-> 
+On Sun, Sep 27, 2020 at 8:08 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> please pull the latest timers/urgent branch from:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-09-27
 
-Both sdm845 and sc7180 DT are using these names. I kept these names in 
-the V4 I just sent, keeping things consistent is a lot more beneficial 
-than dropping 3 extra characters from the DT names.
+Hmm. I got this (and the x86) pull request twice.
 
-The sc7180 dispcc driver is recent and has all of these:
+Is it just because the subject line was messed up the first time, or
+did you perhaps mean to send something else?
 
-- dp_phy_pll_link_clk
-- dp_phy_pll_vco_div_clk
-- dsi0_phy_pll_out_byteclk
-- dsi0_phy_pll_out_dsiclk
-
-So I just can't imagine dropping the clk postfix is actually important.
-
+                       Linus
