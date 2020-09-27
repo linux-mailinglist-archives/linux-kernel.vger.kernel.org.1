@@ -2,106 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46DC327A020
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494E727A022
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:27:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgI0J0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 05:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54572 "EHLO
+        id S1726376AbgI0J1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 05:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgI0J0j (ORCPT
+        with ESMTP id S1726239AbgI0J1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:26:39 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16AE3C0613CE;
-        Sun, 27 Sep 2020 02:26:39 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id j7so1736914plk.11;
-        Sun, 27 Sep 2020 02:26:39 -0700 (PDT)
+        Sun, 27 Sep 2020 05:27:10 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA99DC0613CE;
+        Sun, 27 Sep 2020 02:27:10 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id n14so6712634pff.6;
+        Sun, 27 Sep 2020 02:27:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=pA6yXzA3gbp0YSOhR5m53LA5ya/f3gk0sBhTHh1xSe4=;
-        b=sWWabTOBCy19tx3G8lYZrn3AFCh17mQ9gkrcB2Q1ng2XZ1f6QMxnprzKbFvf+cZJDk
-         Ba1LDHfhyVq5q8BQ4xaASpCXB2zWhkicXT0jt7OxhMBhuhjphF7cv2XuUu+LaAe1nqln
-         p+C5YpnqI+J8gurtfB+r2D6/YhspzycTXCSsJMyQLEGMQFUJB3HToOupwjzzI52Izjhj
-         mSkUREpelIyjxB3lLJ2WNpwD8I+Rgy6JjOY6KzIMvteMgEAKlH/pjf2KeNoyYWsdziGX
-         6N8L41cT4STRdJDsrVmUatlT+OG4ao76sXLehSV03DHvShmxzgnjyaVnQ0VZQ2Qy5rO6
-         VZQA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/+0v4K0vmArclBVNRS/fx6ONczXgbxr9rkdov+E0hJQ=;
+        b=uhn8pjG4O8w8yKQYba0Eqi7d+4yEDRRterRVfsBkbBzHte3tCxkee/VgACvDRoQOEB
+         m8HlLZD8Rvmqz29YH+gKFlueoL77fiAxJYnHQMr9t84twhsh85cQI5Rev7kbALp43kfi
+         yZodv8kSYLEUmgK6sxazd6Ljn1IA/lYSgdCJaU9+93jI6qE/yxUMMT/WEgo/qTerkg47
+         sIR97q1Gpo38eUBE4uAg4/cqRxlfq5t3BtKpVQwy8HTHCpnzw8aFtAITvXQOO49IRS6x
+         YSookZTniu56Aam3V0J3jvjGU0YD3WdyEmxzCchnhGCm+85xK9/EqcEk7GXrZrG1NE3R
+         ojkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=pA6yXzA3gbp0YSOhR5m53LA5ya/f3gk0sBhTHh1xSe4=;
-        b=LDGQ6AuplFTL9+Ahrxrhl6q7qeSXx7zbmwpv2IEkS2o7m9WVBw8+7qvTrh31MYGIvF
-         JM3Q6d/gD+JHN6+vr9NzibrVV44KTDqg7DrRqz7Sf4iYdFCN1li7J26OYuStZeR4Qpb/
-         x1OqMuJO+Lt/m4g/AGaoWwe0vkx443sayIgqzcn5F4AEKhswU72+Ls8a9ZdAX0SCUtNs
-         /ffgvfvAnMdwTn4sSoLMw0oCf0Dba+C4FW4d4l3Aw3AgwdOG/pceC44JqwPfdLJIIKbB
-         JK12+Rb1fNob8vuuNesY6PV4MIqLvNd950b3VxE6m22sQ4G8vonfL2m9l1zWQupMYLCg
-         Kldg==
-X-Gm-Message-State: AOAM533kvvDMoGpu57+iIyyWaM8ykP7v7MqyDU/GlA6OYRAxIfYLcUU+
-        Y6NGbaO/+c9pqnkQh2L9DA==
-X-Google-Smtp-Source: ABdhPJyx3SGakbayI57YaH92av735mygahVZKXiNrXaasK3ixDF+bJPcxHgMN/aWBK/0VWmk65Devw==
-X-Received: by 2002:a17:90b:1649:: with SMTP id il9mr4845770pjb.94.1601198798650;
-        Sun, 27 Sep 2020 02:26:38 -0700 (PDT)
-Received: from localhost.localdomain ([47.242.131.39])
-        by smtp.gmail.com with ESMTPSA id h15sm7910943pfo.194.2020.09.27.02.26.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/+0v4K0vmArclBVNRS/fx6ONczXgbxr9rkdov+E0hJQ=;
+        b=I3ckKWAcXG01EJLET1YsEixVYk87zX8fjk+4L+wF+hvEswvWhsjXEl72MWh32TtCSN
+         GmcED+OVXiEtU9o8PCVcKIn0Zf0Sedz4WR1YQzb2oATuTckeg3tpMY1tV1orDcOesO0R
+         Agcap5LQTzFYlchmpQd7vtgjUvDZluEin1gJ4UKQbQP5ZN2CpUMObUcbxE5wHaF3hQl6
+         mK/45ZF8l+XDhwSkfCsnRuWA6lewqnjWRlv9l8Osf+ZroKdSlJT4rKl4ciCMKKOfAknB
+         WrQPBgvyiYINK246gGRiM8Y3tg+pnHd/0G1Ot87xxAFCvfQGjTES7a7UMdYHHawrHvtF
+         PGmA==
+X-Gm-Message-State: AOAM532KGdaCnj5NWhUzOe390aBjN+vFw+BRxgh5Lh/k863dkf+fRQvb
+        yFnU+yl6yxkP6kVMBp6yzrUhcjYt4TNg7t8=
+X-Google-Smtp-Source: ABdhPJzznsWE+vGPA76opHSWu8mdz1RLxc0cgGQ4T3jeUXYXq5bYqi3z1U4Ii5LxZ7AyjI1MX6tBxw==
+X-Received: by 2002:a63:1f1a:: with SMTP id f26mr5227671pgf.150.1601198830044;
+        Sun, 27 Sep 2020 02:27:10 -0700 (PDT)
+Received: from PWN ([161.117.41.183])
+        by smtp.gmail.com with ESMTPSA id r6sm7556304pfq.11.2020.09.27.02.27.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 02:26:37 -0700 (PDT)
-From:   Pujin Shi <shipujin.t@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Kees Cook <keescook@chromium.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shipujin.t@gmail.com
-Subject: [PATCH] MIPS: mm: Fix build error
-Date:   Sun, 27 Sep 2020 17:26:10 +0800
-Message-Id: <20200927092610.1378-1-shipujin.t@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        Sun, 27 Sep 2020 02:27:09 -0700 (PDT)
+Date:   Sun, 27 Sep 2020 05:27:01 -0400
+From:   Peilin Ye <yepeilin.cs@gmail.com>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
+        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: KASAN: use-after-free Read in bit_putcs
+Message-ID: <20200927092701.GA1037755@PWN>
+References: <000000000000226d3f05b02dd607@google.com>
+ <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
+ <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
+ <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch/mips/mm/init.c: In function 'mem_init':
-././include/linux/compiler_types.h:319:38: error: call to '__compiletime_assert_321' declared with attribute error: BUILD_BUG_ON failed: IS_ENABLED(CONFIG_32BIT) && (_PFN_SHIFT > PAGE_SHIFT)
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                      ^
-././include/linux/compiler_types.h:300:4: note: in definition of macro '__compiletime_assert'
-    prefix ## suffix();    \
-    ^
-././include/linux/compiler_types.h:319:2: note: in expansion of macro '_compiletime_assert'
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-  ^
-./include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
- #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-                                     ^
-./include/linux/build_bug.h:50:2: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-  ^
-arch/mips/mm/init.c:458:2: note: in expansion of macro 'BUILD_BUG_ON'
-  BUILD_BUG_ON(IS_ENABLED(CONFIG_32BIT) && (_PFN_SHIFT > PAGE_SHIFT));
-  ^
+On Sun, Sep 27, 2020 at 05:28:12PM +0900, Tetsuo Handa wrote:
+> Well, vt_io_ioctl(PIO_FONT) initializes "struct console_font_op op;" with
+> 
+>   op.width = 8;
+>   op.height = 0;
+>   op.charcount = 256;
+> 
+> and calls con_font_set() from con_font_op(). But the "/* Need to guess font height [compat] */"
+> chunk in con_font_set() guesses font's height due to being initialized with op.height = 0.
+> Then, con_font_set() calls fbcon_set_font() via vc->vc_sw->con_font_set(), and fbcon_set_font()
+> allocates minimal amount of memory for font data based on font's height calcllated by con_font_set().
+> 
+> Therefore, any attempt to change font's height (like vt_resizex()) larger than font's height
+> calculated by con_font_set() can cause OOB read of memory block for font data. If we allocate
+> maximal amount of memory for any font, OOB read of memory block for font data should not happen.
+> 
+> ----------------------------------------
+> 
+> static char fontdata[8192] = { 2 };
+> 
+> [  227.065369] bit_putcs: width=1 cellsize=1 count=80 maxcnt=8192 scan_align=0 buf_align=0 image.height=1
+> [  227.066254] bit_putcs: width=1 cellsize=1 count=80 maxcnt=8192 scan_align=0 buf_align=0 image.height=1
+> [  227.067642] vc=ffff8880d69b4000 v.v_rows=0 v.v_cols=0 v.v_vlin=1 v.v_clin=9 v.v_vcol=0 v.v_ccol=0 ret=0
+> [  227.067699] vcp=ffff8880d69b4000 before: ->vc_rows=480 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=400 ->vc_font.height=9 save_font_height=1
+> [  227.067774] vcp=ffff8880d69b4000 after: ->vc_rows=480 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=400 ->vc_font.height=9 save_font_height=1 ret=0
+> [  227.067831] vcp=ffff8880cac4b000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
+> [  227.067891] vcp=ffff8880cac4b000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
+> [  227.067947] vcp=ffff8880c6180000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
+> [  227.068007] vcp=ffff8880c6180000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
+> [  227.068063] vcp=ffff8880d6b84000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
+> [  227.068123] vcp=ffff8880d6b84000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
+> [  227.068179] vcp=ffff8880ca8c0000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
+> [  227.068255] vcp=ffff8880ca8c0000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
+> [  227.068455] vcp=ffff8880cbd5d000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
+> [  227.068515] vcp=ffff8880cbd5d000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
+> [  227.084709] ==================================================================
+> [  227.084729] BUG: KASAN: slab-out-of-bounds in soft_cursor+0x34e/0x4a0
+> [  227.084748] Read of size 9 at addr ffff8880c98d5930 by task a.out/1662
 
-Signed-off-by: Pujin Shi <shipujin.t@gmail.com>
----
- arch/mips/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Very interesting, I remember seeing this on the syzbot dashboard...
 
-diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
-index 6c7bbfe35ba3..71dfdf1cb88a 100644
---- a/arch/mips/mm/init.c
-+++ b/arch/mips/mm/init.c
-@@ -455,7 +455,7 @@ void __init mem_init(void)
- 	 * When _PFN_SHIFT is greater than PAGE_SHIFT we won't have enough PTE
- 	 * bits to hold a full 32b physical address on MIPS32 systems.
- 	 */
--	BUILD_BUG_ON(IS_ENABLED(CONFIG_32BIT) && (_PFN_SHIFT > PAGE_SHIFT));
-+	WARN_ON(IS_ENABLED(CONFIG_32BIT) && (_PFN_SHIFT > PAGE_SHIFT));
- 
- #ifdef CONFIG_HIGHMEM
- #ifdef CONFIG_DISCONTIGMEM
--- 
-2.18.1
+Yes, I guess it is this one:
+	KASAN: slab-out-of-bounds Read in soft_cursor
+	https://syzkaller.appspot.com/bug?id=6b8355d27b2b94fb5cedf4655e3a59162d9e48e3
+
+There is a `0x560aul` ioctl() in the reproducer, which is `VT_RESIZEX`.
+
+Thank you,
+Peilin Ye
 
