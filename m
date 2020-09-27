@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD6B27A2F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04F8B27A2F7
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgI0TzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:55:23 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10061
+        id S1726607AbgI0Tzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:55:31 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10039
         "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726442AbgI0TzU (ORCPT
+        by vger.kernel.org with ESMTP id S1726445AbgI0TzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Sep 2020 15:55:20 -0400
 X-IronPort-AV: E=Sophos;i="5.77,311,1596492000"; 
-   d="scan'208";a="360169493"
+   d="scan'208";a="360169494"
 Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
   by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 27 Sep 2020 21:55:12 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
@@ -25,14 +25,10 @@ Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 06/18] hwrng: iproc-rng200 - use semicolons rather than commas to separate statements
-Date:   Sun, 27 Sep 2020 21:12:16 +0200
-Message-Id: <1601233948-11629-7-git-send-email-Julia.Lawall@inria.fr>
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 07/18] hwrng: mxc-rnga - use semicolons rather than commas to separate statements
+Date:   Sun, 27 Sep 2020 21:12:17 +0200
+Message-Id: <1601233948-11629-8-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
 References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
@@ -55,26 +51,24 @@ e2
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- drivers/char/hw_random/iproc-rng200.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/char/hw_random/mxc-rnga.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/char/hw_random/iproc-rng200.c b/drivers/char/hw_random/iproc-rng200.c
-index 32d9fe61a225..01583faf9893 100644
---- a/drivers/char/hw_random/iproc-rng200.c
-+++ b/drivers/char/hw_random/iproc-rng200.c
-@@ -195,10 +195,10 @@ static int iproc_rng200_probe(struct platform_device *pdev)
- 		return PTR_ERR(priv->base);
- 	}
+diff --git a/drivers/char/hw_random/mxc-rnga.c b/drivers/char/hw_random/mxc-rnga.c
+index 025083c838f5..008763c988ed 100644
+--- a/drivers/char/hw_random/mxc-rnga.c
++++ b/drivers/char/hw_random/mxc-rnga.c
+@@ -143,9 +143,9 @@ static int __init mxc_rnga_probe(struct platform_device *pdev)
+ 	mxc_rng->dev = &pdev->dev;
+ 	mxc_rng->rng.name = "mxc-rnga";
+ 	mxc_rng->rng.init = mxc_rnga_init;
+-	mxc_rng->rng.cleanup = mxc_rnga_cleanup,
+-	mxc_rng->rng.data_present = mxc_rnga_data_present,
+-	mxc_rng->rng.data_read = mxc_rnga_data_read,
++	mxc_rng->rng.cleanup = mxc_rnga_cleanup;
++	mxc_rng->rng.data_present = mxc_rnga_data_present;
++	mxc_rng->rng.data_read = mxc_rnga_data_read;
  
--	priv->rng.name = "iproc-rng200",
--	priv->rng.read = iproc_rng200_read,
--	priv->rng.init = iproc_rng200_init,
--	priv->rng.cleanup = iproc_rng200_cleanup,
-+	priv->rng.name = "iproc-rng200";
-+	priv->rng.read = iproc_rng200_read;
-+	priv->rng.init = iproc_rng200_init;
-+	priv->rng.cleanup = iproc_rng200_cleanup;
- 
- 	/* Register driver */
- 	ret = devm_hwrng_register(dev, &priv->rng);
+ 	mxc_rng->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(mxc_rng->clk)) {
 
