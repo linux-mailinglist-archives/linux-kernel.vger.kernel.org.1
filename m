@@ -2,231 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A1A279F97
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 10:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3F97279F99
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 10:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730492AbgI0I2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 04:28:45 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:52127 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727614AbgI0I2p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 04:28:45 -0400
-Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08R8SEm3019762;
-        Sun, 27 Sep 2020 17:28:15 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
- Sun, 27 Sep 2020 17:28:14 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08R8SDHf019753
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Sun, 27 Sep 2020 17:28:14 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: KASAN: use-after-free Read in bit_putcs
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <000000000000226d3f05b02dd607@google.com>
- <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
- <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
-Message-ID: <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
-Date:   Sun, 27 Sep 2020 17:28:12 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1730523AbgI0I3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 04:29:04 -0400
+Received: from mail-dm6nam11on2080.outbound.protection.outlook.com ([40.107.223.80]:20049
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727614AbgI0I3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 04:29:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Sw4K4dcJSnTc6wb8NdpeuaODU8Plmoe5bp635yPaD9iE3AfYrjtd1nVmfip/Oia7dauGzT5BTJQIlevDqfjPJRSwv8pB37dWocpaeph6Vyf27W6NyU1vmkBDMY7MKIrwwTj9JCwxIEm1ADLFvKUmlw6Km7+MEYffSh7Ys1A0mjXH/FM+0nfhc5VzmHzt78KRoJpDZrrIYHS+2YzPqr/f4WfF6P+pccevPhPumf20pZXEwv5k6w9DPDIn7sutzChvKVdouucEvdUwtg5eQNQuCHTkoj1cjftquDCi20Kl6OE9QQJbqF2VVPxB63zKUwpVScWirE8hJ6HGgSX2f4leIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CcvROOIHPrTzckOCuezDgMG5OlL8Hu7mxuVTl5wJLRo=;
+ b=amOGcRLPjocqCoBMs0akfhwj6OVbP/DwNSHSjrxp4MH0Gl9gANqNvm2dE515S6PONSljUrLe57IiB9rOFhmbhjnbxDZ7ThWDqKzj6qcfaSjJlEYooD5sdvk5JwhQj3A6wkc1ZAXw4CKgQiKjC4rN3RLpYrkHHJQ/EAD9DR1y0OdTsFfbBgIzo0tzfX0WU2itAXzTssP95M+1p8GVoRuTlLdXQrOEydmc3ZHoxt3L2tvo7rOHfi6Yx4X5K+mw5zD6Gll/sHiY1wA4kMQBekePaC+c2Rzm7UthWbGzq52DThR0WE7k3N3eMFwOWpdmEFezBbz3NyVoN7mfG8xKfWd5Dw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CcvROOIHPrTzckOCuezDgMG5OlL8Hu7mxuVTl5wJLRo=;
+ b=e2CVVbN/aEC1ehRlBkh/cwmqphAUSoi1GFdBz0SFdS7NOsY8jSdpIHpPp+QJbNwwnoC7VrtM0b3lXTvlxIsaFk7+Lj0nJMb0qpVM3x+CwiMBoPQalvbe9Apa+JNtGkQ15d1VtZHtbdqtt2Qi7TOE89uQjGW9nKxdFKvWPgN4rxI=
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=synaptics.com;
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com (2603:10b6:5:102::17)
+ by DM6PR03MB5035.namprd03.prod.outlook.com (2603:10b6:5:1e5::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23; Sun, 27 Sep
+ 2020 08:29:00 +0000
+Received: from DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38]) by DM6PR03MB4555.namprd03.prod.outlook.com
+ ([fe80::e494:740f:155:4a38%7]) with mapi id 15.20.3412.028; Sun, 27 Sep 2020
+ 08:28:59 +0000
+Date:   Sun, 27 Sep 2020 16:28:30 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        <linux-pci@vger.kernel.org>,
+        Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        <linux-arm-kernel@axis.com>, Vidya Sagar <vidyas@nvidia.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Rob Herring <robh@kernel.org>,
+        Jesper Nilsson <jesper.nilsson@axis.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Pratyush Anand <pratyush.anand@gmail.com>,
+        <linux-tegra@vger.kernel.org>,
+        "Krzysztof Kozlowski" <krzk@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        "Kukjin Kim" <kgene@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        Richard Zhu <hongxing.zhu@nxp.com>,
+        "Martin Blumenstingl" <martin.blumenstingl@googlemail.com>,
+        <linux-arm-msm@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        "Yue Wang" <yue.wang@Amlogic.com>,
+        <linux-samsung-soc@vger.kernel.org>,
+        "Bjorn Helgaas" <bhelgaas@google.com>,
+        <linux-amlogic@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        "Jingoo Han" <jingoohan1@gmail.com>,
+        Andy Gross <agross@kernel.org>, <linux-kernel@vger.kernel.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Lucas Stach <l.stach@pengutronix.de>
+Subject: Re: [PATCH v2 0/5] PCI: dwc: improve msi handling
+Message-ID: <20200927162830.3531ba60@xhacker.debian>
+In-Reply-To: <d4715e17-147f-a4fe-32c1-32fdfe8548bb@nvidia.com>
+References: <20200924190421.549cb8fc@xhacker.debian>
+        <de4d9294-4f6d-c7d1-efc7-c8ef6570bd64@nvidia.com>
+        <20200925171712.254a018d@xhacker.debian>
+        <20200925172724.5bdf6aab@xhacker.debian>
+        <d4715e17-147f-a4fe-32c1-32fdfe8548bb@nvidia.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [124.74.246.114]
+X-ClientProxiedBy: TYAP286CA0021.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:404:8014::8) To DM6PR03MB4555.namprd03.prod.outlook.com
+ (2603:10b6:5:102::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TYAP286CA0021.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8014::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25 via Frontend Transport; Sun, 27 Sep 2020 08:28:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6bbd68cb-aa5b-4171-2507-08d862bf61c2
+X-MS-TrafficTypeDiagnostic: DM6PR03MB5035:
+X-Microsoft-Antispam-PRVS: <DM6PR03MB5035F6550012254F09AB883AED340@DM6PR03MB5035.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /Ks4IXRB0R5h4WoxZtkqy7g8LmoJs4i5kkHXTh3sHFxyOL4LuMQ5Ms+ZT2pi0B11fibhQlx6s+6SnJ5rUyzHeTgtkj4fCGzGMVQ8BanmLHAL7e9fixgNmPDwY2cDiLtvTwjgY6tsggnUn/Vgo5+r/Vp8OsShURp0Uqakj+99OMJ+hQ0UVJP77UhlG5j8rbyfG4ki2yZKO5OoUmmVXR3kONubYDpwIUJCzzKDqyAALgyDwVtTyPFCxhMTRRW19eDkbhnUQLCupRRXcDGmOAKBfo20dVBV8BbRDHTDfK3tsnP0eyh4lBJxRyJutOYrtlkMWx2By92/Rk5SsqbR0GgYGRYoTLqkIrqweC7S6J4D1AcvGWqUb9pIvZSEC3LfsDE6
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR03MB4555.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(346002)(396003)(376002)(136003)(366004)(8676002)(5660300002)(26005)(8936002)(956004)(1076003)(16526019)(186003)(4326008)(7696005)(52116002)(66556008)(66476007)(2906002)(316002)(478600001)(6666004)(45080400002)(55016002)(86362001)(7416002)(6916009)(7406005)(6506007)(53546011)(54906003)(9686003)(66946007)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 0+uIc/TwuvtvuBShW8Tk1e4AjnT9HnXLc8Ac/CHWTBVJT2JHPZgn7JhVqTdX30njeIiS8Sp8EfkBDXcWbzRxmVCi+FX7PNbcmY+072f616R9GMp2bgYUC9YDBKBqxRsQsTBp1R/Ez7acTxswD+lappaEk307SgwSzCWErKXzF8j4SGRzwqHL4dNsIB21jhgY/LKxaeW+PgyN62Sbp4W03kU8oiznro2Dt2T67nSWvPWWoixsNJBSbxzQzHg2Zkr3JC+CVU72NI5e7DteogZ89zQnwcm9OyvJCdZkpRmF8On8VVZCpf+PtzCdwtEEz6c6Fz6TMwPzoatekqwDkuEyqBEBrIDG1cjAHhNEurRc+7+DwEztVZkBwWa/J4FqNXsp03Vn7TIGQUgBlfBYddSyIPDiH4cUMMqYMtH//tbwAsNcebd7vKLizIL8e/Bbq+eoY5wtnkqZbfXv1YkFJfHoLbPp+qylZxcvrhrujXFfhSGvVAoQxET+pXKSurtngszaaxTea9mhbP8c3ms08XF2lsAB5R6KIG7QZjB3oMYd7v2AMwToUKnj4T4tH9++MUH+kTPdRpSXdpzEjgz0GsrpO5mVP5R+fIJ6A/ytZZcL7doZeBYfrieOynKD9qML2bHtlYcRhHIKjT+jUQ1JPsPy+g==
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bbd68cb-aa5b-4171-2507-08d862bf61c2
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR03MB4555.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2020 08:28:59.6001
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: A1Ll9ZESZy8pzq9tJoDO/Co/cFM+bD6oxopVyXuVQLCYXKw6hdDzhCtsXlv1ESoxIKL6+McEDdKmRNlcEazmbQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR03MB5035
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Well, vt_io_ioctl(PIO_FONT) initializes "struct console_font_op op;" with
+Hi,
 
-  op.width = 8;
-  op.height = 0;
-  op.charcount = 256;
+On Fri, 25 Sep 2020 16:13:02 +0100 Jon Hunter wrote:
 
-and calls con_font_set() from con_font_op(). But the "/* Need to guess font height [compat] */"
-chunk in con_font_set() guesses font's height due to being initialized with op.height = 0.
-Then, con_font_set() calls fbcon_set_font() via vc->vc_sw->con_font_set(), and fbcon_set_font()
-allocates minimal amount of memory for font data based on font's height calcllated by con_font_set().
+> 
+> Hi Jisheng,
+> 
+> On 25/09/2020 10:27, Jisheng Zhang wrote:
+> 
+> ...
+> 
+> >> Could you please try below patch?
+> >>
+> >>
+> >> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> >> index bf25d783b5c5..7e5dc54d060e 100644
+> >> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> >> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> >> @@ -197,7 +197,6 @@ static struct irq_chip dw_pci_msi_bottom_irq_chip = {
+> >>         .name = "DWPCI-MSI",
+> >>         .irq_ack = dw_pci_bottom_ack,
+> >>         .irq_compose_msi_msg = dw_pci_setup_msi_msg,
+> >> -       .irq_set_affinity = dw_pci_msi_set_affinity,
+> >>         .irq_mask = dw_pci_bottom_mask,
+> >>         .irq_unmask = dw_pci_bottom_unmask,
+> >>  };  
+> >
+> > A complete patch w/o compiler warning:
+> >
+> > diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > index bf25d783b5c5..18f719cfed0b 100644
+> > --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> > +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> > @@ -137,12 +137,6 @@ static void dw_pci_setup_msi_msg(struct irq_data *d, struct msi_msg *msg)
+> >               (int)d->hwirq, msg->address_hi, msg->address_lo);
+> >  }
+> >
+> > -static int dw_pci_msi_set_affinity(struct irq_data *d,
+> > -                                const struct cpumask *mask, bool force)
+> > -{
+> > -     return -EINVAL;
+> > -}
+> > -
+> >  static void dw_pci_bottom_mask(struct irq_data *d)
+> >  {
+> >       struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+> > @@ -197,7 +191,6 @@ static struct irq_chip dw_pci_msi_bottom_irq_chip = {
+> >       .name = "DWPCI-MSI",
+> >       .irq_ack = dw_pci_bottom_ack,
+> >       .irq_compose_msi_msg = dw_pci_setup_msi_msg,
+> > -     .irq_set_affinity = dw_pci_msi_set_affinity,
+> >       .irq_mask = dw_pci_bottom_mask,
+> >       .irq_unmask = dw_pci_bottom_unmask,
+> >  };
+> >  
+> 
+> 
+> Thanks I was not expecting this to work because ...
+> 
+>  int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
+>                          bool force)
+>  {
+>          struct irq_desc *desc = irq_data_to_desc(data);
+>          struct irq_chip *chip = irq_data_get_irq_chip(data);
+>          int ret;
+> 
+>          if (!chip || !chip->irq_set_affinity)
+>                  return -EINVAL;
+> 
+> However, with your patch Tegra crashes on boot ...
+> 
+> [   11.613853] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+> [   11.622500] Mem abort info:
+> [   11.622515]   ESR = 0x86000004
+> [   11.622524]   EC = 0x21: IABT (current EL), IL = 32 bits
+> [   11.622540]   SET = 0, FnV = 0
+> [   11.636544]   EA = 0, S1PTW = 0
+> [   11.636554] user pgtable: 4k pages, 48-bit VAs, pgdp=000000046a28e000
+> [   11.636559] [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
+> [   11.652652] Internal error: Oops: 86000004 [#1] PREEMPT SMP
+> [   11.652658] Modules linked in: pwm_tegra phy_tegra194_p2u crct10dif_ce lm90 pwm_fan tegra_bpmp_thermal pcie_tegra194 ip_tables x_tables ipv6
+> [   11.670525] CPU: 3 PID: 138 Comm: kworker/3:3 Not tainted 5.9.0-rc4-dirty #12
+> [   11.670534] Hardware name: NVIDIA Jetson AGX Xavier Developer Kit (DT)
+> [   11.683967] Workqueue: events deferred_probe_work_func
+> [   11.683974] pstate: 60c00089 (nZCv daIf +PAN +UAO BTYPE=--)
+> [   11.683985] pc : 0x0
+> [   11.696669] lr : msi_domain_set_affinity+0x44/0xc0
+> [   11.696672] sp : ffff800012bcb390
+> [   11.696680] x29: ffff800012bcb390 x28: ffff0003e3033c20
+> [   11.709891] x27: ffff0003e76cfe58 x26: 0000000000000000
+> [   11.709900] x25: ffff800011d7e850 x24: ffff800011d7e878
+> [   11.709908] x23: 0000000000000000 x22: ffff0003e76cfe00
+> [   11.709914] x21: ffff0003e76cfe58 x20: ffff0003e76cfe58
+> [   11.709921] x19: ffff800011b19000 x18: ffffffffffffffff
+> [   11.709927] x17: 0000000000000000 x16: 0000000000000000
+> [   11.741262] x15: ffff800011b19948 x14: 0000000000000040
+> [   11.741267] x13: 0000000000000228 x12: 0000000000000030
+> [   11.741272] x11: 0101010101010101 x10: 0000000000000040
+> [   11.741277] x9 : 0000000000000000 x8 : 0000000000000004
+> [   11.741281] x7 : ffffffffffffffff x6 : 00000000000000ff
+> [   11.767374] x5 : 0000000000000000 x4 : 0000000000000000
+> [   11.767379] x3 : 0000000000000000 x2 : 0000000000000000
+> [   11.767384] x1 : ffff800011d7e898 x0 : ffff0003e262bf00
+> [   11.767406] Call trace:
+> [   11.767410]  0x0
+> [   11.767424]  irq_do_set_affinity+0x4c/0x178
+> [   11.791400]  irq_setup_affinity+0x124/0x1b0
+> [   11.791423]  irq_startup+0x6c/0x118
+> [   11.791434]  __setup_irq+0x810/0x8a0
+> [   11.802510]  request_threaded_irq+0xdc/0x188
+> [   11.802517]  pcie_pme_probe+0x98/0x110
+> [   11.802536]  pcie_port_probe_service+0x34/0x60
+> [   11.814799]  really_probe+0x110/0x400
+> [   11.814809]  driver_probe_device+0x54/0xb8
+> [   11.822438]  __device_attach_driver+0x90/0xc0
+> [   11.822463]  bus_for_each_drv+0x70/0xc8
+> [   11.822471]  __device_attach+0xec/0x150
+> [   11.834307]  device_initial_probe+0x10/0x18
+> [   11.834311]  bus_probe_device+0x94/0xa0
+> [   11.834315]  device_add+0x464/0x730
+> [   11.834338]  device_register+0x1c/0x28
+> [   11.834349]  pcie_port_device_register+0x2d0/0x3e8
+> [   11.854056]  pcie_portdrv_probe+0x34/0xd8
+> [   11.854063]  local_pci_probe+0x3c/0xa0
+> [   11.854088]  pci_device_probe+0x128/0x1c8
+> [   11.854103]  really_probe+0x110/0x400
+> [   11.869283]  driver_probe_device+0x54/0xb8
+> [   11.869311]  __device_attach_driver+0x90/0xc0
+> [   11.877638]  bus_for_each_drv+0x70/0xc8
+> [   11.877645]  __device_attach+0xec/0x150
+> [   11.877669]  device_attach+0x10/0x18
+> [   11.877680]  pci_bus_add_device+0x4c/0xb0
+> [   11.892642]  pci_bus_add_devices+0x44/0x90
+> [   11.892646]  dw_pcie_host_init+0x370/0x4f8
+> [   11.892653]  tegra_pcie_dw_probe+0x5e8/0xb50 [pcie_tegra194]
+> [   11.892661]  platform_drv_probe+0x50/0xa8
+> [   11.910179]  really_probe+0x110/0x400
+> [   11.910183]  driver_probe_device+0x54/0xb8
+> [   11.910186]  __device_attach_driver+0x90/0xc0
+> [   11.910213]  bus_for_each_drv+0x70/0xc8
+> [   11.910240]  __device_attach+0xec/0x150
+> [   11.929689]  device_initial_probe+0x10/0x18
+> [   11.929694]  bus_probe_device+0x94/0xa0
+> [   11.929719]  deferred_probe_work_func+0x6c/0xa0
+> [   11.929730]  process_one_work+0x1cc/0x360
+> [   11.946008]  worker_thread+0x48/0x450
+> [   11.949602]  kthread+0x120/0x150
+> [   11.952803]  ret_from_fork+0x10/0x1c
+> [   11.956332] Code: bad PC value
+> [   11.959360] ---[ end trace 03c30e252fe4e40b ]---
+> 
+> To be honest, I am not sure I completely understand why it crashes here.
+> 
 
-Therefore, any attempt to change font's height (like vt_resizex()) larger than font's height
-calculated by con_font_set() can cause OOB read of memory block for font data. If we allocate
-maximal amount of memory for any font, OOB read of memory block for font data should not happen.
+I see, the msi_domain_set_affinity() calls parent->chip->irq_set_affinity
+without checking, grepping the irqchip and pci dir, I found that
+if the MSI is based on some cascaded interrupt mechanism, they all
+point the irq_set_affinity to irq_chip_set_affinity_parent(), so I believe
+below patch works:
 
-----------------------------------------
-
-static char fontdata[8192] = { 2 };
-
-[  227.065369] bit_putcs: width=1 cellsize=1 count=80 maxcnt=8192 scan_align=0 buf_align=0 image.height=1
-[  227.066254] bit_putcs: width=1 cellsize=1 count=80 maxcnt=8192 scan_align=0 buf_align=0 image.height=1
-[  227.067642] vc=ffff8880d69b4000 v.v_rows=0 v.v_cols=0 v.v_vlin=1 v.v_clin=9 v.v_vcol=0 v.v_ccol=0 ret=0
-[  227.067699] vcp=ffff8880d69b4000 before: ->vc_rows=480 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=400 ->vc_font.height=9 save_font_height=1
-[  227.067774] vcp=ffff8880d69b4000 after: ->vc_rows=480 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=400 ->vc_font.height=9 save_font_height=1 ret=0
-[  227.067831] vcp=ffff8880cac4b000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  227.067891] vcp=ffff8880cac4b000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  227.067947] vcp=ffff8880c6180000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  227.068007] vcp=ffff8880c6180000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  227.068063] vcp=ffff8880d6b84000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  227.068123] vcp=ffff8880d6b84000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  227.068179] vcp=ffff8880ca8c0000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  227.068255] vcp=ffff8880ca8c0000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  227.068455] vcp=ffff8880cbd5d000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  227.068515] vcp=ffff8880cbd5d000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  227.084709] ==================================================================
-[  227.084729] BUG: KASAN: slab-out-of-bounds in soft_cursor+0x34e/0x4a0
-[  227.084748] Read of size 9 at addr ffff8880c98d5930 by task a.out/1662
-
-[  227.084786] CPU: 3 PID: 1662 Comm: a.out Not tainted 5.9.0-rc6+ #639
-[  227.084810] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
-[  227.084818] Call Trace:
-[  227.084830]  dump_stack+0x161/0x1c3
-[  227.084842]  ? soft_cursor+0x34e/0x4a0
-[  227.084854]  ? soft_cursor+0x34e/0x4a0
-[  227.084871]  print_address_description.constprop.0.cold+0xd3/0x4c5
-[  227.084884]  ? lock_is_held_type+0xbf/0xf0
-[  227.084896]  ? vprintk_func+0xe2/0x155
-[  227.084908]  ? soft_cursor+0x34e/0x4a0
-[  227.084920]  ? soft_cursor+0x34e/0x4a0
-[  227.084932]  kasan_report.cold+0x1f/0x42
-[  227.084944]  ? soft_cursor+0x34e/0x4a0
-[  227.084957]  check_memory_region+0x152/0x1b0
-[  227.084967]  memcpy+0x24/0x60
-[  227.084979]  soft_cursor+0x34e/0x4a0
-[  227.084990]  bit_cursor+0x7f6/0xce6
-[  227.085001]  ? bit_putcs+0x320/0x320
-[  227.085016]  ? fb_get_color_depth.part.0+0x57/0xe0
-[  227.085031]  ? __sanitizer_cov_trace_switch+0x49/0x80
-[  227.085042]  ? bit_putcs+0x320/0x320
-[  227.085054]  fbcon_cursor+0x241/0x2c0
-[  227.085065]  hide_cursor+0x58/0x150
-[  227.085077]  vt_console_print+0x865/0x870
-[  227.085089]  ? lock_release+0x480/0x480
-[  227.085102]  ? lock_downgrade+0x3e0/0x3e0
-[  227.085115]  ? do_raw_spin_lock+0x110/0x1f0
-[  227.085128]  ? screen_glyph_unicode+0x140/0x140
-[  227.085141]  ? rwlock_bug.part.0+0x50/0x50
-[  227.085156]  ? check_preemption_disabled+0x50/0x130
-[  227.085169]  ? screen_glyph_unicode+0x140/0x140
-[  227.085181]  console_unlock+0x92c/0xb30
-[  227.085193]  vt_ioctl.cold+0x182/0x3a2
-[  227.085207]  ? complete_change_console+0x1e0/0x1e0
-[  227.085219]  ? find_held_lock+0x85/0xa0
-[  227.085234]  ? debug_check_no_obj_freed+0x18d/0x276
-[  227.085246]  ? lock_downgrade+0x3e0/0x3e0
-[  227.085258]  ? find_held_lock+0x85/0xa0
-[  227.085271]  ? lock_is_held_type+0xbf/0xf0
-[  227.085281]  ? putname+0xa7/0xc0
-[  227.085292]  ? putname+0xa7/0xc0
-[  227.085302]  ? putname+0xa7/0xc0
-[  227.085317]  ? __sanitizer_cov_trace_switch+0x49/0x80
-[  227.085332]  ? complete_change_console+0x1e0/0x1e0
-[  227.085343]  ? tty_ioctl+0x7c4/0xec0
-[  227.085368]  tty_ioctl+0x7c4/0xec0
-[  227.085383]  ? kmem_cache_free.part.0+0x1b0/0x1e0
-[  227.085394]  ? tty_vhangup+0x30/0x30
-[  227.085409]  ? __sanitizer_cov_trace_switch+0x49/0x80
-[  227.085421]  ? do_vfs_ioctl+0x224/0xc50
-[  227.085434]  ? ioctl_file_clone+0x140/0x140
-[  227.085449]  ? rcu_read_lock_sched_held+0xa0/0xd0
-[  227.085464]  ? rcu_read_lock_any_held.part.0+0x30/0x30
-[  227.085479]  ? check_preemption_disabled+0x50/0x130
-[  227.085491]  ? lock_is_held_type+0xbf/0xf0
-[  227.085506]  ? syscall_enter_from_user_mode+0x1c/0x60
-[  227.085520]  ? rcu_read_lock_sched_held+0xa0/0xd0
-[  227.085533]  ? mark_held_locks+0x24/0x90
-[  227.085544]  ? tty_vhangup+0x30/0x30
-[  227.085556]  __x64_sys_ioctl+0xec/0x140
-[  227.085568]  do_syscall_64+0x31/0x70
-[  227.085583]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  227.085594] RIP: 0033:0x7f261b69e50b
-[  227.085643] Code: 0f 1e fa 48 8b 05 85 39 0d 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 55 39 0d 00 f7 d8 64 89 01 48
-[  227.085658] RSP: 002b:00007fff1894fb98 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[  227.085691] RAX: ffffffffffffffda RBX: 0000560076c54220 RCX: 00007f261b69e50b
-[  227.085711] RDX: 00007fff1894fbac RSI: 000000000000560a RDI: 0000000000000003
-[  227.085731] RBP: 0000000000000003 R08: 0000000000000000 R09: 00007f261b794d50
-[  227.085751] R10: 0000000000000000 R11: 0000000000000246 R12: 0000560076c54130
-[  227.085771] R13: 00007fff1894fcb0 R14: 0000000000000000 R15: 0000000000000000
-
-[  227.085791] Allocated by task 1662:
-[  227.085803]  kasan_save_stack+0x1f/0x40
-[  227.085817]  __kasan_kmalloc.constprop.0+0xbf/0xd0
-[  227.085828]  __kmalloc+0x57d/0x9d0
-[  227.085840]  fbcon_set_font+0x1a6/0x4a0
-[  227.085852]  con_font_op+0x8e2/0xac0
-[  227.085863]  vt_ioctl+0x1186/0x21a0
-[  227.085874]  tty_ioctl+0x7c4/0xec0
-[  227.085886]  __x64_sys_ioctl+0xec/0x140
-[  227.085898]  do_syscall_64+0x31/0x70
-[  227.085913]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-[  227.085940] The buggy address belongs to the object at ffff8880c98d5800
-[  227.085957]  which belongs to the cache kmalloc-512 of size 512
-[  227.085974] The buggy address is located 304 bytes inside of
-[  227.085992]  512-byte region [ffff8880c98d5800, ffff8880c98d5a00)
-[  227.086007] The buggy address belongs to the page:
-[  227.086033] page:00000000022668f3 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0xc98d5
-[  227.086047] flags: 0xfffe0000000200(slab)
-[  227.086081] raw: 00fffe0000000200 ffffea00032c4b08 ffffea0003205748 ffff8880d6840600
-[  227.086104] raw: 0000000000000000 ffff8880c98d5000 0000000100000004 ffff8880d2419241
-[  227.086121] page dumped because: kasan: bad access detected
-[  227.086136] page->mem_cgroup:ffff8880d2419241
-
-[  227.086158] Memory state around the buggy address:
-[  227.086179]  ffff8880c98d5800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  227.086201]  ffff8880c98d5880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-[  227.086222] >ffff8880c98d5900: 00 00 fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  227.086237]                                      ^
-[  227.086258]  ffff8880c98d5980: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  227.086279]  ffff8880c98d5a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-[  227.086301] ==================================================================
-
-----------------------------------------
-
-static char fontdata[8192] = { 2, 3 };
-
-[  464.415205] vcp=ffff8880d69b4000 before: ->vc_rows=240 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=1 ->vc_font.height=9 save_font_height=2
-[  464.415265] vcp=ffff8880d69b4000 after: ->vc_rows=240 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=1 ->vc_font.height=9 save_font_height=2 ret=0
-
-[  464.431257] bit_putcs: width=1 cellsize=9 count=68 maxcnt=910 scan_align=0 buf_align=0 image.height=9
-[  464.431279] ==================================================================
-[  464.431299] BUG: KASAN: slab-out-of-bounds in bit_putcs.cold+0x570/0x5aa
-[  464.431319] Read of size 1 at addr ffff8880ca0ccb43 by task a.out/1757
-
-----------------------------------------
-
-static char fontdata[8192] = "0123456789abcdef0123456789abcdef";
-
-[  300.610119] bit_putcs: width=1 cellsize=32 count=80 maxcnt=256 scan_align=0 buf_align=0 image.height=32
-[  300.630932] bit_putcs: width=1 cellsize=32 count=80 maxcnt=256 scan_align=0 buf_align=0 image.height=32
-[  300.652194] vc=ffff8880d69b4000 v.v_rows=0 v.v_cols=0 v.v_vlin=1 v.v_clin=9 v.v_vcol=0 v.v_ccol=0 ret=0
-[  300.652249] vcp=ffff8880d69b4000 before: ->vc_rows=15 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=400 ->vc_font.height=9 save_font_height=32
-[  300.652308] vcp=ffff8880d69b4000 after: ->vc_rows=15 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=400 ->vc_font.height=9 save_font_height=32 ret=0
-[  300.652500] vcp=ffff8880d55ba000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  300.652559] vcp=ffff8880d55ba000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  300.652613] vcp=ffff8880d4d87000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  300.652690] vcp=ffff8880d4d87000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  300.652767] vcp=ffff8880d546b000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  300.652849] vcp=ffff8880d546b000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  300.652926] vcp=ffff8880c8f85000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  300.653008] vcp=ffff8880c8f85000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  300.653085] vcp=ffff8880d55db000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-[  300.653167] vcp=ffff8880d55db000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-[  300.665421] bit_putcs: width=1 cellsize=9 count=68 maxcnt=910 scan_align=0 buf_align=0 image.height=9
-[  300.665450] bit_putcs: width=1 cellsize=9 count=46 maxcnt=910 scan_align=0 buf_align=0 image.height=9
-
-----------------------------------------
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index bf25d783b5c5..093fba616736 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -137,12 +137,6 @@ static void dw_pci_setup_msi_msg(struct irq_data *d, struct msi_msg *msg)
+ 		(int)d->hwirq, msg->address_hi, msg->address_lo);
+ }
+ 
+-static int dw_pci_msi_set_affinity(struct irq_data *d,
+-				   const struct cpumask *mask, bool force)
+-{
+-	return -EINVAL;
+-}
+-
+ static void dw_pci_bottom_mask(struct irq_data *d)
+ {
+ 	struct pcie_port *pp = irq_data_get_irq_chip_data(d);
+@@ -197,7 +191,7 @@ static struct irq_chip dw_pci_msi_bottom_irq_chip = {
+ 	.name = "DWPCI-MSI",
+ 	.irq_ack = dw_pci_bottom_ack,
+ 	.irq_compose_msi_msg = dw_pci_setup_msi_msg,
+-	.irq_set_affinity = dw_pci_msi_set_affinity,
++	.irq_set_affinity = irq_chip_set_affinity_parent,
+ 	.irq_mask = dw_pci_bottom_mask,
+ 	.irq_unmask = dw_pci_bottom_unmask,
+ };
 
