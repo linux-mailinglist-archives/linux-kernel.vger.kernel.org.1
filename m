@@ -2,131 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5740A27A180
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C14027A185
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:07:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726393AbgI0PB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 11:01:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46050 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726267AbgI0PB7 (ORCPT
+        id S1726314AbgI0PHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 11:07:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39450 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726196AbgI0PHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 11:01:59 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601218917;
+        Sun, 27 Sep 2020 11:07:22 -0400
+Date:   Sun, 27 Sep 2020 15:06:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601219240;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0hs5rdUJVOmzg99SVlEBJlBQFGXQLPQJ2GLdFN3MjFs=;
-        b=ZqnMTfgAjasze6mCvo/28IVH7A5gf58YIwpj/Oo2oiBprfFaoumtJcq3dsrtyZpeJuDNXh
-        rVHom251RK3ICJWXR5PN/ULHma36fUzuxe+FDivwQ/S09fL8Jr2hDAPrji7xwB7rz7R1pe
-        6csiYIKWuaVASfcONKcJWXhjLp/ZHNg=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-504-VmXtMD4VNIa27Wxrs5CI5w-1; Sun, 27 Sep 2020 11:01:56 -0400
-X-MC-Unique: VmXtMD4VNIa27Wxrs5CI5w-1
-Received: by mail-ej1-f71.google.com with SMTP id md9so2187297ejb.8
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:01:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0hs5rdUJVOmzg99SVlEBJlBQFGXQLPQJ2GLdFN3MjFs=;
-        b=pwchudv/7QZnz3RyTMmxVF76bY96f/X3l0JOSLH3P2Iyf3gwk0N1+Q4PrIJe0Fd9Fh
-         SJ7qLflX9m/W3A0Thh+nhVSk9VWhHelw0aa0Cxc5RrIW3jeKaocCl+zJkewf6avIrHwK
-         VoOSz2V3HFEwriSvGFdAEWpW8KdhlJ+DPTfoFMUqo13nc3uHpJpTRYqEAnPVq/JyfAOQ
-         8IsXrMmbAfhRI2KH6MwMhUXO9mWx9uzsZ49ZmezfQ5IwfE4eBiyri0hQ3/F6zwyb7Fxo
-         mhPe6zOWUtrZXEEeq7v6IlQAxIHdhLA/bThjBNfWvJv9vPO045iQWvm88D6c9Ntj1G3G
-         4a6A==
-X-Gm-Message-State: AOAM5303jWXQzjmKSqgjpGsqKiJxAEvGgAjjeeR09JziUTSLgiqQF5pg
-        MN2ugCvcarhYprufa+J0QYFBDheUAzg+xD2kxyfRNCC0XAW2K8mFIzYppA5LAkCeAzo1YFneyBj
-        gQ3pwkM0hzCm9QAwpacIMN8DS
-X-Received: by 2002:a50:bb65:: with SMTP id y92mr11310108ede.53.1601218914414;
-        Sun, 27 Sep 2020 08:01:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw9xBEE4fL9o6SH/mCyn1ClksiNMLfDL1ho7Cw9z0Iz424ysBl96z0clzUKT7OhlnwXh9r6fA==
-X-Received: by 2002:a50:bb65:: with SMTP id y92mr11310082ede.53.1601218914188;
-        Sun, 27 Sep 2020 08:01:54 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id y14sm6602549eje.10.2020.09.27.08.01.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 27 Sep 2020 08:01:53 -0700 (PDT)
-Subject: Re: [PATCH 0/3] serial: 8250_dw: Fix clk-notifier/port suspend
- deadlock
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200923161950.6237-1-Sergey.Semin@baikalelectronics.ru>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e508b9c8-bcc4-00a6-0ca0-0b4a0c34f626@redhat.com>
-Date:   Sun, 27 Sep 2020 17:01:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20200923161950.6237-1-Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Fl8JFJ4gRkBMYg+KBqqcn30Ipo0kiNAnbl7YILaEPsM=;
+        b=I+xuK3+rKuvKJIk2tlvzV5/QsXItECFYsE4Y4aP5KaY54z7KW4+0MsSBSPb2K7KuL5/aku
+        jpDH9hn+Gfny4SWU2+EGtxRmWIRjRJ/SxFpc7iqnczZxno6Rcdu5c2gNchW7Bm0sdNYFzq
+        RLTZpfFF8xIbLzT9wHCOh4krEw+jA4J72EiM66/dtSsdlcNqF8d34uZUN3TMPRzsrx3FBp
+        yTAtzGzxt/kK2kp6flhyRMRCEv8HZfvYgKRur5rfAfs89SScVvKRGI1a8x+Qi4qEalSfdz
+        I5cMoX617ECZIPVwXAdmfyrx4uczGkTUnPIILoWqE3AD2MituHav04BXwbcJcw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601219240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Fl8JFJ4gRkBMYg+KBqqcn30Ipo0kiNAnbl7YILaEPsM=;
+        b=+rdUb4PpEw/En+VFHiGAWICwI8rTXbpsP0AwrTy4nhn0WyfPpcOeR7FQmbWF3mwcwz9IY1
+        0ELZ16U+9HmfxIDA==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] timers/urgent for for
+Message-ID: <160121921194.23623.5568205948074131939.tglx@nanos>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Linus,
 
-On 9/23/20 6:19 PM, Serge Semin wrote:
-> Hans has discovered that there is a potential deadlock between the ref
-> clock change notifier and the port suspension procedures {see the link at
-> the bottom of the letter}. Indeed the deadlock is possible if the port
-> suspension is initiated during the ref clock rate change:
-> 
->      CPU0 (suspend CPU/UART)   CPU1 (update clock)
->               ----                    ----
->      lock(&port->mutex);
->                                lock((work_completion)(&data->clk_work));
->                                lock(&port->mutex);
->      lock((work_completion)(&data->clk_work));
-> 
->      *** DEADLOCK ***
-> 
-> So the CPU performing the UART port shutdown procedure will wait until the
-> ref clock change notifier is finished (worker is flushed), while the later
-> will wait for a port mutex being released.
-> 
-> A possible solution to bypass the deadlock is to move the worker flush out
-> of the critical section protected by the TTY port mutex. For instance we
-> can register and de-register the clock change notifier in the port probe
-> and remove methods instead of having them called from the port
-> startup/shutdown callbacks. But in order to do that we need to make sure
-> that the serial8250_update_uartclk() method is safe to be used while the
-> port is shutted down. Alas the current implementation doesn't provide that
-> safety. The solution described above is introduced in the framework of
-> this patchset. See individual patches for details.
-> 
-> Link: https://lore.kernel.org/linux-serial/f1cd5c75-9cda-6896-a4e2-42c5bfc3f5c3@redhat.com
-> 
-> Hans, could you test the patchset out on your Cherry Trail (x86)-based
-> devices? After that we can merge it in into the kernels 5.8 and 5.9 if
-> there is no objections against the fix.
+please pull the latest timers/urgent branch from:
 
-Done, I can confirm that this fixes the lockdep issue for me, so you
-can add my:
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-09-27
 
-Tested-by: Hans de Goede <hdegoede@redhat.com>
+up to:  a7b6c0feda15: Merge tag 'timers-v5.9-rc4' of https://git.linaro.org/people/daniel.lezcano/linux into timers/urgent
 
-To the entire series.
+A set of clocksource/clockevents updates:
 
-Regards,
+ - Reset the TI/DM timer before enabling it instead of doing it the other
+   way round.
 
-Hans
+ - Initialize the reload value for the GX6605s timer correctly so the
+   hardware counter starts at 0 again after overrun.
+
+ - Make error return value negative in the h8300 timer init function
+
+Thanks,
+
+	tglx
+
+------------------>
+Guo Ren (1):
+      clocksource/drivers/timer-gx6605s: Fixup counter reload
+
+Tianjia Zhang (1):
+      clocksource/drivers/h8300_timer8: Fix wrong return value in h8300_8timer_init()
+
+Tony Lindgren (1):
+      clocksource/drivers/timer-ti-dm: Do reset before enable
+
+
+ drivers/clocksource/h8300_timer8.c         |  2 +-
+ drivers/clocksource/timer-gx6605s.c        |  1 +
+ drivers/clocksource/timer-ti-dm-systimer.c | 44 ++++++++++++++++--------------
+ 3 files changed, 25 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/clocksource/h8300_timer8.c b/drivers/clocksource/h8300_timer8.c
+index 1d740a8c42ab..47114c2a7cb5 100644
+--- a/drivers/clocksource/h8300_timer8.c
++++ b/drivers/clocksource/h8300_timer8.c
+@@ -169,7 +169,7 @@ static int __init h8300_8timer_init(struct device_node *node)
+ 		return PTR_ERR(clk);
+ 	}
+ 
+-	ret = ENXIO;
++	ret = -ENXIO;
+ 	base = of_iomap(node, 0);
+ 	if (!base) {
+ 		pr_err("failed to map registers for clockevent\n");
+diff --git a/drivers/clocksource/timer-gx6605s.c b/drivers/clocksource/timer-gx6605s.c
+index 80d0939d040b..8d386adbe800 100644
+--- a/drivers/clocksource/timer-gx6605s.c
++++ b/drivers/clocksource/timer-gx6605s.c
+@@ -28,6 +28,7 @@ static irqreturn_t gx6605s_timer_interrupt(int irq, void *dev)
+ 	void __iomem *base = timer_of_base(to_timer_of(ce));
+ 
+ 	writel_relaxed(GX6605S_STATUS_CLR, base + TIMER_STATUS);
++	writel_relaxed(0, base + TIMER_INI);
+ 
+ 	ce->event_handler(ce);
+ 
+diff --git a/drivers/clocksource/timer-ti-dm-systimer.c b/drivers/clocksource/timer-ti-dm-systimer.c
+index f6fd1c1cc527..33b3e8aa2cc5 100644
+--- a/drivers/clocksource/timer-ti-dm-systimer.c
++++ b/drivers/clocksource/timer-ti-dm-systimer.c
+@@ -69,12 +69,33 @@ static bool dmtimer_systimer_revision1(struct dmtimer_systimer *t)
+ 	return !(tidr >> 16);
+ }
+ 
++static void dmtimer_systimer_enable(struct dmtimer_systimer *t)
++{
++	u32 val;
++
++	if (dmtimer_systimer_revision1(t))
++		val = DMTIMER_TYPE1_ENABLE;
++	else
++		val = DMTIMER_TYPE2_ENABLE;
++
++	writel_relaxed(val, t->base + t->sysc);
++}
++
++static void dmtimer_systimer_disable(struct dmtimer_systimer *t)
++{
++	if (!dmtimer_systimer_revision1(t))
++		return;
++
++	writel_relaxed(DMTIMER_TYPE1_DISABLE, t->base + t->sysc);
++}
++
+ static int __init dmtimer_systimer_type1_reset(struct dmtimer_systimer *t)
+ {
+ 	void __iomem *syss = t->base + OMAP_TIMER_V1_SYS_STAT_OFFSET;
+ 	int ret;
+ 	u32 l;
+ 
++	dmtimer_systimer_enable(t);
+ 	writel_relaxed(BIT(1) | BIT(2), t->base + t->ifctrl);
+ 	ret = readl_poll_timeout_atomic(syss, l, l & BIT(0), 100,
+ 					DMTIMER_RESET_WAIT);
+@@ -88,6 +109,7 @@ static int __init dmtimer_systimer_type2_reset(struct dmtimer_systimer *t)
+ 	void __iomem *sysc = t->base + t->sysc;
+ 	u32 l;
+ 
++	dmtimer_systimer_enable(t);
+ 	l = readl_relaxed(sysc);
+ 	l |= BIT(0);
+ 	writel_relaxed(l, sysc);
+@@ -336,26 +358,6 @@ static int __init dmtimer_systimer_init_clock(struct dmtimer_systimer *t,
+ 	return 0;
+ }
+ 
+-static void dmtimer_systimer_enable(struct dmtimer_systimer *t)
+-{
+-	u32 val;
+-
+-	if (dmtimer_systimer_revision1(t))
+-		val = DMTIMER_TYPE1_ENABLE;
+-	else
+-		val = DMTIMER_TYPE2_ENABLE;
+-
+-	writel_relaxed(val, t->base + t->sysc);
+-}
+-
+-static void dmtimer_systimer_disable(struct dmtimer_systimer *t)
+-{
+-	if (!dmtimer_systimer_revision1(t))
+-		return;
+-
+-	writel_relaxed(DMTIMER_TYPE1_DISABLE, t->base + t->sysc);
+-}
+-
+ static int __init dmtimer_systimer_setup(struct device_node *np,
+ 					 struct dmtimer_systimer *t)
+ {
+@@ -409,8 +411,8 @@ static int __init dmtimer_systimer_setup(struct device_node *np,
+ 	t->wakeup = regbase + _OMAP_TIMER_WAKEUP_EN_OFFSET;
+ 	t->ifctrl = regbase + _OMAP_TIMER_IF_CTRL_OFFSET;
+ 
+-	dmtimer_systimer_enable(t);
+ 	dmtimer_systimer_reset(t);
++	dmtimer_systimer_enable(t);
+ 	pr_debug("dmtimer rev %08x sysc %08x\n", readl_relaxed(t->base),
+ 		 readl_relaxed(t->base + t->sysc));
+ 
 
