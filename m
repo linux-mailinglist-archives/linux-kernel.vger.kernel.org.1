@@ -2,185 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E75279D50
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 03:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC881279D53
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 03:39:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729623AbgI0B26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 21:28:58 -0400
-Received: from mga06.intel.com ([134.134.136.31]:45502 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726840AbgI0B25 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 21:28:57 -0400
-IronPort-SDR: ETJLov9cqP7+0uvkhFcPbBElYHLhUON0K867TzTvQpbPmd6iWDCGxOK5Yp/1Tt9lwvKgaIqPZH
- 5c3M4EsIvhAQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="223414664"
-X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
-   d="scan'208";a="223414664"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 18:28:53 -0700
-IronPort-SDR: yb0iWlvgjM9+tdxpaKKhjBNtkFX6UK3OkHo7FRL0O/MV10K1LbhNvH4NIIrEkKLvy0PslCgQN8
- Di9N0liqakzQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
-   d="scan'208";a="384038056"
-Received: from orsmsx606.amr.corp.intel.com ([10.22.229.19])
-  by orsmga001.jf.intel.com with ESMTP; 26 Sep 2020 18:28:53 -0700
-Received: from orsmsx608.amr.corp.intel.com (10.22.229.21) by
- ORSMSX606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 26 Sep 2020 18:28:53 -0700
-Received: from orsmsx607.amr.corp.intel.com (10.22.229.20) by
- ORSMSX608.amr.corp.intel.com (10.22.229.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Sat, 26 Sep 2020 18:28:52 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx607.amr.corp.intel.com (10.22.229.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Sat, 26 Sep 2020 18:28:52 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.109)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Sat, 26 Sep 2020 18:28:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VNz4T+qFH9EPyk0BMA0udzJ/1yxdcJlbAdGg9xo1Jj5uDnYX3YxAInJwwCFCw8+8MUdeHrk/OW5TapIvbDCAO1fhhs0IDP+KL19PHloHOZ6rC8bkyc+mj0ovFGDclh0BRFVgJWKImBtq2+Pffkz5kpouMVAcbH/CWhBQ0TA0HbTHAuvw7M5YILxXRIzvGhjVSEiG2zhq2+MNhICsuYKzyOCoVwcTnE3HqoD4gBFNwrreSZB+x57P7v10MR4VeNm7Fxzs4kicyjoqC5VCGOkNcCj9/zee71LRH6jPx3SeQzxvYg+kG9YoJ85T1mszSGp9rELlMiFgrLC8XfVmxTbAAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HGrcuthCL7xUTkNX1ucKlWibITDzMNDJsQJZxkmnnTc=;
- b=hWWTbwGR+t8qXj8eHW+89A6RR6xiOiDrrAb1Lb4an7mI7kFvuKkWVLAGE6PjFCooxVTKqs8tmSVDUHTnHmz/cMaVrbqvYY8fBjpAG26EaGW5on+hizC+gMI5WaFx/hfmjqfgZn3iEyBDBcidoLX4JOblLEFL9zn8rKauqfLSh/PdQWahQ64SxxGjuFkp6yegNasa2SG2R6PrKDf/4HQdUqz8vSO6mPcd1SIsjCJXAHPR7YZVs25ruL7B4/DnVFSq7Q8NPPryJFgZwmhGValXpySw8ygN9pACydtKTE6SqmP1MAk36VJ2ZhMR/QRP28hPiGTneVffbycY/v7upsUoZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HGrcuthCL7xUTkNX1ucKlWibITDzMNDJsQJZxkmnnTc=;
- b=XbBx7unvb9f++LrLgRPpq8XJHqgwpFN0uqnHEOvoNS9aJTpdfDkwCW+ioz3cGpdrClU97Fux1YUDu+eoHOZxbQcT7lM23o4yKmvup4CDj4W7XWe1HPgSIOhKNrTYo6leJfFhNQXraOC7sIlKw2+PSZz/8C3gKZzQD5ZA+b+z6xc=
-Received: from MWHPR11MB1696.namprd11.prod.outlook.com (2603:10b6:300:23::23)
- by MWHPR11MB1837.namprd11.prod.outlook.com (2603:10b6:300:10f::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.21; Sun, 27 Sep
- 2020 01:28:50 +0000
-Received: from MWHPR11MB1696.namprd11.prod.outlook.com
- ([fe80::449a:93eb:c6d1:ce0f]) by MWHPR11MB1696.namprd11.prod.outlook.com
- ([fe80::449a:93eb:c6d1:ce0f%2]) with mapi id 15.20.3412.025; Sun, 27 Sep 2020
- 01:28:50 +0000
-From:   "Zhao, Haifeng" <haifeng.zhao@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "oohall@gmail.com" <oohall@gmail.com>,
-        "ruscur@russell.cc" <ruscur@russell.cc>,
-        "lukas@wunner.de" <lukas@wunner.de>,
-        "stuart.w.hayes@gmail.com" <stuart.w.hayes@gmail.com>,
-        "mr.nuke.me@gmail.com" <mr.nuke.me@gmail.com>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Jia, Pei P" <pei.p.jia@intel.com>
-Subject: RE: [PATCH 4/5] PCI: only return true when dev io state is really
- changed
-Thread-Topic: [PATCH 4/5] PCI: only return true when dev io state is really
- changed
-Thread-Index: AQHWkuSfPEiEZuxyNk2KL6NQhHM8Fal5S6UAgAJpmmA=
-Date:   Sun, 27 Sep 2020 01:28:50 +0000
-Message-ID: <MWHPR11MB1696D14DAC8C5C796C526C4A97340@MWHPR11MB1696.namprd11.prod.outlook.com>
-References: <20200925023423.42675-1-haifeng.zhao@intel.com>
- <20200925023423.42675-5-haifeng.zhao@intel.com>
- <20200925123806.GG3956970@smile.fi.intel.com>
-In-Reply-To: <20200925123806.GG3956970@smile.fi.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-reaction: no-action
-dlp-product: dlpe-windows
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [192.198.147.199]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 857357a8-3b19-446e-6018-08d86284b02c
-x-ms-traffictypediagnostic: MWHPR11MB1837:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB183773AD1407DB987B3DED5C97340@MWHPR11MB1837.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 8QXUKvanEoFwGqbmpg3maZS4FXVkihb3DimQlW01R+1crxj4rCf4XXyX8HT6PDTIwgKMMJ/Mww4DmjMcc5hsu0DC4MQkkzA5iLynXIjeS+9l0acml1QUfX8gxij9OgdrBp9lWLkNc+I2ynaExUMhJT0r/+E0F7m79aWUWa68w5nlpN6DOg06J6D4jv6e5I/L807nOkFGFZt9tTe7SoHJmOh/xSDNqbcNMI5qwQeu37YCuuaB26zBEclHM2xdr7l0jBIJuhZPvuCDPfNl3fkqavPX+/GXuNLXzAZltY70scPiBLVzB1n6Tsiln1K+68nGegcxhNQwUMfbesTXv7g1Js/RFYbUXcX8GNkYhvIskhp97LbPL6doxS6S7RBbpnx+
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1696.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(396003)(346002)(366004)(66946007)(83380400001)(54906003)(33656002)(478600001)(26005)(86362001)(7696005)(53546011)(6506007)(76116006)(66556008)(66476007)(186003)(5660300002)(316002)(52536014)(8936002)(55016002)(4326008)(2906002)(9686003)(6916009)(66446008)(64756008)(71200400001)(8676002)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: qOgMqTHHthiJhwsNNyollsOf2G5mevHMzznUPoQvYoD1tjIAHYd7RES5RpMSo4aE6Iv5ffx3iW9RRw6F3ZMCVdskfBUty8TcNtK0n38VUHWGWksUg6fUORDCSHQKj1ZoVM4MavS02MUzpqBS0b/38P430UV2JlSb0JSycGH7ICOT3fku5KpM/N4BLqCIXuu0TDPVwubHD+ofDaz96vU2gV2uYssK/fK6V6Nl2Rs1jRcRn6WzxTV0Rq1quC4pZaUJGzfo0yTKNNUzweq6zBN++hAjRCvLdql9Z2uCXQ/3KbEu+aIGLcbs/b/qASXaqZFsxZdsDhfHuJFidxw19OFcmaX5mDY+/6xoE0EtOLk5sp7bg8T0V6E20xhZx6PE96iPycF5Rmo1OpvhhPk+O2Zn1+czkp+FT9cbjX5fk60qmguk9xZifwktlaVKvnH84Ei04pdrs+SrJN5CzJ/cV+Jz05Dq7LyAGlhCS87TD3837FaNtHlsogGDO7STQLB7SCDgTx9wSHIXr6e/UqHxWO1kLuAMOsrWZBYORU5Eo1Q2H35x7FBmOydb3sB3Wc2GIYpbdLGUAm+2EPVHgKT7ajCGXK2OZAJ0VsLwwF7zyzxSgOV57FxIDsxSmzXCde/itPyCm/IDLX0NzNDbR0B3J7ND1g==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1729431AbgI0Bjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 21:39:55 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61510 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726382AbgI0Bjz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 21:39:55 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08R1X5tg180683;
+        Sat, 26 Sep 2020 21:39:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=r1Yr7FlV/1H5kBQVxYAxryn3ssZsA+gmf1D3o5vBIU8=;
+ b=VgUH1+MJmz6r042s/OdlxwLXhEVEhSloxfXikQTzgKQmtCWMQ5wWDL2cGPbDdbZgoWW9
+ omkzStYJaLZD7K3BXClVW/Jasa49AMm3w4Z1eiGJAyCXAJH1kZHPugcMVGVX1txFbe9y
+ HtwfubF4OxT94UqHMpd05DjHChyj6yVEjAEb6SbhJF4wO7rmhZ7aMN9vNDNYXBG30ZZz
+ GXZDQzvlPvih1Vshg7wAUMAi94ixig5wd85prdB60qvAZ1ZiN+9Wkl+EvM0t5brakbtX
+ IReWTU+7t8uWCelDLp3DK4GhuePahX7zvfOhlcsVnb7qxQvpCppjzIHcDb9D/U/Z8UQF vQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33tgh88qu4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 21:39:51 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08R1Y7v3183423;
+        Sat, 26 Sep 2020 21:39:51 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33tgh88qtr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 26 Sep 2020 21:39:50 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08R1cFgX018726;
+        Sun, 27 Sep 2020 01:39:49 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma05fra.de.ibm.com with ESMTP id 33sw980d8b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 27 Sep 2020 01:39:49 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08R1dkx319071472
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 27 Sep 2020 01:39:46 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1158D52052;
+        Sun, 27 Sep 2020 01:39:46 +0000 (GMT)
+Received: from oc2783563651 (unknown [9.145.162.14])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 21CC95204E;
+        Sun, 27 Sep 2020 01:39:45 +0000 (GMT)
+Date:   Sun, 27 Sep 2020 03:39:43 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v10 12/16] s390/zcrypt: Notify driver on config changed
+ and scan complete callbacks
+Message-ID: <20200927033943.28943540.pasic@linux.ibm.com>
+In-Reply-To: <20200821195616.13554-13-akrowiak@linux.ibm.com>
+References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
+        <20200821195616.13554-13-akrowiak@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1696.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 857357a8-3b19-446e-6018-08d86284b02c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2020 01:28:50.1769
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: P/CIX+2xFkBpry/MJ3cDvj10eGvr8KeAO8seC0iTpSu9U1VMx/ltP+fwrEJnd0bjNzK9ZvDtcy9Y4MXz0kHiHA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1837
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-26_22:2020-09-24,2020-09-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 phishscore=0 mlxlogscore=999
+ spamscore=0 clxscore=1015 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009270013
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, better !=20
+On Fri, 21 Aug 2020 15:56:12 -0400
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
 
------Original Message-----
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>=20
-Sent: Friday, September 25, 2020 8:38 PM
-To: Zhao, Haifeng <haifeng.zhao@intel.com>
-Cc: bhelgaas@google.com; oohall@gmail.com; ruscur@russell.cc; lukas@wunner.=
-de; stuart.w.hayes@gmail.com; mr.nuke.me@gmail.com; mika.westerberg@linux.i=
-ntel.com; linux-pci@vger.kernel.org; linux-kernel@vger.kernel.org; Jia, Pei=
- P <pei.p.jia@intel.com>
-Subject: Re: [PATCH 4/5] PCI: only return true when dev io state is really =
-changed
-
-On Thu, Sep 24, 2020 at 10:34:22PM -0400, Ethan Zhao wrote:
-> When uncorrectable error happens, AER driver and DPC driver interrupt=20
-> handlers likely call
->    pcie_do_recovery()->pci_walk_bus()->report_frozen_detected() with=20
-> pci_channel_io_frozen the same time.
-
-Call chains are better to read if they split like
-
-   foo() ->
-     bar() ->
-       baz()
-
->    If pci_dev_set_io_state() return true even if the original state is=20
-> pci_channel_io_frozen, that will cause AER or DPC handler re-enter the=20
-> error detecting and recovery procedure one after another.
->    The result is the recovery flow mixed between AER and DPC.
-> So simplify the pci_dev_set_io_state() function to only return true=20
-> when dev->error_state is changed.
-
-...
-
-> +	if (dev->error_state !=3D new) {
->  		dev->error_state =3D new;
-> +		changed =3D true;
+> This patch intruduces an extension to the ap bus to notify drivers
+> on crypto config changed and bus scan complete events.
+> Two new callbacks are introduced for ap_drivers:
+> 
+>   void (*on_config_changed)(struct ap_config_info *new_config_info,
+>                              struct ap_config_info *old_config_info);
+>   void (*on_scan_complete)(struct ap_config_info *new_config_info,
+>                              struct ap_config_info *old_config_info);
+> 
+> Both callbacks are optional. Both callbacks are only triggered
+> when QCI information is available (facility bit 12):
+> 
+> * The on_config_changed callback is invoked at the start of the AP bus scan
+>   function when it determines that the host AP configuration information
+>   has changed since the previous scan. This is done by storing
+>   an old and current QCI info struct and comparing them. If there is any
+>   difference, the callback is invoked.
+> 
+>   Note that when the AP bus scan detects that AP adapters or domains have
+>   been removed from the host's AP configuration, it will remove the
+>   associated devices from the AP bus subsystem's device model. This
+>   callback gives the device driver a chance to respond to the removal
+>   of the AP devices in bulk rather than one at a time as its remove
+>   callback is invoked. It will also allow the device driver to do any
+>   any cleanup prior to giving control back to the bus piecemeal. This is
+>   particularly important for the vfio_ap driver because there may be
+>   guests using the queues at the time.
+> 
+> * The on_scan_complete callback is invoked after the ap bus scan is
+>   complete if the host AP configuration data has changed.
+> 
+>   Note that when the AP bus scan detects that adapters or domains have
+>   been added to the host's configuration, it will create new devices in
+>   the AP bus subsystem's device model. This callback also allows the driver
+>   to process all of the new devices in bulk.
+> 
+> Please note that changes to the apmask and aqmask do not trigger
+> these two callbacks since the bus scan function is not invoked by changes
+> to those masks.
+> 
+> Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>  drivers/s390/crypto/ap_bus.c | 85 +++++++++++++++++++++++++++++++++++-
+>  drivers/s390/crypto/ap_bus.h | 12 +++++
+>  2 files changed, 96 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/s390/crypto/ap_bus.c b/drivers/s390/crypto/ap_bus.c
+> index db27bd931308..cbf4c4d2e573 100644
+> --- a/drivers/s390/crypto/ap_bus.c
+> +++ b/drivers/s390/crypto/ap_bus.c
+> @@ -73,8 +73,10 @@ struct ap_perms ap_perms;
+>  EXPORT_SYMBOL(ap_perms);
+>  DEFINE_MUTEX(ap_perms_mutex);
+>  EXPORT_SYMBOL(ap_perms_mutex);
+> +DEFINE_MUTEX(ap_config_lock);
+>  
+>  static struct ap_config_info *ap_qci_info;
+> +static struct ap_config_info *ap_qci_info_old;
+>  
+>  /*
+>   * AP bus related debug feature things.
+> @@ -1412,6 +1414,52 @@ static int __match_queue_device_with_queue_id(struct device *dev, const void *da
+>  		&& AP_QID_QUEUE(to_ap_queue(dev)->qid) == (int)(long) data;
+>  }
+>  
+> +/* Helper function for notify_config_changed */
+> +static int __drv_notify_config_changed(struct device_driver *drv, void *data)
+> +{
+> +	struct ap_driver *ap_drv = to_ap_drv(drv);
+> +
+> +	if (try_module_get(drv->owner)) {
+> +		if (ap_drv->on_config_changed)
+> +			ap_drv->on_config_changed(ap_qci_info,
+> +						  ap_qci_info_old);
+> +		module_put(drv->owner);
 > +	}
->  	return changed;
+> +
+> +	return 0;
+> +}
+> +
+> +/* Notify all drivers about an qci config change */
+> +static inline void notify_config_changed(void)
+> +{
+> +	bus_for_each_drv(&ap_bus_type, NULL, NULL,
+> +			 __drv_notify_config_changed);
+> +}
+> +
+> +/* Helper function for notify_scan_complete */
+> +static int __drv_notify_scan_complete(struct device_driver *drv, void *data)
+> +{
+> +	struct ap_driver *ap_drv = to_ap_drv(drv);
+> +
+> +	if (try_module_get(drv->owner)) {
+> +		if (ap_drv->on_scan_complete)
+> +			ap_drv->on_scan_complete(ap_qci_info,
+> +						 ap_qci_info_old);
+> +		module_put(drv->owner);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/* Notify all drivers about bus scan complete */
+> +static inline void notify_scan_complete(void)
+> +{
+> +	bus_for_each_drv(&ap_bus_type, NULL, NULL,
+> +			 __drv_notify_scan_complete);
+> +}
+> +
+> +
+> +
 
-Perhaps
-	if (dev->error_state =3D=3D new)
-		return changed;
+Too many blank lines?
 
-	dev->error_state =3D new;
-	return true;
+>  /*
+>   * Helper function for ap_scan_bus().
+>   * Does the scan bus job for the given adapter id.
+> @@ -1565,15 +1613,44 @@ static void _ap_scan_bus_adapter(int id)
+>  		put_device(&ac->ap_dev.device);
+>  }
+>  
+> +static int ap_config_changed(void)
+> +{
+> +	int cfg_chg = 0;
+> +
+> +	if (ap_qci_info) {
+> +		if (!ap_qci_info_old) {
+> +			ap_qci_info_old = kzalloc(sizeof(*ap_qci_info_old),
+> +						  GFP_KERNEL);
+> +			if (!ap_qci_info_old)
+> +				return 0;
+> +		} else {
+> +			memcpy(ap_qci_info_old, ap_qci_info,
+> +			       sizeof(struct ap_config_info));
+> +		}
+> +		ap_fetch_qci_info(ap_qci_info);
+> +		cfg_chg = memcmp(ap_qci_info,
+> +				 ap_qci_info_old,
+> +				 sizeof(struct ap_config_info)) != 0;
+> +	}
+> +
+> +	return cfg_chg;
+> +}
+> +
+>  /**
+>   * ap_scan_bus(): Scan the AP bus for new devices
+>   * Runs periodically, workqueue timer (ap_config_time)
+>   */
+>  static void ap_scan_bus(struct work_struct *unused)
+>  {
+> -	int id;
+> +	int id, config_changed = 0;
+>  
+>  	ap_fetch_qci_info(ap_qci_info);
 
-?
+Do we still need this ap_fetch_qci_info()? ...
+
+> +	mutex_lock(&ap_config_lock);
+
+The usage of ap_qci_info does not seem to change substantially, and
+ap_qci_info_old is not used unlike. I believe if we need ap_config_lock
+now, then we used to need it before. And then adding this lock should
+really be a separate patch than clearly advertises its fix nature.
 
 
---
-With Best Regards,
-Andy Shevchenko
+> +
+> +	/* config change notify */
+> +	config_changed = ap_config_changed();
 
+... I mean ap_config_changed() does a ap_fetch_qci_info()
+of it's own.
+
+Otherwise looks OK!
+
+Regards,
+Halil
+
+> +	if (config_changed)
+> +		notify_config_changed();
+>  	ap_select_domain();
+>  
+>  	AP_DBF(DBF_DEBUG, "%s running\n", __func__);
+> @@ -1582,6 +1659,12 @@ static void ap_scan_bus(struct work_struct *unused)
+>  	for (id = 0; id < AP_DEVICES; id++)
+>  		_ap_scan_bus_adapter(id);
+>  
+> +	/* scan complete notify */
+> +	if (config_changed)
+> +		notify_scan_complete();
+> +
+> +	mutex_unlock(&ap_config_lock);
+> +
+>  	/* check if there is at least one queue available with default domain */
+>  	if (ap_domain_index >= 0) {
+>  		struct device *dev =
+> diff --git a/drivers/s390/crypto/ap_bus.h b/drivers/s390/crypto/ap_bus.h
+> index 48c57b3d53a0..3fc743ac549c 100644
+> --- a/drivers/s390/crypto/ap_bus.h
+> +++ b/drivers/s390/crypto/ap_bus.h
+> @@ -137,6 +137,18 @@ struct ap_driver {
+>  	int (*probe)(struct ap_device *);
+>  	void (*remove)(struct ap_device *);
+>  	bool (*in_use)(unsigned long *apm, unsigned long *aqm);
+> +	/*
+> +	 * Called at the start of the ap bus scan function when
+> +	 * the crypto config information (qci) has changed.
+> +	 */
+> +	void (*on_config_changed)(struct ap_config_info *new_config_info,
+> +				  struct ap_config_info *old_config_info);
+> +	/*
+> +	 * Called at the end of the ap bus scan function when
+> +	 * the crypto config information (qci) has changed.
+> +	 */
+> +	void (*on_scan_complete)(struct ap_config_info *new_config_info,
+> +				 struct ap_config_info *old_config_info);
+>  };
+>  
+>  #define to_ap_drv(x) container_of((x), struct ap_driver, driver)
 
