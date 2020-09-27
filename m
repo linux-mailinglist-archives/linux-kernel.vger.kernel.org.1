@@ -2,166 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0256327A479
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:27:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B2627A47D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgI0X1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 19:27:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        id S1726465AbgI0XcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 19:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726316AbgI0X1w (ORCPT
+        with ESMTP id S1726380AbgI0XcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 19:27:52 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE65DC0613CE;
-        Sun, 27 Sep 2020 16:27:51 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id g4so8167031edk.0;
-        Sun, 27 Sep 2020 16:27:51 -0700 (PDT)
+        Sun, 27 Sep 2020 19:32:23 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7A26C0613CE;
+        Sun, 27 Sep 2020 16:32:22 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id z13so9176545iom.8;
+        Sun, 27 Sep 2020 16:32:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cN3ZgKw4L6VVDpPP7WE7qkFiU9duBJ2iGZQMpu3PBaM=;
-        b=OYqkswUYk+lh0vQbjzvQQLGOEEBOLtqMXKhcTxgyloGFPXXJSeq04AgVtYJfnsn4sF
-         pY/uzr6CXc9A7zl+qs8KAiahFaI8aBHBwyT+Z4p+YfZv6BVHXT8Xrfet2vixL3kN0jMk
-         4s9EiYRdQ1mFu/A1pgUaJgfqHWQ29K2p9zLEkg+Ask5AVN9Nuodu4dlMjznB5d+3lqeM
-         d47g7RUc3Wqo962LE5wx0q2IfofFuAcn2CGy+o6/rYPXG+tnOIpI9CML095zQulfHTQT
-         iJKdt7WwIg7aDrMxmi7cQVyaBhcxqWNq2yVGk2siHzXjjlzuzguI0q4loy5zlPCtteei
-         ZoOQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aZ6YU8QkqvXetA4BeWJq48mo0OJ9Oxz0crizVyRgPnQ=;
+        b=LBfnpwp3MtO84n7rLN09lDdxgaQPgijIySJX9jjqBw9KF+omtpeDch6oBcawxzUGzs
+         yX85kVxYB9ppBIhv3Pe7vxEvtWnD6wV5PvMNS8ofM0Y5ExRkegvqyKBqHk+KJLmRTaNZ
+         gvyvTQILWZPfvMBiSZW6FCRgne+/XX1lJ3EL3Fi9U8G8TkLw2Sz/55XyABK9Z+rmz+ig
+         LHnRDwU3nq0vU1/XHDiYuL/CvA98PKq6A7/h/Pp5qXeO3MRG1WLYmIHXIljDEacAA67a
+         vLz6rw4USRScKtxncxlaNdz3GL5xZOMOHLCVceypITeAf2XTcXYvDWVkx/oIfj51Lwe8
+         v8dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cN3ZgKw4L6VVDpPP7WE7qkFiU9duBJ2iGZQMpu3PBaM=;
-        b=lgcBNsn3Gnh9aRI3/lVA8cT1sAtRgxauenzmFC5BJT0rNTqFv2iD2fzE6f/c9n1oii
-         sqArj4iEhcIJfS1nF0UnZJakYPFBgW8VdZheFWsGuQIzhLXFauKIlLFcMYORsyFH7R8c
-         fCiDso4otJclgycz0sce7fmWcmamuZ2BG/hh/zmyn76BZ0PgtwWmG2/U77WNHkgxLdsq
-         xBINbYU0g1j3jU6GCjCJ+QF0PdWIvN8U9qGcmQguBhND3LiPrbvbo0Vo6PixDqh/BBVW
-         ocXbwHkSXpN4djjedd9M9ReT7PX/Ubt7aFbtnelUcXapeQD73F6oqjoQ8A6ORN7IdWKT
-         SPJg==
-X-Gm-Message-State: AOAM532FzjXvfoK9PRjBt0dd166FlQsFlgPg3PG6eu8aXPF5weOEAfG7
-        YvUpUVW0DnxjwcbWGxZZWdY=
-X-Google-Smtp-Source: ABdhPJyk1RP8pMcljHdB+kAVPJv23Xl9JwGhb8o9KMUPsTBTi8pcw2YBBLnwa9blaUKcnHgRf+xohw==
-X-Received: by 2002:aa7:d959:: with SMTP id l25mr12624416eds.383.1601249270550;
-        Sun, 27 Sep 2020 16:27:50 -0700 (PDT)
-Received: from skbuf ([188.25.217.212])
-        by smtp.gmail.com with ESMTPSA id qu9sm7985687ejb.24.2020.09.27.16.27.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 16:27:49 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 02:27:47 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH] spi: fsl-dspi: fix NULL pointer dereference
-Message-ID: <20200927232747.3jwr6mqql727etyz@skbuf>
-References: <20200927224336.705-1-michael@walle.cc>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aZ6YU8QkqvXetA4BeWJq48mo0OJ9Oxz0crizVyRgPnQ=;
+        b=r/8nys+/ZZA99iKf8tEHWCHTJN6taIkLFwsp2vqdidWeWoNDtqKXv7qTKkm0Xw1xkI
+         YZ969q12P7/gk6rYV6dtAx1Y0sCza7e/QbC0cr8+RleNaR81s2BKxJG1fyIhkC4LxvSL
+         XCNTqVoAfhOFWFRdXKvS6qacJ0+RzRFp6ZfVuxA07o2lrI72stgqcXD0FHzCbeNMxd3w
+         c0vidHYEEhLDDGtrPIb/P2CNvtJKSjPGNyUByNS3uAD9TD2x5+k+b0W9njUTY/KnODrz
+         wV/coPSdTMfLqIsCMOUHvv0cWShUnJ0nbuOoOWbYZc9kjBUEdUeI1KYIiLQ+/4A6Avp5
+         r03A==
+X-Gm-Message-State: AOAM532r4qq5RFkYfIZxnKok66yNXeIjJe7xW3dDBevQBZX6mlfgwkk+
+        NPCv9IK6KqWf3DcokeJlPTyslvIoS+wgRGXVMX4=
+X-Google-Smtp-Source: ABdhPJzc5IwJZV09KI9PTIqU3GAYgTusaIZZSB0Qp6/tVIkfZR6sanJs/6HxmjpQN3io4gLQcfBmDzgSFMghUZUlYxE=
+X-Received: by 2002:a02:6623:: with SMTP id k35mr6811796jac.105.1601249541984;
+ Sun, 27 Sep 2020 16:32:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927224336.705-1-michael@walle.cc>
+References: <CAOSf1CEv3v940FR_we70qCBME0qFXPizPT8EFbf3XyK2-fPDrw@mail.gmail.com>
+ <20200925194335.GA2453596@bjorn-Precision-5520>
+In-Reply-To: <20200925194335.GA2453596@bjorn-Precision-5520>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Mon, 28 Sep 2020 09:32:10 +1000
+Message-ID: <CAOSf1CGwj=m+P_XFAOG-KUz8mYCe1axLtk9JPmG5harHE7oArQ@mail.gmail.com>
+Subject: Re: [PATCH] rpadlpar_io:Add MODULE_DESCRIPTION entries to kernel modules
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 12:43:36AM +0200, Michael Walle wrote:
-> Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove
-> path") this driver causes a kernel oops:
-> 
-> [    1.891065] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
-> [    1.899889] Mem abort info:
-> [    1.902692]   ESR = 0x96000004
-> [    1.905754]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    1.911089]   SET = 0, FnV = 0
-> [    1.914156]   EA = 0, S1PTW = 0
-> [    1.917303] Data abort info:
-> [    1.920193]   ISV = 0, ISS = 0x00000004
-> [    1.924044]   CM = 0, WnR = 0
-> [    1.927022] [0000000000000080] user address but active_mm is swapper
-> [    1.933403] Internal error: Oops: 96000004 [#1] PREEMPT SMP
-> [    1.938995] Modules linked in:
-> [    1.942060] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc6-next-20200925-00026-gae556cc74e28-dirty #94
-> [    1.951838] Hardware name: Kontron SMARC-sAL28 (Single PHY) on SMARC Eval 2.0 carrier (DT)
-> [    1.960135] pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
-> [    1.966168] pc : dspi_setup+0xc8/0x2e0
-> [    1.969926] lr : dspi_setup+0xbc/0x2e0
-> [    1.973684] sp : ffff80001139b930
-> [    1.977005] x29: ffff80001139b930 x28: ffff00207a5d2000
-> [    1.982338] x27: 0000000000000006 x26: ffff00207a44d410
-> [    1.987669] x25: ffff002079c08100 x24: ffff00207a5d2400
-> [    1.993000] x23: ffff00207a5d2600 x22: ffff800011169948
-> [    1.998332] x21: ffff800010cbcd20 x20: ffff00207a58a800
-> [    2.003663] x19: ffff00207a76b700 x18: 0000000000000010
-> [    2.008994] x17: 0000000000000001 x16: 0000000000000019
-> [    2.014326] x15: ffffffffffffffff x14: 0720072007200720
-> [    2.019657] x13: 0720072007200720 x12: ffff8000111fc5e0
-> [    2.024989] x11: 0000000000000003 x10: ffff8000111e45a0
-> [    2.030320] x9 : 0000000000000000 x8 : ffff00207a76b780
-> [    2.035651] x7 : 0000000000000000 x6 : 000000000000003f
-> [    2.040982] x5 : 0000000000000040 x4 : ffff80001139b918
-> [    2.046313] x3 : 0000000000000001 x2 : 64b62cc917af5100
-> [    2.051643] x1 : 0000000000000000 x0 : 0000000000000000
-> [    2.056973] Call trace:
-> [    2.059425]  dspi_setup+0xc8/0x2e0
-> [    2.062837]  spi_setup+0xcc/0x248
-> [    2.066160]  spi_add_device+0xb4/0x198
-> [    2.069918]  of_register_spi_device+0x250/0x370
-> [    2.074462]  spi_register_controller+0x4f4/0x770
-> [    2.079094]  dspi_probe+0x5bc/0x7b0
-> [    2.082594]  platform_drv_probe+0x5c/0xb0
-> [    2.086615]  really_probe+0xec/0x3c0
-> [    2.090200]  driver_probe_device+0x60/0xc0
-> [    2.094308]  device_driver_attach+0x7c/0x88
-> [    2.098503]  __driver_attach+0x60/0xe8
-> [    2.102263]  bus_for_each_dev+0x7c/0xd0
-> [    2.106109]  driver_attach+0x2c/0x38
-> [    2.109692]  bus_add_driver+0x194/0x1f8
-> [    2.113538]  driver_register+0x6c/0x128
-> [    2.117385]  __platform_driver_register+0x50/0x60
-> [    2.122105]  fsl_dspi_driver_init+0x24/0x30
-> [    2.126302]  do_one_initcall+0x54/0x2d0
-> [    2.130149]  kernel_init_freeable+0x1ec/0x258
-> [    2.134520]  kernel_init+0x1c/0x120
-> [    2.138018]  ret_from_fork+0x10/0x34
-> [    2.141606] Code: 97e0b11d aa0003f3 b4000680 f94006e0 (f9404000)
-> [    2.147723] ---[ end trace 26cf63e6cbba33a8 ]---
-> [    2.152374] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> [    2.160061] SMP: stopping secondary CPUs
-> [    2.163999] Kernel Offset: disabled
-> [    2.167496] CPU features: 0x0040022,20006008
-> [    2.171777] Memory Limit: none
-> [    2.174840] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
-> 
-> This is because since this commit, the allocation of the drivers private
-> data is done explicitly and in this case spi_alloc_master() won't set the
-> correct pointer.
-> 
-> Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
+On Sat, Sep 26, 2020 at 5:43 AM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Thu, Sep 24, 2020 at 04:41:39PM +1000, Oliver O'Halloran wrote:
+> > On Thu, Sep 24, 2020 at 3:15 PM Mamatha Inamdar
+> > <mamatha4@linux.vnet.ibm.com> wrote:
+> > >
+> > > This patch adds a brief MODULE_DESCRIPTION to rpadlpar_io kernel modules
+> > > (descriptions taken from Kconfig file)
+> > >
+> > > Signed-off-by: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
+> > > ---
+> > >  drivers/pci/hotplug/rpadlpar_core.c |    1 +
+> > >  1 file changed, 1 insertion(+)
+> > >
+> > > diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
+> > > index f979b70..bac65ed 100644
+> > > --- a/drivers/pci/hotplug/rpadlpar_core.c
+> > > +++ b/drivers/pci/hotplug/rpadlpar_core.c
+> > > @@ -478,3 +478,4 @@ static void __exit rpadlpar_io_exit(void)
+> > >  module_init(rpadlpar_io_init);
+> > >  module_exit(rpadlpar_io_exit);
+> > >  MODULE_LICENSE("GPL");
+> > > +MODULE_DESCRIPTION("RPA Dynamic Logical Partitioning driver for I/O slots");
+> >
+> > RPA as a spec was superseded by PAPR in the early 2000s. Can we rename
+> > this already?
+> >
+> > The only potential problem I can see is scripts doing: modprobe
+> > rpadlpar_io or similar
+> >
+> > However, we should be able to fix that with a module alias.
+>
+> Is MODULE_DESCRIPTION() connected with how modprobe works?
 
-Sascha, how did you test commit 530b5affc675?
+I don't think so. The description is just there as an FYI.
 
->  drivers/spi/spi-fsl-dspi.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-> index a939618f5e47..dd80be987bf9 100644
-> --- a/drivers/spi/spi-fsl-dspi.c
-> +++ b/drivers/spi/spi-fsl-dspi.c
-> @@ -1236,6 +1236,8 @@ static int dspi_probe(struct platform_device *pdev)
->  	if (!ctlr)
->  		return -ENOMEM;
->  
-> +	spi_controller_set_devdata(ctlr, dspi);
-> +
->  	dspi->pdev = pdev;
->  	dspi->ctlr = ctlr;
->  
-> -- 
-> 2.20.1
-> 
+> If this patch just improves documentation, without breaking users of
+> modprobe, I'm fine with it, even if it would be nice to rename to PAPR
+> or something in the future.
 
-Thanks,
--Vladimir
+Right, the change in this patch is just a documentation fix and
+shouldn't cause any problems.
+
+I was suggesting renaming the module itself since the term "RPA" is
+only used in this hotplug driver and some of the corresponding PHB add
+/ remove handling in arch/powerpc/platforms/pseries/. We can make that
+change in a follow up though.
+
+> But, please use "git log --oneline drivers/pci/hotplug/rpadlpar*" and
+> match the style, and also look through the rest of drivers/pci/ to see
+> if we should do the same thing to any other modules.
+>
+> Bjorn
