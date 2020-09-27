@@ -2,143 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78338279FB3
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 10:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D10279FAF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 10:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730505AbgI0Ih7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 04:37:59 -0400
-Received: from mga17.intel.com ([192.55.52.151]:9825 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730438AbgI0Ih6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 04:37:58 -0400
-IronPort-SDR: 3jh06MT2h0ga7JMdr88kpcm7+lR9i2PFPOZqhG4hu3QiLZRl8UL5Ag6l02HL/1t3XDFq31pZSK
- TWYurtEz9JRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="141861087"
-X-IronPort-AV: E=Sophos;i="5.77,309,1596524400"; 
-   d="scan'208";a="141861087"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 22:56:06 -0700
-IronPort-SDR: 9oqP1bHZM0aubjyxN/MQ/IcRCDT3cfShUUigwZ7pc3L/Nx73DkcCao9w/Pqj6wpt1leXxKeXLL
- EsC6f2fuNeYA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,309,1596524400"; 
-   d="scan'208";a="337726177"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Sep 2020 22:56:03 -0700
-Subject: Re: [RFC PATCH v2] sched/fair: select idle cpu from idle cpumask in
- sched domain
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>
-References: <78d608f2-b974-e940-da32-b37777bc405a@linux.intel.com>
- <CAKfTPtAVkg081VEGp3Hx3i7D+jxRJcyBi2=NJypvHH6HVJ8Nwg@mail.gmail.com>
- <CAKfTPtA2yE_sFfP5MFN=K+ph7rqpYUhapUdDBJ5hFLxnQPktJw@mail.gmail.com>
- <af0237e0-1451-9d11-2ee2-1468a8bb6180@linux.intel.com>
- <CAKfTPtD71z-n2dVTpZk5tLwy5OZjkju9v5vJ-3QNHhw8Grhc_Q@mail.gmail.com>
- <8a86b085-b445-b1c2-9b46-6346d923abf0@linux.intel.com>
- <CAKfTPtB-L3uM34N1w5ELzceuJxiMdkwXV5nQcqWitBAhsLoMhQ@mail.gmail.com>
- <eb1c4c84-e361-d5a7-d071-b0dd7310eab4@linux.intel.com>
- <CAKfTPtBYmAauUi1-bKpN1UmMTWEQL-TZqQJxtkVFnYjo-E1mRg@mail.gmail.com>
- <aff0c293-cf4d-9770-cd54-fc0d06662f09@linux.intel.com>
- <20200925164514.GA6432@vingu-book>
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Message-ID: <d4c7437a-e7a6-d8e3-497e-1c99152dde7e@linux.intel.com>
-Date:   Sun, 27 Sep 2020 13:56:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1730619AbgI0Iac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 04:30:32 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:32913 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730450AbgI0Iab (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 04:30:31 -0400
+X-UUID: 44b997db2ba1471d8bc2dc62961eaed7-20200927
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Lner+8cIRgrg0cDNcBnnCq0acUspa7hUGg30bAeP/UE=;
+        b=pFD6Tgrfv5dopQXE62tIo5gn5ppuG6Rtmvj8zQD6GN2h25xzqH8nFvBMU6jwm4rffVhfJq4sWKt6yHmYEq3ZkGplUmLFNh/6rGVgB6GsYLNI2TQbIwy8nLXuqgMHAWLZdCSkirI35c2cQM6Tb2MnMoNoQLyamtDXPnTWvTtUigs=;
+X-UUID: 44b997db2ba1471d8bc2dc62961eaed7-20200927
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <yingjoe.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1572921222; Sun, 27 Sep 2020 16:30:26 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 27 Sep 2020 16:30:24 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 27 Sep 2020 16:30:23 +0800
+Message-ID: <1601195424.7766.4.camel@mtksdaap41>
+Subject: Re: [PATCH v3 5/6] spi: spi-mtk-nor: support 36bit dma addressing
+From:   Yingjoe Chen <yingjoe.chen@mediatek.com>
+To:     Ikjoon Jang <ikjn@chromium.org>
+CC:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-mtd@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Sun, 27 Sep 2020 16:30:24 +0800
+In-Reply-To: <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
+References: <20200925065418.1077472-1-ikjn@chromium.org>
+         <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20200925164514.GA6432@vingu-book>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/9/26 0:45, Vincent Guittot wrote:
-> Le vendredi 25 sept. 2020 à 17:21:46 (+0800), Li, Aubrey a écrit :
->> Hi Vicent,
->>
->> On 2020/9/24 21:09, Vincent Guittot wrote:
->>>>>>
->>>>>> Would you mind share uperf(netperf load) result on your side? That's the
->>>>>> workload I have seen the most benefit this patch contributed under heavy
->>>>>> load level.
->>>>>
->>>>> with uperf, i've got the same kind of result as sched pipe
->>>>> tip/sched/core: Throughput 24.83Mb/s (+/- 0.09%)
->>>>> with this patch:  Throughput 19.02Mb/s (+/- 0.71%) which is a 23%
->>>>> regression as for sched pipe
->>>>>
->>>> In case this is caused by the logic error in this patch(sorry again), did
->>>> you see any improvement in patch V2? Though it does not helps for nohz=off
->>>> case, just want to know if it helps or does not help at all on arm platform.
->>>
->>> With the v2 which rate limit the update of the cpumask (but doesn't
->>> support sched_idle stask),  I don't see any performance impact:
->>
->> I agree we should go the way with cpumask update rate limited.
->>
->> And I think no performance impact for sched-pipe is expected, as this workload
->> has only 2 threads and the platform has 8 cores, so mostly previous cpu is
->> returned, and even if select_idle_sibling is called, select_idle_core is hit
->> and rarely call select_idle_cpu.
-> 
-> my platform is not smt so select_idle_core is nop. Nevertheless select_idle_cpu
-> is almost never called because prev is idle and selected before calling it in
-> our case
-> 
->>
->> But I'm more curious why there is 23% performance penalty? So for this patch, if
->> you revert this change but keep cpumask updated, is 23% penalty still there?
->>
->> -       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
->> +       cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
-> 
-> I was about to say that reverting this line should not change anything because
-> we never reach this point but it does in fact. And after looking at a trace,
-> I can see that the 2 threads of perf bench sched pipe are on the same CPU and
-> that the sds_idle_cpus(sd->shared) is always empty. In fact, the rq->curr is
-> not yet idle and still point to the cfs task when you call update_idle_cpumask().
-> This means that once cleared, the bit will never be set
-> You can remove the test in update_idle_cpumask() which is called either when
-> entering idle or when there is only sched_idle tasks that are runnable.
-> 
-> @@ -6044,8 +6044,7 @@ void update_idle_cpumask(struct rq *rq)
->         sd = rcu_dereference(per_cpu(sd_llc, cpu));
->         if (!sd || !sd->shared)
->                 goto unlock;
-> -       if (!available_idle_cpu(cpu) || !sched_idle_cpu(cpu))
-> -               goto unlock;
-> +
->         cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
->  unlock:
->         rcu_read_unlock();
-> 
-> With this fix, the performance decrease is only 2%
-> 
->>
->> I just wonder if it's caused by the atomic ops as you have two cache domains with
->> sd_llc(?). Do you have a x86 machine to make a comparison? It's hard for me to find
->> an ARM machine but I'll try.
->>
->> Also, for uperf(task thread num = cpu num) workload, how is it on patch v2? no any
->> performance impact?
-> 
-> with v2 :  Throughput 24.97Mb/s (+/- 0.07%) so there is no perf regression
-> 
+T24gRnJpLCAyMDIwLTA5LTI1IGF0IDE0OjU0ICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
+VGhpcyBwYXRjaCBlbmFibGVzIDM2Yml0IGRtYSBhZGRyZXNzIHN1cHBvcnQgdG8gc3BpLW10ay1u
+b3IuDQo+IEN1cnJlbnRseSB0aGlzIGlzIGVuYWJsZWQgb25seSBmb3IgbXQ4MTkyLW5vci4NCj4g
+DQo+IFNpZ25lZC1vZmYtYnk6IElram9vbiBKYW5nIDxpa2puQGNocm9taXVtLm9yZz4NCj4gLS0t
+DQo+IA0KPiAobm8gY2hhbmdlcyBzaW5jZSB2MSkNCj4gDQo+ICBkcml2ZXJzL3NwaS9zcGktbXRr
+LW5vci5jIHwgMTggKysrKysrKysrKysrKysrKystDQo+ICAxIGZpbGUgY2hhbmdlZCwgMTcgaW5z
+ZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc3Bp
+L3NwaS1tdGstbm9yLmMgYi9kcml2ZXJzL3NwaS9zcGktbXRrLW5vci5jDQo+IGluZGV4IDhkYmFm
+ZWU3ZjQzMS4uMzUyMDU2MzVlZDQyIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL3NwaS9zcGktbXRr
+LW5vci5jDQo+ICsrKyBiL2RyaXZlcnMvc3BpL3NwaS1tdGstbm9yLmMNCj4gQEAgLTc4LDYgKzc4
+LDggQEANCj4gICNkZWZpbmUgTVRLX05PUl9SRUdfRE1BX0ZBRFIJCTB4NzFjDQo+ICAjZGVmaW5l
+IE1US19OT1JfUkVHX0RNQV9EQURSCQkweDcyMA0KPiAgI2RlZmluZSBNVEtfTk9SX1JFR19ETUFf
+RU5EX0RBRFIJMHg3MjQNCj4gKyNkZWZpbmUgTVRLX05PUl9SRUdfRE1BX0RBRFJfSEIJCTB4NzM4
+DQo+ICsjZGVmaW5lIE1US19OT1JfUkVHX0RNQV9FTkRfREFEUl9IQgkweDczYw0KPiAgDQo+ICAv
+KiBtYXhpbXVtIGJ5dGVzIG9mIFRYIGluIFBSRyBtb2RlICovDQo+ICAjZGVmaW5lIE1US19OT1Jf
+UFJHX01BWF9TSVpFCQk2DQo+IEBAIC0xMDYsNiArMTA4LDcgQEAgc3RydWN0IG10a19ub3Igew0K
+PiAgCXVuc2lnbmVkIGludCBzcGlfZnJlcTsNCj4gIAlib29sIHdidWZfZW47DQo+ICAJYm9vbCBo
+YXNfaXJxOw0KPiArCWJvb2wgaGlnaF9kbWE7DQo+ICAJc3RydWN0IGNvbXBsZXRpb24gb3BfZG9u
+ZTsNCj4gIH07DQo+ICANCj4gQEAgLTMwNSw2ICszMDgsMTEgQEAgc3RhdGljIGludCBtdGtfbm9y
+X2RtYV9leGVjKHN0cnVjdCBtdGtfbm9yICpzcCwgdTMyIGZyb20sIHVuc2lnbmVkIGludCBsZW5n
+dGgsDQo+ICAJd3JpdGVsKGRtYV9hZGRyLCBzcC0+YmFzZSArIE1US19OT1JfUkVHX0RNQV9EQURS
+KTsNCj4gIAl3cml0ZWwoZG1hX2FkZHIgKyBsZW5ndGgsIHNwLT5iYXNlICsgTVRLX05PUl9SRUdf
+RE1BX0VORF9EQURSKTsNCj4gIA0KPiArCWlmIChzcC0+aGlnaF9kbWEpIHsNCj4gKwkJd3JpdGVs
+KGRtYV9hZGRyID4+IDMyLCBzcC0+YmFzZSArIE1US19OT1JfUkVHX0RNQV9EQURSX0hCKTsNCj4g
+KwkJd3JpdGVsKChkbWFfYWRkciArIGxlbmd0aCkgPj4gMzIsIHNwLT5iYXNlICsgTVRLX05PUl9S
+RUdfRE1BX0VORF9EQURSX0hCKTsNCj4gKwl9DQo+ICsNCg0KTWF5YmUgdXNlIHVwcGVyXzMyX2Jp
+dHMoKSA/DQoNCg0KPiAgCWlmIChzcC0+aGFzX2lycSkgew0KPiAgCQlyZWluaXRfY29tcGxldGlv
+bigmc3AtPm9wX2RvbmUpOw0KPiAgCQltdGtfbm9yX3JtdyhzcCwgTVRLX05PUl9SRUdfSVJRX0VO
+LCBNVEtfTk9SX0lSUV9ETUEsIDApOw0KPiBAQCAtNjM1LDcgKzY0Myw4IEBAIHN0YXRpYyBjb25z
+dCBzdHJ1Y3Qgc3BpX2NvbnRyb2xsZXJfbWVtX29wcyBtdGtfbm9yX21lbV9vcHMgPSB7DQo+ICB9
+Ow0KPiAgDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBtdGtfbm9yX21hdGNo
+W10gPSB7DQo+IC0JeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtbm9yIiB9LA0KPiAr
+CXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTkyLW5vciIsIC5kYXRhID0gKHZvaWQgKikz
+NiB9LA0KPiArCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLW5vciIsIC5kYXRhID0g
+KHZvaWQgKikzMiB9LA0KPiAgCXsgLyogc2VudGluZWwgKi8gfQ0KPiAgfTsNCj4gIE1PRFVMRV9E
+RVZJQ0VfVEFCTEUob2YsIG10a19ub3JfbWF0Y2gpOw0KPiBAQCAtNjQ3LDYgKzY1Niw3IEBAIHN0
+YXRpYyBpbnQgbXRrX25vcl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAg
+CXZvaWQgX19pb21lbSAqYmFzZTsNCj4gIAlzdHJ1Y3QgY2xrICpzcGlfY2xrLCAqY3Rscl9jbGs7
+DQo+ICAJaW50IHJldCwgaXJxOw0KPiArCXVuc2lnbmVkIGxvbmcgZG1hX2JpdHM7DQo+ICANCj4g
+IAliYXNlID0gZGV2bV9wbGF0Zm9ybV9pb3JlbWFwX3Jlc291cmNlKHBkZXYsIDApOw0KPiAgCWlm
+IChJU19FUlIoYmFzZSkpDQo+IEBAIC02NjAsNiArNjcwLDEyIEBAIHN0YXRpYyBpbnQgbXRrX25v
+cl9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgCWlmIChJU19FUlIoY3Rs
+cl9jbGspKQ0KPiAgCQlyZXR1cm4gUFRSX0VSUihjdGxyX2Nsayk7DQo+ICANCj4gKwlkbWFfYml0
+cyA9ICh1bnNpZ25lZCBsb25nKW9mX2RldmljZV9nZXRfbWF0Y2hfZGF0YSgmcGRldi0+ZGV2KTsN
+Cj4gKwlpZiAoZG1hX3NldF9tYXNrX2FuZF9jb2hlcmVudCgmcGRldi0+ZGV2LCBETUFfQklUX01B
+U0soZG1hX2JpdHMpKSkgew0KPiArCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJmYWlsZWQgdG8gc2V0
+IGRtYSBtYXNrKCVsdSlcbiIsIGRtYV9iaXRzKTsNCj4gKwkJcmV0dXJuIC1FSU5WQUw7DQo+ICsJ
+fQ0KPiArDQoNCkFzIHNhaWQgaW4gcHJldmlvdXMgdmVyc2lvbi4gSSBkb24ndCBzZWUgYW55IHBs
+YWNlIGVuYWJsZSBoaWdoX2RtYSwgc28gSQ0KdGhpbmsgdGhpcyBwYXRjaCB3b24ndCBzZXQgPjMy
+Yml0cyBmb3IgYW55Y2hpcC4gV2UgbmVlZCBzb21ldGhpbmcgbGlrZToNCg0KCXNwLT5oaWRoX2Rt
+YSA9IGRtYV9iaXRzID4gMzI7DQoNCkFtIEkgbWlzc2luZyBhbnl0aGluZz8NCg0KSm9lLkMNCg0K
 
-Thanks Vincent, let me try to refine this patch.
-
--Aubrey
