@@ -2,163 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF69427A0AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 13:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B14727A0B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 14:05:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgI0Lqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 07:46:34 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:59255 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgI0Lqe (ORCPT
+        id S1726405AbgI0MEv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 27 Sep 2020 08:04:51 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:36886 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgI0MEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 07:46:34 -0400
-Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08RBkVsj015800;
-        Sun, 27 Sep 2020 20:46:31 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
- Sun, 27 Sep 2020 20:46:31 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08RBkVRr015794
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Sun, 27 Sep 2020 20:46:31 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
-Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
-        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
-        syzkaller-bugs@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        George Kennedy <george.kennedy@oracle.com>
-References: <000000000000226d3f05b02dd607@google.com>
- <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
- <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
- <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
- <20200927092701.GA1037755@PWN>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp>
-Date:   Sun, 27 Sep 2020 20:46:30 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <20200927092701.GA1037755@PWN>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 27 Sep 2020 08:04:51 -0400
+Received: from [172.20.10.2] (x527179c4.dyn.telefonica.de [82.113.121.196])
+        by mail.holtmann.org (Postfix) with ESMTPSA id EF808CECFF;
+        Sun, 27 Sep 2020 14:11:46 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <004951c574594df68829e1a076bc94da@realsil.com.cn>
+Date:   Sun, 27 Sep 2020 14:04:46 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Max Chou <max.chou@realtek.com>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <A9AD70E3-D2FE-4D9C-9B9B-C7D448A60A30@holtmann.org>
+References: <004951c574594df68829e1a076bc94da@realsil.com.cn>
+To:     =?utf-8?B?6ZmG5pyx5Lyf?= <alex_lu@realsil.com.cn>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot is reporting UAF/OOB read at bit_putcs()/soft_cursor() [1][2], for
-vt_resizex() from ioctl(VT_RESIZEX) allows setting font height larger than
-actual font height calculated by con_font_set() from ioctl(PIO_FONT).
-Since fbcon_set_font() from con_font_set() allocates minimal amount of
-memory based on actual font height calculated by con_font_set(),
-use of vt_resizex() can cause UAF/OOB read for font data.
+Hi Alex,
 
-VT_RESIZEX was introduced in Linux 1.3.3, but it is unclear that what
-comes to the "+ more" part, and I couldn't find a user of VT_RESIZEX.
+>>>>> When someone attacks the service provider, it creates connection,
+>>>>> authenticates. Then it requests key size of one byte and it identifies
+>>>>> the key with brute force methods.
+>>>>> 
+>>>>> After l2cap info req/resp exchange is complete. the attacker sends l2cap
+>>>>> connect with specific PSM.
+>>>>> 
+>>>>> In above procedure, there is no chance for the service provider to check
+>>>>> the encryption key size before l2cap_connect(). Because the state of
+>>>>> l2cap chan in conn->chan_l is BT_LISTEN, there is no l2cap chan with the
+>>>>> state of BT_CONNECT or BT_CONNECT2.
+>>>>> 
+>>>>> So service provider should check the encryption key size in
+>>>>> l2cap_connect()
+>>>>> 
+>>>>> Signed-off-by: Alex Lu <alex_lu@realsil.com.cn>
+>>>>> ---
+>>>>> net/bluetooth/l2cap_core.c | 7 +++++++
+>>>>> 1 file changed, 7 insertions(+)
+>>>>> 
+>>>>> diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+>>>>> index ade83e224567..63df961d402d 100644
+>>>>> --- a/net/bluetooth/l2cap_core.c
+>>>>> +++ b/net/bluetooth/l2cap_core.c
+>>>>> @@ -4150,6 +4150,13 @@ static struct l2cap_chan *l2cap_connect(struct
+>>>> l2cap_conn *conn,
+>>>>> 
+>>>>> 	if (conn->info_state & L2CAP_INFO_FEAT_MASK_REQ_DONE) {
+>>>>> 		if (l2cap_chan_check_security(chan, false)) {
+>>>>> +			if (!l2cap_check_enc_key_size(conn->hcon)) {
+>>>>> +				l2cap_state_change(chan, BT_DISCONN);
+>>>>> +				__set_chan_timer(chan,
+>>>> L2CAP_DISC_TIMEOUT);
+>>>>> +				result = L2CAP_CR_SEC_BLOCK;
+>>>>> +				status = L2CAP_CS_NO_INFO;
+>>>>> +				goto response;
+>>>>> +			}
+>>>>> 			if (test_bit(FLAG_DEFER_SETUP, &chan->flags)) {
+>>>>> 				l2cap_state_change(chan, BT_CONNECT2);
+>>>>> 				result = L2CAP_CR_PEND;
+>>>> 
+>>>> I am not following what you are trying to fix here. Can you show this with
+>> a
+>>>> btmon trace from an attacking device?
+>>>> 
+>>>> Regards
+>>>> 
+>>>> Marcel
+>>>> 
+>>>> 
+>>> 
+>>> I'm sorry, I didn't have btmon trace from an attacking device.
+>>> I didn't have the real attacking device. I just simulate the attacking.
+>>> I have a device that can create one byte size encryption key.
+>>> It uses the link key that was produced by pairing with the service provider.
+>> Actually the KNOB (Key Negotiation of Bluetooth Attack) says, the link key is
+>> unnecessary for the reconnection.
+>>> I use this device to reconnect to service provider, and then initiate the Key
+>> Negotiation for one byte size encryption key. Actually the attacker identified
+>> the encryption key with some brute force methods.
+>>> 
+>>> I want to provide the trace on service provider side.
+>> 
+>> what kernel version are you running? I wonder if we should always return
+>> L2CAP_CR_PEND here. Do you have a reproducer code?
+> 
+> I'm running kernel 5.8.0-rc6 on acceptor and kernel 5.8.5 on the initiator which acts as an attacker.
+> For the attack simulation, some code needs to be changed on each size.
+> On the acceptor, the master parameter for bt_io_listen() in bluetoothd should be changed to FALSE in profiles/audio/a2dp.c a2dp_server_listen() and profiles/audio/avctp.c avctp_server_socket().
+> The change makes the kernel not to change the role to master when it receives hci conn req event.
+> I did the change in order to make the controller to send LMP_ENCRYPTION_KEY_SIZE_REQ PDU for one byte key size.
+> 
+> On the initiator, the below encryption key size check should be removed.
+> @@ -1622,10 +1624,13 @@ static void l2cap_conn_start(struct l2cap_conn *conn)
+>                                continue;
+>                        }
+> 
+> -                       if (l2cap_check_enc_key_size(conn->hcon))
+> -                               l2cap_start_connection(chan);
+> -                       else
+> -                               l2cap_chan_close(chan, ECONNREFUSED);
+> +                       /* Just simulate KNOB */
+> +                       l2cap_start_connection(chan);
+> +                       /* if (l2cap_check_enc_key_size(conn->hcon))
+> +                        *      l2cap_start_connection(chan);
+> +                        * else
+> +                        *      l2cap_chan_close(chan, ECONNREFUSED);
+> +                        */
+> 
+> At last, I did the test as below:
+> 1. On the initiator, pair acceptor
+> 2. Run l2test -r -P 3 on the acceptor
+> 3. Run l2test -n -P 3 <bdaddr> on the initiator
+> 
+>> 
+>> The problem really is that the MASK_REQ_DONE indication is not enough to
+>> make a decision for the key size. We have to ensure that also the key size is
+>> actually available. If that is not yet done, then we should not check it. This
+>> means that any response to L2CAP_Connect_Request PDU needs to be
+>> delayed until the key size has been read.
+> 
+> In my test case, the key size has been read from controller before the l2cap conn request PDU is received.
+> 
+> < HCI Command: Read Encryption Key Size (0x05|0x0008) plen 2                                         #22 [hci0] 43.089859
+>        Handle: 1
+>> HCI Event: Command Complete (0x0e) plen 7                                                           #23 [hci0] 43.091528
+>      Read Encryption Key Size (0x05|0x0008) ncmd 2
+>        Status: Success (0x00)
+>        Handle: 1
+>        Key size: 1
+>> ACL Data RX: Handle 1 flags 0x02 dlen 10                                                            #24 [hci0] 43.140888
+>      L2CAP: Information Request (0x0a) ident 1 len 2
+>        Type: Extended features supported (0x0002)
+> ......
+>> ACL Data RX: Handle 1 flags 0x02 dlen 12                                                            #34 [hci0] 43.148405
+>      L2CAP: Connection Request (0x02) ident 3 len 4
+>        PSM: 3 (0x0003)
+>        Source CID: 64
 
-  #define VT_RESIZE   0x5609 /* set kernel's idea of screensize */
-  #define VT_RESIZEX  0x560A /* set kernel's idea of screensize + more */
+the easiest way to fake this is just to assign a different value than the one returned by Read Encryption Key Size on the acceptor side. No need to mess with LMP details.
 
-So far we are not aware of syzbot reports caused by setting non-zero value
-to v_vlin parameter. But given that it is possible that nobody is using
-VT_RESIZEX, we can try removing support for v_clin and v_vlin parameters.
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 1df95145f574..741b7ad31ff8 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -3034,7 +3034,7 @@ static void read_enc_key_size_complete(struct hci_dev *hdev, u8 status,
+                           handle);
+                conn->enc_key_size = 0;
+        } else {
+-               conn->enc_key_size = rp->key_size;
++               conn->enc_key_size = 1;
+        }
 
-Therefore, this patch effectively makes VT_RESIZEX behave like VT_RESIZE,
-with emitting a message if somebody is still using v_clin and/or v_vlin
-parameters.
+If you add this change to both sides, what are the steps to reproduce this and what does btmon show? You might have to also enable dynamic_debug for l2cap.ko so that we see the function call trace.
 
-[1] https://syzkaller.appspot.com/bug?id=32577e96d88447ded2d3b76d71254fb855245837
-[2] https://syzkaller.appspot.com/bug?id=6b8355d27b2b94fb5cedf4655e3a59162d9e48e3
+I am a bit pedantic with this one, since it is critical to understand where the current changes to handle anything KNOB related have their shortcomings. I spent so much time testing every single corner case. Certainly I could have missed something, but if I really did, this time around I want to either simplify the code or properly comment it at least.
 
-Reported-by: syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+16469b5e8e5a72e9131e@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- drivers/tty/vt/vt_ioctl.c | 57 +++++++--------------------------------
- 1 file changed, 10 insertions(+), 47 deletions(-)
+Please see the other email thread / patch from Archie trying to also add another encryption key size check.
 
-diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-index a4e520bdd521..bc33938e2f20 100644
---- a/drivers/tty/vt/vt_ioctl.c
-+++ b/drivers/tty/vt/vt_ioctl.c
-@@ -773,58 +773,21 @@ static int vt_resizex(struct vc_data *vc, struct vt_consize __user *cs)
- 	if (copy_from_user(&v, cs, sizeof(struct vt_consize)))
- 		return -EFAULT;
- 
--	/* FIXME: Should check the copies properly */
--	if (!v.v_vlin)
--		v.v_vlin = vc->vc_scan_lines;
--
--	if (v.v_clin) {
--		int rows = v.v_vlin / v.v_clin;
--		if (v.v_rows != rows) {
--			if (v.v_rows) /* Parameters don't add up */
--				return -EINVAL;
--			v.v_rows = rows;
--		}
--	}
--
--	if (v.v_vcol && v.v_ccol) {
--		int cols = v.v_vcol / v.v_ccol;
--		if (v.v_cols != cols) {
--			if (v.v_cols)
--				return -EINVAL;
--			v.v_cols = cols;
--		}
--	}
--
--	if (v.v_clin > 32)
--		return -EINVAL;
-+	if (v.v_vlin)
-+		pr_info_once("\"struct vt_consize\"->v_vlin is ignored. Please report if you need this.\n");
-+	if (v.v_clin)
-+		pr_info_once("\"struct vt_consize\"->v_clin is ignored. Please report if you need this.\n");
- 
-+	console_lock();
- 	for (i = 0; i < MAX_NR_CONSOLES; i++) {
--		struct vc_data *vcp;
-+		vc = vc_cons[i].d;
- 
--		if (!vc_cons[i].d)
--			continue;
--		console_lock();
--		vcp = vc_cons[i].d;
--		if (vcp) {
--			int ret;
--			int save_scan_lines = vcp->vc_scan_lines;
--			int save_font_height = vcp->vc_font.height;
--
--			if (v.v_vlin)
--				vcp->vc_scan_lines = v.v_vlin;
--			if (v.v_clin)
--				vcp->vc_font.height = v.v_clin;
--			vcp->vc_resize_user = 1;
--			ret = vc_resize(vcp, v.v_cols, v.v_rows);
--			if (ret) {
--				vcp->vc_scan_lines = save_scan_lines;
--				vcp->vc_font.height = save_font_height;
--				console_unlock();
--				return ret;
--			}
-+		if (vc) {
-+			vc->vc_resize_user = 1;
-+			vc_resize(vc, v.v_cols, v.v_rows);
- 		}
--		console_unlock();
- 	}
-+	console_unlock();
- 
- 	return 0;
- }
--- 
-2.25.1
+Regards
+
+Marcel
 
