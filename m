@@ -2,132 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D0827A0EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 14:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3B027A0EC
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 14:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726424AbgI0Mbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 08:31:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38366 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726149AbgI0Mbq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 08:31:46 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7638523718;
-        Sun, 27 Sep 2020 12:31:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601209905;
-        bh=Zob3tCpUBLz6vvpiX/sBXSDrbhVYjXyMiLLbZaEfJ/c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RgcoiqB+fXdkWg/+coXRRBCFl/cD1e2JDi9vHSFNoXZuUeHVtR8GTRVBXqnzpfe32
-         EKm0FPMSYeTA0cR6cMCvENP+zugwFXvuON+wdFtbTXq2Ic7P7nPYYpbDFv/MaxQTT2
-         sCsDoXpkG/Ir/IcputjE+BkcCfPnp34Pbjf8MZ0U=
-Date:   Sun, 27 Sep 2020 14:31:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sherry Sun <sherry.sun@nxp.com>
-Cc:     "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
-        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "masahiroy@kernel.org" <masahiroy@kernel.org>,
-        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "rikard.falkeborn@gmail.com" <rikard.falkeborn@gmail.com>,
-        "mst@redhat.co" <mst@redhat.co>, "bp@suse.de" <bp@suse.de>,
-        "jhugo@codeaurora.org" <jhugo@codeaurora.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: Re: [PATCH 1/3] mic: vop: fix a written error in MODULE_DEVICE_TABLE
-Message-ID: <20200927123155.GA205468@kroah.com>
-References: <20200925073158.8238-1-sherry.sun@nxp.com>
- <20200925073158.8238-2-sherry.sun@nxp.com>
- <20200927102848.GA88650@kroah.com>
- <VI1PR04MB4960185041AEE411141583EA92340@VI1PR04MB4960.eurprd04.prod.outlook.com>
+        id S1726476AbgI0MdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 08:33:23 -0400
+Received: from relay12.mail.gandi.net ([217.70.178.232]:53191 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbgI0MdX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 08:33:23 -0400
+X-Greylist: delayed 68247 seconds by postgrey-1.27 at vger.kernel.org; Sun, 27 Sep 2020 08:33:22 EDT
+Received: from pc.localdomain (unknown [195.189.32.242])
+        (Authenticated sender: contact@artur-rojek.eu)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 6725C200007;
+        Sun, 27 Sep 2020 12:33:18 +0000 (UTC)
+From:   Artur Rojek <contact@artur-rojek.eu>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Artur Rojek <contact@artur-rojek.eu>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v10 1/2] dt-bindings: input: Add docs for ADC driven joystick.
+Date:   Sun, 27 Sep 2020 14:33:01 +0200
+Message-Id: <20200927123302.31062-1-contact@artur-rojek.eu>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <VI1PR04MB4960185041AEE411141583EA92340@VI1PR04MB4960.eurprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 12:19:50PM +0000, Sherry Sun wrote:
-> Hi Greg,
-> 
-> > -----Original Message-----
-> > From: Greg KH <gregkh@linuxfoundation.org>
-> > Sent: 2020年9月27日 18:29
-> > To: Sherry Sun <sherry.sun@nxp.com>
-> > Cc: sudeep.dutt@intel.com; ashutosh.dixit@intel.com; arnd@arndb.de;
-> > masahiroy@kernel.org; michal.lkml@markovi.net; lee.jones@linaro.org;
-> > rikard.falkeborn@gmail.com; mst@redhat.co; bp@suse.de;
-> > jhugo@codeaurora.org; tglx@linutronix.de;
-> > manivannan.sadhasivam@linaro.org; mgross@linux.intel.com; pierre-
-> > louis.bossart@linux.intel.com; linux-kernel@vger.kernel.org; linux-
-> > kbuild@vger.kernel.org; dl-linux-imx <linux-imx@nxp.com>
-> > Subject: Re: [PATCH 1/3] mic: vop: fix a written error in
-> > MODULE_DEVICE_TABLE
-> > 
-> > On Fri, Sep 25, 2020 at 03:31:56PM +0800, Sherry Sun wrote:
-> > > For vop bus, the first parameter should be vop in MODULE_DEVICE_TABLE.
-> > >
-> > > Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-> > > Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> > > ---
-> > >  drivers/misc/mic/vop/vop_main.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/misc/mic/vop/vop_main.c
-> > > b/drivers/misc/mic/vop/vop_main.c index d609f0dc6124..589425fa78d4
-> > > 100644
-> > > --- a/drivers/misc/mic/vop/vop_main.c
-> > > +++ b/drivers/misc/mic/vop/vop_main.c
-> > > @@ -796,7 +796,7 @@ static struct vop_driver vop_driver = {
-> > >
-> > >  module_vop_driver(vop_driver);
-> > >
-> > > -MODULE_DEVICE_TABLE(mbus, id_table);
-> > > +MODULE_DEVICE_TABLE(vop, id_table);
-> > >  MODULE_AUTHOR("Intel Corporation");
-> > >  MODULE_DESCRIPTION("Intel(R) Virtio Over PCIe (VOP) driver");
-> > > MODULE_LICENSE("GPL v2");
-> > 
-> > Doesn't this have to go _after_ the MODULE_DEVICE_TABLE(vop...) support,
-> > which you add in patch 2 of this series?
-> 
-> Yes, this patch must be used in conjunction with Patch2.
-> But I think here may be a small bug, in order to distinguish it from the driver
-> autoloading support, make this a separate patch.
-> 
-> I can put this patch together with Patch2 if you think it might look more reasonable.
+Add documentation for the adc-joystick driver, used to provide support
+for joysticks connected over ADC.
 
-How about _after_ patch 2, otherwise this patch will break the build,
-right?
+Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+Tested-by: Paul Cercueil <paul@crapouillou.net>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
 
-> > Does this patch here break the build?  If not, how is it working?
-> > 
-> > And if you only have one vop driver, why do you need autoloading for it?
-> > 
-> No, it doesn't break the build. But actually it won't work(autoloaded) when kernel boot and vop device appears.
-> 
-> Although we may only have one vop driver, but in the mic Kconfig, the intel mic/vop/cosm/scif drivers all
-> recommended to be built as modules, if we don't add autoloading for them, we may need modprobe them
-> one by one manually both on EP and RC side.
-> 
-> Obviously, for our use case, driver autoloading is more convenient.
+Changes:
+    v6-v10: no change
 
-Why are these all not "mic_SUFFIX" type drivers?  Why "vop" and "cosm"
-and "scif"?
+ .../bindings/input/adc-joystick.yaml          | 121 ++++++++++++++++++
+ 1 file changed, 121 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/adc-joystick.yaml
 
-And if you only have 1 driver, then what would cause autoloading?
+diff --git a/Documentation/devicetree/bindings/input/adc-joystick.yaml b/Documentation/devicetree/bindings/input/adc-joystick.yaml
+new file mode 100644
+index 000000000000..054406bbd22b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/adc-joystick.yaml
+@@ -0,0 +1,121 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2019-2020 Artur Rojek
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/input/adc-joystick.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: ADC attached joystick
++
++maintainers:
++  - Artur Rojek <contact@artur-rojek.eu>
++
++description: >
++  Bindings for joystick devices connected to ADC controllers supporting
++  the Industrial I/O subsystem.
++
++properties:
++  compatible:
++    const: adc-joystick
++
++  io-channels:
++    minItems: 1
++    maxItems: 1024
++    description: >
++      List of phandle and IIO specifier pairs.
++      Each pair defines one ADC channel to which a joystick axis is connected.
++      See Documentation/devicetree/bindings/iio/iio-bindings.txt for details.
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++required:
++  - compatible
++  - io-channels
++  - '#address-cells'
++  - '#size-cells'
++
++additionalProperties: false
++
++patternProperties:
++  "^axis@[0-9a-f]+$":
++    type: object
++    description: >
++      Represents a joystick axis bound to the given ADC channel.
++      For each entry in the io-channels list, one axis subnode with a matching
++      reg property must be specified.
++
++    properties:
++      reg:
++        minimum: 0
++        maximum: 1023
++        description: Index of an io-channels list entry bound to this axis.
++
++      linux,code:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        description: EV_ABS specific event code generated by the axis.
++
++      abs-range:
++        allOf:
++          - $ref: /schemas/types.yaml#/definitions/uint32-array
++          - items:
++              - description: minimum value
++              - description: maximum value
++        description: >
++          Minimum and maximum values produced by the axis.
++          For an ABS_X axis this will be the left-most and right-most
++          inclination of the joystick. If min > max, it is left to userspace to
++          treat the axis as inverted.
++          This property is interpreted as two signed 32 bit values.
++
++      abs-fuzz:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        description: >
++          Amount of noise in the input value.
++          Omitting this property indicates the axis is precise.
++
++      abs-flat:
++        $ref: /schemas/types.yaml#/definitions/uint32
++        description: >
++          Axial "deadzone", or area around the center position, where the axis
++          is considered to be at rest.
++          Omitting this property indicates the axis always returns to exactly
++          the center position.
++
++    required:
++      - reg
++      - linux,code
++      - abs-range
++
++    additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/iio/adc/ingenic,adc.h>
++    #include <dt-bindings/input/input.h>
++
++    joystick: adc-joystick {
++      compatible = "adc-joystick";
++      io-channels = <&adc INGENIC_ADC_TOUCH_XP>,
++                    <&adc INGENIC_ADC_TOUCH_YP>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      axis@0 {
++              reg = <0>;
++              linux,code = <ABS_X>;
++              abs-range = <3300 0>;
++              abs-fuzz = <4>;
++              abs-flat = <200>;
++      };
++      axis@1 {
++              reg = <1>;
++              linux,code = <ABS_Y>;
++              abs-range = <0 3300>;
++              abs-fuzz = <4>;
++              abs-flat = <200>;
++      };
++    };
+-- 
+2.28.0
 
-thanks,
-
-greg k-h
