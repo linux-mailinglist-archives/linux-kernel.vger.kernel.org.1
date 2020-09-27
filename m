@@ -2,80 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEB8279FB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 10:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC7A279FBF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 10:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730438AbgI0IiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 04:38:19 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:50335 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730508AbgI0IiT (ORCPT
+        id S1729106AbgI0Iqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 04:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727369AbgI0Iqs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 04:38:19 -0400
-Received: by mail-il1-f205.google.com with SMTP id u20so6185420ilk.17
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 01:38:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=D+7925BAuFy5JUJyqqoXH/AXv+NZQdbjeyCkWAqT2zg=;
-        b=NKIhreFtscOGG0sBX3E5kJfQIfhCBMLPG9f/c0iQw5UW4CqS6DQzxuOJeOXkixk2sJ
-         90yQd8xddRH7/GjuTrOrLnFpIZwmBeyhTDISXQ9H+xztvE+cf1jSV/mR9olHYYQHW3Tv
-         eFufV4y/3oLprluaMl8I8Ws0A+ix2SjHBJhReKoz84kPTqss+Tsm/YFDaO932O6664NL
-         SHvyS+UMtMnoRwYbgr8YlB3Uh1+DRj/8/M8ZzEUed8ptnkWyQC7Ytks25WGwAd776O6Y
-         Sv3U6esitjI/N1K6cK4mk+GnXXtzFkjNaVkiyKMXN9PKzMkxIywEfKSi37ao3ROHICOZ
-         ND3g==
-X-Gm-Message-State: AOAM5337IZgf39mcotwYIDfJrU6D89eI9l0WxzF6D0zBo6joeWX2R6Ik
-        U9e5xgQ0/BHTKkYtj3kNLZagJ3N/A5uQQUNmrvol3GKbynaR
-X-Google-Smtp-Source: ABdhPJy8iDWafPGNK7L+w8Gub4YgC1m1YGqnT9hnSu6/YN5gTC+CHpX//MO6pX46YDRz0dX7sHmu9QGqkoeIkPH8WYqASxfiXyB/
+        Sun, 27 Sep 2020 04:46:48 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB24C0613CE;
+        Sun, 27 Sep 2020 01:46:48 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601196405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=3LGtm2OI8qF06h9KMGGQRJ7d4e/B09d0iYRNLqK19DE=;
+        b=vtWT6FXNpv1rJGdbEJJKxhxZ2hkowdjPcJEaDMAro5/mwYgF7f2qjEeiKFQSSH9PtTbtjQ
+        HsUFQz/Trt8kMSfUg/AQa+Dd6H6TLmp85HgtKhILMKJEBPAXZTlBVlCuBVrTlZ3SWkXObd
+        A3uYhH4wFHZJacmbgX2O+NsHMqa/9G2Pkuz65AAv9jSfW+iCB+ZS9fYcuTgvLwKZwmDf/O
+        zZgGz9fCusPWYJqd2bYwAHlyXGdEd/MWFvhUhNXr7HHWvB0uTZIwM6dBXR4V6SnJO+mQK+
+        WSRcbCQJ++zz1iV8DGtZCO9vHOjRIHe69AAw88TEiMXTyc69NYyY/moKXh9SBg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601196405;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to; bh=3LGtm2OI8qF06h9KMGGQRJ7d4e/B09d0iYRNLqK19DE=;
+        b=2lHZQSLVc5ukVdtzXcK6JAqYUmFwK6ZXXzxyFLvvd4IZf5x37NfcDYaGYy6WSVTOsGs4s7
+        44wL1Jbt8wkVdCAA==
+To:     Peter Zijlstra <peterz@infradead.org>, Qian Cai <cai@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-next@vger.kernel.org, x86@kernel.org,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org, linux-hyperv@vger.kernel.org,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Dimitri Sivanich <sivanich@hpe.com>,
+        Russ Anderson <rja@hpe.com>, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        xen-devel@lists.xenproject.org, Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Megha Dey <megha.dey@intel.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jacob Pan <jacob.jun.pan@intel.com>,
+        Baolu Lu <baolu.lu@intel.com>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: [PATCH] x86/apic/msi: Unbreak DMAR and HPET MSI
+In-Reply-To: <87tuvltpo5.fsf@nanos.tec.linutronix.de>
+Date:   Sun, 27 Sep 2020 10:46:44 +0200
+Message-ID: <87wo0fli8b.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:f87:: with SMTP id v7mr6136361ilo.212.1601195898295;
- Sun, 27 Sep 2020 01:38:18 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 01:38:18 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bbdb3b05b0477890@google.com>
-Subject: WARNING: CPU: 1
-From:   syzbot <syzbot+3640e696903873858f7e@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Switching the DMAR and HPET MSI code to use the generic MSI domain ops
+missed to add the flag which tells the core code to update the domain
+operations with the defaults. As a consequence the core code crashes
+when an interrupt in one of those domains is allocated.
 
-syzbot found the following issue on:
+Add the missing flags.
 
-HEAD commit:    748d1c8a Merge branch 'devlink-Use-nla_policy-to-validate-..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=13ac3ec3900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=51fb40e67d1e3dec
-dashboard link: https://syzkaller.appspot.com/bug?extid=3640e696903873858f7e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1599be03900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=149fd44b900000
-
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1474aaad900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1674aaad900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1274aaad900000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3640e696903873858f7e@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 
-
-
+Fixes: 9006c133a422 ("x86/msi: Use generic MSI domain ops")
+Reported-by: Qian Cai <cai@redhat.com> 
+Reported-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/x86/kernel/apic/msi.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--- a/arch/x86/kernel/apic/msi.c
++++ b/arch/x86/kernel/apic/msi.c
+@@ -309,6 +309,7 @@ static struct msi_domain_ops dmar_msi_do
+ static struct msi_domain_info dmar_msi_domain_info = {
+ 	.ops		= &dmar_msi_domain_ops,
+ 	.chip		= &dmar_msi_controller,
++	.flags		= MSI_FLAG_USE_DEF_DOM_OPS,
+ };
+ 
+ static struct irq_domain *dmar_get_irq_domain(void)
+@@ -408,6 +409,7 @@ static struct msi_domain_ops hpet_msi_do
+ static struct msi_domain_info hpet_msi_domain_info = {
+ 	.ops		= &hpet_msi_domain_ops,
+ 	.chip		= &hpet_msi_controller,
++	.flags		= MSI_FLAG_USE_DEF_DOM_OPS,
+ };
+ 
+ struct irq_domain *hpet_create_irq_domain(int hpet_id)
