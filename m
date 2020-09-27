@@ -2,123 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAE3279FEC
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F75279FEF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgI0JQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 05:16:32 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:16371 "EHLO pegase1.c-s.fr"
+        id S1726597AbgI0JQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 05:16:38 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:8787 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgI0JQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:16:28 -0400
+        id S1726424AbgI0JQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 05:16:30 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bzg4j2sGQz9vCy7;
-        Sun, 27 Sep 2020 11:16:21 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4Bzg4k23b8z9vCy8;
+        Sun, 27 Sep 2020 11:16:22 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id icfunF-TvrNU; Sun, 27 Sep 2020 11:16:21 +0200 (CEST)
+        with ESMTP id raaRS9gIkYFd; Sun, 27 Sep 2020 11:16:22 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bzg4j230tz9vCxw;
-        Sun, 27 Sep 2020 11:16:21 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bzg4k1Jj1z9vCxw;
+        Sun, 27 Sep 2020 11:16:22 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D070B8B771;
-        Sun, 27 Sep 2020 11:16:25 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B8C7D8B771;
+        Sun, 27 Sep 2020 11:16:26 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id fHGWl0RRgwYd; Sun, 27 Sep 2020 11:16:25 +0200 (CEST)
+        with ESMTP id t4GK7Ov7iwQa; Sun, 27 Sep 2020 11:16:26 +0200 (CEST)
 Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6447B8B75B;
-        Sun, 27 Sep 2020 11:16:25 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6BEF98B75B;
+        Sun, 27 Sep 2020 11:16:26 +0200 (CEST)
 Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 4A9DA65DE8; Sun, 27 Sep 2020 09:16:25 +0000 (UTC)
-Message-Id: <4edfa548c3885a430b765335dc720105716e273f.1601197618.git.christophe.leroy@csgroup.eu>
+        id 529F565DE8; Sun, 27 Sep 2020 09:16:26 +0000 (UTC)
+Message-Id: <603c1d039d3f928ee95e547fcd2219fcf4c3b514.1601197618.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1601197618.git.christophe.leroy@csgroup.eu>
 References: <cover.1601197618.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 08/30] powerpc/vdso: Use VDSO size in
- arch_setup_additional_pages()
+Subject: [PATCH v1 09/30] powerpc/vdso: Simplify arch_setup_additional_pages()
+ exit
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Sun, 27 Sep 2020 09:16:25 +0000 (UTC)
+Date:   Sun, 27 Sep 2020 09:16:26 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In arch_setup_additional_pages(), instead of using number of VDSO
-pages and recalculate VDSO size, directly use the VDSO size.
-
-As vdso_ready is set, vdso_pages can't be 0 so just remove the test.
+To simplify arch_setup_additional_pages() exit, rename
+it __arch_setup_additional_pages() and create a caller
+arch_setup_additional_pages() which does the locking.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/vdso.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ arch/powerpc/kernel/vdso.c | 40 ++++++++++++++++++++------------------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
 
 diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
-index a24f6a583fac..448ecaa27ac5 100644
+index 448ecaa27ac5..a976c5e4a7ac 100644
 --- a/arch/powerpc/kernel/vdso.c
 +++ b/arch/powerpc/kernel/vdso.c
-@@ -126,7 +126,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+@@ -122,7 +122,7 @@ struct lib64_elfinfo
+  * This is called from binfmt_elf, we create the special vma for the
+  * vDSO and insert it into the mm struct tree
+  */
+-int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
++static int __arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
  {
  	struct mm_struct *mm = current->mm;
  	struct page **vdso_pagelist;
--	unsigned long vdso_pages;
-+	unsigned long vdso_size;
+@@ -130,9 +130,6 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
  	unsigned long vdso_base;
  	int rc;
  
-@@ -135,11 +135,11 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 
+-	if (!vdso_ready)
+-		return 0;
+-
  	if (is_32bit_task()) {
  		vdso_pagelist = vdso32_pagelist;
--		vdso_pages = vdso32_pages;
-+		vdso_size = &vdso32_end - &vdso32_start;
- 		vdso_base = VDSO32_MBASE;
- 	} else {
- 		vdso_pagelist = vdso64_pagelist;
--		vdso_pages = vdso64_pages;
-+		vdso_size = &vdso64_end - &vdso64_start;
- 		/*
- 		 * On 64bit we don't have a preferred map address. This
- 		 * allows get_unmapped_area to find an area near other mmaps
-@@ -150,13 +150,8 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 		vdso_size = &vdso32_end - &vdso32_start;
+@@ -148,8 +145,6 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 		vdso_base = 0;
+ 	}
  
- 	current->mm->context.vdso_base = 0;
- 
--	/* vDSO has a problem and was disabled, just don't "enable" it for the
--	 * process
--	 */
--	if (vdso_pages == 0)
--		return 0;
+-	current->mm->context.vdso_base = 0;
+-
  	/* Add a page to the vdso size for the data page */
--	vdso_pages ++;
-+	vdso_size += PAGE_SIZE;
+ 	vdso_size += PAGE_SIZE;
  
- 	/*
- 	 * pick a base address for the vDSO in process space. We try to put it
-@@ -167,8 +162,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	if (mmap_write_lock_killable(mm))
- 		return -EINTR;
- 	vdso_base = get_unmapped_area(NULL, vdso_base,
--				      (vdso_pages << PAGE_SHIFT) +
--				      ((VDSO_ALIGNMENT - 1) & PAGE_MASK),
-+				      vdso_size + ((VDSO_ALIGNMENT - 1) & PAGE_MASK),
- 				      0, 0);
- 	if (IS_ERR_VALUE(vdso_base)) {
- 		rc = vdso_base;
-@@ -195,7 +189,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
- 	 * It's fine to use that for setting breakpoints in the vDSO code
- 	 * pages though.
+@@ -159,15 +154,11 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
+ 	 * and end up putting it elsewhere.
+ 	 * Add enough to the size so that the result can be aligned.
  	 */
--	rc = install_special_mapping(mm, vdso_base, vdso_pages << PAGE_SHIFT,
-+	rc = install_special_mapping(mm, vdso_base, vdso_size,
+-	if (mmap_write_lock_killable(mm))
+-		return -EINTR;
+ 	vdso_base = get_unmapped_area(NULL, vdso_base,
+ 				      vdso_size + ((VDSO_ALIGNMENT - 1) & PAGE_MASK),
+ 				      0, 0);
+-	if (IS_ERR_VALUE(vdso_base)) {
+-		rc = vdso_base;
+-		goto fail_mmapsem;
+-	}
++	if (IS_ERR_VALUE(vdso_base))
++		return vdso_base;
+ 
+ 	/* Add required alignment. */
+ 	vdso_base = ALIGN(vdso_base, VDSO_ALIGNMENT);
+@@ -193,15 +184,26 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
  				     VM_READ|VM_EXEC|
  				     VM_MAYREAD|VM_MAYWRITE|VM_MAYEXEC,
  				     vdso_pagelist);
+-	if (rc) {
+-		current->mm->context.vdso_base = 0;
+-		goto fail_mmapsem;
+-	}
++	return rc;
++}
+ 
+-	mmap_write_unlock(mm);
+-	return 0;
++int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
++{
++	struct mm_struct *mm = current->mm;
++	int rc;
++
++	mm->context.vdso_base = 0;
++
++	if (!vdso_ready)
++		return 0;
++
++	if (mmap_write_lock_killable(mm))
++		return -EINTR;
++
++	rc = __arch_setup_additional_pages(bprm, uses_interp);
++	if (rc)
++		mm->context.vdso_base = 0;
+ 
+- fail_mmapsem:
+ 	mmap_write_unlock(mm);
+ 	return rc;
+ }
 -- 
 2.25.0
 
