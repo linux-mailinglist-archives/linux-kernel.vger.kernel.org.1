@@ -2,102 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DAC27A455
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 00:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2162B27A45A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 00:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbgI0WBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 18:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726321AbgI0WBC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 18:01:02 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF33FC0613CE;
-        Sun, 27 Sep 2020 15:01:01 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id a9so5084389wmm.2;
-        Sun, 27 Sep 2020 15:01:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9PYh9zOEyCKmAv70piA7xO/5F+a+eOAGeDMzmq6LTgU=;
-        b=duHzLi7FajhOJGaiNZP2BGpTLfA0z9VPSWRVlAm6MVY8pZhpRbRqnAtDjD7f17nd4G
-         cSpv5eJdGfoSjwQLUx+z0mC/5QOcREqdt1spddn3sS/tpNFzSHDCpWIK3m3SUqBX0iav
-         IMrhcaqeDh8YisTM1vAVIAs4iBEH1sHHtf5Wn+jUJonIrnDYP4DwU1LgwGMhyqGORNlw
-         lN4gXYcs2Lvq+lEPN1GSeL86Ue0yxWARpwvG/PmDctRy4EkQjWH26s9jmOas7TF+mt3Z
-         1NyzF+bg+jlg4zYO+dSpb9094njEXuHc01qnYlNNwI9dYcWqLIiE3wzag0ghbe2QjiQK
-         vSSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9PYh9zOEyCKmAv70piA7xO/5F+a+eOAGeDMzmq6LTgU=;
-        b=pe9Ai8VCKxlWQcRC9jaGvdDnW7k3QOgVlWZN6S1jJ5BLdEZhrV3g+qqSc+57N+nJw0
-         djcaXPUAZnp1JHlCW2SlAHlmSXqNioGFgsgM6IA4U0BRA/2CXV86dhd3lPCtkDMri/2S
-         bf+Jc7ZuxNtXTRJE9F6wHbGe0RGvzwKYupPICSZivE2W1jccDRSqduQ/imt9Fle45nT1
-         Vr1H8VfZY23sIduuk7eDQyykiwQywNHcfLQUsCcIyYhIDjfRjjEQCqF9iJD/6cunJUj/
-         i8UQfvrUX+j0uLcLt5VoXARvxluH40fhEAARwHhPTtZIzSqJmvSRUa54Fq/zSgEoh/GQ
-         2CuA==
-X-Gm-Message-State: AOAM5327kV5PwjB0UB5keMmg5rh/sdHtWwIY6WctYduAamrsrDJYd0yY
-        aupienvMV+XyBZtfyulcHApY4n6gAUNd4g==
-X-Google-Smtp-Source: ABdhPJzCVHlLwwuaO0c74jXnittihkW6Wpt/gODmZ4sWhulUYBYw61c+WMVbx0Qn9YVh7eRgUJFmwQ==
-X-Received: by 2002:a7b:cd8b:: with SMTP id y11mr8559604wmj.172.1601244060486;
-        Sun, 27 Sep 2020 15:01:00 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
-        by smtp.googlemail.com with ESMTPSA id x17sm4123584wrg.57.2020.09.27.15.00.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 15:00:59 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Ilia Mirkin <imirkin@alum.mit.edu>, stable@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sham Muthayyan <smuthayy@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: qcom: use PHY_REFCLK_USE_PAD only for ipq8064
-Date:   Mon, 28 Sep 2020 00:00:50 +0200
-Message-Id: <20200927220050.448-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726466AbgI0WT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 18:19:27 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:58056 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726321AbgI0WT1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 18:19:27 -0400
+Received: from zn.tnic (p200300ec2f249200fb52c51f0a966e24.dip0.t-ipconnect.de [IPv6:2003:ec:2f24:9200:fb52:c51f:a96:6e24])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 577F31EC026F;
+        Mon, 28 Sep 2020 00:19:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601245166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kCF4efe8uD7pMjREjHs1dzHUblYM4vi/JwTHT/UjuqE=;
+        b=JCbiiYjfPBhgyt3HhgoVNiw2nII5ehmehytdxwD33bEtR1tTaoivJSy+AQoDDBwQ3zjoau
+        O2+1pP/GrzQt86VpKNQnesYWsupfFRK/OXPu7jRNO6CVBHpqmPi3sQxx/d8ZTINV/AlX/t
+        AimMBmXUY5tN0P96nLSJRdxJgTSiXKA=
+Date:   Mon, 28 Sep 2020 00:19:17 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     "Song, Youquan" <youquan.song@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] x86/mce: Add Skylake quirk for patrol scrub reported
+ errors
+Message-ID: <20200927221917.GB4746@zn.tnic>
+References: <20200615184056.26531-1-tony.luck@intel.com>
+ <20200616192952.GO13515@zn.tnic>
+ <3908561D78D1C84285E8C5FCA982C28F7F670974@ORSMSX115.amr.corp.intel.com>
+ <20200617074158.GB10118@zn.tnic>
+ <20200617184901.GA387@agluck-desk2.amr.corp.intel.com>
+ <20200828202150.GA11854@agluck-desk2.amr.corp.intel.com>
+ <20200925191912.GO16872@zn.tnic>
+ <20200925230620.GA26621@agluck-desk2.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200925230620.GA26621@agluck-desk2.amr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The use of PHY_REFCLK_USE_PAD introduced a regression for apq8064
-devices. It was tested that while apq doesn't require the padding, ipq
-SoC must use it or the kernel hangs on boot.
+On Fri, Sep 25, 2020 at 04:06:20PM -0700, Luck, Tony wrote:
+> In some ways that's pretty neat. But it would still be ugly if we need
+> to extend it further for other issues. Especially if they don't have such
+> a simple rule to adjust the severity.
 
-Fixes: de3c4bf6489 ("PCI: qcom: Add support for tx term offset for rev 2.1.0")
-Reported-by: Ilia Mirkin <imirkin@alum.mit.edu>
-Signed-off-by: Ilia Mirkin <imirkin@alum.mit.edu>
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-Cc: stable@vger.kernel.org # v4.19+
----
- drivers/pci/controller/dwc/pcie-qcom.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+I'm still secretly hoping that one fine day one of your minions will
+come with a conversion series around the corner; series, which gets rid
+of this unreadable mess and we get something *actually* readable like
+mce_severity_amd().
 
-diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-index 3aac77a295ba..dad6e9ce66ba 100644
---- a/drivers/pci/controller/dwc/pcie-qcom.c
-+++ b/drivers/pci/controller/dwc/pcie-qcom.c
-@@ -387,7 +387,9 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
- 
- 	/* enable external reference clock */
- 	val = readl(pcie->parf + PCIE20_PARF_PHY_REFCLK);
--	val &= ~PHY_REFCLK_USE_PAD;
-+	/* USE_PAD is required only for ipq806x */
-+	if (!of_device_is_compatible(node, "qcom,pcie-apq8064"))
-+		val &= ~PHY_REFCLK_USE_PAD;
- 	val |= PHY_REFCLK_SSP_EN;
- 	writel(val, pcie->parf + PCIE20_PARF_PHY_REFCLK);
- 
+And on that day I'll even take one patch per severities[] member so that
+it is absolutely clear how the conversion has happened and review can be
+good and catch any lurking errors.
+
+One day... :-)
+
+Because after that day, we can do arbitrary rules to adjust the severity
+and there won't be any problems with extending it anymore because then
+it'll be nice and flexible C code only.
+
+> This would be better as a bit mask. I don't think we need this same
+> hack on the next generation of CPUs ... but if we did, the bank numbers
+> that would be affected don't form a continuous sequence.
+
+Ok, feel free to adjust it how you think it is better.
+
+> I'd need to stare at the placement of this in the sequence of rules at some
+> non-Friday-afternoon time. It might be right, but as we've grumbled together
+> many times before that code is full of surprise side effects.
+
+Nah, I just put it there so that I can see the macros in the same window
+and don't have to scroll - I'm purely relying on you here to place it in
+the right spot.
+
+Thx.
+
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
