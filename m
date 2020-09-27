@@ -2,149 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5649D27A17B
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5740A27A180
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbgI0PBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 11:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726196AbgI0PBF (ORCPT
+        id S1726393AbgI0PB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 11:01:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46050 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726267AbgI0PB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 11:01:05 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6712C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:01:04 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z13so8445630iom.8
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6XWqSgpr9w+Cpv2RWf3dg57txkghmrOFhF+JT7YUUFo=;
-        b=Hx67KdK+eLb1KhFlN+brjEytuno5Nb4kE/ImIazivnLcepkU2GnunWk/4nf/JOIgrX
-         xGqa1rFYLOMSxk3VeAOY5ajGOHjOrfT2nUwEUyTkb5gMiaJEzdX1IOfcdLuhwb3jXP4U
-         GMhbH7VJakdCkSHjuT5tLm2BgtFYScLY0+8FcDpX5Tvw77gpS3N+YpYA2IPrHd+VFt7y
-         uo55QNeGd16WRKmS55HxA9spA1abVNxkLvhyS3hZiCEyn0RQDPgaexzalPBjnm+xmcZW
-         MUEtvhz+p6pFf63OgIPX8iulwsRprts2Tl/BzkTj0FIOt6kQSo1/YgAQeb8n9sja6jeK
-         Ag1w==
+        Sun, 27 Sep 2020 11:01:59 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601218917;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0hs5rdUJVOmzg99SVlEBJlBQFGXQLPQJ2GLdFN3MjFs=;
+        b=ZqnMTfgAjasze6mCvo/28IVH7A5gf58YIwpj/Oo2oiBprfFaoumtJcq3dsrtyZpeJuDNXh
+        rVHom251RK3ICJWXR5PN/ULHma36fUzuxe+FDivwQ/S09fL8Jr2hDAPrji7xwB7rz7R1pe
+        6csiYIKWuaVASfcONKcJWXhjLp/ZHNg=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-504-VmXtMD4VNIa27Wxrs5CI5w-1; Sun, 27 Sep 2020 11:01:56 -0400
+X-MC-Unique: VmXtMD4VNIa27Wxrs5CI5w-1
+Received: by mail-ej1-f71.google.com with SMTP id md9so2187297ejb.8
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:01:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6XWqSgpr9w+Cpv2RWf3dg57txkghmrOFhF+JT7YUUFo=;
-        b=eZDZVkJZ2yuyax46NqJMi4rBV3QbLC79qd78xEOvzUAdmASqs6Khuv4NXj8RwiN46k
-         fksNFM4MexVqALhunXLGpPvHNxFl+o2bLMUevyDUSLFfLBzhFq7RGBlfqIxzN4ggq8hw
-         FAuUcIoaAR0+cwsCcjnZ6dUrZSw/TKtiqk9V6WEXKWvC140DZFfaz96jTaRyw8ubvJFn
-         RyHbJgEhErniGc05vBU5QiEG+Vmz/p+qkjuekDdCpYtip7NR6b+6g9SVXaN9IABwwcz8
-         eG6bPmuQwu9b4A7mN/sGON5+IKm+YcVAX2vBmAWk4U0+AUS2T5sXfCAyWRTHFQarWasd
-         6LCA==
-X-Gm-Message-State: AOAM532BkKISug6T+IPOgxy8QsOiDwPZqNwfOoaMFcCkLA647FvNsUPV
-        QZ2BH3qw5aUloHpXxCtScboIZr3L7jz4+3JAv9nB7Q==
-X-Google-Smtp-Source: ABdhPJyrAZSI73bweKVR53OC+XYNW95pSyhMq69jsjspDDDJJ21Ls4kVbWswaTAl9zIUZNW8EJqsGNTvSlZc3GQv29g=
-X-Received: by 2002:a02:94c8:: with SMTP id x66mr6028097jah.64.1601218863238;
- Sun, 27 Sep 2020 08:01:03 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0hs5rdUJVOmzg99SVlEBJlBQFGXQLPQJ2GLdFN3MjFs=;
+        b=pwchudv/7QZnz3RyTMmxVF76bY96f/X3l0JOSLH3P2Iyf3gwk0N1+Q4PrIJe0Fd9Fh
+         SJ7qLflX9m/W3A0Thh+nhVSk9VWhHelw0aa0Cxc5RrIW3jeKaocCl+zJkewf6avIrHwK
+         VoOSz2V3HFEwriSvGFdAEWpW8KdhlJ+DPTfoFMUqo13nc3uHpJpTRYqEAnPVq/JyfAOQ
+         8IsXrMmbAfhRI2KH6MwMhUXO9mWx9uzsZ49ZmezfQ5IwfE4eBiyri0hQ3/F6zwyb7Fxo
+         mhPe6zOWUtrZXEEeq7v6IlQAxIHdhLA/bThjBNfWvJv9vPO045iQWvm88D6c9Ntj1G3G
+         4a6A==
+X-Gm-Message-State: AOAM5303jWXQzjmKSqgjpGsqKiJxAEvGgAjjeeR09JziUTSLgiqQF5pg
+        MN2ugCvcarhYprufa+J0QYFBDheUAzg+xD2kxyfRNCC0XAW2K8mFIzYppA5LAkCeAzo1YFneyBj
+        gQ3pwkM0hzCm9QAwpacIMN8DS
+X-Received: by 2002:a50:bb65:: with SMTP id y92mr11310108ede.53.1601218914414;
+        Sun, 27 Sep 2020 08:01:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9xBEE4fL9o6SH/mCyn1ClksiNMLfDL1ho7Cw9z0Iz424ysBl96z0clzUKT7OhlnwXh9r6fA==
+X-Received: by 2002:a50:bb65:: with SMTP id y92mr11310082ede.53.1601218914188;
+        Sun, 27 Sep 2020 08:01:54 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id y14sm6602549eje.10.2020.09.27.08.01.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Sep 2020 08:01:53 -0700 (PDT)
+Subject: Re: [PATCH 0/3] serial: 8250_dw: Fix clk-notifier/port suspend
+ deadlock
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200923161950.6237-1-Sergey.Semin@baikalelectronics.ru>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <e508b9c8-bcc4-00a6-0ca0-0b4a0c34f626@redhat.com>
+Date:   Sun, 27 Sep 2020 17:01:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200926135514.26189-1-luka.kovacic@sartura.hr>
- <20200926135514.26189-8-luka.kovacic@sartura.hr> <20200926195008.6bd84dd3@nic.cz>
-In-Reply-To: <20200926195008.6bd84dd3@nic.cz>
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-Date:   Sun, 27 Sep 2020 17:01:04 +0200
-Message-ID: <CADZsf3bOAyfoEk9GbAQWNWeq7M6KR5PWWVtefBFV5EFAmArsCA@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] arm64: dts: marvell: Add a device tree for the iEi
- Puzzle-M801 board
-To:     Marek Behun <marek.behun@nic.cz>, Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200923161950.6237-1-Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andrew and Marek,
+Hi,
 
-I will break the new patchset up and also add Gregory to the DT conversation.
-Should I exclude this patch from this patchset or can I just add him to Cc?
+On 9/23/20 6:19 PM, Serge Semin wrote:
+> Hans has discovered that there is a potential deadlock between the ref
+> clock change notifier and the port suspension procedures {see the link at
+> the bottom of the letter}. Indeed the deadlock is possible if the port
+> suspension is initiated during the ref clock rate change:
+> 
+>      CPU0 (suspend CPU/UART)   CPU1 (update clock)
+>               ----                    ----
+>      lock(&port->mutex);
+>                                lock((work_completion)(&data->clk_work));
+>                                lock(&port->mutex);
+>      lock((work_completion)(&data->clk_work));
+> 
+>      *** DEADLOCK ***
+> 
+> So the CPU performing the UART port shutdown procedure will wait until the
+> ref clock change notifier is finished (worker is flushed), while the later
+> will wait for a port mutex being released.
+> 
+> A possible solution to bypass the deadlock is to move the worker flush out
+> of the critical section protected by the TTY port mutex. For instance we
+> can register and de-register the clock change notifier in the port probe
+> and remove methods instead of having them called from the port
+> startup/shutdown callbacks. But in order to do that we need to make sure
+> that the serial8250_update_uartclk() method is safe to be used while the
+> port is shutted down. Alas the current implementation doesn't provide that
+> safety. The solution described above is introduced in the framework of
+> this patchset. See individual patches for details.
+> 
+> Link: https://lore.kernel.org/linux-serial/f1cd5c75-9cda-6896-a4e2-42c5bfc3f5c3@redhat.com
+> 
+> Hans, could you test the patchset out on your Cherry Trail (x86)-based
+> devices? After that we can merge it in into the kernels 5.8 and 5.9 if
+> there is no objections against the fix.
 
-First six LEDs are used to indicate port status and activity on the SFP+ ports.
-Certainly, I will change this once the API is solved. There are currently many
-similar boards with no real solution for the network LED triggers.
+Done, I can confirm that this fixes the lockdep issue for me, so you
+can add my:
 
-I'll add the color and correct the function properties for the LEDs.
+Tested-by: Hans de Goede <hdegoede@redhat.com>
 
-Kind regards,
-Luka
+To the entire series.
 
-On Sat, Sep 26, 2020 at 7:50 PM Marek Behun <marek.behun@nic.cz> wrote:
->
-> On Sat, 26 Sep 2020 15:55:14 +0200
-> Luka Kovacic <luka.kovacic@sartura.hr> wrote:
->
-> > +     leds {
-> > +             compatible = "gpio-leds";
-> > +             status = "okay";
-> > +             pinctrl-0 = <&cp0_sfpplus_led_pins &cp1_sfpplus_led_pins>;
-> > +             pinctrl-names = "default";
-> > +
-> > +             led0 {
-> > +                     function = LED_FUNCTION_STATUS;
-> > +                     label = "p2_act";
-> > +                     gpios = <&cp1_gpio1 6 GPIO_ACTIVE_LOW>;
-> > +             };
->
-> There should be a dash in LED node name, please pass this dts via
-> dt_binding_check
->   led-0 {
->     ...
->   };
->
-> Also why not add the `color` property to the LED? This is DTS for a
-> specific device, right?
-> `label` is obsolete. The LED subsystem creates a name in form
->   [device:]color:function
-> If this LED should blink for activity on port 2 (is this an ethernet
-> port?), the function should be LED_FUNCTION_LAN and function-enumerator
-> should be <2> (or function should be LED_FUNCTION_ACTIVITY, depending
-> on how the LED subsystem goes forward with this, but certainly not
-> LED_FUNCTION_STATUS), and trigger-sources should be set to point to the
-> ethernet port.
->
-> Luka, are you willing to change this once we solve this API properly
-> in LED subsystem?
->
->
->
-> > +             led6 {
-> > +                     function = LED_FUNCTION_STATUS;
-> > +                     linux,default-trigger = "disk-activity";
-> > +                     label = "front-hdd-led";
-> > +                     gpios = <&cp0_gpio2 22 GPIO_ACTIVE_HIGH>;
-> > +             };
->
-> led-6. LED_FUNCTION_DISK. `label` deprecated.
->
-> > +             leds {
-> > +                     compatible = "iei,wt61p803-puzzle-leds";
-> > +                     #address-cells = <1>;
-> > +                     #size-cells = <0>;
-> > +
-> > +                     led@0 {
-> > +                             reg = <0>;
-> > +                             color = <LED_COLOR_ID_BLUE>;
-> > +                             label = "front-power-led";
-> > +                     };
->
-> Again, `label` is deprecated. Rather use function =
-> <LED_FUNCTION_POWER>;
->
-> Marek
+Regards,
+
+Hans
+
