@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 503CB27A25D
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 20:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6942427A260
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 20:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgI0SjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 14:39:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56602 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726239AbgI0SjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 14:39:15 -0400
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1736823A34;
-        Sun, 27 Sep 2020 18:39:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601231955;
-        bh=ufALKz1q13Sp1G9pTzVWJq9Q1h8p8JU3W/56CmJ0ZS0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kac0eHuFG0YFdPk3SGPh90/lS+yAQpBBt7wXoJ3mz352++AlzEiezW+UxtH+l9hYZ
-         WiwLHpgSc3mCtciJ8aRaCwxSi7XhEjAkEZqF/8CBjN1AqREvjKrb3T3eTG12SqsCNe
-         Lbe+Rrgl2SjkUtugP2IAg8oWAVS59mUHWAL0m9bc=
-Received: by mail-io1-f48.google.com with SMTP id r9so8832589ioa.2;
-        Sun, 27 Sep 2020 11:39:15 -0700 (PDT)
-X-Gm-Message-State: AOAM531JIbXQxklxjK20Gfmw4r6/9xC9L39xn35kHMr+A+oj0760A/kj
-        UWih0w9F2kDXd/KOMXozjAGC0jXsP4Qnf72/Lbc=
-X-Google-Smtp-Source: ABdhPJz+78g3vvZjop19EkMo/szs1TmRRk+mu7AQEdXsiYi9+WwNrZpOgx8s3j8bVsqhIPaJiE+v57HiA1bMcpOHQv4=
-X-Received: by 2002:a05:6638:d96:: with SMTP id l22mr6111864jaj.97.1601231954482;
- Sun, 27 Sep 2020 11:39:14 -0700 (PDT)
+        id S1726316AbgI0So3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 14:44:29 -0400
+Received: from sonic304-9.consmr.mail.bf2.yahoo.com ([74.6.128.32]:41518 "EHLO
+        sonic304-9.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726255AbgI0So2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 14:44:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601232267; bh=Ruh8whhsLaTTwjIXmzA3PCfAl+J0v/p4XdxCHWadIAE=; h=Date:From:Reply-To:Subject:References:From:Subject; b=OefH0+p25bbgpybsL1Ir18TEvaJKkdiE8jVs7MJGMKOmNFWhyqcYYb6ET3uB2ypUA66UpoSMKPDAdNLWDL6OT5UvU1G/qjFxULOxPzcMPaeyrYVLjxJtLJv97Vv6L5ygZf5n14ff/AUUL9uC94yDozsTMpPyMd8jPa4Q2Ek2DJh3EwcKlzGg0sjrIeOJcTWWAT4Yffb/9eTTmNuISNVRnshKEDlAJz85NHvtxxMyI+5ikbFmLbBEl/xnI89eKIZV7w2c7VtWxTt66tTrD7PiAACj9KDhbqYs8MVz9tN29pNBiX+l3FnQNWeJgbsYtiw3zyLO+fG0nkg8DecgIDHT/g==
+X-YMail-OSG: gZ8zbg0VM1mL6oFsYpyoZgyvE1guSiGvj0aO_3.93XpTJ8yHBeJpXWfUg0ciqM8
+ 07eP8E4nBN1bKQfsT3h9Z1Z3i2KVsP9OwMq.pkK.32AwXqmofk4AxntL42p.z5QVAlSIX_KjJDTD
+ B82pZNC5pBaOsFgeQHU9_c24wl6d8PytylX5yD2edJNjnl3.tkcLj0nQ1TOnIi2qxbcePlvMkoEV
+ EgCDx059cZcbAqWnfkR3MoKgWhzaWWzVyvyJbDrMPtSIymbnV7F2RW8Yx5ThCTt_ZlW611tBdnUH
+ IRA1FBvsVJ_3fwYpLrNQHLmFo5qWZj_Hp6FvKgI37i9Q7m0pgNuU.XiadWop3T3LUhKkhRvPrl4b
+ GYgtU_c7XIMJOdOQgFNheMOC.D3RlMBk9m92pgnpZi_M.HUKl_1J8o_3piUJzT6cqZDWAqu0FuvF
+ ncq2q_ReNa83yp4FCQV5nOYC0G7jzH7LuDwAFZp2wHxOuUclmURSxHw8ANkZcoe7jjxK0WS8wDd4
+ s9vcZSIiq9QgILlm1Uyex2SI2a87cu2.szVYTipGI.bQ33w47mD9hQa1wP71OMyrf0yIYYjFUEpH
+ qANyOP_Ne9ZJNN3LEe2Odszg20rt0eTgJw9FDuPs5oN8IJByrc6z_Zv7yB71NyPrH1dBWysmnzAk
+ 7klGFnl48W7hdug6jKBcf4PEjaek2z5t7GBv_YgC3Ya3Fqom3vSqwOqHsi7MNVf5XSauXvx2Fz08
+ mWDcvgnqJRDCEkMnNnzwnizEPDd9UIlceoIbtel98W3IKpl5q3spXunNXvmEbvWRwnrRcGVrRREB
+ RY1Y1LrmqoxmYMxAkjPwDanhSVOIW1nrW7b0u9_p_Jrw.CsCHBJxZBO.v50CaWFhZtFy3tG3Kqbo
+ GLA7wMMjRaYRDaMa5w6xrh5DFjtqj3E2PuzuD4AVo9y07DCkK9A00AGnjBMA3lmT0XZ.5smvxEuS
+ ZnLIVyQLVqPgqf4i.hIqj.3.9fpDzLrRXMyqUfR55B9JOEU9ekSDQCTWjiz_c5ypkpy5xoq5cPLc
+ d69.gGwcmKGxtwKMvTkfFgYyqqsdCjwwPFJZr2Ew.FgDFqAw1tJgcwiDYulr0D_0JSGZYp0l5P0C
+ 8GsppN7HseTCEXKP0c2sp8_8yOUWMSGvZjAfRF.9BIcnfd1QlaNC.OxWUJazT2WfrS5ISQjGwDN_
+ lsSHryQST76pabVCTMcvnFVXLET.0E4FinTDI0JXai189CPRCD3yRTX0gB_8H9lhOetew33As4pj
+ .IPO7tll_hB235SHwjWakthXPRZHB51PsH5.dudTX6Q5VxZDe4VnAiqgwSpwvEfTKbq3dc7juZ8c
+ FeU5gF3dFuOX5bCft_L2lvW1bO.l5HaRku.SPoeoV5FJU_olyJXrkY4OL.utMplZGf2Frn3qiRN3
+ OUXsHyQTy1UoYXXeRY9Hgb.E5NWauStVJu05iERXn37k7
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.bf2.yahoo.com with HTTP; Sun, 27 Sep 2020 18:44:27 +0000
+Date:   Sun, 27 Sep 2020 18:44:24 +0000 (UTC)
+From:   Ms Theresa Heidi <james29234@gmail.com>
+Reply-To: mstheresaaheidi@yahoo.com
+Message-ID: <357417391.1234662.1601232264865@mail.yahoo.com>
+Subject: =?UTF-8?B?5Yy76Zmi55qE57Sn5oCl5biu5Yqp77yB?=
 MIME-Version: 1.0
-References: <20200921131056.92848-1-miaoqinglang@huawei.com>
-In-Reply-To: <20200921131056.92848-1-miaoqinglang@huawei.com>
-From:   Sean Wang <sean.wang@kernel.org>
-Date:   Sun, 27 Sep 2020 11:39:03 -0700
-X-Gmail-Original-Message-ID: <CAGp9Lzo0R=7diO62sWwfKFTn7WZFnFbE2aQDV8Yh8UZ4=bm8mA@mail.gmail.com>
-Message-ID: <CAGp9Lzo0R=7diO62sWwfKFTn7WZFnFbE2aQDV8Yh8UZ4=bm8mA@mail.gmail.com>
-Subject: Re: [PATCH -next] pinctrl: mediatek: simplify the return expression
- of mtk_pinconf_bias_disable_set_rev1()
-To:     Qinglang Miao <miaoqinglang@huawei.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <357417391.1234662.1601232264865.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16674 YMailNodin Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 6:10 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
->
-> Simplify the return expression.
->
-> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+Dear Beloved One,=20
 
-Acked-by: Sean Wang <sean.wang@kernel.org>
+ CHARITY DONATION Please read carefully, I know it is true that this letter=
+ may come to you as a surprise. nevertheless,i humbly ask you to give me yo=
+ur attention and hear me, i am writing this mail to you with heavy sorrow i=
+n my heart,i have chose to reach you through Internet because it still rema=
+ins the fastest medium of communication after going through your profile.
 
-> ---
->  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 10 ++--------
->  1 file changed, 2 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> index 2f3dfb56c..16bb15226 100644
-> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
-> @@ -479,14 +479,8 @@ EXPORT_SYMBOL_GPL(mtk_pinconf_bias_get);
->  int mtk_pinconf_bias_disable_set_rev1(struct mtk_pinctrl *hw,
->                                       const struct mtk_pin_desc *desc)
->  {
-> -       int err;
-> -
-> -       err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_PULLEN,
-> -                              MTK_DISABLE);
-> -       if (err)
-> -               return err;
-> -
-> -       return 0;
-> +       return mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_PULLEN,
-> +                               MTK_DISABLE);
->  }
->  EXPORT_SYMBOL_GPL(mtk_pinconf_bias_disable_set_rev1);
->
-> --
-> 2.23.0
->
+My name is Mrs Theresa Heidi i am native France currently hospitalized in a=
+ private hospital here in Israel as a result of lungs cancer I am 62 years =
+old and I was diagnosed of lungs cancer for about 4 years ago, immediately =
+after the death of my husband, who has left me everything he worked for. I'=
+m with my laptop in a hospital here in where I have been undergoing treatme=
+nt for cancer of the lungs
+
+Now that is clear that I=E2=80=99m approaching the last-days of my life and=
+ i don't even need the money again for any thing and because my doctor told=
+ me that i would not last for the period of one year due to Lungs cancer pr=
+oblem.I have some funds inherited from my late husband, the sum of $15 Mill=
+ion United State Dollars ( US$15,000,000,00 ),This money is still with the =
+foreign bank and the management just wrote me as the true owner to come for=
+ward to receive the money for keeping it so long or rather issue a letter o=
+f authorization to somebody to receive it on my behalf since I can't come o=
+ver because of my illness or they may get it confiscated.
+
+I need you to help me withdraw this money from the foreign bank then use th=
+e funds for Charity works/assistance to less privileged people in the socie=
+ty.It is my last wish to see that this money is invested to any organizatio=
+n of your choice.
+
+I decided to contact you if you may be willing and interested to handle the=
+se trust funds in good faith before anything happens to me.This is not a st=
+olen money and there are no dangers involved, is 100% risk free with full l=
+egal proof.
+
+I want you to take 45 percent of the total money for your personal use whil=
+e 55% of the money will go to charity. I will appreciate your utmost confid=
+entiality and trust in this matter to accomplish my heart desire, as I don'=
+t want anything that will jeopardize my last wish.
+       =20
+Yours Beloved Sister.
+Mrs Theresa Heidi
