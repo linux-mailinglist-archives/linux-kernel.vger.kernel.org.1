@@ -2,92 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6942427A260
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 20:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B7E27A261
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 20:45:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgI0So3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 14:44:29 -0400
-Received: from sonic304-9.consmr.mail.bf2.yahoo.com ([74.6.128.32]:41518 "EHLO
-        sonic304-9.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726255AbgI0So2 (ORCPT
+        id S1726379AbgI0Spv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 14:45:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbgI0Spu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 14:44:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601232267; bh=Ruh8whhsLaTTwjIXmzA3PCfAl+J0v/p4XdxCHWadIAE=; h=Date:From:Reply-To:Subject:References:From:Subject; b=OefH0+p25bbgpybsL1Ir18TEvaJKkdiE8jVs7MJGMKOmNFWhyqcYYb6ET3uB2ypUA66UpoSMKPDAdNLWDL6OT5UvU1G/qjFxULOxPzcMPaeyrYVLjxJtLJv97Vv6L5ygZf5n14ff/AUUL9uC94yDozsTMpPyMd8jPa4Q2Ek2DJh3EwcKlzGg0sjrIeOJcTWWAT4Yffb/9eTTmNuISNVRnshKEDlAJz85NHvtxxMyI+5ikbFmLbBEl/xnI89eKIZV7w2c7VtWxTt66tTrD7PiAACj9KDhbqYs8MVz9tN29pNBiX+l3FnQNWeJgbsYtiw3zyLO+fG0nkg8DecgIDHT/g==
-X-YMail-OSG: gZ8zbg0VM1mL6oFsYpyoZgyvE1guSiGvj0aO_3.93XpTJ8yHBeJpXWfUg0ciqM8
- 07eP8E4nBN1bKQfsT3h9Z1Z3i2KVsP9OwMq.pkK.32AwXqmofk4AxntL42p.z5QVAlSIX_KjJDTD
- B82pZNC5pBaOsFgeQHU9_c24wl6d8PytylX5yD2edJNjnl3.tkcLj0nQ1TOnIi2qxbcePlvMkoEV
- EgCDx059cZcbAqWnfkR3MoKgWhzaWWzVyvyJbDrMPtSIymbnV7F2RW8Yx5ThCTt_ZlW611tBdnUH
- IRA1FBvsVJ_3fwYpLrNQHLmFo5qWZj_Hp6FvKgI37i9Q7m0pgNuU.XiadWop3T3LUhKkhRvPrl4b
- GYgtU_c7XIMJOdOQgFNheMOC.D3RlMBk9m92pgnpZi_M.HUKl_1J8o_3piUJzT6cqZDWAqu0FuvF
- ncq2q_ReNa83yp4FCQV5nOYC0G7jzH7LuDwAFZp2wHxOuUclmURSxHw8ANkZcoe7jjxK0WS8wDd4
- s9vcZSIiq9QgILlm1Uyex2SI2a87cu2.szVYTipGI.bQ33w47mD9hQa1wP71OMyrf0yIYYjFUEpH
- qANyOP_Ne9ZJNN3LEe2Odszg20rt0eTgJw9FDuPs5oN8IJByrc6z_Zv7yB71NyPrH1dBWysmnzAk
- 7klGFnl48W7hdug6jKBcf4PEjaek2z5t7GBv_YgC3Ya3Fqom3vSqwOqHsi7MNVf5XSauXvx2Fz08
- mWDcvgnqJRDCEkMnNnzwnizEPDd9UIlceoIbtel98W3IKpl5q3spXunNXvmEbvWRwnrRcGVrRREB
- RY1Y1LrmqoxmYMxAkjPwDanhSVOIW1nrW7b0u9_p_Jrw.CsCHBJxZBO.v50CaWFhZtFy3tG3Kqbo
- GLA7wMMjRaYRDaMa5w6xrh5DFjtqj3E2PuzuD4AVo9y07DCkK9A00AGnjBMA3lmT0XZ.5smvxEuS
- ZnLIVyQLVqPgqf4i.hIqj.3.9fpDzLrRXMyqUfR55B9JOEU9ekSDQCTWjiz_c5ypkpy5xoq5cPLc
- d69.gGwcmKGxtwKMvTkfFgYyqqsdCjwwPFJZr2Ew.FgDFqAw1tJgcwiDYulr0D_0JSGZYp0l5P0C
- 8GsppN7HseTCEXKP0c2sp8_8yOUWMSGvZjAfRF.9BIcnfd1QlaNC.OxWUJazT2WfrS5ISQjGwDN_
- lsSHryQST76pabVCTMcvnFVXLET.0E4FinTDI0JXai189CPRCD3yRTX0gB_8H9lhOetew33As4pj
- .IPO7tll_hB235SHwjWakthXPRZHB51PsH5.dudTX6Q5VxZDe4VnAiqgwSpwvEfTKbq3dc7juZ8c
- FeU5gF3dFuOX5bCft_L2lvW1bO.l5HaRku.SPoeoV5FJU_olyJXrkY4OL.utMplZGf2Frn3qiRN3
- OUXsHyQTy1UoYXXeRY9Hgb.E5NWauStVJu05iERXn37k7
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.bf2.yahoo.com with HTTP; Sun, 27 Sep 2020 18:44:27 +0000
-Date:   Sun, 27 Sep 2020 18:44:24 +0000 (UTC)
-From:   Ms Theresa Heidi <james29234@gmail.com>
-Reply-To: mstheresaaheidi@yahoo.com
-Message-ID: <357417391.1234662.1601232264865@mail.yahoo.com>
-Subject: =?UTF-8?B?5Yy76Zmi55qE57Sn5oCl5biu5Yqp77yB?=
+        Sun, 27 Sep 2020 14:45:50 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6103BC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 11:45:50 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id k25so6511146ljg.9
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 11:45:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HXbBaZxONg8BBAGgxG9uroKUYXpPci8VT24wKfZAHcM=;
+        b=BqNVX6Og/7MJqL+uGc4Tn1aIhplzn+9dXtqbLqfHVzvhPcCAyk/NAqTMdz3VyJChWf
+         UQy8RSXWzY1mFmi4PwmJEkCVJQBH/24apYcwKpgx73X0VIEp6D8lw5H933o53NDzOImf
+         CUH+TBXPlcio3GBoEZ1U/BE/1kJypHqJXlJm0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HXbBaZxONg8BBAGgxG9uroKUYXpPci8VT24wKfZAHcM=;
+        b=HgbQJ4A+Fvn22UIyTZtDKRrgtYfPdy7E8hxbUPUnt2WafdeJXKuEcr4x6GAxejAJeu
+         eRPJ5YExkm4LTAg06G2wrtLXfJAdkpQjLxzxqlBTw1fKNt70rxwRglU+K0tOPxAJ9tQ1
+         iOOCzgptKeKKZGHgQxHulMRhM4YzsRFeHecDEeGYciB1ALRLlO4b84emSSd3U7L/X924
+         xEdlZ84N1gD+U3W6slOHSEznDNrX1ZWNEaX+W59GU/7vzWDDhc82QmYm2/r7hejZlVUb
+         N+nvx9KRCmR4kyKAT7pVg7O0380MsVsF7qsKV+pMQOcmE0aJfNYvSaGcljgh8FNDQTQs
+         X+1Q==
+X-Gm-Message-State: AOAM532pDZlKI1LCKTWwNiSFdh76K4evYsIZ3GLwXgT0/rOivzqJT4rC
+        0wdsrOBoHij7H+1P+mZuszFIcrhjw58k7w==
+X-Google-Smtp-Source: ABdhPJwxYYmwwhgeuAY6eLGQc5q+eJ7W1PglTKxnzYFdJ2y2xkhW6vrBJZDCGQkQR7hNhXXzqf+qcA==
+X-Received: by 2002:a2e:9218:: with SMTP id k24mr3868731ljg.306.1601232348267;
+        Sun, 27 Sep 2020 11:45:48 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id f25sm5675138ljn.29.2020.09.27.11.45.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Sep 2020 11:45:46 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id d15so8517837lfq.11
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 11:45:46 -0700 (PDT)
+X-Received: by 2002:ac2:4a6a:: with SMTP id q10mr2513864lfp.534.1601232346153;
+ Sun, 27 Sep 2020 11:45:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <357417391.1234662.1601232264865.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16674 YMailNodin Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+References: <20200924175531.GH79898@xz-x1> <20200924181501.GF9916@ziepe.ca>
+ <20200924183418.GJ79898@xz-x1> <20200924183953.GG9916@ziepe.ca>
+ <20200924213010.GL79898@xz-x1> <CAHk-=wgz5SXKA6-uZ_BimOP1C7pHJag0ndz=tnJDAZS_Z+FrGQ@mail.gmail.com>
+ <CAHk-=whDSH_MRMt80JaSwoquzt=1nQ-0n3w0aVngoWPAc10BCw@mail.gmail.com>
+ <20200926004136.GJ9916@ziepe.ca> <CAHk-=wiutA_J-OfvrD8Kp3SoYcfMHUwsU7ViOH48q7QN0AQ6eg@mail.gmail.com>
+ <CAHk-=wi_gd+JWj-8t8tc8cy3WZ7NMj-_1hATfH3Rt0ytUxtMpQ@mail.gmail.com>
+ <20200927062337.GE2280698@unreal> <CAHk-=winqSOFsdn1ntYL13s2UuhpQQ9+GRvjWth3sA5APY4Wwg@mail.gmail.com>
+In-Reply-To: <CAHk-=winqSOFsdn1ntYL13s2UuhpQQ9+GRvjWth3sA5APY4Wwg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 27 Sep 2020 11:45:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com>
+Message-ID: <CAHk-=wj61s30pt8POVtKYVamYTh6h=7-_ser2Hx9sEjqeACkDA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] mm: Introduce mm_struct.has_pinned
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Peter Xu <peterx@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jan Kara <jack@suse.cz>, Michal Hocko <mhocko@suse.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Beloved One,=20
+On Sun, Sep 27, 2020 at 11:16 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Btw, I'm not convinced about the whole "turn the pte read-only and
+> then back". If the fork races with another thread doing a pinning
+> fast-GUP on another CPU, there are memory ordering issues etc too.
+> That's not necessarily visible on x86 (the "turn read-only being a
+> locked op will force serialization), but it all looks dodgy as heck.
 
- CHARITY DONATION Please read carefully, I know it is true that this letter=
- may come to you as a surprise. nevertheless,i humbly ask you to give me yo=
-ur attention and hear me, i am writing this mail to you with heavy sorrow i=
-n my heart,i have chose to reach you through Internet because it still rema=
-ins the fastest medium of communication after going through your profile.
+.. looking at it more, I also think it could possibly lose the dirty
+bit for the case where another CPU did a HW dirty/accessed bit update
+in between the original read of the pte, and then us writing back the
+writable pte again.
 
-My name is Mrs Theresa Heidi i am native France currently hospitalized in a=
- private hospital here in Israel as a result of lungs cancer I am 62 years =
-old and I was diagnosed of lungs cancer for about 4 years ago, immediately =
-after the death of my husband, who has left me everything he worked for. I'=
-m with my laptop in a hospital here in where I have been undergoing treatme=
-nt for cancer of the lungs
+Us holding the page table lock means that no _software_ accesses will
+happen to the PTE, but dirty/accessed bits can be modified by hardware
+despite the lock.
 
-Now that is clear that I=E2=80=99m approaching the last-days of my life and=
- i don't even need the money again for any thing and because my doctor told=
- me that i would not last for the period of one year due to Lungs cancer pr=
-oblem.I have some funds inherited from my late husband, the sum of $15 Mill=
-ion United State Dollars ( US$15,000,000,00 ),This money is still with the =
-foreign bank and the management just wrote me as the true owner to come for=
-ward to receive the money for keeping it so long or rather issue a letter o=
-f authorization to somebody to receive it on my behalf since I can't come o=
-ver because of my illness or they may get it confiscated.
+That is, of course, a completely crazy case, and I think that since we
+only do this for a COW mapping, and only do the PTE changes if the pte
+was writable, the pte will always have been dirty already.
 
-I need you to help me withdraw this money from the foreign bank then use th=
-e funds for Charity works/assistance to less privileged people in the socie=
-ty.It is my last wish to see that this money is invested to any organizatio=
-n of your choice.
+So I don't think it's an _actual_ bug, but it's another "this looks
+dodgy as heck" marker. It may _work_, but it sure ain't pretty.
 
-I decided to contact you if you may be willing and interested to handle the=
-se trust funds in good faith before anything happens to me.This is not a st=
-olen money and there are no dangers involved, is 100% risk free with full l=
-egal proof.
+But despite having looked at this quite a bit, I don't see anything
+that looks actively wrong, so I think the series is fine. This is more
+of a note for people to perhaps think about.
 
-I want you to take 45 percent of the total money for your personal use whil=
-e 55% of the money will go to charity. I will appreciate your utmost confid=
-entiality and trust in this matter to accomplish my heart desire, as I don'=
-t want anything that will jeopardize my last wish.
-       =20
-Yours Beloved Sister.
-Mrs Theresa Heidi
+                Linus
