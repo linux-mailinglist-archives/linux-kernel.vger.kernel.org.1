@@ -2,54 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBA127A404
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 22:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4132C27A407
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 22:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgI0UZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 16:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726309AbgI0UZk (ORCPT
+        id S1726632AbgI0U1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 16:27:49 -0400
+Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:41717 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgI0U1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 16:25:40 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FF7C0613CE;
-        Sun, 27 Sep 2020 13:25:40 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 124A213BAF334;
-        Sun, 27 Sep 2020 13:08:53 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 13:25:39 -0700 (PDT)
-Message-Id: <20200927.132539.1155509040825181941.davem@davemloft.net>
-To:     tanhuazhong@huawei.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        salil.mehta@huawei.com, yisen.zhuang@huawei.com,
-        linuxarm@huawei.com, kuba@kernel.org
-Subject: Re: [PATCH net-next 00/10] net: hns3: updates for -next
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1601190768-50075-1-git-send-email-tanhuazhong@huawei.com>
-References: <1601190768-50075-1-git-send-email-tanhuazhong@huawei.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sun, 27 Sep 2020 13:08:53 -0700 (PDT)
+        Sun, 27 Sep 2020 16:27:47 -0400
+Received: from [192.168.42.210] ([93.22.39.148])
+        by mwinf5d36 with ME
+        id Z8Th230063BnMZH038ThwF; Sun, 27 Sep 2020 22:27:44 +0200
+X-ME-Helo: [192.168.42.210]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 27 Sep 2020 22:27:44 +0200
+X-ME-IP: 93.22.39.148
+Subject: Re: [PATCH 12/18] ACPI: use semicolons rather than commas to separate
+ statements
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     =?UTF-8?Q?Valdis_Kl=c4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-janitors@vger.kernel.org, Len Brown <lenb@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+ <1601233948-11629-13-git-send-email-Julia.Lawall@inria.fr>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <446ee567-ecc1-fcc9-2691-d4160fdf2150@wanadoo.fr>
+Date:   Sun, 27 Sep 2020 22:27:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <1601233948-11629-13-git-send-email-Julia.Lawall@inria.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huazhong Tan <tanhuazhong@huawei.com>
-Date: Sun, 27 Sep 2020 15:12:38 +0800
-
-> To facilitate code maintenance and compatibility, #1 and #2 add
-> device version to replace pci revision, #3 to #9 adds support for
-> querying device capabilities and specifications, then the driver
-> can use these query results to implement corresponding features
-> (some features will be implemented later).
+Le 27/09/2020 à 21:12, Julia Lawall a écrit :
+> Replace commas with semicolons.  What is done is essentially described by
+> the following Coccinelle semantic patch (http://coccinelle.lip6.fr/):
 > 
-> And #10 is a minor cleanup since too many parameters for
-> hclge_shaper_para_calc().
+> // <smpl>
+> @@ expression e1,e2; @@
+> e1
+> -,
+> +;
+> e2
+> ... when any
+> // </smpl>
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> 
+> ---
+>   drivers/acpi/processor_idle.c |    4 +++-
+>   1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+> index f66236cff69b..85502143f506 100644
+> --- a/drivers/acpi/processor_idle.c
+> +++ b/drivers/acpi/processor_idle.c
+> @@ -1077,7 +1077,9 @@ static int acpi_processor_get_lpi_info(struct acpi_processor *pr)
+>   		/* flatten all the LPI states in this level of hierarchy */
+>   		flatten_lpi_states(pr, curr, prev);
+>   
+> -		tmp = prev, prev = curr, curr = tmp;
+> +		tmp = prev;
+> +		prev = curr;
+> +		curr = tmp;
+>   
+>   		status = acpi_get_parent(handle, &pr_ahandle);
+>   	}
+> 
+> 
+swap(prev, curr)?
 
-Series applied, thank you.
+CJ
