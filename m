@@ -2,53 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6661527A420
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 22:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0491127A413
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 22:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgI0UzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 16:55:18 -0400
-Received: from elvis.franken.de ([193.175.24.41]:60551 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726267AbgI0UzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 16:55:17 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kMdhT-0006KU-00; Sun, 27 Sep 2020 22:55:15 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 13CF4C102E; Sun, 27 Sep 2020 22:22:05 +0200 (CEST)
-Date:   Sun, 27 Sep 2020 22:22:05 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Pujin Shi <shipujin.t@gmail.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Kees Cook <keescook@chromium.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: mm: Fix build error
-Message-ID: <20200927202205.GA9767@alpha.franken.de>
-References: <20200927092610.1378-1-shipujin.t@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927092610.1378-1-shipujin.t@gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        id S1726594AbgI0UcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 16:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbgI0UcU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 16:32:20 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 938D1C0613CE;
+        Sun, 27 Sep 2020 13:32:20 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 3D1B013BB09D4;
+        Sun, 27 Sep 2020 13:15:32 -0700 (PDT)
+Date:   Sun, 27 Sep 2020 13:32:18 -0700 (PDT)
+Message-Id: <20200927.133218.1538000520701421658.davem@davemloft.net>
+To:     prabhakar.mahadev-lad.rj@bp.renesas.com
+Cc:     kuba@kernel.org, robh+dt@kernel.org, netdev@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        sergei.shtylyov@gmail.com, linux-kernel@vger.kernel.org,
+        prabhakar.csengg@gmail.com,
+        marian-cristian.rotariu.rb@bp.renesas.com
+Subject: Re: [RESEND PATCH] dt-bindings: net: renesas,ravb: Add support for
+ r8a774e1 SoC
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200927123439.29300-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20200927123439.29300-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Sun, 27 Sep 2020 13:15:32 -0700 (PDT)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 05:26:10PM +0800, Pujin Shi wrote:
-> arch/mips/mm/init.c: In function 'mem_init':
-> ././include/linux/compiler_types.h:319:38: error: call to '__compiletime_assert_321' declared with attribute error: BUILD_BUG_ON failed: IS_ENABLED(CONFIG_32BIT) && (_PFN_SHIFT > PAGE_SHIFT)
->   _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Date: Sun, 27 Sep 2020 13:34:39 +0100
 
-this is exactly what we want, so there is nothing to fix in this spot.
-The only real fix is change page table format for 32bit to get more
-PTE bits...
+> From: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> 
+> Document RZ/G2H (R8A774E1) SoC bindings.
+> 
+> Signed-off-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Rob Herring <robh@kernel.org>
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Applied.
