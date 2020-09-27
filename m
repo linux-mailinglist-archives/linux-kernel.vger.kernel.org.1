@@ -2,255 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C24927A0AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 13:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF69427A0AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 13:47:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726299AbgI0Lhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 07:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbgI0Lhn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 07:37:43 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 556272388B;
-        Sun, 27 Sep 2020 11:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601206661;
-        bh=yOO3IWYaWa9ZUTsOWddo7KzzFQEzLLN31SDrl7Bad1A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MyNvYiBteN6vwDHCafZ8BfTxQI5mjHxETLR8B0Mk/bA+gjpbMt9Vkf2Enc2smaB22
-         ceMsbsn5rJSRL6CnX9SE8cdhf7mEA6KNUj7HJeEWRdDYdjHJwUd5oo3CJSQ4brwFIU
-         bmYU1k134fk31suwYN4jGQQDAY4yedbcdWdSqUlU=
-Date:   Sun, 27 Sep 2020 13:37:51 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Corey Minyard <minyard@acm.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Bug with data getting dropped on a pty
-Message-ID: <20200927113751.GA98491@kroah.com>
-References: <20200925220536.GG3674@minyard.net>
+        id S1726299AbgI0Lqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 07:46:34 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:59255 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726185AbgI0Lqe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 07:46:34 -0400
+Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08RBkVsj015800;
+        Sun, 27 Sep 2020 20:46:31 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
+ Sun, 27 Sep 2020 20:46:31 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08RBkVRr015794
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Sun, 27 Sep 2020 20:46:31 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     Peilin Ye <yepeilin.cs@gmail.com>,
+        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
+        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        George Kennedy <george.kennedy@oracle.com>
+References: <000000000000226d3f05b02dd607@google.com>
+ <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
+ <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
+ <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
+ <20200927092701.GA1037755@PWN>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp>
+Date:   Sun, 27 Sep 2020 20:46:30 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200925220536.GG3674@minyard.net>
+In-Reply-To: <20200927092701.GA1037755@PWN>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 05:05:36PM -0500, Corey Minyard wrote:
-> I've been trying to track down a bug in a library I support (named
-> gensio; it does all kinds of stream I/O) and I have figured out that
-> the problem is not in the library, it's in the kernel.  I have
-> attached a reproducer program, more on how to run it later.
-> 
-> Basically, if you have a pty master and do the following:
-> 
->   write(ptym, data, size);
->   close(ptym);
-> 
-> The other end will occasionally not get the first 4095 bytes of data,
-> but it will get byte 4095 and on.  This only happens on SMP systems; I
-> couldn't reproduce with just one processor.  (Running under qemu I
-> have seen it drop 2048 bytes, but it has always been 4095 outside of a
-> VM.)  I have tested on Ubuntu 18.04.5 x86_64, the base 5.4 kernel, on a
-> raspberry pi running raspian, 5.4.51 kernel, and the latest on the
-> master branch of Linus' tree running under qemu on x86_64.
-> 
-> I have never seen it fail going the other way (writing to the slave
-> and reading from the master) and that's part of the test suite.
-> 
-> I'm ok with it not getting any of the data, I'm ok with it getting
-> some of the data at the beginning, but dropping a chunk of the data
-> and getting later data is a problem.
-> 
-> I've looked at the pty and tty code and I haven't found anything
-> obvious, but I haven't looked that hard and I don't know that code
-> very well.
-> 
-> To run the reproducer:
-> 
->   gcc -g -o testpty testpty.c
->   ulimit -c unlimited
->   while ./testpty; do echo pass; done
-> 
-> It should fail pretty quickly; it asserts when it detects the error.
-> You can load the core dump into the debugger.  Note that I wasn't able
-> to reproduce running it in the debugger.
-> 
-> In the debugger, you can back up to the assert and look at the readbuf:
-> 
-> (gdb) x/30xb readbuf
-> 0x559e5e9c6080 <readbuf>:	0xff	0x08	0x00	0x08	0x01	0x08	0x02	0x08
-> 0x559e5e9c6088 <readbuf+8>:	0x03	0x08	0x04	0x08	0x05	0x08	0x06	0x08
-> 0x559e5e9c6090 <readbuf+16>:	0x07	0x08	0x08	0x08	0x09	0x08	0x0a	0x08
-> 0x559e5e9c6098 <readbuf+24>:	0x0b	0x08	0x0c	0x08	0x0d	0x08
-> 
-> verses the data that was sent:
-> 
-> 0x559e5e9b6080 <data>:	0x00	0x00	0x00	0x01	0x00	0x02	0x00	0x03
-> 0x559e5e9b6088 <data+8>:	0x00	0x04	0x00	0x05	0x00	0x06	0x00	0x07
-> 0x559e5e9b6090 <data+16>:	0x00	0x08	0x00	0x09	0x00	0x0a	0x00	0x0b
-> 0x559e5e9b6098 <data+24>:	0x00	0x0c	0x00	0x0d	0x00	0x0e
-> 
-> The data is two byte big endian numbers ascending, the data in readbuf
-> that was read by the reader thread is the data starting at position
-> 4095 in the data buffer that was transmitted.  Since n_tty has a 4096
-> byte buffer, that's somewhat suspicious.
-> 
-> Though the reproducer always fails on the first buffer, the test
-> program I had would close in random places, it would fail at places
-> besides the beginning of the buffer.
-> 
-> I searched and I couldn't find any error report on this.
-> 
-> -corey
+syzbot is reporting UAF/OOB read at bit_putcs()/soft_cursor() [1][2], for
+vt_resizex() from ioctl(VT_RESIZEX) allows setting font height larger than
+actual font height calculated by con_font_set() from ioctl(PIO_FONT).
+Since fbcon_set_font() from con_font_set() allocates minimal amount of
+memory based on actual font height calculated by con_font_set(),
+use of vt_resizex() can cause UAF/OOB read for font data.
 
-> 
-> #define _XOPEN_SOURCE 600
-> #define _DEFAULT_SOURCE
-> 
-> #include <stdio.h>
-> #include <stdlib.h>
-> #include <string.h>
-> #include <fcntl.h>
-> #include <pthread.h>
-> #include <unistd.h>
-> #include <errno.h>
-> #include <termios.h>
-> #include <assert.h>
-> 
-> static int pty_make_raw(int ptym)
-> {
->     struct termios t;
->     int err;
-> 
->     err = tcgetattr(ptym, &t);
->     if (err)
-> 	return err;
-> 
->     cfmakeraw(&t);
->     return tcsetattr(ptym, TCSANOW, &t);
-> }
-> 
-> unsigned char data[65536];
-> unsigned char readbuf[65536];
-> int slavefd, slaveerr;
-> size_t readsize;
-> 
-> int
-> cmp_mem(unsigned char *buf, unsigned char *buf2, size_t len, size_t pos)
-> {
->     size_t i;
->     int rv = 0;
-> 
->     for (i = 0; i < len; i++) {
-> 	if (buf[i] != buf2[i]) {
-> 	    printf("Mismatch on byte %lu, expected 0x%2.2x, got 0x%2.2x\n",
-> 		   (long) (i + pos), buf[i], buf2[i]);
-> 	    fflush(stdout);
-> 	    rv = -1;
-> 	    break;
-> 	}
->     }
->     return rv;
-> }
-> 
-> static void *read_thread(void *dummy)
-> {
->     ssize_t i;
-> 
->     do {
-> 	i = read(slavefd, readbuf + readsize, sizeof(readbuf) - readsize);
-> 	if (i <= -1) {
-> 	    if (errno == EAGAIN)
-> 		continue;
-> 	    if (errno == EIO)
-> 		/* Remote close causes an EIO. */
-> 		return NULL;
-> 	    perror("read");
-> 	    slaveerr = errno;
-> 	    return NULL;
-> 	}
-> 	if (i + readsize > sizeof(data)) {
-> 	    slaveerr = E2BIG;
-> 	    return NULL;
-> 	}
-> 	if (i && cmp_mem(data + readsize, readbuf + readsize, i, readsize)) {
-> 	    fprintf(stderr, "Data mismatch, starting at %ld, %ld bytes\n",
-> 		    (long) readsize, (long) i);
-> 	    assert(0);
-> 	    slaveerr = EBADMSG;
-> 	    return NULL;
-> 	}
-> 	readsize += i;
->     } while (i != 0);
-> 
->     return NULL;
-> }
-> 
-> int main(int argc, char *argv[])
-> {
->     int ptym, err;
->     char *slave;
->     ssize_t i;
->     pthread_t slavethr;
-> 
->     for (i = 0; i < sizeof(data); i += 2) {
-> 	data[i] = (i / 2) >> 8;
-> 	data[i + 1] = i / 2;
->     }
-> 
->     ptym = posix_openpt(O_RDWR | O_NOCTTY);
->     if (ptym == -1) {
-> 	perror("posix_openpt");
-> 	exit(1);
->     }
-> 
->     if (fcntl(ptym, F_SETFL, O_NONBLOCK) == -1) {
-> 	perror("fcntl ptym");
-> 	exit(1);
->     }
-> 
->     if (pty_make_raw(ptym)) {
-> 	perror("pty_make_raw");
-> 	exit(1);
->     }
-> 
->     if (unlockpt(ptym) < 0) {
-> 	perror("unlockpt");
-> 	exit(1);
->     }
-> 
->     slave = ptsname(ptym);
->     slavefd = open(slave, O_RDWR);
->     if (slavefd == -1) {
-> 	perror("open");
-> 	exit(1);
->     }
-> 
->     err = pthread_create(&slavethr, NULL, read_thread, NULL);
->     if (err) {
-> 	fprintf(stderr, "pthread_create: %s\n", strerror(err));
-> 	exit(1);
->     }
-> 
->     i = write(ptym, data, sizeof(data));
->     if (i == -1) {
-> 	perror("write");
-> 	exit(1);
->     }
+VT_RESIZEX was introduced in Linux 1.3.3, but it is unclear that what
+comes to the "+ more" part, and I couldn't find a user of VT_RESIZEX.
 
-Can this write be racing with the pthred_create() and start writing data
-before the reader is actually reading?  Odds are the write() is breaking
-things up into chunks anyway (libc does this), so the first 4k of data
-might have been sent and filled up in the kernel, and then overwritten
-by the second 4k of data before the reader gets a chance to run.
+  #define VT_RESIZE   0x5609 /* set kernel's idea of screensize */
+  #define VT_RESIZEX  0x560A /* set kernel's idea of screensize + more */
 
-If you serialize your reader thread starting up before you start
-writing, does that solve the issue here?
+So far we are not aware of syzbot reports caused by setting non-zero value
+to v_vlin parameter. But given that it is possible that nobody is using
+VT_RESIZEX, we can try removing support for v_clin and v_vlin parameters.
 
-thanks,
+Therefore, this patch effectively makes VT_RESIZEX behave like VT_RESIZE,
+with emitting a message if somebody is still using v_clin and/or v_vlin
+parameters.
 
-greg k-h
+[1] https://syzkaller.appspot.com/bug?id=32577e96d88447ded2d3b76d71254fb855245837
+[2] https://syzkaller.appspot.com/bug?id=6b8355d27b2b94fb5cedf4655e3a59162d9e48e3
+
+Reported-by: syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+16469b5e8e5a72e9131e@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ drivers/tty/vt/vt_ioctl.c | 57 +++++++--------------------------------
+ 1 file changed, 10 insertions(+), 47 deletions(-)
+
+diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
+index a4e520bdd521..bc33938e2f20 100644
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -773,58 +773,21 @@ static int vt_resizex(struct vc_data *vc, struct vt_consize __user *cs)
+ 	if (copy_from_user(&v, cs, sizeof(struct vt_consize)))
+ 		return -EFAULT;
+ 
+-	/* FIXME: Should check the copies properly */
+-	if (!v.v_vlin)
+-		v.v_vlin = vc->vc_scan_lines;
+-
+-	if (v.v_clin) {
+-		int rows = v.v_vlin / v.v_clin;
+-		if (v.v_rows != rows) {
+-			if (v.v_rows) /* Parameters don't add up */
+-				return -EINVAL;
+-			v.v_rows = rows;
+-		}
+-	}
+-
+-	if (v.v_vcol && v.v_ccol) {
+-		int cols = v.v_vcol / v.v_ccol;
+-		if (v.v_cols != cols) {
+-			if (v.v_cols)
+-				return -EINVAL;
+-			v.v_cols = cols;
+-		}
+-	}
+-
+-	if (v.v_clin > 32)
+-		return -EINVAL;
++	if (v.v_vlin)
++		pr_info_once("\"struct vt_consize\"->v_vlin is ignored. Please report if you need this.\n");
++	if (v.v_clin)
++		pr_info_once("\"struct vt_consize\"->v_clin is ignored. Please report if you need this.\n");
+ 
++	console_lock();
+ 	for (i = 0; i < MAX_NR_CONSOLES; i++) {
+-		struct vc_data *vcp;
++		vc = vc_cons[i].d;
+ 
+-		if (!vc_cons[i].d)
+-			continue;
+-		console_lock();
+-		vcp = vc_cons[i].d;
+-		if (vcp) {
+-			int ret;
+-			int save_scan_lines = vcp->vc_scan_lines;
+-			int save_font_height = vcp->vc_font.height;
+-
+-			if (v.v_vlin)
+-				vcp->vc_scan_lines = v.v_vlin;
+-			if (v.v_clin)
+-				vcp->vc_font.height = v.v_clin;
+-			vcp->vc_resize_user = 1;
+-			ret = vc_resize(vcp, v.v_cols, v.v_rows);
+-			if (ret) {
+-				vcp->vc_scan_lines = save_scan_lines;
+-				vcp->vc_font.height = save_font_height;
+-				console_unlock();
+-				return ret;
+-			}
++		if (vc) {
++			vc->vc_resize_user = 1;
++			vc_resize(vc, v.v_cols, v.v_rows);
+ 		}
+-		console_unlock();
+ 	}
++	console_unlock();
+ 
+ 	return 0;
+ }
+-- 
+2.25.1
+
