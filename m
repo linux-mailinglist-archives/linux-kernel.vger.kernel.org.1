@@ -2,109 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37F227A2AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC06427A316
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgI0TaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgI0T3l (ORCPT
+        id S1726819AbgI0T4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:56:11 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10039
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726369AbgI0TzS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:29:41 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9872BC0613D5;
-        Sun, 27 Sep 2020 12:29:41 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id g4so9538043wrs.5;
-        Sun, 27 Sep 2020 12:29:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hFD9C0g02b1YD9AU5pxjflPT96QGvB/rE3rUqbHSeaU=;
-        b=NdxKLIksYEYWvMIxygmJ/wOgbIokpUYXQ7/7+hNB0bJwQlliFTMJsi+7U8PR+mhGQP
-         iy5VoMPACrRlx1sa6Psyr2JTvGxd7ZB47r4LXI17QtvgX315RzmxdiLz8aL2EnCdzTBb
-         wFbexHzCi9QbrV6d2Kr3RGTsApudPoWR/eAjRYdvIVqGavIYdFe8jdBctGSUCFdBuXoK
-         gMYHF30+idE7QvS/yFF9WogbwiOWCmB8vQVBligf48+Sd0FmFLaXJUa0PfJGnFKh86DW
-         kkVut1zRfkW8VNezqQRGOwq1RS7JF6VjlmhXhHxQZbKgZCo/r5rIBQck1cUSeMELkYWZ
-         fD3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hFD9C0g02b1YD9AU5pxjflPT96QGvB/rE3rUqbHSeaU=;
-        b=Ofk4arOVU8rs46Gs1ChoMu6ZRlWqrlgpq9f/Xl+qoEfdL3/8rR31UmuARfRCu4DT2l
-         71M70nmiNeiAZkaralhO61W7rU2a9CnMPk1CDv3e4F2yYM1GIdc/9X4SZjlzB8PJoWVO
-         UuL+raj/TJT8U1X7ha0G7F90zVZu7B6STvWofTkK9ziPCD90vhqcao4sETbEB/jtWJcu
-         OQzqhkaB6n6ng78xe6GYtnTobAuvX5XPh9kYEJH5LqzayplnKej5f02mLnBPkWV2fdto
-         q3jnKnzRI6gjCVoaAN0gPfw8QcWwDjXzkmqz7RBGNX1URb4A+shdJACyZQEq8O3t56Ls
-         1nNQ==
-X-Gm-Message-State: AOAM531FFVPvPdetE8fzbyDaf6vboQuBxuR8f0JGt7xBgR6X1NlpWgLG
-        svZhXpRTDOhRdHPKaaNP5JU=
-X-Google-Smtp-Source: ABdhPJwDIz/p54l7LU0V8+Pe13zDL0f4KhqMgsxnx1wJvc48DpYxuBX17S9t8cH1n0Cmz7B5+bFTmQ==
-X-Received: by 2002:a5d:4d49:: with SMTP id a9mr16140367wru.363.1601234980231;
-        Sun, 27 Sep 2020 12:29:40 -0700 (PDT)
-Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 12:29:39 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Marcus Cooper <codekipper@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v5 20/20] ASoC: sun4i-i2s: fix coding-style for callback definition
-Date:   Sun, 27 Sep 2020 21:29:12 +0200
-Message-Id: <20200927192912.46323-21-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200927192912.46323-1-peron.clem@gmail.com>
-References: <20200927192912.46323-1-peron.clem@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Sun, 27 Sep 2020 15:55:18 -0400
+X-IronPort-AV: E=Sophos;i="5.77,311,1596492000"; 
+   d="scan'208";a="360169486"
+Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 27 Sep 2020 21:55:11 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     linux-iio@vger.kernel.org
+Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
+        Joe Perches <joe@perches.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kernel-janitors@vger.kernel.org,
+        David Lechner <david@lechnology.com>,
+        linux-wireless@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net,
+        linux-crypto@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-amlogic@lists.infradead.org, linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org
+Subject: [PATCH 00/18] use semicolons rather than commas to separate statements
+Date:   Sun, 27 Sep 2020 21:12:10 +0200
+Message-Id: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch script produces warning:
-WARNING: function definition argument 'const struct sun4i_i2s *'
-should also have an identifier name.
+These patches replace commas by semicolons.  This was done using the
+Coccinelle semantic patch (http://coccinelle.lip6.fr/) shown below.
 
-Let's fix this by adding identifier name to get_bclk_parent_rate()
-and set_fmt() callback definition.
+This semantic patch ensures that commas inside for loop headers will not be
+transformed.  It also doesn't touch macro definitions.
 
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
+Coccinelle ensures that braces are added as needed when a single-statement
+branch turns into a multi-statement one.
+
+This semantic patch has a few false positives, for variable delcarations
+such as:
+
+LIST_HEAD(x), *y;
+
+The semantic patch could be improved to avoid these, but for the moment
+they have been removed manually (2 occurrences).
+
+// <smpl>
+@initialize:ocaml@
+@@
+
+let infunction p =
+  (* avoid macros *)
+  (List.hd p).current_element <> "something_else"
+
+let combined p1 p2 =
+  (List.hd p1).line_end = (List.hd p2).line ||
+  (((List.hd p1).line_end < (List.hd p2).line) &&
+   ((List.hd p1).col < (List.hd p2).col))
+
+@bad@
+statement S;
+declaration d;
+position p;
+@@
+
+S@p
+d
+
+// special cases where newlines are needed (hope for no more than 5)
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@@
+expression e1,e2;
+statement S;
+position p != bad.p;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && combined p1 p2 };
+@@
+
+- e1@p1,@S@p e2@p2;
++ e1; e2;
+
+@r@
+expression e1,e2;
+statement S;
+position p != bad.p;
+@@
+
+e1 ,@S@p e2;
+
+@@
+expression e1,e2;
+position p1;
+position p2 :
+    script:ocaml(p1) { infunction p1 && not(combined p1 p2) };
+statement S;
+position r.p;
+@@
+
+e1@p1
+-,@S@p
++;
+e2@p2
+... when any
+// </smpl>
+
 ---
- sound/soc/sunxi/sun4i-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 9cd6cd1cd284..a6fd9bef30d1 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -180,13 +180,13 @@ struct sun4i_i2s_quirks {
- 	const struct sun4i_i2s_clk_div	*mclk_dividers;
- 	unsigned int			num_mclk_dividers;
- 
--	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
-+	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *i2s);
- 	int	(*get_sr)(unsigned int width);
- 	int	(*get_wss)(unsigned int width);
- 	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
- 				unsigned int channels,	unsigned int slots,
- 				unsigned int slot_width);
--	int	(*set_fmt)(const struct sun4i_i2s *, unsigned int);
-+	int	(*set_fmt)(const struct sun4i_i2s *i2s, unsigned int fmt);
- };
- 
- struct sun4i_i2s {
--- 
-2.25.1
-
+ drivers/acpi/processor_idle.c               |    4 +++-
+ drivers/ata/pata_icside.c                   |   21 +++++++++++++--------
+ drivers/base/regmap/regmap-debugfs.c        |    2 +-
+ drivers/bcma/driver_pci_host.c              |    4 ++--
+ drivers/block/drbd/drbd_receiver.c          |    6 ++++--
+ drivers/char/agp/amd-k7-agp.c               |    2 +-
+ drivers/char/agp/nvidia-agp.c               |    2 +-
+ drivers/char/agp/sworks-agp.c               |    2 +-
+ drivers/char/hw_random/iproc-rng200.c       |    8 ++++----
+ drivers/char/hw_random/mxc-rnga.c           |    6 +++---
+ drivers/char/hw_random/stm32-rng.c          |    8 ++++----
+ drivers/char/ipmi/bt-bmc.c                  |    6 +++---
+ drivers/clk/meson/meson-aoclk.c             |    2 +-
+ drivers/clk/mvebu/ap-cpu-clk.c              |    2 +-
+ drivers/clk/uniphier/clk-uniphier-cpugear.c |    2 +-
+ drivers/clk/uniphier/clk-uniphier-mux.c     |    2 +-
+ drivers/clocksource/mps2-timer.c            |    6 +++---
+ drivers/clocksource/timer-armada-370-xp.c   |    8 ++++----
+ drivers/counter/ti-eqep.c                   |    2 +-
+ drivers/crypto/amcc/crypto4xx_alg.c         |    2 +-
+ drivers/crypto/atmel-tdes.c                 |    2 +-
+ drivers/crypto/hifn_795x.c                  |    4 ++--
+ drivers/crypto/talitos.c                    |    8 ++++----
+ 23 files changed, 60 insertions(+), 51 deletions(-)
