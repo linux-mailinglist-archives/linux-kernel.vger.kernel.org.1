@@ -2,165 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02118279E72
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 07:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A85279E73
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 07:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729809AbgI0Fd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 01:33:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:4823 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726382AbgI0Fd1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 01:33:27 -0400
-IronPort-SDR: r/6ggePXmMXt/tkZDIRuUjUGr6CvCHMWJ6QZZBOREUR8Cyb7NBF9mhG6O/yrSQG0E0iZlgOZwH
- GVWdgJ1EYdxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="149503058"
-X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
-   d="scan'208";a="149503058"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 22:33:24 -0700
-IronPort-SDR: KZ5U8p5UglqFP5AJsGeZrD3idzYlR1g4EWZKnHx9q1UnfgQiK7KtvaWpQ1klgZbBiUBXz+QNPR
- YmpMu5TvaVnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
-   d="scan'208";a="488122447"
-Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.65])
-  by orsmga005.jf.intel.com with ESMTP; 26 Sep 2020 22:33:22 -0700
-From:   "Huang\, Ying" <ying.huang@intel.com>
-To:     Rafael Aquini <aquini@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH] mm: swapfile: avoid split_swap_cluster() NULL pointer dereference
-References: <20200923043459.GL795820@optiplex-lnx>
-        <87sgb9oz1u.fsf@yhuang-dev.intel.com>
-        <20200923130138.GM795820@optiplex-lnx>
-        <87blhwng5f.fsf@yhuang-dev.intel.com>
-        <20200924020928.GC1023012@optiplex-lnx>
-        <877dsjessq.fsf@yhuang-dev.intel.com>
-        <20200924063038.GD1023012@optiplex-lnx>
-        <87tuvnd3db.fsf@yhuang-dev.intel.com>
-        <20200924150833.GE1023012@optiplex-lnx>
-        <87r1qqbkx5.fsf@yhuang-dev.intel.com>
-        <20200926151643.GA1325930@optiplex-lnx>
-Date:   Sun, 27 Sep 2020 13:33:21 +0800
-In-Reply-To: <20200926151643.GA1325930@optiplex-lnx> (Rafael Aquini's message
-        of "Sat, 26 Sep 2020 11:16:43 -0400")
-Message-ID: <874knjbx7i.fsf@yhuang-dev.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S1730265AbgI0Ffx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 01:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726382AbgI0Ffx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 01:35:53 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED00AC0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 22:35:52 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j2so8118174wrx.7
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 22:35:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YHDABiC4xj9iLU7za42e+/JActT5fY52ViGb3PJJENA=;
+        b=awzKmx7uwTTIV8k7hfxFozgeg68RC5QUa3CALzs2AvYLepl8s/IfrKrVYR+zw7K02U
+         UzLnhynMS9hIhM6HigzdNWReGMTY+w/5ptAPlZ03nZ8elVLvMN78AQT3uBFfbcxLJYTC
+         3ApNUO2J8F0+VqnNZRwM3/m6aczqW0TaT25dn4Ss59T4PUmt7dCYzqNsDXjOoCJqRr2u
+         WuttwYW4sCWL7nlWL2q2eTidSOaLE6OCoStOgHE+NJV69142dQ1fs5bBeFj92CFNL6ef
+         82gMJqBXFtOwUCiSqlfjBuba9KnapMnDW6bQ8nVUT103iu7EVUHK8BWqIRAjTsf/TSi9
+         Y80A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YHDABiC4xj9iLU7za42e+/JActT5fY52ViGb3PJJENA=;
+        b=Zteir8zfXSTA1XjNOvojHR2oNx8Un1XA5nBT9ZYc6eqy32QhEiG5Bbi95jYviCwfIG
+         jKOSYtDAkVsntnL//o9W1ES5sIM6lpsWa64nqpiw/aF7KNplcE2CqJ+3TiEZixXh1JLZ
+         vus720lGC3qFAAVG3VGdQbG6KjtBYxu+ydl12bubN6J6o5mH6HLNO15FYEv7vgc1OAwZ
+         clV7yYqvvo/HZ9/qo++kVQ7e+U+qOXW53kMv9y7/lxSc00hsMjNon9lzQ37+ENmkc2rD
+         +wS+XKYiOe4Z1mV1pZWVPVu6jd8w6frWgUGyppSJ+/VTfuK/li4zbjz0NDowMPZLX8fG
+         rGWw==
+X-Gm-Message-State: AOAM532O9p2zC9dxZY61tucRtmf0BNUU0a7+xWT3zvrN/fjJwERpVHeJ
+        pHtdSBQwTrpF0GhqtlCbtoG5WhaRPySqbIGoGjPr18rwb2/mGQ==
+X-Google-Smtp-Source: ABdhPJymY2kRm1wRDPx/4uaEIiiSRJOcL3M41zLjWZdvoMoE7JofUxv5WXM7Mvx+g8va0jpRolDaXGc+gOi62HgQiXs=
+X-Received: by 2002:adf:db48:: with SMTP id f8mr12823535wrj.144.1601184951403;
+ Sat, 26 Sep 2020 22:35:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <4950cd11fcf66bc3606f309d6289577b5dc65b2e.camel@wdc.com> <mhng-bcea0448-fc43-406d-a56c-53e16306e12d@palmerdabbelt-glaptop1>
+In-Reply-To: <mhng-bcea0448-fc43-406d-a56c-53e16306e12d@palmerdabbelt-glaptop1>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Sun, 27 Sep 2020 11:05:39 +0530
+Message-ID: <CAAhSdy1T38v-O2v+fiKJHcpOeoxteMwzxXs0wNG46qhRDXAUmA@mail.gmail.com>
+Subject: Re: [PATCH v2] RISC-V: Check clint_time_val before use
+To:     Palmer Dabbelt <palmerdabbelt@google.com>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rafael Aquini <aquini@redhat.com> writes:
-
-> On Fri, Sep 25, 2020 at 11:21:58AM +0800, Huang, Ying wrote:
->> Rafael Aquini <aquini@redhat.com> writes:
->> >> Or, can you help to run the test with a debug kernel based on upstream
->> >> kernel.  I can provide some debug patch.
->> >> 
->> >
->> > Sure, I can set your patches to run with the test cases we have that tend to 
->> > reproduce the issue with some degree of success.
->> 
->> Thanks!
->> 
->> I found a race condition.  During THP splitting, "head" may be unlocked
->> before calling split_swap_cluster(), because head != page during
->> deferred splitting.  So we should call split_swap_cluster() before
->> unlocking.  The debug patch to do that is as below.  Can you help to
->> test it?
->>
+On Sun, Sep 27, 2020 at 5:50 AM Palmer Dabbelt <palmerdabbelt@google.com> wrote:
 >
+> On Sat, 26 Sep 2020 03:31:29 PDT (-0700), Damien Le Moal wrote:
+> > On Sat, 2020-09-26 at 15:51 +0530, Anup Patel wrote:
+> >> The NoMMU kernel is broken for QEMU virt machine from Linux-5.9-rc6
+> >> because the get_cycles() and friends are called very early from
+> >> rand_initialize() before CLINT driver is probed. To fix this, we
+> >> should check clint_time_val before use in get_cycles() and friends.
 >
-> I finally could grab a good crashdump and confirm that head is really
-> not locked.
+> I don't think this is the right way to solve that problem, as we're essentially
+> just lying about the timer rather than informing the system we can't get
+> timer-based entropy right now.  MIPS is explicit about this, I don't see any
+> reason why we shouldn't be as well.
+>
+> Does this fix the boot issue (see below for the NULL)?  There's some other
+> random-related arch functions so this might not be quite the right way to do
+> it.
+>
+> diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
+> index 7f659dda0032..7e39b0068932 100644
+> --- a/arch/riscv/include/asm/timex.h
+> +++ b/arch/riscv/include/asm/timex.h
+> @@ -33,6 +33,18 @@ static inline u32 get_cycles_hi(void)
+>  #define get_cycles_hi get_cycles_hi
+>  #endif /* CONFIG_64BIT */
+>
+> +/*
+> + * Much like MIPS, we may not have a viable counter to use at an early point in
+> + * the boot process.  Unfortunately we don't have a fallback, so instead we
+> + * just return 0.
+> + */
+> +static inline unsigned long random_get_entropy(void)
+> +{
+> +       if (unlikely(clint_time_val == NULL))
+> +               return 0;
+> +       return get_cycles();
+> +}
+> +
 
-Thanks!  That's really helpful for us to root cause the bug.
+Overall, this approach is good but this change is incomplete so does not work.
 
-> I still need to dig into it to figure out more about the
-> crash. I guess that your patch will guarantee that lock on head, but
-> it still doesn't help on explaining how did we get the THP marked as 
-> PG_swapcache, given that it should fail add_to_swap()->get_swap_page()
-> right? 
+The linux/timex.h expects random_get_entropy() to be macro so we need a
+"#define" as well.
 
-Because ClearPageCompound(head) is called in __split_huge_page(), then
-all subpages except "page" are unlocked.  So previously, when
-split_swap_cluster() is called in split_huge_page_to_list(), the THP has
-been split already and "head" may be unlocked.  Then the normal page
-"head" can be added to swap cache.
+After fixing rand_initialize() with custom random_get_entropy(), we get another
+issue in boot_init_stack_canary() because boot_init_stack_canary() directly
+calls get_cycles() so we remove use of get_cycles() from
+boot_init_stack_canary()
+and this is similar to ARM, ARM64, and MIPS kernel.
 
-CPU1                                                             CPU2
-----                                                             ----
-deferred_split_scan()
-  split_huge_page(page) /* page isn't compound head */
-    split_huge_page_to_list(page, NULL)
-      __split_huge_page(page, )
-        ClearPageCompound(head)
-        /* unlock all subpages except page (not head) */
-                                                                 add_to_swap(head)  /* not THP */
-                                                                   get_swap_page(head)
-                                                                   add_to_swap_cache(head, )
-                                                                     SetPageSwapCache(head)
-     if PageSwapCache(head)
-       split_swap_cluster(/* swap entry of head */)
-         /* Deref sis->cluster_info: NULL accessing! */
+Regards,
+Anup
 
-> I'll give your patch a run over the weekend, hopefully we'll have more
-> info on this next week.
-
-Thanks!
-
-Best Regards,
-Huang, Ying
-
->> Best Regards,
->> Huang, Ying
->> 
->> ------------------------8<----------------------------
->> From 24ce0736a9f587d2dba12f12491c88d3e296a491 Mon Sep 17 00:00:00 2001
->> From: Huang Ying <ying.huang@intel.com>
->> Date: Fri, 25 Sep 2020 11:10:56 +0800
->> Subject: [PATCH] dbg: Call split_swap_clsuter() before unlock page during
->>  split THP
->> 
->> ---
->>  mm/huge_memory.c | 13 +++++++------
->>  1 file changed, 7 insertions(+), 6 deletions(-)
->> 
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index faadc449cca5..8d79e5e6b46e 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -2444,6 +2444,12 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->>  
->>  	remap_page(head);
->>  
->> +	if (PageSwapCache(head)) {
->> +		swp_entry_t entry = { .val = page_private(head) };
->> +
->> +		split_swap_cluster(entry);
->> +	}
->> +
->>  	for (i = 0; i < HPAGE_PMD_NR; i++) {
->>  		struct page *subpage = head + i;
->>  		if (subpage == page)
->> @@ -2678,12 +2684,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->>  		}
->>  
->>  		__split_huge_page(page, list, end, flags);
->> -		if (PageSwapCache(head)) {
->> -			swp_entry_t entry = { .val = page_private(head) };
->> -
->> -			ret = split_swap_cluster(entry);
->> -		} else
->> -			ret = 0;
->> +		ret = 0;
->>  	} else {
->>  		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
->>  			pr_alert("total_mapcount: %u, page_count(): %u\n",
->> -- 
->> 2.28.0
->> 
+>  #else /* CONFIG_RISCV_M_MODE */
+>
+>  static inline cycles_t get_cycles(void)
+>
+> >> Fixes: d5be89a8d118 ("RISC-V: Resurrect the MMIO timer implementation
+> >> for M-mode systems")
+> >> Signed-off-by: Anup Patel <anup.patel@wdc.com>
+> >> ---
+> >> Changes since v1:
+> >>  - Explicitly initialize clint_time_val to NULL in CLINT driver to
+> >>    avoid hang on Kendryte K210
+> >> ---
+> >>  arch/riscv/include/asm/timex.h    | 12 +++++++++---
+> >>  drivers/clocksource/timer-clint.c |  2 +-
+> >>  2 files changed, 10 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
+> >> index 7f659dda0032..6e7b04874755 100644
+> >> --- a/arch/riscv/include/asm/timex.h
+> >> +++ b/arch/riscv/include/asm/timex.h
+> >> @@ -17,18 +17,24 @@ typedef unsigned long cycles_t;
+> >>  #ifdef CONFIG_64BIT
+> >>  static inline cycles_t get_cycles(void)
+> >>  {
+> >> -    return readq_relaxed(clint_time_val);
+> >> +    if (clint_time_val)
+> >> +            return readq_relaxed(clint_time_val);
+> >> +    return 0;
+> >>  }
+> >>  #else /* !CONFIG_64BIT */
+> >>  static inline u32 get_cycles(void)
+> >>  {
+> >> -    return readl_relaxed(((u32 *)clint_time_val));
+> >> +    if (clint_time_val)
+> >> +            return readl_relaxed(((u32 *)clint_time_val));
+> >> +    return 0;
+> >>  }
+> >>  #define get_cycles get_cycles
+> >>
+> >>  static inline u32 get_cycles_hi(void)
+> >>  {
+> >> -    return readl_relaxed(((u32 *)clint_time_val) + 1);
+> >> +    if (clint_time_val)
+> >> +            return readl_relaxed(((u32 *)clint_time_val) + 1);
+> >> +    return 0;
+> >>  }
+> >>  #define get_cycles_hi get_cycles_hi
+> >>  #endif /* CONFIG_64BIT */
+> >> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
+> >> index d17367dee02c..8dbec85979fd 100644
+> >> --- a/drivers/clocksource/timer-clint.c
+> >> +++ b/drivers/clocksource/timer-clint.c
+> >> @@ -37,7 +37,7 @@ static unsigned long clint_timer_freq;
+> >>  static unsigned int clint_timer_irq;
+> >>
+> >>  #ifdef CONFIG_RISCV_M_MODE
+> >> -u64 __iomem *clint_time_val;
+> >> +u64 __iomem *clint_time_val = NULL;
+>
+> This one I definately don't get.  According the internet, the C standard says
+>
+>     If an object that has static storage duration is not initialized
+>     explicitly, it is initialized implicitly as if every member that has
+>     arithmetic type were assigned 0 and every member that has pointer type were
+>     assigned a null pointer constant.
+>
+> so unless I'm missing something there shouldn't be any difference between these
+> two lines.  When I just apply this I get exactly the same "objdump -dt" before
+> and after.  I do see some difference in assembly, but only when I don't pass
+> "-fno-common" and that ends up being passed during my Linux builds.
+>
+> >>  #endif
+> >>
+> >>  static void clint_send_ipi(const struct cpumask *target)
+> >
+> > For Kendryte:
+> >
+> > Tested-by: Damien Le Moal <damien.lemoal@wdc.com>
+> >
+> > --
+> > Damien Le Moal
+> > Western Digital
