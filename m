@@ -2,215 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C9C279DCF
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 05:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AE32279DBF
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 05:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730245AbgI0DnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 23:43:14 -0400
-Received: from mga12.intel.com ([192.55.52.136]:58924 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729125AbgI0DnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 23:43:13 -0400
-IronPort-SDR: 23b77/7KnAKEb7ZNGM+E/10kvKchstZXKryJx7pA3PbegISwZdHcVTQADATbx58qS02aA11quB
- gTykfBHOAxsw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="141242669"
-X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
-   d="scan'208";a="141242669"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 20:30:09 -0700
-IronPort-SDR: /wwLhQ00ZDWYLeunlYjmlNNi7cd4uT8kCVVDO92RCiFu8Bwobqd+oPQSWp41oA57CvFTMyzLfR
- fyxzLJlly+3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
-   d="scan'208";a="337697529"
-Received: from shskylake.sh.intel.com ([10.239.48.137])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Sep 2020 20:30:06 -0700
-From:   Ethan Zhao <haifeng.zhao@intel.com>
-To:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
-        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
-        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
-        mika.westerberg@linux.intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pei.p.jia@intel.com, ashok.raj@linux.intel.com,
-        sathyanarayanan.kuppuswamy@intel.com,
-        Ethan Zhao <haifeng.zhao@intel.com>
-Subject: [PATCH 3/5 V2] PCI/ERR: get device before call device driver to avoid NULL pointer reference
-Date:   Sat, 26 Sep 2020 23:28:27 -0400
-Message-Id: <20200927032829.11321-4-haifeng.zhao@intel.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200927032829.11321-1-haifeng.zhao@intel.com>
-References: <20200927032829.11321-1-haifeng.zhao@intel.com>
+        id S1730279AbgI0Dap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 23:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730250AbgI0Dap (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 23:30:45 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00E1C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 20:30:44 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id n14so6409055pff.6
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 20:30:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3K1i/39gs/1aIs4bF2Mo38xKHGoVp+y8wUqaA4xOLDk=;
+        b=CE5Hv2JBdLDwVG1wWdgfaq4I825/wpS9dQECV5O/hpikSp+Xzxd+LsAodLz0MYy0vc
+         xLX6300XzXEMvVsVEGW40LLnataiEzcaY98n/FTwScXmCxJSB3cOD8P7nypVDZXuTbpt
+         IMGSyn5xD65d1apDeZRc7SG2ReNCEtkER325hKh1QnP63COWCjRQ0684qqvP/Lqu3R4K
+         Qwzw50q2G0IXXGBzhYZ64k56PoGP8Tqb9pnJH3szw1gRaLFNtJP7gBaxFg831/zk5hUZ
+         7WG8vzStUCgy6I1Y9oKKwGFF/7goYWcNPJ7nIlQ+HFMr6jxNFjRowFHFQPy093qfPxT1
+         l1Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3K1i/39gs/1aIs4bF2Mo38xKHGoVp+y8wUqaA4xOLDk=;
+        b=JfYGannxQQ3jwtJz8rrGG+bWQXonKJHiibCejVhHQZV5v1oVB1+Pope6BFmqNYn6AK
+         43YPnzroMRNHTYTqCxDW9eGn2BHOkJM7/AkHm+z+XY4QV1EbjQy2r27gPU6UMo+grADv
+         uHxSLIIv6p1OYjf8PLaloZTAwniSUJU0c0NRKDF0PIWO/WbwqInIv+lrYEIrsgvJjmBW
+         THZT7i+y6Oqi1UGeJgTmUIv5WhpUu1Bls9aUA9iqt6Ob29uoRiFbchDH4C6fCKvN12n1
+         qaPmJZjxgj7HuCtcgE7ZijJq481xnkFcF4Dj2uVrSioHFSsW3rTlWFt+DORt07bBeOUG
+         NQog==
+X-Gm-Message-State: AOAM533cc+hLzGVScQkg6cMN1B+QxYlOk3Mp2ZENi5/3FPtCqD9X4CAv
+        nqSb+QfNxhq9hdaOxBP8iSZ3mg==
+X-Google-Smtp-Source: ABdhPJxVsMoz6p3mpIexGgYww17zE4ZhFd9E1yos95NmZo1H5jUPUoG2nh2EbV4KWGDB44FFwz05uA==
+X-Received: by 2002:a63:1644:: with SMTP id 4mr4654361pgw.232.1601177444268;
+        Sat, 26 Sep 2020 20:30:44 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
+        by smtp.gmail.com with ESMTPSA id w14sm6505117pfu.87.2020.09.26.20.30.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 26 Sep 2020 20:30:43 -0700 (PDT)
+Date:   Sun, 27 Sep 2020 11:30:35 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Tan Xiaojun <tanxiaojun@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
+Message-ID: <20200927033035.GE9677@leoy-ThinkPad-X240s>
+References: <20200922101225.183554-1-andre.przywara@arm.com>
+ <20200922101225.183554-6-andre.przywara@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922101225.183554-6-andre.przywara@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During DPC error injection test we found there is race condition between
-pciehp and DPC driver, NULL pointer reference caused panic as following
+Hi Andre,
 
- # setpci -s 64:02.0 0x196.w=000a
-  // 64:02.0 is rootport has DPC capability
- # setpci -s 65:00.0 0x04.w=0544
-  // 65:00.0 is NVMe SSD populated in above port
- # mount /dev/nvme0n1p1 nvme
+On Tue, Sep 22, 2020 at 11:12:25AM +0100, Andre Przywara wrote:
+> The Scalable Vector Extension (SVE) is an ARMv8 architecture extension
+> that introduces very long vector operations (up to 2048 bits).
+> The SPE profiling feature can tag SVE instructions with additional
+> properties like predication or the effective vector length.
+> 
+> Decode the new operation type bits in the SPE decoder to allow the perf
+> tool to correctly report about SVE instructions.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 48 ++++++++++++++++++-
+>  1 file changed, 47 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index a033f34846a6..f0c369259554 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -372,8 +372,35 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  	}
+>  	case ARM_SPE_OP_TYPE:
+>  		switch (idx) {
+> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+> +		case 0: {
+> +			size_t blen = buf_len;
+> +
+> +			if ((payload & 0x89) == 0x08) {
+> +				ret = snprintf(buf, buf_len, "SVE");
+> +				buf += ret;
+> +				blen -= ret;
+> +				if (payload & 0x2)
+> +					ret = snprintf(buf, buf_len, " FP");
+> +				else
+> +					ret = snprintf(buf, buf_len, " INT");
+> +				buf += ret;
+> +				blen -= ret;
+> +				if (payload & 0x4) {
+> +					ret = snprintf(buf, buf_len, " PRED");
+> +					buf += ret;
+> +					blen -= ret;
+> +				}
+> +				/* Bits [7..4] encode the vector length */
+> +				ret = snprintf(buf, buf_len, " EVLEN%d",
+> +					       32 << ((payload >> 4) & 0x7));
+> +				buf += ret;
+> +				blen -= ret;
+> +				return buf_len - blen;
+> +			}
+> +
+> +			return snprintf(buf, buf_len, "%s", payload & 0x1 ?
+>  					"COND-SELECT" : "INSN-OTHER");
+> +			}
+>  		case 1:	{
+>  			size_t blen = buf_len;
+>  
+> @@ -403,6 +430,25 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+>  				ret = snprintf(buf, buf_len, " NV-SYSREG");
+>  				buf += ret;
+>  				blen -= ret;
+> +			} else if ((payload & 0x0a) == 0x08) {
+> +				ret = snprintf(buf, buf_len, " SVE");
+> +				buf += ret;
+> +				blen -= ret;
+> +				if (payload & 0x4) {
+> +					ret = snprintf(buf, buf_len, " PRED");
+> +					buf += ret;
+> +					blen -= ret;
+> +				}
+> +				if (payload & 0x80) {
+> +					ret = snprintf(buf, buf_len, " SG");
+> +					buf += ret;
+> +					blen -= ret;
+> +				}
+> +				/* Bits [7..4] encode the vector length */
+> +				ret = snprintf(buf, buf_len, " EVLEN%d",
+> +					       32 << ((payload >> 4) & 0x7));
+> +				buf += ret;
+> +				blen -= ret;
 
- (tested on stable 5.8 & ICS(Ice Lake SP platform, see
- https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server))
+The changes in this patch has been included in the patch [1].
 
- Buffer I/O error on dev nvme0n1p1, logical block 468843328,
- async page read
- BUG: kernel NULL pointer dereference, address: 0000000000000050
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0
- Oops: 0000 [#1] SMP NOPTI
- CPU: 12 PID: 513 Comm: irq/124-pcie-dp Not tainted 5.8.0-0.0.7.el8.x86_64+ #1
- RIP: 0010:report_error_detected.cold.4+0x7d/0xe6
- Code: b6 d0 e8 e8 fe 11 00 e8 16 c5 fb ff be 06 00 00 00 48 89 df e8 d3 65 ff
- ff b8 06 00 00 00 e9 75 fc ff ff 48 8b 43 68 45 31 c9 <48> 8b 50 50 48 83 3a 00
- 41 0f 94 c1 45 31 c0 48 85 d2 41 0f 94 c0
- RSP: 0018:ff8e06cf8762fda8 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: ff4e3eaacf42a000 RCX: ff4e3eb31f223c01
- RDX: ff4e3eaacf42a140 RSI: ff4e3eb31f223c00 RDI: ff4e3eaacf42a138
- RBP: ff8e06cf8762fdd0 R08: 00000000000000bf R09: 0000000000000000
- R10: 000000eb8ebeab53 R11: ffffffff93453258 R12: 0000000000000002
- R13: ff4e3eaacf42a130 R14: ff8e06cf8762fe2c R15: ff4e3eab44733828
- FS:  0000000000000000(0000) GS:ff4e3eab1fd00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000050 CR3: 0000000f8f80a004 CR4: 0000000000761ee0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- PKRU: 55555554
- Call Trace:
- ? report_normal_detected+0x20/0x20
- report_frozen_detected+0x16/0x20
- pci_walk_bus+0x75/0x90
- ? dpc_irq+0x90/0x90
- pcie_do_recovery+0x157/0x201
- ? irq_finalize_oneshot.part.47+0xe0/0xe0
- dpc_handler+0x29/0x40
- irq_thread_fn+0x24/0x60
- irq_thread+0xea/0x170
- ? irq_forced_thread_fn+0x80/0x80
- ? irq_thread_check_affinity+0xf0/0xf0
- kthread+0x124/0x140
- ? kthread_park+0x90/0x90
- ret_from_fork+0x1f/0x30
- Modules linked in: nft_fib_inet.........
- CR2: 0000000000000050
+So my summary for patches 02 ~ 05, except patch 04, other changes has
+been included in the patch set "perf arm-spe: Refactor decoding &
+dumping flow".
 
-Though we partly close the race condition with patch 'PCI: pciehp: check
-and wait port status out of DPC before handling DLLSC and PDC', but there
-is no hardware spec or software sequence to guarantee the pcie_ist() run
-into pci_wait_port_outdpc() first or DPC triggered status bits being set
-first when errors triggered DPC containment procedure, so device still
-could be removed by function pci_stop_and_removed_bus_device() then freed
-by pci_dev_put() in pciehp driver first during pcie_do_recover()/
-pci_walk_bus() is called by dpc_handler() in DPC driver.
+I'd like to add your patch 04 into the patch set "perf arm-spe:
+Refactor decoding & dumping flow" and I will respin the patch set v2 on
+the latest perf/core branch and send out to review.
 
-Maybe unify pci_bus_sem and pci_rescan_remove_lock to serialize the
-removal and walking operation is the right way, but here we use
-pci_dev_get() to increase the reference count of device before using the
-device to avoid it is freed in use.
+For patch 01, you could continue to try to land it in the kernel.
+(Maybe consolidate a bit with Wei?).
 
-With this patch and patch 'PCI: pciehp: check and wait port status out of
-DPC before handling DLLSC and PDC', stable 5.9-rc6 could pass the error
-injection test and no panic happened.
+Do you think this is okay for you?
 
-Brute DPC error injection script:
+Thanks,
+Leo
 
-for i in {0..100}
-do
-        setpci -s 64:02.0 0x196.w=000a
-        setpci -s 65:00.0 0x04.w=0544
-        mount /dev/nvme0n1p1 /root/nvme
-        sleep 1
-done
+[1] https://lore.kernel.org/patchwork/patch/1288413/
 
-Signed-off-by: Ethan Zhao <haifeng.zhao@intel.com>
-Tested-by: Wen Jin <wen.jin@intel.com>
-Tested-by: Shanshan Zhang <ShanshanX.Zhang@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-Changes:
- V2: revise doc according to Andy's suggestion.
-
- drivers/pci/pcie/err.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index c543f419d8f9..e35c4480c86b 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -52,6 +52,8 @@ static int report_error_detected(struct pci_dev *dev,
- 	pci_ers_result_t vote;
- 	const struct pci_error_handlers *err_handler;
- 
-+	if (!pci_dev_get(dev))
-+		return 0;
- 	device_lock(&dev->dev);
- 	if (!pci_dev_set_io_state(dev, state) ||
- 		!dev->driver ||
-@@ -76,6 +78,7 @@ static int report_error_detected(struct pci_dev *dev,
- 	pci_uevent_ers(dev, vote);
- 	*result = merge_result(*result, vote);
- 	device_unlock(&dev->dev);
-+	pci_dev_put(dev);
- 	return 0;
- }
- 
-@@ -94,6 +97,8 @@ static int report_mmio_enabled(struct pci_dev *dev, void *data)
- 	pci_ers_result_t vote, *result = data;
- 	const struct pci_error_handlers *err_handler;
- 
-+	if (!pci_dev_get(dev))
-+		return 0;
- 	device_lock(&dev->dev);
- 	if (!dev->driver ||
- 		!dev->driver->err_handler ||
-@@ -105,6 +110,7 @@ static int report_mmio_enabled(struct pci_dev *dev, void *data)
- 	*result = merge_result(*result, vote);
- out:
- 	device_unlock(&dev->dev);
-+	pci_dev_put(dev);
- 	return 0;
- }
- 
-@@ -113,6 +119,8 @@ static int report_slot_reset(struct pci_dev *dev, void *data)
- 	pci_ers_result_t vote, *result = data;
- 	const struct pci_error_handlers *err_handler;
- 
-+	if (!pci_dev_get(dev))
-+		return 0;
- 	device_lock(&dev->dev);
- 	if (!dev->driver ||
- 		!dev->driver->err_handler ||
-@@ -124,6 +132,7 @@ static int report_slot_reset(struct pci_dev *dev, void *data)
- 	*result = merge_result(*result, vote);
- out:
- 	device_unlock(&dev->dev);
-+	pci_dev_put(dev);
- 	return 0;
- }
- 
-@@ -131,6 +140,8 @@ static int report_resume(struct pci_dev *dev, void *data)
- {
- 	const struct pci_error_handlers *err_handler;
- 
-+	if (!pci_dev_get(dev))
-+		return 0;
- 	device_lock(&dev->dev);
- 	if (!pci_dev_set_io_state(dev, pci_channel_io_normal) ||
- 		!dev->driver ||
-@@ -143,6 +154,7 @@ static int report_resume(struct pci_dev *dev, void *data)
- out:
- 	pci_uevent_ers(dev, PCI_ERS_RESULT_RECOVERED);
- 	device_unlock(&dev->dev);
-+	pci_dev_put(dev);
- 	return 0;
- }
- 
--- 
-2.18.4
-
+>  			} else if (payload & 0x4) {
+>  				ret = snprintf(buf, buf_len, " SIMD-FP");
+>  				buf += ret;
+> -- 
+> 2.17.1
+> 
