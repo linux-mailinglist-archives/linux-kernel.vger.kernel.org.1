@@ -2,136 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C120827A1A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1420327A1AC
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgI0PiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 11:38:06 -0400
-Received: from mga06.intel.com ([134.134.136.31]:46254 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgI0PiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 11:38:06 -0400
-IronPort-SDR: feMATwj0s4sm+EbFhwpqAJrDojPGzL2JDZkmNyuvX+kfNNmZi3PlXdK/iGdimAEBxtP6+v58ji
- o6jSFiMmMACQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="223473765"
-X-IronPort-AV: E=Sophos;i="5.77,310,1596524400"; 
-   d="scan'208";a="223473765"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 08:38:05 -0700
-IronPort-SDR: ery7qhUZsOg9S3eM+8c0GzDLsKA6+HUBFjDP5v1wFq/GkaxwcC0rZpRTD22etspCACxb6iE16K
- Wa3JFGyCVjkA==
-X-IronPort-AV: E=Sophos;i="5.77,310,1596524400"; 
-   d="scan'208";a="337860010"
-Received: from psanthir-mobl.amr.corp.intel.com (HELO [10.209.181.230]) ([10.209.181.230])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 08:38:04 -0700
-Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Yakui Zhao <yakui.zhao@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Fengwei Yin <fengwei.yin@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-5-shuo.a.liu@intel.com>
- <20200927105152.GG88650@kroah.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com>
-Date:   Sun, 27 Sep 2020 08:38:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726267AbgI0Poa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 11:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgI0Poa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 11:44:30 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF47C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:44:30 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id u19so2356391ion.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:44:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=g/TKrTodAH/CavUw5O+bcIpPmr35KdslNAu5/T0EqGU=;
+        b=suZDQuX4uS+LzwhVqnrWwi+DakAfJrF6ATr3UlYsVxiShYeBq7JHd5zg4lJKTQZodr
+         N8JFp8CCNBYqvNw+eiaWWHH/v5MkuLKJGq5SspTAhRMCSxhcgJSF3KBL60ajMYF1zbsZ
+         OcVnyEkGHGbbyD/oD2b+f3v3DJnZbex4qGK2vWy1NFhSXWYGrgEYP7vf0QvSmsnd4gYY
+         U/lIE4bMdEqwXEq6qQBhlyqmIKOQCRUNMNfAhxeCYry+1Am5b/4Xki/T6z74iqM4xTv0
+         ykIsimv//Pw8CgDznCJt1CI67sdUZClWvRqLUy1ung7b6CgXYaOmnlIXMQ86XomrbGoa
+         YJgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=g/TKrTodAH/CavUw5O+bcIpPmr35KdslNAu5/T0EqGU=;
+        b=YuAy2oOgSKd6Zley/Z2lD0JYq1cIvKNZKwEVNluH53R7kI45VOqItXH3b8Pc4iDIaw
+         JOyzO49L2z8r2t2HBgX11CCKWnTnCeipIdLY4cQ36xU7LHayHqMq9ihfY0MM457+WUN4
+         ygqMpxPc7bIW9uyGzY2D68cORwRv/B6jRwEkNEhgM5aNwHUBRFnQgm0+Bv6LAiFp1/28
+         ELxijcA0Ee37WZ+/jFiuy3biNjEv1x4C2VDXvhI7KQ1YOZUmc7a2L3ScWC2/qyD0iDGN
+         wVRakEeohW2kCKtakl2d5TJ3E1ezVSno7c9uDbUFzFVbAP/1C68zIk9B6/FgA1oyVzzo
+         s6Dw==
+X-Gm-Message-State: AOAM530Cq8tBlv8GahXGZGSPiVW1nURaxTwkfuXcLRREIx2N6gCfkMF0
+        uTUm3gWv1L2v2rYA22j5kUP/E4TqICNK7oKucV7d1g==
+X-Google-Smtp-Source: ABdhPJxpzy2P75QgnXAVWSjTi/IdUIaPp3CaMsBr/63IlT1RzZyJNMXa+Ky1LLpsMrBlZ7QCQkYY0dUIHjs7fI1I31k=
+X-Received: by 2002:a5d:870c:: with SMTP id u12mr4773220iom.129.1601221469251;
+ Sun, 27 Sep 2020 08:44:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200927105152.GG88650@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200926135514.26189-1-luka.kovacic@sartura.hr>
+ <20200926135514.26189-5-luka.kovacic@sartura.hr> <20200926200923.4641533d@nic.cz>
+In-Reply-To: <20200926200923.4641533d@nic.cz>
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+Date:   Sun, 27 Sep 2020 17:44:30 +0200
+Message-ID: <CADZsf3a0xv+DqWg5OcQKNOXutEQ_t0J+_hZkP4bRgZn=SiBwbw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/7] drivers: leds: Add the iEi WT61P803 PUZZLE LED driver
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/20 3:51 AM, Greg Kroah-Hartman wrote:
->> +static inline long acrn_hypercall0(unsigned long hcall_id)
->> +{
->> +	register long r8 asm("r8");
->> +	long result;
->> +
->> +	/* Nothing can come between the r8 assignment and the asm: */
->> +	r8 = hcall_id;
->> +	asm volatile("vmcall\n\t"
->> +		     : "=a" (result)
->> +		     : "r" (r8)
->> +		     : );
-> What keeps an interrupt from happening between the r8 assignment and the
-> asm: ?
+Hi,
 
-It's probably better phrased something like: "No other C code can come
-between this r8 assignment and the inline asm".  An interrupt would
-actually be fine in there because interrupts save and restore all
-register state, including r8.
+The microcontroller on this platform is currently only physically wired to one
+LED, but should support multiple LEDs in software (this could possibly be
+used in future platforms).
 
-The problem (mentioned in the changelog) is that gcc does not let you
-place data directly into r8.  But, it does allow you to declare a
-register variable that you can assign to use r8.  There might be a
-problem if a function calls was in between and clobber the register,
-thus the "nothing can come between" comment.
+Thus I'd like to keep the support for multiple LEDs prepared. As I am not able
+to test multiple LEDs functionality, I will just keep the framework prepared.
 
-The comment is really intended to scare away anyone from adding printk()'s.
+Also I'll use the devm_led_classdev_register_ext() API, thanks for
+letting me know.
 
-More information about these register variables is here:
+Kind regards,
+Luka
 
-> https://gcc.gnu.org/onlinedocs/gcc/Local-Register-Variables.html#Local-Register-Variables
-
-Any better ideas for comments would be greatly appreciated.  It has 4 or
-5 copies so I wanted it to be succinct.
+On Sat, Sep 26, 2020 at 8:09 PM Marek Behun <marek.behun@nic.cz> wrote:
+>
+> On Sat, 26 Sep 2020 15:55:11 +0200
+> Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+>
+> > Add support for the iEi WT61P803 PUZZLE LED driver.
+> > Currently only the front panel power LED is supported.
+> >
+> > This driver depends on the iEi WT61P803 PUZZLE MFD driver.
+> >
+> > Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
+> > Cc: Luka Perkov <luka.perkov@sartura.hr>
+> > Cc: Robert Marko <robert.marko@sartura.hr>
+> > ---
+> >  drivers/leds/Kconfig                    |   8 ++
+> >  drivers/leds/Makefile                   |   1 +
+> >  drivers/leds/leds-iei-wt61p803-puzzle.c | 174 ++++++++++++++++++++++++
+> >  3 files changed, 183 insertions(+)
+> >  create mode 100644 drivers/leds/leds-iei-wt61p803-puzzle.c
+> >
+> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > index 1c181df24eae..8a25fb753dec 100644
+> > --- a/drivers/leds/Kconfig
+> > +++ b/drivers/leds/Kconfig
+> > @@ -332,6 +332,14 @@ config LEDS_IPAQ_MICRO
+> >         Choose this option if you want to use the notification LED on
+> >         Compaq/HP iPAQ h3100 and h3600.
+> >
+> > +config LEDS_IEI_WT61P803_PUZZLE
+> > +     tristate "LED Support for the iEi WT61P803 PUZZLE MCU"
+> > +     depends on LEDS_CLASS
+> > +     depends on MFD_IEI_WT61P803_PUZZLE
+> > +     help
+> > +       This option enables support for LEDs controlled by the iEi WT61P803
+> > +       M801 MCU.
+> > +
+> >  config LEDS_HP6XX
+> >       tristate "LED Support for the HP Jornada 6xx"
+> >       depends on LEDS_CLASS
+> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > index c2c7d7ade0d0..cd362437fefd 100644
+> > --- a/drivers/leds/Makefile
+> > +++ b/drivers/leds/Makefile
+> > @@ -34,6 +34,7 @@ obj-$(CONFIG_LEDS_HP6XX)            += leds-hp6xx.o
+> >  obj-$(CONFIG_LEDS_INTEL_SS4200)              += leds-ss4200.o
+> >  obj-$(CONFIG_LEDS_IP30)                      += leds-ip30.o
+> >  obj-$(CONFIG_LEDS_IPAQ_MICRO)                += leds-ipaq-micro.o
+> > +obj-$(CONFIG_LEDS_IEI_WT61P803_PUZZLE)       += leds-iei-wt61p803-puzzle.o
+> >  obj-$(CONFIG_LEDS_IS31FL319X)                += leds-is31fl319x.o
+> >  obj-$(CONFIG_LEDS_IS31FL32XX)                += leds-is31fl32xx.o
+> >  obj-$(CONFIG_LEDS_KTD2692)           += leds-ktd2692.o
+> > diff --git a/drivers/leds/leds-iei-wt61p803-puzzle.c b/drivers/leds/leds-iei-wt61p803-puzzle.c
+> > new file mode 100644
+> > index 000000000000..b9a977575a23
+> > --- /dev/null
+> > +++ b/drivers/leds/leds-iei-wt61p803-puzzle.c
+> > @@ -0,0 +1,174 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/* iEi WT61P803 PUZZLE MCU LED Driver
+> > + *
+> > + * Copyright (C) 2020 Sartura Ltd.
+> > + * Author: Luka Kovacic <luka.kovacic@sartura.hr>
+> > + */
+> > +
+> > +#include <linux/leds.h>
+> > +#include <linux/mfd/iei-wt61p803-puzzle.h>
+> > +#include <linux/mod_devicetable.h>
+> > +#include <linux/module.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/property.h>
+> > +#include <linux/slab.h>
+> > +
+> > +enum iei_wt61p803_puzzle_led_state {
+> > +     IEI_LED_OFF = 0x30,
+> > +     IEI_LED_ON = 0x31,
+> > +     IEI_LED_BLINK_5HZ = 0x32,
+> > +     IEI_LED_BLINK_1HZ = 0x33,
+> > +};
+> > +
+> > +/**
+> > + * struct iei_wt61p803_puzzle_led - MCU LED Driver
+> > + *
+> > + * @mcu:             MCU struct pointer
+> > + * @response_buffer  Global MCU response buffer allocation
+> > + * @lock:            General mutex lock for LED operations
+> > + * @led_power_state: State of the front panel power LED
+> > + */
+> > +struct iei_wt61p803_puzzle_led {
+> > +     struct iei_wt61p803_puzzle *mcu;
+> > +     unsigned char *response_buffer;
+> > +     struct mutex lock;
+> > +     int led_power_state;
+> > +};
+> > +
+> > +static inline struct iei_wt61p803_puzzle_led *cdev_to_iei_wt61p803_puzzle_led
+> > +     (struct led_classdev *led_cdev)
+> > +{
+> > +     return dev_get_drvdata(led_cdev->dev->parent);
+> > +}
+> > +
+> > +static int iei_wt61p803_puzzle_led_brightness_set_blocking(struct led_classdev *cdev,
+> > +             enum led_brightness brightness)
+> > +{
+> > +     struct iei_wt61p803_puzzle_led *mcu_led =
+> > +             cdev_to_iei_wt61p803_puzzle_led(cdev);
+> > +     unsigned char led_power_cmd[5] = {
+> > +             IEI_WT61P803_PUZZLE_CMD_HEADER_START,
+> > +             IEI_WT61P803_PUZZLE_CMD_LED,
+> > +             IEI_WT61P803_PUZZLE_CMD_LED_POWER,
+> > +             (char)IEI_LED_OFF
+> > +     };
+> > +     unsigned char *resp_buf = mcu_led->response_buffer;
+> > +     size_t reply_size;
+> > +
+> > +     mutex_lock(&mcu_led->lock);
+> > +     if (brightness == LED_OFF) {
+> > +             led_power_cmd[3] = (char)IEI_LED_OFF;
+> > +             mcu_led->led_power_state = LED_OFF;
+> > +     } else {
+> > +             led_power_cmd[3] = (char)IEI_LED_ON;
+> > +             mcu_led->led_power_state = LED_ON;
+> > +     }
+> > +     mutex_unlock(&mcu_led->lock);
+> > +
+> > +     return iei_wt61p803_puzzle_write_command(mcu_led->mcu, led_power_cmd,
+> > +                     sizeof(led_power_cmd), resp_buf, &reply_size);
+> > +}
+> > +
+> > +static enum led_brightness
+> > +iei_wt61p803_puzzle_led_brightness_get(struct led_classdev *cdev)
+> > +{
+> > +     struct iei_wt61p803_puzzle_led *mcu_led =
+> > +             cdev_to_iei_wt61p803_puzzle_led(cdev);
+> > +     int led_state;
+> > +
+> > +     mutex_lock(&mcu_led->lock);
+> > +     led_state = mcu_led->led_power_state;
+> > +     mutex_unlock(&mcu_led->lock);
+> > +
+> > +     return led_state;
+> > +}
+> > +
+> > +static int iei_wt61p803_puzzle_led_probe(struct platform_device *pdev)
+> > +{
+> > +     struct device *dev = &pdev->dev;
+> > +     struct iei_wt61p803_puzzle *mcu = dev_get_drvdata(dev->parent);
+> > +     struct iei_wt61p803_puzzle_led *mcu_led;
+> > +     struct fwnode_handle *child;
+> > +     const char *label;
+> > +     int ret;
+> > +
+> > +     mcu_led = devm_kzalloc(dev, sizeof(*mcu_led), GFP_KERNEL);
+> > +     if (!mcu_led)
+> > +             return -ENOMEM;
+> > +
+> > +     mcu_led->response_buffer = devm_kzalloc(dev,
+> > +                     IEI_WT61P803_PUZZLE_BUF_SIZE, GFP_KERNEL);
+> > +     if (!mcu_led->response_buffer)
+> > +             return -ENOMEM;
+> > +
+> > +     mcu_led->mcu = mcu;
+> > +     mcu_led->led_power_state = 1;
+> > +     mutex_init(&mcu_led->lock);
+> > +     dev_set_drvdata(dev, mcu_led);
+> > +
+> > +     device_for_each_child_node(dev, child) {
+> > +             struct led_classdev *led;
+> > +             u32 reg;
+> > +
+> > +             led = devm_kzalloc(dev, sizeof(*led), GFP_KERNEL);
+>
+> Avoid multiple allocations.
+>
+> Please look
+> at
+> https://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/commit/?h=for-next&id=4351dceba0ff929f667867f9bb69210f08f61717
+>
+> To avoid multiple allocations, please use flexible array members.
+>
+> Does this controller support multiple LEDs? The device tree you
+> provided only defines one.
+>
+> If it supports multiple LED:
+> Rename the mcu_led to mcu_leds, or chip, or (semantically best in this
+> driver) priv.
+> Add member
+>   struct led_classdev leds[];
+> to that structure.
+> Then allocate by
+>   count = device_get_child_node_count(dev);
+>   priv = devm_kzalloc(dev, struct_size(priv, leds, count), GFP_KERNEL);
+>
+> If the device supports only one LED, just put
+>   struct led_classdev cdev;
+> to the private structure of this driver. And don't use
+> device_for_each_child_node, just check whether there is exactly one
+> child node (device_get_child_node_count), get it via
+>   child = device_get_next_child_node(dev, NULL);
+> and after registering the LED
+>   fwnode_handle_put(child);
+> This was done in:
+> https://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/commit/?h=for-next&id=e92e7e8aa066904def9a5d584ece7fb6ae512dbd
+>
+> > +             if (!led) {
+> > +                     ret = -ENOMEM;
+> > +                     goto err_child_node;
+> > +             }
+> > +
+> > +             ret = fwnode_property_read_u32(child, "reg", &reg);
+> > +             if (ret || reg > 1) {
+> > +                     dev_err(dev, "Could not register 'reg' (%lu)\n", (unsigned long)reg);
+> > +                     ret = -EINVAL;
+> > +                     goto err_child_node;
+> > +             }
+> > +
+> > +             if (fwnode_property_read_string(child, "label", &label)) {
+> > +                     led->name = "iei-wt61p803-puzzle-led::";
+> > +             } else {
+> > +                     led->name = devm_kasprintf(dev, GFP_KERNEL,
+> > +                                     "iei-wt61p803-puzzle-led:%s", label);
+> > +                     if (!led->name) {
+> > +                             ret = -ENOMEM;
+> > +                             goto err_child_node;
+> > +                     }
+> > +             }
+>
+> Parsing of label is done by LED core if you use
+> devm_led_classdev_register_ext. Also, label is obsolete. The LED name
+> should be composed from color, function and device.
+> Also please dont pass devicename "iei-wt61p803-puzzle-led" here. We
+> want to make the LED subsystem derive the device name somehow, and
+> afterwards we would need to change this. Also the devicename should
+> refer to the device the LED is triggering to (ie. if the LED is set in
+> devicetree to trigger on activity on eth0, the devicename should be
+> eth0 or something, not the name of this driver).
+>
+> Just remove this code and let devm_led_classdev_register_ext do its
+> thing.
+>
+> > +
+> > +             fwnode_property_read_string(child, "linux,default-trigger",
+> > +                             &led->default_trigger);
+> > +
+>
+> Parsing of linux,default-trigger is done by LED core if you use
+> devm_led_classdev_register_ext.
+>
+> > +             led->brightness_set_blocking = iei_wt61p803_puzzle_led_brightness_set_blocking;
+> > +             led->brightness_get = iei_wt61p803_puzzle_led_brightness_get;
+> > +             led->max_brightness = 1;
+> > +
+> > +             ret = devm_led_classdev_register(dev, led);
+>
+> Please use extended LED registration API, with
+> devm_led_classdev_register_ext. Pass init_data with fwnode member set
+> to child.
+>
+> > +             if (ret) {
+> > +                     dev_err(dev, "Could not register %s\n", led->name);
+> > +                     goto err_child_node;
+> > +             }
+> > +     }
+> > +     return 0;
+> > +err_child_node:
+> > +     fwnode_handle_put(child);
+> > +     return ret;
+> > +}
+> > +
+> > +static const struct of_device_id iei_wt61p803_puzzle_led_of_match[] = {
+> > +     { .compatible = "iei,wt61p803-puzzle-leds" },
+> > +     { }
+> > +};
+> > +MODULE_DEVICE_TABLE(of, iei_wt61p803_puzzle_led_of_match);
+> > +
+> > +static struct platform_driver iei_wt61p803_puzzle_led_driver = {
+> > +     .driver = {
+> > +             .name = "iei-wt61p803-puzzle-led",
+> > +             .of_match_table = iei_wt61p803_puzzle_led_of_match,
+> > +     },
+> > +     .probe = iei_wt61p803_puzzle_led_probe,
+> > +};
+> > +module_platform_driver(iei_wt61p803_puzzle_led_driver);
+> > +
+> > +MODULE_DESCRIPTION("iEi WT61P803 PUZZLE front panel LED driver");
+> > +MODULE_AUTHOR("Luka Kovacic <luka.kovacic@sartura.hr>");
+> > +MODULE_LICENSE("GPL");
+> > +MODULE_ALIAS("platform:leds-iei-wt61p803-puzzle");
+>
+> Marek
