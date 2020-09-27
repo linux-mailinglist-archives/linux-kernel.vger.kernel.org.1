@@ -2,187 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE5C279F70
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABB20279F72
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730393AbgI0HyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 03:54:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726840AbgI0HyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 03:54:06 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0558523998;
-        Sun, 27 Sep 2020 07:54:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601193244;
-        bh=FExBk8zsN+Ua6IDq4ZCBhvfYVoagS100fvkfTV2FMnM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UdlekJ0oMY7sUTK2cmaXNkekV8FOi9RmlzJM9krjblQFsS9IzteGZarqbbbBDaRg4
-         UKeUUPMVtooDkVq2lTCgtUUedNlVzQtR24tgXlttG+IQpxdHlJX9p6tBEGgpOqvcM+
-         C2IXC6n7l9N+kk0g36JxJis083McMZtg3ECc+KNY=
-Date:   Sun, 27 Sep 2020 09:54:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com
-Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
-Message-ID: <20200927075401.GA748141@kroah.com>
-References: <1600966801-30586-1-git-send-email-yilun.xu@intel.com>
- <1600966801-30586-2-git-send-email-yilun.xu@intel.com>
- <20200924172700.GA79736@archbook>
- <20200926022346.GA5623@yilunxu-OptiPlex-7050>
- <20200926060913.GA637197@kroah.com>
- <20200926192219.GA18625@epycbox.lan>
- <20200927055108.GA701198@kroah.com>
- <20200927073754.GB16433@yilunxu-OptiPlex-7050>
+        id S1729272AbgI0H6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 03:58:34 -0400
+Received: from mail-eopbgr00056.outbound.protection.outlook.com ([40.107.0.56]:51527
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726382AbgI0H6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 03:58:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AjtYz//SK5ljY+blyB3Lt4eoEvIl7S1+nIuVmzkAsrgeMr8rAXPEjTffwpuQVIlZsaD7rsRllU7nm4rWFN4yk4Eho9RbJF+WFAPTBUTOtczUYd/eCz1siD4yBHIruMG4356Y0YtwGYfKLPTe0KAQfZokfWLtV8O7jdjGZo+wnsBn6BYB8JJVSDzOt75GC5+5bvggzkDWQyWJg1r/+SIKDMIDYuXpbC4h+8cYfZ5Unk1xDElTcbU3nQiOoxaXaPDfYIewcbdxQ8m2+O6Q4PvmC4OZ+imhXuQ4hk43c2StbnNDxOptR4yFqxOGt5g7IX9t18Ggm19E3M1WEJULLjXKMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PuQlMDRi1WP1wgLTBxzukZp1jHCeCfHPEMPeLFNfyVA=;
+ b=RBf6NJpeLM0OoGK0XcMZK21upmMgs4+bibbaV5d/N1MIVdt2yCwe5XpeOHEEOfRGw///dBSdtavw3uiM6ENILGR5ZgAEVLuy/1SJKiKWprOsgnQ+n9x+uPfmmhuiquPfWkmEl2xPzLWlDZXv48xu+tUXhS/UOtOQHwAvR1+gr6L8PiFJ3KqeZBo18ge5vFyupI7HkDYz8aL3N2JquDPApuM1pOyIKOq8ci0Scvr/KUGGQlz37IfPjyNNg20QXpCei93l5HNaMuH7lAWDUBlR0F96xzAY3LkxYBrHslI55lpfHQnZlmnChcnufYe0HdrX+T4PAi0s/5a7hZyF5iP//Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PuQlMDRi1WP1wgLTBxzukZp1jHCeCfHPEMPeLFNfyVA=;
+ b=DRozTGD+OIark1WbpADAt9SrKCNLBGeVEVFzAwM9oFr37e+xmkoEiRaYte2cdeI3D5TfB8OwZCiL8Yr9RLuidUNTEIFVg5EN4mYf0jYsJyhpKA5uTV4dMGUdctJoBegi81rknHaDsVj9ZJhy1saviV2ZoEoB6GiYgtTzR5maWc4=
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR04MB5392.eurprd04.prod.outlook.com (2603:10a6:803:cb::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.24; Sun, 27 Sep
+ 2020 07:58:29 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3412.024; Sun, 27 Sep 2020
+ 07:58:29 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     Christoph Hellwig <hch@infradead.org>
+CC:     "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "wang.yi59@zte.com.cn" <wang.yi59@zte.com.cn>,
+        "huang.zijiang@zte.com.cn" <huang.zijiang@zte.com.cn>,
+        "rikard.falkeborn@gmail.com" <rikard.falkeborn@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: RE: [PATCH 1/5] misc: vop: change the way of allocating vring for
+ noncoherent platform
+Thread-Topic: [PATCH 1/5] misc: vop: change the way of allocating vring for
+ noncoherent platform
+Thread-Index: AQHWkw1Ua/wMKuww70uQvYAscuCr2al6jTyAgAGOkqA=
+Date:   Sun, 27 Sep 2020 07:58:29 +0000
+Message-ID: <VI1PR04MB4960DC1E64D65634FE76C7AA92340@VI1PR04MB4960.eurprd04.prod.outlook.com>
+References: <20200925072630.8157-1-sherry.sun@nxp.com>
+ <20200925072630.8157-2-sherry.sun@nxp.com>
+ <20200926075015.GA18592@infradead.org>
+In-Reply-To: <20200926075015.GA18592@infradead.org>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.71]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 4c7fcfd8-27f1-4f9d-f5d5-08d862bb1f52
+x-ms-traffictypediagnostic: VI1PR04MB5392:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB5392069944135F040429D78792340@VI1PR04MB5392.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mhUpw3GHBrn8Y/GvbLrfmw1OAEuXY1w80Ac6UqAQ2dAX9aAQSPniZP+Zb58NXdXpuzhIqx6GBZl1Z2TpmjT1i2nLbLssUzYNHBdULgL+STixv+OhW1CjsoNSzyVksiqDHs3HcSf+jOst51Y5McC/xSJT7DKijt9iyIEtuPeA5jYIpDzChYlcVp9IpNO6Eua+7HwgSjImtGCfj++let8KMt0D+VzXI4OOLNCK3pgR//nt8hcxI5lr35dsbMWPnlJFzUhM2QlHxjkMCzl/RZtwjW6uJf3fk8KDFdhBLwr92y2jWwJgfgeqNgZKo9up7iA+GOojrSCJRyD4J8iwqE2XoS86+YPGU2eD07FLJw6oTLhT9cDrks0bWC5uLaxVqCZ3
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(396003)(346002)(39850400004)(6916009)(7416002)(55016002)(66446008)(66556008)(64756008)(8936002)(71200400001)(4744005)(86362001)(66946007)(76116006)(52536014)(5660300002)(9686003)(4326008)(33656002)(44832011)(478600001)(6506007)(26005)(7696005)(2906002)(8676002)(54906003)(186003)(66476007)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: iLyPSNVPguC4K24JsCFiUTtTHovVVOqRULDxgs6F8eZMkM7Yhnupq8T7tMff9206Lu/GDxcDi2IwtPREjCoEnwvY2DCh6H03B2p9Qc5agf3luEKZPF6cBD5Kd6pqVGnTs+cY5ZaSneHKPaCo9OqbE3ZJI3e/RubBQmonTb2Kl1jrGOZ+3fbSvHtPJSQePxcvUUYpvOfYMMKK96+iYImAynrwvu9m6l5AqNFLBzJ339c1AA/Trymjk9909TfdPMAq1iyaRXCmdpiY/slJtB6vprj0dEY1xzdMjAeujbCbKpqxpaps+qGnArIkJ2xxLGF5uVrALKWd36JTMsWarj07vX8RzjmB5B6wALZVq72KBm3umn/miSI+m2FdvZtDVlEhwP0GS+y5XXDwA56ICSOmu6cUStRGNMqhVx5ofimS+8s9R3OAdqQ8KyoubCIaFGN49KrBMZDYdZyeLWRX0ypFaM2w6vS06W54oNTKQb0GJTOalfqs7ZQti6UgZc6w9dGaEYP8UJ1rfi2gUMa9gxVQtubSCPN22mi+PxqvB8QysFINPXPd7egQffWQByuusbHSQAuYG5O8wuclHN0gyy6Hp2aYxu6W33uFjsR4DVW6qmQ+L7fwwycD0jQFq7E+hapkk44gdOEz7an+kjO4gvN32A==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927073754.GB16433@yilunxu-OptiPlex-7050>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c7fcfd8-27f1-4f9d-f5d5-08d862bb1f52
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2020 07:58:29.5173
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Kt1lV8VWJYnr/OYBofqp2wDrRxMer1SMaEhb9aBXZEwYHegMsQz81vCzgY9LnETuZN/+mCQ4SCQ/A4jdfv9LRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5392
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 03:37:54PM +0800, Xu Yilun wrote:
-> Hi Greg,
-> 
-> On Sun, Sep 27, 2020 at 07:51:08AM +0200, Greg KH wrote:
-> > On Sat, Sep 26, 2020 at 12:22:19PM -0700, Moritz Fischer wrote:
-> > > Hi Greg,
-> > > 
-> > > On Sat, Sep 26, 2020 at 08:09:13AM +0200, Greg KH wrote:
-> > > > On Sat, Sep 26, 2020 at 10:23:46AM +0800, Xu Yilun wrote:
-> > > > > Hi greg,
-> > > > > 
-> > > > > About the bus naming, I summarized some questions we've discussed to check
-> > > > > with you. See inline.
-> > > > > 
-> > > > > On Thu, Sep 24, 2020 at 10:27:00AM -0700, Moritz Fischer wrote:
-> > > > > > Hi Xu,
-> > > > > > 
-> > > > > > On Fri, Sep 25, 2020 at 12:59:57AM +0800, Xu Yilun wrote:
-> > > > > > > Now the DFL device drivers could be made as independent modules and put
-> > > > > > > in different subsystems according to their functionalities. So the name
-> > > > > > > should be descriptive and unique in the whole kernel.
-> > > > > > > 
-> > > > > > > The patch changes the naming of dfl bus related structures, functions,
-> > > > > > > APIs and documentations.
-> > > > > > > 
-> > > > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > > > > ---
-> > > > > > >  Documentation/ABI/testing/sysfs-bus-dfl      |  15 --
-> > > > > > >  Documentation/ABI/testing/sysfs-bus-fpga-dfl |  15 ++
-> > > > > > >  MAINTAINERS                                  |   2 +-
-> > > > > > >  drivers/fpga/dfl.c                           | 254 ++++++++++++++-------------
-> > > > > > >  drivers/fpga/dfl.h                           |  77 ++++----
-> > > > > > >  5 files changed, 184 insertions(+), 179 deletions(-)
-> > > > > > >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-fpga-dfl
-> > > > > > > 
-> > > > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > > > deleted file mode 100644
-> > > > > > > index 23543be..0000000
-> > > > > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > > > +++ /dev/null
-> > > > > > > @@ -1,15 +0,0 @@
-> > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/type
-> > > > > > > -Date:		Aug 2020
-> > > > > > > -KernelVersion:	5.10
-> > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > > > > > -Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
-> > > > > > > -		supports 2 FIU types, 0 for FME, 1 for PORT.
-> > > > > > > -		Format: 0x%x
-> > > > > > > -
-> > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
-> > > > > > > -Date:		Aug 2020
-> > > > > > > -KernelVersion:	5.10
-> > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > > > > > -Description:	Read-only. It returns feature identifier local to its DFL FIU
-> > > > > > > -		type.
-> > > > > > > -		Format: 0x%x
-> > > > > > 
-> > > > > > You're changing userland facing ABI. I think that's something to avoid,
-> > > > > > please check with Greg on the rules since this hasn't been in a release yet.
-> > > > > > 
-> > > > > 
-> > > > > I'm going to change the name of bus stuff for other subsystems, to be
-> > > > > aligned, I also consider change the bus_type.name and dfl dev_name. But
-> > > > > it will cause the changing of user ABIs. No user case for these user ABI
-> > > > > now cause they are just queued, is it good I change them?
-> > > > 
-> > > > Why change the user name here?  No need for that, right?  Unless you
-> > > > really want to, and think that no one will notice.  If so, fine, change
-> > > > them :)
-> > > 
-> > > Let's leave it as is -- An FPGA is one possible implementation and as for
-> > > other buses, you wouldn't call it fpga-usb or usb-fpga just because the
-> > > USB bus is implemented in an FPGA if it behaves like a normal USB bus.
-> > > Having an ASIC based DFL bus show up under dfl-fpga / fpga-dfl in sysfs
-> > > would be super confusing.
-> > > 
-> > > > > It is mentioned that although Device Feature List is introduced in FPGA,
-> > > > > but it doesn't limit the usage in FPGA only. It's just a method to
-> > > > > discover features from a device, for sure it can be extended and used
-> > > > > in other devices too. So it can be bigger namespace than FPGA. Like in
-> > > > > our existing code, we picked dfl_fpga (DFL based FPGA) for uapi (ioctl)
-> > > > > and internal functions. This is suggested by Alan (The previous FPGA
-> > > > > maintainer). It's possible to have "DFL based XXX" in the future, even
-> > > > > currently only FPGA uses DFL. This is the reason we thought just "dfl"
-> > > > > in the whole kernel space is OK.
-> > > > > So, is there a chance we keep the "dfl" naming in the whole kernel?
-> > > > 
-> > > > No one knows what "DFL" is, and odds are, if a different subsystem wants
-> > > > to use it, they will have their own variant, right?
-> 
-> DFL is a method to discover devices. If a different subsystem (e.g. ASIC based
-> DFL bus) want to use DFL and follows the DFL spec, they could just use the DFL
-> stuff for enumeration, no need to have new variants.
-> 
-> > > > 
-> > > > And why didn't you all use device tree?  How did this sneak in past
-> > > > everyone?
-> > > 
-> > > DFL is a pretty efficient implementation in terms of resource
-> > > utilization on the FPGA end (a couple of registers / memories) vs
-> > > several kilobytes of memory for a device-tree blob.
-> > > 
-> > > The hardware using DFL to describe its internal structure exists in the
-> > > form of deployed accelerator cards and telling all its users to go and
-> > > change their hardware design would be feasible -- If you think about an
-> > > FPGA as a (albeit reconfigurable) ASIC you wouldn't go and tell people
-> > > to redesign their ASIC to use Device-Tree? :)
-> > > 
-> > > I'm not sure where the 'sneaking in' anything comes from. It's been
-> > > reviewed on the list (and by yourself back then). If you feel any of
-> > > this wasn't kosher, let's talk about it, to make sure it doesn't happen
-> > > again.
-> > 
-> > I can't remember reviewing it, sorry, too many patches, I probably was
-> > only worrying about functionality issues, not what the code actually did
-> > :)
-> > 
-> > So it's fine, just a surprise to me, no big deal.
-> 
-> I'm glad that we made it clear. And the bus name & user APIs cound be
-> kept as "dfl". So I assume the name "dfl" is OK to be used and could
-> be recognized by people out of FPGA domain, is it?
-> 
-> If so, I still want to keep the name "dfl_device_id" in mod_devicetable.h
-> as well.
+Hi Christoph,
 
-No, this is specific to the fpga subsystem, right?  So please put fpga
-in the name.
+> > +#include <linux/dma-noncoherent.h>
+>=20
+> This header must not be included in drivers.
+>=20
+> >
+> > +		if (dev_is_dma_coherent(vop_dev(vdev)))
+>=20
+> And this API must not be used in drivers either.
 
-> We want to keep the device id name of the bus aligned with the
-> bus name. And it would be confusing as well if a driver for ASIC based
-> DFL device uses the "dfl_fpga_device_id" structure.
+Thanks for your reply.
+Can you explain why we cannot use the API and header above in drivers?
+And do you know if there are any APIs that could replace this to check the =
+device hardware dma coherent support?
 
-Do we have that in the kernel today?
+>=20
+> > +			vdev->vvr[i].vrh.vring.used =3D
+> > +				(void __force *)vpdev->hw_ops->remap(
+>=20
+> And you must not use __force casts without a comment explanation why
+> they are safe.
 
-thanks,
+Here is the original code, I moved the original code into the if() without =
+change it.
+But I think  this is because vpdev->hw_ops->remap() return type is void __i=
+omem *, but vring.used need type void *.=20
+Maybe this is a workaround for Intel MIC platform, as it reassigns the used=
+ ring on the EP side.
 
-greg "naming is hard" k-h
+Regards=20
+Sherry
