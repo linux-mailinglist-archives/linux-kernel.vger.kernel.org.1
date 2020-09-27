@@ -2,114 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E3227A2CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37CD27A2D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726565AbgI0Tff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:35:35 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:33346 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726358AbgI0Tff (ORCPT
+        id S1726547AbgI0TgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:36:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726316AbgI0TgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:35:35 -0400
-X-IronPort-AV: E=Sophos;i="5.77,311,1596492000"; 
-   d="scan'208";a="469742917"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 21:35:32 +0200
-Date:   Sun, 27 Sep 2020 21:35:32 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Joe Perches <joe@perches.com>
-cc:     Thomas Gleixner <tglx@linutronix.de>,
-        =?UTF-8?Q?Valdis_Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        kernelnewbies <kernelnewbies@kernelnewbies.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cocci <cocci@systeme.lip6.fr>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andy Whitcroft <apw@shadowen.org>, lkp <lkp@intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [Cocci] coccinelle: Convert comma to semicolons (was Re: [PATCH]
- checkpatch: Add test for comma use that should be semicolon)
-In-Reply-To: <983c49ebe4bbe0435a73d25cd8525764a4f8adac.camel@perches.com>
-Message-ID: <alpine.DEB.2.22.394.2009272132110.2839@hadrien>
-References: <87r1qqvo2d.fsf@nanos.tec.linutronix.de>  <a53048f738dacc1c58654eb94e229de79d4f94c2.camel@perches.com>  <alpine.DEB.2.22.394.2009271907270.2839@hadrien> <983c49ebe4bbe0435a73d25cd8525764a4f8adac.camel@perches.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 27 Sep 2020 15:36:21 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67AFBC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:36:21 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id r24so6611753ljm.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:36:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nmope1OKcgHKIN0lUkmnZDt19fb2tVenNuLLHWBLiKs=;
+        b=aD1ptY13jrKXQ+n8IhaxEaouzjLaeDMBc3wJDUdcFpr2RLNAqh58cEZMo8uG8P0q8D
+         3NWP56+G/OtcMLivSGDU9UxUTr5z49ricmyKju6+L69zq3I4jfR3HIvSiq6+/G26r4F8
+         QaZ3bMwcHl7GfGyT0IoQONGz667rqj05Csbjs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nmope1OKcgHKIN0lUkmnZDt19fb2tVenNuLLHWBLiKs=;
+        b=TvEBdFEoEyL8cKCwyKgJUICW1cqU8d7gEvoCfvk58NngY6jrN9lNXXX87LvNPBGF9n
+         +cDd61dIMPSGxD9ZgbTxPyaMpJV08i6rluEs2l7w55GprXzPnGW1joUH0Jw/RzIIppsF
+         ew0EYmuxulBEhvwh0RwD3XL49cRqDiZhE8PqIyuL1gENPrmO99P7OQcVu4s52vuIYqwJ
+         MPxcV7SisZATXB0yD97aPcFYJ96G3J3NQ3BAUdu/hT75DLlQT3Pka+Og8pbYK8GUq3yo
+         VPo0kpLu5EPrwud94NRRWYU0zpz+RS7oTpVWTVPab8rFEb/PSrqi4Q5Ba5dWbDXCrHA2
+         hZ8Q==
+X-Gm-Message-State: AOAM531VAsjFoimuoDiKn3qQerjchC9JsDL25HQLLwS427Q6DkTxTC/6
+        L0i9ZiqWlI4RR4SnIrX2EGJhVQAff73RoQ==
+X-Google-Smtp-Source: ABdhPJxzVI7dzI/ypXp7Flhu0mFEWkupSfp6SIAxCG/+tZ/VQhajMs0Y5LNcm0QFYwZ5T8XOo3AYOA==
+X-Received: by 2002:a2e:814b:: with SMTP id t11mr4300387ljg.367.1601235379502;
+        Sun, 27 Sep 2020 12:36:19 -0700 (PDT)
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
+        by smtp.gmail.com with ESMTPSA id w9sm2565652lfr.220.2020.09.27.12.36.15
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 27 Sep 2020 12:36:16 -0700 (PDT)
+Received: by mail-lj1-f181.google.com with SMTP id w3so6596944ljo.5
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:36:15 -0700 (PDT)
+X-Received: by 2002:a05:651c:104c:: with SMTP id x12mr4346496ljm.285.1601235375523;
+ Sun, 27 Sep 2020 12:36:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200925222600.6832-1-peterx@redhat.com>
+In-Reply-To: <20200925222600.6832-1-peterx@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 27 Sep 2020 12:35:59 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whWyUg0x72nVQaCjq2xvy=S=x0=_9EuV6Qp4pTarGiaeg@mail.gmail.com>
+Message-ID: <CAHk-=whWyUg0x72nVQaCjq2xvy=S=x0=_9EuV6Qp4pTarGiaeg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] mm: Break COW for pinned pages during fork()
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 25, 2020 at 3:26 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> This series is majorly inspired by the previous discussion on the list [1],
+> starting from the report from Jason on the rdma test failure.
 
+Ok, this is now in my git tree with the changes I outlined in the other email.
 
-On Sun, 27 Sep 2020, Joe Perches wrote:
+> I tested it myself with fork() after vfio pinning a bunch of device pages,
 
-> On Sun, 2020-09-27 at 19:08 +0200, Julia Lawall wrote:
-> > I end up with 208 patches.  I'm not sure that sending them all at once
-> > would be a good idea...
->
-> Last I looked the diffstat for comma -> semicolon was:
->
-> 234 files changed, 509 insertions(+), 509 deletions(-)
->
-> So it would be nearly 1 patch per individual file,
+.. but _my_ only testing was to just add a nasty hack that said that
+all pages are pinned, and made fork() much slower, but hey, it at
+least tests the preallocation paths etc. And I'm not seeing any
+obvious failures due to taking that slow-path that is supposed to be a
+special case.
 
-I have 282 files.
+Let's hope this closes the rdma issues.
 
->
-> Greg KH does send hundreds of patches for -stable at a time.
->
-> So, maybe or maybe not send them all at once.
-> Maybe send it in batches of 25 or so.
->
-> There's no single right way to do this.
->
-> Maybe put up a git tree somewhere and let the
-> kernel-robot test compilation.
-
-I compiled all but about 15 and checked those 15 an extra time.
-
-I'll try the small batch approach to get started.
-
-thanks,
-julia
-
-> (A nicety might be for the kernel-robot to have some
->  option to test pre and post compilation object code
->  differences with an optional report)
->
-> When I automated 491 patches for /* fallthrough */ to
-> fallthrough;, the robot caught a couple problems which
-> was great.
->
-> https://repo.or.cz/linux-2.6/trivial-mods.git/shortlog/refs/heads/20200310_fallthrough_2
->
-> I only posted the first ~30 patches though with
-> about 50% acceptance. Gustavo Silva picked up the
-> effort and did a great job.  Eventually, a single
-> treewide patch was posted and accepted by Linus for
-> this though after dozens of individual patches went
-> through various maintainer trees:
->
-> $ git log --shortstat -1 df561f6688fe
-> commit df561f6688fef775baa341a0f5d960becd248b11
-> Author: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Date:   Sun Aug 23 17:36:59 2020 -0500
->
->     treewide: Use fallthrough pseudo-keyword
->
->     Replace the existing /* fall through */ comments and its variants with
->     the new pseudo-keyword macro fallthrough[1]. Also, remove unnecessary
->     fall-through markings when it is the case.
->
->     [1] https://www.kernel.org/doc/html/v5.7/process/deprecated.html?highlight=>
->
->     Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->
->  1148 files changed, 2667 insertions(+), 2737 deletions(-)
->
->
->
+                Linus
