@@ -2,272 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D50727A121
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 15:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF84A27A126
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 15:04:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbgI0NCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 09:02:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbgI0NCS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 09:02:18 -0400
-Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C629BC0613CE;
-        Sun, 27 Sep 2020 06:02:17 -0700 (PDT)
-Received: by mail-yb1-xb43.google.com with SMTP id s19so5758266ybc.5;
-        Sun, 27 Sep 2020 06:02:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SAgGtci5pGecpxPxGPjkaSEL4OVE7rwFSl1wZa7p8ZY=;
-        b=ZM4F3xWDK6Hw1/9ibUUgPDIAgYDxVN3QLZsTkuSfAokHTmaggKeC633Lxv3P17nn3a
-         okJzI1AnjcabtKEquUqGeCMD9S+DN93vG6imDFp5bUccfj0dX9VG7I+f9YFIiav3QMBw
-         IQAFr9I1oJU0QAn7mCskfQ++jD5vouovrj/e563oA1YGT3ptndyrVhNtUJ9JGfUnGsuX
-         sNJSiG8tIJ/kZFxOIn7s8fdG/6AH1xdfr6y8k+2a831tTL8dcGfT3UkmK5cdYBA3I5hc
-         70wXMZj9nVM4pZVRb1yef5SV6GGTxp8YpfA+UdC9N5wymUKfCZKrEZ/MnRj39mcWzNVa
-         CCEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SAgGtci5pGecpxPxGPjkaSEL4OVE7rwFSl1wZa7p8ZY=;
-        b=ak4SpPiufcGs95/8f7mJub+dh/32RLjZlbw0C7izpH7Enw1V8Ct7/ZYrf946FRtz58
-         dPuS3E3O994zeMP/frHXtCUZ70gpUPySJdXOvF7iy1nL7ZyZQ6FnmkpXqAnhKoSv5r6Z
-         253SksR/7QRVGMp8dgBjUhUxSTADDYfQxjwMHLsMueawI0qj+6wzgrVy1yUQgJi5FL6n
-         WkILZ1bkzL9oKuojvxBvbX5iX519sfeCtJSSXVwDqN7t9/Qwtm5wM4JaerWGP0NzJ1oX
-         T6qHV2VFa020PCgk7+7JEBbG6EKILNgYK/3x89Gjs7bJY8/HAYdmi4d7D3dWAqD1n8AW
-         TQvg==
-X-Gm-Message-State: AOAM530loovb2bjSausakrSoFJtn0aeW1JboVZWUve5xHm3UxOpDyS1m
-        WKwTlEva4ezVID6IIwnnijXT3Y1cBorHfSu4rMY=
-X-Google-Smtp-Source: ABdhPJyf2LbuC9m1ScfusKpq0d3iN7yhTosuIes5dzz8UTrb5Umw71LAHs+SEJ7Z0H8q1p3Wj4tzuzLMVTgelpoGODQ=
-X-Received: by 2002:a25:6849:: with SMTP id d70mr9684946ybc.395.1601211736814;
- Sun, 27 Sep 2020 06:02:16 -0700 (PDT)
+        id S1726513AbgI0NE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 09:04:27 -0400
+Received: from mail-eopbgr00089.outbound.protection.outlook.com ([40.107.0.89]:42917
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726149AbgI0NE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 09:04:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AQl+UO1rZ6lXXJT/lw758NqTSXXjI+AvKIuQe27zVlLWmNuxSOub0nzhUau0qkkdomHdudceWfSfRGIWXavIBLXHeZyjbqkafs0emjTl4hiuhvjeAI5WiPejH9YvEy8xeD8nGPX6bJ1VeKdP55YX7ofCcnqHG9SSQcjd0G4UNtlpYy4gbQ76CrODK4cMBFu6A/hbJt9psYcKQxZL52gw1bTajiCwx7ogZDXIwfbbJHxsguJHkluRE02rSUtBqJe4AySP6Ke5TP+9tzxuOMiZQY4XR+A9ijszySAqDjk1QQxgk2aokCNetQiV0gUaM11Op+0LtEBD9USAZStBvwVgew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xNHevuTZT/v4tGPmpQ0M5B5c5jDY5HGumHq1Tnqno4s=;
+ b=Hg+KsDi96tUNJBFpV+8ItGuQBvn+gAvMO7pcxpHj4xiPfsGWuAT/N4WmPI1GNYxEdVSO82jvQKrd0FHf4sl4Zw7/rv/9yYoTktdA1VeFgKKZKNbSdz7NsBKflrd93QFYlCUE5AHcyHYWbZH4x0VJVDTZht9RFKbJ5LyxSKhRaDWGQo7STU3qcwgDoi/W9iy5TJl/LAEohnYWoIp61NbvZS0cz0lYE9X0TtDXj1LYsQgJDL52Cx+jJ2OlNEGtmqkez7xEcWLehXuUNPLC0eGp2kXAyTFlpfE+4KYKEsvI/tC4jsrpiv43xaKL3cTGxcQ3W3asflbv/SquzoFaAnGl9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xNHevuTZT/v4tGPmpQ0M5B5c5jDY5HGumHq1Tnqno4s=;
+ b=lTVKfCyra+fE9PSdmmbjvk3So+SjZbJ/EgRi6sZrl81//p4Jel39dSLRZVGevIRJUkylEO/ouOMu2ed1a7Jv/KXziMUyoFffyZkyStdbiQ7kG7JH94vESqenADLmvTv0Hft2x1vw7TeTUqw4PSr1BvlGHVlXXgnrfUayUbGpXHM=
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR04MB7165.eurprd04.prod.outlook.com (2603:10a6:800:125::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Sun, 27 Sep
+ 2020 13:04:21 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3412.024; Sun, 27 Sep 2020
+ 13:04:21 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "masahiroy@kernel.org" <masahiroy@kernel.org>,
+        "michal.lkml@markovi.net" <michal.lkml@markovi.net>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "rikard.falkeborn@gmail.com" <rikard.falkeborn@gmail.com>,
+        "bp@suse.de" <bp@suse.de>,
+        "jhugo@codeaurora.org" <jhugo@codeaurora.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "manivannan.sadhasivam@linaro.org" <manivannan.sadhasivam@linaro.org>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>, Sherry Sun <sherry.sun@nxp.com>
+Subject: RE: [PATCH 3/3] mic: cosm: module autoprobing support for cosm driver
+Thread-Topic: [PATCH 3/3] mic: cosm: module autoprobing support for cosm
+ driver
+Thread-Index: AQHWkw4kQ+ZeBhWf/UyRfs5dZf5Gy6l8TCSAgAAhQzA=
+Date:   Sun, 27 Sep 2020 13:04:21 +0000
+Message-ID: <VI1PR04MB49609EF02BAF03BBFAAD19BE92340@VI1PR04MB4960.eurprd04.prod.outlook.com>
+References: <20200925073158.8238-1-sherry.sun@nxp.com>
+ <20200925073158.8238-4-sherry.sun@nxp.com> <20200927102949.GB88650@kroah.com>
+In-Reply-To: <20200927102949.GB88650@kroah.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nxp.com;
+x-originating-ip: [114.219.66.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 038b372b-55a9-4212-dd0d-08d862e5d9c8
+x-ms-traffictypediagnostic: VI1PR04MB7165:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB7165D338CCCEE6447036E51192340@VI1PR04MB7165.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VCZ91ps/3kdn55oovNjkWPMrjrvDYf0Ojdt0eLf6k73h7Whyl2DrFldveCx5Kk2dW73ANUM1ZaPgvaUqffeLMvexMtsS/xxMdtJNbRBrJqeoZ11zrGZrnsO09hMSOSlfAY0mPOhqksJYsaobd1eb1bgxklnRvEVMB6IR9O78eKcfhUX9xE7J7OV9ODupOcIYphATzaNFe7za0gNQjYvlHQVn0g+rvcBaP5Aq8Nnf7DwShKOxGctPPLBQSGlcbJGDUm3qkqxheP8XGQ9q7oLSBdQonMbGMVkM6IR5IGSna6aB3Gllp1WAlHWzWlINTof6afS5TatTWo+XHK58nMQos5GQDe93X2ktYDM/2nc+43fXhTT0KFl0shyy9qrkguqN
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(346002)(376002)(366004)(136003)(396003)(7416002)(66476007)(64756008)(33656002)(6506007)(7696005)(66556008)(6916009)(66446008)(26005)(186003)(5660300002)(52536014)(54906003)(316002)(478600001)(44832011)(4326008)(8676002)(8936002)(2906002)(55016002)(9686003)(71200400001)(86362001)(83380400001)(66946007)(76116006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: E6OWXv7RCrPghRJulv/wWRhrLP7bg9sJzojUkrDu+YYBIblQOImM7CR/FHpJEDSr2yUUPOfMXVRcc4cxdic/B71IOKBUvER3xXrWFn8VF+F64A9jyDOX9x4ExkPl5G4fE+POSm0RSkaAWv9Z+K6J0eTXYYIbRvLxKsBRpPs4pDRxFgMS7a/5uN+OUV6Vq9IUKSIhxkSX3gPhvPhOx6+66ZFzArZW7wCLux9/13T/dv7+iKwAwk7x+folFe1YUU8/fYDEmhyAm9O7nEXNh05d7o35bxmV/TqTp8UU0HSFUfTBUPhGbegEjDTAlhrGFlyY6oGf0yI3LNJDeV5rTY7Jc3uROjEuGIn6gp2zWSwxR9qs4ZDj5/KrphOOnobPVy0mNzUgvy2Y0JvGszvBl7Z+kVRSwDckgacsDMsD+DMb5gOZjaRlM8GG13QNb631OOVJ8WIehsqgjkncJp6zA33gQnIF+8+QIITSZL8cBGOHArgRw1cacKeJeSZGruKtbZKorRgJKDOl444TTA31FXBzDA7c3fwt9Ew1LoUyagkPfXwtlPUBjEbxq2AC+oR4ntNLHIdrE1Kw4jUGBBKF6/GDnImOciGjhzuBpqeZfKFT3jDNyFqOXzkCm+C0HN18m2d+HvK5pmkhFx1BaCK80pij4g==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20200813140041.5082-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20200824004816.GS6002@pendragon.ideasonboard.com>
-In-Reply-To: <20200824004816.GS6002@pendragon.ideasonboard.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Sun, 27 Sep 2020 14:01:50 +0100
-Message-ID: <CA+V-a8uq44hKOxbwBXZ_90q6e4JjCEPwOWp4BDY7BJJaP1Cg6g@mail.gmail.com>
-Subject: Re: [PATCH v2] ARM: dts: r8a7742-iwg21d-q7: Add LCD support
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 038b372b-55a9-4212-dd0d-08d862e5d9c8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2020 13:04:21.2048
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: roWxwn95EJmOojkqIIv2e/OF/NFRoYmxR4LSf8ZcNtBBKwfgPNlDrq3u1iwhdylE/I6pddUcE4sMgNt8x2MhEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7165
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-
-On Mon, Aug 24, 2020 at 1:48 AM Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Prabhakar,
->
-> Thank you for the patch.
->
-> On Thu, Aug 13, 2020 at 03:00:41PM +0100, Lad Prabhakar wrote:
-> > The iwg21d comes with a 7" capacitive touch screen, therefore
-> > add support for it.
+Hi Greg,
+>=20
+> On Fri, Sep 25, 2020 at 03:31:58PM +0800, Sherry Sun wrote:
+> > Add uevent callback for cosm_bus and add cosm_device_id for cosm
+> > driver which is needed for MODULE_DEVICE_TABLE. Also adding struct
+> > cosm_device_id in devicetable-offsets.c and the cosm entry point in
+> > file2alias.c.
 > >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
->
-> Everything seems to match the schematics :-)
->
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
->
+> > Cosm driver will be autoloaded when cosm device appears.
+> >
+> > Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
 > > ---
-> > v1->v2
-> > * This patch is part of series [1] (rest of the patches have be accepted
-> >   by Geert [2]).
-> > * Added regulator for lvds
-> > * Added reset pin for touchpanel
-> > * This patch is based on series [3]
+> >  drivers/misc/mic/bus/cosm_bus.c   |  8 ++++++++
+> >  drivers/misc/mic/cosm/cosm_main.c |  7 +++++++
+> >  include/linux/mod_devicetable.h   |  8 ++++++++
+> >  scripts/mod/devicetable-offsets.c |  3 +++
+> >  scripts/mod/file2alias.c          | 11 +++++++++++
+> >  5 files changed, 37 insertions(+)
 > >
-> > [1] https://patchwork.kernel.org/project/linux-renesas-soc/list/
-> >     ?series=330277
-> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
-> >     renesas-devel.git/log/?h=renesas-arm-dt-for-v5.10
-> > [3] https://patchwork.kernel.org/project/linux-renesas-soc/list/
-> >     ?series=330957
-> > ---
-> >  arch/arm/boot/dts/r8a7742-iwg21d-q7.dts | 99 +++++++++++++++++++++++++
-> >  1 file changed, 99 insertions(+)
+> > diff --git a/drivers/misc/mic/bus/cosm_bus.c
+> > b/drivers/misc/mic/bus/cosm_bus.c index 5f2141c71738..736e27bbc9f9
+> > 100644
+> > --- a/drivers/misc/mic/bus/cosm_bus.c
+> > +++ b/drivers/misc/mic/bus/cosm_bus.c
+> > @@ -14,6 +14,13 @@
+> >  /* Unique numbering for cosm devices. */  static
+> > DEFINE_IDA(cosm_index_ida);
 > >
-Would you be queueing this patch along with DRM driver patches for v5.10 ?
+> > +static int cosm_uevent(struct device *d, struct kobj_uevent_env *env)
+> > +{
+> > +	struct cosm_device *dev =3D dev_to_cosm(d);
+> > +
+> > +	return add_uevent_var(env, "MODALIAS=3Dcosm:cosm-dev%u", dev-
+> >index);
+> > +}
+> > +
+> >  static int cosm_dev_probe(struct device *d)  {
+> >  	struct cosm_device *dev =3D dev_to_cosm(d); @@ -33,6 +40,7 @@
+> static
+> > int cosm_dev_remove(struct device *d)
+> >
+> >  static struct bus_type cosm_bus =3D {
+> >  	.name  =3D "cosm_bus",
+> > +	.uevent =3D cosm_uevent,
+> >  	.probe =3D cosm_dev_probe,
+> >  	.remove =3D cosm_dev_remove,
+> >  };
+> > diff --git a/drivers/misc/mic/cosm/cosm_main.c
+> > b/drivers/misc/mic/cosm/cosm_main.c
+> > index ebb0eac43754..627e7d5f3a83 100644
+> > --- a/drivers/misc/mic/cosm/cosm_main.c
+> > +++ b/drivers/misc/mic/cosm/cosm_main.c
+> > @@ -12,6 +12,7 @@
+> >  #include <linux/idr.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/cred.h>
+> > +#include <linux/mod_devicetable.h>
+> >  #include "cosm_main.h"
+> >
+> >  static const char cosm_driver_name[] =3D "mic"; @@ -323,6 +324,12 @@
+> > static int cosm_suspend(struct device *dev)
+> >  	return 0;
+> >  }
+> >
+> > +static struct cosm_device_id __maybe_unused cosm_driver_id_table[] =3D=
+ {
+> > +	{ .name	=3D "cosm-dev*" },
+> > +	{ },
+> > +};
+> > +MODULE_DEVICE_TABLE(cosm, cosm_driver_id_table);
+> > +
+> >  static const struct dev_pm_ops cosm_pm_ops =3D {
+> >  	.suspend =3D cosm_suspend,
+> >  	.freeze =3D cosm_suspend
+> > diff --git a/include/linux/mod_devicetable.h
+> > b/include/linux/mod_devicetable.h index 736cdc236cf9..ea6cdfe1a3a3
+> > 100644
+> > --- a/include/linux/mod_devicetable.h
+> > +++ b/include/linux/mod_devicetable.h
+> > @@ -845,4 +845,12 @@ struct vop_device_id {  };
+> >  #define VOP_DEV_ANY_ID	0xffffffff
+> >
+> > +/* cosm */
+> > +#define COSM_NAME_SIZE			32
+> > +#define COSM_MODULE_PREFIX	"cosm:"
+> > +
+> > +struct cosm_device_id {
+> > +	char name[COSM_NAME_SIZE];
+> > +};
+> > +
+> >  #endif /* LINUX_MOD_DEVICETABLE_H */
+> > diff --git a/scripts/mod/devicetable-offsets.c
+> > b/scripts/mod/devicetable-offsets.c
+> > index 393acaa5302a..499a2832878d 100644
+> > --- a/scripts/mod/devicetable-offsets.c
+> > +++ b/scripts/mod/devicetable-offsets.c
+> > @@ -247,5 +247,8 @@ int main(void)
+> >  	DEVID_FIELD(vop_device_id, device);
+> >  	DEVID_FIELD(vop_device_id, vendor);
+> >
+> > +	DEVID(cosm_device_id);
+> > +	DEVID_FIELD(cosm_device_id, name);
+> > +
+> >  	return 0;
+> >  }
+> > diff --git a/scripts/mod/file2alias.c b/scripts/mod/file2alias.c index
+> > 8063b778eedf..f7c80e4da137 100644
+> > --- a/scripts/mod/file2alias.c
+> > +++ b/scripts/mod/file2alias.c
+> > @@ -1383,6 +1383,16 @@ static int do_vop_entry(const char *filename,
+> void *symval,
+> >  	return 1;
+> >  }
+> >
+> > +/* Looks like: cosm:S */
+> > +static int do_cosm_entry(const char *filename, void *symval,
+> > +			  char *alias)
+> > +{
+> > +	DEF_FIELD_ADDR(symval, cosm_device_id, name);
+> > +	sprintf(alias, COSM_MODULE_PREFIX "%s", *name);
+> > +
+> > +	return 1;
+> > +}
+> > +
+> >  /* Does namelen bytes of name exactly match the symbol? */  static
+> > bool sym_is(const char *name, unsigned namelen, const char *symbol)  {
+> > @@ -1458,6 +1468,7 @@ static const struct devtable devtable[] =3D {
+> >  	{"wmi", SIZE_wmi_device_id, do_wmi_entry},
+> >  	{"mhi", SIZE_mhi_device_id, do_mhi_entry},
+> >  	{"vop", SIZE_vop_device_id, do_vop_entry},
+> > +	{"cosm", SIZE_cosm_device_id, do_cosm_entry},
+> >  };
+> >
+> >  /* Create MODULE_ALIAS() statements.
+> > --
+> > 2.17.1
+> >
+>=20
+> You are adding MODULE_DEVICE_TABLE() support for a class of drivers, but
+> then never adding that support to those drivers?  Why add this at all
+> then?  Shouldn't you also be modifying a bunch of drivers to get this to
+> work properly?
 
-Cheers,
-Prabhakar
+I also wonder why Intel didn't add the specific implementation code to supp=
+ort MODULE_DEVICE_TABLE() like here.
+The MODULE_DEVICE_TABLE() macro was written here, but it has no effect befo=
+re.
 
-> > diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> > index b3461a61a4bf..9bf4fbd9c736 100644
-> > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
-> > @@ -30,6 +30,7 @@
-> >
-> >  /dts-v1/;
-> >  #include "r8a7742-iwg21m.dtsi"
-> > +#include <dt-bindings/pwm/pwm.h>
-> >
-> >  / {
-> >       model = "iWave Systems RainboW-G21D-Qseven board based on RZ/G1H";
-> > @@ -52,6 +53,51 @@
-> >               clock-frequency = <26000000>;
-> >       };
-> >
-> > +     lcd_backlight: backlight {
-> > +             compatible = "pwm-backlight";
-> > +             pwms = <&tpu 2 5000000 0>;
-> > +             brightness-levels = <0 4 8 16 32 64 128 255>;
-> > +             pinctrl-0 = <&backlight_pins>;
-> > +             pinctrl-names = "default";
-> > +             default-brightness-level = <7>;
-> > +             enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
-> > +     };
-> > +
-> > +     lvds-receiver {
-> > +             compatible = "ti,ds90cf384a", "lvds-decoder";
-> > +             vcc-supply = <&vcc_3v3_tft1>;
-> > +
-> > +             ports {
-> > +                     #address-cells = <1>;
-> > +                     #size-cells = <0>;
-> > +
-> > +                     port@0 {
-> > +                             reg = <0>;
-> > +                             lvds_receiver_in: endpoint {
-> > +                                     remote-endpoint = <&lvds0_out>;
-> > +                             };
-> > +                     };
-> > +                     port@1 {
-> > +                             reg = <1>;
-> > +                             lvds_receiver_out: endpoint {
-> > +                                     remote-endpoint = <&panel_in>;
-> > +                             };
-> > +                     };
-> > +             };
-> > +     };
-> > +
-> > +     panel {
-> > +             compatible = "edt,etm0700g0dh6";
-> > +             backlight = <&lcd_backlight>;
-> > +             power-supply = <&vcc_3v3_tft1>;
-> > +
-> > +             port {
-> > +                     panel_in: endpoint {
-> > +                             remote-endpoint = <&lvds_receiver_out>;
-> > +                     };
-> > +             };
-> > +     };
-> > +
-> >       reg_1p5v: 1p5v {
-> >               compatible = "regulator-fixed";
-> >               regulator-name = "1P5V";
-> > @@ -75,6 +121,17 @@
-> >               };
-> >       };
-> >
-> > +     vcc_3v3_tft1: regulator-panel {
-> > +             compatible = "regulator-fixed";
-> > +
-> > +             regulator-name = "vcc-3v3-tft1";
-> > +             regulator-min-microvolt = <3300000>;
-> > +             regulator-max-microvolt = <3300000>;
-> > +             enable-active-high;
-> > +             startup-delay-us = <500>;
-> > +             gpio = <&gpio5 28 GPIO_ACTIVE_HIGH>;
-> > +     };
-> > +
-> >       vcc_sdhi2: regulator-vcc-sdhi2 {
-> >               compatible = "regulator-fixed";
-> >
-> > @@ -129,12 +186,34 @@
-> >               VDDIO-supply = <&reg_3p3v>;
-> >               VDDD-supply = <&reg_1p5v>;
-> >       };
-> > +
-> > +     touch: touchpanel@38 {
-> > +             compatible = "edt,edt-ft5406";
-> > +             reg = <0x38>;
-> > +             interrupt-parent = <&gpio0>;
-> > +             interrupts = <24 IRQ_TYPE_EDGE_FALLING>;
-> > +             /* GP1_29 is also shared with audio codec reset pin */
-> > +             reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
-> > +             vcc-supply = <&vcc_3v3_tft1>;
-> > +     };
-> >  };
-> >
-> >  &cmt0 {
-> >       status = "okay";
-> >  };
-> >
-> > +&du {
-> > +     status = "okay";
-> > +};
-> > +
-> > +&gpio0 {
-> > +     touch-interrupt {
-> > +             gpio-hog;
-> > +             gpios = <24 GPIO_ACTIVE_LOW>;
-> > +             input;
-> > +     };
-> > +};
-> > +
-> >  &hsusb {
-> >       pinctrl-0 = <&usb0_pins>;
-> >       pinctrl-names = "default";
-> > @@ -165,6 +244,11 @@
-> >               function = "avb";
-> >       };
-> >
-> > +     backlight_pins: backlight {
-> > +             groups = "tpu0_to2";
-> > +             function = "tpu0";
-> > +     };
-> > +
-> >       i2c2_pins: i2c2 {
-> >               groups = "i2c2_b";
-> >               function = "i2c2";
-> > @@ -208,6 +292,17 @@
-> >       };
-> >  };
-> >
-> > +&lvds0 {
-> > +     status = "okay";
-> > +     ports {
-> > +             port@1 {
-> > +                     lvds0_out: endpoint {
-> > +                             remote-endpoint = <&lvds_receiver_in>;
-> > +                     };
-> > +             };
-> > +     };
-> > +};
-> > +
-> >  &rcar_sound {
-> >       pinctrl-0 = <&sound_pins>;
-> >       pinctrl-names = "default";
-> > @@ -261,6 +356,10 @@
-> >       shared-pin;
-> >  };
-> >
-> > +&tpu {
-> > +     status = "okay";
-> > +};
-> > +
-> >  &usbphy {
-> >       status = "okay";
-> >  };
->
-> --
-> Regards,
->
-> Laurent Pinchart
+The changes in this patches is enough to support the drivers autoloading,
+there no need to modify other codes to make this function works.
+
+Regards
+sherry
+>=20
+> thanks,
+>=20
+> greg k-h
