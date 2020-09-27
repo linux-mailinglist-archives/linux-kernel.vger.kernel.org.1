@@ -2,101 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF2527A1C6
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 18:11:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5305E27A1C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 18:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbgI0QLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 12:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60314 "EHLO
+        id S1726328AbgI0QOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 12:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbgI0QLp (ORCPT
+        with ESMTP id S1726239AbgI0QOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 12:11:45 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1DAC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 09:11:45 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id mn7so2198845pjb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 09:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ovlhZsWFZPQTrCZro69WC5buXFc9ezGOhnSX1p1upZ4=;
-        b=gAi4S4k0nB7OSuwiuXf0Xf8d6SLcqL2ICHuNqi7xVtUjD4hLwrM4HyC6wXONIvbJ12
-         qAsClUfcIWDiUiznhwlHablwVf3IaopjrBxaE5lPmVhdSLK0XbA9+e4Nv0t4DKMq2Uu+
-         fSkPGonQlj5qdq9HvoEWphdrlmDikIwQR+WlGqb/n7v9Wi/3tyJczfLPDl0Yin+8I1Hy
-         4HYyOar7tz6n3x/0lldYZALc2WQI+tWyrKC61G+XdvJGYebHnjGtBvjb87xlQ2jFJ3ob
-         Xhl+rd+V7jGRjghcFJfv1WKzK1C3tjPWZ6IurvxtDyOEg4aXkFx4Mz1rljiu46k16O3W
-         j9QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ovlhZsWFZPQTrCZro69WC5buXFc9ezGOhnSX1p1upZ4=;
-        b=q4Qan5JKAWXr/M5jgZK46xgLO7awboMU6F1EXZsEtid04qBCop9CVmLnOYh3yuqwPq
-         Kd8r2FREEuc1GyhvMu/4FwgcRRV4GdXuWm3/qb0AUxGVMvkMMnvx9ww37GlXBj+cq52v
-         jCX96y7fbIF1fQKaeH6WDEaX+a9pDMVpaJcntdS/TYn9PZqOFu/znAVGzdHH1eEAquko
-         Cmq1nmRAahoM9+hVqCeXMMtWJtzfiTnVqm8MGOilvGQ0SYuKeamGdQub/eg+XUhbs6ci
-         ajVRcUvwrHK4fy9MAwWdn/+a1dxCF/VbLQvvKO3OKEe/4j49sDR4qlyyhW1bCFlFktGY
-         iAfg==
-X-Gm-Message-State: AOAM532BTEJaZV6LcjKf70EA4KJlpTQ4arBZxqvyvQosnzViDTR1XkDQ
-        x0AnGYeGVMixO4d8FQR9nFrjXlEzTLZ8TQ==
-X-Google-Smtp-Source: ABdhPJzzFGf3ea0dQ+SGuxATz2ZYqbvd3Tork6B94o+zB+s7A/6vmdl3p2yzbDm/Iq1gwhxISwdogg==
-X-Received: by 2002:a17:902:7b93:b029:d2:172:7d9e with SMTP id w19-20020a1709027b93b02900d201727d9emr7982053pll.83.1601223104517;
-        Sun, 27 Sep 2020 09:11:44 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.220.70])
-        by smtp.gmail.com with ESMTPSA id l141sm8784844pfd.47.2020.09.27.09.11.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 27 Sep 2020 09:11:43 -0700 (PDT)
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-To:     linux-kernel@vger.kernel.org, pmladek@suse.com,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de
-Cc:     zhouchengming@bytedance.com, songmuchun@bytedance.com
-Subject: [PATCH 2/2] sched: mark PRINTK_DEFERRED_CONTEXT_MASK in __schedule()
-Date:   Mon, 28 Sep 2020 00:11:30 +0800
-Message-Id: <20200927161130.33172-2-zhouchengming@bytedance.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20200927161130.33172-1-zhouchengming@bytedance.com>
-References: <20200927161130.33172-1-zhouchengming@bytedance.com>
+        Sun, 27 Sep 2020 12:14:43 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6287C0613CE;
+        Sun, 27 Sep 2020 09:14:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ik7a4/nsVk8BAlTpU8JGdC8GG6dWXG+8DRdMggxS0U0=; b=LMq/AnZNjA9odfL5NABJEuri3d
+        LncuhwLNRHkqxISOEcTNlzY2d+wOM7RTjGKe3gyf16qM8327F9iZUTmWN1jn8bgYyuLF7pJstF1YT
+        ZwCQ2PsL+HXOZZ3DjHyi+QQv1UQGR4SinrIEmLlkXN5ctnNyQQgw2kV3Qp0zU4pombGX0UxaTLUrP
+        aUjDlC511KeBCeYGOzUCuj47GYaU7S2pFUy0PClVmHJciDOsZzugJuoBw9L9NKgzoc4fwOpC/D0/q
+        hxHePhFzidGuLsdNNUcG1kczfN7cJWdJh13RACqYE1latlGad+DbUSGjmeIu7gUZQ3BsKcUZY7vFM
+        67LObhDA==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMZJr-0001tk-NA; Sun, 27 Sep 2020 16:14:36 +0000
+Subject: Re: [PATCH] ptp: add stub function for ptp_get_msgtype()
+To:     Yangbo Lu <yangbo.lu@nxp.com>, netdev@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>
+References: <20200927080150.8479-1-yangbo.lu@nxp.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <77c83c45-4087-eab8-ee66-6bcca11a5e2d@infradead.org>
+Date:   Sun, 27 Sep 2020 09:14:29 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200927080150.8479-1-yangbo.lu@nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The WARN_ON/WARN_ON_ONCE with rq lock held in __schedule() should be
-deferred by marking the PRINTK_DEFERRED_CONTEXT_MASK, or will cause
-deadlock on rq lock in the printk path.
+On 9/27/20 1:01 AM, Yangbo Lu wrote:
+> Added the missing stub function for ptp_get_msgtype().
+> 
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Fixes: 036c508ba95e ("ptp: Add generic ptp message type function")
+> Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
 
-Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- kernel/sched/core.c | 2 ++
- 1 file changed, 2 insertions(+)
+Yes, that works. Thanks.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 2d95dc3f4644..81d8bf614225 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4444,6 +4444,7 @@ static void __sched notrace __schedule(bool preempt)
- 	 */
- 	rq_lock(rq, &rf);
- 	smp_mb__after_spinlock();
-+	printk_deferred_enter();
- 
- 	/* Promote REQ to ACT */
- 	rq->clock_update_flags <<= 1;
-@@ -4530,6 +4531,7 @@ static void __sched notrace __schedule(bool preempt)
- 		rq_unlock_irq(rq, &rf);
- 	}
- 
-+	printk_deferred_exit();
- 	balance_callback(rq);
- }
- 
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+
+> ---
+>  include/linux/ptp_classify.h | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/linux/ptp_classify.h b/include/linux/ptp_classify.h
+> index 8437307..c6487b7 100644
+> --- a/include/linux/ptp_classify.h
+> +++ b/include/linux/ptp_classify.h
+> @@ -134,5 +134,13 @@ static inline struct ptp_header *ptp_parse_header(struct sk_buff *skb,
+>  {
+>  	return NULL;
+>  }
+> +static inline u8 ptp_get_msgtype(const struct ptp_header *hdr,
+> +				 unsigned int type)
+> +{
+> +	/* The return is meaningless. The stub function would not be
+> +	 * executed since no available header from ptp_parse_header.
+> +	 */
+> +	return 0;
+> +}
+>  #endif
+>  #endif /* _PTP_CLASSIFY_H_ */
+> 
+
+
 -- 
-2.11.0
-
+~Randy
