@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 262FA27A026
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CF627A028
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgI0J1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 05:27:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38100 "EHLO
+        id S1726558AbgI0J11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 05:27:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38120 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726380AbgI0J1X (ORCPT
+        with ESMTP id S1726382AbgI0J1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Sep 2020 05:27:23 -0400
-Date:   Sun, 27 Sep 2020 09:27:19 -0000
+Date:   Sun, 27 Sep 2020 09:27:20 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601198840;
+        s=2020; t=1601198841;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VHpxqLpHfRdnTf2yLc6PD3ZbrpNdW3AUuwgLP7OYf3E=;
-        b=sCjYijXksxYit2gocLpK4NHsIUltQU1eyxtjPp25DakcajhoEMzikTzxmr3iKwo43ln4RQ
-        BhNgerJA6cJzgNe4hfXYnJZYyYpiAfLCVniGOQyIjnZ7hBxLvf+ogBva12A4M4J+GJ3RXj
-        hKkjnKIySrCkM9i/RTO2454o4Wkimj9r1EscftLXEXTi5ZBmzdetC9Egk3i61QsIAXv7we
-        SB9YrKvomsVOfUzHQA5f1rBqGrCoJL8etqpPmwRPfL5qyrTTc6Fx8tOI1k1FGcM/Uc6HAJ
-        sJLqHA3dCNX6+BfDlEheNE+2VmSn65flCT3GDdRUMKTmkOWlZfQmCz6mCBXE4g==
+        bh=q4Gk3xX4XY8QOdOz8bsUPu2q5lUughdP4sF0z/xX3qU=;
+        b=KVNWqptbYuPH7lH4zJzlJACKNvGjhHm6hj2un4lkjkMyTQCmBFb0Y8w5b+jBXvZxRC+cNT
+        tvTpAKxvLdJwayo+GkH/nBPZEuoaXUUyW7d1awP/ohkT5pRvMH3qFcrSnsWjF8EKTvtKst
+        MCY9qr9XNC21VmLvcrAwGaBYLjjU9QdMPydQEPRqnTOnA3frbAcRQYbo1QgztWDHPDbTaI
+        p3ez3oKdHeHQCVCOifbAWx6bQKksAOALEvv+0iuANc4G0IYPifXG8qjsrdOe/dUFscT3dK
+        IhRPfHYvCgBU2dEDS2uLWbQZ4ShIHXzJY1R9sUhytz0apyF5TMeBIw/e4vr6HQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601198840;
+        s=2020e; t=1601198841;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=VHpxqLpHfRdnTf2yLc6PD3ZbrpNdW3AUuwgLP7OYf3E=;
-        b=X4+vKiAgDzX1LNxn7LlRley4fquiur4r/jM3AeTiOnKPREa9gZcg0M8Izi0eT4SaxR99rL
-        hwOhf/2vh2jlSTCA==
+        bh=q4Gk3xX4XY8QOdOz8bsUPu2q5lUughdP4sF0z/xX3qU=;
+        b=78thuUd8Ktfaa9UFhsZHsDOhCgNGgiy2EW9Ya+gE+4dFPt9/s3VDZKe0c3CBw8ww8n5cUf
+        bWzFUcGEGntg6kAA==
 From:   "tip-bot2 for Zhen Lei" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/sp804: Add support for
- Hisilicon sp804 timer
+Subject: [tip: timers/core] clocksource/drivers/sp804: Prepare for support
+ non-standard register offset
 Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200918132237.3552-8-thunder.leizhen@huawei.com>
-References: <20200918132237.3552-8-thunder.leizhen@huawei.com>
+In-Reply-To: <20200918132237.3552-6-thunder.leizhen@huawei.com>
+References: <20200918132237.3552-6-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Message-ID: <160119883960.7002.9470721026208404830.tip-bot2@tip-bot2>
+Message-ID: <160119884044.7002.1587977678970164737.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,79 +59,79 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     bd5a1936ffa2b69032815775fa54fc1c422d49d5
-Gitweb:        https://git.kernel.org/tip/bd5a1936ffa2b69032815775fa54fc1c422d49d5
+Commit-ID:     e69aae713bef63b357d4ff85bcb3f8f63dbf4ba3
+Gitweb:        https://git.kernel.org/tip/e69aae713bef63b357d4ff85bcb3f8f63dbf4ba3
 Author:        Zhen Lei <thunder.leizhen@huawei.com>
-AuthorDate:    Fri, 18 Sep 2020 21:22:35 +08:00
+AuthorDate:    Fri, 18 Sep 2020 21:22:33 +08:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
 CommitterDate: Thu, 24 Sep 2020 10:51:04 +02:00
 
-clocksource/drivers/sp804: Add support for Hisilicon sp804 timer
+clocksource/drivers/sp804: Prepare for support non-standard register offset
 
-The ARM SP804 supports a maximum of 32-bit counter, but Hisilicon extends
-it to 64-bit. That means, the registers: TimerXload, TimerXValue and
-TimerXBGLoad are 64bits, all other registers are the same as those in the
-SP804. The driver code can be completely reused except that the register
-offset is different.
+Add two local variables: timer1_base and timer2_base in sp804_of_init(),
+to avoid repeatedly calculate the base address of timer2, and make it
+easier to recognize timer1. Hope to make the next patch looks more clear.
 
-Use compatible = "hisilicon,sp804" mark as Hisilicon sp804 timer.
+No functional change.
 
 Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200918132237.3552-8-thunder.leizhen@huawei.com
+Link: https://lore.kernel.org/r/20200918132237.3552-6-thunder.leizhen@huawei.com
 ---
- drivers/clocksource/timer-sp804.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/clocksource/timer-sp804.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/clocksource/timer-sp804.c b/drivers/clocksource/timer-sp804.c
-index 5f4f979..f0783d1 100644
+index a443f39..471c5c6 100644
 --- a/drivers/clocksource/timer-sp804.c
 +++ b/drivers/clocksource/timer-sp804.c
-@@ -20,6 +20,18 @@
- 
- #include "timer-sp.h"
- 
-+/* Hisilicon 64-bit timer(a variant of ARM SP804) */
-+#define HISI_TIMER_1_BASE	0x00
-+#define HISI_TIMER_2_BASE	0x40
-+#define HISI_TIMER_LOAD		0x00
-+#define HISI_TIMER_VALUE	0x08
-+#define HISI_TIMER_CTRL		0x10
-+#define HISI_TIMER_INTCLR	0x14
-+#define HISI_TIMER_RIS		0x18
-+#define HISI_TIMER_MIS		0x1c
-+#define HISI_TIMER_BGLOAD	0x20
-+
-+
- struct sp804_timer __initdata arm_sp804_timer = {
- 	.load		= TIMER_LOAD,
- 	.value		= TIMER_VALUE,
-@@ -29,6 +41,15 @@ struct sp804_timer __initdata arm_sp804_timer = {
- 	.width		= 32,
- };
- 
-+struct sp804_timer __initdata hisi_sp804_timer = {
-+	.load		= HISI_TIMER_LOAD,
-+	.value		= HISI_TIMER_VALUE,
-+	.ctrl		= HISI_TIMER_CTRL,
-+	.intclr		= HISI_TIMER_INTCLR,
-+	.timer_base	= {HISI_TIMER_1_BASE, HISI_TIMER_2_BASE},
-+	.width		= 64,
-+};
-+
- static struct sp804_clkevt sp804_clkevt[NR_TIMERS];
- 
- static long __init sp804_get_clock_rate(struct clk *clk, const char *name)
-@@ -315,6 +336,12 @@ static int __init arm_sp804_of_init(struct device_node *np)
- }
- TIMER_OF_DECLARE(sp804, "arm,sp804", arm_sp804_of_init);
- 
-+static int __init hisi_sp804_of_init(struct device_node *np)
-+{
-+	return sp804_of_init(np, &hisi_sp804_timer);
-+}
-+TIMER_OF_DECLARE(hisi_sp804, "hisilicon,sp804", hisi_sp804_of_init);
-+
- static int __init integrator_cp_of_init(struct device_node *np)
+@@ -188,6 +188,8 @@ static int __init sp804_of_init(struct device_node *np)
  {
- 	static int init_count = 0;
+ 	static bool initialized = false;
+ 	void __iomem *base;
++	void __iomem *timer1_base;
++	void __iomem *timer2_base;
+ 	int irq, ret = -EINVAL;
+ 	u32 irq_num = 0;
+ 	struct clk *clk1, *clk2;
+@@ -197,9 +199,12 @@ static int __init sp804_of_init(struct device_node *np)
+ 	if (!base)
+ 		return -ENXIO;
+ 
++	timer1_base = base;
++	timer2_base = base + TIMER_2_BASE;
++
+ 	/* Ensure timers are disabled */
+-	writel(0, base + TIMER_CTRL);
+-	writel(0, base + TIMER_2_BASE + TIMER_CTRL);
++	writel(0, timer1_base + TIMER_CTRL);
++	writel(0, timer2_base + TIMER_CTRL);
+ 
+ 	if (initialized || !of_device_is_available(np)) {
+ 		ret = -EINVAL;
+@@ -228,21 +233,21 @@ static int __init sp804_of_init(struct device_node *np)
+ 	of_property_read_u32(np, "arm,sp804-has-irq", &irq_num);
+ 	if (irq_num == 2) {
+ 
+-		ret = sp804_clockevents_init(base + TIMER_2_BASE, irq, clk2, name);
++		ret = sp804_clockevents_init(timer2_base, irq, clk2, name);
+ 		if (ret)
+ 			goto err;
+ 
+-		ret = sp804_clocksource_and_sched_clock_init(base,
++		ret = sp804_clocksource_and_sched_clock_init(timer1_base,
+ 							     name, clk1, 1);
+ 		if (ret)
+ 			goto err;
+ 	} else {
+ 
+-		ret = sp804_clockevents_init(base, irq, clk1, name);
++		ret = sp804_clockevents_init(timer1_base, irq, clk1, name);
+ 		if (ret)
+ 			goto err;
+ 
+-		ret = sp804_clocksource_and_sched_clock_init(base + TIMER_2_BASE,
++		ret = sp804_clocksource_and_sched_clock_init(timer2_base,
+ 							     name, clk2, 1);
+ 		if (ret)
+ 			goto err;
