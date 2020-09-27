@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A460A27A295
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FE627A2BB
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726328AbgI0T3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+        id S1726442AbgI0T3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:29:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgI0T3T (ORCPT
+        with ESMTP id S1726239AbgI0T3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:29:19 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9659C0613CE;
-        Sun, 27 Sep 2020 12:29:18 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id z1so9550838wrt.3;
-        Sun, 27 Sep 2020 12:29:18 -0700 (PDT)
+        Sun, 27 Sep 2020 15:29:20 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053B9C0613CE;
+        Sun, 27 Sep 2020 12:29:20 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g4so9536903wrs.5;
+        Sun, 27 Sep 2020 12:29:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GAAtSAinEwDD4No76XzUrrz89y+X5YI3Fkp3Qs1EF6A=;
-        b=hbvgMZ9dkpTeaVc5x0SjPW7TzrNggvlPmhgOnG5tn1P+we5d6QPlFc+j3/1VysZ9EQ
-         itQVPlgShHauuDhLCa4ba6QnClEIqkUdxuR9P9j0aTPkyR7BCqKbb6GqjL140WPeDQG8
-         JtPAJBxtLNHk+LJTWELGvpHddzfpXVy4gvDa9+WY6GqeC1DIyJVUonyPYE/Hb45jonvl
-         moMG66DTEghDqgNB+Zp+kxWjaJM/tSURPmU00oWqXm3AgwJ+UeVQDjEUuIwPVz5N+EmE
-         JOqq56iTaGn3tEVUMpZuF2s7FXut0HXOuyADmAawW3zIdFmYPJvLVbDrKduLjVwi7xfU
-         v40g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OyfHIE0qAhOjNCFNxAQ6O7ihABXSVqgxqKsK1DQfOYg=;
+        b=XjgZBK2M1cUlt3D0plcopQaVRkhJC3WRcjSIMwCm/PMkn5cbAQD2SrKfXRGdAoJabx
+         zdfRiRQN+9alvyChbeAqfVdbrJeFtAnCUucGvASrcjHPLWaZ/QyLOOufxdJgZ3oCtmSc
+         0Piyk2sDjWXjpEjlFYDyxB4/EWJWAEbHCryFeB7+xPmORXFjESTZrUzraAKzSN0PI8Fy
+         7Ud3pH8FxQWLDeTdalrlEH6ue9n++GwyLFO0r7IKi0rMpvuScwjYUnIGmOW+YKgHE9OR
+         +Om3wlWhsHTRamSpjd5NbGFa19tafCPaHjVDIBKz42OFE603QcPMBrzwlTKWVjqju1IE
+         ByGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GAAtSAinEwDD4No76XzUrrz89y+X5YI3Fkp3Qs1EF6A=;
-        b=n+sQ3wbnjGLy9kgTYaLuja7c2a83Kq8U4+H7wuZ0vqCP1KJJZMCzxRt0c3EwFBnC+Z
-         pkYd4SkWYDUB9GEA3u+f6JQu9WePpMham9UgDVKBX/P9WeIU5UY8pH8mBkOo0Oess2EY
-         v9HYsm7yHuT3M0rXPgSwkUg9WLkNNvR1BMc0MjgAaPYoYA0PJC6Tj9UoOuCQxLsc1xxe
-         9o/pNIrpdzhOD6ieAEjoOENeP/sqwOxP/lexa0emXYZ16y8IB8fq/CTJ6G1KE/GPZH5R
-         LFHYAv/q+eE1a8Zz3Pqy+/Lc5Kfjzzg0M8PhmGmetqtSFYSW8T5u/YqAvAGPre/pWGP5
-         nFpA==
-X-Gm-Message-State: AOAM530FsHf6oBoEGLsnkBW9FKrlik6rPU5PnUboAE7ZSFumblvAWaWU
-        54jLgZMWIzg6JWcByABqy20=
-X-Google-Smtp-Source: ABdhPJy0jlKkB+a7iXNGAIriN8xg5n6aV2MPg6E/rLpY9BkzWV0JjpJGSE0LpFuu38MPFaH6nUPSyQ==
-X-Received: by 2002:a5d:5512:: with SMTP id b18mr12159410wrv.229.1601234957454;
-        Sun, 27 Sep 2020 12:29:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OyfHIE0qAhOjNCFNxAQ6O7ihABXSVqgxqKsK1DQfOYg=;
+        b=aiMUPe8Kk8Kj2NcC8hRzq8hIp3DaOYpVQKFYfiT4TI2LauxGkMrTiwdPJpLUVtm9S0
+         YVT8PPrWTK4v8WIAKUEv20q3npUEkPqBKfEihl6nmjq7VJ87sbO+LMMywTBR2GuQLQkJ
+         +hGvLNXoPJuVIyly/C9CABcmmhCFgCgB4qxVcT88yjMtFYPPeYQVwZHwjyitbV+AB0EE
+         S3uUlU/BiJBaxJB0dztkmkNy2KjRdkcqq3/BealroxLxizjJG8YOXBqn3ssx7fgpBu+r
+         XHDQAAdj3jmrjSRMjXPZUVxLZGxzdNNTQrKSp0peBB+7JKGSI86xRWZOx9QUfMFfFGNt
+         +OTQ==
+X-Gm-Message-State: AOAM531hkmzMSwLXUDWa//ILaNkgZRYZbkE6+7cgw7nw7EgmXeY3cVfz
+        vw25HqfEbvinBjCANkwjpuw=
+X-Google-Smtp-Source: ABdhPJypHB/nVvJsThv5xw8CIcWqqQsPakBV+SlU4uMQhahm5SGPXu5E70m3mk8Olaqd04lK8chq4g==
+X-Received: by 2002:a5d:68d1:: with SMTP id p17mr14672759wrw.378.1601234958534;
+        Sun, 27 Sep 2020 12:29:18 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.16
+        by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 12:29:16 -0700 (PDT)
+        Sun, 27 Sep 2020 12:29:17 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -60,10 +60,12 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
         =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-Subject: [PATCH v5 00/20] Add Allwinner H3/H5/H6/A64 HDMI audio
-Date:   Sun, 27 Sep 2020 21:28:52 +0200
-Message-Id: <20200927192912.46323-1-peron.clem@gmail.com>
+Subject: [PATCH v5 01/20] ASoC: sun4i-i2s: Add support for H6 I2S
+Date:   Sun, 27 Sep 2020 21:28:53 +0200
+Message-Id: <20200927192912.46323-2-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200927192912.46323-1-peron.clem@gmail.com>
+References: <20200927192912.46323-1-peron.clem@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -71,83 +73,295 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Jernej Skrabec <jernej.skrabec@siol.net>
 
-This is exactly the same as v4 but with more details in some commit log
-and also device-tree soundcard and DAI node have been merged.
+H6 I2S is very similar to that in H3, except it supports up to 16
+channels.
 
-Regards,
-Clement
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Signed-off-by: Clément Péron <peron.clem@gmail.com>
+---
+ sound/soc/sunxi/sun4i-i2s.c | 224 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 224 insertions(+)
 
-Change since v4;
-- add more comment on get_wss() and set_channel_cfg() patch
-- merge soundcard and DAI HDMI patches
-
-Change since v3:
-- add Samuel Holland patch to reconfigure FIFO_TX_REG when suspend is enabled
-- readd inversion to H6 LRCK sun50i_h6_i2s_set_soc_fmt()
-- Fix get_wss() for sun4i
-- Add a commit to fix checkpatch warning
-
-Change since v2:
-- rebase on next-20200918
-- drop revert LRCK polarity patch
-- readd simple-audio-card,frame-inversion in dts
-- Add patch for changing set_chan_cfg params
-
-Change since v1:
-- rebase on next-20200828
-- add revert LRCK polarity
-- remove all simple-audio-card,frame-inversion in dts
-- add Ondrej patches for Orange Pi board
-- Add arm64 defconfig patch
-
-Clément Péron (6):
-  ASoC: sun4i-i2s: Change set_chan_cfg() params
-  ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
-  ASoC: sun4i-i2s: Fix sun8i volatile regs
-  arm64: dts: allwinner: h6: Enable HDMI sound for Beelink GS1
-  arm64: defconfig: Enable Allwinner i2s driver
-  ASoC: sun4i-i2s: fix coding-style for callback definition
-
-Jernej Skrabec (3):
-  ASoC: sun4i-i2s: Add support for H6 I2S
-  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
-  arm64: dts: allwinner: h6: Add DAI node and soundcard for HDMI
-
-Marcus Cooper (7):
-  ASoC: sun4i-i2s: Set sign extend sample
-  ASoc: sun4i-i2s: Add 20 and 24 bit support
-  arm: dts: sunxi: h3/h5: Add DAI node and soundcard for HDMI
-  arm64: dts: allwinner: a64: Add DAI node and soundcard for HDMI
-  arm: sun8i: h3: Add HDMI audio to Orange Pi 2
-  arm: sun8i: h3: Add HDMI audio to Beelink X2
-  arm64: dts: allwinner: a64: Add HDMI audio to Pine64
-
-Ondrej Jirman (3):
-  arm64: dts: allwinner: Enable HDMI audio on Orange Pi PC 2
-  ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
-  arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
-
-Samuel Holland (1):
-  ASoC: sun4i-i2s: Fix setting of FIFO modes
-
- .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
- arch/arm/boot/dts/sun8i-h3-beelink-x2.dts     |   8 +
- arch/arm/boot/dts/sun8i-h3-orangepi-2.dts     |   8 +
- arch/arm/boot/dts/sun8i-h3-orangepi-one.dts   |   8 +
- arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts    |   8 +
- arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  33 ++
- .../boot/dts/allwinner/sun50i-a64-pine64.dts  |   8 +
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  34 ++
- .../dts/allwinner/sun50i-h5-orangepi-pc2.dts  |   8 +
- .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   8 +
- .../dts/allwinner/sun50i-h6-orangepi-3.dts    |   8 +
- arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  33 ++
- arch/arm64/configs/defconfig                  |   1 +
- sound/soc/sunxi/sun4i-i2s.c                   | 374 +++++++++++++++---
- 14 files changed, 487 insertions(+), 54 deletions(-)
-
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index f23ff29e7c1d..2baf6c276280 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -124,6 +124,21 @@
+ #define SUN8I_I2S_RX_CHAN_SEL_REG	0x54
+ #define SUN8I_I2S_RX_CHAN_MAP_REG	0x58
+ 
++/* Defines required for sun50i-h6 support */
++#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK	GENMASK(21, 20)
++#define SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset)	((offset) << 20)
++#define SUN50I_H6_I2S_TX_CHAN_SEL_MASK		GENMASK(19, 16)
++#define SUN50I_H6_I2S_TX_CHAN_SEL(chan)		((chan - 1) << 16)
++#define SUN50I_H6_I2S_TX_CHAN_EN_MASK		GENMASK(15, 0)
++#define SUN50I_H6_I2S_TX_CHAN_EN(num_chan)	(((1 << num_chan) - 1))
++
++#define SUN50I_H6_I2S_TX_CHAN_MAP0_REG	0x44
++#define SUN50I_H6_I2S_TX_CHAN_MAP1_REG	0x48
++
++#define SUN50I_H6_I2S_RX_CHAN_SEL_REG	0x64
++#define SUN50I_H6_I2S_RX_CHAN_MAP0_REG	0x68
++#define SUN50I_H6_I2S_RX_CHAN_MAP1_REG	0x6C
++
+ struct sun4i_i2s;
+ 
+ /**
+@@ -474,6 +489,62 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
+ 	return 0;
+ }
+ 
++static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
++				      const struct snd_pcm_hw_params *params)
++{
++	unsigned int channels = params_channels(params);
++	unsigned int slots = channels;
++	unsigned int lrck_period;
++
++	if (i2s->slots)
++		slots = i2s->slots;
++
++	/* Map the channels for playback and capture */
++	regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
++	regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x76543210);
++
++	/* Configure the channels */
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
++	regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL(channels));
++
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
++			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM_MASK,
++			   SUN8I_I2S_CHAN_CFG_TX_SLOT_NUM(channels));
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_CHAN_CFG_REG,
++			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM_MASK,
++			   SUN8I_I2S_CHAN_CFG_RX_SLOT_NUM(channels));
++
++	switch (i2s->format & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_DSP_A:
++	case SND_SOC_DAIFMT_DSP_B:
++	case SND_SOC_DAIFMT_LEFT_J:
++	case SND_SOC_DAIFMT_RIGHT_J:
++		lrck_period = params_physical_width(params) * slots;
++		break;
++
++	case SND_SOC_DAIFMT_I2S:
++		lrck_period = params_physical_width(params);
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN8I_I2S_FMT0_LRCK_PERIOD_MASK,
++			   SUN8I_I2S_FMT0_LRCK_PERIOD(lrck_period));
++
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_EN_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_EN(channels));
++
++	return 0;
++}
++
+ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 			       struct snd_pcm_hw_params *params,
+ 			       struct snd_soc_dai *dai)
+@@ -699,6 +770,108 @@ static int sun8i_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
+ 	return 0;
+ }
+ 
++static int sun50i_h6_i2s_set_soc_fmt(const struct sun4i_i2s *i2s,
++				     unsigned int fmt)
++{
++	u32 mode, val;
++	u8 offset;
++
++	/*
++	 * DAI clock polarity
++	 *
++	 * The setup for LRCK contradicts the datasheet, but under a
++	 * scope it's clear that the LRCK polarity is reversed
++	 * compared to the expected polarity on the bus.
++	 */
++	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
++	case SND_SOC_DAIFMT_IB_IF:
++		/* Invert both clocks */
++		val = SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED;
++		break;
++	case SND_SOC_DAIFMT_IB_NF:
++		/* Invert bit clock */
++		val = SUN8I_I2S_FMT0_BCLK_POLARITY_INVERTED |
++		      SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
++		break;
++	case SND_SOC_DAIFMT_NB_IF:
++		/* Invert frame clock */
++		val = 0;
++		break;
++	case SND_SOC_DAIFMT_NB_NF:
++		val = SUN8I_I2S_FMT0_LRCLK_POLARITY_INVERTED;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_FMT0_REG,
++			   SUN8I_I2S_FMT0_LRCLK_POLARITY_MASK |
++			   SUN8I_I2S_FMT0_BCLK_POLARITY_MASK,
++			   val);
++
++	/* DAI Mode */
++	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
++	case SND_SOC_DAIFMT_DSP_A:
++		mode = SUN8I_I2S_CTRL_MODE_PCM;
++		offset = 1;
++		break;
++
++	case SND_SOC_DAIFMT_DSP_B:
++		mode = SUN8I_I2S_CTRL_MODE_PCM;
++		offset = 0;
++		break;
++
++	case SND_SOC_DAIFMT_I2S:
++		mode = SUN8I_I2S_CTRL_MODE_LEFT;
++		offset = 1;
++		break;
++
++	case SND_SOC_DAIFMT_LEFT_J:
++		mode = SUN8I_I2S_CTRL_MODE_LEFT;
++		offset = 0;
++		break;
++
++	case SND_SOC_DAIFMT_RIGHT_J:
++		mode = SUN8I_I2S_CTRL_MODE_RIGHT;
++		offset = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN8I_I2S_CTRL_MODE_MASK, mode);
++	regmap_update_bits(i2s->regmap, SUN8I_I2S_TX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
++	regmap_update_bits(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_SEL_REG,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET_MASK,
++			   SUN50I_H6_I2S_TX_CHAN_SEL_OFFSET(offset));
++
++	/* DAI clock master masks */
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		/* BCLK and LRCLK master */
++		val = SUN8I_I2S_CTRL_BCLK_OUT |	SUN8I_I2S_CTRL_LRCK_OUT;
++		break;
++
++	case SND_SOC_DAIFMT_CBM_CFM:
++		/* BCLK and LRCLK slave */
++		val = 0;
++		break;
++
++	default:
++		return -EINVAL;
++	}
++
++	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
++			   SUN8I_I2S_CTRL_BCLK_OUT | SUN8I_I2S_CTRL_LRCK_OUT,
++			   val);
++
++	return 0;
++}
++
+ static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+ 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+@@ -979,6 +1152,22 @@ static const struct reg_default sun8i_i2s_reg_defaults[] = {
+ 	{ SUN8I_I2S_RX_CHAN_MAP_REG, 0x00000000 },
+ };
+ 
++static const struct reg_default sun50i_h6_i2s_reg_defaults[] = {
++	{ SUN4I_I2S_CTRL_REG, 0x00060000 },
++	{ SUN4I_I2S_FMT0_REG, 0x00000033 },
++	{ SUN4I_I2S_FMT1_REG, 0x00000030 },
++	{ SUN4I_I2S_FIFO_CTRL_REG, 0x000400f0 },
++	{ SUN4I_I2S_DMA_INT_CTRL_REG, 0x00000000 },
++	{ SUN4I_I2S_CLK_DIV_REG, 0x00000000 },
++	{ SUN8I_I2S_CHAN_CFG_REG, 0x00000000 },
++	{ SUN8I_I2S_TX_CHAN_SEL_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_TX_CHAN_MAP0_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_SEL_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_MAP0_REG, 0x00000000 },
++	{ SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x00000000 },
++};
++
+ static const struct regmap_config sun4i_i2s_regmap_config = {
+ 	.reg_bits	= 32,
+ 	.reg_stride	= 4,
+@@ -1006,6 +1195,19 @@ static const struct regmap_config sun8i_i2s_regmap_config = {
+ 	.volatile_reg	= sun8i_i2s_volatile_reg,
+ };
+ 
++static const struct regmap_config sun50i_h6_i2s_regmap_config = {
++	.reg_bits	= 32,
++	.reg_stride	= 4,
++	.val_bits	= 32,
++	.max_register	= SUN50I_H6_I2S_RX_CHAN_MAP1_REG,
++	.cache_type	= REGCACHE_FLAT,
++	.reg_defaults	= sun50i_h6_i2s_reg_defaults,
++	.num_reg_defaults	= ARRAY_SIZE(sun50i_h6_i2s_reg_defaults),
++	.writeable_reg	= sun4i_i2s_wr_reg,
++	.readable_reg	= sun8i_i2s_rd_reg,
++	.volatile_reg	= sun8i_i2s_volatile_reg,
++};
++
+ static int sun4i_i2s_runtime_resume(struct device *dev)
+ {
+ 	struct sun4i_i2s *i2s = dev_get_drvdata(dev);
+@@ -1164,6 +1366,24 @@ static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
+ 	.set_fmt		= sun4i_i2s_set_soc_fmt,
+ };
+ 
++static const struct sun4i_i2s_quirks sun50i_h6_i2s_quirks = {
++	.has_reset		= true,
++	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
++	.sun4i_i2s_regmap	= &sun50i_h6_i2s_regmap_config,
++	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 8, 8),
++	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 2),
++	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 6),
++	.bclk_dividers		= sun8i_i2s_clk_div,
++	.num_bclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
++	.mclk_dividers		= sun8i_i2s_clk_div,
++	.num_mclk_dividers	= ARRAY_SIZE(sun8i_i2s_clk_div),
++	.get_bclk_parent_rate	= sun8i_i2s_get_bclk_parent_rate,
++	.get_sr			= sun8i_i2s_get_sr_wss,
++	.get_wss		= sun8i_i2s_get_sr_wss,
++	.set_chan_cfg		= sun50i_h6_i2s_set_chan_cfg,
++	.set_fmt		= sun50i_h6_i2s_set_soc_fmt,
++};
++
+ static int sun4i_i2s_init_regmap_fields(struct device *dev,
+ 					struct sun4i_i2s *i2s)
+ {
+@@ -1333,6 +1553,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
+ 		.compatible = "allwinner,sun50i-a64-codec-i2s",
+ 		.data = &sun50i_a64_codec_i2s_quirks,
+ 	},
++	{
++		.compatible = "allwinner,sun50i-h6-i2s",
++		.data = &sun50i_h6_i2s_quirks,
++	},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
 -- 
 2.25.1
 
