@@ -2,109 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C472279F1B
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 08:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CE0279F41
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730426AbgI0Gy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 02:54:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29864 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730384AbgI0Gyz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 02:54:55 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601189694;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bd/ZPlUtGfcavMMYXo7QbCua2yw75N9F0WV8AxCRw+M=;
-        b=Ays+rJYGwzCJ1wVEtXw57oR1kGZIvUCSjVTAWpI4GoU5XKB0izS56ElsLH8ASfX/eilwG6
-        k1LPdrbfTp93o7pS5s/xBXSIH653Es5Pfza73GeupugO4Ga98xXX5iePACON1LLC92a7/T
-        puBThd0qOfpopy+LMO0B8pOiRMVD2AU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-236-74-ihrVjPgaitDBC_v16gQ-1; Sun, 27 Sep 2020 02:54:51 -0400
-X-MC-Unique: 74-ihrVjPgaitDBC_v16gQ-1
-Received: by mail-wr1-f72.google.com with SMTP id v12so3220055wrm.9
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 23:54:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bd/ZPlUtGfcavMMYXo7QbCua2yw75N9F0WV8AxCRw+M=;
-        b=m1qxFchwq+YRmpEYx7FSbGKuS/F9fMj0IBxdlqZysI2SM/RiQq+bSmgl/3jGzXPRlP
-         Zl6MAxAZf/a1FJdK0MLNf8BQDd2AqElmPPoCCFvBgYznOCQJyV/QestUH11yFXZZPEQR
-         mq53cv0j9oScjgD3E4cwpXNTTNMnE3j1YHJCxt4S6SGy9B6KI/4+2qtTKvLuvRao6fly
-         1Rmdw5VG28d7X3WkzSXEt9fvGh3XiFyCMjqbgoMdcYlLBq9uet3tkP4zT59spMMOTQCA
-         BEi4yITWWtJmHLVYmUyLlAq4JHIKEOwtcALf7WV+EEs2JawebDzI67cDyUqnO3mj3UVj
-         or5g==
-X-Gm-Message-State: AOAM5310uJNOQJcXpsxLrkIDkzs8+evtIfg1jUntYEnT8XtbHJ++Qq9V
-        Eq1wU7HDmhfP/tegVpFLHBqNtdEX66LrlYyhX54Um63/5Ye2epqkMOWahiCJOTzAWd4G+QZKXxg
-        58SK3YGLvVe/+4C0AeSXCiRie
-X-Received: by 2002:a1c:26c3:: with SMTP id m186mr5488349wmm.115.1601189690317;
-        Sat, 26 Sep 2020 23:54:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwHzGTRSMAbCCKFrPZbp4Zv97tRct/WUPEKLmIQIF9Yuq5mVmVNaU8KzZHi/AcXFfyqzJEjXw==
-X-Received: by 2002:a1c:26c3:: with SMTP id m186mr5488333wmm.115.1601189690096;
-        Sat, 26 Sep 2020 23:54:50 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:fc81:b99a:aac0:e256? ([2001:b07:6468:f312:fc81:b99a:aac0:e256])
-        by smtp.gmail.com with ESMTPSA id k12sm8527873wrn.39.2020.09.26.23.54.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 26 Sep 2020 23:54:49 -0700 (PDT)
-Subject: Re: [PATCH] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
-To:     "Qi, Yadong" <yadong.qi@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>
-Cc:     "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
-        "liran.alon@oracle.com" <liran.alon@oracle.com>,
-        "nikita.leshchenko@oracle.com" <nikita.leshchenko@oracle.com>,
-        "Gao, Chao" <chao.gao@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "Chen, Luhai" <luhai.chen@intel.com>,
-        "Zhu, Bing" <bing.zhu@intel.com>,
-        "Wang, Kai Z" <kai.z.wang@intel.com>
-References: <20200922052343.84388-1-yadong.qi@intel.com>
- <c0157014-d1bb-ef81-b92f-ebecb72396c9@redhat.com>
- <MWHPR11MB196858E9DC7AF08DC87E9261E3380@MWHPR11MB1968.namprd11.prod.outlook.com>
- <MWHPR11MB1968CD560E8BB15613F3EA73E3340@MWHPR11MB1968.namprd11.prod.outlook.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <5019ebd5-4612-ae15-f976-a95000d0e1ad@redhat.com>
-Date:   Sun, 27 Sep 2020 08:54:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB1968CD560E8BB15613F3EA73E3340@MWHPR11MB1968.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1729580AbgI0HT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 03:19:59 -0400
+Received: from mga17.intel.com ([192.55.52.151]:42934 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726478AbgI0HT7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 03:19:59 -0400
+IronPort-SDR: tdyH/y+CFvMDgiNv9oZFJk2AcC6vLBcynGiT5nThYxYA/7936co8SazjpYIasphcQbLizRrdbg
+ W7H7RsUCStHw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="141863646"
+X-IronPort-AV: E=Sophos;i="5.77,309,1596524400"; 
+   d="scan'208";a="141863646"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 23:40:52 -0700
+IronPort-SDR: uQ98wVKfrttqJnv4H1RkQuunBU7Rj44Zy9bfURCZZzfKXgBMUt1/sqXgxGCpki13aQXfzCWAkQ
+ 4b0hgaZhA4FA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,309,1596524400"; 
+   d="scan'208";a="349457814"
+Received: from allen-box.sh.intel.com ([10.239.159.139])
+  by FMSMGA003.fm.intel.com with ESMTP; 26 Sep 2020 23:40:49 -0700
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>, Tom Murphy <murphyt7@tcd.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Ashok Raj <ashok.raj@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Intel-gfx@lists.freedesktop.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [PATCH v4 1/7] iommu: Handle freelists when using deferred flushing in iommu drivers
+Date:   Sun, 27 Sep 2020 14:34:31 +0800
+Message-Id: <20200927063437.13988-2-baolu.lu@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200927063437.13988-1-baolu.lu@linux.intel.com>
+References: <20200927063437.13988-1-baolu.lu@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/20 03:51, Qi, Yadong wrote:
->> Subject: RE: [PATCH] KVM: x86: emulate wait-for-SIPI and SIPI-VMExit
->>
->>> Again, this looks good but it needs testcases.
->>
->> Yes, the unit test development is WIP.
->>
-> 
-> Hi, Paolo
-> 
-> I have sent out the unit test patch.
-> https://patchwork.kernel.org/patch/11799305/
-> Could you help review it? Thanks a lot.
+From: Tom Murphy <murphyt7@tcd.ie>
 
-Yes, I've seen it.  Tomorrow. :)
+Allow the iommu_unmap_fast to return newly freed page table pages and
+pass the freelist to queue_iova in the dma-iommu ops path.
 
-Paolo
+This is useful for iommu drivers (in this case the intel iommu driver)
+which need to wait for the ioTLB to be flushed before newly
+free/unmapped page table pages can be freed. This way we can still batch
+ioTLB free operations and handle the freelists.
+
+Signed-off-by: Tom Murphy <murphyt7@tcd.ie>
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+---
+ drivers/iommu/dma-iommu.c   | 29 +++++++++++++------
+ drivers/iommu/intel/iommu.c | 55 ++++++++++++++++++++++++-------------
+ include/linux/iommu.h       |  1 +
+ 3 files changed, 58 insertions(+), 27 deletions(-)
+
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index cd6e3c70ebb3..1b8ef3a2cbc3 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -50,6 +50,18 @@ struct iommu_dma_cookie {
+ 	struct iommu_domain		*fq_domain;
+ };
+ 
++static void iommu_dma_entry_dtor(unsigned long data)
++{
++	struct page *freelist = (struct page *)data;
++
++	while (freelist) {
++		unsigned long p = (unsigned long)page_address(freelist);
++
++		freelist = freelist->freelist;
++		free_page(p);
++	}
++}
++
+ static inline size_t cookie_msi_granule(struct iommu_dma_cookie *cookie)
+ {
+ 	if (cookie->type == IOMMU_DMA_IOVA_COOKIE)
+@@ -344,7 +356,7 @@ static int iommu_dma_init_domain(struct iommu_domain *domain, dma_addr_t base,
+ 	if (!cookie->fq_domain && !iommu_domain_get_attr(domain,
+ 			DOMAIN_ATTR_DMA_USE_FLUSH_QUEUE, &attr) && attr) {
+ 		if (init_iova_flush_queue(iovad, iommu_dma_flush_iotlb_all,
+-					NULL))
++					  iommu_dma_entry_dtor))
+ 			pr_warn("iova flush queue initialization failed\n");
+ 		else
+ 			cookie->fq_domain = domain;
+@@ -441,7 +453,7 @@ static dma_addr_t iommu_dma_alloc_iova(struct iommu_domain *domain,
+ }
+ 
+ static void iommu_dma_free_iova(struct iommu_dma_cookie *cookie,
+-		dma_addr_t iova, size_t size)
++		dma_addr_t iova, size_t size, struct page *freelist)
+ {
+ 	struct iova_domain *iovad = &cookie->iovad;
+ 
+@@ -450,7 +462,8 @@ static void iommu_dma_free_iova(struct iommu_dma_cookie *cookie,
+ 		cookie->msi_iova -= size;
+ 	else if (cookie->fq_domain)	/* non-strict mode */
+ 		queue_iova(iovad, iova_pfn(iovad, iova),
+-				size >> iova_shift(iovad), 0);
++				size >> iova_shift(iovad),
++				(unsigned long)freelist);
+ 	else
+ 		free_iova_fast(iovad, iova_pfn(iovad, iova),
+ 				size >> iova_shift(iovad));
+@@ -475,7 +488,7 @@ static void __iommu_dma_unmap(struct device *dev, dma_addr_t dma_addr,
+ 
+ 	if (!cookie->fq_domain)
+ 		iommu_iotlb_sync(domain, &iotlb_gather);
+-	iommu_dma_free_iova(cookie, dma_addr, size);
++	iommu_dma_free_iova(cookie, dma_addr, size, iotlb_gather.freelist);
+ }
+ 
+ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
+@@ -497,7 +510,7 @@ static dma_addr_t __iommu_dma_map(struct device *dev, phys_addr_t phys,
+ 		return DMA_MAPPING_ERROR;
+ 
+ 	if (iommu_map_atomic(domain, iova, phys - iova_off, size, prot)) {
+-		iommu_dma_free_iova(cookie, iova, size);
++		iommu_dma_free_iova(cookie, iova, size, NULL);
+ 		return DMA_MAPPING_ERROR;
+ 	}
+ 	return iova + iova_off;
+@@ -649,7 +662,7 @@ static void *iommu_dma_alloc_remap(struct device *dev, size_t size,
+ out_free_sg:
+ 	sg_free_table(&sgt);
+ out_free_iova:
+-	iommu_dma_free_iova(cookie, iova, size);
++	iommu_dma_free_iova(cookie, iova, size, NULL);
+ out_free_pages:
+ 	__iommu_dma_free_pages(pages, count);
+ 	return NULL;
+@@ -900,7 +913,7 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	return __finalise_sg(dev, sg, nents, iova);
+ 
+ out_free_iova:
+-	iommu_dma_free_iova(cookie, iova, iova_len);
++	iommu_dma_free_iova(cookie, iova, iova_len, NULL);
+ out_restore_sg:
+ 	__invalidate_sg(sg, nents);
+ 	return 0;
+@@ -1194,7 +1207,7 @@ static struct iommu_dma_msi_page *iommu_dma_get_msi_page(struct device *dev,
+ 	return msi_page;
+ 
+ out_free_iova:
+-	iommu_dma_free_iova(cookie, iova, size);
++	iommu_dma_free_iova(cookie, iova, size, NULL);
+ out_free_page:
+ 	kfree(msi_page);
+ 	return NULL;
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 722545f61ba2..fdd514c8b2d4 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -1243,17 +1243,17 @@ static struct page *dma_pte_clear_level(struct dmar_domain *domain, int level,
+    pages can only be freed after the IOTLB flush has been done. */
+ static struct page *domain_unmap(struct dmar_domain *domain,
+ 				 unsigned long start_pfn,
+-				 unsigned long last_pfn)
++				 unsigned long last_pfn,
++				 struct page *freelist)
+ {
+-	struct page *freelist;
+-
+ 	BUG_ON(!domain_pfn_supported(domain, start_pfn));
+ 	BUG_ON(!domain_pfn_supported(domain, last_pfn));
+ 	BUG_ON(start_pfn > last_pfn);
+ 
+ 	/* we don't need lock here; nobody else touches the iova range */
+ 	freelist = dma_pte_clear_level(domain, agaw_to_level(domain->agaw),
+-				       domain->pgd, 0, start_pfn, last_pfn, NULL);
++				       domain->pgd, 0, start_pfn, last_pfn,
++				       freelist);
+ 
+ 	/* free pgd */
+ 	if (start_pfn == 0 && last_pfn == DOMAIN_MAX_PFN(domain->gaw)) {
+@@ -2011,7 +2011,8 @@ static void domain_exit(struct dmar_domain *domain)
+ 	if (domain->pgd) {
+ 		struct page *freelist;
+ 
+-		freelist = domain_unmap(domain, 0, DOMAIN_MAX_PFN(domain->gaw));
++		freelist = domain_unmap(domain, 0,
++					DOMAIN_MAX_PFN(domain->gaw), NULL);
+ 		dma_free_pagelist(freelist);
+ 	}
+ 
+@@ -3567,7 +3568,7 @@ static void intel_unmap(struct device *dev, dma_addr_t dev_addr, size_t size)
+ 	if (dev_is_pci(dev))
+ 		pdev = to_pci_dev(dev);
+ 
+-	freelist = domain_unmap(domain, start_pfn, last_pfn);
++	freelist = domain_unmap(domain, start_pfn, last_pfn, NULL);
+ 	if (intel_iommu_strict || (pdev && pdev->untrusted) ||
+ 			!has_iova_flush_queue(&domain->iovad)) {
+ 		iommu_flush_iotlb_psi(iommu, domain, start_pfn,
+@@ -4630,7 +4631,8 @@ static int intel_iommu_memory_notifier(struct notifier_block *nb,
+ 			struct page *freelist;
+ 
+ 			freelist = domain_unmap(si_domain,
+-						start_vpfn, last_vpfn);
++						start_vpfn, last_vpfn,
++						NULL);
+ 
+ 			rcu_read_lock();
+ 			for_each_active_iommu(iommu, drhd)
+@@ -5603,10 +5605,8 @@ static size_t intel_iommu_unmap(struct iommu_domain *domain,
+ 				struct iommu_iotlb_gather *gather)
+ {
+ 	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
+-	struct page *freelist = NULL;
+ 	unsigned long start_pfn, last_pfn;
+-	unsigned int npages;
+-	int iommu_id, level = 0;
++	int level = 0;
+ 
+ 	/* Cope with horrid API which requires us to unmap more than the
+ 	   size argument if it happens to be a large-page mapping. */
+@@ -5618,22 +5618,38 @@ static size_t intel_iommu_unmap(struct iommu_domain *domain,
+ 	start_pfn = iova >> VTD_PAGE_SHIFT;
+ 	last_pfn = (iova + size - 1) >> VTD_PAGE_SHIFT;
+ 
+-	freelist = domain_unmap(dmar_domain, start_pfn, last_pfn);
+-
+-	npages = last_pfn - start_pfn + 1;
+-
+-	for_each_domain_iommu(iommu_id, dmar_domain)
+-		iommu_flush_iotlb_psi(g_iommus[iommu_id], dmar_domain,
+-				      start_pfn, npages, !freelist, 0);
+-
+-	dma_free_pagelist(freelist);
++	gather->freelist = domain_unmap(dmar_domain, start_pfn,
++					last_pfn, gather->freelist);
+ 
+ 	if (dmar_domain->max_addr == iova + size)
+ 		dmar_domain->max_addr = iova;
+ 
++	iommu_iotlb_gather_add_page(domain, gather, iova, size);
++
+ 	return size;
+ }
+ 
++static void intel_iommu_tlb_sync(struct iommu_domain *domain,
++				 struct iommu_iotlb_gather *gather)
++{
++	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
++	unsigned long iova_pfn = IOVA_PFN(gather->start);
++	size_t size = gather->end - gather->start;
++	unsigned long start_pfn, last_pfn;
++	unsigned long nrpages;
++	int iommu_id;
++
++	nrpages = aligned_nrpages(gather->start, size);
++	start_pfn = mm_to_dma_pfn(iova_pfn);
++	last_pfn = start_pfn + nrpages - 1;
++
++	for_each_domain_iommu(iommu_id, dmar_domain)
++		iommu_flush_iotlb_psi(g_iommus[iommu_id], dmar_domain,
++				      start_pfn, nrpages, !gather->freelist, 0);
++
++	dma_free_pagelist(gather->freelist);
++}
++
+ static phys_addr_t intel_iommu_iova_to_phys(struct iommu_domain *domain,
+ 					    dma_addr_t iova)
+ {
+@@ -6093,6 +6109,7 @@ const struct iommu_ops intel_iommu_ops = {
+ 	.aux_get_pasid		= intel_iommu_aux_get_pasid,
+ 	.map			= intel_iommu_map,
+ 	.unmap			= intel_iommu_unmap,
++	.iotlb_sync		= intel_iommu_tlb_sync,
+ 	.iova_to_phys		= intel_iommu_iova_to_phys,
+ 	.probe_device		= intel_iommu_probe_device,
+ 	.probe_finalize		= intel_iommu_probe_finalize,
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 2ad26d8b4ab9..8109e061d46e 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -180,6 +180,7 @@ struct iommu_iotlb_gather {
+ 	unsigned long		start;
+ 	unsigned long		end;
+ 	size_t			pgsize;
++	struct page		*freelist;
+ };
+ 
+ /**
+-- 
+2.17.1
 
