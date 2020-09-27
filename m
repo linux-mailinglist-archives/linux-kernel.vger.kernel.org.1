@@ -2,189 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD1A5279F4E
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E85279F4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730342AbgI0Hmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 03:42:37 -0400
-Received: from mga18.intel.com ([134.134.136.126]:65160 "EHLO mga18.intel.com"
+        id S1730382AbgI0HnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 03:43:19 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:13423 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727614AbgI0Hmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 03:42:37 -0400
-IronPort-SDR: 3CIEROAxgSr6gmYLMfIMI98DjgWKiJROw1pZ3lGBI2WUcXIWJcGt/e0yJIY59LaLzN8RyvzXdb
- yJySyR8kC+9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="149623672"
-X-IronPort-AV: E=Sophos;i="5.77,309,1596524400"; 
-   d="scan'208";a="149623672"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 00:42:35 -0700
-IronPort-SDR: PB4usEZVimfQXoJwj3TmbvNy4UwFRN9je09LOKs8fpxCsPM5QPRCDA5wEL2MeqLwy/qHdHOAp/
- qtnHYE8wHJvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,309,1596524400"; 
-   d="scan'208";a="311405104"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga006.jf.intel.com with ESMTP; 27 Sep 2020 00:42:32 -0700
-Date:   Sun, 27 Sep 2020 15:37:54 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, yilun.xu@intel.com
-Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
-Message-ID: <20200927073754.GB16433@yilunxu-OptiPlex-7050>
-References: <1600966801-30586-1-git-send-email-yilun.xu@intel.com>
- <1600966801-30586-2-git-send-email-yilun.xu@intel.com>
- <20200924172700.GA79736@archbook>
- <20200926022346.GA5623@yilunxu-OptiPlex-7050>
- <20200926060913.GA637197@kroah.com>
- <20200926192219.GA18625@epycbox.lan>
- <20200927055108.GA701198@kroah.com>
+        id S1727263AbgI0HnT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 03:43:19 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4Bzd1C397tz9vCyd;
+        Sun, 27 Sep 2020 09:43:11 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 2rpLFY2yYYd0; Sun, 27 Sep 2020 09:43:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bzd1C1xLgz9vCyc;
+        Sun, 27 Sep 2020 09:43:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9C23F8B771;
+        Sun, 27 Sep 2020 09:43:15 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 8dPWckrkFTns; Sun, 27 Sep 2020 09:43:15 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E510A8B75B;
+        Sun, 27 Sep 2020 09:43:13 +0200 (CEST)
+Subject: Re: [PATCH v8 2/8] powerpc/vdso: Remove __kernel_datapage_offset and
+ simplify __get_datapage()
+To:     Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linuxppc-dev@lists.ozlabs.org
+References: <cover.1588079622.git.christophe.leroy@c-s.fr>
+ <0d2201efe3c7727f2acc718aefd7c5bb22c66c57.1588079622.git.christophe.leroy@c-s.fr>
+ <87wo34tbas.fsf@mpe.ellerman.id.au>
+ <2f9b7d02-9e2f-4724-2608-c5573f6507a2@csgroup.eu>
+ <6862421a-5a14-2e38-b825-e39e6ad3d51d@csgroup.eu>
+ <87imd5h5kb.fsf@mpe.ellerman.id.au>
+ <CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com>
+ <87a6yf34aj.fsf@mpe.ellerman.id.au> <20200921112638.GC2139@willie-the-truck>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <ad72ffd3-a552-cc98-7545-d30285fd5219@csgroup.eu>
+Date:   Sun, 27 Sep 2020 09:43:06 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927055108.GA701198@kroah.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200921112638.GC2139@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On Sun, Sep 27, 2020 at 07:51:08AM +0200, Greg KH wrote:
-> On Sat, Sep 26, 2020 at 12:22:19PM -0700, Moritz Fischer wrote:
-> > Hi Greg,
-> > 
-> > On Sat, Sep 26, 2020 at 08:09:13AM +0200, Greg KH wrote:
-> > > On Sat, Sep 26, 2020 at 10:23:46AM +0800, Xu Yilun wrote:
-> > > > Hi greg,
-> > > > 
-> > > > About the bus naming, I summarized some questions we've discussed to check
-> > > > with you. See inline.
-> > > > 
-> > > > On Thu, Sep 24, 2020 at 10:27:00AM -0700, Moritz Fischer wrote:
-> > > > > Hi Xu,
-> > > > > 
-> > > > > On Fri, Sep 25, 2020 at 12:59:57AM +0800, Xu Yilun wrote:
-> > > > > > Now the DFL device drivers could be made as independent modules and put
-> > > > > > in different subsystems according to their functionalities. So the name
-> > > > > > should be descriptive and unique in the whole kernel.
-> > > > > > 
-> > > > > > The patch changes the naming of dfl bus related structures, functions,
-> > > > > > APIs and documentations.
-> > > > > > 
-> > > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > > > > ---
-> > > > > >  Documentation/ABI/testing/sysfs-bus-dfl      |  15 --
-> > > > > >  Documentation/ABI/testing/sysfs-bus-fpga-dfl |  15 ++
-> > > > > >  MAINTAINERS                                  |   2 +-
-> > > > > >  drivers/fpga/dfl.c                           | 254 ++++++++++++++-------------
-> > > > > >  drivers/fpga/dfl.h                           |  77 ++++----
-> > > > > >  5 files changed, 184 insertions(+), 179 deletions(-)
-> > > > > >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-fpga-dfl
-> > > > > > 
-> > > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > > deleted file mode 100644
-> > > > > > index 23543be..0000000
-> > > > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
-> > > > > > +++ /dev/null
-> > > > > > @@ -1,15 +0,0 @@
-> > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/type
-> > > > > > -Date:		Aug 2020
-> > > > > > -KernelVersion:	5.10
-> > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > > > > -Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
-> > > > > > -		supports 2 FIU types, 0 for FME, 1 for PORT.
-> > > > > > -		Format: 0x%x
-> > > > > > -
-> > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
-> > > > > > -Date:		Aug 2020
-> > > > > > -KernelVersion:	5.10
-> > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > > > > -Description:	Read-only. It returns feature identifier local to its DFL FIU
-> > > > > > -		type.
-> > > > > > -		Format: 0x%x
-> > > > > 
-> > > > > You're changing userland facing ABI. I think that's something to avoid,
-> > > > > please check with Greg on the rules since this hasn't been in a release yet.
-> > > > > 
-> > > > 
-> > > > I'm going to change the name of bus stuff for other subsystems, to be
-> > > > aligned, I also consider change the bus_type.name and dfl dev_name. But
-> > > > it will cause the changing of user ABIs. No user case for these user ABI
-> > > > now cause they are just queued, is it good I change them?
-> > > 
-> > > Why change the user name here?  No need for that, right?  Unless you
-> > > really want to, and think that no one will notice.  If so, fine, change
-> > > them :)
-> > 
-> > Let's leave it as is -- An FPGA is one possible implementation and as for
-> > other buses, you wouldn't call it fpga-usb or usb-fpga just because the
-> > USB bus is implemented in an FPGA if it behaves like a normal USB bus.
-> > Having an ASIC based DFL bus show up under dfl-fpga / fpga-dfl in sysfs
-> > would be super confusing.
-> > 
-> > > > It is mentioned that although Device Feature List is introduced in FPGA,
-> > > > but it doesn't limit the usage in FPGA only. It's just a method to
-> > > > discover features from a device, for sure it can be extended and used
-> > > > in other devices too. So it can be bigger namespace than FPGA. Like in
-> > > > our existing code, we picked dfl_fpga (DFL based FPGA) for uapi (ioctl)
-> > > > and internal functions. This is suggested by Alan (The previous FPGA
-> > > > maintainer). It's possible to have "DFL based XXX" in the future, even
-> > > > currently only FPGA uses DFL. This is the reason we thought just "dfl"
-> > > > in the whole kernel space is OK.
-> > > > So, is there a chance we keep the "dfl" naming in the whole kernel?
-> > > 
-> > > No one knows what "DFL" is, and odds are, if a different subsystem wants
-> > > to use it, they will have their own variant, right?
 
-DFL is a method to discover devices. If a different subsystem (e.g. ASIC based
-DFL bus) want to use DFL and follows the DFL spec, they could just use the DFL
-stuff for enumeration, no need to have new variants.
-
-> > > 
-> > > And why didn't you all use device tree?  How did this sneak in past
-> > > everyone?
-> > 
-> > DFL is a pretty efficient implementation in terms of resource
-> > utilization on the FPGA end (a couple of registers / memories) vs
-> > several kilobytes of memory for a device-tree blob.
-> > 
-> > The hardware using DFL to describe its internal structure exists in the
-> > form of deployed accelerator cards and telling all its users to go and
-> > change their hardware design would be feasible -- If you think about an
-> > FPGA as a (albeit reconfigurable) ASIC you wouldn't go and tell people
-> > to redesign their ASIC to use Device-Tree? :)
-> > 
-> > I'm not sure where the 'sneaking in' anything comes from. It's been
-> > reviewed on the list (and by yourself back then). If you feel any of
-> > this wasn't kosher, let's talk about it, to make sure it doesn't happen
-> > again.
+Le 21/09/2020 à 13:26, Will Deacon a écrit :
+> On Fri, Aug 28, 2020 at 12:14:28PM +1000, Michael Ellerman wrote:
+>> Dmitry Safonov <0x7f454c46@gmail.com> writes:
+>>> On Wed, 26 Aug 2020 at 15:39, Michael Ellerman <mpe@ellerman.id.au> wrote:
+>>>> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+>>>> We added a test for vdso unmap recently because it happened to trigger a
+>>>> KAUP failure, and someone actually hit it & reported it.
+>>>
+>>> You right, CRIU cares much more about moving vDSO.
+>>> It's done for each restoree and as on most setups vDSO is premapped and
+>>> used by the application - it's actively tested.
+>>> Speaking about vDSO unmap - that's concerning only for heterogeneous C/R,
+>>> i.e when an application is migrated from a system that uses vDSO to the one
+>>> which doesn't - it's much rare scenario.
+>>> (for arm it's !CONFIG_VDSO, for x86 it's `vdso=0` boot parameter)
+>>
+>> Ah OK that explains it.
+>>
+>> The case we hit of VDSO unmapping was some strange "library OS" thing
+>> which had explicitly unmapped the VDSO, so also very rare.
+>>
+>>> Looking at the code, it seems quite easy to provide/maintain .close() for
+>>> vm_special_mapping. A bit harder to add a test from CRIU side
+>>> (as glibc won't know on restore that it can't use vdso anymore),
+>>> but totally not impossible.
+>>>
+>>>> Running that test on arm64 segfaults:
+>>>>
+>>>>    # ./sigreturn_vdso
+>>>>    VDSO is at 0xffff8191f000-0xffff8191ffff (4096 bytes)
+>>>>    Signal delivered OK with VDSO mapped
+>>>>    VDSO moved to 0xffff8191a000-0xffff8191afff (4096 bytes)
+>>>>    Signal delivered OK with VDSO moved
+>>>>    Unmapped VDSO
+>>>>    Remapped the stack executable
+>>>>    [   48.556191] potentially unexpected fatal signal 11.
+>>>>    [   48.556752] CPU: 0 PID: 140 Comm: sigreturn_vdso Not tainted 5.9.0-rc2-00057-g2ac69819ba9e #190
+>>>>    [   48.556990] Hardware name: linux,dummy-virt (DT)
+>>>>    [   48.557336] pstate: 60001000 (nZCv daif -PAN -UAO BTYPE=--)
+>>>>    [   48.557475] pc : 0000ffff8191a7bc
+>>>>    [   48.557603] lr : 0000ffff8191a7bc
+>>>>    [   48.557697] sp : 0000ffffc13c9e90
+>>>>    [   48.557873] x29: 0000ffffc13cb0e0 x28: 0000000000000000
+>>>>    [   48.558201] x27: 0000000000000000 x26: 0000000000000000
+>>>>    [   48.558337] x25: 0000000000000000 x24: 0000000000000000
+>>>>    [   48.558754] x23: 0000000000000000 x22: 0000000000000000
+>>>>    [   48.558893] x21: 00000000004009b0 x20: 0000000000000000
+>>>>    [   48.559046] x19: 0000000000400ff0 x18: 0000000000000000
+>>>>    [   48.559180] x17: 0000ffff817da300 x16: 0000000000412010
+>>>>    [   48.559312] x15: 0000000000000000 x14: 000000000000001c
+>>>>    [   48.559443] x13: 656c626174756365 x12: 7865206b63617473
+>>>>    [   48.559625] x11: 0000000000000003 x10: 0101010101010101
+>>>>    [   48.559828] x9 : 0000ffff818afda8 x8 : 0000000000000081
+>>>>    [   48.559973] x7 : 6174732065687420 x6 : 64657070616d6552
+>>>>    [   48.560115] x5 : 000000000e0388bd x4 : 000000000040135d
+>>>>    [   48.560270] x3 : 0000000000000000 x2 : 0000000000000001
+>>>>    [   48.560412] x1 : 0000000000000003 x0 : 00000000004120b8
+>>>>    Segmentation fault
+>>>>    #
+>>>>
+>>>> So I think we need to keep the unmap hook. Maybe it should be handled by
+>>>> the special_mapping stuff generically.
+>>>
+>>> I'll cook a patch for vm_special_mapping if you don't mind :-)
+>>
+>> That would be great, thanks!
 > 
-> I can't remember reviewing it, sorry, too many patches, I probably was
-> only worrying about functionality issues, not what the code actually did
-> :)
+> I lost track of this one. Is there a patch kicking around to resolve this,
+> or is the segfault expected behaviour?
 > 
-> So it's fine, just a surprise to me, no big deal.
 
-I'm glad that we made it clear. And the bus name & user APIs cound be
-kept as "dfl". So I assume the name "dfl" is OK to be used and could
-be recognized by people out of FPGA domain, is it?
+IIUC dmitry said he will cook a patch. I have not seen any patch yet.
 
-If so, I still want to keep the name "dfl_device_id" in mod_devicetable.h
-as well. We want to keep the device id name of the bus aligned with the
-bus name. And it would be confusing as well if a driver for ASIC based
-DFL device uses the "dfl_fpga_device_id" structure.
+AFAIKS, among the architectures having VDSO sigreturn trampolines, only SH, X86 and POWERPC provide 
+alternative trampoline on stack when VDSO is not there.
 
-How do you think?
+All other architectures just having a VDSO don't expect VDSO to not be mapped.
 
-Thanks,
-Yilun
+As far as nowadays stacks are mapped non-executable, getting a segfaut is expected behaviour. 
+However, I think we should really make it cleaner. Today it segfaults because it is still pointing 
+to the VDSO trampoline that has been unmapped. But should the user map some other code at the same 
+address, we'll run in the weed on signal return instead of segfaulting.
 
-> 
-> thanks,
-> 
-> greg k-h
+So VDSO unmapping should really be properly managed, the reference should be properly cleared in 
+order to segfault in a controllable manner.
+
+Only powerpc has a hook to properly clear the VDSO pointer when VDSO is unmapped.
+
+Christophe
