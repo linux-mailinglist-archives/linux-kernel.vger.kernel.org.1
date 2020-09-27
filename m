@@ -2,198 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2994927A28F
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A460A27A295
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgI0TZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33650 "EHLO
+        id S1726328AbgI0T3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:29:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgI0TZ0 (ORCPT
+        with ESMTP id S1726239AbgI0T3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:25:26 -0400
+        Sun, 27 Sep 2020 15:29:19 -0400
 Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D803C0613CE;
-        Sun, 27 Sep 2020 12:25:26 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id k15so9481618wrn.10;
-        Sun, 27 Sep 2020 12:25:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9659C0613CE;
+        Sun, 27 Sep 2020 12:29:18 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id z1so9550838wrt.3;
+        Sun, 27 Sep 2020 12:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Fj+MqTYC2iAIS+M4K2lQDTVvuS3lB9CWfLhIHCjPtgo=;
-        b=Y9sVAaoeGa0WsUiyIrpAozyW1HjT50dHQRSgxJ9iEx2LORKlf/MCPTGO5gHwkA9+o2
-         L0Bt3H8F8wCAxqHKLMzeHoOIAnxr/Ka4ueyWwDBS8feKPbG1+/hLXVmURoK3yV5d4rYb
-         AvKTn+9YJbAXNTUzr/bYNykUXeZmpmkXUBPR1Vah7jOLQACS87+169Ow2OeJRyUP0+iE
-         pIYxMbLWWYhkxBUq5xzInjxJh00fcEKa6BwqwAO+qys5hXPx9hAju1behnUWvWQM4MU6
-         g/n/+gkdtQrKvKP09mXC5M3Y4O2C+pwgkJ4oZfHJkQQQybrdpsHBG6Qy35U75104xi6s
-         DvLA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GAAtSAinEwDD4No76XzUrrz89y+X5YI3Fkp3Qs1EF6A=;
+        b=hbvgMZ9dkpTeaVc5x0SjPW7TzrNggvlPmhgOnG5tn1P+we5d6QPlFc+j3/1VysZ9EQ
+         itQVPlgShHauuDhLCa4ba6QnClEIqkUdxuR9P9j0aTPkyR7BCqKbb6GqjL140WPeDQG8
+         JtPAJBxtLNHk+LJTWELGvpHddzfpXVy4gvDa9+WY6GqeC1DIyJVUonyPYE/Hb45jonvl
+         moMG66DTEghDqgNB+Zp+kxWjaJM/tSURPmU00oWqXm3AgwJ+UeVQDjEUuIwPVz5N+EmE
+         JOqq56iTaGn3tEVUMpZuF2s7FXut0HXOuyADmAawW3zIdFmYPJvLVbDrKduLjVwi7xfU
+         v40g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Fj+MqTYC2iAIS+M4K2lQDTVvuS3lB9CWfLhIHCjPtgo=;
-        b=PB/3TxWTnRKaI3pfeGpEa3IuzagCcYlUqkMciKOTFrxEZf2GdjulSHxcqDbwBHPdQt
-         HrL0q0naLUjNBczhoV9DSyK+NVzcmT4PPsneHgPypd4dUY2jGX2yOl3d5MZPEZKE/wk6
-         yrDggJ2ktbOBPjF5BbHz3Wdib7S7sJQz9FGXvCci0yP3StReoqI9C4D1rq42FIV9oq7s
-         gMuduNuP4KFayvlEHzLK8xd1Dfy9XMlla6sN2yaqlZORemdVvXrI6qDRGl+GGtyj1iDc
-         ZVQ753bl0JLMQv8OoxsP/eRSNb7mfZ2usS1uj/YeKnUYiosPn0aF2SX13T/mizzmBP55
-         NiQA==
-X-Gm-Message-State: AOAM531MIMJEO9b/6QYiJl6AI0cLOH7YE1hBAQ4ROuoYDuwzyRXJoVHl
-        x+cFZvYCaXEB3bFeTLi0vPY=
-X-Google-Smtp-Source: ABdhPJztFmpDvpI3aRkkIdSznkGAV72myWBuX/0vmVtKZgeNuymlmR/GrI/gMu+xnRoky9GFyVMiSQ==
-X-Received: by 2002:a5d:60cc:: with SMTP id x12mr14995784wrt.84.1601234724930;
-        Sun, 27 Sep 2020 12:25:24 -0700 (PDT)
-Received: from Ansuel-XPS.localdomain (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
-        by smtp.googlemail.com with ESMTPSA id w21sm6398106wmk.34.2020.09.27.12.25.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GAAtSAinEwDD4No76XzUrrz89y+X5YI3Fkp3Qs1EF6A=;
+        b=n+sQ3wbnjGLy9kgTYaLuja7c2a83Kq8U4+H7wuZ0vqCP1KJJZMCzxRt0c3EwFBnC+Z
+         pkYd4SkWYDUB9GEA3u+f6JQu9WePpMham9UgDVKBX/P9WeIU5UY8pH8mBkOo0Oess2EY
+         v9HYsm7yHuT3M0rXPgSwkUg9WLkNNvR1BMc0MjgAaPYoYA0PJC6Tj9UoOuCQxLsc1xxe
+         9o/pNIrpdzhOD6ieAEjoOENeP/sqwOxP/lexa0emXYZ16y8IB8fq/CTJ6G1KE/GPZH5R
+         LFHYAv/q+eE1a8Zz3Pqy+/Lc5Kfjzzg0M8PhmGmetqtSFYSW8T5u/YqAvAGPre/pWGP5
+         nFpA==
+X-Gm-Message-State: AOAM530FsHf6oBoEGLsnkBW9FKrlik6rPU5PnUboAE7ZSFumblvAWaWU
+        54jLgZMWIzg6JWcByABqy20=
+X-Google-Smtp-Source: ABdhPJy0jlKkB+a7iXNGAIriN8xg5n6aV2MPg6E/rLpY9BkzWV0JjpJGSE0LpFuu38MPFaH6nUPSyQ==
+X-Received: by 2002:a5d:5512:: with SMTP id b18mr12159410wrv.229.1601234957454;
+        Sun, 27 Sep 2020 12:29:17 -0700 (PDT)
+Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
+        by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 12:25:24 -0700 (PDT)
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     "0001-ath10k-Try-to-get-mac-address-from-dts . patchKalle Valo" 
-        <kvalo@codeaurora.org>
-Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ath10k: Try to download pre-cal using nvmem api
-Date:   Sun, 27 Sep 2020 21:25:14 +0200
-Message-Id: <20200927192515.86-2-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200927192515.86-1-ansuelsmth@gmail.com>
-References: <20200927192515.86-1-ansuelsmth@gmail.com>
+        Sun, 27 Sep 2020 12:29:16 -0700 (PDT)
+From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v5 00/20] Add Allwinner H3/H5/H6/A64 HDMI audio
+Date:   Sun, 27 Sep 2020 21:28:52 +0200
+Message-Id: <20200927192912.46323-1-peron.clem@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most of routers that have the ath10k wifi chip integrated in the Soc
-have the pre-cal data stored in a dedicated nvmem partition.
-Introduce a new function to directly extract and use it if a nvmem with
-the name 'pre-cal' is defined and available.
-Pre-cal file have still priority to everything else.
+Hi,
 
-Tested-on: QCA9984 hw1.0 PCI 10.4
+This is exactly the same as v4 but with more details in some commit log
+and also device-tree soundcard and DAI node have been merged.
 
-Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 52 +++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h |  3 ++
- 2 files changed, 53 insertions(+), 2 deletions(-)
+Regards,
+Clement
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 9ed7b9883..dd509a4a8 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -15,6 +15,7 @@
- #include <linux/ctype.h>
- #include <linux/pm_qos.h>
- #include <asm/byteorder.h>
-+#include <linux/nvmem-consumer.h>
- 
- #include "core.h"
- #include "mac.h"
-@@ -920,7 +921,8 @@ static int ath10k_core_get_board_id_from_otp(struct ath10k *ar)
- 	}
- 
- 	if (ar->cal_mode == ATH10K_PRE_CAL_MODE_DT ||
--	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE)
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE ||
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_NVMEM)
- 		bmi_board_id_param = BMI_PARAM_GET_FLASH_BOARD_ID;
- 	else
- 		bmi_board_id_param = BMI_PARAM_GET_EEPROM_BOARD_ID;
-@@ -1682,7 +1684,8 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
- 
- 	/* As of now pre-cal is valid for 10_4 variants */
- 	if (ar->cal_mode == ATH10K_PRE_CAL_MODE_DT ||
--	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE)
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_FILE ||
-+	    ar->cal_mode == ATH10K_PRE_CAL_MODE_NVMEM)
- 		bmi_otp_exe_param = BMI_PARAM_FLASH_SECTION_ALL;
- 
- 	ret = ath10k_bmi_execute(ar, address, bmi_otp_exe_param, &result);
-@@ -1703,6 +1706,41 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
- 	return 0;
- }
- 
-+static int ath10k_download_cal_nvmem(struct ath10k *ar)
-+{
-+	int ret;
-+	size_t len;
-+	const void *file;
-+	struct nvmem_cell *cell;
-+	struct platform_device *pdev = of_find_device_by_node(ar->dev->of_node);
-+
-+	if (!pdev)
-+		return -ENODEV;
-+
-+	cell = nvmem_cell_get(ar->dev, "pre-cal");
-+	if (IS_ERR(cell))
-+		return PTR_ERR(cell);
-+
-+	file = nvmem_cell_read(cell, &len);
-+	nvmem_cell_put(cell);
-+
-+	if (IS_ERR(file))
-+		return PTR_ERR(file);
-+
-+	ret = ath10k_download_board_data(ar, file, len);
-+	if (ret) {
-+		ath10k_err(ar, "failed to download cal_file data: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cal file downloaded\n");
-+
-+	return 0;
-+err:
-+	kfree(file);
-+	return ret;
-+}
-+
- static int ath10k_download_cal_file(struct ath10k *ar,
- 				    const struct firmware *file)
- {
-@@ -2049,6 +2087,16 @@ static int ath10k_core_pre_cal_download(struct ath10k *ar)
- 		goto success;
- 	}
- 
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT,
-+		   "boot did not find a pre calibration file, try NVMEM next: %d\n",
-+		   ret);
-+
-+	ret = ath10k_download_cal_nvmem(ar);
-+	if (ret == 0) {
-+		ar->cal_mode = ATH10K_PRE_CAL_MODE_NVMEM;
-+		goto success;
-+	}
-+
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "boot did not find a pre calibration file, try DT next: %d\n",
- 		   ret);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 4cf5bd489..186aba73a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -864,6 +864,7 @@ enum ath10k_cal_mode {
- 	ATH10K_CAL_MODE_OTP,
- 	ATH10K_CAL_MODE_DT,
- 	ATH10K_PRE_CAL_MODE_FILE,
-+	ATH10K_PRE_CAL_MODE_NVMEM,
- 	ATH10K_PRE_CAL_MODE_DT,
- 	ATH10K_CAL_MODE_EEPROM,
- };
-@@ -886,6 +887,8 @@ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
- 		return "dt";
- 	case ATH10K_PRE_CAL_MODE_FILE:
- 		return "pre-cal-file";
-+	case ATH10K_PRE_CAL_MODE_NVMEM:
-+		return "pre-cal-nvmem";
- 	case ATH10K_PRE_CAL_MODE_DT:
- 		return "pre-cal-dt";
- 	case ATH10K_CAL_MODE_EEPROM:
+Change since v4;
+- add more comment on get_wss() and set_channel_cfg() patch
+- merge soundcard and DAI HDMI patches
+
+Change since v3:
+- add Samuel Holland patch to reconfigure FIFO_TX_REG when suspend is enabled
+- readd inversion to H6 LRCK sun50i_h6_i2s_set_soc_fmt()
+- Fix get_wss() for sun4i
+- Add a commit to fix checkpatch warning
+
+Change since v2:
+- rebase on next-20200918
+- drop revert LRCK polarity patch
+- readd simple-audio-card,frame-inversion in dts
+- Add patch for changing set_chan_cfg params
+
+Change since v1:
+- rebase on next-20200828
+- add revert LRCK polarity
+- remove all simple-audio-card,frame-inversion in dts
+- add Ondrej patches for Orange Pi board
+- Add arm64 defconfig patch
+
+Clément Péron (6):
+  ASoC: sun4i-i2s: Change set_chan_cfg() params
+  ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
+  ASoC: sun4i-i2s: Fix sun8i volatile regs
+  arm64: dts: allwinner: h6: Enable HDMI sound for Beelink GS1
+  arm64: defconfig: Enable Allwinner i2s driver
+  ASoC: sun4i-i2s: fix coding-style for callback definition
+
+Jernej Skrabec (3):
+  ASoC: sun4i-i2s: Add support for H6 I2S
+  dt-bindings: ASoC: sun4i-i2s: Add H6 compatible
+  arm64: dts: allwinner: h6: Add DAI node and soundcard for HDMI
+
+Marcus Cooper (7):
+  ASoC: sun4i-i2s: Set sign extend sample
+  ASoc: sun4i-i2s: Add 20 and 24 bit support
+  arm: dts: sunxi: h3/h5: Add DAI node and soundcard for HDMI
+  arm64: dts: allwinner: a64: Add DAI node and soundcard for HDMI
+  arm: sun8i: h3: Add HDMI audio to Orange Pi 2
+  arm: sun8i: h3: Add HDMI audio to Beelink X2
+  arm64: dts: allwinner: a64: Add HDMI audio to Pine64
+
+Ondrej Jirman (3):
+  arm64: dts: allwinner: Enable HDMI audio on Orange Pi PC 2
+  ARM: dts: sun8i-h3: Enable HDMI audio on Orange Pi PC/One
+  arm64: dts: sun50i-h6-orangepi-3: Enable HDMI audio
+
+Samuel Holland (1):
+  ASoC: sun4i-i2s: Fix setting of FIFO modes
+
+ .../sound/allwinner,sun4i-a10-i2s.yaml        |   2 +
+ arch/arm/boot/dts/sun8i-h3-beelink-x2.dts     |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-2.dts     |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-one.dts   |   8 +
+ arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts    |   8 +
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi            |  33 ++
+ .../boot/dts/allwinner/sun50i-a64-pine64.dts  |   8 +
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  34 ++
+ .../dts/allwinner/sun50i-h5-orangepi-pc2.dts  |   8 +
+ .../dts/allwinner/sun50i-h6-beelink-gs1.dts   |   8 +
+ .../dts/allwinner/sun50i-h6-orangepi-3.dts    |   8 +
+ arch/arm64/boot/dts/allwinner/sun50i-h6.dtsi  |  33 ++
+ arch/arm64/configs/defconfig                  |   1 +
+ sound/soc/sunxi/sun4i-i2s.c                   | 374 +++++++++++++++---
+ 14 files changed, 487 insertions(+), 54 deletions(-)
+
 -- 
-2.27.0
+2.25.1
 
