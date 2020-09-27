@@ -2,118 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0D1279F81
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 10:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87531279F88
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 10:13:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730462AbgI0IKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 04:10:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727263AbgI0IKI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 04:10:08 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E81C0C0613CE;
-        Sun, 27 Sep 2020 01:10:07 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id r7so4103965ejs.11;
-        Sun, 27 Sep 2020 01:10:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=reM919V5YhA3/SpytTV6JS37CjmVptV+Uj1ygsM+7qE=;
-        b=gYYFjDla0MAkDoyZMn+Q/Uy5MK2K6Re7g3PTt8p9tIbXPjVzVLZN6600uI/zN/mdlB
-         NkCo8ZbinXyTS2FpqSEBGPj6CFMnK8VDR1aGrzVxPMKKYRzTQtKPNAgYI5ZpmKCxxjvw
-         tBY6n98b3NYZbPQ/RtihEghk4D5o1n1Y70IKAqZ668KYdpxnlOyZWo2UDcSL+gqRNe5s
-         Ul/K8Nwl4iywWVGhbE39tE6U8e0dZgKDoSeXQh/1FdltPb/uKlRv8d4CAVEP8+znFwsp
-         53cLKjD2LGI8Ar2adLjRv/Sz3XewVM7IjW8IjKx5/Rj4l51tO1Nwk5I8+Y+Y0MJw1Yu0
-         Gj4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=reM919V5YhA3/SpytTV6JS37CjmVptV+Uj1ygsM+7qE=;
-        b=IbLAhGvUmteh2/L1ZNMhXGZlLHdxbW8YCysKvtwI8Tc3AgRxrujLCDzcxSCOk6wg2C
-         vZfdybFhu0ekf0Imc01lFdZZZFUk3SHmllDd4qC4B14RNhvD0XaSdywXI3V8VXqFGiwK
-         pb0k7k5/cGrmjDp/C7XXYfCj1RWMa4akk5rdeY0w8N25CsvcdMSWs2G3HA2d70j3+B1d
-         QJh3Ay2OepQ5z/VTS5sSu3kQootL8VwzArHnx8uo1Ot6UxiBx5z9mENOvELBP03gTHGv
-         QuXgD3UC3jxW/GVGVF5xoMj1+O7cpYVUkU/7HLKXDDOJSmRWep6O0YRLIrUDwr3tHBly
-         /23g==
-X-Gm-Message-State: AOAM531BtqkRcNCRJI/3Td2b5l2NBKIo3x9Pbvodq3CWHdbN/lVcDXEQ
-        I19G8uc4jJXmRoKWWpxoTxbVsGN+QolgmCkFmHU=
-X-Google-Smtp-Source: ABdhPJw5SWDLYXdS4VprIHLH8KkhCFfZBsW2pZFxeCyX+bIWlrn0NYttj4ToSAVDccWb8ETVrw9CXGr8U1i4W87ps8c=
-X-Received: by 2002:a17:906:c447:: with SMTP id ck7mr10263244ejb.358.1601194206501;
- Sun, 27 Sep 2020 01:10:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200924074715.GT9675@piout.net> <20200924105256.18162-1-u.kleine-koenig@pengutronix.de>
- <20200924105256.18162-3-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20200924105256.18162-3-u.kleine-koenig@pengutronix.de>
-From:   Bruno Thomsen <bruno.thomsen@gmail.com>
-Date:   Sun, 27 Sep 2020 10:09:50 +0200
-Message-ID: <CAH+2xPAVvMpTgT3W=0AsKy=9jkS8qd6eB65Qebw51YKRQshaGQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] [RFC] rtc: pcf2127: only use watchdog when explicitly available
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Qiang Zhao <qiang.zhao@nxp.com>, linux-rtc@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-watchdog@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730453AbgI0INf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 04:13:35 -0400
+Received: from mail-vi1eur05on2048.outbound.protection.outlook.com ([40.107.21.48]:11985
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726311AbgI0INf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 04:13:35 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jQW+MTemdwEGGO3s+K+lpQjHgdDy9BiQPix0CFm673J+o6lldJlTBtcWW9OkYBEr+wlRuvmd84OTyGvO6lU9Mnd8W9U19cRcQ1IP7MizfVVI0UuRZeu2yaHfgw1FB/A8iDmA28sLP/a2+ofbEdU0+wYHb3fKjNxv/A7i2tIf3mkQbLlzw7ANfB+3NmtSOix9jBRKEO2RPA4kGeV6GqECGwODLDUw/VcO4vbTxH3riMv1UDvi8ES2u3HAhiU34LY9IvEetxNcqZzxGxVY8blw9/WAHyShlDpkbq6EThx0nEn2f4+DRPjZH1/gKCxYFcKwmizoJe3O+gTlnaMqXyDm7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eQsBTwpcTpKmtV0t0RMRZgYhgZ8Jema/bVLlwRvEalk=;
+ b=jV12DMdD1pczC/T4CahNZbxuM9YxlTPKSG/++kZKRIJzjxs6BoblVfN/Myw8t/IuSSaKDqsSTE8w8Au8bNvUh8M6oVUlEWEEv89/hNMAzkLRE0vUVqZzGen0y4XykDdXVTfyUHvZawVMnOpauMidjSvzJFI5z1Y+LAU13eQDc/YrsD1mgprBk4yR3+rHC/EBKuvC+lBOfZQgCTLWzdruCAhN7Uz7/0UFXE/Mc2GNDu2zPatMMl1KMusLIBGDJ4MrmMD+IrBc6KvKOmxZLfDSUuJEClOuF6Psj3WeaEzw9PKwPB3gwcRrkzEbOuuKb5dtC2tvcEbhnIbhAlgXIVe22g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eQsBTwpcTpKmtV0t0RMRZgYhgZ8Jema/bVLlwRvEalk=;
+ b=ArCnWWd3FC88Ey05BJAZqhsIIvdmJbD+/5Z+aJWqTDch3SKd7JSl449oK9TtxykeYs5XcstS6wRNjun7pya/Mq6bdfKKv5uP0TwVhTwYyUVx9NtCChFaY+YnVx7PM19GsJCyJlpxWalMiCb92kv7bk5aIUyPZRHCfWTsLdTXWBo=
+Received: from AM7PR04MB6885.eurprd04.prod.outlook.com (2603:10a6:20b:10d::24)
+ by AM5PR04MB3075.eurprd04.prod.outlook.com (2603:10a6:206:b::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.23; Sun, 27 Sep
+ 2020 08:13:31 +0000
+Received: from AM7PR04MB6885.eurprd04.prod.outlook.com
+ ([fe80::f431:1df6:f18b:ad99]) by AM7PR04MB6885.eurprd04.prod.outlook.com
+ ([fe80::f431:1df6:f18b:ad99%6]) with mapi id 15.20.3412.026; Sun, 27 Sep 2020
+ 08:13:30 +0000
+From:   "Y.b. Lu" <yangbo.lu@nxp.com>
+To:     Randy Dunlap <rdunlap@infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Ioana Ciocoi Radulescu <ruxandra.radulescu@nxp.com>
+Subject: RE: linux-next: Tree for Sep 21
+ (drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c)
+Thread-Topic: linux-next: Tree for Sep 21
+ (drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c)
+Thread-Index: AQHWkC3MBN+BZYzHxEqOSGzA5HTXSKl8K4AQ
+Date:   Sun, 27 Sep 2020 08:13:30 +0000
+Message-ID: <AM7PR04MB6885B840191C5BA936B6D085F8340@AM7PR04MB6885.eurprd04.prod.outlook.com>
+References: <20200921192429.4c7aca86@canb.auug.org.au>
+ <5c9dbb6f-a951-aadc-27c7-6d67aade4876@infradead.org>
+In-Reply-To: <5c9dbb6f-a951-aadc-27c7-6d67aade4876@infradead.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 483f219a-330e-4ebf-2326-08d862bd388b
+x-ms-traffictypediagnostic: AM5PR04MB3075:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM5PR04MB3075669E16BB804CA081FF7BF8340@AM5PR04MB3075.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:949;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: D9ygNTdfMRF4z4be118IwlajZIr1ysIIeBTLBMu/JEklEZIkaH0Og+4kCE0hyBb+eLckXvvpeiIcZ2yZO+766Eshnz+DLYL4GqJZiEEXw1olbUoOh6dly7cvgLwcDEiORsFGTflAICV1GEoRvpLdtgL7uHxqGFOJFLxOzjNtmPrsxgeODCQAcAVMcItuhNkI3jDZDBnYPST12IBIKHha5w6I8z7wJeYyEBMejhd9/j6pdtAh5G9gUSD94lKGKbg/zY0MBlRprN4a+t9BJZqIzgaK0nIwopG0Wi/yb2a5Z3IFOupXpjnJx1VB2jbC+DtOhk4KFytOdAeQvRGVKiDCOVkxWIJShKV4qEaazlaemMutEv1f8N23u6kL1UVQmjCKjF3OiX9Zx5vp1m18qFWczxfvFAwUS7QE9b68FcJSKPO46Z1ZydwMzyVePSILe+fbvXntZf+2pOC8sjCuI8TvaA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6885.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(396003)(346002)(366004)(376002)(7696005)(55016002)(86362001)(110136005)(54906003)(52536014)(33656002)(5660300002)(2906002)(8936002)(9686003)(71200400001)(478600001)(186003)(966005)(8676002)(83380400001)(6506007)(76116006)(53546011)(316002)(4326008)(26005)(66946007)(66446008)(64756008)(66556008)(66476007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: WjdJ501/363l6bVD1cLFamHQZErCDt5qVkzpl09dScUsYN9JV37hdLN7RFbzxeZ+zATc4Lfr5ZsKdz+1rSed54LvEhKKvXzfT7jr8+4k5YTcglM2WOrhcjVXH260wQPOoGFTfztVIoUO/uat5f8WGGdcuTcKBB71hYw1YhYZ6A80S4XxM+8dxlxq2JF+dwloKK7r/uebZrisnjjLsDB+s8/BW3q+eA7KGHmU0iJ3PhsNm3aDp77YICG/0LKd7ZU/3SQsbKX64WZeN78GYN52QeSstqZHMaRrXif/3wfaY7OJvNn7kXG7gwQECwjf6dAC4WrVHf2Q0GDA59d6b2EiLIK4Z+EzFVxCstcJGy3V0ErCOcDS2AGepSSvE6S0sIKp90WrdPr6dmsiyJV04wEK0JM+oJMNy4/dF3lT4gdlq1x4+tobdnUUwcENqEXtj9kVjqS2p3AOSkaBQwrOtBfS4N48ZCWHgRhybzlXm6oRbfPPEzskzvK3eq3OCBsRYXqp0aDdkUsZi/TUZlsEuj0Bttn0JDOpfs8f69sQ0BvIH1VYDfa1OxVOba2uPYc6zJ1gjGW59VmChwXpRmt+GwzVOCpoWOyGSvfrrXaf/pfb/uY1ovv9fBa26WT2FU9xuYAtv+FT93hEIpX+9FMpBZz+iQ==
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6885.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 483f219a-330e-4ebf-2326-08d862bd388b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Sep 2020 08:13:30.8664
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8le136XE/o3ofugMIy2Oc9x0lVWpO06lHI1K0+VkTRHZVZww3T8eTbJ1eBnPD7dFHQ31/PlwsjKtBB1lvKhPHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR04MB3075
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Den tor. 24. sep. 2020 kl. 12.53 skrev Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de>:
->
-> Most boards using the pcf2127 chip (in my bubble) don't make use of the
-> watchdog functionality and the respective output is not connected. The
-> effect on such a board is that there is a watchdog device provided that
-> doesn't work.
->
-> So only register the watchdog if the device tree has a "has-watchdog"
-> property.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> ---
->  drivers/rtc/rtc-pcf2127.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-> index 5b1f1949b5e5..8bd89d641578 100644
-> --- a/drivers/rtc/rtc-pcf2127.c
-> +++ b/drivers/rtc/rtc-pcf2127.c
-> @@ -340,7 +340,8 @@ static int pcf2127_watchdog_init(struct device *dev, =
-struct pcf2127 *pcf2127)
->         u32 wdd_timeout;
->         int ret;
->
-> -       if (!IS_ENABLED(CONFIG_WATCHDOG))
-> +       if (!IS_ENABLED(CONFIG_WATCHDOG) ||
-> +           !device_property_read_bool(dev, "has-watchdog"))
->                 return 0;
+Hi,
 
-I don't think the compiler can remove the function if
-CONFIG_WATCHDOG is disabled due to the device tree
-value check. Maybe it can if split into 2 conditions.
+> -----Original Message-----
+> From: Randy Dunlap <rdunlap@infradead.org>
+> Sent: Monday, September 21, 2020 11:42 PM
+> To: Stephen Rothwell <sfr@canb.auug.org.au>; Linux Next Mailing List
+> <linux-next@vger.kernel.org>
+> Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>;
+> netdev@vger.kernel.org; Y.b. Lu <yangbo.lu@nxp.com>; Ioana Ciornei
+> <ioana.ciornei@nxp.com>; Ioana Ciocoi Radulescu
+> <ruxandra.radulescu@nxp.com>
+> Subject: Re: linux-next: Tree for Sep 21
+> (drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c)
+>=20
+> On 9/21/20 2:24 AM, Stephen Rothwell wrote:
+> > Hi all,
+> >
+> > Changes since 20200918:
+> >
+>=20
+> on i386:
+>=20
+> ../drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c: In function
+> 'dpaa2_eth_ptp_parse':
+> ../drivers/net/ethernet/freescale/dpaa2/dpaa2-eth.c:585:13: error: implic=
+it
+> declaration of function 'ptp_get_msgtype'; did you mean 'get_fs_type'?
+> [-Werror=3Dimplicit-function-declaration]
+>   *msgtype =3D ptp_get_msgtype(hdr, ptp_class);
+>              ^~~~~~~~~~~~~~~
+>              get_fs_type
 
-if (!IS_ENABLED(CONFIG_WATCHDOG))
-        return 0;
-if (!device_property_read_bool(dev, "has-watchdog"))
-        return 0;
+I think a stub function is missing in ptp_classify.h. I sent a fix-up patch=
+.
+https://patchwork.ozlabs.org/project/netdev/patch/20200927080150.8479-1-yan=
+gbo.lu@nxp.com/
+Thanks.
 
-/Bruno
-
->
->         pcf2127->wdd.parent =3D dev;
+>=20
+>=20
+> Full randconfig file is attached.
+>=20
+>=20
 > --
-> 2.28.0
->
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
