@@ -2,107 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29C6827A1D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 18:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8141227A1DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 18:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726348AbgI0QUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 12:20:35 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:10026 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726316AbgI0QUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 12:20:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601223634; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=h91UQOM88lPJBDW95umyjUkyCkjOi1eTerqEEL6q6i0=; b=ciHQYsCNv2h995VadvLeFrRGsyCSwkiW9W3kXTL1lC9RKr11ZSMjfFlhY39qH9xQ+6ff8x6O
- Yi3qHlmYH2UsFVC8aGVqmurj3INENR8zKBicVry1cgqn17rZVa3auNQKdIdAcofInnSDYSdr
- OdWiKVc/GQ7P/IP20cgqgnyt2MI=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 5f70bbd2a7eb63c698fb89dc (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 27 Sep 2020 16:20:34
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5E895C433A0; Sun, 27 Sep 2020 16:20:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9077FC433FE;
-        Sun, 27 Sep 2020 16:20:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9077FC433FE
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, denik@google.com,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCH 2/2] coresight: etm4x: Fix save and restore of TRCVMIDCCTLR1 register
-Date:   Sun, 27 Sep 2020 21:50:04 +0530
-Message-Id: <19e06f26c1e4b0bf48d3971e2f1fb1af27da159a.1601222348.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1601222348.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1601222348.git.saiprakash.ranjan@codeaurora.org>
+        id S1726325AbgI0Qfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 12:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726149AbgI0Qfb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 12:35:31 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4527C0613CE;
+        Sun, 27 Sep 2020 09:35:30 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 197so6160848pge.8;
+        Sun, 27 Sep 2020 09:35:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0C5Gjq9HDGphAUKTprSwLydq67owdjsJTm+aKkh5laY=;
+        b=KjaYB/5G2q2kbCuTFvEezBi7+X8RrHgnqaOl7utkH819j1wnF47zRahvsmttOVk4k+
+         PuqOqhWZBLffVp7cN0wDC8aj0EZCPtLzBc56N7B0V1ggr8637yuD0d3fz9eMwz3ijsGB
+         RkrVTGUNeScMSz0FbaZOY8PjCRcYnVvtTOOi1oNpAJd5fm5SmN5dQXmAHmzFYnEa8P8W
+         n53pxgi5XHRvrFR8IU1B6lQbUeC9ZrJpb+8oFx9F7ALq5p80sGCrpd/xvLpSK8il7NQ+
+         BSj0yfjhCCn6C4+fZkq2tCOlqutkjqD2h3PSw8N/Zy0JuOE0uaQnXEzbZnR23mB84Mzi
+         iK1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0C5Gjq9HDGphAUKTprSwLydq67owdjsJTm+aKkh5laY=;
+        b=H5J+Ja0+TXs9gseBcUzDqkin6DpPfgfndO3eY14NmGpYvMlwZt+FkGYWehG4pAUOIG
+         Kc2BaSlDY7bsFBh09jpKks6FaSprLeCymXU2ztcPesNrczM7g1rs23FDNMxgX8pGKQPr
+         vkIF4XI2BXkeIiY2a6JFyFS3Ol64lwxlLj+too3i0gSxhiNipAGTDYoGkN12vUlSJhXy
+         KUFm/8kChdWmqCK0n/iMRNpKzS0gyWhGoXNFaPTc/FWo3rhEnzO2kN9DeJDx1QW9t2A+
+         NwBQOO16AJiB9iqkXE6il51MXzwf1PZiahQXp7Y+pMN5OyttnOwoHw10YY0Lat5orPrr
+         kNtw==
+X-Gm-Message-State: AOAM531yYkvmlaaWQEvanIAkRIdzOpVsilHZXVr8OK2BoaI+Er6v77Sh
+        kDRrVtz6gS5ccXJ3D7WM6ts=
+X-Google-Smtp-Source: ABdhPJxi17BidG3zA7awFrVtAaRHMYW0KLI7H2kwkVNIrJNMAkLZF4LndDjyq4SfILAq4d4+5P7YTQ==
+X-Received: by 2002:a63:e94a:: with SMTP id q10mr6233305pgj.189.1601224530512;
+        Sun, 27 Sep 2020 09:35:30 -0700 (PDT)
+Received: from localhost.localdomain (cpe-70-95-82-187.san.res.rr.com. [70.95.82.187])
+        by smtp.gmail.com with ESMTPSA id u15sm4635313pjx.50.2020.09.27.09.35.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 09:35:29 -0700 (PDT)
+From:   Ryan Kosta <ryanpkosta@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     marvin24@gmx.de, p.zabel@pengutronix.de, ac100@lists.launchpad.net,
+        linux-tegra@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, Ryan Kosta <ryanpkosta@gmail.com>
+Subject: [PATCH v2] Staging: nvec: nvec: fix double next comment
+Date:   Sun, 27 Sep 2020 09:35:04 -0700
+Message-Id: <20200927163504.7546-1-ryanpkosta@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit f188b5e76aae ("coresight: etm4x: Save/restore state
-across CPU low power states"), mistakenly TRCVMIDCCTLR1 register
-value was saved in trcvmidcctlr0 state variable which is used to
-store TRCVMIDCCTLR0 register value in etm4x_cpu_save() and then
-same value is written back to both TRCVMIDCCTLR0 and TRCVMIDCCTLR1
-in etm4x_cpu_restore(). There is already a trcvmidcctlr1 state
-variable available for TRCVMIDCCTLR1, so use it.
+Changes since v1:
+ * Made commit message more clear
+ * Added description
+Note: previous patch named
+ "[PATCH] fix double next comment in drivers/staging/nvec/nvec.c"
+>8------------------------------------------------------8<
+Fixes a comment typo.
 
-Fixes: 8b44fdfef6a2 ("coresight: etm4x: Allow etm4x to be built as a module")
-Fixes: f188b5e76aae ("coresight: etm4x: Save/restore state across CPU low power states")
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Signed-off-by: Ryan Kosta <ryanpkosta@gmail.com>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/nvec/nvec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index de76d57850bc..abd706b216ac 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -1243,7 +1243,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	state->trccidcctlr1 = readl(drvdata->base + TRCCIDCCTLR1);
- 
- 	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR0);
--	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR1);
-+	state->trcvmidcctlr1 = readl(drvdata->base + TRCVMIDCCTLR1);
- 
- 	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
- 
-@@ -1353,7 +1353,7 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
- 	writel_relaxed(state->trccidcctlr1, drvdata->base + TRCCIDCCTLR1);
- 
- 	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR0);
--	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR1);
-+	writel_relaxed(state->trcvmidcctlr1, drvdata->base + TRCVMIDCCTLR1);
- 
- 	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
- 
+diff --git a/drivers/staging/nvec/nvec.c b/drivers/staging/nvec/nvec.c
+index 360ec040774..a80996b2f5c 100644
+--- a/drivers/staging/nvec/nvec.c
++++ b/drivers/staging/nvec/nvec.c
+@@ -289,7 +289,7 @@ EXPORT_SYMBOL(nvec_write_async);
+  * interrupt handlers.
+  *
+  * Returns: 0 on success, a negative error code on failure.
+- * The response message is returned in @msg. Shall be freed with
++ * The response message is returned in @msg. Shall be freed
+  * with nvec_msg_free() once no longer used.
+  *
+  */
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.20.1
 
