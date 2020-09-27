@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98364279E89
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 07:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC339279E8D
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 07:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730363AbgI0Fwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 01:52:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49778 "EHLO mail.kernel.org"
+        id S1730294AbgI0F5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 01:57:02 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:57278 "EHLO mail5.wrs.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727614AbgI0Fwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 01:52:30 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 530A623A03;
-        Sun, 27 Sep 2020 05:52:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601185950;
-        bh=kHKLO/+ZkO726T7hWNZVIANgTTKBLmXVn8k2Klhf0Zw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0QJbvrqkmJolxgy2wlwYrkXJSfOpp/og/5ZVx9+anRgZ17PT4bEX+h1bh+mkvDula
-         dsn2uBIaT4C0FjpS/jIlPXPMMy0yrcOuQaRoHVL4bFqyepdL5o4YOXDZFaRR9HcOUe
-         pt8mW37ZeCYOi1VSzPikgqk2N18RtZx7Ip+EBPg4=
-Date:   Sun, 27 Sep 2020 07:52:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org
-Subject: Re: [PATCH 6/6] USB: cdc-acm: blacklist ETAS ES58X device
-Message-ID: <20200927055226.GA701624@kroah.com>
-References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
- <20200926175810.278529-7-mailhol.vincent@wanadoo.fr>
- <20200927054520.GB699448@kroah.com>
+        id S1729125AbgI0F5C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 01:57:02 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id 08R5sfp4024676
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Sat, 26 Sep 2020 22:55:26 -0700
+Received: from pek-qzhang2-d1.wrs.com (128.224.162.183) by
+ ALA-HCA.corp.ad.wrs.com (147.11.189.40) with Microsoft SMTP Server id
+ 14.3.487.0; Sat, 26 Sep 2020 22:54:51 -0700
+From:   <qiang.zhang@windriver.com>
+To:     <tj@kernel.org>, <pmladek@suse.com>, <hdanton@sina.com>
+CC:     <akpm@linux-foundation.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] kthread_worker: Prevent queuing delayed work from timer_fn when it is being canceled
+Date:   Sun, 27 Sep 2020 13:54:49 +0800
+Message-ID: <20200927055449.21389-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927054520.GB699448@kroah.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 07:45:20AM +0200, Greg Kroah-Hartman wrote:
-> On Sun, Sep 27, 2020 at 02:57:56AM +0900, Vincent Mailhol wrote:
-> > The ES58X devices are incorrectly recognized as USB Modem (CDC ACM),
-> > preventing the etas-es58x module to load.
-> > 
-> > Thus, these have been added
-> > to the ignore list in drivers/usb/class/cdc-acm.c
-> > 
-> > Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-> > ---
-> >  drivers/usb/class/cdc-acm.c | 11 +++++++++++
-> >  1 file changed, 11 insertions(+)
-> 
-> Did you mean to send this twice?
-> 
-> And where are the 5 other patches in this series?
-> 
-> And finally, it's a good idea to include the output of 'lsusb -v' for
-> devices that need quirks so we can figure things out later on, can you
-> fix up your changelog to include that information?
+From: Zqiang <qiang.zhang@windriver.com>
 
-Also, why is the device saying it is a cdc-acm compliant device when it
-is not?  Why lie to the operating system like that?
+There is a small race window when a delayed work is being canceled and
+the work still might be queued from the timer_fn:
 
-thanks,
+	CPU0						CPU1
+kthread_cancel_delayed_work_sync()
+   __kthread_cancel_work_sync()
+     __kthread_cancel_work()
+        work->canceling++;
+					      kthread_delayed_work_timer_fn()
+						   kthread_insert_work();
 
-greg k-h
+BUG: kthread_insert_work() should not get called when work->canceling
+is set.
+
+Reviewed-by: Petr Mladek <pmladek@suse.com>
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+--- 
+ v1->v2->v3:
+ Change the description of the problem and add 'Reviewed-by' tags.
+
+ kernel/kthread.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 3edaa380dc7b..85a2c9b32049 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -897,7 +897,8 @@ void kthread_delayed_work_timer_fn(struct timer_list *t)
+ 	/* Move the work from worker->delayed_work_list. */
+ 	WARN_ON_ONCE(list_empty(&work->node));
+ 	list_del_init(&work->node);
+-	kthread_insert_work(worker, work, &worker->work_list);
++	if (!work->canceling)
++		kthread_insert_work(worker, work, &worker->work_list);
+ 
+ 	raw_spin_unlock_irqrestore(&worker->lock, flags);
+ }
+-- 
+2.17.1
+
