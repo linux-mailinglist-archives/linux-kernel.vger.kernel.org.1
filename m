@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0A127A2F4
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:55:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACE927A30E
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgI0Tz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:55:26 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10061
+        id S1726766AbgI0T4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:56:06 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10039
         "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726309AbgI0TzW (ORCPT
+        by vger.kernel.org with ESMTP id S1726442AbgI0Tz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:55:22 -0400
+        Sun, 27 Sep 2020 15:55:26 -0400
 X-IronPort-AV: E=Sophos;i="5.77,311,1596492000"; 
-   d="scan'208";a="360169495"
+   d="scan'208";a="360169497"
 Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
   by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 27 Sep 2020 21:55:13 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     David Airlie <airlied@linux.ie>
+To:     Michael Turquette <mturquette@baylibre.com>
 Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
         Joe Perches <joe@perches.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 08/18] agp: use semicolons rather than commas to separate statements
-Date:   Sun, 27 Sep 2020 21:12:18 +0200
-Message-Id: <1601233948-11629-9-git-send-email-Julia.Lawall@inria.fr>
+        kernel-janitors@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 09/18] clk: mvebu: ap80x-cpu: use semicolons rather than commas to separate statements
+Date:   Sun, 27 Sep 2020 21:12:19 +0200
+Message-Id: <1601233948-11629-10-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
 References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
@@ -49,48 +48,20 @@ e2
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- drivers/char/agp/amd-k7-agp.c |    2 +-
- drivers/char/agp/nvidia-agp.c |    2 +-
- drivers/char/agp/sworks-agp.c |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ drivers/clk/mvebu/ap-cpu-clk.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/agp/amd-k7-agp.c b/drivers/char/agp/amd-k7-agp.c
-index 6914e4f0ce98..2b2095542816 100644
---- a/drivers/char/agp/amd-k7-agp.c
-+++ b/drivers/char/agp/amd-k7-agp.c
-@@ -425,7 +425,7 @@ static int agp_amdk7_probe(struct pci_dev *pdev,
- 		return -ENOMEM;
+diff --git a/drivers/clk/mvebu/ap-cpu-clk.c b/drivers/clk/mvebu/ap-cpu-clk.c
+index 6b394302c76a..b4259b60dcfd 100644
+--- a/drivers/clk/mvebu/ap-cpu-clk.c
++++ b/drivers/clk/mvebu/ap-cpu-clk.c
+@@ -197,7 +197,7 @@ static int ap_cpu_clk_set_rate(struct clk_hw *hw, unsigned long rate,
  
- 	bridge->driver = &amd_irongate_driver;
--	bridge->dev_private_data = &amd_irongate_private,
-+	bridge->dev_private_data = &amd_irongate_private;
- 	bridge->dev = pdev;
- 	bridge->capndx = cap_ptr;
- 
-diff --git a/drivers/char/agp/nvidia-agp.c b/drivers/char/agp/nvidia-agp.c
-index 623205bcd04a..f78e756157db 100644
---- a/drivers/char/agp/nvidia-agp.c
-+++ b/drivers/char/agp/nvidia-agp.c
-@@ -382,7 +382,7 @@ static int agp_nvidia_probe(struct pci_dev *pdev,
- 		return -ENOMEM;
- 
- 	bridge->driver = &nvidia_driver;
--	bridge->dev_private_data = &nvidia_private,
-+	bridge->dev_private_data = &nvidia_private;
- 	bridge->dev = pdev;
- 	bridge->capndx = cap_ptr;
- 
-diff --git a/drivers/char/agp/sworks-agp.c b/drivers/char/agp/sworks-agp.c
-index 7729414100ff..f875970bda65 100644
---- a/drivers/char/agp/sworks-agp.c
-+++ b/drivers/char/agp/sworks-agp.c
-@@ -513,7 +513,7 @@ static int agp_serverworks_probe(struct pci_dev *pdev,
- 		return -ENOMEM;
- 
- 	bridge->driver = &sworks_driver;
--	bridge->dev_private_data = &serverworks_private,
-+	bridge->dev_private_data = &serverworks_private;
- 	bridge->dev = pci_dev_get(pdev);
- 
- 	pci_set_drvdata(pdev, bridge);
+ 	stable_bit = BIT(clk->pll_regs->ratio_state_offset +
+ 			 clk->cluster *
+-			 clk->pll_regs->ratio_state_cluster_offset),
++			 clk->pll_regs->ratio_state_cluster_offset);
+ 	ret = regmap_read_poll_timeout(clk->pll_cr_base,
+ 				       clk->pll_regs->ratio_state_reg, reg,
+ 				       reg & stable_bit, STATUS_POLL_PERIOD_US,
 
