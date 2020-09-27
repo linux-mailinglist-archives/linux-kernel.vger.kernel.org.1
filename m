@@ -2,142 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0870D27A1A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C120827A1A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgI0Pf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 11:35:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50094 "EHLO mail.kernel.org"
+        id S1726328AbgI0PiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 11:38:06 -0400
+Received: from mga06.intel.com ([134.134.136.31]:46254 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726210AbgI0Pf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 11:35:59 -0400
-Received: from paulmck-ThinkPad-P72.home (unknown [50.45.173.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B37E23119;
-        Sun, 27 Sep 2020 15:35:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601220958;
-        bh=MeSSJOs9LS41GK9XDU/Rm12r3+r/5hTQk+fA9pHniDk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=X26QebjqmiYdoeX2OYIgXK3EqRA+3mzbMSAN1lPycn9lFuBSr7ipFLYnXELtsVZk9
-         RzmETs4n+GGjaUWfJom5ZZYveOq+NNdJuxSLjhzL3h6YA556ofbbc1Zq4xwN1pW6mx
-         hX+AqHQUFVoybEmuh8rJf7bRQJbUvKVlzk+m/wxs=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 229FB35225F5; Sun, 27 Sep 2020 08:35:58 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 08:35:58 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-Subject: Re: [rcu:urezki-pcount.2020.09.26a 17/17] kernel/rcu/tree.c:3315:52:
- sparse: sparse: incorrect type in argument 2 (different base types)
-Message-ID: <20200927153558.GK29330@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <202009270628.gklDosgG%lkp@intel.com>
+        id S1726210AbgI0PiG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 11:38:06 -0400
+IronPort-SDR: feMATwj0s4sm+EbFhwpqAJrDojPGzL2JDZkmNyuvX+kfNNmZi3PlXdK/iGdimAEBxtP6+v58ji
+ o6jSFiMmMACQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="223473765"
+X-IronPort-AV: E=Sophos;i="5.77,310,1596524400"; 
+   d="scan'208";a="223473765"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 08:38:05 -0700
+IronPort-SDR: ery7qhUZsOg9S3eM+8c0GzDLsKA6+HUBFjDP5v1wFq/GkaxwcC0rZpRTD22etspCACxb6iE16K
+ Wa3JFGyCVjkA==
+X-IronPort-AV: E=Sophos;i="5.77,310,1596524400"; 
+   d="scan'208";a="337860010"
+Received: from psanthir-mobl.amr.corp.intel.com (HELO [10.209.181.230]) ([10.209.181.230])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 08:38:04 -0700
+Subject: Re: [PATCH v4 04/17] x86/acrn: Introduce hypercall interfaces
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        shuo.a.liu@intel.com
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <20200922114311.38804-1-shuo.a.liu@intel.com>
+ <20200922114311.38804-5-shuo.a.liu@intel.com>
+ <20200927105152.GG88650@kroah.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <6f9a2b83-6904-2290-6c4f-526672390beb@intel.com>
+Date:   Sun, 27 Sep 2020 08:38:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202009270628.gklDosgG%lkp@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200927105152.GG88650@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 06:55:31AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urezki-pcount.2020.09.26a
-> head:   e9bed2a1239b017d78cec5de66adce0560f6d077
-> commit: e9bed2a1239b017d78cec5de66adce0560f6d077 [17/17] kvfree_rcu(): Switch to kmalloc() and kfree() for allocations
-> config: i386-randconfig-s002-20200927 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> reproduce:
->         # apt-get install sparse
->         # sparse version: v0.6.2-201-g24bdaac6-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=e9bed2a1239b017d78cec5de66adce0560f6d077
->         git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
->         git fetch --no-tags rcu urezki-pcount.2020.09.26a
->         git checkout e9bed2a1239b017d78cec5de66adce0560f6d077
->         # save the attached .config to linux build tree
->         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=i386 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+On 9/27/20 3:51 AM, Greg Kroah-Hartman wrote:
+>> +static inline long acrn_hypercall0(unsigned long hcall_id)
+>> +{
+>> +	register long r8 asm("r8");
+>> +	long result;
+>> +
+>> +	/* Nothing can come between the r8 assignment and the asm: */
+>> +	r8 = hcall_id;
+>> +	asm volatile("vmcall\n\t"
+>> +		     : "=a" (result)
+>> +		     : "r" (r8)
+>> +		     : );
+> What keeps an interrupt from happening between the r8 assignment and the
+> asm: ?
 
-Fixed by 1a8eee1cc5b0 ("squash! kvfree_rcu: Switch to GFP_ATOMIC when
-preemption is enabled"), to be squashed into the original.
+It's probably better phrased something like: "No other C code can come
+between this r8 assignment and the inline asm".  An interrupt would
+actually be fine in there because interrupts save and restore all
+register state, including r8.
 
-Thank you for your testing efforts!
+The problem (mentioned in the changelog) is that gcc does not let you
+place data directly into r8.  But, it does allow you to declare a
+register variable that you can assign to use r8.  There might be a
+problem if a function calls was in between and clobber the register,
+thus the "nothing can come between" comment.
 
-							Thanx, Paul
+The comment is really intended to scare away anyone from adding printk()'s.
 
-> sparse warnings: (new ones prefixed by >>)
-> 
->    kernel/rcu/tree.c:1344:13: sparse: sparse: context imbalance in 'rcu_start_this_gp' - different lock contexts for basic block
->    kernel/rcu/tree.c:1787:9: sparse: sparse: context imbalance in 'rcu_gp_init' - different lock contexts for basic block
->    kernel/rcu/tree.c:2542:9: sparse: sparse: context imbalance in 'force_qs_rnp' - different lock contexts for basic block
->    kernel/rcu/tree.c:2596:25: sparse: sparse: context imbalance in 'rcu_force_quiescent_state' - unexpected unlock
->    kernel/rcu/tree.c:3299:29: sparse: sparse: incorrect type in initializer (different base types) @@     expected int gfp @@     got restricted gfp_t @@
->    kernel/rcu/tree.c:3299:29: sparse:     expected int gfp
->    kernel/rcu/tree.c:3299:29: sparse:     got restricted gfp_t
-> >> kernel/rcu/tree.c:3315:52: sparse: sparse: incorrect type in argument 2 (different base types) @@     expected restricted gfp_t [usertype] flags @@     got int gfp @@
-> >> kernel/rcu/tree.c:3315:52: sparse:     expected restricted gfp_t [usertype] flags
->    kernel/rcu/tree.c:3315:52: sparse:     got int gfp
->    kernel/rcu/tree.c: note: in included file:
->    kernel/rcu/tree_stall.h:749:17: sparse: sparse: context imbalance in 'rcu_check_gp_start_stall' - different lock contexts for basic block
->    kernel/rcu/tree.c: note: in included file:
->    kernel/rcu/tree_exp.h:189:9: sparse: sparse: context imbalance in '__rcu_report_exp_rnp' - different lock contexts for basic block
-> 
-> vim +3315 kernel/rcu/tree.c
-> 
->   3292	
->   3293	static inline bool
->   3294	add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
->   3295		unsigned long *flags, void *ptr, bool can_sleep)
->   3296	{
->   3297		struct kvfree_rcu_bulk_data *bnode;
->   3298		bool can_alloc_page = preemptible();
->   3299		int gfp = can_sleep ? GFP_NOWAIT | __GFP_NOWARN : GFP_ATOMIC;
->   3300		int idx;
->   3301	
->   3302		*krcp = krc_this_cpu_lock(flags);
->   3303		if (unlikely(!(*krcp)->initialized))
->   3304			return false;
->   3305	
->   3306		idx = !!is_vmalloc_addr(ptr);
->   3307	
->   3308		/* Check if a new block is required. */
->   3309		if (!(*krcp)->bkvhead[idx] ||
->   3310				(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
->   3311			bnode = get_cached_bnode(*krcp);
->   3312			if (!bnode && can_alloc_page) {
->   3313				migrate_disable();
->   3314				krc_this_cpu_unlock(*krcp, *flags);
-> > 3315				bnode = kmalloc(PAGE_SIZE, gfp);
->   3316				*krcp = krc_this_cpu_lock(flags);
->   3317				migrate_enable();
->   3318			}
->   3319	
->   3320			/* Switch to emergency path. */
->   3321			if (unlikely(!bnode))
->   3322				return false;
->   3323	
->   3324			/* Initialize the new block. */
->   3325			bnode->nr_records = 0;
->   3326			bnode->next = (*krcp)->bkvhead[idx];
->   3327	
->   3328			/* Attach it to the head. */
->   3329			(*krcp)->bkvhead[idx] = bnode;
->   3330		}
->   3331	
->   3332		/* Finally insert. */
->   3333		(*krcp)->bkvhead[idx]->records
->   3334			[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
->   3335	
->   3336		return true;
->   3337	}
->   3338	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+More information about these register variables is here:
 
+> https://gcc.gnu.org/onlinedocs/gcc/Local-Register-Variables.html#Local-Register-Variables
 
+Any better ideas for comments would be greatly appreciated.  It has 4 or
+5 copies so I wanted it to be succinct.
