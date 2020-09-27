@@ -2,89 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8CF27A20F
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 19:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0907427A210
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 19:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbgI0Rjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 13:39:43 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:19710 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgI0Rjn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 13:39:43 -0400
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 08RHdG7M010848;
-        Mon, 28 Sep 2020 02:39:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 08RHdG7M010848
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1601228357;
-        bh=XR63nmWE4Wsx8vlGMTUVE6dfgWyHW3V9zZklUvKsjT8=;
-        h=From:Date:Subject:To:Cc:From;
-        b=Ta5F24UNMpejlUpdhsCZ+crQEKeAdtpi58XgaNTbI84poEBsOWA/Qiv2+JsgDyFMR
-         /mTcstVVoNp1yJruwIxLFAJv0FPglirzlzpkfs/+TdmOCdrm236DNpJhGRnwM+mwr3
-         malcTEHHveaAxhtAocQS6pKtFqT4X+sF6+cSqPS2wwINXcdbVIay+uEm2rFaH5bggS
-         wsvmt3BL6PuiSTwdfcFyZx7RzyCcsZJNz0NScnmZSohwYkgwmAx9asbKhd0Ps9Sd3E
-         ewl0ndA7MBzCbz+h/Flh8xCrjRlaUZOI9p716CIgJ1ZGhIuyfodn1RUpBEVN3upO38
-         IrzF62i9SJ6CQ==
-X-Nifty-SrcIP: [209.85.210.172]
-Received: by mail-pf1-f172.google.com with SMTP id k8so7200552pfk.2;
-        Sun, 27 Sep 2020 10:39:16 -0700 (PDT)
-X-Gm-Message-State: AOAM5318i+QFtNrGjVoR0xwZHvVkM6OHbK8Vtros8Wcicj4T2zv676K2
-        CXhumw6sn4mSk2N0p4JiU4KLLmQwfCNTvhR4aGQ=
-X-Google-Smtp-Source: ABdhPJxxJgZmaSbssrAT+fweb7D87tqXhDgOObqeGglJ3SlDlBK3TOtFv2s4tOnVq1rgnyesMVr81VlXYyDfIS5YK/g=
-X-Received: by 2002:aa7:9f4a:0:b029:142:2501:34f7 with SMTP id
- h10-20020aa79f4a0000b0290142250134f7mr7773446pfr.80.1601228355960; Sun, 27
- Sep 2020 10:39:15 -0700 (PDT)
+        id S1726444AbgI0RkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 13:40:00 -0400
+Received: from m12-14.163.com ([220.181.12.14]:44375 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726239AbgI0RkA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 13:40:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=xh2Xd
+        nKdwEptrNopNjoHo/dM/S0Sl8Wq37Wv6eY6w4c=; b=ceTWmM1IQpUVT1QIV8cXT
+        QM9U/eCwcMhYX15ywkZrfc51DomMOHRBgID3+oZW1cHOEHwsK7cyJuZngWimGyq2
+        67IWxOB8sJ5PhUluUNcEHB9588JQqpkpKxhpEYAMxPGeVvdkm5VgqowDYKb1ArFq
+        PaHyrS6IWhOP1M+6m83P9k=
+Received: from localhost (unknown [101.86.214.224])
+        by smtp10 (Coremail) with SMTP id DsCowAC3RttLznBfOkAoNQ--.12812S2;
+        Mon, 28 Sep 2020 01:39:23 +0800 (CST)
+Date:   Mon, 28 Sep 2020 01:39:23 +0800
+From:   Hui Su <sh_def@163.com>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/vmscan: fix comments for isolate_lru_page()
+Message-ID: <20200927173923.GA8058@rlk>
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 28 Sep 2020 02:38:39 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARTwQUtJKnEyyJySJunja4szZPHvxim5+KTA04w6wjhgA@mail.gmail.com>
-Message-ID: <CAK7LNARTwQUtJKnEyyJySJunja4szZPHvxim5+KTA04w6wjhgA@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v5.9-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: DsCowAC3RttLznBfOkAoNQ--.12812S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKw4fJw1rWFy3uw1rCr1xKrg_yoW3GrbE9a
+        ykKF4xur9YqF9Fqr4Yka1ayF1Igr9ruF48ua17J3yYvFW5Za95XF98Wrs8Gry5Zr45uF9I
+        qFWDCrWrW398KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0TGQDUUUUU==
+X-Originating-IP: [101.86.214.224]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiIA+sX10TBh4hOwABsR
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+fix comments for isolate_lru_page():
+s/fundamentnal/fundamental
 
-Please pull more fixes.
-Thanks.
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ mm/vmscan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 466fc3144fff..def9d2b3057b 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1751,7 +1751,7 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
+  * Restrictions:
+  *
+  * (1) Must be called with an elevated refcount on the page. This is a
+- *     fundamentnal difference from isolate_lru_pages (which is called
++ *     fundamental difference from isolate_lru_pages (which is called
+  *     without a stable reference).
+  * (2) the lru_lock must not be held.
+  * (3) interrupts must be enabled.
+-- 
+2.25.1
 
 
--- The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
-
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v5.9-4
-
-for you to fetch changes up to e30d694c3381b565e043cf74b0bed059db1b4ac9:
-
-  Documentation/llvm: Fix clang target examples (2020-09-26 13:54:08 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v5.9 (4th)
-
- - Ignore compiler stubs for PPC to fix builds
-
- - Fix the usage of --target mentioned in the LLVM document
-
-----------------------------------------------------------------
-Florian Fainelli (1):
-      Documentation/llvm: Fix clang target examples
-
-Masahiro Yamada (1):
-      scripts/kallsyms: skip ppc compiler stub *.long_branch.* / *.plt_branch.*
-
- Documentation/kbuild/llvm.rst |  4 ++--
- scripts/kallsyms.c            | 16 +++++++++++++++-
- 2 files changed, 17 insertions(+), 3 deletions(-)
-
-Best Regards
-Masahiro Yamada
