@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB892279E7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 07:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBC45279E7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 07:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730295AbgI0Fm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 01:42:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47670 "EHLO mail.kernel.org"
+        id S1730324AbgI0FpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 01:45:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726382AbgI0Fm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 01:42:27 -0400
+        id S1729291AbgI0FpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 01:45:24 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A5F1239EE;
-        Sun, 27 Sep 2020 05:42:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 375C8239EE;
+        Sun, 27 Sep 2020 05:45:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601185347;
-        bh=ZjXx0SooA9sSMx6d9n9piTmE3umRXqI62zHOyhR7uXk=;
+        s=default; t=1601185524;
+        bh=a9aAX0T70/QT+2E8l3kCiS6KGiEBCkdVBqms4vRdVjc=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q6C8XAEL/E0uvZm2zhMF1PsNofbT4YqJ712Tq36rjD52IjrJv0teglO4Jn/GBr3IX
-         dACR8VuRKGryVNI2/OOSKl9jsMgnTpMs749rKR63+eVizcXZovI2IVUUmbT2ZGKYno
-         nA+46jMARJ4DeX3i+RYWcYDpEpj+/1M+c93gSsEI=
-Date:   Sun, 27 Sep 2020 07:42:22 +0200
+        b=pjzZQT6phG8KUnfYInKFnq2/aYwUwj1cBQ6Bz3NhiknkdllJePnrod8hIEZkGyf60
+         puzeebHIO2dIZ91HVULq3Zmof1Q78NwbBrMvFMVJ3ak+yW4/ZznfOOkjaKCbLkIwG1
+         TaGV+vdulrDvPt/VloJ/HcREzmcE2wYzhr/3BURc=
+Date:   Sun, 27 Sep 2020 07:45:20 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Liu, Shuo A" <shuo.a.liu@intel.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>
-Subject: Re: [PATCH v4 00/17] HSM driver for ACRN hypervisor
-Message-ID: <20200927054222.GA699448@kroah.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <8235ade4-eb61-aed1-bd9a-9db0134cb64a@intel.com>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org
+Subject: Re: [PATCH 6/6] USB: cdc-acm: blacklist ETAS ES58X device
+Message-ID: <20200927054520.GB699448@kroah.com>
+References: <20200926175810.278529-1-mailhol.vincent@wanadoo.fr>
+ <20200926175810.278529-7-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8235ade4-eb61-aed1-bd9a-9db0134cb64a@intel.com>
+In-Reply-To: <20200926175810.278529-7-mailhol.vincent@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 08:24:39AM +0800, Liu, Shuo A wrote:
-> Ping...
+On Sun, Sep 27, 2020 at 02:57:56AM +0900, Vincent Mailhol wrote:
+> The ES58X devices are incorrectly recognized as USB Modem (CDC ACM),
+> preventing the etas-es58x module to load.
+> 
+> Thus, these have been added
+> to the ignore list in drivers/usb/class/cdc-acm.c
+> 
+> Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+> ---
+>  drivers/usb/class/cdc-acm.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 
-It's been less than a week since you sent this.  Please relax and if you
-really need reviews, get them from within Intel, where you can impose a
-deadline on those developers.  Otherwise, your patch is in good company:
+Did you mean to send this twice?
 
-	$ mdfrm -c ~/mail/todo/
-	993 messages in /home/gregkh/mail/todo/
+And where are the 5 other patches in this series?
 
-And will be handled when I get to it.
+And finally, it's a good idea to include the output of 'lsusb -v' for
+devices that need quirks so we can figure things out later on, can you
+fix up your changelog to include that information?
 
 thanks,
 
-greg "Intel still owes me lots of liquor" k-h
+greg k-h
