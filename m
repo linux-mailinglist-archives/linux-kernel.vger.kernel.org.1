@@ -2,195 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C4FF27A05E
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D066527A068
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 12:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgI0Jxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 05:53:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14250 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726149AbgI0Jxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:53:34 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 6CCB1C15570F54E919F4;
-        Sun, 27 Sep 2020 17:53:32 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Sun, 27 Sep 2020
- 17:53:25 +0800
-Subject: Re: [PATCH v6 5/6] dt-bindings: dw-apb-ictl: convert to json-schema
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Alexey Brodkin" <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-snps-arc <linux-snps-arc@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Haoyu Lv <lvhaoyu@huawei.com>, Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-References: <20200924071754.4509-1-thunder.leizhen@huawei.com>
- <20200924071754.4509-6-thunder.leizhen@huawei.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <89149f30-3cc0-c0a8-4b73-49914659bfe9@huawei.com>
-Date:   Sun, 27 Sep 2020 17:53:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726265AbgI0KBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 06:01:08 -0400
+Received: from mga02.intel.com ([134.134.136.20]:41494 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726149AbgI0KBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 06:01:07 -0400
+IronPort-SDR: 86/sZN6JIH0BOFYxQi4MSFXQmQiYV2Jo6KbwB/YoZtilSyihehp96nxRwOmihmL1BUvo/fxv8y
+ aR7/VVvPbGcA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="149526775"
+X-IronPort-AV: E=Sophos;i="5.77,309,1596524400"; 
+   d="scan'208";a="149526775"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 03:01:06 -0700
+IronPort-SDR: Ctcqg3F0rUx6GHUSf39wFtn1pFsXeiXqlbL5CgaKM+StsS49dVhEDw1f4Har5y1csnepuL/0GM
+ iOHwAB15VXmw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,309,1596524400"; 
+   d="scan'208";a="344499551"
+Received: from lkp-server01.sh.intel.com (HELO 2dda29302fe3) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 27 Sep 2020 03:01:04 -0700
+Received: from kbuild by 2dda29302fe3 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kMTUO-0000jn-8W; Sun, 27 Sep 2020 10:01:04 +0000
+Date:   Sun, 27 Sep 2020 18:00:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/fam1-refactors] BUILD SUCCESS
+ c62f8c6726ed904e4ddb5514c0f85ce133708f9a
+Message-ID: <5f7062af.z3T9tn9yIPv6h5Ny%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20200924071754.4509-6-thunder.leizhen@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob:
-  Do you have time to review this patch again?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git  testing/fam1-refactors
+branch HEAD: c62f8c6726ed904e4ddb5514c0f85ce133708f9a  net/sched: cls_u32: Replace one-element array with flexible-array member
 
-On 2020/9/24 15:17, Zhen Lei wrote:
-> Convert the Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
-> binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> ---
->  .../interrupt-controller/snps,dw-apb-ictl.txt      | 43 -------------
->  .../interrupt-controller/snps,dw-apb-ictl.yaml     | 74 ++++++++++++++++++++++
->  2 files changed, 74 insertions(+), 43 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
-> deleted file mode 100644
-> index 2db59df9408f4c6..000000000000000
-> --- a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.txt
-> +++ /dev/null
-> @@ -1,43 +0,0 @@
-> -Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
-> -
-> -Synopsys DesignWare provides interrupt controller IP for APB known as
-> -dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs with
-> -APB bus, e.g. Marvell Armada 1500. It can also be used as primary interrupt
-> -controller in some SoCs, e.g. Hisilicon SD5203.
-> -
-> -Required properties:
-> -- compatible: shall be "snps,dw-apb-ictl"
-> -- reg: physical base address of the controller and length of memory mapped
-> -  region starting with ENABLE_LOW register
-> -- interrupt-controller: identifies the node as an interrupt controller
-> -- #interrupt-cells: number of cells to encode an interrupt-specifier, shall be 1
-> -
-> -Additional required property when it's used as secondary interrupt controller:
-> -- interrupts: interrupt reference to primary interrupt controller
-> -
-> -The interrupt sources map to the corresponding bits in the interrupt
-> -registers, i.e.
-> -- 0 maps to bit 0 of low interrupts,
-> -- 1 maps to bit 1 of low interrupts,
-> -- 32 maps to bit 0 of high interrupts,
-> -- 33 maps to bit 1 of high interrupts,
-> -- (optional) fast interrupts start at 64.
-> -
-> -Example:
-> -	/* dw_apb_ictl is used as secondary interrupt controller */
-> -	aic: interrupt-controller@3000 {
-> -		compatible = "snps,dw-apb-ictl";
-> -		reg = <0x3000 0xc00>;
-> -		interrupt-controller;
-> -		#interrupt-cells = <1>;
-> -		interrupt-parent = <&gic>;
-> -		interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
-> -	};
-> -
-> -	/* dw_apb_ictl is used as primary interrupt controller */
-> -	vic: interrupt-controller@10130000 {
-> -		compatible = "snps,dw-apb-ictl";
-> -		reg = <0x10130000 0x1000>;
-> -		interrupt-controller;
-> -		#interrupt-cells = <1>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
-> new file mode 100644
-> index 000000000000000..1b05d36b5f7b943
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interrupt-controller/snps,dw-apb-ictl.yaml
-> @@ -0,0 +1,74 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interrupt-controller/snps,dw-apb-ictl.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Synopsys DesignWare APB interrupt controller (dw_apb_ictl)
-> +
-> +maintainers:
-> +  - Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-> +
-> +description: |
-> +  Synopsys DesignWare provides interrupt controller IP for APB known as
-> +  dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs
-> +  with APB bus, e.g. Marvell Armada 1500. It can also be used as primary
-> +  interrupt controller in some SoCs, e.g. Hisilicon SD5203.
-> +
-> +  The interrupt sources map to the corresponding bits in the interrupt
-> +  registers, i.e.
-> +  - 0 maps to bit 0 of low interrupts,
-> +  - 1 maps to bit 1 of low interrupts,
-> +  - 32 maps to bit 0 of high interrupts,
-> +  - 33 maps to bit 1 of high interrupts,
-> +  - (optional) fast interrupts start at 64.
-> +
-> +allOf:
-> +  - $ref: /schemas/interrupt-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: snps,dw-apb-ictl
-> +
-> +  interrupt-controller: true
-> +
-> +  reg:
-> +    description: |
-> +      Physical base address of the controller and length of memory mapped
-> +      region starting with ENABLE_LOW register.
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    description: Interrupt reference to primary interrupt controller.
-> +    maxItems: 1
-> +
-> +  "#interrupt-cells":
-> +    description: Number of cells to encode an interrupt-specifier.
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupt-controller
-> +  - '#interrupt-cells'
-> +
-> +examples:
-> +  - |
-> +    /* dw_apb_ictl is used as secondary interrupt controller */
-> +    aic: interrupt-controller@3000 {
-> +        compatible = "snps,dw-apb-ictl";
-> +        reg = <0x3000 0xc00>;
-> +        interrupt-controller;
-> +        #interrupt-cells = <1>;
-> +        interrupt-parent = <&gic>;
-> +        interrupts = <0 3 4>;
-> +    };
-> +
-> +    /* dw_apb_ictl is used as primary interrupt controller */
-> +    vic: interrupt-controller@10130000 {
-> +        compatible = "snps,dw-apb-ictl";
-> +        reg = <0x10130000 0x1000>;
-> +        interrupt-controller;
-> +        #interrupt-cells = <1>;
-> +    };
-> +...
-> 
+elapsed time: 722m
 
+configs tested: 110
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+xtensa                           allyesconfig
+powerpc                        fsp2_defconfig
+powerpc                     sequoia_defconfig
+arm                            hisi_defconfig
+xtensa                       common_defconfig
+arm                        trizeps4_defconfig
+powerpc                         ps3_defconfig
+powerpc                     akebono_defconfig
+powerpc                  mpc866_ads_defconfig
+arc                        vdk_hs38_defconfig
+mips                        nlm_xlp_defconfig
+mips                malta_kvm_guest_defconfig
+nios2                         3c120_defconfig
+sh                          rsk7203_defconfig
+powerpc                     redwood_defconfig
+x86_64                           allyesconfig
+arm                         s3c2410_defconfig
+arm                          pxa3xx_defconfig
+arm                            qcom_defconfig
+arm                           corgi_defconfig
+c6x                        evmc6678_defconfig
+arm                      tct_hammer_defconfig
+powerpc                     rainier_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                      chrp32_defconfig
+mips                             allyesconfig
+arm                         lubbock_defconfig
+arm                            u300_defconfig
+xtensa                generic_kc705_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                          tango4_defconfig
+mips                          ath79_defconfig
+openrisc                    or1ksim_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20200927
+i386                 randconfig-a006-20200927
+i386                 randconfig-a003-20200927
+i386                 randconfig-a004-20200927
+i386                 randconfig-a005-20200927
+i386                 randconfig-a001-20200927
+x86_64               randconfig-a011-20200927
+x86_64               randconfig-a013-20200927
+x86_64               randconfig-a014-20200927
+x86_64               randconfig-a015-20200927
+x86_64               randconfig-a012-20200927
+x86_64               randconfig-a016-20200927
+i386                 randconfig-a012-20200927
+i386                 randconfig-a014-20200927
+i386                 randconfig-a016-20200927
+i386                 randconfig-a013-20200927
+i386                 randconfig-a011-20200927
+i386                 randconfig-a015-20200927
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a011-20200926
+x86_64               randconfig-a013-20200926
+x86_64               randconfig-a014-20200926
+x86_64               randconfig-a015-20200926
+x86_64               randconfig-a012-20200926
+x86_64               randconfig-a016-20200926
+x86_64               randconfig-a005-20200927
+x86_64               randconfig-a003-20200927
+x86_64               randconfig-a004-20200927
+x86_64               randconfig-a002-20200927
+x86_64               randconfig-a006-20200927
+x86_64               randconfig-a001-20200927
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
