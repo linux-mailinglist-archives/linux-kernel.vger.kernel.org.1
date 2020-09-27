@@ -2,154 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB88279E84
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 07:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C532A279E86
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 07:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730346AbgI0Fr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 01:47:26 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:46222 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726382AbgI0Fr0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 01:47:26 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08R5lGXn9029044, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08R5lGXn9029044
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sun, 27 Sep 2020 13:47:16 +0800
-Received: from RSEXMBS01.realsil.com.cn (172.29.17.195) by
- RSEXMBS01.realsil.com.cn (172.29.17.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Sun, 27 Sep 2020 13:47:15 +0800
-Received: from RSEXMBS01.realsil.com.cn ([fe80::e186:b533:fb3:8b37]) by
- RSEXMBS01.realsil.com.cn ([fe80::e186:b533:fb3:8b37%7]) with mapi id
- 15.01.2044.004; Sun, 27 Sep 2020 13:47:15 +0800
-From:   =?gb2312?B?wr3W7M6w?= <alex_lu@realsil.com.cn>
-To:     Marcel Holtmann <marcel@holtmann.org>
-CC:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Max Chou <max.chou@realtek.com>
-Subject: Re: [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-Thread-Topic: [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-Thread-Index: AdaUkBQIy2pYuQ5jTx2quo4sQQ3NUg==
-Date:   Sun, 27 Sep 2020 05:47:15 +0000
-Message-ID: <004951c574594df68829e1a076bc94da@realsil.com.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.36.107]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S1730311AbgI0FvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 01:51:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729125AbgI0FvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 01:51:13 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4931723A03;
+        Sun, 27 Sep 2020 05:51:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601185872;
+        bh=s2aSKHsTWYfQJneI97MMaymU4BrunbKHf1XG+tlw2hY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f8LKpV5gsJzUKNyIPXIJACz4fxDLyX2LCyGPns6fvBBKF2Yjkvz76oMtEAsBpqyDu
+         bg2V7Wuq4qHwswgUz7xX/IB7J0BRbl/PvjnPLlgloE24zc95DOxqT93jPa/lC4PdC9
+         vHQddiZTCYtEN0EdRO5MAUv6+VV1Vkq0m4FyZ5dA=
+Date:   Sun, 27 Sep 2020 07:51:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     Xu Yilun <yilun.xu@intel.com>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com
+Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
+Message-ID: <20200927055108.GA701198@kroah.com>
+References: <1600966801-30586-1-git-send-email-yilun.xu@intel.com>
+ <1600966801-30586-2-git-send-email-yilun.xu@intel.com>
+ <20200924172700.GA79736@archbook>
+ <20200926022346.GA5623@yilunxu-OptiPlex-7050>
+ <20200926060913.GA637197@kroah.com>
+ <20200926192219.GA18625@epycbox.lan>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926192219.GA18625@epycbox.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFyY2VsLA0KDQo+IE9uIDI2IFNlcHRlbWJlciAyMDIwIGF0IDE6MzQsIE1hcmNlbCBIb2x0
-bWFubiB3cm90ZToNCj4gDQo+IEhpIEFsZXgsDQo+IA0KPiA+Pj4gV2hlbiBzb21lb25lIGF0dGFj
-a3MgdGhlIHNlcnZpY2UgcHJvdmlkZXIsIGl0IGNyZWF0ZXMgY29ubmVjdGlvbiwNCj4gPj4+IGF1
-dGhlbnRpY2F0ZXMuIFRoZW4gaXQgcmVxdWVzdHMga2V5IHNpemUgb2Ygb25lIGJ5dGUgYW5kIGl0
-IGlkZW50aWZpZXMNCj4gPj4+IHRoZSBrZXkgd2l0aCBicnV0ZSBmb3JjZSBtZXRob2RzLg0KPiA+
-Pj4NCj4gPj4+IEFmdGVyIGwyY2FwIGluZm8gcmVxL3Jlc3AgZXhjaGFuZ2UgaXMgY29tcGxldGUu
-IHRoZSBhdHRhY2tlciBzZW5kcyBsMmNhcA0KPiA+Pj4gY29ubmVjdCB3aXRoIHNwZWNpZmljIFBT
-TS4NCj4gPj4+DQo+ID4+PiBJbiBhYm92ZSBwcm9jZWR1cmUsIHRoZXJlIGlzIG5vIGNoYW5jZSBm
-b3IgdGhlIHNlcnZpY2UgcHJvdmlkZXIgdG8gY2hlY2sNCj4gPj4+IHRoZSBlbmNyeXB0aW9uIGtl
-eSBzaXplIGJlZm9yZSBsMmNhcF9jb25uZWN0KCkuIEJlY2F1c2UgdGhlIHN0YXRlIG9mDQo+ID4+
-PiBsMmNhcCBjaGFuIGluIGNvbm4tPmNoYW5fbCBpcyBCVF9MSVNURU4sIHRoZXJlIGlzIG5vIGwy
-Y2FwIGNoYW4gd2l0aCB0aGUNCj4gPj4+IHN0YXRlIG9mIEJUX0NPTk5FQ1Qgb3IgQlRfQ09OTkVD
-VDIuDQo+ID4+Pg0KPiA+Pj4gU28gc2VydmljZSBwcm92aWRlciBzaG91bGQgY2hlY2sgdGhlIGVu
-Y3J5cHRpb24ga2V5IHNpemUgaW4NCj4gPj4+IGwyY2FwX2Nvbm5lY3QoKQ0KPiA+Pj4NCj4gPj4+
-IFNpZ25lZC1vZmYtYnk6IEFsZXggTHUgPGFsZXhfbHVAcmVhbHNpbC5jb20uY24+DQo+ID4+PiAt
-LS0NCj4gPj4+IG5ldC9ibHVldG9vdGgvbDJjYXBfY29yZS5jIHwgNyArKysrKysrDQo+ID4+PiAx
-IGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspDQo+ID4+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBh
-L25ldC9ibHVldG9vdGgvbDJjYXBfY29yZS5jIGIvbmV0L2JsdWV0b290aC9sMmNhcF9jb3JlLmMN
-Cj4gPj4+IGluZGV4IGFkZTgzZTIyNDU2Ny4uNjNkZjk2MWQ0MDJkIDEwMDY0NA0KPiA+Pj4gLS0t
-IGEvbmV0L2JsdWV0b290aC9sMmNhcF9jb3JlLmMNCj4gPj4+ICsrKyBiL25ldC9ibHVldG9vdGgv
-bDJjYXBfY29yZS5jDQo+ID4+PiBAQCAtNDE1MCw2ICs0MTUwLDEzIEBAIHN0YXRpYyBzdHJ1Y3Qg
-bDJjYXBfY2hhbiAqbDJjYXBfY29ubmVjdChzdHJ1Y3QNCj4gPj4gbDJjYXBfY29ubiAqY29ubiwN
-Cj4gPj4+DQo+ID4+PiAJaWYgKGNvbm4tPmluZm9fc3RhdGUgJiBMMkNBUF9JTkZPX0ZFQVRfTUFT
-S19SRVFfRE9ORSkgew0KPiA+Pj4gCQlpZiAobDJjYXBfY2hhbl9jaGVja19zZWN1cml0eShjaGFu
-LCBmYWxzZSkpIHsNCj4gPj4+ICsJCQlpZiAoIWwyY2FwX2NoZWNrX2VuY19rZXlfc2l6ZShjb25u
-LT5oY29uKSkgew0KPiA+Pj4gKwkJCQlsMmNhcF9zdGF0ZV9jaGFuZ2UoY2hhbiwgQlRfRElTQ09O
-Tik7DQo+ID4+PiArCQkJCV9fc2V0X2NoYW5fdGltZXIoY2hhbiwNCj4gPj4gTDJDQVBfRElTQ19U
-SU1FT1VUKTsNCj4gPj4+ICsJCQkJcmVzdWx0ID0gTDJDQVBfQ1JfU0VDX0JMT0NLOw0KPiA+Pj4g
-KwkJCQlzdGF0dXMgPSBMMkNBUF9DU19OT19JTkZPOw0KPiA+Pj4gKwkJCQlnb3RvIHJlc3BvbnNl
-Ow0KPiA+Pj4gKwkJCX0NCj4gPj4+IAkJCWlmICh0ZXN0X2JpdChGTEFHX0RFRkVSX1NFVFVQLCAm
-Y2hhbi0+ZmxhZ3MpKSB7DQo+ID4+PiAJCQkJbDJjYXBfc3RhdGVfY2hhbmdlKGNoYW4sIEJUX0NP
-Tk5FQ1QyKTsNCj4gPj4+IAkJCQlyZXN1bHQgPSBMMkNBUF9DUl9QRU5EOw0KPiA+Pg0KPiA+PiBJ
-IGFtIG5vdCBmb2xsb3dpbmcgd2hhdCB5b3UgYXJlIHRyeWluZyB0byBmaXggaGVyZS4gQ2FuIHlv
-dSBzaG93IHRoaXMgd2l0aA0KPiBhDQo+ID4+IGJ0bW9uIHRyYWNlIGZyb20gYW4gYXR0YWNraW5n
-IGRldmljZT8NCj4gPj4NCj4gPj4gUmVnYXJkcw0KPiA+Pg0KPiA+PiBNYXJjZWwNCj4gPj4NCj4g
-Pj4NCj4gPg0KPiA+IEknbSBzb3JyeSwgSSBkaWRuJ3QgaGF2ZSBidG1vbiB0cmFjZSBmcm9tIGFu
-IGF0dGFja2luZyBkZXZpY2UuDQo+ID4gSSBkaWRuJ3QgaGF2ZSB0aGUgcmVhbCBhdHRhY2tpbmcg
-ZGV2aWNlLiBJIGp1c3Qgc2ltdWxhdGUgdGhlIGF0dGFja2luZy4NCj4gPiBJIGhhdmUgYSBkZXZp
-Y2UgdGhhdCBjYW4gY3JlYXRlIG9uZSBieXRlIHNpemUgZW5jcnlwdGlvbiBrZXkuDQo+ID4gSXQg
-dXNlcyB0aGUgbGluayBrZXkgdGhhdCB3YXMgcHJvZHVjZWQgYnkgcGFpcmluZyB3aXRoIHRoZSBz
-ZXJ2aWNlIHByb3ZpZGVyLg0KPiBBY3R1YWxseSB0aGUgS05PQiAoS2V5IE5lZ290aWF0aW9uIG9m
-IEJsdWV0b290aCBBdHRhY2spIHNheXMsIHRoZSBsaW5rIGtleSBpcw0KPiB1bm5lY2Vzc2FyeSBm
-b3IgdGhlIHJlY29ubmVjdGlvbi4NCj4gPiBJIHVzZSB0aGlzIGRldmljZSB0byByZWNvbm5lY3Qg
-dG8gc2VydmljZSBwcm92aWRlciwgYW5kIHRoZW4gaW5pdGlhdGUgdGhlIEtleQ0KPiBOZWdvdGlh
-dGlvbiBmb3Igb25lIGJ5dGUgc2l6ZSBlbmNyeXB0aW9uIGtleS4gQWN0dWFsbHkgdGhlIGF0dGFj
-a2VyIGlkZW50aWZpZWQNCj4gdGhlIGVuY3J5cHRpb24ga2V5IHdpdGggc29tZSBicnV0ZSBmb3Jj
-ZSBtZXRob2RzLg0KPiA+DQo+ID4gSSB3YW50IHRvIHByb3ZpZGUgdGhlIHRyYWNlIG9uIHNlcnZp
-Y2UgcHJvdmlkZXIgc2lkZS4NCj4gDQo+IHdoYXQga2VybmVsIHZlcnNpb24gYXJlIHlvdSBydW5u
-aW5nPyBJIHdvbmRlciBpZiB3ZSBzaG91bGQgYWx3YXlzIHJldHVybg0KPiBMMkNBUF9DUl9QRU5E
-IGhlcmUuIERvIHlvdSBoYXZlIGEgcmVwcm9kdWNlciBjb2RlPw0KDQpJJ20gcnVubmluZyBrZXJu
-ZWwgNS44LjAtcmM2IG9uIGFjY2VwdG9yIGFuZCBrZXJuZWwgNS44LjUgb24gdGhlIGluaXRpYXRv
-ciB3aGljaCBhY3RzIGFzIGFuIGF0dGFja2VyLg0KRm9yIHRoZSBhdHRhY2sgc2ltdWxhdGlvbiwg
-c29tZSBjb2RlIG5lZWRzIHRvIGJlIGNoYW5nZWQgb24gZWFjaCBzaXplLg0KT24gdGhlIGFjY2Vw
-dG9yLCB0aGUgbWFzdGVyIHBhcmFtZXRlciBmb3IgYnRfaW9fbGlzdGVuKCkgaW4gYmx1ZXRvb3Ro
-ZCBzaG91bGQgYmUgY2hhbmdlZCB0byBGQUxTRSBpbiBwcm9maWxlcy9hdWRpby9hMmRwLmMgYTJk
-cF9zZXJ2ZXJfbGlzdGVuKCkgYW5kIHByb2ZpbGVzL2F1ZGlvL2F2Y3RwLmMgYXZjdHBfc2VydmVy
-X3NvY2tldCgpLg0KVGhlIGNoYW5nZSBtYWtlcyB0aGUga2VybmVsIG5vdCB0byBjaGFuZ2UgdGhl
-IHJvbGUgdG8gbWFzdGVyIHdoZW4gaXQgcmVjZWl2ZXMgaGNpIGNvbm4gcmVxIGV2ZW50Lg0KSSBk
-aWQgdGhlIGNoYW5nZSBpbiBvcmRlciB0byBtYWtlIHRoZSBjb250cm9sbGVyIHRvIHNlbmQgTE1Q
-X0VOQ1JZUFRJT05fS0VZX1NJWkVfUkVRIFBEVSBmb3Igb25lIGJ5dGUga2V5IHNpemUuDQoNCk9u
-IHRoZSBpbml0aWF0b3IsIHRoZSBiZWxvdyBlbmNyeXB0aW9uIGtleSBzaXplIGNoZWNrIHNob3Vs
-ZCBiZSByZW1vdmVkLg0KQEAgLTE2MjIsMTAgKzE2MjQsMTMgQEAgc3RhdGljIHZvaWQgbDJjYXBf
-Y29ubl9zdGFydChzdHJ1Y3QgbDJjYXBfY29ubiAqY29ubikNCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgY29udGludWU7DQogICAgICAgICAgICAgICAgICAgICAgICB9DQogDQotICAg
-ICAgICAgICAgICAgICAgICAgICBpZiAobDJjYXBfY2hlY2tfZW5jX2tleV9zaXplKGNvbm4tPmhj
-b24pKQ0KLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsMmNhcF9zdGFydF9jb25uZWN0
-aW9uKGNoYW4pOw0KLSAgICAgICAgICAgICAgICAgICAgICAgZWxzZQ0KLSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBsMmNhcF9jaGFuX2Nsb3NlKGNoYW4sIEVDT05OUkVGVVNFRCk7DQor
-ICAgICAgICAgICAgICAgICAgICAgICAvKiBKdXN0IHNpbXVsYXRlIEtOT0IgKi8NCisgICAgICAg
-ICAgICAgICAgICAgICAgIGwyY2FwX3N0YXJ0X2Nvbm5lY3Rpb24oY2hhbik7DQorICAgICAgICAg
-ICAgICAgICAgICAgICAvKiBpZiAobDJjYXBfY2hlY2tfZW5jX2tleV9zaXplKGNvbm4tPmhjb24p
-KQ0KKyAgICAgICAgICAgICAgICAgICAgICAgICogICAgICBsMmNhcF9zdGFydF9jb25uZWN0aW9u
-KGNoYW4pOw0KKyAgICAgICAgICAgICAgICAgICAgICAgICogZWxzZQ0KKyAgICAgICAgICAgICAg
-ICAgICAgICAgICogICAgICBsMmNhcF9jaGFuX2Nsb3NlKGNoYW4sIEVDT05OUkVGVVNFRCk7DQor
-ICAgICAgICAgICAgICAgICAgICAgICAgKi8NCg0KQXQgbGFzdCwgSSBkaWQgdGhlIHRlc3QgYXMg
-YmVsb3c6DQoxLiBPbiB0aGUgaW5pdGlhdG9yLCBwYWlyIGFjY2VwdG9yDQoyLiBSdW4gbDJ0ZXN0
-IC1yIC1QIDMgb24gdGhlIGFjY2VwdG9yDQozLiBSdW4gbDJ0ZXN0IC1uIC1QIDMgPGJkYWRkcj4g
-b24gdGhlIGluaXRpYXRvcg0KDQo+IA0KPiBUaGUgcHJvYmxlbSByZWFsbHkgaXMgdGhhdCB0aGUg
-TUFTS19SRVFfRE9ORSBpbmRpY2F0aW9uIGlzIG5vdCBlbm91Z2ggdG8NCj4gbWFrZSBhIGRlY2lz
-aW9uIGZvciB0aGUga2V5IHNpemUuIFdlIGhhdmUgdG8gZW5zdXJlIHRoYXQgYWxzbyB0aGUga2V5
-IHNpemUgaXMNCj4gYWN0dWFsbHkgYXZhaWxhYmxlLiBJZiB0aGF0IGlzIG5vdCB5ZXQgZG9uZSwg
-dGhlbiB3ZSBzaG91bGQgbm90IGNoZWNrIGl0LiBUaGlzDQo+IG1lYW5zIHRoYXQgYW55IHJlc3Bv
-bnNlIHRvIEwyQ0FQX0Nvbm5lY3RfUmVxdWVzdCBQRFUgbmVlZHMgdG8gYmUNCj4gZGVsYXllZCB1
-bnRpbCB0aGUga2V5IHNpemUgaGFzIGJlZW4gcmVhZC4NCg0KSW4gbXkgdGVzdCBjYXNlLCB0aGUg
-a2V5IHNpemUgaGFzIGJlZW4gcmVhZCBmcm9tIGNvbnRyb2xsZXIgYmVmb3JlIHRoZSBsMmNhcCBj
-b25uIHJlcXVlc3QgUERVIGlzIHJlY2VpdmVkLg0KDQo8IEhDSSBDb21tYW5kOiBSZWFkIEVuY3J5
-cHRpb24gS2V5IFNpemUgKDB4MDV8MHgwMDA4KSBwbGVuIDIgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIzIyIFtoY2kwXSA0My4wODk4NTkNCiAgICAgICAgSGFuZGxlOiAxDQo+IEhDSSBF
-dmVudDogQ29tbWFuZCBDb21wbGV0ZSAoMHgwZSkgcGxlbiA3ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIzIzIFtoY2kwXSA0My4wOTE1MjgNCiAgICAgIFJl
-YWQgRW5jcnlwdGlvbiBLZXkgU2l6ZSAoMHgwNXwweDAwMDgpIG5jbWQgMg0KICAgICAgICBTdGF0
-dXM6IFN1Y2Nlc3MgKDB4MDApDQogICAgICAgIEhhbmRsZTogMQ0KICAgICAgICBLZXkgc2l6ZTog
-MQ0KPiBBQ0wgRGF0YSBSWDogSGFuZGxlIDEgZmxhZ3MgMHgwMiBkbGVuIDEwICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMyNCBbaGNpMF0gNDMuMTQwODg4
-DQogICAgICBMMkNBUDogSW5mb3JtYXRpb24gUmVxdWVzdCAoMHgwYSkgaWRlbnQgMSBsZW4gMg0K
-ICAgICAgICBUeXBlOiBFeHRlbmRlZCBmZWF0dXJlcyBzdXBwb3J0ZWQgKDB4MDAwMikNCi4uLi4u
-Lg0KPiBBQ0wgRGF0YSBSWDogSGFuZGxlIDEgZmxhZ3MgMHgwMiBkbGVuIDEyICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICMzNCBbaGNpMF0gNDMuMTQ4NDA1
-DQogICAgICBMMkNBUDogQ29ubmVjdGlvbiBSZXF1ZXN0ICgweDAyKSBpZGVudCAzIGxlbiA0DQog
-ICAgICAgIFBTTTogMyAoMHgwMDAzKQ0KICAgICAgICBTb3VyY2UgQ0lEOiA2NA0KDQo+IA0KPiBS
-ZWdhcmRzDQo+IA0KPiBNYXJjZWwNCj4gDQo+IA0KDQo=
+On Sat, Sep 26, 2020 at 12:22:19PM -0700, Moritz Fischer wrote:
+> Hi Greg,
+> 
+> On Sat, Sep 26, 2020 at 08:09:13AM +0200, Greg KH wrote:
+> > On Sat, Sep 26, 2020 at 10:23:46AM +0800, Xu Yilun wrote:
+> > > Hi greg,
+> > > 
+> > > About the bus naming, I summarized some questions we've discussed to check
+> > > with you. See inline.
+> > > 
+> > > On Thu, Sep 24, 2020 at 10:27:00AM -0700, Moritz Fischer wrote:
+> > > > Hi Xu,
+> > > > 
+> > > > On Fri, Sep 25, 2020 at 12:59:57AM +0800, Xu Yilun wrote:
+> > > > > Now the DFL device drivers could be made as independent modules and put
+> > > > > in different subsystems according to their functionalities. So the name
+> > > > > should be descriptive and unique in the whole kernel.
+> > > > > 
+> > > > > The patch changes the naming of dfl bus related structures, functions,
+> > > > > APIs and documentations.
+> > > > > 
+> > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > > ---
+> > > > >  Documentation/ABI/testing/sysfs-bus-dfl      |  15 --
+> > > > >  Documentation/ABI/testing/sysfs-bus-fpga-dfl |  15 ++
+> > > > >  MAINTAINERS                                  |   2 +-
+> > > > >  drivers/fpga/dfl.c                           | 254 ++++++++++++++-------------
+> > > > >  drivers/fpga/dfl.h                           |  77 ++++----
+> > > > >  5 files changed, 184 insertions(+), 179 deletions(-)
+> > > > >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+> > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-fpga-dfl
+> > > > > 
+> > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > deleted file mode 100644
+> > > > > index 23543be..0000000
+> > > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > +++ /dev/null
+> > > > > @@ -1,15 +0,0 @@
+> > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/type
+> > > > > -Date:		Aug 2020
+> > > > > -KernelVersion:	5.10
+> > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > > -Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
+> > > > > -		supports 2 FIU types, 0 for FME, 1 for PORT.
+> > > > > -		Format: 0x%x
+> > > > > -
+> > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
+> > > > > -Date:		Aug 2020
+> > > > > -KernelVersion:	5.10
+> > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > > -Description:	Read-only. It returns feature identifier local to its DFL FIU
+> > > > > -		type.
+> > > > > -		Format: 0x%x
+> > > > 
+> > > > You're changing userland facing ABI. I think that's something to avoid,
+> > > > please check with Greg on the rules since this hasn't been in a release yet.
+> > > > 
+> > > 
+> > > I'm going to change the name of bus stuff for other subsystems, to be
+> > > aligned, I also consider change the bus_type.name and dfl dev_name. But
+> > > it will cause the changing of user ABIs. No user case for these user ABI
+> > > now cause they are just queued, is it good I change them?
+> > 
+> > Why change the user name here?  No need for that, right?  Unless you
+> > really want to, and think that no one will notice.  If so, fine, change
+> > them :)
+> 
+> Let's leave it as is -- An FPGA is one possible implementation and as for
+> other buses, you wouldn't call it fpga-usb or usb-fpga just because the
+> USB bus is implemented in an FPGA if it behaves like a normal USB bus.
+> Having an ASIC based DFL bus show up under dfl-fpga / fpga-dfl in sysfs
+> would be super confusing.
+> 
+> > > It is mentioned that although Device Feature List is introduced in FPGA,
+> > > but it doesn't limit the usage in FPGA only. It's just a method to
+> > > discover features from a device, for sure it can be extended and used
+> > > in other devices too. So it can be bigger namespace than FPGA. Like in
+> > > our existing code, we picked dfl_fpga (DFL based FPGA) for uapi (ioctl)
+> > > and internal functions. This is suggested by Alan (The previous FPGA
+> > > maintainer). It's possible to have "DFL based XXX" in the future, even
+> > > currently only FPGA uses DFL. This is the reason we thought just "dfl"
+> > > in the whole kernel space is OK.
+> > > So, is there a chance we keep the "dfl" naming in the whole kernel?
+> > 
+> > No one knows what "DFL" is, and odds are, if a different subsystem wants
+> > to use it, they will have their own variant, right?
+> > 
+> > And why didn't you all use device tree?  How did this sneak in past
+> > everyone?
+> 
+> DFL is a pretty efficient implementation in terms of resource
+> utilization on the FPGA end (a couple of registers / memories) vs
+> several kilobytes of memory for a device-tree blob.
+> 
+> The hardware using DFL to describe its internal structure exists in the
+> form of deployed accelerator cards and telling all its users to go and
+> change their hardware design would be feasible -- If you think about an
+> FPGA as a (albeit reconfigurable) ASIC you wouldn't go and tell people
+> to redesign their ASIC to use Device-Tree? :)
+> 
+> I'm not sure where the 'sneaking in' anything comes from. It's been
+> reviewed on the list (and by yourself back then). If you feel any of
+> this wasn't kosher, let's talk about it, to make sure it doesn't happen
+> again.
+
+I can't remember reviewing it, sorry, too many patches, I probably was
+only worrying about functionality issues, not what the code actually did
+:)
+
+So it's fine, just a surprise to me, no big deal.
+
+thanks,
+
+greg k-h
