@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3DD279F50
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8C72279F53
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730424AbgI0HnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 03:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727263AbgI0HnV (ORCPT
+        id S1729840AbgI0Hsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 03:48:36 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:57794 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726382AbgI0Hsf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 03:43:21 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37CD7C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 00:43:21 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4Bzd1K4nb5zQlQr;
-        Sun, 27 Sep 2020 09:43:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id yUCFpNA4QEHE; Sun, 27 Sep 2020 09:43:14 +0200 (CEST)
-Date:   Sun, 27 Sep 2020 09:43:12 +0200
-From:   Hagen Paul Pfeifer <hagen@jauu.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: perf script, libperf: python binding bug (bytearrays vs. strings)
-Message-ID: <20200927074312.GA3664097@laniakea>
+        Sun, 27 Sep 2020 03:48:35 -0400
+X-UUID: 41f7c2f5dcb64a769089f932eb3d2dcc-20200927
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=d9lyIqtPvPXiR0F6KUQePPMfpcjXX/jEbkNNHhsMUyo=;
+        b=o4qFlUBL8p6PM/BoSI4Fh75nQ9SKQjn9e07CFDjyzLqE+i40/+JT5ZppBXM9OcnX9nEwgZ0e+/U8ZW+ygxl6GtjXfj80Lz7wXaEDrN9YLZsDFU9+QZltD2MWM6U/CTIL1bE0jud3Iwp5W6ixq2Gf+ZCUjxRLYxZgzetCcMWxQu4=;
+X-UUID: 41f7c2f5dcb64a769089f932eb3d2dcc-20200927
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <jianjun.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 219952987; Sun, 27 Sep 2020 15:48:29 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 27 Sep 2020 15:48:26 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 27 Sep 2020 15:48:25 +0800
+From:   Jianjun Wang <jianjun.wang@mediatek.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Ryder Lee <ryder.lee@mediatek.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        <davem@davemloft.net>, <linux-pci@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Sj Huang <sj.huang@mediatek.com>,
+        Jianjun Wang <jianjun.wang@mediatek.com>,
+        <youlin.pei@mediatek.com>, <chuanjia.liu@mediatek.com>,
+        <qizhong.cheng@mediatek.com>, <sin_jieyang@mediatek.com>
+Subject: [v3,0/3] PCI: mediatek: Add new generation controller support
+Date:   Sun, 27 Sep 2020 15:45:52 +0800
+Message-ID: <20200927074555.4155-1-jianjun.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Key-Id: 98350C22
-X-Key-Fingerprint: 490F 557B 6C48 6D7E 5706 2EA2 4A22 8D45 9835 0C22
-X-GPG-Key: gpg --recv-keys --keyserver wwwkeys.eu.pgp.net 98350C22
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -2.77 / 15.00 / 15.00
-X-Rspamd-Queue-Id: A4CF0EF9
-X-Rspamd-UID: b19b0d
+Content-Type: text/plain
+X-TM-SNTS-SMTP: FEC9D6A66C7B483EF0EF7CCF5000DE10A76B54A9207FFC0B54437214FC778F142000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo Jiri, Arnaldo,
+VGhlc2Ugc2VyaWVzIHBhdGNoZXMgYWRkIHBjaWUtbWVkaWF0ZWstZ2VuMy5jIGFuZCBkdC1iaW5k
+aW5ncyBmaWxlIHRvDQpzdXBwb3J0IG5ldyBnZW5lcmF0aW9uIFBDSWUgY29udHJvbGxlci4NCg0K
+Q2hhbmdlcyBpbiB2MzoNCjEuIFJlbW92ZSBzdGFuZGFyZCBwcm9wZXJ0eSBpbiBiaW5kaW5nIGRv
+Y3VtZW50DQoyLiBSZXR1cm4gZXJyb3IgbnVtYmVyIHdoZW4gZ2V0X29wdGlvbmFsKiBBUEkgdGhy
+b3dzIGFuIGVycm9yDQozLiBVc2UgdGhlIGJ1bGsgY2xrIEFQSXMNCg0KQ2hhbmdlcyBpbiB2MjoN
+CjEuIEZpeCB0aGUgdHlwbyBvZiBkdC1iaW5kaW5ncyBwYXRjaA0KMi4gUmVtb3ZlIHRoZSB1bm5l
+Y2Vzc2FyeSBwcm9wZXJ0aWVzIGluIGJpbmRpbmcgZG9jdW1lbnQNCjMuIGRpc3BvcyB0aGUgaXJx
+IG1hcHBpbmdzIG9mIG1zaSB0b3AgZG9tYWluIHdoZW4gaXJxIHRlYXJkb3duDQoNCkppYW5qdW4g
+V2FuZyAoMyk6DQogIGR0LWJpbmRpbmdzOiBQQ0k6IG1lZGlhdGVrOiBBZGQgWUFNTCBzY2hlbWEN
+CiAgUENJOiBtZWRpYXRlazogQWRkIG5ldyBnZW5lcmF0aW9uIGNvbnRyb2xsZXIgc3VwcG9ydA0K
+ICBNQUlOVEFJTkVSUzogdXBkYXRlIGVudHJ5IGZvciBNZWRpYVRlayBQQ0llIGNvbnRyb2xsZXIN
+Cg0KIC4uLi9iaW5kaW5ncy9wY2kvbWVkaWF0ZWstcGNpZS1nZW4zLnlhbWwgICAgICB8ICAxMjYg
+KysNCiBNQUlOVEFJTkVSUyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAx
+ICsNCiBkcml2ZXJzL3BjaS9jb250cm9sbGVyL0tjb25maWcgICAgICAgICAgICAgICAgfCAgIDE0
+ICsNCiBkcml2ZXJzL3BjaS9jb250cm9sbGVyL01ha2VmaWxlICAgICAgICAgICAgICAgfCAgICAx
+ICsNCiBkcml2ZXJzL3BjaS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWstZ2VuMy5jICAgfCAxMDI0
+ICsrKysrKysrKysrKysrKysrDQogNSBmaWxlcyBjaGFuZ2VkLCAxMTY2IGluc2VydGlvbnMoKykN
+CiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Bj
+aS9tZWRpYXRlay1wY2llLWdlbjMueWFtbA0KIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3Bj
+aS9jb250cm9sbGVyL3BjaWUtbWVkaWF0ZWstZ2VuMy5jDQoNCi0tIA0KMi4yNS4xDQo=
 
-after updating Debian (probably with the advent of Python 3.8.5, guessing)
-I get a wired behavior with python scripting. The error is that the python type
-for prev_comm and next_comm are not strings anymore, rather bytearrays. Which
-are incompatible types and scripts will not work anymore. NOTE: common_comm is
-still fine (see swapper & mutex-thread-co), so they must be treated internal
-differently compared to prev_comm and next_comm and possibly show a way to solve
-this problem!
-
-After bisecting the kernel (perf) even back to v5.6 the problem still exist.
-Compiling perf with PYTHON=python2 do not show any problems - no problems in
-the Python2 world. So I assume with Python 3.8.5 (or other helper library)
-something changed internally. I assume the cause exists in perf forever but
-is now triggered with the new Python3 version.
-
-How to reproduce:
-
-make PYTHON=python3
-./perf record -e sched:sched_switch -a -- sleep 5
-./perf script --gen-script py
-./perf script -s ./perf-script.py
-
-[..]
-sched__sched_switch      7 563231.759525792        0 swapper              prev_comm=bytearray(b'swapper/7\x00\x00\x00\x00\x00\x00\x00'), prev_pid=0, prev_prio=120, prev_state=, next_comm=bytearray(b'mutex-thread-co\x00'), next_pid=3447985, next_prio=120
-Sample: {addr=0, cpu=7, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744072189289569, period=1, phys_addr=0, pid=0, tid=0, time=563231759525792, transaction=0, values=[(0, 0)], weight=0}
-
-sched__sched_switch      7 563231.759582596  3447985 mutex-thread-co      prev_comm=bytearray(b'mutex-thread-co\x00'), prev_pid=3447985, prev_prio=120, prev_state=, next_comm=bytearray(b'swapper/7\x00\x00\x00\x00\x00\x00\x00'), next_pid=0, next_prio=120
-Sample: {addr=0, cpu=7, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744072189289569, period=1, phys_addr=0, pid=3447983, tid=3447985, time=563231759582596, transaction=0, values=[(0, 0)], weight=0}
-
-
-See =bytearray(b'swapper/7\x00\x00\x00\x00\x00\x00\x00') - should be swapper/7
-
-
-Note: the byte array has the length of 16 - exactly like the kernel
-(TASK_COMM_LEN). I assume this is somehow copied directly into the variables
-and not stringified anymore.
-
-
-Even worse: I discovered bytearrays which are not correctly "memseted":
-	bytearray(b'chrome\x00sandbox\x00\x00')
-
-chrome should be the comm name, but is 'chromesandbox' somehow. See the null
-bytes in between.
-
-Jiri, Arnaldo - I tried to fix this. But the Python binding magic for the
-automatically generated events are hard to get comfy.
-
-Hagen
-
-PS: assume this fix is also kernel stable relevant.
