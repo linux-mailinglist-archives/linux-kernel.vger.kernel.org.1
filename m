@@ -2,106 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 947C1279F11
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 08:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3D8279F18
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 08:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730365AbgI0Gt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 02:49:27 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:14240 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730224AbgI0Gt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 02:49:26 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 41C6E69F3BB150381954;
-        Sun, 27 Sep 2020 14:49:23 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.253) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Sun, 27 Sep 2020
- 14:49:14 +0800
-Subject: Re: [PATCH v6 0/6] irqchip: dw-apb-ictl: support hierarchy irq domain
-To:     Marc Zyngier <maz@kernel.org>, Vineet Gupta <vgupta@synopsys.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        linux-snps-arc <linux-snps-arc@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Thomas Gleixner <tglx@linutronix.de>
-CC:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Haoyu Lv <lvhaoyu@huawei.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Libin <huawei.libin@huawei.com>
-References: <20200924071754.4509-1-thunder.leizhen@huawei.com>
- <160104911402.38543.3098076840902954515.b4-ty@kernel.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <f6436e0d-dbed-5455-134f-e209f2a3b131@huawei.com>
-Date:   Sun, 27 Sep 2020 14:49:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1730400AbgI0Gyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 02:54:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24526 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730342AbgI0Gyf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 02:54:35 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601189672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cLXv0DKfSOLJ4aixYebn4viaLF/QMh4USeFAZRpOEdg=;
+        b=SqUx+7SCIhGevSbO8DZqCIuIqBANKs7/7/y6uapjEJhWldbOwfntvMt//yHKocFLXPQYJl
+        xb7lZXt/Ubel8lHYHDXj6xrSI+7SW5AAkKkw5bsoXz+m7xt0bWQEOnrTfaHYRpnNBMzxvf
+        3B2Up0kZABZRSIaBPYzFmmjAaUQ+Mkw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-6kLx7av-MYWZmuB_4SY_rg-1; Sun, 27 Sep 2020 02:54:30 -0400
+X-MC-Unique: 6kLx7av-MYWZmuB_4SY_rg-1
+Received: by mail-wr1-f69.google.com with SMTP id d13so3189411wrr.23
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 23:54:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cLXv0DKfSOLJ4aixYebn4viaLF/QMh4USeFAZRpOEdg=;
+        b=WTBQrMGjXc2feWdvmJZ9cF/6kjSROp4MB7+U9kKWvgODJd+Cl+xO3FMXzYX0fOknel
+         qwohhRVW5luk8cjpbiCqtY4vqlWUDg9nuexEBFM4GMg+II7+8UH1PfewZpEnwjlhRmq6
+         r7mmKShtHo1mzPJ34B9PtnfN83jtTbFM9NTson3ejifm9oUNjDPWRHgrCo3tkqxo4UwD
+         slHq8nObSPf5AHW3kJYB7g5BRy4BaFD2Ljti0tNyKdY3cfDK7uIgQZhaHuY2pzZIFyPW
+         TjMTkLo9ijFWBTlGyKUbiKSDn6KOEpxdLsa+Ds6IXC/5j65VJzNrbxmqqGWkt4O4VaLU
+         D2RQ==
+X-Gm-Message-State: AOAM532iJxHKO0xHIoiKtPleP/OketsOFoO40aNYZcAY9z5DNJL5yoqz
+        ek6prHgvjPCT8bZ2y/alNCHDtNRv4o9/bdBJUfaDHAtPCESecaNMJy0ALaJTy6fbQ/WnMlcFWbT
+        +7LfolH8wYPmDAKSigWx1Nrzv
+X-Received: by 2002:a1c:7514:: with SMTP id o20mr5504924wmc.76.1601189668702;
+        Sat, 26 Sep 2020 23:54:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzPC00lWu0vUKx40yVBk2ftsrestYUPzewXaLzXmUYjf8kVKdthT3RKr7iOh/zNpTpuygb9Dw==
+X-Received: by 2002:a1c:7514:: with SMTP id o20mr5504904wmc.76.1601189668396;
+        Sat, 26 Sep 2020 23:54:28 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:fc81:b99a:aac0:e256? ([2001:b07:6468:f312:fc81:b99a:aac0:e256])
+        by smtp.gmail.com with ESMTPSA id b187sm4374497wmb.8.2020.09.26.23.54.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Sep 2020 23:54:27 -0700 (PDT)
+Subject: Re: [PATCH] x86/hyperv: Remove aliases with X64 in their name
+To:     joseph.salisbury@microsoft.com, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, wei.liu@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        mikelley@microsoft.com, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org
+Cc:     x86@kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <1601130386-11111-1-git-send-email-jsalisbury@linux.microsoft.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <70053462-38a3-e425-5f97-35a349ab96ab@redhat.com>
+Date:   Sun, 27 Sep 2020 08:54:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-In-Reply-To: <160104911402.38543.3098076840902954515.b4-ty@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <1601130386-11111-1-git-send-email-jsalisbury@linux.microsoft.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.253]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2020/9/25 23:54, Marc Zyngier wrote:
-> On Thu, 24 Sep 2020 15:17:48 +0800, Zhen Lei wrote:
->> v5 --> v6:
->> 1. add Reviewed-by: Rob Herring <robh@kernel.org> for Patch 4.
->> 2. Some modifications are made to Patch 5:
->>    1) add " |" for each "description:" property if its content exceeds one line,
->>       to tell the yaml keep the "newline" character.
->>    2) add "..." to mark the end of the yaml file.
->>    3) Change the name list of maintainers to the author of "snps,dw-apb-ictl.txt"
->> 	 maintainers:
->> 	-  - Marc Zyngier <marc.zyngier@arm.com>
->> 	+  - Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
->>    4) add "maxItems: 1" for property "reg".
->>    5) for property "interrupts":
->> 	 interrupts:
->> 	-    minItems: 1
->> 	-    maxItems: 65
->> 	+    maxItems: 1
->>    6) move below descriptions under the top level property "description:"
->> 	description: |
->> 	  Synopsys DesignWare provides interrupt controller IP for APB known as
->> 	  dw_apb_ictl. The IP is used as secondary interrupt controller in some SoCs
->> 	  with APB bus, e.g. Marvell Armada 1500. It can also be used as primary
->> 	  interrupt controller in some SoCs, e.g. Hisilicon SD5203.
->>
->> [...]
+On 26/09/20 16:26, Joseph Salisbury wrote:
+> From: Joseph Salisbury <joseph.salisbury@microsoft.com>
 > 
-> Applied to irq/irqchip-next, thanks!
+> In the architecture independent version of hyperv-tlfs.h, commit c55a844f46f958b
+> removed the "X64" in the symbol names so they would make sense for both x86 and
+> ARM64.  That commit added aliases with the "X64" in the x86 version of hyperv-tlfs.h 
+> so that existing x86 code would continue to compile.
+> 
+> As a cleanup, update the x86 code to use the symbols without the "X64", then remove 
+> the aliases.  There's no functional change.
+> 
+> Signed-off-by: Joseph Salisbury <joseph.salisbury@microsoft.com>
+> ---
+>  arch/x86/hyperv/hv_init.c          |  8 ++++----
+>  arch/x86/hyperv/hv_spinlock.c      |  2 +-
+>  arch/x86/include/asm/hyperv-tlfs.h | 33 ------------------------------
+>  arch/x86/kernel/cpu/mshyperv.c     |  8 ++++----
+>  arch/x86/kvm/hyperv.c              | 20 +++++++++---------
+>  5 files changed, 19 insertions(+), 52 deletions(-)
+> 
+> diff --git a/arch/x86/hyperv/hv_init.c b/arch/x86/hyperv/hv_init.c
+> index 6035df1b49e1..e04d90af4c27 100644
+> --- a/arch/x86/hyperv/hv_init.c
+> +++ b/arch/x86/hyperv/hv_init.c
+> @@ -148,9 +148,9 @@ static inline bool hv_reenlightenment_available(void)
+>  	 * Check for required features and priviliges to make TSC frequency
+>  	 * change notifications work.
+>  	 */
+> -	return ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
+> +	return ms_hyperv.features & HV_ACCESS_FREQUENCY_MSRS &&
+>  		ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE &&
+> -		ms_hyperv.features & HV_X64_ACCESS_REENLIGHTENMENT;
+> +		ms_hyperv.features & HV_ACCESS_REENLIGHTENMENT;
+>  }
+>  
+>  DEFINE_IDTENTRY_SYSVEC(sysvec_hyperv_reenlightenment)
+> @@ -330,8 +330,8 @@ void __init hyperv_init(void)
+>  		return;
+>  
+>  	/* Absolutely required MSRs */
+> -	required_msrs = HV_X64_MSR_HYPERCALL_AVAILABLE |
+> -		HV_X64_MSR_VP_INDEX_AVAILABLE;
+> +	required_msrs = HV_MSR_HYPERCALL_AVAILABLE |
+> +		HV_MSR_VP_INDEX_AVAILABLE;
+>  
+>  	if ((ms_hyperv.features & required_msrs) != required_msrs)
+>  		return;
+> diff --git a/arch/x86/hyperv/hv_spinlock.c b/arch/x86/hyperv/hv_spinlock.c
+> index 07f21a06392f..f3270c1fc48c 100644
+> --- a/arch/x86/hyperv/hv_spinlock.c
+> +++ b/arch/x86/hyperv/hv_spinlock.c
+> @@ -66,7 +66,7 @@ void __init hv_init_spinlocks(void)
+>  {
+>  	if (!hv_pvspin || !apic ||
+>  	    !(ms_hyperv.hints & HV_X64_CLUSTER_IPI_RECOMMENDED) ||
+> -	    !(ms_hyperv.features & HV_X64_MSR_GUEST_IDLE_AVAILABLE)) {
+> +	    !(ms_hyperv.features & HV_MSR_GUEST_IDLE_AVAILABLE)) {
+>  		pr_info("PV spinlocks disabled\n");
+>  		return;
+>  	}
+> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+> index 7a4d2062385c..0ed20e8bba9e 100644
+> --- a/arch/x86/include/asm/hyperv-tlfs.h
+> +++ b/arch/x86/include/asm/hyperv-tlfs.h
+> @@ -27,39 +27,6 @@
+>  #define HYPERV_CPUID_MIN			0x40000005
+>  #define HYPERV_CPUID_MAX			0x4000ffff
+>  
+> -/*
+> - * Aliases for Group A features that have X64 in the name.
+> - * On x86/x64 these are HYPERV_CPUID_FEATURES.EAX bits.
+> - */
+> -
+> -#define HV_X64_MSR_VP_RUNTIME_AVAILABLE		\
+> -		HV_MSR_VP_RUNTIME_AVAILABLE
+> -#define HV_X64_MSR_SYNIC_AVAILABLE		\
+> -		HV_MSR_SYNIC_AVAILABLE
+> -#define HV_X64_MSR_APIC_ACCESS_AVAILABLE	\
+> -		HV_MSR_APIC_ACCESS_AVAILABLE
+> -#define HV_X64_MSR_HYPERCALL_AVAILABLE		\
+> -		HV_MSR_HYPERCALL_AVAILABLE
+> -#define HV_X64_MSR_VP_INDEX_AVAILABLE		\
+> -		HV_MSR_VP_INDEX_AVAILABLE
+> -#define HV_X64_MSR_RESET_AVAILABLE		\
+> -		HV_MSR_RESET_AVAILABLE
+> -#define HV_X64_MSR_GUEST_IDLE_AVAILABLE		\
+> -		HV_MSR_GUEST_IDLE_AVAILABLE
+> -#define HV_X64_ACCESS_FREQUENCY_MSRS		\
+> -		HV_ACCESS_FREQUENCY_MSRS
+> -#define HV_X64_ACCESS_REENLIGHTENMENT		\
+> -		HV_ACCESS_REENLIGHTENMENT
+> -#define HV_X64_ACCESS_TSC_INVARIANT		\
+> -		HV_ACCESS_TSC_INVARIANT
+> -
+> -/*
+> - * Aliases for Group B features that have X64 in the name.
+> - * On x86/x64 these are HYPERV_CPUID_FEATURES.EBX bits.
+> - */
+> -#define HV_X64_POST_MESSAGES		HV_POST_MESSAGES
+> -#define HV_X64_SIGNAL_EVENTS		HV_SIGNAL_EVENTS
+> -
+>  /*
+>   * Group D Features.  The bit assignments are custom to each architecture.
+>   * On x86/x64 these are HYPERV_CPUID_FEATURES.EDX bits.
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
+> index 31125448b174..9834a43cd0fa 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -248,7 +248,7 @@ static void __init ms_hyperv_init_platform(void)
+>  			hv_host_info_edx >> 24, hv_host_info_edx & 0xFFFFFF);
+>  	}
+>  
+> -	if (ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
+> +	if (ms_hyperv.features & HV_ACCESS_FREQUENCY_MSRS &&
+>  	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
+>  		x86_platform.calibrate_tsc = hv_get_tsc_khz;
+>  		x86_platform.calibrate_cpu = hv_get_tsc_khz;
+> @@ -270,7 +270,7 @@ static void __init ms_hyperv_init_platform(void)
+>  		crash_kexec_post_notifiers = true;
+>  
+>  #ifdef CONFIG_X86_LOCAL_APIC
+> -	if (ms_hyperv.features & HV_X64_ACCESS_FREQUENCY_MSRS &&
+> +	if (ms_hyperv.features & HV_ACCESS_FREQUENCY_MSRS &&
+>  	    ms_hyperv.misc_features & HV_FEATURE_FREQUENCY_MSRS_AVAILABLE) {
+>  		/*
+>  		 * Get the APIC frequency.
+> @@ -296,7 +296,7 @@ static void __init ms_hyperv_init_platform(void)
+>  	machine_ops.shutdown = hv_machine_shutdown;
+>  	machine_ops.crash_shutdown = hv_machine_crash_shutdown;
+>  #endif
+> -	if (ms_hyperv.features & HV_X64_ACCESS_TSC_INVARIANT) {
+> +	if (ms_hyperv.features & HV_ACCESS_TSC_INVARIANT) {
+>  		wrmsrl(HV_X64_MSR_TSC_INVARIANT_CONTROL, 0x1);
+>  		setup_force_cpu_cap(X86_FEATURE_TSC_RELIABLE);
+>  	} else {
+> @@ -330,7 +330,7 @@ static void __init ms_hyperv_init_platform(void)
+>  	alloc_intr_gate(HYPERVISOR_CALLBACK_VECTOR, asm_sysvec_hyperv_callback);
+>  
+>  	/* Setup the IDT for reenlightenment notifications */
+> -	if (ms_hyperv.features & HV_X64_ACCESS_REENLIGHTENMENT) {
+> +	if (ms_hyperv.features & HV_ACCESS_REENLIGHTENMENT) {
+>  		alloc_intr_gate(HYPERV_REENLIGHTENMENT_VECTOR,
+>  				asm_sysvec_hyperv_reenlightenment);
+>  	}
+> diff --git a/arch/x86/kvm/hyperv.c b/arch/x86/kvm/hyperv.c
+> index 1d330564eed8..8c1e8334eff0 100644
+> --- a/arch/x86/kvm/hyperv.c
+> +++ b/arch/x86/kvm/hyperv.c
+> @@ -2000,20 +2000,20 @@ int kvm_vcpu_ioctl_get_hv_cpuid(struct kvm_vcpu *vcpu, struct kvm_cpuid2 *cpuid,
+>  			break;
+>  
+>  		case HYPERV_CPUID_FEATURES:
+> -			ent->eax |= HV_X64_MSR_VP_RUNTIME_AVAILABLE;
+> +			ent->eax |= HV_MSR_VP_RUNTIME_AVAILABLE;
+>  			ent->eax |= HV_MSR_TIME_REF_COUNT_AVAILABLE;
+> -			ent->eax |= HV_X64_MSR_SYNIC_AVAILABLE;
+> +			ent->eax |= HV_MSR_SYNIC_AVAILABLE;
+>  			ent->eax |= HV_MSR_SYNTIMER_AVAILABLE;
+> -			ent->eax |= HV_X64_MSR_APIC_ACCESS_AVAILABLE;
+> -			ent->eax |= HV_X64_MSR_HYPERCALL_AVAILABLE;
+> -			ent->eax |= HV_X64_MSR_VP_INDEX_AVAILABLE;
+> -			ent->eax |= HV_X64_MSR_RESET_AVAILABLE;
+> +			ent->eax |= HV_MSR_APIC_ACCESS_AVAILABLE;
+> +			ent->eax |= HV_MSR_HYPERCALL_AVAILABLE;
+> +			ent->eax |= HV_MSR_VP_INDEX_AVAILABLE;
+> +			ent->eax |= HV_MSR_RESET_AVAILABLE;
+>  			ent->eax |= HV_MSR_REFERENCE_TSC_AVAILABLE;
+> -			ent->eax |= HV_X64_ACCESS_FREQUENCY_MSRS;
+> -			ent->eax |= HV_X64_ACCESS_REENLIGHTENMENT;
+> +			ent->eax |= HV_ACCESS_FREQUENCY_MSRS;
+> +			ent->eax |= HV_ACCESS_REENLIGHTENMENT;
+>  
+> -			ent->ebx |= HV_X64_POST_MESSAGES;
+> -			ent->ebx |= HV_X64_SIGNAL_EVENTS;
+> +			ent->ebx |= HV_POST_MESSAGES;
+> +			ent->ebx |= HV_SIGNAL_EVENTS;
+>  
+>  			ent->edx |= HV_FEATURE_FREQUENCY_MSRS_AVAILABLE;
+>  			ent->edx |= HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE;
+> 
 
-Thank you very much. You have provided a lot of valuable review of this patch series.
-
-> 
-> [1/6] genirq: Add stub for set_handle_irq() when !GENERIC_IRQ_MULTI_HANDLER
->       commit: ea0c80d1764449acf2f70fdb25aec33800cd0348
-> [2/6] irqchip/dw-apb-ictl: Refactor priot to introducing hierarchical irq domains
->       commit: d59f7d159891466361808522b63cf3548ea3ecb0
-> [3/6] irqchip/dw-apb-ictl: Add primary interrupt controller support
->       commit: 54a38440b84f8933b555c23273deca6a396f6708
-> [4/6] dt-bindings: dw-apb-ictl: Update binding to describe use as primary interrupt controller
->       commit: 8156b80fd4885d0ca9748e736441cc37f4eb476a
-> 
-> I have dropped patch 5 as it doesn't have Rob's Ack yet (and is not that
-> critical) as well as patch 6 which is better routed via the ARC tree.
-
-OK. I will continue talking to Rob about patch 5. Rob suggested me to remove below allOf, but I have not
-done it. If the allOf should be removed, the 6/6 will be discarded.
-+allOf:
-+  - $ref: /schemas/interrupt-controller.yaml#
-
-> 
-> Cheers,
-> 
-> 	M.
-> 
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
