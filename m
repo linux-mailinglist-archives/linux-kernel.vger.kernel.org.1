@@ -2,76 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 952E327A1E3
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 18:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8470627A1E9
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 19:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbgI0QpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 12:45:24 -0400
-Received: from smtprelay0164.hostedemail.com ([216.40.44.164]:59620 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726149AbgI0QpX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 12:45:23 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 7ECF818225E17;
-        Sun, 27 Sep 2020 16:45:22 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:960:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3865:3867:3868:3870:3873:3874:4321:5007:6691:7264:7576:7875:9545:10004:10400:10848:11232:11658:11914:12043:12295:12297:12683:12740:12760:12895:13069:13071:13095:13161:13229:13311:13357:13439:14110:14180:14659:14721:14777:21060:21080:21433:21451:21627:21819:21939:30022:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: gate88_5f0387d2717a
-X-Filterd-Recvd-Size: 1695
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 27 Sep 2020 16:45:20 +0000 (UTC)
-Message-ID: <4bff3adc94d909be7132151b1af211ed862b4126.camel@perches.com>
-Subject: Re: [PATCH v2] Staging: nvec: nvec: fix double next comment
-From:   Joe Perches <joe@perches.com>
-To:     Ryan Kosta <ryanpkosta@gmail.com>, gregkh@linuxfoundation.org
-Cc:     marvin24@gmx.de, p.zabel@pengutronix.de, ac100@lists.launchpad.net,
-        linux-tegra@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 27 Sep 2020 09:45:19 -0700
-In-Reply-To: <20200927163504.7546-1-ryanpkosta@gmail.com>
-References: <20200927163504.7546-1-ryanpkosta@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1726379AbgI0RAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 13:00:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726321AbgI0Q77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 12:59:59 -0400
+Received: from kozik-lap.proceq-device.com (unknown [194.230.155.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6059823899;
+        Sun, 27 Sep 2020 16:59:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601225999;
+        bh=DsQjxeaTzdxtV/FNnzMWtGBAiV2ATQVQpSEoosApHDY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jWRaHKISj8i/MzZzLzvT9/1wyCUAlxZwzBIf1JXupR8bCUcBqnFUSZ6Ij0r78EdvR
+         5AVKMfIpW40ptp8ffyJwJiYD3vrlnG/PCO6fPoxxymOHX9IiFCQNIQZWVuk7wx3+XP
+         RYZcCPB2dDN2l8sYw5TlngHRYxhKroS73RRIpO28=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Adam Ford <aford173@gmail.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Peter Chen <peter.chen@nxp.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 1/6] arm64: dts: imx8mm-var-som: fix missing PMIC's interrupt line pull-up
+Date:   Sun, 27 Sep 2020 18:59:42 +0200
+Message-Id: <20200927165947.7317-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-09-27 at 09:35 -0700, Ryan Kosta wrote:
-> Changes since v1:
->  * Made commit message more clear
->  * Added description
-> Note: previous patch named
->  "[PATCH] fix double next comment in drivers/staging/nvec/nvec.c"
-> > 8------------------------------------------------------8<
-> Fixes a comment typo.
+The PMIC's interrupt is level low and should be pulled up.  The PMIC's
+device node had pinctrl-0 property but it lacked pinctrl-names which
+is required to apply the pin configuration.  The actual problem in DTS
+was pointed out by Felix Radensky from Variscite.
 
-Hi Ryan.
-
-That comment should be _below_ the --- separator line
-
-There's no need to double the nvec: word in the subject either.
-And please use the imperative.
-
-So the email message should look something like:
-
----------------------------------------------------------
-
-From: <you>
-
-Subject: [PATCH V2] staging: nvec: Remove repeated word typo in a comment
-
-Fix a comment typo.
-
-Signed-off-by: <you>
+Reported-by: Felix Radensky <felix.r@variscite.com>
+Fixes: 5f67317bd967 ("arm64: dts: imx8mm: correct interrupt flags")
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
+ arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-V2: Add a commit description
-
-<patch>
-
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
+index 4107fe914d08..49082529764f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som.dtsi
+@@ -135,13 +135,10 @@
+ 	pmic@4b {
+ 		compatible = "rohm,bd71847";
+ 		reg = <0x4b>;
++		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_pmic>;
+ 		interrupt-parent = <&gpio2>;
+-		/*
+-		 * The interrupt is not correct. It should be level low,
+-		 * however with internal pull up this causes IRQ storm.
+-		 */
+-		interrupts = <8 IRQ_TYPE_EDGE_RISING>;
++		interrupts = <8 IRQ_TYPE_LEVEL_LOW>;
+ 		rohm,reset-snvs-powered;
+ 
+ 		#clock-cells = <0>;
+@@ -398,7 +395,7 @@
+ 
+ 	pinctrl_pmic: pmicirqgrp {
+ 		fsl,pins = <
+-			MX8MM_IOMUXC_SD1_DATA6_GPIO2_IO8	0x41
++			MX8MM_IOMUXC_SD1_DATA6_GPIO2_IO8	0x141
+ 		>;
+ 	};
+ 
+-- 
+2.17.1
 
