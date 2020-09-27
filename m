@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8854F27A082
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 12:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AAC27A083
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 12:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726310AbgI0KoF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 06:44:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58476 "EHLO mail.kernel.org"
+        id S1726348AbgI0Kpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 06:45:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbgI0KoF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 06:44:05 -0400
+        id S1726265AbgI0Kp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 06:45:29 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6A03F22207;
-        Sun, 27 Sep 2020 10:44:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3647C22207;
+        Sun, 27 Sep 2020 10:45:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601203444;
-        bh=cosG4DEjbjDD3MjF22culoVmEblNnFBmoEmuuf4xtLQ=;
+        s=default; t=1601203529;
+        bh=vpId3SV8tixpmayxENUVAYIDaSBnpI8+QNsHHGhHM6A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YKcHcC4PEUYBSA+yqdz0jodWBX6orSb2yYUl8hGPWnSBR321fJwy0PSOdiRCaQXU4
-         lhNTXbd1+Tuu4+2I1J/WuK/muQNiQQDi8r2RyOPl4dFHvboBxHU5pC5VA2x2TTfrct
-         WgGY/BEXqYLBgyW9OjNFOjDRebYkMqm0jW9C85hU=
-Date:   Sun, 27 Sep 2020 12:44:14 +0200
+        b=rCj3Vdp0o15iVhZL+r+A/21IILdz1FmIfT06EYTtuYd1jHM4JQZFT0f3I+fY2jqVs
+         W0MC8dgi4eB0rZZ9U8VobjfI/16+9Grjy1WHsllBM+VGipsxOuKqyUhLxjXk0queQp
+         C6ZMgdDZog7gwNBlSWTS3kIvxzLYxCPE7/fACMaI=
+Date:   Sun, 27 Sep 2020 12:45:38 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     shuo.a.liu@intel.com
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
@@ -35,30 +35,33 @@ Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
         Reinette Chatre <reinette.chatre@intel.com>,
         Zhi Wang <zhi.a.wang@intel.com>,
         Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v4 17/17] virt: acrn: Introduce an interface for Service
- VM to control vCPU
-Message-ID: <20200927104414.GC88650@kroah.com>
+Subject: Re: [PATCH v4 06/17] virt: acrn: Introduce VM management interfaces
+Message-ID: <20200927104538.GD88650@kroah.com>
 References: <20200922114311.38804-1-shuo.a.liu@intel.com>
- <20200922114311.38804-18-shuo.a.liu@intel.com>
+ <20200922114311.38804-7-shuo.a.liu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922114311.38804-18-shuo.a.liu@intel.com>
+In-Reply-To: <20200922114311.38804-7-shuo.a.liu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 07:43:11PM +0800, shuo.a.liu@intel.com wrote:
+On Tue, Sep 22, 2020 at 07:43:00PM +0800, shuo.a.liu@intel.com wrote:
 > From: Shuo Liu <shuo.a.liu@intel.com>
 > 
-> ACRN supports partition mode to achieve real-time requirements. In
-> partition mode, a CPU core can be dedicated to a vCPU of User VM. The
-> local APIC of the dedicated CPU core can be passthrough to the User VM.
-> The Service VM controls the assignment of the CPU cores.
+> The VM management interfaces expose several VM operations to ACRN
+> userspace via ioctls. For example, creating VM, starting VM, destroying
+> VM and so on.
 > 
-> Introduce an interface for the Service VM to remove the control of CPU
-> core from hypervisor perspective so that the CPU core can be a dedicated
-> CPU core of User VM.
+> The ACRN Hypervisor needs to exchange data with the ACRN userspace
+> during the VM operations. HSM provides VM operation ioctls to the ACRN
+> userspace and communicates with the ACRN Hypervisor for VM operations
+> via hypercalls.
+> 
+> HSM maintains a list of User VM. Each User VM will be bound to an
+> existing file descriptor of /dev/acrn_hsm. The User VM will be
+> destroyed when the file descriptor is closed.
 > 
 > Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
 > Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
@@ -69,93 +72,180 @@ On Tue, Sep 22, 2020 at 07:43:11PM +0800, shuo.a.liu@intel.com wrote:
 > Cc: Reinette Chatre <reinette.chatre@intel.com>
 > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > ---
->  drivers/virt/acrn/hsm.c       | 50 +++++++++++++++++++++++++++++++++++
->  drivers/virt/acrn/hypercall.h | 14 ++++++++++
->  2 files changed, 64 insertions(+)
+>  .../userspace-api/ioctl/ioctl-number.rst      |  1 +
+>  MAINTAINERS                                   |  1 +
+>  drivers/virt/acrn/Makefile                    |  2 +-
+>  drivers/virt/acrn/acrn_drv.h                  | 23 +++++-
+>  drivers/virt/acrn/hsm.c                       | 73 ++++++++++++++++-
+>  drivers/virt/acrn/hypercall.h                 | 78 +++++++++++++++++++
+>  drivers/virt/acrn/vm.c                        | 71 +++++++++++++++++
+>  include/uapi/linux/acrn.h                     | 56 +++++++++++++
+>  8 files changed, 301 insertions(+), 4 deletions(-)
+>  create mode 100644 drivers/virt/acrn/hypercall.h
+>  create mode 100644 drivers/virt/acrn/vm.c
+>  create mode 100644 include/uapi/linux/acrn.h
 > 
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 2a198838fca9..ac60efedb104 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -319,6 +319,7 @@ Code  Seq#    Include File                                           Comments
+>  0xA0  all    linux/sdp/sdp.h                                         Industrial Device Project
+>                                                                       <mailto:kenji@bitgate.com>
+>  0xA1  0      linux/vtpm_proxy.h                                      TPM Emulator Proxy Driver
+> +0xA2  all    uapi/linux/acrn.h                                       ACRN hypervisor
+>  0xA3  80-8F                                                          Port ACL  in development:
+>                                                                       <mailto:tlewis@mindspring.com>
+>  0xA3  90-9F  linux/dtlk.h
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 3030d0e93d02..d4c1ef303c2d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -443,6 +443,7 @@ S:	Supported
+>  W:	https://projectacrn.org
+>  F:	Documentation/virt/acrn/
+>  F:	drivers/virt/acrn/
+> +F:	include/uapi/linux/acrn.h
+>  
+>  AD1889 ALSA SOUND DRIVER
+>  L:	linux-parisc@vger.kernel.org
+> diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
+> index 6920ed798aaf..cf8b4ed5e74e 100644
+> --- a/drivers/virt/acrn/Makefile
+> +++ b/drivers/virt/acrn/Makefile
+> @@ -1,3 +1,3 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  obj-$(CONFIG_ACRN_HSM)	:= acrn.o
+> -acrn-y := hsm.o
+> +acrn-y := hsm.o vm.o
+> diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
+> index 29eedd696327..72d92b60d944 100644
+> --- a/drivers/virt/acrn/acrn_drv.h
+> +++ b/drivers/virt/acrn/acrn_drv.h
+> @@ -3,16 +3,37 @@
+>  #ifndef __ACRN_HSM_DRV_H
+>  #define __ACRN_HSM_DRV_H
+>  
+> +#include <linux/acrn.h>
+> +#include <linux/dev_printk.h>
+> +#include <linux/miscdevice.h>
+>  #include <linux/types.h>
+>  
+> +#include "hypercall.h"
+> +
+> +extern struct miscdevice acrn_dev;
+
+Who else needs to get to this structure in your driver?
+
+> +
+>  #define ACRN_INVALID_VMID (0xffffU)
+>  
+> +#define ACRN_VM_FLAG_DESTROYED		0U
+> +extern struct list_head acrn_vm_list;
+> +extern rwlock_t acrn_vm_list_lock;
+>  /**
+>   * struct acrn_vm - Properties of ACRN User VM.
+> + * @list:	Entry within global list of all VMs
+>   * @vmid:	User VM ID
+> + * @vcpu_num:	Number of virtual CPUs in the VM
+> + * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
+> + *		in HSM which is different from the &acrn_vm_creation.vm_flag.
+>   */
+>  struct acrn_vm {
+> -	u16	vmid;
+> +	struct list_head	list;
+> +	u16			vmid;
+> +	int			vcpu_num;
+> +	unsigned long		flags;
+>  };
+>  
+> +struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
+> +			       struct acrn_vm_creation *vm_param);
+> +int acrn_vm_destroy(struct acrn_vm *vm);
+> +
+>  #endif /* __ACRN_HSM_DRV_H */
 > diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-> index aaf4e76d27b4..ef5f77a38d1f 100644
+> index 28a3052ffa55..f3e6467b8723 100644
 > --- a/drivers/virt/acrn/hsm.c
 > +++ b/drivers/virt/acrn/hsm.c
-> @@ -9,6 +9,7 @@
+> @@ -9,7 +9,6 @@
 >   *	Yakui Zhao <yakui.zhao@intel.com>
 >   */
 >  
-> +#include <linux/cpu.h>
->  #include <linux/io.h>
+> -#include <linux/miscdevice.h>
 >  #include <linux/mm.h>
 >  #include <linux/module.h>
-> @@ -354,6 +355,47 @@ struct miscdevice acrn_dev = {
->  	.fops	= &acrn_fops,
->  };
+>  #include <linux/slab.h>
+> @@ -38,10 +37,79 @@ static int acrn_dev_open(struct inode *inode, struct file *filp)
+>  	return 0;
+>  }
 >  
-> +static ssize_t remove_cpu_store(struct device *dev,
-> +				struct device_attribute *attr,
-> +				const char *buf, size_t count)
+> +/*
+> + * HSM relies on hypercall layer of the ACRN hypervisor to do the
+> + * sanity check against the input parameters.
+> + */
+> +static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
+> +			   unsigned long ioctl_param)
 > +{
-> +	u64 cpu, lapicid;
-> +	int ret;
+> +	struct acrn_vm *vm = filp->private_data;
+> +	struct acrn_vm_creation *vm_param;
+> +	int ret = 0;
 > +
-> +	if (kstrtoull(buf, 0, &cpu) < 0)
+> +	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
+> +		dev_dbg(acrn_dev.this_device,
+> +			"ioctl 0x%x: Invalid VM state!\n", cmd);
 > +		return -EINVAL;
-> +
-> +	if (cpu >= num_possible_cpus() || cpu == 0 || !cpu_is_hotpluggable(cpu))
-> +		return -EINVAL;
-> +
-> +	if (cpu_online(cpu))
-> +		remove_cpu(cpu);
-> +
-> +	lapicid = cpu_data(cpu).apicid;
-> +	dev_dbg(dev, "Try to remove cpu %lld with lapicid %lld\n", cpu, lapicid);
-> +	ret = hcall_sos_remove_cpu(lapicid);
-> +	if (ret < 0) {
-> +		dev_err(dev, "Failed to remove cpu %lld!\n", cpu);
-> +		goto fail_remove;
 > +	}
 > +
-> +	return count;
+> +	switch (cmd) {
+> +	case ACRN_IOCTL_CREATE_VM:
+> +		vm_param = memdup_user((void __user *)ioctl_param,
+> +				       sizeof(struct acrn_vm_creation));
+> +		if (IS_ERR(vm_param))
+> +			return PTR_ERR(vm_param);
 > +
-> +fail_remove:
-> +	add_cpu(cpu);
-> +	return ret;
-> +}
-> +static DEVICE_ATTR_WO(remove_cpu);
+> +		vm = acrn_vm_create(vm, vm_param);
+> +		if (!vm) {
+> +			ret = -EINVAL;
+> +			kfree(vm_param);
+> +			break;
+> +		}
 > +
-> +static struct attribute *acrn_attrs[] = {
-> +	&dev_attr_remove_cpu.attr,
-> +	NULL
-> +};
+> +		if (copy_to_user((void __user *)ioctl_param, vm_param,
+> +				 sizeof(struct acrn_vm_creation))) {
+> +			acrn_vm_destroy(vm);
+> +			ret = -EFAULT;
+> +		}
 > +
-> +static struct attribute_group acrn_attr_group = {
-> +	.attrs = acrn_attrs,
-> +};
+> +		kfree(vm_param);
+> +		break;
+> +	case ACRN_IOCTL_START_VM:
+> +		ret = hcall_start_vm(vm->vmid);
+> +		if (ret < 0)
+> +			dev_err(acrn_dev.this_device,
+> +				"Failed to start VM %u!\n", vm->vmid);
+> +		break;
+> +	case ACRN_IOCTL_PAUSE_VM:
+> +		ret = hcall_pause_vm(vm->vmid);
+> +		if (ret < 0)
+> +			dev_err(acrn_dev.this_device,
+> +				"Failed to pause VM %u!\n", vm->vmid);
+> +		break;
+> +	case ACRN_IOCTL_RESET_VM:
+> +		ret = hcall_reset_vm(vm->vmid);
+> +		if (ret < 0)
+> +			dev_err(acrn_dev.this_device,
+> +				"Failed to restart VM %u!\n", vm->vmid);
+> +		break;
+> +	case ACRN_IOCTL_DESTROY_VM:
+> +		ret = acrn_vm_destroy(vm);
+> +		break;
+> +	default:
+> +		dev_warn(acrn_dev.this_device, "Unknown IOCTL 0x%x!\n", cmd);
 
-You create a sysfs attribute without any Documentation/ABI/ update as
-well?  That's not good.
+Do not let userspace spam kernel logs with invalid stuff, that's a sure
+way to cause a DoS.
 
-And why are you trying to emulate CPU hotplug here and not using the
-existing CPU hotplug mechanism?
-
-> +
->  static int __init hsm_init(void)
->  {
->  	int ret;
-> @@ -370,13 +412,21 @@ static int __init hsm_init(void)
->  		return ret;
->  	}
->  
-> +	ret = sysfs_create_group(&acrn_dev.this_device->kobj, &acrn_attr_group);
-> +	if (ret) {
-> +		dev_warn(acrn_dev.this_device, "sysfs create failed\n");
-> +		misc_deregister(&acrn_dev);
-> +		return ret;
-> +	}
-
-You just raced with userspace and lost.  If you want to add attribute
-files to a device, use the default attribute group list, and it will be
-managed properly for you by the driver core.
-
-Huge hint, if a driver every has to touch a kobject, or call sysfs_*,
-then it is probably doing something wrong.
+thanks,
 
 greg k-h
