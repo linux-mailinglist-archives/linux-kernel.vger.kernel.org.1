@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4BE27A2FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5874A27A306
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgI0Tzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:55:45 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10061
+        id S1726730AbgI0Tzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:55:51 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10039
         "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726445AbgI0Tzi (ORCPT
+        by vger.kernel.org with ESMTP id S1726600AbgI0Tzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:55:38 -0400
+        Sun, 27 Sep 2020 15:55:46 -0400
 X-IronPort-AV: E=Sophos;i="5.77,311,1596492000"; 
-   d="scan'208";a="360169505"
+   d="scan'208";a="360169506"
 Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 27 Sep 2020 21:55:14 +0200
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 27 Sep 2020 21:55:15 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
+To:     Philipp Reisner <philipp.reisner@linbit.com>
 Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
         Joe Perches <joe@perches.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         kernel-janitors@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        linux-crypto@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 17/18] crypto: atmel-tdes - use semicolons rather than commas to separate statements
-Date:   Sun, 27 Sep 2020 21:12:27 +0200
-Message-Id: <1601233948-11629-18-git-send-email-Julia.Lawall@inria.fr>
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jens Axboe <axboe@kernel.dk>, drbd-dev@lists.linbit.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 18/18] drbd: use semicolons rather than commas to separate statements
+Date:   Sun, 27 Sep 2020 21:12:28 +0200
+Message-Id: <1601233948-11629-19-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
 References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
@@ -53,20 +50,24 @@ e2
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- drivers/crypto/atmel-tdes.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/drbd/drbd_receiver.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/atmel-tdes.c b/drivers/crypto/atmel-tdes.c
-index ed40dbb98c6b..4d63cb13a54f 100644
---- a/drivers/crypto/atmel-tdes.c
-+++ b/drivers/crypto/atmel-tdes.c
-@@ -912,7 +912,7 @@ static void atmel_tdes_skcipher_alg_init(struct skcipher_alg *alg)
+diff --git a/drivers/block/drbd/drbd_receiver.c b/drivers/block/drbd/drbd_receiver.c
+index 422363daa618..87f732fb5456 100644
+--- a/drivers/block/drbd/drbd_receiver.c
++++ b/drivers/block/drbd/drbd_receiver.c
+@@ -111,8 +111,10 @@ static struct page *page_chain_tail(struct page *page, int *len)
  {
- 	alg->base.cra_priority = ATMEL_TDES_PRIORITY;
- 	alg->base.cra_flags = CRYPTO_ALG_ASYNC;
--	alg->base.cra_ctxsize = sizeof(struct atmel_tdes_ctx),
-+	alg->base.cra_ctxsize = sizeof(struct atmel_tdes_ctx);
- 	alg->base.cra_module = THIS_MODULE;
- 
- 	alg->init = atmel_tdes_init_tfm;
+ 	struct page *tmp;
+ 	int i = 1;
+-	while ((tmp = page_chain_next(page)))
+-		++i, page = tmp;
++	while ((tmp = page_chain_next(page))) {
++		++i;
++		page = tmp;
++	}
+ 	if (len)
+ 		*len = i;
+ 	return page;
 
