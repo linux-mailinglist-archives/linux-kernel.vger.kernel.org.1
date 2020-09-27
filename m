@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795B227A460
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 00:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DA027A468
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbgI0WzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 18:55:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726335AbgI0WzV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 18:55:21 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8DAC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 15:55:21 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id b13so4520748qvl.2
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 15:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dZEAWH40wyXTE3UOii3+/sRujYT6ubIb7i3XFgR2CP8=;
-        b=ivDpjZXAEdfBKlKqV57ib13VDAWPON6jERKmGEPClKawcTLknEtylg6HITs+h39ij/
-         yqDOmIw8HPGTPu4/H1bGe6lOGJBmWm/4v4IZ5/AeqoTWoMqi0wIRnnRA/8mxNjT3ZUXG
-         KXAq93lP0dNneFHZ4uWQcyMvfj2lx2Wa3OTWg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dZEAWH40wyXTE3UOii3+/sRujYT6ubIb7i3XFgR2CP8=;
-        b=C6nX0C4dkY0JT4lAsOXsgFg3mWoFY5s/VWg29OF6gcitGcEDBxQtgn4yHb5PhJkNWj
-         yzt6if3LFK9Y39SFvmjg8UhP+nwDd9FDe7lxoOl+cSkRp3QUGBjGYiiRbNjHcHHN7vVF
-         dzQ1iG1kmeydXe08uCnLZWuue+i9AsKA7uPuOh1FMmAXeBdB/5UaEYJDF3nDOPQQKEE0
-         q4xMxaQAFY8ijNRnesVr1fnnBRrGikiUYYSmHMsKsuj8pc39ScmGzXI9XGdf0MbmyKTJ
-         GSyOYg90apmRoEfr1ZpX8R6U1WWzPkamRfo0/XtZvGSY0e9tRWvk3IWzbOkeUE48j/71
-         TbdA==
-X-Gm-Message-State: AOAM5318haUuGxgfaopGVhuNsgAvjmS+zbmOZB8LTzy6tqTRUmgvTRDt
-        0u647kJks7fx+0aj33TF7zFZxw==
-X-Google-Smtp-Source: ABdhPJz+7N+M6CU2DY9sq6kbBGoQ9wSXoA5o77ldQ7Nq12zHxNr8KmPX3mvcjL33UbMtDa6Z84ktlA==
-X-Received: by 2002:a05:6214:929:: with SMTP id dk9mr9315766qvb.60.1601247320780;
-        Sun, 27 Sep 2020 15:55:20 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id l5sm8651388qtc.28.2020.09.27.15.55.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 15:55:20 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 18:55:19 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>, rcu@vger.kernel.org
-Subject: Re: [PATCH] kvfree_rcu(): fix ifnullfree.cocci warnings
-Message-ID: <20200927225519.GB2800828@google.com>
-References: <alpine.DEB.2.22.394.2009271458380.2839@hadrien>
+        id S1726478AbgI0XB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 19:01:57 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:58492 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726328AbgI0XB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 19:01:56 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kMff2-00GSDf-Dy; Mon, 28 Sep 2020 01:00:52 +0200
+Date:   Mon, 28 Sep 2020 01:00:52 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Christian Benvenuti <benve@cisco.com>,
+        Govindarajulu Varadarajan <_govind@gmx.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-doc@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jay Cliburn <jcliburn@gmail.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        Vishal Kulkarni <vishal@chelsio.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Shannon Nelson <snelson@pensando.io>,
+        Pensando Drivers <drivers@pensando.io>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
+        Edward Cree <ecree@solarflare.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
+        Ulrich Kunitz <kune@deine-taler.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        brcm80211-dev-list@cypress.com,
+        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Intel Linux Wireless <linuxwifi@intel.com>,
+        Jouni Malinen <j@w1.fi>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Xinming Hu <huxinming820@gmail.com>,
+        libertas-dev@lists.infradead.org,
+        Pascal Terjan <pterjan@google.com>,
+        Ping-Ke Shih <pkshih@realtek.com>
+Subject: Re: [patch 13/35] net: mdiobus: Remove WARN_ON_ONCE(in_interrupt())
+Message-ID: <20200927230052.GG3889809@lunn.ch>
+References: <20200927194846.045411263@linutronix.de>
+ <20200927194921.137019811@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2009271458380.2839@hadrien>
+In-Reply-To: <20200927194921.137019811@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 03:00:29PM +0200, Julia Lawall wrote:
-> From: kernel test robot <lkp@intel.com>
+On Sun, Sep 27, 2020 at 09:48:59PM +0200, Thomas Gleixner wrote:
+> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 > 
-> NULL check before kfree is not needed.
+> in_interrupt() is ill defined and does not provide what the name
+> suggests. The usage especially in driver code is deprecated and a tree wide
+> effort to clean up and consolidate the (ab)usage of in_interrupt() and
+> related checks is happening.
 > 
-> Generated by: scripts/coccinelle/free/ifnullfree.cocci
+> In this case the check covers only parts of the contexts in which these
+> functions cannot be called. It fails to detect preemption or interrupt
+> disabled invocations.
 > 
-> Fixes: e9bed2a1239b ("kvfree_rcu(): Switch to kmalloc() and kfree() for allocations")
-> Signed-off-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
-> ---
+> As the functions which contain these warnings invoke mutex_lock() which
+> contains a broad variety of checks (always enabled or debug option
+> dependent) and therefore covers all invalid conditions already, there is no
+> point in having inconsistent warnings in those drivers. The conditional
+> return is not really valuable in practice either.
 > 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urezki-pcount.2020.09.26a
-> head:   1a8eee1cc5b0e59c17f5d94c5871e6c70c4a43a1
-> commit: e9bed2a1239b017d78cec5de66adce0560f6d077 [17/18] kvfree_rcu(): Switch to kmalloc() and kfree() for allocations
-> :::::: branch date: 4 hours ago
-> :::::: commit date: 15 hours ago
+> Just remove them.
 > 
->  tree.c |    3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -3165,8 +3165,7 @@ static void kfree_rcu_work(struct work_s
->  				bkvhead[i] = NULL;
->  			krc_this_cpu_unlock(krcp, flags);
-> 
-> -			if (bkvhead[i])
-> -				kfree(bkvhead[i]);
-> +			kfree(bkvhead[i]);
-> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-thanks,
-
- - Joel
-
->  			cond_resched_tasks_rcu_qs();
->  		}
+    Andrew
