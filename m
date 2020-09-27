@@ -2,72 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2E6279DB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 05:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1114D279DB8
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 05:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730225AbgI0DVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 23:21:01 -0400
-Received: from sp2.canonet.ne.jp ([210.134.165.89]:59002 "EHLO
-        sp2.canonet.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726478AbgI0DVA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 23:21:00 -0400
-Received: from cmcheck2.canonet.ne.jp (unknown [172.21.160.142])
-        by sp2.canonet.ne.jp (Postfix) with ESMTP id B88591E02C8;
-        Sun, 27 Sep 2020 12:20:57 +0900 (JST)
-Received: from echeck2.canonet.ne.jp ([172.21.160.32])
-        by cmcheck2 with ESMTP
-        id MNFBk5J6kpmpXMNFBka0hG; Sun, 27 Sep 2020 12:20:57 +0900
-X-CNT-CMCheck-Reason: "undefined", "v=2.2 cv=OLFX5WSB c=1 sm=1 tr=0
- cx=t_eml:g_jp p=qI3Tz8VRCXwA:10 p=GPZhZkAIlJQcwfiLP0FG:22
- a=FiIqOwRpAfslXfZnN2bOjA==:117 a=xbyLVnzfAZw6kvha8NeemA==:17
- a=PlGk70OYzacA:10 a=kj9zAlcOel0A:10 a=reM5J-MqmosA:10
- a=64ih02tLm2DRpjhKevcA:9 a=da1VUgjd4PpvMsH9:21 a=cAR4Wufobs5_ESAL:21
- a=CjuIK1q_8ugA:10"
-X-CNT-CMCheck-Score: 100.00
-Received: from echeck2.canonet.ne.jp (localhost [127.0.0.1])
-        by esets.canonet.ne.jp (Postfix) with ESMTP id 13C4E1C025A;
-        Sun, 27 Sep 2020 12:20:57 +0900 (JST)
-X-Virus-Scanner: This message was checked by ESET Mail Security
-        for Linux/BSD. For more information on ESET Mail Security,
-        please, visit our website: http://www.eset.com/.
-Received: from smtp2.canonet.ne.jp (smtp2.canonet.ne.jp [172.21.160.22])
-        by echeck2.canonet.ne.jp (Postfix) with ESMTP id ECE501C024D;
-        Sun, 27 Sep 2020 12:20:56 +0900 (JST)
-Received: from chikousha.co.jp (webmail.canonet.ne.jp [210.134.164.250])
-        by smtp2.canonet.ne.jp (Postfix) with ESMTPA id 39BF915F962;
-        Sun, 27 Sep 2020 12:20:56 +0900 (JST)
-MIME-Version: 1.0
-Message-ID: <20200927032056.00007B40.0599@chikousha.co.jp>
-Date:   Sun, 27 Sep 2020 12:20:56 +0900
-From:   "razak ahmed" <info@chikousha.co.jp>
-To:     <razakgeorge1@gmail.com>
-Reply-To: <razakgeorge1@gmail.com>
-Subject: Greetngs.......
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-ORGANIZATION: razak ahmed
-X-MAILER: Active! mail
-X-EsetResult: clean, %VIRUSNAME%
-X-ESET-AS: R=SPAM;S=100;OP=CALC;TIME=1601176857;VERSION=7861;MC=1387121827;TRN=33;CRV=0;IPC=210.134.164.250;SP=4;SIPS=1;PI=5;F=0
-X-I-ESET-AS: RN=304:0;RNP=210.134.164.250
-X-ESET-Antispam: SPAM
+        id S1729883AbgI0DaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 23:30:03 -0400
+Received: from mga12.intel.com ([192.55.52.136]:65381 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726478AbgI0DaD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 23:30:03 -0400
+IronPort-SDR: vIW2bpVRdPzzqU8w5m86e0KorsX/8rIMh53lrD3yGZaUsCDQO6b2yxw5cYvkSsvZihbyCPdxF0
+ NKTe//tz4PrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="141242654"
+X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
+   d="scan'208";a="141242654"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 20:30:01 -0700
+IronPort-SDR: UJQ1DRrW6W1kOmgpEwtYKfzfnc7rROn/qt2K99QA9TQRYbieQH6Hyv68nrUvbG/W8lQCdBdFqc
+ W+EoGXIp0dAQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
+   d="scan'208";a="337697443"
+Received: from shskylake.sh.intel.com ([10.239.48.137])
+  by fmsmga004.fm.intel.com with ESMTP; 26 Sep 2020 20:29:57 -0700
+From:   Ethan Zhao <haifeng.zhao@intel.com>
+To:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
+        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
+        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
+        mika.westerberg@linux.intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pei.p.jia@intel.com, ashok.raj@linux.intel.com,
+        sathyanarayanan.kuppuswamy@intel.com,
+        Ethan Zhao <haifeng.zhao@intel.com>
+Subject: [PATCH 0/5 V2] Fix DPC hotplug race and enhance error handling
+Date:   Sat, 26 Sep 2020 23:28:24 -0400
+Message-Id: <20200927032829.11321-1-haifeng.zhao@intel.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+This simple patch set fixed some serious security issues found when DPC
+error injection and NVMe SSD hotplug brute force test were doing -- race
+condition between DPC handler and pciehp, AER interrupt handlers, caused
+system hang and system with DPC feature couldn't recover to normal
+working state as expected (NVMe instance lost, mount operation hang,
+race PCIe access caused uncorrectable errors reported alternatively etc).
 
-I am Barrister Razak George Ahmed, a lawyer and personal attorney to the 
-late business man from your country who has a similar name with you, I 
-request your consent to present you as the next of kin with the 
-following relatives in order to continue to release his unknown deposits 
-to you which are estimated at $ 5.5 million USD. Kindly get back to me 
-if you can handle this transaction with me.
+With this patch set applied, stable 5.9-rc6 on ICS (Ice Lake SP platform,
+see
+https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server))
 
-Thanks
-Barrister Razak George Ahmed
+could pass the PCIe Gen4 NVMe SSD brute force hotplug test with any time 
+interval between hot-remove and plug-in operation tens of times without
+any errors occur and system works normal.
+
+With this patch set applied, system with DPC feature could recover from
+NON-FATAL and FATAL errors injection test and works as expected.
+
+System works smoothly when errors happen while hotplug is doing, no
+uncorrectable errors found.
+
+Brute DPC error injection script:
+
+for i in {0..100}
+do
+        setpci -s 64:02.0 0x196.w=000a 
+        setpci -s 65:00.0 0x04.w=0544 
+        mount /dev/nvme0n1p1 /root/nvme
+        sleep 1
+done
+
+Other details see every commits description part.
+
+This patch set could be applied to stable 5.9-rc6 directly.
+
+Help to review and test.
+
+V2: changed according to review by Andy Shevchenko.
+
+Thanks,
+Ethan
 
 
+Ethan Zhao (5):
+  PCI: define a function to check and wait till port finish DPC handling
+  PCI: pciehp: check and wait port status out of DPC before handling
+    DLLSC and PDC
+  PCI/ERR: get device before call device driver to avoid NULL pointer
+    reference
+  PCI: only return true when dev io state is really changed
+  PCI/ERR: don't mix io state not changed and no driver together
+
+ drivers/pci/hotplug/pciehp_hpc.c |  4 +++-
+ drivers/pci/pci.h                | 34 +++++---------------------------
+ drivers/pci/pcie/err.c           | 18 +++++++++++++++--
+ include/linux/pci.h              | 31 +++++++++++++++++++++++++++++
+ 4 files changed, 55 insertions(+), 32 deletions(-)
+
+-- 
+2.18.4
 
