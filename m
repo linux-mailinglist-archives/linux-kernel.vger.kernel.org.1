@@ -2,210 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00FEF27A480
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:35:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A85927A486
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726387AbgI0Xf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 19:35:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726396AbgI0Xf3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 19:35:29 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08EAC0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 16:35:28 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id q10so4562263qvs.1
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 16:35:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QZ9ccKxrbw+GLDZtn/A5B8mgsLI26ygsTihNFMKsaJg=;
-        b=F/56Xv83N6WX7oppzzL1NJZmCHsucSUClxFHBoBH3xsnTVfETiPJeuhnRdxGz41V4r
-         wmhjN4hzByPXiI41LvOfaV3oAVNMOhh4n5Bti5j3pJHKbA2Nsm8f9J/+OQapxcZKM/0E
-         Yg72rxpPjAQYXHf+wlNQils/SLD473ptBw7hc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QZ9ccKxrbw+GLDZtn/A5B8mgsLI26ygsTihNFMKsaJg=;
-        b=pjT535ZenalLbIxlS3HOKDsIcvJk/1PgyKpPswMomW18LFl9apuKaeVrHGK208MxJW
-         bml5sP+9TXc55HBt+ugdVJja5Ge8d9ykRNMkcPxR7k+UqS4JHaL4AP9bD8hTce34FRtP
-         ivm6CBuy0XWmo5L8QlfhqsnKwtXmTpSukjISFG5RFY3I3SeR+l7AvPYWp2a0COIXmpMi
-         da3k5Noboa8bqqEi0NhtFqtDx3qUJxViRewdeI/kj5FDzx6DzYjOGOwxMhpJk6cKoCjt
-         0YRotYGaKZQXA/P9KpWAVe6Zfe6xvu9sfcOx6rUkc+E31KE8PDyHbb6iTqB8h0xInnW4
-         b0Pg==
-X-Gm-Message-State: AOAM5306Qcro5/DkSe4k7PbWekgLH5EKD4v2q4Uzkhr5tDzY/C2emHo1
-        9tr8pCrfnYbbr543xnuEpbIjIQ==
-X-Google-Smtp-Source: ABdhPJxVvYjhgGsi9+tR/TAw2u5qjrv6jp+i1+M0SKg/XJH2jhzXZSe5R7zNVYtzRKNJD4xFiXfYRw==
-X-Received: by 2002:a05:6214:292:: with SMTP id l18mr9219493qvv.3.1601249727784;
-        Sun, 27 Sep 2020 16:35:27 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id j16sm7589014qkg.26.2020.09.27.16.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 16:35:27 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 19:35:26 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     corbet@lwn.net, keescook@chromium.org, gregkh@linuxfoundation.org,
-        shuah@kernel.org, rafael@kernel.org, johannes@sipsolutions.net,
-        lenb@kernel.org, james.morse@arm.com, tony.luck@intel.com,
-        bp@alien8.de, arve@android.com, tkjos@android.com,
-        maco@android.com, christian@brauner.io, hridya@google.com,
-        surenb@google.com, minyard@acm.org, arnd@arndb.de,
-        mchehab@kernel.org, rric@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-edac@vger.kernel.org
-Subject: Re: [PATCH 00/11] Introduce Simple atomic and non-atomic counters
-Message-ID: <20200927233526.GA500818@google.com>
-References: <cover.1601073127.git.skhan@linuxfoundation.org>
+        id S1726513AbgI0Xgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 19:36:32 -0400
+Received: from crapouillou.net ([89.234.176.41]:35014 "EHLO crapouillou.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726421AbgI0Xgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 19:36:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1601249789; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pUN8bXktpOva2was0urG22E/o7HGJDL0e0yo+m0sKgw=;
+        b=Ea+EjrEmRRVHpyDOSuxwwOWIbdUT2ILpx9+HREckTyrGZmvCw1f8uD7okkQed5An65UQjR
+        FcQyQljT1EgYiaaeVcXKvGS0hYDcV47AeteFiyVWVG+m/ZW7nyHZmV0UrYGpsUygRapgd5
+        xs761EnzADyyShTFv/Wlx0kBmYHbllU=
+Date:   Mon, 28 Sep 2020 01:36:18 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v3 1/1] drm/ingenic: Add support for paletted 8bpp
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        od@zcrc.me, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <I8CCHQ.3C2N46UNN7BA3@crapouillou.net>
+In-Reply-To: <20200927202757.GA245066@ravnborg.org>
+References: <20200927193645.262612-1-paul@crapouillou.net>
+        <20200927193645.262612-2-paul@crapouillou.net>
+        <20200927202757.GA245066@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1601073127.git.skhan@linuxfoundation.org>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 05:47:14PM -0600, Shuah Khan wrote:
-> This patch series is a result of discussion at the refcount_t BOF
-> the Linux Plumbers Conference. In this discussion, we identified
-> a need for looking closely and investigating atomic_t usages in
-> the kernel when it is used strictly as a counter without it
-> controlling object lifetimes and state changes.
-> 
-> There are a number of atomic_t usages in the kernel where atomic_t api
-> is used strictly for counting and not for managing object lifetime. In
-> some cases, atomic_t might not even be needed.
->     
-> The purpose of these counters is twofold: 1. clearly differentiate
-> atomic_t counters from atomic_t usages that guard object lifetimes,
-> hence prone to overflow and underflow errors. It allows tools that scan
-> for underflow and overflow on atomic_t usages to detect overflow and
-> underflows to scan just the cases that are prone to errors. 2. provides
-> non-atomic counters for cases where atomic isn't necessary.
 
-Nice series :)
 
-It appears there is no user of counter_simple in this series other than the
-selftest. Would you be planning to add any conversions in the series itself,
-for illustration of use? Sorry if I missed a usage.
+Le dim. 27 sept. 2020 =E0 22:27, Sam Ravnborg <sam@ravnborg.org> a=20
+=E9crit :
+> On Sun, Sep 27, 2020 at 09:36:45PM +0200, Paul Cercueil wrote:
+>>  On JZ4725B and newer, the F0 plane supports paletted 8bpp with a
+>>  256-entry palette. Add support for it.
+>>=20
+>>  v3: Only accept a full 256-entry palette.
+>>=20
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>=20
+> Looks good.
+> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-Also how do we guard against atomicity of counter_simple RMW operations? Is
-the implication that it should be guarded using other synchronization to
-prevent lost-update problem?
+Pushed to drm-misc-next.
 
-Some more comments:
+Thanks!
+-Paul
 
-1.  atomic RMW operations that have a return value are fully ordered. Would
-    you be adding support to counter_simple for such ordering as well, for
-    consistency?
+>=20
+>>  ---
+>>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 66=20
+>> +++++++++++++++++++++--
+>>   1 file changed, 62 insertions(+), 4 deletions(-)
+>>=20
+>>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c=20
+>> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  index 589fc0c60716..0225dc1f5eb8 100644
+>>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>  @@ -21,6 +21,7 @@
+>>   #include <drm/drm_atomic.h>
+>>   #include <drm/drm_atomic_helper.h>
+>>   #include <drm/drm_bridge.h>
+>>  +#include <drm/drm_color_mgmt.h>
+>>   #include <drm/drm_crtc.h>
+>>   #include <drm/drm_crtc_helper.h>
+>>   #include <drm/drm_damage_helper.h>
+>>  @@ -50,6 +51,8 @@ struct ingenic_dma_hwdesc {
+>>   struct ingenic_dma_hwdescs {
+>>   	struct ingenic_dma_hwdesc hwdesc_f0;
+>>   	struct ingenic_dma_hwdesc hwdesc_f1;
+>>  +	struct ingenic_dma_hwdesc hwdesc_pal;
+>>  +	u16 palette[256] __aligned(16);
+>>   };
+>>=20
+>>   struct jz_soc_info {
+>>  @@ -249,6 +252,12 @@ static int=20
+>> ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
+>>   	struct ingenic_drm *priv =3D drm_crtc_get_priv(crtc);
+>>   	struct drm_plane_state *f1_state, *f0_state, *ipu_state =3D NULL;
+>>=20
+>>  +	if (state->gamma_lut &&
+>>  +	    drm_color_lut_size(state->gamma_lut) !=3D=20
+>> ARRAY_SIZE(priv->dma_hwdescs->palette)) {
+>>  +		dev_dbg(priv->dev, "Invalid palette size\n");
+>>  +		return -EINVAL;
+>>  +	}
+>>  +
+>>   	if (drm_atomic_crtc_needs_modeset(state) &&=20
+>> priv->soc_info->has_osd) {
+>>   		f1_state =3D drm_atomic_get_plane_state(state->state, &priv->f1);
+>>   		if (IS_ERR(f1_state))
+>>  @@ -470,6 +479,9 @@ void ingenic_drm_plane_config(struct device=20
+>> *dev,
+>>   				   JZ_LCD_OSDCTRL_BPP_MASK, ctrl);
+>>   	} else {
+>>   		switch (fourcc) {
+>>  +		case DRM_FORMAT_C8:
+>>  +			ctrl |=3D JZ_LCD_CTRL_BPP_8;
+>>  +			break;
+>>   		case DRM_FORMAT_XRGB1555:
+>>   			ctrl |=3D JZ_LCD_CTRL_RGB555;
+>>   			fallthrough;
+>>  @@ -541,16 +553,34 @@ void ingenic_drm_sync_data(struct device *dev,
+>>   	}
+>>   }
+>>=20
+>>  +static void ingenic_drm_update_palette(struct ingenic_drm *priv,
+>>  +				       const struct drm_color_lut *lut)
+>>  +{
+>>  +	unsigned int i;
+>>  +
+>>  +	for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
+>>  +		u16 color =3D drm_color_lut_extract(lut[i].red, 5) << 11
+>>  +			| drm_color_lut_extract(lut[i].green, 6) << 5
+>>  +			| drm_color_lut_extract(lut[i].blue, 5);
+>>  +
+>>  +		priv->dma_hwdescs->palette[i] =3D color;
+>>  +	}
+>>  +}
+>>  +
+>>   static void ingenic_drm_plane_atomic_update(struct drm_plane=20
+>> *plane,
+>>   					    struct drm_plane_state *oldstate)
+>>   {
+>>   	struct ingenic_drm *priv =3D drm_device_get_priv(plane->dev);
+>>   	struct drm_plane_state *state =3D plane->state;
+>>  +	struct drm_crtc_state *crtc_state;
+>>   	struct ingenic_dma_hwdesc *hwdesc;
+>>  -	unsigned int width, height, cpp;
+>>  +	unsigned int width, height, cpp, offset;
+>>   	dma_addr_t addr;
+>>  +	u32 fourcc;
+>>=20
+>>   	if (state && state->fb) {
+>>  +		crtc_state =3D state->crtc->state;
+>>  +
+>>   		ingenic_drm_sync_data(priv->dev, oldstate, state);
+>>=20
+>>   		addr =3D drm_fb_cma_get_gem_addr(state->fb, state, 0);
+>>  @@ -566,9 +596,23 @@ static void=20
+>> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
+>>   		hwdesc->addr =3D addr;
+>>   		hwdesc->cmd =3D JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
+>>=20
+>>  -		if (drm_atomic_crtc_needs_modeset(state->crtc->state))
+>>  -			ingenic_drm_plane_config(priv->dev, plane,
+>>  -						 state->fb->format->format);
+>>  +		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
+>>  +			fourcc =3D state->fb->format->format;
+>>  +
+>>  +			ingenic_drm_plane_config(priv->dev, plane, fourcc);
+>>  +
+>>  +			if (fourcc =3D=3D DRM_FORMAT_C8)
+>>  +				offset =3D offsetof(struct ingenic_dma_hwdescs, hwdesc_pal);
+>>  +			else
+>>  +				offset =3D offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
+>>  +
+>>  +			priv->dma_hwdescs->hwdesc_f0.next =3D priv->dma_hwdescs_phys +=20
+>> offset;
+>>  +
+>>  +			crtc_state->color_mgmt_changed =3D fourcc =3D=3D DRM_FORMAT_C8;
+>>  +		}
+>>  +
+>>  +		if (crtc_state->color_mgmt_changed)
+>>  +			ingenic_drm_update_palette(priv, crtc_state->gamma_lut->data);
+>>   	}
+>>   }
+>>=20
+>>  @@ -964,6 +1008,15 @@ static int ingenic_drm_bind(struct device=20
+>> *dev, bool has_components)
+>>   	priv->dma_hwdescs->hwdesc_f1.next =3D dma_hwdesc_phys_f1;
+>>   	priv->dma_hwdescs->hwdesc_f1.id =3D 0xf1;
+>>=20
+>>  +	/* Configure DMA hwdesc for palette */
+>>  +	priv->dma_hwdescs->hwdesc_pal.next =3D priv->dma_hwdescs_phys
+>>  +		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
+>>  +	priv->dma_hwdescs->hwdesc_pal.id =3D 0xc0;
+>>  +	priv->dma_hwdescs->hwdesc_pal.addr =3D priv->dma_hwdescs_phys
+>>  +		+ offsetof(struct ingenic_dma_hwdescs, palette);
+>>  +	priv->dma_hwdescs->hwdesc_pal.cmd =3D JZ_LCD_CMD_ENABLE_PAL
+>>  +		| (sizeof(priv->dma_hwdescs->palette) / 4);
+>>  +
+>>   	if (soc_info->has_osd)
+>>   		priv->ipu_plane =3D drm_plane_from_index(drm, 0);
+>>=20
+>>  @@ -990,6 +1043,9 @@ static int ingenic_drm_bind(struct device=20
+>> *dev, bool has_components)
+>>   		return ret;
+>>   	}
+>>=20
+>>  +	drm_crtc_enable_color_mgmt(&priv->crtc, 0, false,
+>>  +				   ARRAY_SIZE(priv->dma_hwdescs->palette));
+>>  +
+>>   	if (soc_info->has_osd) {
+>>   		drm_plane_helper_add(&priv->f0,
+>>   				     &ingenic_drm_plane_helper_funcs);
+>>  @@ -1225,6 +1281,7 @@ static const u32 jz4725b_formats_f1[] =3D {
+>>   };
+>>=20
+>>   static const u32 jz4725b_formats_f0[] =3D {
+>>  +	DRM_FORMAT_C8,
+>>   	DRM_FORMAT_XRGB1555,
+>>   	DRM_FORMAT_RGB565,
+>>   	DRM_FORMAT_XRGB8888,
+>>  @@ -1239,6 +1296,7 @@ static const u32 jz4770_formats_f1[] =3D {
+>>   };
+>>=20
+>>   static const u32 jz4770_formats_f0[] =3D {
+>>  +	DRM_FORMAT_C8,
+>>   	DRM_FORMAT_XRGB1555,
+>>   	DRM_FORMAT_RGB565,
+>>   	DRM_FORMAT_RGB888,
+>>  --
+>>  2.28.0
 
-2. I felt counter_atomic and counter_atomic64 would be nice equivalents to
-   the atomic and atomic64 naming currently used (i.e. dropping the '32').
-   However that is just my opinion and I am ok with either naming.
 
-thanks!
-
- - Joel
-
->     
-> Simple atomic and non-atomic counters api provides interfaces for simple
-> atomic and non-atomic counters that just count, and don't guard resource
-> lifetimes. Counters will wrap around to 0 when it overflows and should
-> not be used to guard resource lifetimes, device usage and open counts
-> that control state changes, and pm states.
->     
-> Using counter_atomic to guard lifetimes could lead to use-after free
-> when it overflows and undefined behavior when used to manage state
-> changes and device usage/open states.
-> 
-> This patch series introduces Simple atomic and non-atomic counters.
-> Counter atomic ops leverage atomic_t and provide a sub-set of atomic_t
-> ops.
-> 
-> In addition this patch series converts a few drivers to use the new api.
-> The following criteria is used for select variables for conversion:
-> 
-> 1. Variable doesn't guard object lifetimes, manage state changes e.g:
->    device usage counts, device open counts, and pm states.
-> 2. Variable is used for stats and counters.
-> 3. The conversion doesn't change the overflow behavior.
-> 
-> Changes since RFC:
-> -- Thanks for reviews and reviewed-by, and Acked-by tags. Updated
->    the patches with the tags.
-> -- Addressed Kees's comments:
->    1. Non-atomic counters renamed to counter_simple32 and counter_simple64
->       to clearly indicate size.
->    2. Added warning for counter_simple* usage and it should be used only
->       when there is no need for atomicity.
->    3. Renamed counter_atomic to counter_atomic32 to clearly indicate size.
->    4. Renamed counter_atomic_long to counter_atomic64 and it now uses
->       atomic64_t ops and indicates size.
->    5. Test updated for the API renames.
->    6. Added helper functions for test results printing
->    7. Verified that the test module compiles in kunit env. and test
->       module can be loaded to run the test.
->    8. Updated Documentation to reflect the intent to make the API
->       restricted so it can never be used to guard object lifetimes
->       and state management. I left _return ops for now, inc_return
->       is necessary for now as per the discussion we had on this topic. 
-> -- Updated driver patches with API name changes.
-> -- We discussed if binder counters can be non-atomic. For now I left
->    them the same as the RFC patch - using counter_atomic32
-> -- Unrelated to this patch series:
->    The patch series review uncovered improvements could be made to
->    test_async_driver_probe and vmw_vmci/vmci_guest. I will track
->    these for fixing later.
-> 
-> Shuah Khan (11):
->   counters: Introduce counter_simple* and counter_atomic* counters
->   selftests:lib:test_counters: add new test for counters
->   drivers/base: convert deferred_trigger_count and probe_count to
->     counter_atomic32
->   drivers/base/devcoredump: convert devcd_count to counter_atomic32
->   drivers/acpi: convert seqno counter_atomic32
->   drivers/acpi/apei: convert seqno counter_atomic32
->   drivers/android/binder: convert stats, transaction_log to
->     counter_atomic32
->   drivers/base/test/test_async_driver_probe: convert to use
->     counter_atomic32
->   drivers/char/ipmi: convert stats to use counter_atomic32
->   drivers/misc/vmw_vmci: convert num guest devices counter to
->     counter_atomic32
->   drivers/edac: convert pci counters to counter_atomic32
-> 
->  Documentation/core-api/counters.rst          | 174 +++++++++
->  MAINTAINERS                                  |   8 +
->  drivers/acpi/acpi_extlog.c                   |   5 +-
->  drivers/acpi/apei/ghes.c                     |   5 +-
->  drivers/android/binder.c                     |  41 +--
->  drivers/android/binder_internal.h            |   3 +-
->  drivers/base/dd.c                            |  19 +-
->  drivers/base/devcoredump.c                   |   5 +-
->  drivers/base/test/test_async_driver_probe.c  |  23 +-
->  drivers/char/ipmi/ipmi_msghandler.c          |   9 +-
->  drivers/char/ipmi/ipmi_si_intf.c             |   9 +-
->  drivers/edac/edac_pci.h                      |   5 +-
->  drivers/edac/edac_pci_sysfs.c                |  28 +-
->  drivers/misc/vmw_vmci/vmci_guest.c           |   9 +-
->  include/linux/counters.h                     | 350 +++++++++++++++++++
->  lib/Kconfig                                  |  10 +
->  lib/Makefile                                 |   1 +
->  lib/test_counters.c                          | 276 +++++++++++++++
->  tools/testing/selftests/lib/Makefile         |   1 +
->  tools/testing/selftests/lib/config           |   1 +
->  tools/testing/selftests/lib/test_counters.sh |   5 +
->  21 files changed, 913 insertions(+), 74 deletions(-)
->  create mode 100644 Documentation/core-api/counters.rst
->  create mode 100644 include/linux/counters.h
->  create mode 100644 lib/test_counters.c
->  create mode 100755 tools/testing/selftests/lib/test_counters.sh
-> 
-> -- 
-> 2.25.1
-> 
