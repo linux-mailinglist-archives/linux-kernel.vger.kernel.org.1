@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7A027A459
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 00:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23DAC27A455
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 00:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726409AbgI0WRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 18:17:21 -0400
-Received: from m12-13.163.com ([220.181.12.13]:36601 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726321AbgI0WRV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 18:17:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=vS6DJ
-        k7Fac/tQVawi0riFsNIUDE5hRFE459qzpsGu4w=; b=oKY+rVPCQ5k/vUQUfvaPj
-        VLIYA1j1+tsnGz/TMrLzjWXZ5bQjm7ojYySA0j4cYkCTcNx1JXF8rNWh6FTb/xUE
-        fTzMWwzp6v76HXXh7TLNuFuDJ0bZTcGkiJzsiwZ2vIRPtIU6945PFS1KtIfhD+m/
-        IbrRK6MDIVHMbD6GsvYErs=
-Received: from localhost (unknown [101.86.214.224])
-        by smtp9 (Coremail) with SMTP id DcCowAA3KozEy3BffA43Ig--.50549S2;
-        Mon, 28 Sep 2020 01:28:37 +0800 (CST)
-Date:   Mon, 28 Sep 2020 01:28:36 +0800
-From:   Hui Su <sh_def@163.com>
-To:     boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arch/x86: fix some typos in xen_pagetable_p2m_free()
-Message-ID: <20200927172836.GA7423@rlk>
+        id S1726414AbgI0WBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 18:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726321AbgI0WBC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 18:01:02 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF33FC0613CE;
+        Sun, 27 Sep 2020 15:01:01 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a9so5084389wmm.2;
+        Sun, 27 Sep 2020 15:01:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9PYh9zOEyCKmAv70piA7xO/5F+a+eOAGeDMzmq6LTgU=;
+        b=duHzLi7FajhOJGaiNZP2BGpTLfA0z9VPSWRVlAm6MVY8pZhpRbRqnAtDjD7f17nd4G
+         cSpv5eJdGfoSjwQLUx+z0mC/5QOcREqdt1spddn3sS/tpNFzSHDCpWIK3m3SUqBX0iav
+         IMrhcaqeDh8YisTM1vAVIAs4iBEH1sHHtf5Wn+jUJonIrnDYP4DwU1LgwGMhyqGORNlw
+         lN4gXYcs2Lvq+lEPN1GSeL86Ue0yxWARpwvG/PmDctRy4EkQjWH26s9jmOas7TF+mt3Z
+         1NyzF+bg+jlg4zYO+dSpb9094njEXuHc01qnYlNNwI9dYcWqLIiE3wzag0ghbe2QjiQK
+         vSSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9PYh9zOEyCKmAv70piA7xO/5F+a+eOAGeDMzmq6LTgU=;
+        b=pe9Ai8VCKxlWQcRC9jaGvdDnW7k3QOgVlWZN6S1jJ5BLdEZhrV3g+qqSc+57N+nJw0
+         djcaXPUAZnp1JHlCW2SlAHlmSXqNioGFgsgM6IA4U0BRA/2CXV86dhd3lPCtkDMri/2S
+         bf+Jc7ZuxNtXTRJE9F6wHbGe0RGvzwKYupPICSZivE2W1jccDRSqduQ/imt9Fle45nT1
+         Vr1H8VfZY23sIduuk7eDQyykiwQywNHcfLQUsCcIyYhIDjfRjjEQCqF9iJD/6cunJUj/
+         i8UQfvrUX+j0uLcLt5VoXARvxluH40fhEAARwHhPTtZIzSqJmvSRUa54Fq/zSgEoh/GQ
+         2CuA==
+X-Gm-Message-State: AOAM5327kV5PwjB0UB5keMmg5rh/sdHtWwIY6WctYduAamrsrDJYd0yY
+        aupienvMV+XyBZtfyulcHApY4n6gAUNd4g==
+X-Google-Smtp-Source: ABdhPJzCVHlLwwuaO0c74jXnittihkW6Wpt/gODmZ4sWhulUYBYw61c+WMVbx0Qn9YVh7eRgUJFmwQ==
+X-Received: by 2002:a7b:cd8b:: with SMTP id y11mr8559604wmj.172.1601244060486;
+        Sun, 27 Sep 2020 15:01:00 -0700 (PDT)
+Received: from Ansuel-XPS.localdomain (93-39-149-95.ip76.fastwebnet.it. [93.39.149.95])
+        by smtp.googlemail.com with ESMTPSA id x17sm4123584wrg.57.2020.09.27.15.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 15:00:59 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>,
+        Ilia Mirkin <imirkin@alum.mit.edu>, stable@vger.kernel.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sham Muthayyan <smuthayy@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: qcom: use PHY_REFCLK_USE_PAD only for ipq8064
+Date:   Mon, 28 Sep 2020 00:00:50 +0200
+Message-Id: <20200927220050.448-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: DcCowAA3KozEy3BffA43Ig--.50549S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JF47XryUAw4DCw4UCrWxZwb_yoWfJwcEga
-        17Zw4xCryjq3ySy34a93ySqF4Skw4vv398Jry8Zw4UtFy5Jws8GF10qasxJ34UW3yUWrWf
-        G3s3Xr429w47KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnG2NtUUUUU==
-X-Originating-IP: [101.86.214.224]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiOQWsX1Xlu0UBGwAAsb
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-arch/x86: fix some typos in xen_pagetable_p2m_free():
-s/Fortunatly/Fortunately
+The use of PHY_REFCLK_USE_PAD introduced a regression for apq8064
+devices. It was tested that while apq doesn't require the padding, ipq
+SoC must use it or the kernel hangs on boot.
 
-Signed-off-by: Hui Su <sh_def@163.com>
+Fixes: de3c4bf6489 ("PCI: qcom: Add support for tx term offset for rev 2.1.0")
+Reported-by: Ilia Mirkin <imirkin@alum.mit.edu>
+Signed-off-by: Ilia Mirkin <imirkin@alum.mit.edu>
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+Cc: stable@vger.kernel.org # v4.19+
 ---
- arch/x86/xen/mmu_pv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pci/controller/dwc/pcie-qcom.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/xen/mmu_pv.c b/arch/x86/xen/mmu_pv.c
-index 3273c985d3dd..fbee8f50088b 100644
---- a/arch/x86/xen/mmu_pv.c
-+++ b/arch/x86/xen/mmu_pv.c
-@@ -1149,7 +1149,7 @@ static void __init xen_pagetable_p2m_free(void)
- 	 * We could be in __ka space.
- 	 * We roundup to the PMD, which means that if anybody at this stage is
- 	 * using the __ka address of xen_start_info or
--	 * xen_start_info->shared_info they are in going to crash. Fortunatly
-+	 * xen_start_info->shared_info they are in going to crash. Fortunately
- 	 * we have already revectored in xen_setup_kernel_pagetable.
- 	 */
- 	size = roundup(size, PMD_SIZE);
+diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+index 3aac77a295ba..dad6e9ce66ba 100644
+--- a/drivers/pci/controller/dwc/pcie-qcom.c
++++ b/drivers/pci/controller/dwc/pcie-qcom.c
+@@ -387,7 +387,9 @@ static int qcom_pcie_init_2_1_0(struct qcom_pcie *pcie)
+ 
+ 	/* enable external reference clock */
+ 	val = readl(pcie->parf + PCIE20_PARF_PHY_REFCLK);
+-	val &= ~PHY_REFCLK_USE_PAD;
++	/* USE_PAD is required only for ipq806x */
++	if (!of_device_is_compatible(node, "qcom,pcie-apq8064"))
++		val &= ~PHY_REFCLK_USE_PAD;
+ 	val |= PHY_REFCLK_SSP_EN;
+ 	writel(val, pcie->parf + PCIE20_PARF_PHY_REFCLK);
+ 
 -- 
-2.25.1
-
+2.27.0
 
