@@ -2,199 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBB24279F6C
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE5C279F70
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 09:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730553AbgI0HvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 03:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730439AbgI0HvG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 03:51:06 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C97C0613CE;
-        Sun, 27 Sep 2020 00:51:06 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id p15so4103735ejm.7;
-        Sun, 27 Sep 2020 00:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xiszwSzHIPu42VE8ycq9IrzTJRg5eh3Qelq5ghdg0ls=;
-        b=F36JFRR2gw4ZLJ4VQJsJYSQOIEhyhd+ZMKXffeDvfDTakEIRy3DWcaZVJOhPcmAzes
-         zl+fh9At5nHsvyvnr+1/xp1hsTpvH9AWkxilc+L+7uTryxgc5mDNl9THb9Y02yR+wy0h
-         fEepZ2B7QS370fdsvaPwvPmQ9qJ1sLReeD7uUOqtBmm0ixp7WwuPiCm0SyJ56K/BI6VF
-         gyiD8h4zDX0u8mgWQ1iYRvkksiKIDcqejWKWKu5PWse/Xj8YhhCeZCsQxAHT0pl/RSeh
-         sInY2x52eF+F5nsyneFvZNAQuJk57IqGjueS6wUZpndYlSwGh3LMSRTnlIRqxpuSkEsy
-         HwnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xiszwSzHIPu42VE8ycq9IrzTJRg5eh3Qelq5ghdg0ls=;
-        b=QbR0JczV6fdCrho3+cH9LWWwhlL2cFUHbiuCul7BObpkinTJG4x09rA/+KrWMJ06PJ
-         5TH2Joov65fXmv1wC1VQ07hHnalaId2rIJZAWcoq4Vq5S7S3hyKwvVw4rP6lGbDyKiCU
-         NorWM9vO35XNldf1q6eNa8WCFEL2tB2E7mWhZkPTuuD/nh2zHZD+SOe2V7IEjeQfj8Sr
-         tE0nTpL5hXoRdDfLarWTHviwSvJk07zqaoChs5utGj5J5cvYv5E2bt2+6UpYF7hjrdc4
-         Z/WeY11ZeJ6tcdaHTM1p6HHRlWKhrYSk4BLmpSLtmsVjeE8NKW1RsxCQDMOQsVhlr3Hb
-         tUEg==
-X-Gm-Message-State: AOAM533/V1eQZuvG4pd8GndOZkEauJxr3su6T0l75XbsYGtwbNatcIvw
-        ANiK+NlxnHS2wR3zoW4YgfHPGO0uZY3LIwnrKAM=
-X-Google-Smtp-Source: ABdhPJz41zBp2OpzRbMdSMYtk4jLfBUVlcPRmTXMA3XHmsB0S2AVtLhCH0GA3dxF12sVaxehPFbqBjP/5eRI1bbLbUo=
-X-Received: by 2002:a17:906:8682:: with SMTP id g2mr10436779ejx.110.1601193064793;
- Sun, 27 Sep 2020 00:51:04 -0700 (PDT)
+        id S1730393AbgI0HyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 03:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36070 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726840AbgI0HyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 03:54:06 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0558523998;
+        Sun, 27 Sep 2020 07:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601193244;
+        bh=FExBk8zsN+Ua6IDq4ZCBhvfYVoagS100fvkfTV2FMnM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UdlekJ0oMY7sUTK2cmaXNkekV8FOi9RmlzJM9krjblQFsS9IzteGZarqbbbBDaRg4
+         UKeUUPMVtooDkVq2lTCgtUUedNlVzQtR24tgXlttG+IQpxdHlJX9p6tBEGgpOqvcM+
+         C2IXC6n7l9N+kk0g36JxJis083McMZtg3ECc+KNY=
+Date:   Sun, 27 Sep 2020 09:54:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com
+Subject: Re: [PATCH v3 1/5] fpga: dfl: rename the bus type "dfl" to "fpga-dfl"
+Message-ID: <20200927075401.GA748141@kroah.com>
+References: <1600966801-30586-1-git-send-email-yilun.xu@intel.com>
+ <1600966801-30586-2-git-send-email-yilun.xu@intel.com>
+ <20200924172700.GA79736@archbook>
+ <20200926022346.GA5623@yilunxu-OptiPlex-7050>
+ <20200926060913.GA637197@kroah.com>
+ <20200926192219.GA18625@epycbox.lan>
+ <20200927055108.GA701198@kroah.com>
+ <20200927073754.GB16433@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-References: <20200924074715.GT9675@piout.net> <20200924105256.18162-1-u.kleine-koenig@pengutronix.de>
- <20200924105256.18162-2-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20200924105256.18162-2-u.kleine-koenig@pengutronix.de>
-From:   Bruno Thomsen <bruno.thomsen@gmail.com>
-Date:   Sun, 27 Sep 2020 09:50:48 +0200
-Message-ID: <CAH+2xPBu3k53XdLzzak7HP_4W16DkfE9NHXCsjaULRbNctzOuQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] rtc: pcf2127: move watchdog initialisation to a
- separate function
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Qiang Zhao <qiang.zhao@nxp.com>, linux-rtc@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-watchdog@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927073754.GB16433@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Den tor. 24. sep. 2020 kl. 12.53 skrev Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de>:
->
-> The obvious advantages are:
->
->  - The linker can drop the watchdog functions if CONFIG_WATCHDOG is off.
->  - All watchdog stuff grouped together with only a single function call
->    left in generic code.
->  - Watchdog register is only read when it is actually used.
->  - Less #ifdefery
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
-> ---
->  drivers/rtc/rtc-pcf2127.c | 56 ++++++++++++++++++++++-----------------
->  1 file changed, 31 insertions(+), 25 deletions(-)
->
-> diff --git a/drivers/rtc/rtc-pcf2127.c b/drivers/rtc/rtc-pcf2127.c
-> index ed6316992cbb..5b1f1949b5e5 100644
-> --- a/drivers/rtc/rtc-pcf2127.c
-> +++ b/drivers/rtc/rtc-pcf2127.c
-> @@ -335,6 +335,36 @@ static const struct watchdog_ops pcf2127_watchdog_op=
-s =3D {
->         .set_timeout =3D pcf2127_wdt_set_timeout,
->  };
->
-> +static int pcf2127_watchdog_init(struct device *dev, struct pcf2127 *pcf=
-2127)
-> +{
-> +       u32 wdd_timeout;
-> +       int ret;
-> +
-> +       if (!IS_ENABLED(CONFIG_WATCHDOG))
-> +               return 0;
-> +
-> +       pcf2127->wdd.parent =3D dev;
-> +       pcf2127->wdd.info =3D &pcf2127_wdt_info;
-> +       pcf2127->wdd.ops =3D &pcf2127_watchdog_ops;
-> +       pcf2127->wdd.min_timeout =3D PCF2127_WD_VAL_MIN;
-> +       pcf2127->wdd.max_timeout =3D PCF2127_WD_VAL_MAX;
-> +       pcf2127->wdd.timeout =3D PCF2127_WD_VAL_DEFAULT;
-> +       pcf2127->wdd.min_hw_heartbeat_ms =3D 500;
-> +       pcf2127->wdd.status =3D WATCHDOG_NOWAYOUT_INIT_STATUS;
-> +
-> +       watchdog_set_drvdata(&pcf2127->wdd, pcf2127);
-> +
-> +       /* Test if watchdog timer is started by bootloader */
-> +       ret =3D regmap_read(pcf2127->regmap, PCF2127_REG_WD_VAL, &wdd_tim=
-eout);
-> +       if (ret)
-> +               return ret;
-> +
-> +       if (wdd_timeout)
-> +               set_bit(WDOG_HW_RUNNING, &pcf2127->wdd.status);
-> +
-> +       return devm_watchdog_register_device(dev, &pcf2127->wdd);
-> +}
-> +
->  /* Alarm */
->  static int pcf2127_rtc_read_alarm(struct device *dev, struct rtc_wkalrm =
-*alrm)
->  {
-> @@ -536,7 +566,6 @@ static int pcf2127_probe(struct device *dev, struct r=
-egmap *regmap,
->                          int alarm_irq, const char *name, bool has_nvmem)
->  {
->         struct pcf2127 *pcf2127;
-> -       u32 wdd_timeout;
->         int ret =3D 0;
->
->         dev_dbg(dev, "%s\n", __func__);
-> @@ -575,17 +604,6 @@ static int pcf2127_probe(struct device *dev, struct =
-regmap *regmap,
->                 pcf2127->rtc->ops =3D &pcf2127_rtc_alrm_ops;
->         }
->
-> -       pcf2127->wdd.parent =3D dev;
-> -       pcf2127->wdd.info =3D &pcf2127_wdt_info;
-> -       pcf2127->wdd.ops =3D &pcf2127_watchdog_ops;
-> -       pcf2127->wdd.min_timeout =3D PCF2127_WD_VAL_MIN;
-> -       pcf2127->wdd.max_timeout =3D PCF2127_WD_VAL_MAX;
-> -       pcf2127->wdd.timeout =3D PCF2127_WD_VAL_DEFAULT;
-> -       pcf2127->wdd.min_hw_heartbeat_ms =3D 500;
-> -       pcf2127->wdd.status =3D WATCHDOG_NOWAYOUT_INIT_STATUS;
-> -
-> -       watchdog_set_drvdata(&pcf2127->wdd, pcf2127);
-> -
->         if (has_nvmem) {
->                 struct nvmem_config nvmem_cfg =3D {
->                         .priv =3D pcf2127,
-> @@ -615,19 +633,7 @@ static int pcf2127_probe(struct device *dev, struct =
-regmap *regmap,
->                 return ret;
->         }
->
-> -       /* Test if watchdog timer is started by bootloader */
-> -       ret =3D regmap_read(pcf2127->regmap, PCF2127_REG_WD_VAL, &wdd_tim=
-eout);
-> -       if (ret)
-> -               return ret;
-> -
-> -       if (wdd_timeout)
-> -               set_bit(WDOG_HW_RUNNING, &pcf2127->wdd.status);
-> -
-> -#ifdef CONFIG_WATCHDOG
-> -       ret =3D devm_watchdog_register_device(dev, &pcf2127->wdd);
-> -       if (ret)
-> -               return ret;
-> -#endif /* CONFIG_WATCHDOG */
-> +       pcf2127_watchdog_init(dev, pcf2127);
+On Sun, Sep 27, 2020 at 03:37:54PM +0800, Xu Yilun wrote:
+> Hi Greg,
+> 
+> On Sun, Sep 27, 2020 at 07:51:08AM +0200, Greg KH wrote:
+> > On Sat, Sep 26, 2020 at 12:22:19PM -0700, Moritz Fischer wrote:
+> > > Hi Greg,
+> > > 
+> > > On Sat, Sep 26, 2020 at 08:09:13AM +0200, Greg KH wrote:
+> > > > On Sat, Sep 26, 2020 at 10:23:46AM +0800, Xu Yilun wrote:
+> > > > > Hi greg,
+> > > > > 
+> > > > > About the bus naming, I summarized some questions we've discussed to check
+> > > > > with you. See inline.
+> > > > > 
+> > > > > On Thu, Sep 24, 2020 at 10:27:00AM -0700, Moritz Fischer wrote:
+> > > > > > Hi Xu,
+> > > > > > 
+> > > > > > On Fri, Sep 25, 2020 at 12:59:57AM +0800, Xu Yilun wrote:
+> > > > > > > Now the DFL device drivers could be made as independent modules and put
+> > > > > > > in different subsystems according to their functionalities. So the name
+> > > > > > > should be descriptive and unique in the whole kernel.
+> > > > > > > 
+> > > > > > > The patch changes the naming of dfl bus related structures, functions,
+> > > > > > > APIs and documentations.
+> > > > > > > 
+> > > > > > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > > > > > ---
+> > > > > > >  Documentation/ABI/testing/sysfs-bus-dfl      |  15 --
+> > > > > > >  Documentation/ABI/testing/sysfs-bus-fpga-dfl |  15 ++
+> > > > > > >  MAINTAINERS                                  |   2 +-
+> > > > > > >  drivers/fpga/dfl.c                           | 254 ++++++++++++++-------------
+> > > > > > >  drivers/fpga/dfl.h                           |  77 ++++----
+> > > > > > >  5 files changed, 184 insertions(+), 179 deletions(-)
+> > > > > > >  delete mode 100644 Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > >  create mode 100644 Documentation/ABI/testing/sysfs-bus-fpga-dfl
+> > > > > > > 
+> > > > > > > diff --git a/Documentation/ABI/testing/sysfs-bus-dfl b/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > > deleted file mode 100644
+> > > > > > > index 23543be..0000000
+> > > > > > > --- a/Documentation/ABI/testing/sysfs-bus-dfl
+> > > > > > > +++ /dev/null
+> > > > > > > @@ -1,15 +0,0 @@
+> > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/type
+> > > > > > > -Date:		Aug 2020
+> > > > > > > -KernelVersion:	5.10
+> > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > > > > -Description:	Read-only. It returns type of DFL FIU of the device. Now DFL
+> > > > > > > -		supports 2 FIU types, 0 for FME, 1 for PORT.
+> > > > > > > -		Format: 0x%x
+> > > > > > > -
+> > > > > > > -What:		/sys/bus/dfl/devices/dfl_dev.X/feature_id
+> > > > > > > -Date:		Aug 2020
+> > > > > > > -KernelVersion:	5.10
+> > > > > > > -Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > > > > > -Description:	Read-only. It returns feature identifier local to its DFL FIU
+> > > > > > > -		type.
+> > > > > > > -		Format: 0x%x
+> > > > > > 
+> > > > > > You're changing userland facing ABI. I think that's something to avoid,
+> > > > > > please check with Greg on the rules since this hasn't been in a release yet.
+> > > > > > 
+> > > > > 
+> > > > > I'm going to change the name of bus stuff for other subsystems, to be
+> > > > > aligned, I also consider change the bus_type.name and dfl dev_name. But
+> > > > > it will cause the changing of user ABIs. No user case for these user ABI
+> > > > > now cause they are just queued, is it good I change them?
+> > > > 
+> > > > Why change the user name here?  No need for that, right?  Unless you
+> > > > really want to, and think that no one will notice.  If so, fine, change
+> > > > them :)
+> > > 
+> > > Let's leave it as is -- An FPGA is one possible implementation and as for
+> > > other buses, you wouldn't call it fpga-usb or usb-fpga just because the
+> > > USB bus is implemented in an FPGA if it behaves like a normal USB bus.
+> > > Having an ASIC based DFL bus show up under dfl-fpga / fpga-dfl in sysfs
+> > > would be super confusing.
+> > > 
+> > > > > It is mentioned that although Device Feature List is introduced in FPGA,
+> > > > > but it doesn't limit the usage in FPGA only. It's just a method to
+> > > > > discover features from a device, for sure it can be extended and used
+> > > > > in other devices too. So it can be bigger namespace than FPGA. Like in
+> > > > > our existing code, we picked dfl_fpga (DFL based FPGA) for uapi (ioctl)
+> > > > > and internal functions. This is suggested by Alan (The previous FPGA
+> > > > > maintainer). It's possible to have "DFL based XXX" in the future, even
+> > > > > currently only FPGA uses DFL. This is the reason we thought just "dfl"
+> > > > > in the whole kernel space is OK.
+> > > > > So, is there a chance we keep the "dfl" naming in the whole kernel?
+> > > > 
+> > > > No one knows what "DFL" is, and odds are, if a different subsystem wants
+> > > > to use it, they will have their own variant, right?
+> 
+> DFL is a method to discover devices. If a different subsystem (e.g. ASIC based
+> DFL bus) want to use DFL and follows the DFL spec, they could just use the DFL
+> stuff for enumeration, no need to have new variants.
+> 
+> > > > 
+> > > > And why didn't you all use device tree?  How did this sneak in past
+> > > > everyone?
+> > > 
+> > > DFL is a pretty efficient implementation in terms of resource
+> > > utilization on the FPGA end (a couple of registers / memories) vs
+> > > several kilobytes of memory for a device-tree blob.
+> > > 
+> > > The hardware using DFL to describe its internal structure exists in the
+> > > form of deployed accelerator cards and telling all its users to go and
+> > > change their hardware design would be feasible -- If you think about an
+> > > FPGA as a (albeit reconfigurable) ASIC you wouldn't go and tell people
+> > > to redesign their ASIC to use Device-Tree? :)
+> > > 
+> > > I'm not sure where the 'sneaking in' anything comes from. It's been
+> > > reviewed on the list (and by yourself back then). If you feel any of
+> > > this wasn't kosher, let's talk about it, to make sure it doesn't happen
+> > > again.
+> > 
+> > I can't remember reviewing it, sorry, too many patches, I probably was
+> > only worrying about functionality issues, not what the code actually did
+> > :)
+> > 
+> > So it's fine, just a surprise to me, no big deal.
+> 
+> I'm glad that we made it clear. And the bus name & user APIs cound be
+> kept as "dfl". So I assume the name "dfl" is OK to be used and could
+> be recognized by people out of FPGA domain, is it?
+> 
+> If so, I still want to keep the name "dfl_device_id" in mod_devicetable.h
+> as well.
 
-The code refactoring seems like a good idea Uwe, but the new
-pcf2127_watchdog_init() is not a void function. If the return
-value is not handled, it will change driver behavior. Correct
-handling should look like this:
+No, this is specific to the fpga subsystem, right?  So please put fpga
+in the name.
 
-ret =3D pcf2127_watchdog_init(dev, pcf2127);
-if (ret)
-        return ret;
+> We want to keep the device id name of the bus aligned with the
+> bus name. And it would be confusing as well if a driver for ASIC based
+> DFL device uses the "dfl_fpga_device_id" structure.
 
-/Bruno
+Do we have that in the kernel today?
 
->         /*
->          * Disable battery low/switch-over timestamp and interrupts.
-> --
-> 2.28.0
->
+thanks,
+
+greg "naming is hard" k-h
