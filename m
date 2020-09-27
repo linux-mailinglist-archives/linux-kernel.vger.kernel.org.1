@@ -2,58 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1A527A0DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 14:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D160D27A0E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 14:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgI0MXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 08:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37456 "EHLO mail.kernel.org"
+        id S1726604AbgI0MZI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 08:25:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37808 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgI0MXF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 08:23:05 -0400
+        id S1726328AbgI0MZI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 08:25:08 -0400
 Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B203023718;
-        Sun, 27 Sep 2020 12:23:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 317A723718;
+        Sun, 27 Sep 2020 12:25:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601209385;
-        bh=Xgly9v4XEPuR30uhx1ZZu3rViR4F43g5mliPOHLVQ0o=;
+        s=default; t=1601209507;
+        bh=IY/N4/ki8QJZ9vdRwB7Eus2b1ptin2/9EGBJa2l8EbY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1Pe4zmgC6zFGnlaN4douRj3DBnUjzV5Gim64cWqjW32eNcLH3+juDR6fkXxCjHYev
-         i5Pha3VC4RTg8O0rWsE6YhiIYi8O4MVM/pmsSPa1H4g/3BEPkoHpyAMS5d3uZk6kai
-         cXIjhG45jiUAknCeW4KQ0Pz4FRI2dHsYiyn/dilE=
-Date:   Sun, 27 Sep 2020 14:23:15 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     b_lkasam@codeaurora.org
-Cc:     broonie@kernel.org, rafael@kernel.org,
-        linux-kernel@vger.kernel.org, srinivas.kandagatla@linaro.org
-Subject: Re: [PATCH] regmap: irq: Add support to clear ack registers
-Message-ID: <20200927122315.GA179084@kroah.com>
-References: <1601036740-23044-1-git-send-email-lkasam@codeaurora.org>
- <65dd6c86415a3d8f565160ca0cd66f2c@codeaurora.org>
- <553eabe7ebfb94ac2e76323ef339634b@codeaurora.org>
+        b=wKm0mWRV+6ARVxIfY4vm2CJU32hbHecxSvUSR81Yh9pkW7vpX4+FoF5b/3lUa/qwO
+         YeB/uIfp1P5Uj8s2h2OOFB/DM+ciqibvsE52+Bh20TQXuXQWfepFotLOV1Px8lALdR
+         DbKRxNKrZu4+wp4mrgnawtfkO67W+FKhN7H1kMM4=
+Date:   Sun, 27 Sep 2020 14:25:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] nvmem: core: fix possibly memleak when use
+ nvmem_cell_info_to_nvmem_cell()
+Message-ID: <20200927122516.GB179084@kroah.com>
+References: <20200923204456.14032-1-vadym.kochan@plvision.eu>
+ <12edae35-a927-11bf-f80a-037011c4f07a@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <553eabe7ebfb94ac2e76323ef339634b@codeaurora.org>
+In-Reply-To: <12edae35-a927-11bf-f80a-037011c4f07a@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 07:14:01PM +0530, b_lkasam@codeaurora.org wrote:
-> For particular codec HWs have requirement to
-> writing interrupt clear and mask interrupt clear
-> register to toggle interrupt status. To accommodate it,
-> need to add one more field (clear_ack) in the regmap_irq
-> struct and update regmap-irq driver to support it.
+On Fri, Sep 25, 2020 at 10:32:42AM +0100, Srinivas Kandagatla wrote:
 > 
-> Signed-off-by: Laxminath Kasam <lkasam@codeaurora.org>
-> ---
->  drivers/base/regmap/regmap-irq.c | 52
-> ++++++++++++++++++++++++++++++++++++----
->  include/linux/regmap.h           |  2 ++
->  2 files changed, 49 insertions(+), 5 deletions(-)
+> 
+> On 23/09/2020 21:44, Vadym Kochan wrote:
+> > Fix missing 'kfree_const(cell->name)' when call to
+> > nvmem_cell_info_to_nvmem_cell() in several places:
+> > 
+> >       * after nvmem_cell_info_to_nvmem_cell() failed during
+> >         nvmem_add_cells()
+> > 
+> >       * during nvmem_device_cell_{read,write} when cell->name is
+> >         kstrdup'ed() without calling kfree_const() at the end, but
+> >         really there is no reason to do that 'dup, because the cell
+> >         instance is allocated on the stack for some short period to be
+> >         read/write without exposing it to the caller.
+> > 
+> > So the new nvmem_cell_info_to_nvmem_cell_nodup() helper is introduced
+> > which is used to convert cell_info -> cell without name duplication as
+> > a lighweight version of nvmem_cell_info_to_nvmem_cell().
+> > 
+> > Fixes: e2a5402ec7c6 ("nvmem: Add nvmem_device based consumer apis.")
+> > Signed-off-by: Vadym Kochan <vadym.kochan@plvision.eu>
+> 
+> Looks good to me! Thanks for the patch.
+> 
+> Reviewed-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> 
+> Greg,
+> 
+> Can you please pick this one? As don't have any nvmem pending patches to
+> send it together.
 
-Patch is line-wrapped :(
+Will do, thanks.
 
+greg k-h
