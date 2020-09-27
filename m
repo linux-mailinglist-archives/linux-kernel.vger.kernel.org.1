@@ -2,103 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CB8A279D2F
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 02:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD58279D30
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 02:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728425AbgI0Afa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 20:35:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726426AbgI0Afa (ORCPT
+        id S1726426AbgI0AiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 20:38:18 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:41614 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726587AbgI0AiR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 20:35:30 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249F1C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 17:35:30 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id o20so6259814pfp.11
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 17:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XqtqK11C6EYp3TxI68gPMvhecqGFaleQrHQDt6dRtSo=;
-        b=RcTE74DKb6HWl+IWw5w/4AS2rnlo67wcmDI3OVW2aJ1IOUEQiTmRDpcGKXwstYlIYG
-         GltKiOGEAMimsPCbTGKHOd8W735oQ6p/QhPWls6bcVbBQ+h3bbv29S0Ry+WxNMdqnWu5
-         5pSF/CzFs4p6kGnfKs26XTQPBbI/1YndbZEWnGPlw1L/0JlY/NP2makl8ogFDZGQGcjh
-         O4Qavt2XscCKNGtlWlSn5fwG82aGyLG2V05ZIgTz3mzGLjr/HAtQKhk6BkoL0IQJzAjY
-         1HJq+3zBvL7qxlclndfJIP2hZvDdHxsRrncZ7sl31F8f4v1roAaRcdfILQbmFOHQxwVF
-         1M7g==
+        Sat, 26 Sep 2020 20:38:17 -0400
+Received: by mail-il1-f200.google.com with SMTP id a16so5504989ilh.8
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 17:38:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=XqtqK11C6EYp3TxI68gPMvhecqGFaleQrHQDt6dRtSo=;
-        b=nXX1bbIe66T0XrjqbvSLTs0P5RwOCaFPW9r+DKH7PIefOHITz42lxNyZrhgW4cm1rt
-         B/bsZ0wZMVNoQUlmVOCrIvU7tCTnVi1pkD91KLSYT/DxaRFndbjfcVI695QiM25s9cGW
-         VjXWnVW+o+CbZlMpEG0e9hipvcLlFJEUvQhzpkTesKJMynQiJCA2fcNvg8u2psAvyHTu
-         2q8bvtHO7DIib7lTxFedPWbxB/z0JWiZW+tewhPxy9H5bKPXIzj1KTBQS2k+SkJ0oOFb
-         NF9t3/+42vgo1sLov3mKSYZKJz0VO0QhA8dQGX8bMBv9qKTzLPsIo/wWl/XneDNyElv6
-         FZ9Q==
-X-Gm-Message-State: AOAM530RfQSiTgn0a5LQAfFAf+LofhPMwMN4+Ak+t/2qhAHAGC45rdsT
-        bzMiblKuJUx52eDhau99YU/9ig==
-X-Google-Smtp-Source: ABdhPJx8AynfC3lOSrY8k59qcyqfjpr6GSeCaIP8xhW0ff6mYLWyOIrtvz4coZ8ArlPQ2ylV7L86Mw==
-X-Received: by 2002:aa7:96af:0:b029:142:6a8f:c04b with SMTP id g15-20020aa796af0000b02901426a8fc04bmr5456120pfk.30.1601166929558;
-        Sat, 26 Sep 2020 17:35:29 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id x13sm6744416pff.152.2020.09.26.17.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 26 Sep 2020 17:35:28 -0700 (PDT)
-Date:   Sat, 26 Sep 2020 17:35:28 -0700 (PDT)
-X-Google-Original-Date: Sat, 26 Sep 2020 17:35:26 PDT (-0700)
-Subject:     Re: [V2] riscv: fix pfn_to_virt err in do_page_fault().
-In-Reply-To: <1600419358-21446-1-git-send-email-liush@allwinnertech.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        akpm@linux-foundation.org, peterx@redhat.com,
-        daniel.m.jordan@oracle.com, walken@google.com, vbabka@suse.cz,
-        rppt@kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, liush@allwinnertech.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     liush@allwinnertech.com
-Message-ID: <mhng-6b275467-464f-45b7-9ada-7c86add704f6@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=fDiQouvi58KqMcl70Pm7uMuNUtLTT67ERZXcegS8S1U=;
+        b=owzmrC7WYn/ptM8aK6coTlOAHlreyjHAYq/lgGweHB5dnxfZcXOZaKTBPovb8ynb7r
+         elxIi637hIHWyKYg1uGqKXCQdtB7wqCIb1Xrit/B4PgAHIHemd6Sfz62ZNMh674nXN6O
+         pva4dqAgzDfPAAPt78JMNVAlR40QYmEQQy5ZzIcZ8l0/TkrZJ1oTvFcNuAdrPmap7ZmW
+         o8MR9n+mr4It4jlnSJg8dbJ7n/lp/nI5dubdPwcj7ouIjU5N+ceiCxlhWoAQXJlK6GiN
+         UWwdYXEfZgnyPcKF4Cnu7EYyTZvhuGnehL6aXMJpEbXyn2jPZ28eBK1++5UOGtDy/2z5
+         fxdQ==
+X-Gm-Message-State: AOAM532QHEJXT/wJlt6/D1LO+BUbz2fHjAVhk5ddAN/QIL/A3cCPzPqP
+        IRLOpmsJ1VA0LENlQEr7jH/Sh7e03nlK1GcsHwjE4iwUq5Rd
+X-Google-Smtp-Source: ABdhPJyYQ0IdidmXzIFIr5tonQjfTHkMbga+TsmTwCAfjrqzbnx88uP1TAd+Y0FyyVyIkV/L62XdrWx53VMGoWs0pxtrFYpyMlyq
+MIME-Version: 1.0
+X-Received: by 2002:a6b:5804:: with SMTP id m4mr3207206iob.14.1601167096465;
+ Sat, 26 Sep 2020 17:38:16 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 17:38:16 -0700
+In-Reply-To: <000000000000bd9ee505b01f60e2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000002cbe905b040c47c@google.com>
+Subject: Re: WARNING in hrtimer_forward
+From:   syzbot <syzbot+ca740b95a16399ceb9a5@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 01:55:58 PDT (-0700), liush@allwinnertech.com wrote:
-> The argument to pfn_to_virt() should be pfn not the value of CSR_SATP.
+syzbot has found a reproducer for the following issue on:
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+HEAD commit:    ba5f4cfe bpf: Add comment to document BTF type PTR_TO_BTF_..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13f316e5900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d44e1360b76d34dc
+dashboard link: https://syzkaller.appspot.com/bug?extid=ca740b95a16399ceb9a5
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1148fe4b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f5218d900000
 
-> Signed-off-by: liush <liush@allwinnertech.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ca740b95a16399ceb9a5@syzkaller.appspotmail.com
 
-IIUC you're supposed to use an actual name.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 6901 at kernel/time/hrtimer.c:932 hrtimer_forward+0x1e3/0x260 kernel/time/hrtimer.c:932
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 6901 Comm: kworker/u4:1 Not tainted 5.9.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: phy4 ieee80211_iface_work
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x198/0x1fd lib/dump_stack.c:118
+ panic+0x382/0x7fb kernel/panic.c:231
+ __warn.cold+0x20/0x4b kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:hrtimer_forward+0x1e3/0x260 kernel/time/hrtimer.c:932
+Code: e5 4d 0f 4e ec e8 ad 24 10 00 4c 89 6b 20 e8 a4 24 10 00 4c 89 f0 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 e8 8d 24 10 00 <0f> 0b 45 31 f6 eb dd e8 81 24 10 00 4c 89 e0 48 8b 3c 24 48 99 48
+RSP: 0018:ffffc90000007d90 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff88808ded4b78 RCX: ffffffff81666168
+RDX: ffff8880942f0200 RSI: ffffffff816662b3 RDI: 0000000000000001
+RBP: 00000000061a8000 R08: 0000000000000001 R09: ffff8880942f0b00
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 000000a6d77ff62e R14: 0000000000000001 R15: dffffc0000000000
+ mac80211_hwsim_beacon+0x159/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1726
+ __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
+ __hrtimer_run_queues+0x6a9/0xfc0 kernel/time/hrtimer.c:1588
+ hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1605
+ __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
+ </IRQ>
+ __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
+ run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
+ do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:393 [inline]
+ __irq_exit_rcu kernel/softirq.c:423 [inline]
+ irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
+ sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
+RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:770 [inline]
+RIP: 0010:lock_acquire+0x27b/0xaf0 kernel/locking/lockdep.c:5032
+Code: ba 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 0f 85 1d 07 00 00 48 83 3d d8 41 a0 08 00 0f 84 73 05 00 00 4c 89 ff 57 9d <0f> 1f 44 00 00 48 b8 00 00 00 00 00 fc ff df 48 03 44 24 08 48 c7
+RSP: 0018:ffffc90000e37c18 EFLAGS: 00000286
+RAX: 1ffffffff13f8d7d RBX: ffff8880942f0200 RCX: 0000000000000001
+RDX: dffffc0000000000 RSI: 0000000000000008 RDI: 0000000000000286
+RBP: ffffc90000e37da8 R08: 0000000000000000 R09: ffffffff8d108aa7
+R10: fffffbfff1a21154 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000286
+ process_one_work+0x8bb/0x1670 kernel/workqueue.c:2245
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2415
+ kthread+0x3b5/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-> ---
->  arch/riscv/mm/fault.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
-> index 716d64e..3e560ec13 100644
-> --- a/arch/riscv/mm/fault.c
-> +++ b/arch/riscv/mm/fault.c
-> @@ -198,6 +198,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
->  		pmd_t *pmd, *pmd_k;
->  		pte_t *pte_k;
->  		int index;
-> +		unsigned long pfn;
->
->  		/* User mode accesses just cause a SIGSEGV */
->  		if (user_mode(regs))
-> @@ -212,7 +213,8 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
->  		 * of a task switch.
->  		 */
->  		index = pgd_index(addr);
-> -		pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP)) + index;
-> +		pfn = csr_read(CSR_SATP) & SATP_PPN;
-> +		pgd = (pgd_t *)pfn_to_virt(pfn) + index;
->  		pgd_k = init_mm.pgd + index;
->
->  		if (!pgd_present(*pgd_k))
