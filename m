@@ -2,124 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494E727A022
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B4827A024
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgI0J1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 05:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54650 "EHLO
+        id S1726440AbgI0J1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 05:27:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726239AbgI0J1K (ORCPT
+        with ESMTP id S1726387AbgI0J1W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:27:10 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA99DC0613CE;
-        Sun, 27 Sep 2020 02:27:10 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id n14so6712634pff.6;
-        Sun, 27 Sep 2020 02:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/+0v4K0vmArclBVNRS/fx6ONczXgbxr9rkdov+E0hJQ=;
-        b=uhn8pjG4O8w8yKQYba0Eqi7d+4yEDRRterRVfsBkbBzHte3tCxkee/VgACvDRoQOEB
-         m8HlLZD8Rvmqz29YH+gKFlueoL77fiAxJYnHQMr9t84twhsh85cQI5Rev7kbALp43kfi
-         yZodv8kSYLEUmgK6sxazd6Ljn1IA/lYSgdCJaU9+93jI6qE/yxUMMT/WEgo/qTerkg47
-         sIR97q1Gpo38eUBE4uAg4/cqRxlfq5t3BtKpVQwy8HTHCpnzw8aFtAITvXQOO49IRS6x
-         YSookZTniu56Aam3V0J3jvjGU0YD3WdyEmxzCchnhGCm+85xK9/EqcEk7GXrZrG1NE3R
-         ojkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/+0v4K0vmArclBVNRS/fx6ONczXgbxr9rkdov+E0hJQ=;
-        b=I3ckKWAcXG01EJLET1YsEixVYk87zX8fjk+4L+wF+hvEswvWhsjXEl72MWh32TtCSN
-         GmcED+OVXiEtU9o8PCVcKIn0Zf0Sedz4WR1YQzb2oATuTckeg3tpMY1tV1orDcOesO0R
-         Agcap5LQTzFYlchmpQd7vtgjUvDZluEin1gJ4UKQbQP5ZN2CpUMObUcbxE5wHaF3hQl6
-         mK/45ZF8l+XDhwSkfCsnRuWA6lewqnjWRlv9l8Osf+ZroKdSlJT4rKl4ciCMKKOfAknB
-         WrQPBgvyiYINK246gGRiM8Y3tg+pnHd/0G1Ot87xxAFCvfQGjTES7a7UMdYHHawrHvtF
-         PGmA==
-X-Gm-Message-State: AOAM532KGdaCnj5NWhUzOe390aBjN+vFw+BRxgh5Lh/k863dkf+fRQvb
-        yFnU+yl6yxkP6kVMBp6yzrUhcjYt4TNg7t8=
-X-Google-Smtp-Source: ABdhPJzznsWE+vGPA76opHSWu8mdz1RLxc0cgGQ4T3jeUXYXq5bYqi3z1U4Ii5LxZ7AyjI1MX6tBxw==
-X-Received: by 2002:a63:1f1a:: with SMTP id f26mr5227671pgf.150.1601198830044;
-        Sun, 27 Sep 2020 02:27:10 -0700 (PDT)
-Received: from PWN ([161.117.41.183])
-        by smtp.gmail.com with ESMTPSA id r6sm7556304pfq.11.2020.09.27.02.27.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 02:27:09 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 05:27:01 -0400
-From:   Peilin Ye <yepeilin.cs@gmail.com>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: KASAN: use-after-free Read in bit_putcs
-Message-ID: <20200927092701.GA1037755@PWN>
-References: <000000000000226d3f05b02dd607@google.com>
- <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
- <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
- <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
+        Sun, 27 Sep 2020 05:27:22 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00878C0613CE;
+        Sun, 27 Sep 2020 02:27:21 -0700 (PDT)
+Date:   Sun, 27 Sep 2020 09:27:19 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1601198840;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NoREJBYtTaK5urcLHtLaaMlVb1ZBxZeQJ8zng4TTpoQ=;
+        b=l3yCRfN3atBquAQLqec6MbzsaKzr5huhcFsSPkHepDWhL7BJqag2lIALMsD3p9+u8LqXxR
+        cIl+P6bLd5ayirzU+UXeODIBI4lTs+PGXW87fjyQdOcLdSLHNCgqf5713I6a+5pFJf9uLG
+        89AddX8xSOMOSq7bQJs25fnfCC4URdc0GRAgaONjcw8GoF0cde67BfNjYPCAUR+6VXj2A+
+        gXvpH0NxfMoAEUO/mWTVVMPhhWtCy5LnLlZecH5HvGwuaGXhJOvnfqUUIUtFo1QT4wAzmR
+        0TrMX/672kym5YCJ2tHwu0xDU6O9ERQmYyICkUEklLllv090TxIJTKd80IkFQQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1601198840;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NoREJBYtTaK5urcLHtLaaMlVb1ZBxZeQJ8zng4TTpoQ=;
+        b=Y+jQAMt6chifq8Vk06sVYmXFe10YlekxxT000lKjAYJUnqtwsRwLhsufPXoluByO4aEVao
+        yZi5nY/Bdtnjk8Aw==
+From:   "tip-bot2 for Zhen Lei" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] clocksource/drivers/sp804: Enable Hisilicon sp804
+ timer 64bit mode
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200918132237.3552-9-thunder.leizhen@huawei.com>
+References: <20200918132237.3552-9-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
+Message-ID: <160119883909.7002.9109042796819288420.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 05:28:12PM +0900, Tetsuo Handa wrote:
-> Well, vt_io_ioctl(PIO_FONT) initializes "struct console_font_op op;" with
-> 
->   op.width = 8;
->   op.height = 0;
->   op.charcount = 256;
-> 
-> and calls con_font_set() from con_font_op(). But the "/* Need to guess font height [compat] */"
-> chunk in con_font_set() guesses font's height due to being initialized with op.height = 0.
-> Then, con_font_set() calls fbcon_set_font() via vc->vc_sw->con_font_set(), and fbcon_set_font()
-> allocates minimal amount of memory for font data based on font's height calcllated by con_font_set().
-> 
-> Therefore, any attempt to change font's height (like vt_resizex()) larger than font's height
-> calculated by con_font_set() can cause OOB read of memory block for font data. If we allocate
-> maximal amount of memory for any font, OOB read of memory block for font data should not happen.
-> 
-> ----------------------------------------
-> 
-> static char fontdata[8192] = { 2 };
-> 
-> [  227.065369] bit_putcs: width=1 cellsize=1 count=80 maxcnt=8192 scan_align=0 buf_align=0 image.height=1
-> [  227.066254] bit_putcs: width=1 cellsize=1 count=80 maxcnt=8192 scan_align=0 buf_align=0 image.height=1
-> [  227.067642] vc=ffff8880d69b4000 v.v_rows=0 v.v_cols=0 v.v_vlin=1 v.v_clin=9 v.v_vcol=0 v.v_ccol=0 ret=0
-> [  227.067699] vcp=ffff8880d69b4000 before: ->vc_rows=480 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=400 ->vc_font.height=9 save_font_height=1
-> [  227.067774] vcp=ffff8880d69b4000 after: ->vc_rows=480 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=400 ->vc_font.height=9 save_font_height=1 ret=0
-> [  227.067831] vcp=ffff8880cac4b000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-> [  227.067891] vcp=ffff8880cac4b000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-> [  227.067947] vcp=ffff8880c6180000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-> [  227.068007] vcp=ffff8880c6180000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-> [  227.068063] vcp=ffff8880d6b84000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-> [  227.068123] vcp=ffff8880d6b84000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-> [  227.068179] vcp=ffff8880ca8c0000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-> [  227.068255] vcp=ffff8880ca8c0000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-> [  227.068455] vcp=ffff8880cbd5d000 before: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16
-> [  227.068515] vcp=ffff8880cbd5d000 after: ->vc_rows=30 ->vc_cols=80 ->vc_scan_lines=1 save_scan_lines=0 ->vc_font.height=9 save_font_height=16 ret=0
-> [  227.084709] ==================================================================
-> [  227.084729] BUG: KASAN: slab-out-of-bounds in soft_cursor+0x34e/0x4a0
-> [  227.084748] Read of size 9 at addr ffff8880c98d5930 by task a.out/1662
+The following commit has been merged into the timers/core branch of tip:
 
-Very interesting, I remember seeing this on the syzbot dashboard...
+Commit-ID:     549437a43f45ce70cf5012317633c635c43ba4f4
+Gitweb:        https://git.kernel.org/tip/549437a43f45ce70cf5012317633c635c43ba4f4
+Author:        Zhen Lei <thunder.leizhen@huawei.com>
+AuthorDate:    Fri, 18 Sep 2020 21:22:36 +08:00
+Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CommitterDate: Thu, 24 Sep 2020 10:51:04 +02:00
 
-Yes, I guess it is this one:
-	KASAN: slab-out-of-bounds Read in soft_cursor
-	https://syzkaller.appspot.com/bug?id=6b8355d27b2b94fb5cedf4655e3a59162d9e48e3
+clocksource/drivers/sp804: Enable Hisilicon sp804 timer 64bit mode
 
-There is a `0x560aul` ioctl() in the reproducer, which is `VT_RESIZEX`.
+A 100MHZ 32-bit timer will be wrapped up less than 43s. Although the
+kernel maintains a software high 32-bit count in the tick IRQ. But it's
+not applicable to the user mode APPs.
 
-Thank you,
-Peilin Ye
+Note: The kernel still uses the lower 32 bits of the timer.
 
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200918132237.3552-9-thunder.leizhen@huawei.com
+---
+ drivers/clocksource/timer-sp.h    |  6 ++++++
+ drivers/clocksource/timer-sp804.c | 11 +++++++++++
+ 2 files changed, 17 insertions(+)
+
+diff --git a/drivers/clocksource/timer-sp.h b/drivers/clocksource/timer-sp.h
+index 1ab75cb..811f840 100644
+--- a/drivers/clocksource/timer-sp.h
++++ b/drivers/clocksource/timer-sp.h
+@@ -33,12 +33,15 @@
+ 
+ struct sp804_timer {
+ 	int load;
++	int load_h;
+ 	int value;
++	int value_h;
+ 	int ctrl;
+ 	int intclr;
+ 	int ris;
+ 	int mis;
+ 	int bgload;
++	int bgload_h;
+ 	int timer_base[NR_TIMERS];
+ 	int width;
+ };
+@@ -46,12 +49,15 @@ struct sp804_timer {
+ struct sp804_clkevt {
+ 	void __iomem *base;
+ 	void __iomem *load;
++	void __iomem *load_h;
+ 	void __iomem *value;
++	void __iomem *value_h;
+ 	void __iomem *ctrl;
+ 	void __iomem *intclr;
+ 	void __iomem *ris;
+ 	void __iomem *mis;
+ 	void __iomem *bgload;
++	void __iomem *bgload_h;
+ 	unsigned long reload;
+ 	int width;
+ };
+diff --git a/drivers/clocksource/timer-sp804.c b/drivers/clocksource/timer-sp804.c
+index f0783d1..6e8ad4a 100644
+--- a/drivers/clocksource/timer-sp804.c
++++ b/drivers/clocksource/timer-sp804.c
+@@ -24,12 +24,15 @@
+ #define HISI_TIMER_1_BASE	0x00
+ #define HISI_TIMER_2_BASE	0x40
+ #define HISI_TIMER_LOAD		0x00
++#define HISI_TIMER_LOAD_H	0x04
+ #define HISI_TIMER_VALUE	0x08
++#define HISI_TIMER_VALUE_H	0x0c
+ #define HISI_TIMER_CTRL		0x10
+ #define HISI_TIMER_INTCLR	0x14
+ #define HISI_TIMER_RIS		0x18
+ #define HISI_TIMER_MIS		0x1c
+ #define HISI_TIMER_BGLOAD	0x20
++#define HISI_TIMER_BGLOAD_H	0x24
+ 
+ 
+ struct sp804_timer __initdata arm_sp804_timer = {
+@@ -43,7 +46,9 @@ struct sp804_timer __initdata arm_sp804_timer = {
+ 
+ struct sp804_timer __initdata hisi_sp804_timer = {
+ 	.load		= HISI_TIMER_LOAD,
++	.load_h		= HISI_TIMER_LOAD_H,
+ 	.value		= HISI_TIMER_VALUE,
++	.value_h	= HISI_TIMER_VALUE_H,
+ 	.ctrl		= HISI_TIMER_CTRL,
+ 	.intclr		= HISI_TIMER_INTCLR,
+ 	.timer_base	= {HISI_TIMER_1_BASE, HISI_TIMER_2_BASE},
+@@ -129,6 +134,10 @@ int __init sp804_clocksource_and_sched_clock_init(void __iomem *base,
+ 	writel(0, clkevt->ctrl);
+ 	writel(0xffffffff, clkevt->load);
+ 	writel(0xffffffff, clkevt->value);
++	if (clkevt->width == 64) {
++		writel(0xffffffff, clkevt->load_h);
++		writel(0xffffffff, clkevt->value_h);
++	}
+ 	writel(TIMER_CTRL_32BIT | TIMER_CTRL_ENABLE | TIMER_CTRL_PERIODIC,
+ 		clkevt->ctrl);
+ 
+@@ -245,7 +254,9 @@ static void __init sp804_clkevt_init(struct sp804_timer *timer, void __iomem *ba
+ 		clkevt = &sp804_clkevt[i];
+ 		clkevt->base	= timer_base;
+ 		clkevt->load	= timer_base + timer->load;
++		clkevt->load_h	= timer_base + timer->load_h;
+ 		clkevt->value	= timer_base + timer->value;
++		clkevt->value_h	= timer_base + timer->value_h;
+ 		clkevt->ctrl	= timer_base + timer->ctrl;
+ 		clkevt->intclr	= timer_base + timer->intclr;
+ 		clkevt->width	= timer->width;
