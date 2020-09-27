@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD6727A2C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7E127A2CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgI0TeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:34:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32970 "EHLO mail.kernel.org"
+        id S1726424AbgI0TeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:34:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgI0TeA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:34:00 -0400
-Subject: Re: [GIT PULL] Kbuild fixes for v5.9-rc7
+        id S1726309AbgI0TeB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 15:34:01 -0400
+Subject: Re: [GIT pull] timers/urgent for for
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601235239;
-        bh=kGvm0D/uqbbLsjzAHl6x1eT4/vNWKHPAs5FKOtCVUDk=;
+        s=default; t=1601235241;
+        bh=RlhY+7NPfk0VccYK858cYJtnK+U6TX8fm2dX+DbCjaI=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=WdPjW6CmdkBrSLpttNzpvy4zTyWHfTyA/VQ5WJ4k35knGpDKASKhPzeKuH/cyb/dt
-         ch9zbQSxma8/0+5ZQDzifKYROcNWVpqsYKhLpqAQ6rqC4zHo5fjaPHdGy45JL/etyh
-         aTChsK8fSDlpWhCIpuy4wUvrOURiYp3vn3Yna5SU=
+        b=aFKNwRdtuMncJjY5cFQLsFMw6JLDKL2WJCDvy1/S4whBXQDmBTHnIGMoMzNew/Wyi
+         AW5IT7w1m+1GQ+OhXjHxU1e47x9+I52Qc/05ywDVfvIeuvioJSQ7ShpFb/+4BlgRG3
+         VdH+3CTChEK/J0M9KLRgw0FyaM+38HEwkhkBNV5o=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNARTwQUtJKnEyyJySJunja4szZPHvxim5+KTA04w6wjhgA@mail.gmail.com>
-References: <CAK7LNARTwQUtJKnEyyJySJunja4szZPHvxim5+KTA04w6wjhgA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kbuild.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNARTwQUtJKnEyyJySJunja4szZPHvxim5+KTA04w6wjhgA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.9-4
-X-PR-Tracked-Commit-Id: e30d694c3381b565e043cf74b0bed059db1b4ac9
+In-Reply-To: <160121921194.23623.5568205948074131939.tglx@nanos>
+References: <160121921194.23623.5568205948074131939.tglx@nanos>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <160121921194.23623.5568205948074131939.tglx@nanos>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-09-27
+X-PR-Tracked-Commit-Id: a7b6c0feda15c9881cac83102cdbc82e39889995
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 16bc1d5432ebd8e50e480eb300fd2b84afa28286
-Message-Id: <160123523972.14460.4525244834390054926.pr-tracker-bot@kernel.org>
-Date:   Sun, 27 Sep 2020 19:33:59 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
+X-PR-Merge-Commit-Id: ba25f0570b53267e8b9dc1f2e185caa3d3bc7633
+Message-Id: <160123524116.14460.8107148574749877754.pr-tracker-bot@kernel.org>
+Date:   Sun, 27 Sep 2020 19:34:01 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+        linux-kernel@vger.kernel.org, x86@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 28 Sep 2020 02:38:39 +0900:
+The pull request you sent on Sun, 27 Sep 2020 15:06:51 -0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.9-4
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-09-27
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/16bc1d5432ebd8e50e480eb300fd2b84afa28286
+https://git.kernel.org/torvalds/c/ba25f0570b53267e8b9dc1f2e185caa3d3bc7633
 
 Thank you!
 
