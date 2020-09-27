@@ -2,149 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E9D27A0BC
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 14:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126C227A0C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 14:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgI0MJE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 27 Sep 2020 08:09:04 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:41115 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgI0MJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 08:09:03 -0400
-Received: from [172.20.10.2] (x527179c4.dyn.telefonica.de [82.113.121.196])
-        by mail.holtmann.org (Postfix) with ESMTPSA id F2716CECFF;
-        Sun, 27 Sep 2020 14:15:59 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH v3] Bluetooth: Check for encryption key size on connect
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAJQfnxHPDktGp=MQJzY57qmMTO7TPfNZvLHLm7DAyZ-4qM-DnQ@mail.gmail.com>
-Date:   Sun, 27 Sep 2020 14:08:59 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <6FDED095-BAE4-437D-9A25-37245B8454B1@holtmann.org>
-References: <20200922155548.v3.1.I67a8b8cd4def8166970ca37109db46d731b62bb6@changeid>
- <BC59363A-B32A-4DAA-BAF5-F7FBA01752E6@holtmann.org>
- <CAJQfnxHPDktGp=MQJzY57qmMTO7TPfNZvLHLm7DAyZ-4qM-DnQ@mail.gmail.com>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
+        id S1726424AbgI0ML1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 08:11:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59590 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726185AbgI0ML0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 08:11:26 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABD572389F;
+        Sun, 27 Sep 2020 12:11:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601208686;
+        bh=segKEbXbLQKoyPsw1zVmBiTvE2bpOdGaSwUbj//kNpk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TR4snYG+LeCHuPJnPeV/NE3sixMtY3veYQsu9oJ1po1GZvDF4zwVJC+EyzmPrWOLx
+         hVMTpzuQdkfkrOxdIfZb4gluYxR9AzFIu9IGMC7gegQiSyQcXMwdJa0PgsZcci49G0
+         SNfkzWwkZ+bfzvRrqmxPGErhABqNauV3FLYSEi4I=
+Date:   Sun, 27 Sep 2020 14:11:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     kernel-janitors@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/14] pch_uart: drop double zeroing
+Message-ID: <20200927121136.GA164938@kroah.com>
+References: <1600601186-7420-1-git-send-email-Julia.Lawall@inria.fr>
+ <1600601186-7420-2-git-send-email-Julia.Lawall@inria.fr>
+ <20200920121404.GA2830482@kroah.com>
+ <alpine.DEB.2.22.394.2009201443590.2966@hadrien>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2009201443590.2966@hadrien>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
-
->>> When receiving connection, we only check whether the link has been
->>> encrypted, but not the encryption key size of the link.
->>> 
->>> This patch adds check for encryption key size, and reject L2CAP
->>> connection which size is below the specified threshold (default 7)
->>> with security block.
->>> 
->>> Here is some btmon trace.
->>> @ MGMT Event: New Link Key (0x0009) plen 26    {0x0001} [hci0] 5.847722
->>>       Store hint: No (0x00)
->>>       BR/EDR Address: 38:00:25:F7:F1:B0 (OUI 38-00-25)
->>>       Key type: Unauthenticated Combination key from P-192 (0x04)
->>>       Link key: 7bf2f68c81305d63a6b0ee2c5a7a34bc
->>>       PIN length: 0
->>>> HCI Event: Encryption Change (0x08) plen 4        #29 [hci0] 5.871537
->>>       Status: Success (0x00)
->>>       Handle: 256
->>>       Encryption: Enabled with E0 (0x01)
->>> < HCI Command: Read Encryp... (0x05|0x0008) plen 2  #30 [hci0] 5.871609
->>>       Handle: 256
->>>> HCI Event: Command Complete (0x0e) plen 7         #31 [hci0] 5.872524
->>>     Read Encryption Key Size (0x05|0x0008) ncmd 1
->>>       Status: Success (0x00)
->>>       Handle: 256
->>>       Key size: 3
->>> 
->>> ////// WITHOUT PATCH //////
->>>> ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 5.895023
->>>     L2CAP: Connection Request (0x02) ident 3 len 4
->>>       PSM: 4097 (0x1001)
->>>       Source CID: 64
->>> < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 5.895213
->>>     L2CAP: Connection Response (0x03) ident 3 len 8
->>>       Destination CID: 64
->>>       Source CID: 64
->>>       Result: Connection successful (0x0000)
->>>       Status: No further information available (0x0000)
->>> 
->>> ////// WITH PATCH //////
->>>> ACL Data RX: Handle 256 flags 0x02 dlen 12        #42 [hci0] 4.887024
->>>     L2CAP: Connection Request (0x02) ident 3 len 4
->>>       PSM: 4097 (0x1001)
->>>       Source CID: 64
->>> < ACL Data TX: Handle 256 flags 0x00 dlen 16        #43 [hci0] 4.887127
->>>     L2CAP: Connection Response (0x03) ident 3 len 8
->>>       Destination CID: 0
->>>       Source CID: 64
->>>       Result: Connection refused - security block (0x0003)
->>>       Status: No further information available (0x0000)
->>> 
->>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
->>> 
->>> ---
->>> 
->>> Changes in v3:
->>> * Move the check to hci_conn_check_link_mode()
->>> 
->>> Changes in v2:
->>> * Add btmon trace to the commit message
->>> 
->>> net/bluetooth/hci_conn.c | 4 ++++
->>> 1 file changed, 4 insertions(+)
->>> 
->>> diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
->>> index 9832f8445d43..89085fac797c 100644
->>> --- a/net/bluetooth/hci_conn.c
->>> +++ b/net/bluetooth/hci_conn.c
->>> @@ -1348,6 +1348,10 @@ int hci_conn_check_link_mode(struct hci_conn *conn)
->>>          !test_bit(HCI_CONN_ENCRYPT, &conn->flags))
->>>              return 0;
->>> 
->>> +     if (test_bit(HCI_CONN_ENCRYPT, &conn->flags) &&
->>> +         conn->enc_key_size < conn->hdev->min_enc_key_size)
->>> +             return 0;
->>> +
->>>      return 1;
->>> }
->> 
->> I am a bit concerned since we had that check and I on purpose moved it. See commit 693cd8ce3f88 for the change where I removed and commit d5bb334a8e17 where I initially added it.
->> 
->> Naively adding the check in that location caused a major regression with Bluetooth 2.0 devices. This makes me a bit reluctant to re-add it here since I restructured the whole change to check the key size a different location.
+On Sun, Sep 20, 2020 at 02:47:11PM +0200, Julia Lawall wrote:
 > 
-> I have tried this patch (both v2 and v3) to connect with a Bluetooth
-> 2.0 device, it doesn't have any connection problem.
-> I suppose because in the original patch (d5bb334a8e17), there is no
-> check for the HCI_CONN_ENCRYPT flag.
-
-while that might be the case, I am still super careful. Especially also in conjunction with the email / patch from Alex trying to add just another encryption key size check. If we really need them or even both, we have to audit the whole code since I must have clearly missed something when adding the KNOB fix.
-
->> Now I have to ask, are you running an upstream kernel with both commits above that address KNOB vulnerability?
 > 
-> Actually no, I haven't heard of KNOB vulnerability before.
-> This patch is written for qualification purposes, specifically to pass
-> GAP/SEC/SEM/BI-05-C to BI-08-C.
-> However, it sounds like it could also prevent some KNOB vulnerability
-> as a bonus.
+> On Sun, 20 Sep 2020, Greg Kroah-Hartman wrote:
+> 
+> > On Sun, Sep 20, 2020 at 01:26:13PM +0200, Julia Lawall wrote:
+> > > sg_init_table zeroes its first argument, so the allocation of that argument
+> > > doesn't have to.
+> > >
+> > > the semantic patch that makes this change is as follows:
+> > > (http://coccinelle.lip6.fr/)
+> > >
+> > > // <smpl>
+> > > @@
+> > > expression x,n,flags;
+> > > @@
+> > >
+> > > x =
+> > > - kcalloc
+> > > + kmalloc_array
+> > >   (n,sizeof(struct scatterlist),flags)
+> > > ...
+> > > sg_init_table(x,n)
+> > > // </smpl>
+> > >
+> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> >
+> > It inits the first entry in the array, but what about all of the other
+> > ones?  Is that "safe" to have uninitialized data in them like your
+> > change causes to happen?
+> 
+> Sorry, I don't follow.  The complete code is:
+> 
+>         priv->sg_tx_p = kcalloc(num, sizeof(struct scatterlist), GFP_ATOMIC);
+>         if (!priv->sg_tx_p) {
+> 		dev_err(priv->port.dev, "%s:kzalloc Failed\n", __func__);
+>                 return 0;
+> 	}
+> 
+> 	sg_init_table(priv->sg_tx_p, num); /* Initialize SG table */
+> 
+> and the definition of sg_init_table is:
+> 
+> void sg_init_table(struct scatterlist *sgl, unsigned int nents)
+> {
+> 	memset(sgl, 0, sizeof(*sgl) * nents);
+> 	sg_init_marker(sgl, nents);
+> }
 
-That part worries me since there should be no gaps that allows an encryption key size downgrade if our side supports Read Encryption Key Size.
+Ah, missed the "* nents" thing there, sorry, my fault.
 
-We really have to ensure that any L2CAP communication is stalled until we have all information from HCI connection setup that we need. So maybe the change Alex did would work as well, or as I mentioned put any L2CAP connection request as pending so that the validation happens in one place.
-
-Regards
-
-Marcel
-
+greg k-h
