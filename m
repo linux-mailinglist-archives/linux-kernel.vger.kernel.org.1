@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFA7227A299
+	by mail.lfdr.de (Postfix) with ESMTP id ED75A27A298
 	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgI0T3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34252 "EHLO
+        id S1726534AbgI0T31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726350AbgI0T3V (ORCPT
+        with ESMTP id S1726360AbgI0T3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:29:21 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 727C3C0613D3;
-        Sun, 27 Sep 2020 12:29:21 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id e11so3035884wme.0;
-        Sun, 27 Sep 2020 12:29:21 -0700 (PDT)
+        Sun, 27 Sep 2020 15:29:23 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A540C0613D4;
+        Sun, 27 Sep 2020 12:29:22 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id e17so4404666wme.0;
+        Sun, 27 Sep 2020 12:29:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4lePnbJsWezK8RnHwYEENqDk89LB4Q2STBonc48dD/w=;
-        b=caGfsQcujd7FlPqbJt4KLcdRSp2tfHMQOyRlbULHBb4IECIHT6LRTzTAZjWR3eqO+H
-         EjdQc4CKML7/fvpql72/dMfSFEZ459//bmwVseDuwcXQWE6Yd1c9mJNY1vL01X8BSQXf
-         y+mk0DTRKV07F/aCevv0lc9vyk9Tt7iH9egmvYKOyAfhRzgxM2oENK+51mhwUrjvD3by
-         hIaoPc/ClE+lpVVJRgNm0YVaSyq8GGQ3Y0h2Qpu5Te4EcURwfTct+ICtG60BSShMSqCx
-         rg2BIzO3Z4UFFQhFaZCzZV9S4HhVniIzow84IVYX8cqyMxLqnuY2pm8unIC/bidfeRJa
-         9bzg==
+        bh=LfoOimVfCN8iFpUENEv9ik5I5IDM2MMc9g699qzOgnE=;
+        b=VpmgE9hKsKx/id8FAUpypRINdZZZJDQA2g5lwliDvvPG9+wLh7mwSHeREEXM+3IGo6
+         JM4Zsn9otlHItLDUZVOeoSoYYSelVp8w6u84cVugy6ngjkiT0vVSotxMPshnjYhjQKce
+         rsy3mzyWMgCzDJ/9o5OkR+MnDXsWjR6EBkFkRT5xUzbWShpRXN/kKk2IvkG+1yG7lCg8
+         5/QR7CLhtajvWc3epZeTnRoDNPjefVyXdAQUK08bHmvw4Mj5n1ais1esclJnVyskfSiy
+         +bBKwryUU+zccngaYsykzxsW7MX72TzEyen+G0f+zx8+POtGMz4mDz0clZzuF+00Az8I
+         rBSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4lePnbJsWezK8RnHwYEENqDk89LB4Q2STBonc48dD/w=;
-        b=hgb/Q2Hn8d34toTg6W+yRQogW2x0erFZ7ygU8XXCSXk6KuJ/L9xO4zCLMf1x1YnxGf
-         THb5ihJ8orPh4AmeqhM70mBBDxHPGf0MFKPbAdgeJWD1BsGBa1Ih3jkFa5fgwWH0D9+m
-         6OCvL+7DMwgWoKo3/pFbDgVLEhNN2BK9SmR0tDE5xicW4PYjsVzTPN2xb5AqBgDAtZoS
-         +FT4VJOEjvXnJz8I8I/qzqg0v45TYqqGzQX6g5u4QwndEBfmSEWet1S/P5sOExE1loR/
-         0kU4q0cszbypgOgMYeyJfmoweDcLdB4haz48uFRiEEeQvJDX6WP3SeBouYFMhH+tL0Tr
-         vebA==
-X-Gm-Message-State: AOAM530r854lDI4uDlJYEaE7wCCWnsiLkJUUSvqsrZiAf/90Ru7Xudr6
-        jx3iRCpvQxCOcZTJ/a+Ol4I=
-X-Google-Smtp-Source: ABdhPJxyWdxzWOe5nyLzsGgdejVxb9LmqmzUTe9sWMAvfaL/PoX5b/HoKKR2IYXVdjuKPCWM8HIptA==
-X-Received: by 2002:a1c:9ad0:: with SMTP id c199mr8101749wme.54.1601234959961;
-        Sun, 27 Sep 2020 12:29:19 -0700 (PDT)
+        bh=LfoOimVfCN8iFpUENEv9ik5I5IDM2MMc9g699qzOgnE=;
+        b=Etf2qFdYy7YVK3Hb6J6fYX9S2vQ7WjtUOkXqKhHXgTOfcp40vmXMw/7vIJn2/uQD0W
+         Ule9CQHGFiF4irmLc29T/jD6KPP2+BTDciC4oXGiioC7IJPyIkGMu7O8UbipR5Z/SXuy
+         WPB/otJT4Ghj9MjNBgJdJHaz9jUNOsEZyUuxesfFYd2E8obbylZ1Q7yQbmql8H9kvDnZ
+         E9dLVY3KtWDW4uljp540WbRlOeji8xA4c7Qy1dUTTg+R2ef+NG1VMvby/GHi9BoKbDkG
+         oQEQCFmMwiEf/+iq9S17FXc0Iy/LoXE38x8cwUn8YIrWNyeox75gwEqYtwl4a1lz/oYP
+         Ot/g==
+X-Gm-Message-State: AOAM532QIgnv9KXKPIybWCaE1tD7URrT2ZCal8Lv41tNb1OdYc/4jOUN
+        C7RUWSNovo5AmC51mILuWeY=
+X-Google-Smtp-Source: ABdhPJw3iZIupzVBEAEZQV7hiP0OWDYQ3Rq8IdNg9/nxOE6mZ0V/lg0E7tgNoNIB3xWEaiYI1jaNUQ==
+X-Received: by 2002:a1c:6a14:: with SMTP id f20mr7949339wmc.81.1601234961223;
+        Sun, 27 Sep 2020 12:29:21 -0700 (PDT)
 Received: from clement-Latitude-7490.numericable.fr (213-245-241-245.rev.numericable.fr. [213.245.241.245])
-        by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.18
+        by smtp.gmail.com with ESMTPSA id n21sm6149609wmi.21.2020.09.27.12.29.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 12:29:19 -0700 (PDT)
+        Sun, 27 Sep 2020 12:29:20 -0700 (PDT)
 From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
 To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -59,11 +59,10 @@ Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-sunxi@googlegroups.com,
-        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Subject: [PATCH v5 02/20] ASoC: sun4i-i2s: Change set_chan_cfg() params
-Date:   Sun, 27 Sep 2020 21:28:54 +0200
-Message-Id: <20200927192912.46323-3-peron.clem@gmail.com>
+        =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
+Subject: [PATCH v5 03/20] ASoC: sun4i-i2s: Change get_sr() and get_wss() to be more explicit
+Date:   Sun, 27 Sep 2020 21:28:55 +0200
+Message-Id: <20200927192912.46323-4-peron.clem@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200927192912.46323-1-peron.clem@gmail.com>
 References: <20200927192912.46323-1-peron.clem@gmail.com>
@@ -74,122 +73,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As slots and slot_width can be overwritter in case set_tdm() is
-called. Avoid to have this logic in set_chan_cfg().
+We are actually using a complex formula to just return a bunch of
+simple values. Also this formula is wrong for sun4i when calling
+get_wss() the function return 4 instead of 3.
 
-Instead pass the required values as params to set_chan_cfg().
+Replace this with a simpler switch case.
 
-This will also avoid a bug when we will enable 20/24bits support,
-i2s->slot_width is not actually used in the lrck_period computation.
+Also drop the i2s params which is unused and return a simple int as
+returning an error code could be out of range for an s8 and there is
+no optim to return a s8 here.
 
-Suggested-by: Samuel Holland <samuel@sholland.org>
 Signed-off-by: Clément Péron <peron.clem@gmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 36 ++++++++++++++----------------------
- 1 file changed, 14 insertions(+), 22 deletions(-)
+ sound/soc/sunxi/sun4i-i2s.c | 69 +++++++++++++++++++++++--------------
+ 1 file changed, 44 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 2baf6c276280..0633b9fba3d7 100644
+index 0633b9fba3d7..11bbcbe24d6b 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -177,8 +177,9 @@ struct sun4i_i2s_quirks {
- 	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
- 	s8	(*get_sr)(const struct sun4i_i2s *, int);
- 	s8	(*get_wss)(const struct sun4i_i2s *, int);
--	int	(*set_chan_cfg)(const struct sun4i_i2s *,
--				const struct snd_pcm_hw_params *);
-+	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
-+				unsigned int channels,	unsigned int slots,
-+				unsigned int slot_width);
- 	int	(*set_fmt)(const struct sun4i_i2s *, unsigned int);
- };
+@@ -175,8 +175,8 @@ struct sun4i_i2s_quirks {
+ 	unsigned int			num_mclk_dividers;
  
-@@ -414,10 +415,9 @@ static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
+ 	unsigned long (*get_bclk_parent_rate)(const struct sun4i_i2s *);
+-	s8	(*get_sr)(const struct sun4i_i2s *, int);
+-	s8	(*get_wss)(const struct sun4i_i2s *, int);
++	int	(*get_sr)(unsigned int width);
++	int	(*get_wss)(unsigned int width);
+ 	int	(*set_chan_cfg)(const struct sun4i_i2s *i2s,
+ 				unsigned int channels,	unsigned int slots,
+ 				unsigned int slot_width);
+@@ -381,37 +381,56 @@ static int sun4i_i2s_set_clk_rate(struct snd_soc_dai *dai,
+ 	return 0;
+ }
+ 
+-static s8 sun4i_i2s_get_sr(const struct sun4i_i2s *i2s, int width)
++static int sun4i_i2s_get_sr(unsigned int width)
+ {
+-	if (width < 16 || width > 24)
+-		return -EINVAL;
+-
+-	if (width % 4)
+-		return -EINVAL;
++	switch (width) {
++	case 16:
++		return 0x0;
++	case 20:
++		return 0x1;
++	case 24:
++		return 0x2;
++	}
+ 
+-	return (width - 16) / 4;
++	return -EINVAL;
+ }
+ 
+-static s8 sun4i_i2s_get_wss(const struct sun4i_i2s *i2s, int width)
++static int sun4i_i2s_get_wss(unsigned int width)
+ {
+-	if (width < 16 || width > 32)
+-		return -EINVAL;
+-
+-	if (width % 4)
+-		return -EINVAL;
++	switch (width) {
++	case 16:
++		return 0x0;
++	case 20:
++		return 0x1;
++	case 24:
++		return 0x2;
++	case 32:
++		return 0x3;
++	}
+ 
+-	return (width - 16) / 4;
++	return -EINVAL;
+ }
+ 
+-static s8 sun8i_i2s_get_sr_wss(const struct sun4i_i2s *i2s, int width)
++static int sun8i_i2s_get_sr_wss(unsigned int width)
+ {
+-	if (width % 4)
+-		return -EINVAL;
+-
+-	if (width < 8 || width > 32)
+-		return -EINVAL;
++	switch (width) {
++	case 8:
++		return 0x1;
++	case 12:
++		return 0x2;
++	case 16:
++		return 0x3;
++	case 20:
++		return 0x4;
++	case 24:
++		return 0x5;
++	case 28:
++		return 0x6;
++	case 32:
++		return 0x7;
++	}
+ 
+-	return (width - 8) / 4 + 1;
++	return -EINVAL;
  }
  
  static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
--				  const struct snd_pcm_hw_params *params)
-+				  unsigned int channels, unsigned int slots,
-+				  unsigned int slot_width)
- {
--	unsigned int channels = params_channels(params);
--
- 	/* Map the channels for playback and capture */
- 	regmap_write(i2s->regmap, SUN4I_I2S_TX_CHAN_MAP_REG, 0x76543210);
- 	regmap_write(i2s->regmap, SUN4I_I2S_RX_CHAN_MAP_REG, 0x00003210);
-@@ -434,15 +434,11 @@ static int sun4i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- }
+@@ -572,11 +591,11 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 	i2s->playback_dma_data.addr_width = width;
  
- static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
--				  const struct snd_pcm_hw_params *params)
-+				  unsigned int channels, unsigned int slots,
-+				  unsigned int slot_width)
- {
--	unsigned int channels = params_channels(params);
--	unsigned int slots = channels;
- 	unsigned int lrck_period;
+-	sr = i2s->variant->get_sr(i2s, word_size);
++	sr = i2s->variant->get_sr(word_size);
+ 	if (sr < 0)
+ 		return -EINVAL;
  
--	if (i2s->slots)
--		slots = i2s->slots;
--
- 	/* Map the channels for playback and capture */
- 	regmap_write(i2s->regmap, SUN8I_I2S_TX_CHAN_MAP_REG, 0x76543210);
- 	regmap_write(i2s->regmap, SUN8I_I2S_RX_CHAN_MAP_REG, 0x76543210);
-@@ -467,11 +463,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 	case SND_SOC_DAIFMT_DSP_B:
- 	case SND_SOC_DAIFMT_LEFT_J:
- 	case SND_SOC_DAIFMT_RIGHT_J:
--		lrck_period = params_physical_width(params) * slots;
-+		lrck_period = slot_width * slots;
- 		break;
+-	wss = i2s->variant->get_wss(i2s, slot_width);
++	wss = i2s->variant->get_wss(slot_width);
+ 	if (wss < 0)
+ 		return -EINVAL;
  
- 	case SND_SOC_DAIFMT_I2S:
--		lrck_period = params_physical_width(params);
-+		lrck_period = slot_width;
- 		break;
- 
- 	default:
-@@ -490,15 +486,11 @@ static int sun8i_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- }
- 
- static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
--				      const struct snd_pcm_hw_params *params)
-+				      unsigned int channels, unsigned int slots,
-+				      unsigned int slot_width)
- {
--	unsigned int channels = params_channels(params);
--	unsigned int slots = channels;
- 	unsigned int lrck_period;
- 
--	if (i2s->slots)
--		slots = i2s->slots;
--
- 	/* Map the channels for playback and capture */
- 	regmap_write(i2s->regmap, SUN50I_H6_I2S_TX_CHAN_MAP1_REG, 0x76543210);
- 	regmap_write(i2s->regmap, SUN50I_H6_I2S_RX_CHAN_MAP1_REG, 0x76543210);
-@@ -523,11 +515,11 @@ static int sun50i_h6_i2s_set_chan_cfg(const struct sun4i_i2s *i2s,
- 	case SND_SOC_DAIFMT_DSP_B:
- 	case SND_SOC_DAIFMT_LEFT_J:
- 	case SND_SOC_DAIFMT_RIGHT_J:
--		lrck_period = params_physical_width(params) * slots;
-+		lrck_period = slot_width * slots;
- 		break;
- 
- 	case SND_SOC_DAIFMT_I2S:
--		lrck_period = params_physical_width(params);
-+		lrck_period = slot_width;
- 		break;
- 
- 	default:
-@@ -563,7 +555,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	if (i2s->slot_width)
- 		slot_width = i2s->slot_width;
- 
--	ret = i2s->variant->set_chan_cfg(i2s, params);
-+	ret = i2s->variant->set_chan_cfg(i2s, channels, slots, slot_width);
- 	if (ret < 0) {
- 		dev_err(dai->dev, "Invalid channel configuration\n");
- 		return ret;
 -- 
 2.25.1
 
