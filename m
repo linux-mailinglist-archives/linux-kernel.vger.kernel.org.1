@@ -2,310 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9047B27A432
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 23:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CED27A436
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 23:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbgI0VLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 17:11:49 -0400
-Received: from mout.gmx.net ([212.227.15.19]:49497 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726309AbgI0VLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 17:11:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601241051;
-        bh=qVd4IBNRV8DN0dMqUdGypqqYYu8vUZdLxNcc0dQl9qg=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=IJhFE/modoHQ2WBVha3Qbx9Tcua6m5oQF+vINcmuu1zuJy4tVwpZw96xFN2v3xvt7
-         +TWVIiJYeFXTYzvhSlR5d7tyP5PDr02c67gg3U4DjxFYvnt9TvSKWVE2QK+2f6s4B7
-         1UbmFgbzhW2ttX15Ay3a2KEplh8HllCWDjOj1E48=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.195.151]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mz9Yv-1kaRKa1AmJ-00wDva; Sun, 27
- Sep 2020 23:10:51 +0200
-Date:   Sun, 27 Sep 2020 23:10:44 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        allen <allen.chen@ite.com.tw>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Mark Brown <broonie@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Shawn Guo <shawnguo@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v3 4/7] pwm: ntxec: Add driver for PWM function in
- Netronix EC
-Message-ID: <20200927211044.GC2510@latitude>
-References: <20200924192455.2484005-1-j.neuschaefer@gmx.net>
- <20200924192455.2484005-5-j.neuschaefer@gmx.net>
- <20200925063037.fcrmqvpe5noi3ef4@pengutronix.de>
+        id S1726387AbgI0VPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 17:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgI0VPR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 17:15:17 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8840BC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 14:15:17 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id d4so4593573wmd.5
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 14:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wo4yLXRXGXzvWNduXQeTvSnGkItHS2XwJ0Qpb3pIebI=;
+        b=PgK5dB0EfwyESJ76pPs8H8HZ8y2jTGBuxHe4uughIzKTKEYDK5K0aDlVXaM9Go0lLv
+         HZJKsSAjwDlad/w+aTw9VQjCpAH+zUi66wG0xOdSZ5NYBOxxwQr1kKMZ36+g+tpADcTN
+         1UuW4XkcYBDjEQvVzq5d/GpnX+yKBA+DradgPXcKW/CpfMnjR7RuUe+xq1hFwHY92T/j
+         9U28piAZGkJf+2b1TJUOZATdigvwym+uE0p4g6jP3UYVNWwLWunrBkdLfqgxeIMvuI/d
+         vxdC4oUwP2BVl4T+DU/wGbCarpqek5EaA1WDd2QZ6EknGltY9h7Q0ZdnachlhuoINFgu
+         OKTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Wo4yLXRXGXzvWNduXQeTvSnGkItHS2XwJ0Qpb3pIebI=;
+        b=OK01C3DXJiUl3HozOGPvjlcUKsg8tp6qMXHr9mopmNCRwWzBuRc1KngM/29C7YVM9u
+         kC3txz6kJDwHYKg/x6uzbfp6cu/AGSnW4eUaA62tapVbI3KCCp6nJqNcvHgcN2RLrRRW
+         Iqpuc2E4MjELHLqOYogZbCGBM+8ip+DvNSgz4D7RcKbUP0wlC5NQkDxVQq4Uic3twU1q
+         mO/z62Y/n+jKNGrwyuO+4zT76g7os0x1lhgLgJt6zTyNhiwO1JbVSC+QWVA+aaqJVhwp
+         n7yGb9BWHXCVyr0U07VVYGBWwVE0lANKRDOd6oUWcjzZPtUAsjAAlhh3EWqrV4rB5BP7
+         jJMQ==
+X-Gm-Message-State: AOAM531nvj0xk+Q5YZfvubm0zgohE21UC8JpWXZXZtV4TtX6g75J7l2t
+        HygH0INbDpbdyHzL4xG9CsGVBQ==
+X-Google-Smtp-Source: ABdhPJxZTZglZnvISi46LyC0c5QCR6qmfidmxXPZPTk7a/ypsDTNNHQeo9gTmNUMQz0CipMy10a7Rw==
+X-Received: by 2002:a1c:6145:: with SMTP id v66mr8647508wmb.171.1601241316210;
+        Sun, 27 Sep 2020 14:15:16 -0700 (PDT)
+Received: from holly.lan (cpc141216-aztw34-2-0-cust174.18-1.cable.virginm.net. [80.7.220.175])
+        by smtp.gmail.com with ESMTPSA id b84sm7220960wmd.0.2020.09.27.14.15.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 14:15:15 -0700 (PDT)
+Date:   Sun, 27 Sep 2020 22:15:13 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Jason Wessel <jason.wessel@windriver.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        LKML <linux-kernel@vger.kernel.org>,
+        Patch Tracking <patches@linaro.org>
+Subject: Re: [PATCH v3 2/3] kgdb: Add NOKPROBE labels on the trap handler
+ functions
+Message-ID: <20200927211513.3crdqbo4lr5xno7j@holly.lan>
+References: <20200914130143.1322802-1-daniel.thompson@linaro.org>
+ <20200914130143.1322802-3-daniel.thompson@linaro.org>
+ <CAD=FV=XTgNxVLwytSY1wmCj7Dex3cWGVMA+Rkpp9gb1UN5CU_A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="YD3LsXFS42OYHhNZ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200925063037.fcrmqvpe5noi3ef4@pengutronix.de>
-X-Provags-ID: V03:K1:00nuOkNowTQRCrCjdFKk5tV+lSRXoRV3Xt6XUa2nST9IL4fgThc
- VXjBJj3m1VTD0qkkgAo1TOFXZE6pQQ1qjelvnnGKZq1EP9dOhpcD7v7h5cjtEo2sFdYYIdc
- 5UL6G9nI0REvXhr2+qv2LrhmebYL3yKlApm6xX3ljX9dD0FDVtAMKMbLVN8bynoRFV7GQBQ
- dZkxKsNepdzAkm6wlYjgg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SQoj+zePzdM=:Z5VssEvwXj1u0kDjfgKFtE
- AgRhljRygNTYhIUAHhgWuzeRK6v0WtyxrtvzkYWHbGjL9AUT2axQ8eikiLPUrnoL33O5OoYl9
- iwn7V8YNKetV6OzGErHDY8E4/5KdPLhXIWV7xlJ6N1cePyboHpkDxSllH4vU5ujQddaDjpF25
- aCkZxhKFmXXdBXWQwB5V9jrnUobgaAdGBXs1LjKrSQdX03faxl/1LHGZCUxfbKbbuMSi2Uv1P
- yQmlKtTvEnKgnsiA0+akZJAD+rUKMg39GyU6vvF7Feqtj8w8eBSVHgN1LNyb46TJeGkx8tFAA
- 6IRVk/wH7adyWP7n6vMgQig4OvmMmsLtfcBQsQRrhOFq/MejYKHhRNTgWz0IiUMFqTMgg4wJ9
- FestkvYe5BC7anktuvti3SCrUbHTWgBSLOfk/zola7xxWFFF6TxveGFmyi2YnTkq0f8T+Yojr
- utTpM0hEF5RIiezSnmC68clKkxsI3PuVfKfAmAUudCTOQV+Ttqf/tPxI4KWMUZehu9AXLusxy
- 3rQSkq8yTFnH0pLdoCjtXH3R1aoqfp6MF1TVDuK1E3dW7lMT5x2X4lWi13ZOvXijVZquW2KEn
- K5hs3AHAyIE4DhLLIEfsViKnMMOBV+aKqzou1qUSsAePgJHwr8lZychaR7jh72ZKzCdppnnG3
- EpgjEDTJllF3qEUsF/Zt++kFU4umPWx8URmnakSVJDSIFMpGjuHgLf1l6RZnm6tHYPVh8OU8j
- VHRLzOGkwBs+lAzO4OtSJbseJQjCxZUhYPTZw8z2pMzjv8OzUefXe56aJUB9lZWVtX3xP19ez
- ArSRg1t5MsgD1FunvGTRUGaQXZNfKmHfYAoKi/9h7vdDNCM/se9wgmiKbwqSLXGKs/Jg2d31G
- j0KNLjZvFAcSGcKS/JFg8XqEMrzHWGxYfmQmf7m1wjr1nDE5C6XbaZiA5RgdmwUCvxgOzYH1/
- nqwHWmuJNXX0ar5NXsaIKLeJEPPmMEmpmygtjFHLJ4osdLSOl1Beikj55CxUGLCLwmk0jAASF
- ZpgsaEnFp+ggd2kAuBB8+5jjfv6AJL+UpBi0QuGSoY7rcehju9qA8hk+rqJEBc24guAcROU+b
- /LTJkEURNjH+jLDBu6sQ9deam2dpuHJq/WG1BWlKl+qpjRQqDC40fEB4WdL8JUKrFOjptFEDu
- nYXjZ5r5Z1wTH6ci15/BC2PWVkEZyxMSngTYfGq7FmYMRllgC4z0tytU7F9LF6dw6WGMMT/pD
- UzduXX708P8t6fiYqAK9qghVzGmrS0Gqx85Zwgw==
+In-Reply-To: <CAD=FV=XTgNxVLwytSY1wmCj7Dex3cWGVMA+Rkpp9gb1UN5CU_A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 14, 2020 at 05:14:22PM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Mon, Sep 14, 2020 at 6:02 AM Daniel Thompson
+> <daniel.thompson@linaro.org> wrote:
+> >
+> > Currently kgdb honours the kprobe blocklist but doesn't place its own
+> > trap handling code on the list. Add labels to discourage attempting to
+> > use kgdb to debug itself.
+> >
+> > Not every functions that executes from the trap handler needs to be
+> > marked up: relatively early in the trap handler execution (just after
+> > we bring the other CPUs to a halt) all breakpoints are replaced with
+> > the original opcodes. This patch marks up code in the debug_core that
+> > executes between trap entry and the breakpoints being deactivated
+> > and, also, code that executes between breakpoint activation and trap
+> > exit.
+> 
+> Other functions that seem to be missing from a quick skim:
+> * kgdb_io_ready()
+> * kgdb_roundup_cpus()
+> * kgdb_call_nmi_hook()
 
---YD3LsXFS42OYHhNZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I've grabbed those (and a one or two extras after paying better attention
+to the entry logic).
 
-On Fri, Sep 25, 2020 at 08:30:37AM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> Hello Jonathan,
-[...]
-> > +config PWM_NTXEC
-> > +	tristate "Netronix embedded controller PWM support"
-> > +	depends on MFD_NTXEC
-> > +	help
-> > +	  Say yes here if you want to support the PWM output of the embedded
-> > +	  controller found in certain e-book readers designed by the ODM
-> > +	  Netronix.
->=20
-> Is it only me who had to look up what ODM means? If not, maybe spell it
-> out?
+> I'm not confident in my ability to spot every code path, though, so
+> I'm not sure at what point we stop looking.  I only spent a few
+> minutes and, if important, I could dig more.  Did you have any chance
+> to see if there was any way to have a magic linker script just add
+> this to everything under "kernel/debug" or something like that where
+> we just use a heavier hammer to whack a whole bunch?
 
-I'm sure other readers will have the same problem. I'll spell it out.
+I think one could play games with linker sections but it would involve
+adding extra infrastructure for the kprobe blocklist. I'm not convinced
+that is worth the effort whilst there are acknowledged (and bigger) gaps
+elsewhere.
 
-> > +/*
-> > + * The maximum input value (in nanoseconds) is determined by the time =
-base and
-> > + * the range of the hardware registers that hold the converted value.
-> > + * It fits into 32 bits, so we can do our calculations in 32 bits as w=
-ell.
-> > + */
-> > +#define MAX_PERIOD_NS (TIME_BASE_NS * 0x10000 - 1)
->=20
-> The maximal configurable period length is 0xffff, so I would have
-> expected MAX_PERIOD_NS to be 0xffff * TIME_BASE_NS?
+> In general any extra annotation here is better than no annotation, I
+> suppose.  ...so if you just want to commit what you have (maybe with
+> the above 3 extra functions) then I suppose it'd be fine.
 
-Due to the division rounding down, TIME_BASE_NS * 0x10000 - 1 would be
-the highest input that results in a representable value after the
-division, but I'm not sure it otherwise makes sense.
-
->=20
-> > +static int ntxec_pwm_apply(struct pwm_chip *chip, struct pwm_device *p=
-wm_dev,
-> > +			   const struct pwm_state *state)
-> > +{
-> > +	struct ntxec_pwm *pwm =3D pwmchip_to_pwm(pwm_dev->chip);
-> > +	unsigned int duty =3D state->duty_cycle;
-> > +	unsigned int period =3D state->period;
-> > +	int res =3D 0;
-> > +
->=20
-> I assume your device only supports normal polarity? If so, please check
-> for it here and point out this limitation in the header (in the format
-> that is for example used in pwm-sifive.c to make it easy to grep for
-> that).
-
-I haven't seen any indication that it supports inverted polarity. I'll
-point it out in the header comment, and add a check.
-
->=20
-> > +	if (period > MAX_PERIOD_NS) {
-> > +		dev_warn(pwm->dev,
-> > +			 "Period is not representable in 16 bits after division by %u: %u\n=
-",
-> > +			 TIME_BASE_NS, period);
->=20
-> No error messages in .apply() please; this might spam the kernel log.
->
-> Also the expectation when a too big period is requested is to configure
-> for the biggest possible period. So just do:
->=20
-> 	if (period > MAX_PERIOD_NS) {
-> 		period =3D MAX_PERIOD_NS;
->=20
-> 		if (duty > period)
-> 			duty =3D period;
-> 	}
->=20
-> (or something equivalent).
-
-Okay, I'll adjust it.
-
-> > +	/*
-> > +	 * Writing a duty cycle of zone puts the device into a state where
->=20
-> What is "zone"? A mixture of zero and one and so approximately 0.5?
-
-Oops, that's a typo. I just meant "zero".
-
-> > +	 * writing a higher duty cycle doesn't result in the brightness that =
-it
-> > +	 * usually results in. This can be fixed by cycling the ENABLE regist=
-er.
-> > +	 *
-> > +	 * As a workaround, write ENABLE=3D0 when the duty cycle is zero.
-> > +	 */
-> > +	if (state->enabled && duty !=3D 0) {
-> > +		res =3D regmap_write(pwm->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(1=
-));
-> > +		if (res)
-> > +			return res;
-> > +
-> > +		/* Disable the auto-off timer */
-> > +		res =3D regmap_write(pwm->ec->regmap, NTXEC_REG_AUTO_OFF_HI, ntxec_r=
-eg8(0xff));
-> > +		if (res)
-> > +			return res;
-> > +
-> > +		return regmap_write(pwm->ec->regmap, NTXEC_REG_AUTO_OFF_LO, ntxec_re=
-g8(0xff));
-> > +	} else {
-> > +		return regmap_write(pwm->ec->regmap, NTXEC_REG_ENABLE, ntxec_reg8(0)=
-);
-> > +	}
->=20
-> This code is wrong for state->enabled =3D false.
-
-Why?
-
-> How does the PWM behave when .apply is called? Does it complete the
-> currently running period? Can it happen that when you switch from say
->=20
-> 	.duty_cycle =3D 900 * TIME_BASE_NS (0x384)
-> 	.period =3D 1800 * TIME_BASE_NS (0x708)
->=20
-> to
->=20
-> 	.duty_cycle =3D 300 * TIME_BASE_NS (0x12c)
-> 	.period =3D 600 * TIME_BASE_NS (0x258)
->=20
-> that a period with
->=20
-> 	.duty_cycle =3D 388 * TIME_BASE_NS (0x184)
-> 	.period =3D 1800 * TIME_BASE_NS (0x708)
-> =09
-> (because only NTXEC_REG_PERIOD_HIGH was written when the new period
-> started) or something similar is emitted?
-
-Changes take effect after the low byte is written, so a result like 0x184
-in the above example should not happen.
-
-When the period and duty cycle are both changed, it temporarily results
-in an inconsistent state:
-
- - period =3D 1800ns, duty cycle =3D 900ns
- - period =3D  600ns, duty cycle =3D 900ns (!)
- - period =3D  600ns, duty cycle =3D 300ns
-
-The inconsistent state of duty cycle > period is handled gracefully by
-the EC and it outputs a 100% duty cycle, as far as I can tell.
-
-I currently don't have a logic analyzer / oscilloscope to measure
-whether we get full PWM periods, or some kind of glitch when the new
-period starts in the middle of the last one.
-
-> > +}
-> > +
-> > +static struct pwm_ops ntxec_pwm_ops =3D {
-> > +	.apply =3D ntxec_pwm_apply,
->=20
-> Please implement a .get_state() callback. And enable PWM_DEBUG during
-> your tests.
-
-The device doesn't support reading back the PWM state. What should a
-driver do in this case?
-
-> > +	.owner =3D THIS_MODULE,
-> > +};
-> > +
-> > +static int ntxec_pwm_probe(struct platform_device *pdev)
-> > +{
-> > +	struct ntxec *ec =3D dev_get_drvdata(pdev->dev.parent);
-> > +	struct ntxec_pwm *pwm;
->=20
-> Please don't call this variable pwm. I would expect that a variable with
-> this name is of type pwm_device. I would have called it "ddata" (and the
-> type would be named ntxec_pwm_ddata for me); another usual name is "priv".
-
-Ok, I'll rename it.
-
-> > +	chip->npwm =3D 1;
-> > +
-> > +	res =3D pwmchip_add(chip);
-> > +	if (res < 0)
-> > +		return res;
-> > +
-> > +	platform_set_drvdata(pdev, pwm);
->=20
-> If you do the platform_set_drvdata earlier you can just do
->=20
-> 	return pwmchip_add(chip);
-
-Good idea, I'll do that.
+This wasn't quite confident enough for me to convert into an Acked-by:
+but I plan to pull v4 into -next very shortly after posting it (since
+everything else is agreed).
 
 
-Thanks,
-Jonathan Neusch=C3=A4fer
-
---YD3LsXFS42OYHhNZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl9w/8UACgkQCDBEmo7z
-X9v+uBAAn25NpiHhNJtO6YKlwketM5qW1G37xao76/fwdBuKMc11FECDeyH6jd7/
-G/OSggdKa5hom2VNhTVMQ1UvRcTdZxuoJi9a/UMBFZo1HHfP/zWejuWZw5TeA2X9
-ubB+5qJTVbTTAoxzf8gu8nx4tYUBUqFhSGsKI+lqlJyGgHMD73P9/VBT4JobxjOA
-w4dKyUYcjfN2eVNqnuiSa/hYO11uugv+hqOjgiWAGcafBVUUzcWgpn6QG406v/1X
-MCm5tTLwkUOEPNsJmPQsbNmVXVIRJjppNq/jlPHIeGsm+JofkxQymk7VlzquGW64
-adnPIhAo/A0RrrKDV18p7/twuRVHvvxIoAPSIrOWZRE7vNQ9TqN2kwebvS/qSLbO
-/6RAwZW8bgPepQq0HSVjwOTwaP1XGutcSI/yNCF2VoAjEsKPWP7Qk9M8BZEnpz7D
-+bfM1Yfyeo8s0BFZ/MZIx+sfi1PeCpXKk2l7RV+E3W0hfdWIBoqjvonxth2kjU2T
-zvtv9kRXJA9yz2UEXo0jQWwO4AifcX6HK/xsmIiPXlI90cerAAKYeYV3atyTqjvr
-t5+/9IZxfQfspdOQBZ8k81OI/X2f2fiUXrsWfzMjTUjTRNkeNAm8MI8ARIf5QvPW
-pUtEJWd5PBGgn6QbG0dnGlNEQIV+YGZv0BlpOZ/xfPg1+VHWuaw=
-=IRtw
------END PGP SIGNATURE-----
-
---YD3LsXFS42OYHhNZ--
+Daniel.
