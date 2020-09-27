@@ -2,37 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A17C727A318
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C4727A2F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgI0T4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:56:17 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10061
+        id S1726594AbgI0Tza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:55:30 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:10070
         "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726280AbgI0TzQ (ORCPT
+        by vger.kernel.org with ESMTP id S1726440AbgI0TzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:55:16 -0400
+        Sun, 27 Sep 2020 15:55:20 -0400
 X-IronPort-AV: E=Sophos;i="5.77,311,1596492000"; 
-   d="scan'208";a="360169490"
+   d="scan'208";a="360169491"
 Received: from palace.rsr.lip6.fr (HELO palace.lip6.fr) ([132.227.105.202])
   by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 27 Sep 2020 21:55:12 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Matt Mackall <mpm@selenic.com>
+To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 Cc:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
         Joe Perches <joe@perches.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        kernel-janitors@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-crypto@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 04/18] hwrng: stm32 - use semicolons rather than commas to separate statements
-Date:   Sun, 27 Sep 2020 21:12:14 +0200
-Message-Id: <1601233948-11629-5-git-send-email-Julia.Lawall@inria.fr>
+        kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 05/18] bcma: use semicolons rather than commas to separate statements
+Date:   Sun, 27 Sep 2020 21:12:15 +0200
+Message-Id: <1601233948-11629-6-git-send-email-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
 References: <1601233948-11629-1-git-send-email-Julia.Lawall@inria.fr>
@@ -55,28 +48,26 @@ e2
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- drivers/char/hw_random/stm32-rng.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/bcma/driver_pci_host.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/char/hw_random/stm32-rng.c b/drivers/char/hw_random/stm32-rng.c
-index 38324c2ddda1..bc22178f83e8 100644
---- a/drivers/char/hw_random/stm32-rng.c
-+++ b/drivers/char/hw_random/stm32-rng.c
-@@ -145,12 +145,12 @@ static int stm32_rng_probe(struct platform_device *ofdev)
+diff --git a/drivers/bcma/driver_pci_host.c b/drivers/bcma/driver_pci_host.c
+index 88a93c266c19..6f8fc5f587fe 100644
+--- a/drivers/bcma/driver_pci_host.c
++++ b/drivers/bcma/driver_pci_host.c
+@@ -419,12 +419,12 @@ void bcma_core_pci_hostmode_init(struct bcma_drv_pci *pc)
+ 	pc_host->pci_ops.read = bcma_core_pci_hostmode_read_config;
+ 	pc_host->pci_ops.write = bcma_core_pci_hostmode_write_config;
  
- 	dev_set_drvdata(dev, priv);
+-	pc_host->mem_resource.name = "BCMA PCIcore external memory",
++	pc_host->mem_resource.name = "BCMA PCIcore external memory";
+ 	pc_host->mem_resource.start = BCMA_SOC_PCI_DMA;
+ 	pc_host->mem_resource.end = BCMA_SOC_PCI_DMA + BCMA_SOC_PCI_DMA_SZ - 1;
+ 	pc_host->mem_resource.flags = IORESOURCE_MEM | IORESOURCE_PCI_FIXED;
  
--	priv->rng.name = dev_driver_string(dev),
-+	priv->rng.name = dev_driver_string(dev);
- #ifndef CONFIG_PM
--	priv->rng.init = stm32_rng_init,
--	priv->rng.cleanup = stm32_rng_cleanup,
-+	priv->rng.init = stm32_rng_init;
-+	priv->rng.cleanup = stm32_rng_cleanup;
- #endif
--	priv->rng.read = stm32_rng_read,
-+	priv->rng.read = stm32_rng_read;
- 	priv->rng.priv = (unsigned long) dev;
- 	priv->rng.quality = 900;
- 
+-	pc_host->io_resource.name = "BCMA PCIcore external I/O",
++	pc_host->io_resource.name = "BCMA PCIcore external I/O";
+ 	pc_host->io_resource.start = 0x100;
+ 	pc_host->io_resource.end = 0x7FF;
+ 	pc_host->io_resource.flags = IORESOURCE_IO | IORESOURCE_PCI_FIXED;
 
