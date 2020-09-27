@@ -2,42 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B973927A186
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:07:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F4227A18C
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726360AbgI0PH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 11:07:26 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39458 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbgI0PHY (ORCPT
+        id S1726497AbgI0PIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 11:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726255AbgI0PIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 11:07:24 -0400
+        Sun, 27 Sep 2020 11:08:54 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1499DC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:08:54 -0700 (PDT)
 Date:   Sun, 27 Sep 2020 15:06:53 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601219241;
+        s=2020; t=1601219332;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
         bh=Ve/eliBOOrDy+dHmJqpwEZEajfXiPS6UllUys+7R5bA=;
-        b=HDzi1Zzs3GkzPUsc7zE6hzrowdlrZsdMCkkIRs7Emnv4QBz6/2TH+ofnL8yvMrRO4840ID
-        8AaHsoVScHl7awHJNUQiWmvVjBEUeMt0xvxCyTxTstQFcunlHtTBdmQUW/jJUPcZZH7cn0
-        NstIe7GN9PssJSxgcWwT7f0BC8F5MKVqlyJcBetK+3kplhWPxhC67yyaZ3qqHe13wCDkfO
-        E9Oc/DIx+1DABM7zNorSviQSZdEKGnTv1hDOUFrNlxv5Y8l4LdZaB/VYuTgj9Y8AfckLGF
-        SyhO1A0DfTYCjdtjR9sq8HFOVGq1Q2k8WyS1UCJpmOJnPJbGZg73cdVDTniNHA==
+        b=1m+l8+qpVAgX1Iu02zkc+BcD8ACfzfcTCViWpGQM5Qjw02oqTwBJgQ3kEL1xMj/IYRc33p
+        b37mvrHJnec8gVyouUOdF5tn02789nE/qpQRwkbG68IXTHj5NebBeSMnYh6DtOXQmGi5uu
+        cESX0Q3WmeyxqhbsDBkWhOQv3cdC8d/Ws+0bcIGQ13t7TjemyvARIkcaItAVOkl6jiI1Gk
+        JCoNO3FG2u8Inl+18LHZ8NYdXvo4GFVhfXWe8vnpQpRZDhrv2hBM2rOgvzzo4+6nlk3Lms
+        3J3DGyqFsTYhdyPHlWgTGOxXip1J7/KRvHKaTBGqcNbXBlMvGp/gRV5z4lySPw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601219241;
+        s=2020e; t=1601219332;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
         bh=Ve/eliBOOrDy+dHmJqpwEZEajfXiPS6UllUys+7R5bA=;
-        b=Xnqnohin83Nbv3plpTSLi9k7Xq/bmbMEqNjnve/a9KHXPUblYlggtLcRYJhlvJJ41wpIGT
-        oGskvZ968Elie3Bw==
+        b=qm452fC8C3UzUBsrgqJBQj266a8iwo/nDOmnmFqHW7AuXjTCURn4VIxF57hhkh3l8dH6nY
+        lHT0k46XNQNbf1AQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/urgent for for
-References: <160121921194.23623.5568205948074131939.tglx@nanos>
-Message-ID: <160121921315.23623.17643308720426244416.tglx@nanos>
+Subject: [GIT pull] x86/urgent for 5.9-rc7
+References: <160121922194.23623.5568205948074131939.tglx@nanos>
+Message-ID: <160121922315.23623.17643308720426244416.tglx@nanos>
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
