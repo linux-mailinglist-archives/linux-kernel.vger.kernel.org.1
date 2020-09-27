@@ -2,105 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC3427A397
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 22:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE6627A3E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 22:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgI0UA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 16:00:28 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41774 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727084AbgI0T5a (ORCPT
+        id S1726722AbgI0UFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 16:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726485AbgI0UFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:57:30 -0400
-Date:   Sun, 27 Sep 2020 19:57:27 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601236648;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a786VCv1z2fJcpCMIo7y6Vm7zl4rBDgJhy6TGsHsmKY=;
-        b=uQ9Y1Nt0I3J2+gj6Dnxs3OHqNpOoVlXd20sprku0hNoZ3q7zoiWjBegA1jPOpHGbb7oocV
-        OzlQKRqBV/zC/2D5AwW5moSIKxT8Is/v+BqHbf8eoDPoSZtfAPV8RW2pzECF6LIUMB+7C+
-        DlaSV1Mosad/V+4Amf6W1bJoVkXbXGAcAcDOikMVXu7PSxfb91uRL/27vRsRK0KSB+65tA
-        +Ko0quSmrpvoldAKg33W1L3ABzIlvDVbWHarDFFJJ0hGYOg14+z1B45PUo7qGgSAiI1FVj
-        eozwCVoJ7W0mUUIlDOQNiyBjw82CUYyRonugIuNGFJJV9+8OsU47Sn1UvEYcQA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601236648;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a786VCv1z2fJcpCMIo7y6Vm7zl4rBDgJhy6TGsHsmKY=;
-        b=GXextnyg1zjdLCUyRYucI62PQYjrxw81gg5ZNiUDB+1fVV4V0UfE0dyxEHh7Nc0CeRiCUI
-        BNTxFqFrRru5D/Cw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/irq] x86/apic/msi: Unbreak DMAR and HPET MSI
-Cc:     Qian Cai <cai@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <87wo0fli8b.fsf@nanos.tec.linutronix.de>
-References: <87wo0fli8b.fsf@nanos.tec.linutronix.de>
+        Sun, 27 Sep 2020 16:05:00 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EFBC0613CE;
+        Sun, 27 Sep 2020 13:05:00 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EF1A127B;
+        Sun, 27 Sep 2020 22:04:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1601237092;
+        bh=KXIz45C/Mat1tgDDrs+edL2gNNihFY9AO9VW/2BFRys=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=wgXrlocB7cOM39Ip04dmoRlg/DWQBQxHJ+k1yuq9YN7OsoLzedY8tA2HGUpcFktLo
+         xWEI83SN8xUYCsVd7TmO65YPJ4qoquzFIdZEIEZJNAynFskS+EJmJKBEIg8xASzTI+
+         y6Ch4UbfaxUr/fQeIKU+wV+qASzpNrs5mXQtZAGM=
+Date:   Sun, 27 Sep 2020 23:04:18 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] ARM: dts: r8a7742-iwg21d-q7: Add LCD support
+Message-ID: <20200927200418.GA3986@pendragon.ideasonboard.com>
+References: <20200813140041.5082-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20200824004816.GS6002@pendragon.ideasonboard.com>
+ <CA+V-a8uq44hKOxbwBXZ_90q6e4JjCEPwOWp4BDY7BJJaP1Cg6g@mail.gmail.com>
 MIME-Version: 1.0
-Message-ID: <160123664742.7002.8496872646322552146.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+V-a8uq44hKOxbwBXZ_90q6e4JjCEPwOWp4BDY7BJJaP1Cg6g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/irq branch of tip:
+Hi Prabhakar,
 
-Commit-ID:     d27e623ace6af259075b6e0437380ee8d6268c5d
-Gitweb:        https://git.kernel.org/tip/d27e623ace6af259075b6e0437380ee8d6268c5d
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sun, 27 Sep 2020 10:46:44 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sun, 27 Sep 2020 21:53:41 +02:00
+On Sun, Sep 27, 2020 at 02:01:50PM +0100, Lad, Prabhakar wrote:
+> On Mon, Aug 24, 2020 at 1:48 AM Laurent Pinchart wrote:
+> > On Thu, Aug 13, 2020 at 03:00:41PM +0100, Lad Prabhakar wrote:
+> > > The iwg21d comes with a 7" capacitive touch screen, therefore
+> > > add support for it.
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
+> >
+> > Everything seems to match the schematics :-)
+> >
+> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> >
+> > > ---
+> > > v1->v2
+> > > * This patch is part of series [1] (rest of the patches have be accepted
+> > >   by Geert [2]).
+> > > * Added regulator for lvds
+> > > * Added reset pin for touchpanel
+> > > * This patch is based on series [3]
+> > >
+> > > [1] https://patchwork.kernel.org/project/linux-renesas-soc/list/
+> > >     ?series=330277
+> > > [2] https://git.kernel.org/pub/scm/linux/kernel/git/geert/
+> > >     renesas-devel.git/log/?h=renesas-arm-dt-for-v5.10
+> > > [3] https://patchwork.kernel.org/project/linux-renesas-soc/list/
+> > >     ?series=330957
+> > > ---
+> > >  arch/arm/boot/dts/r8a7742-iwg21d-q7.dts | 99 +++++++++++++++++++++++++
+> > >  1 file changed, 99 insertions(+)
+>
+> Would you be queueing this patch along with DRM driver patches for v5.10 ?
 
-x86/apic/msi: Unbreak DMAR and HPET MSI
+No, I expect Geert to do so, DT patches go through his tree. I handle
+the drivers and DT bindings.
 
-Switching the DMAR and HPET MSI code to use the generic MSI domain ops
-missed to add the flag which tells the core code to update the domain
-operations with the defaults. As a consequence the core code crashes
-when an interrupt in one of those domains is allocated.
+> > > diff --git a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > > index b3461a61a4bf..9bf4fbd9c736 100644
+> > > --- a/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > > +++ b/arch/arm/boot/dts/r8a7742-iwg21d-q7.dts
+> > > @@ -30,6 +30,7 @@
+> > >
+> > >  /dts-v1/;
+> > >  #include "r8a7742-iwg21m.dtsi"
+> > > +#include <dt-bindings/pwm/pwm.h>
+> > >
+> > >  / {
+> > >       model = "iWave Systems RainboW-G21D-Qseven board based on RZ/G1H";
+> > > @@ -52,6 +53,51 @@
+> > >               clock-frequency = <26000000>;
+> > >       };
+> > >
+> > > +     lcd_backlight: backlight {
+> > > +             compatible = "pwm-backlight";
+> > > +             pwms = <&tpu 2 5000000 0>;
+> > > +             brightness-levels = <0 4 8 16 32 64 128 255>;
+> > > +             pinctrl-0 = <&backlight_pins>;
+> > > +             pinctrl-names = "default";
+> > > +             default-brightness-level = <7>;
+> > > +             enable-gpios = <&gpio3 11 GPIO_ACTIVE_HIGH>;
+> > > +     };
+> > > +
+> > > +     lvds-receiver {
+> > > +             compatible = "ti,ds90cf384a", "lvds-decoder";
+> > > +             vcc-supply = <&vcc_3v3_tft1>;
+> > > +
+> > > +             ports {
+> > > +                     #address-cells = <1>;
+> > > +                     #size-cells = <0>;
+> > > +
+> > > +                     port@0 {
+> > > +                             reg = <0>;
+> > > +                             lvds_receiver_in: endpoint {
+> > > +                                     remote-endpoint = <&lvds0_out>;
+> > > +                             };
+> > > +                     };
+> > > +                     port@1 {
+> > > +                             reg = <1>;
+> > > +                             lvds_receiver_out: endpoint {
+> > > +                                     remote-endpoint = <&panel_in>;
+> > > +                             };
+> > > +                     };
+> > > +             };
+> > > +     };
+> > > +
+> > > +     panel {
+> > > +             compatible = "edt,etm0700g0dh6";
+> > > +             backlight = <&lcd_backlight>;
+> > > +             power-supply = <&vcc_3v3_tft1>;
+> > > +
+> > > +             port {
+> > > +                     panel_in: endpoint {
+> > > +                             remote-endpoint = <&lvds_receiver_out>;
+> > > +                     };
+> > > +             };
+> > > +     };
+> > > +
+> > >       reg_1p5v: 1p5v {
+> > >               compatible = "regulator-fixed";
+> > >               regulator-name = "1P5V";
+> > > @@ -75,6 +121,17 @@
+> > >               };
+> > >       };
+> > >
+> > > +     vcc_3v3_tft1: regulator-panel {
+> > > +             compatible = "regulator-fixed";
+> > > +
+> > > +             regulator-name = "vcc-3v3-tft1";
+> > > +             regulator-min-microvolt = <3300000>;
+> > > +             regulator-max-microvolt = <3300000>;
+> > > +             enable-active-high;
+> > > +             startup-delay-us = <500>;
+> > > +             gpio = <&gpio5 28 GPIO_ACTIVE_HIGH>;
+> > > +     };
+> > > +
+> > >       vcc_sdhi2: regulator-vcc-sdhi2 {
+> > >               compatible = "regulator-fixed";
+> > >
+> > > @@ -129,12 +186,34 @@
+> > >               VDDIO-supply = <&reg_3p3v>;
+> > >               VDDD-supply = <&reg_1p5v>;
+> > >       };
+> > > +
+> > > +     touch: touchpanel@38 {
+> > > +             compatible = "edt,edt-ft5406";
+> > > +             reg = <0x38>;
+> > > +             interrupt-parent = <&gpio0>;
+> > > +             interrupts = <24 IRQ_TYPE_EDGE_FALLING>;
+> > > +             /* GP1_29 is also shared with audio codec reset pin */
+> > > +             reset-gpios = <&gpio1 29 GPIO_ACTIVE_LOW>;
+> > > +             vcc-supply = <&vcc_3v3_tft1>;
+> > > +     };
+> > >  };
+> > >
+> > >  &cmt0 {
+> > >       status = "okay";
+> > >  };
+> > >
+> > > +&du {
+> > > +     status = "okay";
+> > > +};
+> > > +
+> > > +&gpio0 {
+> > > +     touch-interrupt {
+> > > +             gpio-hog;
+> > > +             gpios = <24 GPIO_ACTIVE_LOW>;
+> > > +             input;
+> > > +     };
+> > > +};
+> > > +
+> > >  &hsusb {
+> > >       pinctrl-0 = <&usb0_pins>;
+> > >       pinctrl-names = "default";
+> > > @@ -165,6 +244,11 @@
+> > >               function = "avb";
+> > >       };
+> > >
+> > > +     backlight_pins: backlight {
+> > > +             groups = "tpu0_to2";
+> > > +             function = "tpu0";
+> > > +     };
+> > > +
+> > >       i2c2_pins: i2c2 {
+> > >               groups = "i2c2_b";
+> > >               function = "i2c2";
+> > > @@ -208,6 +292,17 @@
+> > >       };
+> > >  };
+> > >
+> > > +&lvds0 {
+> > > +     status = "okay";
+> > > +     ports {
+> > > +             port@1 {
+> > > +                     lvds0_out: endpoint {
+> > > +                             remote-endpoint = <&lvds_receiver_in>;
+> > > +                     };
+> > > +             };
+> > > +     };
+> > > +};
+> > > +
+> > >  &rcar_sound {
+> > >       pinctrl-0 = <&sound_pins>;
+> > >       pinctrl-names = "default";
+> > > @@ -261,6 +356,10 @@
+> > >       shared-pin;
+> > >  };
+> > >
+> > > +&tpu {
+> > > +     status = "okay";
+> > > +};
+> > > +
+> > >  &usbphy {
+> > >       status = "okay";
+> > >  };
 
-Add the missing flags.
+-- 
+Regards,
 
-Fixes: 9006c133a422 ("x86/msi: Use generic MSI domain ops")
-Reported-by: Qian Cai <cai@redhat.com>
-Reported-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/87wo0fli8b.fsf@nanos.tec.linutronix.de
-
----
- arch/x86/kernel/apic/msi.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/x86/kernel/apic/msi.c b/arch/x86/kernel/apic/msi.c
-index 3b522b0..6313f0a 100644
---- a/arch/x86/kernel/apic/msi.c
-+++ b/arch/x86/kernel/apic/msi.c
-@@ -309,6 +309,7 @@ static struct msi_domain_ops dmar_msi_domain_ops = {
- static struct msi_domain_info dmar_msi_domain_info = {
- 	.ops		= &dmar_msi_domain_ops,
- 	.chip		= &dmar_msi_controller,
-+	.flags		= MSI_FLAG_USE_DEF_DOM_OPS,
- };
- 
- static struct irq_domain *dmar_get_irq_domain(void)
-@@ -408,6 +409,7 @@ static struct msi_domain_ops hpet_msi_domain_ops = {
- static struct msi_domain_info hpet_msi_domain_info = {
- 	.ops		= &hpet_msi_domain_ops,
- 	.chip		= &hpet_msi_controller,
-+	.flags		= MSI_FLAG_USE_DEF_DOM_OPS,
- };
- 
- struct irq_domain *hpet_create_irq_domain(int hpet_id)
+Laurent Pinchart
