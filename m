@@ -2,187 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AE2279CFC
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 02:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94036279D00
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 02:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728533AbgI0AD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 20:03:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61704 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726242AbgI0AD0 (ORCPT
+        id S1728707AbgI0AFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 20:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726311AbgI0AFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 20:03:26 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08R01TYX151753;
-        Sat, 26 Sep 2020 20:03:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=pp1;
- bh=M0PhSozL3gyEL26b9uq7FZv8dv+vWETw1ww0FRa/cog=;
- b=NhOvzXSf6K/jXbVM32R2omjGqeIR3LBxemVIdpX9X+783LPkT4XaP+lvOXi6zaZAGgh4
- +90erdi4Js3cPrdO23KyvlfJ7eZnmQEsxOVFeVRpLApD0w5/8AvxoRGIIWk2Cnd/rSek
- hmxhl3Bac+yHfyhw1CJEJoTeTr+BNkSsoei/ZJKdoWUFUgLoajsr9KPJIH7FB7kBoZZ5
- ra0LSNpzAbrqamaJrNNBXrrQnAK8ibZYU6wUGsLJFa8Jr+ZvMhRFiCOOVVFHNk1L5IbO
- Ll4NcDqPxPGokz/Dheu6VjC2H8lCKmGk2qE4VK47qY2ME8E+G+wWRf+2E2UH4CHZe6+/ wA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33teh2s6d6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 20:03:24 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08R03NO8156695;
-        Sat, 26 Sep 2020 20:03:24 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 33teh2s6cp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 26 Sep 2020 20:03:23 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08R03MU8009665;
-        Sun, 27 Sep 2020 00:03:22 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma01fra.de.ibm.com with ESMTP id 33sw988cdd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 27 Sep 2020 00:03:22 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08R03Jfa26411400
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 27 Sep 2020 00:03:19 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F152242042;
-        Sun, 27 Sep 2020 00:03:18 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2BCA342049;
-        Sun, 27 Sep 2020 00:03:18 +0000 (GMT)
-Received: from oc2783563651 (unknown [9.145.162.14])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 27 Sep 2020 00:03:18 +0000 (GMT)
-Date:   Sun, 27 Sep 2020 02:03:16 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
-        cohuck@redhat.com, mjrosato@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
-        imbrenda@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com
-Subject: Re: [PATCH v10 10/16] s390/vfio-ap: allow configuration of matrix
- mdev in use by a KVM guest
-Message-ID: <20200927020316.38bf3fa1.pasic@linux.ibm.com>
-In-Reply-To: <20200821195616.13554-11-akrowiak@linux.ibm.com>
-References: <20200821195616.13554-1-akrowiak@linux.ibm.com>
-        <20200821195616.13554-11-akrowiak@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.11.1 (GTK+ 2.24.31; x86_64-redhat-linux-gnu)
+        Sat, 26 Sep 2020 20:05:00 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE27C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 17:04:59 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id w3so5426438ljo.5
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 17:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=U1OUqNTBnVCMPp1ia2uQg45U9rR6Q8tgrXbVfMePRQs=;
+        b=CmacqtDMqmSt6zlNRn6vPCkQB5zdpAqt8v8RN0LEGgbCnEGv1D+2OztGRck+T6aaQE
+         yycrdozsfp4ydQKjMWyOEluArt7NX0xdprQuuRUGiiFEqxpn4RtcmKRnkL4BjDLpGXdF
+         aEKlIfuHb7kE+yxm6N6kbm9UO0f0bQBp0nJ7E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=U1OUqNTBnVCMPp1ia2uQg45U9rR6Q8tgrXbVfMePRQs=;
+        b=myDlEYB4uR4e4BgaVKr11mZuH7YQSMFZhrvBY1jEL6QBLIFUWXqnbkWagLcAH/E+Vu
+         Qk/cip39Uy9JHA5TGtUST270wbgps9MYDyiePZrCq9jBIznfbh3EBdEgf0FyyyuS5dy5
+         ucjnskmb3nYxTLmlFnAsxCvtcUDZ5cE8V4jkC9KMgPbbmm4DHCbliIrQmvoUdwQf1J4+
+         PzRNGN2H0W31VCzHrHCuquNMjuvJPtxd3FoiWo4VoWW+1WbYaFeAaBCsnbposK6HBmeF
+         rRGjeCNAmej4KElKTpfkQfeH1Hzw24Qdpx7uhXLBwvJRRsnHwbzFbEuZDK0N96EG0wW2
+         T/+g==
+X-Gm-Message-State: AOAM531sixvs6HlQB091Wj5y3OLSrj+ltBvghDqmeIdm6se2ojXq1wCd
+        r8XEvpHMxnn414mKMM1ECPTFvhTp29kq+Q==
+X-Google-Smtp-Source: ABdhPJxGmm5PP6xTtrQ0SIFF/zRW9OW6s+wXFW2tVAh7KtDQrhTPCc5UldobUxkvLwvILkBHIv3SIA==
+X-Received: by 2002:a2e:8ec1:: with SMTP id e1mr3458483ljl.84.1601165097470;
+        Sat, 26 Sep 2020 17:04:57 -0700 (PDT)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id c17sm2205538lfs.62.2020.09.26.17.04.54
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 26 Sep 2020 17:04:54 -0700 (PDT)
+Received: by mail-lj1-f178.google.com with SMTP id w3so5426382ljo.5
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 17:04:54 -0700 (PDT)
+X-Received: by 2002:a05:651c:514:: with SMTP id o20mr3433991ljp.312.1601165094039;
+ Sat, 26 Sep 2020 17:04:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-09-26_21:2020-09-24,2020-09-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 phishscore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 priorityscore=1501 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006250000 definitions=main-2009260214
+References: <20200925222600.6832-1-peterx@redhat.com> <20200925222600.6832-4-peterx@redhat.com>
+ <20200926232335.GA348793@ziepe.ca>
+In-Reply-To: <20200926232335.GA348793@ziepe.ca>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 26 Sep 2020 17:04:38 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh5pE+gXTigysiGf4vf+6jG7K58gwdk8b7qk_QUeEgKWA@mail.gmail.com>
+Message-ID: <CAHk-=wh5pE+gXTigysiGf4vf+6jG7K58gwdk8b7qk_QUeEgKWA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] mm: Do early cow for pinned pages during fork()
+ for ptes
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Peter Xu <peterx@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, Yang Shi <shy828301@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>,
+        Michal Hocko <mhocko@suse.com>, Jan Kara <jack@suse.cz>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 Aug 2020 15:56:10 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+On Sat, Sep 26, 2020 at 4:23 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> Linus's version doesn't do pte_sw_mkyoung(), but looks OK to have it
 
-> The current support for pass-through crypto adapters does not allow
-> configuration of a matrix mdev when it is in use by a KVM guest. Let's
-> allow AP resources - i.e., adapters, domains and control domains - to be
-> assigned to or unassigned from a matrix mdev while it is in use by a guest.
-> This is in preparation for the introduction of support for dynamic
-> configuration of the AP matrix for a running KVM guest.
+I don't think it matters. But I don't think it should make it young,
+since there's no access, but it's not like it's a big deal.
 
-AFAIU this will let the user do the assign, which will however only take
-effect if the same mdev is re-used with a freshly constructed VM, or?
+> > +                             pte = maybe_mkwrite(pte_mkdirty(pte), new);
+>
+> maybe_mkwrite() was not in Linus's version but it is wp_page_copy().
 
-This is however supposed to change real soon (in patch 11). From the
-perspective of bisectability we would end up with a single commit that
-acts funny.
+Actually, it is in my version too, just in a different form.
 
-How about switching up patches 10 and 11. This way the changes you have
-in the current 11 would remain dormant until the changes in the current
-10 enable the complete new feature (hotplug)?
+I did it using
 
+        if (vma->vm_flags & VM_WRITE)
+                *src_pte = pte_mkwrite(*src_pte);
 
-> 
-> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> ---
->  drivers/s390/crypto/vfio_ap_ops.c | 24 ------------------------
->  1 file changed, 24 deletions(-)
-> 
-> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-> index 24fd47e43b80..cf3321eb239b 100644
-> --- a/drivers/s390/crypto/vfio_ap_ops.c
-> +++ b/drivers/s390/crypto/vfio_ap_ops.c
-> @@ -773,10 +773,6 @@ static ssize_t assign_adapter_store(struct device *dev,
->  	struct mdev_device *mdev = mdev_from_dev(dev);
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  
-> -	/* If the guest is running, disallow assignment of adapter */
-> -	if (matrix_mdev->kvm)
-> -		return -EBUSY;
-> -
->  	ret = kstrtoul(buf, 0, &apid);
->  	if (ret)
->  		return ret;
-> @@ -828,10 +824,6 @@ static ssize_t unassign_adapter_store(struct device *dev,
->  	struct mdev_device *mdev = mdev_from_dev(dev);
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  
-> -	/* If the guest is running, disallow un-assignment of adapter */
-> -	if (matrix_mdev->kvm)
-> -		return -EBUSY;
-> -
->  	ret = kstrtoul(buf, 0, &apid);
->  	if (ret)
->  		return ret;
-> @@ -891,10 +883,6 @@ static ssize_t assign_domain_store(struct device *dev,
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  	unsigned long max_apqi = matrix_mdev->matrix.aqm_max;
->  
-> -	/* If the guest is running, disallow assignment of domain */
-> -	if (matrix_mdev->kvm)
-> -		return -EBUSY;
-> -
->  	ret = kstrtoul(buf, 0, &apqi);
->  	if (ret)
->  		return ret;
-> @@ -946,10 +934,6 @@ static ssize_t unassign_domain_store(struct device *dev,
->  	struct mdev_device *mdev = mdev_from_dev(dev);
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  
-> -	/* If the guest is running, disallow un-assignment of domain */
-> -	if (matrix_mdev->kvm)
-> -		return -EBUSY;
-> -
->  	ret = kstrtoul(buf, 0, &apqi);
->  	if (ret)
->  		return ret;
-> @@ -991,10 +975,6 @@ static ssize_t assign_control_domain_store(struct device *dev,
->  	struct mdev_device *mdev = mdev_from_dev(dev);
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  
-> -	/* If the guest is running, disallow assignment of control domain */
-> -	if (matrix_mdev->kvm)
-> -		return -EBUSY;
-> -
->  	ret = kstrtoul(buf, 0, &id);
->  	if (ret)
->  		return ret;
-> @@ -1036,10 +1016,6 @@ static ssize_t unassign_control_domain_store(struct device *dev,
->  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
->  	unsigned long max_domid =  matrix_mdev->matrix.adm_max;
->  
-> -	/* If the guest is running, disallow un-assignment of control domain */
-> -	if (matrix_mdev->kvm)
-> -		return -EBUSY;
-> -
->  	ret = kstrtoul(buf, 0, &domid);
->  	if (ret)
->  		return ret;
+instead, ie avoiding the write to src_pte if it wasn't a writable vma
+(and I had checked that it was dirty and not done this at all if not,
+so no need for the mkdirty).
 
+> It seemed like mk_pte() should set the proper write
+> bit already from the vm_page_prot?
+
+No, vm_page_prot won't have the writable bit for a COW mapping.
+
+The write bit gets set when the write happens (which may be on the
+first access, of course), by the code that makes sure it's a private
+copy.
+
+> Perhaps this is harmless but redundant?
+
+No, the pte_mkwrite() is required in some form, whether it's that
+"maybe_mkwrite()" that looks at the vm flags, or in that explicit
+form.
+
+> > +                             page_add_new_anon_rmap(new_page, new, addr, false);
+> > +                             rss[mm_counter(new_page)]++;
+> > +                             set_pte_at(dst_mm, addr, dst_pte, pte);
+>
+> Linus's patch had a lru_cache_add_inactive_or_unevictable() here, like
+> wp_page_copy()
+
+Yeah, I do think that is needed so that we have the new page on the
+LRU and it gets properly evicted under memory pressure.
+
+                   Linus
