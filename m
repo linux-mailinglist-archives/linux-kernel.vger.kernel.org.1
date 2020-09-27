@@ -2,56 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1420327A1AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B239D27A1B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 17:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgI0Poa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 11:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
+        id S1726314AbgI0PtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 11:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgI0Poa (ORCPT
+        with ESMTP id S1726149AbgI0PtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 11:44:30 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF47C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:44:30 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id u19so2356391ion.3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:44:30 -0700 (PDT)
+        Sun, 27 Sep 2020 11:49:02 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916E0C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:49:01 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id g7so8486903iov.13
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 08:49:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g/TKrTodAH/CavUw5O+bcIpPmr35KdslNAu5/T0EqGU=;
-        b=suZDQuX4uS+LzwhVqnrWwi+DakAfJrF6ATr3UlYsVxiShYeBq7JHd5zg4lJKTQZodr
-         N8JFp8CCNBYqvNw+eiaWWHH/v5MkuLKJGq5SspTAhRMCSxhcgJSF3KBL60ajMYF1zbsZ
-         OcVnyEkGHGbbyD/oD2b+f3v3DJnZbex4qGK2vWy1NFhSXWYGrgEYP7vf0QvSmsnd4gYY
-         U/lIE4bMdEqwXEq6qQBhlyqmIKOQCRUNMNfAhxeCYry+1Am5b/4Xki/T6z74iqM4xTv0
-         ykIsimv//Pw8CgDznCJt1CI67sdUZClWvRqLUy1ung7b6CgXYaOmnlIXMQ86XomrbGoa
-         YJgg==
+        bh=kMOePL7SuunhCQJvUEzJENmJqI2ZT46rRLTR1oHruk0=;
+        b=ZTMmsNrKXqA5RsQNSpCRZDHhk9W97uuDmVabN2P9vN4e1WJs8BF/4ZjloizBFL+WkR
+         msL1QgJLxWFzN6a/3hK1ckvb2SY8rwaM4i2obvKJ4cPUWSgCi2lYA3VXr/Oeomljz1Cl
+         01iXgXHM9C6QXBkysMMMA072Rq0HfH9SwBH6GxksToMnPySeABgE0Yq7futAwLLCbHSJ
+         63AAMEKr9H6fFRQsvrC7AAcv+31cuKciPJvCwb5Mz9nNzbfzzXtQ/C5cJEuAQCx8JDZ1
+         yH8rt2YF7WnOHmSIPuc2MJdY6zJjNx46UKhlbRLfEGkHIv7cFUfrk+uiUs2RAp8a3eGZ
+         8/4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g/TKrTodAH/CavUw5O+bcIpPmr35KdslNAu5/T0EqGU=;
-        b=YuAy2oOgSKd6Zley/Z2lD0JYq1cIvKNZKwEVNluH53R7kI45VOqItXH3b8Pc4iDIaw
-         JOyzO49L2z8r2t2HBgX11CCKWnTnCeipIdLY4cQ36xU7LHayHqMq9ihfY0MM457+WUN4
-         ygqMpxPc7bIW9uyGzY2D68cORwRv/B6jRwEkNEhgM5aNwHUBRFnQgm0+Bv6LAiFp1/28
-         ELxijcA0Ee37WZ+/jFiuy3biNjEv1x4C2VDXvhI7KQ1YOZUmc7a2L3ScWC2/qyD0iDGN
-         wVRakEeohW2kCKtakl2d5TJ3E1ezVSno7c9uDbUFzFVbAP/1C68zIk9B6/FgA1oyVzzo
-         s6Dw==
-X-Gm-Message-State: AOAM530Cq8tBlv8GahXGZGSPiVW1nURaxTwkfuXcLRREIx2N6gCfkMF0
-        uTUm3gWv1L2v2rYA22j5kUP/E4TqICNK7oKucV7d1g==
-X-Google-Smtp-Source: ABdhPJxpzy2P75QgnXAVWSjTi/IdUIaPp3CaMsBr/63IlT1RzZyJNMXa+Ky1LLpsMrBlZ7QCQkYY0dUIHjs7fI1I31k=
-X-Received: by 2002:a5d:870c:: with SMTP id u12mr4773220iom.129.1601221469251;
- Sun, 27 Sep 2020 08:44:29 -0700 (PDT)
+        bh=kMOePL7SuunhCQJvUEzJENmJqI2ZT46rRLTR1oHruk0=;
+        b=t1HM665bBGKjX+5IBhAaSkqE2dxdivhWLk6bSswR/Y8qBg4NMiCoL+UJbzZOxOfoAj
+         XFRrPsV2vpTPbcaZuRf4f0B0v3dRWV87bsxw+o+SKL/QI6IxaRDRYwRAjzyqggaqmK/o
+         p6Vk8I/LaWIfCSpNab9iK0lcsPfYyeAIb6mKiNCo6tTv49cQ9WDYwOLVZGnUPCXOONp/
+         Fqu1QZ/zqpK+N1+zzWA0U7xLD97eN9nIyI+C5IsyAAiLqZM1SO3CJlmoYgsXiHfq60gd
+         DtHtNyz71BrAkpNXOLyCJKtf92OHUgZZLvq7Dwj+tTLXjaI31rMSwQR7uDEHMj5HICM0
+         kk4A==
+X-Gm-Message-State: AOAM532Z9Hcw9jc2M53DD/Us7JQKtNs8STO5bL55+odOh/e/3LhP3qop
+        ZsRM3f7jklUO1wC1KYYv1ZmCwhEJuNfGTvF0taDxLw==
+X-Google-Smtp-Source: ABdhPJydTQXOfAgH73YHVMqDI0Qi6yiTEDtQ8bHWUbqPUMPOLmzvN8dZKz+AF3P5AAyHDR8E8qMEoqyqk5Sxjejt5dc=
+X-Received: by 2002:a02:4b07:: with SMTP id q7mr6144862jaa.84.1601221740947;
+ Sun, 27 Sep 2020 08:49:00 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200926135514.26189-1-luka.kovacic@sartura.hr>
- <20200926135514.26189-5-luka.kovacic@sartura.hr> <20200926200923.4641533d@nic.cz>
-In-Reply-To: <20200926200923.4641533d@nic.cz>
+ <20200926135514.26189-6-luka.kovacic@sartura.hr> <20200926202521.100d17f8@nic.cz>
+In-Reply-To: <20200926202521.100d17f8@nic.cz>
 From:   Luka Kovacic <luka.kovacic@sartura.hr>
-Date:   Sun, 27 Sep 2020 17:44:30 +0200
-Message-ID: <CADZsf3a0xv+DqWg5OcQKNOXutEQ_t0J+_hZkP4bRgZn=SiBwbw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/7] drivers: leds: Add the iEi WT61P803 PUZZLE LED driver
+Date:   Sun, 27 Sep 2020 17:49:02 +0200
+Message-ID: <CADZsf3YmbELw6mw2wT2tkkx03zf1y_jM2vrBDH1_HqXc--AHew@mail.gmail.com>
+Subject: Re: [PATCH v2 5/7] Documentation/ABI: Add iei-wt61p803-puzzle driver
+ sysfs interface documentation
 To:     Marek Behun <marek.behun@nic.cz>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-hwmon@vger.kernel.org,
@@ -71,307 +72,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I agree, I'll move this over to testing.
 
-The microcontroller on this platform is currently only physically wired to one
-LED, but should support multiple LEDs in software (this could possibly be
-used in future platforms).
-
-Thus I'd like to keep the support for multiple LEDs prepared. As I am not able
-to test multiple LEDs functionality, I will just keep the framework prepared.
-
-Also I'll use the devm_led_classdev_register_ext() API, thanks for
-letting me know.
+These values are stored in the microcontroller EEPROM and can be modified.
+Some test units might be shipped with unpopulated MAC address and S/N values
+so I exposed this functionality to enable the user to use some
+internal value there.
 
 Kind regards,
 Luka
 
-On Sat, Sep 26, 2020 at 8:09 PM Marek Behun <marek.behun@nic.cz> wrote:
+On Sat, Sep 26, 2020 at 8:25 PM Marek Behun <marek.behun@nic.cz> wrote:
 >
-> On Sat, 26 Sep 2020 15:55:11 +0200
+> On Sat, 26 Sep 2020 15:55:12 +0200
 > Luka Kovacic <luka.kovacic@sartura.hr> wrote:
 >
-> > Add support for the iEi WT61P803 PUZZLE LED driver.
-> > Currently only the front panel power LED is supported.
-> >
-> > This driver depends on the iEi WT61P803 PUZZLE MFD driver.
+> > Add the iei-wt61p803-puzzle driver sysfs interface documentation to allow
+> > monitoring and control of the microcontroller from user space.
 > >
 > > Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
 > > Cc: Luka Perkov <luka.perkov@sartura.hr>
 > > Cc: Robert Marko <robert.marko@sartura.hr>
 > > ---
-> >  drivers/leds/Kconfig                    |   8 ++
-> >  drivers/leds/Makefile                   |   1 +
-> >  drivers/leds/leds-iei-wt61p803-puzzle.c | 174 ++++++++++++++++++++++++
-> >  3 files changed, 183 insertions(+)
-> >  create mode 100644 drivers/leds/leds-iei-wt61p803-puzzle.c
+> >  .../stable/sysfs-driver-iei-wt61p803-puzzle   | 65 +++++++++++++++++++
+> >  1 file changed, 65 insertions(+)
+> >  create mode 100644 Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
 > >
-> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> > index 1c181df24eae..8a25fb753dec 100644
-> > --- a/drivers/leds/Kconfig
-> > +++ b/drivers/leds/Kconfig
-> > @@ -332,6 +332,14 @@ config LEDS_IPAQ_MICRO
-> >         Choose this option if you want to use the notification LED on
-> >         Compaq/HP iPAQ h3100 and h3600.
-> >
-> > +config LEDS_IEI_WT61P803_PUZZLE
-> > +     tristate "LED Support for the iEi WT61P803 PUZZLE MCU"
-> > +     depends on LEDS_CLASS
-> > +     depends on MFD_IEI_WT61P803_PUZZLE
-> > +     help
-> > +       This option enables support for LEDs controlled by the iEi WT61P803
-> > +       M801 MCU.
-> > +
-> >  config LEDS_HP6XX
-> >       tristate "LED Support for the HP Jornada 6xx"
-> >       depends on LEDS_CLASS
-> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> > index c2c7d7ade0d0..cd362437fefd 100644
-> > --- a/drivers/leds/Makefile
-> > +++ b/drivers/leds/Makefile
-> > @@ -34,6 +34,7 @@ obj-$(CONFIG_LEDS_HP6XX)            += leds-hp6xx.o
-> >  obj-$(CONFIG_LEDS_INTEL_SS4200)              += leds-ss4200.o
-> >  obj-$(CONFIG_LEDS_IP30)                      += leds-ip30.o
-> >  obj-$(CONFIG_LEDS_IPAQ_MICRO)                += leds-ipaq-micro.o
-> > +obj-$(CONFIG_LEDS_IEI_WT61P803_PUZZLE)       += leds-iei-wt61p803-puzzle.o
-> >  obj-$(CONFIG_LEDS_IS31FL319X)                += leds-is31fl319x.o
-> >  obj-$(CONFIG_LEDS_IS31FL32XX)                += leds-is31fl32xx.o
-> >  obj-$(CONFIG_LEDS_KTD2692)           += leds-ktd2692.o
-> > diff --git a/drivers/leds/leds-iei-wt61p803-puzzle.c b/drivers/leds/leds-iei-wt61p803-puzzle.c
+> > diff --git a/Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle b/Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
 > > new file mode 100644
-> > index 000000000000..b9a977575a23
+> > index 000000000000..36fca70d66ef
 > > --- /dev/null
-> > +++ b/drivers/leds/leds-iei-wt61p803-puzzle.c
-> > @@ -0,0 +1,174 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* iEi WT61P803 PUZZLE MCU LED Driver
-> > + *
-> > + * Copyright (C) 2020 Sartura Ltd.
-> > + * Author: Luka Kovacic <luka.kovacic@sartura.hr>
-> > + */
-> > +
-> > +#include <linux/leds.h>
-> > +#include <linux/mfd/iei-wt61p803-puzzle.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/property.h>
-> > +#include <linux/slab.h>
-> > +
-> > +enum iei_wt61p803_puzzle_led_state {
-> > +     IEI_LED_OFF = 0x30,
-> > +     IEI_LED_ON = 0x31,
-> > +     IEI_LED_BLINK_5HZ = 0x32,
-> > +     IEI_LED_BLINK_1HZ = 0x33,
-> > +};
-> > +
-> > +/**
-> > + * struct iei_wt61p803_puzzle_led - MCU LED Driver
-> > + *
-> > + * @mcu:             MCU struct pointer
-> > + * @response_buffer  Global MCU response buffer allocation
-> > + * @lock:            General mutex lock for LED operations
-> > + * @led_power_state: State of the front panel power LED
-> > + */
-> > +struct iei_wt61p803_puzzle_led {
-> > +     struct iei_wt61p803_puzzle *mcu;
-> > +     unsigned char *response_buffer;
-> > +     struct mutex lock;
-> > +     int led_power_state;
-> > +};
-> > +
-> > +static inline struct iei_wt61p803_puzzle_led *cdev_to_iei_wt61p803_puzzle_led
-> > +     (struct led_classdev *led_cdev)
-> > +{
-> > +     return dev_get_drvdata(led_cdev->dev->parent);
-> > +}
-> > +
-> > +static int iei_wt61p803_puzzle_led_brightness_set_blocking(struct led_classdev *cdev,
-> > +             enum led_brightness brightness)
-> > +{
-> > +     struct iei_wt61p803_puzzle_led *mcu_led =
-> > +             cdev_to_iei_wt61p803_puzzle_led(cdev);
-> > +     unsigned char led_power_cmd[5] = {
-> > +             IEI_WT61P803_PUZZLE_CMD_HEADER_START,
-> > +             IEI_WT61P803_PUZZLE_CMD_LED,
-> > +             IEI_WT61P803_PUZZLE_CMD_LED_POWER,
-> > +             (char)IEI_LED_OFF
-> > +     };
-> > +     unsigned char *resp_buf = mcu_led->response_buffer;
-> > +     size_t reply_size;
-> > +
-> > +     mutex_lock(&mcu_led->lock);
-> > +     if (brightness == LED_OFF) {
-> > +             led_power_cmd[3] = (char)IEI_LED_OFF;
-> > +             mcu_led->led_power_state = LED_OFF;
-> > +     } else {
-> > +             led_power_cmd[3] = (char)IEI_LED_ON;
-> > +             mcu_led->led_power_state = LED_ON;
-> > +     }
-> > +     mutex_unlock(&mcu_led->lock);
-> > +
-> > +     return iei_wt61p803_puzzle_write_command(mcu_led->mcu, led_power_cmd,
-> > +                     sizeof(led_power_cmd), resp_buf, &reply_size);
-> > +}
-> > +
-> > +static enum led_brightness
-> > +iei_wt61p803_puzzle_led_brightness_get(struct led_classdev *cdev)
-> > +{
-> > +     struct iei_wt61p803_puzzle_led *mcu_led =
-> > +             cdev_to_iei_wt61p803_puzzle_led(cdev);
-> > +     int led_state;
-> > +
-> > +     mutex_lock(&mcu_led->lock);
-> > +     led_state = mcu_led->led_power_state;
-> > +     mutex_unlock(&mcu_led->lock);
-> > +
-> > +     return led_state;
-> > +}
-> > +
-> > +static int iei_wt61p803_puzzle_led_probe(struct platform_device *pdev)
-> > +{
-> > +     struct device *dev = &pdev->dev;
-> > +     struct iei_wt61p803_puzzle *mcu = dev_get_drvdata(dev->parent);
-> > +     struct iei_wt61p803_puzzle_led *mcu_led;
-> > +     struct fwnode_handle *child;
-> > +     const char *label;
-> > +     int ret;
-> > +
-> > +     mcu_led = devm_kzalloc(dev, sizeof(*mcu_led), GFP_KERNEL);
-> > +     if (!mcu_led)
-> > +             return -ENOMEM;
-> > +
-> > +     mcu_led->response_buffer = devm_kzalloc(dev,
-> > +                     IEI_WT61P803_PUZZLE_BUF_SIZE, GFP_KERNEL);
-> > +     if (!mcu_led->response_buffer)
-> > +             return -ENOMEM;
-> > +
-> > +     mcu_led->mcu = mcu;
-> > +     mcu_led->led_power_state = 1;
-> > +     mutex_init(&mcu_led->lock);
-> > +     dev_set_drvdata(dev, mcu_led);
-> > +
-> > +     device_for_each_child_node(dev, child) {
-> > +             struct led_classdev *led;
-> > +             u32 reg;
-> > +
-> > +             led = devm_kzalloc(dev, sizeof(*led), GFP_KERNEL);
+> > +++ b/Documentation/ABI/stable/sysfs-driver-iei-wt61p803-puzzle
 >
-> Avoid multiple allocations.
+> I think this should go to testing, not stable. It should go to stable
+> only after it is stable for some time.
 >
-> Please look
-> at
-> https://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/commit/?h=for-next&id=4351dceba0ff929f667867f9bb69210f08f61717
->
-> To avoid multiple allocations, please use flexible array members.
->
-> Does this controller support multiple LEDs? The device tree you
-> provided only defines one.
->
-> If it supports multiple LED:
-> Rename the mcu_led to mcu_leds, or chip, or (semantically best in this
-> driver) priv.
-> Add member
->   struct led_classdev leds[];
-> to that structure.
-> Then allocate by
->   count = device_get_child_node_count(dev);
->   priv = devm_kzalloc(dev, struct_size(priv, leds, count), GFP_KERNEL);
->
-> If the device supports only one LED, just put
->   struct led_classdev cdev;
-> to the private structure of this driver. And don't use
-> device_for_each_child_node, just check whether there is exactly one
-> child node (device_get_child_node_count), get it via
->   child = device_get_next_child_node(dev, NULL);
-> and after registering the LED
->   fwnode_handle_put(child);
-> This was done in:
-> https://git.kernel.org/pub/scm/linux/kernel/git/pavel/linux-leds.git/commit/?h=for-next&id=e92e7e8aa066904def9a5d584ece7fb6ae512dbd
->
-> > +             if (!led) {
-> > +                     ret = -ENOMEM;
-> > +                     goto err_child_node;
-> > +             }
+> > @@ -0,0 +1,65 @@
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/mac_address_*
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read the internal iEi WT61P803 PUZZLE MCU MAC address values.
+> > +             These are factory assigned and can be changed.
 > > +
-> > +             ret = fwnode_property_read_u32(child, "reg", &reg);
-> > +             if (ret || reg > 1) {
-> > +                     dev_err(dev, "Could not register 'reg' (%lu)\n", (unsigned long)reg);
-> > +                     ret = -EINVAL;
-> > +                     goto err_child_node;
-> > +             }
-> > +
-> > +             if (fwnode_property_read_string(child, "label", &label)) {
-> > +                     led->name = "iei-wt61p803-puzzle-led::";
-> > +             } else {
-> > +                     led->name = devm_kasprintf(dev, GFP_KERNEL,
-> > +                                     "iei-wt61p803-puzzle-led:%s", label);
-> > +                     if (!led->name) {
-> > +                             ret = -ENOMEM;
-> > +                             goto err_child_node;
-> > +                     }
-> > +             }
->
-> Parsing of label is done by LED core if you use
-> devm_led_classdev_register_ext. Also, label is obsolete. The LED name
-> should be composed from color, function and device.
-> Also please dont pass devicename "iei-wt61p803-puzzle-led" here. We
-> want to make the LED subsystem derive the device name somehow, and
-> afterwards we would need to change this. Also the devicename should
-> refer to the device the LED is triggering to (ie. if the LED is set in
-> devicetree to trigger on activity on eth0, the devicename should be
-> eth0 or something, not the name of this driver).
->
-> Just remove this code and let devm_led_classdev_register_ext do its
-> thing.
->
-> > +
-> > +             fwnode_property_read_string(child, "linux,default-trigger",
-> > +                             &led->default_trigger);
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/serial_number
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read the internal iEi WT61P803 PUZZLE MCU serial number.
+> > +             This value is factory assigned and can be changed.
 > > +
 >
-> Parsing of linux,default-trigger is done by LED core if you use
-> devm_led_classdev_register_ext.
+> Please use (RO) and (RW) prefixes before the Description, instead of
+> writing "This value is read only", i.e.:
+>   Description: (RO) Internal ... serial number.
 >
-> > +             led->brightness_set_blocking = iei_wt61p803_puzzle_led_brightness_set_blocking;
-> > +             led->brightness_get = iei_wt61p803_puzzle_led_brightness_get;
-> > +             led->max_brightness = 1;
-> > +
-> > +             ret = devm_led_classdev_register(dev, led);
->
-> Please use extended LED registration API, with
-> devm_led_classdev_register_ext. Pass init_data with fwnode member set
-> to child.
->
-> > +             if (ret) {
-> > +                     dev_err(dev, "Could not register %s\n", led->name);
-> > +                     goto err_child_node;
-> > +             }
-> > +     }
-> > +     return 0;
-> > +err_child_node:
-> > +     fwnode_handle_put(child);
-> > +     return ret;
-> > +}
-> > +
-> > +static const struct of_device_id iei_wt61p803_puzzle_led_of_match[] = {
-> > +     { .compatible = "iei,wt61p803-puzzle-leds" },
-> > +     { }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, iei_wt61p803_puzzle_led_of_match);
-> > +
-> > +static struct platform_driver iei_wt61p803_puzzle_led_driver = {
-> > +     .driver = {
-> > +             .name = "iei-wt61p803-puzzle-led",
-> > +             .of_match_table = iei_wt61p803_puzzle_led_of_match,
-> > +     },
-> > +     .probe = iei_wt61p803_puzzle_led_probe,
-> > +};
-> > +module_platform_driver(iei_wt61p803_puzzle_led_driver);
-> > +
-> > +MODULE_DESCRIPTION("iEi WT61P803 PUZZLE front panel LED driver");
-> > +MODULE_AUTHOR("Luka Kovacic <luka.kovacic@sartura.hr>");
-> > +MODULE_LICENSE("GPL");
-> > +MODULE_ALIAS("platform:leds-iei-wt61p803-puzzle");
+> JFI: Why can these values be changed? Shouldn't they be burned into OTP?
 >
 > Marek
+>
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/version
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read the internal iEi WT61P803 PUZZLE MCU version.
+> > +             This value is read only.
+> > +
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/protocol_version
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read the internal iEi WT61P803 PUZZLE MCU protocol version.
+> > +             This value is read only.
+> > +
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/power_loss_recovery
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read the iEi WT61P803 PUZZLE MCU power loss recovery value.
+> > +             This value is read write.
+> > +             Value mapping: 0 - Always-On, 1 - Always-Off, 2 - Always-AC, 3 - Always-WA
+> > +
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/bootloader_mode
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read whether the MCU is in bootloader mode.
+> > +             This value is read only.
+> > +
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/power_status
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read the iEi WT61P803 PUZZLE MCU power status. Power status indicates
+> > +             the power on method.
+> > +             This value is read only.
+> > +             Value mapping (bitwise list):
+> > +             0x80 - Null
+> > +             0x40 - Firmware flag
+> > +             0x20 - Power loss detection flag (powered off)
+> > +             0x10 - Power loss detection flag (AC mode)
+> > +             0x08 - Button power on
+> > +             0x04 - WOL power on
+> > +             0x02 - RTC alarm power on
+> > +             0x01 - AC recover power on
+> > +
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/build_info
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read the iEi WT61P803 PUZZLE MCU firmware build date.
+> > +             This value is read only.
+> > +             Format: yyyy/mm/dd hh:mm
+> > +
+> > +What:                /sys/bus/serial/devices/.../iei_wt61p803_puzzle_core/ac_recovery_status
+> > +Date:                September 2020
+> > +Contact:     Luka Kovacic <luka.kovacic@sartura.hr>
+> > +Description: Read the iEi WT61P803 PUZZLE MCU AC recovery status.
+> > +             This value is read only.
+>
