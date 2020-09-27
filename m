@@ -2,94 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1D127A244
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 20:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E770727A246
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 20:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbgI0SGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 14:06:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39550 "EHLO mail.kernel.org"
+        id S1726680AbgI0SH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 14:07:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726387AbgI0SGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 14:06:19 -0400
-Received: from localhost (router.4pisysteme.de [80.79.225.122])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1726497AbgI0SH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 14:07:57 -0400
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C29823A05;
-        Sun, 27 Sep 2020 18:06:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8F8723A31;
+        Sun, 27 Sep 2020 18:07:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601229978;
-        bh=2G9SbJ/cJpywKU3C9LDI23sdvEaOKHzPJIaoxw96RnA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YwrArF11uS67h3nQpwyvKAdyGkuArwYeZC7BVinQI3FmyVa+oiuq75RckZTCbjxMu
-         eB7X645Flqjj75iWFIiATsZyAiLq084vg3xPg9RWIMVkB1fMFMuL1jK9jgrg+uS26I
-         lAwDWwA2wCn60JtroaeaosvZrSzxAvZZC8TqJ7XQ=
-Date:   Sun, 27 Sep 2020 20:06:16 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Tali Perry <tali.perry1@gmail.com>
-Cc:     andriy.shevchenko@linux.intel.com, kunyi@google.com,
-        benjaminfair@google.com, avifishman70@gmail.com, joel@jms.id.au,
-        tmaimon77@gmail.com, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] i2c: npcm7xx: Clear LAST bit after a failed
- transaction.
-Message-ID: <20200927180616.GG19475@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Tali Perry <tali.perry1@gmail.com>,
-        andriy.shevchenko@linux.intel.com, kunyi@google.com,
-        benjaminfair@google.com, avifishman70@gmail.com, joel@jms.id.au,
-        tmaimon77@gmail.com, linux-i2c@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
-References: <20200920204809.132911-1-tali.perry1@gmail.com>
+        s=default; t=1601230077;
+        bh=vsE9X3eOgp7dHrsjtGKh2H/Hys4APfGgXPzjOy78+jo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=V+f9PBYVKnfawmN5ojU0YWt7R+WuJrseSZJvMh9s+F98TeQF9x1d+dq6cq+63T0eR
+         xGWZED7d1UupRbRs7p8uANEKo3fyKpqG0FFv1CNxJX/l8937FnRJIUeDMliAUp7EAY
+         BhszQvEXrh70MsotsMlw2Hqx3iKpfWm3bMUAYa1s=
+Received: by mail-il1-f181.google.com with SMTP id m9so2484496ila.10;
+        Sun, 27 Sep 2020 11:07:56 -0700 (PDT)
+X-Gm-Message-State: AOAM530mdL1OkBFVHaqfA2mn+4FzTQ1SW2oMID4DkCLiqzMozQuWlnSv
+        BAzPeYTl8eZvAF9r2JOcUc41GBSnYkXSxkUQpQo=
+X-Google-Smtp-Source: ABdhPJx6T9krolcK/30YgUVR5caQAXMJfm/AVPZx6YqMKU9Mlbfb3a9iooHxc2jWt3avTWAWB6bvx8FM+nioWnkZleY=
+X-Received: by 2002:a92:d842:: with SMTP id h2mr7981119ilq.176.1601230076381;
+ Sun, 27 Sep 2020 11:07:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cyV/sMl4KAhiehtf"
-Content-Disposition: inline
-In-Reply-To: <20200920204809.132911-1-tali.perry1@gmail.com>
+References: <1597922546-29633-1-git-send-email-hanks.chen@mediatek.com> <1601038258.15065.4.camel@mtkswgap22>
+In-Reply-To: <1601038258.15065.4.camel@mtkswgap22>
+From:   Sean Wang <sean.wang@kernel.org>
+Date:   Sun, 27 Sep 2020 11:07:45 -0700
+X-Gmail-Original-Message-ID: <CAGp9LzqOvqm+ewSxyvjuX_D=181+DUu3Lre-oG5FY=Mx8X6Qzw@mail.gmail.com>
+Message-ID: <CAGp9LzqOvqm+ewSxyvjuX_D=181+DUu3Lre-oG5FY=Mx8X6Qzw@mail.gmail.com>
+Subject: Re: [PATCH v2] pinctrl: mediatek: check mtk_is_virt_gpio input parameter
+To:     Hanks Chen <hanks.chen@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        CC Hwang <cc.hwang@mediatek.com>,
+        sin_jieyang <sin_jieyang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 25, 2020 at 5:51 AM Hanks Chen <hanks.chen@mediatek.com> wrote:
+>
+> Hi Sean & Linux & Matthias,
+>
+> Please kindly let me know your comments about this fixes patch.
+> Thanks
+>
 
---cyV/sMl4KAhiehtf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Sean Wang <sean.wang@kernel.org>
 
-On Sun, Sep 20, 2020 at 11:48:09PM +0300, Tali Perry wrote:
-> Due to a HW issue, in some scenarios the LAST bit might remain set.
-> This will cause an unexpected NACK after reading 16 bytes on the next
-> read.
->=20
-> Example: if user tries to read from a missing device, get a NACK,
-> then if the next command is a long read ( > 16 bytes),
-> the master will stop reading after 16 bytes.
-> To solve this, if a command fails, check if LAST bit is still
-> set. If it does, reset the module.
->=20
-> Fixes: 56a1485b102e (i2c: npcm7xx: Add Nuvoton NPCM I2C controller driver)
-> Signed-off-by: Tali Perry <tali.perry1@gmail.com>
-
-Applied to for-current, thanks!
-
-
---cyV/sMl4KAhiehtf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9w1JgACgkQFA3kzBSg
-KbZh3g//XYIGDk4pDY8HrG7y81c38n5KYK+HXD635lZxwr0D3Hp/DVeAw2YWmS4f
-15It6nyQIk9ENrURatSHh2fVbh5EAhdXlnmHVWF5Ey2XS7Rv/RL6QLxanBHl385E
-3q+FHqSMrcSjfQqqPILlGEDpHfOmVEDLV+pwcxbeku5P8CPzThXT1ZVfxB5Ild9j
-eysaEdluZ/KFtDQnnzLupeOUYsTt69a0Kz/8vSvfFOS1QnLQfObyZoW9801odQEl
-b2SzGSPYKMaiZLX+rSlONIA9ZLzyIsB1YE0R3gU1V4blzdHdxkVtK1tyaW69UPxs
-kIP5WnjTvAHKxeN9juz+61qH5NpEUg8vrBjRM8Ey6FSZf6g+672Q6vVQcnqO7MNm
-PG0LgmVwd0GzDlSDt4pHZLt2o9OkVcYgyul5ZoFV5rDatILSlOGPiCUTUWG7QgK4
-hZEhhlgyib7o7S9eEzB5ORiMw4pF+C4cPpQmPryQetnvWmkxU/PIQgAHzSfS+Jvo
-UaEKWzlZrdfx7SKSikJEDXn6y6FFWyIyD/S/WRBTolvqP9XXmiHIhdDrEc95Mqwu
-/r4x4GP/k5ec4qkwAu4JTdup2WUs+lD5ZEzRu8SelWURCKp2in0Yu2ZZLeMlYFZD
-zUO2lAkwE/LbQuflJ0MVqHcMiJz/W22FkxYDttpvATSoq0f7wig=
-=gCdm
------END PGP SIGNATURE-----
-
---cyV/sMl4KAhiehtf--
+> Regards,
+> Hanks
+>
+>
+> On Thu, 2020-08-20 at 19:22 +0800, Hanks Chen wrote:
+> > check mtk_is_virt_gpio input parameter,
+> > virtual gpio need to support eint mode.
+> >
+> > add error handler for the ko case
+> > to fix this boot fail:
+> > pc : mtk_is_virt_gpio+0x20/0x38 [pinctrl_mtk_common_v2]
+> > lr : mtk_gpio_get_direction+0x44/0xb0 [pinctrl_paris]
+> >
+> > Fixes: edd546465002 ("pinctrl: mediatek: avoid virtual gpio trying to set reg")
+> > Singed-off-by: Jie Yang <sin_jieyang@mediatek.com>
+> > Signed-off-by: Hanks Chen <hanks.chen@mediatek.com>
+> >
+> > ---
+> > Changes since v1:
+> > - update Singed-off-by
+> > - align with pinctrl/mediatek/pinctrl-mtk-mt*.h
+> >
+> > ---
+> >  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> > index c53e2c391e32..a485d79f51a1 100644
+> > --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> > +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> > @@ -259,6 +259,10 @@ bool mtk_is_virt_gpio(struct mtk_pinctrl *hw, unsigned int gpio_n)
+> >
+> >       desc = (const struct mtk_pin_desc *)&hw->soc->pins[gpio_n];
+> >
+> > +     /* if the GPIO is not supported for eint mode */
+> > +     if (desc->eint.eint_m == NO_EINT_SUPPORT)
+> > +             return virt_gpio;
+> > +
+> >       if (desc->funcs && !desc->funcs[desc->eint.eint_m].name)
+> >               virt_gpio = true;
+> >
+>
