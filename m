@@ -2,199 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962CA27A2D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788D127A2DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgI0ThC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:37:02 -0400
-Received: from crapouillou.net ([89.234.176.41]:50042 "EHLO crapouillou.net"
+        id S1726369AbgI0TjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:39:03 -0400
+Received: from sauhun.de ([88.99.104.3]:38552 "EHLO pokefinder.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726314AbgI0ThC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:37:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1601235413; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lh7NfaMRR2/5OvVIOgj2QdyiBr5bakMb9ZkqYQ/T7EU=;
-        b=Ga6MOrPTtutYmOjlYB8bZJT9He75EYbWR7gtLO1HBv9LG5miP/MVGCkjvkVeelnf1VzQmI
-        EKWvbKBITDuVr0eXRrH5gx93TVDstWqqLkBomC41+jqucG0Aus5obGq0EEjWf6yqNoGzgu
-        TumeCz59g1MgLoTxpuoF37ifFCzhaog=
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v3 1/1] drm/ingenic: Add support for paletted 8bpp
-Date:   Sun, 27 Sep 2020 21:36:45 +0200
-Message-Id: <20200927193645.262612-2-paul@crapouillou.net>
-In-Reply-To: <20200927193645.262612-1-paul@crapouillou.net>
-References: <20200927193645.262612-1-paul@crapouillou.net>
+        id S1726267AbgI0TjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 15:39:02 -0400
+Received: from localhost (router.4pisysteme.de [80.79.225.122])
+        by pokefinder.org (Postfix) with ESMTPSA id 556562C0548;
+        Sun, 27 Sep 2020 21:39:00 +0200 (CEST)
+Date:   Sun, 27 Sep 2020 21:39:00 +0200
+From:   Wolfram Sang <wsa@the-dreams.de>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        linux-i2c@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
+ powered off
+Message-ID: <20200927193900.GA30711@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>, linux-i2c@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rajmohan.mani@intel.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media@vger.kernel.org
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
+ <f4b82baa-66b7-464e-fd39-66d2243a05ef@lucaceresoli.net>
+ <20200911130104.GF26842@paasikivi.fi.intel.com>
+ <6dea1206-cfaa-bfc5-d57e-4dcddadc03c7@lucaceresoli.net>
+ <20200914094727.GM26842@paasikivi.fi.intel.com>
+ <20200926123807.GA3781977@chromium.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Disposition: inline
+In-Reply-To: <20200926123807.GA3781977@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On JZ4725B and newer, the F0 plane supports paletted 8bpp with a
-256-entry palette. Add support for it.
 
-v3: Only accept a full 256-entry palette.
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 66 +++++++++++++++++++++--
- 1 file changed, 62 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 589fc0c60716..0225dc1f5eb8 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -21,6 +21,7 @@
- #include <drm/drm_atomic.h>
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_bridge.h>
-+#include <drm/drm_color_mgmt.h>
- #include <drm/drm_crtc.h>
- #include <drm/drm_crtc_helper.h>
- #include <drm/drm_damage_helper.h>
-@@ -50,6 +51,8 @@ struct ingenic_dma_hwdesc {
- struct ingenic_dma_hwdescs {
- 	struct ingenic_dma_hwdesc hwdesc_f0;
- 	struct ingenic_dma_hwdesc hwdesc_f1;
-+	struct ingenic_dma_hwdesc hwdesc_pal;
-+	u16 palette[256] __aligned(16);
- };
- 
- struct jz_soc_info {
-@@ -249,6 +252,12 @@ static int ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
- 	struct ingenic_drm *priv = drm_crtc_get_priv(crtc);
- 	struct drm_plane_state *f1_state, *f0_state, *ipu_state = NULL;
- 
-+	if (state->gamma_lut &&
-+	    drm_color_lut_size(state->gamma_lut) != ARRAY_SIZE(priv->dma_hwdescs->palette)) {
-+		dev_dbg(priv->dev, "Invalid palette size\n");
-+		return -EINVAL;
-+	}
-+
- 	if (drm_atomic_crtc_needs_modeset(state) && priv->soc_info->has_osd) {
- 		f1_state = drm_atomic_get_plane_state(state->state, &priv->f1);
- 		if (IS_ERR(f1_state))
-@@ -470,6 +479,9 @@ void ingenic_drm_plane_config(struct device *dev,
- 				   JZ_LCD_OSDCTRL_BPP_MASK, ctrl);
- 	} else {
- 		switch (fourcc) {
-+		case DRM_FORMAT_C8:
-+			ctrl |= JZ_LCD_CTRL_BPP_8;
-+			break;
- 		case DRM_FORMAT_XRGB1555:
- 			ctrl |= JZ_LCD_CTRL_RGB555;
- 			fallthrough;
-@@ -541,16 +553,34 @@ void ingenic_drm_sync_data(struct device *dev,
- 	}
- }
- 
-+static void ingenic_drm_update_palette(struct ingenic_drm *priv,
-+				       const struct drm_color_lut *lut)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
-+		u16 color = drm_color_lut_extract(lut[i].red, 5) << 11
-+			| drm_color_lut_extract(lut[i].green, 6) << 5
-+			| drm_color_lut_extract(lut[i].blue, 5);
-+
-+		priv->dma_hwdescs->palette[i] = color;
-+	}
-+}
-+
- static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
- 					    struct drm_plane_state *oldstate)
- {
- 	struct ingenic_drm *priv = drm_device_get_priv(plane->dev);
- 	struct drm_plane_state *state = plane->state;
-+	struct drm_crtc_state *crtc_state;
- 	struct ingenic_dma_hwdesc *hwdesc;
--	unsigned int width, height, cpp;
-+	unsigned int width, height, cpp, offset;
- 	dma_addr_t addr;
-+	u32 fourcc;
- 
- 	if (state && state->fb) {
-+		crtc_state = state->crtc->state;
-+
- 		ingenic_drm_sync_data(priv->dev, oldstate, state);
- 
- 		addr = drm_fb_cma_get_gem_addr(state->fb, state, 0);
-@@ -566,9 +596,23 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
- 		hwdesc->addr = addr;
- 		hwdesc->cmd = JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
- 
--		if (drm_atomic_crtc_needs_modeset(state->crtc->state))
--			ingenic_drm_plane_config(priv->dev, plane,
--						 state->fb->format->format);
-+		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
-+			fourcc = state->fb->format->format;
-+
-+			ingenic_drm_plane_config(priv->dev, plane, fourcc);
-+
-+			if (fourcc == DRM_FORMAT_C8)
-+				offset = offsetof(struct ingenic_dma_hwdescs, hwdesc_pal);
-+			else
-+				offset = offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
-+
-+			priv->dma_hwdescs->hwdesc_f0.next = priv->dma_hwdescs_phys + offset;
-+
-+			crtc_state->color_mgmt_changed = fourcc == DRM_FORMAT_C8;
-+		}
-+
-+		if (crtc_state->color_mgmt_changed)
-+			ingenic_drm_update_palette(priv, crtc_state->gamma_lut->data);
- 	}
- }
- 
-@@ -964,6 +1008,15 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	priv->dma_hwdescs->hwdesc_f1.next = dma_hwdesc_phys_f1;
- 	priv->dma_hwdescs->hwdesc_f1.id = 0xf1;
- 
-+	/* Configure DMA hwdesc for palette */
-+	priv->dma_hwdescs->hwdesc_pal.next = priv->dma_hwdescs_phys
-+		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
-+	priv->dma_hwdescs->hwdesc_pal.id = 0xc0;
-+	priv->dma_hwdescs->hwdesc_pal.addr = priv->dma_hwdescs_phys
-+		+ offsetof(struct ingenic_dma_hwdescs, palette);
-+	priv->dma_hwdescs->hwdesc_pal.cmd = JZ_LCD_CMD_ENABLE_PAL
-+		| (sizeof(priv->dma_hwdescs->palette) / 4);
-+
- 	if (soc_info->has_osd)
- 		priv->ipu_plane = drm_plane_from_index(drm, 0);
- 
-@@ -990,6 +1043,9 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 		return ret;
- 	}
- 
-+	drm_crtc_enable_color_mgmt(&priv->crtc, 0, false,
-+				   ARRAY_SIZE(priv->dma_hwdescs->palette));
-+
- 	if (soc_info->has_osd) {
- 		drm_plane_helper_add(&priv->f0,
- 				     &ingenic_drm_plane_helper_funcs);
-@@ -1225,6 +1281,7 @@ static const u32 jz4725b_formats_f1[] = {
- };
- 
- static const u32 jz4725b_formats_f0[] = {
-+	DRM_FORMAT_C8,
- 	DRM_FORMAT_XRGB1555,
- 	DRM_FORMAT_RGB565,
- 	DRM_FORMAT_XRGB8888,
-@@ -1239,6 +1296,7 @@ static const u32 jz4770_formats_f1[] = {
- };
- 
- static const u32 jz4770_formats_f0[] = {
-+	DRM_FORMAT_C8,
- 	DRM_FORMAT_XRGB1555,
- 	DRM_FORMAT_RGB565,
- 	DRM_FORMAT_RGB888,
--- 
-2.28.0
+> I think we might be overly complicating things. IMHO the series as is
+> with the "i2c_" prefix removed from the flags introduced would be
+> reusable as is for any other subsystem that needs it. Of course, for
+> now, the handling of the flag would remain implemented only in the I2C
+> subsystem.
 
+Just to be clear: you are suggesting to remove "i2c" from the DSD
+binding "i2c-allow-low-power-probe". And you are not talking about
+moving I2C_DRV_FL_ALLOW_LOW_POWER_PROBE to struct device_driver? I
+recall the latter has been NACKed by gkh so far.
+
+
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl9w6k8ACgkQFA3kzBSg
+Kbbb4Q//cQDDt6R/93qbuDZbbBbKU7yOioGMp1yxGawOohDmpz0uV631alJMoKlv
+5l2nQXyXHInvGZu7fmdwqH4ouAgvHMC7jnEw2lv8DOj6q8ovnukacpme+JjGa1y3
+DYO2CIktDQw1xqUas2B5yu4Qt5D+LgnlMFZN+LUSiYGSAVQdZ+nVbYcwjRNQ59Eq
+T38itwlWGIISRo+5zv3prNb//xtoaITJty6DdBOFvoLQK0vv0UNMqva5zD8+86kA
+BKa9JZPRLzYeWpO5TJlVYw13vGjEl802a1kF6+xUTc63bSrUtUhSDCLnezrzlkW7
+gxJRHwrKYoWuuaRckVA14UNRvnZKMAtpuHToZidgeryEOw+biqzYS4fvlebqkg+w
+oub1xk6svlhzujT06LlW5mr0l5eo9yz1+AFmy0Xr7t9ZkOjhK2W9yoZTR7GF8zJv
+acmwMqTDnINf7hSmVbSfPi6hPamjf8M1LloZB5ej2OcPZ2urCx17bXJGeyzMvtPr
+VsVdE7QJd/JQ1uhvWeU1a9dqh6kCBp9+4my8JIk6BwYP4sbaqftlXLxh0MMm4ANC
+mDKxA4Z75Ifj5h+elH23cOZ9eFFANZJM43BmjLff04XUinlnBXm2YBXEECufQJw7
+OLSs3YqJz1M+yqX74QGxnb+dZgTObyOU99s/Qe2mWRwFcEMOjNE=
+=H98q
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
