@@ -2,200 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC1B27A005
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D7827A004
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbgI0JRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 05:17:38 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:23034 "EHLO pegase1.c-s.fr"
+        id S1726843AbgI0JRh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 05:17:37 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:32047 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726572AbgI0JQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726379AbgI0JQi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 27 Sep 2020 05:16:38 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Bzg4t5kynz9vCy6;
-        Sun, 27 Sep 2020 11:16:30 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4Bzg4v5Bd4z9vCy7;
+        Sun, 27 Sep 2020 11:16:31 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id QvLWqxH2Duhc; Sun, 27 Sep 2020 11:16:30 +0200 (CEST)
+        with ESMTP id TupNUypj6y0x; Sun, 27 Sep 2020 11:16:31 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bzg4t50Ffz9vCxw;
-        Sun, 27 Sep 2020 11:16:30 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4Bzg4v4SbYz9vCxw;
+        Sun, 27 Sep 2020 11:16:31 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 25FCE8B771;
-        Sun, 27 Sep 2020 11:16:35 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 3664D8B771;
+        Sun, 27 Sep 2020 11:16:36 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id NfSfdl7Ue1Hx; Sun, 27 Sep 2020 11:16:35 +0200 (CEST)
+        with ESMTP id I-YkZQShlrs7; Sun, 27 Sep 2020 11:16:36 +0200 (CEST)
 Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id CC4628B75B;
-        Sun, 27 Sep 2020 11:16:34 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C796A8B75B;
+        Sun, 27 Sep 2020 11:16:35 +0200 (CEST)
 Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id A216065DE8; Sun, 27 Sep 2020 09:16:34 +0000 (UTC)
-Message-Id: <2954526981859ca1ccfcfc7a7c4263920e9ddfcb.1601197618.git.christophe.leroy@csgroup.eu>
+        id AC1E565DE8; Sun, 27 Sep 2020 09:16:35 +0000 (UTC)
+Message-Id: <4c7dcc6544882761b2b0249d7a8ec2c3a8088cb5.1601197618.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1601197618.git.christophe.leroy@csgroup.eu>
 References: <cover.1601197618.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 17/30] powerpc/vdso: Use builtin symbols to locate fixup
- section
+Subject: [PATCH v1 18/30] powerpc/vdso: Merge __kernel_sync_dicache_p5() into
+ __kernel_sync_dicache()
 To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
         Michael Ellerman <mpe@ellerman.id.au>
 Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Sun, 27 Sep 2020 09:16:34 +0000 (UTC)
+Date:   Sun, 27 Sep 2020 09:16:35 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add builtin symbols to locate fixup section and use them
-instead of locating sections through elf headers at runtime.
+__kernel_sync_dicache_p5() is an alternative to
+__kernel_sync_dicache() when cpu has CPU_FTR_COHERENT_ICACHE
+
+Remove this alternative function and merge
+__kernel_sync_dicache_p5() into __kernel_sync_dicache() using
+standard CPU feature fixup.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/powerpc/kernel/vdso.c              | 55 +++++++------------------
- arch/powerpc/kernel/vdso32/vdso32.lds.S |  8 ++++
- arch/powerpc/kernel/vdso64/vdso64.lds.S |  8 ++++
- 3 files changed, 30 insertions(+), 41 deletions(-)
+ arch/powerpc/kernel/vdso.c              |  4 ----
+ arch/powerpc/kernel/vdso32/cacheflush.S | 17 ++++++-----------
+ arch/powerpc/kernel/vdso32/vdso32.lds.S |  1 -
+ arch/powerpc/kernel/vdso64/cacheflush.S | 16 ++++++----------
+ arch/powerpc/kernel/vdso64/vdso64.lds.S |  1 -
+ 5 files changed, 12 insertions(+), 27 deletions(-)
 
 diff --git a/arch/powerpc/kernel/vdso.c b/arch/powerpc/kernel/vdso.c
-index 7042e9edfb96..ba2b935a67f6 100644
+index ba2b935a67f6..3a4fbcc0d1be 100644
 --- a/arch/powerpc/kernel/vdso.c
 +++ b/arch/powerpc/kernel/vdso.c
-@@ -437,6 +437,12 @@ static int __init vdso_do_func_patch64(struct lib32_elfinfo *v32,
+@@ -87,10 +87,6 @@ struct vdso_patch_def
+  * with a coherent icache
+  */
+ static struct vdso_patch_def vdso_patches[] = {
+-	{
+-		CPU_FTR_COHERENT_ICACHE, CPU_FTR_COHERENT_ICACHE,
+-		"__kernel_sync_dicache", "__kernel_sync_dicache_p5"
+-	},
+ };
  
- #endif /* CONFIG_PPC64 */
- 
-+#define VDSO_DO_FIXUPS(type, value, bits, sec) do {					\
-+	void *__start = (void *)VDSO##bits##_SYMBOL(&vdso##bits##_start, sec##_start);	\
-+	void *__end = (void *)VDSO##bits##_SYMBOL(&vdso##bits##_start, sec##_end);	\
-+											\
-+	do_##type##_fixups((value), __start, __end);					\
-+} while (0)
- 
- static __init int vdso_do_find_sections(struct lib32_elfinfo *v32,
- 					struct lib64_elfinfo *v64)
-@@ -533,53 +539,20 @@ static __init int vdso_fixup_datapage(struct lib32_elfinfo *v32,
- static __init int vdso_fixup_features(struct lib32_elfinfo *v32,
- 				      struct lib64_elfinfo *v64)
- {
--	unsigned long size;
--	void *start;
--
+ /*
+diff --git a/arch/powerpc/kernel/vdso32/cacheflush.S b/arch/powerpc/kernel/vdso32/cacheflush.S
+index 017843bf5382..f340e82d1981 100644
+--- a/arch/powerpc/kernel/vdso32/cacheflush.S
++++ b/arch/powerpc/kernel/vdso32/cacheflush.S
+@@ -24,11 +24,15 @@
+  */
+ V_FUNCTION_BEGIN(__kernel_sync_dicache)
+   .cfi_startproc
++BEGIN_FTR_SECTION
++	b	3f
++END_FTR_SECTION_IFSET(CPU_FTR_COHERENT_ICACHE)
  #ifdef CONFIG_PPC64
--	start = find_section64(v64->hdr, "__ftr_fixup", &size);
--	if (start)
--		do_feature_fixups(cur_cpu_spec->cpu_features,
--				  start, start + size);
--
--	start = find_section64(v64->hdr, "__mmu_ftr_fixup", &size);
--	if (start)
--		do_feature_fixups(cur_cpu_spec->mmu_features,
--				  start, start + size);
--
--	start = find_section64(v64->hdr, "__fw_ftr_fixup", &size);
--	if (start)
--		do_feature_fixups(powerpc_firmware_features,
--				  start, start + size);
--
--	start = find_section64(v64->hdr, "__lwsync_fixup", &size);
--	if (start)
--		do_lwsync_fixups(cur_cpu_spec->cpu_features,
--				 start, start + size);
-+	VDSO_DO_FIXUPS(feature, cur_cpu_spec->cpu_features, 64, ftr_fixup);
-+	VDSO_DO_FIXUPS(feature, cur_cpu_spec->mmu_features, 64, mmu_ftr_fixup);
-+	VDSO_DO_FIXUPS(feature, powerpc_firmware_features, 64, fw_ftr_fixup);
-+	VDSO_DO_FIXUPS(lwsync, cur_cpu_spec->cpu_features, 64, lwsync_fixup);
- #endif /* CONFIG_PPC64 */
- 
- #ifdef CONFIG_VDSO32
--	start = find_section32(v32->hdr, "__ftr_fixup", &size);
--	if (start)
--		do_feature_fixups(cur_cpu_spec->cpu_features,
--				  start, start + size);
--
--	start = find_section32(v32->hdr, "__mmu_ftr_fixup", &size);
--	if (start)
--		do_feature_fixups(cur_cpu_spec->mmu_features,
--				  start, start + size);
--
-+	VDSO_DO_FIXUPS(feature, cur_cpu_spec->cpu_features, 32, ftr_fixup);
-+	VDSO_DO_FIXUPS(feature, cur_cpu_spec->mmu_features, 32, mmu_ftr_fixup);
- #ifdef CONFIG_PPC64
--	start = find_section32(v32->hdr, "__fw_ftr_fixup", &size);
--	if (start)
--		do_feature_fixups(powerpc_firmware_features,
--				  start, start + size);
-+	VDSO_DO_FIXUPS(feature, powerpc_firmware_features, 32, fw_ftr_fixup);
- #endif /* CONFIG_PPC64 */
--
--	start = find_section32(v32->hdr, "__lwsync_fixup", &size);
--	if (start)
--		do_lwsync_fixups(cur_cpu_spec->cpu_features,
--				 start, start + size);
-+	VDSO_DO_FIXUPS(lwsync, cur_cpu_spec->cpu_features, 32, lwsync_fixup);
+ 	mflr	r12
+   .cfi_register lr,r12
+ 	get_datapage	r10
+ 	mtlr	r12
++  .cfi_restore	lr
  #endif
  
- 	return 0;
+ #ifdef CONFIG_PPC64
+@@ -84,20 +88,11 @@ V_FUNCTION_BEGIN(__kernel_sync_dicache)
+ 	isync
+ 	li	r3,0
+ 	blr
+-  .cfi_endproc
+-V_FUNCTION_END(__kernel_sync_dicache)
+-
+-
+-/*
+- * POWER5 version of __kernel_sync_dicache
+- */
+-V_FUNCTION_BEGIN(__kernel_sync_dicache_p5)
+-  .cfi_startproc
++3:
+ 	crclr	cr0*4+so
+ 	sync
+ 	isync
+ 	li	r3,0
+ 	blr
+   .cfi_endproc
+-V_FUNCTION_END(__kernel_sync_dicache_p5)
+-
++V_FUNCTION_END(__kernel_sync_dicache)
 diff --git a/arch/powerpc/kernel/vdso32/vdso32.lds.S b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-index a4494a998f58..dd9f262e07c6 100644
+index dd9f262e07c6..c70f5dac8c98 100644
 --- a/arch/powerpc/kernel/vdso32/vdso32.lds.S
 +++ b/arch/powerpc/kernel/vdso32/vdso32.lds.S
-@@ -38,17 +38,25 @@ SECTIONS
- 	PROVIDE(etext = .);
- 
- 	. = ALIGN(8);
-+	VDSO_ftr_fixup_start = .;
- 	__ftr_fixup	: { *(__ftr_fixup) }
-+	VDSO_ftr_fixup_end = .;
- 
- 	. = ALIGN(8);
-+	VDSO_mmu_ftr_fixup_start = .;
- 	__mmu_ftr_fixup	: { *(__mmu_ftr_fixup) }
-+	VDSO_mmu_ftr_fixup_end = .;
- 
- 	. = ALIGN(8);
-+	VDSO_lwsync_fixup_start = .;
- 	__lwsync_fixup	: { *(__lwsync_fixup) }
-+	VDSO_lwsync_fixup_end = .;
- 
- #ifdef CONFIG_PPC64
- 	. = ALIGN(8);
-+	VDSO_fw_ftr_fixup_start = .;
- 	__fw_ftr_fixup	: { *(__fw_ftr_fixup) }
-+	VDSO_fw_ftr_fixup_end = .;
+@@ -163,7 +163,6 @@ VERSION
+ 		__kernel_get_tbfreq;
  #endif
+ 		__kernel_sync_dicache;
+-		__kernel_sync_dicache_p5;
+ 		__kernel_sigtramp32;
+ 		__kernel_sigtramp_rt32;
+ #if defined(CONFIG_PPC64) || !defined(CONFIG_SMP)
+diff --git a/arch/powerpc/kernel/vdso64/cacheflush.S b/arch/powerpc/kernel/vdso64/cacheflush.S
+index 61985de5758f..76c3c8cf8ece 100644
+--- a/arch/powerpc/kernel/vdso64/cacheflush.S
++++ b/arch/powerpc/kernel/vdso64/cacheflush.S
+@@ -23,10 +23,14 @@
+  */
+ V_FUNCTION_BEGIN(__kernel_sync_dicache)
+   .cfi_startproc
++BEGIN_FTR_SECTION
++	b	3f
++END_FTR_SECTION_IFSET(CPU_FTR_COHERENT_ICACHE)
+ 	mflr	r12
+   .cfi_register lr,r12
+ 	get_datapage	r10
+ 	mtlr	r12
++  .cfi_restore lr
  
- 	/*
+ 	lwz	r7,CFG_DCACHE_BLOCKSZ(r10)
+ 	addi	r5,r7,-1
+@@ -61,19 +65,11 @@ V_FUNCTION_BEGIN(__kernel_sync_dicache)
+ 	isync
+ 	li	r3,0
+ 	blr
+-  .cfi_endproc
+-V_FUNCTION_END(__kernel_sync_dicache)
+-
+-
+-/*
+- * POWER5 version of __kernel_sync_dicache
+- */
+-V_FUNCTION_BEGIN(__kernel_sync_dicache_p5)
+-  .cfi_startproc
++3:
+ 	crclr	cr0*4+so
+ 	sync
+ 	isync
+ 	li	r3,0
+ 	blr
+   .cfi_endproc
+-V_FUNCTION_END(__kernel_sync_dicache_p5)
++V_FUNCTION_END(__kernel_sync_dicache)
 diff --git a/arch/powerpc/kernel/vdso64/vdso64.lds.S b/arch/powerpc/kernel/vdso64/vdso64.lds.S
-index 2113bf79ccda..e950bf68783a 100644
+index e950bf68783a..a049000eacfe 100644
 --- a/arch/powerpc/kernel/vdso64/vdso64.lds.S
 +++ b/arch/powerpc/kernel/vdso64/vdso64.lds.S
-@@ -39,16 +39,24 @@ SECTIONS
- 	PROVIDE(etext = .);
- 
- 	. = ALIGN(8);
-+	VDSO_ftr_fixup_start = .;
- 	__ftr_fixup	: { *(__ftr_fixup) }
-+	VDSO_ftr_fixup_end = .;
- 
- 	. = ALIGN(8);
-+	VDSO_mmu_ftr_fixup_start = .;
- 	__mmu_ftr_fixup	: { *(__mmu_ftr_fixup) }
-+	VDSO_mmu_ftr_fixup_end = .;
- 
- 	. = ALIGN(8);
-+	VDSO_lwsync_fixup_start = .;
- 	__lwsync_fixup	: { *(__lwsync_fixup) }
-+	VDSO_lwsync_fixup_end = .;
- 
- 	. = ALIGN(8);
-+	VDSO_fw_ftr_fixup_start = .;
- 	__fw_ftr_fixup	: { *(__fw_ftr_fixup) }
-+	VDSO_fw_ftr_fixup_end = .;
- 
- 	/*
- 	 * Other stuff is appended to the text segment:
+@@ -159,7 +159,6 @@ VERSION
+ 		__kernel_clock_getres;
+ 		__kernel_get_tbfreq;
+ 		__kernel_sync_dicache;
+-		__kernel_sync_dicache_p5;
+ 		__kernel_sigtramp_rt64;
+ 		__kernel_getcpu;
+ 		__kernel_time;
 -- 
 2.25.0
 
