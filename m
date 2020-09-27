@@ -2,185 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AE32279DBF
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 05:30:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE17279DC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 05:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730279AbgI0Dap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 23:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
+        id S1730252AbgI0DhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 23:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730250AbgI0Dap (ORCPT
+        with ESMTP id S1730191AbgI0DhB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 23:30:45 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00E1C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 20:30:44 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id n14so6409055pff.6
-        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 20:30:44 -0700 (PDT)
+        Sat, 26 Sep 2020 23:37:01 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF822C0613D3
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 20:37:00 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id e18so1843029pgd.4
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 20:37:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3K1i/39gs/1aIs4bF2Mo38xKHGoVp+y8wUqaA4xOLDk=;
-        b=CE5Hv2JBdLDwVG1wWdgfaq4I825/wpS9dQECV5O/hpikSp+Xzxd+LsAodLz0MYy0vc
-         xLX6300XzXEMvVsVEGW40LLnataiEzcaY98n/FTwScXmCxJSB3cOD8P7nypVDZXuTbpt
-         IMGSyn5xD65d1apDeZRc7SG2ReNCEtkER325hKh1QnP63COWCjRQ0684qqvP/Lqu3R4K
-         Qwzw50q2G0IXXGBzhYZ64k56PoGP8Tqb9pnJH3szw1gRaLFNtJP7gBaxFg831/zk5hUZ
-         7WG8vzStUCgy6I1Y9oKKwGFF/7goYWcNPJ7nIlQ+HFMr6jxNFjRowFHFQPy093qfPxT1
-         l1Rg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RQaUnoAH1C1tw4/jDIjVLHYjHISZCikIVgp2rtLZhwI=;
+        b=YyZKNo6xzcr41ymQJx7mMCSbM2sehFkPgOet4qGlnngbvePG7kkBMB9dLwqD30IaH7
+         +oQraSZFM63Zc5yQT5oGbguKOx1m4JQrvjGN/R8Si7+HqKCrgFYvhpVRKGLOvSKVMvVt
+         gAIhP3b+sWQBgL3Ym42Vk2irm0wYR/61tKeboQbxMAb7JXodEHhttlBoLLl97BDd4ksr
+         27vhaVcajQHe2KyO8r4LpOirfy9U8P8pgXQzlqfN26UlLImEDQ0zSlbvB3d8rvFCQl5T
+         W2lQlse8386qWpkRyscPUSHgOfC9b6HVFYBdivjMyFCppZeZXM8bFhAnePYe+0P9wWuO
+         uTvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3K1i/39gs/1aIs4bF2Mo38xKHGoVp+y8wUqaA4xOLDk=;
-        b=JfYGannxQQ3jwtJz8rrGG+bWQXonKJHiibCejVhHQZV5v1oVB1+Pope6BFmqNYn6AK
-         43YPnzroMRNHTYTqCxDW9eGn2BHOkJM7/AkHm+z+XY4QV1EbjQy2r27gPU6UMo+grADv
-         uHxSLIIv6p1OYjf8PLaloZTAwniSUJU0c0NRKDF0PIWO/WbwqInIv+lrYEIrsgvJjmBW
-         THZT7i+y6Oqi1UGeJgTmUIv5WhpUu1Bls9aUA9iqt6Ob29uoRiFbchDH4C6fCKvN12n1
-         qaPmJZjxgj7HuCtcgE7ZijJq481xnkFcF4Dj2uVrSioHFSsW3rTlWFt+DORt07bBeOUG
-         NQog==
-X-Gm-Message-State: AOAM533cc+hLzGVScQkg6cMN1B+QxYlOk3Mp2ZENi5/3FPtCqD9X4CAv
-        nqSb+QfNxhq9hdaOxBP8iSZ3mg==
-X-Google-Smtp-Source: ABdhPJxVsMoz6p3mpIexGgYww17zE4ZhFd9E1yos95NmZo1H5jUPUoG2nh2EbV4KWGDB44FFwz05uA==
-X-Received: by 2002:a63:1644:: with SMTP id 4mr4654361pgw.232.1601177444268;
-        Sat, 26 Sep 2020 20:30:44 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([2600:3c01::f03c:91ff:fe8a:bb03])
-        by smtp.gmail.com with ESMTPSA id w14sm6505117pfu.87.2020.09.26.20.30.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 26 Sep 2020 20:30:43 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 11:30:35 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
-Message-ID: <20200927033035.GE9677@leoy-ThinkPad-X240s>
-References: <20200922101225.183554-1-andre.przywara@arm.com>
- <20200922101225.183554-6-andre.przywara@arm.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RQaUnoAH1C1tw4/jDIjVLHYjHISZCikIVgp2rtLZhwI=;
+        b=uMvH2LEwIZU1P6gPwEDg3Cr822SzJF0y/SKmt6Zx5tFTjMaF2/EMjBaTOeKVAuvSEY
+         jaf1EUDYyQ9rd1bHC7so08j2cDoZMfkN8ZKNC6h4hYpcBvBJCkESNXr/N8A38Jhbhd81
+         PUNneBMFgPKMgmXzaNgsJF5jxNlV5yat3tIXESR0UvgLAsMTi42fLph5wHoHYXErKCyu
+         OexD7nQmJ92uVo/yXB3coRwTDSSNVnuyrReQUl/HRqC8rDFmWSHBo0nb0J3d4cMOW6wQ
+         optdeurazYidwQkVbUXBgOGEuIFuU95SeAMUtHu5ZCQDXTf/F6F49tqPINUv94I/CX0V
+         1SMA==
+X-Gm-Message-State: AOAM530b5sYscWJ5rUPDd56/ycHFEzZBEP+FnqmlunYyfq6GxVrXydj9
+        pLCvUZRYhbmngN0YsnK78+iA
+X-Google-Smtp-Source: ABdhPJwAmBj1HbUO+eiZYhoX+EmaV6ljDLkA4vaZDYE/Y0L07qGO89B2pLbeGAZG7VPR4PwJokcaqw==
+X-Received: by 2002:a63:3:: with SMTP id 3mr4454205pga.44.1601177820216;
+        Sat, 26 Sep 2020 20:37:00 -0700 (PDT)
+Received: from Mani-XPS-13-9360.localdomain ([2409:4072:980:cb63:5c53:a3bf:dd6b:614d])
+        by smtp.gmail.com with ESMTPSA id gx5sm2821439pjb.57.2020.09.26.20.36.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 20:36:59 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH 0/5] MHI changes for v5.10 - Take two
+Date:   Sun, 27 Sep 2020 09:06:47 +0530
+Message-Id: <20200927033652.11789-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922101225.183554-6-andre.przywara@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andre,
+Hi Greg,
 
-On Tue, Sep 22, 2020 at 11:12:25AM +0100, Andre Przywara wrote:
-> The Scalable Vector Extension (SVE) is an ARMv8 architecture extension
-> that introduces very long vector operations (up to 2048 bits).
-> The SPE profiling feature can tag SVE instructions with additional
-> properties like predication or the effective vector length.
-> 
-> Decode the new operation type bits in the SPE decoder to allow the perf
-> tool to correctly report about SVE instructions.
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 48 ++++++++++++++++++-
->  1 file changed, 47 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index a033f34846a6..f0c369259554 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -372,8 +372,35 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
->  	}
->  	case ARM_SPE_OP_TYPE:
->  		switch (idx) {
-> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
-> +		case 0: {
-> +			size_t blen = buf_len;
-> +
-> +			if ((payload & 0x89) == 0x08) {
-> +				ret = snprintf(buf, buf_len, "SVE");
-> +				buf += ret;
-> +				blen -= ret;
-> +				if (payload & 0x2)
-> +					ret = snprintf(buf, buf_len, " FP");
-> +				else
-> +					ret = snprintf(buf, buf_len, " INT");
-> +				buf += ret;
-> +				blen -= ret;
-> +				if (payload & 0x4) {
-> +					ret = snprintf(buf, buf_len, " PRED");
-> +					buf += ret;
-> +					blen -= ret;
-> +				}
-> +				/* Bits [7..4] encode the vector length */
-> +				ret = snprintf(buf, buf_len, " EVLEN%d",
-> +					       32 << ((payload >> 4) & 0x7));
-> +				buf += ret;
-> +				blen -= ret;
-> +				return buf_len - blen;
-> +			}
-> +
-> +			return snprintf(buf, buf_len, "%s", payload & 0x1 ?
->  					"COND-SELECT" : "INSN-OTHER");
-> +			}
->  		case 1:	{
->  			size_t blen = buf_len;
->  
-> @@ -403,6 +430,25 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
->  				ret = snprintf(buf, buf_len, " NV-SYSREG");
->  				buf += ret;
->  				blen -= ret;
-> +			} else if ((payload & 0x0a) == 0x08) {
-> +				ret = snprintf(buf, buf_len, " SVE");
-> +				buf += ret;
-> +				blen -= ret;
-> +				if (payload & 0x4) {
-> +					ret = snprintf(buf, buf_len, " PRED");
-> +					buf += ret;
-> +					blen -= ret;
-> +				}
-> +				if (payload & 0x80) {
-> +					ret = snprintf(buf, buf_len, " SG");
-> +					buf += ret;
-> +					blen -= ret;
-> +				}
-> +				/* Bits [7..4] encode the vector length */
-> +				ret = snprintf(buf, buf_len, " EVLEN%d",
-> +					       32 << ((payload >> 4) & 0x7));
-> +				buf += ret;
-> +				blen -= ret;
+This is the second set of MHI patches for v5.10. The summary is below:
 
-The changes in this patch has been included in the patch [1].
+* Fixed the format specifier used in debugfs interface. The issue was
+  identified by building for ARM32 machine.
 
-So my summary for patches 02 ~ 05, except patch 04, other changes has
-been included in the patch set "perf arm-spe: Refactor decoding &
-dumping flow".
+NOTE: I've sent this patch separately for review.
 
-I'd like to add your patch 04 into the patch set "perf arm-spe:
-Refactor decoding & dumping flow" and I will respin the patch set v2 on
-the latest perf/core branch and send out to review.
+* Removed the auto-start option for MHI channels. This is done to avoid
+  receiving spurious uplink from MHI client device when the client driver
+  is not up. The corresponding qrtr change is also included with Dave's ACK.
 
-For patch 01, you could continue to try to land it in the kernel.
-(Maybe consolidate a bit with Wei?).
+* Moved MHI_MAX_MTU define out of internal header to global to use it in
+  client drivers.
 
-Do you think this is okay for you?
+Please consider merging!
 
 Thanks,
-Leo
+Mani
 
-[1] https://lore.kernel.org/patchwork/patch/1288413/
+Hemant Kumar (1):
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
 
->  			} else if (payload & 0x4) {
->  				ret = snprintf(buf, buf_len, " SIMD-FP");
->  				buf += ret;
-> -- 
-> 2.17.1
-> 
+Loic Poulain (3):
+  bus: mhi: debugfs: Print channel context read-pointer
+  bus: mhi: Remove auto-start option
+  net: qrtr: Start MHI channels during init
+
+Manivannan Sadhasivam (1):
+  bus: mhi: core: debugfs: Use correct format specifiers for addresses
+
+ drivers/bus/mhi/core/debugfs.c  | 15 ++++++++-------
+ drivers/bus/mhi/core/init.c     |  9 ---------
+ drivers/bus/mhi/core/internal.h |  2 --
+ include/linux/mhi.h             |  5 +++--
+ net/qrtr/mhi.c                  |  5 +++++
+ 5 files changed, 16 insertions(+), 20 deletions(-)
+
+-- 
+2.17.1
+
