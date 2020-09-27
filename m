@@ -2,347 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69E227A368
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 22:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F66F27A313
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 21:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbgI0T7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 15:59:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41008 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbgI0T6F (ORCPT
+        id S1726785AbgI0T4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 15:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726309AbgI0Tz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 15:58:05 -0400
-Message-Id: <20200927194923.358900104@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1601236669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ksaGPqhXSZGY4WnWtBR0byDM8dQ34v3PX/0X3fUvpQM=;
-        b=aHzJrPYU7FfUq814LOC20bsDMxiPF9kl5hv062qPTqnIj6StKd0bSDSLccSvRmXIASHhqf
-        aZR5++WuDmDCfI0fjwrlc0bANro81Ge/6/SkWNWmZ7CknohO75MPmk9RUBx5Zs8csm8eJT
-        +Vmk+qsZAPDw/MNaszn3bnwgnoPnRmygxJEr9cPQJPSgLgnjJpMVakzJ8DEfBCO7HU43Im
-        Ooc/O8v/j4db+A3q92vkqFI0aR/1S7RwPqw3jHr20cFbFMPPTVPePJFAwB/2G0nzplV+hz
-        gvCImYxktX+py8y+YnjKDpKSVo5Z89DdMSDLczbEle3un0h6LIMG4Nn2GX9S8g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1601236669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=ksaGPqhXSZGY4WnWtBR0byDM8dQ34v3PX/0X3fUvpQM=;
-        b=mU8Ag4UbwIj964lLMObE7JECFn2QEeMPOgKxS1KjDCTPv+aDXN3i+2v1K3ZjxYIiCh4FfZ
-        AJv7/jn/6+S5qpBQ==
-Date:   Sun, 27 Sep 2020 21:49:21 +0200
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        Christian Benvenuti <benve@cisco.com>,
-        Govindarajulu Varadarajan <_govind@gmx.com>,
-        Dave Miller <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Vishal Kulkarni <vishal@chelsio.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Shannon Nelson <snelson@pensando.io>,
-        Pensando Drivers <drivers@pensando.io>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
-        Ulrich Kunitz <kune@deine-taler.de>, linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Jouni Malinen <j@w1.fi>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        libertas-dev@lists.infradead.org,
-        Pascal Terjan <pterjan@google.com>
-Subject: [patch 35/35] net: rtlwifi: Replace in_interrupt() for context detection
-References: <20200927194846.045411263@linutronix.de>
+        Sun, 27 Sep 2020 15:55:27 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85648C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:55:27 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id w16so9229066oia.2
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 12:55:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DxOdAl7sH3OhvBKk5Ro74hqjL09MxO9v9O8lpGWE/Ek=;
+        b=KVteUaGtYYgt1pv8F5e/d8+hcMVIW/7x3P9l2b0v9RRK6abnRV7j36wZjBv43+lQxZ
+         bQv1189Plz+EDjPVCs7EZ13FbC3p9X/J5jasnqWOgqpDmofjC8rx3NVrRmDtWwBHXgVQ
+         ujxK3bIkAlFUFaIQEX3j+dXEwqANUUx50lodmuuSJGslWGveIBZW7HypORuc4Q9ioaOM
+         NPjPwqK62dDiXNr9S4kwditIsLh56hC0NEJPO6R85C7ArBhBcLLeIB9ml0VtyVX4WVtF
+         A9SgKEqrhN/2tTbXdC4FNwwvHroTzFmweTW9wVhVh09419lCrK8f0zIssHYgQqKrt4H+
+         zZnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to
+         :user-agent;
+        bh=DxOdAl7sH3OhvBKk5Ro74hqjL09MxO9v9O8lpGWE/Ek=;
+        b=K+Etb+qHyUtbXbwhVSmf0sE7hYaQURiyax3wQsq+s2ATs0snzuJ7923N0DyVr1oV5x
+         YCiF18dMVjHKJJVeTLSPYoIMF7NiRe/6SRfxmb5u/roEq3fjZ1vr7qu93SYaAWz4qLoA
+         wCfYueUQww1dL19f/I/swOH66c0Hg0OejLHy9jtIuyyfpdoAvPMSnIuMgOXjAxRyw+Av
+         cSfBseQa8yjS2M5bdAVDy0Zx8hYTXvS9LHyh1ZhOdxBH7aqOqIGTgIbRSCyZlRu2oGbj
+         C7Y3hfsr1iLEfY7pUDxHKUPu6O3zF+YkRofcmdwawaz9mpVAaiAdb8kwsH/kOViTQYyd
+         P+gA==
+X-Gm-Message-State: AOAM5339N1BH/rQGe6cEQ/awPV9+izPNQhXCneJBQ0xme2Qx/KU/UBzI
+        MGSA+/jLXmL3c1toveZzUw==
+X-Google-Smtp-Source: ABdhPJxXHDC780tJT60de9ANwysRXLNM1qinrcGPc66kEjeW46EM1rBaJI0YvkJ7HCiFWd895s2HjQ==
+X-Received: by 2002:aca:538f:: with SMTP id h137mr4328180oib.103.1601236526568;
+        Sun, 27 Sep 2020 12:55:26 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id w4sm2333319otm.57.2020.09.27.12.55.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 12:55:25 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:2c0b:4c97:d400:dc84])
+        by serve.minyard.net (Postfix) with ESMTPSA id F017F18003E;
+        Sun, 27 Sep 2020 19:55:24 +0000 (UTC)
+Date:   Sun, 27 Sep 2020 14:55:23 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Bug with data getting dropped on a pty
+Message-ID: <20200927195523.GP3674@minyard.net>
+Reply-To: minyard@acm.org
+References: <20200925220536.GG3674@minyard.net>
+ <20200927113751.GA98491@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-transfer-encoding: 8-bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200927113751.GA98491@kroah.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+On Sun, Sep 27, 2020 at 01:37:51PM +0200, Greg Kroah-Hartman wrote:
+> On Fri, Sep 25, 2020 at 05:05:36PM -0500, Corey Minyard wrote:
+> > I've been trying to track down a bug in a library I support (named
+> > gensio; it does all kinds of stream I/O) and I have figured out that
+> > the problem is not in the library, it's in the kernel.  I have
+> > attached a reproducer program, more on how to run it later.
+> > 
+> > Basically, if you have a pty master and do the following:
+> > 
+> >   write(ptym, data, size);
+> >   close(ptym);
+> > 
+> > The other end will occasionally not get the first 4095 bytes of data,
+> > but it will get byte 4095 and on.  This only happens on SMP systems; I
+> > couldn't reproduce with just one processor.  (Running under qemu I
+> > have seen it drop 2048 bytes, but it has always been 4095 outside of a
+> > VM.)  I have tested on Ubuntu 18.04.5 x86_64, the base 5.4 kernel, on a
+> > raspberry pi running raspian, 5.4.51 kernel, and the latest on the
+> > master branch of Linus' tree running under qemu on x86_64.
+> > 
+> > I have never seen it fail going the other way (writing to the slave
+> > and reading from the master) and that's part of the test suite.
+> > 
+> > I'm ok with it not getting any of the data, I'm ok with it getting
+> > some of the data at the beginning, but dropping a chunk of the data
+> > and getting later data is a problem.
+> > 
+> > I've looked at the pty and tty code and I haven't found anything
+> > obvious, but I haven't looked that hard and I don't know that code
+> > very well.
+> > 
+> > To run the reproducer:
+> > 
+> >   gcc -g -o testpty testpty.c
+> >   ulimit -c unlimited
+> >   while ./testpty; do echo pass; done
+> > 
+> > It should fail pretty quickly; it asserts when it detects the error.
+> > You can load the core dump into the debugger.  Note that I wasn't able
+> > to reproduce running it in the debugger.
+> > 
+> > In the debugger, you can back up to the assert and look at the readbuf:
+> > 
+> > (gdb) x/30xb readbuf
+> > 0x559e5e9c6080 <readbuf>:	0xff	0x08	0x00	0x08	0x01	0x08	0x02	0x08
+> > 0x559e5e9c6088 <readbuf+8>:	0x03	0x08	0x04	0x08	0x05	0x08	0x06	0x08
+> > 0x559e5e9c6090 <readbuf+16>:	0x07	0x08	0x08	0x08	0x09	0x08	0x0a	0x08
+> > 0x559e5e9c6098 <readbuf+24>:	0x0b	0x08	0x0c	0x08	0x0d	0x08
+> > 
+> > verses the data that was sent:
+> > 
+> > 0x559e5e9b6080 <data>:	0x00	0x00	0x00	0x01	0x00	0x02	0x00	0x03
+> > 0x559e5e9b6088 <data+8>:	0x00	0x04	0x00	0x05	0x00	0x06	0x00	0x07
+> > 0x559e5e9b6090 <data+16>:	0x00	0x08	0x00	0x09	0x00	0x0a	0x00	0x0b
+> > 0x559e5e9b6098 <data+24>:	0x00	0x0c	0x00	0x0d	0x00	0x0e
+> > 
+> > The data is two byte big endian numbers ascending, the data in readbuf
+> > that was read by the reader thread is the data starting at position
+> > 4095 in the data buffer that was transmitted.  Since n_tty has a 4096
+> > byte buffer, that's somewhat suspicious.
+> > 
+> > Though the reproducer always fails on the first buffer, the test
+> > program I had would close in random places, it would fail at places
+> > besides the beginning of the buffer.
+> > 
+> > I searched and I couldn't find any error report on this.
+> > 
+> > -corey
+> 
+> > 
+> > #define _XOPEN_SOURCE 600
+> > #define _DEFAULT_SOURCE
+> > 
+> > #include <stdio.h>
+> > #include <stdlib.h>
+> > #include <string.h>
+> > #include <fcntl.h>
+> > #include <pthread.h>
+> > #include <unistd.h>
+> > #include <errno.h>
+> > #include <termios.h>
+> > #include <assert.h>
+> > 
+> > static int pty_make_raw(int ptym)
+> > {
+> >     struct termios t;
+> >     int err;
+> > 
+> >     err = tcgetattr(ptym, &t);
+> >     if (err)
+> > 	return err;
+> > 
+> >     cfmakeraw(&t);
+> >     return tcsetattr(ptym, TCSANOW, &t);
+> > }
+> > 
+> > unsigned char data[65536];
+> > unsigned char readbuf[65536];
+> > int slavefd, slaveerr;
+> > size_t readsize;
+> > 
+> > int
+> > cmp_mem(unsigned char *buf, unsigned char *buf2, size_t len, size_t pos)
+> > {
+> >     size_t i;
+> >     int rv = 0;
+> > 
+> >     for (i = 0; i < len; i++) {
+> > 	if (buf[i] != buf2[i]) {
+> > 	    printf("Mismatch on byte %lu, expected 0x%2.2x, got 0x%2.2x\n",
+> > 		   (long) (i + pos), buf[i], buf2[i]);
+> > 	    fflush(stdout);
+> > 	    rv = -1;
+> > 	    break;
+> > 	}
+> >     }
+> >     return rv;
+> > }
+> > 
+> > static void *read_thread(void *dummy)
+> > {
+> >     ssize_t i;
+> > 
+> >     do {
+> > 	i = read(slavefd, readbuf + readsize, sizeof(readbuf) - readsize);
+> > 	if (i <= -1) {
+> > 	    if (errno == EAGAIN)
+> > 		continue;
+> > 	    if (errno == EIO)
+> > 		/* Remote close causes an EIO. */
+> > 		return NULL;
+> > 	    perror("read");
+> > 	    slaveerr = errno;
+> > 	    return NULL;
+> > 	}
+> > 	if (i + readsize > sizeof(data)) {
+> > 	    slaveerr = E2BIG;
+> > 	    return NULL;
+> > 	}
+> > 	if (i && cmp_mem(data + readsize, readbuf + readsize, i, readsize)) {
+> > 	    fprintf(stderr, "Data mismatch, starting at %ld, %ld bytes\n",
+> > 		    (long) readsize, (long) i);
+> > 	    assert(0);
+> > 	    slaveerr = EBADMSG;
+> > 	    return NULL;
+> > 	}
+> > 	readsize += i;
+> >     } while (i != 0);
+> > 
+> >     return NULL;
+> > }
+> > 
+> > int main(int argc, char *argv[])
+> > {
+> >     int ptym, err;
+> >     char *slave;
+> >     ssize_t i;
+> >     pthread_t slavethr;
+> > 
+> >     for (i = 0; i < sizeof(data); i += 2) {
+> > 	data[i] = (i / 2) >> 8;
+> > 	data[i + 1] = i / 2;
+> >     }
+> > 
+> >     ptym = posix_openpt(O_RDWR | O_NOCTTY);
+> >     if (ptym == -1) {
+> > 	perror("posix_openpt");
+> > 	exit(1);
+> >     }
+> > 
+> >     if (fcntl(ptym, F_SETFL, O_NONBLOCK) == -1) {
+> > 	perror("fcntl ptym");
+> > 	exit(1);
+> >     }
+> > 
+> >     if (pty_make_raw(ptym)) {
+> > 	perror("pty_make_raw");
+> > 	exit(1);
+> >     }
+> > 
+> >     if (unlockpt(ptym) < 0) {
+> > 	perror("unlockpt");
+> > 	exit(1);
+> >     }
+> > 
+> >     slave = ptsname(ptym);
+> >     slavefd = open(slave, O_RDWR);
+> >     if (slavefd == -1) {
+> > 	perror("open");
+> > 	exit(1);
+> >     }
+> > 
+> >     err = pthread_create(&slavethr, NULL, read_thread, NULL);
+> >     if (err) {
+> > 	fprintf(stderr, "pthread_create: %s\n", strerror(err));
+> > 	exit(1);
+> >     }
+> > 
+> >     i = write(ptym, data, sizeof(data));
+> >     if (i == -1) {
+> > 	perror("write");
+> > 	exit(1);
+> >     }
+> 
+> Can this write be racing with the pthred_create() and start writing data
+> before the reader is actually reading?  Odds are the write() is breaking
+> things up into chunks anyway (libc does this), so the first 4k of data
+> might have been sent and filled up in the kernel, and then overwritten
+> by the second 4k of data before the reader gets a chance to run.
+> 
+> If you serialize your reader thread starting up before you start
+> writing, does that solve the issue here?
 
-rtl_lps_enter() and rtl_lps_leave() are using in_interrupt() to detect
-whether it is safe to acquire a mutex or if it is required to defer to a
-workqueue.
+I don't know of a way to serialize this to guarantee that the reader is
+sitting in the read call before the write happens.  I would think that
+is impossible.  The first thread creates and opens the slave side of the
+pty, so it's not a matter of the reader side not being open.  In my test
+programs, the read side is definitely open and waiting, there is an
+interlock there to make sure.
 
-The usage of in_interrupt() in drivers is phased out and Linus clearly
-requested that code which changes behaviour depending on context should
-either be seperated or the context be conveyed in an argument passed by the
-caller, which usually knows the context.
+It was my impression from looking through the kernel code that the writer
+would block (or return with EAGAIN in this case, since it is
+non-blocking) if the buffer to the reader side is full (from looking in
+n_tty_write()).  Is that not the case with ptys?
 
-in_interrupt() also is only partially correct because it fails to chose the
-correct code path when just preemption or interrupts are disabled.
+thanks,
 
-Add an argument 'may_block' to both functions and adjust the callers to
-pass the context information.
+-corey
 
-The following call chains were analyzed to be safe to block:
-
-    rtl_watchdog_wq_callback()
-      rlf_lps_leave/enter()
-
-    rtl_op_suspend()
-      rtl_lps_leave()
-
-    rtl_op_bss_info_changed()
-      rtl_lps_leave()
-
-    rtl_op_sw_scan_start()
-      rtl_lps_leave()
-
-The following call chains were analyzed to be unsafe to block:
-
-    _rtl_pci_interrupt()
-      _rtl_pci_rx_interrupt()
-	  rtl_lps_leave()
-
-    _rtl_pci_interrupt()
-      _rtl_pci_rx_interrupt()
-        rtl_is_special_data()
-	  rtl_lps_leave()
-
-    _rtl_pci_interrupt()
-      _rtl_pci_rx_interrupt()
-        rtl_is_special_data()
-	  setup_special_tx()
-	    rtl_lps_leave()
-
-    _rtl_pci_interrupt()
-      _rtl_pci_tx_isr
-        rtl_lps_leave()
-
-      halbtc_leave_lps()
-        rtl_lps_leave()
-
-This leaves four callers of rtl_lps_enter/leave() where the analyzis
-stopped dead in the maze of several nested pointer based callchains and
-lack of rtlwifi hardware to debug this via tracing:
-
-     halbtc_leave_lps(), halbtc_enter_lps(), halbtc_normal_lps(),
-     halbtc_pre_normal_lps()
-
-These four have been cautionally marked to be unable to block which is the
-safe option, but the rtwifi wizards should be able to clarify that.
-
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ping-Ke Shih <pkshih@realtek.com>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: linux-wireless@vger.kernel.org
-Cc: netdev@vger.kernel.org
-
----
- drivers/net/wireless/realtek/rtlwifi/base.c                   |    8 +++---
- drivers/net/wireless/realtek/rtlwifi/btcoexist/halbtcoutsrc.c |   12 ++++++----
- drivers/net/wireless/realtek/rtlwifi/core.c                   |    6 ++---
- drivers/net/wireless/realtek/rtlwifi/pci.c                    |    4 +--
- drivers/net/wireless/realtek/rtlwifi/ps.c                     |    8 +++---
- drivers/net/wireless/realtek/rtlwifi/ps.h                     |    4 +--
- 6 files changed, 23 insertions(+), 19 deletions(-)
-
---- a/drivers/net/wireless/realtek/rtlwifi/base.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/base.c
-@@ -1456,7 +1456,7 @@ static void setup_special_tx(struct rtl_
- 	if (rtlpriv->cfg->ops->get_btc_status())
- 		rtlpriv->btcoexist.btc_ops->btc_special_packet_notify(
- 					rtlpriv, type);
--	rtl_lps_leave(hw);
-+	rtl_lps_leave(hw, false);
- 	ppsc->last_delaylps_stamp_jiffies = jiffies;
- }
- 
-@@ -1546,7 +1546,7 @@ u8 rtl_is_special_data(struct ieee80211_
- 
- 		if (is_tx) {
- 			rtlpriv->ra.is_special_data = true;
--			rtl_lps_leave(hw);
-+			rtl_lps_leave(hw, false);
- 			ppsc->last_delaylps_stamp_jiffies = jiffies;
- 
- 			setup_special_tx(rtlpriv, ppsc, PACKET_EAPOL);
-@@ -2147,9 +2147,9 @@ static void rtl_watchdog_wq_callback(str
- 		if (rtlpriv->link_info.num_rx_inperiod +
- 		      rtlpriv->link_info.num_tx_inperiod > 8 ||
- 		    rtlpriv->link_info.num_rx_inperiod > 2)
--			rtl_lps_leave(hw);
-+			rtl_lps_leave(hw, true);
- 		else
--			rtl_lps_enter(hw);
-+			rtl_lps_enter(hw, true);
- 
- label_lps_done:
- 		;
---- a/drivers/net/wireless/realtek/rtlwifi/btcoexist/halbtcoutsrc.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/btcoexist/halbtcoutsrc.c
-@@ -285,7 +285,8 @@ static void halbtc_leave_lps(struct btc_
- 
- 	btcoexist->bt_info.bt_ctrl_lps = true;
- 	btcoexist->bt_info.bt_lps_on = false;
--	rtl_lps_leave(rtlpriv->mac80211.hw);
-+	/* FIXME: Context is unclear. Is it allowed to block? */
-+	rtl_lps_leave(rtlpriv->mac80211.hw, false);
- }
- 
- static void halbtc_enter_lps(struct btc_coexist *btcoexist)
-@@ -306,7 +307,8 @@ static void halbtc_enter_lps(struct btc_
- 
- 	btcoexist->bt_info.bt_ctrl_lps = true;
- 	btcoexist->bt_info.bt_lps_on = true;
--	rtl_lps_enter(rtlpriv->mac80211.hw);
-+	/* FIXME: Context is unclear. Is it allowed to block? */
-+	rtl_lps_enter(rtlpriv->mac80211.hw, false);
- }
- 
- static void halbtc_normal_lps(struct btc_coexist *btcoexist)
-@@ -317,7 +319,8 @@ static void halbtc_normal_lps(struct btc
- 
- 	if (btcoexist->bt_info.bt_ctrl_lps) {
- 		btcoexist->bt_info.bt_lps_on = false;
--		rtl_lps_leave(rtlpriv->mac80211.hw);
-+		/* FIXME: Context is unclear. Is it allowed to block? */
-+		rtl_lps_leave(rtlpriv->mac80211.hw, false);
- 		btcoexist->bt_info.bt_ctrl_lps = false;
- 	}
- }
-@@ -328,7 +331,8 @@ static void halbtc_pre_normal_lps(struct
- 
- 	if (btcoexist->bt_info.bt_ctrl_lps) {
- 		btcoexist->bt_info.bt_lps_on = false;
--		rtl_lps_leave(rtlpriv->mac80211.hw);
-+		/* FIXME: Context is unclear. Is it allowed to block? */
-+		rtl_lps_leave(rtlpriv->mac80211.hw, false);
- 	}
- }
- 
---- a/drivers/net/wireless/realtek/rtlwifi/core.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/core.c
-@@ -544,7 +544,7 @@ static int rtl_op_suspend(struct ieee802
- 	rtlhal->driver_is_goingto_unload = true;
- 	rtlhal->enter_pnp_sleep = true;
- 
--	rtl_lps_leave(hw);
-+	rtl_lps_leave(hw, true);
- 	rtl_op_stop(hw);
- 	device_set_wakeup_enable(wiphy_dev(hw->wiphy), true);
- 	return 0;
-@@ -1151,7 +1151,7 @@ static void rtl_op_bss_info_changed(stru
- 			mstatus = RT_MEDIA_DISCONNECT;
- 
- 			if (mac->link_state == MAC80211_LINKED)
--				rtl_lps_leave(hw);
-+				rtl_lps_leave(hw, true);
- 			if (ppsc->p2p_ps_info.p2p_ps_mode > P2P_PS_NONE)
- 				rtl_p2p_ps_cmd(hw, P2P_PS_DISABLE);
- 			mac->link_state = MAC80211_NOLINK;
-@@ -1448,7 +1448,7 @@ static void rtl_op_sw_scan_start(struct
- 	}
- 
- 	if (mac->link_state == MAC80211_LINKED) {
--		rtl_lps_leave(hw);
-+		rtl_lps_leave(hw, true);
- 		mac->link_state = MAC80211_LINKED_SCANNING;
- 	} else {
- 		rtl_ips_nic_on(hw);
---- a/drivers/net/wireless/realtek/rtlwifi/pci.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/pci.c
-@@ -622,7 +622,7 @@ static void _rtl_pci_tx_isr(struct ieee8
- 	if (((rtlpriv->link_info.num_rx_inperiod +
- 	      rtlpriv->link_info.num_tx_inperiod) > 8) ||
- 	      rtlpriv->link_info.num_rx_inperiod > 2)
--		rtl_lps_leave(hw);
-+		rtl_lps_leave(hw, false);
- }
- 
- static int _rtl_pci_init_one_rxdesc(struct ieee80211_hw *hw,
-@@ -875,7 +875,7 @@ static void _rtl_pci_rx_interrupt(struct
- 		if (((rtlpriv->link_info.num_rx_inperiod +
- 		      rtlpriv->link_info.num_tx_inperiod) > 8) ||
- 		      rtlpriv->link_info.num_rx_inperiod > 2)
--			rtl_lps_leave(hw);
-+			rtl_lps_leave(hw, false);
- 		skb = new_skb;
- no_new:
- 		if (rtlpriv->use_new_trx_flow) {
---- a/drivers/net/wireless/realtek/rtlwifi/ps.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/ps.c
-@@ -653,22 +653,22 @@ void rtl_lps_change_work_callback(struct
- }
- EXPORT_SYMBOL_GPL(rtl_lps_change_work_callback);
- 
--void rtl_lps_enter(struct ieee80211_hw *hw)
-+void rtl_lps_enter(struct ieee80211_hw *hw, bool may_block)
- {
- 	struct rtl_priv *rtlpriv = rtl_priv(hw);
- 
--	if (!in_interrupt())
-+	if (may_block)
- 		return rtl_lps_enter_core(hw);
- 	rtlpriv->enter_ps = true;
- 	schedule_work(&rtlpriv->works.lps_change_work);
- }
- EXPORT_SYMBOL_GPL(rtl_lps_enter);
- 
--void rtl_lps_leave(struct ieee80211_hw *hw)
-+void rtl_lps_leave(struct ieee80211_hw *hw, bool may_block)
- {
- 	struct rtl_priv *rtlpriv = rtl_priv(hw);
- 
--	if (!in_interrupt())
-+	if (may_block)
- 		return rtl_lps_leave_core(hw);
- 	rtlpriv->enter_ps = false;
- 	schedule_work(&rtlpriv->works.lps_change_work);
---- a/drivers/net/wireless/realtek/rtlwifi/ps.h
-+++ b/drivers/net/wireless/realtek/rtlwifi/ps.h
-@@ -11,8 +11,8 @@ bool rtl_ps_disable_nic(struct ieee80211
- void rtl_ips_nic_off(struct ieee80211_hw *hw);
- void rtl_ips_nic_on(struct ieee80211_hw *hw);
- void rtl_ips_nic_off_wq_callback(struct work_struct *work);
--void rtl_lps_enter(struct ieee80211_hw *hw);
--void rtl_lps_leave(struct ieee80211_hw *hw);
-+void rtl_lps_enter(struct ieee80211_hw *hw, bool may_block);
-+void rtl_lps_leave(struct ieee80211_hw *hw, bool may_block);
- 
- void rtl_lps_set_psmode(struct ieee80211_hw *hw, u8 rt_psmode);
- 
-
+> 
+> thanks,
+> 
+> greg k-h
