@@ -2,66 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7680327A24D
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 20:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 503CB27A25D
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 20:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbgI0SZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 14:25:28 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:54770 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbgI0SZ2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 14:25:28 -0400
-Received: from [192.168.254.38] (unknown [47.187.206.220])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8DA9420B7178;
-        Sun, 27 Sep 2020 11:25:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8DA9420B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1601231127;
-        bh=NZJ93BWQdNdtnup4P68DjyJ2f4J6Q7RZaGDO8Xn2+3I=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=DpS0rOFX9c2GsPc1PEXzlWFOu+1KBs4zeUS1aH7fAkW2jf062lNBLwoWEkVn5uF63
-         pmFvWTR0KD5a1Tp6TJYLSMtw+URTbe8DcbBwZSJ/h6Z6gwbOHMPn/CL/wf/tULcEjl
-         e/MX1aKmZY/E641oQi2DMMrk1AYIHKfwxVOEDCe0=
-Subject: Re: [PATCH v2 0/4] [RFC] Implement Trampoline File Descriptor
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Florian Weimer <fw@deneb.enyo.de>
-Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
-        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, oleg@redhat.com,
-        x86@kernel.org, libffi-discuss@sourceware.org, luto@kernel.org,
-        David.Laight@ACULAB.COM, mark.rutland@arm.com, mic@digikod.net,
-        pavel@ucw.cz
-References: <20200916150826.5990-1-madvenka@linux.microsoft.com>
- <87v9gdz01h.fsf@mid.deneb.enyo.de>
- <96ea02df-4154-5888-1669-f3beeed60b33@linux.microsoft.com>
- <20200923014616.GA1216401@rani.riverdale.lan>
- <20200923091125.GB1240819@rani.riverdale.lan>
- <a742b9cd-4ffb-60e0-63b8-894800009700@linux.microsoft.com>
- <20200923195147.GA1358246@rani.riverdale.lan>
- <2ed2becd-49b5-7e76-9836-6a43707f539f@linux.microsoft.com>
- <87o8luvqw9.fsf@mid.deneb.enyo.de>
- <3fe7ba84-b719-b44d-da87-6eda60543118@linux.microsoft.com>
-Message-ID: <fdfe73d3-d735-4bdc-4790-7feb7fecece5@linux.microsoft.com>
-Date:   Sun, 27 Sep 2020 13:25:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726350AbgI0SjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 14:39:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726239AbgI0SjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 14:39:15 -0400
+Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1736823A34;
+        Sun, 27 Sep 2020 18:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601231955;
+        bh=ufALKz1q13Sp1G9pTzVWJq9Q1h8p8JU3W/56CmJ0ZS0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kac0eHuFG0YFdPk3SGPh90/lS+yAQpBBt7wXoJ3mz352++AlzEiezW+UxtH+l9hYZ
+         WiwLHpgSc3mCtciJ8aRaCwxSi7XhEjAkEZqF/8CBjN1AqREvjKrb3T3eTG12SqsCNe
+         Lbe+Rrgl2SjkUtugP2IAg8oWAVS59mUHWAL0m9bc=
+Received: by mail-io1-f48.google.com with SMTP id r9so8832589ioa.2;
+        Sun, 27 Sep 2020 11:39:15 -0700 (PDT)
+X-Gm-Message-State: AOAM531JIbXQxklxjK20Gfmw4r6/9xC9L39xn35kHMr+A+oj0760A/kj
+        UWih0w9F2kDXd/KOMXozjAGC0jXsP4Qnf72/Lbc=
+X-Google-Smtp-Source: ABdhPJz+78g3vvZjop19EkMo/szs1TmRRk+mu7AQEdXsiYi9+WwNrZpOgx8s3j8bVsqhIPaJiE+v57HiA1bMcpOHQv4=
+X-Received: by 2002:a05:6638:d96:: with SMTP id l22mr6111864jaj.97.1601231954482;
+ Sun, 27 Sep 2020 11:39:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3fe7ba84-b719-b44d-da87-6eda60543118@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200921131056.92848-1-miaoqinglang@huawei.com>
+In-Reply-To: <20200921131056.92848-1-miaoqinglang@huawei.com>
+From:   Sean Wang <sean.wang@kernel.org>
+Date:   Sun, 27 Sep 2020 11:39:03 -0700
+X-Gmail-Original-Message-ID: <CAGp9Lzo0R=7diO62sWwfKFTn7WZFnFbE2aQDV8Yh8UZ4=bm8mA@mail.gmail.com>
+Message-ID: <CAGp9Lzo0R=7diO62sWwfKFTn7WZFnFbE2aQDV8Yh8UZ4=bm8mA@mail.gmail.com>
+Subject: Re: [PATCH -next] pinctrl: mediatek: simplify the return expression
+ of mtk_pinconf_bias_disable_set_rev1()
+To:     Qinglang Miao <miaoqinglang@huawei.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before I implement the user land solution recommended by reviewers, I just want
-an opinion on where the code should reside.
+On Mon, Sep 21, 2020 at 6:10 AM Qinglang Miao <miaoqinglang@huawei.com> wrote:
+>
+> Simplify the return expression.
+>
+> Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
 
-I am thinking glibc. The other choice would be a separate library, say, libtramp.
-What do you recommend?
+Acked-by: Sean Wang <sean.wang@kernel.org>
 
-Madhavan
+> ---
+>  drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c | 10 ++--------
+>  1 file changed, 2 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> index 2f3dfb56c..16bb15226 100644
+> --- a/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> +++ b/drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.c
+> @@ -479,14 +479,8 @@ EXPORT_SYMBOL_GPL(mtk_pinconf_bias_get);
+>  int mtk_pinconf_bias_disable_set_rev1(struct mtk_pinctrl *hw,
+>                                       const struct mtk_pin_desc *desc)
+>  {
+> -       int err;
+> -
+> -       err = mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_PULLEN,
+> -                              MTK_DISABLE);
+> -       if (err)
+> -               return err;
+> -
+> -       return 0;
+> +       return mtk_hw_set_value(hw, desc, PINCTRL_PIN_REG_PULLEN,
+> +                               MTK_DISABLE);
+>  }
+>  EXPORT_SYMBOL_GPL(mtk_pinconf_bias_disable_set_rev1);
+>
+> --
+> 2.23.0
+>
