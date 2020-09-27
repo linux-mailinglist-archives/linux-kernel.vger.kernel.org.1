@@ -2,230 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A85927A486
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC9527A487
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 01:37:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbgI0Xgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 19:36:32 -0400
-Received: from crapouillou.net ([89.234.176.41]:35014 "EHLO crapouillou.net"
+        id S1726547AbgI0XhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 19:37:05 -0400
+Received: from mga05.intel.com ([192.55.52.43]:7293 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726421AbgI0Xgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 19:36:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1601249789; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pUN8bXktpOva2was0urG22E/o7HGJDL0e0yo+m0sKgw=;
-        b=Ea+EjrEmRRVHpyDOSuxwwOWIbdUT2ILpx9+HREckTyrGZmvCw1f8uD7okkQed5An65UQjR
-        FcQyQljT1EgYiaaeVcXKvGS0hYDcV47AeteFiyVWVG+m/ZW7nyHZmV0UrYGpsUygRapgd5
-        xs761EnzADyyShTFv/Wlx0kBmYHbllU=
-Date:   Mon, 28 Sep 2020 01:36:18 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v3 1/1] drm/ingenic: Add support for paletted 8bpp
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        od@zcrc.me, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <I8CCHQ.3C2N46UNN7BA3@crapouillou.net>
-In-Reply-To: <20200927202757.GA245066@ravnborg.org>
-References: <20200927193645.262612-1-paul@crapouillou.net>
-        <20200927193645.262612-2-paul@crapouillou.net>
-        <20200927202757.GA245066@ravnborg.org>
+        id S1726421AbgI0XhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 19:37:05 -0400
+IronPort-SDR: G8o5wPLxZD7V09inwxhr1DOBS5QLO7kseR+9jHxGhPX2dz5hwsZPc98R9U7FPlO5PixAbP8tAX
+ wVqgbbJRFhfg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="246658430"
+X-IronPort-AV: E=Sophos;i="5.77,311,1596524400"; 
+   d="scan'208";a="246658430"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 16:37:04 -0700
+IronPort-SDR: g3DNNPNqPM8zIlRN2HlJVhyzyTKQy7usmCRG4fEf/zRgameEqlQd0mgWhptwPNG3dYAfNnyUnn
+ 8uDyLDnIb4tQ==
+X-IronPort-AV: E=Sophos;i="5.77,311,1596524400"; 
+   d="scan'208";a="488336523"
+Received: from memara-mobl.ger.corp.intel.com (HELO localhost) ([10.252.49.157])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 16:36:58 -0700
+Date:   Mon, 28 Sep 2020 02:37:00 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200927233700.GA4450@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <20200924180407.GO5030@zn.tnic>
+ <20200925010031.GH119995@linux.intel.com>
+ <20200925082807.GG16872@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925082807.GG16872@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 25, 2020 at 10:28:07AM +0200, Borislav Petkov wrote:
+> > > I can see why you would write "TCS" though - there's a thread control
+> > > structure thing too in that patch.
+> > 
+> > Renamed.
+> 
+> See Sean's reply.
 
+I did not get Sean's reply, and neither can find it from lore:
 
-Le dim. 27 sept. 2020 =E0 22:27, Sam Ravnborg <sam@ravnborg.org> a=20
-=E9crit :
-> On Sun, Sep 27, 2020 at 09:36:45PM +0200, Paul Cercueil wrote:
->>  On JZ4725B and newer, the F0 plane supports paletted 8bpp with a
->>  256-entry palette. Add support for it.
->>=20
->>  v3: Only accept a full 256-entry palette.
->>=20
->>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->=20
-> Looks good.
-> Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
+https://lore.kernel.org/linux-sgx/20200915112842.897265-1-jarkko.sakkinen@linux.intel.com/T/#t
 
-Pushed to drm-misc-next.
+> >  * typedef sgx_enclave_exit_handler_t - Exit handler function accepted by
+> >  *					__vdso_sgx_enter_enclave()
+> >  * @rdi:	RDI snapshot
+> >  * @rsi:	RSI snapshot
+> >  * @rdx:	RDX snapshot
+> >  * @rsp:	RSP snapshot (untrusted stack)
+> >  * @r8:		R8 snapshot
+> >  * @r9:		R9 snapshot
+> 
+> I'd say here:
+> 
+> "The registers' content is the snapshot made at enclave exit."
 
-Thanks!
--Paul
+I'd make that a description and take away individual parameter
+descriptions. Is that fine?
 
->=20
->>  ---
->>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 66=20
->> +++++++++++++++++++++--
->>   1 file changed, 62 insertions(+), 4 deletions(-)
->>=20
->>  diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c=20
->> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  index 589fc0c60716..0225dc1f5eb8 100644
->>  --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->>  @@ -21,6 +21,7 @@
->>   #include <drm/drm_atomic.h>
->>   #include <drm/drm_atomic_helper.h>
->>   #include <drm/drm_bridge.h>
->>  +#include <drm/drm_color_mgmt.h>
->>   #include <drm/drm_crtc.h>
->>   #include <drm/drm_crtc_helper.h>
->>   #include <drm/drm_damage_helper.h>
->>  @@ -50,6 +51,8 @@ struct ingenic_dma_hwdesc {
->>   struct ingenic_dma_hwdescs {
->>   	struct ingenic_dma_hwdesc hwdesc_f0;
->>   	struct ingenic_dma_hwdesc hwdesc_f1;
->>  +	struct ingenic_dma_hwdesc hwdesc_pal;
->>  +	u16 palette[256] __aligned(16);
->>   };
->>=20
->>   struct jz_soc_info {
->>  @@ -249,6 +252,12 @@ static int=20
->> ingenic_drm_crtc_atomic_check(struct drm_crtc *crtc,
->>   	struct ingenic_drm *priv =3D drm_crtc_get_priv(crtc);
->>   	struct drm_plane_state *f1_state, *f0_state, *ipu_state =3D NULL;
->>=20
->>  +	if (state->gamma_lut &&
->>  +	    drm_color_lut_size(state->gamma_lut) !=3D=20
->> ARRAY_SIZE(priv->dma_hwdescs->palette)) {
->>  +		dev_dbg(priv->dev, "Invalid palette size\n");
->>  +		return -EINVAL;
->>  +	}
->>  +
->>   	if (drm_atomic_crtc_needs_modeset(state) &&=20
->> priv->soc_info->has_osd) {
->>   		f1_state =3D drm_atomic_get_plane_state(state->state, &priv->f1);
->>   		if (IS_ERR(f1_state))
->>  @@ -470,6 +479,9 @@ void ingenic_drm_plane_config(struct device=20
->> *dev,
->>   				   JZ_LCD_OSDCTRL_BPP_MASK, ctrl);
->>   	} else {
->>   		switch (fourcc) {
->>  +		case DRM_FORMAT_C8:
->>  +			ctrl |=3D JZ_LCD_CTRL_BPP_8;
->>  +			break;
->>   		case DRM_FORMAT_XRGB1555:
->>   			ctrl |=3D JZ_LCD_CTRL_RGB555;
->>   			fallthrough;
->>  @@ -541,16 +553,34 @@ void ingenic_drm_sync_data(struct device *dev,
->>   	}
->>   }
->>=20
->>  +static void ingenic_drm_update_palette(struct ingenic_drm *priv,
->>  +				       const struct drm_color_lut *lut)
->>  +{
->>  +	unsigned int i;
->>  +
->>  +	for (i =3D 0; i < ARRAY_SIZE(priv->dma_hwdescs->palette); i++) {
->>  +		u16 color =3D drm_color_lut_extract(lut[i].red, 5) << 11
->>  +			| drm_color_lut_extract(lut[i].green, 6) << 5
->>  +			| drm_color_lut_extract(lut[i].blue, 5);
->>  +
->>  +		priv->dma_hwdescs->palette[i] =3D color;
->>  +	}
->>  +}
->>  +
->>   static void ingenic_drm_plane_atomic_update(struct drm_plane=20
->> *plane,
->>   					    struct drm_plane_state *oldstate)
->>   {
->>   	struct ingenic_drm *priv =3D drm_device_get_priv(plane->dev);
->>   	struct drm_plane_state *state =3D plane->state;
->>  +	struct drm_crtc_state *crtc_state;
->>   	struct ingenic_dma_hwdesc *hwdesc;
->>  -	unsigned int width, height, cpp;
->>  +	unsigned int width, height, cpp, offset;
->>   	dma_addr_t addr;
->>  +	u32 fourcc;
->>=20
->>   	if (state && state->fb) {
->>  +		crtc_state =3D state->crtc->state;
->>  +
->>   		ingenic_drm_sync_data(priv->dev, oldstate, state);
->>=20
->>   		addr =3D drm_fb_cma_get_gem_addr(state->fb, state, 0);
->>  @@ -566,9 +596,23 @@ static void=20
->> ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->>   		hwdesc->addr =3D addr;
->>   		hwdesc->cmd =3D JZ_LCD_CMD_EOF_IRQ | (width * height * cpp / 4);
->>=20
->>  -		if (drm_atomic_crtc_needs_modeset(state->crtc->state))
->>  -			ingenic_drm_plane_config(priv->dev, plane,
->>  -						 state->fb->format->format);
->>  +		if (drm_atomic_crtc_needs_modeset(crtc_state)) {
->>  +			fourcc =3D state->fb->format->format;
->>  +
->>  +			ingenic_drm_plane_config(priv->dev, plane, fourcc);
->>  +
->>  +			if (fourcc =3D=3D DRM_FORMAT_C8)
->>  +				offset =3D offsetof(struct ingenic_dma_hwdescs, hwdesc_pal);
->>  +			else
->>  +				offset =3D offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
->>  +
->>  +			priv->dma_hwdescs->hwdesc_f0.next =3D priv->dma_hwdescs_phys +=20
->> offset;
->>  +
->>  +			crtc_state->color_mgmt_changed =3D fourcc =3D=3D DRM_FORMAT_C8;
->>  +		}
->>  +
->>  +		if (crtc_state->color_mgmt_changed)
->>  +			ingenic_drm_update_palette(priv, crtc_state->gamma_lut->data);
->>   	}
->>   }
->>=20
->>  @@ -964,6 +1008,15 @@ static int ingenic_drm_bind(struct device=20
->> *dev, bool has_components)
->>   	priv->dma_hwdescs->hwdesc_f1.next =3D dma_hwdesc_phys_f1;
->>   	priv->dma_hwdescs->hwdesc_f1.id =3D 0xf1;
->>=20
->>  +	/* Configure DMA hwdesc for palette */
->>  +	priv->dma_hwdescs->hwdesc_pal.next =3D priv->dma_hwdescs_phys
->>  +		+ offsetof(struct ingenic_dma_hwdescs, hwdesc_f0);
->>  +	priv->dma_hwdescs->hwdesc_pal.id =3D 0xc0;
->>  +	priv->dma_hwdescs->hwdesc_pal.addr =3D priv->dma_hwdescs_phys
->>  +		+ offsetof(struct ingenic_dma_hwdescs, palette);
->>  +	priv->dma_hwdescs->hwdesc_pal.cmd =3D JZ_LCD_CMD_ENABLE_PAL
->>  +		| (sizeof(priv->dma_hwdescs->palette) / 4);
->>  +
->>   	if (soc_info->has_osd)
->>   		priv->ipu_plane =3D drm_plane_from_index(drm, 0);
->>=20
->>  @@ -990,6 +1043,9 @@ static int ingenic_drm_bind(struct device=20
->> *dev, bool has_components)
->>   		return ret;
->>   	}
->>=20
->>  +	drm_crtc_enable_color_mgmt(&priv->crtc, 0, false,
->>  +				   ARRAY_SIZE(priv->dma_hwdescs->palette));
->>  +
->>   	if (soc_info->has_osd) {
->>   		drm_plane_helper_add(&priv->f0,
->>   				     &ingenic_drm_plane_helper_funcs);
->>  @@ -1225,6 +1281,7 @@ static const u32 jz4725b_formats_f1[] =3D {
->>   };
->>=20
->>   static const u32 jz4725b_formats_f0[] =3D {
->>  +	DRM_FORMAT_C8,
->>   	DRM_FORMAT_XRGB1555,
->>   	DRM_FORMAT_RGB565,
->>   	DRM_FORMAT_XRGB8888,
->>  @@ -1239,6 +1296,7 @@ static const u32 jz4770_formats_f1[] =3D {
->>   };
->>=20
->>   static const u32 jz4770_formats_f0[] =3D {
->>  +	DRM_FORMAT_C8,
->>   	DRM_FORMAT_XRGB1555,
->>   	DRM_FORMAT_RGB565,
->>   	DRM_FORMAT_RGB888,
->>  --
->>  2.28.0
+> > Also, I renamed 'r' as 'run' in some places.
+> > 
+> > End result:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-sgx.git/tree/arch/x86/include/uapi/asm/sgx.h
+> > 
+> > I'm wondering this sentence:
+> > 
+> > "The calling convention is custom and does not follow System V x86-64 ABI."
+> 
+> Yeah, I was wondering what that meant too.
 
+I'll refine that one based on my own and Jethro's feedback.
 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+/Jarkko
