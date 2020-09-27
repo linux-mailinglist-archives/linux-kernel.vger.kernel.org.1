@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786FA27A00A
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C36827A00C
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 11:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726350AbgI0JUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 05:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
+        id S1726387AbgI0JUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 05:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726185AbgI0JUQ (ORCPT
+        with ESMTP id S1726185AbgI0JUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 05:20:16 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E59C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 02:20:15 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Bzg991djMzQlWH;
-        Sun, 27 Sep 2020 11:20:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter02.heinlein-hosting.de (spamfilter02.heinlein-hosting.de [80.241.56.116]) (amavisd-new, port 10030)
-        with ESMTP id 1bMPKKK7PZCs; Sun, 27 Sep 2020 11:20:10 +0200 (CEST)
-Date:   Sun, 27 Sep 2020 11:20:08 +0200
-From:   Hagen Paul Pfeifer <hagen@jauu.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: perf script, libperf: python binding bug (bytearrays vs. strings)
-Message-ID: <20200927092008.GB3664097@laniakea>
-References: <20200927074312.GA3664097@laniakea>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200927074312.GA3664097@laniakea>
-X-Key-Id: 98350C22
-X-Key-Fingerprint: 490F 557B 6C48 6D7E 5706 2EA2 4A22 8D45 9835 0C22
-X-GPG-Key: gpg --recv-keys --keyserver wwwkeys.eu.pgp.net 98350C22
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -2.37 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 3369916A5
-X-Rspamd-UID: 450e56
+        Sun, 27 Sep 2020 05:20:53 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A4CDC0613CE;
+        Sun, 27 Sep 2020 02:20:53 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b124so6685370pfg.13;
+        Sun, 27 Sep 2020 02:20:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=49O4zHPx1PVwGbq+z1yRkKckf3sNv0jnpUzWYqsF8Ug=;
+        b=SIBHc8S1kVbejxLpkvkbAnmaMKtpEDgXAUTVYm7bTQrxeyEd68dqoh6aC6uWS7+b9o
+         CR7/Rag/PwVQImFjW8jOSYcUevO2p3YEEb4sMtSh+eINHTUDbVEc2MjmlLsDeNNhbH1M
+         V9SqIUm4DcGsJoDutnrn+ieu+PAxol1B/a6UAs0d+xRE24Rm+oqdEUNUjEqpi1FDcg7R
+         xX9BA0Zx/Yw7PdxkjE7EnOLIE6PcBgnBs1xcI4K/VLctyULi00fBOM5Kxx4A8TPVKmKa
+         eEwQ4GUCb/+EQeyzeuSLsQoRMG/LEc5qzPGkttMDa5bHJIs1wxC2oe6SVzSGnO9Ibsjc
+         kydQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=49O4zHPx1PVwGbq+z1yRkKckf3sNv0jnpUzWYqsF8Ug=;
+        b=Lw1XEnFb8uJilg77x2GGpTzcy4pe/wa9dORB7nqz5Wh18Bq8fWmgmK+1qxM/1RoQVA
+         q/l08OTMUKIr+GOOY/VVqx/JBxVae2XJy88posTg75vHNpdieerx4qQ7x1gbyKTCohTH
+         YZ3QvxoBQHkklPB6ARi8wrmxHcJcwacP6tDTI3oY3nZK/RuaRplRAjfNvDN9XWDwm7dP
+         mbxqDDZiA94wNDdU/e0pH4/5YF+J4URYm0sLiRphhVjYWSNTFl2oM+4YOVn+0VHfrZFL
+         899g5+vLgjZoj7Mf5zMJjj6Oslj/STWQrzob6J5jwoPsHnEWDTJj+8giAaxQAUPwb7pa
+         1xtA==
+X-Gm-Message-State: AOAM5333ASueyVNFsYZImteyUcHloE7PNSOhWsoy2GD9G3sSZIjPko6X
+        nQS23FPjZG30AABmqrzGgA==
+X-Google-Smtp-Source: ABdhPJxw54EShzs5KlINfZfjyTxxpk0MdCpSC7i0fIKaDsJd36PnNgvmSS3Xlyqn5MSjudlvrNkLXg==
+X-Received: by 2002:aa7:9583:0:b029:142:2501:396a with SMTP id z3-20020aa795830000b02901422501396amr6459109pfj.47.1601198453059;
+        Sun, 27 Sep 2020 02:20:53 -0700 (PDT)
+Received: from localhost.localdomain ([47.242.131.39])
+        by smtp.gmail.com with ESMTPSA id j19sm7780904pfe.108.2020.09.27.02.20.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 02:20:52 -0700 (PDT)
+From:   Pujin Shi <shipujin.t@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shipujin.t@gmail.com, Pujin Shi <shipujin.t@lemote.com>
+Subject: [PATCH v2] MIPS: idle: Add prototype for function check_wait
+Date:   Sun, 27 Sep 2020 17:20:41 +0800
+Message-Id: <20200927092041.1187-1-shipujin.t@gmail.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Short addendum: even under python2 not everything is perfect. It seems that
-the "comm-name-memory-reuse" problem is a general problem - for python3 and
-python2.
+This commit adds a prototype to fix warning at W=1:
 
-In the following example the prev_comm name should be chrome only, but is
-"chromesandbox", common_comm is correctly "chrome". I believe that the memory
-area for prev_comm & next_comm has not been fully memset'ed before
-(memset(mem, 0, 16)).
+  arch/mips/kernel/idle.c:126:13: error: no previous prototype for 'check_wait' [-Werror=missing-prototypes]
 
-That the string in Python3 is now a bytearray instead of a string is a
-second, independent problem.
+Signed-off-by: Pujin Shi <shipujin.t@lemote.com>
+---
+ arch/mips/include/asm/idle.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Python 2 example:
+diff --git a/arch/mips/include/asm/idle.h b/arch/mips/include/asm/idle.h
+index 655a6dbc861a..0992cad9c632 100644
+--- a/arch/mips/include/asm/idle.h
++++ b/arch/mips/include/asm/idle.h
+@@ -15,6 +15,8 @@ static inline int using_rollback_handler(void)
+ 	return cpu_wait == r4k_wait;
+ }
+ 
++extern void __init check_wait(void);
++
+ extern int mips_cpuidle_wait_enter(struct cpuidle_device *dev,
+ 				   struct cpuidle_driver *drv, int index);
+ 
+-- 
+2.18.1
 
-sched__sched_switch      2 563232.889356634  2924848 chrome               prev_comm=chromesandbox, prev_pid=2924848, prev_prio=120, prev_state=S, next_comm=swapper/2, next_pid=0, next_prio=120
-Sample: {addr=0, cpu=2, datasrc=84410401, datasrc_decode=N/A|SNP N/A|TLB N/A|LCK N/A, ip=18446744072189289569, period=1, phys_addr=0, pid=2924848, tid=2924848, time=563232889356634, transaction=0, values=[(0L, 0L)], weight=0}
-
-
-Hagen
