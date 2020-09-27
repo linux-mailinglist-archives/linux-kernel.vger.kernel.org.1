@@ -2,210 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391A8279D2A
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 02:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CB8A279D2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 02:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728585AbgI0AZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 20:25:32 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:51852 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726242AbgI0AZc (ORCPT
+        id S1728425AbgI0Afa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 20:35:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726426AbgI0Afa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 20:25:32 -0400
-Received: from fsav302.sakura.ne.jp (fsav302.sakura.ne.jp [153.120.85.133])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08R0P9TR053146;
-        Sun, 27 Sep 2020 09:25:09 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav302.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp);
- Sun, 27 Sep 2020 09:25:09 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08R0P8G8053139
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Sun, 27 Sep 2020 09:25:08 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: KASAN: use-after-free Read in bit_putcs
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <000000000000226d3f05b02dd607@google.com>
- <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
-Message-ID: <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
-Date:   Sun, 27 Sep 2020 09:25:07 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sat, 26 Sep 2020 20:35:30 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 249F1C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 17:35:30 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id o20so6259814pfp.11
+        for <linux-kernel@vger.kernel.org>; Sat, 26 Sep 2020 17:35:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XqtqK11C6EYp3TxI68gPMvhecqGFaleQrHQDt6dRtSo=;
+        b=RcTE74DKb6HWl+IWw5w/4AS2rnlo67wcmDI3OVW2aJ1IOUEQiTmRDpcGKXwstYlIYG
+         GltKiOGEAMimsPCbTGKHOd8W735oQ6p/QhPWls6bcVbBQ+h3bbv29S0Ry+WxNMdqnWu5
+         5pSF/CzFs4p6kGnfKs26XTQPBbI/1YndbZEWnGPlw1L/0JlY/NP2makl8ogFDZGQGcjh
+         O4Qavt2XscCKNGtlWlSn5fwG82aGyLG2V05ZIgTz3mzGLjr/HAtQKhk6BkoL0IQJzAjY
+         1HJq+3zBvL7qxlclndfJIP2hZvDdHxsRrncZ7sl31F8f4v1roAaRcdfILQbmFOHQxwVF
+         1M7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=XqtqK11C6EYp3TxI68gPMvhecqGFaleQrHQDt6dRtSo=;
+        b=nXX1bbIe66T0XrjqbvSLTs0P5RwOCaFPW9r+DKH7PIefOHITz42lxNyZrhgW4cm1rt
+         B/bsZ0wZMVNoQUlmVOCrIvU7tCTnVi1pkD91KLSYT/DxaRFndbjfcVI695QiM25s9cGW
+         VjXWnVW+o+CbZlMpEG0e9hipvcLlFJEUvQhzpkTesKJMynQiJCA2fcNvg8u2psAvyHTu
+         2q8bvtHO7DIib7lTxFedPWbxB/z0JWiZW+tewhPxy9H5bKPXIzj1KTBQS2k+SkJ0oOFb
+         NF9t3/+42vgo1sLov3mKSYZKJz0VO0QhA8dQGX8bMBv9qKTzLPsIo/wWl/XneDNyElv6
+         FZ9Q==
+X-Gm-Message-State: AOAM530RfQSiTgn0a5LQAfFAf+LofhPMwMN4+Ak+t/2qhAHAGC45rdsT
+        bzMiblKuJUx52eDhau99YU/9ig==
+X-Google-Smtp-Source: ABdhPJx8AynfC3lOSrY8k59qcyqfjpr6GSeCaIP8xhW0ff6mYLWyOIrtvz4coZ8ArlPQ2ylV7L86Mw==
+X-Received: by 2002:aa7:96af:0:b029:142:6a8f:c04b with SMTP id g15-20020aa796af0000b02901426a8fc04bmr5456120pfk.30.1601166929558;
+        Sat, 26 Sep 2020 17:35:29 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id x13sm6744416pff.152.2020.09.26.17.35.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 26 Sep 2020 17:35:28 -0700 (PDT)
+Date:   Sat, 26 Sep 2020 17:35:28 -0700 (PDT)
+X-Google-Original-Date: Sat, 26 Sep 2020 17:35:26 PDT (-0700)
+Subject:     Re: [V2] riscv: fix pfn_to_virt err in do_page_fault().
+In-Reply-To: <1600419358-21446-1-git-send-email-liush@allwinnertech.com>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        akpm@linux-foundation.org, peterx@redhat.com,
+        daniel.m.jordan@oracle.com, walken@google.com, vbabka@suse.cz,
+        rppt@kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, liush@allwinnertech.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     liush@allwinnertech.com
+Message-ID: <mhng-6b275467-464f-45b7-9ada-7c86add704f6@palmerdabbelt-glaptop1>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/09/27 4:39, Peilin Ye wrote:
-> On Sun, Sep 27, 2020 at 01:25:17AM +0900, Tetsuo Handa wrote:
->> Since I don't know the meaning of "struct vt_consize"->v_clin (which is commented
->> with "/* number of pixel rows per character */" but does it mean font size ?),
->> I don't know why we can assign that value to vcp->vc_font.height via
->>
->> 	if (v.v_clin)
->> 		vcp->vc_font.height = v.v_clin;
->>
->> in vt_resizex(). While ioctl(PIO_FONT) needs to pass vc->vc_sw->con_font_set()
->> check in con_font_set(), ioctl(VT_RESIZEX) does not pass it in vt_resizex()...
->>
->> Since this problem does not happen if I remove
->>
->> 	if (v.v_clin)
->> 		vcp->vc_font.height = v.v_clin;
-> 
-> Hi Tetsuo!
-> 
->>  from vt_resizex(), I guess that some variables are getting confused by change
->> of vc->vc_font.height ...
-> 
-> Yes, see bit_putcs():
-> 
-> (drivers/video/fbdev/core/bitblit.c)
-> static void bit_putcs(struct vc_data *vc, struct fb_info *info,
-> 		      const unsigned short *s, int count, int yy, int xx,
-> 		      int fg, int bg)
-> {
-> 	struct fb_image image;
-> 	u32 width = DIV_ROUND_UP(vc->vc_font.width, 8);
-> 	u32 cellsize = width * vc->vc_font.height;
-> 	    ^^^^^^^^		   ^^^^^^^^^^^^^^
-> 
-> `cellsize` is now too large. Later, in bit_putcs_aligned():
-> 
-> 	while (cnt--) {
-> 		src = vc->vc_font.data + (scr_readw(s++)&
-> 					  charmask)*cellsize;
-> 						    ^^^^^^^^
-> 
-> `src` goes out of bounds of the data buffer. At first glance I guess
-> this is an out-of-bound read reported as a use-after-free read? The
-> crashlog says:
+On Fri, 18 Sep 2020 01:55:58 PDT (-0700), liush@allwinnertech.com wrote:
+> The argument to pfn_to_virt() should be pfn not the value of CSR_SATP.
 
-How this OOB access is reported varies.
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
 
-> 
-> To resolve this out-of-bound issue for now, I think the easiest way
-> is to add a range check in bit_putcs(), or bit_putcs_aligned().
-> 
-> ...but yeah, that `VT_RESIZEX` ioctl looks really buggy, and is already
-> causing more issues:
+> Signed-off-by: liush <liush@allwinnertech.com>
 
-At least, since not all fonts have height == 32 (e.g. font_vga_8x8 is height == 8),
-allow changing vc->vc_font.height with only
+IIUC you're supposed to use an actual name.
 
-	if (v.v_clin > 32)
-		return -EINVAL;
-
-validation in VT_RESIZEX looks wrong. This needs more validations.
-
-
-
-By the way, can we find a user of VT_RESIZEX? As far as I googled with "VT_RESIZEX",
-I couldn't find a userspace program; only explanation of VT_RESIZEX and kernel patches
-related to VT_RESIZEX are found. Also, while console_ioctl(4) man page says
-
-  Any parameter may be set to zero, indicating "no change"
-
-, the assignment
-
-	if (!v.v_vlin)
-		v.v_vlin = vc->vc_scan_lines;
-
-changes the meaning to
-
-   If v_vlin parameter is set to zero, the value for associated console is copied
-   to each console (instead of preserving current value for that console)
-
-. Maybe for now we can try this (effectively making VT_RESIZEX == VT_RESIZE) ?
-
- vt_ioctl.c |   57 ++++++++++-----------------------------------------------
- 1 file changed, 10 insertions(+), 47 deletions(-)
-
-diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-index a4e520bdd521..bc33938e2f20 100644
---- a/drivers/tty/vt/vt_ioctl.c
-+++ b/drivers/tty/vt/vt_ioctl.c
-@@ -773,58 +773,21 @@ static int vt_resizex(struct vc_data *vc, struct vt_consize __user *cs)
- 	if (copy_from_user(&v, cs, sizeof(struct vt_consize)))
- 		return -EFAULT;
- 
--	/* FIXME: Should check the copies properly */
--	if (!v.v_vlin)
--		v.v_vlin = vc->vc_scan_lines;
--
--	if (v.v_clin) {
--		int rows = v.v_vlin / v.v_clin;
--		if (v.v_rows != rows) {
--			if (v.v_rows) /* Parameters don't add up */
--				return -EINVAL;
--			v.v_rows = rows;
--		}
--	}
--
--	if (v.v_vcol && v.v_ccol) {
--		int cols = v.v_vcol / v.v_ccol;
--		if (v.v_cols != cols) {
--			if (v.v_cols)
--				return -EINVAL;
--			v.v_cols = cols;
--		}
--	}
--
--	if (v.v_clin > 32)
--		return -EINVAL;
-+	if (v.v_vlin)
-+		pr_info_once("\"struct vt_consize\"->v_vlin is ignored. Please report if you need this.\n");
-+	if (v.v_clin)
-+		pr_info_once("\"struct vt_consize\"->v_clin is ignored. Please report if you need this.\n");
- 
-+	console_lock();
- 	for (i = 0; i < MAX_NR_CONSOLES; i++) {
--		struct vc_data *vcp;
-+		vc = vc_cons[i].d;
- 
--		if (!vc_cons[i].d)
--			continue;
--		console_lock();
--		vcp = vc_cons[i].d;
--		if (vcp) {
--			int ret;
--			int save_scan_lines = vcp->vc_scan_lines;
--			int save_font_height = vcp->vc_font.height;
--
--			if (v.v_vlin)
--				vcp->vc_scan_lines = v.v_vlin;
--			if (v.v_clin)
--				vcp->vc_font.height = v.v_clin;
--			vcp->vc_resize_user = 1;
--			ret = vc_resize(vcp, v.v_cols, v.v_rows);
--			if (ret) {
--				vcp->vc_scan_lines = save_scan_lines;
--				vcp->vc_font.height = save_font_height;
--				console_unlock();
--				return ret;
--			}
-+		if (vc) {
-+			vc->vc_resize_user = 1;
-+			vc_resize(vc, v.v_cols, v.v_rows);
- 		}
--		console_unlock();
- 	}
-+	console_unlock();
- 
- 	return 0;
- }
-
+> ---
+>  arch/riscv/mm/fault.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
+> index 716d64e..3e560ec13 100644
+> --- a/arch/riscv/mm/fault.c
+> +++ b/arch/riscv/mm/fault.c
+> @@ -198,6 +198,7 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+>  		pmd_t *pmd, *pmd_k;
+>  		pte_t *pte_k;
+>  		int index;
+> +		unsigned long pfn;
+>
+>  		/* User mode accesses just cause a SIGSEGV */
+>  		if (user_mode(regs))
+> @@ -212,7 +213,8 @@ asmlinkage void do_page_fault(struct pt_regs *regs)
+>  		 * of a task switch.
+>  		 */
+>  		index = pgd_index(addr);
+> -		pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP)) + index;
+> +		pfn = csr_read(CSR_SATP) & SATP_PPN;
+> +		pgd = (pgd_t *)pfn_to_virt(pfn) + index;
+>  		pgd_k = init_mm.pgd + index;
+>
+>  		if (!pgd_present(*pgd_k))
