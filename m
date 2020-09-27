@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 806BE279D28
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 02:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391A8279D2A
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 02:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728094AbgI0AZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 26 Sep 2020 20:25:12 -0400
-Received: from mga02.intel.com ([134.134.136.20]:12226 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726382AbgI0AZM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 26 Sep 2020 20:25:12 -0400
-IronPort-SDR: HQ4ajrjhaD6i7u2wudDcsVMvet+UpYynNvVV18zEix/XaVkkY6CUCbdp2gG0eS88TjRtWbc1u4
- NWgz/gB14hnw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9756"; a="149479796"
-X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
-   d="scan'208";a="149479796"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 17:25:07 -0700
-IronPort-SDR: svSdsM3bYbpeJYiWx9WInXAegrAs9Pat/H6quQ2B3HKrTkplNQT1UhkLRtff1p+UoZtAwyOd4z
- 42R6q0L6qHrQ==
-X-IronPort-AV: E=Sophos;i="5.77,308,1596524400"; 
-   d="scan'208";a="488061063"
-Received: from sliu49-mobl1.ccr.corp.intel.com (HELO [10.249.175.72]) ([10.249.175.72])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2020 17:25:05 -0700
-Subject: Re: [PATCH v4 00/17] HSM driver for ACRN hypervisor
-To:     linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>
-References: <20200922114311.38804-1-shuo.a.liu@intel.com>
-From:   "Liu, Shuo A" <shuo.a.liu@intel.com>
-Message-ID: <8235ade4-eb61-aed1-bd9a-9db0134cb64a@intel.com>
-Date:   Sun, 27 Sep 2020 08:24:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        id S1728585AbgI0AZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 26 Sep 2020 20:25:32 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:51852 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726242AbgI0AZc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 26 Sep 2020 20:25:32 -0400
+Received: from fsav302.sakura.ne.jp (fsav302.sakura.ne.jp [153.120.85.133])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 08R0P9TR053146;
+        Sun, 27 Sep 2020 09:25:09 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav302.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp);
+ Sun, 27 Sep 2020 09:25:09 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav302.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 08R0P8G8053139
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Sun, 27 Sep 2020 09:25:08 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: KASAN: use-after-free Read in bit_putcs
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
+        b.zolnierkie@samsung.com, daniel.vetter@ffwll.ch, deller@gmx.de,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <000000000000226d3f05b02dd607@google.com>
+ <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
+Message-ID: <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
+Date:   Sun, 27 Sep 2020 09:25:07 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20200922114311.38804-1-shuo.a.liu@intel.com>
+In-Reply-To: <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,146 +50,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ping...
+On 2020/09/27 4:39, Peilin Ye wrote:
+> On Sun, Sep 27, 2020 at 01:25:17AM +0900, Tetsuo Handa wrote:
+>> Since I don't know the meaning of "struct vt_consize"->v_clin (which is commented
+>> with "/* number of pixel rows per character */" but does it mean font size ?),
+>> I don't know why we can assign that value to vcp->vc_font.height via
+>>
+>> 	if (v.v_clin)
+>> 		vcp->vc_font.height = v.v_clin;
+>>
+>> in vt_resizex(). While ioctl(PIO_FONT) needs to pass vc->vc_sw->con_font_set()
+>> check in con_font_set(), ioctl(VT_RESIZEX) does not pass it in vt_resizex()...
+>>
+>> Since this problem does not happen if I remove
+>>
+>> 	if (v.v_clin)
+>> 		vcp->vc_font.height = v.v_clin;
+> 
+> Hi Tetsuo!
+> 
+>>  from vt_resizex(), I guess that some variables are getting confused by change
+>> of vc->vc_font.height ...
+> 
+> Yes, see bit_putcs():
+> 
+> (drivers/video/fbdev/core/bitblit.c)
+> static void bit_putcs(struct vc_data *vc, struct fb_info *info,
+> 		      const unsigned short *s, int count, int yy, int xx,
+> 		      int fg, int bg)
+> {
+> 	struct fb_image image;
+> 	u32 width = DIV_ROUND_UP(vc->vc_font.width, 8);
+> 	u32 cellsize = width * vc->vc_font.height;
+> 	    ^^^^^^^^		   ^^^^^^^^^^^^^^
+> 
+> `cellsize` is now too large. Later, in bit_putcs_aligned():
+> 
+> 	while (cnt--) {
+> 		src = vc->vc_font.data + (scr_readw(s++)&
+> 					  charmask)*cellsize;
+> 						    ^^^^^^^^
+> 
+> `src` goes out of bounds of the data buffer. At first glance I guess
+> this is an out-of-bound read reported as a use-after-free read? The
+> crashlog says:
 
-On 9/22/2020 19:42, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
+How this OOB access is reported varies.
+
 > 
-> ACRN is a Type 1 reference hypervisor stack, running directly on the bare-metal
-> hardware, and is suitable for a variety of IoT and embedded device solutions.
+> To resolve this out-of-bound issue for now, I think the easiest way
+> is to add a range check in bit_putcs(), or bit_putcs_aligned().
 > 
-> ACRN implements a hybrid VMM architecture, using a privileged Service VM. The
-> Service VM manages the system resources (CPU, memory, etc.) and I/O devices of
-> User VMs. Multiple User VMs are supported, with each of them running Linux,
-> Android OS or Windows. Both Service VM and User VMs are guest VM.
-> 
-> Below figure shows the architecture.
-> 
->                 Service VM                    User VM
->       +----------------------------+  |  +------------------+
->       |        +--------------+    |  |  |                  |
->       |        |ACRN userspace|    |  |  |                  |
->       |        +--------------+    |  |  |                  |
->       |-----------------ioctl------|  |  |                  |   ...
->       |kernel space   +----------+ |  |  |                  |
->       |               |   HSM    | |  |  | Drivers          |
->       |               +----------+ |  |  |                  |
->       +--------------------|-------+  |  +------------------+
->   +---------------------hypercall----------------------------------------+
->   |                       ACRN Hypervisor                                |
->   +----------------------------------------------------------------------+
->   |                          Hardware                                    |
->   +----------------------------------------------------------------------+
-> 
-> There is only one Service VM which could run Linux as OS.
-> 
-> In a typical case, the Service VM will be auto started when ACRN Hypervisor is
-> booted. Then the ACRN userspace (an application running in Service VM) could be
-> used to start/stop User VMs by communicating with ACRN Hypervisor Service
-> Module (HSM).
-> 
-> ACRN Hypervisor Service Module (HSM) is a middle layer that allows the ACRN
-> userspace and Service VM OS kernel to communicate with ACRN Hypervisor
-> and manage different User VMs. This middle layer provides the following
-> functionalities,
->   - Issues hypercalls to the hypervisor to manage User VMs:
->       * VM/vCPU management
->       * Memory management
->       * Device passthrough
->       * Interrupts injection
->   - I/O requests handling from User VMs.
->   - Exports ioctl through HSM char device.
->   - Exports function calls for other kernel modules
-> 
-> ACRN is focused on embedded system. So it doesn't support some features.
-> E.g.,
->   - ACRN doesn't support VM migration.
->   - ACRN doesn't support vCPU migration.
-> 
-> This patch set adds the HSM to the Linux kernel.
-> 
-> The basic ARCN support was merged to upstream already.
-> https://lore.kernel.org/lkml/1559108037-18813-3-git-send-email-yakui.zhao@intel.com/
-> 
-> ChangeLog:
-> v4:
->   - Used acrn_dev.this_device directly for dev_*() (Reinette)
->   - Removed the odd usage of {get|put}_device() on &acrn_dev->this_device (Greg)
->   - Removed unused log code. (Greg)
->   - Corrected the return error values. (Greg)
->   - Mentioned that HSM relies hypervisor for sanity check in acrn_dev_ioctl() comments (Greg)
-> 
-> v3:
->   - Used {get|put}_device() helpers on &acrn_dev->this_device
->   - Moved unused code from front patches to later ones.
->   - Removed self-defined pr_fmt() and dev_fmt()
->   - Provided comments for acrn_vm_list_lock.
-> 
-> v2:
->   - Removed API version related code. (Dave)
->   - Replaced pr_*() by dev_*(). (Greg)
->   - Used -ENOTTY as the error code of unsupported ioctl. (Greg)
-> 
-> Shuo Liu (16):
->   docs: acrn: Introduce ACRN
->   x86/acrn: Introduce acrn_{setup, remove}_intr_handler()
->   x86/acrn: Introduce hypercall interfaces
->   virt: acrn: Introduce ACRN HSM basic driver
->   virt: acrn: Introduce VM management interfaces
->   virt: acrn: Introduce an ioctl to set vCPU registers state
->   virt: acrn: Introduce EPT mapping management
->   virt: acrn: Introduce I/O request management
->   virt: acrn: Introduce PCI configuration space PIO accesses combiner
->   virt: acrn: Introduce interfaces for PCI device passthrough
->   virt: acrn: Introduce interrupt injection interfaces
->   virt: acrn: Introduce interfaces to query C-states and P-states
->     allowed by hypervisor
->   virt: acrn: Introduce I/O ranges operation interfaces
->   virt: acrn: Introduce ioeventfd
->   virt: acrn: Introduce irqfd
->   virt: acrn: Introduce an interface for Service VM to control vCPU
-> 
-> Yin Fengwei (1):
->   x86/acrn: Introduce an API to check if a VM is privileged
-> 
->  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
->  Documentation/virt/acrn/index.rst             |  11 +
->  Documentation/virt/acrn/introduction.rst      |  40 ++
->  Documentation/virt/acrn/io-request.rst        |  97 +++
->  Documentation/virt/index.rst                  |   1 +
->  MAINTAINERS                                   |   9 +
->  arch/x86/include/asm/acrn.h                   |  74 ++
->  arch/x86/kernel/cpu/acrn.c                    |  35 +-
->  drivers/virt/Kconfig                          |   2 +
->  drivers/virt/Makefile                         |   1 +
->  drivers/virt/acrn/Kconfig                     |  15 +
->  drivers/virt/acrn/Makefile                    |   3 +
->  drivers/virt/acrn/acrn_drv.h                  | 229 +++++++
->  drivers/virt/acrn/hsm.c                       | 437 ++++++++++++
->  drivers/virt/acrn/hypercall.h                 | 254 +++++++
->  drivers/virt/acrn/ioeventfd.c                 | 273 ++++++++
->  drivers/virt/acrn/ioreq.c                     | 645 ++++++++++++++++++
->  drivers/virt/acrn/irqfd.c                     | 235 +++++++
->  drivers/virt/acrn/mm.c                        | 305 +++++++++
->  drivers/virt/acrn/vm.c                        | 126 ++++
->  include/uapi/linux/acrn.h                     | 486 +++++++++++++
->  21 files changed, 3278 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/virt/acrn/index.rst
->  create mode 100644 Documentation/virt/acrn/introduction.rst
->  create mode 100644 Documentation/virt/acrn/io-request.rst
->  create mode 100644 arch/x86/include/asm/acrn.h
->  create mode 100644 drivers/virt/acrn/Kconfig
->  create mode 100644 drivers/virt/acrn/Makefile
->  create mode 100644 drivers/virt/acrn/acrn_drv.h
->  create mode 100644 drivers/virt/acrn/hsm.c
->  create mode 100644 drivers/virt/acrn/hypercall.h
->  create mode 100644 drivers/virt/acrn/ioeventfd.c
->  create mode 100644 drivers/virt/acrn/ioreq.c
->  create mode 100644 drivers/virt/acrn/irqfd.c
->  create mode 100644 drivers/virt/acrn/mm.c
->  create mode 100644 drivers/virt/acrn/vm.c
->  create mode 100644 include/uapi/linux/acrn.h
-> 
-> 
-> base-commit: 18445bf405cb331117bc98427b1ba6f12418ad17
-> 
+> ...but yeah, that `VT_RESIZEX` ioctl looks really buggy, and is already
+> causing more issues:
+
+At least, since not all fonts have height == 32 (e.g. font_vga_8x8 is height == 8),
+allow changing vc->vc_font.height with only
+
+	if (v.v_clin > 32)
+		return -EINVAL;
+
+validation in VT_RESIZEX looks wrong. This needs more validations.
+
+
+
+By the way, can we find a user of VT_RESIZEX? As far as I googled with "VT_RESIZEX",
+I couldn't find a userspace program; only explanation of VT_RESIZEX and kernel patches
+related to VT_RESIZEX are found. Also, while console_ioctl(4) man page says
+
+  Any parameter may be set to zero, indicating "no change"
+
+, the assignment
+
+	if (!v.v_vlin)
+		v.v_vlin = vc->vc_scan_lines;
+
+changes the meaning to
+
+   If v_vlin parameter is set to zero, the value for associated console is copied
+   to each console (instead of preserving current value for that console)
+
+. Maybe for now we can try this (effectively making VT_RESIZEX == VT_RESIZE) ?
+
+ vt_ioctl.c |   57 ++++++++++-----------------------------------------------
+ 1 file changed, 10 insertions(+), 47 deletions(-)
+
+diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
+index a4e520bdd521..bc33938e2f20 100644
+--- a/drivers/tty/vt/vt_ioctl.c
++++ b/drivers/tty/vt/vt_ioctl.c
+@@ -773,58 +773,21 @@ static int vt_resizex(struct vc_data *vc, struct vt_consize __user *cs)
+ 	if (copy_from_user(&v, cs, sizeof(struct vt_consize)))
+ 		return -EFAULT;
+ 
+-	/* FIXME: Should check the copies properly */
+-	if (!v.v_vlin)
+-		v.v_vlin = vc->vc_scan_lines;
+-
+-	if (v.v_clin) {
+-		int rows = v.v_vlin / v.v_clin;
+-		if (v.v_rows != rows) {
+-			if (v.v_rows) /* Parameters don't add up */
+-				return -EINVAL;
+-			v.v_rows = rows;
+-		}
+-	}
+-
+-	if (v.v_vcol && v.v_ccol) {
+-		int cols = v.v_vcol / v.v_ccol;
+-		if (v.v_cols != cols) {
+-			if (v.v_cols)
+-				return -EINVAL;
+-			v.v_cols = cols;
+-		}
+-	}
+-
+-	if (v.v_clin > 32)
+-		return -EINVAL;
++	if (v.v_vlin)
++		pr_info_once("\"struct vt_consize\"->v_vlin is ignored. Please report if you need this.\n");
++	if (v.v_clin)
++		pr_info_once("\"struct vt_consize\"->v_clin is ignored. Please report if you need this.\n");
+ 
++	console_lock();
+ 	for (i = 0; i < MAX_NR_CONSOLES; i++) {
+-		struct vc_data *vcp;
++		vc = vc_cons[i].d;
+ 
+-		if (!vc_cons[i].d)
+-			continue;
+-		console_lock();
+-		vcp = vc_cons[i].d;
+-		if (vcp) {
+-			int ret;
+-			int save_scan_lines = vcp->vc_scan_lines;
+-			int save_font_height = vcp->vc_font.height;
+-
+-			if (v.v_vlin)
+-				vcp->vc_scan_lines = v.v_vlin;
+-			if (v.v_clin)
+-				vcp->vc_font.height = v.v_clin;
+-			vcp->vc_resize_user = 1;
+-			ret = vc_resize(vcp, v.v_cols, v.v_rows);
+-			if (ret) {
+-				vcp->vc_scan_lines = save_scan_lines;
+-				vcp->vc_font.height = save_font_height;
+-				console_unlock();
+-				return ret;
+-			}
++		if (vc) {
++			vc->vc_resize_user = 1;
++			vc_resize(vc, v.v_cols, v.v_rows);
+ 		}
+-		console_unlock();
+ 	}
++	console_unlock();
+ 
+ 	return 0;
+ }
+
