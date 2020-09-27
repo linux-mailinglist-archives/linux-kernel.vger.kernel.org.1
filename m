@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35AD427A165
-	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 16:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151D227A170
+	for <lists+linux-kernel@lfdr.de>; Sun, 27 Sep 2020 16:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbgI0O3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 10:29:11 -0400
-Received: from mail-il1-f205.google.com ([209.85.166.205]:54406 "EHLO
-        mail-il1-f205.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726149AbgI0O3K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 10:29:10 -0400
-Received: by mail-il1-f205.google.com with SMTP id f4so6636933ilk.21
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 07:29:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=iCeP7IjOo2Hlq0UPmdkKG9qIQjxyS5bd1Y3NOX50t+0=;
-        b=rwGLYaQ0JQtvNDgpXxkST9fw79mwyz1Rq/noDQCHrcfpAa8EJ83/AKuyfgxSrFaCw+
-         1PpgNgnlsVve463EYjzrUTmGvYcDr119X4Pqtq4dJUdFwWnnupgZ+p1mU2cCeOhOJbYI
-         pZW29VFFyPEJX6WsIiUtrq3i4PABpXvBjkje8w+H6jm+XlK7hrJBifwmA20Cd+OgBAXu
-         ot74L6/V7oFRqp1DzuH0tFFPPlL0c1BbfK3cjlY5FVT85K6RTjSMDRfXgeq+qianpIno
-         fmRD6fb5gBK0dtgsGGhxf1c/PW8R3r9lUHyelNF0JlUNjz4CnSm36NrjqtyDbdMbxDhH
-         opUQ==
-X-Gm-Message-State: AOAM532nBMdiH7wwMKpQg1Iz2Er4Gs4UDSA0Oo4r52JAcC/4lEdp9zoJ
-        Q3wuALBDHhX1avy/fsOcLMQKjDY1p88VuJfhOFXYGUjVy977
-X-Google-Smtp-Source: ABdhPJzSnnM2y4SNlhtJwTtaS8AAXKQiaBSWsw5kGRsxEpDRyxijBbiKIWYkwjEk/3KFDNFGigpdVrGvz9UsIxoMAcRuYP0BiQTV
+        id S1726303AbgI0O5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 10:57:51 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:60826 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726196AbgI0O5u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 10:57:50 -0400
+Received: from zn.tnic (p200300ec2f2492004b5aa76b10805eb1.dip0.t-ipconnect.de [IPv6:2003:ec:2f24:9200:4b5a:a76b:1080:5eb1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C64CD1EC026F;
+        Sun, 27 Sep 2020 16:57:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1601218669;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CFJCCuderP9O1B05vn4MreLrTvlEZtAqEG1hDiK3BkQ=;
+        b=oATQHPSujtIHRVWxdZiQhDxsoFA3P4hCxNLkK+cG7BabD/AwJj+wMc8PLGXrVec6v62sdl
+        B3ajOQCpcyMEawY0Is2vxXBSQIMQicoyLtqLtieX6ALd6tWi1Du4+EY2nTmvAap2ZU73Xg
+        F5uDQVMRz4arjOzvYZS1q9ZU65qFcq8=
+Date:   Sun, 27 Sep 2020 16:57:37 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
+        acme@kernel.org, alexander.shishkin@linux.intel.com, hpa@zytor.com,
+        jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, x86@kernel.org
+Subject: Re: general protection fault in perf_misc_flags
+Message-ID: <20200927145737.GA4746@zn.tnic>
+References: <00000000000052569205afa67426@google.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:a30b:: with SMTP id q11mr5628610jai.77.1601216949607;
- Sun, 27 Sep 2020 07:29:09 -0700 (PDT)
-Date:   Sun, 27 Sep 2020 07:29:09 -0700
-In-Reply-To: <000000000000bd9ee505b01f60e2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007d5ec805b04c5fc8@google.com>
-Subject: Re: WARNING in hrtimer_forward
-From:   syzbot <syzbot+ca740b95a16399ceb9a5@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, hchunhui@mail.ustc.edu.cn, hdanton@sina.com,
-        ja@ssi.bg, jmorris@namei.org, kaber@trash.net,
-        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <00000000000052569205afa67426@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+On Sat, Sep 19, 2020 at 01:32:14AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    92ab97ad Merge tag 'sh-for-5.9-part2' of git://git.libc.or..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1069669b900000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
+> compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
-commit 0e7bbcc104baaade4f64205e9706b7d43c46db7d
-Author: Julian Anastasov <ja@ssi.bg>
-Date:   Wed Jul 27 06:56:50 2016 +0000
+All below is AFAICT:
 
-    neigh: allow admin to set NUD_STALE
+This compiler you're using is not some official release but some random
+commit before the v10 release:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1661d187900000
-start commit:   ba5f4cfe bpf: Add comment to document BTF type PTR_TO_BTF_..
-git tree:       bpf-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1561d187900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1161d187900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d44e1360b76d34dc
-dashboard link: https://syzkaller.appspot.com/bug?extid=ca740b95a16399ceb9a5
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1148fe4b900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f5218d900000
+$ git show c2443155a0fb245c8f17f2c1c72b6ea391e86e81
+Author: Hans Wennborg <hans@chromium.org>
+Date:   Sat Nov 30 14:20:11 2019 +0100
 
-Reported-by: syzbot+ca740b95a16399ceb9a5@syzkaller.appspotmail.com
-Fixes: 0e7bbcc104ba ("neigh: allow admin to set NUD_STALE")
+    Revert 651f07908a1 "[AArch64] Don't combine callee-save and local stack adjustment when optimizing for size"
+...
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+$ git describe c2443155a0fb245c8f17f2c1c72b6ea391e86e81
+llvmorg-10-init-10900-gc2443155a0fb
+
+The v10 release is:
+
+$ git show llvmorg-10.0.0
+tag llvmorg-10.0.0
+Tagger: Hans Wennborg <hans@chromium.org>
+Date:   Tue Mar 24 12:58:58 2020 +0100
+
+Tag 10.0.0
+
+and v10 has reached v10.0.1 in the meantime:
+
+$ git log --oneline c2443155a0fb245c8f17f2c1c72b6ea391e86e81~1..llvmorg-10.0.1 | wc -l
+7051
+
+so can you please update your compiler and see if you can still
+reproduce with 10.0.1 so that we don't waste time chasing a bug which
+has been likely already fixed in one of those >7K commits.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
