@@ -2,165 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E79C27A9A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D126027A9AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbgI1IgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:36:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50066 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726534AbgI1IgS (ORCPT
+        id S1726667AbgI1IhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:37:19 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:47780 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgI1IhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:36:18 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601282176;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=b0K87K2uy0xXJ5sS5mjVYfO5yWO5fpNePtczSJfVxG0=;
-        b=QILSz/dioIDepD4r4CeO5UjwLBBDfzlBMRHiaofFBb52Utr8g5xTMlO1LzzR2bYdSOD/vM
-        iwEzRGJOtUc6kcAfQfndly3o0jjr5QhtXeX/skT21VFgvoYaMJ38oi872YY+XWf6BAOc0D
-        exf4FOo53XOCCG6tzPl/By6Sgu2X6ng=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-117-syumm9kTNViBmTA8R7YvsQ-1; Mon, 28 Sep 2020 04:36:12 -0400
-X-MC-Unique: syumm9kTNViBmTA8R7YvsQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0C71F801ADC;
-        Mon, 28 Sep 2020 08:36:10 +0000 (UTC)
-Received: from [10.36.114.255] (ovpn-114-255.ams2.redhat.com [10.36.114.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E99FC7A41F;
-        Mon, 28 Sep 2020 08:36:01 +0000 (UTC)
-Subject: Re: [PATCH RFC 4/4] mm/page_alloc: place pages to tail in
- __free_pages_core()
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>
-References: <20200916183411.64756-1-david@redhat.com>
- <20200916183411.64756-5-david@redhat.com> <20200928075820.GA4082@linux>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- mQINBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABtCREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT6JAlgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63W5Ag0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAGJAjwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat GmbH
-Message-ID: <a18327c0-b86a-df00-e984-27c26468caf7@redhat.com>
-Date:   Mon, 28 Sep 2020 10:36:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
-MIME-Version: 1.0
-In-Reply-To: <20200928075820.GA4082@linux>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Mon, 28 Sep 2020 04:37:18 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kMoei-0006rf-AQ; Mon, 28 Sep 2020 08:37:08 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jeffrey.t.kirsher@intel.com
+Cc:     andrew@lunn.ch, Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        intel-wired-lan@lists.osuosl.org (moderated list:INTEL ETHERNET DRIVERS),
+        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4] e1000e: Increase polling timeout on MDIC ready bit
+Date:   Mon, 28 Sep 2020 16:36:58 +0800
+Message-Id: <20200928083658.8567-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200924164542.19906-1-kai.heng.feng@canonical.com>
+References: <20200924164542.19906-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.09.20 09:58, Oscar Salvador wrote:
-> On Wed, Sep 16, 2020 at 08:34:11PM +0200, David Hildenbrand wrote:
->> @@ -1523,7 +1524,13 @@ void __free_pages_core(struct page *page, unsigned int order)
->>  
->>  	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
->>  	set_page_refcounted(page);
->> -	__free_pages(page, order);
->> +
->> +	/*
->> +	 * Bypass PCP and place fresh pages right to the tail, primarily
->> +	 * relevant for memory onlining.
->> +	 */
->> +	page_ref_dec(page);
->> +	__free_pages_ok(page, order, FOP_TO_TAIL);
-> 
-> Sorry, I must be missing something obvious here, but I am a bit confused here.
-> I get the part of placing them at the tail so rmqueue_bulk() won't
-> find them, but I do not get why we decrement page's refcount.
-> IIUC, its refcount will be 0, but why do we want to do that?
-> 
-> Another thing a bit unrelated... we mess three times with page's refcount
-> (two before this patch).
-> Why do we have this dance in place?
+We are seeing the following error after S3 resume:
+[  704.746874] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+[  704.844232] e1000e 0000:00:1f.6 eno1: MDI Write did not complete
+[  704.902817] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+[  704.903075] e1000e 0000:00:1f.6 eno1: reading PHY page 769 (or 0x6020 shifted) reg 0x17
+[  704.903281] e1000e 0000:00:1f.6 eno1: Setting page 0x6020
+[  704.903486] e1000e 0000:00:1f.6 eno1: writing PHY page 769 (or 0x6020 shifted) reg 0x17
+[  704.943155] e1000e 0000:00:1f.6 eno1: MDI Error
+...
+[  705.108161] e1000e 0000:00:1f.6 eno1: Hardware Error
 
-Hi Oscar!
+As Andrew Lunn pointed out, MDIO has nothing to do with phy, and indeed
+increase polling iteration can resolve the issue.
 
-Old code:
+This patch only papers over the symptom, as we don't really know the
+root cause of the issue. The most possible culprit is Intel ME, which
+may do its own things that conflict with software.
 
-set_page_refcounted(): sets the refcount to 1.
-__free_pages()
-  -> put_page_testzero(): sets it to 0
-  -> free_the_page()->__free_pages_ok()
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+v4:
+ - States that this patch just papers over the symptom.
 
-New code:
+v3:
+ - Moving delay to end of loop doesn't save anytime, move it back.
+ - Point out this is quitely likely caused by Intel ME.
 
-set_page_refcounted(): sets the refcount to 1.
-page_ref_dec(page): sets it to 0
-__free_pages_ok():
+v2:
+ - Increase polling iteration instead of powering down the phy.
 
+ drivers/net/ethernet/intel/e1000e/phy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-We could skip the set_page_refcounted() + page_ref_dec(page) and lose a
-couple of sanity checks but we could simply use a
-VM_BUG_ON_PAGE(page_ref_count(page), page), which is what we really care
-about when onlining memory.
-
+diff --git a/drivers/net/ethernet/intel/e1000e/phy.c b/drivers/net/ethernet/intel/e1000e/phy.c
+index e11c877595fb..e6d4acd90937 100644
+--- a/drivers/net/ethernet/intel/e1000e/phy.c
++++ b/drivers/net/ethernet/intel/e1000e/phy.c
+@@ -203,7 +203,7 @@ s32 e1000e_write_phy_reg_mdic(struct e1000_hw *hw, u32 offset, u16 data)
+ 	 * Increasing the time out as testing showed failures with
+ 	 * the lower time out
+ 	 */
+-	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 3); i++) {
++	for (i = 0; i < (E1000_GEN_POLL_TIMEOUT * 10); i++) {
+ 		udelay(50);
+ 		mdic = er32(MDIC);
+ 		if (mdic & E1000_MDIC_READY)
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
