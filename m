@@ -2,58 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD8F27AEAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9EDB27AEB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726629AbgI1NGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 09:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
+        id S1726562AbgI1NI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 09:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI1NGl (ORCPT
+        with ESMTP id S1726393AbgI1NIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 09:06:41 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CBBC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 06:06:40 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrewsh)
-        with ESMTPSA id 0DFA529A5F5
-From:   Andrej Shadura <andrew.shadur@collabora.co.uk>
-To:     linux-kernel@vger.kernel.org, trivial@kernel.org
-Subject: [PATCH] mailmap: add Andrej Shadura
-Date:   Mon, 28 Sep 2020 15:06:21 +0200
-Message-Id: <20200928130621.449023-1-andrew.shadur@collabora.co.uk>
-X-Mailer: git-send-email 2.25.1
+        Mon, 28 Sep 2020 09:08:55 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75476C061755;
+        Mon, 28 Sep 2020 06:08:55 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id w5so1253343wrp.8;
+        Mon, 28 Sep 2020 06:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nOPCbtpqgtnY4q9MU+tBngQWc0zGdIdrFUQVT0XwMnc=;
+        b=PNXAGWlfrLIwYmKX7uB9DdP2i6YwxpSHwY/h2+K7/bKTIkW5Taq5ZYDKck/kK6Q+Vy
+         RK8xixXhcG62JBokojeJ0BwjfL+QZzB+zTQdOeOELafkW0IiLuo3lW0G1UY9HXMAXGcQ
+         kNViHnUiok0uKWS4thy6Cj8ytgaq1NFYplKXFJpwklo75k5dL0ifVix1cWy3Nq8W2FP/
+         7YrwPNhdUSgZcnppGXxlPe3JTPW/skoVE2LmTXOvRwIHy/J26m8du+kLcEjVoGH65dtJ
+         7013cU/NFUZlXp0zWhoMtfUGOVwFqXOEFYTyNgEWtpCu/ijvLTvrbxAvSs1TLTQS9p1b
+         RwYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nOPCbtpqgtnY4q9MU+tBngQWc0zGdIdrFUQVT0XwMnc=;
+        b=ThVRVaVIbEsDsUtjTfCzjvcrhIlTyRGrWNjvoBLCyxdqLnImDfqwQkuZmpL2jEFzfy
+         vUlj4nxTdoJLEymsYsE6cBp62lwpNZ5de3Q98VrwhbnIIFWI/lrHxBglCkEKMLySAdQ3
+         WbOpNXOtS0f0FdAfcIDAd6hFguMbsEtivM+SLOs6gXQ3cK8oJH6aKIvQaoS84w+MlOCl
+         WXvudgWC5MmlxkAPbDv4S9qPfYIlEwrPAc1a8JeLrNMv+7tDXIvU9HXcjOcUOzncLOx6
+         sYjdSga3l+0vjCj2vkkCPxzPNQj+deKpPI/l13zb6Wb2z9eYGPCr+c7sCoK/g6yUML8k
+         5ieQ==
+X-Gm-Message-State: AOAM532hBbzL+O+m2E4uVyhdpqpmsBT1UMML3uvBeIZRm+sp3NeI2hTk
+        tQaSwYWkEzsOfNa2IKqg39I=
+X-Google-Smtp-Source: ABdhPJy7janYixmQSDCn0tIUz1ypKEhJKOUw0PNZ9o+5Pl2RABP+3KpTW9eWVNI1Y7kpV1u/9T16Zw==
+X-Received: by 2002:adf:ab46:: with SMTP id r6mr1750114wrc.360.1601298534158;
+        Mon, 28 Sep 2020 06:08:54 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id i11sm1497443wre.32.2020.09.28.06.08.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 06:08:52 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 15:08:49 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     JC Kuo <jckuo@nvidia.com>
+Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
+        kishon@ti.com, linux-tegra@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, nkristam@nvidia.com
+Subject: Re: [PATCH v3 05/15] phy: tegra: xusb: Rearrange UPHY init on
+ Tegra210
+Message-ID: <20200928130849.GF3065790@ulmo>
+References: <20200909081041.3190157-1-jckuo@nvidia.com>
+ <20200909081041.3190157-6-jckuo@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Pgaa2uWPnPrfixyx"
+Content-Disposition: inline
+In-Reply-To: <20200909081041.3190157-6-jckuo@nvidia.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrej Shadura <andrew.shadura@collabora.co.uk>
 
-Add a mapping for my old work email for BelDisplayTech to the personal
-email, and make sure the Collabora email has the correct spelling
-of the first name.
+--Pgaa2uWPnPrfixyx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Andrej Shadura <andrew.shadura@collabora.co.uk>
----
- .mailmap | 2 ++
- 1 file changed, 2 insertions(+)
+On Wed, Sep 09, 2020 at 04:10:31PM +0800, JC Kuo wrote:
+> This commit is a preparation for enabling XUSB SC7 support.
+> It rearranges Tegra210 XUSB PADCTL UPHY initialization sequence,
+> for the following reasons:
+>=20
+> 1. PLLE hardware power sequencer has to be enabled only after both
+>    PEX UPHY PLL and SATA UPHY PLL are initialized.
+>    tegra210_uphy_init() -> tegra210_pex_uphy_enable()
+>                         -> tegra210_sata_uphy_enable()
+>                         -> tegra210_plle_hw_sequence_start()
+>                         -> tegra210_aux_mux_lp0_clamp_disable()
+>=20
+> 2. At cold boot and SC7 exit, the following bits must be cleared after
+>    PEX/SATA lanes are out of IDDQ (IDDQ_DISABLE=3D1).
+>    a. XUSB_PADCTL_ELPG_PROGRAM1_AUX_MUX_LP0_CLAMP_EN,
+>    b. XUSB_PADCTL_ELPG_PROGRAM1_AUX_MUX_LP0_CLAMP_EN_EARLY
+>    c. XUSB_PADCTL_ELPG_PROGRAM1_AUX_MUX_LP0_VCORE_DOWN
+>=20
+>    tegra210_pex_uphy_enable() and tegra210_sata_uphy_enable() are in
+>    charge of bringing lanes out of IDDQ, and then AUX_MUX_LP0_* bits
+>    will be cleared by tegra210_aux_mux_lp0_clamp_disable().
+>=20
+> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+> ---
+> v3:
+>    make separate changes
+>    use "unsigned int" instead "int" type for PHY index
+>    add blank line for better readability
+>   =20
+>  drivers/phy/tegra/xusb-tegra210.c | 203 +++++++++++++++---------------
+>  drivers/phy/tegra/xusb.h          |   4 +-
+>  2 files changed, 102 insertions(+), 105 deletions(-)
 
-diff --git a/.mailmap b/.mailmap
-index a780211468e4..392c3dc2f98b 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -35,6 +35,8 @@ Al Viro <viro@zenIV.linux.org.uk>
- Andi Kleen <ak@linux.intel.com> <ak@suse.de>
- Andi Shyti <andi@etezian.org> <andi.shyti@samsung.com>
- Andreas Herrmann <aherrman@de.ibm.com>
-+Andrej Shadura <andrew.shadura@collabora.co.uk>
-+Andrej Shadura <andrew@shadura.me> <andrew@beldisplaytech.com>
- Andrew Morton <akpm@linux-foundation.org>
- Andrew Murray <amurray@thegoodpenguin.co.uk> <amurray@embedded-bits.co.uk>
- Andrew Murray <amurray@thegoodpenguin.co.uk> <andrew.murray@arm.com>
--- 
-2.25.1
+Acked-by: Thierry Reding <treding@nvidia.com>
 
+--Pgaa2uWPnPrfixyx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9x4GEACgkQ3SOs138+
+s6GhchAAkPMKilPY4JMW/bvt3MBYK7A1MMaVtO9dLUY52mM1qF9Kfd7gb27GvgOx
+8xsT7a6ckgaydc/Mv0Ll/Q0TOm9RTvYSZQYV+I7EXtZYcgujfeR5c1bORiOZZWxc
+QIgv+DN7wGcrTf82Z8Tg/eIugt2WPlILY+kmPYDxEF+J3PnH6WufUAIR8osArhhP
+pCjZ+5ZrAttBUNJM2tvErCaYHDauxDFN3r6sQqMbo8VchpTh6jW8+nuENaScTHNk
+99r3WrJjO3nCVqLWqmQPl4uqg0L+f3VlG6akuGSX8ZeOOqUz+J/MmFsvuTO+j//K
+w820awaV8c9TCy14itTtIhQnPG/xybXexZP0lLrKyVpJZdJEonkFjgOe/zt4PeHz
+SjEgrzDjc3sdkcK7Dr2QZdQmxYXpK/GcFm/dAMUWXUzhEP+g3Wg5/5Trdpk23cBI
+pO/rr2huNIERpsgxRETCom2+SvVI9UYktYEXu78lhgAtSPU6Y3+hJLKLP0XgGFMN
+c6Wiwe8GK4AO8KlAB+/iKdhcOn8/dIuc3CZBqndUCURvhnK6D37Fjzyca89i0rzP
+DLvKCfuSckh78ZJeg6qkGMzAcEQgVOBCBEavmtIfrgB1Lb/nCdJtosKPSqp7erfK
+8ZtxBtOXxnYla9C+QkrJOY1tkZPRtUwlPa0doK3Lndr3cNv+SG8=
+=PnVB
+-----END PGP SIGNATURE-----
+
+--Pgaa2uWPnPrfixyx--
