@@ -2,126 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F1D27A725
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B5F27A729
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726518AbgI1F4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 01:56:21 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:5143 "EHLO pegase1.c-s.fr"
+        id S1726461AbgI1F6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 01:58:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725308AbgI1F4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 01:56:21 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4C0BbG5lCQz9v0fj;
-        Mon, 28 Sep 2020 07:56:10 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id qrVmKyF7AUkt; Mon, 28 Sep 2020 07:56:10 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0BbG4mWfz9v0fh;
-        Mon, 28 Sep 2020 07:56:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 51D2F8B782;
-        Mon, 28 Sep 2020 07:56:17 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id DRoorLxFwtMj; Mon, 28 Sep 2020 07:56:17 +0200 (CEST)
-Received: from [10.25.210.27] (unknown [10.25.210.27])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F27AE8B75B;
-        Mon, 28 Sep 2020 07:56:16 +0200 (CEST)
-Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, Ard Biesheuvel <ardb@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200922094128.26245-1-ardb@kernel.org>
- <20200925055626.GC165011@linux.intel.com>
- <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
- <20200925102920.GA180915@linux.intel.com> <20200925120018.GH9916@ziepe.ca>
- <20200927234434.GA5283@linux.intel.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <9be9c7e7-c424-d241-2255-ad854221bd2e@csgroup.eu>
-Date:   Mon, 28 Sep 2020 07:56:07 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1725290AbgI1F6o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 01:58:44 -0400
+Received: from localhost (unknown [122.179.43.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E5FAA207E8;
+        Mon, 28 Sep 2020 05:58:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601272723;
+        bh=IgjnKRfiNYyLJ7chUdt8lXcSYhAnrsMC3SPuMP5B9TM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KlUuDy3sxT6kNUHW8hBz7v/zD77hRI6flODdL6AwwHWLC5ipshFNlSs/FmoOjhYPd
+         pg6Gy9TDU2DNKF3C2+MIuX2o2jlq7yxaGKSoWxPryuV5coloomGIh4cIlwD8nf03uI
+         nuM3tKnuve9n09BMJvtw3BFJAFZcpa+M2MtQU1ZM=
+Date:   Mon, 28 Sep 2020 11:28:19 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Jeykumar Sankaran <jsanka@codeaurora.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        Vara Reddy <varar@codeaurora.org>,
+        Tanmay Shah <tanmay@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Manu Gautam <mgautam@codeaurora.org>,
+        Sandeep Maheswaram <sanm@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v4 00/10] Support qcom USB3+DP combo phy (or type-c phy)
+Message-ID: <20200928055819.GK2968@vkoul-mobl>
+References: <20200916231202.3637932-1-swboyd@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20200927234434.GA5283@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200916231202.3637932-1-swboyd@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 28/09/2020 à 01:44, Jarkko Sakkinen a écrit :
-> On Fri, Sep 25, 2020 at 09:00:18AM -0300, Jason Gunthorpe wrote:
->> On Fri, Sep 25, 2020 at 01:29:20PM +0300, Jarkko Sakkinen wrote:
->>> On Fri, Sep 25, 2020 at 09:00:56AM +0200, Ard Biesheuvel wrote:
->>>> On Fri, 25 Sep 2020 at 07:56, Jarkko Sakkinen
->>>> <jarkko.sakkinen@linux.intel.com> wrote:
->>>>>
->>>>> On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
->>>>>> The TPM event log is provided to the OS by the firmware, by loading
->>>>>> it into an area in memory and passing the physical address via a node
->>>>>> in the device tree.
->>>>>>
->>>>>> Currently, we use __va() to access the memory via the kernel's linear
->>>>>> map: however, it is not guaranteed that the linear map covers this
->>>>>> particular address, as we may be running under HIGHMEM on a 32-bit
->>>>>> architecture, or running firmware that uses a memory type for the
->>>>>> event log that is omitted from the linear map (such as EfiReserved).
->>>>>
->>>>> Makes perfect sense to the level that I wonder if this should have a
->>>>> fixes tag and/or needs to be backported to the stable kernels?
->>>>>
->>>>
->>>> AIUI, the code was written specifically for ppc64, which is a
->>>> non-highmem, non-EFI architecture. However, when we start reusing this
->>>> driver for ARM, this issue could pop up.
->>>>
->>>> The code itself has been refactored a couple of times, so I think it
->>>> will require different versions of the patch for different generations
->>>> of stable kernels.
->>>>
->>>> So perhaps just add Cc: <stable@vger.kernel.org>, and wait and see how
->>>> far back it applies cleanly?
->>>
->>> Yeah, I think I'll cc it with some note before the diffstat.
->>>
->>> I'm thinking to cap it to only 5.x kernels (at least first) unless it is
->>> dead easy to backport below that.
->>
->> I have this vauge recollection of pointing at this before and being
->> told that it had to be __va for some PPC reason?
->>
->> Do check with the PPC people first, I see none on the CC list.
->>
->> Jason
+On 16-09-20, 16:11, Stephen Boyd wrote:
+> This patch series is based on v12 of the msm DP driver submission[1]
+> plus a compliance patch[2]. In the v5 patch series review I suggested
+> that the DP PHY and PLL be split out of the drm driver and moved to the
+> qmp phy driver. This patch series does that, but it is still marked as
+> an RFC because there are a couple more things to do, mostly updating the
+> DT binding and getting agreement on how to structure the code.
 > 
-> Thanks, added arch/powerpc maintainers.
-> 
+> Eventually I believe the qmp phy driver will need to listen for type-c
+> notifiers or somehow know the type-c pinout being used so this driver
+> can program things slightly differently. Right now, I don't have any way
+> to test it though, so I've left it as future work. For some more
+> details, the DP phy and the USB3 phy share the same physical pins on the
+> SoC and those pins pretty much line up with a type-c pinout modulo some
+> CC pins for cable orientation detection logic that lives on the PMIC. So
+> the DP phy can use all four lanes or it can use two lanes and the USB3
+> phy can use two lanes. In the hardware designs that I have access to it
+> is always two lanes for USB3 and two lanes for DP going through what
+> looks like a type-c pinout so this just hard codes that configuration in
+> the driver.
 
-As far as I can see, memremap() won't work on PPC32 at least:
+Applied 1 thru 8, thanks
 
-IIUC, memremap() calls arch_memremap_wb()
-arch_memremap_wb() calls ioremap_cache()
-In case of failure, then ioremap_wt() and ioremap_wc() are tried.
-
-All ioremap calls end up in __ioremap_caller() which will return NULL in case you try to ioremap RAM.
-
-So the statement "So instead, use memremap(), which will reuse the linear mapping if
-it is valid, or create another mapping otherwise." seems to be wrong, at least for PPC32.
-
-Even for PPC64 which doesn't seem to have the RAM check, I can't see that it will "reuse the linear 
-mapping".
-
-Christophe
+-- 
+~Vinod
