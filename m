@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CCF027B78C
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A08D27B7FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726953AbgI1XNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
+        id S1727130AbgI1XUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:20:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726901AbgI1XNJ (ORCPT
+        with ESMTP id S1726369AbgI1XUk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:13:09 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953CDC05BD22
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:13:09 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id d9so2651585pfd.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:13:09 -0700 (PDT)
+        Mon, 28 Sep 2020 19:20:40 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD94C0613D3;
+        Mon, 28 Sep 2020 16:20:40 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id h23so472598pjv.5;
+        Mon, 28 Sep 2020 16:20:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=NftyTi1bwuaE14e4XfgcQF93EOxKUsMOEEQqaDTCXJ4=;
-        b=gb3PRHELtfh8s0n7btbKHS7gdHecLDH27/WSx/dTaEZqzwAyfLHcApZT5c+IqoShdm
-         0LEtidHDj3nYkCuzJeB2PL+jPZX/ntrn70g8bHDhQFR+CUPr0IDYs3hxi4tZpkrlg6d9
-         hrDzPZTP54zHmpmIZZBNppWuJmHgMncA/mXvQ=
+        bh=vsuWKLnYeMqAepqrk/6lbvj79XMPNhiuP6mG1PfPe34=;
+        b=DAQE/OdpvMJty/PiUP8m7WDGj6XUkYKfRqvj+WvEeZVXQRMyX59ZrFxphPrwEv/sSB
+         DEPkdlaK7CEK0qnn8TQCOmRQYNjTYT62tmIcBKq7k/50TmYoH1cgFE0iSplexDtWUqLb
+         LrKLjDmK316DV5PBWiSf5zgDFwRFKis51FBufthjbjgNek9tpA4jlYGplHDUIZRir7G0
+         gSPaJ4k5B+ZF26WgZk805tBHginmGRRw4sR2pET6Fy2BhInqwKVoK3wRvdfzyTAcVkSY
+         64bFaHmO4BXEtHkvKD9id5Qaid5seBa3etIWSrTo4HBtCodz9xu9S6uw963e4tUrGDOU
+         x+JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=NftyTi1bwuaE14e4XfgcQF93EOxKUsMOEEQqaDTCXJ4=;
-        b=Xxlq0P9ZriHrxF5cnnuV2e7+Z9C4PP1l4hmyXFGeueTB0HMzTbIx3xqRjYxS7qDIbP
-         3VV7dKfyuD9n6XybJPhAk2/2zd5CqzmBmXXRleJYGVt7IW7e2BDLKAi8vFoRNYT6kXoh
-         TLpUrw8YZyEErZK2iXn9X/S6YxV5gmCIjPcGgzRdEp2767G7f7q1VUxJ0VIQb1JoVgof
-         9HGeeHs+8MpYGncZz955QyLTOarUuQ05gf+pjzLDekHI3v1iQoxiT8K83i2lbBNFZPvV
-         Q/0rwtzJ+Twap+EMYy8M2/scBcd/pZZKq9mz2peWA3SrJBBRVf3YXYGYDG8tPoQ+Z2wj
-         4rnw==
-X-Gm-Message-State: AOAM531mnpQDqG++LjR89BJcakvVrp1CG+U4+lKQ1D9iwwjKvBUzresW
-        Nd8Auu1RWIJeV3AuIX6YPJMnOw==
-X-Google-Smtp-Source: ABdhPJwQDKOxa8hqpizwqXPcIZmf1ybA5/FNT7GiN+5miNLUE3lYvrdUP8suk6yqrm6piIZGkrVe3g==
-X-Received: by 2002:a65:494e:: with SMTP id q14mr1006851pgs.281.1601334788954;
-        Mon, 28 Sep 2020 16:13:08 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id z23sm2835217pfj.177.2020.09.28.16.13.07
+        bh=vsuWKLnYeMqAepqrk/6lbvj79XMPNhiuP6mG1PfPe34=;
+        b=k7b0wAcsTWZkpEcAhaZ1mEbLbDI4PQS+rTFsKv9Pur+2UoqJFrSNa6agzLS9s+QtAs
+         CWNeBhcCse8BPjCkpSITWJGeYHO9mzMrhG/xKxt4yuP8GDUOUChxqb18aoVNdT8UCbKx
+         oPr7bCCwaxY9M9P4lhN5tvUq+RVJ/HwMiHnENA357ylbxg8eNkTreh40tJrPoweQhTGy
+         1x8fgIvHl+G0rBCDhkCT2GhzEKH9NeXWQxH3OFiAWlzActKGrFGoXEmODNrX1vR9lFEN
+         bcKYQ/I8eozGnRZFWfsT+uKpfTN70+x3wxfqwtnRiktomsmMmzzgFFnRQhVIqSUZT1hY
+         IX5w==
+X-Gm-Message-State: AOAM531JvL8hkujZ+F+0k4Nsw6QvuM6+v8x0L/Tza7wLmCfqk09UKp7p
+        25OSi/7nUS7T6sd5dIR4S40bcUuWeTk=
+X-Google-Smtp-Source: ABdhPJzuqkV3warjS17g8nEqlLRCjCj/XVrgIQpJq1/rLez4W9NX/3EmfOb1x4tS8XUkEAqvJjvmjg==
+X-Received: by 2002:a17:90a:9415:: with SMTP id r21mr1324474pjo.180.1601335239742;
+        Mon, 28 Sep 2020 16:20:39 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id y12sm2437659pga.53.2020.09.28.16.20.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 16:13:08 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 16:13:07 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, shuah@kernel.org,
-        rafael@kernel.org, johannes@sipsolutions.net, lenb@kernel.org,
-        james.morse@arm.com, tony.luck@intel.com, bp@alien8.de,
-        arve@android.com, tkjos@android.com, maco@android.com,
-        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
-        surenb@google.com, minyard@acm.org, arnd@arndb.de,
-        mchehab@kernel.org, rric@kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@driverdev.osuosl.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-edac@vger.kernel.org
-Subject: Re: [PATCH 00/11] Introduce Simple atomic and non-atomic counters
-Message-ID: <202009281612.EDC1C0078@keescook>
-References: <cover.1601073127.git.skhan@linuxfoundation.org>
- <202009260923.9A2606CFF6@keescook>
- <3929a023-eb7a-509c-50e1-ee72dca05191@linuxfoundation.org>
+        Mon, 28 Sep 2020 16:20:38 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 16:20:36 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Vincent Huang <vincent.huang@tw.synaptics.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Duggan <aduggan@synaptics.com>
+Subject: Re: [PATCH] Input: trackpoint - enable Synaptics trackpoints
+Message-ID: <20200928232036.GA2520341@dtor-ws>
+References: <20200924053013.1056953-1-vincent.huang@tw.synaptics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3929a023-eb7a-509c-50e1-ee72dca05191@linuxfoundation.org>
+In-Reply-To: <20200924053013.1056953-1-vincent.huang@tw.synaptics.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 04:41:47PM -0600, Shuah Khan wrote:
-> On 9/26/20 10:29 AM, Kees Cook wrote:
-> > On Fri, Sep 25, 2020 at 05:47:14PM -0600, Shuah Khan wrote:
-> > >     7. Verified that the test module compiles in kunit env. and test
-> > >        module can be loaded to run the test.
-> > 
-> > I meant write it using KUnit interfaces (e.g. KUNIT_EXPECT*(),
-> > kunit_test_suite(), etc):
-> > https://www.kernel.org/doc/html/latest/dev-tools/kunit/
-> > 
-> > Though I see the docs are still not updated[1] to reflect the Kconfig
-> > (CONFIG_foo_KUNIT_TEST) and file naming conventions (foo_kunit.c).
-> > 
+On Thu, Sep 24, 2020 at 01:30:13PM +0800, Vincent Huang wrote:
+> Add Synaptics IDs in trackpoint_start_protocol() to mark them as valid.
 > 
-> I would like to be able to run this test outside Kunit env., hence the
-> choice to go with a module and kselftest script. It makes it easier to
-> test as part of my workflow as opposed to doing a kunit and build and
-> running it that way.
+> Signed-off-by: Vincent Huang <vincent.huang@tw.synaptics.com>
 
-It does -- you just load it normally like before and it prints out
-everything just fine. This is how I use the lib/test_user_copy.c and
-lib/test_overflow.c before/after their conversions.
+Applied, thank you.
 
 -- 
-Kees Cook
+Dmitry
