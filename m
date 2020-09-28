@@ -2,164 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3251B27B5C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:54:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A8327B5C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:54:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbgI1Typ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33856 "EHLO
+        id S1726714AbgI1Tyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgI1Typ (ORCPT
+        with ESMTP id S1726590AbgI1Tyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:54:45 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39685C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:54:44 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id j185so1541681vsc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:54:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iNpDShrVH0G/yhVSSFMZRjI6zLZIrWDL5WcnPUrYGzk=;
-        b=GyPa84B2gDRjXkfCs6NUDZmJEyPJ4/aOBxxs5SluRxk+xDHeeMdBdYam31QWJvC7U1
-         L9JYguE062Ayx4K6/mqBIzcFcUIyZ7fdcr5PTF3vFUzX81ZxHjjButBuMRTYjMcD/JWM
-         +0/du/7KsYoDnJ3945FToisyazVuA5fS0RSRo9veeBudFhqKsml63C9W4od0s5qEMqE7
-         BnCcSOSIB8yUBs/UAHphk7LO6Ny4AN5wMlktb6d2YvSJf9E2sbYeXJ7jdG2GIR1+JhBq
-         0e9+5xbp2gPt3qIQ+sWYpcF3ken54zKdkbq0znlvpiFPA7DbMClVE+7NhFXTrnWpQIRu
-         0Ygg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iNpDShrVH0G/yhVSSFMZRjI6zLZIrWDL5WcnPUrYGzk=;
-        b=HqWDk2kGuXXW5fKMSL8rsXl0zZ9lSfBVUtPGhLoneu4dT4vvRaM90MjFb4QNloN1D0
-         q4YweSArqS+KiDqXrTj3gNLXMI038T1fcHhvLkveX+qycarCbiySl3Uy5KxpUgU+ujCK
-         H2IiqYwRD1JKfF/n9bRXK/w7zSpWExn5NMaLcWg7lRtoSUvcXodVBf++iFkVKXMs+wU7
-         1DZhPPyOuVOhGVTIwekGc6GndcD4RF2d06ewOOQYpBk9ppyp1ZSkKD0gGf3ppIq0vfaC
-         ZpKtsL7jbwac2ku6paxaa4zfPHJEqr8TQjOhbBABax6aCGckBtEEmRh3xPbdJQJ6bu26
-         xowA==
-X-Gm-Message-State: AOAM532ZY6nsxw+ww+MEo/7j35D7CWiQN9BPJrwr7u+G6ROlVuP3lg/g
-        PAFtd3gkJ25FVXjSGugSdxDXQ1N5N+4+diRz0CCldA==
-X-Google-Smtp-Source: ABdhPJyKWBQujyJVRHGrieRaSMsZmWbNB9hyqNqokl7AeUU5BIFXRGbNbptSBgg8A0uaH6NdaRJx7pPfbvsJBwoZZPc=
-X-Received: by 2002:a67:bd12:: with SMTP id y18mr893885vsq.45.1601322883397;
- Mon, 28 Sep 2020 12:54:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200918021220.2066485-1-sashal@kernel.org> <20200918021220.2066485-112-sashal@kernel.org>
-In-Reply-To: <20200918021220.2066485-112-sashal@kernel.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 29 Sep 2020 01:24:32 +0530
-Message-ID: <CA+G9fYteKZxdLVtQzXyh36hhaj6W5e17U_emsXwZdjPoeyj+OQ@mail.gmail.com>
-Subject: Re: [PATCH AUTOSEL 4.14 112/127] perf parse-events: Fix incorrect
- conversion of 'if () free()' to 'zfree()'
-To:     Sasha Levin <sashal@kernel.org>,
-        linux- stable <stable@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        clang-built-linux@googlegroups.com, Jiri Olsa <jolsa@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Stephane Eranian <eranian@google.com>,
-        lkft-triage@lists.linaro.org
+        Mon, 28 Sep 2020 15:54:53 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BFAC061755;
+        Mon, 28 Sep 2020 12:54:53 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 8557128DB03
+Message-ID: <9cbd69ac5386c2e2e6e7024416c97efa618a97bf.camel@collabora.com>
+Subject: Re: [PATCH] media: uapi: h264: Add documentation to the interface
+ header
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel@collabora.com,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>
+Date:   Mon, 28 Sep 2020 16:54:44 -0300
+In-Reply-To: <5049b19f-cb31-6e6e-2667-c63b7adf997b@xs4all.nl>
+References: <20200921193851.50752-1-ezequiel@collabora.com>
+         <5049b19f-cb31-6e6e-2667-c63b7adf997b@xs4all.nl>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Sep 2020 at 08:00, Sasha Levin <sashal@kernel.org> wrote:
->
-> From: Arnaldo Carvalho de Melo <acme@redhat.com>
->
-> [ Upstream commit 7fcdccd4237724931d9773d1e3039bfe053a6f52 ]
->
-> When applying a patch by Ian I incorrectly converted to zfree() an
-> expression that involved testing some other struct member, not the one
-> being freed, which lead to bugs reproduceable by:
->
->   $ perf stat -e i/bs,tsc,L2/o sleep 1
->   WARNING: multiple event parsing errors
->   Segmentation fault (core dumped)
->   $
->
-> Fix it by restoring the test for pos->free_str before freeing
-> pos->val.str, but continue using zfree(&pos->val.str) to set that member
-> to NULL after freeing it.
->
-> Reported-by: Ian Rogers <irogers@google.com>
-> Fixes: e8dfb81838b1 ("perf parse-events: Fix memory leaks found on parse_events")
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Cc: clang-built-linux@googlegroups.com
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: Leo Yan <leo.yan@linaro.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Stephane Eranian <eranian@google.com>
-> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On Thu, 2020-09-24 at 10:29 +0200, Hans Verkuil wrote:
+> Hi Ezequiel,
+> 
+> On 21/09/2020 21:38, Ezequiel Garcia wrote:
+> > In preparation for making the interface public,
+> > document all the structures. Special care is taken to
+> > annotate those fields that depart from the H264 syntax.
+> > 
+> > This commit only adds documentation and doesn't affect
+> > functionality in any way.
+> > 
+> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > ---
+> >  include/media/h264-ctrls.h | 138 ++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 128 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
+> > index ec4799154438..afc8e7c05c18 100644
+> > --- a/include/media/h264-ctrls.h
+> > +++ b/include/media/h264-ctrls.h
+> > @@ -46,11 +46,38 @@
+> >  #define V4L2_CTRL_TYPE_H264_DECODE_PARAMS	0x0114
+> >  #define V4L2_CTRL_TYPE_H264_PRED_WEIGHTS	0x0115
+> >  
+> > +/**
+> > + * enum v4l2_mpeg_video_h264_decode_mode - Decoding mode
+> > + *
+> > + * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED: indicates that decoding
+> > + * is performed one slice at a time. In this mode,
+> > + * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS must contain the parsed slice
+> > + * parameters and the OUTPUT buffer must contain a single slice.
+> > + * V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF feature is used
+> > + * in order to support multislice frames.
+> > + * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED: indicates that
+> > + * decoding is performed per frame. The OUTPUT buffer must contain
+> > + * all slices and also both fields. This mode is typically supported
+> > + * by device drivers that are able to parse the slice(s) header(s)
+> > + * in hardware. When this mode is selected,
+> > + * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS is not used.
+> > + */
+> >  enum v4l2_mpeg_video_h264_decode_mode {
+> >  	V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED,
+> >  	V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
+> >  };
+> >  
+> > +/**
+> > + * enum v4l2_mpeg_video_h264_start_code - Start code
+> > + *
+> > + * @V4L2_MPEG_VIDEO_H264_START_CODE_NONE: slices are passed
+> > + * to the driver without any start code.
+> > + * @V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B: slices are passed
+> > + * to the driver with an Annex B start code prefix
+> > + * (legal start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001).
+> > + * This mode is typically supported by device drivers that parse
+> > + * the start code in hardware.
+> > + */
+> >  enum v4l2_mpeg_video_h264_start_code {
+> >  	V4L2_MPEG_VIDEO_H264_START_CODE_NONE,
+> >  	V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
+> > @@ -71,6 +98,12 @@ enum v4l2_mpeg_video_h264_start_code {
+> >  #define V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD		0x20
+> >  #define V4L2_H264_SPS_FLAG_DIRECT_8X8_INFERENCE			0x40
+> >  
+> > +/**
+> > + * struct v4l2_ctrl_h264_sps - H264 sequence parameter set
+> > + *
+> > + * All the members on this sequence parameter set structure match the
+> > + * sequence parameter set syntax as specified by the H264 specification.
+> > + */
+> >  struct v4l2_ctrl_h264_sps {
+> >  	__u8 profile_idc;
+> >  	__u8 constraint_set_flags;
+> > @@ -101,6 +134,20 @@ struct v4l2_ctrl_h264_sps {
+> >  #define V4L2_H264_PPS_FLAG_TRANSFORM_8X8_MODE				0x0040
+> >  #define V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT			0x0080
+> >  
+> > +/**
+> > + * struct v4l2_ctrl_h264_pps - H264 picture parameter set
+> > + *
+> > + * Except where noted, all the members on this picture parameter set
+> > + * structure match the sequence parameter set syntax as specified
+> > + * by the H264 specification.
+> > + *
+> > + * In particular, V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT flag
+> > + * has a specific meaning. This flag should be set if a non-flat
+> > + * scaling matrix applies to the picture. In this case, applications
+> > + * are expected to use V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX.
+> > + * This will be the case if SPS scaling_matrix_present_flag or
+> > + * PPS pic_scaling_matrix_present_flag syntax elements are set.
+> 
+> This is a bit confusing. 'This will be the case': what does 'This' refer
+> to?
+> 
 
-stable rc 4.14 perf build broken.
+I see, yes. I'll try to clarify here.
 
-> ---
->  tools/perf/util/parse-events.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> index 2733cdfdf04c6..ba973bdfaa657 100644
-> --- a/tools/perf/util/parse-events.c
-> +++ b/tools/perf/util/parse-events.c
-> @@ -1258,7 +1258,8 @@ static int __parse_events_add_pmu(struct parse_events_state *parse_state,
->
->                 list_for_each_entry_safe(pos, tmp, &config_terms, list) {
->                         list_del_init(&pos->list);
-> -                       zfree(&pos->val.str);
-> +                       if (pos->free_str)
-> +                               zfree(&pos->val.str);
->                         free(pos);
->                 }
->                 return -EINVAL;
+> > + */
+> >  struct v4l2_ctrl_h264_pps {
+> >  	__u8 pic_parameter_set_id;
+> >  	__u8 seq_parameter_set_id;
+> > @@ -115,6 +162,18 @@ struct v4l2_ctrl_h264_pps {
+> >  	__u16 flags;
+> >  };
+> >  
+> > +/**
+> > + * struct v4l2_ctrl_h264_scaling_matrix - H264 scaling matrices
+> > + *
+> > + * @scaling_list_4x4: scaling matrix after applying the inverse
+> > + * scanning process. Expected list order is Intra Y, Intra Cb,
+> > + * Intra Cr, Inter Y, Inter Cb, Inter Cr. The values on each
+> > + * scaling list are expected in raster scan order.
+> > + * @scaling_list_8x8: scaling matrix after applying the inverse
+> > + * scanning process. Expected list order is Intra Y, Inter Y,
+> > + * Intra Cb, Inter Cb, Intra Cr, Inter Cr. The values on each
+> > + * scaling list are expected in raster scan order.
+> 
+> The list order is different for the 4x4 and 8x8 matrices. Is that
+> correct?
+> 
+> If it is correct, then there should perhaps be a sentence like this
+> at the start:
+> 
+> "Note that the list order is different for the 4x4 and 8x8 matrices
+> as per the H264 specification."
+> 
+> 
+> (I assume that the order is based on the H264 spec)
+> 
 
+Yes, I'll add this and mention table 7-2 as pointed out by Nicolas.
 
-util/parse-events.c: In function '__parse_events_add_pmu':
-util/parse-events.c:1261:11: error: 'struct perf_evsel_config_term'
-has no member named 'free_str'
-    if (pos->free_str)
-           ^~
-In file included from util/evlist.h:14:0,
-                 from util/parse-events.c:10:
-util/parse-events.c:1262:20: error: 'union <anonymous>' has no member
-named 'str'
-     zfree(&pos->val.str);
-                    ^
-util/util.h:27:29: note: in definition of macro 'zfree'
- #define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
-                             ^~~
-util/parse-events.c:1262:20: error: 'union <anonymous>' has no member
-named 'str'
-     zfree(&pos->val.str);
-                    ^
-util/util.h:27:36: note: in definition of macro 'zfree'
- #define zfree(ptr) ({ free(*ptr); *ptr = NULL; })
-                                    ^~~
+> > + */
+> >  struct v4l2_ctrl_h264_scaling_matrix {
+> >  	__u8 scaling_list_4x4[6][16];
+> >  	__u8 scaling_list_8x8[6][64];
+> > @@ -134,6 +193,12 @@ struct v4l2_h264_weight_factors {
+> >  	 ((pps)->weighted_bipred_idc == 1 && \
+> >  	  (slice)->slice_type == V4L2_H264_SLICE_TYPE_B))
+> >  
+> > +/**
+> > + * struct v4l2_ctrl_h264_pred_weights - Prediction weight table
+> > + *
+> > + * Prediction weight table, which matches the syntax specified
+> > + * by the H264 specification.
+> > + */
+> >  struct v4l2_ctrl_h264_pred_weights {
+> >  	__u16 luma_log2_weight_denom;
+> >  	__u16 chroma_log2_weight_denom;
+> > @@ -153,19 +218,41 @@ struct v4l2_ctrl_h264_pred_weights {
+> >  #define V4L2_H264_BOTTOM_FIELD_REF			0x2
+> >  #define V4L2_H264_FRAME_REF				0x3
+> >  
+> > +/**
+> > + * struct v4l2_h264_reference - H264 picture reference
+> > + *
+> > + * @fields: indicates how the picture is referenced.
+> > + * Valid values are V4L2_H264_{}_REF.
+> > + * @index: index into v4l2_ctrl_h264_decode_params.dpb[].
+> > + */
+> >  struct v4l2_h264_reference {
+> >  	__u8 fields;
+> > -
+> > -	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
+> >  	__u8 index;
+> >  };
+> >  
+> > +/**
+> > + * struct v4l2_ctrl_h264_slice_params - H264 slice parameters
+> > + *
+> > + * This structure holds the H264 syntax elements that are specified
+> > + * as non-invariant for the slices in a given frame.
+> > + *
+> > + * Slice invariant syntax elements are contained in struct
+> > + * v4l2_ctrl_h264_decode_params. This is done to reduce the API surface
+> > + * on frame-based decoders, where slice header parsing is done by the
+> > + * hardware.
+> > + *
+> > + * Slice invariant syntax elements are specified in specification section
+> > + * "7.4.3 Slice header semantics".
+> > + *
+> > + * Except where noted, the members on this struct match the slice header syntax.
+> > + *
+> > + * @header_bit_size: offset in bits to slice_data() from the beginning of this slice.
+> > + * @ref_pic_list0: reference picture list 0 after applying the per-slice modifications.
+> > + * @ref_pic_list1: reference picture list 1 after applying the per-slice modifications.
+> 
+> There are a lot more fields here that are not mentioned.
+> 
+> In order to prevent the doc checker to issue warnings about undocumented field,
+> I would suggest adding them all, but just keep the description simple:
+> 
+> @slice_type: see H264 specification.
+> 
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+OK.
 
-full build link,
-https://ci.linaro.org/view/lkft/job/openembedded-lkft-linux-stable-rc-4.14/DISTRO=lkft,MACHINE=intel-corei7-64,label=docker-lkft/938/consoleText
+> You should also document @reserved since that's obviously not part of the h264 spec.
+> 
 
+OK.
 
--- 
-Linaro LKFT
-https://lkft.linaro.org
+> > + */
+> >  struct v4l2_ctrl_h264_slice_params {
+> > -	/* Offset in bits to slice_data() from the beginning of this slice. */
+> >  	__u32 header_bit_size;
+> > -
+> >  	__u32 first_mb_in_slice;
+> > -
+> >  	__u8 slice_type;
+> >  	__u8 colour_plane_id;
+> >  	__u8 redundant_pic_cnt;
+> > @@ -191,22 +278,55 @@ struct v4l2_ctrl_h264_slice_params {
+> >  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
+> >  #define V4L2_H264_DPB_ENTRY_FLAG_FIELD		0x08
+> >  
+> > +/**
+> > + * struct v4l2_h264_dpb_entry - H264 decoded picture buffer entry
+> > + *
+> > + * @reference_ts: timestamp of the V4L2 capture buffer to use as reference.
+> > + * The timestamp refers to the timestamp field in struct v4l2_buffer.
+> > + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
+> > + * @pic_num: matches PicNum variable assigned during the reference
+> > + * picture lists construction process.
+> > + * @frame_num: frame identifier which matches frame_num syntax element.
+> > + * @fields: indicates how the DPB entry is referenced. Valid values are
+> > + * V4L2_H264_{}_REF.
+> > + * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
+> > + * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
+> > + * Note that picture field is indicated by v4l2_buffer.field.
+> 
+> @flags and @reserved are missing.
+> 
+> > + */
+> >  struct v4l2_h264_dpb_entry {
+> >  	__u64 reference_ts;
+> >  	__u32 pic_num;
+> >  	__u16 frame_num;
+> >  	__u8 fields;
+> >  	__u8 reserved[5];
+> > -	/* Note that field is indicated by v4l2_buffer.field */
+> >  	__s32 top_field_order_cnt;
+> >  	__s32 bottom_field_order_cnt;
+> > -	__u32 flags; /* V4L2_H264_DPB_ENTRY_FLAG_* */
+> > +	__u32 flags;
+> >  };
+> >  
+> >  #define V4L2_H264_DECODE_PARAM_FLAG_IDR_PIC		0x01
+> >  #define V4L2_H264_DECODE_PARAM_FLAG_FIELD_PIC		0x02
+> >  #define V4L2_H264_DECODE_PARAM_FLAG_BOTTOM_FIELD	0x04
+> >  
+> > +/**
+> > + * struct v4l2_ctrl_h264_decode_params - H264 decoding parameters
+> > + *
+> > + * @dpb: decoded picture buffer.
+> > + * @nal_ref_idc: slice header syntax element.
+> > + * @frame_num: slice header syntax element.
+> > + * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
+> > + * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
+> > + * Note that picture field is indicated by v4l2_buffer.field.
+> > + * @idr_pic_id: slice header syntax element.
+> > + * @pic_order_cnt_lsb: slice header syntax element.
+> > + * @delta_pic_order_cnt_bottom: slice header syntax element.
+> > + * @delta_pic_order_cnt0: slice header syntax element.
+> > + * @delta_pic_order_cnt1: slice header syntax element.
+> > + * @dec_ref_pic_marking_bit_size: size in bits of dec_ref_pic_marking()
+> > + * syntax element.
+> > + * @pic_order_cnt_bit_size: size in bits of pic order count syntax.
+> > + * @slice_group_change_cycle: slice header syntax element.
+> 
+> @reserved and @flags are missing.
+> 
 
-> --
-> 2.25.1
->
+Yes, I'll address the missing fields and send a v2.
+
+Thanks,
+Ezequiel
+
