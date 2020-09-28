@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0A627B3E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFA127B3E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbgI1SBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:01:21 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:48141 "EHLO
+        id S1726906AbgI1SBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:01:47 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:51225 "EHLO
         wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726504AbgI1SBS (ORCPT
+        by vger.kernel.org with ESMTP id S1726826AbgI1SBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:01:18 -0400
+        Mon, 28 Sep 2020 14:01:20 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id A510ED92;
+        by mailnew.west.internal (Postfix) with ESMTP id 08D60E88;
         Mon, 28 Sep 2020 13:55:24 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 28 Sep 2020 13:55:25 -0400
+  by compute4.internal (MEProxy); Mon, 28 Sep 2020 13:55:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
         :to:cc:subject:date:message-id:in-reply-to:references:reply-to
-        :mime-version:content-transfer-encoding; s=fm1; bh=01LYlc5bDzp3u
-        qzR9xxfv49dl40Bp54QbYMpQqXO/5E=; b=M7xV7Ip4pSaGpM8FfuydMwvO0fCGH
-        zGTwAaxetq6YCSXCJaFSXSMVVRR+7XCaxRwCXRNyRgvbA5OkFS4xogt5/hq8aGYa
-        MHoGtx1bA1WnF8b1xTkDW7Ozxs5jJlm3jvzV18BudEsGJL5oftAXPw+S4KWTtOa+
-        ovNUwCbq0Z297HcQvaS9OMmRr61NfYe0mPj34A6XZYUdqj33OuZabIA3X/lIm5qQ
-        kX+IBv9LpobNgSBad6u3/iWfsrSjSDi8ew4QriaIGvIoLvOauOwfwhX2VX8S5Wyq
-        gk0kHZMz/uIBJSr+E9lyAVIwyGqfLzsFSpuNhRNBwF23CHHOmpaJEZDTw==
+        :mime-version:content-transfer-encoding; s=fm1; bh=jyLbUIlQCtFGz
+        7jNfvQyTQJ+R8QHi6y2ry8kkWn61AM=; b=Hn+ay/U24pF9LPmOCv8p85LuSyLZ0
+        y0ZSMPnUWnZX31bAwM8Q6H9Hwo9HID53QZHuf7l8xSoxbNFvGPCSJerBi2mlVPJD
+        32sascRspIB3Acwx6IH4s+eDaKdr0S8h6cpMLaBMWNFWrrToWZmNQQf4lvGWSwH7
+        g9QfUUAR+x6gfRcHlF9XDSe5xpU4Kki5/QFgMz35tctxXjN1FbykfLau2pass/xl
+        pPJo503R6m91iX9IRxsCLppmH9cvoBYJLWX0xkLSlSs/JgDdBpR1oOhn3MxDcHoJ
+        YPTwCOvUc2dpSFW2cWiUoczp270HXyC5LalEO7StcsE3k/RnezgRRhIyw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:reply-to:subject
         :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=01LYlc5bDzp3uqzR9xxfv49dl40Bp54QbYMpQqXO/5E=; b=ioPd4MMV
-        55cAG7caB4GzPpNXV6YKinZBo+9I1F6vWb8/o0eJAAfr3y6pUAy0AW00miyueaiy
-        uPXAnW+LNFyjleTU/zBsseynT4nAp/OCozX+lBRzBW0SHY14dH4GdjoGXVOOa8m9
-        CJRkCP/+uVXmAIF6BqGx1g0ZHQvlXbqYlhxI7voWYfMnU5yr9RVGWfs8TOMCpiM4
-        OW78uxueiVgxYaCNA8vMEwcuM3vB/BsiKaZDTBjBrxqJ+s5nvGYLo7U8+zrZr4Tt
-        jPemCbUCIf0eR/gfG50NExHXRqqQas2NLOVkJIr/x5hOkBP1qm/gIiTlHk7K7kAw
-        IZ7i+fSPvMZL+Q==
-X-ME-Sender: <xms:jCNyXzLMWxfCOqAa1uWMKjHl_DlvN6LE8G6el-riw_ks-mi_LFxX_A>
-    <xme:jCNyX3L5mE3ux-2OnlKMNXNQdVgabyk-8i7h-4ILb_agi-Wg4T5AumJmijnSXXbZf
-    zC2aOEHu-WMPI2nVg>
+        fm3; bh=jyLbUIlQCtFGz7jNfvQyTQJ+R8QHi6y2ry8kkWn61AM=; b=Ut2Dy29W
+        xcq2q4FraGvdMfQI4YwmLJbOh/OHg/8Y78QXH8MYWJ+4HDgw/+KwsZuJQgSPu7xp
+        8xmca4fOxBiPs+NvyOd2C8zR8v5KmxNMvYN8h4NDfVULGJSJuJHAc8Zuj/0PNhwI
+        SXaAcAAA0yQtJ1AOf3tLqzjNOu5TK/4JKbIjz9Wy2sY8jpr9O5DNuLgVDXnSb1p8
+        3at9g1Y2vASoyD24YMTepZULAoAUdpdLK3clNsiySLpkrlzyAgG3kVNcJB4IeM3y
+        37LA+pBIg5PUg92JeRIjN95+LeU+vXWrHVR/09ogLZDuJUIBtiHiBvwEw5dQhwo6
+        tVVlIcy4MbQ1gg==
+X-ME-Sender: <xms:jCNyX2PtdqVU0iZI05t76kJXrFzOFUQaPQ6aBcnwjAp0HposdqShSQ>
+    <xme:jCNyX08hJEaGtwWMvFY07ZcmZghuNe8_5MdHQhho0ujLxBGZzBUTPevHWZ-qxYUD4
+    NXFlAsEaBfNrWYNqQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -48,13 +48,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdote
     ektdduhfdutdfgtdekkedvhfetuedufedtgffgvdevleehheevjefgtdenucfkphepuddv
     rdegiedruddtiedrudeigeenucevlhhushhtvghrufhiiigvpeduvdenucfrrghrrghmpe
     hmrghilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
-X-ME-Proxy: <xmx:jCNyX7v5tkIDX3eaTgYOPxaDdLeZSrsOOa-CwR2fmU6DgOJvy-FqMw>
-    <xmx:jCNyX8bCjXPv8GujQnxBO03FvTJIf5fdcFiqQcrowoC4pmPbqEGRkg>
-    <xmx:jCNyX6aWJQ_yFGpUrOMhmdx5DxdkM1myAHoLzX3yqYrU1fuw4RPZvg>
-    <xmx:jCNyXwy1OANFJdy20Zpup9yLCO0CJFn8aVWp2ggsgLbEu_BftbXf_j8cRJY>
+X-ME-Proxy: <xmx:jCNyX9SAg4EPqNuDwTddc7lIPhi8GmSwtEpnSdc9Kq8iWKrDJSu5mQ>
+    <xmx:jCNyX2u-DyspJqyjNMl0NXe3_XS9Chy6Kdzyl1wz8CfOI3pzuGXdcQ>
+    <xmx:jCNyX-f5rwtv5Bu0iXRasR2V4ayB4uAXVk6-DUaQOKxQizrcJADeCw>
+    <xmx:jCNyX52h-FVUhHbW6GFsO7oBNPsiDg3AG2UkrdIX66qjTgq_hMFSTrU4hjI>
 Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
-        by mail.messagingengine.com (Postfix) with ESMTPA id BE8013064688;
-        Mon, 28 Sep 2020 13:55:23 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 219893064610;
+        Mon, 28 Sep 2020 13:55:24 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     linux-mm@kvack.org
 Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
@@ -71,9 +71,9 @@ Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         John Hubbard <jhubbard@nvidia.com>,
         David Nellans <dnellans@nvidia.com>,
         linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>
-Subject: [RFC PATCH v2 16/30] mm: debug: adapt dump_page to PUD THP.
-Date:   Mon, 28 Sep 2020 13:54:14 -0400
-Message-Id: <20200928175428.4110504-17-zi.yan@sent.com>
+Subject: [RFC PATCH v2 17/30] mm: thp: PUD THP COW splits PUD page and falls back to PMD page.
+Date:   Mon, 28 Sep 2020 13:54:15 -0400
+Message-Id: <20200928175428.4110504-18-zi.yan@sent.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200928175428.4110504-1-zi.yan@sent.com>
 References: <20200928175428.4110504-1-zi.yan@sent.com>
@@ -86,39 +86,100 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-Since the order of a PUD THP is greater than MAX_ORDER, do not consider
-its tail pages corrupted. Also print sub_compound_mapcount when dumping
-a PMDPageInPUD.
+COW on PUD THPs has the same behavior as COW on PMD THPs to avoid high
+COW overhead. As a result, do_huge_pmd_wp will see PMD-mapped PUD THPs,
+thus needs to count PUD mappings in total mapcount when calling
+page_trans_huge_map_swapcount in reuse_swap_page to avoid false positive.
+Change page_trans_huge_map_swapcount to get it right.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 ---
- mm/debug.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ include/linux/huge_mm.h |  5 +++++
+ mm/huge_memory.c        | 13 +++++++++++++
+ mm/memory.c             |  3 +--
+ mm/swapfile.c           |  7 ++++++-
+ 4 files changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/mm/debug.c b/mm/debug.c
-index ccca576b2899..f5b035dc620d 100644
---- a/mm/debug.c
-+++ b/mm/debug.c
-@@ -68,7 +68,9 @@ void __dump_page(struct page *page, const char *reason)
- 		goto hex_only;
- 	}
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index e5c68e680907..589e5af5a1c2 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -19,6 +19,7 @@ extern int copy_huge_pud(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+ #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+ extern void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud);
+ extern int do_huge_pud_anonymous_page(struct vm_fault *vmf);
++extern vm_fault_t do_huge_pud_wp_page(struct vm_fault *vmf, pud_t orig_pud);
+ #else
+ static inline void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud)
+ {
+@@ -27,6 +28,10 @@ extern int do_huge_pud_anonymous_page(struct vm_fault *vmf)
+ {
+ 	return VM_FAULT_FALLBACK;
+ }
++extern vm_fault_t do_huge_pud_wp_page(struct vm_fault *vmf, pud_t orig_pud)
++{
++	return VM_FAULT_FALLBACK;
++}
+ #endif
  
--	if (page < head || (page >= head + MAX_ORDER_NR_PAGES)) {
-+	if (page < head ||
-+	    (page >= head + max_t(unsigned long, compound_nr(head),
-+				  (unsigned long)MAX_ORDER_NR_PAGES))) {
- 		/*
- 		 * Corrupt page, so we cannot call page_mapping. Instead, do a
- 		 * safe subset of the steps that page_mapping() does. Caution:
-@@ -109,6 +111,8 @@ void __dump_page(struct page *page, const char *reason)
- 					head, compound_order(head),
- 					head_compound_mapcount(head));
- 		}
-+		if (compound_order(head) == HPAGE_PUD_ORDER && PMDPageInPUD(page))
-+			pr_warn("sub_compound_mapcount:%d\n", sub_compound_mapcount(page));
- 	}
- 	if (PageKsm(page))
- 		type = "ksm ";
+ extern vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf, pmd_t orig_pmd);
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 4a899e856088..9aa19aa643cd 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -1335,6 +1335,19 @@ void huge_pud_set_accessed(struct vm_fault *vmf, pud_t orig_pud)
+ unlock:
+ 	spin_unlock(vmf->ptl);
+ }
++
++vm_fault_t do_huge_pud_wp_page(struct vm_fault *vmf, pud_t orig_pud)
++{
++	struct vm_area_struct *vma = vmf->vma;
++
++	/*
++	 * split pud directly. a whole pud page is not swappable, so there is
++	 * no need to try reuse_swap_page
++	 */
++	__split_huge_pud(vma, vmf->pud, vmf->address, false, NULL);
++	return VM_FAULT_FALLBACK;
++}
++
+ #endif /* CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD */
+ 
+ void huge_pmd_set_accessed(struct vm_fault *vmf, pmd_t orig_pmd)
+diff --git a/mm/memory.c b/mm/memory.c
+index e0e0459c0caf..ab80d13807aa 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4141,9 +4141,8 @@ static vm_fault_t create_huge_pud(struct vm_fault *vmf)
+ static vm_fault_t wp_huge_pud(struct vm_fault *vmf, pud_t orig_pud)
+ {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	/* No support for anonymous transparent PUD pages yet */
+ 	if (vma_is_anonymous(vmf->vma))
+-		return VM_FAULT_FALLBACK;
++		return do_huge_pud_wp_page(vmf, orig_pud);
+ 	if (vmf->vma->vm_ops->huge_fault)
+ 		return vmf->vma->vm_ops->huge_fault(vmf, PE_SIZE_PUD);
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 495ecdbd7859..a6989b0c4d44 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -1635,7 +1635,12 @@ static int page_trans_huge_map_swapcount(struct page *page, int *total_mapcount,
+ 	/* hugetlbfs shouldn't call it */
+ 	VM_BUG_ON_PAGE(PageHuge(page), page);
+ 
+-	if (!IS_ENABLED(CONFIG_THP_SWAP) || likely(!PageTransCompound(page))) {
++	if (!IS_ENABLED(CONFIG_THP_SWAP) || likely(!PageTransCompound(page)) ||
++	    /*
++	     * PMD-mapped PUD THP need to take PUD mappings into account by
++	     * using page_trans_huge_mapcount
++	     */
++	    unlikely(thp_order(page) == HPAGE_PUD_ORDER)) {
+ 		mapcount = page_trans_huge_mapcount(page, total_mapcount);
+ 		if (PageSwapCache(page))
+ 			swapcount = page_swapcount(page);
 -- 
 2.28.0
 
