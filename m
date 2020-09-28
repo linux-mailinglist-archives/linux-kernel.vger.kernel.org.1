@@ -2,100 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD7627B531
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A51D27B533
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgI1TVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:21:54 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:53375 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgI1TVx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:21:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601320913; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=obVXhgTgepUWdTaJcXF5/0Z4MlxN7LlK1+bxFgWPPcM=;
- b=lD5nSKA5i/gnD0zM8HAkOKykrHjnDXjD0Eweo377yG0NPMdw2Z0TinxAr9A+scbQ6y+CQ321
- jyOGVy4KMzpB7eMk56W24PSQpY/JRPt3DIJR1W3JQznlody0z44iBI3yktoa/vCW6BJBzAcd
- U6UAAbFWlgJ9F1KPkTltULpbX9g=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5f7237c270602555f5a9970f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 19:21:38
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5C356C433FF; Mon, 28 Sep 2020 19:21:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A9B0CC433C8;
-        Mon, 28 Sep 2020 19:21:36 +0000 (UTC)
+        id S1726497AbgI1TYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:24:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21907 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726228AbgI1TYi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 15:24:38 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601321076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=upPMrX0wk/3QeqZeG7hPWaGmRYIlDkaA6lt47IgGbBs=;
+        b=gruXdflvS/lGzMiL7wzs+G1YFqJF5ShE9KS9NF5b2r6Y7vvsKHuxY114onIwFbCfvfl6Xy
+        i4Dti+PEMrR6pbbunPlln81xAh0DwuSZ3RZL+BnRrXoDG6LehrBkKjaCjlghjdQT9IVB4f
+        XlmD8r63+ACJG8WylWpLwVRl+uJQ3/I=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-204-sOwEmsmiOqmhkXT4MJWrHA-1; Mon, 28 Sep 2020 15:24:34 -0400
+X-MC-Unique: sOwEmsmiOqmhkXT4MJWrHA-1
+Received: by mail-qt1-f197.google.com with SMTP id g10so1392975qto.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:24:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=upPMrX0wk/3QeqZeG7hPWaGmRYIlDkaA6lt47IgGbBs=;
+        b=NirZUNgp9lh4BmsOIgxppwldLXNbssvEpvonzuoiRj7ulIFUrziEnwi3CV3MqL66Xh
+         DbJdkmKhPNEkrBH24REGI8Xe76XbE0JUUN9kJbMG6gJaWZ96KgrTEVpYkUkc+KR7Z1S5
+         DFaaka1K2g/O/AVTSwmnWGQ0Zf4lBfz8vWl0dKccNoiX5eo4m5e1iLEEFL0JmLdqNeMx
+         Ru3bGL8xD/wkbpfI3KcWJB59osB1Hjxym2LGJpg5TTJwdZxAIOiIA+rAgCKTEGF30NoF
+         Xk0Kht0UL6C8iiBVqqA/kT6doBFu18YKJ3mj+68TiFeZlIkwNzkulxXLyFYJJHJgfCgU
+         D+TQ==
+X-Gm-Message-State: AOAM531cI+KDTIt+LpPTwjSZhv4TOy6ODPsfgr3DTDC0QNaVlmci14m6
+        VFsZOtRdJqQVJ7U+hU9Uhcpbf4+pmyuLJSez1oFMpRuCGFqX26D4E2tTsnUOSchvYxTwUOQTFRV
+        YNTNmak5OPuoVDGWfHGhAVlva
+X-Received: by 2002:ac8:7208:: with SMTP id a8mr3248319qtp.22.1601321073400;
+        Mon, 28 Sep 2020 12:24:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4I5C4VgLLDw70WedgRe2U/NYbWhztK+94fjt5d1eiH9eMyK54GDBck3R6ElFO5cEWL1RP/Q==
+X-Received: by 2002:ac8:7208:: with SMTP id a8mr3248302qtp.22.1601321073066;
+        Mon, 28 Sep 2020 12:24:33 -0700 (PDT)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
+        by smtp.gmail.com with ESMTPSA id u10sm1471098qkk.14.2020.09.28.12.24.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 12:24:32 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 15:24:30 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Tony Fischetti <tony.fischetti@gmail.com>
+Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie,
+        linux-kernel@vger.kernel.org
+Subject: Re: REGRESSION: in intel video driver following introduction of
+ mm_struct.has_pinned
+Message-ID: <20200928192430.GD59869@xz-x1>
+References: <CAOMV6SUP1=U3bqO=+f_HrnTYpaLLwvZY4muCdW-ixQU2M10_WQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 28 Sep 2020 12:21:36 -0700
-From:   abhinavk@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        freedreno@lists.freedesktop.org
-Subject: Re: [Freedreno] [PATCH] drm/msm/dpu: Add newline to printks
-In-Reply-To: <20200928191657.1193583-1-swboyd@chromium.org>
-References: <20200928191657.1193583-1-swboyd@chromium.org>
-Message-ID: <ef9767b5088a9ce33aaceccae3f6d458@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAOMV6SUP1=U3bqO=+f_HrnTYpaLLwvZY4muCdW-ixQU2M10_WQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-09-28 12:16, Stephen Boyd wrote:
-> Printk messages need newlines. Add it here.
+On Mon, Sep 28, 2020 at 02:14:16PM -0400, Tony Fischetti wrote:
+> After a length git bisection, I determined the commit that introduced
+> a change that ultimately caused a bug/oops null dereference (see below
+> for relevant syslog entries) was 008cfe4418b3dbda2ff.. (mm: Introduce
+> mm_struct.has_pinned)
 > 
-> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> Cc: Jeykumar Sankaran <jsanka@codeaurora.org>
-> Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> The RIP (according to syslog) occurs in function
+> `__get_user_pages_remote` and the last function to call it from the
+> i915 code is `gem_userptr_get_pages_worker`
+> More specifically, it appears to be the call to
+> `pin_user_pages_remote` in `gem_userptr_get_pages_worker` in
+> drivers/gpu/drm/i915/gem/i915_gem_userptr.c that directly leads to the
+> oops.
 > 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> index f272a8d0f95b..cbe0461246f8 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c
-> @@ -906,7 +906,7 @@ static int dpu_crtc_atomic_check(struct drm_crtc 
-> *crtc,
->  	}
+> Unfortunately, I don't know enough to try to fix and share the fix
+> myself, but I hope the information I provided is helpful. Please let
+> me know if there is any further information I can provide that might
+> be of use.
 > 
->  	mode = &state->adjusted_mode;
-> -	DPU_DEBUG("%s: check", dpu_crtc->name);
-> +	DPU_DEBUG("%s: check\n", dpu_crtc->name);
+> BUG: kernel NULL pointer dereference, address: 0000000000000054
+> #PF: supervisor write access in kernel mode
+> #PF: error_code(0x0002) - not-present page
+> Oops: 0002 [#1] PREEMPT SMP NOPTI
+> CPU: 8 PID: 497 Comm: kworker/u25:0 Not tainted
+> 5.9.0-rc7-alice-investigate-3+ #2
+> Hardware name: LENOVO 10ST001QUS/312A, BIOS M1UKT4BA 11/11/2019
+> Workqueue: i915-userptr-acquire __i915_gem_userptr_get_pages_worker [i915]
+> RIP: 0010:__get_user_pages_remote+0xa0/0x2d0
+> Code: 85 e7 01 00 00 83 3b 01 0f 85 e0 01 00 00 f7 c1 00 00 04 00 0f
+> 84 12 01 00 00 65 48 8b 04 25 00 6d 01 00 48 8b 80 58 03 00 00 <c7> 40
+> 54 01 00 00 00 c6 04 24 00 4d 8d 6f 68 48 c7 44 24 10 00 00
+> RSP: 0018:ffffa1a58086bde0 EFLAGS: 00010206
+> RAX: 0000000000000000 RBX: ffffa1a58086be64 RCX: 0000000000040001
+> RDX: 00000000000007e9 RSI: 00007f532f800000 RDI: ffff92f22d89c480
+> RBP: 00007f532f800000 R08: ffff92f23a188000 R09: 0000000000000000
+> R10: 0000000000000000 R11: ffffa1a58086bcfd R12: ffff92f23a188000
+> R13: ffff92f22d89c480 R14: 0000000000042003 R15: ffff92f22d89c480
+> FS:  0000000000000000(0000) GS:ffff92f23e400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000000000054 CR3: 0000000016c0a002 CR4: 00000000001706e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  __i915_gem_userptr_get_pages_worker+0x1ec/0x392 [i915]
+>  process_one_work+0x1c7/0x310
+>  worker_thread+0x28/0x3c0
+>  ? set_worker_desc+0xb0/0xb0
+>  kthread+0x123/0x140
+>  ? kthread_use_mm+0xe0/0xe0
+>  ret_from_fork+0x1f/0x30
+> Modules linked in: snd_hda_codec_hdmi snd_hda_codec_realtek
+> snd_hda_codec_generic ledtrig_audio iwlmvm mac80211 libarc4
+> x86_pkg_temp_thermal intel_powerclamp iwlwifi coretemp i915
+> crct10dif_pclmul crc32_pclmul crc32c_intel i2c_algo_bit
+> ghash_clmulni_intel drm_kms_helper syscopyarea sysfillrect sysimgblt
+> fb_sys_fops cec mei_hdcp wmi_bmof snd_hda_intel drm tpm_crb
+> snd_intel_dspcfg intel_wmi_thunderbolt snd_hda_codec snd_hwdep
+> aesni_intel crypto_simd glue_helper snd_hda_core cfg80211 i2c_i801
+> snd_pcm intel_cstate pcspkr snd_timer mei_me i2c_smbus mei i2c_core
+> thermal wmi tpm_tis tpm_tis_core tpm rng_core acpi_pad ppdev lp
+> ip_tables x_tables
+> CR2: 0000000000000054
+> ---[ end trace 8d080e8b96289c9e ]---
 > 
->  	/* force a full mode set if active state changed */
->  	if (state->active_changed)
-> @@ -1012,7 +1012,7 @@ static int dpu_crtc_atomic_check(struct drm_crtc 
-> *crtc,
->  		}
-> 
->  		pstates[i].dpu_pstate->stage = z_pos + DPU_STAGE_0;
-> -		DPU_DEBUG("%s: zpos %d", dpu_crtc->name, z_pos);
-> +		DPU_DEBUG("%s: zpos %d\n", dpu_crtc->name, z_pos);
->  	}
-> 
->  	for (i = 0; i < multirect_count; i++) {
+
+Hi, Tony,
+
+This is also reported elsewhere and the proper fix should be here:
+
+https://lore.kernel.org/intel-gfx/20200928134915.GA5904@xz-x1
+
+Thanks for the report, and sorry for the trouble!
+
+-- 
+Peter Xu
+
