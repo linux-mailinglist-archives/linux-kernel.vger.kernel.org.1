@@ -2,191 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D5E827B3A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD7127B3B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726692AbgI1Rvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
+        id S1726551AbgI1RxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbgI1Rvb (ORCPT
+        with ESMTP id S1726380AbgI1RxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:51:31 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E21F4C061755;
-        Mon, 28 Sep 2020 10:51:30 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id f70so1535487ybg.13;
-        Mon, 28 Sep 2020 10:51:30 -0700 (PDT)
+        Mon, 28 Sep 2020 13:53:07 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C6AC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:53:07 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id bw23so1108379pjb.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:53:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qTP8d6dwLkAh+M4ApAYeMXWqLPV1jTHesAupoc2kHSY=;
-        b=E4fi1zAHUeotTp0Z1r5nI7mQsi3gxEL5SyafmaJ1/GlQ6KNNGQCfsT+51gs6ePjSkc
-         LlE2AkVyA10UVrMw4hQj4Ax1kjhWapYFsqdBGXKOOuQgI7k+jnByZ6iF+jUMiG0VS/yz
-         PpPEWhEruvtoyS6SDZndOGZC++A/KfE7OVVisrDH5iJ2iOveP80Ayf2Wn3PYVtU5W3sh
-         Ug+Ejwii/v+3kCRCpcqf+eKyC45hZiq0Paaeu6HAgz9RNaaQcF4ldOUpZ3Gg7TRUrp6+
-         Q9dWuccPrdz7PnVyCWkzwU06s8flWWPDI/cZ69cqaKbsnLeHtTjWvt4/FVb7uAKR50Lb
-         KJZA==
+         :cc:content-transfer-encoding;
+        bh=VcSWQzeN0AmLIOeU7lVRuYXohJfDxAJkBb+mWUpJkbY=;
+        b=A8zjOf2CHIC4ACdMhPKQ91cY8IlwMxNJpeNacR3FNI5TEmGOoO8iEVoYnx9tPBal27
+         pWK+MZGfSZZN71hlQSNP+L32f2n5PXNEbyDI1mxQ2U/Usy/6hjZXZtnC1FZMxXaiK4FG
+         wr8wQVHMwTpsdGmKwI14kLq/ciytADMApen7xfPEQ2RqKWEE6V7Hnbyj88ZIWlw/Uilm
+         fbFOYhWPIdI5XGoEBnr9DcEcGOptQ7ODBk0YsN7Gr/1iQ5K4e0qov+Xy0z1HvLLdsBvA
+         dP6h9ZmyCy+0OXz19yK2iedDKbz4/pQRu14na3ncX2sdoWIxWhwQns75sSzwdo0fJpTs
+         7wtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qTP8d6dwLkAh+M4ApAYeMXWqLPV1jTHesAupoc2kHSY=;
-        b=miQEotDMH5cP3oyAC4NU+AsD4D4EUnAj5u6IdiRJoSC0MMCv88O+WmG4oiZasttge6
-         Fm3QbUT62noY2KmYs1M152NJ1zKu0llNDLi9fiOKYAkX19T4Nnw9VXfAeeHQQhtZZM2V
-         dTWQ3CjXym8mi4ss80aJ09IcMFqoKuF44tGDrqOTTVREqee2iMXneCASxfVfr+F8srOP
-         B28IHm34aP0CFMCVKP6cbAnt4G9swGgFtmFykep89RqTA7bvOb5p1rRKPJfDHReUq0d1
-         VzM+/NlJjjKeKYPLXQhubYT2kLBeFQiCsQ+NaCjgc2E1mE/GenV/uACmA5ExohY8aF/N
-         YBog==
-X-Gm-Message-State: AOAM533d1WEE6SUinGy2HU1XRJuU5wDaW6gNVcTou1/cs/5VVnzwi2V+
-        /WXunzASWI1mwIMeSQnGisXCwy9c9W8hgyAyIl0=
-X-Google-Smtp-Source: ABdhPJzb4iP1Y4Z4wPLox10qrUF6c/jCk5f9w7mRUTEZzUpGrHN35vSBQ4T21G8uAgOHZ7AZHiNAaeVff+gm2HvX/7w=
-X-Received: by 2002:a25:2687:: with SMTP id m129mr906465ybm.425.1601315490150;
- Mon, 28 Sep 2020 10:51:30 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VcSWQzeN0AmLIOeU7lVRuYXohJfDxAJkBb+mWUpJkbY=;
+        b=mg8EKltAKj9RP/xlLMZFPAlpHi2IV1As5JXlpHrLwnxfDq0h+O6jwyadF93qfUkKuT
+         tQ6GDz8fxN3I7xx6Hw0O6pV2MhS+E236340rAaGXbBskmJK0y/1/dF1sXtiFy/NYaC7P
+         SpnVZx9Bna6fpgI0NHAA2StsrCHDTyIfZKGXXt5atpgqzVCbDU6lZdDOhPMJXGJMtOib
+         KFEbHlDkfLzRqfH6H9qV++CEvrbMmi4p33RYJQjehbOR35BqzbXVervoxjYRLx5wq7nU
+         IGmTl4nJUHvscyFlpjwF+MPR62DNLcjLFY3b/KsoQOPdm5DFNJNXOXTrA8UXtFmOxXIl
+         x0NA==
+X-Gm-Message-State: AOAM532dCzXw333QhOrodwe2DLbpQr5DQNPVHS+S7v+KvV+fSFgPvpiP
+        Yj2QVtiu3MzPLE0pnHI3Gy7F7H9va/Eqfnbd1BmuVA==
+X-Google-Smtp-Source: ABdhPJyycyoHB8lSUDQdJQ5lxUPgHn14tkpu6dc71wMMTiF7vAMBRkZ7ouDDaRK2MgjbyjwsMQbOuNzRNyjzd8zxusQ=
+X-Received: by 2002:a17:90a:e517:: with SMTP id t23mr371035pjy.25.1601315585940;
+ Mon, 28 Sep 2020 10:53:05 -0700 (PDT)
 MIME-Version: 1.0
-References: <1600883188-4831-1-git-send-email-alan.maguire@oracle.com>
- <1600883188-4831-7-git-send-email-alan.maguire@oracle.com>
- <20200925012611.jebtlvcttusk3hbx@ast-mbp.dhcp.thefacebook.com> <alpine.LRH.2.21.2009281500220.13299@localhost>
-In-Reply-To: <alpine.LRH.2.21.2009281500220.13299@localhost>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Mon, 28 Sep 2020 10:51:19 -0700
-Message-ID: <CAEf4Bzb2JE_V7cQ=LGto6jHbiKUAg+A5MuqQ0LGb9L8qTUk6yg@mail.gmail.com>
-Subject: Re: [PATCH v6 bpf-next 6/6] selftests/bpf: add test for
- bpf_seq_printf_btf helper
-To:     Alan Maguire <alan.maguire@oracle.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        andriy.shevchenko@linux.intel.com, Petr Mladek <pmladek@suse.com>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Andrey Ignatov <rdna@fb.com>, scott.branden@broadcom.com,
-        Quentin Monnet <quentin@isovalent.com>,
-        Carlos Neira <cneirabustos@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <202009271553.4OjMpGkX%lkp@intel.com> <76cae106-b643-57a9-e82e-48e46ebf1b70@ti.com>
+In-Reply-To: <76cae106-b643-57a9-e82e-48e46ebf1b70@ti.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 28 Sep 2020 10:52:54 -0700
+Message-ID: <CAKwvOdnsQY6S+3zAH6_SD0ifbUaSDFj9mBdhF4GVq6VB=tjFsA@mail.gmail.com>
+Subject: Re: sound/soc/ti/j721e-evm.c:528:34: warning: unused variable 'j721e_audio_of_match'
+To:     Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 7:14 AM Alan Maguire <alan.maguire@oracle.com> wrote:
+On Mon, Sep 28, 2020 at 12:27 AM 'Peter Ujfalusi' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
 >
 >
 >
-> On Thu, 24 Sep 2020, Alexei Starovoitov wrote:
+> On 27/09/2020 10.27, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git master
+> > head:   a1bffa48745afbb54cb4f873bba783b2ae8be042
+> > commit: 6748d05590594837e42dfa975879fb275099f0b2 ASoC: ti: Add custom m=
+achine driver for j721e EVM (CPB and IVI)
+> > date:   3 months ago
+> > config: x86_64-randconfig-r033-20200927 (attached as .config)
+> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project a8=
+3eb048cb9a75da7a07a9d5318bbdbf54885c87)
+> > reproduce (this is a W=3D1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/s=
+bin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install x86_64 cross compiling tool for clang build
+> >         # apt-get install binutils-x86-64-linux-gnu
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linu=
+x.git/commit/?id=3D6748d05590594837e42dfa975879fb275099f0b2
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kerne=
+l/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout 6748d05590594837e42dfa975879fb275099f0b2
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross =
+ARCH=3Dx86_64
+> >
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> >
+> > All warnings (new ones prefixed by >>):
+> >
+> >>> sound/soc/ti/j721e-evm.c:528:34: warning: unused variable 'j721e_audi=
+o_of_match' [-Wunused-const-variable]
+> >    static const struct of_device_id j721e_audio_of_match[] =3D {
+> >                                     ^
+> >    1 warning generated.
 >
-> > to whatever number, but printing single task_struct needs ~800 lines and
-> > ~18kbytes. Humans can scroll through that much spam, but can we make it less
-> > verbose by default somehow?
-> > May be not in this patch set, but in the follow up?
+> Right, in the attached .config:
+> # CONFIG_OF is not set
+>
+> There must be a clean way to handle this without extensive ifedfery...
+
+Pretty sure I just saw a patch go by wrapping another device table
+definition in #ifdef CONFIG_OF, so it's not unusual.
+
+>
+> > vim +/j721e_audio_of_match +528 sound/soc/ti/j721e-evm.c
+> >
+> >    527
+> >  > 528        static const struct of_device_id j721e_audio_of_match[] =
+=3D {
+> >    529                {
+> >    530                        .compatible =3D "ti,j721e-cpb-audio",
+> >    531                        .data =3D &j721e_cpb_data,
+> >    532                }, {
+> >    533                        .compatible =3D "ti,j721e-cpb-ivi-audio",
+> >    534                        .data =3D &j721e_cpb_ivi_data,
+> >    535                },
+> >    536                { },
+> >    537        };
+> >    538        MODULE_DEVICE_TABLE(of, j721e_audio_of_match);
+> >    539
+> >
+> > ---
+> > 0-DAY CI Kernel Test Service, Intel Corporation
+> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 > >
 >
-> One approach that might work would be to devote 4 bits or so of
-> flag space to a "maximum depth" specifier; i.e. at depth 1,
-> only base types are displayed, no aggregate types like arrays,
-> structs and unions.  We've already got depth processing in the
-> code to figure out if possibly zeroed nested data needs to be
-> displayed, so it should hopefully be a simple follow-up.
+> - P=C3=A9ter
 >
-> One way to express it would be to use "..." to denote field(s)
-> were omitted. We could even use the number of "."s to denote
-> cases where multiple fields were omitted, giving a visual sense
-> of how much data was omitted.  So for example with
-> BTF_F_MAX_DEPTH(1), task_struct looks like this:
+> Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+> Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 >
-> (struct task_struct){
->  .state = ()1,
->  .stack = ( *)0x00000000029d1e6f,
->  ...
->  .flags = (unsigned int)4194560,
->  ...
->  .cpu = (unsigned int)36,
->  .wakee_flips = (unsigned int)11,
->  .wakee_flip_decay_ts = (long unsigned int)4294914874,
->  .last_wakee = (struct task_struct *)0x000000006c7dfe6d,
->  .recent_used_cpu = (int)19,
->  .wake_cpu = (int)36,
->  .prio = (int)120,
->  .static_prio = (int)120,
->  .normal_prio = (int)120,
->  .sched_class = (struct sched_class *)0x00000000ad1561e6,
->  ...
->  .exec_start = (u64)674402577156,
->  .sum_exec_runtime = (u64)5009664110,
->  .vruntime = (u64)167038057,
->  .prev_sum_exec_runtime = (u64)5009578167,
->  .nr_migrations = (u64)54,
->  .depth = (int)1,
->  .parent = (struct sched_entity *)0x00000000cba60e7d,
->  .cfs_rq = (struct cfs_rq *)0x0000000014f353ed,
->  ...
->
-> ...etc. What do you think?
-
-It's not clear to me what exactly is omitted with ... ? Would it make
-sense to still at least list a field name and "abbreviated" value.
-E.g., for arrays:
-
-.array_field = (int[16]){ ... },
-
-Similarly for struct:
-
-.struct_field = (struct my_struct){ ... },
-
-? With just '...' I get a very strong and unsettling feeling of
-missing out on the important stuff :)
-
->
-> > > +SEC("iter/task")
-> > > +int dump_task_fs_struct(struct bpf_iter__task *ctx)
-> > > +{
-> > > +   static const char fs_type[] = "struct fs_struct";
-> > > +   struct seq_file *seq = ctx->meta->seq;
-> > > +   struct task_struct *task = ctx->task;
-> > > +   struct fs_struct *fs = (void *)0;
-> > > +   static struct btf_ptr ptr = { };
-> > > +   long ret;
-> > > +
-> > > +   if (task)
-> > > +           fs = task->fs;
-> > > +
-> > > +   ptr.type = fs_type;
-> > > +   ptr.ptr = fs;
-> >
-> > imo the following is better:
-> >        ptr.type_id = __builtin_btf_type_id(*fs, 1);
-> >        ptr.ptr = fs;
-> >
->
-> I'm still seeing lookup failures using __builtin_btf_type_id(,1) -
-> whereas both __builtin_btf_type_id(,0) and Andrii's
-> suggestion of bpf_core_type_id_kernel() work. Not sure what's
-> going on - pahole is v1.17, clang is
-
-bpf_core_type_id_kernel() is
-
-__builtin_btf_type_id(*(typeof(type) *)0, BPF_TYPE_ID_TARGET)
-
-BPF_TYPE_ID_TARGET is exactly 1. So I bet it's because of the type
-capturing through typeof() and pointer casting/dereferencing, which
-preserves type information properly. Regardless, just use the helper,
-IMO.
+> --
+> You received this message because you are subscribed to the Google Groups=
+ "Clang Built Linux" group.
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to clang-built-linux+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgi=
+d/clang-built-linux/76cae106-b643-57a9-e82e-48e46ebf1b70%40ti.com.
 
 
->
-> clang version 12.0.0 (/mnt/src/llvm-project/clang
-> 7ab7b979d29e1e43701cf690f5cf1903740f50e3)
->
 
-[...]
+--=20
+Thanks,
+~Nick Desaulniers
