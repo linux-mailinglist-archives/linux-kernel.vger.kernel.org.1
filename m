@@ -2,96 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F31327B195
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:14:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D66E27B193
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbgI1QOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:14:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56308 "EHLO
+        id S1726744AbgI1QOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726727AbgI1QOY (ORCPT
+        with ESMTP id S1726504AbgI1QOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:14:24 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFDAC0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:14:23 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id b79so1743630wmb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ablR3knQp8V4Xus5gSWFEPKLooYQFHbeiNIFj+RtYYY=;
-        b=KntFXjgD2m18dkgK66tvFC4NL+CIMRmAh9CUk377MLEQ/WTyC1lyFWb7bkzcD4vIK+
-         uBNUqPJCtqMBM38BUEpYIgutrA3ErU+xmV8KzMl5TgOGSFRmF/PNwxHEaaW4j2Kv+LBN
-         kNER1mcLg++pXJQBJxr7/8TVEPMvBQRW3kvy1zHLpLWke4ZOZWuFCozTFh4/4IE878T3
-         ddOqHQf64ToPzd1wOg0dFyjPNw52jEryzRshdnVg3iWCmGd1jPUtrFvPz8R1SpFTaZ58
-         UEvfHtZtRutCXIYnvWbzzTp9W9XmxYkChJ70SAXII4eFeSeyualRe1oar1mmql5yV2Dz
-         jQyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ablR3knQp8V4Xus5gSWFEPKLooYQFHbeiNIFj+RtYYY=;
-        b=T5YLab3AvJkLvtOH3zh0zyCBbbNogySRDKT7nEXbTba/Hbjm+ml2pJfuI9LuPlrw7r
-         EtZVq/JSh0fWSETGwKPvjwZLBqHaTDX2pVMgNSCslUkJbZRl/R3qz86LWgDDLHazJp3w
-         KwegOHsKh12AIN8gNtU4Kk9UqDGdGe1opMnGoZ6q6k0ybxaze0FzfI48+nuCDCcMAp/C
-         AE+wnN4LcHNOCJ89/uxTNbl+aocd+cKlmtFGut50VtNeNJ8bmFsyJ3JJbTZOBfcdQpud
-         gNlGkTFMjif07UAnoNFlPwYip7+ixwDsu5DUzgEe5wJjd7BR4r1ZB3GqJccuRCwUFYfB
-         HsNQ==
-X-Gm-Message-State: AOAM533aWThy685OUTipQUlfaOx9mPSmcjsRv4ygpS7cqoDdJDE7wDQQ
-        1JM2cNBXza0fD5s+gP9JuDgGLPcYLTuhoBem
-X-Google-Smtp-Source: ABdhPJysuvPAxMmaEYUNYctclsXfDWSH9kSRmm+jOZyFHfsdftrc8VmKXkmBX+B1Zm9Y9XBuyoy2gw==
-X-Received: by 2002:a7b:c095:: with SMTP id r21mr2527408wmh.133.1601309662206;
-        Mon, 28 Sep 2020 09:14:22 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e35:2ec0:82b0:19c2:a71d:5af8:dbf6])
-        by smtp.gmail.com with ESMTPSA id n4sm2004867wrp.61.2020.09.28.09.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 09:14:21 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     hverkuil-cisco@xs4all.nl, khilman@baylibre.com
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        linux-media@vger.kernel.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] arm64: dts: meson-axg: add GE2D node
-Date:   Mon, 28 Sep 2020 18:14:11 +0200
-Message-Id: <20200928161411.323581-5-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200928161411.323581-1-narmstrong@baylibre.com>
-References: <20200928161411.323581-1-narmstrong@baylibre.com>
+        Mon, 28 Sep 2020 12:14:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E91EEC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:14:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=QoFyP4/0BeNzhhOw+8WeyMy5dH0E+MGYDYPx4SWtxXo=; b=aGZf2FYVdMpZFUCVkYRevW4Ha5
+        PpsGHcVopVRa1qnyH4CLRX2c0f0pktcDvfS673HL4NFpnbDUGTbPFfu/eywYF9/F8/O6ZoGh/jRvW
+        MTYxvRcnumxDyhEovhFCBHAL5Lfq9hJYg2ZpwdwkuJes+cw4+kpEe28q6Wx+5P1jzrXvzRkxFkZIE
+        zqT0/JvPDDeoiwwhmsjfLBksbN9Ykb+qhntaUZxPbxAYqBnI2gocNGf8ifO6rEkEEfgayiuAInVL4
+        vBunOLvBKhvdhFk7P21s63IYlWxWLj2nLPMECsIQo5GuM37OHZMcCgO+a6fdoudFbPE99d7MkI85W
+        gk1KLt1A==;
+Received: from [2001:4bb8:180:7b62:3a1d:d74e:d75b:5fe7] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMvn6-00021B-28; Mon, 28 Sep 2020 16:14:16 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] compat: move strut compat_iovec out of #ifdef CONFIG_COMPAT
+Date:   Mon, 28 Sep 2020 18:14:14 +0200
+Message-Id: <20200928161414.642727-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds the node for the GE2D accelerator unit.
+This avoid annoying ifdefs in iov_iter.c
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index 4559f2173065..5cce5540cec0 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -1647,6 +1647,15 @@ dpi_out: endpoint {
- 			};
- 		};
+This fixes a build failure with the import_iovec / compat_import_iovec
+unification.
+
+ include/linux/compat.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/compat.h b/include/linux/compat.h
+index 80b9b8cc1cd405..3e3d2beafed312 100644
+--- a/include/linux/compat.h
++++ b/include/linux/compat.h
+@@ -91,6 +91,11 @@
+ 	static inline long __do_compat_sys##name(__MAP(x,__SC_DECL,__VA_ARGS__))
+ #endif /* COMPAT_SYSCALL_DEFINEx */
  
-+		ge2d: ge2d@ff940000 {
-+			compatible = "amlogic,axg-ge2d";
-+			reg = <0x0 0xff940000 0x0 0x10000>;
-+			interrupts = <GIC_SPI 150 IRQ_TYPE_EDGE_RISING>;
-+			clocks = <&clkc CLKID_VAPB>;
-+			resets = <&reset RESET_GE2D>;
-+			reset-names = "core";
-+		};
++struct compat_iovec {
++	compat_uptr_t	iov_base;
++	compat_size_t	iov_len;
++};
 +
- 		gic: interrupt-controller@ffc01000 {
- 			compatible = "arm,gic-400";
- 			reg = <0x0 0xffc01000 0 0x1000>,
+ #ifdef CONFIG_COMPAT
+ 
+ #ifndef compat_user_stack_pointer
+@@ -248,11 +253,6 @@ typedef struct compat_siginfo {
+ 	} _sifields;
+ } compat_siginfo_t;
+ 
+-struct compat_iovec {
+-	compat_uptr_t	iov_base;
+-	compat_size_t	iov_len;
+-};
+-
+ struct compat_rlimit {
+ 	compat_ulong_t	rlim_cur;
+ 	compat_ulong_t	rlim_max;
 -- 
-2.25.1
+2.28.0
 
