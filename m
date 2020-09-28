@@ -2,79 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA1D27A9E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8A527A9FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:52:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbgI1Irg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:47:36 -0400
-Received: from cmccmta3.chinamobile.com ([221.176.66.81]:49905 "EHLO
-        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726328AbgI1Irg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:47:36 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.15]) by rmmx-syy-dmz-app11-12011 (RichMail) with SMTP id 2eeb5f71a31f2bb-f1168; Mon, 28 Sep 2020 16:47:29 +0800 (CST)
-X-RM-TRANSID: 2eeb5f71a31f2bb-f1168
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from [192.168.21.77] (unknown[10.42.68.12])
-        by rmsmtp-syy-appsvr08-12008 (RichMail) with SMTP id 2ee85f71a31f8be-57d56;
-        Mon, 28 Sep 2020 16:47:29 +0800 (CST)
-X-RM-TRANSID: 2ee85f71a31f8be-57d56
-Subject: Re: [PATCH] usb: phy: tegra: Use IS_ERR() to check and simplify code
-To:     Felipe Balbi <balbi@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     gregkh@linuxfoundation.org, jonathanh@nvidia.com,
-        linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200910115607.11392-1-tangbin@cmss.chinamobile.com>
- <87imc3eiug.fsf@kernel.org> <20200924102139.GF2483160@ulmo>
- <87pn6bcvfm.fsf@kernel.org>
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-Message-ID: <ae9e3c71-9532-ad13-2109-a278121cf76e@cmss.chinamobile.com>
-Date:   Mon, 28 Sep 2020 16:47:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1726668AbgI1IwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:52:16 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:14306 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726380AbgI1IwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:52:15 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9D98AA3994EECB7BA889;
+        Mon, 28 Sep 2020 16:52:11 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 28 Sep 2020 16:52:09 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] drm/hisilicon: Using the to_hibmc_drm_private to convert
+Date:   Mon, 28 Sep 2020 16:49:38 +0800
+Message-ID: <1601282978-45534-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-In-Reply-To: <87pn6bcvfm.fsf@kernel.org>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all:
+Using the to_hibmc_drm_private to convert over all uses of
+dev_private, and fix a little formatting issue.
 
-ÔÚ 2020/9/24 18:37, Felipe Balbi Ð´µÀ:
-> Thierry Reding <thierry.reding@gmail.com> writes:
->
->> On Thu, Sep 24, 2020 at 10:26:15AM +0300, Felipe Balbi wrote:
->>> Tang Bin <tangbin@cmss.chinamobile.com> writes:
->>>
->>>> Use IS_ERR() and PTR_ERR() instead of PTR_ERR_OR_ZERO() to
->>>> simplify code, avoid redundant judgements.
->>>>
->>>> Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
->>>> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
->>> Applied for next merge window. Make sure to get this driver out of
->>> drivers/usb/phy and moved into drivers/phy ASAP.
->> Sergei had commented on this patch with valid concerns, see here in case
->> you don't have his reply in your inbox:
->>
->>      http://patchwork.ozlabs.org/project/linux-tegra/patch/20200910115607.11392-1-tangbin@cmss.chinamobile.com/#2526208
->>
->> I agree with those concerns. This patch is broken because it will output
->> the wrong error code on failure. I don't fully agree with Sergei's point
->> that this patch isn't worth redoing. I do like the idiomatic error
->> handling better, but I think we shouldn't be breaking the error messages
->> like this.
-> Sure thing, dropped for now.
+v2:
+fixed the commit message.
 
-Sorry, it's my fault.
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 22 +++++++++++-----------
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  |  5 ++---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  4 ++--
+ 3 files changed, 15 insertions(+), 16 deletions(-)
 
-Thanks
-
-Tang Bin
-
->
-
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+index 4d57ec6..a98f993 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+@@ -105,7 +105,7 @@ static void hibmc_plane_atomic_update(struct drm_plane *plane,
+ 	u32 reg;
+ 	s64 gpu_addr = 0;
+ 	unsigned int line_l;
+-	struct hibmc_drm_private *priv = plane->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(plane->dev);
+ 	struct drm_gem_vram_object *gbo;
+ 
+ 	if (!state->fb)
+@@ -159,7 +159,7 @@ static const struct drm_plane_helper_funcs hibmc_plane_helper_funcs = {
+ 
+ static void hibmc_crtc_dpms(struct drm_crtc *crtc, int dpms)
+ {
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 	unsigned int reg;
+ 
+ 	reg = readl(priv->mmio + HIBMC_CRT_DISP_CTL);
+@@ -175,7 +175,7 @@ static void hibmc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 				     struct drm_crtc_state *old_state)
+ {
+ 	unsigned int reg;
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 
+ 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
+ 
+@@ -194,7 +194,7 @@ static void hibmc_crtc_atomic_disable(struct drm_crtc *crtc,
+ 				      struct drm_crtc_state *old_state)
+ {
+ 	unsigned int reg;
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 
+ 	hibmc_crtc_dpms(crtc, HIBMC_CRT_DPMS_OFF);
+ 	drm_crtc_vblank_off(crtc);
+@@ -254,7 +254,7 @@ static unsigned int format_pll_reg(void)
+ static void set_vclock_hisilicon(struct drm_device *dev, unsigned long pll)
+ {
+ 	u32 val;
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	val = readl(priv->mmio + CRT_PLL1_HS);
+ 	val &= ~(CRT_PLL1_HS_OUTER_BYPASS(1));
+@@ -315,7 +315,7 @@ static unsigned int display_ctrl_adjust(struct drm_device *dev,
+ 	unsigned long x, y;
+ 	u32 pll1; /* bit[31:0] of PLL */
+ 	u32 pll2; /* bit[63:32] of PLL */
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	x = mode->hdisplay;
+ 	y = mode->vdisplay;
+@@ -363,7 +363,7 @@ static void hibmc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 	unsigned int val;
+ 	struct drm_display_mode *mode = &crtc->state->mode;
+ 	struct drm_device *dev = crtc->dev;
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 	int width = mode->hsync_end - mode->hsync_start;
+ 	int height = mode->vsync_end - mode->vsync_start;
+ 
+@@ -397,7 +397,7 @@ static void hibmc_crtc_atomic_begin(struct drm_crtc *crtc,
+ {
+ 	unsigned int reg;
+ 	struct drm_device *dev = crtc->dev;
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
+ 
+@@ -427,7 +427,7 @@ static void hibmc_crtc_atomic_flush(struct drm_crtc *crtc,
+ 
+ static int hibmc_crtc_enable_vblank(struct drm_crtc *crtc)
+ {
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 
+ 	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(1),
+ 	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
+@@ -437,7 +437,7 @@ static int hibmc_crtc_enable_vblank(struct drm_crtc *crtc)
+ 
+ static void hibmc_crtc_disable_vblank(struct drm_crtc *crtc)
+ {
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 
+ 	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(0),
+ 	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
+@@ -445,7 +445,7 @@ static void hibmc_crtc_disable_vblank(struct drm_crtc *crtc)
+ 
+ static void hibmc_crtc_load_lut(struct drm_crtc *crtc)
+ {
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 	void __iomem   *mmio = priv->mmio;
+ 	u16 *r, *g, *b;
+ 	unsigned int reg;
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+index 085d1b2..5632bce 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+@@ -29,8 +29,7 @@ DEFINE_DRM_GEM_FOPS(hibmc_fops);
+ static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
+ {
+ 	struct drm_device *dev = (struct drm_device *)arg;
+-	struct hibmc_drm_private *priv =
+-		(struct hibmc_drm_private *)dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 	u32 status;
+ 
+ 	status = readl(priv->mmio + HIBMC_RAW_INTERRUPT);
+@@ -244,7 +243,7 @@ static int hibmc_hw_init(struct hibmc_drm_private *priv)
+ 
+ static int hibmc_unload(struct drm_device *dev)
+ {
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	drm_atomic_helper_shutdown(dev);
+ 
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+index c6999ed..74e26c2 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+@@ -43,7 +43,7 @@ static int hibmc_connector_get_modes(struct drm_connector *connector)
+ }
+ 
+ static enum drm_mode_status hibmc_connector_mode_valid(struct drm_connector *connector,
+-				      struct drm_display_mode *mode)
++						       struct drm_display_mode *mode)
+ {
+ 	return MODE_OK;
+ }
+@@ -76,7 +76,7 @@ static void hibmc_encoder_mode_set(struct drm_encoder *encoder,
+ {
+ 	u32 reg;
+ 	struct drm_device *dev = encoder->dev;
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	reg = readl(priv->mmio + HIBMC_DISPLAY_CONTROL_HISILE);
+ 	reg |= HIBMC_DISPLAY_CONTROL_FPVDDEN(1);
+-- 
+2.7.4
 
