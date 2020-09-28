@@ -2,49 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86AC27B83D
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C8C127B84A
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgI1Xdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:33:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgI1Xdm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:33:42 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011D2C0613E2;
-        Mon, 28 Sep 2020 15:15:09 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 0F4E811E3E4CE;
-        Mon, 28 Sep 2020 14:58:21 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:15:07 -0700 (PDT)
-Message-Id: <20200928.151507.1739959435679214893.davem@davemloft.net>
-To:     wangqing@vivo.com
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: Use kobj_to_dev() API
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1601102960-8322-1-git-send-email-wangqing@vivo.com>
-References: <1601102960-8322-1-git-send-email-wangqing@vivo.com>
-X-Mailer: Mew version 6.8 on Emacs 27.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [2620:137:e000::1:9]); Mon, 28 Sep 2020 14:58:21 -0700 (PDT)
+        id S1727096AbgI1Xfb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 19:35:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726867AbgI1Xfb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:35:31 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8C17235F7;
+        Mon, 28 Sep 2020 22:15:36 +0000 (UTC)
+Date:   Mon, 28 Sep 2020 18:15:35 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux- stable <stable@vger.kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH 4.19 38/92] kprobes: Fix NULL pointer dereference at
+ kprobe_ftrace_handler
+Message-ID: <20200928181535.56d7b2cb@oasis.local.home>
+In-Reply-To: <20200928180942.100aa6c8@oasis.local.home>
+References: <20200820091537.490965042@linuxfoundation.org>
+        <20200820091539.592290034@linuxfoundation.org>
+        <CA+G9fYvdQv2Ukvs-UKiEgYaDdBthsWsY=35cQ4YpvMhA0hU5Gg@mail.gmail.com>
+        <20200928180942.100aa6c8@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wang Qing <wangqing@vivo.com>
-Date: Sat, 26 Sep 2020 14:49:18 +0800
+On Mon, 28 Sep 2020 18:09:42 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> Use kobj_to_dev() instead of container_of().
+> On Tue, 29 Sep 2020 01:32:59 +0530
+> Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
 > 
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> > stable rc branch 4.19 build warning on arm64.
+> > 
+> > ../kernel/kprobes.c: In function ‘kill_kprobe’:
+> > ../kernel/kprobes.c:1070:33: warning: statement with no effect [-Wunused-value]
+> >  1070 | #define disarm_kprobe_ftrace(p) (-ENODEV)
+> >       |                                 ^
+> > ../kernel/kprobes.c:2090:3: note: in expansion of macro ‘disarm_kprobe_ftrace’
+> >  2090 |   disarm_kprobe_ftrace(p);
+> >       |   ^~~~~~~~~~~~~~~~~~~~  
+> 
+> Seems to affect upstream as well.
+> 
 
-Applied to net-next, thank you.
+Bah, no (tested the wrong kernel).
+
+You want this commit too:
+
+10de795a5addd ("kprobes: Fix compiler warning for !CONFIG_KPROBES_ON_FTRACE")
+
+-- Steve
