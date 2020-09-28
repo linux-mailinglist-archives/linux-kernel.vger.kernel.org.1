@@ -2,73 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188C527AE70
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFB727AE7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726696AbgI1M44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:56:56 -0400
-Received: from mail-oo1-f65.google.com ([209.85.161.65]:40542 "EHLO
-        mail-oo1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726348AbgI1M44 (ORCPT
+        id S1726596AbgI1M5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgI1M5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:56:56 -0400
-Received: by mail-oo1-f65.google.com with SMTP id r4so270313ooq.7;
-        Mon, 28 Sep 2020 05:56:55 -0700 (PDT)
+        Mon, 28 Sep 2020 08:57:41 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 033BDC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:57:41 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id r8so585860qtp.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:57:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wDoFUE99bIcRGspOXbo3zjmN4PbXIvPVJjhLWXzP2ws=;
+        b=fh+YvJ9Brb4kYYngrH/s/qYqgriElu1sQclUqqsUqnI6iNy73Lw71pmIIPHLpV9j4W
+         59/nCSWYfA/9pGsQa331v3pqyC5dMWH3s2EMmVDI+3A4EQ+MyDFAIwCT5zkaVKiutdiD
+         WSUcE1foff3Wj638oHgA24KPnv6GD0y1GudgeynBKA6Nu51WFE993W/MIKFGyZ3ush6d
+         ABAxCR8X8x/SGd7waBLsiY7M4rWb0PJpGnacZAdQ3fZPhRYbBVf3YEiCJS3URIz0mZTj
+         AHIvDqoKW/ZwBWN2LF3qlDVUxFT7tspnHuVo9Kgx5rmhoUybDzdx4349SK5guLHxC5T+
+         0b0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=sMLPLFtdKygZNybR4cqmUVRj9twZY87y7rGYBclpkHA=;
-        b=HzlA7gbaX1krDq+D7Kvv4Vjjn3TAf+Bc/u6mGVGVTZ1sp/m3SHS76EI/x4Zx6PZ7lt
-         J9vleaKxLCFGmVzsTklWO8hgJESYZE1KgA6IEOYYEw46w8zkab+bxaUppiVwNxJsP8xl
-         pIMvo6AioJu4jVUh/9KBWpAw1A5vkOYPqO7RMENQRKuuJKyy/vvITEppoM2tKcRlGx7+
-         f/vLm3IUoAZsedIIlEhDi9dVoljPwW0LWZmGQxTA3PtyE6x2s7YXX4TgVyoFg9RLhifX
-         oDsD8Ll5hEBL+2b20gCeJ5KV3Sa0vKLrg39jHzOFuxxugOroOtS6sEj7xN7FvqP/3Ji4
-         rfqg==
-X-Gm-Message-State: AOAM5334Kl3uTKr/QIp2TT8jWvFswi0t+x3oghXgrnSP7WbQOV9KqrYT
-        EIZsvmRI3dnWTqKVIA7tvg==
-X-Google-Smtp-Source: ABdhPJyPbJ54E1pfq2XatL/TA4r2MuH0qFlT5Gyu3YLe5KnIICICh5/PgjEcenRs6saA0dCqcPGQ+A==
-X-Received: by 2002:a4a:5258:: with SMTP id d85mr726841oob.72.1601297808241;
-        Mon, 28 Sep 2020 05:56:48 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id q81sm167968oia.46.2020.09.28.05.56.46
+        bh=wDoFUE99bIcRGspOXbo3zjmN4PbXIvPVJjhLWXzP2ws=;
+        b=ZK/pEghXoP+njf+QhTdQsTJC+lT8KUOyqWLLU2UOGyyCC3F3yKi7a3X1MU0D9b9BOZ
+         i4RWsf6nYdyppbR2QfoNTqwfEBfDNe91n9F4BKcmIq2Vk4kWNNSLqzDsldFM7HYFdqAN
+         0mKcCwXfzeF9ZUBRYiA2XY0qYeKX9Po+CWUCF1a1dzoutBCUsDVIwU/z9bXZbDTvMrX1
+         Y2cYjP6SaW1mLePW0WdWU0kGQ+EVWaVC16wcGZ0Guo7DGh01kupLcURhlgDnSZqVmRGa
+         rW9Ph1RM3eEqXQoTXDDEDwJgAMr38YsFxzyagOT4tL3fQgBkmOzHNmbUZPWLsdsV7UBX
+         1VEA==
+X-Gm-Message-State: AOAM5334K95rcQsyUZHfdkoFZs4PPONZnp296KreOez+30U/IlF2fg0i
+        tYqs5b3MH2t3RpQjqr7MKetNRg==
+X-Google-Smtp-Source: ABdhPJxCKooSFDLWgOXoraPDbg4q0zhejQPruckFKr8pWCDzdZCLrg6aCuKusJtuOinatJbK6F9iAw==
+X-Received: by 2002:ac8:4a93:: with SMTP id l19mr1379042qtq.163.1601297860267;
+        Mon, 28 Sep 2020 05:57:40 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id d22sm857359qkj.93.2020.09.28.05.57.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 05:56:46 -0700 (PDT)
-Received: (nullmailer pid 2545734 invoked by uid 1000);
-        Mon, 28 Sep 2020 12:56:45 -0000
-Date:   Mon, 28 Sep 2020 07:56:45 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-serial@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH] dt-bindings: serial: fsl-imx-uart: fix i.MX 53 and 6
- compatible matching
-Message-ID: <20200928125645.GA2545321@bogus>
-References: <20200925212649.23183-1-krzk@kernel.org>
+        Mon, 28 Sep 2020 05:57:39 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kMsip-001uld-4v; Mon, 28 Sep 2020 09:57:39 -0300
+Date:   Mon, 28 Sep 2020 09:57:39 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 2/8] selftests/vm: use a common gup_test.h
+Message-ID: <20200928125739.GP9916@ziepe.ca>
+References: <20200928062159.923212-1-jhubbard@nvidia.com>
+ <20200928062159.923212-3-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200925212649.23183-1-krzk@kernel.org>
+In-Reply-To: <20200928062159.923212-3-jhubbard@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Sep 2020 23:26:49 +0200, Krzysztof Kozlowski wrote:
-> The i.MX 53 and i.MX6Q DTS use two compatibles, i.MX 6SL/6SLL/SX three
-> so update the binding to fix dtbs_check warnings like:
-> 
->   serial@21ec000: compatible: ['fsl,imx6q-uart', 'fsl,imx21-uart'] is not valid under any of the given schemas
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  .../devicetree/bindings/serial/fsl-imx-uart.yaml          | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
+On Sun, Sep 27, 2020 at 11:21:53PM -0700, John Hubbard wrote:
+> diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
+> index d1ae706d9927..9cc6bc087461 100644
+> +++ b/tools/testing/selftests/vm/Makefile
+> @@ -130,3 +130,5 @@ endif
+>  $(OUTPUT)/userfaultfd: LDLIBS += -lpthread
+>  
+>  $(OUTPUT)/mlock-random-test: LDLIBS += -lcap
+> +
+> +$(OUTPUT)/gup_test: ../../../../mm/gup_test.h
 
-Acked-by: Rob Herring <robh@kernel.org>
+There is no reason to do this, the auto depends will pick up header
+files, and gup_test.h isn't a generated file
+
+Jason
