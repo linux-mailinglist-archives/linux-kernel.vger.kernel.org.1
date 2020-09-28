@@ -2,91 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46EFA27B06E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E44827B070
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 17:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgI1PBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 11:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
+        id S1726310AbgI1PBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 11:01:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI1PBF (ORCPT
+        with ESMTP id S1726504AbgI1PBW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 11:01:05 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C900AC061755;
-        Mon, 28 Sep 2020 08:01:04 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id g4so1719053wrs.5;
-        Mon, 28 Sep 2020 08:01:04 -0700 (PDT)
+        Mon, 28 Sep 2020 11:01:22 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B02CC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 08:01:22 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id y2so1572553ila.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 08:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=j4rmvqeCqQcnLgyoa1rABwXSUxqPaFqVmfgnmQ3TuWY=;
-        b=qSckvyirQ2xX0mglQCf2Nr57ahSvex8M8o9kQQ2yGXRWMizSts1cGS/X67+qu6ucxN
-         X9moYc8VRt5BOxWUjfaOiK/U99qPmNBKoQRP9M1egmvXHb9JLgOeOehYQ4lWureNKJtP
-         Xa3HgkVGOCzYODE/AC9SZmQp/Qf0BqlDAHOz2AzYcD8NDBOHGpg9KPYGQaeBuRDJ6Vt/
-         I/0/nE0PmvKlvKkzR0/kxdqd5681IPCy71BWlMFypCffR+9Unhqw1CLSghxm6Mm1xpvG
-         YrbPSjyj4//vG7QdbwDaIF6lvQURw1kyxTL+GlgUhBMIyasN+Y0S1/0+cTIzdLmhL+hV
-         OUzw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=wz4/cJUtcGrHgQdHqiJQL66PoALmhO/Jeqp0NNqQOYA=;
+        b=tVc9Ks8AyUnx5Ss4K4lY/dnw7ZGtH8ZOnEEFa2u9Jjf09E8vDx9EKir5p58zO9G8Zz
+         cuFKzICCDEomikQ0nnJK2BO2HxwU6lcjema4++Ol0MI0zzfCHyAxGQdjkdbikOqetycM
+         5trJgK5UoUBnHeq2nwfJDjpCPLxBwxDmDltnRMiC7AFln4LZbFEEMRAwSviBt2UGqot9
+         XVEXuAcmxj7LWRD7pBpCtqrF1zBmoG+XG5vhXEdf/PLYyID9e4UjKi7yDs46nXx72Ayt
+         DVY9hFBfRUtF0gNgDak4aAQhWfLa7ftyvFzEHxyhV6kBFl5oeQR8ViB2eCZgq0F8Q6g+
+         0Agw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=j4rmvqeCqQcnLgyoa1rABwXSUxqPaFqVmfgnmQ3TuWY=;
-        b=DWI+zDjkkrSBBMWlyjpQTbr02q+Ik4MLnZpMpGxSw8J8ZmDcnTVH2wHB3CxgezcD3X
-         UMSFfHXvYWXVOSnQzh37YeaSxDSPI3QoZDEyOQuL3AuH0h9WNYwqTKUjzGon3jt057iT
-         fj2wzyuuiBhyRXGlqgvbgmDJDNfjTl+wy7XY3mykN1ZmNmV2NEazxBwb2rHVkte609Gg
-         GnsevXhkVHL1iOklpXkMBoipC+tCZpE5EKmmoTc3J30EZdgbyIXlku4vuEdQDFEsBHWS
-         rtePX8RWegDcxbQqK4m4IXE95kQ1y8rtEzu1auxIwmcFC1U3YQ7KijFAmQYIvfsxpYtb
-         laIA==
-X-Gm-Message-State: AOAM533UubfMg5n1wVSd3hJ+HmZ88H8w4UUyD0ibU92+Jabu8UK6QM6K
-        CIHvx2dzhvTuMDarUvix5veC7bbDXLttQQ==
-X-Google-Smtp-Source: ABdhPJxciGliXAToxp0AvwXzcJsjOMAZpov9CrokXaGDMDZKITJAjWkOz1bRtTNklcHD2ZdPz8oRvw==
-X-Received: by 2002:adf:9f10:: with SMTP id l16mr2329228wrf.77.1601305263323;
-        Mon, 28 Sep 2020 08:01:03 -0700 (PDT)
-Received: from localhost.localdomain (lputeaux-656-1-11-33.w82-127.abo.wanadoo.fr. [82.127.142.33])
-        by smtp.gmail.com with ESMTPSA id z127sm1598763wmc.2.2020.09.28.08.01.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 08:01:02 -0700 (PDT)
-From:   =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?q?Cl=C3=A9ment=20P=C3=A9ron?= <peron.clem@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: allwinner: h6: add eMMC voltage property for Beelink GS1
-Date:   Mon, 28 Sep 2020 17:00:37 +0200
-Message-Id: <20200928150038.97413-1-peron.clem@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        bh=wz4/cJUtcGrHgQdHqiJQL66PoALmhO/Jeqp0NNqQOYA=;
+        b=EFODjwCLYETKesUBRgP1A2UuNyuPukM/P9WkyGsk6zl9aVw7EpMZ/sziecRd4ueJ+K
+         sfNT7sum6G9rRStx4gQdYgnXwzQMmfHlxCGTqx2HSig9tsNaf+HQE5+29w7HE5xiJjCM
+         kAjtiQL1pvK3RsNYLVqoMYaQV86im8hKK0NZRW+zdFVJYr7O95gEbjkTL+AYrGQSLW4D
+         aO2i3jMHq7w39gZTX2bmeehuNlyj12dectOgaxxJyDVzmKGLjPKH9jwSLgPuAWSOMxkU
+         +Z6lHZHl4EZCTYbkCCZMVOzPXNty25xayhLJwVmwSyi/N/VK7FwznpTpGeCjmzkvFuIp
+         ObmA==
+X-Gm-Message-State: AOAM533i3Z+3lUTDo0w6qqFXMbiMOtDt1Y7xS757Jf3HuAyHms22XYrR
+        i7GERDyPC7RGofHo2IQ6F4Vu8g==
+X-Google-Smtp-Source: ABdhPJzhsqplk4CkEQgE6tO03x+gt13937ez/h3kCBx/Qs/poGnRb2j4ITML8gMSoKHsg6RduIJA4Q==
+X-Received: by 2002:a92:3554:: with SMTP id c81mr1594067ila.265.1601305281132;
+        Mon, 28 Sep 2020 08:01:21 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id t12sm733682ilh.18.2020.09.28.08.01.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2020 08:01:20 -0700 (PDT)
+Subject: Re: possible deadlock in io_write
+To:     syzbot <syzbot+2f8fa4e860edc3066aba@syzkaller.appspotmail.com>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+References: <00000000000050a4fd05b05a7579@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <69d85830-b846-72ad-7315-545509f3a099@kernel.dk>
+Date:   Mon, 28 Sep 2020 09:01:20 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <00000000000050a4fd05b05a7579@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VQMMC supply is connected to BLDO2 which provides 1.8V.
+Not the prettiest solution, but I don't think that's a real concern as
+this is just for human consumption.
 
-Let's reflect this in the device-tree.
+#syz test: git://git.kernel.dk/linux-block io_uring-5.9
 
-Fixes: 089bee8dd119 ("arm64: dts: allwinner: h6: Introduce Beelink GS1 board")
-Signed-off-by: Clément Péron <peron.clem@gmail.com>
----
- arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-index 049c21718846..3f20d2c9bbbb 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-beelink-gs1.dts
-@@ -145,6 +145,7 @@ &mmc2 {
- 	vqmmc-supply = <&reg_bldo2>;
- 	non-removable;
- 	cap-mmc-hw-reset;
-+	mmc-hs200-1_8v;
- 	bus-width = <8>;
- 	status = "okay";
- };
 -- 
-2.25.1
+Jens Axboe
 
