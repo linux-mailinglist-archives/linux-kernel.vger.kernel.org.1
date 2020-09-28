@@ -2,114 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E47527B32A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:27:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CD027B32D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726590AbgI1R1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:27:20 -0400
-Received: from mail-bn8nam11on2119.outbound.protection.outlook.com ([40.107.236.119]:54241
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726281AbgI1R1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:27:20 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CSOm2vZLzQMck3FGzXITrSE/DybxYZYf3GSatYfSwnswvq3q9u/pjXpvTd8KqU8PkRSy8r5QFE9H/P3+H0lHqxTBNwoZALQZ3/S05J4hKXbRdlnE3ml71uOmVuoONjS5VVgmJz5e4BiGvg/QSvoAG4f4N0MqMk37rZjWNNxJu5o0BGQK0nKQ/+DcU/cGNACChjN1SoFafOayqDKh4qhdnv8Sm5LNGEyUeiWMqhvVjkQ0PJ7hZ4slR0WKnc91tP1itrqsFZMVVuqsJVAzZFa/d8XL7Hy1Hq+2pwIwzlIQEPcax8Mex/yEAC4AiKZSe+2ExR1oAWk89WVPzHaWv+Nr9w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=obKvPQYQV8QBhYqKJosYIDVefS+y2r3SOzFNSH5f2rg=;
- b=LfcpF1dreKgoFaC4dXN9EGOZIrDSZuC0tLJjkBotTzRrmRSTzwJJDfvfbgnFP1O3m/L3Jx7pvIp/0JtUb77JYxhRWewlmdri7IoWO7CzLJfFT9moFm6wrUDmsjWs1NOW1s7lfTUFMySu5gMGVMmKBIi2uDJkNaN1BZPbuvU3wR4Wy0jIcxJQMbHUa16KEHSvw2EvDOVyQ7oNGmwEMCkWd76rMshEXwv44aN0T8uhibpz0ZfgfSj07ao1h3wgGjNKXhBdYkTQYIECObJVndzW3x1jA+KsJnU7u6Tx4loNH81P5XxBDrjM/OSQLwmgMFItKX4qOKDkHIquUaPiTdDJ8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=hammerspace.com; dmarc=pass action=none
- header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=obKvPQYQV8QBhYqKJosYIDVefS+y2r3SOzFNSH5f2rg=;
- b=Upap9GP3d41yX6RMxbKfQePR963Sbo55HU9f3O+Z6AV+2v/BXruN1J6VkSJwE6J1C+C/jRmauozRpWJezwU9gB1llpfn2w9yE2CWqz+3T/uzhR3EnxjMvrqo1t05N65co4Bkd9gkEF/aHVbxxqsxQrsVn/iU5KFmxx3xr4EAcds=
-Received: from MN2PR13MB3957.namprd13.prod.outlook.com (2603:10b6:208:263::11)
- by MN2PR13MB3696.namprd13.prod.outlook.com (2603:10b6:208:1e0::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3433.18; Mon, 28 Sep
- 2020 17:27:15 +0000
-Received: from MN2PR13MB3957.namprd13.prod.outlook.com
- ([fe80::e8a1:6acc:70f0:ef39]) by MN2PR13MB3957.namprd13.prod.outlook.com
- ([fe80::e8a1:6acc:70f0:ef39%6]) with mapi id 15.20.3433.030; Mon, 28 Sep 2020
- 17:27:15 +0000
-From:   Trond Myklebust <trondmy@hammerspace.com>
-To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
-CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] Please pull NFS client bugfixes
-Thread-Topic: [GIT PULL] Please pull NFS client bugfixes
-Thread-Index: AQHWlbyb7Abp3rPZ80efHk7uJAcVYw==
-Date:   Mon, 28 Sep 2020 17:27:14 +0000
-Message-ID: <93a6b36e466a389330945f8c515ad7fd86e8b714.camel@hammerspace.com>
-Accept-Language: en-US, en-GB
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=hammerspace.com;
-x-originating-ip: [68.36.133.222]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 76459e92-d25e-4eb5-6cef-08d863d3be15
-x-ms-traffictypediagnostic: MN2PR13MB3696:
-x-microsoft-antispam-prvs: <MN2PR13MB3696E67DB78161A5A87264FBB8350@MN2PR13MB3696.namprd13.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:913;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9eOdc02iu42a2Q6Vl4HFOZOk1MJMlsd+Ec9ZHseLErmm3R7ziycdu5loLi+kIfHs4DiY4MKu7GYrQ4yi/vBniPl3wUQXs9x5A0CbUhQp77dkfPTYO7jqo9MkBNtfYw3WjKbCoJn+tjssXQmQfaCyyiBrzbC+0+8BRs14zNMHsMiTKoMFtaTZtrqx03pgvsAiL1C4/XbODhFyt3YKRlgJv/zFz+JicgblhPDuF/+wTrxsDUwtMiegror1SpSKpCZxAm1B3HDkjwHfBEF8O7qLSK4mx8iCZzQw/YTM0ILzduUI7ce1KUsnsyqL43K1ENnTDe9QCgFd+qyrOwrBJaJB0w==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR13MB3957.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(396003)(346002)(376002)(136003)(366004)(478600001)(26005)(54906003)(36756003)(2616005)(6506007)(186003)(316002)(8936002)(2906002)(6916009)(6512007)(8676002)(86362001)(66476007)(64756008)(66556008)(66446008)(83380400001)(5660300002)(71200400001)(6486002)(76116006)(91956017)(4326008)(66946007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: rBxeWNAeOyn85CFINKQjCyZqCW536WTskLOTLUDEavzvzky2WuWVue5e+cySMiAkRNXZ7PBADPpADo+xNifsfOxBQV4WgGE4qP8uIaGIw1Gfnr5cjEnrJPcyJ7/hBy0N1YTPNhua98nj30rKIgshjI9KFMgRyd9M7MicEBVQeFKhVvI7sRG/D8zAm2GDEINk4/bMKP/NrHMNWjI3DgST0r3eutWAoE85c56ZV51vo+2NPZX5Pr5xGHyZfqHFQeqcZVRb4o0lrOSIbSL+HbynKCaC6fRRyhogF88mnQAEp3c1q2vi7g/tx7nrMzFbjIsnZkjNwHY49OLXRaDc4x2xdTYwvEbkUbsEo55qEbBaBx/ltthmggFaRgIwQptcwUsTwh2a9Ep324gh2EDrJulyaevh1lJCmkpS10mE3hUOOuqKI4ZqKEZJYXT9rZ8NnjdxEmHZrccNNR9Upvm7nI7J3gJuPxSGL/azvLn32YrB2uzBflNla1JSDVOpn3B1f0FhXC5lLL303Dj9UJRhi2vXfME7EVIboMdTmkfbgsMzWWa61OnEXReo+iMvu8werzGgqBb6pbG9VcKUvAasBPh7LDH2e/QBhYbr7O0dfdsxnSX8/o6qCZoZHEk/EWcWcYLnMebIUCpz+TdLVddj/WS9pQ==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C970E3A53B69824683840492C9890F7F@namprd13.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726657AbgI1R2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:28:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726629AbgI1R2A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 13:28:00 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A1B9C0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:28:00 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t14so1445348pgl.10
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=I5wHrqbA3BFE/yXMIVXV5TxVPWZuFJUtrSjQifdJ3Ko=;
+        b=Dc5/cE0ZOYgBtGqB4bTM9PZwgB94XaeccXmyvi9CG7y4tKg8hxoTX4ZVH0uLMuqPZv
+         hvhe+pphVypljddP4xbM2tutD8Y4hDqegd24tZ5i5rhDft2IFdH13mxEJdQJmeDDsNPs
+         z2aZkd5Qg4N2om1tbDM+mB2+sPgav2vaaeBm6pa3tmYNb6uxgDSJdpz7+pzS6yJb6znl
+         agVJ5rwFLWYNejENNMk/UxSHz/cNwM51Q8Qli1EwWUspUwsxe/bpLc9zCkf8nSPpj06m
+         n3pvdYCSYpV8OUl0wYAj07f0qvGZxiOuZKxk2eU4Fr0yB9vTOCRs8r3r5P0Wm/0LPHNI
+         er0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=I5wHrqbA3BFE/yXMIVXV5TxVPWZuFJUtrSjQifdJ3Ko=;
+        b=ctcwX3kBHPCnasCYR/ted5egDgvoS8paJx7OeGcDuYE5cg1OF3qZF1YzZPDGDQi0cw
+         C5JNQMil/f3c9xG9UAvcRhXG3IHlmulD18+iwfrPST1hZFbvblUydasvs3+ymnPvnrfH
+         lvn+nTiwUqn7inYFhj+zPfPoqOL9B9B6qKroqMwYUaSwxK0wRn0aYBjHS0CY2m//LF2A
+         mtJBTDmC0LAV3WC6KzG/cwc3BzNVv/ur2Ys+F27uiBIa1fvE47JNmzWZPUrFdNpHoDij
+         Fi1nYz2sgmGYzsH58fRnkcKzRqkUf34S1R0NopZaiI+hwx6qEVlZlg2TGmyiB7ozHGza
+         kwIQ==
+X-Gm-Message-State: AOAM533AfctcJ1vpqA76Ibg0jOsSUvOeM38yeXwyiGZjyB3lI0QaFapG
+        jpCHt50eNGwg7DilCZJiaETcWw==
+X-Google-Smtp-Source: ABdhPJxeKEPh1MtnSqX1aEZ9sb0PmG+Pvnb7PBxV8mM6ohLk/inzqjgHNsMYCoSWznwq607jeGBoyQ==
+X-Received: by 2002:a63:c1e:: with SMTP id b30mr107732pgl.345.1601314080087;
+        Mon, 28 Sep 2020 10:28:00 -0700 (PDT)
+Received: from [192.168.1.102] (c-24-20-148-49.hsd1.or.comcast.net. [24.20.148.49])
+        by smtp.gmail.com with ESMTPSA id w14sm2152789pfu.87.2020.09.28.10.27.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Sep 2020 10:27:59 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 07/10] PCI/RCEC: Add RCiEP's linked RCEC to AER/ERR
+Date:   Mon, 28 Sep 2020 10:27:57 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <361B6391-A524-4928-97D3-D1131422B474@intel.com>
+In-Reply-To: <20200927234545.GA2470139@bjorn-Precision-5520>
+References: <20200927234545.GA2470139@bjorn-Precision-5520>
 MIME-Version: 1.0
-X-OriginatorOrg: hammerspace.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR13MB3957.namprd13.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 76459e92-d25e-4eb5-6cef-08d863d3be15
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2020 17:27:14.9128
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dDqHGUWznzM/9ip1llAQD21YmehYMf8ALNNK1wnVchueVZaOjYDbW3nDrU3hl3XAyJZyNWoeuo1khuUlGpO9Xg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR13MB3696
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTGludXMsDQoNClRoZSBmb2xsb3dpbmcgY2hhbmdlcyBzaW5jZSBjb21taXQgODU2ZGViODY2
-ZDE2ZTI5YmQ2NTk1MmUwMjg5MDY2ZjYwNzhhZjc3MzoNCg0KICBMaW51eCA1LjktcmM1ICgyMDIw
-LTA5LTEzIDE2OjA2OjAwIC0wNzAwKQ0KDQphcmUgYXZhaWxhYmxlIGluIHRoZSBHaXQgcmVwb3Np
-dG9yeSBhdDoNCg0KICBnaXQ6Ly9naXQubGludXgtbmZzLm9yZy9wcm9qZWN0cy90cm9uZG15L2xp
-bnV4LW5mcy5naXQgdGFncy9uZnMtZm9yLTUuOS0zDQoNCmZvciB5b3UgdG8gZmV0Y2ggY2hhbmdl
-cyB1cCB0byBiOWRmNDZkMDhhOGQwOThlYTIxMjRjYjllM2I4NDQ1OGE0NzRiNGQ0Og0KDQogIHBO
-RlMvZmxleGZpbGVzOiBCZSBjb25zaXN0ZW50IGFib3V0IG1pcnJvciBpbmRleCB0eXBlcyAoMjAy
-MC0wOS0xOCAwOToyNTozMyAtMDQwMCkNCg0KQ2hlZXJzLA0KICBUcm9uZA0KLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KTkZT
-IGNsaWVudCBidWdmaXhlcyBmb3IgTGludXggNS45DQoNCkhpZ2hsaWdodHMgaW5jbHVkZToNCg0K
-QnVnZml4ZXM6DQotIE5GU3Y0LjI6IGNvcHlfZmlsZV9yYW5nZSBuZWVkcyB0byBpbnZhbGlkYXRl
-IGNhY2hlcyBvbiBzdWNjZXNzDQotIE5GU3Y0LjI6IEZpeCBzZWN1cml0eSBsYWJlbCBsZW5ndGgg
-bm90IGJlaW5nIHJlc2V0DQotIHBORlMvZmxleGZpbGVzOiBFbnN1cmUgd2UgaW5pdGlhbGlzZSB0
-aGUgbWlycm9yIGJzaXplcyBjb3JyZWN0bHkgb24gcmVhZA0KLSBwTkZTL2ZsZXhmaWxlczogRml4
-IHNpZ25lZC91bnNpZ25lZCB0eXBlIGlzc3VlcyB3aXRoIG1pcnJvciBpbmRpY2VzDQoNCi0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0NCkplZmZyZXkgTWl0Y2hlbGwgKDEpOg0KICAgICAgbmZzOiBGaXggc2VjdXJpdHkgbGFiZWwg
-bGVuZ3RoIG5vdCBiZWluZyByZXNldA0KDQpPbGdhIEtvcm5pZXZza2FpYSAoMSk6DQogICAgICBO
-RlN2NC4yOiBmaXggY2xpZW50J3MgYXR0cmlidXRlIGNhY2hlIG1hbmFnZW1lbnQgZm9yIGNvcHlf
-ZmlsZV9yYW5nZQ0KDQpUcm9uZCBNeWtsZWJ1c3QgKDIpOg0KICAgICAgcE5GUy9mbGV4ZmlsZXM6
-IEVuc3VyZSB3ZSBpbml0aWFsaXNlIHRoZSBtaXJyb3IgYnNpemVzIGNvcnJlY3RseSBvbiByZWFk
-DQogICAgICBwTkZTL2ZsZXhmaWxlczogQmUgY29uc2lzdGVudCBhYm91dCBtaXJyb3IgaW5kZXgg
-dHlwZXMNCg0KIGZzL25mcy9kaXIuYyAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDMgKysr
-DQogZnMvbmZzL2ZsZXhmaWxlbGF5b3V0L2ZsZXhmaWxlbGF5b3V0LmMgfCA0MyArKysrKysrKysr
-KysrKysrKy0tLS0tLS0tLS0tLS0tLS0tDQogZnMvbmZzL25mczQycHJvYy5jICAgICAgICAgICAg
-ICAgICAgICAgfCAxMCArKysrKysrLQ0KIGluY2x1ZGUvbGludXgvbmZzX3hkci5oICAgICAgICAg
-ICAgICAgIHwgIDQgKystLQ0KIDQgZmlsZXMgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgMjQg
-ZGVsZXRpb25zKC0pDQotLSANClRyb25kIE15a2xlYnVzdA0KTGludXggTkZTIGNsaWVudCBtYWlu
-dGFpbmVyLCBIYW1tZXJzcGFjZQ0KdHJvbmQubXlrbGVidXN0QGhhbW1lcnNwYWNlLmNvbQ0KDQoN
-Cg==
+On 27 Sep 2020, at 16:45, Bjorn Helgaas wrote:
+
+> On Tue, Sep 22, 2020 at 02:38:56PM -0700, Sean V Kelley wrote:
+>> From: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>>
+>> When attempting error recovery for an RCiEP associated with an RCEC 
+>> device,
+>> there needs to be a way to update the Root Error Status, the 
+>> Uncorrectable
+>> Error Status and the Uncorrectable Error Severity of the parent RCEC.
+>> In some non-native cases in which there is no OS visible device
+>> associated with the RCiEP, there is nothing to act upon as the 
+>> firmware
+>> is acting before the OS. So add handling for the linked 'rcec' in 
+>> AER/ERR
+>> while taking into account non-native cases.
+>>
+>> Co-developed-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>> ---
+>>  drivers/pci/pcie/aer.c |  9 +++++----
+>>  drivers/pci/pcie/err.c | 38 ++++++++++++++++++++++++--------------
+>>  2 files changed, 29 insertions(+), 18 deletions(-)
+>>
+>> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
+>> index 65dff5f3457a..dccdba60b5d9 100644
+>> --- a/drivers/pci/pcie/aer.c
+>> +++ b/drivers/pci/pcie/aer.c
+>> @@ -1358,17 +1358,18 @@ static int aer_probe(struct pcie_device *dev)
+>>  static pci_ers_result_t aer_root_reset(struct pci_dev *dev)
+>>  {
+>>  	int aer = dev->aer_cap;
+>> +	int rc = 0;
+>>  	u32 reg32;
+>> -	int rc;
+>> -
+>>
+>>  	/* Disable Root's interrupt in response to error messages */
+>>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, &reg32);
+>>  	reg32 &= ~ROOT_PORT_INTR_ON_MESG_MASK;
+>>  	pci_write_config_dword(dev, aer + PCI_ERR_ROOT_COMMAND, reg32);
+>>
+>> -	rc = pci_bus_error_reset(dev);
+>> -	pci_info(dev, "Root Port link has been reset\n");
+>> +	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC) {
+>> +		rc = pci_bus_error_reset(dev);
+>> +		pci_info(dev, "Root Port link has been reset\n");
+>> +	}
+>>
+>>  	/* Clear Root Error Status */
+>>  	pci_read_config_dword(dev, aer + PCI_ERR_ROOT_STATUS, &reg32);
+>> diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+>> index 5380ecc41506..a61a2518163a 100644
+>> --- a/drivers/pci/pcie/err.c
+>> +++ b/drivers/pci/pcie/err.c
+>> @@ -149,7 +149,8 @@ static int report_resume(struct pci_dev *dev, 
+>> void *data)
+>>  /**
+>>   * pci_bridge_walk - walk bridges potentially AER affected
+>>   * @bridge   bridge which may be an RCEC with associated RCiEPs,
+>> - *           an RCiEP associated with an RCEC, or a Port.
+>> + *           or a Port.
+>> + * @dev      an RCiEP lacking an associated RCEC.
+>>   * @cb       callback to be called for each device found
+>>   * @userdata arbitrary pointer to be passed to callback.
+>>   *
+>> @@ -160,13 +161,16 @@ static int report_resume(struct pci_dev *dev, 
+>> void *data)
+>>   * If the device provided has no subordinate bus, call the provided
+>>   * callback on the device itself.
+>>   */
+>> -static void pci_bridge_walk(struct pci_dev *bridge, int (*cb)(struct 
+>> pci_dev *, void *),
+>> +static void pci_bridge_walk(struct pci_dev *bridge, struct pci_dev 
+>> *dev,
+>> +			    int (*cb)(struct pci_dev *, void *),
+>>  			    void *userdata)
+>>  {
+>> -	if (bridge->subordinate)
+>> +	if (bridge && bridge->subordinate)
+>
+> I *guess* this means there's a possibility that bridge is NULL?  And I
+> guess that case is when pci_upstream_bridge(dev) in pcie_do_recovery()
+> was NULL?
+>
+> I can't figure out what that means in practice.  Oh, wait, I bet I
+> know -- this is the non-native case where there's no OS-visible
+> reporting device.
+
+Yes, this is for the non-native case.
+
+>
+> We need some sort of comment because this is really not a top-of-mind
+> situation unless you happen to be working on one of the few systems
+> like that.
+
+Will do.
+
+>
+> Not too sure this scenario is really a good fit for the
+> pci_bridge_walk() model, but I think it's OK for now with a hint so we
+> can remember this no RCEC, no Root Port model.
+
+Understood.
+
+>
+>>  		pci_walk_bus(bridge->subordinate, cb, userdata);
+>> -	else
+>> +	else if (bridge)
+>>  		cb(bridge, userdata);
+>> +	else
+>> +		cb(dev, userdata);
+>>  }
+>>
+>>  static pci_ers_result_t flr_on_rciep(struct pci_dev *dev)
+>> @@ -196,16 +200,24 @@ pci_ers_result_t pcie_do_recovery(struct 
+>> pci_dev *dev,
+>>  	type = pci_pcie_type(dev);
+>>  	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>>  	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+>> -	    type == PCI_EXP_TYPE_RC_EC ||
+>> -	    type == PCI_EXP_TYPE_RC_END)
+>> +	    type == PCI_EXP_TYPE_RC_EC)
+>>  		bridge = dev;
+>> +	else if (type == PCI_EXP_TYPE_RC_END)
+>> +		bridge = dev->rcec;
+>>  	else
+>>  		bridge = pci_upstream_bridge(dev);
+>>
+>>  	pci_dbg(dev, "broadcast error_detected message\n");
+>>  	if (state == pci_channel_io_frozen) {
+>> -		pci_bridge_walk(bridge, report_frozen_detected, &status);
+>> +		pci_bridge_walk(bridge, dev, report_frozen_detected, &status);
+>>  		if (type == PCI_EXP_TYPE_RC_END) {
+>> +			/*
+>> +			 * The callback only clears the Root Error Status
+>> +			 * of the RCEC (see aer.c).
+>> +			 */
+>> +			if (bridge)
+>> +				reset_subordinate_devices(bridge);
+>
+> It's unfortunate to add yet another special case in this code, and I'm
+> not thrilled about the one in aer_root_reset() either.  It's just not
+> obvious why they should be there.  I'm sure if I spent 30 minutes
+> decoding things, it would all make sense.  Guess I'm just griping
+> because I don't have a better suggestion.
+
+I could also add some more detail here referencing the non-native case 
+where there may not even exist an RCEC. Aside from comments, I could 
+employ a descriptive flag such as “native_bridge”.
+
+Thanks,
+
+Sean
+
+>
+>>  			status = flr_on_rciep(dev);
+>>  			if (status != PCI_ERS_RESULT_RECOVERED) {
+>>  				pci_warn(dev, "function level reset failed\n");
+>> @@ -219,13 +231,13 @@ pci_ers_result_t pcie_do_recovery(struct 
+>> pci_dev *dev,
+>>  			}
+>>  		}
+>>  	} else {
+>> -		pci_bridge_walk(bridge, report_normal_detected, &status);
+>> +		pci_bridge_walk(bridge, dev, report_normal_detected, &status);
+>>  	}
+>>
+>>  	if (status == PCI_ERS_RESULT_CAN_RECOVER) {
+>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>  		pci_dbg(dev, "broadcast mmio_enabled message\n");
+>> -		pci_bridge_walk(bridge, report_mmio_enabled, &status);
+>> +		pci_bridge_walk(bridge, dev, report_mmio_enabled, &status);
+>>  	}
+>>
+>>  	if (status == PCI_ERS_RESULT_NEED_RESET) {
+>> @@ -236,18 +248,16 @@ pci_ers_result_t pcie_do_recovery(struct 
+>> pci_dev *dev,
+>>  		 */
+>>  		status = PCI_ERS_RESULT_RECOVERED;
+>>  		pci_dbg(dev, "broadcast slot_reset message\n");
+>> -		pci_bridge_walk(bridge, report_slot_reset, &status);
+>> +		pci_bridge_walk(bridge, dev, report_slot_reset, &status);
+>>  	}
+>>
+>>  	if (status != PCI_ERS_RESULT_RECOVERED)
+>>  		goto failed;
+>>
+>>  	pci_dbg(dev, "broadcast resume message\n");
+>> -	pci_bridge_walk(bridge, report_resume, &status);
+>> +	pci_bridge_walk(bridge, dev, report_resume, &status);
+>>
+>> -	if (type == PCI_EXP_TYPE_ROOT_PORT ||
+>> -	    type == PCI_EXP_TYPE_DOWNSTREAM ||
+>> -	    type == PCI_EXP_TYPE_RC_EC) {
+>> +	if (bridge) {
+>>  		if (pcie_aer_is_native(bridge))
+>>  			pcie_clear_device_status(bridge);
+>>  		pci_aer_clear_nonfatal_status(bridge);
+>> -- 
+>> 2.28.0
+>>
