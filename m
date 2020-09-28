@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B6527AD8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5531927AD8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:12:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgI1MLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:11:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52386 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726350AbgI1MLk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:11:40 -0400
-Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDDA52083B;
-        Mon, 28 Sep 2020 12:11:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601295099;
-        bh=NK7+H/Aeb5qTM2CC+Dotq0cvh0sf74ZwVYE2Z4WjsRQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Qbv/4iT98v3fufYZRVwMVbg01QTkaf635XRL7rtSN9sp2LSfeplmr6ZNwXsSWEe+4
-         voeOVqjaJDotsxrl7+lX2H/Q3sorqUt3ZjzqIeAHNdH6t5bKFoypvUtki5XNI0xV50
-         qwUihFFy3e3dZuYRw9XTg6pA3KxUU36tND05JKuc=
-Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
- call
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <20200922233333.GA2239404@bjorn-Precision-5520>
- <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
- <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
- <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
- <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
- <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
- <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
- <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
- <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
- <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
- <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
- <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
- <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
- <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
- <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
- <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
-From:   Sinan Kaya <okaya@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <d508091f-a5a3-1127-6a42-e546532da7b2@kernel.org>
-Date:   Mon, 28 Sep 2020 08:11:37 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726635AbgI1ML6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726350AbgI1ML5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:11:57 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898AFC0613CE
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:11:57 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id e17so861505wme.0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:11:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7j2hMlME7tc0tEQkSSS8xb1F+KuYkA6Veri3DVF15q4=;
+        b=E+zJZI097lrmY3nCoxu4sDiwT3FNXKkjxBIaywF3Lc07KL1z66isdCFxW0xTSa111L
+         sCYDHY0mJSJMOMQ0Uz/xhyMItQ5mDfejVfOYLuli9qQbgAQy3PRVLwgZLppGctm7ipuY
+         Sn6JBAVLlkAkgdWBqVtU0QHXqvyvEVabweu95ePoPY5CyQvbt6F+IEmg9HAuuKQE2tH0
+         VJG/b7iXyYgLlJ3LM6QMzwr68G6H0UJFhv8pUiVXpXA2DLfyuU7NM4MOWHsEJx1KHNEX
+         qNblPhsWvXXaQOIVYhCG3S7iNPsyPWuNfNjhJ1OCNdde4NgzJj6fPv4s801o6fr8n1+q
+         M0+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7j2hMlME7tc0tEQkSSS8xb1F+KuYkA6Veri3DVF15q4=;
+        b=WnkjC11ANKjMspb/UByWrucK3Ohd7DOICmKd0IiIlCVAVz0rbZPfJtpUvl9Jc7iu7O
+         mtGv+cqf1aDUYypA7VW07xMsNJmWb9PnE/gKhTk5jbEcj91jU4HInJg3izyzI8eUBM7w
+         LtV7CdjZQwBDHVVxj+rKIwiBEsHww7PjZcoCfI8ipB0NWo6wzcf6TmNaDBkyO8oxDOth
+         hNgJ88gIcrzZ0I1JuQoncIEkHukNnl6ZxYfl56/+L4r7X+N2ylM1vu3S4j/7cccxo1XX
+         vN4DkDZrqzdkz2VW/2PnZasfEw2nZUo7lJMRaUlB4nosUZ9cZI7s9zpmT+CLMIdnzBrv
+         RDbA==
+X-Gm-Message-State: AOAM531yZ7ip8Ka0dNlqTQhQR2rngc0RTHm904MNbH2ueVkfxkDuR7kq
+        SY1ySsRVkMwBRaJXochlQUsVrYpoDWQ5xg==
+X-Google-Smtp-Source: ABdhPJxFfqR3eEqXbi3H+U8ljl91xjX3UcTfZVavU0Hq94Z1nqVnr59NRTgNIM1pflmJKosPdWlTMg==
+X-Received: by 2002:a7b:c215:: with SMTP id x21mr1299532wmi.138.1601295116194;
+        Mon, 28 Sep 2020 05:11:56 -0700 (PDT)
+Received: from dell ([91.110.221.154])
+        by smtp.gmail.com with ESMTPSA id q15sm1219701wrr.8.2020.09.28.05.11.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 05:11:55 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 13:11:53 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     Keerthy <j-keerthy@ti.com>, Axel Lin <axel.lin@ingics.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] dt-bindings: mfd: add LP87524-Q1
+Message-ID: <20200928121153.GE4637@dell>
+References: <20200902142259.28349-1-luca@lucaceresoli.net>
+ <20200902142259.28349-3-luca@lucaceresoli.net>
 MIME-Version: 1.0
-In-Reply-To: <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200902142259.28349-3-luca@lucaceresoli.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/2020 10:43 PM, Kuppuswamy, Sathyanarayanan wrote:
->> 2. no bus reset on NON_FATAL error through AER driver path.
->> This already tells me that you need to split your change into
->> multiple patches.
->>
->> Let's talk about this too. bus reset should be triggered via
->> AER driver before informing the recovery.
-> But as per error recovery documentation, any call to
-> ->error_detected() or ->mmio_enabled() can request
-> PCI_ERS_RESULT_NEED_RESET. So we need to add code
-> to do the actual reset before calling ->slot_reset()
-> callback. So call to pci_reset_bus() fixes this
-> issue.
+On Wed, 02 Sep 2020, Luca Ceresoli wrote:
+
+> Add the LP87524-Q1 to the bindings along with an example. This is a variant
+> of the LP87565-Q1 and LP87561-Q1 chips which already have bindings.
 > 
->      if (status == PCI_ERS_RESULT_NEED_RESET) {
-> +        pci_reset_bus(dev);
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> 
+> ---
+> 
+> Changes in v5:
+>  - describe the "regulators" node too (Rob)
+>  - add 'additionalProperties: false' (Rob)
+>  - user patternProperties for supplies
+>  - simplify supply description
+> 
+> Changes in v4:
+>  - reformat as a standalone file
+> 
+> Changes in v3:
+>  - fix yaml errors
+> 
+> Changes in v2:
+>  - RFC,v1 was based on the txt file, rewrite for yaml
+>  - use uppercase consistently in model names (Lee Jones)
+>  - replace "regulator" -> "mfd" in subject line (Lee Jones)
+>  - replace "dt:" suffix with "dt-bindings:" prefix in subject line
+> ---
+>  .../bindings/mfd/ti,lp87524-q1.yaml           | 112 ++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/ti,lp87524-q1.yaml
 
-This part seems to make sense as you already highlighted there is
-a TO-DO in the code.
+Applied, thanks.
 
-This is an independent change that deserves its own patch.
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
