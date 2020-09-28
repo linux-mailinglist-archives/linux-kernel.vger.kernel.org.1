@@ -2,155 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3EC27B654
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D1227B65A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbgI1UdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        id S1726871AbgI1Ud4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:33:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726621AbgI1UdA (ORCPT
+        with ESMTP id S1726607AbgI1Udz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:33:00 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B028C061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:33:00 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id x22so2191216pfo.12
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 13:33:00 -0700 (PDT)
+        Mon, 28 Sep 2020 16:33:55 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDDB5C061755;
+        Mon, 28 Sep 2020 13:33:55 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id m17so2567909ioo.1;
+        Mon, 28 Sep 2020 13:33:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=022MB5UvViutFdbXtKWJ6VGGifiGIjQGT/+f3C2X5BY=;
-        b=NoPj18WgNhec0QYX9MZ8kfNwH7cnM3fgMKVS08JdvNhSGDE1UKenWD8EAY+BxLHt4N
-         lhZsTYFAcHhMcpEH34DfmOyFjDAcuEsEAY1U1L2dl6oMerOBXkL6QfNBmFZOArwb5hTm
-         tfiE0AnKi4fST1CL5etiJDlxNV2K16CKFAE1fM4DCkuy38u1j/tusM/mC39qyBx7G7uJ
-         q68k3gsUfLXDLZkgX5OzbYz47SWrlBZ25uK8VpoHR5X8VkYD0rkI3A+Jy8JcN6VkW6oV
-         IYzOYWbiaw67LWJjWoVPTzD6KkBqPxHr1FE36f3e4r7Hzxdvy2NZNw1+Wfcsr7GkOkm1
-         MxwQ==
+        bh=pNxQqZbIUbKA/pVuTihMDSXkiAxmD/LhZW5G6KwpTtw=;
+        b=DeXZi/28lBTYBdPmn8L5Wg5PunD/XJQao3jBlEjXodDCQwCB6xgs2cfQ3Su1G/Nnij
+         Udoz2kUopa454OtfZrbCiN7aLSL+pQxEBHvkbHUzDLip2HJlLonz3j45i3dOVKQTjMbg
+         BF2o6P/1h7bSt8+BnwwL0xC3qHE5rM7KV9ctJw3pgOpXPlKPDfMInoHnCpEY85jnGNj5
+         98SFFPA2pTtWcFyF7E+icQ/7GnixQovjKzENQ+mSvfJK7tbQNuN4lZaHqlHBpPsridoy
+         V1rKHOadYWrd3UeFuDTU3r/99s5EGVacZQwt0no2uvlyj/06J8E5uZeT9bUSwFsOTigw
+         Sg6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=022MB5UvViutFdbXtKWJ6VGGifiGIjQGT/+f3C2X5BY=;
-        b=UbG1AEleWZh4h8TFPF3+sS6UTZTS3w/1uS/5OtmKppkemvjTbu0n1HTV26Jp5r/tDo
-         LPsPqXJ1oFJ72jeG8APWaJpMyBKgleLJ9maNN5GCIcRbrtXe1r3vI/ubW64tpPOTNlqq
-         hfT8+/N0fGTAjSP1ZJdw9Gj3wPl6cJDtL9JpQatECI4HBxZGElZ0LRZFwVSAINz38nhu
-         zLRTbFXX302hwt0ih8SUNfcogE9R8MDjI5SHbTww9RbcMD4FdkRV4TFTBGAH2hVhvO0w
-         p5jRBlGv2fhT5JLQFwbSFoR1cCuuaW9jQe3OocClRtzZg+LB1xpsYpjA1EFbcgT5ulir
-         E1Kw==
-X-Gm-Message-State: AOAM533QZrEu/+5GEB2GWJh7XKQf3OqNwMAm4bzBuf4Q0SiqvO+FVb+/
-        Y98vmJYwwwBO9nLyhBrSmu5dR0LIFu+qHZJHjwjuvA==
-X-Google-Smtp-Source: ABdhPJwHAmE69z8mkim2n/OT/maVWQ/SLtorRPWkomU9EXgYrVJ3gp7dNXMq1AfJKujjghUPlz6AC5WclapGWhARzsA=
-X-Received: by 2002:a17:902:ed11:b029:d1:f385:f4e7 with SMTP id
- b17-20020a170902ed11b02900d1f385f4e7mr1131531pld.56.1601325179369; Mon, 28
- Sep 2020 13:32:59 -0700 (PDT)
+        bh=pNxQqZbIUbKA/pVuTihMDSXkiAxmD/LhZW5G6KwpTtw=;
+        b=WDKriZhPLqKwCWTeii7WNP1CN2DjapQPO/AJMu48Fuv0BtXJK/BkISPPKc1OhWBLte
+         5YrQRDnBX2SbS2F0Y0tjSR3/vJg7ehKv2DeK/rwVxFLK11BKeeGjwywpGJNcCNkicIEs
+         6qVh74X/Anqoirhs6t4za/Eassfo/CUNzIG41+wgFfMmlg3jnAERsBMxbxYWaycYyG/K
+         z5pvLqdq6y5hGTURsFHVscPlJaoLFFtx7PBTSUcF+PD+0RSlHqpfiKnd9pxR28DZWlqG
+         e32jcG5kFdbI2JyxBuUIneGUNN3ZzRvk9mQ/pfRUrRb0edq70nUnj3DnUHvRSodH6xRr
+         YEdg==
+X-Gm-Message-State: AOAM532Fy36lM5HJE8OJolMayiAB5DUsD5zkJpCt2ih6KAxowZ1mCPst
+        R5QFIjYIFN4I7qaQ8N+EPkz6fSHhPmRu4ybXhFA=
+X-Google-Smtp-Source: ABdhPJznLwKjrRT1WnROfKC6JoC0/wSkbw+rziNX/Guf0Zyj6vQOa3REKtcbjD3iq6pB7GbkLKP7PD3uPoNB1y4Nddo=
+X-Received: by 2002:a6b:7909:: with SMTP id i9mr60914iop.98.1601325235094;
+ Mon, 28 Sep 2020 13:33:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <00000000000052569205afa67426@google.com> <20200927145737.GA4746@zn.tnic>
- <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
-In-Reply-To: <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 28 Sep 2020 13:32:47 -0700
-Message-ID: <CAKwvOdkdAi2PwiiS=sp0LV_3=8aVsqEJ87w8WyWbvJ==Eu_4Ag@mail.gmail.com>
-Subject: Re: general protection fault in perf_misc_flags
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20200928182110.7050-1-david@redhat.com> <20200928182110.7050-5-david@redhat.com>
+In-Reply-To: <20200928182110.7050-5-david@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Mon, 28 Sep 2020 22:33:43 +0200
+Message-ID: <CAM9Jb+iRpsSPET0ntvNRqnw3i44mDKjqYvKWXxPune5pBgpGvA@mail.gmail.com>
+Subject: Re: [PATCH v1 4/5] mm/page_alloc: place pages to tail in __free_pages_core()
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 10:18 PM 'Dmitry Vyukov' via Clang Built Linux
-<clang-built-linux@googlegroups.com> wrote:
+> __free_pages_core() is used when exposing fresh memory to the buddy
+> during system boot and when onlining memory in generic_online_page().
 >
-> On Sun, Sep 27, 2020 at 4:57 PM Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Sat, Sep 19, 2020 at 01:32:14AM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    92ab97ad Merge tag 'sh-for-5.9-part2' of git://git.libc.or..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1069669b900000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
-> > > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> >
-> > All below is AFAICT:
-> >
-> > This compiler you're using is not some official release but some random
-> > commit before the v10 release:
-> >
-> > $ git show c2443155a0fb245c8f17f2c1c72b6ea391e86e81
-> > Author: Hans Wennborg <hans@chromium.org>
-> > Date:   Sat Nov 30 14:20:11 2019 +0100
-> >
-> >     Revert 651f07908a1 "[AArch64] Don't combine callee-save and local stack adjustment when optimizing for size"
-> > ...
-> >
-> > $ git describe c2443155a0fb245c8f17f2c1c72b6ea391e86e81
-> > llvmorg-10-init-10900-gc2443155a0fb
-> >
-> > The v10 release is:
-> >
-> > $ git show llvmorg-10.0.0
-> > tag llvmorg-10.0.0
-> > Tagger: Hans Wennborg <hans@chromium.org>
-> > Date:   Tue Mar 24 12:58:58 2020 +0100
-> >
-> > Tag 10.0.0
-> >
-> > and v10 has reached v10.0.1 in the meantime:
-> >
-> > $ git log --oneline c2443155a0fb245c8f17f2c1c72b6ea391e86e81~1..llvmorg-10.0.1 | wc -l
-> > 7051
-> >
-> > so can you please update your compiler and see if you can still
-> > reproduce with 10.0.1 so that we don't waste time chasing a bug which
-> > has been likely already fixed in one of those >7K commits.
-
-Oh, shoot, sorry I didn't catch that. Good find.  My next question was
-going to be if this is reproducible with a newer compiler release or
-not (later emails make this sound like it's no longer considered clang
-specific).
-
-Generally we want coverage of unreleased compiler versions to ensure
-we don't ship a broken release.  Once the release exists, it's of
-questionable value to continue to test a pre-release version of that
-branch.
-
-This isn't the first time where we've had syzcaller reports that were
-testing old releases of clang.  Maybe we can establish a process for
-upgrading the toolchain under test based on some time based cadence,
-or coinciding with the upstream LLVM release events?
-
+> generic_online_page() is used in two cases:
 >
-> +Alex, Marco,
+> 1. Direct memory onlining in online_pages().
+> 2. Deferred memory onlining in memory-ballooning-like mechanisms (HyperV
+>    balloon and virtio-mem), when parts of a section are kept
+>    fake-offline to be fake-onlined later on.
 >
-> There is suspicion that these may be caused by use of unreleased clang.
-> Do we use the same clang as we use for the KMSAN instance? But this is
-> not KMSAN machine, so I am not sure who/when/why updated it last to
-> this revision.
-> I even see we have some clang 11 version:
-> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
+> In 1, we already place pages to the tail of the freelist. Pages will be
+> freed to MIGRATE_ISOLATE lists first and moved to the tail of the freelists
+> via undo_isolate_page_range().
 >
-> Is it possible to switch to some released version for both KMSAN and KASAN now?
--- 
-Thanks,
-~Nick Desaulniers
+> In 2, we currently don't implement a proper rule. In case of virtio-mem,
+> where we currently always online MAX_ORDER - 1 pages, the pages will be
+> placed to the HEAD of the freelist - undesireable. While the hyper-v
+> balloon calls generic_online_page() with single pages, usually it will
+> call it on successive single pages in a larger block.
+>
+> The pages are fresh, so place them to the tail of the freelists and avoid
+> the PCP. In __free_pages_core(), remove the now superflouos call to
+> set_page_refcounted() and add a comment regarding page initialization and
+> the refcount.
+>
+> Note: In 2. we currently don't shuffle. If ever relevant (page shuffling
+> is usually of limited use in virtualized environments), we might want to
+> shuffle after a sequence of generic_online_page() calls in the
+> relevant callers.
+>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Stephen Hemminger <sthemmin@microsoft.com>
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/page_alloc.c | 37 ++++++++++++++++++++++++-------------
+>  1 file changed, 24 insertions(+), 13 deletions(-)
+>
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index d5a5f528b8ca..8a2134fe9947 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -270,7 +270,8 @@ bool pm_suspended_storage(void)
+>  unsigned int pageblock_order __read_mostly;
+>  #endif
+>
+> -static void __free_pages_ok(struct page *page, unsigned int order);
+> +static void __free_pages_ok(struct page *page, unsigned int order,
+> +                           fop_t fop_flags);
+>
+>  /*
+>   * results with 256, 32 in the lowmem_reserve sysctl:
+> @@ -682,7 +683,7 @@ static void bad_page(struct page *page, const char *reason)
+>  void free_compound_page(struct page *page)
+>  {
+>         mem_cgroup_uncharge(page);
+> -       __free_pages_ok(page, compound_order(page));
+> +       __free_pages_ok(page, compound_order(page), FOP_NONE);
+>  }
+>
+>  void prep_compound_page(struct page *page, unsigned int order)
+> @@ -1419,17 +1420,15 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+>         spin_unlock(&zone->lock);
+>  }
+>
+> -static void free_one_page(struct zone *zone,
+> -                               struct page *page, unsigned long pfn,
+> -                               unsigned int order,
+> -                               int migratetype)
+> +static void free_one_page(struct zone *zone, struct page *page, unsigned long pfn,
+> +                         unsigned int order, int migratetype, fop_t fop_flags)
+>  {
+>         spin_lock(&zone->lock);
+>         if (unlikely(has_isolate_pageblock(zone) ||
+>                 is_migrate_isolate(migratetype))) {
+>                 migratetype = get_pfnblock_migratetype(page, pfn);
+>         }
+> -       __free_one_page(page, pfn, zone, order, migratetype, FOP_NONE);
+> +       __free_one_page(page, pfn, zone, order, migratetype, fop_flags);
+>         spin_unlock(&zone->lock);
+>  }
+>
+> @@ -1507,7 +1506,8 @@ void __meminit reserve_bootmem_region(phys_addr_t start, phys_addr_t end)
+>         }
+>  }
+>
+> -static void __free_pages_ok(struct page *page, unsigned int order)
+> +static void __free_pages_ok(struct page *page, unsigned int order,
+> +                           fop_t fop_flags)
+>  {
+>         unsigned long flags;
+>         int migratetype;
+> @@ -1519,7 +1519,8 @@ static void __free_pages_ok(struct page *page, unsigned int order)
+>         migratetype = get_pfnblock_migratetype(page, pfn);
+>         local_irq_save(flags);
+>         __count_vm_events(PGFREE, 1 << order);
+> -       free_one_page(page_zone(page), page, pfn, order, migratetype);
+> +       free_one_page(page_zone(page), page, pfn, order, migratetype,
+> +                     fop_flags);
+>         local_irq_restore(flags);
+>  }
+>
+> @@ -1529,6 +1530,11 @@ void __free_pages_core(struct page *page, unsigned int order)
+>         struct page *p = page;
+>         unsigned int loop;
+>
+> +       /*
+> +        * When initializing the memmap, init_single_page() sets the refcount
+> +        * of all pages to 1 ("allocated"/"not free"). We have to set the
+> +        * refcount of all involved pages to 0.
+> +        */
+>         prefetchw(p);
+>         for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
+>                 prefetchw(p + 1);
+> @@ -1539,8 +1545,12 @@ void __free_pages_core(struct page *page, unsigned int order)
+>         set_page_count(p, 0);
+>
+>         atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
+> -       set_page_refcounted(page);
+> -       __free_pages(page, order);
+> +
+> +       /*
+> +        * Bypass PCP and place fresh pages right to the tail, primarily
+> +        * relevant for memory onlining.
+> +        */
+> +       __free_pages_ok(page, order, FOP_TO_TAIL);
+>  }
+>
+>  #ifdef CONFIG_NEED_MULTIPLE_NODES
+> @@ -3171,7 +3181,8 @@ static void free_unref_page_commit(struct page *page, unsigned long pfn)
+>          */
+>         if (migratetype >= MIGRATE_PCPTYPES) {
+>                 if (unlikely(is_migrate_isolate(migratetype))) {
+> -                       free_one_page(zone, page, pfn, 0, migratetype);
+> +                       free_one_page(zone, page, pfn, 0, migratetype,
+> +                                     FOP_NONE);
+>                         return;
+>                 }
+>                 migratetype = MIGRATE_MOVABLE;
+> @@ -5063,7 +5074,7 @@ static inline void free_the_page(struct page *page, unsigned int order)
+>         if (order == 0)         /* Via pcp? */
+>                 free_unref_page(page);
+>         else
+> -               __free_pages_ok(page, order);
+> +               __free_pages_ok(page, order, FOP_NONE);
+>  }
+>
+>  void __free_pages(struct page *page, unsigned int order)
+
+Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
