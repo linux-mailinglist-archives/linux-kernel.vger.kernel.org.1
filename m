@@ -2,215 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 016BB27ABAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8819127ABAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbgI1KQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:16:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:48792 "EHLO foss.arm.com"
+        id S1726613AbgI1KQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:16:10 -0400
+Received: from crapouillou.net ([89.234.176.41]:45896 "EHLO crapouillou.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726540AbgI1KQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:16:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B24DC1063;
-        Mon, 28 Sep 2020 03:16:29 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B31333F6CF;
-        Mon, 28 Sep 2020 03:16:27 -0700 (PDT)
-Subject: Re: [PATCH 5/5] perf: arm_spe: Decode SVE events
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200922101225.183554-1-andre.przywara@arm.com>
- <20200922101225.183554-6-andre.przywara@arm.com>
- <20200927033035.GE9677@leoy-ThinkPad-X240s>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
- 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
- i4aIXCH3Wv6K
-Organization: ARM Ltd.
-Message-ID: <2a301585-1930-17e4-f9a1-d47ca5264734@arm.com>
-Date:   Mon, 28 Sep 2020 11:15:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726540AbgI1KQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 06:16:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1601288167; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eaezfrc/4eiOR0LrVt+JJpCAEUdt+IaeF8unx2pm0xI=;
+        b=ehzyN1qDWZTP83bJZcoPKfxN4GLfTJP7C7io1/Emz9nxPArsA9zFA3/UXMFqLh7cnRHTY9
+        CIw6MCvQFWJBCvuTP3bHtn3qjbo5foPRCbbgCu3Q/XGgJG5Okf1CtvYQYzlxOS87KB5QL+
+        8LhTVU4lqOp6jtu8yEN+M90m7ixPgnU=
+Date:   Mon, 28 Sep 2020 12:15:56 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: linux-next: build failure after merge of the drm tree
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Message-Id: <KU5DHQ.C9RVOLP69UO81@crapouillou.net>
+In-Reply-To: <20200928060427.GA15041@lst.de>
+References: <20200928135405.73404219@canb.auug.org.au>
+        <20200928060427.GA15041@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20200927033035.GE9677@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27/09/2020 04:30, Leo Yan wrote:
+Hi Christoph,
 
-Hi Leo,
+Le lun. 28 sept. 2020 =E0 8:04, Christoph Hellwig <hch@lst.de> a =E9crit :
+> On Mon, Sep 28, 2020 at 01:54:05PM +1000, Stephen Rothwell wrote:
+>>  Hi all,
+>>=20
+>>  After merging the drm tree, today's linux-next build (x86_64=20
+>> allmodconfig)
+>>  failed like this:
+>=20
+> The driver needs to switch do dma_alloc_noncoherent + dma_sync_single*
+> like the other drivers converted in the dma tree.  Paul, let me know=20
+> if
+> you have any questions.
 
-> On Tue, Sep 22, 2020 at 11:12:25AM +0100, Andre Przywara wrote:
->> The Scalable Vector Extension (SVE) is an ARMv8 architecture extension
->> that introduces very long vector operations (up to 2048 bits).
->> The SPE profiling feature can tag SVE instructions with additional
->> properties like predication or the effective vector length.
->>
->> Decode the new operation type bits in the SPE decoder to allow the perf
->> tool to correctly report about SVE instructions.
->>
->> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
->> ---
->>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 48 ++++++++++++++++++-
->>  1 file changed, 47 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
->> index a033f34846a6..f0c369259554 100644
->> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
->> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
->> @@ -372,8 +372,35 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
->>  	}
->>  	case ARM_SPE_OP_TYPE:
->>  		switch (idx) {
->> -		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
->> +		case 0: {
->> +			size_t blen = buf_len;
->> +
->> +			if ((payload & 0x89) == 0x08) {
->> +				ret = snprintf(buf, buf_len, "SVE");
->> +				buf += ret;
->> +				blen -= ret;
->> +				if (payload & 0x2)
->> +					ret = snprintf(buf, buf_len, " FP");
->> +				else
->> +					ret = snprintf(buf, buf_len, " INT");
->> +				buf += ret;
->> +				blen -= ret;
->> +				if (payload & 0x4) {
->> +					ret = snprintf(buf, buf_len, " PRED");
->> +					buf += ret;
->> +					blen -= ret;
->> +				}
->> +				/* Bits [7..4] encode the vector length */
->> +				ret = snprintf(buf, buf_len, " EVLEN%d",
->> +					       32 << ((payload >> 4) & 0x7));
->> +				buf += ret;
->> +				blen -= ret;
->> +				return buf_len - blen;
->> +			}
->> +
->> +			return snprintf(buf, buf_len, "%s", payload & 0x1 ?
->>  					"COND-SELECT" : "INSN-OTHER");
->> +			}
->>  		case 1:	{
->>  			size_t blen = buf_len;
->>  
->> @@ -403,6 +430,25 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
->>  				ret = snprintf(buf, buf_len, " NV-SYSREG");
->>  				buf += ret;
->>  				blen -= ret;
->> +			} else if ((payload & 0x0a) == 0x08) {
->> +				ret = snprintf(buf, buf_len, " SVE");
->> +				buf += ret;
->> +				blen -= ret;
->> +				if (payload & 0x4) {
->> +					ret = snprintf(buf, buf_len, " PRED");
->> +					buf += ret;
->> +					blen -= ret;
->> +				}
->> +				if (payload & 0x80) {
->> +					ret = snprintf(buf, buf_len, " SG");
->> +					buf += ret;
->> +					blen -= ret;
->> +				}
->> +				/* Bits [7..4] encode the vector length */
->> +				ret = snprintf(buf, buf_len, " EVLEN%d",
->> +					       32 << ((payload >> 4) & 0x7));
->> +				buf += ret;
->> +				blen -= ret;
-> 
-> The changes in this patch has been included in the patch [1].
-> 
-> So my summary for patches 02 ~ 05, except patch 04, other changes has
-> been included in the patch set "perf arm-spe: Refactor decoding &
-> dumping flow".
+I don't dma_alloc* anything, DRM core does. I use the=20
+DMA_ATTR_NON_CONSISTENT attr with dma_mmap_attrs(). Is there a=20
+replacement for that?
 
-Ah, my sincere apologies, I totally missed Wei's and your series on this
-(although I did some research on "prior art").
+-Paul
 
-> I'd like to add your patch 04 into the patch set "perf arm-spe:
-> Refactor decoding & dumping flow" and I will respin the patch set v2 on
-> the latest perf/core branch and send out to review.
-> 
-> For patch 01, you could continue to try to land it in the kernel.
-> (Maybe consolidate a bit with Wei?).
-> 
-> Do you think this is okay for you?
-
-Yes, sounds like a plan. So Wei's original series is now fully
-integrated into your 13-patch rework, right?
-
-Is "[RESEND,v1,xx/13] ..." the latest revision of your series?
-Do you plan on sending a v2 anytime soon? Or shall I do review on the
-existing one?
-
-Cheers,
-Andre
-
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1288413/
-> 
->>  			} else if (payload & 0x4) {
->>  				ret = snprintf(buf, buf_len, " SIMD-FP");
->>  				buf += ret;
->> -- 
->> 2.17.1
->>
 
