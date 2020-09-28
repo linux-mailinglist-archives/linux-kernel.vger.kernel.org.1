@@ -2,138 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9479227AE8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE75727AE8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726621AbgI1NCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 09:02:36 -0400
-Received: from mga17.intel.com ([192.55.52.151]:51376 "EHLO mga17.intel.com"
+        id S1726551AbgI1NCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 09:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbgI1NCf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 09:02:35 -0400
-IronPort-SDR: 2ty10jP2zj3eFybKQHP4h7FvBVc+u0e9oX+M/5fEU0HPlMGm8PyK08c8olpbMWp1tFjCiisE/N
- OWcMj//V7XAA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="142004019"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="142004019"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 06:01:45 -0700
-IronPort-SDR: 2PYb7chxyfjfrLHr1gMCoPXK20Doql8Ipysr3XEkekNBhef/3QikprX/1U1qDPFgKsaDmmqgcW
- UeaWQB1ewDJg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="340409775"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga008.jf.intel.com with SMTP; 28 Sep 2020 06:01:42 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 28 Sep 2020 16:01:41 +0300
-Date:   Mon, 28 Sep 2020 16:01:41 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     nouveau@lists.freedesktop.org, Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/nouveau/kms/nv50-: Fix clock checking algorithm in
- nv50_dp_mode_valid()
-Message-ID: <20200928130141.GV6112@intel.com>
-References: <20200922210510.156220-1-lyude@redhat.com>
+        id S1725290AbgI1NCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 09:02:13 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DB0020738;
+        Mon, 28 Sep 2020 13:02:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601298133;
+        bh=jdysMaLrkR71ehjBrCElC5XtY4m0W338UonI9DdcFHw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j8mUCWH307c6c2xxXQZ/kCrp16905805mCM4kH0eBwTS3P621bI5SLMZ+6RgJRg2g
+         52T56S3MRMNNN5KxyLim3kc/iWsgDeKMRO+1ufNBbyTJYLQXExbGLqBSk/P+Ai5HJF
+         WyfpWCfrJBHEcIpreKuuz8i7bcNdJLP9vRK6Tz4s=
+Date:   Mon, 28 Sep 2020 14:02:09 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Anthony Steinhauser <asteinhauser@google.com>
+Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        maz@kernel.org
+Subject: Re: [PATCH v2] PR_SPEC_DISABLE_NOEXEC support for arm64.
+Message-ID: <20200928130208.GA11356@willie-the-truck>
+References: <20200921110020.GA2139@willie-the-truck>
+ <20200922092153.978003-1-asteinhauser@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200922210510.156220-1-lyude@redhat.com>
-X-Patchwork-Hint: comment
+In-Reply-To: <20200922092153.978003-1-asteinhauser@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 05:05:10PM -0400, Lyude Paul wrote:
-> While I thought I had this correct (since it actually did reject modes
-> like I expected during testing), Ville Syrjala from Intel pointed out
-> that the logic here isn't correct. max_clock refers to the max symbol
-> rate supported by the encoder, so limiting clock to ds_clock using max()
-> doesn't make sense. Additionally, we want to check against 6bpc for the
-> time being since that's the minimum possible bpc here, not the reported
-> bpc from the connector. See:
+Hi Anthony,
+
+On Tue, Sep 22, 2020 at 02:21:53AM -0700, Anthony Steinhauser wrote:
+> Support of Spectre v4 PR_SPEC_DISABLE_NOEXEC mitigation mode for on arm64.
 > 
-> https://lists.freedesktop.org/archives/dri-devel/2020-September/280276.html
+> PR_SPEC_DISABLE_NOEXEC turns the mitigation on, but it is automatically
+> turned off whenever a new program is being execve'ed.
 > 
-> For more info.
-> 
-> So, let's rewrite this using Ville's advice.
-> 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Fixes: 409d38139b42 ("drm/nouveau/kms/nv50-: Use downstream DP clock limits for mode validation")
-> Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-> Cc: Lyude Paul <lyude@redhat.com>
-> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Signed-off-by: Anthony Steinhauser <asteinhauser@google.com>
 > ---
->  drivers/gpu/drm/nouveau/nouveau_dp.c | 23 +++++++++++++----------
->  1 file changed, 13 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-> index 7b640e05bd4cd..24c81e423d349 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_dp.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-> @@ -231,23 +231,26 @@ nv50_dp_mode_valid(struct drm_connector *connector,
->  		   const struct drm_display_mode *mode,
->  		   unsigned *out_clock)
->  {
-> -	const unsigned min_clock = 25000;
-> -	unsigned max_clock, ds_clock, clock;
-> +	const unsigned int min_clock = 25000;
-> +	unsigned int max_clock, ds_clock, clock;
-> +	const u8 bpp = 18; /* 6 bpc */
+> I added the "#include <linux/sched/task_stack.h>" line to the
+> arch/arm64/kernel/proton-pack.c file just to make the kernel compilable.
+> It is not a part of the PR_SPEC_DISABLE_NOEXEC implementation.
 
-AFAICS nv50_outp_atomic_check() and nv50_msto_atomic_check()
-just blindly use connector->display_info.bpc without any fallback
-logic to lower the bpc. So Ilia's concerns seem well founded.
-Without that logic I guess you should just use
-connector->display_info.bpc here as well.
+Thanks, I saw the kbuild robot complain about this with 'allnoconfig'
+builds, so I'll patch that separately.
 
->  	enum drm_mode_status ret;
+>  arch/arm64/kernel/process.c     |  7 +++++++
+>  arch/arm64/kernel/proton-pack.c | 35 +++++++++++++++++++++++++++++++++
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 9dbd35b95253..5ac43b743696 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -391,6 +391,13 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
 >  
->  	if (mode->flags & DRM_MODE_FLAG_INTERLACE && !outp->caps.dp_interlace)
->  		return MODE_NO_INTERLACE;
+>  	ptrauth_thread_init_kernel(p);
 >  
->  	max_clock = outp->dp.link_nr * outp->dp.link_bw;
-> -	ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd,
-> -						  outp->dp.downstream_ports);
-> -	if (ds_clock)
-> -		max_clock = min(max_clock, ds_clock);
-> -
-> -	clock = mode->clock * (connector->display_info.bpc * 3) / 10;
-> -	ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock,
-> -					    &clock);
-> +	clock = mode->clock * bpp / 8;
-> +	if (clock > max_clock)
-> +		return MODE_CLOCK_HIGH;
+> +	if (task_spec_ssb_noexec(current)) {
+> +		clear_thread_flag(TIF_SSBD);
+> +		task_clear_spec_ssb_disable(current);
+> +		task_clear_spec_ssb_noexec(current);
+> +		spectre_v4_enable_task_mitigation(current);
+> +	}
 
-This stuff vs. nouveau_conn_mode_clock_valid() still seems a bit messy.
-The max_clock you pass to nouveau_conn_mode_clock_valid() is the max
-symbol clock, but nouveau_conn_mode_clock_valid() checks it against the
-dotclock. Also only nouveau_conn_mode_clock_valid() has any kind of
-stereo 3D handling, but AFAICS stereo_allowed is also set for DP?
+Are you sure copy_thread() is the right place for this? afaict, that would
+also apply to plain fork(), which isn't what we want. It looks like
+arch_setup_new_exec() is a better fit, and matches what x86 does. Any reason
+not to use that?
 
-> +
-> +	ds_clock = drm_dp_downstream_max_dotclock(outp->dp.dpcd, outp->dp.downstream_ports);
-> +	if (ds_clock && mode->clock > ds_clock)
-> +		return MODE_CLOCK_HIGH;
-> +
-> +	ret = nouveau_conn_mode_clock_valid(mode, min_clock, max_clock, &clock);
->  	if (out_clock)
->  		*out_clock = clock;
-> +
->  	return ret;
->  }
-> -- 
-> 2.26.2
+This also looks like we basically want to issue the PR_SPEC_ENABLE prctl()
+on execve(). We can implement it like that to keep things simple and not
+have to worry about the actual underlying state (aside: why doesn't the
+core code do this?).
 
--- 
-Ville Syrjälä
-Intel
+Anyway, I've had a crack at this. Please take a look at the diff below.
+
+Will
+
+--->8
+
+diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+index 9dbd35b95253..085d8ca39e47 100644
+--- a/arch/arm64/kernel/process.c
++++ b/arch/arm64/kernel/process.c
+@@ -21,6 +21,7 @@
+ #include <linux/lockdep.h>
+ #include <linux/mman.h>
+ #include <linux/mm.h>
++#include <linux/nospec.h>
+ #include <linux/stddef.h>
+ #include <linux/sysctl.h>
+ #include <linux/unistd.h>
+@@ -609,6 +610,11 @@ void arch_setup_new_exec(void)
+ 	current->mm->context.flags = is_compat_task() ? MMCF_AARCH32 : 0;
+ 
+ 	ptrauth_thread_init_user(current);
++
++	if (task_spec_ssb_noexec(current)) {
++		arch_prctl_spec_ctrl_set(current, PR_SPEC_STORE_BYPASS,
++					 PR_SPEC_ENABLE);
++	}
+ }
+ 
+ #ifdef CONFIG_ARM64_TAGGED_ADDR_ABI
+diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
+index 1fbaa0240d4c..c0d73d02b379 100644
+--- a/arch/arm64/kernel/proton-pack.c
++++ b/arch/arm64/kernel/proton-pack.c
+@@ -692,6 +692,9 @@ static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 
+ 		task_set_spec_ssb_force_disable(task);
+ 		fallthrough;
++	case PR_SPEC_DISABLE_NOEXEC:
++		/* Disable speculation until execve(): enable mitigation */
++		fallthrough;
+ 	case PR_SPEC_DISABLE:
+ 		/* Disable speculation: enable mitigation */
+ 		/* Same as PR_SPEC_FORCE_DISABLE */
+@@ -705,6 +708,12 @@ static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 		return -ERANGE;
+ 	}
+ 
++	/* Handle the 'noexec' flag separately to save bloating up the switch */
++	if (ctrl == PR_SPEC_DISABLE_NOEXEC)
++		task_set_spec_ssb_noexec(task);
++	else
++		task_clear_spec_ssb_noexec(task);
++
+ 	spectre_v4_enable_task_mitigation(task);
+ 	return 0;
+ }
+@@ -744,6 +753,9 @@ static int ssbd_prctl_get(struct task_struct *task)
+ 	if (task_spec_ssb_force_disable(task))
+ 		return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
+ 
++	if (task_spec_ssb_noexec(task))
++		return PR_SPEC_PRCTL | PR_SPEC_DISABLE_NOEXEC;
++
+ 	if (task_spec_ssb_disable(task))
+ 		return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 
