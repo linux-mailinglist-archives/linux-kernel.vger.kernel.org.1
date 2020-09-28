@@ -2,169 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 946C127AA63
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F5A27AA66
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 11:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726877AbgI1JKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 05:10:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47146 "EHLO
+        id S1726681AbgI1JLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 05:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgI1JKm (ORCPT
+        with ESMTP id S1726328AbgI1JLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 05:10:42 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D65C0613CE
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:10:42 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id 34so282306pgo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 02:10:42 -0700 (PDT)
+        Mon, 28 Sep 2020 05:11:22 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA33C061755;
+        Mon, 28 Sep 2020 02:11:22 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mm21so275072pjb.4;
+        Mon, 28 Sep 2020 02:11:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=O1+yMppnDpNfXMAMC1ZdSEkZ8OlKvslG0pRoiuAQVN0=;
-        b=i0OWzrKQVRrRW+5vXExQR3uFGBu7++GZTpfFtp5wxHPGl0QVi/qJ5OUbL+jt4X7zzi
-         XVO9IAPOK/g3UxE4+rNRbdNk6MK0TsqAr9l501hzNxohI0lrw+TYEUAUHVj5nSSPqOU1
-         +odUFDTyM9fc0fflVZx0LR8MKZnZLUbZ0w1BuUdCcjUJONhQ7IEqoSUZ+3vRBjRG/Rg2
-         3vabPIqfBohFl4gq4MAgOQyY4Bt7VpaeR67t7JwpcFaYb5sxz1ZjYyGJt4BCwYTHtdGr
-         Vx3R+P3e8jndccEUgwlRDv7eI/BuOp7ace5krUyQkMkskRGkMfbAlFjdT9GpOFgCXeUQ
-         XlTQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZiEI44lVQql3CV00anMbhOQHPESlcWHyF66pXqicaoQ=;
+        b=aasVp887UK0+pu3XY9sdoB11qRDafaGklbzs0JAIQ+p5WCp2TNLpvyyZhgBjSM27Eq
+         fI1Dzl3XlyIlZsWMoNivjoWW1a1M67/+iycWqLTR2/+V1rM9GDKEhnN7tDL9+s2wB3bi
+         eDdkEiQu0qalqs7JLDDA9LpqfIDQ8ePI5rfc/tfVlVY9aozHsESsGWHuq4/IHV6tg4DX
+         qN9qIwu4zirlwrmNnXwHU3t+aeiVcqsNF8DMCKx8rrvaGWNo+PV7GmrYkTiTfbEUWsOc
+         +qQrk/4mNCO/Dk/B12yMe1w0GvErIjEkR02Laj5d5XqVqKwKScj1dErHCef42thnYHju
+         DhuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=O1+yMppnDpNfXMAMC1ZdSEkZ8OlKvslG0pRoiuAQVN0=;
-        b=pSQX7AztigO+Z6XubIZRh2glYvNNd3oD/Sr5ydTOHU25cv5cNsjabtUhsPKCxwcqqC
-         dlQ0nRKSoDn4B5jEZEr/uluPpR5QbiMQW8QiSX6wQttBpKMitx+BsxEU6zrgtRqdeAnN
-         naozczi6R0O+cp4yyIZOLKc6koHUmQUYgYb+dOYyfXAoYu13slOzfVyuyRBOhbGJVMXB
-         NxOqRSzQwDsR0EJ4hTS1/nhv6mzHYTSLA+thGUOe0MnUQCQ2FXMdr2CGd0vtvKYFX84L
-         pFoI5i0glciGoxKeM1bArH0kW3cvkgRmxErEyD3AgtkBMN5tiqa81aej91mSVeNs5r8W
-         GK6g==
-X-Gm-Message-State: AOAM533pagjLjYfKJDMBW7NwMjRHAvEoRDkfQfnyttuXuyhCFd/oXpxP
-        UT6DeNFdas803ElY39qWsD8rMqqiKlAftSs=
-X-Google-Smtp-Source: ABdhPJxz0IdBuu8ZZQnGUY8fl5P06ZoniHdCD4o7XYloBPzjr6aas9+xPzk+z1uzjfdwDZhKnE47gA==
-X-Received: by 2002:a62:8205:0:b029:151:c014:6915 with SMTP id w5-20020a6282050000b0290151c0146915mr591925pfd.51.1601284242177;
-        Mon, 28 Sep 2020 02:10:42 -0700 (PDT)
-Received: from linux ([103.59.133.81])
-        by smtp.gmail.com with ESMTPSA id q15sm697928pgr.27.2020.09.28.02.10.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 28 Sep 2020 02:10:41 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 14:40:35 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Govind Singh <govinds@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the mhi tree
-Message-ID: <20200928091035.GA11515@linux>
-References: <20200928184230.2d973291@canb.auug.org.au>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZiEI44lVQql3CV00anMbhOQHPESlcWHyF66pXqicaoQ=;
+        b=exaCOXEU6Hu5O5GoYYzBxiNSqX9aHgsKjOhl18xwF29Q9dnWlld2dLs1TxjWuTFJX8
+         YzOC7qQvsed9OYMFrqD4C6fM5wt+7S+rweJJXh9j5UNb27fuVXibCrvoHLVP+IHwefrI
+         Y1jD4YdMKEGc1TqwCAhOMQA1Lj782gFQ6L5LLYpqUP7A5PXQFkRwhExUv5GVuPgC48hT
+         MSLcWS2XTsPqn76K7i9cqEVWB8LdVRiMSCuLw9XSqkGS2/hC9tA8yTR/9Jm4ANsmzDfU
+         iUkC+43FTeQ06MNiSqIQR/Ij0kMKcJXbRBlA1V2oLvN4LE+JZYYFWn61VIcIS0sV5q2+
+         7eAQ==
+X-Gm-Message-State: AOAM531sy7lZJRRQv78QyIxuLQ9b3JjugedfZHmwvs+l9BAmC7S9AFtz
+        R76qx8TodNA4o27bIWxVWPPuLZJ/uNbnIvzGgdc=
+X-Google-Smtp-Source: ABdhPJy+VIGI1poKYp14uXMKvEj9HZSaqqhzHFFJP9v3EK+X9zHUaL/bj52Swb/V1SYklh/cFgA2kviSVoJjDECW+U4=
+X-Received: by 2002:a17:90a:fd98:: with SMTP id cx24mr431011pjb.181.1601284282032;
+ Mon, 28 Sep 2020 02:11:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200928184230.2d973291@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200924113842.11670-1-brgl@bgdev.pl> <20200924113842.11670-9-brgl@bgdev.pl>
+ <20200925090329.GZ3956970@smile.fi.intel.com> <CAMpxmJWBSwofFy94mHZWB2mdvHGStYp5oLDZp2M+wO57t40HSQ@mail.gmail.com>
+ <20200925123000.GD3956970@smile.fi.intel.com> <CAMRc=McfBLaE=N12z29JjTDJ0ABzC8OW4rPWeeSU82kag+9pgQ@mail.gmail.com>
+In-Reply-To: <CAMRc=McfBLaE=N12z29JjTDJ0ABzC8OW4rPWeeSU82kag+9pgQ@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 28 Sep 2020 12:11:03 +0300
+Message-ID: <CAHp75Vd9N+OWCq_M3U3RfTEwx+xCyJHzSpZOXWiXQRRdv3tSDQ@mail.gmail.com>
+Subject: Re: [PATCH 8/9] gpio: mockup: use the generic 'gpio-line-names' property
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kent Gibson <warthog618@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Sep 28, 2020 at 11:45 AM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> On Fri, Sep 25, 2020 at 6:41 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Fri, Sep 25, 2020 at 01:40:10PM +0200, Bartosz Golaszewski wrote:
+> > > On Fri, Sep 25, 2020 at 11:03 AM Andy Shevchenko
+> > > <andriy.shevchenko@linux.intel.com> wrote:
+> > > > On Thu, Sep 24, 2020 at 01:38:41PM +0200, Bartosz Golaszewski wrote:
 
-On Mon, Sep 28, 2020 at 06:42:30PM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the mhi tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
-> 
-> drivers/net/wireless/ath/ath11k/mhi.c:27:4: error: 'struct mhi_channel_config' has no member named 'auto_start'
->    27 |   .auto_start = false,
->       |    ^~~~~~~~~~
-> drivers/net/wireless/ath/ath11k/mhi.c:42:4: error: 'struct mhi_channel_config' has no member named 'auto_start'
->    42 |   .auto_start = false,
->       |    ^~~~~~~~~~
-> drivers/net/wireless/ath/ath11k/mhi.c:57:4: error: 'struct mhi_channel_config' has no member named 'auto_start'
->    57 |   .auto_start = true,
->       |    ^~~~~~~~~~
-> drivers/net/wireless/ath/ath11k/mhi.c:72:4: error: 'struct mhi_channel_config' has no member named 'auto_start'
->    72 |   .auto_start = true,
->       |    ^~~~~~~~~~
-> 
-> Caused by commit
-> 
->   ed39d7816885 ("bus: mhi: Remove auto-start option")
-> 
-> interacting with commit
-> 
->   1399fb87ea3e ("ath11k: register MHI controller device for QCA6390")
-> 
-> from the net-next tree.
-> 
-> I applied the following merge fix patch, but maybe more is required.
-> Even if so, this could be fixed now in the net-next tree.
-> 
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Mon, 28 Sep 2020 18:39:41 +1000
-> Subject: [PATCH] fix up for "ath11k: register MHI controller device for QCA6390"
-> 
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+...
 
-Sorry, I forgot to submit a patch against net-next for fixing this while merging
-the MHI change.
+> > > > > +             kfree_strarray(line_names, line_names ? ngpio : 0);
+> > > >
+> > > > Perhaps you may check for NULL pointer in the kfree_strarray() and drop ternary
+> > > > here?
+> > > >
+> > >
+> > > I did in the previous series and you told me to not to. :)
+> >
+> > Hmm... What was my argument? What was wrong with me? free() should be NULL-aware.
+>
+> Well, it is - your just need to make sure ngpio is 0 too. :)
 
-But your change looks good and I can just modify the subject/description and
-resubmit. Or if Dave prefers to fix the original commit itself in net-next,
-I'm fine!
+Do you really need that? If you have NULL as a first parameter, the
+second one can be anything.
 
-Thanks,
-Mani
+> I'll revert back to having the NULL check.
 
-> ---
->  drivers/net/wireless/ath/ath11k/mhi.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath11k/mhi.c b/drivers/net/wireless/ath/ath11k/mhi.c
-> index aded9a719d51..47a1ce1bee4f 100644
-> --- a/drivers/net/wireless/ath/ath11k/mhi.c
-> +++ b/drivers/net/wireless/ath/ath11k/mhi.c
-> @@ -24,7 +24,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
->  		.offload_channel = false,
->  		.doorbell_mode_switch = false,
->  		.auto_queue = false,
-> -		.auto_start = false,
->  	},
->  	{
->  		.num = 1,
-> @@ -39,7 +38,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
->  		.offload_channel = false,
->  		.doorbell_mode_switch = false,
->  		.auto_queue = false,
-> -		.auto_start = false,
->  	},
->  	{
->  		.num = 20,
-> @@ -54,7 +52,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
->  		.offload_channel = false,
->  		.doorbell_mode_switch = false,
->  		.auto_queue = false,
-> -		.auto_start = true,
->  	},
->  	{
->  		.num = 21,
-> @@ -69,7 +66,6 @@ static struct mhi_channel_config ath11k_mhi_channels[] = {
->  		.offload_channel = false,
->  		.doorbell_mode_switch = false,
->  		.auto_queue = true,
-> -		.auto_start = true,
->  	},
->  };
->  
-> -- 
-> 2.28.0
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
+-- 
+With Best Regards,
+Andy Shevchenko
