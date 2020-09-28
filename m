@@ -2,95 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E422F27B5FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C87D27B600
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbgI1UK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:10:27 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2425 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbgI1UKZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:10:25 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f7242cd0001>; Mon, 28 Sep 2020 13:08:45 -0700
-Received: from [10.2.53.30] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 28 Sep
- 2020 20:10:25 +0000
-Subject: Re: [PATCH 2/8] selftests/vm: use a common gup_test.h
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Ralph Campbell <rcampbell@nvidia.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-s390@vger.kernel.org>
-References: <20200928062159.923212-1-jhubbard@nvidia.com>
- <20200928062159.923212-3-jhubbard@nvidia.com>
- <20200928125739.GP9916@ziepe.ca>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <6481e78f-c70d-133a-ff4a-325b5cd8fd5d@nvidia.com>
-Date:   Mon, 28 Sep 2020 13:10:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726819AbgI1UL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:11:56 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:27120 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726716AbgI1UL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 16:11:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601323915; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=op/U87fsFlt3hvvtSBRrE2L1WvnY7Uc8jC7iUSSh17U=;
+ b=bpr0v+w4foDTEg1p+ccPijirsF4NrIcRsNjes4rjk3FCD3Mh8zdY2t7TSoLdfvd6SWCyCRts
+ 3yuJL1x2n+qoCcsIrA0TAZ3t9lorwUWeQ1bd4DMJF5NKBPA38HW3jZYMpVDAn06lNLjO7hBU
+ tS7d/n4ETxerHxyh6kbFkdKgnHw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 5f724351be59ebabf365701a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 20:10:57
+ GMT
+Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A1866C43387; Mon, 28 Sep 2020 20:10:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cgoldswo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B4E03C433C8;
+        Mon, 28 Sep 2020 20:10:55 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20200928125739.GP9916@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1601323725; bh=IAnhMRFhLfn/o6VnG/j9EvoCmqTmaObpHGzh20VLI9s=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Slv3IPRUCeDcWuWxM01TTCUoBJWicUemyGsxm/6RNDdcGQpHWQLGXDmIOGle6OOzh
-         Z13TcLVKa9oyblsqo/g5IF/kN/sYc6kmWKe7ToJhj4aSX55bNSXnJAB9jmdf0RyPr5
-         5xX62Yli3Gq/8uK34J0zfHHo9SfVNnknqzANpt3D1d7I11DTt0r7eJdimwfz4sKFci
-         K+OJvAfBY4Him88DqKw3E1qgSea6y3oJ6KDyZtsKESoB4z7qAgbG2Xyrq55AJsp393
-         QcOX6hxekpQouSt3/HCpYTYEdRbcU6DqhNUhQwALEnKykLFoG0r2GY7JAQUKfyzALi
-         /UCG9d8kRPtFQ==
+Date:   Mon, 28 Sep 2020 13:10:55 -0700
+From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pratikp@codeaurora.org, pdaly@codeaurora.org,
+        sudaraja@codeaurora.org, iamjoonsoo.kim@lge.com, david@redhat.com,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Minchan Kim <minchan.kim@gmail.com>
+Subject: Re: [PATCH v3] mm: cma: indefinitely retry allocations in cma_alloc
+In-Reply-To: <20200927192338.GA2593886@google.com>
+References: <cover.1600922611.git.cgoldswo@codeaurora.org>
+ <6904d64c97ca71b14ed0548a0287162bb6fb4b7b.1600922611.git.cgoldswo@codeaurora.org>
+ <20200927192338.GA2593886@google.com>
+Message-ID: <4af80340b8905a02d48202ea033131c9@codeaurora.org>
+X-Sender: cgoldswo@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/20 5:57 AM, Jason Gunthorpe wrote:
-> On Sun, Sep 27, 2020 at 11:21:53PM -0700, John Hubbard wrote:
->> diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
->> index d1ae706d9927..9cc6bc087461 100644
->> +++ b/tools/testing/selftests/vm/Makefile
->> @@ -130,3 +130,5 @@ endif
->>   $(OUTPUT)/userfaultfd: LDLIBS += -lpthread
->>   
->>   $(OUTPUT)/mlock-random-test: LDLIBS += -lcap
+On 2020-09-27 12:23, Minchan Kim wrote:
+> On Wed, Sep 23, 2020 at 10:16:25PM -0700, Chris Goldsworthy wrote:
+>> CMA allocations will fail if 'pinned' pages are in a CMA area, since 
+>> we
+
+
+>> 
+>> +config CMA_RETRY_SLEEP_DURATION
+>> +	int "Sleep duration between retries"
+>> +	depends on CMA
+>> +	default 100
+>> +	help
+>> +	  Time to sleep for in milliseconds between the indefinite
+>> +	  retries of a CMA allocation that are induced by passing
+>> +	  __GFP_NOFAIL to cma_alloc().
 >> +
->> +$(OUTPUT)/gup_test: ../../../../mm/gup_test.h
+>> +	  If unsure, leave the value as "100".
 > 
-> There is no reason to do this, the auto depends will pick up header
-> files, and gup_test.h isn't a generated file
+> What's the point of this new config? If we need it, How could admin
+> set their value?
+> How does it make bad if we just use simple default vaule?
+> IOW, I'd like to avoid introducing new config if we don't see good
+> justifcation.
+
+I thought that it would be useful for developers, but I guess it would 
+be much better for this to be runtime configurable.  But, I don't think 
+there's a strong reason to be able to configure the value - 100 ms has 
+worked for us.  I'll update scrap this option in a follow-up patch, and 
+will use 100 ms as the sleeping time.
+
+>> +
+>>  config MEM_SOFT_DIRTY
+>>  	bool "Track memory changes"
+>>  	depends on CHECKPOINT_RESTORE && HAVE_ARCH_SOFT_DIRTY && PROC_FS
+>> diff --git a/mm/cma.c b/mm/cma.c
+>> index 7f415d7..4fbad2b 100644
+>> --- a/mm/cma.c
+>> +++ b/mm/cma.c
+>> @@ -32,6 +32,7 @@
+>>  #include <linux/highmem.h>
+>>  #include <linux/io.h>
+>>  #include <linux/kmemleak.h>
+>> +#include <linux/delay.h>
+>>  #include <trace/events/cma.h>
+>> 
+>>  #include "cma.h"
+>> @@ -403,13 +404,15 @@ static inline void cma_debug_show_areas(struct 
+>> cma *cma) { }
+>>   * @cma:   Contiguous memory region for which the allocation is 
+>> performed.
+>>   * @count: Requested number of pages.
+>>   * @align: Requested alignment of pages (in PAGE_SIZE order).
+>> - * @no_warn: Avoid printing message about failed allocation
+>> + * @gfp_mask: If __GFP_NOWARN is passed, suppress messages about 
+>> failed
+>> + *	      allocations. If __GFP_NOFAIL is passed, try doing the CMA
+>> + *	      allocation indefinitely until the allocation succeeds.
+>>   *
+>>   * This function allocates part of contiguous memory on specific
+>>   * contiguous memory area.
+>>   */
+>>  struct page *cma_alloc(struct cma *cma, size_t count, unsigned int 
+>> align,
+>> -		       bool no_warn)
+>> +		       gfp_t gfp_mask)
+>>  {
+>>  	unsigned long mask, offset;
+>>  	unsigned long pfn = -1;
+>> @@ -442,8 +445,28 @@ struct page *cma_alloc(struct cma *cma, size_t 
+>> count, unsigned int align,
+>>  				bitmap_maxno, start, bitmap_count, mask,
+>>  				offset);
+>>  		if (bitmap_no >= bitmap_maxno) {
+>> -			mutex_unlock(&cma->lock);
+>> -			break;
+>> +			if (ret == -EBUSY && gfp_mask & __GFP_NOFAIL) {
+>> +				mutex_unlock(&cma->lock);
+>> +
+>> +				/*
+>> +				 * Page may be momentarily pinned by some other
+>> +				 * process which has been scheduled out, e.g.
+>> +				 * in exit path, during unmap call, or process
+>> +				 * fork and so cannot be freed there. Sleep
+>> +				 * for 100ms and retry the allocation.
+>> +				 */
+>> +				start = 0;
+>> +				ret = -ENOMEM;
+>> +				msleep(CONFIG_CMA_RETRY_SLEEP_DURATION);
 > 
+> Should it be uninterruptible, really?
 
-It is less capable than you might think. Without the admittedly ugly technique
-above, it fails to build, and as you can see, the include paths that are fed to
-gcc are just a single one: usr/include:
+Good point - I'll replace the msleep() this with 
+schedule_timeout_killable() in the follow-up patch.
 
-$ make
-make --no-builtin-rules ARCH=x86 -C ../../../.. headers_install
-gcc -Wall -I ../../../../usr/include     gup_test.c 
-/kernel_work/linux-next-github/tools/testing/selftests/kselftest_harness.h 
-/kernel_work/linux-next-github/tools/testing/selftests/kselftest.h ../../../../mm/gup_test.h -lrt -o 
-/kernel_work/linux-next-github/tools/testing/selftests/vm/gup_test
-make[1]: Entering directory '/kernel_work/linux-next-github'
-gup_test.c:10:10: fatal error: gup_test.h: No such file or directory
-    10 | #include "gup_test.h"
-       |          ^~~~~~~~~~~~
-
-
-thanks,
 -- 
-John Hubbard
-NVIDIA
+The Qualcomm Innovation Center, Inc.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
