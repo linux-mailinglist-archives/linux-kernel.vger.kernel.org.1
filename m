@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6880627AC76
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:10:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378E027AC7E
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgI1LKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:10:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726328AbgI1LKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:10:20 -0400
-Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 546712080A;
-        Mon, 28 Sep 2020 11:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601291419;
-        bh=wYqO00bCRCBLIXF7AwyYWv9ZRjMNILumIMJciP1IhIk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ylAQgUPKW1cL9jioDd4xvnxl4dvs4ndWg2LJcS0ZHQEJ6hRL3iJyIkyj5NVPbrddN
-         jOrDQsF8gP0EqBmP4opUyv2Il08NrHOkqKvJZ5V3J4xUpeoqXrOQXlyaa+yVucKYYu
-         mB2Ztmcit17uS3j/+dYAcz5GJ7XRCLmAowVv/AeA=
-Subject: Re: [PATCH 2/5 V2] PCI: pciehp: check and wait port status out of DPC
- before handling DLLSC and PDC
-To:     "Zhao, Haifeng" <haifeng.zhao@intel.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "oohall@gmail.com" <oohall@gmail.com>,
-        "ruscur@russell.cc" <ruscur@russell.cc>,
-        "lukas@wunner.de" <lukas@wunner.de>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "stuart.w.hayes@gmail.com" <stuart.w.hayes@gmail.com>,
-        "mr.nuke.me@gmail.com" <mr.nuke.me@gmail.com>,
-        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
-        Keith Busch <keith.busch@intel.com>
-Cc:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Jia, Pei P" <pei.p.jia@intel.com>,
-        "ashok.raj@linux.intel.com" <ashok.raj@linux.intel.com>,
-        "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
-References: <20200927032829.11321-1-haifeng.zhao@intel.com>
- <20200927032829.11321-3-haifeng.zhao@intel.com>
- <f2c9e3db-2027-f669-fcdd-fbc80888b934@kernel.org>
- <MWHPR11MB1696BA6B8473248A8638FD3797350@MWHPR11MB1696.namprd11.prod.outlook.com>
-From:   Sinan Kaya <okaya@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <14b7d988-212b-93dc-6fa6-6b155d5c8ac3@kernel.org>
-Date:   Mon, 28 Sep 2020 07:10:17 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1726597AbgI1LQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgI1LQC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:16:02 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2D01C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:16:02 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id n193so1453781vkf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:16:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aTg89kQFoPFyRernf7PS1jGsama59atD6k9bwAWjpAg=;
+        b=MiBGoys98PDSrsPqkEjYTebINCZC/OCsP2P/n3pNkxhv7fqB7g26/SFOU14RuEuSAt
+         9OQZPTba+C4p2ZHYyi8PKu1JKxOCue4a4ExjV1ZroKA6JRDd/cGseOvp5yoh2OQs5QCH
+         yrPWHkjG0nj6oyh9rmLGHKZWMQ7w99a6K/GnRSPA9r85j2gUqVNac0sAKqAFHygeb3Lh
+         w39ULubsP+AHTSDOInsc38BPCCn9+RqzwVRKFERZX5thhJ6P2621iJdn7590doKGEd6F
+         wIG+k8A90CJ76d29GRlp0CYw4W73yRYc+8FopFmN0WHurnEK1455MtWuLJYfasOye2c+
+         8+XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aTg89kQFoPFyRernf7PS1jGsama59atD6k9bwAWjpAg=;
+        b=ad/fIrI12kJ0qAnrQ49UvTCWJggS49M73ZGWGiuZwWTqv9SUaVm3FVg0gTfMIsy3N0
+         LwMygSyawxCH+XS8459U5LvibQX4ppF+fKx4es2UQoFZNxvbKMz14aVUiWvcsHdxZGv0
+         igBB7M1Mk6AP9fc9Xz6Rr0jLjFwUYzQXjLvDODbqpq3801KTlUT9lnzEDOEaTsdp1nUk
+         dzDCrZ7gynuWbmnm1HH9zpo6nh0z4sh26d7TZVJ+Me9414JpYUNhzlOZj3uAiScaFirv
+         AU/zP3aL4kZmzUEAFWsLCVsb7t9cKrP9nLuRXdB1KyiBc627XDN6pIhSm2UUNn9NbGdD
+         5ONg==
+X-Gm-Message-State: AOAM531p/kSaQetBezt2NgHb85JUsvEIydQsQTgybizQoVI5ZkfSsitz
+        WdT+aNFUHjeAlgSMqvayXBZIdLPOjI1hY8cNf0Y=
+X-Google-Smtp-Source: ABdhPJzVEobMEIZfcXTAraMdTx7qgV5GkDiQmwXNpX8WPDHdxeIYqiLaY3VCwfv3e+FOCq+7hE/RDyr1D+h3tQCSXsc=
+X-Received: by 2002:a1f:a905:: with SMTP id s5mr4591464vke.9.1601291762051;
+ Mon, 28 Sep 2020 04:16:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <MWHPR11MB1696BA6B8473248A8638FD3797350@MWHPR11MB1696.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200915115609.85106-1-qianjun.kernel@gmail.com>
+ <20200915115609.85106-5-qianjun.kernel@gmail.com> <20200928092039.GB2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200928092039.GB2628@hirez.programming.kicks-ass.net>
+From:   jun qian <qianjun.kernel@gmail.com>
+Date:   Mon, 28 Sep 2020 19:15:50 +0800
+Message-ID: <CAKc596KNqQg+EOu=dkbXnZYHw3011dvkWx6Y-PXnK_wDehfeZg@mail.gmail.com>
+Subject: Re: [PATCH V7 4/4] softirq: Allow early break the softirq processing loop
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, will@kernel.org,
+        luto@kernel.org, linux-kernel@vger.kernel.org,
+        Yafang Shao <laoar.shao@gmail.com>, qais.yousef@arm.com,
+        Uladzislau Rezki <urezki@gmail.com>, frederic@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/2020 10:01 PM, Zhao, Haifeng wrote:
-> Sinan,
->    I explained the reason why locks don't protect this case in the patch description part. 
-> Write side and read side hold different semaphore and mutex.
-> 
+Peter Zijlstra <peterz@infradead.org> =E4=BA=8E2020=E5=B9=B49=E6=9C=8828=E6=
+=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=885:20=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Tue, Sep 15, 2020 at 07:56:09PM +0800, qianjun.kernel@gmail.com wrote:
+> > From: jun qian <qianjun.kernel@gmail.com>
+> >
+> > Allow terminating the softirq processing loop without finishing the vec=
+tors.
+> >
+> > Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+> > ---
+> >  kernel/softirq.c | 113 ++++++++++++++++++++++++++++++++++++++++++++---=
+--------
+> >  1 file changed, 91 insertions(+), 22 deletions(-)
+>
+> This is still a ginormous patch for something that should be simple.
+>
 
-I have been thinking about it some time but is there any reason why we
-have to handle all port AER/DPC/HP events in different threads?
+Yes, i think so. Because of the left pending bits need to be processed,
+the code is going to be not simple.I will try my best to simplify this proc=
+ess.
 
-Can we go to single threaded event loop for all port drivers events?
+> I've put my patches (and a bunch on top) in:
+>
+>   git://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git core/sof=
+tirq
+>
+> but got a fairly significant regression report from 0day on that, and
+> haven't had time/motivation to look at that.
+>
 
-This will require some refactoring but it wlll eliminate the lock
-nightmares we are having.
+OK, I am trying to slove the significant regression problem, maybe it
+needs some time.
 
-This means no sleeping. All sleeps need to happen outside of the loop.
+thanks
 
-I wanted to see what you all are thinking about this.
-
-It might become a performance problem if the system is
-continuously observing a hotplug/aer/dpc events.
-
-I always think that these should be rare events.
+>
