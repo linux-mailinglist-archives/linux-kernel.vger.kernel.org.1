@@ -2,184 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B262827A60E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 05:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D85B27A5C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 05:31:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbgI1D6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 23:58:47 -0400
-Received: from mga04.intel.com ([192.55.52.120]:37232 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgI1D6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 23:58:47 -0400
-IronPort-SDR: H0KbsDqAC4HwYYWhF4B8HLoGQ+oTkMBuRrvak6uX5WY/Qv3m8uruD0OOvMLdtg2IQdr+5hwUB/
- 6ncvDHrgCV1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="159301856"
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="159301856"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 17:15:30 -0700
-IronPort-SDR: G3bpv15SFxQpqfe6ZKKSZv8GJxri1qhrVgk4q5TGUyr/hE1AtVcKIlrwKvYKdU/UUfgru/zG9f
- 1Xvot87pKjGg==
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="488343287"
-Received: from memara-mobl.ger.corp.intel.com (HELO localhost) ([10.252.49.157])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 17:15:28 -0700
-Date:   Mon, 28 Sep 2020 03:15:30 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        linux-integrity@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-Subject: Re: [PATCH 2/2] tpm: Revert "tpm_tis_core: Turn on the TPM before
- probing IRQ's"
-Message-ID: <20200928001530.GF5283@linux.intel.com>
-References: <20191126131753.3424363-1-stefanb@linux.vnet.ibm.com>
- <20191126131753.3424363-3-stefanb@linux.vnet.ibm.com>
- <1de642865a142dfbf9d7ef0da398c98d52228943.camel@HansenPartnership.com>
+        id S1726513AbgI1Dbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 23:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726380AbgI1Dbk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 23:31:40 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB0AC0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 20:31:40 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id k13so8097712pfg.1
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 20:31:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N/EpoZQfstu+PtLpJpKosc5sDI8cNsjHAqKjuh09dpU=;
+        b=TPnACvqkAuZKzWjdeh9nwNFuQlDeml7iNwfm7yiuUMD+fLPKDKiPV0d3OUxkF/4nwv
+         YOJkoUckvY6C5DCSyiXEGg3vqREv67TrjRFIQE1BZBezidWKQ63ALmygtJhiX5bbMOeX
+         IUrlHOhAv38J+fNOK5OpVSZth44dtAChBiCSU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N/EpoZQfstu+PtLpJpKosc5sDI8cNsjHAqKjuh09dpU=;
+        b=JOAmpqFMLPQAkVdBLTg1m1fBC1vcNhEfOvyi2zSFVNOaMjiiT/a4Oi2LZZ98MB46aI
+         h6lFHp3Rk+SSJmRsVZntMMTVAt7DXFWGvkRu2DyPQ74WzvL/ikoKoYvOsnEd3VgrLNfs
+         W0bYCibL1t9zWoTCLJQCe+zA6TlGgGvxdmTyt1zl1Oga3x3oqAY5E45Mk5b7Jc7EITXz
+         pEdm65BgzjD9FYzTkfdKhdNdYkSa3wN8gFoxLut/N/7RFwSYvPhT/YYlizTDeaB80ldT
+         wEJ90uzsP3kgEZUiwM6PbhzFtGEu2saujPqaZ6lCGfYTxWWd7f1FcBC5xw6uFLSSlzgy
+         G0JA==
+X-Gm-Message-State: AOAM530Z/JR2KduM/gRF1Zczs6N7WFbze3JJIbc/nIOYc+bOIcAiIajj
+        XyMagCLKX5HK34Vjuc+PXxkQww==
+X-Google-Smtp-Source: ABdhPJzTJGzCeQ9lvnJeSH23CAuBjJ+xu7mtkCHRt4CPpwRzS5FlrwfY9s2qHfFca9qJY+TDrd/WXA==
+X-Received: by 2002:aa7:8249:0:b029:142:2501:34db with SMTP id e9-20020aa782490000b0290142250134dbmr9395510pfn.52.1601263900127;
+        Sun, 27 Sep 2020 20:31:40 -0700 (PDT)
+Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
+        by smtp.gmail.com with ESMTPSA id z8sm8201440pgr.70.2020.09.27.20.31.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 20:31:39 -0700 (PDT)
+From:   Nicolas Boichat <drinkcat@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        Daniel Kurtz <djkurtz@chromium.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH v2] soc: mediatek: Check if power domains can be powered on at boot time
+Date:   Mon, 28 Sep 2020 11:31:35 +0800
+Message-Id: <20200928113107.v2.1.I5e6f8c262031d0451fe7241b744f4f3111c1ce71@changeid>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1de642865a142dfbf9d7ef0da398c98d52228943.camel@HansenPartnership.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 01:06:03PM -0700, James Bottomley wrote:
-> On Tue, 2019-11-26 at 08:17 -0500, Stefan Berger wrote:
-> > From: Stefan Berger <stefanb@linux.ibm.com>
-> > 
-> > Revert the patch that was turning the TPM on before probing for IRQs.
-> > 
-> > Fixes: 5b359c7c4372 ("tpm_tis_core: Turn on the TPM before probing
-> > IRQ's")
-> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > Reported-by: Jerry Snitselaar <jsnitsel@redhat.com>
-> > Cc: stable@vger.kernel.org
-> > ---
-> >  drivers/char/tpm/tpm_tis_core.c | 2 --
-> >  1 file changed, 2 deletions(-)
-> > 
-> > diff --git a/drivers/char/tpm/tpm_tis_core.c
-> > b/drivers/char/tpm/tpm_tis_core.c
-> > index 5dc52c4e2292..27c6ca031e23 100644
-> > --- a/drivers/char/tpm/tpm_tis_core.c
-> > +++ b/drivers/char/tpm/tpm_tis_core.c
-> > @@ -1059,7 +1059,6 @@ int tpm_tis_core_init(struct device *dev,
-> > struct tpm_tis_data *priv, int irq,
-> >  			goto out_err;
-> >  		}
-> >  
-> > -		tpm_chip_start(chip);
-> >  		if (irq) {
-> >  			tpm_tis_probe_irq_single(chip, intmask,
-> > IRQF_SHARED,
-> >  						 irq);
-> > @@ -1069,7 +1068,6 @@ int tpm_tis_core_init(struct device *dev,
-> > struct tpm_tis_data *priv, int irq,
-> >  		} else {
-> >  			tpm_tis_probe_irq(chip, intmask);
-> >  		}
-> > -		tpm_chip_stop(chip);
-> >  	}
-> >  
-> >  	rc = tpm_chip_register(chip);
-> 
-> This patch is completely bogus: it's not a full revert of what it
-> claims to be.  With this patch applied all my TIS TPMs are returning
-> 0xff to the status reads because the locality hasn't been properly
-> requested.  The chip has to be started somewhere for the interrupt
-> probe to work on these TPMs ... what the original patch did was
-> eliminate a bunch of start/stops for a global one.  However, if the
-> global one isn't working we should have gone back to the bunch of
-> smaller ones i.e. a full revert.
-> 
-> The only real manifestation of the problems this patch causes is that
-> interrupts never get enabled on TIS TPMs that have this issue, but they
-> still work via polling.
-> 
-> The below is what fixes this for me with the minimum possible extend of
-> additional chip start/stop in the code.  This should be checked against
-> the previous failing laptops.
-> 
-> James
-> 
-> ---
-> 
-> From: James Bottomley <James.Bottomley@HansenPartnership.com>
-> Subject: [PATCH] tpm_tis: fix interrupt probing
-> 
-> When we send a command into the TPM core, the TPM must be started
-> otherwise the register reads can be bogus.  There have been several
-> bug reports about doing this inside the TIS core, so fix the issue by
-> adding an external version of the tpm2_get_tpm_pt() call which adds a
-> tpm ops get/put to set up the TPM correctly before the command is
-> sent.
-> 
-> Fixes: aa4a63dd9816 (tpm: Revert "tpm_tis_core: Turn on the TPM before probing IRQ's")
-> Signed-off-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-> ---
->  drivers/char/tpm/tpm.h          |  2 ++
->  drivers/char/tpm/tpm2-cmd.c     | 30 ++++++++++++++++++++++++++++++
->  drivers/char/tpm/tpm_tis_core.c |  2 +-
->  3 files changed, 33 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
-> index 947d1db0a5cc..041b0b5bd2a5 100644
-> --- a/drivers/char/tpm/tpm.h
-> +++ b/drivers/char/tpm/tpm.h
-> @@ -223,6 +223,8 @@ int tpm2_pcr_extend(struct tpm_chip *chip, u32 pcr_idx,
->  int tpm2_get_random(struct tpm_chip *chip, u8 *dest, size_t max);
->  ssize_t tpm2_get_tpm_pt(struct tpm_chip *chip, u32 property_id,
->  			u32 *value, const char *desc);
-> +ssize_t tpm2_get_tpm_pt_cmd(struct tpm_chip *chip, u32 property_id,
-> +			    u32 *value, const char *desc);
->  
->  ssize_t tpm2_get_pcr_allocation(struct tpm_chip *chip);
->  int tpm2_auto_startup(struct tpm_chip *chip);
-> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
-> index eff1f12d981a..9b84158c5a9e 100644
-> --- a/drivers/char/tpm/tpm2-cmd.c
-> +++ b/drivers/char/tpm/tpm2-cmd.c
-> @@ -407,6 +407,36 @@ ssize_t tpm2_get_tpm_pt(struct tpm_chip *chip, u32 property_id,  u32 *value,
->  }
->  EXPORT_SYMBOL_GPL(tpm2_get_tpm_pt);
->  
-> +/**
-> + * tpm2_get_tpm_pt_cmd() - get value of a TPM_CAP_TPM_PROPERTIES type property
-> + * @chip:		a &tpm_chip instance
-> + * @property_id:	property ID.
-> + * @value:		output variable.
-> + * @desc:		passed to tpm_transmit_cmd()
-> + *
-> + * This calls the necessary tpm_try_get_ops()/tpm_put_ops() around
-> + * tpm2_get_tpm_pt() and must be called where it is used stand alone
-> + * outside the core code.
-> + *
-> + * Return:
-> + *   0 on success,
-> + *   -errno or a TPM return code otherwise
-> + */
-> +ssize_t tpm2_get_tpm_pt_cmd(struct tpm_chip *chip, u32 property_id,  u32 *value,
-> +			    const char *desc)
-> +{
-> +	ssize_t rc;
-> +
-> +	rc = tpm_try_get_ops(chip);
-> +	if (rc)
-> +		return rc;
-> +	rc = tpm2_get_tpm_pt(chip, property_id, value, desc);
-> +	tpm_put_ops(chip);
-> +
-> +	return rc;
-> +}
-> +EXPORT_SYMBOL_GPL(tpm2_get_tpm_pt_cmd);
+In the error case, where a power domain cannot be powered on
+successfully at boot time (in mtk_register_power_domains),
+pm_genpd_init would still be called with is_off=false, and the
+system would later try to disable the power domain again, triggering
+warnings as disabled clocks are disabled again (and other potential
+issues).
 
-Hi, same comment as for the other, i.e. rename the function that does
-not have get/put_ops as __tpm2_get_tpm_pt(). Otherwise, fine. Thank
-you.
+Also print a warning splat in that case, as this should never
+happen.
 
-/Jarkko
+Fixes: c84e358718a66f7 ("soc: Mediatek: Add SCPSYS power domain driver")
+Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+---
+
+Changes in v2:
+ - Add WARN_ON if the domain can't be powered on, to make it more
+   obvious that this should not happen (there is already an error
+   message).
+
+ drivers/soc/mediatek/mtk-scpsys.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/soc/mediatek/mtk-scpsys.c b/drivers/soc/mediatek/mtk-scpsys.c
+index f669d3754627..ca75b14931ec 100644
+--- a/drivers/soc/mediatek/mtk-scpsys.c
++++ b/drivers/soc/mediatek/mtk-scpsys.c
+@@ -524,6 +524,7 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+ 	for (i = 0; i < num; i++) {
+ 		struct scp_domain *scpd = &scp->domains[i];
+ 		struct generic_pm_domain *genpd = &scpd->genpd;
++		bool on;
+ 
+ 		/*
+ 		 * Initially turn on all domains to make the domains usable
+@@ -531,9 +532,9 @@ static void mtk_register_power_domains(struct platform_device *pdev,
+ 		 * software.  The unused domains will be switched off during
+ 		 * late_init time.
+ 		 */
+-		genpd->power_on(genpd);
++		on = !WARN_ON(genpd->power_on(genpd) < 0);
+ 
+-		pm_genpd_init(genpd, NULL, false);
++		pm_genpd_init(genpd, NULL, !on);
+ 	}
+ 
+ 	/*
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
