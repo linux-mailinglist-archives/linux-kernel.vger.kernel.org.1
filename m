@@ -2,122 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C1A727AA08
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0545A27AA06
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:56:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgI1I4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 04:56:00 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:38875 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgI1I4A (ORCPT
+        id S1726693AbgI1Izz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:55:55 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:48547 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726440AbgI1Izy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:56:00 -0400
-X-Greylist: delayed 4175 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 04:55:58 EDT
-Received: from mwalle01.sab.local. (unknown [213.135.10.150])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 5219E23E40;
-        Mon, 28 Sep 2020 10:55:57 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1601283357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=8Okg/8vp+zzsmnCMZvYIcfv0Dps7pb340pkA+BoMZ14=;
-        b=OSFBGaOBXCXoCneOqm+6YrgMT7OUsnN62YMJ/yMfKvhH5NiKM3tlWApDfOJz2v71FEcvgS
-        s2BFw0+cnqu5usnc2OlgMNnhB4x4UWAPUrfLCnS/9MKChDz6WlW2F37oCWAUUREeI6uZOK
-        uzCByyB8M5zwGnGhE9PJE4Vlw6CNJzk=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Mon, 28 Sep 2020 04:55:54 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 58758B74;
+        Mon, 28 Sep 2020 04:55:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 28 Sep 2020 04:55:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=wUSUu2G3aVIryWaeA7vOSq4b5nt
+        Z2lJ4mb84/YsXOuI=; b=WZM48iBF91gdKnDjQ7uhJ0/RIFRw5RhXsOOeZlZJCKo
+        ysOwTqjBtlBCZj08M9nF22EmaxFAVEoLPCI8HL/0jdPlzcH2YFICniXpCoLiPtqH
+        VpOBH47bt+ui/2YfhU/yW5VfSsau0KQrKRpIe0o0c/LA7MH8NR/XbJViG+pkL2jD
+        B/g/l2T60cdiT268BZyz1XUMfVw55IQig/jerb/vptjxlA1X6M9x6a83g0v0CBK5
+        Bmmq1FDcnqounb0O4rwjBb8ol1ZrgQbcaIJowXG8EgIrm6mkVObuBjZaEx3BtVfa
+        XrLcZKvTOl2wgSLOTL7PgfwIArfBy2SMIZW7HfyAtbQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=wUSUu2
+        G3aVIryWaeA7vOSq4b5ntZ2lJ4mb84/YsXOuI=; b=A4aQVk9qURplYZemoSbP0T
+        EUoSZyu6BP+ZXw6FNbxPs0GVkLXlfle+zceapwfhWF20BfQ34PdGbXpWpcwdus8w
+        T8ByrOAMTp9PAVFOq7Dw8hBc+2GLY+/0ycOmDjNEUvrO37DrvgPHjPIMrlXu/3SH
+        5q8/uU/TxEl/IcgFyNTAaaq99scwACFHzeUlUBgrJI8c5BAIL7QKXasqfwACLnP3
+        OKdCTsL3Z0OzDIGDuPBTeNGz7iGRXdtW0uJDyfeK4dvfUEvLgEi//GS+qrpG9FgJ
+        z2gTBIwFOb2DHf8rlSu69xN17a5yR33Xj3A8eP4bkmOVhqRwYRi/uXVd98IT2DcQ
+        ==
+X-ME-Sender: <xms:F6VxX9h8l3bdAdhKV7_ZeWNJSwUX_O1_FpWJwZe1u_C2JnuMPQGRKQ>
+    <xme:F6VxXyBUwEdfOyLmpzIxGe9WCsxP_0R9KFUgHeaQKe4QIaeVg9mSAC_s3igP0_uM7
+    w1WHRnZF_vmQISJkGk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigddutdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
+    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:F6VxX9HpWJ2SssBbPsr8cR0GdgkIsAFIl4TChPshZo0Qsl62OBNPrA>
+    <xmx:F6VxXyTAfPBcPd-lFgiNOUKT-Dk05hFMJ2dwQsw_6WiFT0kUbPlw0Q>
+    <xmx:F6VxX6zrMQ_V4GpMBxdfOcUtIBmmlvBxqky092uEANXubuudMIwvkA>
+    <xmx:GKVxX1qlyUa-jOEbIeG-OVdzvi-kstcBwRc9s__r2vQLN4KC_S3NA-TUoVc>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 50723328005E;
+        Mon, 28 Sep 2020 04:55:51 -0400 (EDT)
+Date:   Mon, 28 Sep 2020 10:55:49 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     =?utf-8?B?Q2zDqW1lbnQgUMOpcm9u?= <peron.clem@gmail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
         Mark Brown <broonie@kernel.org>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH v3] spi: fsl-dspi: fix NULL pointer dereference
-Date:   Mon, 28 Sep 2020 10:55:00 +0200
-Message-Id: <20200928085500.28254-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Marcus Cooper <codekipper@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>,
+        Samuel Holland <samuel@sholland.org>
+Subject: Re: [PATCH v4 02/22] ASoC: sun4i-i2s: Change set_chan_cfg() params
+Message-ID: <20200928085549.izpgwdtkq5cwa4ut@gilmour.lan>
+References: <20200921102731.747736-1-peron.clem@gmail.com>
+ <20200921102731.747736-3-peron.clem@gmail.com>
+ <20200921122918.kzzu623wui277nwr@gilmour.lan>
+ <CAJiuCce0thGcH19vMtDX0X8-9S32Y7kC2bnWo_6-SHozF8uDAA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="z5fpfx6vrqwdiuav"
+Content-Disposition: inline
+In-Reply-To: <CAJiuCce0thGcH19vMtDX0X8-9S32Y7kC2bnWo_6-SHozF8uDAA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove
-path") this driver causes a kernel oops:
 
-[    1.891065] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000080
-[..]
-[    2.056973] Call trace:
-[    2.059425]  dspi_setup+0xc8/0x2e0
-[    2.062837]  spi_setup+0xcc/0x248
-[    2.066160]  spi_add_device+0xb4/0x198
-[    2.069918]  of_register_spi_device+0x250/0x370
-[    2.074462]  spi_register_controller+0x4f4/0x770
-[    2.079094]  dspi_probe+0x5bc/0x7b0
-[    2.082594]  platform_drv_probe+0x5c/0xb0
-[    2.086615]  really_probe+0xec/0x3c0
-[    2.090200]  driver_probe_device+0x60/0xc0
-[    2.094308]  device_driver_attach+0x7c/0x88
-[    2.098503]  __driver_attach+0x60/0xe8
-[    2.102263]  bus_for_each_dev+0x7c/0xd0
-[    2.106109]  driver_attach+0x2c/0x38
-[    2.109692]  bus_add_driver+0x194/0x1f8
-[    2.113538]  driver_register+0x6c/0x128
-[    2.117385]  __platform_driver_register+0x50/0x60
-[    2.122105]  fsl_dspi_driver_init+0x24/0x30
-[    2.126302]  do_one_initcall+0x54/0x2d0
-[    2.130149]  kernel_init_freeable+0x1ec/0x258
-[    2.134520]  kernel_init+0x1c/0x120
-[    2.138018]  ret_from_fork+0x10/0x34
-[    2.141606] Code: 97e0b11d aa0003f3 b4000680 f94006e0 (f9404000)
-[    2.147723] ---[ end trace 26cf63e6cbba33a8 ]---
+--z5fpfx6vrqwdiuav
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is because since this commit, the allocation of the drivers private
-data is done explicitly and in this case spi_alloc_master() won't set the
-correct pointer.
+On Mon, Sep 21, 2020 at 07:15:13PM +0200, Cl=E9ment P=E9ron wrote:
+> Hi Maxime,
+>=20
+> On Mon, 21 Sep 2020 at 14:29, Maxime Ripard <maxime@cerno.tech> wrote:
+> >
+> > On Mon, Sep 21, 2020 at 12:27:11PM +0200, Cl=E9ment P=E9ron wrote:
+> > > As slots and slot_width can be overwritter in case set_tdm() is
+> > > called. Avoid to have this logic in set_chan_cfg().
+> > >
+> > > Instead pass the required values as params to set_chan_cfg().
+> >
+> > It's not really clear here what the issue is, and how passing the slots
+> > and slot_width as arguments addresses it
+> >
+> > > This also fix a bug when i2s->slot_width is set for TDM but not
+> > > properly used in set_chan_cfg().
+> >
+> > Which bug?
+>=20
+> Do you mean my commit log is too short or is it a real question to unders=
+tand ?
 
-Also move the platform_set_drvdata() to have both next to each other.
+Both, actually :)
 
-Fixes: 530b5affc675 ("spi: fsl-dspi: fix use-after-free in remove path")
-Signed-off-by: Michael Walle <michael@walle.cc>
-Tested-by: Sascha Hauer <s.hauer@pengutronix.de>
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
----
-changes since v2:
- - trimmed the commit message, suggested by Krzysztof.
+Maxime
 
-changes since v1:
- - moved platform_set_drvdata(), suggested by Krzysztof.
+--z5fpfx6vrqwdiuav
+Content-Type: application/pgp-signature; name="signature.asc"
 
- drivers/spi/spi-fsl-dspi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index a939618f5e47..3967afa465f0 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1236,6 +1236,9 @@ static int dspi_probe(struct platform_device *pdev)
- 	if (!ctlr)
- 		return -ENOMEM;
- 
-+	spi_controller_set_devdata(ctlr, dspi);
-+	platform_set_drvdata(pdev, dspi);
-+
- 	dspi->pdev = pdev;
- 	dspi->ctlr = ctlr;
- 
-@@ -1371,8 +1374,6 @@ static int dspi_probe(struct platform_device *pdev)
- 	if (dspi->devtype_data->trans_mode != DSPI_DMA_MODE)
- 		ctlr->ptp_sts_supported = true;
- 
--	platform_set_drvdata(pdev, dspi);
--
- 	ret = spi_register_controller(ctlr);
- 	if (ret != 0) {
- 		dev_err(&pdev->dev, "Problem registering DSPI ctlr\n");
--- 
-2.20.1
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX3GlFQAKCRDj7w1vZxhR
+xYJzAP90E3Ebs8ekSnakjeM+AFop/3Kt5use/kVDKsSr/V2JlwD6A8+jug6YBRDY
+7kZEe3Y1iUyb4oLqEpjNxunahn+yfQA=
+=0O29
+-----END PGP SIGNATURE-----
 
+--z5fpfx6vrqwdiuav--
