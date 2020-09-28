@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5038227B6BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9122727B6C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbgI1U4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:56:46 -0400
-Received: from mga03.intel.com ([134.134.136.65]:36585 "EHLO mga03.intel.com"
+        id S1726861AbgI1U5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:57:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgI1U4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:56:45 -0400
-IronPort-SDR: AntBVXBu61xZ+p8c4MEP1zprWDBZqzIOybxcwwRFD7e7SzUrVBRrutN/sG34WL1oDKuzkaXqQk
- 8CrBEOy7Gw4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="162122524"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="162122524"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 13:56:45 -0700
-IronPort-SDR: fGbW3MaymiMrYnM20A8FHMVnJsWXl3X37Tcn1A6N2GhCqj+Qdmdmv67N+UKMyRo/Fs6MiaxFMv
- 8mhj4psmJzJA==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="488755489"
-Received: from jlasecki-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.49.78])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 13:56:38 -0700
-Date:   Mon, 28 Sep 2020 23:56:36 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        chenalexchen@google.com, conradparker@google.com,
-        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
-        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, luto@kernel.org,
-        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
-        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
-        "H.J. Lu" <hjl.tools@gmail.com>
-Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-Message-ID: <20200928205636.GB2705@linux.intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
- <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
- <c1b0019d-d3cb-cc62-f47f-90c2550c22a4@intel.com>
+        id S1726281AbgI1U5E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 16:57:04 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00FA92080A;
+        Mon, 28 Sep 2020 20:57:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601326624;
+        bh=7QSESI5ibs3UZkTDPr/lNjD28U/TPwZzxzhvs4wH5tE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0PX/j912vIkge8ZEw/pcfXuE91ceov+mqg1dW73/u1/AdUs0yOe2cuiMWtwF13zNR
+         WQ8P7iEXfKVGvlrxRU3QAYOrVlzyrIquGswDyer6Z8S0BCFe5h++KzBl2aZjQVbiGH
+         LvCla2wdxjcMv/GzTbR1tdTgv7b6alN3OB4jyFlk=
+Date:   Mon, 28 Sep 2020 21:56:58 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Auger Eric <eric.auger@redhat.com>
+Cc:     Vennila Megavannan <vemegava@linux.microsoft.com>,
+        jean-philippe@linaro.org, joro@8bytes.org,
+        linux-kernel@vger.kernel.org, shameerali.kolothum.thodi@huawei.com,
+        iommu@lists.linux-foundation.org, tyhicks@linux.microsoft.com,
+        srinath.mannam@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2] iommu/arm: Add module parameter to set msi iova
+ address
+Message-ID: <20200928205658.GB12218@willie-the-truck>
+References: <20200914181307.117792-1-vemegava@linux.microsoft.com>
+ <20200921204545.GA3811@willie-the-truck>
+ <85f7d1ae-71a9-4e95-8a30-03cc699d4794@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c1b0019d-d3cb-cc62-f47f-90c2550c22a4@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <85f7d1ae-71a9-4e95-8a30-03cc699d4794@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 08:43:16AM -0700, Yu, Yu-cheng wrote:
-> On 9/25/2020 11:23 AM, Andrew Cooper wrote:
-> > On 15/09/2020 12:28, Jarkko Sakkinen wrote:
-> > > diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> > > new file mode 100644
-> > > index 000000000000..adbd59d41517
-> > > --- /dev/null
-> > > +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
-> > > @@ -0,0 +1,157 @@
-> > > +SYM_FUNC_START(__vdso_sgx_enter_enclave)
-> > > <snip>
-> > > +.Lretpoline:
-> > > +	call	2f
-> > > +1:	pause
-> > > +	lfence
-> > > +	jmp	1b
-> > > +2:	mov	%rax, (%rsp)
-> > > +	ret
+On Wed, Sep 23, 2020 at 08:32:43AM +0200, Auger Eric wrote:
+> On 9/21/20 10:45 PM, Will Deacon wrote:
+> > On Mon, Sep 14, 2020 at 11:13:07AM -0700, Vennila Megavannan wrote:
+> >> From: Srinath Mannam <srinath.mannam@broadcom.com>
+> >>
+> >> Add provision to change default value of MSI IOVA base to platform's
+> >> suitable IOVA using module parameter. The present hardcoded MSI IOVA base
+> >> may not be the accessible IOVA ranges of platform.
+> >>
+> >> If any platform has the limitaion to access default MSI IOVA, then it can
+> >> be changed using "arm-smmu.msi_iova_base=0xa0000000" command line argument.
+> >>
+> >> Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+> >> Co-developed-by: Vennila Megavannan <vemegava@linux.microsoft.com>
+> >> Signed-off-by: Vennila Megavannan <vemegava@linux.microsoft.com>
+> >> ---
+> >>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 5 ++++-
+> >>  drivers/iommu/arm/arm-smmu/arm-smmu.c       | 5 ++++-
+> >>  2 files changed, 8 insertions(+), 2 deletions(-)
 > > 
-> > I hate to throw further spanners in the work, but this is not compatible
-> > with CET, and the user shadow stack work in progress.
+> > This feels pretty fragile. Wouldn't it be better to realise that there's
+> > a region conflict with iommu_dma_get_resv_regions() and move the MSI window
+> > accordingly at runtime?
 > 
-> Hi Jarkko,
-> 
-> These 1: and 2: targets are reached only from these few lines?  If they are
-> direct call/jmp targets, I think it is OK in terms of CET.  If they are
-> reached from an instruction like "jmp *%rax", then we need to put in an
-> "endbr64".
-> 
-> Yu-cheng
+> Since cd2c9fcf5c66 ("iommu/dma: Move PCI window region reservation back
+> into dma specific path"), the PCI host bridge windows are not exposed by
+> iommu_dma_get_resv_regions() anymore. If I understood correctly, what is
+> attempted here is to avoid the collision between such PCI host bridge
+> window and the MSI IOVA range.
 
-The invocation is over here:
+Either way, I think the kernel should figure this out at runtime and not
+rely on a cmdline option to tell it where to place the region.
 
-	/* Load the callback pointer to %rax and invoke it via retpoline. */
-	mov	SGX_ENCLAVE_RUN_USER_HANDLER(%rax), %rax
-	call	.Lretpoline
-
-/Jarkko
+Will
