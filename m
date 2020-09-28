@@ -2,110 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AB327B877
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C8B27B878
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727018AbgI1XwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:52:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726969AbgI1XwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:52:16 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A39B2207D8;
-        Mon, 28 Sep 2020 23:52:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601337136;
-        bh=wFhp55ulXjxuuIoaT0rVvAcVgZE0echpnHPUtNYAzCM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=NC7nJD6uGd78qkf48jTtE1RBIgE33wxNfXuWqjZLRm5fsfTb4jyLY/LcVJzorvCkM
-         0pAWGrxMv1T5+gTxUUh6YrvU14dMc0NpQ3DwrrQskblkfs1LOGOAQaSISYnrXc2wwL
-         iHtAqWUQVF1DR5P24hiEwrUkpRHgihEA0Ks0tUrY=
-Date:   Mon, 28 Sep 2020 16:52:15 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     js1304@gmail.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Mel Gorman <mgorman@techsingularity.net>, kernel-team@lge.com,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v2 for v5.9] mm/page_alloc: handle a missing case for
- memalloc_nocma_{save/restore} APIs
-Message-Id: <20200928165215.f46924bfff9a109131048f81@linux-foundation.org>
-In-Reply-To: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
-References: <1601283046-15329-1-git-send-email-iamjoonsoo.kim@lge.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1727040AbgI1Xws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:52:48 -0400
+Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:27036 "EHLO
+        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbgI1Xwr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:52:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1601337167;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=9havvRmmnKCNOTaJIQHciec4LD86I1g+WXR70O2VXJg=;
+  b=P9dMx0quCAmhKnVymvBqsRvqqQnELoTBqlI7eYEuW2UTMCAm19FbOQ1m
+   yKLiae1LfO58RMtu8x9UfhWy+h4XNvGaq2CNMQC8K3ynVrGA7sS5ZN9cP
+   a5PU2kN9L/9FoMaignvJwmj8eyvwju02tYkAvgdkuS+48CHjveUE+BCZM
+   w=;
+Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: 8d4z3LX7+XoKNY4TVCAIRG8YMWjcRRGpOgZxIDEyjuje0amF5lXR9SmLIqXia/b+NM0FbXAXVE
+ TSLJz6nRD/C5S6dQn7IkF8DaYGLF/LM2+YkQkmAvGW2j2q135qMSzFkA6r6C4XuPqMj9gyYO0X
+ zWZrQ8ad2SUcyzkkb0Ldq0B5uecctWxWaTbKba7rzjAvJ/6ck0frHPesLBbACneXNryYEgQz4q
+ x31TpJbzn8MxO1hmZqbr+cL0Jxwj1shSDV1TUp5nAntQzH+gH9edKdnQqXMjrcUIxZFV+ZkcsS
+ HiE=
+X-SBRS: None
+X-MesageID: 28144873
+X-Ironport-Server: esa1.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+X-IronPort-AV: E=Sophos;i="5.77,315,1596513600"; 
+   d="scan'208";a="28144873"
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+CC:     <x86@kernel.org>, <linux-sgx@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        <akpm@linux-foundation.org>, <andriy.shevchenko@linux.intel.com>,
+        <asapek@google.com>, <bp@alien8.de>, <chenalexchen@google.com>,
+        <conradparker@google.com>, <cyhanish@google.com>,
+        <dave.hansen@intel.com>, <haitao.huang@intel.com>,
+        <josh@joshtriplett.org>, <kai.huang@intel.com>,
+        <kai.svahn@intel.com>, <kmoy@google.com>, <ludloff@google.com>,
+        <luto@kernel.org>, <nhorman@redhat.com>, <npmccallum@redhat.com>,
+        <puiterwijk@redhat.com>, <rientjes@google.com>,
+        <tglx@linutronix.de>, <yaozhangx@google.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <20200928005842.GC6704@linux.intel.com>
+ <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+ <20200928204258.GA2705@linux.intel.com>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <7a3e45a5-513a-1d77-fa64-8f4a9f67e3ab@citrix.com>
+Date:   Tue, 29 Sep 2020 00:52:35 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20200928204258.GA2705@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+X-ClientProxiedBy: AMSPEX02CAS02.citrite.net (10.69.22.113) To
+ FTLPEX02CL05.citrite.net (10.13.108.178)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 17:50:46 +0900 js1304@gmail.com wrote:
+On 28/09/2020 21:42, Jarkko Sakkinen wrote:
+> On Mon, Sep 28, 2020 at 05:44:35PM +0100, Andrew Cooper wrote:
+>> On 28/09/2020 01:58, Jarkko Sakkinen wrote:
+>>> On Fri, Sep 25, 2020 at 07:23:59PM +0100, Andrew Cooper wrote:
+>>>> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
+>>>>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+>>>>> new file mode 100644
+>>>>> index 000000000000..adbd59d41517
+>>>>> --- /dev/null
+>>>>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+>>>>> @@ -0,0 +1,157 @@
+>>>>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+>>>>> <snip>
+>>>>> +.Lretpoline:
+>>>>> +	call	2f
+>>>>> +1:	pause
+>>>>> +	lfence
+>>>>> +	jmp	1b
+>>>>> +2:	mov	%rax, (%rsp)
+>>>>> +	ret
+>>>> I hate to throw further spanners in the work, but this is not compatible
+>>>> with CET, and the user shadow stack work in progress.
+>>> CET goes beyond my expertise. Can you describe, at least rudimentary,
+>>> how this code is not compatible?
+>> CET Shadow Stacks detect attacks which modify the return address on the
+>> stack.
+>>
+>> Retpoline *is* a ROP gadget.  It really does modify the return address
+>> on the stack, even if its purpose is defensive (vs Spectre v2) rather
+>> than malicious.
+> Aah. I get that, yes.
+>
+> Kernel is full of retpoline but I presume that ring-0 does not use CET.
 
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> memalloc_nocma_{save/restore} APIs can be used to skip page allocation
-> on CMA area, but, there is a missing case and the page on CMA area could
-> be allocated even if APIs are used. This patch handles this case to fix
-> the potential issue.
-> 
-> Missing case is an allocation from the pcplist. MIGRATE_MOVABLE pcplist
-> could have the pages on CMA area so we need to skip it if ALLOC_CMA isn't
-> specified.
+No-one has implemented support CET-SS support for Linux itself yet, but
+other kernels do have it working.
 
-Changelog doesn't describe the end-user visible effects of the bug. 
-Please send this description?
-
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3367,9 +3367,16 @@ struct page *rmqueue(struct zone *preferred_zone,
->  	struct page *page;
->  
->  	if (likely(order == 0)) {
-> -		page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
-> +		/*
-> +		 * MIGRATE_MOVABLE pcplist could have the pages on CMA area and
-> +		 * we need to skip it when CMA area isn't allowed.
-> +		 */
-> +		if (!IS_ENABLED(CONFIG_CMA) || alloc_flags & ALLOC_CMA ||
-> +				migratetype != MIGRATE_MOVABLE) {
-> +			page = rmqueue_pcplist(preferred_zone, zone, gfp_flags,
->  					migratetype, alloc_flags);
-> -		goto out;
-> +			goto out;
-> +		}
->  	}
->  
->  	/*
-
-We still really really don't want to be adding overhead to the page
-allocation hotpath for a really really obscure feature from a single
-callsite.
-
-Do we have an understanding of how many people's kernels are enabling
-CONFIG_CMA?
-
-I previously suggested retrying the allocation in
-__gup_longterm_locked() but you said "it cannot ensure that we
-eventually get the non-CMA page".  Please explain why?
-
-What about manually emptying the pcplists beforehand? 
-
-Or byassing the pcplists for this caller and calling __rmqueue() directly?
-
-> @@ -3381,7 +3388,7 @@ struct page *rmqueue(struct zone *preferred_zone,
->  
->  	do {
->  		page = NULL;
-> -		if (alloc_flags & ALLOC_HARDER) {
-> +		if (order > 0 && alloc_flags & ALLOC_HARDER) {
->  			page = __rmqueue_smallest(zone, order, MIGRATE_HIGHATOMIC);
->  			if (page)
->  				trace_mm_page_alloc_zone_locked(page, order, migratetype);
-
-What does this hunk do?
+~Andrew
