@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821B027AE3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC5E27AE54
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbgI1Mwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:52:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgI1Mwi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:52:38 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFFEC061755;
-        Mon, 28 Sep 2020 05:52:35 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id m6so1237037wrn.0;
-        Mon, 28 Sep 2020 05:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WhsdZacySdHmhYo66BvVLzv/GBpIKfZV61Gk8RkbUdY=;
-        b=lzX0am67ZGVlsQoQ2kbF8vGo4KhrKHhSDPBuqsFxCYgC4MCZw73ajGQvluiQxvwL4n
-         QWbNvFJL02cDelcLIh33ImNmabslsGgtra8ROBtQ4wDuVqEHgmppWTn5s2z4nXKUeNKP
-         Rnxj4oc9pz7skqddCVA2Xj58LTLxtuquQFw5QHGMmfeBh22j/m169pCUZLADynPwVmMw
-         O0X7dhWl1NQ5i58BuzfTvrKLioAttVE5bWDvtNzfgS0NbIwaHLrZbG0ywW385uMYxzT5
-         QHTjWY1Coh3CBMTwl3hwsrGbGiRWASGuCoDuNsQY8LuhyN6lxbNBiIUZh8pCiaViiuUV
-         8SkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WhsdZacySdHmhYo66BvVLzv/GBpIKfZV61Gk8RkbUdY=;
-        b=P0mfYyA9vvp7pKTMigwVkBi4rP1PFQLpSh/BNetoHXvFRJsKKo2bQ5Cvkaraf1g0Qi
-         dq/CR+OGnve82N5dQ+1zm14LFOYjMevO0yfkA+lOFCQeY5Okt38aodNksM95+FgpOlvZ
-         nFDgJYNJ7M7Eea4JUFIv3igeBaB10Ry+zLNzwrKBO0pmqQima9VNLGUPPTRdV41BkB0c
-         Q8rKAW7ui230sXvLGMx3Xp+7uH0HFZudRjt+NVHzLXsIRuauCT/ybCcB9acJLcxUCDt/
-         plgx94SNMXYx9EboAWeRILml7FX0fHLKhA9nc0GdEbdkle39VPDEQ6Cka8bEbmzyFsQj
-         XTMQ==
-X-Gm-Message-State: AOAM531bi9Jk6kTxcxxVby4fBNDye8tXH+x0R6r1lCciVnQnQ2kVY/L+
-        4EqBrLm1uuPvvAEUmxEdMjA=
-X-Google-Smtp-Source: ABdhPJyzbqE1S8hnXDtNXfxjwww9r7z4nj/5EZ1jJxjScBfwGXGDRoFQUqvGAoJuZ9m+Jda3RdSE6w==
-X-Received: by 2002:a5d:4d48:: with SMTP id a8mr1559082wru.318.1601297554533;
-        Mon, 28 Sep 2020 05:52:34 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id o4sm1263689wru.55.2020.09.28.05.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 05:52:33 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 14:52:30 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
-        kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v3 02/15] clk: tegra: Don't enable PLLE HW sequencer at
- init
-Message-ID: <20200928125230.GB3065790@ulmo>
-References: <20200909081041.3190157-1-jckuo@nvidia.com>
- <20200909081041.3190157-3-jckuo@nvidia.com>
+        id S1726729AbgI1Myx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:54:53 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:50750 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726424AbgI1Myw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:54:52 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 91D31990272C836C0780;
+        Mon, 28 Sep 2020 20:54:50 +0800 (CST)
+Received: from lhrphicprd00229.huawei.com (10.123.41.22) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 28 Sep 2020 20:54:42 +0800
+From:   Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To:     <linux-mm@kvack.org>, <linux-acpi@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <rafael@kernel.org>, Ingo Molnar <mingo@redhat.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>,
+        <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, <linuxarm@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Brice Goglin <Brice.Goglin@inria.fr>,
+        "Sean V Kelley" <sean.v.kelley@linux.intel.com>,
+        <linux-api@vger.kernel.org>, "Borislav Petkov" <bp@alien8.de>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Subject: [PATCH v11 2/6] x86: Support Generic Initiator only proximity domains
+Date:   Mon, 28 Sep 2020 20:52:31 +0800
+Message-ID: <20200928125235.446188-3-Jonathan.Cameron@huawei.com>
+X-Mailer: git-send-email 2.19.1
+In-Reply-To: <20200928125235.446188-1-Jonathan.Cameron@huawei.com>
+References: <20200928125235.446188-1-Jonathan.Cameron@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Fba/0zbH8Xs+Fj9o"
-Content-Disposition: inline
-In-Reply-To: <20200909081041.3190157-3-jckuo@nvidia.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.123.41.22]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In common with memoryless domains we only register GI domains
+if the proximity node is not online. If a domain is already
+a memory containing domain, or a memoryless domain there is
+nothing to do just because it also contains a Generic Initiator.
 
---Fba/0zbH8Xs+Fj9o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+---
+v11: Improved description for init_gi_nodes()
 
-On Wed, Sep 09, 2020 at 04:10:28PM +0800, JC Kuo wrote:
-> PLLE hardware power sequencer references PEX/SATA UPHY PLL hardware
-> power sequencers' output to enable/disable PLLE. PLLE hardware power
-> sequencer has to be enabled only after PEX/SATA UPHY PLL's sequencers
-> are enabled.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
-> ---
-> v3:
->    no change
->=20
->  drivers/clk/tegra/clk-pll.c | 12 ------------
->  1 file changed, 12 deletions(-)
+ arch/x86/include/asm/numa.h |  2 ++
+ arch/x86/kernel/setup.c     |  1 +
+ arch/x86/mm/numa.c          | 21 +++++++++++++++++++++
+ 3 files changed, 24 insertions(+)
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+diff --git a/arch/x86/include/asm/numa.h b/arch/x86/include/asm/numa.h
+index bbfde3d2662f..f631467272a3 100644
+--- a/arch/x86/include/asm/numa.h
++++ b/arch/x86/include/asm/numa.h
+@@ -62,12 +62,14 @@ extern void numa_clear_node(int cpu);
+ extern void __init init_cpu_to_node(void);
+ extern void numa_add_cpu(int cpu);
+ extern void numa_remove_cpu(int cpu);
++extern void init_gi_nodes(void);
+ #else	/* CONFIG_NUMA */
+ static inline void numa_set_node(int cpu, int node)	{ }
+ static inline void numa_clear_node(int cpu)		{ }
+ static inline void init_cpu_to_node(void)		{ }
+ static inline void numa_add_cpu(int cpu)		{ }
+ static inline void numa_remove_cpu(int cpu)		{ }
++static inline void init_gi_nodes(void)			{ }
+ #endif	/* CONFIG_NUMA */
+ 
+ #ifdef CONFIG_DEBUG_PER_CPU_MAPS
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 3511736fbc74..9062c146f03a 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1218,6 +1218,7 @@ void __init setup_arch(char **cmdline_p)
+ 	prefill_possible_map();
+ 
+ 	init_cpu_to_node();
++	init_gi_nodes();
+ 
+ 	io_apic_init_mappings();
+ 
+diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+index aa76ec2d359b..cab6f679941d 100644
+--- a/arch/x86/mm/numa.c
++++ b/arch/x86/mm/numa.c
+@@ -747,6 +747,27 @@ static void __init init_memory_less_node(int nid)
+ 	 */
+ }
+ 
++/*
++ * A node may exist which has one or more Generic Initiators but no CPUs and no
++ * memory.
++ *
++ * This function must be called after init_cpu_to_node() to ensure that we have
++ * already brought online any memoryless CPU nodes, and before the node_data[nid]
++ * needs to be available for zone list setup in build_all_zonelists().
++ *
++ * When this function is called, any nodes containing either memory and/or CPUs
++ * will already be online and there is no need to do anything extra, even if
++ * they also contain one or more Generic Initiators.
++ */
++void __init init_gi_nodes(void)
++{
++	int nid;
++
++	for_each_node_state(nid, N_GENERIC_INITIATOR)
++		if (!node_online(nid))
++			init_memory_less_node(nid);
++}
++
+ /*
+  * Setup early cpu_to_node.
+  *
+-- 
+2.19.1
 
---Fba/0zbH8Xs+Fj9o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9x3I4ACgkQ3SOs138+
-s6EEmBAAuuvM/hY2DJvUpUjDsO0NA03byh0ZvnpmbiPAS93YVx96WfjbP1pMhKxQ
-1zeO8P1gXC0rf3o7B3th4zL9PJsLOc1mcoqLGIjo4jFvuOrc6yTHIJ7xSN0oVG+H
-1XQ8GWWoU3ErDW+TTgbnbjuwX1/cEJZLA9Ip1jsd+ANxo3oeknPvnKu2/WVLUYdB
-pBOg+lTnPR0CtgtRdMWkUSjtHAMruF0oGGP7tTQnRnM5cOgpinzy3N6KWUe5KlHV
-6UY2CUeACuAL2EqxmLjcK1HjusOJa19mbgdc4bhMCuvJdSRTtR/Ca4IL1Omk4+Pc
-aXEgCy+uhC9S4rHXCC6SkeuAUSPhNCS71/oL+EKVeXY8+G4Hrh+KPjE5bi1XkPOZ
-+m4KqXfYZKv+gSnV+4/Cf7Wfxju7EbM9nybyKpOZg93ys0xmcB5spk7+Q5M0LfnM
-wW+dBwz9UeTPz+sLxJ7zx12ZOKpis/ZEJUSSkxVSxvnsHb+ZdAzoQhxM4wLP2lgo
-9BX2a4F5eF3IKpED0WxjaC4/czGI3Tvrv6RtYRIbAMngMw9e+8nHaYGgwmeIHR6g
-q78eUf/Q2CrZpymOerGGIUs0/nB0XzbsMFJTPDEfC4bYgg3HHo8tUfOshJGYf3Bz
-sr1hwQu6xUP8wGYtI5MBfrwHPfysa9LfNcca41bnzK1lrCaavuI=
-=QKJI
------END PGP SIGNATURE-----
-
---Fba/0zbH8Xs+Fj9o--
