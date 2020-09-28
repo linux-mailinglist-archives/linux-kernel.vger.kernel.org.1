@@ -2,134 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B27A727A7C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151F327A7CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbgI1Gmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 02:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
+        id S1726559AbgI1GpW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 02:45:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725290AbgI1Gmz (ORCPT
+        with ESMTP id S1725290AbgI1GpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 02:42:55 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26910C0613CE;
-        Sun, 27 Sep 2020 23:42:55 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id gx22so6935827ejb.5;
-        Sun, 27 Sep 2020 23:42:55 -0700 (PDT)
+        Mon, 28 Sep 2020 02:45:21 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752F4C0613CE;
+        Sun, 27 Sep 2020 23:45:21 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id j2so10920838wrx.7;
+        Sun, 27 Sep 2020 23:45:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=qN+S61oVmPC+Q3dWpJjCh6WwaRMPQCJpevSG1rLGzow=;
-        b=gaAPsr1eQolYUOGe9xSWxntexJqKCVnQSoYWSGe3KJDLR7z09fD1A5fKObl5/9IGKR
-         ueMKPiAKANCX0LUiqWxJ6KjyDH6q1JEwC60B/dk03wYJptr83gc+GnjJO3001Me15EEW
-         oMvgetsntbd7vqqgDJ8U/mEMEeXdlqNVLWg9D7WM+cC8Aaa6Kk6JCIchYNcRPZodnXsA
-         7p8DfJB0m5Ecvk0/y/5daHEP+hJm8zQFrBiGihVE7CtkungkUfFgQsZoJ1HtiejuWdt2
-         cSo1DdcXwxIuzAo9M1UIvf4CbNOqwjGdvgLjIM/n8M37oWBR/LSEk2VaAzanqtTExLoD
-         PKuQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=05iWIJYB2oDYyH9Jw0dcggBXad7SUALC3TiMsF+Azj8=;
+        b=DyqRJdfm63h/KMo4QCnEFJL1M2GlQQm95ZOeccn/9kNWjGfRDaRfzvyLYDX3uaYj+z
+         hIcMplZ+4XU/z0Wnu5QP5A8QcVISkLSL3jlONUkHjOASmAACf0ctZd0PKi8myCTGs6Q5
+         nfy/LLrgkZssLSkwWrleHwS09SwDfU21Q5XquTU19V7JRoxCrfiDo00lYe1zzHbo7EHN
+         gwhY7R8SuvYkvLUHJyVFS3JB1IzvKSrND1ZObSL2jCpvd8bTu8Iw1yUe0Lfk9+k5iv1z
+         wfhEa7fNThovhs//VzZ/gLvb15nTB+T8LeL63ow1O/dV0ZRNM8+EY24UXrluSX16akQD
+         r0oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=qN+S61oVmPC+Q3dWpJjCh6WwaRMPQCJpevSG1rLGzow=;
-        b=O+y9w8+J5lWjN3SbP5gM/IRmwml86lY63q9vKG+oLD6eup7aF+wwnsBJacWjiPj9P7
-         Opn/HKGvJN7S9sUA37NAjJUo+clmkwNUEHeAhbVeDlz6FJKxAezMM0WyXOIFdGOhw3VM
-         x5YTMB+s61dyjxz4VhKn4ZcGTZqXB4PgRfdpK83JbeNzMuHdWre9X0VeaUDVkCsYSNqR
-         ihn8sREZQWeCj4vEWVEDkc8pSQyn9Jg0c2ijeNATHj3XRxD1gqwCNIrr5bSlE2zR7ixi
-         wDnChiuY3wiS2VCHT1RSc3U6L8P9KSJIxuCK+l0PbE9DbbPIFHKiZToU62tcF/XxDhMs
-         7Kjg==
-X-Gm-Message-State: AOAM5312PZNbYlG1fv3NRJHfGsmdxPe9nqeCwuEu8cCQ0w2HNUAqjVVR
-        figgRZN3a96QbhcowIw/890=
-X-Google-Smtp-Source: ABdhPJyoLdeeL5FGFduOYkr7rEhDILDQ4q8oJjqEotR4NwQH3lEnzkjqzfIzQPtc9b6BgiUtc3TNTQ==
-X-Received: by 2002:a17:906:2c14:: with SMTP id e20mr244311ejh.205.1601275373814;
-        Sun, 27 Sep 2020 23:42:53 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d9d:5000:b971:2536:319e:5b1d])
-        by smtp.gmail.com with ESMTPSA id lz22sm9221047ejb.98.2020.09.27.23.42.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=05iWIJYB2oDYyH9Jw0dcggBXad7SUALC3TiMsF+Azj8=;
+        b=RWMiY5Uo1A0ijkcRhnhG/Zdz7FZymw5DJBdZZ9jhEoaCvMQrfiv3TjHsQ6CNfPV6/q
+         5uPdzS1KLzcBlcBFi+10Hctf84TR7ZRgvusQYRRn3B6BGXwFMvWDZL6AE5OkkJiXYouN
+         kqgsXNOM1xO7nCFQagkWfBqHq26gXfVSBQoa4WuxXps5fF4txUdVhhvfjMs9lUqoi1bv
+         m6IEFHWn6hvRI98MWowIlUMNgsaNYC+GIzML9DgoaF5o5eXQ7nAbn6lG3StXkiOGpY1G
+         OyFAPH634QpvcJvXL+B/v14X1PRzCl6GR4AK8n7xr4f36pHuSbCrRGaaTBb9tMJmWJC3
+         x9eQ==
+X-Gm-Message-State: AOAM530qgvw2xqTWKOMaARXVDtD631FpIjmcoDtVNxEHdOSYl4BVtVrw
+        wl+d2pDHMPRtfM94s766bfw=
+X-Google-Smtp-Source: ABdhPJxUmnoNK0Resy7N687L4omMhCRf+0hyyUxR25i0XfPeotFKDPjVtTTKDIUT/0aaVXHHjZiEbw==
+X-Received: by 2002:a5d:4fcc:: with SMTP id h12mr17093159wrw.199.1601275520072;
+        Sun, 27 Sep 2020 23:45:20 -0700 (PDT)
+Received: from localhost ([217.111.27.204])
+        by smtp.gmail.com with ESMTPSA id f1sm11637062wrx.75.2020.09.27.23.45.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Sep 2020 23:42:52 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ujjwal Kumar <ujjwalkumar0501@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH RFC] kbuild: doc: describe proper script invocation
-Date:   Mon, 28 Sep 2020 08:42:44 +0200
-Message-Id: <20200928064244.29206-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Sun, 27 Sep 2020 23:45:18 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 08:45:17 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        linux-pwm@vger.kernel.org, lee.jones@linaro.org,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        songjun.Wu@intel.com, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com, rahul.tanwar.linux@gmail.com,
+        rtanwar@maxlinear.com
+Subject: Re: [PATCH v13 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200928064517.GA2837573@ulmo>
+References: <cover.1600158087.git.rahul.tanwar@linux.intel.com>
+ <befa655d8beb326fc8aa405a25a8b3e62b7e6a4a.1600158087.git.rahul.tanwar@linux.intel.com>
+ <20200924065534.e2anwghhtysv63e7@pengutronix.de>
+ <20200924132334.GT3956970@smile.fi.intel.com>
+ <20200924141659.4wov7w2l2bllpre4@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
+Content-Disposition: inline
+In-Reply-To: <20200924141659.4wov7w2l2bllpre4@pengutronix.de>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During an investigation to fix up the execute bits of scripts in the kernel
-repository, Andrew Morton and Kees Cook pointed out that the execute bit
-should not matter, and that build scripts cannot rely on that. Kees could
-not point to any documentation, though.
 
-Provide some basic documentation how the build shall invoke scripts, such
-that the execute bits do not matter.
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This serves as reference for further clean-up patches in the future.
+On Thu, Sep 24, 2020 at 04:16:59PM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> On Thu, Sep 24, 2020 at 04:23:34PM +0300, Andy Shevchenko wrote:
+> > On Thu, Sep 24, 2020 at 08:55:34AM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> > > On Tue, Sep 15, 2020 at 04:23:37PM +0800, Rahul Tanwar wrote:
+> >=20
+> > ...
+> >=20
+> > > > +	ret =3D lgm_clk_enable(dev, pc);
+> > > > +	if (ret) {
+> > > > +		dev_err(dev, "failed to enable clock\n");
+> > >=20
+> > > You used dev_err_probe four times for six error paths. I wonder why y=
+ou
+> > > didn't use it here (and below for a failing pwmchip_add()).
+> >=20
+> > dev_err_probe() makes sense when we might experience deferred probe. In=
+ neither
+> > of mentioned function this can be the case.
+> >=20
+> > > > +		return ret;
+> > > > +	}
+> >=20
+> > ...
+> >=20
+> > > > +	ret =3D lgm_reset_control_deassert(dev, pc);
+> > > > +	if (ret)
+> > > > +		return dev_err_probe(dev, ret, "cannot deassert reset control\n"=
+);
+> > >=20
+> > > After lgm_reset_control_deassert is called pc->rst is unused. So there
+> > > is no need to have this member in struct lgm_pwm_chip. The same appli=
+es
+> > > to ->clk. (You have to pass rst (or clk) to devm_add_action_or_reset =
+for
+> > > that to work. Looks like a nice idea anyhow.)
+> >=20
+> > True. And above dev_err_probe() is not needed.
+>=20
+> You argue that dev_err_probe() gives no benefit as
+> lgm_reset_control_deassert won't return -EPROBE_DEFER, right?
+>=20
+> Still I consider it a useful function because
+>=20
+>  a) I (as an author or as a reviewer) don't need to think if the
+>     failing function might return -EPROBE_DEFER now or in the future.
+>     dev_err_probe does the right thing even for functions that don't
+>     return -EPROBE_DEFER.
+>=20
+>  b) With dev_err_probe() I can accomplish things in a single line that
+>     need two lines when open coding it.
+>=20
+>  c) dev_err_probe() emits the symbolic error name without having to
+>     resort to %pe + ERR_PTR.
+>=20
+>  d) Using dev_err_probe() for all error paths gives a consistency that I
+>     like with a maintainer's hat on.
 
-Link: https://lore.kernel.org/lkml/20200830174409.c24c3f67addcce0cea9a9d4c@linux-foundation.org/
-Link: https://lore.kernel.org/lkml/202008271102.FEB906C88@keescook/
+That would perhaps be true if all error paths did use dev_err_probe().
+And even if that were the case, dev_err_probe() doesn't guarantee that
+error messages will actually be consistent because developers can still
+provide whatever format string they like.
 
-Suggested-by: Andrew Morton <akpm@linux-foundation.org>
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20200925 and v5.9-rc7
+Also, the format of the messages that dev_err_probe() prints is unlike
+anything that I've seen, so introducing dev_err_probe() actually makes
+things more inconsistent, in my opinion.
 
-Kees, Andrew, please ack.
+I have in fact been advocating for people to use error messages of the
+form:
 
-Masahiro-san, please pick this small documentation update into your kbuild tree.
+	"failed to ...: %d\n", err
 
-Ujjwal Kumar, a potential future mentee, will follow up with further fixes to
-the build scripts.
+or:
 
- Documentation/kbuild/makefiles.rst | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+	"unable to ...: %d\n", err
 
-diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-index 58d513a0fa95..9d0d198adb7e 100644
---- a/Documentation/kbuild/makefiles.rst
-+++ b/Documentation/kbuild/makefiles.rst
-@@ -21,6 +21,7 @@ This document describes the Linux kernel Makefiles.
- 	   --- 3.10 Special Rules
- 	   --- 3.11 $(CC) support functions
- 	   --- 3.12 $(LD) support functions
-+	   --- 3.13 Script Invocation
- 
- 	=== 4 Host Program support
- 	   --- 4.1 Simple Host Program
-@@ -605,6 +606,23 @@ more details, with real examples.
- 		#Makefile
- 		LDFLAGS_vmlinux += $(call ld-option, -X)
- 
-+3.13 Script invocation
-+----------------------
-+
-+	Make rules may invoke scripts to build the kernel. The rules shall
-+	always provide the appropriate interpreter to execute the script. They
-+	shall not rely on the execute bits being set, and shall not invoke the
-+	script directly.
-+
-+	Kbuild provides variables $(CONFIG_SHELL), $(AWK), $(PERL),
-+	$(PYTHON) and $(PYTHON3) to refer to interpreters for the respective
-+	scripts.
-+
-+	Example::
-+
-+		#Makefile
-+		cmd_depmod = $(CONFIG_SHELL) $(srctree)/scripts/depmod.sh $(DEPMOD) \
-+			     $(KERNELRELEASE)
- 
- 4 Host Program support
- ======================
--- 
-2.17.1
+Or some other similar form because that's the most common type that I
+have come across in the kernel. I think it's also easier to read those
+error messages because they contain the important data (i.e. the
+description, which tells you what went wrong) first and then are
+followed by the error code (which tells you how it failed).
 
+Now I suspect the current format was chosen because we need to have the
+constant part first, because otherwise the arbitrary format string could
+be something that doesn't lend itself to have an error code appended.
+
+The current format is arguably also something that's easier to parse
+=66rom some script because the format is in a somewhat standard format. On
+the other hand, I think this is a bit misguided because we already have
+structured log messages, so I wonder if it might have been better to
+make the error code part of structured log messages to make them truly
+machine readable but leave the formatting up to developers so that they
+can use whatever is consistent within the driver or whatever fits best
+without actually adding a standard string to the log messages.
+
+Thierry
+
+--xHFwDpU9dbj6ez1V
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9xhnkACgkQ3SOs138+
+s6FL3xAAi8SW4eZyqa3DzH2x8PIYh0nU4XdJiwu3FXjnpeZKFhpAw727Pf1Rwae7
+PMFnDggq2Q0GJC8Pzo95H0yBYaaVuQa93TLNszX3ofW0GZoZAadGPtGUjQrfFWcZ
+p7DySeukbO3BNIEDSIbMRYSUF+9cPq1sC4RAAQXP27Kdk62nbw2Tsr+AG7YXIBlj
+Z5N4zdFTv6LQRIIv08vpNyj74FSAb41wb+MR5vQnZKwlGRLJ0ZpVuW77SjFtj3Q7
+XMwrHljmSogGLIeqepX3I4McjzVfMXLWcF1sw6quBSX3zJo5DYybcvN6TUnWXQWe
+2AKyE+PGBjwBZcUJg9RM90VvGNjCJ3zm2WUQqLvsYRKC0eGubF9p65b36y6j0IIa
+A2gQNJQ5JiqW5q9Jm5I4RwTU0lZ/Mi+TwnKdZvPiPcC+YuRiqdUC5dHfXvWPfeCL
+eMFhmd7pRI8H7HkRNPo8z/tVufr+zHbYjtQljv2iCCZLXDfBPioX8jeTh9iXbj8Y
+wqR7F5vCC4pAWGLMw4o9jg0Zg5ywPRccXpNh8IbsrNONj0Y7MfXbo5lhxeqck10h
+ZnQRB67wK7iRbV23oos+R5Run1fU/PD4TD+m+6noGDHcmiOmX3g/ZxecAU5iB9pg
+e+V3/apZhQnJ3zwUssmZUfG501sECh3EqmZdUzDT6yrULhEiLtg=
+=Td2r
+-----END PGP SIGNATURE-----
+
+--xHFwDpU9dbj6ez1V--
