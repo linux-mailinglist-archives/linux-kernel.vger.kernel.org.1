@@ -2,94 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2D5D27B7C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F2227B7C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727317AbgI1XPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:15:24 -0400
-Received: from mga01.intel.com ([192.55.52.88]:30710 "EHLO mga01.intel.com"
+        id S1727369AbgI1XPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:15:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60224 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727251AbgI1XOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:14:46 -0400
-IronPort-SDR: eayjO9fC1DYqjeGB8m/ntb/tH1UZk5ZyOZErM4Q288iXryDCshcNFobk4ox07iQsoYWPULLHCb
- OG1ORKdmDmZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="180234029"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="180234029"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 16:07:40 -0700
-IronPort-SDR: 9XkV9aLbK1uAODE88byKKp4MRaliHvhMU2hA+PTmt3T8XPM+w0ywCelOZNty1UJdqIhZAm4dv8
- RTFYnpFF8n1g==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="340597549"
-Received: from pchilaka-mobl.amr.corp.intel.com (HELO ldmartin-desk1) ([10.212.247.146])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 16:07:39 -0700
-Date:   Mon, 28 Sep 2020 16:07:39 -0700
-From:   Lucas De Marchi <lucas.demarchi@intel.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>
-Cc:     "Surendrakumar Upadhyay, TejaskumarX" 
-        <tejaskumarx.surendrakumar.upadhyay@intel.com>,
-        "Vivi, Rodrigo" <rodrigo.vivi@intel.com>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Ausmus, James" <james.ausmus@intel.com>,
-        "Roper, Matthew D" <matthew.d.roper@intel.com>,
-        "Souza, Jose" <jose.souza@intel.com>,
-        "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>,
-        "Pandey, Hariom" <hariom.pandey@intel.com>
-Subject: Re: [Intel-gfx] [PATCH 2/2] drm/i915/edp/jsl: Update vswing table
- for HBR and HBR2
-Message-ID: <20200928230739.vpj22bwebqhtehuk@ldmartin-desk1>
-References: <20200928080931.246347-1-tejaskumarx.surendrakumar.upadhyay@intel.com>
- <20200928080931.246347-3-tejaskumarx.surendrakumar.upadhyay@intel.com>
- <87a6xaow40.fsf@intel.com>
- <SN6PR11MB3421725FE60CC7930FC02AB6DF350@SN6PR11MB3421.namprd11.prod.outlook.com>
- <871rilq0um.fsf@intel.com>
+        id S1727251AbgI1XPb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:15:31 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4447D23A58;
+        Mon, 28 Sep 2020 23:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601334522;
+        bh=yx7Kl0l4LL/Tx5VWW4V3Yshm8iNUcgJJrDqsEi+/CI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=esDNOvaQBOKfLSsr97k+I5mnTJEnZaivBEIgHvM19pd79mkh8+Th6XPwP9Dg7Nu8F
+         n1JK1azkKbq5XAjhQvWuh8gZeIXNRzYUR0SLDbng3W2pSqMX5+frAs9Kre/PSATOTQ
+         1mB7qdIrAZLVKO/Jx9zpQxnEd4tPpiq3CWHfS3ps=
+Date:   Tue, 29 Sep 2020 00:08:35 +0100
+From:   Will Deacon <will@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Yu Kuai <yukuai3@huawei.com>, robdclark@gmail.com, joro@8bytes.org,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        iommu@lists.linux-foundation.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com
+Subject: Re: [PATCH] iommu/qcom: add missing put_device() call in
+ qcom_iommu_of_xlate()
+Message-ID: <20200928230835.GA12939@willie-the-truck>
+References: <20200918011357.909335-1-yukuai3@huawei.com>
+ <202009220340.bJfsaeQn%lkp@intel.com>
+ <20200921204556.GB3811@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871rilq0um.fsf@intel.com>
+In-Reply-To: <20200921204556.GB3811@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 08:15:29PM +0300, Jani Nikula wrote:
->On Mon, 28 Sep 2020, "Surendrakumar Upadhyay, TejaskumarX"	<tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
->> This is a good example of a potential trap that having
->> IS_ELKHARTLAKE() cover both ELK and JSP creates. An unsuspecting coder
->> might change the if ladder to have IS_ELKHARTLAKE() first, and the
->> subsequent IS_JASPERLAKE() branch would never be taken.
->>
->> BR,
->> Jani.
->>
->> Tejas : In that case I will put attention note in comment about
->> platform checks such that ladder distrubance can be avoided. What you
->> suggest?
+On Mon, Sep 21, 2020 at 09:45:57PM +0100, Will Deacon wrote:
+> On Tue, Sep 22, 2020 at 03:13:53AM +0800, kernel test robot wrote:
+> > Thank you for the patch! Perhaps something to improve:
+> > 
+> > [auto build test WARNING on iommu/next]
+> > [also build test WARNING on linus/master v5.9-rc6 next-20200921]
+> > [cannot apply to robclark/msm-next]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch]
+> > 
+> > url:    https://github.com/0day-ci/linux/commits/Yu-Kuai/iommu-qcom-add-missing-put_device-call-in-qcom_iommu_of_xlate/20200918-091341
+> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git next
+> > config: arm64-randconfig-r023-20200920 (attached as .config)
+> > compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 4e8c028158b56d9c2142a62464e8e0686bde3584)
+> > reproduce (this is a W=1 build):
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # install arm64 cross compiling tool for clang build
+> >         # apt-get install binutils-aarch64-linux-gnu
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All warnings (new ones prefixed by >>):
+> > 
+> > >> drivers/iommu/arm/arm-smmu/qcom_iommu.c:601:4: warning: misleading indentation; statement is not part of the previous 'if' [-Wmisleading-indentation]
+> >                            return -EINVAL;
+> >                            ^
+> >    drivers/iommu/arm/arm-smmu/qcom_iommu.c:599:3: note: previous statement is here
+> >                    if (WARN_ON(qcom_iommu != dev_iommu_priv_get(dev)))
+> 
+> Oh, this looks like a nasty bug. Seems we're missing some braces.
 
->The solution is to make IS_ELKHARTLAKE() mean ELK and only ELK.
+Yu Kuai: please could you send a v2 of this?
 
-Since we are talking about the TLA for JSL in the other patch, for
-elkhartlake it is EHL, not ELK. ELK is something else, but I'm not sure
-what:
-
-$ git grep -w ELK -- drivers/gpu/drm/
-drivers/gpu/drm/i915/gem/i915_gem_stolen.c:             IS_GM45(i915) ? "CTG" : "ELK", reg_val);
-drivers/gpu/drm/i915/gem/i915_gem_stolen.c:      * Whether ILK really reuses the ELK register for this is unclear.
-drivers/gpu/drm/i915/intel_pm.c:         * Not 100% sure which way ELK should go here as the
-drivers/gpu/drm/i915/intel_pm.c:         * assume ELK doesn't need this.
-
-Lucas De Marchi
-
->
->BR,
->Jani.
->
->
->-- 
->Jani Nikula, Intel Open Source Graphics Center
+Will
