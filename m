@@ -2,187 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F059327A70F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C5227A721
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:53:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726607AbgI1Fr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 01:47:58 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:35182 "EHLO
+        id S1726576AbgI1Fx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 01:53:28 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:36755 "EHLO
         rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725290AbgI1Fr5 (ORCPT
+        with ESMTP id S1726420AbgI1Fx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 01:47:57 -0400
+        Mon, 28 Sep 2020 01:53:27 -0400
 Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08S5lhA53024826, This message is accepted by code: ctloc85258
-Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
-        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08S5lhA53024826
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 08S5qdDM3027745, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmb04.realtek.com.tw[172.21.6.97])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 08S5qdDM3027745
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 28 Sep 2020 13:47:44 +0800
-Received: from RSEXMBS01.realsil.com.cn (172.29.17.195) by
- RSEXMBS01.realsil.com.cn (172.29.17.195) with Microsoft SMTP Server
+        Mon, 28 Sep 2020 13:52:39 +0800
+Received: from localhost.localdomain (172.21.179.130) by
+ RTEXMB04.realtek.com.tw (172.21.6.97) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2044.4; Mon, 28 Sep 2020 13:47:43 +0800
-Received: from RSEXMBS01.realsil.com.cn ([fe80::e186:b533:fb3:8b37]) by
- RSEXMBS01.realsil.com.cn ([fe80::e186:b533:fb3:8b37%7]) with mapi id
- 15.01.2044.004; Mon, 28 Sep 2020 13:47:43 +0800
-From:   =?gb2312?B?wr3W7M6w?= <alex_lu@realsil.com.cn>
-To:     Marcel Holtmann <marcel@holtmann.org>
-CC:     Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Max Chou <max.chou@realtek.com>
-Subject: Re [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-Thread-Topic: Re [PATCH] Bluetooth: Fix the vulnerable issue on enc key size
-Thread-Index: AdaVWXT6oH4CpWmNTuafodOPDtcHGQ==
-Date:   Mon, 28 Sep 2020 05:47:42 +0000
-Message-ID: <6000bce133414df79e386e605b8dd1a5@realsil.com.cn>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.29.36.107]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+ 15.1.2044.4; Mon, 28 Sep 2020 13:52:39 +0800
+From:   Willy Liu <willy.liu@realtek.com>
+To:     <andrew@lunn.ch>
+CC:     <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <fancer.lancer@gmail.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ryankao@realtek.com>,
+        <kevans@FreeBSD.org>, Willy Liu <willy.liu@realtek.com>
+Subject: [PATCH net v3] net: phy: realtek: fix rtl8211e rx/tx delay config
+Date:   Mon, 28 Sep 2020 13:52:23 +0800
+Message-ID: <1601272343-32672-1-git-send-email-willy.liu@realtek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [172.21.179.130]
+X-ClientProxiedBy: RTEXMB01.realtek.com.tw (172.21.6.94) To
+ RTEXMB04.realtek.com.tw (172.21.6.97)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWFyY2VsLA0KDQo+IE9uIFNlcHRlbWJlciAyNywgMjAyMCAyMDowNSwgTWFyY2VsIEhvbHRt
-YW5uIHdyb3RlOg0KPiANCj4gSGkgQWxleCwNCj4gDQo+ID4+Pj4+IFdoZW4gc29tZW9uZSBhdHRh
-Y2tzIHRoZSBzZXJ2aWNlIHByb3ZpZGVyLCBpdCBjcmVhdGVzIGNvbm5lY3Rpb24sDQo+ID4+Pj4+
-IGF1dGhlbnRpY2F0ZXMuIFRoZW4gaXQgcmVxdWVzdHMga2V5IHNpemUgb2Ygb25lIGJ5dGUgYW5k
-IGl0IGlkZW50aWZpZXMNCj4gPj4+Pj4gdGhlIGtleSB3aXRoIGJydXRlIGZvcmNlIG1ldGhvZHMu
-DQo+ID4+Pj4+DQo+ID4+Pj4+IEFmdGVyIGwyY2FwIGluZm8gcmVxL3Jlc3AgZXhjaGFuZ2UgaXMg
-Y29tcGxldGUuIHRoZSBhdHRhY2tlciBzZW5kcw0KPiBsMmNhcA0KPiA+Pj4+PiBjb25uZWN0IHdp
-dGggc3BlY2lmaWMgUFNNLg0KPiA+Pj4+Pg0KPiA+Pj4+PiBJbiBhYm92ZSBwcm9jZWR1cmUsIHRo
-ZXJlIGlzIG5vIGNoYW5jZSBmb3IgdGhlIHNlcnZpY2UgcHJvdmlkZXIgdG8NCj4gY2hlY2sNCj4g
-Pj4+Pj4gdGhlIGVuY3J5cHRpb24ga2V5IHNpemUgYmVmb3JlIGwyY2FwX2Nvbm5lY3QoKS4gQmVj
-YXVzZSB0aGUgc3RhdGUgb2YNCj4gPj4+Pj4gbDJjYXAgY2hhbiBpbiBjb25uLT5jaGFuX2wgaXMg
-QlRfTElTVEVOLCB0aGVyZSBpcyBubyBsMmNhcCBjaGFuIHdpdGgNCj4gdGhlDQo+ID4+Pj4+IHN0
-YXRlIG9mIEJUX0NPTk5FQ1Qgb3IgQlRfQ09OTkVDVDIuDQo+ID4+Pj4+DQo+ID4+Pj4+IFNvIHNl
-cnZpY2UgcHJvdmlkZXIgc2hvdWxkIGNoZWNrIHRoZSBlbmNyeXB0aW9uIGtleSBzaXplIGluDQo+
-ID4+Pj4+IGwyY2FwX2Nvbm5lY3QoKQ0KPiA+Pj4+Pg0KPiA+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBB
-bGV4IEx1IDxhbGV4X2x1QHJlYWxzaWwuY29tLmNuPg0KPiA+Pj4+PiAtLS0NCj4gPj4+Pj4gbmV0
-L2JsdWV0b290aC9sMmNhcF9jb3JlLmMgfCA3ICsrKysrKysNCj4gPj4+Pj4gMSBmaWxlIGNoYW5n
-ZWQsIDcgaW5zZXJ0aW9ucygrKQ0KPiA+Pj4+Pg0KPiA+Pj4+PiBkaWZmIC0tZ2l0IGEvbmV0L2Js
-dWV0b290aC9sMmNhcF9jb3JlLmMgYi9uZXQvYmx1ZXRvb3RoL2wyY2FwX2NvcmUuYw0KPiA+Pj4+
-PiBpbmRleCBhZGU4M2UyMjQ1NjcuLjYzZGY5NjFkNDAyZCAxMDA2NDQNCj4gPj4+Pj4gLS0tIGEv
-bmV0L2JsdWV0b290aC9sMmNhcF9jb3JlLmMNCj4gPj4+Pj4gKysrIGIvbmV0L2JsdWV0b290aC9s
-MmNhcF9jb3JlLmMNCj4gPj4+Pj4gQEAgLTQxNTAsNiArNDE1MCwxMyBAQCBzdGF0aWMgc3RydWN0
-IGwyY2FwX2NoYW4NCj4gKmwyY2FwX2Nvbm5lY3Qoc3RydWN0DQo+ID4+Pj4gbDJjYXBfY29ubiAq
-Y29ubiwNCj4gPj4+Pj4NCj4gPj4+Pj4gCWlmIChjb25uLT5pbmZvX3N0YXRlICYgTDJDQVBfSU5G
-T19GRUFUX01BU0tfUkVRX0RPTkUpIHsNCj4gPj4+Pj4gCQlpZiAobDJjYXBfY2hhbl9jaGVja19z
-ZWN1cml0eShjaGFuLCBmYWxzZSkpIHsNCj4gPj4+Pj4gKwkJCWlmICghbDJjYXBfY2hlY2tfZW5j
-X2tleV9zaXplKGNvbm4tPmhjb24pKQ0KPiB7DQo+ID4+Pj4+ICsJCQkJbDJjYXBfc3RhdGVfY2hh
-bmdlKGNoYW4sDQo+IEJUX0RJU0NPTk4pOw0KPiA+Pj4+PiArCQkJCV9fc2V0X2NoYW5fdGltZXIo
-Y2hhbiwNCj4gPj4+PiBMMkNBUF9ESVNDX1RJTUVPVVQpOw0KPiA+Pj4+PiArCQkJCXJlc3VsdCA9
-IEwyQ0FQX0NSX1NFQ19CTE9DSzsNCj4gPj4+Pj4gKwkJCQlzdGF0dXMgPSBMMkNBUF9DU19OT19J
-TkZPOw0KPiA+Pj4+PiArCQkJCWdvdG8gcmVzcG9uc2U7DQo+ID4+Pj4+ICsJCQl9DQo+ID4+Pj4+
-IAkJCWlmICh0ZXN0X2JpdChGTEFHX0RFRkVSX1NFVFVQLCAmY2hhbi0+ZmxhZ3MpKSB7DQo+ID4+
-Pj4+IAkJCQlsMmNhcF9zdGF0ZV9jaGFuZ2UoY2hhbiwgQlRfQ09OTkVDVDIpOw0KPiA+Pj4+PiAJ
-CQkJcmVzdWx0ID0gTDJDQVBfQ1JfUEVORDsNCj4gPj4+Pg0KPiA+Pj4+IEkgYW0gbm90IGZvbGxv
-d2luZyB3aGF0IHlvdSBhcmUgdHJ5aW5nIHRvIGZpeCBoZXJlLiBDYW4geW91IHNob3cgdGhpcw0K
-PiB3aXRoDQo+ID4+IGENCj4gPj4+PiBidG1vbiB0cmFjZSBmcm9tIGFuIGF0dGFja2luZyBkZXZp
-Y2U/DQo+ID4+Pj4NCj4gPj4+PiBSZWdhcmRzDQo+ID4+Pj4NCj4gPj4+PiBNYXJjZWwNCj4gPj4+
-Pg0KPiA+Pj4+DQo+ID4+Pg0KPiA+Pj4gSSdtIHNvcnJ5LCBJIGRpZG4ndCBoYXZlIGJ0bW9uIHRy
-YWNlIGZyb20gYW4gYXR0YWNraW5nIGRldmljZS4NCj4gPj4+IEkgZGlkbid0IGhhdmUgdGhlIHJl
-YWwgYXR0YWNraW5nIGRldmljZS4gSSBqdXN0IHNpbXVsYXRlIHRoZSBhdHRhY2tpbmcuDQo+ID4+
-PiBJIGhhdmUgYSBkZXZpY2UgdGhhdCBjYW4gY3JlYXRlIG9uZSBieXRlIHNpemUgZW5jcnlwdGlv
-biBrZXkuDQo+ID4+PiBJdCB1c2VzIHRoZSBsaW5rIGtleSB0aGF0IHdhcyBwcm9kdWNlZCBieSBw
-YWlyaW5nIHdpdGggdGhlIHNlcnZpY2UNCj4gcHJvdmlkZXIuDQo+ID4+IEFjdHVhbGx5IHRoZSBL
-Tk9CIChLZXkgTmVnb3RpYXRpb24gb2YgQmx1ZXRvb3RoIEF0dGFjaykgc2F5cywgdGhlIGxpbmsg
-a2V5DQo+IGlzDQo+ID4+IHVubmVjZXNzYXJ5IGZvciB0aGUgcmVjb25uZWN0aW9uLg0KPiA+Pj4g
-SSB1c2UgdGhpcyBkZXZpY2UgdG8gcmVjb25uZWN0IHRvIHNlcnZpY2UgcHJvdmlkZXIsIGFuZCB0
-aGVuIGluaXRpYXRlIHRoZQ0KPiBLZXkNCj4gPj4gTmVnb3RpYXRpb24gZm9yIG9uZSBieXRlIHNp
-emUgZW5jcnlwdGlvbiBrZXkuIEFjdHVhbGx5IHRoZSBhdHRhY2tlcg0KPiBpZGVudGlmaWVkDQo+
-ID4+IHRoZSBlbmNyeXB0aW9uIGtleSB3aXRoIHNvbWUgYnJ1dGUgZm9yY2UgbWV0aG9kcy4NCj4g
-Pj4+DQo+ID4+PiBJIHdhbnQgdG8gcHJvdmlkZSB0aGUgdHJhY2Ugb24gc2VydmljZSBwcm92aWRl
-ciBzaWRlLg0KPiA+Pg0KPiA+PiB3aGF0IGtlcm5lbCB2ZXJzaW9uIGFyZSB5b3UgcnVubmluZz8g
-SSB3b25kZXIgaWYgd2Ugc2hvdWxkIGFsd2F5cyByZXR1cm4NCj4gPj4gTDJDQVBfQ1JfUEVORCBo
-ZXJlLiBEbyB5b3UgaGF2ZSBhIHJlcHJvZHVjZXIgY29kZT8NCj4gPg0KPiA+IEknbSBydW5uaW5n
-IGtlcm5lbCA1LjguMC1yYzYgb24gYWNjZXB0b3IgYW5kIGtlcm5lbCA1LjguNSBvbiB0aGUgaW5p
-dGlhdG9yDQo+IHdoaWNoIGFjdHMgYXMgYW4gYXR0YWNrZXIuDQo+ID4gRm9yIHRoZSBhdHRhY2sg
-c2ltdWxhdGlvbiwgc29tZSBjb2RlIG5lZWRzIHRvIGJlIGNoYW5nZWQgb24gZWFjaCBzaXplLg0K
-PiA+IE9uIHRoZSBhY2NlcHRvciwgdGhlIG1hc3RlciBwYXJhbWV0ZXIgZm9yIGJ0X2lvX2xpc3Rl
-bigpIGluIGJsdWV0b290aGQNCj4gc2hvdWxkIGJlIGNoYW5nZWQgdG8gRkFMU0UgaW4gcHJvZmls
-ZXMvYXVkaW8vYTJkcC5jIGEyZHBfc2VydmVyX2xpc3RlbigpDQo+IGFuZCBwcm9maWxlcy9hdWRp
-by9hdmN0cC5jIGF2Y3RwX3NlcnZlcl9zb2NrZXQoKS4NCj4gPiBUaGUgY2hhbmdlIG1ha2VzIHRo
-ZSBrZXJuZWwgbm90IHRvIGNoYW5nZSB0aGUgcm9sZSB0byBtYXN0ZXIgd2hlbiBpdA0KPiByZWNl
-aXZlcyBoY2kgY29ubiByZXEgZXZlbnQuDQo+ID4gSSBkaWQgdGhlIGNoYW5nZSBpbiBvcmRlciB0
-byBtYWtlIHRoZSBjb250cm9sbGVyIHRvIHNlbmQNCj4gTE1QX0VOQ1JZUFRJT05fS0VZX1NJWkVf
-UkVRIFBEVSBmb3Igb25lIGJ5dGUga2V5IHNpemUuDQo+ID4NCj4gPiBPbiB0aGUgaW5pdGlhdG9y
-LCB0aGUgYmVsb3cgZW5jcnlwdGlvbiBrZXkgc2l6ZSBjaGVjayBzaG91bGQgYmUgcmVtb3ZlZC4N
-Cj4gPiBAQCAtMTYyMiwxMCArMTYyNCwxMyBAQCBzdGF0aWMgdm9pZCBsMmNhcF9jb25uX3N0YXJ0
-KHN0cnVjdCBsMmNhcF9jb25uDQo+ICpjb25uKQ0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBjb250aW51ZTsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgIH0NCj4gPg0KPiA+
-IC0gICAgICAgICAgICAgICAgICAgICAgIGlmIChsMmNhcF9jaGVja19lbmNfa2V5X3NpemUoY29u
-bi0+aGNvbikpDQo+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsMmNhcF9zdGFy
-dF9jb25uZWN0aW9uKGNoYW4pOw0KPiA+IC0gICAgICAgICAgICAgICAgICAgICAgIGVsc2UNCj4g
-PiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGwyY2FwX2NoYW5fY2xvc2UoY2hhbiwg
-RUNPTk5SRUZVU0VEKTsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAvKiBKdXN0IHNpbXVs
-YXRlIEtOT0IgKi8NCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBsMmNhcF9zdGFydF9jb25u
-ZWN0aW9uKGNoYW4pOw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIC8qIGlmIChsMmNhcF9j
-aGVja19lbmNfa2V5X3NpemUoY29ubi0+aGNvbikpDQo+ID4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICogICAgICBsMmNhcF9zdGFydF9jb25uZWN0aW9uKGNoYW4pOw0KPiA+ICsgICAgICAgICAg
-ICAgICAgICAgICAgICAqIGVsc2UNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgKiAgICAg
-IGwyY2FwX2NoYW5fY2xvc2UoY2hhbiwgRUNPTk5SRUZVU0VEKTsNCj4gPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgKi8NCj4gPg0KPiA+IEF0IGxhc3QsIEkgZGlkIHRoZSB0ZXN0IGFzIGJlbG93
-Og0KPiA+IDEuIE9uIHRoZSBpbml0aWF0b3IsIHBhaXIgYWNjZXB0b3INCj4gPiAyLiBSdW4gbDJ0
-ZXN0IC1yIC1QIDMgb24gdGhlIGFjY2VwdG9yDQo+ID4gMy4gUnVuIGwydGVzdCAtbiAtUCAzIDxi
-ZGFkZHI+IG9uIHRoZSBpbml0aWF0b3INCj4gPg0KPiA+Pg0KPiA+PiBUaGUgcHJvYmxlbSByZWFs
-bHkgaXMgdGhhdCB0aGUgTUFTS19SRVFfRE9ORSBpbmRpY2F0aW9uIGlzIG5vdCBlbm91Z2gNCj4g
-dG8NCj4gPj4gbWFrZSBhIGRlY2lzaW9uIGZvciB0aGUga2V5IHNpemUuIFdlIGhhdmUgdG8gZW5z
-dXJlIHRoYXQgYWxzbyB0aGUga2V5IHNpemUNCj4gaXMNCj4gPj4gYWN0dWFsbHkgYXZhaWxhYmxl
-LiBJZiB0aGF0IGlzIG5vdCB5ZXQgZG9uZSwgdGhlbiB3ZSBzaG91bGQgbm90IGNoZWNrIGl0LiBU
-aGlzDQo+ID4+IG1lYW5zIHRoYXQgYW55IHJlc3BvbnNlIHRvIEwyQ0FQX0Nvbm5lY3RfUmVxdWVz
-dCBQRFUgbmVlZHMgdG8gYmUNCj4gPj4gZGVsYXllZCB1bnRpbCB0aGUga2V5IHNpemUgaGFzIGJl
-ZW4gcmVhZC4NCj4gPg0KPiA+IEluIG15IHRlc3QgY2FzZSwgdGhlIGtleSBzaXplIGhhcyBiZWVu
-IHJlYWQgZnJvbSBjb250cm9sbGVyIGJlZm9yZSB0aGUgbDJjYXANCj4gY29ubiByZXF1ZXN0IFBE
-VSBpcyByZWNlaXZlZC4NCj4gPg0KPiA+IDwgSENJIENvbW1hbmQ6IFJlYWQgRW5jcnlwdGlvbiBL
-ZXkgU2l6ZSAoMHgwNXwweDAwMDgpIHBsZW4gMg0KPiAjMjIgW2hjaTBdIDQzLjA4OTg1OQ0KPiA+
-ICAgICAgICBIYW5kbGU6IDENCj4gPj4gSENJIEV2ZW50OiBDb21tYW5kIENvbXBsZXRlICgweDBl
-KSBwbGVuIDcNCj4gIzIzIFtoY2kwXSA0My4wOTE1MjgNCj4gPiAgICAgIFJlYWQgRW5jcnlwdGlv
-biBLZXkgU2l6ZSAoMHgwNXwweDAwMDgpIG5jbWQgMg0KPiA+ICAgICAgICBTdGF0dXM6IFN1Y2Nl
-c3MgKDB4MDApDQo+ID4gICAgICAgIEhhbmRsZTogMQ0KPiA+ICAgICAgICBLZXkgc2l6ZTogMQ0K
-PiA+PiBBQ0wgRGF0YSBSWDogSGFuZGxlIDEgZmxhZ3MgMHgwMiBkbGVuIDEwICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIzI0DQo+IFto
-Y2kwXSA0My4xNDA4ODgNCj4gPiAgICAgIEwyQ0FQOiBJbmZvcm1hdGlvbiBSZXF1ZXN0ICgweDBh
-KSBpZGVudCAxIGxlbiAyDQo+ID4gICAgICAgIFR5cGU6IEV4dGVuZGVkIGZlYXR1cmVzIHN1cHBv
-cnRlZCAoMHgwMDAyKQ0KPiA+IC4uLi4uLg0KPiA+PiBBQ0wgRGF0YSBSWDogSGFuZGxlIDEgZmxh
-Z3MgMHgwMiBkbGVuIDEyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIzM0DQo+IFtoY2kwXSA0My4xNDg0MDUNCj4gPiAgICAgIEwyQ0FQ
-OiBDb25uZWN0aW9uIFJlcXVlc3QgKDB4MDIpIGlkZW50IDMgbGVuIDQNCj4gPiAgICAgICAgUFNN
-OiAzICgweDAwMDMpDQo+ID4gICAgICAgIFNvdXJjZSBDSUQ6IDY0DQo+IA0KPiB0aGUgZWFzaWVz
-dCB3YXkgdG8gZmFrZSB0aGlzIGlzIGp1c3QgdG8gYXNzaWduIGEgZGlmZmVyZW50IHZhbHVlIHRo
-YW4gdGhlIG9uZQ0KPiByZXR1cm5lZCBieSBSZWFkIEVuY3J5cHRpb24gS2V5IFNpemUgb24gdGhl
-IGFjY2VwdG9yIHNpZGUuIE5vIG5lZWQgdG8gbWVzcw0KPiB3aXRoIExNUCBkZXRhaWxzLg0KPiAN
-Cj4gZGlmZiAtLWdpdCBhL25ldC9ibHVldG9vdGgvaGNpX2V2ZW50LmMgYi9uZXQvYmx1ZXRvb3Ro
-L2hjaV9ldmVudC5jDQo+IGluZGV4IDFkZjk1MTQ1ZjU3NC4uNzQxYjdhZDMxZmY4IDEwMDY0NA0K
-PiAtLS0gYS9uZXQvYmx1ZXRvb3RoL2hjaV9ldmVudC5jDQo+ICsrKyBiL25ldC9ibHVldG9vdGgv
-aGNpX2V2ZW50LmMNCj4gQEAgLTMwMzQsNyArMzAzNCw3IEBAIHN0YXRpYyB2b2lkIHJlYWRfZW5j
-X2tleV9zaXplX2NvbXBsZXRlKHN0cnVjdA0KPiBoY2lfZGV2ICpoZGV2LCB1OCBzdGF0dXMsDQo+
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIGhhbmRsZSk7DQo+ICAgICAgICAgICAgICAgICBj
-b25uLT5lbmNfa2V5X3NpemUgPSAwOw0KPiAgICAgICAgIH0gZWxzZSB7DQo+IC0gICAgICAgICAg
-ICAgICBjb25uLT5lbmNfa2V5X3NpemUgPSBycC0+a2V5X3NpemU7DQo+ICsgICAgICAgICAgICAg
-ICBjb25uLT5lbmNfa2V5X3NpemUgPSAxOw0KPiAgICAgICAgIH0NCg0KWWVzLCB5b3UncmUgcmln
-aHQuIEp1c3QgdG8gYXNzaWduIGEgZGlmZmVyZW50IHZhbHVlIGlzIHRoZSBlYXNpZXN0IHdheS4N
-ClByZXZpb3VzbHkgSSBzdHJ1Z2dsZWQgdG8gcHJvdmlkZSBjb21wbGV0ZSBldmlkZW5jZSBmb3Ig
-cXVhbGlmaWNhdGlvbiB0ZXN0LCBzbyBJIG1hZGUgdGhlIGNoYW5nZSBhIGJpdCBtb3JlIGNvbXBs
-aWNhdGVkLg0KSSdtIHNvcnJ5IHRvIG1lc3MgaXQuDQoNCj4gDQo+IElmIHlvdSBhZGQgdGhpcyBj
-aGFuZ2UgdG8gYm90aCBzaWRlcywgd2hhdCBhcmUgdGhlIHN0ZXBzIHRvIHJlcHJvZHVjZSB0aGlz
-IGFuZA0KPiB3aGF0IGRvZXMgYnRtb24gc2hvdz8gWW91IG1pZ2h0IGhhdmUgdG8gYWxzbyBlbmFi
-bGUgZHluYW1pY19kZWJ1ZyBmb3INCj4gbDJjYXAua28gc28gdGhhdCB3ZSBzZWUgdGhlIGZ1bmN0
-aW9uIGNhbGwgdHJhY2UuDQo+IA0KPiBJIGFtIGEgYml0IHBlZGFudGljIHdpdGggdGhpcyBvbmUs
-IHNpbmNlIGl0IGlzIGNyaXRpY2FsIHRvIHVuZGVyc3RhbmQgd2hlcmUgdGhlDQo+IGN1cnJlbnQg
-Y2hhbmdlcyB0byBoYW5kbGUgYW55dGhpbmcgS05PQiByZWxhdGVkIGhhdmUgdGhlaXIgc2hvcnRj
-b21pbmdzLiBJDQo+IHNwZW50IHNvIG11Y2ggdGltZSB0ZXN0aW5nIGV2ZXJ5IHNpbmdsZSBjb3Ju
-ZXIgY2FzZS4gQ2VydGFpbmx5IEkgY291bGQgaGF2ZQ0KPiBtaXNzZWQgc29tZXRoaW5nLCBidXQg
-aWYgSSByZWFsbHkgZGlkLCB0aGlzIHRpbWUgYXJvdW5kIEkgd2FudCB0byBlaXRoZXIgc2ltcGxp
-ZnkNCj4gdGhlIGNvZGUgb3IgcHJvcGVybHkgY29tbWVudCBpdCBhdCBsZWFzdC4NCj4gDQo+IFBs
-ZWFzZSBzZWUgdGhlIG90aGVyIGVtYWlsIHRocmVhZCAvIHBhdGNoIGZyb20gQXJjaGllIHRyeWlu
-ZyB0byBhbHNvIGFkZA0KPiBhbm90aGVyIGVuY3J5cHRpb24ga2V5IHNpemUgY2hlY2suDQoNClRo
-YW5rcyBmb3IgeW91ciByZW1haW5kZXIuIEl0IHNlZW1zIHRoYXQgQXJjaGllIGFuZCBJIGhhdmUg
-ZW5jb3VudGVyZWQgdGhlIHNhbWUgcHJvYmxlbS4gSSBhbHNvIGZvdW5kIHRoaXMgd2hlbiBJIGRp
-ZCB0aGUgcXVhbGlmaWNhdGlvbi4NCg0KPiANCj4gUmVnYXJkcw0KPiANCj4gTWFyY2VsDQo+IA0K
-PiANCg0K
+There are two chip pins named TXDLY and RXDLY which actually adds the 2ns
+delays to TXC and RXC for TXD/RXD latching. These two pins can config via
+4.7k-ohm resistor to 3.3V hw setting, but also config via software setting
+(extension page 0xa4 register 0x1c bit13 12 and 11).
+
+The configuration register definitions from table 13 official PHY datasheet:
+PHYAD[2:0] = PHY Address
+AN[1:0] = Auto-Negotiation
+Mode = Interface Mode Select
+RX Delay = RX Delay
+TX Delay = TX Delay
+SELRGV = RGMII/GMII Selection
+
+This table describes how to config these hw pins via external pull-high or pull-
+low resistor.
+
+It is a misunderstanding that mapping it as register bits below:
+8:6 = PHY Address
+5:4 = Auto-Negotiation
+3 = Interface Mode Select
+2 = RX Delay
+1 = TX Delay
+0 = SELRGV
+So I removed these descriptions above and add related settings as below:
+14 = reserved
+13 = force Tx RX Delay controlled by bit12 bit11
+12 = Tx Delay
+11 = Rx Delay
+10:0 = Test && debug settings reserved by realtek
+
+Test && debug settings are not recommend to modify by default.
+
+Fixes: f81dadbcf7fd ("net: phy: realtek: Add rtl8211e rx/tx delays config")
+Signed-off-by: Willy Liu <willy.liu@realtek.com>
+---
+ drivers/net/phy/realtek.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
+ mode change 100644 => 100755 drivers/net/phy/realtek.c
+
+diff --git a/drivers/net/phy/realtek.c b/drivers/net/phy/realtek.c
+old mode 100644
+new mode 100755
+index 95dbe5e..0f09609
+--- a/drivers/net/phy/realtek.c
++++ b/drivers/net/phy/realtek.c
+@@ -1,6 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0+
+-/*
+- * drivers/net/phy/realtek.c
++/* drivers/net/phy/realtek.c
+  *
+  * Driver for Realtek PHYs
+  *
+@@ -32,9 +31,9 @@
+ #define RTL8211F_TX_DELAY			BIT(8)
+ #define RTL8211F_RX_DELAY			BIT(3)
+ 
+-#define RTL8211E_TX_DELAY			BIT(1)
+-#define RTL8211E_RX_DELAY			BIT(2)
+-#define RTL8211E_MODE_MII_GMII			BIT(3)
++#define RTL8211E_CTRL_DELAY			BIT(13)
++#define RTL8211E_TX_DELAY			BIT(12)
++#define RTL8211E_RX_DELAY			BIT(11)
+ 
+ #define RTL8201F_ISR				0x1e
+ #define RTL8201F_IER				0x13
+@@ -246,16 +245,16 @@ static int rtl8211e_config_init(struct phy_device *phydev)
+ 	/* enable TX/RX delay for rgmii-* modes, and disable them for rgmii. */
+ 	switch (phydev->interface) {
+ 	case PHY_INTERFACE_MODE_RGMII:
+-		val = 0;
++		val = RTL8211E_CTRL_DELAY | 0;
+ 		break;
+ 	case PHY_INTERFACE_MODE_RGMII_ID:
+-		val = RTL8211E_TX_DELAY | RTL8211E_RX_DELAY;
++		val = RTL8211E_CTRL_DELAY | RTL8211E_TX_DELAY | RTL8211E_RX_DELAY;
+ 		break;
+ 	case PHY_INTERFACE_MODE_RGMII_RXID:
+-		val = RTL8211E_RX_DELAY;
++		val = RTL8211E_CTRL_DELAY | RTL8211E_RX_DELAY;
+ 		break;
+ 	case PHY_INTERFACE_MODE_RGMII_TXID:
+-		val = RTL8211E_TX_DELAY;
++		val = RTL8211E_CTRL_DELAY | RTL8211E_TX_DELAY;
+ 		break;
+ 	default: /* the rest of the modes imply leaving delays as is. */
+ 		return 0;
+@@ -263,11 +262,12 @@ static int rtl8211e_config_init(struct phy_device *phydev)
+ 
+ 	/* According to a sample driver there is a 0x1c config register on the
+ 	 * 0xa4 extension page (0x7) layout. It can be used to disable/enable
+-	 * the RX/TX delays otherwise controlled by RXDLY/TXDLY pins. It can
+-	 * also be used to customize the whole configuration register:
+-	 * 8:6 = PHY Address, 5:4 = Auto-Negotiation, 3 = Interface Mode Select,
+-	 * 2 = RX Delay, 1 = TX Delay, 0 = SELRGV (see original PHY datasheet
+-	 * for details).
++	 * the RX/TX delays otherwise controlled by RXDLY/TXDLY pins.
++	 * The configuration register definition:
++	 * 14 = reserved
++	 * 13 = Force Tx RX Delay controlled by bit12 bit11,
++	 * 12 = RX Delay, 11 = TX Delay
++	 * 10:0 = Test && debug settings reserved by realtek
+ 	 */
+ 	oldpage = phy_select_page(phydev, 0x7);
+ 	if (oldpage < 0)
+@@ -277,7 +277,8 @@ static int rtl8211e_config_init(struct phy_device *phydev)
+ 	if (ret)
+ 		goto err_restore_page;
+ 
+-	ret = __phy_modify(phydev, 0x1c, RTL8211E_TX_DELAY | RTL8211E_RX_DELAY,
++	ret = __phy_modify(phydev, 0x1c, RTL8211E_CTRL_DELAY
++			   | RTL8211E_TX_DELAY | RTL8211E_RX_DELAY,
+ 			   val);
+ 
+ err_restore_page:
+-- 
+1.9.1
+
