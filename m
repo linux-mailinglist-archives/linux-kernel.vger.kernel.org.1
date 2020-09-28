@@ -2,145 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A51D27B533
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC63927B538
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbgI1TYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:24:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21907 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726228AbgI1TYi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:24:38 -0400
-Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1601321076;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=upPMrX0wk/3QeqZeG7hPWaGmRYIlDkaA6lt47IgGbBs=;
-        b=gruXdflvS/lGzMiL7wzs+G1YFqJF5ShE9KS9NF5b2r6Y7vvsKHuxY114onIwFbCfvfl6Xy
-        i4Dti+PEMrR6pbbunPlln81xAh0DwuSZ3RZL+BnRrXoDG6LehrBkKjaCjlghjdQT9IVB4f
-        XlmD8r63+ACJG8WylWpLwVRl+uJQ3/I=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-204-sOwEmsmiOqmhkXT4MJWrHA-1; Mon, 28 Sep 2020 15:24:34 -0400
-X-MC-Unique: sOwEmsmiOqmhkXT4MJWrHA-1
-Received: by mail-qt1-f197.google.com with SMTP id g10so1392975qto.1
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:24:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=upPMrX0wk/3QeqZeG7hPWaGmRYIlDkaA6lt47IgGbBs=;
-        b=NirZUNgp9lh4BmsOIgxppwldLXNbssvEpvonzuoiRj7ulIFUrziEnwi3CV3MqL66Xh
-         DbJdkmKhPNEkrBH24REGI8Xe76XbE0JUUN9kJbMG6gJaWZ96KgrTEVpYkUkc+KR7Z1S5
-         DFaaka1K2g/O/AVTSwmnWGQ0Zf4lBfz8vWl0dKccNoiX5eo4m5e1iLEEFL0JmLdqNeMx
-         Ru3bGL8xD/wkbpfI3KcWJB59osB1Hjxym2LGJpg5TTJwdZxAIOiIA+rAgCKTEGF30NoF
-         Xk0Kht0UL6C8iiBVqqA/kT6doBFu18YKJ3mj+68TiFeZlIkwNzkulxXLyFYJJHJgfCgU
-         D+TQ==
-X-Gm-Message-State: AOAM531cI+KDTIt+LpPTwjSZhv4TOy6ODPsfgr3DTDC0QNaVlmci14m6
-        VFsZOtRdJqQVJ7U+hU9Uhcpbf4+pmyuLJSez1oFMpRuCGFqX26D4E2tTsnUOSchvYxTwUOQTFRV
-        YNTNmak5OPuoVDGWfHGhAVlva
-X-Received: by 2002:ac8:7208:: with SMTP id a8mr3248319qtp.22.1601321073400;
-        Mon, 28 Sep 2020 12:24:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx4I5C4VgLLDw70WedgRe2U/NYbWhztK+94fjt5d1eiH9eMyK54GDBck3R6ElFO5cEWL1RP/Q==
-X-Received: by 2002:ac8:7208:: with SMTP id a8mr3248302qtp.22.1601321073066;
-        Mon, 28 Sep 2020 12:24:33 -0700 (PDT)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-11-70-53-122-15.dsl.bell.ca. [70.53.122.15])
-        by smtp.gmail.com with ESMTPSA id u10sm1471098qkk.14.2020.09.28.12.24.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 12:24:32 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:24:30 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Tony Fischetti <tony.fischetti@gmail.com>
-Cc:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org
-Subject: Re: REGRESSION: in intel video driver following introduction of
- mm_struct.has_pinned
-Message-ID: <20200928192430.GD59869@xz-x1>
-References: <CAOMV6SUP1=U3bqO=+f_HrnTYpaLLwvZY4muCdW-ixQU2M10_WQ@mail.gmail.com>
+        id S1726666AbgI1TZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:25:17 -0400
+Received: from mga12.intel.com ([192.55.52.136]:3001 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726228AbgI1TZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 15:25:14 -0400
+IronPort-SDR: iu+zewthp4S0SEKyWggJZ9zaEIvPJENA/U3PlKCrTisdFyVp/LZ0HD6ATmd6vEXhlR7TIDTRqh
+ W/XSKPJlUCFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="141454351"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="141454351"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:25:13 -0700
+IronPort-SDR: tB4XrJ9aLM72evmIhruNpxEjFX7/KzKfSmj/6ewbmqEjPs3y3GNI3pa0NLBB4WO3OrSyfDBZbi
+ hnEj68aCHPjg==
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="488729969"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 12:25:12 -0700
+Date:   Mon, 28 Sep 2020 12:25:12 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 6/8] selftests/vm: gup_test: introduce the dump_pages()
+ sub-test
+Message-ID: <20200928192512.GE458519@iweiny-DESK2.sc.intel.com>
+References: <20200928062159.923212-1-jhubbard@nvidia.com>
+ <20200928062159.923212-7-jhubbard@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOMV6SUP1=U3bqO=+f_HrnTYpaLLwvZY4muCdW-ixQU2M10_WQ@mail.gmail.com>
+In-Reply-To: <20200928062159.923212-7-jhubbard@nvidia.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 02:14:16PM -0400, Tony Fischetti wrote:
-> After a length git bisection, I determined the commit that introduced
-> a change that ultimately caused a bug/oops null dereference (see below
-> for relevant syslog entries) was 008cfe4418b3dbda2ff.. (mm: Introduce
-> mm_struct.has_pinned)
+On Sun, Sep 27, 2020 at 11:21:57PM -0700, John Hubbard wrote:
+> For quite a while, I was doing a quick hack to gup_test.c (previously,
+> gup_benchmark.c) whenever I wanted to try out my changes to dump_page().
+> This makes that hack unnecessary, and instead allows anyone to easily
+> get the same coverage from a user space program. That saves a lot of
+> time because you don't have to change the kernel, in order to test
+> different pages and options.
 > 
-> The RIP (according to syslog) occurs in function
-> `__get_user_pages_remote` and the last function to call it from the
-> i915 code is `gem_userptr_get_pages_worker`
-> More specifically, it appears to be the call to
-> `pin_user_pages_remote` in `gem_userptr_get_pages_worker` in
-> drivers/gpu/drm/i915/gem/i915_gem_userptr.c that directly leads to the
-> oops.
+> The new sub-test takes advantage of the existing gup_test
+> infrastructure, which already provides a simple user space program, some
+> allocated user space pages, an ioctl call, pinning of those pages (via
+> either get_user_pages or pin_user_pages) and a corresponding kernel-side
+> test invocation. There's not much more required, mainly just a couple of
+> inputs from the user.
 > 
-> Unfortunately, I don't know enough to try to fix and share the fix
-> myself, but I hope the information I provided is helpful. Please let
-> me know if there is any further information I can provide that might
-> be of use.
+> In fact, the new test re-uses the existing command line options in order
+> to get various helpful combinations (THP or normal, _fast or slow gup,
+> gup vs. pup, and more).
 > 
-> BUG: kernel NULL pointer dereference, address: 0000000000000054
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> Oops: 0002 [#1] PREEMPT SMP NOPTI
-> CPU: 8 PID: 497 Comm: kworker/u25:0 Not tainted
-> 5.9.0-rc7-alice-investigate-3+ #2
-> Hardware name: LENOVO 10ST001QUS/312A, BIOS M1UKT4BA 11/11/2019
-> Workqueue: i915-userptr-acquire __i915_gem_userptr_get_pages_worker [i915]
-> RIP: 0010:__get_user_pages_remote+0xa0/0x2d0
-> Code: 85 e7 01 00 00 83 3b 01 0f 85 e0 01 00 00 f7 c1 00 00 04 00 0f
-> 84 12 01 00 00 65 48 8b 04 25 00 6d 01 00 48 8b 80 58 03 00 00 <c7> 40
-> 54 01 00 00 00 c6 04 24 00 4d 8d 6f 68 48 c7 44 24 10 00 00
-> RSP: 0018:ffffa1a58086bde0 EFLAGS: 00010206
-> RAX: 0000000000000000 RBX: ffffa1a58086be64 RCX: 0000000000040001
-> RDX: 00000000000007e9 RSI: 00007f532f800000 RDI: ffff92f22d89c480
-> RBP: 00007f532f800000 R08: ffff92f23a188000 R09: 0000000000000000
-> R10: 0000000000000000 R11: ffffa1a58086bcfd R12: ffff92f23a188000
-> R13: ffff92f22d89c480 R14: 0000000000042003 R15: ffff92f22d89c480
-> FS:  0000000000000000(0000) GS:ffff92f23e400000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000000000054 CR3: 0000000016c0a002 CR4: 00000000001706e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  __i915_gem_userptr_get_pages_worker+0x1ec/0x392 [i915]
->  process_one_work+0x1c7/0x310
->  worker_thread+0x28/0x3c0
->  ? set_worker_desc+0xb0/0xb0
->  kthread+0x123/0x140
->  ? kthread_use_mm+0xe0/0xe0
->  ret_from_fork+0x1f/0x30
-> Modules linked in: snd_hda_codec_hdmi snd_hda_codec_realtek
-> snd_hda_codec_generic ledtrig_audio iwlmvm mac80211 libarc4
-> x86_pkg_temp_thermal intel_powerclamp iwlwifi coretemp i915
-> crct10dif_pclmul crc32_pclmul crc32c_intel i2c_algo_bit
-> ghash_clmulni_intel drm_kms_helper syscopyarea sysfillrect sysimgblt
-> fb_sys_fops cec mei_hdcp wmi_bmof snd_hda_intel drm tpm_crb
-> snd_intel_dspcfg intel_wmi_thunderbolt snd_hda_codec snd_hwdep
-> aesni_intel crypto_simd glue_helper snd_hda_core cfg80211 i2c_i801
-> snd_pcm intel_cstate pcspkr snd_timer mei_me i2c_smbus mei i2c_core
-> thermal wmi tpm_tis tpm_tis_core tpm rng_core acpi_pad ppdev lp
-> ip_tables x_tables
-> CR2: 0000000000000054
-> ---[ end trace 8d080e8b96289c9e ]---
+> New command line options are: which pages to dump, and what type of
+> "get/pin" to use.
 > 
+> In order to figure out which pages to dump, the logic is:
+> 
+> * If the user doesn't specify anything, the page 0 (the first page in
+> the address range that the program sets up for testing) is dumped.
+> 
+> * Or, the user can type up to 8 page indices anywhere on the command
+> line. If you type more than 8, then it uses the first 8 and ignores the
+> remaining items.
+> 
+> For example:
+> 
+>     ./gup_test -ct -F 1 0 19 0x1000
+> 
+> Meaning:
+>     -c:          dump pages sub-test
+>     -t:          use THP pages
+>     -F 1:        use pin_user_pages() instead of get_user_pages()
+>     0 19 0x1000: dump pages 0, 19, and 4096
+> 
+> Also, invoke the new test from run_vmtests.sh. This keeps it in use, and
 
-Hi, Tony,
+I don't see a change to run_vmtests.sh?
 
-This is also reported elsewhere and the proper fix should be here:
+Ira
 
-https://lore.kernel.org/intel-gfx/20200928134915.GA5904@xz-x1
-
-Thanks for the report, and sorry for the trouble!
-
--- 
-Peter Xu
-
+> also provides a good example of how to invoke it.
+> 
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> ---
+>  mm/Kconfig                            |  6 +++
+>  mm/gup_test.c                         | 54 ++++++++++++++++++++++++++-
+>  mm/gup_test.h                         | 10 +++++
+>  tools/testing/selftests/vm/gup_test.c | 47 +++++++++++++++++++++--
+>  4 files changed, 112 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 588984ee5fb4..f7c4c21e5cb1 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -845,6 +845,12 @@ config GUP_TEST
+>  	  get_user_pages*() and pin_user_pages*(), as well as smoke tests of
+>  	  the non-_fast variants.
+>  
+> +	  There is also a sub-test that allows running dump_page() on any
+> +	  of up to eight pages (selected by command line args) within the
+> +	  range of user-space addresses. These pages are either pinned via
+> +	  pin_user_pages*(), or pinned via get_user_pages*(), as specified
+> +	  by other command line arguments.
+> +
+>  	  See tools/testing/selftests/vm/gup_test.c
+>  
+>  config GUP_GET_PTE_LOW_HIGH
+> diff --git a/mm/gup_test.c b/mm/gup_test.c
+> index a980c4a194f0..e79dc364eafb 100644
+> --- a/mm/gup_test.c
+> +++ b/mm/gup_test.c
+> @@ -7,7 +7,7 @@
+>  #include "gup_test.h"
+>  
+>  static void put_back_pages(unsigned int cmd, struct page **pages,
+> -			   unsigned long nr_pages)
+> +			   unsigned long nr_pages, unsigned int gup_test_flags)
+>  {
+>  	unsigned long i;
+>  
+> @@ -23,6 +23,15 @@ static void put_back_pages(unsigned int cmd, struct page **pages,
+>  	case PIN_LONGTERM_BENCHMARK:
+>  		unpin_user_pages(pages, nr_pages);
+>  		break;
+> +	case DUMP_USER_PAGES_TEST:
+> +		if (gup_test_flags & GUP_TEST_FLAG_DUMP_PAGES_USE_PIN) {
+> +			unpin_user_pages(pages, nr_pages);
+> +		} else {
+> +			for (i = 0; i < nr_pages; i++)
+> +				put_page(pages[i]);
+> +
+> +		}
+> +		break;
+>  	}
+>  }
+>  
+> @@ -49,6 +58,37 @@ static void verify_dma_pinned(unsigned int cmd, struct page **pages,
+>  	}
+>  }
+>  
+> +static void dump_pages_test(struct gup_test *gup, struct page **pages,
+> +			    unsigned long nr_pages)
+> +{
+> +	unsigned int index_to_dump;
+> +	unsigned int i;
+> +
+> +	/*
+> +	 * Zero out any user-supplied page index that is out of range. Remember:
+> +	 * .which_pages[] contains a 1-based set of page indices.
+> +	 */
+> +	for (i = 0; i < GUP_TEST_MAX_PAGES_TO_DUMP; i++) {
+> +		if (gup->which_pages[i] > nr_pages) {
+> +			pr_warn("ZEROING due to out of range: .which_pages[%u]: %u\n",
+> +				i, gup->which_pages[i]);
+> +			gup->which_pages[i] = 0;
+> +		}
+> +	}
+> +
+> +	for (i = 0; i < GUP_TEST_MAX_PAGES_TO_DUMP; i++) {
+> +		index_to_dump = gup->which_pages[i];
+> +
+> +		if (index_to_dump) {
+> +			index_to_dump--; // Decode from 1-based, to 0-based
+> +			pr_info("---- page #%u, starting from user virt addr: 0x%llx\n",
+> +				index_to_dump, gup->addr);
+> +			dump_page(pages[index_to_dump],
+> +				  "gup_test: dump_pages() test");
+> +		}
+> +	}
+> +}
+> +
+>  static int __gup_test_ioctl(unsigned int cmd,
+>  		struct gup_test *gup)
+>  {
+> @@ -104,6 +144,14 @@ static int __gup_test_ioctl(unsigned int cmd,
+>  					    gup->flags | FOLL_LONGTERM,
+>  					    pages + i, NULL);
+>  			break;
+> +		case DUMP_USER_PAGES_TEST:
+> +			if (gup->flags & GUP_TEST_FLAG_DUMP_PAGES_USE_PIN)
+> +				nr = pin_user_pages(addr, nr, gup->flags,
+> +						    pages + i, NULL);
+> +			else
+> +				nr = get_user_pages(addr, nr, gup->flags,
+> +						    pages + i, NULL);
+> +			break;
+>  		default:
+>  			kvfree(pages);
+>  			ret = -EINVAL;
+> @@ -127,10 +175,11 @@ static int __gup_test_ioctl(unsigned int cmd,
+>  	 * state: print a warning if any non-dma-pinned pages are found:
+>  	 */
+>  	verify_dma_pinned(cmd, pages, nr_pages);
+> +	dump_pages_test(gup, pages, nr_pages);
+>  
+>  	start_time = ktime_get();
+>  
+> -	put_back_pages(cmd, pages, nr_pages);
+> +	put_back_pages(cmd, pages, nr_pages, gup->flags);
+>  
+>  	end_time = ktime_get();
+>  	gup->put_delta_usec = ktime_us_delta(end_time, start_time);
+> @@ -152,6 +201,7 @@ static long gup_test_ioctl(struct file *filep, unsigned int cmd,
+>  	case PIN_LONGTERM_BENCHMARK:
+>  	case GUP_BASIC_TEST:
+>  	case PIN_BASIC_TEST:
+> +	case DUMP_USER_PAGES_TEST:
+>  		break;
+>  	default:
+>  		return -EINVAL;
+> diff --git a/mm/gup_test.h b/mm/gup_test.h
+> index 921b4caad8ef..90a6713d50eb 100644
+> --- a/mm/gup_test.h
+> +++ b/mm/gup_test.h
+> @@ -9,6 +9,11 @@
+>  #define PIN_LONGTERM_BENCHMARK	_IOWR('g', 3, struct gup_test)
+>  #define GUP_BASIC_TEST		_IOWR('g', 4, struct gup_test)
+>  #define PIN_BASIC_TEST		_IOWR('g', 5, struct gup_test)
+> +#define DUMP_USER_PAGES_TEST	_IOWR('g', 6, struct gup_test)
+> +
+> +#define GUP_TEST_MAX_PAGES_TO_DUMP		8
+> +
+> +#define GUP_TEST_FLAG_DUMP_PAGES_USE_PIN	0x1
+>  
+>  struct gup_test {
+>  	__u64 get_delta_usec;
+> @@ -17,6 +22,11 @@ struct gup_test {
+>  	__u64 size;
+>  	__u32 nr_pages_per_call;
+>  	__u32 flags;
+> +	/*
+> +	 * Each non-zero entry is the number of the page (1-based: first page is
+> +	 * page 1, so that zero entries mean "do nothing") from the .addr base.
+> +	 */
+> +	__u32 which_pages[GUP_TEST_MAX_PAGES_TO_DUMP];
+>  };
+>  
+>  #endif	/* __GUP_TEST_H */
+> diff --git a/tools/testing/selftests/vm/gup_test.c b/tools/testing/selftests/vm/gup_test.c
+> index 67d57a1cc8b6..68137b337114 100644
+> --- a/tools/testing/selftests/vm/gup_test.c
+> +++ b/tools/testing/selftests/vm/gup_test.c
+> @@ -27,21 +27,23 @@ static char *cmd_to_str(unsigned long cmd)
+>  		return "GUP_BASIC_TEST";
+>  	case PIN_BASIC_TEST:
+>  		return "PIN_BASIC_TEST";
+> +	case DUMP_USER_PAGES_TEST:
+> +		return "DUMP_USER_PAGES_TEST";
+>  	}
+>  	return "Unknown command";
+>  }
+>  
+>  int main(int argc, char **argv)
+>  {
+> -	struct gup_test gup;
+> +	struct gup_test gup = { 0 };
+>  	unsigned long size = 128 * MB;
+>  	int i, fd, filed, opt, nr_pages = 1, thp = -1, repeats = 1, write = 0;
+> -	int cmd = GUP_FAST_BENCHMARK;
+> +	unsigned long cmd = GUP_FAST_BENCHMARK;
+>  	int flags = MAP_PRIVATE;
+>  	char *file = "/dev/zero";
+>  	char *p;
+>  
+> -	while ((opt = getopt(argc, argv, "m:r:n:f:abtTLUuwSH")) != -1) {
+> +	while ((opt = getopt(argc, argv, "m:r:n:F:f:abctTLUuwSH")) != -1) {
+>  		switch (opt) {
+>  		case 'a':
+>  			cmd = PIN_FAST_BENCHMARK;
+> @@ -52,6 +54,21 @@ int main(int argc, char **argv)
+>  		case 'L':
+>  			cmd = PIN_LONGTERM_BENCHMARK;
+>  			break;
+> +		case 'c':
+> +			cmd = DUMP_USER_PAGES_TEST;
+> +			/*
+> +			 * Dump page 0 (index 1). May be overridden later, by
+> +			 * user's non-option arguments.
+> +			 *
+> +			 * .which_pages is zero-based, so that zero can mean "do
+> +			 * nothing".
+> +			 */
+> +			gup.which_pages[0] = 1;
+> +			break;
+> +		case 'F':
+> +			/* strtol, so you can pass flags in hex form */
+> +			gup.flags = strtol(optarg, 0, 0);
+> +			break;
+>  		case 'm':
+>  			size = atoi(optarg) * MB;
+>  			break;
+> @@ -91,6 +108,30 @@ int main(int argc, char **argv)
+>  		}
+>  	}
+>  
+> +	if (optind < argc) {
+> +		int extra_arg_count = 0;
+> +		/*
+> +		 * For example:
+> +		 *
+> +		 *   ./gup_test -c 0 1 0x1001
+> +		 *
+> +		 * ...to dump pages 0, 1, and 4097
+> +		 */
+> +
+> +		while ((optind < argc) &&
+> +		       (extra_arg_count < GUP_TEST_MAX_PAGES_TO_DUMP)) {
+> +			/*
+> +			 * Do the 1-based indexing here, so that the user can
+> +			 * use normal 0-based indexing on the command line.
+> +			 */
+> +			long page_index = strtol(argv[optind], 0, 0) + 1;
+> +
+> +			gup.which_pages[extra_arg_count] = page_index;
+> +			extra_arg_count++;
+> +			optind++;
+> +		}
+> +	}
+> +
+>  	filed = open(file, O_RDWR|O_CREAT);
+>  	if (filed < 0) {
+>  		perror("open");
+> -- 
+> 2.28.0
+> 
+> 
