@@ -2,162 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E254527B46D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F2D27B46B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgI1S0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:26:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726500AbgI1S0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:26:09 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 88E23206C3;
-        Mon, 28 Sep 2020 18:26:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601317568;
-        bh=u3Ru8Fp5ZqhFBwNIXZAOccSRXU2X+Qr4X2uqL+hJr/U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B03u8dyNCfhxAIlvYxgJmoafLkMChsrV98Aao3vYaGNFG8KHfTnE6sNTcZbE3ym/b
-         Er4NWOpq1K4ZY4i7huD+aYeJ61Zy3Z6SLZPCkrjwcrWH0aT6pIP5ZDIaBtM1ErEr+Q
-         +t/obcQz90G7jfpNwCksmWsI4HkHME2Vv6dKDlZw=
-Date:   Mon, 28 Sep 2020 19:26:02 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Raphael Gault <raphael.gault@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ian Rogers <irogers@google.com>, honnappa.nagarahalli@arm.com
-Subject: Re: [PATCH v3 01/10] arm64: pmu: Add hook to handle pmu-related
- undefined instructions
-Message-ID: <20200928182601.GA11974@willie-the-truck>
-References: <20200911215118.2887710-1-robh@kernel.org>
- <20200911215118.2887710-2-robh@kernel.org>
+        id S1726615AbgI1S0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:26:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726500AbgI1S0F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 14:26:05 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BFDAC0613CF
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 11:26:04 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id i1so2601537edv.2
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 11:26:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=TfPKxyw5a1PAEzMCx92gy5qeOP9PIfg38x5vIw4FqCc=;
+        b=VEGIOy4J4hxnebcx7q/gSDH9xV3y/3q5aNnqHiHtmMlZt6JqpzbRCRrTJShM2mKbcP
+         ykZonJNvnFrMSHbfbN9Cwlm+j4hfxpQX6lcc3tN9v4+h2bCw/7fO93r9EVTzirQR3nXY
+         VXzSXF+2bYITZpfS+5zGrt5ZxepC/C2hQSEVyuktA+tzfxJLajVUxG1PCJCreJ7VAFT4
+         jBk9Of3qz0pIcJ0+mAFuoQ5HadU3z1rMwQOOg15fRFjLrxWQNyZ/FRjmPwL9TnSAk7oU
+         +Lh+jsleO71AI1YRRLF0h1xQKlOd+x7T9CsLotZG9IB2uXmhz7MxZYUKPDxshxvL/wUc
+         Mcrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=TfPKxyw5a1PAEzMCx92gy5qeOP9PIfg38x5vIw4FqCc=;
+        b=nfXJAj1FVONXK82eW7yipXdyKOEh/rj1WQsMckzIGRx+BlijSvq5e40kEkCMDcIS8i
+         cHv2LKifOIeNEIGT+D/n6ZsvFFFQxeQFwiAPLPDteApNyOa8i+3+1+6ZVRraNUXN7dLV
+         qN+BXOZQzLYqo71vtSAJ0c/Elsnyu3gpb20XoND958q7Vx469TKCSBeVAj7YE6tw332c
+         OTf98Wf7rHhSyPX2sDS87PntjBkWs2zVjp7ikK4VOM8qczX2pVexWpSL9dU/o8hOsxF6
+         B21F7We4MWWBKQpmbQl2wmb8aLKwswp10ZylvDsXDtnAqA1u0VNUZ5XOG965O6uwNNqR
+         Poog==
+X-Gm-Message-State: AOAM530VtMYrQwGJYuYH/AaI+xfGWKCiUEDuRY3zRfep06EH9JgdFefA
+        0mTE49H3ou++nAj4OzDh5KA+529vqhiiNvVTWp8=
+X-Google-Smtp-Source: ABdhPJxAVgn1gcWgxzMG8Hsn959zgmFmK3EJvMllupmpFL7/IuBGAE+jFUn0KhUTDVz+L6OfTA4BPNUaJeWoO/FG83U=
+X-Received: by 2002:a50:a694:: with SMTP id e20mr3227269edc.114.1601317563531;
+ Mon, 28 Sep 2020 11:26:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200911215118.2887710-2-robh@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Received: by 2002:a17:907:408d:0:0:0:0 with HTTP; Mon, 28 Sep 2020 11:26:03
+ -0700 (PDT)
+Reply-To: maab1@yahoo.com
+From:   XXXXXXXXXX 95758756658505 <barristeruchec@gmail.com>
+Date:   Mon, 28 Sep 2020 20:26:03 +0200
+Message-ID: <CAGwxU1K-VWz0PGrU11i2sQCVBM-QbgY9OqRU3KwN8nhO=jNFmQ@mail.gmail.com>
+Subject: THANK YOU
+To:     barristeruchec@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 11, 2020 at 03:51:09PM -0600, Rob Herring wrote:
-> From: Raphael Gault <raphael.gault@arm.com>
-> 
-> This patch introduces a protection for the userspace processes which are
-> trying to access the registers from the pmu registers on a big.LITTLE
-> environment. It introduces a hook to handle undefined instructions.
-> 
-> The goal here is to prevent the process to be interrupted by a signal
-> when the error is caused by the task being scheduled while accessing
-> a counter, causing the counter access to be invalid. As we are not able
-> to know efficiently the number of counters available physically on both
-> pmu in that context we consider that any faulting access to a counter
-> which is architecturally correct should not cause a SIGILL signal if
-> the permissions are set accordingly.
-> 
-> This commit also modifies the mask of the mrs_hook declared in
-> arch/arm64/kernel/cpufeatures.c which emulates only feature register
-> access. This is necessary because this hook's mask was too large and
-> thus masking any mrs instruction, even if not related to the emulated
-> registers which made the pmu emulation inefficient.
-> 
-> Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> v2:
->  - Fix warning for set but unused sys_reg
-> ---
->  arch/arm64/kernel/cpufeature.c |  4 +--
->  arch/arm64/kernel/perf_event.c | 54 ++++++++++++++++++++++++++++++++++
->  2 files changed, 56 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-> index a389b999482e..00bf53ffd9b0 100644
-> --- a/arch/arm64/kernel/cpufeature.c
-> +++ b/arch/arm64/kernel/cpufeature.c
-> @@ -2811,8 +2811,8 @@ static int emulate_mrs(struct pt_regs *regs, u32 insn)
->  }
->  
->  static struct undef_hook mrs_hook = {
-> -	.instr_mask = 0xfff00000,
-> -	.instr_val  = 0xd5300000,
-> +	.instr_mask = 0xffff0000,
-> +	.instr_val  = 0xd5380000,
->  	.pstate_mask = PSR_AA32_MODE_MASK,
->  	.pstate_val = PSR_MODE_EL0t,
->  	.fn = emulate_mrs,
-> diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
-> index 462f9a9cc44b..70538ae684da 100644
-> --- a/arch/arm64/kernel/perf_event.c
-> +++ b/arch/arm64/kernel/perf_event.c
-> @@ -8,9 +8,11 @@
->   * This code is based heavily on the ARMv7 perf event code.
->   */
->  
-> +#include <asm/cpu.h>
->  #include <asm/irq_regs.h>
->  #include <asm/perf_event.h>
->  #include <asm/sysreg.h>
-> +#include <asm/traps.h>
->  #include <asm/virt.h>
->  
->  #include <clocksource/arm_arch_timer.h>
-> @@ -1016,6 +1018,58 @@ static int armv8pmu_probe_pmu(struct arm_pmu *cpu_pmu)
->  	return probe.present ? 0 : -ENODEV;
->  }
->  
-> +static int emulate_pmu(struct pt_regs *regs, u32 insn)
-> +{
-> +	u32 rt;
-> +	u32 pmuserenr;
-> +
-> +	rt = aarch64_insn_decode_register(AARCH64_INSN_REGTYPE_RT, insn);
-> +	pmuserenr = read_sysreg(pmuserenr_el0);
-> +
-> +	if ((pmuserenr & (ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR)) !=
-> +	    (ARMV8_PMU_USERENR_ER|ARMV8_PMU_USERENR_CR))
-> +		return -EINVAL;
-> +
-> +
-> +	/*
-> +	 * Userspace is expected to only use this in the context of the scheme
-> +	 * described in the struct perf_event_mmap_page comments.
-> +	 *
-> +	 * Given that context, we can only get here if we got migrated between
-> +	 * getting the register index and doing the MSR read.  This in turn
-> +	 * implies we'll fail the sequence and retry, so any value returned is
-> +	 * 'good', all we need is to be non-fatal.
-> +	 *
-> +	 * The choice of the value 0 is comming from the fact that when
-> +	 * accessing a register which is not counting events but is accessible,
-> +	 * we get 0.
-> +	 */
-> +	pt_regs_write_reg(regs, rt, 0);
+From Harvey Terence (Mr.)
 
-Hmm... this feels pretty fragile since, although we may expect userspace only
-to trigger this in the context of the specific perf use-case, we don't have
-a way to detect that, so the ABI we're exposing is that EL0 accesses to
-non-existent counters will return 0. I don't really think that's something
-we want to commit to.
+25 Canada Square, Canary Wharf, London E14 5LB,
 
-When restartable sequences were added to the kernel, one of the proposed
-use-cases was to allow PMU access on big/little systems, because the
-sequence will abort on preemption. Taking that approach removes the need
-for this emulation hook entirely. Is that something we can rely on instead
-of this emulation hook?
+Good day
 
-Cheers,
+I am Mr. Harvey Terence, Operating Officer of this bank. I am assuring
+you that with your honest assistance and joint effort we can complete
+this life time transaction within 7/14 working days.
 
-Will
+I need a reliable and honest person who will be able to handle this
+business opportunity with me because of the need to involve a
+foreigner. I am contacting you because of such demand, and I believe
+you will work with me to achieve this purpose and will never turn down
+my request.
+
+Before the United States of America and Iraqi war, our bank customer
+Mr.Hatem Kamil Abdul Fatah, who was the deputy governor of Baghdad in
+Iraq and also a business man made a deposit of (GBP10,750,000.00) Ten
+Million, Seven Hundred And Fifty Thousand
+Pounds Sterling Only in a Bank account number: ABP-LN-685
+00/52207712321 over here in our bank.
+
+But I later discovered that the Deputy Governor has been assassinated
+in Baghdad by unknown gun men.
+
+Below is the information about his death as a proof and verification
+of his assassination In Baghdad:
+http://news.bbc.co.uk/go/pr/fr/-/1/hi/world/middle_east/3970619.stm
+
+During my further investigation after hearing of his assassination in
+Baghdad, I also discovered that Mr.Hatem Kamil Abdul Fatah did not
+declare any next of kin in his official papers including the paper
+work of his funds with our bank which might be because he embezzled
+this funds while in office and was afraid of revealing his political
+dignity when opening the above account number in our bank until his
+dead.
+
+My aim of contacting you is to assist me to receive this money in your
+bank account over there in your country and let me know how much
+commission you will receive out of the total fund when transferred
+into your oversea bank account?.
+
+You will diligently transfer the balance to me through another bank
+account number from another bank I will forward to you as soon as the
+fund is transferred into your over sea account after deducting your
+commission from the whole sum or I will come over to your country to
+meet with you one on one for sharing of the fund or shall invested the
+fund into any lucrative business out there in your country together..
+
+We are going to process and perfect the transaction legally as bank to
+bank procedure has been put in place.
+
+I need your urgent reply through my private E-mail address at:
+maab1@yahoo.com if you are interested to work with me.
+
+I provide more details on how to process the approval of the fund in
+your name to be release for instant bank to bank wire transfer into
+any designated bank account of your choice without delay.
+
+Please keep this transaction safe and confidential as exposing this
+transaction will jeopardize my reputation in this Bank.
+
+I would like to hear from you in no distant time as soon as you read
+this mail through the above stated E-mail address so that we can
+proceed accordingly.
+
+Best Regards,
+
+Mr. Harvey Terence
