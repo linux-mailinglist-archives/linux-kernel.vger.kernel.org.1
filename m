@@ -2,132 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41ABB27B854
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2FB27B874
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbgI1Xib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:38:31 -0400
-Received: from esa2.hc3370-68.iphmx.com ([216.71.145.153]:17899 "EHLO
-        esa2.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725272AbgI1Xia (ORCPT
+        id S1726973AbgI1Xu4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:50:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726891AbgI1Xu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:38:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1601336310;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=0LzZbRFl/CyU9nd3qjv74lv4REKcZF26xakkDStIRxg=;
-  b=cSPZKswN/TBYpB4qIRrlCWlbmE1qtC9umR0IKGwM2tMiMlLNPgRXzd+p
-   WKDwNvBnpNqMtuL47qCRJtT9ymKobIyTFxAN1PCcuoIaTY9kYS4GsKTp3
-   tAJqSX69HKPWKIcObo6PhzTnGQjv8t3oyCvDFFpMtkatAAiFiRbs4Hfsz
-   8=;
-Authentication-Results: esa2.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: e+CimQ0poSeBPYJpvoJ5c8XZ5T4rkFR0OV3pAgxkdjnmShDp5A6Y4yHlKdIuJ0RgL1KiinY5dS
- uTw0GBAvPRmNgTd7hS0FZu9XD5XCZztSImN2q4kvAhcscjnQkrC1Ex4yJkYkxLFwf854o+Xznk
- sXUGmRZPvNqaA2D/oE9Hi7xnfteWZv3iKwX5/N+MPGi4f5maTc7Rvv/2OJK/OwWj2M9IZn8jRV
- cdJpUQpfQPGHxbKxkSYVx++qensJMeKDAqsmeKFVk80+tlSwdUAfVPh/kD4ZvL0RfCRLEkenTi
- FvY=
-X-SBRS: None
-X-MesageID: 27814137
-X-Ironport-Server: esa2.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,315,1596513600"; 
-   d="scan'208";a="27814137"
-Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-To:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-CC:     "H.J. Lu" <hjl.tools@gmail.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        <linux-sgx@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        <asapek@google.com>, Borislav Petkov <bp@alien8.de>,
-        <chenalexchen@google.com>, Conrad Parker <conradparker@google.com>,
-        <cyhanish@google.com>, "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        "Patrick Uiterwijk" <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, <yaozhangx@google.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
- <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
- <20200928005842.GC6704@linux.intel.com>
- <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
- <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
- <CALCETrU4Rhc0fwzzKLSUgan2YmSovxVFYOZEmFnBHC4DbZ5RfQ@mail.gmail.com>
- <20200928215635.GF2705@linux.intel.com>
- <CAMe9rOoyxtf_kUCdb-TN+NmZsQNmFY8NLMObSdCB5bBVq1x+cQ@mail.gmail.com>
- <24b9f250-0f75-1a7d-688d-787ca53b388c@intel.com>
- <CALCETrViotikw5HcDnvuY8nm28bAcdMQjcVs88kXVf8sjb0C_w@mail.gmail.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <761f457d-bbb0-4b8f-e472-6705bc1d3cd1@citrix.com>
-Date:   Tue, 29 Sep 2020 00:38:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 28 Sep 2020 19:50:56 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F343C0613D3
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:50:54 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id l126so2738058pfd.5
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:50:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=PCAUgmN81IcYAHnWNhW9isLm7rbDzjVGyanWkN6tKwA=;
+        b=a3QFXOgMPz3RSiSDW47BSACzZ+lN+UDtHLgnGyi0Wz7PMmdNYaJpkYj6lhZU59Kqr9
+         bZAn6moKqH/16Z2IjS4blzsuDT1bj+fTcnw2D2pLVimX/85VaK0/DUKZe5iixrWpSJcv
+         n9czm3J4mpWUTcX7yUTXPm7wv8P/5++lyUF1rxOD/EHiIQRNSiF70LElCuT5VatFsJ/g
+         QvhT9KMYQ/wBA6Nv3yA6PNRxd6YgxJzdpLxZrbzC6OQJHEcrY1YFv5b2B2VML9XK44eA
+         8Odmukrz0Nnu5PPj9mXykyfNlQCO6BaKvZADoyXP3+7Y4N4tJTGtbyrEHzAhiJp83EFg
+         v2HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PCAUgmN81IcYAHnWNhW9isLm7rbDzjVGyanWkN6tKwA=;
+        b=SeALMS2edoB5pWiBkaIbiSyW5HjjtOrh+5RWFYqeUioLr8zmDRIMmwzXScpphVGLPs
+         NyYZUw+7G+k39tmqhtvX90zazwYaSKv9RKMPKwkXUJUYR40hMnAp/2U3L95S7pDHlB+M
+         mU/v8wx5Y0C+oxKEkGAP1qwO7eEUXI8nlDVWBzfGuCXsloRXl9uCTebCcRfm+iiqMOu7
+         YAWSjW7jPm8NsCz9Kx7rmKr4ZeMTxLLI6inu3Nm0t44bIsGC7Rl5WvD2QY5vKYdyFnD6
+         KPFTD4NV6bcLpSTuK59DwetsmOD/syh9bdnsApxC+qCSp6bBlv351dFpqsp2U2HJM1Tc
+         5o8w==
+X-Gm-Message-State: AOAM530dMd7Nl2t11Qck1dGVdtk/SqsW1h1lbcZkMAvXW8L7BYIb4AIi
+        M6HGSiP9wTsJmicgzDNpQDo=
+X-Google-Smtp-Source: ABdhPJwXzc51MZz1CeTs+djanje5iH0/4kmI+KmxFurjdIf4ShczmfC1Fe92b9wOEEEd2ppFENX6mA==
+X-Received: by 2002:a17:902:c14c:b029:d2:4345:5a9 with SMTP id 12-20020a170902c14cb02900d2434505a9mr1734375plj.0.1601337053781;
+        Mon, 28 Sep 2020 16:50:53 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id w195sm2938435pff.74.2020.09.28.16.50.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 16:50:52 -0700 (PDT)
+Date:   Tue, 29 Sep 2020 08:50:52 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        pmladek@suse.com, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        bsegall@google.com, mgorman@suse.de, songmuchun@bytedance.com,
+        john.ogness@linutronix.de
+Subject: Re: [External] Re: [PATCH 2/2] sched: mark
+ PRINTK_DEFERRED_CONTEXT_MASK in __schedule()
+Message-ID: <20200928235052.GB871730@jagdpanzerIV.localdomain>
+References: <20200927161130.33172-1-zhouchengming@bytedance.com>
+ <20200927161130.33172-2-zhouchengming@bytedance.com>
+ <20200928073202.GA2611@hirez.programming.kicks-ass.net>
+ <40ab934e-5b8b-735b-da65-3043efab9fdc@bytedance.com>
+ <20200928090143.GA2628@hirez.programming.kicks-ass.net>
+ <688eadd7-4ca3-3e32-3520-25977ff059a6@bytedance.com>
+ <20200928102559.GF2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CALCETrViotikw5HcDnvuY8nm28bAcdMQjcVs88kXVf8sjb0C_w@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL05.citrite.net (10.13.108.178)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200928102559.GF2611@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2020 23:41, Andy Lutomirski wrote:
-> On Mon, Sep 28, 2020 at 3:18 PM Dave Hansen <dave.hansen@intel.com> wrote:
->> On 9/28/20 3:06 PM, H.J. Lu wrote:
->>>> I'm open to do either solution. My thinking was to initially do things
->>>> vsgx.S local (i.e. consider ALTERNATIVE post upstreaming) and use the
->>>> above solution but I'm also fine doing ALTERNATIVE. Dave kindly briefed
->>>> on details how that thing works and it should be perfectly usable for
->>>> our use case.
->>>>
->>> Since SHSTK and IBT are enabled per process, not the whole machine,
->>> are you going to patch vDSO on a per-process basis?
->> No.
->>
->> Retpolines mitigate Spectre v2 attacks.  If you're not vulnerable to
->> Spectre v2, you don't need retpolines.
->>
->> All processors which support CET *also* have hardware mitigations
->> against Spectre v2 and don't need retpolines.  Here's all of the
->> possibilities:
->>
->> CET=y, BUG_SPECTRE_V2=y: does not exist
->> CET=n, BUG_SPECTRE_V2=y: vulnerable, use retpoline
->> CET=y, BUG_SPECTRE_V2=n: no retpoline, not vulnerable
->> CET=n, BUG_SPECTRE_V2=n: no retpoline, not vulnerable
-> Just to confirm: does this mean that the CPU mitigates against user
-> code mistraining the branch predictors for CPL0?
+On (20/09/28 12:25), Peter Zijlstra wrote:
+[..]
+> > printk
+> >   vprintk_emit
+> >     console_unlock
+> >       vt_console_print
+> >         hide_cursor
+> >           bit_cursor
+> >             soft_cursor
+> >               queue_work_on
+> >                 __queue_work
+> >                   try_to_wake_up
+> >                     _raw_spin_lock
+> >                       native_queued_spin_lock_slowpath
+> > 
+> > Looks like it's introduced by this commit:
+> > 
+> > eaa434defaca1781fb2932c685289b610aeb8b4b
+> > 
+> > "drm/fb-helper: Add fb_deferred_io support"
+> 
+> Oh gawd, yeah, all the !serial consoles are utter batshit.
+> 
+> Please look at John's last printk rewrite, IIRC it farms all that off to
+> a kernel thread instead of doing it from the printk() caller's context.
 
-If (and only if) you have eIBRS enabled.
+Not yet. Scheduler is still part of the printk() - either in the
+form of !serial consoles or console_sem, or both.
 
-eIBRS should be available on all CET-capable hardware, and Linux ought
-to use it by default.
-
-> Because this is the
-> vDSO, and the situation we're actually concerned about is user code
-> mistraining its own branch predictors.  This could happen
-> cross-process or within the same process.
-
-There is nothing (in Intel parts) which prevents mode same-mode training
-of indirect branches, either in user or kernel space.
-
-However, an IBPB on context switch should prevent cross-process trailing
-attacks.
-
-~Andrew
+	-ss
