@@ -2,81 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8294827AD75
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:05:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E60427AD79
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgI1MFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726565AbgI1MFM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:05:12 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75610C061755;
-        Mon, 28 Sep 2020 05:05:12 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f072200e7db2dcfbd154ae2.dip0.t-ipconnect.de [IPv6:2003:ec:2f07:2200:e7db:2dcf:bd15:4ae2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E32D41EC0299;
-        Mon, 28 Sep 2020 14:05:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1601294710;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=44nAg9CdaxdFx7/RfjaA6M4aP2DlupCxNU/SRzXgphU=;
-        b=pIs6DGm6aKFUzC7aC4QQBTgP7xfvVRCi7ALKiflT6HG69Xv+j+vJEfSovaqiCL2mXkx9qh
-        6iSCNYE1+fW7S9DMEaJtEpSuyIy7yOqsHnADz1iDp69TUIGG68rjGXaRZ7uQkWuuKJIDhf
-        3jcoAx1N9TzosGqThGX5HyWrlAwcsxI=
-Date:   Mon, 28 Sep 2020 14:05:00 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     mchehab@kernel.org, tony.luck@intel.com, james.morse@arm.com,
-        rric@kernel.org, gregkh@linuxfoundation.org, keescook@chromium.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/11] drivers/edac: convert pci counters to
- counter_atomic32
-Message-ID: <20200928120500.GA8151@zn.tnic>
-References: <cover.1601073127.git.skhan@linuxfoundation.org>
- <f69320551ff9526b648dd587d15f433c84c13ca3.1601073127.git.skhan@linuxfoundation.org>
+        id S1726406AbgI1MFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:05:48 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:50624 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725290AbgI1MFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:05:47 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 261F75B7C094076B8000;
+        Mon, 28 Sep 2020 20:05:45 +0800 (CST)
+Received: from [10.57.101.250] (10.57.101.250) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 28 Sep 2020 20:05:38 +0800
+Subject: Re: [PATCH v3 03/21] dt-bindings: arm: hisilicon: convert Hisilicon
+ board/soc bindings to json-schema
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200927062129.4573-1-thunder.leizhen@huawei.com>
+ <20200927062129.4573-4-thunder.leizhen@huawei.com>
+CC:     Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+From:   Wei Xu <xuwei5@hisilicon.com>
+Message-ID: <5F71D192.8070105@hisilicon.com>
+Date:   Mon, 28 Sep 2020 20:05:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f69320551ff9526b648dd587d15f433c84c13ca3.1601073127.git.skhan@linuxfoundation.org>
+In-Reply-To: <20200927062129.4573-4-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.57.101.250]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 05:47:25PM -0600, Shuah Khan wrote:
-> counter_atomic* is introduced to be used when a variable is used as
-> a simple counter and doesn't guard object lifetimes. This clearly
-> differentiates atomic_t usages that guard object lifetimes.
+Hi Zhen Lei,
+
+Thanks!
+
+On 2020/9/27 14:21, Zhen Lei wrote:
+> Convert Hisilicon SoC bindings to DT schema format using json-schema.
 > 
-> counter_atomic* variables will wrap around to 0 when it overflows and
-> should not be used to guard resource lifetimes, device usage and
-> open counts that control state changes, and pm states.
-> 
-> atomic_t variables used for pci counters keep track of pci parity and
-> non-parity errors. Convert them to use counter_atomic32.
-> 
-> Overflow will wrap around and reset the counts as was the case prior to
-> the conversion.
-> 
-> Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 > ---
->  drivers/edac/edac_pci.h       |  5 +++--
->  drivers/edac/edac_pci_sysfs.c | 28 ++++++++++++++--------------
->  2 files changed, 17 insertions(+), 16 deletions(-)
+>  .../bindings/arm/hisilicon/hisilicon.txt           | 57 ----------------
+>  .../bindings/arm/hisilicon/hisilicon.yaml          | 77 ++++++++++++++++++++++
+>  2 files changed, 77 insertions(+), 57 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+> deleted file mode 100644
+> index f7e52476f5f2f3c..000000000000000
+> --- a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.txt
+> +++ /dev/null
+> @@ -1,57 +0,0 @@
+> -Hisilicon Platforms Device Tree Bindings
+> -----------------------------------------------------
+> -Hi3660 SoC
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi3660";
+> -
+> -HiKey960 Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi3660-hikey960", "hisilicon,hi3660";
+> -
+> -Hi3670 SoC
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi3670";
+> -
+> -HiKey970 Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi3670-hikey970", "hisilicon,hi3670";
+> -
+> -Hi3798cv200 SoC
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi3798cv200";
+> -
+> -Hi3798cv200 Poplar Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi3798cv200-poplar", "hisilicon,hi3798cv200";
+> -
+> -Hi4511 Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi3620-hi4511";
+> -
+> -Hi6220 SoC
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi6220";
+> -
+> -HiKey Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hi6220-hikey", "hisilicon,hi6220";
+> -
+> -HiP01 ca9x2 Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hip01-ca9x2";
+> -
+> -HiP04 D01 Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hip04-d01";
+> -
+> -HiP05 D02 Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hip05-d02";
+> -
+> -HiP06 D03 Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hip06-d03";
+> -
+> -HiP07 D05 Board
+> -Required root node properties:
+> -	- compatible = "hisilicon,hip07-d05";
+> \ No newline at end of file
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+> new file mode 100644
+> index 000000000000000..362decf3b85c6fb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/hisilicon.yaml
+> @@ -0,0 +1,77 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/hisilicon/hisilicon.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hisilicon Platforms Device Tree Bindings
+> +
+> +maintainers:
+> +  - Wei Xu <xuwei5@hisilicon.com>
+> +
+> +properties:
+> +  $nodename:
+> +    const: '/'
+> +
+> +  compatible:
+> +    oneOf:
+> +      - description: Hi3660 SoC
+> +        items:
+> +          - const: hisilicon,hi3660
+> +
+> +      - description: HiKey960 Board
+> +        items:
+> +          - const: hisilicon,hi3660-hikey960
+> +          - const: hisilicon,hi3660
 
-The patches I was Cced - this one and the apei one, look ok to me.
+How about to use the boards with SoC to reduce some duplication like following?
 
-Acked-by: Borislav Petkov <bp@suse.de>
+         - description: Boards with the Hisilicon hi3660 SoC
+           items:
+             - enum:
+                 - hisilicon,hi3660-hikey960
+             - const: hisilicon,hi3660
 
-Thx.
+And in this case, there is no need to remove the "hisilicon,hip01" as the first patch.
 
--- 
-Regards/Gruss,
-    Boris.
+Best Regards,
+Wei
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> +
+> +      - description: Hi3670 SoC
+> +        items:
+> +          - const: hisilicon,hi3670
+> +
+> +      - description: HiKey970 Board
+> +        items:
+> +          - const: hisilicon,hi3670-hikey970
+> +          - const: hisilicon,hi3670
+> +
+> +      - description: Hi3798cv200 SoC
+> +        items:
+> +          - const: hisilicon,hi3798cv200
+> +
+> +      - description: Hi3798cv200 Poplar Board
+> +        items:
+> +          - const: hisilicon,hi3798cv200-poplar
+> +          - const: hisilicon,hi3798cv200
+> +
+> +      - description: Hi4511 Board
+> +        items:
+> +          - const: hisilicon,hi3620-hi4511
+> +
+> +      - description: Hi6220 SoC
+> +        items:
+> +          - const: hisilicon,hi6220
+> +
+> +      - description: HiKey Board
+> +        items:
+> +          - const: hisilicon,hi6220-hikey
+> +          - const: hisilicon,hi6220
+> +
+> +      - description: HiP01 ca9x2 Board
+> +        items:
+> +          - const: hisilicon,hip01-ca9x2
+> +
+> +      - description: HiP04 D01 Board
+> +        items:
+> +          - const: hisilicon,hip04-d01
+> +
+> +      - description: HiP05 D02 Board
+> +        items:
+> +          - const: hisilicon,hip05-d02
+> +
+> +      - description: HiP06 D03 Board
+> +        items:
+> +          - const: hisilicon,hip06-d03
+> +
+> +      - description: HiP07 D05 Board
+> +        items:
+> +          - const: hisilicon,hip07-d05
+> +...
+> 	
