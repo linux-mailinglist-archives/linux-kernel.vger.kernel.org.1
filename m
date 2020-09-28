@@ -2,259 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A9C27B1D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5112327B1DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726665AbgI1Q0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:26:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41558 "EHLO mail.kernel.org"
+        id S1726686AbgI1Q2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:28:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726460AbgI1Q0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:26:49 -0400
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        id S1726327AbgI1Q2m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:28:42 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94E672080C;
-        Mon, 28 Sep 2020 16:26:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 765CC2184D
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 16:28:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601310407;
-        bh=RZgZEQZ2Y+Q2uBAmtWLw8oR3zIwNMMFQeQqDf6MO+CQ=;
+        s=default; t=1601310521;
+        bh=Eo8YEjouCJzF1yYSbOTSLRi6+NRp9wrcB5MtIkA8TCw=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EoXt0PxPIkqfcr/hV8zE/p4GT6blLlRf/8EVkcBtndrb1Fv35GCIh2/vCuEM/3mWb
-         EJy0/idFE5PhTHw5FqYvg9Lko0Ms1OY/uXWq9P/RPo1KfbYmP7TC1MyL1SBqBo8tli
-         JXOIGza3yDiqafp8CZE5B1tMuI21u4NiidPWtZfA=
-Received: by mail-oo1-f41.google.com with SMTP id c4so466286oou.6;
-        Mon, 28 Sep 2020 09:26:47 -0700 (PDT)
-X-Gm-Message-State: AOAM530MNJwGrJp4DFWsfGU1d3SgYikG2ETWwJLBGRoBRvODjN/quDe4
-        G7JtZNQJhF/025rgNyZ3wzL4rdVyqSRawPt5tsY=
-X-Google-Smtp-Source: ABdhPJz8iTx6GdTrAJzVLHUCd9Gh2xki+ua5kbiJB0Y44VztM4RTsJ2imoqlKfoSYPsjWddjJfVEdeQFydQBy8tRfrE=
-X-Received: by 2002:a4a:c541:: with SMTP id j1mr1419071ooq.13.1601310406886;
- Mon, 28 Sep 2020 09:26:46 -0700 (PDT)
+        b=AZ+elSJNS7jNx/5uNGRT4xca53om5Iz5t8ceN1+UDaeEUAm4QfDKNhZ51HYVQP7Tg
+         duTODn7ql0pu+rSaIDfQbNE5uwyTEi088CU/pYJZr8/IhYzJvQBL/0bjkHQ7DXtTCZ
+         brvEBHgLw9nKzZsnyKaJiyuTuYJinZhd3qfKGfY4=
+Received: by mail-oi1-f171.google.com with SMTP id c13so1964902oiy.6
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:28:41 -0700 (PDT)
+X-Gm-Message-State: AOAM531Cw4jCzh/kVhHBswWf9s8uqSr5Fca1rDerQA+gAcbmF7f0MIR2
+        s+t5jzFF9IKHUCK90CPETO21ZG6sxt2p0sVMOg==
+X-Google-Smtp-Source: ABdhPJxa2uMVpJWBoZg+SM+FBl4RJ9Um0uaAT5ECCXoQfXhOVrkAi/EDHDmDLmJOKu0hkbNfgXZBlR2mU8AeruFF828=
+X-Received: by 2002:aca:fc07:: with SMTP id a7mr1401247oii.106.1601310520677;
+ Mon, 28 Sep 2020 09:28:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
- <20200928140623.GA69515@linux.intel.com> <BB63B86E-CA44-4EB7-A5D1-21B0E9EB2850@canonical.com>
- <20200928155215.GA92669@linux.intel.com> <CAMj1kXF-hOTZ62_Tf_GAN9_w7ztngdVp_atNrowH5Y0SwSjCAw@mail.gmail.com>
-In-Reply-To: <CAMj1kXF-hOTZ62_Tf_GAN9_w7ztngdVp_atNrowH5Y0SwSjCAw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 28 Sep 2020 18:26:35 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGJzYeSrqUG4KkU6WMwNzM55CWFRNVStFn3CpQJyLwW4w@mail.gmail.com>
-Message-ID: <CAMj1kXGJzYeSrqUG4KkU6WMwNzM55CWFRNVStFn3CpQJyLwW4w@mail.gmail.com>
-Subject: Re: [Regression] "tpm: Require that all digests are present in
- TCG_PCR_EVENT2 structures" causes null pointer dereference
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "Kenneth R. Crudup" <kenny@panix.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Matthew Garrett <mjg59@google.com>, tweek@google.com
+References: <1601274460-7866-1-git-send-email-kevin3.tang@gmail.com>
+ <1601274460-7866-2-git-send-email-kevin3.tang@gmail.com> <20200928081726.hkh3rzbfr6m7jszt@gilmour.lan>
+In-Reply-To: <20200928081726.hkh3rzbfr6m7jszt@gilmour.lan>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 28 Sep 2020 11:28:29 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLUT9gBiVgSdcHM86vNLR_1MxEZ+x9MDBaFGdv2j9EtvA@mail.gmail.com>
+Message-ID: <CAL_JsqLUT9gBiVgSdcHM86vNLR_1MxEZ+x9MDBaFGdv2j9EtvA@mail.gmail.com>
+Subject: Re: [PATCH RFC v7 1/6] dt-bindings: display: add Unisoc's drm master bindings
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Kevin Tang <kevin3.tang@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Lyra Zhang <zhang.lyra@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 at 18:15, Ard Biesheuvel <ardb@kernel.org> wrote:
+On Mon, Sep 28, 2020 at 3:17 AM Maxime Ripard <maxime@cerno.tech> wrote:
 >
-> On Mon, 28 Sep 2020 at 17:52, Jarkko Sakkinen
-> <jarkko.sakkinen@linux.intel.com> wrote:
-> >
-> > On Mon, Sep 28, 2020 at 10:16:07PM +0800, Kai-Heng Feng wrote:
-> > > Hi Jarkko,
-> > >
-> > > > On Sep 28, 2020, at 22:06, Jarkko Sakkinen <jarkko.sakkinen@linux.i=
-ntel.com> wrote:
-> > > >
-> > > > On Mon, Sep 28, 2020 at 08:31:04PM +0800, Kai-Heng Feng wrote:
-> > > >> Commit 7f3d176f5f7e "tpm: Require that all digests are present in
-> > > >> TCG_PCR_EVENT2 structures" causes a null pointer dereference on al=
-l
-> > > >> laptops I have:
-> > > >
-> > > > ...
-> > > >
-> > > >> [   17.868849] BUG: kernel NULL pointer dereference, address: 0000=
-00000000002c
-> > > >> [   17.868852] #PF: supervisor read access in kernel mode
-> > > >> [   17.868854] #PF: error_code(0x0000) - not-present page
-> > > >> [   17.868855] PGD 0 P4D 0
-> > > >> [   17.868858] Oops: 0000 [#1] SMP PTI
-> > > >> [   17.868860] CPU: 0 PID: 1873 Comm: fwupd Not tainted 5.8.0-rc6+=
- #25
-> > > >> [   17.868861] Hardware name: LENOVO 20LAZ3TXCN/20LAZ3TXCN, BIOS N=
-27ET38W (1.24 ) 11/28/2019
-> > > >> [   17.868866] RIP: 0010:tpm2_bios_measurements_start+0x38/0x1f0
-> > > >> [   17.868868] Code: 55 41 54 53 48 83 ec 30 4c 8b 16 65 48 8b 04 =
-25 28 00 00 00 48 89 45 d0 48 8b 47 70 4c 8b a0 d0 06 00 00 48 8b 88 d8 06 =
-00 00 <41> 8b 5c 24 1c 48 89 4d b0 48 89 d8 48 83 c3 20 4d 85 d2 75 31 4c
-> > > >> [   17.868869] RSP: 0018:ffff9da500a9fde0 EFLAGS: 00010282
-> > > >> [   17.868871] RAX: ffff917d03dc4000 RBX: 0000000000000000 RCX: 00=
-00000000000010
-> > > >> [   17.868872] RDX: 0000000000001000 RSI: ffff917c99b19460 RDI: ff=
-ff917c99b19438
-> > > >> [   17.868873] RBP: ffff9da500a9fe38 R08: ffffbda4ffa33fc0 R09: ff=
-ff917cbfeae4c0
-> > > >> [   17.868874] R10: 0000000000000000 R11: 0000000000000002 R12: 00=
-00000000000010
-> > > >> [   17.868875] R13: ffff917c99b19438 R14: ffff917c99b19460 R15: ff=
-ff917c99b19470
-> > > >> [   17.868876] FS:  00007f9d80988b00(0000) GS:ffff917d07400000(000=
-0) knlGS:0000000000000000
-> > > >> [   17.868877] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > >> [   17.868878] CR2: 000000000000002c CR3: 0000000219b12004 CR4: 00=
-000000003606f0
-> > > >> [   17.868879] Call Trace:
-> > > >> [   17.868884]  seq_read+0x95/0x470
-> > > >> [   17.868887]  ? security_file_permission+0x150/0x160
-> > > >> [   17.868889]  vfs_read+0xaa/0x190
-> > > >> [   17.868891]  ksys_read+0x67/0xe0
-> > > >> [   17.868893]  __x64_sys_read+0x1a/0x20
-> > > >> [   17.868896]  do_syscall_64+0x52/0xc0
-> > > >> [   17.868898]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > > >> [   17.868900] RIP: 0033:0x7f9d83be91dc
-> > > >> [   17.868901] Code: Bad RIP value.
-> > > >> [   17.868902] RSP: 002b:00007fff7f5e0250 EFLAGS: 00000246 ORIG_RA=
-X: 0000000000000000
-> > > >> [   17.868903] RAX: ffffffffffffffda RBX: 00005651d262f420 RCX: 00=
-007f9d83be91dc
-> > > >> [   17.868904] RDX: 0000000000001000 RSI: 00007fff7f5e0350 RDI: 00=
-00000000000010
-> > > >> [   17.868905] RBP: 00007f9d83cc54a0 R08: 0000000000000000 R09: 00=
-005651d26c1830
-> > > >> [   17.868906] R10: 00005651d2582010 R11: 0000000000000246 R12: 00=
-00000000001000
-> > > >> [   17.868907] R13: 00007fff7f5e0350 R14: 0000000000000d68 R15: 00=
-007f9d83cc48a0
-> > > >> [   17.868909] Modules linked in: rfcomm ccm cmac algif_hash algif=
-_skcipher af_alg snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_gen=
-eric bnep joydev mei_hdcp wmi_bmof intel_rapl_msr intel_wmi_thunderbolt x86=
-_pkg_temp_thermal intel_powerclamp coretemp nls_iso8859_1 kvm_intel kvm crc=
-t10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel glue_helper cryp=
-to_simd cryptd rapl input_leds intel_cstate snd_hda_intel snd_intel_dspcfg =
-rmi_smbus iwlmvm snd_hda_codec serio_raw snd_hwdep mac80211 rmi_core snd_hd=
-a_core libarc4 uvcvideo snd_pcm videobuf2_vmalloc btusb videobuf2_memops iw=
-lwifi videobuf2_v4l2 btrtl btbcm videobuf2_common btintel thunderbolt i915 =
-bluetooth mei_me videodev thinkpad_acpi nvram cfg80211 ledtrig_audio mei mc=
- ecdh_generic ecc i2c_algo_bit processor_thermal_device snd_seq_midi drm_km=
-s_helper snd_seq_midi_event intel_soc_dts_iosf syscopyarea sysfillrect snd_=
-rawmidi intel_pch_thermal sysimgblt intel_rapl_common intel_xhci_usb_role_s=
-witch fb_sys_fops ucsi_acpi ro
-> > > > les cec
-> > > >> [   17.868935]  typec_ucsi typec nxp_nci_i2c snd_seq nxp_nci wmi n=
-ci nfc snd_timer snd_seq_device snd int3403_thermal soundcore int340x_therm=
-al_zone video mac_hid int3400_thermal acpi_pad acpi_thermal_rel sch_fq_code=
-l parport_pc ppdev lp parport drm ip_tables x_tables autofs4 btrfs blake2b_=
-generic libcrc32c xor zstd_compress raid6_pq uas usb_storage psmouse e1000e=
- nvme i2c_i801 i2c_smbus nvme_core intel_lpss_pci intel_lpss idma64 virt_dm=
-a pinctrl_sunrisepoint pinctrl_intel
-> > > >> [   17.868951] CR2: 000000000000002c
-> > > >> [   17.868953] ---[ end trace ee7716fff5dec2fb ]---
-> > > >> [   17.868955] RIP: 0010:tpm2_bios_measurements_start+0x38/0x1f0
-> > > >> [   17.868957] Code: 55 41 54 53 48 83 ec 30 4c 8b 16 65 48 8b 04 =
-25 28 00 00 00 48 89 45 d0 48 8b 47 70 4c 8b a0 d0 06 00 00 48 8b 88 d8 06 =
-00 00 <41> 8b 5c 24 1c 48 89 4d b0 48 89 d8 48 83 c3 20 4d 85 d2 75 31 4c
-> > > >> [   17.868958] RSP: 0018:ffff9da500a9fde0 EFLAGS: 00010282
-> > > >> [   17.868959] RAX: ffff917d03dc4000 RBX: 0000000000000000 RCX: 00=
-00000000000010
-> > > >> [   17.868960] RDX: 0000000000001000 RSI: ffff917c99b19460 RDI: ff=
-ff917c99b19438
-> > > >> [   17.868961] RBP: ffff9da500a9fe38 R08: ffffbda4ffa33fc0 R09: ff=
-ff917cbfeae4c0
-> > > >> [   17.868962] R10: 0000000000000000 R11: 0000000000000002 R12: 00=
-00000000000010
-> > > >> [   17.868963] R13: ffff917c99b19438 R14: ffff917c99b19460 R15: ff=
-ff917c99b19470
-> > > >> [   17.868964] FS:  00007f9d80988b00(0000) GS:ffff917d07400000(000=
-0) knlGS:0000000000000000
-> > > >> [   17.868965] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > >> [   17.868966] CR2: 000000000000002c CR3: 0000000219b12004 CR4: 00=
-000000003606f0
-> > > >
-> > > > It is possible but initially feels a bit weird:
-> > > >
-> > > > -                  sizeof(TCG_SPECID_SIG)) || count > efispecid->nu=
-m_algs) {
-> > > > +                  sizeof(TCG_SPECID_SIG)) ||
-> > > > +           !efispecid->num_algs || count !=3D efispecid->num_algs)=
- {
-> > > >
-> > > > Assuming that check does not pass because of a more strict constrai=
-nt,
-> > > > __calc_tpm2_event_size() returns 0.
-> > > >
-> > > > It is wrapped like this in drivers/char/tpm/eventlog/tpm2.c:
-> > > >
-> > > > static size_t calc_tpm2_event_size(struct tcg_pcr_event2_head *even=
-t,
-> > > >                                struct tcg_pcr_event *event_header)
-> > > > {
-> > > >     return __calc_tpm2_event_size(event, event_header, false);
-> > > > }
-> > > >
-> > > > I.e. TPM_MEMUNMAP will not get executed because "do_mapping =3D=3D =
-false".
-> > > > tpm2_bios_measurements_start() checks for "size =3D=3D 0" and retur=
-ns NULL
-> > > > whenever this happens.
-> > > >
-> > > > Are you 100% sure that it is exactly this commit that triggers the =
-bug?
-> > >
-> > > Yes I am 100% sure. The issue happens all the time, and never happens
-> > > if I checkout the previous commit.
-> >
-> > OK, had to just "sanity check". Thank you. Just sounds extremely weird
-> > because there are no new derefences in the path.
-> >
-> > Looking at the call sites in *_start:
-> >
-> >         if (*pos > 0) {
-> >                 addr +=3D size;
-> >                 event =3D addr;
-> >                 size =3D calc_tpm2_event_size(event, event_header);
-> >                 if ((addr + size >=3D  limit) || (size =3D=3D 0))
-> >                         return NULL;
-> >         }
-> >
-> >         for (i =3D 0; i < (*pos - 1); i++) {
-> >                 event =3D addr;
-> >                 size =3D calc_tpm2_event_size(event, event_header);
-> >
-> >                 if ((addr + size >=3D limit) || (size =3D=3D 0))
-> >                         return NULL;
-> >                 addr +=3D size;
-> >         }
-> >
-> > we just essentially return NULL and efispecid is dereferenced two times
-> > instead of one. Especially, if this happens on your all machines it
-> > sounds weird.
-> >
-> > Kenneth [1] was experiencing a similar issue. Kenneth, can you try out
-> > if going one commit before 7f3d176f5f7e sorts out the issue?
-> >
-> > This sounds serious enough that I rather revert the commit if it is not
-> > rooted quickly but I added some people to the CC list who worked on thi=
-s
-> > in the past. Perhaps they spot something I'm blind to ATM.
-> >
+> Hi!
 >
-> In tpm2_bios_measurements_start(), we dereference tpm_bios_log to
-> access bios_event_log and bios_event_log_end without checking tpm_bios
-> for NULL. This is where the crash seems to occur.
+> On Mon, Sep 28, 2020 at 02:27:35PM +0800, Kevin Tang wrote:
+> > From: Kevin Tang <kevin.tang@unisoc.com>
+> >
+> > The Unisoc DRM master device is a virtual device needed to list all
+> > DPU devices or other display interface nodes that comprise the
+> > graphics subsystem
+> >
+> > RFC v7:
+> >   - Fix DTC unit name warnings
+> >   - Fix the problem of maintainers
+> >
+> > Cc: Orson Zhai <orsonzhai@gmail.com>
+> > Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+> > Signed-off-by: Kevin Tang <kevin.tang@unisoc.com>
+> > ---
+> >  .../display/sprd/sprd,display-subsystem.yaml       | 39 ++++++++++++++++++++++
+> >  1 file changed, 39 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml b/Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+> > new file mode 100644
+> > index 0000000..9487a39
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/display/sprd/sprd,display-subsystem.yaml
+> > @@ -0,0 +1,39 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/display/sprd/sprd,display-subsystem.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Unisoc DRM master device
+> > +
+> > +maintainers:
+> > +  - Kevin Tang <kevin.tang@unisoc.com>
+> > +
+> > +description: |
+> > +  The Unisoc DRM master device is a virtual device needed to list all
+> > +  DPU devices or other display interface nodes that comprise the
+> > +  graphics subsystem.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: sprd,display-subsystem
+> > +
+> > +  ports:
+> > +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> > +    description:
+> > +      Should contain a list of phandles pointing to display interface port
+> > +      of DPU devices.
+>
+> Generally speaking, driver-specific properties should be prefixed by the
+> vendor name to avoid any conflict with generic properties (like the
+> OF-Graph ports subnode in this case)
 
-It's one level down from there:
+We try to avoid this virtual node altogether which I commented about
+on v6 which was ignored.
 
-  18: 48 8b 47 70          mov    0x70(%rdi),%rax
-  1c: 4c 8b a0 d0 06 00 00 mov    0x6d0(%rax),%r12
-  23: 48 8b 88 d8 06 00 00 mov    0x6d8(%rax),%rcx
-  2a: 41 8b 5c 24 1c       mov    0x1c(%r12),%ebx <-- trapping instruction
-
-%rdi is is seq_file *m, so %rax is the tpm_chip pointer 'chip'.
-
-The tpm_bios_log struct is embedded in the tpm_chip struct, but its
-values are bogus.
-
-So when we assign event_header to the value of
-tpm_bios_log->bios_event_log and attempt to dereference it to get at
-its event_size member, we crash. (0x1c is the offset of event_size in
-struct tcg_pcr_event)
+Rob
