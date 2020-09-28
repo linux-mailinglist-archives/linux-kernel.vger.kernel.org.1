@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F13E27B3F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D82B227B3EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbgI1SC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:02:27 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:50441 "EHLO
+        id S1726944AbgI1SBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:01:53 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:41017 "EHLO
         wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726794AbgI1SBT (ORCPT
+        by vger.kernel.org with ESMTP id S1726823AbgI1SBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:01:19 -0400
+        Mon, 28 Sep 2020 14:01:20 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 1C73EEB0;
+        by mailnew.west.internal (Postfix) with ESMTP id 875AFE7E;
         Mon, 28 Sep 2020 13:55:28 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
   by compute4.internal (MEProxy); Mon, 28 Sep 2020 13:55:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
         :to:cc:subject:date:message-id:in-reply-to:references:reply-to
-        :mime-version:content-transfer-encoding; s=fm1; bh=fKNGPn4b5sGwL
-        Rh+ItgDgX7lMBGsorph0sms9B238k0=; b=XEu86+j+e7gcMHEv92P5s4xJp20rp
-        zMFVKS65FnuMSKgAA77Gtj5Ut+FUrecE44+tUeEk6LFeW9NtYgTpYMm120lIOWGx
-        HKht3fcFgqTYoq5eaVGgHK5PK8AhelDj/mEBUuq3cgVpjZ/OUSU++DpMZI8K84LG
-        YIjEjqIXnkDi3RUfoY0XSLSIu8G2ETQ2XsEyId1umd5KLN01DJxt3rkbIv7rr1tm
-        +KOna1sKXCp+cZEAZPGdRN+hzk+oS+y6HttZbrD3q2+llWNhzOpswf1GxRE0V73e
-        SjuI2T4VXRU3LOUm/1Wvi0b8EELHFNSaY2bSuHMRsFt7//jDROOkxq96Q==
+        :mime-version:content-transfer-encoding; s=fm1; bh=hEDfPgaD0F1Ir
+        Gg16yzXHXns+J50v05ddCe9x/z5XhY=; b=bqH0Bi6Pd970v1YMJbeVN95QTRqME
+        aldJWGE6nstMyTGKIMSyKYimhbyFk7WMzI7vCdR8PdVq0PicpFSustr4hZluwT06
+        CGjolCRuoWo4KLxCp61sy+TocJr55EjF2Hd5xIYj6hGyHxScwTwixkJmM5KotHMT
+        +BvfQo3OwWd5RCdzkiqqsDLz9833zLZFkaO2wctsD7KXQzo0DOWEjUn6/QVKTKt4
+        9EadzdhIQxAiHU9TrefdMSjAVgraKQ+4zCNH2Tvq/CHZfWrg6BHOrRRaRGsTdmOs
+        75EXkC2YZ1JD/d4M6gj0BNmgWB+1ll2C6gWN4JvUN0Bt1j5R9ejkHtCng==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:reply-to:subject
         :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=fKNGPn4b5sGwLRh+ItgDgX7lMBGsorph0sms9B238k0=; b=lsRyCnmS
-        nAcktrPPtkfFAhB7BBGBbHqNo/gPpg3cChaqKww8YC0T6Y+zAygHI2S+g8Z4bVjX
-        QRR7zu1tFpCbO4aHf6IPZAAd5fF2hhY/x+P0wHq3Kh/6KQDOZCpvOGuMFZ98KziJ
-        Ex+CzzF4D+kBV6HuNyknRSav09t+z9bSTYrRziX7HxBtd9kOVQ7dxnLFhVXHSAwl
-        HuN9o7AsduqJLdKQCbPw6wlAdkrTCqJki99q1sUS5+CN8FYdGRBspor/Y9zn7UZc
-        wP7XsClW4DokSWczCjfxpj78fTugYYgGOlTD2TEFkL+BZ427ytqKodqCX7ZSEiE5
-        +9DfsXEmWWATMQ==
-X-ME-Sender: <xms:jyNyXzw97N3Autf9BzgcqiJZX788T6Yj5tTFmKGu6yknk5WmMeUBqQ>
-    <xme:jyNyX7QW4H90Bap9JNeENDWriuvUtdfjk2MNUcw6W85DcPhsmUCRDdVq1zjKSwoe3
-    OPXjKmxF4utoUvEpg>
+        fm3; bh=hEDfPgaD0F1IrGg16yzXHXns+J50v05ddCe9x/z5XhY=; b=OK7wJUb5
+        P6iKo/6Sh7RSJTZp9j4cEOt8OWrjc7IEw2eS+nqU5Dhs0vP34uu6WQ0UAIEW6oWK
+        JbM8PByEmH3TM1N1VHJCP3q+svIFLcGctbECZr2kUdT5Oim5pT8bsjFxIk8PO6Ru
+        Pswwd90kxdBEYcmS+bW/uUUJlN8JCkhowhTmqK9xdFNQ58Bf+Wx6Owe4rUkV9dBO
+        qmLn11tFo4dxgQYh5azhsybW395xB5vEnqRhvU2JXI8TA2kbaa6UyPvxVvgPpVzk
+        SthMtmmzeS9tQZYPJJQjjxZ497WHtp6C1DUapLbkXwUdCyxvQtjbVJEnpJHg4LI3
+        e0YDPIRVDotUeQ==
+X-ME-Sender: <xms:kCNyX5rMtxwZwm2TQpoFCa9bZF4-2g5LTVXBKgFFA3ix5Kxbjzrhsw>
+    <xme:kCNyX7qVAs6X1WRUomMSNWewDI1xrjT0BwThu0vERDX4sRkozzM8Bf5A9X4hCYOmn
+    HGLJxbskbVSt-JYLQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -48,12 +48,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdote
     ektdduhfdutdfgtdekkedvhfetuedufedtgffgvdevleehheevjefgtdenucfkphepuddv
     rdegiedruddtiedrudeigeenucevlhhushhtvghrufhiiigvpeduvdenucfrrghrrghmpe
     hmrghilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
-X-ME-Proxy: <xmx:jyNyX9W6H8R-8fdGjnT8-MHmqP_r-votdahNnx4Ca8VYFyMS7PG02g>
-    <xmx:jyNyX9hWnTrQY7bUREvYW1Gc5uAwnH5-wEZsRQ8bBjNsvtB3YaV3Aw>
-    <xmx:jyNyX1DOZ-wOyXBmL5u3CvZY3JWX6YYKjbKrHuGjZhFNKSIwnTOHaA>
-    <xmx:jyNyX9YjCb3kjFXAgTX-TGmxo4ylxjBy7zGCwcs-JDmftoiQOZ8InqmnPNs>
+X-ME-Proxy: <xmx:kCNyX2M0d1RHquYtLCelFHxNdkkiXFL5X9-wGdBEcdtpjw1XT24UkQ>
+    <xmx:kCNyX06s-XkJfObyv8QU-rqwVb7FPkWgTU-Zqe1oTNudxp18yvQvVg>
+    <xmx:kCNyX441SPi5XusrKPbbfYh18zhVyLTmDWOC9RanlilFGTgLw126dw>
+    <xmx:kCNyX3SE8cRj6alXJZc8Fp-3OSD1VRe7_lydzanYLxfuoTpfUrFguk1jUZg>
 Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4C6BB3064686;
+        by mail.messagingengine.com (Postfix) with ESMTPA id A13CB3064688;
         Mon, 28 Sep 2020 13:55:27 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     linux-mm@kvack.org
@@ -71,9 +71,9 @@ Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         John Hubbard <jhubbard@nvidia.com>,
         David Nellans <dnellans@nvidia.com>,
         linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>
-Subject: [RFC PATCH v2 26/30] mm: thp: add a global knob to enable/disable PUD THPs.
-Date:   Mon, 28 Sep 2020 13:54:24 -0400
-Message-Id: <20200928175428.4110504-27-zi.yan@sent.com>
+Subject: [RFC PATCH v2 27/30] mm: thp: make PUD THP size public.
+Date:   Mon, 28 Sep 2020 13:54:25 -0400
+Message-Id: <20200928175428.4110504-28-zi.yan@sent.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200928175428.4110504-1-zi.yan@sent.com>
 References: <20200928175428.4110504-1-zi.yan@sent.com>
@@ -86,126 +86,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-Like the existing global PMD THP knob, it allows user to enable/disable
-PUD THPs. PUD THP is disabled by default unless user knows the
-performance tradeoff of using it, like longer first time page fault
-due to larger page zeroing and longer page allocation time when memory
-is fragmented. Experienced user can enable it and take advantage of its
-benefit of suffering fewer page faults and TLB misses.
-
-* always means PUD THPs will be allocated on all VMAs if possible.
-* madvise means PUD THPs will be allocated if vm_flags has VM_HUGEPAGE_PUD
-  set via madvise syscall using MADV_HUGEPAGE | MADV_HUGEPAGE_PUD.
-* none means PUD THPs will not be allocated on any VMA.
+User can access the PUD THP size via
+`cat /sys/kernel/mm/transparent_hugepage/hpage_pud_size`. This is
+similar to make PMD THP size public.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 ---
- include/linux/huge_mm.h | 14 ++++++++++++++
- mm/huge_memory.c        | 38 ++++++++++++++++++++++++++++++++++++++
- mm/memory.c             |  2 +-
- 3 files changed, 53 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/mm/transhuge.rst |  1 +
+ mm/huge_memory.c                           | 13 +++++++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index c7bc40c4a5e2..0d0f9cf25aeb 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -119,6 +119,8 @@ enum transparent_hugepage_flag {
- #ifdef CONFIG_DEBUG_VM
- 	TRANSPARENT_HUGEPAGE_DEBUG_COW_FLAG,
- #endif
-+	TRANSPARENT_PUD_HUGEPAGE_FLAG,
-+	TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG,
- };
+diff --git a/Documentation/admin-guide/mm/transhuge.rst b/Documentation/admin-guide/mm/transhuge.rst
+index b2acd0d395ca..11b173c2650e 100644
+--- a/Documentation/admin-guide/mm/transhuge.rst
++++ b/Documentation/admin-guide/mm/transhuge.rst
+@@ -159,6 +159,7 @@ Some userspace (such as a test program, or an optimized memory allocation
+ library) may want to know the size (in bytes) of a transparent hugepage::
  
- struct kobject;
-@@ -184,6 +186,18 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
- }
+ 	cat /sys/kernel/mm/transparent_hugepage/hpage_pmd_size
++	cat /sys/kernel/mm/transparent_hugepage/hpage_pud_size
  
- bool transparent_hugepage_enabled(struct vm_area_struct *vma);
-+static inline bool transparent_pud_hugepage_enabled(struct vm_area_struct *vma)
-+{
-+	if (transparent_hugepage_enabled(vma)) {
-+		if (transparent_hugepage_flags & (1 << TRANSPARENT_PUD_HUGEPAGE_FLAG))
-+			return true;
-+		if (transparent_hugepage_flags &
-+					(1 << TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG))
-+			return !!(vma->vm_flags & VM_HUGEPAGE_PUD);
-+	}
-+
-+	return false;
-+}
- 
- #define HPAGE_CACHE_INDEX_MASK (HPAGE_PMD_NR - 1)
- 
+ khugepaged will be automatically started when
+ transparent_hugepage/enabled is set to "always" or "madvise, and it'll
 diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 61ae7a0ded84..1965753b31a2 100644
+index 1965753b31a2..20ecffc27396 100644
 --- a/mm/huge_memory.c
 +++ b/mm/huge_memory.c
-@@ -199,6 +199,43 @@ static ssize_t enabled_store(struct kobject *kobj,
- static struct kobj_attribute enabled_attr =
- 	__ATTR(enabled, 0644, enabled_show, enabled_store);
+@@ -340,12 +340,25 @@ static ssize_t hpage_pmd_size_show(struct kobject *kobj,
+ static struct kobj_attribute hpage_pmd_size_attr =
+ 	__ATTR_RO(hpage_pmd_size);
  
-+static ssize_t enabled_pud_thp_show(struct kobject *kobj,
-+			    struct kobj_attribute *attr, char *buf)
++#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
++static ssize_t hpage_pud_size_show(struct kobject *kobj,
++		struct kobj_attribute *attr, char *buf)
 +{
-+	if (test_bit(TRANSPARENT_PUD_HUGEPAGE_FLAG, &transparent_hugepage_flags))
-+		return sprintf(buf, "[always] madvise never\n");
-+	else if (test_bit(TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags))
-+		return sprintf(buf, "always [madvise] never\n");
-+	else
-+		return sprintf(buf, "always madvise [never]\n");
++	return sprintf(buf, "%lu\n", HPAGE_PUD_SIZE);
 +}
++static struct kobj_attribute hpage_pud_size_attr =
++	__ATTR_RO(hpage_pud_size);
++#endif
 +
-+static ssize_t enabled_pud_thp_store(struct kobject *kobj,
-+			     struct kobj_attribute *attr,
-+			     const char *buf, size_t count)
-+{
-+	ssize_t ret = count;
-+
-+	if (!memcmp("always", buf,
-+		    min(sizeof("always")-1, count))) {
-+		clear_bit(TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags);
-+		set_bit(TRANSPARENT_PUD_HUGEPAGE_FLAG, &transparent_hugepage_flags);
-+	} else if (!memcmp("madvise", buf,
-+			   min(sizeof("madvise")-1, count))) {
-+		clear_bit(TRANSPARENT_PUD_HUGEPAGE_FLAG, &transparent_hugepage_flags);
-+		set_bit(TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags);
-+	} else if (!memcmp("never", buf,
-+			   min(sizeof("never")-1, count))) {
-+		clear_bit(TRANSPARENT_PUD_HUGEPAGE_FLAG, &transparent_hugepage_flags);
-+		clear_bit(TRANSPARENT_PUD_HUGEPAGE_REQ_MADV_FLAG, &transparent_hugepage_flags);
-+	} else
-+		ret = -EINVAL;
-+
-+	return ret;
-+}
-+static struct kobj_attribute enabled_pud_thp_attr =
-+	__ATTR(enabled_pud_thp, 0644, enabled_pud_thp_show, enabled_pud_thp_store);
-+
- ssize_t single_hugepage_flag_show(struct kobject *kobj,
- 				struct kobj_attribute *attr, char *buf,
- 				enum transparent_hugepage_flag flag)
-@@ -305,6 +342,7 @@ static struct kobj_attribute hpage_pmd_size_attr =
- 
  static struct attribute *hugepage_attr[] = {
  	&enabled_attr.attr,
-+	&enabled_pud_thp_attr.attr,
+ 	&enabled_pud_thp_attr.attr,
  	&defrag_attr.attr,
  	&use_zero_page_attr.attr,
  	&hpage_pmd_size_attr.attr,
-diff --git a/mm/memory.c b/mm/memory.c
-index ab80d13807aa..9f7b509a3aa7 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4282,7 +4282,7 @@ static vm_fault_t __handle_mm_fault(struct vm_area_struct *vma,
- 	if (!vmf.pud)
- 		return VM_FAULT_OOM;
- retry_pud:
--	if (pud_none(*vmf.pud) && __transparent_hugepage_enabled(vma)) {
-+	if (pud_none(*vmf.pud) && transparent_pud_hugepage_enabled(vma)) {
- 		ret = create_huge_pud(&vmf);
- 		if (!(ret & VM_FAULT_FALLBACK))
- 			return ret;
++#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
++	&hpage_pud_size_attr.attr,
++#endif
+ #ifdef CONFIG_SHMEM
+ 	&shmem_enabled_attr.attr,
+ #endif
 -- 
 2.28.0
 
