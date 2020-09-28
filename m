@@ -2,177 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C7E27A98E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1833327A99F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 10:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbgI1Ic7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 04:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726576AbgI1Ic7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 04:32:59 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1A4C0613CF
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 01:32:59 -0700 (PDT)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kMoaY-00083X-Mf; Mon, 28 Sep 2020 10:32:50 +0200
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kMoaQ-0004M0-Ts; Mon, 28 Sep 2020 10:32:42 +0200
-Message-ID: <aaccd827fa6de117d27319884f2d70a2ea91aa5e.camel@pengutronix.de>
-Subject: Re: [v3,2/3] PCI: mediatek: Add new generation controller support
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Jianjun Wang <jianjun.wang@mediatek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Ryder Lee <ryder.lee@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        davem@davemloft.net, linux-pci@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sj Huang <sj.huang@mediatek.com>, youlin.pei@mediatek.com,
-        chuanjia.liu@mediatek.com, qizhong.cheng@mediatek.com,
-        sin_jieyang@mediatek.com
-Date:   Mon, 28 Sep 2020 10:32:42 +0200
-In-Reply-To: <20200927074555.4155-3-jianjun.wang@mediatek.com>
-References: <20200927074555.4155-1-jianjun.wang@mediatek.com>
-         <20200927074555.4155-3-jianjun.wang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+        id S1726814AbgI1IfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 04:35:20 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:14252 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726440AbgI1IfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 04:35:20 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 032E453F7FBAD8837765;
+        Mon, 28 Sep 2020 16:35:17 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 28 Sep 2020 16:35:14 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/hisilicon: Using the to_hibmc_drm_private to convert
+Date:   Mon, 28 Sep 2020 16:32:43 +0800
+Message-ID: <1601281963-42133-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jianjun,
+Using the to_hibmc_drm_private to convert over all uses of dev_private
+over to the function, and fix a little formatting issue.
 
-On Sun, 2020-09-27 at 15:45 +0800, Jianjun Wang wrote:
-> MediaTek's PCIe host controller has three generation HWs, the new
-> generation HW is an individual bridge, it supoorts Gen3 speed and
-> up to 256 MSI interrupt numbers for multi-function devices.
-> 
-> Add support for new Gen3 controller which can be found on MT8192.
-> 
-> Signed-off-by: Jianjun Wang <jianjun.wang@mediatek.com>
-> Acked-by: Ryder Lee <ryder.lee@mediatek.com>
-> ---
->  drivers/pci/controller/Kconfig              |   14 +
->  drivers/pci/controller/Makefile             |    1 +
->  drivers/pci/controller/pcie-mediatek-gen3.c | 1024 +++++++++++++++++++
->  3 files changed, 1039 insertions(+)
->  create mode 100644 drivers/pci/controller/pcie-mediatek-gen3.c
-> 
-[...]
-> diff --git a/drivers/pci/controller/pcie-mediatek-gen3.c b/drivers/pci/controller/pcie-mediatek-gen3.c
-> new file mode 100644
-> index 000000000000..ad69c789b24d
-> --- /dev/null
-> +++ b/drivers/pci/controller/pcie-mediatek-gen3.c
-> @@ -0,0 +1,1024 @@
-[...]
-> +static int mtk_pcie_power_up(struct mtk_pcie_port *port)
-> +{
-> +	struct device *dev = port->dev;
-> +	int err;
-> +
-> +	port->phy_reset = devm_reset_control_get_optional_exclusive(dev,
-> +								    "phy-rst");
-> +	if (IS_ERR(port->phy_reset))
-> +		return PTR_ERR(port->phy_reset);
-> +
-> +	reset_control_deassert(port->phy_reset);
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c   | 22 +++++++++++-----------
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c  |  5 ++---
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c |  4 ++--
+ 3 files changed, 15 insertions(+), 16 deletions(-)
 
-In general, it is better to request all required resources before
-starting to activate the hardware.
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+index 4d57ec6..a98f993 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_de.c
+@@ -105,7 +105,7 @@ static void hibmc_plane_atomic_update(struct drm_plane *plane,
+ 	u32 reg;
+ 	s64 gpu_addr = 0;
+ 	unsigned int line_l;
+-	struct hibmc_drm_private *priv = plane->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(plane->dev);
+ 	struct drm_gem_vram_object *gbo;
+ 
+ 	if (!state->fb)
+@@ -159,7 +159,7 @@ static const struct drm_plane_helper_funcs hibmc_plane_helper_funcs = {
+ 
+ static void hibmc_crtc_dpms(struct drm_crtc *crtc, int dpms)
+ {
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 	unsigned int reg;
+ 
+ 	reg = readl(priv->mmio + HIBMC_CRT_DISP_CTL);
+@@ -175,7 +175,7 @@ static void hibmc_crtc_atomic_enable(struct drm_crtc *crtc,
+ 				     struct drm_crtc_state *old_state)
+ {
+ 	unsigned int reg;
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 
+ 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
+ 
+@@ -194,7 +194,7 @@ static void hibmc_crtc_atomic_disable(struct drm_crtc *crtc,
+ 				      struct drm_crtc_state *old_state)
+ {
+ 	unsigned int reg;
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 
+ 	hibmc_crtc_dpms(crtc, HIBMC_CRT_DPMS_OFF);
+ 	drm_crtc_vblank_off(crtc);
+@@ -254,7 +254,7 @@ static unsigned int format_pll_reg(void)
+ static void set_vclock_hisilicon(struct drm_device *dev, unsigned long pll)
+ {
+ 	u32 val;
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	val = readl(priv->mmio + CRT_PLL1_HS);
+ 	val &= ~(CRT_PLL1_HS_OUTER_BYPASS(1));
+@@ -315,7 +315,7 @@ static unsigned int display_ctrl_adjust(struct drm_device *dev,
+ 	unsigned long x, y;
+ 	u32 pll1; /* bit[31:0] of PLL */
+ 	u32 pll2; /* bit[63:32] of PLL */
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	x = mode->hdisplay;
+ 	y = mode->vdisplay;
+@@ -363,7 +363,7 @@ static void hibmc_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 	unsigned int val;
+ 	struct drm_display_mode *mode = &crtc->state->mode;
+ 	struct drm_device *dev = crtc->dev;
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 	int width = mode->hsync_end - mode->hsync_start;
+ 	int height = mode->vsync_end - mode->vsync_start;
+ 
+@@ -397,7 +397,7 @@ static void hibmc_crtc_atomic_begin(struct drm_crtc *crtc,
+ {
+ 	unsigned int reg;
+ 	struct drm_device *dev = crtc->dev;
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	hibmc_set_power_mode(priv, HIBMC_PW_MODE_CTL_MODE_MODE0);
+ 
+@@ -427,7 +427,7 @@ static void hibmc_crtc_atomic_flush(struct drm_crtc *crtc,
+ 
+ static int hibmc_crtc_enable_vblank(struct drm_crtc *crtc)
+ {
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 
+ 	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(1),
+ 	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
+@@ -437,7 +437,7 @@ static int hibmc_crtc_enable_vblank(struct drm_crtc *crtc)
+ 
+ static void hibmc_crtc_disable_vblank(struct drm_crtc *crtc)
+ {
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 
+ 	writel(HIBMC_RAW_INTERRUPT_EN_VBLANK(0),
+ 	       priv->mmio + HIBMC_RAW_INTERRUPT_EN);
+@@ -445,7 +445,7 @@ static void hibmc_crtc_disable_vblank(struct drm_crtc *crtc)
+ 
+ static void hibmc_crtc_load_lut(struct drm_crtc *crtc)
+ {
+-	struct hibmc_drm_private *priv = crtc->dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(crtc->dev);
+ 	void __iomem   *mmio = priv->mmio;
+ 	u16 *r, *g, *b;
+ 	unsigned int reg;
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+index 085d1b2..5632bce 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c
+@@ -29,8 +29,7 @@ DEFINE_DRM_GEM_FOPS(hibmc_fops);
+ static irqreturn_t hibmc_drm_interrupt(int irq, void *arg)
+ {
+ 	struct drm_device *dev = (struct drm_device *)arg;
+-	struct hibmc_drm_private *priv =
+-		(struct hibmc_drm_private *)dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 	u32 status;
+ 
+ 	status = readl(priv->mmio + HIBMC_RAW_INTERRUPT);
+@@ -244,7 +243,7 @@ static int hibmc_hw_init(struct hibmc_drm_private *priv)
+ 
+ static int hibmc_unload(struct drm_device *dev)
+ {
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	drm_atomic_helper_shutdown(dev);
+ 
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+index c6999ed..74e26c2 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+@@ -43,7 +43,7 @@ static int hibmc_connector_get_modes(struct drm_connector *connector)
+ }
+ 
+ static enum drm_mode_status hibmc_connector_mode_valid(struct drm_connector *connector,
+-				      struct drm_display_mode *mode)
++						       struct drm_display_mode *mode)
+ {
+ 	return MODE_OK;
+ }
+@@ -76,7 +76,7 @@ static void hibmc_encoder_mode_set(struct drm_encoder *encoder,
+ {
+ 	u32 reg;
+ 	struct drm_device *dev = encoder->dev;
+-	struct hibmc_drm_private *priv = dev->dev_private;
++	struct hibmc_drm_private *priv = to_hibmc_drm_private(dev);
+ 
+ 	reg = readl(priv->mmio + HIBMC_DISPLAY_CONTROL_HISILE);
+ 	reg |= HIBMC_DISPLAY_CONTROL_FPVDDEN(1);
+-- 
+2.7.4
 
-> +
-> +	/* PHY power on and enable pipe clock */
-> +	port->phy = devm_phy_optional_get(dev, "pcie-phy");
-> +	if (IS_ERR(port->phy))
-> +		return PTR_ERR(port->phy);
-
-For example, if the PHY driver is not loaded yet and this returns
--EPROBE_DEFER, it was not useful to take the PHY out of reset above.
-Also, phy-rst is kept deasserted if this fails.
-
-> +
-> +	err = phy_init(port->phy);
-> +	if (err) {
-> +		dev_notice(dev, "failed to initialize pcie phy\n");
-> +		return err;
-
-phy-rst is kept deasserted if this fails.
-
-> +	}
-> +
-> +	err = phy_power_on(port->phy);
-> +	if (err) {
-> +		dev_notice(dev, "failed to power on pcie phy\n");
-> +		goto err_phy_on;
-> +	}
-> +
-> +	port->mac_reset = devm_reset_control_get_optional_exclusive(dev,
-> +								    "mac-rst");
-> +	if (IS_ERR(port->mac_reset))
-> +		return PTR_ERR(port->mac_reset);
-
-The PHY is not powered down if this fails.
-
-> +
-> +	reset_control_deassert(port->mac_reset);
-> +
-> +	/* MAC power on and enable transaction layer clocks */
-> +	pm_runtime_enable(dev);
-> +	pm_runtime_get_sync(dev);
-> +
-> +	err = mtk_pcie_clk_init(port);
-> +	if (err) {
-> +		dev_notice(dev, "clock init failed\n");
-> +		goto err_clk_init;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_clk_init:
-> +	pm_runtime_put_sync(dev);
-> +	pm_runtime_disable(dev);
-> +	reset_control_assert(port->mac_reset);
-> +	phy_power_off(port->phy);
-> +err_phy_on:
-> +	phy_exit(port->phy);
-> +	reset_control_assert(port->phy_reset);
-> +
-> +	return -EBUSY;
-> +}
-> +
-> +static void mtk_pcie_power_down(struct mtk_pcie_port *port)
-> +{
-> +	phy_power_off(port->phy);
-> +	phy_exit(port->phy);
-> +
-> +	clk_bulk_disable_unprepare(port->num_clks, port->clks);
-
-In the power-up sequence clocks are enabled last, but here they are not
-disabled before the PHY is powered off. Is this on purpose?
-
-> +
-> +	pm_runtime_put_sync(port->dev);
-> +	pm_runtime_disable(port->dev);
-
-In the power-up error path, PHY and controller resets are asserted
-again, but here they are kept deasserted. Should they be asserted here
-as well?
-
-regards
-Philipp
