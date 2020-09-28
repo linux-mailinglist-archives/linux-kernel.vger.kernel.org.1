@@ -2,249 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5A5727A872
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:20:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 054E827A87A
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbgI1HT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgI1HT4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:19:56 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84464C0613CE;
-        Mon, 28 Sep 2020 00:19:56 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id b124so98658pfg.13;
-        Mon, 28 Sep 2020 00:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=Kte6gHSNCG6v2OVGxS3d7I/+DBmoB+e4pk9r9Jb/QP8=;
-        b=u55pMWOO6eU+LYykvbpU15GlXBNUgyhWLu+l4YNZfKEDuzU2izGhXR2Bc2g1ns5MMh
-         FbUV7ddABP/oWhieqxCUunwrduW6+IX29NnVRPBsD4AtF2qmbI4s6LD4R//wRDnEPzsJ
-         cXbaL6FdWjpZsd1Kg+eR6Iuj+LMe++rVuUe3kooG6HmTNuURKhr2+6DBGGrOGCgDVOEC
-         MOSUgz0YOXoAdpIZo6bHE8R5MY/mwSIQmLg7XtvJPIyLgHLicgImpAhKlSyRjf8Oy+Mu
-         SXquwbWsIBVo+aS9S9uAn15BiRsxISf3cQjDtdHDVBXX5ExCcyblXzlTbLljlGc+lALp
-         NhzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=Kte6gHSNCG6v2OVGxS3d7I/+DBmoB+e4pk9r9Jb/QP8=;
-        b=kAnOtET4GaKUaTYIIkuinh0RiIgNAU7JFVGXyohkgaK8M5iCluuzzzeT3aqbuA8gUq
-         o+DaGYJqoTB68lMwBOXlFCryXAOHOyzu7cjY7k/b/yEcLTxoQLKijcye9De1piZzSOBn
-         Po+SIH5wVAjGfxYS5VFX8KEgLu2rBpm/OkkaHnTDaPUufQXHCSSU0Hu0owz2gbQZVNne
-         7lswFOp1Co9F+SS780pPOG5c3y3OQn4p3kuawT0LBuAg2MHX1vNynbqE9JWGDUAYDfdX
-         4aaxzdwKcUsITYzEOP9mjqMEwD3/bNOoe3IZifp2ENAueh6kPOc4eY9xE9uXR3aAeZeZ
-         dApA==
-X-Gm-Message-State: AOAM531qSwxqXqf+NKVPOg9OtWvE81fhocY90/QHGmSVP+2labKfdwd1
-        GyOQvcDiscmkBZbqHZ2/NPI=
-X-Google-Smtp-Source: ABdhPJzPsCHjmFUdNlibb2Og9HWOdZd5lXQBhc7m2IPkw/WZ4o65l70avc8DWJSV2GnazaYhke/4Mg==
-X-Received: by 2002:a63:e111:: with SMTP id z17mr201584pgh.267.1601277596032;
-        Mon, 28 Sep 2020 00:19:56 -0700 (PDT)
-Received: from localhost.localdomain ([2402:7500:579:ab5d:e84b:6994:41f0:ce96])
-        by smtp.gmail.com with ESMTPSA id gj16sm148556pjb.13.2020.09.28.00.19.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Sep 2020 00:19:55 -0700 (PDT)
-From:   cy_huang <u0084500@gmail.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org
-Cc:     linux-kernel@vger.kernel.org, cy_huang@richtek.com,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 2/2] regulator: rtmv20: Add DT-binding document for Richtek RTMV20
-Date:   Mon, 28 Sep 2020 15:19:44 +0800
-Message-Id: <1601277584-5526-2-git-send-email-u0084500@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1601277584-5526-1-git-send-email-u0084500@gmail.com>
-References: <1601277584-5526-1-git-send-email-u0084500@gmail.com>
+        id S1726500AbgI1HW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:22:59 -0400
+Received: from mail-eopbgr80102.outbound.protection.outlook.com ([40.107.8.102]:35126
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725290AbgI1HW6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 03:22:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GbKCCpYvrpD93Kv9e3X4lpJQ88EqukwD+LW7JM1euMgmr6+54Q1V8oOuowEKomUDF+91kLkKh5Fhn25T2vvG2LRpumyw1ECvYOTbAgiDVx3M3FsfysQ20c51t1QBr0NjvfiyJ4oV9l5MnoJ98R4N3MZB8Yf1WXJGBw0nc2YjlLA5JizSRKdUvAS0KwfPh+M4Xw+Q6s9DnltB61tNUMXoO3xGjvCRqrJTYi86OKXuul/HDT2YpeUa7WDj9BcxejKFJUvjxtrK6W7PK7iXAi9ICDi6SBiMyhsbxNxrYcdsNiZuVCUl6aQ3vVVPoNB1QsD7Cfx2DH+njlZ9l7eOG/CaWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6zv2/22aVeOxCq90tkdNdyKKPapk1rA02Rt6IXGZ1RM=;
+ b=Rn5mFJ+LmFUO+OMqK6qKPmUCndh93BIwutgNcOZEmvPxGEAD3Cji5+LI/HM5MAIMp0HESzzWHc4WYWof3TSIccMDxfvEZ3ROC2WVXuIolHS8y1gwGOkFDS35mf1VFcNejWAT431hWaCp/OgVN3FMWw6vVHLyYwTOZc+9EPTr2kLZ2UhGRpGHvAvVXGD1AxWiJ64gRKRh1Fh8wlY683qX1CMoGOXHOC62ktmnIoPzS967+a1bifIR9frBbDB6J7Ny38hQyfCaoen51s4OJ4Aw5PjsW/2fxLkP0APCBjl5WfRHPKM8Dt8A/6nPP7H6ExfRFoTYNfv0GRAtnez7ZSsWzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6zv2/22aVeOxCq90tkdNdyKKPapk1rA02Rt6IXGZ1RM=;
+ b=rxmiIBRauTLJQXVo6Hn8sxZJp6nTaGthbNhjgHZ5FRo2Ez7kCYV/3m31mxoLciFb2uMjqCNIQHIdig63xAY4qgrfBQgNZOfe6lAp6bdarL38AI7rqBFmcC4XuwZyaIOXqMPFMiYbhwTfC21tRVOQBS0v6YSoSOIbjLB/uzmqEhQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=virtuozzo.com;
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com (2603:10a6:20b:cd::17)
+ by AM6PR08MB3191.eurprd08.prod.outlook.com (2603:10a6:209:41::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.25; Mon, 28 Sep
+ 2020 07:22:55 +0000
+Received: from AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322]) by AM6PR08MB4756.eurprd08.prod.outlook.com
+ ([fe80::71e0:46d9:2c06:2322%7]) with mapi id 15.20.3412.028; Mon, 28 Sep 2020
+ 07:22:55 +0000
+Subject: Re: [PATCH v4 2/2] ovl: introduce new "uuid=off" option for inodes
+ index feature
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20200925083507.13603-1-ptikhomirov@virtuozzo.com>
+ <20200925083507.13603-3-ptikhomirov@virtuozzo.com>
+ <CAOQ4uxgxw7hZysDPfkrE9=Rc8-iK3=3SMX+RQJqgaARFRb_rNA@mail.gmail.com>
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Message-ID: <2d2d19c0-66cd-d823-f63e-92b6629ca3aa@virtuozzo.com>
+Date:   Mon, 28 Sep 2020 10:22:53 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+In-Reply-To: <CAOQ4uxgxw7hZysDPfkrE9=Rc8-iK3=3SMX+RQJqgaARFRb_rNA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM0PR06CA0124.eurprd06.prod.outlook.com
+ (2603:10a6:208:ab::29) To AM6PR08MB4756.eurprd08.prod.outlook.com
+ (2603:10a6:20b:cd::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.1.192] (46.39.230.109) by AM0PR06CA0124.eurprd06.prod.outlook.com (2603:10a6:208:ab::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Mon, 28 Sep 2020 07:22:54 +0000
+X-Originating-IP: [46.39.230.109]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 87d206c0-2b10-4b51-6b13-08d8637f5167
+X-MS-TrafficTypeDiagnostic: AM6PR08MB3191:
+X-Microsoft-Antispam-PRVS: <AM6PR08MB319135CD20102F1F05CCE95CB7350@AM6PR08MB3191.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Gk3OFoISGl5UPK3u0ePDwUFSi7eNxe+LHQ69YW+IvrqTaTBFSCgul8ZAG7hsm0gAXeHfmNCvUEFfXLxKxyafOutUQ356UaI2dQf8jQ/JGTbdda1RkTKV57+glSGKqrwcAcwMtmLZDXf7mfaHZFOhmkB+531RoZizfX0czbz40MSgPRXI+BW2rWvg428gjA0tp4spAAPQEo1y/1RQAvjoimkyDcmmWuIgfNuyQyaAAjTVSHelr5fACVN7mnz8XxLHE0sYabJVwUMKcntjnvcas6CLkXNU9CebIoOIV1GSem14+cHP+PN7u3lSYv8XSDpI9zsK6rTyWm+UqkKcVmHTrpDgJ9WrZpD4sZulQibdHnhuewuccMRa7i5ZiWoY4ZfE0YC/h4GuSkHXaJmTJ4AddKNXMHRReqc6eN81g2+vy54=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR08MB4756.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(376002)(39840400004)(346002)(31696002)(8676002)(8936002)(53546011)(186003)(31686004)(16526019)(52116002)(26005)(86362001)(6916009)(6486002)(4326008)(54906003)(558084003)(2906002)(36756003)(16576012)(316002)(66556008)(66476007)(66946007)(478600001)(2616005)(956004)(5660300002)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 7zYSbPSwKyS71S7FSJBTymSVRv6aQufVw/Z69yybl/Rzh5O/2DtFvAg4SNeTJTHHcp7WDALuW9SpNLMJU40r4wat/wTI/j6p4AwM1vSylxgpW8TTHTSKq+xE6IY1+NUZE6uX0uxTgtBXriCsm969A7cLWF1LojtC+kSM24ynAYsu1D2n3NUDmbcmTor1sRCPOB/M5ZlvGvCoTjup/RYEgvrFebLvnuTlThya09TdgGFtHZQS3yPJ8PzQmLsEQf84IIKy8W1vteYg+eSj/iIyLJjKvaNxT7LUeM5+MGpp2w3ZJKInImi4ZIvAE0ClmfZuE2aD2TKHyh1LyT5pYcBFEWXhYRTHaITjEbWBcr2lji/sBsJwmcQ1OTzLs+3GOOWYHM703Pwqg5lLmXlD19XSUiFS3kz2z7pV+02ymJgyQfpEf7ymzDqEs8nut58xhSEzdNIsEyddcp7fcSVPhtM/3QgE37Vutz/6+d16R5t5TBguGCjlE+b83RP6AYtao7hh3zWd/ZHUul8ZFyarftfWURy+0OmFaeJ+spX0eYb6OWJW6kWj909Z0flI4w5lt3XfJa9M7uCgAwJPPwfKBPAeLlt7KeJCyFQXRIanxfWlyk833Mg3KIAC4Q1IvoXWZbaOtKWuNoFQTQzoYZ+dRFQ6UQ==
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87d206c0-2b10-4b51-6b13-08d8637f5167
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR08MB4756.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2020 07:22:55.3592
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KFvU6VhkhT0krQFrO8vUhJ0sHo9W6fIq+4Uc2OTVtDWwMxAYzPIm2KgZNyIE2Wqb3xkjCzsMAsjfqr60/PUPZmoJlg8lkYtBq6c0g2n9w2c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR08MB3191
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+On 9/25/20 7:42 PM, Amir Goldstein wrote:
+> Apart from some typos, looks good to me.
 
-Add DT-binding document for Richtek RTMV20
+Amir, Thanks a lot for your review!
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
----
- .../regulator/richtek,rtmv20-regulator.yaml        | 168 +++++++++++++++++++++
- 1 file changed, 168 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
+ > you should wait for more feedback from others
 
-diff --git a/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
-new file mode 100644
-index 00000000..4cb4b68
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/richtek,rtmv20-regulator.yaml
-@@ -0,0 +1,168 @@
-+# SPDX-License-Identifier: GPL-2.0
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/richtek,rtmv20-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Richtek RTMV20 laser diode regulator
-+
-+maintainers:
-+  - ChiYuan Huang <cy_huang@richtek.com>
-+
-+description: |
-+  Richtek RTMV20 is a load switch current regulator that can supply up to 6A.
-+  It is used to drive laser diode. There're two signals for chip controls
-+  (Enable/Fail), Enable pin to turn chip on, and Fail pin as fault indication.
-+  There're still four pins for camera control, two inputs (strobe and vsync),
-+  the others for outputs (fsin1 and fsin2). Strobe input to start the current
-+  supply, vsync input from IR camera, and fsin1/fsin2 output for the optional.
-+
-+properties:
-+  compatible:
-+    const: richtek,rtmv20
-+
-+  reg:
-+    maxItems: 1
-+
-+  wakeup-source: true
-+
-+  interrupts-extend:
-+    maxItems: 1
-+
-+  enable-gpios:
-+    description: A connection of the 'enable' gpio line.
-+    maxItems: 1
-+
-+  ld-pulse-delay-us:
-+    description: |
-+      load current pulse delay in microsecond after strobe pin pulse high.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 0
-+    maximum: 100000
-+    default: 0
-+
-+  ld-pulse-width-us:
-+    description: |
-+      Load current pulse width in microsecond after strobe pin pulse high.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 0
-+    maximum: 10000
-+    default: 1200
-+
-+  fsin1-delay-us:
-+    description: |
-+      Fsin1 pulse high delay in microsecond after vsync signal pulse high.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 0
-+    maximum: 100000
-+    default: 23000
-+
-+  fsin1-width-us:
-+    description: |
-+      Fsin1 pulse high width in microsecond after vsync signal pulse high.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 40
-+    maximum: 10000
-+    default: 160
-+
-+  fsin2-delay-us:
-+    description: |
-+      Fsin2 pulse high delay in microsecond after vsync signal pulse high.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 0
-+    maximum: 100000
-+    default: 23000
-+
-+  fsin2-width-us:
-+    description: |
-+      Fsin2 pulse high width in microsecond after vsync signal pulse high.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 40
-+    maximum: 10000
-+    default: 160
-+
-+  es-pulse-width-us:
-+    description: Eye safety function pulse width limit in microsecond.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 0
-+    maximum: 10000
-+    default: 1200
-+
-+  es-ld-current-microamp:
-+    description: Eye safety function load current limit in microamp.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 0
-+    maximum: 6000000
-+    default: 3000000
-+
-+  lbp-level-microvolt:
-+    description: Low battery protection level in microvolt.
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    minimum: 2400000
-+    maximum: 3700000
-+    default: 2700000
-+
-+  lbp-enable:
-+    description: Low battery protection function enable control.
-+    type: boolean
-+
-+  strobe-polarity-high:
-+    description: Strobe pin active polarity control.
-+    type: boolean
-+
-+  vsync-polarity-high:
-+    description: Vsync pin active polarity control.
-+    type: boolean
-+
-+  fsin-enable:
-+    description: Fsin function enable control.
-+    type: boolean
-+
-+  fsin-output:
-+    description: Fsin function output control.
-+    type: boolean
-+
-+  es-enable:
-+    description: Eye safety function enable control.
-+    type: boolean
-+
-+patternProperties:
-+  "lsw":
-+    type: object
-+    $ref: "regulator.yaml#"
-+
-+required:
-+  - compatible
-+  - reg
-+  - wakeup-source
-+  - interrupts-extend
-+  - enable-gpios
-+  - lsw
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      rtmv20@34 {
-+        compatible = "richtek,rtmv20";
-+        reg = <0x34>;
-+        wakeup-source;
-+        interrupts-extend = <&gpio26 2 IRQ_TYPE_LEVEL_LOW>;
-+        enable-gpios = <&gpio26 3 0>;
-+
-+        strobe-polarity-high;
-+        vsync-polarity-high;
-+
-+        lsw {
-+                regulator-name = "rtmv20,lsw";
-+                regulator-min-microamp = <0>;
-+                regulator-max-microamp = <6000000>;
-+        };
-+      };
-+    };
-+...
+Sure, will wait.
+
 -- 
-2.7.4
-
+Best regards, Tikhomirov Pavel
+Software Developer, Virtuozzo.
