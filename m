@@ -2,156 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4CC27AFA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6343F27AFA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 16:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgI1OEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 10:04:41 -0400
-Received: from mga11.intel.com ([192.55.52.93]:34831 "EHLO mga11.intel.com"
+        id S1726513AbgI1OGZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 28 Sep 2020 10:06:25 -0400
+Received: from mga18.intel.com ([134.134.136.126]:10612 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgI1OEl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 10:04:41 -0400
-IronPort-SDR: aUtvYIForp7ysAl/qzHyJxl3HOdTLSKQ5WU2vpY4cdS3T1Nhzsje/wlIeKZmlmY4XU/A1s3Olb
- ZNLWomBnTyXA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="159339285"
+        id S1726291AbgI1OGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 10:06:25 -0400
+IronPort-SDR: XcHF2vwALD4ov6orVKnT/bYHW8ePw1wfmsF2D5xW4kB+mJmrhG+KYRXlIMapAgmB9A2EUwyTOc
+ D6g0xFjagXPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="149771967"
 X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="159339285"
+   d="scan'208";a="149771967"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:04:41 -0700
-IronPort-SDR: bSjZtT+3Bd0LZJOmJVSs5VoAj1QCix81AP6hfFZuvRE2NDmeqjgL3xv0q7gE5S8+I7JZYywQsF
- rgejAw1wwU9g==
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:06:24 -0700
+IronPort-SDR: 6Kb5hjKCDpJQ/cPEQrLQ+lRQkX3rMfMeGiAHG/nUOi75rYIJqVecVtxjgpyJUM9gWsoWE3MIiO
+ fCNDb4NchwUw==
 X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="293263820"
-Received: from kdeng-mobl.amr.corp.intel.com (HELO [10.212.231.239]) ([10.212.231.239])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:04:38 -0700
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-References: <20200924200156.GA19127@linux.intel.com>
- <e4bcb25f-581a-da93-502b-b8f73e28286a@intel.com>
- <20200924202549.GB19127@linux.intel.com>
- <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
- <20200924230501.GA20095@linux.intel.com>
- <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
- <20200925000052.GA20333@linux.intel.com>
- <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
- <20200925194304.GE31528@linux.intel.com>
- <230ce6da-7820-976f-f036-a261841d626f@intel.com>
- <20200928005347.GB6704@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
-Date:   Mon, 28 Sep 2020 07:04:38 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+   d="scan'208";a="488594149"
+Received: from schuethe-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.34.214])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 07:06:22 -0700
+Date:   Mon, 28 Sep 2020 17:06:23 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     tyhicks@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [Regression] "tpm: Require that all digests are present in
+ TCG_PCR_EVENT2 structures" causes null pointer dereference
+Message-ID: <20200928140623.GA69515@linux.intel.com>
+References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <20200928005347.GB6704@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/20 5:53 PM, Jarkko Sakkinen wrote:
-> On Fri, Sep 25, 2020 at 12:53:35PM -0700, Dave Hansen wrote:
->> On 9/25/20 12:43 PM, Sean Christopherson wrote:
->>>> That means that the intent argument (SGX_PROT_*) is currently unused.
->>> No, the intent argument is used (eventually) by SGX's ->mprotect()
->>> implementation, i.e. sgx_mprotect() enforces that the actual protections are a
->>> subset of the declared/intended protections.
->>>
->>> If ->mprotect() is not merged, then it yes, it will be unused.
->>
->> OK, I think I've got it.
->>
->> I think I'm OK with adding ->mprotect().  As long as folks buy into the
->> argument that intent needs to be checked at mmap() time, they obviously
->> need to be checked at mprotect() too.
->>
->> Jarkko, if you want to try and rewrite the changelog, capturing the
->> discussion here and reply, I think I can ack the resulting patch.  I
->> don't know if that will satisfy the request from Boris from an ack from
->> a "mm person", but we can at least start there. :)
-> 
-> I think what it needs, based on what I've read, is the step by step
-> description of the EMODPE scenarion without this callback and with it.
+On Mon, Sep 28, 2020 at 08:31:04PM +0800, Kai-Heng Feng wrote:
+> Commit 7f3d176f5f7e "tpm: Require that all digests are present in
+> TCG_PCR_EVENT2 structures" causes a null pointer dereference on all
+> laptops I have:
 
-EMODPE is virtually irrelevant for this whole thing.  The x86 PTE
-permissions still specify the most restrictive permissions, which is
-what matters the most.
+...
 
-We care about the _worst_ the enclave can do, not what it imposes on
-itself on top of that.
+> [   17.868849] BUG: kernel NULL pointer dereference, address: 000000000000002c
+> [   17.868852] #PF: supervisor read access in kernel mode
+> [   17.868854] #PF: error_code(0x0000) - not-present page
+> [   17.868855] PGD 0 P4D 0 
+> [   17.868858] Oops: 0000 [#1] SMP PTI
+> [   17.868860] CPU: 0 PID: 1873 Comm: fwupd Not tainted 5.8.0-rc6+ #25
+> [   17.868861] Hardware name: LENOVO 20LAZ3TXCN/20LAZ3TXCN, BIOS N27ET38W (1.24 ) 11/28/2019
+> [   17.868866] RIP: 0010:tpm2_bios_measurements_start+0x38/0x1f0
+> [   17.868868] Code: 55 41 54 53 48 83 ec 30 4c 8b 16 65 48 8b 04 25 28 00 00 00 48 89 45 d0 48 8b 47 70 4c 8b a0 d0 06 00 00 48 8b 88 d8 06 00 00 <41> 8b 5c 24 1c 48 89 4d b0 48 89 d8 48 83 c3 20 4d 85 d2 75 31 4c
+> [   17.868869] RSP: 0018:ffff9da500a9fde0 EFLAGS: 00010282
+> [   17.868871] RAX: ffff917d03dc4000 RBX: 0000000000000000 RCX: 0000000000000010
+> [   17.868872] RDX: 0000000000001000 RSI: ffff917c99b19460 RDI: ffff917c99b19438
+> [   17.868873] RBP: ffff9da500a9fe38 R08: ffffbda4ffa33fc0 R09: ffff917cbfeae4c0
+> [   17.868874] R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000010
+> [   17.868875] R13: ffff917c99b19438 R14: ffff917c99b19460 R15: ffff917c99b19470
+> [   17.868876] FS:  00007f9d80988b00(0000) GS:ffff917d07400000(0000) knlGS:0000000000000000
+> [   17.868877] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   17.868878] CR2: 000000000000002c CR3: 0000000219b12004 CR4: 00000000003606f0
+> [   17.868879] Call Trace:
+> [   17.868884]  seq_read+0x95/0x470
+> [   17.868887]  ? security_file_permission+0x150/0x160
+> [   17.868889]  vfs_read+0xaa/0x190
+> [   17.868891]  ksys_read+0x67/0xe0
+> [   17.868893]  __x64_sys_read+0x1a/0x20
+> [   17.868896]  do_syscall_64+0x52/0xc0
+> [   17.868898]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [   17.868900] RIP: 0033:0x7f9d83be91dc
+> [   17.868901] Code: Bad RIP value.
+> [   17.868902] RSP: 002b:00007fff7f5e0250 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+> [   17.868903] RAX: ffffffffffffffda RBX: 00005651d262f420 RCX: 00007f9d83be91dc
+> [   17.868904] RDX: 0000000000001000 RSI: 00007fff7f5e0350 RDI: 0000000000000010
+> [   17.868905] RBP: 00007f9d83cc54a0 R08: 0000000000000000 R09: 00005651d26c1830
+> [   17.868906] R10: 00005651d2582010 R11: 0000000000000246 R12: 0000000000001000
+> [   17.868907] R13: 00007fff7f5e0350 R14: 0000000000000d68 R15: 00007f9d83cc48a0
+> [   17.868909] Modules linked in: rfcomm ccm cmac algif_hash algif_skcipher af_alg snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic bnep joydev mei_hdcp wmi_bmof intel_rapl_msr intel_wmi_thunderbolt x86_pkg_temp_thermal intel_powerclamp coretemp nls_iso8859_1 kvm_intel kvm crct10dif_pclmul crc32_pclmul ghash_clmulni_intel aesni_intel glue_helper crypto_simd cryptd rapl input_leds intel_cstate snd_hda_intel snd_intel_dspcfg rmi_smbus iwlmvm snd_hda_codec serio_raw snd_hwdep mac80211 rmi_core snd_hda_core libarc4 uvcvideo snd_pcm videobuf2_vmalloc btusb videobuf2_memops iwlwifi videobuf2_v4l2 btrtl btbcm videobuf2_common btintel thunderbolt i915 bluetooth mei_me videodev thinkpad_acpi nvram cfg80211 ledtrig_audio mei mc ecdh_generic ecc i2c_algo_bit processor_thermal_device snd_seq_midi drm_kms_helper snd_seq_midi_event intel_soc_dts_iosf syscopyarea sysfillrect snd_rawmidi intel_pch_thermal sysimgblt intel_rapl_common intel_xhci_usb_role_switch fb_sys_fops ucsi_acpi roles cec
+> [   17.868935]  typec_ucsi typec nxp_nci_i2c snd_seq nxp_nci wmi nci nfc snd_timer snd_seq_device snd int3403_thermal soundcore int340x_thermal_zone video mac_hid int3400_thermal acpi_pad acpi_thermal_rel sch_fq_codel parport_pc ppdev lp parport drm ip_tables x_tables autofs4 btrfs blake2b_generic libcrc32c xor zstd_compress raid6_pq uas usb_storage psmouse e1000e nvme i2c_i801 i2c_smbus nvme_core intel_lpss_pci intel_lpss idma64 virt_dma pinctrl_sunrisepoint pinctrl_intel
+> [   17.868951] CR2: 000000000000002c
+> [   17.868953] ---[ end trace ee7716fff5dec2fb ]---
+> [   17.868955] RIP: 0010:tpm2_bios_measurements_start+0x38/0x1f0
+> [   17.868957] Code: 55 41 54 53 48 83 ec 30 4c 8b 16 65 48 8b 04 25 28 00 00 00 48 89 45 d0 48 8b 47 70 4c 8b a0 d0 06 00 00 48 8b 88 d8 06 00 00 <41> 8b 5c 24 1c 48 89 4d b0 48 89 d8 48 83 c3 20 4d 85 d2 75 31 4c
+> [   17.868958] RSP: 0018:ffff9da500a9fde0 EFLAGS: 00010282
+> [   17.868959] RAX: ffff917d03dc4000 RBX: 0000000000000000 RCX: 0000000000000010
+> [   17.868960] RDX: 0000000000001000 RSI: ffff917c99b19460 RDI: ffff917c99b19438
+> [   17.868961] RBP: ffff9da500a9fe38 R08: ffffbda4ffa33fc0 R09: ffff917cbfeae4c0
+> [   17.868962] R10: 0000000000000000 R11: 0000000000000002 R12: 0000000000000010
+> [   17.868963] R13: ffff917c99b19438 R14: ffff917c99b19460 R15: ffff917c99b19470
+> [   17.868964] FS:  00007f9d80988b00(0000) GS:ffff917d07400000(0000) knlGS:0000000000000000
+> [   17.868965] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [   17.868966] CR2: 000000000000002c CR3: 0000000219b12004 CR4: 00000000003606f0
 
-> I think other important thing to underline is that an LSM or any other
-> security measure can only do a sane decision when the enclave is loaded.
-> At that point we know the source (vm_file).
+It is possible but initially feels a bit weird:
 
-Right, you know the source, but it can be anonymous or a file.
+-                  sizeof(TCG_SPECID_SIG)) || count > efispecid->num_algs) {
++                  sizeof(TCG_SPECID_SIG)) ||
++           !efispecid->num_algs || count != efispecid->num_algs) {
+
+Assuming that check does not pass because of a more strict constraint,
+__calc_tpm2_event_size() returns 0.
+
+It is wrapped like this in drivers/char/tpm/eventlog/tpm2.c:
+
+static size_t calc_tpm2_event_size(struct tcg_pcr_event2_head *event,
+				   struct tcg_pcr_event *event_header)
+{
+	return __calc_tpm2_event_size(event, event_header, false);
+}
+
+I.e. TPM_MEMUNMAP will not get executed because "do_mapping == false".
+tpm2_bios_measurements_start() checks for "size == 0" and returns NULL
+whenever this happens.
+
+Are you 100% sure that it is exactly this commit that triggers the bug?
+
+/Jarkko
