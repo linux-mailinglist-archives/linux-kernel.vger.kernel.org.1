@@ -2,117 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF24D27AD44
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 709EA27AD5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbgI1LxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgI1LxJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:53:09 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15E96C061755;
-        Mon, 28 Sep 2020 04:53:09 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id 26so977901ois.5;
-        Mon, 28 Sep 2020 04:53:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WQxf8eR0dURUFnxSfO8awhZP1MTj2t0jw3MmlFzeHs0=;
-        b=GMtSjZZfxG9MbEdffePlO1h7sC8ZgA63nZOWgJl6O48iDiGXuLeFSRWMwtxi8ApR5d
-         WO6QHpzwYEQSnol1QWCM3fhLtodSPBObnSi4NDrpDMe/DlxKbN/cxOp6H5x+B06ytI2D
-         ZABv1vTdi2CWD6G3MMfXTr3IiEVXXt84u/gtI6VqlnMe2o6aoHbl7XzHxU9iRK53asTK
-         K4Y3AxkrNychFccLD+p9Rp5/UQc23Jku0q/1HOBxumpU+GZhV0sFFMNnYTCmjZtSEzGL
-         adr1lYYEIT/L8/F76Sg8WB8Yy9ZdkPDAsJ7FfgnxD3Rjd5Hb3YvUuyndx/F7R+2Ycnjm
-         PVXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WQxf8eR0dURUFnxSfO8awhZP1MTj2t0jw3MmlFzeHs0=;
-        b=nGYPNMKt3aVvGWMGSxDPEepyzRcZ1WTNB18ulVPAvlvbtl1O/F0a6pepRRz0Msb4lm
-         l4x3MlhWzkoVmMfAR4cRJ61Xz7CcR4CaBhYKSHreyKpI0no9W917AqxVasFpPrBrKutv
-         LnxCuVSwldwb0sRdSUhFsayFco9KrTCEguIWcJ6icBSc822T6aQgBiXcvvV0M+sDRdF4
-         hhIEZga+eG7lSlgjraxAEc1BKJuFLSzAzUrIEGLVviWvvJEtngTy4714pviAFy0UOnl5
-         4+IEH3f0G83p48nxJONFvhbe04YFe7JOe5c4hVJ5iUFbsedeFhY+IOZ/Jxi/obF7bF6x
-         nqXg==
-X-Gm-Message-State: AOAM531dFTLtgCXmvIrJXrzLcGpLnDROWtCWsNvHANs8doAvfNZi24AH
-        io2p2YHHIxCNet+iNcruGZGDxzmf3RUucWyH+Lw=
-X-Google-Smtp-Source: ABdhPJxlSoQmFcr9h6f4O8+MFkJPm4gQcBxjML8NNr9yV3njDHhlIjZIlTgJiAkWjrev48D1bqggdKZvPN7/31UXFe8=
-X-Received: by 2002:a05:6808:98f:: with SMTP id a15mr665150oic.58.1601293988496;
- Mon, 28 Sep 2020 04:53:08 -0700 (PDT)
+        id S1726742AbgI1L5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:57:15 -0400
+Received: from mga01.intel.com ([192.55.52.88]:35629 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726559AbgI1L5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:57:12 -0400
+IronPort-SDR: SEXSGMJ9NfPxqxzlXEnDacL3WBxp/DlEap4G/lLa8IFvNrZ1n1JNEJukQJlVJcDD++6k9YAr4t
+ 9i5fCS1Gvf2Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="180135752"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208,223";a="180135752"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 04:53:05 -0700
+IronPort-SDR: zzNG14OF8XTMxMxLkG0kTbK7Bo7jmhFqNh1qV0RmKkpcZtihvVj9uT6rFdU/yVl+sugHRrob1E
+ gegvzyejPPHg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208,223";a="414958496"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 28 Sep 2020 04:53:02 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 28 Sep 2020 14:53:01 +0300
+Date:   Mon, 28 Sep 2020 14:53:01 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>, pavel@ucw.cz,
+        dmurphy@ti.com, jacek.anaszewski@gmail.com,
+        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] leds: lp50xx: Fix an error handling path in
+ 'lp50xx_probe_dt()'
+Message-ID: <20200928115301.GB3987353@kuha.fi.intel.com>
+References: <20200922210515.385099-1-christophe.jaillet@wanadoo.fr>
+ <20200923133510.GJ4282@kadam>
+ <faa49efc-5ba5-b6bd-b486-2f7c4611219b@wanadoo.fr>
+ <20200924064932.GP18329@kadam>
 MIME-Version: 1.0
-References: <cover.1598868203.git.yulei.kernel@gmail.com> <CANRm+CwhTVHXOV6HzawHS5E_ELA3nEw0AxY1-w8vX=EsADWGSw@mail.gmail.com>
- <CANRm+CydqYmVbYz2pkT28wjKFS4AvmZ_iS4Sn1rnHT6G1S_=Mw@mail.gmail.com>
- <CANgfPd8uvkYyHLJh60vSKp1ZDi9T0ZWM9SeXEUm-1da+DqxTEQ@mail.gmail.com>
- <CACZOiM1JTX3w567dzThM-nPUrUksPnxks4goafoALDq1z_iNsw@mail.gmail.com>
- <CANgfPd-ZRW676grgOmm2E2+_RtFaiJfspnKseHMKgsHGfepmig@mail.gmail.com> <2592097d-3190-1862-b438-9e1b16616b82@redhat.com>
-In-Reply-To: <2592097d-3190-1862-b438-9e1b16616b82@redhat.com>
-From:   yulei zhang <yulei.kernel@gmail.com>
-Date:   Mon, 28 Sep 2020 19:52:57 +0800
-Message-ID: <CACZOiM3LdZKyDEPswa1tcKW3-joJMk0jHU3fDn-v9K8hOo1vvQ@mail.gmail.com>
-Subject: Re: [RFC V2 0/9] x86/mmu:Introduce parallel memory virtualization to
- boost performance
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, Wanpeng Li <kernellwp@gmail.com>,
-        kvm <kvm@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Haiwei Li <lihaiwei.kernel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="RnlQjJ0d97Da+TV1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200924064932.GP18329@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 4:50 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 25/09/20 19:30, Ben Gardon wrote:
-> > Oh, thank you for explaining that. I didn't realize the goal here was
-> > to improve LM performance. I was under the impression that this was to
-> > give VMs a better experience on startup for fast scaling or something.
-> > In your testing with live migration how has this affected the
-> > distribution of time between the phases of live migration? Just for
-> > terminology (since I'm not sure how standard it is across the
-> > industry) I think of a live migration as consisting of 3 stages:
-> > precopy, blackout, and postcopy. In precopy we're tracking the VM's
-> > working set via dirty logging and sending the contents of its memory
-> > to the target host. In blackout we pause the vCPUs on the source, copy
-> > minimal data to the target, and resume the vCPUs on the target. In
-> > postcopy we may still have some pages that have not been copied to the
-> > target and so request those in response to vCPU page faults via user
-> > fault fd or some other mechanism.
-> >
-> > Does EPT pre-population preclude the use of a postcopy phase?
->
-> I think so.
->
-> As a quick recap, turn postcopy migration handles two kinds of
-> pages---they can be copied to the destination either in background
-> (stuff that was dirty when userspace decided to transition to the
-> blackout phase) or on-demand (relayed from KVM to userspace via
-> get_user_pages and userfaultfd).  Normally only on-demand pages would be
-> served through userfaultfd, while with prepopulation every missing page
-> would be faulted in from the kernel through userfaultfd.  In practice
-> this would just extend the blackout phase.
->
-> Paolo
->
 
-Yep, you are right, based on current implementation it doesn't support the
-postcopy. Thanks for the suggestion, we will try to fill the gap with proper
-EPT population during the post-copy.
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-> > I would
-> > expect that to make the blackout phase really long. Has that not been
-> > a problem for you?
-> >
-> > I love the idea of partial EPT pre-population during precopy if you
-> > could still handle postcopy and just pre-populate as memory came in.
-> >
->
+On Thu, Sep 24, 2020 at 09:49:32AM +0300, Dan Carpenter wrote:
+> On Wed, Sep 23, 2020 at 08:49:56PM +0200, Christophe JAILLET wrote:
+> > Le 23/09/2020 à 15:35, Dan Carpenter a écrit :
+> > > I've added Heikki Krogerus to the CC list because my question is mostly
+> > > about commit 59abd83672f7 ("drivers: base: Introducing software nodes to
+> > > the firmware node framework").
+> > > 
+> > > I have been trying to teach Smatch to understand reference counting so
+> > > it can discover these kinds of bugs automatically.
+> > > 
+> > > I don't know how software_node_get_next_child() can work when it doesn't
+> > > call kobject_get().  This sort of bug would have been caught in testing
+> > > because it affects the success path so I must be reading the code wrong.
+> > > 
+> > 
+> > I had the same reading of the code and thought that I was missing something
+> > somewhere.
+> > 
+> > There is the same question about 'acpi_get_next_subnode' which is also a
+> > '.get_next_child_node' function, without any ref counting, if I'm correct.
+> > 
+> 
+> Yeah, but there aren't any ->get/put() ops for the acpi_get_next_subnode()
+> stuff so it's not a problem.  (Presumably there is some other sort of
+> refcounting policy there).
+
+OK, so I guess we need to make software_node_get_next_child()
+mimic the behaviour of of_get_next_available_child(), and not
+acpi_get_next_subnode(). Does the attached patch work?
+
+
+thanks,
+
+-- 
+heikki
+
+--RnlQjJ0d97Da+TV1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-software-nodes-Handle-the-refcounting-also-in-softwa.patch"
+
+From 9b5744450d07b1e6e32e441785b9b69d7e54a7b1 Mon Sep 17 00:00:00 2001
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Date: Mon, 28 Sep 2020 14:38:09 +0300
+Subject: [PATCH] software nodes: Handle the refcounting also in
+ software_node_get_next_child()
+
+Incrementing the reference count of the node that is
+returned in software_node_get_next_child(), and decrementing
+the reference count of the previous node.
+
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+ drivers/base/swnode.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index 010828fc785bc..adbaafab3887b 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -439,18 +439,26 @@ static struct fwnode_handle *
+ software_node_get_next_child(const struct fwnode_handle *fwnode,
+ 			     struct fwnode_handle *child)
+ {
+-	struct swnode *p = to_swnode(fwnode);
+-	struct swnode *c = to_swnode(child);
++	struct swnode *parent = to_swnode(fwnode);
++	struct swnode *prev = to_swnode(child);
++	struct swnode *next;
+ 
+-	if (!p || list_empty(&p->children) ||
+-	    (c && list_is_last(&c->entry, &p->children)))
++	if (!parent || list_empty(&parent->children))
+ 		return NULL;
+ 
+-	if (c)
+-		c = list_next_entry(c, entry);
+-	else
+-		c = list_first_entry(&p->children, struct swnode, entry);
+-	return &c->fwnode;
++	if (prev && list_is_last(&prev->entry, &parent->children)) {
++		kobject_put(&prev->kobj);
++		return NULL;
++	}
++
++	if (prev) {
++		next = list_next_entry(prev, entry);
++		kobject_put(&prev->kobj);
++	} else {
++		next = list_first_entry(&parent->children, struct swnode, entry);
++	}
++
++	return fwnode_handle_get(&next->fwnode);
+ }
+ 
+ static struct fwnode_handle *
+-- 
+2.28.0
+
+
+--RnlQjJ0d97Da+TV1--
