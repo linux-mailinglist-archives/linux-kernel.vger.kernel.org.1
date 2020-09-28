@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956DE27A4F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 02:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8899927A4F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 02:58:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgI1Azy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 20:55:54 -0400
-Received: from mx.socionext.com ([202.248.49.38]:27379 "EHLO mx.socionext.com"
+        id S1726478AbgI1A6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 20:58:48 -0400
+Received: from mga03.intel.com ([134.134.136.65]:3753 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726393AbgI1Azy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 20:55:54 -0400
-Received: from unknown (HELO kinkan-ex.css.socionext.com) ([172.31.9.52])
-  by mx.socionext.com with ESMTP; 28 Sep 2020 09:55:52 +0900
-Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
-        by kinkan-ex.css.socionext.com (Postfix) with ESMTP id 7A036180BE1;
-        Mon, 28 Sep 2020 09:55:52 +0900 (JST)
-Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Mon, 28 Sep 2020 09:55:52 +0900
-Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
-        by iyokan.css.socionext.com (Postfix) with ESMTP id 47B9B4035E;
-        Mon, 28 Sep 2020 09:55:52 +0900 (JST)
-Received: from [10.212.1.203] (unknown [10.212.1.203])
-        by yuzu.css.socionext.com (Postfix) with ESMTP id 9345C120B9F;
-        Mon, 28 Sep 2020 09:55:51 +0900 (JST)
-Subject: Re: [PATCH 2/3] PCI: dwc: Add common iATU register support
-From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
+        id S1726393AbgI1A6s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 27 Sep 2020 20:58:48 -0400
+IronPort-SDR: Qrwq7sieAnXW2K3yAcbLs8Ds5D86rNKJPtpfgD/45dl3YHzhG/ppF6O6cBmbKDDyjc5TVJirC0
+ DYe8wuiKOkkQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="161980969"
+X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
+   d="scan'208";a="161980969"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 17:58:48 -0700
+IronPort-SDR: a893AbrkDh9NEqsvVgsFECYLvDp1TGe5NEn8Kf3iYsyO9hWGRj2HhNerB/5u+vChTtTHg6xArP
+ 464TFTaa3iFQ==
+X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
+   d="scan'208";a="488354243"
+Received: from memara-mobl.ger.corp.intel.com (HELO localhost) ([10.252.49.157])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 17:58:40 -0700
+Date:   Mon, 28 Sep 2020 03:58:42 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Murali Karicheri <m-karicheri2@ti.com>,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <1599814203-14441-1-git-send-email-hayashi.kunihiko@socionext.com>
- <1599814203-14441-3-git-send-email-hayashi.kunihiko@socionext.com>
- <20200923155700.GA820801@bogus>
- <aef56eed-3966-cb1b-75f3-4b5dffc710c8@socionext.com>
-Message-ID: <a7cbceee-aaee-e770-85a8-99ee2eab0466@socionext.com>
-Date:   Mon, 28 Sep 2020 09:55:51 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200928005842.GC6704@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
 MIME-Version: 1.0
-In-Reply-To: <aef56eed-3966-cb1b-75f3-4b5dffc710c8@socionext.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/09/25 18:10, Kunihiko Hayashi wrote:
-> Hi Rob,
+On Fri, Sep 25, 2020 at 07:23:59PM +0100, Andrew Cooper wrote:
+> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
+> > diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > new file mode 100644
+> > index 000000000000..adbd59d41517
+> > --- /dev/null
+> > +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > @@ -0,0 +1,157 @@
+> > +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+> > <snip>
+> > +.Lretpoline:
+> > +	call	2f
+> > +1:	pause
+> > +	lfence
+> > +	jmp	1b
+> > +2:	mov	%rax, (%rsp)
+> > +	ret
 > 
-> On 2020/09/24 0:57, Rob Herring wrote:
->> On Fri, Sep 11, 2020 at 05:50:02PM +0900, Kunihiko Hayashi wrote:
->>> This gets iATU register area from reg property that has reg-names "atu".
->>> In Synopsys DWC version 4.80 or later, since iATU register area is
->>> separated from core register area, this area is necessary to get from
->>> DT independently.
->>>
->>> Cc: Murali Karicheri <m-karicheri2@ti.com>
->>> Cc: Jingoo Han <jingoohan1@gmail.com>
->>> Cc: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
->>> Suggested-by: Rob Herring <robh@kernel.org>
->>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
->>> ---
->>>   drivers/pci/controller/dwc/pcie-designware.c | 8 +++++++-
->>>   1 file changed, 7 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
->>> index 4d105ef..4a360bc 100644
->>> --- a/drivers/pci/controller/dwc/pcie-designware.c
->>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
->>> @@ -10,6 +10,7 @@
->>>   #include <linux/delay.h>
->>>   #include <linux/of.h>
->>> +#include <linux/of_platform.h>
->>>   #include <linux/types.h>
->>>   #include "../../pci.h"
->>> @@ -526,11 +527,16 @@ void dw_pcie_setup(struct dw_pcie *pci)
->>>       u32 val;
->>>       struct device *dev = pci->dev;
->>>       struct device_node *np = dev->of_node;
->>> +    struct platform_device *pdev;
->>>       if (pci->version >= 0x480A || (!pci->version &&
->>>                          dw_pcie_iatu_unroll_enabled(pci))) {
->>>           pci->iatu_unroll_enabled = true;
->>> -        if (!pci->atu_base)
->>> +        pdev = of_find_device_by_node(np);
->>
->> Use to_platform_device(dev) instead. Put that at the beginning as I'm
->> going to move 'dbi' in here too.
+> I hate to throw further spanners in the work, but this is not compatible
+> with CET, and the user shadow stack work in progress.
+
+CET goes beyond my expertise. Can you describe, at least rudimentary,
+how this code is not compatible?
+
+I know CET only conceptual level (separate stack holding return
+addresses as an measure against return oriented programming (ROP)).
+
+> Whichever of these two large series lands first is going to inflict
+> fixing this problem on the other.
 > 
-> Okay, I'll rewrite it with to_platform_device(dev).
-> Should I refer somewhere to rebase to your change?
-It seems there is no dbi patch yet, so I'm going to send v2 in advance
-for now. I can rebase it if necessary.
+> As the vdso text is global (to a first approximation), it must not be a
+> retpoline if any other process is liable to want to use CET-SS.
 
-Thank you,
+Why is that?
 
----
-Best Regards
-Kunihiko Hayashi
+> If the retpoline really does need to stay, then the vdso probably needs
+> to gain suitable __x86_indirect_thunk_%reg thunks which are patched at
+> boot based on the system properties.
+> 
+> ~Andrew
+
+aka without CET it is patched? With CET, not?
+
+/Jarkko
