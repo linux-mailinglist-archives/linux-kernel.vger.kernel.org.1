@@ -2,138 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A5527B7D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E0627B7F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbgI1XSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbgI1XSn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:18:43 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAA1CC0613D7
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:59:43 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id u6so2761493iow.9
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 14:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3iVoZz4LPLXcD3ObX5Wdg7gmG0g3PTuNak4a1fGnsho=;
-        b=fkSDlWy78hY5FJpMqklZKIdBafKlpwKwacui8jlbDg6A7yns39H/DbvJhAtgfKu7Yj
-         /Qn0qDHBP6AIyNJYRAqT93zGfQyJxif6eSnaD1ZwcpdD0IrKao/9H8B0z1KAJl9q3T3z
-         NwI9cNy2ZGiuCjWcyVNjKFHg2Vn7VX/7a4NOg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3iVoZz4LPLXcD3ObX5Wdg7gmG0g3PTuNak4a1fGnsho=;
-        b=Bo8Lq3EtcecLvvshLjyncWnKQPHhpZ7L6EI1R9vlw8rWcDOQud+yFBU0ya9bXN2M1K
-         ukyLG1bJwXVqWwlefXoCZS+DGEQ0beHJhEBrGHIsWidA6ZMblwBPFk8jxODIqp/dc7d9
-         HgZmbhaWhzwXagfTx2uPTltBZiG6mAk9O8/I8thS4HbcwXCH5DBGG+lHZL+l2IBup2WJ
-         T6OMMraU9m6mM9MDnVnnxQ42puU6aCqSUKcn6oQlMj11JbEW2c+chcUUydsQmimqDMxX
-         O+EkzUljpdbqw38GVkNlXmt0f4WyhHX/Hxo8n34r/V2YirkPqWAxi0DAixsHPl/o4nlN
-         r0ew==
-X-Gm-Message-State: AOAM533YjnrpTnDxVun/+XwsXUIyHzY9Cq4/OFBSDhXSWAX2M3gp9WMB
-        0mg1H/WA7+p7HoaIadOVjrNM4Q==
-X-Google-Smtp-Source: ABdhPJzlEr/qw0libv0a7Eqb6Gy5PvyembzhqhHIRRsVf5kxgY5X0DIbHXD4jYKzt9vW0QaknS7GPQ==
-X-Received: by 2002:a5d:8846:: with SMTP id t6mr247881ios.123.1601330383014;
-        Mon, 28 Sep 2020 14:59:43 -0700 (PDT)
-Received: from rrangel920.bld.corp.google.com (h184-60-195-141.arvdco.broadband.dynamic.tds.net. [184.60.195.141])
-        by smtp.gmail.com with ESMTPSA id 64sm972782iob.36.2020.09.28.14.59.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 14:59:42 -0700 (PDT)
-From:   Raul E Rangel <rrangel@chromium.org>
-To:     linux-mmc@vger.kernel.org, adrian.hunter@intel.com
-Cc:     Shirish.S@amd.com, Akshu.Agrawal@amd.com,
-        Nehal-bakulchandra.Shah@amd.com, chris.wang@amd.com,
-        Raul E Rangel <rrangel@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mmc: sdhci-acpi: AMDI0040: Allow changing HS200/HS400 driver strength
-Date:   Mon, 28 Sep 2020 15:59:21 -0600
-Message-Id: <20200928154718.2.Ic6b6031366f090393d00a53fd69e1ada31ceb29e@changeid>
-X-Mailer: git-send-email 2.28.0.709.gb0816b6eb0-goog
-In-Reply-To: <20200928154718.1.Icc21d4b2f354e83e26e57e270dc952f5fe0b0a40@changeid>
-References: <20200928154718.1.Icc21d4b2f354e83e26e57e270dc952f5fe0b0a40@changeid>
+        id S1727091AbgI1XUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:20:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726379AbgI1XUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:20:32 -0400
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F62721D7F;
+        Mon, 28 Sep 2020 22:01:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1601330488;
+        bh=MZv602zAH+mldtKaHV8n2x/vl5hO6z6CgNiDtNb/co4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=10JFGv45YDJTrlFEV6WQiTAi/TskPMzQj6c6xbeq9coOe6pfxGYK0il/SvxLwNFVy
+         ilsp7OakST5z753hMgoeauIJjW/hdokg8folEDFOfyRy6IK6iooE4J7OMx5EhT2IH7
+         vAD/K7NxbXL/8L1GL3xPWfzt2zHTf9nv6NuiV0QU=
+Date:   Mon, 28 Sep 2020 18:01:27 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux- stable <stable@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        clang-built-linux@googlegroups.com, Jiri Olsa <jolsa@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Stephane Eranian <eranian@google.com>,
+        lkft-triage@lists.linaro.org
+Subject: Re: [PATCH AUTOSEL 4.14 112/127] perf parse-events: Fix incorrect
+ conversion of 'if () free()' to 'zfree()'
+Message-ID: <20200928220127.GE2219727@sasha-vm>
+References: <20200918021220.2066485-1-sashal@kernel.org>
+ <20200918021220.2066485-112-sashal@kernel.org>
+ <CA+G9fYteKZxdLVtQzXyh36hhaj6W5e17U_emsXwZdjPoeyj+OQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYteKZxdLVtQzXyh36hhaj6W5e17U_emsXwZdjPoeyj+OQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change will allow platform designers better control over signal
-integrity by allowing them to tune the HS200 and HS400 driver strengths.
+On Tue, Sep 29, 2020 at 01:24:32AM +0530, Naresh Kamboju wrote:
+>On Fri, 18 Sep 2020 at 08:00, Sasha Levin <sashal@kernel.org> wrote:
+>>
+>> From: Arnaldo Carvalho de Melo <acme@redhat.com>
+>>
+>> [ Upstream commit 7fcdccd4237724931d9773d1e3039bfe053a6f52 ]
+>>
+>> When applying a patch by Ian I incorrectly converted to zfree() an
+>> expression that involved testing some other struct member, not the one
+>> being freed, which lead to bugs reproduceable by:
+>>
+>>   $ perf stat -e i/bs,tsc,L2/o sleep 1
+>>   WARNING: multiple event parsing errors
+>>   Segmentation fault (core dumped)
+>>   $
+>>
+>> Fix it by restoring the test for pos->free_str before freeing
+>> pos->val.str, but continue using zfree(&pos->val.str) to set that member
+>> to NULL after freeing it.
+>>
+>> Reported-by: Ian Rogers <irogers@google.com>
+>> Fixes: e8dfb81838b1 ("perf parse-events: Fix memory leaks found on parse_events")
+>> Cc: Adrian Hunter <adrian.hunter@intel.com>
+>> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+>> Cc: Andi Kleen <ak@linux.intel.com>
+>> Cc: clang-built-linux@googlegroups.com
+>> Cc: Jiri Olsa <jolsa@kernel.org>
+>> Cc: Leo Yan <leo.yan@linaro.org>
+>> Cc: Mark Rutland <mark.rutland@arm.com>
+>> Cc: Namhyung Kim <namhyung@kernel.org>
+>> Cc: Peter Zijlstra <peterz@infradead.org>
+>> Cc: Stephane Eranian <eranian@google.com>
+>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>
+>stable rc 4.14 perf build broken.
 
-The driver strength was previously hard coded to A to solve boot
-problems with certain platforms. This driver strength does not
-universally apply to all platforms so we need a knob to adjust it.
+Dropped, thanks!
 
-All older platforms currently have the SDR104 preset hard coded to A in
-the firmware. This means that switching from the hard coded value in
-the kernel to reading the SDR104 preset is a no-op for these platforms.
-Newer platforms will have properly set presets. So this change will
-support both new and old platforms.
-
-Signed-off-by: Raul E Rangel <rrangel@chromium.org>
----
-
- drivers/mmc/host/sdhci-acpi.c | 39 ++++++++++++++++++++++++++++++++---
- 1 file changed, 36 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
-index d335a34ad05b3..5c9a041af5b4b 100644
---- a/drivers/mmc/host/sdhci-acpi.c
-+++ b/drivers/mmc/host/sdhci-acpi.c
-@@ -545,10 +545,43 @@ struct amd_sdhci_host {
- 
- static int amd_select_drive_strength(struct mmc_card *card,
- 				     unsigned int max_dtr, int host_drv,
--				     int card_drv, int *drv_type)
-+				     int card_drv, int *host_driver_strength)
- {
--	*drv_type = MMC_SET_DRIVER_TYPE_A;
--	return MMC_SET_DRIVER_TYPE_A;
-+	struct sdhci_host *host = mmc_priv(card->host);
-+	u16 preset, preset_driver_strength;
-+
-+	/*
-+	 * This method is only called by mmc_select_hs200 so we only need to
-+	 * read from the HS200 (SDR104) preset register.
-+	 *
-+	 * Firmware that has "invalid/default" presets return a driver strength
-+	 * of A. This matches the previously hard coded value.
-+	 */
-+	preset = sdhci_readw(host, SDHCI_PRESET_FOR_SDR104);
-+	preset_driver_strength =
-+		(preset & SDHCI_PRESET_DRV_MASK) >> SDHCI_PRESET_DRV_SHIFT;
-+
-+	/*
-+	 * We want the controller driver strength to match the card's driver
-+	 * strength so they have similar rise/fall times.
-+	 *
-+	 * The controller driver strength set by this method is sticky for all
-+	 * timings after this method is called. This unfortunately means that
-+	 * while HS400 tuning is in progress we end up with mismatched driver
-+	 * strengths between the controller and the card. HS400 tuning requires
-+	 * switching from HS400->DDR52->HS->HS200->HS400. So the driver mismatch
-+	 * happens while in DDR52 and HS modes. This has not been observed to
-+	 * cause problems. Enabling presets would fix this issue.
-+	 */
-+	*host_driver_strength = preset_driver_strength;
-+
-+	/*
-+	 * The resulting card driver strength is only set when switching the
-+	 * card's timing to HS200 or HS400. The card will use the default driver
-+	 * strength (B) for any other mode.
-+	 */
-+	return preset_driver_strength;
-+
- }
- 
- static void sdhci_acpi_amd_hs400_dll(struct sdhci_host *host, bool enable)
 -- 
-2.28.0.709.gb0816b6eb0-goog
-
+Thanks,
+Sasha
