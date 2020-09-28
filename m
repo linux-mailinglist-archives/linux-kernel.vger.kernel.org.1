@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B56227A724
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70F1D27A725
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 07:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgI1F4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 01:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57872 "EHLO mail.kernel.org"
+        id S1726518AbgI1F4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 01:56:21 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:5143 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726380AbgI1F4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 01:56:04 -0400
-Received: from localhost (unknown [122.179.43.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B10C6207E8;
-        Mon, 28 Sep 2020 05:56:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601272563;
-        bh=qlnBxz6Z2Lauf7/9BU8Jivkibjlg1y08OjFnfsAoXAo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=HojW9nObZlGYVaOKU0Rr4wcOEhiAKDC+TP10XKX4GsG4zblCWvT6iDyYkrs5APfAM
-         VDzejmVrBMtcSPV6wV9bmaQLvgAYZow7IczJib/ae2+XAqR1bLVKaXiTcrGIlJOjUK
-         covUKVoK93ERShWEKjvOx5Vf8dZFZ8B3meOlMqQA=
-Date:   Mon, 28 Sep 2020 11:25:40 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: Generic PHY fixes for v5.9
-Message-ID: <20200928055540.GJ2968@vkoul-mobl>
+        id S1725308AbgI1F4V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 01:56:21 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4C0BbG5lCQz9v0fj;
+        Mon, 28 Sep 2020 07:56:10 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id qrVmKyF7AUkt; Mon, 28 Sep 2020 07:56:10 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4C0BbG4mWfz9v0fh;
+        Mon, 28 Sep 2020 07:56:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 51D2F8B782;
+        Mon, 28 Sep 2020 07:56:17 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id DRoorLxFwtMj; Mon, 28 Sep 2020 07:56:17 +0200 (CEST)
+Received: from [10.25.210.27] (unknown [10.25.210.27])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id F27AE8B75B;
+        Mon, 28 Sep 2020 07:56:16 +0200 (CEST)
+Subject: Re: [PATCH] tpm: of: avoid __va() translation for event log address
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-integrity <linux-integrity@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, Ard Biesheuvel <ardb@kernel.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200922094128.26245-1-ardb@kernel.org>
+ <20200925055626.GC165011@linux.intel.com>
+ <CAMj1kXFLWsFz7HV4sHLbwBkuiEu0gT4esSH8umVrvDDrJaOLrQ@mail.gmail.com>
+ <20200925102920.GA180915@linux.intel.com> <20200925120018.GH9916@ziepe.ca>
+ <20200927234434.GA5283@linux.intel.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <9be9c7e7-c424-d241-2255-ad854221bd2e@csgroup.eu>
+Date:   Mon, 28 Sep 2020 07:56:07 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4jXrM3lyYWu4nBt5"
-Content-Disposition: inline
+In-Reply-To: <20200927234434.GA5283@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---4jXrM3lyYWu4nBt5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Greg,
+Le 28/09/2020 à 01:44, Jarkko Sakkinen a écrit :
+> On Fri, Sep 25, 2020 at 09:00:18AM -0300, Jason Gunthorpe wrote:
+>> On Fri, Sep 25, 2020 at 01:29:20PM +0300, Jarkko Sakkinen wrote:
+>>> On Fri, Sep 25, 2020 at 09:00:56AM +0200, Ard Biesheuvel wrote:
+>>>> On Fri, 25 Sep 2020 at 07:56, Jarkko Sakkinen
+>>>> <jarkko.sakkinen@linux.intel.com> wrote:
+>>>>>
+>>>>> On Tue, Sep 22, 2020 at 11:41:28AM +0200, Ard Biesheuvel wrote:
+>>>>>> The TPM event log is provided to the OS by the firmware, by loading
+>>>>>> it into an area in memory and passing the physical address via a node
+>>>>>> in the device tree.
+>>>>>>
+>>>>>> Currently, we use __va() to access the memory via the kernel's linear
+>>>>>> map: however, it is not guaranteed that the linear map covers this
+>>>>>> particular address, as we may be running under HIGHMEM on a 32-bit
+>>>>>> architecture, or running firmware that uses a memory type for the
+>>>>>> event log that is omitted from the linear map (such as EfiReserved).
+>>>>>
+>>>>> Makes perfect sense to the level that I wonder if this should have a
+>>>>> fixes tag and/or needs to be backported to the stable kernels?
+>>>>>
+>>>>
+>>>> AIUI, the code was written specifically for ppc64, which is a
+>>>> non-highmem, non-EFI architecture. However, when we start reusing this
+>>>> driver for ARM, this issue could pop up.
+>>>>
+>>>> The code itself has been refactored a couple of times, so I think it
+>>>> will require different versions of the patch for different generations
+>>>> of stable kernels.
+>>>>
+>>>> So perhaps just add Cc: <stable@vger.kernel.org>, and wait and see how
+>>>> far back it applies cleanly?
+>>>
+>>> Yeah, I think I'll cc it with some note before the diffstat.
+>>>
+>>> I'm thinking to cap it to only 5.x kernels (at least first) unless it is
+>>> dead easy to backport below that.
+>>
+>> I have this vauge recollection of pointing at this before and being
+>> told that it had to be __va for some PPC reason?
+>>
+>> Do check with the PPC people first, I see none on the CC list.
+>>
+>> Jason
+> 
+> Thanks, added arch/powerpc maintainers.
+> 
 
-We have a leak fix for TI driver, please consider for v5.9
+As far as I can see, memremap() won't work on PPC32 at least:
 
-The following changes since commit ad7a7acaedcf45071c822b6c983f9c1e084041c9:
+IIUC, memremap() calls arch_memremap_wb()
+arch_memremap_wb() calls ioremap_cache()
+In case of failure, then ioremap_wt() and ioremap_wc() are tried.
 
-  phy: omap-usb2-phy: disable PHY charger detect (2020-08-31 14:30:59 +0530)
+All ioremap calls end up in __ioremap_caller() which will return NULL in case you try to ioremap RAM.
 
-are available in the Git repository at:
+So the statement "So instead, use memremap(), which will reuse the linear mapping if
+it is valid, or create another mapping otherwise." seems to be wrong, at least for PPC32.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-fixes-2-5.9
+Even for PPC64 which doesn't seem to have the RAM check, I can't see that it will "reuse the linear 
+mapping".
 
-for you to fetch changes up to 850280156f6421a404f2351bee07a0e7bedfd4c6:
-
-  phy: ti: am654: Fix a leak in serdes_am654_probe() (2020-09-08 16:23:09 +=
-0530)
-
-----------------------------------------------------------------
-phy: Second round of fixes for 5.9
-
-*) Fix of leak in TI phy driver
-
-----------------------------------------------------------------
-Dan Carpenter (1):
-      phy: ti: am654: Fix a leak in serdes_am654_probe()
-
- drivers/phy/ti/phy-am654-serdes.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-
---=20
-~Vinod
-
---4jXrM3lyYWu4nBt5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl9xetwACgkQfBQHDyUj
-g0eTFw/+Ng26JKTOLmtR8y0ThGjfnhT8+Sh/9vrrlk6UsTPK3WAA23S+1dLWd9aU
-dWKLzJ+ujmcLJPfTPevsUTmjBfplpicnUrQcpTzo9dxTMHmVthQQHeF9o/vWQlQ9
-kuygQ8jB3Kd7J3DNIZo6etiueFMej043uwLdBtSOZMK5ug5N7aQrYZWw/zjl23NG
-TAE5NoutAH+kMRyyqZATX24lmRZkEfPk1g36AdTOc5YMdKlstpPXzzcBXpt73LXP
-dKr9acNAKL68Pd5D0Ntnnf+gqfZ7n7rVuxAdKzJ/A27iUv2MXm2VS0/g4H7hu0Zg
-D1GhG42x6Snf/mqFoE63JuO72ez2mZ+89qeSNC4Vr2WbnRpuRzCI3r+/GMyxpDoj
-QlAiz/B2FfK9Z+D2gPlG5hUZzxwk3YbxN0Lw6+0Ryn7s3md4Hv3a0R6gE4pImO54
-/U2yKxKSkUBfbjI3T83NAqZwIWxlDFDeBsCEolYuMDQtWvjWsaihINd+jtlya6qL
-lUeV839NF0qL6m03ybVjUjtjYEjcNFZZWzJgcobQgxmWZS9r3F1nr+klJMcB2H41
-H9hMBMRQGR8BQYdg2HpfQ+FYApPgKZ4PiN3ch8D769xsqadLBoSwrYPpwnFAhKmc
-o6dR7c8gMFAhN6HWldVyrg+56XnErfLCvKpvDbZOxx1uIjMl3Tg=
-=Pwhq
------END PGP SIGNATURE-----
-
---4jXrM3lyYWu4nBt5--
+Christophe
