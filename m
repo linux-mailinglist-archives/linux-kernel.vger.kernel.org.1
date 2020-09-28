@@ -2,198 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B45F827ACA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0F227ACAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbgI1LXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39580 "EHLO
+        id S1726615AbgI1LZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726465AbgI1LXs (ORCPT
+        with ESMTP id S1726461AbgI1LZs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:23:48 -0400
-Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF8DC061755
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:23:48 -0700 (PDT)
-Received: by mail-ua1-x942.google.com with SMTP id z1so2053587uaa.6
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:23:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dPqyhHPvAKE8oFtG0HXSnceWMN8F9MOf0pO61krCb1Y=;
-        b=mFX2vgIw/ymy13Qjh/G7aVRGOACw1Fj/ADWUfGlozDS641eSx1hWEkFSVu1esESKHB
-         UgvUnxWEKkoyXHt2GQppOniC5F2M/aHpw+xrsCU17sCP31b/bVtTvUtUzBMuGtkJyCO4
-         9ZwaDtusG19u99CaKHkXc2xtSJnn8TFODC2YHyQo3Z6gziYVZkXmQ4vBrgNUIxjbZI4+
-         t97q6KS543YUmghrGRJDlHkbJ4o8HddYlWvtYRck7UAj/HYKrCGi+iChzCywW1I8gS0w
-         T3Td0+hsZFLVw3kRqLj32n4oOnePgk7isZFeo5d404mzKKfz0KTHG0yUSnbck3JeA8cf
-         UNmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dPqyhHPvAKE8oFtG0HXSnceWMN8F9MOf0pO61krCb1Y=;
-        b=fywQAjsVAusOK9Eu/QsoDIJW3xjSreBleS2MDsLborT+/DN3PQs84OqDRaQjZSrdUu
-         S96CCJHOpD+8fX26EsgQPKzCyslUTdaDZ2NsIrSxuPxFTGR19c+VQ3r9l5qQOF9yUUWy
-         iiulmgosqdMkx/7dlKIOipIvHOXaY28NzInGP72GnsnkM/oBYeKtDoa96TDLvHV+mN5B
-         y5M5zj3goDm2TcuR/S0a5uHDeHuzB2LT1GbD5gporH2Umct3akVSO8h3f0GZYAAmFvhb
-         1m1S4cClhANWTiGqetiYr75y7FQSHAqQqNWtD9mnbkFthWR80wWsZILwQGD2rPHfHBXX
-         C46A==
-X-Gm-Message-State: AOAM532TaAa0ngJoY9u9876XqLCEN+nUwKXOgke65Kc53ekgKZ81yKRM
-        YGJ2isfyDEpmK+EXL/D1Fgs51I5WVhC2fp7dTRsO/Q==
-X-Google-Smtp-Source: ABdhPJwt5PJ9h/2t57J8+266psChAvJLx+l73d4OtTMrMI4/BajbmGg2qnHjsErwIH1mVybopUNZ9072O8Zy3kEiT7w=
-X-Received: by 2002:ab0:2904:: with SMTP id v4mr312369uap.15.1601292227436;
- Mon, 28 Sep 2020 04:23:47 -0700 (PDT)
+        Mon, 28 Sep 2020 07:25:48 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20E64C061755;
+        Mon, 28 Sep 2020 04:25:48 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4C0KvW16dBz9sPB;
+        Mon, 28 Sep 2020 21:25:43 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1601292344;
+        bh=l8e4jZR4SEyL+s/383v75aH6KaBDi8VXqfnr3gJWTng=;
+        h=Date:From:To:Cc:Subject:From;
+        b=nvxZStAOmwH3JedQ17Q6tPtrgAYwuHE9J320H74ZjjPC+PEVnhjDnsv+px3PNZX0c
+         yUQxY4mxPflmYD64pIgqmschcKr285aK1GS3NNJN/VIMi+kITCFL/uzlnagxzKLDxk
+         AJ7EeF4IY8ZjZ0w3ed9GB0UigJGs+Kjp54lNRkiAYhckORMc3qogR007/xbxL55nxk
+         8id2F2Z9GmwiZG7DvQUd1jTm+mt1b5qnXX+8qe0GjwxXexuaFMUNZEobwP26c0ngDD
+         Ud6y3GS1RMp1iccYjLiLD0QrFCnUWdPUY2nPCRevSuiiiln8XpLOtL7iTVBSNwl5J6
+         jiLVVUOLXcvNA==
+Date:   Mon, 28 Sep 2020 21:25:42 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Minchan Kim <minchan@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: linux-next: build failure after merge of the akpm tree
+Message-ID: <20200928212542.468e1fef@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1593615328-5180-1-git-send-email-fabrice.gasnier@st.com>
- <045e9e34-f1e0-087b-bc5b-44440db6be27@st.com> <20200926161732.72af96e3@archlinux>
-In-Reply-To: <20200926161732.72af96e3@archlinux>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 28 Sep 2020 13:23:11 +0200
-Message-ID: <CAPDyKFp=KTf8=zGBSzPYqhjnZpY8xwvjCeM1e-WTKT1QLSxaDA@mail.gmail.com>
-Subject: Re: [RESEND PATCH v2] iio: adc: stm32-adc: fix runtime autosuspend
- delay when slow polling
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Fabrice Gasnier <fabrice.gasnier@st.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        olivier.moysan@st.com, linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/y4Vn+BEnjCX8DmGQlnMY.1p";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jonathan, Fabrice,
+--Sig_/y4Vn+BEnjCX8DmGQlnMY.1p
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 26 Sep 2020 at 17:17, Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Wed, 16 Sep 2020 12:28:00 +0200
-> Fabrice Gasnier <fabrice.gasnier@st.com> wrote:
->
-> > On 7/1/20 4:55 PM, Fabrice Gasnier wrote:
-> > > When the ADC is runtime suspended and starting a conversion, the stm32-adc
-> > > driver calls pm_runtime_get_sync() that gets cascaded to the parent
-> > > (e.g. runtime resume of stm32-adc-core driver). This also kicks the
-> > > autosuspend delay (e.g. 2s) of the parent.
-> > > Once the ADC is active, calling pm_runtime_get_sync() again (upon a new
-> > > capture) won't kick the autosuspend delay for the parent (stm32-adc-core
-> > > driver) as already active.
-> > >
-> > > Currently, this makes the stm32-adc-core driver go in suspend state
-> > > every 2s when doing slow polling. As an example, doing a capture, e.g.
-> > > cat in_voltageY_raw at a 0.2s rate, the auto suspend delay for the parent
-> > > isn't refreshed. Once it expires, the parent immediately falls into
-> > > runtime suspended state, in between two captures, as soon as the child
-> > > driver falls into runtime suspend state:
-> > > - e.g. after 2s, + child calls pm_runtime_put_autosuspend() + 100ms
-> > >   autosuspend delay of the child.
-> > > - stm32-adc-core switches off regulators, clocks and so on.
-> > > - They get switched on back again 100ms later in this example (at 2.2s).
-> > >
-> > > So, use runtime_idle() callback in stm32-adc-core driver to call
-> > > pm_runtime_mark_last_busy() for the parent driver (stm32-adc-core),
-> > > to avoid this.
-> > >
-> > > Fixes: 9bdbb1139ca1 ("iio: adc: stm32-adc: add power management support")
-> > >
-> > > Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-> > > ---
-> > > Changes in v2:
-> > > - Use runtime_idle callback in stm32-adc-core driver, instead of refreshing
-> > >   last_busy from the child (for the parent) at many place. Initial patch v1
-> > >   looked like "somewhat adhoc solution" as commented by Jonathan.
-> >
-> > Hi all,
-> >
-> > Gentle reminder for this patch. Earlier discussions on it were as per
-> > [1] and [2].
-> >
-> > Ideally, Jonathan was looking for an ack from Rafael on this patch.
-> > This is a long pending issue. I'd like to progress on this.
-> >
-> > [1] https://patchwork.kernel.org/patch/11349841/
-> > [2] https://lkml.org/lkml/2020/6/11/279
->
-> Fabrice, I think this one has sat waiting for inputs for
-> too long. Hence I'm going to take a slight gamble that you are correct
-> on doing the fix this way (I'm reasonably convinced)
+Hi all,
 
-My apologies for the huge and unacceptable delay. I have re-started
-looking at this several times, but just never got the point of writing
-a proper reply. Let me do this now, better late than never I guess.
+After merging the akpm tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
-In general, I think this problem (nicely described by Fabrice), should
-be solved in the runtime PM core, without having to involve drivers
-for parents/childs. I have looked into that, but I don't have a patch
-to propose, at least not yet.
+mm/madvise.c: In function '__do_sys_process_madvise':
+mm/madvise.c:1194:9: error: implicit declaration of function 'compat_import=
+_iovec'; did you mean 'import_iovec'? [-Werror=3Dimplicit-function-declarat=
+ion]
+ 1194 |   ret =3D compat_import_iovec(READ,
+      |         ^~~~~~~~~~~~~~~~~~~
+      |         import_iovec
 
-FYI, I have also stumbled over the same problem, for a card controller
-(parent), serving both sd and memstick cards. For that case, we simply
-decided to skip using autosuspend for the child devices (represented
-by an sd host and a memstick host), not optimal, but there were other
-reasons why we decided for this approach as well.
+Caused by commits
 
-That said, I also think the solution proposed in $subject patch, which
-uses the ->runtime_idle() callback for the parent is perfectly fine,
-at least until we have figured out something that can replace it.
+  b50ef3fed31c ("mm/madvise: introduce process_madvise() syscall: an extern=
+al memory hinting API")
+  84b51d510a77 ("mm: do not use helper functions for process_madvise")
 
->
-> Applied to the fixes-togreg branch of iio.git.
-> It won't go in for 5.9 now, so we have a bit of time for any last
-> minute comments.
+interacting with commit
 
-Feel free to add:
+  e42ff3fae0a2 ("iov_iter: transparently handle compat iovecs in import_iov=
+ec")
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+from the vfs tree.
 
-Kind regards
-Uffe
+I have applied the folloing patch for today:
 
->
-> Thanks,
->
-> Jonathan
->
-> >
-> > Please advise,
-> > Thanks in advance,
-> > Fabrice
-> >
-> > > ---
-> > >  drivers/iio/adc/stm32-adc-core.c | 9 ++++++++-
-> > >  1 file changed, 8 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/iio/adc/stm32-adc-core.c b/drivers/iio/adc/stm32-adc-core.c
-> > > index 0e2068e..3586369 100644
-> > > --- a/drivers/iio/adc/stm32-adc-core.c
-> > > +++ b/drivers/iio/adc/stm32-adc-core.c
-> > > @@ -794,6 +794,13 @@ static int stm32_adc_core_runtime_resume(struct device *dev)
-> > >  {
-> > >     return stm32_adc_core_hw_start(dev);
-> > >  }
-> > > +
-> > > +static int stm32_adc_core_runtime_idle(struct device *dev)
-> > > +{
-> > > +   pm_runtime_mark_last_busy(dev);
-> > > +
-> > > +   return 0;
-> > > +}
-> > >  #endif
-> > >
-> > >  static const struct dev_pm_ops stm32_adc_core_pm_ops = {
-> > > @@ -801,7 +808,7 @@ static const struct dev_pm_ops stm32_adc_core_pm_ops = {
-> > >                             pm_runtime_force_resume)
-> > >     SET_RUNTIME_PM_OPS(stm32_adc_core_runtime_suspend,
-> > >                        stm32_adc_core_runtime_resume,
-> > > -                      NULL)
-> > > +                      stm32_adc_core_runtime_idle)
-> > >  };
-> > >
-> > >  static const struct stm32_adc_priv_cfg stm32f4_adc_priv_cfg = {
-> > >
->
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Mon, 28 Sep 2020 21:14:11 +1000
+Subject: [PATCH] fix up for "iov_iter: transparently handle compat iovecs in
+ import_iovec"
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ mm/madvise.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/mm/madvise.c b/mm/madvise.c
+index 935dbc92e626..416a56b8e757 100644
+--- a/mm/madvise.c
++++ b/mm/madvise.c
+@@ -7,7 +7,6 @@
+  */
+=20
+ #include <linux/mman.h>
+-#include <linux/compat.h>
+ #include <linux/pagemap.h>
+ #include <linux/syscalls.h>
+ #include <linux/mempolicy.h>
+@@ -1189,15 +1188,7 @@ SYSCALL_DEFINE5(process_madvise, int, pidfd, const s=
+truct iovec __user *, vec,
+ 		goto out;
+ 	}
+=20
+-#ifdef CONFIG_COMPAT
+-	if (in_compat_syscall())
+-		ret =3D compat_import_iovec(READ,
+-				(struct compat_iovec __user *)vec, vlen,
+-				ARRAY_SIZE(iovstack), &iov, &iter);
+-	else
+-#endif
+-		ret =3D import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack),
+-				&iov, &iter);
++	ret =3D import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack), &iov, &iter);
+ 	if (ret < 0)
+ 		goto out;
+=20
+--=20
+2.28.0
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/y4Vn+BEnjCX8DmGQlnMY.1p
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl9xyDYACgkQAVBC80lX
+0Gy3Igf/a5zgubF4JKDJarzJ4aHOHzwaK8azUK3q4AAKOsbtleYEym0zX0KC/5oQ
+FqF87fu/LzwnK7Cd804dxYGIVNkj6aaZ5KGXiJgR1Wd/l9jg+pOrncquDIPFnyyA
+kNjQmDJWwuGx6LH9j9T0egBLY6CeZuIXIWWzgIT3xDQAEsOU4c/EJLQ9OpXNTzUU
+sv+cJXKGbxUCJSEZbvsb1ZQj2m0PTjO7yMG8pdsPVJqVWMEnuvILXO/CJ34zal3t
+NJk53OjoZCS/HE6getmo3VrmAO7e+nOmL3SaAiTl8pZmhUg0MyrnqvSvWGmjPOv7
+0wrulU8VgGEqhp5l5TdbD1UXkdpvIg==
+=GWOw
+-----END PGP SIGNATURE-----
+
+--Sig_/y4Vn+BEnjCX8DmGQlnMY.1p--
