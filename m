@@ -2,114 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0E9827B6A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A8D27B6AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 22:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbgI1UtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 16:49:12 -0400
-Received: from mga01.intel.com ([192.55.52.88]:19464 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726325AbgI1UtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 16:49:11 -0400
-IronPort-SDR: Sw7CfVi91gr3jZn9GVrhCWIwdZy+Z6tCFYUMiFGwXVhOnG7oxTb+itII1ihRdhjERtlcacO/B/
- 4NRGc8yCGBuA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="180218005"
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="180218005"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 13:49:11 -0700
-IronPort-SDR: kSZaeuYcjm57NTEN1DK59pnm4N8DvKBaGJNX4AcpKh7aT601y/AAeGd5EfGWKVUtv9WcGJlii0
- PkXG+J8hHzGw==
-X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
-   d="scan'208";a="349971865"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 13:49:08 -0700
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 15C5120562; Mon, 28 Sep 2020 23:49:06 +0300 (EEST)
-Date:   Mon, 28 Sep 2020 23:49:06 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v8 0/6] Support running driver's probe for a device
- powered off
-Message-ID: <20200928204905.GD26842@paasikivi.fi.intel.com>
-References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
- <f4b82baa-66b7-464e-fd39-66d2243a05ef@lucaceresoli.net>
- <20200911130104.GF26842@paasikivi.fi.intel.com>
- <6dea1206-cfaa-bfc5-d57e-4dcddadc03c7@lucaceresoli.net>
- <20200914094727.GM26842@paasikivi.fi.intel.com>
- <20200926123807.GA3781977@chromium.org>
- <20200927193900.GA30711@kunai>
- <CAAFQd5Be5sUQYtXapcSOu8CVffW2LuLog9qh71-+mxze9WYUVQ@mail.gmail.com>
- <CAJZ5v0hKQNv+qj-7EQ2Dmtk=UamtVKHBXDCjqo-48Qj13yY+cw@mail.gmail.com>
- <CAAFQd5CP7bg+UQEp5uzuQY5a_xHLAB4ct81pkO0naAou=-QyKw@mail.gmail.com>
+        id S1726811AbgI1UvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 16:51:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41378 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726393AbgI1UvG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 16:51:06 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08SKWhJ6057792;
+        Mon, 28 Sep 2020 16:50:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=6nvkd4IYaV6CN/DpdVRxB7tAXyADtIgoHebrk1fBt80=;
+ b=iIb6HO+7dhFLIkDCU3NwRXfNkSojgauFG6ylwIRlGBnuLBc8qWIUJB/LlG8FlyfiP7m7
+ iwe11jUXTFyoMD4VCLDglKkkbcHBW5G9ghOQd2JVEvFWTB/2HR6gbIEB4vQm5Ls5iFUh
+ 2KbrQcs3eG8bM9Ey8tbJ7H94sosMCEy+vzWxCW4Ciz3Xh8j2vHQIYp4T1MwolmCmdIg5
+ 9Ox6rpAkIdZc0Ap1jUrO16KCEDG87/j0FdLu3ohYTVbHBS02SaEH37yRgNeCIDgLsBGN
+ hXcSdH/vFnmJ1FJRacKTmEgAX/xYYaSRFJiEnWmQd+CP+Wp5iBbQROFVNuYxJSTRnviR fQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33umwwm3d9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Sep 2020 16:50:57 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 08SKbaH6073636;
+        Mon, 28 Sep 2020 16:50:57 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 33umwwm3d1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Sep 2020 16:50:57 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 08SKm0vs026261;
+        Mon, 28 Sep 2020 20:50:56 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma04dal.us.ibm.com with ESMTP id 33sw98uu3s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 28 Sep 2020 20:50:56 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 08SKotwl52691406
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Sep 2020 20:50:55 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6859AAC05F;
+        Mon, 28 Sep 2020 20:50:55 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8CD0FAC064;
+        Mon, 28 Sep 2020 20:50:53 +0000 (GMT)
+Received: from oc6857751186.ibm.com (unknown [9.160.36.142])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 28 Sep 2020 20:50:53 +0000 (GMT)
+Subject: Re: [PATCH] rpadlpar_io:Add MODULE_DESCRIPTION entries to kernel
+ modules
+To:     "Oliver O'Halloran" <oohall@gmail.com>,
+        Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20200924051343.16052.9571.stgit@localhost.localdomain>
+ <CAOSf1CEv3v940FR_we70qCBME0qFXPizPT8EFbf3XyK2-fPDrw@mail.gmail.com>
+From:   Tyrel Datwyler <tyreld@linux.ibm.com>
+Message-ID: <ff6a8c97-4a6a-c82b-bd35-e09fa44f8e20@linux.ibm.com>
+Date:   Mon, 28 Sep 2020 13:50:52 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAFQd5CP7bg+UQEp5uzuQY5a_xHLAB4ct81pkO0naAou=-QyKw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAOSf1CEv3v940FR_we70qCBME0qFXPizPT8EFbf3XyK2-fPDrw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-28_22:2020-09-28,2020-09-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 spamscore=0 phishscore=0 mlxscore=0 adultscore=0
+ clxscore=1011 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ malwarescore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009280158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomasz,
-
-On Mon, Sep 28, 2020 at 06:49:22PM +0200, Tomasz Figa wrote:
-> On Mon, Sep 28, 2020 at 4:18 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Sun, Sep 27, 2020 at 9:44 PM Tomasz Figa <tfiga@chromium.org> wrote:
-> > >
-> > > On Sun, Sep 27, 2020 at 9:39 PM Wolfram Sang <wsa@the-dreams.de> wrote:
-> > > >
-> > > >
-> > > > > I think we might be overly complicating things. IMHO the series as is
-> > > > > with the "i2c_" prefix removed from the flags introduced would be
-> > > > > reusable as is for any other subsystem that needs it. Of course, for
-> > > > > now, the handling of the flag would remain implemented only in the I2C
-> > > > > subsystem.
-> > > >
-> > > > Just to be clear: you are suggesting to remove "i2c" from the DSD
-> > > > binding "i2c-allow-low-power-probe". And you are not talking about
-> > > > moving I2C_DRV_FL_ALLOW_LOW_POWER_PROBE to struct device_driver? I
-> > > > recall the latter has been NACKed by gkh so far.
-> > > >
-> > >
-> > > I'd also drop "I2C_" from "I2C_DRV_FL_ALLOW_LOW_POWER_PROBE", but all
-> > > the implementation would remain where it is in the code. IOW, I'm just
-> > > suggesting a naming change to avoid proliferating duplicate flags of
-> > > the same meaning across subsystems.
-> >
-> > But that would indicate that the property was recognized by other
-> > subsystems which wouldn't be the case, so it would be confusing.
-> >
-> > That's why it cannot be documented as a general property ATM too.
+On 9/23/20 11:41 PM, Oliver O'Halloran wrote:
+> On Thu, Sep 24, 2020 at 3:15 PM Mamatha Inamdar
+> <mamatha4@linux.vnet.ibm.com> wrote:
+>>
+>> This patch adds a brief MODULE_DESCRIPTION to rpadlpar_io kernel modules
+>> (descriptions taken from Kconfig file)
+>>
+>> Signed-off-by: Mamatha Inamdar <mamatha4@linux.vnet.ibm.com>
+>> ---
+>>  drivers/pci/hotplug/rpadlpar_core.c |    1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/pci/hotplug/rpadlpar_core.c b/drivers/pci/hotplug/rpadlpar_core.c
+>> index f979b70..bac65ed 100644
+>> --- a/drivers/pci/hotplug/rpadlpar_core.c
+>> +++ b/drivers/pci/hotplug/rpadlpar_core.c
+>> @@ -478,3 +478,4 @@ static void __exit rpadlpar_io_exit(void)
+>>  module_init(rpadlpar_io_init);
+>>  module_exit(rpadlpar_io_exit);
+>>  MODULE_LICENSE("GPL");
+>> +MODULE_DESCRIPTION("RPA Dynamic Logical Partitioning driver for I/O slots");
 > 
-> I guess that's true. Well, this is kAPI in the end, so if we have more
-> subsystems, it could be always renamed. So feel free to ignore my
-> previous comment.
+> RPA as a spec was superseded by PAPR in the early 2000s. Can we rename
+> this already?
 
-I wouldn't expect this flag to be needed outside I²C since the other
-potential use case (I3C) appears to be entirely free of power management,
-so it's up to the drivers on ACPI, too.
+I seem to recall Michael and I discussed the naming briefly when I added the
+maintainer entries for the drivers and that the PAPR acronym is almost as
+meaningless to most as the original RPA. While, IBM no longer uses the term
+pseries for Power hardware marketing it is the defacto platform identifier in
+the Linux kernel tree for what we would call PAPR compliant. All in all I have
+no problem with renaming, but maybe we should consider pseries_dlpar or even
+simpler ibmdlpar.
 
-The property itself, though, might be.
+> 
+> The only potential problem I can see is scripts doing: modprobe
+> rpadlpar_io or similar
+> 
+> However, we should be able to fix that with a module alias.
 
--- 
-Regards,
+Agreed.
 
-Sakari Ailus
+-Tyrel
+
+> 
+> Oliver
+> 
+
