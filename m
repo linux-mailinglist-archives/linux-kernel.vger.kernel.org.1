@@ -2,44 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55ED827A887
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7A227A893
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgI1H1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:27:25 -0400
-Received: from mail-il1-f207.google.com ([209.85.166.207]:55341 "EHLO
-        mail-il1-f207.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726421AbgI1H1Z (ORCPT
+        id S1726658AbgI1H1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:27:38 -0400
+Received: from mail-il1-f208.google.com ([209.85.166.208]:47045 "EHLO
+        mail-il1-f208.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbgI1H10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 03:27:25 -0400
-Received: by mail-il1-f207.google.com with SMTP id i12so75440ill.22
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:27:24 -0700 (PDT)
+        Mon, 28 Sep 2020 03:27:26 -0400
+Received: by mail-il1-f208.google.com with SMTP id z8so86871ilh.13
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:27:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=/AfpEA6FiFsXUoAejyXfq5OLQ9SrlGOHQTfJuzst7xw=;
-        b=OjyWzEjRCxxZZG3OcED5qYCoJX7hQRtPG4eCyC3EsQxPBeROPD4d3hLtN8UFTSmwIj
-         vrGnLDsdovazahN3K5O8yMBbq9xGB4fUI7tGAMoS/tOv9gbse+BTJWGjO3cATM4CWgJC
-         y2M0z9O8pVj0laz5ENQv2ju3NtGC9LDMNpHKNhCEdWQR1KRVuhN6v0kTxHCwPy3iYtfR
-         7/2vUFJbobA7jlr+C78qAM/sllTavxVYIP1X+7zEE6kbyDywWNH7n5sImyaS24VYYZ+p
-         2Ja2/Xn1TZmA5g+LnFAcXONPpKnUsWW7rwrq2l0QdXTCBmj/IeXwmD8UkuRBDvj/cLBR
-         EbpQ==
-X-Gm-Message-State: AOAM53113ejG3BveT6z8MFzEdem13Z1yfoc0pgdzp4GakcaSRxT841rV
-        Y4zpqyWuTLhxWhDpqH9H+NVEdw5EX8Kvl0heA9BvWaYKKm3M
-X-Google-Smtp-Source: ABdhPJxosxXWJt2K90H0pAaytudDmwmJ7O/X0setgYmcz6l+pZbRXoZZLwL8IBIEZmrEg0DW5g8EpHPAmnAgl2TzjnWtIkGO75fX
+        bh=NCkNaomJtuG8Ixkq0sPPguZMyC8HytnM7a0RscFm9Jc=;
+        b=r4MrogJhVlAqqvnsp+KUyYobn92zxULdO6OBOU/fKUm4EFm+7CKETxnjklhBc7fXsM
+         DKFk00vfUzZcnyoqifjAxZA8BSY9WLdCIJQbv90ZqWefIUZoWYwJi4gnGhXBv7k+HQH+
+         2/7OAagY8qD6WH9Yshna+4ugKfqhq8lcWuYpAcBm0ZNrTF9zL3wWZ3XgwJ1KPpYrvw0h
+         QSyXL4EwOAlgVAB0bpLsv/meRu5G97XKQJcZKZGQVk6nHwk29EJjdb82UQupc8nyeYO2
+         mG2LrTq1HvtF+vu+Ky5pny9d9pfvy1/aFvanHt9/TuXiorDCVbNRbrjhen4PM7cw68Ej
+         S+kg==
+X-Gm-Message-State: AOAM532fmVKNO5mxDV8vSuOPe0jn9PpYRBkJEoLL2WwePWG4jFW1/KQK
+        Hx5ElAjjcI3+JyZp7299vXkBm6yhOVGL26vt7xXrKYU7MkGU
+X-Google-Smtp-Source: ABdhPJzItk4Uh0W6cDwSXiw8cDz9ZlXp6DQZfJNm3HckGO07a0OULgqJiOJSCsPNBAp87ljdpSInHeHcxqrbj5ahk7FTMp6hbrfx
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:24d1:: with SMTP id y17mr142416jat.3.1601278044027;
+X-Received: by 2002:a02:a816:: with SMTP id f22mr148732jaj.118.1601278044624;
  Mon, 28 Sep 2020 00:27:24 -0700 (PDT)
 Date:   Mon, 28 Sep 2020 00:27:24 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000044ba05b05a9961@google.com>
-Subject: kernel BUG at fs/erofs/inode.c:LINE!
-From:   syzbot <syzbot+8afc256dce324523609d@syzkaller.appspotmail.com>
-To:     chao@kernel.org, devel@driverdev.osuosl.org, gaoxiang25@huawei.com,
-        gregkh@linuxfoundation.org, linux-erofs@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiang@kernel.org, yuchao0@huawei.com
+Message-ID: <000000000000095d3605b05a9909@google.com>
+Subject: KASAN: use-after-free Read in tcf_action_init
+From:   syzbot <syzbot+9f43bb6a66ff96a21931@syzkaller.appspotmail.com>
+To:     coreteam@netfilter.org, davem@davemloft.net,
+        enric.balletbo@collabora.com, groeck@chromium.org,
+        gwendal@chromium.org, jhs@mojatatu.com, jic23@kernel.org,
+        jiri@resnulli.us, kaber@trash.net, kadlec@blackhole.kfki.hu,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,88 +53,142 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    d1d2220c Add linux-next specific files for 20200924
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=166cb7d9900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=254e028a642027c
-dashboard link: https://syzkaller.appspot.com/bug?extid=8afc256dce324523609d
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=127762c3900000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=124ccf3b900000
+HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=105fbac5900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=9f43bb6a66ff96a21931
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13cb8f8b900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12af2c81900000
 
 The issue was bisected to:
 
-commit 382329a9d8553a98418a6f6e3425f0c288837897
-Author: Gao Xiang <gaoxiang25@huawei.com>
-Date:   Wed Aug 14 10:37:04 2019 +0000
+commit 974e6f02e27e1b46c6c5e600e70ced25079f73eb
+Author: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Date:   Mon Aug 1 09:54:35 2016 +0000
 
-    staging: erofs: differentiate unsupported on-disk format
+    iio: cros_ec_sensors_core: Add common functions for the ChromeOS EC Sensor Hub.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=149889e3900000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=169889e3900000
-console output: https://syzkaller.appspot.com/x/log.txt?x=129889e3900000
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11fe49d3900000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13fe49d3900000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15fe49d3900000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8afc256dce324523609d@syzkaller.appspotmail.com
-Fixes: 382329a9d855 ("staging: erofs: differentiate unsupported on-disk format")
+Reported-by: syzbot+9f43bb6a66ff96a21931@syzkaller.appspotmail.com
+Fixes: 974e6f02e27e ("iio: cros_ec_sensors_core: Add common functions for the ChromeOS EC Sensor Hub.")
 
-erofs: (device loop0): erofs_read_inode: bogus i_mode (0) @ nid 36
-------------[ cut here ]------------
-kernel BUG at fs/erofs/inode.c:182!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 6895 Comm: syz-executor894 Not tainted 5.9.0-rc6-next-20200924-syzkaller #0
+netlink: 32 bytes leftover after parsing attributes in process `syz-executor211'.
+==================================================================
+BUG: KASAN: use-after-free in tcf_action_destroy net/sched/act_api.c:724 [inline]
+BUG: KASAN: use-after-free in tcf_action_init+0x231/0x3d0 net/sched/act_api.c:1058
+Read of size 8 at addr ffff888097225c00 by task syz-executor211/7086
+
+CPU: 0 PID: 7086 Comm: syz-executor211 Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:erofs_read_inode fs/erofs/inode.c:182 [inline]
-RIP: 0010:erofs_fill_inode fs/erofs/inode.c:235 [inline]
-RIP: 0010:erofs_iget+0xfd8/0x2390 fs/erofs/inode.c:322
-Code: 00 0f 85 aa 10 00 00 49 8b 7c 24 28 49 89 d8 44 89 e9 48 c7 c2 a0 9c ef 88 48 c7 c6 40 9f ef 88 e8 b5 df b0 04 e8 88 5a 07 fe <0f> 0b e8 81 5a 07 fe 4c 89 e7 4c 63 e3 e8 b6 61 5b fe e9 ed f0 ff
-RSP: 0018:ffffc90001017c10 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000024 RCX: 0000000000000000
-RDX: ffff8880a172e480 RSI: ffffffff836dd6e8 RDI: fffff52000202f72
-RBP: ffff8880a8ca4480 R08: 0000000000000042 R09: ffff8880ae5319a7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880854fd9b8
-R13: 0000000000000000 R14: ffffea0002a32900 R15: 0000000000000000
-FS:  000000000108e880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000043eb80 CR3: 00000000a7edb000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- erofs_fc_fill_super+0xaa3/0x1010 fs/erofs/super.c:382
- get_tree_bdev+0x421/0x740 fs/super.c:1342
- vfs_get_tree+0x89/0x2f0 fs/super.c:1547
- do_new_mount fs/namespace.c:2896 [inline]
- path_mount+0x12ae/0x1e70 fs/namespace.c:3227
- __do_sys_mount fs/namespace.c:3438 [inline]
- __se_sys_mount fs/namespace.c:3411 [inline]
- __x64_sys_mount+0x278/0x2f0 fs/namespace.c:3411
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ print_address_description+0x66/0x620 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ tcf_action_destroy net/sched/act_api.c:724 [inline]
+ tcf_action_init+0x231/0x3d0 net/sched/act_api.c:1058
+ tcf_action_add net/sched/act_api.c:1451 [inline]
+ tc_ctl_action+0x2c7/0x7e0 net/sched/act_api.c:1504
+ rtnetlink_rcv_msg+0x889/0xd40 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x2b1/0x360 net/socket.c:2440
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446d6a
-Code: b8 08 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 fd ad fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 da ad fb ff c3 66 0f 1f 84 00 00 00 00 00
-RSP: 002b:00007fffa8ef9ef8 EFLAGS: 00000297 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fffa8ef9f50 RCX: 0000000000446d6a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fffa8ef9f10
-RBP: 00007fffa8ef9f10 R08: 00007fffa8ef9f50 R09: 00007fff00000015
-R10: 0000000000000000 R11: 0000000000000297 R12: 0000000000000001
-R13: 0000000000000004 R14: 0000000000000003 R15: 0000000000000003
-Modules linked in:
----[ end trace 66a5371a9bd8a3b2 ]---
-RIP: 0010:erofs_read_inode fs/erofs/inode.c:182 [inline]
-RIP: 0010:erofs_fill_inode fs/erofs/inode.c:235 [inline]
-RIP: 0010:erofs_iget+0xfd8/0x2390 fs/erofs/inode.c:322
-Code: 00 0f 85 aa 10 00 00 49 8b 7c 24 28 49 89 d8 44 89 e9 48 c7 c2 a0 9c ef 88 48 c7 c6 40 9f ef 88 e8 b5 df b0 04 e8 88 5a 07 fe <0f> 0b e8 81 5a 07 fe 4c 89 e7 4c 63 e3 e8 b6 61 5b fe e9 ed f0 ff
-RSP: 0018:ffffc90001017c10 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000024 RCX: 0000000000000000
-RDX: ffff8880a172e480 RSI: ffffffff836dd6e8 RDI: fffff52000202f72
-RBP: ffff8880a8ca4480 R08: 0000000000000042 R09: ffff8880ae5319a7
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8880854fd9b8
-R13: 0000000000000000 R14: ffffea0002a32900 R15: 0000000000000000
-FS:  000000000108e880(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000043eb80 CR3: 00000000a7edb000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+RIP: 0033:0x44abe9
+Code: e8 dc 13 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 cb 0b fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f842a305ce8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000006e0c48 RCX: 000000000044abe9
+RDX: 0000000000000000 RSI: 0000000020002980 RDI: 0000000000000003
+RBP: 00000000006e0c40 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006e0c4c
+R13: 00007ffcf73121ef R14: 00007f842a3069c0 R15: 00000000006e0c4c
+
+Allocated by task 7086:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
+ __do_kmalloc mm/slab.c:3655 [inline]
+ __kmalloc+0x205/0x300 mm/slab.c:3664
+ kmalloc include/linux/slab.h:559 [inline]
+ kzalloc+0x16/0x30 include/linux/slab.h:666
+ tcf_idr_create+0x56/0x5e0 net/sched/act_api.c:408
+ tcf_connmark_init+0x230/0x7d0 net/sched/act_connmark.c:126
+ tcf_action_init_1+0x7dc/0xce0 net/sched/act_api.c:984
+ tcf_action_init+0x114/0x3d0 net/sched/act_api.c:1043
+ tcf_action_add net/sched/act_api.c:1451 [inline]
+ tc_ctl_action+0x2c7/0x7e0 net/sched/act_api.c:1504
+ rtnetlink_rcv_msg+0x889/0xd40 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x2b1/0x360 net/socket.c:2440
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 7088:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
+ kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xdd/0x110 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x113/0x200 mm/slab.c:3756
+ tcf_idr_release_unsafe net/sched/act_api.c:284 [inline]
+ tcf_del_walker net/sched/act_api.c:310 [inline]
+ tcf_generic_walker+0x6f8/0xbc0 net/sched/act_api.c:339
+ tca_action_flush net/sched/act_api.c:1278 [inline]
+ tca_action_gd+0x135a/0x18f0 net/sched/act_api.c:1385
+ tc_ctl_action+0x395/0x7e0 net/sched/act_api.c:1512
+ rtnetlink_rcv_msg+0x889/0xd40 net/core/rtnetlink.c:5563
+ netlink_rcv_skb+0x190/0x3a0 net/netlink/af_netlink.c:2470
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x786/0x940 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0xa57/0xd70 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:651 [inline]
+ sock_sendmsg net/socket.c:671 [inline]
+ ____sys_sendmsg+0x519/0x800 net/socket.c:2353
+ ___sys_sendmsg net/socket.c:2407 [inline]
+ __sys_sendmsg+0x2b1/0x360 net/socket.c:2440
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888097225c00
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 0 bytes inside of
+ 512-byte region [ffff888097225c00, ffff888097225e00)
+The buggy address belongs to the page:
+page:00000000598892c8 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x97225
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00028423c8 ffffea00028bbc48 ffff8880aa440600
+raw: 0000000000000000 ffff888097225000 0000000100000004 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888097225b00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+ ffff888097225b80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888097225c00: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                   ^
+ ffff888097225c80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888097225d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
 
 
 ---
