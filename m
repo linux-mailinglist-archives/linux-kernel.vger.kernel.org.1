@@ -2,161 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A7C27A563
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 04:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D62127A566
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 04:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgI1CTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 27 Sep 2020 22:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
+        id S1726516AbgI1CWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 27 Sep 2020 22:22:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726409AbgI1CTL (ORCPT
+        with ESMTP id S1726458AbgI1CWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 27 Sep 2020 22:19:11 -0400
-Received: from mail-vk1-xa42.google.com (mail-vk1-xa42.google.com [IPv6:2607:f8b0:4864:20::a42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAEAC0613D3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 19:19:11 -0700 (PDT)
-Received: by mail-vk1-xa42.google.com with SMTP id n7so1191661vkq.5
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 19:19:11 -0700 (PDT)
+        Sun, 27 Sep 2020 22:22:02 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CB5C0613D3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 19:22:02 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id a12so8368644eds.13
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 19:22:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8r8ZQ9WFem+xMGOEuRI4QXJqsFWB3RpcceUKwYsgmIE=;
-        b=UwBVC3kcZ8as2vQq5raFEecalgZi24VjAbQWkvAkqPqSIKs9/Rypej2ZHeDhZue48N
-         uwHaCBKHLs+1KCY4qI3wedU96I6Mux+6hJM0PRuASqzFWoIP/oTDzMJcpvPIwW0lTStL
-         nLAT/BYP8bBXu3sDR6cZGcmyVQKAKhxyLomq0=
+        bh=vOX5Sd+xpTPA9/G3a3HyLwKA39unA0IaH2aJ/ahSQ48=;
+        b=qWrMSVm6zYmVaFJcTErsVXateVeWWiDTida+WlvUE+uTdTpqtnEDoAS5/Fab3urTai
+         zVC/L+EmWCWMmZZLXmcfTTewmXUlNJHZKMHMlOXI21wFMAIiCPKQBsVcXWBOuIWdkSJw
+         wRjVb0qNA/Wr0py5s32t6cT2qH4mMisal2HMbwAzd587SjYazqjs730xTKftVO/LuVh8
+         z5SqJGPe6Z6FkYdOzbDRlTuU8q6aT+KfFqcKMNC6Uq0DHawFoME2NoXJCWrpEwOSakwj
+         aqz4/eyirVDPTcjNHeg2KSOdgmBn2yafu/pWbZ8fXwYjpOa4lrAz9lroe+Wfwt0jlbYj
+         xUug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8r8ZQ9WFem+xMGOEuRI4QXJqsFWB3RpcceUKwYsgmIE=;
-        b=VviDYOqQfcEJG3HqVt/WlSUrO2/p4ODAx77G0eAYT4LU7M19GvQ1nfYPxL4UHLClqr
-         EGicT0VRxz3k5+Eo/x55FMI5XlzghGGxHyh4LgFmgsjfuG18BaLsaSKQ72jWAt33gXJg
-         D44FgDhcBN0HMiK5HDI4/w/p2AXo37ZyljBUCqFkWuzvxdECafXdUzYZlHwSPztdflJg
-         ORqRcrN9O3bQnvtx+ndchKwUTtTStXi8xrUEdz6XOYB5Yh5KihLrYl7dGeVwAbYOh0aP
-         JCjjBJnj1k9KqzdopssOfrCaEWh8/F16eD8Fdhcq7KBK9UBJAso8bB1ZFrzPKp7aRKdg
-         uwUA==
-X-Gm-Message-State: AOAM533SJjXtkuJ4isV6VSytZvImD+uauDXzcgWfBDLl3skZSc6qyoxR
-        J8g3wvxAjiuz7aaAfQrgxwcqsfINozkeZJiEo8Tylw==
-X-Google-Smtp-Source: ABdhPJzMzVYBekXtY/fDL9QkaeRJXXppiNLoJcZ5OmOeX7nmgFpzlOFVzI+FQV2QY4jYTtNiAJiVdaRJ5Eo/3cOsnr4=
-X-Received: by 2002:a1f:fcc2:: with SMTP id a185mr3771112vki.8.1601259549093;
- Sun, 27 Sep 2020 19:19:09 -0700 (PDT)
+        bh=vOX5Sd+xpTPA9/G3a3HyLwKA39unA0IaH2aJ/ahSQ48=;
+        b=kVpIMAD2fjqz9WP/zuFdnjuvABDvueL918of0gXqE6dqGlWI3WTFZQGXSkzbylZ2ft
+         HLyMeZymsYrAP+b+CK5eBaP3xLtvd2XPwrTXvu9lpZMON28LZW1AYpakWQdLISgjZ0PO
+         /S7teDAZFDGL18fg/KYjT8XkI3VdMXmtudsEKozGux01auS3fU6NhtCajdZS+bLNUB/g
+         f2Y+tvsfJb3z56ZBSo5mBXckUhP7lHJVqn3U6tZGG9M/GnCHc/G0oDd29ClPy6Kbd++n
+         c1j+JrAutW/2ICp/hMaALcU4kcCuesyWZ07nb4t7CwLtYghkaH1MV/5tng9d4wrlfb9p
+         StBw==
+X-Gm-Message-State: AOAM533A+t7qfMpQ7aQ/dNG8QpEq8SdzLJv04TDVVGsynYEhWhyAQttg
+        U5xtl5V1swS6Vm3SC8PSekzZv+sSp0jIy8viJZi9
+X-Google-Smtp-Source: ABdhPJzsqAtfa9f1NG8hfvEATJbi9eEwRIg9uIFPEmWBfP9DD88yDxmZdKhWH6XK21EL7PJHsV83fl/LkgW6hEmDjDQ=
+X-Received: by 2002:a05:6402:1805:: with SMTP id g5mr13063002edy.135.1601259720569;
+ Sun, 27 Sep 2020 19:22:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200925065418.1077472-1-ikjn@chromium.org> <20200925145255.v3.5.Id1cb208392928afc7ceed4de06924243c7858cd0@changeid>
- <1601195424.7766.4.camel@mtksdaap41>
-In-Reply-To: <1601195424.7766.4.camel@mtksdaap41>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Mon, 28 Sep 2020 10:18:58 +0800
-Message-ID: <CAATdQgDP6kd=us35FJ=MWv4KtyATjd_RbEU5ENmBK+Z-m2GnSw@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] spi: spi-mtk-nor: support 36bit dma addressing
-To:     Yingjoe Chen <yingjoe.chen@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, linux-spi@vger.kernel.org,
-        linux-mtd@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
+References: <0000000000009fc91605afd40d89@google.com> <20200925030759.GA17939@gondor.apana.org.au>
+In-Reply-To: <20200925030759.GA17939@gondor.apana.org.au>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Sun, 27 Sep 2020 22:21:48 -0400
+Message-ID: <CAHC9VhQjfqAaPnsT20T8zsT1kGHk3LRU1fqL8kNxiKsQ_E6TWQ@mail.gmail.com>
+Subject: Re: KASAN: stack-out-of-bounds Read in xfrm_selector_match (2)
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     syzbot <syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com>,
+        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, steffen.klassert@secunet.com,
+        syzkaller-bugs@googlegroups.com, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 4:30 PM Yingjoe Chen <yingjoe.chen@mediatek.com> wrote:
+On Thu, Sep 24, 2020 at 11:08 PM Herbert Xu <herbert@gondor.apana.org.au> wrote:
+> On Mon, Sep 21, 2020 at 07:56:20AM -0700, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    eb5f95f1 Merge tag 's390-5.9-6' of git://git.kernel.org/pu..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=13996ad5900000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=ffe85b197a57c180
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=577fbac3145a6eb2e7a5
+> > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> >
+> > Unfortunately, I don't have any reproducer for this issue yet.
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+577fbac3145a6eb2e7a5@syzkaller.appspotmail.com
+> >
+> > ==================================================================
+> > BUG: KASAN: stack-out-of-bounds in xfrm_flowi_dport include/net/xfrm.h:877 [inline]
+> > BUG: KASAN: stack-out-of-bounds in __xfrm6_selector_match net/xfrm/xfrm_policy.c:216 [inline]
+> > BUG: KASAN: stack-out-of-bounds in xfrm_selector_match+0xf36/0xf60 net/xfrm/xfrm_policy.c:229
+> > Read of size 2 at addr ffffc9001914f55c by task syz-executor.4/15633
+> >
+> > CPU: 0 PID: 15633 Comm: syz-executor.4 Not tainted 5.9.0-rc5-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > Call Trace:
+> >  __dump_stack lib/dump_stack.c:77 [inline]
+> >  dump_stack+0x198/0x1fd lib/dump_stack.c:118
+> >  print_address_description.constprop.0.cold+0x5/0x497 mm/kasan/report.c:383
+> >  __kasan_report mm/kasan/report.c:513 [inline]
+> >  kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+> >  xfrm_flowi_dport include/net/xfrm.h:877 [inline]
 >
-> On Fri, 2020-09-25 at 14:54 +0800, Ikjoon Jang wrote:
-> > This patch enables 36bit dma address support to spi-mtk-nor.
-> > Currently this is enabled only for mt8192-nor.
-> >
-> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> > ---
-> >
-> > (no changes since v1)
-> >
-> >  drivers/spi/spi-mtk-nor.c | 18 +++++++++++++++++-
-> >  1 file changed, 17 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/spi/spi-mtk-nor.c b/drivers/spi/spi-mtk-nor.c
-> > index 8dbafee7f431..35205635ed42 100644
-> > --- a/drivers/spi/spi-mtk-nor.c
-> > +++ b/drivers/spi/spi-mtk-nor.c
-> > @@ -78,6 +78,8 @@
-> >  #define MTK_NOR_REG_DMA_FADR         0x71c
-> >  #define MTK_NOR_REG_DMA_DADR         0x720
-> >  #define MTK_NOR_REG_DMA_END_DADR     0x724
-> > +#define MTK_NOR_REG_DMA_DADR_HB              0x738
-> > +#define MTK_NOR_REG_DMA_END_DADR_HB  0x73c
-> >
-> >  /* maximum bytes of TX in PRG mode */
-> >  #define MTK_NOR_PRG_MAX_SIZE         6
-> > @@ -106,6 +108,7 @@ struct mtk_nor {
-> >       unsigned int spi_freq;
-> >       bool wbuf_en;
-> >       bool has_irq;
-> > +     bool high_dma;
-> >       struct completion op_done;
-> >  };
-> >
-> > @@ -305,6 +308,11 @@ static int mtk_nor_dma_exec(struct mtk_nor *sp, u32 from, unsigned int length,
-> >       writel(dma_addr, sp->base + MTK_NOR_REG_DMA_DADR);
-> >       writel(dma_addr + length, sp->base + MTK_NOR_REG_DMA_END_DADR);
-> >
-> > +     if (sp->high_dma) {
-> > +             writel(dma_addr >> 32, sp->base + MTK_NOR_REG_DMA_DADR_HB);
-> > +             writel((dma_addr + length) >> 32, sp->base + MTK_NOR_REG_DMA_END_DADR_HB);
-> > +     }
-> > +
+> This one goes back more than ten years.  This patch should fix
+> it.
 >
-> Maybe use upper_32_bits() ?
+> ---8<---
+> The struct flowi must never be interpreted by itself as its size
+> depends on the address family.  Therefore it must always be grouped
+> with its original family value.
+>
+> In this particular instance, the original family value is lost in
+> the function xfrm_state_find.  Therefore we get a bogus read when
+> it's coupled with the wrong family which would occur with inter-
+> family xfrm states.
+>
+> This patch fixes it by keeping the original family value.
+>
+> Note that the same bug could potentially occur in LSM through
+> the xfrm_state_pol_flow_match hook.  I checked the current code
+> there and it seems to be safe for now as only secid is used which
+> is part of struct flowi_common.  But that API should be changed
+> so that so that we don't get new bugs in the future.  We could
+> do that by replacing fl with just secid or adding a family field.
 
-Thanks, good to know that!
+I'm thinking it might be better to pass the family along with the flow
+instead of passing just the secid (less worry of passing an incorrect
+secid that way).  Let me see if I can cobble together a quick patch
+for testing before bed ...
 
->
->
-> >       if (sp->has_irq) {
-> >               reinit_completion(&sp->op_done);
-> >               mtk_nor_rmw(sp, MTK_NOR_REG_IRQ_EN, MTK_NOR_IRQ_DMA, 0);
-> > @@ -635,7 +643,8 @@ static const struct spi_controller_mem_ops mtk_nor_mem_ops = {
-> >  };
-> >
-> >  static const struct of_device_id mtk_nor_match[] = {
-> > -     { .compatible = "mediatek,mt8173-nor" },
-> > +     { .compatible = "mediatek,mt8192-nor", .data = (void *)36 },
-> > +     { .compatible = "mediatek,mt8173-nor", .data = (void *)32 },
-> >       { /* sentinel */ }
-> >  };
-> >  MODULE_DEVICE_TABLE(of, mtk_nor_match);
-> > @@ -647,6 +656,7 @@ static int mtk_nor_probe(struct platform_device *pdev)
-> >       void __iomem *base;
-> >       struct clk *spi_clk, *ctlr_clk;
-> >       int ret, irq;
-> > +     unsigned long dma_bits;
-> >
-> >       base = devm_platform_ioremap_resource(pdev, 0);
-> >       if (IS_ERR(base))
-> > @@ -660,6 +670,12 @@ static int mtk_nor_probe(struct platform_device *pdev)
-> >       if (IS_ERR(ctlr_clk))
-> >               return PTR_ERR(ctlr_clk);
-> >
-> > +     dma_bits = (unsigned long)of_device_get_match_data(&pdev->dev);
-> > +     if (dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(dma_bits))) {
-> > +             dev_err(&pdev->dev, "failed to set dma mask(%lu)\n", dma_bits);
-> > +             return -EINVAL;
-> > +     }
-> > +
->
-> As said in previous version. I don't see any place enable high_dma, so I
-> think this patch won't set >32bits for anychip. We need something like:
->
->         sp->hidh_dma = dma_bits > 32;
->
-> Am I missing anything?
-
-Yeah, you're right, that line disappeared between v2 ~ v3 (by mistake).
-
->
-> Joe.C
->
+-- 
+paul moore
+www.paul-moore.com
