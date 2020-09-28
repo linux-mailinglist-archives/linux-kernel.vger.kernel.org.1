@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F070827B294
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F5127B224
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgI1Qv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:51:57 -0400
-Received: from esa6.hc3370-68.iphmx.com ([216.71.155.175]:15719 "EHLO
-        esa6.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726393AbgI1Qv4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:51:56 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 12:51:56 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=citrix.com; s=securemail; t=1601311916;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=WwqkvuAxebZCnazAOx6UX5jgHbKHiBc6PbGDR1L4Dik=;
-  b=YJTpPGk2dR9DLxc1lPsk0np5/oeJQ5luVA6wch8D89bgBW2PLagqG89W
-   hX5MZIfkjphWgtE2ALAAgA6kZw/UAD7kxuySl2d1jr6V0ShykFK117I70
-   QfH1L+7CI08yhDhR4beYHKaRTNeCYGIrZM0DAr7EMGTu8XnG7+UwW0xz7
-   Q=;
-Authentication-Results: esa6.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: WZTTGPQR61mLqOqWCNv7IfyT2D16AIrwaW1rfjuo9HH1CQzA3i5/+8XPP9LEXmDG0PDx2mmVVu
- L/w593LMKghKc1Cxc34TtFFXKOZhxTtzsY8Mkobq0+2UtUkcFKKJV0xteUp4l7hCg2VpaQdumv
- dxg6w+LnrFpf2qJzK4J1qDKWaA/vYEZOzcmZOYPzDcWQXJBzsOi7rtkv9diClXK25snR6gn7Is
- ALqV6HyHU+r58cm7ED+ueThu9pGyC+XOc1CPn7u+mlwoYmVwBk+QMRAbMqIHptFfwdZS8eV6QG
- ChQ=
-X-SBRS: None
-X-MesageID: 28055057
-X-Ironport-Server: esa6.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.77,313,1596513600"; 
-   d="scan'208";a="28055057"
-Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
- enclave call
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-CC:     <x86@kernel.org>, <linux-sgx@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Cedric Xing <cedric.xing@intel.com>,
-        <akpm@linux-foundation.org>, <andriy.shevchenko@linux.intel.com>,
-        <asapek@google.com>, <bp@alien8.de>, <chenalexchen@google.com>,
-        <conradparker@google.com>, <cyhanish@google.com>,
-        <dave.hansen@intel.com>, <haitao.huang@intel.com>,
-        <josh@joshtriplett.org>, <kai.huang@intel.com>,
-        <kai.svahn@intel.com>, <kmoy@google.com>, <ludloff@google.com>,
-        <luto@kernel.org>, <nhorman@redhat.com>, <npmccallum@redhat.com>,
-        <puiterwijk@redhat.com>, <rientjes@google.com>,
-        <tglx@linutronix.de>, <yaozhangx@google.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
- <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
- <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
- <20200928005842.GC6704@linux.intel.com>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
-Date:   Mon, 28 Sep 2020 17:44:35 +0100
+        id S1726761AbgI1Qol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:44:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:8608 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726461AbgI1Qok (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:44:40 -0400
+IronPort-SDR: PA3dkROH2wo9sk7oJOasId1ObNsUY56vHtIziNXj0U/fKET3JMtDcznKqHPQ8dtiHPzXYpj2RX
+ p+rijdlvUUOw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="142042836"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="142042836"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:44:39 -0700
+IronPort-SDR: pSHQ7l+Mbbkt628+IlvnBZDGitO+LYhQFQSxDdn3O/3kLj6u8AaNusDrvXivT2yfw8wkgz9Wip
+ bhsZgZINMOCA==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="307400159"
+Received: from sethura1-mobl2.amr.corp.intel.com (HELO [10.254.88.203]) ([10.254.88.203])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:44:38 -0700
+Subject: Re: [PATCH 2/5 V2] PCI: pciehp: check and wait port status out of DPC
+ before handling DLLSC and PDC
+To:     Sinan Kaya <okaya@kernel.org>,
+        "Zhao, Haifeng" <haifeng.zhao@intel.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "oohall@gmail.com" <oohall@gmail.com>,
+        "ruscur@russell.cc" <ruscur@russell.cc>,
+        "lukas@wunner.de" <lukas@wunner.de>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "stuart.w.hayes@gmail.com" <stuart.w.hayes@gmail.com>,
+        "mr.nuke.me@gmail.com" <mr.nuke.me@gmail.com>,
+        "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>,
+        Keith Busch <keith.busch@intel.com>
+Cc:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Jia, Pei P" <pei.p.jia@intel.com>,
+        "ashok.raj@linux.intel.com" <ashok.raj@linux.intel.com>
+References: <20200927032829.11321-1-haifeng.zhao@intel.com>
+ <20200927032829.11321-3-haifeng.zhao@intel.com>
+ <f2c9e3db-2027-f669-fcdd-fbc80888b934@kernel.org>
+ <MWHPR11MB1696BA6B8473248A8638FD3797350@MWHPR11MB1696.namprd11.prod.outlook.com>
+ <14b7d988-212b-93dc-6fa6-6b155d5c8ac3@kernel.org>
+ <16431a60-027e-eca9-36f4-74d348e88090@kernel.org>
+From:   "Kuppuswamy, Sathyanarayanan" <sathyanarayanan.kuppuswamy@intel.com>
+Message-ID: <38cc8252-e485-ef11-93a1-7b43ad85fc2e@intel.com>
+Date:   Mon, 28 Sep 2020 09:44:36 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20200928005842.GC6704@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- FTLPEX02CL05.citrite.net (10.13.108.178)
+In-Reply-To: <16431a60-027e-eca9-36f4-74d348e88090@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2020 01:58, Jarkko Sakkinen wrote:
-> On Fri, Sep 25, 2020 at 07:23:59PM +0100, Andrew Cooper wrote:
->> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
->>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
->>> new file mode 100644
->>> index 000000000000..adbd59d41517
->>> --- /dev/null
->>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
->>> @@ -0,0 +1,157 @@
->>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
->>> <snip>
->>> +.Lretpoline:
->>> +	call	2f
->>> +1:	pause
->>> +	lfence
->>> +	jmp	1b
->>> +2:	mov	%rax, (%rsp)
->>> +	ret
->> I hate to throw further spanners in the work, but this is not compatible
->> with CET, and the user shadow stack work in progress.
-> CET goes beyond my expertise. Can you describe, at least rudimentary,
-> how this code is not compatible?
 
-CET Shadow Stacks detect attacks which modify the return address on the
-stack.
-
-Retpoline *is* a ROP gadget.  It really does modify the return address
-on the stack, even if its purpose is defensive (vs Spectre v2) rather
-than malicious.
-
->> Whichever of these two large series lands first is going to inflict
->> fixing this problem on the other.
+On 9/28/20 9:43 AM, Sinan Kaya wrote:
+> On 9/28/2020 7:10 AM, Sinan Kaya wrote:
+>> On 9/27/2020 10:01 PM, Zhao, Haifeng wrote:
+>>> Sinan,
+>>>     I explained the reason why locks don't protect this case in the patch description part.
+>>> Write side and read side hold different semaphore and mutex.
+>>>
+>> I have been thinking about it some time but is there any reason why we
+>> have to handle all port AER/DPC/HP events in different threads?
 >>
->> As the vdso text is global (to a first approximation), it must not be a
->> retpoline if any other process is liable to want to use CET-SS.
-> Why is that?
+>> Can we go to single threaded event loop for all port drivers events?
+>>
+>> This will require some refactoring but it wlll eliminate the lock
+>> nightmares we are having.
+>>
+>> This means no sleeping. All sleeps need to happen outside of the loop.
+>>
+>> I wanted to see what you all are thinking about this.
+>>
+>> It might become a performance problem if the system is
+>> continuously observing a hotplug/aer/dpc events.
+>>
+>> I always think that these should be rare events.
+> If restructuring would be too costly, the preferred solution should be
+> to fix the locks in hotplug driver rather than throwing there a random
+> wait call.
+Since the current race condition is detected between DPC and
+hotplug, I recommend synchronizing them.
 
-Because when CET-SS is enabled, the ret will suffer a #CP exception
-(return address on the stack not matching the one recorded in the shadow
-stack), which I presume/hope is wired into SIGSEGV.
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-~Andrew
