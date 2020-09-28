@@ -2,125 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E8A27AD9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16F9127ADA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbgI1MPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:15:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53230 "EHLO mail.kernel.org"
+        id S1726566AbgI1MQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:16:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53610 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbgI1MPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:15:54 -0400
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        id S1726281AbgI1MQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:16:52 -0400
+Received: from [192.168.0.112] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CAAC221531
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:15:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A98702083B;
+        Mon, 28 Sep 2020 12:16:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601295353;
-        bh=VzE5JnSqbWbSjqt1XZOKvxLhpPp01vzIUE5bLK2KBGw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=wWXeY/okl0iT74hT2/it3uy9M4LrKvjeaYovhf4wW2CVVgdbbUJDMoQezUnoDU6m/
-         iALSmCVv7Qz5UzbbPvJzVCno8xPT988GV2/D+z2O5P6b6VcFhKypMLunwVjvUOBLna
-         l8sde7Js1xU2hZUMlYLZEy3si575DxRqUlhDd7l8=
-Received: by mail-oo1-f44.google.com with SMTP id t3so237257ook.8
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 05:15:53 -0700 (PDT)
-X-Gm-Message-State: AOAM532ULsyobRCcoscwJwwByC9LLSgrT0YRcNxhiOVE3ui/zbqKlYws
-        Cx/beF3Cd+yO8+LonNKdol4nX4YtzWZPj/1tuDY=
-X-Google-Smtp-Source: ABdhPJxJ9X0j2i9aipMDD622TMXIK4KJvvyre4/xitAq7fB8wQ8A2zpZSJK+fOWTyYIB/ev7M7zwAeZw/2vm/fmpGtE=
-X-Received: by 2002:a4a:4910:: with SMTP id z16mr612115ooa.41.1601295353098;
- Mon, 28 Sep 2020 05:15:53 -0700 (PDT)
+        s=default; t=1601295412;
+        bh=1IDcn/q9rvVLSbuuWRAYiXlIVFFdblHW6YdWWqmHXvc=;
+        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
+        b=B4QW4EmqoIcJJ8a6Msqln+1qNhbPBAe2XhFYFOn0A49E5T21PqKc+bANPZaIwQ8h5
+         mVvQCRvaXc3asZ0o2n5NAQ4lrIModMq1WCslu3xp9QahRcA1iRs1mwTjuhELVr9c7z
+         XiEQDkNLfnUsFqTyqj9CaEl21uHUT5UmWFiauAiQ=
+Subject: Re: [PATCH v3 1/1] PCI/ERR: Fix reset logic in pcie_do_recovery()
+ call
+From:   Sinan Kaya <okaya@kernel.org>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ashok.raj@intel.com,
+        Jay Vosburgh <jay.vosburgh@canonical.com>
+References: <20200922233333.GA2239404@bjorn-Precision-5520>
+ <704c39bf-6f0c-bba3-70b8-91de6a445e43@linux.intel.com>
+ <3d27d0a4-2115-fa72-8990-a84910e4215f@kernel.org>
+ <d5aa53dc-0c94-e57a-689a-1c1f89787af1@linux.intel.com>
+ <526dc846-b12b-3523-4995-966eb972ceb7@kernel.org>
+ <1fdcc4a6-53b7-2b5f-8496-f0f09405f561@linux.intel.com>
+ <aef0b9aa-59f5-9ec3-adac-5bc366b362e0@kernel.org>
+ <a647f485-8db4-db45-f404-940b55117b53@linux.intel.com>
+ <aefd8842-90c4-836a-b43a-f21c5428d2ba@kernel.org>
+ <95e23cb5-f6e1-b121-0de8-a2066d507d9c@linux.intel.com>
+ <65238d0b-0a39-400a-3a18-4f68eb554538@kernel.org>
+ <4ae86061-2182-bcf1-ebd7-485acf2d47b9@linux.intel.com>
+ <f360165e-5f73-057c-efd1-557b5e5027eb@kernel.org>
+ <8beca800-ffb5-c535-6d43-7e750cbf06d0@linux.intel.com>
+ <44f0cac5-8deb-1169-eb6d-93ac4889fe7e@kernel.org>
+ <3bc0fd23-8ddd-32c5-1dd9-4d5209ea68c3@linux.intel.com>
+ <a2bbdfed-fb17-51dc-8ae4-55d924c13211@kernel.org>
+Autocrypt: addr=okaya@kernel.org; keydata=
+ mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
+ uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
+ 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
+ 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
+ V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
+ AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
+ ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
+ AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
+ 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
+ Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
+ ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
+ qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
+ AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
+ eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
+ 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
+ 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
+ gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
+ CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
+ gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
+ e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
+ 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
+ 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
+ L+s0nPaNMKwv/Xhhm6Y=
+Message-ID: <1200962b-824c-bc38-36b1-d35a3208f948@kernel.org>
+Date:   Mon, 28 Sep 2020 08:16:50 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200928092641.2070-1-thunder.leizhen@huawei.com>
- <20200928092641.2070-3-thunder.leizhen@huawei.com> <CAMj1kXGK8x4eBL55mLMWVQWpFZKa+FSCaQj9_gieWCQSgG=xAQ@mail.gmail.com>
- <e2d45592-ffc3-395e-0657-dcff0e094c1f@huawei.com>
-In-Reply-To: <e2d45592-ffc3-395e-0657-dcff0e094c1f@huawei.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 28 Sep 2020 14:15:42 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXEXziNDWxKNmD9nPWCmhpAPO--vWvJvr2nioQL+QJBfBQ@mail.gmail.com>
-Message-ID: <CAMj1kXEXziNDWxKNmD9nPWCmhpAPO--vWvJvr2nioQL+QJBfBQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: decompressor: relax the loading restriction of
- the decompressed kernel
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Libin <huawei.libin@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a2bbdfed-fb17-51dc-8ae4-55d924c13211@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 at 13:57, Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
->
->
->
-> On 2020/9/28 18:14, Ard Biesheuvel wrote:
-> > On Mon, 28 Sep 2020 at 11:27, Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> >>
-> >> mov     r4, pc
-> >> and     r4, r4, #0xf8000000     //truncated to 128MiB boundary
-> >> add     r4, r4, #TEXT_OFFSET    //PA(_start)
-> >>
-> >> Currently, the decompressed kernel must be placed at the position: 128MiB
-> >> boundary + TEXT_OFFSET. This limitation is just because we masked PC with
-> >> 0xf80000000. Actually, we can directly obtain PA(_start) by using formula
-> >> : VA(_start) + (PHYS_OFFSET - PAGE_OFFSET).
-> >>
-> >> So the "PA(_start) - TEXT_OFFSET" can be 2MiB boundary, 1MiB boundary,
-> >> and so on.
-> >>
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >
-> > No, this won't work.
->
-> But it works well on my board.
->
+On 9/28/2020 7:17 AM, Sinan Kaya wrote:
+> This should remove/rescan logic should be inside DPC's slot_reset()
+> function BTW. Not here.
 
-That is because you load zImage at the base of DRAM.
+Correct function name is dpc_handler().
 
-> >
-> > The whole reason for rounding to a multiple of 128 MB is that we
-> > cannot infer the start of DRAM from the placement of the zImage (which
-> > provides _start).
->
-> Maybe this is further guaranteed by the following code:
->         /*
->          * Set up a page table only if it won't overwrite ourself.
->          * That means r4 < pc || r4 - 16k page directory > &_end.
->          * Given that r4 > &_end is most unfrequent, we add a rough
->          * additional 1MB of room for a possible appended DTB.
->          */
->
-> In addition, the Image has already been loaded when this position is reached.
->
-> ----------- <--128MiB boundary
-> |          |
-> ----------- <--TEXT_OFFSET <--
-> | (1)Image |                 |
-> ------------                 |
-> |          |                 |
-> -----------  (2)--copyto-----
-> | (2)Image |
-> -----------
->
-> I don't think it's the case of (2), but (1). Because no code modification is
-> required for the case (2).
->
-> By the way, I'm not familiar with the arm32 code, so I'm just speculating.
->
-
-The zImage code that runs has not received *any* information from the
-platform on where DRAM starts, so the only info it has is the current
-placement of zImage.
-
-So when zImage is loaded at the intended base of DRAM, things work fine.
-
-If the zImage is loaded close to the end of a 128 MB region, the
-rounding would pick the start of that 128 MB region. However, the
-_start symbol you are using will point to an address that is close to
-the end of the 128 MB [given that it is inside zImage] so your logic
-will pick an address that is much higher in memory.
+I hope I did not create confusion with slot_reset() that gets called for
+each driver post recovery.
