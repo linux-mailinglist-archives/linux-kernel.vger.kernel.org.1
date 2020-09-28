@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A63C27B3EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E0F27B3F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726960AbgI1SCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:02:06 -0400
-Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:52727 "EHLO
+        id S1727029AbgI1SCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:02:24 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:37469 "EHLO
         wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726827AbgI1SBU (ORCPT
+        by vger.kernel.org with ESMTP id S1726817AbgI1SBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:01:20 -0400
+        Mon, 28 Sep 2020 14:01:19 -0400
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 0E19EDAA;
-        Mon, 28 Sep 2020 13:55:21 -0400 (EDT)
+        by mailnew.west.internal (Postfix) with ESMTP id 5B2A9E3B;
+        Mon, 28 Sep 2020 13:55:22 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
   by compute4.internal (MEProxy); Mon, 28 Sep 2020 13:55:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
         :to:cc:subject:date:message-id:in-reply-to:references:reply-to
-        :mime-version:content-transfer-encoding; s=fm1; bh=vrkxZJEQEBPuH
-        CVbBAj+BQgl5osnBBmheesqLl7iLcM=; b=W2K3Us/8YRs4FcMLHPHb+2LU+kawc
-        sMht8gZOYrUjngiiuCmcVI/au1+l3/EYEXw3ADll8FIpZr50bHD6fT5kBGhTN90l
-        h6Tqs++h4vj9tTvdKPLg1TfXzfTSCNIH5/NXUbgUesqi7GsOK/20Ch/weCl8MgPk
-        SEH2Pt47IGxrPxRVnrl0V1+Q3c8p0bQqHe3XBO5EW9yKJXCPodqurxUuDbVZ5kHz
-        x08DV22ZFN29KYuOgQ8K+MpaI4R/aD03GWxayBDvQsD6KXUJ6xiaTyGi2B4zbw/b
-        lakaxoyprrosbT1ytZfPWkquE9emOSg99oXwRUq3yUHoL5cTQ4ylCgM7w==
+        :mime-version:content-transfer-encoding; s=fm1; bh=yT8BqugvTfzX9
+        L+ABEmA5mKWIFrSrhshFc+djKx/V3o=; b=aGKrAuFETfvFo4s3uBM7F78Ud8X7/
+        xkgCTUDMcd/tBhOn3y4M2odiBIVc+w0gnHamHUE7/pmQCVRkxwQx0xrVBRtaZFSd
+        SYRu78pFlEIy59DpizHiI/ivIx3zR3piW2nuHavWVXcoYOVIdmQgK/Fmh9VVVmbW
+        3MN3fZoFbfvsr5Nh0T9nbx4IXc1gG2tOqBE1gVDZ1uUPZfpjKaZ5/1ulENnYq1Eh
+        gREN3MAcLIOcUF12c0W4q2AV3JlCAp2GOFR6jnZ93A1ySOmn3TwNqu8YYReHLl81
+        MGdfCTyDMdZZbXPvbaxiIsfWkU8cEdU5NOePBq35hzjKsTq7vp8JoIj+w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:reply-to:subject
         :to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; bh=vrkxZJEQEBPuHCVbBAj+BQgl5osnBBmheesqLl7iLcM=; b=fxrT9c03
-        fdx0/UW/BNcBqstgRcX+vG7MroPZKqt75Q2/VImuzPwmVoM5LmQoF6bbmXCS46b/
-        Qs2ALEaNwoY8XH+VOQ29WGP81TEs4+5eIgX3y80lZ/CMwBP0PZOurSzLl/nB6ESL
-        mf6dqX8UNIOKsCnKnVXc9jUGmQTYy1BRu7qinJJrEYy7g22ujZC9Og2PvR3/HVq1
-        r5BGm425X/7lD0LVnwBeD59D+Oe2q3ZvTkiT+EwIvieRDVSZOngAujlbg0ac+MG3
-        pniuCoN1PO1xOjn3ZYTZeaUhCHpFGhZ0aG8lk1/Z19sY5uuUVCh5trbXHF79RyZw
-        wr3E057cwSrbXg==
-X-ME-Sender: <xms:iSNyX-FizKg7ljL6c0DUmCIJmzr5KMm4UBs1om91Z3Ww19IS3D-cHQ>
-    <xme:iSNyX_VbPg0WCyISMLssVOCGGrXxZ8YOgKRbqQTSMi3sMZiydNr2vVQEWaF6SRH7W
-    XLDCrOngBLoEj2HIg>
+        fm3; bh=yT8BqugvTfzX9L+ABEmA5mKWIFrSrhshFc+djKx/V3o=; b=Rmjfm5wt
+        kVGtJQ24G9TjUoQR/Oq6OBke3QE1yzYEVXda6XuNBCCNyrwr1Z/QesQKOVxm7rtA
+        w7N4pMnJ4YrYKof4L2avf4X5X98uJvIwC/s/3Fcp3+G9VsLBqchhS34/yOTSSnD0
+        L4sh0vaaX6xtYxfygSZLi3eAt9ic1OSPm61gTGYFWiAS41OrvgZ5jvL5qaLeX7Y7
+        NWB7sKeYl2yQy0Rn3oc0KiQ077MKSQ7dkYF7taEkgXidwU3Gz8pxMMissx/1nfKo
+        AhyiUFAckTiYQER28ehsjj87Z9i4OtqcsEFPE1eYaotoVe44AWBd34ttZS6qKAtN
+        rtbFpVqoHU9tgw==
+X-ME-Sender: <xms:iSNyX-QkCbdH0zcIv-3BIYRQn1BzeVZ68dJGK6o2Q45pCrkZ03mQTQ>
+    <xme:iSNyXzypLyh69aWMoa6CxHufBeBKhwXwsSFO648eCSL2efwhUbjVEme7ygdhs8Xit
+    xePdowy8XJQYbw07A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
@@ -48,12 +48,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeigdeliecutefuodetggdote
     ektdduhfdutdfgtdekkedvhfetuedufedtgffgvdevleehheevjefgtdenucfkphepuddv
     rdegiedruddtiedrudeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
     grihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
-X-ME-Proxy: <xmx:iSNyX4KdZ93yJJKjXqAlfnP2XLtP2-AXqdZEi2v9JOOQEm1seRP-BA>
-    <xmx:iSNyX4FIXJGHqRtlY1p5Uag7WFORRgtywzlHTVHBU0stM4p-bxYYAw>
-    <xmx:iSNyX0WJnr5nQ4u11rn4TbT7bZSzZDdAia4T5m-d5YO-9Q4IJp6wFg>
-    <xmx:iSNyX1tU7FAgzStFK-HOiwgEgtAKnoSJgl5sAm2txtvnAx5ts4o7m-r8-3U>
+X-ME-Proxy: <xmx:iSNyX71OB_Gpun-WetBbpT5lF3m7TAeixz3HQLKCwfA6HBVMalQ50g>
+    <xmx:iSNyX6DA-fGE9ENKN-wtzQI66MHXXsMcE-3HWDbVWNaHISH_bjuKFg>
+    <xmx:iSNyX3iIKvpV5RGG2T9kilKGy7Cj8o2bnmsVAkI9ApNgzKRIo671FQ>
+    <xmx:iSNyX37SQhwSr4Z2I0MQh9wdxPzw_CtJHh2HgtGmkk6BlmyDtLeqwVvHT8c>
 Received: from nvrsysarch6.NVidia.COM (unknown [12.46.106.164])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 1EC933064685;
+        by mail.messagingengine.com (Postfix) with ESMTPA id 763C8306468B;
         Mon, 28 Sep 2020 13:55:21 -0400 (EDT)
 From:   Zi Yan <zi.yan@sent.com>
 To:     linux-mm@kvack.org
@@ -71,9 +71,9 @@ Cc:     "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
         John Hubbard <jhubbard@nvidia.com>,
         David Nellans <dnellans@nvidia.com>,
         linux-kernel@vger.kernel.org, Zi Yan <ziy@nvidia.com>
-Subject: [RFC PATCH v2 09/30] mm: thp: add PUD THP support to zap_huge_pud.
-Date:   Mon, 28 Sep 2020 13:54:07 -0400
-Message-Id: <20200928175428.4110504-10-zi.yan@sent.com>
+Subject: [RFC PATCH v2 10/30] fs: proc: add PUD THP kpageflag.
+Date:   Mon, 28 Sep 2020 13:54:08 -0400
+Message-Id: <20200928175428.4110504-11-zi.yan@sent.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20200928175428.4110504-1-zi.yan@sent.com>
 References: <20200928175428.4110504-1-zi.yan@sent.com>
@@ -86,91 +86,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Zi Yan <ziy@nvidia.com>
 
-Preallocated 513 (1 PMD and 512 PTE) page table pages need to be freed
-when PUD THP is removed. zap_pud_deposited_table is added to perform the
-action.
+Bit 27 is used to identify PUD THP.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 ---
- mm/huge_memory.c | 48 +++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 45 insertions(+), 3 deletions(-)
+ fs/proc/page.c                         | 2 ++
+ include/uapi/linux/kernel-page-flags.h | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index ea9fbedcda26..76069affebef 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2013,11 +2013,27 @@ spinlock_t *__pud_trans_huge_lock(pud_t *pud, struct vm_area_struct *vma)
- }
+diff --git a/fs/proc/page.c b/fs/proc/page.c
+index f3b39a7d2bf3..e4e2ad3612c9 100644
+--- a/fs/proc/page.c
++++ b/fs/proc/page.c
+@@ -161,6 +161,8 @@ u64 stable_page_flags(struct page *page)
+ 			u |= BIT_ULL(KPF_ZERO_PAGE);
+ 			u |= BIT_ULL(KPF_THP);
+ 		}
++		if (compound_order(head) == HPAGE_PUD_ORDER)
++			u |= 1 << KPF_PUD_THP;
+ 	} else if (is_zero_pfn(page_to_pfn(page)))
+ 		u |= BIT_ULL(KPF_ZERO_PAGE);
  
- #ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
-+static inline void zap_pud_deposited_table(struct mm_struct *mm, pud_t *pud)
-+{
-+	pgtable_t pgtable;
-+	int i;
-+
-+	pgtable = pgtable_trans_huge_pud_withdraw(mm, pud);
-+	pmd_free_page_with_ptes(mm, (pmd_t *)page_address(pgtable));
-+
-+	mm_dec_nr_pmds(mm);
-+	for (i = 0; i < (1<<(HPAGE_PUD_ORDER - HPAGE_PMD_ORDER)); i++)
-+		mm_dec_nr_ptes(mm);
-+}
-+
- int zap_huge_pud(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 		 pud_t *pud, unsigned long addr)
- {
-+	pud_t orig_pud;
- 	spinlock_t *ptl;
+diff --git a/include/uapi/linux/kernel-page-flags.h b/include/uapi/linux/kernel-page-flags.h
+index 6f2f2720f3ac..62c5fc70909b 100644
+--- a/include/uapi/linux/kernel-page-flags.h
++++ b/include/uapi/linux/kernel-page-flags.h
+@@ -36,5 +36,6 @@
+ #define KPF_ZERO_PAGE		24
+ #define KPF_IDLE		25
+ #define KPF_PGTABLE		26
++#define KPF_PUD_THP		27
  
-+	tlb_change_page_size(tlb, HPAGE_PUD_SIZE);
-+
- 	ptl = __pud_trans_huge_lock(pud, vma);
- 	if (!ptl)
- 		return 0;
-@@ -2027,14 +2043,40 @@ int zap_huge_pud(struct mmu_gather *tlb, struct vm_area_struct *vma,
- 	 * pgtable_trans_huge_withdraw after finishing pudp related
- 	 * operations.
- 	 */
--	pudp_huge_get_and_clear_full(tlb->mm, addr, pud, tlb->fullmm);
-+	orig_pud = pudp_huge_get_and_clear_full(tlb->mm, addr, pud,
-+			tlb->fullmm);
- 	tlb_remove_pud_tlb_entry(tlb, pud, addr);
- 	if (vma_is_special_huge(vma)) {
- 		spin_unlock(ptl);
- 		/* No zero page support yet */
-+	} else if (is_huge_zero_pud(orig_pud)) {
-+		zap_pud_deposited_table(tlb->mm, pud);
-+		spin_unlock(ptl);
-+		tlb_remove_page_size(tlb, pud_page(orig_pud), HPAGE_PUD_SIZE);
- 	} else {
--		/* No support for anonymous PUD pages yet */
--		BUG();
-+		struct page *page = NULL;
-+		int flush_needed = 1;
-+
-+		if (pud_present(orig_pud)) {
-+			page = pud_page(orig_pud);
-+			page_remove_rmap(page, true);
-+			VM_BUG_ON_PAGE(page_mapcount(page) < 0, page);
-+			VM_BUG_ON_PAGE(!PageHead(page), page);
-+		} else
-+			WARN_ONCE(1, "Non present huge pmd without pmd migration enabled!");
-+
-+		if (PageAnon(page)) {
-+			zap_pud_deposited_table(tlb->mm, pud);
-+			add_mm_counter(tlb->mm, MM_ANONPAGES, -HPAGE_PUD_NR);
-+		} else {
-+			if (arch_needs_pgtable_deposit())
-+				zap_pud_deposited_table(tlb->mm, pud);
-+			add_mm_counter(tlb->mm, MM_FILEPAGES, -HPAGE_PUD_NR);
-+		}
-+
-+		spin_unlock(ptl);
-+		if (flush_needed)
-+			tlb_remove_page_size(tlb, page, HPAGE_PUD_SIZE);
- 	}
- 	return 1;
- }
+ #endif /* _UAPILINUX_KERNEL_PAGE_FLAGS_H */
 -- 
 2.28.0
 
