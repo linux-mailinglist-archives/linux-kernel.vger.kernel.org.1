@@ -2,44 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AF727A8C7
+	by mail.lfdr.de (Postfix) with ESMTP id E49CF27A8C8
 	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 09:37:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbgI1HhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 03:37:20 -0400
-Received: from mail-io1-f78.google.com ([209.85.166.78]:45246 "EHLO
-        mail-io1-f78.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726604AbgI1HhS (ORCPT
+        id S1726787AbgI1HhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 03:37:22 -0400
+Received: from mail-io1-f79.google.com ([209.85.166.79]:46126 "EHLO
+        mail-io1-f79.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726625AbgI1HhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 28 Sep 2020 03:37:18 -0400
-Received: by mail-io1-f78.google.com with SMTP id h21so117840iof.12
+Received: by mail-io1-f79.google.com with SMTP id j8so118868iof.13
         for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 00:37:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=04SWKSSMPO5wiPUAGW/9pHu3f+KlpomAZBHkybrJOqk=;
-        b=iae2NFzKmCr62SOboztFYFujE2NVPHus4ytSEtH1O159vWPZY1T5NmoL8OyVIBz8J9
-         YKIMR7dVf3KbW4hSXazaEIygcO79/riWF3CaHAgJRjprZABsPBuN6KX7znh5gE85iq19
-         gHCaDcFjZSOxwFWFq78H90dLF7cfR+GhQMUopin0tSzJf8DgxgLzEKAgz8gDJODbm87z
-         6msREmciftQ+LjlAmNZl45xhOnyX1nntoMr53pZoSRTceq1Rq3PdF6FNxcJN5Kouq0pl
-         DCZ/1s5F0xcLtlrWv4aHzcJxDcNZerpg7VP2o2yh2r7BIoCy6bbAJOdrLiWO7peHC7bF
-         4FGg==
-X-Gm-Message-State: AOAM532KyZSjef2lloETJqlS+yPUc9RVygKzu1NeHBBkLOY5mrtXQlZJ
-        ueSCKVTpvlbq9sGvs/I7xRoWYw4RtP6yE7WfJHE2IvjvAn8P
-X-Google-Smtp-Source: ABdhPJzvRHP+j1PB4wus3aYitS2UDMRTL51vrngDEalOsgPFVzQBnvE7WncmG+K1fEi6zIPaamYL1i9N0XBWPtaSysf/4DEALoK8
+        bh=34Ah2FBKBlb/Ry08URjFZa+8xnbU6pAEjvgS1SnlDts=;
+        b=ISzSt2JKBK5IXAPKO/zF8ZnyfHf50mjGDSob4qWog3/BOrCgi3zeQckmxdNnufP9Qk
+         RNV1+hNLqU4B1x6EL3XzhQR/QNxS9jLTNrKP+Z54xs2Y6Q2FUeAbtN9Ye0XG6N2ygmVK
+         /m2tZp75t7MJxz470sn6x5rQGHgTjrp44KGR2Af6V2kNkUhsNZEVYDfrTFECXnhrC5MB
+         eKjI72Mwe5JJxsmjDDcD5nRxaNLjS3R2GfVcXR114NTNkeDELX+8y+rKZD/8YaGaobz8
+         MVhBDNDyePPj3VkR5yd4/aUi8gSJxzACS8uZN5lmoakBMyXrVomrGncX0g7nbIRAJF4z
+         fLYg==
+X-Gm-Message-State: AOAM531SglNQq3+WSGllaY0ixFJPOXPPBo/XG26QKkEw+JNQUT//FmUD
+        JjcbEX80MZQUVBKUl/JJ+Jkmzrf7TqGoP772OvFadhQMb9wD
+X-Google-Smtp-Source: ABdhPJwGTiMIuvd8MW9tpENYCizEv5e6p8/no51heLAjos6ZCCh41QZwFEnK4TTBVP3nI7V9kJyRHUbchZyeoY3gzNd8hq08qsIF
 MIME-Version: 1.0
-X-Received: by 2002:a92:4a0c:: with SMTP id m12mr122549ilf.238.1601278636781;
+X-Received: by 2002:a92:6a0a:: with SMTP id f10mr120305ilc.186.1601278636978;
  Mon, 28 Sep 2020 00:37:16 -0700 (PDT)
 Date:   Mon, 28 Sep 2020 00:37:16 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000054f46105b05abcd5@google.com>
-Subject: general protection fault in mac80211_hwsim_tx_frame_no_nl
-From:   syzbot <syzbot+84f7d08012d5c1f0f59e@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <00000000000057f8db05b05abc47@google.com>
+Subject: KASAN: use-after-free Read in __proc_create
+From:   syzbot <syzbot+0e0db88e1eb44a91ae8d@syzkaller.appspotmail.com>
+To:     dhowells@redhat.com, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -49,98 +47,97 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    171d4ff7 Merge tag 'mmc-v5.9-rc4-2' of git://git.kernel.or..
+HEAD commit:    7c7ec322 Merge tag 'for-linus' of git://git.kernel.org/pub..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d1a809900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=240e2ebab67245c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=84f7d08012d5c1f0f59e
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+console output: https://syzkaller.appspot.com/x/log.txt?x=1375b14b900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6184b75aa6d48d66
+dashboard link: https://syzkaller.appspot.com/bug?extid=0e0db88e1eb44a91ae8d
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+84f7d08012d5c1f0f59e@syzkaller.appspotmail.com
+Reported-by: syzbot+0e0db88e1eb44a91ae8d@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc0000000338: 0000 [#1] PREEMPT SMP KASAN
-KASAN: probably user-memory-access in range [0x00000000000019c0-0x00000000000019c7]
-CPU: 1 PID: 27410 Comm: syz-executor.4 Not tainted 5.9.0-rc6-syzkaller #0
+==================================================================
+BUG: KASAN: use-after-free in strlen+0x4c/0x60 lib/string.c:544
+Read of size 1 at addr ffff8880a29662c0 by task kworker/1:1/23
+
+CPU: 1 PID: 23 Comm: kworker/1:1 Not tainted 5.9.0-rc6-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:mac80211_hwsim_tx_frame_no_nl.isra.0+0x728/0x12d0 drivers/net/wireless/mac80211_hwsim.c:1408
-Code: 89 b4 24 90 00 00 00 c6 84 24 98 00 00 00 00 74 bb e8 6c 5f 50 fc 48 8d bb c4 19 00 00 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 28 38 d0 7f 08 84 c0 0f 85 39 09 00 00 44 0f b6 bb c4 19
-RSP: 0018:ffffc90000da8b68 EFLAGS: 00010202
-RAX: 0000000000000338 RBX: 0000000000000000 RCX: ffffffff8525df4e
-RDX: 0000000000000004 RSI: ffffffff8525ded4 RDI: 00000000000019c4
-RBP: dffffc0000000000 R08: 0000000000000001 R09: ffffffff8d0c0a3f
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888047738500
-R13: ffff888051ca3120 R14: ffff888051ca3350 R15: 0000000000000077
-FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055783cad52c8 CR3: 000000005a64a000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Workqueue: afs afs_manage_cell
 Call Trace:
- <IRQ>
- mac80211_hwsim_tx_frame+0x14f/0x1e0 drivers/net/wireless/mac80211_hwsim.c:1654
- mac80211_hwsim_beacon_tx+0x439/0x810 drivers/net/wireless/mac80211_hwsim.c:1694
- __iterate_interfaces+0x124/0x4d0 net/mac80211/util.c:737
- ieee80211_iterate_active_interfaces_atomic+0x8d/0x170 net/mac80211/util.c:773
- mac80211_hwsim_beacon+0xd5/0x1a0 drivers/net/wireless/mac80211_hwsim.c:1717
- __run_hrtimer kernel/time/hrtimer.c:1524 [inline]
- __hrtimer_run_queues+0x6a9/0xfc0 kernel/time/hrtimer.c:1588
- hrtimer_run_softirq+0x17b/0x360 kernel/time/hrtimer.c:1605
- __do_softirq+0x1f8/0xb23 kernel/softirq.c:298
- asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:706
- </IRQ>
- __run_on_irqstack arch/x86/include/asm/irq_stack.h:22 [inline]
- run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:48 [inline]
- do_softirq_own_stack+0x9d/0xd0 arch/x86/kernel/irq_64.c:77
- invoke_softirq kernel/softirq.c:393 [inline]
- __irq_exit_rcu kernel/softirq.c:423 [inline]
- irq_exit_rcu+0x235/0x280 kernel/softirq.c:435
- sysvec_apic_timer_interrupt+0x51/0xf0 arch/x86/kernel/apic/apic.c:1091
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:581
-RIP: 0010:__raw_write_unlock_irq include/linux/rwlock_api_smp.h:268 [inline]
-RIP: 0010:_raw_write_unlock_irq+0x4b/0x80 kernel/locking/spinlock.c:343
-Code: c0 b8 6b fc 89 48 ba 00 00 00 00 00 fc ff df 48 c1 e8 03 80 3c 10 00 75 31 48 83 3d 56 9f d3 01 00 74 25 fb 66 0f 1f 44 00 00 <bf> 01 00 00 00 e8 6b 28 28 f9 65 8b 05 04 32 d9 77 85 c0 74 02 5d
-RSP: 0018:ffffc900074a7ae8 EFLAGS: 00000282
-RAX: 1ffffffff13f8d77 RBX: ffff888037acc480 RCX: 1ffffffff16b2531
-RDX: dffffc0000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffffff89e09080 R08: 0000000000000001 R09: 0000000000000001
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888048116340 R14: dffffc0000000000 R15: 00000000ffffffff
- release_task+0xc4e/0x14d0 kernel/exit.c:219
- exit_notify kernel/exit.c:681 [inline]
- do_exit+0x14db/0x29f0 kernel/exit.c:826
- do_group_exit+0x125/0x310 kernel/exit.c:903
- get_signal+0x428/0x1f00 kernel/signal.c:2757
- arch_do_signal+0x82/0x2520 arch/x86/kernel/signal.c:811
- exit_to_user_mode_loop kernel/entry/common.c:161 [inline]
- exit_to_user_mode_prepare+0x1ae/0x200 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x7e/0x2e0 kernel/entry/common.c:267
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1d6/0x29e lib/dump_stack.c:118
+ print_address_description+0x66/0x620 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report+0x132/0x1d0 mm/kasan/report.c:530
+ strlen+0x4c/0x60 lib/string.c:544
+ __proc_create+0x28d/0xb60 fs/proc/generic.c:399
+ proc_mkdir_data+0x84/0x160 fs/proc/generic.c:482
+ proc_net_mkdir include/linux/proc_fs.h:201 [inline]
+ afs_proc_cell_setup+0xaf/0x180 fs/afs/proc.c:620
+ afs_activate_cell fs/afs/cell.c:615 [inline]
+ afs_manage_cell+0x7db/0x1540 fs/afs/cell.c:697
+ process_one_work+0x789/0xfc0 kernel/workqueue.c:2269
+ process_scheduled_works kernel/workqueue.c:2331 [inline]
+ worker_thread+0xde4/0x1460 kernel/workqueue.c:2417
+ kthread+0x37e/0x3a0 drivers/block/aoe/aoecmd.c:1234
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+
+Allocated by task 8801:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track mm/kasan/common.c:56 [inline]
+ __kasan_kmalloc+0x100/0x130 mm/kasan/common.c:461
+ __do_kmalloc mm/slab.c:3655 [inline]
+ __kmalloc+0x205/0x300 mm/slab.c:3664
+ kmalloc include/linux/slab.h:559 [inline]
+ afs_alloc_cell fs/afs/cell.c:157 [inline]
+ afs_lookup_cell+0x4d2/0x14d0 fs/afs/cell.c:262
+ afs_parse_source fs/afs/super.c:290 [inline]
+ afs_parse_param+0x526/0x790 fs/afs/super.c:326
+ vfs_parse_fs_param+0x1e5/0x460 fs/fs_context.c:117
+ vfs_parse_fs_string fs/fs_context.c:161 [inline]
+ generic_parse_monolithic+0x230/0x350 fs/fs_context.c:201
+ do_new_mount fs/namespace.c:2871 [inline]
+ path_mount+0x176c/0x29e0 fs/namespace.c:3192
+ do_mount fs/namespace.c:3205 [inline]
+ __do_sys_mount fs/namespace.c:3413 [inline]
+ __se_sys_mount+0x126/0x180 fs/namespace.c:3390
+ do_syscall_64+0x31/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e179
-Code: Bad RIP value.
-RSP: 002b:00007f248bdfacf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: fffffffffffffe00 RBX: 000000000118cf48 RCX: 000000000045e179
-RDX: 0000000000000000 RSI: 0000000000000080 RDI: 000000000118cf48
-RBP: 000000000118cf40 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000118cf4c
-R13: 00007ffec4bea0bf R14: 00007f248bdfb9c0 R15: 000000000118cf4c
-Modules linked in:
----[ end trace fba95d8d60d8e645 ]---
-RIP: 0010:mac80211_hwsim_tx_frame_no_nl.isra.0+0x728/0x12d0 drivers/net/wireless/mac80211_hwsim.c:1408
-Code: 89 b4 24 90 00 00 00 c6 84 24 98 00 00 00 00 74 bb e8 6c 5f 50 fc 48 8d bb c4 19 00 00 48 89 f8 48 89 fa 48 c1 e8 03 83 e2 07 <0f> b6 04 28 38 d0 7f 08 84 c0 0f 85 39 09 00 00 44 0f b6 bb c4 19
-RSP: 0018:ffffc90000da8b68 EFLAGS: 00010202
-RAX: 0000000000000338 RBX: 0000000000000000 RCX: ffffffff8525df4e
-RDX: 0000000000000004 RSI: ffffffff8525ded4 RDI: 00000000000019c4
-RBP: dffffc0000000000 R08: 0000000000000001 R09: ffffffff8d0c0a3f
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff888047738500
-R13: ffff888051ca3120 R14: ffff888051ca3350 R15: 0000000000000077
-FS:  0000000000000000(0000) GS:ffff8880ae500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055783cad52c8 CR3: 000000005a64a000 CR4: 00000000001526e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+Freed by task 8668:
+ kasan_save_stack mm/kasan/common.c:48 [inline]
+ kasan_set_track+0x3d/0x70 mm/kasan/common.c:56
+ kasan_set_free_info+0x17/0x30 mm/kasan/generic.c:355
+ __kasan_slab_free+0xdd/0x110 mm/kasan/common.c:422
+ __cache_free mm/slab.c:3418 [inline]
+ kfree+0x113/0x200 mm/slab.c:3756
+ afs_cell_destroy+0x16b/0x240 fs/afs/cell.c:500
+ rcu_do_batch kernel/rcu/tree.c:2430 [inline]
+ rcu_core+0x79b/0x1130 kernel/rcu/tree.c:2658
+ __do_softirq+0x256/0x6d5 kernel/softirq.c:298
+
+The buggy address belongs to the object at ffff8880a29662c0
+ which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 0 bytes inside of
+ 32-byte region [ffff8880a29662c0, ffff8880a29662e0)
+The buggy address belongs to the page:
+page:00000000f15c0556 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff8880a2966fc1 pfn:0xa2966
+flags: 0xfffe0000000200(slab)
+raw: 00fffe0000000200 ffffea00028f7d48 ffffea0002a22248 ffff8880aa440100
+raw: ffff8880a2966fc1 ffff8880a2966000 000000010000003f 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff8880a2966180: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff8880a2966200: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+>ffff8880a2966280: 00 00 03 fc fc fc fc fc fa fb fb fb fc fc fc fc
+                                           ^
+ ffff8880a2966300: 00 07 fc fc fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff8880a2966380: fa fb fb fb fc fc fc fc 00 00 00 00 fc fc fc fc
+==================================================================
 
 
 ---
