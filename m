@@ -2,119 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 145FB27AB6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 276B827AB78
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbgI1KAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:00:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgI1KAP (ORCPT
+        id S1726696AbgI1KDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:03:24 -0400
+Received: from m17618.mail.qiye.163.com ([59.111.176.18]:17757 "EHLO
+        m17618.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726658AbgI1KDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:00:15 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2863EC061755;
-        Mon, 28 Sep 2020 03:00:15 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id e22so623345edq.6;
-        Mon, 28 Sep 2020 03:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=SDDq2C7QLWNFyYFepbxAMacpxOBVCHMbzny/kHBr8TA=;
-        b=R+pfU0Towmle8RJu/D2uVB6nF3nenvlxVFjiSEvSkMiG2Jlx3yvjSATbQ8+uGNBHHC
-         /hxaVJSDGW/iXOGt0AzwAPlvP3FQWFp7uRePLRzNFXLrjI0cUmxzmB/Yo4f7rU2w/PgF
-         QZZNVcmw/iC5SfxzSz2omZ3VEyF9P6mf8kLWBPl9DmsXVXIn00jKeEf2rX03yd0uCEhx
-         cbYV3TC7vuKlE6QYK63WE8mIThW1ugvgD3GoYFnmga8LP66ybx8Bj4VvIj9Td0U8GFtB
-         Lo3a8nFWXq4UkVdkgbsrgexuhXTY65G8VOE+r0bL/pwSau4c2qfKMF3pZa37/VqccADC
-         1MIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=SDDq2C7QLWNFyYFepbxAMacpxOBVCHMbzny/kHBr8TA=;
-        b=dJSzkyNBWRcTnfFiVDEbtvAQdQfpTaPueibQ03JLXJbV5SPo592vnkF5K/RONPLUS7
-         MQ2fikQYB4X93JzmOt9NI+KNLwQOLt9rqyA/s6GWvLbWdKFKko56uJVrtwPqI5zRtw7r
-         qQ2sqnvEsU9NHsWXyvVgn8MCijSmy+LlHlOLmJ9fbqISNyi6hoOHdeFTcSVGXqionyT3
-         PJj1yU2dTvliGSvEwqo+VaHyNJCZ8W1I8X/FlZjdZqjqqS9e5oQOWcRvQQpfrwt4etqn
-         zAwrgQafwogYfdb83Seq9lxAVMTCxFzNlqcGdlvmwCP4/1BYg4szY8ucKl+7LQf/5ob6
-         WNsg==
-X-Gm-Message-State: AOAM530JMy8DwAjBAn+ry+JRfAmzu7VmHxteMehHg+m5wNyg0H9H0GZM
-        IskSu4cl8AtZJSX9BCmS7yI=
-X-Google-Smtp-Source: ABdhPJzlWRLg1EMg817RKK+Ds6y/qvJKdNZ7zwAaJGbykb2KswiX5HBOGUqqOfFCatcJ6+iB3eFoOQ==
-X-Received: by 2002:a05:6402:1d93:: with SMTP id dk19mr800943edb.198.1601287213821;
-        Mon, 28 Sep 2020 03:00:13 -0700 (PDT)
-Received: from felia.fritz.box ([2001:16b8:2d9d:5000:7872:7299:adfa:b749])
-        by smtp.gmail.com with ESMTPSA id m10sm921048edf.11.2020.09.28.03.00.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 03:00:13 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-safety@lists.elisa.tech,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] x86/mm: drop superfluous initialization
-Date:   Mon, 28 Sep 2020 12:00:04 +0200
-Message-Id: <20200928100004.25674-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 28 Sep 2020 06:03:23 -0400
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by m17618.mail.qiye.163.com (Hmail) with ESMTPA id 303C54E2363;
+        Mon, 28 Sep 2020 18:03:19 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Harry Wei <harryxiyou@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Wang Qing <wangqing@vivo.com>,
+        Wang Wenhu <wenhu.wang@vivo.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Chucheng Luo <luochucheng@vivo.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V5] doc: zh_CN: add translatation for btrfs
+Date:   Mon, 28 Sep 2020 17:59:47 +0800
+Message-Id: <1601287276-25406-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZTB0ZHRpKSEtKSh8fVkpNS0pJQ0xIQkJOTUJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NzY6Djo5MT8fGlYhNhwNDkIQ
+        FikaFDpVSlVKTUtKSUNMT0tLS0lKVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFITUpPNwY+
+X-HM-Tid: 0a74d42aa8459376kuws303c54e2363
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not required to initialize the local variable start in
-memory_map_top_down(), as the variable will be initialized in any path
-before it is used.
+Translate Documentation/filesystems/btrfs.rst into Chinese.
 
-make clang-analyzer on x86_64 tinyconfig reports:
-
-  arch/x86/mm/init.c:612:15: warning: Although the value stored to 'start' \
-  is used in the enclosing expression, the value is never actually read \
-  from 'start' [clang-analyzer-deadcode.DeadStores]
-
-Compilers will detect this superfluous assignment and optimize that
-expression anyway. So, the resulting binary is identical before and after
-the change.
-
-Drop this superfluous assignment to make clang-analyzer happy.
-
-No functional change.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
-applies cleanly on v5.9-rc7 and next-20200925
+Changes in v5:
+ - Fix ref errors in Original.
+Changes in v4:
+ - Add btrfs index.
+Changes in v3:
+ - Fix patch format issue.
+---
+ .../translations/zh_CN/filesystems/btrfs.rst       | 37 ++++++++++++++++++++++
+ .../translations/zh_CN/filesystems/index.rst       |  1 +
+ 2 files changed, 38 insertions(+)
+ create mode 100644 Documentation/translations/zh_CN/filesystems/btrfs.rst
 
-Dave, Andy, Peter, please pick this minor non-urgent clean-up patch.
-
-I quickly confirmed that the binary did not change with this change to the
-source code; the hash of init.o remained the same before and after the change.
-
-So, in my setup:
-  md5sum arch/x86/mm/init.o
-  b26f6380760f32d2ef2c7525301eebd3  init.o
-
-linux-safety, please verify and validate this change.
-
- arch/x86/mm/init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index c7a47603537f..5632f02146ca 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -609,7 +609,7 @@ static void __init memory_map_top_down(unsigned long map_start,
- 	step_size = PMD_SIZE;
- 	max_pfn_mapped = 0; /* will get exact value next */
- 	min_pfn_mapped = real_end >> PAGE_SHIFT;
--	last_start = start = real_end;
-+	last_start = real_end;
+diff --git a/Documentation/translations/zh_CN/filesystems/btrfs.rst b/Documentation/translations/zh_CN/filesystems/btrfs.rst
+new file mode 100644
+index 0000000..8b8cca2
+--- /dev/null
++++ b/Documentation/translations/zh_CN/filesystems/btrfs.rst
+@@ -0,0 +1,37 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: :ref:`Documentation/filesystems/btrfs.rst <btrfs_index>`
++
++translated by 王擎 Wang Qing<wangqing@vivo.com>
++
++=====
++BTRFS
++=====
++
++Btrfs是一个写时复制更新的文件系统，它注重容错、修复和易于管理。
++Btrfs由多家公司联合开发，并获得GPL许可，免费开放给所有人。
++
++Btrfs的主要功能包括：
++
++    *扩展大小的文件存储（文件最大支持2^64）
++    *填充方式使小文件更节省空间
++    *索引目录的方式更节省空间
++    *动态的索引节点分配方式
++    *写快照的特性
++    *支持子卷（独立的内部根文件系统）
++    *对象级别的镜像克隆
++    *基于数据和元数据的校验和（支持多种算法）
++    *支持压缩
++    *內建多种磁盘阵列算法，支持多种设备
++    *支持离线的文件系统检查
++    *高效的增量备份和文件系统镜像
++    *在线文件系统碎片整理
++
++更多有关信息，请参阅Wiki
++
++  https://btrfs.wiki.kernel.org
++
++维护信息包含管理任务、常见问题、用例、挂载选项、变更日志、
++特性、手册、源码仓、联系人等。
+diff --git a/Documentation/translations/zh_CN/filesystems/index.rst b/Documentation/translations/zh_CN/filesystems/index.rst
+index 186501d..47e86397
+--- a/Documentation/translations/zh_CN/filesystems/index.rst
++++ b/Documentation/translations/zh_CN/filesystems/index.rst
+@@ -25,4 +25,5 @@ Linux Kernel中的文件系统
  
- 	/*
- 	 * We start from the top (end of memory) and go to the bottom.
+    virtiofs
+    debugfs
++   btrfs
+ 
 -- 
-2.17.1
+2.7.4
 
