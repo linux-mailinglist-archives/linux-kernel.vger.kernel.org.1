@@ -2,72 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9C227B162
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6917D27B165
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgI1QGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:06:40 -0400
-Received: from smtprelay0062.hostedemail.com ([216.40.44.62]:41254 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726551AbgI1QGk (ORCPT
+        id S1726693AbgI1QGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:06:44 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:60886 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726551AbgI1QGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:06:40 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id EA4BF8383102;
-        Mon, 28 Sep 2020 16:06:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:965:966:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:4385:4390:4395:5007:6119:7576:8660:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13018:13019:13069:13148:13230:13311:13357:13439:14181:14659:14721:21080:21220:21451:21611:21627:21939:30054:30060:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: coast39_3a00add27182
-X-Filterd-Recvd-Size: 2060
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 28 Sep 2020 16:06:37 +0000 (UTC)
-Message-ID: <12317bbc7712d96be8f52a3bf574e47628830191.camel@perches.com>
-Subject: Re: [PATCH v2 1/9] lib: string_helpers: provide kfree_strarray()
-From:   Joe Perches <joe@perches.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 28 Sep 2020 09:06:34 -0700
-In-Reply-To: <CAMRc=Mds0ccYBhRJnCQ0NEPkUpWRGtyX4FKj4+4rxN27_gfobA@mail.gmail.com>
-References: <20200928104155.7385-1-brgl@bgdev.pl>
-         <20200928104155.7385-2-brgl@bgdev.pl>
-         <2fcfd81f62ec87d9b75cca32468d8b9583faec47.camel@perches.com>
-         <CAMRc=Mds0ccYBhRJnCQ0NEPkUpWRGtyX4FKj4+4rxN27_gfobA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 28 Sep 2020 12:06:44 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kMvfm-00018L-BI; Mon, 28 Sep 2020 16:06:42 +0000
+To:     Ariel Levkovich <lariel@mellanox.com>,
+        Roi Dayan <roid@mellanox.com>, Vlad Buslov <vladbu@nvidia.com>,
+        Saeed Mahameed <saeedm@mellanox.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: net/mlx5: Refactor tc flow attributes structure
+Message-ID: <763ea1c6-ed2b-3487-113f-fb48c1cf27dc@canonical.com>
+Date:   Mon, 28 Sep 2020 17:06:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-28 at 18:02 +0200, Bartosz Golaszewski wrote:
-> On Mon, Sep 28, 2020 at 5:59 PM Joe Perches <joe@perches.com> wrote:
-> > On Mon, 2020-09-28 at 12:41 +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > 
-> > > There's a common pattern of dynamically allocating an array of char
-> > > pointers and then also dynamically allocating each string in this
-> > > array. Provide a helper for freeing such a string array with one call.
-> > 
-> > Isn't this also common for things like ring buffers?
-> > Why limit this to char *[]?
-> > 
-> 
-> I don't want to add APIs nobody is using. What do you suggest?
+Hi,
 
-Change the argument to void** and call it
+static analysis with Coverity has found a null pointer dereference issue
+with the following commit:
 
-void kfree_array(void **array, int count);
+commit c620b772152b8274031083bdb2e11c963e596c5c
+Author: Ariel Levkovich <lariel@mellanox.com>
+Date:   Thu Apr 30 05:54:08 2020 +0300
 
+    net/mlx5: Refactor tc flow attributes structure
 
+The analysis is as follows:
 
+1240        slow_attr = mlx5_alloc_flow_attr(MLX5_FLOW_NAMESPACE_FDB);
 
+    1. Condition !slow_attr, taking true branch.
+    2. var_compare_op: Comparing slow_attr to null implies that
+slow_attr might be null.
+
+1241        if (!slow_attr)
+1242                mlx5_core_warn(flow->priv->mdev, "Unable to
+unoffload slow path rule\n");
+1243
+1244        memcpy(slow_attr, flow->attr, ESW_FLOW_ATTR_SZ);
+
+Dereference after null check (FORWARD_NULL)
+    3. var_deref_op: Dereferencing null pointer slow_attr.
+
+1245        slow_attr->action = MLX5_FLOW_CONTEXT_ACTION_FWD_DEST;
+1246        slow_attr->esw_attr->split_count = 0;
+1247        slow_attr->flags |= MLX5_ESW_ATTR_FLAG_SLOW_PATH;
+1248        mlx5e_tc_unoffload_fdb_rules(esw, flow, slow_attr);
+1249        flow_flag_clear(flow, SLOW);
+1250        kfree(slow_attr);
+
+there is a !slow_attr check but if it slow_attr is null the code then
+dereferences it multiple times afterwards.
+
+Colin
