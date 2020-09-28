@@ -2,156 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE75727AE8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:02:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670AC27AE94
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbgI1NCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 09:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbgI1NCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 09:02:13 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5DB0020738;
-        Mon, 28 Sep 2020 13:02:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601298133;
-        bh=jdysMaLrkR71ehjBrCElC5XtY4m0W338UonI9DdcFHw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j8mUCWH307c6c2xxXQZ/kCrp16905805mCM4kH0eBwTS3P621bI5SLMZ+6RgJRg2g
-         52T56S3MRMNNN5KxyLim3kc/iWsgDeKMRO+1ufNBbyTJYLQXExbGLqBSk/P+Ai5HJF
-         WyfpWCfrJBHEcIpreKuuz8i7bcNdJLP9vRK6Tz4s=
-Date:   Mon, 28 Sep 2020 14:02:09 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Anthony Steinhauser <asteinhauser@google.com>
-Cc:     linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        maz@kernel.org
-Subject: Re: [PATCH v2] PR_SPEC_DISABLE_NOEXEC support for arm64.
-Message-ID: <20200928130208.GA11356@willie-the-truck>
-References: <20200921110020.GA2139@willie-the-truck>
- <20200922092153.978003-1-asteinhauser@google.com>
+        id S1726650AbgI1NCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 09:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726630AbgI1NCr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 09:02:47 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E4AC0613D0
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 06:02:47 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id y11so609909qtn.9
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 06:02:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0vw0hzc9LBmLPORF1IWKKNtSKYXmHXVZRRprHQAaYXo=;
+        b=GskZscDezG2KqdkACqV8aTol4TYVU67vtXhjpLjLmCHlsc8eztYkj/KyG0nACG75+R
+         rNXcSTO6VBIBqXAyqHCAAJSdD5fzv77e73XzOz1w28Mmdl/OIxqRk7eyhlZrjHnSem/a
+         UknUSWtU4yOGXyh1VjK3hZXYJstYNsRdBhJEgOic5any935sWaTBJDMjURDxaX7yzafb
+         Q6x9bblYnRjtCuKvu5dxw+A+srcuScuD9W/eelwqZphZeKEtrk9k4W8FEY0IUZH/1AKu
+         yVv+ZuBDofv3kNcMtRhxiCa6c985NzKdNUOYA6A2qDno6+R3gm3meQARiy+gYA3PbBZq
+         AogA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0vw0hzc9LBmLPORF1IWKKNtSKYXmHXVZRRprHQAaYXo=;
+        b=lpXrWMwJtu+ghOFw0gItv0QvMmTTJ1e6gW6UtImaweWAkrAEz7J5MR9m/UyW4Yzt+l
+         cdc4azy/s49R+kqgeebpcU/3PPoTJH+944+ZrU4q/7y5g4HQBm8CmoVhsc7TRBcYL9b2
+         Vyq23OGeDfp/mzYqT5Z5PUO3hAOctaJyDl3TqpvmCK7nejjVDtQn9QGxmWz/Nso21ecv
+         NAhH1KH/IiWrcyWjnlXqE4ofmAC7M6rmm49CtIIrBTYiTHE1LlOCGc4o2ZGFQjvEYxs+
+         7BoHfUQ3nHhSzBkJ/TF0O2LdsN8GLoGm65cXRF/WKHikv8SH0H7GBkQSKjG1cylAUZDN
+         6XEw==
+X-Gm-Message-State: AOAM532hRAgJsRe2V6YY7uHKwOPdkwGYhxuXGxi3BVNTNXpwtovMfRlm
+        LGn8KQn8csU2MOeBozi3l67TFA==
+X-Google-Smtp-Source: ABdhPJxNelY8OktJZyftNDCq39TaQIPExwt+riZUsci5Sw5qww94PXK5KPyw8lwkqStl+sFd9YRKLA==
+X-Received: by 2002:ac8:7b3d:: with SMTP id l29mr1463274qtu.366.1601298166224;
+        Mon, 28 Sep 2020 06:02:46 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id 76sm876952qkl.127.2020.09.28.06.02.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 06:02:45 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kMsnl-001us3-0v; Mon, 28 Sep 2020 10:02:45 -0300
+Date:   Mon, 28 Sep 2020 10:02:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        Shuah Khan <shuah@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-s390@vger.kernel.org
+Subject: Re: [PATCH 8/8] selftests/vm: hmm-tests: remove the libhugetlbfs
+ dependency
+Message-ID: <20200928130245.GQ9916@ziepe.ca>
+References: <20200928062159.923212-1-jhubbard@nvidia.com>
+ <20200928062159.923212-9-jhubbard@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922092153.978003-1-asteinhauser@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200928062159.923212-9-jhubbard@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anthony,
+On Sun, Sep 27, 2020 at 11:21:59PM -0700, John Hubbard wrote:
 
-On Tue, Sep 22, 2020 at 02:21:53AM -0700, Anthony Steinhauser wrote:
-> Support of Spectre v4 PR_SPEC_DISABLE_NOEXEC mitigation mode for on arm64.
-> 
-> PR_SPEC_DISABLE_NOEXEC turns the mitigation on, but it is automatically
-> turned off whenever a new program is being execve'ed.
-> 
-> Signed-off-by: Anthony Steinhauser <asteinhauser@google.com>
-> ---
-> 
-> I added the "#include <linux/sched/task_stack.h>" line to the
-> arch/arm64/kernel/proton-pack.c file just to make the kernel compilable.
-> It is not a part of the PR_SPEC_DISABLE_NOEXEC implementation.
-
-Thanks, I saw the kbuild robot complain about this with 'allnoconfig'
-builds, so I'll patch that separately.
-
->  arch/arm64/kernel/process.c     |  7 +++++++
->  arch/arm64/kernel/proton-pack.c | 35 +++++++++++++++++++++++++++++++++
->  2 files changed, 42 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-> index 9dbd35b95253..5ac43b743696 100644
-> --- a/arch/arm64/kernel/process.c
-> +++ b/arch/arm64/kernel/process.c
-> @@ -391,6 +391,13 @@ int copy_thread(unsigned long clone_flags, unsigned long stack_start,
+> @@ -76,8 +79,6 @@ TEST_FILES := test_vmalloc.sh
+>  KSFT_KHDR_INSTALL := 1
+>  include ../lib.mk
 >  
->  	ptrauth_thread_init_kernel(p);
+> -$(OUTPUT)/hmm-tests: LDLIBS += -lhugetlbfs
+> -
+>  ifeq ($(ARCH),x86_64)
+>  BINARIES_32 := $(patsubst %,$(OUTPUT)/%,$(BINARIES_32))
+>  BINARIES_64 := $(patsubst %,$(OUTPUT)/%,$(BINARIES_64))
+> @@ -130,3 +131,22 @@ endif
+>  $(OUTPUT)/mlock-random-test: LDLIBS += -lcap
 >  
-> +	if (task_spec_ssb_noexec(current)) {
-> +		clear_thread_flag(TIF_SSBD);
-> +		task_clear_spec_ssb_disable(current);
-> +		task_clear_spec_ssb_noexec(current);
-> +		spectre_v4_enable_task_mitigation(current);
-> +	}
+>  $(OUTPUT)/gup_test: ../../../../mm/gup_test.h
+> +
+> +$(OUTPUT)/hmm-tests: local_config.h
+> +
+> +# HMM_EXTRA_LIBS may get set in local_config.mk, or it may be left empty.
+> +$(OUTPUT)/hmm-tests: LDLIBS += $(HMM_EXTRA_LIBS)
+> +
+> +local_config.mk local_config.h: check_config.sh
+> +	./check_config.sh
+> +
+> +EXTRA_CLEAN += local_config.mk local_config.h
+> +
+> +ifeq ($(HMM_EXTRA_LIBS),)
+> +all: warn_missing_hugelibs
+> +
+> +warn_missing_hugelibs:
+> +	@echo ; \
+> +	echo "Warning: missing libhugetlbfs support. Some HMM tests will be skipped." ; \
+> +	echo
+> +endif
+> diff --git a/tools/testing/selftests/vm/check_config.sh b/tools/testing/selftests/vm/check_config.sh
+> new file mode 100755
+> index 000000000000..651a4b192479
+> +++ b/tools/testing/selftests/vm/check_config.sh
+> @@ -0,0 +1,30 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: GPL-2.0
+> +#
+> +# Probe for libraries and create header files to record the results. Both C
+> +# header files and Makefile include fragments are created.
+> +
+> +OUTPUT_H_FILE=local_config.h
+> +OUTPUT_MKFILE=local_config.mk
+> +
+> +# libhugetlbfs
+> +tmpname=$(mktemp)
+> +tmpfile_c=${tmpname}.c
+> +tmpfile_o=${tmpname}.o
+> +
+> +echo "#include <sys/types.h>"        > $tmpfile_c
+> +echo "#include <hugetlbfs.h>"       >> $tmpfile_c
+> +echo "int func(void) { return 0; }" >> $tmpfile_c
+> +
+> +gcc -c $tmpfile_c -o $tmpfile_o >/dev/null 2>&1
 
-Are you sure copy_thread() is the right place for this? afaict, that would
-also apply to plain fork(), which isn't what we want. It looks like
-arch_setup_new_exec() is a better fit, and matches what x86 does. Any reason
-not to use that?
+This gcc has to come from some makefile variable
 
-This also looks like we basically want to issue the PR_SPEC_ENABLE prctl()
-on execve(). We can implement it like that to keep things simple and not
-have to worry about the actual underlying state (aside: why doesn't the
-core code do this?).
+This is kind of janky :\
 
-Anyway, I've had a crack at this. Please take a look at the diff below.
+Could we just not use libhugetlbfs? Doesn't it all just boil down to
+creating a file in /dev/huge? Eg look at tools/testing/selftests/vm/hugepage-mmap.c
 
-Will
-
---->8
-
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 9dbd35b95253..085d8ca39e47 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -21,6 +21,7 @@
- #include <linux/lockdep.h>
- #include <linux/mman.h>
- #include <linux/mm.h>
-+#include <linux/nospec.h>
- #include <linux/stddef.h>
- #include <linux/sysctl.h>
- #include <linux/unistd.h>
-@@ -609,6 +610,11 @@ void arch_setup_new_exec(void)
- 	current->mm->context.flags = is_compat_task() ? MMCF_AARCH32 : 0;
- 
- 	ptrauth_thread_init_user(current);
-+
-+	if (task_spec_ssb_noexec(current)) {
-+		arch_prctl_spec_ctrl_set(current, PR_SPEC_STORE_BYPASS,
-+					 PR_SPEC_ENABLE);
-+	}
- }
- 
- #ifdef CONFIG_ARM64_TAGGED_ADDR_ABI
-diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
-index 1fbaa0240d4c..c0d73d02b379 100644
---- a/arch/arm64/kernel/proton-pack.c
-+++ b/arch/arm64/kernel/proton-pack.c
-@@ -692,6 +692,9 @@ static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
- 
- 		task_set_spec_ssb_force_disable(task);
- 		fallthrough;
-+	case PR_SPEC_DISABLE_NOEXEC:
-+		/* Disable speculation until execve(): enable mitigation */
-+		fallthrough;
- 	case PR_SPEC_DISABLE:
- 		/* Disable speculation: enable mitigation */
- 		/* Same as PR_SPEC_FORCE_DISABLE */
-@@ -705,6 +708,12 @@ static int ssbd_prctl_set(struct task_struct *task, unsigned long ctrl)
- 		return -ERANGE;
- 	}
- 
-+	/* Handle the 'noexec' flag separately to save bloating up the switch */
-+	if (ctrl == PR_SPEC_DISABLE_NOEXEC)
-+		task_set_spec_ssb_noexec(task);
-+	else
-+		task_clear_spec_ssb_noexec(task);
-+
- 	spectre_v4_enable_task_mitigation(task);
- 	return 0;
- }
-@@ -744,6 +753,9 @@ static int ssbd_prctl_get(struct task_struct *task)
- 	if (task_spec_ssb_force_disable(task))
- 		return PR_SPEC_PRCTL | PR_SPEC_FORCE_DISABLE;
- 
-+	if (task_spec_ssb_noexec(task))
-+		return PR_SPEC_PRCTL | PR_SPEC_DISABLE_NOEXEC;
-+
- 	if (task_spec_ssb_disable(task))
- 		return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
- 
+Jason
