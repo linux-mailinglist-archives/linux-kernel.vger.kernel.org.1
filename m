@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C735927ABEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1941827ABF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726722AbgI1Kh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:37:27 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:19924 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726540AbgI1Kh0 (ORCPT
+        id S1726734AbgI1Khk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:37:40 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:52851 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726576AbgI1Khk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:37:26 -0400
+        Mon, 28 Sep 2020 06:37:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1601289445; x=1632825445;
+  t=1601289458; x=1632825458;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version;
-  bh=qvrhquTl8+AtxVLoOsq6PQfl9fxedokru3rzzkYbCIA=;
-  b=rMbNg7JD7CQ3Xv//ke616wzrddVdxCh3f3rEtCNjyDeM3pv4RRTwTkgH
-   Y2SPBIMouXG2AL/NFs/YKRfWTcr2HMed+nHdc40c4LKoUvSuwitS+Wpek
-   9FG8m4QNM1gcdzlll2oQcGcJFac695KU6b+5rzX6kSGEcaNHohUbjBVB2
-   A=;
+  bh=tdNdw6IfHLO/vMz+dCnfV6saHBkcPkuM1L7pDo6BFss=;
+  b=FMq3kve59mMh30uA204nEgDsLNGwdyqquVWL7EmgYlSre4hIVmcjGwyP
+   wXW/0FVcxmtAoWvfBwq6GbNwcpbpMdZR0VlDufqmLbNuqJTg2T4I7Pfrs
+   cObjnqv7ubsvq0H5DwXHFEddf9HiZpORoepcRQ87cWHEkEayMZ8bQYP8J
+   Y=;
 X-IronPort-AV: E=Sophos;i="5.77,313,1596499200"; 
-   d="scan'208";a="79768620"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 28 Sep 2020 10:37:20 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-5dd976cd.us-east-1.amazon.com (Postfix) with ESMTPS id 8BE06A1CF1;
-        Mon, 28 Sep 2020 10:37:06 +0000 (UTC)
+   d="scan'208";a="56682864"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 28 Sep 2020 10:37:37 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com (Postfix) with ESMTPS id 09157A1F79;
+        Mon, 28 Sep 2020 10:37:24 +0000 (UTC)
 Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
  EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 28 Sep 2020 10:36:47 +0000
+ id 15.0.1497.2; Mon, 28 Sep 2020 10:37:06 +0000
 From:   SeongJae Park <sjpark@amazon.com>
 To:     <akpm@linux-foundation.org>
 CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
@@ -53,9 +53,9 @@ CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
         <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
         <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH 3/5] mm/damon: Move recording feature from core to dbgfs
-Date:   Mon, 28 Sep 2020 12:35:26 +0200
-Message-ID: <20200928103528.4256-4-sjpark@amazon.com>
+Subject: [RFC PATCH 4/5] mm/page_idle: Avoid interferences from concurrent users
+Date:   Mon, 28 Sep 2020 12:35:27 +0200
+Message-ID: <20200928103528.4256-5-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200928103528.4256-1-sjpark@amazon.com>
 References: <20200928103528.4256-1-sjpark@amazon.com>
@@ -70,889 +70,147 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: SeongJae Park <sjpark@amazon.de>
 
-DAMON passes the monitoring results to user space via two ways: 1) a
-tracepoint and 2) it's recording feature.  The recording feature is for
-the users who want simplest use.
+Concurrent Idle Page Tracking users can interfere each other because the
+interface doesn't provide a central rule for synchronization between the
+users.  Users could implement their own synchronization rule, but even
+in that case, applications developed by different users would not know
+how to synchronize with others.  To help this situation, this commit
+introduces a centralized synchronization infrastructure of Idle Page
+Tracking.
 
-However, as the feature is for the user space only while the core is
-fundamentally a framework for the kernel space, keeping the feature in
-the core would make no sense.  Therefore, this commit moves the feature
-to the debugfs interface of DAMON.
+In detail, this commit introduces a mutex lock for Idle Page Tracking,
+called 'page_idle_lock'.  It is exposed to user space via a new bool
+sysfs file, '/sys/kernel/mm/page_idle/lock'.  By writing to and reading
+from the file, users can hold/release and read status of the mutex.
+Writes to the Idle Page Tracking 'bitmap' file fails if the lock is not
+held, while reads of the file can be done regardless of the lock status.
+
+Note that users could still interfere each other if they abuse this
+locking rule.  Nevertheless, this change will let them notice the rule.
 
 Signed-off-by: SeongJae Park <sjpark@amazon.de>
 ---
- include/linux/damon.h |  23 +---
- mm/damon/core-test.h  |  57 ++-------
- mm/damon/core.c       | 150 +-----------------------
- mm/damon/dbgfs-test.h |  87 +++++++++++++-
- mm/damon/dbgfs.c      | 264 ++++++++++++++++++++++++++++++++++++++++--
- 5 files changed, 359 insertions(+), 222 deletions(-)
+ .../admin-guide/mm/idle_page_tracking.rst     | 22 +++++++---
+ mm/page_idle.c                                | 40 +++++++++++++++++++
+ 2 files changed, 56 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 505e6261cefa..606e59f785a2 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -134,14 +134,6 @@ struct damos {
-  * in case of virtual memory monitoring) and applies the changes for each
-  * @regions_update_interval.  All time intervals are in micro-seconds.
-  *
-- * @rbuf: In-memory buffer for monitoring result recording.
-- * @rbuf_len: The length of @rbuf.
-- * @rbuf_offset: The offset for next write to @rbuf.
-- * @rfile_path: Record file path.
-- *
-- * If @rbuf, @rbuf_len, and @rfile_path are set, the monitored results are
-- * automatically stored in @rfile_path file.
-- *
-  * @kdamond:		Kernel thread who does the monitoring.
-  * @kdamond_stop:	Notifies whether kdamond should stop.
-  * @kdamond_lock:	Mutex for the synchronizations with @kdamond.
-@@ -164,6 +156,8 @@ struct damos {
-  * @targets_list:	Head of monitoring targets (&damon_target) list.
-  * @schemes_list:	Head of schemes (&damos) list.
-  *
-+ * @private		Private user data.
-+ *
-  * @init_target_regions:	Constructs initial monitoring target regions.
-  * @update_target_regions:	Updates monitoring target regions.
-  * @prepare_access_checks:	Prepares next access check of target regions.
-@@ -214,11 +208,6 @@ struct damon_ctx {
- 	struct timespec64 last_aggregation;
- 	struct timespec64 last_regions_update;
+diff --git a/Documentation/admin-guide/mm/idle_page_tracking.rst b/Documentation/admin-guide/mm/idle_page_tracking.rst
+index df9394fb39c2..3f5e7a8b5b78 100644
+--- a/Documentation/admin-guide/mm/idle_page_tracking.rst
++++ b/Documentation/admin-guide/mm/idle_page_tracking.rst
+@@ -21,13 +21,13 @@ User API
+ ========
  
--	unsigned char *rbuf;
--	unsigned int rbuf_len;
--	unsigned int rbuf_offset;
--	char *rfile_path;
--
- 	struct task_struct *kdamond;
- 	bool kdamond_stop;
- 	struct mutex kdamond_lock;
-@@ -226,6 +215,8 @@ struct damon_ctx {
- 	struct list_head targets_list;	/* 'damon_target' objects */
- 	struct list_head schemes_list;	/* 'damos' objects */
+ The idle page tracking API is located at ``/sys/kernel/mm/page_idle``.
+-Currently, it consists of the only read-write file,
+-``/sys/kernel/mm/page_idle/bitmap``.
++Currently, it consists of two read-write file,
++``/sys/kernel/mm/page_idle/bitmap`` and ``/sys/kernel/mm/page_idle/lock``.
  
-+	void *private;
+-The file implements a bitmap where each bit corresponds to a memory page. The
+-bitmap is represented by an array of 8-byte integers, and the page at PFN #i is
+-mapped to bit #i%64 of array element #i/64, byte order is native. When a bit is
+-set, the corresponding page is idle.
++The ``bitmap`` file implements a bitmap where each bit corresponds to a memory
++page. The bitmap is represented by an array of 8-byte integers, and the page at
++PFN #i is mapped to bit #i%64 of array element #i/64, byte order is native.
++When a bit is set, the corresponding page is idle.
+ 
+ A page is considered idle if it has not been accessed since it was marked idle
+ (for more details on what "accessed" actually means see the :ref:`Implementation
+@@ -74,6 +74,16 @@ See :ref:`Documentation/admin-guide/mm/pagemap.rst <pagemap>` for more
+ information about ``/proc/pid/pagemap``, ``/proc/kpageflags``, and
+ ``/proc/kpagecgroup``.
+ 
++The ``lock`` file is for avoidance of interference from concurrent users.  If
++the content of the ``lock`` file is ``1``, it means the ``bitmap`` file is
++currently being used by someone.  While the content of the ``lock`` file is
++``1``, writing ``1`` to the file fails.  Therefore, users should first
++successfully write ``1`` to the ``lock`` file before starting use of ``bitmap``
++file and write ``0`` to the ``lock`` file after they finished use of the
++``bitmap`` file.  If a user writes the ``bitmap`` file while the ``lock`` is
++``0``, the write fails.  Meanwhile, reads of the ``bitmap`` file success
++regardless of the ``lock`` status.
 +
- 	/* callbacks */
- 	void (*init_target_regions)(struct damon_ctx *context);
- 	void (*update_target_regions)(struct damon_ctx *context);
-@@ -241,10 +232,6 @@ struct damon_ctx {
+ .. _impl_details:
  
- #ifdef CONFIG_DAMON
+ Implementation Details
+diff --git a/mm/page_idle.c b/mm/page_idle.c
+index 144fb4ed961d..0aa45f848570 100644
+--- a/mm/page_idle.c
++++ b/mm/page_idle.c
+@@ -16,6 +16,8 @@
+ #define BITMAP_CHUNK_SIZE	sizeof(u64)
+ #define BITMAP_CHUNK_BITS	(BITMAP_CHUNK_SIZE * BITS_PER_BYTE)
  
--#define MIN_RECORD_BUFFER_LEN	1024
--#define MAX_RECORD_BUFFER_LEN	(4 * 1024 * 1024)
--#define MAX_RFILE_PATH_LEN	256
--
- #define damon_next_region(r) \
- 	(container_of(r->list.next, struct damon_region, list))
- 
-@@ -298,8 +285,6 @@ int damon_set_attrs(struct damon_ctx *ctx, unsigned long sample_int,
- 		unsigned long min_nr_reg, unsigned long max_nr_reg);
- int damon_set_schemes(struct damon_ctx *ctx,
- 			struct damos **schemes, ssize_t nr_schemes);
--int damon_set_recording(struct damon_ctx *ctx,
--				unsigned int rbuf_len, char *rfile_path);
- int damon_nr_running_ctxs(void);
- 
- int damon_start(struct damon_ctx *ctxs, int nr_ctxs);
-diff --git a/mm/damon/core-test.h b/mm/damon/core-test.h
-index c916d773397a..b815dfbfb5fd 100644
---- a/mm/damon/core-test.h
-+++ b/mm/damon/core-test.h
-@@ -36,6 +36,17 @@ static void damon_test_regions(struct kunit *test)
- 	damon_free_target(t);
- }
- 
-+static unsigned int nr_damon_targets(struct damon_ctx *ctx)
-+{
-+	struct damon_target *t;
-+	unsigned int nr_targets = 0;
++static DEFINE_MUTEX(page_idle_lock);
 +
-+	damon_for_each_target(t, ctx)
-+		nr_targets++;
-+
-+	return nr_targets;
-+}
-+
- static void damon_test_target(struct kunit *test)
- {
- 	struct damon_ctx *c = damon_new_ctx();
-@@ -54,23 +65,6 @@ static void damon_test_target(struct kunit *test)
- 	damon_destroy_ctx(c);
- }
- 
--static void damon_test_set_recording(struct kunit *test)
--{
--	struct damon_ctx *ctx = damon_new_ctx();
--	int err;
--
--	err = damon_set_recording(ctx, 42, "foo");
--	KUNIT_EXPECT_EQ(test, err, -EINVAL);
--	damon_set_recording(ctx, 4242, "foo.bar");
--	KUNIT_EXPECT_EQ(test, ctx->rbuf_len, 4242u);
--	KUNIT_EXPECT_STREQ(test, ctx->rfile_path, "foo.bar");
--	damon_set_recording(ctx, 424242, "foo");
--	KUNIT_EXPECT_EQ(test, ctx->rbuf_len, 424242u);
--	KUNIT_EXPECT_STREQ(test, ctx->rfile_path, "foo");
--
--	damon_destroy_ctx(ctx);
--}
--
  /*
-  * Test kdamond_reset_aggregated()
-  *
-@@ -91,9 +85,7 @@ static void damon_test_aggregate(struct kunit *test)
- 	struct damon_target *t;
- 	struct damon_region *r;
- 	int it, ir;
--	ssize_t sz, sr, sp;
+  * Idle page tracking only considers user memory pages, for other types of
+  * pages the idle flag is always unset and an attempt to set it is silently
+@@ -169,6 +171,9 @@ static ssize_t page_idle_bitmap_write(struct file *file, struct kobject *kobj,
+ 	unsigned long pfn, end_pfn;
+ 	int bit;
  
--	damon_set_recording(ctx, 4242, "damon.data");
- 	damon_set_targets(ctx, target_ids, 3);
++	if (!mutex_is_locked(&page_idle_lock))
++		return -EPERM;
++
+ 	if (pos % BITMAP_CHUNK_SIZE || count % BITMAP_CHUNK_SIZE)
+ 		return -EINVAL;
  
- 	it = 0;
-@@ -121,31 +113,6 @@ static void damon_test_aggregate(struct kunit *test)
- 	/* targets also should be preserved */
- 	KUNIT_EXPECT_EQ(test, 3, it);
- 
--	/* The aggregated information should be written in the buffer */
--	sr = sizeof(r->ar.start) + sizeof(r->ar.end) + sizeof(r->nr_accesses);
--	sp = sizeof(t->id) + sizeof(unsigned int) + 3 * sr;
--	sz = sizeof(struct timespec64) + sizeof(unsigned int) + 3 * sp;
--	KUNIT_EXPECT_EQ(test, (unsigned int)sz, ctx->rbuf_offset);
--
--	damon_destroy_ctx(ctx);
--}
--
--static void damon_test_write_rbuf(struct kunit *test)
--{
--	struct damon_ctx *ctx = damon_new_ctx();
--	char *data;
--
--	damon_set_recording(ctx, 4242, "damon.data");
--
--	data = "hello";
--	damon_write_rbuf(ctx, data, strnlen(data, 256));
--	KUNIT_EXPECT_EQ(test, ctx->rbuf_offset, 5u);
--
--	damon_write_rbuf(ctx, data, 0);
--	KUNIT_EXPECT_EQ(test, ctx->rbuf_offset, 5u);
--
--	KUNIT_EXPECT_STREQ(test, (char *)ctx->rbuf, data);
--
- 	damon_destroy_ctx(ctx);
+@@ -197,17 +202,52 @@ static ssize_t page_idle_bitmap_write(struct file *file, struct kobject *kobj,
+ 	return (char *)in - buf;
  }
  
-@@ -267,9 +234,7 @@ static void damon_test_split_regions_of(struct kunit *test)
- static struct kunit_case damon_test_cases[] = {
- 	KUNIT_CASE(damon_test_target),
- 	KUNIT_CASE(damon_test_regions),
--	KUNIT_CASE(damon_test_set_recording),
- 	KUNIT_CASE(damon_test_aggregate),
--	KUNIT_CASE(damon_test_write_rbuf),
- 	KUNIT_CASE(damon_test_split_at),
- 	KUNIT_CASE(damon_test_merge_two),
- 	KUNIT_CASE(damon_test_merge_regions_of),
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index ba52421a2673..ba0035d7a27a 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -208,11 +208,6 @@ struct damon_ctx *damon_new_ctx(void)
- 	ktime_get_coarse_ts64(&ctx->last_aggregation);
- 	ctx->last_regions_update = ctx->last_aggregation;
- 
--	if (damon_set_recording(ctx, 0, "none")) {
--		kfree(ctx);
--		return NULL;
--	}
--
- 	mutex_init(&ctx->kdamond_lock);
- 
- 	INIT_LIST_HEAD(&ctx->targets_list);
-@@ -328,54 +323,6 @@ int damon_set_schemes(struct damon_ctx *ctx, struct damos **schemes,
- 	return 0;
- }
- 
--/**
-- * damon_set_recording() - Set attributes for the recording.
-- * @ctx:	target kdamond context
-- * @rbuf_len:	length of the result buffer
-- * @rfile_path:	path to the monitor result files
-- *
-- * Setting 'rbuf_len' 0 disables recording.
-- *
-- * This function should not be called while the kdamond is running.
-- *
-- * Return: 0 on success, negative error code otherwise.
-- */
--int damon_set_recording(struct damon_ctx *ctx,
--			unsigned int rbuf_len, char *rfile_path)
--{
--	size_t rfile_path_len;
--
--	if (rbuf_len && (rbuf_len > MAX_RECORD_BUFFER_LEN ||
--			rbuf_len < MIN_RECORD_BUFFER_LEN)) {
--		pr_err("result buffer size (%u) is out of [%d,%d]\n",
--				rbuf_len, MIN_RECORD_BUFFER_LEN,
--				MAX_RECORD_BUFFER_LEN);
--		return -EINVAL;
--	}
--	rfile_path_len = strnlen(rfile_path, MAX_RFILE_PATH_LEN);
--	if (rfile_path_len >= MAX_RFILE_PATH_LEN) {
--		pr_err("too long (>%d) result file path %s\n",
--				MAX_RFILE_PATH_LEN, rfile_path);
--		return -EINVAL;
--	}
--	ctx->rbuf_len = rbuf_len;
--	kfree(ctx->rbuf);
--	ctx->rbuf = NULL;
--	kfree(ctx->rfile_path);
--	ctx->rfile_path = NULL;
--
--	if (rbuf_len) {
--		ctx->rbuf = kvmalloc(rbuf_len, GFP_KERNEL);
--		if (!ctx->rbuf)
--			return -ENOMEM;
--	}
--	ctx->rfile_path = kmalloc(rfile_path_len + 1, GFP_KERNEL);
--	if (!ctx->rfile_path)
--		return -ENOMEM;
--	strncpy(ctx->rfile_path, rfile_path, rfile_path_len + 1);
--	return 0;
--}
--
- /**
-  * damon_nr_running_ctxs() - Return number of currently running contexts.
-  */
-@@ -390,17 +337,6 @@ int damon_nr_running_ctxs(void)
- 	return nr_ctxs;
- }
- 
--static unsigned int nr_damon_targets(struct damon_ctx *ctx)
--{
--	struct damon_target *t;
--	unsigned int nr_targets = 0;
--
--	damon_for_each_target(t, ctx)
--		nr_targets++;
--
--	return nr_targets;
--}
--
- /* Returns the size upper limit for each monitoring region */
- static unsigned long damon_region_sz_limit(struct damon_ctx *ctx)
- {
-@@ -613,87 +549,18 @@ static bool kdamond_aggregate_interval_passed(struct damon_ctx *ctx)
- }
- 
- /*
-- * Flush the content in the result buffer to the result file
-- */
--static void damon_flush_rbuffer(struct damon_ctx *ctx)
--{
--	ssize_t sz;
--	loff_t pos = 0;
--	struct file *rfile;
--
--	if (!ctx->rbuf_offset)
--		return;
--
--	rfile = filp_open(ctx->rfile_path,
--			O_CREAT | O_RDWR | O_APPEND | O_LARGEFILE, 0644);
--	if (IS_ERR(rfile)) {
--		pr_err("Cannot open the result file %s\n",
--				ctx->rfile_path);
--		return;
--	}
--
--	while (ctx->rbuf_offset) {
--		sz = kernel_write(rfile, ctx->rbuf, ctx->rbuf_offset, &pos);
--		if (sz < 0)
--			break;
--		ctx->rbuf_offset -= sz;
--	}
--	filp_close(rfile, NULL);
--}
--
--/*
-- * Write a data into the result buffer
-- */
--static void damon_write_rbuf(struct damon_ctx *ctx, void *data, ssize_t size)
--{
--	if (!ctx->rbuf_len || !ctx->rbuf || !ctx->rfile_path)
--		return;
--	if (ctx->rbuf_offset + size > ctx->rbuf_len)
--		damon_flush_rbuffer(ctx);
--	if (ctx->rbuf_offset + size > ctx->rbuf_len) {
--		pr_warn("%s: flush failed, or wrong size given(%u, %zu)\n",
--				__func__, ctx->rbuf_offset, size);
--		return;
--	}
--
--	memcpy(&ctx->rbuf[ctx->rbuf_offset], data, size);
--	ctx->rbuf_offset += size;
--}
--
--/*
-- * Flush the aggregated monitoring results to the result buffer
-- *
-- * Stores current tracking results to the result buffer and reset 'nr_accesses'
-- * of each region.  The format for the result buffer is as below:
-- *
-- *   <time> <number of targets> <array of target infos>
-- *
-- *   target info: <id> <number of regions> <array of region infos>
-- *   region info: <start address> <end address> <nr_accesses>
-+ * Reset the aggregated monitoring results ('nr_accesses' of each region).
-  */
- static void kdamond_reset_aggregated(struct damon_ctx *c)
- {
- 	struct damon_target *t;
--	struct timespec64 now;
- 	unsigned int nr;
- 
--	ktime_get_coarse_ts64(&now);
--
--	damon_write_rbuf(c, &now, sizeof(now));
--	nr = nr_damon_targets(c);
--	damon_write_rbuf(c, &nr, sizeof(nr));
--
- 	damon_for_each_target(t, c) {
- 		struct damon_region *r;
- 
--		damon_write_rbuf(c, &t->id, sizeof(t->id));
- 		nr = damon_nr_regions(t);
--		damon_write_rbuf(c, &nr, sizeof(nr));
- 		damon_for_each_region(r, t) {
--			damon_write_rbuf(c, &r->ar.start, sizeof(r->ar.start));
--			damon_write_rbuf(c, &r->ar.end, sizeof(r->ar.end));
--			damon_write_rbuf(c, &r->nr_accesses,
--					sizeof(r->nr_accesses));
- 			trace_damon_aggregated(t, r, nr);
- 			r->last_nr_accesses = r->nr_accesses;
- 			r->nr_accesses = 0;
-@@ -927,14 +794,6 @@ static bool kdamond_need_stop(struct damon_ctx *ctx)
- 	return true;
- }
- 
--static void kdamond_write_record_header(struct damon_ctx *ctx)
--{
--	int recfmt_ver = 2;
--
--	damon_write_rbuf(ctx, "damon_recfmt_ver", 16);
--	damon_write_rbuf(ctx, &recfmt_ver, sizeof(recfmt_ver));
--}
--
- /*
-  * The monitoring daemon that runs as a kernel thread
-  */
-@@ -951,8 +810,6 @@ static int kdamond_fn(void *data)
- 		ctx->init_target_regions(ctx);
- 	sz_limit = damon_region_sz_limit(ctx);
- 
--	kdamond_write_record_header(ctx);
--
- 	while (!kdamond_need_stop(ctx)) {
- 		if (ctx->prepare_access_checks)
- 			ctx->prepare_access_checks(ctx);
-@@ -965,10 +822,10 @@ static int kdamond_fn(void *data)
- 			max_nr_accesses = ctx->check_accesses(ctx);
- 
- 		if (kdamond_aggregate_interval_passed(ctx)) {
--			if (ctx->aggregate_cb)
--				ctx->aggregate_cb(ctx);
- 			kdamond_merge_regions(ctx, max_nr_accesses / 10,
- 					sz_limit);
-+			if (ctx->aggregate_cb)
-+				ctx->aggregate_cb(ctx);
- 			kdamond_apply_schemes(ctx);
- 			kdamond_reset_aggregated(ctx);
- 			kdamond_split_regions(ctx);
-@@ -980,7 +837,6 @@ static int kdamond_fn(void *data)
- 			sz_limit = damon_region_sz_limit(ctx);
- 		}
- 	}
--	damon_flush_rbuffer(ctx);
- 	damon_for_each_target(t, ctx) {
- 		damon_for_each_region_safe(r, next, t)
- 			damon_destroy_region(r);
-diff --git a/mm/damon/dbgfs-test.h b/mm/damon/dbgfs-test.h
-index dffb9f70e399..426adf5dadc2 100644
---- a/mm/damon/dbgfs-test.h
-+++ b/mm/damon/dbgfs-test.h
-@@ -78,7 +78,7 @@ static void damon_dbgfs_test_str_to_target_ids(struct kunit *test)
- 
- static void damon_dbgfs_test_set_targets(struct kunit *test)
- {
--	struct damon_ctx *ctx = damon_new_ctx();
-+	struct damon_ctx *ctx = debugfs_new_ctx();
- 	unsigned long ids[] = {1, 2, 3};
- 	char buf[64];
- 
-@@ -105,9 +105,91 @@ static void damon_dbgfs_test_set_targets(struct kunit *test)
- 	sprint_target_ids(ctx, buf, 64);
- 	KUNIT_EXPECT_STREQ(test, (char *)buf, "\n");
- 
-+	debugfs_destroy_ctx(ctx);
++static ssize_t page_idle_lock_show(struct kobject *kobj,
++		struct kobj_attribute *attr, char *buf)
++{
++	return sprintf(buf, "%d\n", mutex_is_locked(&page_idle_lock));
 +}
 +
-+static void damon_dbgfs_test_set_recording(struct kunit *test)
++static ssize_t page_idle_lock_store(struct kobject *kobj,
++		struct kobj_attribute *attr, const char *buf, size_t count)
 +{
-+	struct damon_ctx *ctx = debugfs_new_ctx();
-+	struct debugfs_recorder *rec = ctx->private;
-+	int err;
++	bool do_lock;
++	int ret;
 +
-+	err = debugfs_set_recording(ctx, 42, "foo");
-+	KUNIT_EXPECT_EQ(test, err, -EINVAL);
-+	debugfs_set_recording(ctx, 4242, "foo.bar");
-+	KUNIT_EXPECT_EQ(test, rec->rbuf_len, 4242u);
-+	KUNIT_EXPECT_STREQ(test, rec->rfile_path, "foo.bar");
-+	debugfs_set_recording(ctx, 424242, "foo");
-+	KUNIT_EXPECT_EQ(test, rec->rbuf_len, 424242u);
-+	KUNIT_EXPECT_STREQ(test, rec->rfile_path, "foo");
++	ret = kstrtobool(buf, &do_lock);
++	if (ret < 0)
++		return ret;
 +
-+	debugfs_destroy_ctx(ctx);
-+}
-+
-+static void damon_dbgfs_test_write_rbuf(struct kunit *test)
-+{
-+	struct damon_ctx *ctx = debugfs_new_ctx();
-+	struct debugfs_recorder *rec = ctx->private;
-+	char *data;
-+
-+	debugfs_set_recording(ctx, 4242, "damon.data");
-+
-+	data = "hello";
-+	debugfs_write_rbuf(ctx, data, strnlen(data, 256));
-+	KUNIT_EXPECT_EQ(test, rec->rbuf_offset, 5u);
-+
-+	debugfs_write_rbuf(ctx, data, 0);
-+	KUNIT_EXPECT_EQ(test, rec->rbuf_offset, 5u);
-+
-+	KUNIT_EXPECT_STREQ(test, (char *)rec->rbuf, data);
-+
-+	debugfs_destroy_ctx(ctx);
-+}
-+
-+/*
-+ * Test debugfs_aggregate_cb()
-+ *
-+ * dbgfs sets debugfs_aggregate_cb() as aggregate callback.  It stores the
-+ * aggregated monitoring information ('->nr_accesses' of each regions) to the
-+ * result buffer.
-+ */
-+static void damon_dbgfs_test_aggregate(struct kunit *test)
-+{
-+	struct damon_ctx *ctx = debugfs_new_ctx();
-+	struct debugfs_recorder *rec = ctx->private;
-+	unsigned long target_ids[] = {1, 2, 3};
-+	unsigned long saddr[][3] = {{10, 20, 30}, {5, 42, 49}, {13, 33, 55} };
-+	unsigned long eaddr[][3] = {{15, 27, 40}, {31, 45, 55}, {23, 44, 66} };
-+	unsigned long accesses[][3] = {{42, 95, 84}, {10, 20, 30}, {0, 1, 2} };
-+	struct damon_target *t;
-+	struct damon_region *r;
-+	int it, ir;
-+	ssize_t sz, sr, sp;
-+
-+	debugfs_set_recording(ctx, 4242, "damon.data");
-+	damon_set_targets(ctx, target_ids, 3);
-+
-+	it = 0;
-+	damon_for_each_target(t, ctx) {
-+		for (ir = 0; ir < 3; ir++) {
-+			r = damon_new_region(saddr[it][ir], eaddr[it][ir]);
-+			r->nr_accesses = accesses[it][ir];
-+			damon_add_region(r, t);
-+		}
-+		it++;
++	if (do_lock) {
++		if (!mutex_trylock(&page_idle_lock))
++			return -EBUSY;
++	} else {
++		mutex_unlock(&page_idle_lock);
 +	}
-+	debugfs_aggregate_cb(ctx);
 +
-+	/* The aggregated information should be written in the buffer */
-+	sr = sizeof(r->ar.start) + sizeof(r->ar.end) + sizeof(r->nr_accesses);
-+	sp = sizeof(t->id) + sizeof(unsigned int) + 3 * sr;
-+	sz = sizeof(struct timespec64) + sizeof(unsigned int) + 3 * sp;
-+	KUNIT_EXPECT_EQ(test, (unsigned int)sz, rec->rbuf_offset);
++	return count;
++}
 +
- 	damon_destroy_ctx(ctx);
- }
+ static struct bin_attribute page_idle_bitmap_attr =
+ 		__BIN_ATTR(bitmap, 0600,
+ 			   page_idle_bitmap_read, page_idle_bitmap_write, 0);
  
++static struct kobj_attribute page_idle_lock_attr =
++		__ATTR(lock, 0600, page_idle_lock_show, page_idle_lock_store);
 +
- static void damon_dbgfs_test_set_init_regions(struct kunit *test)
- {
- 	struct damon_ctx *ctx = damon_new_ctx();
-@@ -164,6 +246,9 @@ static void damon_dbgfs_test_set_init_regions(struct kunit *test)
- static struct kunit_case damon_test_cases[] = {
- 	KUNIT_CASE(damon_dbgfs_test_str_to_target_ids),
- 	KUNIT_CASE(damon_dbgfs_test_set_targets),
-+	KUNIT_CASE(damon_dbgfs_test_set_recording),
-+	KUNIT_CASE(damon_dbgfs_test_write_rbuf),
-+	KUNIT_CASE(damon_dbgfs_test_aggregate),
- 	KUNIT_CASE(damon_dbgfs_test_set_init_regions),
- 	{},
+ static struct bin_attribute *page_idle_bin_attrs[] = {
+ 	&page_idle_bitmap_attr,
+ 	NULL,
  };
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index 646a492100ff..7a6c279690f8 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -10,15 +10,155 @@
- #include <linux/damon.h>
- #include <linux/debugfs.h>
- #include <linux/file.h>
-+#include <linux/mm.h>
- #include <linux/module.h>
- #include <linux/slab.h>
  
-+#define MIN_RECORD_BUFFER_LEN	1024
-+#define MAX_RECORD_BUFFER_LEN	(4 * 1024 * 1024)
-+#define MAX_RFILE_PATH_LEN	256
-+
-+struct debugfs_recorder {
-+	unsigned char *rbuf;
-+	unsigned int rbuf_len;
-+	unsigned int rbuf_offset;
-+	char *rfile_path;
++static struct attribute *page_idle_lock_attrs[] = {
++	&page_idle_lock_attr.attr,
++	NULL,
 +};
 +
- /* Monitoring contexts for debugfs interface users. */
- static struct damon_ctx **debugfs_ctxs;
- static int debugfs_nr_ctxs = 1;
+ static const struct attribute_group page_idle_attr_group = {
+ 	.bin_attrs = page_idle_bin_attrs,
++	.attrs = page_idle_lock_attrs,
+ 	.name = "page_idle",
+ };
  
- static DEFINE_MUTEX(damon_dbgfs_lock);
- 
-+static unsigned int nr_damon_targets(struct damon_ctx *ctx)
-+{
-+	struct damon_target *t;
-+	unsigned int nr_targets = 0;
-+
-+	damon_for_each_target(t, ctx)
-+		nr_targets++;
-+
-+	return nr_targets;
-+}
-+
-+/*
-+ * Flush the content in the result buffer to the result file
-+ */
-+static void debugfs_flush_rbuffer(struct debugfs_recorder *rec)
-+{
-+	ssize_t sz;
-+	loff_t pos = 0;
-+	struct file *rfile;
-+
-+	if (!rec->rbuf_offset)
-+		return;
-+
-+	rfile = filp_open(rec->rfile_path,
-+			O_CREAT | O_RDWR | O_APPEND | O_LARGEFILE, 0644);
-+	if (IS_ERR(rfile)) {
-+		pr_err("Cannot open the result file %s\n",
-+				rec->rfile_path);
-+		return;
-+	}
-+
-+	while (rec->rbuf_offset) {
-+		sz = kernel_write(rfile, rec->rbuf, rec->rbuf_offset, &pos);
-+		if (sz < 0)
-+			break;
-+		rec->rbuf_offset -= sz;
-+	}
-+	filp_close(rfile, NULL);
-+}
-+
-+/*
-+ * Write a data into the result buffer
-+ */
-+static void debugfs_write_rbuf(struct damon_ctx *ctx, void *data, ssize_t size)
-+{
-+	struct debugfs_recorder *rec = (struct debugfs_recorder *)ctx->private;
-+
-+	if (!rec->rbuf_len || !rec->rbuf || !rec->rfile_path)
-+		return;
-+	if (rec->rbuf_offset + size > rec->rbuf_len)
-+		debugfs_flush_rbuffer(ctx->private);
-+	if (rec->rbuf_offset + size > rec->rbuf_len) {
-+		pr_warn("%s: flush failed, or wrong size given(%u, %zu)\n",
-+				__func__, rec->rbuf_offset, size);
-+		return;
-+	}
-+
-+	memcpy(&rec->rbuf[rec->rbuf_offset], data, size);
-+	rec->rbuf_offset += size;
-+}
-+
-+static void debugfs_write_record_header(struct damon_ctx *ctx)
-+{
-+	int recfmt_ver = 2;
-+
-+	debugfs_write_rbuf(ctx, "damon_recfmt_ver", 16);
-+	debugfs_write_rbuf(ctx, &recfmt_ver, sizeof(recfmt_ver));
-+}
-+
-+static void debugfs_init_vm_regions(struct damon_ctx *ctx)
-+{
-+	debugfs_write_record_header(ctx);
-+	kdamond_init_vm_regions(ctx);
-+}
-+
-+static void debugfs_vm_cleanup(struct damon_ctx *ctx)
-+{
-+	debugfs_flush_rbuffer(ctx->private);
-+	kdamond_vm_cleanup(ctx);
-+}
-+
-+static void debugfs_init_phys_regions(struct damon_ctx *ctx)
-+{
-+	debugfs_write_record_header(ctx);
-+}
-+
-+static void debugfs_phys_cleanup(struct damon_ctx *ctx)
-+{
-+	debugfs_flush_rbuffer(ctx->private);
-+}
-+
-+/*
-+ * Store the aggregated monitoring results to the result buffer
-+ *
-+ * The format for the result buffer is as below:
-+ *
-+ *   <time> <number of targets> <array of target infos>
-+ *
-+ *   target info: <id> <number of regions> <array of region infos>
-+ *   region info: <start address> <end address> <nr_accesses>
-+ */
-+static void debugfs_aggregate_cb(struct damon_ctx *c)
-+{
-+	struct damon_target *t;
-+	struct timespec64 now;
-+	unsigned int nr;
-+
-+	ktime_get_coarse_ts64(&now);
-+
-+	debugfs_write_rbuf(c, &now, sizeof(now));
-+	nr = nr_damon_targets(c);
-+	debugfs_write_rbuf(c, &nr, sizeof(nr));
-+
-+	damon_for_each_target(t, c) {
-+		struct damon_region *r;
-+
-+		debugfs_write_rbuf(c, &t->id, sizeof(t->id));
-+		nr = damon_nr_regions(t);
-+		debugfs_write_rbuf(c, &nr, sizeof(nr));
-+		damon_for_each_region(r, t) {
-+			debugfs_write_rbuf(c, &r->ar.start, sizeof(r->ar.start));
-+			debugfs_write_rbuf(c, &r->ar.end, sizeof(r->ar.end));
-+			debugfs_write_rbuf(c, &r->nr_accesses,
-+					sizeof(r->nr_accesses));
-+		}
-+	}
-+}
-+
- static ssize_t debugfs_monitor_on_read(struct file *file,
- 		char __user *buf, size_t count, loff_t *ppos)
- {
-@@ -330,6 +470,20 @@ static struct pid *damon_get_pidfd_pid(unsigned int pidfd)
- 	return pid;
- }
- 
-+static void debugfs_set_vaddr_primitives(struct damon_ctx *ctx)
-+{
-+	damon_set_vaddr_primitives(ctx);
-+	ctx->init_target_regions = debugfs_init_vm_regions;
-+	ctx->cleanup = debugfs_vm_cleanup;
-+}
-+
-+static void debugfs_set_paddr_primitives(struct damon_ctx *ctx)
-+{
-+	damon_set_paddr_primitives(ctx);
-+	ctx->init_target_regions = debugfs_init_phys_regions;
-+	ctx->cleanup = debugfs_phys_cleanup;
-+}
-+
- static ssize_t debugfs_target_ids_write(struct file *file,
- 		const char __user *buf, size_t count, loff_t *ppos)
- {
-@@ -349,12 +503,13 @@ static ssize_t debugfs_target_ids_write(struct file *file,
- 	nrs = kbuf;
- 	if (!strncmp(kbuf, "paddr\n", count)) {
- 		/* Configure the context for physical memory monitoring */
--		damon_set_paddr_primitives(ctx);
-+		debugfs_set_paddr_primitives(ctx);
- 		/* target id is meaningless here, but we set it just for fun */
- 		scnprintf(kbuf, count, "42    ");
- 	} else {
- 		/* Configure the context for virtual memory monitoring */
--		damon_set_vaddr_primitives(ctx);
-+		debugfs_set_vaddr_primitives(ctx);
-+
- 		if (!strncmp(kbuf, "pidfd ", 6)) {
- 			received_pidfds = true;
- 			nrs = &kbuf[6];
-@@ -398,16 +553,76 @@ static ssize_t debugfs_record_read(struct file *file,
- 		char __user *buf, size_t count, loff_t *ppos)
- {
- 	struct damon_ctx *ctx = file->private_data;
-+	struct debugfs_recorder *rec = ctx->private;
- 	char record_buf[20 + MAX_RFILE_PATH_LEN];
- 	int ret;
- 
- 	mutex_lock(&ctx->kdamond_lock);
- 	ret = scnprintf(record_buf, ARRAY_SIZE(record_buf), "%u %s\n",
--			ctx->rbuf_len, ctx->rfile_path);
-+			rec->rbuf_len, rec->rfile_path);
- 	mutex_unlock(&ctx->kdamond_lock);
- 	return simple_read_from_buffer(buf, count, ppos, record_buf, ret);
- }
- 
-+/*
-+ * debugfs_set_recording() - Set attributes for the recording.
-+ * @ctx:	target kdamond context
-+ * @rbuf_len:	length of the result buffer
-+ * @rfile_path:	path to the monitor result files
-+ *
-+ * Setting 'rbuf_len' 0 disables recording.
-+ *
-+ * This function should not be called while the kdamond is running.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+static int debugfs_set_recording(struct damon_ctx *ctx,
-+			unsigned int rbuf_len, char *rfile_path)
-+{
-+	struct debugfs_recorder *recorder;
-+	size_t rfile_path_len;
-+
-+	if (rbuf_len && (rbuf_len > MAX_RECORD_BUFFER_LEN ||
-+			rbuf_len < MIN_RECORD_BUFFER_LEN)) {
-+		pr_err("result buffer size (%u) is out of [%d,%d]\n",
-+				rbuf_len, MIN_RECORD_BUFFER_LEN,
-+				MAX_RECORD_BUFFER_LEN);
-+		return -EINVAL;
-+	}
-+	rfile_path_len = strnlen(rfile_path, MAX_RFILE_PATH_LEN);
-+	if (rfile_path_len >= MAX_RFILE_PATH_LEN) {
-+		pr_err("too long (>%d) result file path %s\n",
-+				MAX_RFILE_PATH_LEN, rfile_path);
-+		return -EINVAL;
-+	}
-+
-+	recorder = ctx->private;
-+	if (!recorder) {
-+		recorder = kzalloc(sizeof(*recorder), GFP_KERNEL);
-+		if (!recorder)
-+			return -ENOMEM;
-+		ctx->private = recorder;
-+	}
-+
-+	recorder->rbuf_len = rbuf_len;
-+	kfree(recorder->rbuf);
-+	recorder->rbuf = NULL;
-+	kfree(recorder->rfile_path);
-+	recorder->rfile_path = NULL;
-+
-+	if (rbuf_len) {
-+		recorder->rbuf = kvmalloc(rbuf_len, GFP_KERNEL);
-+		if (!recorder->rbuf)
-+			return -ENOMEM;
-+	}
-+	recorder->rfile_path = kmalloc(rfile_path_len + 1, GFP_KERNEL);
-+	if (!recorder->rfile_path)
-+		return -ENOMEM;
-+	strncpy(recorder->rfile_path, rfile_path, rfile_path_len + 1);
-+
-+	return 0;
-+}
-+
- static ssize_t debugfs_record_write(struct file *file,
- 		const char __user *buf, size_t count, loff_t *ppos)
- {
-@@ -434,7 +649,7 @@ static ssize_t debugfs_record_write(struct file *file,
- 		goto unlock_out;
- 	}
- 
--	err = damon_set_recording(ctx, rbuf_len, rfile_path);
-+	err = debugfs_set_recording(ctx, rbuf_len, rfile_path);
- 	if (err)
- 		ret = err;
- unlock_out:
-@@ -654,6 +869,38 @@ static struct dentry **debugfs_dirs;
- 
- static int debugfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx);
- 
-+static void debugfs_free_recorder(struct debugfs_recorder *recorder)
-+{
-+	kfree(recorder->rbuf);
-+	kfree(recorder->rfile_path);
-+	kfree(recorder);
-+}
-+
-+static struct damon_ctx *debugfs_new_ctx(void)
-+{
-+	struct damon_ctx *ctx;
-+
-+	ctx = damon_new_ctx();
-+	if (!ctx)
-+		return NULL;
-+
-+	if (debugfs_set_recording(ctx, 0, "none")) {
-+		damon_destroy_ctx(ctx);
-+		return NULL;
-+	}
-+
-+	debugfs_set_vaddr_primitives(ctx);
-+	ctx->aggregate_cb = debugfs_aggregate_cb;
-+	return ctx;
-+}
-+
-+static void debugfs_destroy_ctx(struct damon_ctx *ctx)
-+{
-+	debugfs_free_recorder(ctx->private);
-+	damon_destroy_ctx(ctx);
-+}
-+
-+
- static ssize_t debugfs_nr_contexts_write(struct file *file,
- 		const char __user *buf, size_t count, loff_t *ppos)
- {
-@@ -689,7 +936,7 @@ static ssize_t debugfs_nr_contexts_write(struct file *file,
- 
- 	for (i = nr_contexts; i < debugfs_nr_ctxs; i++) {
- 		debugfs_remove(debugfs_dirs[i]);
--		damon_destroy_ctx(debugfs_ctxs[i]);
-+		debugfs_destroy_ctx(debugfs_ctxs[i]);
- 	}
- 
- 	new_dirs = kmalloc_array(nr_contexts, sizeof(*new_dirs), GFP_KERNEL);
-@@ -729,13 +976,13 @@ static ssize_t debugfs_nr_contexts_write(struct file *file,
- 			break;
- 		}
- 
--		debugfs_ctxs[i] = damon_new_ctx();
-+		debugfs_ctxs[i] = debugfs_new_ctx();
- 		if (!debugfs_ctxs[i]) {
- 			pr_err("ctx for %s creation failed\n", dirname);
-+			debugfs_remove(debugfs_dirs[i]);
- 			ret = -ENOMEM;
- 			break;
- 		}
--		damon_set_vaddr_primitives(debugfs_ctxs[i]);
- 
- 		if (debugfs_fill_ctx_dir(debugfs_dirs[i], debugfs_ctxs[i])) {
- 			ret = -ENOMEM;
-@@ -865,10 +1112,9 @@ static int __init damon_dbgfs_init(void)
- 	int rc;
- 
- 	debugfs_ctxs = kmalloc(sizeof(*debugfs_ctxs), GFP_KERNEL);
--	debugfs_ctxs[0] = damon_new_ctx();
-+	debugfs_ctxs[0] = debugfs_new_ctx();
- 	if (!debugfs_ctxs[0])
- 		return -ENOMEM;
--	damon_set_vaddr_primitives(debugfs_ctxs[0]);
- 
- 	rc = damon_debugfs_init();
- 	if (rc)
 -- 
 2.17.1
 
