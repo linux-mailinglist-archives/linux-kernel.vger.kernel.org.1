@@ -2,63 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2362327B465
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E23C27B415
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 20:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbgI1SWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 14:22:36 -0400
-Received: from l2mail1.panix.com ([166.84.1.75]:56017 "EHLO l2mail1.panix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726552AbgI1SWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 14:22:35 -0400
-X-Greylist: delayed 1012 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Sep 2020 14:22:35 EDT
-Received: from mailbackend.panix.com (mailbackend.panix.com [166.84.1.89])
-        by l2mail1.panix.com (Postfix) with ESMTPS id 4C0Vn40HcfzDS8;
-        Mon, 28 Sep 2020 14:05:43 -0400 (EDT)
-Received: from xps-7390 (cpe-23-242-39-94.socal.res.rr.com [23.242.39.94])
-        by mailbackend.panix.com (Postfix) with ESMTPSA id 4C0Vn164GYzmWW;
-        Mon, 28 Sep 2020 14:05:41 -0400 (EDT)
-Date:   Mon, 28 Sep 2020 11:05:39 -0700 (PDT)
-From:   "Kenneth R. Crudup" <kenny@panix.com>
-Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Matthew Garrett <mjg59@google.com>, tweek@google.com
-Subject: Re: [Regression] "tpm: Require that all digests are present in
- TCG_PCR_EVENT2 structures" causes null pointer dereference
-In-Reply-To: <20200928171238.GB119268@linux.intel.com>
-Message-ID: <alpine.DEB.2.23.453.2009281104310.3261@xps-7390>
-References: <E1FDCCCB-CA51-4AEE-AC83-9CDE995EAE52@canonical.com> <20200928140623.GA69515@linux.intel.com> <BB63B86E-CA44-4EB7-A5D1-21B0E9EB2850@canonical.com> <20200928155215.GA92669@linux.intel.com> <CAMj1kXF-hOTZ62_Tf_GAN9_w7ztngdVp_atNrowH5Y0SwSjCAw@mail.gmail.com>
- <20200928171238.GB119268@linux.intel.com>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        id S1726630AbgI1SI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 14:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726597AbgI1SI0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 14:08:26 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755F5C061755;
+        Mon, 28 Sep 2020 11:08:24 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id l16so2196324ilt.13;
+        Mon, 28 Sep 2020 11:08:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nKSJN20m2Jf2AlPqu6+2tq7IkJVBweKUH7voj06VmFQ=;
+        b=fBQ3kK/kcuUeLyJVp5s6hpg0jy09Qi3cJgR0D/Od7F13/6zHb3XXtDHGK4TOfeq5RA
+         ZFqleP+5zGuN+pAxLRPFXyaUT78RUoHPPdzAA9iNO869Hu0rk9/+ttAUnJPlb0SW5suK
+         YqXYeEFkXaoub5XtkmoY2KZ46rdd3jicNkZ1dj9WL4clHi0DZr+wcc//o6A55Nv0BhHB
+         rFBxx2Et4o8RQpP0LU2q+zP4KqDM7djQwmTy2CBYIe5AfvSz+J+EBEmaWVZN0k/umLp2
+         eU0Ptxc1DdD5+itZHJc6FKZp2ZK0fg02HCJo8eOiGFmqhFy3BG/XUJZRbaZ2aYf6lxs6
+         zAkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nKSJN20m2Jf2AlPqu6+2tq7IkJVBweKUH7voj06VmFQ=;
+        b=VqOKdwKx83cbEJ4S31sEmxKhZFqZZF2oV0+xTifzuuxxF3I3YHS5+PKRehFX+Ex80q
+         8kdCTmu2ycL+IjxQYhhHQ2D9/hRsH5mdEFdUry17WkoMMNx1zrrapcuN3uu3zeenDG7H
+         hv925HOKt/PxmjL3gdCcFBYi/A4ieRZU0eJTpc6RqpCv0YtB0m1Vx4OjLXdlWjjtfetS
+         Cg0KgGR3JK18T1T/CjfP39rd3/k5CC/9Z5tq7b4yaZRX7aQaBa6XIqs/cEKAGZvAx5KT
+         gFJovydH11NEZYCI5NgMizAYAUlADXlz6dMgddgo9iXJZQtwJ7By9nD3nBuRaq6qmCKb
+         5d3A==
+X-Gm-Message-State: AOAM533jKSyPBlny8Ca1QVqujk7bAveB1pYFYyycOCGuRexDwiVlfMsa
+        jz4tDyOllMBX/gbxWeL3eQr40n5aZ+LaKnf0QRUMjDmO6FQgnw==
+X-Google-Smtp-Source: ABdhPJzFtIs70e4FpySNixEQnyWuQQnZVCMq4UpNNmWk6XYXaor66zymQTwrz4vRm8Dd0CYYISF3Zg+K45ZAVeLt+KE=
+X-Received: by 2002:a92:1589:: with SMTP id 9mr2302583ilv.292.1601316503759;
+ Mon, 28 Sep 2020 11:08:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com> <20200928005842.GC6704@linux.intel.com>
+ <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+In-Reply-To: <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+From:   "H.J. Lu" <hjl.tools@gmail.com>
+Date:   Mon, 28 Sep 2020 11:07:47 -0700
+Message-ID: <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+To:     Andrew Cooper <andrew.cooper3@citrix.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        Borislav Petkov <bp@alien8.de>, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>, josh@joshtriplett.org,
+        kai.huang@intel.com, kai.svahn@intel.com, kmoy@google.com,
+        Christian Ludloff <ludloff@google.com>,
+        Andy Lutomirski <luto@kernel.org>, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 28, 2020 at 9:44 AM Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+>
+> On 28/09/2020 01:58, Jarkko Sakkinen wrote:
+> > On Fri, Sep 25, 2020 at 07:23:59PM +0100, Andrew Cooper wrote:
+> >> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
+> >>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> >>> new file mode 100644
+> >>> index 000000000000..adbd59d41517
+> >>> --- /dev/null
+> >>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> >>> @@ -0,0 +1,157 @@
+> >>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+> >>> <snip>
+> >>> +.Lretpoline:
+> >>> +   call    2f
+> >>> +1: pause
+> >>> +   lfence
+> >>> +   jmp     1b
+> >>> +2: mov     %rax, (%rsp)
+> >>> +   ret
+> >> I hate to throw further spanners in the work, but this is not compatible
+> >> with CET, and the user shadow stack work in progress.
+> > CET goes beyond my expertise. Can you describe, at least rudimentary,
+> > how this code is not compatible?
+>
+> CET Shadow Stacks detect attacks which modify the return address on the
+> stack.
+>
+> Retpoline *is* a ROP gadget.  It really does modify the return address
+> on the stack, even if its purpose is defensive (vs Spectre v2) rather
+> than malicious.
+>
+> >> Whichever of these two large series lands first is going to inflict
+> >> fixing this problem on the other.
+> >>
+> >> As the vdso text is global (to a first approximation), it must not be a
+> >> retpoline if any other process is liable to want to use CET-SS.
+> > Why is that?
+>
+> Because when CET-SS is enabled, the ret will suffer a #CP exception
+> (return address on the stack not matching the one recorded in the shadow
+> stack), which I presume/hope is wired into SIGSEGV.
+>
 
-On Mon, 28 Sep 2020, Jarkko Sakkinen wrote:
+Here is the CET compatible retpoline:
 
-> That's a good guess. Just a bit confused how that particular patch can
-> have the effect: it has two deferences to efispecid instead of one in
-> the same statement. Would be interesting to hear if the bug is triggered
-> in Kenneth's environment by the exact same commit.
+endbr64
+/* Check if shadow stack is in use.  NB: R11 is the only usable
+   scratch register for function calls.  */
+xorl %r11d, %r11d
+rdsspq %r11
+testq %r11, %r11
+jnz 3f
+call 2f
+1:
+pause
+lfence
+jmp 1b
+2:
+mov %rax, (%rsp)
+ret
+3:
+/* Shadow stack is in use.  Make the indirect call.  */
+call *%rax
+ret
 
-I can confirm that reverting 7f3d176f5f stops my kernel from panic()ing:
-
-$ sudo fwupdtpmevlog
-[sudo] password for kenny:
-Failed to parse file: attempted to read 0x10 bytes from buffer of 0x00
-$
-
-It would normally OOPS at that point.
-
-	-Kenny
 
 -- 
-Kenneth R. Crudup  Sr. SW Engineer, Scott County Consulting, Orange County CA
+H.J.
