@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FA027A611
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 06:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2280027A613
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 06:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726412AbgI1EE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 00:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725275AbgI1EE6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 00:04:58 -0400
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44EC5C0613CE;
-        Sun, 27 Sep 2020 21:04:58 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4C086t3D3Jz1rt44;
-        Mon, 28 Sep 2020 06:04:54 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4C086t1Vv5z1qvJW;
-        Mon, 28 Sep 2020 06:04:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id dTZDEMc4P2RL; Mon, 28 Sep 2020 06:04:52 +0200 (CEST)
-X-Auth-Info: NN9vCGYeqt26BFTY+HK0UHezTpi8SoVDEXDJd8cFD6Y=
-Received: from [192.168.1.106] (82-131-154-50.pool.digikabel.hu [82.131.154.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Mon, 28 Sep 2020 06:04:52 +0200 (CEST)
-Reply-To: hs@denx.de
-Subject: Re: [RFC 12/14] dt-bindings: vendor-prefixes: add Aristainetos
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-References: <20200926162811.5335-1-krzk@kernel.org>
- <20200926162811.5335-12-krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Robert Jones <rjones@gateworks.com>,
-        Li Yang <leoyang.li@nxp.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-From:   Heiko Schocher <hs@denx.de>
-Message-ID: <2a329c9b-8bfc-fbd8-62a3-759f608347d6@denx.de>
-Date:   Mon, 28 Sep 2020 06:04:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.5.2
-MIME-Version: 1.0
-In-Reply-To: <20200926162811.5335-12-krzk@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726461AbgI1EIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 00:08:25 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30276 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725290AbgI1EIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 00:08:25 -0400
+IronPort-SDR: PSk58SnQkmWiCFKcD4fSDF7WeMRIivdUDWlRohsHXcwdd9SEw5GmoWpTzDpM6Ni5t6ijb1BzRT
+ Q7ZYuhtlq8mA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="149710878"
+X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
+   d="scan'208";a="149710878"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 21:08:24 -0700
+IronPort-SDR: NM66TBsNtL7Aeg04tTKV/P63A/LteiApke6ROtr3Xp3uonWtPJ7U3oUNuQ8fB5sBnHNKyKAC9+
+ M8SUe7WQAUvg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
+   d="scan'208";a="311628124"
+Received: from shskylake.sh.intel.com ([10.239.48.137])
+  by orsmga006.jf.intel.com with ESMTP; 27 Sep 2020 21:08:20 -0700
+From:   Ethan Zhao <haifeng.zhao@intel.com>
+To:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
+        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
+        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
+        mika.westerberg@linux.intel.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pei.p.jia@intel.com, ashok.raj@linux.intel.com,
+        sathyanarayanan.kuppuswamy@intel.com,
+        Ethan Zhao <haifeng.zhao@intel.com>
+Subject: [PATCH 0/5 V5] Fix DPC hotplug race and enhance error handling
+Date:   Mon, 28 Sep 2020 00:06:46 -0400
+Message-Id: <20200928040651.24937-1-haifeng.zhao@intel.com>
+X-Mailer: git-send-email 2.18.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof,
+This simple patch set fixed some serious security issues found when DPC
+error injection and NVMe SSD hotplug brute force test were doing -- race
+condition between DPC handler and pciehp, AER interrupt handlers, caused
+system hang and system with DPC feature couldn't recover to normal
+working state as expected (NVMe instance lost, mount operation hang,
+race PCIe access caused uncorrectable errors reported alternatively etc).
 
-Am 26.09.2020 um 18:28 schrieb Krzysztof Kozlowski:
-> Document binding for an unknown entity Aristainetos with few boards
-> mainlined.
-> 
-> Cc: Heiko Schocher <hs@denx.de>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> 
-> ---
-> 
-> I tried to Google but except the patches from Heiko Schocher, I could
-> not find any meaningful data.
-> 
-> Heiko, you posted this. Do you know what is it?
+With this patch set applied, stable 5.9-rc6 on ICS (Ice Lake SP platform,
+see
+https://en.wikichip.org/wiki/intel/microarchitectures/ice_lake_(server))
 
-aristainetos is the name of the board, so it is not the vendor name.
+could pass the PCIe Gen4 NVMe SSD brute force hotplug test with any time 
+interval between hot-remove and plug-in operation tens of times without
+any errors occur and system works normal.
 
-I just asked the customer if we can add a valid vendor name...
+With this patch set applied, system with DPC feature could recover from
+NON-FATAL and FATAL errors injection test and works as expected.
 
-bye,
-Heiko
+System works smoothly when errors happen while hotplug is doing, no
+uncorrectable errors found.
+
+Brute DPC error injection script:
+
+for i in {0..100}
+do
+        setpci -s 64:02.0 0x196.w=000a 
+        setpci -s 65:00.0 0x04.w=0544 
+        mount /dev/nvme0n1p1 /root/nvme
+        sleep 1
+done
+
+Other details see every commits description part.
+
+This patch set could be applied to stable 5.9-rc6 directly.
+
+Help to review and test.
+
+V2: changed according to review by Andy Shevchenko.
+V3: changed patch 4/5 to simpler coding.
+V4: move function pci_wait_port_outdpc() to DPC driver and its
+declaration to pci.h. (tip from Christoph Hellwig <hch@infradead.org>).
+V5: fix building issue reported by lkp@intel.com with some config.
+
+Thanks,
+Ethan
+
+
+Ethan Zhao (5):
+  PCI: define a function to check and wait till port finish DPC handling
+  PCI: pciehp: check and wait port status out of DPC before handling
+    DLLSC and PDC
+  PCI/ERR: get device before call device driver to avoid NULL pointer
+    reference
+  PCI: only return true when dev io state is really changed
+  PCI/ERR: don't mix io state not changed and no driver together
+
+ drivers/pci/hotplug/pciehp_hpc.c |  4 +++-
+ drivers/pci/pci.h                | 34 +++++---------------------------
+ drivers/pci/pcie/err.c           | 18 +++++++++++++++--
+ include/linux/pci.h              | 31 +++++++++++++++++++++++++++++
+ 4 files changed, 55 insertions(+), 32 deletions(-)
+
 -- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: +49-8142-66989-52   Fax: +49-8142-66989-80   Email: hs@denx.de
+2.18.4
+
