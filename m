@@ -2,317 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43A8327B5C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:54:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5E527B5C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726714AbgI1Tyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:54:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726590AbgI1Tyx (ORCPT
+        id S1726772AbgI1TzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:55:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29652 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726442AbgI1TzV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:54:53 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14BFAC061755;
-        Mon, 28 Sep 2020 12:54:53 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 8557128DB03
-Message-ID: <9cbd69ac5386c2e2e6e7024416c97efa618a97bf.camel@collabora.com>
-Subject: Re: [PATCH] media: uapi: h264: Add documentation to the interface
- header
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel@collabora.com,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Date:   Mon, 28 Sep 2020 16:54:44 -0300
-In-Reply-To: <5049b19f-cb31-6e6e-2667-c63b7adf997b@xs4all.nl>
-References: <20200921193851.50752-1-ezequiel@collabora.com>
-         <5049b19f-cb31-6e6e-2667-c63b7adf997b@xs4all.nl>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.3-1 
+        Mon, 28 Sep 2020 15:55:21 -0400
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1601322918;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1qD/bYiwXaDqvMUHTGUqMaHkNigUfku0s1G1pgifknA=;
+        b=Vcodsduej2/u385HKMhQzefiBZKnP4rRfnexsY2G/V05Fe4miT9mTycR4/ipq0KIW85Cif
+        D3m8CcFbpTBi3+2YsSNJM3YxRkP77dXtvidgaiaWZupqTQhZKigr1hB45elH5XDlMdsUyR
+        L9i6ciyAGmUgFWPWI8KuDgh5QzUNS8M=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-574-UPsTZ0I8OfyKfTGVYbfZBQ-1; Mon, 28 Sep 2020 15:55:16 -0400
+X-MC-Unique: UPsTZ0I8OfyKfTGVYbfZBQ-1
+Received: by mail-wm1-f71.google.com with SMTP id x6so804152wmi.1
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 12:55:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1qD/bYiwXaDqvMUHTGUqMaHkNigUfku0s1G1pgifknA=;
+        b=SIOQ9fofEnY5o/3+MutumH+pk47UA3kXT57edObXDDVhDXj7PzOLwm79O0J8I0iq25
+         grS1FPCl12pQhbdyPBBz1cajuMrgHUeRBCvOcywotA09/LVudSQbq/JXSUdag+xrbedI
+         cvHYA1/KwwS1i6EAh//HaKsGuhZrQlWBbAt5RccExh5EFFLi49fSSP2BYFpD4oHin37H
+         gtjPqGhy36RvxiyDziMsgehRGJQKNc5OO4E5I+QmmvZg5t57TI9363AaMchpZ2pfUVzn
+         XnwlDEkVqW4actICntOQXcrZP+fgfgU5shoJQFU/CYGdC4WfrQfhV8hFdkJZI/JaMMpE
+         9F1A==
+X-Gm-Message-State: AOAM533jEiCqRulhpdl1y+SUE4DAE/EruWwwBVTVdqqVepKuUJBLHBUZ
+        pUTapOq3D1SeVt4AzrtXLuHIfJllNv3j6b/fl5pOjz+KDifc6mkwj4mKTgm5ICPyMkX1zu4R6lG
+        0Gz/duhM4FpJ0MsBEN35h5M+A
+X-Received: by 2002:a7b:c151:: with SMTP id z17mr806548wmi.53.1601322913403;
+        Mon, 28 Sep 2020 12:55:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxHJc0NzkL6UIF4Usztiftaij8e1WIEJYDq5hNYrhp+v+0ltPTCNUWn4xJ0d+jBa6m27TyepA==
+X-Received: by 2002:a7b:c151:: with SMTP id z17mr806531wmi.53.1601322913098;
+        Mon, 28 Sep 2020 12:55:13 -0700 (PDT)
+Received: from redhat.com (bzq-79-179-71-128.red.bezeqint.net. [79.179.71.128])
+        by smtp.gmail.com with ESMTPSA id v9sm3010804wrv.35.2020.09.28.12.55.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 12:55:12 -0700 (PDT)
+Date:   Mon, 28 Sep 2020 15:55:09 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     jasowang@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        eli@nvidia.com
+Subject: Re: [PATCH V1 vhost-next] vdpa/mlx5: Make vdpa core driver a
+ distinct module
+Message-ID: <20200928155448-mutt-send-email-mst@kernel.org>
+References: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200924143231.GA186492@mtl-vdi-166.wap.labs.mlnx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-09-24 at 10:29 +0200, Hans Verkuil wrote:
-> Hi Ezequiel,
+On Thu, Sep 24, 2020 at 05:32:31PM +0300, Eli Cohen wrote:
+> Change core vdpa functionality into a loadbale module such that upcoming
+> block implementation will be able to use it.
 > 
-> On 21/09/2020 21:38, Ezequiel Garcia wrote:
-> > In preparation for making the interface public,
-> > document all the structures. Special care is taken to
-> > annotate those fields that depart from the H264 syntax.
-> > 
-> > This commit only adds documentation and doesn't affect
-> > functionality in any way.
-> > 
-> > Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > ---
-> >  include/media/h264-ctrls.h | 138 ++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 128 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
-> > index ec4799154438..afc8e7c05c18 100644
-> > --- a/include/media/h264-ctrls.h
-> > +++ b/include/media/h264-ctrls.h
-> > @@ -46,11 +46,38 @@
-> >  #define V4L2_CTRL_TYPE_H264_DECODE_PARAMS	0x0114
-> >  #define V4L2_CTRL_TYPE_H264_PRED_WEIGHTS	0x0115
-> >  
-> > +/**
-> > + * enum v4l2_mpeg_video_h264_decode_mode - Decoding mode
-> > + *
-> > + * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED: indicates that decoding
-> > + * is performed one slice at a time. In this mode,
-> > + * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS must contain the parsed slice
-> > + * parameters and the OUTPUT buffer must contain a single slice.
-> > + * V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF feature is used
-> > + * in order to support multislice frames.
-> > + * @V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED: indicates that
-> > + * decoding is performed per frame. The OUTPUT buffer must contain
-> > + * all slices and also both fields. This mode is typically supported
-> > + * by device drivers that are able to parse the slice(s) header(s)
-> > + * in hardware. When this mode is selected,
-> > + * V4L2_CID_MPEG_VIDEO_H264_SLICE_PARAMS is not used.
-> > + */
-> >  enum v4l2_mpeg_video_h264_decode_mode {
-> >  	V4L2_MPEG_VIDEO_H264_DECODE_MODE_SLICE_BASED,
-> >  	V4L2_MPEG_VIDEO_H264_DECODE_MODE_FRAME_BASED,
-> >  };
-> >  
-> > +/**
-> > + * enum v4l2_mpeg_video_h264_start_code - Start code
-> > + *
-> > + * @V4L2_MPEG_VIDEO_H264_START_CODE_NONE: slices are passed
-> > + * to the driver without any start code.
-> > + * @V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B: slices are passed
-> > + * to the driver with an Annex B start code prefix
-> > + * (legal start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001).
-> > + * This mode is typically supported by device drivers that parse
-> > + * the start code in hardware.
-> > + */
-> >  enum v4l2_mpeg_video_h264_start_code {
-> >  	V4L2_MPEG_VIDEO_H264_START_CODE_NONE,
-> >  	V4L2_MPEG_VIDEO_H264_START_CODE_ANNEX_B,
-> > @@ -71,6 +98,12 @@ enum v4l2_mpeg_video_h264_start_code {
-> >  #define V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD		0x20
-> >  #define V4L2_H264_SPS_FLAG_DIRECT_8X8_INFERENCE			0x40
-> >  
-> > +/**
-> > + * struct v4l2_ctrl_h264_sps - H264 sequence parameter set
-> > + *
-> > + * All the members on this sequence parameter set structure match the
-> > + * sequence parameter set syntax as specified by the H264 specification.
-> > + */
-> >  struct v4l2_ctrl_h264_sps {
-> >  	__u8 profile_idc;
-> >  	__u8 constraint_set_flags;
-> > @@ -101,6 +134,20 @@ struct v4l2_ctrl_h264_sps {
-> >  #define V4L2_H264_PPS_FLAG_TRANSFORM_8X8_MODE				0x0040
-> >  #define V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT			0x0080
-> >  
-> > +/**
-> > + * struct v4l2_ctrl_h264_pps - H264 picture parameter set
-> > + *
-> > + * Except where noted, all the members on this picture parameter set
-> > + * structure match the sequence parameter set syntax as specified
-> > + * by the H264 specification.
-> > + *
-> > + * In particular, V4L2_H264_PPS_FLAG_SCALING_MATRIX_PRESENT flag
-> > + * has a specific meaning. This flag should be set if a non-flat
-> > + * scaling matrix applies to the picture. In this case, applications
-> > + * are expected to use V4L2_CID_MPEG_VIDEO_H264_SCALING_MATRIX.
-> > + * This will be the case if SPS scaling_matrix_present_flag or
-> > + * PPS pic_scaling_matrix_present_flag syntax elements are set.
-> 
-> This is a bit confusing. 'This will be the case': what does 'This' refer
-> to?
-> 
+> Signed-off-by: Eli Cohen <elic@nvidia.com>
 
-I see, yes. I'll try to clarify here.
+Why don't we merge this patch together with the block module?
 
-> > + */
-> >  struct v4l2_ctrl_h264_pps {
-> >  	__u8 pic_parameter_set_id;
-> >  	__u8 seq_parameter_set_id;
-> > @@ -115,6 +162,18 @@ struct v4l2_ctrl_h264_pps {
-> >  	__u16 flags;
-> >  };
-> >  
-> > +/**
-> > + * struct v4l2_ctrl_h264_scaling_matrix - H264 scaling matrices
-> > + *
-> > + * @scaling_list_4x4: scaling matrix after applying the inverse
-> > + * scanning process. Expected list order is Intra Y, Intra Cb,
-> > + * Intra Cr, Inter Y, Inter Cb, Inter Cr. The values on each
-> > + * scaling list are expected in raster scan order.
-> > + * @scaling_list_8x8: scaling matrix after applying the inverse
-> > + * scanning process. Expected list order is Intra Y, Inter Y,
-> > + * Intra Cb, Inter Cb, Intra Cr, Inter Cr. The values on each
-> > + * scaling list are expected in raster scan order.
+> ---
+> V0 --> V1:
+> Removed "default n" for configu options as 'n' is the default
 > 
-> The list order is different for the 4x4 and 8x8 matrices. Is that
-> correct?
+>  drivers/vdpa/Kconfig               |  8 +++-----
+>  drivers/vdpa/Makefile              |  2 +-
+>  drivers/vdpa/mlx5/Makefile         |  7 +++++--
+>  drivers/vdpa/mlx5/core/core_main.c | 20 ++++++++++++++++++++
+>  drivers/vdpa/mlx5/core/mr.c        |  3 +++
+>  drivers/vdpa/mlx5/core/resources.c | 10 ++++++++++
+>  6 files changed, 42 insertions(+), 8 deletions(-)
+>  create mode 100644 drivers/vdpa/mlx5/core/core_main.c
 > 
-> If it is correct, then there should perhaps be a sentence like this
-> at the start:
-> 
-> "Note that the list order is different for the 4x4 and 8x8 matrices
-> as per the H264 specification."
-> 
-> 
-> (I assume that the order is based on the H264 spec)
-> 
-
-Yes, I'll add this and mention table 7-2 as pointed out by Nicolas.
-
-> > + */
-> >  struct v4l2_ctrl_h264_scaling_matrix {
-> >  	__u8 scaling_list_4x4[6][16];
-> >  	__u8 scaling_list_8x8[6][64];
-> > @@ -134,6 +193,12 @@ struct v4l2_h264_weight_factors {
-> >  	 ((pps)->weighted_bipred_idc == 1 && \
-> >  	  (slice)->slice_type == V4L2_H264_SLICE_TYPE_B))
-> >  
-> > +/**
-> > + * struct v4l2_ctrl_h264_pred_weights - Prediction weight table
-> > + *
-> > + * Prediction weight table, which matches the syntax specified
-> > + * by the H264 specification.
-> > + */
-> >  struct v4l2_ctrl_h264_pred_weights {
-> >  	__u16 luma_log2_weight_denom;
-> >  	__u16 chroma_log2_weight_denom;
-> > @@ -153,19 +218,41 @@ struct v4l2_ctrl_h264_pred_weights {
-> >  #define V4L2_H264_BOTTOM_FIELD_REF			0x2
-> >  #define V4L2_H264_FRAME_REF				0x3
-> >  
-> > +/**
-> > + * struct v4l2_h264_reference - H264 picture reference
-> > + *
-> > + * @fields: indicates how the picture is referenced.
-> > + * Valid values are V4L2_H264_{}_REF.
-> > + * @index: index into v4l2_ctrl_h264_decode_params.dpb[].
-> > + */
-> >  struct v4l2_h264_reference {
-> >  	__u8 fields;
-> > -
-> > -	/* Index into v4l2_ctrl_h264_decode_params.dpb[] */
-> >  	__u8 index;
-> >  };
-> >  
-> > +/**
-> > + * struct v4l2_ctrl_h264_slice_params - H264 slice parameters
-> > + *
-> > + * This structure holds the H264 syntax elements that are specified
-> > + * as non-invariant for the slices in a given frame.
-> > + *
-> > + * Slice invariant syntax elements are contained in struct
-> > + * v4l2_ctrl_h264_decode_params. This is done to reduce the API surface
-> > + * on frame-based decoders, where slice header parsing is done by the
-> > + * hardware.
-> > + *
-> > + * Slice invariant syntax elements are specified in specification section
-> > + * "7.4.3 Slice header semantics".
-> > + *
-> > + * Except where noted, the members on this struct match the slice header syntax.
-> > + *
-> > + * @header_bit_size: offset in bits to slice_data() from the beginning of this slice.
-> > + * @ref_pic_list0: reference picture list 0 after applying the per-slice modifications.
-> > + * @ref_pic_list1: reference picture list 1 after applying the per-slice modifications.
-> 
-> There are a lot more fields here that are not mentioned.
-> 
-> In order to prevent the doc checker to issue warnings about undocumented field,
-> I would suggest adding them all, but just keep the description simple:
-> 
-> @slice_type: see H264 specification.
-> 
-
-OK.
-
-> You should also document @reserved since that's obviously not part of the h264 spec.
-> 
-
-OK.
-
-> > + */
-> >  struct v4l2_ctrl_h264_slice_params {
-> > -	/* Offset in bits to slice_data() from the beginning of this slice. */
-> >  	__u32 header_bit_size;
-> > -
-> >  	__u32 first_mb_in_slice;
-> > -
-> >  	__u8 slice_type;
-> >  	__u8 colour_plane_id;
-> >  	__u8 redundant_pic_cnt;
-> > @@ -191,22 +278,55 @@ struct v4l2_ctrl_h264_slice_params {
-> >  #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
-> >  #define V4L2_H264_DPB_ENTRY_FLAG_FIELD		0x08
-> >  
-> > +/**
-> > + * struct v4l2_h264_dpb_entry - H264 decoded picture buffer entry
-> > + *
-> > + * @reference_ts: timestamp of the V4L2 capture buffer to use as reference.
-> > + * The timestamp refers to the timestamp field in struct v4l2_buffer.
-> > + * Use v4l2_timeval_to_ns() to convert the struct timeval to a __u64.
-> > + * @pic_num: matches PicNum variable assigned during the reference
-> > + * picture lists construction process.
-> > + * @frame_num: frame identifier which matches frame_num syntax element.
-> > + * @fields: indicates how the DPB entry is referenced. Valid values are
-> > + * V4L2_H264_{}_REF.
-> > + * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
-> > + * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
-> > + * Note that picture field is indicated by v4l2_buffer.field.
-> 
-> @flags and @reserved are missing.
-> 
-> > + */
-> >  struct v4l2_h264_dpb_entry {
-> >  	__u64 reference_ts;
-> >  	__u32 pic_num;
-> >  	__u16 frame_num;
-> >  	__u8 fields;
-> >  	__u8 reserved[5];
-> > -	/* Note that field is indicated by v4l2_buffer.field */
-> >  	__s32 top_field_order_cnt;
-> >  	__s32 bottom_field_order_cnt;
-> > -	__u32 flags; /* V4L2_H264_DPB_ENTRY_FLAG_* */
-> > +	__u32 flags;
-> >  };
-> >  
-> >  #define V4L2_H264_DECODE_PARAM_FLAG_IDR_PIC		0x01
-> >  #define V4L2_H264_DECODE_PARAM_FLAG_FIELD_PIC		0x02
-> >  #define V4L2_H264_DECODE_PARAM_FLAG_BOTTOM_FIELD	0x04
-> >  
-> > +/**
-> > + * struct v4l2_ctrl_h264_decode_params - H264 decoding parameters
-> > + *
-> > + * @dpb: decoded picture buffer.
-> > + * @nal_ref_idc: slice header syntax element.
-> > + * @frame_num: slice header syntax element.
-> > + * @top_field_order_cnt: matches TopFieldOrderCnt picture value.
-> > + * @bottom_field_order_cnt: matches BottomFieldOrderCnt picture value.
-> > + * Note that picture field is indicated by v4l2_buffer.field.
-> > + * @idr_pic_id: slice header syntax element.
-> > + * @pic_order_cnt_lsb: slice header syntax element.
-> > + * @delta_pic_order_cnt_bottom: slice header syntax element.
-> > + * @delta_pic_order_cnt0: slice header syntax element.
-> > + * @delta_pic_order_cnt1: slice header syntax element.
-> > + * @dec_ref_pic_marking_bit_size: size in bits of dec_ref_pic_marking()
-> > + * syntax element.
-> > + * @pic_order_cnt_bit_size: size in bits of pic order count syntax.
-> > + * @slice_group_change_cycle: slice header syntax element.
-> 
-> @reserved and @flags are missing.
-> 
-
-Yes, I'll address the missing fields and send a v2.
-
-Thanks,
-Ezequiel
+> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
+> index 4271c408103e..57ff6a7f7401 100644
+> --- a/drivers/vdpa/Kconfig
+> +++ b/drivers/vdpa/Kconfig
+> @@ -29,10 +29,9 @@ config IFCVF
+>  	  To compile this driver as a module, choose M here: the module will
+>  	  be called ifcvf.
+>  
+> -config MLX5_VDPA
+> -	bool "MLX5 VDPA support library for ConnectX devices"
+> +config MLX5_VDPA_CORE
+> +	tristate "MLX5 VDPA support library for ConnectX devices"
+>  	depends on MLX5_CORE
+> -	default n
+>  	help
+>  	  Support library for Mellanox VDPA drivers. Provides code that is
+>  	  common for all types of VDPA drivers. The following drivers are planned:
+> @@ -40,8 +39,7 @@ config MLX5_VDPA
+>  
+>  config MLX5_VDPA_NET
+>  	tristate "vDPA driver for ConnectX devices"
+> -	depends on MLX5_VDPA
+> -	default n
+> +	depends on MLX5_VDPA_CORE
+>  	help
+>  	  VDPA network driver for ConnectX6 and newer. Provides offloading
+>  	  of virtio net datapath such that descriptors put on the ring will
+> diff --git a/drivers/vdpa/Makefile b/drivers/vdpa/Makefile
+> index d160e9b63a66..07353bbb9f8b 100644
+> --- a/drivers/vdpa/Makefile
+> +++ b/drivers/vdpa/Makefile
+> @@ -2,4 +2,4 @@
+>  obj-$(CONFIG_VDPA) += vdpa.o
+>  obj-$(CONFIG_VDPA_SIM) += vdpa_sim/
+>  obj-$(CONFIG_IFCVF)    += ifcvf/
+> -obj-$(CONFIG_MLX5_VDPA) += mlx5/
+> +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5/
+> diff --git a/drivers/vdpa/mlx5/Makefile b/drivers/vdpa/mlx5/Makefile
+> index 89a5bededc9f..9f50f7e8d889 100644
+> --- a/drivers/vdpa/mlx5/Makefile
+> +++ b/drivers/vdpa/mlx5/Makefile
+> @@ -1,4 +1,7 @@
+>  subdir-ccflags-y += -I$(srctree)/drivers/vdpa/mlx5/core
+>  
+> -obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa.o
+> -mlx5_vdpa-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o core/resources.o core/mr.o
+> +obj-$(CONFIG_MLX5_VDPA_CORE) += mlx5_vdpa_core.o
+> +mlx5_vdpa_core-$(CONFIG_MLX5_VDPA_CORE) += core/resources.o core/mr.o core/core_main.o
+> +
+> +obj-$(CONFIG_MLX5_VDPA_NET) += mlx5_vdpa_net.o
+> +mlx5_vdpa_net-$(CONFIG_MLX5_VDPA_NET) += net/main.o net/mlx5_vnet.o
+> diff --git a/drivers/vdpa/mlx5/core/core_main.c b/drivers/vdpa/mlx5/core/core_main.c
+> new file mode 100644
+> index 000000000000..4b39b55f57ab
+> --- /dev/null
+> +++ b/drivers/vdpa/mlx5/core/core_main.c
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+> +/* Copyright (c) 2020 Mellanox Technologies Ltd. */
+> +
+> +#include <linux/module.h>
+> +
+> +MODULE_AUTHOR("Eli Cohen <elic@nvidia.com>");
+> +MODULE_DESCRIPTION("Mellanox VDPA core driver");
+> +MODULE_LICENSE("Dual BSD/GPL");
+> +
+> +static int __init mlx5_vdpa_core_init(void)
+> +{
+> +	return 0;
+> +}
+> +
+> +static void __exit mlx5_vdpa_core_exit(void)
+> +{
+> +}
+> +
+> +module_init(mlx5_vdpa_core_init);
+> +module_exit(mlx5_vdpa_core_exit);
+> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+> index ef1c550f8266..c093eab6c714 100644
+> --- a/drivers/vdpa/mlx5/core/mr.c
+> +++ b/drivers/vdpa/mlx5/core/mr.c
+> @@ -434,6 +434,7 @@ int mlx5_vdpa_create_mr(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *iotlb)
+>  	mutex_unlock(&mr->mkey_mtx);
+>  	return err;
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_create_mr);
+>  
+>  void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+>  {
+> @@ -456,6 +457,7 @@ void mlx5_vdpa_destroy_mr(struct mlx5_vdpa_dev *mvdev)
+>  out:
+>  	mutex_unlock(&mr->mkey_mtx);
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_destroy_mr);
+>  
+>  static bool map_empty(struct vhost_iotlb *iotlb)
+>  {
+> @@ -484,3 +486,4 @@ int mlx5_vdpa_handle_set_map(struct mlx5_vdpa_dev *mvdev, struct vhost_iotlb *io
+>  
+>  	return err;
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_handle_set_map);
+> diff --git a/drivers/vdpa/mlx5/core/resources.c b/drivers/vdpa/mlx5/core/resources.c
+> index 96e6421c5d1c..89606a18e286 100644
+> --- a/drivers/vdpa/mlx5/core/resources.c
+> +++ b/drivers/vdpa/mlx5/core/resources.c
+> @@ -98,6 +98,7 @@ int mlx5_vdpa_create_tis(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tisn)
+>  
+>  	return err;
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_create_tis);
+>  
+>  void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
+>  {
+> @@ -108,6 +109,7 @@ void mlx5_vdpa_destroy_tis(struct mlx5_vdpa_dev *mvdev, u32 tisn)
+>  	MLX5_SET(destroy_tis_in, in, tisn, tisn);
+>  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tis, in);
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_destroy_tis);
+>  
+>  int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *rqtn)
+>  {
+> @@ -121,6 +123,7 @@ int mlx5_vdpa_create_rqt(struct mlx5_vdpa_dev *mvdev, void *in, int inlen, u32 *
+>  
+>  	return err;
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_create_rqt);
+>  
+>  void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
+>  {
+> @@ -131,6 +134,7 @@ void mlx5_vdpa_destroy_rqt(struct mlx5_vdpa_dev *mvdev, u32 rqtn)
+>  	MLX5_SET(destroy_rqt_in, in, rqtn, rqtn);
+>  	mlx5_cmd_exec_in(mvdev->mdev, destroy_rqt, in);
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_destroy_rqt);
+>  
+>  int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
+>  {
+> @@ -144,6 +148,7 @@ int mlx5_vdpa_create_tir(struct mlx5_vdpa_dev *mvdev, void *in, u32 *tirn)
+>  
+>  	return err;
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_create_tir);
+>  
+>  void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
+>  {
+> @@ -154,6 +159,7 @@ void mlx5_vdpa_destroy_tir(struct mlx5_vdpa_dev *mvdev, u32 tirn)
+>  	MLX5_SET(destroy_tir_in, in, tirn, tirn);
+>  	mlx5_cmd_exec_in(mvdev->mdev, destroy_tir, in);
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_destroy_tir);
+>  
+>  int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
+>  {
+> @@ -170,6 +176,7 @@ int mlx5_vdpa_alloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 *tdn)
+>  
+>  	return err;
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_alloc_transport_domain);
+>  
+>  void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
+>  {
+> @@ -180,6 +187,7 @@ void mlx5_vdpa_dealloc_transport_domain(struct mlx5_vdpa_dev *mvdev, u32 tdn)
+>  	MLX5_SET(dealloc_transport_domain_in, in, transport_domain, tdn);
+>  	mlx5_cmd_exec_in(mvdev->mdev, dealloc_transport_domain, in);
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_dealloc_transport_domain);
+>  
+>  int mlx5_vdpa_create_mkey(struct mlx5_vdpa_dev *mvdev, struct mlx5_core_mkey *mkey, u32 *in,
+>  			  int inlen)
+> @@ -266,6 +274,7 @@ int mlx5_vdpa_alloc_resources(struct mlx5_vdpa_dev *mvdev)
+>  	mutex_destroy(&mvdev->mr.mkey_mtx);
+>  	return err;
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_alloc_resources);
+>  
+>  void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
+>  {
+> @@ -282,3 +291,4 @@ void mlx5_vdpa_free_resources(struct mlx5_vdpa_dev *mvdev)
+>  	mutex_destroy(&mvdev->mr.mkey_mtx);
+>  	res->valid = false;
+>  }
+> +EXPORT_SYMBOL(mlx5_vdpa_free_resources);
+> -- 
+> 2.27.0
 
