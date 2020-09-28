@@ -2,175 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 441DC27B320
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:26:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 396AE27B327
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 19:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgI1R0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 13:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbgI1R0Q (ORCPT
+        id S1726765AbgI1R0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 13:26:34 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:44212 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726551AbgI1R0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 13:26:16 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E0A2C0613D0
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:26:16 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id k8so1676912pfk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 10:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pensando.io; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=xu75CUkAEe8YKESDX+6RMXTyhfVPWONUsVk2klTLLIw=;
-        b=0/6i+LzwyathOMbvG6oG2ll/0evYhsEXpg9MB8BFBLC+1GFyqK6z7LlJJBxzxFdfbJ
-         05TEF7DdGGpuvCMyi2NZv1Q92KQL0cR+D9CHNZcApVdI271h571JbWXG7v8ceUFtVFtf
-         iwjyPFqYKOGDgEmB8LpvoaUN93/ZIPIYVvLAUawMj6Y4rR+hfMhita75OZvkqLyaAvUf
-         xvE+pK94Tr93FIKvvY4r5qpOHmvw3WITNJyYhNThNqO4q29c3wTZYVBQe7Tq8UTIL6k4
-         0ZHjkrbMpMyKmBmkJEdjYVDtZTHnR2/b6Pa/4fNUCUmKUcc1eo5AP/szp3Nr9ULAH1LL
-         Gszg==
+        Mon, 28 Sep 2020 13:26:33 -0400
+Received: by mail-oi1-f193.google.com with SMTP id 185so2170358oie.11;
+        Mon, 28 Sep 2020 10:26:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=xu75CUkAEe8YKESDX+6RMXTyhfVPWONUsVk2klTLLIw=;
-        b=kLBWc4W3blS8aA+8zM/oB2Z3hLo2PQXrKhgYhk2X3ZdSmiYN/LK0upXfH1YEKk+Bla
-         m+3lB1cKiEWQc5RaALHV3DL+l765JlrXcwLiGe3ARoddOTFpjC1+K/sUJlPj7Ca2WRkh
-         YKOwFJrSB5G9nLQFv8hw/4IAlqWPYx8x8uNBNUsbO3syqsjGRv1/Vj4gxIHxC7eJu0M8
-         PITqFQ/e2/VZyXH8XviwOFuRlKb3lIYqlBRLJoTfXSKSIGHSPLIA5rCqgMOGSoX4c15E
-         3tXDvotd8GBAe+mfuznYaCYJM9uXMMPEcM5PDFzv12AD1SwH1FWJrmozzPaiG2/+aCU/
-         e4qA==
-X-Gm-Message-State: AOAM533BEZLPUw6ttfIGE11pMoLzjehCk7T3y5sosAi3WDuZoVNiIDy5
-        8Y+uOLr6aZAi4+xy2NMRlWNlvQ==
-X-Google-Smtp-Source: ABdhPJzwfjXkCsxEu3XfK2aVP501w1BXp/1/rfPP3H13WpeMSgLae7v91sNjQ8w4DmdYg1Jo2bc1PA==
-X-Received: by 2002:a63:595a:: with SMTP id j26mr130244pgm.406.1601313975665;
-        Mon, 28 Sep 2020 10:26:15 -0700 (PDT)
-Received: from Shannons-MacBook-Pro.local (static-50-53-47-17.bvtn.or.frontiernet.net. [50.53.47.17])
-        by smtp.gmail.com with ESMTPSA id j18sm1986127pgm.30.2020.09.28.10.26.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Sep 2020 10:26:15 -0700 (PDT)
-Subject: Re: [patch 12/35] net: ionic: Remove WARN_ON(in_interrupt()).
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Pensando Drivers <drivers@pensando.io>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Christian Benvenuti <benve@cisco.com>,
-        Govindarajulu Varadarajan <_govind@gmx.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Jay Cliburn <jcliburn@gmail.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Vishal Kulkarni <vishal@chelsio.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        intel-wired-lan@lists.osuosl.org, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Solarflare linux maintainers <linux-net-drivers@solarflare.com>,
-        Edward Cree <ecree@solarflare.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Jon Mason <jdmason@kudzu.us>, Daniel Drake <dsd@gentoo.org>,
-        Ulrich Kunitz <kune@deine-taler.de>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Intel Linux Wireless <linuxwifi@intel.com>,
-        Jouni Malinen <j@w1.fi>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        libertas-dev@lists.infradead.org,
-        Pascal Terjan <pterjan@google.com>,
-        Ping-Ke Shih <pkshih@realtek.com>
-References: <20200927194846.045411263@linutronix.de>
- <20200927194921.026798214@linutronix.de>
-From:   Shannon Nelson <snelson@pensando.io>
-Message-ID: <96baeba9-eb5f-1462-2dcc-ecb9793727a1@pensando.io>
-Date:   Mon, 28 Sep 2020 10:26:10 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2Bg8Mb9Gv2pIoiwK87TIqBreNFfJwQnzcH+LXnQL+4E=;
+        b=DKnyfgXTAWzRQeaW3JaGxzzoiSP0dqnknMWsftAehv4tdc2OeHIJAbqoFraSdjqOu4
+         QuC11py4w0cv3dl0kggtBOb5tWsdVhQfz+ktlbeZyItsUIjVObT9XgV5cI5MdKB7/0oz
+         Crv0RtmZHjWcVbRnEWu+xY2GJ7+GgoOjT+CGXB6qc4ph/VAnXxJXQXm0SyHkaUrSYZgU
+         E90My/BaNRR9Bcv9CF/Ba5nLiD4l1Mi/c3JlRNSAGlNf1jfxNR4aimdTRqmp/442AWNl
+         n4KraUiMG/4TfDG2L7Egf+xCusXknSn2yFfT3aFgjTW9F5p4oMa5vXkdbbHscnxt1ORg
+         4ZHw==
+X-Gm-Message-State: AOAM532e/W+wCx/kKtwVgbyD32AwJBMAaeDb5yxdP2jIAvbbI51zo/gt
+        yh6rc92gCcVeDiVylXIw3w==
+X-Google-Smtp-Source: ABdhPJwXO9pq9TJEGuCXdjVBWwl4RWh6eeuKeJMcErJlWKZi0dMMVwHrqzNAx4K4wDL4I9iZT4xUhA==
+X-Received: by 2002:a05:6808:914:: with SMTP id w20mr1614438oih.72.1601313992499;
+        Mon, 28 Sep 2020 10:26:32 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y23sm2207192ooj.34.2020.09.28.10.26.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 10:26:31 -0700 (PDT)
+Received: (nullmailer pid 2933713 invoked by uid 1000);
+        Mon, 28 Sep 2020 17:26:31 -0000
+Date:   Mon, 28 Sep 2020 12:26:31 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     kholk11@gmail.com
+Cc:     linux-pm@vger.kernel.org, konradybcio@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        marijns95@gmail.com, martin.botka1@gmail.com, agross@kernel.org,
+        bjorn.andersson@linaro.org, phone-devel@vger.kernel.org,
+        georgi.djakov@linaro.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org
+Subject: Re: [PATCH 2/2] dt-bindings: interconnect: Add bindings for Qualcomm
+ SDM660 NoC
+Message-ID: <20200928172631.GA2933280@bogus>
+References: <20200926125101.12712-1-kholk11@gmail.com>
+ <20200926125101.12712-3-kholk11@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200927194921.026798214@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200926125101.12712-3-kholk11@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/20 12:48 PM, Thomas Gleixner wrote:
-> From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
->
-> in_interrupt() is ill defined and does not provide what the name
-> suggests. The usage especially in driver code is deprecated and a tree wide
-> effort to clean up and consolidate the (ab)usage of in_interrupt() and
-> related checks is happening.
->
-> In this case the check covers only parts of the contexts in which these
-> functions cannot be called. It fails to detect preemption or interrupt
-> disabled invocations.
->
-> As the functions which are invoked from ionic_adminq_post() and
-> ionic_dev_cmd_wait() contain a broad variety of checks (always enabled or
-> debug option dependent) which cover all invalid conditions already, there
-> is no point in having inconsistent warnings in those drivers.
->
-> Just remove them.
->
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Shannon Nelson <snelson@pensando.io>
-> Cc: Pensando Drivers <drivers@pensando.io>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-Thanks.
-
-Acked-by: Shannon Nelson <snelson@pensando.io>
-
+On Sat, 26 Sep 2020 14:51:01 +0200, kholk11@gmail.com wrote:
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+> 
+> Add the bindings for the Qualcomm SDM660-class NoC, valid for
+> SDM630, SDM636, SDM660 and SDA variants.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
 > ---
->   drivers/net/ethernet/pensando/ionic/ionic_main.c |    4 ----
->   1 file changed, 4 deletions(-)
->
-> --- a/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> +++ b/drivers/net/ethernet/pensando/ionic/ionic_main.c
-> @@ -248,8 +248,6 @@ static int ionic_adminq_post(struct ioni
->   	struct ionic_queue *adminq;
->   	int err = 0;
->   
-> -	WARN_ON(in_interrupt());
-> -
->   	if (!lif->adminqcq)
->   		return -EIO;
->   
-> @@ -346,8 +344,6 @@ int ionic_dev_cmd_wait(struct ionic *ion
->   	int done;
->   	int err;
->   
-> -	WARN_ON(in_interrupt());
-> -
->   	/* Wait for dev cmd to complete, retrying if we get EAGAIN,
->   	 * but don't wait any longer than max_seconds.
->   	 */
->
+>  .../bindings/interconnect/qcom,sdm660.yaml    | 146 ++++++++++++++++++
+>  1 file changed, 146 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdm660.yaml
+> 
+
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+Error: Documentation/devicetree/bindings/interconnect/qcom,sdm660.example.dts:64.33-34 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/interconnect/qcom,sdm660.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1366: dt_binding_check] Error 2
+
+
+See https://patchwork.ozlabs.org/patch/1371756
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure dt-schema is up to date:
+
+pip3 install git+https://github.com/devicetree-org/dt-schema.git@master --upgrade
+
+Please check and re-submit.
 
