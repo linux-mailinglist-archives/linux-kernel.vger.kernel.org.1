@@ -2,172 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6A127B1AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B019327B1B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 18:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgI1QUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 12:20:06 -0400
-Received: from mga11.intel.com ([192.55.52.93]:48309 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726344AbgI1QUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 12:20:06 -0400
-IronPort-SDR: ebBylnUyEkKRx6ZMHgDu7vBQmQ/RrIHCESBCEUaILo1EK2OPdJ/KdJq8BpRzpuwoIPumBA9MMl
- MC0kWrvtj+Ng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="159362211"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="159362211"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:20:03 -0700
-IronPort-SDR: 6TZJ7Ehu/ELhw6vm2VOLjkupaHMzkSF96p16WXD+Pyxf8TnKh2UvfUtj/SAjsteIHkGVm6TJLD
- ViathMlqBWzA==
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208";a="488641778"
-Received: from gboudouk-mobl2.ger.corp.intel.com (HELO localhost) ([10.249.33.127])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 09:19:56 -0700
-Date:   Mon, 28 Sep 2020 19:19:54 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com
-Subject: Re: [PATCH v38 10/24] mm: Add vm_ops->mprotect()
-Message-ID: <20200928161954.GB92669@linux.intel.com>
-References: <20200924202549.GB19127@linux.intel.com>
- <e25bfeaa-afb4-3928-eb80-50d90815eabb@intel.com>
- <20200924230501.GA20095@linux.intel.com>
- <b737fcab-bfde-90e1-1101-82d646a6f5b7@intel.com>
- <20200925000052.GA20333@linux.intel.com>
- <32fc9df4-d4aa-6768-aa06-0035427b7535@intel.com>
- <20200925194304.GE31528@linux.intel.com>
- <230ce6da-7820-976f-f036-a261841d626f@intel.com>
- <20200928005347.GB6704@linux.intel.com>
- <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
+        id S1726650AbgI1QUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 12:20:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57244 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726344AbgI1QUb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 12:20:31 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0B49C061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:20:31 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id mm21so947835pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 09:20:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=4V2KOSWz2Ynez7A9qc6gszCbitnG30+IEs3hUqTCfO4=;
+        b=HVr1r1zMioW8B+bOUNuze9QYluvHCclRX8sQykdHld08TNmtZVr1mi1lUiRIg+XDRR
+         H93HlVSgjhdhk4l8PAMh0X+HOiGQc+XaTGmsUMZmnCydLEl0+t+rjcqMuF7k/RaQr2FV
+         4km2qPGp18hSsvioanvkO23m+RPeVaNr2OrTUTJs/yhw8YZvxly7pajPS/8Ysb78wZbR
+         iX8F3gX6y63P7MP8rfJzar7nPzoaw3RwqEsYrIHWmk9inU1LxaI6t9X7Bc3fN1YHobKS
+         3o0XPHXbVJZpMRtG0QtFAOANe+j3tQ066viVsuWi76t6PWiLDGXtF+IYJKc4BfA1AMRk
+         /4Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=4V2KOSWz2Ynez7A9qc6gszCbitnG30+IEs3hUqTCfO4=;
+        b=lBYmyh5osL6UDBkOw+WWTE+/y94w0Av8Zcb7TZlK01oBWkhLT3+4UgXCPC30j1Dox2
+         wn7AEqDsmWfopKopo+Xphd2MnRwY0iDH2V36ulJC5k7Zis+eFUnQ/sTMRxEH/mdvBqmq
+         EV3hneuEe7L9/FXXzBLl4BbAfDpgFESz2BxzNFR7ePDCUJRPrxw37h43J/TJXV3AqodK
+         JxgslldsdkFXWlkNS8SHuiZQG07YQMYtvYa+ch91bPIR9kn0gwtZpqaXyt/fYzm5giox
+         QEPafKf1MLXSvwSM8MVFqtFNUl0yOd4l7YdmL3AM7ObPd+/UALCCOFhHoZE+RhNJE3LC
+         Uplw==
+X-Gm-Message-State: AOAM533sMjgACdLHhiXK2ibpFeiZMt+iLRfjqJ6fy4NZdf+X0pg2BDOv
+        +6hpBmtZfkawT6/AE+iLNv3xPg==
+X-Google-Smtp-Source: ABdhPJxkjBTlYZ3nCaLlMOJp1FXAWAlJSinEhItUxBY+55Da/lxMYQRAr/PGO6ghJJ//Z0wDZb6Hlw==
+X-Received: by 2002:a17:90a:ca17:: with SMTP id x23mr90679pjt.96.1601310031082;
+        Mon, 28 Sep 2020 09:20:31 -0700 (PDT)
+Received: from [192.168.1.102] (c-24-20-148-49.hsd1.or.comcast.net. [24.20.148.49])
+        by smtp.gmail.com with ESMTPSA id j14sm1819052pjz.21.2020.09.28.09.20.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Sep 2020 09:20:29 -0700 (PDT)
+From:   "Sean V Kelley" <sean.v.kelley@intel.com>
+To:     "Bjorn Helgaas" <helgaas@kernel.org>
+Cc:     "Sean V Kelley" <seanvk.dev@oregontracks.org>, bhelgaas@google.com,
+        Jonathan.Cameron@huawei.com, rafael.j.wysocki@intel.com,
+        ashok.raj@intel.com, tony.luck@intel.com,
+        sathyanarayanan.kuppuswamy@intel.com, qiuxu.zhuo@intel.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 06/10] PCI/RCEC: Add pcie_link_rcec() to associate
+ RCiEPs
+Date:   Mon, 28 Sep 2020 09:20:28 -0700
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <CCA7D16A-80A6-456B-BD0F-0DA4CCE8F054@intel.com>
+In-Reply-To: <20200925221540.GA2460947@bjorn-Precision-5520>
+References: <20200925221540.GA2460947@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6eca8490-d27d-25b8-da7c-df4f9a802e87@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 07:04:38AM -0700, Dave Hansen wrote:
-> On 9/27/20 5:53 PM, Jarkko Sakkinen wrote:
-> > On Fri, Sep 25, 2020 at 12:53:35PM -0700, Dave Hansen wrote:
-> >> On 9/25/20 12:43 PM, Sean Christopherson wrote:
-> >>>> That means that the intent argument (SGX_PROT_*) is currently unused.
-> >>> No, the intent argument is used (eventually) by SGX's ->mprotect()
-> >>> implementation, i.e. sgx_mprotect() enforces that the actual protections are a
-> >>> subset of the declared/intended protections.
-> >>>
-> >>> If ->mprotect() is not merged, then it yes, it will be unused.
-> >>
-> >> OK, I think I've got it.
-> >>
-> >> I think I'm OK with adding ->mprotect().  As long as folks buy into the
-> >> argument that intent needs to be checked at mmap() time, they obviously
-> >> need to be checked at mprotect() too.
-> >>
-> >> Jarkko, if you want to try and rewrite the changelog, capturing the
-> >> discussion here and reply, I think I can ack the resulting patch.  I
-> >> don't know if that will satisfy the request from Boris from an ack from
-> >> a "mm person", but we can at least start there. :)
-> > 
-> > I think what it needs, based on what I've read, is the step by step
-> > description of the EMODPE scenarion without this callback and with it.
-> 
-> EMODPE is virtually irrelevant for this whole thing.  The x86 PTE
-> permissions still specify the most restrictive permissions, which is
-> what matters the most.
-> 
-> We care about the _worst_ the enclave can do, not what it imposes on
-> itself on top of that.
+On 25 Sep 2020, at 15:15, Bjorn Helgaas wrote:
 
-AFAIK it is not, or what we are protecting against with this anyway
-then?
+> On Tue, Sep 22, 2020 at 02:38:55PM -0700, Sean V Kelley wrote:
+>> From: Sean V Kelley <sean.v.kelley@intel.com>
+>>
+>> A Root Complex Event Collector provides support for
+>> terminating error and PME messages from associated RCiEPs.
+>>
+>> Make use of the RCEC Endpoint Association Extended Capability
+>> to identify associated RCiEPs. Link the associated RCiEPs as
+>> the RCECs are enumerated.
+>>
+>> Co-developed-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>> Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
+>> Signed-off-by: Sean V Kelley <sean.v.kelley@intel.com>
+>> ---
+>>  drivers/pci/pci.h              |  2 +
+>>  drivers/pci/pcie/portdrv_pci.c |  3 ++
+>>  drivers/pci/pcie/rcec.c        | 96 
+>> ++++++++++++++++++++++++++++++++++
+>>  include/linux/pci.h            |  1 +
+>>  4 files changed, 102 insertions(+)
+>>
+>> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+>> index 7b547fc3679a..ddb5872466fb 100644
+>> --- a/drivers/pci/pci.h
+>> +++ b/drivers/pci/pci.h
+>> @@ -474,9 +474,11 @@ static inline void pci_dpc_init(struct pci_dev 
+>> *pdev) {}
+>>  #ifdef CONFIG_PCIEPORTBUS
+>>  void pci_rcec_init(struct pci_dev *dev);
+>>  void pci_rcec_exit(struct pci_dev *dev);
+>> +void pcie_link_rcec(struct pci_dev *rcec);
+>>  #else
+>>  static inline void pci_rcec_init(struct pci_dev *dev) {}
+>>  static inline void pci_rcec_exit(struct pci_dev *dev) {}
+>> +static inline void pcie_link_rcec(struct pci_dev *rcec) {}
+>>  #endif
+>>
+>>  #ifdef CONFIG_PCI_ATS
+>> diff --git a/drivers/pci/pcie/portdrv_pci.c 
+>> b/drivers/pci/pcie/portdrv_pci.c
+>> index 4d880679b9b1..dbeb0155c2c3 100644
+>> --- a/drivers/pci/pcie/portdrv_pci.c
+>> +++ b/drivers/pci/pcie/portdrv_pci.c
+>> @@ -110,6 +110,9 @@ static int pcie_portdrv_probe(struct pci_dev 
+>> *dev,
+>>  	     (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_EC)))
+>>  		return -ENODEV;
+>>
+>> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_EC)
+>> +		pcie_link_rcec(dev);
+>
+> Nice solution.  One day we'll get rid of pcie_portdrv_probe() and
+> integrate this stuff better into the PCI core, and we'll have to
+> figure out a little different solution then.  But we'll be smarter
+> then so it should be possible :)
 
-Let say an LSM makes decision for the permissions based on origin. If we
-do not have this you can:
+Indeed!
 
-1. EMODPE
-2. mprotect
+>
+>>  	status = pcie_port_device_register(dev);
+>>  	if (status)
+>>  		return status;
+>> diff --git a/drivers/pci/pcie/rcec.c b/drivers/pci/pcie/rcec.c
+>> index 519ae086ff41..5630480a6659 100644
+>> --- a/drivers/pci/pcie/rcec.c
+>> +++ b/drivers/pci/pcie/rcec.c
+>> @@ -17,6 +17,102 @@
+>>
+>>  #include "../pci.h"
+>>
+>> +struct walk_rcec_data {
+>> +	struct pci_dev *rcec;
+>> +	int (*user_callback)(struct pci_dev *dev, void *data);
+>> +	void *user_data;
+>> +};
+>> +
+>> +static bool rcec_assoc_rciep(struct pci_dev *rcec, struct pci_dev 
+>> *rciep)
+>> +{
+>> +	unsigned long bitmap = rcec->rcec_ext->bitmap;
+>> +	unsigned int devn;
+>> +
+>> +	/* An RCiEP found on bus in range */
+>> +	if (rcec->bus->number != rciep->bus->number)
+>> +		return true;
+>> +
+>> +	/* Same bus, so check bitmap */
+>> +	for_each_set_bit(devn, &bitmap, 32)
+>> +		if (devn == rciep->devfn)
+>> +			return true;
+>> +
+>> +	return false;
+>> +}
+>> +
+>> +static int link_rcec_helper(struct pci_dev *dev, void *data)
+>> +{
+>> +	struct walk_rcec_data *rcec_data = data;
+>> +	struct pci_dev *rcec = rcec_data->rcec;
+>> +
+>> +	if ((pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) && 
+>> rcec_assoc_rciep(rcec, dev)) {
+>> +		dev->rcec = rcec;
+>> +		pci_dbg(dev, "PME & error events reported via %s\n", 
+>> pci_name(rcec));
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +void walk_rcec(int (*cb)(struct pci_dev *dev, void *data), void 
+>> *userdata)
+>> +{
+>> +	struct walk_rcec_data *rcec_data = userdata;
+>> +	struct pci_dev *rcec = rcec_data->rcec;
+>> +	u8 nextbusn, lastbusn;
+>> +	struct pci_bus *bus;
+>> +	unsigned int bnr;
+>> +
+>> +	if (!rcec->rcec_cap)
+>> +		return;
+>> +
+>> +	/* Walk own bus for bitmap based association */
+>> +	pci_walk_bus(rcec->bus, cb, rcec_data);
+>> +
+>> +	/* Check whether RCEC BUSN register is present */
+>> +	if (rcec->rcec_ext->ver < PCI_RCEC_BUSN_REG_VER)
+>> +		return;
+>> +
+>> +	nextbusn = rcec->rcec_ext->nextbusn;
+>> +	lastbusn = rcec->rcec_ext->lastbusn;
+>> +
+>> +	/* All RCiEP devices are on the same bus as the RCEC */
+>> +	if (nextbusn == 0xff && lastbusn == 0x00)
+>> +		return;
+>> +
+>> +	for (bnr = nextbusn; bnr <= lastbusn; bnr++) {
+>> +		/* No association indicated (PCIe 5.0-1, 7.9.10.3) */
+>> +		if (bnr == rcec->bus->number)
+>> +			continue;
+>> +
+>> +		bus = pci_find_bus(pci_domain_nr(rcec->bus), bnr);
+>> +		if (!bus)
+>> +			continue;
+>> +
+>> +		/* Find RCiEP devices on the given bus ranges */
+>> +		pci_walk_bus(bus, cb, rcec_data);
+>> +	}
+>> +}
+>> +
+>> +/**
+>> + * pcie_link_rcec - Link RCiEP devices associating with RCEC.
+>> + * @rcec     RCEC whose RCiEP devices should be linked.
+>> + *
+>> + * Link the given RCEC to each RCiEP device found.
+>> + *
+>> + */
+>> +void pcie_link_rcec(struct pci_dev *rcec)
+>> +{
+>> +	struct walk_rcec_data rcec_data;
+>> +
+>> +	if (!rcec->rcec_cap)
+>> +		return;
+>> +
+>> +	rcec_data.rcec = rcec;
+>> +	rcec_data.user_callback = NULL;
+>> +	rcec_data.user_data = NULL;
+>> +
+>> +	walk_rcec(link_rcec_helper, &rcec_data);
+>> +}
+>> +
+>>  void pci_rcec_init(struct pci_dev *dev)
+>>  {
+>>  	u32 rcec, hdr, busn;
+>> diff --git a/include/linux/pci.h b/include/linux/pci.h
+>> index 5c5c4eb642b6..ad382a9484ea 100644
+>> --- a/include/linux/pci.h
+>> +++ b/include/linux/pci.h
+>> @@ -330,6 +330,7 @@ struct pci_dev {
+>>  #ifdef CONFIG_PCIEPORTBUS
+>>  	u16		rcec_cap;	/* RCEC capability offset */
+>>  	struct rcec_ext *rcec_ext;	/* RCEC cached assoc. endpoint extended 
+>> capabilities */
+>> +	struct pci_dev  *rcec;          /* Associated RCEC device */
+>
+> Wondering if we can put this pointer inside the struct rcec_ext (or
+> whatever we call it) so we don't have to pay *two* pointers for every
+> PCI device?  Maybe it should be something like this:
 
-I.e. whatever LSM decides, won't matter.
+It’s definitely unfortunate to need these two pointers. Here we have 
+the spec implying an association, but leaving it to software to fill in 
+the gaps! The spec provides a bitmap, but the reverse mapping is also 
+needed from the RCiEPs to the RCEC.
 
-The other case, noexec, is now unconditionally denied.
+>
+>   struct rcec {
+>     u8			ea_ver;
+>     u8			ea_nextbusn;
+>     u8			ea_lastbusn;
+>     u32			ea_bitmap;
+>     struct pci_dev	*rcec;
+>   }
+>
+> I dunno.  Not sure if that would be better or worse, since we'd be
+> mixing RCEC stuff (the EA capability info) with RCiEP stuff (the
+> pointer to the related RCEC).  Could even be a union, since any given
+> device only needs one of them, but I'm pretty sure that would be
+> worse.
 
-> > I think other important thing to underline is that an LSM or any other
-> > security measure can only do a sane decision when the enclave is loaded.
-> > At that point we know the source (vm_file).
-> 
-> Right, you know the source, but it can be anonymous or a file.
+Well, I think the pointer savings would be offset by lack of clarity on 
+what is going on here due to this nesting. Then again, *rcec_ea and 
+*rcec are not themselves revealing in terms of the relationship with 
+RCiEPs either.  I’ll think on it some more. I do like the ea_ prefix.
 
-They are both origin, the point being that you know what you're dealing
-with when you build the enclave, not when you map it.
+>
+> BTW, 03/10 didn't add a forward declaration, e.g.,
+>
+>   struct rcec_ext;
+>
+> to include/linux/pci.h, and the actual definition is in
+> drivers/pci/pci.h.  It seems like you should need that?
 
-This is my current rewrite of the commit message in my master branch:
+Yes, it should be added.  Will do.
 
-"
-    mm: Add 'mprotect' callback to vm_ops
-    
-    Intel Sofware Guard eXtensions (SGX) allows creation of blobs called
-    enclaves, for which page permissions are defined when the enclave is first
-    loaded. Once an enclave is loaded and initialized, it can be mapped to the
-    process address space.
-    
-    There is no standard file format for enclaves. They are dynamically built
-    and the ways how enclaves are deployed differ greatly. For an app you might
-    want to have a simple static binary, but on the other hand for a container
-    you might want to dynamically create the whole thing at run-time. Also, the
-    existing ecosystem for SGX is already large, which would make the task very
-    hard.
-    
-    Finally, even if there was a standard format, one would still want a
-    dynamic way to add pages to the enclave. One big reason for this is that
-    enclaves have load time defined pages that represent entry points to the
-    enclave. Each entry point can service one hardware thread at a time and
-    you might want to run-time parametrize this depending on your environment.
-    
-    The consequence is that enclaves are best created with an ioctl API and the
-    access control can be based only to the origin of the source file for the
-    enclave data, i.e. on VMA file pointer and page permissions. For example,
-    this could be done with LSM hooks that are triggered in the appropriate
-    ioctl's and they could make the access control decision based on this
-    information.
-    
-    Unfortunately, there is ENCLS[EMODPE] that a running enclave can use to
-    upgrade its permissions. If we do not limit mmap() and mprotect(), enclave
-    could upgrade its permissions by using EMODPE followed by an appropriate
-    mprotect() call. This would be completely hidden from the kernel.
-    
-    Add 'mprotect' hook to vm_ops, so that a callback can be implemeted for SGX
-    that will ensure that {mmap, mprotect}() permissions do not surpass any of
-    the original page permissions. This feature allows to maintain and refine
-    sane access control for enclaves.
-"
+Thanks,
 
-I'm mostly happy with this but am open for change suggestions.
-
-/Jarkko
+Sean
+>
+>>  #endif
+>>  	u8		pcie_cap;	/* PCIe capability offset */
+>>  	u8		msi_cap;	/* MSI capability offset */
+>> -- 
+>> 2.28.0
+>>
