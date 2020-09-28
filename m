@@ -2,160 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 709EA27AD5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1FF27AD4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgI1L5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:57:15 -0400
-Received: from mga01.intel.com ([192.55.52.88]:35629 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726559AbgI1L5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:57:12 -0400
-IronPort-SDR: SEXSGMJ9NfPxqxzlXEnDacL3WBxp/DlEap4G/lLa8IFvNrZ1n1JNEJukQJlVJcDD++6k9YAr4t
- 9i5fCS1Gvf2Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="180135752"
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208,223";a="180135752"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 04:53:05 -0700
-IronPort-SDR: zzNG14OF8XTMxMxLkG0kTbK7Bo7jmhFqNh1qV0RmKkpcZtihvVj9uT6rFdU/yVl+sugHRrob1E
- gegvzyejPPHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
-   d="scan'208,223";a="414958496"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 28 Sep 2020 04:53:02 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 28 Sep 2020 14:53:01 +0300
-Date:   Mon, 28 Sep 2020 14:53:01 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>, pavel@ucw.cz,
-        dmurphy@ti.com, jacek.anaszewski@gmail.com,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] leds: lp50xx: Fix an error handling path in
- 'lp50xx_probe_dt()'
-Message-ID: <20200928115301.GB3987353@kuha.fi.intel.com>
-References: <20200922210515.385099-1-christophe.jaillet@wanadoo.fr>
- <20200923133510.GJ4282@kadam>
- <faa49efc-5ba5-b6bd-b486-2f7c4611219b@wanadoo.fr>
- <20200924064932.GP18329@kadam>
+        id S1726699AbgI1LyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726656AbgI1LyI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:54:08 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC46FC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:54:07 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id 4so218370ooh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 04:54:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qVxE17p4zsLCszLlrp2+yy6w1PaUWdFxLyFkrOjdfgU=;
+        b=FrUJQhU8kLw5wzKwxdDxIRtiVoZ4lfeEZwy4LJPWfKENd3ZpDBr+fUeXyts5ABr4TM
+         ZH5Q5AUVRyledcZkhZFHMj1Xb7lLb7lvKlji7ROGvzgo5ad7SJnlL95Wct+/0nKk++lq
+         wYWBtVoulBHcCIV7zqSRjVQeTpnuEVHGkiONEu3FSe0BhD/SwyM/JVJg1Di8LjLpUzMQ
+         Ed0RQHWOFbz70PZpdJtw4ZCSz3+jgk5repK1v2BzNhFohtN0QypxHHQD9EbCKbCxyof+
+         XI+394+OH71KeoWaiKUNCaoq1tLs3vkcMfYf4L9lvcLWzyN3U+23iR3Pz3G1aYmjKf0n
+         RJPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qVxE17p4zsLCszLlrp2+yy6w1PaUWdFxLyFkrOjdfgU=;
+        b=mCWRC8fnFzeUP5I3IiB8McuMLMcWM1tg87G4OlEuWRJXhzi68BTQWz/h5EMJdxRASs
+         y1OfikGs6YX2NzAl0hJAvHqaeka5wT2X60xxuTobQ0ifZhlKiBswV+W7FIh642RZkNuh
+         jvJK7yAxYo9AxQ5JfLH9mi60J1uzZ15o6yuIYn7oDg7IhD+SwYwPOBWeaXYtnfpm/uSt
+         XAhLRM/qm9/YSNlFFRg2FC29z91xbu3EHn6rUhsqBVeJYfxwpnSMs0m5v6JtmghDEDpF
+         KDGMvO2gJD0MY1U2Xiw5RRSFKo/cQUisyx66a5s0AeooIVRxmL+H0nu1PVq/UyheEv6x
+         UwDQ==
+X-Gm-Message-State: AOAM530hyEeNqe3RdrCGYOJgdyvooexVf6x/EOCp+nhtE4EhVP8475rQ
+        roC372YWf/jnGTd8Q0G5YyMTybrmzykv0sUVh7EKoQ==
+X-Google-Smtp-Source: ABdhPJzpY53/CL/rlGYhaAH12AEPiz652/Rpx7oha4MEk7h+kTfhAQNGeyGlFXmxe76ygSbGoIxkc8SQ6hVOJ6Wmhdo=
+X-Received: by 2002:a4a:a58f:: with SMTP id d15mr554121oom.36.1601294046985;
+ Mon, 28 Sep 2020 04:54:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200924064932.GP18329@kadam>
+References: <20200921132611.1700350-1-elver@google.com> <20200921132611.1700350-4-elver@google.com>
+ <20200921143059.GO2139@willie-the-truck>
+In-Reply-To: <20200921143059.GO2139@willie-the-truck>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 28 Sep 2020 13:53:55 +0200
+Message-ID: <CANpmjNMS-6mfDF6o31yiejP0wmgpEeuoh0PP9QJa-qt0OpiRBg@mail.gmail.com>
+Subject: Re: [PATCH v3 03/10] arm64, kfence: enable KFENCE for ARM64
+To:     Will Deacon <will@kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        SeongJae Park <sjpark@amazon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 21 Sep 2020 at 16:31, Will Deacon <will@kernel.org> wrote:
+> On Mon, Sep 21, 2020 at 03:26:04PM +0200, Marco Elver wrote:
+> > Add architecture specific implementation details for KFENCE and enable
+> > KFENCE for the arm64 architecture. In particular, this implements the
+> > required interface in <asm/kfence.h>. Currently, the arm64 version does
+> > not yet use a statically allocated memory pool, at the cost of a pointer
+> > load for each is_kfence_address().
+[...]
+> > For ARM64, we would like to solicit feedback on what the best option is
+> > to obtain a constant address for __kfence_pool. One option is to declare
+> > a memory range in the memory layout to be dedicated to KFENCE (like is
+> > done for KASAN), however, it is unclear if this is the best available
+> > option. We would like to avoid touching the memory layout.
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+> Given that the pool is relatively small (i.e. when compared with our virtual
+> address space), dedicating an area of virtual space sounds like it makes
+> the most sense here. How early do you need it to be available?
 
-On Thu, Sep 24, 2020 at 09:49:32AM +0300, Dan Carpenter wrote:
-> On Wed, Sep 23, 2020 at 08:49:56PM +0200, Christophe JAILLET wrote:
-> > Le 23/09/2020 à 15:35, Dan Carpenter a écrit :
-> > > I've added Heikki Krogerus to the CC list because my question is mostly
-> > > about commit 59abd83672f7 ("drivers: base: Introducing software nodes to
-> > > the firmware node framework").
-> > > 
-> > > I have been trying to teach Smatch to understand reference counting so
-> > > it can discover these kinds of bugs automatically.
-> > > 
-> > > I don't know how software_node_get_next_child() can work when it doesn't
-> > > call kobject_get().  This sort of bug would have been caught in testing
-> > > because it affects the success path so I must be reading the code wrong.
-> > > 
-> > 
-> > I had the same reading of the code and thought that I was missing something
-> > somewhere.
-> > 
-> > There is the same question about 'acpi_get_next_subnode' which is also a
-> > '.get_next_child_node' function, without any ref counting, if I'm correct.
-> > 
-> 
-> Yeah, but there aren't any ->get/put() ops for the acpi_get_next_subnode()
-> stuff so it's not a problem.  (Presumably there is some other sort of
-> refcounting policy there).
+Note: we're going to send a v4 this or next week with a few other
+minor fixes in it. But I think we just don't want to block the entire
+series on figuring out what the static-pool arm64 version should do,
+especially if we'll have a few iterations with only this patch here
+changing.
 
-OK, so I guess we need to make software_node_get_next_child()
-mimic the behaviour of of_get_next_available_child(), and not
-acpi_get_next_subnode(). Does the attached patch work?
+So the plan will be:
 
+1. Send v4, which could from our point-of-view be picked up for
+merging. Unless of course there are more comments.
 
-thanks,
+2. Work out the details for the static-pool arm64 version, since it
+doesn't seem trivial to do the same thing as we do for x86. In
+preparation for that, v4 will allow the __kfence_pool's attributes to
+be defined entirely by <asm/kfence.h>, so that we can fiddle with
+sections etc.
 
--- 
-heikki
+3. Send patch switching out the simpler arm64 version here for one
+that places __kfence_pool at a static location.
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-software-nodes-Handle-the-refcounting-also-in-softwa.patch"
+Hopefully that plan is reasonable.
 
-From 9b5744450d07b1e6e32e441785b9b69d7e54a7b1 Mon Sep 17 00:00:00 2001
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Date: Mon, 28 Sep 2020 14:38:09 +0300
-Subject: [PATCH] software nodes: Handle the refcounting also in
- software_node_get_next_child()
-
-Incrementing the reference count of the node that is
-returned in software_node_get_next_child(), and decrementing
-the reference count of the previous node.
-
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
----
- drivers/base/swnode.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index 010828fc785bc..adbaafab3887b 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -439,18 +439,26 @@ static struct fwnode_handle *
- software_node_get_next_child(const struct fwnode_handle *fwnode,
- 			     struct fwnode_handle *child)
- {
--	struct swnode *p = to_swnode(fwnode);
--	struct swnode *c = to_swnode(child);
-+	struct swnode *parent = to_swnode(fwnode);
-+	struct swnode *prev = to_swnode(child);
-+	struct swnode *next;
- 
--	if (!p || list_empty(&p->children) ||
--	    (c && list_is_last(&c->entry, &p->children)))
-+	if (!parent || list_empty(&parent->children))
- 		return NULL;
- 
--	if (c)
--		c = list_next_entry(c, entry);
--	else
--		c = list_first_entry(&p->children, struct swnode, entry);
--	return &c->fwnode;
-+	if (prev && list_is_last(&prev->entry, &parent->children)) {
-+		kobject_put(&prev->kobj);
-+		return NULL;
-+	}
-+
-+	if (prev) {
-+		next = list_next_entry(prev, entry);
-+		kobject_put(&prev->kobj);
-+	} else {
-+		next = list_first_entry(&parent->children, struct swnode, entry);
-+	}
-+
-+	return fwnode_handle_get(&next->fwnode);
- }
- 
- static struct fwnode_handle *
--- 
-2.28.0
-
-
---RnlQjJ0d97Da+TV1--
+Thanks,
+-- Marco
