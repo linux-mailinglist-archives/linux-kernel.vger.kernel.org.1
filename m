@@ -2,84 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49ED927A61D
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 06:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F7B27A620
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 06:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726617AbgI1EIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 00:08:48 -0400
-Received: from mga18.intel.com ([134.134.136.126]:30290 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725290AbgI1EIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 00:08:42 -0400
-IronPort-SDR: t+7kTvOuo+TrI/9zmbf/PYWT0jmqNoLlv+z28RFj29cbv0+ZlhGzAw43UvXkkEPgSEIjInaQuY
- j6m2LNAupZlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="149710901"
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="149710901"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2020 21:08:41 -0700
-IronPort-SDR: p8KvPyKGQSZM5hr74cP0clr+WzHemPj7g9nkcoIqQ09zkuftqdi7829iElGmIQwo1QTi5orxNk
- 1g9j8j8vMZWg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,312,1596524400"; 
-   d="scan'208";a="311628179"
-Received: from shskylake.sh.intel.com ([10.239.48.137])
-  by orsmga006.jf.intel.com with ESMTP; 27 Sep 2020 21:08:38 -0700
-From:   Ethan Zhao <haifeng.zhao@intel.com>
-To:     bhelgaas@google.com, oohall@gmail.com, ruscur@russell.cc,
-        lukas@wunner.de, andriy.shevchenko@linux.intel.com,
-        stuart.w.hayes@gmail.com, mr.nuke.me@gmail.com,
-        mika.westerberg@linux.intel.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pei.p.jia@intel.com, ashok.raj@linux.intel.com,
-        sathyanarayanan.kuppuswamy@intel.com,
-        Ethan Zhao <haifeng.zhao@intel.com>
-Subject: [PATCH 5/5 V5] PCI/ERR: don't mix io state not changed and no driver together
-Date:   Mon, 28 Sep 2020 00:06:51 -0400
-Message-Id: <20200928040651.24937-6-haifeng.zhao@intel.com>
-X-Mailer: git-send-email 2.18.4
-In-Reply-To: <20200928040651.24937-1-haifeng.zhao@intel.com>
-References: <20200928040651.24937-1-haifeng.zhao@intel.com>
+        id S1726572AbgI1EKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 00:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726328AbgI1EKb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 00:10:31 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19854C0613CF
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 21:10:31 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id u3so2781428pjr.3
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 21:10:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=OHdB/lQSZ51PriON1YnzhLSGGjk5yXlBwN7F9gXnLRk=;
+        b=eTjt/mfpH5f2ibLKAUl28AUwGSYqFAPi7JON1aflRzrzYfHYr3oUXd+LnqOBvOmQ4d
+         aSHV3gDOl4id8ASR47jc/kGGabiipe2oao3t+27FsxnQoCJ9aNVqcM9UxmSNlx6A3u4H
+         9V01syle6eOS3uBo1FbtStxptSJuCZtxet5tY6H6NZcWM02t3toRwMRPNDWKITOYpGk3
+         vnKCd7m3sHFPseU2hIgQvioWia7sb40QOW4Jf1VXD2DkyELg8nmaqB53biZluWhyepVF
+         s/41CgLhh9pSf6iOgxg19Zag0ThO6g5kR1qN+mRTY7NM5fc5hD8d7sostRutHwIQtXbs
+         ftuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=OHdB/lQSZ51PriON1YnzhLSGGjk5yXlBwN7F9gXnLRk=;
+        b=GMg0OzBfTNUJp5Kt4BEahhm+cAOJIn2UA2ED9vGadWHXaGqOCL53mYANYVFnpEUD5l
+         mNrrXIWqo06FbctJCVHLKaU1K6CiDdfogbmg66m/7KD3VOfwNrCKkvsrdOp4msqGffcr
+         C7ki0/ke41X1B9puK/RWrhkkWNGzJJeBAOPykXFbOooKSZWP7fekSapV6zoyaiEIoCj0
+         TN3OMp3RwEMwrDvLzMLvJb2yzOSN66CmO59lI+z/oUZIBAf8lipWAymMgnac3+f9JdEP
+         IjGH0rSJfyKGXiGY+9G+FyDkD+4NNYiapckyeXlcBuKFHBu3YDJk7bmYQZc7vo3ioYW6
+         OieQ==
+X-Gm-Message-State: AOAM532gsvOI9JgWQ2w/0QBKN9nXzkhCADEkG+HeqxWEpxUYvVsI26WH
+        Q74RhV3ynuODNOmiPiePE6/Vo0USoBAz
+X-Google-Smtp-Source: ABdhPJzzIuqsDYeYYR2zSnPBXcbi35TE22v/zVexAdbo8tvy/P3qVRTqkCHXpekSuL9qWSRYjN+SDQ==
+X-Received: by 2002:a17:90a:f098:: with SMTP id cn24mr7716592pjb.158.1601266230371;
+        Sun, 27 Sep 2020 21:10:30 -0700 (PDT)
+Received: from Mani-XPS-13-9360.localdomain ([2409:4072:6003:40df:7c40:5a87:eb86:87b0])
+        by smtp.gmail.com with ESMTPSA id n21sm8306322pgl.7.2020.09.27.21.10.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 21:10:29 -0700 (PDT)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 00/21] MHI changes for v5.10
+Date:   Mon, 28 Sep 2020 09:39:30 +0530
+Message-Id: <20200928040951.18207-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we see 'can't recover (no error_detected callback)' on console,
-Maybe the reason is io state is not changed by calling
-pci_dev_set_io_state(), that is confused. fix it.
+Hi Greg,
 
-Signed-off-by: Ethan Zhao <haifeng.zhao@intel.com>
-Tested-by: Wen Jin <wen.jin@intel.com>
-Tested-by: Shanshan Zhang <ShanshanX.Zhang@intel.com>
----
-Chagnes:
- V2: no change.
- V3: no change.
- V4: no change.
- V5: no change.
+Here is the MHI series for v5.10 cycle. Most of the patches are cleanups
+in the MHI stack. Notable changes are below:
 
- drivers/pci/pcie/err.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+* Saving the client device hardware information obtained through the BHI
+  protocol. This information will be exposed through sysfs to make use in
+  the userland applications.
+* Introduce sysfs entries to read the serial number and OEM PK hash values
+  of the client device obtained from BHI protocol. Relevant API documentation
+  is also added.
+* Introduce debugfs entries to show MHI states, events, channels, register
+  state etc... to aid debug.
+* Remove the channel name from MHI device name as the device is not specific
+  to channels. Used generic names instead!
+* Fix the warning reported by Kbuild bot by using append (+=) Kbuild rule
+  to the mhi/core Makefile.
+* Introduce APIs to allocate and free MHI controllers. This is done to make
+  sure that the allocated structs are initialized to NULL before passing to
+  the MHI core.
+* Remove the requirement to have a dedicated IRQ for each event ring.
+  The MHI controllers can now use a single IRQ for all event rings.
+* Remove the auto-start option for MHI channels. This is done to avoid
+  receiving spurious uplink from MHI client device when the client driver
+  is not up. The corresponding qrtr change is also included with Dave's ACK.
 
-diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-index e35c4480c86b..d85f27c90c26 100644
---- a/drivers/pci/pcie/err.c
-+++ b/drivers/pci/pcie/err.c
-@@ -55,8 +55,10 @@ static int report_error_detected(struct pci_dev *dev,
- 	if (!pci_dev_get(dev))
- 		return 0;
- 	device_lock(&dev->dev);
--	if (!pci_dev_set_io_state(dev, state) ||
--		!dev->driver ||
-+	if (!pci_dev_set_io_state(dev, state)) {
-+		pci_dbg(dev, "Device might already being in error handling ...\n");
-+		vote = PCI_ERS_RESULT_NONE;
-+	} else if (!dev->driver ||
- 		!dev->driver->err_handler ||
- 		!dev->driver->err_handler->error_detected) {
- 		/*
+Please consider merging!
+
+Thanks,
+Mani
+
+Changes in v2:
+
+* Clubbed both series (take one and two) onto a single one
+* Used dev_groups to manage sysfs attributes
+* Merged the debugfs fix patch with the debugfs patch
+* Dropped MAX_MTU patch for now
+
+Bhaumik Bhatt (12):
+  bus: mhi: core: Remove double occurrence for mhi_ctrl_ev_task()
+    declaration
+  bus: mhi: core: Abort suspends due to outgoing pending packets
+  bus: mhi: core: Use helper API to trigger a non-blocking host resume
+  bus: mhi: core: Trigger host resume if suspended during
+    mhi_device_get()
+  bus: mhi: core: Use generic name field for an MHI device
+  bus: mhi: core: Introduce helper function to check device state
+  bus: mhi: core: Introduce counters to track MHI device state
+    transitions
+  bus: mhi: core: Read and save device hardware information from BHI
+  bus: mhi: core: Introduce APIs to allocate and free the MHI controller
+  bus: mhi: Fix entries based on Kconfig coding style
+  bus: mhi: core: Introduce debugfs entries for MHI
+  bus: mhi: core: Introduce sysfs entries for MHI
+
+Clark Williams (1):
+  bus: mhi: Remove include of rwlock_types.h
+
+Hemant Kumar (1):
+  bus: mhi: core: Add const qualifier to MHI config information
+
+Loic Poulain (5):
+  bus: mhi: core: Allow shared IRQ for event rings
+  bus: mhi: Remove unused nr_irqs_req variable
+  bus: mhi: debugfs: Print channel context read-pointer
+  bus: mhi: Remove auto-start option
+  net: qrtr: Start MHI channels during init
+
+Manivannan Sadhasivam (1):
+  bus: mhi: core: Fix the building of MHI module
+
+Randy Dunlap (1):
+  bus: mhi: fix doubled words and struct image_info kernel-doc
+
+ Documentation/ABI/stable/sysfs-bus-mhi |  21 ++
+ MAINTAINERS                            |   1 +
+ drivers/bus/mhi/Kconfig                |  20 +-
+ drivers/bus/mhi/core/Makefile          |   3 +-
+ drivers/bus/mhi/core/boot.c            |  17 +-
+ drivers/bus/mhi/core/debugfs.c         | 411 +++++++++++++++++++++++++
+ drivers/bus/mhi/core/init.c            |  96 ++++--
+ drivers/bus/mhi/core/internal.h        |  38 ++-
+ drivers/bus/mhi/core/main.c            |  27 +-
+ drivers/bus/mhi/core/pm.c              |  28 +-
+ include/linux/mhi.h                    |  53 +++-
+ net/qrtr/mhi.c                         |   5 +
+ 12 files changed, 644 insertions(+), 76 deletions(-)
+ create mode 100644 Documentation/ABI/stable/sysfs-bus-mhi
+ create mode 100644 drivers/bus/mhi/core/debugfs.c
+
 -- 
-2.18.4
+2.17.1
 
