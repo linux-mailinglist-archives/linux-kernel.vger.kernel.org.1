@@ -2,560 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0FC27A7AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 440A127A7B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbgI1GiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 02:38:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726440AbgI1GiK (ORCPT
+        id S1726635AbgI1Gjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 02:39:43 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:43944 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbgI1Gjn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 02:38:10 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901C8C0613CE;
-        Sun, 27 Sep 2020 23:38:09 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id gx22so6921376ejb.5;
-        Sun, 27 Sep 2020 23:38:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7U/X75rmIhwif4TLgWVYSAGklF004XaYwIHxKwiWxOs=;
-        b=Eupq+Ellszm3vdHHuR4ttLWR42/Npnc1oBbsh2xUCNMnmvCdnqhGCe4RkuVNntZWK+
-         FV9QsKhwpEXNW11+bTG5ewYNHsvNy/T2Vs7P6abir7UfyZ5DP2gufanFXsfRO/SOHvp8
-         8js2iX8dN+SbbvHpMTBuvwYyU4tG8b96pV+Eg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7U/X75rmIhwif4TLgWVYSAGklF004XaYwIHxKwiWxOs=;
-        b=BWuuGXXQ+S7c3OL0ezfWSfOH+X7Cxm4os69/yMrC7K9XSpVoMoY9aqexPxBa9EmY8K
-         JwoH2gfi8q+V+Loi8eIs57SFQNWLgoemqlKqTaTb23g1Wv2I2eFMxKudcDIfr7KHGYI+
-         nOMNtIH5kc+IJ9oacTFlBmub5sZM7Q5kkH3il+ns6csMIGcnsUR5L5vcVu2yD7i8JHJf
-         rCZQZZcGNb4Mx51VkDtKnv/8sPWZZ2m3wss62INkVHPmWBC7moI4DDkOUHse3rvnt+am
-         8wp7+SUmFfNELKhJi7nRc13guXjuwiuaDyzEJ/mXRoFNIT0JnyjaE71Kl5ETgDErXLt2
-         eb8w==
-X-Gm-Message-State: AOAM531jzD+aSOLmuqdm/FVWeneKOr7OHVkS4XzzRuO/pBkTCV0mUhCI
-        UA7+3Fssa7IgueXKlsJpFACY9kb+He7BV+rQg5o=
-X-Google-Smtp-Source: ABdhPJwKvppbK81Xbgrhk2k9WtLm9V2F80fGkvHe7yS6mto65+xCZDYS1Pq7Bna3rOLZx5RMI6CFcR8tpEqwgJPL5YM=
-X-Received: by 2002:a17:906:4cd6:: with SMTP id q22mr215192ejt.139.1601275088129;
- Sun, 27 Sep 2020 23:38:08 -0700 (PDT)
+        Mon, 28 Sep 2020 02:39:43 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 08S6dKjQ126264;
+        Mon, 28 Sep 2020 01:39:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1601275160;
+        bh=ObPYzVtkXyOyfzJlM4CU/7L6Ac+puM8WVVh6Sgi6wPo=;
+        h=From:To:CC:Subject:Date;
+        b=oAvqZrNZbpK4Hl5MYxw2W+GGlIfo6YYbeDBOgHi4acDD4Hcoi/A/ViquerEEP1FNx
+         vQxUdOtdQz1NVKcXGeb9Nv1qFnkWGOj9sS3cP95DhJVPxsAsDBUGdt1HuU3HkHiqik
+         mbPfjGv15ZuMmo7TLuC+Ba12mYnhOKyW42fYd/v8=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 08S6dJml044676
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 28 Sep 2020 01:39:19 -0500
+Received: from DFLE103.ent.ti.com (10.64.6.24) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 28
+ Sep 2020 01:39:19 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 28 Sep 2020 01:39:19 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 08S6dG3d111672;
+        Mon, 28 Sep 2020 01:39:16 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <nm@ti.com>, <t-kristo@ti.com>, <ssantosh@kernel.org>,
+        <tglx@linutronix.de>, <jason@lakedaemon.net>, <maz@kernel.org>,
+        <robh+dt@kernel.org>, <lokeshvutla@ti.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: [PATCH 0/2] irqchip/ti-sci-inta: Support for unmapped events
+Date:   Mon, 28 Sep 2020 09:39:28 +0300
+Message-ID: <20200928063930.12012-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20200923164730.176881-1-tmaimon77@gmail.com> <20200923164730.176881-5-tmaimon77@gmail.com>
-In-Reply-To: <20200923164730.176881-5-tmaimon77@gmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Mon, 28 Sep 2020 06:37:55 +0000
-Message-ID: <CACPK8XeAUe0iWHv4tAjobxrwjx=LRawmtW4u=q9nFgbjc1c+cg@mail.gmail.com>
-Subject: Re: [PATCH v7 4/5] arm: dts: add new device nodes to NPCM7XX device tree
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 23 Sep 2020 at 16:48, Tomer Maimon <tmaimon77@gmail.com> wrote:
->
-> Add the following new device nodes to NPCM7XX:
->
->         - NPCM7xx PWM and FAN.
->         - NPCM7xx EHCI USB.
->         - NPCM7xx KCS.
->         - NPCM Reset.
->         - NPCM Peripheral SPI.
->         - NPCM FIU SPI.
->         - NPCM HWRNG.
->         - NPCM I2C.
->         - STMicro STMMAC.
->
-> Signed-off-by: Tomer Maimon <tmaimon77@gmail.com>
+Hi,
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+The version of INTA within DMSS (in AM64) changed how the events from the DMAs
+are handled and how sysfw is presenting these events to be used for interrupts.
 
-> ---
->  arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi | 382 +++++++++++++++++-
->  arch/arm/boot/dts/nuvoton-npcm750.dtsi        |  18 +
->  2 files changed, 394 insertions(+), 6 deletions(-)
->
-> diff --git a/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi b/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
-> index 5df77a617e77..4a69a9f31668 100644
-> --- a/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
-> +++ b/arch/arm/boot/dts/nuvoton-common-npcm7xx.dtsi
-> @@ -4,6 +4,7 @@
->
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/clock/nuvoton,npcm7xx-clock.h>
-> +#include <dt-bindings/reset/nuvoton,npcm7xx-reset.h>
->
->  / {
->         #address-cells = <1>;
-> @@ -64,12 +65,6 @@
->                 interrupt-parent = <&gic>;
->                 ranges = <0x0 0xf0000000 0x00900000>;
->
-> -               gcr: gcr@800000 {
-> -                       compatible = "nuvoton,npcm750-gcr", "syscon",
-> -                               "simple-mfd";
-> -                       reg = <0x800000 0x1000>;
-> -               };
-> -
->                 scu: scu@3fe000 {
->                         compatible = "arm,cortex-a9-scu";
->                         reg = <0x3fe000 0x1000>;
-> @@ -92,6 +87,16 @@
->                         reg = <0x3ff000 0x1000>,
->                                 <0x3fe100 0x100>;
->                 };
-> +
-> +               gcr: gcr@800000 {
-> +                       compatible = "nuvoton,npcm750-gcr", "syscon", "simple-mfd";
-> +                       reg = <0x800000 0x1000>;
-> +               };
-> +
-> +               rst: rst@801000 {
-> +                       compatible = "nuvoton,npcm750-rst", "syscon", "simple-mfd";
-> +                       reg = <0x801000 0x6C>;
-> +               };
->         };
->
->         ahb {
-> @@ -101,6 +106,12 @@
->                 interrupt-parent = <&gic>;
->                 ranges;
->
-> +               rstc: rstc@f0801000 {
-> +                       compatible = "nuvoton,npcm750-reset";
-> +                       reg = <0xf0801000 0x70>;
-> +                       #reset-cells = <2>;
-> +               };
-> +
->                 clk: clock-controller@f0801000 {
->                         compatible = "nuvoton,npcm750-clk", "syscon";
->                         #clock-cells = <1>;
-> @@ -110,6 +121,63 @@
->                         clocks = <&clk_refclk>, <&clk_sysbypck>, <&clk_mcbypck>;
->                 };
->
-> +               gmac0: eth@f0802000 {
-> +                       device_type = "network";
-> +                       compatible = "snps,dwmac";
-> +                       reg = <0xf0802000 0x2000>;
-> +                       interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "macirq";
-> +                       ethernet = <0>;
-> +                       clocks  = <&clk_rg1refck>, <&clk NPCM7XX_CLK_AHB>;
-> +                       clock-names = "stmmaceth", "clk_gmac";
-> +                       pinctrl-names = "default";
-> +                       pinctrl-0 = <&rg1_pins
-> +                                       &rg1mdio_pins>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               ehci1: usb@f0806000 {
-> +                       compatible = "nuvoton,npcm750-ehci";
-> +                       reg = <0xf0806000 0x1000>;
-> +                       interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               fiu0: spi@fb000000 {
-> +                       compatible = "nuvoton,npcm750-fiu";
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <0xfb000000 0x1000>;
-> +                       reg-names = "control", "memory";
-> +                       clocks = <&clk NPCM7XX_CLK_SPI0>;
-> +                       clock-names = "clk_spi0";
-> +                       status = "disabled";
-> +               };
-> +
-> +               fiu3: spi@c0000000 {
-> +                       compatible = "nuvoton,npcm750-fiu";
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <0xc0000000 0x1000>;
-> +                       reg-names = "control", "memory";
-> +                       clocks = <&clk NPCM7XX_CLK_SPI3>;
-> +                       clock-names = "clk_spi3";
-> +                       pinctrl-names = "default";
-> +                       pinctrl-0 = <&spi3_pins>;
-> +                       status = "disabled";
-> +               };
-> +
-> +               fiux: spi@fb001000 {
-> +                       compatible = "nuvoton,npcm750-fiu";
-> +                       #address-cells = <1>;
-> +                       #size-cells = <0>;
-> +                       reg = <0xfb001000 0x1000>;
-> +                       reg-names = "control", "memory";
-> +                       clocks = <&clk NPCM7XX_CLK_SPIX>;
-> +                       clock-names = "clk_spix";
-> +                       status = "disabled";
-> +               };
-> +
->                 apb {
->                         #address-cells = <1>;
->                         #size-cells = <1>;
-> @@ -117,6 +185,68 @@
->                         interrupt-parent = <&gic>;
->                         ranges = <0x0 0xf0000000 0x00300000>;
->
-> +                       lpc_kcs: lpc_kcs@7000 {
-> +                               compatible = "nuvoton,npcm750-lpc-kcs", "simple-mfd", "syscon";
-> +                               reg = <0x7000 0x40>;
-> +                               reg-io-width = <1>;
-> +
-> +                               #address-cells = <1>;
-> +                               #size-cells = <1>;
-> +                               ranges = <0x0 0x7000 0x40>;
-> +
-> +                               kcs1: kcs1@0 {
-> +                                       compatible = "nuvoton,npcm750-kcs-bmc";
-> +                                       reg = <0x0 0x40>;
-> +                                       interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +                                       kcs_chan = <1>;
-> +                                       status = "disabled";
-> +                               };
-> +
-> +                               kcs2: kcs2@0 {
-> +                                       compatible = "nuvoton,npcm750-kcs-bmc";
-> +                                       reg = <0x0 0x40>;
-> +                                       interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +                                       kcs_chan = <2>;
-> +                                       status = "disabled";
-> +                               };
-> +
-> +                               kcs3: kcs3@0 {
-> +                                       compatible = "nuvoton,npcm750-kcs-bmc";
-> +                                       reg = <0x0 0x40>;
-> +                                       interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
-> +                                       kcs_chan = <3>;
-> +                                       status = "disabled";
-> +                               };
-> +                       };
-> +
-> +                       spi0: spi@200000 {
-> +                               compatible = "nuvoton,npcm750-pspi";
-> +                               reg = <0x200000 0x1000>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&pspi1_pins>;
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB5>;
-> +                               clock-names = "clk_apb5";
-> +                               resets = <&rstc NPCM7XX_RESET_IPSRST2 NPCM7XX_RESET_PSPI1>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       spi1: spi@201000 {
-> +                               compatible = "nuvoton,npcm750-pspi";
-> +                               reg = <0x201000 0x1000>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&pspi2_pins>;
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB5>;
-> +                               clock-names = "clk_apb5";
-> +                               resets = <&rstc NPCM7XX_RESET_IPSRST2 NPCM7XX_RESET_PSPI2>;
-> +                               status = "disabled";
-> +                       };
-> +
->                         timer0: timer@8000 {
->                                 compatible = "nuvoton,npcm750-timer";
->                                 interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -183,6 +313,246 @@
->                                 reg-shift = <2>;
->                                 status = "disabled";
->                         };
-> +
-> +                       rng: rng@b000 {
-> +                               compatible = "nuvoton,npcm750-rng";
-> +                               reg = <0xb000 0x8>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       adc: adc@c000 {
-> +                               compatible = "nuvoton,npcm750-adc";
-> +                               reg = <0xc000 0x8>;
-> +                               interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
-> +                               clocks = <&clk NPCM7XX_CLK_ADC>;
-> +                               resets = <&rstc NPCM7XX_RESET_IPSRST1 NPCM7XX_RESET_ADC>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       pwm_fan: pwm-fan-controller@103000 {
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               compatible = "nuvoton,npcm750-pwm-fan";
-> +                               reg = <0x103000 0x2000>, <0x180000 0x8000>;
-> +                               reg-names = "pwm", "fan";
-> +                               clocks = <&clk NPCM7XX_CLK_APB3>,
-> +                                       <&clk NPCM7XX_CLK_APB4>;
-> +                               clock-names = "pwm","fan";
-> +                               interrupts = <GIC_SPI 96 IRQ_TYPE_LEVEL_HIGH>,
-> +                                               <GIC_SPI 97 IRQ_TYPE_LEVEL_HIGH>,
-> +                                               <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>,
-> +                                               <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>,
-> +                                               <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>,
-> +                                               <GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>,
-> +                                               <GIC_SPI 102 IRQ_TYPE_LEVEL_HIGH>,
-> +                                               <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&pwm0_pins &pwm1_pins
-> +                                               &pwm2_pins &pwm3_pins
-> +                                               &pwm4_pins &pwm5_pins
-> +                                               &pwm6_pins &pwm7_pins
-> +                                               &fanin0_pins &fanin1_pins
-> +                                               &fanin2_pins &fanin3_pins
-> +                                               &fanin4_pins &fanin5_pins
-> +                                               &fanin6_pins &fanin7_pins
-> +                                               &fanin8_pins &fanin9_pins
-> +                                               &fanin10_pins &fanin11_pins
-> +                                               &fanin12_pins &fanin13_pins
-> +                                               &fanin14_pins &fanin15_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c0: i2c@80000 {
-> +                               reg = <0x80000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb0_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c1: i2c@81000 {
-> +                               reg = <0x81000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb1_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c2: i2c@82000 {
-> +                               reg = <0x82000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb2_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c3: i2c@83000 {
-> +                               reg = <0x83000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb3_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c4: i2c@84000 {
-> +                               reg = <0x84000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb4_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c5: i2c@85000 {
-> +                               reg = <0x85000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb5_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c6: i2c@86000 {
-> +                               reg = <0x86000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb6_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c7: i2c@87000 {
-> +                               reg = <0x87000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb7_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c8: i2c@88000 {
-> +                               reg = <0x88000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb8_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c9: i2c@89000 {
-> +                               reg = <0x89000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb9_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c10: i2c@8a000 {
-> +                               reg = <0x8a000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb10_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c11: i2c@8b000 {
-> +                               reg = <0x8b000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb11_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c12: i2c@8c000 {
-> +                               reg = <0x8c000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb12_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c13: i2c@8d000 {
-> +                               reg = <0x8d000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 77 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb13_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c14: i2c@8e000 {
-> +                               reg = <0x8e000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 78 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb14_pins>;
-> +                               status = "disabled";
-> +                       };
-> +
-> +                       i2c15: i2c@8f000 {
-> +                               reg = <0x8f000 0x1000>;
-> +                               compatible = "nuvoton,npcm750-i2c";
-> +                               #address-cells = <1>;
-> +                               #size-cells = <0>;
-> +                               clocks = <&clk NPCM7XX_CLK_APB2>;
-> +                               interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
-> +                               pinctrl-names = "default";
-> +                               pinctrl-0 = <&smb15_pins>;
-> +                               status = "disabled";
-> +                       };
->                 };
->         };
->
-> diff --git a/arch/arm/boot/dts/nuvoton-npcm750.dtsi b/arch/arm/boot/dts/nuvoton-npcm750.dtsi
-> index a37bb2294b8f..13eee0fe5642 100644
-> --- a/arch/arm/boot/dts/nuvoton-npcm750.dtsi
-> +++ b/arch/arm/boot/dts/nuvoton-npcm750.dtsi
-> @@ -32,6 +32,7 @@
->                         next-level-cache = <&l2>;
->                 };
->         };
-> +
->         soc {
->                 timer@3fe600 {
->                         compatible = "arm,cortex-a9-twd-timer";
-> @@ -41,4 +42,21 @@
->                         clocks = <&clk NPCM7XX_CLK_AHB>;
->                 };
->         };
-> +
-> +       ahb {
-> +               gmac1: eth@f0804000 {
-> +                       device_type = "network";
-> +                       compatible = "snps,dwmac";
-> +                       reg = <0xf0804000 0x2000>;
-> +                       interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
-> +                       interrupt-names = "macirq";
-> +                       ethernet = <1>;
-> +                       clocks  = <&clk_rg2refck>, <&clk NPCM7XX_CLK_AHB>;
-> +                       clock-names = "stmmaceth", "clk_gmac";
-> +                       pinctrl-names = "default";
-> +                       pinctrl-0 = <&rg2_pins
-> +                                       &rg2mdio_pins>;
-> +                       status = "disabled";
-> +               };
-> +       };
->  };
-> --
-> 2.22.0
->
+The DMA related events are directly mapped within INTA as unmapped events in
+contrast to previous devices with NAVSS where the events were tied to their
+source devices (UDMAP, ringacc).
+
+This series adds support for handling the new version of INTA by introducing a
+new property: ti,unmapped-event-sources which should hold a list of phandles
+pointing to the sources of these unmapped events.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (2):
+  dt-bindings: irqchip: ti,sci-inta: Update for unmapped event handling
+  irqchip/ti-sci-inta: Add support for unmapped event handling
+
+ .../interrupt-controller/ti,sci-inta.yaml     |  5 ++
+ drivers/irqchip/irq-ti-sci-inta.c             | 72 +++++++++++++++++--
+ 2 files changed, 73 insertions(+), 4 deletions(-)
+
+-- 
+Peter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+
