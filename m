@@ -2,96 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BCE27B810
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA7427B892
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 02:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbgI1XZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:25:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48236 "EHLO mail.kernel.org"
+        id S1727078AbgI1X77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:59:59 -0400
+Received: from mga06.intel.com ([134.134.136.31]:12718 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726369AbgI1XZs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:25:48 -0400
-Received: from lt-jalone-7480.mtl.com (c-24-6-56-119.hsd1.ca.comcast.net [24.6.56.119])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6038B2076A;
-        Mon, 28 Sep 2020 23:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601335547;
-        bh=iCS/ts0ASN16IaSHlp9cyi3HjNkN+HRIvd/XP8pvAIQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=yT/rXRN14s6cXs7QXCmvczxg7To5+F3E9YvR7u89N7F1/ThSmeh4i26FMi1KP68ZD
-         8VCD0LpcJjhQ+tssv6gLf8Ho4MKRBzben9Xk9aBeUE7ZOrUqRkr6S0ODP36CkKsIF7
-         J/mc5fHDWC6/dsDx74ywdc64bITrVDIOElcyZ01o=
-Message-ID: <64f6a3eaaac505c341f996df0b0877ee9af56c00.camel@kernel.org>
-Subject: Re: net/mlx5: Refactor tc flow attributes structure
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Colin Ian King <colin.king@canonical.com>,
-        Ariel Levkovich <lariel@mellanox.com>,
-        Roi Dayan <roid@mellanox.com>, Vlad Buslov <vladbu@nvidia.com>,
-        Saeed Mahameed <saeedm@mellanox.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        linux-rdma@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Mon, 28 Sep 2020 16:25:46 -0700
-In-Reply-To: <763ea1c6-ed2b-3487-113f-fb48c1cf27dc@canonical.com>
-References: <763ea1c6-ed2b-3487-113f-fb48c1cf27dc@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        id S1726952AbgI1X76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:59:58 -0400
+IronPort-SDR: nyRcAbQY9U+v13UtthCqBK0eruFjXoMIUqtkCqxNe1aWwKJ5v39E7pN3QubbyQgvVEiX+eRLox
+ PyQy8gGvTAiQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9758"; a="223660966"
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="223660966"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:56:44 -0700
+IronPort-SDR: 3TWj+h2LPhdtBpEZ+uEDq8JR3Pkv5DjbrTY5pg8oVvTeweUZJ6ev/zSPMtjbBShluKnNJVlCkM
+ ItrbFVtNgLDQ==
+X-IronPort-AV: E=Sophos;i="5.77,315,1596524400"; 
+   d="scan'208";a="457008323"
+Received: from jlasecki-mobl2.ger.corp.intel.com (HELO localhost) ([10.252.49.78])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 14:56:37 -0700
+Date:   Tue, 29 Sep 2020 00:56:35 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     "H.J. Lu" <hjl.tools@gmail.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-sgx@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Cedric Xing <cedric.xing@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        asapek@google.com, Borislav Petkov <bp@alien8.de>,
+        chenalexchen@google.com, Conrad Parker <conradparker@google.com>,
+        cyhanish@google.com, Dave Hansen <dave.hansen@intel.com>,
+        "Huang, Haitao" <haitao.huang@intel.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
+        Christian Ludloff <ludloff@google.com>,
+        Neil Horman <nhorman@redhat.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Patrick Uiterwijk <puiterwijk@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: Re: [PATCH v38 21/24] x86/vdso: Implement a vDSO for Intel SGX
+ enclave call
+Message-ID: <20200928215635.GF2705@linux.intel.com>
+References: <20200915112842.897265-1-jarkko.sakkinen@linux.intel.com>
+ <20200915112842.897265-22-jarkko.sakkinen@linux.intel.com>
+ <721ca14e-21df-3df1-7bef-0b00d0ff90c3@citrix.com>
+ <20200928005842.GC6704@linux.intel.com>
+ <85bc15d5-93cd-e332-ae9a-1e1e66e1181d@citrix.com>
+ <CAMe9rOpzXW0cSD=9E7drGEHH=pcm_NqvPiaR0pBJzYLeAt0_3g@mail.gmail.com>
+ <CALCETrU4Rhc0fwzzKLSUgan2YmSovxVFYOZEmFnBHC4DbZ5RfQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrU4Rhc0fwzzKLSUgan2YmSovxVFYOZEmFnBHC4DbZ5RfQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-09-28 at 17:06 +0100, Colin Ian King wrote:
-> Hi,
+On Mon, Sep 28, 2020 at 11:12:08AM -0700, Andy Lutomirski wrote:
+> On Mon, Sep 28, 2020 at 11:08 AM H.J. Lu <hjl.tools@gmail.com> wrote:
+> >
+> > On Mon, Sep 28, 2020 at 9:44 AM Andrew Cooper <andrew.cooper3@citrix.com> wrote:
+> > >
+> > > On 28/09/2020 01:58, Jarkko Sakkinen wrote:
+> > > > On Fri, Sep 25, 2020 at 07:23:59PM +0100, Andrew Cooper wrote:
+> > > >> On 15/09/2020 12:28, Jarkko Sakkinen wrote:
+> > > >>> diff --git a/arch/x86/entry/vdso/vsgx_enter_enclave.S b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > > >>> new file mode 100644
+> > > >>> index 000000000000..adbd59d41517
+> > > >>> --- /dev/null
+> > > >>> +++ b/arch/x86/entry/vdso/vsgx_enter_enclave.S
+> > > >>> @@ -0,0 +1,157 @@
+> > > >>> +SYM_FUNC_START(__vdso_sgx_enter_enclave)
+> > > >>> <snip>
+> > > >>> +.Lretpoline:
+> > > >>> +   call    2f
+> > > >>> +1: pause
+> > > >>> +   lfence
+> > > >>> +   jmp     1b
+> > > >>> +2: mov     %rax, (%rsp)
+> > > >>> +   ret
+> > > >> I hate to throw further spanners in the work, but this is not compatible
+> > > >> with CET, and the user shadow stack work in progress.
+> > > > CET goes beyond my expertise. Can you describe, at least rudimentary,
+> > > > how this code is not compatible?
+> > >
+> > > CET Shadow Stacks detect attacks which modify the return address on the
+> > > stack.
+> > >
+> > > Retpoline *is* a ROP gadget.  It really does modify the return address
+> > > on the stack, even if its purpose is defensive (vs Spectre v2) rather
+> > > than malicious.
+> > >
+> > > >> Whichever of these two large series lands first is going to inflict
+> > > >> fixing this problem on the other.
+> > > >>
+> > > >> As the vdso text is global (to a first approximation), it must not be a
+> > > >> retpoline if any other process is liable to want to use CET-SS.
+> > > > Why is that?
+> > >
+> > > Because when CET-SS is enabled, the ret will suffer a #CP exception
+> > > (return address on the stack not matching the one recorded in the shadow
+> > > stack), which I presume/hope is wired into SIGSEGV.
+> > >
+> >
+> > Here is the CET compatible retpoline:
+> >
+> > endbr64
+> > /* Check if shadow stack is in use.  NB: R11 is the only usable
+> >    scratch register for function calls.  */
+> > xorl %r11d, %r11d
+> > rdsspq %r11
+> > testq %r11, %r11
+> > jnz 3f
+> > call 2f
+> > 1:
+> > pause
+> > lfence
+> > jmp 1b
+> > 2:
+> > mov %rax, (%rsp)
+> > ret
+> > 3:
+> > /* Shadow stack is in use.  Make the indirect call.  */
+> > call *%rax
+> > ret
 > 
-> static analysis with Coverity has found a null pointer dereference
-> issue
-> with the following commit:
+> What do we expect user programs to do on CET systems?  It would be
+> nice if we could instead ALTERNATIVE this out if X86_FEATURE_SHSTK.
 > 
-> commit c620b772152b8274031083bdb2e11c963e596c5c
-> Author: Ariel Levkovich <lariel@mellanox.com>
-> Date:   Thu Apr 30 05:54:08 2020 +0300
-> 
->     net/mlx5: Refactor tc flow attributes structure
-> 
-> The analysis is as follows:
-> 
-> 1240        slow_attr =
-> mlx5_alloc_flow_attr(MLX5_FLOW_NAMESPACE_FDB);
-> 
->     1. Condition !slow_attr, taking true branch.
->     2. var_compare_op: Comparing slow_attr to null implies that
-> slow_attr might be null.
-> 
-> 1241        if (!slow_attr)
-> 1242                mlx5_core_warn(flow->priv->mdev, "Unable to
-> unoffload slow path rule\n");
-> 1243
-> 1244        memcpy(slow_attr, flow->attr, ESW_FLOW_ATTR_SZ);
-> 
-> Dereference after null check (FORWARD_NULL)
->     3. var_deref_op: Dereferencing null pointer slow_attr.
-> 
-> 1245        slow_attr->action = MLX5_FLOW_CONTEXT_ACTION_FWD_DEST;
-> 1246        slow_attr->esw_attr->split_count = 0;
-> 1247        slow_attr->flags |= MLX5_ESW_ATTR_FLAG_SLOW_PATH;
-> 1248        mlx5e_tc_unoffload_fdb_rules(esw, flow, slow_attr);
-> 1249        flow_flag_clear(flow, SLOW);
-> 1250        kfree(slow_attr);
-> 
-> there is a !slow_attr check but if it slow_attr is null the code then
-> dereferences it multiple times afterwards.
-> 
-> Colin
+> --Andy
 
-Thanks Colin for the Report,
+I'm open to do either solution. My thinking was to initially do things
+vsgx.S local (i.e. consider ALTERNATIVE post upstreaming) and use the
+above solution but I'm also fine doing ALTERNATIVE. Dave kindly briefed
+on details how that thing works and it should be perfectly usable for
+our use case.
 
-Ariel is handling this internally and we will be posting the patch
-soon.
-
-
-
+/Jarkko
