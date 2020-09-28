@@ -2,158 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ACB927A737
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:06:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739FC27A738
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726522AbgI1GGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 02:06:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46846 "EHLO
+        id S1726558AbgI1GGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 02:06:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725287AbgI1GGc (ORCPT
+        with ESMTP id S1725287AbgI1GGh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 02:06:32 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFF9C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 23:06:32 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id n10so7313960qtv.3
-        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 23:06:32 -0700 (PDT)
+        Mon, 28 Sep 2020 02:06:37 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69FA1C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 23:06:37 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id q123so3171068pfb.0
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 23:06:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QFn+0NLLcstHF4oViRUUZIB6ljirkEV5COOiFgccFNU=;
-        b=b9szbW2TpSjxF/CGLqTeOgN7Z3kjewYOochBmA/DxorZGNtdZ8YWm9AOogc+xxwah3
-         bIUDPlBHq5HS7O8weA7IR2vGiCjvWcN3f40RVpKh54ZxXkamH64i7kINhCiz+QYEt6y5
-         o9yQsODQMxza9qxx9UIaiedP9eZo1YeLHaKIXASs7/7Hapq63GXZWbZM0bo3ELf11XgC
-         IwNspin25qn0eh1uhf+vIbysvN0Kk8Vw9EoCb/lDu/S6Z+/UEj193mvCRzOiFl1W/hPy
-         0aGq3n5xT4zrZvyFipnNqbytVu3gDqIAGG+fIjWJDJjQDMUX8Tkx8gZaBJ++FUBSFCQQ
-         XjqQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gHJjusODSL5KLL1weep7z/YaDVJ91HtbgB4OW9jv2/8=;
+        b=mybmCirxvUPgvcZsFPVfJz+tQvfkoNdnBxQ5MPul8JfkV1UE4PLmHWTXBppoYyCyv/
+         nP4x2flAM9/D33leQdjy9lT8hwBJEnfuyh6yaTPYANO1T7imIgKSKVl0saQet3/TcJiF
+         e2nJotE7q8UgFbCpBB6iDcnYB97xj0c/hniZg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QFn+0NLLcstHF4oViRUUZIB6ljirkEV5COOiFgccFNU=;
-        b=VbrI5h5FIfMX37TDIzjgKFAR8uAPP/ScYF7q4y1wpDMU9RUOXONKio2W9CK9QqTYa1
-         RN+5FeWtSNEaZqtpVzktlxivemHNOZfaojzK1CDn/cGro15URyHU9lx13xOvufWkXZEf
-         A8OVFyzx0fmtsVcVaWVPI6SxaQKD8XSg6i+yjLsFaXbj50l3+ajqzFu3SaBXE1jfL02/
-         +4I0BDxBPTV2hZHCumKe/H1wXJNiEZoFAdPgO6EEHKj5mkSJA4a1aXkjhn72Mf1v2rgk
-         /uVja+Iq/i1O8VyqI/+SO2FwSTVyr7fB3cMblNUmppxjKdtPXZ1tZ5G0Ei3DDWB04TDb
-         35mQ==
-X-Gm-Message-State: AOAM532b4iip9pkM7/hXhQbLD1Sd4bDcQAqC5pse/ne+WK90LFYI1jq0
-        a9M/hzPt787Nv3PfmbHFJB+1iPQliodktzEE2M5Cag==
-X-Google-Smtp-Source: ABdhPJwf3ysUB6d/9n01nR6drKA9FVftec0UL1LdiyDpiMui4YJ2O2DGe8LMw6ykzwnGEMs+gBd6NykvDq4SLLn/6+k=
-X-Received: by 2002:ac8:4658:: with SMTP id f24mr126882qto.158.1601273191291;
- Sun, 27 Sep 2020 23:06:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gHJjusODSL5KLL1weep7z/YaDVJ91HtbgB4OW9jv2/8=;
+        b=gSGJzapOFJ8L4t5h2c6CtPtLNe/jfpcP+VTKTdgA+6+5Z/RBmOXBQv0t5hQIwIx1AV
+         0eFfpxMV37p3ujwrX0JmRStsQdOJZ8Z8Tx+0ykmh+6C0G1i1Pzr622QnOeY8oGVtGVGf
+         8WiMEg5YoR4LY/pqxdYxlYS1gEO8xHGTqPMo5pHnInIJCPG0WmajFvvAZZ65L3Xn/jti
+         KWuFLFS61e5ijA/4tFPDiYR46OAQqjf42kq7Vg+Y5DtnNd2XRwOhLjzKK/eZK0o9zR2n
+         nJij48ka4tS1RDh9s0b0btT1N0escD8I7igQExn5gixOArTZCx9EGfUGNyjTfcpIYUMS
+         y0IA==
+X-Gm-Message-State: AOAM530ztC57omhsXtFPb+WgVEVWh1Ffz7lIJBmQkVxgW44aViquCyr9
+        FiS2R3grno4bo/wx9T9oVRiVFQ==
+X-Google-Smtp-Source: ABdhPJys0fcAQCikN4bA7YkLZiDDMVxPgjOg08J6Xzpi8IGQ3V0rpHGTaHALqVKPRNBBeyN7puEbnQ==
+X-Received: by 2002:a63:524a:: with SMTP id s10mr75810pgl.40.1601273196923;
+        Sun, 27 Sep 2020 23:06:36 -0700 (PDT)
+Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:10:f693:9fff:fef4:a8fc])
+        by smtp.gmail.com with ESMTPSA id ml20sm5754895pjb.20.2020.09.27.23.06.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Sep 2020 23:06:36 -0700 (PDT)
+From:   Ikjoon Jang <ikjn@chromium.org>
+To:     linux-mtd@lists.infradead.org
+Cc:     Ikjoon Jang <ikjn@chromium.org>,
+        Xingyu Wu <wuxy@bitland.corp-partner.google.com>,
+        ST Lin <stlin2@winbond.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v4] mtd: spi-nor: winbond: Add support for w25q64jwm
+Date:   Mon, 28 Sep 2020 14:06:31 +0800
+Message-Id: <20200928060631.2090541-1-ikjn@chromium.org>
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
 MIME-Version: 1.0
-References: <00000000000052569205afa67426@google.com> <20200927145737.GA4746@zn.tnic>
- <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
-In-Reply-To: <CACT4Y+Zxt3-Dj6r53mEkwv24PazPzTxQ7usV1O+RB0bk2FzO8g@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 28 Sep 2020 08:06:19 +0200
-Message-ID: <CACT4Y+ZZH76qg810RzGp6FDLTxJWVqZgkrXSxqgq7AjpPYG9XQ@mail.gmail.com>
-Subject: Re: general protection fault in perf_misc_flags
-To:     Borislav Petkov <bp@alien8.de>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Cc:     syzbot <syzbot+ce179bc99e64377c24bc@syzkaller.appspotmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jiri Olsa <jolsa@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 7:18 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > On Sat, Sep 19, 2020 at 01:32:14AM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    92ab97ad Merge tag 'sh-for-5.9-part2' of git://git.libc.or..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1069669b900000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=cd992d74d6c7e62
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=ce179bc99e64377c24bc
-> > > compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-> >
-> > All below is AFAICT:
-> >
-> > This compiler you're using is not some official release but some random
-> > commit before the v10 release:
-> >
-> > $ git show c2443155a0fb245c8f17f2c1c72b6ea391e86e81
-> > Author: Hans Wennborg <hans@chromium.org>
-> > Date:   Sat Nov 30 14:20:11 2019 +0100
-> >
-> >     Revert 651f07908a1 "[AArch64] Don't combine callee-save and local stack adjustment when optimizing for size"
-> > ...
-> >
-> > $ git describe c2443155a0fb245c8f17f2c1c72b6ea391e86e81
-> > llvmorg-10-init-10900-gc2443155a0fb
-> >
-> > The v10 release is:
-> >
-> > $ git show llvmorg-10.0.0
-> > tag llvmorg-10.0.0
-> > Tagger: Hans Wennborg <hans@chromium.org>
-> > Date:   Tue Mar 24 12:58:58 2020 +0100
-> >
-> > Tag 10.0.0
-> >
-> > and v10 has reached v10.0.1 in the meantime:
-> >
-> > $ git log --oneline c2443155a0fb245c8f17f2c1c72b6ea391e86e81~1..llvmorg-10.0.1 | wc -l
-> > 7051
-> >
-> > so can you please update your compiler and see if you can still
-> > reproduce with 10.0.1 so that we don't waste time chasing a bug which
-> > has been likely already fixed in one of those >7K commits.
->
-> +Alex, Marco,
->
-> There is suspicion that these may be caused by use of unreleased clang.
-> Do we use the same clang as we use for the KMSAN instance? But this is
-> not KMSAN machine, so I am not sure who/when/why updated it last to
-> this revision.
-> I even see we have some clang 11 version:
-> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#crash-does-not-reproduce
->
-> Is it possible to switch to some released version for both KMSAN and KASAN now?
+Add support Winbond w25q{64,128,256}jwm which are identical to existing
+w25q32jwm except for their sizes.
 
-Interestingly there is a new crash, which looks similar:
+This was tested with w25q64jwm, basic erase/write/readback and
+lock/unlock both lower/upper blocks were okay.
 
-general protection fault in map_vdso
-https://syzkaller.appspot.com/bug?extid=c2ae01c2b1b385384a06
+Signed-off-by: ikjn@chromium.org <ikjn@chromium.org>
+Signed-off-by: Xingyu Wu <wuxy@bitland.corp-partner.google.com>
+Signed-off-by: ST Lin <stlin2@winbond.com>
+Tested-by: Nicolas Boichat <drinkcat@chromium.org>
 
-The code is also with 4 0's:
-Code: 00 00 00 48 b8 00 00 00 00 00 fc ff df 41 57 49 89 ff 41 56 41
-55 41 54 55 65 48 8b 2c 25 c0 fe 01 00 48 8d bd 28 04 00 00 53 <48> 00
-00 00 00 fa 48 83 ec 10 48 c1 ea 03 80 3c 02 00 0f 85 51 02
+Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+---
 
-But it happened with gcc.
+Changes in v4:
+- drops package type code from name
 
-Also I found this older one:
-general protection fault in map_vdso_randomized
-https://syzkaller.appspot.com/bug?id=8366fd024559946137b9db23b26fd2235d43b383
+Changes in v3:
+- fix commit message formats
 
-which also has code smashed and happened with gcc:
-Code: 00 fc ff df 48 89 f9 48 c1 e9 03 80 3c 01 00 0f 85 eb 00 00 00
-65 48 8b 1c 25 c0 fe 01 00 48 8d bb 28 04 00 00 41 2b 54 24 20 <00> 00
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Changes in v2:
+- remove duplicated flash ID (w25q32jwm)
 
-I think there may be dozens older ones here:
-https://syzkaller.appspot.com/upstream#moderation2
-e.g. this one where code also looks strange:
-https://syzkaller.appspot.com/bug?id=651c61721c822bfdcdae8bfb9320e4a9b4bd49c9
+ drivers/mtd/spi-nor/winbond.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Maybe it's just a random silent memory corruption in the end?...
+diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+index 6dcde15fb1aa..e5dfa786f190 100644
+--- a/drivers/mtd/spi-nor/winbond.c
++++ b/drivers/mtd/spi-nor/winbond.c
+@@ -63,6 +63,15 @@ static const struct flash_info winbond_parts[] = {
+ 	{ "w25q32jwm", INFO(0xef8016, 0, 64 * 1024,  64,
+ 			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
+ 			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
++	{ "w25q64jwm", INFO(0xef8017, 0, 64 * 1024, 128,
++			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
++	{ "w25q128jwm", INFO(0xef8018, 0, 64 * 1024, 256,
++			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
++	{ "w25q256jwm", INFO(0xef8019, 0, 64 * 1024, 512,
++			    SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ |
++			    SPI_NOR_HAS_LOCK | SPI_NOR_HAS_TB) },
+ 	{ "w25x64", INFO(0xef3017, 0, 64 * 1024, 128, SECT_4K) },
+ 	{ "w25q64", INFO(0xef4017, 0, 64 * 1024, 128,
+ 			 SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+-- 
+2.28.0.681.g6f77f65b4e-goog
+
