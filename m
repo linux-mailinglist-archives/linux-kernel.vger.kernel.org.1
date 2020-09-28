@@ -2,277 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735C627ABF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1483727ABF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 12:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbgI1KiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 06:38:12 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:20212 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726668AbgI1KiL (ORCPT
+        id S1726762AbgI1KiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 06:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbgI1KiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 06:38:11 -0400
+        Mon, 28 Sep 2020 06:38:12 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C4EC061755
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:38:12 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 197so481117pge.8
+        for <linux-kernel@vger.kernel.org>; Mon, 28 Sep 2020 03:38:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1601289491; x=1632825491;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=6GREaQYLw0Ho63BrhBcruGzxG22Apn0xI0E3Xv5Cu8Q=;
-  b=DV6kV1ZsCtU0XeSG+du53H6tso3KaM6trzvS1zHSWPLWhLoZ/1bwb5g0
-   5+DmT49KKAF1J21CbdJyRiEH7VWSJdaeCE7cHxfIiUaaqJKtqO3wExp1Y
-   LL/gRjAKo7E4QRwhwN1qW4kh9jv87fnjz06iJyavS8NrtlXLl+JatGfI4
-   A=;
-X-IronPort-AV: E=Sophos;i="5.77,313,1596499200"; 
-   d="scan'208";a="79768829"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 28 Sep 2020 10:38:07 +0000
-Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-16acd5e0.us-east-1.amazon.com (Postfix) with ESMTPS id B18CAA1EDC;
-        Mon, 28 Sep 2020 10:37:54 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 28 Sep 2020 10:37:28 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <akpm@linux-foundation.org>
-CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
-        <aarcange@redhat.com>, <acme@kernel.org>,
-        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
-        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
-        <brendanhiggins@google.com>, <cai@lca.pw>,
-        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
-        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
-        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
-        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
-        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
-        <namhyung@kernel.org>, <peterz@infradead.org>,
-        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
-        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
-        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
-        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
-        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
-        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
-        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH 5/5] mm/damon/primitives: Make coexistable with Idle Page Tracking
-Date:   Mon, 28 Sep 2020 12:35:28 +0200
-Message-ID: <20200928103528.4256-6-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200928103528.4256-1-sjpark@amazon.com>
-References: <20200928103528.4256-1-sjpark@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.237]
-X-ClientProxiedBy: EX13D10UWA003.ant.amazon.com (10.43.160.248) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
+        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:mime-version
+         :content-transfer-encoding;
+        bh=i1pcc9oI2ymP/R7jfhbDU4KKfk6rWA2fSDx9MDktUoM=;
+        b=DtYSjOrpKknZq+N68FeauZjnGlaqhGj9YfjNR6tHvEjuqYDivGpihXu6Wi59kVucU9
+         GlrYIRaVS3kSgB2LCbAKZgGMzaeL1u0ECJUBBQ+yDd4apBDDU9SvHlw3xz7v4Q1CxMWh
+         FrYZPilHUornOcRgCErukJIqHJDhPdSLYNDryLVYkeE3B/1gyidx1b9NE8yRnEIoPQDl
+         Yg2/NYofdcBOwl+kmioB9a62kcvNRxxp5dRSwLXWXWLMuEnk1ESM6xfY4rlXl/xm+rs+
+         30IrRHll/i/4MkIpVKnVv1LZdSK8zQpwPhZS/T4v9qkzp/McajxQBCOnHA2XNxEf+teB
+         m0/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:mime-version
+         :content-transfer-encoding;
+        bh=i1pcc9oI2ymP/R7jfhbDU4KKfk6rWA2fSDx9MDktUoM=;
+        b=BulBly1n18U2omEF/ZjvNiRh247Rrr6qREBraR823xZ9KUGk9f1nXFHrGTftKIA5La
+         dqk0vUHcphqY1I3jXTIkTYJHpuaH74X4whN9nqUdo+WB9gXDdz5VtVanQF8sP3Gntj8c
+         7n80Gq+neCrVB/ilAu75PlgFZVsAfFUMIVqZQWRlCYZWer6NPUbk21xeCoW/LrTTrory
+         E72QhvRCjxZGJqlo82MEREZizsMzJ1GRIL636pCfXPhy7tBqCDzX7klYeMGg2gdMeSiH
+         Ja6KJrk335PUctFt+jBn0P1KP9LUj/QRCK6jhy8I8MFRq+Oeo45eoWy2xEKjtMWd0/iV
+         f3Zg==
+X-Gm-Message-State: AOAM530I5z2DtrXVVOS8G23W/8aPCyW2Yt1pkmuatv6NM7SZQByZxgyF
+        9LNgJlpTv4BjgOHvEdOvBIly3w==
+X-Google-Smtp-Source: ABdhPJw0S3vcuXHtMfaconrKJz9EMkaPVjPfq6pyIyZadAr4wDGVPNkONYBoNJXk13wwRPqhSvbUoA==
+X-Received: by 2002:a17:902:6bc7:b029:d2:6aa:e177 with SMTP id m7-20020a1709026bc7b02900d206aae177mr985250plt.52.1601289491958;
+        Mon, 28 Sep 2020 03:38:11 -0700 (PDT)
+Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
+        by smtp.gmail.com with ESMTPSA id c9sm921588pgl.92.2020.09.28.03.38.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Sep 2020 03:38:11 -0700 (PDT)
+Message-ID: <b41f9af781bc36f4e5f82fccabc86ebbd0e587f8.camel@areca.com.tw>
+Subject: [PATCH 4/4] scsi: arcmsr: Update driver version to
+ v1.50.00.02-20200819
+From:   ching Huang <ching2048@areca.com.tw>
+To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
+        linux-scsi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     dan.carpenter@oracle.com, hch@infradead.org,
+        Colin King <colin.king@canonical.com>
+Date:   Mon, 28 Sep 2020 18:38:09 +0800
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-8.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+From: ching Huang <ching2048@areca.com.tw>
 
-DAMON's reference 'primitives' internally use 'PG_Idle' flag.  Because
-the flag is also used by Idle Page Tracking but there was no way to
-synchronize with it, the 'primitives' were configured to be exclusive
-with Idle Page Tracking before.  However, as we can now synchronize with
-Idle Page Tracking using 'idle_page_lock', this commit makes the
-primitives to do the synchronization and coexistable with Idle Page
-Tracking.
+Update driver version to v1.50.00.02-20200819.
 
-In more detail, the 'primitives' only require the users to do the
-synchronization by themselves.  Real synchronization is done by the
-DAMON debugfs interface, who is the only one user of the 'primitives' as
-of now.
-
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
 ---
- include/linux/damon.h     |  1 +
- include/linux/page_idle.h |  2 ++
- mm/damon/Kconfig          |  2 +-
- mm/damon/dbgfs.c          | 32 +++++++++++++++++++++++++++++++-
- mm/damon/primitives.c     | 16 +++++++++++++++-
- mm/page_idle.c            |  2 +-
- 6 files changed, 51 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 606e59f785a2..12200a1171a8 100644
---- a/include/linux/damon.h
-+++ b/include/linux/damon.h
-@@ -312,6 +312,7 @@ void kdamond_init_phys_regions(struct damon_ctx *ctx);
- void kdamond_update_phys_regions(struct damon_ctx *ctx);
- void kdamond_prepare_phys_access_checks(struct damon_ctx *ctx);
- unsigned int kdamond_check_phys_accesses(struct damon_ctx *ctx);
-+bool kdamond_phys_target_valid(struct damon_target *t);
- void damon_set_paddr_primitives(struct damon_ctx *ctx);
- 
- #endif	/* CONFIG_DAMON_PRIMITIVES */
-diff --git a/include/linux/page_idle.h b/include/linux/page_idle.h
-index d8a6aecf99cb..bcbb965b566c 100644
---- a/include/linux/page_idle.h
-+++ b/include/linux/page_idle.h
-@@ -8,6 +8,8 @@
- 
- #ifdef CONFIG_PAGE_IDLE_FLAG
- 
-+extern struct mutex page_idle_lock;
-+
- #ifdef CONFIG_64BIT
- static inline bool page_is_young(struct page *page)
- {
-diff --git a/mm/damon/Kconfig b/mm/damon/Kconfig
-index 8b3f3dd3bd32..64d69a239408 100644
---- a/mm/damon/Kconfig
-+++ b/mm/damon/Kconfig
-@@ -26,7 +26,7 @@ config DAMON_KUNIT_TEST
- 
- config DAMON_PRIMITIVES
- 	bool "DAMON primitives for virtual/physical address spaces monitoring"
--	depends on DAMON && MMU && !IDLE_PAGE_TRACKING
-+	depends on DAMON && MMU
- 	select PAGE_EXTENSION if !64BIT
- 	select PAGE_IDLE_FLAG
- 	help
-diff --git a/mm/damon/dbgfs.c b/mm/damon/dbgfs.c
-index 7a6c279690f8..ce12e92e1667 100644
---- a/mm/damon/dbgfs.c
-+++ b/mm/damon/dbgfs.c
-@@ -12,6 +12,7 @@
- #include <linux/file.h>
- #include <linux/mm.h>
- #include <linux/module.h>
-+#include <linux/page_idle.h>
- #include <linux/slab.h>
- 
- #define MIN_RECORD_BUFFER_LEN	1024
-@@ -28,6 +29,7 @@ struct debugfs_recorder {
- /* Monitoring contexts for debugfs interface users. */
- static struct damon_ctx **debugfs_ctxs;
- static int debugfs_nr_ctxs = 1;
-+static int debugfs_nr_terminated_ctxs;
- 
- static DEFINE_MUTEX(damon_dbgfs_lock);
- 
-@@ -106,9 +108,20 @@ static void debugfs_init_vm_regions(struct damon_ctx *ctx)
- 	kdamond_init_vm_regions(ctx);
- }
- 
-+static void debugfs_unlock_page_idle_lock(void)
-+{
-+	mutex_lock(&damon_dbgfs_lock);
-+	if (++debugfs_nr_terminated_ctxs == debugfs_nr_ctxs) {
-+		debugfs_nr_terminated_ctxs = 0;
-+		mutex_unlock(&page_idle_lock);
-+	}
-+	mutex_unlock(&damon_dbgfs_lock);
-+}
-+
- static void debugfs_vm_cleanup(struct damon_ctx *ctx)
- {
- 	debugfs_flush_rbuffer(ctx->private);
-+	debugfs_unlock_page_idle_lock();
- 	kdamond_vm_cleanup(ctx);
- }
- 
-@@ -120,6 +133,8 @@ static void debugfs_init_phys_regions(struct damon_ctx *ctx)
- static void debugfs_phys_cleanup(struct damon_ctx *ctx)
- {
- 	debugfs_flush_rbuffer(ctx->private);
-+	debugfs_unlock_page_idle_lock();
-+
- }
- 
- /*
-@@ -197,6 +212,21 @@ static char *user_input_str(const char __user *buf, size_t count, loff_t *ppos)
- 	return kbuf;
- }
- 
-+static int debugfs_start_ctx_ptrs(struct damon_ctx **ctxs, int nr_ctxs)
-+{
-+	int rc;
-+
-+	if (!mutex_trylock(&page_idle_lock))
-+		return -EBUSY;
-+
-+	rc = damon_start_ctx_ptrs(ctxs, nr_ctxs);
-+	if (rc)
-+		mutex_unlock(&page_idle_lock);
-+
-+	return rc;
-+}
-+
-+
- static ssize_t debugfs_monitor_on_write(struct file *file,
- 		const char __user *buf, size_t count, loff_t *ppos)
- {
-@@ -212,7 +242,7 @@ static ssize_t debugfs_monitor_on_write(struct file *file,
- 	if (sscanf(kbuf, "%s", kbuf) != 1)
- 		return -EINVAL;
- 	if (!strncmp(kbuf, "on", count))
--		err = damon_start_ctx_ptrs(debugfs_ctxs, debugfs_nr_ctxs);
-+		err = debugfs_start_ctx_ptrs(debugfs_ctxs, debugfs_nr_ctxs);
- 	else if (!strncmp(kbuf, "off", count))
- 		err = damon_stop_ctx_ptrs(debugfs_ctxs, debugfs_nr_ctxs);
- 	else
-diff --git a/mm/damon/primitives.c b/mm/damon/primitives.c
-index e762dc8a5f2e..442b41b79b82 100644
---- a/mm/damon/primitives.c
-+++ b/mm/damon/primitives.c
-@@ -30,6 +30,10 @@
- 
- #include "damon.h"
- 
-+#ifndef CONFIG_IDLE_PAGE_TRACKING
-+DEFINE_MUTEX(page_idle_lock);
-+#endif
-+
- /* Minimal region size.  Every damon_region is aligned by this. */
- #ifndef CONFIG_DAMON_KUNIT_TEST
- #define MIN_REGION PAGE_SIZE
-@@ -776,6 +780,9 @@ bool kdamond_vm_target_valid(struct damon_target *t)
- {
- 	struct task_struct *task;
- 
-+	if (!mutex_is_locked(&page_idle_lock))
-+		return false;
-+
- 	task = damon_get_task_struct(t);
- 	if (task) {
- 		put_task_struct(task);
-@@ -795,6 +802,13 @@ void kdamond_vm_cleanup(struct damon_ctx *ctx)
- 	}
- }
- 
-+bool kdamond_phys_target_valid(struct damon_target *t)
-+{
-+	if (!mutex_is_locked(&page_idle_lock))
-+		return false;
-+	return true;
-+}
-+
- #ifndef CONFIG_ADVISE_SYSCALLS
- static int damos_madvise(struct damon_target *target, struct damon_region *r,
- 			int behavior)
-@@ -874,7 +888,7 @@ void damon_set_paddr_primitives(struct damon_ctx *ctx)
- 	ctx->update_target_regions = kdamond_update_phys_regions;
- 	ctx->prepare_access_checks = kdamond_prepare_phys_access_checks;
- 	ctx->check_accesses = kdamond_check_phys_accesses;
--	ctx->target_valid = NULL;
-+	ctx->target_valid = kdamond_phys_target_valid;
- 	ctx->cleanup = NULL;
- 	ctx->apply_scheme = NULL;
- }
-diff --git a/mm/page_idle.c b/mm/page_idle.c
-index 0aa45f848570..958dcc18f6cd 100644
---- a/mm/page_idle.c
-+++ b/mm/page_idle.c
-@@ -16,7 +16,7 @@
- #define BITMAP_CHUNK_SIZE	sizeof(u64)
- #define BITMAP_CHUNK_BITS	(BITMAP_CHUNK_SIZE * BITS_PER_BYTE)
- 
--static DEFINE_MUTEX(page_idle_lock);
-+DEFINE_MUTEX(page_idle_lock);
- 
- /*
-  * Idle page tracking only considers user memory pages, for other types of
--- 
-2.17.1
+diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
+index 5e32f17..5d054d5 100755
+--- a/drivers/scsi/arcmsr/arcmsr.h
++++ b/drivers/scsi/arcmsr/arcmsr.h
+@@ -49,7 +49,7 @@ struct device_attribute;
+ #define ARCMSR_MAX_OUTSTANDING_CMD	1024
+ #define ARCMSR_DEFAULT_OUTSTANDING_CMD	128
+ #define ARCMSR_MIN_OUTSTANDING_CMD	32
+-#define ARCMSR_DRIVER_VERSION		"v1.40.00.10-20190116"
++#define ARCMSR_DRIVER_VERSION		"v1.50.00.02-20200819"
+ #define ARCMSR_SCSI_INITIATOR_ID	255
+ #define ARCMSR_MAX_XFER_SECTORS		512
+ #define ARCMSR_MAX_XFER_SECTORS_B	4096
 
