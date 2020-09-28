@@ -2,95 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43A127B50A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BC427B50F
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgI1TMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:12:52 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:31607 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726551AbgI1TMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:12:52 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4C0XGT63dJz3c;
-        Mon, 28 Sep 2020 21:12:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1601320370; bh=ZpKqDVMnGnFJxAu7glq/SOb5QpupbYxViZoh10ycH/Y=;
-        h=Date:From:Subject:To:Cc:From;
-        b=mGxeFJVC5qzOolq9C5c/j7x6dSiLgvrIztRQqlkeFwl8znWjtTzKZA7w69wNVcJh1
-         YjsiZq5sRhfi41gAdUEgAPATQq4njIdgd3g585xd6qT4zO/05nOZxBLUDa/1Ys8hHs
-         EO+i4+Q+4oH4ffErejZJ/Viy11DSYaPNagAqME8btEUwJgpZ0qAeyqHCVGR5z+No+q
-         iY4CE6kRqG4huKjRr66reZt5VFBQg6r++UBqJ+xlJj23tclgynMO40ratNXDz3jgbV
-         djSL7D1QfomJIc3vQc+rm+DqHp+qXQ8D9ab6F3zr+ggMUb2DG58W10r9NcbI6GjTRW
-         rHsSkvTwsnBZA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Mon, 28 Sep 2020 21:12:49 +0200
-Message-Id: <d0b8d9294b948eac599fd7e9602085fe606832c4.1601320251.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2] ASoC: tegra20-spdif: remove "default m"
+        id S1726719AbgI1TNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:13:13 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:42567 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726442AbgI1TNN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 15:13:13 -0400
+Received: by mail-ot1-f66.google.com with SMTP id m13so2033416otl.9;
+        Mon, 28 Sep 2020 12:13:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sBMT/yUJssHKk30uHEKtfVPd8t01wzuCOlJvqJUVDFo=;
+        b=CFOwaogCr18m86vIil0YQ6xFGds3z88GsYLHr1UTNjgFxo4S2BhGEnG0cRTIXMScAi
+         7+z7PleBWri2BQhrZcXB+Q0vPpbU7IVy6giuNoTKy4jCyLB5xpwtyn5zjHR5lTRlAMfH
+         6t6qyW0TEaC5yGl7/UlBsDcrmUJPXw/0H27VdqexAPHmwFLVYazgXOZVR95AxrdbPyac
+         HDzukg9YeQvqXb540a4S1jcvf9Tjn6AWseUbBKbStXFpGh9NEcCoebmd8jWIPE1cAIHO
+         VGIZHK+MYywUzX1REJggTG9A88E+8hOCPj2OUgKrf1rLjfKPE8VCJi5X2Ls0lEqhH/s9
+         w3wg==
+X-Gm-Message-State: AOAM531/18KYAWS7DlUdlMrQn8BNqHqMQq0WoRWbyfxXpYJ7bNQfv8OE
+        MaPXp9vaBGRk8hjB/XU6yw==
+X-Google-Smtp-Source: ABdhPJwm2EYYzEys43w40LdHFEFgciuLJQIsljPpYkmA9Mw/wXozl8cZIqIxREyfoWc1Y71iJpclZg==
+X-Received: by 2002:a05:6830:ca:: with SMTP id x10mr303561oto.344.1601320391804;
+        Mon, 28 Sep 2020 12:13:11 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id z10sm2273308ooz.14.2020.09.28.12.13.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 12:13:11 -0700 (PDT)
+Received: (nullmailer pid 3098896 invoked by uid 1000);
+        Mon, 28 Sep 2020 19:13:10 -0000
+Date:   Mon, 28 Sep 2020 14:13:10 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Wei Xu <xuwei5@hisilicon.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Libin <huawei.libin@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Subject: Re: [PATCH v4 07/20] dt-bindings: arm: hisilicon: convert system
+ controller bindings to json-schema
+Message-ID: <20200928191310.GA3092001@bogus>
+References: <20200928151324.2134-1-thunder.leizhen@huawei.com>
+ <20200928151324.2134-8-thunder.leizhen@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Stephen Warren <swarren@nvidia.com>
-Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200928151324.2134-8-thunder.leizhen@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make tegra20-spdif default to N as all other drivers do.
-Add the selection to defconfigs instead.
+On Mon, Sep 28, 2020 at 11:13:11PM +0800, Zhen Lei wrote:
+> Convert the Hisilicon system controller and its variants binding to DT
+> schema format using json-schema. All of them are grouped into one yaml
+> file, to help users understand differences and avoid repeated
+> descriptions.
+> 
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>  .../controller/hisilicon,hi6220-sysctrl.txt        |  19 ----
+>  .../controller/hisilicon,hip01-sysctrl.txt         |  19 ----
+>  .../arm/hisilicon/controller/hisilicon,sysctrl.txt |  25 -----
+>  .../hisilicon/controller/hisilicon,sysctrl.yaml    | 115 +++++++++++++++++++++
+>  .../bindings/arm/hisilicon/hi3519-sysctrl.txt      |  14 ---
+>  5 files changed, 115 insertions(+), 77 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+>  create mode 100644 Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/arm/hisilicon/hi3519-sysctrl.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
+> deleted file mode 100644
+> index 07e318eda254f52..000000000000000
+> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hi6220-sysctrl.txt
+> +++ /dev/null
+> @@ -1,19 +0,0 @@
+> -Hisilicon Hi6220 system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,hi6220-sysctrl"
+> -- reg : Register address and size
+> -- #clock-cells: should be set to 1, many clock registers are defined
+> -  under this controller and this property must be present.
+> -
+> -Hisilicon designs this controller as one of the system controllers,
+> -its main functions are the same as Hisilicon system controller, but
+> -the register offset of some core modules are different.
+> -
+> -Example:
+> -	/*for Hi6220*/
+> -	sys_ctrl: sys_ctrl@f7030000 {
+> -		compatible = "hisilicon,hi6220-sysctrl", "syscon";
+> -		reg = <0x0 0xf7030000 0x0 0x2000>;
+> -		#clock-cells = <1>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
+> deleted file mode 100644
+> index db2dfdce799db91..000000000000000
+> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,hip01-sysctrl.txt
+> +++ /dev/null
+> @@ -1,19 +0,0 @@
+> -Hisilicon HiP01 system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,hip01-sysctrl"
+> -- reg : Register address and size
+> -
+> -The HiP01 system controller is mostly compatible with hisilicon
+> -system controller,but it has some specific control registers for
+> -HIP01 SoC family, such as slave core boot, and also some same
+> -registers located at different offset.
+> -
+> -Example:
+> -
+> -	/* for hip01-ca9x2 */
+> -	sysctrl: system-controller@10000000 {
+> -		compatible = "hisilicon,hip01-sysctrl", "hisilicon,sysctrl";
+> -		reg = <0x10000000 0x1000>;
+> -		reboot-offset = <0x4>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+> deleted file mode 100644
+> index 963f7f1ca7a2f0c..000000000000000
+> --- a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.txt
+> +++ /dev/null
+> @@ -1,25 +0,0 @@
+> -Hisilicon system controller
+> -
+> -Required properties:
+> -- compatible : "hisilicon,sysctrl"
+> -- reg : Register address and size
+> -
+> -Optional properties:
+> -- smp-offset : offset in sysctrl for notifying slave cpu booting
+> -		cpu 1, reg;
+> -		cpu 2, reg + 0x4;
+> -		cpu 3, reg + 0x8;
+> -		If reg value is not zero, cpun exit wfi and go
+> -- resume-offset : offset in sysctrl for notifying cpu0 when resume
+> -- reboot-offset : offset in sysctrl for system reboot
+> -
+> -Example:
+> -
+> -	/* for Hi3620 */
+> -	sysctrl: system-controller@fc802000 {
+> -		compatible = "hisilicon,sysctrl";
+> -		reg = <0xfc802000 0x1000>;
+> -		smp-offset = <0x31c>;
+> -		resume-offset = <0x308>;
+> -		reboot-offset = <0x4>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.yaml b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.yaml
+> new file mode 100644
+> index 000000000000000..37b214e0a401d7d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/hisilicon/controller/hisilicon,sysctrl.yaml
+> @@ -0,0 +1,115 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/hisilicon/controller/hisilicon,sysctrl.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Hisilicon system controller
+> +
+> +maintainers:
+> +  - Wei Xu <xuwei5@hisilicon.com>
+> +
+> +description: |
+> +  The Hisilicon system controller is used on many Hisilicon boards, it can be
+> +  used to assist the slave core startup, reboot the system, etc.
+> +
+> +  There are some variants of the Hisilicon system controller, such as HiP01,
+> +  Hi3519, Hi6220 system controller, each of them is mostly compatible with the
+> +  Hisilicon system controller, but some same registers located at different
+> +  offset. In addition, the HiP01 system controller has some specific control
+> +  registers for HIP01 SoC family, such as slave core boot.
+> +
+> +  The compatible names of each system controller are as follows:
+> +  Hisilicon system controller   --> hisilicon,sysctrl
+> +  HiP01     system controller   --> hisilicon,hip01-sysctrl
+> +  Hi6220    system controller   --> hisilicon,hi6220-sysctrl
+> +  Hi3519    system controller   --> hisilicon,hi3519-sysctrl
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: hisilicon,hi6220-sysctrl
+> +    then:
+> +      required:
+> +        - '#clock-cells'
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: hisilicon,sysctrl
+> +      - items:
+> +          - const: hisilicon,sysctrl
+> +          - const: syscon
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Fixes: 774fec338bfc ("ASoC: Tegra: Implement SPDIF CPU DAI")
----
- v2: add the symbol to defconfig as suggested by Thierry Reding
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- arch/arm/configs/tegra_defconfig    | 1 +
- sound/soc/tegra/Kconfig             | 1 -
- 3 files changed, 2 insertions(+), 1 deletion(-)
+Of these 2, the 1st case should be fixed (add 'syscon' in the dts 
+files).
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index e9e76e32f10f..19342ac738a5 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -743,6 +743,7 @@ CONFIG_SND_SOC_STM32_I2S=m
- CONFIG_SND_SUN4I_CODEC=m
- CONFIG_SND_SOC_TEGRA=m
- CONFIG_SND_SOC_TEGRA20_I2S=m
-+CONFIG_SND_SOC_TEGRA20_SPDIF=m
- CONFIG_SND_SOC_TEGRA30_I2S=m
- CONFIG_SND_SOC_TEGRA_RT5640=m
- CONFIG_SND_SOC_TEGRA_WM8753=m
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index fff5fae0db30..08526eb50484 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -225,6 +225,7 @@ CONFIG_SND_HDA_CODEC_HDMI=y
- CONFIG_SND_SOC=y
- CONFIG_SND_SOC_TEGRA=y
- CONFIG_SND_SOC_TEGRA20_I2S=y
-+CONFIG_SND_SOC_TEGRA20_SPDIF=y
- CONFIG_SND_SOC_TEGRA30_I2S=y
- CONFIG_SND_SOC_TEGRA_RT5640=y
- CONFIG_SND_SOC_TEGRA_WM8753=y
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index 3d91bd3e59cd..a62cc87551ac 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -39,7 +39,6 @@ config SND_SOC_TEGRA20_I2S
- config SND_SOC_TEGRA20_SPDIF
- 	tristate "Tegra20 SPDIF interface"
- 	depends on SND_SOC_TEGRA
--	default m
- 	help
- 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
- 	  You will also need to select the individual machine drivers to support
--- 
-2.20.1
+> +      - items:
+> +          - const: hisilicon,hip01-sysctrl
+> +          - const: hisilicon,sysctrl
+> +      - items:
+> +          - const: hisilicon,hi6220-sysctrl
+> +          - const: syscon
+> +      - items:
+> +          - const: hisilicon,hi3519-sysctrl
+> +          - const: syscon
 
+All the cases with 'syscon' can be a single entry. Use 'enum' for the 
+1st string.
+
+> +
+> +  reg:
+> +    description: Register address and size
+
+That's every 'reg' property. Drop it.
+
+> +    maxItems: 1
+> +
+> +  smp-offset:
+> +    description: |
+> +      offset in sysctrl for notifying slave cpu booting
+> +      cpu 1, reg;
+> +      cpu 2, reg + 0x4;
+> +      cpu 3, reg + 0x8;
+> +      If reg value is not zero, cpun exit wfi and go
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  resume-offset:
+> +    description: offset in sysctrl for notifying cpu0 when resume
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  reboot-offset:
+> +    description: offset in sysctrl for system reboot
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  '#clock-cells':
+> +    description: the number of cells occupied by one clock ID.
+
+Drop.
+
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+
+additionalProperties: false
+
+(and in other patches)
+
+> +
+> +examples:
+> +  - |
+> +    /* Hisilicon system controller */
+> +    system-controller@fc802000 {
+> +        compatible = "hisilicon,sysctrl";
+> +        reg = <0xfc802000 0x1000>;
+> +        smp-offset = <0x31c>;
+> +        resume-offset = <0x308>;
+> +        reboot-offset = <0x4>;
+> +    };
+> +
+> +    /* HiP01 system controller */
+> +    system-controller@10000000 {
+> +        compatible = "hisilicon,hip01-sysctrl", "hisilicon,sysctrl";
+> +        reg = <0x10000000 0x1000>;
+> +        reboot-offset = <0x4>;
+> +    };
+> +
+> +    /* Hi6220 system controller */
+> +    system-controller@f7030000 {
+> +        compatible = "hisilicon,hi6220-sysctrl", "syscon";
+> +        reg = <0xf7030000 0x2000>;
+> +        #clock-cells = <1>;
+> +    };
+> +
+> +    /* Hi3519 system controller */
+> +    system-controller@12010000 {
+> +        compatible = "hisilicon,hi3519-sysctrl", "syscon";
+> +        reg = <0x12010000 0x1000>;
+> +    };
+> +...
+> diff --git a/Documentation/devicetree/bindings/arm/hisilicon/hi3519-sysctrl.txt b/Documentation/devicetree/bindings/arm/hisilicon/hi3519-sysctrl.txt
+> deleted file mode 100644
+> index 8defacc44dd5b9e..000000000000000
+> --- a/Documentation/devicetree/bindings/arm/hisilicon/hi3519-sysctrl.txt
+> +++ /dev/null
+> @@ -1,14 +0,0 @@
+> -* Hisilicon Hi3519 System Controller Block
+> -
+> -This bindings use the following binding:
+> -Documentation/devicetree/bindings/mfd/syscon.yaml
+> -
+> -Required properties:
+> -- compatible: "hisilicon,hi3519-sysctrl".
+> -- reg: the register region of this block
+> -
+> -Examples:
+> -sysctrl: system-controller@12010000 {
+> -	compatible = "hisilicon,hi3519-sysctrl", "syscon";
+> -	reg = <0x12010000 0x1000>;
+> -};
+> -- 
+> 1.8.3
+> 
+> 
