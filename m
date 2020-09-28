@@ -2,64 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EE3327AD2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0008027AD2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726651AbgI1Lrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:47:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726420AbgI1Lrh (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:47:37 -0400
-Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BB0620657;
-        Mon, 28 Sep 2020 11:47:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601293656;
-        bh=39YhlJCdQCPV00YZJbaNuDDr5xHzCAOsWoinmbZIpew=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tElBZwDYrRnTpN/MBD5ijF2t8tvXOx1Up5vhgHA3w+2mexfKzcIFoCC/mo4SjMlw6
-         /HFZAa9r8wkQi6U9cVhUmPE04i5nN77Qo1P2QBykeM7pr/lYmUnlMO3f7unerS6pME
-         VEQsGSPOFPiI3jvCg62yZr68OizNNbByjk23ePjw=
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A1F4B400E9; Mon, 28 Sep 2020 08:47:33 -0300 (-03)
-Date:   Mon, 28 Sep 2020 08:47:33 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     "Jin, Yao" <yao.jin@linux.intel.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com,
-        irogers@google.com
-Subject: Re: [PATCH v2 1/2] perf vendor events: Update CascadelakeX events to
- v1.08
-Message-ID: <20200928114733.GD2883319@kernel.org>
-References: <20200922031918.3723-1-yao.jin@linux.intel.com>
- <20200922031918.3723-2-yao.jin@linux.intel.com>
- <20200922194232.GA2505291@kernel.org>
- <4db737f2-0705-5183-6971-9031acfd123b@linux.intel.com>
+        id S1726578AbgI1LtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:49:24 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:40680 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726420AbgI1LtY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:49:24 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SBk0Xe142655;
+        Mon, 28 Sep 2020 11:49:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=6EGfoGt5aE9CLOcfa3rEsfoAnJl0dVpVezF4zUT6fHU=;
+ b=OqTobTOCqaInJY3FBaTd8qUAJ5lBO7P+J4Yoy04RM4pxXNNuNusyE9fTT8i/UAOulU6M
+ uzIv9CCIaa90XJcMORsoEhLzwHt6j8aKYDmyYSnKbwqosYD+3EbPOle1qfnN/n3PDq90
+ BE5ImlJEyqyyDz4OGlMIvWolfswBdnBOFIDqgS4Xa0YC853rrBFix+8JmBozJSN5cojr
+ NTrTjuedOQgUluqQDQwSS+vETi9smjTiFWm3OggMhJXbHArls9JC5Gdyx2ITXscFdVWQ
+ kZ5neXsoNE6mLn9cCPE7jjom3SvX/+yFkhMY143qQNep4lO3Zy7YfdYGUcqKjabgSbTk Vw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 33su5amk7j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 28 Sep 2020 11:49:09 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SBil6g148534;
+        Mon, 28 Sep 2020 11:49:08 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 33tf7k7r05-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 28 Sep 2020 11:49:08 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08SBn4vq004885;
+        Mon, 28 Sep 2020 11:49:05 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 28 Sep 2020 04:49:04 -0700
+Date:   Mon, 28 Sep 2020 14:48:57 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     gregkh@linuxfoundation.org, christian.gromm@microchip.com,
+        masahiroy@kernel.org, tglx@linutronix.de, keescook@chromium.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: most: don't access hdm_ch before checking it
+ valid
+Message-ID: <20200928114857.GR4282@kadam>
+References: <20200928104838.189639-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4db737f2-0705-5183-6971-9031acfd123b@linux.intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20200928104838.189639-1-jingxiangfeng@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 malwarescore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009280096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9757 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
+ lowpriorityscore=0 spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 adultscore=0 bulkscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2009280096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, Sep 23, 2020 at 09:25:06AM +0800, Jin, Yao escreveu:
-> Hi Arnaldo,
+On Mon, Sep 28, 2020 at 06:48:38PM +0800, Jing Xiangfeng wrote:
+> In try_start_dim_transfer(), pointer hdm_ch is accessed before checking.
+> This may lead to a potential null pointer dereference. Fix this by
+> dereferencing hdm_ch after calling BUG_ON().
 > 
-> On 9/23/2020 3:42 AM, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, Sep 22, 2020 at 11:19:17AM +0800, Jin Yao escreveu:
-> > > - Update CascadelakeX events to v1.08.
-> > > - Update CascadelakeX JSON metrics from TMAM 4.0.
-> > > 
-> > > Other fixes:
-> > > - Add NO_NMI_WATCHDOG metric constraint to Backend_Bound
-> > > - Change 'MB/sec' to 'MB' in UNC_M_PMM_BANDWIDTH.
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
+> ---
+>  drivers/staging/most/dim2/dim2.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/most/dim2/dim2.c b/drivers/staging/most/dim2/dim2.c
+> index 509c8012d20b..ccd7cc7545e4 100644
+> --- a/drivers/staging/most/dim2/dim2.c
+> +++ b/drivers/staging/most/dim2/dim2.c
+> @@ -148,7 +148,7 @@ void dimcb_on_error(u8 error_id, const char *error_message)
+>  static int try_start_dim_transfer(struct hdm_channel *hdm_ch)
+>  {
+>  	u16 buf_size;
+> -	struct list_head *head = &hdm_ch->pending_list;
 
-Applied.
+This is not a dereference, it's just pointer math.  In other words:
 
-- Arnaldo
+	struct list_head *head = hdm_ch + offsetof(struct hdm_channel, pending_list);
+
+So the commit message is wrong because this cannot lead to a NULL
+dereference.  It's better to just delete the BUG_ON().  We don't really
+like BUG_ON().  Checkpatch will complain about them.  An Oops gives
+basically the same information as a BUG_ON() without completely killing
+the kernel so just dereferencing a NULL is preferable.  Finally, we can
+see from the callers that "hdm_ch" is never NULL.
+
+regards,
+dan carpenter
+
