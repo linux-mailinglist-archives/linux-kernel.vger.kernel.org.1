@@ -2,146 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADFC27AE0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0461827AE14
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 14:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726601AbgI1MmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 08:42:15 -0400
-Received: from mail-dm6nam11on2082.outbound.protection.outlook.com ([40.107.223.82]:22935
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726393AbgI1MmM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 08:42:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FzaNqS9sa4S07Wq+AZ41UGhM+EH/E9yBk7O+kXUUyxbqaP8+nFN/WnOkwQrjpx5X3+C85rFyugJtI/4n3Uh8WKf7bl9UsfjQ0j9U4zssVdWZeeuVXXJdwmqyM1d7nYlcrQMOzqe3qTh63TxMa60zam9C5/IjSSzjSPuJ/4m4aN7JWX8nMiPhMxXx8DrD79Gf57opCIKYu1FLs7CmwjK9kHbzFp55qCWkcrxgoVeREbMrDARQnGncrMbh0wb7WwMRA1Ptu5hRJUdqEhOCYcdj3ljxbuUSnLWWb+s+JX43EOiEGNS9MZswv61v0XsreuDL0uGvKLYAXgNpKD3Ewj/lGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VJgXfRgbwBCAbdKWID5BO50XbJFRbXBcly79efT7PDc=;
- b=mUBU7Tp0LdsNo4dWxio5LyLBERuSEZUpdE8Rjb2G0c700Th72B2SDJrbz6/hsqkw8nG5whtchgHXyGf1T88wxuMeKWkLpbC5gL8qU9RxLO9gcWFZxA9MFNwB11gd7ByBehc21djxSWfA4qGoSAPxdaEyoMJ23v//qtzr07lFcUNKNFFo7334TZfie6ZMFnOqVImaiKBlD0D5uwfP+zaBvTZeI0o/SAJyDUgahZRbsi309QZDIzWLsy2rqqhnZvrJFtmz7GefX1AWGVx1a4D3OxBn5RARUyifRb+Szcm08bHq3adJM9JpvLDEtMiIrVNPX3fe0fyhpVp9bN9a78znCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VJgXfRgbwBCAbdKWID5BO50XbJFRbXBcly79efT7PDc=;
- b=SUG1iLl+Og7shKvflxQRh9BU4vRWDretKKHWC9VLufrz0Z+LCKOnJTYhsPq4aNYQkePwah8XzfcYQPfJULXTObHEtCUuAsc5xkqOYuc3UQxUTXi10GEBO9xreKEbRpuSBQE+iV7+sxi4T8KE13O6pqdtxsMlo+3tTOSTYOuk74o=
-Authentication-Results: goodmis.org; dkim=none (message not signed)
- header.d=none;goodmis.org; dmarc=none action=none header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1941.namprd11.prod.outlook.com (2603:10b6:903:120::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.28; Mon, 28 Sep
- 2020 12:42:09 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::2d47:2e9c:cfbe:6fb2]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::2d47:2e9c:cfbe:6fb2%6]) with mapi id 15.20.3370.033; Mon, 28 Sep 2020
- 12:42:09 +0000
-Subject: Re: [PATCH] time/sched_clock: mark sched_clock_read_begin as notrace
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Leo Yan <leo.yan@linaro.org>, Will Deacon <will@kernel.org>,
-        a.darwish@linutronix.de,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        ben.dooks@codethink.co.uk, Steven Rostedt <rostedt@goodmis.org>
-References: <20200928104952.26892-1-quanyang.wang@windriver.com>
- <20200928105859.GF2628@hirez.programming.kicks-ass.net>
-From:   Quanyang Wang <quanyang.wang@windriver.com>
-Message-ID: <22a5d255-7a9f-3139-1e8a-4263fea690c0@windriver.com>
-Date:   Mon, 28 Sep 2020 20:41:59 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20200928105859.GF2628@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: HK2PR04CA0047.apcprd04.prod.outlook.com
- (2603:1096:202:14::15) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+        id S1726589AbgI1MnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 08:43:03 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:56297 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726461AbgI1MnD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 08:43:03 -0400
+Received: from mail-qk1-f179.google.com ([209.85.222.179]) by
+ mrelayeu.kundenserver.de (mreue012 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MnpP8-1klUoI26e2-00pOWB; Mon, 28 Sep 2020 14:43:00 +0200
+Received: by mail-qk1-f179.google.com with SMTP id g72so740888qke.8;
+        Mon, 28 Sep 2020 05:43:00 -0700 (PDT)
+X-Gm-Message-State: AOAM533KsGcTCEjepB62goD1p5t2/fewDpwm/EM9CbURR2xH4kU9ifwf
+        9B2HELMRoiDvqnQ+T2pCk3JEauID4k/1Nw6C+ww=
+X-Google-Smtp-Source: ABdhPJwGqDO65ntGAdjq302JT9kz4grqzX1nUBEs13e10HB5wJSnUc85Ohe6MBKd5+4G8v6JAaqmSAOcRa0VKiSI31w=
+X-Received: by 2002:a37:5d8:: with SMTP id 207mr1246723qkf.352.1601296979151;
+ Mon, 28 Sep 2020 05:42:59 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.199] (60.247.85.82) by HK2PR04CA0047.apcprd04.prod.outlook.com (2603:1096:202:14::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22 via Frontend Transport; Mon, 28 Sep 2020 12:42:06 +0000
-X-Originating-IP: [60.247.85.82]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fdac5aa7-dba2-45d4-b248-08d863abea06
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1941:
-X-Microsoft-Antispam-PRVS: <CY4PR11MB194140BF44850366F4F6115EF0350@CY4PR11MB1941.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TjzvZEPy9ErttPht9BozXTZX1D+p5CeAqyJw6uNkl8rtmpPQ9zImXczGOd5XLza+v1T3wRHyACVibRM3B9CXjlnUm/SKi9hzoWz6ICZ/mGuAj10NUgewX5VcW+ZqVG5cCn4Im56hCNf4RBSq4bdzA57hjc/0+/XvpZAM6kDkeCFavxL2+dqHdDyCjmFYRhfb9QjAAgYuHuLLCXathQX41jeicrISbHONqGkjuQDscdSkyulnGQ1yWVRRrEAFSMllV5G536TrAWVjqN0RXFvPlLN2cNH5Xmv3U0IC2IVsfLZUt1UHuBbttrynjWgrWRHVpZM4cNrtqZ9CYXrD8GXRoTjOX+S3IPuMQM8lsJs7S0i3//hsEB8UIwJP3uz83GrGn+92a5nmaZNO07cv0xCLwGgkXiQr3DAEgqio5w2e4ponrMz0ugkLjvolp9t+ik5xBmu0P7nKBTKFiIz75sRCvw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(396003)(376002)(39850400004)(366004)(6666004)(31686004)(66946007)(478600001)(2616005)(956004)(44832011)(6486002)(8936002)(52116002)(7416002)(2906002)(6916009)(8676002)(6706004)(16576012)(54906003)(53546011)(316002)(36756003)(26005)(4326008)(186003)(16526019)(66476007)(66556008)(83380400001)(5660300002)(31696002)(86362001)(78286007)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: Ax387dZi+Jv9XxLNHDmb1tVTIZ4Rq9l98AqKkVaOLzDYb7/KrOOPv1dmw/xUAx4L8ipXGTQkXIHW31rA8EnHZO8uF1hpRelqjlNeSX3v26pw1SRzzma4ZjKEcDsNUL8de38tfgtKiQrjMAnjmE4fH1dciEb/WWdIiqqRCHoZ6ajsnaw1zdDfq787wZ69VuJ/MNbFzBIxfx23zlPcXQGTs4OE/N0IZmGJc252lqKIZl4w7WS4r3I3Rl93ZJBaLwLzhTUJO7ZlP0lC2DyYujOYmFua8CHVlIgMQ3ZIn5Bc8meCBDxr4Y1ILsXeoveQmQesvzvmaTNCICRfkeP6zv+YMisHLB4WGVps7gMYLwJ8pbQxjA3oV/rV34x0ITji0gHAGSP1Z/RJK/+uoK03rHRngAgPdgyWvl5BAXPNNvM/VtfX1QbZOOjfqUZPonkdjV1EQE2dd0F40ZWvtlMhRzq9AZvJk5NBRQzwb/1FBuJxgqGfC0mRB2ebOhneVSXb4P9ebP+X6tXrEYTrQZ+Ig8zpkYWpt1SNPJVs0gyUm0MKYXMMjt0gV2FrlOKFKOrpcGX52hYGKiUMGg/CvuJdblz9hi7VNR+4rYrCOe5OI4O7WjUaO4yTEs3jPCF4L9+8s/rmr4kZUV4FQDMWvGUZYOVTFg==
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fdac5aa7-dba2-45d4-b248-08d863abea06
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2020 12:42:09.2518
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: J491FmWsee4xmHY/8NcVCgSo/lDkQ66RO6lfm/A7k5A/equLe4OM8wj5ThPpEEqx5cNmvc8D77rMKgqKcCuFa7MyVy9oFHNz9kwXJYaQJwo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1941
+References: <20200907153701.2981205-1-arnd@arndb.de> <20200907153701.2981205-5-arnd@arndb.de>
+ <CACRpkdYkL2=gkBvbHO514rnppLdHgsXwi0==6Ovq43kSZqEvUQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYkL2=gkBvbHO514rnppLdHgsXwi0==6Ovq43kSZqEvUQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 28 Sep 2020 14:42:43 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0BZ-zdk+RB5ODcVs2z-Y6xmLCp57uzivUGWRcoeH2fQQ@mail.gmail.com>
+Message-ID: <CAK8P3a0BZ-zdk+RB5ODcVs2z-Y6xmLCp57uzivUGWRcoeH2fQQ@mail.gmail.com>
+Subject: Re: [PATCH 4/9] ARM: syscall: always store thread_info->syscall
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Russell King <rmk@arm.linux.org.uk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "linux-kernel@vger.kernel.org" <kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:CJWFLrA3SKB1padlpM+y7ShF7lXMlbKZdm1TjFDfHOwwpX2/X1l
+ 4DwGU7nUfV3s+3R6aPkb+Fw3M18j5TvRh6/vUFDC+BVlmc2vrDKia7qgCM4qINevW2uL+YM
+ IdppK2EJsIq+JZRI95ZlejNdSIk43nSq+6vf9413uDGaZnKaCULXxJZPd1vrYEEou9TV64f
+ b5K+bFXBKO0KCPHgDuhVQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gQsWUr9tEh8=:cKF/3Zynrx5p7FwCSuooU0
+ FblKNcfyrL/tN4oej/9hFEGfqBr26hak8Jkl5u5Jaaufa758G4/DD3fM3DjlhN5QcZqRRKVtp
+ iIFJ3LnJOoBgNp1PqfEupIuLyZn81y4W7ANyEnzS0phTIYa6YT1dL/3I5qMYZKkGfHZuvicrY
+ MaZvcoDzw44RTY1B+BCNId4VEQVtyM+wPWwY0iCncm27V6yqiJ1JEsYoRvKl5rQLykM4ZimnV
+ 6mi4GdvbB1aIvguwJV9OYj9C+inag7gxiASRcMe+Bo40rMIBw9rGCFMOJ58C5dwWVBHWj5biR
+ VtHqQXj8nbDeZt0pwsZfa2znTo7GYiA5DEHnRNSXdda7KmEpKwKu59wIYYu16+ihAsXyzY1MM
+ kTQeGQcTF103MGDNNGbdYAZd059P16DT25so0at+PoWRKlS40gi4t5IJOAJN5CiLgCPA3+4cX
+ 5SL+MWYqrmjMIm3UhIVdO0Ecf0fa0kr0unLZuxq5N5piTVgX8SiIFPD4H0NtuHFLRTFuwdxEY
+ D9bUPSxk/fFv85L1zrZqJyMb3dP7w2p6mdwFO3J5EuK1jXohAc329H6BaeeEIoQasI4Lt9UwB
+ KwRBzF5sNuopi59nEMNVo7Qmav0OCMjEhMlUXgtN26ivxkduU6N5zY5XqKe9HBy43xXXk7oV9
+ WMy7SaC7Fwe3s/TwkhXTH17awXpXiturbsY7z9NRT6lj3t8ozf1Uwz0M3OGyRh+ApItSa6oek
+ IYcu/5sb1a3en+QmMp6Wj9krqWycrQ62ASG91W396zSv3ISRFI92Y0PwPBcZc7AI/36cRcBb0
+ Q3ySynKhSXh8xEtyJXQpgjaUZGj9YXzgjbZvXuV5M6Dk8pjENarLR8+yZPjk12tXVTjHp4+
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
-
-On 9/28/20 6:58 PM, Peter Zijlstra wrote:
-> On Mon, Sep 28, 2020 at 06:49:52PM +0800, quanyang.wang@windriver.com wrote:
->> From: Quanyang Wang <quanyang.wang@windriver.com>
->>
->> Since sched_clock_read_begin is called by notrace function sched_clock,
->> it shouldn't be traceable either, or else __ftrace_graph_caller will
->> run into a dead loop on the path (arm for instance):
->>
->>    ftrace_graph_caller
->>      prepare_ftrace_return
->>        function_graph_enter
->>          ftrace_push_return_trace
->>            trace_clock_local
->>              sched_clock
->>                sched_clock_read_begin
->>
->> Fixes: 1b86abc1c645 ("sched_clock: Expose struct clock_read_data")
->> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
->> ---
->>   kernel/time/sched_clock.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/kernel/time/sched_clock.c b/kernel/time/sched_clock.c
->> index 1c03eec6ca9b..58459e1359d7 100644
->> --- a/kernel/time/sched_clock.c
->> +++ b/kernel/time/sched_clock.c
->> @@ -68,7 +68,7 @@ static inline u64 notrace cyc_to_ns(u64 cyc, u32 mult, u32 shift)
->>   	return (cyc * mult) >> shift;
->>   }
->>   
->> -struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
->> +notrace struct clock_read_data *sched_clock_read_begin(unsigned int *seq)
->>   {
->>   	*seq = raw_read_seqcount_latch(&cd.seq);
->>   	return cd.read_data + (*seq & 1);
-> At the very least sched_clock_read_retry() should also be marked such.
-
-In fact, the sched_clock_read_retry is treated as a "inline" function, so
-
-it doesn't trigger the  dead loop. But for safe, add notrace to it is 
-better.
-
-I will send a V2 patch.
-
-Thanks,
-
-Quanyang
-
-
+On Mon, Sep 28, 2020 at 11:41 AM Linus Walleij <linus.walleij@linaro.org> wrote:
 >
-> But Steve, how come x86 works? Our sched_clock() doesn't have notrace on
-> at all.
+> Hi Arnd,
+>
+> help me out here because I feel vaguely stupid...
+>
+> On Mon, Sep 7, 2020 at 5:38 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> >  {
+> > +       if (IS_ENABLED(CONFIG_OABI_COMPAT))
+> > +               return task_thread_info(task)->syscall & ~__NR_OABI_SYSCALL_BASE;
+>
+> Where __NR_OABI_SYSCALL_BASE is
+> #define __NR_OABI_SYSCALL_BASE       0x900000
+>
+> So you will end up with sycall number & FF6FFFFF
+> masking off bits 20 and 23.
+
+Right. I fixed a bug in here since I sent this, the correct version also
+needs to mask away the __NR_OABI_SYSCALL_BASE for a native
+oabi kernel, not just for an eabi kernel with oabi-compat mode.
+
+> I suppose this is based on this:
+>
+> >         bics    r10, r10, #0xff000000
+> > +       str     r10, [tsk, #TI_SYSCALL]
+>
+> OK we mask off bits 24-31 before we store this.
+>
+> >         bic     scno, scno, #0xff000000         @ mask off SWI op-code
+> > +       str     scno, [tsk, #TI_SYSCALL]
+>
+> And here too.
+>
+> >         eor     scno, scno, #__NR_SYSCALL_BASE  @ check OS number
+>
+> And then happens that which will ... I don't know really.
+> Exclusive or with 0x9000000 is not immediately intuitive
+> evident to me, I suppose it is for everyone else... :/
+
+This is how the SWI/SVC immediate argument gets turned into
+a system call number that is used as an offset into the sys_call_table.
+
+OABI syscalls are called with '__NR_OABI_SYSCALL_BASE | scno'
+in the immediate argument of the instruction, so using an
+'eor ... , #__NR_SYSCALL_BASE' means that any valid
+argument afterwards is a number between zero and
+__NR_syscalls, and any invalid argument is a number outside
+of that range
+
+EABI syscalls are just 'SVC 0' with the syscall number in register 7
+and no offset.
+
+See also
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=3f2829a31573e3e502b874c8d69a765f7a778793
+
+> I need some idea how this numberspace is managed in order to
+> understand the code so I can review it, I guess it all makes perfect
+> sense but I need some background here.
+
+I also had never understood this part before, and I'm still not
+sure where the 0x900000 actually comes from, though my best
+guess is that this was intended as a an OS specific number space,
+with '9' being assigned to Linux (similar to the way Itanium and
+MIPS do with their respective offsets). By the time EABI got added,
+this was apparently no longer considered helpful.
+
+        Arnd
