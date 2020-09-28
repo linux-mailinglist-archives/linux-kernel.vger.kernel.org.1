@@ -2,106 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8168327AD02
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1FF27ACFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 13:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726744AbgI1LiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 07:38:24 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:51241 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726666AbgI1LiX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 07:38:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1601293103; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=HtyanNG6hEeZvhgA5eqgIt4/bt21T19irBZrb+nidcM=; b=TiKhy4RoiJ/8PBU2fVVkPFLwvy9FNf5D6dzDQjr9KcgM2L+54o0KQumXKr7clKQOZuVjgkbd
- uoZUMHbicCb7x842A/Mhxb+HMskW7xWmJvzuuLtI5zoXJsJH2mEbw4ADtodoISGIevYwsh5C
- 8hO6FcbSOp3hJIflG5+jPPduJMM=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f71cb01557d03a9f4acd846 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 11:37:37
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6AC72C43395; Mon, 28 Sep 2020 11:37:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 047CFC433CA;
-        Mon, 28 Sep 2020 11:37:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 047CFC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>
-Cc:     coresight@lists.linaro.org, leo.yan@linaro.org,
-        alexander.shishkin@linux.intel.com, peterz@infradead.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv2 2/2] coresight: etm4x: Fix save and restore of TRCVMIDCCTLR1 register
-Date:   Mon, 28 Sep 2020 17:07:09 +0530
-Message-Id: <011321608e06db0a2797d3a0418b81c75438c571.1601292571.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <cover.1601292571.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1601292571.git.saiprakash.ranjan@codeaurora.org>
+        id S1726701AbgI1LiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 07:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgI1LiE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 07:38:04 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84BA4C061755;
+        Mon, 28 Sep 2020 04:38:04 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g4so940228wrs.5;
+        Mon, 28 Sep 2020 04:38:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=/DSfl3PhmxyqK4cCLrMlHEsrYZk0SosXscE+a3oAY9s=;
+        b=BKUXY08CAONse8WpQ7sUrmd1q/uBCMq1YsJ7kY2YHySsvfSynLm2E6t5oCMCNvBn2T
+         V4kwJbsEvli/SsBH76PZ7yPrZZ+nOkqXa5wFpaDpSt3EVO95vRFKVDEcRupq1zSENVb0
+         L6inXyTM8LbbJyYQgch0NOpYZ23Yfo2agilZtogNs3qd4r9kLZqk7pOsAVu9gJtAQOP0
+         ec6FQQWIk+srdEQdJH3nEMM6XyGzZaHgBRDDrzcGVoiWMllGCbeEIwrOiMj/ceNymZ1A
+         oJpP1+GJ2hKsSURadWl+NIetcMzZMmtoSLAgskc/RKuJlRNzarujyV7A2TAUGtFdZQLg
+         aszw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=/DSfl3PhmxyqK4cCLrMlHEsrYZk0SosXscE+a3oAY9s=;
+        b=Prov/8FczqIOF0l5/cVWCwQs9yS+eC/DHRnEkNlqQ01RHQQIW/pIju8EzLiHKcFmW1
+         DkoLNE9ahEfiiv5hfivMWIJm4NuLT8akrCUdBXeMqS+qAyNZ7ple+VaGOO64XgK8KbC5
+         86kAy7NsTbJJZlMhbBPpltZ6oZ0eA9mSLJ7b85KJbFzDkVfo2oKufUZaSCSLGJg83U0A
+         m4FWTVANh4ngyvcVE1Ltnu/Ntb0K6LUc2qPxcLHfYj4CoaXrGyHKkPyFwQp2BCZKWZHt
+         zhk5KMe9VPp3IkxAMfaSm1vtq4cTY9OR3eFOS4R9H8IWN7FknvgqHwrc5W7JfL5vDsmP
+         IB5g==
+X-Gm-Message-State: AOAM532Qdp0laX0TjgGFq96ibAko3YeVipZYAkmvJhT066ThMzMnk4kD
+        h7wYdKSoKlf1xk42WZCxxAM=
+X-Google-Smtp-Source: ABdhPJzqVbAgm8Mpq/f7Lw5cB88wTQXRr/O+Mg6pfxX0WJsJ3kspBzf3nQPqzm47Ga4SBXFb3SkYLA==
+X-Received: by 2002:adf:ec92:: with SMTP id z18mr1317347wrn.53.1601293077673;
+        Mon, 28 Sep 2020 04:37:57 -0700 (PDT)
+Received: from [192.168.1.211] ([95.144.134.217])
+        by smtp.gmail.com with ESMTPSA id r14sm1028721wrn.56.2020.09.28.04.37.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 28 Sep 2020 04:37:56 -0700 (PDT)
+From:   Dan Scally <djrscally@gmail.com>
+Subject: Re: [RFC PATCH] Add bridge driver to connect sensors to CIO2 device
+ via software nodes on ACPI platforms
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     yong.zhi@intel.com, bingbu.cao@intel.com, tian.shu.qiu@intel.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org,
+        davem@davemloft.net, robh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        jorhand@linux.microsoft.com, kitakar@gmail.com,
+        kieran.bingham@ideasonboard.com, andriy.shevchenko@linux.intel.com
+References: <20200916213618.8003-1-djrscally@gmail.com>
+ <20200917103343.GW26842@paasikivi.fi.intel.com>
+Message-ID: <060b458e-66ee-ab22-5c4c-c8e04affff7b@gmail.com>
+Date:   Mon, 28 Sep 2020 12:37:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200917103343.GW26842@paasikivi.fi.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit f188b5e76aae ("coresight: etm4x: Save/restore state
-across CPU low power states"), mistakenly TRCVMIDCCTLR1 register
-value was saved in trcvmidcctlr0 state variable which is used to
-store TRCVMIDCCTLR0 register value in etm4x_cpu_save() and then
-same value is written back to both TRCVMIDCCTLR0 and TRCVMIDCCTLR1
-in etm4x_cpu_restore(). There is already a trcvmidcctlr1 state
-variable available for TRCVMIDCCTLR1, so use it.
+On 17/09/2020 11:33, Sakari Ailus wrote:
+>> +		sensor_props[3] = PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
+>> +							       data_lanes,
+>> +							       (int)ssdb->lanes);
+>> +		sensor_props[4] = remote_endpoints[(bridge.n_sensors * 2) + ENDPOINT_SENSOR];
+>> +		sensor_props[5] = PROPERTY_ENTRY_NULL;
+>> +
+>> +		cio2_props[0] = PROPERTY_ENTRY_U32_ARRAY_LEN("data-lanes",
+>> +							     data_lanes,
+>> +							     (int)ssdb->lanes);
+>> +		cio2_props[1] = remote_endpoints[(bridge.n_sensors * 2) + ENDPOINT_CIO2];
+>> +		cio2_props[2] = PROPERTY_ENTRY_NULL;
+> I suppose the CSI-2 link frequency is generally encoded in drivers in this
+> case. A lot of drivers already check for those, could you add the
+> frequencies here as well (as they are known)?
 
-Fixes: f188b5e76aae ("coresight: etm4x: Save/restore state across CPU low power states")
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This one caused me some consternation; I mentioned in a previous email
+that I was overwriting the v4l2_subdev's fwnode directly because I
+couldn't reprobe() the devices after changing their fwnode. Turns out
+that's probably not ok, because as you point out there are some drivers
+that check for properties in firmware as part of their .probe() call, so
+they _have_ to be there for those to work (including ov5670, which is
+the canonical ipu3 driver in the kernel docs). imx258 and ov13858 are
+also affected, and I'm aware of at least one other driver in development
+that would be affected.
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index de76d57850bc..abd706b216ac 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -1243,7 +1243,7 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	state->trccidcctlr1 = readl(drvdata->base + TRCCIDCCTLR1);
- 
- 	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR0);
--	state->trcvmidcctlr0 = readl(drvdata->base + TRCVMIDCCTLR1);
-+	state->trcvmidcctlr1 = readl(drvdata->base + TRCVMIDCCTLR1);
- 
- 	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
- 
-@@ -1353,7 +1353,7 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
- 	writel_relaxed(state->trccidcctlr1, drvdata->base + TRCCIDCCTLR1);
- 
- 	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR0);
--	writel_relaxed(state->trcvmidcctlr0, drvdata->base + TRCVMIDCCTLR1);
-+	writel_relaxed(state->trcvmidcctlr1, drvdata->base + TRCVMIDCCTLR1);
- 
- 	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
- 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+
+The problem preventing the reprobe working is that i2c_device_match()
+relies on a device's fwnode having acpi_device_fwnode_ops to perform
+ACPI matching, so after giving the device our software nodes the
+matching just fails. I thrashed out a way to make the reprobe work, but
+I don't really like the solution so I wanted to talk about it. The long
+story short is; clone the driver but add an i2c_device_id matching the
+existing i2c_client's name, then use i2c_add_driver() to install it to
+the bus before calling device_reprobe(). This does work; it makes the
+devices reprobe cleanly at the end of cio2-bridge's init, but it feels a
+little bit hacky. Any thoughts? Or if it makes it easier to discuss, I
+can just post the v2 containing all the changes that people suggested
+after the v1, and showing how this reprobe would work.
 
