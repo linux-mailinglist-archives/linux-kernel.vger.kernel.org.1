@@ -2,116 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174E527AF45
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0D5D27AF48
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 15:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgI1Nmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 09:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32876 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgI1Nmt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 09:42:49 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BDFFC061755;
-        Mon, 28 Sep 2020 06:42:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id m6so1433783wrn.0;
-        Mon, 28 Sep 2020 06:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=WVwdUfyjMEoCtuOhheTQ9oRiRarpPNDUuV3BfILNxJ8=;
-        b=kDi0BWxHW6BtOj7bB4YVgWfNm4uGCHxZjrleQIFZtDEZ6/3XNTd70U/2xYLD0xvsBI
-         s1Kg2h6ubhSO5fk9TSHxE7Q8XQ5LOVP2wV/nkjGpcYhuWMnrUAuiZEuc5PSexGn1V/xJ
-         XWxHRMgcx6wYNI4Y9A7MUP3n2bYSPthjjUjIrXBVIAS90OldpcWTDsu95iLuRNwpXK7d
-         YU0NKj2T7Xt4a6KhpoanPgaFcwV0x8PBftEU3Bq7fJM98Zu3DhQKWjsJ73cj5zUrYU81
-         /WN1oh6JWcYWE7U6hsywxAv0DX/W62kcaIpl4UrRDlx1JGuqIwmg58FSAmW22cJqzhU0
-         9udQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WVwdUfyjMEoCtuOhheTQ9oRiRarpPNDUuV3BfILNxJ8=;
-        b=bnFN/quBAu8Al0lgdIK3B990Xjqe/O82SKb6TO0P/JEI+0+hIoNFC0Nn/fGQQZn8a7
-         nydYXUr2aDK7YD4pAv7icXB9CpcnGme3KJBHOdo9PO3AO6A60q9u+gvAb58zpxtgTTeu
-         ScvyS8XKmUzAIWUYoY7DiQ+KED+TgLF+NOQBHIhXbubie1m+DtPmBXQUuTaouoi0PM+h
-         gXZoicG4Zwf+KIPCME9kKZlepeJRLIHW47XMHweoz8xVAXm+bRvqPAMrKBZuyKCKHmue
-         0+wxnqDkRZaiMc/Lb+Cj7Y5M7+wmL4X/sAbUBaDogM1bwjCMCrMu3ZDPkLDd7MNAlyyU
-         HK2g==
-X-Gm-Message-State: AOAM530UagE92MZfK0O6eF/L+i9NTAMjPEljSPdy+VBpOu9l5IsjncZH
-        l6ckmhBSJC8Ip5p737wuA6ZI0pjVeiU=
-X-Google-Smtp-Source: ABdhPJyM9lyBNEicuYe1j+vM1mQpQcI0inyyCPoZ/POUXKl7FVC80MEMnrStswwD3Eq+LWXzqxbj5w==
-X-Received: by 2002:adf:a3d4:: with SMTP id m20mr1949028wrb.29.1601300568063;
-        Mon, 28 Sep 2020 06:42:48 -0700 (PDT)
-Received: from localhost ([217.111.27.204])
-        by smtp.gmail.com with ESMTPSA id a15sm1565621wrn.3.2020.09.28.06.42.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Sep 2020 06:42:47 -0700 (PDT)
-Date:   Mon, 28 Sep 2020 15:42:44 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     JC Kuo <jckuo@nvidia.com>
-Cc:     gregkh@linuxfoundation.org, robh@kernel.org, jonathanh@nvidia.com,
-        kishon@ti.com, linux-tegra@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, nkristam@nvidia.com
-Subject: Re: [PATCH v3 11/15] phy: tegra: xusb: Tegra210 host mode VBUS
- control
-Message-ID: <20200928134244.GL3065790@ulmo>
-References: <20200909081041.3190157-1-jckuo@nvidia.com>
- <20200909081041.3190157-12-jckuo@nvidia.com>
+        id S1726597AbgI1NnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 09:43:01 -0400
+Received: from mga06.intel.com ([134.134.136.31]:23462 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726291AbgI1NnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 09:43:01 -0400
+IronPort-SDR: 3+nGgyL3A6P6ioTQ0EXyLfZeNrQxlmipOOWafamPTFpsqxrcAHHKEfsHBKO91iU0/3mjS0iHjs
+ LqaKEcUQtCXQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9757"; a="223588710"
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="223588710"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 06:42:59 -0700
+IronPort-SDR: 4Xk7W23AgLR3wbPMrvyEE+Dm27TAL69CuT9tBEtFttwHr75E7JlhPuuuz8ffGnLPtywsdOjUDX
+ UMYA++P5AgXw==
+X-IronPort-AV: E=Sophos;i="5.77,313,1596524400"; 
+   d="scan'208";a="488584983"
+Received: from lizwalsh-mobl3.ger.corp.intel.com (HELO localhost) ([10.251.86.12])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2020 06:42:54 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, james.ausmus@intel.com,
+        matthew.d.roper@intel.com, jose.souza@intel.com,
+        ville.syrjala@linux.intel.com, lucas.demarchi@intel.com,
+        hariom.pandey@intel.com
+Subject: Re: [Intel-gfx] [PATCH 2/2] drm/i915/edp/jsl: Update vswing table for HBR and HBR2
+In-Reply-To: <20200928080931.246347-3-tejaskumarx.surendrakumar.upadhyay@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20200928080931.246347-1-tejaskumarx.surendrakumar.upadhyay@intel.com> <20200928080931.246347-3-tejaskumarx.surendrakumar.upadhyay@intel.com>
+Date:   Mon, 28 Sep 2020 16:43:11 +0300
+Message-ID: <87a6xaow40.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Swj79WlilW4BQYVz"
-Content-Disposition: inline
-In-Reply-To: <20200909081041.3190157-12-jckuo@nvidia.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 28 Sep 2020, Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com> wrote:
+> JSL has update in vswing table for eDP
 
---Swj79WlilW4BQYVz
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I've thought the TLA for Jasper Lake is JSP, not JSL. At least we have
+PCH_JSP for Jasper Lake PCH.
 
-On Wed, Sep 09, 2020 at 04:10:37PM +0800, JC Kuo wrote:
-> To support XUSB host controller ELPG, this commit moves VBUS control
-> .phy_power_on()/.phy_power_off() to .phy_init()/.phy_exit().
-> When XUSB host controller enters ELPG, host driver invokes
-> .phy_power_off(), VBUS should remain ON so that USB devices will not
-> disconnect. VBUS can be turned OFF when host driver invokes
-> .phy_exit() which indicates disabling a USB port.
->=20
-> Signed-off-by: JC Kuo <jckuo@nvidia.com>
+>
+> BSpec: 21257
+> Signed-off-by: Tejas Upadhyay <tejaskumarx.surendrakumar.upadhyay@intel.com>
 > ---
-> v3:
->    new, was a part of "phy: tegra: xusb: Add wake/sleepwalk for Tegra210"
->=20
->  drivers/phy/tegra/xusb-tegra210.c | 52 ++++++++++++++++++++++++-------
->  1 file changed, 40 insertions(+), 12 deletions(-)
+>  drivers/gpu/drm/i915/display/intel_ddi.c | 67 ++++++++++++++++++++++--
+>  1 file changed, 64 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+> index 4d06178cd76c..fa08463bcf2e 100644
+> --- a/drivers/gpu/drm/i915/display/intel_ddi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+> @@ -582,6 +582,34 @@ static const struct cnl_ddi_buf_trans ehl_combo_phy_ddi_translations_dp[] = {
+>  	{ 0x6, 0x7F, 0x3F, 0x00, 0x00 },	/* 900   900      0.0   */
+>  };
+>  
+> +static const struct cnl_ddi_buf_trans jsl_combo_phy_ddi_translations_edp_hbr[] = {
+> +						/* NT mV Trans mV db    */
+> +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 200   200      0.0   */
+> +	{ 0x8, 0x7F, 0x38, 0x00, 0x07 },	/* 200   250      1.9   */
+> +	{ 0x1, 0x7F, 0x33, 0x00, 0x0C },	/* 200   300      3.5   */
+> +	{ 0xA, 0x35, 0x36, 0x00, 0x09 },	/* 200   350      4.9   */
+> +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 250   250      0.0   */
+> +	{ 0x1, 0x7F, 0x38, 0x00, 0x07 },	/* 250   300      1.6   */
+> +	{ 0xA, 0x35, 0x35, 0x00, 0x0A },	/* 250   350      2.9   */
+> +	{ 0x1, 0x7F, 0x3F, 0x00, 0x00 },	/* 300   300      0.0   */
+> +	{ 0xA, 0x35, 0x38, 0x00, 0x07 },	/* 300   350      1.3   */
+> +	{ 0xA, 0x35, 0x3F, 0x00, 0x00 },	/* 350   350      0.0   */
+> +};
+> +
+> +static const struct cnl_ddi_buf_trans jsl_combo_phy_ddi_translations_edp_hbr2[] = {
+> +						/* NT mV Trans mV db    */
+> +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 200   200      0.0   */
+> +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 200   250      1.9   */
+> +	{ 0x1, 0x7F, 0x3D, 0x00, 0x02 },	/* 200   300      3.5   */
+> +	{ 0xA, 0x35, 0x38, 0x00, 0x07 },	/* 200   350      4.9   */
+> +	{ 0x8, 0x7F, 0x3F, 0x00, 0x00 },	/* 250   250      0.0   */
+> +	{ 0x1, 0x7F, 0x3F, 0x00, 0x00 },	/* 250   300      1.6   */
+> +	{ 0xA, 0x35, 0x3A, 0x00, 0x05 },	/* 250   350      2.9   */
+> +	{ 0x1, 0x7F, 0x3F, 0x00, 0x00 },	/* 300   300      0.0   */
+> +	{ 0xA, 0x35, 0x38, 0x00, 0x07 },	/* 300   350      1.3   */
+> +	{ 0xA, 0x35, 0x3F, 0x00, 0x00 },	/* 350   350      0.0   */
+> +};
+> +
+>  struct icl_mg_phy_ddi_buf_trans {
+>  	u32 cri_txdeemph_override_11_6;
+>  	u32 cri_txdeemph_override_5_0;
+> @@ -1069,7 +1097,6 @@ icl_get_mg_buf_trans(struct intel_encoder *encoder, int type, int rate,
+>  	*n_entries = ARRAY_SIZE(icl_mg_phy_ddi_translations_rbr_hbr);
+>  	return icl_mg_phy_ddi_translations_rbr_hbr;
+>  }
+> -
+>  static const struct cnl_ddi_buf_trans *
+>  ehl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
+>  			int *n_entries)
+> @@ -1098,6 +1125,34 @@ ehl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
+>  	}
+>  }
+>  
+> +static const struct cnl_ddi_buf_trans *
+> +jsl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
+> +			int *n_entries)
+> +{
+> +	struct drm_i915_private *dev_priv = to_i915(encoder->base.dev);
+> +
+> +	switch (type) {
+> +	case INTEL_OUTPUT_HDMI:
+> +		*n_entries = ARRAY_SIZE(icl_combo_phy_ddi_translations_hdmi);
+> +		return icl_combo_phy_ddi_translations_hdmi;
+> +	case INTEL_OUTPUT_EDP:
+> +		if (dev_priv->vbt.edp.low_vswing) {
+> +			if (rate > 270000) {
+> +				*n_entries = ARRAY_SIZE(jsl_combo_phy_ddi_translations_edp_hbr2);
+> +				return jsl_combo_phy_ddi_translations_edp_hbr2;
+> +			} else {
+> +				*n_entries = ARRAY_SIZE(jsl_combo_phy_ddi_translations_edp_hbr);
+> +				return jsl_combo_phy_ddi_translations_edp_hbr;
+> +			}
+> +		}
+> +		/* fall through */
+> +	default:
+> +		/* All combo DP and eDP ports that do not support low_vswing */
+> +		*n_entries = ARRAY_SIZE(icl_combo_phy_ddi_translations_dp_hbr2);
+> +		return icl_combo_phy_ddi_translations_dp_hbr2;
+> +	}
+> +}
+> +
+>  static const struct cnl_ddi_buf_trans *
+>  tgl_get_combo_buf_trans(struct intel_encoder *encoder, int type, int rate,
+>  			int *n_entries)
+> @@ -2265,9 +2320,12 @@ static u8 intel_ddi_dp_voltage_max(struct intel_dp *intel_dp)
+>  			tgl_get_dkl_buf_trans(encoder, encoder->type,
+>  					      intel_dp->link_rate, &n_entries);
+>  	} else if (INTEL_GEN(dev_priv) == 11) {
+> -		if (IS_ELKHARTLAKE(dev_priv))
+> +		if (IS_JASPERLAKE(dev_priv))
+> +			jsl_get_combo_buf_trans(encoder, encoder->type,
+> +					intel_dp->link_rate, &n_entries);
+> +		else if (IS_ELKHARTLAKE(dev_priv))
+>  			ehl_get_combo_buf_trans(encoder, encoder->type,
+> -						intel_dp->link_rate, &n_entries);
+> +					intel_dp->link_rate, &n_entries);
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+This is a good example of a potential trap that having IS_ELKHARTLAKE()
+cover both ELK and JSP creates. An unsuspecting coder might change the
+if ladder to have IS_ELKHARTLAKE() first, and the subsequent
+IS_JASPERLAKE() branch would never be taken.
 
---Swj79WlilW4BQYVz
-Content-Type: application/pgp-signature; name="signature.asc"
+BR,
+Jani.
 
------BEGIN PGP SIGNATURE-----
+>  		else if (intel_phy_is_combo(dev_priv, phy))
+>  			icl_get_combo_buf_trans(encoder, encoder->type,
+>  						intel_dp->link_rate, &n_entries);
+> @@ -2454,6 +2512,9 @@ static void icl_ddi_combo_vswing_program(struct intel_encoder *encoder,
+>  	if (INTEL_GEN(dev_priv) >= 12)
+>  		ddi_translations = tgl_get_combo_buf_trans(encoder, type, rate,
+>  							   &n_entries);
+> +	else if (IS_JASPERLAKE(dev_priv))
+> +		ddi_translations = jsl_get_combo_buf_trans(encoder, type, rate,
+> +							   &n_entries);
+>  	else if (IS_ELKHARTLAKE(dev_priv))
+>  		ddi_translations = ehl_get_combo_buf_trans(encoder, type, rate,
+>  							   &n_entries);
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl9x6FQACgkQ3SOs138+
-s6G92hAApMHDpezGgXdXh/OWS2HGj7CokE31XJ/Jr6PUdq5XOJtv7eyyF3TuiRmx
-mWCGxdxGu0lXayJXGta/LylRwlxD3uzOEQkBeRU11EmoUu08XDlFclLoBC8w+hro
-R/3/4Mc9vwrz9nYSwdF9G34XZVKSvVrCxQQRIXm9tVK0aMv/rl6BqHffPd/YwgeZ
-Z0DDadkgJZ5wyERDK8pxxto5DzdYCzC/iR5Kr31PXt5zGXshONGPAxmJlLScqsuo
-/ulKH7Ts/LqIdkEo/Lpes6z1r7lOlQ3dvNhj62pFcLgnQJCNoIuWVBjpvt+8OfCz
-Usw9IE2gh8YKHBTSRDP41RjtgoXALYdQCjPxFILob+TrTE8/lMs9ItZZLl4Yy0MA
-9akzpif3DLcdM/bY7R7T80xlgHoAf6Y4L5t5cs4hL9hFfbH9db7c6qK057Geyyxb
-ULNQFPMkuYxY4SYudyKU9gyipOV8WxGGXWhTaSmI6lcrFJLvMDbEmSyyQlGPoiOb
-zvSrz7b9V/tiATiRF7xg+Aim+9JzR4gPSYhcuzl4aMTgKwzG8JroTISVL5kNr2SQ
-du8mFNnedIr++ymT6BrSH734H0RTDTlb8wN83yM/PW99lJwXN2QmRHltj3ug5ydg
-uIPhnK2b9V2M9gufaFq+kOuBfgC/pEdZqUiKUY2VEgw+2j+FcqY=
-=MNU9
------END PGP SIGNATURE-----
-
---Swj79WlilW4BQYVz--
+-- 
+Jani Nikula, Intel Open Source Graphics Center
