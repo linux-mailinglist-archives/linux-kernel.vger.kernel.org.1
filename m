@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6EC27A73A
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D30127A73C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 08:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgI1GIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 02:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47196 "EHLO
+        id S1726564AbgI1GJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 02:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbgI1GIt (ORCPT
+        with ESMTP id S1725287AbgI1GJ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 02:08:49 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A206C0613CE;
-        Sun, 27 Sep 2020 23:08:49 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id j11so6863016ejk.0;
-        Sun, 27 Sep 2020 23:08:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W94+USkFOEw29LE8CB5eIdgPT0Swcp2//ikNQs39wI8=;
-        b=LAZYNjM3G/CcV3a5b7ikfdXvsqLboydZLUWluGdZlPbENZBXIr1znw2HuOHa++Z1/w
-         QEM5PfLTZ/122a5FiGefQsa7DWppDGVSDmJOISbrTbzWNEegsLg8VRXCcELnmY3vVJPV
-         dDldTdPCx27Bp4eCvwEvmIX3Lf/QdVa3ssi2qQq8KviyULWVQtW8Ez8XeZ9D2zhaNTmw
-         vMO+CIKmV6Lojy/EXgNM2i1Qf3xUpkkjfqotrxsmqOqtssbjwXW8tLTNkqlqUTtyoBOB
-         HP1rxAhi5/OeED+oYyjbsTimi39EMzGXfRvHJJe2AVNfbf1DxPHcNk6ja6GLt1H2wBsc
-         89+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W94+USkFOEw29LE8CB5eIdgPT0Swcp2//ikNQs39wI8=;
-        b=VlrtTVidGBicckMNoRJ4AKeaiZqtWRaq7zgbNNQ7OFnGS+28LlPNLumk2ewAoDk1Mg
-         pLSR5qWpN5qt5O+xUc7aU73MY9DPUfJH89B0yjO3cbLuQWQPKJYBt1i9PdzEgWlIROh7
-         uhSCBtyYAykl5VXiy5bPWIxySuVcCcPzAgKyms6MTwlZLFX2/IrdzDvjT2f4MFXYa6EL
-         3aZ1IRgqiFZxchIEohey8wdoA+/7Z3iG8F0VXeOP598d70oqEolVVORmhmyQyWt2Gh4r
-         W91Ya1vuBEGFAgeecmX5raVdJwA6k+kCiFV3L+Xa7ceyCyi0qGq1mk5y/qEhR19Psqve
-         xuyA==
-X-Gm-Message-State: AOAM533C4t4QR9cgpmPRxSU82oYy/va0vYWqUAvr6HzH3jm/bY+ZPwc5
-        H4NenatfaUbQYGghneZDAxrYZ7l+zckxgRgX8Cc2jD47
-X-Google-Smtp-Source: ABdhPJwnmwKg6CTBdT1WpaQr+mK3XPL3ayBHn/1nHxViptewGpSpXXVGOtaQDyHJV04k07v5RDDwgJts8rPZEuPVoqU=
-X-Received: by 2002:a17:906:6b95:: with SMTP id l21mr123687ejr.317.1601273327952;
- Sun, 27 Sep 2020 23:08:47 -0700 (PDT)
+        Mon, 28 Sep 2020 02:09:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83928C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 27 Sep 2020 23:09:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1Pc31Fv12tc6sKlB32+4VLUicd8Kys3Yi96EmJx4ZVw=; b=KtFsoMZVzI2hLn0kVqj841Zljv
+        KdeaaWf3HTJMLJ7W5NKm2PhNVFRZgvv2JC+VbGnCZNWsjkTSkqe2GmXMHwkaGMnz3JAldfxKTc1qq
+        XMYisiiSxnaLJGZebR/heqLjlcHZH+Mufiqn+O6LKSO/x8wHtmU3fYRwK8wppekNAg9x1flncjxvg
+        l44pVJ+j4quoNKMiyGPiOxbTgjYoTdKwQEAzfzZybld0vPFdJlC+o8gSr4JBUPuoNe+CpYrcnNqiP
+        GfqIBjEJFwq3zhwPXXNHonZCG6ZOmPICt3hOMGu6Q/kYS5fOhKyDYxtJqcQ51ps+fL/RBphRs5mny
+        a5kRlxFw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kMmLQ-0002UV-Fl; Mon, 28 Sep 2020 06:09:04 +0000
+Date:   Mon, 28 Sep 2020 07:09:04 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "sudeep.dutt@intel.com" <sudeep.dutt@intel.com>,
+        "ashutosh.dixit@intel.com" <ashutosh.dixit@intel.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "wang.yi59@zte.com.cn" <wang.yi59@zte.com.cn>,
+        "huang.zijiang@zte.com.cn" <huang.zijiang@zte.com.cn>,
+        "rikard.falkeborn@gmail.com" <rikard.falkeborn@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "mst@redhat.com" <mst@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dl-linux-imx <linux-imx@nxp.com>
+Subject: Re: [PATCH 1/5] misc: vop: change the way of allocating vring for
+ noncoherent platform
+Message-ID: <20200928060904.GA9387@infradead.org>
+References: <20200925072630.8157-1-sherry.sun@nxp.com>
+ <20200925072630.8157-2-sherry.sun@nxp.com>
+ <20200926075015.GA18592@infradead.org>
+ <VI1PR04MB4960DC1E64D65634FE76C7AA92340@VI1PR04MB4960.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20200928135405.73404219@canb.auug.org.au> <20200928060427.GA15041@lst.de>
-In-Reply-To: <20200928060427.GA15041@lst.de>
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Mon, 28 Sep 2020 16:08:36 +1000
-Message-ID: <CAPM=9txFX+M8O+-PCxAUnrSovXRHEZyRwOX2r3GUr7hP0A_o3A@mail.gmail.com>
-Subject: Re: linux-next: build failure after merge of the drm tree
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <VI1PR04MB4960DC1E64D65634FE76C7AA92340@VI1PR04MB4960.eurprd04.prod.outlook.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 28 Sep 2020 at 16:05, Christoph Hellwig <hch@lst.de> wrote:
->
-> On Mon, Sep 28, 2020 at 01:54:05PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> >
-> > After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
-> > failed like this:
->
-> The driver needs to switch do dma_alloc_noncoherent + dma_sync_single*
-> like the other drivers converted in the dma tree.  Paul, let me know if
-> you have any questions.
+On Sun, Sep 27, 2020 at 07:58:29AM +0000, Sherry Sun wrote:
+> Thanks for your reply.
+> Can you explain why we cannot use the API and header above in drivers?
+> And do you know if there are any APIs that could replace this to check the device hardware dma coherent support?
 
-Is this possible in drm-next now (it's 5.9.0-rc5 based)?
+If your treat the memory as if it is coherent with device access you
+should always use dma_alloc_coherent.  The whole point of the DMA API
+is to abstract such differences away.
 
-or will I need to get a stable shared git tree that goes into drm-next
-and you send to Linus early in the MR?
+> > 
+> > > +			vdev->vvr[i].vrh.vring.used =
+> > > +				(void __force *)vpdev->hw_ops->remap(
+> > 
+> > And you must not use __force casts without a comment explanation why
+> > they are safe.
+> 
+> Here is the original code, I moved the original code into the if() without change it.
+> But I think  this is because vpdev->hw_ops->remap() return type is void __iomem *, but vring.used need type void *. 
+> Maybe this is a workaround for Intel MIC platform, as it reassigns the used ring on the EP side.
 
-Dave.
+Well, we'll need to figure out what is going on here, and blind casts to
+and from __iomem are dangerous.
