@@ -2,94 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6881027B820
-	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAE627B788
+	for <lists+linux-kernel@lfdr.de>; Tue, 29 Sep 2020 01:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgI1Xac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 19:30:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53580 "EHLO mail.kernel.org"
+        id S1726885AbgI1XNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 19:13:07 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:61065 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726939AbgI1Xab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 19:30:31 -0400
-Received: from localhost.localdomain (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1725272AbgI1XNG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 28 Sep 2020 19:13:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1601334786; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=8CJA6J29Cn+bufk0vCjsxrbKFbanr4AB9WIlRG9X7Uc=; b=K7lfzv2h9zYCQBss5doSaRdpNGiS6gqK6k2lVkMecYeUU0IiiHy9whpbCegtgMfWQfWFEjvZ
+ Ljtz7Wk73++w+hIdi4TuuUMA7vNH+gsvMKX4aEQC4qNcbE0ZI4xhbukyAukf9VsosMdVFsFR
+ s6BXJgWdTihfxgquviUnUbpi9rw=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f7261102892e2043e87aafb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 28 Sep 2020 22:17:52
+ GMT
+Sender: rishabhb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 25BADC433CB; Mon, 28 Sep 2020 22:17:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2575B2311C;
-        Mon, 28 Sep 2020 22:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1601331211;
-        bh=pgUIZysIK7lf6lo7USrdfGQn+em4Qyd3aAxmmKkexrw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O7Hd0Rqb/FjcrbpWzQDN9tO2jA3+L1aBo3Z8mTfjE2WJwvjwa11O3OOCK15N4HOB6
-         KUnexO3cH0TcDGf8VP/rgq9puXMlr8+8OJzettVB72gowMZ1bZPgM9PgmvcOwlKrxf
-         QjpQA62ygR/O97bSl1lM06udouONZzqX0ykfVZbc=
-From:   Will Deacon <will@kernel.org>
-To:     Gavin Shan <gshan@redhat.com>, linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, mark.rutland@arm.com,
-        james.morse@arm.com, shan.gavin@gmail.com,
-        linux-kernel@vger.kernel.org, Jonathan.Cameron@huawei.com
-Subject: Re: [PATCH v5 00/13] Refactor SDEI client driver
-Date:   Mon, 28 Sep 2020 23:13:21 +0100
-Message-Id: <160132634376.1851570.16643738826038417970.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200922130423.10173-1-gshan@redhat.com>
-References: <20200922130423.10173-1-gshan@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 28728C433CB;
+        Mon, 28 Sep 2020 22:17:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 28728C433CB
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rishabhb@codeaurora.org
+From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
+To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org
+Cc:     tsoni@codeaurora.org, psodagud@codeaurora.org,
+        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
+Subject: [PATCH v6 0/3] Move recovery/coredump configuration to sysfs
+Date:   Mon, 28 Sep 2020 15:17:33 -0700
+Message-Id: <1601331456-20432-1-git-send-email-rishabhb@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Sep 2020 23:04:10 +1000, Gavin Shan wrote:
-> This series bases on 5.9.rc5 and extracted from (v4) series of "Refactoring
-> SDEI client driver", which is prepatory work to support SDEI virtualizaton.
-> This series can be checkout from github.
-> 
->    git@github.com:gwshan/linux.git (branch: "sdei_client")
-> 
-> Testing
-> =======
-> I have the SDEI virtualization code implemented as part of KVM module.
-> With that, the SDEI event can be registered/unregistered/enabled/disabled.
-> Also, the SDEI event can be injected from host and the guest handler runs
-> properly.
-> 
-> [...]
+From Android R onwards Google has restricted access to debugfs in user
+and user-debug builds. This restricts access to most of the features
+exposed through debugfs. 'Coredump' and 'Recovery' are critical
+interfaces that are required for remoteproc to work on Qualcomm Chipsets. 
+Coredump configuration needs to be set to "inline" in debug/test builds
+and "disabled" in production builds. Whereas recovery needs to be
+"disabled" for debugging purposes and "enabled" on production builds.
+This patch series removes the recovery/coredump entries from debugfs
+and moves them to sysfs. Also, this disables the coredump collection
+by default as this is a requirement for production devices.
 
-Applied to arm64 (for-next/sdei), thanks!
+Changelog:
 
-[01/13] firmware: arm_sdei: Remove sdei_is_err()
-        https://git.kernel.org/arm64/c/5735f5158430
-[02/13] firmware: arm_sdei: Common block for failing path in sdei_event_create()
-        https://git.kernel.org/arm64/c/119884249fdb
-[03/13] firmware: arm_sdei: Retrieve event number from event instance
-        https://git.kernel.org/arm64/c/663c0e89c8de
-[04/13] firmware: arm_sdei: Avoid nested statements in sdei_init()
-        https://git.kernel.org/arm64/c/10fd7c42b795
-[05/13] firmware: arm_sdei: Unregister driver on error in sdei_init()
-        https://git.kernel.org/arm64/c/63627cae41e3
-[06/13] firmware: arm_sdei: Remove duplicate check in sdei_get_conduit()
-        https://git.kernel.org/arm64/c/bc110fd32281
-[07/13] firmware: arm_sdei: Remove redundant error message in sdei_probe()
-        https://git.kernel.org/arm64/c/101119a35ca1
-[08/13] firmware: arm_sdei: Remove while loop in sdei_event_register()
-        https://git.kernel.org/arm64/c/1bbc75518503
-[09/13] firmware: arm_sdei: Remove while loop in sdei_event_unregister()
-        https://git.kernel.org/arm64/c/b06146b698e6
-[10/13] firmware: arm_sdei: Cleanup on cross call function
-        https://git.kernel.org/arm64/c/a27c04e1de87
-[11/13] firmware: arm_sdei: Introduce sdei_do_local_call()
-        https://git.kernel.org/arm64/c/f4673625a52c
-[12/13] firmware: arm_sdei: Remove _sdei_event_register()
-        https://git.kernel.org/arm64/c/d2fc580d2dca
-[13/13] firmware: arm_sdei: Remove _sdei_event_unregister()
-        https://git.kernel.org/arm64/c/4b2b76cbbc8f
+v6 -> v5:
+- Disable coredump collection by default
+- Rename the "default" configuration to "enabled" to avoid confusion
 
-Cheers,
+v5 -> v4:
+- Fix the cover-letter of tha patch series.
+
+v4 -> v3:
+- Remove the feature flag to expose recovery/coredump
+
+v3 -> v2:
+- Remove the coredump/recovery entries from debugfs
+- Expose recovery/coredump from sysfs under a feature flag
+
+v1 -> v2:
+- Correct the contact name in the sysfs documentation.
+- Remove the redundant write documentation for coredump/recovery sysfs
+- Add a feature flag to make this interface switch configurable.
+
+Rishabh Bhatnagar (3):
+  remoteproc: Move coredump configuration to sysfs
+  remoteproc: Move recovery configuration to sysfs
+  remoteproc: Change default dump configuration to "disabled"
+
+ Documentation/ABI/testing/sysfs-class-remoteproc |  46 +++++++
+ drivers/remoteproc/remoteproc_coredump.c         |   6 +-
+ drivers/remoteproc/remoteproc_debugfs.c          | 168 -----------------------
+ drivers/remoteproc/remoteproc_sysfs.c            | 120 ++++++++++++++++
+ include/linux/remoteproc.h                       |   8 +-
+ 5 files changed, 173 insertions(+), 175 deletions(-)
+
 -- 
-Will
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
