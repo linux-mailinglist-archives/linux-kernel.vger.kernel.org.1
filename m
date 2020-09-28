@@ -2,153 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2077127B510
-	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F68C27B50C
+	for <lists+linux-kernel@lfdr.de>; Mon, 28 Sep 2020 21:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbgI1TNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 28 Sep 2020 15:13:16 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:38614 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726696AbgI1TNO (ORCPT
+        id S1726686AbgI1TM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 28 Sep 2020 15:12:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726442AbgI1TM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 28 Sep 2020 15:13:14 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SJ90B3005177;
-        Mon, 28 Sep 2020 19:12:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=wL+FSbzPDyTOZYHdyTb21RdbTIUYUYpk4JKjFqxA86c=;
- b=jnhx7F4QDGM1NbmcFShUQeKxzQtv/FzNCBRIsBkwEQLErIqyQUey6TgIGFgKX7uHgxiW
- F9ni7U2s7HEgZXKtynTlY11+yJOzYADgZMp68Zihx4UrjNBV+2yr5UVpOQQPi7JEoSVv
- 8FdlqPxaraU8lm2MrDyrL8VXC9W9L/bnM0kgFxIxTlvcIMfhLygVSErP/gGWHXBsLIY2
- 2Hhok61N4fxmajmXTKNsRx6QuD+4ZGMQyO9HYLggNt+u6KG6uE/7XbDJRy3msKXdCMVH
- LV8sRdBZ7/vP7dW8wzdiKpkwHsgZN/Lt2pMcJyaJQSgiv5MP89H0idklvHh5b/IBP0fP SQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 33sx9mxt5x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 28 Sep 2020 19:12:46 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08SJAOOe011172;
-        Mon, 28 Sep 2020 19:12:46 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 33tfhwnf26-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 28 Sep 2020 19:12:46 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 08SJCbl6008284;
-        Mon, 28 Sep 2020 19:12:37 GMT
-Received: from [10.74.86.78] (/10.74.86.78)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 28 Sep 2020 12:12:36 -0700
-Subject: Re: [PATCH v5 10/17] mm/memremap_pages: convert to 'struct range'
-To:     Dan Williams <dan.j.williams@intel.com>, akpm@linux-foundation.org
-Cc:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        dave.hansen@linux.intel.com, linux-mm@kvack.org,
-        linux-nvdimm@lists.01.org, linux-kernel@vger.kernel.org
-References: <160106109960.30709.7379926726669669398.stgit@dwillia2-desk3.amr.corp.intel.com>
- <160106115761.30709.13539840236873663620.stgit@dwillia2-desk3.amr.corp.intel.com>
-From:   boris.ostrovsky@oracle.com
-Organization: Oracle Corporation
-Message-ID: <6186fa28-d123-12db-6171-a75cb6e615a5@oracle.com>
-Date:   Mon, 28 Sep 2020 15:12:32 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.2.2
+        Mon, 28 Sep 2020 15:12:58 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88EFEC061755;
+        Mon, 28 Sep 2020 12:12:57 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id k15so2527601wrn.10;
+        Mon, 28 Sep 2020 12:12:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vz8QchO9cmYjlrvcRjFTzSFLrDWK4NlG4rgcy0Z2ls0=;
+        b=eZOsu7wLnWpgSk3ecwmrfrSrD/FefaVqzQUz8eDGKTOuBAiOxmJIQmNUyRwptMQ2nh
+         RrFUxfuzAf/kYMF+Q3lUFUHubksh1KnI3cW/izilWr0u5vcX9jVF7BqMBJmtebAfLe3Q
+         6FSpU9kcf70FwEhd4AOkAOk0vwPGmrKkcwK2lNN12mUnNXmfxPGEuLxPPyeTvG87QMRQ
+         h9qOj2jtnX8VvqXhdQX0v5N8FA2StGEu8EdQhtDgdbLMXaJZu7DQLR0WPJtkolMp1T/N
+         7edVHSN06lYkz54H4eG3KjNi5HhTZtJnCyM9IUXuY0yQ8Se/fYKitRVp57ujcB3/l2GB
+         yFTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vz8QchO9cmYjlrvcRjFTzSFLrDWK4NlG4rgcy0Z2ls0=;
+        b=QTo7RMO6kK7Vr6y09eMu6N7HA/YYwxsevvY8RtL5YSw90S+03hOO/42fOc7+7SQmdZ
+         2BgM+oGsE1qr7Oo8WE99x0hMGumzvLks5BP4VWkK2ZTIM27I+p/LsudBwc7fdI9yZDca
+         uNJ5s/fwvWveFkg9N/DuTzXd3qWeyYfxrJlThLZlCN5iT9irYXX2Q1m4Eh32f8zAoDqW
+         8W8jf+gdwLMkUdE0dSZKshbaIVUnU6nOqZUdQvztwsYcbuOxu8tbZnbkV4Sc2uFiqx1K
+         aHoUK1F1qvqyZKf1RCYLLCwWQqmI1EHceg7YDHgwx58EEEnjoY4LkpdTjmO0r0G+VOtN
+         7fnA==
+X-Gm-Message-State: AOAM533/889jyj43mhkzS+H42JrpyT0i27LyRB5dPKv8l98WleVwOYHM
+        G7vkVjWvnQnQFQSTexyYKeY=
+X-Google-Smtp-Source: ABdhPJxiovG5tEEYTxk/MpoF6F52R8oux8Nz02/E+YQwQi67lZw1/Wi5MOd0u/CLQO5ZyrON/8wPTw==
+X-Received: by 2002:adf:dd0b:: with SMTP id a11mr3152720wrm.422.1601320376258;
+        Mon, 28 Sep 2020 12:12:56 -0700 (PDT)
+Received: from localhost.localdomain ([170.253.60.68])
+        by smtp.googlemail.com with ESMTPSA id u17sm3072159wri.45.2020.09.28.12.12.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Sep 2020 12:12:55 -0700 (PDT)
+From:   Alejandro Colomar <colomar.6.4.3@gmail.com>
+To:     libc-alpha@sourceware.org
+Cc:     Alejandro Colomar <colomar.6.4.3@gmail.com>,
+        libc-coord@lists.openwall.com, libstdc++@gcc.gnu.org,
+        gcc@gcc.gnu.org, linux-kernel@vger.kernel.org,
+        linux-man@vger.kernel.org, jwakely@redhat.com, fweimer@redhat.com,
+        ville.voutilainen@gmail.com, enh@google.com, rusty@rustcorp.com.au
+Subject: [PATCH v4] <sys/param.h>: Add nitems()
+Date:   Mon, 28 Sep 2020 21:12:37 +0200
+Message-Id: <20200928191237.32063-1-colomar.6.4.3@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <160106115761.30709.13539840236873663620.stgit@dwillia2-desk3.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999 bulkscore=0
- phishscore=0 malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009280146
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9758 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011
- spamscore=0 impostorscore=0 malwarescore=0 bulkscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009280146
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+'nitems()' calculates the length of an array in number of items.
+It is safe: if a pointer is passed to the macro (or function, in C++),
+the compilation is broken due to:
+ - In >= C11: _Static_assert()
+ - In C89, C99: Negative anonymous bitfield
+ - In C++: The template requires an array
 
-On 9/25/20 3:12 PM, Dan Williams wrote:
->  
-> diff --git a/drivers/xen/unpopulated-alloc.c b/drivers/xen/unpopulated-alloc.c
-> index 3b98dc921426..091b8669eca3 100644
-> --- a/drivers/xen/unpopulated-alloc.c
-> +++ b/drivers/xen/unpopulated-alloc.c
-> @@ -18,27 +18,37 @@ static unsigned int list_count;
->  static int fill_list(unsigned int nr_pages)
->  {
->  	struct dev_pagemap *pgmap;
-> +	struct resource *res;
->  	void *vaddr;
->  	unsigned int i, alloc_pages = round_up(nr_pages, PAGES_PER_SECTION);
-> -	int ret;
-> +	int ret = -ENOMEM;
-> +
-> +	res = kzalloc(sizeof(*res), GFP_KERNEL);
-> +	if (!res)
-> +		return -ENOMEM;
->  
->  	pgmap = kzalloc(sizeof(*pgmap), GFP_KERNEL);
->  	if (!pgmap)
-> -		return -ENOMEM;
-> +		goto err_pgmap;
->  
->  	pgmap->type = MEMORY_DEVICE_GENERIC;
+Some BSDs already provide a macro nitems() in <sys/param.h>,
+although it usually doesn't provide safety against pointers.
 
+This patch uses the same name for compatibility reasons,
+and to be the least disruptive with existing code.
 
-Can you move these last 5 lines ...
+This patch also adds some other macros, which are required by 'nitems()':
 
+__is_same_type(a, b):
+Returns non-zero if the two input arguments are of the same type.
 
-> -	pgmap->res.name = "Xen scratch";
-> -	pgmap->res.flags = IORESOURCE_MEM | IORESOURCE_BUSY;
-> +	res->name = "Xen scratch";
-> +	res->flags = IORESOURCE_MEM | IORESOURCE_BUSY;
->  
-> -	ret = allocate_resource(&iomem_resource, &pgmap->res,
-> +	ret = allocate_resource(&iomem_resource, res,
->  				alloc_pages * PAGE_SIZE, 0, -1,
->  				PAGES_PER_SECTION * PAGE_SIZE, NULL, NULL);
->  	if (ret < 0) {
->  		pr_err("Cannot allocate new IOMEM resource\n");
-> -		kfree(pgmap);
-> -		return ret;
-> +		goto err_resource;
->  	}
->  
+__is_array(arr):
+Returns non-zero if the input argument is of an array type.
+
+__must_be(expr, msg):
+Allows using _Static_assert() everywhere an expression can be used.
+It evaluates '(int)0' or breaks the compilation.
+
+__must_be_array(arr):
+It evaluates to '(int)0' if the argument is of an array type.
+Else, it breaks compilation.
+
+__nitems(arr):
+It implements the basic sizeof division needed to calculate the array length.
 
 
-... here, so that we deal with pgmap in the same place? The diff will be slightly larger but the code will read better I think.
+P.S.: I'd like to put this patch in the public domain.
+
+Signed-off-by: Alejandro Colomar <colomar.6.4.3@gmail.com>
+---
+
+A few changes since v3:
+
+- Macros don't need reserved names in their parameters,
+so I simplified those names.
+
+- I fixed some wrong indentation levels.
+
+- Renamed __array_len() to __nitems() for consistency.
 
 
--boris
+ misc/sys/param.h | 47 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
 
+diff --git a/misc/sys/param.h b/misc/sys/param.h
+index d7c319b157..08d4093961 100644
+--- a/misc/sys/param.h
++++ b/misc/sys/param.h
+@@ -102,5 +102,52 @@
+ #define MIN(a,b) (((a)<(b))?(a):(b))
+ #define MAX(a,b) (((a)>(b))?(a):(b))
+ 
++/* Macros related to the types of variables */
++#define __is_same_type(a, b)                                                  \
++	__builtin_types_compatible_p(__typeof__(a), __typeof__(b))
++#define __is_array(arr)	(!__is_same_type((arr), &(arr)[0]))
++
++/* Macros for embedding _Static_assert() in expressions */
++#if __STDC_VERSION__ >= 201112L
++# define __must_be(expr, msg)   (                                             \
++        0 * (int)sizeof(                                                      \
++          struct {                                                            \
++            _Static_assert((expr), msg);                                      \
++            char _ISO_C_forbids_a_struct_with_no_members;                     \
++          }                                                                   \
++        )                                                                     \
++)
++#else
++# define __must_be(expr, msg)   (                                             \
++        0 * (int)sizeof(                                                      \
++          struct {                                                            \
++            int  : (-!(expr));                                                \
++            char _ISO_C_forbids_a_struct_with_no_members;                     \
++          }                                                                   \
++        )                                                                     \
++)
++#endif
++#define __must_be_array(arr)	__must_be(__is_array(arr), "Must be an array!")
++
++/* Macros for array sizes */
++#if defined(__cplusplus)
++# if __cplusplus >= 201103L
++template<typename _Tp, std::size_t _Len>
++  constexpr inline std::size_t
++  nitems(const _Tp(&)[_Len]) __THROW
++  {
++    return _Len;
++  }
++# else /* __cplusplus < 201103L */
++template<typename _Tp, std::size_t _Len>
++  char
++  (&__nitems_chararr(const _Tp(&)[_Len]))[_Len];
++#  define nitems(arr)	(sizeof(__nitems_chararr(arr)))
++# endif /* __cplusplus < 201103L */
++#else /* !defined(__cplusplus) */
++# define __nitems(arr)	(sizeof((arr)) / sizeof((arr)[0]))
++# define nitems(arr)	(__nitems(arr) + __must_be_array(arr))
++#endif /* !defined(__cplusplus) */
++
+ 
+ #endif  /* sys/param.h */
+-- 
+2.28.0
 
-> +	pgmap->range = (struct range) {
-> +		.start = res->start,
-> +		.end = res->end,
-> +	};
-> +	pgmap->owner = res;
-> +
->  #ifdef CONFIG_XEN_HAVE_PVMMU
->          /*
->           * memremap will build page tables for the new memory so
